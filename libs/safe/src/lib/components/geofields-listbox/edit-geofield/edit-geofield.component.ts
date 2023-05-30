@@ -1,6 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {
-  AbstractControl,
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
@@ -9,9 +8,9 @@ import {
   MatLegacyDialogRef as MatDialogRef,
   MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
 } from '@angular/material/legacy-dialog';
-import { Geofield } from '@oort-front/safe';
+import { Geofield } from '../../../models/geofield.model';
 import { CommonModule } from '@angular/common';
-import { SafeModalModule } from '@oort-front/safe';
+import { SafeModalModule } from '../../ui/modal/modal.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -32,7 +31,7 @@ import { TranslateModule } from '@ngx-translate/core';
   templateUrl: './edit-geofield.component.html',
   styleUrls: ['./edit-geofield.component.scss'],
 })
-export class EditGeofieldComponent implements OnInit{
+export class EditGeofieldComponent implements OnInit {
   // === REACTIVE FORM ===
   geoFieldForm: UntypedFormGroup = new UntypedFormGroup({});
 

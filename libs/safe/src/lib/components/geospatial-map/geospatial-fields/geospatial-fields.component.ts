@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GeoProperties } from '../geospatial-map.interface';
 import { LabelModule } from '@progress/kendo-angular-label';
@@ -21,11 +21,7 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
   templateUrl: './geospatial-fields.component.html',
   styleUrls: ['./geospatial-fields.component.scss'],
 })
-export class GeospatialFieldsComponent implements OnInit{
-  @Input() fields: {value: keyof GeoProperties, label: string}[] = [];
+export class GeospatialFieldsComponent {
+  @Input() fields: { value: keyof GeoProperties; label: string }[] = [];
   @Input() geoForm!: FormGroup;
-
-  ngOnInit(): void {
-      console.log(this.fields);
-  }
 }

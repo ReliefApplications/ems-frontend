@@ -41,7 +41,6 @@ import { CronExpressionControlModule } from './components/cron-expression-contro
 import { MapModule } from './components/ui/map';
 import { FullScreenModule } from './directives/fullscreen/fullscreen.module';
 import { DashboardFilterModule } from './components/dashboard-filter/dashboard-filter.module';
-import { EditGeofieldComponent } from './components/geofields-listbox/edit-geofield/edit-geofield.component';
 
 /** Main module for the safe project */
 @NgModule({
