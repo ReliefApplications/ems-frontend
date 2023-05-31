@@ -1,10 +1,12 @@
+<!-- Header -->
 <mat-toolbar [color]="theme.headerColor">
   <safe-button
+    *ngIf="nav"
     [isIcon]="true"
     icon="menu"
-    (click)="nav.toggle()"
+    (click)="nav?.toggle()"
     [matTooltip]="
-      (nav.opened
+      (nav?.opened
         ? 'components.header.sidenav.collapse'
         : 'components.header.sidenav.show'
       ) | translate
@@ -117,18 +119,20 @@
   </mat-menu>
 </mat-toolbar>
 
+<!-- Toolbar / horizontal nav -->
 <ng-container *ngIf="toolbar">
   <ng-container *ngTemplateOutlet="toolbar"></ng-container>
+  <ng-container *ngIf="!sideMenu && largeDevice">
+    <ng-container *ngIf="leftSidenav">
+      <ng-container [ngTemplateOutlet]="leftSidenav"></ng-container>
+    </ng-container>
+  </ng-container>
 </ng-container>
 
-<mat-sidenav-container
-  [class]="
-    !sideMenu && largeDevice
-      ? 'sidenav-container top-menu'
-      : 'sidenav-container'
-  "
->
+<mat-sidenav-container class="sidenav-container">
+  <!-- Left Sidenav -->
   <mat-sidenav
+    *ngIf="sideMenu || !largeDevice"
     class="sidenav"
     #nav
     [mode]="largeDevice ? 'side' : 'over'"
@@ -140,11 +144,13 @@
     </ng-container>
   </mat-sidenav>
 
+  <!-- Content -->
   <mat-sidenav-content class="sidenav-content">
     <safe-breadcrumb></safe-breadcrumb>
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 
+  <!-- Right Sidenav -->
   <mat-sidenav mode="side" position="end" [(opened)]="showSidenav">
     <ng-template #rightSidenav></ng-template>
   </mat-sidenav>

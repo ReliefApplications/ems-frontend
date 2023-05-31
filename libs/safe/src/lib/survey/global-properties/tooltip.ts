@@ -26,9 +26,7 @@ export const init = (Survey: any): void => {
  */
 export const render = (question: Question, el: HTMLElement): void => {
   // Display the tooltip
-  const header = el?.parentElement?.parentElement?.querySelector(
-    '.sv_q_title'
-  ) as HTMLElement;
+  const header = el?.parentElement?.querySelector('.sv_q_title') as HTMLElement;
   if (header) {
     header.title = get(question, 'localizableStrings.tooltip.renderedText', '');
     const span = document.createElement('span');
