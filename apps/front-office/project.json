@@ -72,7 +72,8 @@
           "cron-validator",
           "localforage",
           "survey-angular",
-          "fast-sha256"
+          "fast-sha256",
+          "jsonpath"
         ]
       },
       "configurations": {
