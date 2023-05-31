@@ -1836,6 +1836,10 @@
 				"selectApplication": "Missing value application for an element on page {{page}}. Please select at least one application in properties of {{question}} to save the form.",
 				"snakecase": "The value name {{name}} on page {{page}} is invalid. Please conform to snake_case."
 			},
+			"move": {
+				"down": "Move down",
+				"up": "Move up"
+			},
 			"questionsCategories": {
 				"core": "Question Library"
 			},
