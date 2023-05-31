@@ -58,6 +58,11 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   // === GRID ===
   public colsNumber = MAX_COL_SPAN;
 
+  /** Define default height of summary card */
+  public defaultCardHeight = 2;
+  /** Define max width of summary card */
+  public defaultCardWidth = 2;  
+
   // === DYNAMIC CARDS PAGINATION ===
   public pageInfo = {
     first: DEFAULT_PAGE_SIZE,

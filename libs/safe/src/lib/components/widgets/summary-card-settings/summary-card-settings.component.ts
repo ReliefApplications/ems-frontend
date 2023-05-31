@@ -18,16 +18,6 @@ import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { MatLegacyTabChangeEvent } from '@angular/material/legacy-tabs';
 
-/** Define max height of summary card */
-const MAX_ROW_SPAN = 4;
-/** Define max width of summary card */
-const MAX_COL_SPAN = 8;
-
-/** Define default height of summary card */
-const DEFAULT_CARD_HEIGHT = 2;
-/** Define max width of summary card */
-const DEFAULT_CARD_WIDTH = 2;
-
 /**
  * Create a card form
  *
@@ -37,14 +27,6 @@ const DEFAULT_CARD_WIDTH = 2;
 const createCardForm = (value?: any) => {
   return new FormGroup({
     title: new FormControl<string>(get(value, 'title', 'New Card')),
-    height: new FormControl<number>(get(value, 'height', DEFAULT_CARD_HEIGHT), [
-      Validators.min(1),
-      Validators.max(MAX_ROW_SPAN),
-    ]),
-    width: new FormControl<number>(get(value, 'width', DEFAULT_CARD_WIDTH), [
-      Validators.min(1),
-      Validators.max(MAX_COL_SPAN),
-    ]),
     resource: new FormControl<string>(get(value, 'resource', null)),
     layout: new FormControl<string>(get(value, 'layout', null)),
     aggregation: new FormControl<string>(get(value, 'aggregation', null)),
