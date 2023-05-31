@@ -185,7 +185,7 @@
     (move)="onMove($event)"
     (edit)="onEditTile($event)"
     (delete)="onDeleteTile($event)"
-    (goToNextStep)="changeStep.emit($event)"
+    (changeStep)="changeStep.emit($event)"
     (add)="onAdd($event)"
   ></safe-widget-grid>
   <safe-dashboard-filter *ngIf="showFilter && isFullScreen"></safe-dashboard-filter>
