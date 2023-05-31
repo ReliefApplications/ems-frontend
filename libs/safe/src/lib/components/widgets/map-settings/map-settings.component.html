@@ -47,14 +47,12 @@
         </ng-container>
         <!-- MAP LAYERS -->
         <ng-container *ngSwitchCase="'layers'">
-          <ng-container *ngIf="layerDisplay">
-            <safe-map-layers
-              [layerIds]="layerIds"
-              (close)="currentTab = null"
-              (editLayer)="onEditLayer($event)"
-              (deleteLayer)="onDeleteLayer($event)"
-            ></safe-map-layers>
-          </ng-container>
+          <safe-map-layers
+            [layerIds]="layerIds"
+            (close)="currentTab = null"
+            (editLayer)="onEditLayer($event)"
+            (deleteLayer)="onDeleteLayer($event)"
+          ></safe-map-layers>
         </ng-container>
         <ng-container *ngSwitchCase="'layer'">
           <ng-container *ngIf="layerComponent">

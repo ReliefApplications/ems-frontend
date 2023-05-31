@@ -139,7 +139,6 @@ export class SafeMapSettingsComponent
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((layerIds) => {
         this.layerIds = layerIds;
-        console.log('I pass on layers');
       });
   }
 
@@ -207,8 +206,6 @@ export class SafeMapSettingsComponent
         ...this.mapSettings,
         ...settings,
       };
-      console.log('updateMapSettings');
-      console.log(settings);
       this.layerDisplay = settings.controls.layer;
     } else {
       this.mapSettings = settings;
@@ -283,8 +280,6 @@ export class SafeMapSettingsComponent
       arcGisWebMap: this.tileForm?.value.arcGisWebMap,
       layers: this.tileForm?.value.layers,
     };
-    console.log('onDelete : map settings');
-    console.log(this.mapSettings);
   }
 
   /**

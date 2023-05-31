@@ -95,8 +95,6 @@ export class MapComponent
   private layerControlButtons: any;
   private layerControl: any;
 
-  public layerDisplay = false;
-
   // === Controls ===
   // Search
   public searchControl?: L.Control;
@@ -197,7 +195,6 @@ export class MapComponent
       if (this.map) {
         this.drawMap(false);
       }
-      console.log(changes.mapSettings);
     }
   }
 
@@ -437,7 +434,6 @@ export class MapComponent
     basemaps: L.Control.Layers.TreeObject[],
     layers: L.Control.Layers.TreeObject[]
   ) {
-    console.log('control buttons');
     if (!this.layerControlButtons || !this.layerControlButtons._map) {
       this.layerControlButtons = this.mapControlsService.getLayerControl(
         this.map
@@ -454,7 +450,6 @@ export class MapComponent
     //   this.layerControl.setLayersControl
     // }
     if (this.layerControl) {
-      console.log(this.extractSettings().controls.layer);
       if (!this.extractSettings().controls.layer) {
         this.map.removeControl(this.layerControl);
         this.renderer.addClass(this.layerControlButtons._container, 'hidden');
@@ -561,7 +556,6 @@ export class MapComponent
    */
   public displayLayerIfNeeded(): void {
     if (this.layerControl) {
-      console.log(this.extractSettings().controls.layer);
       if (!this.extractSettings().controls.layer) {
         this.map.removeControl(this.layerControl);
         this.renderer.addClass(this.layerControlButtons._container, 'hidden');
@@ -846,7 +840,6 @@ export class MapComponent
     basemap: any
   ): Promise<{ basemaps: L.Control.Layers.TreeObject[] }> {
     const basemapName = get(BASEMAP_LAYERS, basemap, BASEMAP_LAYERS.OSM);
-    console.log(basemapName);
     this.basemap = Vector.vectorBasemapLayer(basemapName, {
       apiKey: this.esriApiKey,
     });
