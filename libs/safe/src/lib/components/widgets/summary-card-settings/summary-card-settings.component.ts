@@ -7,7 +7,6 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { Validators, FormGroup, FormControl } from '@angular/forms';
-
 import { get } from 'lodash';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { Apollo } from 'apollo-angular';

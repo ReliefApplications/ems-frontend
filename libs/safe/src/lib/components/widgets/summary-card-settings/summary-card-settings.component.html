@@ -57,21 +57,8 @@
         }}</span>
       </ng-template>
       <ng-template matTabContent>
-        <!-- TODO Preview here -->
-        <!-- <safe-summary-card-item
-            *ngFor="let card of cards; let i = index"
-            class="k-tilelayout-item k-card"
-            [style.order]="i"
-            style.grid-column-end="{{
-              'span ' +
-                (card.width && card.width > colsNumber
-                  ? colsNumber
-                  : card.width)
-            }}"
-            style.grid-row-end="{{ 'span ' + card.height }}"
-            [card]="card"
-          >
-          </safe-summary-card-item> -->
+        <safe-summary-card [settings]="tileForm.value" [widget]="tile">
+        </safe-summary-card>
       </ng-template>
     </mat-tab>
     <!-- Card display settings -->
