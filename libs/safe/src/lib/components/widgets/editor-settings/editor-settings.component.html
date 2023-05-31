@@ -26,7 +26,7 @@
       </ng-template>
     </mat-tab>
     <!-- Preview -->
-    <mat-tab>
+    <mat-tab *ngIf="tileForm.value">
       <ng-template mat-tab-label>
         <safe-icon icon="preview" [size]="24"></safe-icon>
         <span>{{
@@ -38,9 +38,9 @@
         <safe-editor
           #widgetContent
           class="flex-1 h-full w-full"
-          [title]="tile.settings.title"
-          [text]="tile.settings.text"
-          [record]="tile.settings.record"
+          [title]="tileForm.value.title"
+          [text]="tileForm.value.text"
+          [record]="tileForm.value.record"
         >
         </safe-editor>
       </ng-template>

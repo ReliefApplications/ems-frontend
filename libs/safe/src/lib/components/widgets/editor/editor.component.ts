@@ -17,9 +17,9 @@ import {
 export class SafeEditorComponent implements OnInit {
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
-  @Input() public title = '';
-  @Input() public text = '';
-  @Input() public record = '';
+  @Input() public title: string | null | undefined = '';
+  @Input() public text: string | null | undefined = '';
+  @Input() public record: string | null | undefined = '';
 
   // === TEXT SANITIZED ===
   public safeText: SafeHtml = '';
@@ -34,7 +34,7 @@ export class SafeEditorComponent implements OnInit {
 
   /** Sanitize the text. */
   ngOnInit(): void {
-    if (!this.record) {
+    if (!this.record && this.text) {
       this.safeText = this.sanitizer.bypassSecurityTrustHtml(this.text);
       return;
     }
@@ -49,13 +49,15 @@ export class SafeEditorComponent implements OnInit {
       .subscribe((res) => {
         const regex = /{{data\.(.*?)}}/g;
         const data = res.data?.record.data || {};
-        // replace all {{data.<field>}} with the value from the data
-        const textWithAddedData = this.text.replace(regex, (match) => {
-          const field = match.replace('{{data.', '').replace('}}', '');
-          return data[field] || match;
-        });
-        this.safeText =
-          this.sanitizer.bypassSecurityTrustHtml(textWithAddedData);
+        if (this.text) {
+          // replace all {{data.<field>}} with the value from the data
+          const textWithAddedData = this.text.replace(regex, (match) => {
+            const field = match.replace('{{data.', '').replace('}}', '');
+            return data[field] || match;
+          });
+          this.safeText =
+            this.sanitizer.bypassSecurityTrustHtml(textWithAddedData);
+        }
       });
   }
 }

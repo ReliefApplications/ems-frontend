@@ -1570,6 +1570,18 @@
 			"unlock": "Déverrouiller",
 			"unstick": "Désépingler"
 		},
+		"pager": {
+			"firstPage": "Aller à la première page",
+			"items": "éléments",
+			"itemsPerPage": "éléments par page",
+			"label": "'Navigation de page, page {currentPage} sur {totalPages}'",
+			"lastPage": "Aller à la dernière page",
+			"nextPage": "Aller à la page suivante",
+			"of": "sur",
+			"page": "Page",
+			"pageNumberInputTitle": "Numéro de page",
+			"previousPage": "Aller à la page précédente"
+		},
 		"tilelayout": {
 			"component": {
 				"items": "articles",

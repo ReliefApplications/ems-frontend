@@ -1563,6 +1563,18 @@
 			"unlock": "Unlock",
 			"unstick": "Unstick"
 		},
+		"pager": {
+			"firstPage": "Go to the first page",
+			"items": "items",
+			"itemsPerPage": "items per page",
+			"label": "'Page navigation, page {currentPage} of {totalPages}'",
+			"lastPage": "Go to the last page",
+			"nextPage": "Go to the next page",
+			"of": "of",
+			"page": "Page",
+			"pageNumberInputTitle": "Page Number",
+			"previousPage": "Go to the previous page"
+		},
 		"tilelayout": {
 			"component": {
 				"items": "items",

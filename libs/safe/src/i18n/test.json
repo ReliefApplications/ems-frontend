@@ -1563,6 +1563,18 @@
 			"unlock": "******",
 			"unstick": "******"
 		},
+		"pager": {
+			"firstPage": "******",
+			"items": "******",
+			"itemsPerPage": "******",
+			"label": "******",
+			"lastPage": "******",
+			"nextPage": "******",
+			"of": "******",
+			"page": "******",
+			"pageNumberInputTitle": "******",
+			"previousPage": "******"
+		},
 		"tilelayout": {
 			"component": {
 				"items": "******",
