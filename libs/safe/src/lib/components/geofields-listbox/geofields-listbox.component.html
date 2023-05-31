@@ -8,11 +8,13 @@
     (actionClick)="handleActionClick()"
   >
     <ng-template kendoListBoxItemTemplate let-dataItem>
-      <div class="geofields-div inline-flex w-full">
+      <div class="group inline-flex w-full">
         <span>
           {{ dataItem.label }}
         </span>
-        <mat-icon (click)="editLabel(dataItem)" class="icon-geofield">edit</mat-icon>
+        <mat-icon (click)="editLabel(dataItem)" class="hidden group-hover:block"
+          >edit</mat-icon
+        >
       </div>
     </ng-template>
   </kendo-listbox>
@@ -23,9 +25,14 @@
     [toolbar]="false"
   >
     <ng-template kendoListBoxItemTemplate let-dataItem>
-      <span>
-        {{ dataItem.label }}
-      </span>
-  </ng-template>
+      <div class="group inline-flex w-full">
+        <span>
+          {{ dataItem.label }}
+        </span>
+        <mat-icon (click)="editLabel(dataItem)" class="hidden group-hover:block"
+          >edit</mat-icon
+        >
+      </div>
+    </ng-template>
   </kendo-listbox>
 </div>
