@@ -1201,6 +1201,7 @@
 					},
 					"position": "Position",
 					"series": {
+						"fill": "Remplissage",
 						"interpolation": {
 							"step": "Étape d'interpolation",
 							"title": "Interpolation"
