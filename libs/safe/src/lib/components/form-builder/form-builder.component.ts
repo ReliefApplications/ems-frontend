@@ -387,20 +387,26 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     }
     // if choices object exists, checks for duplicate values
     if (question.choices) {
-      const values = question.choices.map(
-        (choice: { value: string; text: string }) => choice.value || choice
-      );
-      const distinctValues = [...new Set(values)];
-
-      if (values.length > distinctValues.length) {
-        throw new Error(
-          this.translate.instant(
-            'pages.formBuilder.errors.choices.valueDuplicated',
-            {
-              question: question.valueName,
-            }
-          )
+      // If choices do not come from a reference data, we would make the duplication check as we want to save the choices in the form
+      if (!question.referenceData) {
+        const values = question.choices.map(
+          (choice: { value: string; text: string }) => choice.value || choice
         );
+        const distinctValues = [...new Set(values)];
+
+        if (values.length > distinctValues.length) {
+          throw new Error(
+            this.translate.instant(
+              'pages.formBuilder.errors.choices.valueDuplicated',
+              {
+                question: question.valueName,
+              }
+            )
+          );
+        }
+      } else {
+        // As we already have the reference data value to get the choices, we dont want to save them again with the form structure
+        question.choices = [];
       }
     }
     if (question.getType() === 'multipletext') {

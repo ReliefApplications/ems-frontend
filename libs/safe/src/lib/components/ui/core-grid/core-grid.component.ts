@@ -1251,14 +1251,16 @@ export class SafeCoreGridComponent
     this.skip = event.skip;
     this.pageSize = event.take;
     this.pageSizeChanged.emit(this.pageSize);
-    this.dataQuery.refetch({
-      first: this.pageSize,
-      skip: this.skip,
-      filter: this.queryFilter,
-      sortField: this.sortField || undefined,
-      sortOrder: this.sortOrder,
-      styles: this.style,
-    });
+    this.dataQuery
+      .refetch({
+        first: this.pageSize,
+        skip: this.skip,
+        filter: this.queryFilter,
+        sortField: this.sortField || undefined,
+        sortOrder: this.sortOrder,
+        styles: this.style,
+      })
+      .then(() => (this.loading = false));
   }
 
   // === FILTERING ===

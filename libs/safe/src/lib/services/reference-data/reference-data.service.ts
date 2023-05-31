@@ -104,8 +104,13 @@ export class SafeReferenceDataService {
       ((foreignIsMultiselect && filter.foreignValue.length) ||
         (!foreignIsMultiselect && !!filter.foreignValue))
     ) {
-      const { items: foreignItems, valueField: foreignValueField } =
-        (await localForage.getItem(filter.foreignReferenceData)) as CachedItems;
+      const cache = (await localForage.getItem(
+        filter.foreignReferenceData
+      )) as CachedItems;
+      if (!cache) {
+        return [];
+      }
+      const { items: foreignItems, valueField: foreignValueField } = cache;
       let selectedForeignValue: any | any[];
       // Retrieve foreign field items for multiselect or single select
       if (foreignIsMultiselect) {

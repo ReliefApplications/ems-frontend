@@ -135,7 +135,21 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
         } else {
           this.nextPage = false;
         }
-        this.items.next(this.items.getValue().concat(search.results));
+        if (text) {
+          this.items.next(
+            this.items
+              .getValue()
+              .concat(
+                search.results.filter(
+                  (a) =>
+                    a.id != this.value ||
+                    a.title.toLowerCase().includes(text.toLowerCase())
+                )
+              )
+          );
+        } else {
+          this.items.next(this.items.getValue().concat(search.results));
+        }
         this.loading = false;
       });
   }
