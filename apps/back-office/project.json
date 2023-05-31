@@ -313,7 +313,7 @@
           "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/safe/src/lib/style/themes/expertisefr"]
           }
         },
         "oort-local": {
@@ -358,6 +358,9 @@
         },
         "development": {
           "browserTarget": "back-office:build:development"
+        },
+        "oort-expertisefr": {
+          "browserTarget": "back-office:build:oort-expertisefr"
         }
       },
       "defaultConfiguration": "development"
