@@ -1,3 +1,15 @@
+# [2.0.0-beta.13](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.12...v2.0.0-beta.13) (2023-05-19)
+
+
+### Bug Fixes
+
+* errors on survey submit (edge cases) ([bdea6d2](https://github.com/ReliefApplications/oort-frontend/commit/bdea6d20a9c45bc74129f934e1a22220c2ca609c))
+
+
+### Features
+
+* add snackbar when CUD for distribution lists, notification template & custom ([5033358](https://github.com/ReliefApplications/oort-frontend/commit/503335820c65991a64077e2ea0f817b9aabf2416))
+
 # [2.0.0-beta.12](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0-beta.11...v2.0.0-beta.12) (2023-05-15)
 
 

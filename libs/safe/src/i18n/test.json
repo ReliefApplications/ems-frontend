@@ -401,6 +401,11 @@
 			"dashboard": {
 				"editFilter": "******",
 				"empty": "******",
+				"filter": {
+					"empty": "******",
+					"info": "******",
+					"title": "******"
+				},
 				"filterSettings": "******",
 				"settings": {
 					"defaultPosition": "******"
@@ -548,6 +553,15 @@
 			"fields": "******",
 			"subject": "******",
 			"withoutRecords": "******"
+		},
+		"emailPreview": {
+			"errors": {
+				"missingSubject": "******"
+			},
+			"from": "******",
+			"subject": "******",
+			"title": "******",
+			"to": "******"
 		},
 		"form": {
 			"aggregation": {
@@ -1158,7 +1172,7 @@
 							"step": "******",
 							"title": "******"
 						},
-						"showSerie": "******",
+						"showSeries": "******",
 						"stack": {
 							"enable": "******",
 							"usePercentage": "******"

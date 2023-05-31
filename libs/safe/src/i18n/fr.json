@@ -401,6 +401,11 @@
 			"dashboard": {
 				"editFilter": "Modifier le filtre",
 				"empty": "Aucun contenu n'est disponible. Veuillez attendre que votre administrateur en crée.",
+				"filter": {
+					"empty": "Aucun filtre n'a été défini par les administrateurs",
+					"info": "Les filtres de tableau de bord peuvent être utilisés entre les pages pour filtrer leur contenu.",
+					"title": "Vous modifiez les filtres du tableau de bord"
+				},
 				"filterSettings": "Paramètres du filtre",
 				"settings": {
 					"defaultPosition": "Position par défaut du filtre"
@@ -548,6 +553,15 @@
 			"fields": "Sélectionner les champs à écrire dans le corps du texte",
 			"subject": "Objet",
 			"withoutRecords": "Sans enregistrements"
+		},
+		"emailPreview": {
+			"errors": {
+				"missingSubject": "L'objet du mail ne peut être vide."
+			},
+			"from": "De",
+			"subject": "Objet",
+			"title": "Prévisualisation de mail",
+			"to": "À"
 		},
 		"floating": {
 			"menuButton": {
@@ -1165,7 +1179,7 @@
 							"step": "Étape d'interpolation",
 							"title": "Interpolation"
 						},
-						"showSerie": "Afficher la serie",
+						"showSeries": "Afficher la serie",
 						"stack": {
 							"enable": "Empiler les séries",
 							"usePercentage": "Utiliser des pourcentages"
