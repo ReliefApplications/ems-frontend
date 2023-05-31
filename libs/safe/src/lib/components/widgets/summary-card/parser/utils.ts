@@ -188,7 +188,6 @@ const replaceRecordFields = (
               ' disabled></input>';
             break;
           case 'file':
-            convertedValue = '';
             if (isArray(value)) {
               for (let i = 0; value[i]; ) {
                 const file = value[i];
@@ -203,7 +202,13 @@ const replaceRecordFields = (
                     : file.name,
                   field
                 );
-                convertedValue += `<button type="file"
+                const srcRegex = new RegExp(
+                  `src="${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}"`
+                );
+                if (srcRegex.test(formattedHtml)) {
+                  formattedHtml = formattedHtml.replace(srcRegex, `src=${file.content}`);
+                } else {
+                  convertedValue += `<button type="file"
                   field="${field.name}"
                   index="${i++}"
                   style="border: none; padding: 4px 6px; cursor: pointer; ${style}" title=
@@ -212,6 +217,7 @@ const replaceRecordFields = (
                   <span class="k-icon ${fileIcon}" style="margin-right: 4px"></span>
                   ${fileName}
                   </button>`; // add elements to be able to identify file when clicking on button
+                }
               }
             }
 
