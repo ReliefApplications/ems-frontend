@@ -161,7 +161,9 @@ export class FormWrapperDirective
    * @param renderer renderer
    * @param elementRef references to the element on which the directive is applied
    */
-  constructor(private renderer: Renderer2, private elementRef: ElementRef) {}
+  constructor(private renderer: Renderer2, private elementRef: ElementRef) {
+    this.renderer.addClass(this.elementRef.nativeElement, 'mb-4');
+  }
 
   ngAfterContentInit() {
     // Get inner input and label elements
@@ -178,21 +180,11 @@ export class FormWrapperDirective
     }
     if (!this.outline) {
       for (const cl of this.beyondLabelNoOutline) {
-        if (
-          !this.dateWrapperElement ||
-          (this.dateWrapperElement && !cl.includes('ring-'))
-        ) {
-          this.renderer.addClass(this.beyondLabelContainer, cl);
-        }
+        this.renderer.addClass(this.beyondLabelContainer, cl);
       }
     } else {
       for (const cl of this.beyondLabelOutline) {
-        if (
-          !this.dateWrapperElement ||
-          (this.dateWrapperElement && !cl.includes('ring-'))
-        ) {
-          this.renderer.addClass(this.beyondLabelContainer, cl);
-        }
+        this.renderer.addClass(this.beyondLabelContainer, cl);
       }
     }
 
@@ -246,12 +238,85 @@ export class FormWrapperDirective
     this.initializeDirectiveListeners();
 
     //Add beyond label as a child of elementRef
-    this.renderer.appendChild(
-      this.elementRef.nativeElement,
-      this.beyondLabelContainer
-    );
+    if (!this.dateWrapperElement) {
+      this.renderer.appendChild(
+        this.elementRef.nativeElement,
+        this.beyondLabelContainer
+      );
+    }
 
     this.elementWrapped.next(true);
+  }
+
+  //We need to use afterViewInit for select menu, otherwise removing class does not work
+  ngAfterViewInit() {
+    // Do the same with selectMenu
+    if (this.currentSelectElement || this.currentGraphQLSelectComponent) {
+      if (this.currentGraphQLSelectComponent) {
+        this.currentGraphQLSelectComponent.elementSelect.isGraphQlSelect = true;
+      }
+      this.renderer.removeClass(this.beyondLabelContainer, 'py-1.5');
+      this.renderer.addClass(this.beyondLabelContainer, 'py-1');
+      const currentElement = this.currentGraphQLSelectComponent
+        ? this.currentGraphQLSelectComponent.elementRef
+        : this.currentSelectElement;
+      //Get select-menu button in order to remove styling elements
+      const selectButton = currentElement.nativeElement.querySelector('button');
+      for (const cl of this.selectButtonRemove) {
+        this.renderer.removeClass(selectButton, cl);
+      }
+      // Add related classes to select menu element
+      if (!this.outline) {
+        for (const cl of this.selectClassesNoOutline) {
+          this.renderer.addClass(currentElement.nativeElement, cl);
+        }
+      } else {
+        for (const cl of this.selectClassesOutline) {
+          this.renderer.addClass(currentElement.nativeElement, cl);
+        }
+        this.renderer.removeClass(selectButton, 'bg-white');
+        this.renderer.addClass(selectButton, 'bg-gray-50');
+      }
+      //Add reworked element to beyond label
+      this.renderer.appendChild(
+        this.beyondLabelContainer,
+        currentElement.nativeElement
+      );
+    }
+
+    if (this.autocompleteContent) {
+      this.renderer.removeClass(
+        this.autocompleteContent.nativeElement.querySelector('div'),
+        'relative'
+      );
+      this.renderer.addClass(this.elementRef.nativeElement, 'relative');
+    }
+
+    if (this.currentTextareaElement) {
+      const textareaElement =
+        this.currentTextareaElement.nativeElement.querySelector('textarea');
+      this.renderer.addClass(textareaElement, 'bg-transparent');
+
+      for (const cl of this.textareaRemove) {
+        this.renderer.removeClass(textareaElement, cl);
+      }
+      // Add related classes to input element
+      if (!this.outline) {
+        for (const cl of this.inputClassesNoOutline) {
+          this.renderer.addClass(this.currentTextareaElement.nativeElement, cl);
+        }
+      } else {
+        for (const cl of this.inputClassesOutline) {
+          this.renderer.addClass(this.currentTextareaElement.nativeElement, cl);
+        }
+      }
+      this.renderer.addClass(this.elementRef.nativeElement, 'pb-3');
+      // Then add the input to our beyondLabel wrapper element
+      this.renderer.appendChild(
+        this.beyondLabelContainer,
+        this.currentTextareaElement.nativeElement
+      );
+    }
   }
 
   /**
@@ -309,77 +374,5 @@ export class FormWrapperDirective
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  //We need to use afterViewInit for select menu, otherwise removing class does not work
-  ngAfterViewInit() {
-    // Do the same with selectMenu
-    if (this.currentSelectElement || this.currentGraphQLSelectComponent) {
-      if (this.currentGraphQLSelectComponent) {
-        this.currentGraphQLSelectComponent.elementSelect.isGraphQlSelect = true;
-      }
-      this.renderer.removeClass(this.beyondLabelContainer, 'py-1.5');
-      this.renderer.addClass(this.beyondLabelContainer, 'py-1');
-      const currentElement = this.currentGraphQLSelectComponent
-        ? this.currentGraphQLSelectComponent.elementRef
-        : this.currentSelectElement;
-      //Get select-menu button in order to remove styling elements
-      const selectButton = currentElement.nativeElement.querySelector('button');
-      for (const cl of this.selectButtonRemove) {
-        this.renderer.removeClass(selectButton, cl);
-      }
-      // Add related classes to select menu element
-      if (!this.outline) {
-        for (const cl of this.selectClassesNoOutline) {
-          this.renderer.addClass(currentElement.nativeElement, cl);
-        }
-      } else {
-        for (const cl of this.selectClassesOutline) {
-          this.renderer.addClass(currentElement.nativeElement, cl);
-        }
-        this.renderer.removeClass(selectButton, 'bg-white');
-        this.renderer.addClass(selectButton, 'bg-gray-50');
-      }
-      // this.renderer.addClass(this.elementRef.nativeElement, 'pb-4');
-      //Add reworked element to beyond label
-      this.renderer.appendChild(
-        this.beyondLabelContainer,
-        currentElement.nativeElement
-      );
-    }
-
-    if (this.autocompleteContent) {
-      this.renderer.removeClass(
-        this.autocompleteContent.nativeElement.querySelector('div'),
-        'relative'
-      );
-      this.renderer.addClass(this.elementRef.nativeElement, 'relative');
-    }
-
-    if (this.currentTextareaElement) {
-      const textareaElement =
-        this.currentTextareaElement.nativeElement.querySelector('textarea');
-      this.renderer.addClass(textareaElement, 'bg-transparent');
-
-      for (const cl of this.textareaRemove) {
-        this.renderer.removeClass(textareaElement, cl);
-      }
-      // Add related classes to input element
-      if (!this.outline) {
-        for (const cl of this.inputClassesNoOutline) {
-          this.renderer.addClass(this.currentTextareaElement.nativeElement, cl);
-        }
-      } else {
-        for (const cl of this.inputClassesOutline) {
-          this.renderer.addClass(this.currentTextareaElement.nativeElement, cl);
-        }
-      }
-      this.renderer.addClass(this.elementRef.nativeElement, 'pb-3');
-      // Then add the input to our beyondLabel wrapper element
-      this.renderer.appendChild(
-        this.beyondLabelContainer,
-        this.currentTextareaElement.nativeElement
-      );
-    }
   }
 }

@@ -1,9 +1,10 @@
 import {
   Component,
   EventEmitter,
-  HostListener,
   Input,
   Output,
+  TemplateRef,
+  ViewChild,
 } from '@angular/core';
 import { SelectionRange } from '@progress/kendo-angular-dateinputs';
 
@@ -18,21 +19,12 @@ import { SelectionRange } from '@progress/kendo-angular-dateinputs';
 export class DateRangeComponent {
   @Input() disabled = false;
   @Output() selectedValue = new EventEmitter<SelectionRange>();
+  @ViewChild(TemplateRef) calendar!: TemplateRef<any>;
 
   range: SelectionRange = {
     start: null,
     end: null,
   } as unknown as SelectionRange;
-  showPanel = false;
-  isBottom = false;
-
-  /**
-   * Propagate host element blur event
-   */
-  @HostListener('focusout')
-  onFocusout() {
-    this.showPanel = false;
-  }
 
   /**
    * Handles the selection of a content
