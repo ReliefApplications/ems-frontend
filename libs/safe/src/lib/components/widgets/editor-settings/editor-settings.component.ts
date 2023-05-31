@@ -50,7 +50,7 @@ export type EditorFormType = ReturnType<typeof createEditorForm>;
 })
 export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
   // === REACTIVE FORM ===
-  tileForm: ReturnType<typeof createEditorForm> | undefined;
+  tileForm!: EditorFormType;
 
   // === WIDGET ===
   @Input() tile: any;
