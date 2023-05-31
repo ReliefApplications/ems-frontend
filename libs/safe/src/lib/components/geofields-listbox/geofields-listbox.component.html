@@ -12,9 +12,13 @@
         <span>
           {{ dataItem.label }}
         </span>
-        <mat-icon (click)="editLabel(dataItem)" class="hidden group-hover:block"
-          >edit</mat-icon
-        >
+        <safe-icon
+          *ngIf="dataItem.value !== 'coordinates'"
+          (click)="editLabel(dataItem)"
+          class="hidden group-hover:block"
+          icon="edit"
+          >
+          </safe-icon>
       </div>
     </ng-template>
   </kendo-listbox>
@@ -29,9 +33,13 @@
         <span>
           {{ dataItem.label }}
         </span>
-        <mat-icon (click)="editLabel(dataItem)" class="hidden group-hover:block"
-          >edit</mat-icon
+        <safe-icon
+          *ngIf="dataItem.value !== 'coordinates'"
+          (click)="editLabel(dataItem)"
+          class="hidden group-hover:block"
+          icon="edit"
         >
+        </safe-icon>
       </div>
     </ng-template>
   </kendo-listbox>

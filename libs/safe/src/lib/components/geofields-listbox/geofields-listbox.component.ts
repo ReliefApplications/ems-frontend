@@ -13,11 +13,10 @@ import {
 } from '@progress/kendo-angular-listbox';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GeoProperties } from '../../components/geospatial-map/geospatial-map.interface';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
 import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Geofield } from '../../models/geofield.model';
+import { SafeIconModule } from '../ui/icon/icon.module';
 
 /** All available fields */
 export const ALL_FIELDS: { value: keyof GeoProperties; label: string }[] = [
@@ -41,8 +40,7 @@ export const ALL_FIELDS: { value: keyof GeoProperties; label: string }[] = [
     ListBoxModule,
     FormsModule,
     ReactiveFormsModule,
-    MatIconModule,
-    MatButtonModule,
+    SafeIconModule,
     MatDialogModule,
   ],
   templateUrl: './geofields-listbox.component.html',
@@ -102,6 +100,16 @@ export class GeofieldsListboxComponent implements OnInit, OnChanges {
           return field;
         });
         this.availableFields = modified_fields;
+
+        const modified_selectedFields = this.selectedFields.map((field) => {
+          if (field.value === geofield.value) {
+            return { ...field, label: value.label };
+          }
+          return field;
+        });
+        this.selectedFields = modified_selectedFields;
+        //update the value of the fields in others components
+        this.handleActionClick();
       }
     });
   }
