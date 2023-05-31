@@ -549,6 +549,15 @@
 			"subject": "Subject",
 			"withoutRecords": "Without records"
 		},
+		"emailPreview": {
+			"errors": {
+				"missingSubject": "Subject cannot be left empty."
+			},
+			"from": "From",
+			"subject": "Subject",
+			"title": "Email Preview",
+			"to": "To"
+		},
 		"form": {
 			"aggregation": {
 				"delete": {
@@ -1158,7 +1167,7 @@
 							"step": "Step interpolation",
 							"title": "Interpolation"
 						},
-						"showSerie": "Show serie",
+						"showSeries": "Show series",
 						"stack": {
 							"enable": "Plot series",
 							"usePercentage": "Use percentage"

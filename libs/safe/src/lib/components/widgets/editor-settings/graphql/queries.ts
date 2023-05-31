@@ -27,6 +27,10 @@ export const GET_RESOURCES = gql`
           layouts {
             totalCount
           }
+          metadata {
+            name
+            type
+          }
         }
         cursor
       }
