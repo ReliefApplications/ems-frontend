@@ -68,6 +68,9 @@ export class DashboardFilterComponent
 
   public applicationId?: string;
 
+  /** Indicate empty status of filter */
+  public empty = false;
+
   /**
    * Class constructor
    *
@@ -233,11 +236,19 @@ export class DashboardFilterComponent
     this.survey.showCompletedPage = false;
     this.survey.showNavigationButtons = false;
 
-    if (this.survey.getAllQuestions().length) {
-      this.survey.render(this.dashboardSurveyCreatorContainer?.nativeElement);
-    }
-
     this.survey.onValueChanged.add(this.onValueChange.bind(this));
+    this.survey.onAfterRenderSurvey.add(this.onAfterRenderSurvey.bind(this));
+
+    this.survey.render(this.dashboardSurveyCreatorContainer?.nativeElement);
+  }
+
+  /**
+   * Subscribe to survey render to see if survey is empty or not.
+   *
+   * @param survey survey model
+   */
+  public onAfterRenderSurvey(survey: Survey.SurveyModel) {
+    this.empty = !(survey.getAllQuestions().length > 0);
   }
 
   /**
