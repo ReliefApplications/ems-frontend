@@ -172,7 +172,6 @@ export class ReferenceDatasComponent
     this.filterLoading = true;
     this.cachedReferenceDatas = [];
     this.pageInfo.pageIndex = 0;
-    console.log(filter);
     this.filter = filter;
     this.referenceDatasQuery
       .fetchMore({
