@@ -401,6 +401,11 @@
 			"dashboard": {
 				"editFilter": "Edit filter",
 				"empty": "No content available. Wait for your administrator to build some.",
+				"filter": {
+					"empty": "No filters have been defined by the administrators",
+					"info": "Dashboard filters can be used between pages to filter their content.",
+					"title": "You are editing dashboard filters"
+				},
 				"filterSettings": "Filter settings",
 				"settings": {
 					"defaultPosition": "Default position for the filter"

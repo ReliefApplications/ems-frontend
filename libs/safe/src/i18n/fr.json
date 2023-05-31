@@ -401,6 +401,11 @@
 			"dashboard": {
 				"editFilter": "Modifier le filtre",
 				"empty": "Aucun contenu n'est disponible. Veuillez attendre que votre administrateur en crée.",
+				"filter": {
+					"empty": "Aucun filtre n'a été défini par les administrateurs",
+					"info": "Les filtres de tableau de bord peuvent être utilisés entre les pages pour filtrer leur contenu.",
+					"title": "Vous modifiez les filtres du tableau de bord"
+				},
 				"filterSettings": "Paramètres du filtre",
 				"settings": {
 					"defaultPosition": "Position par défaut du filtre"
