@@ -206,7 +206,10 @@ const replaceRecordFields = (
                   `src="${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}"`
                 );
                 if (srcRegex.test(formattedHtml)) {
-                  formattedHtml = formattedHtml.replace(srcRegex, `src=${file.content}`);
+                  formattedHtml = formattedHtml.replace(
+                    srcRegex,
+                    `src=${file.content}`
+                  );
                 } else {
                   convertedValue += `<button type="file"
                   field="${field.name}"
