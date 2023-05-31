@@ -1363,7 +1363,9 @@
 								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
 							}
 						},
-						"preview": {},
+						"preview": {
+							"title": "Prévisualisation"
+						},
 						"textEditor": {
 							"alert": "Vous pouvez ajouter des variables ex: {{data.variable}} et faire des calculs ex: {{calc.round( value ; precision )}}",
 							"title": "Éditeur de texte"

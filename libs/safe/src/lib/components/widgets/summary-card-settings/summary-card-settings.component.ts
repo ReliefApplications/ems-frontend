@@ -100,6 +100,8 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   // === WIDGET ===
   @Input() tile: any;
 
+  @Input() cards: any;
+
   // === EMIT THE CHANGES APPLIED ===
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();

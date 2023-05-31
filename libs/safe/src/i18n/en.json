@@ -1356,6 +1356,9 @@
 								"datasource": "Add a button in widget's header to view card's data source"
 							}
 						},
+						"preview": {
+							"title": "Preview card"
+						},
 						"textEditor": {
 							"alert": "You can add variables e.g: {{data.variable}} and calculate e.g: {{calc.round( value ; precision )}}",
 							"title": "Text editor"

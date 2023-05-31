@@ -1356,6 +1356,9 @@
 								"datasource": "******"
 							}
 						},
+						"preview": {
+							"title": "******"
+						},
 						"textEditor": {
 							"alert": "****** {{data.variable}} ****** {{calc.round( value ; precision )}}",
 							"title": "******"
