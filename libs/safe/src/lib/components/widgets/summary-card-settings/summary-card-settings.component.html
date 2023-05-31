@@ -48,9 +48,9 @@
       </ng-template>
     </mat-tab>
     <!-- Card text preview -->
-    <mat-tab>
+    <mat-tab *ngIf="tileForm && !tileForm.invalid">
       <ng-template mat-tab-label>
-        <safe-icon icon="article" [size]="24"></safe-icon>
+        <safe-icon icon="preview" [size]="24"></safe-icon>
         <span>{{
           'components.widget.settings.summaryCard.card.preview.title'
             | translate

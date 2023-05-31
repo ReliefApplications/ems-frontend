@@ -25,6 +25,26 @@
         </form>
       </ng-template>
     </mat-tab>
+    <!-- Preview -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <safe-icon icon="preview" [size]="24"></safe-icon>
+        <span>{{
+          'components.widget.settings.summaryCard.card.preview.title'
+            | translate
+        }}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <safe-editor
+          #widgetContent
+          class="flex-1 h-full w-full"
+          [title]="tile.settings.title"
+          [text]="tile.settings.text"
+          [record]="tile.settings.record"
+        >
+        </safe-editor>
+      </ng-template>
+    </mat-tab>
     <!-- Resource and record selection  -->
     <mat-tab>
       <ng-template mat-tab-label>

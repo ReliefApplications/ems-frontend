@@ -1371,7 +1371,7 @@
 							}
 						},
 						"preview": {
-							"title": "Preview card"
+							"title": "Preview"
 						},
 						"textEditor": {
 							"alert": "You can add variables e.g: {{data.variable}} and calculate e.g: {{calc.round( value ; precision )}}",
