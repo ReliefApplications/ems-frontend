@@ -19,7 +19,7 @@ import {
 import { Page } from '../../../../models/page.model';
 import { Apollo } from 'apollo-angular';
 import { firstValueFrom } from 'rxjs';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 
 /**
  * Content component of Single Item of Summary Card.
@@ -46,8 +46,10 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
   /**
    * Content component of Single Item of Summary Card.
    *
+   * @param environment Environment specific data
    * @param sanitizer Sanitizes the cards content so angular can show it up.
    * @param downloadService Used to download file type fields
+   * @param router Angular Router
    * @param apollo Apollo service
    */
   constructor(
@@ -55,7 +57,6 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
     private sanitizer: DomSanitizer,
     private downloadService: SafeDownloadService,
     private router: Router,
-    private route: ActivatedRoute,
     private apollo: Apollo
   ) {
     this.environment = environment;
@@ -112,6 +113,12 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
     }
   }
 
+  /**
+   * Checks if an html element contains the page key and replaces it with correct link display
+   *
+   * @param html the html element to apply page modification to
+   * @returns the modified html element
+   */
   public applyPage = async (html: string): Promise<string> => {
     const regex = new RegExp(`{{page\\(\\s*[a-z0-9]{24}\\s*\\)}}`);
     let result = regex.exec(html);
@@ -176,6 +183,12 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
     return html;
   };
 
+  /**
+   * Checks if page is contained inside the current application
+   *
+   * @param pageId Id of page to check
+   * @param currentAppId Id of current application
+   */
   private async checkPageApplication(pageId: any, currentAppId: string) {
     const appPromise: Promise<any> = firstValueFrom(
       this.apollo.query<GetApplicationByIdQueryResponse>({

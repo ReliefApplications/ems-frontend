@@ -37,7 +37,9 @@ export class SafeEditorComponent implements OnInit {
    * Constructor for safe-editor component
    *
    * @param sanitizer Dom sanitizer instance
+   * @param environment Environment specific data
    * @param apollo Apollo instance
+   * @param router Angular Router
    */
   constructor(
     private sanitizer: DomSanitizer,
@@ -78,6 +80,12 @@ export class SafeEditorComponent implements OnInit {
       });
   }
 
+  /**
+   * Checks if an html element contains the page key and replaces it with correct link display
+   *
+   * @param html the html element to apply page modification to
+   * @returns the modified html element
+   */
   public applyPage = async (html: string): Promise<string> => {
     const regex = new RegExp(`{{page\\(\\s*[a-z0-9]{24}\\s*\\)}}`);
     let result = regex.exec(html);
@@ -144,6 +152,12 @@ export class SafeEditorComponent implements OnInit {
     return html;
   };
 
+  /**
+   * Checks if page is contained inside the current application
+   *
+   * @param pageId Id of page to check
+   * @param currentAppId Id of current application
+   */
   private async checkPageApplication(pageId: any, currentAppId: string) {
     const appPromise: Promise<any> = firstValueFrom(
       this.apollo.query<GetApplicationByIdQueryResponse>({
