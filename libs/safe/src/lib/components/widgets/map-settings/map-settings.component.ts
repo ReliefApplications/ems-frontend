@@ -41,6 +41,7 @@ export class SafeMapSettingsComponent
   public layerIds: string[] = [];
   // === REACTIVE FORM ===
   tileForm: UntypedFormGroup | undefined;
+  public layerDisplay = false;
 
   // layerNavigationTemplate: TemplateRef<any> | null = null;
   // layerSettingsTemplate: TemplateRef<any> | null = null;
@@ -138,6 +139,7 @@ export class SafeMapSettingsComponent
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((layerIds) => {
         this.layerIds = layerIds;
+        console.log('I pass on layers');
       });
   }
 
@@ -205,8 +207,12 @@ export class SafeMapSettingsComponent
         ...this.mapSettings,
         ...settings,
       };
+      console.log('updateMapSettings');
+      console.log(settings);
+      this.layerDisplay = settings.controls.layer;
     } else {
       this.mapSettings = settings;
+      this.layerDisplay = settings.controls.layer;
     }
   }
 
@@ -348,7 +354,5 @@ export class SafeMapSettingsComponent
     this.tileForm?.get('layers')?.setValue(layers);
     this.tileForm?.markAsTouched();
     this.tileForm?.markAsDirty();
-    console.log('update Layers : tile form');
-    console.log(this.tileForm);
   }
 }

@@ -9,6 +9,7 @@ import {
   EventEmitter,
   OnChanges,
   SimpleChanges,
+  Renderer2,
 } from '@angular/core';
 import get from 'lodash/get';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -94,6 +95,8 @@ export class MapComponent
   private layerControlButtons: any;
   private layerControl: any;
 
+  public layerDisplay = false;
+
   // === Controls ===
   // Search
   public searchControl?: L.Control;
@@ -121,7 +124,8 @@ export class MapComponent
     private mapControlsService: SafeMapControlsService,
     private arcgisService: ArcgisService,
     private mapLayersService: SafeMapLayersService,
-    public mapPopupService: SafeMapPopupService
+    public mapPopupService: SafeMapPopupService,
+    private renderer: Renderer2
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -170,6 +174,8 @@ export class MapComponent
     // Creates the map and adds all the controls we use.
     this.drawMap();
 
+    this.displayLayerIfNeeded();
+
     this.setUpMapListeners();
 
     setTimeout(() => {
@@ -191,6 +197,7 @@ export class MapComponent
       if (this.map) {
         this.drawMap(false);
       }
+      console.log(changes.mapSettings);
     }
   }
 
@@ -430,6 +437,7 @@ export class MapComponent
     basemaps: L.Control.Layers.TreeObject[],
     layers: L.Control.Layers.TreeObject[]
   ) {
+    console.log('control buttons');
     if (!this.layerControlButtons || !this.layerControlButtons._map) {
       this.layerControlButtons = this.mapControlsService.getLayerControl(
         this.map
@@ -446,8 +454,15 @@ export class MapComponent
     //   this.layerControl.setLayersControl
     // }
     if (this.layerControl) {
-      if (this.extractSettings().controls.layer) {
+      console.log(this.extractSettings().controls.layer);
+      if (!this.extractSettings().controls.layer) {
         this.map.removeControl(this.layerControl);
+        this.renderer.addClass(this.layerControlButtons._container, 'hidden');
+      } else {
+        this.renderer.removeClass(
+          this.layerControlButtons._container,
+          'hidden'
+        );
       }
       this.layerControl.setBaseTree(this.baseTree);
       this.layerControl.setOverlayTree(this.layersTree);
@@ -538,6 +553,33 @@ export class MapComponent
    */
   public addLayer(layer: Layer): void {
     layer.getLayer().addTo(this.map);
+  }
+
+  /**
+   * Display the layers if needed
+   *
+   */
+  public displayLayerIfNeeded(): void {
+    if (this.layerControl) {
+      console.log(this.extractSettings().controls.layer);
+      if (!this.extractSettings().controls.layer) {
+        this.map.removeControl(this.layerControl);
+        this.renderer.addClass(this.layerControlButtons._container, 'hidden');
+      } else {
+        this.renderer.removeClass(
+          this.layerControlButtons._container,
+          'hidden'
+        );
+      }
+      this.layerControl.setBaseTree(this.baseTree);
+      this.layerControl.setOverlayTree(this.layersTree);
+    } else {
+      this.layerControl = L.control.layers.tree(
+        this.baseTree,
+        this.layersTree as any,
+        { collapsed: false }
+      );
+    }
   }
 
   /**
@@ -804,6 +846,7 @@ export class MapComponent
     basemap: any
   ): Promise<{ basemaps: L.Control.Layers.TreeObject[] }> {
     const basemapName = get(BASEMAP_LAYERS, basemap, BASEMAP_LAYERS.OSM);
+    console.log(basemapName);
     this.basemap = Vector.vectorBasemapLayer(basemapName, {
       apiKey: this.esriApiKey,
     });
