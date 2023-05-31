@@ -14,12 +14,10 @@ import {
 } from '@oort-front/safe';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import {
   MenuModule,
   TooltipModule,
@@ -41,7 +39,6 @@ import {
     DashboardRoutingModule,
     SafeAccessModule,
     SafeWidgetGridModule,
-    MatButtonModule,
     IconModule,
     DialogModule,
     MenuModule,
@@ -55,7 +52,6 @@ import {
     FullScreenModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
     DashboardFilterModule,
     TooltipModule,
     ButtonModule,

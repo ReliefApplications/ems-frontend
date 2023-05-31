@@ -1,18 +1,17 @@
 import {
   Component,
   EventEmitter,
+  Inject,
   Input,
+  OnDestroy,
   OnInit,
   Output,
-  ViewChild,
+  Renderer2,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Application } from '../../models/application.model';
 import { BehaviorSubject, Observable } from 'rxjs';
-import {
-  MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY,
-  MatLegacySelect as MatSelect,
-} from '@angular/material/legacy-select';
+import { MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/legacy-select';
 import {
   GetApplicationsQueryResponse,
   GET_APPLICATIONS,
@@ -21,6 +20,7 @@ import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { updateQueryUniqueValues } from '../../utils/update-queries';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * A constant that is used to set the number of items to be displayed on the page.
@@ -55,7 +55,7 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
 })
 export class SafeApplicationDropdownComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   @Input() value = [];
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
@@ -65,13 +65,12 @@ export class SafeApplicationDropdownComponent
   public applications$!: Observable<Application[]>;
   private cachedApplications: Application[] = [];
   private applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
+  private scrollListener!: any;
   private pageInfo = {
     endCursor: '',
     hasNextPage: true,
   };
   private loading = true;
-
-  @ViewChild('applicationSelect') applicationSelect?: MatSelect;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -79,8 +78,14 @@ export class SafeApplicationDropdownComponent
    *
    * @param apollo This is the Apollo service that we'll use to make our GraphQL
    * queries.
+   * @param document Document
+   * @param renderer Renderer2
    */
-  constructor(private apollo: Apollo) {
+  constructor(
+    private apollo: Apollo,
+    @Inject(DOCUMENT) private document: Document,
+    private renderer: Renderer2
+  ) {
     super();
   }
 
@@ -135,13 +140,17 @@ export class SafeApplicationDropdownComponent
   /**
    * Adds scroll listener to select.
    *
-   * @param e open select event.
    */
-  onOpenSelect(e: any): void {
-    if (e && this.applicationSelect) {
-      const panel = this.applicationSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) =>
-        this.loadOnScroll(event)
+  onOpenSelect(): void {
+    const panel = this.document.getElementById('optionList');
+    if (panel) {
+      if (this.scrollListener) {
+        this.scrollListener();
+      }
+      this.scrollListener = this.renderer.listen(
+        panel,
+        'scroll',
+        (event: any) => this.loadOnScroll(event)
       );
     }
   }
@@ -190,5 +199,12 @@ export class SafeApplicationDropdownComponent
     }
     this.pageInfo = data.applications.pageInfo;
     this.loading = loading;
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.scrollListener) {
+      this.scrollListener();
+    }
   }
 }

@@ -17,10 +17,7 @@ import {
 } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import {
-  MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY,
-  MatLegacySelectChange as MatSelectChange,
-} from '@angular/material/legacy-select';
+import { MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/legacy-select';
 import { Overlay } from '@angular/cdk/overlay';
 import { get } from 'lodash';
 import {
@@ -152,7 +149,6 @@ export class GraphQLSelectComponent
   private ePlaceholder = '';
   private isRequired = false;
   private scrollListener!: any;
-  private document!: Document;
 
   @ViewChild(SelectMenuComponent)
   elementSelect!: SelectMenuComponent;
@@ -204,9 +200,8 @@ export class GraphQLSelectComponent
     @Optional() @Self() public ngControl: NgControl,
     public elementRef: ElementRef<HTMLElement>,
     private renderer: Renderer2,
-    @Inject(DOCUMENT) document: Document
+    @Inject(DOCUMENT) private document: Document
   ) {
-    this.document = document;
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
@@ -441,7 +436,7 @@ export class GraphQLSelectComponent
    *
    * @param event the selection change event
    */
-  public onSelectionChange(event: MatSelectChange) {
+  public onSelectionChange(event: any) {
     this.value = event.value;
   }
 

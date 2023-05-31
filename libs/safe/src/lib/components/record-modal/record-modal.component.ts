@@ -28,8 +28,6 @@ import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.compo
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import { CommonModule } from '@angular/common';
 import { SnackbarService, TabsModule } from '@oort-front/ui';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatGridListModule } from '@angular/material/grid-list';
 import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
@@ -57,9 +55,7 @@ interface DialogData {
     CommonModule,
     DialogModule,
     TabsModule,
-    MatGridListModule,
     IconModule,
-    MatButtonModule,
     SafeRecordSummaryModule,
     SafeFormActionsModule,
     TranslateModule,

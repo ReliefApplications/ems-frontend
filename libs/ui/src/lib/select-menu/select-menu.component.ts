@@ -81,7 +81,6 @@ export class SelectMenuComponent
   private clickOutsideListener!: any;
   private selectClosingActionsSubscription!: Subscription;
   private overlayRef!: OverlayRef;
-  private document: Document;
 
   //Control access value functions
   onChange!: (value: any) => void;
@@ -101,10 +100,8 @@ export class SelectMenuComponent
     private renderer: Renderer2,
     private viewContainerRef: ViewContainerRef,
     private overlay: Overlay,
-    @Inject(DOCUMENT) document: Document
-  ) {
-    this.document = document;
-  }
+    @Inject(DOCUMENT) private document: Document
+  ) {}
 
   ngAfterViewInit(): void {
     this.clickOutsideListener = this.renderer.listen(

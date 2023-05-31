@@ -4,7 +4,6 @@ import { SafePipelineComponent } from './pipeline.component';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeGroupStageComponent } from './group-stage/group-stage.component';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeAddFieldStageComponent } from './add-field-stage/add-field-stage.component';
 import { SafeExpressionsComponent } from './expressions/expressions.component';
@@ -41,7 +40,6 @@ import {
     MenuModule,
     TranslateModule,
     ExpansionPanelModule,
-    MatFormFieldModule,
     FormsModule,
     ReactiveFormsModule,
     DragDropModule,

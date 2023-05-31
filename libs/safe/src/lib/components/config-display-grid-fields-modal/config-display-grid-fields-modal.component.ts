@@ -11,15 +11,11 @@ import { UntypedFormGroup } from '@angular/forms';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/legacy-select';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
-import { MAT_LEGACY_TOOLTIP_SCROLL_STRATEGY as MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/legacy-tooltip';
 import { createQueryForm } from '../query-builder/query-builder-forms';
 import { CommonModule } from '@angular/common';
 import { SpinnerModule } from '@oort-front/ui';
 import { SafeQueryBuilderModule } from '../query-builder/query-builder.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogModule } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
@@ -52,11 +48,8 @@ interface DialogData {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
     SpinnerModule,
     SafeQueryBuilderModule,
-    MatButtonModule,
-    MatInputModule,
     TranslateModule,
     DialogModule,
     ButtonModule,
@@ -68,11 +61,6 @@ interface DialogData {
     PopupService,
     {
       provide: MAT_SELECT_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-    {
-      provide: MAT_TOOLTIP_SCROLL_STRATEGY,
       useFactory: scrollFactory,
       deps: [Overlay],
     },

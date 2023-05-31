@@ -16,7 +16,6 @@ import {
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import { Router } from '@angular/router';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import {
   getCachedValues,
@@ -50,7 +49,7 @@ export class ResourcesComponent
   private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   displayedColumns: string[] = ['name', 'createdAt', 'recordsCount', 'actions'];
   public cachedResources: Resource[] = [];
-  public resources = new MatTableDataSource<Resource>([]);
+  public resources = new Array<Resource>();
 
   // === SORTING ===
   public updating = false;
@@ -134,7 +133,7 @@ export class ResourcesComponent
       this.loading = true;
       this.fetchResources();
     } else {
-      this.resources.data = this.cachedResources.slice(
+      this.resources = this.cachedResources.slice(
         e.pageSize * this.pageInfo.pageIndex,
         e.pageSize * (this.pageInfo.pageIndex + 1)
       );
@@ -238,7 +237,7 @@ export class ResourcesComponent
           })
           .subscribe(({ errors }) => {
             if (!errors) {
-              this.resources.data = this.resources.data.filter(
+              this.resources = this.resources.filter(
                 (x) => x.id !== resource.id
               );
               this.snackBar.openSnackBar(
@@ -322,7 +321,7 @@ export class ResourcesComponent
       this.cachedResources,
       mappedValues
     );
-    this.resources.data = mappedValues;
+    this.resources = mappedValues;
     this.pageInfo.length = data.resources.totalCount;
     this.pageInfo.endCursor = data.resources.pageInfo.endCursor;
     this.loading = loading;

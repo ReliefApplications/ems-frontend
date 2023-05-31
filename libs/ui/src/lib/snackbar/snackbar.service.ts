@@ -27,8 +27,6 @@ const DEFAULT_SNACKBAR = {
   providedIn: 'root',
 })
 export class SnackbarService {
-  private document!: Document;
-
   /**
    * Shared snackbar service.
    * Snackbar is a brief notification that appears for a short time as a popup.
@@ -39,13 +37,11 @@ export class SnackbarService {
    * @param injector Environment injector to create snackbar component
    */
   constructor(
-    @Inject(DOCUMENT) document: Document,
+    @Inject(DOCUMENT) private document: Document,
     private translate: TranslateService,
     private app: ApplicationRef,
     private injector: EnvironmentInjector
-  ) {
-    this.document = document;
-  }
+  ) {}
 
   /**
    * Attach the snackbar to the document's body and add the component to the applications change detector ref

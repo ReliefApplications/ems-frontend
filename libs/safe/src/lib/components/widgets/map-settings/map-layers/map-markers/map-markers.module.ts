@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MapMarkersComponent } from './map-markers.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MapMarkerRuleModule } from '../map-marker-rule/map-marker-rule.module';
 import {
   TooltipModule,
@@ -25,7 +24,6 @@ import {
     ReactiveFormsModule,
     TranslateModule,
     IconModule,
-    MatFormFieldModule,
     MapMarkerRuleModule,
     TooltipModule,
     ButtonModule,

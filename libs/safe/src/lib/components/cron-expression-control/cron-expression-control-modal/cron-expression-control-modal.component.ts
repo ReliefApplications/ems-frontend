@@ -7,8 +7,6 @@ import { CommonModule } from '@angular/common';
 import { CronEditorModule } from 'ngx-cron-editor';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeReadableCronModule } from '../../../pipes/readable-cron/readable-cron.module';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { AlertModule, ButtonModule, DialogModule } from '@oort-front/ui';
 
 /**
@@ -22,9 +20,7 @@ import { AlertModule, ButtonModule, DialogModule } from '@oort-front/ui';
     FormsModule,
     ReactiveFormsModule,
     SafeReadableCronModule,
-    MatFormFieldModule,
     DialogModule,
-    MatInputModule,
     ButtonModule,
     AlertModule,
   ],

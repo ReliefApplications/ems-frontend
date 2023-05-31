@@ -2,8 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeProfileComponent } from './profile.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import {
   MenuModule,
   ButtonModule,
@@ -23,9 +21,7 @@ import { SafeProfileRoutingModule } from './profile-routing.module';
     CommonModule,
     SafeProfileRoutingModule,
     FormsModule,
-    MatFormFieldModule,
     FormWrapperModule,
-    MatButtonModule,
     MenuModule,
     ReactiveFormsModule,
     IconModule,

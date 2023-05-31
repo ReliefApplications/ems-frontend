@@ -1,21 +1,17 @@
 <ui-dialog>
   <ng-container ngProjectAs="content">
-    <form
-      [formGroup]="form"
-      class="flex flex-col gap-3 last:mb-0"
-    >
-    <div uiFormFieldDirective >
-      <label>{{ 'common.label' | translate }}</label>
-      <input type="text" formControlName="label" />
-    </div>
-      <mat-form-field appearance="outline">
-        <mat-label>{{
+    <form [formGroup]="form" class="flex flex-col gap-3 last:mb-0">
+      <div uiFormFieldDirective>
+        <label>{{ 'common.label' | translate }}</label>
+        <input type="text" formControlName="label" />
+      </div>
+      <div uiFormFieldDirective>
+        <label>{{
           'components.widget.settings.map.layers.point.color' | translate
-        }}</mat-label>
-        <h4></h4>
-        <input type="color" matInput formControlName="color" />
-      </mat-form-field>
-      <div uiFormFieldDirective >
+        }}</label>
+        <input type="color" formControlName="color" />
+      </div>
+      <div uiFormFieldDirective>
         <label>{{
           'components.widget.settings.map.layers.point.size' | translate
         }}</label>

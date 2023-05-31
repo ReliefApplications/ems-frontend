@@ -18,7 +18,6 @@ import {
   DeleteApplicationMutationResponse,
   DELETE_APPLICATION,
 } from './graphql/mutations';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
@@ -37,7 +36,7 @@ export class SettingsComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  public applications = new MatTableDataSource<Application>([]);
+  public applications = new Array<Application>();
   public settingsForm?: UntypedFormGroup;
   public application?: Application;
   public user: any;
@@ -183,7 +182,7 @@ export class SettingsComponent
                         }
                       )
                     );
-                    this.applications.data = this.applications.data.filter(
+                    this.applications = this.applications.filter(
                       (x) => x.id !== data?.deleteApplication.id
                     );
                   }

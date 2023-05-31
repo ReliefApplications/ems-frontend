@@ -9,7 +9,6 @@ import { SafeTabFilterComponent } from './tab-filter/tab-filter.component';
 import { SafeTabStyleComponent } from './tab-style/tab-style.component';
 import { SafeTabLayoutPreviewComponent } from './tab-layout-preview/tab-layout-preview.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { IconModule } from '@oort-front/ui';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
@@ -65,7 +64,6 @@ import {
     TabsModule,
     MenuModule,
     DragDropModule,
-    MatButtonModule,
     IconModule,
     TooltipModule,
     MatAutocompleteModule,

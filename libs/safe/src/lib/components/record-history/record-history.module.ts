@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeRecordHistoryComponent } from './record-history.component';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import {
   ExpansionPanelModule,
   MenuModule,
@@ -25,7 +24,6 @@ import { SafeEmptyModule } from '../ui/empty/empty.module';
   declarations: [SafeRecordHistoryComponent],
   imports: [
     CommonModule,
-    MatButtonModule,
     ExpansionPanelModule,
     MatDatepickerModule,
     MatFormFieldModule,

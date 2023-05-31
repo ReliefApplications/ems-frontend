@@ -1,7 +1,7 @@
 <!-- Header -->
 <h2>{{ 'common.filter.few' | translate }}</h2>
 <!-- Content -->
-<div *ngIf="filters.data.length === 0" class="flex flex-col p-4 items-center">
+<div *ngIf="filters.length === 0" class="flex flex-col p-4 items-center">
   <ui-icon icon="folder_open"></ui-icon>
   <h3>{{ 'components.role.summary.noFilters' | translate }}</h3>
 </div>
@@ -13,7 +13,7 @@
       cdk-table 
       uiTableWrapper
       [dataSource]="filters"
-      *ngIf="filters.data.length > 0"
+      *ngIf="filters.length > 0"
       multiTemplateDataRows
     >
       <ng-container cdkColumnDef="filter">

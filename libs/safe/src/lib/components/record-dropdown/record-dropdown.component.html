@@ -4,7 +4,7 @@
     #recordSelect
     [(ngModel)]="record"
     name="record"
-    (openedChange)="onOpenSelect($event)"
+    (opened)="onOpenSelect()"
     (selectionChange)="onSelect($event)"
   >
     <ui-select-option *ngIf="selectedRecord">{{

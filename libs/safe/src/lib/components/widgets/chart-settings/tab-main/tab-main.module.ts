@@ -4,7 +4,6 @@ import { TabMainComponent } from './tab-main.component';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import {
   ExpansionPanelModule,
   GraphQLSelectModule,
@@ -33,7 +32,6 @@ import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
     ReactiveFormsModule,
     MatFormFieldModule,
     FormWrapperModule,
-    MatButtonModule,
     IconModule,
     TextFieldModule,
     SafeQueryBuilderModule,

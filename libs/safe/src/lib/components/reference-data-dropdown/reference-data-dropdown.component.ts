@@ -1,18 +1,17 @@
 import {
   Component,
   EventEmitter,
+  Inject,
   Input,
+  OnDestroy,
   OnInit,
   Output,
-  ViewChild,
+  Renderer2,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { ReferenceData } from '../../models/reference-data.model';
 import { BehaviorSubject, Observable } from 'rxjs';
-import {
-  MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY,
-  MatLegacySelect as MatSelect,
-} from '@angular/material/legacy-select';
+import { MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/legacy-select';
 import {
   GetReferenceDataByIdQueryResponse,
   GetReferenceDatasQueryResponse,
@@ -24,6 +23,7 @@ import { scrollFactory } from '../../utils/scroll-factory';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { updateQueryUniqueValues } from '../../utils/update-queries';
+import { DOCUMENT } from '@angular/common';
 
 /** Pagination */
 const ITEMS_PER_PAGE = 10;
@@ -45,7 +45,7 @@ const ITEMS_PER_PAGE = 10;
 })
 export class SafeReferenceDataDropdownComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   @Input() referenceData = '';
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
@@ -60,15 +60,20 @@ export class SafeReferenceDataDropdownComponent
     hasNextPage: true,
   };
   private loading = true;
-
-  @ViewChild('referenceDataSelect') referenceDataSelect?: MatSelect;
+  private scrollListener!: any;
 
   /**
    * Reference data dropdown component
    *
    * @param apollo Apollo service
+   * @param renderer Renderer2
+   * @param document Document
    */
-  constructor(private apollo: Apollo) {
+  constructor(
+    private apollo: Apollo,
+    private renderer: Renderer2,
+    @Inject(DOCUMENT) private document: Document
+  ) {
     super();
   }
 
@@ -120,13 +125,17 @@ export class SafeReferenceDataDropdownComponent
   /**
    * Adds scroll listener to select.
    *
-   * @param e open select event.
    */
-  onOpenSelect(e: any): void {
-    if (e && this.referenceDataSelect) {
-      const panel = this.referenceDataSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) =>
-        this.loadOnScroll(event)
+  onOpenSelect(): void {
+    const panel = this.document.getElementById('optionList');
+    if (panel) {
+      if (this.scrollListener) {
+        this.scrollListener();
+      }
+      this.scrollListener = this.renderer.listen(
+        panel,
+        'scroll',
+        (event: any) => this.loadOnScroll(event)
       );
     }
   }
@@ -173,5 +182,12 @@ export class SafeReferenceDataDropdownComponent
     }
     this.pageInfo = data.referenceDatas.pageInfo;
     this.loading = loading;
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.scrollListener) {
+      this.scrollListener();
+    }
   }
 }

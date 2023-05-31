@@ -16,7 +16,6 @@ import {
   EditPullJobMutationResponse,
   EDIT_PULL_JOB,
 } from './graphql/mutations';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { ApolloQueryResult } from '@apollo/client';
 import {
@@ -46,7 +45,7 @@ export class PullJobsComponent
   // === DATA ===
   public loading = true;
   private pullJobsQuery!: QueryRef<GetPullJobsQueryResponse>;
-  public pullJobs = new MatTableDataSource<PullJob>([]);
+  public pullJobs = new Array<PullJob>();
   public cachedPullJobs: PullJob[] = [];
 
   public displayedColumns: string[] = [
@@ -136,7 +135,7 @@ export class PullJobsComponent
           });
       }
     } else {
-      this.pullJobs.data = this.cachedPullJobs.slice(
+      this.pullJobs = this.cachedPullJobs.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex,
         ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
       );
@@ -211,7 +210,7 @@ export class PullJobsComponent
                     this.cachedPullJobs = this.cachedPullJobs.concat([
                       data?.addPullJob,
                     ]);
-                    this.pullJobs.data = this.cachedPullJobs.slice(
+                    this.pullJobs = this.cachedPullJobs.slice(
                       ITEMS_PER_PAGE * this.pageInfo.pageIndex,
                       ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
                     );
@@ -284,7 +283,7 @@ export class PullJobsComponent
                         (x) => x.id !== data?.deletePullJob.id
                       );
                       this.pageInfo.length -= 1;
-                      this.pullJobs.data = this.cachedPullJobs.slice(
+                      this.pullJobs = this.cachedPullJobs.slice(
                         ITEMS_PER_PAGE * this.pageInfo.pageIndex,
                         ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
                       );
@@ -375,7 +374,7 @@ export class PullJobsComponent
                       return pullJob;
                     }
                   );
-                  this.pullJobs.data = this.cachedPullJobs.slice(
+                  this.pullJobs = this.cachedPullJobs.slice(
                     ITEMS_PER_PAGE * this.pageInfo.pageIndex,
                     ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
                   );
@@ -402,7 +401,7 @@ export class PullJobsComponent
       this.cachedPullJobs,
       mappedValues
     );
-    this.pullJobs.data = mappedValues;
+    this.pullJobs = mappedValues;
     this.pageInfo.length = data.pullJobs.totalCount;
     this.pageInfo.endCursor = data.pullJobs.pageInfo.endCursor;
     this.loading = loading;

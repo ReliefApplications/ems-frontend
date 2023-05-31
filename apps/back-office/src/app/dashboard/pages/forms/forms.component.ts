@@ -15,7 +15,6 @@ import {
   AddFormMutationResponse,
   ADD_FORM,
 } from './graphql/mutations';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import {
   getCachedValues,
@@ -50,7 +49,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
     'parentForm',
     'actions',
   ];
-  public forms = new MatTableDataSource<Form>([]);
+  public forms = new Array<Form>();
   public cachedForms: Form[] = [];
 
   // === FILTERING ===
@@ -137,7 +136,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
       this.pageInfo.pageSize = first;
       this.fetchForms();
     } else {
-      this.forms.data = this.cachedForms.slice(
+      this.forms = this.cachedForms.slice(
         e.pageSize * this.pageInfo.pageIndex,
         e.pageSize * (this.pageInfo.pageIndex + 1)
       );
@@ -245,7 +244,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
                     value: this.translate.instant('common.form.one'),
                   })
                 );
-                this.forms.data = this.forms.data.filter(
+                this.forms = this.forms.filter(
                   (x) =>
                     x.id !== form.id && form.id !== x.resource?.coreForm?.id
                 );
@@ -331,7 +330,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
   private updateValues(data: GetFormsQueryResponse, loading: boolean): void {
     const mappedValues = data.forms.edges.map((x) => x.node);
     this.cachedForms = updateQueryUniqueValues(this.cachedForms, mappedValues);
-    this.forms.data = mappedValues;
+    this.forms = mappedValues;
     this.pageInfo.length = data.forms.totalCount;
     this.pageInfo.endCursor = data.forms.pageInfo.endCursor;
     this.loading = loading;

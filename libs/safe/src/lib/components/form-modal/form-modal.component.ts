@@ -36,7 +36,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../utils/cleanRecord';
 import { CommonModule } from '@angular/common';
 import { IconModule } from '@oort-front/ui';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { ButtonModule, SnackbarService, TabsModule } from '@oort-front/ui';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
@@ -72,7 +71,6 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
   imports: [
     CommonModule,
     IconModule,
-    MatButtonModule,
     TabsModule,
     SafeRecordSummaryModule,
     SafeFormActionsModule,

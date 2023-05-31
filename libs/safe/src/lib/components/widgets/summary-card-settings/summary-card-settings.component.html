@@ -7,13 +7,23 @@
       </div>
     </div>
     <div class="settings">
-      <div formControlName="isDynamic" uiRadioGroupDirective="isDynamicOptions" class="flex gap-4 items-center">
-        <ui-radio [value]="false" [checked]="tileForm.get('isDynamic')?.value === false">
+      <div
+        formControlName="isDynamic"
+        uiRadioGroupDirective="isDynamicOptions"
+        class="flex gap-4 items-center"
+      >
+        <ui-radio
+          [value]="false"
+          [checked]="tileForm.get('isDynamic')?.value === false"
+        >
           <ng-container ngProjectAs="label">
             {{ 'components.widget.settings.summaryCard.static' | translate }}
           </ng-container>
         </ui-radio>
-        <ui-radio [value]="true" [checked]="tileForm.get('isDynamic')?.value === true">
+        <ui-radio
+          [value]="true"
+          [checked]="tileForm.get('isDynamic')?.value === true"
+        >
           <ng-container ngProjectAs="label">
             {{ 'components.widget.settings.summaryCard.dynamic' | translate }}
           </ng-container>
@@ -76,7 +86,7 @@
             <ui-icon icon="insert_chart"></ui-icon>
             <span>{{ 'common.settings' | translate }}</span>
           </button>
-          <mat-divider></mat-divider>
+          <ui-divider></ui-divider>
           <button uiMenuItem (click)="removeCard(i)">
             <ui-icon icon="delete"></ui-icon>
             <span>{{ 'common.delete' | translate }}</span>

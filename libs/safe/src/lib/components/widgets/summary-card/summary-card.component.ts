@@ -3,12 +3,14 @@ import {
   Component,
   HostListener,
   Input,
+  OnDestroy,
   OnInit,
+  Renderer2,
   ViewChild,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, takeUntil } from 'rxjs';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
@@ -16,6 +18,7 @@ import {
   GetResourceMetadataQueryResponse,
   GET_RESOURCE_METADATA,
 } from './graphql/queries';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -31,7 +34,10 @@ const DEFAULT_PAGE_SIZE = 25;
   templateUrl: './summary-card.component.html',
   styleUrls: ['./summary-card.component.scss'],
 })
-export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
+export class SafeSummaryCardComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @Input() widget: any;
   @Input() header = true;
   @Input() export = true;
@@ -53,7 +59,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
 
   public cards: any[] = [];
   private dataQuery?: QueryRef<any>;
-
+  private scrollListener!: any;
   /**
    * Gets whether the cards that will be displayed
    * are from an aggregation
@@ -99,13 +105,17 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    * @param queryBuilder Query builder service
    * @param gridLayoutService Shared grid layout service
    * @param aggregationService Aggregation service
+   * @param renderer Renderer2
    */
   constructor(
     private apollo: Apollo,
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: SafeGridLayoutService,
-    private aggregationService: SafeAggregationService
-  ) {}
+    private aggregationService: SafeAggregationService,
+    private renderer: Renderer2
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     if (this.settings.isDynamic) {
@@ -119,7 +129,11 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     if (this.settings.isDynamic && !this.isAggregation) {
-      this.pdfExport.element.nativeElement.addEventListener(
+      if (this.scrollListener) {
+        this.scrollListener();
+      }
+      this.scrollListener = this.renderer.listen(
+        this.pdfExport.element.nativeElement,
         'scroll',
         (event: any) => this.loadOnScroll(event)
       );
@@ -208,24 +222,26 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
               fetchPolicy: 'network-only',
               nextFetchPolicy: 'cache-first',
             });
-            this.dataQuery.valueChanges.subscribe((res2) => {
-              const edges = res2.data?.[layoutQuery.name].edges;
-              if (!edges) return;
+            this.dataQuery.valueChanges
+              .pipe(takeUntil(this.destroy$))
+              .subscribe((res2) => {
+                const edges = res2.data?.[layoutQuery.name].edges;
+                if (!edges) return;
 
-              const newCards = edges.map((e: any) => ({
-                ...this.settings.cards[0],
-                record: e.node,
-                layout: layouts[0],
-                metadata: fields,
-              }));
+                const newCards = edges.map((e: any) => ({
+                  ...this.settings.cards[0],
+                  record: e.node,
+                  layout: layouts[0],
+                  metadata: fields,
+                }));
 
-              this.cards = [...this.cards, ...newCards];
-              this.pageInfo.hasNextPage =
-                get(res2.data[layoutQuery.name], 'totalCount', 0) >
-                this.cards.length;
+                this.cards = [...this.cards, ...newCards];
+                this.pageInfo.hasNextPage =
+                  get(res2.data[layoutQuery.name], 'totalCount', 0) >
+                  this.cards.length;
 
-              this.loading = res2.loading;
-            });
+                this.loading = res2.loading;
+              });
           }
         }
       });
@@ -303,6 +319,13 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
           },
         });
       }
+    }
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.scrollListener) {
+      this.scrollListener();
     }
   }
 }

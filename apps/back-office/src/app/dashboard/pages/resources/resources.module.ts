@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ResourcesRoutingModule } from './resources-routing.module';
 import { ResourcesComponent } from './resources.component';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -31,7 +30,6 @@ import {
     SpinnerModule,
     IconModule,
     MenuModule,
-    MatInputModule,
     MatDatepickerModule,
     MatNativeDateModule,
     MatFormFieldModule,

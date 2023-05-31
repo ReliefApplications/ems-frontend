@@ -1,6 +1,6 @@
 <!-- Actions -->
 <ng-container *ngIf="!loading; else loadingTmpl">
-  <ng-container *ngIf="templates?.data?.length">
+  <ng-container *ngIf="templates?.length">
     <div class="flex justify-end">
       <ng-container *ngTemplateOutlet="newTemplate"></ng-container>
     </div>
@@ -15,7 +15,7 @@
       {{ 'components.templates.edit.new' | translate }}
     </ui-button>
   </ng-template>
-  <ng-container *ngIf="templates?.data?.length; else emptyTmpl">
+  <ng-container *ngIf="templates?.length; else emptyTmpl">
     <!-- Table container -->
     <div class="overflow-x-hidden mt-4 shadow-2lg">
       <!-- Table scroll container -->

@@ -31,9 +31,7 @@ import {
   SortDescriptor,
 } from '@progress/kendo-data-query';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
-import { MAT_LEGACY_MENU_SCROLL_STRATEGY as MAT_MENU_SCROLL_STRATEGY } from '@angular/material/legacy-menu';
 import { MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/legacy-select';
-import { MAT_LEGACY_TOOLTIP_SCROLL_STRATEGY as MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/legacy-tooltip';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
 // import {
 //   CalendarDOMService,
@@ -87,16 +85,6 @@ const matches = (el: any, selector: any) =>
     // WeekNamesService,
     {
       provide: MAT_SELECT_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-    {
-      provide: MAT_TOOLTIP_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-    {
-      provide: MAT_MENU_SCROLL_STRATEGY,
       useFactory: scrollFactory,
       deps: [Overlay],
     },

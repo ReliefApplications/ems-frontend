@@ -9,7 +9,6 @@ import { SafeDropdownFilterModule } from '../dropdown-filter/dropdown-filter.mod
 import { SafeDropdownFilterMenuModule } from '../dropdown-filter-menu/dropdown-filter-menu.module';
 import { SafeExpandedCommentModule } from '../expanded-comment/expanded-comment.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { IconModule } from '@oort-front/ui';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { ButtonModule, ButtonsModule } from '@progress/kendo-angular-buttons';
@@ -33,8 +32,6 @@ import {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    // === MATERIAL ===
-    MatButtonModule,
     IconModule,
     TooltipModule,
     // === KENDO ===

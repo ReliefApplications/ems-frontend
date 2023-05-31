@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { SafeEditorSettingsComponent } from './editor-settings.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormWrapperModule } from '@oort-front/ui';
 
@@ -16,7 +15,6 @@ import { FormWrapperModule } from '@oort-front/ui';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
     FormWrapperModule,
     EditorModule,
     TranslateModule,

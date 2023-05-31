@@ -1,5 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
 import {
@@ -21,7 +21,6 @@ import {
 } from './graphql/mutations';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { PreviewService } from '../../../services/preview.service';
-import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { ApolloQueryResult } from '@apollo/client';
@@ -71,10 +70,6 @@ export class ApplicationsComponent
     length: 0,
     endCursor: '',
   };
-
-  @ViewChild('startDate', { read: MatStartDate })
-  startDate!: MatStartDate<string>;
-  @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
 
   /**
    * Applications page component

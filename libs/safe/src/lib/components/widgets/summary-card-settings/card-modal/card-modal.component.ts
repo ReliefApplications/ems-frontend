@@ -27,8 +27,6 @@ import { SafeAggregationService } from '../../../../services/aggregation/aggrega
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { IconModule, TabsModule } from '@oort-front/ui';
 import { SafeDataSourceTabModule } from './data-source-tab/data-source.module';
 import { SafeValueSelectorTabModule } from './value-selector-tab/value-selector.module';
@@ -50,8 +48,6 @@ import { DialogModule } from '@oort-front/ui';
     TooltipModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
     TabsModule,
     SafeDataSourceTabModule,
     SafeValueSelectorTabModule,

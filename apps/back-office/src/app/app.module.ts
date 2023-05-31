@@ -16,8 +16,6 @@ import {
 import { environment } from '../environments/environment';
 
 // Config
-import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 
 // TRANSLATOR
@@ -47,12 +45,7 @@ import { IconsService } from '@progress/kendo-angular-icons';
 // import { touchEnabled } from '@progress/kendo-common';
 // Apollo / GraphQL
 import { GraphQLModule } from './graphql.module';
-import { MAT_LEGACY_TOOLTIP_DEFAULT_OPTIONS as MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/legacy-tooltip';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
-
-// Importing the paginators translation service
-import { MatPaginationIntlService } from '@oort-front/safe';
-import { MatPaginatorIntl } from '@angular/material/paginator';
 
 // Code editor component for Angular applications
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
@@ -98,8 +91,6 @@ export const httpTranslateLoader = (http: HttpClient) =>
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
     DialogCdkModule,
     TranslateModule.forRoot({
       loader: {
@@ -128,18 +119,6 @@ export const httpTranslateLoader = (http: HttpClient) =>
       provide: MessageService,
       useClass: KendoTranslationService,
     },
-    // only used to force date language in 1.2.0, remove in 1.3.0
-    {
-      provide: MAT_DATE_LOCALE,
-      useValue: 'en-GB',
-    },
-    // Default parameters of material tooltip
-    {
-      provide: MAT_TOOLTIP_DEFAULT_OPTIONS,
-      useValue: {
-        showDelay: 500,
-      },
-    },
     {
       provide: OAuthStorage,
       useValue: localStorage,
@@ -161,10 +140,6 @@ export const httpTranslateLoader = (http: HttpClient) =>
     {
       provide: PureAbility,
       useExisting: AppAbility,
-    },
-    {
-      provide: MatPaginatorIntl,
-      useClass: MatPaginationIntlService,
     },
     PopupService,
     ResizeBatchService,
