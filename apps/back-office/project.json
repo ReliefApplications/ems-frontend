@@ -358,9 +358,6 @@
         },
         "development": {
           "browserTarget": "back-office:build:development"
-        },
-        "oort-expertisefr": {
-          "browserTarget": "back-office:build:oort-expertisefr"
         }
       },
       "defaultConfiguration": "development"
