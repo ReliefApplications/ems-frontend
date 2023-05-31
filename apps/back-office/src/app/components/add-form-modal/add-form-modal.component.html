@@ -72,15 +72,14 @@
             <ui-toggle formControlName="inheritsTemplate" class="mb-5">
               <ng-container ngProjectAs="label">
                 {{ 'components.form.create.choice.template' | translate }}
-                <safe-icon
+                <ui-icon
                   icon="info_outline"
                   variant="grey"
-                  [inline]="true"
                   [size]="18"
                   [uiTooltip]="
                     'components.form.create.tooltip.template' | translate
                   "
-                ></safe-icon>
+                ></ui-icon>
               </ng-container>
             </ui-toggle>
             <ng-container *ngIf="form.controls.inheritsTemplate.value">

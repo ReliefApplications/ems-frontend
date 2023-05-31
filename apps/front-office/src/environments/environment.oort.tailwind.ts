@@ -5,8 +5,8 @@ import { sharedEnvironment } from './environment.shared';
 /** Authentication configuration of the module. */
 const authConfig: AuthConfig = {
   issuer: 'https://id-dev.oortcloud.tech/auth/realms/oort',
-  redirectUri: 'https://tailwind.oortcloud.tech/',
-  postLogoutRedirectUri: 'https://tailwind.oortcloud.tech/auth/',
+  redirectUri: 'https://tailwind.humanitarian.tech/',
+  postLogoutRedirectUri: 'https://tailwind.humanitarian.tech/auth/',
   clientId: 'oort-client',
   scope: 'openid profile email offline_access',
   responseType: 'code',
@@ -19,8 +19,8 @@ export const environment = {
   production: true,
   apiUrl: 'https://oort-dev.oortcloud.tech/api',
   subscriptionApiUrl: 'wss://oort-dev.oortcloud.tech/api',
-  frontOfficeUri: 'https://tailwind.oortcloud.tech',
-  backOfficeUri: 'https://tailwind.oortcloud.tech/admin/',
+  frontOfficeUri: 'https://tailwind.humanitarian.tech',
+  backOfficeUri: 'https://tailwind.humanitarian.tech/admin/',
   availableLanguages: ['en', 'fr', 'test'],
   authConfig,
   esriApiKey:

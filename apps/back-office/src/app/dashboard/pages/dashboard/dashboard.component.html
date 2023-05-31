@@ -74,7 +74,7 @@
         </ui-button>
         <ui-menu #menu>
           <button uiMenuItem (click)="toggleFiltering()">
-            <mat-icon>tune</mat-icon>
+            <ui-icon icon="tune"></ui-icon>
             <!-- todo(translate) -->
             {{
               dashboard.showFilter
@@ -83,11 +83,11 @@
             }}
           </button>
           <button uiMenuItem (click)="onAppSelection()">
-            <mat-icon>file_copy</mat-icon>
+            <ui-icon icon="file_copy"></ui-icon>
             {{ 'common.duplicate' | translate }}
           </button>
           <button uiMenuItem (click)="onShare()">
-            <mat-icon>share</mat-icon>
+            <ui-icon icon="share"></ui-icon>
             {{ 'models.dashboard.share' | translate }}
           </button>
         </ui-menu>

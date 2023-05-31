@@ -30,7 +30,7 @@ import { CommonModule } from '@angular/common';
 import { SnackbarService, TabsModule } from '@oort-front/ui';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatGridListModule } from '@angular/material/grid-list';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
@@ -58,7 +58,7 @@ interface DialogData {
     DialogModule,
     TabsModule,
     MatGridListModule,
-    MatIconModule,
+    IconModule,
     MatButtonModule,
     SafeRecordSummaryModule,
     SafeFormActionsModule,

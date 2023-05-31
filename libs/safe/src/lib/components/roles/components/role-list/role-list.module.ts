@@ -1,5 +1,5 @@
 import { FormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
@@ -31,7 +31,7 @@ import { SafeEmptyModule } from '../../../ui/empty/empty.module';
     FormsModule,
     SpinnerModule,
     MenuModule,
-    MatIconModule,
+    IconModule,
     MatSortModule,
     MatAutocompleteModule,
     DividerModule,

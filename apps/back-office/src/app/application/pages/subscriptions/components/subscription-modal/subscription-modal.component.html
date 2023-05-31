@@ -20,17 +20,16 @@
             formControlName="title"
           />
         </div>
-        <mat-form-field appearance="outline">
-          <mat-label>{{
+        <div uiFormFieldDirective>
+          <label>{{
             'components.application.subscription.modal.listenTo' | translate
-          }}</mat-label>
+          }}</label>
           <input
             type="text"
             [placeholder]="
               'components.application.subscription.modal.placeholder.listenTo'
                 | translate
             "
-            matInput
             formControlName="routingKey"
             [matAutocomplete]="auto"
           />
@@ -54,7 +53,7 @@
           </mat-autocomplete>
           <ui-button
             *ngIf="routingKey"
-            matSuffix
+            uiSuffix
             [isIcon]="true"
             icon="close"
             [ariaLabel]="
@@ -63,17 +62,17 @@
             "
             (click)="routingKey = ''"
           ></ui-button>
-          <safe-icon
+          <ui-icon
             icon="info"
             class="cursor-pointer"
-            variant="'grey'"
-            matSuffix
+            variant="grey"
+            uiSuffix
             [uiTooltip]="
               'components.application.subscription.modal.hint.listenTo'
                 | translate
             "
-          ></safe-icon>
-        </mat-form-field>
+          ></ui-icon>
+        </div>
         <div uiFormFieldDirective>
           <label>{{ 'components.record.convert.select' | translate }}</label>
           <ui-graphql-select

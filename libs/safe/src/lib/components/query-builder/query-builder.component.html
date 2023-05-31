@@ -1,14 +1,13 @@
 <ng-container *ngIf="form">
   <form [formGroup]="form" [ngClass]="{ 'field-form': isField }">
     <div>
-      <mat-form-field appearance="outline" *ngIf="!isField && canSelectDataSet">
-        <mat-label>{{
+      <div uiFormFieldDirective *ngIf="!isField && canSelectDataSet">
+        <label>{{
           'components.queryBuilder.dataset.select' | translate
-        }}</mat-label>
+        }}</label>
         <input
           type="text"
           [placeholder]="'components.queryBuilder.dataset.select' | translate"
-          matInput
           formControlName="name"
           [matAutocomplete]="auto"
         />
@@ -17,14 +16,14 @@
             {{ option }}
           </mat-option>
         </mat-autocomplete>
-        <safe-icon
+        <ui-icon
           *ngIf="canSelectDataSet && form.invalid"
-          matSuffix
+          uiSuffix
           icon="error"
           variant="danger"
           [uiTooltip]="'components.form.layout.errors.invalid' | translate"
-        ></safe-icon>
-      </mat-form-field>
+        ></ui-icon>
+      </div>
 
       <div
         *ngIf="!isField && canSelectDataSet && templates.length > 0"

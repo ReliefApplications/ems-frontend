@@ -10,7 +10,6 @@ import { SafeAddFieldStageComponent } from './add-field-stage/add-field-stage.co
 import { SafeExpressionsComponent } from './expressions/expressions.component';
 import { SafeFieldDropdownComponent } from './field-dropdown/field-dropdown.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { SafeIconModule } from '../../icon/icon.module';
 import { SafeFilterModule } from '../../../filter/filter.module';
 import { SafeSortStageComponent } from './sort-stage/sort-stage.component';
 import {
@@ -21,6 +20,7 @@ import {
   ButtonModule,
   ExpansionPanelModule,
   SelectMenuModule,
+  IconModule,
 } from '@oort-front/ui';
 
 /**
@@ -45,7 +45,7 @@ import {
     FormsModule,
     ReactiveFormsModule,
     DragDropModule,
-    SafeIconModule,
+    IconModule,
     TooltipModule,
     SafeFilterModule,
     TextareaModule,

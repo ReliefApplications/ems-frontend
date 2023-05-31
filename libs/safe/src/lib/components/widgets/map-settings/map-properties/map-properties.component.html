@@ -15,16 +15,15 @@
     </div>
     <label>
       {{ 'components.widget.settings.map.properties.zoom' | translate }}
-      <safe-icon
+      <ui-icon
         icon="info_outline"
         class="cursor-pointer"
         [uiTooltip]="
           'components.widget.settings.map.properties.zoom' | translate
         "
-        [inline]="true"
         [size]="18"
         variant="grey"
-      ></safe-icon>
+      ></ui-icon>
     </label>
     <ui-slider
       class="mb-2"
@@ -47,7 +46,7 @@
           {{ 'components.widget.settings.map.properties.latitude' | translate }}
         </label>
         <input type="number" formControlName="centerLat" />
-        <safe-icon
+        <ui-icon
           uiSuffix
           icon="info"
           class="cursor-pointer"
@@ -56,7 +55,7 @@
             'components.widget.settings.map.tooltip.default.latitude'
               | translate
           "
-        ></safe-icon>
+        ></ui-icon>
       </div>
       <div
         [uiErrorMessage]="
@@ -74,7 +73,7 @@
           }}
         </label>
         <input type="number" formControlName="centerLong" />
-        <safe-icon
+        <ui-icon
           uiSuffix
           icon="info"
           class="cursor-pointer"
@@ -83,7 +82,7 @@
             'components.widget.settings.map.tooltip.default.longitude'
               | translate
           "
-        ></safe-icon>
+        ></ui-icon>
       </div>
     </div>
     <safe-map [header]="false" [settings]="mapSettings"></safe-map>

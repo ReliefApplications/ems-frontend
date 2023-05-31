@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DistributionListsComponent } from './distribution-lists.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import {
   MenuModule,
   DividerModule,
@@ -22,7 +22,7 @@ import { SafeEmptyModule } from '../ui/empty/empty.module';
     TranslateModule,
     SafeSkeletonTableModule,
     MenuModule,
-    MatIconModule,
+    IconModule,
     DividerModule,
     ButtonModule,
     SafeEmptyModule,

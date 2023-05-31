@@ -20,8 +20,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-// @TODO: Remove SafeIconModule import after ui-icon is being used in the app
-import { SafeIconModule } from '../../../ui/icon/icon.module';
 import {
   ButtonModule,
   ChipModule,
@@ -68,7 +66,6 @@ export function codesFactory(): () => any {
     ReactiveFormsModule,
     TranslateModule,
     ButtonModule,
-    SafeIconModule,
     ChipModule,
     FormWrapperModule,
     ErrorMessageModule,

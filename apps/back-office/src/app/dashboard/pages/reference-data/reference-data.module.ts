@@ -3,12 +3,11 @@ import { CommonModule } from '@angular/common';
 import { ReferenceDataRoutingModule } from './reference-data-routing.module';
 import { ReferenceDataComponent } from './reference-data.component';
 import { SafeAccessModule } from '@oort-front/safe';
-import { GraphQLSelectModule, SpinnerModule } from '@oort-front/ui';
+import { GraphQLSelectModule, IconModule, SpinnerModule } from '@oort-front/ui';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyOptionModule as MatOptionModule } from '@angular/material/legacy-core';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeIconModule } from '@oort-front/safe';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import {
@@ -33,7 +32,7 @@ import {
     ReactiveFormsModule,
     MatOptionModule,
     TranslateModule,
-    SafeIconModule,
+    IconModule,
     GridModule,
     TooltipModule,
     GraphQLSelectModule,

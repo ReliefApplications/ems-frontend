@@ -11,14 +11,12 @@ import {
   PaginatorModule,
   SelectMenuModule,
 } from '@oort-front/ui';
-import { SafeIconModule } from '../../ui/icon/icon.module';
 import { FilterComponent } from '../role-resources-filter/role-resources-filter.component';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatIconModule } from '@angular/material/icon';
 import { SpinnerModule, FormWrapperModule, IconModule } from '@oort-front/ui';
 import { ResourceFieldsComponent } from './resource-fields/resource-fields.component';
 import { SafeRoleResourceFiltersComponent } from './resource-access-filters/resource-access-filters.component';
@@ -40,7 +38,6 @@ import { SafeFilterModule } from '../../filter/filter.module';
     PaginatorModule,
     TranslateModule,
     SafeDateModule,
-    SafeIconModule,
     SafeSkeletonTableModule,
     MatFormFieldModule,
     MatNativeDateModule,
@@ -48,7 +45,6 @@ import { SafeFilterModule } from '../../filter/filter.module';
     FormsModule,
     ReactiveFormsModule,
     MatInputModule,
-    MatIconModule,
     SpinnerModule,
     FormWrapperModule,
     IconModule,

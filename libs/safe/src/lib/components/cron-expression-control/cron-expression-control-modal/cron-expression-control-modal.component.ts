@@ -10,8 +10,6 @@ import { SafeReadableCronModule } from '../../../pipes/readable-cron/readable-cr
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { AlertModule, ButtonModule, DialogModule } from '@oort-front/ui';
-// @TODO: Remove SafeIconModule import after ui-icon is being used in the app
-import { SafeIconModule } from '../../ui/icon/icon.module';
 
 /**
  * Cron expression form control modal
@@ -29,7 +27,6 @@ import { SafeIconModule } from '../../ui/icon/icon.module';
     MatInputModule,
     ButtonModule,
     AlertModule,
-    SafeIconModule,
   ],
   selector: 'safe-cron-expression-control-modal',
   templateUrl: './cron-expression-control-modal.component.html',

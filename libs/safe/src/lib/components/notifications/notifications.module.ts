@@ -11,7 +11,7 @@ import {
   ChipModule,
   PaginatorModule,
 } from '@oort-front/ui';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { SafeEmptyModule } from '../ui/empty/empty.module';
 
 /**
@@ -25,7 +25,7 @@ import { SafeEmptyModule } from '../ui/empty/empty.module';
     TranslateModule,
     SafeSkeletonTableModule,
     DividerModule,
-    MatIconModule,
+    IconModule,
     SafeEmptyModule,
     PaginatorModule,
     ButtonModule,

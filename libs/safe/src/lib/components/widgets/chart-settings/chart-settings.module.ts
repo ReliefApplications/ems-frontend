@@ -6,7 +6,7 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
 import { SafeChartModule } from '../chart/chart.module';
 import {
@@ -19,7 +19,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeAggregationBuilderModule } from '../../ui/aggregation-builder/aggregation-builder.module';
 import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { SafeGridModule } from '../../../components/ui/core-grid/grid/grid.module';
-import { SafeIconModule } from '../../ui/icon/icon.module';
 import { SafePaletteControlModule } from '../../palette-control/palette-control.module';
 import { TabMainModule } from './tab-main/tab-main.module';
 import { TabDisplayModule } from './tab-display/tab-display.module';
@@ -34,7 +33,7 @@ import { TabDisplayModule } from './tab-display/tab-display.module';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatIconModule,
+    IconModule,
     TextFieldModule,
     SafeQueryBuilderModule,
     SafeChartModule,
@@ -44,7 +43,6 @@ import { TabDisplayModule } from './tab-display/tab-display.module';
     SafeAggregationBuilderModule,
     MatAutocompleteModule,
     SafeGridModule,
-    SafeIconModule,
     SafePaletteControlModule,
     TabMainModule,
     TabDisplayModule,

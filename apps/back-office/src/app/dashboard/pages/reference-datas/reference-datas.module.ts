@@ -9,7 +9,6 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { SafeDateModule, SafeSkeletonTableModule } from '@oort-front/safe';
-import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
 import { AddReferenceDataComponent } from './add-reference-data/add-reference-data.component';
@@ -37,7 +36,7 @@ import { DialogModule } from '@oort-front/ui';
     MatFormFieldModule,
     AngularFormsModule,
     ReactiveFormsModule,
-    MatIconModule,
+    IconModule,
     MatButtonModule,
     PaginatorModule,
     TranslateModule,
@@ -47,7 +46,6 @@ import { DialogModule } from '@oort-front/ui';
     AbilityModule,
     ButtonModule,
     FormWrapperModule,
-    IconModule,
     TableModule,
   ],
   exports: [ReferenceDatasComponent],

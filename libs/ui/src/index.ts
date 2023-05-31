@@ -7,6 +7,7 @@ export * from './lib/button/button.component';
 export * from './lib/checkbox/checkbox.module';
 export * from './lib/menu/menu.module';
 export * from './lib/icon/icon.module';
+export * from './lib/icon/icon.component';
 export * from './lib/table/table.module';
 export * from './lib/tooltip/tooltip.module';
 export * from './lib/spinner/spinner.module';
