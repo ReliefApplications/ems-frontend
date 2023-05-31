@@ -1377,7 +1377,9 @@
 								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
 							}
 						},
-						"preview": {},
+						"preview": {
+							"title": "Prévisualisation"
+						},
 						"textEditor": {
 							"alert": "Vous pouvez ajouter des variables ex: {{data.variable}} et faire des calculs ex: {{calc.round( value ; precision )}}",
 							"title": "Éditeur de texte"
@@ -1567,6 +1569,18 @@
 			"stick": "Épingler",
 			"unlock": "Déverrouiller",
 			"unstick": "Désépingler"
+		},
+		"pager": {
+			"firstPage": "Aller à la première page",
+			"items": "éléments",
+			"itemsPerPage": "éléments par page",
+			"label": "'Navigation de page, page {currentPage} sur {totalPages}'",
+			"lastPage": "Aller à la dernière page",
+			"nextPage": "Aller à la page suivante",
+			"of": "sur",
+			"page": "Page",
+			"pageNumberInputTitle": "Numéro de page",
+			"previousPage": "Aller à la page précédente"
 		},
 		"tilelayout": {
 			"component": {
