@@ -121,7 +121,7 @@ const replaceRecordFields = (
   if (fields) {
     for (const field of fields) {
       const value = fieldsValue[field.name];
-      const style = getLayoutsStyle(styles, field.name, fields);
+      const style = getLayoutsStyle(styles, field.name, fieldsValue);
       let convertedValue = '';
       if (!isNil(value)) {
         switch (field.type) {
@@ -408,98 +408,90 @@ const getLayoutStyle = (layout: any): string => {
  */
 const applyFilters = (filter: any, fields: any): boolean => {
   if (filter.logic) {
-    for (let i = 0; filter.filters[i]; i++) {
-      if (applyFilters(filter.filters[i], fields)) {
-        if (filter.logic === 'or') {
-          return true;
-        }
-      } else if (filter.logic === 'and') {
-        return false;
-      }
+    const exp = filter.logic === 'or' ? 'some' : 'every';
+    return filter.filters[exp]((f: any) => applyFilters(f, fields));
+  }
+
+  const value = fields[filter.field];
+  switch (filter.operator) {
+    case 'eq': {
+      // equal
+      return value === filter.value;
     }
-    return filter.logic === 'or' ? false : true;
-  } else {
-    const value = fields[filter.field];
-    switch (filter.operator) {
-      case 'eq': {
-        // equal
-        return value === filter.value;
-      }
-      case 'neq': {
-        // not equal
-        return value !== filter.value;
-      }
-      case 'isnull': {
-        return value === null;
-      }
-      case 'isnotnull': {
-        return value !== null;
-      }
-      case 'lt': {
-        // lesser
-        return value < filter.value;
-      }
-      case 'lte': {
-        // lesser or equal
-        return value <= filter.value;
-      }
-      case 'gt': {
-        // greater
-        return value > filter.value;
-      }
-      case 'gte': {
-        // greater or equal
-        return value >= filter.value;
-      }
-      case 'startswith': {
-        if (!value) {
-          return false;
-        }
-        return value[0] === filter.value;
-      }
-      case 'endswith': {
-        if (!value) {
-          return false;
-        }
-        return value[value.length] === filter.value;
-      }
-      case 'contains': {
-        if (!value) {
-          return false;
-        }
-        for (let i = 0; value[i]; i++) {
-          if (value[i] === filter.value) {
-            return true;
-          }
-        }
+    case 'neq': {
+      // not equal
+      return value !== filter.value;
+    }
+    case 'isnull': {
+      return value === null;
+    }
+    case 'isnotnull': {
+      return value !== null;
+    }
+    case 'lt': {
+      // lesser
+      return value < filter.value;
+    }
+    case 'lte': {
+      // lesser or equal
+      return value <= filter.value;
+    }
+    case 'gt': {
+      // greater
+      return value > filter.value;
+    }
+    case 'gte': {
+      // greater or equal
+      return value >= filter.value;
+    }
+    case 'startswith': {
+      if (!value) {
         return false;
       }
-      case 'doesnotcontain': {
-        if (!value) {
+      return value[0] === filter.value;
+    }
+    case 'endswith': {
+      if (!value) {
+        return false;
+      }
+      return value[value.length] === filter.value;
+    }
+    case 'contains': {
+      if (!value) {
+        return false;
+      }
+      for (let i = 0; value[i]; i++) {
+        if (value[i] === filter.value) {
           return true;
         }
-        for (let i = 0; value[i]; i++) {
-          if (value[i] === filter.value) {
-            return false;
-          }
-        }
+      }
+      return false;
+    }
+    case 'doesnotcontain': {
+      if (!value) {
         return true;
       }
-      case 'isempty': {
-        if (!value) {
-          return true;
-        }
-        return value.length <= 0;
-      }
-      case 'isnotempty': {
-        if (!value) {
+      for (let i = 0; value[i]; i++) {
+        if (value[i] === filter.value) {
           return false;
         }
-        return value.length > 0;
       }
-      default: {
+      return true;
+    }
+    case 'isempty': {
+      if (!value) {
+        return true;
+      }
+      return value.length <= 0;
+    }
+    case 'isnotempty': {
+      if (!value) {
         return false;
       }
+      return value.length > 0;
+    }
+    default: {
+      return false;
     }
   }
 };
