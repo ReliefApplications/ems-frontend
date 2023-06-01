@@ -40,11 +40,6 @@
   font-weight: 500 !important;
 }
 
-::ng-deep input[type='date'] {
-  appearance: none !important;
-  -webkit-appearance: none !important;
-}
-
 ::ng-deep input[type='date']::-webkit-inner-spin-button,
 ::ng-deep input[type='date']::-webkit-calendar-picker-indicator {
   display: none !important;
