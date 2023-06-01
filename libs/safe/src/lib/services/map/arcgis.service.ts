@@ -261,7 +261,6 @@ export class ArcgisService {
         break;
       }
       case 'ArcGISFeatureLayer': {
-        console.log(layer);
         let featureLayer: L.Layer | undefined = undefined;
         if (layer.url) {
           // if (layer.itemId) {
