@@ -32,6 +32,7 @@ export class DatePickerDirective implements OnInit, OnDestroy {
 
   private destroy$ = new Subject<void>();
   private clickEventListener!: any;
+  private labelElement!: HTMLLabelElement;
   private inputClasses = [
     'peer',
     'block',
@@ -59,19 +60,13 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     'left-2',
     'bg-white',
     'top-0',
-    'mb-0',
-    'max-w-[90%]',
-    'origin-[0_0]',
+    'right-0',
+    'bottom-0',
     'truncate',
-    'pt-[0.3rem]',
-    'leading-[1.6]',
     'text-neutral-500',
-    'transition-all',
-    'duration-200',
-    'ease-out',
-    '-translate-y-[1rem]',
-    'scale-[0.8]',
-    'motion-reduce:transition-none',
+    'min-w-[30px]',
+    'flex',
+    'items-center',
   ] as const;
 
   private iconClasses = [
@@ -129,6 +124,15 @@ export class DatePickerDirective implements OnInit, OnDestroy {
               // Trigger input change event to update date picker/ date range element
               const event = new Event('change');
               this.el.nativeElement.dispatchEvent(event);
+              if (this.label) {
+                this.labelElement.textContent = this.label;
+                this.renderer.addClass(this.labelElement, 'left-2');
+              }
+            } else {
+              if (this.label) {
+                this.labelElement.textContent = '';
+                this.renderer.removeClass(this.labelElement, 'left-2');
+              }
             }
           },
         });
@@ -170,14 +174,14 @@ export class DatePickerDirective implements OnInit, OnDestroy {
    * Set given label to the input element
    */
   private setLabelElement() {
-    const labelElement = this.renderer.createElement('label');
+    this.labelElement = this.renderer.createElement('label');
     this.labelClasses.forEach((lClass) => {
-      this.renderer.addClass(labelElement, lClass);
+      this.renderer.addClass(this.labelElement, lClass);
     });
-    labelElement.innerText = this.label;
+    this.labelElement.innerText = this.label;
     this.renderer.appendChild(
       this.el.nativeElement.parentElement,
-      labelElement
+      this.labelElement
     );
   }
 

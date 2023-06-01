@@ -230,9 +230,6 @@ export class FormWrapperDirective
       for (const cl of this.labelClasses) {
         this.renderer.addClass(this.currentLabelElement, cl);
       }
-      if (this.dateWrapperElement) {
-        this.renderer.addClass(this.currentLabelElement, 'mb-3');
-      }
     }
 
     this.initializeDirectiveListeners();

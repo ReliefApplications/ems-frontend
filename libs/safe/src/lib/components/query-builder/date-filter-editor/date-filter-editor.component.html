@@ -1,4 +1,4 @@
-<div uiFormFieldDirective>
+<div uiFormFieldDirective [ngClass]="{ 'mr-2': useExpression }">
   <label>{{ 'common.value.one' | translate }}</label>
   <div [uiDateWrapper]="calendar">
     <input
