@@ -1858,6 +1858,10 @@
 				"selectApplication": "Application manquante pour un élément de la page : {{page}}. Veuillez sélectionner au moins une application dans les propriétés de {{question}} pour sauvegarder le formulaire.",
 				"snakecase": "Le nom de valeur {{name}} de la page {{page}} est invalide. Veuillez configurer un nom valide (en format snake_case) pour sauvegarder le formulaire."
 			},
+			"move": {
+				"down": "Descendre la question",
+				"up": "Monter la question"
+			},
 			"questionsCategories": {
 				"core": "Bibliothèque de questions"
 			},

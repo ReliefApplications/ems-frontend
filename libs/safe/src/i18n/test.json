@@ -1851,6 +1851,10 @@
 				"selectApplication": "****** {{page}} ****** {{question}} ******",
 				"snakecase": "****** {{name}} ****** {{page}} ******"
 			},
+			"move": {
+				"down": "******",
+				"up": "******"
+			},
 			"questionsCategories": {
 				"core": "******"
 			},
