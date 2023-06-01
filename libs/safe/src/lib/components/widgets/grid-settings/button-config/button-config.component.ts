@@ -200,9 +200,7 @@ export class ButtonConfigComponent
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         if (value) {
-          this.formGroup
-            ?.get('distributionList')
-            ?.setValidators(Validators.required);
+          this.formGroup?.get('distributionList');
           this.formGroup?.get('templates')?.setValidators(Validators.required);
         } else {
           this.formGroup?.get('distributionList')?.clearValidators();

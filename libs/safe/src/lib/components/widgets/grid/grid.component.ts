@@ -351,52 +351,43 @@ export class SafeGridWidgetComponent implements OnInit {
           this.applicationService.distributionLists.find(
             (x) => x.id === options.distributionList
           )?.emails || [];
-        if (recipients.length === 0) {
-          // no recipient found, skip
-          this.snackbarService.openSnackBar(
-            this.translate.instant(
-              'common.notifications.email.errors.noDistributionList'
-            ),
-            { error: true }
-          );
-        } else {
-          // select template
-          const { EmailTemplateModalComponent } = await import(
-            '../../email-template-modal/email-template-modal.component'
-          );
-          const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
-            data: {
-              templates,
+
+        // select template
+        const { EmailTemplateModalComponent } = await import(
+          '../../email-template-modal/email-template-modal.component'
+        );
+        const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
+          data: {
+            templates,
+          },
+        });
+
+        const value = await firstValueFrom(dialogRef.afterClosed());
+        const template = value?.template;
+
+        if (template) {
+          this.emailService.previewMail(
+            recipients,
+            template.content.subject,
+            template.content.body,
+            {
+              logic: 'and',
+              filters: [
+                {
+                  operator: 'eq',
+                  field: 'ids',
+                  value: this.grid.selectedRows,
+                },
+              ],
             },
-          });
-
-          const value = await firstValueFrom(dialogRef.afterClosed());
-          const template = value?.template;
-
-          if (template) {
-            this.emailService.previewMail(
-              recipients,
-              template.content.subject,
-              template.content.body,
-              {
-                logic: 'and',
-                filters: [
-                  {
-                    operator: 'eq',
-                    field: 'ids',
-                    value: this.grid.selectedRows,
-                  },
-                ],
-              },
-              {
-                name: this.grid.settings.query.name,
-                fields: options.bodyFields,
-              },
-              this.grid.sortField || undefined,
-              this.grid.sortOrder || undefined,
-              options.export
-            );
-          }
+            {
+              name: this.grid.settings.query.name,
+              fields: options.bodyFields,
+            },
+            this.grid.sortField || undefined,
+            this.grid.sortOrder || undefined,
+            options.export
+          );
         }
       }
     }
