@@ -473,8 +473,14 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
    * @param showColumnChooser optional parameter to decide of the state of the popup
    */
   public toggleColumnChooser(showColumnChooser?: boolean) {
-    if (showColumnChooser) this.showColumnChooser = showColumnChooser;
-    else this.showColumnChooser = !this.showColumnChooser;
+    if (this.showColumnChooser) {
+      this.onColumnVisibilityChange();
+    }
+    if (showColumnChooser) {
+      this.showColumnChooser = showColumnChooser;
+    } else {
+      this.showColumnChooser = !this.showColumnChooser;
+    }
   }
 
   // === LAYOUT ===
