@@ -1,11 +1,13 @@
 <div [formGroup]="form" class="flex flex-col gap-4">
   <div class="flex flex-wrap gap-2 items-center">
+    <!-- Search bar -->
     <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
       <mat-icon matPrefix>search</mat-icon>
       <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
       <input matInput [formControl]="search" type="search" />
       <mat-spinner *ngIf="loading" diameter="24" matSuffix></mat-spinner>
     </mat-form-field>
+    <!-- Filters -->
     <safe-button
       icon="filter_list"
       category="tertiary"
@@ -19,6 +21,7 @@
       }}
     </safe-button>
   </div>
+  <!-- Filters when on "show" mode -->
   <div class="flex flex-wrap gap-2 items-center" *ngIf="show">
     <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
       <mat-label>{{ 'common.input.dateRange' | translate }}</mat-label>
