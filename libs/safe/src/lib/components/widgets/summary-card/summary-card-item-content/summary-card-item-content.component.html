@@ -1,4 +1,4 @@
-<div class="html-content" (click)="onClick($event)">
+<div [ngClass]="('html-content ' + (makeCardClickable ? 'clickable' : ''))" (click)="onClick($event)">
   <div
     class="w-fit h-fit"
     [innerHTML]="formattedHtml"

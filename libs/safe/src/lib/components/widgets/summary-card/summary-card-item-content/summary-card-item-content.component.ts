@@ -9,6 +9,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SafeDownloadService } from '../../../../services/download/download.service';
 import { getCardStyle, parseHtml } from '../parser/utils';
 import get from 'lodash/get';
+import { Router } from '@angular/router';
 
 /**
  * Content component of Single Item of Summary Card.
@@ -26,6 +27,8 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
   @Input() fieldsValue: any;
   @Input() styles: any[] = [];
   @Input() wholeCardStyles = false;
+  @Input() makeCardClickable: any;
+  @Input() urlToLink?: any;
 
   public formattedHtml?: SafeHtml;
   public cardStyle?: string;
@@ -35,10 +38,12 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
    *
    * @param sanitizer Sanitizes the cards content so angular can show it up.
    * @param downloadService Used to download file type fields
+   * @param router Angular Router
    */
   constructor(
     private sanitizer: DomSanitizer,
-    private downloadService: SafeDownloadService
+    private downloadService: SafeDownloadService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -73,6 +78,11 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
    */
   public onClick(event: any) {
     const type = event.target.getAttribute('type');
+    if (this.makeCardClickable) {
+      this.router.navigate([
+        './applications/645e0c941d360b3e80725bf8/form/64638583886a176c28824ff4',
+      ]);
+    }
     if (type === 'file') {
       const fieldName = event.target.getAttribute('field');
       const index = event.target.getAttribute('index');
