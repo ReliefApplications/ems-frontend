@@ -290,10 +290,10 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   }
 
   /**
- * On initialization of editor, format code
- *
- * @param editor monaco editor used for scss edition
- */
+   * On initialization of editor, format code
+   *
+   * @param editor monaco editor used for scss edition
+   */
   public initEditor(editor: any): void {
     if (editor) {
       setTimeout(() => {

@@ -6,7 +6,7 @@ import {
   Input,
   OnInit,
   ViewChild,
-  Renderer2
+  Renderer2,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
@@ -153,11 +153,17 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
         (event: any) => this.loadOnScroll(event)
       );
     }
-    if(this.settings.card?.editClasses && this.settings.card?.editClasses !== ''){
+    if (
+      this.settings.card?.editClasses &&
+      this.settings.card?.editClasses !== ''
+    ) {
       this.customClasses = this.settings.card?.editClasses;
     }
 
-    if(this.settings.card?.editStyle && this.settings.card?.editStyle !== ''){
+    if (
+      this.settings.card?.editStyle && 
+      this.settings.card?.editStyle !== ''
+    ) {
       const styleElement = this.renderer.createElement('style');
       const styleText = this.renderer.createText(this.settings.card.editStyle);
       this.renderer.appendChild(styleElement, styleText);
