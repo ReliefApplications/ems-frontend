@@ -52,6 +52,10 @@ const createCardForm = (value?: any) => {
     showDataSourceLink: new FormControl<boolean>(
       get(value, 'showDataSourceLink', false)
     ),
+    makeCardClickable: new FormControl<boolean>(
+      get(value, 'makeCardClickable', false)
+    ),
+    urlToLink: new FormControl<string>(get(value, 'urlToLink', null)),
     useStyles: new FormControl<boolean>(get(value, 'useStyles', true)),
     wholeCardStyles: new FormControl<boolean>(
       get(value, 'wholeCardStyles', false)
@@ -128,6 +132,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    */
   ngOnInit(): void {
     this.tileForm = createSummaryCardForm(this.tile);
+    console.log('WE ARE HERE', this.tileForm);
     this.change.emit(this.tileForm);
 
     const resourceID = this.tileForm?.get('card.resource')?.value;

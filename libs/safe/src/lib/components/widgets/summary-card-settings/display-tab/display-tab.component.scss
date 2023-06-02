@@ -4,7 +4,16 @@
   }
 }
 
+.mat-slide-toggle {
+  display: flex;
+  margin-bottom: 1.5em;
+}
+
 .space-divider {
   margin-top: 0.5em;
   margin-bottom: 2.5em;
+}
+
+.url-input {
+  width: 50%;
 }

@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 
 /**
@@ -9,6 +9,10 @@ import { UntypedFormGroup } from '@angular/forms';
   templateUrl: './display-tab.component.html',
   styleUrls: ['./display-tab.component.scss'],
 })
-export class SafeDisplayTabComponent {
+export class SafeDisplayTabComponent implements OnInit {
   @Input() form!: UntypedFormGroup;
+
+  ngOnInit() {
+    console.log('FORM', this.form);
+  }
 }
