@@ -10,16 +10,8 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SafeDownloadService } from '../../../../services/download/download.service';
 import { getCardStyle, parseHtml } from '../parser/utils';
 import get from 'lodash/get';
-import {
-  GET_PAGE_BY_ID,
-  GetPageByIdQueryResponse,
-  GET_APPLICATION_BY_ID,
-  GetApplicationByIdQueryResponse,
-} from '../graphql/queries';
-import { Page } from '../../../../models/page.model';
-import { Apollo } from 'apollo-angular';
-import { firstValueFrom } from 'rxjs';
 import { Router } from '@angular/router';
+import { ToPageFromWidgetService } from '../../../../services/to-page-from-widget/to-page-from-widget.service';
 
 /**
  * Content component of Single Item of Summary Card.
@@ -53,14 +45,14 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
    * @param sanitizer Sanitizes the cards content so angular can show it up.
    * @param downloadService Used to download file type fields
    * @param router Angular Router
-   * @param apollo Apollo service
+   * @param toPageService Used to handle redirecting to pages from widgets
    */
   constructor(
     @Inject('environment') environment: any,
     private sanitizer: DomSanitizer,
     private downloadService: SafeDownloadService,
     private router: Router,
-    private apollo: Apollo
+    private toPageService: ToPageFromWidgetService
   ) {
     this.environment = environment;
     //Get current app ID through the url of the current page
@@ -83,7 +75,7 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
       this.fieldsValue
     );
     this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
-      await this.applyPage(
+      await this.toPageService.applyPage(
         parseHtml(this.html, this.fieldsValue, this.fields, this.styles)
       )
     );
@@ -105,7 +97,7 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
       this.styles
     );
     this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
-      await this.applyPage(parsedHtml)
+      await this.toPageService.applyPage(parsedHtml)
     );
   }
 
@@ -118,7 +110,7 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
     const type = event.target.getAttribute('type');
     if (this.makeCardClickable) {
       //Check if page to link is from same app or not. If not, do not link it
-      const sameApplication = await this.checkPageApplication(
+      const sameApplication = await this.toPageService.checkPageApplication(
         this.pageToLink,
         this.currentAppId
       );
@@ -139,89 +131,5 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
         this.downloadService.getFile(path, file.type, file.name);
       }
     }
-  }
-
-  /**
-   * Checks if an html element contains the page key and replaces it with correct link display
-   *
-   * @param html the html element to apply page modification to
-   * @returns the modified html element
-   */
-  public applyPage = async (html: string): Promise<string> => {
-    const regex = new RegExp(`{{page\\(\\s*[a-z0-9]{24}\\s*\\)}}`);
-    let result = regex.exec(html);
-    while (result !== null) {
-      const pageId = result[0]
-        .substring(result[0].indexOf('(') + 1, result[0].lastIndexOf(')'))
-        .trim();
-
-      //Check if page to link is from same app or not. If not, do not link it
-      const sameApplication = await this.checkPageApplication(
-        pageId,
-        this.currentAppId
-      );
-      if (sameApplication) {
-        //Get page information from the database
-        const pagePromise: Promise<any> = firstValueFrom(
-          this.apollo.query<GetPageByIdQueryResponse>({
-            query: GET_PAGE_BY_ID,
-            variables: {
-              id: pageId,
-            },
-          })
-        );
-        const pageToLink = await Promise.resolve(pagePromise);
-        //Build the url depending on whether we are in the front or back office
-        let url: string;
-        this.router.url.includes('/applications')
-          ? (url = './applications/')
-          : (url = './');
-        let finalUrlElement;
-        pageToLink.data.page.type === 'dashboard'
-          ? (finalUrlElement = pageToLink.data.page.content)
-          : (finalUrlElement = pageToLink.data.page.id);
-        url +=
-          this.currentAppId +
-          '/' +
-          pageToLink.data.page.type +
-          '/' +
-          finalUrlElement;
-
-        this.resultText =
-          '<a href="' + url + '">' + pageToLink.data.page.name + '</a>';
-      } else {
-        this.resultText =
-          'Error : Cannot link to page outside of this application';
-      }
-
-      html = html.replace(result[0], this.resultText);
-      result = regex.exec(html);
-    }
-    return html;
-  };
-
-  /**
-   * Checks if page is contained inside the current application
-   *
-   * @param pageId Id of page to check
-   * @param currentAppId Id of current application
-   */
-  private async checkPageApplication(pageId: any, currentAppId: string) {
-    const appPromise: Promise<any> = firstValueFrom(
-      this.apollo.query<GetApplicationByIdQueryResponse>({
-        query: GET_APPLICATION_BY_ID,
-        variables: {
-          id: currentAppId,
-        },
-      })
-    );
-    const appToCheck = await Promise.resolve(appPromise);
-    let isSameApp = false;
-    appToCheck.data.application.pages.map((elt: Page) => {
-      if (elt.id === pageId) {
-        isSameApp = true;
-      }
-    });
-    return isSameApp;
   }
 }
