@@ -55,7 +55,7 @@ const createCardForm = (value?: any) => {
     makeCardClickable: new FormControl<boolean>(
       get(value, 'makeCardClickable', false)
     ),
-    urlToLink: new FormControl<string>(get(value, 'urlToLink', null)),
+    pageToLink: new FormControl<string>(get(value, 'pageToLink', null)),
     useStyles: new FormControl<boolean>(get(value, 'useStyles', true)),
     wholeCardStyles: new FormControl<boolean>(
       get(value, 'wholeCardStyles', false)

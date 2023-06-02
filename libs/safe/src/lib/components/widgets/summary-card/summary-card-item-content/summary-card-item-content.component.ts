@@ -28,7 +28,7 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
   @Input() styles: any[] = [];
   @Input() wholeCardStyles = false;
   @Input() makeCardClickable: any;
-  @Input() urlToLink?: any;
+  @Input() pageToLink?: any;
 
   public formattedHtml?: SafeHtml;
   public cardStyle?: string;
