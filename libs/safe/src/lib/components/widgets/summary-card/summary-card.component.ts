@@ -6,6 +6,7 @@ import {
   Input,
   OnInit,
   ViewChild,
+  Renderer2
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
@@ -61,7 +62,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   /** Define default height of summary card */
   public defaultCardHeight = 2;
   /** Define max width of summary card */
-  public defaultCardWidth = 2;  
+  public defaultCardWidth = 2;
 
   // === DYNAMIC CARDS PAGINATION ===
   public pageInfo = {
@@ -80,6 +81,8 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   private fields: any[] = [];
 
   public searchControl = new FormControl('');
+
+  public customClasses = '';
 
   @ViewChild('summaryCardGrid') summaryCardGrid!: ElementRef<HTMLDivElement>;
   @ViewChild('pdf') pdf!: any;
@@ -122,7 +125,9 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
     private apollo: Apollo,
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: SafeGridLayoutService,
-    private aggregationService: SafeAggregationService
+    private aggregationService: SafeAggregationService,
+    private renderer: Renderer2,
+    private elementRef: ElementRef
   ) {}
 
   ngOnInit(): void {
@@ -147,6 +152,16 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
         'scroll',
         (event: any) => this.loadOnScroll(event)
       );
+    }
+    if(this.settings.card?.editClasses && this.settings.card?.editClasses !== ''){
+      this.customClasses = this.settings.card?.editClasses;
+    }
+
+    if(this.settings.card?.editStyle && this.settings.card?.editStyle !== ''){
+      const styleElement = this.renderer.createElement('style');
+      const styleText = this.renderer.createText(this.settings.card.editStyle);
+      this.renderer.appendChild(styleElement, styleText);
+      this.renderer.appendChild(this.elementRef.nativeElement, styleElement);
     }
   }
 

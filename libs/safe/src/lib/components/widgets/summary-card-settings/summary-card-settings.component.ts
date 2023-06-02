@@ -6,7 +6,7 @@ import {
   Input,
   AfterViewInit,
 } from '@angular/core';
-import { Validators, FormGroup, FormControl } from '@angular/forms';
+import { FormGroup, FormControl } from '@angular/forms';
 
 import { get } from 'lodash';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
@@ -38,6 +38,8 @@ const createCardForm = (value?: any) => {
     wholeCardStyles: new FormControl<boolean>(
       get(value, 'wholeCardStyles', false)
     ),
+    editStyle: new FormControl<string>(get(value, 'editStyle', '')),
+    editClasses: new FormControl<string>(get(value, 'editClasses', '')),
   });
 };
 
@@ -93,6 +95,22 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
 
   public fields: any[] = [];
   public activeTabIndex: number | undefined;
+
+  public editorOptions = {
+    theme: 'vs-dark',
+    language: 'scss',
+    fixedOverflowWidgets: true,
+  };
+
+  /** @returns the editStyle form control */
+  get editStyleControl() {
+    return this.tileForm?.get('card.editStyle') as FormControl | null;
+  }
+
+  /** @returns the editClasses form control */
+  get editClassesControl() {
+    return this.tileForm?.get('card.editClasses') as FormControl | null;
+  }
 
   /**
    * Summary Card Settings component.
@@ -269,5 +287,23 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   handleAggregationChange(aggregation: Aggregation | null) {
     this.selectedAggregation = aggregation;
     this.getCustomAggregation();
+  }
+
+  /**
+ * On initialization of editor, format code
+ *
+ * @param editor monaco editor used for scss edition
+ */
+  public initEditor(editor: any): void {
+    if (editor) {
+      setTimeout(() => {
+        editor
+          .getAction('editor.action.formatDocument')
+          .run()
+          .finally(() => {
+            this.editStyleControl?.markAsPristine();
+          });
+      }, 100);
+    }
   }
 }

@@ -12,6 +12,9 @@ import { SafeDisplayTabModule } from './display-tab/display.module';
 import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 
 /** Summary Card Settings Module */
 @NgModule({
@@ -30,6 +33,9 @@ import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy
     FormsModule,
     ReactiveFormsModule,
     MatRadioModule,
+    MonacoEditorModule,
+    MatFormFieldModule,
+    MatInputModule,
   ],
   exports: [SafeSummaryCardSettingsComponent],
 })

@@ -99,5 +99,36 @@
         </safe-display-settings>
       </ng-template>
     </mat-tab>
+    <!-- Write scss -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <safe-icon icon="code" [size]="24"></safe-icon>
+        <span>{{
+          'components.widget.settings.summaryCard.card.style.editStyle'
+            | translate
+        }}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <h2>{{
+          'components.widget.settings.summaryCard.card.style.editScss'
+            | translate
+        }}</h2>
+        <ngx-monaco-editor
+          *ngIf="editStyleControl"
+          [formControl]="editStyleControl"
+          (onInit)="initEditor($event)"
+          [options]="editorOptions"
+          class="mb-2"
+        ></ngx-monaco-editor>
+        <br>
+        <mat-form-field appearance="outline" class="w-full">
+          <mat-label>{{
+            'components.widget.settings.summaryCard.card.style.editClasses'
+              | translate
+          }}</mat-label>
+          <input matInput *ngIf="editClassesControl" [formControl]="editClassesControl" type="string" class="w-full"/>
+        </mat-form-field>    
+      </ng-template>
+    </mat-tab>
   </mat-tab-group>
 </ng-container>

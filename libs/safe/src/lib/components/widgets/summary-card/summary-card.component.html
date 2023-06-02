@@ -1,33 +1,6 @@
 <div class="flex flex-col h-full">
-  <!-- <kendo-tilelayout-item-header *ngIf="header" class="widget-header">
-    <span class="widget-title" [title]="settings.title">{{
-      settings.title
-    }}</span>
-    Switch between grid and cards view
-    <div class="flex">
-      <safe-button
-        [isIcon]="true"
-        icon="grid_view"
-        [disabled]="displayMode === 'cards'"
-        (click)="displayMode = 'cards'"
-        [matTooltip]="'components.widget.summaryCard.viewAsCards' | translate"
-      ></safe-button>
-      <safe-button
-        [isIcon]="true"
-        icon="view_list"
-        [disabled]="displayMode === 'grid'"
-        (click)="displayMode = 'grid'"
-        [matTooltip]="'components.widget.summaryCard.viewAsGrid' | translate"
-      ></safe-button>
-    </div>
-    <safe-button
-      *ngIf="export && displayMode === 'cards'"
-      [isIcon]="true"
-      icon="get_app"
-      class="text-neutral-700"
-      (click)="pdf.saveAs(exportName)"
-    ></safe-button>
-  </kendo-tilelayout-item-header> -->
+  <kendo-tilelayout-item-header *ngIf="header" class="widget-header">
+  </kendo-tilelayout-item-header>
   <!-- Cards display mode -->
   <ng-container *ngIf="displayMode === 'cards'">
     <!-- Search -->
@@ -45,10 +18,11 @@
         <div
           class="summary-card-container k-widget k-tile-layout k-grid-flow-col"
           style.grid-template-columns="{{ 'repeat(' + colsNumber + ', 1fr)' }}"
-        >
+        > 
           <safe-summary-card-item
             *ngFor="let card of cards; let i = index"
             class="k-tilelayout-item k-card"
+            [ngClass]="customClasses"
             [style.order]="i"
             style.grid-column-end="{{
               'span ' +
