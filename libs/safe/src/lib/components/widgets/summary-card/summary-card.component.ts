@@ -120,6 +120,8 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    * @param queryBuilder Query builder service
    * @param gridLayoutService Shared grid layout service
    * @param aggregationService Aggregation service
+   * @param renderer Renderer
+   * @param elementRef ElementRef
    */
   constructor(
     private apollo: Apollo,
@@ -160,10 +162,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
       this.customClasses = this.settings.card?.editClasses;
     }
 
-    if (
-      this.settings.card?.editStyle && 
-      this.settings.card?.editStyle !== ''
-    ) {
+    if (this.settings.card?.editStyle && this.settings.card?.editStyle !== '') {
       const styleElement = this.renderer.createElement('style');
       const styleText = this.renderer.createText(this.settings.card.editStyle);
       this.renderer.appendChild(styleElement, styleText);
