@@ -648,7 +648,6 @@ export class Layer implements LayerModel {
                     htmlTemplate.textContent = cluster
                       .getChildCount()
                       .toString();
-                    htmlTemplate.classList.add('text-lg');
                     return createCustomDivIcon(
                       {
                         icon: clusterSymbol.style,
