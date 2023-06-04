@@ -496,7 +496,8 @@ export class MapComponent
       // so we should check if the layer is not already added
       if (!this.map.hasLayer(featureLayer)) this.map.addLayer(featureLayer);
 
-      const children = layer.getChildren();
+      const children = await layer.getChildren();
+
       if (layer.type === 'GroupLayer') {
         // It is a group, it should not have any layer but it should be able to check/uncheck its children
         return {

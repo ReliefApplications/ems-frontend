@@ -26,7 +26,7 @@ import { haversineDistance } from './utils/haversine';
 import { SafeIconDisplayPipe } from '../../../pipes/icon-display/icon-display.pipe';
 import { GradientPipe } from '../../../pipes/gradient/gradient.pipe';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
-import { firstValueFrom } from 'rxjs';
+import { BehaviorSubject, filter, firstValueFrom } from 'rxjs';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -164,6 +164,8 @@ export class Layer implements LayerModel {
 
   public _sublayers: Layer[] = [];
 
+  public sublayersLoaded = new BehaviorSubject(false);
+
   // Layer datasource
   public datasource?: LayerDatasource;
   public geojson: GeoJSON | null = null;
@@ -226,7 +228,8 @@ export class Layer implements LayerModel {
   }
 
   /** @returns the children of the current layer */
-  public getChildren() {
+  public async getChildren() {
+    await firstValueFrom(this.sublayersLoaded.pipe(filter((v) => v)));
     return this._sublayers;
   }
 
@@ -288,13 +291,14 @@ export class Layer implements LayerModel {
    *
    * @param options Layer options
    */
-  public setConfig(options: any) {
+  public async setConfig(options: any) {
     this.id = get(options, 'id', '');
     this.name = get(options, 'name', '');
     this.type = get<LayerType>(options, 'type', 'FeatureLayer');
     this.opacity = get(options, 'opacity', 1);
 
-    if (options.type !== 'group') {
+    if (options.type !== 'GroupLayer') {
+      this.sublayersLoaded.next(true);
       // Not group layer, add other properties
       this.datasource = get(options, 'datasource', null);
       this.geojson = get(options, 'geojson', EMPTY_FEATURE_COLLECTION);
@@ -307,9 +311,15 @@ export class Layer implements LayerModel {
       this.setFields();
     } else if (options.sublayers) {
       // Group layer, add sublayers
-      this._sublayers = options.sublayers?.map((child: any) => ({
-        object: new Layer(child, this.popupService, this.layerService),
-      }));
+      this._sublayers = options.sublayers?.length
+        ? await this.layerService.createLayersFromIds(
+            options.sublayers,
+            this.popupService,
+            this.layerService
+          )
+        : [];
+
+      this.sublayersLoaded.next(true);
     }
   }
 
@@ -495,18 +505,12 @@ export class Layer implements LayerModel {
 
     switch (this.type) {
       case 'GroupLayer':
-        const layersPromises = this.sublayers.map((id) =>
-          firstValueFrom(this.layerService.getLayerById(id))
-        );
+        const sublayers = await this.getChildren();
 
-        this._sublayers = (await Promise.all(layersPromises)).map(
-          (l) => new Layer(l, this.popupService, this.layerService)
-        );
-
-        for (const child of this._sublayers) {
+        for (const child of sublayers) {
           child.layer = await child.getLayer();
         }
-        const layers = this._sublayers
+        const layers = sublayers
           .map((child) => child.layer)
           .filter((layer) => layer !== undefined) as L.Layer[];
         const layer = L.layerGroup(layers);
