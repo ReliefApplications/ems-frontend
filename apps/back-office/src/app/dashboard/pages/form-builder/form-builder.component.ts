@@ -23,6 +23,7 @@ import {
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
+import { isEqual } from 'lodash';
 
 /**
  * Form builder page
@@ -64,6 +65,7 @@ export class FormBuilderComponent implements OnInit {
   public formActive = false;
   public hasChanges = false;
   private isStep = false;
+  private referenceDataChoicesLoaded = false;
 
   /**
    * Form builder page
@@ -150,7 +152,11 @@ export class FormBuilderComponent implements OnInit {
                 ? storedStructure
                 : this.form.structure;
               if (this.structure !== this.form.structure) {
-                this.hasChanges = true;
+                this.checkStructureChoicesLoaded(this.structure);
+                this.hasChanges = !isEqual(
+                  JSON.parse(this.structure),
+                  JSON.parse(this.form?.structure ?? '')
+                );
                 this.authService.canLogout.next(!this.hasChanges);
               }
             } else {
@@ -443,8 +449,48 @@ export class FormBuilderComponent implements OnInit {
    * @param event update event
    */
   formStructureChange(event: any): void {
-    this.hasChanges = event !== this.form?.structure;
+    if (!this.referenceDataChoicesLoaded) {
+      // If reference data loaded after form init and it hasn't been confirmed that the question choices are available
+      this.checkStructureChoicesLoaded(event);
+    }
+    this.hasChanges = !isEqual(
+      JSON.parse(event),
+      JSON.parse(this.form?.structure ?? '')
+    );
     localStorage.setItem(`form:${this.id}`, event);
     this.authService.canLogout.next(!this.hasChanges);
+  }
+
+  /**
+   * Checks that the structure saved in the form is complete and
+   * has all the reference data information including question choices
+   *
+   * @param updatedStructure new form structure
+   */
+  private checkStructureChoicesLoaded(updatedStructure: any): void {
+    this.referenceDataChoicesLoaded = true;
+    let updateStructure = false;
+    const structureObj = JSON.parse(this.form?.structure ?? '');
+    const updatedStructureObj = JSON.parse(updatedStructure);
+    structureObj.pages.forEach((page: any, i: number) => {
+      page.elements.forEach((element: any, j: number) => {
+        if (
+          element.referenceData &&
+          element.referenceDataDisplayField &&
+          !element.choices
+        ) {
+          structureObj.pages[i].elements[j] =
+            updatedStructureObj.pages[i].elements[j];
+          updateStructure = true;
+        }
+      });
+    });
+    if (updateStructure) {
+      this.form = { ...this.form, structure: JSON.stringify(structureObj) };
+      this.structure = JSON.stringify({
+        ...structureObj,
+        ...updatedStructureObj,
+      });
+    }
   }
 }
