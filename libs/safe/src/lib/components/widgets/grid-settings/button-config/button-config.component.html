@@ -3,12 +3,11 @@
     <div class="flex justify-between">
       <mat-slide-toggle formControlName="show">{{
         'components.widget.settings.grid.buttons.enable' | translate
-      }}</mat-slide-toggle>
+        }}</mat-slide-toggle>
       <safe-button
         icon="remove_circle_outline"
         variant="danger"
-        (click)="emitDeleteButton()"
-      >
+        (click)="emitDeleteButton()">
         {{ 'common.delete' | translate }}
       </safe-button>
     </div>
@@ -22,20 +21,20 @@
       <!-- Select all records of query -->
       <mat-checkbox formControlName="selectAll">{{
         'components.widget.settings.grid.buttons.callback.selectAllRecords'
-          | translate
-      }}</mat-checkbox>
+        | translate
+        }}</mat-checkbox>
 
       <!-- Select only visible records -->
       <mat-checkbox formControlName="selectPage">{{
         'components.widget.settings.grid.buttons.callback.selectAllRecordsActivePage'
-          | translate
-      }}</mat-checkbox>
+        | translate
+        }}</mat-checkbox>
 
       <!-- Prefill form with selected records -->
       <ng-container *ngIf="relatedForms.length > 0">
         <mat-checkbox formControlName="prefillForm">{{
           'components.widget.settings.grid.buttons.callback.prefill' | translate
-        }}</mat-checkbox>
+          }}</mat-checkbox>
         <div *ngIf="formGroup.value.prefillForm" class="sub-parameters">
           <mat-form-field appearance="outline">
             <mat-label>{{ 'models.form.template' | translate }}</mat-label>
@@ -54,23 +53,22 @@
         <!-- Go to next step -->
         <mat-checkbox formControlName="goToNextStep">{{
           'components.widget.settings.grid.buttons.callback.workflow.next'
-            | translate
-        }}</mat-checkbox>
+          | translate
+          }}</mat-checkbox>
         <!-- Close workflow -->
         <mat-checkbox formControlName="closeWorkflow">{{
           'components.widget.settings.grid.buttons.callback.workflow.close'
-            | translate
-        }}</mat-checkbox>
+          | translate
+          }}</mat-checkbox>
         <!-- Confirm action -->
         <mat-form-field
           appearance="outline"
           class="sub-parameters"
-          *ngIf="formGroup.value.closeWorkflow"
-        >
+          *ngIf="formGroup.value.closeWorkflow">
           <mat-label>{{
             'components.widget.settings.grid.buttons.callback.workflow.confirm'
-              | translate
-          }}</mat-label>
+            | translate
+            }}</mat-label>
           <input matInput formControlName="confirmationText" type="string" />
         </mat-form-field>
       </ng-container>
@@ -78,62 +76,55 @@
       <!-- Auto save edited records -->
       <mat-checkbox formControlName="autoSave">{{
         'components.widget.settings.grid.buttons.callback.save' | translate
-      }}</mat-checkbox>
+        }}</mat-checkbox>
 
       <!-- Auto edition of selected records -->
       <div class="flex flex-col">
         <mat-checkbox formControlName="modifySelectedRows">{{
           'components.widget.settings.grid.buttons.callback.modify' | translate
-        }}</mat-checkbox>
+          }}</mat-checkbox>
         <div
           *ngIf="formGroup.value.modifySelectedRows"
-          class="sub-parameters flex flex-col"
-        >
+          class="sub-parameters flex flex-col">
           <form
             [formGroup]="$any(modification)"
             *ngFor="let modification of modificationsArray.controls; index as i"
-            class="update-row"
-          >
+            class="update-row">
             <mat-form-field appearance="outline">
               <mat-label>{{
                 'components.widget.settings.grid.buttons.callback.modifyField'
-                  | translate
-              }}</mat-label>
+                | translate
+                }}</mat-label>
               <mat-select formControlName="field" [compareWith]="compareFields">
                 <mat-option>--</mat-option>
                 <mat-option
                   *ngFor="let field of scalarFields"
-                  [value]="field"
-                  >{{ field.name }}</mat-option
-                >
+                  [value]="field">{{ field.name }}</mat-option>
               </mat-select>
             </mat-form-field>
             <mat-form-field
               appearance="outline"
-              *ngIf="modification.value.field"
-            >
+              *ngIf="modification.value.field">
               <mat-label>{{
                 'components.widget.settings.grid.buttons.callback.modifyValue'
-                  | translate
-              }}</mat-label>
+                | translate
+                }}</mat-label>
               <ng-container
                 *ngIf="
                   ['Int', 'Float'].includes(modification.value.field.type.name)
-                "
-              >
+                ">
                 <input matInput formControlName="value" type="number" />
               </ng-container>
               <ng-container
-                *ngIf="modification.value.field.type.name === 'Boolean'"
-              >
+                *ngIf="modification.value.field.type.name === 'Boolean'">
                 <mat-select formControlName="value">
                   <mat-option>--</mat-option>
                   <mat-option [value]="true">{{
                     'common.true' | translate
-                  }}</mat-option>
+                    }}</mat-option>
                   <mat-option [value]="false">{{
                     'common.false' | translate
-                  }}</mat-option>
+                    }}</mat-option>
                 </mat-select>
               </ng-container>
               <ng-container
@@ -141,8 +132,7 @@
                   !['Int', 'Float'].includes(
                     modification.value.field.type.name
                   ) && modification.value.field.type.name !== 'Boolean'
-                "
-              >
+                ">
                 <input matInput formControlName="value" type="string" />
               </ng-container>
             </mat-form-field>
@@ -150,16 +140,14 @@
               [isIcon]="true"
               icon="remove_circle_outline"
               variant="danger"
-              (click)="onDeleteModification(i)"
-            >
+              (click)="onDeleteModification(i)">
             </safe-button>
           </form>
           <safe-button
             [isIcon]="true"
             icon="add_circle_outline"
             variant="primary"
-            (click)="onAddModification()"
-          >
+            (click)="onAddModification()">
           </safe-button>
         </div>
       </div>
@@ -168,8 +156,8 @@
       <ng-container *ngIf="relatedForms.length > 0">
         <mat-checkbox formControlName="attachToRecord">
           {{
-            'components.widget.settings.grid.buttons.callback.attach'
-              | translate
+          'components.widget.settings.grid.buttons.callback.attach'
+          | translate
           }}
           <safe-icon
             icon="info_outline"
@@ -180,8 +168,7 @@
               'components.widget.settings.grid.buttons.tooltip.attach'
                 | translate
             "
-            matTooltipPosition="right"
-          ></safe-icon>
+            matTooltipPosition="right"></safe-icon>
         </mat-checkbox>
       </ng-container>
       <div *ngIf="formGroup.value.attachToRecord" class="sub-parameters">
@@ -192,8 +179,7 @@
             <mat-option>--</mat-option>
             <mat-option
               *ngFor="let resource of relatedResources"
-              [value]="resource.id"
-            >
+              [value]="resource.id">
               {{ resource.name }}
             </mat-option>
           </mat-select>
@@ -205,8 +191,7 @@
             <mat-option>--</mat-option>
             <mat-option
               *ngFor="let form of targetResource.forms"
-              [value]="form.id"
-            >
+              [value]="form.id">
               {{ form.name }}
             </mat-option>
           </mat-select>
@@ -216,14 +201,13 @@
           <mat-form-field appearance="outline">
             <mat-label>{{
               'components.widget.settings.grid.buttons.callback.displayField'
-                | translate
-            }}</mat-label>
+              | translate
+              }}</mat-label>
             <mat-select formControlName="targetFormField">
               <mat-option>--</mat-option>
               <mat-option
                 *ngFor="let field of targetResource.fields"
-                [value]="field.name"
-              >
+                [value]="field.name">
                 {{ field.name }}
               </mat-option>
             </mat-select>
@@ -233,8 +217,7 @@
           <!-- Selection of fields to display for advanced selection -->
           <safe-query-builder
             [form]="$any(formGroup.controls.targetFormQuery)"
-            [canSelectDataSet]="false"
-          >
+            [canSelectDataSet]="false">
           </safe-query-builder>
         </ng-container>
       </div>
@@ -250,8 +233,7 @@
           [matTooltip]="
             'components.widget.settings.grid.buttons.tooltip.notify' | translate
           "
-          matTooltipPosition="right"
-        ></safe-icon>
+          matTooltipPosition="right"></safe-icon>
       </mat-checkbox>
       <div *ngIf="formGroup.value.notify" class="sub-parameters">
         <mat-form-field appearance="outline">
@@ -266,8 +248,8 @@
         <mat-form-field appearance="outline">
           <mat-label>{{
             'components.widget.settings.grid.buttons.callback.notify.message'
-              | translate
-          }}</mat-label>
+            | translate
+            }}</mat-label>
           <input matInput formControlName="notificationMessage" type="string" />
         </mat-form-field>
       </div>
@@ -284,8 +266,7 @@
             'components.widget.settings.grid.buttons.tooltip.publish'
               | translate
           "
-          matTooltipPosition="right"
-        ></safe-icon>
+          matTooltipPosition="right"></safe-icon>
       </mat-checkbox>
       <div *ngIf="formGroup.value.publish" class="sub-parameters">
         <mat-form-field appearance="outline">
@@ -302,19 +283,24 @@
       <!-- Send email -->
       <mat-checkbox formControlName="sendMail">{{
         'components.widget.settings.grid.buttons.callback.sendMail' | translate
-      }}</mat-checkbox>
+        }}</mat-checkbox>
       <div *ngIf="formGroup.value.sendMail" class="sub-parameters">
         <!-- Distribution list -->
         <mat-form-field appearance="outline">
           <mat-label>{{
             'components.emailBuilder.distribution' | translate
-          }}</mat-label>
+            }}</mat-label>
           <mat-select formControlName="distributionList">
             <mat-option
               *ngFor="let list of distributionLists"
-              [value]="list.id"
-            >
+              [value]="list.id">
               {{ list.name }}
+            </mat-option>
+            <!-- Email from a field in resource -->
+            <mat-option
+              *ngFor="let emailFromResource of emailFields"
+              [value]="emailFromResource.name">
+              {{ emailFromResource.name }}
             </mat-option>
           </mat-select>
           <safe-icon
@@ -326,28 +312,25 @@
             [matTooltip]="
               'components.widget.settings.grid.buttons.tooltip.mail.selectDistributionList'
                 | translate
-            "
-          ></safe-icon>
+            "></safe-icon>
           <safe-button
             matSuffix
             [isIcon]="true"
             icon="add_circle_outline"
             variant="primary"
             (click)="$event.stopPropagation(); addDistributionList()"
-            [matTooltip]="'components.distributionLists.edit.new' | translate"
-          >
+            [matTooltip]="'components.distributionLists.edit.new' | translate">
           </safe-button>
         </mat-form-field>
         <!-- Templates -->
         <mat-form-field appearance="outline">
           <mat-label>{{
             'components.templates.available' | translate
-          }}</mat-label>
+            }}</mat-label>
           <mat-select class="select" formControlName="templates" multiple>
             <mat-option
               *ngFor="let template of mailTemplates"
-              [value]="template.id"
-            >
+              [value]="template.id">
               {{ template.name }}
             </mat-option>
           </mat-select>
@@ -360,37 +343,32 @@
             [matTooltip]="
               'components.widget.settings.grid.buttons.tooltip.mail.selectTemplates'
                 | translate
-            "
-          ></safe-icon>
+            "></safe-icon>
           <safe-button
             matSuffix
             [isIcon]="true"
             icon="add_circle_outline"
             variant="primary"
             (click)="$event.stopPropagation(); addEmailTemplate()"
-            [matTooltip]="'components.templates.edit.new' | translate"
-          >
+            [matTooltip]="'components.templates.edit.new' | translate">
           </safe-button>
           <mat-error
             *ngIf="
               formGroup.get('sendMail')?.value &&
               !formGroup.get('templates')?.valid
-            "
-            >{{ 'components.templates.errors.empty' | translate }}</mat-error
-          >
+            ">{{ 'components.templates.errors.empty' | translate }}</mat-error>
         </mat-form-field>
         <!-- Export dataset -->
         <mat-checkbox formControlName="export">{{
           'components.widget.settings.grid.buttons.callback.export' | translate
-        }}</mat-checkbox>
+          }}</mat-checkbox>
         <!-- Select fields to see in dataset -->
         <h2>{{ 'components.emailBuilder.fields' | translate }}</h2>
         <safe-tab-fields
           *ngIf="fields.length > 0"
           [form]="$any(formGroup.controls.bodyFields)"
           [fields]="fields"
-          [showLimit]="true"
-        ></safe-tab-fields>
+          [showLimit]="true"></safe-tab-fields>
       </div>
     </ng-container>
   </div>

@@ -19,6 +19,8 @@ import {
   GET_FORM_BY_ID,
   GetUserRolesPermissionsQueryResponse,
   GET_USER_ROLES_PERMISSIONS,
+  GET_RESOURCE_BY_ID,
+  GetResourceByIdQueryResponse,
 } from './graphql/queries';
 import {
   Component,
@@ -246,6 +248,34 @@ export class SafeGridWidgetComponent implements OnInit {
   }
 
   /**
+   * Find the list of emails from the selected field, if any
+   *
+   * @param fieldName the field name
+   * @returns the email list or an empty list
+   */
+  public async findEmailsFromSelectedField(
+    fieldName: string
+  ): Promise<string[]> {
+    const res = await firstValueFrom(
+      this.apollo.query<GetResourceByIdQueryResponse>({
+        query: GET_RESOURCE_BY_ID,
+        variables: {
+          id: this.settings.resource,
+        },
+      })
+    );
+
+    // get all the emails from the selected field
+    const emails = res.data?.resource.records?.edges?.flatMap((edge) => {
+      if (fieldName in edge.node.data) return [edge.node.data[fieldName]];
+      else return [];
+    });
+
+    // remove duplicates
+    return [...new Set(emails)];
+  }
+
+  /**
    * Executes sequentially actions enabled by settings for the floating button
    *
    * @param options action options.
@@ -348,9 +378,15 @@ export class SafeGridWidgetComponent implements OnInit {
       } else {
         // find recipients
         const recipients =
+          // find distribution list if any
           this.applicationService.distributionLists.find(
             (x) => x.id === options.distributionList
-          )?.emails || [];
+          )?.emails ||
+          // if no distribution list, find selected field
+          (await this.findEmailsFromSelectedField(options.distributionList)) ||
+          // if no distribution list and no selected field, return empty array
+          [];
+
         if (recipients.length === 0) {
           // no recipient found, skip
           this.snackbarService.openSnackBar(

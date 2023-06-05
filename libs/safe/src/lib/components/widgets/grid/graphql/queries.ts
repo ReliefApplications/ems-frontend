@@ -231,3 +231,32 @@ export const GET_USER_ROLES_PERMISSIONS = gql`
 export interface GetUserRolesPermissionsQueryResponse {
   resource: Resource;
 }
+
+// === GET RESOURCE BY ID ===
+/** Graphql request for getting a resource by its id */
+export const GET_RESOURCE_BY_ID = gql`
+  query GetResourceById($id: ID!) {
+    resource(id: $id) {
+      id
+      name
+      forms {
+        id
+        name
+        fields
+      }
+      records {
+        totalCount
+        edges {
+          node {
+            data
+          }
+        }
+      }
+    }
+  }
+`;
+
+/** Model for GetResourceByIdQueryResponse object */
+export interface GetResourceByIdQueryResponse {
+  resource: Resource;
+}

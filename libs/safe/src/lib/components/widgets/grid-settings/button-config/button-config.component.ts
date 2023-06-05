@@ -45,11 +45,14 @@ export class ButtonConfigComponent
 
   @Input() distributionLists: DistributionList[] = [];
   @Input() templates: Template[] = [];
-  // Indicate is the page is a single dashboard.
+  /** Indicate is the page is a single dashboard. */
   public isDashboard = false;
 
-  // Indicate if the next step is a Form and so we could potentially pass some data to it.
+  /** Indicate if the next step is a Form and so we could potentially pass some data to it. */
   public canPassData = false;
+
+  /** Stores the list of fields which are of type email */
+  public emailFields!: any[];
 
   /** @returns The list of fields which are of type scalar and not disabled */
   get scalarFields(): any[] {
@@ -309,6 +312,11 @@ export class ButtonConfigComponent
           this.formGroup?.get('selectAll')?.updateValueAndValidity();
         }
       });
+
+    // this is a BAD was to check if a field is an email field
+    this.emailFields = this.fields.filter((x) => {
+      return x.type.kind === 'SCALAR' && x.name.toLowerCase().includes('email');
+    });
   }
 
   /** Set list of resources user can attach a record to */
