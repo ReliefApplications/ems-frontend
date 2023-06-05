@@ -324,9 +324,19 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     path: string,
     attribute: string
   ): any {
+    // find field with the path name
+    const field = this.fields.find((x) => x.name === path);
+    const fieldMeta = field?.meta ?? {};
+    if (!fieldMeta) return '';
+
+    const graphQLName = Object.keys(fieldMeta).find(
+      (x) => fieldMeta[x].name === attribute
+    );
+    if (!graphQLName) return '';
+
     const values = get(item, path);
     if (Array.isArray(values)) {
-      return values.map((x) => x[attribute]).join(', ');
+      return values.map((x) => x[graphQLName]).join(', ');
     }
   }
 
