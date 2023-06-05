@@ -250,7 +250,9 @@ export class SafeReferenceDataService {
           referenceData.apiConfiguration?.name +
           referenceData.query;
         const data = await this.apiProxy.promisedRequestWithHeaders(url);
-        items = referenceData.path ? get(data, referenceData.path) : data;
+        items = referenceData.path
+          ? jsonpath.query(data, referenceData.path)
+          : data;
         break;
       }
       case referenceDataType.static: {
