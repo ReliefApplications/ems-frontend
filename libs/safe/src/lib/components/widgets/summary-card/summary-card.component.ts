@@ -89,7 +89,8 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
 
   @ViewChild('summaryCardGrid') summaryCardGrid!: ElementRef<HTMLDivElement>;
   @ViewChild('pdf') pdf!: any;
-  @ViewChildren('summaryCardItem') summaryCardItem!: QueryList<SummaryCardItemComponent>;
+  @ViewChildren('summaryCardItem')
+  summaryCardItem!: QueryList<SummaryCardItemComponent>;
 
   /**
    * Get the summary card pdf name
@@ -163,28 +164,35 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
       this.settings.card?.editClasses &&
       this.settings.card?.editClasses !== ''
     ) {
-        this.summaryCardItem.changes.subscribe((items: QueryList<SummaryCardItemComponent>) => {
+      this.summaryCardItem.changes.subscribe(
+        (items: QueryList<SummaryCardItemComponent>) => {
           items.forEach((component: SummaryCardItemComponent) => {
             const el = component.getElement();
-            if(this.settings.card?.editClasses){
-              this.settings.card?.editClasses.split(" ").forEach((cls : string) => {
-                this.renderer.addClass(el, `${cls.toString()}`);
-              })
+            if (this.settings.card?.editClasses) {
+              this.settings.card?.editClasses
+                .split(' ')
+                .forEach((cls: string) => {
+                  this.renderer.addClass(el, `${cls.toString()}`);
+                });
             }
           });
-        })
+        }
+      );
     }
 
     if (this.settings.card?.editStyle && this.settings.card?.editStyle !== '') {
-      const cssBlocks = this.settings.card.editStyle.match(/\.card-item[^{]+{[^}]+}/g);
+      const cssBlocks = this.settings.card.editStyle.match(
+        /\.card-item[^{]+{[^}]+}/g
+      );
       if (cssBlocks) {
         cssBlocks.forEach((block) => {
           const styleElement = this.renderer.createElement('style');
-          const styleText = this.renderer.createText(
-           `${block}`
-          );
+          const styleText = this.renderer.createText(`${block}`);
           this.renderer.appendChild(styleElement, styleText);
-          this.renderer.appendChild(this.elementRef.nativeElement, styleElement);
+          this.renderer.appendChild(
+            this.elementRef.nativeElement,
+            styleElement
+          );
         });
       }
     }

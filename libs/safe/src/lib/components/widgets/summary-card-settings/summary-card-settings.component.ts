@@ -123,7 +123,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   constructor(
     private apollo: Apollo,
     private aggregationService: SafeAggregationService,
-    private translateService: TranslateService,
+    private translateService: TranslateService
   ) {}
 
   /**
@@ -156,12 +156,14 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
       this.change.emit(this.tileForm);
     });
 
-    if(this.tileForm?.get('card.editStyle')?.value === ''){
-      this.tileForm?.get('card.editStyle')?.setValue(
-        `/*${this.translateService.instant(
-          'components.widget.settings.summaryCard.card.style.tooltip.setScss'
-        )}*/\n\n${DEFAULT_STYLE}`
-      );
+    if (this.tileForm?.get('card.editStyle')?.value === '') {
+      this.tileForm
+        ?.get('card.editStyle')
+        ?.setValue(
+          `/*${this.translateService.instant(
+            'components.widget.settings.summaryCard.card.style.tooltip.setScss'
+          )}*/\n\n${DEFAULT_STYLE}`
+        );
     }
   }
 
