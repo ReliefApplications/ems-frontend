@@ -1,3 +1,4 @@
+<!-- Creation button -->
 <div class="self-end">
   <safe-button
     variant="primary"
@@ -9,7 +10,9 @@
   >
 </div>
 <div>
+  <!-- Table container -->
   <div class="overflow-x-hidden shadow-2lg">
+    <!-- Table scroll container -->
     <div class="overflow-x-auto">
       <table mat-table [dataSource]="fields">
         <ng-container matColumnDef="name">
@@ -56,6 +59,7 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
       </table>
     </div>
+    <!-- Empty indicator -->
     <safe-empty
       class="m-auto py-6 px-0 bg-white"
       *ngIf="fields.length === 0"

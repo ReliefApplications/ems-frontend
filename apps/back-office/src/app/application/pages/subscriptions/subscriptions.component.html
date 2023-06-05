@@ -1,5 +1,9 @@
+<!-- Subscriptions page -->
+<!-- Spinner if loading -->
 <mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<!-- Page if not loading -->
 <ng-container *ngIf="!loading">
+  <!-- Button to add a subscription -->
   <div class="mb-4 flex flex-row justify-end">
     <safe-button
       icon="add"
