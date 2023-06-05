@@ -117,7 +117,7 @@ export const init = (
           referenceDataService
             .loadReferenceData(foreignQuestion.referenceData)
             .then((referenceData) =>
-              choicesCallback(referenceData.fields || [])
+              choicesCallback((referenceData.fields || []).map((x) => x.name))
             );
         }
       }
@@ -163,7 +163,9 @@ export const init = (
       if (obj?.referenceData) {
         referenceDataService
           .loadReferenceData(obj.referenceData)
-          .then((referenceData) => choicesCallback(referenceData.fields || []));
+          .then((referenceData) =>
+            choicesCallback((referenceData.fields || []).map((x) => x.name))
+          );
       }
     },
   });

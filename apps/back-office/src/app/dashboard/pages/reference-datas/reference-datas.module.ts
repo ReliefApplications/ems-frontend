@@ -25,12 +25,17 @@ import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/materia
 import { TranslateModule } from '@ngx-translate/core';
 import { AddReferenceDataComponent } from './add-reference-data/add-reference-data.component';
 import { AbilityModule } from '@casl/angular';
+import { FilterComponent } from './components/filter/filter.component';
 
 /**
  * List of reference data page module
  */
 @NgModule({
-  declarations: [ReferenceDatasComponent, AddReferenceDataComponent],
+  declarations: [
+    ReferenceDatasComponent,
+    AddReferenceDataComponent,
+    FilterComponent,
+  ],
   imports: [
     CommonModule,
     MatMenuModule,

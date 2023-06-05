@@ -15,6 +15,7 @@ import { SafeGraphQLSelectModule } from '../../graphql-select/graphql-select.mod
 import { SafeButtonModule } from '../../ui/button/button.module';
 import { MatLegacySelectModule } from '@angular/material/legacy-select';
 import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
+import { SafeEditorModule } from '../editor/editor.module';
 
 /**
  * Module for the safeEditorSetting component
@@ -37,6 +38,7 @@ import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
     SafeButtonModule,
     MatLegacySelectModule,
     SafeCoreGridModule,
+    SafeEditorModule,
   ],
   exports: [SafeEditorSettingsComponent],
   providers: [

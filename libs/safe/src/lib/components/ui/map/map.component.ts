@@ -836,8 +836,6 @@ export class MapComponent
    * Set the webmap.
    *
    * @param webmap String containing the id (name) of the webmap
-   * @param options options for the web map
-   * @param options.loadBasemap set to true to confirm basemap loading
    * @returns loaded basemaps and layers as Promise
    */
   public setWebmap(webmap: any) {

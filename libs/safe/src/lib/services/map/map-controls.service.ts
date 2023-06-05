@@ -234,7 +234,6 @@ export class SafeMapControlsService {
    * Control is automated to listen to map layers changes
    *
    * @param map leaflet map
-   * @param layers leaflet layers
    * @param addControl flag that indicates if should add or remove the control
    */
   public getLegendControl(map: L.Map, addControl: boolean): void {

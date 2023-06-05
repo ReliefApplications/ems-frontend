@@ -51,7 +51,7 @@
           "
         >
         </safe-button>
-        <!-- Default position -->
+        <!-- Settings -->
         <safe-button
           [isIcon]="true"
           icon="settings"
@@ -62,7 +62,27 @@
         >
         </safe-button>
       </div>
-
+      <!-- Quick filter -->
+      <div
+        class="flex flex-row overflow-auto justify-center gap-4 items-center"
+        [ngClass]="{
+          'text-side': position === filterPosition.LEFT,
+          'text-side rotate-180': position === filterPosition.RIGHT
+        }"
+      >
+        <ng-container
+          *ngFor="let quickFilter of quickFilters"
+          class="flex flex-auto overflow-auto justify-center gap-4"
+        >
+          <div
+            class="z-20 whitespace-nowrap"
+            [matTooltip]="quickFilter.tooltip ? quickFilter.tooltip : ''"
+            matTooltipClass="multiline-tooltip"
+          >
+            {{ quickFilter.label }}
+          </div>
+        </ng-container>
+      </div>
       <!-- Position -->
       <div
         [ngClass]="{
@@ -105,7 +125,7 @@
           position === filterPosition.RIGHT,
         'w-full':
           position === filterPosition.TOP || position === filterPosition.BOTTOM,
-        'h-full':
+        'h-full max-w-xs':
           position === filterPosition.LEFT || position === filterPosition.RIGHT,
         'flex-col':
           position === filterPosition.LEFT || position === filterPosition.RIGHT,
@@ -114,9 +134,15 @@
       }"
       class="dashboard-filter-content bg-white p-3"
     >
+      <safe-empty
+        class="m-auto py-6 px-0 bg-white"
+        *ngIf="empty"
+        [title]="'components.application.dashboard.filter.empty' | translate"
+      ></safe-empty>
       <div
         #dashboardSurveyCreatorContainer
         class="overflow-scroll"
+        [ngClass]="{ 'hidden': empty }"
       ></div>
       <!-- <form
         [ngClass]="{
