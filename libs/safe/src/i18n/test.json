@@ -1518,6 +1518,9 @@
 								"datasource": "******"
 							}
 						},
+						"preview": {
+							"title": "******"
+						},
 						"textEditor": {
 							"alert": "****** {{data.variable}} ****** {{calc.round( value ; precision )}}",
 							"title": "******"
@@ -1707,6 +1710,18 @@
 			"stick": "******",
 			"unlock": "******",
 			"unstick": "******"
+		},
+		"pager": {
+			"firstPage": "******",
+			"items": "******",
+			"itemsPerPage": "******",
+			"label": "******",
+			"lastPage": "******",
+			"nextPage": "******",
+			"of": "******",
+			"page": "******",
+			"pageNumberInputTitle": "******",
+			"previousPage": "******"
 		},
 		"tilelayout": {
 			"component": {
@@ -1984,6 +1999,10 @@
 				},
 				"selectApplication": "****** {{page}} ****** {{question}} ******",
 				"snakecase": "****** {{name}} ****** {{page}} ******"
+			},
+			"move": {
+				"down": "******",
+				"up": "******"
 			},
 			"questionsCategories": {
 				"core": "******"
