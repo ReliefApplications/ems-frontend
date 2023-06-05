@@ -484,8 +484,8 @@ export class MapComponent
       layer: Layer,
       leafletLayer?: L.Layer
     ): Promise<OverlayLayerTree> => {
-      // Add to the layers array
-      this.layers.push(layer);
+      // Add to the layers array if not already added
+      if (!this.layers.find((l) => l.id === layer.id)) this.layers.push(layer);
 
       // Gets the leaflet layer. Either the one passed as parameter
       // (from parent) or the one created by the layer itself (if no parent)
@@ -521,6 +521,7 @@ export class MapComponent
         };
       }
     };
+
     return new Promise<{ layers: L.Control.Layers.TreeObject[] }>((resolve) => {
       this.mapLayersService
         .createLayersFromIds(
@@ -534,7 +535,9 @@ export class MapComponent
           layers.forEach((layer) => {
             layersTree.push(parseTreeNode(layer));
           });
-          resolve({ layers: layersTree });
+          Promise.all(layersTree).then((layersTree) => {
+            resolve({ layers: layersTree });
+          });
         });
     });
   }
