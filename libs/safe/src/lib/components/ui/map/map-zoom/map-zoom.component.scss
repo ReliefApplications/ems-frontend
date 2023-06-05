@@ -1,0 +1,53 @@
+
+
+input[type=range][orient=vertical]
+{
+    writing-mode: bt-lr !important; /* IE */
+    -webkit-appearance: slider-vertical !important; /* Chromium */
+}
+
+/** Chrome*/
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+  input[type='range'] {
+    overflow: hidden;
+    accent-color: theme('colors.primary.500');
+  }
+
+  input[type=range]::-webkit-slider-runnable-track {
+    background-color: #CCCCCC;
+    border: 0.2px solid #CCCCCC;
+  }
+
+  input[type='range']::-webkit-slider-thumb {
+    background: theme('colors.primary.500');
+    box-shadow: -10px 80px 0 80px theme('colors.primary.500');
+  }
+}
+
+/** Firefox*/
+input[type="range"]::-moz-range-progress {
+  background-color: theme('colors.primary.500');
+  border: 0.2px solid theme('colors.primary.500');
+}
+input[type="range"]::-moz-range-track {
+  background-color: #CCCCCC;
+  border: 0.2px solid #CCCCCC;
+}
+input[type=range]::-moz-range-thumb {
+  background: theme('colors.primary.500');
+  border: 0.2px solid theme('colors.primary.500');
+}
+
+/* Internet explorer*/
+input[type="range"]::-ms-fill-lower {
+  background-color: theme('colors.primary.500');
+  border: 0.2px solid theme('colors.primary.500');
+}
+input[type="range"]::-ms-fill-upper {
+  background-color: #CCCCCC;
+  border: 0.2px solid #CCCCCC;
+}
+input[type=range]::-ms-thumb {
+  background: theme('colors.primary.500');
+  border: 0.2px solid theme('colors.primary.500');
+}

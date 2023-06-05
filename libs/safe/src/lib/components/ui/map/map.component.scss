@@ -68,11 +68,21 @@
   align-items: baseline;
   gap: 4px;
 }
-  
+
 ::ng-deep .leaflet-layerstree-header {
   &:not(.leaflet-layerstree-nevershow) {
     display: flex;
   }
   align-items: baseline;
   gap: 4px;
+}
+
+::ng-deep .leaflet-verticalcenter {
+  position: absolute;
+  width: 100px !important;
+  z-index: 1000;
+  pointer-events: none;
+  top: 45%;
+  transform: translateY(-40%);
+  padding-top: 10px;
 }
