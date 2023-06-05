@@ -1,4 +1,5 @@
 <mat-nav-list class="border-b">
+  <!-- Container used to divide nav items into groups -->
   <ng-container *ngFor="let group of navGroups; let i = index" class="h-full">
     <div
       cdkDropList
@@ -7,6 +8,7 @@
       class="nav-items-list"
     >
       <!-- Classes determine nav-list height for application layout -->
+      <!-- loop on items of each nav groups -->
       <ng-container *ngFor="let item of group.navItems">
         <div cdkDrag [cdkDragDisabled]="!item.orderable">
           <mat-list-item class="nav-item">
