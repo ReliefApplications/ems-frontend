@@ -1529,7 +1529,10 @@
 						"style": {
 							"editClasses": "@TODO",
 							"editScss": "@TODO",
-							"editStyle": "@TODO"
+							"editStyle": "@TODO",
+							"tooltip": {
+								"setScss": "@TODO"
+							}
 						},
 						"textEditor": {
 							"alert": "Vous pouvez ajouter des variables ex: {{data.variable}} et faire des calculs ex: {{calc.round( value ; precision )}}",

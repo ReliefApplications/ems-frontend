@@ -7,6 +7,8 @@ import {
   OnInit,
   ViewChild,
   Renderer2,
+  ViewChildren,
+  QueryList,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
@@ -32,6 +34,7 @@ import { Layout } from '../../../models/layout.model';
 import { PageChangeEvent } from '@progress/kendo-angular-grid';
 import { FormControl } from '@angular/forms';
 import { clone, isNaN } from 'lodash';
+import { SummaryCardItemComponent } from './summary-card-item/summary-card-item.component';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -86,6 +89,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
 
   @ViewChild('summaryCardGrid') summaryCardGrid!: ElementRef<HTMLDivElement>;
   @ViewChild('pdf') pdf!: any;
+  @ViewChildren('summaryCardItem') summaryCardItem!: QueryList<SummaryCardItemComponent>;
 
   /**
    * Get the summary card pdf name
@@ -159,14 +163,30 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
       this.settings.card?.editClasses &&
       this.settings.card?.editClasses !== ''
     ) {
-      this.customClasses = this.settings.card?.editClasses;
+        this.summaryCardItem.changes.subscribe((items: QueryList<SummaryCardItemComponent>) => {
+          items.forEach((component: SummaryCardItemComponent) => {
+            const el = component.getElement();
+            if(this.settings.card?.editClasses){
+              this.settings.card?.editClasses.split(" ").forEach((cls : string) => {
+                this.renderer.addClass(el, `${cls.toString()}`);
+              })
+            }
+          });
+        })
     }
 
     if (this.settings.card?.editStyle && this.settings.card?.editStyle !== '') {
-      const styleElement = this.renderer.createElement('style');
-      const styleText = this.renderer.createText(this.settings.card.editStyle);
-      this.renderer.appendChild(styleElement, styleText);
-      this.renderer.appendChild(this.elementRef.nativeElement, styleElement);
+      const cssBlocks = this.settings.card.editStyle.match(/\.card-item[^{]+{[^}]+}/g);
+      if (cssBlocks) {
+        cssBlocks.forEach((block) => {
+          const styleElement = this.renderer.createElement('style');
+          const styleText = this.renderer.createText(
+           `${block}`
+          );
+          this.renderer.appendChild(styleElement, styleText);
+          this.renderer.appendChild(this.elementRef.nativeElement, styleElement);
+        });
+      }
     }
   }
 

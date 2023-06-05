@@ -4,23 +4,6 @@
     *ngIf="headerTemplate"
     [ngTemplateOutlet]="headerTemplate"
   ></ng-container>
-  <!-- Default Header -->
-  <div class="widget-header k-card-header" *ngIf="!headerTemplate">
-    <!-- Title -->
-    <span class="widget-title" [title]="card.title">{{ card.title }}</span>
-    <!-- Actions -->
-    <div class="floating-button">
-      <!-- Data source button -->
-      <safe-button
-        variant="primary"
-        icon="open_in_new"
-        (click)="openDataSource()"
-        *ngIf="card.showDataSourceLink"
-      >
-        {{ 'components.widget.summaryCard.dataSource' | translate }}
-      </safe-button>
-    </div>
-  </div>
   <!-- HTML content -->
   <safe-summary-card-item-content
     *ngIf="

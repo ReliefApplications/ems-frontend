@@ -1520,8 +1520,11 @@
 						},
 						"style": {
 							"editClasses": "Edit Classes",
-							"editScss": "Edit SCSS",
-							"editStyle": "Edit Style"
+							"editScss": "Edit CSS",
+							"editStyle": "Edit Style",
+							"tooltip": {
+								"setScss": "You can set styles to each card by filing the class below"
+							}
 						},
 						"textEditor": {
 							"alert": "You can add variables e.g: {{data.variable}} and calculate e.g: {{calc.round( value ; precision )}}",

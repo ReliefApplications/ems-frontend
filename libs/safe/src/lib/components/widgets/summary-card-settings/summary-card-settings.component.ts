@@ -17,6 +17,10 @@ import { Aggregation } from '../../../models/aggregation.model';
 import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { MatLegacyTabChangeEvent } from '@angular/material/legacy-tabs';
+import { TranslateService } from '@ngx-translate/core';
+
+/** Default style */
+const DEFAULT_STYLE = `.card-item {\n  \n}`;
 
 /**
  * Create a card form
@@ -31,9 +35,6 @@ const createCardForm = (value?: any) => {
     layout: new FormControl<string>(get(value, 'layout', null)),
     aggregation: new FormControl<string>(get(value, 'aggregation', null)),
     html: new FormControl<string>(get(value, 'html', null)),
-    showDataSourceLink: new FormControl<boolean>(
-      get(value, 'showDataSourceLink', false)
-    ),
     useStyles: new FormControl<boolean>(get(value, 'useStyles', true)),
     wholeCardStyles: new FormControl<boolean>(
       get(value, 'wholeCardStyles', false)
@@ -98,7 +99,7 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
 
   public editorOptions = {
     theme: 'vs-dark',
-    language: 'scss',
+    language: 'css',
     fixedOverflowWidgets: true,
   };
 
@@ -117,10 +118,12 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    *
    * @param apollo Apollo service
    * @param aggregationService Shared aggregation service
+   * @param translateService Angular translate service
    */
   constructor(
     private apollo: Apollo,
-    private aggregationService: SafeAggregationService
+    private aggregationService: SafeAggregationService,
+    private translateService: TranslateService,
   ) {}
 
   /**
@@ -152,6 +155,14 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     this.tileForm?.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
     });
+
+    if(this.tileForm?.get('card.editStyle')?.value === ''){
+      this.tileForm?.get('card.editStyle')?.setValue(
+        `/*${this.translateService.instant(
+          'components.widget.settings.summaryCard.card.style.tooltip.setScss'
+        )}*/\n\n${DEFAULT_STYLE}`
+      );
+    }
   }
 
   /**

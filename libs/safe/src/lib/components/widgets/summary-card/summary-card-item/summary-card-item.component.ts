@@ -4,6 +4,7 @@ import {
   OnChanges,
   OnInit,
   TemplateRef,
+  ElementRef
 } from '@angular/core';
 import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
@@ -53,7 +54,8 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
     private dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private translate: TranslateService,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private elementRef: ElementRef
   ) {}
 
   ngOnInit(): void {
@@ -206,5 +208,9 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
         { error: true }
       );
     }
+  }
+
+  getElement(): HTMLElement {
+    return this.elementRef.nativeElement;
   }
 }

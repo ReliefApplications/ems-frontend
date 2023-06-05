@@ -1521,7 +1521,10 @@
 						"style": {
 							"editClasses": "******",
 							"editScss": "******",
-							"editStyle": "******"
+							"editStyle": "******",
+							"tooltip": {
+								"setScss": "******"
+							}
 						},
 						"textEditor": {
 							"alert": "****** {{data.variable}} ****** {{calc.round( value ; precision )}}",
