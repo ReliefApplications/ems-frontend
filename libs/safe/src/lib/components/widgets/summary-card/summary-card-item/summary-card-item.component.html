@@ -5,20 +5,22 @@
     [ngTemplateOutlet]="headerTemplate"
   ></ng-container>
   <!-- HTML content -->
-  <safe-summary-card-item-content
-    *ngIf="
-      card.html &&
-      card.wholeCardStyles !== null &&
-      card.wholeCardStyles !== undefined
-    "
-    [html]="card.html"
-    [fields]="fields"
-    [fieldsValue]="fieldsValue"
-    [styles]="card.useStyles ? styles : []"
-    [wholeCardStyles]="card.wholeCardStyles"
-    style="flex: 1"
-  >
-  </safe-summary-card-item-content>
+  <div class="flex-1">
+    <safe-summary-card-item-content
+      *ngIf="
+        card.html &&
+        card.wholeCardStyles !== null &&
+        card.wholeCardStyles !== undefined
+      "
+      [html]="card.html"
+      [fields]="fields"
+      [fieldsValue]="fieldsValue"
+      [styles]="card.useStyles ? styles : []"
+      [wholeCardStyles]="card.wholeCardStyles"
+      style="flex: 1"
+    >
+    </safe-summary-card-item-content>
+  </div>
 </ng-container>
 <!-- Loading indicator -->
 <kendo-skeleton
