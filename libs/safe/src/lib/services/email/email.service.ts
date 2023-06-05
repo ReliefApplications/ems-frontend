@@ -230,7 +230,7 @@ export class SafeEmailService {
           dialogRef.afterClosed().subscribe((value) => {
             if (value) {
               this.sendMail(
-                recipient,
+                value.to,
                 value.subject,
                 value.html,
                 filter,
