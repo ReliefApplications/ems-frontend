@@ -132,6 +132,11 @@ export class SafeAuthService {
         const redirectPath = localStorage.getItem('redirectPath');
         if (redirectPath) {
           this.router.navigateByUrl(redirectPath);
+        } else {
+          // Fallback to the location origin with a new url state with clean params
+          // Chrome does not delete state and session state params once the oauth is successful
+          // Which triggers a new token fetch with an invalid(deprecated) code
+          this.router.navigateByUrl(location.origin);
         }
         localStorage.removeItem('redirectPath');
       });
