@@ -137,12 +137,20 @@ export class ArcgisService {
           // This regex matches the content for => {{url}}/items/tileLayerId/blabla/blabla
           let id = layer.styleUrl.match(/(?<=items\/).*?(?=\/)/gi);
           let esriUrlContent: any = null;
-          // Get the styleUrl content to use the esriUrlContent.serviceItemId (if it exists) instead of the id
           const styleUrlContent: any = await this.httpGet(layer.styleUrl);
-          if (styleUrlContent.sources.esri?.url) {
-            esriUrlContent = await this.httpGet(
-              styleUrlContent.sources.esri.url
-            );
+          // @TODO WHO map contains buggy basemap within(id=b047fc319898445287111763e4fcf300) which breaks the whole
+          // layer flow, current one and the next ones
+          // this would solve that and only load the no buggy layers
+          try {
+            // Get the styleUrl content to use the esriUrlContent.serviceItemId (if it exists) instead of the id
+            if (styleUrlContent.sources.esri?.url) {
+              esriUrlContent = await this.httpGet(
+                styleUrlContent.sources.esri.url
+              );
+            }
+          } catch (error) {
+            console.log(error);
+            break;
           }
           id = esriUrlContent
             ? esriUrlContent?.serviceItemId
