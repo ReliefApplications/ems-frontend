@@ -34,3 +34,7 @@
     [appLayout]="true"
   ></safe-navbar>
 </ng-template>
+<safe-dashboard-filter
+  *ngIf="application?.contextualFilter"
+></safe-dashboard-filter>
+<!-- contextualFilter -->
