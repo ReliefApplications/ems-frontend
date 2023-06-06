@@ -316,16 +316,25 @@ export class DashboardFilterComponent
    */
   private onValueChange() {
     const surveyData = this.survey.data;
+    const displayValues = this.survey.getPlainData();
     this.contextService.filter.next(surveyData);
     this.ngZone.run(() => {
-      this.quickFilters = Object.keys(surveyData).map((question: string) =>
-        Array.isArray(surveyData[question]) && surveyData[question].length > 2
-          ? {
-              label: question + ` (${surveyData[question].length})`,
-              tooltip: surveyData[question].join('\n'),
-            }
-          : { label: surveyData[question] }
-      );
+      this.quickFilters = displayValues
+        .filter((question) => !!question.value)
+        .map((question: any) => {
+          let mappedQuestion;
+          if (question.value instanceof Array && question.value.length > 2) {
+            mappedQuestion = {
+              label: question.title + ` (${question.value.length})`,
+              tooltip: question.displayValue,
+            };
+          } else {
+            mappedQuestion = {
+              label: question.displayValue,
+            };
+          }
+          return mappedQuestion;
+        });
     });
   }
 }
