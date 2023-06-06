@@ -1,5 +1,5 @@
-<!-- We use a div so we can have a standar background when seeing the dashboard on fullscreen -->
-<div [ngClass]="{'p-8 h-full bg-white overflow-auto': isFullScreen}">
+<!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
+<div [ngClass]="{ 'p-8 h-full bg-white overflow-auto': isFullScreen }">
   <ng-container
     safeFullScreen
     [(isFullScreenMode)]="isFullScreen"
@@ -188,6 +188,12 @@
     (changeStep)="changeStep.emit($event)"
     (add)="onAdd($event)"
   ></safe-widget-grid>
-  <safe-dashboard-filter *ngIf="showFilter && isFullScreen"></safe-dashboard-filter>
+  <safe-dashboard-filter
+    *ngIf="showFilter && isFullScreen"
+    [editable]="true"
+  ></safe-dashboard-filter>
 </div>
-<safe-dashboard-filter *ngIf="showFilter && !isFullScreen"></safe-dashboard-filter>
+<safe-dashboard-filter
+  *ngIf="showFilter && !isFullScreen"
+  [editable]="true"
+></safe-dashboard-filter>

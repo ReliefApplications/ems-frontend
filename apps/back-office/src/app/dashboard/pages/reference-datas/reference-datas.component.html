@@ -97,6 +97,7 @@
         [routerLink]="['/referencedata', row.id]"
       ></tr>
     </table>
+    <!-- Skeleton table when loading -->
     <safe-skeleton-table
       *ngIf="loading"
       [columns]="[
@@ -109,6 +110,7 @@
     >
     </safe-skeleton-table>
   </div>
+  <!-- Paginator under the table -->
   <mat-paginator
     [disabled]="loading"
     [pageIndex]="pageInfo.pageIndex"

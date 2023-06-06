@@ -1,3 +1,4 @@
+<!-- Actions -->
 <div class="self-end" *ngIf="!loading">
   <safe-button variant="primary" category="secondary" (click)="onAddLayout()">
     {{
@@ -56,6 +57,7 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumnsLayouts"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumnsLayouts"></tr>
       </table>
+      <!-- Skeleton table when loading -->
       <safe-skeleton-table
         *ngIf="loading"
         [columns]="['common.name', 'common.createdOn']"

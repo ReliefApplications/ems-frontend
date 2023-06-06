@@ -8,7 +8,7 @@
   [elementTopOffset]="containerTopOffset"
   [opened]="isDrawerOpen"
   [dashboardSurveyCreatorContainer]="dashboardSurveyCreatorContainer"
-  class="pointer-events-auto"
+  class="pointer-events-none"
 >
   <div
     [ngClass]="{
@@ -31,9 +31,10 @@
         'w-full py-1 px-4 flex-row':
           position === filterPosition.TOP || position === filterPosition.BOTTOM
       }"
-      class="relative flex justify-between bg-primary-500 text-white"
+      class="relative flex justify-between bg-primary-500 text-white pointer-events-auto"
     >
       <div
+        *ngIf="editable"
         [ngClass]="{
           'flex-col':
             position === filterPosition.LEFT ||
@@ -66,7 +67,7 @@
       <div
         class="flex flex-row overflow-auto justify-center gap-4 items-center"
         [ngClass]="{
-          'text-side': position === filterPosition.LEFT,
+          'text-side -rotate-180': position === filterPosition.LEFT,
           'text-side rotate-180': position === filterPosition.RIGHT
         }"
       >
@@ -129,8 +130,8 @@
           position === filterPosition.LEFT || position === filterPosition.RIGHT,
         'flex-col':
           position === filterPosition.LEFT || position === filterPosition.RIGHT,
-        'animate-fadeOut': !isDrawerOpen,
-        'animate-fadeIn': isDrawerOpen
+        'animate-fadeOut pointer-events-none': !isDrawerOpen,
+        'animate-fadeIn pointer-events-auto': isDrawerOpen
       }"
       class="dashboard-filter-content bg-white p-3"
     >

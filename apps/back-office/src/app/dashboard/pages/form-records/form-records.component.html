@@ -153,6 +153,7 @@
         [routerLink]="['./update', row.id]"
       ></tr>
     </table>
+    <!-- Skeleton table when data is still loading -->
     <safe-skeleton-table
       *ngIf="loading"
       [columns]="displayedColumns"

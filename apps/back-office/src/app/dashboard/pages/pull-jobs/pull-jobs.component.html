@@ -1,3 +1,4 @@
+<!-- Pull jobs add button -->
 <div class="mb-4 flex flex-row justify-end">
   <safe-button
     icon="add"
@@ -104,6 +105,7 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
     </table>
+    <!-- Skeleton table when loading -->
     <safe-skeleton-table
       *ngIf="loading"
       [columns]="[
@@ -116,6 +118,7 @@
     >
     </safe-skeleton-table>
   </div>
+  <!-- Paginator under the table -->
   <mat-paginator
     [disabled]="loading"
     [pageSize]="pageInfo.pageSize"

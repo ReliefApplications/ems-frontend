@@ -52,6 +52,7 @@ export class DashboardComponent
 
   @ViewChild(SafeWidgetGridComponent)
   widgetGridComponent!: SafeWidgetGridComponent;
+  public showFilter?: boolean;
 
   /**
    * Dashboard page.
@@ -101,6 +102,7 @@ export class DashboardComponent
                 ? data.dashboard.structure
                 : [];
               this.loading = loading;
+              this.showFilter = this.dashboard.showFilter;
             } else {
               this.snackBar.openSnackBar(
                 this.translate.instant(
