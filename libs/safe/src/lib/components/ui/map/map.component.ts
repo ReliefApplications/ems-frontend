@@ -88,6 +88,10 @@ export class MapComponent
   };
   private arcGisWebMap: any;
 
+  // === ZOOM ===
+  public currentZoom = 2;
+  public zoomControl: any = undefined;
+
   // === MARKERS ===
   private baseTree!: L.Control.Layers.TreeObject;
   private layersTree: L.Control.Layers.TreeObject[] = [];
@@ -144,6 +148,7 @@ export class MapComponent
     });
 
     this.map.on('zoomend', () => {
+      this.currentZoom = this.map.getZoom();
       this.mapEvent.emit({
         type: MapEventType.ZOOM_END,
         content: { zoom: this.map.getZoom() },
@@ -278,6 +283,10 @@ export class MapComponent
         ),
         initialState.viewpoint.zoom
       );
+
+      this.currentZoom = initialState.viewpoint.zoom;
+      this.mapControlsService.addControlPlaceholders(this.map);
+
       // Set the needed map instance for it's popup service instance
       this.mapPopupService.setMap = this.map;
     } else {
@@ -349,10 +358,6 @@ export class MapComponent
       this.setLayersControl(flatten(basemaps), flatten(layers));
     });
 
-    // Add zoom control
-    if (initMap) {
-      L.control.zoom({ position: 'bottomright' }).addTo(this.map);
-    }
     this.setMapControls(controls, initMap);
   }
 
@@ -397,6 +402,16 @@ export class MapComponent
       this.map,
       controls.download ?? true
     );
+    // Add zoom control
+    if (!this.zoomControl) {
+      this.zoomControl = this.mapControlsService.getZoomControl(
+        this.map,
+        this.map.getMaxZoom(),
+        this.map.getMinZoom(),
+        this.map.getZoom(),
+        this.mapEvent
+      );
+    }
     // Add legend control
     this.mapControlsService.getLegendControl(this.map, controls.legend ?? true);
     // Add layer control
@@ -821,8 +836,6 @@ export class MapComponent
    * Set the webmap.
    *
    * @param webmap String containing the id (name) of the webmap
-   * @param options options for the web map
-   * @param options.loadBasemap set to true to confirm basemap loading
    * @returns loaded basemaps and layers as Promise
    */
   public setWebmap(webmap: any) {

@@ -13,6 +13,9 @@ import { BehaviorSubject, Observable } from 'rxjs';
 import { DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { SafeIconModule } from '../../../../../ui/icon/icon.module';
 
+/**
+ * Unique value renderer layer settings.
+ */
 @Component({
   selector: 'safe-unique-value-renderer',
   standalone: true,
@@ -39,6 +42,7 @@ export class UniqueValueRendererComponent implements OnInit {
 
   openedIndex = -1;
 
+  /** @returns get unique infos settings as form array */
   get uniqueValueInfos(): FormArray {
     return this.formGroup.get('uniqueValueInfos') as FormArray;
   }
@@ -51,11 +55,17 @@ export class UniqueValueRendererComponent implements OnInit {
     });
   }
 
+  /** Add new info form group */
   onAddInfo(): void {
     this.uniqueValueInfos.push(createUniqueValueInfoForm());
     this.openedIndex = this.uniqueValueInfos.length - 1;
   }
 
+  /**
+   * Remove info form group
+   *
+   * @param index index of form group to remove
+   */
   onRemoveInfo(index: number): void {
     if (index === this.openedIndex) {
       this.openedIndex = -1;
@@ -63,6 +73,11 @@ export class UniqueValueRendererComponent implements OnInit {
     this.uniqueValueInfos.removeAt(index);
   }
 
+  /**
+   * Reorder info form groups
+   *
+   * @param event reorder event
+   */
   onDrop(event: any): void {
     this.openedIndex = -1;
     const uniqueValueInfos = this.uniqueValueInfos.value;
