@@ -3,8 +3,8 @@ import {
   Input,
   TemplateRef,
   ViewChild,
-  OnInit,
   Output,
+  OnChanges,
   EventEmitter,
   OnDestroy,
 } from '@angular/core';
@@ -39,12 +39,13 @@ import { get } from 'lodash';
 })
 export class MapLayerComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, OnDestroy
+  implements OnChanges, OnDestroy
 {
   @Input() layer?: LayerModel;
   private _layer!: Layer;
   @Input() mapComponent!: MapComponent | undefined;
   @Output() layerToSave = new EventEmitter<LayerFormData>();
+  @Output() layerToOpen = new EventEmitter<LayerModel | undefined>();
 
   @ViewChild('layerNavigationTemplate')
   layerNavigationTemplate!: TemplateRef<any>;
@@ -67,6 +68,7 @@ export class MapLayerComponent
     | 'fields'
     | 'labels'
     | 'styling'
+    | 'sublayers'
     | null = 'parameters';
   public form!: LayerFormT;
   public currentZoom!: number;
@@ -126,7 +128,8 @@ export class MapLayerComponent
     super();
   }
 
-  ngOnInit(): void {
+  ngOnChanges(): void {
+    this.currentTab = 'parameters';
     this.form = createLayerForm(this.layer);
     this.setIsDatasourceValid(this.form.get('datasource')?.value);
     this.form
@@ -175,13 +178,16 @@ export class MapLayerComponent
     this.mapLayersService
       .createLayerFromDefinition(
         this.form.value as LayerModel,
-        this.mapComponent.mapPopupService
+        this.mapComponent.mapPopupService,
+        this.mapComponent.mapLayersService
       )
       .then((layer) => {
         if (layer) {
           this._layer = layer;
-          this.currentLayer = layer.getLayer();
-          this.updateMapLayer();
+          layer.getLayer().then((l) => {
+            this.currentLayer = l;
+            this.updateMapLayer();
+          });
         }
       });
   }
@@ -214,8 +220,10 @@ export class MapLayerComponent
       .subscribe((value) => {
         this.updateMapLayer({ delete: true });
         this._layer.setConfig({ ...value, geojson: this._layer.geojson });
-        this.currentLayer = this._layer.getLayer(true);
-        this.updateMapLayer();
+        this._layer.getLayer(true).then((layer) => {
+          this.currentLayer = layer;
+          this.updateMapLayer();
+        });
       });
 
     this.form
@@ -334,5 +342,26 @@ export class MapLayerComponent
         isDelete: true,
       };
     }
+  }
+
+  /**
+   * Open layer edition
+   *
+   * @param layer layer to open
+   */
+  onEditLayer(layer?: LayerModel): void {
+    this.layerToOpen.emit(layer);
+  }
+
+  /**
+   * Delete given layer id from the layers form and updates map view
+   *
+   * @param layerIdToDelete Layer id to  delete
+   */
+  onDeleteLayer(layerIdToDelete: string): void {
+    // Delete layer from form
+    const sublayers = this.form.get('sublayers')?.value;
+    const filtered = sublayers?.filter((l) => l !== layerIdToDelete);
+    this.form.get('sublayers')?.setValue(filtered);
   }
 }

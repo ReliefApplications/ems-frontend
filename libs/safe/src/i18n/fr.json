@@ -1354,6 +1354,7 @@
 						},
 						"fields": "Champs",
 						"filter": "Filtre",
+						"groupLayers": "Regrouper les calques",
 						"labels": "Étiquettes",
 						"layerDatasource": "Source de données de la couche",
 						"layerProperties": "Propriétés",
@@ -1412,6 +1413,7 @@
 					"layers": {
 						"add": "Ajouter un nouveau calque",
 						"chooseLayer": "Choisir un calque existant",
+						"createGroup": "Créer un nouveau groupe de couches",
 						"createLayer": "Créer un nouveau calque",
 						"dataSource": {
 							"geoField": "GeoField",

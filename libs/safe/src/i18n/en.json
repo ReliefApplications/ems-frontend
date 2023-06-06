@@ -409,11 +409,6 @@
 			"dashboard": {
 				"editFilter": "Edit filter",
 				"empty": "No content available. Wait for your administrator to build some.",
-				"filter": {
-					"empty": "No filters have been defined by the administrators",
-					"info": "Dashboard filters can be used between pages to filter their content.",
-					"title": "You are editing dashboard filters"
-				},
 				"filterSettings": "Filter settings",
 				"settings": {
 					"defaultPosition": "Default position for the filter"
@@ -561,15 +556,6 @@
 			"fields": "Select fields to write in body",
 			"subject": "Subject",
 			"withoutRecords": "Without records"
-		},
-		"emailPreview": {
-			"errors": {
-				"missingSubject": "Subject cannot be left empty."
-			},
-			"from": "From",
-			"subject": "Subject",
-			"title": "Email Preview",
-			"to": "To"
 		},
 		"form": {
 			"aggregation": {
@@ -1347,6 +1333,7 @@
 						},
 						"fields": "Fields",
 						"filter": "Filter",
+						"groupLayers": "Group layers",
 						"labels": "Labels",
 						"layerDatasource": "Layer datasource",
 						"layerProperties": "Layer properties",
@@ -1405,6 +1392,7 @@
 					"layers": {
 						"add": "Add new layer",
 						"chooseLayer": "Choose a layer",
+						"createGroup": "Create a new group layer",
 						"createLayer": "Create a new layer",
 						"dataSource": {
 							"geoField": "GeoField",

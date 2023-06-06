@@ -50,6 +50,7 @@ export interface LayerFormData {
     aggregation: any;
     refData: any;
   };
+  sublayers?: string[];
 }
 
 export type LayerLabel = {

@@ -26,8 +26,9 @@
       }}</span>
     </button>
     <button mat-menu-item (click)="onAddLayer('GroupLayer')">
-      <!-- todo(translate) -->
-      <span>Create a new group layer</span>
+      <span>{{
+        'components.widget.settings.map.layers.createGroup' | translate
+      }}</span>
     </button>
     <button mat-menu-item (click)="onSelectLayer()">
       <span>{{
