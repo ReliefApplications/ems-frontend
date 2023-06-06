@@ -6,6 +6,7 @@ import {
   NgZone,
   OnDestroy,
   OnInit,
+  Optional,
   ViewChild,
 } from '@angular/core';
 import { FilterPosition } from './enums/dashboard-filters.enum';
@@ -25,6 +26,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { ContextService } from '../../services/context/context.service';
 import localForage from 'localforage';
+import { MatDrawerContent, MatSidenavContent } from '@angular/material/sidenav';
 
 /**
  * Interface for quick filters
@@ -77,6 +79,8 @@ export class DashboardFilterComponent
   /**
    * Class constructor
    *
+   * @param matDrawer MatDrawerContent
+   * @param matSidenav MatSidenavContent
    * @param hostElement Host/Component Element
    * @param dialog The material dialog service
    * @param apollo Apollo client
@@ -87,6 +91,8 @@ export class DashboardFilterComponent
    * @param ngZone Triggers html changes
    */
   constructor(
+    @Optional() private matDrawer: MatDrawerContent,
+    @Optional() private matSidenav: MatSidenavContent,
     private hostElement: ElementRef<HTMLElement>,
     private dialog: MatDialog,
     private apollo: Apollo,
@@ -134,12 +140,7 @@ export class DashboardFilterComponent
             });
         }
       });
-    const parentRect =
-      this.hostElement.nativeElement.parentElement?.parentElement?.getBoundingClientRect(); //This is the sidenav container, not ideal solution
-    this.containerWidth = `${parentRect?.width}px`;
-    this.containerHeight = `${parentRect?.height}px`;
-    this.containerLeftOffset = `${parentRect?.x}px`;
-    this.containerTopOffset = `${parentRect?.y}px`;
+    this.setFilterContainerDimensions();
   }
 
   /**
@@ -147,12 +148,7 @@ export class DashboardFilterComponent
    */
   @HostListener('window:resize', ['$event'])
   onResize() {
-    const parentRect =
-      this.hostElement.nativeElement.parentElement?.parentElement?.getBoundingClientRect(); //This is the sidenav container, not ideal solution
-    this.containerWidth = `${parentRect?.width}px`;
-    this.containerHeight = `${parentRect?.height}px`;
-    this.containerLeftOffset = `${parentRect?.x}px`;
-    this.containerTopOffset = `${parentRect?.y}px`;
+    this.setFilterContainerDimensions();
   }
 
   /**
@@ -327,5 +323,34 @@ export class DashboardFilterComponent
           : { label: surveyData[question] }
       );
     });
+  }
+
+  /**
+   * Set filter container dimensions for the current parent container wrapper
+   */
+  private setFilterContainerDimensions() {
+    const parentRect = this.getParentReferenceClientRect();
+    this.containerWidth = `${parentRect?.width}px`;
+    this.containerHeight = `${parentRect?.height}px`;
+    this.containerLeftOffset = `${parentRect?.x}px`;
+    this.containerTopOffset = `${parentRect?.y}px`;
+  }
+
+  /**
+   * Get current parent DOM client rect reference
+   *
+   * @returns DOMRect | undefined
+   */
+  private getParentReferenceClientRect() {
+    const matWrapper = this.matDrawer ? this.matDrawer : this.matSidenav;
+    // If no mat wrapper, default behavior would be filter direct parent container
+    let parentRect =
+      this.hostElement.nativeElement.parentElement?.getBoundingClientRect();
+    if (matWrapper) {
+      parentRect = matWrapper
+        ?.getElementRef()
+        .nativeElement.getBoundingClientRect();
+    }
+    return parentRect;
   }
 }
