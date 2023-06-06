@@ -24,6 +24,14 @@
     >
       {{ 'components.widget.settings.map.edit.layerStyling' | translate }}
     </safe-button>
+    <safe-button
+      *ngIf="form?.get('sublayers')"
+      icon="map"
+      [attr.data-selected]="currentTab === 'sublayers'"
+      (click)="currentTab = 'sublayers'"
+    >
+      {{ 'components.widget.settings.map.edit.groupLayers' | translate }}
+    </safe-button>
     <!-- <safe-button
       icon="map"
       [attr.data-selected]="currentTab === 'filter'"
@@ -96,6 +104,14 @@
           [fields$]="fields$"
           (fields)="fields.next($event)"
         ></safe-layer-datasource>
+      </ng-container>
+      <ng-container *ngSwitchCase="'sublayers'">
+        <safe-map-layers
+          [layerIds]="form.get('sublayers')?.value || []"
+          (close)="currentTab = null"
+          (editLayer)="onEditLayer($event)"
+          (deleteLayer)="onDeleteLayer($event)"
+        ></safe-map-layers>
       </ng-container>
       <!-- Layer styling -->
       <ng-container *ngSwitchCase="'styling'">

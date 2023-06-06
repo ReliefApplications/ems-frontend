@@ -5,7 +5,6 @@ import {
   OnInit,
   TemplateRef,
 } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
@@ -15,7 +14,7 @@ import {
   GetLayoutQueryResponse,
   GET_LAYOUT,
 } from '../graphql/queries';
-import { clone, get } from 'lodash';
+import { get } from 'lodash';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { firstValueFrom } from 'rxjs';
 import { CardT } from '../summary-card.component';
@@ -43,14 +42,12 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
    * Single item component of summary card widget.
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
    * @param snackBar Shared snackBar service
    * @param translate Angular translate service
    * @param queryBuilder Query builder service
    */
   constructor(
     private apollo: Apollo,
-    private dialog: MatDialog,
     private snackBar: SafeSnackBarService,
     private translate: TranslateService,
     private queryBuilder: QueryBuilderService
@@ -183,28 +180,5 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
       name: key,
       editor: 'text',
     }));
-  }
-
-  /**
-   * Open the dataSource modal.
-   */
-  public async openDataSource(): Promise<void> {
-    if (this.layout?.query) {
-      const { SafeResourceGridModalComponent } = await import(
-        '../../../search-resource-grid-modal/search-resource-grid-modal.component'
-      );
-      this.dialog.open(SafeResourceGridModalComponent, {
-        data: {
-          gridSettings: clone(this.layout.query),
-        },
-      });
-    } else {
-      this.snackBar.openSnackBar(
-        this.translate.instant(
-          'components.widget.summaryCard.errors.invalidSource'
-        ),
-        { error: true }
-      );
-    }
   }
 }

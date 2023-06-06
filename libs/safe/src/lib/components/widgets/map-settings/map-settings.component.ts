@@ -48,7 +48,7 @@ export class SafeMapSettingsComponent
 
   // === WIDGET ===
   @Input() tile: any;
-  public openedLayer?: LayerModel;
+  public openedLayers: (LayerModel | undefined)[] = [];
 
   // === EMIT THE CHANGES APPLIED ===
   // eslint-disable-next-line @angular-eslint/no-output-native
@@ -246,7 +246,7 @@ export class SafeMapSettingsComponent
    * @param layer layer to open
    */
   onEditLayer(layer?: LayerModel): void {
-    this.openedLayer = layer;
+    this.openedLayers.unshift(layer);
     // We initialize the map settings to default value once we display the map layer editor
     (this.mapComponent as MapComponent).mapSettings = {
       basemap: 'OSM',
@@ -288,20 +288,30 @@ export class SafeMapSettingsComponent
    * @param layerData layer to save
    */
   saveLayer(layerData?: any) {
+    const goToNextScreen = () => {
+      // Go to the previous layer if we are editing an existing one
+      this.openedLayers.shift();
+
+      // If no more layers to edit, go back to the main layers list
+      if (this.openedLayers.length === 0) this.openTab('layers');
+    };
+
     if (layerData) {
       if (layerData.id) {
         this.mapLayersService.editLayer(layerData).subscribe({
           next: (result) => {
             // We check if we are editing an already added layer to the tile form
             // Or we are adding a new one from an existing layer
-            if (
-              result &&
-              !this.tileForm?.get('layers')?.value.includes(result.id)
-            ) {
+            const layer = this.openedLayers[0];
+            const isInGroup = this.openedLayers.length > 1;
+            const layersArr = isInGroup
+              ? layer?.sublayers ?? []
+              : this.tileForm?.get('layers')?.value ?? [];
+
+            if (result && !layersArr?.includes(result.id)) {
               this.updateLayersForm(result.id);
             }
-            // Redirect to main layers list
-            this.openTab('layers');
+            goToNextScreen();
           },
           error: (err) => console.log(err),
         });
@@ -321,15 +331,13 @@ export class SafeMapSettingsComponent
               if (result) {
                 this.updateLayersForm(result.id);
               }
-              // Redirect to main layers list
-              this.openTab('layers');
+              goToNextScreen();
             },
             error: (err) => console.log(err),
           });
       }
     } else {
-      // Redirect to main layers list
-      this.openTab('layers');
+      goToNextScreen();
     }
   }
 
@@ -340,14 +348,30 @@ export class SafeMapSettingsComponent
    * @param toDelete Is to delete or not
    */
   private updateLayersForm(newLayerId: string, toDelete = false) {
-    let layers = [...(this.tileForm?.get('layers')?.value ?? []), newLayerId];
-    if (toDelete) {
-      layers = this.tileForm
-        ?.get('layers')
-        ?.value.filter((layerId: string) => layerId !== newLayerId);
+    const isGroupForm = this.openedLayers.length > 1;
+
+    if (!isGroupForm) {
+      let layers = [...(this.tileForm?.get('layers')?.value ?? []), newLayerId];
+      if (toDelete) {
+        layers = this.tileForm
+          ?.get('layers')
+          ?.value.filter((layerId: string) => layerId !== newLayerId);
+      }
+      this.tileForm?.get('layers')?.setValue(layers);
+      this.tileForm?.markAsTouched();
+      this.tileForm?.markAsDirty();
+      return;
     }
-    this.tileForm?.get('layers')?.setValue(layers);
-    this.tileForm?.markAsTouched();
-    this.tileForm?.markAsDirty();
+
+    // This function will never be called when deleting a layer from a group
+    if (toDelete) return;
+
+    // Add to the second element, since that will be the group
+    // containing the sublayer that was just saved.
+    const layer = this.openedLayers[1];
+    if (!layer) return;
+
+    const currLayers = layer.sublayers ?? [];
+    layer.sublayers = [...new Set([...currLayers, newLayerId])];
   }
 }

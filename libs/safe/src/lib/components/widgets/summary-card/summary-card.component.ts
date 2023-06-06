@@ -10,6 +10,8 @@ import {
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import { debounceTime, distinctUntilChanged, firstValueFrom } from 'rxjs';
+import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { TranslateService } from '@ngx-translate/core';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
@@ -31,6 +33,7 @@ import { Layout } from '../../../models/layout.model';
 import { PageChangeEvent } from '@progress/kendo-angular-grid';
 import { FormControl } from '@angular/forms';
 import { clone, isNaN } from 'lodash';
+import { SafeSnackBarService } from '../../../services/snackbar/snackbar.service';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -109,12 +112,18 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    * Constructor for summary card component
    *
    * @param apollo Apollo service
+   * @param dialog Material dialog service
+   * @param snackBar Shared snackbar service
+   * @param translate Angular translate service
    * @param queryBuilder Query builder service
    * @param gridLayoutService Shared grid layout service
    * @param aggregationService Aggregation service
    */
   constructor(
     private apollo: Apollo,
+    private dialog: MatDialog,
+    private snackBar: SafeSnackBarService,
+    private translate: TranslateService,
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: SafeGridLayoutService,
     private aggregationService: SafeAggregationService
@@ -431,6 +440,29 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
           },
         })
         .then(this.updateCards.bind(this));
+    }
+  }
+
+  /**
+   * Open the dataSource modal.
+   */
+  public async openDataSource(): Promise<void> {
+    if (this.layout?.query) {
+      const { SafeResourceGridModalComponent } = await import(
+        '../../search-resource-grid-modal/search-resource-grid-modal.component'
+      );
+      this.dialog.open(SafeResourceGridModalComponent, {
+        data: {
+          gridSettings: clone(this.layout.query),
+        },
+      });
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'components.widget.summaryCard.errors.invalidSource'
+        ),
+        { error: true }
+      );
     }
   }
 }

@@ -102,6 +102,7 @@ export class ApiConfigurationComponent
                 this.apiConfiguration.name as string
               );
               this.apiForm = this.formBuilder.group({
+                id: [{ value: this.apiConfiguration.id, disabled: true }],
                 name: [
                   this.apiConfiguration?.name,
                   [Validators.required, Validators.pattern(apiValidator)],
@@ -294,9 +295,8 @@ export class ApiConfigurationComponent
 
   /** Send a ping request to test the configuration */
   onPing(): void {
-    this.apiProxy
-      .buildPingRequest(this.apiConfiguration?.name, this.apiForm.value.pingUrl)
-      ?.subscribe((res: any) => {
+    this.apiProxy.buildPingRequest(this.apiForm.getRawValue())?.subscribe(
+      (res: any) => {
         if (res) {
           if (res.access_token) {
             this.snackBar.openSnackBar(
@@ -319,6 +319,15 @@ export class ApiConfigurationComponent
             { error: true }
           );
         }
-      });
+      },
+      () => {
+        this.snackBar.openSnackBar(
+          this.translate.instant(
+            'pages.apiConfiguration.notifications.pingFailed'
+          ),
+          { error: true }
+        );
+      }
+    );
   }
 }

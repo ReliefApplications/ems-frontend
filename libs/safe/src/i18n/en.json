@@ -1180,11 +1180,12 @@
 					},
 					"position": "Position",
 					"series": {
+						"fill": "Fill",
 						"interpolation": {
 							"step": "Step interpolation",
 							"title": "Interpolation"
 						},
-						"showSerie": "Show serie",
+						"showSeries": "Show series",
 						"stack": {
 							"enable": "Plot series",
 							"usePercentage": "Use percentage"
@@ -1332,6 +1333,7 @@
 						},
 						"fields": "Fields",
 						"filter": "Filter",
+						"groupLayers": "Group layers",
 						"labels": "Labels",
 						"layerDatasource": "Layer datasource",
 						"layerProperties": "Layer properties",
@@ -1390,6 +1392,7 @@
 					"layers": {
 						"add": "Add new layer",
 						"chooseLayer": "Choose a layer",
+						"createGroup": "Create a new group layer",
 						"createLayer": "Create a new layer",
 						"dataSource": {
 							"geoField": "GeoField",
@@ -1502,6 +1505,9 @@
 							"tooltip": {
 								"datasource": "Add a button in widget's header to view card's data source"
 							}
+						},
+						"preview": {
+							"title": "Preview"
 						},
 						"textEditor": {
 							"alert": "You can add variables e.g: {{data.variable}} and calculate e.g: {{calc.round( value ; precision )}}",
@@ -1692,6 +1698,18 @@
 			"stick": "Stick",
 			"unlock": "Unlock",
 			"unstick": "Unstick"
+		},
+		"pager": {
+			"firstPage": "Go to the first page",
+			"items": "items",
+			"itemsPerPage": "items per page",
+			"label": "'Page navigation, page {currentPage} of {totalPages}'",
+			"lastPage": "Go to the last page",
+			"nextPage": "Go to the next page",
+			"of": "of",
+			"page": "Page",
+			"pageNumberInputTitle": "Page Number",
+			"previousPage": "Go to the previous page"
 		},
 		"tilelayout": {
 			"component": {
@@ -1969,6 +1987,10 @@
 				},
 				"selectApplication": "Missing value application for an element on page {{page}}. Please select at least one application in properties of {{question}} to save the form.",
 				"snakecase": "The value name {{name}} on page {{page}} is invalid. Please conform to snake_case."
+			},
+			"move": {
+				"down": "Move down",
+				"up": "Move up"
 			},
 			"questionsCategories": {
 				"core": "Question Library"

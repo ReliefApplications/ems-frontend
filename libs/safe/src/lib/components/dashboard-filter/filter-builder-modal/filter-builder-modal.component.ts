@@ -18,6 +18,7 @@ import { SafeButtonModule } from '../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { SafeModalModule } from '../../ui/modal/modal.module';
+import { SafeAlertModule } from '../../ui/alert/alert.module';
 
 /**
  * Data passed to initialize the filter builder
@@ -102,6 +103,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
     TranslateModule,
     MatTooltipModule,
     SafeModalModule,
+    SafeAlertModule,
   ],
 })
 export class FilterBuilderModalComponent

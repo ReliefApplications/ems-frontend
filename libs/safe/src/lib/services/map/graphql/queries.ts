@@ -79,6 +79,7 @@ export const GET_LAYER_BY_ID = gql`
           fields
         }
       }
+      sublayers
     }
   }
 `;

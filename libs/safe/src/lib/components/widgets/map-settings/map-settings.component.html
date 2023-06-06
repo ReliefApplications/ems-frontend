@@ -79,8 +79,9 @@
 
 <ng-container *ngIf="currentTab === 'layer'">
   <safe-map-layer
-    [layer]="openedLayer"
+    [layer]="openedLayers[0]"
     [mapComponent]="mapComponent"
     (layerToSave)="saveLayer($event)"
+    (layerToOpen)="onEditLayer($event)"
   ></safe-map-layer>
 </ng-container>

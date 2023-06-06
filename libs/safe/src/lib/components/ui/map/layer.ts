@@ -25,6 +25,8 @@ import { SafeMapPopupService } from './map-popup/map-popup.service';
 import { haversineDistance } from './utils/haversine';
 import { SafeIconDisplayPipe } from '../../../pipes/icon-display/icon-display.pipe';
 import { GradientPipe } from '../../../pipes/gradient/gradient.pipe';
+import { SafeMapLayersService } from '../../../services/map/map-layers.service';
+import { BehaviorSubject, filter, firstValueFrom } from 'rxjs';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -157,8 +159,12 @@ export class Layer implements LayerModel {
   public createdAt!: Date;
   public updatedAt!: Date;
 
-  // Properties for the layer, if layer type is 'group'
-  public sublayers: Layer[] = [];
+  // If the layer is a group, the sublayers array has the ids of the layers
+  public sublayers: string[] = [];
+
+  public _sublayers: Layer[] = [];
+
+  public sublayersLoaded = new BehaviorSubject(false);
 
   // Layer datasource
   public datasource?: LayerDatasource;
@@ -222,8 +228,9 @@ export class Layer implements LayerModel {
   }
 
   /** @returns the children of the current layer */
-  public getChildren() {
-    return this.sublayers;
+  public async getChildren() {
+    await firstValueFrom(this.sublayersLoaded.pipe(filter((v) => v)));
+    return this._sublayers;
   }
 
   /** @returns the filtered geojson data */
@@ -265,8 +272,13 @@ export class Layer implements LayerModel {
    *
    * @param options Layer options
    * @param popupService Popup service
+   * @param layerService Shared layer service
    */
-  constructor(options: any, private popupService: SafeMapPopupService) {
+  constructor(
+    options: any,
+    private popupService: SafeMapPopupService,
+    private layerService: SafeMapLayersService
+  ) {
     if (options) {
       this.setConfig(options);
     } else {
@@ -279,13 +291,14 @@ export class Layer implements LayerModel {
    *
    * @param options Layer options
    */
-  public setConfig(options: any) {
+  public async setConfig(options: any) {
     this.id = get(options, 'id', '');
     this.name = get(options, 'name', '');
     this.type = get<LayerType>(options, 'type', 'FeatureLayer');
     this.opacity = get(options, 'opacity', 1);
 
-    if (options.type !== 'group') {
+    if (options.type !== 'GroupLayer') {
+      this.sublayersLoaded.next(true);
       // Not group layer, add other properties
       this.datasource = get(options, 'datasource', null);
       this.geojson = get(options, 'geojson', EMPTY_FEATURE_COLLECTION);
@@ -298,9 +311,15 @@ export class Layer implements LayerModel {
       this.setFields();
     } else if (options.sublayers) {
       // Group layer, add sublayers
-      this.sublayers = options.sublayers?.map((child: any) => ({
-        object: new Layer(child, this.popupService),
-      }));
+      this._sublayers = options.sublayers?.length
+        ? await this.layerService.createLayersFromIds(
+            options.sublayers,
+            this.popupService,
+            this.layerService
+          )
+        : [];
+
+      this.sublayersLoaded.next(true);
     }
   }
 
@@ -377,7 +396,7 @@ export class Layer implements LayerModel {
    * @param redraw wether the layer should be redrawn
    * @returns the leaflet layer from layer definition
    */
-  public getLayer(redraw?: boolean): L.Layer {
+  public async getLayer(redraw?: boolean): Promise<L.Layer> {
     // If layer has already been created, return it
     if (this.layer && !redraw) return this.layer;
 
@@ -486,8 +505,13 @@ export class Layer implements LayerModel {
 
     switch (this.type) {
       case 'GroupLayer':
-        this.sublayers.forEach((child) => (child.layer = child.getLayer()));
-        const layers = this.sublayers
+        const sublayers = await this.getChildren();
+
+        for (const child of sublayers) {
+          child.opacity = child.opacity * this.opacity;
+          child.layer = await child.getLayer();
+        }
+        const layers = sublayers
           .map((child) => child.layer)
           .filter((layer) => layer !== undefined) as L.Layer[];
         const layer = L.layerGroup(layers);

@@ -86,6 +86,10 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
    * @param e event
    */
   public selectionOnChange(e: any) {
+    // If no value is set into no this.value return
+    if (!e.value && !this.value) {
+      return;
+    }
     this.value = e.value;
     this.onChanged(this.value);
   }
@@ -135,7 +139,21 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
         } else {
           this.nextPage = false;
         }
-        this.items.next(this.items.getValue().concat(search.results));
+        if (text) {
+          this.items.next(
+            this.items
+              .getValue()
+              .concat(
+                search.results.filter(
+                  (a) =>
+                    a.id != this.value ||
+                    a.title.toLowerCase().includes(text.toLowerCase())
+                )
+              )
+          );
+        } else {
+          this.items.next(this.items.getValue().concat(search.results));
+        }
         this.loading = false;
       });
   }

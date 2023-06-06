@@ -266,11 +266,13 @@ export class SafeMapLayersService {
    *
    * @param layerIds layer settings saved from the layer editor
    * @param popupService popup service
+   * @param layerService Shared layer service
    * @returns Observable of LayerSettingsI
    */
   async createLayersFromIds(
     layerIds: string[],
-    popupService: SafeMapPopupService
+    popupService: SafeMapPopupService,
+    layerService: SafeMapLayersService
   ): Promise<Layer[]> {
     const promises: Promise<Layer>[] = [];
     for (const id of layerIds) {
@@ -300,7 +302,8 @@ export class SafeMapLayersService {
               (layer: { layer: LayerModel; geojson: any }) =>
                 new Layer(
                   { ...layer.layer, geojson: layer.geojson },
-                  popupService
+                  popupService,
+                  layerService
                 )
             )
           )
@@ -320,11 +323,13 @@ export class SafeMapLayersService {
    *
    * @param layer Layer to get definition of.
    * @param popupService Shared popup service
+   * @param layersService Shared layers service
    * @returns Layer for map widget
    */
   async createLayerFromDefinition(
     layer: LayerModel,
-    popupService: SafeMapPopupService
+    popupService: SafeMapPopupService,
+    layersService: SafeMapLayersService
   ) {
     if (this.isDatasourceValid(layer.datasource)) {
       const params = new HttpParams({
@@ -343,10 +348,11 @@ export class SafeMapLayersService {
           ...res.layer,
           geojson: res.geojson,
         },
-        popupService
+        popupService,
+        layersService
       );
     } else {
-      return new Layer(layer, popupService);
+      return new Layer(layer, popupService, layersService);
     }
   }
 

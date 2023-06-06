@@ -1180,11 +1180,12 @@
 					},
 					"position": "******",
 					"series": {
+						"fill": "******",
 						"interpolation": {
 							"step": "******",
 							"title": "******"
 						},
-						"showSerie": "******",
+						"showSeries": "******",
 						"stack": {
 							"enable": "******",
 							"usePercentage": "******"
@@ -1332,6 +1333,7 @@
 						},
 						"fields": "******",
 						"filter": "******",
+						"groupLayers": "******",
 						"labels": "******",
 						"layerDatasource": "******",
 						"layerProperties": "******",
@@ -1390,6 +1392,7 @@
 					"layers": {
 						"add": "******",
 						"chooseLayer": "******",
+						"createGroup": "******",
 						"createLayer": "******",
 						"dataSource": {
 							"geoField": "******",
@@ -1502,6 +1505,9 @@
 							"tooltip": {
 								"datasource": "******"
 							}
+						},
+						"preview": {
+							"title": "******"
 						},
 						"textEditor": {
 							"alert": "****** {{data.variable}} ****** {{calc.round( value ; precision )}}",
@@ -1692,6 +1698,18 @@
 			"stick": "******",
 			"unlock": "******",
 			"unstick": "******"
+		},
+		"pager": {
+			"firstPage": "******",
+			"items": "******",
+			"itemsPerPage": "******",
+			"label": "******",
+			"lastPage": "******",
+			"nextPage": "******",
+			"of": "******",
+			"page": "******",
+			"pageNumberInputTitle": "******",
+			"previousPage": "******"
 		},
 		"tilelayout": {
 			"component": {
@@ -1969,6 +1987,10 @@
 				},
 				"selectApplication": "****** {{page}} ****** {{question}} ******",
 				"snakecase": "****** {{name}} ****** {{page}} ******"
+			},
+			"move": {
+				"down": "******",
+				"up": "******"
 			},
 			"questionsCategories": {
 				"core": "******"

@@ -89,6 +89,10 @@ export class MapComponent
   };
   private arcGisWebMap: any;
 
+  // === ZOOM ===
+  public currentZoom = 2;
+  public zoomControl: any = undefined;
+
   // === MARKERS ===
   private baseTree!: L.Control.Layers.TreeObject;
   private layersTree: L.Control.Layers.TreeObject[] = [];
@@ -115,6 +119,7 @@ export class MapComponent
    * @param arcgisService Shared arcgis service
    * @param mapLayersService SafeMapLayersService
    * @param mapPopupService The map popup handler service
+   * @param renderer Angular renderer
    */
   constructor(
     @Inject('environment') environment: any,
@@ -146,6 +151,7 @@ export class MapComponent
     });
 
     this.map.on('zoomend', () => {
+      this.currentZoom = this.map.getZoom();
       this.mapEvent.emit({
         type: MapEventType.ZOOM_END,
         content: { zoom: this.map.getZoom() },
@@ -282,6 +288,10 @@ export class MapComponent
         ),
         initialState.viewpoint.zoom
       );
+
+      this.currentZoom = initialState.viewpoint.zoom;
+      this.mapControlsService.addControlPlaceholders(this.map);
+
       // Set the needed map instance for it's popup service instance
       this.mapPopupService.setMap = this.map;
     } else {
@@ -353,10 +363,6 @@ export class MapComponent
       this.setLayersControl(flatten(basemaps), flatten(layers));
     });
 
-    // Add zoom control
-    if (initMap) {
-      L.control.zoom({ position: 'bottomright' }).addTo(this.map);
-    }
     this.setMapControls(controls, initMap);
   }
 
@@ -401,6 +407,16 @@ export class MapComponent
       this.map,
       controls.download ?? true
     );
+    // Add zoom control
+    if (!this.zoomControl) {
+      this.zoomControl = this.mapControlsService.getZoomControl(
+        this.map,
+        this.map.getMaxZoom(),
+        this.map.getMinZoom(),
+        this.map.getZoom(),
+        this.mapEvent
+      );
+    }
     // Add legend control
     this.mapControlsService.getLegendControl(this.map, controls.legend ?? true);
     // Add layer control
@@ -490,23 +506,24 @@ export class MapComponent
      * @param leafletLayer The leaflet layer previously created by the parent layer, if any
      * @returns The tree node
      */
-    const parseTreeNode = (
+    const parseTreeNode = async (
       layer: Layer,
       leafletLayer?: L.Layer
-    ): OverlayLayerTree => {
-      // Add to the layers array
-      this.layers.push(layer);
+    ): Promise<OverlayLayerTree> => {
+      // Add to the layers array if not already added
+      if (!this.layers.find((l) => l.id === layer.id)) this.layers.push(layer);
 
       // Gets the leaflet layer. Either the one passed as parameter
       // (from parent) or the one created by the layer itself (if no parent)
-      const featureLayer = leafletLayer ?? layer.getLayer();
+      const featureLayer = leafletLayer ?? (await layer.getLayer());
 
       // Adds the layer to the map if not already added
       // note: group layers are of type L.LayerGroup
       // so we should check if the layer is not already added
       if (!this.map.hasLayer(featureLayer)) this.map.addLayer(featureLayer);
 
-      const children = layer.getChildren();
+      const children = await layer.getChildren();
+
       if (layer.type === 'GroupLayer') {
         // It is a group, it should not have any layer but it should be able to check/uncheck its children
         return {
@@ -514,8 +531,11 @@ export class MapComponent
           selectAllCheckbox: true,
           children:
             children.length > 0
-              ? children.map((sublayer) =>
-                  parseTreeNode(sublayer, sublayer.getLayer())
+              ? await Promise.all(
+                  children.map(async (sublayer) => {
+                    const layer = await sublayer.getLayer();
+                    return parseTreeNode(sublayer, layer);
+                  })
                 )
               : undefined,
         };
@@ -527,16 +547,23 @@ export class MapComponent
         };
       }
     };
+
     return new Promise<{ layers: L.Control.Layers.TreeObject[] }>((resolve) => {
       this.mapLayersService
-        .createLayersFromIds(layerIds, this.mapPopupService)
+        .createLayersFromIds(
+          layerIds,
+          this.mapPopupService,
+          this.mapLayersService
+        )
         .then((layers) => {
           const layersTree: any[] = [];
           // Add each layer to the tree
           layers.forEach((layer) => {
             layersTree.push(parseTreeNode(layer));
           });
-          resolve({ layers: layersTree });
+          Promise.all(layersTree).then((layersTree) => {
+            resolve({ layers: layersTree });
+          });
         });
     });
   }
@@ -546,8 +573,8 @@ export class MapComponent
    *
    * @param layer layer to be added to the map
    */
-  public addLayer(layer: Layer): void {
-    layer.getLayer().addTo(this.map);
+  public async addLayer(layer: Layer): Promise<void> {
+    (await layer.getLayer()).addTo(this.map);
   }
 
   /**
@@ -637,7 +664,7 @@ export class MapComponent
           deleteLayer(child);
         }
       } else {
-        this.map.removeLayer(layer.layer);
+        if (layer.layer) this.map.removeLayer(layer.layer);
       }
     };
 
@@ -648,7 +675,7 @@ export class MapComponent
     } else {
       deleteLayer(layers);
     }
-    this.map.removeControl(this.layerControl);
+    if (this.layerControl) this.map.removeControl(this.layerControl);
     // Reset related properties
     this.layers = [];
     this.layersTree = [];
@@ -857,8 +884,6 @@ export class MapComponent
    * Set the webmap.
    *
    * @param webmap String containing the id (name) of the webmap
-   * @param options options for the web map
-   * @param options.loadBasemap set to true to confirm basemap loading
    * @returns loaded basemaps and layers as Promise
    */
   public setWebmap(webmap: any) {

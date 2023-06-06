@@ -12,6 +12,7 @@ import { LayerLabelsModule } from './layer-labels/layer-labels.module';
 import { LayerFilterModule } from './layer-filter/layer-filter.module';
 import { LayerClusterModule } from './layer-cluster/layer-cluster.module';
 import { LayerStylingModule } from './layer-styling/layer-styling.module';
+import { MapLayersModule } from '../map-layers/map-layers.module';
 
 /**
  * Map layer settings component.
@@ -31,6 +32,7 @@ import { LayerStylingModule } from './layer-styling/layer-styling.module';
     LayerLabelsModule,
     LayerFilterModule,
     LayerStylingModule,
+    MapLayersModule,
   ],
   exports: [MapLayerComponent],
 })
