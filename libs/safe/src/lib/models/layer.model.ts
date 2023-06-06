@@ -121,7 +121,7 @@ export interface LayerModel {
   id: string;
   name: string;
   type?: LayerType;
-  sublayers?: LayerModel[];
+  sublayers?: string[];
   visibility: boolean;
   opacity: number;
   layerDefinition?: LayerDefinition;

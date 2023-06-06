@@ -57,7 +57,8 @@ export class MapModalComponent implements AfterViewInit {
           createdAt: new Date(),
           updatedAt: new Date(),
         },
-        mapComponent.mapPopupService
+        mapComponent.mapPopupService,
+        mapComponent.mapLayersService
       )
       .then((layer) => {
         mapComponent.addLayer(layer);
