@@ -24,6 +24,7 @@ export const GET_RESOURCES = gql`
             id
             name
           }
+          queryName
           layouts {
             totalCount
           }
