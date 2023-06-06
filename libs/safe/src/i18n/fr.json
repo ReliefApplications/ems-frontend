@@ -1880,8 +1880,15 @@
 			},
 			"display": {
 				"border": "Afficher la bordure du widget",
+				"filtrable": "Autoriser le filtrage",
 				"searchable": "Autoriser la recherche",
 				"title": "Affichage des widgets"
+			},
+			"filtering": {
+				"field": "Champ",
+				"label": "Étiquette",
+				"order": "Ordre",
+				"title": "Filtrage"
 			},
 			"map": {
 				"defaultTitle": "Widget Carte",

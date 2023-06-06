@@ -1872,8 +1872,15 @@
 			},
 			"display": {
 				"border": "Show widget border",
+				"filtrable": "Allow filtering",
 				"searchable": "Allow search",
 				"title": "Widget display"
+			},
+			"filtering": {
+				"field": "Field",
+				"label": "Label",
+				"order": "Order",
+				"title": "Filtering"
 			},
 			"map": {
 				"defaultTitle": "Map Widget",

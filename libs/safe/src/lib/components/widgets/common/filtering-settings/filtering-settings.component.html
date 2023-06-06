@@ -1,0 +1,85 @@
+<safe-button
+  type="button"
+  (click)="addRow()"
+  variant="primary"
+  category="secondary"
+  class="mb-6"
+>
+  Add row
+</safe-button>
+
+<form [formGroup]="formGroup">
+  <table
+    mat-table
+    [dataSource]="data"
+    formArrayName="filters"
+    cdkDropList
+    (cdkDropListDropped)="drop($event)"
+  >
+    <ng-container matColumnDef="field">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'models.widget.filtering.field' | translate }}
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element; let rowIndex = index"
+        [formGroupName]="rowIndex"
+      >
+        <select matNativeControl required formControlName="field">
+          <option
+            *ngFor="let field of this.layout.query.fields"
+            [value]="field.name"
+          >
+            {{ field.label ?? field.name }}
+          </option>
+        </select>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="order">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'models.widget.filtering.order' | translate }}
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element; let rowIndex = index"
+        [formGroupName]="rowIndex"
+      >
+        <select matNativeControl required formControlName="order">
+          <option value="asc">ASC</option>
+          <option value="desc">DESC</option>
+        </select>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="label">
+      <th mat-header-cell *matHeaderCellDef>
+        {{ 'models.widget.filtering.label' | translate }}
+      </th>
+      <td
+        mat-cell
+        *matCellDef="let element; let rowIndex = index"
+        [formGroupName]="rowIndex"
+      >
+        <input type="text" class="border" matInput formControlName="label" />
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let element" cdkDragHandle>
+        <div class="flex">
+          <button mat-icon-button>
+            <mat-icon>delete</mat-icon>
+          </button>
+          <button mat-icon-button>
+            <mat-icon>drag_indicator</mat-icon>
+          </button>
+        </div>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumnsApps"></tr>
+    <tr
+      mat-row
+      *matRowDef="let row; columns: displayedColumnsApps"
+      cdkDrag
+    ></tr>
+  </table>
+</form>

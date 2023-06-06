@@ -1872,7 +1872,14 @@
 			},
 			"display": {
 				"border": "******",
+				"filtrable": "******",
 				"searchable": "******",
+				"title": "******"
+			},
+			"filtering": {
+				"field": "******",
+				"label": "******",
+				"order": "******",
 				"title": "******"
 			},
 			"map": {

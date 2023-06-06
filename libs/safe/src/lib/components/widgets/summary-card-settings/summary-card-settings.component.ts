@@ -78,6 +78,9 @@ const createSummaryCardForm = (def: any) => {
     searchable: new FormControl(
       get<boolean>(settings, 'widgetDisplay.searchable', false)
     ),
+    filtrable: new FormControl(
+      get<boolean>(settings, 'widgetDisplay.filtrable', false)
+    ),
     usePagination: new FormControl(
       get<boolean>(settings, 'widgetDisplay.usePagination', false)
     ),
@@ -138,6 +141,11 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   /** @returns a FormControl for the searchable field */
   get searchableControl(): FormControl {
     return this.tileForm?.get('widgetDisplay.searchable') as any;
+  }
+
+  /** @returns a FormControl for the filtrable field */
+  get filtrableControl(): FormControl {
+    return this.tileForm?.get('widgetDisplay.filtrable') as any;
   }
 
   /** @returns a FormControl for the usePagination field */

@@ -77,6 +77,13 @@
             {{ 'models.widget.display.searchable' | translate }}
           </mat-slide-toggle>
 
+          <mat-slide-toggle
+            *ngIf="selectedLayout"
+            [formControl]="$any(tileForm.get('widgetDisplay.filtrable'))"
+          >
+            {{ 'models.widget.display.filtrable' | translate }}
+          </mat-slide-toggle>
+
           <mat-radio-group
             [formControl]="$any(tileForm.get('widgetDisplay.usePagination'))"
             class="flex flex-col gap-1 mt-2"
@@ -97,6 +104,25 @@
             }}</mat-radio-button>
           </mat-radio-group>
         </safe-display-settings>
+      </ng-template>
+    </mat-tab>
+    <!-- Widget display options -->
+    <mat-tab
+      *ngIf="selectedLayout && tileForm?.get('widgetDisplay.filtrable')?.value"
+    >
+      <ng-template mat-tab-label>
+        <safe-icon
+          icon="filter_alt"
+          [size]="24"
+          matTooltip="{{ 'models.widget.filtering.title' | translate }}"
+          matTooltipPosition="right"
+        ></safe-icon>
+        <span>{{ 'models.widget.filtering.title' | translate }}</span>
+      </ng-template>
+      <ng-template matTabContent>
+        <safe-filtering-settings
+          [layout]="selectedLayout"
+        ></safe-filtering-settings>
       </ng-template>
     </mat-tab>
   </mat-tab-group>
