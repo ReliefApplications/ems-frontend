@@ -88,6 +88,7 @@ export class GeospatialMapComponent
       layer: false,
       search: true,
     },
+    zoomControl: true,
   };
 
   // Layer to edit
