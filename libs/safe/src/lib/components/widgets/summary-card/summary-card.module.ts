@@ -12,6 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { PagerModule } from '@progress/kendo-angular-pager';
+import { SafeSkeletonModule } from '../../../directives/skeleton/skeleton.module';
 
 /** Summary Card Widget Module */
 @NgModule({
@@ -30,6 +31,7 @@ import { PagerModule } from '@progress/kendo-angular-pager';
     FormsModule,
     ReactiveFormsModule,
     PagerModule,
+    SafeSkeletonModule,
   ],
   exports: [SafeSummaryCardComponent],
 })
