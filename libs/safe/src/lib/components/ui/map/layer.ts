@@ -284,7 +284,20 @@ export class Layer implements LayerModel {
     this.name = get(options, 'name', '');
     this.type = get<LayerType>(options, 'type', 'FeatureLayer');
     this.opacity = get(options, 'opacity', 1);
-
+    // Cast all coordinates to number type as the used layouts for map settings could come from a text input
+    if (options.geojson) {
+      const mappedFeatures = options.geojson.features.map((feature: any) => ({
+        ...feature,
+        geometry: {
+          ...feature.geometry,
+          coordinates: feature.geometry.coordinates.map((coordinate: any) => {
+            const numberCoord = Number(coordinate);
+            return !Number.isNaN(numberCoord) ? numberCoord : 0;
+          }),
+        },
+      }));
+      options.geojson.features = mappedFeatures;
+    }
     if (options.type !== 'group') {
       // Not group layer, add other properties
       this.datasource = get(options, 'datasource', null);
