@@ -34,6 +34,7 @@
       class="relative flex justify-between bg-primary-500 text-white pointer-events-auto"
     >
       <div
+        *ngIf="editable"
         [ngClass]="{
           'flex-col':
             position === filterPosition.LEFT ||

@@ -2,6 +2,7 @@ import {
   Component,
   ElementRef,
   HostListener,
+  Input,
   NgZone,
   OnDestroy,
   OnInit,
@@ -70,6 +71,8 @@ export class DashboardFilterComponent
 
   /** Indicate empty status of filter */
   public empty = false;
+
+  @Input() editable = false;
 
   /**
    * Class constructor
