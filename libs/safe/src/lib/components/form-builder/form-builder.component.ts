@@ -94,6 +94,8 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   surveyCreator!: SurveyCreator.SurveyCreator;
   public json: any;
 
+  private relatedNames!: string[];
+
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
@@ -376,6 +378,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * Makes sure that value names are existent and snake case, to not cause backend problems.
    */
   private async validateValueNames(): Promise<void> {
+    this.relatedNames = [];
     const survey = new Survey.SurveyModel(this.surveyCreator.JSON);
     survey.pages.forEach((page: Survey.PageModel) => {
       page.questions.forEach((question: Survey.Question) =>
@@ -516,6 +519,19 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     if (['resource', 'resources'].includes(question.getType())) {
       if (question.relatedName) {
         question.relatedName = this.toSnakeCase(question.relatedName);
+        if (this.relatedNames.includes(question.relatedName)) {
+          throw new Error(
+            this.translate.instant(
+              'components.formBuilder.errors.duplicatedRelatedName',
+              {
+                question: question.name,
+                page: page.name,
+              }
+            )
+          );
+        } else {
+          this.relatedNames.push(question.relatedName);
+        }
       } else {
         throw new Error(
           this.translate.instant(
