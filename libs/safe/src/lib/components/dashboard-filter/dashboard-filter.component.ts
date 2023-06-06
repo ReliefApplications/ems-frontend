@@ -72,7 +72,7 @@ export class DashboardFilterComponent
   public applicationId?: string;
 
   /** Indicate empty status of filter */
-  public empty = false;
+  public empty = true;
 
   @Input() editable = false;
 
