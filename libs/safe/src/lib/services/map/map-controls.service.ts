@@ -376,6 +376,8 @@ export class SafeMapControlsService {
       instance.map = map;
       instance.mapEvent = mapEvent;
       L.DomEvent.addListener(div, 'mousedown', L.DomEvent.stopPropagation);
+      L.DomEvent.addListener(div, 'click', L.DomEvent.stopPropagation);
+      L.DomEvent.addListener(div, 'wheel', L.DomEvent.stopPropagation);
       return div;
     };
     map.addControl(customZoomControl);

@@ -86,6 +86,10 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
    * @param e event
    */
   public selectionOnChange(e: any) {
+    // If no value is set into no this.value return
+    if (!e.value && !this.value) {
+      return;
+    }
     this.value = e.value;
     this.onChanged(this.value);
   }

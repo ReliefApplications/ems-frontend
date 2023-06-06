@@ -128,7 +128,6 @@ export class MapLayerComponent
 
   ngOnInit(): void {
     this.form = createLayerForm(this.layer);
-    console.log(this.form.value);
     this.setIsDatasourceValid(this.form.get('datasource')?.value);
     this.form
       .get('datasource')
