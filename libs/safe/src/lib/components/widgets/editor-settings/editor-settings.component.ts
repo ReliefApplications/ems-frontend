@@ -50,7 +50,7 @@ export type EditorFormType = ReturnType<typeof createEditorForm>;
 })
 export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
   // === REACTIVE FORM ===
-  tileForm: ReturnType<typeof createEditorForm> | undefined;
+  tileForm!: EditorFormType;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -118,6 +118,9 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     this.tileForm?.valueChanges.subscribe(() => {
       this.change.emit(this.tileForm);
+      this.tile.settings.text = this.tileForm.value.text;
+      this.tile.settings.record = this.tileForm.value.record;
+      this.tile.settings.title = this.tileForm.value.title;
     });
     this.updateFields();
   }

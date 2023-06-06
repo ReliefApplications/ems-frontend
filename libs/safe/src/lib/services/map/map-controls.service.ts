@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { EventEmitter, Inject, Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MARKER_OPTIONS } from '../../components/ui/map/const/marker-options';
 import { MapDownloadComponent } from '../../components/ui/map/map-download/map-download.component';
@@ -14,6 +14,8 @@ import * as Geocoding from 'esri-leaflet-geocoder';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/language';
 import { MapLayersComponent } from '../../components/ui/map/map-layers/map-layers.component';
 import { legendControl } from '../../components/ui/map/controls/legend.control';
+import { MapZoomComponent } from '../../components/ui/map/map-zoom/map-zoom.component';
+import { MapEvent } from '../../components/ui/map/interfaces/map.interface';
 
 /**
  * Shared map control service.
@@ -232,7 +234,6 @@ export class SafeMapControlsService {
    * Control is automated to listen to map layers changes
    *
    * @param map leaflet map
-   * @param layers leaflet layers
    * @param addControl flag that indicates if should add or remove the control
    */
   public getLegendControl(map: L.Map, addControl: boolean): void {
@@ -340,6 +341,71 @@ export class SafeMapControlsService {
         this.downloadControl = null;
       }
     }
+  }
+
+  /**
+   * Add a zoom slider to control the zoom level of the map
+   *
+   * @param map map widget
+   * @param maxZoom maximum zoom for the map
+   * @param minZoom minimum zoom for the map
+   * @param currentZoom currentZoom of the map
+   * @param mapEvent listen to map events to get correct zoom
+   * @returns zoomControl
+   */
+  public getZoomControl(
+    map: L.Map,
+    maxZoom: number,
+    minZoom: number,
+    currentZoom: number,
+    mapEvent: EventEmitter<MapEvent>
+  ) {
+    const customZoomControl = new L.Control(<any>{
+      position: 'verticalcenterright',
+    });
+    customZoomControl.onAdd = () => {
+      const div = L.DomUtil.create('div');
+      const component = this.domService.appendComponentToBody(
+        MapZoomComponent,
+        div
+      );
+      const instance: MapZoomComponent = component.instance;
+      instance.maxZoom = maxZoom;
+      instance.minZoom = minZoom;
+      instance.currentZoom = currentZoom;
+      instance.map = map;
+      instance.mapEvent = mapEvent;
+      L.DomEvent.addListener(div, 'mousedown', L.DomEvent.stopPropagation);
+      L.DomEvent.addListener(div, 'click', L.DomEvent.stopPropagation);
+      L.DomEvent.addListener(div, 'wheel', L.DomEvent.stopPropagation);
+      return div;
+    };
+    map.addControl(customZoomControl);
+    return customZoomControl;
+  }
+
+  /**
+   * Adds custom zoom control (different from the leaflet default one
+   *
+   * @param map Leaflet map
+   */
+  public addControlPlaceholders(map: any) {
+    const corners = map._controlCorners,
+      l = 'leaflet-',
+      container = map._controlContainer;
+
+    /**
+     * Creates new corner for the map
+     *
+     * @param vSide vertical side
+     * @param hSide horizontal side
+     */
+    function createCorner(vSide: string, hSide: string) {
+      const className = l + vSide + ' ' + l + hSide;
+
+      corners[vSide + hSide] = L.DomUtil.create('div', className, container);
+    }
+    createCorner('verticalcenter', 'right');
   }
 
   /**

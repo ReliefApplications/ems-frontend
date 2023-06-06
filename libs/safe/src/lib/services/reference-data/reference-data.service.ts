@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { isArray, isEqual, get } from 'lodash';
+import { isArray, isEqual } from 'lodash';
 import { map } from 'rxjs/operators';
 import localForage from 'localforage';
 import {
@@ -250,7 +250,9 @@ export class SafeReferenceDataService {
           referenceData.apiConfiguration?.name +
           referenceData.query;
         const data = await this.apiProxy.promisedRequestWithHeaders(url);
-        items = referenceData.path ? get(data, referenceData.path) : data;
+        items = referenceData.path
+          ? jsonpath.query(data, referenceData.path)
+          : data;
         break;
       }
       case referenceDataType.static: {

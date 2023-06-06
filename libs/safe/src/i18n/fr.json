@@ -1527,7 +1527,9 @@
 								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
 							}
 						},
-						"preview": {},
+						"preview": {
+							"title": "Prévisualisation"
+						},
 						"textEditor": {
 							"alert": "Vous pouvez ajouter des variables ex: {{data.variable}} et faire des calculs ex: {{calc.round( value ; precision )}}",
 							"title": "Éditeur de texte"
@@ -1717,6 +1719,18 @@
 			"stick": "Épingler",
 			"unlock": "Déverrouiller",
 			"unstick": "Désépingler"
+		},
+		"pager": {
+			"firstPage": "Aller à la première page",
+			"items": "éléments",
+			"itemsPerPage": "éléments par page",
+			"label": "'Navigation de page, page {currentPage} sur {totalPages}'",
+			"lastPage": "Aller à la dernière page",
+			"nextPage": "Aller à la page suivante",
+			"of": "sur",
+			"page": "Page",
+			"pageNumberInputTitle": "Numéro de page",
+			"previousPage": "Aller à la page précédente"
 		},
 		"tilelayout": {
 			"component": {
@@ -1994,6 +2008,10 @@
 				},
 				"selectApplication": "Application manquante pour un élément de la page : {{page}}. Veuillez sélectionner au moins une application dans les propriétés de {{question}} pour sauvegarder le formulaire.",
 				"snakecase": "Le nom de valeur {{name}} de la page {{page}} est invalide. Veuillez configurer un nom valide (en format snake_case) pour sauvegarder le formulaire."
+			},
+			"move": {
+				"down": "Descendre la question",
+				"up": "Monter la question"
 			},
 			"questionsCategories": {
 				"core": "Bibliothèque de questions"

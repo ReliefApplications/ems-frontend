@@ -40,9 +40,7 @@
         <!-- Remove value -->
         <safe-button
           matSuffix
-          (click)="
-            form.get('basemap')?.setValue(null); $event.stopPropagation()
-          "
+          (click)="clearFormField('basemap', $event)"
           [isIcon]="true"
           icon="close"
           variant="danger"
