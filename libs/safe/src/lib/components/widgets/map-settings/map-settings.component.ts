@@ -41,7 +41,6 @@ export class SafeMapSettingsComponent
   public layerIds: string[] = [];
   // === REACTIVE FORM ===
   tileForm: UntypedFormGroup | undefined;
-  public layerDisplay = false;
 
   // layerNavigationTemplate: TemplateRef<any> | null = null;
   // layerSettingsTemplate: TemplateRef<any> | null = null;
@@ -206,10 +205,8 @@ export class SafeMapSettingsComponent
         ...this.mapSettings,
         ...settings,
       };
-      this.layerDisplay = settings.controls.layer;
     } else {
       this.mapSettings = settings;
-      this.layerDisplay = settings.controls.layer;
     }
   }
 

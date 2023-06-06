@@ -126,7 +126,7 @@ export class MapComponent
     private translate: TranslateService,
     private mapControlsService: SafeMapControlsService,
     private arcgisService: ArcgisService,
-    private mapLayersService: SafeMapLayersService,
+    public mapLayersService: SafeMapLayersService,
     public mapPopupService: SafeMapPopupService,
     private renderer: Renderer2
   ) {
@@ -408,7 +408,7 @@ export class MapComponent
       controls.download ?? true
     );
     // Add zoom control
-    if (!this.zoomControl) {
+    if (!this.zoomControl && !this.map.zoomControl) {
       this.zoomControl = this.mapControlsService.getZoomControl(
         this.map,
         this.map.getMaxZoom(),
@@ -462,9 +462,6 @@ export class MapComponent
     };
     this.layersTree = layers;
     // Add control to the map layers
-    // if (this.layerControl) {
-    //   this.layerControl.setLayersControl
-    // }
     if (this.layerControl) {
       if (!this.extractSettings().controls.layer) {
         this.map.removeControl(this.layerControl);
