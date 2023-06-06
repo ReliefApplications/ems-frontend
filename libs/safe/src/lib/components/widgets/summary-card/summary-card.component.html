@@ -67,6 +67,7 @@
     </div>
     <!-- Pagination -->
     <kendo-datapager
+      *ngIf="settings.widgetDisplay?.usePagination"
       [style.width.%]="100"
       [pageSize]="pageInfo.first"
       [pageSizeValues]="[10, 25, 50, 100]"
