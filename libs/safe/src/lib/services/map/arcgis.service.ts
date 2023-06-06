@@ -149,6 +149,8 @@ export class ArcgisService {
               );
             }
           } catch (error) {
+            console.log(layer);
+            console.log(styleUrlContent);
             console.log(error);
             break;
           }
