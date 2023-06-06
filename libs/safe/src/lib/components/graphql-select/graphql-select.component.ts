@@ -79,6 +79,10 @@ export class SafeGraphQLSelectComponent
   @Output() searchChange = new EventEmitter<string>();
   public searchControl = new UntypedFormControl('');
 
+  public virtual: any = {
+    itemHeight: 28,
+  };
+
   /**
    * Gets the value
    *

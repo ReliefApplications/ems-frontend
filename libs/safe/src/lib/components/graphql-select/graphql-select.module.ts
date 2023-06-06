@@ -8,6 +8,7 @@ import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@ang
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SafeButtonModule } from '../ui/button/button.module';
+import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 
 /**
  * Select module for GraphQL queries.
@@ -24,6 +25,7 @@ import { SafeButtonModule } from '../ui/button/button.module';
     MatProgressSpinnerModule,
     MatInputModule,
     SafeButtonModule,
+    DropDownsModule,
   ],
   exports: [SafeGraphQLSelectComponent],
 })
