@@ -51,6 +51,7 @@ export interface Field {
   filter: any;
   fields?: Field[];
   options?: { value: any; text: string }[];
+  type?: string;
 }
 
 /** Stored query field interface definition */
