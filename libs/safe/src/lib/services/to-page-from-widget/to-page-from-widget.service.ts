@@ -58,33 +58,9 @@ export class ToPageFromWidgetService {
       let resultText = '';
       if (sameApplication) {
         //Get page information from the database
-        const pagePromise: Promise<any> = firstValueFrom(
-          this.apollo.query<GetPageByIdQueryResponse>({
-            query: GET_PAGE_BY_ID,
-            variables: {
-              id: pageId,
-            },
-          })
-        );
-        const pageToLink = await Promise.resolve(pagePromise);
-        //Build the url depending on whether we are in the front or back office
-        let url: string;
-        this.router.url.includes('/applications')
-          ? (url = './applications/')
-          : (url = './');
-        let finalUrlElement;
-        pageToLink.data.page.type === 'dashboard'
-          ? (finalUrlElement = pageToLink.data.page.content)
-          : (finalUrlElement = pageToLink.data.page.id);
-        url +=
-          currentAppId +
-          '/' +
-          pageToLink.data.page.type +
-          '/' +
-          finalUrlElement;
+        const pageInfo = await this.getPageInfo(pageId, currentAppId);
 
-        resultText =
-          '<a href="' + url + '">' + pageToLink.data.page.name + '</a>';
+        resultText = '<a href="' + pageInfo.url + '">' + pageInfo.name + '</a>';
       } else {
         resultText = 'Error : Cannot link to page outside of this application';
       }
@@ -94,6 +70,31 @@ export class ToPageFromWidgetService {
     }
     return html;
   };
+
+  public async getPageInfo(pageId: any, currentAppId: any) {
+    const pagePromise: Promise<any> = firstValueFrom(
+      this.apollo.query<GetPageByIdQueryResponse>({
+        query: GET_PAGE_BY_ID,
+        variables: {
+          id: pageId,
+        },
+      })
+    );
+    const pageToLink = await Promise.resolve(pagePromise);
+    //Build the url depending on whether we are in the front or back office
+    let url: string;
+    this.router.url.includes('/applications')
+      ? (url = './applications/')
+      : (url = './');
+    let finalUrlElement;
+    pageToLink.data.page.type === 'dashboard'
+      ? (finalUrlElement = pageToLink.data.page.content)
+      : (finalUrlElement = pageToLink.data.page.id);
+    url +=
+      currentAppId + '/' + pageToLink.data.page.type + '/' + finalUrlElement;
+
+    return { url: url, name: pageToLink.data.page.name };
+  }
 
   /**
    * Checks if page is contained inside the current application

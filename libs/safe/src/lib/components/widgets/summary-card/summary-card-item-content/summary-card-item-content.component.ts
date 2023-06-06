@@ -109,17 +109,14 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
   public async onClick(event: any) {
     const type = event.target.getAttribute('type');
     if (this.makeCardClickable) {
-      //Check if page to link is from same app or not. If not, do not link it
-      const sameApplication = await this.toPageService.checkPageApplication(
-        this.pageToLink,
-        this.currentAppId
-      );
-      if (sameApplication) {
-        this.router.navigate([
-          './applications/645e0c941d360b3e80725bf8/form/64638583886a176c28824ff4',
-        ]);
-      } else {
-        console.log('CANNOT REDIRECT TO PAGE OUTSIDE THIS APPLICATION');
+      try {
+        const pageInfo = await this.toPageService.getPageInfo(
+          this.pageToLink,
+          this.currentAppId
+        );
+        this.router.navigate([pageInfo.url]);
+      } catch {
+        console.log('SOMETHING WENT WRONG');
       }
     }
     if (type === 'file') {
