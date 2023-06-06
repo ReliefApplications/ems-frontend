@@ -508,6 +508,7 @@ export class Layer implements LayerModel {
         const sublayers = await this.getChildren();
 
         for (const child of sublayers) {
+          child.opacity = child.opacity * this.opacity;
           child.layer = await child.getLayer();
         }
         const layers = sublayers
