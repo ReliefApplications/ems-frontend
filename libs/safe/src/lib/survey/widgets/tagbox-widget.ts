@@ -74,10 +74,19 @@ export const init = (Survey: any, domService: DomService): void => {
         question.value = value;
       });
       const updateChoices = () => {
-        tagboxInstance.data = question.visibleChoices.map((choice: any) => ({
-          text: choice.text,
-          value: choice.value,
-        }));
+        if (question.visibleChoices && Array.isArray(question.visibleChoices)) {
+          tagboxInstance.data = question.visibleChoices.map((choice: any) =>
+            typeof choice === 'string'
+              ? {
+                  text: choice,
+                  value: choice,
+                }
+              : {
+                  text: choice.text,
+                  value: choice.value,
+                }
+          );
+        }
       };
       question._propertyValueChangedVirtual = () => {
         updateChoices();
@@ -116,6 +125,7 @@ export const init = (Survey: any, domService: DomService): void => {
     tagboxInstance.virtual = {
       itemHeight: 28,
     };
+    tagboxInstance.valuePrimitive = true;
     tagboxInstance.textField = 'text';
     tagboxInstance.valueField = 'value';
     return tagboxInstance;

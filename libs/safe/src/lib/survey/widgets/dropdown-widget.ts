@@ -23,6 +23,7 @@ export const init = (Survey: any, domService: DomService): void => {
       dropdownDiv = document.createElement('div');
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const dropdownInstance = createDropdownInstance(dropdownDiv);
+      console.log(question.value);
       dropdownInstance.value = question.value;
       dropdownInstance.placeholder = question.placeholder;
       dropdownInstance.readonly = question.isReadOnly;
@@ -31,10 +32,19 @@ export const init = (Survey: any, domService: DomService): void => {
         question.value = value;
       });
       const updateChoices = () => {
-        dropdownInstance.data = question.visibleChoices.map((choice) => ({
-          text: choice.text,
-          value: choice.value,
-        }));
+        if (question.visibleChoices && Array.isArray(question.visibleChoices)) {
+          dropdownInstance.data = question.visibleChoices.map((choice: any) =>
+            typeof choice === 'string'
+              ? {
+                  text: choice,
+                  value: choice,
+                }
+              : {
+                  text: choice.text,
+                  value: choice.value,
+                }
+          );
+        }
       };
       question._propertyValueChangedVirtual = () => {
         updateChoices();
@@ -73,6 +83,7 @@ export const init = (Survey: any, domService: DomService): void => {
     // dropdownInstance.virtual = {
     //   itemHeight: 28,
     // };
+    dropdownInstance.valuePrimitive = true;
     dropdownInstance.textField = 'text';
     dropdownInstance.valueField = 'value';
     return dropdownInstance;

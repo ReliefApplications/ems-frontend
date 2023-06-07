@@ -1,5 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import {
+  GET_SHORT_RESOURCE_BY_ID,
   GET_RESOURCE_BY_ID,
   GetResourceByIdQueryResponse,
 } from '../graphql/queries';
@@ -30,7 +31,15 @@ export const init = (
   dialog: MatDialog,
   formBuilder: UntypedFormBuilder
 ): void => {
-  const getResourceById = (data: {
+  const getResourceById = (data: { id: string }) =>
+    apollo.query<GetResourceByIdQueryResponse>({
+      query: GET_SHORT_RESOURCE_BY_ID,
+      variables: {
+        id: data.id,
+      },
+    });
+
+  const getResourceRecordsById = (data: {
     id: string;
     filters?: { field: string; operator: string; value: string }[];
   }) =>
@@ -208,19 +217,21 @@ export const init = (
         visibleIndex: 3,
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource) {
-            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const serverRes =
-                data.resource.records?.edges?.map((x) => x.node) || [];
-              const res = [];
-              res.push({ value: null });
-              for (const item of serverRes) {
-                res.push({
-                  value: item?.id,
-                  text: item?.data[obj.displayField || 'id'],
-                });
+            getResourceRecordsById({ id: obj.resource }).subscribe(
+              ({ data }) => {
+                const serverRes =
+                  data.resource.records?.edges?.map((x) => x.node) || [];
+                const res = [];
+                res.push({ value: null });
+                for (const item of serverRes) {
+                  res.push({
+                    value: item?.id,
+                    text: item?.data[obj.displayField || 'id'],
+                  });
+                }
+                choicesCallback(res);
               }
-              choicesCallback(res);
-            });
+            );
           }
         },
       });
@@ -550,7 +561,7 @@ export const init = (
     },
     populateChoices: (question: QuestionResource): void => {
       if (question.resource) {
-        getResourceById({ id: question.resource, filters }).subscribe(
+        getResourceRecordsById({ id: question.resource, filters }).subscribe(
           ({ data }) => {
             const serverRes =
               data.resource.records?.edges?.map((x) => x.node) || [];

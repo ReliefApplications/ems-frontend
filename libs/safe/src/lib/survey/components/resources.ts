@@ -1,5 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import {
+  GET_SHORT_RESOURCE_BY_ID,
   GET_RESOURCE_BY_ID,
   GetResourceByIdQueryResponse,
 } from '../graphql/queries';
@@ -47,7 +48,15 @@ export const init = (
   dialog: MatDialog,
   formBuilder: UntypedFormBuilder
 ): void => {
-  const getResourceById = (data: {
+  const getResourceById = (data: { id: string }) =>
+    apollo.query<GetResourceByIdQueryResponse>({
+      query: GET_SHORT_RESOURCE_BY_ID,
+      variables: {
+        id: data.id,
+      },
+    });
+
+  const getResourceRecordsById = (data: {
     id: string;
     filters?: { field: string; operator: string; value: string }[];
   }) =>
@@ -57,6 +66,7 @@ export const init = (
         id: data.id,
         filter: data.filters,
       },
+      fetchPolicy: 'no-cache',
     });
 
   // const hasUniqueRecord = ((id: string) => false);
@@ -251,19 +261,21 @@ export const init = (
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
-            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const serverRes =
-                data.resource.records?.edges?.map((x) => x.node) || [];
-              const res = [];
-              res.push({ value: null });
-              for (const item of serverRes) {
-                res.push({
-                  value: item?.id,
-                  text: item?.data[obj.displayField],
-                });
+            getResourceRecordsById({ id: obj.resource }).subscribe(
+              ({ data }) => {
+                const serverRes =
+                  data.resource.records?.edges?.map((x) => x.node) || [];
+                const res = [];
+                res.push({ value: null });
+                for (const item of serverRes) {
+                  res.push({
+                    value: item?.id,
+                    text: item?.data[obj.displayField],
+                  });
+                }
+                choicesCallback(res);
               }
-              choicesCallback(res);
-            });
+            );
           }
         },
       });
@@ -629,25 +641,27 @@ export const init = (
             );
           }
         }
-        getResourceById({ id: question.resource }).subscribe(({ data }) => {
-          const serverRes =
-            data.resource.records?.edges?.map((x) => x.node) || [];
-          const res = [];
-          for (const item of serverRes) {
-            res.push({
-              value: item?.id,
-              text: item?.data[question.displayField],
-            });
+        getResourceRecordsById({ id: question.resource }).subscribe(
+          ({ data }) => {
+            const serverRes =
+              data.resource.records?.edges?.map((x) => x.node) || [];
+            const res = [];
+            for (const item of serverRes) {
+              res.push({
+                value: item?.id,
+                text: item?.data[question.displayField],
+              });
+            }
+            question.contentQuestion.choices = res;
+            if (!question.placeholder) {
+              question.contentQuestion.optionsCaption =
+                'Select a record from ' + data.resource.name + '...';
+            }
+            if (!question.filterBy || question.filterBy.length < 1) {
+              this.populateChoices(question);
+            }
           }
-          question.contentQuestion.choices = res;
-          if (!question.placeholder) {
-            question.contentQuestion.optionsCaption =
-              'Select a record from ' + data.resource.name + '...';
-          }
-          if (!question.filterBy || question.filterBy.length < 1) {
-            this.populateChoices(question);
-          }
-        });
+        );
         if (question.selectQuestion) {
           if (question.selectQuestion === '#staticValue') {
             setAdvanceFilter(question.staticValue, question);
@@ -710,7 +724,7 @@ export const init = (
           resourcesFilterValues.next(filters);
         }
       } else {
-        getResourceById({ id: question.resource, filters }).subscribe(
+        getResourceRecordsById({ id: question.resource, filters }).subscribe(
           ({ data }) => {
             const serverRes =
               data.resource.records?.edges?.map((x) => x.node) || [];
