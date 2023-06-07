@@ -3,6 +3,12 @@ import { DomService } from '../../services/dom/dom.service';
 import { Question } from '../types';
 import { QuestionDropdown } from 'survey-knockout';
 
+/**
+ * Init dropdown widget
+ *
+ * @param Survey Survey instance
+ * @param domService Shared dom service
+ */
 export const init = (Survey: any, domService: DomService): void => {
   const widget = {
     name: 'dropdown-widget',
@@ -33,6 +39,12 @@ export const init = (Survey: any, domService: DomService): void => {
     },
   };
 
+  /**
+   * Create dropdown instance
+   *
+   * @param element html element
+   * @returns combobox component
+   */
   const createDropdownInstance = (element: any): ComboBoxComponent => {
     const dropdown = domService.appendComponentToBody(
       ComboBoxComponent,
