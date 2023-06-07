@@ -1415,6 +1415,9 @@
 		}
 	},
 	"kendo": {
+		"combobox": {
+			"noDataText": "******"
+		},
 		"datepicker": {
 			"today": "******",
 			"toggle": "******"
@@ -1563,6 +1566,9 @@
 			"stick": "******",
 			"unlock": "******",
 			"unstick": "******"
+		},
+		"multiselect": {
+			"noDataText": "******"
 		},
 		"pager": {
 			"firstPage": "******",

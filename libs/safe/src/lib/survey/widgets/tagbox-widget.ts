@@ -58,23 +58,46 @@ export const init = (Survey: any, domService: DomService): void => {
     },
     isDefaultRender: false,
     htmlTemplate: '<div></div>',
-    afterRender: (question: any, el: HTMLInputElement): void => {
+    afterRender: (question: any, el: HTMLElement): void => {
+      widget.willUnmount(question);
+      console.log('creating tagbox...');
       let tagboxDiv: HTMLDivElement | null = null;
       tagboxDiv = document.createElement('div');
+      tagboxDiv.id = 'tagbox';
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const tagboxInstance = createTagboxInstance(tagboxDiv);
       tagboxInstance.value = question.value;
       tagboxInstance.placeholder = question.placeholder;
       tagboxInstance.readonly = question.isReadOnly;
       tagboxInstance.disabled = question.isReadOnly;
-      tagboxInstance.data = question.visibleChoices.map((choice: any) => ({
-        text: choice.text,
-        value: choice.value,
-      }));
       tagboxInstance.registerOnChange((value: any) => {
         question.value = value;
       });
+      const updateChoices = () => {
+        tagboxInstance.data = question.visibleChoices.map((choice: any) => ({
+          text: choice.text,
+          value: choice.value,
+        }));
+      };
+      question._propertyValueChangedVirtual = () => {
+        updateChoices();
+      };
+      question.registerFunctionOnPropertyValueChanged(
+        'visibleChoices',
+        question._propertyValueChangedVirtual
+      );
+      updateChoices();
       el.parentElement?.appendChild(tagboxDiv);
+    },
+    willUnmount: (question: any): void => {
+      if (!question._propertyValueChangedVirtual) return;
+      question.readOnlyChangedCallback = null;
+      question.valueChangedCallback = null;
+      question.unRegisterFunctionOnPropertyValueChanged(
+        'visibleChoices',
+        question._propertyValueChangedVirtual
+      );
+      question._propertyValueChangedVirtual = undefined;
     },
   };
 
@@ -95,12 +118,6 @@ export const init = (Survey: any, domService: DomService): void => {
     };
     tagboxInstance.textField = 'text';
     tagboxInstance.valueField = 'value';
-    tagboxInstance.data = [
-      {
-        text: 'choice 1',
-        value: 'one',
-      },
-    ];
     return tagboxInstance;
   };
 
