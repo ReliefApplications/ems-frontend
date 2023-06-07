@@ -1363,10 +1363,14 @@
 							"title": "******"
 						},
 						"display": {
+							"clickable": "******",
 							"dataSource": "******",
 							"header": "******",
+							"pageError": "******",
+							"pageId": "******",
 							"title": "******",
 							"tooltip": {
+								"clickable": "******",
 								"datasource": "******"
 							}
 						},

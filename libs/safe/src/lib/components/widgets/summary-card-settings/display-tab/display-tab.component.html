@@ -36,21 +36,35 @@
         ></safe-icon>
       </mat-slide-toggle>
       <mat-slide-toggle formControlName="makeCardClickable">
-        Make whole card clickable
+        {{
+          'components.widget.settings.summaryCard.card.display.clickable'
+            | translate
+        }}
         <safe-icon
           icon="info_outline"
           variant="grey"
           [inline]="true"
           [size]="18"
-          matTooltip="Clicking on the card will redirect the user to a different page in the same application"
+          [matTooltip]="
+            'components.widget.settings.summaryCard.card.display.tooltip.clickable'
+              | translate
+          "
         ></safe-icon>
       </mat-slide-toggle>
       <ng-container *ngIf="form.value.card.makeCardClickable">
         <mat-form-field class="url-input" appearance="outline">
-          <mat-label>Page ID *</mat-label>
+          <mat-label>
+            {{
+              'components.widget.settings.summaryCard.card.display.pageId'
+                | translate
+            }}</mat-label
+          >
           <input formControlName="pageToLink" matInput type="string" />
           <mat-error *ngIf="cardPageToLink?.errors">
-            Please enter a page ID with a valid format
+            {{
+              'components.widget.settings.summaryCard.card.display.pageError'
+                | translate
+            }}
           </mat-error>
         </mat-form-field>
       </ng-container>

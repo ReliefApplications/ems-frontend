@@ -1370,10 +1370,14 @@
 							"title": "Source de données"
 						},
 						"display": {
+							"clickable": "Rendre carte cliquable",
 							"dataSource": "Afficher le lien vers la source de données",
 							"header": "Titre",
+							"pageError": "Veuillez entrer un ID de page avec un format valide",
+							"pageId": "ID de la page",
 							"title": "Affichage",
 							"tooltip": {
+								"clickable": "Cliquer sur la carte va rediriger l'utilisateur vers une autre page de la même application",
 								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
 							}
 						},

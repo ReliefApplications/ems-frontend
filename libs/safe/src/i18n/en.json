@@ -1363,10 +1363,14 @@
 							"title": "Data source"
 						},
 						"display": {
+							"clickable": "Make whole card clickable",
 							"dataSource": "Show link to data source",
 							"header": "Header",
+							"pageError": "Please enter a page ID with a valid format",
+							"pageId": "Page ID",
 							"title": "Display",
 							"tooltip": {
+								"clickable": "Clicking on the card will redirect the user to a different page in the same application",
 								"datasource": "Add a button in widget's header to view card's data source"
 							}
 						},
