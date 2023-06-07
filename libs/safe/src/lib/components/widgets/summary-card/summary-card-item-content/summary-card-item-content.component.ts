@@ -112,16 +112,29 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
   public async onClick(event: any) {
     const type = event.target.getAttribute('type');
     if (this.makeCardClickable) {
-      try {
-        const pageInfo = await this.toPageService.getPageInfo(
-          this.pageToLink,
-          this.currentAppId
+      const sameApp = await this.toPageService.checkPageApplication(
+        this.pageToLink,
+        this.currentAppId
+      );
+      if (sameApp) {
+        try {
+          const pageInfo = await this.toPageService.getPageInfo(
+            this.pageToLink,
+            this.currentAppId
+          );
+          this.router.navigate([pageInfo.url]);
+        } catch {
+          this.snackBar.openSnackBar('Redirecting to page was unsuccessful', {
+            error: true,
+          });
+        }
+      } else {
+        this.snackBar.openSnackBar(
+          'Cannot redirect to page outside application',
+          {
+            error: true,
+          }
         );
-        this.router.navigate([pageInfo.url]);
-      } catch {
-        this.snackBar.openSnackBar('Redirecting to page was unsuccessful', {
-          error: true,
-        });
       }
     }
     if (type === 'file') {
