@@ -135,7 +135,7 @@ export class SafeFormModalComponent
     public dialog: Dialog,
     public dialogRef: DialogRef<SafeFormModalComponent>,
     private apollo: Apollo,
-    private snackBar: SnackbarService,
+    protected snackBar: SnackbarService,
     private authService: SafeAuthService,
     private formBuilderService: SafeFormBuilderService,
     protected formHelpersService: SafeFormHelpersService,

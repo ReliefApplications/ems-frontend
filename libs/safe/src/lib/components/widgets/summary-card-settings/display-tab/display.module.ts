@@ -8,6 +8,7 @@ import {
   TooltipModule,
   FormWrapperModule,
   IconModule,
+  DividerModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDisplayTabComponent } from './display-tab.component';
@@ -26,6 +27,7 @@ import { SafeDisplayTabComponent } from './display-tab.component';
     TooltipModule,
     ToggleModule,
     IconModule,
+    DividerModule,
   ],
   exports: [SafeDisplayTabComponent],
 })

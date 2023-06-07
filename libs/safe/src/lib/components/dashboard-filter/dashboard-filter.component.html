@@ -58,10 +58,10 @@
           *ngFor="let quickFilter of quickFilters"
           class="flex flex-auto overflow-auto justify-center gap-4"
         >
+          <!--            matTooltipClass="multiline-tooltip"-->
           <div
             class="z-20 whitespace-nowrap"
-            [matTooltip]="quickFilter.tooltip ? quickFilter.tooltip : ''"
-            matTooltipClass="multiline-tooltip"
+            [uiTooltip]="quickFilter.tooltip ? quickFilter.tooltip : ''"
           >
             {{ quickFilter.label }}
           </div>

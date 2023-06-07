@@ -10,7 +10,6 @@ import {
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import { debounceTime, distinctUntilChanged, firstValueFrom } from 'rxjs';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
@@ -33,7 +32,8 @@ import { Layout } from '../../../models/layout.model';
 import { PageChangeEvent } from '@progress/kendo-angular-grid';
 import { FormControl } from '@angular/forms';
 import { clone, isNaN } from 'lodash';
-import { SafeSnackBarService } from '../../../services/snackbar/snackbar.service';
+import { SnackbarService } from '@oort-front/ui';
+import { Dialog } from '@angular/cdk/dialog';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -121,8 +121,8 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    */
   constructor(
     private apollo: Apollo,
-    private dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    private dialog: Dialog,
+    private snackBar: SnackbarService,
     private translate: TranslateService,
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: SafeGridLayoutService,

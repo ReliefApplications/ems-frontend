@@ -1,8 +1,8 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
 import { TranslateModule } from '@ngx-translate/core';
+import { ToggleModule } from '@oort-front/ui';
 
 /** Component for selecting the widget display options */
 @Component({
@@ -12,7 +12,7 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatSlideToggleModule,
+    ToggleModule,
     TranslateModule,
   ],
   templateUrl: './display-settings.component.html',

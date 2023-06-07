@@ -47,11 +47,11 @@
     <!-- Widget display options -->
     <ui-tab>
       <ng-container ngProjectAs="label">
-        <safe-icon
+        <ui-icon
           icon="settings_overscan"
           [size]="24"
-          [uiTooltip]="{{ 'models.widget.display.title' | translate }}"
-        ></safe-icon>
+          [uiTooltip]="'models.widget.display.title' | translate"
+        ></ui-icon>
         <span>{{ 'models.widget.display.title' | translate }}</span>
       </ng-container>
       <safe-display-settings [formGroup]="tileForm"></safe-display-settings>

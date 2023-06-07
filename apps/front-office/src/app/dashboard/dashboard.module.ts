@@ -5,7 +5,6 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import {
   SafeApplicationToolbarModule,
   SafeLayoutModule,
-  SafeLeftSidenavModule,
   SafeEmptyModule,
   SafeNavbarModule,
 } from '@oort-front/safe';
@@ -21,7 +20,6 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     SafeLayoutModule,
-    SafeLeftSidenavModule,
     DashboardRoutingModule,
     SafeApplicationToolbarModule,
     SafeEmptyModule,

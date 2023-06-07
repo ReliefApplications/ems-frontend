@@ -2,11 +2,11 @@
   {{ 'models.widget.display.title' | translate }}
 </h2>
 <form class="flex flex-col gap-2">
-  <mat-slide-toggle
-    [formControl]="$any(formGroup.get('widgetDisplay.showBorder'))"
-  >
-    {{ 'models.widget.display.border' | translate }}
-  </mat-slide-toggle>
+  <ui-toggle [formControl]="$any(formGroup.get('widgetDisplay.showBorder'))">
+    <ng-container ngProjectAs="label">{{
+      'models.widget.display.border' | translate
+    }}</ng-container>
+  </ui-toggle>
 
   <!-- Other specific options for each widget type -->
   <ng-content></ng-content>

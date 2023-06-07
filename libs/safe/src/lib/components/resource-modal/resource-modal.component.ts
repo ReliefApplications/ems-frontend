@@ -5,17 +5,16 @@ import localForage from 'localforage';
 import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTabsModule } from '@angular/material/tabs';
-import { SafeButtonModule } from '../ui/button/button.module';
-import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '../ui/modal/modal.module';
-import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
+import {
+  ButtonModule,
+  DialogModule,
+  IconModule,
+  SpinnerModule,
+  TabsModule,
+} from '@oort-front/ui';
 
 /**
  * Factory for creating scroll strategy
@@ -45,17 +44,14 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   ],
   imports: [
     CommonModule,
-    MatDialogModule,
-    MatIconModule,
-    MatButtonModule,
-    MatTabsModule,
-    SafeButtonModule,
-    SafeIconModule,
+    ButtonModule,
+    IconModule,
     SafeRecordSummaryModule,
     SafeFormActionsModule,
     TranslateModule,
-    SafeModalModule,
-    SafeSpinnerModule,
+    DialogModule,
+    SpinnerModule,
+    TabsModule,
   ],
 })
 export class SafeResourceModalComponent extends SafeFormModalComponent {
@@ -110,7 +106,7 @@ export class SafeResourceModalComponent extends SafeFormModalComponent {
             id: temporaryId,
             data: survey.data,
           },
-        });
+        } as any);
       });
     }
     survey.showCompletedPage = true;

@@ -7,7 +7,6 @@ import {
   Output,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatLegacyTabChangeEvent } from '@angular/material/legacy-tabs';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Aggregation } from '../../../models/aggregation.model';
@@ -164,8 +163,8 @@ export class SafeSummaryCardSettingsComponent
    *
    * @param e Change tab event.
    */
-  handleTabChange(e: MatLegacyTabChangeEvent) {
-    this.activeTabIndex = e.index;
+  handleTabChange(e: number) {
+    this.activeTabIndex = e;
   }
 
   /**
