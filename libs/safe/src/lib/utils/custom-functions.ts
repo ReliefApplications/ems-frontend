@@ -103,8 +103,6 @@ const addCustomFunctions = (
         | QuestionMatrixModel
         | QuestionMatrixDynamicModel;
 
-      // console.log(matrix.cellType);
-
       return rows
         .map((row: string) => {
           const rowTitle =
