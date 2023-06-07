@@ -67,7 +67,7 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,,,,,,,,,,
+      // A700: #ffffff,,,,,,,,,,,
     ),
 );
 
@@ -330,6 +330,10 @@ $safe-theme: mat.define-light-theme(
   .mat-tooltip-panel {
     pointer-events: none !important;
   }
+}
+
+.multiline-tooltip {
+  white-space: pre-line;
 }
 
 // === GLOBAL STYLES ==
@@ -723,6 +727,28 @@ mat-tab-group[vertical] {
 
 // Define new colors
 @layer base {
+  // Revert all default changes of base layer in this custom class
+  // https://tailwindcss.com/docs/preflight
+  .no-tailwindcss-base,
+  .no-tailwindcss-base *,
+  .no-tailwindcss-base > * {
+    font-size: revert;
+    font-weight: revert;
+    margin: revert;
+    display: revert;
+    vertical-align: revert;
+    max-width: revert;
+    height: revert;
+    border-width: revert;
+    border-style: revert;
+    border-color: revert;
+    border-style: revert;
+    outline: revert;
+    list-style: revert;
+    padding: revert;
+    color: revert;
+    text-decoration: revert;
+  }
   :root {
     --primary-50: #{$primary_50};
     --primary-100: #{$primary_100};

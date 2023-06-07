@@ -2,8 +2,11 @@ import {
   Component,
   ElementRef,
   HostListener,
+  Input,
+  NgZone,
   OnDestroy,
   OnInit,
+  Optional,
   ViewChild,
 } from '@angular/core';
 import { FilterPosition } from './enums/dashboard-filters.enum';
@@ -23,6 +26,15 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { ContextService } from '../../services/context/context.service';
 import localForage from 'localforage';
+import { MatDrawerContent, MatSidenavContent } from '@angular/material/sidenav';
+
+/**
+ * Interface for quick filters
+ */
+interface QuickFilter {
+  label: string;
+  tooltip?: string;
+}
 
 /**  Dashboard contextual filter component. */
 @Component({
@@ -55,12 +67,20 @@ export class DashboardFilterComponent
   public surveyStructure: any = {};
   @ViewChild('dashboardSurveyCreatorContainer')
   dashboardSurveyCreatorContainer!: ElementRef<HTMLElement>;
+  public quickFilters: QuickFilter[] = [];
 
   public applicationId?: string;
+
+  /** Indicate empty status of filter */
+  public empty = true;
+
+  @Input() editable = false;
 
   /**
    * Class constructor
    *
+   * @param matDrawer MatDrawerContent
+   * @param matSidenav MatSidenavContent
    * @param hostElement Host/Component Element
    * @param dialog The material dialog service
    * @param apollo Apollo client
@@ -68,15 +88,19 @@ export class DashboardFilterComponent
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param contextService Context service
+   * @param ngZone Triggers html changes
    */
   constructor(
+    @Optional() private matDrawer: MatDrawerContent,
+    @Optional() private matSidenav: MatSidenavContent,
     private hostElement: ElementRef<HTMLElement>,
     private dialog: MatDialog,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
     private snackBar: SafeSnackBarService,
     private translate: TranslateService,
-    private contextService: ContextService
+    private contextService: ContextService,
+    private ngZone: NgZone
   ) {
     super();
   }
@@ -116,12 +140,7 @@ export class DashboardFilterComponent
             });
         }
       });
-    const parentRect =
-      this.hostElement.nativeElement.parentElement?.parentElement?.getBoundingClientRect(); //This is the sidenav container, not ideal solution
-    this.containerWidth = `${parentRect?.width}px`;
-    this.containerHeight = `${parentRect?.height}px`;
-    this.containerLeftOffset = `${parentRect?.x}px`;
-    this.containerTopOffset = `${parentRect?.y}px`;
+    this.setFilterContainerDimensions();
   }
 
   /**
@@ -129,12 +148,7 @@ export class DashboardFilterComponent
    */
   @HostListener('window:resize', ['$event'])
   onResize() {
-    const parentRect =
-      this.hostElement.nativeElement.parentElement?.parentElement?.getBoundingClientRect(); //This is the sidenav container, not ideal solution
-    this.containerWidth = `${parentRect?.width}px`;
-    this.containerHeight = `${parentRect?.height}px`;
-    this.containerLeftOffset = `${parentRect?.x}px`;
-    this.containerTopOffset = `${parentRect?.y}px`;
+    this.setFilterContainerDimensions();
   }
 
   /**
@@ -214,13 +228,26 @@ export class DashboardFilterComponent
     Survey.StylesManager.applyTheme();
     const surveyStructure = this.surveyStructure;
     this.survey = new Survey.Model(surveyStructure);
+
     if (this.value) {
       this.survey.data = this.value;
     }
     this.survey.showCompletedPage = false;
     this.survey.showNavigationButtons = false;
-    this.survey.render(this.dashboardSurveyCreatorContainer?.nativeElement);
+
     this.survey.onValueChanged.add(this.onValueChange.bind(this));
+    this.survey.onAfterRenderSurvey.add(this.onAfterRenderSurvey.bind(this));
+
+    this.survey.render(this.dashboardSurveyCreatorContainer?.nativeElement);
+  }
+
+  /**
+   * Subscribe to survey render to see if survey is empty or not.
+   *
+   * @param survey survey model
+   */
+  public onAfterRenderSurvey(survey: Survey.SurveyModel) {
+    this.empty = !(survey.getAllQuestions().length > 0);
   }
 
   /**
@@ -284,6 +311,55 @@ export class DashboardFilterComponent
    * when a value changes.
    */
   private onValueChange() {
-    this.contextService.filter.next(this.survey.data);
+    const surveyData = this.survey.data;
+    const displayValues = this.survey.getPlainData();
+    this.contextService.filter.next(surveyData);
+    this.ngZone.run(() => {
+      this.quickFilters = displayValues
+        .filter((question) => !!question.value)
+        .map((question: any) => {
+          let mappedQuestion;
+          if (question.value instanceof Array && question.value.length > 2) {
+            mappedQuestion = {
+              label: question.title + ` (${question.value.length})`,
+              tooltip: question.displayValue,
+            };
+          } else {
+            mappedQuestion = {
+              label: question.displayValue,
+            };
+          }
+          return mappedQuestion;
+        });
+    });
+  }
+
+  /**
+   * Set filter container dimensions for the current parent container wrapper
+   */
+  private setFilterContainerDimensions() {
+    const parentRect = this.getParentReferenceClientRect();
+    this.containerWidth = `${parentRect?.width}px`;
+    this.containerHeight = `${parentRect?.height}px`;
+    this.containerLeftOffset = `${parentRect?.x}px`;
+    this.containerTopOffset = `${parentRect?.y}px`;
+  }
+
+  /**
+   * Get current parent DOM client rect reference
+   *
+   * @returns DOMRect | undefined
+   */
+  private getParentReferenceClientRect() {
+    const matWrapper = this.matDrawer ? this.matDrawer : this.matSidenav;
+    // If no mat wrapper, default behavior would be filter direct parent container
+    let parentRect =
+      this.hostElement.nativeElement.parentElement?.getBoundingClientRect();
+    if (matWrapper) {
+      parentRect = matWrapper
+        ?.getElementRef()
+        .nativeElement.getBoundingClientRect();
+    }
+    return parentRect;
   }
 }

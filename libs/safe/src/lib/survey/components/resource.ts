@@ -561,6 +561,7 @@ export const init = (
                 text: item?.data[question.displayField || 'id'],
               });
             }
+            console.log(question);
             question.contentQuestion.choices = res;
             if (!question.placeholder) {
               question.contentQuestion.optionsCaption =

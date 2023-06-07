@@ -123,6 +123,7 @@
         class="cursor-pointer"
       ></tr>
     </table>
+    <!-- Loading indicator -->
     <safe-skeleton-table
       *ngIf="loading"
       [columns]="[
@@ -135,12 +136,14 @@
       [checkbox]="true"
     >
     </safe-skeleton-table>
+    <!-- Empty indicator -->
     <safe-empty
       class="py-3 px-0 bg-white"
       *ngIf="empty"
       [title]="'components.application.users.empty' | translate"
     >
     </safe-empty>
+    <!-- Paginator -->
     <mat-paginator
       *ngIf="!empty"
       [disabled]="loading || updating"

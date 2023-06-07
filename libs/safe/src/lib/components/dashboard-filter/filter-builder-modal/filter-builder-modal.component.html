@@ -1,4 +1,9 @@
 <safe-modal [closable]="true" size="fullscreen">
+  <h3>{{ 'components.application.dashboard.filter.title' | translate }}</h3>
+  <safe-alert class="mb-6"
+    ><safe-icon icon="info"></safe-icon>
+    {{ 'components.application.dashboard.filter.info' | translate }}
+  </safe-alert>
   <div mat-dialog-content class="max-h-full h-full">
     <div class="w-full h-full" id="dashboardSurveyCreatorContainer"></div>
   </div>

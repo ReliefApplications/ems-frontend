@@ -6,6 +6,7 @@ import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeDrawerPositionerDirective } from './directives/drawer-positioner/drawer-positioner.directive';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { SafeEmptyModule } from '../ui/empty/empty.module';
 
 /** Cron expression control module. */
 @NgModule({
@@ -16,6 +17,7 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     SafeIconModule,
     TranslateModule,
     MatTooltipModule,
+    SafeEmptyModule,
   ],
   exports: [DashboardFilterComponent],
   providers: [SafeDrawerPositionerDirective],

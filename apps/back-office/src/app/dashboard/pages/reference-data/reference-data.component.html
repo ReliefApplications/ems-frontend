@@ -39,7 +39,7 @@
     </div>
     <!-- Specific to GraphQL and Rest type -->
     <div *ngIf="['rest', 'graphql'].includes(type)" class="flex flex-col">
-      <div class="flex gap-x-2">
+      <div class="flex gap-x-2" [class.flex-col]="type === 'graphql'">
         <!-- API Configuration -->
         <mat-form-field appearance="outline" class="flex-auto">
           <mat-label>{{ 'common.apiConfiguration.one' | translate }}</mat-label>
@@ -53,7 +53,11 @@
           </safe-graphql-select>
         </mat-form-field>
         <!-- QueryName -->
-        <mat-form-field appearance="outline" class="flex-1">
+        <mat-form-field
+          appearance="outline"
+          class="flex-1"
+          *ngIf="type !== 'graphql'"
+        >
           <mat-label>{{
             'pages.referenceData.queryName' | translate
           }}</mat-label>
@@ -64,6 +68,14 @@
             [placeholder]="'common.placeholder.name' | translate"
           />
         </mat-form-field>
+        <!-- GraphQL Query -->
+        <ngx-monaco-editor
+          *ngIf="type === 'graphql' && queryControl"
+          (onInit)="initEditor($event)"
+          [options]="editorOptions"
+          [formControl]="queryControl"
+          class="mb-2"
+        ></ngx-monaco-editor>
       </div>
       <!-- Fields -->
       <kendo-grid [data]="valueFields" class="mb-5" *ngIf="!loading">
@@ -150,6 +162,13 @@
           type="text"
           [placeholder]="'common.placeholder.name' | translate"
         />
+        <safe-icon
+          icon="info_outline"
+          class="cursor-pointer"
+          variant="grey"
+          matSuffix
+          [matTooltip]="'pages.referenceData.tooltip.path' | translate"
+        ></safe-icon>
       </mat-form-field>
       <!-- Value field to be displayed -->
       <mat-form-field
@@ -167,27 +186,6 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <!-- For graphql -->
-    <mat-form-field appearance="outline" *ngIf="type === 'graphql'">
-      <mat-label
-        >{{ 'pages.referenceData.graphQLFilter' | translate }}
-      </mat-label>
-      <input
-        matInput
-        formControlName="graphQLFilter"
-        type="text"
-        [placeholder]="
-          'pages.referenceData.placeholder.graphQLFilter' | translate
-        "
-      />
-      <safe-icon
-        icon="info_outline"
-        class="cursor-pointer"
-        variant="grey"
-        matSuffix
-        [matTooltip]="'pages.referenceData.tooltip.graphQLFilter' | translate"
-      ></safe-icon>
-    </mat-form-field>
     <!-- Kendo grid to preview data on static type -->
     <div *ngIf="!csvLoading && csvValue && type === 'static'">
       <kendo-grid [data]="newData">

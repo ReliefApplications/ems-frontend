@@ -401,6 +401,11 @@
 			"dashboard": {
 				"editFilter": "Edit filter",
 				"empty": "No content available. Wait for your administrator to build some.",
+				"filter": {
+					"empty": "No filters have been defined by the administrators",
+					"info": "Dashboard filters can be used between pages to filter their content.",
+					"title": "You are editing dashboard filters"
+				},
 				"filterSettings": "Filter settings",
 				"settings": {
 					"defaultPosition": "Default position for the filter"
@@ -549,6 +554,15 @@
 			"subject": "Subject",
 			"withoutRecords": "Without records"
 		},
+		"emailPreview": {
+			"errors": {
+				"missingSubject": "Subject cannot be left empty."
+			},
+			"from": "From",
+			"subject": "Subject",
+			"title": "Email Preview",
+			"to": "To"
+		},
 		"form": {
 			"aggregation": {
 				"delete": {
@@ -612,6 +626,7 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"duplicatedRelatedName": "Duplicated related name for question {{question}} on page {{page}}. Please provide a unique related name (snake case format) to save the form.",
 				"missingGridField": "Missing an available field grid for question {{question}} on page {{page}}. Please select a least one in Custom Question Properties to save the form.",
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
@@ -1158,7 +1173,7 @@
 							"step": "Step interpolation",
 							"title": "Interpolation"
 						},
-						"showSerie": "Show serie",
+						"showSeries": "Show series",
 						"stack": {
 							"enable": "Plot series",
 							"usePercentage": "Use percentage"
@@ -1181,6 +1196,10 @@
 				},
 				"close": {
 					"confirmationMessage": "Some changes will be lost when closing edition. Do you want to continue?"
+				},
+				"editor": {
+					"recordSelection": "Record selection",
+					"title": "Editor"
 				},
 				"grid": {
 					"actions": {
@@ -1259,12 +1278,12 @@
 								"create": "Create a new layout",
 								"load": "Load existing layout"
 							},
-							"select": "Select a layout",
 							"title": "Add new layout"
 						},
 						"edit": {
 							"title": "Layout configuration"
 						},
+						"select": "Select a layout",
 						"title": "Grid layouts"
 					},
 					"tooltip": {
@@ -1352,7 +1371,11 @@
 								"datasource": "Add a button in widget's header to view card's data source"
 							}
 						},
+						"preview": {
+							"title": "Preview"
+						},
 						"textEditor": {
+							"alert": "You can add variables e.g: {{data.variable}} and calculate e.g: {{calc.round( value ; precision )}}",
 							"title": "Text editor"
 						},
 						"title": "Card settings",
@@ -1369,6 +1392,11 @@
 					"dynamic": "Dynamic",
 					"hint": {
 						"dynamic": "Dynamic Summary cards adapt their display to the number of elements in the datasource. You must define a single card which will be repeated for each element."
+					},
+					"loadMore": {
+						"infiniteScroll": "Use infinite scrolling",
+						"pagination": "Use pagination",
+						"title": "Trigger for loading more data"
 					},
 					"options": {
 						"ariaLabel": "Select an option"
@@ -1387,6 +1415,9 @@
 		}
 	},
 	"kendo": {
+		"combobox": {
+			"noDataText": "No available choice"
+		},
 		"datepicker": {
 			"today": "Today",
 			"toggle": "Choose a date"
@@ -1456,6 +1487,7 @@
 			"underline": "Underline",
 			"undo": "Undo",
 			"unlink": "Remove Link",
+			"unselectAll": "Unselect all",
 			"viewSource": "View source"
 		},
 		"fileselect": {
@@ -1535,6 +1567,29 @@
 			"unlock": "Unlock",
 			"unstick": "Unstick"
 		},
+		"multiselect": {
+			"noDataText": "No available choice"
+		},
+		"pager": {
+			"firstPage": "Go to the first page",
+			"items": "items",
+			"itemsPerPage": "items per page",
+			"label": "'Page navigation, page {currentPage} of {totalPages}'",
+			"lastPage": "Go to the last page",
+			"nextPage": "Go to the next page",
+			"of": "of",
+			"page": "Page",
+			"pageNumberInputTitle": "Page Number",
+			"previousPage": "Go to the previous page"
+		},
+		"tilelayout": {
+			"component": {
+				"items": "items",
+				"itemsPerPage": "Items per page",
+				"of": "of",
+				"page": "Page"
+			}
+		},
 		"timepicker": {
 			"accept": "Accept",
 			"acceptLabel": "Accept",
@@ -1556,6 +1611,7 @@
 		"application": {
 			"description": "Description",
 			"id": "Application ID",
+			"menu": "Side menu",
 			"new": "New application",
 			"notifications": {
 				"notPublished": "Application not published.",
@@ -1649,7 +1705,8 @@
 				"rowsNotAdded": "Error on add row(s).",
 				"uploadSuccessful": "Records upload successful."
 			},
-			"restore": "Restore"
+			"restore": "Restore",
+			"select": "Select a record"
 		},
 		"referenceData": {
 			"add": "Add new reference data"
@@ -1689,6 +1746,7 @@
 			},
 			"display": {
 				"border": "Show widget border",
+				"searchable": "Allow search",
 				"title": "Widget display"
 			},
 			"map": {
@@ -1800,6 +1858,10 @@
 				"selectApplication": "Missing value application for an element on page {{page}}. Please select at least one application in properties of {{question}} to save the form.",
 				"snakecase": "The value name {{name}} on page {{page}} is invalid. Please conform to snake_case."
 			},
+			"move": {
+				"down": "Move down",
+				"up": "Move up"
+			},
 			"questionsCategories": {
 				"core": "Question Library"
 			},
@@ -1834,7 +1896,8 @@
 			},
 			"queryName": "Query Name",
 			"tooltip": {
-				"graphQLFilter": "Enter a query parameter to be used as a filter once choices are already cached. You can use {{lastUpdate}} to insert dynamically the last fetch date in SQL format."
+				"graphQLFilter": "You can use {{lastUpdate}} to dynamically get the last fetch date in SQL format.",
+				"path": "Uses JSONPath syntax to extract items from the JSON response. Examples: $.data[*].name, $.data..countries, $.data.countries.*"
 			},
 			"type": "Type",
 			"validateCsv": "Validate CSV",

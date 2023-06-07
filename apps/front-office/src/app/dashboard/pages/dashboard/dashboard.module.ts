@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import {
+  DashboardFilterModule,
   FullScreenModule,
   SafeButtonModule,
   SafeSkeletonModule,
@@ -21,6 +22,7 @@ import {
     FullScreenModule,
     SafeSkeletonModule,
     SafeButtonModule,
+    DashboardFilterModule,
   ],
   exports: [DashboardComponent],
 })
