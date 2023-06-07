@@ -134,7 +134,6 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    */
   ngOnInit(): void {
     this.tileForm = createSummaryCardForm(this.tile);
-    console.log('WE ARE HERE', this.tileForm);
     this.change.emit(this.tileForm);
 
     const resourceID = this.tileForm?.get('card.resource')?.value;

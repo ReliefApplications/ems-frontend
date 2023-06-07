@@ -10,12 +10,22 @@ import {
   GetApplicationByIdQueryResponse,
 } from './graphql/queries';
 
+/**
+ * Service used in widgets to redirect to another page from the same app
+ */
 @Injectable({
   providedIn: 'root',
 })
 export class ToPageFromWidgetService {
   public environment: any;
 
+  /**
+   * Service to redirect to a page from a widget
+   *
+   * @param environment Environment specific data
+   * @param router Angular router
+   * @param apollo Apollo service
+   */
   constructor(
     @Inject('environment') environment: any,
     private router: Router,
@@ -71,6 +81,13 @@ export class ToPageFromWidgetService {
     return html;
   };
 
+  /**
+   * Gets the page information including url for the page
+   *
+   * @param pageId ID of the page to get information on
+   * @param currentAppId ID of the current application
+   * @returns the page information
+   */
   public async getPageInfo(pageId: any, currentAppId: any) {
     const pagePromise: Promise<any> = firstValueFrom(
       this.apollo.query<GetPageByIdQueryResponse>({
