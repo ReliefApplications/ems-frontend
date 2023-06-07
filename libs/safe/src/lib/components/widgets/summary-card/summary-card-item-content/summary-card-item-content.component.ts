@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { SafeDownloadService } from '../../../../services/download/download.service';
-import { parseHtml } from '../parser/utils';
+import { getCardStyle, parseHtml } from '../parser/utils';
 import get from 'lodash/get';
 
 /**
@@ -28,6 +28,7 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
   @Input() wholeCardStyles = false;
 
   public formattedHtml?: SafeHtml;
+  public cardStyle?: string;
 
   /**
    * Content component of Single Item of Summary Card.
@@ -41,14 +42,13 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
   ) {}
 
   ngOnInit(): void {
+    this.cardStyle = getCardStyle(
+      this.wholeCardStyles,
+      this.styles,
+      this.fieldsValue
+    );
     this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(
-        this.html,
-        this.fieldsValue,
-        this.fields,
-        this.styles,
-        this.wholeCardStyles
-      )
+      parseHtml(this.html, this.fieldsValue, this.fields, this.styles)
     );
   }
 
@@ -56,14 +56,13 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
    * Detects when the html or record inputs change.
    */
   ngOnChanges(): void {
+    this.cardStyle = getCardStyle(
+      this.wholeCardStyles,
+      this.styles,
+      this.fieldsValue
+    );
     this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(
-        this.html,
-        this.fieldsValue,
-        this.fields,
-        this.styles,
-        this.wholeCardStyles
-      )
+      parseHtml(this.html, this.fieldsValue, this.fields, this.styles)
     );
   }
 

@@ -1,183 +1,193 @@
-<ng-container
-  safeFullScreen
-  [(isFullScreenMode)]="isFullScreen"
-  *safeSkeleton="
-    loading;
-    repeat: 1;
-    height: '32px';
-    width: '120px';
-    shape: 'rectangle'
-  "
->
-  <!-- Dashboard options -->
-  <ng-container *ngIf="dashboard">
-    <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
-      <!-- Dashboard title -->
-      <safe-editable-text
-        [text]="dashboard.name"
-        [canEdit]="canEditName"
-        (onChange)="saveName($event)"
-        (formActiveEvent)="formActive = $event"
-      >
-        <h1 class="!m-0 overflow-hidden text-ellipsis">
-          {{ dashboard.name }}
-        </h1>
-      </safe-editable-text>
+<!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
+<div [ngClass]="{ 'p-8 h-full bg-white overflow-auto': isFullScreen }">
+  <ng-container
+    safeFullScreen
+    [(isFullScreenMode)]="isFullScreen"
+    *safeSkeleton="
+      loading;
+      repeat: 1;
+      height: '32px';
+      width: '120px';
+      shape: 'rectangle'
+    "
+  >
+    <!-- Dashboard options -->
+    <ng-container *ngIf="dashboard">
+      <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+        <!-- Dashboard title -->
+        <safe-editable-text
+          [text]="dashboard.name"
+          [canEdit]="canEditName"
+          (onChange)="saveName($event)"
+          (formActiveEvent)="formActive = $event"
+        >
+          <h1 class="!m-0 overflow-hidden text-ellipsis">
+            {{ dashboard.name }}
+          </h1>
+        </safe-editable-text>
 
-      <div class="flex items-center gap-1" *ngIf="!formActive">
-        <!-- Fullscreen -->
-        <ui-button
-          variant="grey"
-          [isIcon]="true"
-          icon="{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}"
-          (click)="isFullScreen = !isFullScreen"
-        >
-        </ui-button>
-        <!-- Access -->
-        <safe-access
-          [access]="dashboard.permissions"
-          [application]="applicationId"
-          [objectTypeName]="'common.page.one' | translate"
-          (save)="saveAccess($event)"
-          *ngIf="
-            dashboard.page
-              ? dashboard.page.canUpdate
-              : dashboard.step
-              ? dashboard.step.canUpdate
-              : false
-          "
-        >
-        </safe-access>
-        <!-- Context -->
-        <ui-button
-          variant="grey"
-          [isIcon]="true"
-          [icon]="dashboard.page?.context ? 'cached' : 'add'"
-          (click)="selectContextDatasource()"
-          [uiTooltip]="
-            (dashboard.page?.context
-              ? 'models.dashboard.context.datasource.update'
-              : 'models.dashboard.context.datasource.set'
-            ) | translate
-          "
-        >
-        </ui-button>
-        <!-- More options -->
-        <ui-button
-          variant="grey"
-          [isIcon]="true"
-          icon="more_vert"
-          [uiMenuTriggerFor]="menu"
-          cdkOverlayOrigin
-          #appMenuTrigger="cdkOverlayOrigin"
-        >
-        </ui-button>
-        <ui-menu #menu>
-          <button uiMenuItem (click)="toggleFiltering()">
-            <ui-icon icon="tune"></ui-icon>
-            <!-- todo(translate) -->
-            {{
-              dashboard.showFilter
-                ? 'Deactivate filtering'
-                : 'Activate filtering'
-            }}
-          </button>
-          <button uiMenuItem (click)="onAppSelection()">
-            <ui-icon icon="file_copy"></ui-icon>
-            {{ 'common.duplicate' | translate }}
-          </button>
-          <button uiMenuItem (click)="onShare()">
-            <ui-icon icon="share"></ui-icon>
-            {{ 'models.dashboard.share' | translate }}
-          </button>
-        </ui-menu>
-
-        <ng-template #searchMenuHeaderTemplate>
-          <ui-alert [closable]="true">
-            {{ 'models.page.tooltip.duplicate' | translate }}
-          </ui-alert>
-        </ng-template>
-
-        <ng-template
-          cdkConnectedOverlay
-          [cdkConnectedOverlayOrigin]="appMenuTrigger"
-          [cdkConnectedOverlayOpen]="showAppMenu"
-        >
-          <safe-search-menu
-            [headerTemplate]="searchMenuHeaderTemplate"
-            [currentApplicationId]="applicationId"
-            [applications]="applications"
-            (close)="showAppMenu = false"
-            (open)="onDuplicate($event)"
-          ></safe-search-menu>
-        </ng-template>
-      </div>
-    </div>
-    <ng-container *ngIf="dashboard.page?.context">
-      <!-- todo(translate) -->
-      <ui-alert *ngIf="!contextRecord" class="mb-4">{{
-        'models.dashboard.context.edition.template' | translate
-      }}</ui-alert>
-      <ui-alert *ngIf="contextRecord" class="mb-4">{{
-        'models.dashboard.context.edition.element' | translate
-      }}</ui-alert>
-    </ng-container>
-    <span>
-      <!-- Selection of record, to see dashboard per record -->
-      <div
-        uiFormFieldDirective
-        *ngIf="
-          dashboard.page &&
-          dashboard.page.context &&
-          $any(dashboard.page.context).resource &&
-          recordsQuery
-        "
-      >
-        <label>{{ 'common.record.one' | translate }}</label>
-        <ui-graphql-select
-          [query]="recordsQuery"
-          [formControl]="contextId"
-          path="records"
-          valueField="id"
-          textField="data.{{ dashboard.page.context.displayField }}"
-          [selectedElements]="contextRecord ? [contextRecord] : []"
-        >
-        </ui-graphql-select>
-      </div>
-      <!-- Selection of element from reference data -->
-      <div
-        uiFormFieldDirective
-        [outline]="false"
-        *ngIf="
-          dashboard.page &&
-          dashboard.page.context &&
-          $any(dashboard.page.context).refData
-        "
-      >
-        <label>{{
-          'models.dashboard.context.refData.element' | translate
-        }}</label>
-        <ui-select-menu [formControl]="contextId">
-          <ui-select-option
-            *ngFor="let element of refDataElements"
-            [value]="element[refDataValueField]"
+        <div class="flex items-center gap-1" *ngIf="!formActive">
+          <!-- Fullscreen -->
+          <ui-button
+            variant="grey"
+            [isIcon]="true"
+            icon="{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}"
+            (click)="isFullScreen = !isFullScreen"
           >
-            {{ element[dashboard.page.context.displayField] }}
-          </ui-select-option>
-        </ui-select-menu>
+          </ui-button>
+          <!-- Access -->
+          <safe-access
+            [access]="dashboard.permissions"
+            [application]="applicationId"
+            [objectTypeName]="'common.page.one' | translate"
+            (save)="saveAccess($event)"
+            *ngIf="
+              dashboard.page
+                ? dashboard.page.canUpdate
+                : dashboard.step
+                ? dashboard.step.canUpdate
+                : false
+            "
+          >
+          </safe-access>
+          <!-- Context -->
+          <ui-button
+            variant="grey"
+            [isIcon]="true"
+            [icon]="dashboard.page?.context ? 'cached' : 'add'"
+            (click)="selectContextDatasource()"
+            [uiTooltip]="
+              (dashboard.page?.context
+                ? 'models.dashboard.context.datasource.update'
+                : 'models.dashboard.context.datasource.set'
+              ) | translate
+            "
+          >
+          </ui-button>
+          <!-- More options -->
+          <ui-button
+            variant="grey"
+            [isIcon]="true"
+            icon="more_vert"
+            [uiMenuTriggerFor]="menu"
+            cdkOverlayOrigin
+            #appMenuTrigger="cdkOverlayOrigin"
+          >
+          </ui-button>
+          <ui-menu #menu>
+            <button uiMenuItem (click)="toggleFiltering()">
+              <ui-icon icon="tune"></ui-icon>
+              <!-- todo(translate) -->
+              {{
+                dashboard.showFilter
+                  ? 'Deactivate filtering'
+                  : 'Activate filtering'
+              }}
+            </button>
+            <button uiMenuItem (click)="onAppSelection()">
+              <ui-icon icon="file_copy"></ui-icon>
+              {{ 'common.duplicate' | translate }}
+            </button>
+            <button uiMenuItem (click)="onShare()">
+              <ui-icon icon="share"></ui-icon>
+              {{ 'models.dashboard.share' | translate }}
+            </button>
+          </ui-menu>
+
+          <ng-template #searchMenuHeaderTemplate>
+            <ui-alert [closable]="true">
+              {{ 'models.page.tooltip.duplicate' | translate }}
+            </ui-alert>
+          </ng-template>
+
+          <ng-template
+            cdkConnectedOverlay
+            [cdkConnectedOverlayOrigin]="appMenuTrigger"
+            [cdkConnectedOverlayOpen]="showAppMenu"
+          >
+            <safe-search-menu
+              [headerTemplate]="searchMenuHeaderTemplate"
+              [currentApplicationId]="applicationId"
+              [applications]="applications"
+              (close)="showAppMenu = false"
+              (open)="onDuplicate($event)"
+            ></safe-search-menu>
+          </ng-template>
+        </div>
       </div>
-    </span>
+      <ng-container *ngIf="dashboard.page?.context">
+        <!-- todo(translate) -->
+        <ui-alert *ngIf="!contextRecord" class="mb-4">{{
+          'models.dashboard.context.edition.template' | translate
+        }}</ui-alert>
+        <ui-alert *ngIf="contextRecord" class="mb-4">{{
+          'models.dashboard.context.edition.element' | translate
+        }}</ui-alert>
+      </ng-container>
+      <span>
+        <!-- Selection of record, to see dashboard per record -->
+        <div
+          uiFormFieldDirective
+          *ngIf="
+            dashboard.page &&
+            dashboard.page.context &&
+            $any(dashboard.page.context).resource &&
+            recordsQuery
+          "
+        >
+          <label>{{ 'common.record.one' | translate }}</label>
+          <ui-graphql-select
+            [query]="recordsQuery"
+            [formControl]="contextId"
+            path="records"
+            valueField="id"
+            textField="data.{{ dashboard.page.context.displayField }}"
+            [selectedElements]="contextRecord ? [contextRecord] : []"
+          >
+          </ui-graphql-select>
+        </div>
+        <!-- Selection of element from reference data -->
+        <div
+          uiFormFieldDirective
+          [outline]="false"
+          *ngIf="
+            dashboard.page &&
+            dashboard.page.context &&
+            $any(dashboard.page.context).refData
+          "
+        >
+          <label>{{
+            'models.dashboard.context.refData.element' | translate
+          }}</label>
+          <ui-select-menu [formControl]="contextId">
+            <ui-select-option
+              *ngFor="let element of refDataElements"
+              [value]="element[refDataValueField]"
+            >
+              {{ element[dashboard.page.context.displayField] }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+      </span>
+    </ng-container>
   </ng-container>
-</ng-container>
-<!-- Widgets -->
-<safe-widget-grid
-  [loading]="loading"
-  [widgets]="tiles"
-  [canUpdate]="dashboard?.canUpdate || false"
-  (move)="onMove($event)"
-  (edit)="onEditTile($event)"
-  (delete)="onDeleteTile($event)"
-  (goToNextStep)="goToNextStep.emit($event)"
-  (add)="onAdd($event)"
-></safe-widget-grid>
-<safe-dashboard-filter *ngIf="dashboard?.showFilter"></safe-dashboard-filter>
+  <!-- Widgets -->
+  <safe-widget-grid
+    [loading]="loading"
+    [widgets]="tiles"
+    [canUpdate]="dashboard?.canUpdate || false"
+    (move)="onMove($event)"
+    (edit)="onEditTile($event)"
+    (delete)="onDeleteTile($event)"
+    (goToNextStep)="goToNextStep.emit($event)"
+    (add)="onAdd($event)"
+  ></safe-widget-grid>
+  <safe-dashboard-filter
+    *ngIf="showFilter && isFullScreen"
+    [editable]="true"
+  ></safe-dashboard-filter>
+</div>
+<safe-dashboard-filter
+  *ngIf="showFilter && !isFullScreen"
+  [editable]="true"
+></safe-dashboard-filter>

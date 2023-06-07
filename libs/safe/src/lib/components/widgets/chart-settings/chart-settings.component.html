@@ -25,9 +25,19 @@
       ></ui-icon>
       <span>{{ 'common.display' | translate }}</span>
     </ng-container>
-    <safe-tab-display
-      [formGroup]="formGroup"
-      [type]="type"
-    ></safe-tab-display>
+    <safe-tab-display [formGroup]="formGroup" [type]="type"></safe-tab-display>
+  </ui-tab>
+  <!-- Widget display options -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <safe-icon
+        icon="settings_overscan"
+        [size]="24"
+        matTooltip="{{ 'models.widget.display.title' | translate }}"
+        matTooltipPosition="right"
+      ></safe-icon>
+      <span>{{ 'models.widget.display.title' | translate }}</span>
+    </ng-container>
+    <safe-display-settings [formGroup]="formGroup"></safe-display-settings>
   </ui-tab>
 </ui-tabs>

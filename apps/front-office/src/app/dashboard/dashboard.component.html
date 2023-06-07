@@ -1,7 +1,8 @@
 <safe-layout
   [applications]="applications"
   [toolbar]="toolbar"
-  [leftSidenav]="leftSidenav"
+  [leftSidenav]="pages"
+  [sideMenu]="sideMenu"
   [profileRoute]="'/' + appID + '/profile'"
   (openApplication)="onOpenApplication($event)"
 ></safe-layout>
@@ -18,10 +19,17 @@
   ></safe-empty>
 </ng-template>
 <!--Need the nav variable, don't remove let-nav, used in layout-->
-<ng-template #leftSidenav let-nav>
+<ng-template #pages let-nav>
   <safe-left-sidenav
+    *ngIf="sideMenu || !largeDevice"
     [nav]="nav"
     [appLayout]="true"
     [navGroups]="navGroups"
   ></safe-left-sidenav>
+  <safe-navbar
+    *ngIf="!sideMenu && largeDevice"
+    [nav]="nav"
+    [navGroups]="navGroups"
+    [appLayout]="true"
+  ></safe-navbar>
 </ng-template>

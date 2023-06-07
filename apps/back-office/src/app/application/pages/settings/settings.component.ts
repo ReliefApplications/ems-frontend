@@ -82,6 +82,7 @@ export class SettingsComponent
           this.settingsForm = this.formBuilder.group({
             id: [{ value: application.id, disabled: true }],
             name: [application.name, Validators.required],
+            sideMenu: [application.sideMenu],
             description: [application.description],
             status: [application.status],
           });

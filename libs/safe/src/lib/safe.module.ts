@@ -26,6 +26,7 @@ import { SafeSummaryCardSettingsModule } from './components/widgets/summary-card
 import { SafeRoleSummaryModule } from './components/role-summary/role-summary.module';
 import { SafeEmptyModule } from './components/ui/empty/empty.module';
 import { SafeLeftSidenavModule } from './components/left-sidenav/left-sidenav.module';
+import { SafeNavbarModule } from './components/navbar/navbar.module';
 import { SafeReadableCronModule } from './pipes/readable-cron/readable-cron.module';
 import { SafeCronParserModule } from './pipes/cron-parser/cron-parser.module';
 import { SafeUnsubscribeModule } from './components/utils/unsubscribe/unsubscribe.module';
@@ -72,6 +73,7 @@ import { GraphQLSelectModule } from '@oort-front/ui';
     GraphQLSelectModule,
     SafeEmptyModule,
     SafeLeftSidenavModule,
+    SafeNavbarModule,
     // === Directives
     SafeSkeletonModule,
     FullScreenModule,
@@ -80,5 +82,7 @@ import { GraphQLSelectModule } from '@oort-front/ui';
     // === VIEWS ===
     SafeViewsModule,
   ],
+  declarations: [],
+  imports: [],
 })
 export class SafeModule {}

@@ -149,11 +149,17 @@
 </nav>
 <ng-container *ngIf="toolbar">
   <ng-container *ngTemplateOutlet="toolbar"></ng-container>
+  <ng-container *ngIf="!sideMenu && largeDevice">
+    <ng-container *ngIf="leftSidenav">
+      <ng-container [ngTemplateOutlet]="leftSidenav"></ng-container>
+    </ng-container>
+  </ng-container>
 </ng-container>
 <ui-sidenav-container class="sidenav-container">
   <div
     uiSidenavDirective
     #nav="uiSidenavDirective"
+    *ngIf="sideMenu || !largeDevice"
     [mode]="largeDevice ? 'side' : 'over'"
     [opened]="largeDevice"
   >

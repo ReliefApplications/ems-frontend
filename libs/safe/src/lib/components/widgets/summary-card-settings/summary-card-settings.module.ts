@@ -1,28 +1,44 @@
-import { NgModule } from '@angular/core';
-import { SafeSummaryCardSettingsComponent } from './summary-card-settings.component';
 import { CommonModule } from '@angular/common';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { TranslateModule } from '@ngx-translate/core';
-import { LayoutModule } from '@progress/kendo-angular-layout';
-import { IconModule } from '@oort-front/ui';
 import { MatDividerModule } from '@angular/material/divider';
-import { SafeAddCardModule } from './add-card/add-card.module';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { SummaryCardItemModule } from '../summary-card/summary-card-item/summary-card-item.module';
+import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
+import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
+import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TranslateModule } from '@ngx-translate/core';
 import {
-  MenuModule,
-  TooltipModule,
-  RadioModule,
   ButtonModule,
   FormWrapperModule,
+  IconModule,
+  MenuModule,
+  RadioModule,
+  TooltipModule,
 } from '@oort-front/ui';
+import { LayoutModule } from '@progress/kendo-angular-layout';
+import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
+import { SummaryCardItemModule } from '../summary-card/summary-card-item/summary-card-item.module';
+import { SafeSummaryCardModule } from '../summary-card/summary-card.module';
+import { SafeDisplayTabModule } from './display-tab/display.module';
+import { SummaryCardGeneralComponent } from './summary-card-general/summary-card-general.component';
+import { SafeSummaryCardSettingsComponent } from './summary-card-settings.component';
+import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
 
 /** Summary Card Settings Module */
 @NgModule({
   declarations: [SafeSummaryCardSettingsComponent],
   imports: [
     CommonModule,
+    MatTooltipModule,
+    MatTabsModule,
+    TranslateModule,
+    DisplaySettingsComponent,
+    SummaryCardGeneralComponent,
+    SafeTextEditorTabModule,
+    SafeDisplayTabModule,
+    MatSlideToggleModule,
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
@@ -32,12 +48,13 @@ import {
     MenuModule,
     IconModule,
     MatDividerModule,
-    SafeAddCardModule,
     MatButtonModule,
     SummaryCardItemModule,
     RadioModule,
     ButtonModule,
     FormWrapperModule,
+    MatRadioModule,
+    SafeSummaryCardModule,
   ],
   exports: [SafeSummaryCardSettingsComponent],
 })
