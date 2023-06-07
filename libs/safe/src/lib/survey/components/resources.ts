@@ -193,7 +193,6 @@ export const init = (
           btn.style.padding = '10px';
           htmlElement.appendChild(btn);
           btn.onclick = () => {
-            console.log('ici');
             const currentQuestion = editor.object;
             getResourceById({ id: currentQuestion.resource }).subscribe(
               async ({ data }) => {
@@ -758,17 +757,14 @@ export const init = (
     },
     onAfterRender: (question: QuestionResource, el: any): void => {
       // hide tagbox if grid view is enable
-      if (question.displayAsGrid) {
-        console.log('searching for tagbox...');
-        const element = el.parentElement?.querySelector('.k-multiselect');
-        console.log(el.parentElement?.querySelector('kendo-multiselect'));
-        console.log(el.parentElement?.querySelector('#tagbox'));
-        console.log(el.querySelector('#tagbox'));
-        console.log(element);
-        if (element) {
-          element.style.display = 'none';
+      setTimeout(() => {
+        if (question.displayAsGrid) {
+          const element = el.parentElement?.querySelector('#tagbox');
+          if (element) {
+            element.style.display = 'none';
+          }
         }
-      }
+      }, 500);
       // Display the add button | grid for resources question
       if (question.resource) {
         const parentElement = el.querySelector('.safe-qst-content');

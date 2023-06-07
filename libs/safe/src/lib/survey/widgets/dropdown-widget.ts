@@ -23,7 +23,6 @@ export const init = (Survey: any, domService: DomService): void => {
       dropdownDiv = document.createElement('div');
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const dropdownInstance = createDropdownInstance(dropdownDiv);
-      console.log(question.value);
       dropdownInstance.value = question.value;
       dropdownInstance.placeholder = question.placeholder;
       dropdownInstance.readonly = question.isReadOnly;
