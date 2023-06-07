@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { UntypedFormGroup, AbstractControl } from '@angular/forms';
 
 /**
  * Component used in the card-modal-settings for configuring some display settings.
@@ -11,4 +11,9 @@ import { UntypedFormGroup } from '@angular/forms';
 })
 export class SafeDisplayTabComponent {
   @Input() form!: UntypedFormGroup;
+
+  /** @returns pageToLink */
+  get cardPageToLink(): AbstractControl | null {
+    return this.form.get('card.pageToLink');
+  }
 }

@@ -12,6 +12,7 @@ import { getCardStyle, parseHtml } from '../parser/utils';
 import get from 'lodash/get';
 import { Router } from '@angular/router';
 import { ToPageFromWidgetService } from '../../../../services/to-page-from-widget/to-page-from-widget.service';
+import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 
 /**
  * Content component of Single Item of Summary Card.
@@ -46,13 +47,15 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
    * @param downloadService Used to download file type fields
    * @param router Angular Router
    * @param toPageService Used to handle redirecting to pages from widgets
+   * @param snackBar Shared snackbar service
    */
   constructor(
     @Inject('environment') environment: any,
     private sanitizer: DomSanitizer,
     private downloadService: SafeDownloadService,
     private router: Router,
-    private toPageService: ToPageFromWidgetService
+    private toPageService: ToPageFromWidgetService,
+    private snackBar: SafeSnackBarService
   ) {
     this.environment = environment;
     //Get current app ID through the url of the current page
@@ -116,7 +119,9 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
         );
         this.router.navigate([pageInfo.url]);
       } catch {
-        console.log('SOMETHING WENT WRONG');
+        this.snackBar.openSnackBar('Redirecting to page was unsuccessful', {
+          error: true,
+        });
       }
     }
     if (type === 'file') {

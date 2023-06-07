@@ -42,13 +42,16 @@
           variant="grey"
           [inline]="true"
           [size]="18"
-          matTooltip="The user will be able to click on the card and be redirected to a link"
+          matTooltip="Clicking on the card will redirect the user to a different page in the same application"
         ></safe-icon>
       </mat-slide-toggle>
       <ng-container *ngIf="form.value.card.makeCardClickable">
         <mat-form-field class="url-input" appearance="outline">
           <mat-label>Page ID *</mat-label>
           <input formControlName="pageToLink" matInput type="string" />
+          <mat-error *ngIf="cardPageToLink?.errors">
+            Please enter a page ID with a valid format
+          </mat-error>
         </mat-form-field>
       </ng-container>
     </div>
