@@ -16,8 +16,6 @@ export const init = (Survey: any, domService: DomService): void => {
     isFit: (question: Question): boolean => question.getType() === 'dropdown',
     isDefaultRender: true,
     afterRender: (question: QuestionDropdown, el: HTMLInputElement): void => {
-      console.log(typeof question);
-      console.log(question);
       // remove default render
       el.parentElement?.querySelector('.sv_select_wrapper')?.remove();
       let dropdownDiv: HTMLDivElement | null = null;
@@ -56,7 +54,6 @@ export const init = (Survey: any, domService: DomService): void => {
     // };
     dropdownInstance.textField = 'text';
     dropdownInstance.valueField = 'value';
-    console.log('ici');
     dropdownInstance.data = [
       {
         text: 'choice 1',

@@ -32,7 +32,6 @@ export const init = (Survey: any, domService: DomService): void => {
     },
     init: () => {
       if (Survey.Serializer.findClass(componentName)) return;
-      console.log(Survey.Serializer);
       Survey.Serializer.addClass(
         componentName,
         [
@@ -46,14 +45,6 @@ export const init = (Survey: any, domService: DomService): void => {
         null,
         'checkbox'
       );
-      const registerQuestion =
-        Survey.ElementFactory.Instance.registerCustomQuestion;
-      // console.log(registerQuestion);
-      console.log(Survey.ElementFactory.Instance);
-      console.log(Survey.ComponentCollection.Instance);
-      // Survey.ComponentCollection.Instance.add(widget);
-      // Survey.ComponentCollection.Instance.registerCustomQuestion(componentName);
-      if (registerQuestion) registerQuestion(componentName);
       Survey.Serializer.addProperty(componentName, {
         name: 'placeholder',
         category: 'general',
@@ -83,30 +74,7 @@ export const init = (Survey: any, domService: DomService): void => {
       tagboxInstance.registerOnChange((value: any) => {
         question.value = value;
       });
-      // dropdownInstance.choices = question.choices;
       el.parentElement?.appendChild(tagboxDiv);
-      question.registerFunctionOnPropertyValueChanged(
-        'choices',
-        () => {
-          console.log('there');
-          // console.log(question.visibleChoices);
-          // dropdownInstance.data = question.visibleChoices.map((choice) => ({
-          //   text: choice.text,
-          //   value: choice.value,
-          // }));
-          console.log(tagboxInstance.virtual);
-          console.log(tagboxInstance.data);
-        },
-        el.id // a unique key to distinguish fields
-      );
-      question.registerFunctionOnPropertyValueChanged(
-        'visibleChoices',
-        () => {
-          console.log('there');
-          console.log(question.visibleChoices);
-        },
-        el.id // a unique key to distinguish fields
-      );
     },
   };
 
