@@ -1,4 +1,4 @@
-import { isEqual, isNil } from 'lodash';
+import { isArray, isEqual, isNil } from 'lodash';
 import { Record } from '../models/record.model';
 import { SafeAuthService } from '../services/auth/auth.service';
 import {
@@ -85,6 +85,80 @@ const addCustomFunctions = (
       return rows.filter((row) => isEqual(matrix[row]?.[colName], colValue));
     }
   );
+
+  // Custom function that given a question name for a matrix,
+  // and a list of rows names, returns a string with the values of the columns
+  // for each row.
+  survey.FunctionFactory.Instance.register(
+    'listColsForRows',
+    function (this: { survey: SurveyModel }, params: any[]) {
+      const [questionName, rows] = params;
+      if (!questionName || !rows) return [];
+
+      const question = this.survey.getQuestionByName(questionName);
+      if (!question || !question.getType().startsWith('matrix')) return [];
+
+      const matrix = question as
+        | QuestionMatrixDropdownModel
+        | QuestionMatrixModel
+        | QuestionMatrixDynamicModel;
+
+      // console.log(matrix.cellType);
+
+      return rows
+        .map((row: string) => {
+          const rowTitle =
+            matrix.rows.find((r) => r.value === row)?.text || row;
+          const colsValues = matrix.columns
+            .map((col) => {
+              // Get type of column
+              const colType =
+                col.cellType === 'default' ? matrix.cellType : col.cellType;
+
+              const colTitle = col.title;
+              const value = matrix.value?.[row]?.[col.name];
+              let formattedValue;
+              switch (colType) {
+                case 'boolean':
+                  // Get the label of the boolean value
+                  formattedValue = isNil(value)
+                    ? ''
+                    : value
+                    ? col.labelTrue
+                    : col.labelFalse;
+                  break;
+                case 'dropdown':
+                  formattedValue = value?.text || value?.value;
+                  break;
+                case 'file':
+                  if (isArray(value))
+                    formattedValue = value.map((v) => v.name).join(', ');
+                  break;
+                default:
+                  formattedValue = value;
+              }
+
+              return {
+                title: colTitle,
+                value: formattedValue,
+              };
+            })
+            .filter((value) => !!value.value)
+            .map((value) => `${value.title}: ${value.value}`)
+            .join(', ');
+          if (!colsValues) return '';
+          return `[${rowTitle}]\n${colsValues}`;
+        })
+        .filter((value: string) => !!value)
+        .join('\n');
+    }
+  );
+
+  // Custom function to replace new lines with <br> tags.
+  survey.FunctionFactory.Instance.register('nl2br', (params: any[]) => {
+    if (!params[0]) return '';
+    return params[0].replace(/\n/g, '<br>');
+  });
 
   // Custom function that gets two arrays and returns the intersection of them.
   survey.FunctionFactory.Instance.register('intersect', (params: any[]) => {
