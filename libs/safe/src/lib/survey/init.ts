@@ -18,6 +18,8 @@ import * as OwnerComponent from './components/owner';
 import * as UsersComponent from './components/users';
 import * as TextWidget from './widgets/text-widget';
 import * as CommentWidget from './widgets/comment-widget';
+import * as DropdownWidget from './widgets/dropdown-widget';
+// import * as TagboxWidget from './widgets/tagbox-widget';
 import * as OtherProperties from './global-properties/others';
 import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';
@@ -59,6 +61,8 @@ export const initCustomSurvey = (
   if (containsCustomQuestions) {
     CommentWidget.init(Survey);
     TextWidget.init(Survey, domService);
+    DropdownWidget.init(Survey, domService);
+    // TagboxWidget.init(Survey, domService);
     // load components (same as widgets, but with less configuration options)
     ResourceComponent.init(Survey, domService, apollo, dialog, formBuilder);
     ResourcesComponent.init(Survey, domService, apollo, dialog, formBuilder);
