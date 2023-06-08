@@ -99,6 +99,10 @@ export class ChipListDirective
    */
   public setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
+    // Disable/enable chips when form control disabled status changes
+    this.currentChipList?.forEach((chip: ChipComponent) => {
+      chip.disabled = isDisabled;
+    });
   }
 
   ngOnDestroy(): void {

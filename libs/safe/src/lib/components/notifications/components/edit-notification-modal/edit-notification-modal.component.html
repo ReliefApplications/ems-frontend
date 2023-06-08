@@ -27,9 +27,7 @@
         <div uiFormFieldDirective [outline]="false" class="flex-1 w-28">
           <label>{{ 'models.customNotification.type' | translate }}</label>
           <ui-select-menu formControlName="notificationType">
-            <ui-select-option
-              value="email"
-            >
+            <ui-select-option value="email">
               {{ 'common.email.one' | translate }}
             </ui-select-option>
           </ui-select-menu>
@@ -102,7 +100,7 @@
       <div class="flex flex-col">
         <!-- Template -->
 
-        <div uiFormFieldDirective [outline]="false" class="w-60 flex-1">
+        <div uiFormFieldDirective [outline]="false" class="w-full">
           <label>{{ 'common.template.one' | translate }}</label>
           <ui-select-menu formControlName="template">
             <ui-select-option

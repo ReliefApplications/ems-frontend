@@ -22,7 +22,7 @@ export class ChipComponent {
     const classes = [];
     // Disable state
     if (this.disabled) {
-      classes.push('opacity-40 bg-gray-200 text-gray-400 pointer-events-none');
+      classes.push('opacity-70 bg-gray-300 text-gray-400 pointer-events-none');
     } else {
       classes.push('cursor-pointer');
       // Variants

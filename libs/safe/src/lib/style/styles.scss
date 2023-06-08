@@ -219,10 +219,6 @@ $safe-theme: mat.define-light-theme(
 
 // === FORM FIELD ===
 @mixin form-field($theme) {
-  div > input:disabled {
-    opacity: 0.5;
-  }
-
   mat-label {
     ui-icon {
       vertical-align: text-bottom;

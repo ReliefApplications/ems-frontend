@@ -61,6 +61,7 @@ export class TextareaComponent implements ControlValueAccessor {
 
   minRowsNumber = 2;
   valueChange: EventEmitter<boolean> = new EventEmitter();
+  disabled = false;
   onTouched!: () => void;
   onChanged!: (value: string) => void;
 
@@ -82,6 +83,15 @@ export class TextareaComponent implements ControlValueAccessor {
    */
   public registerOnTouched(fn: any): void {
     this.onTouched = fn;
+  }
+
+  /**
+   * Set disabled state of the control
+   *
+   * @param isDisabled is control disabled
+   */
+  public setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
   }
 
   /**

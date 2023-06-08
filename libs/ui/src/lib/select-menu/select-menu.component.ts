@@ -204,6 +204,15 @@ export class SelectMenuComponent
   }
 
   /**
+   * Set disabled state of the control
+   *
+   * @param isDisabled is control disabled
+   */
+  public setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+  }
+
+  /**
    * Emit selectedOption output, change trigger text and deal with control access value when an element of the list is clicked
    */
   onChangeFunction() {
