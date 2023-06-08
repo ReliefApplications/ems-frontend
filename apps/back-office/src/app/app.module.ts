@@ -17,7 +17,6 @@ import { environment } from '../environments/environment';
 
 // Config
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 
 // TRANSLATOR
@@ -98,7 +97,6 @@ export const httpTranslateLoader = (http: HttpClient) =>
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    MatDatepickerModule,
     MatNativeDateModule,
     DialogCdkModule,
     TranslateModule.forRoot({

@@ -40,7 +40,6 @@ import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeReadableCronModule,
   CronExpressionControlModule,
-  SafeIconModule,
 } from '@oort-front/safe';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import {
@@ -52,6 +51,7 @@ import {
   TextareaModule,
   ChipModule,
   GraphQLSelectModule,
+  IconModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 
@@ -76,7 +76,7 @@ const DEFAULT_FIELDS = ['createdBy'];
     MatFormFieldModule,
     ExpansionPanelModule,
     CronExpressionControlModule,
-    SafeIconModule,
+    IconModule,
     TextareaModule,
     ButtonModule,
     SelectMenuModule,

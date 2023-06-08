@@ -8,7 +8,7 @@ import {
   TabsModule,
   PaginatorModule,
 } from '@oort-front/ui';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { SafeAccessModule, SafeDateModule } from '@oort-front/safe';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
@@ -22,7 +22,7 @@ import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.mo
     ResourceRoutingModule,
     SpinnerModule,
     TabsModule,
-    MatIconModule,
+    IconModule,
     MenuModule,
     SafeAccessModule,
     PaginatorModule,

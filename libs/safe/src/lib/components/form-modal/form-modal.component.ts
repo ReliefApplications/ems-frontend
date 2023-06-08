@@ -4,6 +4,7 @@ import {
   ElementRef,
   Inject,
   NgZone,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -35,10 +36,9 @@ import omitBy from 'lodash/omitBy';
 import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../utils/cleanRecord';
 import { CommonModule } from '@angular/common';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { ButtonModule, SnackbarService, TabsModule } from '@oort-front/ui';
-import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -72,10 +72,9 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
   styleUrls: ['./form-modal.component.scss'],
   imports: [
     CommonModule,
-    MatIconModule,
+    IconModule,
     MatButtonModule,
     TabsModule,
-    SafeIconModule,
     SafeRecordSummaryModule,
     SafeFormActionsModule,
     TranslateModule,
@@ -86,7 +85,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
 })
 export class SafeFormModalComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   // === DATA ===
   public loading = true;
@@ -96,13 +95,13 @@ export class SafeFormModalComponent
 
   public modifiedAt: Date | null = null;
 
-  private isMultiEdition = false;
+  protected isMultiEdition = false;
   private storedMergedData: any;
 
   public survey!: Survey.SurveyModel;
   public selectedTabIndex = 0;
   private pages = new BehaviorSubject<any[]>([]);
-  private temporaryFilesStorage: any = {};
+  protected temporaryFilesStorage: any = {};
 
   @ViewChild('formContainer') formContainer!: ElementRef;
 
@@ -136,13 +135,13 @@ export class SafeFormModalComponent
     public dialog: Dialog,
     public dialogRef: DialogRef<SafeFormModalComponent>,
     private apollo: Apollo,
-    private snackBar: SnackbarService,
+    protected snackBar: SnackbarService,
     private authService: SafeAuthService,
     private formBuilderService: SafeFormBuilderService,
-    private formHelpersService: SafeFormHelpersService,
-    private confirmService: SafeConfirmService,
-    private translate: TranslateService,
-    private ngZone: NgZone
+    protected formHelpersService: SafeFormHelpersService,
+    protected confirmService: SafeConfirmService,
+    protected translate: TranslateService,
+    protected ngZone: NgZone
   ) {
     super();
   }
@@ -336,11 +335,15 @@ export class SafeFormModalComponent
    * @param survey current survey
    */
   public async onUpdate(survey: any): Promise<void> {
-    await this.formHelpersService.uploadFiles(
-      survey,
-      this.temporaryFilesStorage,
-      this.form?.id
+    const promises = this.formHelpersService.uploadTemporaryRecords(survey);
+    promises.push(
+      this.formHelpersService.uploadFiles(
+        survey,
+        this.temporaryFilesStorage,
+        this.form?.id
+      )
     );
+    await Promise.allSettled(promises);
     if (this.data.recordId) {
       if (this.isMultiEdition) {
         this.updateMultipleData(this.data.recordId, survey);
@@ -648,5 +651,13 @@ export class SafeFormModalComponent
           });
       }
     });
+  }
+
+  /**
+   * Clears the cache for the records created by resource questions
+   */
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.formHelpersService.cleanCachedRecords(this.survey);
   }
 }

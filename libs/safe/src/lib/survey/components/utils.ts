@@ -31,7 +31,7 @@ export const buildSearchButton = (
       const dialogRef = dialog.open(SafeResourceGridModalComponent, {
         data: {
           multiselect,
-          gridSettings: fieldsSettingsForm,
+          gridSettings: { ...fieldsSettingsForm },
           selectedRows: Array.isArray(question.value)
             ? question.value
             : question.value
@@ -78,10 +78,10 @@ export const buildAddButton = (
   );
   if (question.addRecord && question.addTemplate) {
     addButton.onclick = async () => {
-      const { SafeFormModalComponent } = await import(
-        '../../components/form-modal/form-modal.component'
+      const { SafeResourceModalComponent } = await import(
+        '../../components/resource-modal/resource-modal.component'
       );
-      const dialogRef = dialog.open(SafeFormModalComponent, {
+      const dialogRef = dialog.open(SafeResourceModalComponent, {
         disableClose: true,
         data: {
           template: question.addTemplate,

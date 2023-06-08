@@ -7,10 +7,10 @@ import {
   SliderModule,
   FormWrapperModule,
   SelectMenuModule,
+  IconModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeIconModule } from '../../../ui/icon/icon.module';
-import { TooltipModule } from '@oort-front/ui';
+import { TooltipModule, ErrorMessageModule } from '@oort-front/ui';
 import { SafeMapModule } from '../../map/map.module';
 
 /**
@@ -27,9 +27,10 @@ import { SafeMapModule } from '../../map/map.module';
     FormWrapperModule,
     SliderModule,
     TooltipModule,
-    SafeIconModule,
+    IconModule,
     SafeMapModule,
     SelectMenuModule,
+    ErrorMessageModule,
   ],
   exports: [MapPropertiesComponent],
 })

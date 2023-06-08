@@ -50,10 +50,11 @@
               </ui-option>
             </ui-option>
           </ui-autocomplete>
-          <safe-icon
+          <ui-button
             *ngIf="routingKey"
+            uiSuffix
+            [isIcon]="true"
             icon="close"
-            class="cursor-pointer"
             variant="primary"
             uiSuffix
             [uiTooltip]="
@@ -61,17 +62,17 @@
                 | translate
             "
             (click)="routingKey = ''"
-          ></safe-icon>
-          <safe-icon
+          ></ui-button>
+          <ui-icon
             icon="info"
             class="cursor-pointer"
-            variant="'grey'"
+            variant="grey"
             uiSuffix
             [uiTooltip]="
               'components.application.subscription.modal.hint.listenTo'
                 | translate
             "
-          ></safe-icon>
+          ></ui-icon>
         </div>
         <div uiFormFieldDirective>
           <label>{{ 'components.record.convert.select' | translate }}</label>
@@ -79,7 +80,6 @@
             valueField="id"
             textField="name"
             [query]="formsQuery"
-            formControlName="convertTo"
             [selectedElements]="[defaultForm]"
             (searchChange)="onSearchChange($event)"
             [filterable]="true"

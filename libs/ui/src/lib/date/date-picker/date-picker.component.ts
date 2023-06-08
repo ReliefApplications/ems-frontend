@@ -1,9 +1,10 @@
 import {
   Component,
   EventEmitter,
-  HostListener,
   Input,
   Output,
+  TemplateRef,
+  ViewChild,
 } from '@angular/core';
 
 /**
@@ -17,18 +18,9 @@ import {
 export class DatePickerComponent {
   @Input() disabled = false;
   @Output() selectedValue = new EventEmitter<Date>();
+  @ViewChild(TemplateRef) calendar!: TemplateRef<any>;
 
   value!: Date;
-  showPanel = false;
-  isBottom = false;
-
-  /**
-   * Propagate host element blur event
-   */
-  @HostListener('focusout')
-  onFocusout() {
-    this.showPanel = false;
-  }
 
   /**
    * Handles the selection of a content

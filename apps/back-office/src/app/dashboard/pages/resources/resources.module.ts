@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ResourcesRoutingModule } from './resources-routing.module';
 import { ResourcesComponent } from './resources.component';
-import { MatIconModule } from '@angular/material/icon';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -19,6 +18,7 @@ import {
   FormWrapperModule,
   IconModule,
   PaginatorModule,
+  DateModule,
 } from '@oort-front/ui';
 
 /**
@@ -30,7 +30,7 @@ import {
     CommonModule,
     ResourcesRoutingModule,
     SpinnerModule,
-    MatIconModule,
+    IconModule,
     MenuModule,
     MatInputModule,
     MatDatepickerModule,
@@ -44,8 +44,8 @@ import {
     SafeDateModule,
     ButtonModule,
     FormWrapperModule,
-    IconModule,
     TableModule,
+    DateModule,
   ],
   exports: [ResourcesComponent],
 })

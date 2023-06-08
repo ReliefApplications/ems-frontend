@@ -3,7 +3,7 @@
   <div class="flex flex-wrap gap-2 flex-col sm:flex-row">
     <!-- Search text filter -->
     <div uiFormFieldDirective>
-      <ui-icon [icon]="'search'" uiPrefix></ui-icon>
+      <ui-icon icon="search" uiPrefix></ui-icon>
       <input
         placeholder="{{ 'common.placeholder.search' | translate }}"
         [formControl]="search"
@@ -31,31 +31,22 @@
     class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row"
   >
     <!-- Date range filter -->
-    <mat-form-field class="p-0 mat-form-field-sm" appearance="outline">
-      <mat-label>{{ 'common.input.dateRange' | translate }}</mat-label>
-      <mat-date-range-input [rangePicker]="rangePicker">
-        <input formControlName="startDate" matStartDate />
-        <input formControlName="endDate" matEndDate />
-      </mat-date-range-input>
-      <mat-datepicker-toggle
-        matSuffix
-        [for]="rangePicker"
-      ></mat-datepicker-toggle>
-      <mat-date-range-picker #rangePicker>
-        <mat-date-range-picker-actions>
-          <ui-button matDateRangePickerCancel (click)="clearDateFilter()">
-            {{ 'common.clear' | translate }}
-          </ui-button>
-          <ui-button
-            category="secondary"
-            variant="primary"
-            matDateRangePickerApply
-          >
-            {{ 'common.filter.apply' | translate }}
-          </ui-button>
-        </mat-date-range-picker-actions>
-      </mat-date-range-picker>
-    </mat-form-field>
+    <div uiFormFieldDirective>
+      <label>{{ 'common.input.dateRange' | translate }}</label>
+      <div [formGroup]="form" [uiDateWrapper]="calendar">
+        <input
+          [uiDatePicker]
+          formControlName="startDate"
+          [label]="'kendo.datepicker.startLabel' | translate"
+        />
+        <input
+          [uiDatePicker]
+          formControlName="endDate"
+          [label]="'kendo.datepicker.endLabel' | translate"
+        />
+        <ui-date-range #calendar> </ui-date-range>
+      </div>
+    </div>
     <!-- Status filter -->
     <div uiFormFieldDirective [outline]="false" class="p-0 w-44">
       <label>{{ 'common.status' | translate }}</label>

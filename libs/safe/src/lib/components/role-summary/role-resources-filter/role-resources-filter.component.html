@@ -1,7 +1,7 @@
 <div [formGroup]="form" class="flex flex-col gap-4">
   <div class="flex flex-wrap gap-2">
     <div uiFormFieldDirective>
-      <ui-icon [icon]="'search'" uiPrefix></ui-icon>
+      <ui-icon icon="search" uiPrefix></ui-icon>
       <input
         placeholder="{{ 'common.placeholder.search' | translate }}"
         [formControl]="search"
@@ -22,8 +22,25 @@
       }}
     </ui-button>
   </div>
+  <!-- Filters when on "show" mode -->
   <div class="flex flex-wrap gap-2 items-center" *ngIf="show">
-    <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
+    <div uiFormFieldDirective>
+      <label>{{ 'common.input.dateRange' | translate }}</label>
+      <div [uiDateWrapper]="calendar">
+        <input
+          [uiDatePicker]
+          formControlName="startDate"
+          [label]="'kendo.datepicker.startLabel' | translate"
+        />
+        <input
+          [uiDatePicker]
+          formControlName="endDate"
+          [label]="'kendo.datepicker.endLabel' | translate"
+        />
+        <ui-date-range #calendar> </ui-date-range>
+      </div>
+    </div>
+    <!-- <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
       <mat-label>{{ 'common.input.dateRange' | translate }}</mat-label>
       <mat-date-range-input [rangePicker]="rangePicker">
         <input formControlName="startDate" matStartDate />
@@ -47,7 +64,7 @@
           </ui-button>
         </mat-date-range-picker-actions>
       </mat-date-range-picker>
-    </mat-form-field>
+    </mat-form-field> -->
     <ui-button variant="danger" (click)="clear()">
       {{ 'common.filter.clear' | translate }}
     </ui-button>

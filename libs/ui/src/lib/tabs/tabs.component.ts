@@ -1,5 +1,6 @@
 import {
-  AfterViewInit,
+  AfterContentInit,
+  ChangeDetectorRef,
   Component,
   ContentChildren,
   EventEmitter,
@@ -43,7 +44,7 @@ import { Subject, takeUntil } from 'rxjs';
     ]),
   ],
 })
-export class TabsComponent implements AfterViewInit, OnDestroy {
+export class TabsComponent implements AfterContentInit, OnDestroy {
   @ContentChildren(TabComponent, { descendants: true })
   tabs!: QueryList<TabComponent>;
 
@@ -70,6 +71,13 @@ export class TabsComponent implements AfterViewInit, OnDestroy {
   triggerAnimation = false;
   destroy$ = new Subject<void>();
 
+  /**
+   * Ui Sidenav constructor
+   *
+   * @param cdr ChangeDetectorRef
+   */
+  constructor(private cdr: ChangeDetectorRef) {}
+
   /** @returns general resolved position classes for navigation tabs*/
   get resolveTabPositionClasses(): string[] {
     const classes = [];
@@ -85,19 +93,22 @@ export class TabsComponent implements AfterViewInit, OnDestroy {
     return classes;
   }
 
-  ngAfterViewInit() {
-    // Initialize tab components
-    this.tabs.forEach((tab, index) => {
-      tab.variant = this.variant;
-      tab.vertical = this.vertical;
-      tab.index = index;
-      tab.openTab.pipe(takeUntil(this.destroy$)).subscribe(() => {
-        this.showContent(tab);
+  ngAfterContentInit() {
+    // Timeout will trigger change detection accordingly to avoid change cycle errors
+    setTimeout(() => {
+      // Initialize tab components
+      this.tabs.forEach((tab, index) => {
+        tab.variant = this.variant;
+        tab.vertical = this.vertical;
+        tab.index = index;
+        tab.openTab.pipe(takeUntil(this.destroy$)).subscribe(() => {
+          this.showContent(tab);
+        });
+        if (index === this.selectedIndex) {
+          this.showContent(tab);
+        }
       });
-      if (index === this.selectedIndex) {
-        this.showContent(tab);
-      }
-    });
+    }, 0);
   }
 
   /**

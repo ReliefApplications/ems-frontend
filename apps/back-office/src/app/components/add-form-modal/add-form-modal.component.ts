@@ -17,7 +17,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeIconModule } from '@oort-front/safe';
 import {
   ToggleModule,
   TooltipModule,
@@ -49,7 +48,6 @@ const ITEMS_PER_PAGE = 10;
     MatButtonModule,
     ToggleModule,
     TranslateModule,
-    SafeIconModule,
     GraphQLSelectModule,
     DialogModule,
     TooltipModule,

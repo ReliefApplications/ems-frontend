@@ -68,15 +68,14 @@
       <ui-toggle [(ngModel)]="export.email">
         <ng-container ngProjectAs="label">
           {{ 'components.widget.grid.export.email.title' | translate
-          }}<safe-icon
+          }}<ui-icon
             variant="grey"
-            [inline]="true"
             [size]="18"
             icon="info_outline"
             [uiTooltip]="
               'components.widget.grid.export.email.tooltip' | translate
             "
-          ></safe-icon>
+          ></ui-icon>
       </ng-container>
     </ui-toggle>
     </p>

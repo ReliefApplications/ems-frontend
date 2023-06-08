@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LayoutTableComponent } from './layout-table.component';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SafeDateModule } from '../../../pipes/date/date.module';
@@ -14,7 +14,7 @@ import { MenuModule, ButtonModule, TableModule } from '@oort-front/ui';
     CommonModule,
     TranslateModule,
     MenuModule,
-    MatIconModule,
+    IconModule,
     DragDropModule,
     SafeDateModule,
     ButtonModule,

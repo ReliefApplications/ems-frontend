@@ -7,7 +7,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogModule } from '@oort-front/ui';
@@ -31,7 +31,7 @@ import {
     MatFormFieldModule,
     FormWrapperModule,
     SpinnerModule,
-    MatIconModule,
+    IconModule,
     MenuModule,
     MatButtonModule,
     TranslateModule,

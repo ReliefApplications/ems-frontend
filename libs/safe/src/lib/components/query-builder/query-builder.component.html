@@ -16,13 +16,13 @@
             {{ option }}
           </ui-option>
         </ui-autocomplete>
-        <safe-icon
+        <ui-icon
           *ngIf="canSelectDataSet && form.invalid"
           uiSuffix
           icon="error"
           variant="danger"
           [uiTooltip]="'components.form.layout.errors.invalid' | translate"
-        ></safe-icon>
+        ></ui-icon>
       </div>
 
       <div

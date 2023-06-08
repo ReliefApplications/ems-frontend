@@ -6,11 +6,11 @@
   <!-- MAIN PARAMETERS / SELECTION OF LAYOUTS -->
   <ui-tab>
     <ng-container ngProjectAs="label">
-      <safe-icon
+      <ui-icon
         icon="preview"
         [size]="24"
         uiTooltip="{{ 'common.general' | translate }}"
-      ></safe-icon>
+      ></ui-icon>
       <span>{{ 'common.general' | translate }}</span>
     </ng-container>
     <safe-tab-main
@@ -21,15 +21,15 @@
     ></safe-tab-main>
   </ui-tab>
   <!-- AVAILABLE ACTIONS -->
-  <ui-tab [disabled]="formGroup.value.aggregations.length > 0">
+  <ui-tab [disabled]="formGroup && formGroup.value.aggregations.length > 0">
     <ng-container ngProjectAs="label">
-      <safe-icon
+      <ui-icon
         icon="toggle_on"
         [size]="24"
         uiTooltip="{{
           'components.widget.settings.grid.actions.title' | translate
         }}"
-      ></safe-icon>
+      ></ui-icon>
       <span>{{
         'components.widget.settings.grid.actions.title' | translate
       }}</span>
@@ -37,15 +37,15 @@
     <safe-tab-actions [formGroup]="formGroup"></safe-tab-actions>
   </ui-tab>
   <!-- BUTTONS -->
-  <ui-tab [disabled]="formGroup.value.aggregations.length > 0">
+  <ui-tab [disabled]="formGroup && formGroup.value.aggregations.length > 0">
     <ng-container ngProjectAs="label">
-      <safe-icon
+      <ui-icon
         icon="bolt"
         [size]="24"
         uiTooltip="{{
           'components.widget.settings.grid.buttons.title' | translate
         }}"
-      ></safe-icon>
+      ></ui-icon>
       <span>{{
         'components.widget.settings.grid.buttons.title' | translate
       }}</span>
@@ -58,5 +58,17 @@
       [relatedForms]="relatedForms"
       [channels]="channels"
     ></safe-tab-buttons>
+  </ui-tab>
+  <!-- Widget display options -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon
+        icon="settings_overscan"
+        [size]="24"
+        [uiTooltip]="'models.widget.display.title' | translate"
+      ></ui-icon>
+      <span>{{ 'models.widget.display.title' | translate }}</span>
+    </ng-container>
+    <safe-display-settings [formGroup]="formGroup"></safe-display-settings>
   </ui-tab>
 </ui-tabs>

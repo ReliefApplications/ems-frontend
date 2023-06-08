@@ -42,11 +42,11 @@
           </ui-button>
           <ui-menu #resMenu>
             <button uiMenuItem (click)="edit.emit(i)">
-              <mat-icon>edit</mat-icon>
+              <ui-icon icon="edit"></ui-icon>
               {{ 'common.edit' | translate }}
             </button>
             <button uiMenuItem (click)="delete.emit(i)">
-              <mat-icon>delete</mat-icon>
+              <ui-icon icon="delete"></ui-icon>
               {{ 'common.delete' | translate }}
             </button>
           </ui-menu>

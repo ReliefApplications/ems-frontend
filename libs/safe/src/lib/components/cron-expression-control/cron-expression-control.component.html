@@ -1,4 +1,9 @@
-<div uiFormFieldDirective  class="flex-1">
+<div
+  [uiErrorMessage]="'components.pullJob.modal.errors.schedule' | translate"
+  [uiErrorMessageIf]="ngControl.errors && ngControl.touched"
+  uiFormFieldDirective
+  class="flex-1"
+>
   <label>{{ 'models.pullJob.schedule' | translate }}</label>
   <input
     type="text"
@@ -10,15 +15,12 @@
         : (value | safeReadableCron)
     }}"
   />
-  <safe-icon
+  <ui-icon
     icon="edit"
     class="cursor-pointer"
     variant="grey"
     uiSuffix
     (click)="onEdit()"
     [uiTooltip]="'components.pullJob.modal.hint.schedule' | translate"
-  ></safe-icon>
-  <mat-error *ngIf="ngControl.errors">
-    {{ 'components.pullJob.modal.errors.schedule' | translate }}
-  </mat-error>
+  ></ui-icon>
 </div>

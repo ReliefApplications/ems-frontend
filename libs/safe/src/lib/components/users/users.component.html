@@ -5,7 +5,7 @@
     <div class="flex flex-wrap gap-2 flex-col sm:flex-row">
       <!-- Search text filter -->
       <div uiFormFieldDirective>
-        <mat-icon uiPrefix>search</mat-icon>
+        <ui-icon icon="search" uiPrefix></ui-icon>
         <input
           [ngModel]="searchText"
           (keyup)="applyFilter('', $event)"
@@ -176,7 +176,7 @@
           </ui-button>
           <ui-menu #menu>
             <button uiMenuItem (click)="onDelete([element])">
-              <mat-icon>delete</mat-icon>
+              <ui-icon icon="delete"></ui-icon>
               {{ 'common.delete' | translate }}
             </button>
           </ui-menu>
@@ -191,6 +191,7 @@
         class="cursor-pointer"
       ></tr>
     </table>
+    <!-- Loading indicator -->
     <safe-skeleton-table
       *ngIf="loading"
       [columns]="[

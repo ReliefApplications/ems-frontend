@@ -155,12 +155,12 @@
               [routerLink]="[element.id + '/builder']"
               *ngIf="element.canUpdate"
             >
-              <mat-icon>edit</mat-icon>
+              <ui-icon icon="edit"></ui-icon>
               {{ 'common.edit' | translate }}
             </button>
             <ng-container *ngIf="element.canSee">
               <button uiMenuItem [routerLink]="[element.id + '/records']">
-                <mat-icon>plagiarism</mat-icon>
+                <ui-icon icon="plagiarism"></ui-icon>
                 {{
                   'common.viewObject'
                     | translate : { name: 'common.record.few' | translate }
@@ -170,7 +170,7 @@
             <ng-container *ngIf="element.canDelete">
               <ui-divider class="m-0"></ui-divider>
               <button uiMenuItem (click)="onDelete(element, $event)">
-                <mat-icon>delete</mat-icon>
+                <ui-icon icon="delete"></ui-icon>
                 {{ 'common.delete' | translate }}
               </button>
             </ng-container>

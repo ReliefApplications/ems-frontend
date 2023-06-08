@@ -125,7 +125,7 @@ const SimpleAutocompletePanelTemplate: StoryFn<any> = (args: any) => {
         {{option.label}}
         <ng-container ngProjectsAs="icon">
         <ui-icon
-          [icon]="'edit'"
+          icon="edit"
           [size]="18"
         ></ui-icon>
         </ng-container>
@@ -171,7 +171,7 @@ const GroupedAutocompletePanelTemplate: StoryFn<any> = (args: any) => {
     {{child.optionName}}
     <ng-container ngProjectsAs="icon">
     <ui-icon
-      [icon]="'edit'"
+      icon="edit"
       [size]="18"
     ></ui-icon>
     </ng-container>
@@ -220,7 +220,7 @@ const FormControlTemplate: StoryFn<any> = (args: any) => {
     {{option.label}}
     <ng-container ngProjectsAs="icon">
     <ui-icon
-      [icon]="'edit'"
+      icon="edit"
       [size]="18"
     ></ui-icon>
     </ng-container>

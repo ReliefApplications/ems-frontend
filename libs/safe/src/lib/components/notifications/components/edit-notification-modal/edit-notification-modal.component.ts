@@ -33,6 +33,8 @@ import {
   FormWrapperModule,
   DialogModule,
   GraphQLSelectModule,
+  IconModule,
+  ErrorMessageModule,
 } from '@oort-front/ui';
 
 /**
@@ -62,10 +64,12 @@ const ITEMS_PER_PAGE = 10;
     DividerModule,
     GraphQLSelectModule,
     CronExpressionControlModule,
+    IconModule,
     RadioModule,
     ButtonModule,
     SelectMenuModule,
     FormWrapperModule,
+    ErrorMessageModule,
   ],
   selector: 'safe-edit-notification-modal',
   templateUrl: './edit-notification-modal.component.html',

@@ -21,14 +21,21 @@
     >
       {{ form.name }}
       <ng-container ngProjectAs="icon">
-        <safe-icon
+        <ui-icon
           *ngIf="form.core"
           icon="storage"
           variant="primary"
           [size]="20"
-        ></safe-icon>
+        ></ui-icon>
+        <!-- <ui-icon
+        *ngIf="form.core"
+        icon="storage"
+        variant="primary"
+        [size]="20"
+      ></ui-icon> -->
       </ng-container>
     </ui-option>
   </ui-autocomplete>
+
   <ui-spinner [size]="'medium'" *ngIf="loadingMore" uiSuffix></ui-spinner>
 </div>

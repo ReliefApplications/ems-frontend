@@ -15,6 +15,7 @@
 </ng-template>
 <ng-container *ngIf="fields.length; else emptyTmpl">
   <div class="overflow-x-hidden shadow-2lg">
+    <!-- Table scroll container -->
     <div class="overflow-x-auto">
       <table cdk-table uiTableWrapper [dataSource]="fields">
         <ng-container cdkColumnDef="name">
@@ -46,11 +47,11 @@
             </ui-button>
             <ui-menu #resMenu>
               <button uiMenuItem (click)="onEditCalculatedField(element)">
-                <mat-icon>edit</mat-icon>
+                <ui-icon icon="edit"></ui-icon>
                 {{ 'common.edit' | translate }}
               </button>
               <button uiMenuItem (click)="onDeleteCalculatedField(element)">
-                <mat-icon>delete</mat-icon>
+                <ui-icon icon="delete"></ui-icon>
                 {{ 'common.delete' | translate }}
               </button>
             </ui-menu>

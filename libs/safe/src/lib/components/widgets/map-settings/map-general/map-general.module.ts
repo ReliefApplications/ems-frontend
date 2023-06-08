@@ -5,7 +5,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
-import { SafeIconModule } from '../../../ui/icon/icon.module';
 import {
   AlertModule,
   FormWrapperModule,
@@ -25,7 +24,6 @@ import {
     MatFormFieldModule,
     FormWrapperModule,
     SafeQueryBuilderModule,
-    SafeIconModule,
     GraphQLSelectModule,
     AlertModule,
   ],

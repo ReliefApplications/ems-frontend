@@ -12,11 +12,13 @@ import {
 } from '@angular/core';
 import { SuffixDirective } from './suffix.directive';
 import { PrefixDirective } from './prefix.directive';
-import { Subject, startWith, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, startWith, takeUntil } from 'rxjs';
 import { SelectMenuComponent } from '../select-menu/select-menu.component';
 import { TextareaComponent } from '../textarea/textarea.component';
 import { GraphQLSelectComponent } from '../graphql-select/graphql-select.component';
-import { AutocompleteComponent } from '../autocomplete/autocomplete.component';
+import { FormControlName, Validators, FormControlStatus } from '@angular/forms';
+import { ChipListDirective } from '../chip/chip-list.directive';
+import { DateWrapperDirective } from '../date/date-wrapper.directive';
 
 /**
  * UI Form Wrapper Directive
@@ -46,6 +48,12 @@ export class FormWrapperDirective
   private currentTextareaElement!: ElementRef;
   @ContentChild(GraphQLSelectComponent)
   private currentGraphQLSelectComponent!: GraphQLSelectComponent;
+  @ContentChild(ChipListDirective, { read: ElementRef })
+  private chipListElement!: ElementRef;
+  @ContentChild(DateWrapperDirective, { read: ElementRef })
+  private dateWrapperElement!: ElementRef;
+
+  @ContentChild(FormControlName) control!: FormControlName;
 
   private currentInputElement!: HTMLInputElement;
   private currentLabelElement!: HTMLLabelElement;
@@ -100,15 +108,8 @@ export class FormWrapperDirective
     'bg-gray-50',
   ] as const;
 
-  private beyondLabelGeneral = [
-    'relative',
-    'py-1.5',
-    'px-2',
-    'flex',
-    'items-center',
-    'w-full',
-  ] as const;
-
+  private beyondLabelGeneral = ['relative', 'py-1.5', 'px-2'] as const;
+  private beyondLabelNoChipList = ['flex', 'items-center', 'w-full'] as const;
   private beyondLabelNoOutline = [
     'focus-within:ring-2',
     'focus-within:ring-inset',
@@ -131,6 +132,7 @@ export class FormWrapperDirective
   ] as const;
 
   private selectButtonRemove = [
+    'px-3',
     'ring-1',
     'ring-inset',
     'ring-gray-300',
@@ -151,7 +153,7 @@ export class FormWrapperDirective
   ];
 
   private destroy$ = new Subject<void>();
-
+  elementWrapped = new BehaviorSubject<boolean>(false);
   /**
    * Constructor including a ref to the element on which the directive is applied
    * and the renderer.
@@ -163,7 +165,102 @@ export class FormWrapperDirective
     this.renderer.addClass(this.elementRef.nativeElement, 'mb-4');
   }
 
+  //We need to use afterViewInit for select menu, otherwise removing class does not work
+  ngAfterViewInit() {
+    // Do the same with selectMenu
+    if (this.currentSelectElement || this.currentGraphQLSelectComponent) {
+      if (this.currentGraphQLSelectComponent) {
+        this.currentGraphQLSelectComponent.elementSelect.isGraphQlSelect = true;
+      }
+      this.renderer.removeClass(this.beyondLabelContainer, 'py-1.5');
+      this.renderer.addClass(this.beyondLabelContainer, 'py-0.5');
+      const currentElement = this.currentGraphQLSelectComponent
+        ? this.currentGraphQLSelectComponent.elementRef
+        : this.currentSelectElement;
+      //Get select-menu button in order to remove styling elements
+      const selectButton = currentElement.nativeElement.querySelector('button');
+      for (const cl of this.selectButtonRemove) {
+        this.renderer.removeClass(selectButton, cl);
+      }
+      // Add related classes to select menu element
+      if (!this.outline) {
+        for (const cl of this.selectClassesNoOutline) {
+          this.renderer.addClass(currentElement.nativeElement, cl);
+        }
+      } else {
+        for (const cl of this.selectClassesOutline) {
+          this.renderer.addClass(currentElement.nativeElement, cl);
+        }
+        this.renderer.removeClass(selectButton, 'bg-white');
+        this.renderer.addClass(selectButton, 'bg-gray-50');
+      }
+      // this.renderer.addClass(this.elementRef.nativeElement, 'pb-4');
+      //Add reworked element to beyond label
+      this.renderer.appendChild(
+        this.beyondLabelContainer,
+        currentElement.nativeElement
+      );
+    }
+
+    if (this.autocompleteContent) {
+      this.renderer.removeClass(
+        this.autocompleteContent.nativeElement.querySelector('div'),
+        'relative'
+      );
+      this.renderer.addClass(this.elementRef.nativeElement, 'relative');
+    }
+
+    if (this.currentTextareaElement) {
+      const textareaElement =
+        this.currentTextareaElement.nativeElement.querySelector('textarea');
+      this.renderer.addClass(textareaElement, 'bg-transparent');
+
+      for (const cl of this.textareaRemove) {
+        this.renderer.removeClass(textareaElement, cl);
+      }
+      // Add related classes to input element
+      if (!this.outline) {
+        for (const cl of this.inputClassesNoOutline) {
+          this.renderer.addClass(this.currentTextareaElement.nativeElement, cl);
+        }
+      } else {
+        for (const cl of this.inputClassesOutline) {
+          this.renderer.addClass(this.currentTextareaElement.nativeElement, cl);
+        }
+      }
+      this.renderer.addClass(this.elementRef.nativeElement, 'pb-3');
+      // Then add the input to our beyondLabel wrapper element
+      this.renderer.appendChild(
+        this.beyondLabelContainer,
+        this.currentTextareaElement.nativeElement
+      );
+    }
+  }
+
   ngAfterContentInit() {
+    // Manage form control status changes
+    if (this.control) {
+      this.control.control.statusChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (status: FormControlStatus) => {
+            // Disabled state
+            if (status === 'DISABLED') {
+              this.setDisableState();
+            } else {
+              this.removeDisableState();
+            }
+            // Error state
+            if (this.control.control.validator) {
+              if (status === 'INVALID') {
+                this.setInvalidState();
+              } else {
+                this.removeInvalidState();
+              }
+            }
+          },
+        });
+    }
     // Get inner input and label elements
     this.currentInputElement =
       this.elementRef.nativeElement.querySelector('input');
@@ -186,7 +283,7 @@ export class FormWrapperDirective
       }
     }
 
-    if (this.currentInputElement) {
+    if (this.currentInputElement && !this.dateWrapperElement) {
       // Add related classes to input element
       if (!this.outline) {
         for (const cl of this.inputClassesNoOutline) {
@@ -197,7 +294,6 @@ export class FormWrapperDirective
           this.renderer.addClass(this.currentInputElement, cl);
         }
       }
-
       // Then add the input to our beyondLabel wrapper element
       this.renderer.appendChild(
         this.beyondLabelContainer,
@@ -205,19 +301,48 @@ export class FormWrapperDirective
       );
     }
 
+    if (this.chipListElement) {
+      this.renderer.insertBefore(
+        this.beyondLabelContainer,
+        this.chipListElement.nativeElement,
+        this.currentInputElement
+      );
+      this.renderer.removeClass(this.beyondLabelContainer, 'flex');
+    } else {
+      for (const cl of this.beyondLabelNoChipList) {
+        this.renderer.addClass(this.beyondLabelContainer, cl);
+      }
+    }
+
     if (this.currentLabelElement) {
+      if (this.control?.control?.hasValidator(Validators.required)) {
+        this.renderer.appendChild(
+          this.currentLabelElement,
+          this.renderer.createText(' *')
+        );
+      }
       // Add related classes to label
       for (const cl of this.labelClasses) {
         this.renderer.addClass(this.currentLabelElement, cl);
       }
     }
+
+    // Check if form control inits with disabled state
+    if (this.control?.control?.disabled) {
+      this.setDisableState();
+    }
+
     this.initializeDirectiveListeners();
 
     //Add beyond label as a child of elementRef
-    this.renderer.appendChild(
-      this.elementRef.nativeElement,
-      this.beyondLabelContainer
-    );
+    if (!this.dateWrapperElement) {
+      this.renderer.appendChild(
+        this.elementRef.nativeElement,
+        this.beyondLabelContainer
+      );
+    }
+
+    this.elementWrapped.next(true);
   }
 
   /**
@@ -288,76 +413,73 @@ export class FormWrapperDirective
     this.renderer.addClass(suffixElement, 'pl-2');
   }
 
+  /**
+   * Set invalid state styling to form wrapper directive element
+   */
+  private setInvalidState() {
+    this.renderer.addClass(this.beyondLabelContainer, 'ring-red-400');
+    if (this.currentLabelElement) {
+      this.renderer.addClass(this.currentLabelElement, 'text-red-400');
+    }
+  }
+
+  /**
+   * Remove invalid state styling from form wrapper directive element
+   */
+  private removeInvalidState() {
+    this.renderer.removeClass(this.beyondLabelContainer, 'ring-red-400');
+    if (this.currentLabelElement) {
+      this.renderer.removeClass(this.currentLabelElement, 'text-red-400');
+    }
+  }
+
+  /**
+   * Set disable state styling to form wrapper directive element
+   */
+  private setDisableState() {
+    this.renderer.addClass(this.beyondLabelContainer, 'opacity-50');
+    if (!this.outline) {
+      this.renderer.removeClass(
+        this.beyondLabelContainer,
+        'focus-within:ring-2'
+      );
+      this.renderer.removeClass(
+        this.beyondLabelContainer,
+        'focus-within:ring-inset'
+      );
+      this.renderer.removeClass(
+        this.beyondLabelContainer,
+        'focus-within:ring-primary-600'
+      );
+    }
+    if (this.chipListElement && this.currentInputElement) {
+      this.currentInputElement.disabled = true;
+    }
+  }
+
+  /**
+   * Remove disable state styling from form wrapper directive element
+   */
+  private removeDisableState() {
+    this.renderer.removeClass(this.beyondLabelContainer, 'opacity-50');
+    if (!this.outline) {
+      this.renderer.addClass(this.beyondLabelContainer, 'focus-within:ring-2');
+      this.renderer.addClass(
+        this.beyondLabelContainer,
+        'focus-within:ring-inset'
+      );
+      this.renderer.addClass(
+        this.beyondLabelContainer,
+        'focus-within:ring-primary-600'
+      );
+    }
+    if (this.chipListElement && this.currentInputElement) {
+      this.currentInputElement.disabled = false;
+    }
+  }
+
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-  }
-
-  //We need to use afterViewInit for select menu, otherwise removing class does not work
-  ngAfterViewInit() {
-    // Do the same with selectMenu
-    if (this.currentSelectElement || this.currentGraphQLSelectComponent) {
-      if (this.currentGraphQLSelectComponent) {
-        this.currentGraphQLSelectComponent.elementSelect.isGraphQlSelect = true;
-      }
-      this.renderer.removeClass(this.beyondLabelContainer, 'py-1.5');
-      this.renderer.addClass(this.beyondLabelContainer, 'py-1');
-      const currentElement = this.currentGraphQLSelectComponent
-        ? this.currentGraphQLSelectComponent.elementRef
-        : this.currentSelectElement;
-      //Get select-menu button in order to remove styling elements
-      const selectButton = currentElement.nativeElement.querySelector('button');
-      for (const cl of this.selectButtonRemove) {
-        this.renderer.removeClass(selectButton, cl);
-      }
-      // Add related classes to select menu element
-      if (!this.outline) {
-        for (const cl of this.selectClassesNoOutline) {
-          this.renderer.addClass(currentElement.nativeElement, cl);
-        }
-      } else {
-        for (const cl of this.selectClassesOutline) {
-          this.renderer.addClass(currentElement.nativeElement, cl);
-        }
-        this.renderer.removeClass(selectButton, 'bg-white');
-        this.renderer.addClass(selectButton, 'bg-gray-50');
-      }
-      // this.renderer.addClass(this.elementRef.nativeElement, 'pb-4');
-      //Add reworked element to beyond label
-      this.renderer.appendChild(
-        this.beyondLabelContainer,
-        currentElement.nativeElement
-      );
-    }
-
-    if (this.autocompleteContent) {
-      this.renderer.addClass(this.elementRef.nativeElement, 'relative');
-    }
-
-    if (this.currentTextareaElement) {
-      const textareaElement =
-        this.currentTextareaElement.nativeElement.querySelector('textarea');
-      this.renderer.addClass(textareaElement, 'bg-transparent');
-
-      for (const cl of this.textareaRemove) {
-        this.renderer.removeClass(textareaElement, cl);
-      }
-      // Add related classes to input element
-      if (!this.outline) {
-        for (const cl of this.inputClassesNoOutline) {
-          this.renderer.addClass(this.currentTextareaElement.nativeElement, cl);
-        }
-      } else {
-        for (const cl of this.inputClassesOutline) {
-          this.renderer.addClass(this.currentTextareaElement.nativeElement, cl);
-        }
-      }
-      this.renderer.addClass(this.elementRef.nativeElement, 'pb-3');
-      // Then add the input to our beyondLabel wrapper element
-      this.renderer.appendChild(
-        this.beyondLabelContainer,
-        this.currentTextareaElement.nativeElement
-      );
-    }
   }
 }

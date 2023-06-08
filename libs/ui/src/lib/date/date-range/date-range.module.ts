@@ -7,6 +7,7 @@ import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { DateRangeComponent } from './date-range.component';
 import { IconModule } from '../../icon/icon.module';
 import { TranslateModule } from '@ngx-translate/core';
+
 /**
  * UI Daterange module
  */

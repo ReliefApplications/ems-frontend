@@ -15,7 +15,6 @@ import {
   ReferenceData,
   Resource,
   SafeUnsubscribeComponent,
-  SafeIconModule,
 } from '@oort-front/safe';
 import { takeUntil } from 'rxjs';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -38,6 +37,7 @@ import {
   TooltipModule,
   GraphQLSelectComponent,
   GraphQLSelectModule,
+  IconModule,
 } from '@oort-front/ui';
 
 /** Default items per resources query, for pagination */
@@ -77,7 +77,7 @@ const createContextDatasourceForm = (data?: PageContextT) => {
     TranslateModule,
     MatFormFieldModule,
     DialogModule,
-    SafeIconModule,
+    IconModule,
     TooltipModule,
     ButtonModule,
     SelectMenuModule,
@@ -93,7 +93,7 @@ export class ContextDatasourceComponent
   implements OnInit
 {
   // Form
-  public form: ReturnType<typeof createContextDatasourceForm>;
+  public form!: ReturnType<typeof createContextDatasourceForm>;
 
   // Data
   public resource: Resource | null = null;

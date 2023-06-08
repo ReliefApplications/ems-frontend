@@ -15,16 +15,15 @@
     </div>
     <label>
       {{ 'components.widget.settings.map.properties.zoom' | translate }}
-      <safe-icon
+      <ui-icon
         icon="info_outline"
         class="cursor-pointer"
         [uiTooltip]="
           'components.widget.settings.map.properties.zoom' | translate
         "
-        [inline]="true"
         [size]="18"
         variant="grey"
-      ></safe-icon>
+      ></ui-icon>
     </label>
     <ui-slider
       class="mb-2"
@@ -33,12 +32,21 @@
       [maxValue]="18"
     ></ui-slider>
     <div class="flex flex-wrap gap-2">
-      <div uiFormFieldDirective class="flex-1">
+      <div
+        [uiErrorMessage]="
+          'components.widget.settings.map.errors.latitude' | translate
+        "
+        [uiErrorMessageIf]="
+          form.controls.centerLat.errors && form.controls.centerLat.touched
+        "
+        uiFormFieldDirective
+        class="flex-1"
+      >
         <label>
           {{ 'components.widget.settings.map.properties.latitude' | translate }}
         </label>
         <input type="number" formControlName="centerLat" />
-        <safe-icon
+        <ui-icon
           uiSuffix
           icon="info"
           class="cursor-pointer"
@@ -47,19 +55,25 @@
             'components.widget.settings.map.tooltip.default.latitude'
               | translate
           "
-        ></safe-icon>
-        <mat-error *ngIf="form.controls.centerLat.errors">
-          {{ 'components.widget.settings.map.errors.latitude' | translate }}
-        </mat-error>
+        ></ui-icon>
       </div>
-      <div uiFormFieldDirective class="flex-1">
+      <div
+        [uiErrorMessage]="
+          'components.widget.settings.map.errors.longitude' | translate
+        "
+        [uiErrorMessageIf]="
+          form.controls.centerLong.errors && form.controls.centerLong.touched
+        "
+        uiFormFieldDirective
+        class="flex-1"
+      >
         <label>
           {{
             'components.widget.settings.map.properties.longitude' | translate
           }}
         </label>
         <input type="number" formControlName="centerLong" />
-        <safe-icon
+        <ui-icon
           uiSuffix
           icon="info"
           class="cursor-pointer"
@@ -68,10 +82,7 @@
             'components.widget.settings.map.tooltip.default.longitude'
               | translate
           "
-        ></safe-icon>
-        <mat-error *ngIf="form.controls.centerLat.errors">
-          {{ 'components.widget.settings.map.errors.longitude' | translate }}
-        </mat-error>
+        ></ui-icon>
       </div>
     </div>
     <safe-map [header]="false" [settings]="mapSettings"></safe-map>

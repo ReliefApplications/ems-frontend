@@ -12,6 +12,7 @@ import {
   ButtonModule,
   SelectMenuModule,
   FormWrapperModule,
+  DateModule,
 } from '@oort-front/ui';
 
 /**
@@ -29,6 +30,7 @@ import {
     MatDatepickerModule,
     ButtonModule,
     SelectMenuModule,
+    DateModule,
     FormWrapperModule,
   ],
   exports: [SafeFilterComponent],

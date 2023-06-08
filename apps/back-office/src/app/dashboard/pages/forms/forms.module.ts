@@ -2,11 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsRoutingModule } from './forms-routing.module';
 import { FormsComponent } from './forms.component';
-import { MatIconModule } from '@angular/material/icon';
 import { SafeSkeletonTableModule, SafeDateModule } from '@oort-front/safe';
 import { MatSortModule } from '@angular/material/sort';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import {
@@ -26,6 +24,7 @@ import {
   FormWrapperModule,
   TableModule,
   ChipModule,
+  DateModule,
   PaginatorModule,
 } from '@oort-front/ui';
 
@@ -40,9 +39,7 @@ import {
     SpinnerModule,
     MatSortModule,
     MenuModule,
-    MatIconModule,
     MatFormFieldModule,
-    MatDatepickerModule,
     MatNativeDateModule,
     MatInputModule,
     DividerModule,
@@ -57,6 +54,7 @@ import {
     SelectMenuModule,
     TableModule,
     ChipModule,
+    DateModule,
   ],
   exports: [FormsComponent],
 })

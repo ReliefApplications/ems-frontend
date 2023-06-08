@@ -51,11 +51,11 @@
           </ui-button>
           <ui-menu #menu>
             <button uiMenuItem (click)="onEdit(element, index)">
-              <mat-icon>edit</mat-icon>
+              <ui-icon icon="edit"></ui-icon>
               {{ 'common.edit' | translate }}
             </button>
             <button uiMenuItem (click)="onDelete(index)">
-              <mat-icon>delete</mat-icon>
+              <ui-icon icon="delete"></ui-icon>
               {{ 'common.delete' | translate }}
             </button>
           </ui-menu>
@@ -67,6 +67,7 @@
     </table>
   </div>
 </div>
+<!-- Actions -->
 <div class="actions flex justify-center mt-4">
   <ui-button
     class="w-auto max-w-xs"

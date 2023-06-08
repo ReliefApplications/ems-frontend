@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SafeAccessComponent } from './access.component';
 import { SafeEditAccessComponent } from './edit-access/edit-access.component';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TranslateModule } from '@ngx-translate/core';
@@ -24,7 +24,7 @@ import {
   imports: [
     CommonModule,
     MatButtonModule,
-    MatIconModule,
+    IconModule,
     DialogModule,
     FormsModule,
     ReactiveFormsModule,

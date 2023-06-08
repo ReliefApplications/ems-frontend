@@ -27,6 +27,7 @@ import { AlertModule } from './alert/alert.module';
 import { DatePickerModule } from './date/date-picker/date-picker.module';
 import { DateRangeModule } from './date/date-range/date-range.module';
 import { GraphQLSelectModule } from './graphql-select/graphql-select.module';
+import { ErrorMessageModule } from './error-message/error-message.module';
 
 /**
  * UI Library Module
@@ -61,6 +62,7 @@ import { GraphQLSelectModule } from './graphql-select/graphql-select.module';
     DatePickerModule,
     DateRangeModule,
     GraphQLSelectModule,
+    ErrorMessageModule,
   ],
 })
 export class UiModule {}

@@ -27,9 +27,7 @@
         <div uiFormFieldDirective [outline]="false" class="flex-1 w-28">
           <label>{{ 'models.customNotification.type' | translate }}</label>
           <ui-select-menu formControlName="notificationType">
-            <ui-select-option
-              value="email"
-            >
+            <ui-select-option value="email">
               {{ 'common.email.one' | translate }}
             </ui-select-option>
           </ui-select-menu>
@@ -102,7 +100,7 @@
       <div class="flex flex-col">
         <!-- Template -->
 
-        <div uiFormFieldDirective [outline]="false" class="w-60 flex-1">
+        <div uiFormFieldDirective [outline]="false" class="w-full">
           <label>{{ 'common.template.one' | translate }}</label>
           <ui-select-menu formControlName="template">
             <ui-select-option
@@ -112,14 +110,13 @@
               {{ template.name }}
             </ui-select-option>
           </ui-select-menu>
-          <safe-icon
+          <ui-icon
             uiPrefix
             icon="info_outline"
             class="cursor-pointer"
             variant="grey"
-            matSuffix
             uiTooltip="HINT"
-          ></safe-icon>
+          ></ui-icon>
           <ui-button
             uiSuffix
             [isIcon]="true"
@@ -216,6 +213,13 @@
           <!-- Using email -->
           <div
             uiFormFieldDirective
+            [uiErrorMessage]="
+              'components.customNotifications.errors.email' | translate
+            "
+            [uiErrorMessageIf]="
+              formGroup.get('recipients')?.errors &&
+              formGroup.get('recipients')?.touched
+            "
             *ngIf="formGroup.value.recipientsType === 'email'"
             class="flex-1"
           >
@@ -225,9 +229,6 @@
               [placeholder]="'common.placeholder.email' | translate"
               formControlName="recipients"
             />
-            <mat-error *ngIf="formGroup.get('recipients')?.errors">
-              {{ 'components.customNotifications.errors.email' | translate }}
-            </mat-error>
           </div>
         </div>
       </div>

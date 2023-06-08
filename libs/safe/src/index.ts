@@ -55,7 +55,7 @@ export * from './lib/models/metadata.model';
 // === COMPONENTS ===
 export * from './lib/components/aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
 export * from './lib/components/layout/public-api';
-export * from './lib/components/left-sidenav/public-api';
+export * from './lib/components/navbar/public-api';
 export * from './lib/components/application-toolbar/public-api';
 export * from './lib/components/access/public-api';
 export * from './lib/components/form/public-api';
@@ -100,7 +100,6 @@ export * from './lib/components/grid-layout/edit-layout-modal/public-api';
 // === UI ===
 export * from './lib/components/ui/aggregation-builder/public-api';
 export * from './lib/components/ui/tagbox/public-api';
-export * from './lib/components/ui/icon/public-api';
 
 // === VIEWS ===
 export * from './lib/views/public-api';

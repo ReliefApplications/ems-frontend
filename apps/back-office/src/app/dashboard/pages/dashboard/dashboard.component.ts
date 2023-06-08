@@ -45,6 +45,7 @@ import { FormControl } from '@angular/forms';
 import { isEqual } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
+import localForage from 'localforage';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -68,6 +69,7 @@ export class DashboardComponent
   public loading = true;
   public tiles: any[] = [];
   public dashboard?: Dashboard;
+  public showFilter?: boolean;
 
   // === GRID ===
   private generatedTiles = 0;
@@ -162,6 +164,7 @@ export class DashboardComponent
                 ? this.dashboard.step.workflow?.page?.application?.id
                 : '';
               this.loading = loading;
+              this.showFilter = this.dashboard.showFilter;
             } else {
               this.snackBar.openSnackBar(
                 this.translateService.instant(
@@ -199,6 +202,8 @@ export class DashboardComponent
    */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    localForage.removeItem(this.applicationId + 'contextualFilterPosition'); //remove temporary contextual filter data
+    localForage.removeItem(this.applicationId + 'contextualFilter');
     this.dashboardService.closeDashboard();
   }
 
@@ -500,16 +505,17 @@ export class DashboardComponent
   }
 
   /**
-   * Toggle filtering
+   * Toggles the filter for the current dashboard.
    */
   toggleFiltering(): void {
     if (this.dashboard) {
+      this.showFilter = !this.showFilter;
       this.apollo
         .mutate<EditDashboardMutationResponse>({
           mutation: EDIT_DASHBOARD,
           variables: {
             id: this.id,
-            showFilter: !this.dashboard.showFilter,
+            showFilter: this.showFilter,
           },
         })
         .subscribe({

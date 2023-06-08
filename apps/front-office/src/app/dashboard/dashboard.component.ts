@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { subject } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
@@ -47,6 +47,10 @@ export class DashboardComponent
   private permissions: Permission[] = [];
   /** Roles of the user */
   private roles: Role[] = [];
+  /** Use side menu or not */
+  public sideMenu = false;
+  /** Is large device */
+  public largeDevice: boolean;
 
   /** @returns True if applications is empty */
   get empty(): boolean {
@@ -73,6 +77,17 @@ export class DashboardComponent
     private ability: AppAbility
   ) {
     super();
+    this.largeDevice = window.innerWidth > 1024;
+  }
+
+  /**
+   * Change the display depending on windows size.
+   *
+   * @param event Event that implies a change in window size
+   */
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    this.largeDevice = event.target.innerWidth > 1024;
   }
 
   /**
@@ -252,6 +267,7 @@ export class DashboardComponent
           }
           this.application = application;
           this.appID = application.id || '';
+          this.sideMenu = this.application?.sideMenu ?? false;
         } else {
           this.navGroups = [];
         }

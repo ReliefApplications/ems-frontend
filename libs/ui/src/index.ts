@@ -7,6 +7,7 @@ export * from './lib/button/button.component';
 export * from './lib/checkbox/checkbox.module';
 export * from './lib/menu/menu.module';
 export * from './lib/icon/icon.module';
+export * from './lib/icon/icon.component';
 export * from './lib/table/table.module';
 export * from './lib/tooltip/tooltip.module';
 export * from './lib/spinner/spinner.module';
@@ -23,6 +24,7 @@ export * from './lib/expansion-panel/expansion-panel.module';
 export * from './lib/slider/slider.module';
 export * from './lib/radio/radio.module';
 export * from './lib/sidenav/sidenav-container.module';
+export * from './lib/sidenav/sidenav-container.component';
 export * from './lib/chip/chip.module';
 export * from './lib/form-wrapper/form-wrapper.module';
 export * from './lib/dialog/dialog.module';
@@ -31,6 +33,7 @@ export * from './lib/alert/alert.module';
 export * from './lib/date/date.module';
 export * from './lib/graphql-select/graphql-select.module';
 export * from './lib/graphql-select/graphql-select.component';
+export * from './lib/error-message/error-message.module';
 
 // === SERVICES === //
 export * from './lib/snackbar/snackbar.service';

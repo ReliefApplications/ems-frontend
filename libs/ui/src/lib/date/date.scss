@@ -39,3 +39,10 @@
 ::ng-deep .k-calendar-header .k-calendar-title {
   font-weight: 500 !important;
 }
+
+::ng-deep input[type='date']::-webkit-inner-spin-button,
+::ng-deep input[type='date']::-webkit-calendar-picker-indicator {
+  display: none !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+}

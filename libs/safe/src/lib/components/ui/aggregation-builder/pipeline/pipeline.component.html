@@ -10,16 +10,15 @@
         'components.aggregationBuilder.stages.' + stageForm.value.type
           | translate
       }}
-      <safe-icon
+      <ui-icon
         icon="info_outline"
         variant="grey"
-        [inline]="true"
         [size]="18"
         [uiTooltip]="
           'components.aggregationBuilder.tooltip.' + stageForm.value.type
             | translate
         "
-      ></safe-icon>
+      ></ui-icon>
     </ng-container>
     <ng-container [ngSwitch]="stageForm.value.type">
       <ng-container *ngSwitchCase="stageType.FILTER">

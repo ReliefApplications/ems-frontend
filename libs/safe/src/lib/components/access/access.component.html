@@ -1,9 +1,10 @@
 <ng-container *ngIf="menuItem">
   <button uiMenuItem (click)="onClick()">
-    <mat-icon>admin_panel_settings</mat-icon>
+    <ui-icon icon="admin_panel_settings"></ui-icon>
     {{ 'components.access.title' | translate }}
   </button>
 </ng-container>
+<!-- Button to update permissions in toolbar of apps -->
 <ng-container *ngIf="!menuItem">
   <ui-button
     variant="grey"
