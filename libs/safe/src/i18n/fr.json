@@ -1424,6 +1424,9 @@
 		}
 	},
 	"kendo": {
+		"combobox": {
+			"noDataText": "No available choice"
+		},
 		"datepicker": {
 			"today": "Aujourd'hui",
 			"toggle": "Sélectionnez une date"
@@ -1572,6 +1575,9 @@
 			"stick": "Épingler",
 			"unlock": "Déverrouiller",
 			"unstick": "Désépingler"
+		},
+		"multiselect": {
+			"noDataText": "No available choice"
 		},
 		"pager": {
 			"firstPage": "Aller à la première page",

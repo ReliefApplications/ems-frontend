@@ -122,7 +122,7 @@ export class SafeReferenceDataService {
         );
       } else {
         selectedForeignValue = foreignItems.find(
-          (item) => item[foreignValueField] === filter.foreignValue
+          (item) => get(item, foreignValueField) === filter.foreignValue
         )[filter.foreignField];
       }
       return items
