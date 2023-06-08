@@ -50,7 +50,8 @@ export class FilterRowComponent
   @ViewChild('numericEditor', { static: false })
   numericEditor!: TemplateRef<any>;
   @ViewChild('dateEditor', { static: false }) dateEditor!: TemplateRef<any>;
-  @ViewChild('filterEditor', { static: false }) filterEditor!: TemplateRef<any>;
+  @ViewChild('dashboardFilterEditor', { static: false })
+  dashboardFilterEditor!: TemplateRef<any>;
 
   editorConfig = INLINE_EDITOR_CONFIG;
   isFilterEnable = false;
@@ -182,14 +183,16 @@ export class FilterRowComponent
    */
   private setEditor(field: any) {
     const value = this.form.get('value')?.value;
+    this.isFilterEditorOnView = false;
     if (get(field, 'filter.template', null)) {
       this.editor = field.filter.template;
     } else if (
-      this.isFilterEnable &&
       typeof value === 'string' &&
-      value.startsWith('{{filter.')
+      value.startsWith('{{filter.') &&
+      this.isFilterEnable
     ) {
-      this.editor = this.filterEditor;
+      this.editor = this.dashboardFilterEditor;
+      this.isFilterEditorOnView = true;
     } else {
       switch (field.editor) {
         case 'text': {
@@ -224,11 +227,11 @@ export class FilterRowComponent
   /** Toggles filter editor */
   public toggleFilterEditor() {
     this.form.get('value')?.setValue(null);
-    if (this.editor === this.filterEditor) {
+    if (this.editor === this.dashboardFilterEditor) {
       this.setEditor(this.field);
       this.isFilterEditorOnView = false;
     } else {
-      this.editor = this.filterEditor;
+      this.editor = this.dashboardFilterEditor;
       this.isFilterEditorOnView = true;
     }
   }

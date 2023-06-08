@@ -48,6 +48,14 @@ export class SafeQueryBuilderComponent
   public allQueries: any[] = [];
   public filteredQueries: any[] = [];
   /**
+   * The parent component containing the editor within using ng-content has to be rendered
+   * at the same time the tab is in the view in order to set the tinymce editor open by default
+   * source: https://github.com/tinymce/tinymce-angular/issues/76
+   * this property would handle that in the beginning of loading the query builder
+   */
+  isFilterTabOnView = false;
+
+  /**
    * Getter for the available scalar fields
    *
    * @returns the available scalar fields

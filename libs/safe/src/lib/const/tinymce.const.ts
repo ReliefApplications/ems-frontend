@@ -86,6 +86,7 @@ export const INLINE_EDITOR_CONFIG: RawEditorSettings = {
   toolbar: false,
   importcss_append: true,
   height: 54,
+  width: 200,
   quickbars_selection_toolbar: '',
   file_browser_callback: false, // removes possibility to upload files
   content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
@@ -93,5 +94,6 @@ export const INLINE_EDITOR_CONFIG: RawEditorSettings = {
     'shortcuts', // the default shortcuts tab
     'keyboardnav', // the default keyboard navigation tab
   ],
+  // Removes any tag from the tinymce text value, but important to keep in mind: https://github.com/tinymce/tinymce/issues/7297
   forced_root_block: false,
 };

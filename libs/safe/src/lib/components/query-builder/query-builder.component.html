@@ -56,7 +56,10 @@
         </div>
       </div>
     </ng-container>
-    <ui-tabs *ngIf="form.getRawValue().name">
+    <ui-tabs
+      (selectedIndexChange)="isFilterTabOnView = $event === 2 ? true : false"
+      *ngIf="form.getRawValue().name"
+    >
       <ui-tab>
         <ng-container ngProjectAs="label">{{
           'components.queryBuilder.fields.title' | translate
@@ -89,6 +92,7 @@
         }}</ng-container>
 
         <safe-tab-filter
+          *ngIf="isFilterTabOnView"
           [form]="$any(form.controls.filter)"
           [query]="form.getRawValue()"
         >

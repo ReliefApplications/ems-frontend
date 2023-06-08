@@ -159,9 +159,11 @@
   </ng-template>
 
   <!-- FILTER EDITOR -->
-  <ng-template #filterEditor>
+  <ng-template #dashboardFilterEditor>
     <div>
-      <label>{{ 'models.dashboard.dashboardFilter' | translate }}</label>
+      <label class="block text-sm font-medium leading-6 text-gray-900">{{
+        'models.dashboard.dashboardFilter' | translate
+      }}</label>
       <editor [init]="editorConfig" formControlName="value"></editor>
     </div>
   </ng-template>
