@@ -20,21 +20,21 @@ export class ContextService {
     return this.isFilterEnable.asObservable();
   }
 
-  /**
-   * Injects current dashboard filter into an object.
-   *
-   * @param obj object to inject context into
-   * @returns object with dashboard filter injected
-   */
-  public injectDashboardFilter(obj: any): any {
-    // const availableFilterFields = this.availableFilterFields;
-    // if (!availableFilterFields) return obj;
-    // const regex = /{{filter\.(.*?)}}/g;
-    // return JSON.parse(
-    //   JSON.stringify(obj).replace(regex, (match) => {
-    //     const field = match.replace('{{filter.', '').replace('}}', '');
-    //     return availableFilterFields[field] || match;
-    //   })
-    // );
-  }
+  // /**
+  //  * Injects current dashboard filter into an object.
+  //  *
+  //  * @param obj object to inject context into
+  //  * @returns object with dashboard filter injected
+  //  */
+  // public injectDashboardFilter(obj: any): any {
+  //   // const availableFilterFields = this.availableFilterFields;
+  //   // if (!availableFilterFields) return obj;
+  //   // const regex = /{{filter\.(.*?)}}/g;
+  //   // return JSON.parse(
+  //   //   JSON.stringify(obj).replace(regex, (match) => {
+  //   //     const field = match.replace('{{filter.', '').replace('}}', '');
+  //   //     return availableFilterFields[field] || match;
+  //   //   })
+  //   // );
+  // }
 }
