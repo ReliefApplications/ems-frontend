@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { SafeApplicationsSummaryComponent } from './applications-summary.component';
 import { SafeAddApplicationComponent } from './components/add-application/add-application.component';
 import { SafeApplicationSummaryComponent } from './components/application-summary/application-summary.component';
-import { MatRippleModule } from '@angular/material/core';
 import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonModule } from '../../directives/skeleton/skeleton.module';
@@ -22,7 +21,6 @@ import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
   ],
   imports: [
     CommonModule,
-    MatRippleModule,
     MenuModule,
     IconModule,
     TranslateModule,
