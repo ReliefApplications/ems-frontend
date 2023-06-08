@@ -171,18 +171,23 @@ export class FilterRowComponent
    * @param field filter field
    */
   private setEditor(field: any) {
+    let editorSet = false;
     const value = this.form.get('value')?.value;
     this.isFilterEditorOnView = false;
     if (get(field, 'filter.template', null)) {
       this.editor = field.filter.template;
-    } else if (
-      typeof value === 'string' &&
-      value.startsWith('{{filter.') &&
-      this.isFilterEnable
-    ) {
-      this.editor = this.dashboardFilterEditor;
-      this.isFilterEditorOnView = true;
-    } else {
+      editorSet = true;
+    } else if (typeof value === 'string' && value.startsWith('{{filter.')) {
+      if (this.isFilterEnable) {
+        this.editor = this.dashboardFilterEditor;
+        this.isFilterEditorOnView = true;
+        editorSet = true;
+      } else {
+        this.form.get('value')?.setValue(null);
+        this.isFilterEditorOnView = false;
+      }
+    }
+    if (!editorSet) {
       switch (field.editor) {
         case 'text': {
           this.editor = this.textEditor;

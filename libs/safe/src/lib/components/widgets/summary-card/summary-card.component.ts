@@ -11,7 +11,12 @@ import {
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
-import { debounceTime, distinctUntilChanged, firstValueFrom } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  firstValueFrom,
+  takeUntil,
+} from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
@@ -37,6 +42,7 @@ import { FormControl } from '@angular/forms';
 import { clone, isNaN } from 'lodash';
 import { SnackbarService } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
+import { ContextService } from '../../../services/context/context.service';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -82,6 +88,7 @@ export class SafeSummaryCardComponent
 
   private layout: Layout | null = null;
   private fields: any[] = [];
+  private dashboardFilters!: any;
 
   public searchControl = new FormControl('');
 
@@ -125,6 +132,7 @@ export class SafeSummaryCardComponent
    * @param gridLayoutService Shared grid layout service
    * @param aggregationService Aggregation service
    * @param renderer Renderer2
+   * @param contextService ContextService
    */
   constructor(
     private apollo: Apollo,
@@ -134,7 +142,8 @@ export class SafeSummaryCardComponent
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: SafeGridLayoutService,
     private aggregationService: SafeAggregationService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private contextService: ContextService
   ) {
     super();
   }
@@ -150,6 +159,15 @@ export class SafeSummaryCardComponent
       .subscribe((value) => {
         this.handleSearch(value || '');
       });
+
+    this.contextService.filter$.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (filter) => {
+        if (filter) {
+          this.dashboardFilters = filter;
+          this.setupDynamicCards();
+        }
+      },
+    });
   }
 
   ngAfterViewInit(): void {
@@ -324,6 +342,13 @@ export class SafeSummaryCardComponent
               return f;
             }
           );
+
+          if (this.dashboardFilters && layoutQuery.filter.filters.length) {
+            layoutQuery.filter.filters =
+              this.contextService.injectDashboardFilterValues(
+                layoutQuery.filter?.filters
+              );
+          }
 
           if (builtQuery) {
             this.dataQuery = this.apollo.watchQuery<any>({
