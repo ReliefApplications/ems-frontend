@@ -28,6 +28,9 @@ const calcFunctions: Record<string, { signature: string }> = {
   if: {
     signature: 'if( condition ; then ; else )',
   },
+  substr: {
+    signature: 'substr( value ; startIndex ; length )',
+  },
 
   // DOUBLE ARGUMENTS
   sub: {
@@ -89,6 +92,9 @@ const calcFunctions: Record<string, { signature: string }> = {
   size: {
     signature: 'size( value )',
   },
+  toInt: {
+    signature: 'toInt( value )',
+  },
 
   // ONE OR NO ARGUMENTS
   today: {
@@ -114,7 +120,9 @@ export const getCalcKeys = (): string[] => {
  * @returns List of info keys
  */
 export const getInfoKeys = (): string[] =>
-  ['createdAt', 'updatedAt'].map((k) => INFO_PREFIX + k + PLACEHOLDER_SUFFIX);
+  ['createdAt', 'updatedAt', 'incrementalId'].map(
+    (k) => INFO_PREFIX + k + PLACEHOLDER_SUFFIX
+  );
 
 /**
  * Returns an array with the keys for data autocompletion.

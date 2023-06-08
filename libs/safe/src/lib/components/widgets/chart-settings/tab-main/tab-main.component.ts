@@ -44,6 +44,18 @@ export class TabMainComponent
 
   private reload = new Subject<boolean>();
   public reload$ = this.reload.asObservable();
+  /**
+   * Get the selected chart type object
+   *
+   * @returns chart type object
+   */
+  public get selectedChartType() {
+    return (
+      this.types.find(
+        (type) => type.name === this.formGroup.get('chart.type')?.value
+      ) ?? { name: '', icon: null }
+    );
+  }
 
   /**
    * Main tab of chart settings modal.
@@ -88,6 +100,7 @@ export class TabMainComponent
         sortField: 'name',
       },
     });
+    console.log(this.formGroup);
   }
 
   /**

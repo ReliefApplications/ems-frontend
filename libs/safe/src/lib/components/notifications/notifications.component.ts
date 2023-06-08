@@ -1,19 +1,19 @@
+import { Dialog } from '@angular/cdk/dialog';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Subscription, takeUntil } from 'rxjs';
 import { Application } from '../../models/application.model';
 import { CustomNotification } from '../../models/custom-notification.model';
 import { SafeApplicationService } from '../../services/application/application.service';
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
-import {
-  GetCustomNotificationsQueryResponse,
-  GET_CUSTOM_NOTIFICATIONS,
-} from './graphql/queries';
-import { Dialog } from '@angular/cdk/dialog';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { UIPageChangeEvent } from '@oort-front/ui';
+import {
+  GET_CUSTOM_NOTIFICATIONS,
+  GetCustomNotificationsQueryResponse,
+} from './graphql/queries';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -57,13 +57,15 @@ export class NotificationsComponent
    * @param confirmService Shared confirmation service
    * @param apollo Apollo service
    * @param applicationService Shared application service
+   * @param snackBar Shared snackbar service
    */
   constructor(
     public dialog: Dialog,
     private translate: TranslateService,
     private confirmService: SafeConfirmService,
     private apollo: Apollo,
-    private applicationService: SafeApplicationService
+    private applicationService: SafeApplicationService,
+    private snackBar: SnackbarService
   ) {
     super();
   }
@@ -135,6 +137,12 @@ export class NotificationsComponent
             this.notificationsQuery.refetch();
           }
         );
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectUpdated', {
+            value: value.name,
+            type: this.translate.instant('common.customNotification.one'),
+          })
+        );
       }
     });
   }
@@ -165,6 +173,11 @@ export class NotificationsComponent
             this.notificationsQuery.refetch();
           }
         );
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectDeleted', {
+            value: notification.name,
+          })
+        );
       }
     });
   }
@@ -183,6 +196,12 @@ export class NotificationsComponent
         this.applicationService.addCustomNotification(value, () => {
           this.notificationsQuery.refetch();
         });
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectCreated', {
+            value: value.name,
+            type: this.translate.instant('common.customNotification.one'),
+          })
+        );
       }
     });
   }

@@ -13,7 +13,7 @@ import { CommonModule } from '@angular/common';
 import { SafeFormBuilderModule } from '../../form-builder/form-builder.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from '@oort-front/ui';
-import { DialogModule } from '@oort-front/ui';
+import { DialogModule, AlertModule } from '@oort-front/ui';
 
 /**
  * Data passed to initialize the filter builder
@@ -97,6 +97,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
     TranslateModule,
     TooltipModule,
     DialogModule,
+    AlertModule,
   ],
 })
 export class FilterBuilderModalComponent
@@ -178,7 +179,7 @@ export class FilterBuilderModalComponent
    * Custom SurveyJS method, save the survey when edited.
    */
   saveMySurvey = () => {
-    this.dialogRef.close(this.surveyCreator as any);
+    this.dialogRef.close(this.surveyCreator.text as any);
   };
 
   ngOnDestroy(): void {
