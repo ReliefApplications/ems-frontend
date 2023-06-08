@@ -4,18 +4,26 @@
   </ng-container>
   <ng-container ngProjectAs="content">
     <form class="flex flex-col gap-4" [formGroup]="form" *ngIf="form">
-      <div uiFormFieldDirective>
+      <div
+        [uiErrorMessage]="
+          'components.emailPreview.errors.missingSubject' | translate
+        "
+        [uiErrorMessageIf]="this.form.controls.subject.hasError('required')"
+        uiFormFieldDirective
+      >
         <label>{{ 'components.emailPreview.subject' | translate }}</label>
         <input formControlName="subject" type="text" />
-        <mat-error *ngIf="this.form.controls.subject.hasError('required')">
-          {{ 'components.emailPreview.errors.missingSubject' | translate }}
-        </mat-error>
       </div>
       <div uiFormFieldDirective>
         <label>{{ 'components.emailPreview.from' | translate }}</label>
         <input formControlName="from" type="text" />
       </div>
-      <div uiFormFieldDirective id="previewEmailTo">
+      <div
+        [uiErrorMessage]="errorMessage() | translate"
+        [uiErrorMessageIf]="this.form.controls.to.invalid"
+        uiFormFieldDirective
+        id="previewEmailTo"
+      >
         <label class="block text-sm font-medium leading-6 text-gray-900">{{
           'components.emailPreview.to' | translate
         }}</label>
@@ -36,7 +44,6 @@
           (focusout)="addEmail($event)"
           (chipTokenEnd)="addEmail($event)"
         />
-        <mat-error>{{ errorMessage() | translate }}</mat-error>
       </div>
       <kendo-fileselect
         class="mb-4"

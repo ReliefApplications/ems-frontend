@@ -8,11 +8,17 @@ import {
   SafeDateModule,
   SafeEditableTextModule,
 } from '@oort-front/safe';
-import { SpinnerModule } from '@oort-front/ui';
+import {
+  ChipModule,
+  FormWrapperModule,
+  SelectMenuModule,
+  SpinnerModule,
+  TableModule,
+} from '@oort-front/ui';
 import { HistoryComponent } from './components/history/history.component';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { TranslateModule } from '@ngx-translate/core';
-import { TableModule } from '@oort-front/ui';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 /**
  * Form builder module.
@@ -30,6 +36,11 @@ import { TableModule } from '@oort-front/ui';
     SafeDateModule,
     SafeEditableTextModule,
     TableModule,
+    ChipModule,
+    SelectMenuModule,
+    FormWrapperModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   exports: [FormBuilderComponent],
 })
