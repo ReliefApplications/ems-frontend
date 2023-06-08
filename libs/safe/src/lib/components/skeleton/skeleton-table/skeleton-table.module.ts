@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeSkeletonTableComponent } from './skeleton-table.component';
 import { SafeAccessModule } from '../../access/access.module';
-import { MatSortModule } from '@angular/material/sort';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
@@ -20,7 +19,6 @@ import {
   imports: [
     CommonModule,
     SafeAccessModule,
-    MatSortModule,
     PaginatorModule,
     IndicatorsModule,
     LayoutModule,

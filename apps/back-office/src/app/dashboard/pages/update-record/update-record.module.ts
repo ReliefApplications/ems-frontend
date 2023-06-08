@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { UpdateRecordRoutingModule } from './update-record-routing.module';
 import { UpdateRecordComponent } from './update-record.component';
 import { SafeFormModule } from '@oort-front/safe';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -16,7 +15,6 @@ import { TranslateModule } from '@ngx-translate/core';
     UpdateRecordRoutingModule,
     SafeFormModule,
     IconModule,
-    MatButtonModule,
   ],
   exports: [UpdateRecordComponent],
 })

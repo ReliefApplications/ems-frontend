@@ -16,17 +16,8 @@
     {{ 'components.widget.settings.grid.buttons.create' | translate }}
   </ui-button>
   <!-- Available buttons -->
-  <ui-tabs
-    *ngIf="buttons.length > 0"
-    #tabGroup
-  >
-    <ng-container
-      *ngFor="
-        let button of buttons.controls;
-        let i = index;
-        trackBy: trackByIndex
-      "
-    >
+  <ui-tabs *ngIf="buttons.length > 0">
+    <ng-container *ngFor="let button of buttons.controls; let i = index">
       <ui-tab>
         <!-- Button label - tab label -->
         <ng-container ngProjectAs="label">

@@ -4,7 +4,6 @@ import { FormAnswerRoutingModule } from './form-answer-routing.module';
 import { FormAnswerComponent } from './form-answer.component';
 import { SafeFormModule } from '@oort-front/safe';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule } from '@oort-front/ui';
 
@@ -18,7 +17,6 @@ import { ButtonModule } from '@oort-front/ui';
     FormAnswerRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
     SafeFormModule,
     TranslateModule,
     ButtonModule,

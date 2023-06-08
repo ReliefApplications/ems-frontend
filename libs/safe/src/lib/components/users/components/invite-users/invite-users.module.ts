@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeInviteUsersComponent } from './invite-users.component';
 import { GridModule, GroupModule } from '@progress/kendo-angular-grid';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule, ButtonsModule } from '@progress/kendo-angular-buttons';
@@ -21,7 +20,6 @@ import { DialogModule } from '@oort-front/ui';
     ReactiveFormsModule,
     GridModule,
     GroupModule,
-    MatButtonModule,
     DropDownsModule,
     ButtonModule,
     ButtonsModule,

@@ -4,8 +4,6 @@ import { CronExpressionControlComponent } from './cron-expression-control.compon
 import { CronEditorModule } from 'ngx-cron-editor';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeReadableCronModule } from '../../pipes/readable-cron/readable-cron.module';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import {
   AlertModule,
   DialogModule,
@@ -25,8 +23,6 @@ import {
     FormsModule,
     ReactiveFormsModule,
     SafeReadableCronModule,
-    MatFormFieldModule,
-    MatInputModule,
     DialogModule,
     IconModule,
     TooltipModule,

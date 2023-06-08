@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ChannelsRoutingModule } from './channels-routing.module';
 import { ChannelsComponent } from './channels.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import {
   SpinnerModule,
   MenuModule,
@@ -14,7 +12,6 @@ import {
 } from '@oort-front/ui';
 import { SafeEmptyModule, SafeSkeletonTableModule } from '@oort-front/safe';
 import { IconModule } from '@oort-front/ui';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -27,13 +24,10 @@ import { TranslateModule } from '@ngx-translate/core';
     ChannelsRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
     IconModule,
-    MatInputModule,
     SpinnerModule,
     MenuModule,
     DividerModule,
-    MatButtonModule,
     TranslateModule,
     ButtonModule,
     TableModule,

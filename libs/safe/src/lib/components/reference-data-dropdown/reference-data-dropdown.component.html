@@ -4,7 +4,7 @@
     #referenceDataSelect
     [(ngModel)]="referenceData"
     name="referenceData"
-    (openedChange)="onOpenSelect($event)"
+    (opened)="onOpenSelect()"
     (selectionChange)="onSelect($event)"
   >
     <ui-select-option>{{ 'common.input.none' | translate }}</ui-select-option>

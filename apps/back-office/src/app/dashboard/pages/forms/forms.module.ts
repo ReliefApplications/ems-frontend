@@ -3,10 +3,6 @@ import { CommonModule } from '@angular/common';
 import { FormsRoutingModule } from './forms-routing.module';
 import { FormsComponent } from './forms.component';
 import { SafeSkeletonTableModule, SafeDateModule } from '@oort-front/safe';
-import { MatSortModule } from '@angular/material/sort';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import {
   FormsModule as AngularFormsModule,
   ReactiveFormsModule,
@@ -37,11 +33,7 @@ import {
     AngularFormsModule,
     ReactiveFormsModule,
     SpinnerModule,
-    MatSortModule,
     MenuModule,
-    MatFormFieldModule,
-    MatNativeDateModule,
-    MatInputModule,
     DividerModule,
     PaginatorModule,
     TranslateModule,

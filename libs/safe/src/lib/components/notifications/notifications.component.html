@@ -1,6 +1,6 @@
 <ng-container *ngIf="!loading; else loadingTmpl">
   <!-- Actions -->
-  <ng-container *ngIf="notifications?.data?.length">
+  <ng-container *ngIf="notifications?.length">
     <div class="flex justify-end">
       <ng-container *ngTemplateOutlet="newNotification"></ng-container>
     </div>
@@ -15,7 +15,7 @@
       {{ 'components.customNotifications.edit.new' | translate }}
     </ui-button>
   </ng-template>
-  <ng-container *ngIf="notifications?.data?.length; else emptyTmpl">
+  <ng-container *ngIf="notifications?.length; else emptyTmpl">
     <!-- Table container -->
     <div class="mt-4 overflow-x-hidden shadow-2lg">
       <!-- Table scroll container -->

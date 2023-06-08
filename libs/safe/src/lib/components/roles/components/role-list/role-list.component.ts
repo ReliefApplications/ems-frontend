@@ -1,11 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import {
-  Component,
-  OnInit,
-  Input,
-  AfterViewInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { Application } from '../../../../models/application.model';
 import { Role } from '../../../../models/user.model';
@@ -19,7 +13,6 @@ import {
 } from '../../graphql/mutations';
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
-import { MatSort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -37,7 +30,7 @@ import { SnackbarService } from '@oort-front/ui';
 })
 export class SafeRoleListComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements OnInit
 {
   // === INPUT DATA ===
   @Input() inApplication = false;
@@ -46,9 +39,6 @@ export class SafeRoleListComponent
   public loading = true;
   public roles: MatTableDataSource<any> = new MatTableDataSource<any>([]);
   public displayedColumns = ['title', 'usersCount', 'actions'];
-
-  // === SORTING ===
-  @ViewChild(MatSort) sort!: MatSort;
 
   // === FILTERS ===
   public filters = [
@@ -259,10 +249,6 @@ export class SafeRoleListComponent
         }
       }
     });
-  }
-
-  ngAfterViewInit(): void {
-    this.roles.sort = this.sort;
   }
 
   /**

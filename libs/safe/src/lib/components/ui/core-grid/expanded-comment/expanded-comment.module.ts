@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { SafeExpandedCommentComponent } from './expanded-comment.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import {
   ButtonModule,
   TextareaModule,
@@ -21,8 +19,6 @@ import {
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    MatInputModule,
-    MatFormFieldModule,
     TextareaModule,
     ButtonModule,
     FormWrapperModule,

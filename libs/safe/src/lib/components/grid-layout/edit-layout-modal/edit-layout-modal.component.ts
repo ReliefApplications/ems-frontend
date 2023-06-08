@@ -11,7 +11,6 @@ import {
 } from '../../query-builder/query-builder-forms';
 import { CommonModule } from '@angular/common';
 import { SafeQueryBuilderModule } from '../../query-builder/query-builder.module';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { flattenDeep } from 'lodash';
@@ -36,7 +35,6 @@ interface DialogData {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
     FormWrapperModule,
     SafeQueryBuilderModule,
     SafeCoreGridModule,

@@ -29,6 +29,8 @@ export * from './lib/chip/chip.module';
 export * from './lib/form-wrapper/form-wrapper.module';
 export * from './lib/dialog/dialog.module';
 export * from './lib/tabs/tabs.module';
+export * from './lib/tabs/tabs.component';
+export * from './lib/tabs/components/tab/tab.component';
 export * from './lib/alert/alert.module';
 export * from './lib/date/date.module';
 export * from './lib/graphql-select/graphql-select.module';

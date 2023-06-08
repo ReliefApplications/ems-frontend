@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormArray } from '@angular/forms';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { Apollo } from 'apollo-angular';
@@ -39,7 +38,7 @@ export class RoleAutoAssignmentComponent
     }
   }
 
-  public rules = new MatTableDataSource<CompositeFilterDescriptor>([]);
+  public rules = new Array<CompositeFilterDescriptor>();
   public displayedColumns: string[] = ['filter', 'actions'];
 
   private fields: any[] = [];
@@ -70,9 +69,9 @@ export class RoleAutoAssignmentComponent
         createFilterGroup(x)
       )
     );
-    this.rules.data = this.formArray.value;
+    this.rules = this.formArray.value;
     this.formArray.valueChanges.subscribe((value) => {
-      this.rules.data = value;
+      this.rules = value;
     });
     this.apollo
       .query<GetGroupsQueryResponse>({

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MapOnlineLayersComponent } from './map-online-layers.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { SafeBadgeModule } from '../../../../ui/badge/badge.module';
 import {
   AlertModule,
@@ -22,7 +21,6 @@ import {
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    MatFormFieldModule,
     FormWrapperModule,
     SafeBadgeModule,
     TableModule,

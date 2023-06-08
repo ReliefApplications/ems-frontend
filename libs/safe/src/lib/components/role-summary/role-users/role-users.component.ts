@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Role, User } from '../../../models/user.model';
 import { GetRoleQueryResponse, GET_ROLE_USERS } from './graphql/queries';
@@ -30,7 +29,7 @@ export class RoleUsersComponent
 
   public displayedColumns = ['name', 'username'];
 
-  public users = new MatTableDataSource<User>([]);
+  public users = new Array<User>();
   public cachedUsers: User[] = [];
   private usersQuery!: QueryRef<GetRoleQueryResponse>;
 
@@ -43,7 +42,7 @@ export class RoleUsersComponent
 
   /** @returns empty state of the table */
   get empty(): boolean {
-    return !this.loading && this.users.data.length === 0;
+    return !this.loading && this.users.length === 0;
   }
 
   /**
@@ -95,7 +94,7 @@ export class RoleUsersComponent
       this.pageInfo.pageSize = first;
       this.fetchUsers();
     } else {
-      this.users.data = this.cachedUsers.slice(
+      this.users = this.cachedUsers.slice(
         e.pageSize * this.pageInfo.pageIndex,
         e.pageSize * (this.pageInfo.pageIndex + 1)
       );
@@ -127,7 +126,7 @@ export class RoleUsersComponent
   private updateValues(data: GetRoleQueryResponse, loading: boolean) {
     const mappedValues = data.role.users?.edges.map((x) => x.node) ?? [];
     this.cachedUsers = updateQueryUniqueValues(this.cachedUsers, mappedValues);
-    this.users.data = mappedValues;
+    this.users = mappedValues;
     this.pageInfo.length = data.role.users.totalCount;
     this.pageInfo.endCursor = data.role.users.pageInfo.endCursor;
     this.loading = loading;

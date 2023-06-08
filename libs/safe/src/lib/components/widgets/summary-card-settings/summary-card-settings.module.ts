@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
   FormWrapperModule,
+  DividerModule,
   IconModule,
   MenuModule,
   RadioModule,
@@ -37,6 +38,7 @@ import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
     TooltipModule,
     MenuModule,
     IconModule,
+    DividerModule,
     SummaryCardItemModule,
     RadioModule,
     ButtonModule,

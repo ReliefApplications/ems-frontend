@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   IconModule,
@@ -35,8 +34,6 @@ import { SafeGridComponent } from './grid.component';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    // === MATERIAL ===
-    MatButtonModule,
     IconModule,
     TooltipModule,
     // === KENDO ===

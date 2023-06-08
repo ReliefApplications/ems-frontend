@@ -10,7 +10,6 @@ import { FIELD_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { SafeEditorService } from '../../services/editor/editor.service';
 import { getCalcKeys, getDataKeys, getInfoKeys } from './utils/keys';
 import { CommonModule } from '@angular/common';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import {
@@ -36,7 +35,6 @@ interface DialogData {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
     FormWrapperModule,
     DialogModule,
     EditorModule,

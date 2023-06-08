@@ -1,7 +1,7 @@
 <ng-container *ngIf="!loading; else loadingTmpl">
   <!-- Actions -->
   <div class="flex justify-end">
-    <ng-container *ngIf="distributionLists?.data?.length">
+    <ng-container *ngIf="distributionLists?.length">
       <ng-container *ngTemplateOutlet="newDistribution"></ng-container>
     </ng-container>
     <ng-template #newDistribution>
@@ -16,7 +16,7 @@
     </ng-template>
   </div>
   <!-- Table container -->
-  <ng-container *ngIf="distributionLists?.data?.length; else emptyTmpl">
+  <ng-container *ngIf="distributionLists?.length; else emptyTmpl">
     <div class="mt-4 overflow-x-hidden shadow-2lg">
       <!-- Table scroll container -->
       <div class="overflow-x-auto">

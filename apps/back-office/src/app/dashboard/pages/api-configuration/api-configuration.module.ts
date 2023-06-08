@@ -4,9 +4,7 @@ import { ApiConfigurationRoutingModule } from './api-configuration-routing.modul
 import { ApiConfigurationComponent } from './api-configuration.component';
 import { SafeAccessModule } from '@oort-front/safe';
 import { ChipModule, SpinnerModule } from '@oort-front/ui';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyOptionModule as MatOptionModule } from '@angular/material/legacy-core';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
@@ -25,10 +23,8 @@ import {
     ApiConfigurationRoutingModule,
     SafeAccessModule,
     SpinnerModule,
-    MatFormFieldModule,
     FormWrapperModule,
     ReactiveFormsModule,
-    MatOptionModule,
     TranslateModule,
     ButtonModule,
     SelectMenuModule,

@@ -4,7 +4,7 @@
     #applicationSelect
     [(ngModel)]="value"
     name="applications"
-    (openedChange)="onOpenSelect($event)"
+    (opened)="onOpenSelect()"
     (selectionChange)="onSelect($event)"
     [multiselect]="true"
   >

@@ -1,6 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { createFormGroup, Mapping, Mappings } from './mapping-forms';
@@ -22,7 +21,7 @@ export class SafeMappingComponent
   @Input() mappingForm!: UntypedFormArray;
   // === TABLE ===
   displayedColumns = ['field', 'path', 'value', 'text', 'actions'];
-  dataSource = new MatTableDataSource<Mapping>([]);
+  dataSource = new Array<Mapping>();
 
   /**
    * Mapping component constructor.
@@ -34,11 +33,11 @@ export class SafeMappingComponent
   }
 
   ngOnInit(): void {
-    this.dataSource.data = [...this.mappingForm.value];
+    this.dataSource = [...this.mappingForm.value];
     this.mappingForm.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((mappings: Mappings) => {
-        this.dataSource.data = [...mappings];
+        this.dataSource = [...mappings];
       });
   }
 

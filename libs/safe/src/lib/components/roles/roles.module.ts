@@ -7,8 +7,6 @@ import { SafeRoleListModule } from './components/role-list/role-list.module';
 import { SafeGroupListModule } from './components/group-list/group-list.module';
 import { SafeAddRoleComponent } from './components/add-role/add-role.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { AbilityModule } from '@casl/angular';
 import { ButtonModule } from '@oort-front/ui';
 import { DialogModule, FormWrapperModule } from '@oort-front/ui';
@@ -27,8 +25,6 @@ import { DialogModule, FormWrapperModule } from '@oort-front/ui';
     TranslateModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatButtonModule,
     DialogModule,
     FormWrapperModule,
     AbilityModule,

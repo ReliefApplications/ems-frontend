@@ -6,8 +6,6 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogModule } from '@oort-front/ui';
 import { DialogRef } from '@angular/cdk/dialog';
@@ -23,9 +21,7 @@ import { FormWrapperModule } from '@oort-front/ui';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
     FormWrapperModule,
-    MatButtonModule,
     TranslateModule,
     DialogModule,
     ButtonModule,

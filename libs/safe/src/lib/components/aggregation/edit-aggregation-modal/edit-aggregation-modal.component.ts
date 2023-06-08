@@ -5,7 +5,6 @@ import { Aggregation } from '../../../models/aggregation.model';
 import { Resource } from '../../../models/resource.model';
 import { createAggregationForm } from '../../ui/aggregation-builder/aggregation-builder-forms';
 import { CommonModule } from '@angular/common';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DialogModule } from '@oort-front/ui';
 import { SafeAggregationBuilderModule } from '../../ui/aggregation-builder/aggregation-builder.module';
@@ -32,7 +31,6 @@ interface DialogData {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
     FormWrapperModule,
     DialogModule,
     SafeAggregationBuilderModule,
