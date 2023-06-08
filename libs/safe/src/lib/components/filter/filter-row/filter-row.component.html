@@ -160,11 +160,16 @@
 
   <!-- FILTER EDITOR -->
   <ng-template #dashboardFilterEditor>
-    <div>
-      <label class="block text-sm font-medium leading-6 text-gray-900">{{
-        'models.dashboard.dashboardFilter' | translate
-      }}</label>
-      <editor [init]="editorConfig" formControlName="value"></editor>
+    <div uiFormFieldDirective class="w-60">
+      <label>{{ 'models.dashboard.dashboardFilter' | translate }}</label>
+      <ui-select-menu formControlName="value">
+        <ui-select-option
+          *ngFor="let filterField of availableFilterFields"
+          value="{{ filterField.value }}"
+        >
+          {{ filterField.name }}
+        </ui-select-option>
+      </ui-select-menu>
     </div>
   </ng-template>
 </form>

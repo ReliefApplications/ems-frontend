@@ -15,7 +15,6 @@ import {
   DateModule,
   TooltipModule,
 } from '@oort-front/ui';
-import { TINYMCE_SCRIPT_SRC, EditorModule } from '@tinymce/tinymce-angular';
 
 /**
  * Composite Filter module.
@@ -35,10 +34,6 @@ import { TINYMCE_SCRIPT_SRC, EditorModule } from '@tinymce/tinymce-angular';
     SelectMenuModule,
     DateModule,
     FormWrapperModule,
-    EditorModule,
-  ],
-  providers: [
-    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
   ],
   exports: [SafeFilterComponent],
 })

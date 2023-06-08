@@ -250,22 +250,12 @@ export class DashboardFilterComponent
    * Set the available filters of dashboard filter in the shared context service
    */
   private setAvailableFiltersForContext() {
-    const questions = this.survey.getAllQuestions().length
+    this.contextService.availableFilterFields = this.survey.getAllQuestions()
+      .length
       ? this.survey
           .getAllQuestions()
-          .map((question) => ({ [question.name]: question.value }))
-      : null;
-
-    if (questions) {
-      let questionsObj = {};
-      questions.forEach((q) => {
-        questionsObj = {
-          ...questionsObj,
-          ...q,
-        };
-      });
-      this.contextService.availableFilterFields = questionsObj;
-    }
+          .map((question) => ({ name: question.title, value: question.name }))
+      : [];
   }
 
   /**

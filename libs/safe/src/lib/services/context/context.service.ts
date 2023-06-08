@@ -7,8 +7,9 @@ import { BehaviorSubject } from 'rxjs';
 export class ContextService {
   /** Current dashboard filter available questions*/
   public availableFilterFields: {
-    [key: string]: any;
-  } | null = null;
+    name: string;
+    value: string;
+  }[] = [];
 
   public filter = new BehaviorSubject<any>(null);
   get filter$() {
@@ -26,14 +27,14 @@ export class ContextService {
    * @returns object with dashboard filter injected
    */
   public injectDashboardFilter(obj: any): any {
-    const availableFilterFields = this.availableFilterFields;
-    if (!availableFilterFields) return obj;
-    const regex = /{{filter\.(.*?)}}/g;
-    return JSON.parse(
-      JSON.stringify(obj).replace(regex, (match) => {
-        const field = match.replace('{{filter.', '').replace('}}', '');
-        return availableFilterFields[field] || match;
-      })
-    );
+    // const availableFilterFields = this.availableFilterFields;
+    // if (!availableFilterFields) return obj;
+    // const regex = /{{filter\.(.*?)}}/g;
+    // return JSON.parse(
+    //   JSON.stringify(obj).replace(regex, (match) => {
+    //     const field = match.replace('{{filter.', '').replace('}}', '');
+    //     return availableFilterFields[field] || match;
+    //   })
+    // );
   }
 }

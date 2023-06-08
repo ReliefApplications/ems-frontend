@@ -16,8 +16,6 @@ import { takeUntil } from 'rxjs/operators';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
 import { ContextService } from '../../../services/context/context.service';
-import { SafeEditorService } from '../../../services/editor/editor.service';
-import { INLINE_EDITOR_CONFIG } from '../../../const/tinymce.const';
 
 /**
  * Composite filter row.
@@ -53,9 +51,9 @@ export class FilterRowComponent
   @ViewChild('dashboardFilterEditor', { static: false })
   dashboardFilterEditor!: TemplateRef<any>;
 
-  editorConfig = INLINE_EDITOR_CONFIG;
   isFilterEnable = false;
   isFilterEditorOnView = false;
+  availableFilterFields: { name: string; value: string }[] = [];
 
   public operators: any[] = [];
 
@@ -63,17 +61,9 @@ export class FilterRowComponent
    * Constructor of filter row
    *
    * @param contextService Context service
-   * @param editorService Editor service
    */
-  constructor(
-    private contextService: ContextService,
-    private editorService: SafeEditorService
-  ) {
+  constructor(private contextService: ContextService) {
     super();
-    // Set the editor base url based on the environment file
-    this.editorConfig.base_url = editorService.url;
-    // Set the editor language
-    this.editorConfig.language = editorService.language;
   }
 
   ngOnInit(): void {
@@ -84,13 +74,12 @@ export class FilterRowComponent
           this.isFilterEnable = isFilterEnable;
           const availableFilterFields =
             this.contextService.availableFilterFields;
-          if (isFilterEnable && availableFilterFields) {
-            this.editorService.addCalcAndKeysAutoCompleter(
-              this.editorConfig,
-              Object.keys(availableFilterFields).map(
-                (key: string) => `{{filter.${key}}}`
-              )
-            );
+          if (isFilterEnable && availableFilterFields.length) {
+            this.availableFilterFields =
+              this.contextService.availableFilterFields.map((field) => ({
+                name: field.name,
+                value: `{{filter.${field.value}}}`,
+              }));
           }
         },
       });
