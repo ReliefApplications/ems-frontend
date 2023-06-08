@@ -32,20 +32,20 @@ module.exports = {
           200: 'rgb(var(--secondary-200) / <alpha-value>)', //200
         },
       },
-      // keyframes: {
-      //   fadeIn: {
-      //     '0%': { opacity: 0 },
-      //     '100%': { opacity: 1 },
-      //   },
-      //   fadeOut: {
-      //     '0%': { opacity: 1 },
-      //     '100%': { opacity: 0 },
-      //   },
-      // },
-      // animation: {
-      //   fadeIn: 'fadeIn 0.5s forwards',
-      //   fadeOut: 'fadeOut 0.1s forwards',
-      // },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: 0 },
+          '100%': { opacity: 1 },
+        },
+        fadeOut: {
+          '0%': { opacity: 1 },
+          '100%': { opacity: 0 },
+        },
+      },
+      animation: {
+        fadeIn: 'fadeIn 0.5s forwards',
+        fadeOut: 'fadeOut 0.1s forwards',
+      },
     },
   },
   plugins: [require('@tailwindcss/forms')],
