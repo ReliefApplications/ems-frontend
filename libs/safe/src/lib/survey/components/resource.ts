@@ -6,7 +6,7 @@ import {
 } from '../graphql/queries';
 import * as SurveyCreator from 'survey-creator';
 import { resourceConditions } from './resources';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
 import { DomService } from '../../services/dom/dom.service';
@@ -28,7 +28,7 @@ export const init = (
   Survey: any,
   domService: DomService,
   apollo: Apollo,
-  dialog: MatDialog,
+  dialog: Dialog,
   formBuilder: UntypedFormBuilder
 ): void => {
   const getResourceById = (data: { id: string }) =>
@@ -190,7 +190,7 @@ export const init = (
                       },
                     }
                   );
-                  dialogRef.afterClosed().subscribe((res: any) => {
+                  dialogRef.closed.subscribe((res: any) => {
                     if (res && res.value.fields) {
                       currentQuestion.gridFieldsSettings = res.getRawValue();
                     }

@@ -1,0 +1,34 @@
+:host {
+  display: flex;
+  justify-content: center;
+}
+
+.spinner-small {
+  @apply h-4 w-4;
+}
+.spinner-medium {
+  @apply h-5 w-5;
+}
+.spinner-large {
+  @apply h-12 w-12;
+}
+
+.spinner-primary {
+  @apply fill-primary-400;
+}
+
+.spinner-success {
+  @apply fill-green-400;
+}
+
+.spinner-danger {
+  @apply fill-red-400;
+}
+
+.spinner-grey {
+  @apply fill-neutral-400;
+}
+
+.spinner-light {
+  @apply fill-white;
+}

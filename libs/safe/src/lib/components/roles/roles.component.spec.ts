@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import {
-  MatLegacyDialogModule as MatDialogModule,
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import { environment } from 'projects/back-office/src/environments/environment';
 import { SafeRolesComponent } from './roles.component';
 import {
@@ -13,7 +13,6 @@ import {
   UrlHelperService,
 } from 'angular-oauth2-oidc';
 import { HttpClientModule } from '@angular/common/http';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import {
   TranslateModule,
@@ -35,8 +34,8 @@ describe('SafeRolesComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: {} },
+        { provide: DialogRef, useValue: {} },
+        { provide: DIALOG_DATA, useValue: {} },
         { provide: 'environment', useValue: environment },
         OAuthService,
         UrlHelperService,
@@ -46,9 +45,8 @@ describe('SafeRolesComponent', () => {
       ],
       declarations: [SafeRolesComponent],
       imports: [
-        MatDialogModule,
+        DialogCdkModule,
         HttpClientModule,
-        MatSnackBarModule,
         RouterTestingModule,
         TranslateModule.forRoot({
           loader: {

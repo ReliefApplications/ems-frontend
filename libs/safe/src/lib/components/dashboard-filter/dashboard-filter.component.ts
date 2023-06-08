@@ -2,6 +2,7 @@ import {
   Component,
   ElementRef,
   HostListener,
+  Inject,
   Input,
   NgZone,
   OnDestroy,
@@ -10,7 +11,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FilterPosition } from './enums/dashboard-filters.enum';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import * as Survey from 'survey-angular';
 import { Apollo } from 'apollo-angular';
 import { SafeApplicationService } from '../../services/application/application.service';
@@ -23,10 +24,10 @@ import {
   EditApplicationMutationResponse,
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { ContextService } from '../../services/context/context.service';
+import { SidenavContainerComponent, SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
-import { MatDrawerContent, MatSidenavContent } from '@angular/material/sidenav';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Interface for quick filters
@@ -79,8 +80,7 @@ export class DashboardFilterComponent
   /**
    * Class constructor
    *
-   * @param matDrawer MatDrawerContent
-   * @param matSidenav MatSidenavContent
+   * @param uiSidenav MatDrawerContent
    * @param hostElement Host/Component Element
    * @param dialog The material dialog service
    * @param apollo Apollo client
@@ -91,16 +91,16 @@ export class DashboardFilterComponent
    * @param ngZone Triggers html changes
    */
   constructor(
-    @Optional() private matDrawer: MatDrawerContent,
-    @Optional() private matSidenav: MatSidenavContent,
+    @Optional() private uiSidenav: SidenavContainerComponent,
     private hostElement: ElementRef<HTMLElement>,
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private translate: TranslateService,
     private contextService: ContextService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
   }
@@ -178,17 +178,19 @@ export class DashboardFilterComponent
           data: { surveyStructure: this.surveyStructure },
           autoFocus: false,
         });
-        dialogRef.afterClosed().subscribe((newStructure) => {
-          if (newStructure) {
-            this.surveyStructure = newStructure;
-            localForage.setItem(
-              this.applicationId + 'contextualFilter',
-              this.surveyStructure
-            );
-            this.initSurvey();
-            this.saveFilter();
-          }
-        });
+        dialogRef.closed
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((newStructure) => {
+            if (newStructure) {
+              this.surveyStructure = newStructure;
+              localForage.setItem(
+                this.applicationId + 'contextualFilter',
+                this.surveyStructure
+              );
+              this.initSurvey();
+              this.saveFilter();
+            }
+          });
       }
     );
   }
@@ -284,11 +286,13 @@ export class DashboardFilterComponent
         const dialogRef = this.dialog.open(FilterSettingsModalComponent, {
           data: { positionList: this.positionList },
         });
-        dialogRef.afterClosed().subscribe((defaultPosition) => {
-          if (defaultPosition) {
-            this.saveSettings(defaultPosition);
-          }
-        });
+        dialogRef.closed
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((defaultPosition) => {
+            if (defaultPosition) {
+              this.saveSettings(defaultPosition as FilterPosition);
+            }
+          });
       }
     );
   }
@@ -376,14 +380,12 @@ export class DashboardFilterComponent
    * @returns DOMRect | undefined
    */
   private getParentReferenceClientRect() {
-    const matWrapper = this.matDrawer ? this.matDrawer : this.matSidenav;
-    // If no mat wrapper, default behavior would be filter direct parent container
-    let parentRect =
-      this.hostElement.nativeElement.parentElement?.getBoundingClientRect();
-    if (matWrapper) {
-      parentRect = matWrapper
-        ?.getElementRef()
-        .nativeElement.getBoundingClientRect();
+    // If no sidenav wrapper, default behavior would be filter horizontal sidenav Content
+    let parentRect = this.document
+      .getElementById('horizontalSidenavContent')
+      ?.getBoundingClientRect();
+    if (this.uiSidenav) {
+      parentRect = this.uiSidenav.content.nativeElement.getBoundingClientRect();
     }
     return parentRect;
   }

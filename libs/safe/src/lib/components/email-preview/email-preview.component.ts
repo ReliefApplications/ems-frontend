@@ -1,3 +1,5 @@
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import {
   Component,
   ElementRef,
@@ -11,16 +13,11 @@ import {
   Validators,
 } from '@angular/forms';
 import {
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-  MatLegacyDialogRef as MatDialogRef,
-} from '@angular/material/legacy-dialog';
-import {
-  MatLegacyChipInputEvent as MatChipInputEvent,
   MAT_LEGACY_CHIPS_DEFAULT_OPTIONS as MAT_CHIPS_DEFAULT_OPTIONS,
+  MatLegacyChipInputEvent as MatChipInputEvent,
 } from '@angular/material/legacy-chips';
 import { EMAIL_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { SafeEditorService } from '../../services/editor/editor.service';
-import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 
 /** Interface of Email Preview Modal Data */
 interface DialogData {
@@ -83,8 +80,8 @@ export class SafeEmailPreviewComponent implements OnInit {
    * @param editorService Editor service used to get main URL and current language
    */
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    public dialogRef: MatDialogRef<SafeEmailPreviewComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData,
+    public dialogRef: DialogRef<SafeEmailPreviewComponent>,
     private formBuilder: UntypedFormBuilder,
     private editorService: SafeEditorService
   ) {

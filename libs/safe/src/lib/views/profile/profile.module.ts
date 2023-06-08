@@ -4,11 +4,13 @@ import { SafeProfileComponent } from './profile.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { SafeButtonModule } from '../../components/ui/button/button.module';
+import {
+  MenuModule,
+  ButtonModule,
+  TableModule,
+  FormWrapperModule,
+  IconModule,
+} from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeProfileRoutingModule } from './profile-routing.module';
 
@@ -22,14 +24,14 @@ import { SafeProfileRoutingModule } from './profile-routing.module';
     SafeProfileRoutingModule,
     FormsModule,
     MatFormFieldModule,
-    MatInputModule,
-    MatTableModule,
+    FormWrapperModule,
     MatButtonModule,
-    MatMenuModule,
+    MenuModule,
     ReactiveFormsModule,
-    MatIconModule,
-    SafeButtonModule,
+    IconModule,
     TranslateModule,
+    ButtonModule,
+    TableModule,
   ],
   exports: [SafeProfileComponent],
 })

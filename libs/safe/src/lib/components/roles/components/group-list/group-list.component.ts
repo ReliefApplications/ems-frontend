@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
@@ -12,13 +12,13 @@ import {
   FETCH_GROUPS,
 } from '../../graphql/mutations';
 import { GetGroupsQueryResponse, GET_GROUPS } from '../../graphql/queries';
-import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
 import { SafeSnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';
 import get from 'lodash/get';
 import { SafeRestService } from '../../../../services/rest/rest.service';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * This component is used to display the groups tab in the platform
@@ -53,8 +53,8 @@ export class SafeGroupListComponent
    */
   constructor(
     private apollo: Apollo,
-    public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    public dialog: Dialog,
+    private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private restService: SafeRestService
@@ -126,53 +126,47 @@ export class SafeGroupListComponent
     const dialogRef = this.dialog.open(SafeAddRoleComponent, {
       data: { title: 'components.group.add.title' },
     });
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value) {
-          this.apollo
-            .mutate<AddGroupMutationResponse>({
-              mutation: ADD_GROUP,
-              variables: {
-                title: value.title,
-              },
-            })
-            .pipe(takeUntil(this.destroy$))
-            .subscribe({
-              next: ({ errors }) => {
-                if (errors) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectNotCreated',
-                      {
-                        type: this.translate
-                          .instant('common.role.one')
-                          .toLowerCase(),
-                        error: errors ? errors[0].message : '',
-                      }
-                    ),
-                    { error: true }
-                  );
-                } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectCreated',
-                      {
-                        type: this.translate.instant('common.role.one'),
-                        value: value.title,
-                      }
-                    )
-                  );
-                  this.getGroups();
-                }
-              },
-              error: (err) => {
-                this.snackBar.openSnackBar(err.message, { error: true });
-              },
-            });
-        }
-      });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        this.apollo
+          .mutate<AddGroupMutationResponse>({
+            mutation: ADD_GROUP,
+            variables: {
+              title: value.title,
+            },
+          })
+          .pipe(takeUntil(this.destroy$))
+          .subscribe({
+            next: ({ errors }) => {
+              if (errors) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.objectNotCreated',
+                    {
+                      type: this.translate
+                        .instant('common.role.one')
+                        .toLowerCase(),
+                      error: errors ? errors[0].message : '',
+                    }
+                  ),
+                  { error: true }
+                );
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectCreated', {
+                    type: this.translate.instant('common.role.one'),
+                    value: value.title,
+                  })
+                );
+                this.getGroups();
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
+          });
+      }
+    });
   }
 
   /** Fetches groups from service */
@@ -197,23 +191,21 @@ export class SafeGroupListComponent
         next: ({ data, loading }) => {
           if (data) this.groups.data = data.fetchGroups || [];
           this.loadingFetch = loading;
-          snackBarRef.instance.data = {
-            message: this.translate.instant(
-              'common.notifications.groups.ready'
-            ),
-            loading: false,
-          };
-          setTimeout(() => snackBarRef.dismiss(), 1000);
+          snackBarRef.instance.message = this.translate.instant(
+            'common.notifications.groups.ready'
+          );
+          snackBarRef.instance.loading = false;
+
+          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
         },
         error: () => {
-          snackBarRef.instance.data = {
-            message: this.translate.instant(
-              'common.notifications.groups.error'
-            ),
-            loading: false,
-            error: true,
-          };
-          setTimeout(() => snackBarRef.dismiss(), 1000);
+          snackBarRef.instance.message = this.translate.instant(
+            'common.notifications.groups.error'
+          );
+          snackBarRef.instance.loading = false;
+          snackBarRef.instance.error = true;
+
+          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
         },
       });
   }
@@ -236,7 +228,7 @@ export class SafeGroupListComponent
       confirmText: this.translate.instant('components.confirmModal.delete'),
       confirmColor: 'warn',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<DeleteGroupMutationResponse>({

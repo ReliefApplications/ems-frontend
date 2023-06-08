@@ -4,28 +4,22 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
 import { Channel } from '@oort-front/safe';
 import { CommonModule } from '@angular/common';
 import { ChannelsRoutingModule } from '../../channels-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import {
-  SafeButtonModule,
-  SafeModalModule,
-  SafeDividerModule,
-} from '@oort-front/safe';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatIconModule } from '@angular/material/icon';
+import { IconModule } from '@oort-front/ui';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { TranslateModule } from '@ngx-translate/core';
+import { DialogModule } from '@oort-front/ui';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
+import {
+  SpinnerModule,
+  DividerModule,
+  MenuModule,
+  ButtonModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
 
 /**
  * Edit channel component, act as modal.
@@ -38,17 +32,14 @@ import { TranslateModule } from '@ngx-translate/core';
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatMenuModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    MatSelectModule,
-    SafeDividerModule,
-    SafeButtonModule,
+    IconModule,
+    FormWrapperModule,
+    SpinnerModule,
+    MenuModule,
+    DividerModule,
     MatButtonModule,
-    TranslateModule,
-    SafeModalModule,
+    DialogModule,
+    ButtonModule,
   ],
   selector: 'app-edit-channel-modal',
   templateUrl: './edit-channel-modal.component.html',
@@ -68,8 +59,8 @@ export class EditChannelModalComponent implements OnInit {
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<EditChannelModalComponent>,
-    @Inject(MAT_DIALOG_DATA)
+    public dialogRef: DialogRef<EditChannelModalComponent>,
+    @Inject(DIALOG_DATA)
     public data: {
       channel: Channel;
     }

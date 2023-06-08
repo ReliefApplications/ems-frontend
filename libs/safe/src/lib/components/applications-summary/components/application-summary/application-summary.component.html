@@ -8,7 +8,7 @@
     class="flex flex-row justify-between items-center text-sm text-gray-600 w-full box-border pt-2 pb-2 px-2"
   >
     <div class="flex items-center gap-1">
-      <safe-icon icon="person"></safe-icon>
+      <ui-icon icon="person"></ui-icon>
       <span>{{ application.users?.totalCount }}</span>
     </div>
     <div
@@ -39,36 +39,36 @@
       }}</span
     >
     <!-- Actions -->
-    <safe-button
+    <ui-button
       [isIcon]="true"
       icon="more_vert"
-      [matMenuTriggerFor]="menu"
+      [uiMenuTriggerFor]="menu"
       (click)="$event.stopPropagation()"
     >
-    </safe-button>
-    <mat-menu #menu="matMenu">
+    </ui-button>
+    <ui-menu #menu>
       <!-- Preview -->
-      <button mat-menu-item (click)="preview.emit()">
-        <mat-icon>preview</mat-icon>
+      <button uiMenuItem (click)="preview.emit()">
+        <ui-icon icon="preview"></ui-icon>
         {{ 'common.preview' | translate }}
       </button>
       <!-- Duplication -->
       <button
-        mat-menu-item
+        uiMenuItem
         (click)="clone.emit()"
         *ngIf="application.canUpdate"
       >
-        <mat-icon>file_copy</mat-icon>
+        <ui-icon icon="file_copy"></ui-icon>
         {{ 'common.duplicate' | translate }}
       </button>
       <!-- Delete -->
       <ng-container *ngIf="application.canDelete">
-        <safe-divider class="m-0"></safe-divider>
-        <button mat-menu-item (click)="delete.emit()">
-          <mat-icon>delete</mat-icon>
+        <ui-divider class="m-0"></ui-divider>
+        <button uiMenuItem (click)="delete.emit()">
+          <ui-icon icon="delete"></ui-icon>
           {{ 'common.delete' | translate }}
         </button>
       </ng-container>
-    </mat-menu>
+    </ui-menu>
   </div>
 </div>

@@ -5,7 +5,6 @@ import {
   UntypedFormBuilder,
   Validators,
 } from '@angular/forms';
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
 import {
   GetResourcesQueryResponse,
   GET_RESOURCES,
@@ -17,18 +16,20 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
-import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
 import { TranslateModule } from '@ngx-translate/core';
 import {
-  SafeGraphQLSelectModule,
-  SafeIconModule,
-  SafeModalModule,
-} from '@oort-front/safe';
+  ToggleModule,
+  TooltipModule,
+  RadioModule,
+  IconModule,
+  ButtonModule,
+  SelectMenuModule,
+  ChipModule,
+  FormWrapperModule,
+  GraphQLSelectModule,
+} from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
+import { DialogRef } from '@angular/cdk/dialog';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -43,17 +44,19 @@ const ITEMS_PER_PAGE = 10;
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
+    FormWrapperModule,
     MatButtonModule,
-    MatRadioModule,
-    MatTooltipModule,
-    MatSlideToggleModule,
-    MatChipsModule,
+    ToggleModule,
     TranslateModule,
-    SafeIconModule,
-    SafeGraphQLSelectModule,
-    SafeModalModule,
+    GraphQLSelectModule,
+    DialogModule,
+    TooltipModule,
+    RadioModule,
+    IconModule,
+    ButtonModule,
+    SelectMenuModule,
+    FormWrapperModule,
+    ChipModule,
   ],
   selector: 'app-add-form-modal',
   templateUrl: './add-form-modal.component.html',
@@ -79,7 +82,7 @@ export class AddFormModalComponent implements OnInit {
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<AddFormModalComponent>,
+    public dialogRef: DialogRef<AddFormModalComponent>,
     private apollo: Apollo
   ) {}
 
@@ -92,7 +95,6 @@ export class AddFormModalComponent implements OnInit {
       inheritsTemplate: [false],
       template: [null],
     });
-
     this.form.get('newResource')?.valueChanges.subscribe((value: boolean) => {
       if (value) {
         this.form.get('resource')?.clearValidators();

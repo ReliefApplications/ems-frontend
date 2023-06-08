@@ -1,4 +1,4 @@
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { UntypedFormGroup } from '@angular/forms';
 import { surveyLocalization } from 'survey-angular';
 
@@ -15,7 +15,7 @@ export const buildSearchButton = (
   question: any,
   fieldsSettingsForm: UntypedFormGroup,
   multiselect: boolean,
-  dialog: MatDialog
+  dialog: Dialog
 ): any => {
   const searchButton = document.createElement('button');
   searchButton.innerText = surveyLocalization.getString(
@@ -41,7 +41,7 @@ export const buildSearchButton = (
         },
         panelClass: 'closable-dialog',
       });
-      dialogRef.afterClosed().subscribe((rows: any[]) => {
+      dialogRef.closed.subscribe((rows: any) => {
         if (!rows) {
           return;
         }
@@ -69,7 +69,7 @@ export const buildSearchButton = (
 export const buildAddButton = (
   question: any,
   multiselect: boolean,
-  dialog: MatDialog
+  dialog: Dialog
 ): any => {
   const addButton = document.createElement('button');
   addButton.innerText = surveyLocalization.getString(
@@ -96,7 +96,7 @@ export const buildAddButton = (
         panelClass: 'full-screen-modal',
         autoFocus: false,
       });
-      dialogRef.afterClosed().subscribe((result: any) => {
+      dialogRef.closed.subscribe((result: any) => {
         if (result) {
           const { data } = result;
           // TODO: call reload method

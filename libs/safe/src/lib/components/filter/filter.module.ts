@@ -6,11 +6,15 @@ import { FilterRowComponent } from './filter-row/filter-row.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import {
+  ButtonModule,
+  SelectMenuModule,
+  FormWrapperModule,
+  DateModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import { TINYMCE_SCRIPT_SRC, EditorModule } from '@tinymce/tinymce-angular';
 
 /**
@@ -24,11 +28,13 @@ import { TINYMCE_SCRIPT_SRC, EditorModule } from '@tinymce/tinymce-angular';
     FormsModule,
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatSelectModule,
     MatInputModule,
+    TooltipModule,
     MatDatepickerModule,
-    MatTooltipModule,
-    SafeButtonModule,
+    ButtonModule,
+    SelectMenuModule,
+    DateModule,
+    FormWrapperModule,
     EditorModule,
   ],
   providers: [

@@ -47,7 +47,7 @@ Library changes should automatically be detected when serving the other projects
 If you want to deploy on Azure, build back-office and front-office:
 ```
 npx nx run back-office:build:azure-dev
-npx nx run back-office:build:azure-dev
+npx nx run front-office:build:azure-dev
 ```
 
 For prod, replace `azure-dev` with `azure-prod`.
