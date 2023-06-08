@@ -21,7 +21,7 @@
     ></safe-tab-main>
   </ui-tab>
   <!-- AVAILABLE ACTIONS -->
-  <ui-tab [disabled]="formGroup.value.aggregations.length > 0">
+  <ui-tab [disabled]="formGroup && formGroup.value.aggregations.length > 0">
     <ng-container ngProjectAs="label">
       <ui-icon
         icon="toggle_on"
@@ -37,7 +37,7 @@
     <safe-tab-actions [formGroup]="formGroup"></safe-tab-actions>
   </ui-tab>
   <!-- BUTTONS -->
-  <ui-tab [disabled]="formGroup.value.aggregations.length > 0">
+  <ui-tab [disabled]="formGroup && formGroup.value.aggregations.length > 0">
     <ng-container ngProjectAs="label">
       <ui-icon
         icon="bolt"
@@ -58,5 +58,17 @@
       [relatedForms]="relatedForms"
       [channels]="channels"
     ></safe-tab-buttons>
+  </ui-tab>
+  <!-- Widget display options -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon
+        icon="settings_overscan"
+        [size]="24"
+        [uiTooltip]="'models.widget.display.title' | translate"
+      ></ui-icon>
+      <span>{{ 'models.widget.display.title' | translate }}</span>
+    </ng-container>
+    <safe-display-settings [formGroup]="formGroup"></safe-display-settings>
   </ui-tab>
 </ui-tabs>

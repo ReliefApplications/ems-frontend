@@ -5,6 +5,7 @@ import { MAT_LEGACY_AUTOCOMPLETE_SCROLL_STRATEGY as MAT_AUTOCOMPLETE_SCROLL_STRA
 import { scrollFactory } from '../../../utils/scroll-factory';
 import { createChartWidgetForm } from './chart-forms';
 import { CHART_TYPES } from './constants';
+import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 
 /**
  * Chart settings component
@@ -51,7 +52,10 @@ export class SafeChartSettingsComponent implements OnInit {
 
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
-    this.formGroup = createChartWidgetForm(this.tile.id, this.tile.settings);
+    this.formGroup = extendWidgetForm(
+      createChartWidgetForm(this.tile.id, this.tile.settings),
+      this.tile.settings?.widgetDisplay
+    );
     this.type = this.types.find((x) => x.name === this.chartForm.value.type);
     this.change.emit(this.formGroup);
 

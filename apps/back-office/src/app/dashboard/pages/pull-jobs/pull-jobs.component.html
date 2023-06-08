@@ -1,3 +1,4 @@
+<!-- Pull jobs add button -->
 <div class="mb-4 flex flex-row justify-end">
   <ui-button
     icon="add"
@@ -102,6 +103,7 @@
       <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
       <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
     </table>
+    <!-- Skeleton table when loading -->
     <safe-skeleton-table
       *ngIf="loading"
       [columns]="[

@@ -1,30 +1,33 @@
+import { Dialog } from '@angular/cdk/dialog';
+import { Overlay } from '@angular/cdk/overlay';
 import {
   Component,
-  OnInit,
-  Input,
   EventEmitter,
+  Input,
+  OnInit,
   Output,
   ViewChild,
 } from '@angular/core';
-import { Record } from '../../models/record.model';
 import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
-import { Dialog } from '@angular/cdk/dialog';
-import { SafeDownloadService } from '../../services/download/download.service';
+import { MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/legacy-select';
 import { TranslateService } from '@ngx-translate/core';
-import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
+import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { Version } from '../../models/form.model';
+import { Record } from '../../models/record.model';
+import { Change, RecordHistory } from '../../models/recordsHistory';
+import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
+import { SafeDownloadService } from '../../services/download/download.service';
+import { scrollFactory } from '../../utils/scroll-factory';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import {
-  GetRecordByIdQueryResponse,
-  GetRecordHistoryByIdResponse,
   GET_RECORD_BY_ID_FOR_HISTORY,
   GET_RECORD_HISTORY_BY_ID,
+  GetRecordByIdQueryResponse,
+  GetRecordHistoryByIdResponse,
 } from './graphql/queries';
-import { Change, RecordHistory } from '../../models/recordsHistory';
-import { Version } from '../../models/form.model';
-import { Subject } from 'rxjs';
-import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
-import { SnackbarService } from '@oort-front/ui';
 import { FormControl, FormGroup } from '@angular/forms';
 
 /**
@@ -55,6 +58,13 @@ const getValueType = (
   selector: 'safe-record-history',
   templateUrl: './record-history.component.html',
   styleUrls: ['./record-history.component.scss'],
+  providers: [
+    {
+      provide: MAT_SELECT_SCROLL_STRATEGY,
+      useFactory: scrollFactory,
+      deps: [Overlay],
+    },
+  ],
 })
 export class SafeRecordHistoryComponent
   extends SafeUnsubscribeComponent

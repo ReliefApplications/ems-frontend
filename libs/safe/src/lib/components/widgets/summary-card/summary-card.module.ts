@@ -8,6 +8,10 @@ import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { SafeGridWidgetModule } from '../grid/grid.module';
 import { TooltipModule, ButtonModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
+import { InputsModule } from '@progress/kendo-angular-inputs';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { PagerModule } from '@progress/kendo-angular-pager';
+import { SafeSkeletonModule } from '../../../directives/skeleton/skeleton.module';
 
 /** Summary Card Widget Module */
 @NgModule({
@@ -22,6 +26,11 @@ import { TranslateModule } from '@ngx-translate/core';
     TooltipModule,
     TranslateModule,
     ButtonModule,
+    InputsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    PagerModule,
+    SafeSkeletonModule,
   ],
   exports: [SafeSummaryCardComponent],
 })

@@ -1,6 +1,7 @@
 import {
   AfterViewInit,
   Component,
+  ElementRef,
   HostListener,
   Input,
   OnInit,
@@ -8,7 +9,8 @@ import {
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
-import { firstValueFrom } from 'rxjs';
+import { debounceTime, distinctUntilChanged, firstValueFrom } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
@@ -16,6 +18,22 @@ import {
   GetResourceMetadataQueryResponse,
   GET_RESOURCE_METADATA,
 } from './graphql/queries';
+import { SummaryCardFormT } from '../summary-card-settings/summary-card-settings.component';
+import { Record } from '../../../models/record.model';
+
+export type CardT = NonNullable<SummaryCardFormT['value']['card']> &
+  Partial<{
+    record: Record;
+    metadata: any[];
+    layout: Layout;
+    cardAggregationData: any;
+  }>;
+import { Layout } from '../../../models/layout.model';
+import { PageChangeEvent } from '@progress/kendo-angular-grid';
+import { FormControl } from '@angular/forms';
+import { clone, isNaN } from 'lodash';
+import { SnackbarService } from '@oort-front/ui';
+import { Dialog } from '@angular/cdk/dialog';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -35,7 +53,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   @Input() widget: any;
   @Input() header = true;
   @Input() export = true;
-  @Input() settings: any = null;
+  @Input() settings!: SummaryCardFormT['value'];
 
   public gridSettings: any = null;
 
@@ -44,27 +62,25 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   public colsNumber = MAX_COL_SPAN;
 
   // === DYNAMIC CARDS PAGINATION ===
-  private pageInfo = {
+  public pageInfo = {
     first: DEFAULT_PAGE_SIZE,
     skip: 0,
     hasNextPage: false,
+    totalCount: 0,
   };
   public loading = true;
 
-  public cards: any[] = [];
+  public cards: CardT[] = [];
+  private cachedCards: CardT[] = [];
   private dataQuery?: QueryRef<any>;
 
-  /**
-   * Gets whether the cards that will be displayed
-   * are from an aggregation
-   *
-   * @returns if the cards are from an aggregation
-   */
-  private get isAggregation(): boolean {
-    return !!this.settings.cards[0]?.isAggregation;
-  }
+  private layout: Layout | null = null;
+  private fields: any[] = [];
 
-  @ViewChild('pdf') pdfExport!: any;
+  public searchControl = new FormControl('');
+
+  @ViewChild('summaryCardGrid') summaryCardGrid!: ElementRef<HTMLDivElement>;
+  @ViewChild('pdf') pdf!: any;
 
   /**
    * Get the summary card pdf name
@@ -96,30 +112,42 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    * Constructor for summary card component
    *
    * @param apollo Apollo service
+   * @param dialog Material dialog service
+   * @param snackBar Shared snackbar service
+   * @param translate Angular translate service
    * @param queryBuilder Query builder service
    * @param gridLayoutService Shared grid layout service
    * @param aggregationService Aggregation service
    */
   constructor(
     private apollo: Apollo,
+    private dialog: Dialog,
+    private snackBar: SnackbarService,
+    private translate: TranslateService,
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: SafeGridLayoutService,
     private aggregationService: SafeAggregationService
   ) {}
 
   ngOnInit(): void {
-    if (this.settings.isDynamic) {
-      this.setupDynamicCards();
-    } else {
-      this.cards = this.settings.cards;
-    }
+    this.setupDynamicCards();
+
     this.colsNumber = this.setColsNumber(window.innerWidth);
     this.setupGridSettings();
+
+    this.searchControl.valueChanges
+      .pipe(debounceTime(2000), distinctUntilChanged())
+      .subscribe((value) => {
+        this.handleSearch(value || '');
+      });
   }
 
   ngAfterViewInit(): void {
-    if (this.settings.isDynamic && !this.isAggregation) {
-      this.pdfExport.element.nativeElement.addEventListener(
+    if (
+      !this.settings.widgetDisplay?.usePagination &&
+      !this.settings.card?.aggregation
+    ) {
+      this.summaryCardGrid.nativeElement.addEventListener(
         'scroll',
         (event: any) => this.loadOnScroll(event)
       );
@@ -151,11 +179,101 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   /** Gets the query for fetching the dynamic cards records. */
   private async setupDynamicCards() {
     // only one dynamic card is allowed per widget
-    const [card] = this.settings.cards;
+    const card = this.settings.card;
     if (!card) return;
 
-    if (card.isAggregation) this.getCardsFromAggregation(card);
-    else this.createDynamicQueryFromLayout(card);
+    if (card.aggregation) this.getCardsFromAggregation(card);
+    else if (card.layout) this.createDynamicQueryFromLayout(card);
+  }
+
+  /**
+   * Handles the search on cards
+   *
+   * @param search search value
+   */
+  private handleSearch(search: string) {
+    // Only need to fetch data if is dynamic and not an aggregation
+    const needRefetch = !this.settings.card?.aggregation;
+    const skippedFields = ['id', 'incrementalId'];
+
+    if (!needRefetch)
+      this.cards = this.cachedCards.filter((card: any) => {
+        const data = clone(card.record || card.cardAggregationData || {});
+        skippedFields.forEach((field) => delete data[field]);
+        const recordValues = Object.values(data);
+        return recordValues.some(
+          (value) =>
+            (typeof value === 'string' &&
+              value.toLowerCase().includes(search.toLowerCase()) &&
+              !skippedFields.includes(value)) ||
+            (!isNaN(parseFloat(search)) &&
+              typeof value === 'number' &&
+              value === parseFloat(search))
+        );
+      });
+    else {
+      const filters: {
+        field: string;
+        operator: string;
+        value: string | number;
+      }[] = [];
+      this.fields.forEach((field) => {
+        if (skippedFields.includes(field.name)) return;
+        if (field?.type === 'text')
+          filters.push({
+            field: field.name,
+            operator: 'contains',
+            value: search,
+          });
+        if (field?.type === 'numeric' && !isNaN(parseFloat(search)))
+          filters.push({
+            field: field.name,
+            operator: 'eq',
+            value: parseFloat(search),
+          });
+      });
+      this.pageInfo.skip = 0;
+      this.dataQuery?.refetch({
+        skip: 0,
+        filter: {
+          logic: 'or',
+          filters,
+        },
+      });
+    }
+  }
+
+  /**
+   * Updates the cards from fetched custom query
+   *
+   * @param res Query result
+   */
+  private updateCards(res: any) {
+    if (!this.layout || !res?.data) return;
+    const layoutQueryName = this.layout.query.name;
+    const edges = res.data?.[layoutQueryName].edges;
+    if (!edges) return;
+
+    const newCards = edges.map((e: any) => ({
+      ...this.settings.card,
+      record: e.node,
+      layout: this.layout,
+      metadata: this.fields,
+    }));
+
+    this.cachedCards =
+      this.pageInfo.skip > 0 ? [...this.cachedCards, ...newCards] : newCards;
+
+    this.cards = this.settings.widgetDisplay?.usePagination
+      ? this.cachedCards.slice(
+          this.pageInfo.skip,
+          this.pageInfo.skip + this.pageInfo.first
+        )
+      : this.cachedCards;
+    this.pageInfo.totalCount = get(res.data[layoutQueryName], 'totalCount', 0);
+    this.pageInfo.hasNextPage = this.pageInfo.totalCount > this.cards.length;
+
+    this.loading = res.loading;
   }
 
   /**
@@ -179,12 +297,13 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
       .then((res) => {
         const layouts = res.edges.map((edge) => edge.node);
         if (layouts.length > 0) {
-          const layoutQuery = layouts[0].query;
+          this.layout = layouts[0];
+          const layoutQuery = this.layout.query;
           const builtQuery = this.queryBuilder.buildQuery({
             query: layoutQuery,
           });
           const layoutFields = layoutQuery.fields;
-          const fields = get(metaRes, 'data.resource.metadata', []).map(
+          this.fields = get(metaRes, 'data.resource.metadata', []).map(
             (f: any) => {
               const layoutField = layoutFields.find(
                 (lf: any) => lf.name === f.name
@@ -208,24 +327,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
               fetchPolicy: 'network-only',
               nextFetchPolicy: 'cache-first',
             });
-            this.dataQuery.valueChanges.subscribe((res2) => {
-              const edges = res2.data?.[layoutQuery.name].edges;
-              if (!edges) return;
-
-              const newCards = edges.map((e: any) => ({
-                ...this.settings.cards[0],
-                record: e.node,
-                layout: layouts[0],
-                metadata: fields,
-              }));
-
-              this.cards = [...this.cards, ...newCards];
-              this.pageInfo.hasNextPage =
-                get(res2.data[layoutQuery.name], 'totalCount', 0) >
-                this.cards.length;
-
-              this.loading = res2.loading;
-            });
+            this.dataQuery.valueChanges.subscribe(this.updateCards.bind(this));
           }
         }
       });
@@ -235,8 +337,8 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    * mdr
    */
   private async setupGridSettings() {
-    if (!this.settings.cards) return;
-    const [card] = this.settings.cards;
+    const card = this.settings.card;
+    if (!card || !card.resource || !card.layout) return;
 
     this.gridLayoutService
       .getLayouts(card.resource, { ids: [card.layout], first: 1 })
@@ -272,15 +374,19 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    *
    * @param card Card settings
    */
-  private async getCardsFromAggregation(card: any) {
+  private async getCardsFromAggregation(
+    card: NonNullable<SummaryCardFormT['value']['card']>
+  ) {
+    if (!card.aggregation || !card.resource) return;
     this.aggregationService
       .aggregationDataQuery(card.resource, card.aggregation)
       ?.subscribe((res) => {
-        if (!res.data) return;
-        this.cards = res.data.recordsAggregation.map((x: any) => ({
-          ...this.settings.cards[0],
+        if (!res.data?.recordsAggregation?.items) return;
+        this.cachedCards = res.data.recordsAggregation.items.map((x: any) => ({
+          ...this.settings.card,
           cardAggregationData: x,
         }));
+        this.cards = this.cachedCards;
       });
   }
 
@@ -296,13 +402,67 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
     ) {
       if (!this.loading && this.pageInfo.hasNextPage) {
         this.loading = true;
-        // TOCHECK
-        this.dataQuery?.fetchMore({
-          variables: {
-            skip: this.cards.length,
-          },
-        });
+        this.dataQuery
+          ?.fetchMore({
+            variables: {
+              skip: this.cachedCards.length,
+            },
+          })
+          .then(this.updateCards.bind(this));
       }
+    }
+  }
+
+  /**
+   * Triggered when the page changes.
+   *
+   * @param e Kendo paginator page change event
+   */
+  public onPageChange(e: PageChangeEvent) {
+    this.pageInfo.first = e.take;
+    this.pageInfo.skip = e.skip;
+
+    this.summaryCardGrid.nativeElement.scroll({
+      top: 0,
+      left: 0,
+      behavior: 'smooth',
+    });
+
+    // Check if the data is already cached
+    if (this.cachedCards.length >= e.skip + e.take)
+      this.cards = this.cachedCards.slice(e.skip, e.skip + e.take);
+    else {
+      this.loading = true;
+      this.dataQuery
+        ?.fetchMore({
+          variables: {
+            skip: this.cachedCards.length,
+          },
+        })
+        .then(this.updateCards.bind(this));
+    }
+  }
+
+  /**
+   * Open the dataSource modal.
+   */
+  public async openDataSource(): Promise<void> {
+    if (this.layout?.query) {
+      const { SafeResourceGridModalComponent } = await import(
+        '../../search-resource-grid-modal/search-resource-grid-modal.component'
+      );
+      this.dialog.open(SafeResourceGridModalComponent, {
+        data: {
+          gridSettings: clone(this.layout.query),
+        },
+      });
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'components.widget.summaryCard.errors.invalidSource'
+        ),
+        { error: true }
+      );
     }
   }
 }

@@ -6,19 +6,13 @@
     <div uiFormFieldDirective [outline]="false" class="p-0">
       <label>{{ 'common.status' | translate }}</label>
       <ui-select-menu formControlName="status">
-        <ui-select-option
-          value="active"
-        >
+        <ui-select-option value="active">
           {{ 'common.status_active' | translate }}
         </ui-select-option>
-        <ui-select-option
-          value="pending"
-        >
+        <ui-select-option value="pending">
           {{ 'common.status_pending' | translate }}
         </ui-select-option>
-        <ui-select-option
-          value="archived"
-        >
+        <ui-select-option value="archived">
           {{ 'common.status_archived' | translate }}
         </ui-select-option>
       </ui-select-menu>
@@ -58,6 +52,13 @@
         name="textarea"
       >
       </ui-textarea>
+    </div>
+    <div class="mb-6">
+      <ui-toggle formControlName="sideMenu">
+        <ng-container ngProjectAs="label">
+          {{ 'models.application.menu' | translate }}</ng-container
+        >
+      </ui-toggle>
     </div>
   </div>
   <ui-button

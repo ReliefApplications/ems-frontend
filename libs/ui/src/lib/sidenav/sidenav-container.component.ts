@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ContentChildren,
   ElementRef,
@@ -36,8 +37,9 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
    * UI Sidenav constructor
    *
    * @param renderer Renderer2
+   * @param cdr ChangeDetectorRef
    */
-  constructor(private renderer: Renderer2) {}
+  constructor(private renderer: Renderer2, private cdr: ChangeDetectorRef) {}
 
   ngAfterViewInit() {
     // Initialize width and show sidenav value
@@ -45,6 +47,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
       this.showSidenav[index] = sidenavDirective.opened;
       this.mode[index] = sidenavDirective.mode;
       this.position[index] = sidenavDirective.position;
+      this.cdr.detectChanges();
       this.renderer.appendChild(
         this.sidenav.get(index).nativeElement.querySelector('div'),
         sidenavDirective.el.nativeElement

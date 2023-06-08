@@ -54,11 +54,16 @@ export class SafeLayoutComponent
   @ViewChild('rightSidenav', { read: ViewContainerRef })
   rightSidenav?: ViewContainerRef;
 
+  @ViewChild('nav')
+  nav?: any;
+
   @Output() openApplication: EventEmitter<Application> = new EventEmitter();
 
   @Output() reorder: EventEmitter<any> = new EventEmitter();
 
   @Input() profileRoute = '/profile';
+
+  @Input() sideMenu = true;
 
   languages: string[] = [];
 

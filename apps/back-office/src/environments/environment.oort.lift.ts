@@ -3,7 +3,7 @@ import { theme } from '../themes/oort/oort.prod';
 import { sharedEnvironment } from './environment.shared';
 
 /**
- * Authentification configuration
+ * Authentication configuration
  */
 const authConfig: AuthConfig = {
   issuer: 'https://id-lift.oortcloud.tech/auth/realms/oort',
@@ -38,5 +38,6 @@ export const environment = {
     'grid',
     'text',
     'map',
+    'summaryCard',
   ],
 };

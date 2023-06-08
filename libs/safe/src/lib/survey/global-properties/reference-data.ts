@@ -117,7 +117,7 @@ export const init = (
           referenceDataService
             .loadReferenceData(foreignQuestion.referenceData)
             .then((referenceData) =>
-              choicesCallback(referenceData.fields || [])
+              choicesCallback((referenceData.fields || []).map((x) => x.name))
             );
         }
       }
@@ -163,7 +163,9 @@ export const init = (
       if (obj?.referenceData) {
         referenceDataService
           .loadReferenceData(obj.referenceData)
-          .then((referenceData) => choicesCallback(referenceData.fields || []));
+          .then((referenceData) =>
+            choicesCallback((referenceData.fields || []).map((x) => x.name))
+          );
       }
     },
   });
@@ -233,7 +235,9 @@ export const render = (
             filter
           )
           .then((choices) => {
-            question.choices = choices;
+            question.choices = [];
+            // this is to avoid that the choices appear on the 'choices' tab
+            question.setPropertyValue('visibleChoices', choices);
           });
       } else {
         question.choices = [];
