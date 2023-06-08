@@ -37,18 +37,6 @@ export class TabMainComponent
   @Input() formGroup!: UntypedFormGroup;
   @Input() type: any;
   public types = CHART_TYPES;
-  /**
-   * Get the selected chart type object
-   *
-   * @returns chart type object
-   */
-  public get selectedChartType() {
-    return (
-      this.types.find(
-        (type) => type.name === this.formGroup.get('chart.type')?.value
-      ) ?? { name: '', icon: null }
-    );
-  }
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   public resource?: Resource;
   public aggregation?: Aggregation;

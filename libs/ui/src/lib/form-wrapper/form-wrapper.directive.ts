@@ -19,6 +19,7 @@ import { GraphQLSelectComponent } from '../graphql-select/graphql-select.compone
 import { FormControlName, Validators, FormControlStatus } from '@angular/forms';
 import { ChipListDirective } from '../chip/chip-list.directive';
 import { DateWrapperDirective } from '../date/date-wrapper.directive';
+import { AutocompleteComponent } from '../autocomplete/autocomplete.component';
 
 /**
  * UI Form Wrapper Directive
@@ -203,10 +204,10 @@ export class FormWrapperDirective
     }
 
     if (this.autocompleteContent) {
-      this.renderer.removeClass(
-        this.autocompleteContent.nativeElement.querySelector('div'),
-        'relative'
-      );
+      // this.renderer.removeClass(
+      //   this.autocompleteContent.nativeElement.querySelector('div'),
+      //   'relative'
+      // );
       this.renderer.addClass(this.elementRef.nativeElement, 'relative');
     }
 

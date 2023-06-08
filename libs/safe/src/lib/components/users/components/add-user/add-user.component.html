@@ -22,16 +22,12 @@
             </ui-option>
           </ui-autocomplete>
         </div>
-        <label class="invite-label">{{
-          'components.user.invite.role.description' | translate
-        }}</label>
         <div uiFormFieldDirective>
-          <label>{{ 'common.role.one' | translate }}</label>
+          <label>{{
+            'components.user.invite.role.description' | translate
+          }}</label>
           <ui-select-menu formControlName="role">
-            <ui-select-option
-              *ngFor="let role of data.roles"
-              [value]="role.id"
-            >
+            <ui-select-option *ngFor="let role of data.roles" [value]="role.id">
               {{ role.title }}
             </ui-select-option>
           </ui-select-menu>
