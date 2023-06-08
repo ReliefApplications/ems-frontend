@@ -94,7 +94,6 @@ export class MapComponent
   public zoomControl: any = undefined;
 
   // === MARKERS ===
-  private baseTree!: L.Control.Layers.TreeObject;
   private layersTree: L.Control.Layers.TreeObject[] = [];
   private layerControlButtons: any;
   private layerControl: any;
@@ -360,7 +359,7 @@ export class MapComponent
         tree.basemaps && basemaps.push(tree.basemaps);
         tree.layers && layers.push(tree.layers);
       }
-      this.setLayersControl(flatten(basemaps), flatten(layers));
+      this.setLayersControl(flatten(layers));
     });
 
     this.setMapControls(controls, initMap);
@@ -446,20 +445,12 @@ export class MapComponent
    * @param basemaps loaded basemaps
    * @param layers loaded layers
    */
-  private setLayersControl(
-    basemaps: L.Control.Layers.TreeObject[],
-    layers: L.Control.Layers.TreeObject[]
-  ) {
+  private setLayersControl(layers: L.Control.Layers.TreeObject[]) {
     if (!this.layerControlButtons || !this.layerControlButtons._map) {
       this.layerControlButtons = this.mapControlsService.getLayerControl(
         this.map
       );
     }
-    this.baseTree = {
-      label: 'Base Maps',
-      children: basemaps,
-      collapsed: true,
-    };
     this.layersTree = layers;
     // Add control to the map layers
     if (this.layerControl) {
@@ -472,13 +463,14 @@ export class MapComponent
           'hidden'
         );
       }
-      this.layerControl.setBaseTree(this.baseTree);
       this.layerControl.setOverlayTree(this.layersTree);
     } else {
       this.layerControl = L.control.layers.tree(
-        this.baseTree,
+        undefined,
         this.layersTree as any,
-        { collapsed: false }
+        {
+          collapsed: false,
+        }
       );
     }
     if (this.extractSettings().controls.layer) {
@@ -491,7 +483,7 @@ export class MapComponent
   }
 
   /**
-   * Setup and draw layers on map and sets the baseTree.
+   * Setup and draw layers on map
    *
    * @param layerIds layerIds from saved edit layer info
    */
@@ -589,11 +581,10 @@ export class MapComponent
           'hidden'
         );
       }
-      this.layerControl.setBaseTree(this.baseTree);
       this.layerControl.setOverlayTree(this.layersTree);
     } else {
       this.layerControl = L.control.layers.tree(
-        this.baseTree,
+        undefined,
         this.layersTree as any,
         { collapsed: false }
       );
@@ -630,14 +621,11 @@ export class MapComponent
         if (this.extractSettings().controls.layer) {
           this.map.removeControl(this.layerControl);
         }
-        this.layerControl.setBaseTree(this.baseTree);
         this.layerControl.setOverlayTree(layers as any);
       } else {
-        this.layerControl = L.control.layers.tree(
-          this.baseTree,
-          layers as any,
-          { collapsed: false }
-        );
+        this.layerControl = L.control.layers.tree(undefined, layers as any, {
+          collapsed: false,
+        });
       }
       if (this.extractSettings().controls.layer) {
         this.layerControl.addTo(this.map);
