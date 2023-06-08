@@ -1,4 +1,6 @@
 import {
+  AfterContentChecked,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -17,7 +19,7 @@ import { Variant } from '../../../types/variant';
   templateUrl: './tab.component.html',
   styleUrls: ['./tab.component.scss'],
 })
-export class TabComponent {
+export class TabComponent implements AfterContentChecked {
   @Input() disabled = false;
   @ViewChild('button')
   button!: ElementRef;
@@ -31,9 +33,10 @@ export class TabComponent {
   vertical = false;
   selected = false;
   index = 0;
+  resolveTabClasses: string[] = [];
+  constructor(private cdr: ChangeDetectorRef) {}
 
-  /** @returns general resolved classes and variant for tab*/
-  get resolveTabClasses(): string[] {
+  ngAfterContentChecked(): void {
     const classes = [];
     if (this.vertical) {
       classes.push('ui-tab__vertical');
@@ -54,6 +57,6 @@ export class TabComponent {
         );
       }
     }
-    return classes;
+    this.resolveTabClasses = classes;
   }
 }

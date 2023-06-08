@@ -24,6 +24,7 @@ export * from './lib/expansion-panel/expansion-panel.module';
 export * from './lib/slider/slider.module';
 export * from './lib/radio/radio.module';
 export * from './lib/sidenav/sidenav-container.module';
+export * from './lib/sidenav/sidenav-container.component';
 export * from './lib/chip/chip.module';
 export * from './lib/form-wrapper/form-wrapper.module';
 export * from './lib/dialog/dialog.module';

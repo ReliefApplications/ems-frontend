@@ -129,6 +129,7 @@ export class FormWrapperDirective
   ] as const;
 
   private selectButtonRemove = [
+    'px-3',
     'ring-1',
     'ring-inset',
     'ring-gray-300',

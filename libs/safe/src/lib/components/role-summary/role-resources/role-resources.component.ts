@@ -316,6 +316,10 @@ export class RoleResourcesComponent
                 : data?.editResource
             );
             this.resources.data = tableElements;
+            const cachedIndex = this.cachedResources.findIndex(
+              (x) => x.id === resource.id
+            );
+            this.cachedResources[cachedIndex] = tableElements[index].resource;
             if (isEqual(resource.id, this.openedResource?.id)) {
               this.openedResource = tableElements[index].resource;
             }

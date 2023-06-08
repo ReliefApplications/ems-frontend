@@ -51,6 +51,7 @@ export const GET_API_CONFIGURATION = gql`
     apiConfiguration(id: $id) {
       id
       name
+      graphQLEndpoint
     }
   }
 `;
