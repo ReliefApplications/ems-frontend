@@ -12,7 +12,6 @@ import {
 } from '@angular/core';
 import { SuffixDirective } from './suffix.directive';
 import { PrefixDirective } from './prefix.directive';
-import { AutocompleteComponent } from '../autocomplete/autocomplete.component';
 import { BehaviorSubject, Subject, startWith, takeUntil } from 'rxjs';
 import { SelectMenuComponent } from '../select-menu/select-menu.component';
 import { TextareaComponent } from '../textarea/textarea.component';
@@ -20,6 +19,7 @@ import { GraphQLSelectComponent } from '../graphql-select/graphql-select.compone
 import { FormControlName, Validators, FormControlStatus } from '@angular/forms';
 import { ChipListDirective } from '../chip/chip-list.directive';
 import { DateWrapperDirective } from '../date/date-wrapper.directive';
+import { AutocompleteComponent } from '../autocomplete/autocomplete.component';
 
 /**
  * UI Form Wrapper Directive
@@ -41,8 +41,8 @@ export class FormWrapperDirective
   @ContentChildren(PrefixDirective)
   private allPrefixDirectives: QueryList<PrefixDirective> = new QueryList();
 
-  @ContentChild(AutocompleteComponent, { read: ElementRef })
-  private autocompleteContent!: ElementRef;
+  @ContentChild(AutocompleteComponent)
+  private autocompleteContent!: AutocompleteComponent;
   @ContentChild(SelectMenuComponent, { read: ElementRef })
   private currentSelectElement!: ElementRef;
   @ContentChild(TextareaComponent, { read: ElementRef })
@@ -204,10 +204,10 @@ export class FormWrapperDirective
     }
 
     if (this.autocompleteContent) {
-      this.renderer.removeClass(
-        this.autocompleteContent.nativeElement.querySelector('div'),
-        'relative'
-      );
+      // this.renderer.removeClass(
+      //   this.autocompleteContent.nativeElement.querySelector('div'),
+      //   'relative'
+      // );
       this.renderer.addClass(this.elementRef.nativeElement, 'relative');
     }
 
@@ -367,13 +367,29 @@ export class FormWrapperDirective
       .pipe(startWith(this.allSuffixDirectives), takeUntil(this.destroy$))
       .subscribe({
         next: (suffixes: QueryList<SuffixDirective>) => {
-          for (const suffix of suffixes) {
+          suffixes.forEach((suffix) => {
             const suffixRef = (suffix as any).elementRef.nativeElement;
             if (!this.beyondLabelContainer.contains(suffixRef)) {
               this.applySuffixClasses(suffixRef);
-              this.renderer.appendChild(this.beyondLabelContainer, suffixRef);
+              // Support to insert elements in order if more than one suffix element is set
+              if (suffix === suffixes.first) {
+                try {
+                  this.renderer.insertBefore(
+                    this.beyondLabelContainer,
+                    suffixRef,
+                    suffixes.last.elementRef.nativeElement
+                  );
+                } catch (error) {
+                  this.renderer.appendChild(
+                    this.beyondLabelContainer,
+                    suffixRef
+                  );
+                }
+              } else {
+                this.renderer.appendChild(this.beyondLabelContainer, suffixRef);
+              }
             }
-          }
+          });
         },
       });
   }

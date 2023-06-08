@@ -44,6 +44,7 @@ import {
   ButtonModule,
   SelectMenuModule,
   FormWrapperModule,
+  AutocompleteModule,
   GraphQLSelectModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
@@ -75,6 +76,7 @@ const ITEMS_PER_PAGE = 10;
     DialogModule,
     TooltipModule,
     ButtonModule,
+    AutocompleteModule,
     SelectMenuModule,
     FormWrapperModule,
   ],

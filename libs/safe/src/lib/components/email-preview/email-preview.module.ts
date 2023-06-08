@@ -11,6 +11,7 @@ import {
   ChipModule,
   DialogModule,
   FormWrapperModule,
+  ErrorMessageModule,
 } from '@oort-front/ui';
 
 /**
@@ -30,6 +31,7 @@ import {
     DialogModule,
     ButtonModule,
     ChipModule,
+    ErrorMessageModule,
   ],
   exports: [SafeEmailPreviewComponent],
   providers: [

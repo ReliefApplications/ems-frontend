@@ -28,45 +28,6 @@
         <ui-date-range #calendar> </ui-date-range>
       </div>
     </div>
-    <!-- <mat-form-field appearance="outline">
-      <mat-date-range-input
-        (click)="rangePicker.open()"
-        [rangePicker]="rangePicker"
-      >
-        <input
-          #startDate
-          (dateInput)="filtersDate['startDate'] = $event.value"
-          matStartDate
-          placeholder="Start date"
-          readonly
-        />
-        <input
-          #endDate
-          (dateInput)="filtersDate['endDate'] = $event.value"
-          matEndDate
-          placeholder="End date"
-          readonly
-        />
-      </mat-date-range-input>
-      <mat-datepicker-toggle
-        matSuffix
-        [for]="rangePicker"
-      ></mat-datepicker-toggle>
-      <mat-date-range-picker #rangePicker>
-        <mat-date-range-picker-actions>
-          <ui-button matDateRangePickerCancel (click)="clearDateFilter()">{{
-            'common.clear' | translate
-          }}</ui-button>
-          <ui-button
-            category="secondary"
-            variant="primary"
-            matDateRangePickerApply
-            (click)="applyFilter()"
-            >{{ 'common.filter.apply' | translate }}</ui-button
-          >
-        </mat-date-range-picker-actions>
-      </mat-date-range-picker>
-    </mat-form-field> -->
     <div uiFormFieldDirective>
       <label>{{ 'components.history.field.select' | translate }}</label>
       <ui-select-menu

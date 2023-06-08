@@ -9,7 +9,7 @@ export default {
   component: DateRangeComponent,
   decorators: [
     moduleMetadata({
-      imports: [DateModule, ReactiveFormsModule, StorybookTranslateModule],
+      imports: [DateModule, StorybookTranslateModule, ReactiveFormsModule],
     }),
   ],
 } as Meta<DateRangeComponent>;

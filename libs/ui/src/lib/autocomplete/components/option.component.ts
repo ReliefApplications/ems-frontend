@@ -1,9 +1,7 @@
 import {
   Component,
   ContentChildren,
-  EventEmitter,
   Input,
-  Output,
   QueryList,
   forwardRef,
 } from '@angular/core';
@@ -18,8 +16,8 @@ import {
 })
 export class OptionComponent {
   @Input() value!: any;
+  @Input() label: any = '';
   @Input() isGroup = false;
-  @Output() itemClick = new EventEmitter<any>();
   @ContentChildren(forwardRef(() => OptionComponent))
   options!: QueryList<OptionComponent>;
 
@@ -27,10 +25,11 @@ export class OptionComponent {
   display = true;
 
   /**
-   * Emit the value attribute of the option
+   * Set formatted value for list element
+   *
+   * @returns formatted value
    */
-  onClickItem() {
-    this.selected = !this.selected;
-    this.itemClick.emit(this.selected);
+  get getValue() {
+    return this.value ? JSON.stringify(this.value) : '';
   }
 }

@@ -1,5 +1,11 @@
-import { Component, ContentChildren, QueryList } from '@angular/core';
-import { OptionComponent } from '../option/option.component';
+import {
+  Component,
+  ContentChildren,
+  QueryList,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
+import { OptionComponent } from './components/option.component';
 
 /**
  * UI Autocomplete component
@@ -9,6 +15,7 @@ import { OptionComponent } from '../option/option.component';
   templateUrl: './autocomplete.component.html',
 })
 export class AutocompleteComponent {
+  @ViewChild(TemplateRef) templateRef!: TemplateRef<any>;
   @ContentChildren(OptionComponent, { descendants: true })
   options!: QueryList<OptionComponent>;
   openPanel = false;
