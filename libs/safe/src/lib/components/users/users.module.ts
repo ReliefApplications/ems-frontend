@@ -12,7 +12,6 @@ import {
   FormWrapperModule,
   SelectMenuModule,
 } from '@oort-front/ui';
-import { MatRippleModule } from '@angular/material/core';
 import { SafeInviteUsersModule } from './components/invite-users/invite-users.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
@@ -27,7 +26,6 @@ import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-tab
     MenuModule,
     IconModule,
     FormWrapperModule,
-    MatRippleModule,
     SpinnerModule,
     CheckboxModule,
     SafeInviteUsersModule,
