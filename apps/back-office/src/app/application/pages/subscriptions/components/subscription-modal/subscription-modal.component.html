@@ -31,32 +31,33 @@
                 | translate
             "
             formControlName="routingKey"
-            [matAutocomplete]="auto"
-          />
-          <mat-autocomplete
-            autoActiveFirstOption
-            #auto="matAutocomplete"
-            #applicationSelect
+            [uiAutocomplete]="auto"
             (opened)="onOpenApplicationSelect()"
-          >
-            <mat-optgroup
-              *ngFor="let application of applications$ | async"
+          />
+          <ui-autocomplete #auto>
+            <ui-option
+              [isGroup]="true"
               [label]="application.name || ''"
+              *ngFor="let application of applications$ | async"
             >
-              <mat-option
+              {{ application.name || '' }}
+              <ui-option
                 *ngFor="let channel of application.channels"
                 [value]="channel.routingKey"
+                [label]="channel.title ?? ''"
               >
-                {{ channel.title }}
-              </mat-option>
-            </mat-optgroup>
-          </mat-autocomplete>
+                {{ channel.title ?? '' }}
+              </ui-option>
+            </ui-option>
+          </ui-autocomplete>
           <ui-button
             *ngIf="routingKey"
             uiSuffix
             [isIcon]="true"
             icon="close"
-            [ariaLabel]="
+            variant="primary"
+            uiSuffix
+            [uiTooltip]="
               'components.application.subscription.modal.routingKey.clear.ariaLabel'
                 | translate
             "
@@ -79,7 +80,6 @@
             valueField="id"
             textField="name"
             [query]="formsQuery"
-            formControlName="convertTo"
             [selectedElements]="[defaultForm]"
             (searchChange)="onSearchChange($event)"
             [filterable]="true"

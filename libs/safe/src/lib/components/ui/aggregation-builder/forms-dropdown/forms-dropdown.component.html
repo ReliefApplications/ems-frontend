@@ -7,28 +7,35 @@
     type="text"
     [placeholder]="'common.placeholder.search' | translate"
     [formControl]="sourceFormControl"
-    [matAutocomplete]="auto"
-  />
-  <mat-autocomplete
-    autoActiveFirstOption
-    #auto="matAutocomplete"
-    [displayWith]="displayName.bind(this)"
+    [uiAutocomplete]="auto"
+    [autocompleteDisplayKey]="displayName.bind(this)"
     (opened)="onOpen()"
     (closed)="onClose()"
-  >
-    <mat-option
+  />
+  <ui-autocomplete #auto>
+    <ui-option
       *ngFor="let form of filteredForms"
       [value]="form.id"
+      [label]="form.name"
       class="form-option"
     >
       {{ form.name }}
-      <ui-icon
+      <ng-container ngProjectAs="icon">
+        <ui-icon
+          *ngIf="form.core"
+          icon="storage"
+          variant="primary"
+          [size]="20"
+        ></ui-icon>
+        <!-- <ui-icon
         *ngIf="form.core"
         icon="storage"
         variant="primary"
         [size]="20"
-      ></ui-icon>
-    </mat-option>
-  </mat-autocomplete>
+      ></ui-icon> -->
+      </ng-container>
+    </ui-option>
+  </ui-autocomplete>
+
   <ui-spinner [size]="'medium'" *ngIf="loadingMore" uiSuffix></ui-spinner>
 </div>

@@ -5,7 +5,6 @@ import { IconModule } from '../icon/icon.module';
 import { SpinnerModule } from '../spinner/spinner.module';
 import { SelectMenuModule } from '../select-menu/select-menu.module';
 import { AutocompleteModule } from '../autocomplete/autocomplete.module';
-import { OptionModule } from '../option/option.module';
 import { ButtonModule } from '../button/button.module';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
@@ -20,7 +19,6 @@ export default {
         SpinnerModule,
         SelectMenuModule,
         AutocompleteModule,
-        OptionModule,
         ButtonModule,
         ReactiveFormsModule,
       ],

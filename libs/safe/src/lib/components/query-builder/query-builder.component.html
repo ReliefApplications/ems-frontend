@@ -9,13 +9,13 @@
           type="text"
           [placeholder]="'components.queryBuilder.dataset.select' | translate"
           formControlName="name"
-          [matAutocomplete]="auto"
+          [uiAutocomplete]="auto"
         />
-        <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-          <mat-option *ngFor="let option of filteredQueries" [value]="option">
+        <ui-autocomplete #auto>
+          <ui-option *ngFor="let option of filteredQueries" [value]="option">
             {{ option }}
-          </mat-option>
-        </mat-autocomplete>
+          </ui-option>
+        </ui-autocomplete>
         <ui-icon
           *ngIf="canSelectDataSet && form.invalid"
           uiSuffix
