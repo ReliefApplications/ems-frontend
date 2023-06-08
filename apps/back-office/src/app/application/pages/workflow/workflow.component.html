@@ -1,3 +1,4 @@
+<!-- Skeleton when loading -->
 <ng-container
   *safeSkeleton="
     loading;
@@ -9,6 +10,7 @@
 >
   <ng-container *ngIf="workflow">
     <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+      <!-- Editable Title -->
       <safe-editable-text
         [text]="workflow.name"
         [canEdit]="canEditName"
@@ -20,6 +22,7 @@
         </h1>
       </safe-editable-text>
 
+      <!-- buttons right to title -->
       <div class="flex items-center gap-1" *ngIf="!formActive">
         <safe-access
           [access]="workflow.permissions"

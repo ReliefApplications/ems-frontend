@@ -13,6 +13,7 @@ import { DomService } from '../../services/dom/dom.service';
 import { buildSearchButton, buildAddButton } from './utils';
 import { QuestionResource } from '../types';
 import { SurveyModel } from 'survey-angular';
+import localForage from 'localforage';
 
 /** Create the list of filter values for resources */
 export const resourcesFilterValues = new BehaviorSubject<
@@ -866,22 +867,53 @@ export const init = (
    * @param instance grid instance.
    * @param question survey question.
    */
-  const setGridInputs = (
+  const setGridInputs = async (
     instance: SafeCoreGridComponent,
     question: any
-  ): void => {
+  ) => {
     instance.multiSelect = true;
     const query = question.gridFieldsSettings || {};
+    const temporaryRecords: any[] = [];
+    const promises: any[] = [];
+    question.newCreatedRecords?.forEach((recordId: string) => {
+      const promise = new Promise<void>((resolve, reject) => {
+        localForage
+          .getItem(recordId)
+          .then((data: any) => {
+            if (data != null) {
+              // We ensure to make it only if such a record is found
+              const parsedData = JSON.parse(data);
+              temporaryRecords.push({
+                id: recordId,
+                template: parsedData.template,
+                ...parsedData.data,
+                isTemporary: true,
+              });
+            }
+            resolve();
+          })
+          .catch((error: any) => {
+            console.error(error); // Handle any errors that occur while getting the item
+            reject(error);
+          });
+      });
+      promises.push(promise);
+    });
+    const uuidRegExpr =
+      /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/i;
     const settings = {
       query: {
         ...query,
+        temporaryRecords: temporaryRecords,
         filter: {
           logic: 'and',
           filters: [
             {
               field: 'ids',
               operator: 'eq',
-              value: question.value || [],
+              value:
+                question.value.filter((id: string) => !uuidRegExpr.test(id)) ||
+                [], //We exclude the temporary records by excluding id in UUID format
             },
           ],
         },
@@ -900,6 +932,8 @@ export const init = (
       });
     }
     instance.settings = settings;
-    instance.configureGrid();
+    Promise.allSettled(promises).then(() => {
+      instance.configureGrid();
+    });
   };
 };
