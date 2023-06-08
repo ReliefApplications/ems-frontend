@@ -40,6 +40,14 @@ export const init = (Survey: any, domService: DomService): void => {
         default: 'Point',
         choices: ['Point'],
       });
+      // User location
+      serializer.addProperty('geospatial', {
+        name: 'userLocation',
+        type: 'boolean',
+        category: 'general',
+        required: false,
+        default: false,
+      });
       // Display geofields
       serializer.addProperty('geospatial', {
         name: 'geoFields',
@@ -53,6 +61,7 @@ export const init = (Survey: any, domService: DomService): void => {
       const listBoxEditor = {
         render: (editor: any, htmlElement: HTMLElement) => {
           const question = editor.object;
+          console.log(question);
           const listbox = domService.appendComponentToBody(
             GeofieldsListboxComponent,
             htmlElement
@@ -89,6 +98,14 @@ export const init = (Survey: any, domService: DomService): void => {
       // Listen to change on geofields
       question.registerFunctionOnPropertyValueChanged('geoFields', () => {
         instance.fields = question.geoFields;
+      });
+
+      // Set the user location button
+      instance.userLocation = question.userLocation || false;
+
+      // Listen to change on user location
+      question.registerFunctionOnPropertyValueChanged('userLocation', () => {
+        instance.userLocation = question.userLocation;
       });
 
       // updates the question value when the map changes

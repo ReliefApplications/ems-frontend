@@ -23,13 +23,14 @@ import {
   getMapFeature,
   updateGeoManLayerPosition,
 } from '../ui/map/utils/get-map-features';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { debounceTime, takeUntil } from 'rxjs';
 import { GeospatialFieldsComponent } from './geospatial-fields/geospatial-fields.component';
 import { GeoProperties } from './geospatial-map.interface';
 import { get } from 'lodash';
 import { ArcgisService } from '../../services/map/arcgis.service';
 import { FormBuilder } from '@angular/forms';
+import { SafeButtonModule } from '../ui/button/button.module';
 
 /**
  * Default geocoding value
@@ -55,7 +56,13 @@ const DEFAULT_GEOCODING: GeoProperties = {
   selector: 'safe-geospatial-map',
   templateUrl: './geospatial-map.component.html',
   styleUrls: ['./geospatial-map.component.scss'],
-  imports: [CommonModule, MapModule, GeospatialFieldsComponent],
+  imports: [
+    CommonModule,
+    MapModule,
+    GeospatialFieldsComponent,
+    TranslateModule,
+    SafeButtonModule,
+  ],
 })
 export class GeospatialMapComponent
   extends SafeUnsubscribeComponent
@@ -63,6 +70,7 @@ export class GeospatialMapComponent
 {
   @Input() data?: Feature | FeatureCollection;
   @Input() geometry = 'Point';
+  @Input() userLocation!: boolean;
   @Input() fields: (keyof GeoProperties)[] = [];
 
   public geoForm!: ReturnType<typeof this.buildGeoForm>;
@@ -343,6 +351,30 @@ export class GeospatialMapComponent
       );
       this.geoForm.setValue(value, { emitEvent: false });
     }
+  }
+
+  /** Update the map and the form with the user's location */
+  findUserLocation(): void {
+    navigator.geolocation.getCurrentPosition((success) => {
+      console.log(success);
+
+      const latlng = L.latLng([
+        success.coords.latitude,
+        success.coords.longitude,
+      ]);
+
+      // update the form
+      this.onReverseSearch(latlng);
+
+      // update the map
+      updateGeoManLayerPosition(
+        this.mapComponent?.map,
+        {
+          latlng: [latlng.lat, latlng.lng],
+        },
+        this.selectedLayer
+      );
+    });
   }
 
   /**

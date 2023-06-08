@@ -1481,7 +1481,8 @@
 							"longitude": "******",
 							"zoom": "******"
 						}
-					}
+					},
+					"userLocation": "******"
 				},
 				"summaryCard": {
 					"add": "******",

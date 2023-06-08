@@ -1502,7 +1502,8 @@
 							"longitude": "Définissez la longitude par défaut du centre de la carte. 'Utiliser la vue actuelle' sauvegardera la longitude de la carte d'aperçu.",
 							"zoom": "Sélectionnez un zoom par défaut"
 						}
-					}
+					},
+					"userLocation": "Ma position"
 				},
 				"summaryCard": {
 					"add": "Ajouter un carte",
