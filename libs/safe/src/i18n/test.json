@@ -1421,6 +1421,9 @@
 			"noDataText": "******"
 		},
 		"datepicker": {
+			"dateLabel": "******",
+			"endLabel": "******",
+			"startLabel": "******",
 			"today": "******",
 			"toggle": "******"
 		},

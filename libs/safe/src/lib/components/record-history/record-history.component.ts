@@ -28,6 +28,7 @@ import {
   GetRecordByIdQueryResponse,
   GetRecordHistoryByIdResponse,
 } from './graphql/queries';
+import { FormControl, FormGroup } from '@angular/forms';
 
 /**
  * Return the type of the old value if existing, else the type of the new value.
@@ -80,7 +81,10 @@ export class SafeRecordHistoryComponent
   public loading = true;
   public showMore = false;
   public displayedColumns: string[] = ['position'];
-  public filtersDate = { startDate: '', endDate: '' };
+  public filtersDate = new FormGroup({
+    startDate: new FormControl(''),
+    endDate: new FormControl(''),
+  });
   public sortedFields: any[] = [];
   public filterFields: string[] = [];
 
@@ -292,8 +296,8 @@ export class SafeRecordHistoryComponent
    * Clears the date filter, empties it
    */
   clearDateFilter(): void {
-    this.filtersDate.startDate = '';
-    this.filtersDate.endDate = '';
+    this.filtersDate.get('startDate')?.setValue('');
+    this.filtersDate.get('endDate')?.setValue('');
     this.filterHistory = this.history;
     this.startDate.value = '';
     this.endDate.value = '';
@@ -311,12 +315,12 @@ export class SafeRecordHistoryComponent
     // other => Field name for filter
     if (fields) this.filterFields = fields;
 
-    const startDate = this.filtersDate.startDate
-      ? new Date(this.filtersDate.startDate)
+    const startDate = this.filtersDate.get('startDate')?.value
+      ? new Date(this.filtersDate.get('startDate')?.value as any)
       : undefined;
     if (startDate) startDate.setHours(0, 0, 0, 0);
-    const endDate = this.filtersDate.endDate
-      ? new Date(this.filtersDate.endDate)
+    const endDate = this.filtersDate.get('endDate')?.value
+      ? new Date(this.filtersDate.get('endDate')?.value as any)
       : undefined;
     if (endDate) endDate.setHours(23, 59, 59, 99);
 
@@ -358,8 +362,12 @@ export class SafeRecordHistoryComponent
     const path = `download/form/records/${this.id}/history`;
     const queryString = new URLSearchParams({
       type,
-      from: `${new Date(this.filtersDate.startDate).getTime()}`,
-      to: `${new Date(this.filtersDate.endDate).getTime()}`,
+      from: `${new Date(
+        this.filtersDate.get('startDate')?.value as any
+      ).getTime()}`,
+      to: `${new Date(
+        this.filtersDate.get('endDate')?.value as any
+      ).getTime()}`,
       lng: this.translate.currentLang,
       dateLocale: this.dateFormat.currentLang,
       ...(this.filterFields && { fields: this.filterFields.join(',') }),

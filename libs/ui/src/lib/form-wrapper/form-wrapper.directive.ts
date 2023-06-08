@@ -19,6 +19,7 @@ import { TextareaComponent } from '../textarea/textarea.component';
 import { GraphQLSelectComponent } from '../graphql-select/graphql-select.component';
 import { FormControlName, Validators, FormControlStatus } from '@angular/forms';
 import { ChipListDirective } from '../chip/chip-list.directive';
+import { DateWrapperDirective } from '../date/date-wrapper.directive';
 
 /**
  * UI Form Wrapper Directive
@@ -50,6 +51,9 @@ export class FormWrapperDirective
   private currentGraphQLSelectComponent!: GraphQLSelectComponent;
   @ContentChild(ChipListDirective, { read: ElementRef })
   private chipListElement!: ElementRef;
+  @ContentChild(DateWrapperDirective, { read: ElementRef })
+  private dateWrapperElement!: ElementRef;
+
   @ContentChild(FormControlName) control!: FormControlName;
 
   private currentInputElement!: HTMLInputElement;
@@ -280,7 +284,7 @@ export class FormWrapperDirective
       }
     }
 
-    if (this.currentInputElement) {
+    if (this.currentInputElement && !this.dateWrapperElement) {
       // Add related classes to input element
       if (!this.outline) {
         for (const cl of this.inputClassesNoOutline) {
@@ -332,10 +336,12 @@ export class FormWrapperDirective
     this.initializeDirectiveListeners();
 
     //Add beyond label as a child of elementRef
-    this.renderer.appendChild(
-      this.elementRef.nativeElement,
-      this.beyondLabelContainer
-    );
+    if (!this.dateWrapperElement) {
+      this.renderer.appendChild(
+        this.elementRef.nativeElement,
+        this.beyondLabelContainer
+      );
+    }
 
     this.elementWrapped.next(true);
   }

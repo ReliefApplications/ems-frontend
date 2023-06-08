@@ -284,18 +284,6 @@ body {
   }
 }
 
-input[type='date'] {
-  appearance: none !important;
-  -webkit-appearance: none !important;
-}
-
-input[type='date']::-webkit-inner-spin-button,
-input[type='date']::-webkit-calendar-picker-indicator {
-  display: none !important;
-  appearance: none !important;
-  -webkit-appearance: none !important;
-}
-
 // Define new colors
 @layer base {
   :root {

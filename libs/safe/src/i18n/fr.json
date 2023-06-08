@@ -1428,6 +1428,9 @@
 			"noDataText": "No available choice"
 		},
 		"datepicker": {
+			"dateLabel": "@TODO",
+			"endLabel": "@TODO",
+			"startLabel": "@TODO",
 			"today": "Aujourd'hui",
 			"toggle": "Sélectionnez une date"
 		},

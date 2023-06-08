@@ -36,6 +36,7 @@ import {
   ButtonModule,
   TableModule,
   FormWrapperModule,
+  DateModule,
 } from '@oort-front/ui';
 
 /**
@@ -67,6 +68,7 @@ import {
     DragDropModule,
     MatButtonModule,
     IconModule,
+    DateModule,
     TooltipModule,
     MatAutocompleteModule,
     MatButtonToggleModule,

@@ -12,7 +12,23 @@
   </div>
   <!-- FILTER -->
   <div class="clear-both flex flex-col">
-    <mat-form-field appearance="outline">
+    <div uiFormFieldDirective>
+      <label>{{ 'common.input.dateRange' | translate }}</label>
+      <div [formGroup]="filtersDate" [uiDateWrapper]="calendar">
+        <input
+          [uiDatePicker]
+          formControlName="startDate"
+          [label]="'kendo.datepicker.startLabel' | translate"
+        />
+        <input
+          [uiDatePicker]
+          formControlName="endDate"
+          [label]="'kendo.datepicker.endLabel' | translate"
+        />
+        <ui-date-range #calendar> </ui-date-range>
+      </div>
+    </div>
+    <!-- <mat-form-field appearance="outline">
       <mat-date-range-input
         (click)="rangePicker.open()"
         [rangePicker]="rangePicker"
@@ -50,7 +66,7 @@
           >
         </mat-date-range-picker-actions>
       </mat-date-range-picker>
-    </mat-form-field>
+    </mat-form-field> -->
     <div uiFormFieldDirective>
       <label>{{ 'components.history.field.select' | translate }}</label>
       <ui-select-menu
