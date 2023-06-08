@@ -156,6 +156,11 @@ export class SafeGridComponent
     );
   }
 
+  /** @returns show border of grid */
+  get showBorder(): boolean {
+    return get(this.widget, 'settings.widgetDisplay.showBorder', true);
+  }
+
   // === DISPLAY ===
   @Input() resizable = true;
   @Input() reorderable = true;
@@ -176,6 +181,7 @@ export class SafeGridComponent
   @Input() selectedRows: string[] = [];
   @Output() selectionChange = new EventEmitter();
   public selectedItems: any[] = [];
+  public showColumnChooser = false;
 
   // === FILTER ===
   @Input() filterable = true;
@@ -200,7 +206,7 @@ export class SafeGridComponent
 
   // === TEMPLATE ===
   @ViewChild(GridComponent)
-  private grid?: GridComponent;
+  public grid?: GridComponent;
 
   // === ADMIN ===
   @Input() admin = false;
@@ -448,6 +454,23 @@ export class SafeGridComponent
     this.selectedItems = this.data.data.filter((x) =>
       this.selectedRows.includes(x.id)
     );
+  }
+
+  /**
+   * Toggles the menu for choosing columns
+   *
+   * @param showColumnChooser optional parameter to decide of the state of the popup
+   */
+  public toggleColumnChooser(showColumnChooser?: boolean) {
+    // Emit column change event
+    if (this.showColumnChooser) {
+      this.onColumnVisibilityChange();
+    }
+    if (showColumnChooser) {
+      this.showColumnChooser = showColumnChooser;
+    } else {
+      this.showColumnChooser = !this.showColumnChooser;
+    }
   }
 
   // === LAYOUT ===

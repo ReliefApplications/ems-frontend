@@ -9,6 +9,7 @@ import {
   SelectMenuModule,
   TextareaModule,
   FormWrapperModule,
+  ToggleModule,
 } from '@oort-front/ui';
 
 /**
@@ -26,6 +27,7 @@ import {
     ButtonModule,
     SelectMenuModule,
     FormWrapperModule,
+    ToggleModule,
   ],
 })
 export class SettingsModule {}

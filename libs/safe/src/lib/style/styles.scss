@@ -219,10 +219,6 @@ $safe-theme: mat.define-light-theme(
 
 // === FORM FIELD ===
 @mixin form-field($theme) {
-  div > input:disabled {
-    opacity: 0.5;
-  }
-
   mat-label {
     ui-icon {
       vertical-align: text-bottom;
@@ -262,6 +258,34 @@ $safe-theme: mat.define-light-theme(
 @mixin tooltip($theme) {
   .mat-tooltip-panel {
     pointer-events: none !important;
+  }
+}
+
+.multiline-tooltip {
+  white-space: pre-line;
+}
+
+// === GLOBAL STYLES ==
+.mat-table {
+  font-size: 14px;
+  opacity: 0.87;
+  border-radius: 4px;
+  width: 100%;
+  th,
+  td {
+    padding: 0 4px !important;
+    &:first-of-type {
+      padding-left: 24px !important;
+      &:not(:last-of-type) {
+        padding-right: 4px !important;
+      }
+    }
+    &:last-of-type {
+      padding-right: 24px !important;
+      &:not(:first-of-type) {
+        padding-left: 4px !important;
+      }
+    }
   }
 }
 
@@ -347,6 +371,10 @@ body {
     text-overflow: ellipsis;
     flex: 1;
     margin: unset;
+  }
+
+  .hide-border & {
+    border-bottom: none !important;
   }
 }
 
@@ -493,6 +521,28 @@ body {
 
 // Define new colors
 @layer base {
+  // Revert all default changes of base layer in this custom class
+  // https://tailwindcss.com/docs/preflight
+  .no-tailwindcss-base,
+  .no-tailwindcss-base *,
+  .no-tailwindcss-base > * {
+    font-size: revert;
+    font-weight: revert;
+    margin: revert;
+    display: revert;
+    vertical-align: revert;
+    max-width: revert;
+    height: revert;
+    border-width: revert;
+    border-style: revert;
+    border-color: revert;
+    border-style: revert;
+    outline: revert;
+    list-style: revert;
+    padding: revert;
+    color: revert;
+    text-decoration: revert;
+  }
   :root {
     --primary-50: #{$primary_50};
     --primary-100: #{$primary_100};

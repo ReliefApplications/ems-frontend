@@ -91,7 +91,7 @@ export class ContextDatasourceComponent
   implements OnInit
 {
   // Form
-  public form: ReturnType<typeof createContextDatasourceForm>;
+  public form!: ReturnType<typeof createContextDatasourceForm>;
 
   // Data
   public resource: Resource | null = null;

@@ -64,7 +64,6 @@ export class SafeGridWidgetComponent
 
   // === DATA ===
   @Input() widget: any;
-  public loading = true;
 
   // === PERMISSIONS ===
   public canCreateRecords = false;
@@ -255,7 +254,6 @@ export class SafeGridWidgetComponent
    * @param options action options.
    */
   public async onQuickAction(options: any): Promise<void> {
-    this.loading = true;
     // Select all the records in the grid
     if (options.selectAll) {
       const query = this.queryBuilder.graphqlQuery(

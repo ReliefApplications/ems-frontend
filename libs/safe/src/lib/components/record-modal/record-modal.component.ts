@@ -44,6 +44,8 @@ interface DialogData {
   compareTo?: any;
   canUpdate?: boolean;
   template?: string;
+  isTemporary?: boolean;
+  temporaryRecordData?: any;
 }
 
 /**
@@ -152,23 +154,30 @@ export class SafeRecordModalComponent
         })
       );
     }
+
+    if (this.data.isTemporary) {
+      this.modifiedAt = new Date();
+      this.record = { data: this.data.temporaryRecordData };
+    }
     // Fetch record data
-    promises.push(
-      firstValueFrom(
-        this.apollo.query<GetRecordByIdQueryResponse>({
-          query: GET_RECORD_BY_ID,
-          variables: {
-            id: this.data.recordId,
-          },
+    else {
+      promises.push(
+        firstValueFrom(
+          this.apollo.query<GetRecordByIdQueryResponse>({
+            query: GET_RECORD_BY_ID,
+            variables: {
+              id: this.data.recordId,
+            },
+          })
+        ).then(({ data }) => {
+          this.record = data.record;
+          this.modifiedAt = this.record.modifiedAt || null;
+          if (!this.data.template) {
+            this.form = this.record.form;
+          }
         })
-      ).then(({ data }) => {
-        this.record = data.record;
-        this.modifiedAt = this.record.modifiedAt || null;
-        if (!this.data.template) {
-          this.form = this.record.form;
-        }
-      })
-    );
+      );
+    }
     await Promise.all(promises);
     // INIT SURVEY
     this.initSurvey();
@@ -188,12 +197,18 @@ export class SafeRecordModalComponent
    * Initializes the form
    */
   private initSurvey() {
-    this.survey = this.formBuilderService.createSurvey(
-      this.form?.structure || '',
-      this.pages,
-      this.form?.metadata,
-      this.record
-    );
+    this.data.isTemporary
+      ? (this.survey = this.formBuilderService.createSurvey(
+          this.form?.structure || '',
+          this.pages,
+          this.form?.metadata,
+          this.record
+        ))
+      : (this.survey = this.formBuilderService.createSurvey(
+          this.form?.structure || '',
+          this.pages,
+          this.form?.metadata
+        ));
 
     addCustomFunctions(Survey, this.authService, this.record);
     this.survey.data = this.record.data;

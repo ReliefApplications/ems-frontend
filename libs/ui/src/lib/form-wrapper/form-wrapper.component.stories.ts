@@ -5,7 +5,8 @@ import { IconModule } from '../icon/icon.module';
 import { SpinnerModule } from '../spinner/spinner.module';
 import { SelectMenuModule } from '../select-menu/select-menu.module';
 import { AutocompleteModule } from '../autocomplete/autocomplete.module';
-import { OptionModule } from '../option/option.module';
+import { ButtonModule } from '../button/button.module';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 export default {
   title: 'Form Wrapper',
@@ -18,7 +19,8 @@ export default {
         SpinnerModule,
         SelectMenuModule,
         AutocompleteModule,
-        OptionModule,
+        ButtonModule,
+        ReactiveFormsModule,
       ],
     }),
   ],
@@ -35,6 +37,19 @@ const options = [
   'javanese',
   'chinese',
 ];
+
+/** Form group to test story with disable option */
+const formControl = new FormGroup({
+  name: new FormControl(''),
+});
+/** Callback to test story with disable option */
+const toggleDisabled = () => {
+  if (formControl.disabled) {
+    formControl.enable();
+  } else {
+    formControl.disable();
+  }
+};
 
 /**
  * Template to create form wrapper component's story
@@ -91,31 +106,41 @@ const TemplateSelect: StoryFn<any> = (args: any) => {
  */
 const TemplateAutocomplete: StoryFn<any> = (args: any) => {
   return {
-    template: `<div uiFormFieldDirective [outline]="${args.outline}">
-    <label>Choose language</label>
-    <input
-    type="text"
-    placeholder="Select a value"
-    [uiAutocomplete]="auto"
-    (optionSelected)="selectedOption($event)"
-  >
-  <ui-autocomplete #auto>
-  <ui-option *ngFor="let option of options" [value]="option">
-    {{option}}
-    <ng-container ngProjectsAs="icon">
-    <ui-icon
-      icon="edit"
-      [size]="18"
-    ></ui-icon>
-    </ng-container>
-  </ui-option>
-  </ui-autocomplete>
-    <ui-spinner [size]="'medium'" uiSuffix></ui-spinner>
-    <ui-icon icon="search" uiPrefix></ui-icon>
-  </div>`,
+    template: `
+    <div [formGroup]="formControl">
+      <div uiFormFieldDirective  [outline]="${args.outline}">
+        <label>Choose language</label>
+        <input
+          formControlName="name"
+          type="text"
+          placeholder="Select a value"
+          [uiAutocomplete]="auto"
+          (optionSelected)="selectedOption($event)"
+        >
+        <ui-autocomplete #auto>
+          <ui-option *ngFor="let option of options" [value]="option">
+            {{option}}
+            <ng-container ngProjectsAs="icon">
+              <ui-icon
+                [icon]="'edit'"
+                [size]="18"
+              ></ui-icon>
+            </ng-container>
+          </ui-option>
+        </ui-autocomplete>
+        <ui-spinner [size]="'medium'" uiSuffix></ui-spinner>
+        <ui-icon icon="search" uiPrefix></ui-icon>
+    </div>
+  </div>
+  <ui-button (click)="toggleDisabled()">
+    Enable/disabled
+  </ui-button>
+  `,
     props: {
       ...args,
       options,
+      toggleDisabled,
+      formControl,
     },
   };
 };

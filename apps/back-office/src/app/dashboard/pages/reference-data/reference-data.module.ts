@@ -15,6 +15,7 @@ import {
   TextareaModule,
   FormWrapperModule,
 } from '@oort-front/ui';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 /**
  * Reference Data page module.
@@ -37,6 +38,7 @@ import {
     UiButtonModule,
     SelectMenuModule,
     FormWrapperModule,
+    MonacoEditorModule,
   ],
 })
 export class ReferenceDataModule {}

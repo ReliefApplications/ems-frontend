@@ -9,6 +9,7 @@ import {
   ButtonModule,
   TableModule,
   PaginatorModule,
+  DateModule,
   SelectMenuModule,
 } from '@oort-front/ui';
 import { FilterComponent } from '../role-resources-filter/role-resources-filter.component';
@@ -52,6 +53,7 @@ import { SafeFilterModule } from '../../filter/filter.module';
     SelectMenuModule,
     ButtonModule,
     TableModule,
+    DateModule,
   ],
   exports: [RoleResourcesComponent],
 })

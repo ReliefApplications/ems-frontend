@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeQueryBuilderComponent } from './query-builder.component';
-import { AlertModule, SelectMenuModule, TabsModule } from '@oort-front/ui';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SafeTabFieldsComponent } from './tab-fields/tab-fields.component';
 import { SafeTabSortComponent } from './tab-sort/tab-sort.component';
@@ -35,6 +34,11 @@ import {
   ButtonModule,
   TableModule,
   FormWrapperModule,
+  AlertModule,
+  SelectMenuModule,
+  AutocompleteModule,
+  TabsModule,
+  DateModule,
 } from '@oort-front/ui';
 
 /**
@@ -65,6 +69,7 @@ import {
     MenuModule,
     DragDropModule,
     IconModule,
+    DateModule,
     TooltipModule,
     MatAutocompleteModule,
     MatButtonToggleModule,
@@ -80,6 +85,7 @@ import {
     RadioModule,
     ButtonModule,
     TableModule,
+    AutocompleteModule,
     AlertModule,
     FormWrapperModule,
     SelectMenuModule,

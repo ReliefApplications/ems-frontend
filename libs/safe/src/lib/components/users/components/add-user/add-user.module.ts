@@ -10,6 +10,7 @@ import {
   ButtonModule,
   DialogModule,
   FormWrapperModule,
+  AutocompleteModule,
   SelectMenuModule,
 } from '@oort-front/ui';
 
@@ -27,6 +28,7 @@ import {
     DialogModule,
     ButtonModule,
     FormWrapperModule,
+    AutocompleteModule,
     SelectMenuModule,
   ],
   exports: [SafeAddUserComponent],

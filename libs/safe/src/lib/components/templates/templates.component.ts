@@ -5,6 +5,7 @@ import { TemplateTypeEnum } from '../../models/template.model';
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * A component to display the list of templates of an application
@@ -32,8 +33,13 @@ export class SafeTemplatesComponent
    *
    * @param dialog The material dialog service
    * @param translate The translation service
+   * @param snackBar Shared snackbar service
    */
-  constructor(public dialog: Dialog, private translate: TranslateService) {
+  constructor(
+    public dialog: Dialog,
+    private translate: TranslateService,
+    private snackBar: SnackbarService
+  ) {
     super();
   }
 
@@ -59,7 +65,7 @@ export class SafeTemplatesComponent
       disableClose: true,
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value)
+      if (value) {
         this.applicationService.editTemplate({
           id: template.id,
           name: value.name,
@@ -69,6 +75,13 @@ export class SafeTemplatesComponent
             body: value.body,
           },
         });
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectUpdated', {
+            value: value.name,
+            type: this.translate.instant('common.template.one'),
+          })
+        );
+      }
     });
   }
 
@@ -100,6 +113,11 @@ export class SafeTemplatesComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.deleteTemplate(template.id);
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectDeleted', {
+            value: template.name,
+          })
+        );
       }
     });
   }
@@ -113,7 +131,7 @@ export class SafeTemplatesComponent
       disableClose: true,
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value)
+      if (value) {
         this.applicationService.addTemplate({
           name: value.name,
           type: TemplateTypeEnum.EMAIL,
@@ -122,6 +140,13 @@ export class SafeTemplatesComponent
             body: value.body,
           },
         });
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectCreated', {
+            value: value.name,
+            type: this.translate.instant('common.template.one'),
+          })
+        );
+      }
     });
   }
 }

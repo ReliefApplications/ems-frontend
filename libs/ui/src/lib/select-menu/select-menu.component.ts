@@ -7,15 +7,20 @@ import {
   TemplateRef,
   ContentChildren,
   QueryList,
-  AfterViewInit,
   OnDestroy,
   Renderer2,
   ElementRef,
   ViewChild,
   ViewContainerRef,
   Inject,
+  Injector,
+  AfterContentInit,
 } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  NG_VALUE_ACCESSOR,
+  NgControl,
+} from '@angular/forms';
 import { SelectOptionComponent } from './components/select-option.component';
 import {
   Observable,
@@ -45,7 +50,7 @@ import { DOCUMENT } from '@angular/common';
   ],
 })
 export class SelectMenuComponent
-  implements ControlValueAccessor, AfterViewInit, OnDestroy
+  implements ControlValueAccessor, AfterContentInit, OnDestroy
 {
   // Tells if the select menu should allow multi selection
   @Input() multiselect = false;
@@ -81,6 +86,7 @@ export class SelectMenuComponent
   private clickOutsideListener!: any;
   private selectClosingActionsSubscription!: Subscription;
   private overlayRef!: OverlayRef;
+  private control!: NgControl;
 
   //Control access value functions
   onChange!: (value: any) => void;
@@ -89,6 +95,7 @@ export class SelectMenuComponent
   /**
    * Ui Select constructor
    *
+   * @param injector Injector
    * @param el Host element reference
    * @param renderer Renderer2
    * @param viewContainerRef ViewContainerRef
@@ -96,6 +103,7 @@ export class SelectMenuComponent
    * @param document document
    */
   constructor(
+    private injector: Injector,
     public el: ElementRef,
     private renderer: Renderer2,
     private viewContainerRef: ViewContainerRef,
@@ -103,7 +111,7 @@ export class SelectMenuComponent
     @Inject(DOCUMENT) private document: Document
   ) {}
 
-  ngAfterViewInit(): void {
+  ngAfterContentInit(): void {
     this.clickOutsideListener = this.renderer.listen(
       window,
       'click',
@@ -144,6 +152,19 @@ export class SelectMenuComponent
           });
         },
       });
+    this.control = this.injector.get(NgControl);
+    if (this.control) {
+      this.control.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe({
+        next: (value) => {
+          // If the value is cleared from outside, reset displayed values
+          if (!value || !value.length) {
+            this.selectedValues = [];
+            this.optionList.forEach((option) => (option.selected = false));
+            this.setDisplayTriggerText();
+          }
+        },
+      });
+    }
   }
 
   /**
@@ -152,10 +173,10 @@ export class SelectMenuComponent
    * @param value value set from parent form control
    */
   writeValue(value: string[]): void {
-    if (value && typeof value === 'string') {
-      this.selectedValues = [value];
-    } else if (value) {
+    if (value && value instanceof Array) {
       this.selectedValues = [...value];
+    } else if (value) {
+      this.selectedValues = [value];
     }
   }
 
@@ -177,6 +198,15 @@ export class SelectMenuComponent
    */
   registerOnTouched(fn: any) {
     this.onTouch = fn;
+  }
+
+  /**
+   * Set disabled state of the control
+   *
+   * @param isDisabled is control disabled
+   */
+  public setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
   }
 
   /**

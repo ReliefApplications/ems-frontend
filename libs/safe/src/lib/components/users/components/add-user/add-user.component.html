@@ -5,34 +5,29 @@
   <ng-container ngProjectAs="content">
     <form [formGroup]="form">
       <div class="flex flex-col">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.email.one' | translate }}</mat-label>
+        <div uiFormFieldDirective>
+          <label>{{ 'common.email.one' | translate }}</label>
           <input
-            matInput
             [placeholder]="'common.placeholder.email' | translate"
             #emailInput
             formControlName="email"
-            [matAutocomplete]="auto"
+            [uiAutocomplete]="auto"
           />
-          <mat-autocomplete #auto="matAutocomplete">
-            <mat-option
+          <ui-autocomplete #auto>
+            <ui-option
               *ngFor="let user of filteredUsers | async"
               [value]="user.username"
             >
               {{ user.username }}
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-        <label class="invite-label">{{
-          'components.user.invite.role.description' | translate
-        }}</label>
+            </ui-option>
+          </ui-autocomplete>
+        </div>
         <div uiFormFieldDirective>
-          <label>{{ 'common.role.one' | translate }}</label>
+          <label>{{
+            'components.user.invite.role.description' | translate
+          }}</label>
           <ui-select-menu formControlName="role">
-            <ui-select-option
-              *ngFor="let role of data.roles"
-              [value]="role.id"
-            >
+            <ui-select-option *ngFor="let role of data.roles" [value]="role.id">
               {{ role.title }}
             </ui-select-option>
           </ui-select-menu>

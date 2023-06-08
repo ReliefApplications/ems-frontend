@@ -2,15 +2,20 @@
   <!-- FIELD SELECTION -->
   <ng-container *ngTemplateOutlet="fieldSelect"></ng-container>
   <!-- OPERATOR -->
-  
-  <div uiFormFieldDirective [outline]="false" *ngIf="operators.length > 0" class="w-60">
-    <label>{{
-      'components.queryBuilder.filter.operator' | translate
-    }}</label>
+
+  <div
+    uiFormFieldDirective
+    [outline]="false"
+    *ngIf="operators.length > 0"
+    class="w-60"
+  >
+    <label>{{ 'components.queryBuilder.filter.operator' | translate }}</label>
     <ui-select-menu formControlName="operator">
-      <ui-select-option *ngFor="let operator of operators" [value]="operator.value">{{
-        operator.label | translate
-      }}</ui-select-option>
+      <ui-select-option
+        *ngFor="let operator of operators"
+        [value]="operator.value"
+        >{{ operator.label | translate }}</ui-select-option
+      >
     </ui-select-menu>
   </div>
   <ng-container *ngIf="field && editor">
@@ -30,20 +35,14 @@
 
   <!-- DEFAULT FIELD TEMPLATE -->
   <ng-template #fieldSelect>
-
     <div uiFormFieldDirective [outline]="false" class="w-60">
-      <label>{{
-        'common.field.one' | translate
-      }}</label>
+      <label>{{ 'common.field.one' | translate }}</label>
       <ui-select-menu formControlName="field">
         <ng-container *ngFor="let field of fields">
-          <ui-select-option 
-            *ngIf="!field.fields" 
-            [value]="field.name" 
-          >
+          <ui-select-option *ngIf="!field.fields" [value]="field.name">
             {{ field.text || field.name }}
           </ui-select-option>
-          
+
           <ui-select-option *ngIf="field.fields" [isGroup]="true">
             <ui-select-option
               *ngFor="let subField of field.fields"
@@ -63,7 +62,7 @@
 
   <!-- TEXT EDITOR -->
   <ng-template #textEditor>
-    <div uiFormFieldDirective >
+    <div uiFormFieldDirective>
       <label>{{ 'common.value.one' | translate }}</label>
       <input formControlName="value" type="string" />
     </div>
@@ -72,9 +71,7 @@
   <!-- BOOLEAN EDITOR -->
   <ng-template #booleanEditor>
     <div uiFormFieldDirective [outline]="false" class="w-28">
-      <label>{{
-        'common.value.one' | translate
-      }}</label>
+      <label>{{ 'common.value.one' | translate }}</label>
       <ui-select-menu formControlName="value">
         <ui-select-option [value]="true">
           {{ 'common.true' | translate }}
@@ -91,7 +88,7 @@
 
   <!-- NUMERIC EDITOR -->
   <ng-template #numericEditor>
-    <div uiFormFieldDirective >
+    <div uiFormFieldDirective>
       <label>{{ 'common.value.one' | translate }}</label>
       <input formControlName="value" type="number" />
     </div>
@@ -100,12 +97,15 @@
   <!-- SELECT EDITOR -->
   <ng-template #selectEditor>
     <div uiFormFieldDirective [outline]="false" class="w-60">
-      <label>{{
-        'common.value.one' | translate
-      }}</label>
+      <label>{{ 'common.value.one' | translate }}</label>
       <ui-select-menu *ngIf="!field.multiSelect" formControlName="value">
-        <ui-select-option>{{ 'common.input.none' | translate }}</ui-select-option>
-        <ui-select-option *ngFor="let option of field.options" [value]="option.value">
+        <ui-select-option>{{
+          'common.input.none' | translate
+        }}</ui-select-option>
+        <ui-select-option
+          *ngFor="let option of field.options"
+          [value]="option.value"
+        >
           {{ option.text }}
         </ui-select-option>
       </ui-select-menu>
@@ -114,8 +114,13 @@
         formControlName="value"
         [multiselect]="true"
       >
-        <ui-select-option>{{ 'common.input.none' | translate }}</ui-select-option>
-        <ui-select-option *ngFor="let option of field.options" [value]="option.value">
+        <ui-select-option>{{
+          'common.input.none' | translate
+        }}</ui-select-option>
+        <ui-select-option
+          *ngFor="let option of field.options"
+          [value]="option.value"
+        >
           {{ option.text }}
         </ui-select-option>
       </ui-select-menu>
@@ -124,12 +129,16 @@
 
   <!-- DATE EDITOR -->
   <ng-template #dateEditor>
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'common.value.one' | translate }}</mat-label>
-      <input matInput [matDatepicker]="datePicker" formControlName="value" />
-      <mat-datepicker-toggle matSuffix [for]="datePicker">
-      </mat-datepicker-toggle>
-      <mat-datepicker #datePicker></mat-datepicker>
-    </mat-form-field>
+    <div uiFormFieldDirective>
+      <label>{{ 'common.value.one' | translate }}</label>
+      <div [uiDateWrapper]="calendar">
+        <input
+          [uiDatePicker]
+          formControlName="value"
+          [label]="'kendo.datepicker.dateLabel' | translate"
+        />
+        <ui-date-picker #calendar> </ui-date-picker>
+      </div>
+    </div>
   </ng-template>
 </form>

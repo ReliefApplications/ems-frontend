@@ -76,11 +76,16 @@ export const init = (Survey: any, domService: DomService): void => {
       const dateEditor = {
         render: (editor: any, htmlElement: HTMLElement) => {
           const question = editor.object as QuestionText;
+          let pickerDiv: HTMLDivElement | null = null;
           const updatePickerInstance = () => {
+            if (pickerDiv) {
+              pickerDiv.remove();
+            }
             htmlElement.querySelector('.k-widget')?.remove(); // .k-widget class is shared by the 3 types of picker
+            pickerDiv = document.createElement('div');
             const pickerInstance = createPickerInstance(
               question.inputType as DateInputFormat,
-              htmlElement
+              pickerDiv
             );
             if (pickerInstance) {
               if (question[editor.property.name as keyof QuestionText]) {
@@ -97,6 +102,7 @@ export const init = (Survey: any, domService: DomService): void => {
                 }
               });
             }
+            htmlElement.appendChild(pickerDiv);
           };
           question.registerFunctionOnPropertyValueChanged(
             'inputType',
@@ -115,17 +121,24 @@ export const init = (Survey: any, domService: DomService): void => {
     },
     isDefaultRender: true,
     afterRender: (question: QuestionText, el: HTMLInputElement): void => {
+      let pickerDiv: HTMLDivElement | null = null;
       // add kendo date pickers for text inputs with dates types
       const updateTextInput = () => {
         el.parentElement?.querySelector('.k-widget')?.remove(); // .k-widget class is shared by the 3 types of picker
+
+        // Remove the picker div whenever we switch question type, so it is not duplicated
+        if (pickerDiv) {
+          pickerDiv.remove();
+        }
         if (
           ['date', 'datetime', 'datetime-local', 'time'].includes(
             question.inputType
           )
         ) {
+          pickerDiv = document.createElement('div');
           const pickerInstance = createPickerInstance(
             question.inputType as DateInputFormat,
-            el.parentElement
+            pickerDiv
           );
 
           if (pickerInstance) {
@@ -148,7 +161,7 @@ export const init = (Survey: any, domService: DomService): void => {
             );
 
             // add the button to the DOM
-            el.parentElement?.appendChild(button);
+            pickerDiv.appendChild(button);
 
             const iconInstance: IconComponent = icon.instance;
             iconInstance.icon = 'close';
@@ -185,17 +198,31 @@ export const init = (Survey: any, domService: DomService): void => {
             pickerInstance.disabled = question.isReadOnly;
 
             el.style.display = 'none';
-            el.parentElement?.classList.add('flex', 'flex-row');
+            pickerDiv.classList.add('flex', 'flex-row');
+            el.parentElement?.appendChild(pickerDiv);
 
             button.onclick = () => {
               question.value = null;
               button.classList.add('hidden');
-              pickerInstance.writeValue(null as any);
+              pickerInstance?.writeValue(null as any);
             };
 
             // Positioning the button inside the picker
             el.parentElement?.classList.add('relative');
             button.classList.add('absolute', 'right-7', 'z-10');
+            (question.survey as SurveyModel).onValueChanged.add(
+              (sender: any, options: any) => {
+                if (options.question.name === question.name) {
+                  if (options.question.value) {
+                    pickerInstance.writeValue(
+                      getDateDisplay(question.value, question.inputType)
+                    );
+                  } else {
+                    pickerInstance.writeValue(null as any);
+                  }
+                }
+              }
+            );
           }
         } else {
           el.style.display = 'initial';

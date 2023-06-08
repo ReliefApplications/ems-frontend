@@ -1,10 +1,15 @@
-<mat-form-field appearance="outline" *ngIf="!useExpression">
-  <mat-label>{{ 'common.value.one' | translate }}</mat-label>
-  <input matInput [matDatepicker]="datePicker" [formControl]="control" />
-  <mat-datepicker-toggle matSuffix [for]="datePicker"> </mat-datepicker-toggle>
-  <mat-datepicker #datePicker></mat-datepicker>
-</mat-form-field>
-<div uiFormFieldDirective  *ngIf="useExpression">
+<div uiFormFieldDirective [ngClass]="{ 'mr-2': useExpression }">
+  <label>{{ 'common.value.one' | translate }}</label>
+  <div [uiDateWrapper]="calendar">
+    <input
+      [uiDatePicker]
+      [formControl]="control"
+      [label]="'kendo.datepicker.dateLabel' | translate"
+    />
+    <ui-date-picker #calendar> </ui-date-picker>
+  </div>
+</div>
+<div uiFormFieldDirective *ngIf="useExpression">
   <label>{{ 'common.value.one' | translate }}</label>
   <input
     uiTooltip="YYYY/MM/DD"

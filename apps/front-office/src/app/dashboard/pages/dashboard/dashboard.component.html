@@ -21,11 +21,17 @@
         >
         </ui-button>
       </div>
-    </div>
+    </ng-container>
   </ng-container>
-</ng-container>
-<safe-widget-grid
-  [loading]="loading"
-  [widgets]="widgets"
-  (goToNextStep)="goToNextStep.emit($event)"
-></safe-widget-grid>
+  <safe-widget-grid
+    [loading]="loading"
+    [widgets]="widgets"
+    (goToNextStep)="goToNextStep.emit($event)"
+  ></safe-widget-grid>
+  <safe-dashboard-filter
+    *ngIf="showFilter && isFullScreen"
+  ></safe-dashboard-filter>
+</div>
+<safe-dashboard-filter
+  *ngIf="showFilter && !isFullScreen"
+></safe-dashboard-filter>

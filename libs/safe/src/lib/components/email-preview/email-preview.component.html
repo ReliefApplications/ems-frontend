@@ -1,26 +1,49 @@
 <ui-dialog>
   <ng-container ngProjectAs="header">
-    <h1>Email Preview</h1>
+    <h1>{{ 'components.emailPreview.title' | translate }}</h1>
   </ng-container>
   <ng-container ngProjectAs="content">
-    <form class="flex flex-col" [formGroup]="form" *ngIf="form">
-      <div uiFormFieldDirective>
-        <label>Subject</label>
+    <form class="flex flex-col gap-4" [formGroup]="form" *ngIf="form">
+      <div
+        [uiErrorMessage]="
+          'components.emailPreview.errors.missingSubject' | translate
+        "
+        [uiErrorMessageIf]="this.form.controls.subject.hasError('required')"
+        uiFormFieldDirective
+      >
+        <label>{{ 'components.emailPreview.subject' | translate }}</label>
         <input formControlName="subject" type="text" />
       </div>
       <div uiFormFieldDirective>
-        <label>From</label>
+        <label>{{ 'components.emailPreview.from' | translate }}</label>
         <input formControlName="from" type="text" />
       </div>
-      <div id="previewEmailTo">
-        <label class="block text-sm font-medium leading-6 text-gray-900"
-          >To</label
-        >
+      <div
+        [uiErrorMessage]="errorMessage() | translate"
+        [uiErrorMessageIf]="this.form.controls.to.invalid"
+        uiFormFieldDirective
+        id="previewEmailTo"
+      >
+        <label class="block text-sm font-medium leading-6 text-gray-900">{{
+          'components.emailPreview.to' | translate
+        }}</label>
         <div uiChipList formControlName="to" #chipList>
-          <ui-chip [value]="email" *ngFor="let email of form.controls.to.value">
+          <ui-chip
+            [removable]="true"
+            (removed)="removeEmail(email)"
+            [value]="email"
+            *ngFor="let email of emails"
+          >
             {{ email }}
           </ui-chip>
         </div>
+        <input
+          #emailsInput
+          [uiChipListFor]="chipList"
+          [chipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (focusout)="addEmail($event)"
+          (chipTokenEnd)="addEmail($event)"
+        />
       </div>
       <kendo-fileselect
         class="mb-4"
@@ -39,6 +62,7 @@
       variant="primary"
       [uiDialogClose]="form.value"
       cdkFocusInitial
+      [disabled]="!form.valid"
     >
       {{ 'common.send' | translate }}
     </ui-button>

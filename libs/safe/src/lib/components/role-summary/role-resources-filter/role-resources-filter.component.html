@@ -22,32 +22,24 @@
       }}
     </ui-button>
   </div>
+  <!-- Filters when on "show" mode -->
   <div class="flex flex-wrap gap-2 items-center" *ngIf="show">
-    <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
-      <mat-label>{{ 'common.input.dateRange' | translate }}</mat-label>
-      <mat-date-range-input [rangePicker]="rangePicker">
-        <input formControlName="startDate" matStartDate />
-        <input formControlName="endDate" matEndDate />
-      </mat-date-range-input>
-      <mat-datepicker-toggle
-        matSuffix
-        [for]="rangePicker"
-      ></mat-datepicker-toggle>
-      <mat-date-range-picker #rangePicker>
-        <mat-date-range-picker-actions>
-          <ui-button matDateRangePickerCancel (click)="clearDateFilter()">
-            {{ 'common.clear' | translate }}
-          </ui-button>
-          <ui-button
-            category="secondary"
-            variant="primary"
-            matDateRangePickerApply
-          >
-            {{ 'common.filter.apply' | translate }}
-          </ui-button>
-        </mat-date-range-picker-actions>
-      </mat-date-range-picker>
-    </mat-form-field>
+    <div uiFormFieldDirective>
+      <label>{{ 'common.input.dateRange' | translate }}</label>
+      <div [uiDateWrapper]="calendar">
+        <input
+          [uiDatePicker]
+          formControlName="startDate"
+          [label]="'kendo.datepicker.startLabel' | translate"
+        />
+        <input
+          [uiDatePicker]
+          formControlName="endDate"
+          [label]="'kendo.datepicker.endLabel' | translate"
+        />
+        <ui-date-range #calendar> </ui-date-range>
+      </div>
+    </div>
     <ui-button variant="danger" (click)="clear()">
       {{ 'common.filter.clear' | translate }}
     </ui-button>

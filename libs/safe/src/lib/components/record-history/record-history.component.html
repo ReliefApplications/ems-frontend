@@ -12,45 +12,22 @@
   </div>
   <!-- FILTER -->
   <div class="clear-both flex flex-col">
-    <mat-form-field appearance="outline">
-      <mat-date-range-input
-        (click)="rangePicker.open()"
-        [rangePicker]="rangePicker"
-      >
+    <div uiFormFieldDirective>
+      <label>{{ 'common.input.dateRange' | translate }}</label>
+      <div [formGroup]="filtersDate" [uiDateWrapper]="calendar">
         <input
-          #startDate
-          (dateInput)="filtersDate['startDate'] = $event.value"
-          matStartDate
-          placeholder="Start date"
-          readonly
+          [uiDatePicker]
+          formControlName="startDate"
+          [label]="'kendo.datepicker.startLabel' | translate"
         />
         <input
-          #endDate
-          (dateInput)="filtersDate['endDate'] = $event.value"
-          matEndDate
-          placeholder="End date"
-          readonly
+          [uiDatePicker]
+          formControlName="endDate"
+          [label]="'kendo.datepicker.endLabel' | translate"
         />
-      </mat-date-range-input>
-      <mat-datepicker-toggle
-        matSuffix
-        [for]="rangePicker"
-      ></mat-datepicker-toggle>
-      <mat-date-range-picker #rangePicker>
-        <mat-date-range-picker-actions>
-          <ui-button matDateRangePickerCancel (click)="clearDateFilter()">{{
-            'common.clear' | translate
-          }}</ui-button>
-          <ui-button
-            category="secondary"
-            variant="primary"
-            matDateRangePickerApply
-            (click)="applyFilter()"
-            >{{ 'common.filter.apply' | translate }}</ui-button
-          >
-        </mat-date-range-picker-actions>
-      </mat-date-range-picker>
-    </mat-form-field>
+        <ui-date-range #calendar> </ui-date-range>
+      </div>
+    </div>
     <div uiFormFieldDirective>
       <label>{{ 'components.history.field.select' | translate }}</label>
       <ui-select-menu

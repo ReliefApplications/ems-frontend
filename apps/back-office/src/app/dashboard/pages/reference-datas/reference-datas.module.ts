@@ -19,12 +19,17 @@ import {
   PaginatorModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
+import { FilterComponent } from './components/filter/filter.component';
 
 /**
  * List of reference data page module
  */
 @NgModule({
-  declarations: [ReferenceDatasComponent, AddReferenceDataComponent],
+  declarations: [
+    ReferenceDatasComponent,
+    AddReferenceDataComponent,
+    FilterComponent,
+  ],
   imports: [
     CommonModule,
     MenuModule,

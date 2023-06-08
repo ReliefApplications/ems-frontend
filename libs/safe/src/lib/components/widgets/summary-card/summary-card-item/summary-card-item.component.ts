@@ -5,22 +5,19 @@ import {
   OnInit,
   TemplateRef,
 } from '@angular/core';
-import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import {
   GetResourceMetadataQueryResponse,
   GET_RESOURCE_METADATA,
-} from '../graphql/queries';
-import { clone, get } from 'lodash';
-import {
   GetLayoutQueryResponse,
   GET_LAYOUT,
-} from '../../summary-card-settings/card-modal/graphql/queries';
+} from '../graphql/queries';
+import { get } from 'lodash';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
-import { SafeAggregationService } from '../../../../services/aggregation/aggregation.service';
 import { firstValueFrom } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
+import { CardT } from '../summary-card.component';
 
 /**
  * Single Item component of Summary card widget.
@@ -31,7 +28,7 @@ import { SnackbarService } from '@oort-front/ui';
   styleUrls: ['./summary-card-item.component.scss'],
 })
 export class SummaryCardItemComponent implements OnInit, OnChanges {
-  @Input() card!: any;
+  @Input() card!: CardT;
   public fields: any[] = [];
   public fieldsValue: any = null;
   public loading = true;
@@ -45,18 +42,14 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
    * Single item component of summary card widget.
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
    * @param snackBar Shared snackBar service
    * @param translate Angular translate service
-   * @param aggregationService Aggregation service
    * @param queryBuilder Query builder service
    */
   constructor(
     private apollo: Apollo,
-    private dialog: Dialog,
     private snackBar: SnackbarService,
     private translate: TranslateService,
-    private aggregationService: SafeAggregationService,
     private queryBuilder: QueryBuilderService
   ) {}
 
@@ -70,28 +63,12 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
 
   /** Sets the content of the card */
   private async setContent() {
-    this.fields = this.card.metadata;
+    this.fields = this.card.metadata || [];
     if (!this.card.resource) return;
-    if (this.card.isAggregation) {
+    if (this.card.aggregation) {
       this.fieldsValue = this.card.cardAggregationData;
-      if (!this.card.isDynamic) await this.getAggregationData();
       this.setContentFromAggregation();
     } else this.setContentFromLayout();
-  }
-
-  /** Get the aggregation data for the current card, if not dynamic. */
-  private async getAggregationData() {
-    if (!this.card.aggregation) return;
-    const res = await firstValueFrom(
-      this.aggregationService.aggregationDataQuery(
-        this.card.resource,
-        this.card.aggregation
-      )
-    );
-
-    // for static cards with aggregation, assume the response is an array with one element
-    if (res?.data?.recordsAggregation)
-      this.fieldsValue = res.data.recordsAggregation[0];
   }
 
   /**
@@ -103,7 +80,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
       this.getCardData();
     } else if (typeof this.card.record === 'object') {
       this.fieldsValue = { ...this.card.record };
-      this.fields = this.card.metadata;
+      this.fields = this.card.metadata || [];
       this.loading = false;
     } else {
       this.snackBar.openSnackBar(
@@ -203,28 +180,5 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
       name: key,
       editor: 'text',
     }));
-  }
-
-  /**
-   * Open the dataSource modal.
-   */
-  public async openDataSource(): Promise<void> {
-    if (this.layout?.query) {
-      const { SafeResourceGridModalComponent } = await import(
-        '../../../search-resource-grid-modal/search-resource-grid-modal.component'
-      );
-      this.dialog.open(SafeResourceGridModalComponent, {
-        data: {
-          gridSettings: clone(this.layout.query),
-        },
-      });
-    } else {
-      this.snackBar.openSnackBar(
-        this.translate.instant(
-          'components.widget.summaryCard.errors.invalidSource'
-        ),
-        { error: true }
-      );
-    }
   }
 }

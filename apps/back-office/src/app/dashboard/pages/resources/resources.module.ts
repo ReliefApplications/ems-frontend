@@ -17,6 +17,7 @@ import {
   FormWrapperModule,
   IconModule,
   PaginatorModule,
+  DateModule,
 } from '@oort-front/ui';
 
 /**
@@ -42,6 +43,7 @@ import {
     ButtonModule,
     FormWrapperModule,
     TableModule,
+    DateModule,
   ],
   exports: [ResourcesComponent],
 })

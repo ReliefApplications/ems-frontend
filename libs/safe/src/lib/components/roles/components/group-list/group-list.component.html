@@ -85,6 +85,7 @@
       <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
       <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
     </table>
+    <!-- Loading indicator -->
     <safe-skeleton-table
       *ngIf="loading"
       [columns]="['common.title', 'common.user.few']"

@@ -6,6 +6,7 @@ import {
   MenuModule,
   ButtonModule,
   SelectMenuModule,
+  DateModule,
 } from '@oort-front/ui';
 import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -15,6 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule } from '../../pipes/date/date.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { SafeEmptyModule } from '../ui/empty/empty.module';
+import { ReactiveFormsModule } from '@angular/forms';
 
 /**
  * SafeRecordHistoryModule is a class used to manage all the modules and components
@@ -35,7 +37,9 @@ import { SafeEmptyModule } from '../ui/empty/empty.module';
     IndicatorsModule,
     SafeEmptyModule,
     ButtonModule,
+    DateModule,
     SelectMenuModule,
+    ReactiveFormsModule,
   ],
   exports: [SafeRecordHistoryComponent],
 })

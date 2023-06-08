@@ -14,6 +14,7 @@ export interface Application {
   id?: string;
   name?: string;
   description?: string;
+  sideMenu?: boolean;
   createdAt?: Date;
   modifiedAt?: Date;
   pages?: Page[];
@@ -36,4 +37,5 @@ export interface Application {
   distributionLists?: DistributionList[];
   customNotifications?: Connection<CustomNotification>;
   contextualFilter?: any;
+  contextualFilterPosition?: any;
 }

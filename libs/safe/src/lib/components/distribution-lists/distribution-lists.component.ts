@@ -4,6 +4,7 @@ import { SafeApplicationService } from '../../services/application/application.s
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Component to show the list of distribution lists of an application
@@ -30,8 +31,13 @@ export class DistributionListsComponent
    *
    * @param dialog The material dialog service
    * @param translate The translation service
+   * @param snackBar Shared snackbar service
    */
-  constructor(public dialog: Dialog, private translate: TranslateService) {
+  constructor(
+    public dialog: Dialog,
+    private translate: TranslateService,
+    private snackBar: SnackbarService
+  ) {
     super();
   }
 
@@ -64,6 +70,12 @@ export class DistributionListsComponent
           name: value.name,
           emails: value.emails,
         });
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectUpdated', {
+            value: value.name,
+            type: this.translate.instant('common.distributionList.one'),
+          })
+        );
       }
     });
   }
@@ -85,6 +97,12 @@ export class DistributionListsComponent
           name: value.name,
           emails: value.emails,
         });
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectCreated', {
+            value: value.name,
+            type: this.translate.instant('common.distributionList.one'),
+          })
+        );
       }
     });
   }
@@ -117,6 +135,11 @@ export class DistributionListsComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.deleteDistributionList(distributionList.id);
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectDeleted', {
+            value: distributionList.name,
+          })
+        );
       }
     });
   }
