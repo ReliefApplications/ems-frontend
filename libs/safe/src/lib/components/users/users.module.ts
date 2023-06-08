@@ -2,9 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeUsersComponent } from './users.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { IconModule } from '@oort-front/ui';
-import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import {
   MenuModule,
   CheckboxModule,
@@ -26,11 +24,9 @@ import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-tab
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
     MenuModule,
     IconModule,
     FormWrapperModule,
-    MatAutocompleteModule,
     MatRippleModule,
     SpinnerModule,
     CheckboxModule,

@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import { TabDisplayComponent } from './tab-display.component';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafePaletteControlModule } from '../../../palette-control/palette-control.module';
@@ -34,7 +32,6 @@ import {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
     FormWrapperModule,
     IconModule,
     TextFieldModule,
@@ -45,7 +42,6 @@ import {
     TabsModule,
     TranslateModule,
     SafeAggregationBuilderModule,
-    MatAutocompleteModule,
     SafeGridModule,
     SafePaletteControlModule,
     InputsModule,

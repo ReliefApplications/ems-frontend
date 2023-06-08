@@ -1,4 +1,3 @@
-import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import {
   Component,
   EventEmitter,
@@ -9,7 +8,6 @@ import {
   Output,
   Renderer2,
 } from '@angular/core';
-import { MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/legacy-select';
 import { QueryRef, Apollo } from 'apollo-angular';
 import {
   GetRecordByIdQueryResponse,
@@ -29,30 +27,12 @@ import { DOCUMENT } from '@angular/common';
 const ITEMS_PER_PAGE = 25;
 
 /**
- * Scroll Factory for material select, provided by the component.
- *
- * @param overlay material overlay
- * @returns Strategy to prevent scrolling if user sees overlay.
- */
-export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
-  const block = () => overlay.scrollStrategies.block();
-  return block;
-}
-
-/**
  * A component to display a dropdown to select a record
  */
 @Component({
   selector: 'safe-record-dropdown',
   templateUrl: './record-dropdown.component.html',
   styleUrls: ['./record-dropdown.component.scss'],
-  providers: [
-    {
-      provide: MAT_SELECT_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-  ],
 })
 export class SafeRecordDropdownComponent
   extends SafeUnsubscribeComponent

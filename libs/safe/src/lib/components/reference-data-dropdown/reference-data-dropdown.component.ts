@@ -11,15 +11,12 @@ import {
 import { Apollo, QueryRef } from 'apollo-angular';
 import { ReferenceData } from '../../models/reference-data.model';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/legacy-select';
 import {
   GetReferenceDataByIdQueryResponse,
   GetReferenceDatasQueryResponse,
   GET_REFERENCE_DATAS,
   GET_SHORT_REFERENCE_DATA_BY_ID,
 } from './graphql/queries';
-import { Overlay } from '@angular/cdk/overlay';
-import { scrollFactory } from '../../utils/scroll-factory';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { updateQueryUniqueValues } from '../../utils/update-queries';
@@ -35,13 +32,6 @@ const ITEMS_PER_PAGE = 10;
   selector: 'safe-reference-data-dropdown',
   templateUrl: './reference-data-dropdown.component.html',
   styleUrls: ['./reference-data-dropdown.component.scss'],
-  providers: [
-    {
-      provide: MAT_SELECT_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-  ],
 })
 export class SafeReferenceDataDropdownComponent
   extends SafeUnsubscribeComponent

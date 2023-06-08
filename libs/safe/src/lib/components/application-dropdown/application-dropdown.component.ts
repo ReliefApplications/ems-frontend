@@ -11,12 +11,10 @@ import {
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Application } from '../../models/application.model';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/legacy-select';
 import {
   GetApplicationsQueryResponse,
   GET_APPLICATIONS,
 } from './graphql/queries';
-import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { updateQueryUniqueValues } from '../../utils/update-queries';
@@ -28,30 +26,12 @@ import { DOCUMENT } from '@angular/common';
 const ITEMS_PER_PAGE = 10;
 
 /**
- * Scroll Factory for material select, provided by the component.
- *
- * @param overlay material overlay
- * @returns Strategy to prevent scrolling if user sees overlay.
- */
-export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
-  const block = () => overlay.scrollStrategies.block();
-  return block;
-}
-
-/**
  * This is a component used to show a dropdown form where the user can choose an application
  */
 @Component({
   selector: 'safe-application-dropdown',
   templateUrl: './application-dropdown.component.html',
   styleUrls: ['./application-dropdown.component.scss'],
-  providers: [
-    {
-      provide: MAT_SELECT_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-  ],
 })
 export class SafeApplicationDropdownComponent
   extends SafeUnsubscribeComponent

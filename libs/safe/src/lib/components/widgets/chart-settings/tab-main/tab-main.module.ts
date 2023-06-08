@@ -3,13 +3,11 @@ import { CommonModule } from '@angular/common';
 import { TabMainComponent } from './tab-main.component';
 import { TextFieldModule } from '@angular/cdk/text-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import {
   ExpansionPanelModule,
   GraphQLSelectModule,
   SelectMenuModule,
 } from '@oort-front/ui';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { IconModule } from '@oort-front/ui';
 import { TabsModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
@@ -30,7 +28,6 @@ import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
     FormWrapperModule,
     IconModule,
     TextFieldModule,
@@ -40,7 +37,6 @@ import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
     ExpansionPanelModule,
     TranslateModule,
     SafeAggregationBuilderModule,
-    MatAutocompleteModule,
     SafeGridModule,
     SafePaletteControlModule,
     GraphQLSelectModule,

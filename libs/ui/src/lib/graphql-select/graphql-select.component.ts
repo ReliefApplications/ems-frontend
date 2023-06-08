@@ -17,8 +17,6 @@ import {
 } from '@angular/core';
 import { QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
-import { MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/legacy-select';
-import { Overlay } from '@angular/cdk/overlay';
 import { get } from 'lodash';
 import {
   NgControl,
@@ -30,7 +28,6 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { takeUntil } from 'rxjs/operators';
 import { SelectMenuComponent } from '../select-menu/select-menu.component';
 import { updateQueryUniqueValues } from './utils/update-queries';
-import { scrollFactory } from './utils/scroll-factory';
 import { DOCUMENT } from '@angular/common';
 
 /** A constant that is used to determine how many items should be added on scroll. */
@@ -41,13 +38,6 @@ const ITEMS_PER_RELOAD = 10;
   selector: 'ui-graphql-select',
   templateUrl: './graphql-select.component.html',
   styleUrls: ['./graphql-select.component.scss'],
-  providers: [
-    {
-      provide: MAT_SELECT_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-  ],
 })
 export class GraphQLSelectComponent
   implements OnInit, OnChanges, OnDestroy, ControlValueAccessor

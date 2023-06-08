@@ -2,7 +2,6 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ExpansionPanelModule,
@@ -28,7 +27,6 @@ import { TabMainModule } from './tab-main/tab-main.module';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatInputModule,
     IconModule,
     TextFieldModule,
     SafeQueryBuilderModule,
