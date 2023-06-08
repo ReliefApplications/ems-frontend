@@ -6,14 +6,18 @@ import {
   OnChanges,
   OnInit,
   Output,
+  SimpleChanges,
   TemplateRef,
   ViewChild,
 } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import { clone, get } from 'lodash';
+import { clone, get, isEqual } from 'lodash';
 import { takeUntil } from 'rxjs/operators';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
+import { ContextService } from '../../../services/context/context.service';
+import { SafeEditorService } from '../../../services/editor/editor.service';
+import { INLINE_EDITOR_CONFIG } from '../../../const/tinymce.const';
 
 /**
  * Composite filter row.
@@ -46,17 +50,50 @@ export class FilterRowComponent
   @ViewChild('numericEditor', { static: false })
   numericEditor!: TemplateRef<any>;
   @ViewChild('dateEditor', { static: false }) dateEditor!: TemplateRef<any>;
+  @ViewChild('filterEditor', { static: false }) filterEditor!: TemplateRef<any>;
+
+  editorConfig = INLINE_EDITOR_CONFIG;
+  isFilterEnable = false;
+  isFilterEditorOnView = false;
 
   public operators: any[] = [];
 
   /**
    * Constructor of filter row
+   *
+   * @param contextService Context service
+   * @param editorService Editor service
    */
-  constructor() {
+  constructor(
+    private contextService: ContextService,
+    private editorService: SafeEditorService
+  ) {
     super();
+    // Set the editor base url based on the environment file
+    this.editorConfig.base_url = editorService.url;
+    // Set the editor language
+    this.editorConfig.language = editorService.language;
   }
 
   ngOnInit(): void {
+    this.contextService.isFilterEnable$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (isFilterEnable: boolean) => {
+          this.isFilterEnable = isFilterEnable;
+          const availableFilterFields =
+            this.contextService.availableFilterFields;
+          if (isFilterEnable && availableFilterFields) {
+            this.editorService.addCalcAndKeysAutoCompleter(
+              this.editorConfig,
+              Object.keys(availableFilterFields).map(
+                (key: string) => `{{filter.${key}}}`
+              )
+            );
+          }
+        },
+      });
+
     this.form
       .get('field')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
@@ -85,9 +122,13 @@ export class FilterRowComponent
     }
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     const initialField = this.form.get('field')?.value;
-    if (initialField && this.fields.length > 0) {
+    if (
+      initialField &&
+      this.fields.length > 0 &&
+      !isEqual(changes.fields?.previousValue, changes.fields?.currentValue)
+    ) {
       this.setField(initialField);
     }
   }
@@ -140,8 +181,15 @@ export class FilterRowComponent
    * @param field filter field
    */
   private setEditor(field: any) {
+    const value = this.form.get('value')?.value;
     if (get(field, 'filter.template', null)) {
       this.editor = field.filter.template;
+    } else if (
+      this.isFilterEnable &&
+      typeof value === 'string' &&
+      value.startsWith('{{filter.')
+    ) {
+      this.editor = this.filterEditor;
     } else {
       switch (field.editor) {
         case 'text': {
@@ -170,6 +218,18 @@ export class FilterRowComponent
           this.editor = this.textEditor;
         }
       }
+    }
+  }
+
+  /** Toggles filter editor */
+  public toggleFilterEditor() {
+    this.form.get('value')?.setValue(null);
+    if (this.editor === this.filterEditor) {
+      this.setEditor(this.field);
+      this.isFilterEditorOnView = false;
+    } else {
+      this.editor = this.filterEditor;
+      this.isFilterEditorOnView = true;
     }
   }
 }

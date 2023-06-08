@@ -18,6 +18,21 @@
       [ngTemplateOutletContext]="{ valueControl: valueControl }"
     ></ng-container>
   </ng-container>
+
+  <!-- TOGGLE FILTER EDITOR -->
+  <safe-button
+    *ngIf="field && isFilterEnable"
+    [isIcon]="true"
+    [icon]="isFilterEditorOnView ? 'filter_list_off' : 'filter_list'"
+    (click)="toggleFilterEditor()"
+    [matTooltip]="
+      (isFilterEditorOnView
+        ? 'models.dashboard.tooltip.useDefaultEditor'
+        : 'models.dashboard.tooltip.useDashboardFilterEditor'
+      ) | translate
+    "
+  ></safe-button>
+
   <!-- DELETE ROW -->
   <safe-button
     [isIcon]="true"
@@ -117,5 +132,13 @@
       </mat-datepicker-toggle>
       <mat-datepicker #datePicker></mat-datepicker>
     </mat-form-field>
+  </ng-template>
+
+  <!-- FILTER EDITOR -->
+  <ng-template #filterEditor>
+    <div>
+      <label>{{ 'models.dashboard.dashboardFilter' | translate }}</label>
+      <editor [init]="editorConfig" formControlName="value"></editor>
+    </div>
   </ng-template>
 </form>

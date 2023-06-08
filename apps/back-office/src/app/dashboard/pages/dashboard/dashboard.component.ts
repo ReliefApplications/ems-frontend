@@ -47,6 +47,7 @@ import { firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { isEqual } from 'lodash';
 import localForage from 'localforage';
+import { ContextService } from '@oort-front/safe';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -70,7 +71,7 @@ export class DashboardComponent
   public loading = true;
   public tiles: any[] = [];
   public dashboard?: Dashboard;
-  public showFilter?: boolean;
+  public showFilter!: boolean;
 
   // === GRID ===
   private generatedTiles = 0;
@@ -110,6 +111,7 @@ export class DashboardComponent
    * @param translateService Angular translate service
    * @param authService Shared authentication service
    * @param confirmService Shared confirm service
+   * @param contextService Dashboard context service
    * @param refDataService Shared reference data service
    */
   constructor(
@@ -124,6 +126,7 @@ export class DashboardComponent
     private translateService: TranslateService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
+    private contextService: ContextService,
     private refDataService: SafeReferenceDataService
   ) {
     super();
@@ -165,7 +168,8 @@ export class DashboardComponent
                 ? this.dashboard.step.workflow?.page?.application?.id
                 : '';
               this.loading = loading;
-              this.showFilter = this.dashboard.showFilter;
+              this.showFilter = this.dashboard.showFilter ?? false;
+              this.contextService.isFilterEnable.next(this.showFilter);
             } else {
               this.snackBar.openSnackBar(
                 this.translateService.instant(
@@ -548,7 +552,10 @@ export class DashboardComponent
               });
             }
           },
-          complete: () => (this.loading = false),
+          complete: () => {
+            this.loading = false;
+            this.contextService.isFilterEnable.next(this.showFilter);
+          },
         });
     }
   }

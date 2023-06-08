@@ -11,6 +11,7 @@ import { SafeButtonModule } from '../ui/button/button.module';
 import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { TINYMCE_SCRIPT_SRC, EditorModule } from '@tinymce/tinymce-angular';
 
 /**
  * Composite Filter module.
@@ -28,6 +29,10 @@ import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/le
     MatDatepickerModule,
     MatTooltipModule,
     SafeButtonModule,
+    EditorModule,
+  ],
+  providers: [
+    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
   ],
   exports: [SafeFilterComponent],
 })
