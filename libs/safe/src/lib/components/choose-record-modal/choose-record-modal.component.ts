@@ -1,20 +1,18 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnDestroy, OnInit, Renderer2 } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 import { Apollo } from 'apollo-angular';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { SpinnerModule } from '@oort-front/ui';
 import { SafeResourceDropdownModule } from '../resource-dropdown/resource-dropdown.module';
 import { SafeApplicationDropdownModule } from '../application-dropdown/application-dropdown.module';
@@ -60,7 +58,6 @@ interface IRecord {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatButtonModule,
     SpinnerModule,
     SafeResourceDropdownModule,
     SafeApplicationDropdownModule,
@@ -78,7 +75,7 @@ interface IRecord {
 })
 export class SafeChooseRecordModalComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   // === REACTIVE FORM ===
   chooseRecordForm: UntypedFormGroup = new UntypedFormGroup({});
@@ -95,8 +92,7 @@ export class SafeChooseRecordModalComponent
     endCursor: '',
     hasNextPage: true,
   };
-
-  @ViewChild('recordSelect') recordSelect?: MatSelect;
+  private scrollListener!: any;
 
   // === LOAD DATA ===
   public loading = true;
@@ -114,15 +110,19 @@ export class SafeChooseRecordModalComponent
    * @param apollo This is the Apollo service that we will use to make our GraphQL
    * queries.
    * @param dialogRef This is the dialog that will be opened
+   * @param renderer Renderer2
    * @param data This is the data that is passed into the modal when it is
    * opened.
+   * @param document Document
    */
   constructor(
     private queryBuilder: QueryBuilderService,
     private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     public dialogRef: DialogRef<SafeChooseRecordModalComponent>,
-    @Inject(DIALOG_DATA) public data: DialogData
+    private renderer: Renderer2,
+    @Inject(DIALOG_DATA) public data: DialogData,
+    @Inject(DOCUMENT) public document: Document
   ) {
     super();
   }
@@ -212,13 +212,17 @@ export class SafeChooseRecordModalComponent
   /**
    * Adds scroll listener to select.
    *
-   * @param e open select event.
    */
-  onOpenSelect(e: any): void {
-    if (e && this.recordSelect) {
-      const panel = this.recordSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) =>
-        this.loadOnScroll(event)
+  onOpenSelect(): void {
+    const panel = this.document.getElementById('optionList');
+    if (panel) {
+      if (this.scrollListener) {
+        this.scrollListener();
+      }
+      this.scrollListener = this.renderer.listen(
+        panel,
+        'scroll',
+        (event: any) => this.loadOnScroll(event)
       );
     }
   }
@@ -269,5 +273,12 @@ export class SafeChooseRecordModalComponent
       }
     }
     this.loading = loading;
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.scrollListener) {
+      this.scrollListener();
+    }
   }
 }

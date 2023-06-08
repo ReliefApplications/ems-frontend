@@ -1,5 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -15,7 +15,6 @@ import {
 import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
 import { AddFormMutationResponse, ADD_FORM } from './graphql/mutations';
 import { GET_FORMS, GetFormsQueryResponse } from './graphql/queries';
-import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 import { TranslateService } from '@ngx-translate/core';
 import { ApolloQueryResult } from '@apollo/client';
 import {
@@ -54,8 +53,6 @@ export class AddPageComponent
   };
   private loading = true;
   public loadingMore = false;
-
-  @ViewChild('formSelect') formSelect?: MatSelect;
 
   // === REACTIVE FORM ===
   public pageForm: UntypedFormGroup = new UntypedFormGroup({});

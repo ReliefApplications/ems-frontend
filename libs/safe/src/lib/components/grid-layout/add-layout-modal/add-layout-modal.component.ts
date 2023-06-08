@@ -12,8 +12,6 @@ import {
 import { UntypedFormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import {
@@ -43,8 +41,6 @@ interface DialogData {
   imports: [
     CommonModule,
     TranslateModule,
-    MatButtonModule,
-    MatFormFieldModule,
     DialogModule,
     GraphQLSelectModule,
     FormsModule,

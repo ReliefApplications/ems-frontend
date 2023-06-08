@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Record,
@@ -49,7 +48,7 @@ export class RecordsTabComponent
   implements OnInit
 {
   private recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
-  public dataSource = new MatTableDataSource<Record>([]);
+  public dataSource = new Array<Record>();
   private cachedRecords: Record[] = [];
   public resource!: Resource;
   recordsDefaultColumns: string[] = RECORDS_DEFAULT_COLUMNS;
@@ -67,7 +66,7 @@ export class RecordsTabComponent
 
   /** @returns True if the records tab is empty */
   get empty(): boolean {
-    return !this.loading && this.dataSource.filteredData.length === 0;
+    return !this.loading && this.dataSource.length === 0;
   }
 
   /**
@@ -359,7 +358,7 @@ export class RecordsTabComponent
       this.pageInfo.pageSize = first;
       this.fetchRecords();
     } else {
-      this.dataSource.data = this.cachedRecords.slice(
+      this.dataSource = this.cachedRecords.slice(
         e.pageSize * this.pageInfo.pageIndex,
         e.pageSize * (this.pageInfo.pageIndex + 1)
       );
@@ -420,7 +419,7 @@ export class RecordsTabComponent
       this.cachedRecords,
       mappedValues
     );
-    this.dataSource.data = mappedValues;
+    this.dataSource = mappedValues;
     this.pageInfo.length = data.resource.records.totalCount;
     this.pageInfo.endCursor = data.resource.records.pageInfo.endCursor;
     this.loading = loading;

@@ -1,6 +1,5 @@
 import { Component, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { DialogModule } from '@oort-front/ui';
@@ -21,7 +20,6 @@ interface DialogData {
   standalone: true,
   imports: [
     CommonModule,
-    MatButtonModule,
     TranslateModule,
     DialogModule,
     ButtonModule,

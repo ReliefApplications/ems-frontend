@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application/application.service';
 import { TemplateTypeEnum } from '../../models/template.model';
@@ -21,7 +20,7 @@ export class SafeTemplatesComponent
   implements OnInit
 {
   // === INPUT DATA ===
-  public templates: MatTableDataSource<any> = new MatTableDataSource<any>([]);
+  public templates: Array<any> = new Array<any>();
   @Input() applicationService!: SafeApplicationService;
 
   // === DISPLAYED COLUMNS ===
@@ -45,9 +44,11 @@ export class SafeTemplatesComponent
   }
 
   ngOnInit(): void {
-    this.applicationService.application$.subscribe((value) => {
-      this.templates.data = value?.templates || [];
-    });
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.templates = value?.templates || [];
+      });
   }
 
   /**

@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeRecordDropdownComponent } from './record-dropdown.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { SelectMenuModule } from '@oort-front/ui';
 
 /**
@@ -11,13 +10,7 @@ import { SelectMenuModule } from '@oort-front/ui';
  */
 @NgModule({
   declarations: [SafeRecordDropdownComponent],
-  imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatFormFieldModule,
-    SelectMenuModule,
-  ],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, SelectMenuModule],
   exports: [SafeRecordDropdownComponent],
 })
 export class SafeRecordDropdownModule {}

@@ -10,7 +10,6 @@ import { SafeDateTranslateService } from '../../services/date-translate/date-tra
 import { getLanguageNativeName } from '../../utils/languages';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import {
   TabsModule,
   DialogModule,
@@ -36,7 +35,6 @@ interface PreferencesDialogData {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
     TabsModule,
     DialogModule,
     IconModule,

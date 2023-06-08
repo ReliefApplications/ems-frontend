@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application/application.service';
 import { Dialog } from '@angular/cdk/dialog';
@@ -20,8 +19,7 @@ export class DistributionListsComponent
   implements OnInit
 {
   // === INPUT DATA ===
-  public distributionLists: MatTableDataSource<any> =
-    new MatTableDataSource<any>([]);
+  public distributionLists: Array<any> = new Array<any>();
   @Input() applicationService!: SafeApplicationService;
   // === DISPLAYED COLUMNS ===
   public displayedColumns = ['name', 'actions'];
@@ -47,7 +45,7 @@ export class DistributionListsComponent
     this.applicationService.application$
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        this.distributionLists.data = value?.distributionLists || [];
+        this.distributionLists = value?.distributionLists || [];
       });
   }
 

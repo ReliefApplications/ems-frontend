@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MapClorophletComponent } from './map-clorophlet.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TranslateModule } from '@ngx-translate/core';
 import { MapClorophletDivisionModule } from '../map-clorophlet-division/map-clorophlet-division.module';
 import {
@@ -25,7 +24,6 @@ import {
     ReactiveFormsModule,
     TranslateModule,
     DialogModule,
-    MatFormFieldModule,
     FormWrapperModule,
     SliderModule,
     MapClorophletDivisionModule,

@@ -21,7 +21,6 @@ import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe
 import { takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { SafeReadableCronModule } from '../../../../pipes/readable-cron/readable-cron.module';
 import { CronExpressionControlModule } from '../../../cron-expression-control/cron-expression-control.module';
 import {
@@ -57,7 +56,6 @@ const ITEMS_PER_PAGE = 10;
     DialogModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
     FormWrapperModule,
     TooltipModule,
     SafeReadableCronModule,

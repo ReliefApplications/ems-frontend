@@ -2,10 +2,6 @@ import { TextFieldModule } from '@angular/cdk/text-field';
 import { CommonModule } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ExpansionPanelModule,
@@ -31,9 +27,6 @@ import { TabMainModule } from './tab-main/tab-main.module';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
     IconModule,
     TextFieldModule,
     SafeQueryBuilderModule,
@@ -42,7 +35,6 @@ import { TabMainModule } from './tab-main/tab-main.module';
     ExpansionPanelModule,
     TranslateModule,
     SafeAggregationBuilderModule,
-    MatAutocompleteModule,
     SafeGridModule,
     SafePaletteControlModule,
     TabMainModule,

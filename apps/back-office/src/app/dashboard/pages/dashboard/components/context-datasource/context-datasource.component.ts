@@ -9,7 +9,6 @@ import {
 } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import {
   PageContextT,
   ReferenceData,
@@ -75,7 +74,6 @@ const createContextDatasourceForm = (data?: PageContextT) => {
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    MatFormFieldModule,
     DialogModule,
     IconModule,
     TooltipModule,

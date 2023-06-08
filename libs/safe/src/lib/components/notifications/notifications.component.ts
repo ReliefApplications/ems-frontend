@@ -1,6 +1,5 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -31,8 +30,8 @@ export class NotificationsComponent
   implements OnInit, OnDestroy
 {
   // === INPUT DATA ===
-  public notifications: MatTableDataSource<CustomNotification> =
-    new MatTableDataSource<CustomNotification>([]);
+  public notifications: Array<CustomNotification> =
+    new Array<CustomNotification>();
   private cachedNotifications: CustomNotification[] = [];
   private notificationsQuery!: QueryRef<GetCustomNotificationsQueryResponse>;
   private applicationSubscription?: Subscription;
@@ -88,7 +87,7 @@ export class NotificationsComponent
                 res.data.application.customNotifications.edges.map(
                   (x) => x.node
                 );
-              this.notifications.data = this.cachedNotifications.slice(
+              this.notifications = this.cachedNotifications.slice(
                 this.pageInfo.pageSize * this.pageInfo.pageIndex,
                 this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
               );

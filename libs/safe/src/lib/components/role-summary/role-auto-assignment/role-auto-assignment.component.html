@@ -1,5 +1,5 @@
 <ng-container *ngIf="!loading; else loadingTmpl">
-  <ng-container *ngIf="rules?.data?.length">
+  <ng-container *ngIf="rules?.length">
     <div class="flex justify-end">
       <ng-container *ngTemplateOutlet="newRule"></ng-container>
     </div>
@@ -15,7 +15,7 @@
       }}</ui-button
     >
   </ng-template>
-  <ng-container *ngIf="rules?.data?.length; else emptyTmpl">
+  <ng-container *ngIf="rules?.length; else emptyTmpl">
     <!-- Table container -->
     <div class="overflow-x-hidden shadow-2lg">
       <!-- Table scroll container -->

@@ -30,10 +30,6 @@ import {
   CompositeFilterDescriptor,
   SortDescriptor,
 } from '@progress/kendo-data-query';
-import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
-import { MAT_LEGACY_MENU_SCROLL_STRATEGY as MAT_MENU_SCROLL_STRATEGY } from '@angular/material/legacy-menu';
-import { MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/legacy-select';
-import { MAT_LEGACY_TOOLTIP_SCROLL_STRATEGY as MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/legacy-tooltip';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
 // import {
 //   CalendarDOMService,
@@ -52,17 +48,6 @@ import { SafeDashboardService } from '../../../../services/dashboard/dashboard.s
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-
-/**
- * Factory for creating scroll strategy
- *
- * @param overlay The overlay
- * @returns A function that returns a block scroll strategy
- */
-export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
-  const block = () => overlay.scrollStrategies.block();
-  return block;
-}
 
 /**
  * Test if an element match a css selector
@@ -85,21 +70,6 @@ const matches = (el: any, selector: any) =>
     // CalendarDOMService,
     // MonthViewService,
     // WeekNamesService,
-    {
-      provide: MAT_SELECT_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-    {
-      provide: MAT_TOOLTIP_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-    {
-      provide: MAT_MENU_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
   ],
 })
 export class SafeGridComponent
