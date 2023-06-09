@@ -16,7 +16,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeEditorControlComponent } from '../../../editor-control/editor-control.component';
 import { RawEditorSettings } from 'tinymce';
-import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import { EditorModule } from '@tinymce/tinymce-angular';
 import {
   ButtonModule,
   IconModule,
