@@ -11,6 +11,7 @@
         variant="primary"
         category="secondary"
         class="!w-auto"
+        [isBlock]="true"
         (click)="nextStep = true"
         [disabled]="!hasLayouts"
         >{{
@@ -22,6 +23,7 @@
         variant="primary"
         category="tertiary"
         class="!w-auto"
+        [isBlock]="true"
         (click)="onCreate()"
         >{{
           'components.widget.settings.grid.layouts.add.choice.create'

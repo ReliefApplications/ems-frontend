@@ -66,6 +66,7 @@
     class="max-w-xs grow"
     category="tertiary"
     variant="primary"
+    [isBlock]="true"
     (click)="onAdd()"
     [disabled]="!resource && !form"
     >{{ 'components.aggregation.add.title' | translate }}</ui-button
