@@ -1,5 +1,4 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Layout } from '../../../models/layout.model';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
@@ -9,6 +8,7 @@ import get from 'lodash/get';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Dialog } from '@angular/cdk/dialog';
 
 /**
  * Layouts list configuration for grid widgets
@@ -34,11 +34,11 @@ export class LayoutTableComponent
   /**
    * Constructor of the layout list component
    *
-   * @param dialog Material Dialog Service
+   * @param dialog Dialog Service
    * @param gridLayoutService The safe grid layout service
    */
   constructor(
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private gridLayoutService: SafeGridLayoutService
   ) {
     super();
@@ -112,7 +112,7 @@ export class LayoutTableComponent
         resource: this.resource,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         if (!this.allLayouts.find((x) => x.id === value.id)) {
           this.allLayouts.push(value);
@@ -140,7 +140,7 @@ export class LayoutTableComponent
         queryName: this.resource?.queryName,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.gridLayoutService
           .editLayout(layout, value, this.resource?.id, this.form?.id)

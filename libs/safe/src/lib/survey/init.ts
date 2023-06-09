@@ -5,9 +5,7 @@
 /// <reference path="../../typings/extract-files/index.d.ts" />
 
 import { Apollo } from 'apollo-angular';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { UntypedFormBuilder } from '@angular/forms';
-import * as SurveyJSWidgets from 'surveyjs-widgets';
 import { DomService } from '../services/dom/dom.service';
 import { SafeAuthService } from '../services/auth/auth.service';
 import { SafeReferenceDataService } from '../services/reference-data/reference-data.service';
@@ -18,10 +16,13 @@ import * as OwnerComponent from './components/owner';
 import * as UsersComponent from './components/users';
 import * as TextWidget from './widgets/text-widget';
 import * as CommentWidget from './widgets/comment-widget';
+import * as DropdownWidget from './widgets/dropdown-widget';
+import * as TagboxWidget from './widgets/tagbox-widget';
 import * as OtherProperties from './global-properties/others';
 import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';
 import { initLocalization } from './localization';
+import { Dialog } from '@angular/cdk/dialog';
 
 /**
  * Executes all init methods of custom SurveyJS.
@@ -39,7 +40,7 @@ import { initLocalization } from './localization';
 export const initCustomSurvey = (
   Survey: any,
   domService: DomService,
-  dialog: MatDialog,
+  dialog: Dialog,
   apollo: Apollo,
   formBuilder: UntypedFormBuilder,
   authService: SafeAuthService,
@@ -53,12 +54,12 @@ export const initCustomSurvey = (
     Survey.ComponentCollection.Instance.clear();
   }
 
-  // load widgets (aka custom questions)
-  SurveyJSWidgets.select2tagbox(Survey);
+  TagboxWidget.init(Survey, domService);
+  TextWidget.init(Survey, domService);
+  DropdownWidget.init(Survey, domService);
 
   if (containsCustomQuestions) {
     CommentWidget.init(Survey);
-    TextWidget.init(Survey, domService);
     // load components (same as widgets, but with less configuration options)
     ResourceComponent.init(Survey, domService, apollo, dialog, formBuilder);
     ResourcesComponent.init(Survey, domService, apollo, dialog, formBuilder);

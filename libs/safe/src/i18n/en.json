@@ -626,6 +626,7 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"duplicatedRelatedName": "Duplicated related name for question {{question}} on page {{page}}. Please provide a unique related name (snake case format) to save the form.",
 				"missingGridField": "Missing an available field grid for question {{question}} on page {{page}}. Please select a least one in Custom Question Properties to save the form.",
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
@@ -913,6 +914,7 @@
 						"add": "Create assignment rule",
 						"delete": "Delete rule",
 						"edit": "Edit assignment rule",
+						"none": "No assignment rule",
 						"title": "Rule"
 					},
 					"title": "Automatic assignment"
@@ -1168,6 +1170,7 @@
 					},
 					"position": "Position",
 					"series": {
+						"fill": "Fill",
 						"interpolation": {
 							"step": "Step interpolation",
 							"title": "Interpolation"
@@ -1414,7 +1417,13 @@
 		}
 	},
 	"kendo": {
+		"combobox": {
+			"noDataText": "No available choice"
+		},
 		"datepicker": {
+			"dateLabel": "Select a date",
+			"endLabel": "Select a end date",
+			"startLabel": "Select a start date",
 			"today": "Today",
 			"toggle": "Choose a date"
 		},
@@ -1562,6 +1571,9 @@
 			"stick": "Stick",
 			"unlock": "Unlock",
 			"unstick": "Unstick"
+		},
+		"multiselect": {
+			"noDataText": "No available choice"
 		},
 		"pager": {
 			"firstPage": "Go to the first page",
@@ -1850,6 +1862,10 @@
 				},
 				"selectApplication": "Missing value application for an element on page {{page}}. Please select at least one application in properties of {{question}} to save the form.",
 				"snakecase": "The value name {{name}} on page {{page}} is invalid. Please conform to snake_case."
+			},
+			"move": {
+				"down": "Move down",
+				"up": "Move up"
 			},
 			"questionsCategories": {
 				"core": "Question Library"

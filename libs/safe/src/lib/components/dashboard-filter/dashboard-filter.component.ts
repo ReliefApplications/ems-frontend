@@ -2,13 +2,16 @@ import {
   Component,
   ElementRef,
   HostListener,
+  Inject,
+  Input,
   NgZone,
   OnDestroy,
   OnInit,
+  Optional,
   ViewChild,
 } from '@angular/core';
 import { FilterPosition } from './enums/dashboard-filters.enum';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import * as Survey from 'survey-angular';
 import { Apollo } from 'apollo-angular';
 import { SafeApplicationService } from '../../services/application/application.service';
@@ -21,9 +24,10 @@ import {
   EditApplicationMutationResponse,
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { ContextService } from '../../services/context/context.service';
+import { SidenavContainerComponent, SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Interface for quick filters
@@ -69,13 +73,16 @@ export class DashboardFilterComponent
   public applicationId?: string;
 
   /** Indicate empty status of filter */
-  public empty = false;
+  public empty = true;
+
+  @Input() editable = false;
 
   /**
    * Class constructor
    *
+   * @param uiSidenav MatDrawerContent
    * @param hostElement Host/Component Element
-   * @param dialog The material dialog service
+   * @param dialog The Dialog service
    * @param apollo Apollo client
    * @param applicationService Shared application service
    * @param snackBar Shared snackbar service
@@ -84,14 +91,16 @@ export class DashboardFilterComponent
    * @param ngZone Triggers html changes
    */
   constructor(
+    @Optional() private uiSidenav: SidenavContainerComponent,
     private hostElement: ElementRef<HTMLElement>,
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private translate: TranslateService,
     private contextService: ContextService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
   }
@@ -131,12 +140,7 @@ export class DashboardFilterComponent
             });
         }
       });
-    const parentRect =
-      this.hostElement.nativeElement.parentElement?.parentElement?.getBoundingClientRect(); //This is the sidenav container, not ideal solution
-    this.containerWidth = `${parentRect?.width}px`;
-    this.containerHeight = `${parentRect?.height}px`;
-    this.containerLeftOffset = `${parentRect?.x}px`;
-    this.containerTopOffset = `${parentRect?.y}px`;
+    this.setFilterContainerDimensions();
   }
 
   /**
@@ -144,12 +148,7 @@ export class DashboardFilterComponent
    */
   @HostListener('window:resize', ['$event'])
   onResize() {
-    const parentRect =
-      this.hostElement.nativeElement.parentElement?.parentElement?.getBoundingClientRect(); //This is the sidenav container, not ideal solution
-    this.containerWidth = `${parentRect?.width}px`;
-    this.containerHeight = `${parentRect?.height}px`;
-    this.containerLeftOffset = `${parentRect?.x}px`;
-    this.containerTopOffset = `${parentRect?.y}px`;
+    this.setFilterContainerDimensions();
   }
 
   /**
@@ -179,17 +178,19 @@ export class DashboardFilterComponent
           data: { surveyStructure: this.surveyStructure },
           autoFocus: false,
         });
-        dialogRef.afterClosed().subscribe((newStructure) => {
-          if (newStructure) {
-            this.surveyStructure = newStructure;
-            localForage.setItem(
-              this.applicationId + 'contextualFilter',
-              this.surveyStructure
-            );
-            this.initSurvey();
-            this.saveFilter();
-          }
-        });
+        dialogRef.closed
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((newStructure) => {
+            if (newStructure) {
+              this.surveyStructure = newStructure;
+              localForage.setItem(
+                this.applicationId + 'contextualFilter',
+                this.surveyStructure
+              );
+              this.initSurvey();
+              this.saveFilter();
+            }
+          });
       }
     );
   }
@@ -260,11 +261,13 @@ export class DashboardFilterComponent
         const dialogRef = this.dialog.open(FilterSettingsModalComponent, {
           data: { positionList: this.positionList },
         });
-        dialogRef.afterClosed().subscribe((defaultPosition) => {
-          if (defaultPosition) {
-            this.saveSettings(defaultPosition);
-          }
-        });
+        dialogRef.closed
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((defaultPosition) => {
+            if (defaultPosition) {
+              this.saveSettings(defaultPosition as FilterPosition);
+            }
+          });
       }
     );
   }
@@ -313,16 +316,52 @@ export class DashboardFilterComponent
    */
   private onValueChange() {
     const surveyData = this.survey.data;
+    const displayValues = this.survey.getPlainData();
     this.contextService.filter.next(surveyData);
     this.ngZone.run(() => {
-      this.quickFilters = Object.keys(surveyData).map((question: string) =>
-        Array.isArray(surveyData[question]) && surveyData[question].length > 2
-          ? {
-              label: question + ` (${surveyData[question].length})`,
-              tooltip: surveyData[question].join('\n'),
-            }
-          : { label: surveyData[question] }
-      );
+      this.quickFilters = displayValues
+        .filter((question) => !!question.value)
+        .map((question: any) => {
+          let mappedQuestion;
+          if (question.value instanceof Array && question.value.length > 2) {
+            mappedQuestion = {
+              label: question.title + ` (${question.value.length})`,
+              tooltip: question.displayValue,
+            };
+          } else {
+            mappedQuestion = {
+              label: question.displayValue,
+            };
+          }
+          return mappedQuestion;
+        });
     });
+  }
+
+  /**
+   * Set filter container dimensions for the current parent container wrapper
+   */
+  private setFilterContainerDimensions() {
+    const parentRect = this.getParentReferenceClientRect();
+    this.containerWidth = `${parentRect?.width}px`;
+    this.containerHeight = `${parentRect?.height}px`;
+    this.containerLeftOffset = `${parentRect?.x}px`;
+    this.containerTopOffset = `${parentRect?.y}px`;
+  }
+
+  /**
+   * Get current parent DOM client rect reference
+   *
+   * @returns DOMRect | undefined
+   */
+  private getParentReferenceClientRect() {
+    // If no sidenav wrapper, default behavior would be filter horizontal sidenav Content
+    let parentRect = this.document
+      .getElementById('horizontalSidenavContent')
+      ?.getBoundingClientRect();
+    if (this.uiSidenav) {
+      parentRect = this.uiSidenav.content.nativeElement.getBoundingClientRect();
+    }
+    return parentRect;
   }
 }

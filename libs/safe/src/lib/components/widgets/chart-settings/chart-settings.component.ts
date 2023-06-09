@@ -1,11 +1,5 @@
-import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { MAT_LEGACY_AUTOCOMPLETE_SCROLL_STRATEGY as MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/legacy-autocomplete';
-import { MAT_LEGACY_CHIPS_DEFAULT_OPTIONS as MAT_CHIPS_DEFAULT_OPTIONS } from '@angular/material/legacy-chips';
-import { MatLegacyTabChangeEvent as MatTabChangeEvent } from '@angular/material/legacy-tabs';
-import { scrollFactory } from '../../../utils/scroll-factory';
-import { codesFactory } from '../../distribution-lists/components/edit-distribution-list-modal/edit-distribution-list-modal.component';
 import { createChartWidgetForm } from './chart-forms';
 import { CHART_TYPES } from './constants';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
@@ -17,14 +11,6 @@ import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
   selector: 'safe-chart-settings',
   templateUrl: './chart-settings.component.html',
   styleUrls: ['./chart-settings.component.scss'],
-  providers: [
-    {
-      provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-    { provide: MAT_CHIPS_DEFAULT_OPTIONS, useFactory: codesFactory },
-  ],
 })
 /** Modal content for the settings of the chart widgets. */
 export class SafeChartSettingsComponent implements OnInit {
@@ -77,7 +63,7 @@ export class SafeChartSettingsComponent implements OnInit {
    *
    * @param event Event triggered on tab switch
    */
-  handleTabChange(event: MatTabChangeEvent): void {
-    this.selectedTab = event.index;
+  handleTabChange(event: number): void {
+    this.selectedTab = event;
   }
 }

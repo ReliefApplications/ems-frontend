@@ -10,7 +10,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import * as Survey from 'survey-angular';
 import {
   AddRecordMutationResponse,
@@ -20,7 +20,6 @@ import {
 } from './graphql/mutations';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeAuthService } from '../../services/auth/auth.service';
@@ -30,6 +29,7 @@ import { SafeRecordHistoryComponent } from '../record-history/record-history.com
 import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * This component is used to display forms
@@ -80,7 +80,7 @@ export class SafeFormComponent
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
-   * @param dialog This is the Angular Material Dialog service.
+   * @param dialog This is the Angular Dialog service.
    * @param apollo This is the Apollo client that is used to make GraphQL requests.
    * @param snackBar This is the service that allows you to show a snackbar message to the user.
    * @param authService This is the service that handles authentication.
@@ -90,9 +90,9 @@ export class SafeFormComponent
    * @param translate This is the service used to translate text
    */
   constructor(
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private authService: SafeAuthService,
     private layoutService: SafeLayoutService,
     private formBuilderService: SafeFormBuilderService,
@@ -384,7 +384,7 @@ export class SafeFormComponent
    */
   private confirmRevertDialog(record: any, version: any) {
     const dialogRef = this.formHelpersService.createRevertDialog(version);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<EditRecordMutationResponse>({

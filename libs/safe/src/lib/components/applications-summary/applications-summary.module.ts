@@ -3,15 +3,11 @@ import { CommonModule } from '@angular/common';
 import { SafeApplicationsSummaryComponent } from './applications-summary.component';
 import { SafeAddApplicationComponent } from './components/add-application/add-application.component';
 import { SafeApplicationSummaryComponent } from './components/application-summary/application-summary.component';
-import { MatRippleModule } from '@angular/material/core';
-import { SafeIconModule } from '../ui/icon/icon.module';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { MatIconModule } from '@angular/material/icon';
-import { SafeButtonModule } from '../ui/button/button.module';
+import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonModule } from '../../directives/skeleton/skeleton.module';
 import { SafeDateModule } from '../../pipes/date/date.module';
-import { SafeDividerModule } from '../ui/divider/divider.module';
+import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
 
 /**
  * SafeApplicationsSummaryModule is a class used to manage all the modules and components
@@ -25,15 +21,13 @@ import { SafeDividerModule } from '../ui/divider/divider.module';
   ],
   imports: [
     CommonModule,
-    MatRippleModule,
-    SafeIconModule,
-    MatMenuModule,
-    MatIconModule,
-    SafeButtonModule,
+    MenuModule,
+    IconModule,
     TranslateModule,
     SafeSkeletonModule,
     SafeDateModule,
-    SafeDividerModule,
+    DividerModule,
+    ButtonModule,
   ],
   exports: [
     SafeApplicationsSummaryComponent,

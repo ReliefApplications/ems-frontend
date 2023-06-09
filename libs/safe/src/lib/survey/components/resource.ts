@@ -1,11 +1,12 @@
 import { Apollo } from 'apollo-angular';
 import {
+  GET_SHORT_RESOURCE_BY_ID,
   GET_RESOURCE_BY_ID,
   GetResourceByIdQueryResponse,
 } from '../graphql/queries';
 import * as SurveyCreator from 'survey-creator';
 import { resourceConditions } from './resources';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
 import { DomService } from '../../services/dom/dom.service';
@@ -20,17 +21,25 @@ import { JsonMetadata, SurveyModel } from 'survey-angular';
  * @param Survey Survey library
  * @param domService Shared DOM service
  * @param apollo Apollo client
- * @param dialog Material dom service
+ * @param dialog Dialog
  * @param formBuilder Angular form service
  */
 export const init = (
   Survey: any,
   domService: DomService,
   apollo: Apollo,
-  dialog: MatDialog,
+  dialog: Dialog,
   formBuilder: UntypedFormBuilder
 ): void => {
-  const getResourceById = (data: {
+  const getResourceById = (data: { id: string }) =>
+    apollo.query<GetResourceByIdQueryResponse>({
+      query: GET_SHORT_RESOURCE_BY_ID,
+      variables: {
+        id: data.id,
+      },
+    });
+
+  const getResourceRecordsById = (data: {
     id: string;
     filters?: { field: string; operator: string; value: string }[];
   }) =>
@@ -181,7 +190,7 @@ export const init = (
                       },
                     }
                   );
-                  dialogRef.afterClosed().subscribe((res: any) => {
+                  dialogRef.closed.subscribe((res: any) => {
                     if (res && res.value.fields) {
                       currentQuestion.gridFieldsSettings = res.getRawValue();
                     }
@@ -208,19 +217,21 @@ export const init = (
         visibleIndex: 3,
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource) {
-            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const serverRes =
-                data.resource.records?.edges?.map((x) => x.node) || [];
-              const res = [];
-              res.push({ value: null });
-              for (const item of serverRes) {
-                res.push({
-                  value: item?.id,
-                  text: item?.data[obj.displayField || 'id'],
-                });
+            getResourceRecordsById({ id: obj.resource }).subscribe(
+              ({ data }) => {
+                const serverRes =
+                  data.resource.records?.edges?.map((x) => x.node) || [];
+                const res = [];
+                res.push({ value: null });
+                for (const item of serverRes) {
+                  res.push({
+                    value: item?.id,
+                    text: item?.data[obj.displayField || 'id'],
+                  });
+                }
+                choicesCallback(res);
               }
-              choicesCallback(res);
-            });
+            );
           }
         },
       });
@@ -550,7 +561,7 @@ export const init = (
     },
     populateChoices: (question: QuestionResource): void => {
       if (question.resource) {
-        getResourceById({ id: question.resource, filters }).subscribe(
+        getResourceRecordsById({ id: question.resource, filters }).subscribe(
           ({ data }) => {
             const serverRes =
               data.resource.records?.edges?.map((x) => x.node) || [];
@@ -561,6 +572,7 @@ export const init = (
                 text: item?.data[question.displayField || 'id'],
               });
             }
+            console.log(question);
             question.contentQuestion.choices = res;
             if (!question.placeholder) {
               question.contentQuestion.optionsCaption =

@@ -1,10 +1,9 @@
 import { Component, Inject } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
-import {
-  MatLegacyDialog as MatDialog,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { Dialog, DIALOG_DATA } from '@angular/cdk/dialog';
 import { clorophletForm, divisionForm } from '../../map-forms';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
 
 /** Interface of dialog data of the component */
 interface DialogData {
@@ -22,7 +21,7 @@ interface DialogData {
   templateUrl: './map-clorophlet.component.html',
   styleUrls: ['./map-clorophlet.component.scss'],
 })
-export class MapClorophletComponent {
+export class MapClorophletComponent extends SafeUnsubscribeComponent {
   public form!: UntypedFormGroup;
 
   public tableColumns = ['label', 'color', 'actions'];
@@ -45,12 +44,13 @@ export class MapClorophletComponent {
    * Single Clorophlet Configuration in Map Settings.
    *
    * @param data dialog data
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    */
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    private dialog: MatDialog
+    @Inject(DIALOG_DATA) public data: DialogData,
+    private dialog: Dialog
   ) {
+    super();
     this.form = clorophletForm(data.value);
     this.fields = data.fields;
     this.formattedFields = data.formattedFields;
@@ -92,7 +92,7 @@ export class MapClorophletComponent {
         query: this.query,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.divisions.setControl(index, divisionForm(value));
       }

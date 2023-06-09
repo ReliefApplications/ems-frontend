@@ -1,11 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  MatLegacyDialogModule as MatDialogModule,
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { SafeResourceModalComponent } from './resource-modal.component';
 import {
   DateTimeProvider,
@@ -19,6 +13,8 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
+import { DialogModule } from '@oort-front/ui';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 
 describe('SafeResourceModalComponent', () => {
   let component: SafeResourceModalComponent;
@@ -27,8 +23,8 @@ describe('SafeResourceModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: {} },
+        { provide: DialogRef, useValue: {} },
+        { provide: DIALOG_DATA, useValue: {} },
         OAuthService,
         UrlHelperService,
         OAuthLogger,
@@ -37,8 +33,7 @@ describe('SafeResourceModalComponent', () => {
       ],
       declarations: [SafeResourceModalComponent],
       imports: [
-        MatDialogModule,
-        MatSnackBarModule,
+        DialogModule,
         HttpClientModule,
         TranslateModule.forRoot({
           loader: {

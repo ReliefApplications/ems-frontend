@@ -1,9 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 
 /** Data for the dialog inputs */
 interface DialogData {
@@ -29,8 +26,8 @@ export class SafeExpandedCommentComponent implements OnInit {
    * @param fb Angular form builder
    */
   constructor(
-    public dialogRef: MatDialogRef<SafeExpandedCommentComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    public dialogRef: DialogRef<SafeExpandedCommentComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData,
     private fb: UntypedFormBuilder
   ) {}
 

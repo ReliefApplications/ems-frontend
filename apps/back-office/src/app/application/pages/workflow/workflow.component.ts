@@ -1,11 +1,10 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   Workflow,
   Step,
-  SafeSnackBarService,
   SafeConfirmService,
   ContentType,
   SafeApplicationService,
@@ -25,6 +24,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Application workflow page component.
@@ -67,7 +67,7 @@ export class WorkflowComponent
    * @param applicationService Shared application service
    * @param route Angular activated route
    * @param router Angular router
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param authService Shared authentication service
    * @param confirmService Shared confirm service
@@ -79,8 +79,8 @@ export class WorkflowComponent
     private applicationService: SafeApplicationService,
     private route: ActivatedRoute,
     private router: Router,
-    public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    public dialog: Dialog,
+    private snackBar: SnackbarService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
@@ -262,59 +262,61 @@ export class WorkflowComponent
         confirmText: this.translate.instant('components.confirmModal.delete'),
         confirmColor: 'warn',
       });
-      dialogRef.afterClosed().subscribe((value) => {
-        if (value) {
-          this.apollo
-            .mutate<DeleteStepMutationResponse>({
-              mutation: DELETE_STEP,
-              variables: {
-                id: step.id,
-              },
-            })
-            .subscribe({
-              next: ({ errors, data }) => {
-                if (errors) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectNotDeleted',
-                      {
-                        value: this.translate.instant('common.step.one'),
-                        error: errors ? errors[0].message : '',
-                      }
-                    ),
-                    { error: true }
-                  );
-                } else {
-                  if (data) {
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.apollo
+              .mutate<DeleteStepMutationResponse>({
+                mutation: DELETE_STEP,
+                variables: {
+                  id: step.id,
+                },
+              })
+              .subscribe({
+                next: ({ errors, data }) => {
+                  if (errors) {
                     this.snackBar.openSnackBar(
                       this.translate.instant(
-                        'common.notifications.objectDeleted',
+                        'common.notifications.objectNotDeleted',
                         {
                           value: this.translate.instant('common.step.one'),
+                          error: errors ? errors[0].message : '',
                         }
-                      )
+                      ),
+                      { error: true }
                     );
-                    this.steps = this.steps.filter(
-                      (x) => x.id !== data?.deleteStep.id
-                    );
-                    if (index === this.activeStep) {
-                      this.onOpenStep(-1);
-                    } else {
-                      if (currentStep) {
-                        this.activeStep = this.steps.findIndex(
-                          (x) => x.id === currentStep.id
-                        );
+                  } else {
+                    if (data) {
+                      this.snackBar.openSnackBar(
+                        this.translate.instant(
+                          'common.notifications.objectDeleted',
+                          {
+                            value: this.translate.instant('common.step.one'),
+                          }
+                        )
+                      );
+                      this.steps = this.steps.filter(
+                        (x) => x.id !== data?.deleteStep.id
+                      );
+                      if (index === this.activeStep) {
+                        this.onOpenStep(-1);
+                      } else {
+                        if (currentStep) {
+                          this.activeStep = this.steps.findIndex(
+                            (x) => x.id === currentStep.id
+                          );
+                        }
                       }
                     }
                   }
-                }
-              },
-              error: (err) => {
-                this.snackBar.openSnackBar(err.message, { error: true });
-              },
-            });
-        }
-      });
+                },
+                error: (err) => {
+                  this.snackBar.openSnackBar(err.message, { error: true });
+                },
+              });
+          }
+        });
     }
   }
 

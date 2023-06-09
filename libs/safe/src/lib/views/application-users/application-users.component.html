@@ -2,51 +2,47 @@
 <div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row">
   <!-- Actions -->
   <div class="flex gap-2 items-center ml-auto">
-    <safe-button
+    <ui-button
       icon="file_download"
       category="secondary"
       variant="primary"
-      [matMenuTriggerFor]="menu"
+      [uiMenuTriggerFor]="menu"
     >
       {{
         'common.exportObject'
           | translate : { name: 'common.user.few' | translate }
       }}
-    </safe-button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="onExport('csv')">.csv</button>
-      <button mat-menu-item (click)="onExport('xlsx')">.xlsx</button>
-    </mat-menu>
-    <safe-button
+    </ui-button>
+    <ui-menu #menu>
+      <button uiMenuItem (click)="onExport('csv')">.csv</button>
+      <button uiMenuItem (click)="onExport('xlsx')">.xlsx</button>
+    </ui-menu>
+    <ui-button
       icon="send"
       category="secondary"
       variant="primary"
       (click)="onInvite()"
     >
       {{ 'components.users.invite.confirm' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </div>
-<mat-tab-group>
+<ui-tabs>
   <!-- Manual assignment -->
-  <mat-tab>
-    <ng-template mat-tab-label>{{
+  <ui-tab>
+    <ng-container ngProjectAs="label">{{
       'components.application.users.manual' | translate
-    }}</ng-template>
-    <ng-template matTabContent>
-      <safe-user-list
-        [roles]="roles"
-        [positionAttributeCategories]="positionAttributeCategories"
-      ></safe-user-list>
-    </ng-template>
-  </mat-tab>
+    }}</ng-container>
+    <safe-user-list
+      [roles]="roles"
+      [positionAttributeCategories]="positionAttributeCategories"
+    ></safe-user-list>
+  </ui-tab>
   <!-- Automated assignment -->
-  <mat-tab>
-    <ng-template mat-tab-label>{{
+  <ui-tab>
+    <ng-container ngProjectAs="label">{{
       'components.application.users.auto' | translate
-    }}</ng-template>
-    <ng-template matTabContent>
-      <safe-user-list [autoAssigned]="true"></safe-user-list>
-    </ng-template>
-  </mat-tab>
-</mat-tab-group>
+    }}</ng-container>
+    <safe-user-list [autoAssigned]="true"></safe-user-list>
+  </ui-tab>
+</ui-tabs>

@@ -1,6 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { OAuthModule } from 'angular-oauth2-oidc';
 
 import { DashboardComponent } from './dashboard.component';
@@ -11,7 +10,7 @@ describe('DashboardComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HttpClientModule, OAuthModule.forRoot(), MatSnackBarModule],
+      imports: [HttpClientModule, OAuthModule.forRoot()],
       declarations: [DashboardComponent],
     }).compileComponents();
   });

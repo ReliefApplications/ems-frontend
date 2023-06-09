@@ -5,9 +5,6 @@ import { debounceTime } from 'rxjs/operators';
 import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { Resource } from '../../../models/resource.model';
-import { MAT_LEGACY_AUTOCOMPLETE_SCROLL_STRATEGY as MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/legacy-autocomplete';
-import { scrollFactory } from '../../config-display-grid-fields-modal/config-display-grid-fields-modal.component';
-import { Overlay } from '@angular/cdk/overlay';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 
@@ -19,13 +16,6 @@ import { takeUntil } from 'rxjs/operators';
   selector: 'safe-aggregation-builder',
   templateUrl: './aggregation-builder.component.html',
   styleUrls: ['./aggregation-builder.component.scss'],
-  providers: [
-    {
-      provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-  ],
 })
 export class SafeAggregationBuilderComponent
   extends SafeUnsubscribeComponent
