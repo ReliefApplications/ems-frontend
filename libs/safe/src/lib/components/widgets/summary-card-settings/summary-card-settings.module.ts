@@ -11,6 +11,7 @@ import {
   RadioModule,
   TooltipModule,
   TabsModule,
+  ToggleModule,
 } from '@oort-front/ui';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
@@ -45,6 +46,7 @@ import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
     FormWrapperModule,
     SafeSummaryCardModule,
     TabsModule,
+    ToggleModule,
   ],
   exports: [SafeSummaryCardSettingsComponent],
 })
