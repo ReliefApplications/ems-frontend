@@ -1,7 +1,6 @@
 import {
   Component,
   EventEmitter,
-  Inject,
   Input,
   OnDestroy,
   OnInit,
@@ -20,7 +19,6 @@ import {
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { updateQueryUniqueValues } from '../../utils/update-queries';
-import { DOCUMENT } from '@angular/common';
 
 /** Pagination */
 const ITEMS_PER_PAGE = 10;
@@ -57,13 +55,8 @@ export class SafeReferenceDataDropdownComponent
    *
    * @param apollo Apollo service
    * @param renderer Renderer2
-   * @param document Document
    */
-  constructor(
-    private apollo: Apollo,
-    private renderer: Renderer2,
-    @Inject(DOCUMENT) private document: Document
-  ) {
+  constructor(private apollo: Apollo, private renderer: Renderer2) {
     super();
   }
 
@@ -117,7 +110,7 @@ export class SafeReferenceDataDropdownComponent
    *
    */
   onOpenSelect(): void {
-    const panel = this.document.getElementById('optionList');
+    const panel = document.getElementById('optionList');
     if (panel) {
       if (this.scrollListener) {
         this.scrollListener();
