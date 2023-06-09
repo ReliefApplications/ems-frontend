@@ -82,7 +82,7 @@ export class DashboardFilterComponent
    *
    * @param uiSidenav MatDrawerContent
    * @param hostElement Host/Component Element
-   * @param dialog The material dialog service
+   * @param dialog The Dialog service
    * @param apollo Apollo client
    * @param applicationService Shared application service
    * @param snackBar Shared snackbar service

@@ -69,7 +69,7 @@ export class ApiConfigurationsComponent
    * API configurations page component
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param confirmService Shared confirm service
    * @param router Angular router

@@ -53,7 +53,7 @@ export class SafeRoleListComponent
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
-   * @param dialog This is the Angular Material Dialog service.
+   * @param dialog This is the Angular Dialog service.
    * @param applicationService This is the service that will be used to get
    * the application data from the backend.
    * @param apollo This is the Apollo client that will be used to make GraphQL

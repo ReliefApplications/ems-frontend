@@ -27,7 +27,7 @@ export class SafeAccessComponent extends SafeUnsubscribeComponent {
    * The constructor function is a special function that is called when a new instance of the class is
    * created
    *
-   * @param {Dialog} dialog - Dialog - This is the material service that is used to open modal dialogs with Material Design styling and animations.
+   * @param {Dialog} dialog - Dialog - This is the service that is used to open modal dialogs
    */
   constructor(private dialog: Dialog) {
     super();

@@ -89,7 +89,7 @@ export class EditDistributionListModalComponent implements OnInit {
    *
    * @param formBuilder Angular form builder service
    * @param translateService TranslateService
-   * @param dialogRef Material dialog ref of the component
+   * @param dialogRef Dialog ref of the component
    * @param data Data input of the modal
    */
   constructor(

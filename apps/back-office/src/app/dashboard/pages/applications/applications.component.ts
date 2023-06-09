@@ -75,7 +75,7 @@ export class ApplicationsComponent
    * Applications page component
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param router Angular router
    * @param snackBar Shared snackbar service
    * @param previewService Shared preview service

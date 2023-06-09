@@ -53,7 +53,7 @@ export class SettingsComponent
    * @param applicationService Shared application service
    * @param authService Shared authentication service
    * @param confirmService Shared confirm service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param translate Angular translate service
    * @param layoutService Shared layout service
    */

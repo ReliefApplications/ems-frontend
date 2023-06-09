@@ -76,7 +76,7 @@ export class ReferenceDatasComponent
    * List of Reference data page.
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param authService Shared authentication service
    * @param confirmService Shared confirm service

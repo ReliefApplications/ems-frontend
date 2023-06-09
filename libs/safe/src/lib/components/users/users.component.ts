@@ -57,7 +57,7 @@ export class SafeUsersComponent
    *
    * @param apollo The apollo client
    * @param snackBar The snack bar service
-   * @param dialog The material dialog service
+   * @param dialog The Dialog service
    * @param downloadService The download service
    * @param confirmService The confirm service
    * @param translate The translation service

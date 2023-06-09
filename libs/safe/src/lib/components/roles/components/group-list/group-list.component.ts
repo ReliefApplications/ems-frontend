@@ -45,7 +45,7 @@ export class SafeGroupListComponent
    * This component is used to display the groups tab in the platform
    *
    * @param apollo This is the Apollo client that will be used to make GraphQL
-   * @param dialog This is the Angular Material Dialog service.
+   * @param dialog This is the Angular Dialog service.
    * @param snackBar This is the service that will be used to display the snackbar.
    * @param confirmService This is the service that will be used to display the confirm window.
    * @param translate This is the service that is used to

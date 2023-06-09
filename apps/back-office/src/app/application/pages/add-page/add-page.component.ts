@@ -64,7 +64,7 @@ export class AddPageComponent
    * @param formBuilder Angular form builder
    * @param apollo Apollo service
    * @param applicationService Shared application service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    */

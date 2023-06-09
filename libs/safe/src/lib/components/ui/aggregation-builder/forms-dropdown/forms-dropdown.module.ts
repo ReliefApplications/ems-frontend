@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeFormsDropdownComponent } from './forms-dropdown.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   SpinnerModule,
@@ -21,7 +20,6 @@ import {
     TranslateModule,
     FormsModule,
     ReactiveFormsModule,
-    MatAutocompleteModule,
     IconModule,
     SpinnerModule,
     FormWrapperModule,

@@ -49,7 +49,7 @@ export class EditChannelModalComponent implements OnInit {
    * Edit channel component
    *
    * @param formBuilder Angular form builder
-   * @param dialogRef Material dialog ref
+   * @param dialogRef Dialog ref
    * @param data Injected dialog data
    * @param data.channel channel to edit
    */

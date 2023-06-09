@@ -39,7 +39,7 @@ export class SubscriptionsComponent
    * Application subscriptions page component
    *
    * @param applicationService Shared application service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param apollo Apollo service
    */
   constructor(

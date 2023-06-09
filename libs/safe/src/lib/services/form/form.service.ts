@@ -25,7 +25,7 @@ export class SafeFormService {
    *
    * @param environment Current environment
    * @param domService Shared DOM service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param apollo Apollo client
    * @param formBuilder Angular form builder
    * @param authService Shared authentication service
