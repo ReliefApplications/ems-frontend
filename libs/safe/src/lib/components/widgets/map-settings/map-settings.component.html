@@ -1,35 +1,54 @@
-<mat-drawer-container class="grow bg-transparent" autosize *ngIf="tileForm">
-  <mat-drawer class="border-none pr-2" mode="side" [opened]="true">
-    <safe-button
-      icon="map"
-      [attr.data-selected]="currentTab === 'parameters'"
-      (click)="handleTabChange('parameters')"
-    >
-      {{ 'components.widget.settings.map.properties.title' | translate }}
-    </safe-button>
+<ui-sidenav-container *ngIf="tileForm" class="grow bg-transparent">
+  <div
+    uiSidenavDirective
+    #nav="uiSidenavDirective"
+    class="border-none pr-2"
+    mode="side"
+    [opened]="true"
+  >
+    <ui-tabs [vertical]="true" class="grow">
+      <ui-tab>
+        <ng-container ngProjectAs="label">
+          <ui-button
+            icon="map"
+            [attr.data-selected]="currentTab === 'parameters'"
+            (click)="handleTabChange('parameters')"
+          >
+            {{ 'components.widget.settings.map.properties.title' | translate }}
+          </ui-button>
+        </ng-container>
+      </ui-tab>
+      <ui-tab>
+        <ng-container ngProjectAs="label">
+          <ui-button
+            icon="layers"
+            [attr.data-selected]="currentTab === 'layers'"
+            (click)="handleTabChange('layers')"
+          >
+            {{ 'common.layers' | translate }}
+          </ui-button>
+        </ng-container>
+      </ui-tab>
+      <ui-tab>
+        <ng-container ngProjectAs="label">
+          <ui-button
+            icon="settings_overscan"
+            [attr.data-selected]="currentTab === 'display'"
+            (click)="handleTabChange('display')"
+          >
+            {{ 'models.widget.display.title' | translate }}
+          </ui-button>
+        </ng-container>
+      </ui-tab>
+    </ui-tabs>
 
-    <safe-button
-      icon="layers"
-      [attr.data-selected]="currentTab === 'layers'"
-      (click)="handleTabChange('layers')"
-    >
-      {{ 'common.layers' | translate }}
-    </safe-button>
-    <safe-button
-      icon="settings_overscan"
-      [attr.data-selected]="currentTab === 'display'"
-      (click)="handleTabChange('display')"
-    >
-      {{ 'models.widget.display.title' | translate }}
-    </safe-button>
     <ng-container *ngIf="currentTab === 'layer' && layerComponent">
-      <safe-divider></safe-divider>
+      <ui-divider></ui-divider>
       <ng-container
         [ngTemplateOutlet]="layerComponent.layerNavigationTemplate"
       ></ng-container>
     </ng-container>
-  </mat-drawer>
-
+  </div>
   <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
     <ng-container *ngIf="currentTab">
       <div
@@ -75,17 +94,16 @@
       ></safe-map>
     </div>
   </div>
-</mat-drawer-container>
 
-<ng-container *ngIf="currentTab === 'layer'">
-  <safe-map-layer
-    [layer]="openedLayers[0]"
-    [mapComponent]="mapComponent"
-    (layerToSave)="saveLayer($event)"
-    (layerToOpen)="onEditLayer($event)"
-  ></safe-map-layer>
-</ng-container>
-<!-- <ng-container *ngIf="tileForm">
+  <ng-container *ngIf="currentTab === 'layer'">
+    <safe-map-layer
+      [layer]="openedLayers[0]"
+      [mapComponent]="mapComponent"
+      (layerToSave)="saveLayer($event)"
+      (layerToOpen)="onEditLayer($event)"
+    ></safe-map-layer>
+  </ng-container>
+  <!-- <ng-container *ngIf="tileForm">
   <ui-tabs [vertical]="true" class="grow">
     <ui-tab>
       <ng-container ngProjectAs="label">
@@ -141,3 +159,4 @@
     </ui-tab>
   </ui-tabs>
 </ng-container> -->
+</ui-sidenav-container>

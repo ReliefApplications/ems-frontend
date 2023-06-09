@@ -14,12 +14,15 @@ import get from 'lodash/get';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '../../../ui/modal/modal.module';
-import { EditorModule } from '@tinymce/tinymce-angular';
 import { SafeEditorControlComponent } from '../../../editor-control/editor-control.component';
 import { RawEditorSettings } from 'tinymce';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
-import { ButtonModule, SelectMenuModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  IconModule,
+  SelectMenuModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import { DialogModule, FormWrapperModule } from '@oort-front/ui';
 
 /** Model for the data input */
@@ -48,6 +51,8 @@ const SUBJECT_EDITOR_AUTOCOMPLETE_KEYS = ['{{now}}', '{{today}}'];
     SafeEditorControlComponent,
     ButtonModule,
     SelectMenuModule,
+    IconModule,
+    TooltipModule,
   ],
   // providers: [
   //   { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },

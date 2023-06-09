@@ -35,6 +35,10 @@ export class SliderComponent
    * Maximum value of the slider
    */
   @Input() maxValue = 100;
+  /**
+   * Step value of each tick
+   */
+  @Input() step = 1;
 
   //In order to define left position of the bubble linked to the slider
   bubbleStyle = '';

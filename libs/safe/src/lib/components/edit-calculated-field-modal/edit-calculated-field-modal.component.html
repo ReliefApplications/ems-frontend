@@ -12,7 +12,7 @@
   <ng-container ngProjectAs="content">
     <form [formGroup]="form">
       <div class="flex flex-col">
-        <div uiFormFieldDirective >
+        <div uiFormFieldDirective>
           <label>{{
             'components.aggregationBuilder.fieldName' | translate
           }}</label>
@@ -23,24 +23,24 @@
             variant="grey"
             uiSuffix
             [uiTooltip]="'components.calculatedFields.hint.name' | translate"
-          ></safe-icon>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{
+          ></ui-icon>
+        </div>
+        <div uiFormFieldDirective>
+          <label>{{
             'components.calculatedFields.expression' | translate
-          }}</mat-label>
+          }}</label>
           <safe-editor-control
             formControlName="expression"
             [editorConfig]="editor"
           ></safe-editor-control>
-          <safe-icon
+          <ui-icon
             icon="info"
             class="cursor-pointer"
             variant="grey"
-            matSuffix
-            [matTooltip]="'common.tooltip.editor.insert' | translate"
-          ></safe-icon>
-        </mat-form-field>
+            uiSuffix
+            [uiTooltip]="'common.tooltip.editor.insert' | translate"
+          ></ui-icon>
+        </div>
       </div>
     </form>
   </ng-container>

@@ -29,22 +29,20 @@
         <label>{{ 'components.templates.edit.subject' | translate }}</label>
         <input formControlName="subject" type="text" />
       </div>
-      <mat-form-field appearance="outline">
-        <mat-label>{{
-          'components.templates.edit.subject' | translate
-        }}</mat-label>
+      <div uiFormFieldDirective>
+        <label>{{ 'components.templates.edit.subject' | translate }}</label>
         <safe-editor-control
           formControlName="subject"
           [editorConfig]="subjectEditor"
         ></safe-editor-control>
-        <safe-icon
+        <ui-icon
           icon="info"
           class="cursor-pointer"
           variant="grey"
-          matSuffix
-          [matTooltip]="'common.tooltip.editor.insert' | translate"
-        ></safe-icon>
-      </mat-form-field>
+          uiSuffix
+          [uiTooltip]="'common.tooltip.editor.insert' | translate"
+        ></ui-icon>
+      </div>
       <editor [init]="editor" formControlName="body"></editor>
     </form>
   </ng-container>

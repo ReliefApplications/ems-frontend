@@ -8,22 +8,23 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { SafeDividerModule } from '../../../../../ui/divider/divider.module';
-import { SafeButtonModule } from '../../../../../ui/button/button.module';
 import { Fields } from '../../layer-fields/layer-fields.component';
 import { Observable, takeUntil } from 'rxjs';
 import { SafeEditorControlComponent } from '../../../../../editor-control/editor-control.component';
 import { INLINE_EDITOR_CONFIG } from '../../../../../../const/tinymce.const';
 import { SafeEditorService } from '../../../../../../services/editor/editor.service';
-import { SafeIconModule } from '../../../../../ui/icon/icon.module';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { SafeUnsubscribeComponent } from '../../../../../utils/unsubscribe/unsubscribe.component';
 import {
   ListBoxModule,
   ListBoxToolbarConfig,
 } from '@progress/kendo-angular-listbox';
+import {
+  ButtonModule,
+  DividerModule,
+  FormWrapperModule,
+  IconModule,
+  TooltipModule,
+} from '@oort-front/ui';
 /**
  * Popup fields element component.
  */
@@ -35,13 +36,12 @@ import {
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    MatFormFieldModule,
-    MatInputModule,
-    SafeDividerModule,
-    SafeButtonModule,
+    FormWrapperModule,
+    DividerModule,
+    ButtonModule,
     SafeEditorControlComponent,
-    SafeIconModule,
-    MatTooltipModule,
+    IconModule,
+    TooltipModule,
     ListBoxModule,
   ],
   templateUrl: './fields-element.component.html',

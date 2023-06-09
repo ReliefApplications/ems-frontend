@@ -7,151 +7,148 @@
           {{ 'components.widget.settings.map.properties.title' | translate }}
         </h2>
         <!-- Close button -->
-        <safe-button
+        <ui-button
           [isIcon]="true"
           icon="close"
           (click)="close.emit()"
-        ></safe-button>
+        ></ui-button>
       </div>
       <!-- Widget ( map ) name -->
-      <mat-form-field appearance="outline" class="p-0">
-        <mat-label>{{ 'common.name' | translate }}</mat-label>
-        <input matInput formControlName="title" type="string" />
-      </mat-form-field>
-      <safe-divider></safe-divider>
+      <div uiFormFieldDirective class="p-0">
+        <label>{{ 'common.name' | translate }}</label>
+        <input formControlName="title" type="string" />
+      </div>
+      <ui-divider></ui-divider>
       <!-- Basemap -->
-      <mat-form-field appearance="outline" class="p-0">
-        <mat-label>{{
+      <div uiFormFieldDirective class="p-0">
+        <label>{{
           'components.widget.settings.map.properties.basemap' | translate
-        }}</mat-label>
-        <mat-select formControlName="basemap" placeholder="OSM">
-          <mat-option *ngFor="let map of baseMaps" [value]="map">
+        }}</label>
+        <ui-select-menu formControlName="basemap" placeholder="OSM">
+          <ui-select-option *ngFor="let map of baseMaps" [value]="map">
             {{ map }}
-          </mat-option>
-        </mat-select>
+          </ui-select-option>
+        </ui-select-menu>
         <!-- Info todo(translate)-->
-        <safe-icon
-          matSuffix
+        <ui-icon
+          uiSuffix
           icon="info"
           class="cursor-pointer"
           variant="grey"
-          matTooltip="Selecting a basemap will override basemap from webmap if any"
-        ></safe-icon>
+          uiTooltip="Selecting a basemap will override basemap from webmap if any"
+        ></ui-icon>
         <!-- Remove value -->
-        <safe-button
-          matSuffix
+        <ui-button
+          uiSuffix
           (click)="clearFormField('basemap', $event)"
           [isIcon]="true"
           icon="close"
           variant="danger"
-        ></safe-button>
-      </mat-form-field>
-      <safe-divider></safe-divider>
+        ></ui-button>
+      </div>
+      <ui-divider></ui-divider>
       <!-- Webmap selection -->
       <safe-webmap-select formControlName="arcGisWebMap"></safe-webmap-select>
-      <safe-divider></safe-divider>
+      <ui-divider></ui-divider>
       <!-- Default view -->
       <div class="w-full" formGroupName="initialState">
         <div class="flex flex-col flex-1" formGroupName="viewpoint">
           <!-- Default zoom -->
-          <mat-label>
+          <label>
             {{ 'components.widget.settings.map.properties.zoom' | translate }}
-            <safe-icon
+            <ui-icon
               icon="info_outline"
               class="cursor-pointer"
-              [matTooltip]="
+              [uiTooltip]="
                 'components.widget.settings.map.properties.zoom' | translate
               "
-              [inline]="true"
               [size]="18"
               variant="grey"
-            ></safe-icon>
-          </mat-label>
-          <mat-slider
-            thumbLabel
-            tickInterval="1"
+            ></ui-icon>
+          </label>
+          <ui-slider
             formControlName="zoom"
-            [min]="2"
-            [max]="18"
-          ></mat-slider>
+            [minValue]="2"
+            [maxValue]="18"
+          ></ui-slider>
           <div formGroupName="center" class="flex flex-wrap gap-2">
             <!-- Default latitude -->
-            <mat-form-field appearance="outline" class="flex-1">
-              <mat-label>
+            <div
+              [uiErrorMessage]="
+                'components.widget.settings.map.errors.latitude' | translate
+              "
+              [uiErrorMessageIf]="
+                form.get('initialState.viewpoint.center.latitude')!.errors
+              "
+              uiFormFieldDirective
+              class="flex-1"
+            >
+              <label>
                 {{
                   'components.widget.settings.map.properties.latitude'
                     | translate
                 }}
-              </mat-label>
-              <input type="number" matInput formControlName="latitude" />
-              <safe-icon
-                matSuffix
+              </label>
+              <input type="number" formControlName="latitude" />
+              <ui-icon
+                uiSuffix
                 icon="info"
                 class="cursor-pointer"
                 variant="grey"
-                [matTooltip]="
+                [uiTooltip]="
                   'components.widget.settings.map.tooltip.default.latitude'
                     | translate
                 "
-              ></safe-icon>
-              <mat-error
-                *ngIf="
-                  form.get('initialState.viewpoint.center.latitude')!.errors
-                "
-              >
-                {{
-                  'components.widget.settings.map.errors.latitude' | translate
-                }}
-              </mat-error>
-            </mat-form-field>
+              ></ui-icon>
+            </div>
             <!-- Default longitude -->
-            <mat-form-field appearance="outline" class="flex-1">
-              <mat-label>
+            <div
+              [uiErrorMessage]="
+                'components.widget.settings.map.errors.longitude' | translate
+              "
+              [uiErrorMessageIf]="
+                form.get('initialState.viewpoint.center.longitude')!.errors
+              "
+              uiFormFieldDirective
+              class="flex-1"
+            >
+              <label>
                 {{
                   'components.widget.settings.map.properties.longitude'
                     | translate
                 }}
-              </mat-label>
-              <input type="number" matInput formControlName="longitude" />
-              <safe-icon
-                matSuffix
+              </label>
+              <input type="number" formControlName="longitude" />
+              <ui-icon
+                uiSuffix
                 icon="info"
                 class="cursor-pointer"
                 variant="grey"
-                [matTooltip]="
+                [uiTooltip]="
                   'components.widget.settings.map.tooltip.default.longitude'
                     | translate
                 "
-              ></safe-icon>
-              <mat-error
-                *ngIf="
-                  form.get('initialState.viewpoint.center.longitude')!.errors
-                "
-              >
-                {{
-                  'components.widget.settings.map.errors.longitude' | translate
-                }}
-              </mat-error>
-            </mat-form-field>
+              ></ui-icon>
+            </div>
           </div>
         </div>
       </div>
       <!-- Use map to set properties -->
-      <safe-button
+      <ui-button
         class="self-end flex-1"
         (click)="onSetByMap()"
         category="secondary"
         variant="primary"
       >
         {{ 'components.widget.settings.map.properties.setByMap' | translate }}
-      </safe-button>
-      <safe-divider></safe-divider>
+      </ui-button>
+      <ui-divider></ui-divider>
       <!-- Map controls -->
       <safe-map-controls
         formGroupName="controls"
         [form]="controlsFormGroup"
       ></safe-map-controls>
-<!-- <form [formGroup]="form" class="overflow-hidden">
+      <!-- <form [formGroup]="form" class="overflow-hidden">
   <div class="flex flex-col last:mb-0">
     <h2>
       {{ 'components.widget.settings.map.properties.title' | translate }}

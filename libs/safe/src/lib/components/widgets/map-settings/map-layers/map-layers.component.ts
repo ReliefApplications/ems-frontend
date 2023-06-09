@@ -9,13 +9,14 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { AddLayerModalComponent } from '../add-layer-modal/add-layer-modal.component';
 import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
 import { LayerModel } from '../../../../models/layer.model';
 import { LayerType } from '../../../ui/map/interfaces/layer-settings.type';
+import { Dialog } from '@angular/cdk/dialog';
+import { takeUntil } from 'rxjs';
 
 /**
  * Layers configuration component of Map Widget.
@@ -47,7 +48,7 @@ export class MapLayersComponent
    * @param mapLayersService Shared map layers service
    */
   constructor(
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private mapLayersService: SafeMapLayersService
   ) {
     super();
@@ -101,9 +102,9 @@ export class MapLayersComponent
     const dialogRef = this.dialog.open(AddLayerModalComponent, {
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe((id) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((id) => {
       if (id) {
-        this.onEditLayer(id);
+        this.onEditLayer(id as string);
       }
     });
   }

@@ -3,11 +3,10 @@ import { CommonModule } from '@angular/common';
 import { LayerStylingComponent } from './layer-styling.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { SimpleRendererComponent } from './simple-renderer/simple-renderer.component';
 import { HeatmapRendererComponent } from './heatmap-renderer/heatmap-renderer.component';
 import { UniqueValueRendererComponent } from './unique-value-renderer/unique-value-renderer.component';
+import { FormWrapperModule, SelectMenuModule } from '@oort-front/ui';
 
 /**
  * Layer styling module.
@@ -19,8 +18,8 @@ import { UniqueValueRendererComponent } from './unique-value-renderer/unique-val
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    MatSelectModule,
-    MatFormFieldModule,
+    SelectMenuModule,
+    FormWrapperModule,
     SimpleRendererComponent,
     HeatmapRendererComponent,
     UniqueValueRendererComponent,

@@ -11,9 +11,6 @@ import { SafeEditorService } from '../../services/editor/editor.service';
 import { getCalcKeys, getDataKeys, getInfoKeys } from './utils/keys';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { SafeModalModule } from '../ui/modal/modal.module';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { SafeEditorControlComponent } from '../editor-control/editor-control.component';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import {
@@ -21,6 +18,7 @@ import {
   ButtonModule,
   TooltipModule,
   FormWrapperModule,
+  IconModule,
 } from '@oort-front/ui';
 /**
  * Interface describing the structure of the data displayed in the dialog
@@ -39,10 +37,7 @@ interface DialogData {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    SafeModalModule,
+    IconModule,
     SafeEditorControlComponent,
     FormWrapperModule,
     DialogModule,

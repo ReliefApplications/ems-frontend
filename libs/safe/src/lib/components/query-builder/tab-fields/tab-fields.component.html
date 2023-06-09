@@ -156,19 +156,22 @@
         </div>
       </div>
       <!-- Display format -->
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{
+      <div uiFormFieldDirective class="w-full">
+        <label>{{
           'components.queryBuilder.fields.format.title' | translate
-        }}</mat-label>
-        <safe-editor-control formControlName="format" [editorConfig]="editor"></safe-editor-control>
-        <safe-icon
+        }}</label>
+        <safe-editor-control
+          formControlName="format"
+          [editorConfig]="editor"
+        ></safe-editor-control>
+        <ui-icon
           icon="info"
           class="cursor-pointer"
           variant="grey"
-          matSuffix
-          [matTooltip]="'components.queryBuilder.fields.format.info'  | translate"
-        ></safe-icon>
-      </mat-form-field>
+          uiSuffix
+          [uiTooltip]="'components.queryBuilder.fields.format.info' | translate"
+        ></ui-icon>
+      </div>
     </form>
   </ng-container>
   <ng-container

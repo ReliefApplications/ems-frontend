@@ -3,20 +3,21 @@ import { CommonModule } from '@angular/common';
 import { SafeMapSettingsComponent } from './map-settings.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeIconModule } from '../../ui/icon/icon.module';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 import { MapLayersModule } from './map-layers/map-layers.module';
 import { MapPropertiesModule } from './map-properties/map-properties.module';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { SafeButtonModule } from '../../ui/button/button.module';
 import { MapModule } from '../../ui/map/map.module';
-import { SafeDividerModule } from '../../ui/divider/divider.module';
 import { MapLayerModule } from './map-layer/map-layer.module';
-import { IconModule, TabsModule } from '@oort-front/ui';
-import { MapGeneralModule } from './map-general/map-general.module';
-import { MapLayersModule } from './map-layers/map-layers.module';
-import { MapPropertiesModule } from './map-properties/map-properties.module';
+import {
+  ButtonModule,
+  DividerModule,
+  IconModule,
+  SidenavContainerModule,
+  TabsModule,
+} from '@oort-front/ui';
+// import { MapGeneralModule } from './map-general/map-general.module';
+// import { MapLayersModule } from './map-layers/map-layers.module';
+// import { MapPropertiesModule } from './map-properties/map-properties.module';
 import { TooltipModule } from '@oort-front/ui';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 
@@ -29,17 +30,19 @@ import { DisplaySettingsComponent } from '../common/display-settings/display-set
     ReactiveFormsModule,
     IconModule,
     TranslateModule,
-    MatTabsModule,
+    TabsModule,
     MapLayersModule,
     MapPropertiesModule,
-    MatTooltipModule,
+    TooltipModule,
     MatSidenavModule,
     MapModule,
-    SafeButtonModule,
-    SafeDividerModule,
+    ButtonModule,
+    DividerModule,
     MapLayerModule,
     TabsModule,
-    MapGeneralModule,
+    SidenavContainerModule,
+    // @TODO TAILWIND
+    // MapGeneralModule,
     MapLayersModule,
     MapPropertiesModule,
     TooltipModule,

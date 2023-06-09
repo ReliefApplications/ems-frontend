@@ -2,11 +2,9 @@ import { Component, Input, Inject, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IconPickerModule } from '../../../../../icon-picker/icon-picker.module';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsModule } from '@progress/kendo-angular-inputs';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
-import { MatSliderModule } from '@angular/material/slider';
+import { FormWrapperModule, SliderModule, SpinnerModule } from '@oort-front/ui';
 
 /**
  * Layer simple renderer settings component.
@@ -19,11 +17,11 @@ import { MatSliderModule } from '@angular/material/slider';
     FormsModule,
     ReactiveFormsModule,
     IconPickerModule,
-    MatFormFieldModule,
+    FormWrapperModule,
     TranslateModule,
     InputsModule,
-    MatProgressSpinnerModule,
-    MatSliderModule,
+    SpinnerModule,
+    SliderModule,
   ],
   templateUrl: './simple-renderer.component.html',
   styleUrls: ['./simple-renderer.component.scss'],

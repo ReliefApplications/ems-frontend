@@ -184,11 +184,13 @@ export class SafeMapSettingsComponent
         confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'warn',
       });
-      confirmDialogRef.afterClosed().subscribe((value: any) => {
-        if (value) {
-          this.openTab(selectedTab);
-        }
-      });
+      confirmDialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.openTab(selectedTab);
+          }
+        });
     } else {
       this.openTab(selectedTab);
     }

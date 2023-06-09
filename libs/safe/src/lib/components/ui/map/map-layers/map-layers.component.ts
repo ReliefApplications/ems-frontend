@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
-import { SafeButtonModule } from '../../button/button.module';
 import { CommonModule } from '@angular/common';
-import { SafeDividerModule } from '../../divider/divider.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { ButtonModule, DividerModule } from '@oort-front/ui';
 
 /**
  * Map layers component
@@ -10,7 +9,7 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'safe-map-layers',
   standalone: true,
-  imports: [SafeButtonModule, CommonModule, SafeDividerModule, TranslateModule],
+  imports: [ButtonModule, CommonModule, DividerModule, TranslateModule],
   templateUrl: './map-layers.component.html',
   styleUrls: ['./map-layers.component.scss'],
 })

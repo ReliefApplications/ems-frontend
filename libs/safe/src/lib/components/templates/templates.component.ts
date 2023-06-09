@@ -5,6 +5,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SnackbarService } from '@oort-front/ui';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * A component to display the list of templates of an application

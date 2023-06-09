@@ -2,16 +2,17 @@ import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormArray, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { SimpleRendererComponent } from '../simple-renderer/simple-renderer.component';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { SafeButtonModule } from '../../../../../ui/button/button.module';
 import { createUniqueValueInfoForm } from '../../../map-forms';
 import { SafeIconDisplayModule } from '../../../../../../pipes/icon-display/icon-display.module';
 import { Fields } from '../../layer-fields/layer-fields.component';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { SafeIconModule } from '../../../../../ui/icon/icon.module';
+import {
+  ButtonModule,
+  FormWrapperModule,
+  IconModule,
+  SelectMenuModule,
+} from '@oort-front/ui';
 
 /**
  * Unique value renderer layer settings.
@@ -23,13 +24,12 @@ import { SafeIconModule } from '../../../../../ui/icon/icon.module';
     CommonModule,
     ReactiveFormsModule,
     SimpleRendererComponent,
-    MatInputModule,
-    MatFormFieldModule,
-    SafeButtonModule,
+    ButtonModule,
+    FormWrapperModule,
     SafeIconDisplayModule,
-    MatSelectModule,
+    SelectMenuModule,
     DragDropModule,
-    SafeIconModule,
+    IconModule,
   ],
   templateUrl: './unique-value-renderer.component.html',
   styleUrls: ['./unique-value-renderer.component.scss'],

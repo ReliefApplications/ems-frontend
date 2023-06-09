@@ -3,7 +3,6 @@ import {
   Component,
   ElementRef,
   HostBinding,
-  Inject,
   Input,
   OnChanges,
   OnDestroy,
@@ -13,11 +12,6 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
-import {
-  MatLegacyFormField as MatFormField,
-  MatLegacyFormFieldControl as MatFormFieldControl,
-  MAT_LEGACY_FORM_FIELD as MAT_FORM_FIELD,
-} from '@angular/material/legacy-form-field';
 import { Subject } from 'rxjs';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import {
@@ -36,20 +30,11 @@ import { RawEditorSettings } from 'tinymce';
   templateUrl: './editor-control.component.html',
   styleUrls: ['./editor-control.component.scss'],
   providers: [
-    {
-      provide: MatFormFieldControl,
-      useExisting: SafeEditorControlComponent,
-    },
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
   ],
 })
 export class SafeEditorControlComponent
-  implements
-    ControlValueAccessor,
-    MatFormFieldControl<string | null>,
-    OnDestroy,
-    AfterViewInit,
-    OnChanges
+  implements ControlValueAccessor, OnDestroy, AfterViewInit, OnChanges
 {
   static nextId = 0;
 
@@ -173,13 +158,11 @@ export class SafeEditorControlComponent
    *
    * @param editorService editor service
    * @param elementRef shared element ref service
-   * @param formField MatFormField
    * @param ngControl form control shared service
    */
   constructor(
     private editorService: SafeEditorService,
     private elementRef: ElementRef<HTMLElement>,
-    @Optional() @Inject(MAT_FORM_FIELD) public formField: MatFormField,
     @Optional() @Self() public ngControl: NgControl
   ) {
     if (this.ngControl != null) {

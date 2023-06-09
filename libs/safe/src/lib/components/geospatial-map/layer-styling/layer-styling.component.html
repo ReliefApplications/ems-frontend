@@ -10,121 +10,118 @@
       class="hover:cursor-pointer hover:bg-gray-200 rounded-full p-2"
       (click)="close.emit()"
     >
-      <mat-icon class="text-gray-600">close</mat-icon>
+      <ui-icon class="text-gray-600">close</ui-icon>
     </div>
   </span>
   <form [formGroup]="styleForm">
     <ng-container *ngIf="selectedLayerType === 'Polygon'">
-      <safe-divider
+      <ui-divider
         [text]="
           'components.widget.settings.map.geospatial.layersStyles.fill.title'
             | translate
         "
         class="mt-0"
-      ></safe-divider>
+      ></ui-divider>
       <!-- Fill color -->
-      <mat-form-field appearance="outline">
-        <mat-label>{{
+      <div uiFormFieldDirective>
+        <label>{{
           'components.widget.settings.map.geospatial.layersStyles.fill.color'
             | translate
-        }}</mat-label>
-        <input matInput type="color" formControlName="fillColor" />
-      </mat-form-field>
+        }}</label>
+        <input type="color" formControlName="fillColor" />
+      </div>
 
       <!-- Fill opacity -->
-      <mat-form-field appearance="outline">
-        <mat-label>{{
+      <div uiFormFieldDirective>
+        <label>{{
           'components.widget.settings.map.geospatial.layersStyles.fill.opacity'
             | translate
-        }}</mat-label>
+        }}</label>
         <input
-          matInput
           type="number"
           step=".1"
           min="0"
           max="1"
           formControlName="fillOpacity"
         />
-      </mat-form-field>
+      </div>
     </ng-container>
     <ng-container
       *ngIf="
         selectedLayerType === 'Polygon' || selectedLayerType === 'LineString'
       "
     >
-      <safe-divider
+      <ui-divider
         [text]="
           'components.widget.settings.map.geospatial.layersStyles.outline.title'
             | translate
         "
         [ngClass]="{ 'mt-0': selectedLayerType === 'LineString' }"
-      ></safe-divider>
+      ></ui-divider>
       <!-- Outline color -->
-      <mat-form-field appearance="outline">
-        <mat-label>{{
+      <div uiFormFieldDirective>
+        <label>{{
           'components.widget.settings.map.geospatial.layersStyles.outline.color'
             | translate
-        }}</mat-label>
-        <input matInput type="color" formControlName="color" />
-      </mat-form-field>
+        }}</label>
+        <input type="color" formControlName="color" />
+      </div>
 
       <!-- Outline opacity -->
-      <mat-form-field appearance="outline">
-        <mat-label>{{
+      <div uiFormFieldDirective>
+        <label>{{
           'components.widget.settings.map.geospatial.layersStyles.outline.opacity'
             | translate
-        }}</mat-label>
+        }}</label>
         <input
-          matInput
           type="number"
           step=".1"
           min="0"
           max="1"
           formControlName="opacity"
         />
-      </mat-form-field>
+      </div>
 
       <!-- Outline width -->
-      <mat-form-field appearance="outline">
-        <mat-label>{{
+      <div uiFormFieldDirective>
+        <label>{{
           'components.widget.settings.map.geospatial.layersStyles.outline.width'
             | translate
-        }}</mat-label>
-        <input matInput type="number" min="0" formControlName="weight" />
-      </mat-form-field>
+        }}</label>
+        <input type="number" min="0" formControlName="weight" />
+      </div>
     </ng-container>
     <ng-container *ngIf="selectedLayerType === 'Point'">
-      <safe-divider
+      <ui-divider
         [text]="
           'components.widget.settings.map.geospatial.layersStyles.marker.title'
             | translate
         "
         class="mt-0"
-      ></safe-divider>
+      ></ui-divider>
       <!-- Marker color -->
-      <mat-form-field appearance="outline">
-        <mat-label>{{
+      <div uiFormFieldDirective>
+        <label>{{
           'components.widget.settings.map.geospatial.layersStyles.marker.color'
             | translate
-        }}</mat-label>
-        <input matInput type="color" formControlName="color" />
-      </mat-form-field>
+        }}</label>
+        <input type="color" formControlName="color" />
+      </div>
 
       <!-- Marker opacity -->
-      <mat-form-field appearance="outline">
-        <mat-label>{{
+      <div uiFormFieldDirective>
+        <label>{{
           'components.widget.settings.map.geospatial.layersStyles.marker.opacity'
             | translate
-        }}</mat-label>
+        }}</label>
         <input
-          matInput
           type="number"
           step=".1"
           min="0"
           max="1"
           formControlName="opacity"
         />
-      </mat-form-field>
+      </div>
     </ng-container>
   </form>
 </div>

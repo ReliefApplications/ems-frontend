@@ -9,7 +9,6 @@ import { SafeTabStyleComponent } from './tab-style/tab-style.component';
 import { SafeTabLayoutPreviewComponent } from './tab-layout-preview/tab-layout-preview.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IconModule } from '@oort-front/ui';
-import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
@@ -22,7 +21,6 @@ import { SliderModule } from '@oort-front/ui';
 import { SafeTabPaginationComponent } from './tab-pagination/tab-pagination.component';
 import { SafeFilterModule } from '../filter/filter.module';
 import { DateFilterEditorComponent } from './date-filter-editor/date-filter-editor.component';
-import { SafeAlertModule } from '../ui/alert/alert.module';
 import { SafeEditorControlComponent } from '../editor-control/editor-control.component';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import {
@@ -67,7 +65,7 @@ import {
     IconModule,
     DateModule,
     TooltipModule,
-    MatAutocompleteModule,
+    AutocompleteModule,
     TranslateModule,
     InputsModule,
     LabelModule,
@@ -75,7 +73,7 @@ import {
     SafeCoreGridModule,
     SliderModule,
     SafeFilterModule,
-    SafeAlertModule,
+    AlertModule,
     SafeEditorControlComponent,
     EditorModule,
     RadioModule,

@@ -280,11 +280,13 @@ export class MapLayerComponent
         confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'warn',
       });
-      confirmDialogRef.afterClosed().subscribe((value: any) => {
-        if (value) {
-          this.layerToSave.emit(undefined);
-        }
-      });
+      confirmDialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.layerToSave.emit(undefined);
+          }
+        });
     }
   }
 

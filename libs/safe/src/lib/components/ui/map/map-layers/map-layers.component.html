@@ -3,32 +3,32 @@
   class="flex justify-end"
   *ngIf="!layersMenuExpanded && !bookmarksMenuExpanded"
 >
-  <safe-button
+  <ui-button
     class="bg-white rounded-l border-2 border-solid border-black border-opacity-20 border-r-0"
     (click)="openLayersMenu()"
-    >{{ 'common.layers' | translate }}</safe-button
+    >{{ 'common.layers' | translate }}</ui-button
   >
-  <safe-button
+  <ui-button
     [disabled]="true"
     class="bg-white mr-2 rounded-r border-2 border-solid border-black border-opacity-20 border-l-0"
     (click)="openBookmarksMenu()"
-    >{{ 'common.bookmarks' | translate }}</safe-button
+    >{{ 'common.bookmarks' | translate }}</ui-button
   >
 </div>
 
 <!-- MENU OPENED -->
 <ng-container *ngIf="layersMenuExpanded || bookmarksMenuExpanded">
   <div class="flex">
-    <safe-button
+    <ui-button
       class="rounded-t ml-2 mr-2"
       [ngClass]="{
         'bg-primary-900 text-white': layersMenuExpanded,
         'bg-slate-200': !layersMenuExpanded
       }"
       (click)="openLayersMenu()"
-      >{{ 'common.layers' | translate }}</safe-button
+      >{{ 'common.layers' | translate }}</ui-button
     >
-    <safe-button
+    <ui-button
       [disabled]="true"
       class="rounded-t"
       [ngClass]="{
@@ -36,15 +36,15 @@
         'bg-slate-200': !bookmarksMenuExpanded
       }"
       (click)="openBookmarksMenu()"
-      >{{ 'common.bookmarks' | translate }}</safe-button
+      >{{ 'common.bookmarks' | translate }}</ui-button
     >
-    <safe-button
+    <ui-button
       [isIcon]="true"
       icon="close"
       (click)="closeLayersMenu()"
       class="flex-grow text-right"
       id="layer-control-button-close"
-    ></safe-button>
+    ></ui-button>
   </div>
-  <safe-divider class="m-0"></safe-divider>
+  <ui-divider class="m-0"></ui-divider>
 </ng-container>
