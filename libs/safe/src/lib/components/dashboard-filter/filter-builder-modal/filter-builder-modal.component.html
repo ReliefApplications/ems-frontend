@@ -1,10 +1,11 @@
-<safe-modal [closable]="true" size="fullscreen">
+<ui-dialog [closable]="true" size="fullscreen">
   <h3>{{ 'components.application.dashboard.filter.title' | translate }}</h3>
-  <safe-alert class="mb-6"
-    ><safe-icon icon="info"></safe-icon>
+  <ui-alert [showIcon]="true" class="mb-6">
     {{ 'components.application.dashboard.filter.info' | translate }}
-  </safe-alert>
-  <div mat-dialog-content class="max-h-full h-full">
-    <div class="w-full h-full" id="dashboardSurveyCreatorContainer"></div>
-  </div>
-</safe-modal>
+  </ui-alert>
+  <ng-container ngProjectAs="content">
+    <div class="max-h-full h-full">
+      <div class="w-full h-full" id="dashboardSurveyCreatorContainer"></div>
+    </div>
+  </ng-container>
+</ui-dialog>

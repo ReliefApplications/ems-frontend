@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MapLayersComponent } from './map-layers.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TabsModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeButtonModule } from '../../../ui/button/button.module';
 import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
@@ -26,6 +27,10 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     MatIconModule,
     SafeDividerModule,
     DragDropModule,
+    TabsModule,
+    MapMarkersModule,
+    MapClorophletsModule,
+    MapOnlineLayersModule,
   ],
   exports: [MapLayersComponent],
 })

@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   ContentType,
   Step,
-  SafeSnackBarService,
   Workflow,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
@@ -14,6 +13,7 @@ import {
 } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Workflow page.
@@ -50,7 +50,7 @@ export class WorkflowComponent
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private router: Router,
     private translate: TranslateService
   ) {

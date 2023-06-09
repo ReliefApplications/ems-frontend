@@ -639,6 +639,7 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"duplicatedRelatedName": "Nom lié en double pour la question {{question}} à la page {{page}}. Veuillez fournir un nom lié unique (au format snake_case) pour sauvegarder le formulaire.",
 				"missingGridField": "Champs disponible de table de données manquant pour la question {{question}} à la page {{page}}. Veuillez en sélectionner au moins un dans la propriété Custom Question pour sauvegarder le formulaire.",
 				"missingRelatedName": "Nom lié manquant pour la question {{question}} à la page {{page}}. Veuillez entrer un nom valide pour la valeur de la donnée (au format snake_case) pour sauvegarder le formulaire.",
 				"missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un modèle pour sauvegarder le formulaire."
@@ -721,10 +722,10 @@
 			"readAll": "Tout marquer comme lu"
 		},
 		"paginator": {
-			"items": "@TODO",
-			"itemsPerPage": "@TODO",
-			"of": "@TODO",
-			"page": "@TODO"
+			"items": "élements",
+			"itemsPerPage": "éléments par page",
+			"of": "de",
+			"page": "Page"
 		},
 		"preferences": {
 			"dateFormat": "Format de date et heure",
@@ -943,6 +944,7 @@
 						"add": "Ajouter une règle d'attribution",
 						"delete": "Supprimer la règle",
 						"edit": "Mettre à jour la règle d'attribution",
+						"none": "Aucune règle d'attribution automatique",
 						"title": "Règle"
 					},
 					"title": "Attribution automatique"
@@ -1571,7 +1573,13 @@
 		}
 	},
 	"kendo": {
+		"combobox": {
+			"noDataText": "No available choice"
+		},
 		"datepicker": {
+			"dateLabel": "@TODO",
+			"endLabel": "@TODO",
+			"startLabel": "@TODO",
 			"today": "Aujourd'hui",
 			"toggle": "Sélectionnez une date"
 		},
@@ -1719,6 +1727,9 @@
 			"stick": "Épingler",
 			"unlock": "Déverrouiller",
 			"unstick": "Désépingler"
+		},
+		"multiselect": {
+			"noDataText": "No available choice"
 		},
 		"pager": {
 			"firstPage": "Aller à la première page",

@@ -31,27 +31,26 @@
           (save)="saveAccess($event)"
           *ngIf="workflow.page?.canUpdate || false"
         ></safe-access>
-        <safe-button
+        <ui-button
           variant="grey"
           [isIcon]="true"
           icon="more_vert"
-          [matMenuTriggerFor]="menu"
+          [uiMenuTriggerFor]="menu"
           cdkOverlayOrigin
           #appMenuTrigger="cdkOverlayOrigin"
         >
-        </safe-button>
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item (click)="onAppSelection()">
-            <mat-icon>file_copy</mat-icon>
+        </ui-button>
+        <ui-menu #menu>
+          <button uiMenuItem (click)="onAppSelection()">
+            <ui-icon icon="file_copy" variant="grey"></ui-icon>
             {{ 'common.duplicate' | translate }}
           </button>
-        </mat-menu>
+        </ui-menu>
 
         <ng-template #searchMenuHeaderTemplate>
-          <safe-alert
-            ><safe-icon icon="info"></safe-icon>
+          <ui-alert>
             {{ 'models.page.tooltip.duplicate' | translate }}
-          </safe-alert>
+          </ui-alert>
         </ng-template>
 
         <ng-template

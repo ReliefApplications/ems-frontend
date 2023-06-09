@@ -1,38 +1,34 @@
-<safe-modal size="small">
-  <h1 mat-dialog-title>
-    {{ 'components.role.impersonate.title' | translate }}
-  </h1>
-  <div mat-dialog-content>
-    <mat-spinner
-      diameter="45"
-      class="page-loader"
-      *ngIf="loading"
-    ></mat-spinner>
+<ui-dialog size="small">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{ 'components.role.impersonate.title' | translate }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <ui-spinner *ngIf="loading"></ui-spinner>
     <form [formGroup]="roleForm" class="flex flex-col" *ngIf="!loading">
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'common.role.one' | translate }}</mat-label>
-        <safe-graphql-select
+      <div uiFormFieldDirective>
+        <label>{{ 'common.role.one' | translate }}</label>
+        <ui-graphql-select
           valueField="id"
           textField="title"
           [query]="rolesQuery"
           formControlName="role"
         >
-        </safe-graphql-select>
-      </mat-form-field>
+        </ui-graphql-select>
+      </div>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button (click)="onClose()">{{
-      'common.close' | translate
-    }}</safe-button>
-    <safe-button
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="roleForm.value"
+      [uiDialogClose]="roleForm.value"
       cdkFocusInitial
       [disabled]="!roleForm.valid"
     >
       {{ 'common.preview' | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

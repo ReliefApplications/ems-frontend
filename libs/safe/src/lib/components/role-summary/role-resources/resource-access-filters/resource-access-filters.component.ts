@@ -16,7 +16,6 @@ import {
   UntypedFormBuilder,
   UntypedFormGroup,
 } from '@angular/forms';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { SafeRestService } from '../../../../services/rest/rest.service';
 import { firstValueFrom } from 'rxjs';
 
@@ -92,7 +91,7 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
 
   // === TABLE ELEMENTS ===
   public displayedColumns: string[] = ['filter', 'actions'];
-  public filters = new MatTableDataSource<AccessPermissions>([]);
+  public filters = new Array<AccessPermissions>();
 
   /**
    * Modal for the definition of access/permissions for a given resource
@@ -133,7 +132,7 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
       }
     );
 
-    this.filters.data = this.setTableElements(filters);
+    this.filters = this.setTableElements(filters);
     this.filtersFormArray = this.fb.array(
       filters.map((x) => this.createAccessFilterFormGroup(x))
     );
@@ -197,7 +196,7 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
     const formGroup = this.filtersFormArray.at(index);
     const formControl = formGroup.get(`permissions.${action}`);
     formControl?.setValue(!formControl.value);
-    this.filters.data = this.setTableElements(this.filtersFormArray.value);
+    this.filters = this.setTableElements(this.filtersFormArray.value);
   }
 
   /**
@@ -336,7 +335,7 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
   toggleFilterEdition(index: number) {
     if (index < 0) return;
     if (index !== this.openedFilterIndex) {
-      this.filters.data = this.setTableElements(this.filtersFormArray.value);
+      this.filters = this.setTableElements(this.filtersFormArray.value);
       const filterFormGroup = this.filtersFormArray.at(index).get('access');
       if (filterFormGroup) {
         this.openedFilterFormGroup = filterFormGroup as UntypedFormGroup;
@@ -344,7 +343,7 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
       }
     } else {
       this.openedFilterIndex = null;
-      this.filters.data = this.setTableElements(this.filtersFormArray.value);
+      this.filters = this.setTableElements(this.filtersFormArray.value);
     }
   }
 
@@ -386,8 +385,8 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
   addFilter() {
     const accessFilterGroup = this.createAccessFilterFormGroup();
     this.filtersFormArray.push(accessFilterGroup);
-    this.filters.data = this.setTableElements(this.filtersFormArray.value);
-    this.toggleFilterEdition(this.filters.data.length - 1);
+    this.filters = this.setTableElements(this.filtersFormArray.value);
+    this.toggleFilterEdition(this.filters.length - 1);
   }
 
   /**
@@ -399,8 +398,8 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
     this.openedFilterIndex = null;
     this.openedFilterFormGroup = undefined;
     this.filtersFormArray.removeAt(index);
-    this.filters.data = this.setTableElements(this.filtersFormArray.value);
-    if (this.filters.data.length === 0) {
+    this.filters = this.setTableElements(this.filtersFormArray.value);
+    if (this.filters.length === 0) {
       this.save();
     }
   }

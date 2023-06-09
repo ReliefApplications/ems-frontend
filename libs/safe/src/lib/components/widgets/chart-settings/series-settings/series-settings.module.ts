@@ -9,6 +9,9 @@ import { MatLegacySelectModule as MatSelectModule } from '@angular/material/lega
 import { TranslateModule } from '@ngx-translate/core';
 import { CategoriesSettingsModule } from './categories-settings/categories-settings.module';
 import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
+import { CategoriesSettingsModule } from './categories-settings/categories-settings.module';
+import { SelectMenuModule, ToggleModule } from '@oort-front/ui';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Chart Series Settings module
@@ -26,6 +29,10 @@ import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/mat
     TranslateModule,
     CategoriesSettingsModule,
     MatSlideToggleModule,
+    CategoriesSettingsModule,
+    ToggleModule,
+    TranslateModule,
+    SelectMenuModule,
   ],
   exports: [SafeSeriesSettingsComponent],
 })

@@ -1,0 +1,48 @@
+::ng-deep .k-calendar-range {
+  & .k-range-end {
+    border-top-right-radius: 1rem !important;
+    border-bottom-right-radius: 1rem !important;
+  }
+  & .k-range-start {
+    border-top-left-radius: 1rem !important;
+    border-bottom-left-radius: 1rem !important;
+  }
+  & .k-range-mid,
+  .k-range-end,
+  .k-range-start {
+    --tw-bg-opacity: 1 !important;
+    background-color: rgb(var(--primary-100) / var(--tw-bg-opacity)) !important;
+  }
+}
+
+::ng-deep .k-calendar {
+  & .k-calendar-td .k-link {
+    border-radius: 1rem !important;
+  }
+  & .k-button-flat-primary,
+  .today {
+    color: rgb(var(--primary-400) / var(--tw-bg-opacity)) !important;
+  }
+  & .k-calendar-td.k-selected .k-link {
+    --tw-bg-opacity: 1 !important;
+    background-color: rgb(var(--primary-400) / var(--tw-bg-opacity)) !important;
+  }
+  & .k-calendar-td:hover .k-link {
+    --tw-bg-opacity: 1 !important;
+    background-color: rgb(var(--primary-100) / var(--tw-bg-opacity)) !important;
+  }
+  & .k-month-header {
+    font-weight: normal !important;
+  }
+}
+
+::ng-deep .k-calendar-header .k-calendar-title {
+  font-weight: 500 !important;
+}
+
+::ng-deep input[type='date']::-webkit-inner-spin-button,
+::ng-deep input[type='date']::-webkit-calendar-picker-indicator {
+  display: none !important;
+  appearance: none !important;
+  -webkit-appearance: none !important;
+}

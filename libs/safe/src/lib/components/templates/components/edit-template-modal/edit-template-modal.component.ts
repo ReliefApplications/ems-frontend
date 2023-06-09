@@ -4,10 +4,7 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { SafeEditorService } from '../../../../services/editor/editor.service';
 import {
   EMAIL_EDITOR_CONFIG,
@@ -16,14 +13,14 @@ import {
 import get from 'lodash/get';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeModalModule } from '../../../ui/modal/modal.module';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import { SafeEditorControlComponent } from '../../../editor-control/editor-control.component';
 import { RawEditorSettings } from 'tinymce';
+import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import { ButtonModule, SelectMenuModule } from '@oort-front/ui';
+import { DialogModule, FormWrapperModule } from '@oort-front/ui';
 
 /** Model for the data input */
 interface DialogData {
@@ -42,15 +39,15 @@ const SUBJECT_EDITOR_AUTOCOMPLETE_KEYS = ['{{now}}', '{{today}}'];
   standalone: true,
   imports: [
     CommonModule,
-    SafeModalModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatInputModule,
+    DialogModule,
+    FormWrapperModule,
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
     EditorModule,
     SafeEditorControlComponent,
+    ButtonModule,
+    SelectMenuModule,
   ],
   // providers: [
   //   { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
@@ -79,8 +76,8 @@ export class EditTemplateModalComponent implements OnInit {
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<EditTemplateModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    public dialogRef: DialogRef<EditTemplateModalComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData,
     private editorService: SafeEditorService
   ) {
     // Set the editor base url based on the environment file

@@ -7,6 +7,9 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { MatSliderModule } from '@angular/material/slider';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
+import { TranslateModule } from '@ngx-translate/core';
+import { SafeFilterModule } from '../../../../filter/filter.module';
+import { ButtonModule, DialogModule, FormWrapperModule } from '@oort-front/ui';
 
 /**
  * Map layer properties module.
@@ -22,6 +25,10 @@ import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/mat
     MatInputModule,
     MatSliderModule,
     MatSlideToggleModule,
+    DialogModule,
+    FormWrapperModule,
+    SafeFilterModule,
+    ButtonModule,
   ],
   exports: [LayerPropertiesComponent],
 })

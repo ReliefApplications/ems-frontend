@@ -1,12 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
-import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application/application.service';
 import { TemplateTypeEnum } from '../../models/template.model';
-import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * A component to display the list of templates of an application
@@ -21,7 +19,7 @@ export class SafeTemplatesComponent
   implements OnInit
 {
   // === INPUT DATA ===
-  public templates: MatTableDataSource<any> = new MatTableDataSource<any>([]);
+  public templates: Array<any> = new Array<any>();
   @Input() applicationService!: SafeApplicationService;
 
   // === DISPLAYED COLUMNS ===
@@ -37,9 +35,9 @@ export class SafeTemplatesComponent
    * @param snackBar Shared snackbar service
    */
   constructor(
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private translate: TranslateService,
-    private snackBar: SafeSnackBarService
+    private snackBar: SnackbarService
   ) {
     super();
   }
@@ -48,7 +46,7 @@ export class SafeTemplatesComponent
     this.applicationService.application$
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        this.templates.data = value?.templates || [];
+        this.templates = value?.templates || [];
       });
   }
 
@@ -65,7 +63,7 @@ export class SafeTemplatesComponent
       data: template,
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.editTemplate({
           id: template.id,
@@ -111,7 +109,7 @@ export class SafeTemplatesComponent
         confirmColor: 'warn',
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.deleteTemplate(template.id);
         this.snackBar.openSnackBar(
@@ -131,7 +129,7 @@ export class SafeTemplatesComponent
     const dialogRef = this.dialog.open(EditTemplateModalComponent, {
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.addTemplate({
           name: value.name,

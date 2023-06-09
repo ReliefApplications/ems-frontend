@@ -8,9 +8,9 @@ import get from 'lodash/get';
 import { Record } from '../../models/record.model';
 import { EditRecordMutationResponse, EDIT_RECORD } from './graphql/mutations';
 import { Metadata } from '../../models/metadata.model';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeRestService } from '../rest/rest.service';
 import { BehaviorSubject } from 'rxjs';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Shared form builder service.
@@ -35,7 +35,7 @@ export class SafeFormBuilderService {
     private referenceDataService: SafeReferenceDataService,
     private translate: TranslateService,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private restService: SafeRestService
   ) {}
 

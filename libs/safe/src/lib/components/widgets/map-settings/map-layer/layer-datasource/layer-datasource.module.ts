@@ -9,6 +9,13 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
 import { SafeGraphQLSelectModule } from '../../../../graphql-select/graphql-select.module';
 import { SafeButtonModule } from '../../../../ui/button/button.module';
 import { SafeDividerModule } from '../../../../ui/divider/divider.module';
+import { SafeBadgeModule } from '../../../../ui/badge/badge.module';
+import {
+  AlertModule,
+  ButtonModule,
+  TableModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
 
 /** Module for the LayerDatasourceComponent */
 @NgModule({
@@ -24,6 +31,12 @@ import { SafeDividerModule } from '../../../../ui/divider/divider.module';
     SafeGraphQLSelectModule,
     SafeButtonModule,
     SafeDividerModule,
+    TranslateModule,
+    FormWrapperModule,
+    SafeBadgeModule,
+    TableModule,
+    ButtonModule,
+    AlertModule,
   ],
   exports: [LayerDatasourceComponent],
 })
