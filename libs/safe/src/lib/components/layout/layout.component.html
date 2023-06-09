@@ -1,4 +1,5 @@
 <nav
+  id="app-header"
   class="flex p-4 items-center md:justify-between text-gray-200 bg-primary-600"
   [ngClass]="theme.headerClass"
 >
@@ -41,6 +42,7 @@
       <h1 class="text-base mb-0 whitespace-nowrap text-clip" *ngIf="route">
         {{ 'common.back' | translate }}
       </h1>
+      <div id="app-logo"></div>
     </div>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
