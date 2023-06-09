@@ -70,7 +70,7 @@ export class AddFormModalComponent implements OnInit {
    * Add form modal
    *
    * @param formBuilder Angular form builder
-   * @param dialogRef Material dialog ref
+   * @param dialogRef Dialog ref
    * @param apollo Apollo service
    */
   constructor(

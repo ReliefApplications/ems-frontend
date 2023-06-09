@@ -20,7 +20,7 @@ export class SafeConfirmService {
   /**
    * Confirmation modal service
    *
-   * @param dialog Material dialog
+   * @param dialog Dialog
    */
   constructor(private dialog: Dialog) {}
 

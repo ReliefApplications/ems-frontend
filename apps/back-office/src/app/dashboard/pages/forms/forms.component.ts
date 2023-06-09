@@ -71,7 +71,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
    * Forms page component
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param router Angular router
    * @param snackBar Shared snackbar
    * @param authService Shared authentication service

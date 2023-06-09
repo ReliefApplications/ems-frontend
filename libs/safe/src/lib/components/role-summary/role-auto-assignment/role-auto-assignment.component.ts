@@ -49,7 +49,7 @@ export class RoleAutoAssignmentComponent
    *
    * @param fb Angular form builder
    * @param apollo Apollo service
-   * @param dialog Material dialog
+   * @param dialog Dialog
    * @param translate Angular translate service
    * @param restService Safe REST service
    */

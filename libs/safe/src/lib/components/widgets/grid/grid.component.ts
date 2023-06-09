@@ -114,7 +114,7 @@ export class SafeGridWidgetComponent
    *
    * @param environment Environment variables
    * @param apollo The apollo client
-   * @param dialog Material dialogs service
+   * @param dialog Dialogs service
    * @param snackBar Shared snack bar service
    * @param workflowService Shared workflow service
    * @param safeAuthService Shared authentication service

@@ -28,7 +28,7 @@ export class AddReferenceDataComponent implements OnInit {
    * New Refence Data modal.
    *
    * @param formBuilder Angular form builder
-   * @param dialogRef Material dialog ref.
+   * @param dialogRef Dialog ref.
    */
   constructor(
     private formBuilder: UntypedFormBuilder,

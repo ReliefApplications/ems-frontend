@@ -59,7 +59,7 @@ export class SafeResourceGridModalComponent {
    * Grid of records for resource / resources questions.
    *
    * @param data dialog data
-   * @param dialogRef Material dialog reference of the component
+   * @param dialogRef Dialog reference of the component
    * @param ref Application reference
    */
   constructor(

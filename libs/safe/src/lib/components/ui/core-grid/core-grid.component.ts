@@ -265,7 +265,7 @@ export class SafeCoreGridComponent
    *
    * @param environment platform environment
    * @param apollo Apollo service
-   * @param dialog Material dialog
+   * @param dialog Dialog
    * @param queryBuilder Shared query builder
    * @param layoutService Shared layout service
    * @param snackBar Shared snackbar service

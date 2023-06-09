@@ -109,7 +109,7 @@ export class SafeReferenceDataDropdownComponent
    * @param e select event.
    */
   onSelect(e: any): void {
-    this.choice.emit(e.value);
+    this.choice.emit(e);
   }
 
   /**

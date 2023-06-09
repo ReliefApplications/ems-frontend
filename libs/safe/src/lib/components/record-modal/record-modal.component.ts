@@ -107,7 +107,7 @@ export class SafeRecordModalComponent
    * @param dialogRef This is the reference to the dialog that is being opened.
    * @param data This is the data that is passed to the modal when it is opened.
    * @param apollo This is the Apollo client that we'll use to make GraphQL requests.
-   * @param dialog This is the Material dialog service
+   * @param dialog This is the Dialog service
    * @param authService This is the service that handles the authentication of the user
    * @param snackBar This is the service that allows you to display a snackbar message to the user.
    * @param formBuilderService This is the service that will be used to build forms.

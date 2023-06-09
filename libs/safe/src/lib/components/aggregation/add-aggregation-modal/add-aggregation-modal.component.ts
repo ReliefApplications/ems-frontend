@@ -69,8 +69,8 @@ export class AddAggregationModalComponent
    * Modal to add or select an aggregation.
    * Result of the action will be added to the component list that triggered the modal.
    *
-   * @param dialogRef Material dialog reference
-   * @param dialog Material dialog instance
+   * @param dialogRef Dialog reference
+   * @param dialog Dialog instance
    * @param apollo Apollo client service
    * @param data Data used by the modal
    * @param aggregationService Shared aggregation service

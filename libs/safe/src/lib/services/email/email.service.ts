@@ -34,7 +34,7 @@ export class SafeEmailService {
    * Used by widgets to send request to the back to send emails.
    *
    * @param snackBar Shared snackbar service.
-   * @param dialog The Material Dialog service.
+   * @param dialog The Dialog service.
    * @param translate Angular translate service.
    * @param restService Shared rest service.
    */

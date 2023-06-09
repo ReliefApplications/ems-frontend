@@ -1,6 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { SafeResourceModalComponent } from './resource-modal.component';
 import {
   DateTimeProvider,
@@ -35,7 +34,6 @@ describe('SafeResourceModalComponent', () => {
       declarations: [SafeResourceModalComponent],
       imports: [
         DialogModule,
-        MatSnackBarModule,
         HttpClientModule,
         TranslateModule.forRoot({
           loader: {

@@ -44,7 +44,7 @@ export class MapClorophletComponent extends SafeUnsubscribeComponent {
    * Single Clorophlet Configuration in Map Settings.
    *
    * @param data dialog data
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    */
   constructor(
     @Inject(DIALOG_DATA) public data: DialogData,

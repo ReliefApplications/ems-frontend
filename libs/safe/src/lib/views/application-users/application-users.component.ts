@@ -31,7 +31,7 @@ export class SafeApplicationUsersComponent
   /**
    * Application users component.
    *
-   * @param dialog Material dialog
+   * @param dialog Dialog
    * @param applicationService Shared application service
    * @param apollo Apollo service
    * @param translate Translate service

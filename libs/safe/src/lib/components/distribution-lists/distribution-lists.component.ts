@@ -29,7 +29,7 @@ export class DistributionListsComponent
   /**
    * Constructor of the distribution lists component
    *
-   * @param dialog The material dialog service
+   * @param dialog The Dialog service
    * @param translate The translation service
    * @param snackBar Shared snackbar service
    */
