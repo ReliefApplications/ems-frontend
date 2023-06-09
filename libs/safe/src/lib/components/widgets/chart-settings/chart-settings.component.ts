@@ -1,7 +1,5 @@
-import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { scrollFactory } from '../../../utils/scroll-factory';
 import { createChartWidgetForm } from './chart-forms';
 import { CHART_TYPES } from './constants';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
@@ -12,7 +10,7 @@ import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 @Component({
   selector: 'safe-chart-settings',
   templateUrl: './chart-settings.component.html',
-  styleUrls: ['./chart-settings.component.scss']
+  styleUrls: ['./chart-settings.component.scss'],
 })
 /** Modal content for the settings of the chart widgets. */
 export class SafeChartSettingsComponent implements OnInit {
