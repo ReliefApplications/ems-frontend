@@ -41,10 +41,11 @@
       >{{ 'common.bookmarks' | translate }}</safe-button
     >
     <safe-button
+      [size]="buttonSize.SMALL"
       [isIcon]="true"
       icon="close"
       (click)="closeLayersMenu()"
-      class="flex-grow text-right"
+      class="flex-grow text-right -mt-1"
       id="layer-control-button-close"
     ></safe-button>
   </div>
