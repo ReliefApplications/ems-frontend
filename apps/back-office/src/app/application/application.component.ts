@@ -89,6 +89,7 @@ export class ApplicationComponent
                   }),
                   callback: () => this.onDelete(x),
                 },
+                visible: x.visible || true,
               })) || [];
           if (application.canUpdate) {
             this.adminNavItems = [

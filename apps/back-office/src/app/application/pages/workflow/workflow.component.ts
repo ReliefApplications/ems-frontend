@@ -17,6 +17,8 @@ import {
 import {
   EditPageMutationResponse,
   EDIT_PAGE,
+  EditPageVisibilityMutationResponse,
+  EDIT_PAGE_VISIBILITY,
   DeleteStepMutationResponse,
   DELETE_STEP,
   EditWorkflowMutationResponse,
@@ -454,5 +456,49 @@ export class WorkflowComponent
     } else {
       this.router.navigate(['./'], { relativeTo: this.route });
     }
+  }
+
+  hidePage(){
+    const pageId = this.workflow?.page?.id;
+    const visiblePage = this.workflow?.page?.visible ?? true;
+    console.log(visiblePage);
+    this.apollo
+      .mutate<EditPageVisibilityMutationResponse>({
+        mutation: EDIT_PAGE_VISIBILITY,
+        variables: {
+          id: pageId,
+          visible: !visiblePage
+        },
+      })
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.page.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.page.one'),
+                value: '',
+              })
+            );
+            this.workflow = {
+              ...this.workflow,
+              page: {
+                ...this.workflow?.page,
+                visible: data?.editPageVisibility.visible,
+              },
+            };
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
   }
 }

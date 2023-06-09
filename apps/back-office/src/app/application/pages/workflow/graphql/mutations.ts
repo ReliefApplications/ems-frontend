@@ -36,10 +36,11 @@ export interface DeleteStepMutationResponse {
 // === EDIT PAGE ===
 /** Edit page gql mutation definition */
 export const EDIT_PAGE = gql`
-  mutation editPage($id: ID!, $name: String, $permissions: JSON) {
-    editPage(id: $id, name: $name, permissions: $permissions) {
+  mutation editPage($id: ID!, $name: String, $visible: Boolean, $permissions: JSON) {
+    editPage(id: $id, name: $name, visible: $visible, permissions: $permissions) {
       id
       name
+      visible
       permissions {
         canSee {
           id
@@ -61,6 +62,22 @@ export const EDIT_PAGE = gql`
 /** Edit page gql mutation response interface */
 export interface EditPageMutationResponse {
   editPage: Page;
+}
+
+// === EDIT PAGE VISIBILITY ===
+/** Edit page gql mutation definition */
+export const EDIT_PAGE_VISIBILITY = gql`
+  mutation editPageVisibility($id: ID!, $visible: Boolean) {
+    editPageVisibility(id: $id, visible: $visible) {
+      id
+      visible
+    }
+  }
+`;
+
+/** Edit page gql mutation response interface */
+export interface EditPageVisibilityMutationResponse {
+  editPageVisibility: Page;
 }
 
 // === ADD FORM ===

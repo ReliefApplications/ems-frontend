@@ -87,4 +87,5 @@ export interface Page {
   ) & {
     content: string;
   })[];
+  visible?: boolean;
 }

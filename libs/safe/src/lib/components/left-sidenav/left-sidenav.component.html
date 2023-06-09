@@ -72,6 +72,15 @@
               >
                 <mat-icon>drag_indicator</mat-icon>
               </button>
+
+              <button
+                mat-icon-button
+                class="nav-action"
+                *ngIf="!item.visible"
+              >
+                <mat-icon>visibility_off</mat-icon>
+              </button>
+
             </div>
           </mat-list-item>
           <!-- Preview when dragging element -->
