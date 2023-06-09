@@ -9,7 +9,7 @@ import { Component, Input, TemplateRef } from '@angular/core';
   styleUrls: ['./empty.component.scss'],
 })
 export class SafeEmptyComponent {
-  // Material icon name, has priority over an image
+  // Icon name, has priority over an image
   @Input() icon?: string;
   // Image URL
   @Input() image?: string;

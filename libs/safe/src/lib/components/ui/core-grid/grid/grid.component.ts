@@ -202,7 +202,7 @@ export class SafeGridComponent
    * Constructor of the grid component
    *
    * @param environment Current environment
-   * @param dialog The material dialog service
+   * @param dialog The Dialog service
    * @param gridService The grid service
    * @param renderer The renderer library
    * @param downloadService The download service

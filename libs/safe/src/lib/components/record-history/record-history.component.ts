@@ -86,7 +86,7 @@ export class SafeRecordHistoryComponent
   /**
    * Constructor of the record history component
    *
-   * @param dialog The material dialog service
+   * @param dialog The Dialog service
    * @param downloadService The download service
    * @param translate The translation service
    * @param dateFormat The dateTranslation service

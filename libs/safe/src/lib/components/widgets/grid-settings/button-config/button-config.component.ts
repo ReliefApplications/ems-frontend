@@ -70,7 +70,7 @@ export class ButtonConfigComponent
    * @param router Angular Router service
    * @param workflowService Shared workflow service
    * @param queryBuilder Shared Query Builder service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param applicationService Shared application service
    */
   constructor(

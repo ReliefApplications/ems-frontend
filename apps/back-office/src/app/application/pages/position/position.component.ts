@@ -30,7 +30,7 @@ export class PositionComponent
   /**
    * Application position component
    *
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param applicationService Shared application service
    * @param confirmService Shared confirm service
    * @param translate Angular translate service

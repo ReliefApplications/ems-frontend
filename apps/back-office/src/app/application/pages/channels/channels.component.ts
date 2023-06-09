@@ -35,7 +35,7 @@ export class ChannelsComponent
    *
    * @param applicationService Shared application service
    * @param confirmService Shared confirm service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param translate Angular translate service
    */
   constructor(

@@ -46,7 +46,7 @@ export class PositionModalComponent implements OnInit {
    * Add new application position component
    *
    * @param formBuilder Angular form builder
-   * @param dialogRef Material dialog ref
+   * @param dialogRef Dialog ref
    * @param data Injected modal data
    * @param data.add is it an addition
    * @param data.edit is it an edition

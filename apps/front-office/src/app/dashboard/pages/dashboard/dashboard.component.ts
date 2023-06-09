@@ -60,7 +60,7 @@ export class DashboardComponent
    * @param apollo Apollo client
    * @param route Angular current page
    * @param router Angular router
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param dashboardService Shared dashboard service
    * @param translate Angular translate service

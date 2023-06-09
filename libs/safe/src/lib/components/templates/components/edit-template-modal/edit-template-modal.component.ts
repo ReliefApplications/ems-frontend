@@ -75,7 +75,7 @@ export class EditTemplateModalComponent implements OnInit {
    * Component for editing a template
    *
    * @param formBuilder Angular form builder service
-   * @param dialogRef Material dialog ref of the component
+   * @param dialogRef Dialog ref of the component
    * @param data Data input of the modal
    * @param editorService Editor service used to get main URL and current language
    */

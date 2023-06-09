@@ -72,8 +72,8 @@ export class AddLayoutModalComponent
   /**
    * Add layout modal component.
    *
-   * @param dialogRef Material dialog reference
-   * @param dialog Material dialog instance
+   * @param dialogRef Dialog reference
+   * @param dialog Dialog instance
    * @param data Data used by the modal
    * @param gridLayoutService Grid layout service
    * @param apollo Apollo service
