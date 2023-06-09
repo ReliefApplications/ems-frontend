@@ -18,8 +18,9 @@
 
 <!-- MENU OPENED -->
 <ng-container *ngIf="layersMenuExpanded || bookmarksMenuExpanded">
-  <div class="flex">
+  <div class="flex smaller-tab">
     <safe-button
+      [size]="buttonSize.SMALL"
       class="rounded-t ml-2 mr-2"
       [ngClass]="{
         'bg-primary-900 text-white': layersMenuExpanded,
@@ -29,6 +30,7 @@
       >{{ 'common.layers' | translate }}</safe-button
     >
     <safe-button
+      [size]="buttonSize.SMALL"
       [disabled]="true"
       class="rounded-t"
       [ngClass]="{

@@ -3,6 +3,7 @@ import { SafeButtonModule } from '../../button/button.module';
 import { CommonModule } from '@angular/common';
 import { SafeDividerModule } from '../../divider/divider.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { ButtonSize } from '../../../ui/button/button-size.enum';
 
 /**
  * Map layers component
@@ -18,6 +19,7 @@ export class MapLayersComponent {
   public layersMenuExpanded = false;
   public bookmarksMenuExpanded = false;
   public mapContainer!: HTMLElement;
+  public buttonSize = ButtonSize;
 
   /** Opens the layers menu */
   openLayersMenu() {
