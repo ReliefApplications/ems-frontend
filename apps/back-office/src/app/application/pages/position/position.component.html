@@ -41,11 +41,11 @@
               </ui-button>
               <ui-menu #menu>
                 <button uiMenuItem (click)="onEdit(element)">
-                  <ui-icon icon="edit"></ui-icon>
+                  <ui-icon icon="edit" variant="grey"></ui-icon>
                   {{ 'common.edit' | translate }}
                 </button>
-                <button uiMenuItem color="warn" (click)="onDelete(element)">
-                  <ui-icon icon="delete"></ui-icon>
+                <button uiMenuItem (click)="onDelete(element)">
+                  <ui-icon icon="delete" variant="danger"></ui-icon>
                   {{ 'common.delete' | translate }}
                 </button>
               </ui-menu>

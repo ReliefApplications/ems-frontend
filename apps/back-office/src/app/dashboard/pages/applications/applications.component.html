@@ -111,7 +111,7 @@
             </ui-button>
             <ui-menu #menu>
               <button uiMenuItem (click)="onPreview(element)">
-                <ui-icon icon="preview"></ui-icon>
+                <ui-icon icon="preview" variant="grey"></ui-icon>
                 {{ 'common.preview' | translate }}
               </button>
               <safe-access
@@ -126,13 +126,13 @@
                 (click)="onClone(element)"
                 *ngIf="element.canDelete"
               >
-                <ui-icon icon="file_copy"></ui-icon>
+                <ui-icon icon="file_copy" variant="grey"></ui-icon>
                 {{ 'common.duplicate' | translate }}
               </button>
               <ng-container *ngIf="element.canDelete">
-                <ui-divider class="m-0"></ui-divider>
+                <ui-divider class="py-1"></ui-divider>
                 <button uiMenuItem (click)="onDelete(element, $event)">
-                  <ui-icon icon="delete"></ui-icon>
+                  <ui-icon icon="delete" variant="danger"></ui-icon>
                   {{ 'common.delete' | translate }}
                 </button>
               </ng-container>

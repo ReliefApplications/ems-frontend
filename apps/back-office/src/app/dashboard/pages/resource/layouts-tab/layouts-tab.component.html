@@ -49,11 +49,11 @@
               </ui-button>
               <ui-menu #resMenu>
                 <button uiMenuItem (click)="onEditLayout(element)">
-                  <ui-icon icon="edit"></ui-icon>
+                  <ui-icon icon="edit" variant="grey"></ui-icon>
                   {{ 'common.edit' | translate }}
                 </button>
                 <button uiMenuItem (click)="onDeleteLayout(element)">
-                  <ui-icon icon="delete"></ui-icon>
+                  <ui-icon icon="delete" variant="danger"></ui-icon>
                   {{ 'common.delete' | translate }}
                 </button>
               </ui-menu>
