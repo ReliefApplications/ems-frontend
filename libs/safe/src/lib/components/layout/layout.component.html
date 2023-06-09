@@ -32,7 +32,7 @@
   <ng-container *ngIf="!applications || applications.length === 0">
     <div class="min-w-0 overflow-hidden flex items-center">
       <h1
-        class="text-2xl leading-7 mb-0 whitespace-nowrap text-clip"
+        class="text-xl mb-0 whitespace-nowrap text-clip font-medium"
         *ngIf="!route"
       >
         {{ theme.prefix }}
@@ -65,7 +65,10 @@
       ></safe-search-menu>
     </ng-template>
   </ng-container>
-  <div class="account-container">
+  <!-- Account icon and info -->
+  <div
+    class="flex flex-col items-end content-center font-medium text-xs ml-auto"
+  >
     <div class="account-property">{{ account ? account.name : '' }}</div>
     <div class="account-property">{{ account ? account.username : '' }}</div>
   </div>
