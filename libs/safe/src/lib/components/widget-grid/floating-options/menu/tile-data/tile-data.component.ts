@@ -60,6 +60,7 @@ export class SafeTileDataComponent implements AfterViewInit {
     componentRef.instance.tile = this.data.tile;
     componentRef.instance.change.subscribe((e: any) => {
       this.tileForm = e;
+      console.log(e);
     });
   }
 

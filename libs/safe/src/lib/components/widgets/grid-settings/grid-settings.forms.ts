@@ -1,4 +1,5 @@
 import {
+  FormArray,
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
@@ -148,6 +149,7 @@ export const createGridWidgetFormGroup = (
           )
         : [createButtonFormGroup(null)]
     ),
+    filters: new FormArray([]),
   });
   return formGroup;
 };

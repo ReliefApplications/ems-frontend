@@ -418,6 +418,14 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
     }
   }
 
+  public sortData(e: any): void {
+    if (e) {
+      this.onSortChange([{ field: e.field, dir: e.order }]);
+    } else {
+      this.onSortChange([{ field: '', dir: 'asc' }]);
+    }
+  }
+
   // === PAGINATION ===
   /**
    * Handles page change event.

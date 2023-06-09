@@ -187,7 +187,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
     const needRefetch = !this.settings.card?.aggregation;
     const skippedFields = ['id', 'incrementalId'];
 
-    if (!needRefetch)
+    if (!needRefetch) {
       this.cards = this.cachedCards.filter((card: any) => {
         const data = clone(card.record || card.cardAggregationData || {});
         skippedFields.forEach((field) => delete data[field]);
@@ -202,7 +202,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
               value === parseFloat(search))
         );
       });
-    else {
+    } else {
       const filters: {
         field: string;
         operator: string;
@@ -420,9 +420,9 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
     });
 
     // Check if the data is already cached
-    if (this.cachedCards.length >= e.skip + e.take)
+    if (this.cachedCards.length >= e.skip + e.take) {
       this.cards = this.cachedCards.slice(e.skip, e.skip + e.take);
-    else {
+    } else {
       this.loading = true;
       this.dataQuery
         ?.fetchMore({
@@ -432,5 +432,25 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
         })
         .then(this.updateCards.bind(this));
     }
+  }
+
+  public sortData(e: any) {
+    const layoutQuery = this.layout?.query;
+    let field = get(layoutQuery, 'sort.field', null);
+    let order = get(layoutQuery, 'sort.order', null);
+
+    if (e) {
+      field = e.field;
+      order = e.order;
+    }
+
+    (this.dataQuery as any)
+      .refetch({
+        first: this.pageInfo.first,
+        filter: this.layout?.query.filter,
+        sortField: field || undefined,
+        sortOrder: order,
+      })
+      .then(() => (this.loading = false));
   }
 }

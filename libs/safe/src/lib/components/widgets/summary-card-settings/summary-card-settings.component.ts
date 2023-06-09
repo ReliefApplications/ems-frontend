@@ -6,7 +6,13 @@ import {
   Input,
   AfterViewInit,
 } from '@angular/core';
-import { Validators, FormGroup, FormControl } from '@angular/forms';
+import {
+  Validators,
+  FormGroup,
+  FormControl,
+  FormArray,
+  FormBuilder,
+} from '@angular/forms';
 
 import { get } from 'lodash';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
@@ -72,14 +78,15 @@ const createSummaryCardForm = (def: any) => {
     id: new FormControl<number>(def.id),
     title: new FormControl<string>(get(settings, 'title', '')),
     card: createCardForm(get(settings, 'card', null)),
+    sortFields: new FormArray([]),
   });
 
   return extendWidgetForm(form, settings?.widgetDisplay, {
     searchable: new FormControl(
       get<boolean>(settings, 'widgetDisplay.searchable', false)
     ),
-    filtrable: new FormControl(
-      get<boolean>(settings, 'widgetDisplay.filtrable', false)
+    sortable: new FormControl(
+      get<boolean>(settings, 'widgetDisplay.sortable', false)
     ),
     usePagination: new FormControl(
       get<boolean>(settings, 'widgetDisplay.usePagination', false)
@@ -98,7 +105,7 @@ export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
 })
 export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
   // === REACTIVE FORM ===
-  tileForm: SummaryCardFormT | undefined;
+  public tileForm: SummaryCardFormT | undefined;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -120,10 +127,12 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    *
    * @param apollo Apollo service
    * @param aggregationService Shared aggregation service
+   * @param formBuilder FormBuilder instance
    */
   constructor(
     private apollo: Apollo,
-    private aggregationService: SafeAggregationService
+    private aggregationService: SafeAggregationService,
+    private formBuilder: FormBuilder
   ) {}
 
   /**
@@ -137,15 +146,32 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     if (resourceID) {
       this.getResource(resourceID);
     }
+
+    this.initSortFields();
   }
+
+  /**
+   * Adds sortFields to the tileForm
+   */
+  initSortFields(): void {
+    this.tile.settings.sortFields?.forEach((item: any) => {
+      const row = this.formBuilder.group({
+        field: [item.field, Validators.required],
+        order: [item.order, Validators.required],
+        label: [item.label, Validators.required],
+      });
+      (this.tileForm?.get('sortFields') as any).push(row);
+    });
+  }
+
   /** @returns a FormControl for the searchable field */
   get searchableControl(): FormControl {
     return this.tileForm?.get('widgetDisplay.searchable') as any;
   }
 
-  /** @returns a FormControl for the filtrable field */
-  get filtrableControl(): FormControl {
-    return this.tileForm?.get('widgetDisplay.filtrable') as any;
+  /** @returns a FormControl for the sortable field */
+  get sortableControl(): FormControl {
+    return this.tileForm?.get('widgetDisplay.sortable') as any;
   }
 
   /** @returns a FormControl for the usePagination field */

@@ -11,6 +11,9 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserModule } from '@angular/platform-browser';
 import { SafeFilteringSettingsComponent } from './filtering-settings.component';
+import { InputsModule } from '@progress/kendo-angular-inputs';
+import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 /**
  * Module for the filtering-settings component
@@ -30,6 +33,9 @@ import { SafeFilteringSettingsComponent } from './filtering-settings.component';
     MatFormFieldModule,
     MatInputModule,
     BrowserModule,
+    InputsModule,
+    DropDownsModule,
+    MatTooltipModule,
   ],
   exports: [SafeFilteringSettingsComponent],
 })

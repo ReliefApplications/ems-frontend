@@ -4,6 +4,7 @@ import {
   FormArray,
   FormBuilder,
   FormGroup,
+  Validators,
 } from '@angular/forms';
 import { Component, Input, OnInit } from '@angular/core';
 import { moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
@@ -16,18 +17,17 @@ import { moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
 })
 export class SafeFilteringSettingsComponent implements OnInit {
   @Input() layout: any;
+  @Input() formArray!: FormArray;
 
   /** Displayed columns of table */
   public displayedColumnsApps = ['field', 'order', 'label', 'actions'];
+  public formGroup!: FormGroup;
+  public data!: BehaviorSubject<AbstractControl[]>;
 
-  public items = [
-    { field: 'name', order: 'asc', label: 'label1' },
-    { field: 'height', order: 'desc', label: 'label2' },
+  public orderList = [
+    { value: 'asc', text: 'ASC' },
+    { value: 'desc', text: 'DESC' },
   ];
-
-  public rows: FormArray = this.formBuilder.array([]);
-  public formGroup: FormGroup = this.formBuilder.group({ filters: this.rows });
-  public data = new BehaviorSubject<AbstractControl[]>(this.rows.controls);
 
   /**
    * Constructor for filtering-settings component
@@ -37,31 +37,41 @@ export class SafeFilteringSettingsComponent implements OnInit {
   constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit() {
-    this.items.forEach((item: any) => this.addRow(item, false));
-    this.updateView();
+    this.formGroup = this.formBuilder.group({
+      sortFields: this.formArray,
+    });
+    this.data = new BehaviorSubject<AbstractControl[]>(this.formArray.controls);
   }
 
   /**
    * Adds row to the table
    *
-   * @param item items values
-   * @param noUpdate is a refresh needed
    */
-  addRow(item?: any, noUpdate?: boolean): void {
+  addRow(): void {
     const row = this.formBuilder.group({
-      field: item ? item.field : '',
-      order: item ? item.order : '',
-      label: item ? item.label : '',
+      field: [this.layout.query.fields[0].name, Validators.required],
+      order: [this.orderList[0].value, Validators.required],
+      label: ['', Validators.required],
     });
-    this.rows.push(row);
-    if (!noUpdate) this.updateView();
+    this.formArray.push(row);
+    this.updateView();
+  }
+
+  /**
+   * Removes row to the table
+   *
+   * @param itemIndex item index
+   */
+  removeRow(itemIndex: number): void {
+    this.formArray.removeAt(itemIndex);
+    this.updateView();
   }
 
   /**
    * Refreshes the table view
    */
   updateView(): void {
-    this.data.next(this.rows.controls);
+    this.data.next(this.formArray.controls);
   }
 
   /**
@@ -71,7 +81,7 @@ export class SafeFilteringSettingsComponent implements OnInit {
    */
   drop(event: CdkDragDrop<string[]>): void {
     moveItemInArray(
-      this.rows.controls,
+      this.formArray.controls,
       event.previousIndex,
       event.currentIndex
     );

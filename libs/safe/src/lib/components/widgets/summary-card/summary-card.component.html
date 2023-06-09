@@ -31,13 +31,29 @@
   <!-- Cards display mode -->
   <ng-container *ngIf="displayMode === 'cards'">
     <!-- Search -->
-    <div class="bg-zinc-50 p-2" *ngIf="!!settings.widgetDisplay?.searchable">
+    <div
+      class="bg-zinc-50 p-2 flex gap-2"
+      *ngIf="!!settings.widgetDisplay?.searchable"
+    >
       <input
         [placeholder]="'common.placeholder.search' | translate"
         kendoTextBox
         [formControl]="searchControl"
-        class="!w-full"
       />
+      <kendo-combobox
+        class="w-fit"
+        *ngIf="
+          !!settings.widgetDisplay?.sortable &&
+          cards.length !== 0 &&
+          widget.settings.sortFields?.length > 0
+        "
+        [data]="widget.settings.sortFields"
+        textField="label"
+        valueField="label"
+        (selectionChange)="sortData($event)"
+        [placeholder]="'models.widget.sorting.select' | translate"
+      >
+      </kendo-combobox>
     </div>
     <!-- Export -->
     <div class="w-full grow overflow-auto" #summaryCardGrid>

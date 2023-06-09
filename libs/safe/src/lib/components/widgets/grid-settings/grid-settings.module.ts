@@ -12,6 +12,7 @@ import { TabButtonsModule } from './tab-buttons/tab-buttons.module';
 import { TabMainModule } from './tab-main/tab-main.module';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
+import { SafeFilteringSettingsModule } from '../common/filtering-settings/filtering-settings.module';
 
 /** Module for the grid widget settings component */
 @NgModule({
@@ -30,6 +31,7 @@ import { DisplaySettingsComponent } from '../common/display-settings/display-set
     TabMainModule,
     MatTooltipModule,
     DisplaySettingsComponent,
+    SafeFilteringSettingsModule,
   ],
   exports: [SafeGridSettingsComponent],
 })

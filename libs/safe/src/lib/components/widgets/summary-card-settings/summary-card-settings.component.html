@@ -79,9 +79,9 @@
 
           <mat-slide-toggle
             *ngIf="selectedLayout"
-            [formControl]="$any(tileForm.get('widgetDisplay.filtrable'))"
+            [formControl]="$any(tileForm.get('widgetDisplay.sortable'))"
           >
-            {{ 'models.widget.display.filtrable' | translate }}
+            {{ 'models.widget.display.sortable' | translate }}
           </mat-slide-toggle>
 
           <mat-radio-group
@@ -106,9 +106,9 @@
         </safe-display-settings>
       </ng-template>
     </mat-tab>
-    <!-- Widget display options -->
+    <!-- Widget filters options -->
     <mat-tab
-      *ngIf="selectedLayout && tileForm?.get('widgetDisplay.filtrable')?.value"
+      *ngIf="selectedLayout && tileForm?.get('widgetDisplay.sortable')?.value"
     >
       <ng-template mat-tab-label>
         <safe-icon
@@ -117,11 +117,12 @@
           matTooltip="{{ 'models.widget.filtering.title' | translate }}"
           matTooltipPosition="right"
         ></safe-icon>
-        <span>{{ 'models.widget.filtering.title' | translate }}</span>
+        <span>{{ 'models.widget.sorting.title' | translate }}</span>
       </ng-template>
       <ng-template matTabContent>
         <safe-filtering-settings
           [layout]="selectedLayout"
+          [formArray]="$any(tileForm.get('sortFields'))"
         ></safe-filtering-settings>
       </ng-template>
     </mat-tab>

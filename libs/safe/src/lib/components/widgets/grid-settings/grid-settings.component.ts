@@ -7,7 +7,12 @@ import {
   EventEmitter,
   AfterViewInit,
 } from '@angular/core';
-import { UntypedFormGroup, UntypedFormArray, Validators } from '@angular/forms';
+import {
+  UntypedFormGroup,
+  UntypedFormArray,
+  Validators,
+  FormBuilder,
+} from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import {
   GetChannelsQueryResponse,
@@ -51,6 +56,7 @@ export class SafeGridSettingsComponent
 {
   // === REACTIVE FORM ===
   public formGroup!: UntypedFormGroup;
+  public filtersFormArray: any = null;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -89,11 +95,13 @@ export class SafeGridSettingsComponent
    * @param apollo The apollo client
    * @param applicationService The application service
    * @param queryBuilder The query builder service
+   * @param formBuilder FormBuilder instance
    */
   constructor(
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private formBuilder: FormBuilder
   ) {
     super();
   }
@@ -226,6 +234,22 @@ export class SafeGridSettingsComponent
     if (this.formGroup.get('layouts')?.value.length > 0) {
       this.formGroup.controls.aggregations.clearValidators();
     }
+
+    this.initFilters();
+  }
+
+  /**
+   * Adds filters to the formGroup
+   */
+  initFilters(): void {
+    this.tile.settings.filters.forEach((item: any) => {
+      const row = this.formBuilder.group({
+        field: [item ? item.field : '', Validators.required],
+        order: [item ? item.order : '', Validators.required],
+        label: [item ? item.label : '', Validators.required],
+      });
+      (this.formGroup?.get('filters') as any).push(row);
+    });
   }
 
   ngAfterViewInit(): void {

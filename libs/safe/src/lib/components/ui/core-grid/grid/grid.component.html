@@ -97,6 +97,19 @@
         (showFilter ? 'common.filter.hide' : 'common.filter.show') | translate
       }}
     </button>
+    <kendo-combobox
+      class="w-fit"
+      *ngIf="
+        !!widget.settings.widgetDisplay?.sortable &&
+        widget.settings.sortFields?.length > 0
+      "
+      [data]="widget.settings.sortFields"
+      textField="label"
+      valueField="label"
+      (selectionChange)="sortData($event)"
+      [placeholder]="'models.widget.sorting.select' | translate"
+    >
+    </kendo-combobox>
     <!-- ADMIN FEATURES -->
     <ng-container *ngIf="admin">
       <span kendotooltip>
@@ -638,7 +651,9 @@
               class="url-container textbox cursor-pointer"
               rel="noopener noreferrer"
               (click)="onOpenMapModal(dataItem, field)"
-              [matTooltip]="'components.widget.grid.tooltip.displayMap' | translate"
+              [matTooltip]="
+                'components.widget.grid.tooltip.displayMap' | translate
+              "
             >
               {{
                 applyFieldFormat(getPropertyValue(dataItem, field.name), field)
