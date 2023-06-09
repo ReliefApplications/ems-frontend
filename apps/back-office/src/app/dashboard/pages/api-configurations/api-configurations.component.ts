@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   ApiConfiguration,
@@ -47,7 +46,8 @@ export class ApiConfigurationsComponent
   public loading = true;
   private apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
   displayedColumns = ['name', 'status', 'authType', 'actions'];
-  dataSource = new MatTableDataSource<ApiConfiguration>([]);
+  dataSource = new Array<ApiConfiguration>();
+  filteredDataSources = new Array<ApiConfiguration>();
   public cachedApiConfigurations: ApiConfiguration[] = [];
 
   // === SORTING ===
@@ -155,10 +155,11 @@ export class ApiConfigurationsComponent
           );
       }
     } else {
-      this.dataSource.data = this.cachedApiConfigurations.slice(
+      this.dataSource = this.cachedApiConfigurations.slice(
         e.pageSize * this.pageInfo.pageIndex,
         e.pageSize * (this.pageInfo.pageIndex + 1)
       );
+      this.filteredDataSources = this.dataSource;
     }
     this.pageInfo.pageSize = e.pageSize;
   }
@@ -167,13 +168,15 @@ export class ApiConfigurationsComponent
    * Frontend filtering.
    */
   private filterPredicate(): void {
-    this.dataSource.filterPredicate = (data: any) =>
-      (this.searchText.trim().length === 0 ||
-        (this.searchText.trim().length > 0 &&
-          data.name.toLowerCase().includes(this.searchText.trim()))) &&
-      (this.statusFilter.trim().length === 0 ||
-        (this.statusFilter.trim().length > 0 &&
-          data.status.toLowerCase().includes(this.statusFilter.trim())));
+    this.filteredDataSources = this.dataSource.filter(
+      (data: any) =>
+        (this.searchText.trim().length === 0 ||
+          (this.searchText.trim().length > 0 &&
+            data.name.toLowerCase().includes(this.searchText.trim()))) &&
+        (this.statusFilter.trim().length === 0 ||
+          (this.statusFilter.trim().length > 0 &&
+            data.status.toLowerCase().includes(this.statusFilter.trim())))
+    );
   }
 
   /**
@@ -184,13 +187,13 @@ export class ApiConfigurationsComponent
    */
   applyFilter(column: string, event: any): void {
     if (column === 'status') {
-      this.statusFilter = event;
+      this.statusFilter = event ?? '';
     } else {
       this.searchText = event
         ? event.target.value.trim().toLowerCase()
         : this.searchText;
     }
-    this.dataSource.filter = '##';
+    this.filterPredicate();
   }
 
   /**
@@ -298,9 +301,10 @@ export class ApiConfigurationsComponent
                     ),
                   })
                 );
-                this.dataSource.data = this.dataSource.data.filter(
+                this.dataSource = this.dataSource.filter(
                   (x) => x.id !== element.id
                 );
+                this.filteredDataSources = this.dataSource;
               } else {
                 this.snackBar.openSnackBar(
                   this.translate.instant(
@@ -339,7 +343,7 @@ export class ApiConfigurationsComponent
       this.cachedApiConfigurations,
       mappedValues
     );
-    this.dataSource.data = mappedValues;
+    this.dataSource = mappedValues;
     this.pageInfo.length = data.apiConfigurations.totalCount;
     this.pageInfo.endCursor = data.apiConfigurations.pageInfo.endCursor;
     this.loading = loading;

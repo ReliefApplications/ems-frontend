@@ -139,15 +139,15 @@ export class SafeSchedulerSettingsComponent implements OnInit {
   /**
    * Load a resource or a form.
    *
-   * @param e An event or any object with a value attribute
+   * @param event An event or any object with a value attribute
    */
-  getSource(e: any): void {
+  getSource(event: any): void {
     if (this.tileForm.controls.from.value === 'resource') {
       this.apollo
         .query<GetResourceByIdQueryResponse>({
           query: GET_RESOURCE_BY_ID,
           variables: {
-            id: e.value,
+            id: event,
           },
         })
         .subscribe(({ data }) => {
@@ -159,7 +159,7 @@ export class SafeSchedulerSettingsComponent implements OnInit {
         .query<GetFormByIdQueryResponse>({
           query: GET_FORM_BY_ID,
           variables: {
-            id: e.value,
+            id: event,
           },
         })
         .subscribe(({ data }) => {

@@ -66,8 +66,8 @@
     >
       <div uiFormFieldDirective>
         <label>{{ 'common.layout.one' | translate }}</label>
-        <ui-select-menu [disabled]="true" [value]="selectedLayout.id">
-          <ui-select-option [value]="selectedLayout.id">{{
+        <ui-select-menu [disabled]="true" [value]="selectedLayout.name">
+          <ui-select-option [value]="selectedLayout.name">{{
             selectedLayout.name
           }}</ui-select-option>
         </ui-select-menu>

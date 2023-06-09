@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   ReferenceData,
@@ -54,7 +53,7 @@ export class ReferenceDatasComponent
     'modifiedAt',
     'actions',
   ];
-  dataSource = new MatTableDataSource<ReferenceData>([]);
+  dataSource = new Array<ReferenceData>();
   public cachedReferenceDatas: ReferenceData[] = [];
 
   // === SORTING ===
@@ -160,7 +159,7 @@ export class ReferenceDatasComponent
           .then((results) => this.updateValues(results.data, results.loading));
       }
     } else {
-      this.dataSource.data = this.cachedReferenceDatas.slice(
+      this.dataSource = this.cachedReferenceDatas.slice(
         e.pageSize * this.pageInfo.pageIndex,
         e.pageSize * (this.pageInfo.pageIndex + 1)
       );
@@ -276,7 +275,7 @@ export class ReferenceDatasComponent
                     value: this.translate.instant('common.referenceData.one'),
                   })
                 );
-                this.dataSource.data = this.dataSource.data.filter(
+                this.dataSource = this.dataSource.filter(
                   (x) => x.id !== element.id
                 );
               } else {
@@ -326,7 +325,7 @@ export class ReferenceDatasComponent
       this.cachedReferenceDatas,
       mappedValues
     );
-    this.dataSource.data = mappedValues;
+    this.dataSource = mappedValues;
     this.pageInfo.length = data.referenceDatas.totalCount;
     this.pageInfo.endCursor = data.referenceDatas.pageInfo.endCursor;
     this.loading = loading;
