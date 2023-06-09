@@ -137,7 +137,7 @@ export class SafeAuthService {
     // Redirect to previous path
     this.oauthService.events
       .pipe(filter((e: any) => e.type === 'user_profile_loaded'))
-      .subscribe(() => {
+      .subscribe((e: any) => {
         const redirectPath = localStorage.getItem('redirectPath');
         if (redirectPath) {
           this.router.navigateByUrl(redirectPath);
@@ -145,7 +145,9 @@ export class SafeAuthService {
           // Fallback to the location origin with a new url state with clean params
           // Chrome does not delete state and session state params once the oauth is successful
           // Which triggers a new token fetch with an invalid(deprecated) code
-          this.router.navigateByUrl(this.origin);
+          // can cause an issue with navigation
+          console.log(e);
+          // this.router.navigateByUrl(this.origin);
         }
         localStorage.removeItem('redirectPath');
       });

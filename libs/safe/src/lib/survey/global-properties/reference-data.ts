@@ -235,7 +235,9 @@ export const render = (
             filter
           )
           .then((choices) => {
-            question.choices = choices;
+            question.choices = [];
+            // this is to avoid that the choices appear on the 'choices' tab
+            question.setPropertyValue('visibleChoices', choices);
           });
       } else {
         question.choices = [];

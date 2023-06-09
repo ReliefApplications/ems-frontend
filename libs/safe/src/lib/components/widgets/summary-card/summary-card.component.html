@@ -7,36 +7,36 @@
     <!-- Switch between grid and cards view -->
     <div class="flex">
       <!-- Data source button -->
-      <safe-button
+      <ui-button
         variant="primary"
         icon="open_in_new"
         (click)="openDataSource()"
         *ngIf="settings.card?.showDataSourceLink || false"
       >
         {{ 'components.widget.summaryCard.dataSource' | translate }}
-      </safe-button>
-      <safe-button
+      </ui-button>
+      <ui-button
         [isIcon]="true"
         icon="grid_view"
         [disabled]="displayMode === 'cards'"
         (click)="displayMode = 'cards'"
-        [matTooltip]="'components.widget.summaryCard.viewAsCards' | translate"
-      ></safe-button>
-      <safe-button
+        [uiTooltip]="'components.widget.summaryCard.viewAsCards' | translate"
+      ></ui-button>
+      <ui-button
         [isIcon]="true"
         icon="view_list"
         [disabled]="displayMode === 'grid'"
         (click)="displayMode = 'grid'"
-        [matTooltip]="'components.widget.summaryCard.viewAsGrid' | translate"
-      ></safe-button>
+        [uiTooltip]="'components.widget.summaryCard.viewAsGrid' | translate"
+      ></ui-button>
     </div>
-    <safe-button
+    <ui-button
       *ngIf="export && displayMode === 'cards'"
       [isIcon]="true"
       icon="get_app"
       class="text-neutral-700"
       (click)="pdf.saveAs(exportName)"
-    ></safe-button>
+    ></ui-button>
   </kendo-tilelayout-item-header>
   <!-- Cards display mode -->
   <ng-container *ngIf="displayMode === 'cards'">

@@ -1,6 +1,6 @@
-<mat-form-field appearance="outline" class="grow">
-  <mat-label>{{ 'components.resource.dropdown.select' | translate }}</mat-label>
-  <safe-graphql-select
+<div uiFormFieldDirective class="grow">
+  <label>{{ 'components.resource.dropdown.select' | translate }}</label>
+  <ui-graphql-select
     valueField="id"
     textField="name"
     [query]="resourcesQuery"
@@ -9,5 +9,5 @@
     (searchChange)="onResourceSearchChange($event)"
     [filterable]="true"
   >
-  </safe-graphql-select>
-</mat-form-field>
+  </ui-graphql-select>
+</div>

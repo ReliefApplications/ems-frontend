@@ -2,16 +2,22 @@
   <!-- FIELD SELECTION -->
   <ng-container *ngTemplateOutlet="fieldSelect"></ng-container>
   <!-- OPERATOR -->
-  <mat-form-field appearance="outline" *ngIf="operators.length > 0">
-    <mat-label>{{
-      'components.queryBuilder.filter.operator' | translate
-    }}</mat-label>
-    <mat-select formControlName="operator">
-      <mat-option *ngFor="let operator of operators" [value]="operator.value">{{
-        operator.label | translate
-      }}</mat-option>
-    </mat-select>
-  </mat-form-field>
+
+  <div
+    uiFormFieldDirective
+    [outline]="false"
+    *ngIf="operators.length > 0"
+    class="w-60"
+  >
+    <label>{{ 'components.queryBuilder.filter.operator' | translate }}</label>
+    <ui-select-menu formControlName="operator">
+      <ui-select-option
+        *ngFor="let operator of operators"
+        [value]="operator.value"
+        >{{ operator.label | translate }}</ui-select-option
+      >
+    </ui-select-menu>
+  </div>
   <ng-container *ngIf="field && editor">
     <ng-container
       [ngTemplateOutlet]="editor"
@@ -19,25 +25,26 @@
     ></ng-container>
   </ng-container>
   <!-- DELETE ROW -->
-  <safe-button
+  <ui-button
     [isIcon]="true"
     icon="delete"
     variant="danger"
     (click)="delete.emit()"
   >
-  </safe-button>
+  </ui-button>
 
   <!-- DEFAULT FIELD TEMPLATE -->
   <ng-template #fieldSelect>
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'common.field.one' | translate }}</mat-label>
-      <mat-select formControlName="field">
+    <div uiFormFieldDirective [outline]="false" class="w-60">
+      <label>{{ 'common.field.one' | translate }}</label>
+      <ui-select-menu formControlName="field">
         <ng-container *ngFor="let field of fields">
-          <mat-option *ngIf="!field.fields" [value]="field.name">
+          <ui-select-option *ngIf="!field.fields" [value]="field.name">
             {{ field.text || field.name }}
-          </mat-option>
-          <mat-optgroup *ngIf="field.fields" [label]="field.text || field.name">
-            <mat-option
+          </ui-select-option>
+
+          <ui-select-option *ngIf="field.fields" [isGroup]="true">
+            <ui-select-option
               *ngFor="let subField of field.fields"
               [value]="field.name + '.' + subField.name"
             >
@@ -46,76 +53,92 @@
                   ? subField.text || subField.name
                   : field.name + ' - ' + (subField.text || subField.name)
               }}
-            </mat-option>
-          </mat-optgroup>
+            </ui-select-option>
+          </ui-select-option>
         </ng-container>
-      </mat-select>
-    </mat-form-field>
+      </ui-select-menu>
+    </div>
   </ng-template>
 
   <!-- TEXT EDITOR -->
   <ng-template #textEditor>
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'common.value.one' | translate }}</mat-label>
-      <input matInput formControlName="value" type="string" />
-    </mat-form-field>
+    <div uiFormFieldDirective>
+      <label>{{ 'common.value.one' | translate }}</label>
+      <input formControlName="value" type="string" />
+    </div>
   </ng-template>
 
   <!-- BOOLEAN EDITOR -->
   <ng-template #booleanEditor>
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'common.value.one' | translate }}</mat-label>
-      <mat-select formControlName="value">
-        <mat-option [value]="true">{{ 'common.true' | translate }}</mat-option>
-        <mat-option [value]="false">{{
-          'common.false' | translate
-        }}</mat-option>
-        <mat-option [value]="null">{{
-          'common.input.none' | translate
-        }}</mat-option>
-      </mat-select>
-    </mat-form-field>
+    <div uiFormFieldDirective [outline]="false" class="w-28">
+      <label>{{ 'common.value.one' | translate }}</label>
+      <ui-select-menu formControlName="value">
+        <ui-select-option [value]="true">
+          {{ 'common.true' | translate }}
+        </ui-select-option>
+        <ui-select-option [value]="false">
+          {{ 'common.false' | translate }}
+        </ui-select-option>
+        <ui-select-option [value]="null">
+          {{ 'common.input.none' | translate }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
   </ng-template>
 
   <!-- NUMERIC EDITOR -->
   <ng-template #numericEditor>
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'common.value.one' | translate }}</mat-label>
-      <input matInput formControlName="value" type="number" />
-    </mat-form-field>
+    <div uiFormFieldDirective>
+      <label>{{ 'common.value.one' | translate }}</label>
+      <input formControlName="value" type="number" />
+    </div>
   </ng-template>
 
   <!-- SELECT EDITOR -->
   <ng-template #selectEditor>
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'common.value.one' | translate }}</mat-label>
-      <mat-select *ngIf="!field.multiSelect" formControlName="value">
-        <mat-option>{{ 'common.input.none' | translate }}</mat-option>
-        <mat-option *ngFor="let option of field.options" [value]="option.value">
+    <div uiFormFieldDirective [outline]="false" class="w-60">
+      <label>{{ 'common.value.one' | translate }}</label>
+      <ui-select-menu *ngIf="!field.multiSelect" formControlName="value">
+        <ui-select-option>{{
+          'common.input.none' | translate
+        }}</ui-select-option>
+        <ui-select-option
+          *ngFor="let option of field.options"
+          [value]="option.value"
+        >
           {{ option.text }}
-        </mat-option>
-      </mat-select>
-      <mat-select
+        </ui-select-option>
+      </ui-select-menu>
+      <ui-select-menu
         *ngIf="field.multiSelect"
         formControlName="value"
-        multiple="true"
+        [multiselect]="true"
       >
-        <mat-option>{{ 'common.input.none' | translate }}</mat-option>
-        <mat-option *ngFor="let option of field.options" [value]="option.value">
+        <ui-select-option>{{
+          'common.input.none' | translate
+        }}</ui-select-option>
+        <ui-select-option
+          *ngFor="let option of field.options"
+          [value]="option.value"
+        >
           {{ option.text }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
   </ng-template>
 
   <!-- DATE EDITOR -->
   <ng-template #dateEditor>
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'common.value.one' | translate }}</mat-label>
-      <input matInput [matDatepicker]="datePicker" formControlName="value" />
-      <mat-datepicker-toggle matSuffix [for]="datePicker">
-      </mat-datepicker-toggle>
-      <mat-datepicker #datePicker></mat-datepicker>
-    </mat-form-field>
+    <div uiFormFieldDirective>
+      <label>{{ 'common.value.one' | translate }}</label>
+      <div [uiDateWrapper]="calendar">
+        <input
+          [uiDatePicker]
+          formControlName="value"
+          [label]="'kendo.datepicker.dateLabel' | translate"
+        />
+        <ui-date-picker #calendar> </ui-date-picker>
+      </div>
+    </div>
   </ng-template>
 </form>

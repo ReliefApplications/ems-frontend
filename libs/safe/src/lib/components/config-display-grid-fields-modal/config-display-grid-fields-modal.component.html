@@ -1,11 +1,13 @@
-<safe-modal>
-  <h2 mat-dialog-title>
-    {{
-      'components.widget.settings.grid.buttons.callback.selectDisplay'
-        | translate
-    }}
-  </h2>
-  <mat-dialog-content>
+<ui-dialog>
+  <ng-container ngProjectAs="header">
+    <h2>
+      {{
+        'components.widget.settings.grid.buttons.callback.selectDisplay'
+          | translate
+      }}
+    </h2>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <div class="flex flex-col">
       <safe-query-builder
         *ngIf="!loading && form.value.name"
@@ -13,20 +15,20 @@
         [canSelectDataSet]="false"
       ></safe-query-builder>
     </div>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <safe-button mat-dialog-close *ngIf="!loading">{{
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose *ngIf="!loading">{{
       'common.cancel' | translate
-    }}</safe-button>
-    <safe-button
+    }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="form"
+      [uiDialogClose]="form"
       cdkFocusInitial
       [disabled]="!form.valid"
       *ngIf="!loading"
     >
       {{ 'common.save' | translate }}
-    </safe-button>
-  </mat-dialog-actions>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

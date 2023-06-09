@@ -1,13 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Application } from '../../models/application.model';
 import { SafeApplicationService } from '../../services/application/application.service';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { SafeUnsubscribeComponent } from '../../components/utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Toolbar component visible when editing application.
@@ -47,8 +47,8 @@ export class SafeApplicationToolbarComponent
   constructor(
     private applicationService: SafeApplicationService,
     private router: Router,
-    public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    public dialog: Dialog,
+    private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
   ) {
@@ -90,7 +90,7 @@ export class SafeApplicationToolbarComponent
       ),
       confirmColor: 'primary',
     });
-    dialogRef.afterClosed().subscribe(() => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.applicationService.toggleApplicationLock();
     });
   }
@@ -116,11 +116,13 @@ export class SafeApplicationToolbarComponent
         ),
         confirmColor: 'primary',
       });
-      dialogRef.afterClosed().subscribe((value) => {
-        if (value) {
-          this.applicationService.publish();
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.applicationService.publish();
+          }
+        });
     }
   }
 
