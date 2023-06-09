@@ -17,8 +17,6 @@ import get from 'lodash/get';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   ButtonModule,
@@ -60,8 +58,6 @@ export function codesFactory(): () => any {
   imports: [
     CommonModule,
     DialogModule,
-    MatFormFieldModule,
-    MatInputModule,
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
@@ -93,7 +89,7 @@ export class EditDistributionListModalComponent implements OnInit {
    *
    * @param formBuilder Angular form builder service
    * @param translateService TranslateService
-   * @param dialogRef Material dialog ref of the component
+   * @param dialogRef Dialog ref of the component
    * @param data Data input of the modal
    */
   constructor(

@@ -6,9 +6,7 @@ import {
 } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { IconModule } from '@oort-front/ui';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogModule } from '@oort-front/ui';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
@@ -28,12 +26,10 @@ import {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
     FormWrapperModule,
     SpinnerModule,
     IconModule,
     MenuModule,
-    MatButtonModule,
     TranslateModule,
     DialogModule,
     ButtonModule,
@@ -50,7 +46,7 @@ export class PositionModalComponent implements OnInit {
    * Add new application position component
    *
    * @param formBuilder Angular form builder
-   * @param dialogRef Material dialog ref
+   * @param dialogRef Dialog ref
    * @param data Injected modal data
    * @param data.add is it an addition
    * @param data.edit is it an edition

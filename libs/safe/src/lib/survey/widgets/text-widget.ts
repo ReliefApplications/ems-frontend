@@ -223,6 +223,13 @@ export const init = (Survey: any, domService: DomService): void => {
                 }
               }
             );
+            question.registerFunctionOnPropertyValueChanged(
+              'readOnly',
+              (value: boolean) => {
+                pickerInstance.readonly = value;
+                pickerInstance.disabled = value;
+              }
+            );
           }
         } else {
           el.style.display = 'initial';

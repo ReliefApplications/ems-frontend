@@ -3,7 +3,6 @@ import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
 import { CommonModule } from '@angular/common';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { DialogModule } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
 
@@ -23,7 +22,7 @@ interface DialogData {
  */
 @Component({
   standalone: true,
-  imports: [CommonModule, DialogModule, MatButtonModule, ButtonModule],
+  imports: [CommonModule, DialogModule, ButtonModule],
   selector: 'safe-confirm-modal',
   templateUrl: './confirm-modal.component.html',
   styleUrls: ['./confirm-modal.component.scss'],

@@ -1,15 +1,5 @@
 import { Dialog } from '@angular/cdk/dialog';
-import { Overlay } from '@angular/cdk/overlay';
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnInit,
-  Output,
-  ViewChild,
-} from '@angular/core';
-import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
-import { MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/legacy-select';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
@@ -20,7 +10,6 @@ import { Record } from '../../models/record.model';
 import { Change, RecordHistory } from '../../models/recordsHistory';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
 import { SafeDownloadService } from '../../services/download/download.service';
-import { scrollFactory } from '../../utils/scroll-factory';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import {
   GET_RECORD_BY_ID_FOR_HISTORY,
@@ -58,13 +47,6 @@ const getValueType = (
   selector: 'safe-record-history',
   templateUrl: './record-history.component.html',
   styleUrls: ['./record-history.component.scss'],
-  providers: [
-    {
-      provide: MAT_SELECT_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-  ],
 })
 export class SafeRecordHistoryComponent
   extends SafeUnsubscribeComponent
@@ -91,10 +73,6 @@ export class SafeRecordHistoryComponent
   // Refresh content of the history
   @Input() refresh$: Subject<boolean> = new Subject<boolean>();
 
-  @ViewChild('startDate', { read: MatStartDate })
-  startDate!: MatStartDate<string>;
-  @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
-
   /** @returns filename from current date and record inc. id */
   get fileName(): string {
     const today = new Date();
@@ -108,7 +86,7 @@ export class SafeRecordHistoryComponent
   /**
    * Constructor of the record history component
    *
-   * @param dialog The material dialog service
+   * @param dialog The Dialog service
    * @param downloadService The download service
    * @param translate The translation service
    * @param dateFormat The dateTranslation service
@@ -299,8 +277,6 @@ export class SafeRecordHistoryComponent
     this.filtersDate.get('startDate')?.setValue('');
     this.filtersDate.get('endDate')?.setValue('');
     this.filterHistory = this.history;
-    this.startDate.value = '';
-    this.endDate.value = '';
   }
 
   /**

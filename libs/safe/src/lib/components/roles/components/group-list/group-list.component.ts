@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import {
@@ -35,7 +34,8 @@ export class SafeGroupListComponent
   // === DATA ===
   public loading = true;
   public loadingFetch = false;
-  public groups: MatTableDataSource<any> = new MatTableDataSource<any>([]);
+  public groups: Array<any> = new Array<any>();
+  public filteredGroups: Array<any> = new Array<any>();
   public manualCreation = true;
   public displayedColumns = ['title', 'usersCount', 'actions'];
 
@@ -45,7 +45,7 @@ export class SafeGroupListComponent
    * This component is used to display the groups tab in the platform
    *
    * @param apollo This is the Apollo client that will be used to make GraphQL
-   * @param dialog This is the Angular Material Dialog service.
+   * @param dialog This is the Angular Dialog service.
    * @param snackBar This is the service that will be used to display the snackbar.
    * @param confirmService This is the service that will be used to display the confirm window.
    * @param translate This is the service that is used to
@@ -67,12 +67,21 @@ export class SafeGroupListComponent
     this.getPermissionsConfiguration();
 
     // sets up filtering on table
-    this.groups.filterPredicate = (data: any) =>
-      this.searchText.trim().length === 0 ||
-      (this.searchText.trim().length > 0 &&
-        data.title
-          .toLowerCase()
-          .includes(this.searchText.trim().toLowerCase()));
+    this.filterPredicate();
+  }
+
+  /**
+   * Filter groups by search
+   */
+  private filterPredicate() {
+    this.filteredGroups = this.groups.filter(
+      (data: any) =>
+        this.searchText.trim().length === 0 ||
+        (this.searchText.trim().length > 0 &&
+          data.title
+            .toLowerCase()
+            .includes(this.searchText.trim().toLowerCase()))
+    );
   }
 
   /**
@@ -84,7 +93,7 @@ export class SafeGroupListComponent
     this.searchText = event
       ? event.target.value.trim().toLowerCase()
       : this.searchText;
-    this.groups.filter = '##';
+    this.filterPredicate();
   }
 
   /**
@@ -97,7 +106,8 @@ export class SafeGroupListComponent
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ data, loading }) => {
-        this.groups.data = data.groups;
+        this.groups = data.groups;
+        this.filteredGroups = this.groups;
         // this.manualCreation = data.groups.manualCreation;
         this.loading = loading;
       });
@@ -189,7 +199,8 @@ export class SafeGroupListComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ data, loading }) => {
-          if (data) this.groups.data = data.fetchGroups || [];
+          if (data) this.groups = data.fetchGroups || [];
+          this.filteredGroups = this.groups;
           this.loadingFetch = loading;
           snackBarRef.instance.message = this.translate.instant(
             'common.notifications.groups.ready'

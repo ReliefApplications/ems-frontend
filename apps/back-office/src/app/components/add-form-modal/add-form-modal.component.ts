@@ -1,5 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   UntypedFormGroup,
   UntypedFormBuilder,
@@ -11,11 +11,8 @@ import {
   GetResourceByIdQueryResponse,
   GET_RESOURCE_BY_ID,
 } from './graphql/queries';
-import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ToggleModule,
@@ -43,9 +40,7 @@ const ITEMS_PER_PAGE = 10;
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
     FormWrapperModule,
-    MatButtonModule,
     ToggleModule,
     TranslateModule,
     GraphQLSelectModule,
@@ -71,13 +66,11 @@ export class AddFormModalComponent implements OnInit {
 
   public templates: any[] = [];
 
-  @ViewChild('resourceSelect') resourceSelect?: MatSelect;
-
   /**
    * Add form modal
    *
    * @param formBuilder Angular form builder
-   * @param dialogRef Material dialog ref
+   * @param dialogRef Dialog ref
    * @param apollo Apollo service
    */
   constructor(

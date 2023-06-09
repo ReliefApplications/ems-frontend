@@ -12,10 +12,6 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  MAT_LEGACY_CHIPS_DEFAULT_OPTIONS as MAT_CHIPS_DEFAULT_OPTIONS,
-  MatLegacyChipInputEvent as MatChipInputEvent,
-} from '@angular/material/legacy-chips';
 import { EMAIL_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { SafeEditorService } from '../../services/editor/editor.service';
 
@@ -35,16 +31,6 @@ const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
 
 /**
- * Function that create a function which returns an object with the separator keys
- *
- * @returns A function which returns an object with the separator keys
- */
-export function codesFactory(): () => any {
-  const codes = () => ({ separatorKeyCodes: SEPARATOR_KEYS_CODE });
-  return codes;
-}
-
-/**
  * Preview Email component.
  * Modal in read-only mode.
  */
@@ -52,7 +38,6 @@ export function codesFactory(): () => any {
   selector: 'safe-email-preview',
   templateUrl: './email-preview.component.html',
   styleUrls: ['./email-preview.component.scss'],
-  providers: [{ provide: MAT_CHIPS_DEFAULT_OPTIONS, useFactory: codesFactory }],
 })
 export class SafeEmailPreviewComponent implements OnInit {
   /** mail is put in a form to use read-only inputs */ // we want to change that
@@ -106,7 +91,7 @@ export class SafeEmailPreviewComponent implements OnInit {
    *
    * @param event The event triggered when we exit the input
    */
-  addEmail(event: MatChipInputEvent | any): void {
+  addEmail(event: any): void {
     // use setTimeout to prevent add input value on focusout
     setTimeout(
       () => {

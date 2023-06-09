@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormControl } from '@angular/forms';
-import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import {
   TranslateModule,
   TranslateService,
@@ -9,6 +8,7 @@ import {
 } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { SafeFormsDropdownComponent } from './forms-dropdown.component';
+import { AutocompleteModule } from '@oort-front/ui';
 
 describe('SafeFormsDropdownComponent', () => {
   let component: SafeFormsDropdownComponent;
@@ -25,7 +25,7 @@ describe('SafeFormsDropdownComponent', () => {
             useClass: TranslateFakeLoader,
           },
         }),
-        MatAutocompleteModule,
+        AutocompleteModule,
       ],
     }).compileComponents();
   });

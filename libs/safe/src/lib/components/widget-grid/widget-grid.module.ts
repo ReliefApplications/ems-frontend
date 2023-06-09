@@ -3,9 +3,6 @@ import { CommonModule } from '@angular/common';
 import { SafeWidgetGridComponent } from './widget-grid.component';
 import { SafeWidgetModule } from '../widget/widget.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SafeFloatingOptionsComponent } from './floating-options/floating-options.component';
 import { SafeTileDataComponent } from './floating-options/menu/tile-data/tile-data.component';
 import { SafeExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
@@ -29,9 +26,6 @@ import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
     SafeWidgetModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
     MenuModule,
     DividerModule,
     TranslateModule,

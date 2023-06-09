@@ -10,7 +10,6 @@ import { EMAIL_EDITOR_CONFIG } from '../../../../const/tinymce.const';
 import get from 'lodash/get';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TranslateModule } from '@ngx-translate/core';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { ButtonModule, SelectMenuModule } from '@oort-front/ui';
@@ -29,7 +28,6 @@ interface DialogData {
   imports: [
     CommonModule,
     DialogModule,
-    MatFormFieldModule,
     FormWrapperModule,
     FormsModule,
     ReactiveFormsModule,
@@ -56,7 +54,7 @@ export class EditTemplateModalComponent implements OnInit {
    * Component for editing a template
    *
    * @param formBuilder Angular form builder service
-   * @param dialogRef Material dialog ref of the component
+   * @param dialogRef Dialog ref of the component
    * @param data Data input of the modal
    * @param editorService Editor service used to get main URL and current language
    */

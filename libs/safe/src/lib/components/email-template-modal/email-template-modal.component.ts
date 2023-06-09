@@ -7,7 +7,6 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import {
@@ -28,7 +27,6 @@ interface DialogData {
   imports: [
     CommonModule,
     DialogModule,
-    MatFormFieldModule,
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,

@@ -2,10 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeUsersComponent } from './users.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { IconModule } from '@oort-front/ui';
-import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import {
   MenuModule,
   CheckboxModule,
@@ -15,8 +12,6 @@ import {
   FormWrapperModule,
   SelectMenuModule,
 } from '@oort-front/ui';
-import { MatRippleModule } from '@angular/material/core';
-import { MatDividerModule } from '@angular/material/divider';
 import { SafeInviteUsersModule } from './components/invite-users/invite-users.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
@@ -28,16 +23,11 @@ import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-tab
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatButtonModule,
     MenuModule,
     IconModule,
     FormWrapperModule,
-    MatAutocompleteModule,
-    MatRippleModule,
     SpinnerModule,
     CheckboxModule,
-    MatDividerModule,
     SafeInviteUsersModule,
     TranslateModule,
     SafeSkeletonTableModule,

@@ -4,8 +4,8 @@
     #applicationSelect
     [(ngModel)]="value"
     name="applications"
-    (openedChange)="onOpenSelect($event)"
-    (selectionChange)="onSelect($event)"
+    (opened)="onOpenSelect()"
+    (selectedOption)="onSelect($event)"
     [multiselect]="true"
   >
     <ui-select-option

@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ButtonConfigComponent } from './button-config.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { IconModule, SelectMenuModule, TabsModule } from '@oort-front/ui';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
 import {
@@ -26,7 +25,6 @@ import {
     FormsModule,
     ReactiveFormsModule,
     ToggleModule,
-    MatInputModule,
     CheckboxModule,
     TabsModule,
     TooltipModule,

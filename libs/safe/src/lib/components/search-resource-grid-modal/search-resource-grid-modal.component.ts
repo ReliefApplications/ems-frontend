@@ -3,7 +3,6 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
 import { CommonModule } from '@angular/common';
 import { SpinnerModule } from '@oort-front/ui';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { SafeResourceDropdownModule } from '../resource-dropdown/resource-dropdown.module';
 import { SafeApplicationDropdownModule } from '../application-dropdown/application-dropdown.module';
 import { SafeRecordDropdownModule } from '../record-dropdown/record-dropdown.module';
@@ -31,7 +30,6 @@ interface DialogData {
     CommonModule,
     DialogModule,
     SpinnerModule,
-    MatButtonModule,
     SafeResourceDropdownModule,
     SafeApplicationDropdownModule,
     SafeRecordDropdownModule,
@@ -61,7 +59,7 @@ export class SafeResourceGridModalComponent {
    * Grid of records for resource / resources questions.
    *
    * @param data dialog data
-   * @param dialogRef Material dialog reference of the component
+   * @param dialogRef Dialog reference of the component
    * @param ref Application reference
    */
   constructor(

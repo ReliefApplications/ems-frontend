@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import {
   UntypedFormArray,
   UntypedFormBuilder,
@@ -6,7 +6,6 @@ import {
   Validators,
 } from '@angular/forms';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 import {
   ApiConfiguration,
   Application,
@@ -34,14 +33,13 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../../../utils/update-queries';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeReadableCronModule,
   CronExpressionControlModule,
 } from '@oort-front/safe';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import {
   TooltipModule,
   ButtonModule,
@@ -73,7 +71,6 @@ const DEFAULT_FIELDS = ['createdBy'];
     GraphQLSelectModule,
     SafeReadableCronModule,
     TooltipModule,
-    MatFormFieldModule,
     ExpansionPanelModule,
     CronExpressionControlModule,
     IconModule,
@@ -96,7 +93,6 @@ export class EditPullJobModalComponent implements OnInit {
   public formsQuery!: QueryRef<GetFormsQueryResponse>;
 
   // === CHANNELS ===
-  @ViewChild('channelSelect') channelSelect?: MatSelect;
   private applicationsLoading = true;
   public applications = new BehaviorSubject<Application[]>([]);
   public applications$!: Observable<Application[]>;
@@ -143,9 +139,10 @@ export class EditPullJobModalComponent implements OnInit {
    * Pull job modal component
    *
    * @param formBuilder Angular form builder
-   * @param dialogRef Material dialog ref
+   * @param dialogRef Dialog ref
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
+   * @param document Document
    * @param data Modal injected data
    * @param data.channels list of available channels
    * @param data.pullJob pull job
@@ -155,6 +152,7 @@ export class EditPullJobModalComponent implements OnInit {
     public dialogRef: DialogRef<EditPullJobModalComponent>,
     private apollo: Apollo,
     private dialog: Dialog,
+    @Inject(DOCUMENT) private document: Document,
     @Inject(DIALOG_DATA)
     public data: {
       channels: Channel[];
@@ -381,11 +379,9 @@ export class EditPullJobModalComponent implements OnInit {
    * Adds scroll listener to channels select.
    */
   onOpenApplicationSelect(): void {
-    if (this.channelSelect) {
-      const panel = this.channelSelect.panel.nativeElement;
-      if (panel) {
-        panel.onscroll = (event: any) => this.loadOnScrollApplication(event);
-      }
+    const panel = this.document.getElementById('optionList');
+    if (panel) {
+      panel.onscroll = (event: any) => this.loadOnScrollApplication(event);
     }
   }
 

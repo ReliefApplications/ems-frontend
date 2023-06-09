@@ -38,7 +38,7 @@ export class RecordSelectionTabComponent
    * Component for the record selection in the editor widget settings
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param gridLayoutService Shared layout service
    */
   constructor(

@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { get, isEqual } from 'lodash';
 import {
@@ -70,7 +69,7 @@ export class RoleResourcesComponent
   // === TABLE ELEMENTS ===
   private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   public displayedColumns: string[] = ['name', 'actions'];
-  public resources = new MatTableDataSource<TableResourceElement>([]);
+  public resources = new Array<TableResourceElement>();
   public cachedResources: Resource[] = [];
 
   // === SINGLE ELEMENT ===
@@ -176,7 +175,7 @@ export class RoleResourcesComponent
       this.pageInfo.pageSize = first;
       this.fetchResources();
     } else {
-      this.resources.data = this.setTableElements(
+      this.resources = this.setTableElements(
         this.cachedResources.slice(
           e.pageSize * this.pageInfo.pageIndex,
           e.pageSize * (this.pageInfo.pageIndex + 1)
@@ -306,16 +305,16 @@ export class RoleResourcesComponent
       .subscribe({
         next: ({ errors, data }) => {
           if (data?.editResource) {
-            const index = this.resources.data.findIndex(
+            const index = this.resources.findIndex(
               (x) => x.resource.id === resource.id
             );
-            const tableElements = [...this.resources.data];
+            const tableElements = [...this.resources];
             tableElements[index] = this.setTableElement(
               isEqual(resource.id, this.openedResource?.id)
                 ? { ...this.openedResource, ...data?.editResource }
                 : data?.editResource
             );
-            this.resources.data = tableElements;
+            this.resources = tableElements;
             const cachedIndex = this.cachedResources.findIndex(
               (x) => x.id === resource.id
             );
@@ -357,16 +356,16 @@ export class RoleResourcesComponent
       .subscribe({
         next: ({ errors, data }) => {
           if (data?.editResource) {
-            const index = this.resources.data.findIndex(
+            const index = this.resources.findIndex(
               (x) => x.resource.id === resource.id
             );
-            const tableElements = [...this.resources.data];
+            const tableElements = [...this.resources];
             tableElements[index] = this.setTableElement(
               isEqual(resource.id, this.openedResource?.id)
                 ? { ...this.openedResource, ...data?.editResource }
                 : data?.editResource
             );
-            this.resources.data = tableElements;
+            this.resources = tableElements;
             if (isEqual(resource.id, this.openedResource?.id)) {
               this.openedResource = tableElements[index].resource;
             }
@@ -430,16 +429,16 @@ export class RoleResourcesComponent
       .subscribe({
         next: ({ errors, data }) => {
           if (data?.editResource) {
-            const index = this.resources.data.findIndex(
+            const index = this.resources.findIndex(
               (x) => x.resource.id === resource.id
             );
-            const tableElements = [...this.resources.data];
+            const tableElements = [...this.resources];
             tableElements[index] = this.setTableElement(
               isEqual(resource.id, this.openedResource?.id)
                 ? { ...this.openedResource, ...data?.editResource }
                 : data?.editResource
             );
-            this.resources.data = tableElements;
+            this.resources = tableElements;
             if (isEqual(resource.id, this.openedResource?.id)) {
               this.openedResource = tableElements[index].resource;
             }
@@ -626,7 +625,7 @@ export class RoleResourcesComponent
       this.cachedResources,
       mappedValues
     );
-    this.resources.data = this.setTableElements(mappedValues);
+    this.resources = this.setTableElements(mappedValues);
     this.pageInfo.length = data.resources.totalCount;
     this.pageInfo.endCursor = data.resources.pageInfo.endCursor;
     this.loading = loading;

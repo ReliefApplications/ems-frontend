@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 import { SafeFormModalComponent } from '../form-modal/form-modal.component';
 import { v4 as uuidv4 } from 'uuid';
 import localForage from 'localforage';
-import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
@@ -35,13 +34,6 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   selector: 'safe-resource-modal',
   templateUrl: '../form-modal/form-modal.component.html',
   styleUrls: ['../form-modal/form-modal.component.scss'],
-  providers: [
-    {
-      provide: MAT_TOOLTIP_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-  ],
   imports: [
     CommonModule,
     ButtonModule,

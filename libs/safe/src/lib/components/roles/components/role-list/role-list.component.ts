@@ -1,11 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import {
-  Component,
-  OnInit,
-  Input,
-  AfterViewInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { Application } from '../../../../models/application.model';
 import { Role } from '../../../../models/user.model';
@@ -18,8 +12,6 @@ import {
   DELETE_ROLE,
 } from '../../graphql/mutations';
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
-import { MatSort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -37,18 +29,16 @@ import { SnackbarService } from '@oort-front/ui';
 })
 export class SafeRoleListComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements OnInit
 {
   // === INPUT DATA ===
   @Input() inApplication = false;
 
   // === DATA ===
   public loading = true;
-  public roles: MatTableDataSource<any> = new MatTableDataSource<any>([]);
+  public roles: Array<any> = new Array<any>([]);
+  public filteredRoles: Array<any> = new Array<any>([]);
   public displayedColumns = ['title', 'usersCount', 'actions'];
-
-  // === SORTING ===
-  @ViewChild(MatSort) sort!: MatSort;
 
   // === FILTERS ===
   public filters = [
@@ -63,7 +53,7 @@ export class SafeRoleListComponent
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
-   * @param dialog This is the Angular Material Dialog service.
+   * @param dialog This is the Angular Dialog service.
    * @param applicationService This is the service that will be used to get
    * the application data from the backend.
    * @param apollo This is the Apollo client that will be used to make GraphQL
@@ -90,18 +80,17 @@ export class SafeRoleListComponent
   }
 
   ngOnInit(): void {
-    this.filterPredicate();
-
     if (this.inApplication) {
       this.loading = false;
       this.applicationService.application$
         .pipe(takeUntil(this.destroy$))
         .subscribe((application: Application | null) => {
           if (application) {
-            this.roles.data = application.roles || [];
+            this.roles = application.roles || [];
           } else {
-            this.roles.data = [];
+            this.roles = [];
           }
+          this.filterPredicate();
         });
     } else {
       this.getRoles();
@@ -112,13 +101,15 @@ export class SafeRoleListComponent
    * Filter roles and users.
    */
   private filterPredicate(): void {
-    this.roles.filterPredicate = (data: any) =>
-      (this.searchText.trim().length === 0 ||
-        (this.searchText.trim().length > 0 &&
-          data.title.toLowerCase().includes(this.searchText.trim()))) &&
-      (this.usersFilter.trim().length === 0 ||
-        (this.usersFilter.trim().length > 0 &&
-          data.usersCount.toString().includes(this.usersFilter.trim())));
+    this.filteredRoles = this.roles.filter(
+      (data: any) =>
+        (this.searchText.trim().length === 0 ||
+          (this.searchText.trim().length > 0 &&
+            data.title.toLowerCase().includes(this.searchText.trim()))) &&
+        (this.usersFilter.trim().length === 0 ||
+          (this.usersFilter.trim().length > 0 &&
+            data.usersCount.toString().includes(this.usersFilter.trim())))
+    );
   }
 
   /**
@@ -131,8 +122,9 @@ export class SafeRoleListComponent
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ data, loading }) => {
-        this.roles.data = data.roles;
+        this.roles = data.roles;
         this.loading = loading;
+        this.filterPredicate();
       });
   }
 
@@ -261,10 +253,6 @@ export class SafeRoleListComponent
     });
   }
 
-  ngAfterViewInit(): void {
-    this.roles.sort = this.sort;
-  }
-
   /**
    * Applies filters to the list of roles on event
    *
@@ -281,7 +269,7 @@ export class SafeRoleListComponent
         ? event.target.value.trim().toLowerCase()
         : this.searchText;
     }
-    this.roles.filter = '##';
+    this.filterPredicate();
   }
 
   /**

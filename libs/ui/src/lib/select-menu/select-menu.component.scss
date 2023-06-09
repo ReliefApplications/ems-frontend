@@ -1,3 +1,8 @@
+:host {
+  width: 100%;
+  display: block;
+}
+
 //Non selectable item with the mouth
 .non_selectable {
   -moz-user-select: -moz-none;
@@ -10,4 +15,9 @@
 // Text of the trigger goes little on the top-left corner of the button
 .corner_label {
   font-size: 0.5rem !important;
+}
+
+.default {
+  min-width: max-content;
+  max-width: calc(100% - 26px);
 }

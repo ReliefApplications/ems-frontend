@@ -29,14 +29,14 @@ class LaunchSnackbarComponent implements OnDestroy {
 
   destroy$ = new Subject<void>();
   /**
-   * Constructor for the launchDialog component
+   * Constructor for the launch Snackbar component
    *
    * @param snackBar SnackbarService service
    */
   constructor(private snackBar: SnackbarService) {}
 
   /**
-   * open material dialog.
+   * open Snackbar.
    */
   openSnackBar(): void {
     if (this.default) {

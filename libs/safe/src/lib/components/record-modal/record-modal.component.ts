@@ -28,8 +28,6 @@ import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.compo
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import { CommonModule } from '@angular/common';
 import { SnackbarService, TabsModule } from '@oort-front/ui';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatGridListModule } from '@angular/material/grid-list';
 import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
@@ -59,9 +57,7 @@ interface DialogData {
     CommonModule,
     DialogModule,
     TabsModule,
-    MatGridListModule,
     IconModule,
-    MatButtonModule,
     SafeRecordSummaryModule,
     SafeFormActionsModule,
     TranslateModule,
@@ -111,7 +107,7 @@ export class SafeRecordModalComponent
    * @param dialogRef This is the reference to the dialog that is being opened.
    * @param data This is the data that is passed to the modal when it is opened.
    * @param apollo This is the Apollo client that we'll use to make GraphQL requests.
-   * @param dialog This is the Material dialog service
+   * @param dialog This is the Dialog service
    * @param authService This is the service that handles the authentication of the user
    * @param snackBar This is the service that allows you to display a snackbar message to the user.
    * @param formBuilderService This is the service that will be used to build forms.

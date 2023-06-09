@@ -1,8 +1,5 @@
-import { Overlay } from '@angular/cdk/overlay';
 import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { MAT_LEGACY_AUTOCOMPLETE_SCROLL_STRATEGY as MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/legacy-autocomplete';
-import { scrollFactory } from '../../../utils/scroll-factory';
 import { createChartWidgetForm } from './chart-forms';
 import { CHART_TYPES } from './constants';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
@@ -14,13 +11,6 @@ import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
   selector: 'safe-chart-settings',
   templateUrl: './chart-settings.component.html',
   styleUrls: ['./chart-settings.component.scss'],
-  providers: [
-    {
-      provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-  ],
 })
 /** Modal content for the settings of the chart widgets. */
 export class SafeChartSettingsComponent implements OnInit {

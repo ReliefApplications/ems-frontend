@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { IconModule } from '@oort-front/ui';
 import { MenuModule, TableModule, SpinnerModule } from '@oort-front/ui';
 import { PositionAttributesRoutingModule } from './position-attributes-routing.module';
@@ -16,7 +15,6 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonModule,
     PositionAttributesRoutingModule,
     SpinnerModule,
-    MatButtonModule,
     MenuModule,
     IconModule,
     TranslateModule,

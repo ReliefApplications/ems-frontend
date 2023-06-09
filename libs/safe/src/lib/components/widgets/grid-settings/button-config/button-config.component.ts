@@ -70,7 +70,7 @@ export class ButtonConfigComponent
    * @param router Angular Router service
    * @param workflowService Shared workflow service
    * @param queryBuilder Shared Query Builder service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param applicationService Shared application service
    */
   constructor(
@@ -200,9 +200,6 @@ export class ButtonConfigComponent
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         if (value) {
-          this.formGroup
-            ?.get('distributionList')
-            ?.setValidators(Validators.required);
           this.formGroup?.get('templates')?.setValidators(Validators.required);
         } else {
           this.formGroup?.get('distributionList')?.clearValidators();

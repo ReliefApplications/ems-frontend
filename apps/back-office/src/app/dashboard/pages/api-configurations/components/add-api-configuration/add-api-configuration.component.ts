@@ -29,7 +29,7 @@ export class AddApiConfigurationComponent implements OnInit {
    * Add API configuration component
    *
    * @param formBuilder Angular form builder
-   * @param dialogRef Material dialog ref
+   * @param dialogRef Dialog ref
    */
   constructor(
     private formBuilder: UntypedFormBuilder,

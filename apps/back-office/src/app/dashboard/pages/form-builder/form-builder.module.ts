@@ -16,7 +16,6 @@ import {
   TableModule,
 } from '@oort-front/ui';
 import { HistoryComponent } from './components/history/history.component';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -29,7 +28,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     FormBuilderRoutingModule,
     SpinnerModule,
-    MatButtonToggleModule,
     SafeFormBuilderModule,
     SafeAccessModule,
     TranslateModule,

@@ -8,7 +8,7 @@ import { surveyLocalization } from 'survey-angular';
  * @param question The question object
  * @param fieldsSettingsForm The form used for the button
  * @param multiselect Indicate if we need multiselect
- * @param dialog The material dialog service
+ * @param dialog The Dialog service
  * @returns The button DOM element
  */
 export const buildSearchButton = (
@@ -63,7 +63,7 @@ export const buildSearchButton = (
  *
  * @param question The question object
  * @param multiselect Indicate if we need multiselect
- * @param dialog The material dialog service
+ * @param dialog The Dialog service
  * @returns The button DOM element
  */
 export const buildAddButton = (

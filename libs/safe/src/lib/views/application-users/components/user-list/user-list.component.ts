@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { SafeApplicationService } from '../../../../services/application/application.service';
 import { takeUntil } from 'rxjs';
@@ -44,7 +43,7 @@ export class UserListComponent
     'actions',
   ];
 
-  public users: MatTableDataSource<User> = new MatTableDataSource<User>([]);
+  public users: Array<User> = new Array<User>();
   public cachedUsers: User[] = [];
   private usersQuery!: QueryRef<GetApplicationUsersQueryResponse>;
   @Input() roles: Role[] = [];
@@ -62,7 +61,7 @@ export class UserListComponent
 
   /** @returns empty state of the table */
   get empty(): boolean {
-    return !this.loading && this.users.data.length === 0;
+    return !this.loading && this.users.length === 0;
   }
 
   public selection = new SelectionModel<User>(true, []);
@@ -140,7 +139,7 @@ export class UserListComponent
       this.pageInfo.pageSize = first;
       this.fetchUsers();
     } else {
-      this.users.data = this.cachedUsers.slice(
+      this.users = this.cachedUsers.slice(
         e.pageSize * this.pageInfo.pageIndex,
         e.pageSize * (this.pageInfo.pageIndex + 1)
       );
@@ -181,7 +180,7 @@ export class UserListComponent
    */
   isAllSelected(): boolean {
     const numSelected = this.selection.selected.length;
-    const numRows = this.users.data.length;
+    const numRows = this.users.length;
     return numSelected === numRows;
   }
 
@@ -192,7 +191,7 @@ export class UserListComponent
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.isAllSelected()
       ? this.selection.clear()
-      : this.users.data.forEach((row) => this.selection.select(row));
+      : this.users.forEach((row) => this.selection.select(row));
   }
 
   /**
@@ -274,7 +273,7 @@ export class UserListComponent
     const mappedValues = data.application.users.edges.map((x) => x.node);
     this.cachedUsers = updateQueryUniqueValues(this.cachedUsers, mappedValues);
 
-    this.users.data = mappedValues;
+    this.users = mappedValues;
     this.pageInfo.length = data.application.users.totalCount;
     this.pageInfo.endCursor = data.application.users.pageInfo.endCursor;
     this.loading = loading;

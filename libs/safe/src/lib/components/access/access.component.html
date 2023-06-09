@@ -1,6 +1,6 @@
 <ng-container *ngIf="menuItem">
-  <button uiMenuItem (click)="onClick()">
-    <ui-icon icon="admin_panel_settings"></ui-icon>
+  <button uiMenuItem (click)="onClick()" class="w-full">
+    <ui-icon icon="admin_panel_settings" variant="grey"></ui-icon>
     {{ 'components.access.title' | translate }}
   </button>
 </ng-container>
