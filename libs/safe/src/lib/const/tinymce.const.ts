@@ -16,7 +16,7 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
   imagetools_cors_hosts: ['picsum.photos'],
   menubar: 'edit view insert format tools table help',
   toolbar:
-    'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link',
+    'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link avatar',
   toolbar_sticky: true,
   image_advtab: true,
   importcss_append: true,
@@ -31,6 +31,66 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
     'shortcuts', // the default shortcuts tab
     'keyboardnav', // the default keyboard navigation tab
   ],
+  setup: (editor) => {
+    editor.ui.registry.addIcon(
+      'avatar-icon',
+      '<svg width="24" height="24"><ellipse style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" cx="12.051" cy="8.44" rx="4.407" ry="4.457"></ellipse><ellipse style="fill: none; stroke: rgb(0, 0, 0);" cx="12" cy="12" ry="11" rx="11"></ellipse><path style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" d="M 3.859 19.172 C 4.12 10.79 20.414 11.589 20.143 19.122 C 20.141 19.179 3.857 19.247 3.859 19.172 Z"></path></svg>'
+    );
+    editor.ui.registry.addButton('avatar', {
+      icon: 'avatar-icon',
+      tooltip: 'Avatar',
+      onAction: () => {
+        editor.windowManager.open({
+          title: 'Avatars', //TODO: Translate
+          body: {
+            type: 'panel',
+            items: [
+              {
+                type: 'input',
+                name: 'avatars_source',
+                label: 'Source', //TODO: Translate
+              },
+              {
+                type: 'input',
+                name: 'avatars_max_items',
+                label: 'Max items', //TODO: Translate
+              },
+              {
+                type: 'bar',
+                items: [
+                  {
+                    type: 'input',
+                    name: 'avatars_width',
+                    label: 'Width', //TODO: Translate
+                  },
+                  {
+                    type: 'input',
+                    name: 'avatars_height',
+                    label: 'Height', //TODO: Translate
+                  },
+                ],
+              },
+            ],
+          },
+          onSubmit: (api) => {
+            console.log(api.getData());
+            api.close();
+          },
+          buttons: [
+            {
+              text: 'Close', //TODO: Translate
+              type: 'cancel',
+            },
+            {
+              text: 'Insert', //TODO: Translate
+              type: 'submit',
+              primary: true,
+            },
+          ],
+        });
+      },
+    });
+  },
 };
 
 /** Email Editor tinymce configuration. */
