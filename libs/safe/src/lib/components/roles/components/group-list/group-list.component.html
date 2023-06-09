@@ -74,8 +74,8 @@
           {{ 'common.edit' | translate }}
         </button>
         <ui-divider class="m-0"></ui-divider> -->
-            <button uiMenuItem color="warn" (click)="onDelete(element)">
-              <ui-icon icon="delete"></ui-icon>
+            <button uiMenuItem (click)="onDelete(element)">
+              <ui-icon icon="delete" variant="danger"></ui-icon>
               {{ 'common.delete' | translate }}
             </button>
           </ui-menu>

@@ -116,16 +116,16 @@
                     color="warn"
                     (click)="onViewHistory(element.id)"
                   >
-                    <ui-icon icon="library_books"></ui-icon>
+                    <ui-icon icon="library_books" variant="grey"></ui-icon>
                     {{ 'common.history' | translate }}
                   </button>
-                  <ui-divider class="m-0"></ui-divider>
+                  <ui-divider class="py-1"></ui-divider>
                   <button
                     *ngIf="!showDeletedRecords"
                     uiMenuItem
                     (click)="onDeleteRecord(element, $event)"
                   >
-                    <ui-icon icon="delete"></ui-icon>
+                    <ui-icon icon="delete" variant="danger"></ui-icon>
                     {{ 'common.delete' | translate }}
                   </button>
                   <button
@@ -133,7 +133,7 @@
                     uiMenuItem
                     (click)="onDeleteRecord(element, $event)"
                   >
-                    <ui-icon icon="delete_forever"></ui-icon>
+                    <ui-icon icon="delete_forever" variant="danger"></ui-icon>
                     {{ 'components.record.delete.permanently' | translate }}
                   </button>
                   <button
@@ -141,7 +141,7 @@
                     uiMenuItem
                     (click)="onRestoreRecord(element.id, $event)"
                   >
-                    <ui-icon icon="unarchive"></ui-icon>
+                    <ui-icon icon="unarchive" variant="success"></ui-icon>
                     {{ 'models.record.restore' | translate }}
                   </button>
                 </ui-menu>

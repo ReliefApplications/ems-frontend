@@ -47,6 +47,9 @@ module.exports = {
         fadeOut: 'fadeOut 0.1s forwards',
       },
     },
+    fontFamily: {
+      'system-ui': ['Roboto', 'Helvetica Neue', 'sans-serif']
+    }
   },
   plugins: [require('@tailwindcss/forms')],
 };

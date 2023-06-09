@@ -1,4 +1,5 @@
 <nav
+  id="app-header"
   class="flex p-4 items-center md:justify-between text-gray-200 bg-primary-600"
   [ngClass]="theme.headerClass"
 >
@@ -32,7 +33,7 @@
   <ng-container *ngIf="!applications || applications.length === 0">
     <div class="min-w-0 overflow-hidden flex items-center">
       <h1
-        class="text-2xl leading-7 mb-0 whitespace-nowrap text-clip"
+        class="text-xl mb-0 whitespace-nowrap text-clip font-medium"
         *ngIf="!route"
       >
         {{ theme.prefix }}
@@ -41,6 +42,7 @@
       <h1 class="text-base mb-0 whitespace-nowrap text-clip" *ngIf="route">
         {{ 'common.back' | translate }}
       </h1>
+      <div id="app-logo"></div>
     </div>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
@@ -65,7 +67,10 @@
       ></safe-search-menu>
     </ng-template>
   </ng-container>
-  <div class="account-container">
+  <!-- Account icon and info -->
+  <div
+    class="flex flex-col items-end content-center font-medium text-xs ml-auto"
+  >
     <div class="account-property">{{ account ? account.name : '' }}</div>
     <div class="account-property">{{ account ? account.username : '' }}</div>
   </div>
@@ -100,18 +105,18 @@
     <a uiMenuItem [routerLink]="[profileRoute]">
       {{ 'pages.profile.title' | translate }}
     </a>
-    <ui-divider class="m-0"></ui-divider>
+    <ui-divider class="py-1"></ui-divider>
     <button uiMenuItem (click)="onOpenPreferences()" *ngIf="showPreferences">
       {{ 'components.preferences.title' | translate }}
     </button>
     <ng-container *ngIf="user && user.isAdmin">
-      <ui-divider class="m-0"></ui-divider>
+      <ui-divider class="py-1"></ui-divider>
       <a uiMenuItem [href]="otherOfficeUri">
         {{ 'components.header.goToPlatform' | translate }} {{ otherOffice }}
       </a>
     </ng-container>
-    <ui-divider class="m-0"></ui-divider>
-    <button uiMenuItem class="warn" (click)="logout()">
+    <ui-divider class="py-1"></ui-divider>
+    <button uiMenuItem class="text-red-500" (click)="logout()">
       {{ 'components.header.logout' | translate }}
     </button>
     <div
