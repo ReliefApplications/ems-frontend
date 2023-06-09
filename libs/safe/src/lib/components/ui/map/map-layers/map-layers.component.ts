@@ -51,6 +51,9 @@ export class MapLayersComponent {
     this.mapContainer
       .querySelector('.leaflet-top.leaflet-right')
       ?.classList.add('shadow-2lg');
+    this.mapContainer
+      .querySelector('.leaflet-top.leaflet-right')
+      ?.classList.add('w-2/6');
   }
 
   /** Closes the layers menu */
