@@ -2,74 +2,73 @@
   <!-- Header -->
   <div class="flex gap-2 flex-wrap justify-between mb-8">
     <h1 class="!m-0">{{ 'common.general' | translate }}</h1>
-    <mat-form-field appearance="outline" class="p-0">
-      <mat-label>{{ 'common.status' | translate }}</mat-label>
-      <mat-select formControlName="status">
-        <mat-option value="active">
+    <!-- Selection of status -->
+    <div uiFormFieldDirective [outline]="false" class="p-0">
+      <label>{{ 'common.status' | translate }}</label>
+      <ui-select-menu formControlName="status">
+        <ui-select-option value="active">
           {{ 'common.status_active' | translate }}
-        </mat-option>
-        <mat-option value="pending">
+        </ui-select-option>
+        <ui-select-option value="pending">
           {{ 'common.status_pending' | translate }}
-        </mat-option>
-        <mat-option value="archived">
+        </ui-select-option>
+        <ui-select-option value="archived">
           {{ 'common.status_archived' | translate }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
   </div>
   <!-- Settings -->
-  <div class="flex flex-col">
+  <div class="flex flex-col gap-4">
     <div class="flex gap-x-2 flex-wrap">
-      <mat-form-field appearance="outline" class="flex-auto">
-        <mat-label>
+      <div uiFormFieldDirective class="flex-auto">
+        <label>
           {{ 'common.name' | translate }}
-        </mat-label>
+        </label>
         <input
-          matInput
           formControlName="name"
           type="text"
           [placeholder]="'common.placeholder.name' | translate"
         />
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>
+      </div>
+      <div uiFormFieldDirective class="flex-1">
+        <label>
           {{ 'models.application.id' | translate }}
-        </mat-label>
-        <input matInput formControlName="id" type="text" />
-      </mat-form-field>
+        </label>
+        <input formControlName="id" type="text" />
+      </div>
     </div>
-
-    <mat-form-field appearance="outline">
-      <mat-label>
+    <div uiFormFieldDirective>
+      <label>
         {{ 'models.application.description' | translate }}
-      </mat-label>
-      <textarea
-        matInput
+      </label>
+      <ui-textarea
         formControlName="description"
         [placeholder]="
           'components.application.update.placeholder.description' | translate
         "
-        [cdkTextareaAutosize]="true"
-        [cdkAutosizeMinRows]="2"
-        [cdkAutosizeMaxRows]="5"
-      ></textarea>
-    </mat-form-field>
-
+        [minRows]="2"
+        [maxRows]="5"
+        name="textarea"
+      >
+      </ui-textarea>
+    </div>
     <div class="mb-6">
-      <mat-slide-toggle formControlName="sideMenu">
-        {{ 'models.application.menu' | translate }}
-      </mat-slide-toggle>
+      <ui-toggle formControlName="sideMenu">
+        <ng-container ngProjectAs="label">
+          {{ 'models.application.menu' | translate }}</ng-container
+        >
+      </ui-toggle>
     </div>
   </div>
-  <safe-button
+  <ui-button
     category="secondary"
     variant="primary"
     (click)="onSubmit()"
     [disabled]="settingsForm.invalid || !settingsForm.dirty"
   >
     {{ 'common.saveChanges' | translate }}
-  </safe-button>
+  </ui-button>
 </form>
 <!-- Actions -->
 <div
@@ -79,10 +78,10 @@
   <h1>{{ 'pages.application.settings.actions' | translate }}</h1>
   <div class="flex gap-2 flex-wrap">
     <!-- Styling -->
-    <safe-button category="secondary" variant="primary" (click)="onOpenStyle()">
+    <ui-button category="secondary" variant="primary" (click)="onOpenStyle()">
       {{ 'components.application.customStyling' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       icon="file_copy"
       category="tertiary"
       variant="primary"
@@ -90,8 +89,8 @@
       *ngIf="application.canUpdate"
     >
       {{ 'common.duplicate' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       icon="delete"
       category="tertiary"
       variant="danger"
@@ -99,6 +98,6 @@
       *ngIf="application.canDelete"
     >
       {{ 'common.delete' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </div>

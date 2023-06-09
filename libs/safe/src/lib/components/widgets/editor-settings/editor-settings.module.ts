@@ -3,18 +3,21 @@ import { CommonModule } from '@angular/common';
 import { SafeEditorSettingsComponent } from './editor-settings.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
-import { SafeIconModule } from '../../ui/icon/icon.module';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import {
+  ButtonModule,
+  FormWrapperModule,
+  GraphQLSelectModule,
+  IconModule,
+  SelectMenuModule,
+  SelectOptionModule,
+  TabsModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 import { RecordSelectionTabComponent } from './record-selection-tab/record-selection-tab.component';
-import { SafeGraphQLSelectModule } from '../../graphql-select/graphql-select.module';
-import { SafeButtonModule } from '../../ui/button/button.module';
-import { MatLegacySelectModule } from '@angular/material/legacy-select';
 import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
+import { SafeEditorModule } from '../editor/editor.module';
 
 /**
  * Module for the safeEditorSetting component
@@ -25,18 +28,19 @@ import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
+    FormWrapperModule,
     EditorModule,
     TranslateModule,
-    MatTabsModule,
-    SafeIconModule,
-    MatTooltipModule,
     DisplaySettingsComponent,
-    SafeGraphQLSelectModule,
-    SafeButtonModule,
-    MatLegacySelectModule,
     SafeCoreGridModule,
+    SafeEditorModule,
+    GraphQLSelectModule,
+    SelectMenuModule,
+    SelectOptionModule,
+    ButtonModule,
+    TabsModule,
+    TooltipModule,
+    IconModule,
   ],
   exports: [SafeEditorSettingsComponent],
   providers: [

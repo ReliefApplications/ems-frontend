@@ -1,15 +1,15 @@
 <div [formGroup]="formGroup" class="flex flex-col">
   <h2>{{ 'common.general' | translate }}</h2>
   <!-- Widget title -->
-  <mat-form-field appearance="outline">
-    <mat-label>{{ 'common.title' | translate }}</mat-label>
-    <input matInput formControlName="title" type="string" />
-  </mat-form-field>
+  <div uiFormFieldDirective>
+    <label>{{ 'common.title' | translate }}</label>
+    <input formControlName="title" type="string" />
+  </div>
   <div class="flex gap-2 flex-wrap">
     <!-- Resource selection -->
-    <mat-form-field appearance="outline" class="flex-1">
-      <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
-      <safe-graphql-select
+    <div uiFormFieldDirective class="flex-1">
+      <label>{{ 'common.resource.one' | translate }}</label>
+      <ui-graphql-select
         valueField="id"
         textField="name"
         [query]="resourcesQuery"
@@ -18,41 +18,29 @@
         (searchChange)="onResourceSearchChange($event)"
         [filterable]="true"
       >
-      </safe-graphql-select>
-      <!-- <mat-label>{{
-      'components.queryBuilder.dataset.select' | translate
-    }}</mat-label>
-    <input
-      type="text"
-      [placeholder]="'components.queryBuilder.dataset.select' | translate"
-      matInput
-      formControlName="name"
-      [matAutocomplete]="auto"
-    />
-    <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-      <mat-option *ngFor="let option of queries" [value]="option">
-        {{ option }}
-      </mat-option>
-    </mat-autocomplete> -->
-    </mat-form-field>
+      </ui-graphql-select>
+    </div>
     <!-- Template selection -->
-    <mat-form-field appearance="outline" class="flex-1">
-      <mat-label>{{ 'models.form.template' | translate }}</mat-label>
-      <mat-select formControlName="template">
-        <mat-option>-</mat-option>
-        <mat-option *ngFor="let template of templates" [value]="template.id">{{
-          template.name
-        }}</mat-option>
-      </mat-select>
-      <safe-icon
-        matSuffix
+    <div uiFormFieldDirective class="flex-1">
+      <label>{{ 'models.form.template' | translate }}</label>
+      <ui-select-menu formControlName="template">
+        <ui-select-option>-</ui-select-option>
+        <ui-select-option
+          *ngFor="let template of templates"
+          [value]="template.id"
+        >
+          {{ template.name }}
+        </ui-select-option>
+      </ui-select-menu>
+      <ui-icon
+        uiSuffix
         icon="info_outline"
         variant="grey"
-        [matTooltip]="
+        [uiTooltip]="
           'components.widget.settings.grid.tooltip.template' | translate
         "
-      ></safe-icon>
-    </mat-form-field>
+      ></ui-icon>
+    </div>
   </div>
 </div>
 <div class="flex flex-col mt-8 gap-8" *ngIf="form || resource">
@@ -66,13 +54,13 @@
       [selectedAggregations]="$any(formGroup).get('aggregations')"
     ></safe-aggregation-table>
   </div>
-  <safe-divider
+  <ui-divider
     *ngIf="
       !(formGroup.get('layouts')?.value.length > 0) &&
       !(formGroup.get('aggregations')?.value.length > 0)
     "
     [text]="'common.or' | translate"
-  ></safe-divider>
+  ></ui-divider>
   <!-- Layouts -->
   <div *ngIf="!(formGroup.get('aggregations')?.value.length > 0)">
     <h2>

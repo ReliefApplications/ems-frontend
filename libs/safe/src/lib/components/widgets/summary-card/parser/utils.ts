@@ -241,6 +241,9 @@ const replaceRecordFields = (
       formattedHtml = formattedHtml.replace(regex, convertedValue);
     }
   }
+  // replace all /n with <br/> to keep the line breaks
+  formattedHtml = formattedHtml.replace(/\n/g, '<br/>');
+
   return formattedHtml;
 };
 

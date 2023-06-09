@@ -7,7 +7,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   GetDashboardByIdQueryResponse,
@@ -15,7 +15,6 @@ import {
 } from './graphql/queries';
 import {
   Dashboard,
-  SafeSnackBarService,
   SafeDashboardService,
   SafeUnsubscribeComponent,
   SafeWidgetGridComponent,
@@ -24,6 +23,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { map, takeUntil } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Dashboard page.
@@ -52,6 +52,7 @@ export class DashboardComponent
 
   @ViewChild(SafeWidgetGridComponent)
   widgetGridComponent!: SafeWidgetGridComponent;
+  public showFilter?: boolean;
 
   /**
    * Dashboard page.
@@ -69,8 +70,8 @@ export class DashboardComponent
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    public dialog: Dialog,
+    private snackBar: SnackbarService,
     private dashboardService: SafeDashboardService,
     private translate: TranslateService,
     private confirmService: SafeConfirmService
@@ -101,6 +102,7 @@ export class DashboardComponent
                 ? data.dashboard.structure
                 : [];
               this.loading = loading;
+              this.showFilter = this.dashboard.showFilter;
             } else {
               this.snackBar.openSnackBar(
                 this.translate.instant(
@@ -146,7 +148,7 @@ export class DashboardComponent
         confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmColor: 'primary',
       });
-      return dialogRef.afterClosed().pipe(
+      return dialogRef.closed.pipe(
         map((confirm) => {
           if (confirm) {
             return true;
