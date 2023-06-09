@@ -211,7 +211,7 @@ const replaceRecordFields = (
                   >
                   <span class="k-icon ${fileIcon}" style="margin-right: 4px"></span>
                   ${fileName}
-                  </button>`; // add elements to be able to identify file when clicking on button
+                  </button>`.replace(/\n/g, ''); // add elements to be able to identify file when clicking on button
               }
             }
 
