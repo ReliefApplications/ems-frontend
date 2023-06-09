@@ -119,95 +119,6 @@ $safe-theme: mat.define-light-theme(
   )
 );
 
-// === CUSTOM THEME ===
-@mixin custom-theme($theme) {
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
-  $warn: map-get($theme, warn);
-
-  .accent {
-    color: mat.get-color-from-palette($accent);
-  }
-
-  .warn {
-    color: mat.get-color-from-palette($warn);
-  }
-}
-
-// === CHIP ===
-@mixin chip($theme) {
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
-  $warn: map-get($theme, warn);
-
-  .warn-chip {
-    background-color: mat.get-color-from-palette($warn, lighter) !important;
-    color: mat.get-color-from-palette($warn) !important;
-  }
-
-  .success-chip {
-    background-color: #e9fae1 !important;
-    color: #67dd2d !important;
-  }
-
-  .accent-chip {
-    background-color: rgba(255, 159, 0, 0.14) !important;
-    color: #ff9f00 !important;
-  }
-
-  .primary-chip {
-    background-color: mat.get-color-from-palette($primary, lighter) !important;
-    color: mat.get-color-from-palette($primary) !important;
-  }
-}
-
-// === BUTTON ===
-@mixin button($theme) {
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
-  $warn: map-get($theme, warn);
-
-  .mat-stroked-button:not(.mat-button-disabled) {
-    &.mat-primary {
-      border-color: mat.get-color-from-palette($primary);
-    }
-    &.mat-accent {
-      border-color: mat.get-color-from-palette($accent);
-    }
-    &.mat-warn {
-      border-color: mat.get-color-from-palette($warn);
-    }
-  }
-
-  .mat-button:disabled,
-  .mat-stroked-button:disabled {
-    color: #adadad !important;
-  }
-
-  .mat-flat-button:disabled {
-    color: #adadad !important;
-    background-color: #d8d8d8 !important;
-  }
-}
-
-// === RADIO ===
-@mixin radio($theme) {
-  .mat-radio-label-content {
-    ui-icon {
-      vertical-align: text-bottom;
-    }
-  }
-}
-
-// === SLIDE TOGGLE ===
-@mixin slide-toggle($theme) {
-  ui-toggle {
-    ui-icon {
-      vertical-align: text-bottom;
-    }
-  }
-}
-
 // === CHECKBOX ===
 @mixin checkbox($theme) {
   ui-checkbox {
@@ -217,89 +128,11 @@ $safe-theme: mat.define-light-theme(
   }
 }
 
-// === FORM FIELD ===
-@mixin form-field($theme) {
-  mat-label {
-    ui-icon {
-      vertical-align: text-bottom;
-    }
-  }
-
-  .p-0 {
-    // no padding fields
-    &.mat-form-field {
-      .mat-form-field-wrapper {
-        padding: 0 !important;
-      }
-    }
-  }
-
-  .mat-form-field-sm {
-    // small form-field
-    &.mat-form-field {
-      .mat-form-field-label-wrapper {
-        top: -1.4em;
-      }
-    }
-
-    .mat-form-field-flex > .mat-form-field-infix {
-      padding: 0.42em 0px !important;
-    }
-
-    &.mat-form-field-appearance-outline.mat-form-field-can-float.mat-form-field-should-float
-      .mat-form-field-label {
-      transform: translateY(-1.1em) scale(0.75);
-      width: 133.33333%;
-    }
-  }
-}
-
-// === TOOLTIP ===
-@mixin tooltip($theme) {
-  .mat-tooltip-panel {
-    pointer-events: none !important;
-  }
-}
-
 .multiline-tooltip {
   white-space: pre-line;
 }
 
-// === GLOBAL STYLES ==
-.mat-table {
-  font-size: 14px;
-  opacity: 0.87;
-  border-radius: 4px;
-  width: 100%;
-  th,
-  td {
-    padding: 0 4px !important;
-    &:first-of-type {
-      padding-left: 24px !important;
-      &:not(:last-of-type) {
-        padding-right: 4px !important;
-      }
-    }
-    &:last-of-type {
-      padding-right: 24px !important;
-      &:not(:first-of-type) {
-        padding-left: 4px !important;
-      }
-    }
-  }
-}
-
-.success-button {
-  &:not(:disabled) {
-    background-color: #63d168 !important;
-    color: white !important;
-  }
-}
-
-.danger-button {
-  background: mat.get-color-from-palette($safe-warn) !important;
-}
-
+// todo: check if can be removed
 *:focus,
 *:active:focus,
 *.active:focus {
@@ -307,6 +140,7 @@ $safe-theme: mat.define-light-theme(
   outline-style: none !important;
 }
 
+// todo: put in a component?
 .page-header {
   display: flex;
   justify-content: flex-start;
@@ -321,25 +155,10 @@ $safe-theme: mat.define-light-theme(
   }
 }
 
-// === FORMS ===
-.auth-form {
-  padding: 32px 24px;
-  border: 1px solid darkgray;
-  border-radius: 4px;
-  margin: 32px;
-}
-
 // === ADDITIONAL MATERIAL STYLING ===
 @include mat.all-component-themes($safe-theme);
 @include mat.all-legacy-component-themes($safe-theme);
-@include chip($safe-theme);
-@include button($safe-theme);
-@include radio($safe-theme);
-@include slide-toggle($safe-theme);
 @include checkbox($safe-theme);
-@include form-field($safe-theme);
-@include tooltip($safe-theme);
-@include custom-theme($safe-theme);
 
 html,
 body {
@@ -351,6 +170,7 @@ body {
   overflow: hidden;
 }
 
+// Widgets
 .widget-header {
   box-sizing: border-box;
   height: 40px;
@@ -403,14 +223,6 @@ body {
   .cdk-dialog-container {
     padding: unset;
   }
-}
-
-// === UTILS ===
-// Correct a bug of angular, see https://github.com/angular/components/issues/14311
-.mat-form-field-suffix,
-.mat-form-field-prefix {
-  display: inline-flex;
-  align-items: center;
 }
 
 // === SURVEY BUILDER ===
@@ -493,70 +305,5 @@ body {
 
   .legend-division-hide {
     opacity: 0.4;
-  }
-}
-
-/* === Tailwindcss === */
-// Allow to use @apply in not visible by default elements
-@layer components {
-  // Drag & Drop
-  .cdk-drag-preview {
-    @apply box-border rounded shadow-xl flex items-center justify-between bg-white;
-  }
-
-  .cdk-drag-animating {
-    @apply transition-transform;
-  }
-
-  .cdk-drag-placeholder {
-    @apply opacity-0;
-  }
-
-  .cdk-drop-list-dragging {
-    .cdk-drag:not(.cdk-drag-placeholder) {
-      @apply transition-transform;
-    }
-  }
-}
-
-// Define new colors
-@layer base {
-  // Revert all default changes of base layer in this custom class
-  // https://tailwindcss.com/docs/preflight
-  .no-tailwindcss-base,
-  .no-tailwindcss-base *,
-  .no-tailwindcss-base > * {
-    font-size: revert;
-    font-weight: revert;
-    margin: revert;
-    display: revert;
-    vertical-align: revert;
-    max-width: revert;
-    height: revert;
-    border-width: revert;
-    border-style: revert;
-    border-color: revert;
-    border-style: revert;
-    outline: revert;
-    list-style: revert;
-    padding: revert;
-    color: revert;
-    text-decoration: revert;
-  }
-  :root {
-    --primary-50: #{$primary_50};
-    --primary-100: #{$primary_100};
-    --primary-200: #{$primary_200};
-    --primary-300: #{$primary_300};
-    --primary-400: #{$primary_400};
-    --primary-500: #{$primary_500};
-    --primary-600: #{$primary_600};
-    --primary-700: #{$primary_700};
-    --primary-800: #{$primary_800};
-    --primary-900: #{$primary_900};
-    --secondary-50: #{$secondary_50};
-    --secondary-100: #{$secondary_100};
-    --secondary-150: #{$secondary_150};
-    --secondary-200: #{$secondary_200};
   }
 }
