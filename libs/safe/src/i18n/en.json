@@ -914,6 +914,7 @@
 						"add": "Create assignment rule",
 						"delete": "Delete rule",
 						"edit": "Edit assignment rule",
+						"none": "No assignment rule",
 						"title": "Rule"
 					},
 					"title": "Automatic assignment"
@@ -1169,6 +1170,7 @@
 					},
 					"position": "Position",
 					"series": {
+						"fill": "Fill",
 						"interpolation": {
 							"step": "Step interpolation",
 							"title": "Interpolation"
@@ -1415,7 +1417,13 @@
 		}
 	},
 	"kendo": {
+		"combobox": {
+			"noDataText": "No available choice"
+		},
 		"datepicker": {
+			"dateLabel": "Select a date",
+			"endLabel": "Select a end date",
+			"startLabel": "Select a start date",
 			"today": "Today",
 			"toggle": "Choose a date"
 		},
@@ -1563,6 +1571,9 @@
 			"stick": "Stick",
 			"unlock": "Unlock",
 			"unstick": "Unstick"
+		},
+		"multiselect": {
+			"noDataText": "No available choice"
 		},
 		"pager": {
 			"firstPage": "Go to the first page",

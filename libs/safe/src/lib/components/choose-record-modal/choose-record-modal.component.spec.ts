@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
 import {
-  MatLegacyDialogModule as MatDialogModule,
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { SafeChooseRecordModalComponent } from './choose-record-modal.component';
 import {
@@ -23,11 +23,11 @@ describe('SafeChooseRecordModalComponent', () => {
       providers: [
         QueryBuilderService,
         UntypedFormBuilder,
-        { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: {} },
+        { provide: DialogRef, useValue: {} },
+        { provide: DIALOG_DATA, useValue: {} },
       ],
       declarations: [SafeChooseRecordModalComponent],
-      imports: [MatDialogModule, ApolloTestingModule],
+      imports: [DialogCdkModule, ApolloTestingModule],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);

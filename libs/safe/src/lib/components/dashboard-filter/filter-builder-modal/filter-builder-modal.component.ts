@@ -7,18 +7,13 @@ import {
 } from '@angular/core';
 import * as SurveyCreator from 'survey-creator';
 import * as Survey from 'survey-angular';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { SafeFormService } from '../../../services/form/form.service';
 import { CommonModule } from '@angular/common';
 import { SafeFormBuilderModule } from '../../form-builder/form-builder.module';
-import { SafeButtonModule } from '../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
-import { SafeModalModule } from '../../ui/modal/modal.module';
-import { SafeAlertModule } from '../../ui/alert/alert.module';
+import { TooltipModule } from '@oort-front/ui';
+import { DialogModule, AlertModule } from '@oort-front/ui';
 
 /**
  * Data passed to initialize the filter builder
@@ -99,11 +94,10 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   imports: [
     CommonModule,
     SafeFormBuilderModule,
-    SafeButtonModule,
     TranslateModule,
-    MatTooltipModule,
-    SafeModalModule,
-    SafeAlertModule,
+    TooltipModule,
+    DialogModule,
+    AlertModule,
   ],
 })
 export class FilterBuilderModalComponent
@@ -120,8 +114,8 @@ export class FilterBuilderModalComponent
    */
   constructor(
     private formService: SafeFormService,
-    private dialogRef: MatDialogRef<FilterBuilderModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    private dialogRef: DialogRef<FilterBuilderModalComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData
   ) {}
 
   ngOnInit(): void {
@@ -185,7 +179,7 @@ export class FilterBuilderModalComponent
    * Custom SurveyJS method, save the survey when edited.
    */
   saveMySurvey = () => {
-    this.dialogRef.close(this.surveyCreator.text);
+    this.dialogRef.close(this.surveyCreator.text as any);
   };
 
   ngOnDestroy(): void {

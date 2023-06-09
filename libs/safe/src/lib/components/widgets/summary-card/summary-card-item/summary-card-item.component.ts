@@ -7,7 +7,6 @@ import {
 } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
-import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 import {
   GetResourceMetadataQueryResponse,
   GET_RESOURCE_METADATA,
@@ -17,6 +16,7 @@ import {
 import { get } from 'lodash';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { firstValueFrom } from 'rxjs';
+import { SnackbarService } from '@oort-front/ui';
 import { CardT } from '../summary-card.component';
 
 /**
@@ -48,7 +48,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
    */
   constructor(
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private translate: TranslateService,
     private queryBuilder: QueryBuilderService
   ) {}

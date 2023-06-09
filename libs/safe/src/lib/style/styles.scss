@@ -67,7 +67,7 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,,,,,,,,,,,
+      // A700: #ffffff,,
     ),
 );
 
@@ -124,28 +124,6 @@ $safe-theme: mat.define-light-theme(
   $primary: map-get($theme, primary);
   $accent: map-get($theme, accent);
   $warn: map-get($theme, warn);
-
-  .snack-error {
-    background-color: mat.get-color-from-palette($warn);
-    color: white;
-    white-space: pre-wrap;
-
-    .mat-simple-snackbar-action {
-      color: white;
-    }
-  }
-
-  .active-link {
-    .nav-icon {
-      color: mat.get-color-from-palette($primary);
-    }
-  }
-
-  .mat-list-item {
-    a:not(.active-link) {
-      color: mat.get-color-from-palette(mat.$grey-palette, 500);
-    }
-  }
 
   .accent {
     color: mat.get-color-from-palette($accent);
@@ -212,45 +190,10 @@ $safe-theme: mat.define-light-theme(
   }
 }
 
-// === ALERT ===
-@mixin alert($theme) {
-  $primary: map-get($theme, primary);
-  $accent: map-get($theme, accent);
-  $warn: map-get($theme, warn);
-
-  .safe-alert {
-    &-default {
-      $variant-color: #f1f1f1;
-      background-color: $variant-color;
-      color: darken($variant-color, 30%);
-    }
-
-    &-primary {
-      background-color: mat.get-color-from-palette($primary, 50);
-      color: mat.get-color-from-palette($primary);
-    }
-
-    &-danger {
-      background-color: mat.get-color-from-palette($warn, 50);
-      color: mat.get-color-from-palette($warn);
-    }
-
-    &-success {
-      background-color: rgba(149, 221, 101, 0.2);
-      color: rgb(149, 221, 101);
-    }
-
-    &-warning {
-      background-color: rgba(244, 174, 82, 0.2);
-      color: rgb(244, 174, 82);
-    }
-  }
-}
-
 // === RADIO ===
 @mixin radio($theme) {
   .mat-radio-label-content {
-    safe-icon {
+    ui-icon {
       vertical-align: text-bottom;
     }
   }
@@ -258,24 +201,17 @@ $safe-theme: mat.define-light-theme(
 
 // === SLIDE TOGGLE ===
 @mixin slide-toggle($theme) {
-  .mat-slide-toggle-content {
-    safe-icon {
+  ui-toggle {
+    ui-icon {
       vertical-align: text-bottom;
     }
   }
 }
 
-// === EXPANSION PANEL ===
-@mixin expansion-panel($theme) {
-  .mat-expansion-panel-header-title {
-    gap: 4px;
-  }
-}
-
 // === CHECKBOX ===
 @mixin checkbox($theme) {
-  .mat-checkbox-label {
-    safe-icon {
+  ui-checkbox {
+    ui-icon {
       vertical-align: text-bottom;
     }
   }
@@ -284,7 +220,7 @@ $safe-theme: mat.define-light-theme(
 // === FORM FIELD ===
 @mixin form-field($theme) {
   mat-label {
-    safe-icon {
+    ui-icon {
       vertical-align: text-bottom;
     }
   }
@@ -315,13 +251,6 @@ $safe-theme: mat.define-light-theme(
       transform: translateY(-1.1em) scale(0.75);
       width: 133.33333%;
     }
-  }
-}
-
-// === MODAL ===
-@mixin modal($theme) {
-  .mat-dialog-actions {
-    gap: 8px;
   }
 }
 
@@ -371,25 +300,6 @@ $safe-theme: mat.define-light-theme(
   background: mat.get-color-from-palette($safe-warn) !important;
 }
 
-// Mat table
-mat-header-row {
-  border-bottom: none !important;
-}
-
-.mat-header-cell {
-  @apply text-gray-500 border-b border-solid border-zinc-300 #{!important};
-}
-
-.mat-row {
-  .mat-cell {
-    @apply text-gray-600 border-b border-solid border-zinc-100 #{!important};
-  }
-}
-
-.mat-spinner {
-  margin: auto;
-}
-
 *:focus,
 *:active:focus,
 *.active:focus {
@@ -411,17 +321,6 @@ mat-header-row {
   }
 }
 
-.mat-chip {
-  min-width: 75px;
-  justify-content: center;
-  font-weight: 500 !important;
-
-  &.mat-chip-disabled {
-    opacity: 1 !important;
-    pointer-events: none;
-  }
-}
-
 // === FORMS ===
 .auth-form {
   padding: 32px 24px;
@@ -430,35 +329,15 @@ mat-header-row {
   margin: 32px;
 }
 
-.mat-tab-group .mat-tab-header,
-.mat-tab-nav-bar {
-  margin-bottom: 12px;
-}
-
-.collapsible-form-group {
-  mat-expansion-panel {
-    border: solid 1px rgba(0, 0, 0, 0.1);
-    box-shadow: none !important;
-  }
-
-  mat-expansion-panel:not(.mat-expanded)
-    + mat-expansion-panel:not(.mat-expanded) {
-    border-top: 0;
-  }
-}
-
 // === ADDITIONAL MATERIAL STYLING ===
 @include mat.all-component-themes($safe-theme);
 @include mat.all-legacy-component-themes($safe-theme);
 @include chip($safe-theme);
 @include button($safe-theme);
-@include alert($safe-theme);
 @include radio($safe-theme);
 @include slide-toggle($safe-theme);
-@include expansion-panel($safe-theme);
 @include checkbox($safe-theme);
 @include form-field($safe-theme);
-@include modal($safe-theme);
 @include tooltip($safe-theme);
 @include custom-theme($safe-theme);
 
@@ -481,10 +360,10 @@ body {
   text-align: left;
   line-height: 40px;
   padding: 0 40px !important;
-  border-bottom: 1px solid #d8d8d8 !important;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  @apply bg-white border-b border-b-gray-300 #{!important};
 
   .widget-title {
     overflow: hidden;
@@ -500,33 +379,29 @@ body {
 }
 
 // === DIALOGS ===
+.cdk-dialog-container {
+  @media (max-width: 640px) {
+    padding: 24px !important;
+  }
+}
+
 .fullscreen-dialog {
   max-width: unset !important;
   width: 100%;
   height: 100%;
+  .cdk-dialog-container {
+    @media (max-width: 640px) {
+      padding: unset !important;
+    }
+  }
+  ui-dialog {
+    max-height: 100vh !important;
+  }
 }
 
 .no-padding-dialog {
-  mat-dialog-container {
+  .cdk-dialog-container {
     padding: unset;
-  }
-}
-
-.resource-access-dialog {
-  max-width: unset !important;
-  width: 90%;
-  height: calc(100% - 72px);
-
-  mat-dialog-container {
-    position: relative;
-    border-radius: 4px 4px 0 0;
-    width: 100%;
-    background-color: #fafafa;
-  }
-
-  .mat-dialog-content {
-    max-height: calc(100% - 68px - 32px);
-    height: 100%;
   }
 }
 
@@ -545,87 +420,6 @@ body {
 
 // === KENDO THEME ===
 @import 'theme.scss';
-
-// === VERTICAL TABS ===
-mat-tab-group[vertical] {
-  display: flex;
-  flex-direction: row !important;
-
-  & > .mat-tab-header {
-    border-bottom: none;
-    width: 240px;
-    z-index: 1;
-
-    .mat-tab-labels {
-      display: flex;
-      flex-direction: column !important;
-      position: relative;
-
-      .mat-tab-label {
-        justify-content: left;
-        border-radius: 7px;
-        transition: all 0.1s ease;
-
-        &.mat-tab-label-active:not(.cdk-keyboard-focused) {
-          opacity: 1;
-          background-color: #f5f5f5;
-        }
-
-        .mat-tab-label-content {
-          gap: 6px;
-
-          safe-icon {
-            display: flex;
-            pointer-events: none;
-          }
-        }
-      }
-    }
-
-    .mat-ink-bar {
-      display: none;
-    }
-  }
-
-  & > .mat-tab-body-wrapper {
-    width: 100%;
-
-    & > .mat-tab-body {
-      & > .mat-tab-body-content {
-        transition: all ease 200ms;
-        padding-left: 32px;
-      }
-      &
-        > .mat-tab-body-content[style*='transform: translate3d(100%, 0px, 0px)'] {
-        transform: translate3d(0px, 100%, 0px) !important;
-      }
-      &
-        > .mat-tab-body-content[style*='transform: translate3d(-100%, 0px, 0px)'] {
-        transform: translate3d(0px, -100%, 0px) !important;
-      }
-    }
-  }
-}
-
-@media (max-width: 598px) {
-  mat-tab-group[vertical] {
-    & > .mat-tab-header {
-      width: unset;
-
-      .mat-tab-label {
-        .mat-tab-label-content {
-          span {
-            display: none;
-          }
-
-          safe-icon {
-            pointer-events: all !important;
-          }
-        }
-      }
-    }
-  }
-}
 
 // === TINYMCE ===
 .tox-editor-header *,
@@ -727,6 +521,28 @@ mat-tab-group[vertical] {
 
 // Define new colors
 @layer base {
+  // Revert all default changes of base layer in this custom class
+  // https://tailwindcss.com/docs/preflight
+  .no-tailwindcss-base,
+  .no-tailwindcss-base *,
+  .no-tailwindcss-base > * {
+    font-size: revert;
+    font-weight: revert;
+    margin: revert;
+    display: revert;
+    vertical-align: revert;
+    max-width: revert;
+    height: revert;
+    border-width: revert;
+    border-style: revert;
+    border-color: revert;
+    border-style: revert;
+    outline: revert;
+    list-style: revert;
+    padding: revert;
+    color: revert;
+    text-decoration: revert;
+  }
   :root {
     --primary-50: #{$primary_50};
     --primary-100: #{$primary_100};

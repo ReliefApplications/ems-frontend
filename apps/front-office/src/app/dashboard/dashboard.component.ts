@@ -7,13 +7,13 @@ import {
   User,
   Role,
   SafeAuthService,
-  SafeSnackBarService,
   SafeApplicationService,
   Permission,
   ContentType,
   SafeUnsubscribeComponent,
   AppAbility,
 } from '@oort-front/safe';
+import { SnackbarService } from '@oort-front/ui';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
 
@@ -71,7 +71,7 @@ export class DashboardComponent
     private authService: SafeAuthService,
     private applicationService: SafeApplicationService,
     public route: ActivatedRoute,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private router: Router,
     private translate: TranslateService,
     private ability: AppAbility

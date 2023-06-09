@@ -914,6 +914,7 @@
 						"add": "******",
 						"delete": "******",
 						"edit": "******",
+						"none": "******",
 						"title": "******"
 					},
 					"title": "******"
@@ -1169,6 +1170,7 @@
 					},
 					"position": "******",
 					"series": {
+						"fill": "******",
 						"interpolation": {
 							"step": "******",
 							"title": "******"
@@ -1415,7 +1417,13 @@
 		}
 	},
 	"kendo": {
+		"combobox": {
+			"noDataText": "******"
+		},
 		"datepicker": {
+			"dateLabel": "******",
+			"endLabel": "******",
+			"startLabel": "******",
 			"today": "******",
 			"toggle": "******"
 		},
@@ -1563,6 +1571,9 @@
 			"stick": "******",
 			"unlock": "******",
 			"unstick": "******"
+		},
+		"multiselect": {
+			"noDataText": "******"
 		},
 		"pager": {
 			"firstPage": "******",

@@ -8,20 +8,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import {
   PageContextT,
   ReferenceData,
   Resource,
-  SafeAlertModule,
-  SafeGraphQLSelectComponent,
-  SafeGraphQLSelectModule,
-  SafeModalModule,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import { takeUntil } from 'rxjs';
@@ -36,6 +27,17 @@ import {
   GET_RESOURCE,
   GET_RESOURCES,
 } from './graphql/queries';
+import {
+  ButtonModule,
+  SelectMenuModule,
+  FormWrapperModule,
+  AlertModule,
+  DialogModule,
+  TooltipModule,
+  GraphQLSelectComponent,
+  GraphQLSelectModule,
+  IconModule,
+} from '@oort-front/ui';
 
 /** Default items per resources query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -72,11 +74,14 @@ const createContextDatasourceForm = (data?: PageContextT) => {
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    MatSelectModule,
-    MatFormFieldModule,
-    SafeModalModule,
-    SafeGraphQLSelectModule,
-    SafeAlertModule,
+    DialogModule,
+    IconModule,
+    TooltipModule,
+    ButtonModule,
+    SelectMenuModule,
+    FormWrapperModule,
+    AlertModule,
+    GraphQLSelectModule,
   ],
   templateUrl: './context-datasource.component.html',
   styleUrls: ['./context-datasource.component.scss'],
@@ -86,7 +91,7 @@ export class ContextDatasourceComponent
   implements OnInit
 {
   // Form
-  public form: ReturnType<typeof createContextDatasourceForm>;
+  public form!: ReturnType<typeof createContextDatasourceForm>;
 
   // Data
   public resource: Resource | null = null;
@@ -97,10 +102,10 @@ export class ContextDatasourceComponent
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   public refDatasQuery!: QueryRef<GetReferenceDatasQueryResponse>;
 
-  @ViewChild(SafeGraphQLSelectComponent)
-  resourceSelect?: SafeGraphQLSelectComponent;
-  @ViewChild(SafeGraphQLSelectComponent)
-  refDataSelect?: SafeGraphQLSelectComponent;
+  @ViewChild(GraphQLSelectComponent)
+  resourceSelect?: GraphQLSelectComponent;
+  @ViewChild(GraphQLSelectComponent)
+  refDataSelect?: GraphQLSelectComponent;
 
   // Available fields
   public availableFields: string[] = [];
@@ -114,8 +119,8 @@ export class ContextDatasourceComponent
    */
   constructor(
     private apollo: Apollo,
-    @Inject(MAT_DIALOG_DATA) public data: PageContextT,
-    public dialogRef: MatDialogRef<ContextDatasourceComponent>
+    @Inject(DIALOG_DATA) public data: PageContextT,
+    public dialogRef: DialogRef<ContextDatasourceComponent>
   ) {
     super();
     this.form = createContextDatasourceForm(data);
@@ -281,6 +286,6 @@ export class ContextDatasourceComponent
             displayField: formValue.displayField ?? '',
           };
 
-    this.dialogRef.close(context);
+    this.dialogRef.close(context as any);
   }
 }

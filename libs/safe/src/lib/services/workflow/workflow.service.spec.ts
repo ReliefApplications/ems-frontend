@@ -1,6 +1,5 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { RouterTestingModule } from '@angular/router/testing';
 import { environment } from 'projects/back-office/src/environments/environment';
 import {
@@ -24,7 +23,7 @@ describe('SafeWorkflowService', () => {
         OAuthLogger,
         DateTimeProvider,
       ],
-      imports: [MatSnackBarModule, RouterTestingModule, HttpClientModule],
+      imports: [RouterTestingModule, HttpClientModule],
     });
     service = TestBed.inject(SafeWorkflowService);
   });

@@ -1,9 +1,11 @@
-<safe-modal>
-  <h1 mat-dialog-title *ngIf="data.title">{{ data.title }}</h1>
-  <mat-dialog-content>
+<ui-dialog>
+  <ng-container ngProjectAs="header">
+    <h1 *ngIf="data.title">{{ data.title }}</h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <ng-container *ngIf="data.content">
       {{ data.content }}
     </ng-container>
-    <mat-spinner *ngIf="data.showSpinner" diameter="45"></mat-spinner>
-  </mat-dialog-content>
-</safe-modal>
+    <ui-spinner *ngIf="data.showSpinner"></ui-spinner>
+  </ng-container>
+</ui-dialog>
