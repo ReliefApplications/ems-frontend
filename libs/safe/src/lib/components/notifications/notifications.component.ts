@@ -162,7 +162,7 @@ export class NotificationsComponent
       //   { step: step.name }
       // ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
-      confirmColor: 'warn',
+      confirmVariant: 'danger',
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {

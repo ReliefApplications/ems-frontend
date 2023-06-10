@@ -282,7 +282,7 @@ export class WorkflowComponent
           { step: step.name }
         ),
         confirmText: this.translate.instant('components.confirmModal.delete'),
-        confirmColor: 'warn',
+        confirmVariant: 'danger',
       });
       dialogRef.closed
         .pipe(takeUntil(this.destroy$))

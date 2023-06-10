@@ -88,7 +88,7 @@ export class SafeApplicationToolbarComponent
           name: this.application?.name,
         }
       ),
-      confirmColor: 'primary',
+      confirmVariant: 'primary',
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.applicationService.toggleApplicationLock();
@@ -114,7 +114,7 @@ export class SafeApplicationToolbarComponent
             name: this.application?.name,
           }
         ),
-        confirmColor: 'primary',
+        confirmVariant: 'primary',
       });
       dialogRef.closed
         .pipe(takeUntil(this.destroy$))

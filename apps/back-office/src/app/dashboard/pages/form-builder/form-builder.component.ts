@@ -88,7 +88,7 @@ export class FormBuilderComponent implements OnInit {
         title: this.translate.instant('components.form.update.exit'),
         content: this.translate.instant('components.form.update.exitMessage'),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
+        confirmVariant: 'primary',
       });
       return dialogRef.closed.pipe(
         map((value) => {

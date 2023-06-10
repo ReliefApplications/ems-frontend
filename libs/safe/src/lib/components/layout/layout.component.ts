@@ -284,7 +284,7 @@ export class SafeLayoutComponent
           'components.logout.confirmationMessage'
         ),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
+        confirmVariant: 'primary',
       });
       dialogRef.closed
         .pipe(takeUntil(this.destroy$))

@@ -246,7 +246,7 @@ export class FormRecordsComponent
           }
         ),
         confirmText: this.translate.instant('components.confirmModal.delete'),
-        confirmColor: 'warn',
+        confirmVariant: 'danger',
       });
       dialogRef.closed
         .pipe(takeUntil(this.destroy$))
@@ -321,7 +321,7 @@ export class FormRecordsComponent
         { date: formatDate }
       ),
       confirmText: this.translate.instant('components.confirmModal.confirm'),
-      confirmColor: 'primary',
+      confirmVariant: 'primary',
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
