@@ -106,7 +106,7 @@ export class EditNotificationModalComponent
    * @param fb Angular form builder
    * @param data Modal injected data
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param gridLayoutService Shared dataset layout service
    * @param applicationService Shared application service
    */

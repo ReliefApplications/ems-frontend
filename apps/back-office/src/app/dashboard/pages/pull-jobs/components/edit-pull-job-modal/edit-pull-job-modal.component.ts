@@ -139,9 +139,9 @@ export class EditPullJobModalComponent implements OnInit {
    * Pull job modal component
    *
    * @param formBuilder Angular form builder
-   * @param dialogRef Material dialog ref
+   * @param dialogRef Dialog ref
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param document Document
    * @param data Modal injected data
    * @param data.channels list of available channels

@@ -1,11 +1,10 @@
-<div uiFormFieldDirective>
-  <label>{{ 'components.referenceData.dropdown.select' | translate }}</label>
+<div uiFormFieldDirective class="flex-1">
   <ui-select-menu
     #referenceDataSelect
     [(ngModel)]="referenceData"
     name="referenceData"
     (opened)="onOpenSelect()"
-    (selectionChange)="onSelect($event)"
+    (selectedOption)="onSelect($event)"
   >
     <ui-select-option>{{ 'common.input.none' | translate }}</ui-select-option>
     <ui-select-option

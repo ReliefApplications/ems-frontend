@@ -30,7 +30,7 @@ export class RecordHistoryModalComponent {
    * @param dialogRef The reference of the dialog modal that will be opened
    * @param data This is the data that is passed into the modal when it is
    * opened.
-   * @param dialog This is the Material service that allows us to open a dialog.
+   * @param dialog This is the service that allows us to open a dialog.
    */
   constructor(
     public dialogRef: DialogRef<RecordHistoryModalComponent>,

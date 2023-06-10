@@ -37,7 +37,7 @@ export class MapMarkersComponent
   /**
    * List of rules in Map Settings
    *
-   * @param dialog Material Dialog Service
+   * @param dialog Dialog Service
    */
   constructor(private dialog: Dialog) {
     super();

@@ -88,7 +88,7 @@ export class FormRecordsComponent
    * @param route Angular activated route
    * @param downloadService Shared download service
    * @param layoutService Shared layout service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param breadcrumbService Shared breadcrumb service

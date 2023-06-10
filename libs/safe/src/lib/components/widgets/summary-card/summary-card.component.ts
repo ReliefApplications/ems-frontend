@@ -118,7 +118,7 @@ export class SafeSummaryCardComponent
    * Constructor for summary card component
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param queryBuilder Query builder service

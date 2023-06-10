@@ -51,7 +51,7 @@ export class NotificationsComponent
   /**
    * Custom notifications table component.
    *
-   * @param dialog The material dialog service
+   * @param dialog The Dialog service
    * @param translate The translation service
    * @param confirmService Shared confirmation service
    * @param apollo Apollo service

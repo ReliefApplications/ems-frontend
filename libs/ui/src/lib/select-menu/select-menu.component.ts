@@ -1,6 +1,5 @@
 import {
   Component,
-  forwardRef,
   Input,
   Output,
   EventEmitter,
@@ -13,14 +12,11 @@ import {
   ViewChild,
   ViewContainerRef,
   Inject,
-  Injector,
   AfterContentInit,
+  Optional,
+  Self,
 } from '@angular/core';
-import {
-  ControlValueAccessor,
-  NG_VALUE_ACCESSOR,
-  NgControl,
-} from '@angular/forms';
+import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { SelectOptionComponent } from './components/select-option.component';
 import {
   Observable,
@@ -41,13 +37,6 @@ import { DOCUMENT } from '@angular/common';
   selector: 'ui-select-menu',
   templateUrl: './select-menu.component.html',
   styleUrls: ['./select-menu.component.scss'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => SelectMenuComponent),
-      multi: true,
-    },
-  ],
 })
 export class SelectMenuComponent
   implements ControlValueAccessor, AfterContentInit, OnDestroy
@@ -86,7 +75,6 @@ export class SelectMenuComponent
   private clickOutsideListener!: any;
   private selectClosingActionsSubscription!: Subscription;
   private overlayRef!: OverlayRef;
-  private control!: NgControl;
 
   //Control access value functions
   onChange!: (value: any) => void;
@@ -95,7 +83,7 @@ export class SelectMenuComponent
   /**
    * Ui Select constructor
    *
-   * @param injector Injector
+   * @param control host element NgControl instance
    * @param el Host element reference
    * @param renderer Renderer2
    * @param viewContainerRef ViewContainerRef
@@ -103,13 +91,17 @@ export class SelectMenuComponent
    * @param document document
    */
   constructor(
-    private injector: Injector,
+    @Optional() @Self() private control: NgControl,
     public el: ElementRef,
     private renderer: Renderer2,
     private viewContainerRef: ViewContainerRef,
     private overlay: Overlay,
     @Inject(DOCUMENT) private document: Document
-  ) {}
+  ) {
+    if (this.control) {
+      this.control.valueAccessor = this;
+    }
+  }
 
   ngAfterContentInit(): void {
     this.clickOutsideListener = this.renderer.listen(
@@ -152,7 +144,6 @@ export class SelectMenuComponent
           });
         },
       });
-    this.control = this.injector.get(NgControl);
     if (this.control) {
       this.control.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe({
         next: (value) => {

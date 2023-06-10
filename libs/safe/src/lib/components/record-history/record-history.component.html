@@ -31,7 +31,7 @@
     <div uiFormFieldDirective>
       <label>{{ 'components.history.field.select' | translate }}</label>
       <ui-select-menu
-        (selectionChange)="applyFilter($event)"
+        (selectedOption)="applyFilter($event)"
         [value]="filterFields"
         [multiselect]="true"
       >

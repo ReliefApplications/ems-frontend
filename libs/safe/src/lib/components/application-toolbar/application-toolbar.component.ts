@@ -39,7 +39,7 @@ export class SafeApplicationToolbarComponent
    *
    * @param applicationService Shared application service
    * @param router Angular router
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param confirmService Shared confirm service
    * @param translate Angular translate service

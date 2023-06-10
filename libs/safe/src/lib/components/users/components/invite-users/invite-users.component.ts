@@ -55,8 +55,8 @@ export class SafeInviteUsersComponent extends SafeUnsubscribeComponent {
    * @param downloadService The download service
    * @param snackBar The snack bar service
    * @param formBuilder The form builder service
-   * @param dialog The material dialog service
-   * @param dialogRef The reference to a material dialog
+   * @param dialog The Dialog service
+   * @param dialogRef The reference to a Dialog
    * @param translate The translation service
    * @param data The input data of the component
    */
