@@ -22,7 +22,6 @@ import {
   EDIT_WORKFLOW,
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
-import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 
@@ -103,7 +102,7 @@ export class WorkflowComponent
           this.steps = workflow.steps || [];
           this.loading = false;
           if (!this.workflow || workflow.id !== this.workflow.id) {
-            const firstStep = get(workflow, 'steps', [])[0];
+            const firstStep = this.steps[0];
             if (firstStep) {
               const firstStepIsForm = firstStep.type === ContentType.form;
               const currentStepId = this.router.url.split('/').pop();
