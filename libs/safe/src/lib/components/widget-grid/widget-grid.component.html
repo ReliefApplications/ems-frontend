@@ -31,10 +31,15 @@
           : widget.defaultCols
       "
       [rowSpan]="!canUpdate && widgets.length === 1 ? 4 : widget.defaultRows"
-      [class.shadow-2lg]="widget.settings.widgetDisplay?.showBorder ?? true"
-      [class.hide-border]="!(widget.settings.widgetDisplay?.showBorder ?? true)"
-      [class.hover:shadow-2lg]="isBackOffice"
-      [class.bg-inherit]="!(widget.settings.widgetDisplay?.showBorder ?? true)"
+      class="rounded-lg border focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2"
+      [ngClass]="{
+        'shadow-sm border-gray-300':
+          widget.settings.widgetDisplay?.showBorder ?? true,
+        'border-transparent': !(
+          widget.settings.widgetDisplay?.showBorder ?? true
+        ),
+        'hover:border-gray-400 hover:shadow-sm': isBackOffice
+      }"
     >
       <!-- Settings -->
       <safe-floating-options

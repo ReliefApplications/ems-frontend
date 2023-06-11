@@ -29,12 +29,12 @@ class LaunchDialogComponent implements OnDestroy {
   /**
    * Constructor for the launchDialog component
    *
-   * @param _dialog Material dialog service
+   * @param _dialog Dialog service
    */
   constructor(private _dialog: Dialog) {}
 
   /**
-   * open material dialog.
+   * open Dialog.
    */
   openDialog(): void {
     const dialogRef: any = this._dialog.open(EditDialogComponent, {
@@ -118,7 +118,7 @@ class EditDialogComponent {
   /**
    * Edit Dialog component
    *
-   * @param dialogRef Material dialog ref
+   * @param dialogRef Dialog ref
    * @param data Injected dialog data
    * @param data.animal animal data
    * @param data.size size data

@@ -88,7 +88,7 @@ export class SafeWidgetGridComponent
    * Constructor of the grid widget component
    *
    * @param environment This is the environment in which we are running the application
-   * @param dialog The material dialog service
+   * @param dialog The Dialog service
    * @param dashboardService Shared dashboard service
    */
   constructor(

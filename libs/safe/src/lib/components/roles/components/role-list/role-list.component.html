@@ -1,5 +1,5 @@
 <ng-container *ngIf="!loading; else loadingTmpl">
-  <ng-container *ngIf="roles?.data?.length">
+  <ng-container *ngIf="roles?.length">
     <div class="flex gap-8 justify-between flex-col sm:flex-row">
       <!-- Search text filter -->
       <div uiFormFieldDirective>
@@ -28,12 +28,12 @@
       {{ 'models.role.create' | translate }}
     </ui-button>
   </ng-template>
-  <ng-container *ngIf="roles?.data?.length; else emptyTmpl">
+  <ng-container *ngIf="roles?.length; else emptyTmpl">
     <!-- Table container -->
     <div class="mt-4 overflow-x-hidden shadow-2lg">
       <!-- Table scroll container -->
       <div class="overflow-x-auto">
-        <table cdk-table uiTableWrapper [dataSource]="roles">
+        <table cdk-table uiTableWrapper [dataSource]="filteredRoles">
           <ng-container cdkColumnDef="title">
             <th uiCellHeader *cdkHeaderCellDef scope="col">
               <span class="headerTitle">

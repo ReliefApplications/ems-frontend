@@ -32,7 +32,7 @@ export class ChoseRoleComponent implements OnInit {
    * Chose role component, to preview application with selected role.
    *
    * @param formBuilder Angular form builder
-   * @param dialogRef Material dialog ref
+   * @param dialogRef Dialog ref
    * @param apollo Angular service
    * @param data Injected modal data
    * @param data.application application id

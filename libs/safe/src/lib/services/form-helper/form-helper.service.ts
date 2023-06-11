@@ -55,7 +55,7 @@ export class SafeFormHelpersService {
         { date: formatDate }
       ),
       confirmText: this.translate.instant('components.confirmModal.confirm'),
-      confirmColor: 'primary',
+      confirmVariant: 'primary',
     });
     return dialogRef as any;
   }

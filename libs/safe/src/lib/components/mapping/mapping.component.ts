@@ -26,7 +26,7 @@ export class SafeMappingComponent
   /**
    * Mapping component constructor.
    *
-   * @param dialog Angular Material dialog service.
+   * @param dialog Angular Dialog service.
    */
   constructor(private dialog: Dialog) {
     super();

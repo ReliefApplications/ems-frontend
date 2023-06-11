@@ -9,7 +9,6 @@ import { SafeTabStyleComponent } from './tab-style/tab-style.component';
 import { SafeTabLayoutPreviewComponent } from './tab-layout-preview/tab-layout-preview.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IconModule } from '@oort-front/ui';
-import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
@@ -67,7 +66,6 @@ import {
     IconModule,
     DateModule,
     TooltipModule,
-    MatAutocompleteModule,
     TranslateModule,
     InputsModule,
     LabelModule,

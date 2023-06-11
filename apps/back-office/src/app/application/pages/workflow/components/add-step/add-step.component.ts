@@ -62,7 +62,7 @@ export class AddStepComponent
    *
    * @param route Angular activated route
    * @param formBuilder Angular form builder
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param authService Shared authentication service
    * @param apollo Apollo service

@@ -7,10 +7,7 @@
       <ui-select-option>{{
         'common.filter.none' | translate
       }}</ui-select-option>
-      <ui-select-option
-        *ngFor="let form of resource.forms"
-        [value]="form.id"
-      >
+      <ui-select-option *ngFor="let form of resource.forms" [value]="form.id">
         {{ form.name }}
       </ui-select-option>
     </ui-select-menu>
@@ -25,7 +22,7 @@
       cdk-table
       uiTableWrapper
       [dataSource]="fields"
-      *ngIf="fields.data.length > 0"
+      *ngIf="fields.length > 0"
     >
       <ng-container cdkColumnDef="name">
         <th uiCellHeader *cdkHeaderCellDef scope="col">

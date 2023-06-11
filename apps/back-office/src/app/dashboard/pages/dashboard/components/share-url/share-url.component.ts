@@ -16,7 +16,7 @@ export class ShareUrlComponent {
    *
    * @param snackBar Shared snackbar service
    * @param clipboard Angular clipboard service
-   * @param dialogRef Material dialog ref
+   * @param dialogRef Dialog ref
    * @param data Injected dialog data
    * @param data.url active url
    * @param translate Angular translate service

@@ -32,7 +32,7 @@ export class CalculatedFieldsTabComponent
    * Layouts tab of resource page
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param translate Angular translate service
    * @param snackBar Shared snackbar service
    */

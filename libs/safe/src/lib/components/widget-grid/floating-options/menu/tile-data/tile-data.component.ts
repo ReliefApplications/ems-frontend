@@ -39,11 +39,11 @@ export class SafeTileDataComponent
   /**
    * Constructor of a data tile
    *
-   * @param dialogRef Reference to a dialog opened via the material dialog service
+   * @param dialogRef Reference to a dialog opened via the Dialog service
    * @param data The dialog data
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    */
   constructor(
     public dialogRef: DialogRef<SafeTileDataComponent>,
@@ -87,7 +87,7 @@ export class SafeTileDataComponent
           'components.widget.settings.close.confirmationMessage'
         ),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'warn',
+        confirmVariant: 'danger',
       });
       confirmDialogRef.closed
         .pipe(takeUntil(this.destroy$))

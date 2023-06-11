@@ -30,6 +30,7 @@ import { NgControl } from '@angular/forms';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { DOCUMENT } from '@angular/common';
+import { ScrollStrategies } from './types/scroll-strategies';
 
 /**
  * UI Autocomplete directive
@@ -44,6 +45,7 @@ export class AutocompleteDirective
   autocompletePanel!: AutocompleteComponent;
 
   @Input() autocompleteDisplayKey?: any;
+  @Input() scrollStrategy?: ScrollStrategies = 'close';
 
   @Output() opened: EventEmitter<void> = new EventEmitter();
   @Output() closed: EventEmitter<void> = new EventEmitter();
@@ -248,7 +250,10 @@ export class AutocompleteDirective
     this.overlayRef = this.overlay.create({
       hasBackdrop: false,
       // close autocomplete on user scroll - default behavior, could be changed
-      scrollStrategy: this.overlay.scrollStrategies.close(),
+      scrollStrategy:
+        this.scrollStrategy === 'close'
+          ? this.overlay.scrollStrategies.close()
+          : this.overlay.scrollStrategies.block(),
       // We position the displayed autocomplete taking current directive host element as reference
       positionStrategy: this.overlay
         .position()
