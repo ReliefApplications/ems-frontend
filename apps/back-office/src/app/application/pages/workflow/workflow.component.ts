@@ -22,7 +22,6 @@ import {
   EDIT_WORKFLOW,
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
-import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 
@@ -103,20 +102,43 @@ export class WorkflowComponent
           this.steps = workflow.steps || [];
           this.loading = false;
           if (!this.workflow || workflow.id !== this.workflow.id) {
-            const firstStep = get(workflow, 'steps', [])[0];
+            const firstStep = this.steps[0];
             if (firstStep) {
-              if (firstStep.type === ContentType.form) {
+              const firstStepIsForm = firstStep.type === ContentType.form;
+              const currentStepId = this.router.url.split('/').pop();
+              // If redirect to the workflow beginning, just go to the firstStep
+              let currentStep: Step = firstStep;
+              let currentActiveStep = 0;
+              if (
+                !(firstStepIsForm
+                  ? firstStep.id === currentStepId
+                  : firstStep.content === currentStepId)
+              ) {
+                // If not, URL contains the step id so redirect to the selected step (used for when refresh page or shared dashboard step link)
+                workflow?.steps?.forEach((step: Step, index: number) => {
+                  const stepIsForm = step.type === ContentType.form;
+                  if (
+                    (stepIsForm && step.id === currentStepId) ||
+                    step.content === currentStepId
+                  ) {
+                    currentStep = step;
+                    currentActiveStep = index;
+                    return;
+                  }
+                });
+              }
+              if (currentStep.type === ContentType.form) {
                 this.router.navigate(
-                  ['./' + firstStep.type + '/' + firstStep.id],
+                  ['./' + currentStep.type + '/' + currentStep.id],
                   { relativeTo: this.route }
                 );
               } else {
                 this.router.navigate(
-                  ['./' + firstStep.type + '/' + firstStep.content],
+                  ['./' + currentStep.type + '/' + currentStep.content],
                   { relativeTo: this.route }
                 );
               }
-              this.activeStep = 0;
+              this.activeStep = currentActiveStep;
             }
             if (!firstStep) {
               this.router.navigate([`./`], { relativeTo: this.route });
@@ -260,7 +282,7 @@ export class WorkflowComponent
           { step: step.name }
         ),
         confirmText: this.translate.instant('components.confirmModal.delete'),
-        confirmColor: 'warn',
+        confirmVariant: 'danger',
       });
       dialogRef.closed
         .pipe(takeUntil(this.destroy$))

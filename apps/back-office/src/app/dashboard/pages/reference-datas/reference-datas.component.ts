@@ -256,7 +256,7 @@ export class ReferenceDatasComponent
         }
       ),
       confirmText: this.translate.instant('common.delete'),
-      confirmColor: 'warn',
+      confirmVariant: 'danger',
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {

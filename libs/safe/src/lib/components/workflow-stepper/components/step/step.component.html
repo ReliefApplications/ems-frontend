@@ -3,9 +3,9 @@
   [style.background-color]="active ? type?.color : ''"
   [ngClass]="{ active: active }"
 >
-  <div class="step-actions">
+  <div class="step-actions" *ngIf="canUpdate">
+    <!-- Delete action -->
     <ui-button
-      *ngIf="canUpdate"
       [isIcon]="true"
       icon="delete_outline"
       category="primary"
@@ -17,8 +17,8 @@
       (click)="onDelete($event)"
     >
     </ui-button>
+    <!-- Duplicate action ( disabled ) -->
     <ui-button
-      *ngIf="canUpdate"
       [isIcon]="true"
       icon="content_copy"
       category="primary"

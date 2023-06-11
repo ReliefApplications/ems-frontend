@@ -78,7 +78,29 @@ export class WorkflowComponent
               this.steps = data.workflow.steps || [];
               this.loading = loading;
               if (this.steps.length > 0) {
-                this.onOpenStep(0);
+                const currentStepId = this.router.url.split('/').pop();
+                // If redirect to the workflow beginning, just go to the firstStep
+                const firstStep = this.steps[0];
+                const firstStepIsForm = firstStep.type === ContentType.form;
+                let currentActiveStep = 0;
+                if (
+                  !(firstStepIsForm
+                    ? firstStep.id === currentStepId
+                    : firstStep.content === currentStepId)
+                ) {
+                  // If not, URL contains the step id so redirect to the selected step (used for when refresh page or shared dashboard step link)
+                  data.workflow?.steps?.forEach((step: Step, index: number) => {
+                    const stepIsForm = step.type === ContentType.form;
+                    if (
+                      (stepIsForm && step.id === currentStepId) ||
+                      step.content === currentStepId
+                    ) {
+                      currentActiveStep = index;
+                      return;
+                    }
+                  });
+                }
+                this.onOpenStep(currentActiveStep);
               }
             } else {
               this.snackBar.openSnackBar(

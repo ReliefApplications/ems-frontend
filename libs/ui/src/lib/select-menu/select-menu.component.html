@@ -4,7 +4,7 @@
   (click)="openSelectPanel()"
   [ngClass]="{
     'non_selectable text-gray-400': disabled,
-    'bg-white text-gray-900 focus:outline-none': !disabled
+    'bg-white text-gray-900 focus:outline-none cursor-pointer': !disabled
   }"
 >
   <ng-container *ngIf="customTemplate">

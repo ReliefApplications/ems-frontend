@@ -107,7 +107,7 @@ export class SafeTemplatesComponent
         ),
         confirmText: this.translate.instant('components.confirmModal.delete'),
         cancelText: this.translate.instant('components.confirmModal.cancel'),
-        confirmColor: 'warn',
+        confirmVariant: 'danger',
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {

@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { SafeConfirmModalComponent } from '../../components/confirm-modal/confirm-modal.component';
 import { Dialog, DialogRef } from '@angular/cdk/dialog';
+import { Variant } from '@oort-front/ui';
 
 /** Interface of confirm dialog data */
 interface ConfirmDialogData {
   title?: string;
   content?: string;
   confirmText?: string;
-  confirmColor?: string;
+  confirmVariant?: Variant;
 }
 
 /**
