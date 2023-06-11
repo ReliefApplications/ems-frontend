@@ -5,7 +5,6 @@ import {
   Output,
   EventEmitter,
   HostListener,
-  AfterViewInit
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
@@ -17,7 +16,7 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
   templateUrl: './left-sidenav.component.html',
   styleUrls: ['./left-sidenav.component.scss'],
 })
-export class SafeLeftSidenavComponent implements AfterViewInit{
+export class SafeLeftSidenavComponent {
   @Input() appLayout = false;
   @Input() canAddPage = false;
   @Output() reorder: EventEmitter<any> = new EventEmitter();
@@ -40,10 +39,6 @@ export class SafeLeftSidenavComponent implements AfterViewInit{
   constructor(@Inject('environment') environment: any, private router: Router) {
     this.environment = environment;
     this.largeDevice = window.innerWidth > 1024;
-  }
-
-  ngAfterViewInit(): void {
-    console.log(this.navGroups);
   }
 
   /**

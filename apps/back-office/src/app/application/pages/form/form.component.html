@@ -15,22 +15,26 @@
             {{ page ? page.name || '' : step ? step.name || '' : '' }}
           </h1>
         </safe-editable-text>
-        <!-- <button
+        <button
           mat-icon-button
-          cdkDragHandle
           (click)="hidePage()"
-          *ngIf="!this.workflow.page?.visible"
+          *ngIf="!this.page?.visible"
         >
-          <mat-icon>visibility_off</mat-icon>
+          <safe-icon
+            icon="visibility_off"
+          >
+          </safe-icon>
         </button>
         <button
           mat-icon-button
-          cdkDragHandle
           (click)="hidePage()"
-          *ngIf="this.workflow.page?.visible"
+          *ngIf="this.page?.visible"
         >
-          <mat-icon>visibility</mat-icon>
-        </button> -->
+          <safe-icon
+            icon="visibility"
+          >
+          </safe-icon>
+        </button>
       </div>
       <!-- Page access -->
       <safe-access

@@ -461,7 +461,6 @@ export class WorkflowComponent
   hidePage(){
     const pageId = this.workflow?.page?.id;
     const visiblePage = this.workflow?.page?.visible ?? true;
-    console.log(visiblePage);
     this.apollo
       .mutate<EditPageVisibilityMutationResponse>({
         mutation: EDIT_PAGE_VISIBILITY,

@@ -31,6 +31,8 @@ import {
   EDIT_PAGE,
   EditStepMutationResponse,
   EDIT_STEP,
+  EditPageVisibilityMutationResponse,
+  EDIT_PAGE_VISIBILITY,
 } from './graphql/mutations';
 import {
   GetDashboardByIdQueryResponse,
@@ -124,7 +126,8 @@ export class DashboardComponent
     private translateService: TranslateService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
-    private refDataService: SafeReferenceDataService
+    private refDataService: SafeReferenceDataService,
+    private translate: TranslateService
   ) {
     super();
   }
@@ -736,5 +739,48 @@ export class DashboardComponent
         this.contextRecord = data.record;
       });
     }
+  }
+
+  hidePage(){
+    const pageId = this.dashboard?.page?.id;
+    const visiblePage = this.dashboard?.page?.visible ?? true;
+    this.apollo
+      .mutate<EditPageVisibilityMutationResponse>({
+        mutation: EDIT_PAGE_VISIBILITY,
+        variables: {
+          id: pageId,
+          visible: !visiblePage
+        },
+      })
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.page.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.page.one'),
+                value: '',
+              })
+            );
+            this.dashboard = {
+              ...this.dashboard,
+              page: {
+                ...this.dashboard?.page,
+                visible: data?.editPageVisibility.visible,
+              },
+            };
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
   }
 }

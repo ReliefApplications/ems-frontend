@@ -28,7 +28,10 @@
           (click)="hidePage()"
           *ngIf="!this.workflow.page?.visible"
         >
-          <mat-icon>visibility_off</mat-icon>
+          <safe-icon
+            icon="visibility_off"
+          >
+          </safe-icon>
         </button>
         <button
           mat-icon-button
@@ -36,7 +39,10 @@
           (click)="hidePage()"
           *ngIf="this.workflow.page?.visible"
         >
-          <mat-icon>visibility</mat-icon>
+          <safe-icon
+            icon="visibility"
+          >
+          </safe-icon>
         </button>
       </div>
       <!-- buttons right to title -->

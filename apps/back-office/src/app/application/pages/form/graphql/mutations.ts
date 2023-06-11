@@ -76,11 +76,6 @@ export interface EditStepMutationResponse {
   editStep: Step;
 }
 
-/** Edit page gql mutation response interface */
-export interface EditPageMutationResponse {
-  editPage: Page;
-}
-
 // === EDIT PAGE VISIBILITY ===
 /** Edit page gql mutation definition */
 export const EDIT_PAGE_VISIBILITY = gql`
@@ -91,3 +86,8 @@ export const EDIT_PAGE_VISIBILITY = gql`
     }
   }
 `;
+
+/** Edit page gql mutation response interface */
+export interface EditPageVisibilityMutationResponse {
+  editPageVisibility: Page;
+}

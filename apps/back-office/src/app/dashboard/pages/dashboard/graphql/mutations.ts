@@ -127,3 +127,20 @@ export const EDIT_DASHBOARD = gql`
 export interface EditDashboardMutationResponse {
   editDashboard: Dashboard;
 }
+
+// === EDIT PAGE VISIBILITY ===
+/** Edit page gql mutation definition */
+export const EDIT_PAGE_VISIBILITY = gql`
+  mutation editPageVisibility($id: ID!, $visible: Boolean) {
+    editPageVisibility(id: $id, visible: $visible) {
+      id
+      visible
+    }
+  }
+`;
+
+/** Edit page gql mutation response interface */
+export interface EditPageVisibilityMutationResponse {
+  editPageVisibility: Page;
+}
+

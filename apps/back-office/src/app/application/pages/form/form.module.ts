@@ -10,6 +10,7 @@ import {
 } from '@oort-front/safe';
 import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
 import { TranslateModule } from '@ngx-translate/core';
+import { SafeIconModule } from '@oort-front/safe';
 
 /**
  * Application form page module.
@@ -25,6 +26,7 @@ import { TranslateModule } from '@ngx-translate/core';
     SafeButtonModule,
     TranslateModule,
     SafeEditableTextModule,
+    SafeIconModule,
   ],
   exports: [FormComponent],
 })

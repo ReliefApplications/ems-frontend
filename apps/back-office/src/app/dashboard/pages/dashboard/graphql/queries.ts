@@ -31,6 +31,7 @@ export const GET_DASHBOARD_BY_ID = gql`
         application {
           id
         }
+        visible
         canUpdate
         context
         content

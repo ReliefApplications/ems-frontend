@@ -27,6 +27,8 @@ import {
   EDIT_STEP,
   EditPageMutationResponse,
   EDIT_PAGE,
+  EditPageVisibilityMutationResponse,
+  EDIT_PAGE_VISIBILITY,
 } from './graphql/mutations';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
@@ -321,5 +323,45 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
         });
       }
     }
+  }
+
+  hidePage(){
+    const pageId = this.page?.id;
+    const visiblePage = this.page?.visible ?? true;
+    this.apollo
+      .mutate<EditPageVisibilityMutationResponse>({
+        mutation: EDIT_PAGE_VISIBILITY,
+        variables: {
+          id: pageId,
+          visible: !visiblePage
+        },
+      })
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.page.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.page.one'),
+                value: '',
+              })
+            );
+            this.page = {
+              ...this.page,
+              visible: data?.editPageVisibility.visible
+            };
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
   }
 }
