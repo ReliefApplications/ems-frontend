@@ -11,7 +11,7 @@
   </h3>
   <p *ngIf="subtitle" class="mt-1 text-sm text-gray-500">{{ subtitle }}</p>
   <ng-container *ngIf="footerTemplate">
-    <div class="mt-6">
+    <div class="mt-6 flex justify-center">
       <ng-container *ngTemplateOutlet="footerTemplate"></ng-container>
     </div>
   </ng-container>

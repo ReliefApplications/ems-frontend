@@ -278,7 +278,7 @@ export class MapLayerComponent
           'components.widget.settings.close.confirmationMessage'
         ),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'warn',
+        confirmVariant: 'danger',
       });
       confirmDialogRef.closed
         .pipe(takeUntil(this.destroy$))

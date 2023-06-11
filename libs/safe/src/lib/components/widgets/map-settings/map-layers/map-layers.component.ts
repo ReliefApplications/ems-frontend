@@ -7,9 +7,7 @@ import {
   OnInit,
   Output,
   SimpleChanges,
-  ViewChild,
 } from '@angular/core';
-import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { AddLayerModalComponent } from '../add-layer-modal/add-layer-modal.component';
 import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
@@ -30,7 +28,6 @@ export class MapLayersComponent
   extends SafeUnsubscribeComponent
   implements OnInit, OnChanges
 {
-  @ViewChild('layerTable', { static: true }) layerTable!: MatTable<any>;
   @Input() layerIds!: string[];
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close = new EventEmitter();
@@ -38,7 +35,7 @@ export class MapLayersComponent
   @Output() deleteLayer = new EventEmitter<string>();
 
   // Table
-  public mapLayers: MatTableDataSource<LayerModel> = new MatTableDataSource();
+  public mapLayers: Array<LayerModel> = new Array<LayerModel>();
   public displayedColumns = ['name', 'actions'];
 
   /**
@@ -71,7 +68,7 @@ export class MapLayersComponent
   private updateLayerList(): void {
     // todo: add filtering
     this.mapLayersService.getLayers().subscribe((layers) => {
-      this.mapLayers.data = layers.filter((x) => this.layerIds.includes(x.id));
+      this.mapLayers = layers.filter((x) => this.layerIds.includes(x.id));
     });
   }
 
@@ -81,7 +78,7 @@ export class MapLayersComponent
    * @param index Index of the layer to remove
    */
   public onDeleteLayer(index: number) {
-    this.deleteLayer.emit(this.mapLayers.data[index].id);
+    this.deleteLayer.emit(this.mapLayers[index].id);
   }
 
   /**
@@ -142,7 +139,7 @@ export class MapLayersComponent
    * @param e Event emitted when a layer is reordered
    */
   public onListDrop(e: CdkDragDrop<LayerModel[]>) {
-    moveItemInArray(this.mapLayers.data, e.previousIndex, e.currentIndex);
-    this.layerTable.renderRows();
+    moveItemInArray(this.mapLayers, e.previousIndex, e.currentIndex);
+    // this.layerTable.renderRows();
   }
 }

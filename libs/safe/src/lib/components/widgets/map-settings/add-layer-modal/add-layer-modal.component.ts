@@ -5,6 +5,7 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { GetLayersQueryResponse, GET_LAYERS } from './graphql/queries';
 import {
+  ButtonModule,
   DialogModule,
   FormWrapperModule,
   GraphQLSelectModule,
@@ -24,6 +25,7 @@ import {
     ReactiveFormsModule,
     FormWrapperModule,
     GraphQLSelectModule,
+    ButtonModule,
   ],
   templateUrl: './add-layer-modal.component.html',
   styleUrls: ['./add-layer-modal.component.scss'],

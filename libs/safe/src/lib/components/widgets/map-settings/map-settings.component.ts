@@ -40,7 +40,7 @@ export class SafeMapSettingsComponent
   public mapSettings!: MapConstructorSettings;
   public layerIds: string[] = [];
   // === REACTIVE FORM ===
-  tileForm: UntypedFormGroup | undefined;
+  tileForm!: UntypedFormGroup;
 
   // layerNavigationTemplate: TemplateRef<any> | null = null;
   // layerSettingsTemplate: TemplateRef<any> | null = null;
@@ -55,6 +55,9 @@ export class SafeMapSettingsComponent
 
   @ViewChild(MapLayerComponent) layerComponent?: MapLayerComponent;
   @ViewChild(MapComponent) mapComponent?: MapComponent;
+
+  // @ViewChild(MapComponent)
+  // map: any;
 
   /**
    * Class constructor
@@ -147,6 +150,7 @@ export class SafeMapSettingsComponent
    * @param tab Tab
    */
   private openTab(tab: 'parameters' | 'layers' | 'layer' | 'display' | null) {
+    console.log(tab);
     // Reset settings when switching to/from 'layer' tab
     if (
       (this.currentTab === 'layer' && tab !== 'layer') ||
@@ -175,6 +179,7 @@ export class SafeMapSettingsComponent
   handleTabChange(
     selectedTab: 'parameters' | 'layers' | 'layer' | 'display' | null
   ) {
+    console.log(selectedTab);
     if (this.currentTab === 'layer' && !this.layerComponent?.form.pristine) {
       const confirmDialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('common.close'),
@@ -182,7 +187,7 @@ export class SafeMapSettingsComponent
           'components.widget.settings.close.confirmationMessage'
         ),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'warn',
+        confirmVariant: 'danger',
       });
       confirmDialogRef.closed
         .pipe(takeUntil(this.destroy$))

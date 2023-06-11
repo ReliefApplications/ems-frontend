@@ -12,6 +12,7 @@ import {
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { SafeEmptyModule } from '../../../ui/empty/empty.module';
 
 /**
  * Map Widget layers configuration module.
@@ -30,10 +31,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     DividerModule,
     DragDropModule,
     TabsModule,
-    //@TODO TAILWIND
-    // MapMarkersModule,
-    // MapClorophletsModule,
-    // MapOnlineLayersModule,
+    SafeEmptyModule,
   ],
   exports: [MapLayersComponent],
 })

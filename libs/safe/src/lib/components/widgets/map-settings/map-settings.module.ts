@@ -15,9 +15,6 @@ import {
   SidenavContainerModule,
   TabsModule,
 } from '@oort-front/ui';
-// import { MapGeneralModule } from './map-general/map-general.module';
-// import { MapLayersModule } from './map-layers/map-layers.module';
-// import { MapPropertiesModule } from './map-properties/map-properties.module';
 import { TooltipModule } from '@oort-front/ui';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 
@@ -41,8 +38,6 @@ import { DisplaySettingsComponent } from '../common/display-settings/display-set
     MapLayerModule,
     TabsModule,
     SidenavContainerModule,
-    // @TODO TAILWIND
-    // MapGeneralModule,
     MapLayersModule,
     MapPropertiesModule,
     TooltipModule,
