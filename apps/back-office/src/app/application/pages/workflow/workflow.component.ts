@@ -458,7 +458,8 @@ export class WorkflowComponent
     }
   }
 
-  hidePage(){
+  /** Hide a page  */
+  hidePage() {
     const pageId = this.workflow?.page?.id;
     const visiblePage = this.workflow?.page?.visible ?? true;
     this.apollo
@@ -466,7 +467,7 @@ export class WorkflowComponent
         mutation: EDIT_PAGE_VISIBILITY,
         variables: {
           id: pageId,
-          visible: !visiblePage
+          visible: !visiblePage,
         },
       })
       .subscribe({

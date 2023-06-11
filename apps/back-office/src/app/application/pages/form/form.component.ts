@@ -325,7 +325,10 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
     }
   }
 
-  hidePage(){
+  /**
+   * hide a page
+   */
+  hidePage() {
     const pageId = this.page?.id;
     const visiblePage = this.page?.visible ?? true;
     this.apollo
@@ -333,7 +336,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
         mutation: EDIT_PAGE_VISIBILITY,
         variables: {
           id: pageId,
-          visible: !visiblePage
+          visible: !visiblePage,
         },
       })
       .subscribe({
@@ -355,7 +358,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
             );
             this.page = {
               ...this.page,
-              visible: data?.editPageVisibility.visible
+              visible: data?.editPageVisibility.visible,
             };
           }
         },

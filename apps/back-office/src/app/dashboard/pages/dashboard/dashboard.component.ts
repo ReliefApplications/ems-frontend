@@ -113,6 +113,7 @@ export class DashboardComponent
    * @param authService Shared authentication service
    * @param confirmService Shared confirm service
    * @param refDataService Shared reference data service
+   * @param translate Translate service
    */
   constructor(
     private applicationService: SafeApplicationService,
@@ -741,7 +742,8 @@ export class DashboardComponent
     }
   }
 
-  hidePage(){
+  /** Hide a page  */
+  hidePage() {
     const pageId = this.dashboard?.page?.id;
     const visiblePage = this.dashboard?.page?.visible ?? true;
     this.apollo
@@ -749,7 +751,7 @@ export class DashboardComponent
         mutation: EDIT_PAGE_VISIBILITY,
         variables: {
           id: pageId,
-          visible: !visiblePage
+          visible: !visiblePage,
         },
       })
       .subscribe({

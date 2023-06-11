@@ -143,4 +143,3 @@ export const EDIT_PAGE_VISIBILITY = gql`
 export interface EditPageVisibilityMutationResponse {
   editPageVisibility: Page;
 }
-
