@@ -156,6 +156,7 @@
           </ng-container>
           <div class="flex flex-col gap-4">
             <div class="flex justify-end">
+              <!-- Switch edition mode (raw / ui) -->
               <ui-button
                 icon="edit_note"
                 category="secondary"
@@ -165,6 +166,7 @@
                 {{ 'components.pullJob.modal.switch' | translate }}
               </ui-button>
             </div>
+            <!-- Raw edition mode (json) -->
             <ng-container *ngIf="openRawJSON">
               <div uiFormFieldDirective>
                 <label>{{ 'common.input.rawJson' | translate }}</label>
@@ -176,6 +178,7 @@
                 </ui-textarea>
               </div>
             </ng-container>
+            <!-- UI edition mode -->
             <ng-container *ngIf="!openRawJSON">
               <div class="flex flex-col gap-2 overflow-x-auto">
                 <form
@@ -183,7 +186,7 @@
                   *ngFor="let element of mappingArray.controls; index as i"
                   class="flex gap-x-2 items-center"
                 >
-                  <div uiFormFieldDirective [outline]="false" class="p-0 w-32">
+                  <div uiFormFieldDirective [outline]="false" class="flex-1">
                     <label>{{ 'common.field.one' | translate }}</label>
                     <ui-select-menu formControlName="name">
                       <ui-select-option
@@ -197,7 +200,7 @@
                   <div
                     uiFormFieldDirective
                     *ngIf="element.value.name"
-                    class="p-0"
+                    class="flex-1"
                   >
                     <label>{{ 'common.value.one' | translate }}</label>
                     <input formControlName="value" type="string" />

@@ -88,7 +88,7 @@ export class FormRecordsComponent
    * @param route Angular activated route
    * @param downloadService Shared download service
    * @param layoutService Shared layout service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param breadcrumbService Shared breadcrumb service
@@ -246,7 +246,7 @@ export class FormRecordsComponent
           }
         ),
         confirmText: this.translate.instant('components.confirmModal.delete'),
-        confirmColor: 'warn',
+        confirmVariant: 'danger',
       });
       dialogRef.closed
         .pipe(takeUntil(this.destroy$))
@@ -321,7 +321,7 @@ export class FormRecordsComponent
         { date: formatDate }
       ),
       confirmText: this.translate.instant('components.confirmModal.confirm'),
-      confirmColor: 'primary',
+      confirmVariant: 'primary',
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {

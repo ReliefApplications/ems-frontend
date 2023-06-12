@@ -62,7 +62,7 @@ export class AggregationsTabComponent
    * Aggregations tab of resource page
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param aggregationService Grid aggregation service
    * @param confirmService Shared confirm service
    * @param translate Angular translate service

@@ -1,33 +1,28 @@
 <!-- Wrapper of the entire select menu, has focusout event -->
 <button
-  class="min-h-[32px] relative w-full cursor-default rounded-md px-3 text-left shadow-sm ring-1 ring-inset ring-gray-300 sm:leading-6"
+  class="min-h-[32px] relative flex items-center w-full cursor-default rounded-md px-3 text-left shadow-sm ring-1 ring-inset ring-gray-300 sm:leading-6 overflow-hidden"
   (click)="openSelectPanel()"
   [ngClass]="{
     'non_selectable text-gray-400': disabled,
-    'bg-white text-gray-900 focus:outline-none':
-      !disabled
+    'bg-white text-gray-900 focus:outline-none cursor-pointer': !disabled
   }"
 >
-  <ng-container *ngIf="selectedValues?.length">
-    <ng-container *ngIf="customTemplate">
-      <ng-container
-        *ngTemplateOutlet="
-          customTemplate.template;
-          context: customTemplate.context
-        "
-      ></ng-container>
-    </ng-container>
-    <div class="default">
-      <ng-container *ngIf="!customTemplate">
-        <span class="block truncate text-sm">{{ displayTrigger }}</span>
-      </ng-container>
-    </div>
+  <ng-container *ngIf="customTemplate">
+    <ng-container
+      *ngTemplateOutlet="
+        customTemplate.template;
+        context: customTemplate.context
+      "
+    ></ng-container>
   </ng-container>
+  <div class="default flex-1">
+    <ng-container *ngIf="!customTemplate">
+      <span class="block truncate text-sm">{{ displayTrigger }}</span>
+    </ng-container>
+  </div>
 
   <!-- icon at right of the button -->
-  <span
-    class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2"
-  >
+  <span class="pointer-events-none flex items-center">
     <svg
       class="h-5 w-5 text-gray-400"
       viewBox="0 0 20 20"

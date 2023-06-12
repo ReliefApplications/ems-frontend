@@ -147,7 +147,7 @@ export class SafeLayoutComponent
    * @param notificationService This is the service that handles the notifications.
    * @param layoutService Shared layout service
    * @param confirmService This is the service that is used to display a confirm window.
-   * @param dialog This is the dialog service provided by Angular Material CDK
+   * @param dialog This is the dialog service provided by Angular CDK
    * @param translate This is the Angular service that translates text
    * @param dateTranslate Service used for date formatting
    * @param breadcrumbService Shared breadcrumb service
@@ -284,7 +284,7 @@ export class SafeLayoutComponent
           'components.logout.confirmationMessage'
         ),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
+        confirmVariant: 'primary',
       });
       dialogRef.closed
         .pipe(takeUntil(this.destroy$))

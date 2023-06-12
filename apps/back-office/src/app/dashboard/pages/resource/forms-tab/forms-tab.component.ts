@@ -47,7 +47,7 @@ export class FormsTabComponent
    * @param snackBar Shared snackbar service
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    */
   constructor(
     private apollo: Apollo,
@@ -97,7 +97,7 @@ export class FormsTabComponent
         }
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
-      confirmColor: 'warn',
+      confirmVariant: 'danger',
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {

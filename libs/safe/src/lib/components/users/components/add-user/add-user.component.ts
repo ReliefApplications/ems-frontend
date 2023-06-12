@@ -48,7 +48,7 @@ export class SafeAddUserComponent
    * Constructor for the component
    *
    * @param formBuilder The form builder service
-   * @param dialogRef The material dialog reference service
+   * @param dialogRef The Dialog reference service
    * @param data The input data
    * @param apollo The apollo client
    * @param translate The translation service

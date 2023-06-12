@@ -103,7 +103,7 @@ export class DashboardComponent
    * @param apollo Apollo service
    * @param route Angular activated route
    * @param router Angular router
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param dashboardService Shared dashboard service
    * @param translateService Angular translate service
@@ -222,7 +222,7 @@ export class DashboardComponent
         confirmText: this.translateService.instant(
           'components.confirmModal.confirm'
         ),
-        confirmColor: 'primary',
+        confirmVariant: 'primary',
       });
       return dialogRef.closed.pipe(takeUntil(this.destroy$)).pipe(
         map((confirm) => {

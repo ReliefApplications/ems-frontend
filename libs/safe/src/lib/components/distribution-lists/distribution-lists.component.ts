@@ -29,7 +29,7 @@ export class DistributionListsComponent
   /**
    * Constructor of the distribution lists component
    *
-   * @param dialog The material dialog service
+   * @param dialog The Dialog service
    * @param translate The translation service
    * @param snackBar Shared snackbar service
    */
@@ -129,7 +129,7 @@ export class DistributionListsComponent
         ),
         confirmText: this.translate.instant('components.confirmModal.delete'),
         cancelText: this.translate.instant('components.confirmModal.cancel'),
-        confirmColor: 'warn',
+        confirmVariant: 'danger',
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {

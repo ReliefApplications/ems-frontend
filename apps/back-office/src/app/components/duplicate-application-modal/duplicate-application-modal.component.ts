@@ -50,7 +50,7 @@ export class DuplicateApplicationModalComponent implements OnInit {
    * @param snackBar Shared snackbar service
    * @param formBuilder Angular form builder
    * @param apollo Apollo service
-   * @param dialogRef Material dialog ref
+   * @param dialogRef Dialog ref
    * @param translateService Angular translate service
    * @param data Injected dialog data
    */

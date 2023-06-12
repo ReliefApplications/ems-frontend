@@ -36,7 +36,7 @@ export class CronExpressionControlComponent
    *  Cron expression form control
    *
    * @param ngControl Angular form control base class
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    */
   constructor(
     @Optional() @Self() public ngControl: NgControl,

@@ -51,7 +51,7 @@ export class NotificationsComponent
   /**
    * Custom notifications table component.
    *
-   * @param dialog The material dialog service
+   * @param dialog The Dialog service
    * @param translate The translation service
    * @param confirmService Shared confirmation service
    * @param apollo Apollo service
@@ -162,7 +162,7 @@ export class NotificationsComponent
       //   { step: step.name }
       // ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
-      confirmColor: 'warn',
+      confirmVariant: 'danger',
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {

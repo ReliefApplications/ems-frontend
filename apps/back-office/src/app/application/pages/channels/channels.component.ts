@@ -35,7 +35,7 @@ export class ChannelsComponent
    *
    * @param applicationService Shared application service
    * @param confirmService Shared confirm service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param translate Angular translate service
    */
   constructor(
@@ -132,7 +132,7 @@ export class ChannelsComponent
         }
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
-      confirmColor: 'warn',
+      confirmVariant: 'danger',
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {

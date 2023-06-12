@@ -59,7 +59,7 @@ export class FormBuilderComponent implements OnInit {
    * @param route Angular activated route
    * @param router Angular router
    * @param snackBar Shared snackbar service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param authService Shared authentication service
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
@@ -88,7 +88,7 @@ export class FormBuilderComponent implements OnInit {
         title: this.translate.instant('components.form.update.exit'),
         content: this.translate.instant('components.form.update.exitMessage'),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
+        confirmVariant: 'primary',
       });
       return dialogRef.closed.pipe(
         map((value) => {

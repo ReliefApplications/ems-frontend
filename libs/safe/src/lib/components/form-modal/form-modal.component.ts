@@ -117,7 +117,7 @@ export class SafeFormModalComponent
    * created.
    *
    * @param data This is the data that is passed to the modal when it is opened.
-   * @param dialog This is the Angular Material Dialog service.
+   * @param dialog This is the Angular Dialog service.
    * @param dialogRef This is the reference to the dialog.
    * @param apollo This is the Apollo client that we'll use to make GraphQL requests.
    * @param snackBar This is the service that allows you to display a snackbar.
@@ -310,7 +310,7 @@ export class SafeFormModalComponent
           }
         ),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
+        confirmVariant: 'primary',
       });
       dialogRef.closed
         .pipe(takeUntil(this.destroy$))
@@ -576,7 +576,7 @@ export class SafeFormModalComponent
     //       title: 'Confirm',
     //       content: 'Record has been modified. You can cancel to continue editing, or discard you changes.',
     //       confirmText: 'Discard changes',
-    //       confirmColor: 'primary'
+    //       confirmVariant: 'primary'
     //     }
     //   });
     //   closeDialogRef.closed.subscribe((value: any) => {

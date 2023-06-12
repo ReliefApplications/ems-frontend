@@ -1,7 +1,12 @@
 import { Apollo } from 'apollo-angular';
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { User, Role } from '../../models/user.model';
 import {
   DELETE_USERS,
@@ -28,10 +33,10 @@ import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.compo
 })
 export class SafeUsersComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnChanges
 {
   // === INPUT DATA ===
-  @Input() users: MatTableDataSource<User> = new MatTableDataSource<User>([]);
+  @Input() users: Array<User> = new Array<User>();
   @Input() roles: Role[] = [];
   @Input() loading = true;
 
@@ -49,7 +54,7 @@ export class SafeUsersComponent
   public searchText = '';
   public roleFilter = '';
   public showFilters = false;
-
+  public filteredUsers = new Array<User>();
   selection = new SelectionModel<User>(true, []);
 
   /**
@@ -57,7 +62,7 @@ export class SafeUsersComponent
    *
    * @param apollo The apollo client
    * @param snackBar The snack bar service
-   * @param dialog The material dialog service
+   * @param dialog The Dialog service
    * @param downloadService The download service
    * @param confirmService The confirm service
    * @param translate The translation service
@@ -78,18 +83,35 @@ export class SafeUsersComponent
   }
 
   ngOnInit(): void {
-    this.users.filterPredicate = (data: any) =>
-      (this.searchText.trim().length === 0 ||
-        (this.searchText.trim().length > 0 &&
-          !!data.name &&
-          data.name.toLowerCase().includes(this.searchText.trim()))) &&
-      (this.roleFilter.trim().toLowerCase().length === 0 ||
-        (this.roleFilter.trim().toLowerCase().length > 0 &&
-          !!data.roles &&
-          data.roles.length > 0 &&
-          data.roles.filter((r: any) =>
-            r.title.toLowerCase().includes(this.roleFilter.trim().toLowerCase())
-          ).length > 0));
+    this.filterPredicate();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.users) {
+      this.filterPredicate();
+    }
+  }
+
+  /**
+   * Filter current user list by search and role
+   */
+  private filterPredicate() {
+    this.filteredUsers = this.users.filter(
+      (data: any) =>
+        (this.searchText.trim().length === 0 ||
+          (this.searchText.trim().length > 0 &&
+            !!data.name &&
+            data.name.toLowerCase().includes(this.searchText.trim()))) &&
+        (this.roleFilter.trim().toLowerCase().length === 0 ||
+          (this.roleFilter.trim().toLowerCase().length > 0 &&
+            !!data.roles &&
+            data.roles.length > 0 &&
+            data.roles.filter((r: any) =>
+              r.title
+                .toLowerCase()
+                .includes(this.roleFilter.trim().toLowerCase())
+            ).length > 0))
+    );
   }
 
   /**
@@ -102,7 +124,7 @@ export class SafeUsersComponent
     const dialogRef = this.dialog.open(SafeInviteUsersComponent, {
       data: {
         roles: this.roles,
-        users: this.users.data,
+        users: this.filteredUsers,
         downloadPath: 'download/invite',
         uploadPath: 'upload/invite',
       },
@@ -129,7 +151,8 @@ export class SafeUsersComponent
                     this.translate.instant('components.users.onInvite.singular')
                   );
                 }
-                this.users.data = this.users.data.concat(data?.addUsers || []);
+                this.users = this.users.concat(data?.addUsers || []);
+                this.filterPredicate();
               } else {
                 if (value.length > 1) {
                   this.snackBar.openSnackBar(
@@ -195,7 +218,7 @@ export class SafeUsersComponent
       title,
       content,
       confirmText: this.translate.instant('components.confirmModal.delete'),
-      confirmColor: 'warn',
+      confirmVariant: 'danger',
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
@@ -242,9 +265,8 @@ export class SafeUsersComponent
                       )
                     );
                   }
-                  this.users.data = this.users.data.filter(
-                    (u) => !ids.includes(u.id)
-                  );
+                  this.users = this.users.filter((u) => !ids.includes(u.id));
+                  this.filteredUsers = this.users;
                 } else {
                   if (ids.length > 1) {
                     this.snackBar.openSnackBar(
@@ -279,13 +301,13 @@ export class SafeUsersComponent
    */
   applyFilter(column: string, event: any): void {
     if (column === 'role') {
-      this.roleFilter = event.value ? event.value.trim() : '';
+      this.roleFilter = event?.trim() ?? '';
     } else {
       this.searchText = event
         ? event.target.value.trim().toLowerCase()
         : this.searchText;
     }
-    this.users.filter = '##';
+    this.filterPredicate();
   }
 
   /**
@@ -304,7 +326,7 @@ export class SafeUsersComponent
    */
   isAllSelected(): boolean {
     const numSelected = this.selection.selected.length;
-    const numRows = this.users.data.length;
+    const numRows = this.filteredUsers.length;
     return numSelected === numRows;
   }
 
@@ -315,7 +337,7 @@ export class SafeUsersComponent
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.isAllSelected()
       ? this.selection.clear()
-      : this.users.data.forEach((row) => this.selection.select(row));
+      : this.filteredUsers.forEach((row) => this.selection.select(row));
   }
 
   /**

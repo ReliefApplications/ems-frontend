@@ -19,10 +19,10 @@ import {
 } from 'apollo-angular/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
-import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 
 import { SafeGridSettingsComponent } from './grid-settings.component';
 import { GET_CHANNELS, GET_QUERY_TYPES } from './graphql/queries';
+import { AutocompleteModule } from '@oort-front/ui';
 
 describe('SafeGridSettingsComponent', () => {
   let component: SafeGridSettingsComponent;
@@ -50,7 +50,7 @@ describe('SafeGridSettingsComponent', () => {
             useClass: TranslateFakeLoader,
           },
         }),
-        MatAutocompleteModule,
+        AutocompleteModule,
         ApolloTestingModule,
       ],
     }).compileComponents();

@@ -30,12 +30,12 @@ export class CellDirective extends CdkCell implements AfterContentInit {
 
   classes = [
     'whitespace-nowrap',
-    'py-4',
+    'h-16',
     'pl-4',
     'pr-3',
     'text-sm',
-    'font-normal',
-    'text-gray-900',
+    'font-medium',
+    'text-gray-500',
     'bg-white',
   ];
 

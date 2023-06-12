@@ -6,20 +6,10 @@
     {{ content }}
   </ng-container>
   <ng-container ngProjectAs="actions">
-     <!--
-    <ui-button uiDialogClose>{{ cancelText }}</ui-button>
-    <button
-      mat-flat-button
-      [color]="confirmColor"
-      cdkFocusInitial
-      [uiDialogClose]="true"
-    >
-      {{ confirmText }}
-    </button> -->
     <ui-button uiDialogClose>{{ cancelText }}</ui-button>
     <ui-button
       category="secondary"
-      variant="primary"
+      [variant]="confirmVariant"
       [uiDialogClose]="true"
       cdkFocusInitial
     >
