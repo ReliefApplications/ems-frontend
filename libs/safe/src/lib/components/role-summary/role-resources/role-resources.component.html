@@ -34,6 +34,7 @@
             <ng-container *ngFor="let permission of element.permissions">
               <ui-button
                 [isIcon]="true"
+                [isOutlined]="permission.isOutlined"
                 [icon]="permission.icon"
                 [variant]="permission.variant"
                 (click)="editResourceAccess(element.resource, permission.name)"
