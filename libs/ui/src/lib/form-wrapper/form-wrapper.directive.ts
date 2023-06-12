@@ -99,13 +99,12 @@ export class FormWrapperDirective
     'sm:leading-6',
   ] as const;
 
-  private selectClassesNoOutline = ['block', 'w-full', 'pr-1'] as const;
+  private selectClassesNoOutline = ['block', 'w-full'] as const;
 
   private selectClassesOutline = [
     'block',
     'w-full',
     'border-0',
-    'pr-1',
     'bg-gray-50',
   ] as const;
 

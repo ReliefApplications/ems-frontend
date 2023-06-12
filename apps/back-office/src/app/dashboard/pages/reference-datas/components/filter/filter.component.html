@@ -4,8 +4,11 @@
     <!-- Search text filter -->
     <div uiFormFieldDirective class="mat-form-field-sm p-0">
       <ui-icon icon="search" uiPrefix></ui-icon>
-      <label>{{ 'common.placeholder.search' | translate }}</label>
-      <input [formControl]="search" type="search" />
+      <input
+        placeholder="{{ 'common.placeholder.search' | translate }}"
+        [formControl]="search"
+        type="search"
+      />
       <ui-spinner *ngIf="loading" diameter="24" uiSuffix></ui-spinner>
     </div>
   </div>
