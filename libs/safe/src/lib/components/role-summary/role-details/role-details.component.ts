@@ -95,4 +95,11 @@ export class RoleDetailsComponent implements OnInit {
   onUpdate(): void {
     this.edit.emit(this.form.value);
   }
+
+  /**
+   * Clear all permissions from the form
+   */
+  clearPermissions() {
+    this.form.get('permissions')?.reset([]);
+  }
 }
