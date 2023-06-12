@@ -5,6 +5,8 @@ import calcFunctions from './calcFunctions';
 const DATA_PREFIX = '{{data.';
 /** Prefix for calc keys */
 const CALC_PREFIX = '{{calc.';
+/** Prefix for avatar keys */
+const AVATAR_PREFIX = '{{avatars.';
 /** Suffix for all keys */
 const PLACEHOLDER_SUFFIX = '}}';
 
@@ -223,6 +225,26 @@ const replaceRecordFields = (
               value ? value.length : 0
             } items</span>`;
             break;
+          case 'tagbox':
+            // test for avatars, retrieve the field and the size of the avatars
+            const avatarRgx = new RegExp(
+              `${AVATAR_PREFIX}(?<name>${field.name}) (?<width>[0-9]+) (?<height>[0-9]+) (?<maxItems>[0-9]+)${PLACEHOLDER_SUFFIX}`
+            );
+            const match = avatarRgx.exec(formattedHtml);
+            let avatars = `<ui-avatar-group [limit]=${
+              match?.groups?.maxItems || 999
+            }>`;
+            for (
+              let i = 0;
+              i <
+              Math.min(value.length, Number(match?.groups?.maxItems) || 999);
+              i++
+            ) {
+              avatars += `<ui-avatar [image]=${value[i]}></ui-avatar>`;
+            }
+            avatars += `</ui-avatar-group>`;
+            formattedHtml = formattedHtml.replace(avatarRgx, avatars);
+            break;
           default:
             convertedValue = style
               ? `<span style='${style}'>${applyLayoutFormat(
@@ -239,6 +261,11 @@ const replaceRecordFields = (
         'gi'
       );
       formattedHtml = formattedHtml.replace(regex, convertedValue);
+      const regex2 = new RegExp(
+        `${AVATAR_PREFIX}${field.name}[ 0-9]+${PLACEHOLDER_SUFFIX}`,
+        'gi'
+      );
+      formattedHtml = formattedHtml.replace(regex2, convertedValue);
     }
   }
   // replace all /n with <br/> to keep the line breaks
