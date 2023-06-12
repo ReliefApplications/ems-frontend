@@ -113,7 +113,10 @@
           uiRadioGroupDirective="applyStyles"
           formControlName="wholeCardStyles"
         >
-          <ui-radio [value]="false">
+          <ui-radio
+            [value]="false"
+            [checked]="tileForm.value.card?.wholeCardStyles === false"
+          >
             <ng-container ngProjectAs="label">
               {{
                 'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option1'
@@ -121,7 +124,10 @@
               }}
             </ng-container>
           </ui-radio>
-          <ui-radio [value]="true">
+          <ui-radio
+            [value]="true"
+            [checked]="tileForm.value.card?.wholeCardStyles === true"
+          >
             <ng-container ngProjectAs="label">
               {{
                 'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option2'
