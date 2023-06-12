@@ -1,5 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -17,7 +17,6 @@ import { ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
 import { AddFormMutationResponse, ADD_FORM } from '../../graphql/mutations';
 import { GET_FORMS, GetFormsQueryResponse } from '../../graphql/queries';
-import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 import { ApolloQueryResult } from '@apollo/client';
 import {
   getCachedValues,
@@ -54,8 +53,6 @@ export class AddStepComponent
   private loading = true;
   public loadingMore = false;
 
-  @ViewChild('formSelect') formSelect?: MatSelect;
-
   // === REACTIVE FORM ===
   public stepForm: UntypedFormGroup = new UntypedFormGroup({});
   public stage = 1;
@@ -65,7 +62,7 @@ export class AddStepComponent
    *
    * @param route Angular activated route
    * @param formBuilder Angular form builder
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param authService Shared authentication service
    * @param apollo Apollo service

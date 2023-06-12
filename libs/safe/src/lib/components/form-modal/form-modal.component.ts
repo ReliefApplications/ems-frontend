@@ -37,7 +37,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../utils/cleanRecord';
 import { CommonModule } from '@angular/common';
 import { IconModule } from '@oort-front/ui';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { ButtonModule, SnackbarService, TabsModule } from '@oort-front/ui';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
@@ -73,7 +72,6 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
   imports: [
     CommonModule,
     IconModule,
-    MatButtonModule,
     TabsModule,
     SafeRecordSummaryModule,
     SafeFormActionsModule,
@@ -119,7 +117,7 @@ export class SafeFormModalComponent
    * created.
    *
    * @param data This is the data that is passed to the modal when it is opened.
-   * @param dialog This is the Angular Material Dialog service.
+   * @param dialog This is the Angular Dialog service.
    * @param dialogRef This is the reference to the dialog.
    * @param apollo This is the Apollo client that we'll use to make GraphQL requests.
    * @param snackBar This is the service that allows you to display a snackbar.

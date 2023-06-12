@@ -34,7 +34,7 @@ export class LayoutTableComponent
   /**
    * Constructor of the layout list component
    *
-   * @param dialog Material Dialog Service
+   * @param dialog Dialog Service
    * @param gridLayoutService The safe grid layout service
    */
   constructor(

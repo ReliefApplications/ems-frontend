@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { RoleChannelsComponent } from './role-channels.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { ButtonModule, SelectMenuModule } from '@oort-front/ui';
 
 /**
@@ -16,7 +15,6 @@ import { ButtonModule, SelectMenuModule } from '@oort-front/ui';
     TranslateModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
     ButtonModule,
     SelectMenuModule,
   ],

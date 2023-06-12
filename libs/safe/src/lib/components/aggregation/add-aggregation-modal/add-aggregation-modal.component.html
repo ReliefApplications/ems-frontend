@@ -13,6 +13,7 @@
         category="secondary"
         (click)="nextStep = true"
         [disabled]="!hasAggregations"
+        [isBlock]="true"
         >{{ 'components.aggregation.add.choice.load' | translate }}</ui-button
       >
       <!-- Add a new aggregation -->
@@ -20,6 +21,7 @@
         class="!w-auto"
         variant="primary"
         category="tertiary"
+        [isBlock]="true"
         (click)="onCreate()"
         >{{ 'components.aggregation.add.choice.create' | translate }}</ui-button
       >

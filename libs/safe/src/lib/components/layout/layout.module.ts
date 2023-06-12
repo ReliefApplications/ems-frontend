@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeLayoutComponent } from './layout.component';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { IconModule } from '@oort-front/ui';
 import { RouterModule } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -30,7 +29,6 @@ import {
     CommonModule,
     RouterModule,
     FormsModule,
-    MatButtonModule,
     MenuModule,
     SidenavContainerModule,
     DragDropModule,

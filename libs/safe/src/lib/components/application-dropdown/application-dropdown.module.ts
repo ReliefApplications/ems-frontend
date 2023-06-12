@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeApplicationDropdownComponent } from './application-dropdown.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TranslateModule } from '@ngx-translate/core';
 import { SelectMenuModule, FormWrapperModule } from '@oort-front/ui';
 /**
@@ -15,7 +14,6 @@ import { SelectMenuModule, FormWrapperModule } from '@oort-front/ui';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
     TranslateModule,
     SelectMenuModule,
     FormWrapperModule,

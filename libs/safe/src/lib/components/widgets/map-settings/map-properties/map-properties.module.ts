@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MapPropertiesComponent } from './map-properties.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import {
   SliderModule,
   FormWrapperModule,
@@ -23,7 +22,6 @@ import { SafeMapModule } from '../../map/map.module';
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    MatFormFieldModule,
     FormWrapperModule,
     SliderModule,
     TooltipModule,

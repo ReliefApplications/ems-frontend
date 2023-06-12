@@ -8,7 +8,6 @@
       class="safe-widget-type"
       *ngFor="let type of widgetTypes"
       (click)="onSelect(type)"
-      matRipple
       [ngStyle]="hovered === type.id ? { 'border-color': type.color } : null"
       (mouseover)="hovered = type.id"
       (mouseout)="hovered = ''"

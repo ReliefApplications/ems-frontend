@@ -58,7 +58,7 @@ export class LayoutsTabComponent
    * Layouts tab of resource page
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param gridLayoutService Grid layout service
    * @param confirmService Confirm service
    * @param translate Angular translate service

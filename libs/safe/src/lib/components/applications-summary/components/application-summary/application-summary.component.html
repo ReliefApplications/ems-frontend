@@ -1,6 +1,5 @@
 <!-- Main application block -->
 <div
-  matRipple
   class="w-48 h-48 bg-white flex flex-col justify-between items-center cursor-pointer rounded-lg box-border border"
 >
   <!-- Top line -->
@@ -49,7 +48,7 @@
     <ui-menu #menu>
       <!-- Preview -->
       <button uiMenuItem (click)="preview.emit()">
-        <ui-icon icon="preview"></ui-icon>
+        <ui-icon icon="preview" variant="grey"></ui-icon>
         {{ 'common.preview' | translate }}
       </button>
       <!-- Duplication -->
@@ -58,14 +57,14 @@
         (click)="clone.emit()"
         *ngIf="application.canUpdate"
       >
-        <ui-icon icon="file_copy"></ui-icon>
+        <ui-icon icon="file_copy" variant="grey"></ui-icon>
         {{ 'common.duplicate' | translate }}
       </button>
       <!-- Delete -->
       <ng-container *ngIf="application.canDelete">
-        <ui-divider class="m-0"></ui-divider>
+        <ui-divider class="py-1"></ui-divider>
         <button uiMenuItem (click)="delete.emit()">
-          <ui-icon icon="delete"></ui-icon>
+          <ui-icon icon="delete" variant="danger"></ui-icon>
           {{ 'common.delete' | translate }}
         </button>
       </ng-container>

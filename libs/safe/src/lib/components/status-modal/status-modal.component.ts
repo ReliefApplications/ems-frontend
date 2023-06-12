@@ -1,7 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { SpinnerModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 
@@ -19,7 +18,7 @@ interface StatusDialogData {
  */
 @Component({
   standalone: true,
-  imports: [CommonModule, DialogModule, MatButtonModule, SpinnerModule],
+  imports: [CommonModule, DialogModule, SpinnerModule],
   selector: 'safe-status-modal',
   templateUrl: './status-modal.component.html',
   styleUrls: ['./status-modal.component.scss'],

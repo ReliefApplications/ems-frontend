@@ -5,11 +5,13 @@ import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
   FormWrapperModule,
+  DividerModule,
   IconModule,
   MenuModule,
   RadioModule,
   TooltipModule,
   TabsModule,
+  ToggleModule,
 } from '@oort-front/ui';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
@@ -37,12 +39,14 @@ import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
     TooltipModule,
     MenuModule,
     IconModule,
+    DividerModule,
     SummaryCardItemModule,
     RadioModule,
     ButtonModule,
     FormWrapperModule,
     SafeSummaryCardModule,
     TabsModule,
+    ToggleModule,
   ],
   exports: [SafeSummaryCardSettingsComponent],
 })

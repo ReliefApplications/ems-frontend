@@ -1,6 +1,6 @@
 <ng-container *ngIf="!loading; else loadingTmpl">
   <!-- Actions -->
-  <ng-container *ngIf="notifications?.data?.length">
+  <ng-container *ngIf="notifications?.length">
     <div class="flex justify-end">
       <ng-container *ngTemplateOutlet="newNotification"></ng-container>
     </div>
@@ -15,7 +15,7 @@
       {{ 'components.customNotifications.edit.new' | translate }}
     </ui-button>
   </ng-template>
-  <ng-container *ngIf="notifications?.data?.length; else emptyTmpl">
+  <ng-container *ngIf="notifications?.length; else emptyTmpl">
     <!-- Table container -->
     <div class="mt-4 overflow-x-hidden shadow-2lg">
       <!-- Table scroll container -->
@@ -86,12 +86,12 @@
               </ui-button>
               <ui-menu #menu>
                 <button uiMenuItem (click)="editNotification(element)">
-                  <ui-icon icon="edit"></ui-icon>
+                  <ui-icon icon="edit" variant="grey"></ui-icon>
                   {{ 'common.edit' | translate }}
                 </button>
-                <ui-divider class="m-0"></ui-divider>
+                <ui-divider class="py-1"></ui-divider>
                 <button uiMenuItem (click)="deleteNotification(element)">
-                  <ui-icon icon="delete"></ui-icon>
+                  <ui-icon icon="delete" varian="danger"></ui-icon>
                   {{ 'common.delete' | translate }}
                 </button>
               </ui-menu>

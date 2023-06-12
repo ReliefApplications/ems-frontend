@@ -5,9 +5,7 @@ import { createFormGroup, Mapping } from '../mapping-forms';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { IconModule } from '@oort-front/ui';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { MenuModule, ButtonModule, FormWrapperModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 
@@ -28,9 +26,7 @@ interface MappingDialogData {
     TranslateModule,
     MenuModule,
     IconModule,
-    MatFormFieldModule,
     FormWrapperModule,
-    MatButtonModule,
     FormsModule,
     ReactiveFormsModule,
     DialogModule,

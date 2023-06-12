@@ -21,7 +21,7 @@ import { JsonMetadata, SurveyModel } from 'survey-angular';
  * @param Survey Survey library
  * @param domService Shared DOM service
  * @param apollo Apollo client
- * @param dialog Material dom service
+ * @param dialog Dialog
  * @param formBuilder Angular form service
  */
 export const init = (
@@ -572,7 +572,6 @@ export const init = (
                 text: item?.data[question.displayField || 'id'],
               });
             }
-            console.log(question);
             question.contentQuestion.choices = res;
             if (!question.placeholder) {
               question.contentQuestion.optionsCaption =

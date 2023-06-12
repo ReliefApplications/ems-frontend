@@ -1,7 +1,7 @@
 <ng-container *ngIf="!loading; else loadingTmpl">
   <!-- Actions -->
   <div class="flex justify-end">
-    <ng-container *ngIf="distributionLists?.data?.length">
+    <ng-container *ngIf="distributionLists?.length">
       <ng-container *ngTemplateOutlet="newDistribution"></ng-container>
     </ng-container>
     <ng-template #newDistribution>
@@ -16,7 +16,7 @@
     </ng-template>
   </div>
   <!-- Table container -->
-  <ng-container *ngIf="distributionLists?.data?.length; else emptyTmpl">
+  <ng-container *ngIf="distributionLists?.length; else emptyTmpl">
     <div class="mt-4 overflow-x-hidden shadow-2lg">
       <!-- Table scroll container -->
       <div class="overflow-x-auto">
@@ -44,12 +44,12 @@
               </ui-button>
               <ui-menu #menu>
                 <button uiMenuItem (click)="editDistributionList(element)">
-                  <ui-icon icon="edit"></ui-icon>
+                  <ui-icon icon="edit" variant="grey"></ui-icon>
                   {{ 'common.edit' | translate }}
                 </button>
-                <ui-divider class="m-0"></ui-divider>
+                <ui-divider class="py-1"></ui-divider>
                 <button uiMenuItem (click)="deleteDistributionList(element)">
-                  <ui-icon icon="delete"></ui-icon>
+                  <ui-icon icon="delete" variant="danger"></ui-icon>
                   {{ 'common.delete' | translate }}
                 </button>
               </ui-menu>

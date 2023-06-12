@@ -1,5 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
 import {
@@ -19,9 +19,7 @@ import {
   EditApplicationMutationResponse,
   EDIT_APPLICATION,
 } from './graphql/mutations';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { PreviewService } from '../../../services/preview.service';
-import { MatEndDate, MatStartDate } from '@angular/material/datepicker';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { ApolloQueryResult } from '@apollo/client';
@@ -49,7 +47,7 @@ export class ApplicationsComponent
   public loading = true;
   public updating = false;
   private applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
-  public applications = new MatTableDataSource<Application>([]);
+  public applications = new Array<Application>();
   public cachedApplications: Application[] = [];
   public displayedColumns = [
     'name',
@@ -72,15 +70,11 @@ export class ApplicationsComponent
     endCursor: '',
   };
 
-  @ViewChild('startDate', { read: MatStartDate })
-  startDate!: MatStartDate<string>;
-  @ViewChild('endDate', { read: MatEndDate }) endDate!: MatEndDate<string>;
-
   /**
    * Applications page component
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param router Angular router
    * @param snackBar Shared snackbar service
    * @param previewService Shared preview service
@@ -160,7 +154,7 @@ export class ApplicationsComponent
       this.pageInfo.pageSize = first;
       this.fetchApplications();
     } else {
-      this.applications.data = this.cachedApplications.slice(
+      this.applications = this.cachedApplications.slice(
         e.pageSize * this.pageInfo.pageIndex,
         e.pageSize * (this.pageInfo.pageIndex + 1)
       );
@@ -280,7 +274,7 @@ export class ApplicationsComponent
                     value: this.translate.instant('common.application.one'),
                   })
                 );
-                this.applications.data = this.applications.data.filter(
+                this.applications = this.applications.filter(
                   (x) => x.id !== data?.deleteApplication.id
                 );
                 this.newApplications = this.newApplications.filter(
@@ -369,12 +363,12 @@ export class ApplicationsComponent
                   value: element.name,
                 })
               );
-              const index = this.applications.data.findIndex(
+              const index = this.applications.findIndex(
                 (x) => x.id === element.id
               );
-              this.applications.data[index] = data.editApplication;
+              this.applications[index] = data.editApplication;
               // eslint-disable-next-line no-self-assign
-              this.applications.data = this.applications.data;
+              this.applications = this.applications;
             }
           }
         },
@@ -423,9 +417,9 @@ export class ApplicationsComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        this.applications.data.push(value);
+        this.applications.push(value);
         // eslint-disable-next-line no-self-assign
-        this.applications.data = this.applications.data;
+        this.applications = this.applications;
       }
     });
   }
@@ -454,7 +448,7 @@ export class ApplicationsComponent
       this.cachedApplications,
       mappedValues
     );
-    this.applications.data = mappedValues;
+    this.applications = mappedValues;
     this.pageInfo.length = data.applications.totalCount;
     this.pageInfo.endCursor = data.applications.pageInfo.endCursor;
     this.loading = loading;

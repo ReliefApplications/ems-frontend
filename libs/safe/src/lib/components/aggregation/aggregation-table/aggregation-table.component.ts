@@ -34,7 +34,7 @@ export class AggregationTableComponent
   /**
    * Aggregation table component.
    *
-   * @param dialog Material Dialog Service
+   * @param dialog Dialog Service
    * @param aggregationService Shared aggregation service
    */
   constructor(

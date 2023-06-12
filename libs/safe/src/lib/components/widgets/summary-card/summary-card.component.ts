@@ -4,7 +4,9 @@ import {
   ElementRef,
   HostListener,
   Input,
+  OnDestroy,
   OnInit,
+  Renderer2,
   ViewChild,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -18,6 +20,7 @@ import {
   GetResourceMetadataQueryResponse,
   GET_RESOURCE_METADATA,
 } from './graphql/queries';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { SummaryCardFormT } from '../summary-card-settings/summary-card-settings.component';
 import { Record } from '../../../models/record.model';
 
@@ -49,7 +52,10 @@ const DEFAULT_PAGE_SIZE = 25;
   templateUrl: './summary-card.component.html',
   styleUrls: ['./summary-card.component.scss'],
 })
-export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
+export class SafeSummaryCardComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @Input() widget: any;
   @Input() header = true;
   @Input() export = true;
@@ -112,12 +118,13 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    * Constructor for summary card component
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param queryBuilder Query builder service
    * @param gridLayoutService Shared grid layout service
    * @param aggregationService Aggregation service
+   * @param renderer Renderer2
    */
   constructor(
     private apollo: Apollo,
@@ -126,8 +133,11 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
     private translate: TranslateService,
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: SafeGridLayoutService,
-    private aggregationService: SafeAggregationService
-  ) {}
+    private aggregationService: SafeAggregationService,
+    private renderer: Renderer2
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.setupDynamicCards();
@@ -464,5 +474,9 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
         { error: true }
       );
     }
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
   }
 }

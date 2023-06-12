@@ -13,10 +13,6 @@ import {
   SelectMenuModule,
 } from '@oort-front/ui';
 import { FilterComponent } from '../role-resources-filter/role-resources-filter.component';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SpinnerModule, FormWrapperModule, IconModule } from '@oort-front/ui';
 import { ResourceFieldsComponent } from './resource-fields/resource-fields.component';
@@ -40,12 +36,8 @@ import { SafeFilterModule } from '../../filter/filter.module';
     TranslateModule,
     SafeDateModule,
     SafeSkeletonTableModule,
-    MatFormFieldModule,
-    MatNativeDateModule,
-    MatDatepickerModule,
     FormsModule,
     ReactiveFormsModule,
-    MatInputModule,
     SpinnerModule,
     FormWrapperModule,
     IconModule,

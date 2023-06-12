@@ -82,7 +82,7 @@
       cdk-table
       uiTableWrapper
       (sortChange)="onSort($event)"
-      [dataSource]="dataSource"
+      [dataSource]="filteredDataSources"
     >
       <ng-container cdkColumnDef="name">
         <th uiTableHeaderSort="name" uiCellHeader *cdkHeaderCellDef>
@@ -154,7 +154,7 @@
               (click)="onDelete(element, $event)"
               *ngIf="element.canDelete"
             >
-              <ui-icon icon="delete"></ui-icon>
+              <ui-icon icon="delete" variant="danger"></ui-icon>
               {{ 'common.delete' | translate }}
             </button>
           </ui-menu>

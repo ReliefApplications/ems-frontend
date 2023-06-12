@@ -10,6 +10,7 @@
           [placeholder]="'components.queryBuilder.dataset.select' | translate"
           formControlName="name"
           [uiAutocomplete]="auto"
+          [scrollStrategy]="'block'"
         />
         <ui-autocomplete #auto>
           <ui-option *ngFor="let option of filteredQueries" [value]="option">

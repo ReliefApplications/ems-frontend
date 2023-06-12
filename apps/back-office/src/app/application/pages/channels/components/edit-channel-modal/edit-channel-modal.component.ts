@@ -8,9 +8,7 @@ import { Channel } from '@oort-front/safe';
 import { CommonModule } from '@angular/common';
 import { ChannelsRoutingModule } from '../../channels-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { IconModule } from '@oort-front/ui';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { DialogModule } from '@oort-front/ui';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import {
@@ -31,13 +29,11 @@ import {
     ChannelsRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
     IconModule,
     FormWrapperModule,
     SpinnerModule,
     MenuModule,
     DividerModule,
-    MatButtonModule,
     DialogModule,
     ButtonModule,
   ],
@@ -53,7 +49,7 @@ export class EditChannelModalComponent implements OnInit {
    * Edit channel component
    *
    * @param formBuilder Angular form builder
-   * @param dialogRef Material dialog ref
+   * @param dialogRef Dialog ref
    * @param data Injected dialog data
    * @param data.channel channel to edit
    */

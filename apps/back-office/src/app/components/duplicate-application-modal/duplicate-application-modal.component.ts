@@ -13,8 +13,6 @@ import { Application } from '@oort-front/safe';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogModule } from '@oort-front/ui';
@@ -32,10 +30,8 @@ import {
   imports: [
     CommonModule,
     FormsModule,
-    MatFormFieldModule,
     FormWrapperModule,
     ReactiveFormsModule,
-    MatButtonModule,
     TranslateModule,
     DialogModule,
     ButtonModule,
@@ -54,7 +50,7 @@ export class DuplicateApplicationModalComponent implements OnInit {
    * @param snackBar Shared snackbar service
    * @param formBuilder Angular form builder
    * @param apollo Apollo service
-   * @param dialogRef Material dialog ref
+   * @param dialogRef Dialog ref
    * @param translateService Angular translate service
    * @param data Injected dialog data
    */

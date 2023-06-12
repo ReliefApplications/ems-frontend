@@ -19,9 +19,6 @@ import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { Form } from '../../../models/form.model';
-import { Overlay } from '@angular/cdk/overlay';
-import { MAT_LEGACY_AUTOCOMPLETE_SCROLL_STRATEGY as MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/legacy-autocomplete';
-import { scrollFactory } from '../../../utils/scroll-factory';
 import { Resource } from '../../../models/resource.model';
 import { createGridWidgetFormGroup } from './grid-settings.forms';
 import { DistributionList } from '../../../models/distribution-list.model';
@@ -36,13 +33,6 @@ import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
   selector: 'safe-grid-settings',
   templateUrl: './grid-settings.component.html',
   styleUrls: ['./grid-settings.component.scss'],
-  providers: [
-    {
-      provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-  ],
 })
 export class SafeGridSettingsComponent
   extends SafeUnsubscribeComponent

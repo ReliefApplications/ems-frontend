@@ -34,7 +34,7 @@ export class SafeFloatingOptionsComponent
    * Button on top left of each widget, if user can see it, with menu of possible
    * actions for that widget.
    *
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param dashboardService Dashboard service
    * @param confirmService Confirm service
    * @param translate Translation service

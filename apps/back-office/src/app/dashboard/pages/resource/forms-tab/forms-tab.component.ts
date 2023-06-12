@@ -47,7 +47,7 @@ export class FormsTabComponent
    * @param snackBar Shared snackbar service
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    */
   constructor(
     private apollo: Apollo,

@@ -196,7 +196,7 @@ export class FormWrapperDirective
         this.renderer.addClass(selectButton, 'bg-gray-50');
       }
       // this.renderer.addClass(this.elementRef.nativeElement, 'pb-4');
-      //Add reworked element to beyond label
+      // Add reworked element to beyond label
       this.renderer.appendChild(
         this.beyondLabelContainer,
         currentElement.nativeElement
@@ -274,6 +274,7 @@ export class FormWrapperDirective
     for (const cl of this.beyondLabelGeneral) {
       this.renderer.addClass(this.beyondLabelContainer, cl);
     }
+
     if (!this.outline) {
       for (const cl of this.beyondLabelNoOutline) {
         this.renderer.addClass(this.beyondLabelContainer, cl);
@@ -282,6 +283,12 @@ export class FormWrapperDirective
       for (const cl of this.beyondLabelOutline) {
         this.renderer.addClass(this.beyondLabelContainer, cl);
       }
+    }
+
+    // Remove right padding for select
+    if (this.currentSelectElement || this.currentGraphQLSelectComponent) {
+      this.renderer.removeClass(this.beyondLabelContainer, 'px-2');
+      this.renderer.addClass(this.beyondLabelContainer, 'pl-2');
     }
 
     if (this.currentInputElement && !this.dateWrapperElement) {

@@ -1,5 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -20,21 +20,16 @@ import {
   GetFormsQueryResponse,
 } from '../../graphql/queries';
 import { map, startWith, takeUntil } from 'rxjs/operators';
-import { MatLegacyAutocomplete as MatAutocomplete } from '@angular/material/legacy-autocomplete';
 import get from 'lodash/get';
 import { ApolloQueryResult } from '@apollo/client';
 import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../../../utils/update-queries';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { IconModule } from '@oort-front/ui';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { SubscriptionsRoutingModule } from '../../subscriptions-routing.module';
-import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SpinnerModule,
@@ -63,13 +58,9 @@ const ITEMS_PER_PAGE = 10;
     SubscriptionsRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    MatButtonModule,
-    MatFormFieldModule,
     IconModule,
-    MatInputModule,
     SpinnerModule,
     MenuModule,
-    MatAutocompleteModule,
     DividerModule,
     TranslateModule,
     GraphQLSelectModule,
@@ -106,8 +97,6 @@ export class SubscriptionModalComponent
   };
   private applicationsLoading = true;
 
-  @ViewChild('applicationSelect') applicationSelect?: MatAutocomplete;
-
   /** @returns subscription routing key */
   get routingKey(): string {
     return this.subscriptionForm.value.routingKey;
@@ -129,11 +118,12 @@ export class SubscriptionModalComponent
    * Subscription modal component
    *
    * @param formBuilder Angular form builder
-   * @param dialogRef Material dialog ref
+   * @param dialogRef Dialog ref
    * @param apollo Apollo service
    * @param data Injected dialog data
    * @param data.channels list of channels
    * @param data.subscription subscription
+   * @param document Document
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -143,7 +133,8 @@ export class SubscriptionModalComponent
     public data: {
       channels: Channel[];
       subscription?: Subscription;
-    }
+    },
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
   }
@@ -221,13 +212,9 @@ export class SubscriptionModalComponent
    * Adds scroll listener to auto complete.
    */
   onOpenApplicationSelect(): void {
-    if (this.applicationSelect) {
-      setTimeout(() => {
-        const panel = this.applicationSelect?.panel.nativeElement;
-        if (panel) {
-          panel.onscroll = (event: any) => this.loadOnScrollApplication(event);
-        }
-      }, 0);
+    const panel = this.document.getElementById('autocompleteList');
+    if (panel) {
+      panel.onscroll = (event: any) => this.loadOnScrollApplication(event);
     }
   }
 
