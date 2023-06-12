@@ -2,16 +2,22 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
+  EventEmitter,
   HostListener,
   Input,
   OnDestroy,
   OnInit,
-  Renderer2,
+  Output,
   ViewChild,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
-import { debounceTime, distinctUntilChanged, firstValueFrom } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  firstValueFrom,
+  takeUntil,
+} from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
@@ -37,6 +43,8 @@ import { FormControl } from '@angular/forms';
 import { clone, isNaN } from 'lodash';
 import { SnackbarService } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
+import { SafeDashboardService } from '../../../services/dashboard/dashboard.service';
+import { SafeTileDataComponent } from '../../widget-grid/floating-options/menu/tile-data/tile-data.component';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -60,6 +68,9 @@ export class SafeSummaryCardComponent
   @Input() header = true;
   @Input() export = true;
   @Input() settings!: SummaryCardFormT['value'];
+  @Input() canUpdate = false;
+
+  @Output() edit: EventEmitter<any> = new EventEmitter();
 
   public gridSettings: any = null;
 
@@ -75,6 +86,7 @@ export class SafeSummaryCardComponent
     totalCount: 0,
   };
   public loading = true;
+  public noSettings = false;
 
   public cards: CardT[] = [];
   private cachedCards: CardT[] = [];
@@ -124,7 +136,7 @@ export class SafeSummaryCardComponent
    * @param queryBuilder Query builder service
    * @param gridLayoutService Shared grid layout service
    * @param aggregationService Aggregation service
-   * @param renderer Renderer2
+   * @param dashboardService Dashboard service
    */
   constructor(
     private apollo: Apollo,
@@ -134,7 +146,7 @@ export class SafeSummaryCardComponent
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: SafeGridLayoutService,
     private aggregationService: SafeAggregationService,
-    private renderer: Renderer2
+    private dashboardService: SafeDashboardService
   ) {
     super();
   }
@@ -190,7 +202,10 @@ export class SafeSummaryCardComponent
   private async setupDynamicCards() {
     // only one dynamic card is allowed per widget
     const card = this.settings.card;
-    if (!card) return;
+    if (!card) {
+      this.noSettings = true;
+      return;
+    }
 
     if (card.aggregation) this.getCardsFromAggregation(card);
     else if (card.layout) this.createDynamicQueryFromLayout(card);
@@ -283,6 +298,7 @@ export class SafeSummaryCardComponent
     this.pageInfo.totalCount = get(res.data[layoutQueryName], 'totalCount', 0);
     this.pageInfo.hasNextPage = this.pageInfo.totalCount > this.cards.length;
 
+    this.noSettings = false;
     this.loading = res.loading;
   }
 
@@ -348,7 +364,10 @@ export class SafeSummaryCardComponent
    */
   private async setupGridSettings() {
     const card = this.settings.card;
-    if (!card || !card.resource || !card.layout) return;
+    if (!card || !card.resource || !card.layout) {
+      this.noSettings = true;
+      return;
+    }
 
     this.gridLayoutService
       .getLayouts(card.resource, { ids: [card.layout], first: 1 })
@@ -474,6 +493,24 @@ export class SafeSummaryCardComponent
         { error: true }
       );
     }
+  }
+
+  /**
+   * Emit an event to open settings window
+   */
+  public async openSettings(): Promise<void> {
+    const dialogRef = this.dialog.open(SafeTileDataComponent, {
+      disableClose: true,
+      data: {
+        tile: this.widget,
+        template: this.dashboardService.findSettingsTemplate(this.widget),
+      },
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+      if (res) {
+        this.edit.emit({ type: 'data', id: this.widget.id, options: res });
+      }
+    });
   }
 
   override ngOnDestroy(): void {

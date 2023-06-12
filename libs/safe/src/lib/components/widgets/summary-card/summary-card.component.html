@@ -65,7 +65,7 @@
         >
           <ng-container
             *safeSkeleton="
-              loading;
+              loading && !noSettings;
               repeat: colsNumber * 5;
               height: '80px';
               width: 80;
@@ -89,6 +89,20 @@
           </ng-container>
         </div>
       </kendo-pdf-export>
+      <!-- Summary card with no settings (need to select a resource) -->
+      <ng-container *ngIf="noSettings">
+        <div class="flex flex-col justify-center items-center">
+          {{ 'components.widget.grid.errors.missingDataset' | translate }}
+          <ui-button
+            *ngIf="canUpdate"
+            variant="primary"
+            category="secondary"
+            class="mt-2"
+            (click)="openSettings()"
+            >{{ 'components.widget.grid.openSettings' | translate }}
+          </ui-button>
+        </div>
+      </ng-container>
     </div>
     <!-- Pagination -->
     <kendo-datapager
