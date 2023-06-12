@@ -9,7 +9,6 @@ import {
   Output,
   QueryList,
   ViewChild,
-  ViewContainerRef,
 } from '@angular/core';
 import { Variant } from '../types/variant';
 import {
@@ -21,6 +20,7 @@ import {
 } from '@angular/animations';
 import { TabComponent } from './components/tab/tab.component';
 import { Subject, takeUntil } from 'rxjs';
+import { TabBodyHostDirective } from './directives/tab-body-host.directive';
 
 /**
  * UI Tabs component
@@ -65,8 +65,10 @@ export class TabsComponent implements AfterContentInit, OnDestroy {
    */
   @Output() selectedIndexChange = new EventEmitter<number>();
 
-  @ViewChild('content', { read: ViewContainerRef })
-  content!: ViewContainerRef;
+  @Output() openedTab = new EventEmitter<TabComponent>();
+
+  @ViewChild(TabBodyHostDirective)
+  tabBodyHost!: TabBodyHostDirective;
 
   triggerAnimation = false;
   destroy$ = new Subject<void>();
@@ -117,17 +119,20 @@ export class TabsComponent implements AfterContentInit, OnDestroy {
    * @param tab tab to display
    */
   showContent(tab: TabComponent) {
-    if (tab.index !== this.selectedIndex || !this.content.length) {
+    if (tab.index !== this.selectedIndex || !this.tabBodyHost.hasAttached()) {
       this.selectedIndex = tab.index;
       this.setSelectedTab();
 
       // Clean up previous displayed content
-      this.deleteContent();
+      // this.deleteContent();
+      this.triggerAnimation = false;
 
       // Creates the content element thanks to the hidden html content of the tab component
       // Timeout so the animation has the time to render (elsewhere it can't cause delete then create is instantaneous)
       setTimeout(() => {
-        this.createContent(tab);
+        this.triggerAnimation = true;
+        this.openedTab.emit(tab);
+        // this.createContent(tab);
       }, 100);
       // Emits the current selected index
       this.selectedIndexChange.emit(this.selectedIndex);
@@ -152,9 +157,9 @@ export class TabsComponent implements AfterContentInit, OnDestroy {
    */
   deleteContent() {
     this.triggerAnimation = false;
-    if (this.content) {
-      this.content.clear();
-    }
+    // if (this.content) {
+    //   this.content.clear();
+    // }
   }
 
   /**
@@ -162,10 +167,11 @@ export class TabsComponent implements AfterContentInit, OnDestroy {
    *
    * @param target dom element clicked
    */
-  createContent(target: TabComponent) {
-    this.triggerAnimation = true;
-    this.content.createEmbeddedView(target.tabContent);
-  }
+  // createContent(target: TabComponent) {
+  //   this.triggerAnimation = true;
+  //   // this.content.createEmbeddedView(target.content);
+  //   this.portalHost.attach(target.content);
+  // }
 
   ngOnDestroy(): void {
     this.destroy$.next();

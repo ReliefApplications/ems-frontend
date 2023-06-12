@@ -10,15 +10,17 @@
         ></ui-icon>
         <span>{{ 'components.widget.settings.editor.title' | translate }}</span>
       </ng-container>
-      <form [formGroup]="tileForm">
-        <div class="flex flex-col">
-          <div uiFormFieldDirective>
-            <label>{{ 'common.title' | translate }}</label>
-            <input formControlName="title" type="string" />
+      <ng-template uiTabContent>
+        <form [formGroup]="tileForm">
+          <div class="flex flex-col">
+            <div uiFormFieldDirective>
+              <label>{{ 'common.title' | translate }}</label>
+              <input formControlName="title" type="string" />
+            </div>
           </div>
-        </div>
-        <editor [init]="editor" formControlName="text"></editor>
-      </form>
+          <editor [init]="editor" formControlName="text"></editor>
+        </form>
+      </ng-template>
     </ui-tab>
     <!-- Preview -->
     <ui-tab *ngIf="tileForm.value">
@@ -29,12 +31,14 @@
             | translate
         }}</span>
       </ng-container>
-      <safe-editor
-        #widgetContent
-        class="flex-1 h-full w-full"
-        [settings]="tile.settings"
-      >
-      </safe-editor>
+      <ng-template uiTabContent>
+        <safe-editor
+          #widgetContent
+          class="flex-1 h-full w-full"
+          [settings]="tile.settings"
+        >
+        </safe-editor>
+      </ng-template>
     </ui-tab>
     <!-- Resource and record selection  -->
     <ui-tab>
@@ -50,14 +54,16 @@
           'components.widget.settings.editor.recordSelection' | translate
         }}</span>
       </ng-container>
-      <safe-record-selection-tab
-        *ngIf="tileForm"
-        [form]="tileForm"
-        [selectedResource]="selectedResource"
-        [selectedLayout]="selectedLayout"
-        (resourceChange)="selectedResource = $event; updateFields()"
-        (layoutChange)="selectedLayout = $event; updateFields()"
-      ></safe-record-selection-tab>
+      <ng-template uiTabContent>
+        <safe-record-selection-tab
+          *ngIf="tileForm"
+          [form]="tileForm"
+          [selectedResource]="selectedResource"
+          [selectedLayout]="selectedLayout"
+          (resourceChange)="selectedResource = $event; updateFields()"
+          (layoutChange)="selectedLayout = $event; updateFields()"
+        ></safe-record-selection-tab>
+      </ng-template>
     </ui-tab>
     <!-- Widget display options -->
     <ui-tab>
@@ -69,7 +75,9 @@
         ></ui-icon>
         <span>{{ 'models.widget.display.title' | translate }}</span>
       </ng-container>
-      <safe-display-settings [formGroup]="tileForm"></safe-display-settings>
+      <ng-template uiTabContent>
+        <safe-display-settings [formGroup]="tileForm"></safe-display-settings>
+      </ng-template>
     </ui-tab>
   </ui-tabs>
 </ng-container>

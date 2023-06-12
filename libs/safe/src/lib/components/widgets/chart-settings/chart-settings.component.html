@@ -13,7 +13,9 @@
       ></ui-icon>
       <span>{{ 'common.general' | translate }}</span>
     </ng-container>
-    <safe-tab-main [formGroup]="formGroup" [type]="type"></safe-tab-main>
+    <ng-template uiTabContent>
+      <safe-tab-main [formGroup]="formGroup" [type]="type"></safe-tab-main>
+    </ng-template>
   </ui-tab>
   <!-- Display options -->
   <ui-tab>
@@ -25,7 +27,9 @@
       ></ui-icon>
       <span>{{ 'common.display' | translate }}</span>
     </ng-container>
-    <safe-tab-display [formGroup]="formGroup" [type]="type"></safe-tab-display>
+    <ng-template uiTabContent>
+      <safe-tab-display [formGroup]="formGroup" [type]="type"></safe-tab-display>
+    </ng-template>
   </ui-tab>
   <!-- Widget display options -->
   <ui-tab>
@@ -37,6 +41,8 @@
       ></ui-icon>
       <span>{{ 'models.widget.display.title' | translate }}</span>
     </ng-container>
-    <safe-display-settings [formGroup]="formGroup"></safe-display-settings>
+    <ng-template uiTabContent>
+      <safe-display-settings [formGroup]="formGroup"></safe-display-settings>
+    </ng-template>
   </ui-tab>
 </ui-tabs>
