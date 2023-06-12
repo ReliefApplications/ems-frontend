@@ -320,4 +320,42 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
       }
     }
   }
+
+  togglePageVisibility(){
+    this.apollo
+      .mutate<EditPageMutationResponse>({
+        mutation: EDIT_PAGE,
+        variables: {
+          id: this.page?.id,
+          visible: !this.page?.visible,
+        },
+      })
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.page.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.page.one'),
+                value: '',
+              })
+            );
+            this.page = {
+              ...this.page,
+              visible: data?.editPage.visible,
+            };
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
+  }
 }

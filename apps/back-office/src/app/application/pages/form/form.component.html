@@ -4,16 +4,36 @@
   <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
     <div class="flex items-center overflow-hidden">
       <!-- Page name and name edition -->
-      <safe-editable-text
-        [text]="page ? page.name || '' : step ? step.name || '' : ''"
-        [canEdit]="canEditName"
-        (onChange)="saveName($event)"
-        (formActiveEvent)="formActive = $event"
-      >
-        <h1 class="!m-0 overflow-hidden text-ellipsis">
-          {{ page ? page.name || '' : step ? step.name || '' : '' }}
-        </h1>
-      </safe-editable-text>
+      <div class="inline-flex gap-4">
+        <safe-editable-text
+          [text]="page ? page.name || '' : step ? step.name || '' : ''"
+          [canEdit]="canEditName"
+          (onChange)="saveName($event)"
+          (formActiveEvent)="formActive = $event"
+        >
+          <h1 class="!m-0 overflow-hidden text-ellipsis">
+            {{ page ? page.name || '' : step ? step.name || '' : '' }}
+          </h1>
+        </safe-editable-text>
+        <ui-button
+          [isIcon]="true"
+          variant="grey"
+          category="primary"
+          icon="visibility_off"
+          (click)="togglePageVisibility()"
+          *ngIf="!this.page?.visible"
+        >
+        </ui-button>
+        <ui-button
+          [isIcon]="true"
+          variant="grey"
+          category="primary"
+          icon="visibility"
+          (click)="togglePageVisibility()"
+          *ngIf="this.page?.visible"
+        >
+        </ui-button>
+      </div>
       <!-- Page access -->
       <safe-access
         [access]="page ? page.permissions : step ? step.permissions : null"

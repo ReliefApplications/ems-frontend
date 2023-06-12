@@ -75,6 +75,14 @@
                       icon="drag_indicator"
                     >
                     </ui-button>
+                    <ui-button
+                      class="hide-icons hover:text-primary-600"
+                      [isIcon]="true"
+                      size="small"
+                      *ngIf="!item.visible"
+                      icon="visibility_off"
+                    >
+                    </ui-button>
                   </div>
                 </li>
                 <!-- Preview when dragging element -->

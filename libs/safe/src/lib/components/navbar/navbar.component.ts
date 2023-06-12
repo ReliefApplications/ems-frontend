@@ -5,6 +5,7 @@ import {
   Output,
   EventEmitter,
   HostListener,
+  AfterViewInit
 } from '@angular/core';
 import { Router } from '@angular/router';
 import { moveItemInArray } from '@angular/cdk/drag-drop';
@@ -16,7 +17,7 @@ import { moveItemInArray } from '@angular/cdk/drag-drop';
   templateUrl: './navbar.component.html',
   styleUrls: ['./navbar.component.scss'],
 })
-export class SafeNavbarComponent {
+export class SafeNavbarComponent implements AfterViewInit{
   @Input() appLayout = false;
   @Input() canAddPage = false;
   @Input() vertical = true;
@@ -40,6 +41,11 @@ export class SafeNavbarComponent {
   constructor(@Inject('environment') environment: any, private router: Router) {
     this.environment = environment;
     this.largeDevice = window.innerWidth > 1024;
+  }
+
+  ngAfterViewInit(): void {
+    console.log(this.navGroups);
+    console.log(this.nav);
   }
 
   /**

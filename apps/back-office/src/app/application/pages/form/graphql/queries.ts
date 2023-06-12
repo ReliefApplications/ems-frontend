@@ -60,6 +60,7 @@ export const GET_PAGE_BY_ID = gql`
       modifiedAt
       type
       content
+      visible
       permissions {
         canSee {
           id

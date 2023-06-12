@@ -32,6 +32,7 @@ export const GET_APPLICATION_BY_ID = gql`
         canSee
         canUpdate
         canDelete
+        visible
       }
       roles {
         id
