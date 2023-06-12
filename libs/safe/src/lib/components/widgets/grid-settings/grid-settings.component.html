@@ -83,33 +83,31 @@
     <ng-template matTabContent>
       <safe-display-settings [formGroup]="formGroup">
         <!-- Specific settings for grid -->
-        <!-- <mat-slide-toggle
-          *ngIf="selectedLayout"
+        <mat-slide-toggle
           [formControl]="$any(formGroup.get('widgetDisplay.sortable'))"
         >
           {{ 'models.widget.display.sortable' | translate }}
-        </mat-slide-toggle> -->
+        </mat-slide-toggle>
       </safe-display-settings>
     </ng-template>
   </mat-tab>
   <!-- Widget filters options -->
-  <!-- <mat-tab
-    *ngIf="selectedLayout && formGroup?.get('widgetDisplay.sortable')?.value"
-  >
+  <mat-tab *ngIf="formGroup?.get('widgetDisplay.sortable')?.value">
     <ng-template mat-tab-label>
       <safe-icon
         icon="filter_alt"
         [size]="24"
-        matTooltip="{{ 'models.widget.filtering.title' | translate }}"
+        matTooltip="{{ 'models.widget.sorting.title' | translate }}"
         matTooltipPosition="right"
       ></safe-icon>
-      <span>{{ 'models.widget.filtering.title' | translate }}</span>
+      <span>{{ 'models.widget.sorting.title' | translate }}</span>
     </ng-template>
     <ng-template matTabContent>
-      <safe-filtering-settings
-        [layout]="selectedLayout"
-        [formArray]="$any(formGroup.get('filters'))"
-      ></safe-filtering-settings>
+      <safe-sorting-settings
+        [fields]="fields"
+        [formArray]="$any(formGroup.get('sortFields'))"
+        [formGroup]="formGroup"
+      ></safe-sorting-settings>
     </ng-template>
-  </mat-tab> -->
+  </mat-tab>
 </mat-tab-group>

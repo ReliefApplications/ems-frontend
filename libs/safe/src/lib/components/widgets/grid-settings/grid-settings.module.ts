@@ -12,7 +12,8 @@ import { TabButtonsModule } from './tab-buttons/tab-buttons.module';
 import { TabMainModule } from './tab-main/tab-main.module';
 import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
-import { SafeFilteringSettingsModule } from '../common/filtering-settings/filtering-settings.module';
+import { SafeSortingSettingsModule } from '../common/sorting-settings/sorting-settings.module';
+import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
 
 /** Module for the grid widget settings component */
 @NgModule({
@@ -31,7 +32,8 @@ import { SafeFilteringSettingsModule } from '../common/filtering-settings/filter
     TabMainModule,
     MatTooltipModule,
     DisplaySettingsComponent,
-    SafeFilteringSettingsModule,
+    SafeSortingSettingsModule,
+    MatSlideToggleModule,
   ],
   exports: [SafeGridSettingsComponent],
 })

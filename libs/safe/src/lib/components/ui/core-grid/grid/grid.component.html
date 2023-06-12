@@ -101,9 +101,10 @@
       class="w-fit"
       *ngIf="
         !!widget.settings.widgetDisplay?.sortable &&
-        widget.settings.sortFields?.length > 0
+        data.total &&
+        sortFields.length > 0
       "
-      [data]="widget.settings.sortFields"
+      [data]="sortFields"
       textField="label"
       valueField="label"
       (selectionChange)="sortData($event)"

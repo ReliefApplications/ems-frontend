@@ -149,7 +149,7 @@ export const createGridWidgetFormGroup = (
           )
         : [createButtonFormGroup(null)]
     ),
-    filters: new FormArray([]),
+    sortFields: new FormArray([]),
   });
   return formGroup;
 };

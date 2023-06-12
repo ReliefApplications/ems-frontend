@@ -215,6 +215,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   @Input() sortable = true;
   @Input() sort: SortDescriptor[] = [];
   @Output() sortChange = new EventEmitter();
+  @Input() sortFields = []; // sort fields select
 
   // === TEMPLATE ===
   @ViewChild(GridComponent)

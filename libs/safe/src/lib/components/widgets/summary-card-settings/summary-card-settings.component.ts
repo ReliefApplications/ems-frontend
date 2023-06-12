@@ -169,11 +169,6 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     return this.tileForm?.get('widgetDisplay.searchable') as any;
   }
 
-  /** @returns a FormControl for the sortable field */
-  get sortableControl(): FormControl {
-    return this.tileForm?.get('widgetDisplay.sortable') as any;
-  }
-
   /** @returns a FormControl for the usePagination field */
   get usePaginationControl(): FormControl {
     return this.tileForm?.get('widgetDisplay.usePagination') as any;
@@ -280,6 +275,10 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    * @param resource the modified resource
    */
   handleResourceChange(resource: Resource | null) {
+    // clear sort fields array
+    const sortFields = this.tileForm?.get('sortFields') as any;
+    while (sortFields.length != 0) sortFields.removeAt(0);
+
     this.selectedResource = resource;
     this.fields = [];
 

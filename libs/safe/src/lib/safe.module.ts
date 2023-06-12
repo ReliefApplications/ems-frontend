@@ -41,7 +41,7 @@ import { CronExpressionControlModule } from './components/cron-expression-contro
 import { MapModule } from './components/ui/map';
 import { FullScreenModule } from './directives/fullscreen/fullscreen.module';
 import { DashboardFilterModule } from './components/dashboard-filter/dashboard-filter.module';
-import { SafeFilteringSettingsModule } from './components/widgets/common/filtering-settings/filtering-settings.module';
+import { SafeSortingSettingsModule } from './components/widgets/common/sorting-settings/sorting-settings.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -55,7 +55,7 @@ import { SafeFilteringSettingsModule } from './components/widgets/common/filteri
     SafeGridSettingsModule,
     SafeMapSettingsModule,
     SafeWidgetGridModule,
-    SafeFilteringSettingsModule,
+    SafeSortingSettingsModule,
     SafeUsersModule,
     SafeRolesModule,
     SafeRecordHistoryModule,

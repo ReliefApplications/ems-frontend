@@ -45,9 +45,9 @@
         *ngIf="
           !!settings.widgetDisplay?.sortable &&
           cards.length !== 0 &&
-          widget.settings.sortFields?.length > 0
+          sortFields.length > 0
         "
-        [data]="widget.settings.sortFields"
+        [data]="sortFields"
         textField="label"
         valueField="label"
         (selectionChange)="sortData($event)"

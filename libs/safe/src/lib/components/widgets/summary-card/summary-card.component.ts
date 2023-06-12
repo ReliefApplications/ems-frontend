@@ -73,6 +73,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
 
   private layout: Layout | null = null;
   private fields: any[] = [];
+  public sortFields: any[] = [];
 
   public searchControl = new FormControl('');
 
@@ -305,6 +306,15 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
               return f;
             }
           );
+
+          // select sort fields that match the current layout
+          const layoutFieldsName = layoutFields.map((a: any) => a.name);
+
+          this.widget.settings.sortFields?.forEach((sortField: any) => {
+            if (layoutFieldsName.includes(sortField.field)) {
+              this.sortFields.push(sortField);
+            }
+          });
 
           if (builtQuery) {
             this.dataQuery = this.apollo.watchQuery<any>({

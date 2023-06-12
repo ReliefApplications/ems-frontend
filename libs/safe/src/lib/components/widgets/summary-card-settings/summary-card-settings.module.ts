@@ -12,7 +12,7 @@ import { SafeDisplayTabModule } from './display-tab/display.module';
 import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
-import { SafeFilteringSettingsModule } from '../common/filtering-settings/filtering-settings.module';
+import { SafeSortingSettingsModule } from '../common/sorting-settings/sorting-settings.module';
 
 /** Summary Card Settings Module */
 @NgModule({
@@ -31,7 +31,7 @@ import { SafeFilteringSettingsModule } from '../common/filtering-settings/filter
     FormsModule,
     ReactiveFormsModule,
     MatRadioModule,
-    SafeFilteringSettingsModule,
+    SafeSortingSettingsModule,
   ],
   exports: [SafeSummaryCardSettingsComponent],
 })

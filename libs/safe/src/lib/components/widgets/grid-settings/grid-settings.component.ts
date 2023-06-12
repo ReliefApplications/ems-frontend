@@ -12,6 +12,7 @@ import {
   UntypedFormArray,
   Validators,
   FormBuilder,
+  FormControl,
 } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import {
@@ -34,6 +35,7 @@ import { DistributionList } from '../../../models/distribution-list.model';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
+import { get } from 'lodash';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -111,9 +113,16 @@ export class SafeGridSettingsComponent
     const tileSettings = this.tile.settings;
     this.formGroup = extendWidgetForm(
       createGridWidgetFormGroup(this.tile.id, tileSettings),
-      tileSettings?.widgetDisplay
+      tileSettings?.widgetDisplay,
+      {
+        sortable: new FormControl(
+          get<boolean>(tileSettings, 'widgetDisplay.sortable', false)
+        ),
+      }
     );
+
     this.change.emit(this.formGroup);
+
     // this.formGroup?.get('query.name')?.valueChanges.subscribe((res) => {
     //   this.filteredQueries = this.filterQueries(res);
     // });
@@ -155,6 +164,10 @@ export class SafeGridSettingsComponent
         } else {
           this.fields = [];
         }
+
+        // clear sort fields array
+        const sortFields = this.formGroup?.get('sortFields') as any;
+        while (sortFields.length != 0) sortFields.removeAt(0);
       });
 
     // Subscribe to form aggregations changes
@@ -235,20 +248,20 @@ export class SafeGridSettingsComponent
       this.formGroup.controls.aggregations.clearValidators();
     }
 
-    this.initFilters();
+    this.initSortFields();
   }
 
   /**
-   * Adds filters to the formGroup
+   * Adds sortFields to the formGroup
    */
-  initFilters(): void {
-    this.tile.settings.filters.forEach((item: any) => {
+  initSortFields(): void {
+    this.tile.settings.sortFields?.forEach((item: any) => {
       const row = this.formBuilder.group({
-        field: [item ? item.field : '', Validators.required],
-        order: [item ? item.order : '', Validators.required],
-        label: [item ? item.label : '', Validators.required],
+        field: [item.field, Validators.required],
+        order: [item.order, Validators.required],
+        label: [item.label, Validators.required],
       });
-      (this.formGroup?.get('filters') as any).push(row);
+      (this.formGroup?.get('sortFields') as any).push(row);
     });
   }
 

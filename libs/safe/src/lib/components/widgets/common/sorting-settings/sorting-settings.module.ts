@@ -10,16 +10,16 @@ import { SafeButtonModule } from '../../../ui/button/button.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserModule } from '@angular/platform-browser';
-import { SafeFilteringSettingsComponent } from './filtering-settings.component';
+import { SafeSortingSettingsComponent } from './sorting-settings.component';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { MatTooltipModule } from '@angular/material/tooltip';
 
 /**
- * Module for the filtering-settings component
+ * Module for the sorting-settings component
  */
 @NgModule({
-  declarations: [SafeFilteringSettingsComponent],
+  declarations: [SafeSortingSettingsComponent],
   imports: [
     CommonModule,
     TranslateModule,
@@ -37,6 +37,6 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     DropDownsModule,
     MatTooltipModule,
   ],
-  exports: [SafeFilteringSettingsComponent],
+  exports: [SafeSortingSettingsComponent],
 })
-export class SafeFilteringSettingsModule {}
+export class SafeSortingSettingsModule {}

@@ -68,6 +68,9 @@ export class SafeGridWidgetComponent implements OnInit {
   public layout: Layout | null = null;
   public layouts: Layout[] = [];
 
+  // === SORT FIELDS SELECT ===
+  public sortFields: any[] = [];
+
   // === AGGREGATION ===
   public aggregation: Aggregation | null = null;
   public aggregations: Aggregation[] = [];
@@ -183,6 +186,17 @@ export class SafeGridWidgetComponent implements OnInit {
               this.status = {
                 error: true,
               };
+            } else {
+              // select sort fields that match the current layout
+              const layoutFieldsName = this.layout.query.fields.map(
+                (a: any) => a.name
+              );
+
+              this.widget.settings.sortFields?.forEach((sortField: any) => {
+                if (layoutFieldsName.includes(sortField.field)) {
+                  this.sortFields.push(sortField);
+                }
+              });
             }
             this.gridSettings = {
               ...this.settings,
@@ -626,6 +640,16 @@ export class SafeGridWidgetComponent implements OnInit {
       ...this.layout,
       ...{ template: get(this.settings, 'template', null) },
     };
+
+    // select sort fields that match the current layout
+    this.sortFields = [];
+    const layoutFieldsName = this.layout.query.fields.map((a: any) => a.name);
+
+    this.widget.settings.sortFields?.forEach((sortField: any) => {
+      if (layoutFieldsName.includes(sortField.field)) {
+        this.sortFields.push(sortField);
+      }
+    });
   }
 
   /**

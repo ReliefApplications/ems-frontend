@@ -9,20 +9,20 @@ import {
 import { Component, Input, OnInit } from '@angular/core';
 import { moveItemInArray, CdkDragDrop } from '@angular/cdk/drag-drop';
 
-/** Component for managing the widget filtering options */
+/** Component for managing the widget sorting options */
 @Component({
-  selector: 'safe-filtering-settings',
-  templateUrl: './filtering-settings.component.html',
-  styleUrls: ['./filtering-settings.component.scss'],
+  selector: 'safe-sorting-settings',
+  templateUrl: './sorting-settings.component.html',
+  styleUrls: ['./sorting-settings.component.scss'],
 })
-export class SafeFilteringSettingsComponent implements OnInit {
-  @Input() layout: any;
+export class SafeSortingSettingsComponent implements OnInit {
+  @Input() fields: any;
   @Input() formArray!: FormArray;
+  @Input() formGroup!: FormGroup;
 
   /** Displayed columns of table */
   public displayedColumnsApps = ['field', 'order', 'label', 'actions'];
-  public formGroup!: FormGroup;
-  public data!: BehaviorSubject<AbstractControl[]>;
+  public data!: BehaviorSubject<AbstractControl[]>; // to make drag and drop work with table
 
   public orderList = [
     { value: 'asc', text: 'ASC' },
@@ -30,16 +30,13 @@ export class SafeFilteringSettingsComponent implements OnInit {
   ];
 
   /**
-   * Constructor for filtering-settings component
+   * Constructor for sorting-settings component
    *
    * @param formBuilder FormBuilder instance
    */
   constructor(private formBuilder: FormBuilder) {}
 
   ngOnInit() {
-    this.formGroup = this.formBuilder.group({
-      sortFields: this.formArray,
-    });
     this.data = new BehaviorSubject<AbstractControl[]>(this.formArray.controls);
   }
 
@@ -49,7 +46,7 @@ export class SafeFilteringSettingsComponent implements OnInit {
    */
   addRow(): void {
     const row = this.formBuilder.group({
-      field: [this.layout.query.fields[0].name, Validators.required],
+      field: [this.fields[0]?.name ?? '', Validators.required],
       order: [this.orderList[0].value, Validators.required],
       label: ['', Validators.required],
     });
