@@ -65,6 +65,9 @@
           uiCell
           *cdkCellDef="let element"
           [attr.colspan]="displayedColumns.length"
+          [ngClass]="
+            element.resource.id === openedResource?.id ? '' : 'hidden'
+          "
         >
           <div
             class="expanded-form"
@@ -106,11 +109,7 @@
       </ng-container>
       <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
       <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
-      <tr
-        cdk-row
-        *cdkRowDef="let row; columns: ['expandedDetail']"
-        class="h-0"
-      ></tr>
+      <tr cdk-row *cdkRowDef="let row; columns: ['expandedDetail']"></tr>
     </table>
     <safe-skeleton-table
       class="my-4 mx-0 w-full"
