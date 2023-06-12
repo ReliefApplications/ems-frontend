@@ -28,7 +28,7 @@
         [isIcon]="true"
         icon="delete"
         class = "mr-1 pl-0"
-        (click)="clearPermissions()"
+        (click)="this.form.get('permissions')?.reset([]);"
       ></ui-button>
     </div>
   </div>

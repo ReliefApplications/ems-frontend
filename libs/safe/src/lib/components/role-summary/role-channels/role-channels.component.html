@@ -1,8 +1,8 @@
-<form [formGroup]="form">
+<form [formGroup]="form" class="my-8">
   <div class="flex flex-col">
     <div uiFormFieldDirective>
       <label>{{ 'common.channel.few' | translate }}</label>
-      <ui-select-menu [multiselect]="true" formControlName="channels" class="my-8">
+      <ui-select-menu [multiselect]="true" formControlName="channels">
         <ui-select-option
           [isGroup]="true"
           *ngFor="let application of applications"
