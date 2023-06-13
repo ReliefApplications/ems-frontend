@@ -1,11 +1,11 @@
 <div [formGroup]="formGroup" class="flex flex-col last:mb-0">
   <h2>{{ 'common.general' | translate }}</h2>
-  <div uiFormFieldDirective>
+  <div uiFormFieldDirective class="w-[99%]">
     <label>{{ 'common.title' | translate }}</label>
     <input formControlName="title" type="string" />
   </div>
   <ng-container formGroupName="chart">
-    <div uiFormFieldDirective>
+    <div uiFormFieldDirective class="w-[99%]">
       <label>{{ 'components.widget.settings.chart.type' | translate }}</label>
       <ng-template #chartTemplate let-type>
         <img class="chart-icon" [src]="type?.icon" />{{
@@ -28,7 +28,7 @@
       </ui-select-menu>
     </div>
   </ng-container>
-  <div uiFormFieldDirective>
+  <div uiFormFieldDirective class="w-[99%]">
     <label>{{ 'common.resource.one' | translate }}</label>
     <ui-graphql-select
       valueField="id"
