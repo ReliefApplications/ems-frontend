@@ -310,7 +310,7 @@ export class SafeFormModalComponent
           }
         ),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
+        confirmVariant: 'primary',
       });
       dialogRef.closed
         .pipe(takeUntil(this.destroy$))
@@ -576,7 +576,7 @@ export class SafeFormModalComponent
     //       title: 'Confirm',
     //       content: 'Record has been modified. You can cancel to continue editing, or discard you changes.',
     //       confirmText: 'Discard changes',
-    //       confirmColor: 'primary'
+    //       confirmVariant: 'primary'
     //     }
     //   });
     //   closeDialogRef.closed.subscribe((value: any) => {

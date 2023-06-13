@@ -229,16 +229,16 @@ export class SelectMenuComponent
   private setDisplayTriggerText() {
     const labelValues = this.getValuesLabel(this.selectedValues);
     // Adapt the text to be displayed in the trigger if no custom template for display is provided
-    if (labelValues?.length) {
-      if (!this.customTemplate) {
+    if (!this.customTemplate) {
+      if (labelValues?.length) {
         if (labelValues.length === 1) {
           this.displayTrigger = labelValues[0];
-        } else if (labelValues.length >= 1) {
+        } else {
           this.displayTrigger =
             labelValues[0] + ' (+' + (labelValues.length - 1) + ' others)';
-        } else {
-          this.displayTrigger = '';
         }
+      } else {
+        this.displayTrigger = '';
       }
     }
   }

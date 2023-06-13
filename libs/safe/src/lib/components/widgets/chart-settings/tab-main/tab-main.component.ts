@@ -100,7 +100,6 @@ export class TabMainComponent
         sortField: 'name',
       },
     });
-    console.log(this.formGroup);
   }
 
   /**

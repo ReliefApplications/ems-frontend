@@ -39,7 +39,11 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
    * @param renderer Renderer2
    * @param cdr ChangeDetectorRef
    */
-  constructor(private renderer: Renderer2, private cdr: ChangeDetectorRef) {}
+  constructor(
+    private renderer: Renderer2,
+    private cdr: ChangeDetectorRef,
+    public el: ElementRef
+  ) {}
 
   ngAfterViewInit() {
     // Initialize width and show sidenav value

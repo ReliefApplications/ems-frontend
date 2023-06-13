@@ -404,7 +404,7 @@
 				"filter": {
 					"empty": "No filters have been defined by the administrators",
 					"info": "Dashboard filters can be used between pages to filter their content.",
-					"title": "You are editing dashboard filters"
+					"title": "Dashboard filters configuration"
 				},
 				"filterSettings": "Filter settings",
 				"settings": {

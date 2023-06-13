@@ -636,7 +636,9 @@ export const init = (
         });
         question.registerFunctionOnPropertyValueChanged('addRecord', () => {
           addBtn.style.display =
-            question.addRecord && question.addTemplate ? '' : 'none';
+            question.addRecord && question.addTemplate && !question.isReadOnly
+              ? ''
+              : 'none';
         });
       }
     },

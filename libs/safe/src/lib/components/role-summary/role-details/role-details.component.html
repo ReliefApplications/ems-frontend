@@ -22,6 +22,14 @@
           {{ permission.type }}
         </ui-select-option>
       </ui-select-menu>
+      <ui-button 
+        uiSuffix
+        variant="danger"
+        [isIcon]="true"
+        icon="delete"
+        class = "mr-1 pl-0"
+        (click)="this.form.get('permissions')?.reset([]);"
+      ></ui-button>
     </div>
   </div>
   <ui-button
@@ -123,18 +131,22 @@
       <ng-container ngProjectAs="label">{{
         'components.role.summary.users.manual' | translate
       }}</ng-container>
-      <safe-role-users [role]="role" *ngIf="role"></safe-role-users>
+      <ng-template uiTabContent>
+        <safe-role-users [role]="role" *ngIf="role"></safe-role-users>
+      </ng-template>
     </ui-tab>
     <!-- Automated assignment -->
     <ui-tab>
       <ng-container ngProjectAs="label">{{
         'components.role.summary.users.auto' | translate
       }}</ng-container>
-      <safe-role-users
-        [autoAssigned]="true"
-        [role]="role"
-        *ngIf="role"
-      ></safe-role-users>
+      <ng-template uiTabContent>
+        <safe-role-users
+          [autoAssigned]="true"
+          [role]="role"
+          *ngIf="role"
+        ></safe-role-users>
+      </ng-template>
     </ui-tab>
   </ui-tabs>
 </div>

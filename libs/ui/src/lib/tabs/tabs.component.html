@@ -4,7 +4,7 @@
   <!-- List of tabs -->
   <div
     id="tabs"
-    class="justify-around flex"
+    class="justify-start flex"
     [ngClass]="resolveTabPositionClasses"
   >
     <ng-content></ng-content>
@@ -14,6 +14,6 @@
     class="flex-1"
     [@tabContentDisplay]="triggerAnimation ? 'initial' : 'loadContent'"
   >
-    <ng-template #content></ng-template>
+    <ng-template uiTabBodyHost></ng-template>
   </div>
 </div>

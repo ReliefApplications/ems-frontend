@@ -256,14 +256,20 @@ export class SafeGridComponent
    * Returns property value in object from path.
    *
    * @param item Item to get property of.
-   * @param path Path of the property.
+   * @param field parent field
+   * @param subField subfield ( optional, used by reference data)
    * @returns Value of the property.
    */
-  public getPropertyValue(item: any, path: string): any {
-    const meta = this.fields.find((x) => x.name === path)?.meta;
-    const value = get(item, path);
+  public getPropertyValue(item: any, field: any, subField?: any): any {
+    let value = get(item, field.name);
+    const meta = subField ? subField.meta : field.meta;
     if (meta.choices) {
       if (Array.isArray(value)) {
+        if (subField) {
+          if (meta.graphQLFieldName) {
+            value = value.map((x) => get(x, meta.graphQLFieldName));
+          }
+        }
         const text = meta.choices.reduce(
           (acc: string[], x: any) =>
             value.includes(x.value) ? acc.concat([x.text]) : acc,
@@ -281,6 +287,21 @@ export class SafeGridComponent
       return value;
     }
   }
+
+  // find field with the path name
+  // const field = this.fields.find((x) => x.name === path);
+  // const fieldMeta = field?.meta ?? {};
+  // if (!fieldMeta) return '';
+
+  // const graphQLName = Object.keys(fieldMeta).find(
+  //   (x) => fieldMeta[x].name === attribute
+  // );
+  // if (!graphQLName) return '';
+
+  // const values = get(item, path);
+  // if (Array.isArray(values)) {
+  //   return values.map((x) => x[graphQLName]).join(', ');
+  // }
 
   /**
    * Returns property value in object from path. Specific for multiselect reference data.

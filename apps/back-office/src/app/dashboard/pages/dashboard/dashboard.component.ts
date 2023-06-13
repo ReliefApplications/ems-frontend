@@ -222,7 +222,7 @@ export class DashboardComponent
         confirmText: this.translateService.instant(
           'components.confirmModal.confirm'
         ),
-        confirmColor: 'primary',
+        confirmVariant: 'primary',
       });
       return dialogRef.closed.pipe(takeUntil(this.destroy$)).pipe(
         map((confirm) => {
