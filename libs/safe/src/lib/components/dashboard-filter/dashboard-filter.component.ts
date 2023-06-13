@@ -135,7 +135,9 @@ export class DashboardFilterComponent
               } else if (application.contextualFilterPosition) {
                 this.position = application.contextualFilterPosition;
               } else {
-                this.position = localStorage.getItem('position') as any || FilterPosition.BOTTOM; //case where there are no default position set up
+                this.position =
+                  (localStorage.getItem('position') as any) ||
+                  FilterPosition.BOTTOM; //case where there are no default position set up
               }
             });
         }
