@@ -261,7 +261,7 @@ export const render = (
     }
     // Prevent selected choices to be removed when sending the value
     question.clearIncorrectValuesCallback = () => {
-      console.log(question.visibleChoices);
+      // console.log(question.visibleChoices);
       console.log(question.value);
     };
     // look on changes
