@@ -1,4 +1,3 @@
-import { Apollo } from 'apollo-angular';
 import { Component, Input, OnChanges } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { SafeEditorService } from '../../../../services/editor/editor.service';
