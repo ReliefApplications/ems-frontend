@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Variant } from '../types/variant';
 
 /**
@@ -18,8 +18,6 @@ export class RadioComponent {
   @Input() ariaLabelledby = '';
   @Input() variant: Variant = 'default';
 
-  @Output() radioClick: EventEmitter<boolean> = new EventEmitter();
-
   /**
    * Getter resolving the variant classes
    *
@@ -37,13 +35,5 @@ export class RadioComponent {
       classes.push('opacity-70 bg-gray-300 pointer-events-none');
     }
     return classes;
-  }
-
-  /**
-   * Handles the selection of a radio
-   */
-  onRadioClick() {
-    this.checked = true;
-    this.radioClick.emit(this.checked);
   }
 }
