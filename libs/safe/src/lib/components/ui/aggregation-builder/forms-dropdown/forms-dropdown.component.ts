@@ -84,6 +84,13 @@ export class SafeFormsDropdownComponent
           this.filteredForms = this.filterForms(value);
         }
       });
+    
+    setTimeout(() => {
+      console.log(this.currentForms);
+      console.log(this.filteredForms);
+      console.log(this.sourceFormControl);
+      console.log(this.sourceControl);
+    }, 3000);
   }
 
   /**
@@ -115,6 +122,7 @@ export class SafeFormsDropdownComponent
    * otherwise returns the formId
    */
   public displayName(formId: string): string {
+    console.log(this.currentForms);
     return this.currentForms && this.currentForms.length
       ? this.currentForms.find((x) => x.id === formId)?.name || formId
       : formId;
