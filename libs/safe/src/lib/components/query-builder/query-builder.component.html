@@ -51,7 +51,7 @@
           <label>{{ 'models.form.field.name' | translate }}</label>
           <input formControlName="name" type="text" />
         </div>
-        <div uiFormFieldDirective *ngIf="form?.controls?.fields?.value?.length">
+        <div uiFormFieldDirective *ngIf="form.get('label')">
           <label>{{ 'models.form.field.label' | translate }}</label>
           <input formControlName="label" type="text" />
         </div>
