@@ -156,6 +156,8 @@ export class SelectMenuComponent
         },
       });
     }
+    // Add default width to select menu to avoid visual issues when select being totally empty
+    this.renderer.addClass(this.el.nativeElement, 'min-w-[100px]');
   }
 
   /**
