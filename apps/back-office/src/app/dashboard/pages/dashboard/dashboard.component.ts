@@ -125,7 +125,7 @@ export class DashboardComponent
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     private refDataService: SafeReferenceDataService,
-    private translate: TranslateService,
+    private translate: TranslateService
   ) {
     super();
   }
@@ -741,7 +741,10 @@ export class DashboardComponent
     }
   }
 
-  togglePageVisibility(){
+  /**
+   * hide a page
+   */
+  togglePageVisibility() {
     this.apollo
       .mutate<EditPageMutationResponse>({
         mutation: EDIT_PAGE,
@@ -771,9 +774,9 @@ export class DashboardComponent
               ...this.dashboard,
               page: {
                 ...this.dashboard?.page,
-                visible: data?.editPage.visible
-              }
-            }
+                visible: data?.editPage.visible,
+              },
+            };
           }
         },
         error: (err) => {

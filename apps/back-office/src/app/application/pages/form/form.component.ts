@@ -321,7 +321,10 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
     }
   }
 
-  togglePageVisibility(){
+  /**
+   * hide a page
+   */
+  togglePageVisibility() {
     this.apollo
       .mutate<EditPageMutationResponse>({
         mutation: EDIT_PAGE,

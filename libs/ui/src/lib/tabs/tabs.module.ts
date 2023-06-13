@@ -6,7 +6,12 @@ import { TabContentDirective } from './directives/tab-content.directive';
 import { TabBodyHostDirective } from './directives/tab-body-host.directive';
 
 @NgModule({
-  declarations: [TabsComponent, TabComponent, TabContentDirective, TabBodyHostDirective],
+  declarations: [
+    TabsComponent,
+    TabComponent,
+    TabContentDirective,
+    TabBodyHostDirective,
+  ],
   imports: [CommonModule],
   exports: [TabsComponent, TabComponent, TabContentDirective],
 })

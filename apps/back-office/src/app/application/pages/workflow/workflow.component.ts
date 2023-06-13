@@ -455,7 +455,10 @@ export class WorkflowComponent
     }
   }
 
-  togglePageVisibility(){
+  /**
+   * hide a page
+   */
+  togglePageVisibility() {
     this.apollo
       .mutate<EditPageMutationResponse>({
         mutation: EDIT_PAGE,
@@ -486,7 +489,7 @@ export class WorkflowComponent
               page: {
                 ...this.workflow?.page,
                 visible: data?.editPage.visible,
-              }
+              },
             };
           }
         },
