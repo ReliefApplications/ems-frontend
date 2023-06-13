@@ -4,6 +4,8 @@ import {
   ComponentFactoryResolver,
   Directive,
   Inject,
+  OnDestroy,
+  OnInit,
   ViewContainerRef,
   forwardRef,
 } from '@angular/core';
@@ -11,14 +13,30 @@ import { Subject, takeUntil } from 'rxjs';
 import { TabsComponent } from '../tabs.component';
 import { TabComponent } from '../components/tab/tab.component';
 
+/**
+ * UI Tab body host directive.
+ * Used to render content of tabs.
+ */
 @Directive({
   selector: '[uiTabBodyHost]',
 })
-export class TabBodyHostDirective extends CdkPortalOutlet {
+export class TabBodyHostDirective
+  extends CdkPortalOutlet
+  implements OnInit, OnDestroy
+{
   destroy$: Subject<boolean> = new Subject<boolean>();
 
   private _openedTab?: TabComponent;
 
+  /**
+   * UI Tab body host directive.
+   * Used to render content of tabs.
+   *
+   * @param componentFactoryResolver Angular component factory resolver ( deprecated )
+   * @param viewContainerRef Angular view container reference
+   * @param _host parent tabs component
+   * @param _document document
+   */
   constructor(
     componentFactoryResolver: ComponentFactoryResolver,
     viewContainerRef: ViewContainerRef,
