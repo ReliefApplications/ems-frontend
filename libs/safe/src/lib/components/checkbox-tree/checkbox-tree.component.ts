@@ -240,10 +240,8 @@ export class SafeCheckboxTreeComponent implements OnInit {
    * @param node The node whose descendants needs to be selected/deselected
    */
   todoItemSelectionToggle(node: TreeItemFlatNode): void {
-    console.log(node);
     this.checklistSelection.toggle(node);
     const descendants = this.treeControl.getDescendants(node);
-    console.log(descendants);
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.checklistSelection.isSelected(node)
       ? this.checklistSelection.select(...descendants)

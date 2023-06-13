@@ -157,21 +157,7 @@ export class TabsComponent implements AfterContentInit, OnDestroy {
    */
   deleteContent() {
     this.triggerAnimation = false;
-    // if (this.content) {
-    //   this.content.clear();
-    // }
   }
-
-  /**
-   * Creates the content element thanks to the hidden html content of the tab component targeted
-   *
-   * @param target dom element clicked
-   */
-  // createContent(target: TabComponent) {
-  //   this.triggerAnimation = true;
-  //   // this.content.createEmbeddedView(target.content);
-  //   this.portalHost.attach(target.content);
-  // }
 
   ngOnDestroy(): void {
     this.destroy$.next();

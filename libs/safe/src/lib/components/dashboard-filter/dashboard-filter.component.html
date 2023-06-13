@@ -34,7 +34,16 @@
       class="relative flex justify-between bg-primary-500 text-white pointer-events-auto"
     >
       <!-- Edition -->
-      <div class="flex-auto">
+      <div
+        *ngIf="editable"
+        [ngClass]="{
+          'flex-col':
+            position === filterPosition.LEFT ||
+            position === filterPosition.RIGHT
+        }"
+        class="flex flex-auto"
+      >
+        <!-- Configuration -->
         <ui-button
           variant="light"
           [isIcon]="true"
@@ -42,6 +51,17 @@
           (click)="onEditFilter()"
           [uiTooltip]="
             'components.application.dashboard.editFilter' | translate
+          "
+        >
+        </ui-button>
+        <!-- Settings (default position) -->
+        <ui-button
+          variant="light"
+          [isIcon]="true"
+          icon="settings"
+          (click)="openSettings()"
+          [uiTooltip]="
+            'components.application.dashboard.filterSettings' | translate
           "
         >
         </ui-button>
