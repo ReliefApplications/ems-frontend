@@ -44,7 +44,6 @@ import { clone, isNaN } from 'lodash';
 import { SnackbarService } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { SafeDashboardService } from '../../../services/dashboard/dashboard.service';
-import { SafeTileDataComponent } from '../../widget-grid/floating-options/menu/tile-data/tile-data.component';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -499,6 +498,9 @@ export class SafeSummaryCardComponent
    * Emit an event to open settings window
    */
   public async openSettings(): Promise<void> {
+    const { SafeTileDataComponent } = await import(
+      '../../widget-grid/floating-options/menu/tile-data/tile-data.component'
+    );
     const dialogRef = this.dialog.open(SafeTileDataComponent, {
       disableClose: true,
       data: {
