@@ -38,6 +38,7 @@ export const GET_WORKFLOW_BY_ID = gql`
         id
         name
         canUpdate
+        visible
         permissions {
           canSee {
             id

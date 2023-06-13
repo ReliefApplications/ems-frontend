@@ -110,6 +110,7 @@ export class DashboardComponent
    * @param authService Shared authentication service
    * @param confirmService Shared confirm service
    * @param refDataService Shared reference data service
+   * @param translate Translate service
    */
   constructor(
     private applicationService: SafeApplicationService,
@@ -123,7 +124,8 @@ export class DashboardComponent
     private translateService: TranslateService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
-    private refDataService: SafeReferenceDataService
+    private refDataService: SafeReferenceDataService,
+    private translate: TranslateService,
   ) {
     super();
   }
@@ -737,5 +739,46 @@ export class DashboardComponent
         this.contextRecord = data.record;
       });
     }
+  }
+
+  togglePageVisibility(){
+    this.apollo
+      .mutate<EditPageMutationResponse>({
+        mutation: EDIT_PAGE,
+        variables: {
+          id: this.dashboard?.page?.id,
+          visible: !this.dashboard?.page?.visible,
+        },
+      })
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.page.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.page.one'),
+                value: '',
+              })
+            );
+            this.dashboard = {
+              ...this.dashboard,
+              page: {
+                ...this.dashboard?.page,
+                visible: data?.editPage.visible
+              }
+            }
+          }
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+        },
+      });
   }
 }

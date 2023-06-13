@@ -41,6 +41,7 @@
                 cdkDrag
                 [cdkDragDisabled]="!item.orderable"
                 class="show-icons"
+                *ngIf="item.visible === true || item.visible === null || item.visible === undefined || canAddPage"
               >
                 <li
                   [routerLink]="item.path"

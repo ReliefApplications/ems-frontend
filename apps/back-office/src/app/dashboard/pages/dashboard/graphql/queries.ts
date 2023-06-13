@@ -28,6 +28,7 @@ export const GET_DASHBOARD_BY_ID = gql`
       canUpdate
       page {
         id
+        visible
         application {
           id
         }

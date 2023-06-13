@@ -15,16 +15,36 @@
     <ng-container *ngIf="dashboard">
       <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
         <!-- Dashboard title -->
-        <safe-editable-text
-          [text]="dashboard.name"
-          [canEdit]="canEditName"
-          (onChange)="saveName($event)"
-          (formActiveEvent)="formActive = $event"
-        >
-          <h1 class="!m-0 overflow-hidden text-ellipsis">
-            {{ dashboard.name }}
-          </h1>
-        </safe-editable-text>
+        <div class="inline-flex gap-4">
+          <safe-editable-text
+            [text]="dashboard.name"
+            [canEdit]="canEditName"
+            (onChange)="saveName($event)"
+            (formActiveEvent)="formActive = $event"
+          >
+            <h1 class="!m-0 overflow-hidden text-ellipsis">
+              {{ dashboard.name }}
+            </h1>
+          </safe-editable-text>
+          <ui-button
+            [isIcon]="true"
+            variant="grey"
+            category="primary"
+            icon="visibility_off"
+            (click)="togglePageVisibility()"
+            *ngIf="!this.dashboard.page?.visible"
+          >
+          </ui-button>
+          <ui-button
+            [isIcon]="true"
+            variant="grey"
+            category="primary"
+            icon="visibility"
+            (click)="togglePageVisibility()"
+            *ngIf="this.dashboard.page?.visible"
+          >
+          </ui-button>
+        </div>
 
         <div class="flex items-center gap-1" *ngIf="!formActive">
           <!-- Fullscreen -->
