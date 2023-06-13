@@ -98,7 +98,6 @@ export class SafeTextEditorTabComponent implements OnChanges {
               else api.enable('submit');
             },
             onSubmit: (api) => {
-              console.log(api.getData());
               const data = api.getData();
               const html = `{{avatars.${data.avatarsSource} ${data.avatarsWidth} ${data.avatarsHeight} ${data.avatarsMaxItems}}}`;
               editor.insertContent(html);
