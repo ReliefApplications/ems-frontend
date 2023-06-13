@@ -30,6 +30,7 @@ export class TabComponent implements AfterContentChecked, AfterContentInit {
 
   @Output() openTab: EventEmitter<void> = new EventEmitter();
 
+  /** @returns content portal of the tab */
   get content(): TemplatePortal | null {
     return this.contentPortal;
   }
@@ -48,6 +49,11 @@ export class TabComponent implements AfterContentChecked, AfterContentInit {
 
   contentPortal: TemplatePortal | null = null;
 
+  /**
+   * UI tab component
+   *
+   * @param viewContainerRef Angular view container reference
+   */
   constructor(private viewContainerRef: ViewContainerRef) {}
 
   ngAfterContentInit(): void {
