@@ -58,3 +58,9 @@ ui-expansion-panel {
 ::ng-deep p {
   line-height: 2;
 }
+
+.date-header {
+  ::ng-deep div {
+    margin-left: unset !important;
+  }
+}

@@ -418,7 +418,7 @@ export class FormWrapperDirective
    */
   private applySuffixClasses(suffixElement: any) {
     this.renderer.addClass(suffixElement, 'order-last');
-    this.renderer.addClass(suffixElement, 'pl-2');
+    this.renderer.addClass(suffixElement, 'px-2');
   }
 
   /**
