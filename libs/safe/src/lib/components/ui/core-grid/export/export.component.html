@@ -10,12 +10,12 @@
       aria-labelledby="export-options-records"
       class="ml-2 flex flex-col gap-2"
     >
-      <ui-radio value="all" [checked]="'all' === export.records">
+      <ui-radio value="all">
         <ng-container ngProjectAs="label">
           {{ 'components.widget.grid.export.dataset.choice.all' | translate }}
         </ng-container>
       </ui-radio>
-      <ui-radio value="selected" [checked]="'selected' === export.records">
+      <ui-radio value="selected">
         <ng-container ngProjectAs="label">
           {{ 'components.widget.grid.export.dataset.choice.selected' | translate }}
         </ng-container>
@@ -31,12 +31,12 @@
       aria-labelledby="export-options-columns"
       class="ml-2 flex flex-col gap-2"
     >
-      <ui-radio value="all" [checked]="'all' === export.fields">
+      <ui-radio value="all">
         <ng-container ngProjectAs="label">
           {{ 'components.widget.grid.export.columns.choice.all' | translate }}
         </ng-container>
       </ui-radio>
-      <ui-radio value="visible" [checked]="'visible' === export.fields">
+      <ui-radio value="visible">
         <ng-container ngProjectAs="label">
           {{ 'components.widget.grid.export.columns.choice.visible' | translate }}
         </ng-container>
@@ -52,12 +52,12 @@
       aria-labelledby="export-options-format"
       class="ml-2 flex flex-col gap-2"
     >
-      <ui-radio value="csv" [checked]="'csv'===export.format">
+      <ui-radio value="csv">
         <ng-container ngProjectAs="label">
           .csv
         </ng-container>
       </ui-radio>
-      <ui-radio value="xlsx" [checked]="'xlsx'===export.format">
+      <ui-radio value="xlsx">
         <ng-container ngProjectAs="label">
           .xlsx
         </ng-container>

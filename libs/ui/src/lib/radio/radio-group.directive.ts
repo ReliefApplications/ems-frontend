@@ -4,25 +4,16 @@ import {
   Input,
   HostListener,
   QueryList,
-  forwardRef,
-  Provider,
   ContentChildren,
   Output,
   EventEmitter,
-  Injector,
+  Optional,
+  Self,
 } from '@angular/core';
 import { RadioComponent } from './radio.component';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ControlValueAccessor } from '@angular/forms';
 import { NgControl } from '@angular/forms';
-
-/**
- * Control value accessor
- */
-const CONTROL_VALUE_ACCESSOR: Provider = {
-  provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => RadioGroupDirective),
-  multi: true,
-};
+import { isNil } from 'lodash';
 
 /**
  * UI Radio group directive
@@ -31,7 +22,6 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
  */
 @Directive({
   selector: '[uiRadioGroupDirective]',
-  providers: [CONTROL_VALUE_ACCESSOR],
 })
 export class RadioGroupDirective
   implements AfterContentInit, ControlValueAccessor
@@ -40,8 +30,6 @@ export class RadioGroupDirective
   @ContentChildren(RadioComponent) radioComponents!: QueryList<RadioComponent>;
   // If radio group with no form control is added we want to get radio selection as well
   @Output() groupValueChange = new EventEmitter<any>();
-
-  public formControl!: NgControl;
   private groupValue: any;
 
   disabled = false;
@@ -51,23 +39,24 @@ export class RadioGroupDirective
   /**
    * Creates an instance of RadioGroupDirective.
    *
-   * @param injector Angular injector
+   * @param control host element NgControl instance
    */
-  constructor(private injector: Injector) {}
+  constructor(@Optional() @Self() private control: NgControl) {
+    if (this.control) {
+      this.control.valueAccessor = this;
+    }
+  }
 
   ngAfterContentInit() {
-    this.formControl = this.injector.get(NgControl);
-    this.radioComponents.forEach(
-      (radio: RadioComponent) =>
-        (radio.checked = radio.value === this.formControl?.control?.value)
-    );
-
-    this.radioComponents.forEach((radio: RadioComponent) => {
-      radio.radioClick.subscribe((value: boolean) => {
-        this.radioComponents.forEach(
-          (r: RadioComponent) => (r.checked = r.value === value)
-        );
+    if (!isNil(this.control?.value)) {
+      this.radioComponents.forEach((radio: RadioComponent) => {
+        radio.checked = radio.value === this.control.value;
       });
+    }
+    this.control?.valueChanges?.subscribe((value) => {
+      this.radioComponents.forEach(
+        (radio: RadioComponent) => (radio.checked = radio.value === value)
+      );
     });
     this.radioComponents.toArray().forEach((val: any) => {
       if (!this.onTouched && !this.onChanged && val.checked) {
