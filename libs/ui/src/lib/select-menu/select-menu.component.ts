@@ -236,10 +236,10 @@ export class SelectMenuComponent
         } else if (labelValues.length >= 1) {
           this.displayTrigger =
             labelValues[0] + ' (+' + (labelValues.length - 1) + ' others)';
-        } else {
-          this.displayTrigger = '';
         }
       }
+    } else {
+      this.displayTrigger = '';
     }
   }
 
