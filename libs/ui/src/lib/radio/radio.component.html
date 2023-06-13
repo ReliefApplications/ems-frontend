@@ -9,8 +9,15 @@
     [checked]="checked"
     [name]="name"
     [ariaLabel]="ariaLabelledby"
+    (click)="onRadioClick()"
   />
-  <div class="ml-2 block text-sm font-medium leading-6 text-gray-900">
+  <div
+    class="ml-2 block text-sm font-medium leading-6"
+    [ngClass]="{
+      'text-gray-400': disabled,
+      'text-gray-900': !disabled
+    }"
+  >
     <label for="{{ name }}">
       <ng-content select="label"></ng-content>
     </label>

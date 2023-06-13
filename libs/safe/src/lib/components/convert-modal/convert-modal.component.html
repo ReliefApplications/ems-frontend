@@ -22,18 +22,12 @@
           formControlName="copyRecord"
           uiRadioGroupDirective="copyRecordOptions"
         >
-          <ui-radio
-            [value]="true"
-            [checked]="convertForm.get('copyRecord')?.value === true"
-          >
+          <ui-radio [value]="true">
             <ng-container ngProjectAs="label">
               {{ 'components.record.convert.choice.copy' | translate }}
             </ng-container>
           </ui-radio>
-          <ui-radio
-            [value]="false"
-            [checked]="convertForm.get('copyRecord')?.value === false"
-          >
+          <ui-radio [value]="false">
             <ng-container ngProjectAs="label">
               {{ 'components.record.convert.choice.overwrite' | translate }}
             </ng-container>
