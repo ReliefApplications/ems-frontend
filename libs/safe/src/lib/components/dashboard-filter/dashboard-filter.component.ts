@@ -8,6 +8,7 @@ import {
   OnDestroy,
   OnInit,
   Optional,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { FilterPosition } from './enums/dashboard-filters.enum';
@@ -76,12 +77,11 @@ export class DashboardFilterComponent
   public empty = true;
 
   @Input() editable = false;
+  @Input() isFullScreen = false;
 
   /**
    * Class constructor
    *
-   * @param uiSidenav MatDrawerContent
-   * @param hostElement Host/Component Element
    * @param dialog The Dialog service
    * @param apollo Apollo client
    * @param applicationService Shared application service
@@ -89,10 +89,9 @@ export class DashboardFilterComponent
    * @param translate Angular translate service
    * @param contextService Context service
    * @param ngZone Triggers html changes
+   * @param _host sidenav container host
    */
   constructor(
-    @Optional() private uiSidenav: SidenavContainerComponent,
-    private hostElement: ElementRef<HTMLElement>,
     private dialog: Dialog,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
@@ -100,7 +99,8 @@ export class DashboardFilterComponent
     private translate: TranslateService,
     private contextService: ContextService,
     private ngZone: NgZone,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    @Optional() private _host: SidenavContainerComponent
   ) {
     super();
   }
@@ -142,6 +142,14 @@ export class DashboardFilterComponent
       });
     this.setFilterContainerDimensions();
   }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.isFullScreen) {
+      this.setFilterContainerDimensions();
+    }
+  }
+
+  // add ngOnChanges there
 
   /**
    * Set the drawer height and width on resize
@@ -342,26 +350,34 @@ export class DashboardFilterComponent
    * Set filter container dimensions for the current parent container wrapper
    */
   private setFilterContainerDimensions() {
-    const parentRect = this.getParentReferenceClientRect();
-    this.containerWidth = `${parentRect?.width}px`;
-    this.containerHeight = `${parentRect?.height}px`;
-    this.containerLeftOffset = `${parentRect?.x}px`;
-    this.containerTopOffset = `${parentRect?.y}px`;
-  }
-
-  /**
-   * Get current parent DOM client rect reference
-   *
-   * @returns DOMRect | undefined
-   */
-  private getParentReferenceClientRect() {
-    // If no sidenav wrapper, default behavior would be filter horizontal sidenav Content
-    let parentRect = this.document
-      .getElementById('horizontalSidenavContent')
-      ?.getBoundingClientRect();
-    if (this.uiSidenav) {
-      parentRect = this.uiSidenav.content.nativeElement.getBoundingClientRect();
+    // also check if fullscreen !
+    if (this.isFullScreen) {
+      this.containerWidth = `${window.innerWidth}px`;
+      this.containerHeight = `${window.innerHeight}px`;
+      this.containerLeftOffset = `${0}px`;
+      this.containerTopOffset = `${0}px`;
+    } else {
+      if (this._host) {
+        if (this._host.showSidenav[0]) {
+          // remove width from left sidenav if opened
+          this.containerWidth = `${
+            this._host.el.nativeElement.offsetWidth -
+            this._host.sidenav.get(0).nativeElement.offsetWidth
+          }px`;
+          this.containerHeight = `${this._host.el.nativeElement.offsetHeight}px`;
+          // Add width from left sidenav as left offset
+          this.containerLeftOffset = `${
+            this._host.el.nativeElement.offsetLeft +
+            this._host.sidenav.get(0).nativeElement.offsetWidth
+          }px`;
+          this.containerTopOffset = `${this._host.el.nativeElement.offsetTop}px`;
+        } else {
+          this.containerWidth = `${this._host.el.nativeElement.offsetWidth}px`;
+          this.containerHeight = `${this._host.el.nativeElement.offsetHeight}px`;
+          this.containerLeftOffset = `${this._host.el.nativeElement.offsetLeft}px`;
+          this.containerTopOffset = `${this._host.el.nativeElement.offsetTop}px`;
+        }
+      }
     }
-    return parentRect;
   }
 }
