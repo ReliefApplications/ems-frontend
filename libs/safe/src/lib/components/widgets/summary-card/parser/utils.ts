@@ -126,15 +126,26 @@ const replaceRecordFields = (
       const style = getLayoutsStyle(styles, field.name, fieldsValue);
       let convertedValue = '';
       if (!isNil(value)) {
+        // First, try to find cases where the url is used as src of image or link
+        const srcRegex = new RegExp(
+          `src="${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}"`,
+          'gi'
+        );
+        formattedHtml = formattedHtml.replace(srcRegex, `src=${value}`);
+        // Inject avatars
+        const avatarRgx = new RegExp(
+          `${AVATAR_PREFIX}(?<name>${field.name}) (?<width>[0-9]+) (?<height>[0-9]+) (?<maxItems>[0-9]+)${PLACEHOLDER_SUFFIX}`
+        );
+        const match = avatarRgx.exec(formattedHtml);
+        const avatarGroup = createAvatarGroup(
+          value,
+          Number(match?.groups?.width),
+          Number(match?.groups?.height),
+          Number(match?.groups?.maxItems)
+        );
+        formattedHtml = formattedHtml.replace(avatarRgx, avatarGroup.innerHTML);
         switch (field.type) {
           case 'url': {
-            // Specific case
-            // First, try to find cases where the url is used as src of image or link
-            const srcRegex = new RegExp(
-              `src="${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}"`,
-              'gi'
-            );
-            formattedHtml = formattedHtml.replace(srcRegex, `src=${value}`);
             // Then, follow same logic than for other fields
             convertedValue = `<a href="${value}" style="${style}" target="_blank">${applyLayoutFormat(
               value,
@@ -225,23 +236,6 @@ const replaceRecordFields = (
               value ? value.length : 0
             } items</span>`;
             break;
-          case 'tagbox':
-            // test for avatars, retrieve the field and the size of the avatars
-            const avatarRgx = new RegExp(
-              `${AVATAR_PREFIX}(?<name>${field.name}) (?<width>[0-9]+) (?<height>[0-9]+) (?<maxItems>[0-9]+)${PLACEHOLDER_SUFFIX}`
-            );
-            const match = avatarRgx.exec(formattedHtml);
-            const avatarGroup = createAvatarGroup(
-              value,
-              Number(match?.groups?.width),
-              Number(match?.groups?.height),
-              Number(match?.groups?.maxItems)
-            );
-            formattedHtml = formattedHtml.replace(
-              avatarRgx,
-              avatarGroup.innerHTML
-            );
-            break;
           default:
             convertedValue = style
               ? `<span style='${style}'>${applyLayoutFormat(
@@ -258,11 +252,11 @@ const replaceRecordFields = (
         'gi'
       );
       formattedHtml = formattedHtml.replace(regex, convertedValue);
-      const regex2 = new RegExp(
+      const avatarCleanRegex = new RegExp(
         `${AVATAR_PREFIX}${field.name}[ 0-9]+${PLACEHOLDER_SUFFIX}`,
         'gi'
       );
-      formattedHtml = formattedHtml.replace(regex2, convertedValue);
+      formattedHtml = formattedHtml.replace(avatarCleanRegex, convertedValue);
     }
   }
   // replace all /n with <br/> to keep the line breaks
@@ -530,15 +524,14 @@ const applyFilters = (filter: any, fields: any): boolean => {
  * @param width Width of the avatars
  * @param height Height of the avatars
  * @param maxItems Maximum number of avatars to show
- *
  * @returns The html element
  */
-function createAvatarGroup(
+const createAvatarGroup = (
   value: string[],
   width: number | undefined,
   height: number | undefined,
   maxItems: number | undefined
-): HTMLElement {
+): HTMLElement => {
   const avatarGroup = document.createElement('avatar-group');
   const innerDiv = document.createElement('div');
   avatarGroup.appendChild(innerDiv);
@@ -590,22 +583,21 @@ function createAvatarGroup(
   }
 
   return avatarGroup;
-}
+};
 
 /**
  * Compute the size of the avatar
  *
  * @param width Width of the avatar
  * @param height Height of the avatar
- *
  * @returns The size of the avatar
  */
-function computeSize(
+const computeSize = (
   width: number | undefined,
   height: number | undefined
-): number {
+): number => {
   if (width && height) {
     return (width + height) / 2;
   }
   return 32;
-}
+};
