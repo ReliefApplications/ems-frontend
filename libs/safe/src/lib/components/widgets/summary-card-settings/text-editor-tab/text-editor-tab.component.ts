@@ -23,13 +23,9 @@ export class SafeTextEditorTabComponent implements OnChanges {
   /**
    * SafeTextEditorTabComponent constructor.
    *
-   * @param apollo Apollo service used to query the data
    * @param editorService Editor service used to get main URL and current language
    */
-  constructor(
-    private apollo: Apollo,
-    private editorService: SafeEditorService
-  ) {
+  constructor(private editorService: SafeEditorService) {
     // Set the editor base url based on the environment file
     this.editor.base_url = editorService.url;
     // Set the editor language
