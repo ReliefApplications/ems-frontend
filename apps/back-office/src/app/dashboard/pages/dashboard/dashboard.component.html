@@ -185,9 +185,11 @@
   <safe-dashboard-filter
     *ngIf="showFilter && isFullScreen"
     [editable]="true"
+    [isFullScreen]="isFullScreen"
   ></safe-dashboard-filter>
 </div>
 <safe-dashboard-filter
   *ngIf="showFilter && !isFullScreen"
   [editable]="true"
+  [isFullScreen]="isFullScreen"
 ></safe-dashboard-filter>
