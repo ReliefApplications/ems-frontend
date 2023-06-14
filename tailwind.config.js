@@ -48,8 +48,12 @@ module.exports = {
       },
     },
     fontFamily: {
-      'system-ui': ['Roboto', 'Helvetica Neue', 'sans-serif']
-    }
+      'system-ui': ['Roboto', 'Helvetica Neue', 'sans-serif'],
+    },
   },
-  plugins: [require('@tailwindcss/forms')],
+  plugins: [
+    require('@tailwindcss/forms')({
+      strategy: 'class', // only generate classes
+    }),
+  ],
 };

@@ -70,6 +70,7 @@ export class FormWrapperDirective
   ] as const;
 
   private inputClassesNoOutline = [
+    'form-input',
     'bg-transparent',
     'block',
     'overflow-hidden',
@@ -86,6 +87,7 @@ export class FormWrapperDirective
   ] as const;
 
   private inputClassesOutline = [
+    'form-input',
     'bg-transparent',
     'block',
     'w-full',
