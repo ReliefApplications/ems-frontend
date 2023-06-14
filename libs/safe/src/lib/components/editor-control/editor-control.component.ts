@@ -9,6 +9,7 @@ import {
   Optional,
   Self,
   ViewChild,
+  forwardRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
@@ -21,6 +22,7 @@ import {
 } from '@tinymce/tinymce-angular';
 import { SafeEditorService } from '../../services/editor/editor.service';
 import { RawEditorSettings } from 'tinymce';
+import { FormControlComponent } from '@oort-front/ui';
 
 /** Component for using TinyMCE editor with formControl */
 @Component({
@@ -31,9 +33,14 @@ import { RawEditorSettings } from 'tinymce';
   styleUrls: ['./editor-control.component.scss'],
   providers: [
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+    {
+      provide: FormControlComponent,
+      useExisting: forwardRef(() => SafeEditorControlComponent),
+    },
   ],
 })
 export class SafeEditorControlComponent
+  extends FormControlComponent
   implements ControlValueAccessor, OnDestroy, AfterViewInit, OnChanges
 {
   static nextId = 0;
@@ -165,6 +172,7 @@ export class SafeEditorControlComponent
     private elementRef: ElementRef<HTMLElement>,
     @Optional() @Self() public ngControl: NgControl
   ) {
+    super();
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }

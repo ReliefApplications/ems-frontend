@@ -22,6 +22,7 @@ import {
   ButtonModule,
   FormWrapperModule,
   SelectMenuModule,
+  SpinnerModule,
 } from '@oort-front/ui';
 
 /**
@@ -37,6 +38,7 @@ import {
     ButtonModule,
     FormsModule,
     ReactiveFormsModule,
+    SpinnerModule,
   ],
   selector: 'safe-webmap-select',
   templateUrl: './webmap-select.component.html',
@@ -54,7 +56,7 @@ export class WebmapSelectComponent
   public items = new BehaviorSubject<any[]>([]);
   public items$ = this.items.asObservable();
   private start = 1;
-  private loading = true;
+  public loading = true;
   private nextPage = true;
   private scrollListener!: any;
 
@@ -62,6 +64,8 @@ export class WebmapSelectComponent
    * Map Properties of Map widget.
    *
    * @param arcgis service
+   * @param document Document
+   * @param renderer current renderer
    * @param ngControl current ng control
    */
   constructor(

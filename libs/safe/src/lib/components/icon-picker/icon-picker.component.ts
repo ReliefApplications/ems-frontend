@@ -8,11 +8,13 @@ import {
   OnDestroy,
   Optional,
   Self,
+  forwardRef,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { FA_ICONS, IconName } from './icon-picker.const';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { FormControlComponent } from '@oort-front/ui';
 
 type FormFieldValue = IconName | null;
 
@@ -23,8 +25,17 @@ type FormFieldValue = IconName | null;
   selector: 'safe-icon-picker',
   templateUrl: './icon-picker.component.html',
   styleUrls: ['./icon-picker.component.scss'],
+  providers: [
+    {
+      provide: FormControlComponent,
+      useExisting: forwardRef(() => IconPickerComponent),
+    },
+  ],
 })
-export class IconPickerComponent implements ControlValueAccessor, OnDestroy {
+export class IconPickerComponent
+  extends FormControlComponent
+  implements ControlValueAccessor, OnDestroy
+{
   static nextId = 0;
 
   public icons: string[] = FA_ICONS;
@@ -167,7 +178,6 @@ export class IconPickerComponent implements ControlValueAccessor, OnDestroy {
    *
    * @param environment platform environment
    * @param elementRef shared element ref service
-   * @param formField MatFormField
    * @param ngControl form control shared service
    */
   constructor(
@@ -175,6 +185,7 @@ export class IconPickerComponent implements ControlValueAccessor, OnDestroy {
     private elementRef: ElementRef<HTMLElement>,
     @Optional() @Self() public ngControl: NgControl
   ) {
+    super();
     this.primaryColor = environment.theme.primary;
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
