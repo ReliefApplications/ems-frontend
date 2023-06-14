@@ -16,7 +16,7 @@ import {
   Optional,
   Self,
 } from '@angular/core';
-import { ControlValueAccessor, NgControl } from '@angular/forms';
+import { ControlValueAccessor, NgControl, UntypedFormControl } from '@angular/forms';
 import { SelectOptionComponent } from './components/select-option.component';
 import {
   Observable,
@@ -29,6 +29,7 @@ import {
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { DOCUMENT } from '@angular/common';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 /**
  * UI Select Menu component
@@ -47,6 +48,8 @@ export class SelectMenuComponent
   @Input() disabled = false;
   // Default selected value
   @Input() value?: string | string[];
+  // Tells if the select menu should able filter
+  @Input() filterable = false;
   // Any custom template provided for display
   @Input()
   customTemplate!: { template: TemplateRef<any>; context: any };
@@ -75,6 +78,9 @@ export class SelectMenuComponent
   private clickOutsideListener!: any;
   private selectClosingActionsSubscription!: Subscription;
   private overlayRef!: OverlayRef;
+
+  public searchControl = new UntypedFormControl('');
+  public loading = false;
 
   //Control access value functions
   onChange!: (value: any) => void;
@@ -144,7 +150,7 @@ export class SelectMenuComponent
           });
         },
       });
-    if (this.control) {
+    if (this.filterable) {
       this.control.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe({
         next: (value) => {
           // If the value is cleared from outside, reset displayed values
@@ -154,6 +160,22 @@ export class SelectMenuComponent
             this.setDisplayTriggerText();
           }
         },
+      });
+    }
+
+    if(this.filterable){
+      this.searchControl.valueChanges
+      .pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value) => {
+        this.loading = true;
+        this.optionList.forEach((op: SelectOptionComponent) => {
+          if(!op.label.toLowerCase().includes(value.toLowerCase())){
+            op.hidden = true;
+          }else{
+            op.hidden = false;
+          }
+        })
+        setTimeout(() => {this.loading = false}, 150);
       });
     }
   }

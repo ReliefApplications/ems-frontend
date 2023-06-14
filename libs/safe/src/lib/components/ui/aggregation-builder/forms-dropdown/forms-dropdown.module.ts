@@ -8,6 +8,7 @@ import {
   FormWrapperModule,
   AutocompleteModule,
   IconModule,
+  SelectMenuModule
 } from '@oort-front/ui';
 
 /**
@@ -24,6 +25,7 @@ import {
     SpinnerModule,
     FormWrapperModule,
     AutocompleteModule,
+    SelectMenuModule,
   ],
   exports: [SafeFormsDropdownComponent],
 })

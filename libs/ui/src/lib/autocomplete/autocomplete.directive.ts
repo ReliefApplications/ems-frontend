@@ -68,11 +68,11 @@ export class AutocompleteDirective
    * @param option Option from autocomplete list item
    * @returns The option value needed to set in the host input
    */
-  getOptionValue = (option: OptionComponent) => {
+  getOptionValue = (option: OptionComponent) =>
     this.autocompleteDisplayKey
       ? option.value[this.autocompleteDisplayKey]
       : option.value;
-  }
+
   /**
    * Get options
    *
@@ -302,7 +302,6 @@ export class AutocompleteDirective
       this.document.getElementById('autocompleteList'),
       'click',
       (event: any) => {
-        console.log("eeee");
         const isGroup = JSON.parse(event.target.getAttribute('data-is-group'));
         if (!isGroup) {
           const optionValue = JSON.parse(
@@ -348,8 +347,6 @@ export class AutocompleteDirective
     setTimeout(() => {
       this.overlayRef.detach();
     }, 100);
-    console.log(this.autocompleteDisplayKey);
-    console.log("123456");  
   }
 
   /**

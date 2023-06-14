@@ -8,6 +8,7 @@ import {
   QueryList,
   ElementRef,
   AfterContentInit,
+  HostBinding,
 } from '@angular/core';
 
 /**
@@ -24,6 +25,8 @@ export class SelectOptionComponent implements AfterContentInit {
   @Input() isGroup = false;
   @Input() disabled = false;
   @Output() optionClick = new EventEmitter<any>();
+  @HostBinding('class.hidden')
+  @Input() hidden = false;
 
   @ContentChildren(forwardRef(() => SelectOptionComponent))
   options!: QueryList<SelectOptionComponent>;
