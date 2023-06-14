@@ -6,7 +6,7 @@
     <ui-spinner *ngIf="loading"></ui-spinner>
     <form *ngIf="!loading" [formGroup]="convertForm">
       <div class="flex flex-col">
-        <div uiFormFieldDirective [outline]="false" class="flex-1">
+        <div uiFormFieldDirective class="flex-1">
           <label>{{ 'components.record.convert.select' | translate }}</label>
           <ui-select-menu formControlName="targetForm">
             <ui-select-option

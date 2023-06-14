@@ -13,7 +13,7 @@
         </div>
         <div uiFormFieldDirective>
           <label>{{ 'common.resource.one' | translate }}</label>
-          <ui-select-menu>
+          <ui-select-menu [value]="resource.id" [disabled]="true">
             <ui-select-option
               [value]="resource.id"
               [disabled]="true"
