@@ -51,17 +51,20 @@
       icon="arrow_drop_down"
       (click)="showAppMenu = !showAppMenu"
       cdkOverlayOrigin
-      #appMenuTrigger="cdkOverlayOrigin">
+      #appMenuTrigger="cdkOverlayOrigin"
+    >
       {{ theme.prefix }} {{ title }}
     </ui-button>
     <ng-template
       cdkConnectedOverlay
       [cdkConnectedOverlayOrigin]="appMenuTrigger"
-      [cdkConnectedOverlayOpen]="showAppMenu">
+      [cdkConnectedOverlayOpen]="showAppMenu"
+    >
       <safe-search-menu
         [applications]="this.applications"
         (close)="showAppMenu = false"
-        (open)="onOpenApplication($event)"></safe-search-menu>
+        (open)="onOpenApplication($event)"
+      ></safe-search-menu>
     </ng-template>
   </ng-container>
   <!-- Account icon and info -->
@@ -117,7 +120,8 @@
       {{ 'components.header.logout' | translate }}
     </button>
     <div
-      class="absolute bottom-0 right-1 text-gray-400 text-xs pointer-events-none">
+      class="absolute bottom-0 right-1 text-gray-400 text-xs pointer-events-none"
+    >
       {{ environment.version }}
     </div>
   </ui-menu>
@@ -130,7 +134,8 @@
       <button
         uiMenuItem
         (click)="onNotificationClick(notification)"
-        *ngFor="let notification of notifications">
+        *ngFor="let notification of notifications"
+      >
         {{ notification.action }} - {{ notification.createdAt | safeDate }}
       </button>
     </div>
@@ -141,7 +146,8 @@
       class="!w-auto"
       [disabled]="loadingNotifications"
       [loading]="loadingNotifications"
-      (click)="onLoadMoreNotifications($event)">
+      (click)="onLoadMoreNotifications($event)"
+    >
       {{ 'common.pagination.loadMore' | translate }}
     </ui-button>
   </ui-menu>
@@ -200,3 +206,10 @@
     </ng-container>
   </ui-sidenav-container>
 </ng-template>
+
+<!-- <mat-sidenav
+*ngIf="sideMenu || !largeDevice"
+class="sidenav"
+#nav
+[mode]="largeDevice ? 'side' : 'over'"
+[opened]="largeDevice"> -->

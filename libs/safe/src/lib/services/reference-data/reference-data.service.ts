@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { isArray, isEqual } from 'lodash';
+import { isArray, isEqual, get } from 'lodash';
 import { map } from 'rxjs/operators';
 import localForage from 'localforage';
 import {

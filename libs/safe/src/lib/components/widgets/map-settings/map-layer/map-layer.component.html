@@ -1,21 +1,21 @@
 <ng-template #layerNavigationTemplate>
   <div class="tabs">
-    <safe-button
+    <ui-button
       icon="map"
       [attr.data-selected]="currentTab === 'parameters'"
       (click)="currentTab = 'parameters'"
     >
       {{ 'components.widget.settings.map.edit.layerProperties' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       *ngIf="form?.get('datasource')"
       icon="storage"
       [attr.data-selected]="currentTab === 'datasource'"
       (click)="currentTab = 'datasource'"
     >
       {{ 'components.widget.settings.map.edit.layerDatasource' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       *ngIf="form?.get('layerDefinition.drawingInfo')"
       icon="storage"
       [attr.data-selected]="currentTab === 'styling'"
@@ -23,15 +23,15 @@
       [disabled]="!isDatasourceValid"
     >
       {{ 'components.widget.settings.map.edit.layerStyling' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       *ngIf="form?.get('sublayers')"
       icon="map"
       [attr.data-selected]="currentTab === 'sublayers'"
       (click)="currentTab = 'sublayers'"
     >
       {{ 'components.widget.settings.map.edit.groupLayers' | translate }}
-    </safe-button>
+    </ui-button>
     <!-- <safe-button
       icon="map"
       [attr.data-selected]="currentTab === 'filter'"
@@ -46,7 +46,7 @@
     >
       {{ 'components.widget.settings.map.edit.cluster.cluster' | translate }}
     </safe-button> -->
-    <safe-button
+    <ui-button
       *ngIf="
         form?.get('layerDefinition.drawingInfo.renderer.type')?.value !==
         'heatmap'
@@ -57,8 +57,8 @@
       [disabled]="!isDatasourceValid"
     >
       {{ 'components.widget.settings.map.edit.aggregation' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       *ngIf="form?.get('popupInfo')"
       icon="map"
       [attr.data-selected]="currentTab === 'popup'"
@@ -66,8 +66,8 @@
       [disabled]="!isDatasourceValid"
     >
       {{ 'components.widget.settings.map.edit.popup' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       *ngIf="form?.get('datasource')"
       icon="map"
       [attr.data-selected]="currentTab === 'fields'"
@@ -75,7 +75,7 @@
       [disabled]="!isDatasourceValid"
     >
       {{ 'components.widget.settings.map.edit.fields' | translate }}
-    </safe-button>
+    </ui-button>
     <!-- <safe-button
       icon="map"
       [attr.data-selected]="currentTab === 'labels'"
@@ -152,10 +152,10 @@
     </div>
     <!-- Layer editor actions-->
     <div class="flex justify-end">
-      <safe-button (click)="onCancel()">
+      <ui-button (click)="onCancel()">
         {{ 'common.cancel' | translate }}
-      </safe-button>
-      <safe-button
+      </ui-button>
+      <ui-button
         category="secondary"
         variant="primary"
         (click)="onSubmit()"
@@ -163,7 +163,7 @@
         [disabled]="!form || !form.valid"
       >
         {{ (!layer ? 'common.create' : 'common.update') | translate }}
-      </safe-button>
+      </ui-button>
     </div>
   </div>
 </ng-template>

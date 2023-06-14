@@ -1,28 +1,59 @@
 <div [formGroup]="formGroup">
   <!-- Gradient -->
-  <mat-form-field appearance="outline">
-    <mat-label>{{ 'components.widget.settings.map.edit.styling.heatmapOptions.gradient' | translate }}</mat-label>
+  <div uiFormFieldDirective>
+    <label>{{
+      'components.widget.settings.map.edit.styling.heatmapOptions.gradient'
+        | translate
+    }}</label>
     <safe-gradient-picker formControlName="gradient"></safe-gradient-picker>
-  </mat-form-field>
+  </div>
   <!-- Radius -->
   <div class="flex flex-col">
-    <h3>{{ 'components.widget.settings.map.edit.styling.heatmapOptions.radius' | translate }}</h3>
-    <mat-slider class="grow" min="10" max="30" step="1" [discrete]="true">
-      <input matSliderThumb formControlName="radius" />
-    </mat-slider>
+    <h3>
+      {{
+        'components.widget.settings.map.edit.styling.heatmapOptions.radius'
+          | translate
+      }}
+    </h3>
+    <ui-slider
+      formControlName="radius"
+      class="grow"
+      [minValue]="10"
+      [maxValue]="30"
+    >
+    </ui-slider>
   </div>
   <!-- Blur -->
   <div class="flex flex-col">
-    <h3>{{ 'components.widget.settings.map.edit.styling.heatmapOptions.blur' | translate }}</h3>
-    <mat-slider class="grow" min="10" max="20" step="1" [discrete]="true">
-      <input matSliderThumb formControlName="blur" />
-    </mat-slider>
+    <h3>
+      {{
+        'components.widget.settings.map.edit.styling.heatmapOptions.blur'
+          | translate
+      }}
+    </h3>
+    <ui-slider
+      formControlName="blur"
+      class="grow"
+      [minValue]="10"
+      [maxValue]="20"
+    >
+    </ui-slider>
   </div>
   <div class="flex flex-col">
-    <h3>{{ 'components.widget.settings.map.edit.styling.heatmapOptions.minOpacity' | translate }}</h3>
-    <mat-slider class="grow" min="0" max="1" step="0.1" [discrete]="true">
-      <input matSliderThumb formControlName="minOpacity" />
-    </mat-slider>
+    <h3>
+      {{
+        'components.widget.settings.map.edit.styling.heatmapOptions.minOpacity'
+          | translate
+      }}
+    </h3>
+    <ui-slider
+      formControlName="minOpacity"
+      class="grow"
+      [minValue]="0"
+      [maxValue]="1"
+      [step]="0.1"
+    >
+    </ui-slider>
   </div>
 </div>
 <!-- 

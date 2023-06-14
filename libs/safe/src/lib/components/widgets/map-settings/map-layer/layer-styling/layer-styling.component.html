@@ -1,13 +1,15 @@
 <div [formGroup]="formGroup">
   <div formGroupName="renderer">
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'components.widget.settings.map.layers.styling.style' | translate }}</mat-label>
-      <mat-select formControlName="type">
-        <mat-option *ngFor="let type of rendererTypes" [value]="type"
+    <div uiFormFieldDirective>
+      <label>{{
+        'components.widget.settings.map.layers.styling.style' | translate
+      }}</label>
+      <ui-select-menu formControlName="type">
+        <ui-select-option *ngFor="let type of rendererTypes" [value]="type"
           >{{ type }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
     <div class="flex flex-col" [ngSwitch]="formGroup.value.renderer.type">
       <div *ngSwitchCase="'simple'">
         <ng-container *ngTemplateOutlet="simpleRenderer"></ng-container>
@@ -23,13 +25,20 @@
 </div>
 
 <ng-template #simpleRenderer>
-  <safe-simple-renderer [formGroup]="$any(formGroup.get('renderer.symbol'))"></safe-simple-renderer>
+  <safe-simple-renderer
+    [formGroup]="$any(formGroup.get('renderer.symbol'))"
+  ></safe-simple-renderer>
 </ng-template>
 
 <ng-template #heatmapRenderer>
-  <safe-heatmap-renderer [formGroup]="$any(formGroup.get('renderer'))"></safe-heatmap-renderer>
+  <safe-heatmap-renderer
+    [formGroup]="$any(formGroup.get('renderer'))"
+  ></safe-heatmap-renderer>
 </ng-template>
 
 <ng-template #uniqueValueRenderer>
-  <safe-unique-value-renderer [formGroup]="$any(formGroup.get('renderer'))" [fields$]="fields$"></safe-unique-value-renderer>
+  <safe-unique-value-renderer
+    [formGroup]="$any(formGroup.get('renderer'))"
+    [fields$]="fields$"
+  ></safe-unique-value-renderer>
 </ng-template>

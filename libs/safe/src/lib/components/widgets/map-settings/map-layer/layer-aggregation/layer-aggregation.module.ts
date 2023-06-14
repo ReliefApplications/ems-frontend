@@ -3,9 +3,8 @@ import { CommonModule } from '@angular/common';
 import { LayerAggregationComponent } from './layer-aggregation.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { LayerClusterModule } from '../layer-cluster/layer-cluster.module';
+import { FormWrapperModule, SelectMenuModule } from '@oort-front/ui';
 
 /**
  * Map layer aggregation settings module.
@@ -17,9 +16,9 @@ import { LayerClusterModule } from '../layer-cluster/layer-cluster.module';
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    MatSelectModule,
-    MatFormFieldModule,
+    FormWrapperModule,
     LayerClusterModule,
+    SelectMenuModule,
   ],
   exports: [LayerAggregationComponent],
 })

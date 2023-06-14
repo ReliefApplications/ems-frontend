@@ -61,7 +61,7 @@ export class SafeMapControlsService {
     const layerControl = new L.Control({ position: 'topright' });
     layerControl.onAdd = () => {
       const layersButton = L.DomUtil.create(
-        'safe-button',
+        'ui-button',
         'layers-bookmarks-menu'
       );
       const mapLayersComponent = this.domService.appendComponentToBody(

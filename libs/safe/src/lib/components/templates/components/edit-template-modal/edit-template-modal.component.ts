@@ -16,7 +16,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeEditorControlComponent } from '../../../editor-control/editor-control.component';
 import { RawEditorSettings } from 'tinymce';
-import { ButtonModule, SelectMenuModule } from '@oort-front/ui';
+import { EditorModule } from '@tinymce/tinymce-angular';
+import {
+  ButtonModule,
+  IconModule,
+  SelectMenuModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import { DialogModule, FormWrapperModule } from '@oort-front/ui';
 
 /** Model for the data input */
@@ -41,9 +47,12 @@ const SUBJECT_EDITOR_AUTOCOMPLETE_KEYS = ['{{now}}', '{{today}}'];
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
+    EditorModule,
     SafeEditorControlComponent,
     ButtonModule,
     SelectMenuModule,
+    IconModule,
+    TooltipModule,
   ],
   selector: 'safe-edit-template',
   templateUrl: './edit-template-modal.component.html',

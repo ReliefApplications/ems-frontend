@@ -17,6 +17,7 @@ import {
   ButtonModule,
   TooltipModule,
   FormWrapperModule,
+  IconModule,
 } from '@oort-front/ui';
 /**
  * Interface describing the structure of the data displayed in the dialog
@@ -35,6 +36,7 @@ interface DialogData {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    IconModule,
     SafeEditorControlComponent,
     FormWrapperModule,
     DialogModule,

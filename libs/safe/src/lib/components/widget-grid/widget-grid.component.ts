@@ -166,7 +166,7 @@ export class SafeWidgetGridComponent
     });
     dialogRef.componentInstance?.changeStep
       .pipe(takeUntil(this.destroy$))
-      .subscribe((event: number) => {
+      .subscribe((event: any) => {
         this.changeStep.emit(event);
         dialogRef.close();
       });

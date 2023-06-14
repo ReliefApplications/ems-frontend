@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MapControlsComponent } from './map-controls.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { ToggleModule } from '@oort-front/ui';
 
 /**
  * Module of Map Controls of the Map Properties.
@@ -16,8 +15,7 @@ import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/materia
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    MatSlideToggleModule,
-    MatFormFieldModule,
+    ToggleModule,
   ],
   exports: [MapControlsComponent],
 })

@@ -268,6 +268,7 @@ export class MapComponent
     } = this.extractSettings();
 
     if (initMap) {
+      console.log(document.getElementById(this.mapId));
       // Create leaflet map
       this.map = L.map(this.mapId, {
         zoomControl,

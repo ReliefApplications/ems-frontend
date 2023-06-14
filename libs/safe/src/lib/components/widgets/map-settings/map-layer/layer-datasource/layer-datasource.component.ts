@@ -22,8 +22,6 @@ import {
   GET_REFERENCE_DATAS,
   GET_REFERENCE_DATA,
 } from '../../graphql/queries';
-import { SafeGraphQLSelectComponent } from '../../../../graphql-select/graphql-select.component';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { AddLayoutModalComponent } from '../../../../grid-layout/add-layout-modal/add-layout-modal.component';
 import { get } from 'lodash';
 import { AddAggregationModalComponent } from '../../../../aggregation/add-aggregation-modal/add-aggregation-modal.component';
@@ -34,6 +32,8 @@ import { SafeEditAggregationModalComponent } from '../../../../aggregation/edit-
 import { FormControl, FormGroup } from '@angular/forms';
 import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
 import { Fields } from '../layer-fields/layer-fields.component';
+import { GraphQLSelectComponent } from '@oort-front/ui';
+import { Dialog } from '@angular/cdk/dialog';
 
 /** Default items per resources query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -55,14 +55,14 @@ export class LayerDatasourceComponent
   // Resource
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   public resource: Resource | null = null;
-  @ViewChild(SafeGraphQLSelectComponent)
-  resourceSelect?: SafeGraphQLSelectComponent;
+  @ViewChild(GraphQLSelectComponent)
+  resourceSelect?: GraphQLSelectComponent;
 
   // Reference data
   public refDatasQuery!: QueryRef<GetReferenceDatasQueryResponse>;
   public refData: ReferenceData | null = null;
-  @ViewChild(SafeGraphQLSelectComponent)
-  refDataSelect?: SafeGraphQLSelectComponent;
+  @ViewChild(GraphQLSelectComponent)
+  refDataSelect?: GraphQLSelectComponent;
 
   // Aggregation and layout
   public aggregation: Aggregation | null = null;
@@ -82,7 +82,7 @@ export class LayerDatasourceComponent
    */
   constructor(
     private apollo: Apollo,
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private gridLayoutService: SafeGridLayoutService,
     private aggregationService: SafeAggregationService,
     private mapLayersService: SafeMapLayersService
@@ -221,9 +221,9 @@ export class LayerDatasourceComponent
         hasLayouts: get(this.resource, 'layouts.totalCount', 0) > 0,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value) {
-        this.formGroup.get('layout')?.setValue(value.id);
+        this.formGroup.get('layout')?.setValue((value as any).id);
         this.layout = value;
         this.fields.emit(this.mapLayersService.getQueryFields(this.layout));
       }
@@ -238,9 +238,9 @@ export class LayerDatasourceComponent
         resource: this.resource,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value) {
-        this.formGroup.get('aggregation')?.setValue(value.id);
+        this.formGroup.get('aggregation')?.setValue((value as any).id);
         this.aggregation = value;
         this.fields.emit(
           this.mapLayersService.getAggregationFields(
@@ -262,7 +262,7 @@ export class LayerDatasourceComponent
         layout: this.layout,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value && this.layout) {
         this.gridLayoutService
           .editLayout(this.layout, value, this.resource?.id)
@@ -285,7 +285,7 @@ export class LayerDatasourceComponent
         aggregation: this.aggregation,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value && this.aggregation) {
         this.aggregationService
           .editAggregation(this.aggregation, value, this.resource?.id)

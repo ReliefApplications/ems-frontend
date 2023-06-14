@@ -1,45 +1,45 @@
 <ng-container [formGroup]="formGroup">
   <div class="flex flex-col">
-    <mat-form-field appearance="outline">
-      <mat-label>{{
+    <div uiFormFieldDirective>
+      <label>{{
         'components.widget.settings.map.layers.popup.fieldsElements.title'
           | translate
-      }}</mat-label>
+      }}</label>
       <safe-editor-control
         formControlName="title"
         [editorConfig]="editorConfig"
       ></safe-editor-control>
-      <safe-icon
+      <ui-icon
         icon="info"
         class="cursor-pointer"
         variant="grey"
-        matSuffix
-        [matTooltip]="
+        uiSuffix
+        [uiTooltip]="
           'components.widget.settings.map.layers.popup.tooltip.text' | translate
         "
-      ></safe-icon>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>{{
+      ></ui-icon>
+    </div>
+    <div uiFormFieldDirective>
+      <label>{{
         'components.widget.settings.map.layers.popup.fieldsElements.description'
           | translate
-      }}</mat-label>
+      }}</label>
       <safe-editor-control
         formControlName="description"
         [editorConfig]="editorConfig"
       ></safe-editor-control>
-      <safe-icon
+      <ui-icon
         icon="info"
         class="cursor-pointer"
         variant="grey"
-        matSuffix
-        [matTooltip]="
+        uiSuffix
+        [uiTooltip]="
           'components.widget.settings.map.layers.popup.tooltip.text' | translate
         "
-      ></safe-icon>
-    </mat-form-field>
+      ></ui-icon>
+    </div>
   </div>
-  <safe-divider></safe-divider>
+  <ui-divider></ui-divider>
   <div class="flex flex-row flex-wrap gap-2">
     <kendo-listbox
       class="h-72 flex-1"

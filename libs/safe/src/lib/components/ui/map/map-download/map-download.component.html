@@ -1,74 +1,84 @@
 <div class="border-2 border-opacity-20 border-black rounded-md bg-white">
   <!-- Small control ( not showing download ) -->
   <button class="bg-none p2" (click)="toggleVisibility()" *ngIf="!expanded">
-    <safe-icon icon="download"></safe-icon>
+    <ui-icon icon="download"></ui-icon>
   </button>
   <!-- Expanded control ( showing download ) -->
   <div class="flex flex-col" *ngIf="expanded" [formGroup]="formGroup">
     <!-- Selection of view -->
     <div class="p-1">
-      <mat-radio-group
+      <div
         formControlName="view"
-        aria-labelledby="view-radio-group"
+        uiRadioGroupDirective="viewOptions"
         class="flex flex-col gap-1"
       >
-        <mat-radio-button *ngFor="let view of viewOptions" [value]="view.value">
-          {{ view.label }}
-        </mat-radio-button>
-      </mat-radio-group>
+        <ui-radio *ngFor="let view of viewOptions" [value]="view.value">
+          <ng-container ngProjectAs="label">
+            {{ view.label }}
+          </ng-container>
+        </ui-radio>
+      </div>
     </div>
-    <safe-divider class="m-0"></safe-divider>
+    <ui-divider class="m-0"></ui-divider>
     <!-- Selection of layers to export -->
     <div class="p-1 flex flex-col gap-1">
-      <mat-radio-group
+      <div
         formControlName="layers"
-        aria-labelledby="layer-radio-group"
+        uiRadioGroupDirective="layerOptions"
         class="flex flex-col gap-1"
       >
-        <mat-radio-button
+        <ui-radio
           class="radio-button"
           *ngFor="let layer of layersOptions"
           [value]="layer.value"
         >
-          {{ layer.label }}
-        </mat-radio-button>
-      </mat-radio-group>
+          <ng-container ngProjectAs="label">
+            {{ layer.label }}
+          </ng-container>
+        </ui-radio>
+      </div>
       <ng-container *ngIf="formGroup.value.layers === 'selected'">
-        <mat-form-field appearance="outline" class="p-0">
-          <mat-label>{{
+        <div uiFormFieldDirective class="p-0">
+          <label>{{
             'components.map.controls.download.selectLayers' | translate
-          }}</mat-label>
-          <mat-select formControlName="selectedLayers" multiple>
-            <mat-option *ngFor="let layer of layers" [value]="layer.label">
+          }}</label>
+          <ui-select-menu formControlName="selectedLayers" [multiselect]="true">
+            <ui-select-option
+              *ngFor="let layer of layers"
+              [value]="layer.label"
+            >
               {{ layer.label }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
       </ng-container>
     </div>
-    <safe-divider class="m-0"></safe-divider>
+    <ui-divider class="m-0"></ui-divider>
     <!-- Export format -->
     <div class="p-1">
-      <mat-form-field appearance="outline" class="p-0">
-        <mat-label>{{
+      <div uiFormFieldDirective class="p-0">
+        <label>{{
           'components.map.controls.download.output' | translate
-        }}</mat-label>
-        <mat-select formControlName="output">
-          <mat-option *ngFor="let output of outputOptions" [value]="output">
+        }}</label>
+        <ui-select-menu formControlName="output">
+          <ui-select-option
+            *ngFor="let output of outputOptions"
+            [value]="output"
+          >
             {{ output }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
     </div>
-    <safe-divider class="m-0"></safe-divider>
+    <ui-divider class="m-0"></ui-divider>
     <!-- Actions -->
     <div class="flex gap-1 justify-end">
-      <safe-button
+      <ui-button
         [isIcon]="true"
         icon="close"
         (click)="toggleVisibility()"
-      ></safe-button>
-      <safe-button [isIcon]="true" icon="download"></safe-button>
+      ></ui-button>
+      <ui-button [isIcon]="true" icon="download"></ui-button>
     </div>
   </div>
 </div>

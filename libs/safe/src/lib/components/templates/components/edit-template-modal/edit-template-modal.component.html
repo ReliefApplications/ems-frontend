@@ -27,8 +27,6 @@
       </div>
       <div uiFormFieldDirective>
         <label>{{ 'components.templates.edit.subject' | translate }}</label>
-        <!-- <input formControlName="subject" type="text" /> -->
-        <!-- @todo: check -->
         <safe-editor-control
           formControlName="subject"
           [editorConfig]="subjectEditor"
@@ -37,7 +35,7 @@
           icon="info"
           class="cursor-pointer"
           variant="grey"
-          matSuffix
+          uiSuffix
           [uiTooltip]="'common.tooltip.editor.insert' | translate"
         ></ui-icon>
       </div>

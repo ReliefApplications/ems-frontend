@@ -1,7 +1,7 @@
 <div class="border-2 border-opacity-20 border-black rounded-md bg-white">
   <!-- Small control ( not showing legend ) -->
   <button class="bg-none p2" (click)="toggleVisibility()" *ngIf="!expanded">
-    <safe-icon icon="list"></safe-icon>
+    <ui-icon icon="list"></ui-icon>
   </button>
   <!-- Expanded control ( showing legend ) -->
   <div class="flex flex-col w-48" *ngIf="expanded">
@@ -12,11 +12,11 @@
       <h2 class="m-0">
         {{ 'components.widget.settings.map.legend.title' | translate }}
       </h2>
-      <safe-button
+      <ui-button
         icon="close"
         [isIcon]="true"
         (click)="toggleVisibility()"
-      ></safe-button>
+      ></ui-button>
     </div>
     <!-- Layers -->
     <div class="max-h-80 overflow-y-auto p-2 flex flex-col gap-2">

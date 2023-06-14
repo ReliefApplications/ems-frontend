@@ -278,13 +278,15 @@ export class MapLayerComponent
           'components.widget.settings.close.confirmationMessage'
         ),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'warn',
+        confirmVariant: 'danger',
       });
-      confirmDialogRef.afterClosed().subscribe((value: any) => {
-        if (value) {
-          this.layerToSave.emit(undefined);
-        }
-      });
+      confirmDialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.layerToSave.emit(undefined);
+          }
+        });
     }
   }
 

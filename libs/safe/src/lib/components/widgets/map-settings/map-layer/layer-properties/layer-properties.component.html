@@ -2,15 +2,19 @@
   <!-- Options section -->
   <form [formGroup]="form" class="flex flex-col space-y-8">
     <!-- Layer title -->
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'common.title' | translate }}</mat-label>
-      <input matInput formControlName="name" type="text" />
-    </mat-form-field>
+    <div uiFormFieldDirective>
+      <label>{{ 'common.title' | translate }}</label>
+      <input formControlName="name" type="text" />
+    </div>
     <!-- Default visibility -->
-    <mat-slide-toggle formControlName="visibility">{{
-      'components.widget.settings.map.edit.properties.defaultVisibility'
-        | translate
-    }}</mat-slide-toggle>
+    <ui-toggle formControlName="visibility">
+      <ng-container ngProjectAs="label">
+        {{
+          'components.widget.settings.map.edit.properties.defaultVisibility'
+            | translate
+        }}
+      </ng-container>
+    </ui-toggle>
     <!-- Opacity -->
     <div class="flex flex-col">
       <h3>
@@ -18,9 +22,14 @@
           'components.widget.settings.map.edit.properties.opacity' | translate
         }}
       </h3>
-      <mat-slider class="grow" min="0" max="1" step="0.1" [discrete]="true">
-        <input matSliderThumb formControlName="opacity" />
-      </mat-slider>
+      <ui-slider
+        formControlName="opacity"
+        class="grow"
+        [minValue]="0"
+        [maxValue]="1"
+        [step]="0.1"
+      >
+      </ui-slider>
     </div>
     <!-- Visibility range -->
     <div class="flex flex-col" formGroupName="layerDefinition">
@@ -30,10 +39,11 @@
             | translate
         }}
       </h3>
-      <mat-slider class="grow" min="2" max="18" step="1" [discrete]="true">
+      <!--@TODO TAILWIND-->
+      <!-- <mat-slider class="grow" min="2" max="18" step="1" [discrete]="true">
         <input formControlName="minZoom" matSliderStartThumb />
         <input formControlName="maxZoom" matSliderEndThumb />
-      </mat-slider>
+      </mat-slider> -->
     </div>
     <!-- Zoom level -->
     <h3>

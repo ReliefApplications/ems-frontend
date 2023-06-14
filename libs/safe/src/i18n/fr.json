@@ -1577,7 +1577,7 @@
 			"noDataText": "No available choice"
 		},
 		"datepicker": {
-			"dateLabel": "Sélectionner une date",
+			"dateLabel": "Sélectionnez une date",
 			"endLabel": "Date de fin",
 			"startLabel": "Date de début",
 			"today": "Aujourd'hui",
