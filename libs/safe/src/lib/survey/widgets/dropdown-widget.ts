@@ -24,17 +24,14 @@ export const init = (Survey: any, domService: DomService): void => {
       dropdownDiv = document.createElement('div');
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const dropdownInstance = createDropdownInstance(dropdownDiv);
-      if (!isObject(question.value) && isArray(question.value)) {
+      if (!isObject(question.value) && !isArray(question.value)) {
         dropdownInstance.value = question.value;
-      } else {
-        console.log(question.name);
-        console.log(question.value);
       }
       dropdownInstance.placeholder = question.placeholder;
       dropdownInstance.readonly = question.isReadOnly;
       dropdownInstance.disabled = question.isReadOnly;
       dropdownInstance.registerOnChange((value: any) => {
-        if (!isObject(value) && isArray(value)) {
+        if (!isObject(value) && !isArray(value)) {
           question.value = value;
         } else {
           console.log(question.name);
@@ -90,9 +87,9 @@ export const init = (Survey: any, domService: DomService): void => {
       element
     );
     const dropdownInstance: ComboBoxComponent = dropdown.instance;
-    // dropdownInstance.virtual = {
-    //   itemHeight: 28,
-    // };
+    dropdownInstance.virtual = {
+      itemHeight: 28,
+    };
     dropdownInstance.valuePrimitive = true;
     dropdownInstance.textField = 'text';
     dropdownInstance.valueField = 'value';
