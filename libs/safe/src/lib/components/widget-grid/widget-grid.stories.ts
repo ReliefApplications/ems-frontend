@@ -68,6 +68,9 @@ const defaultWidgets = [
   },
 ];
 
+/**
+ * Default story
+ */
 export const DEFAULT = {
   render: TEMPLATE,
   name: 'Default',
@@ -78,6 +81,9 @@ export const DEFAULT = {
   },
 };
 
+/**
+ * Empty story
+ */
 export const EMPTY = {
   render: TEMPLATE,
   name: 'Empty grid',

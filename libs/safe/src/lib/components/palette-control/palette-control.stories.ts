@@ -53,6 +53,9 @@ const COLORS = [
   '#FF0000',
 ];
 
+/**
+ * Default story
+ */
 export const DEFAULT = {
   render: TEMPLATE,
 
@@ -62,6 +65,9 @@ export const DEFAULT = {
   },
 };
 
+/**
+ * Disabled story
+ */
 export const DISABLED = {
   render: TEMPLATE,
 

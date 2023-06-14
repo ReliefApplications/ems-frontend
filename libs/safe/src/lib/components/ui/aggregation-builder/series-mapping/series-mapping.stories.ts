@@ -168,6 +168,9 @@ const TEMPLATE: StoryFn<SafeSeriesMappingComponent> = () => ({
   },
 });
 
+/**
+ * With source story
+ */
 export const INITIAL_SOURCE = {
   render: TEMPLATE,
   name: 'Initial source',

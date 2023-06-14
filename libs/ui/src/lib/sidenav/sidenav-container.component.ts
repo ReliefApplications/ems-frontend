@@ -38,6 +38,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
    *
    * @param renderer Renderer2
    * @param cdr ChangeDetectorRef
+   * @param el elementRef
    */
   constructor(
     private renderer: Renderer2,

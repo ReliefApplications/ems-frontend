@@ -59,6 +59,9 @@ const TEMPLATE: StoryFn<SafeMappingModalComponent> = () => ({
   template: '<safe-mapping-modal></safe-mapping-modal>',
 });
 
+/**
+ * Default story
+ */
 export const DEFAULT = {
   render: TEMPLATE,
   name: 'Full',
