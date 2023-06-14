@@ -2,9 +2,9 @@ import {
   Component,
   ElementRef,
   HostListener,
-  Inject,
   Input,
   NgZone,
+  OnChanges,
   OnDestroy,
   OnInit,
   Optional,
@@ -28,7 +28,6 @@ import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../services/context/context.service';
 import { SidenavContainerComponent, SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
-import { DOCUMENT } from '@angular/common';
 
 /**
  * Interface for quick filters
@@ -46,7 +45,7 @@ interface QuickFilter {
 })
 export class DashboardFilterComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, OnDestroy
+  implements OnInit, OnDestroy, OnChanges
 {
   // Filter
   position!: FilterPosition;
@@ -99,7 +98,6 @@ export class DashboardFilterComponent
     private translate: TranslateService,
     private contextService: ContextService,
     private ngZone: NgZone,
-    @Inject(DOCUMENT) private document: Document,
     @Optional() private _host: SidenavContainerComponent
   ) {
     super();

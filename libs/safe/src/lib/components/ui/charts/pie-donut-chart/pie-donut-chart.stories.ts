@@ -43,6 +43,9 @@ const TEMPLATE: StoryFn<SafePieDonutChartComponent> = (args) => ({
   },
 });
 
+/**
+ * Default story
+ */
 export const DEFAULT = {
   render: TEMPLATE,
   name: 'Default',
@@ -73,6 +76,9 @@ export const DEFAULT = {
   },
 };
 
+/**
+ * Donut story
+ */
 export const DOUGHNUT = {
   render: TEMPLATE,
   name: 'Doughnut',

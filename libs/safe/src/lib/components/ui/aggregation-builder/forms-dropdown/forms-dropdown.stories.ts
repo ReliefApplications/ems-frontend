@@ -106,6 +106,9 @@ const DEFAULT_FORMS = [
   },
 ];
 
+/**
+ * Default story
+ */
 export const DEFAULT = {
   render: TEMPLATE,
   name: 'Default',
@@ -118,6 +121,9 @@ export const DEFAULT = {
   },
 };
 
+/**
+ * With initial value story
+ */
 export const INITIAL_SOURCE = {
   render: TEMPLATE,
   name: 'Initial source',
