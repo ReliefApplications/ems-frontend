@@ -1,8 +1,16 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { MapConstructorSettings } from '../../../ui/map/interfaces/map.interface';
 import { BASEMAPS } from '../../../ui/map/const/baseMaps';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 
 /**
  * Map Properties of Map widget.
@@ -15,7 +23,12 @@ import { BASEMAPS } from '../../../ui/map/const/baseMaps';
 export class MapPropertiesComponent extends SafeUnsubscribeComponent {
   @Input() form!: UntypedFormGroup;
   @Input() mapSettings!: MapConstructorSettings;
-  @Input() arcgisteste!: string;
+  @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;
+
+  @ViewChild('mapContainer', { read: ViewContainerRef })
+  mapContainerRef!: ViewContainerRef;
+
+  @Input() destroyTab$!: Subject<boolean>;
 
   public baseMaps = BASEMAPS;
 
@@ -31,6 +44,22 @@ export class MapPropertiesComponent extends SafeUnsubscribeComponent {
    */
   constructor() {
     super();
+  }
+
+  ngAfterViewInit(): void {
+    this.currentMapContainerRef
+      .pipe(takeUntil(this.destroyTab$))
+      .subscribe((viewContainerRef) => {
+        if (viewContainerRef) {
+          if (viewContainerRef !== this.mapContainerRef) {
+            const view = viewContainerRef.detach();
+            if (view) {
+              this.mapContainerRef.insert(view);
+              this.currentMapContainerRef.next(this.mapContainerRef);
+            }
+          }
+        }
+      });
   }
 
   /**

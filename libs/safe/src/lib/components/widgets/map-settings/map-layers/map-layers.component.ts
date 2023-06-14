@@ -7,6 +7,8 @@ import {
   OnInit,
   Output,
   SimpleChanges,
+  ViewChild,
+  ViewContainerRef,
 } from '@angular/core';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { AddLayerModalComponent } from '../add-layer-modal/add-layer-modal.component';
@@ -14,7 +16,7 @@ import { SafeMapLayersService } from '../../../../services/map/map-layers.servic
 import { LayerModel } from '../../../../models/layer.model';
 import { LayerType } from '../../../ui/map/interfaces/layer-settings.type';
 import { Dialog } from '@angular/cdk/dialog';
-import { takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 
 /**
  * Layers configuration component of Map Widget.
@@ -33,6 +35,12 @@ export class MapLayersComponent
   @Output() close = new EventEmitter();
   @Output() editLayer = new EventEmitter<LayerModel>();
   @Output() deleteLayer = new EventEmitter<string>();
+  @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;
+
+  @ViewChild('mapContainer', { read: ViewContainerRef })
+  mapContainerRef!: ViewContainerRef;
+
+  @Input() destroyTab$!: Subject<boolean>;
 
   // Table
   public mapLayers: Array<LayerModel> = new Array<LayerModel>();
@@ -60,6 +68,22 @@ export class MapLayersComponent
       this.layerIds = changes.layerIds.currentValue;
       this.updateLayerList();
     }
+  }
+
+  ngAfterViewInit(): void {
+    this.currentMapContainerRef
+      .pipe(takeUntil(this.destroyTab$))
+      .subscribe((viewContainerRef) => {
+        if (viewContainerRef) {
+          if (viewContainerRef !== this.mapContainerRef) {
+            const view = viewContainerRef.detach();
+            if (view) {
+              this.mapContainerRef.insert(view);
+              this.currentMapContainerRef.next(this.mapContainerRef);
+            }
+          }
+        }
+      });
   }
 
   /**

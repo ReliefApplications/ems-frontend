@@ -6,6 +6,8 @@ import {
   EventEmitter,
   ViewChild,
   ChangeDetectorRef,
+  ViewContainerRef,
+  OnDestroy,
 } from '@angular/core';
 import { createMapWidgetFormGroup } from './map-forms';
 import { UntypedFormGroup } from '@angular/forms';
@@ -15,7 +17,7 @@ import {
   MapEvent,
   MapEventType,
 } from '../../ui/map/interfaces/map.interface';
-import { takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil, tap } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { LayerModel } from '../../../models/layer.model';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
@@ -32,7 +34,7 @@ import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 })
 export class SafeMapSettingsComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   public currentTab: 'parameters' | 'layers' | 'layer' | 'display' | null =
     'parameters';
@@ -52,9 +54,13 @@ export class SafeMapSettingsComponent
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
   @ViewChild(MapComponent) mapComponent?: MapComponent;
+  @ViewChild('mapContainer', { read: ViewContainerRef })
+  mapContainerRef!: ViewContainerRef;
 
-  // @ViewChild(MapComponent)
-  // map: any;
+  public currentMapContainerRef = new BehaviorSubject<ViewContainerRef | null>(
+    null
+  );
+  destroyTab$: Subject<boolean> = new Subject<boolean>();
 
   /**
    * Class constructor
@@ -92,6 +98,29 @@ export class SafeMapSettingsComponent
     };
     this.updateMapSettings(defaultMapSettings);
     this.setUpFormListeners();
+  }
+
+  ngAfterViewInit(): void {
+    const componentRef = this.mapContainerRef.createComponent(MapComponent);
+    componentRef.instance.mapSettings = this.mapSettings;
+    componentRef.instance.mapEvent.subscribe((event) =>
+      this.handleMapEvent(event)
+    );
+    this.mapComponent = componentRef.instance;
+    this.currentMapContainerRef.next(this.mapContainerRef);
+  }
+
+  selectedIndexChange(): void {
+    this.destroyTab$.next(true);
+    const currentContainerRef = this.currentMapContainerRef.getValue();
+    if (currentContainerRef) {
+      const view = currentContainerRef.detach();
+      if (view) {
+        this.mapContainerRef.insert(view);
+        this.currentMapContainerRef.next(this.mapContainerRef);
+        this.destroyTab$.next(false);
+      }
+    }
   }
 
   /**
@@ -166,36 +195,6 @@ export class SafeMapSettingsComponent
     }
     this.currentTab = tab;
     this.cdr.detectChanges();
-  }
-
-  /**
-   * Handle tab set logic
-   *
-   * @param selectedTab tab
-   */
-  handleTabChange(
-    selectedTab: 'parameters' | 'layers' | 'layer' | 'display' | null
-  ) {
-    // console.log(selectedTab);
-    // if (this.currentTab === 'layer' && !this.layerComponent?.form.pristine) {
-    //   const confirmDialogRef = this.confirmService.openConfirmModal({
-    //     title: this.translate.instant('common.close'),
-    //     content: this.translate.instant(
-    //       'components.widget.settings.close.confirmationMessage'
-    //     ),
-    //     confirmText: this.translate.instant('components.confirmModal.confirm'),
-    //     confirmVariant: 'danger',
-    //   });
-    //   confirmDialogRef.closed
-    //     .pipe(takeUntil(this.destroy$))
-    //     .subscribe((value: any) => {
-    //       if (value) {
-    //         this.openTab(selectedTab);
-    //       }
-    //     });
-    // } else {
-    //   this.openTab(selectedTab);
-    // }
   }
 
   /**
@@ -374,5 +373,10 @@ export class SafeMapSettingsComponent
 
     const currLayers = layer.sublayers ?? [];
     layer.sublayers = [...new Set([...currLayers, newLayerId])];
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.mapContainerRef.detach();
   }
 }
