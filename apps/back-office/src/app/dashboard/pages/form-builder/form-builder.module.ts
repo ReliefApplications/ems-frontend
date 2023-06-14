@@ -5,15 +5,19 @@ import { FormBuilderComponent } from './form-builder.component';
 import {
   SafeAccessModule,
   SafeFormBuilderModule,
-  SafeButtonModule,
   SafeDateModule,
   SafeEditableTextModule,
 } from '@oort-front/safe';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import {
+  ChipModule,
+  FormWrapperModule,
+  SelectMenuModule,
+  SpinnerModule,
+  TableModule,
+} from '@oort-front/ui';
 import { HistoryComponent } from './components/history/history.component';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { TranslateModule } from '@ngx-translate/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 /**
  * Form builder module.
@@ -23,15 +27,18 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     FormBuilderRoutingModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    MatButtonToggleModule,
+    SpinnerModule,
     SafeFormBuilderModule,
     SafeAccessModule,
-    SafeButtonModule,
     TranslateModule,
     SafeDateModule,
     SafeEditableTextModule,
+    TableModule,
+    ChipModule,
+    SelectMenuModule,
+    FormWrapperModule,
+    FormsModule,
+    ReactiveFormsModule,
   ],
   exports: [FormBuilderComponent],
 })

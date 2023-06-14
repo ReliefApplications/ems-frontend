@@ -4,14 +4,16 @@ import {
   Form,
   Resource,
   SafeConfirmService,
-  SafeSnackBarService,
+  SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import { TranslateService } from '@ngx-translate/core';
 import { DeleteFormMutationResponse, DELETE_FORM } from './graphql/mutations';
 import get from 'lodash/get';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { GetResourceByIdQueryResponse } from '../graphql/queries';
 import { GET_RESOURCE_FORMS } from './graphql/queries';
+import { Dialog } from '@angular/cdk/dialog';
+import { SnackbarService } from '@oort-front/ui';
+import { takeUntil } from 'rxjs';
 
 /**
  *Forms tab of resource page
@@ -21,7 +23,10 @@ import { GET_RESOURCE_FORMS } from './graphql/queries';
   templateUrl: './forms-tab.component.html',
   styleUrls: ['./forms-tab.component.scss'],
 })
-export class FormsTabComponent implements OnInit {
+export class FormsTabComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   private resource!: Resource;
   public forms: Form[] = [];
   public loading = true;
@@ -42,15 +47,17 @@ export class FormsTabComponent implements OnInit {
    * @param snackBar Shared snackbar service
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    */
   constructor(
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
-    private dialog: MatDialog
-  ) {}
+    private dialog: Dialog
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     const state = history.state;
@@ -90,9 +97,9 @@ export class FormsTabComponent implements OnInit {
         }
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
-      confirmColor: 'warn',
+      confirmVariant: 'danger',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<DeleteFormMutationResponse>({

@@ -4,12 +4,15 @@ import {
   HostListener,
   Input,
   NgZone,
+  OnChanges,
   OnDestroy,
   OnInit,
+  Optional,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { FilterPosition } from './enums/dashboard-filters.enum';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import * as Survey from 'survey-angular';
 import { Apollo } from 'apollo-angular';
 import { SafeApplicationService } from '../../services/application/application.service';
@@ -22,8 +25,8 @@ import {
   EditApplicationMutationResponse,
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { ContextService } from '../../services/context/context.service';
+import { SidenavContainerComponent, SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
 
 /**
@@ -42,7 +45,7 @@ interface QuickFilter {
 })
 export class DashboardFilterComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, OnDestroy
+  implements OnInit, OnDestroy, OnChanges
 {
   // Filter
   position!: FilterPosition;
@@ -70,31 +73,32 @@ export class DashboardFilterComponent
   public applicationId?: string;
 
   /** Indicate empty status of filter */
-  public empty = false;
+  public empty = true;
 
   @Input() editable = false;
+  @Input() isFullScreen = false;
 
   /**
    * Class constructor
    *
-   * @param hostElement Host/Component Element
-   * @param dialog The material dialog service
+   * @param dialog The Dialog service
    * @param apollo Apollo client
    * @param applicationService Shared application service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param contextService Context service
    * @param ngZone Triggers html changes
+   * @param _host sidenav container host
    */
   constructor(
-    private hostElement: ElementRef<HTMLElement>,
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private translate: TranslateService,
     private contextService: ContextService,
-    private ngZone: NgZone
+    private ngZone: NgZone,
+    @Optional() private _host: SidenavContainerComponent
   ) {
     super();
   }
@@ -134,25 +138,23 @@ export class DashboardFilterComponent
             });
         }
       });
-    const parentRect =
-      this.hostElement.nativeElement.parentElement?.parentElement?.getBoundingClientRect(); //This is the sidenav container, not ideal solution
-    this.containerWidth = `${parentRect?.width}px`;
-    this.containerHeight = `${parentRect?.height}px`;
-    this.containerLeftOffset = `${parentRect?.x}px`;
-    this.containerTopOffset = `${parentRect?.y}px`;
+    this.setFilterContainerDimensions();
   }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.isFullScreen) {
+      this.setFilterContainerDimensions();
+    }
+  }
+
+  // add ngOnChanges there
 
   /**
    * Set the drawer height and width on resize
    */
   @HostListener('window:resize', ['$event'])
   onResize() {
-    const parentRect =
-      this.hostElement.nativeElement.parentElement?.parentElement?.getBoundingClientRect(); //This is the sidenav container, not ideal solution
-    this.containerWidth = `${parentRect?.width}px`;
-    this.containerHeight = `${parentRect?.height}px`;
-    this.containerLeftOffset = `${parentRect?.x}px`;
-    this.containerTopOffset = `${parentRect?.y}px`;
+    this.setFilterContainerDimensions();
   }
 
   /**
@@ -182,17 +184,19 @@ export class DashboardFilterComponent
           data: { surveyStructure: this.surveyStructure },
           autoFocus: false,
         });
-        dialogRef.afterClosed().subscribe((newStructure) => {
-          if (newStructure) {
-            this.surveyStructure = newStructure;
-            localForage.setItem(
-              this.applicationId + 'contextualFilter',
-              this.surveyStructure
-            );
-            this.initSurvey();
-            this.saveFilter();
-          }
-        });
+        dialogRef.closed
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((newStructure) => {
+            if (newStructure) {
+              this.surveyStructure = newStructure;
+              localForage.setItem(
+                this.applicationId + 'contextualFilter',
+                this.surveyStructure
+              );
+              this.initSurvey();
+              this.saveFilter();
+            }
+          });
       }
     );
   }
@@ -263,11 +267,13 @@ export class DashboardFilterComponent
         const dialogRef = this.dialog.open(FilterSettingsModalComponent, {
           data: { positionList: this.positionList },
         });
-        dialogRef.afterClosed().subscribe((defaultPosition) => {
-          if (defaultPosition) {
-            this.saveSettings(defaultPosition);
-          }
-        });
+        dialogRef.closed
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((defaultPosition) => {
+            if (defaultPosition) {
+              this.saveSettings(defaultPosition as FilterPosition);
+            }
+          });
       }
     );
   }
@@ -316,16 +322,60 @@ export class DashboardFilterComponent
    */
   private onValueChange() {
     const surveyData = this.survey.data;
+    const displayValues = this.survey.getPlainData();
     this.contextService.filter.next(surveyData);
     this.ngZone.run(() => {
-      this.quickFilters = Object.keys(surveyData).map((question: string) =>
-        Array.isArray(surveyData[question]) && surveyData[question].length > 2
-          ? {
-              label: question + ` (${surveyData[question].length})`,
-              tooltip: surveyData[question].join('\n'),
-            }
-          : { label: surveyData[question] }
-      );
+      this.quickFilters = displayValues
+        .filter((question) => !!question.value)
+        .map((question: any) => {
+          let mappedQuestion;
+          if (question.value instanceof Array && question.value.length > 2) {
+            mappedQuestion = {
+              label: question.title + ` (${question.value.length})`,
+              tooltip: question.displayValue,
+            };
+          } else {
+            mappedQuestion = {
+              label: question.displayValue,
+            };
+          }
+          return mappedQuestion;
+        });
     });
+  }
+
+  /**
+   * Set filter container dimensions for the current parent container wrapper
+   */
+  private setFilterContainerDimensions() {
+    // also check if fullscreen !
+    if (this.isFullScreen) {
+      this.containerWidth = `${window.innerWidth}px`;
+      this.containerHeight = `${window.innerHeight}px`;
+      this.containerLeftOffset = `${0}px`;
+      this.containerTopOffset = `${0}px`;
+    } else {
+      if (this._host) {
+        if (this._host.showSidenav[0]) {
+          // remove width from left sidenav if opened
+          this.containerWidth = `${
+            this._host.el.nativeElement.offsetWidth -
+            this._host.sidenav.get(0).nativeElement.offsetWidth
+          }px`;
+          this.containerHeight = `${this._host.el.nativeElement.offsetHeight}px`;
+          // Add width from left sidenav as left offset
+          this.containerLeftOffset = `${
+            this._host.el.nativeElement.offsetLeft +
+            this._host.sidenav.get(0).nativeElement.offsetWidth
+          }px`;
+          this.containerTopOffset = `${this._host.el.nativeElement.offsetTop}px`;
+        } else {
+          this.containerWidth = `${this._host.el.nativeElement.offsetWidth}px`;
+          this.containerHeight = `${this._host.el.nativeElement.offsetHeight}px`;
+          this.containerLeftOffset = `${this._host.el.nativeElement.offsetLeft}px`;
+          this.containerTopOffset = `${this._host.el.nativeElement.offsetTop}px`;
+        }
+      }
+    }
   }
 }

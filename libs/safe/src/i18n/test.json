@@ -409,6 +409,11 @@
 			"dashboard": {
 				"editFilter": "******",
 				"empty": "******",
+				"filter": {
+					"empty": "******",
+					"info": "******",
+					"title": "******"
+				},
 				"filterSettings": "******",
 				"settings": {
 					"defaultPosition": "******"
@@ -620,6 +625,7 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"duplicatedRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingGridField": "****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
@@ -924,6 +930,7 @@
 						"add": "******",
 						"delete": "******",
 						"edit": "******",
+						"none": "******",
 						"title": "******"
 					},
 					"title": "******"
@@ -1550,7 +1557,13 @@
 		}
 	},
 	"kendo": {
+		"combobox": {
+			"noDataText": "******"
+		},
 		"datepicker": {
+			"dateLabel": "******",
+			"endLabel": "******",
+			"startLabel": "******",
 			"today": "******",
 			"toggle": "******"
 		},
@@ -1698,6 +1711,9 @@
 			"stick": "******",
 			"unlock": "******",
 			"unstick": "******"
+		},
+		"multiselect": {
+			"noDataText": "******"
 		},
 		"pager": {
 			"firstPage": "******",

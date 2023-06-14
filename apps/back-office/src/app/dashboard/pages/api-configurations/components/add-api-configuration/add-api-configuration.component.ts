@@ -5,7 +5,7 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { MatLegacyDialogRef as MatDialogRef } from '@angular/material/legacy-dialog';
+import { DialogRef } from '@angular/cdk/dialog';
 import { apiValidator } from '../../../../../utils/nameValidation';
 
 /**
@@ -29,11 +29,11 @@ export class AddApiConfigurationComponent implements OnInit {
    * Add API configuration component
    *
    * @param formBuilder Angular form builder
-   * @param dialogRef Material dialog ref
+   * @param dialogRef Dialog ref
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<AddApiConfigurationComponent>
+    public dialogRef: DialogRef<AddApiConfigurationComponent>
   ) {}
 
   /** Build the form. */

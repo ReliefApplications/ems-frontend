@@ -7,7 +7,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   GetDashboardByIdQueryResponse,
@@ -15,7 +15,6 @@ import {
 } from './graphql/queries';
 import {
   Dashboard,
-  SafeSnackBarService,
   SafeDashboardService,
   SafeUnsubscribeComponent,
   SafeWidgetGridComponent,
@@ -24,6 +23,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { map, takeUntil } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Dashboard page.
@@ -60,7 +60,7 @@ export class DashboardComponent
    * @param apollo Apollo client
    * @param route Angular current page
    * @param router Angular router
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param dashboardService Shared dashboard service
    * @param translate Angular translate service
@@ -70,8 +70,8 @@ export class DashboardComponent
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    public dialog: Dialog,
+    private snackBar: SnackbarService,
     private dashboardService: SafeDashboardService,
     private translate: TranslateService,
     private confirmService: SafeConfirmService
@@ -146,9 +146,9 @@ export class DashboardComponent
         title: this.translate.instant('pages.dashboard.update.exit'),
         content: this.translate.instant('pages.dashboard.update.exitMessage'),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
+        confirmVariant: 'primary',
       });
-      return dialogRef.afterClosed().pipe(
+      return dialogRef.closed.pipe(
         map((confirm) => {
           if (confirm) {
             return true;

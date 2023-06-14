@@ -4,7 +4,6 @@ import { get } from 'lodash';
 import { Application } from '../../../models/application.model';
 import { ContentType, Page } from '../../../models/page.model';
 import { Role } from '../../../models/user.model';
-import { SafeSnackBarService } from '../../../services/snackbar/snackbar.service';
 import {
   EditPageAccessMutationResponse,
   EDIT_PAGE_ACCESS,
@@ -13,6 +12,7 @@ import {
   GetApplicationFeaturesQueryResponse,
   GET_APPLICATION_FEATURES,
 } from '../graphql/queries';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Features tab of Role Summary component.
@@ -42,7 +42,7 @@ export class RoleFeaturesComponent implements OnInit {
    * @param apollo Apollo service
    * @param snackBar Shared snackbar service
    */
-  constructor(private apollo: Apollo, private snackBar: SafeSnackBarService) {}
+  constructor(private apollo: Apollo, private snackBar: SnackbarService) {}
 
   ngOnInit(): void {
     this.apollo

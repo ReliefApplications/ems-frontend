@@ -1,12 +1,15 @@
-<div class="flex flex-col gap-4">
+<div class="flex flex-col gap-x-4">
   <!-- Default filter -->
   <div class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row">
     <!-- Search text filter -->
-    <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
-      <mat-icon matPrefix>search</mat-icon>
-      <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
-      <input matInput [formControl]="search" type="search" />
-      <mat-spinner *ngIf="loading" diameter="24" matSuffix></mat-spinner>
-    </mat-form-field>
+    <div uiFormFieldDirective class="mat-form-field-sm p-0">
+      <ui-icon icon="search" uiPrefix></ui-icon>
+      <input
+        [formControl]="search"
+        type="search"
+        [placeholder]="'common.placeholder.search' | translate"
+      />
+      <ui-spinner *ngIf="loading" diameter="24" uiSuffix></ui-spinner>
+    </div>
   </div>
 </div>

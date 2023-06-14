@@ -1,16 +1,14 @@
 import { Injectable } from '@angular/core';
-import {
-  MatLegacyDialog as MatDialog,
-  MatLegacyDialogRef as MatDialogRef,
-} from '@angular/material/legacy-dialog';
 import { SafeConfirmModalComponent } from '../../components/confirm-modal/confirm-modal.component';
+import { Dialog, DialogRef } from '@angular/cdk/dialog';
+import { Variant } from '@oort-front/ui';
 
 /** Interface of confirm dialog data */
 interface ConfirmDialogData {
   title?: string;
   content?: string;
   confirmText?: string;
-  confirmColor?: string;
+  confirmVariant?: Variant;
 }
 
 /**
@@ -23,9 +21,9 @@ export class SafeConfirmService {
   /**
    * Confirmation modal service
    *
-   * @param dialog Material dialog
+   * @param dialog Dialog
    */
-  constructor(private dialog: MatDialog) {}
+  constructor(private dialog: Dialog) {}
 
   /**
    * Open confirmation modal.
@@ -35,7 +33,7 @@ export class SafeConfirmService {
    */
   openConfirmModal(
     data?: ConfirmDialogData
-  ): MatDialogRef<SafeConfirmModalComponent> {
-    return this.dialog.open(SafeConfirmModalComponent, { data });
+  ): DialogRef<SafeConfirmModalComponent> {
+    return this.dialog.open(SafeConfirmModalComponent, { data }) as any;
   }
 }

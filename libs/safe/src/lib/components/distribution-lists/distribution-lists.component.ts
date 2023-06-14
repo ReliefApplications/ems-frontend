@@ -1,9 +1,10 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application/application.service';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
+import { Dialog } from '@angular/cdk/dialog';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Component to show the list of distribution lists of an application
@@ -13,32 +14,39 @@ import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
   templateUrl: './distribution-lists.component.html',
   styleUrls: ['./distribution-lists.component.scss'],
 })
-export class DistributionListsComponent implements OnInit {
+export class DistributionListsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === INPUT DATA ===
-  public distributionLists: MatTableDataSource<any> =
-    new MatTableDataSource<any>([]);
+  public distributionLists: Array<any> = new Array<any>();
   @Input() applicationService!: SafeApplicationService;
   // === DISPLAYED COLUMNS ===
   public displayedColumns = ['name', 'actions'];
 
   public loading = false;
+
   /**
    * Constructor of the distribution lists component
    *
-   * @param dialog The material dialog service
+   * @param dialog The Dialog service
    * @param translate The translation service
    * @param snackBar Shared snackbar service
    */
   constructor(
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private translate: TranslateService,
-    private snackBar: SafeSnackBarService
-  ) {}
+    private snackBar: SnackbarService
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.applicationService.application$.subscribe((value) => {
-      this.distributionLists.data = value?.distributionLists || [];
-    });
+    this.applicationService.application$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.distributionLists = value?.distributionLists || [];
+      });
   }
 
   /**
@@ -55,7 +63,7 @@ export class DistributionListsComponent implements OnInit {
       data: distributionList,
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.editDistributionList({
           id: distributionList.id,
@@ -83,7 +91,7 @@ export class DistributionListsComponent implements OnInit {
       data: null,
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.addDistributionList({
           name: value.name,
@@ -121,10 +129,10 @@ export class DistributionListsComponent implements OnInit {
         ),
         confirmText: this.translate.instant('components.confirmModal.delete'),
         cancelText: this.translate.instant('components.confirmModal.cancel'),
-        confirmColor: 'warn',
+        confirmVariant: 'danger',
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.deleteDistributionList(distributionList.id);
         this.snackBar.openSnackBar(

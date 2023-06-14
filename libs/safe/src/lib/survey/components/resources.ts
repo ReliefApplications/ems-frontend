@@ -1,12 +1,13 @@
 import { Apollo } from 'apollo-angular';
 import {
+  GET_SHORT_RESOURCE_BY_ID,
   GET_RESOURCE_BY_ID,
   GetResourceByIdQueryResponse,
 } from '../graphql/queries';
 import { BehaviorSubject } from 'rxjs';
 import * as SurveyCreator from 'survey-creator';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
 import { SafeCoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
 import { DomService } from '../../services/dom/dom.service';
@@ -37,17 +38,25 @@ export const resourceConditions = [
  * @param Survey Survey library
  * @param domService Shared DOM service
  * @param apollo Apollo client
- * @param dialog Material dialog service
+ * @param dialog Dialog service
  * @param formBuilder Angular form service
  */
 export const init = (
   Survey: any,
   domService: DomService,
   apollo: Apollo,
-  dialog: MatDialog,
+  dialog: Dialog,
   formBuilder: UntypedFormBuilder
 ): void => {
-  const getResourceById = (data: {
+  const getResourceById = (data: { id: string }) =>
+    apollo.query<GetResourceByIdQueryResponse>({
+      query: GET_SHORT_RESOURCE_BY_ID,
+      variables: {
+        id: data.id,
+      },
+    });
+
+  const getResourceRecordsById = (data: {
     id: string;
     filters?: { field: string; operator: string; value: string }[];
   }) =>
@@ -57,6 +66,7 @@ export const init = (
         id: data.id,
         filter: data.filters,
       },
+      fetchPolicy: 'no-cache',
     });
 
   // const hasUniqueRecord = ((id: string) => false);
@@ -207,7 +217,7 @@ export const init = (
                       },
                     }
                   );
-                  dialogRef.afterClosed().subscribe((res: any) => {
+                  dialogRef.closed.subscribe((res: any) => {
                     if (res && res.value.fields) {
                       currentQuestion.gridFieldsSettings = res.getRawValue();
                     }
@@ -250,19 +260,21 @@ export const init = (
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
-            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const serverRes =
-                data.resource.records?.edges?.map((x) => x.node) || [];
-              const res = [];
-              res.push({ value: null });
-              for (const item of serverRes) {
-                res.push({
-                  value: item?.id,
-                  text: item?.data[obj.displayField],
-                });
+            getResourceRecordsById({ id: obj.resource }).subscribe(
+              ({ data }) => {
+                const serverRes =
+                  data.resource.records?.edges?.map((x) => x.node) || [];
+                const res = [];
+                res.push({ value: null });
+                for (const item of serverRes) {
+                  res.push({
+                    value: item?.id,
+                    text: item?.data[obj.displayField],
+                  });
+                }
+                choicesCallback(res);
               }
-              choicesCallback(res);
-            });
+            );
           }
         },
       });
@@ -628,25 +640,27 @@ export const init = (
             );
           }
         }
-        getResourceById({ id: question.resource }).subscribe(({ data }) => {
-          const serverRes =
-            data.resource.records?.edges?.map((x) => x.node) || [];
-          const res = [];
-          for (const item of serverRes) {
-            res.push({
-              value: item?.id,
-              text: item?.data[question.displayField],
-            });
+        getResourceRecordsById({ id: question.resource }).subscribe(
+          ({ data }) => {
+            const serverRes =
+              data.resource.records?.edges?.map((x) => x.node) || [];
+            const res = [];
+            for (const item of serverRes) {
+              res.push({
+                value: item?.id,
+                text: item?.data[question.displayField],
+              });
+            }
+            question.contentQuestion.choices = res;
+            if (!question.placeholder) {
+              question.contentQuestion.optionsCaption =
+                'Select a record from ' + data.resource.name + '...';
+            }
+            if (!question.filterBy || question.filterBy.length < 1) {
+              this.populateChoices(question);
+            }
           }
-          question.contentQuestion.choices = res;
-          if (!question.placeholder) {
-            question.contentQuestion.optionsCaption =
-              'Select a record from ' + data.resource.name + '...';
-          }
-          if (!question.filterBy || question.filterBy.length < 1) {
-            this.populateChoices(question);
-          }
-        });
+        );
         if (question.selectQuestion) {
           if (question.selectQuestion === '#staticValue') {
             setAdvanceFilter(question.staticValue, question);
@@ -709,7 +723,7 @@ export const init = (
           resourcesFilterValues.next(filters);
         }
       } else {
-        getResourceById({ id: question.resource, filters }).subscribe(
+        getResourceRecordsById({ id: question.resource, filters }).subscribe(
           ({ data }) => {
             const serverRes =
               data.resource.records?.edges?.map((x) => x.node) || [];
@@ -743,10 +757,14 @@ export const init = (
     },
     onAfterRender: (question: QuestionResource, el: any): void => {
       // hide tagbox if grid view is enable
-      if (question.displayAsGrid) {
-        const element = el.getElementsByTagName('select')[0].parentElement;
-        element.style.display = 'none';
-      }
+      setTimeout(() => {
+        if (question.displayAsGrid) {
+          const element = el.parentElement?.querySelector('#tagbox');
+          if (element) {
+            element.style.display = 'none';
+          }
+        }
+      }, 500);
       // Display the add button | grid for resources question
       if (question.resource) {
         const parentElement = el.querySelector('.safe-qst-content');
@@ -802,7 +820,11 @@ export const init = (
             );
             question.registerFunctionOnPropertyValueChanged('addRecord', () => {
               addBtn.style.display =
-                question.addRecord && question.addTemplate ? '' : 'none';
+                question.addRecord &&
+                question.addTemplate &&
+                !question.isReadOnly
+                  ? ''
+                  : 'none';
             });
           }
         }

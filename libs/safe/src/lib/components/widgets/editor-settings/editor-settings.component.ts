@@ -121,6 +121,8 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
       this.tile.settings.text = this.tileForm.value.text;
       this.tile.settings.record = this.tileForm.value.record;
       this.tile.settings.title = this.tileForm.value.title;
+      this.tile.settings.resource = this.tileForm.value.resource;
+      this.tile.settings.layout = this.tileForm.value.layout;
     });
     this.updateFields();
   }

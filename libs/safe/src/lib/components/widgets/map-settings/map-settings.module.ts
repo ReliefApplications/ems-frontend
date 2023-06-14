@@ -22,7 +22,7 @@ import { DisplaySettingsComponent } from '../common/display-settings/display-set
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    SafeIconModule,
+    IconModule,
     TranslateModule,
     MatTabsModule,
     MapLayersModule,

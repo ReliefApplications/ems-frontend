@@ -1,5 +1,10 @@
 import * as SurveyCreator from 'survey-creator';
-import { JsonMetadata, SurveyModel, Serializer } from 'survey-angular';
+import {
+  JsonMetadata,
+  SurveyModel,
+  Serializer,
+  ItemValue,
+} from 'survey-angular';
 import { DomService } from '../../services/dom/dom.service';
 import { SafeReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { SafeReferenceDataDropdownComponent } from '../../components/reference-data-dropdown/reference-data-dropdown.component';
@@ -235,7 +240,12 @@ export const render = (
             filter
           )
           .then((choices) => {
-            question.choices = choices;
+            question.choices = [];
+            // this is to avoid that the choices appear on the 'choices' tab
+            question.setPropertyValue(
+              'visibleChoices',
+              choices.map((choice) => new ItemValue(choice))
+            );
           });
       } else {
         question.choices = [];
@@ -249,6 +259,11 @@ export const render = (
         .then(() => updateChoices());
       question.referenceDataChoicesLoaded = true;
     }
+    // Prevent selected choices to be removed when sending the value
+    question.clearIncorrectValuesCallback = () => {
+      // console.log(question.visibleChoices);
+      console.log(question.value);
+    };
     // look on changes
     question.registerFunctionOnPropertyValueChanged(
       'referenceData',

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
@@ -35,13 +35,13 @@ export class ChannelsComponent
    *
    * @param applicationService Shared application service
    * @param confirmService Shared confirm service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param translate Angular translate service
    */
   constructor(
     private applicationService: SafeApplicationService,
     private confirmService: SafeConfirmService,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private translate: TranslateService
   ) {
     super();
@@ -86,7 +86,7 @@ export class ChannelsComponent
       './components/add-channel-modal/add-channel-modal.component'
     );
     const dialogRef = this.dialog.open(AddChannelModalComponent);
-    dialogRef.afterClosed().subscribe((value: { title: string }) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.addChannel(value);
       }
@@ -107,7 +107,7 @@ export class ChannelsComponent
         channel,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.editChannel(channel, value.title);
       }
@@ -132,9 +132,9 @@ export class ChannelsComponent
         }
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
-      confirmColor: 'warn',
+      confirmVariant: 'danger',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.deleteChannel(channel);
       }

@@ -31,14 +31,20 @@
           : widget.defaultCols
       "
       [rowSpan]="!canUpdate && widgets.length === 1 ? 4 : widget.defaultRows"
-      [class.shadow-2lg]="widget.settings.widgetDisplay?.showBorder ?? true"
-      [class.hide-border]="!(widget.settings.widgetDisplay?.showBorder ?? true)"
-      [class.hover:shadow-2lg]="isBackOffice"
-      [class.bg-inherit]="!(widget.settings.widgetDisplay?.showBorder ?? true)"
+      class="rounded-lg border focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2"
+      [ngClass]="{
+        'shadow-sm border-gray-300':
+          widget.settings.widgetDisplay?.showBorder ?? true,
+        'border-transparent': !(
+          widget.settings.widgetDisplay?.showBorder ?? true
+        ),
+        'hover:border-gray-400 hover:shadow-sm': isBackOffice
+      }"
     >
+      <!-- Settings -->
       <safe-floating-options
         *ngIf="canUpdate"
-        class="widget-options"
+        class="absolute top-0 right-0 z-[1100]"
         [widget]="widget"
         (edit)="onEditWidget($event)"
         (delete)="onDeleteWidget($event)"
@@ -52,16 +58,24 @@
         (edit)="onEditWidget($event)"
         [canUpdate]="canUpdate"
       ></safe-widget>
-      <safe-icon *ngIf="canUpdate" icon="drag_indicator" class="widget-handle">
-      </safe-icon>
-      <safe-button
+      <!-- Move widget -->
+      <ui-icon
+        *ngIf="canUpdate"
+        icon="drag_indicator"
+        class="absolute cursor-grab top-2 left-2 z-[1100] pointer-events-none"
+        variant="grey"
+      >
+      </ui-icon>
+      <!-- Expand button -->
+      <ui-button
         *ngIf="!canUpdate"
         [isIcon]="true"
         icon="open_in_full"
-        class="widget-expand"
+        variant="grey"
+        class="absolute top-0 right-0 z-[1100]"
         (click)="onExpandWidget(widget)"
       >
-      </safe-button>
+      </ui-button>
     </kendo-tilelayout-item>
   </kendo-tilelayout>
 </div>

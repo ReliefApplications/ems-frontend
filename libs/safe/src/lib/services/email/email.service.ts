@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { SafeSnackBarService } from '../snackbar/snackbar.service';
 import { SafeSnackbarSpinnerComponent } from '../../components/snackbar-spinner/snackbar-spinner.component';
 import { HttpHeaders } from '@angular/common/http';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { prettifyLabel } from '../../utils/prettify';
 import { firstValueFrom, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeRestService } from '../rest/rest.service';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Takes an array, and returns a new array with all the nested arrays flattened
@@ -34,13 +34,13 @@ export class SafeEmailService {
    * Used by widgets to send request to the back to send emails.
    *
    * @param snackBar Shared snackbar service.
-   * @param dialog The Material Dialog service.
+   * @param dialog The Dialog service.
    * @param translate Angular translate service.
    * @param restService Shared rest service.
    */
   constructor(
-    private snackBar: SafeSnackBarService,
-    private dialog: MatDialog,
+    private snackBar: SnackbarService,
+    private dialog: Dialog,
     private translate: TranslateService,
     private restService: SafeRestService
   ) {}
@@ -135,19 +135,20 @@ export class SafeEmailService {
       )
       .subscribe({
         next: () => {
-          snackBarRef.instance.data = {
-            message: this.translate.instant('common.notifications.email.sent'),
-            loading: false,
-          };
-          setTimeout(() => snackBarRef.dismiss(), 1000);
+          (snackBarRef.instance.message = this.translate.instant(
+            'common.notifications.email.sent'
+          )),
+            (snackBarRef.instance.loading = false);
+
+          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
         },
         error: () => {
-          snackBarRef.instance.data = {
-            message: this.translate.instant('common.notifications.email.error'),
-            loading: false,
-            error: true,
-          };
-          setTimeout(() => snackBarRef.dismiss(), 1000);
+          (snackBarRef.instance.message = this.translate.instant(
+            'common.notifications.email.error'
+          )),
+            (snackBarRef.instance.loading = false);
+          snackBarRef.instance.error = true;
+          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
         },
       });
   }
@@ -213,11 +214,11 @@ export class SafeEmailService {
       )
       .subscribe({
         next: async (res) => {
-          snackBarRef.instance.data = {
-            message: this.translate.instant('common.notifications.email.ready'),
-            loading: false,
-          };
-          setTimeout(() => snackBarRef.dismiss(), 1000);
+          snackBarRef.instance.message = this.translate.instant(
+            'common.notifications.email.ready'
+          );
+          snackBarRef.instance.loading = false;
+          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
           const { SafeEmailPreviewComponent } = await import(
             '../../components/email-preview/email-preview.component'
           );
@@ -227,7 +228,7 @@ export class SafeEmailService {
             disableClose: true,
             width: '100%',
           });
-          dialogRef.afterClosed().subscribe((value) => {
+          dialogRef.closed.subscribe((value: any) => {
             if (value) {
               this.sendMail(
                 value.to,
@@ -244,12 +245,13 @@ export class SafeEmailService {
           });
         },
         error: () => {
-          snackBarRef.instance.data = {
-            message: this.translate.instant('common.notifications.email.error'),
-            loading: false,
-            error: true,
-          };
-          setTimeout(() => snackBarRef.dismiss(), 1000);
+          snackBarRef.instance.message = this.translate.instant(
+            'common.notifications.email.error'
+          );
+          snackBarRef.instance.loading = false;
+          snackBarRef.instance.error = true;
+
+          setTimeout(() => snackBarRef.instance.dismiss(), 1000);
         },
       });
   }

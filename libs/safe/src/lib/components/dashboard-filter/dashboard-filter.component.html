@@ -33,6 +33,7 @@
       }"
       class="relative flex justify-between bg-primary-500 text-white pointer-events-auto"
     >
+      <!-- Edition -->
       <div
         *ngIf="editable"
         [ngClass]="{
@@ -42,43 +43,47 @@
         }"
         class="flex flex-auto"
       >
-        <!-- Edition -->
-        <safe-button
+        <!-- Configuration -->
+        <ui-button
+          variant="light"
           [isIcon]="true"
           icon="edit"
           (click)="onEditFilter()"
-          [matTooltip]="
+          [uiTooltip]="
             'components.application.dashboard.editFilter' | translate
           "
         >
-        </safe-button>
-        <!-- Settings -->
-        <safe-button
+        </ui-button>
+        <!-- Settings (default position) -->
+        <ui-button
+          variant="light"
           [isIcon]="true"
           icon="settings"
           (click)="openSettings()"
-          [matTooltip]="
+          [uiTooltip]="
             'components.application.dashboard.filterSettings' | translate
           "
         >
-        </safe-button>
+        </ui-button>
       </div>
       <!-- Quick filter -->
       <div
         class="flex flex-row overflow-auto justify-center gap-4 items-center"
         [ngClass]="{
-          'text-side -rotate-180': position === filterPosition.LEFT,
-          'text-side rotate-180': position === filterPosition.RIGHT
+          'text-side':
+            position === filterPosition.LEFT ||
+            position === filterPosition.RIGHT,
+          'rotate-180': position === filterPosition.RIGHT
         }"
       >
         <ng-container
           *ngFor="let quickFilter of quickFilters"
           class="flex flex-auto overflow-auto justify-center gap-4"
         >
+          <!--            matTooltipClass="multiline-tooltip"-->
           <div
             class="z-20 whitespace-nowrap"
-            [matTooltip]="quickFilter.tooltip ? quickFilter.tooltip : ''"
-            matTooltipClass="multiline-tooltip"
+            [uiTooltip]="quickFilter.tooltip ? quickFilter.tooltip : ''"
           >
             {{ quickFilter.label }}
           </div>
@@ -94,13 +99,13 @@
         class="flex flex-auto justify-end"
       >
         <ng-container *ngFor="let position of positionList">
-          <safe-button
-            matSuffix
+          <ui-button
+            variant="light"
             [isIcon]="true"
             icon="{{ position + '_panel_open' }}"
-            [fontSet]="'material-symbols-outlined'"
+            [isOutlined]="true"
             (click)="changeFilterPosition(position)"
-          ></safe-button>
+          ></ui-button>
         </ng-container>
       </div>
       <!-- Toggle opened status -->
@@ -114,7 +119,7 @@
         class="dashboard-filter-tab absolute h-10 py-2 px-3 flex bg-primary-500"
         (click)="isDrawerOpen = !isDrawerOpen"
       >
-        <safe-icon icon="view_stream" class="cursor-pointer"></safe-icon>
+        <ui-icon icon="view_stream" class="cursor-pointer"></ui-icon>
       </div>
     </header>
     <div
@@ -143,7 +148,7 @@
       <div
         #dashboardSurveyCreatorContainer
         class="overflow-scroll"
-        [ngClass]="{ 'hidden': empty }"
+        [ngClass]="{ hidden: empty }"
       ></div>
       <!-- <form
         [ngClass]="{

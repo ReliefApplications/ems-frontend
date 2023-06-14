@@ -4,13 +4,14 @@ import {
   ElementRef,
   HostListener,
   Input,
+  OnDestroy,
   OnInit,
+  Renderer2,
   ViewChild,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import { debounceTime, distinctUntilChanged, firstValueFrom } from 'rxjs';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
@@ -19,6 +20,7 @@ import {
   GetResourceMetadataQueryResponse,
   GET_RESOURCE_METADATA,
 } from './graphql/queries';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { SummaryCardFormT } from '../summary-card-settings/summary-card-settings.component';
 import { Record } from '../../../models/record.model';
 
@@ -33,7 +35,8 @@ import { Layout } from '../../../models/layout.model';
 import { PageChangeEvent } from '@progress/kendo-angular-grid';
 import { FormControl } from '@angular/forms';
 import { clone, isNaN } from 'lodash';
-import { SafeSnackBarService } from '../../../services/snackbar/snackbar.service';
+import { SnackbarService } from '@oort-front/ui';
+import { Dialog } from '@angular/cdk/dialog';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -49,7 +52,10 @@ const DEFAULT_PAGE_SIZE = 25;
   templateUrl: './summary-card.component.html',
   styleUrls: ['./summary-card.component.scss'],
 })
-export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
+export class SafeSummaryCardComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @Input() widget: any;
   @Input() header = true;
   @Input() export = true;
@@ -112,22 +118,26 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    * Constructor for summary card component
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param queryBuilder Query builder service
    * @param gridLayoutService Shared grid layout service
    * @param aggregationService Aggregation service
+   * @param renderer Renderer2
    */
   constructor(
     private apollo: Apollo,
-    private dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    private dialog: Dialog,
+    private snackBar: SnackbarService,
     private translate: TranslateService,
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: SafeGridLayoutService,
-    private aggregationService: SafeAggregationService
-  ) {}
+    private aggregationService: SafeAggregationService,
+    private renderer: Renderer2
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.setupDynamicCards();
@@ -464,5 +474,9 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
         { error: true }
       );
     }
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
   }
 }

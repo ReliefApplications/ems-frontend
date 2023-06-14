@@ -14,20 +14,12 @@
 </ng-template>
 <!--Need the nav variable, don't remove let-nav, used in layout-->
 <ng-template #pages let-nav>
-  <safe-left-sidenav
-    *ngIf="sideMenu || !largeDevice"
-    [nav]="nav"
-    [navGroups]="navGroups"
-    [appLayout]="true"
-    [canAddPage]="application?.canUpdate!"
-    (reorder)="onReorder($event)"
-  ></safe-left-sidenav>
   <safe-navbar
-    *ngIf="!sideMenu && largeDevice"
     [nav]="nav"
     [navGroups]="navGroups"
     [appLayout]="true"
     [canAddPage]="application?.canUpdate!"
+    [vertical]="!(!sideMenu && largeDevice)"
     (reorder)="onReorder($event)"
   ></safe-navbar>
 </ng-template>
