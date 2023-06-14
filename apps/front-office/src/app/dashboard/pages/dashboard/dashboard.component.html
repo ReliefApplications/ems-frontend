@@ -14,6 +14,15 @@
     <ng-container *ngIf="dashboard">
       <div class="flex flex-wrap items-center justify-end mb-6 gap-4">
         <div class="flex items-center gap-1">
+          <!-- Button actions -->
+          <ui-button
+            *ngFor="let button of dashboard.buttons || []; let i = index"
+            [variant]="button.variant"
+            [category]="button.category"
+            (click)="onButtonActionClick(button)"
+          >
+            {{ button.text }}
+          </ui-button>
           <!-- Fullscreen -->
           <ui-button
             variant="grey"

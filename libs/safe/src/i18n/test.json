@@ -1639,6 +1639,17 @@
 		},
 		"dashboard": {
 			"activateFiltering": "******",
+			"buttonActions": {
+				"add": "******",
+				"category": "******",
+				"confirmDelete": "******",
+				"edit": "******",
+				"href": "******",
+				"one": "******",
+				"openInNewTab": "******",
+				"text": "******",
+				"variant": "******"
+			},
 			"context": {
 				"datasource": {
 					"alert": "******",
