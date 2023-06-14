@@ -52,7 +52,7 @@
             </div>
             <div class="flex gap-2 items-center">
               <!-- Font size -->
-              <div uiFormFieldDirective>
+              <div uiFormFieldDirective class="flex-1">
                 <label>{{
                   'components.widget.settings.chart.size' | translate
                 }}</label>
@@ -63,7 +63,7 @@
                 </ui-select-menu>
               </div>
               <!-- Position -->
-              <div uiFormFieldDirective>
+              <div uiFormFieldDirective class="flex-1">
                 <label>{{
                   'components.widget.settings.chart.position' | translate
                 }}</label>
@@ -337,7 +337,7 @@
                   | translate
               }}</ng-container>
             </ui-toggle>
-            <ui-divider></ui-divider>
+            <ui-divider class="my-1"></ui-divider>
           </div>
           <safe-series-settings
             [formArray]="$any(formGroup.get('chart.series'))"

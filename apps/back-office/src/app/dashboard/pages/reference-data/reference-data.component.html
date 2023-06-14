@@ -158,7 +158,6 @@
       <!-- Value field to be displayed -->
       <div
         uiFormFieldDirective
-        [outline]="false"
         class="flex-1"
         *ngIf="!csvLoading && type && valueFields.length > 0"
       >
@@ -173,7 +172,7 @@
       </div>
     </div>
     <!-- For graphql -->
-    <div uiFormFieldDirective *ngIf="type === 'graphql'">
+    <!-- <div uiFormFieldDirective *ngIf="type === 'graphql'">
       <label>{{ 'pages.referenceData.graphQLFilter' | translate }} </label>
       <input
         formControlName="graphQLFilter"
@@ -189,7 +188,7 @@
         uiSuffix
         [uiTooltip]="'pages.referenceData.tooltip.graphQLFilter' | translate"
       ></ui-icon>
-    </div>
+    </div> -->
     <!-- Kendo grid to preview data on static type -->
     <div *ngIf="!csvLoading && csvValue && type === 'static'">
       <kendo-grid [data]="newData">
