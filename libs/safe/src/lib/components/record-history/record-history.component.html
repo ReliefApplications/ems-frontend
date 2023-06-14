@@ -12,7 +12,7 @@
   </div>
   <!-- FILTER -->
   <div class="clear-both flex flex-col">
-    <div uiFormFieldDirective class="date-header">
+    <div uiFormFieldDirective id="date-header">
       <label>{{ 'common.input.dateRange' | translate }}</label>
       <div [formGroup]="filtersDate" [uiDateWrapper]="calendar"  class="flex-col">
         <input
@@ -76,7 +76,7 @@
             }}</span>
           </ng-container>
 
-          <div class="flex flex-col">
+          <div class="flex flex-col text-sm">
             <div
               class="changes-content"
               *ngFor="

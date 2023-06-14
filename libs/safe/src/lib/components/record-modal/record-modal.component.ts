@@ -239,14 +239,13 @@ export class SafeRecordModalComponent
           updatedQuestions.push(question);
         }
       }
-      // @TODO CHECK => Repeated, the callback below is the only one applied
-      // this.survey.onAfterRenderQuestion.add(
-      //   (survey: Survey.SurveyModel, options: any): void => {
-      //     if (updatedQuestions.includes(options.question.valueName)) {
-      //       options.htmlElement.style.background = '#b2ebbf';
-      //     }
-      //   }
-      // );
+      this.survey.onAfterRenderQuestion.add(
+        (survey: Survey.SurveyModel, options: any): void => {
+          if (updatedQuestions.includes(options.question.valueName)) {
+            options.htmlElement.style.background = '#b2ebbf';
+          }
+        }
+      );
       this.surveyNext.onAfterRenderQuestion.add(
         (survey: Survey.SurveyModel, options: any): void => {
           if (updatedQuestions.includes(options.question.valueName)) {
