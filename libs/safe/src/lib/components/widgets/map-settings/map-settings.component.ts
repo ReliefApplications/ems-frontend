@@ -18,7 +18,6 @@ import {
 import { takeUntil, tap } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { LayerModel } from '../../../models/layer.model';
-import { MapLayerComponent } from './map-layer/map-layer.component';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 import { SafeConfirmService } from '../../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -52,8 +51,6 @@ export class SafeMapSettingsComponent
   // === EMIT THE CHANGES APPLIED ===
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
-
-  @ViewChild(MapLayerComponent) layerComponent?: MapLayerComponent;
   @ViewChild(MapComponent) mapComponent?: MapComponent;
 
   // @ViewChild(MapComponent)
@@ -179,26 +176,26 @@ export class SafeMapSettingsComponent
   handleTabChange(
     selectedTab: 'parameters' | 'layers' | 'layer' | 'display' | null
   ) {
-    console.log(selectedTab);
-    if (this.currentTab === 'layer' && !this.layerComponent?.form.pristine) {
-      const confirmDialogRef = this.confirmService.openConfirmModal({
-        title: this.translate.instant('common.close'),
-        content: this.translate.instant(
-          'components.widget.settings.close.confirmationMessage'
-        ),
-        confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmVariant: 'danger',
-      });
-      confirmDialogRef.closed
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((value: any) => {
-          if (value) {
-            this.openTab(selectedTab);
-          }
-        });
-    } else {
-      this.openTab(selectedTab);
-    }
+    // console.log(selectedTab);
+    // if (this.currentTab === 'layer' && !this.layerComponent?.form.pristine) {
+    //   const confirmDialogRef = this.confirmService.openConfirmModal({
+    //     title: this.translate.instant('common.close'),
+    //     content: this.translate.instant(
+    //       'components.widget.settings.close.confirmationMessage'
+    //     ),
+    //     confirmText: this.translate.instant('components.confirmModal.confirm'),
+    //     confirmVariant: 'danger',
+    //   });
+    //   confirmDialogRef.closed
+    //     .pipe(takeUntil(this.destroy$))
+    //     .subscribe((value: any) => {
+    //       if (value) {
+    //         this.openTab(selectedTab);
+    //       }
+    //     });
+    // } else {
+    //   this.openTab(selectedTab);
+    // }
   }
 
   /**
@@ -250,7 +247,7 @@ export class SafeMapSettingsComponent
    * @param layer layer to open
    */
   onEditLayer(layer?: LayerModel): void {
-    this.openedLayers.unshift(layer);
+    // this.openedLayers.unshift(layer);
     // We initialize the map settings to default value once we display the map layer editor
     (this.mapComponent as MapComponent).mapSettings = {
       basemap: 'OSM',
@@ -265,7 +262,7 @@ export class SafeMapSettingsComponent
       },
       controls: DefaultMapControls,
     };
-    this.openTab('layer');
+    // this.openTab('layer');
   }
 
   /**

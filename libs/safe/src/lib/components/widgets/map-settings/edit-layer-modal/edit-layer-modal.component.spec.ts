@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MapLayerComponent } from './map-layer.component';
+import { EditLayerModalComponent } from './edit-layer-modal.component';
 
-describe('MapLayerComponent', () => {
-  let component: MapLayerComponent;
-  let fixture: ComponentFixture<MapLayerComponent>;
+describe('EditLayerModalComponent', () => {
+  let component: EditLayerModalComponent;
+  let fixture: ComponentFixture<EditLayerModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MapLayerComponent],
+      imports: [EditLayerModalComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MapLayerComponent);
+    fixture = TestBed.createComponent(EditLayerModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

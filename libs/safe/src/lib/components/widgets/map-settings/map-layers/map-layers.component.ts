@@ -86,10 +86,25 @@ export class MapLayersComponent
    *
    * @param type type of layer
    */
-  public onAddLayer(type: LayerType = 'FeatureLayer') {
+  public async onAddLayer(type: LayerType = 'FeatureLayer') {
     this.editLayer.emit({
       type,
     } as LayerModel);
+    const { EditLayerModalComponent } = await import(
+      '../edit-layer-modal/edit-layer-modal.component'
+    );
+    const dialogRef = this.dialog.open(EditLayerModalComponent, {
+      disableClose: true,
+      autoFocus: false,
+      data: {
+        layer: { type } as LayerModel,
+      },
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        console.log(value);
+      }
+    });
   }
 
   /**
@@ -112,25 +127,29 @@ export class MapLayersComponent
    * @param id id of layer to edit
    */
   public onEditLayer(id: string) {
-    this.mapLayersService.getLayerById(id).subscribe((layer) => {
-      this.editLayer.emit(layer);
-      // const dialogRef: MatDialogRef<SafeEditLayerModalComponent, MapLayerI> =
-      //   this.dialog.open(SafeEditLayerModalComponent, {
-      //     disableClose: true,
-      //     data: layer,
-      //   });
-
-      // dialogRef.afterClosed().subscribe((editedLayer) => {
-      //   if (editedLayer) {
-      //     this.mapLayersService.editLayer(editedLayer).subscribe((res) => {
-      //       if (res) {
-      //         // this.layers.at(index).patchValue(res);
-      //         this.fetchLayers();
-      //       }
-      //     });
-      //   }
-      // });
-    });
+    this.mapLayersService
+      .getLayerById(id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async (layer) => {
+        this.editLayer.emit(layer);
+        const { EditLayerModalComponent } = await import(
+          '../edit-layer-modal/edit-layer-modal.component'
+        );
+        const dialogRef = this.dialog.open(EditLayerModalComponent, {
+          disableClose: true,
+          autoFocus: false,
+          data: {
+            layer,
+          },
+        });
+        dialogRef.closed
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((value: any) => {
+            if (value) {
+              console.log(value);
+            }
+          });
+      });
   }
 
   /**

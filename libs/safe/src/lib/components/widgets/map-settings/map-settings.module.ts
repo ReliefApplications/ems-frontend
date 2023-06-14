@@ -5,9 +5,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { MapLayersModule } from './map-layers/map-layers.module';
 import { MapPropertiesModule } from './map-properties/map-properties.module';
-import { MatSidenavModule } from '@angular/material/sidenav';
 import { MapModule } from '../../ui/map/map.module';
-import { MapLayerModule } from './map-layer/map-layer.module';
 import {
   ButtonModule,
   DividerModule,
@@ -31,11 +29,9 @@ import { DisplaySettingsComponent } from '../common/display-settings/display-set
     MapLayersModule,
     MapPropertiesModule,
     TooltipModule,
-    MatSidenavModule,
     MapModule,
     ButtonModule,
     DividerModule,
-    MapLayerModule,
     TabsModule,
     SidenavContainerModule,
     MapLayersModule,

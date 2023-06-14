@@ -1,4 +1,5 @@
-<ui-tabs [vertical]="true" class="grow">
+<ui-tabs class="grow" [vertical]="true">
+  <!-- Map properties -->
   <ui-tab>
     <ng-container ngProjectAs="label">
       <ui-icon icon="map" [size]="24"> </ui-icon>
@@ -6,44 +7,40 @@
         'components.widget.settings.map.properties.title' | translate
       }}</span>
     </ng-container>
-    <div>
+    <ng-template uiTabContent>
       <safe-map-properties
         [form]="tileForm"
         [mapSettings]="mapSettings"
       ></safe-map-properties>
       <!-- <ng-container *ngTemplateOutlet="map"></ng-container> -->
-    </div>
+    </ng-template>
   </ui-tab>
+  <!-- Map layers -->
   <ui-tab>
     <ng-container ngProjectAs="label">
       <ui-icon icon="layers" [size]="24"> </ui-icon>
       <span>{{ 'common.layers' | translate }}</span>
     </ng-container>
-    <div>
+    <ng-template uiTabContent>
       <safe-map-layers
         [layerIds]="layerIds"
         (editLayer)="onEditLayer($event)"
         (deleteLayer)="onDeleteLayer($event)"
       ></safe-map-layers>
       <!-- <ng-container *ngTemplateOutlet="map"></ng-container> -->
-    </div>
+    </ng-template>
   </ui-tab>
+  <!-- General widget display -->
   <ui-tab>
     <ng-container ngProjectAs="label">
       <ui-icon icon="settings_overscan" [size]="24"> </ui-icon>
       <span>{{ 'models.widget.display.title' | translate }}</span>
     </ng-container>
-    <div>
+    <ng-template uiTabContent>
       <safe-display-settings [formGroup]="tileForm"></safe-display-settings>
       <!-- <ng-container *ngTemplateOutlet="map"></ng-container> -->
-    </div>
+    </ng-template>
   </ui-tab>
-  <!-- <ng-container *ngIf="currentTab === 'layer' && layerComponent">
-    <ui-divider></ui-divider>
-    <ng-container
-      [ngTemplateOutlet]="layerComponent.layerNavigationTemplate"
-    ></ng-container>
-  </ng-container> -->
 </ui-tabs>
 
 <!-- <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">

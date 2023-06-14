@@ -12,11 +12,6 @@ import {
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { FA_ICONS, IconName } from './icon-picker.const';
-import {
-  MatLegacyFormField as MatFormField,
-  MatLegacyFormFieldControl as MatFormFieldControl,
-  MAT_LEGACY_FORM_FIELD as MAT_FORM_FIELD,
-} from '@angular/material/legacy-form-field';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 
 type FormFieldValue = IconName | null;
@@ -28,19 +23,8 @@ type FormFieldValue = IconName | null;
   selector: 'safe-icon-picker',
   templateUrl: './icon-picker.component.html',
   styleUrls: ['./icon-picker.component.scss'],
-  providers: [
-    {
-      provide: MatFormFieldControl,
-      useExisting: IconPickerComponent,
-    },
-  ],
 })
-export class IconPickerComponent
-  implements
-    ControlValueAccessor,
-    MatFormFieldControl<FormFieldValue>,
-    OnDestroy
-{
+export class IconPickerComponent implements ControlValueAccessor, OnDestroy {
   static nextId = 0;
 
   public icons: string[] = FA_ICONS;
@@ -189,7 +173,6 @@ export class IconPickerComponent
   constructor(
     @Inject('environment') environment: any,
     private elementRef: ElementRef<HTMLElement>,
-    @Optional() @Inject(MAT_FORM_FIELD) public formField: MatFormField,
     @Optional() @Self() public ngControl: NgControl
   ) {
     this.primaryColor = environment.theme.primary;

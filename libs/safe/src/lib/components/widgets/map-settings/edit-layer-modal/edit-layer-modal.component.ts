@@ -4,16 +4,16 @@ import {
   TemplateRef,
   ViewChild,
   Output,
-  OnChanges,
   EventEmitter,
   OnDestroy,
+  Inject,
+  OnInit,
 } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
 import { LayerModel } from '../../../../models/layer.model';
 import { createLayerForm, LayerFormT } from '../map-forms';
 import { debounceTime, takeUntil, BehaviorSubject } from 'rxjs';
-import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { MapComponent } from '../../../ui/map/map.component';
 import {
   MapEvent,
@@ -26,22 +26,68 @@ import { SafeMapLayersService } from '../../../../services/map/map-layers.servic
 import { Layer } from '../../../ui/map/layer';
 import { Apollo } from 'apollo-angular';
 import { GetResourceQueryResponse, GET_RESOURCE } from '../graphql/queries';
-import { Fields } from './layer-fields/layer-fields.component';
 import { get } from 'lodash';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { LayerPropertiesModule } from './layer-properties/layer-properties.module';
+import { LayerDatasourceModule } from './layer-datasource/layer-datasource.module';
+import { LayerFieldsModule } from './layer-fields/layer-fields.module';
+import { LayerAggregationModule } from './layer-aggregation/layer-aggregation.module';
+import { LayerPopupModule } from './layer-popup/layer-popup.module';
+import { LayerLabelsModule } from './layer-labels/layer-labels.module';
+import { LayerFilterModule } from './layer-filter/layer-filter.module';
+import { LayerClusterModule } from './layer-cluster/layer-cluster.module';
+import { LayerStylingModule } from './layer-styling/layer-styling.module';
+import { CommonModule } from '@angular/common';
+import {
+  ButtonModule,
+  DialogModule,
+  IconModule,
+  TabsModule,
+  TooltipModule,
+} from '@oort-front/ui';
+import { Fields } from './layer-fields/layer-fields.component';
+import { MapLayersModule } from '../map-layers/map-layers.module';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 
 /**
- * Map layer editor.
+ * Interface of dialog input
+ */
+interface DialogData {
+  layer?: LayerModel;
+}
+
+/**
+ * Edit map layer modal.
  */
 @Component({
-  selector: 'safe-map-layer',
-  templateUrl: './map-layer.component.html',
-  styleUrls: ['./map-layer.component.scss'],
+  selector: 'safe-edit-layer-modal',
+  standalone: true,
+  imports: [
+    CommonModule,
+    DialogModule,
+    TabsModule,
+    ButtonModule,
+    IconModule,
+    TranslateModule,
+    TooltipModule,
+    LayerPropertiesModule,
+    LayerDatasourceModule,
+    LayerFieldsModule,
+    LayerAggregationModule,
+    LayerPopupModule,
+    LayerClusterModule,
+    LayerLabelsModule,
+    LayerFilterModule,
+    LayerStylingModule,
+    MapLayersModule,
+  ],
+  templateUrl: './edit-layer-modal.component.html',
+  styleUrls: ['./edit-layer-modal.component.scss'],
 })
-export class MapLayerComponent
+export class EditLayerModalComponent
   extends SafeUnsubscribeComponent
-  implements OnChanges, OnDestroy
+  implements OnInit, OnDestroy
 {
-  @Input() layer?: LayerModel;
   private _layer!: Layer;
   @Input() mapComponent!: MapComponent | undefined;
   @Output() layerToSave = new EventEmitter<LayerFormData>();
@@ -57,19 +103,7 @@ export class MapLayerComponent
     new BehaviorSubject<GetResourceQueryResponse | null>(null);
   public fields = new BehaviorSubject<Fields[]>([]);
   public fields$ = this.fields.asObservable();
-  // === MAP ===
-  public currentTab:
-    | 'parameters'
-    | 'datasource'
-    | 'filter'
-    | 'cluster'
-    | 'aggregation'
-    | 'popup'
-    | 'fields'
-    | 'labels'
-    | 'styling'
-    | 'sublayers'
-    | null = 'parameters';
+
   public form!: LayerFormT;
   public currentZoom!: number;
   private currentLayer!: L.Layer;
@@ -118,19 +152,22 @@ export class MapLayerComponent
    * @param translate Angular translate service.
    * @param mapLayersService Shared map layer Service.
    * @param apollo Apollo service
+   * @param {DialogData} data Dialog input
+   * @param dialogRef Dialog ref
    */
   constructor(
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private mapLayersService: SafeMapLayersService,
-    private apollo: Apollo
+    private apollo: Apollo,
+    @Inject(DIALOG_DATA) public data: DialogData,
+    public dialogRef: DialogRef<EditLayerModalComponent>
   ) {
     super();
   }
 
-  ngOnChanges(): void {
-    this.currentTab = 'parameters';
-    this.form = createLayerForm(this.layer);
+  ngOnInit(): void {
+    this.form = createLayerForm(this.data.layer);
     this.setIsDatasourceValid(this.form.get('datasource')?.value);
     this.form
       .get('datasource')
@@ -284,7 +321,7 @@ export class MapLayerComponent
         .pipe(takeUntil(this.destroy$))
         .subscribe((value: any) => {
           if (value) {
-            this.layerToSave.emit(undefined);
+            this.dialogRef.close();
           }
         });
     }
