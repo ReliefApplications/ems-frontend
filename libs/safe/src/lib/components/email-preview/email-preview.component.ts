@@ -95,15 +95,10 @@ export class SafeEmailPreviewComponent implements OnInit {
     // use setTimeout to prevent add input value on focusout
     setTimeout(
       () => {
-        const input =
-          event.type === 'focusout'
-            ? this.emailsInput?.nativeElement
-            : event.input;
         const value =
           event.type === 'focusout'
             ? this.emailsInput?.nativeElement.value
-            : event.value;
-
+            : event;
         // Add the mail
         const emails = [...this.emails];
         if ((value || '').trim()) {
@@ -111,10 +106,6 @@ export class SafeEmailPreviewComponent implements OnInit {
             emails.push(value.trim());
             this.form.get('to')?.setValue(emails);
             this.form.get('to')?.updateValueAndValidity();
-            // Reset the input value
-            if (input) {
-              input.value = '';
-            }
           } else {
             this.form.get('to')?.setErrors({ pattern: true });
           }

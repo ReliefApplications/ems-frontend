@@ -128,41 +128,11 @@ export class EditDistributionListModalComponent implements OnInit {
             emails.push(value.trim());
             this.form.get('emails')?.setValue(emails);
             this.form.get('emails')?.updateValueAndValidity();
-            // Reset the input value
-            if (this.emailsInput?.nativeElement) {
-              this.emailsInput.nativeElement.value = '';
-            }
           } else {
             this.form.get('emails')?.setErrors({ pattern: true });
           }
-        } else {
-          this.form.get('emails')?.setErrors({ required: true });
-          if (this.form.get('emails')?.hasError('pattern')) {
-            const currentErrors = this.form.get('emails')?.errors;
-            delete currentErrors?.pattern;
-            if (currentErrors) {
-              this.form.get('emails')?.setErrors(currentErrors);
-            }
-          }
         }
-        const hasError =
-          ((this.form.get('emails')?.hasError('required') &&
-            this.form.get('emails')?.touched) ||
-            this.form.get('emails')?.hasError('pattern')) ??
-          false;
-        this.errorEmails.next(hasError);
-        const errorMessage: string = this.form
-          .get('emails')
-          ?.hasError('pattern')
-          ? this.translateService.instant(
-              'components.distributionLists.errors.emails.pattern'
-            )
-          : this.form.get('emails')?.hasError('required')
-          ? this.translateService.instant(
-              'components.distributionLists.errors.emails.required'
-            )
-          : '';
-        this.errorEmailMessages.next(errorMessage);
+        this.setEmailsErrors();
       },
       event.type === 'focusout' ? 500 : 0
     );
@@ -178,5 +148,41 @@ export class EditDistributionListModalComponent implements OnInit {
       (emailData) => emailData.toLowerCase() !== email.toLowerCase()
     );
     this.form.get('emails')?.setValue(emails);
+    // If removed all emails, set required error message
+    if (!emails.length) {
+      this.setEmailsErrors();
+    }
+  }
+
+  /**
+   * Check if emails field has errors and set error message
+   */
+  setEmailsErrors(): void {
+    if (!this.emails.length) {
+      this.form.get('emails')?.setErrors({ required: true });
+      if (this.form.get('emails')?.hasError('pattern')) {
+        const currentErrors = this.form.get('emails')?.errors;
+        delete currentErrors?.pattern;
+        if (currentErrors) {
+          this.form.get('emails')?.setErrors(currentErrors);
+        }
+      }
+    }
+    const hasError =
+      ((this.form.get('emails')?.hasError('required') &&
+        this.form.get('emails')?.touched) ||
+        this.form.get('emails')?.hasError('pattern')) ??
+      false;
+    this.errorEmails.next(hasError);
+    const errorMessage: string = this.form.get('emails')?.hasError('pattern')
+      ? this.translateService.instant(
+          'components.distributionLists.errors.emails.pattern'
+        )
+      : this.form.get('emails')?.hasError('required')
+      ? this.translateService.instant(
+          'components.distributionLists.errors.emails.required'
+        )
+      : '';
+    this.errorEmailMessages.next(errorMessage);
   }
 }
