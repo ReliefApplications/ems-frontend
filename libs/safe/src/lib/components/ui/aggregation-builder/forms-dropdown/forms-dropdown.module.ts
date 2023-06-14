@@ -8,7 +8,7 @@ import {
   FormWrapperModule,
   AutocompleteModule,
   IconModule,
-  SelectMenuModule
+  SelectMenuModule,
 } from '@oort-front/ui';
 
 /**

@@ -16,7 +16,11 @@ import {
   Optional,
   Self,
 } from '@angular/core';
-import { ControlValueAccessor, NgControl, UntypedFormControl } from '@angular/forms';
+import {
+  ControlValueAccessor,
+  NgControl,
+  UntypedFormControl,
+} from '@angular/forms';
 import { SelectOptionComponent } from './components/select-option.component';
 import {
   Observable,
@@ -150,7 +154,7 @@ export class SelectMenuComponent
           });
         },
       });
-    if (this.filterable) {
+    if (this.control) {
       this.control.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe({
         next: (value) => {
           // If the value is cleared from outside, reset displayed values
@@ -163,20 +167,22 @@ export class SelectMenuComponent
       });
     }
 
-    if(this.filterable){
+    if (this.filterable) {
       this.searchControl.valueChanges
-      .pipe(debounceTime(500), distinctUntilChanged())
-      .subscribe((value) => {
-        this.loading = true;
-        this.optionList.forEach((op: SelectOptionComponent) => {
-          if(!op.label.toLowerCase().includes(value.toLowerCase())){
-            op.hidden = true;
-          }else{
-            op.hidden = false;
-          }
-        })
-        setTimeout(() => {this.loading = false}, 150);
-      });
+        .pipe(debounceTime(500), distinctUntilChanged())
+        .subscribe((value) => {
+          this.loading = true;
+          this.optionList.forEach((op: SelectOptionComponent) => {
+            if (!op.label.toLowerCase().includes(value.toLowerCase())) {
+              op.hidden = true;
+            } else {
+              op.hidden = false;
+            }
+          });
+          setTimeout(() => {
+            this.loading = false;
+          }, 150);
+        });
     }
   }
 

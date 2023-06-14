@@ -84,7 +84,7 @@ export class SafeFormsDropdownComponent
           this.filteredForms = this.filterForms(value);
         }
       });
-    
+
     setTimeout(() => {
       console.log(this.currentForms);
       console.log(this.filteredForms);

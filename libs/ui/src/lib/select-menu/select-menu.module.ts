@@ -12,7 +12,14 @@ import { TranslateModule } from '@ngx-translate/core';
  */
 @NgModule({
   declarations: [SelectMenuComponent],
-  imports: [CommonModule, ReactiveFormsModule, SelectOptionModule, SpinnerModule, ButtonModule, TranslateModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    SelectOptionModule,
+    SpinnerModule,
+    ButtonModule,
+    TranslateModule,
+  ],
   exports: [SelectMenuComponent, SelectOptionModule],
 })
 export class SelectMenuModule {}

@@ -26,7 +26,8 @@ export class SelectOptionComponent implements AfterContentInit {
   @Input() disabled = false;
   @Output() optionClick = new EventEmitter<any>();
   @HostBinding('class.hidden')
-  @Input() hidden = false;
+  @Input()
+  hidden = false;
 
   @ContentChildren(forwardRef(() => SelectOptionComponent))
   options!: QueryList<SelectOptionComponent>;
