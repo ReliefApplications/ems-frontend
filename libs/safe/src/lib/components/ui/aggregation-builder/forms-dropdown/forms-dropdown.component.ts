@@ -82,6 +82,9 @@ export class SafeFormsDropdownComponent
           this.sourceFilter = value;
           this.filter.emit(value);
           this.filteredForms = this.filterForms(value);
+          this.sourceFormControl.setErrors({ pattern: true });
+        } else {
+          this.sourceFormControl.setErrors({ pattern: false });
         }
       });
   }
