@@ -779,10 +779,11 @@ export class Layer implements LayerModel {
       const currZoom = zoom.target.getZoom();
       const maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
       const minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
+
       if (currZoom > maxZoom || currZoom < minZoom) {
         map.removeLayer(layer);
       } else {
-        map.addLayer(layer);
+        if (map.hasLayer(layer)) map.addLayer(layer);
       }
     });
   }
