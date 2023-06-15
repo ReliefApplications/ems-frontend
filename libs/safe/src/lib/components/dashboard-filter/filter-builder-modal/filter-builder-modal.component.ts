@@ -54,6 +54,22 @@ const QUESTION_TYPES = [
  * Allowed properties for a core question in a child form.
  */
 const CORE_QUESTION_ALLOWED_PROPERTIES = [
+  'name',
+  'title',
+  'size',
+  'min',
+  'max',
+  'minValueExpression',
+  'maxValueExpression',
+  'minErrorText',
+  'maxErrorText',
+  'step',
+  'maxLength',
+  'placeholder',
+  'dateMin',
+  'dateMax',
+  'description',
+  'hideNumber',
   'width',
   'maxWidth',
   'minWidth',
@@ -90,6 +106,18 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'referenceDataFilterForeignField',
   'referenceDataFilterFilterCondition',
   'referenceDataFilterLocalField',
+  'showSelectAllItem',
+  'showNoneItem',
+  'showClearButton',
+  'bindings',
+  'choicesMin',
+  'choicesMax',
+  'allowClear',
+  'autoGrow',
+  'labelTrue',
+  'labelFalse',
+  'valueTrue',
+  'valueFalse',
 ];
 
 /**
@@ -170,9 +198,8 @@ export class FilterBuilderModalComponent
 
       // If it is a core field
       if (!CORE_QUESTION_ALLOWED_PROPERTIES.includes(opt.property.name)) {
+        // console.log(opt.property.name);
         opt.canShow = false;
-      } else {
-        console.log(opt);
       }
     });
 
