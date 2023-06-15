@@ -45,6 +45,8 @@ export class SliderComponent
   range: number[] = [];
   //Value of the slider
   currentValue = this.minValue;
+  currentMinValue = this.minValue;
+  currentMaxValue = this.maxValue;
   onChange!: (value: number) => void;
   onTouch!: () => void;
 
@@ -143,12 +145,23 @@ export class SliderComponent
    */
   onChangeFunction(value: EventTarget | null) {
     if (value) {
-      this.currentValue = +((value as HTMLInputElement)?.value ?? value);
+      const name = (value as HTMLInputElement)?.name;
       const min = this.minValue;
       const max = this.maxValue;
-      const newVal = Number(((this.currentValue - min) * 100) / (max - min));
+      let newVal = 0;
+      if (name === 'slider-min') {
+        this.currentMinValue = +((value as HTMLInputElement)?.value ?? value);
+        newVal = Number(((this.currentMinValue - min) * 100) / (max - min));
+      } else {
+        this.currentMaxValue = +((value as HTMLInputElement)?.value ?? value);
+        newVal = Number(((this.currentMaxValue - min) * 100) / (max - min));
+      }
       if (this.onChange && this.onTouch) {
-        this.onChange(this.currentValue);
+        if (name === 'slider-min') {
+          this.onChange(this.currentMinValue);
+        } else {
+          this.onChange(this.currentMaxValue);
+        }
         this.onTouch();
       }
       // Sorta magic numbers based on size of the native UI thumb

@@ -20,19 +20,34 @@
     >{{ currentValue }}</span
   >
   <!-- Actual input range -->
-  <input
-    name="slider"
-    style="--value:{{ currentValue }}; --min:{{ minValue }}; --max:{{
-      maxValue
-    }}"
-    class="w-full h-1 bg-gray-300 focus:bg-gray-400 bg-gradient-to-r from-primary-400 to-primary-400"
-    type="range"
-    min="{{ minValue }}"
-    max="{{ maxValue }}"
-    value="{{ currentValue }}"
-    step="1"
-    (input)="onChangeFunction($event.target)"
-  />
+  <div class="relative max-w-xl">
+    <input
+      name="slider-min"
+      style="--value:{{ currentMinValue }}; --min:{{ minValue }}; --max:{{
+        maxValue
+      }}"
+      class="absolute pointer-events-none appearance-none z-10 h-2 w-full cursor-pointer"
+      type="range"
+      min="{{ minValue }}"
+      max="{{ maxValue }}"
+      value="{{ currentMinValue }}"
+      step="1"
+      (input)="onChangeFunction($event.target)"
+    />
+    <input
+      name="slider-max"
+      style="--value:{{ currentMaxValue }}; --min:{{ minValue }}; --max:{{
+        maxValue
+      }}"
+      class="absolute pointer-events-none appearance-none z-20 h-2 w-full cursor-pointer"
+      type="range"
+      min="{{ minValue }}"
+      max="{{ maxValue }}"
+      value="{{ currentMaxValue }}"
+      step="1"
+      (input)="onChangeFunction($event.target)"
+    />
+  </div>
   <!-- Ticks placement + appearance -->
   <div
     [ngClass]="{
