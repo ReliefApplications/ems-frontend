@@ -106,10 +106,12 @@
     <a uiMenuItem [routerLink]="[profileRoute]">
       {{ 'pages.profile.title' | translate }}
     </a>
-    <ui-divider class="py-1"></ui-divider>
-    <button uiMenuItem (click)="onOpenPreferences()" *ngIf="showPreferences">
-      {{ 'components.preferences.title' | translate }}
-    </button>
+    <ng-container *ngIf="showPreferences">
+      <ui-divider class="py-1"></ui-divider>
+      <button uiMenuItem (click)="onOpenPreferences()">
+        {{ 'components.preferences.title' | translate }}
+      </button>
+    </ng-container>
     <ng-container *ngIf="user && user.isAdmin">
       <ui-divider class="py-1"></ui-divider>
       <a uiMenuItem [href]="otherOfficeUri">
@@ -163,21 +165,6 @@
     <ng-container [ngTemplateOutlet]="leftSidenav"></ng-container>
   </ng-container>
 </ng-container>
-<!-- <ng-container *ngIf="!sideMenu && largeDevice; else sidenavTmpl">
-  <ng-container *ngIf="leftSidenav">
-    <ng-container [ngTemplateOutlet]="leftSidenav"></ng-container>
-  </ng-container>
-  <div></div>
-  <div class="flex-1 overflow-y-auto">
-    <div class="py-[32px] h-full px-[24px]">
-      <ui-breadcrumbs
-        *ngIf="breadcrumbs.length > 1"
-        [breadcrumbs]="breadcrumbs"
-      ></ui-breadcrumbs>
-      <router-outlet></router-outlet>
-    </div>
-  </div>
-</ng-container> -->
 <!-- Content -->
 <ui-sidenav-container class="sidenav-container">
   <!-- Left sidenav -->
