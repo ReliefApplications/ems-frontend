@@ -160,14 +160,12 @@
     <ng-container [ngTemplateOutlet]="leftSidenav"></ng-container>
   </ng-container>
   <div></div>
-  <div class="flex-1 overflow-y-auto">
-    <div class="py-[32px] h-full px-[24px]">
-      <ui-breadcrumbs
-        *ngIf="breadcrumbs.length > 1"
-        [breadcrumbs]="breadcrumbs"
-      ></ui-breadcrumbs>
-      <router-outlet></router-outlet>
-    </div>
+  <div class="flex-1 overflow-y-auto py-[32px] h-full px-[24px]">
+    <ui-breadcrumbs
+      *ngIf="breadcrumbs.length > 1"
+      [breadcrumbs]="breadcrumbs"
+    ></ui-breadcrumbs>
+    <router-outlet></router-outlet>
   </div>
 </ng-container>
 <ng-template #sidenavTmpl>
