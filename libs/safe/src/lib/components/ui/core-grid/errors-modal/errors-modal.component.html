@@ -16,7 +16,7 @@
     <div class="overflow-x-hidden shadow-2lg">
       <!-- Table scroll container -->
       <div class="overflow-x-auto">
-        <table class="mb-6" cdk-table  uiTableWrapper [dataSource]="data.errors">
+        <table class="mb-6" cdk-table uiTableWrapper [dataSource]="data.errors">
           <ng-container cdkColumnDef="question">
             <th uiCellHeader *cdkHeaderCellDef scope="col">Field</th>
             <td uiCell *cdkCellDef="let element">{{ element.question }}</td>

@@ -7,7 +7,7 @@
           [record]="record"
           (showHistory)="onShowHistory()"
         ></safe-record-summary>
-  
+
         <safe-form-actions
           [survey]="survey"
           [surveyNext]="surveyNext || undefined"
@@ -18,7 +18,9 @@
         (selectedIndexChange)="onShowPage($event)"
       >
         <ui-tab *ngFor="let page of pages$ | async">
-          <ng-container ngProjectAs="label">{{page.title ? page.title : page.name}}</ng-container>
+          <ng-container ngProjectAs="label">{{
+            page.title ? page.title : page.name
+          }}</ng-container>
         </ui-tab>
       </ui-tabs>
       <div class="versions-info" *ngIf="data.compareTo">
@@ -67,7 +69,7 @@
       <ui-button (click)="onClose()" variant="danger">
         {{ 'common.close' | translate }}
       </ui-button>
-  
+
       <ng-container *ngIf="pages$ | async as pages">
         <ui-button
           category="secondary"

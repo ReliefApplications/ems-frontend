@@ -267,11 +267,7 @@
 <!-- Template to display status -->
 <ng-template #statusTemplate let-status>
   <div uiChipList>
-    <ui-chip
-      class="!rounded-lg"
-      variant="success"
-      *ngIf="status === 'active'"
-    >
+    <ui-chip class="!rounded-lg" variant="success" *ngIf="status === 'active'">
       {{ 'common.status_active' | translate | titlecase }}
     </ui-chip>
     <ui-chip class="!rounded-lg" variant="warning" *ngIf="status === 'pending'">

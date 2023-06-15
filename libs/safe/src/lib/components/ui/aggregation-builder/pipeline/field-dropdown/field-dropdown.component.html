@@ -10,10 +10,7 @@
         [value]="field.name"
         >{{ field.name }}</ui-select-option
       >
-      <ui-select-option
-        [isGroup]="true"
-        *ngIf="field.type.kind !== 'SCALAR'"
-      >
+      <ui-select-option [isGroup]="true" *ngIf="field.type.kind !== 'SCALAR'">
         <ui-select-option
           *ngFor="let subField of field.fields"
           [value]="field.name + '.' + subField.name"
