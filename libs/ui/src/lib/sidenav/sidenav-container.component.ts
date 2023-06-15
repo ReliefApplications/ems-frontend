@@ -30,6 +30,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   public showSidenav: boolean[] = [];
   public mode: SidenavTypes[] = [];
   public position: SidenavPositionTypes[] = [];
+  public visible: boolean[] = [];
   private destroy$ = new Subject<void>();
   animationClasses = ['transition-all', 'duration-500', 'ease-in-out'] as const;
 
@@ -81,6 +82,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
     const classes = [];
     if (this.position[index] === 'start') {
       classes.push("data-[sidenav-show='false']:-translate-x-full");
+      classes.push("data-[sidenav-show='false']:w-0");
       classes.push('z-[999]');
       classes.push('w-60');
       classes.push('border-r');
