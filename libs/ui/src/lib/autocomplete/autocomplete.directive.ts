@@ -54,7 +54,7 @@ export class AutocompleteDirective
   public overlayRef!: OverlayRef;
 
   private inputElement!: HTMLInputElement;
-  private selectedOption!: any;
+  private value!: any;
   private inputEventListener!: any;
   private destroy$ = new Subject<void>();
   private control!: NgControl;
@@ -139,9 +139,9 @@ export class AutocompleteDirective
       }
     );
     if (this.control?.control) {
-      this.selectedOption = this.control.control.value;
+      this.value = this.control.control.value;
     } else if (this.inputElement?.value) {
-      this.selectedOption = this.inputElement.value;
+      this.value = this.inputElement.value;
     }
   }
 
@@ -164,7 +164,7 @@ export class AutocompleteDirective
   private highLightSelectedOption() {
     this.getNotGroupOptionList().forEach((option: OptionComponent) => {
       // Highlight selected option
-      if (isEqual(this.selectedOption, option.value)) {
+      if (isEqual(this.value, option.value)) {
         option.selected = true;
       } else {
         option.selected = false;
@@ -220,15 +220,15 @@ export class AutocompleteDirective
    */
   private updateListAndSelectedOption(value: string) {
     if (
-      this.selectedOption &&
+      this.value &&
       !isEqual(
         this.getOptionValue({
-          value: this.selectedOption,
+          value: this.value,
         } as OptionComponent),
         this.inputElement.value
       )
     ) {
-      this.selectedOption = null;
+      this.value = null;
       this.highLightSelectedOption();
     }
     if (this.autocompletePanel.openPanel) {
@@ -311,18 +311,18 @@ export class AutocompleteDirective
             event.target.getAttribute('data-selected')
           );
           if (isSelected) {
-            this.selectedOption = optionValue;
+            this.value = optionValue;
           } else {
-            this.selectedOption = null;
+            this.value = null;
           }
           if (this.control?.control) {
-            this.control.control.setValue(this.selectedOption, {
+            this.control.control.setValue(this.value, {
               emitEvent: false,
             });
-          } else {
-            this.inputElement.value = this.selectedOption;
           }
-          this.optionSelected.emit(this.selectedOption);
+          this.inputElement.value =
+            event.target.getAttribute('data-label') || this.value;
+          this.optionSelected.emit(this.value);
           this.closeAutocompletePanel();
         }
       }

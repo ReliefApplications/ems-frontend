@@ -209,14 +209,17 @@ export class SafeFormHelpersService {
    * @param survey Survey from which we need to clean cached records.
    */
   cleanCachedRecords(survey: Survey.SurveyModel): void {
+    if (!survey) return;
     survey.getAllQuestions().forEach((question) => {
-      if (
-        question.value &&
-        ['resources', 'resource'].includes(question.getType())
-      ) {
-        question.value.forEach((recordId: any) =>
-          localForage.removeItem(recordId)
-        );
+      if (question.value) {
+        const type = question.getType();
+        if (type === 'resources') {
+          question.value.forEach((recordId: string) =>
+            localForage.removeItem(recordId)
+          );
+        } else if (type === 'resource') {
+          localForage.removeItem(question.value);
+        }
       }
     });
   }
