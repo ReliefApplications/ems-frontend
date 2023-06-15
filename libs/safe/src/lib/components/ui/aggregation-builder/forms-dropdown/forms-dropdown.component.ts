@@ -108,19 +108,6 @@ export class SafeFormsDropdownComponent
   }
 
   /**
-   * Display function necessary for the autocomplete in order to display selected choice.
-   *
-   * @param formId the ID of the form
-   * @returns the name of the form with matching ID if currentForms exists and has a length,
-   * otherwise returns the formId
-   */
-  public displayName(formId: string): string {
-    return this.currentForms && this.currentForms.length
-      ? this.currentForms.find((x) => x.id === formId)?.name || formId
-      : formId;
-  }
-
-  /**
    * Trigger add scroll listener to autocomplete.
    *
    */
