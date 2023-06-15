@@ -55,12 +55,12 @@
             breadcrumb.key ? (breadcrumb.key | translate) : breadcrumb.text
           }}</span>
         </a>
-         <!-- Loading indicator if text not set -->
-          <kendo-skeleton
-            *ngIf="!breadcrumb.key && !breadcrumb.text"
-            width="3em"
-          ></kendo-skeleton>
-        </div>
+        <!-- Loading indicator if text not set -->
+        <kendo-skeleton
+          *ngIf="!breadcrumb.key && !breadcrumb.text"
+          width="3em"
+        ></kendo-skeleton>
+      </div>
     </li>
   </ol>
 </nav>

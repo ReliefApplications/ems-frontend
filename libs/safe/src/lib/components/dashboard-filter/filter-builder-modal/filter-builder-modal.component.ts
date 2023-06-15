@@ -51,11 +51,6 @@ const QUESTION_TYPES = [
 ];
 
 /**
- * Array containing the different types of questions that should not show the reference data property.
- */
-const SHOW_REFERENCE_DATA_PROPERTY = ['dropdown', 'tagbox'];
-
-/**
  * Allowed properties for a core question in a child form.
  */
 const CORE_QUESTION_ALLOWED_PROPERTIES = [
@@ -89,12 +84,6 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'enableIf',
   'visibleIf',
   'tooltip',
-];
-
-/**
- * Reference data related properties
- */
-const REFERENCE_DATA_PROPERTIES = [
   'referenceData',
   'referenceDataDisplayField',
   'referenceDataFilterFilterFromQuestion',
@@ -182,13 +171,8 @@ export class FilterBuilderModalComponent
       // If it is a core field
       if (!CORE_QUESTION_ALLOWED_PROPERTIES.includes(opt.property.name)) {
         opt.canShow = false;
-      }
-      // show reference data property for some types of questions
-      if (
-        REFERENCE_DATA_PROPERTIES.includes(opt.property.name) &&
-        SHOW_REFERENCE_DATA_PROPERTY.includes(obj.getType())
-      ) {
-        opt.canShow = true;
+      } else {
+        console.log(opt);
       }
     });
 

@@ -73,7 +73,9 @@ export class SafeEditorService {
    */
   addCalcAndKeysAutoCompleter(editor: RawEditorSettings, keys: string[]) {
     this.allowScrolling();
+    const defaultSetup = editor.setup;
     editor.setup = (e: Editor) => {
+      if (defaultSetup && typeof defaultSetup === 'function') defaultSetup(e);
       e.ui.registry.addAutocompleter('keys_data_and_calc', {
         ch: '{',
         minChars: 0,

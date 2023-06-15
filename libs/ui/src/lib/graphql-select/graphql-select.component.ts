@@ -59,7 +59,7 @@ export class GraphQLSelectComponent
    * @returns the value
    */
   @Input() get value(): string | string[] | null {
-    return this.ngControl.value;
+    return this.ngControl?.value;
   }
   /** Sets the value */
   set value(val: string | string[] | null) {
@@ -105,13 +105,13 @@ export class GraphQLSelectComponent
    */
   @Input()
   get disabled(): boolean {
-    return this.ngControl.disabled || false;
+    return this.ngControl?.disabled || false;
   }
   /** Sets whether the field is disabled */
   set disabled(value: boolean) {
     const isDisabled = coerceBooleanProperty(value);
-    if (isDisabled) this.ngControl.control?.disable();
-    else this.ngControl.control?.enable();
+    if (isDisabled) this.ngControl?.control?.disable();
+    else this.ngControl?.control?.enable();
     this.stateChanges.next();
   }
 
@@ -163,7 +163,7 @@ export class GraphQLSelectComponent
    */
   get empty() {
     // return !this.selected.value;
-    return !this.ngControl.control?.value;
+    return !this.ngControl?.control?.value;
   }
 
   /**
@@ -172,7 +172,7 @@ export class GraphQLSelectComponent
    * @returns whether the input is in an error state
    */
   get errorState(): boolean {
-    return (this.ngControl.invalid && this.touched) || false;
+    return (this.ngControl?.invalid && this.touched) || false;
     // return this.ngControl.invalid && this.touched;
     // return this.selected.invalid && this.touched;
   }
@@ -265,7 +265,7 @@ export class GraphQLSelectComponent
         this.queryName = Object.keys(data)[0];
         this.updateValues(data, loading);
       });
-    this.ngControl.valueChanges
+    this.ngControl?.valueChanges
       ?.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         const elements = this.elements.getValue();
@@ -316,7 +316,7 @@ export class GraphQLSelectComponent
       this.searchControl.setValue('');
 
       // Clear the form control
-      this.ngControl.control?.setValue(null);
+      this.ngControl?.control?.setValue(null);
 
       // Emit the selection change
       this.selectionChange.emit(null);

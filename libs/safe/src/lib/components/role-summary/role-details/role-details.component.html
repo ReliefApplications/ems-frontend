@@ -22,13 +22,13 @@
           {{ permission.type }}
         </ui-select-option>
       </ui-select-menu>
-      <ui-button 
+      <ui-button
         uiSuffix
         variant="danger"
         [isIcon]="true"
         icon="delete"
-        class = "mr-1 pl-0"
-        (click)="this.form.get('permissions')?.reset([]);"
+        class="mr-1 pl-0"
+        (click)="this.form.get('permissions')?.reset([])"
       ></ui-button>
     </div>
   </div>

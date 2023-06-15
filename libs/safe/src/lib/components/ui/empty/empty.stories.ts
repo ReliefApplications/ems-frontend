@@ -38,6 +38,9 @@ const TEMPLATE: StoryFn<SafeEmptyComponent> = (args) => ({
   },
 });
 
+/**
+ * Default story
+ */
 export const DEFAULT = {
   render: TEMPLATE,
   name: 'Default',

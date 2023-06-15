@@ -32,9 +32,11 @@
     ></safe-widget-grid>
     <safe-dashboard-filter
       *ngIf="showFilter && isFullScreen"
+      [isFullScreen]="isFullScreen"
     ></safe-dashboard-filter>
   </ng-container>
 </div>
 <safe-dashboard-filter
   *ngIf="showFilter && !isFullScreen"
+  [isFullScreen]="isFullScreen"
 ></safe-dashboard-filter>

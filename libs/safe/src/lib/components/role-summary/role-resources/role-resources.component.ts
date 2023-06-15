@@ -525,7 +525,6 @@ export class RoleResourcesComponent
     const permissionLevel = this.permissionLevel(resource, permission);
     switch (permissionLevel) {
       case 'limited': {
-        console.log('there');
         return true;
       }
       case 'full':

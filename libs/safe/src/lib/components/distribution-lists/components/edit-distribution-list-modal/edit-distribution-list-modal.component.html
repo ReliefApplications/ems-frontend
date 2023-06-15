@@ -28,8 +28,10 @@
           <input formControlName="name" type="text" />
         </div>
         <div
-          [uiErrorMessage]="errorEmailMessages | async"
-          [uiErrorMessageIf]="errorEmails | async"
+          [uiErrorMessage]="emailsError | translate"
+          [uiErrorMessageIf]="
+            form.get('emails')?.errors && form.get('emails')?.touched
+          "
           uiFormFieldDirective
         >
           <label class="block text-sm font-medium leading-6 text-gray-900">{{

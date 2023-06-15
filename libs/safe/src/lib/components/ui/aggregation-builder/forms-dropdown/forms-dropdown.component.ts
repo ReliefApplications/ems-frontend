@@ -82,6 +82,9 @@ export class SafeFormsDropdownComponent
           this.sourceFilter = value;
           this.filter.emit(value);
           this.filteredForms = this.filterForms(value);
+          this.sourceFormControl.setErrors({ pattern: true });
+        } else {
+          this.sourceFormControl.setErrors({ pattern: false });
         }
       });
   }
@@ -105,19 +108,6 @@ export class SafeFormsDropdownComponent
     return this.currentForms.filter((form) =>
       form.name?.toLowerCase().includes(value.toLowerCase())
     );
-  }
-
-  /**
-   * Display function necessary for the autocomplete in order to display selected choice.
-   *
-   * @param formId the ID of the form
-   * @returns the name of the form with matching ID if currentForms exists and has a length,
-   * otherwise returns the formId
-   */
-  public displayName(formId: string): string {
-    return this.currentForms && this.currentForms.length
-      ? this.currentForms.find((x) => x.id === formId)?.name || formId
-      : formId;
   }
 
   /**

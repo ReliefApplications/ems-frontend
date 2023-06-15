@@ -70,8 +70,10 @@
       <div
         class="flex flex-row overflow-auto justify-center gap-4 items-center"
         [ngClass]="{
-          'text-side -rotate-180': position === filterPosition.LEFT,
-          'text-side rotate-180': position === filterPosition.RIGHT
+          'text-side':
+            position === filterPosition.LEFT ||
+            position === filterPosition.RIGHT,
+          'rotate-180': position === filterPosition.RIGHT
         }"
       >
         <ng-container

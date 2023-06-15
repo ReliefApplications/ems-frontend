@@ -38,6 +38,9 @@ const TEMPLATE: StoryFn<SafeWidgetChoiceComponent> = (args) => ({
   },
 });
 
+/**
+ * Default story
+ */
 export const DEFAULT = {
   render: TEMPLATE,
   name: 'Default',
@@ -48,6 +51,9 @@ export const DEFAULT = {
   },
 };
 
+/**
+ * Floating story
+ */
 export const FLOATING = {
   render: TEMPLATE,
   name: 'Floating',

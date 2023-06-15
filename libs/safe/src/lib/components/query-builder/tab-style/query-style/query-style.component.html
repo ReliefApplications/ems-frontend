@@ -12,7 +12,7 @@
         <span class="field-name">{{
           'components.queryBuilder.style.edit.name' | translate
         }}</span>
-        <div uiFormFieldDirective >
+        <div uiFormFieldDirective>
           <input formControlName="name" type="text" />
         </div>
       </div>
@@ -74,20 +74,26 @@
             ></ui-button>
           </div>
         </div>
-      </ng-container>    
+      </ng-container>
       <div class="field-form">
         <span class="field-name">{{
           'components.queryBuilder.style.edit.appliesTo' | translate
         }}</span>
-        <div class="flex flex-col" [formControl]="wholeRow" uiRadioGroupDirective="wholeRowOptions">
-          <ui-radio [value]="true" [checked]="wholeRow.value === true">
+        <div
+          class="flex flex-col"
+          [formControl]="wholeRow"
+          uiRadioGroupDirective="wholeRowOptions"
+        >
+          <ui-radio [value]="true">
             <ng-container ngProjectAs="label">
               {{ 'components.queryBuilder.style.edit.wholeRow' | translate }}
             </ng-container>
           </ui-radio>
-          <ui-radio [value]="false" [checked]="wholeRow.value === false">
+          <ui-radio [value]="false">
             <ng-container ngProjectAs="label">
-              {{ 'components.queryBuilder.style.edit.selectedColumns' | translate }}
+              {{
+                'components.queryBuilder.style.edit.selectedColumns' | translate
+              }}
             </ng-container>
           </ui-radio>
         </div>

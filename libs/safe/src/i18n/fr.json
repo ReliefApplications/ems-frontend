@@ -1177,7 +1177,7 @@
 					},
 					"position": "Position",
 					"series": {
-						"fill": "@TODO",
+						"fill": "Remplissage",
 						"interpolation": {
 							"step": "Étape d'interpolation",
 							"title": "Interpolation"
@@ -1428,9 +1428,9 @@
 			"noDataText": "No available choice"
 		},
 		"datepicker": {
-			"dateLabel": "@TODO",
-			"endLabel": "@TODO",
-			"startLabel": "@TODO",
+			"dateLabel": "Sélectionner une date",
+			"endLabel": "Date de fin",
+			"startLabel": "Date de début",
 			"today": "Aujourd'hui",
 			"toggle": "Sélectionnez une date"
 		},
