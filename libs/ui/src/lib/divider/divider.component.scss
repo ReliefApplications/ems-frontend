@@ -1,34 +1,34 @@
 .divider-container {
-	@apply flex justify-center;
+  @apply flex justify-center;
 }
 
 .orientation-horizontal {
-	@apply relative w-full;
+  @apply relative w-full;
 }
 
 .orientation-vertical {
-	@apply absolute w-px h-full border-l border-[#E5E7EB];
+  @apply absolute w-px h-full border-l border-[#E5E7EB];
 }
 
 .horizontal {
-	@apply absolute;
+  @apply absolute;
 }
 
 .vertical {
-	@apply relative;
+  @apply relative;
 }
 
 // Horizontal divider: position change texts positions
 .position-center {
-	@apply justify-center relative;
+  @apply justify-center relative;
 }
 
 .position-left {
-	@apply justify-start relative;
+  @apply justify-start relative;
 }
 
 .position-right {
-	@apply justify-end relative;
+  @apply justify-end relative;
 }
 
 // Vertical divider: position change divider locations, text always in the center

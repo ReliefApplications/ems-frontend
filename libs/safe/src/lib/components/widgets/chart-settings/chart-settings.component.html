@@ -28,7 +28,10 @@
       <span>{{ 'common.display' | translate }}</span>
     </ng-container>
     <ng-template uiTabContent>
-      <safe-tab-display [formGroup]="formGroup" [type]="type"></safe-tab-display>
+      <safe-tab-display
+        [formGroup]="formGroup"
+        [type]="type"
+      ></safe-tab-display>
     </ng-template>
   </ui-tab>
   <!-- Widget display options -->

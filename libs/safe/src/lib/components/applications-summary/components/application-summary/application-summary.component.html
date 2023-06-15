@@ -52,11 +52,7 @@
         {{ 'common.preview' | translate }}
       </button>
       <!-- Duplication -->
-      <button
-        uiMenuItem
-        (click)="clone.emit()"
-        *ngIf="application.canUpdate"
-      >
+      <button uiMenuItem (click)="clone.emit()" *ngIf="application.canUpdate">
         <ui-icon icon="file_copy" variant="grey"></ui-icon>
         {{ 'common.duplicate' | translate }}
       </button>

@@ -18,16 +18,19 @@
       <!-- Status -->
       <div uiFormFieldDirective [outline]="false" class="p-0">
         <label>{{ 'common.status' | translate }}</label>
-        <ui-select-menu 
-          formControlName="status" 
-          [customTemplate]="{ template : statusTemplate, context: { $implicit: apiForm.value.status } }"
+        <ui-select-menu
+          formControlName="status"
+          [customTemplate]="{
+            template: statusTemplate,
+            context: { $implicit: apiForm.value.status }
+          }"
         >
-          <ui-select-option *ngFor="let status of statusChoices" [value]="status">
+          <ui-select-option
+            *ngFor="let status of statusChoices"
+            [value]="status"
+          >
             <ng-container
-              *ngTemplateOutlet="
-                statusTemplate;
-                context: { $implicit: status }
-              "
+              *ngTemplateOutlet="statusTemplate; context: { $implicit: status }"
             ></ng-container>
           </ui-select-option>
         </ui-select-menu>
@@ -54,12 +57,10 @@
           />
         </div>
         <!-- Authentication type -->
-        
+
         <div uiFormFieldDirective [outline]="false" class="flex-1">
           <label>{{ 'models.apiConfiguration.authType' | translate }}</label>
-          <ui-select-menu 
-            formControlName="authType" 
-          >
+          <ui-select-menu formControlName="authType">
             <ui-select-option
               *ngFor="let authTypeChoice of authTypeChoices"
               [value]="authTypeChoice"

@@ -3,7 +3,7 @@
   class="flex flex-row gap-4"
   *ngFor="let fieldForm of form.controls; let index = index"
 >
-  <div uiFormFieldDirective  *ngIf="displayName"  class="w-44">
+  <div uiFormFieldDirective *ngIf="displayName" class="w-44">
     <label>{{ 'common.name' | translate }}</label>
     <input formControlName="name" [placeholder]="'common.name' | translate" />
   </div>
