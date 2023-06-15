@@ -835,6 +835,12 @@ export class DashboardComponent
       event.currentIndex
     );
 
-    this.dashboardService.saveDashboardButtons(this.buttonActions);
+    this.dashboardService.saveDashboardButtons(
+      this.buttonActions.map((b) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { isHovered, ...button } = b;
+        return button;
+      })
+    );
   }
 }
