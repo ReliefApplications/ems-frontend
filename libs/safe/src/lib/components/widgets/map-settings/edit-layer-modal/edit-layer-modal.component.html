@@ -3,7 +3,11 @@
     <h1>Layer Edition</h1>
   </ng-container>
   <ng-container ngProjectAs="content">
-    <ui-tabs class="grow" [vertical]="true">
+    <ui-tabs
+      class="grow"
+      [vertical]="true"
+      (selectedIndexChange)="selectedIndexChange()"
+    >
       <!-- Layer parameters -->
       <ui-tab>
         <ng-container ngProjectAs="label">
@@ -24,6 +28,8 @@
           <safe-layer-properties
             [currentZoom]="currentZoom"
             [form]="form"
+            [destroyTab$]="destroyTab$"
+            [currentMapContainerRef]="data.currentMapContainerRef"
           ></safe-layer-properties>
         </ng-template>
       </ui-tab>
@@ -49,6 +55,8 @@
             [resourceQuery]="resource"
             [fields$]="fields$"
             (fields)="fields.next($event)"
+            [destroyTab$]="destroyTab$"
+            [currentMapContainerRef]="data.currentMapContainerRef"
           ></safe-layer-datasource>
         </ng-template>
       </ui-tab>
@@ -73,6 +81,8 @@
             [layerIds]="form.get('sublayers')?.value || []"
             (editLayer)="onEditLayer($event)"
             (deleteLayer)="onDeleteLayer($event)"
+            [destroyTab$]="destroyTab$"
+            [currentMapContainerRef]="data.currentMapContainerRef"
           ></safe-map-layers>
         </ng-template>
       </ui-tab>
@@ -99,6 +109,8 @@
           <safe-layer-styling
             [formGroup]="$any(form.get('layerDefinition.drawingInfo'))"
             [fields$]="fields$"
+            [destroyTab$]="destroyTab$"
+            [currentMapContainerRef]="data.currentMapContainerRef"
           ></safe-layer-styling>
         </ng-template>
       </ui-tab>
@@ -167,6 +179,8 @@
         <ng-template uiTabContent>
           <safe-layer-aggregation
             [formGroup]="$any(form.get('layerDefinition.featureReduction'))"
+            [destroyTab$]="destroyTab$"
+            [currentMapContainerRef]="data.currentMapContainerRef"
           ></safe-layer-aggregation>
         </ng-template>
       </ui-tab>
@@ -188,6 +202,8 @@
           <safe-layer-popup
             [formGroup]="$any(form.get('popupInfo'))"
             [fields$]="fields$"
+            [destroyTab$]="destroyTab$"
+            [currentMapContainerRef]="data.currentMapContainerRef"
           ></safe-layer-popup>
         </ng-template>
       </ui-tab>
@@ -206,7 +222,11 @@
           >
         </ng-container>
         <ng-template uiTabContent>
-          <safe-layer-fields [fields$]="fields$"></safe-layer-fields>
+          <safe-layer-fields
+            [fields$]="fields$"
+            [destroyTab$]="destroyTab$"
+            [currentMapContainerRef]="data.currentMapContainerRef"
+          ></safe-layer-fields>
         </ng-template>
       </ui-tab>
       <!-- Layer labels -->
@@ -246,3 +266,7 @@
     </ui-button>
   </ng-container>
 </ui-dialog>
+
+<div class="hidden">
+  <ng-template #mapContainer></ng-template>
+</div>

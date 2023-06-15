@@ -1,5 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
 import { LayerFormT } from '../../map-forms';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 
 /** Component for the general layer properties */
 @Component({
@@ -10,4 +11,26 @@ import { LayerFormT } from '../../map-forms';
 export class LayerPropertiesComponent {
   @Input() form!: LayerFormT;
   @Input() currentZoom!: number | undefined;
+
+  // Display of map
+  @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;
+  @ViewChild('mapContainer', { read: ViewContainerRef })
+  mapContainerRef!: ViewContainerRef;
+  @Input() destroyTab$!: Subject<boolean>;
+
+  ngAfterViewInit(): void {
+    this.currentMapContainerRef
+      .pipe(takeUntil(this.destroyTab$))
+      .subscribe((viewContainerRef) => {
+        if (viewContainerRef) {
+          if (viewContainerRef !== this.mapContainerRef) {
+            const view = viewContainerRef.detach();
+            if (view) {
+              this.mapContainerRef.insert(view);
+              this.currentMapContainerRef.next(this.mapContainerRef);
+            }
+          }
+        }
+      });
+  }
 }

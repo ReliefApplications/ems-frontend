@@ -1,6 +1,6 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
 import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
 
 /**
  * Fields interface
@@ -22,6 +22,12 @@ export interface Fields {
 export class LayerFieldsComponent {
   @Input() fields$!: Observable<Fields[]>;
 
+  // Display of map
+  @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;
+  @ViewChild('mapContainer', { read: ViewContainerRef })
+  mapContainerRef!: ViewContainerRef;
+  @Input() destroyTab$!: Subject<boolean>;
+
   /**
    * Creates an instance of LayerFieldsComponent.
    *
@@ -40,5 +46,21 @@ export class LayerFieldsComponent {
     // if (event && this.fields[index]) {
     //   this.fields[index].label = event;
     // }
+  }
+
+  ngAfterViewInit(): void {
+    this.currentMapContainerRef
+      .pipe(takeUntil(this.destroyTab$))
+      .subscribe((viewContainerRef) => {
+        if (viewContainerRef) {
+          if (viewContainerRef !== this.mapContainerRef) {
+            const view = viewContainerRef.detach();
+            if (view) {
+              this.mapContainerRef.insert(view);
+              this.currentMapContainerRef.next(this.mapContainerRef);
+            }
+          }
+        }
+      });
   }
 }

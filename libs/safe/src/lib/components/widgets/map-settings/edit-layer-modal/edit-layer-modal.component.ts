@@ -1,19 +1,19 @@
 import {
   Component,
   Input,
-  TemplateRef,
   ViewChild,
   Output,
   EventEmitter,
   OnDestroy,
   Inject,
   OnInit,
+  ViewContainerRef,
 } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
 import { LayerModel } from '../../../../models/layer.model';
 import { createLayerForm, LayerFormT } from '../map-forms';
-import { debounceTime, takeUntil, BehaviorSubject } from 'rxjs';
+import { debounceTime, takeUntil, BehaviorSubject, Subject } from 'rxjs';
 import { MapComponent } from '../../../ui/map/map.component';
 import {
   MapEvent,
@@ -54,6 +54,8 @@ import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
  */
 interface DialogData {
   layer?: LayerModel;
+  currentMapContainerRef: BehaviorSubject<ViewContainerRef | null>;
+  editingLayer: BehaviorSubject<boolean>;
 }
 
 /**
@@ -93,11 +95,9 @@ export class EditLayerModalComponent
   @Output() layerToSave = new EventEmitter<LayerFormData>();
   @Output() layerToOpen = new EventEmitter<LayerModel | undefined>();
 
-  @ViewChild('layerNavigationTemplate')
-  layerNavigationTemplate!: TemplateRef<any>;
-
-  @ViewChild('layerSettingsTemplate')
-  layerSettingsTemplate!: TemplateRef<any>;
+  @ViewChild('mapContainer', { read: ViewContainerRef })
+  mapContainerRef!: ViewContainerRef;
+  destroyTab$: Subject<boolean> = new Subject<boolean>();
 
   public resource: BehaviorSubject<GetResourceQueryResponse | null> =
     new BehaviorSubject<GetResourceQueryResponse | null>(null);
@@ -181,6 +181,33 @@ export class EditLayerModalComponent
     }
     this.setUpEditLayerListeners();
     this.getResource();
+  }
+
+  ngAfterViewInit(): void {
+    console.log('edit layer after view init');
+    this.data.editingLayer.next(true);
+    const currentContainerRef = this.data.currentMapContainerRef.getValue();
+    if (currentContainerRef) {
+      const view = currentContainerRef.detach();
+      if (view) {
+        this.mapContainerRef.insert(view);
+        this.data.currentMapContainerRef.next(this.mapContainerRef);
+      }
+    }
+  }
+
+  selectedIndexChange(): void {
+    console.log('edit layer tab change');
+    this.destroyTab$.next(true);
+    const currentContainerRef = this.data.currentMapContainerRef.getValue();
+    if (currentContainerRef) {
+      const view = currentContainerRef.detach();
+      if (view) {
+        this.mapContainerRef.insert(view);
+        this.data.currentMapContainerRef.next(this.mapContainerRef);
+        this.destroyTab$.next(false);
+      }
+    }
   }
 
   /**
@@ -299,6 +326,9 @@ export class EditLayerModalComponent
    */
   onSubmit() {
     this.layerToSave.emit(this.form.getRawValue() as LayerFormData);
+    this.destroyTab$.next(true);
+    this.data.editingLayer.next(false);
+    this.dialogRef.close();
   }
 
   /**
@@ -307,7 +337,10 @@ export class EditLayerModalComponent
    */
   onCancel(): void {
     if (this.form?.pristine) {
-      this.layerToSave.emit(undefined);
+      // this.layerToSave.emit(undefined);
+      this.destroyTab$.next(true);
+      this.data.editingLayer.next(false);
+      this.dialogRef.close();
     } else {
       const confirmDialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('common.close'),
@@ -321,6 +354,8 @@ export class EditLayerModalComponent
         .pipe(takeUntil(this.destroy$))
         .subscribe((value: any) => {
           if (value) {
+            this.destroyTab$.next(true);
+            this.data.editingLayer.next(false);
             this.dialogRef.close();
           }
         });

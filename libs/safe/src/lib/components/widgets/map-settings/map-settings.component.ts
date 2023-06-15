@@ -43,9 +43,6 @@ export class SafeMapSettingsComponent
   // === REACTIVE FORM ===
   tileForm!: UntypedFormGroup;
 
-  // layerNavigationTemplate: TemplateRef<any> | null = null;
-  // layerSettingsTemplate: TemplateRef<any> | null = null;
-
   // === WIDGET ===
   @Input() tile: any;
   public openedLayers: (LayerModel | undefined)[] = [];
@@ -176,7 +173,6 @@ export class SafeMapSettingsComponent
    * @param tab Tab
    */
   private openTab(tab: 'parameters' | 'layers' | 'layer' | 'display' | null) {
-    console.log(tab);
     // Reset settings when switching to/from 'layer' tab
     if (
       (this.currentTab === 'layer' && tab !== 'layer') ||

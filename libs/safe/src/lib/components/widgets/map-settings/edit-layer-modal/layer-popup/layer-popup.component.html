@@ -1,119 +1,128 @@
-<div class="flex flex-col">
-  {{ 'components.widget.settings.map.layers.popup.popup' | translate }}
-  <div [formGroup]="formGroup">
-    <div class="flex flex-col">
-      <div uiFormFieldDirective>
-        <label>{{
-          'components.widget.settings.map.layers.popup.title' | translate
-        }}</label>
-        <safe-editor-control
-          formControlName="title"
-          [editorConfig]="editorConfig"
-        ></safe-editor-control>
-        <ui-icon
-          icon="info"
-          class="cursor-pointer"
-          variant="grey"
-          uiSuffix
-          [uiTooltip]="
-            'components.widget.settings.map.layers.popup.tooltip.text'
-              | translate
-          "
-        ></ui-icon>
-      </div>
-      <div uiFormFieldDirective>
-        <label>{{
-          'components.widget.settings.map.layers.popup.description' | translate
-        }}</label>
-        <safe-editor-control
-          formControlName="description"
-          [editorConfig]="editorConfig"
-        ></safe-editor-control>
-        <ui-icon
-          icon="info"
-          class="cursor-pointer"
-          variant="grey"
-          uiSuffix
-          [uiTooltip]="
-            'components.widget.settings.map.layers.popup.tooltip.text'
-              | translate
-          "
-        ></ui-icon>
-      </div>
-    </div>
-    <ui-divider></ui-divider>
-    <h3>
-      {{
-        'components.widget.settings.map.layers.popup.popupElements' | translate
-      }}
-    </h3>
-    <div
-      formArrayName="popupElements"
-      cdkDropList
-      (cdkDropListDropped)="onListDrop($event)"
-    >
-      <ui-expansion-panel
-        [expanded]="false"
-        hideToggle
-        cdkDrag
-        *ngFor="let item of popupElements.controls; let index = index"
-        [formGroup]="$any(item)"
-      >
-        <!-- Expand block header -->
-        <ng-container ngProjectAs="title">
-          <div class="grow-0">
-            <ui-button
-              cdkDragHandle
-              [isIcon]="true"
-              icon="drag_indicator"
-            ></ui-button>
-          </div>
-          <div>
-            <div class="flex flex-col">
-              <h4 class="!m-0">
-                {{ item.value.type }}
-              </h4>
-              <h6 class="!m-0">{{ item.value.title }}</h6>
-            </div>
-          </div>
-          <ui-button
-            [isIcon]="true"
-            icon="close"
-            (click)="onRemoveElement(index)"
-          ></ui-button>
-        </ng-container>
-
-        <!-- Expanded block content -->
-        <div class="flex flex-col mx-4">
-          <safe-fields-element
-            *ngIf="item.value.type === 'fields'"
-            [formGroup]="$any(item)"
-            [fields$]="fields$"
-          ></safe-fields-element>
-          <safe-text-element
-            *ngIf="item.value.type === 'text'"
-            [formGroup]="$any(item)"
-            [fields$]="fields$"
-          ></safe-text-element>
+<div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
+  <!-- Popup form -->
+  <div class="flex flex-col">
+    {{ 'components.widget.settings.map.layers.popup.popup' | translate }}
+    <div [formGroup]="formGroup">
+      <div class="flex flex-col">
+        <div uiFormFieldDirective>
+          <label>{{
+            'components.widget.settings.map.layers.popup.title' | translate
+          }}</label>
+          <safe-editor-control
+            formControlName="title"
+            [editorConfig]="editorConfig"
+          ></safe-editor-control>
+          <ui-icon
+            icon="info"
+            class="cursor-pointer"
+            variant="grey"
+            uiSuffix
+            [uiTooltip]="
+              'components.widget.settings.map.layers.popup.tooltip.text'
+                | translate
+            "
+          ></ui-icon>
         </div>
-      </ui-expansion-panel>
+        <div uiFormFieldDirective>
+          <label>{{
+            'components.widget.settings.map.layers.popup.description'
+              | translate
+          }}</label>
+          <safe-editor-control
+            formControlName="description"
+            [editorConfig]="editorConfig"
+          ></safe-editor-control>
+          <ui-icon
+            icon="info"
+            class="cursor-pointer"
+            variant="grey"
+            uiSuffix
+            [uiTooltip]="
+              'components.widget.settings.map.layers.popup.tooltip.text'
+                | translate
+            "
+          ></ui-icon>
+        </div>
+      </div>
+      <ui-divider></ui-divider>
+      <h3>
+        {{
+          'components.widget.settings.map.layers.popup.popupElements'
+            | translate
+        }}
+      </h3>
+      <div
+        formArrayName="popupElements"
+        cdkDropList
+        (cdkDropListDropped)="onListDrop($event)"
+      >
+        <ui-expansion-panel
+          [expanded]="false"
+          hideToggle
+          cdkDrag
+          *ngFor="let item of popupElements.controls; let index = index"
+          [formGroup]="$any(item)"
+        >
+          <!-- Expand block header -->
+          <ng-container ngProjectAs="title">
+            <div class="grow-0">
+              <ui-button
+                cdkDragHandle
+                [isIcon]="true"
+                icon="drag_indicator"
+              ></ui-button>
+            </div>
+            <div>
+              <div class="flex flex-col">
+                <h4 class="!m-0">
+                  {{ item.value.type }}
+                </h4>
+                <h6 class="!m-0">{{ item.value.title }}</h6>
+              </div>
+            </div>
+            <ui-button
+              [isIcon]="true"
+              icon="close"
+              (click)="onRemoveElement(index)"
+            ></ui-button>
+          </ng-container>
+
+          <!-- Expanded block content -->
+          <div class="flex flex-col mx-4">
+            <safe-fields-element
+              *ngIf="item.value.type === 'fields'"
+              [formGroup]="$any(item)"
+              [fields$]="fields$"
+            ></safe-fields-element>
+            <safe-text-element
+              *ngIf="item.value.type === 'text'"
+              [formGroup]="$any(item)"
+              [fields$]="fields$"
+            ></safe-text-element>
+          </div>
+        </ui-expansion-panel>
+      </div>
+      <!-- Add new block -->
+      <ui-button
+        category="secondary"
+        variant="primary"
+        [uiMenuTriggerFor]="contentOptions"
+        class="self-center mt-4"
+      >
+        {{ 'components.widget.settings.map.layers.popup.addField' | translate }}
+      </ui-button>
+      <ui-menu #contentOptions>
+        <button uiMenuItem (click)="onAddElement('fields')">
+          {{ 'components.widget.settings.map.layers.popup.fields' | translate }}
+        </button>
+        <button uiMenuItem (click)="onAddElement('text')">
+          {{ 'components.widget.settings.map.layers.popup.text' | translate }}
+        </button>
+      </ui-menu>
     </div>
-    <!-- Add new block -->
-    <ui-button
-      category="secondary"
-      variant="primary"
-      [uiMenuTriggerFor]="contentOptions"
-      class="self-center mt-4"
-    >
-      {{ 'components.widget.settings.map.layers.popup.addField' | translate }}
-    </ui-button>
-    <ui-menu #contentOptions>
-      <button uiMenuItem (click)="onAddElement('fields')">
-        {{ 'components.widget.settings.map.layers.popup.fields' | translate }}
-      </button>
-      <button uiMenuItem (click)="onAddElement('text')">
-        {{ 'components.widget.settings.map.layers.popup.text' | translate }}
-      </button>
-    </ui-menu>
+  </div>
+  <!-- Map -->
+  <div class="lg:flex-1 max-lg:min-w-full h-80 lg:min-h-full flex-shrink-0">
+    <ng-template #mapContainer></ng-template>
   </div>
 </div>

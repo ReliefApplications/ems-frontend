@@ -35,12 +35,13 @@ export class MapLayersComponent
   @Output() close = new EventEmitter();
   @Output() editLayer = new EventEmitter<LayerModel>();
   @Output() deleteLayer = new EventEmitter<string>();
-  @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;
 
+  // Display of map
+  @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;
   @ViewChild('mapContainer', { read: ViewContainerRef })
   mapContainerRef!: ViewContainerRef;
-
   @Input() destroyTab$!: Subject<boolean>;
+  public editingLayer: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
   // Table
   public mapLayers: Array<LayerModel> = new Array<LayerModel>();
@@ -74,7 +75,8 @@ export class MapLayersComponent
     this.currentMapContainerRef
       .pipe(takeUntil(this.destroyTab$))
       .subscribe((viewContainerRef) => {
-        if (viewContainerRef) {
+        console.log('current map container');
+        if (viewContainerRef && !this.editingLayer.getValue()) {
           if (viewContainerRef !== this.mapContainerRef) {
             const view = viewContainerRef.detach();
             if (view) {
@@ -84,6 +86,22 @@ export class MapLayersComponent
           }
         }
       });
+    this.editingLayer.pipe(takeUntil(this.destroyTab$)).subscribe((editing) => {
+      console.log('edition');
+      if (!editing) {
+        const currentMapContainerRef = this.currentMapContainerRef.getValue();
+        if (
+          currentMapContainerRef &&
+          currentMapContainerRef !== this.mapContainerRef
+        ) {
+          const view = currentMapContainerRef.detach();
+          if (view) {
+            this.mapContainerRef.insert(view);
+            this.currentMapContainerRef.next(this.mapContainerRef);
+          }
+        }
+      }
+    });
   }
 
   /**
@@ -122,6 +140,8 @@ export class MapLayersComponent
       autoFocus: false,
       data: {
         layer: { type } as LayerModel,
+        currentMapContainerRef: this.currentMapContainerRef,
+        editingLayer: this.editingLayer,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
@@ -164,6 +184,8 @@ export class MapLayersComponent
           autoFocus: false,
           data: {
             layer,
+            currentMapContainerRef: this.currentMapContainerRef,
+            editingLayer: this.editingLayer,
           },
         });
         dialogRef.closed

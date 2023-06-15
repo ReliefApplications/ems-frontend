@@ -5,9 +5,10 @@ import {
   OnInit,
   Output,
   ViewChild,
+  ViewContainerRef,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { takeUntil, BehaviorSubject, Observable } from 'rxjs';
+import { takeUntil, BehaviorSubject, Observable, Subject } from 'rxjs';
 import { Resource } from '../../../../../models/resource.model';
 import { ReferenceData } from '../../../../../models/reference-data.model';
 import { Aggregation } from '../../../../../models/aggregation.model';
@@ -70,6 +71,12 @@ export class LayerDatasourceComponent
 
   @Input() fields$!: Observable<Fields[]>;
   @Output() fields: EventEmitter<Fields[]> = new EventEmitter<Fields[]>();
+
+  // Display of map
+  @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;
+  @ViewChild('mapContainer', { read: ViewContainerRef })
+  mapContainerRef!: ViewContainerRef;
+  @Input() destroyTab$!: Subject<boolean>;
 
   /**
    * Component for the layer datasource selection tab
@@ -188,6 +195,22 @@ export class LayerDatasourceComponent
           this.refDataSelect?.elements
             .getValue()
             .find((x) => x.id === refDataID) || null;
+      });
+  }
+
+  ngAfterViewInit(): void {
+    this.currentMapContainerRef
+      .pipe(takeUntil(this.destroyTab$))
+      .subscribe((viewContainerRef) => {
+        if (viewContainerRef) {
+          if (viewContainerRef !== this.mapContainerRef) {
+            const view = viewContainerRef.detach();
+            if (view) {
+              this.mapContainerRef.insert(view);
+              this.currentMapContainerRef.next(this.mapContainerRef);
+            }
+          }
+        }
       });
   }
 

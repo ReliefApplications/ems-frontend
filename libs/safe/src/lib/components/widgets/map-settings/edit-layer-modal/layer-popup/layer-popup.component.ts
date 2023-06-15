@@ -1,5 +1,11 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import {
   PopupElement,
@@ -7,7 +13,7 @@ import {
 } from '../../../../../models/layer.model';
 import { createPopupElementForm } from '../../map-forms';
 import { Fields } from '../layer-fields/layer-fields.component';
-import { Observable, takeUntil } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
 import { INLINE_EDITOR_CONFIG } from '../../../../../const/tinymce.const';
 import { SafeEditorService } from '../../../../../services/editor/editor.service';
 import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
@@ -35,6 +41,12 @@ export class LayerPopupComponent
     return this.formGroup.get('popupElements') as FormArray;
   }
 
+  // Display of map
+  @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;
+  @ViewChild('mapContainer', { read: ViewContainerRef })
+  mapContainerRef!: ViewContainerRef;
+  @Input() destroyTab$!: Subject<boolean>;
+
   /**
    * Creates an instance of LayerPopupComponent.
    *
@@ -53,6 +65,22 @@ export class LayerPopupComponent
         this.keys
       );
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.currentMapContainerRef
+      .pipe(takeUntil(this.destroyTab$))
+      .subscribe((viewContainerRef) => {
+        if (viewContainerRef) {
+          if (viewContainerRef !== this.mapContainerRef) {
+            const view = viewContainerRef.detach();
+            if (view) {
+              this.mapContainerRef.insert(view);
+              this.currentMapContainerRef.next(this.mapContainerRef);
+            }
+          }
+        }
+      });
   }
 
   /**
