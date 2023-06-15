@@ -43,15 +43,8 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     'border-0',
     'bg-transparent',
     'px-2',
-    'placeholder-transparent',
     'leading-[1.6]',
     'outline-none',
-    'transition-all',
-    'duration-200',
-    'ease-linear',
-    'focus:placeholder:opacity-100',
-    'peer-focus:text-primary',
-    'motion-reduce:transition-none',
   ] as const;
 
   private labelClasses = [
