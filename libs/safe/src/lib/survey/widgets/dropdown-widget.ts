@@ -33,9 +33,6 @@ export const init = (Survey: any, domService: DomService): void => {
       dropdownInstance.registerOnChange((value: any) => {
         if (!isObject(value) && !isArray(value)) {
           question.value = value;
-        } else {
-          console.log(question.name);
-          console.log(value);
         }
       });
       const updateChoices = () => {
