@@ -114,28 +114,44 @@ export class DashboardFilterComponent
       .subscribe((application: Application | null) => {
         if (application) {
           this.applicationId = application.id;
+
           localForage
             .getItem(this.applicationId + 'contextualFilter')
             .then((contextualFilter) => {
-              if (contextualFilter) {
-                this.surveyStructure = contextualFilter;
-                this.initSurvey();
-              } else if (application.contextualFilter) {
-                this.surveyStructure = application.contextualFilter;
-                this.initSurvey();
+              if (contextualFilter){
+                this.contextService.filterStructure.next(contextualFilter);
               }
             });
+          
+          this.contextService.filterStructure$
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((value) => {
+            if(value){
+              this.surveyStructure = value;
+              this.initSurvey();
+            } else if (application.contextualFilter) {
+              this.surveyStructure = application.contextualFilter;
+              this.initSurvey();
+            }
+          });
+
           localForage
             .getItem(this.applicationId + 'contextualFilterPosition')
             .then((contextualFilterPosition) => {
-              if (contextualFilterPosition) {
-                this.position = contextualFilterPosition as FilterPosition;
-              } else if (application.contextualFilterPosition) {
-                this.position = application.contextualFilterPosition;
-              } else {
-                this.position = FilterPosition.BOTTOM; //case where there are no default position set up
-              }
+              if (contextualFilterPosition)
+                this.contextService.filterPosition.next(contextualFilterPosition);
             });
+          this.contextService.filterPosition$
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((value) => {
+            if (value) {
+              this.position = value as FilterPosition;
+            } else if (application.contextualFilterPosition) {
+              this.position = application.contextualFilterPosition;
+            } else {
+              this.position = FilterPosition.BOTTOM; //case where there are no default position set up
+            }
+          });
         }
       });
     this.setFilterContainerDimensions();
@@ -172,6 +188,12 @@ export class DashboardFilterComponent
    */
   public changeFilterPosition(position: FilterPosition) {
     this.position = position;
+    this.contextService.filterPosition.next(position);
+    localForage.setItem(
+      this.applicationId + 'contextualFilterPosition',
+      position
+    );
+
   }
 
   /**
@@ -193,6 +215,7 @@ export class DashboardFilterComponent
                 this.applicationId + 'contextualFilter',
                 this.surveyStructure
               );
+              this.contextService.filterStructure.next(newStructure);
               this.initSurvey();
               this.saveFilter();
             }
@@ -306,6 +329,7 @@ export class DashboardFilterComponent
             this.applicationId + 'contextualFilterPosition',
             defaultPosition
           );
+          this.contextService.filterPosition.next(defaultPosition);
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectUpdated', {
               type: this.translate.instant('common.filter.one').toLowerCase(),
