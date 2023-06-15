@@ -19,7 +19,7 @@
         <input formControlName="from" type="text" />
       </div>
       <div
-        [uiErrorMessage]="errorMessage() | translate"
+        [uiErrorMessage]="emailsError | translate"
         [uiErrorMessageIf]="this.form.controls.to.invalid"
         uiFormFieldDirective
         id="previewEmailTo"
