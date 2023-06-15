@@ -128,6 +128,14 @@
                   >{{ field.name }}</ui-select-option
                 >
               </ui-select-menu>
+              <ui-button
+                uiSuffix
+                [isIcon]="true"
+                icon="remove_circle_outline"
+                variant="danger"
+                (click)="onDeleteModification(i)"
+              >
+              </ui-button>
             </div>
             <div *ngIf="modification.value.field" uiFormFieldDirective>
               <label>{{
@@ -164,14 +172,6 @@
                 <input formControlName="value" type="string" />
               </ng-container>
             </div>
-
-            <ui-button
-              [isIcon]="true"
-              icon="remove_circle_outline"
-              variant="danger"
-              (click)="onDeleteModification(i)"
-            >
-            </ui-button>
           </form>
           <ui-button
             [isIcon]="true"
