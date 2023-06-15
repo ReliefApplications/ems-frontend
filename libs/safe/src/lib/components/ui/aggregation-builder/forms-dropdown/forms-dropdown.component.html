@@ -8,7 +8,7 @@
     [placeholder]="'common.placeholder.search' | translate"
     [formControl]="sourceFormControl"
     [uiAutocomplete]="auto"
-    [autocompleteDisplayKey]="displayName.bind(this)"
+    autocompleteDisplayKey="name"
     (opened)="onOpen()"
     (closed)="onClose()"
   />

@@ -17,7 +17,7 @@ import get from 'lodash/get';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
   ChipModule,
@@ -82,19 +82,33 @@ export class EditDistributionListModalComponent implements OnInit {
     return this.form.get('emails')?.value || [];
   }
 
-  @ViewChild('emailsInput') emailsInput?: ElementRef<HTMLInputElement>;
+  /**
+   * Get error message of field
+   *
+   * @returns error message
+   */
+  get emailsError(): string {
+    const control = this.form.get('emails');
+    if (control?.hasError('required')) {
+      return 'components.distributionLists.errors.emails.required';
+    }
+    if (control?.hasError('pattern')) {
+      return 'components.distributionLists.errors.emails.pattern';
+    }
+    return '';
+  }
+
+  @ViewChild('emailsInput') emailsInput!: ElementRef<HTMLInputElement>;
 
   /**
    * Component for edition of distribution list
    *
    * @param formBuilder Angular form builder service
-   * @param translateService TranslateService
    * @param dialogRef Dialog ref of the component
    * @param data Data input of the modal
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    private translateService: TranslateService,
     public dialogRef: DialogRef<EditDistributionListModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData
   ) {}
@@ -113,56 +127,33 @@ export class EditDistributionListModalComponent implements OnInit {
    * @param event The event triggered when we exit the input
    */
   addEmail(event: string | any): void {
+    const control = this.form.get('emails');
     // use setTimeout to prevent add input value on focusout
     setTimeout(
       () => {
         const value =
           event.type === 'focusout'
-            ? this.emailsInput?.nativeElement.value
+            ? this.emailsInput.nativeElement.value
             : event;
 
         // Add the mail
+        const emails = [...this.emails];
         if ((value || '').trim()) {
           if (EMAIL_REGEX.test(value.trim())) {
-            const emails = [...this.emails];
             emails.push(value.trim());
-            this.form.get('emails')?.setValue(emails);
-            this.form.get('emails')?.updateValueAndValidity();
-            // Reset the input value
-            if (this.emailsInput?.nativeElement) {
+            control?.setValue(emails);
+            control?.updateValueAndValidity();
+            if (event.type === 'focusout') {
               this.emailsInput.nativeElement.value = '';
             }
           } else {
-            this.form.get('emails')?.setErrors({ pattern: true });
+            control?.setErrors({ pattern: true });
           }
         } else {
-          this.form.get('emails')?.setErrors({ required: true });
-          if (this.form.get('emails')?.hasError('pattern')) {
-            const currentErrors = this.form.get('emails')?.errors;
-            delete currentErrors?.pattern;
-            if (currentErrors) {
-              this.form.get('emails')?.setErrors(currentErrors);
-            }
-          }
+          // no value
+          control?.setErrors({ pattern: false });
+          control?.updateValueAndValidity();
         }
-        const hasError =
-          ((this.form.get('emails')?.hasError('required') &&
-            this.form.get('emails')?.touched) ||
-            this.form.get('emails')?.hasError('pattern')) ??
-          false;
-        this.errorEmails.next(hasError);
-        const errorMessage: string = this.form
-          .get('emails')
-          ?.hasError('pattern')
-          ? this.translateService.instant(
-              'components.distributionLists.errors.emails.pattern'
-            )
-          : this.form.get('emails')?.hasError('required')
-          ? this.translateService.instant(
-              'components.distributionLists.errors.emails.required'
-            )
-          : '';
-        this.errorEmailMessages.next(errorMessage);
       },
       event.type === 'focusout' ? 500 : 0
     );
