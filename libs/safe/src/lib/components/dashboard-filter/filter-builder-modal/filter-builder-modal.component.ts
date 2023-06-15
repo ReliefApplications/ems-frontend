@@ -14,7 +14,8 @@ import { SafeFormBuilderModule } from '../../form-builder/form-builder.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from '@oort-front/ui';
 import { DialogModule, AlertModule } from '@oort-front/ui';
-
+import { renderGlobalProperties } from '../../../survey/render-global-properties';
+import { SafeReferenceDataService } from '../../../services/reference-data/reference-data.service';
 /**
  * Data passed to initialize the filter builder
  */
@@ -50,6 +51,11 @@ const QUESTION_TYPES = [
 ];
 
 /**
+ * Array containing the different types of questions that should not show the reference data property.
+ */
+const SHOW_REFERENCE_DATA_PROPERTY = ['dropdown', 'tagbox'];
+
+/**
  * Allowed properties for a core question in a child form.
  */
 const CORE_QUESTION_ALLOWED_PROPERTIES = [
@@ -69,12 +75,26 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'addTemplate',
   'Search resource table',
   'visible',
+  'choicesFromQuestion',
+  'choices',
+  'choicesFromQuestionMode',
+  'choicesOrder',
+  'choicesByUrl',
+  'hideIfChoicesEmpty',
+  'choicesVisibleIf',
+  'choicesEnableIf',
   'readOnly',
   'isRequired',
   'placeHolder',
   'enableIf',
   'visibleIf',
   'tooltip',
+];
+
+/**
+ * Reference data related properties
+ */
+const REFERENCE_DATA_PROPERTIES = [
   'referenceData',
   'referenceDataDisplayField',
   'referenceDataFilterFilterFromQuestion',
@@ -111,11 +131,13 @@ export class FilterBuilderModalComponent
    * @param formService Shared form service
    * @param dialogRef reference to the dialog component
    * @param data data passed to initialize the filter builder
+   * @param referenceDataService reference data service
    */
   constructor(
     private formService: SafeFormService,
     private dialogRef: DialogRef<FilterBuilderModalComponent>,
-    @Inject(DIALOG_DATA) public data: DialogData
+    @Inject(DIALOG_DATA) public data: DialogData,
+    private referenceDataService: SafeReferenceDataService
   ) {}
 
   ngOnInit(): void {
@@ -156,11 +178,29 @@ export class FilterBuilderModalComponent
       if (!obj || !obj.page) {
         return;
       }
+
       // If it is a core field
       if (!CORE_QUESTION_ALLOWED_PROPERTIES.includes(opt.property.name)) {
         opt.canShow = false;
       }
+      // show reference data property for some types of questions
+      if (
+        REFERENCE_DATA_PROPERTIES.includes(opt.property.name) &&
+        SHOW_REFERENCE_DATA_PROPERTY.includes(obj.getType())
+      ) {
+        opt.canShow = true;
+      }
     });
+
+    // add the rendering of custom properties
+    this.surveyCreator.survey.onAfterRenderQuestion.add(
+      renderGlobalProperties(this.referenceDataService)
+    );
+    this.surveyCreator.onTestSurveyCreated.add((sender: any, opt: any) =>
+      opt.survey.onAfterRenderQuestion.add(
+        renderGlobalProperties(this.referenceDataService)
+      )
+    );
 
     // Set content
     const survey = new Survey.SurveyModel(this.data?.surveyStructure || {});
