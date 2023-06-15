@@ -19,14 +19,29 @@
     class="transition-all duration-200 absolute px-2 -translate-x-2/4 -translate-y-3/4 text-white rounded-lg"
     >{{ currentValue }}</span
   >
-  <!-- Actual input range -->
-  <div class="relative max-w-xl">
+  <!-- Single input range -->
+  <input
+    *ngIf="!multiselect"
+    name="slider"
+    style="--value:{{ currentValue }}; --min:{{ minValue }}; --max:{{
+      maxValue
+    }}"
+    class="w-full h-1 bg-gray-300 focus:bg-gray-400 bg-gradient-to-r from-primary-400 to-primary-400"
+    type="range"
+    min="{{ minValue }}"
+    max="{{ maxValue }}"
+    value="{{ currentValue }}"
+    step="1"
+    (input)="onChangeFunction($event.target)"
+  />
+  <!-- Multiselect input range -->
+  <div *ngIf="multiselect">
     <input
       name="slider-min"
       style="--value:{{ currentMinValue }}; --min:{{ minValue }}; --max:{{
         maxValue
       }}"
-      class="absolute pointer-events-none appearance-none z-10 h-2 w-full cursor-pointer"
+      class="thumb thumb--left"
       type="range"
       min="{{ minValue }}"
       max="{{ maxValue }}"
@@ -39,7 +54,7 @@
       style="--value:{{ currentMaxValue }}; --min:{{ minValue }}; --max:{{
         maxValue
       }}"
-      class="absolute pointer-events-none appearance-none z-20 h-2 w-full cursor-pointer"
+      class="thumb thumb--right"
       type="range"
       min="{{ minValue }}"
       max="{{ maxValue }}"
@@ -47,6 +62,10 @@
       step="1"
       (input)="onChangeFunction($event.target)"
     />
+    <div class="slider">
+      <div class="slider__track"></div>
+      <div class="slider__range"></div>
+    </div>
   </div>
   <!-- Ticks placement + appearance -->
   <div

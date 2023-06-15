@@ -35,6 +35,10 @@ export class SliderComponent
    * Maximum value of the slider
    */
   @Input() maxValue = 100;
+  /**
+   * Whether the slider is multiselect or not
+   */
+  @Input() multiselect = !false;
 
   //In order to define left position of the bubble linked to the slider
   bubbleStyle = '';
@@ -149,18 +153,33 @@ export class SliderComponent
       const min = this.minValue;
       const max = this.maxValue;
       let newVal = 0;
-      if (name === 'slider-min') {
-        this.currentMinValue = +((value as HTMLInputElement)?.value ?? value);
-        newVal = Number(((this.currentMinValue - min) * 100) / (max - min));
+      if (this.multiselect) {
+        if (name === 'slider-min') {
+          this.currentMinValue = +((value as HTMLInputElement)?.value ?? value);
+          if (this.currentMinValue >= this.currentMaxValue) {
+            this.currentMinValue = this.currentMaxValue - 1;
+          }
+          newVal = Number(((this.currentMinValue - min) * 100) / (max - min));
+        } else {
+          this.currentMaxValue = +((value as HTMLInputElement)?.value ?? value);
+          if (this.currentMaxValue <= this.currentMinValue) {
+            this.currentMaxValue = this.currentMinValue + 1;
+          }
+          newVal = Number(((this.currentMaxValue - min) * 100) / (max - min));
+        }
       } else {
-        this.currentMaxValue = +((value as HTMLInputElement)?.value ?? value);
-        newVal = Number(((this.currentMaxValue - min) * 100) / (max - min));
+        this.currentValue = +((value as HTMLInputElement)?.value ?? value);
+        newVal = Number(((this.currentValue - min) * 100) / (max - min));
       }
       if (this.onChange && this.onTouch) {
-        if (name === 'slider-min') {
-          this.onChange(this.currentMinValue);
+        if (this.multiselect) {
+          if (name === 'slider-min') {
+            this.onChange(this.currentMinValue);
+          } else {
+            this.onChange(this.currentMaxValue);
+          }
         } else {
-          this.onChange(this.currentMaxValue);
+          this.onChange(this.currentValue);
         }
         this.onTouch();
       }

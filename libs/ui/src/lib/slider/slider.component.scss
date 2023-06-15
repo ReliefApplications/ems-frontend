@@ -29,12 +29,12 @@ div.min-value input[type='range']::-webkit-slider-thumb {
   @apply z-50 rounded-full bg-gray-800 hover:cursor-grab active:cursor-grabbing shadow-md transition-colors;
 }
 
-// The thumb disappears when the component is on focus
-div.relative:focus-within input[type='range']::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  height: 0px;
-  width: 0px;
-}
+// // The thumb disappears when the component is on focus
+// div.relative:focus-within input[type='range']::-webkit-slider-thumb {
+//   -webkit-appearance: none;
+//   height: 0px;
+//   width: 0px;
+// }
 
 input[type='range']::-webkit-slider-runnable-track {
   -webkit-appearance: none;
@@ -56,4 +56,80 @@ input[type='range']::-webkit-slider-runnable-track {
   -webkit-user-select: none;
   -o-user-select: none;
   user-select: none;
+}
+
+.slider {
+  position: relative;
+}
+
+.slider__track,
+.slider__range {
+  position: absolute;
+}
+
+.slider__track,
+.slider__range {
+  border-radius: 3px;
+  height: 5px;
+}
+
+.slider__track {
+  background-color: #ced4da;
+  width: 100%;
+  z-index: 1;
+}
+
+.slider__range {
+  background-color: #9fe5e1;
+  z-index: 2;
+}
+
+/* Removing the default appearance */
+.thumb,
+.thumb::-webkit-slider-thumb {
+  -webkit-appearance: none;
+}
+
+.thumb {
+  pointer-events: none;
+  position: absolute;
+  height: 0;
+  // width: 200px;
+  outline: none;
+}
+
+.thumb--left {
+  z-index: 3;
+}
+
+.thumb--right {
+  z-index: 4;
+}
+
+/* For Chrome browsers */
+.thumb::-webkit-slider-thumb {
+  background-color: #f1f5f7;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 0 1px 1px #ced4da;
+  cursor: pointer;
+  height: 18px;
+  width: 18px;
+  margin-top: 4px;
+  pointer-events: all;
+  position: relative;
+}
+
+/* For Firefox browsers */
+.thumb::-moz-range-thumb {
+  background-color: #f1f5f7;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 0 1px 1px #ced4da;
+  cursor: pointer;
+  height: 18px;
+  width: 18px;
+  margin-top: 4px;
+  pointer-events: all;
+  position: relative;
 }
