@@ -114,44 +114,43 @@ export class DashboardFilterComponent
       .subscribe((application: Application | null) => {
         if (application) {
           this.applicationId = application.id;
-
           localForage
             .getItem(this.applicationId + 'contextualFilter')
             .then((contextualFilter) => {
-              if (contextualFilter){
+              if (contextualFilter) {
                 this.contextService.filterStructure.next(contextualFilter);
               }
             });
-          
           this.contextService.filterStructure$
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((value) => {
-            if(value){
-              this.surveyStructure = value;
-              this.initSurvey();
-            } else if (application.contextualFilter) {
-              this.surveyStructure = application.contextualFilter;
-              this.initSurvey();
-            }
-          });
-
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((value) => {
+              if (value) {
+                this.surveyStructure = value;
+                this.initSurvey();
+              } else if (application.contextualFilter) {
+                this.surveyStructure = application.contextualFilter;
+                this.initSurvey();
+              }
+            });
           localForage
             .getItem(this.applicationId + 'contextualFilterPosition')
             .then((contextualFilterPosition) => {
               if (contextualFilterPosition)
-                this.contextService.filterPosition.next(contextualFilterPosition);
+                this.contextService.filterPosition.next(
+                  contextualFilterPosition
+                );
             });
           this.contextService.filterPosition$
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((value) => {
-            if (value) {
-              this.position = value as FilterPosition;
-            } else if (application.contextualFilterPosition) {
-              this.position = application.contextualFilterPosition;
-            } else {
-              this.position = FilterPosition.BOTTOM; //case where there are no default position set up
-            }
-          });
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((value) => {
+              if (value) {
+                this.position = value as FilterPosition;
+              } else if (application.contextualFilterPosition) {
+                this.position = application.contextualFilterPosition;
+              } else {
+                this.position = FilterPosition.BOTTOM; //case where there are no default position set up
+              }
+            });
         }
       });
     this.setFilterContainerDimensions();
@@ -193,7 +192,6 @@ export class DashboardFilterComponent
       this.applicationId + 'contextualFilterPosition',
       position
     );
-
   }
 
   /**
