@@ -9,10 +9,6 @@
   (openApplication)="onOpenApplication($event)"
 ></safe-layout>
 <ng-template #toolbar>
-  <safe-app-application-toolbar
-    [title]="title"
-    [settings]="adminNavItems"
-  ></safe-app-application-toolbar>
   <!-- Empty indicator -->
   <safe-empty
     *ngIf="empty"
