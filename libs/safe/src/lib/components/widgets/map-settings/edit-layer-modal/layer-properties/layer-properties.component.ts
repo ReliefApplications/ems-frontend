@@ -3,7 +3,6 @@ import {
   Input,
   ViewChild,
   ViewContainerRef,
-  ViewRef,
 } from '@angular/core';
 import { LayerFormT } from '../../map-forms';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
