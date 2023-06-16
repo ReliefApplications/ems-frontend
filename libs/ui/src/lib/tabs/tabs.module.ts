@@ -16,6 +16,11 @@ import { TabBodyHostDirective } from './directives/tab-body-host.directive';
     TabBodyHostDirective,
   ],
   imports: [CommonModule],
-  exports: [TabsComponent, TabComponent, TabContentDirective],
+  exports: [
+    TabsComponent,
+    TabComponent,
+    TabContentDirective,
+    TabBodyHostDirective,
+  ],
 })
 export class TabsModule {}
