@@ -73,8 +73,8 @@ export class SliderComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.minValue = changes['minValue'].currentValue ?? this.minValue;
-    this.maxValue = changes['maxValue'].currentValue ?? this.maxValue;
+    // this.minValue = changes['minValue'].currentValue ?? this.minValue;
+    // this.maxValue = changes['maxValue'].currentValue ?? this.maxValue;
     //If one of these two changes, update slider range
     if (changes['minValue']?.currentValue || changes['maxValue'].currentValue) {
       this.createRange();

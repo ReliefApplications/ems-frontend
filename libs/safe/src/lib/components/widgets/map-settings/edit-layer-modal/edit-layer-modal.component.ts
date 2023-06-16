@@ -184,7 +184,6 @@ export class EditLayerModalComponent
   }
 
   ngAfterViewInit(): void {
-    console.log('edit layer after view init');
     this.data.editingLayer.next(true);
     const currentContainerRef = this.data.currentMapContainerRef.getValue();
     if (currentContainerRef) {
@@ -197,7 +196,6 @@ export class EditLayerModalComponent
   }
 
   selectedIndexChange(): void {
-    console.log('edit layer tab change');
     this.destroyTab$.next(true);
     const currentContainerRef = this.data.currentMapContainerRef.getValue();
     if (currentContainerRef) {

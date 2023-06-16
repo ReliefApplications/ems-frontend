@@ -12,7 +12,7 @@
       <ui-tab>
         <ng-container ngProjectAs="label">
           <ui-icon
-            icon="format_color_text"
+            icon="map"
             [size]="24"
             [uiTooltip]="
               'components.widget.settings.map.edit.layerProperties' | translate
@@ -26,7 +26,6 @@
         </ng-container>
         <ng-template uiTabContent>
           <safe-layer-properties
-            [currentZoom]="currentZoom"
             [form]="form"
             [destroyTab$]="destroyTab$"
             [currentMapContainerRef]="data.currentMapContainerRef"

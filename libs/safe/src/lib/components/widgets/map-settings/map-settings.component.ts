@@ -312,25 +312,6 @@ export class SafeMapSettingsComponent
           error: (err) => console.log(err),
         });
       } else {
-        this.mapLayersService
-          .addLayer(layerData)
-          .pipe(
-            tap((result) => {
-              // Update our current layer list after the new one is added
-              if (result) {
-                this.mapLayersService.currentLayers.push(result);
-              }
-            })
-          )
-          .subscribe({
-            next: (result) => {
-              if (result) {
-                this.updateLayersForm(result.id);
-              }
-              goToNextScreen();
-            },
-            error: (err) => console.log(err),
-          });
       }
     } else {
       goToNextScreen();

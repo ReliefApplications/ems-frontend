@@ -1,10 +1,10 @@
-<div [formGroup]="formGroup">
+<div [formGroup]="formGroup" class="flex flex-col">
   <!-- Custom Symbol -->
   <safe-simple-renderer
     [formGroup]="$any(formGroup.get('drawingInfo.renderer.symbol'))"
     [showSize]="false"
   ></safe-simple-renderer>
-  <ui-divider></ui-divider>
+  <ui-divider class="my-1"></ui-divider>
   <div class="flex flex-col my-4">
     <label>
       {{ 'components.widget.settings.map.edit.cluster.radius' | translate }}

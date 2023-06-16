@@ -1,18 +1,20 @@
 <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
   <!-- Fields form -->
-  <safe-editable-text
-    *ngFor="let field of fields$ | async; index as i"
-    [text]="field.label"
-    [canEdit]="true"
-    (onChange)="saveLabel($event, i)"
-  >
-    <div class="flex items-center justify-between w-full p-1">
-      <div class="!m-0 overflow-hidden text-ellipsis">
-        {{ field.label }}
+  <div class="flex-1 flex flex-col">
+    <safe-editable-text
+      *ngFor="let field of fields$ | async; index as i"
+      [text]="field.label"
+      [canEdit]="true"
+      (onChange)="saveLabel($event, i)"
+    >
+      <div class="flex items-center justify-between w-full p-1">
+        <div class="!m-0 overflow-hidden text-ellipsis">
+          {{ field.label }}
+        </div>
+        <ui-icon icon="edit" class="cursor-pointer" variant="grey"></ui-icon>
       </div>
-      <ui-icon icon="edit" class="cursor-pointer" variant="grey"></ui-icon>
-    </div>
-  </safe-editable-text>
+    </safe-editable-text>
+  </div>
   <!-- Map -->
   <div class="lg:flex-1 max-lg:min-w-full h-80 lg:min-h-full flex-shrink-0">
     <ng-template #mapContainer></ng-template>

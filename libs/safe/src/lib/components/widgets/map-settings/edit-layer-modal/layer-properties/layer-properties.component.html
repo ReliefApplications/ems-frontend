@@ -1,6 +1,6 @@
 <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
   <!-- Properties -->
-  <div class="flex flex-col space-y-12 w-full overflow-x-hidden" *ngIf="form">
+  <div class="flex flex-col flex-1 space-y-12 overflow-x-hidden" *ngIf="form">
     <!-- Options section -->
     <form [formGroup]="form" class="flex flex-col space-y-8">
       <!-- Layer title -->
@@ -42,6 +42,25 @@
           }}
         </h3>
         <!--@TODO TAILWIND-->
+        <div class="flex flex-row gap-2">
+          <ui-slider
+            formControlName="minZoom"
+            class="grow"
+            [minValue]="2"
+            [maxValue]="form.get('layerDefinition.maxZoom')?.value"
+            [step]="1"
+          >
+          </ui-slider>
+          <ui-slider
+            formControlName="maxZoom"
+            class="grow"
+            [minValue]="form.get('layerDefinition.minZoom')?.value"
+            [maxValue]="18"
+            [step]="1"
+          >
+          </ui-slider>
+        </div>
+
         <!-- <mat-slider class="grow" min="2" max="18" step="1" [discrete]="true">
           <input formControlName="minZoom" matSliderStartThumb />
           <input formControlName="maxZoom" matSliderEndThumb />

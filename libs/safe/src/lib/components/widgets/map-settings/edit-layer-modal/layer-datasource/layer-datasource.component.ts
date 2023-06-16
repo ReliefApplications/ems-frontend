@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   EventEmitter,
   Input,
@@ -92,7 +93,8 @@ export class LayerDatasourceComponent
     private dialog: Dialog,
     private gridLayoutService: SafeGridLayoutService,
     private aggregationService: SafeAggregationService,
-    private mapLayersService: SafeMapLayersService
+    private mapLayersService: SafeMapLayersService,
+    private cdr: ChangeDetectorRef
   ) {
     super();
   }
@@ -207,6 +209,7 @@ export class LayerDatasourceComponent
             const view = viewContainerRef.detach();
             if (view) {
               this.mapContainerRef.insert(view);
+              this.cdr.detectChanges();
               this.currentMapContainerRef.next(this.mapContainerRef);
             }
           }

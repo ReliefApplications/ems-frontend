@@ -1,8 +1,7 @@
 <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
   <!-- Popup form -->
-  <div class="flex flex-col">
-    {{ 'components.widget.settings.map.layers.popup.popup' | translate }}
-    <div [formGroup]="formGroup">
+  <div class="flex flex-col flex-1">
+    <div [formGroup]="formGroup" class="flex flex-col">
       <div class="flex flex-col">
         <div uiFormFieldDirective>
           <label>{{
@@ -44,7 +43,7 @@
           ></ui-icon>
         </div>
       </div>
-      <ui-divider></ui-divider>
+      <ui-divider class="my-1"></ui-divider>
       <h3>
         {{
           'components.widget.settings.map.layers.popup.popupElements'
@@ -103,22 +102,18 @@
         </ui-expansion-panel>
       </div>
       <!-- Add new block -->
-      <ui-button
-        category="secondary"
-        variant="primary"
-        [uiMenuTriggerFor]="contentOptions"
-        class="self-center mt-4"
-      >
-        {{ 'components.widget.settings.map.layers.popup.addField' | translate }}
-      </ui-button>
-      <ui-menu #contentOptions>
-        <button uiMenuItem (click)="onAddElement('fields')">
-          {{ 'components.widget.settings.map.layers.popup.fields' | translate }}
-        </button>
-        <button uiMenuItem (click)="onAddElement('text')">
-          {{ 'components.widget.settings.map.layers.popup.text' | translate }}
-        </button>
-      </ui-menu>
+      <div class="flex justify-center">
+        <ui-button
+          category="secondary"
+          variant="primary"
+          [uiMenuTriggerFor]="contentOptions"
+          class="self-center mt-4"
+        >
+          {{
+            'components.widget.settings.map.layers.popup.addField' | translate
+          }}
+        </ui-button>
+      </div>
     </div>
   </div>
   <!-- Map -->
@@ -126,3 +121,12 @@
     <ng-template #mapContainer></ng-template>
   </div>
 </div>
+
+<ui-menu #contentOptions>
+  <button uiMenuItem (click)="onAddElement('fields')">
+    {{ 'components.widget.settings.map.layers.popup.fields' | translate }}
+  </button>
+  <button uiMenuItem (click)="onAddElement('text')">
+    {{ 'components.widget.settings.map.layers.popup.text' | translate }}
+  </button>
+</ui-menu>

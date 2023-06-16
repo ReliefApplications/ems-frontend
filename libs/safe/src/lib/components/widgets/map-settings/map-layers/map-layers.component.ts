@@ -16,7 +16,7 @@ import { SafeMapLayersService } from '../../../../services/map/map-layers.servic
 import { LayerModel } from '../../../../models/layer.model';
 import { LayerType } from '../../../ui/map/interfaces/layer-settings.type';
 import { Dialog } from '@angular/cdk/dialog';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil, tap } from 'rxjs';
 
 /**
  * Layers configuration component of Map Widget.
@@ -75,7 +75,6 @@ export class MapLayersComponent
     this.currentMapContainerRef
       .pipe(takeUntil(this.destroyTab$))
       .subscribe((viewContainerRef) => {
-        console.log('current map container');
         if (viewContainerRef && !this.editingLayer.getValue()) {
           if (viewContainerRef !== this.mapContainerRef) {
             const view = viewContainerRef.detach();
@@ -87,7 +86,6 @@ export class MapLayersComponent
         }
       });
     this.editingLayer.pipe(takeUntil(this.destroyTab$)).subscribe((editing) => {
-      console.log('edition');
       if (!editing) {
         const currentMapContainerRef = this.currentMapContainerRef.getValue();
         if (
@@ -146,7 +144,21 @@ export class MapLayersComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        console.log(value);
+        this.mapLayersService
+          .addLayer(value)
+          .pipe(
+            tap((res) => {
+              if (res) {
+                this.mapLayersService.currentLayers.push(res);
+              }
+            })
+          )
+          .subscribe({
+            next: (res) => {
+              console.log(res);
+            },
+            error: (err) => console.error(err),
+          });
       }
     });
   }
@@ -192,7 +204,12 @@ export class MapLayersComponent
           .pipe(takeUntil(this.destroy$))
           .subscribe((value: any) => {
             if (value) {
-              console.log(value);
+              this.mapLayersService.editLayer(value).subscribe({
+                next: (res) => {
+                  console.log(res);
+                },
+                error: (err) => console.log(err),
+              });
             }
           });
       });
