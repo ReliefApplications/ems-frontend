@@ -29,6 +29,7 @@ import {
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { DOCUMENT } from '@angular/common';
+import { isNil } from 'lodash';
 
 /**
  * UI Select Menu component
@@ -148,7 +149,7 @@ export class SelectMenuComponent
       this.control.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe({
         next: (value) => {
           // If the value is cleared from outside, reset displayed values
-          if (!value || !value.length) {
+          if (isNil(value) || value.length === 0) {
             this.selectedValues = [];
             this.optionList.forEach((option) => (option.selected = false));
             this.setDisplayTriggerText();
