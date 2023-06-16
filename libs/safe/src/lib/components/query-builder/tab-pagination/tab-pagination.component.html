@@ -1,8 +1,6 @@
 <form [formGroup]="form">
-  <div uiFormFieldDirective >
-    <label>{{
-      'components.queryBuilder.pagination.first' | translate
-    }}</label>
+  <div uiFormFieldDirective>
+    <label>{{ 'components.queryBuilder.pagination.first' | translate }}</label>
     <input formControlName="first" type="number" />
     <ui-icon
       uiSuffix

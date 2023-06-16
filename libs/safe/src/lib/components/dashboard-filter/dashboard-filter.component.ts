@@ -28,6 +28,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../services/context/context.service';
 import { SidenavContainerComponent, SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
+import { SafeReferenceDataService } from '../../services/reference-data/reference-data.service';
+import { renderGlobalProperties } from '../../survey/render-global-properties';
 
 /**
  * Interface for quick filters
@@ -88,6 +90,7 @@ export class DashboardFilterComponent
    * @param translate Angular translate service
    * @param contextService Context service
    * @param ngZone Triggers html changes
+   * @param referenceDataService Reference data service
    * @param _host sidenav container host
    */
   constructor(
@@ -98,6 +101,7 @@ export class DashboardFilterComponent
     private translate: TranslateService,
     private contextService: ContextService,
     private ngZone: NgZone,
+    private referenceDataService: SafeReferenceDataService,
     @Optional() private _host: SidenavContainerComponent
   ) {
     super();
@@ -267,6 +271,10 @@ export class DashboardFilterComponent
     this.survey.onValueChanged.add(this.onValueChange.bind(this));
     this.survey.onAfterRenderSurvey.add(this.onAfterRenderSurvey.bind(this));
 
+    // we should render the custom questions somewhere, let's do it here
+    this.survey.onAfterRenderQuestion.add(
+      renderGlobalProperties(this.referenceDataService)
+    );
     this.survey.render(this.dashboardSurveyCreatorContainer?.nativeElement);
   }
 
