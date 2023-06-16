@@ -86,6 +86,8 @@ export class SafeLayoutComponent
   public otherOffice = '';
   public environment: any;
   private inApplication = false;
+  private currentApplicationId = '';
+  public currentApplicationName = '';
 
   // === APP SEARCH ===
   public showAppMenu = false;
@@ -230,6 +232,15 @@ export class SafeLayoutComponent
       .subscribe((res) => {
         this.breadcrumbs = res;
       });
+
+    this.currentApplicationId = this.router.url.split('/')[1];
+    this.applications.map((elt) => {
+      if (elt.id === this.currentApplicationId) {
+        if (elt.name) {
+          this.currentApplicationName = elt.name;
+        }
+      }
+    });
   }
 
   /**
@@ -270,6 +281,9 @@ export class SafeLayoutComponent
    * @param application The application that needs to be opened
    */
   onOpenApplication(application: Application): void {
+    if (application.name) {
+      this.currentApplicationName = application.name;
+    }
     this.openApplication.emit(application);
   }
 
