@@ -65,12 +65,12 @@
 
         <ng-template uiTabContent>
           <safe-tab-fields
-          *ngIf="availableFields.length > 0"
-          [form]="$any(form.controls.fields)"
-          [fields]="availableFields"
-          [showLimit]="true"
-        ></safe-tab-fields>
-          </ng-template>
+            *ngIf="availableFields.length > 0"
+            [form]="$any(form.controls.fields)"
+            [fields]="availableFields"
+            [showLimit]="true"
+          ></safe-tab-fields>
+        </ng-template>
       </ui-tab>
       <ui-tab *ngIf="form.get('sort')">
         <ng-container ngProjectAs="label">{{
