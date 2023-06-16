@@ -17,8 +17,8 @@
   </ui-button>
   <!-- Available buttons -->
   <ui-tabs *ngIf="buttons.length > 0">
-    <ng-container *ngFor="let button of buttons.controls; let i = index">
-      <ui-tab>
+    <!-- <ng-container *ngFor="let button of buttons.controls; let i = index"> -->
+      <ui-tab *ngFor="let button of buttons.controls; let i = index">
         <!-- Button label - tab label -->
         <ng-container ngProjectAs="label">
           <div
@@ -69,6 +69,6 @@
         >
         </safe-button-config>
       </ui-tab>
-    </ng-container>
+    <!-- </ng-container> -->
   </ui-tabs>
 </div>
