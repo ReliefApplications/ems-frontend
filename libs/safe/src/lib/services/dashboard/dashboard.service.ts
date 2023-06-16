@@ -10,6 +10,8 @@ import {
   UPDATE_PAGE_CONTEXT,
   CreateDashboardWithContextMutationResponse,
   CREATE_DASHBOARD_WITH_CONTEXT,
+  DELETE_PAGE_CONTEXT,
+  DeletePageContextMutationResponse,
 } from './graphql/mutations';
 import get from 'lodash/get';
 
@@ -204,6 +206,37 @@ export class SafeDashboardService {
       }
     });
 
+    return res;
+  }
+
+  /**
+   * Remove the context of the dashboard.
+   *
+   * @returns promise the mutation result
+   */
+  public removeContext() {
+    const dashboard = this.dashboard.getValue();
+    if (!dashboard?.page?.id) return;
+
+    const res = firstValueFrom(
+      this.apollo.mutate<DeletePageContextMutationResponse>({
+        mutation: DELETE_PAGE_CONTEXT,
+        variables: {
+          id: dashboard.page.id,
+        },
+      })
+    );
+
+    res.then(({ data }) => {
+      if (data) {
+        this.dashboard.next({
+          ...dashboard,
+          page: {
+            ...data.deletePageContext,
+          },
+        });
+      }
+    });
     return res;
   }
 

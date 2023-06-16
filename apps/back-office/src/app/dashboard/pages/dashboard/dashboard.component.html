@@ -50,7 +50,7 @@
             "
           >
           </safe-access>
-          <!-- Context -->
+          <!-- Add/update context -->
           <ui-button
             variant="grey"
             [isIcon]="true"
@@ -62,6 +62,16 @@
                 : 'models.dashboard.context.datasource.set'
               ) | translate
             "
+          >
+          </ui-button>
+          <!-- Remove context -->
+          <ui-button
+            *ngIf="dashboard.page?.context"
+            variant="grey"
+            [isIcon]="true"
+            [icon]="'close'"
+            (click)="onRemoveContext()"
+            [uiTooltip]="'models.dashboard.context.datasource.remove' | translate"
           >
           </ui-button>
           <!-- More options -->

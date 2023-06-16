@@ -60,6 +60,20 @@ export interface EditPageContextMutationResponse {
   editPageContext: Pick<Page, 'context' | 'id' | 'contentWithContext'>;
 }
 
+/** Graphql request for deleting a page dashboard context by its id */
+export const DELETE_PAGE_CONTEXT = gql`
+  mutation deletePageContext($id: ID!) {
+    deletePageContext(id: $id) {
+      id
+    }
+  }
+`;
+
+/** Model for DeletePageContextMutationResponse object */
+export interface DeletePageContextMutationResponse {
+  deletePageContext: Page;
+}
+
 /** GraphQL mutation for creating a dashboard with context */
 export const CREATE_DASHBOARD_WITH_CONTEXT = gql`
   mutation createDashboardWithContext($page: ID!, $element: JSON, $record: ID) {
