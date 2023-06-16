@@ -198,6 +198,7 @@ export class MapComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    console.log('changes');
     if (changes.mapSettings && changes.mapSettings.previousValue) {
       if (this.map) {
         this.drawMap(false);
@@ -255,6 +256,7 @@ export class MapComponent
    * @param initMap Does the map need to be reloaded
    */
   private drawMap(initMap: boolean = true): void {
+    console.log('drawing');
     const {
       initialState,
       maxBounds,

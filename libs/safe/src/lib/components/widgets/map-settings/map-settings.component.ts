@@ -102,9 +102,7 @@ export class SafeMapSettingsComponent
       this.handleMapEvent(event)
     );
     this.mapComponent = componentRef.instance;
-    // this.mapComponent.ngAfterViewInit()
     this.currentMapContainerRef.next(this.mapContainerRef);
-    console.log('after view init done');
   }
 
   selectedIndexChange(): void {
@@ -193,6 +191,7 @@ export class SafeMapSettingsComponent
    * @param settings new settings
    */
   private updateMapSettings(settings: MapConstructorSettings) {
+    console.log('update');
     if (this.mapSettings) {
       this.mapSettings = {
         ...this.mapSettings,
@@ -200,6 +199,10 @@ export class SafeMapSettingsComponent
       };
     } else {
       this.mapSettings = settings;
+    }
+    if (this.mapComponent) {
+      // Supposed to trigger changes on the map, but nothing happens
+      this.mapComponent.mapSettings = this.mapSettings;
     }
   }
 

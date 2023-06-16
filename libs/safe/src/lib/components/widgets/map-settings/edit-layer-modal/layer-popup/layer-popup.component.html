@@ -64,26 +64,30 @@
         >
           <!-- Expand block header -->
           <ng-container ngProjectAs="title">
-            <div class="grow-0">
+            <div class="flex items-center">
+              <div class="grow-0">
+                <ui-button
+                  variant="grey"
+                  cdkDragHandle
+                  [isIcon]="true"
+                  icon="drag_indicator"
+                ></ui-button>
+              </div>
+              <div>
+                <div class="flex flex-col">
+                  <h4 class="!m-0">
+                    {{ item.value.type }}
+                  </h4>
+                  <h6 class="!m-0">{{ item.value.title }}</h6>
+                </div>
+              </div>
               <ui-button
-                cdkDragHandle
                 [isIcon]="true"
-                icon="drag_indicator"
+                icon="delete"
+                variant="warning"
+                (click)="onRemoveElement(index)"
               ></ui-button>
             </div>
-            <div>
-              <div class="flex flex-col">
-                <h4 class="!m-0">
-                  {{ item.value.type }}
-                </h4>
-                <h6 class="!m-0">{{ item.value.title }}</h6>
-              </div>
-            </div>
-            <ui-button
-              [isIcon]="true"
-              icon="close"
-              (click)="onRemoveElement(index)"
-            ></ui-button>
           </ng-container>
 
           <!-- Expanded block content -->

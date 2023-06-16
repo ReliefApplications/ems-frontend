@@ -13,7 +13,7 @@ import { LayerModel } from '../../../../models/layer.model';
 import { LayerType } from '../../../ui/map/interfaces/layer-settings.type';
 import { Dialog } from '@angular/cdk/dialog';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
-import { FormControl } from '@angular/forms';
+import { UntypedFormControl } from '@angular/forms';
 import { MapComponent } from '../../../ui/map/map.component';
 
 /**
@@ -29,7 +29,7 @@ export class MapLayersComponent
   implements OnInit
 {
   @Input() mapComponent?: MapComponent;
-  @Input() formControl!: FormControl<string[]>;
+  @Input() formControl!: UntypedFormControl;
 
   // Display of map
   @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;

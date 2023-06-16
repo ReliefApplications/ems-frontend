@@ -50,12 +50,12 @@
                   </ui-button>
                   <ui-menu #menu>
                     <button uiMenuItem (click)="onEditLayer(layer.id)">
-                      <ui-icon icon="edit"></ui-icon>
+                      <ui-icon icon="edit" variant="grey"></ui-icon>
                       {{ 'common.edit' | translate }}
                     </button>
                     <ui-divider class="m-0"></ui-divider>
                     <button uiMenuItem (click)="onDeleteLayer(i)">
-                      <ui-icon icon="delete"></ui-icon>
+                      <ui-icon icon="delete" variant="grey"></ui-icon>
                       {{ 'common.delete' | translate }}
                     </button>
                   </ui-menu>
