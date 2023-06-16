@@ -114,7 +114,7 @@ export class FormWrapperDirective
     'bg-gray-50',
   ] as const;
 
-  private beyondLabelGeneral = ['relative', 'py-1.5', 'px-2'] as const;
+  private beyondLabelGeneral = ['inline-flex','relative', 'py-1.5', 'px-2', 'w-full'] as const;
   private beyondLabelNoChipList = ['flex', 'items-center', 'w-full'] as const;
   private beyondLabelNoOutline = [
     'focus-within:ring-2',
@@ -173,7 +173,6 @@ export class FormWrapperDirective
 
   //We need to use afterViewInit for select menu, otherwise removing class does not work
   ngAfterViewInit() {
-    console.log(this.formControlElement);
     // Do the same with selectMenu
     if (this.currentSelectElement || this.currentGraphQLSelectComponent) {
       if (this.currentGraphQLSelectComponent) {
