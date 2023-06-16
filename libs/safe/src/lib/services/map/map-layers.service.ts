@@ -9,7 +9,6 @@ import {
   mergeMap,
   Observable,
   of,
-  tap,
 } from 'rxjs';
 import { LayerFormData } from '../../components/ui/map/interfaces/layer-settings.type';
 import { Layer, EMPTY_FEATURE_COLLECTION } from '../../components/ui/map/layer';
@@ -59,9 +58,6 @@ export class SafeMapLayersService {
     private queryBuilder: QueryBuilderService,
     private aggregationBuilder: AggregationBuilderService
   ) {}
-
-  // Layers saved in the database
-  currentLayers: LayerModel[] = [];
   /**
    * Save a new layer in the DB
    *
@@ -176,9 +172,6 @@ export class SafeMapLayersService {
       })
       .pipe(
         filter((response) => !!response.data),
-        // We are creating/destroying components in order to use the same map view for the layer edition and the map settings view
-        // So we have to use service properties in order to not keep loading same queries when creating/destroying component views
-        tap((response) => (this.currentLayers = response.data.layers)),
         map((response) => {
           if (response.errors) {
             throw new Error(response.errors[0].message);

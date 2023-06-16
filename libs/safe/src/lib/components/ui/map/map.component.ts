@@ -183,6 +183,7 @@ export class MapComponent
     this.setUpMapListeners();
 
     setTimeout(() => {
+      console.log('invalidating');
       this.map.invalidateSize();
       this.mapEvent.emit({
         type: MapEventType.FIRST_LOAD,
@@ -193,7 +194,7 @@ export class MapComponent
         },
       });
       //}
-    }, 100);
+    }, 1000);
   }
 
   ngOnChanges(changes: SimpleChanges): void {

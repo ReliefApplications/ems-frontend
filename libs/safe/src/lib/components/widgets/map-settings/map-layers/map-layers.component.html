@@ -3,99 +3,79 @@
   <div class="flex-1 flex flex-col">
     <div class="flex justify-between">
       <h2>{{ 'common.layers' | translate }}</h2>
-      <ng-container *ngIf="mapLayers.length">
+      <ng-container *ngIf="mapLayers.length && !loading">
         <div class="flex justify-end">
           <ng-container *ngTemplateOutlet="newLayer"></ng-container>
         </div>
       </ng-container>
     </div>
-    <!-- Contextual menu for layer addition -->
-    <ui-menu #layerMenu>
-      <button uiMenuItem (click)="onAddLayer()">
-        <span>{{
-          'components.widget.settings.map.layers.createLayer' | translate
-        }}</span>
-      </button>
-      <button uiMenuItem (click)="onAddLayer('GroupLayer')">
-        <span>{{
-          'components.widget.settings.map.layers.createGroup' | translate
-        }}</span>
-      </button>
-      <button uiMenuItem (click)="onSelectLayer()">
-        <span>{{
-          'components.widget.settings.map.layers.selectLayer' | translate
-        }}</span>
-      </button>
-    </ui-menu>
-    <ng-container *ngIf="mapLayers.length; else emptyTmpl">
-      <!-- Table container -->
-      <div class="overflow-x-hidden mt-4 shadow-2lg">
-        <!-- Table scroll container -->
-        <div class="overflow-x-auto">
-          <!-- List of layers -->
-          <table
-            #layerTable
-            cdk-table
-            uiTableWrapper
-            [dataSource]="mapLayers"
-            cdkDropList
-            class="shadow-md"
-            (cdkDropListDropped)="onListDrop($event)"
-          >
-            <ng-container cdkColumnDef="name">
-              <th uiCellHeader *cdkHeaderCellDef>
-                {{ 'common.name' | translate }}
-              </th>
-              <td uiCell *cdkCellDef="let layer" class="font-bold">
-                <span class="flex items-center gap-1">
-                  <ui-icon icon="drag_indicator" class="hover:cursor-move">
-                  </ui-icon>
-                  {{ layer.name }}
-                </span>
-              </td>
-            </ng-container>
+    <ng-container *ngIf="!loading; else loadingTmpl">
+      <ng-container *ngIf="mapLayers.length; else emptyTmpl">
+        <!-- Table container -->
+        <div class="overflow-x-hidden mt-4 shadow-2lg">
+          <!-- Table scroll container -->
+          <div class="overflow-x-auto">
+            <!-- List of layers -->
+            <table
+              #layerTable
+              cdk-table
+              uiTableWrapper
+              [dataSource]="mapLayers"
+              cdkDropList
+              class="shadow-md"
+              (cdkDropListDropped)="onListDrop($event)"
+            >
+              <ng-container cdkColumnDef="name">
+                <th uiCellHeader *cdkHeaderCellDef>
+                  {{ 'common.name' | translate }}
+                </th>
+                <td uiCell *cdkCellDef="let layer" class="font-bold">
+                  <span class="flex items-center gap-1">
+                    <ui-icon icon="drag_indicator" class="hover:cursor-move">
+                    </ui-icon>
+                    {{ layer.name }}
+                  </span>
+                </td>
+              </ng-container>
 
-            <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-              <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>
-              <td uiCell *cdkCellDef="let layer; let i = index">
-                <ui-button
-                  [isIcon]="true"
-                  icon="more_vert"
-                  [uiMenuTriggerFor]="menu"
-                  (click)="$event.stopPropagation()"
-                >
-                </ui-button>
-                <ui-menu #menu>
-                  <button uiMenuItem (click)="onEditLayer(layer.id)">
-                    <ui-icon icon="edit"></ui-icon>
-                    {{ 'common.edit' | translate }}
-                  </button>
-                  <ui-divider class="m-0"></ui-divider>
-                  <button uiMenuItem (click)="onDeleteLayer(i)">
-                    <ui-icon icon="delete"></ui-icon>
-                    {{ 'common.delete' | translate }}
-                  </button>
-                </ui-menu>
-              </td>
-            </ng-container>
+              <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+                <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>
+                <td uiCell *cdkCellDef="let layer; let i = index">
+                  <ui-button
+                    [isIcon]="true"
+                    icon="more_vert"
+                    [uiMenuTriggerFor]="menu"
+                    (click)="$event.stopPropagation()"
+                  >
+                  </ui-button>
+                  <ui-menu #menu>
+                    <button uiMenuItem (click)="onEditLayer(layer.id)">
+                      <ui-icon icon="edit"></ui-icon>
+                      {{ 'common.edit' | translate }}
+                    </button>
+                    <ui-divider class="m-0"></ui-divider>
+                    <button uiMenuItem (click)="onDeleteLayer(i)">
+                      <ui-icon icon="delete"></ui-icon>
+                      {{ 'common.delete' | translate }}
+                    </button>
+                  </ui-menu>
+                </td>
+              </ng-container>
 
-            <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-            <tr
-              *cdkRowDef="let row; columns: displayedColumns"
-              cdk-row
-              cdkDrag
-            ></tr>
-          </table>
+              <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+              <tr
+                *cdkRowDef="let row; columns: displayedColumns"
+                cdk-row
+                cdkDrag
+              ></tr>
+            </table>
+          </div>
         </div>
-      </div>
+      </ng-container>
     </ng-container>
-    <ng-template #emptyTmpl>
-      <!-- Empty indicator -->
-      <safe-empty title="No layer" [footerTemplate]="newLayer"></safe-empty>
-    </ng-template>
   </div>
   <!-- Map -->
-  <div class="lg:flex-1 max-lg:min-w-full h-80 lg:min-h-full flex-shrink-0">
+  <div class="lg:flex-1 max-lg:min-w-full h-80 lg:h-[400px] flex-shrink-0">
     <ng-template #mapContainer></ng-template>
   </div>
 </div>
@@ -112,3 +92,33 @@
 </ng-template>
 
 <ng-template #mapContainer></ng-template>
+
+<!-- Contextual menu for layer addition -->
+<ui-menu #layerMenu>
+  <button uiMenuItem (click)="onAddLayer()">
+    <span>{{
+      'components.widget.settings.map.layers.createLayer' | translate
+    }}</span>
+  </button>
+  <button uiMenuItem (click)="onAddLayer('GroupLayer')">
+    <span>{{
+      'components.widget.settings.map.layers.createGroup' | translate
+    }}</span>
+  </button>
+  <button uiMenuItem (click)="onSelectLayer()">
+    <span>{{
+      'components.widget.settings.map.layers.selectLayer' | translate
+    }}</span>
+  </button>
+</ui-menu>
+
+<ng-template #loadingTmpl>
+  <!-- Loading indicator -->
+  <safe-skeleton-table [columns]="['common.name']" [actions]="true">
+  </safe-skeleton-table>
+</ng-template>
+
+<ng-template #emptyTmpl>
+  <!-- Empty indicator -->
+  <safe-empty title="No layer" [footerTemplate]="newLayer"></safe-empty>
+</ng-template>

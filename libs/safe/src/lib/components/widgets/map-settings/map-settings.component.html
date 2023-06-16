@@ -1,4 +1,8 @@
-<ui-tabs class="grow" [vertical]="true" (selectedIndexChange)="selectedIndexChange()">
+<ui-tabs
+  class="grow"
+  [vertical]="true"
+  (selectedIndexChange)="selectedIndexChange()"
+>
   <!-- Map properties -->
   <ui-tab>
     <ng-container ngProjectAs="label">
@@ -24,9 +28,8 @@
     </ng-container>
     <ng-template uiTabContent>
       <safe-map-layers
-        [layerIds]="layerIds"
-        (editLayer)="onEditLayer($event)"
-        (deleteLayer)="onDeleteLayer($event)"
+        [formControl]="$any(tileForm.get('layers'))"
+        [mapComponent]="mapComponent"
         [destroyTab$]="destroyTab$"
         [currentMapContainerRef]="currentMapContainerRef"
       ></safe-map-layers>

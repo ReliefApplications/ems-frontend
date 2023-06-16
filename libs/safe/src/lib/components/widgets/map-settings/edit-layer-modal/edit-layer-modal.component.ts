@@ -1,9 +1,6 @@
 import {
   Component,
-  Input,
   ViewChild,
-  Output,
-  EventEmitter,
   OnDestroy,
   Inject,
   OnInit,
@@ -56,6 +53,7 @@ interface DialogData {
   layer?: LayerModel;
   currentMapContainerRef: BehaviorSubject<ViewContainerRef | null>;
   editingLayer: BehaviorSubject<boolean>;
+  mapComponent: MapComponent;
 }
 
 /**
@@ -91,9 +89,6 @@ export class EditLayerModalComponent
   implements OnInit, OnDestroy
 {
   private _layer!: Layer;
-  @Input() mapComponent!: MapComponent | undefined;
-  @Output() layerToSave = new EventEmitter<LayerFormData>();
-  @Output() layerToOpen = new EventEmitter<LayerModel | undefined>();
 
   @ViewChild('mapContainer', { read: ViewContainerRef })
   mapContainerRef!: ViewContainerRef;
@@ -161,7 +156,7 @@ export class EditLayerModalComponent
     private mapLayersService: SafeMapLayersService,
     private apollo: Apollo,
     @Inject(DIALOG_DATA) public data: DialogData,
-    public dialogRef: DialogRef<EditLayerModalComponent>
+    public dialogRef: DialogRef<LayerFormData>
   ) {
     super();
   }
@@ -175,8 +170,8 @@ export class EditLayerModalComponent
       .subscribe((value) => {
         this.setIsDatasourceValid(value);
       });
-    if (this.mapComponent) {
-      this.currentZoom = this.mapComponent.map.getZoom();
+    if (this.data.mapComponent) {
+      this.currentZoom = this.data.mapComponent.map.getZoom();
       this.setUpLayer();
     }
     this.setUpEditLayerListeners();
@@ -236,12 +231,12 @@ export class EditLayerModalComponent
    * Set default layer for editor
    */
   private setUpLayer() {
-    if (!this.mapComponent) return;
+    if (!this.data.mapComponent) return;
     this.mapLayersService
       .createLayerFromDefinition(
         this.form.value as LayerModel,
-        this.mapComponent.mapPopupService,
-        this.mapComponent.mapLayersService
+        this.data.mapComponent.mapPopupService,
+        this.data.mapComponent.mapLayersService
       )
       .then((layer) => {
         if (layer) {
@@ -261,8 +256,8 @@ export class EditLayerModalComponent
    * @param options.delete delete existing layer
    */
   private updateMapLayer(options: { delete: boolean } = { delete: false }) {
-    if (this.mapComponent) {
-      this.mapComponent.addOrDeleteLayer = {
+    if (this.data.mapComponent) {
+      this.data.mapComponent.addOrDeleteLayer = {
         layerData: this.overlays,
         isDelete: options.delete,
       };
@@ -297,7 +292,7 @@ export class EditLayerModalComponent
         this.getResource();
       });
 
-    this.mapComponent?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({
+    this.data.mapComponent?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({
       next: (event: MapEvent) => this.handleMapEvent(event),
     });
   }
@@ -323,10 +318,10 @@ export class EditLayerModalComponent
    * Send the current form value to save
    */
   onSubmit() {
-    this.layerToSave.emit(this.form.getRawValue() as LayerFormData);
+    // this.layerToSave.emit(this.form.getRawValue() as LayerFormData);
     this.destroyTab$.next(true);
     this.data.editingLayer.next(false);
-    this.dialogRef.close();
+    this.dialogRef.close(this.form.getRawValue() as LayerFormData);
   }
 
   /**
@@ -408,21 +403,12 @@ export class EditLayerModalComponent
       layer: this.currentLayer,
     };
     //Once we exit the layer editor, destroy the layer and related controls
-    if (this.mapComponent) {
-      this.mapComponent.addOrDeleteLayer = {
+    if (this.data.mapComponent) {
+      this.data.mapComponent.addOrDeleteLayer = {
         layerData: overlays,
         isDelete: true,
       };
     }
-  }
-
-  /**
-   * Open layer edition
-   *
-   * @param layer layer to open
-   */
-  onEditLayer(layer?: LayerModel): void {
-    this.layerToOpen.emit(layer);
   }
 
   /**

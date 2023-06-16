@@ -13,6 +13,7 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { SafeEmptyModule } from '../../../ui/empty/empty.module';
+import { SafeSkeletonTableModule } from '../../../skeleton/skeleton-table/skeleton-table.module';
 
 /**
  * Map Widget layers configuration module.
@@ -32,6 +33,7 @@ import { SafeEmptyModule } from '../../../ui/empty/empty.module';
     DragDropModule,
     TabsModule,
     SafeEmptyModule,
+    SafeSkeletonTableModule,
   ],
   exports: [MapLayersComponent],
 })

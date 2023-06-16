@@ -1,12 +1,8 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import {
   Component,
-  EventEmitter,
   Input,
-  OnChanges,
   OnInit,
-  Output,
-  SimpleChanges,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
@@ -16,7 +12,9 @@ import { SafeMapLayersService } from '../../../../services/map/map-layers.servic
 import { LayerModel } from '../../../../models/layer.model';
 import { LayerType } from '../../../ui/map/interfaces/layer-settings.type';
 import { Dialog } from '@angular/cdk/dialog';
-import { BehaviorSubject, Subject, takeUntil, tap } from 'rxjs';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { FormControl } from '@angular/forms';
+import { MapComponent } from '../../../ui/map/map.component';
 
 /**
  * Layers configuration component of Map Widget.
@@ -28,13 +26,10 @@ import { BehaviorSubject, Subject, takeUntil, tap } from 'rxjs';
 })
 export class MapLayersComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, OnChanges
+  implements OnInit
 {
-  @Input() layerIds!: string[];
-  // eslint-disable-next-line @angular-eslint/no-output-native
-  @Output() close = new EventEmitter();
-  @Output() editLayer = new EventEmitter<LayerModel>();
-  @Output() deleteLayer = new EventEmitter<string>();
+  @Input() mapComponent?: MapComponent;
+  @Input() formControl!: FormControl<string[]>;
 
   // Display of map
   @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;
@@ -46,6 +41,7 @@ export class MapLayersComponent
   // Table
   public mapLayers: Array<LayerModel> = new Array<LayerModel>();
   public displayedColumns = ['name', 'actions'];
+  public loading = true;
 
   /**
    * Layers configuration component of Map Widget.
@@ -62,13 +58,6 @@ export class MapLayersComponent
 
   ngOnInit(): void {
     this.updateLayerList();
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.layerIds) {
-      this.layerIds = changes.layerIds.currentValue;
-      this.updateLayerList();
-    }
   }
 
   ngAfterViewInit(): void {
@@ -108,7 +97,11 @@ export class MapLayersComponent
   private updateLayerList(): void {
     // todo: add filtering
     this.mapLayersService.getLayers().subscribe((layers) => {
-      this.mapLayers = layers.filter((x) => this.layerIds.includes(x.id));
+      const layerIds = this.formControl.value;
+      this.mapLayers = layers
+        .filter((x) => layerIds.includes(x.id))
+        .sort((a, b) => layerIds.indexOf(a.id) - layerIds.indexOf(b.id));
+      this.loading = false;
     });
   }
 
@@ -118,7 +111,9 @@ export class MapLayersComponent
    * @param index Index of the layer to remove
    */
   public onDeleteLayer(index: number) {
-    this.deleteLayer.emit(this.mapLayers[index].id);
+    // this.deleteLayer.emit(this.mapLayers[index].id);
+    const value = this.formControl.value;
+    this.formControl.setValue(value.splice(index, 1), { emitEvent: false });
   }
 
   /**
@@ -127,9 +122,6 @@ export class MapLayersComponent
    * @param type type of layer
    */
   public async onAddLayer(type: LayerType = 'FeatureLayer') {
-    this.editLayer.emit({
-      type,
-    } as LayerModel);
     const { EditLayerModalComponent } = await import(
       '../edit-layer-modal/edit-layer-modal.component'
     );
@@ -140,25 +132,27 @@ export class MapLayersComponent
         layer: { type } as LayerModel,
         currentMapContainerRef: this.currentMapContainerRef,
         editingLayer: this.editingLayer,
+        mapComponent: this.mapComponent,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      console.log('add');
+      console.log(value);
       if (value) {
-        this.mapLayersService
-          .addLayer(value)
-          .pipe(
-            tap((res) => {
-              if (res) {
-                this.mapLayersService.currentLayers.push(res);
-              }
-            })
-          )
-          .subscribe({
-            next: (res) => {
-              console.log(res);
-            },
-            error: (err) => console.error(err),
-          });
+        this.loading = true;
+        this.mapLayersService.addLayer(value).subscribe({
+          next: (res) => {
+            if (res) {
+              const value = this.formControl.value;
+              this.formControl.setValue([...value, res.id], {
+                emitEvent: false,
+              });
+              this.mapLayers.push(res);
+            }
+          },
+          error: (err) => console.error(err),
+          complete: () => (this.loading = false),
+        });
       }
     });
   }
@@ -167,6 +161,7 @@ export class MapLayersComponent
    * Open dialog to select existing layer.
    */
   public onSelectLayer() {
+    // @todo
     const dialogRef = this.dialog.open(AddLayerModalComponent, {
       disableClose: true,
     });
@@ -187,7 +182,6 @@ export class MapLayersComponent
       .getLayerById(id)
       .pipe(takeUntil(this.destroy$))
       .subscribe(async (layer) => {
-        this.editLayer.emit(layer);
         const { EditLayerModalComponent } = await import(
           '../edit-layer-modal/edit-layer-modal.component'
         );
@@ -198,17 +192,37 @@ export class MapLayersComponent
             layer,
             currentMapContainerRef: this.currentMapContainerRef,
             editingLayer: this.editingLayer,
+            mapComponent: this.mapComponent,
           },
         });
         dialogRef.closed
           .pipe(takeUntil(this.destroy$))
           .subscribe((value: any) => {
+            console.log('edit');
+            console.log(value);
             if (value) {
+              this.loading = true;
               this.mapLayersService.editLayer(value).subscribe({
                 next: (res) => {
-                  console.log(res);
+                  if (res) {
+                    const index = this.mapLayers.findIndex(
+                      (layer) => layer.id === id
+                    );
+                    if (index > -1) {
+                      // editing already selected layer
+                      this.mapLayers = this.mapLayers.splice(index, 1, res);
+                    } else {
+                      // Selecting a new layer
+                      const value = this.formControl.value;
+                      this.formControl.setValue([...value, res.id], {
+                        emitEvent: false,
+                      });
+                      this.mapLayers.push(res);
+                    }
+                  }
                 },
                 error: (err) => console.log(err),
+                complete: () => (this.loading = false),
               });
             }
           });
@@ -222,6 +236,11 @@ export class MapLayersComponent
    */
   public onListDrop(e: CdkDragDrop<LayerModel[]>) {
     moveItemInArray(this.mapLayers, e.previousIndex, e.currentIndex);
-    // this.layerTable.renderRows();
+    this.mapLayers = [...this.mapLayers];
+    // const value = this.formControl.value;
+    this.formControl.setValue(
+      this.mapLayers.map((x) => x.id),
+      { emitEvent: false }
+    );
   }
 }

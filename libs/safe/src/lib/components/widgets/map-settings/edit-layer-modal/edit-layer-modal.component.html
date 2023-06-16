@@ -77,9 +77,8 @@
         </ng-container>
         <ng-template uiTabContent>
           <safe-map-layers
-            [layerIds]="form.get('sublayers')?.value || []"
-            (editLayer)="onEditLayer($event)"
-            (deleteLayer)="onDeleteLayer($event)"
+            [formControl]="$any(form.get('sublayers'))"
+            [mapComponent]="data.mapComponent"
             [destroyTab$]="destroyTab$"
             [currentMapContainerRef]="data.currentMapContainerRef"
           ></safe-map-layers>
@@ -153,11 +152,11 @@
           <safe-layer-cluster></safe-layer-cluster>
         </ng-template>
       </ui-tab> -->
-      <!-- Layer aggregations -->
+      <!-- Layer aggregation -->
+      <!-- Previously : layerDefinition.drawingInfo.renderer.type -->
       <ui-tab
         *ngIf="
-          form.get('layerDefinition.drawingInfo.renderer.type')?.value !==
-          'heatmap'
+          form.get('layerDefinition.featureReduction')?.value !== 'heatmap'
         "
         [disabled]="!isDatasourceValid"
       >
