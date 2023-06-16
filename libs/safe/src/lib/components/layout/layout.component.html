@@ -53,9 +53,15 @@
       cdkOverlayOrigin
       #appMenuTrigger="cdkOverlayOrigin"
     >
-      {{ theme.prefix }} {{ title }}
+      {{ theme.prefix }}
     </ui-button>
-    <span>{{ currentApplicationName }}</span>
+    <span>{{ title }}</span>
+    <ui-button
+      [isIcon]="true"
+      icon="tune"
+      variant="light"
+      [uiMenuTriggerFor]="settingsMenu"
+    ></ui-button>
     <ng-template
       cdkConnectedOverlay
       [cdkConnectedOverlayOrigin]="appMenuTrigger"
@@ -205,3 +211,16 @@
     </ng-container>
   </ui-sidenav-container>
 </ng-template>
+
+<ui-menu #settingsMenu>
+  <a
+    uiMenuItem
+    *ngFor="let setting of settings"
+    [routerLink]="setting.path"
+    routerLinkActive="text-primary-600 bg-gray-50"
+    class="text-sm font-semibold leading-6"
+  >
+    <ui-icon variant="grey" [icon]="setting.icon"> </ui-icon>
+    {{ setting.name }}
+  </a>
+</ui-menu>
