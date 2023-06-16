@@ -225,11 +225,12 @@ export class DashboardComponent
                 application.id !== this.application?.id ||
                 !firstPage)
             ) {
-              this.adminNavItems.push({
-                name: this.translate.instant('common.distributionList.few'),
-                path: `./${this.appID}/settings/distribution-lists`,
-                icon: 'mail',
-              });
+              // I think this is what is causing the issue, since we already added this in the navGroups if the user has the permission
+              // this.adminNavItems.push({
+              //   name: this.translate.instant('common.distributionList.few'),
+              //   path: `./${this.appID}/settings/distribution-lists`,
+              //   icon: 'mail',
+              // });
             }
             // if (
             //   this.permissions.some(
