@@ -114,7 +114,13 @@ export class FormWrapperDirective
     'bg-gray-50',
   ] as const;
 
-  private beyondLabelGeneral = ['inline-flex','relative', 'py-1.5', 'px-2', 'w-full'] as const;
+  private beyondLabelGeneral = [
+    'inline-flex',
+    'relative',
+    'py-1.5',
+    'px-2',
+    'w-full',
+  ] as const;
   private beyondLabelNoChipList = ['flex', 'items-center', 'w-full'] as const;
   private beyondLabelNoOutline = [
     'focus-within:ring-2',

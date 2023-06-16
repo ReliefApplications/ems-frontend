@@ -1,9 +1,4 @@
-import {
-  Component,
-  Input,
-  ViewChild,
-  ViewContainerRef,
-} from '@angular/core';
+import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
 import { LayerFormT } from '../../map-forms';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { MapComponent } from '../../../../ui/map';
