@@ -1,4 +1,10 @@
-import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Fields } from '../layer-fields/layer-fields.component';
 import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
@@ -14,7 +20,7 @@ const AVAILABLE_RENDERER_TYPES = ['simple', 'heatmap', 'uniqueValue'];
   templateUrl: './layer-styling.component.html',
   styleUrls: ['./layer-styling.component.scss'],
 })
-export class LayerStylingComponent {
+export class LayerStylingComponent implements AfterViewInit {
   @Input() formGroup!: FormGroup;
   public rendererTypes = AVAILABLE_RENDERER_TYPES;
   @Input() fields$!: Observable<Fields[]>;

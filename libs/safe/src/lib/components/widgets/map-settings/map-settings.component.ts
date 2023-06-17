@@ -8,6 +8,7 @@ import {
   ChangeDetectorRef,
   ViewContainerRef,
   OnDestroy,
+  AfterViewInit,
 } from '@angular/core';
 import { createMapWidgetFormGroup } from './map-forms';
 import { UntypedFormGroup } from '@angular/forms';
@@ -34,7 +35,7 @@ import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 })
 export class SafeMapSettingsComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, OnDestroy
+  implements OnInit, OnDestroy, AfterViewInit
 {
   public currentTab: 'parameters' | 'layers' | 'layer' | 'display' | null =
     'parameters';
@@ -105,6 +106,9 @@ export class SafeMapSettingsComponent
     this.currentMapContainerRef.next(this.mapContainerRef);
   }
 
+  /**
+   * Change on selected index.
+   */
   selectedIndexChange(): void {
     this.destroyTab$.next(true);
     const currentContainerRef = this.currentMapContainerRef.getValue();
@@ -275,11 +279,11 @@ export class SafeMapSettingsComponent
   //   };
   // }
 
-  /**
-   * Add or edit existing layer
-   *
-   * @param layerData layer to save
-   */
+  // /**
+  //  * Add or edit existing layer
+  //  *
+  //  * @param layerData layer to save
+  //  */
   // saveLayer(layerData?: any) {
   //   const goToNextScreen = () => {
   //     // Go to the previous layer if we are editing an existing one
@@ -315,12 +319,12 @@ export class SafeMapSettingsComponent
   //   }
   // }
 
-  /**
-   * Add given layer id to the layers form
-   *
-   * @param newLayerId New layer to set in the layers form
-   * @param toDelete Is to delete or not
-   */
+  // /**
+  //  * Add given layer id to the layers form
+  //  *
+  //  * @param newLayerId New layer to set in the layers form
+  //  * @param toDelete Is to delete or not
+  //  */
   // private updateLayersForm(newLayerId: string, toDelete = false) {
   //   const isGroupForm = this.openedLayers.length > 1;
 

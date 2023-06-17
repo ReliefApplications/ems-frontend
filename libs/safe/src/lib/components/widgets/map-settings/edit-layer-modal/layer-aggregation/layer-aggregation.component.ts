@@ -1,4 +1,10 @@
-import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 
@@ -13,7 +19,7 @@ const AVAILABLE_REDUCTION_TYPES = ['cluster'];
   templateUrl: './layer-aggregation.component.html',
   styleUrls: ['./layer-aggregation.component.scss'],
 })
-export class LayerAggregationComponent {
+export class LayerAggregationComponent implements AfterViewInit {
   @Input() formGroup!: FormGroup;
   public reductionTypes = AVAILABLE_REDUCTION_TYPES;
 

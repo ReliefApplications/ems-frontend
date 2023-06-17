@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   EventEmitter,
   Input,
@@ -20,7 +21,10 @@ import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
   templateUrl: './map-properties.component.html',
   styleUrls: ['./map-properties.component.scss'],
 })
-export class MapPropertiesComponent extends SafeUnsubscribeComponent {
+export class MapPropertiesComponent
+  extends SafeUnsubscribeComponent
+  implements AfterViewInit
+{
   @Input() form!: UntypedFormGroup;
   @Input() mapSettings!: MapConstructorSettings;
   @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;

@@ -5,6 +5,7 @@ import {
   Inject,
   OnInit,
   ViewContainerRef,
+  AfterViewInit,
 } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
@@ -86,7 +87,7 @@ interface DialogData {
 })
 export class EditLayerModalComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, OnDestroy
+  implements OnInit, OnDestroy, AfterViewInit
 {
   private _layer!: Layer;
 
@@ -190,6 +191,9 @@ export class EditLayerModalComponent
     }
   }
 
+  /**
+   * Change on selected index.
+   */
   selectedIndexChange(): void {
     this.destroyTab$.next(true);
     const currentContainerRef = this.data.currentMapContainerRef.getValue();

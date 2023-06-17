@@ -1,5 +1,6 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import {
+  AfterViewInit,
   Component,
   Input,
   OnInit,
@@ -26,7 +27,7 @@ import { MapComponent } from '../../../ui/map/map.component';
 })
 export class MapLayersComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, AfterViewInit
 {
   @Input() mapComponent?: MapComponent;
   @Input() formControl!: UntypedFormControl;

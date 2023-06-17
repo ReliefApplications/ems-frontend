@@ -1,9 +1,9 @@
 import {
+  AfterViewInit,
   Component,
   Input,
   ViewChild,
   ViewContainerRef,
-  ViewRef,
 } from '@angular/core';
 import { LayerFormT } from '../../map-forms';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
@@ -15,7 +15,7 @@ import { MapComponent } from '../../../../ui/map';
   templateUrl: './layer-properties.component.html',
   styleUrls: ['./layer-properties.component.scss'],
 })
-export class LayerPropertiesComponent {
+export class LayerPropertiesComponent implements AfterViewInit {
   @Input() form!: LayerFormT;
   // @Input() currentZoom!: number | undefined;
 
@@ -27,6 +27,7 @@ export class LayerPropertiesComponent {
 
   @ViewChild(MapComponent, { static: false }) mapComponent?: MapComponent;
 
+  /** @returns Get current zoom from map component */
   get currentZoom() {
     if (this.mapComponent) return this.mapComponent.map.getZoom();
     else return '';

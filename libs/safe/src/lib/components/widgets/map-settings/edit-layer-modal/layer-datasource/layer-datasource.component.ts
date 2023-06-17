@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
   EventEmitter,
@@ -48,7 +49,7 @@ const ITEMS_PER_PAGE = 10;
 })
 export class LayerDatasourceComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, AfterViewInit
 {
   @Input() formGroup!: FormGroup;
   @Input() resourceQuery!: BehaviorSubject<GetResourceQueryResponse | null>;
@@ -87,6 +88,7 @@ export class LayerDatasourceComponent
    * @param gridLayoutService Shared layout service
    * @param aggregationService Shared aggregation service
    * @param mapLayersService Shared map layer Service.
+   * @param cdr Change detector
    */
   constructor(
     private apollo: Apollo,

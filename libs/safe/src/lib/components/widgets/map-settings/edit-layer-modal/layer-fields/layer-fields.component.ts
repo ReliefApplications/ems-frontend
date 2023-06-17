@@ -1,4 +1,10 @@
-import { Component, Input, ViewChild, ViewContainerRef } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Input,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
 import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
 
@@ -19,7 +25,7 @@ export interface Fields {
   templateUrl: './layer-fields.component.html',
   styleUrls: ['./layer-fields.component.scss'],
 })
-export class LayerFieldsComponent {
+export class LayerFieldsComponent implements AfterViewInit {
   @Input() fields$!: Observable<Fields[]>;
 
   // Display of map
