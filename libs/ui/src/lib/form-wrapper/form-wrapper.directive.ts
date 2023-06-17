@@ -114,7 +114,7 @@ export class FormWrapperDirective
     'bg-gray-50',
   ] as const;
 
-  private beyondLabelGeneral = ['relative', 'py-1.5', 'px-2'] as const;
+  private beyondLabelGeneral = ['relative', 'flex', 'py-1.5', 'px-2'] as const;
   private beyondLabelNoChipList = ['flex', 'items-center', 'w-full'] as const;
   private beyondLabelNoOutline = [
     'focus-within:ring-2',
@@ -329,7 +329,7 @@ export class FormWrapperDirective
           this.formControlElement.nativeElement,
           this.currentInputElement
         );
-        this.renderer.removeClass(this.beyondLabelContainer, 'flex');
+        // this.renderer.removeClass(this.beyondLabelContainer, 'flex');
       } else {
         for (const cl of this.beyondLabelNoChipList) {
           this.renderer.addClass(this.beyondLabelContainer, cl);
