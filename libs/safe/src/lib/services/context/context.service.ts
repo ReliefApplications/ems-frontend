@@ -32,10 +32,16 @@ export class ContextService {
     return this.filterPosition.asObservable();
   }
 
+  /** @returns key for storing position of filter */
   get positionKey(): string {
     return this.currentApplicationId + ':filterPosition';
   }
 
+  /**
+   * Application context service
+   *
+   * @param applicationService Shared application service
+   */
   constructor(private applicationService: SafeApplicationService) {
     this.applicationService.application$.subscribe(
       (application: Application | null) => {
@@ -43,14 +49,11 @@ export class ContextService {
           if (this.currentApplicationId !== application.id) {
             this.currentApplicationId = application.id;
             this.filter.next(null);
-            console.log(application.contextualFilter);
             this.filterStructure.next(application.contextualFilter);
             localForage.getItem(this.positionKey).then((position) => {
-              console.log(position);
               if (position) {
                 this.filterPosition.next(position);
               } else {
-                console.log('ici');
                 this.filterPosition.next(application.contextualFilterPosition);
               }
             });
@@ -64,9 +67,7 @@ export class ContextService {
       }
     );
     this.filterPosition$.subscribe((position: any) => {
-      console.log('la');
       if (position && this.currentApplicationId) {
-        console.log('ici');
         localForage.setItem(this.positionKey, position);
       }
     });

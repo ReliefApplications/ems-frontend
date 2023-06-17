@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   HostListener,
@@ -6,7 +7,6 @@ import {
   NgZone,
   OnChanges,
   OnDestroy,
-  OnInit,
   Optional,
   SimpleChanges,
   ViewChild,
@@ -46,7 +46,7 @@ interface QuickFilter {
 })
 export class DashboardFilterComponent
   extends SafeUnsubscribeComponent
-  implements OnDestroy, OnChanges
+  implements OnDestroy, OnChanges, AfterViewInit
 {
   // Filter
   position!: FilterPosition;
@@ -123,7 +123,6 @@ export class DashboardFilterComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.surveyStructure = value || '';
-        console.log(typeof this.surveyStructure);
         this.initSurvey();
       });
     this.contextService.filterPosition$
@@ -187,7 +186,6 @@ export class DashboardFilterComponent
           .subscribe((newStructure) => {
             if (newStructure) {
               this.surveyStructure = newStructure;
-              console.log(typeof this.surveyStructure);
               this.initSurvey();
               this.saveFilter();
             }
@@ -231,7 +229,6 @@ export class DashboardFilterComponent
   private initSurvey(): void {
     Survey.StylesManager.applyTheme();
     const surveyStructure = this.surveyStructure;
-    console.log(surveyStructure);
     this.survey = new Survey.Model(surveyStructure);
 
     if (this.value) {
