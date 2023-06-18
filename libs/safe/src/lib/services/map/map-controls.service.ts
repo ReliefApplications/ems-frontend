@@ -60,16 +60,14 @@ export class SafeMapControlsService {
   public getLayerControl(map: L.Map): void {
     const layerControl = new L.Control({ position: 'topright' });
     layerControl.onAdd = () => {
-      const layersButton = L.DomUtil.create(
-        'ui-button',
-        'layers-bookmarks-menu'
-      );
+      const container = L.DomUtil.create('div');
       const mapLayersComponent = this.domService.appendComponentToBody(
         MapLayersComponent,
-        layersButton
+        container
       );
       mapLayersComponent.instance.mapContainer = map.getContainer();
-      return layersButton;
+      mapLayersComponent.instance.map = map;
+      return container;
     };
     const container = layerControl.getContainer();
     if (container) {

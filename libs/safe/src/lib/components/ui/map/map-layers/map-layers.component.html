@@ -1,34 +1,34 @@
 <!-- MENU CLOSED -->
 <div
-  class="flex justify-end"
+  class="flex justify-end divide-x divide-gray-100 rounded shadow-sm"
   *ngIf="!layersMenuExpanded && !bookmarksMenuExpanded"
 >
-  <ui-button
-    class="bg-white rounded-l border-2 border-solid border-black border-opacity-20 border-r-0"
-    (click)="openLayersMenu()"
-    >{{ 'common.layers' | translate }}</ui-button
-  >
-  <ui-button
+  <button class="bg-white px-4 py-2 rounded-l-md" (click)="openLayersMenu()">
+    {{ 'common.layers' | translate }}
+  </button>
+  <button
     [disabled]="true"
-    class="bg-white mr-2 rounded-r border-2 border-solid border-black border-opacity-20 border-l-0"
+    class="bg-white px-4 py-2 rounded-r-md"
     (click)="openBookmarksMenu()"
-    >{{ 'common.bookmarks' | translate }}</ui-button
   >
+    {{ 'common.bookmarks' | translate }}
+  </button>
 </div>
 
 <!-- MENU OPENED -->
 <ng-container *ngIf="layersMenuExpanded || bookmarksMenuExpanded">
   <div class="flex">
-    <ui-button
+    <button
       class="rounded-t ml-2 mr-2"
       [ngClass]="{
         'bg-primary-900 text-white': layersMenuExpanded,
         'bg-slate-200': !layersMenuExpanded
       }"
       (click)="openLayersMenu()"
-      >{{ 'common.layers' | translate }}</ui-button
     >
-    <ui-button
+      {{ 'common.layers' | translate }}
+    </button>
+    <button
       [disabled]="true"
       class="rounded-t"
       [ngClass]="{
@@ -36,8 +36,9 @@
         'bg-slate-200': !bookmarksMenuExpanded
       }"
       (click)="openBookmarksMenu()"
-      >{{ 'common.bookmarks' | translate }}</ui-button
     >
+      {{ 'common.bookmarks' | translate }}
+    </button>
     <ui-button
       [isIcon]="true"
       icon="close"

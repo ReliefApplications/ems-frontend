@@ -94,7 +94,7 @@ export class MapComponent
   public zoomControl: any = undefined;
 
   // === MARKERS ===
-  private baseTree!: L.Control.Layers.TreeObject;
+  // private baseTree!: L.Control.Layers.TreeObject;
   private layersTree: L.Control.Layers.TreeObject[] = [];
   private layerControlButtons: any;
   private layerControl: any;
@@ -458,11 +458,11 @@ export class MapComponent
         this.map
       );
     }
-    this.baseTree = {
-      label: 'Base Maps',
-      children: basemaps,
-      collapsed: true,
-    };
+    // this.baseTree = {
+    //   label: 'Base Maps',
+    //   children: basemaps,
+    //   collapsed: true,
+    // };
     this.layersTree = layers;
     // Add control to the map layers
     if (this.layerControl) {
@@ -475,11 +475,12 @@ export class MapComponent
           'hidden'
         );
       }
-      this.layerControl.setBaseTree(this.baseTree);
+      // this.layerControl.setBaseTree(this.baseTree);
       this.layerControl.setOverlayTree(this.layersTree);
     } else {
       this.layerControl = L.control.layers.tree(
-        this.baseTree,
+        // this.baseTree,
+        undefined,
         this.layersTree as any,
         { collapsed: false }
       );
@@ -592,11 +593,12 @@ export class MapComponent
           'hidden'
         );
       }
-      this.layerControl.setBaseTree(this.baseTree);
+      // this.layerControl.setBaseTree(this.baseTree);
       this.layerControl.setOverlayTree(this.layersTree);
     } else {
       this.layerControl = L.control.layers.tree(
-        this.baseTree,
+        // this.baseTree,
+        undefined,
         this.layersTree as any,
         { collapsed: false }
       );
@@ -633,11 +635,12 @@ export class MapComponent
         if (this.extractSettings().controls.layer) {
           this.map.removeControl(this.layerControl);
         }
-        this.layerControl.setBaseTree(this.baseTree);
+        // this.layerControl.setBaseTree(this.baseTree);
         this.layerControl.setOverlayTree(layers as any);
       } else {
         this.layerControl = L.control.layers.tree(
-          this.baseTree,
+          // this.baseTree,
+          undefined,
           layers as any,
           { collapsed: false }
         );

@@ -86,3 +86,7 @@
   transform: translateY(-40%);
   padding-top: 10px;
 }
+
+::ng-deep .leaflet-control-layers-base {
+  padding: 0 !important;
+}
