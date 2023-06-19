@@ -14,7 +14,11 @@
   <div class="clear-both flex flex-col">
     <div uiFormFieldDirective id="date-header">
       <label>{{ 'common.input.dateRange' | translate }}</label>
-      <div [formGroup]="filtersDate" [uiDateWrapper]="calendar"  class="flex-col">
+      <div
+        [formGroup]="filtersDate"
+        [uiDateWrapper]="calendar"
+        class="flex-col"
+      >
         <input
           [uiDatePicker]
           formControlName="startDate"

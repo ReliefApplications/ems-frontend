@@ -3,7 +3,9 @@
   <h2>{{ 'common.layers' | translate }}</h2>
   <ui-tabs>
     <ui-tab>
-      <ng-container ngProjectAs="label">{{'components.widget.settings.map.layers.point.title' | translate}}</ng-container>
+      <ng-container ngProjectAs="label">{{
+        'components.widget.settings.map.layers.point.title' | translate
+      }}</ng-container>
       <safe-map-markers
         [form]="form"
         [selectedFields]="selectedFields"
@@ -11,7 +13,9 @@
       ></safe-map-markers>
     </ui-tab>
     <ui-tab>
-      <ng-container ngProjectAs="label">{{'components.widget.settings.map.layers.clorophlet.title' | translate}}</ng-container>
+      <ng-container ngProjectAs="label">{{
+        'components.widget.settings.map.layers.clorophlet.title' | translate
+      }}</ng-container>
       <safe-map-clorophlets
         [query]="form.get('query')"
         [clorophlets]="clorophlets"
@@ -20,10 +24,10 @@
       ></safe-map-clorophlets>
     </ui-tab>
     <ui-tab>
-      <ng-container ngProjectAs="label">{{'components.widget.settings.map.layers.online.title' | translate}}</ng-container>
-      <safe-map-online-layers
-        [layers]="onlineLayers"
-      ></safe-map-online-layers>
+      <ng-container ngProjectAs="label">{{
+        'components.widget.settings.map.layers.online.title' | translate
+      }}</ng-container>
+      <safe-map-online-layers [layers]="onlineLayers"></safe-map-online-layers>
     </ui-tab>
   </ui-tabs>
 </div>

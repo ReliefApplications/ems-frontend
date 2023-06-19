@@ -29,6 +29,7 @@ import {
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { DOCUMENT } from '@angular/common';
+import { isNil } from 'lodash';
 
 /**
  * UI Select Menu component
@@ -45,6 +46,8 @@ export class SelectMenuComponent
   @Input() multiselect = false;
   // Tells if the select menu should be disabled
   @Input() disabled = false;
+  // Tells if some styles to the current ul element should be applied
+  @Input() isGraphQlSelect = false;
   // Default selected value
   @Input() value?: string | string[];
   // Any custom template provided for display
@@ -69,7 +72,6 @@ export class SelectMenuComponent
   public listBoxFocused = false;
   // Text to be displayed in the trigger when some selections are made
   public displayTrigger = '';
-  public isGraphQlSelect = false;
 
   private destroy$ = new Subject<void>();
   private clickOutsideListener!: any;
@@ -148,7 +150,7 @@ export class SelectMenuComponent
       this.control.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe({
         next: (value) => {
           // If the value is cleared from outside, reset displayed values
-          if (!value || !value.length) {
+          if (isNil(value) || value.length === 0) {
             this.selectedValues = [];
             this.optionList.forEach((option) => (option.selected = false));
             this.setDisplayTriggerText();
