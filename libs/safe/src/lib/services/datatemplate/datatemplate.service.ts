@@ -1,20 +1,23 @@
 import { Injectable } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SafeDownloadService } from '../download/download.service';
-import { parseHtml, getCardStyle } from '../../components/widgets/summary-card/parser/utils'; 
-import get from 'lodash/get';
 import {
-  GET_LAYOUT,
-  GetLayoutQueryResponse,
-} from './graphql/queries'
+  parseHtml,
+  getCardStyle,
+} from '../../components/widgets/summary-card/parser/utils';
+import get from 'lodash/get';
+import { GET_LAYOUT, GetLayoutQueryResponse } from './graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { firstValueFrom } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
-export class DatatemplateService {
 
+/**
+ * Service to render html and style
+ */
+export class DatatemplateService {
   /**
    * Content component of Single Item of Summary Card.
    *
@@ -25,16 +28,31 @@ export class DatatemplateService {
   constructor(
     private sanitizer: DomSanitizer,
     private downloadService: SafeDownloadService,
-    private apollo: Apollo,
+    private apollo: Apollo
   ) {}
 
-  public renderHtml(html: string, fieldsValue?: any, fields?: any[], styles?: any[]) {
+  /**
+   * render the html
+   */
+  public renderHtml(
+    html: string,
+    fieldsValue?: any,
+    fields?: any[],
+    styles?: any[]
+  ) {
     return this.sanitizer.bypassSecurityTrustHtml(
       parseHtml(html, fieldsValue, fields, styles)
     );
   }
 
-  public renderStyle(wholeCardStyles: boolean, styles: any[], fieldsValue: any) {
+  /**
+   * render the style
+   */
+  public renderStyle(
+    wholeCardStyles: boolean,
+    styles: any[],
+    fieldsValue: any
+  ) {
     return getCardStyle(wholeCardStyles, styles, fieldsValue);
   }
 
@@ -69,7 +87,7 @@ export class DatatemplateService {
 
     if (get(apolloRes, 'data')) {
       return apolloRes.data.resource.layouts?.edges[0].node;
-    }else{
+    } else {
       return null;
     }
   }

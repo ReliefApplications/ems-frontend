@@ -13,7 +13,7 @@ import {
   SelectOptionModule,
   TabsModule,
   TooltipModule,
-  CheckboxModule
+  CheckboxModule,
 } from '@oort-front/ui';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 import { RecordSelectionTabComponent } from './record-selection-tab/record-selection-tab.component';

@@ -33,21 +33,37 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
    *
    * @param dataTemplateService Used to generate style and html
    */
-  constructor(
-    private dataTemplateService: DatatemplateService,
-  ) {}
+  constructor(private dataTemplateService: DatatemplateService) {}
 
   ngOnInit(): void {
-    this.cardStyle = this.dataTemplateService.renderStyle(this.wholeCardStyles, this.styles, this.fieldsValue);
-    this.formattedHtml = this.dataTemplateService.renderHtml(this.html, this.fieldsValue, this.fields, this.styles);
+    this.cardStyle = this.dataTemplateService.renderStyle(
+      this.wholeCardStyles,
+      this.styles,
+      this.fieldsValue
+    );
+    this.formattedHtml = this.dataTemplateService.renderHtml(
+      this.html,
+      this.fieldsValue,
+      this.fields,
+      this.styles
+    );
   }
 
   /**
    * Detects when the html or record inputs change.
    */
   ngOnChanges(): void {
-    this.cardStyle = this.dataTemplateService.renderStyle(this.wholeCardStyles, this.styles, this.fieldsValue);
-    this.formattedHtml = this.dataTemplateService.renderHtml(this.html, this.fieldsValue, this.fields, this.styles);
+    this.cardStyle = this.dataTemplateService.renderStyle(
+      this.wholeCardStyles,
+      this.styles,
+      this.fieldsValue
+    );
+    this.formattedHtml = this.dataTemplateService.renderHtml(
+      this.html,
+      this.fieldsValue,
+      this.fields,
+      this.styles
+    );
   }
 
   /**

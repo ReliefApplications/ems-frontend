@@ -36,19 +36,18 @@ export class SafeEditorComponent implements OnInit {
    *
    * @param apollo Apollo instance
    * @param queryBuilder Query builder service
+   * @param dataTemplateService DataTemplate service
    */
   constructor(
     private apollo: Apollo,
     private queryBuilder: QueryBuilderService,
-    private dataTemplateService: DatatemplateService,
+    private dataTemplateService: DatatemplateService
   ) {}
 
   /** Sanitizes the text. */
   ngOnInit(): void {
     if (!this.settings.record) {
-      this.safeHtml = this.dataTemplateService.renderHtml(
-        this.settings.text
-      );
+      this.safeHtml = this.dataTemplateService.renderHtml(this.settings.text);
     } else {
       this.setContentFromLayout();
     }
@@ -58,15 +57,22 @@ export class SafeEditorComponent implements OnInit {
    * Sets content of the text widget, querying associated record.
    */
   private async setContentFromLayout(): Promise<void> {
-    const result = await this.dataTemplateService.getStyles(this.settings.layout, this.settings.resource);
-    if(result){
-      this.layout = result; 
+    const result = await this.dataTemplateService.getStyles(
+      this.settings.layout,
+      this.settings.resource
+    );
+    if (result) {
+      this.layout = result;
       this.styles = result?.query.style;
     }
     await this.getData();
 
-    this.safeHtml = this.dataTemplateService.renderHtml(this.settings.text, this.fieldsValue, this.fields, this.styles);
-
+    this.safeHtml = this.dataTemplateService.renderHtml(
+      this.settings.text,
+      this.fieldsValue,
+      this.fields,
+      this.styles
+    );
   }
 
   /**
