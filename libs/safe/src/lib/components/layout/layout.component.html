@@ -116,6 +116,10 @@
     <button uiMenuItem (click)="onOpenPreferences()" *ngIf="showPreferences">
       {{ 'components.preferences.title' | translate }}
     </button>
+    <ng-container *ngIf="environment.module === 'frontoffice'">
+      <ui-divider class="py-1"></ui-divider>
+      <button uiMenuItem>Go to application</button>
+    </ng-container>
     <ng-container *ngIf="user && user.isAdmin">
       <ui-divider class="py-1"></ui-divider>
       <a uiMenuItem [href]="otherOfficeUri">
