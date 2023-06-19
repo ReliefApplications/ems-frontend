@@ -29,6 +29,7 @@ import { FormWrapperModule, SliderModule, SpinnerModule } from '@oort-front/ui';
 export class SimpleRendererComponent implements AfterViewInit {
   @Input() formGroup!: FormGroup;
   @Input() showSize = true;
+  @Input() showStyle = true;
   public loading = true;
   private primaryColor!: string;
 
