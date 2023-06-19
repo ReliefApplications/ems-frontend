@@ -139,7 +139,11 @@
     <form [formGroup]="fieldForm" class="p-4 rounded-lg border border-gray-300">
       <div class="flex gap-2">
         <!-- Go back to list of fields -->
-        <ui-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()"></ui-button>
+        <ui-button
+          [isIcon]="true"
+          icon="arrow_back"
+          (click)="onCloseField()"
+        ></ui-button>
         <!-- Field name (static) -->
         <div uiFormFieldDirective>
           <label>{{ 'models.form.field.name' | translate }}</label>
@@ -163,7 +167,10 @@
           'components.queryBuilder.fields.format.title' | translate
         }}</label>
         <!-- @todo: check -->
-        <safe-editor-control formControlName="format" [editorConfig]="editor"></safe-editor-control>
+        <safe-editor-control
+          formControlName="format"
+          [editorConfig]="editor"
+        ></safe-editor-control>
         <ui-icon
           icon="info"
           class="cursor-pointer"
