@@ -56,7 +56,7 @@
           position === filterPosition.RIGHT,
         'w-full flex-col':
           position === filterPosition.TOP || position === filterPosition.BOTTOM,
-        'h-full max-w-xs':
+        'h-full':
           position === filterPosition.LEFT || position === filterPosition.RIGHT,
         'animate-fadeOut pointer-events-none': !isDrawerOpen,
         'animate-fadeIn pointer-events-auto': isDrawerOpen
@@ -162,7 +162,7 @@
           'order-2':
             position === filterPosition.BOTTOM ||
             position === filterPosition.RIGHT,
-          'flex-col':
+          'flex-col max-w-xs':
             position === filterPosition.LEFT ||
             position === filterPosition.RIGHT
         }"
@@ -173,11 +173,13 @@
           *ngIf="empty"
           [title]="'components.application.dashboard.filter.empty' | translate"
         ></safe-empty>
-        <div
-          #dashboardSurveyCreatorContainer
-          class="overflow-scroll"
-          [ngClass]="{ hidden: empty }"
-        ></div>
+        <div>
+          <div
+            #dashboardSurveyCreatorContainer
+            class="overflow-scroll"
+            [ngClass]="{ hidden: empty }"
+          ></div>
+        </div>
         <!-- <form
         [ngClass]="{
           'flex-col':
