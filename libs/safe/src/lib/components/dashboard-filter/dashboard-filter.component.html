@@ -173,13 +173,11 @@
           *ngIf="empty"
           [title]="'components.application.dashboard.filter.empty' | translate"
         ></safe-empty>
-        <div>
-          <div
-            #dashboardSurveyCreatorContainer
-            class="overflow-scroll"
-            [ngClass]="{ hidden: empty }"
-          ></div>
-        </div>
+        <div
+          #dashboardSurveyCreatorContainer
+          class="overflow-scroll"
+          [ngClass]="{ hidden: empty }"
+        ></div>
         <!-- <form
         [ngClass]="{
           'flex-col':
