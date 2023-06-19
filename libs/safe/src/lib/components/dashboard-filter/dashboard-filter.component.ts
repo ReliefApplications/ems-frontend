@@ -57,7 +57,7 @@ export class DashboardFilterComponent
     FilterPosition.BOTTOM,
     FilterPosition.RIGHT,
   ] as const;
-  public isDrawerOpen = true;
+  public isDrawerOpen = false;
   public filterPosition = FilterPosition;
   public containerWidth!: string;
   public containerHeight!: string;
