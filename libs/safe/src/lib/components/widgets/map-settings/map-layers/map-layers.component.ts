@@ -16,6 +16,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { UntypedFormControl } from '@angular/forms';
 import { MapComponent } from '../../../ui/map/map.component';
+import { CdkTable } from '@angular/cdk/table';
 
 /**
  * Layers configuration component of Map Widget.
@@ -36,6 +37,7 @@ export class MapLayersComponent
   @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;
   @ViewChild('mapContainer', { read: ViewContainerRef })
   mapContainerRef!: ViewContainerRef;
+  @ViewChild(CdkTable, { static: false }) cdkTable!: CdkTable<LayerModel>;
   @Input() destroyTab$!: Subject<boolean>;
   public editingLayer: BehaviorSubject<boolean> = new BehaviorSubject(false);
 
@@ -43,7 +45,6 @@ export class MapLayersComponent
   public mapLayers: Array<LayerModel> = new Array<LayerModel>();
   public displayedColumns = ['name', 'actions'];
   public loading = true;
-
   /**
    * Layers configuration component of Map Widget.
    *
@@ -113,8 +114,9 @@ export class MapLayersComponent
    */
   public onDeleteLayer(index: number) {
     // this.deleteLayer.emit(this.mapLayers[index].id);
-    const value = this.formControl.value;
-    this.formControl.setValue(value.splice(index, 1), { emitEvent: false });
+    this.mapLayers.splice(index, 1);
+    this.formControl.setValue(this.mapLayers.map((x) => x.id));
+    this.cdkTable.renderRows();
   }
 
   /**
@@ -145,15 +147,15 @@ export class MapLayersComponent
           next: (res) => {
             if (res) {
               const value = this.formControl.value;
-              this.formControl.setValue([...value, res.id], {
-                emitEvent: false,
-              });
+              this.formControl.setValue([...value, res.id]);
               this.mapLayers.push(res);
             }
           },
           error: (err) => console.error(err),
           complete: () => (this.loading = false),
         });
+      } else {
+        this.restoreMapSettingsView();
       }
     });
   }
@@ -212,12 +214,11 @@ export class MapLayersComponent
                     if (index > -1) {
                       // editing already selected layer
                       this.mapLayers = this.mapLayers.splice(index, 1, res);
+                      this.restoreMapSettingsView();
                     } else {
                       // Selecting a new layer
                       const value = this.formControl.value;
-                      this.formControl.setValue([...value, res.id], {
-                        emitEvent: false,
-                      });
+                      this.formControl.setValue([...value, res.id]);
                       this.mapLayers.push(res);
                     }
                   }
@@ -225,6 +226,8 @@ export class MapLayersComponent
                 error: (err) => console.log(err),
                 complete: () => (this.loading = false),
               });
+            } else {
+              this.restoreMapSettingsView();
             }
           });
       });
@@ -243,5 +246,19 @@ export class MapLayersComponent
       this.mapLayers.map((x) => x.id),
       { emitEvent: false }
     );
+  }
+
+  /**
+   * Restore previous map view
+   */
+  private restoreMapSettingsView() {
+    if (this.mapComponent) {
+      const encapsulatedSettings = this.mapComponent.mapSettingsWithoutLayers;
+      // Reset the current map view in order to only see the layer on edition
+      this.mapComponent.mapSettings = {
+        ...encapsulatedSettings.settings,
+        layers: this.mapLayers.map((layer) => layer.id),
+      };
+    }
   }
 }

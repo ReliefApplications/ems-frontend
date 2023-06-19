@@ -172,6 +172,13 @@ export class EditLayerModalComponent
         this.setIsDatasourceValid(value);
       });
     if (this.data.mapComponent) {
+      const encapsulatedSettings =
+        this.data.mapComponent.mapSettingsWithoutLayers;
+      // Reset the current map view in order to only see the layer on edition
+      this.data.mapComponent.mapSettings = {
+        ...encapsulatedSettings.settings,
+        layers: [],
+      };
       this.currentZoom = this.data.mapComponent.map.getZoom();
       this.setUpLayer();
     }

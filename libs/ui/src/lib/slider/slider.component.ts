@@ -146,8 +146,9 @@ export class SliderComponent
    * @param value The value from the slider
    */
   onChangeFunction(value: EventTarget | null) {
-    if (value) {
-      this.currentValue = +((value as HTMLInputElement)?.value ?? value);
+    const newValue = +((value as HTMLInputElement)?.value ?? value);
+    if (newValue !== this.currentValue) {
+      this.currentValue = isNaN(newValue) ? 0 : newValue;
       const min = this.minValue;
       const max = this.maxValue;
       const newVal = Number(((this.currentValue - min) * 100) / (max - min));

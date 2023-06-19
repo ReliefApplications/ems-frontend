@@ -7,8 +7,6 @@ import {
   Inject,
   Output,
   EventEmitter,
-  OnChanges,
-  SimpleChanges,
   Renderer2,
 } from '@angular/core';
 import get from 'lodash/get';
@@ -55,7 +53,7 @@ import { SafeMapPopupService } from './map-popup/map-popup.service';
 })
 export class MapComponent
   extends SafeUnsubscribeComponent
-  implements AfterViewInit, OnChanges
+  implements AfterViewInit
 {
   /** Add or delete layer setter */
   @Input() set addOrDeleteLayer(layerAction: LayerActionOnMap | null) {
@@ -75,7 +73,19 @@ export class MapComponent
   public map!: L.Map;
   private basemap: any;
   private esriApiKey!: string;
-  @Input() mapSettings: MapConstructorSettings = {
+  /**
+   * Update map settings and redraw it with those
+   */
+  @Input() set mapSettings(settings: MapConstructorSettings) {
+    if (settings) {
+      this.mapSettingsValue = settings;
+      if (this.map) {
+        this.drawMap(false);
+      }
+    }
+  }
+
+  private mapSettingsValue: MapConstructorSettings = {
     initialState: {
       viewpoint: {
         center: {
@@ -87,6 +97,18 @@ export class MapComponent
     },
     controls: DefaultMapControls,
   };
+
+  /**
+   * Get current map settings without the layers
+   *
+   * @returns <MapConstructorSettings,'layers'>
+   */
+  get mapSettingsWithoutLayers() {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { layers, ...rest } = this.mapSettingsValue;
+    return { settings: rest };
+  }
+
   private arcGisWebMap: any;
 
   // === ZOOM ===
@@ -197,22 +219,13 @@ export class MapComponent
     }, 1000);
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    console.log('changes');
-    if (changes.mapSettings && changes.mapSettings.previousValue) {
-      if (this.map) {
-        this.drawMap(false);
-      }
-    }
-  }
-
   /**
    * Extract settings
    *
    * @returns cleaned settings
    */
   private extractSettings(): MapConstructorSettings {
-    const mapSettings = omitBy(this.mapSettings, isNil);
+    const mapSettings = omitBy(this.mapSettingsValue, isNil);
     // Settings initialization
     const initialState = get(mapSettings, 'initialState', {
       viewpoint: {

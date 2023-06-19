@@ -161,6 +161,14 @@ export class SafeMapSettingsComponent
           arcGisWebMap: value,
         } as MapConstructorSettings)
       );
+    this.tileForm
+      .get('layers')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) =>
+        this.updateMapSettings({
+          layers: value,
+        } as MapConstructorSettings)
+      );
   }
 
   /**
@@ -205,7 +213,6 @@ export class SafeMapSettingsComponent
       this.mapSettings = settings;
     }
     if (this.mapComponent) {
-      // Supposed to trigger changes on the map, but nothing happens
       this.mapComponent.mapSettings = this.mapSettings;
     }
   }
