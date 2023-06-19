@@ -244,11 +244,11 @@ export class SafeMapSettingsComponent
     }
   }
 
-  /**
-   * Open layer edition
-   *
-   * @param layer layer to open
-   */
+  // /**
+  //  * Open layer edition
+  //  *
+  //  * @param layer layer to open
+  //  */
   // onEditLayer(layer?: LayerModel): void {
   //   // this.openedLayers.unshift(layer);
   //   // We initialize the map settings to default value once we display the map layer editor
