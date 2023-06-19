@@ -1,6 +1,7 @@
 import {
   Component,
   EventEmitter,
+  Input,
   Output,
   TemplateRef,
   ViewChild,
@@ -17,4 +18,11 @@ import {
 export class MenuComponent {
   @ViewChild(TemplateRef) templateRef!: TemplateRef<any>;
   @Output() closed = new EventEmitter<void>();
+  @Input() shouldClose? = true;
+
+  closeMenu() {
+    if (this.shouldClose) {
+      this.closed.emit();
+    }
+  }
 }

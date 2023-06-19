@@ -650,6 +650,7 @@
 			}
 		},
 		"header": {
+			"goToApp": "******",
 			"goToPlatform": "******",
 			"logout": "******",
 			"sidenav": {

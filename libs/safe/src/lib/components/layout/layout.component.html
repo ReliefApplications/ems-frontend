@@ -46,15 +46,6 @@
     </div>
   </ng-container>
   <ng-container *ngIf="applications && applications.length > 0">
-    <ui-button
-      [size]="'large'"
-      icon="arrow_drop_down"
-      (click)="showAppMenu = !showAppMenu"
-      cdkOverlayOrigin
-      #appMenuTrigger="cdkOverlayOrigin"
-    >
-      {{ theme.prefix }}
-    </ui-button>
     <span>{{ title }}</span>
     <ui-button
       [isIcon]="true"
@@ -62,17 +53,6 @@
       variant="light"
       [uiMenuTriggerFor]="settingsMenu"
     ></ui-button>
-    <ng-template
-      cdkConnectedOverlay
-      [cdkConnectedOverlayOrigin]="appMenuTrigger"
-      [cdkConnectedOverlayOpen]="showAppMenu"
-    >
-      <safe-search-menu
-        [applications]="this.applications"
-        (close)="showAppMenu = false"
-        (open)="onOpenApplication($event)"
-      ></safe-search-menu>
-    </ng-template>
   </ng-container>
   <!-- Account icon and info -->
   <div
@@ -108,17 +88,44 @@
       ></kendo-badge>
     </kendo-badge-container>
   </span>
-  <ui-menu #accountMenu>
-    <a uiMenuItem [routerLink]="[profileRoute]">
+  <ui-menu #accountMenu [shouldClose]="environment.module === 'backoffice'">
+    <a
+      uiMenuItem
+      [routerLink]="[profileRoute]"
+      (mouseenter)="showAppMenu = false"
+    >
       {{ 'pages.profile.title' | translate }}
     </a>
     <ui-divider class="py-1"></ui-divider>
-    <button uiMenuItem (click)="onOpenPreferences()" *ngIf="showPreferences">
+    <button
+      uiMenuItem
+      (click)="onOpenPreferences()"
+      *ngIf="showPreferences"
+      (mouseenter)="showAppMenu = false"
+    >
       {{ 'components.preferences.title' | translate }}
     </button>
     <ng-container *ngIf="environment.module === 'frontoffice'">
       <ui-divider class="py-1"></ui-divider>
-      <button uiMenuItem>Go to application</button>
+      <div
+        uiMenuItem
+        (click)="showAppMenu = !showAppMenu"
+        cdkOverlayOrigin
+        #appMenuTrigger="cdkOverlayOrigin"
+      >
+        {{ 'components.header.goToApp' | translate }}
+      </div>
+      <ng-template
+        cdkConnectedOverlay
+        [cdkConnectedOverlayOrigin]="appMenuTrigger"
+        [cdkConnectedOverlayOpen]="showAppMenu"
+      >
+        <safe-search-menu
+          [applications]="this.applications"
+          (close)="showAppMenu = false"
+          (open)="onOpenApplication($event)"
+        ></safe-search-menu>
+      </ng-template>
     </ng-container>
     <ng-container *ngIf="user && user.isAdmin">
       <ui-divider class="py-1"></ui-divider>
