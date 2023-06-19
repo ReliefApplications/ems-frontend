@@ -63,5 +63,21 @@
       style="height: 600px"
     >
     </safe-core-grid>
+    <div class="mt-3 mb-1">
+      <h2>
+        {{
+          'components.widget.settings.summaryCard.card.dataSource.layoutStyles.title'
+            | translate
+        }}
+      </h2>
+      <ui-checkbox formControlName="useStyles">
+        <ng-container ngProjectAs="label">
+          {{
+            'components.widget.settings.summaryCard.card.dataSource.layoutStyles.use'
+              | translate
+          }}
+        </ng-container>
+      </ui-checkbox>
+    </div>
   </div>
 </div>

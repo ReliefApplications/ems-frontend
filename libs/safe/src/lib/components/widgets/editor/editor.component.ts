@@ -1,16 +1,14 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
-import { parseHtml } from '../summary-card/parser/utils';
 import { firstValueFrom } from 'rxjs';
 import {
-  GET_LAYOUT,
   GET_RESOURCE_METADATA,
-  GetLayoutQueryResponse,
   GetResourceMetadataQueryResponse,
 } from '../summary-card/graphql/queries';
 import { get } from 'lodash';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import { DatatemplateService } from '../../../services/datatemplate/datatemplate.service';
 
 /**
  * Text widget component using KendoUI
@@ -36,20 +34,19 @@ export class SafeEditorComponent implements OnInit {
   /**
    * Constructor for safe-editor component
    *
-   * @param sanitizer Dom sanitizer instance
    * @param apollo Apollo instance
    * @param queryBuilder Query builder service
    */
   constructor(
-    private sanitizer: DomSanitizer,
     private apollo: Apollo,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private dataTemplateService: DatatemplateService,
   ) {}
 
   /** Sanitizes the text. */
   ngOnInit(): void {
     if (!this.settings.record) {
-      this.safeHtml = this.sanitizer.bypassSecurityTrustHtml(
+      this.safeHtml = this.dataTemplateService.renderHtml(
         this.settings.text
       );
     } else {
@@ -61,30 +58,15 @@ export class SafeEditorComponent implements OnInit {
    * Sets content of the text widget, querying associated record.
    */
   private async setContentFromLayout(): Promise<void> {
-    await this.getStyles();
+    const result = await this.dataTemplateService.getStyles(this.settings.layout, this.settings.resource);
+    if(result){
+      this.layout = result; 
+      this.styles = result?.query.style;
+    }
     await this.getData();
 
-    this.safeHtml = this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(this.settings.text, this.fieldsValue, this.fields, this.styles)
-    );
-  }
+    this.safeHtml = this.dataTemplateService.renderHtml(this.settings.text, this.fieldsValue, this.fields, this.styles);
 
-  /** Sets layout style. */
-  private async getStyles(): Promise<void> {
-    const apolloRes = await firstValueFrom(
-      this.apollo.query<GetLayoutQueryResponse>({
-        query: GET_LAYOUT,
-        variables: {
-          id: this.settings.layout,
-          resource: this.settings.resource,
-        },
-      })
-    );
-
-    if (get(apolloRes, 'data')) {
-      this.layout = apolloRes.data.resource.layouts?.edges[0].node;
-      this.styles = this.layout?.query.style;
-    }
   }
 
   /**

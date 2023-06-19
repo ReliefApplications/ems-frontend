@@ -5,10 +5,8 @@ import {
   OnInit,
   ViewEncapsulation,
 } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { SafeDownloadService } from '../../../../services/download/download.service';
-import { getCardStyle, parseHtml } from '../parser/utils';
-import get from 'lodash/get';
+import { SafeHtml } from '@angular/platform-browser';
+import { DatatemplateService } from '../../../../services/datatemplate/datatemplate.service';
 
 /**
  * Content component of Single Item of Summary Card.
@@ -33,37 +31,23 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
   /**
    * Content component of Single Item of Summary Card.
    *
-   * @param sanitizer Sanitizes the cards content so angular can show it up.
-   * @param downloadService Used to download file type fields
+   * @param dataTemplateService Used to generate style and html
    */
   constructor(
-    private sanitizer: DomSanitizer,
-    private downloadService: SafeDownloadService
+    private dataTemplateService: DatatemplateService,
   ) {}
 
   ngOnInit(): void {
-    this.cardStyle = getCardStyle(
-      this.wholeCardStyles,
-      this.styles,
-      this.fieldsValue
-    );
-    this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(this.html, this.fieldsValue, this.fields, this.styles)
-    );
+    this.cardStyle = this.dataTemplateService.renderStyle(this.wholeCardStyles, this.styles, this.fieldsValue);
+    this.formattedHtml = this.dataTemplateService.renderHtml(this.html, this.fieldsValue, this.fields, this.styles);
   }
 
   /**
    * Detects when the html or record inputs change.
    */
   ngOnChanges(): void {
-    this.cardStyle = getCardStyle(
-      this.wholeCardStyles,
-      this.styles,
-      this.fieldsValue
-    );
-    this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(this.html, this.fieldsValue, this.fields, this.styles)
-    );
+    this.cardStyle = this.dataTemplateService.renderStyle(this.wholeCardStyles, this.styles, this.fieldsValue);
+    this.formattedHtml = this.dataTemplateService.renderHtml(this.html, this.fieldsValue, this.fields, this.styles);
   }
 
   /**
@@ -72,15 +56,6 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
    * @param event Click event
    */
   public onClick(event: any) {
-    const type = event.target.getAttribute('type');
-    if (type === 'file') {
-      const fieldName = event.target.getAttribute('field');
-      const index = event.target.getAttribute('index');
-      const file = get(this.fieldsValue, `${fieldName}[${index}]`, null);
-      if (file) {
-        const path = `download/file/${file.content}`;
-        this.downloadService.getFile(path, file.type, file.name);
-      }
-    }
+    this.dataTemplateService.onClick(event, this.fieldsValue);
   }
 }

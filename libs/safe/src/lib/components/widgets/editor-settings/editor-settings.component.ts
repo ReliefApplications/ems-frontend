@@ -33,6 +33,7 @@ const createEditorForm = (tile: any) => {
     resource: new FormControl<string>(tile.settings.resource),
     layout: new FormControl<string>(tile.settings.layout),
     record: new FormControl<string>(tile.settings.record),
+    useStyles: new FormControl<boolean>(tile.settings.useStyles),
   });
 
   return extendWidgetForm(form, tile?.settings?.widgetDisplay);
