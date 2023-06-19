@@ -18,7 +18,17 @@
             <label>{{
               'components.widget.settings.map.properties.basemap' | translate
             }}</label>
-            <ui-select-menu formControlName="basemap" placeholder="OSM">
+            <ui-select-menu
+              formControlName="basemap"
+              placeholder="OSM"
+              [disabled]="
+                mapSettings &&
+                mapSettings.arcGisWebMap &&
+                mapSettings.arcGisWebMap.length > 0
+                  ? true
+                  : false
+              "
+            >
               <ui-select-option *ngFor="let map of baseMaps" [value]="map">
                 {{ map }}
               </ui-select-option>
