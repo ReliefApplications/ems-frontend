@@ -45,6 +45,8 @@ export class SelectMenuComponent
   @Input() multiselect = false;
   // Tells if the select menu should be disabled
   @Input() disabled = false;
+  // Tells if some styles to the current ul element should be applied
+  @Input() isGraphQlSelect = false;
   // Default selected value
   @Input() value?: string | string[];
   // Any custom template provided for display
@@ -69,7 +71,6 @@ export class SelectMenuComponent
   public listBoxFocused = false;
   // Text to be displayed in the trigger when some selections are made
   public displayTrigger = '';
-  public isGraphQlSelect = false;
 
   private destroy$ = new Subject<void>();
   private clickOutsideListener!: any;
