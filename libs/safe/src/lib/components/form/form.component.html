@@ -17,9 +17,7 @@
   [selectedIndex]="selectedTabIndex"
   (selectedIndexChange)="onShowPage($event)"
 >
-  <ui-tab
-    *ngFor="let page of pages$ | async"
-  >
+  <ui-tab *ngFor="let page of pages$ | async">
     <ng-container ngProjectAs="label">
       {{ page.title ? page.title : page.name }}
       <ui-icon

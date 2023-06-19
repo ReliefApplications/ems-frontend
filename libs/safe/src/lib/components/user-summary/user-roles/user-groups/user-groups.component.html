@@ -5,10 +5,7 @@
       {{ 'components.user.summary.roles.selectedGroups' | translate }}</label
     >
     <ui-select-menu [formControl]="selectedGroups" [multiselect]="true">
-      <ui-select-option
-        *ngFor="let group of groups"
-        [value]="group.id"
-      >
+      <ui-select-option *ngFor="let group of groups" [value]="group.id">
         {{ group.title }}
       </ui-select-option>
     </ui-select-menu>
