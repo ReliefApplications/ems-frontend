@@ -168,4 +168,18 @@ export class DashboardComponent
     }
     return true;
   }
+
+  /**
+   * Opens link of button action.
+   *
+   * @param button Button action to be executed
+   */
+  public onButtonActionClick(
+    button: NonNullable<Dashboard['buttons']>[number]
+  ) {
+    if (button.href) {
+      if (button.openInNewTab) window.open(button.href, '_blank');
+      else window.location.href = button.href;
+    }
+  }
 }

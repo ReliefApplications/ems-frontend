@@ -48,6 +48,8 @@ import { isEqual } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
+import { ButtonActionT } from './components/edit-button-action/edit-button-action.component';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -96,6 +98,9 @@ export class DashboardComponent
   public contextId = new FormControl<string | number | null>(null);
   public refDataValueField = '';
   public contextRecord: Record | null = null;
+
+  // === BUTTON ACTIONS ===
+  public buttonActions: (ButtonActionT & { isHovered: boolean })[] = [];
 
   /**
    * Dashboard page
@@ -172,6 +177,11 @@ export class DashboardComponent
                 : this.dashboard.step
                 ? this.dashboard.step.workflow?.page?.application?.id
                 : '';
+              this.buttonActions =
+                this.dashboard.buttons?.map((b) => ({
+                  ...b,
+                  isHovered: false,
+                })) || [];
               this.loading = loading;
               this.showFilter = this.dashboard.showFilter;
             } else {
@@ -603,6 +613,28 @@ export class DashboardComponent
     authSubscription.unsubscribe();
   }
 
+  /** Open modal to add new button action */
+  public async onAddButtonAction() {
+    const { EditButtonActionComponent } = await import(
+      './components/edit-button-action/edit-button-action.component'
+    );
+    const dialogRef = this.dialog.open<ButtonActionT | undefined>(
+      EditButtonActionComponent
+    );
+
+    dialogRef.closed
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async (button) => {
+        if (!button) return;
+        const currButtons =
+          (await firstValueFrom(this.dashboardService.dashboard$))?.buttons ||
+          [];
+
+        this.dashboardService.saveDashboardButtons([...currButtons, button]);
+        this.buttonActions.push({ ...button, isHovered: false });
+      });
+  }
+
   /** Opens modal for context dataset selection */
   public async selectContextDatasource() {
     const currContext =
@@ -746,5 +778,78 @@ export class DashboardComponent
         this.contextRecord = data.record;
       });
     }
+  }
+
+  /**
+   * Opens link of button action.
+   *
+   * @param button Button action to be executed
+   */
+  public onButtonActionClick(button: ButtonActionT) {
+    if (button.href) {
+      if (button.openInNewTab) window.open(button.href, '_blank');
+      else window.location.href = button.href;
+    }
+  }
+
+  /**
+   * Removes button action from the dashboard.
+   *
+   * @param idx Index of button action to be removed
+   */
+  public async onDeleteButtonAction(idx: number) {
+    const { SafeConfirmModalComponent } = await import('@oort-front/safe');
+    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+      data: {
+        title: this.translateService.instant('common.deleteObject', {
+          name: this.translateService.instant(
+            'models.dashboard.buttonActions.one'
+          ),
+        }),
+        content: this.translateService.instant(
+          'models.dashboard.buttonActions.confirmDelete'
+        ),
+        confirmText: this.translateService.instant(
+          'components.confirmModal.delete'
+        ),
+        cancelText: this.translateService.instant(
+          'components.confirmModal.cancel'
+        ),
+        confirmVariant: 'danger',
+      },
+    });
+
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        const currButtons = this.dashboard?.buttons || [];
+        currButtons.splice(idx, 1);
+
+        this.dashboardService.saveDashboardButtons(currButtons);
+        this.buttonActions.splice(idx, 1);
+      }
+    });
+  }
+
+  /**
+   * Reorders button actions.
+   *
+   * @param event Drop event
+   */
+  public onButtonActionDrop(event: CdkDragDrop<typeof this.buttonActions>) {
+    if (event.previousIndex === event.currentIndex) return;
+
+    moveItemInArray(
+      this.buttonActions,
+      event.previousIndex,
+      event.currentIndex
+    );
+
+    this.dashboardService.saveDashboardButtons(
+      this.buttonActions.map((b) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { isHovered, ...button } = b;
+        return button;
+      })
+    );
   }
 }
