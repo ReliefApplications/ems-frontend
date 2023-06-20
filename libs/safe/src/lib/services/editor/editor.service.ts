@@ -58,6 +58,7 @@ export class SafeEditorService {
   /**
    * Configuration component for editor service
    *
+   * @param applicationService Application Service
    * @param environment Environment file used to get main url of the page
    * @param translate Angular Translate Service
    */
@@ -79,14 +80,14 @@ export class SafeEditorService {
     this.allowScrolling();
     const defaultSetup = editor.setup;
     //initializes the array for link_list in link add/edit
-    let link_list: any[] = [];
-    //get the application and then the pages of this application 
+    const link_list: any[] = [];
+    //get the application and then the pages of this application
     const application = this.applicationService.application.getValue();
     const pages = this.getPages(application);
-    //for each page in pages, create a option in link_list  
+    //for each page in pages, create a option in link_list
     pages.forEach((page: any) => {
-      link_list.push({title: page.name, value: page.url});
-    })
+      link_list.push({ title: page.name, value: page.url });
+    });
     //save editor.link_list as link_list
     editor.link_list = link_list;
     editor.setup = (e: Editor) => {
