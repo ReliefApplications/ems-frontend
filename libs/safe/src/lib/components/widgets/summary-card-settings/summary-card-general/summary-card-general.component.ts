@@ -195,6 +195,7 @@ export class SummaryCardGeneralComponent
       disableClose: true,
       data: {
         layout: this.selectedLayout,
+        queryName: this.selectedResource?.queryName,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {

@@ -269,6 +269,7 @@ export class SafeSummaryCardComponent
       record: e.node,
       layout: this.layout,
       metadata: this.fields,
+      style: e.meta.style,
     }));
 
     this.cachedCards =
@@ -333,6 +334,7 @@ export class SafeSummaryCardComponent
                 filter: layoutQuery.filter,
                 sortField: get(layoutQuery, 'sort.field', null),
                 sortOrder: get(layoutQuery, 'sort.order', ''),
+                styles: layoutQuery.style || null,
               },
               fetchPolicy: 'network-only',
               nextFetchPolicy: 'cache-first',

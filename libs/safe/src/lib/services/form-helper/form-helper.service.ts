@@ -223,4 +223,72 @@ export class SafeFormHelpersService {
       }
     });
   }
+
+  /**
+   * Create cache records (from resource/s questions) of passed survey.
+   *
+   * @param survey Survey to get questions from
+   */
+  public async createCachedRecords(survey: Survey.SurveyModel): Promise<void> {
+    const promises: Promise<any>[] = [];
+    const questions = survey.getAllQuestions();
+    const nestedRecordsToAdd: string[] = [];
+
+    // Callbacks to update the ids of new records
+    const updateIds: {
+      [key in string]: (arg0: string) => void;
+    } = {};
+
+    // Get all nested records to add
+    questions.forEach((question) => {
+      const type = question.getType();
+      if (!['resource', 'resources'].includes(type)) return;
+      const uuidv4Pattern =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+      const isResource = type === 'resource';
+
+      const toAdd = (isResource ? [question.value] : question.value).filter(
+        (x: string) => uuidv4Pattern.test(x)
+      );
+      nestedRecordsToAdd.push(...toAdd);
+
+      toAdd.forEach((id: string) => {
+        updateIds[id] = (newId: string) => {
+          question.value = isResource
+            ? newId
+            : question.value.map((x: string) => (x === id ? newId : x));
+        };
+      });
+    });
+
+    for (const localID of nestedRecordsToAdd) {
+      // load them from localForage and add them to the promises
+      const cache = await localForage.getItem(localID);
+      if (!cache) continue;
+
+      const { template, data } = JSON.parse(cache as string);
+
+      promises.push(
+        firstValueFrom(
+          this.apollo.mutate<AddRecordMutationResponse>({
+            mutation: ADD_RECORD,
+            variables: {
+              form: template,
+              data,
+            },
+          })
+        ).then((res) => {
+          // change the localID to the new recordId
+          const newId = res.data?.addRecord?.id;
+          if (!newId) return;
+          updateIds[localID](newId);
+          localForage.removeItem(localID);
+          return;
+        })
+      );
+    }
+
+    await Promise.all(promises);
+  }
 }

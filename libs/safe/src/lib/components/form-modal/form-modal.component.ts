@@ -341,7 +341,10 @@ export class SafeFormModalComponent
         this.form?.id
       )
     );
+
     await Promise.allSettled(promises);
+    await this.formHelpersService.createCachedRecords(survey);
+
     if (this.data.recordId) {
       if (this.isMultiEdition) {
         this.updateMultipleData(this.data.recordId, survey);
