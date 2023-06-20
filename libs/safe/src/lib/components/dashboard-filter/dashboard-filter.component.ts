@@ -29,6 +29,7 @@ import { ContextService } from '../../services/context/context.service';
 import { SidenavContainerComponent, SnackbarService } from '@oort-front/ui';
 import { SafeReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
+import { SafeFormService } from '../../services/form/form.service';
 
 /**
  * Interface for quick filters
@@ -90,6 +91,7 @@ export class DashboardFilterComponent
    * @param contextService Context service
    * @param ngZone Triggers html changes
    * @param referenceDataService Reference data service
+   * @param formService Shared form service
    * @param _host sidenav container host
    */
   constructor(
@@ -101,9 +103,15 @@ export class DashboardFilterComponent
     private contextService: ContextService,
     private ngZone: NgZone,
     private referenceDataService: SafeReferenceDataService,
+    private formService: SafeFormService,
     @Optional() private _host: SidenavContainerComponent
   ) {
     super();
+    formService.setSurveyCreatorInstance({ customQuestions: ['date-range'] });
+
+    this.destroy$.subscribe(() => {
+      this.formService.setSurveyCreatorInstance();
+    });
   }
 
   ngAfterViewInit(): void {
