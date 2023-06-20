@@ -2,6 +2,9 @@ import { Inject, Injectable } from '@angular/core';
 import { EDITOR_LANGUAGE_PAIRS } from '../../const/tinymce.const';
 import { TranslateService } from '@ngx-translate/core';
 import { Editor, RawEditorSettings } from 'tinymce';
+import { SafeApplicationService } from '../application/application.service';
+import { Application } from '../../models/application.model';
+import { ContentType, Page } from '../../models/page.model';
 
 /**
  * Shared editor service
@@ -59,6 +62,7 @@ export class SafeEditorService {
    * @param translate Angular Translate Service
    */
   constructor(
+    private applicationService: SafeApplicationService,
     @Inject('environment') environment: any,
     private translate: TranslateService
   ) {
@@ -74,6 +78,17 @@ export class SafeEditorService {
   addCalcAndKeysAutoCompleter(editor: RawEditorSettings, keys: string[]) {
     this.allowScrolling();
     const defaultSetup = editor.setup;
+    //initializes the array for link_list in link add/edit
+    let link_list: any[] = [];
+    //get the application and then the pages of this application 
+    const application = this.applicationService.application.getValue();
+    const pages = this.getPages(application);
+    //for each page in pages, create a option in link_list  
+    pages.forEach((page: any) => {
+      link_list.push({title: page.name, value: page.url});
+    })
+    //save editor.link_list as link_list
+    editor.link_list = link_list;
     editor.setup = (e: Editor) => {
       if (defaultSetup && typeof defaultSetup === 'function') defaultSetup(e);
       e.ui.registry.addAutocompleter('keys_data_and_calc', {
@@ -105,5 +120,40 @@ export class SafeEditorService {
         event.stopPropagation();
       });
     }, 500);
+  }
+
+  /**
+   * Get page url
+   *
+   * @param application application
+   * @param page page to get url from
+   * @returns url of the page
+   */
+  private getPageUrl(application: Application, page: Page): string {
+    if (this.environment.module === 'backoffice') {
+      return page.type === ContentType.form
+        ? `${this.environment.backOfficeUri}/applications/${application.id}/${page.type}/${page.id}`
+        : `${this.environment.backOfficeUri}/applications/${application.id}/${page.type}/${page.content}`;
+    } else {
+      return page.type === ContentType.form
+        ? `${this.environment.frontOfficeUri}/${page.type}/${page.id}`
+        : `${this.environment.frontOfficeUri}/${page.type}/${page.content}`;
+    }
+  }
+
+  /**
+   * Get available pages from app
+   *
+   * @param application application
+   * @returns list of pages and their url
+   */
+  private getPages(application: Application | null) {
+    return (
+      application?.pages?.map((page) => ({
+        id: page.id,
+        name: page.name,
+        url: this.getPageUrl(application, page),
+      })) || []
+    );
   }
 }
