@@ -202,10 +202,19 @@ export class SafeEditorControlComponent
         );
         // If autocomplete list in the DOM, trigger scrolling events
         if (collectionGroup) {
-          this.editorService.initScrollActive(
-            collectionGroup,
-            e.editor.getElement()
-          );
+          if (!this.editorService.activeItemScrollListener) {
+            // Initialize listener
+            this.editorService.initScrollActive(
+              collectionGroup,
+              e.editor.getElement()
+            );
+            // Execute directly first keydown event when no listener is ready
+            this.editorService.handleKeyDownEvent(
+              e.event,
+              collectionGroup,
+              e.editor.getElement()
+            );
+          }
         }
       }
     });

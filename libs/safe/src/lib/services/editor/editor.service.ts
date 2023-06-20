@@ -15,7 +15,7 @@ export class SafeEditorService {
   private environment: any;
 
   private editorScrollListener!: any;
-  private activeItemScrollListener!: any;
+  public activeItemScrollListener!: any;
   private renderer!: Renderer2;
 
   /**
@@ -136,48 +136,60 @@ export class SafeEditorService {
    * @param editor editor element
    */
   public initScrollActive(collectionGroup: Element, editor: HTMLElement) {
-    if (this.activeItemScrollListener) {
-      this.activeItemScrollListener();
+    if (collectionGroup) {
+      this.renderer.setAttribute(collectionGroup, 'tabindex', '1');
+      (collectionGroup as any).focus();
+      this.activeItemScrollListener = this.renderer.listen(
+        collectionGroup,
+        'keydown',
+        (e: any) => {
+          this.handleKeyDownEvent(e, collectionGroup, editor);
+        }
+      );
     }
-    setTimeout(() => {
-      if (collectionGroup) {
-        this.renderer.setAttribute(collectionGroup, 'tabindex', '1');
-        (collectionGroup as any).focus();
-        this.activeItemScrollListener = this.renderer.listen(
-          collectionGroup,
-          'keydown',
-          (e: any) => {
-            if (e.code === 'Tab') {
-              editor.focus();
-            } else if (e.code === 'ArrowDown' || e.code === 'ArrowUp') {
-              const currentActiveItem = Array.from(
-                collectionGroup.children
-              ).filter((item) =>
-                item.className.includes('tox-collection__item--active')
-              );
-              if (currentActiveItem.length) {
-                let showItem =
-                  e.code === 'ArrowDown'
-                    ? currentActiveItem[0].nextElementSibling
-                    : currentActiveItem[0].previousElementSibling;
-                // If first or last element on related keydown, then trigger scroll to first or last list element directly
-                if (
-                  e.code === 'ArrowDown' &&
-                  !currentActiveItem[0].nextElementSibling
-                ) {
-                  showItem = collectionGroup.firstElementChild;
-                } else if (
-                  e.code === 'ArrowUp' &&
-                  !currentActiveItem[0].previousElementSibling
-                ) {
-                  showItem = collectionGroup.lastElementChild;
-                }
-                showItem?.scrollIntoView(false);
-              }
-            }
-          }
-        );
+  }
+
+  /**
+   * Sets the active item of autocomplete list into view using the arrow down and up keys
+   *
+   * @param e KeyBoardEvent
+   * @param collectionGroup autocomplete collection list
+   * @param editor editor element
+   */
+  public handleKeyDownEvent(
+    e: KeyboardEvent,
+    collectionGroup: Element,
+    editor: any
+  ) {
+    if (e.code === 'Tab') {
+      if (this.activeItemScrollListener) {
+        this.activeItemScrollListener();
+        this.activeItemScrollListener = null;
       }
-    }, 500);
+      editor.focus();
+    } else if (e.code === 'ArrowDown' || e.code === 'ArrowUp') {
+      const currentActiveItem = Array.from(collectionGroup.children).filter(
+        (item) => item.className.includes('tox-collection__item--active')
+      );
+      if (currentActiveItem.length) {
+        let showItem =
+          e.code === 'ArrowDown'
+            ? currentActiveItem[0].nextElementSibling
+            : currentActiveItem[0].previousElementSibling;
+        // If first or last element on related keydown, then trigger scroll to first or last list element directly
+        if (
+          e.code === 'ArrowDown' &&
+          !currentActiveItem[0].nextElementSibling
+        ) {
+          showItem = collectionGroup.firstElementChild;
+        } else if (
+          e.code === 'ArrowUp' &&
+          !currentActiveItem[0].previousElementSibling
+        ) {
+          showItem = collectionGroup.lastElementChild;
+        }
+        showItem?.scrollIntoView(false);
+      }
+    }
   }
 }
