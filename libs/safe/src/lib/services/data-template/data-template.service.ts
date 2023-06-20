@@ -12,6 +12,7 @@ import {
 import { SafeApplicationService } from '../application/application.service';
 import { Application } from '../../models/application.model';
 import { ContentType, Page } from '../../models/page.model';
+import { RawEditorSettings } from 'tinymce';
 
 /**
  * Data template service
@@ -123,6 +124,21 @@ export class DataTemplateService {
   }
 
   /**
+   * Set editor link list using application pages
+   *
+   * @param editor current editor
+   */
+  public setEditorLinkList(editor: RawEditorSettings): void {
+    // Add available pages to the list of available keys
+    const application = this.applicationService.application.getValue();
+    const pages = this.getPages(application);
+    editor.link_list = pages.map((page) => ({
+      title: page.name,
+      value: page.placeholder,
+    }));
+  }
+
+  /**
    * Get available pages from app
    *
    * @param application application
@@ -134,6 +150,7 @@ export class DataTemplateService {
         id: page.id,
         name: page.name,
         url: this.getPageUrl(application, page),
+        placeholder: `{{page(${page.id})}}`,
       })) || []
     );
   }
