@@ -103,6 +103,13 @@ export class DataTemplateService {
     }
   }
 
+  /**
+   * Get page url
+   *
+   * @param application application
+   * @param page page to get url from
+   * @returns url of the page
+   */
   private getPageUrl(application: Application, page: Page): string {
     if (this.environment.module === 'backoffice') {
       return page.type === ContentType.form
@@ -115,6 +122,12 @@ export class DataTemplateService {
     }
   }
 
+  /**
+   * Get available pages from app
+   *
+   * @param application application
+   * @returns list of pages and their url
+   */
   private getPages(application: Application | null) {
     return (
       application?.pages?.map((page) => ({

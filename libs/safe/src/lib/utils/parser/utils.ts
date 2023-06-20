@@ -54,6 +54,7 @@ const ICON_EXTENSIONS: any = {
  * @param html The html text.
  * @param fieldsValue Field value.
  * @param fields Available fields.
+ * @param pages list of application pages
  * @param styles Array of layout styles.
  * @returns The parsed html.
  */
