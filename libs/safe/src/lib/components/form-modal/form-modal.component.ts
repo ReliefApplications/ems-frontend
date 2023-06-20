@@ -45,8 +45,6 @@ import { SpinnerModule } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import { DialogModule } from '@oort-front/ui';
-import { QuestionCustom } from 'survey-knockout';
-import localForage from 'localforage';
 
 /**
  * Interface of Dialog data.
@@ -344,65 +342,9 @@ export class SafeFormModalComponent
       )
     );
 
-    const questions = survey.getAllQuestions();
-    const nestedRecordsToAdd: string[] = [];
-
-    // Callbacks to update the ids of new records
-    const updateIds: {
-      [key in string]: (arg0: string) => void;
-    } = {};
-
-    // Get all nested records to add
-    questions.forEach((question: QuestionCustom) => {
-      const type = question.getType();
-      if (!['resource', 'resources'].includes(type)) return;
-      const uuidv4Pattern =
-        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-
-      const isResource = type === 'resource';
-
-      const toAdd = (isResource ? [question.value] : question.value).filter(
-        (x: string) => uuidv4Pattern.test(x)
-      );
-      nestedRecordsToAdd.push(...toAdd);
-
-      toAdd.forEach((id: string) => {
-        updateIds[id] = (newId: string) => {
-          question.value = isResource
-            ? newId
-            : question.value.map((x: string) => (x === id ? newId : x));
-        };
-      });
-    });
-
-    for (const localID of nestedRecordsToAdd) {
-      // load them from localForage and add them to the promises
-      const cache = await localForage.getItem(localID);
-      if (!cache) continue;
-
-      const { template, data } = JSON.parse(cache as string);
-
-      promises.push(
-        firstValueFrom(
-          this.apollo.mutate<AddRecordMutationResponse>({
-            mutation: ADD_RECORD,
-            variables: {
-              form: template,
-              data,
-            },
-          })
-        ).then((res) => {
-          // change the localID to the new recordId
-          const newId = res.data?.addRecord?.id;
-          if (!newId) return;
-          updateIds[localID](newId);
-          localForage.removeItem(localID);
-          return;
-        })
-      );
-    }
-
     await Promise.allSettled(promises);
+    await this.formHelpersService.createCachedRecords(survey);
+
     if (this.data.recordId) {
       if (this.isMultiEdition) {
         this.updateMultipleData(this.data.recordId, survey);
