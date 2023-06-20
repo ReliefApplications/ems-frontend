@@ -1,10 +1,4 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-  TemplateRef,
-} from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { get } from 'lodash';
 import { CardT } from '../summary-card.component';
 
@@ -21,10 +15,6 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   public fields: any[] = [];
   public fieldsValue: any = null;
   public styles: any[] = [];
-
-  // private layout: any;
-
-  @Input() headerTemplate?: TemplateRef<any>;
 
   ngOnInit(): void {
     this.setContent();

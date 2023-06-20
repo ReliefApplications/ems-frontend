@@ -1,10 +1,5 @@
-<!-- Template Header, injected from parent -->
-<ng-container
-  *ngIf="headerTemplate"
-  [ngTemplateOutlet]="headerTemplate"
-></ng-container>
 <!-- Default Header -->
-<div class="widget-header k-card-header" *ngIf="!headerTemplate">
+<div class="widget-header k-card-header" *ngIf="card.title">
   <!-- Title -->
   <span class="widget-title" [title]="card.title">{{ card.title }}</span>
   <!-- Actions -->
@@ -22,6 +17,6 @@
   [fieldsValue]="fieldsValue"
   [styles]="card.useStyles ? styles : []"
   [wholeCardStyles]="card.wholeCardStyles"
-  style="flex: 1"
+  class="flex flex-1"
 >
 </safe-summary-card-item-content>
