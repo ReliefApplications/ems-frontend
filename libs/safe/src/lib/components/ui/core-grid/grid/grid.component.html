@@ -613,7 +613,9 @@
               class="url-container textbox cursor-pointer"
               rel="noopener noreferrer"
               (click)="onOpenMapModal(dataItem, field)"
-              [uiTooltip]="'components.widget.grid.tooltip.displayMap' | translate"
+              [uiTooltip]="
+                'components.widget.grid.tooltip.displayMap' | translate
+              "
             >
               {{
                 applyFieldFormat(getPropertyValue(dataItem, field.name), field)

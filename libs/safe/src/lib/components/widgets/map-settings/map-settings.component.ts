@@ -268,11 +268,11 @@ export class SafeMapSettingsComponent
   //   // this.openTab('layer');
   // }
 
-  /**
-   * Delete given layer id from the layers form and updates map view
-   *
-   * @param layerIdToDelete Layer id to  delete
-   */
+  // /**
+  //  * Delete given layer id from the layers form and updates map view
+  //  *
+  //  * @param layerIdToDelete Layer id to  delete
+  //  */
   // onDeleteLayer(layerIdToDelete: string): void {
   //   // Update layer form
   //   this.updateLayersForm(layerIdToDelete, true);

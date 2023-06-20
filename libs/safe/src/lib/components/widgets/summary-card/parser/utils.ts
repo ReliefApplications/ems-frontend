@@ -134,16 +134,25 @@ const replaceRecordFields = (
         formattedHtml = formattedHtml.replace(srcRegex, `src=${value}`);
         // Inject avatars
         const avatarRgx = new RegExp(
-          `${AVATAR_PREFIX}(?<name>${field.name}) (?<width>[0-9]+) (?<height>[0-9]+) (?<maxItems>[0-9]+)${PLACEHOLDER_SUFFIX}`
+          `{{avatars.(?<name>${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}) (?<width>[0-9]+) (?<height>[0-9]+) (?<maxItems>[0-9]+)}}`,
+          'gi'
         );
         const match = avatarRgx.exec(formattedHtml);
-        const avatarGroup = createAvatarGroup(
-          value,
-          Number(match?.groups?.width),
-          Number(match?.groups?.height),
-          Number(match?.groups?.maxItems)
-        );
-        formattedHtml = formattedHtml.replace(avatarRgx, avatarGroup.innerHTML);
+        if (Array.isArray(value) && value.length > 0) {
+          const avatarGroup = createAvatarGroup(
+            value,
+            Number(match?.groups?.width),
+            Number(match?.groups?.height),
+            Number(match?.groups?.maxItems)
+          );
+          formattedHtml = formattedHtml.replace(
+            avatarRgx,
+            avatarGroup.innerHTML
+          );
+        } else {
+          formattedHtml = formattedHtml.replace(avatarRgx, '');
+        }
+
         switch (field.type) {
           case 'url': {
             // Then, follow same logic than for other fields
@@ -547,22 +556,20 @@ const createAvatarGroup = (
     sizeClass = 'h-14 w-14';
   }
 
-  for (
-    let i = 0;
-    i < (isNil(maxItems) ? value.length : Math.min(value.length, maxItems));
-    i++
-  ) {
+  for (const [index, image] of value
+    .slice(0, maxItems ? maxItems : value.length)
+    .entries()) {
     const avatar = document.createElement('avatar');
     innerDiv.appendChild(avatar);
-    avatar.style.zIndex = `${value.length - i}`;
+    avatar.style.zIndex = `${value.length - index}`;
 
     const span = document.createElement('span');
     avatar.appendChild(span);
-    span.className = `rounded-full ${sizeClass} bg-white block border-2 overflow-hidden ring-2 ring-transparent`;
+    span.className = `rounded-full ${sizeClass} bg-transparent block border-2 overflow-hidden ring-2 ring-transparent`;
 
     const img = document.createElement('img');
     span.appendChild(img);
-    img.src = value[i];
+    img.src = image;
     img.className = 'inline-block h-full w-full';
   }
 
@@ -578,7 +585,7 @@ const createAvatarGroup = (
 
     const innerSpan = document.createElement('span');
     span.appendChild(innerSpan);
-    innerSpan.className = 'text-white text-base font-medium leading-none';
+    innerSpan.className = 'text-white text-xs font-medium leading-none';
     innerSpan.innerText = `+${value.length - maxItems}`;
   }
 
