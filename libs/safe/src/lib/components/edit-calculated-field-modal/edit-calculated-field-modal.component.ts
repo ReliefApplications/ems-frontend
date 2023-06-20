@@ -1,4 +1,10 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  Inject,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -11,13 +17,19 @@ import { SafeEditorService } from '../../services/editor/editor.service';
 import { getCalcKeys, getDataKeys, getInfoKeys } from './utils/keys';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import {
+  EditorComponent,
+  EditorModule,
+  TINYMCE_SCRIPT_SRC,
+} from '@tinymce/tinymce-angular';
 import {
   DialogModule,
   ButtonModule,
   TooltipModule,
   FormWrapperModule,
 } from '@oort-front/ui';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 /**
  * Interface describing the structure of the data displayed in the dialog
  */
@@ -48,7 +60,10 @@ interface DialogData {
   templateUrl: './edit-calculated-field-modal.component.html',
   styleUrls: ['./edit-calculated-field-modal.component.scss'],
 })
-export class SafeEditCalculatedFieldModalComponent implements OnInit {
+export class SafeEditCalculatedFieldModalComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, AfterViewInit
+{
   public form!: UntypedFormGroup;
   public field!: any;
 
@@ -56,6 +71,7 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
 
   /** tinymce editor */
   public editor: any = FIELD_EDITOR_CONFIG;
+  @ViewChild(EditorComponent) editorComponent!: EditorComponent;
 
   /**
    * Modal to edit Calculated field.
@@ -75,6 +91,7 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
     @Inject('environment') environment: any,
     private translate: TranslateService
   ) {
+    super();
     // Set the editor base url based on the environment file
     this.editor.base_url = editorService.url;
     // Set the editor language
@@ -98,6 +115,34 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
       ...getDataKeys(this.resourceFields),
     ];
     this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
+  }
+
+  ngAfterViewInit(): void {
+    this.editorComponent?.onKeyDown
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((e) => {
+        if (e.event.code === 'ArrowDown' || e.event.code === 'ArrowUp') {
+          const collectionGroup = document.querySelector(
+            '.tox-collection__group'
+          );
+          // If autocomplete list in the DOM, trigger scrolling events
+          if (collectionGroup) {
+            if (!this.editorService.activeItemScrollListener) {
+              // Initialize listener
+              this.editorService.initScrollActive(
+                collectionGroup,
+                e.editor.getElement()
+              );
+              // Execute directly first keydown event when no listener is ready
+              this.editorService.handleKeyDownEvent(
+                e.event,
+                collectionGroup,
+                e.editor.getElement()
+              );
+            }
+          }
+        }
+      });
   }
 
   /**

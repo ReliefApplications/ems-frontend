@@ -4,6 +4,7 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import {
+  AfterViewInit,
   Component,
   Input,
   OnChanges,
@@ -20,6 +21,9 @@ import {
 } from '../../widgets/summary-card/parser/utils';
 import { addNewField } from '../query-builder-forms';
 import { SafeQueryBuilderComponent } from '../query-builder.component';
+import { EditorComponent } from '@tinymce/tinymce-angular';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Component used for the selection of fields to display the fields in tabs
@@ -29,7 +33,10 @@ import { SafeQueryBuilderComponent } from '../query-builder.component';
   templateUrl: './tab-fields.component.html',
   styleUrls: ['./tab-fields.component.scss'],
 })
-export class SafeTabFieldsComponent implements OnInit, OnChanges {
+export class SafeTabFieldsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, AfterViewInit, OnChanges
+{
   @Input() form: UntypedFormArray = new UntypedFormArray([]);
   @Input() fields: any[] = [];
   @ViewChild('childTemplate', { read: ViewContainerRef })
@@ -44,6 +51,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
 
   /** tinymce editor */
   public editor: any = FIELD_EDITOR_CONFIG;
+  @ViewChild(EditorComponent) editorComponent!: EditorComponent;
 
   @Input() showLimit = false;
 
@@ -53,6 +61,7 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
    * @param editorService Editor service used to get main URL and current language
    */
   constructor(private editorService: SafeEditorService) {
+    super();
     // Set the editor base url based on the environment file
     this.editor.base_url = editorService.url;
     // Set the editor language
@@ -72,6 +81,34 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
         this.form.at(index).setErrors({ invalid: true });
       }
     });
+  }
+
+  ngAfterViewInit(): void {
+    this.editorComponent?.onKeyDown
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((e) => {
+        if (e.event.code === 'ArrowDown' || e.event.code === 'ArrowUp') {
+          const collectionGroup = document.querySelector(
+            '.tox-collection__group'
+          );
+          // If autocomplete list in the DOM, trigger scrolling events
+          if (collectionGroup) {
+            if (!this.editorService.activeItemScrollListener) {
+              // Initialize listener
+              this.editorService.initScrollActive(
+                collectionGroup,
+                e.editor.getElement()
+              );
+              // Execute directly first keydown event when no listener is ready
+              this.editorService.handleKeyDownEvent(
+                e.event,
+                collectionGroup,
+                e.editor.getElement()
+              );
+            }
+          }
+        }
+      });
   }
 
   ngOnChanges(): void {

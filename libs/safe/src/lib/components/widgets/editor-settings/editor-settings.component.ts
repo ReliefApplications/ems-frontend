@@ -5,6 +5,7 @@ import {
   EventEmitter,
   Input,
   AfterViewInit,
+  ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { WIDGET_EDITOR_CONFIG } from '../../../const/tinymce.const';
@@ -16,6 +17,9 @@ import { Apollo } from 'apollo-angular';
 import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
 import { get } from 'lodash';
 import { getCalcKeys, getDataKeys } from '../summary-card/parser/utils';
+import { takeUntil } from 'rxjs';
+import { EditorComponent } from '@tinymce/tinymce-angular';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Creates the form for the editor widget settings.
@@ -48,7 +52,10 @@ export type EditorFormType = ReturnType<typeof createEditorForm>;
   templateUrl: './editor-settings.component.html',
   styleUrls: ['./editor-settings.component.scss'],
 })
-export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
+export class SafeEditorSettingsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, AfterViewInit
+{
   // === REACTIVE FORM ===
   tileForm!: EditorFormType;
 
@@ -61,6 +68,7 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
 
   /** tinymce editor */
   public editor: any = WIDGET_EDITOR_CONFIG;
+  @ViewChild(EditorComponent) editorComponent!: EditorComponent;
 
   public selectedResource: Resource | null = null;
   public selectedLayout: Layout | null = null;
@@ -74,6 +82,7 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
     private editorService: SafeEditorService,
     private apollo: Apollo
   ) {
+    super();
     // Set the editor base url based on the environment file
     this.editor.base_url = editorService.url;
     // Set the editor language
@@ -125,6 +134,31 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
       this.tile.settings.layout = this.tileForm.value.layout;
     });
     this.updateFields();
+    this.editorComponent?.onKeyDown
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((e) => {
+        if (e.event.code === 'ArrowDown' || e.event.code === 'ArrowUp') {
+          const collectionGroup = document.querySelector(
+            '.tox-collection__group'
+          );
+          // If autocomplete list in the DOM, trigger scrolling events
+          if (collectionGroup) {
+            if (!this.editorService.activeItemScrollListener) {
+              // Initialize listener
+              this.editorService.initScrollActive(
+                collectionGroup,
+                e.editor.getElement()
+              );
+              // Execute directly first keydown event when no listener is ready
+              this.editorService.handleKeyDownEvent(
+                e.event,
+                collectionGroup,
+                e.editor.getElement()
+              );
+            }
+          }
+        }
+      });
   }
 
   /** Extracts the fields from the resource/layout */
