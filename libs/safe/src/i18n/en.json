@@ -18,6 +18,10 @@
 			"none": "No application",
 			"one": "Application"
 		},
+		"archive": {
+			"few": "Archives",
+			"none": "No archive list"
+		},
 		"ariaLabel": {
 			"search": {
 				"clear": "Clear search"
@@ -405,6 +409,10 @@
 			}
 		},
 		"application": {
+			"archive": {
+				"deleteDate": "Deletion date",
+				"name": "Name"
+			},
 			"customStyling": "Custom Styling",
 			"dashboard": {
 				"editFilter": "Edit filter",

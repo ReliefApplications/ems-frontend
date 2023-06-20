@@ -18,6 +18,10 @@
 			"none": "Aucune application",
 			"one": "Application"
 		},
+		"archive": {
+			"few": "@TODO",
+			"none": "@TODO"
+		},
 		"ariaLabel": {
 			"search": {
 				"clear": "Supprimer la recherche"
@@ -405,6 +409,10 @@
 			}
 		},
 		"application": {
+			"archive": {
+				"deleteDate": "@TODO",
+				"name": "@TODO"
+			},
 			"customStyling": "Style personnalisé",
 			"dashboard": {
 				"editFilter": "Modifier le filtre",

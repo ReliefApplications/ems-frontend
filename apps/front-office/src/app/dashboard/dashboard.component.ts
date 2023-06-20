@@ -146,6 +146,11 @@ export class DashboardComponent
               path: `./${this.appID}/settings/users`,
               icon: 'supervisor_account',
             });
+            this.adminNavItems.push({
+              name: this.translate.instant('common.archive.few'),
+              path: `./${this.appID}/settings/archive`,
+              icon: 'delete',
+            });
           }
           if (
             this.ability.can(
@@ -158,6 +163,11 @@ export class DashboardComponent
               name: this.translate.instant('common.role.few'),
               path: `./${this.appID}/settings/roles`,
               icon: 'admin_panel_settings',
+            });
+            this.adminNavItems.push({
+              name: this.translate.instant('common.archive.few'),
+              path: `./${this.appID}/settings/archive`,
+              icon: 'delete',
             });
           }
           if (

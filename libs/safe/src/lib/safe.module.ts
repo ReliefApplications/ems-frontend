@@ -36,6 +36,7 @@ import { MapModule } from './components/ui/map';
 import { FullScreenModule } from './directives/fullscreen/fullscreen.module';
 import { DashboardFilterModule } from './components/dashboard-filter/dashboard-filter.module';
 import { GraphQLSelectModule } from '@oort-front/ui';
+import { SafeApplicationsArchiveModule } from './components/applications-archive/applications-archive.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -56,6 +57,7 @@ import { GraphQLSelectModule } from '@oort-front/ui';
     SafeWorkflowStepperModule,
     SafeApplicationsSummaryModule,
     SafeSearchMenuModule,
+    SafeApplicationsArchiveModule,
     SafeAggregationBuilderModule,
     SafeTagboxModule,
     SafeSnackbarSpinnerModule,

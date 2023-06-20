@@ -92,6 +92,7 @@ export * from './lib/components/edit-calculated-field-modal/public-api';
 export * from './lib/components/utils/unsubscribe/public-api';
 export * from './lib/components/editable-text/public-api';
 export * from './lib/components/cron-expression-control/public-api';
+export * from './lib/components/applications-archive/public-api';
 export * from './lib/components/dashboard-filter/public-api';
 
 /** Grid Layouts */

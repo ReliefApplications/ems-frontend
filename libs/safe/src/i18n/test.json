@@ -18,6 +18,10 @@
 			"none": "******",
 			"one": "******"
 		},
+		"archive": {
+			"few": "******",
+			"none": "******"
+		},
 		"ariaLabel": {
 			"search": {
 				"clear": "******"
@@ -405,6 +409,10 @@
 			}
 		},
 		"application": {
+			"archive": {
+				"deleteDate": "******",
+				"name": "******"
+			},
 			"customStyling": "******",
 			"dashboard": {
 				"editFilter": "******",

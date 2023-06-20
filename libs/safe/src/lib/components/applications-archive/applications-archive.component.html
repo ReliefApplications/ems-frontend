@@ -1,0 +1,73 @@
+<h1>{{ 'common.archive.few' | translate }}</h1>
+<ng-container *ngIf="!loading; else loadingTmpl">
+  <ng-container *ngIf="archiveList?.length">
+    <div class="flex justify-start flex-col sm:flex-row">
+      <!-- Search text filter -->
+      <div uiFormFieldDirective>
+        <ui-icon icon="search" uiPrefix></ui-icon>
+        <input
+          [ngModel]="searchText"
+          (keyup)="applyFilter('', $event)"
+          type="text"
+          [placeholder]="'common.placeholder.search' | translate"
+        />
+      </div>
+    </div>
+  </ng-container>
+  <ng-container *ngIf="archiveList?.length; else emptyTmpl">
+    <!-- Table container -->
+    <div class="mt-4 overflow-x-hidden shadow-2lg">
+      <!-- Table scroll container -->
+      <div class="overflow-x-auto">
+        <table cdk-table uiTableWrapper [dataSource]="filteredArchiveList">
+          <ng-container cdkColumnDef="name">
+            <th uiCellHeader *cdkHeaderCellDef scope="col">
+              <span class="headerTitle">
+                {{ 'components.application.archive.name' | translate }}
+              </span>
+            </th>
+            <td
+              uiCell
+              *cdkCellDef="let element"
+              class="!text-gray-900 !font-medium"
+            >
+              {{ element.name }}
+            </td>
+          </ng-container>
+
+          <ng-container cdkColumnDef="deleteDate">
+            <th uiCellHeader *cdkHeaderCellDef scope="col">
+              <span class="headerTitle">
+                {{ 'components.application.archive.deleteDate' | translate }}
+              </span>
+            </th>
+            <td uiCell *cdkCellDef="let element">
+              {{ element.deleteDate | safeDate }}
+            </td>
+          </ng-container>
+
+          <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+          <tr
+            cdk-row
+            *cdkRowDef="let row; columns: displayedColumns"
+            (click)="onSelectArchive(row)"
+            class="cursor-pointer"
+          ></tr>
+        </table>
+      </div>
+    </div>
+  </ng-container>
+  <ng-template #emptyTmpl>
+    <!-- Empty indicator -->
+    <safe-empty [title]="'common.archive.none' | translate"></safe-empty>
+  </ng-template>
+</ng-container>
+<ng-template #loadingTmpl>
+  <safe-skeleton-table
+    [columns]="[
+      'components.application.archive.name',
+      'components.application.archive.deleteDate'
+    ]"
+  >
+  </safe-skeleton-table>
+</ng-template>
