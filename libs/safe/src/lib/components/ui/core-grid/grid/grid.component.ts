@@ -43,7 +43,7 @@ import { SafeDownloadService } from '../../../../services/download/download.serv
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { GridLayout } from '../models/grid-layout.model';
 import { get, intersection } from 'lodash';
-import { applyLayoutFormat } from '../../../widgets/summary-card/parser/utils';
+import { applyLayoutFormat } from '../../../../utils/parser/utils';
 import { SafeDashboardService } from '../../../../services/dashboard/dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
