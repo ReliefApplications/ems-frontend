@@ -83,7 +83,6 @@ export class TabButtonsComponent implements OnInit {
     if (previous === current) {
       return;
     }
-    this.tabGroup.reorderedTabs = true;
     const previousControl = this.buttons.at(previous);
     this.buttons.removeAt(previous);
     this.buttons.insert(current, previousControl);

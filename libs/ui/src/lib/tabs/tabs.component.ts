@@ -61,10 +61,6 @@ export class TabsComponent implements AfterContentInit, OnDestroy {
    */
   @Input() variant: Variant = 'default';
   /**
-   * If tabs reordered, uses tab.index instead of array index
-   */
-  @Input() reorderedTabs = false;
-  /**
    * Output emitted whenever a new tab is clicked, gives the index of the new tab
    */
   @Output() selectedIndexChange = new EventEmitter<number>();
@@ -77,6 +73,7 @@ export class TabsComponent implements AfterContentInit, OnDestroy {
   previousTabsLength = 0;
   triggerAnimation = false;
   destroy$ = new Subject<void>();
+  reorder$ = new Subject<void>();
 
   /**
    * Ui Sidenav constructor
@@ -107,7 +104,7 @@ export class TabsComponent implements AfterContentInit, OnDestroy {
       .subscribe((tabs: QueryList<TabComponent>) => {
         this.cdr.detectChanges();
         if (tabs.length !== this.previousTabsLength) {
-          this.reorderedTabs = false;
+          this.reorder$.next();
           this.previousTabsLength = tabs.length;
           this.subscribeToOpenTabEvents();
         }
@@ -142,8 +139,8 @@ export class TabsComponent implements AfterContentInit, OnDestroy {
    * Update select state of all the tabs
    */
   public setSelectedTab() {
-    this.tabs.forEach((tab, index) => {
-      if ((this.reorderedTabs ? tab.index : index) === this.selectedIndex) {
+    this.tabs.forEach((tab) => {
+      if (tab.index === this.selectedIndex) {
         tab.selected = true;
       } else {
         tab.selected = false;
@@ -159,11 +156,16 @@ export class TabsComponent implements AfterContentInit, OnDestroy {
       tab.variant = this.variant;
       tab.vertical = this.vertical;
       tab.index = index;
-      tab.openTab.pipe(takeUntil(this.destroy$)).subscribe(() => {
-        this.showContent(tab);
-        this.selectedIndex = index;
-      });
-      if (index === this.selectedIndex) {
+      tab.openTab
+        .pipe(takeUntil(this.destroy$), takeUntil(this.reorder$))
+        .subscribe(() => {
+          this.showContent(tab);
+          this.selectedIndex = index;
+        });
+    });
+    // To avoid that we select all tabs by default
+    this.tabs.forEach((tab) => {
+      if (tab.index === this.selectedIndex) {
         this.showContent(tab);
       }
     });
