@@ -64,7 +64,6 @@ export const init = (Survey: Survey, domService: DomService): void => {
       });
 
       const updateInstance = (): void => {
-        console.log('updateInstance', question.value);
         let [startVal, endVal] = question.value ?? [];
         let min = question.dateMin;
         let max = question.dateMax;
