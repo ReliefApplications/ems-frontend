@@ -151,7 +151,14 @@ export class SafeUsersComponent
                     this.translate.instant('components.users.onInvite.singular')
                   );
                 }
-                this.users = this.users.concat(data?.addUsers || []);
+
+                const incomingUsers: User[] = [];
+                data?.addUsers.forEach((element) => {
+                  if (this.users.some((e) => e?.username !== element?.username))
+                    incomingUsers.push(element);
+                });
+                this.users = this.users.concat(incomingUsers || []);
+
                 this.filterPredicate();
               } else {
                 if (value.length > 1) {
