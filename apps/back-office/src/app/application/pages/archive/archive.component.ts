@@ -50,44 +50,44 @@ export class ArchiveComponent
    * Gets the workflow from the route.
    */
   ngOnInit(): void {
-    // this.previewService.roleId$
-    //   .pipe(takeUntil(this.destroy$))
-    //   .subscribe((role) => {
-    //     this.role = role;
+    this.previewService.roleId$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((role) => {
+        this.role = role;
+      });
+    // this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+    // this.loading = true;
+    // this.id = params.id;
+    // this.apollo
+    //   .watchQuery<GetWorkflowByIdQueryResponse>({
+    //     query: GET_WORKFLOW_BY_ID,
+    //     variables: {
+    //       id: this.id,
+    //       asRole: this.role,
+    //     },
+    //   })
+    //   .valueChanges.subscribe({
+    //     next: ({ data, loading }) => {
+    //       if (data.workflow) {
+    //       } else {
+    //         this.snackBar.openSnackBar(
+    //           this.translate.instant(
+    //             'common.notifications.accessNotProvided',
+    //             {
+    //               type: this.translate
+    //                 .instant('common.workflow.one')
+    //                 .toLowerCase(),
+    //               error: '',
+    //             }
+    //           ),
+    //           { error: true }
+    //         );
+    //       }
+    //     },
+    //     error: (err) => {
+    //       this.snackBar.openSnackBar(err.message, { error: true });
+    //     },
     //   });
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      // this.loading = true;
-      // this.id = params.id;
-      // this.apollo
-      //   .watchQuery<GetWorkflowByIdQueryResponse>({
-      //     query: GET_WORKFLOW_BY_ID,
-      //     variables: {
-      //       id: this.id,
-      //       asRole: this.role,
-      //     },
-      //   })
-      //   .valueChanges.subscribe({
-      //     next: ({ data, loading }) => {
-      //       if (data.workflow) {
-      //       } else {
-      //         this.snackBar.openSnackBar(
-      //           this.translate.instant(
-      //             'common.notifications.accessNotProvided',
-      //             {
-      //               type: this.translate
-      //                 .instant('common.workflow.one')
-      //                 .toLowerCase(),
-      //               error: '',
-      //             }
-      //           ),
-      //           { error: true }
-      //         );
-      //       }
-      //     },
-      //     error: (err) => {
-      //       this.snackBar.openSnackBar(err.message, { error: true });
-      //     },
-      //   });
-    });
+    // });
   }
 }
