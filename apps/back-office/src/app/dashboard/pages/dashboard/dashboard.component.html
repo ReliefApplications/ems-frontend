@@ -115,7 +115,7 @@
             <button uiMenuItem (click)="toggleFiltering()">
               <ui-icon icon="tune" variant="grey"></ui-icon>
               {{
-                (dashboard.showFilter
+                (showFilter
                   ? 'models.dashboard.deactivateFiltering'
                   : 'models.dashboard.activateFiltering'
                 ) | translate
@@ -220,7 +220,7 @@
     (move)="onMove($event)"
     (edit)="onEditTile($event)"
     (delete)="onDeleteTile($event)"
-    (goToNextStep)="goToNextStep.emit($event)"
+    (changeStep)="changeStep.emit($event)"
     (add)="onAdd($event)"
   ></safe-widget-grid>
   <safe-dashboard-filter

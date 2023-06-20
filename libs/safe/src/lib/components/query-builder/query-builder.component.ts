@@ -144,12 +144,6 @@ export class SafeQueryBuilderComponent
                   order: ['asc'],
                 })
               );
-              if (this.form?.get('clorophlets')) {
-                this.form?.setControl(
-                  'clorophlets',
-                  this.formBuilder.array([])
-                );
-              }
             } else {
               this.availableFields = [];
               this.form?.setControl('filter', createFilterGroup(null));
@@ -161,12 +155,6 @@ export class SafeQueryBuilderComponent
                   order: ['asc'],
                 })
               );
-              if (this.form?.get('clorophlets')) {
-                this.form?.setControl(
-                  'clorophlets',
-                  this.formBuilder.array([])
-                );
-              }
             }
             this.filteredQueries = this.filterQueries(value);
           }

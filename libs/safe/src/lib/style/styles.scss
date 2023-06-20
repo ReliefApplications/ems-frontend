@@ -1,13 +1,14 @@
-@use "@angular/material" as mat;
-@import "variables.scss";
+@use '@angular/material' as mat;
+@import 'variables.scss';
 
 // Material ( to remove )
 @include mat.legacy-core();
 @include mat.core();
 
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+@import '~@fortawesome/fontawesome-free/css/all.css';
 
 .sv_main,
 .svd_container {
@@ -60,7 +61,7 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,,,,
+      // A700: #ffffff,,,,,,,,
     ),
 );
 
@@ -222,12 +223,12 @@ body {
 }
 
 // === KENDO THEME ===
-@import "theme.scss";
+@import 'theme.scss';
 
 // === TINYMCE ===
 .tox-editor-header *,
 .tox-tinymce-aux * {
-  font-family: Roboto, "Helvetica Neue", sans-serif !important;
+  font-family: Roboto, 'Helvetica Neue', sans-serif !important;
 }
 
 // === SCROLL BARS ===
@@ -319,6 +320,17 @@ body {
     .cdk-drag:not(.cdk-drag-placeholder) {
       @apply transition-transform;
     }
+  }
+
+  // === Measure plugin ===
+  // todo(gis): move somewhere else
+  .leaflet-measure-resultpopup a.deletemarkup,
+  .leaflet-measure-resultpopup a.zoomto,
+  .leaflet-control-measure a.cancel,
+  .leaflet-control-measure a.finish,
+  .leaflet-control-measure a.start {
+    @apply text-primary-500;
+    background-image: none !important;
   }
 }
 

@@ -1,31 +1,17 @@
 import {
   AfterViewInit,
   Component,
+  EventEmitter,
   Input,
-  OnInit,
+  Output,
   ViewChild,
+  ViewContainerRef,
 } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { SafeMapComponent } from '../../map/map.component';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
-
-/** List of basemap that can be used by the widget */
-const BASEMAPS: string[] = [
-  'Sreets',
-  'Navigation',
-  'Topographic',
-  'Light Gray',
-  'Dark Gray',
-  'Streets Relief',
-  'Imagery',
-  'ChartedTerritory',
-  'ColoredPencil',
-  'Nova',
-  'Midcentury',
-  'OSM',
-  'OSM:Streets',
-];
+import { MapConstructorSettings } from '../../../ui/map/interfaces/map.interface';
+import { BASEMAPS } from '../../../ui/map/const/baseMaps';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 
 /**
  * Map Properties of Map widget.
@@ -37,20 +23,25 @@ const BASEMAPS: string[] = [
 })
 export class MapPropertiesComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements AfterViewInit
 {
   @Input() form!: UntypedFormGroup;
+  @Input() mapSettings!: MapConstructorSettings;
+  @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;
 
-  @ViewChild(SafeMapComponent) previewMap!: SafeMapComponent;
+  @ViewChild('mapContainer', { read: ViewContainerRef })
+  mapContainerRef!: ViewContainerRef;
 
-  public basemaps = BASEMAPS;
+  @Input() destroyTab$!: Subject<boolean>;
 
-  public mapSettings!: {
-    basemap: string;
-    zoom: number;
-    centerLat: number;
-    centerLong: number;
-  };
+  public baseMaps = BASEMAPS;
+
+  /** @returns the form group for the map controls */
+  get controlsFormGroup() {
+    return this.form.get('controls') as UntypedFormGroup;
+  }
+  // eslint-disable-next-line @angular-eslint/no-output-native
+  @Output() close = new EventEmitter();
 
   /**
    * Map Properties of Map widget.
@@ -59,56 +50,44 @@ export class MapPropertiesComponent
     super();
   }
 
-  /**
-   * Subscribe to settings changes to update map.
-   */
-  ngOnInit(): void {
-    this.mapSettings = {
-      basemap: this.form.value.basemap,
-      zoom: this.form.value.zoom,
-      centerLat: this.form.value.centerLat,
-      centerLong: this.form.value.centerLong,
-    };
-    this.form
-      .get('zoom')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.previewMap.map.setZoom(value);
-      });
-    this.form
-      .get('centerLat')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        const map = this.previewMap.map;
-        map.setView([value, map.getCenter().lng], map.getZoom());
-      });
-    this.form
-      .get('centerLong')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        const map = this.previewMap.map;
-        map.setView([map.getCenter().lat, value], map.getZoom());
-      });
-    this.form
-      .get('basemap')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        this.previewMap.setBasemap(value);
+  ngAfterViewInit(): void {
+    this.currentMapContainerRef
+      .pipe(takeUntil(this.destroyTab$))
+      .subscribe((viewContainerRef) => {
+        if (viewContainerRef) {
+          if (viewContainerRef !== this.mapContainerRef) {
+            const view = viewContainerRef.detach();
+            if (view) {
+              this.mapContainerRef.insert(view);
+              this.currentMapContainerRef.next(this.mapContainerRef);
+            }
+          }
+        }
       });
   }
 
   /**
-   * Subscribe to map events to update settings
+   * Set the latitude and longitude of the center of the map using the one in the preview map.
    */
-  ngAfterViewInit(): void {
-    const map = this.previewMap.map;
-    map.on('zoomend', () => {
-      this.form.get('zoom')?.setValue(map.getZoom(), { emitEvent: false });
-    });
-    map.on('moveend', () => {
-      const center = map.getCenter();
-      this.form.get('centerLat')?.setValue(center.lat, { emitEvent: false });
-      this.form.get('centerLong')?.setValue(center.lng, { emitEvent: false });
-    });
+  onSetByMap(): void {
+    this.form
+      .get('initialState.viewpoint')
+      ?.setValue(this.mapSettings.initialState.viewpoint, {
+        emitEvent: false,
+      });
+  }
+
+  /**
+   * Reset given form field value if there is a value previously to avoid triggering
+   * not necessary actions
+   *
+   * @param formField Current form field
+   * @param event click event
+   */
+  clearFormField(formField: string, event: Event) {
+    if (this.form.get(formField)?.value) {
+      this.form.get(formField)?.setValue(null);
+    }
+    event.stopPropagation();
   }
 }

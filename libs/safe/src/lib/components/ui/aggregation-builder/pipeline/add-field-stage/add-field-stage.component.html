@@ -1,14 +1,13 @@
 <form
   [formGroup]="$any(fieldForm)"
-  class="flex flex-row"
+  class="flex flex-row gap-4"
   *ngFor="let fieldForm of form.controls; let index = index"
 >
-  <div uiFormFieldDirective  *ngIf="displayName">
+  <div uiFormFieldDirective *ngIf="displayName" class="w-44">
     <label>{{ 'common.name' | translate }}</label>
     <input formControlName="name" [placeholder]="'common.name' | translate" />
   </div>
   <safe-expressions
-    class="pl-4"
     [fields]="fields"
     [form]="$any(fieldForm.get('expression'))"
     [operators]="$any(operators)"

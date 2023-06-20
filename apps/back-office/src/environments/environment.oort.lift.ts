@@ -27,7 +27,6 @@ export const environment = {
   backOfficeUri: 'https://lift.oortcloud.tech/admin/',
   availableLanguages: ['en', 'fr'],
   authConfig,
-  esriApiKey: '',
   theme,
   availableWidgets: [
     'donut-chart',

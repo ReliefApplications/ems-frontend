@@ -30,6 +30,7 @@
 		},
 		"auto": "Automatique",
 		"back": "Retour",
+		"bookmarks": "Marque-pages",
 		"calculatedField": {
 			"few": "Champs dérivés",
 			"none": "Aucun champ dérivé",
@@ -84,6 +85,7 @@
 		"errors": {
 			"objectDuplicated": "{{type}} {{value}} existe déjà."
 		},
+		"exitFullscreen": "Quitter le mode plein écran",
 		"export": "Exporter",
 		"exportObject": "Exporter {{name}}",
 		"false": "Faux",
@@ -284,6 +286,11 @@
 			"one": "Modèle de notification"
 		},
 		"title": "Titre",
+		"tooltip": {
+			"editor": {
+				"insert": "Tapez '{' pour utiliser des expressions et des variables"
+			}
+		},
 		"true": "Vrai",
 		"type": {
 			"few": "Types",
@@ -303,6 +310,7 @@
 			"none": "Aucune valeur",
 			"one": "Valeur"
 		},
+		"viewFullscreen": "Ouvrir le mode plein écran",
 		"viewObject": "Voir {{name}}",
 		"workflow": {
 			"few": "Workflows",
@@ -682,6 +690,23 @@
 		"logout": {
 			"confirmationMessage": "Le formulaire contient des éléments non sauvegardés. Voulez-vous vous vraiment déconnecter ?",
 			"title": "Quitter la plateforme sans sauvegarder"
+		},
+		"map": {
+			"controls": {
+				"download": {
+					"layers": {
+						"all": "Toutes les couches",
+						"selected": "Couches sélectionnées",
+						"visible": "Couches visibles"
+					},
+					"output": "Format d'export",
+					"selectLayers": "Sélectionnez les couches",
+					"view": {
+						"all": "Toute la carte",
+						"current": "Vue actuelle"
+					}
+				}
+			}
 		},
 		"mapping": {
 			"field": "Champ de l'utilisateur",
@@ -1134,6 +1159,7 @@
 				},
 				"openSettings": "Ouvrir les paramètres",
 				"tooltip": {
+					"displayMap": "Afficher la carte",
 					"saved": "Changements sauvegardés",
 					"unsaved": "Cliquez sur sauvegarder pour enregistrer les changements",
 					"uploadFailed": "L'enregistrement a échoué. Cliquez pour obtenir plus de détails"
@@ -1177,7 +1203,7 @@
 					},
 					"position": "Position",
 					"series": {
-						"fill": "@TODO",
+						"fill": "Remplissage",
 						"interpolation": {
 							"step": "Étape d'interpolation",
 							"title": "Interpolation"
@@ -1251,7 +1277,8 @@
 							"workflow": {
 								"close": "Fermer le workflow",
 								"confirm": "Message de confirmation",
-								"next": "Aller à l'étape suivante"
+								"next": "Aller à l'étape suivante",
+								"previous": "Aller à l'étape précédente"
 							}
 						},
 						"create": "Ajouter un bouton",
@@ -1299,27 +1326,103 @@
 						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements"
 					}
 				},
+				"iconPicker": {
+					"default": "Standard",
+					"placeholder": "Chezchez un symbole"
+				},
 				"map": {
 					"basemap": "Fond de carte",
 					"category": "Catégories rapides",
 					"dataset": "Sélection du jeu de données",
+					"edit": {
+						"aggregation": "Agrégation",
+						"cluster": {
+							"cluster": "Cluster",
+							"clusterSettings": "Paramètres de groupes",
+							"fields": "Champs de groupes",
+							"high": "Haut",
+							"label": "Libellé du groupes",
+							"low": "Faible",
+							"max": "Max",
+							"min": "Min",
+							"overrideSymbol": "Remplacer le symbole de groupes",
+							"popups": "Groupes pop-ups",
+							"radius": "Rayon de groupes",
+							"sizeRange": "Gamme de taille",
+							"symbol": "Style de symboles"
+						},
+						"datasource": {
+							"origin": "Origine"
+						},
+						"fields": "Champs",
+						"filter": "Filtre",
+						"groupLayers": "Regrouper les calques",
+						"labels": "Étiquettes",
+						"layerDatasource": "Source de données de la couche",
+						"layerProperties": "Propriétés",
+						"layerStyling": "Styles",
+						"popup": "Popup",
+						"properties": {
+							"defaultVisibility": "Visible par défaut",
+							"opacity": "Opacité",
+							"visibilityRange": "Plage de visibilité",
+							"zoom": "Zoom"
+						},
+						"reduction": {
+							"noReduction": "Pas de réduction",
+							"reduction": "Réduction"
+						},
+						"style": {
+							"color": "Couleur",
+							"icon": "Symbole",
+							"size": "Taille",
+							"stylingType": "Style de {{layerType}}"
+						},
+						"styling": {
+							"heatmapOptions": {
+								"blur": "Flou",
+								"gradient": "Gradient",
+								"minOpacity": "Opacité minimum",
+								"radius": "Rayon"
+							}
+						}
+					},
 					"errors": {
 						"latitude": "Latitude incorrecte, merci de sélectionner un nombre entre -90 et 90",
 						"longitude": "Longitude incorrecte, merci de sélectionner un nombre entre -180 et 180"
 					},
-					"layers": {
-						"clorophlet": {
-							"add": "Ajouter un clorophlet",
-							"division": {
-								"add": "Ajouter une division",
-								"title": "Divisions"
+					"geospatial": {
+						"layersStyles": {
+							"fill": {
+								"color": "La couleur de remplissage",
+								"opacity": "Opacité de remplissage",
+								"title": "Remplir"
 							},
-							"geoJSON": "geoJSON",
-							"geoJSONidentifier": "geoJSON Identifiant",
-							"identifier": "Identifiant",
-							"info": "Configurer des clorophlets en tant que couches pour la carte",
-							"title": "Clorophlets"
+							"marker": {
+								"color": "Couleur du marqueur",
+								"opacity": "Opacité du marqueur",
+								"title": "Marqueur"
+							},
+							"outline": {
+								"color": "Couleur du contour",
+								"opacity": "Opacité du contour",
+								"title": "Contour",
+								"width": "Largeur du contour"
+							},
+							"title": "Styles de calque"
+						}
+					},
+					"layers": {
+						"add": "Ajouter un nouveau calque",
+						"chooseLayer": "Choisir un calque existant",
+						"createGroup": "Créer un nouveau groupe de couches",
+						"createLayer": "Créer un nouveau calque",
+						"dataSource": {
+							"geoField": "GeoField",
+							"latitude": "Latitude",
+							"longitude": "Longitude"
 						},
+						"edit": "Mettre à jour le calque {{name}}",
 						"online": {
 							"info": "Charger des couches depuis arcGIS online",
 							"select": "Chercher des couches",
@@ -1335,24 +1438,70 @@
 							"rulesInfo": "Configurer la taille et la couleur des marqueurs",
 							"size": "Taille",
 							"title": "Marqueurs"
+						},
+						"popup": {
+							"addField": "Ajouter un champ",
+							"description": "Description",
+							"fields": "Champs",
+							"fieldsElements": {
+								"description": "Description",
+								"title": "Titre"
+							},
+							"popup": "Popup",
+							"popupElements": "Éléments de popup",
+							"text": "Texte",
+							"title": "Titre",
+							"tooltip": {
+								"text": "Tapez '{' pour utiliser les champs de la source de données"
+							}
+						},
+						"remove": "Supprimer le calque",
+						"selectLayer": "Sélectionner un calque",
+						"styling": {
+							"style": "Style"
+						},
+						"types": {
+							"cluster": "Groupes",
+							"heatmap": "Carte de chaleur",
+							"point": "Point",
+							"polygon": "Polygone"
 						}
 					},
+					"legend": {
+						"high": "Haut",
+						"low": "Faible",
+						"title": "Légende"
+					},
 					"popup": {
-						"label": "Champs affichés dans le popup"
+						"label": "Champs affichés dans le popup",
+						"location": "Emplacement",
+						"of": "{{current}} sur {{total}}",
+						"zoomTo": "Zoomer sur"
 					},
 					"properties": {
 						"basemap": "Fond de carte",
+						"controls": {
+							"download": "Télécharger",
+							"layer": "Couches",
+							"legend": "Légende",
+							"measure": "Mesure",
+							"search": "Recherche",
+							"timedimension": "Dimension temporelle",
+							"title": "Contrôles de la carte"
+						},
 						"latitude": "Latitude du centre de la carte",
 						"longitude": "Longitude du centre de la carte",
+						"setByMap": "Utiliser la vue actuelle",
 						"title": "Affichage par défaut",
+						"webmap": "WebMap",
 						"zoom": "Zoom par défaut"
 					},
 					"tooltip": {
 						"category": "Sélectionnez un champ pour séparer vos enregistrements en différentes catégories",
 						"dataset": "Sélectionnez des champs ci-dessous et déplacez-les vers 'champs sélectionnés' sur la droite. Ils seront présents dans le pop-up affiché en cliquant sur les marqueurs",
 						"default": {
-							"latitude": "Sélectionnez une latitude par défaut autour de laquelle vous souhaitez centrer la carte",
-							"longitude": "Sélectionnez une longitude par défaut autour de laquelle vous souhaitez centrer la carte",
+							"latitude": "Définissez la latitude par défaut du centre de la carte. 'Utiliser la vue actuelle' sauvegardera la latitude de la carte d'aperçu.",
+							"longitude": "Définissez la longitude par défaut du centre de la carte. 'Utiliser la vue actuelle' sauvegardera la longitude de la carte d'aperçu.",
 							"zoom": "Sélectionnez un zoom par défaut"
 						}
 					}
@@ -1428,9 +1577,9 @@
 			"noDataText": "No available choice"
 		},
 		"datepicker": {
-			"dateLabel": "@TODO",
-			"endLabel": "@TODO",
-			"startLabel": "@TODO",
+			"dateLabel": "Sélectionnez une date",
+			"endLabel": "Date de fin",
+			"startLabel": "Date de début",
 			"today": "Aujourd'hui",
 			"toggle": "Sélectionnez une date"
 		},
@@ -1626,7 +1775,7 @@
 			"menu": "Menu latéral",
 			"new": "Nouvelle application",
 			"notifications": {
-				"notPublished": "Candidature non publiée.",
+				"notPublished": "L'application n'a pas pu être publiée.",
 				"published": "L'application {{value}} a été publiée.",
 				"updated": "Application modifiée."
 			},
@@ -1791,6 +1940,7 @@
 		"workflow": {
 			"notifications": {
 				"cannotGoToNextStep": "Impossible de passer à l'étape suivante",
+				"cannotGoToPreviousStep": "Impossible de passer à l'étape précédente",
 				"goToStep": "De retour à l'étape {{step}}."
 			}
 		}

@@ -14,7 +14,7 @@ interface DialogData {
   content?: string;
   cancelText?: string;
   confirmText?: string;
-  confirmColor?: string;
+  confirmVariant?: Variant;
 }
 
 /**

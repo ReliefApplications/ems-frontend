@@ -53,7 +53,7 @@
       </safe-floating-options>
       <safe-widget
         [widget]="widget"
-        (goToNextStep)="goToNextStep.emit($event)"
+        (changeStep)="changeStep.emit($event)"
         [id]="'widget-' + widget.id"
         (edit)="onEditWidget($event)"
         [canUpdate]="canUpdate"

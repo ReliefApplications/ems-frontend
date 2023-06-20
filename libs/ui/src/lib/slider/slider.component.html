@@ -30,7 +30,7 @@
     min="{{ minValue }}"
     max="{{ maxValue }}"
     value="{{ currentValue }}"
-    step="1"
+    [step]="step"
     (input)="onChangeFunction($event.target)"
   />
   <!-- Ticks placement + appearance -->

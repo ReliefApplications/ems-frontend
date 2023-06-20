@@ -4,7 +4,7 @@
     <div
       *ngIf="canEdit"
       (click)="toggleControlState()"
-      class="hover:bg-neutral-200 rounded-lg py-1"
+      class="hover:bg-neutral-200 rounded-lg py-1 w-full"
     >
       <ng-container *ngTemplateOutlet="content"></ng-container>
     </div>
@@ -14,7 +14,7 @@
   </ng-container>
   <!-- Text edition -->
   <ng-container *ngIf="!formControl.disabled">
-    <div uiFormFieldDirective >
+    <div uiFormFieldDirective>
       <label>{{ 'common.name' | translate }}</label>
       <input [formControl]="formControl" type="string" />
       <!-- Validate value -->

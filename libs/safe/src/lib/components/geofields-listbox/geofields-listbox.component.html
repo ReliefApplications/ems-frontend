@@ -1,0 +1,18 @@
+<div class="flex flex-row flex-wrap gap-2">
+  <kendo-listbox
+    class="h-72 flex-1"
+    kendoListBoxDataBinding
+    [data]="availableFields"
+    [connectedWith]="selected"
+    [toolbar]="toolbarSettings"
+    (actionClick)="handleActionClick()"
+  >
+  </kendo-listbox>
+  <kendo-listbox
+    class="h-72 flex-1"
+    #selected
+    [data]="selectedFields"
+    [toolbar]="false"
+  >
+  </kendo-listbox>
+</div>

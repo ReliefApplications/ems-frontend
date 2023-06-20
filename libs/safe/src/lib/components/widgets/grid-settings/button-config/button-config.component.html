@@ -70,6 +70,13 @@
               | translate
           }}</ng-container>
         </ui-checkbox>
+        <!-- Go to previous step -->
+        <ui-checkbox formControlName="goToPreviousStep">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.workflow.previous'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
         <!-- Close workflow -->
         <ui-checkbox formControlName="closeWorkflow">
           <ng-container ngProjectAs="label">{{
@@ -128,31 +135,48 @@
                   >{{ field.name }}</ui-select-option
                 >
               </ui-select-menu>
+              <ui-button
+                uiSuffix
+                [isIcon]="true"
+                icon="remove_circle_outline"
+                variant="danger"
+                (click)="onDeleteModification(i)"
+              >
+              </ui-button>
             </div>
-            <div *ngIf="modification.value.field" uiFormFieldDirective>
-              <label>{{
-                'components.widget.settings.grid.buttons.callback.modifyValue'
-                  | translate
-              }}</label>
+            <ng-container *ngIf="modification.value.field">
+              <!-- @todo: replace with ngSwitch and better manage all types -->
               <ng-container
                 *ngIf="
                   ['Int', 'Float'].includes(modification.value.field.type.name)
                 "
               >
-                <input formControlName="value" type="number" />
+                <div uiFormFieldDirective>
+                  <label>{{
+                    'components.widget.settings.grid.buttons.callback.modifyValue'
+                      | translate
+                  }}</label>
+                  <input formControlName="value" type="number" />
+                </div>
               </ng-container>
               <ng-container
                 *ngIf="modification.value.field.type.name === 'Boolean'"
               >
-                <ui-select-menu formControlName="value">
-                  <ui-select-option>--</ui-select-option>
-                  <ui-select-option [value]="true">{{
-                    'common.true' | translate
-                  }}</ui-select-option>
-                  <ui-select-option [value]="false">{{
-                    'common.false' | translate
-                  }}</ui-select-option>
-                </ui-select-menu>
+                <div uiFormFieldDirective>
+                  <label>{{
+                    'components.widget.settings.grid.buttons.callback.modifyValue'
+                      | translate
+                  }}</label>
+                  <ui-select-menu formControlName="value">
+                    <ui-select-option>--</ui-select-option>
+                    <ui-select-option [value]="true">{{
+                      'common.true' | translate
+                    }}</ui-select-option>
+                    <ui-select-option [value]="false">{{
+                      'common.false' | translate
+                    }}</ui-select-option>
+                  </ui-select-menu>
+                </div>
               </ng-container>
               <ng-container
                 *ngIf="
@@ -161,17 +185,15 @@
                   ) && modification.value.field.type.name !== 'Boolean'
                 "
               >
-                <input formControlName="value" type="string" />
+                <div uiFormFieldDirective>
+                  <label>{{
+                    'components.widget.settings.grid.buttons.callback.modifyValue'
+                      | translate
+                  }}</label>
+                  <input formControlName="value" type="string" />
+                </div>
               </ng-container>
-            </div>
-
-            <ui-button
-              [isIcon]="true"
-              icon="remove_circle_outline"
-              variant="danger"
-              (click)="onDeleteModification(i)"
-            >
-            </ui-button>
+            </ng-container>
           </form>
           <ui-button
             [isIcon]="true"

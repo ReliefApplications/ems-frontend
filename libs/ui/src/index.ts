@@ -27,6 +27,7 @@ export * from './lib/sidenav/sidenav-container.module';
 export * from './lib/sidenav/sidenav-container.component';
 export * from './lib/chip/chip.module';
 export * from './lib/form-wrapper/form-wrapper.module';
+export * from './lib/form-wrapper/form-control/form-control.component';
 export * from './lib/dialog/dialog.module';
 export * from './lib/tabs/tabs.module';
 export * from './lib/tabs/tabs.component';

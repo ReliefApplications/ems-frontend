@@ -3,7 +3,7 @@
     <safe-widget
       [widget]="data.widget"
       [header]="false"
-      (goToNextStep)="goToNextStep.emit($event)"
+      (changeStep)="changeStep.emit($event)"
     ></safe-widget>
   </ng-container>
 </ui-dialog>

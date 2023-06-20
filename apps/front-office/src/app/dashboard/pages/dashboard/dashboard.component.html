@@ -37,7 +37,7 @@
     <safe-widget-grid
       [loading]="loading"
       [widgets]="widgets"
-      (goToNextStep)="goToNextStep.emit($event)"
+      (changeStep)="changeStep.emit($event)"
     ></safe-widget-grid>
     <safe-dashboard-filter
       *ngIf="showFilter && isFullScreen"

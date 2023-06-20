@@ -1,6 +1,6 @@
 <div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row">
   <!-- Filters -->
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-x-4">
     <!-- Default filter -->
     <div class="flex flex-wrap gap-2 flex-col sm:flex-row">
       <!-- Search text filter -->
@@ -31,10 +31,10 @@
     <!-- Advanced filters -->
     <div
       *ngIf="showFilters"
-      class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row"
+      class="flex flex-wrap gap-x-2 sm:items-center flex-col sm:flex-row"
     >
       <!-- Status filter -->
-      <div uiFormFieldDirective [outline]="false" class="mt-4 w-32">
+      <div uiFormFieldDirective [outline]="false" class="w-32">
         <label>{{ 'common.status' | translate }}</label>
         <ui-select-menu
           [ngModel]="statusFilter"
@@ -90,7 +90,11 @@
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td uiCell *cdkCellDef="let element" class="!text-gray-900 !font-medium">
+        <td
+          uiCell
+          *cdkCellDef="let element"
+          class="!text-gray-900 !font-medium"
+        >
           {{ element.name }}
         </td>
       </ng-container>

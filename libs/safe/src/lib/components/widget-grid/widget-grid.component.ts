@@ -57,7 +57,7 @@ export class SafeWidgetGridComponent
   @Output() add: EventEmitter<any> = new EventEmitter();
 
   // === STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+  @Output() changeStep: EventEmitter<number> = new EventEmitter();
 
   @ViewChildren(SafeWidgetComponent)
   widgetComponents!: QueryList<SafeWidgetComponent>;
@@ -164,10 +164,10 @@ export class SafeWidgetGridComponent
       },
       autoFocus: false,
     });
-    dialogRef.componentInstance?.goToNextStep
+    dialogRef.componentInstance?.changeStep
       .pipe(takeUntil(this.destroy$))
       .subscribe((event: any) => {
-        this.goToNextStep.emit(event);
+        this.changeStep.emit(event);
         dialogRef.close();
       });
   }

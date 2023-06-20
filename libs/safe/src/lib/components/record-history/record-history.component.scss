@@ -46,7 +46,6 @@ ui-expansion-panel {
   flex-direction: column;
 }
 
-
 ::ng-deep .accordion-item {
   align-items: center;
   font-size: 14px;
@@ -57,4 +56,10 @@ ui-expansion-panel {
 
 ::ng-deep p {
   line-height: 2;
+}
+
+#date-header {
+  ::ng-deep div {
+    margin-left: unset !important;
+  }
 }
