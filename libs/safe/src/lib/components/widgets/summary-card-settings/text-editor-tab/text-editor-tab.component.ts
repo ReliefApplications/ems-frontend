@@ -2,7 +2,7 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { SafeEditorService } from '../../../../services/editor/editor.service';
 import { WIDGET_EDITOR_CONFIG } from '../../../../const/tinymce.const';
-import { getCalcKeys, getDataKeys } from '../../summary-card/parser/utils';
+import { getCalcKeys, getDataKeys } from '../../../../utils/parser/utils';
 
 /**
  * Component used in the card-modal-settings for editing the content of the card.

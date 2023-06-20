@@ -15,7 +15,7 @@ import { Layout } from '../../../models/layout.model';
 import { Apollo } from 'apollo-angular';
 import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
 import { get } from 'lodash';
-import { getCalcKeys, getDataKeys } from '../summary-card/parser/utils';
+import { getCalcKeys, getDataKeys } from '../../../utils/parser/utils';
 
 /**
  * Creates the form for the editor widget settings.

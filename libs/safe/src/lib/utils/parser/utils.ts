@@ -79,14 +79,14 @@ export const parseHtml = (
  * gets the style for the cards
  *
  * @param wholeCardStyles boolean
- * @param styles available
  * @param fieldsValue array of fields to apply the filters
+ * @param styles available
  * @returns the html styles
  */
 export const getCardStyle = (
   wholeCardStyles: boolean = false,
-  styles: any[] = [],
-  fieldsValue: any
+  fieldsValue: any,
+  styles: any[] = []
 ) => {
   if (wholeCardStyles) {
     let lastRowStyle = '';

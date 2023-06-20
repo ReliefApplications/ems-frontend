@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
-import { parseHtml } from '../summary-card/parser/utils';
 import { firstValueFrom } from 'rxjs';
 import {
   GET_LAYOUT,
@@ -11,6 +10,7 @@ import {
 } from '../summary-card/graphql/queries';
 import { get } from 'lodash';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import { DataTemplateService } from '../../../services/data-template/data-template.service';
 
 /**
  * Text widget component using KendoUI
@@ -29,9 +29,10 @@ export class SafeEditorComponent implements OnInit {
   private fields: any[] = [];
   private fieldsValue: any;
   private styles: any[] = [];
+  private wholeCardStyles = false;
 
-  // === TEXT SANITIZED ===
-  public safeHtml: SafeHtml = '';
+  public formattedHtml: SafeHtml = '';
+  public formattedStyle?: string;
 
   /**
    * Constructor for safe-editor component
@@ -39,17 +40,19 @@ export class SafeEditorComponent implements OnInit {
    * @param sanitizer Dom sanitizer instance
    * @param apollo Apollo instance
    * @param queryBuilder Query builder service
+   * @param dataTemplateService Shared data template service, used to render content from template
    */
   constructor(
     private sanitizer: DomSanitizer,
     private apollo: Apollo,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private dataTemplateService: DataTemplateService
   ) {}
 
   /** Sanitizes the text. */
   ngOnInit(): void {
     if (!this.settings.record) {
-      this.safeHtml = this.sanitizer.bypassSecurityTrustHtml(
+      this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
         this.settings.text
       );
     } else {
@@ -58,15 +61,27 @@ export class SafeEditorComponent implements OnInit {
   }
 
   /**
-   * Sets content of the text widget, querying associated record.
+   * Sets content of the text widget, querying associated record if any.
    */
   private async setContentFromLayout(): Promise<void> {
-    await this.getStyles();
-    await this.getData();
-
-    this.safeHtml = this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(this.settings.text, this.fieldsValue, this.fields, this.styles)
-    );
+    if (this.settings.record) {
+      await Promise.all([this.getStyles(), this.getData()]);
+      this.formattedStyle = this.dataTemplateService.renderStyle(
+        this.wholeCardStyles,
+        this.fieldsValue,
+        this.styles
+      );
+      this.formattedHtml = this.dataTemplateService.renderHtml(
+        this.settings.text,
+        this.fieldsValue,
+        this.fields,
+        this.styles
+      );
+    } else {
+      this.formattedHtml = this.dataTemplateService.renderHtml(
+        this.settings.text
+      );
+    }
   }
 
   /** Sets layout style. */
@@ -136,5 +151,14 @@ export class SafeEditorComponent implements OnInit {
       const record: any = get(res.data, `${queryName}.edges[0].node`, null);
       this.fieldsValue = { ...record };
     }
+  }
+
+  /**
+   * Pass click event to data template service
+   *
+   * @param event Click event
+   */
+  public onClick(event: any) {
+    this.dataTemplateService.onClick(event, this.fieldsValue);
   }
 }

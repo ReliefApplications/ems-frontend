@@ -17,7 +17,7 @@ import { SafeEditorService } from '../../../services/editor/editor.service';
 import {
   getCalcKeys,
   getDataKeys,
-} from '../../widgets/summary-card/parser/utils';
+} from '../../../utils/parser/utils';
 import { addNewField } from '../query-builder-forms';
 import { SafeQueryBuilderComponent } from '../query-builder.component';
 
