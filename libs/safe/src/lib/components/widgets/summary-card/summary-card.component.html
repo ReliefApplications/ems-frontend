@@ -74,7 +74,7 @@
           >
             <safe-summary-card-item
               *ngFor="let card of cards; let i = index"
-              class="k-tilelayout-item k-card"
+              class="k-tilelayout-item k-card flex flex-col"
               [style.order]="i"
               style.grid-column-end="{{
                 'span ' +

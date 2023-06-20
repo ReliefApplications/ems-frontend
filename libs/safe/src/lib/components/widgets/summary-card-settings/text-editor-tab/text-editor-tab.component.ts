@@ -2,7 +2,7 @@ import { Component, Input, OnChanges } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { SafeEditorService } from '../../../../services/editor/editor.service';
 import { WIDGET_EDITOR_CONFIG } from '../../../../const/tinymce.const';
-import { getCalcKeys, getDataKeys } from '../../summary-card/parser/utils';
+import { DataTemplateService } from '../../../../services/data-template/data-template.service';
 
 /**
  * Component used in the card-modal-settings for editing the content of the card.
@@ -23,8 +23,12 @@ export class SafeTextEditorTabComponent implements OnChanges {
    * SafeTextEditorTabComponent constructor.
    *
    * @param editorService Editor service used to get main URL and current language
+   * @param dataTemplateService Shared data template service
    */
-  constructor(private editorService: SafeEditorService) {
+  constructor(
+    private editorService: SafeEditorService,
+    private dataTemplateService: DataTemplateService
+  ) {
     // Set the editor base url based on the environment file
     this.editor.base_url = editorService.url;
     // Set the editor language
@@ -32,10 +36,10 @@ export class SafeTextEditorTabComponent implements OnChanges {
   }
 
   ngOnChanges(): void {
-    const dataKeys = getDataKeys(this.fields);
-    const calcKeys = getCalcKeys();
-    const keys = dataKeys.concat(calcKeys);
     // Setup editor auto complete
-    this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
+    this.editorService.addCalcAndKeysAutoCompleter(
+      this.editor,
+      this.dataTemplateService.getAutoCompleterKeys(this.fields)
+    );
   }
 }

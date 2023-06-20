@@ -15,7 +15,7 @@ import { Layout } from '../../../models/layout.model';
 import { Apollo } from 'apollo-angular';
 import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
 import { get } from 'lodash';
-import { getCalcKeys, getDataKeys } from '../summary-card/parser/utils';
+import { DataTemplateService } from '../../../services/data-template/data-template.service';
 
 /**
  * Creates the form for the editor widget settings.
@@ -69,10 +69,12 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
    *
    * @param editorService Editor service used to get main URL and current language
    * @param apollo Apollo service
+   * @param dataTemplateService Shared data template service
    */
   constructor(
     private editorService: SafeEditorService,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private dataTemplateService: DataTemplateService
   ) {
     // Set the editor base url based on the environment file
     this.editor.base_url = editorService.url;
@@ -139,10 +141,10 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
         }
       });
     });
-    const dataKeys = getDataKeys(fields);
-    const calcKeys = getCalcKeys();
-    const keys = dataKeys.concat(calcKeys);
     // Setup editor auto complete
-    this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
+    this.editorService.addCalcAndKeysAutoCompleter(
+      this.editor,
+      this.dataTemplateService.getAutoCompleterKeys(fields)
+    );
   }
 }
