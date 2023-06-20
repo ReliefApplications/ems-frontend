@@ -22,6 +22,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { SnackbarService } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import uniqBy from 'lodash/uniqBy';
 
 /**
  * A component to display the list of users
@@ -151,7 +152,10 @@ export class SafeUsersComponent
                     this.translate.instant('components.users.onInvite.singular')
                   );
                 }
-                this.users = this.users.concat(data?.addUsers || []);
+                this.users = uniqBy(
+                  [...(data?.addUsers || []), ...this.users],
+                  'username'
+                );
                 this.filterPredicate();
               } else {
                 if (value.length > 1) {
