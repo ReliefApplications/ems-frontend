@@ -107,8 +107,6 @@ export class DashboardFilterComponent
     @Optional() private _host: SidenavContainerComponent
   ) {
     super();
-    formService.setSurveyCreatorInstance({ customQuestions: ['date-range'] });
-
     this.destroy$.subscribe(() => {
       this.formService.setSurveyCreatorInstance();
     });
@@ -146,6 +144,10 @@ export class DashboardFilterComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.formService.setSurveyCreatorInstance({
+      customQuestions: ['date-range'],
+    });
+
     if (changes.isFullScreen) {
       this.setFilterContainerDimensions();
     }
@@ -192,6 +194,11 @@ export class DashboardFilterComponent
         dialogRef.closed
           .pipe(takeUntil(this.destroy$))
           .subscribe((newStructure) => {
+            if (this.isDrawerOpen) {
+              this.formService.setSurveyCreatorInstance({
+                customQuestions: ['date-range'],
+              });
+            }
             if (newStructure) {
               this.surveyStructure = newStructure;
               this.initSurvey();
