@@ -45,13 +45,14 @@ export class DataTemplateService {
    * Get auto completer keys
    *
    * @param fields available fields
+   * @param CalcKeys boolean to tell if should return CalcKeys
    * @returns available keys
    */
   public getAutoCompleterKeys(fields: any[], CalcKeys?: boolean) {
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
     const pages = application?.pages || [];
-    if(CalcKeys === false){
+    if (CalcKeys === false) {
       return [...getDataKeys(fields), ...getPageKeys(pages)];
     }
     return [...getDataKeys(fields), ...getCalcKeys(), ...getPageKeys(pages)];
@@ -109,17 +110,18 @@ export class DataTemplateService {
   /**
    * Get button link using application page id
    *
-   * @param editor current editor
+   * @param pageId page id
+   * @returns page url
    */
   public getButtonLink(pageId: string): string {
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
     const pages = this.getPages(application);
     const page = pages.filter((page: any) => page.id === pageId);
-    if(page){
-      return page[0].url
+    if (page) {
+      return page[0].url;
     }
-    return ''
+    return '';
   }
 
   /**

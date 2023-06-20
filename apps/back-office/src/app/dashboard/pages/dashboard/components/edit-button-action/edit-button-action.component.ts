@@ -23,9 +23,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { get } from 'lodash';
 import { RawEditorSettings } from 'tinymce';
 import { EditorModule } from '@tinymce/tinymce-angular';
-import {
-  INLINE_EDITOR_CONFIG,
-} from '../../../../../../../../../libs/safe/src/lib/const/tinymce.const';
+import { INLINE_EDITOR_CONFIG } from '../../../../../../../../../libs/safe/src/lib/const/tinymce.const';
 import { SafeEditorService } from 'libs/safe/src/lib/services/editor/editor.service';
 import { SafeEditorControlComponent } from 'libs/safe/src/lib/components/editor-control/editor-control.component';
 import { DataTemplateService } from 'libs/safe/src/lib/services/data-template/data-template.service';
@@ -74,7 +72,7 @@ const createButtonActionForm = (data?: ButtonActionT) => {
   templateUrl: './edit-button-action.component.html',
   styleUrls: ['./edit-button-action.component.scss'],
 })
-export class EditButtonActionComponent implements OnInit{
+export class EditButtonActionComponent implements OnInit {
   public form: ReturnType<typeof createButtonActionForm>;
 
   public variants = ButtonVariants;
@@ -90,6 +88,8 @@ export class EditButtonActionComponent implements OnInit{
    *
    * @param dialogRef dialog reference
    * @param data initial button action
+   * @param editorService editor service used to get main URL and current language
+   * @param dataTemplateService Shared data template service
    */
   constructor(
     public dialogRef: DialogRef<ButtonActionT>,
@@ -121,7 +121,7 @@ export class EditButtonActionComponent implements OnInit{
       //regex to verify if it's a page id key
       const regex = /{{page\((.*?)\)}}/;
       const match = href.match(regex);
-      if(match){
+      if (match) {
         href = this.dataTemplateService.getButtonLink(match[1]);
       }
       const isNewTab = this.form.get('openInNewTab')?.value ?? true;
