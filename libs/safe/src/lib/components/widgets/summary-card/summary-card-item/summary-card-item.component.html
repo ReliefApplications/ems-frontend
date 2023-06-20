@@ -5,7 +5,7 @@
     [ngTemplateOutlet]="headerTemplate"
   ></ng-container>
   <!-- Default Header -->
-  <div class="widget-header k-card-header" *ngIf="!headerTemplate">
+  <div class="widget-header k-card-header" *ngIf="!headerTemplate && card.title">
     <!-- Title -->
     <span class="widget-title" [title]="card.title">{{ card.title }}</span>
     <!-- Actions -->
