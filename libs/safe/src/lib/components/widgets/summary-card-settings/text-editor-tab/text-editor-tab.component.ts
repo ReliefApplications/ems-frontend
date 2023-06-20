@@ -49,27 +49,7 @@ export class SafeTextEditorTabComponent
     this.editorComponent?.onKeyDown
       .pipe(takeUntil(this.destroy$))
       .subscribe((e) => {
-        if (e.event.code === 'ArrowDown' || e.event.code === 'ArrowUp') {
-          const collectionGroup = document.querySelector(
-            '.tox-collection__group'
-          );
-          // If autocomplete list in the DOM, trigger scrolling events
-          if (collectionGroup) {
-            if (!this.editorService.activeItemScrollListener) {
-              // Initialize listener
-              this.editorService.initScrollActive(
-                collectionGroup,
-                e.editor.getElement()
-              );
-              // Execute directly first keydown event when no listener is ready
-              this.editorService.handleKeyDownEvent(
-                e.event,
-                collectionGroup,
-                e.editor.getElement()
-              );
-            }
-          }
-        }
+        this.editorService.editorComponentKeyDownHandler(e);
       });
   }
 

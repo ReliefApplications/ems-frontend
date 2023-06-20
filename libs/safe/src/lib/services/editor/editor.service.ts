@@ -94,9 +94,14 @@ export class SafeEditorService {
           }
           if (this.activeItemScrollListener) {
             this.activeItemScrollListener();
+            this.activeItemScrollListener = null;
           }
         },
         fetch: async (pattern: string) => {
+          if (this.activeItemScrollListener) {
+            this.activeItemScrollListener();
+            this.activeItemScrollListener = null;
+          }
           this.allowScrolling();
           return keys
             .filter((key) => key.includes(pattern))
@@ -187,6 +192,26 @@ export class SafeEditorService {
           showItem = collectionGroup.lastElementChild;
         }
         showItem?.scrollIntoView(false);
+      }
+    }
+  }
+
+  /**
+   * Handle editor component keydown event
+   *
+   * @param e Editor component keydown event
+   */
+  public editorComponentKeyDownHandler(e: any) {
+    if (e.event.code === 'ArrowDown' || e.event.code === 'ArrowUp') {
+      const collectionGroup = document.querySelector('.tox-collection__group');
+      // If autocomplete list in the DOM, trigger scrolling events
+      if (collectionGroup) {
+        if (!this.activeItemScrollListener) {
+          // Initialize listener
+          this.initScrollActive(collectionGroup, e.editor.getBody());
+          // Execute directly first keydown event when no listener is ready
+          this.handleKeyDownEvent(e.event, collectionGroup, e.editor.getBody());
+        }
       }
     }
   }
