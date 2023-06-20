@@ -20,7 +20,6 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   @Input() card!: CardT;
   public fields: any[] = [];
   public fieldsValue: any = null;
-  public loading = true;
   public styles: any[] = [];
 
   // private layout: any;
@@ -52,7 +51,6 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
     await this.getStyles();
     this.fieldsValue = { ...this.card.record };
     this.fields = this.card.metadata || [];
-    this.loading = false;
   }
 
   /** Sets layout style */
@@ -60,7 +58,6 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
     // this.layout = this.card.layout;
     this.styles = get(this.card.layout, 'query.style', []);
     // this.styles = get(this.card, 'meta.style', []);
-    this.loading = false;
   }
 
   /**
@@ -120,7 +117,6 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
    */
   private setContentFromAggregation(): void {
     this.styles = [];
-    this.loading = false;
     if (!this.fieldsValue) return;
     // @TODO: get the fields' types from the aggregation data
     this.fields = Object.keys(this.fieldsValue).map((key) => ({
