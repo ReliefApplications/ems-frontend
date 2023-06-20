@@ -95,9 +95,14 @@ export class SafeEditorService {
           }
           if (this.activeItemScrollListener) {
             this.activeItemScrollListener();
+            this.activeItemScrollListener = null;
           }
         },
         fetch: async (pattern: string) => {
+          if (this.activeItemScrollListener) {
+            this.activeItemScrollListener();
+            this.activeItemScrollListener = null;
+          }
           this.allowScrolling();
           return keys
             .filter((key) => key.includes(pattern))
