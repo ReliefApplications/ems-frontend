@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { SummaryCardItemComponent } from './summary-card-item.component';
 import { SummaryCardItemContentModule } from '../summary-card-item-content/summary-card-item-content.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { ButtonModule } from '@oort-front/ui';
 
 /**
@@ -15,7 +14,6 @@ import { ButtonModule } from '@oort-front/ui';
     CommonModule,
     SummaryCardItemContentModule,
     TranslateModule,
-    IndicatorsModule,
     ButtonModule,
   ],
   exports: [SummaryCardItemComponent],
