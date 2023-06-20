@@ -72,6 +72,25 @@ export const init = (Survey: any, domService: DomService): void => {
           obj.setPropertyValue('max', value);
         },
       });
+
+      serializer.addProperty('text', {
+        name: 'minValueExpression:expression',
+        category: 'logic',
+        onExecuteExpression: (obj: QuestionText, res: any) => {
+          obj.setPropertyValue('dateMin', res);
+          obj.setPropertyValue('min', res);
+        },
+      });
+
+      serializer.addProperty('text', {
+        name: 'maxValueExpression:expression',
+        category: 'logic',
+        onExecuteExpression: (obj: QuestionText, res: any) => {
+          obj.setPropertyValue('dateMax', res);
+          obj.setPropertyValue('max', res);
+        },
+      });
+
       // register the editor for type "date" with kendo date picker
       const dateEditor = {
         render: (editor: any, htmlElement: HTMLElement) => {
@@ -235,11 +254,15 @@ export const init = (Survey: any, domService: DomService): void => {
           el.style.display = 'initial';
         }
       };
-      question.registerFunctionOnPropertyValueChanged(
-        'inputType',
-        updateTextInput,
-        el.id // a unique key to distinguish fields
-      );
+
+      ['inputType', 'min', 'max'].forEach((prop) => {
+        question.registerFunctionOnPropertyValueChanged(
+          prop,
+          updateTextInput,
+          el.id // a unique key to distinguish fields
+        );
+      });
+
       // Init
       updateTextInput();
 
