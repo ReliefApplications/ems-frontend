@@ -1,8 +1,17 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 import { DomSanitizer } from '@angular/platform-browser';
 import { SafeDownloadService } from '../download/download.service';
 import get from 'lodash/get';
-import { getCardStyle, parseHtml } from '../../utils/parser/utils';
+import {
+  getCalcKeys,
+  getCardStyle,
+  getDataKeys,
+  getPageKeys,
+  parseHtml,
+} from '../../utils/parser/utils';
+import { SafeApplicationService } from '../application/application.service';
+import { Application } from '../../models/application.model';
+import { ContentType, Page } from '../../models/page.model';
 
 /**
  * Data template service
@@ -12,16 +21,38 @@ import { getCardStyle, parseHtml } from '../../utils/parser/utils';
   providedIn: 'root',
 })
 export class DataTemplateService {
+  /** Current environment */
+  private environment: any;
+
   /**
    * Content component of Single Item of Summary Card.
    *
    * @param sanitizer Sanitizes the cards content so angular can show it up.
    * @param downloadService Used to download file type fields
+   * @param applicationService Shared application service
+   * @param environment Current environment
    */
   constructor(
     private sanitizer: DomSanitizer,
-    private downloadService: SafeDownloadService
-  ) {}
+    private downloadService: SafeDownloadService,
+    private applicationService: SafeApplicationService,
+    @Inject('environment') environment: any
+  ) {
+    this.environment = environment;
+  }
+
+  /**
+   * Get auto completer keys
+   *
+   * @param fields available fields
+   * @returns available keys
+   */
+  public getAutoCompleterKeys(fields: any[]) {
+    // Add available pages to the list of available keys
+    const application = this.applicationService.application.getValue();
+    const pages = application?.pages || [];
+    return [...getDataKeys(fields), ...getCalcKeys(), ...getPageKeys(pages)];
+  }
 
   /**
    * Render HTML from definition
@@ -33,8 +64,10 @@ export class DataTemplateService {
    * @returns html to render
    */
   public renderHtml(html: string, data?: any, fields?: any[], styles?: any[]) {
+    // Add available pages to the list of available keys
+    const application = this.applicationService.application.getValue();
     return this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(html, data, fields, styles)
+      parseHtml(html, data, fields, this.getPages(application), styles)
     );
   }
 
@@ -68,5 +101,27 @@ export class DataTemplateService {
         this.downloadService.getFile(path, file.type, file.name);
       }
     }
+  }
+
+  private getPageUrl(application: Application, page: Page): string {
+    if (this.environment.module === 'backoffice') {
+      return page.type === ContentType.form
+        ? `${this.environment.backOfficeUri}/applications/${application.id}/${page.type}/${page.id}`
+        : `${this.environment.backOfficeUri}/applications/${application.id}/${page.type}/${page.content}`;
+    } else {
+      return page.type === ContentType.form
+        ? `${this.environment.frontOfficeUri}/${page.type}/${page.id}`
+        : `${this.environment.frontOfficeUri}/${page.type}/${page.content}`;
+    }
+  }
+
+  private getPages(application: Application | null) {
+    return (
+      application?.pages?.map((page) => ({
+        id: page.id,
+        name: page.name,
+        url: this.getPageUrl(application, page),
+      })) || []
+    );
   }
 }

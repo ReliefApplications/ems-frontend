@@ -96,7 +96,7 @@ import { SnackbarService } from '@oort-front/ui';
 })
 export class SafeApplicationService {
   /** Current application */
-  private application = new BehaviorSubject<Application | null>(null);
+  public application = new BehaviorSubject<Application | null>(null);
   /** @returns Current application as observable */
   get application$(): Observable<Application | null> {
     return this.application.asObservable();

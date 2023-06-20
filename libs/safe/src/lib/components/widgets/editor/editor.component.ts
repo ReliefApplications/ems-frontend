@@ -51,13 +51,7 @@ export class SafeEditorComponent implements OnInit {
 
   /** Sanitizes the text. */
   ngOnInit(): void {
-    if (!this.settings.record) {
-      this.formattedHtml = this.sanitizer.bypassSecurityTrustHtml(
-        this.settings.text
-      );
-    } else {
-      this.setContentFromLayout();
-    }
+    this.setContentFromLayout();
   }
 
   /**
