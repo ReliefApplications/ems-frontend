@@ -13,6 +13,7 @@ import {
 import {
   createCustomDivIcon,
   DEFAULT_MARKER_ICON_OPTIONS,
+  clusterStyles,
 } from './utils/create-div-icon';
 import {
   LayerDatasource,
@@ -74,10 +75,10 @@ export const DEFAULT_HEATMAP = {
 };
 
 /** Minimum cluster size in pixel */
-const MIN_CLUSTER_SIZE = 20;
+// const MIN_CLUSTER_SIZE = 20;
 
 /** Maximum cluster size in pixel */
-const MAX_CLUSTER_SIZE = 100;
+// const MAX_CLUSTER_SIZE = 100;
 
 /** All existing geometry types */
 const GEOMETRY_TYPES = [
@@ -660,6 +661,8 @@ export class Layer implements LayerModel {
                   'featureReduction.drawingInfo.renderer.symbol',
                   symbol
                 );
+                const styleElement = document.createElement('style');
+                document.head.appendChild(styleElement);
                 const clusterGroup = L.markerClusterGroup({
                   maxClusterRadius: get(
                     this.layerDefinition,
@@ -667,24 +670,35 @@ export class Layer implements LayerModel {
                     80
                   ),
                   zoomToBoundsOnClick: false,
+                  spiderfyOnMaxZoom: false,
+                  showCoverageOnHover: false,
                   iconCreateFunction: (cluster) => {
-                    const htmlTemplate = document.createElement('label');
-                    htmlTemplate.textContent = cluster
-                      .getChildCount()
-                      .toString();
-                    return createCustomDivIcon(
-                      {
-                        icon: clusterSymbol.style,
-                        color: clusterSymbol.color,
-                        size:
-                          (cluster.getChildCount() / 50) *
-                            (MAX_CLUSTER_SIZE - MIN_CLUSTER_SIZE) +
-                          MIN_CLUSTER_SIZE,
-                        opacity: this.opacity,
-                      },
-                      htmlTemplate,
-                      'leaflet-data-marker'
+                    // To have a customized color for clusters, we need the iconCreateFunction
+                    // and modify the css leaflet marker-cluster classes
+                    const childCount = cluster.getChildCount();
+                    let c = ' marker-cluster-';
+                    if (childCount < 10) {
+                      c += 'small';
+                    } else if (childCount < 100) {
+                      c += 'medium';
+                    } else {
+                      c += 'large';
+                    }
+                    styleElement.innerHTML = clusterStyles(
+                      clusterSymbol.color,
+                      this.id
                     );
+                    return new L.DivIcon({
+                      html:
+                        `
+                        <div id="cluster-id-${this.id}" style="background-color:${clusterSymbol.color};">
+                        <span style="background-color:${clusterSymbol.color};">` +
+                        childCount +
+                        `</span>
+                        </div>
+                      `,
+                      className: 'marker-cluster' + c,
+                    });
                   },
                 });
                 clusterGroup.onAdd = (map: L.Map) => {
@@ -693,6 +707,12 @@ export class Layer implements LayerModel {
                     map
                   );
                   this.onAddLayer(map, clusterGroup);
+                  // try to remove parent div that always stays in the default leaflet color
+                  const clusterDiv = document.querySelector(
+                    `#cluster-id-${this.id}`
+                  ) as HTMLElement;
+                  const parent = clusterDiv?.parentElement;
+                  parent?.style?.setProperty('background-color', 'transparent');
                   return l;
                 };
                 clusterGroup.onRemove = (map: L.Map) => {
@@ -923,7 +943,7 @@ export class Layer implements LayerModel {
             html += `<div>Clusters</div>`;
             html += `<i style="color: ${
               clusterSymbol.color
-            }"; class="${pipe.transform(clusterSymbol.style, 'fa')} pl-2"></i>`;
+            }"; class="${pipe.transform('circle', 'fa')} pl-2"></i>`;
             break;
           }
           default: {

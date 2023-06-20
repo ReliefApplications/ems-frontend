@@ -77,6 +77,35 @@ const markerHtmlStyles = (
 };
 
 /**
+ * Creates a new custom css class to change the cluster marker color
+ *
+ * @param color Color set in the cluster
+ * @param clusterId layer id to find the custom div cluster
+ * @returns CSS classes for the marker cluster
+ */
+export const clusterStyles = (color: string, clusterId: string) => {
+  return `
+  #cluster-id=${clusterId} .marker-cluster-small {
+    background-color: ${color};
+  }
+  #cluster-id-${clusterId} .marker-cluster-small div {
+    background-color: ${color};
+  }
+  #cluster-id-${clusterId} .marker-cluster-medium {
+    background-color: ${color};
+  }
+  #cluster-id-${clusterId} .marker-cluster-medium div {
+    background-color: ${color};
+  }
+  #cluster-id-${clusterId} .marker-cluster-large {
+    background-color: ${color};
+  }
+  #cluster-id-${clusterId} .marker-cluster-large div {
+    background-color: ${color};
+  }`;
+};
+
+/**
  * Create a custom div icon with the given icon or with custom
  *
  * @param iconProperties Properties related to the icon
