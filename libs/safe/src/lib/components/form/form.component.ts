@@ -273,6 +273,7 @@ export class SafeFormComponent
     this.formHelpersService.setEmptyQuestions(this.survey);
     // We wait for the resources questions to update their ids
     await Promise.allSettled(promises);
+    await this.formHelpersService.createCachedRecords(this.survey);
     // this.survey.data = surveyData;
     // If is an already saved record, edit it
     if (this.record || this.form.uniqueRecord) {
