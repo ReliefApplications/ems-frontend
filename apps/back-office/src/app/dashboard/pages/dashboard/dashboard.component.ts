@@ -626,6 +626,7 @@ export class DashboardComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe(async (button) => {
         if (!button) return;
+        console.log(button);
         const currButtons =
           (await firstValueFrom(this.dashboardService.dashboard$))?.buttons ||
           [];
