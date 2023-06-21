@@ -25,6 +25,14 @@
             {{ dashboard.name }}
           </h1>
         </safe-editable-text>
+        <ui-button
+          [isIcon]="true"
+          variant="grey"
+          category="primary"
+          [icon]="dashboard.page?.visible ? 'visibility' : 'visibility_off'"
+          (click)="togglePageVisibility()"
+        >
+        </ui-button>
 
         <div
           class="flex items-center gap-1"

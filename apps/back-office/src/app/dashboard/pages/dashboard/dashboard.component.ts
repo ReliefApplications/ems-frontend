@@ -119,6 +119,7 @@ export class DashboardComponent
    * @param refDataService Shared reference data service
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
+   * @param translate Translate service
    */
   constructor(
     private applicationService: SafeApplicationService,
@@ -134,7 +135,8 @@ export class DashboardComponent
     private confirmService: SafeConfirmService,
     private refDataService: SafeReferenceDataService,
     private renderer: Renderer2,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private translate: TranslateService
   ) {
     super();
   }
@@ -850,6 +852,28 @@ export class DashboardComponent
         const { isHovered, ...button } = b;
         return button;
       })
+    );
+  }
+
+  /**
+   * Toggle page visibility.
+   */
+  togglePageVisibility() {
+    const callback = () => {
+      this.dashboard = {
+        ...this.dashboard,
+        page: {
+          ...this.dashboard?.page,
+          visible: !this.dashboard?.page?.visible,
+        },
+      };
+    };
+    this.applicationService.togglePageVisibility(
+      {
+        id: this.dashboard?.page?.id,
+        visible: this.dashboard?.page?.visible,
+      },
+      callback
     );
   }
 }
