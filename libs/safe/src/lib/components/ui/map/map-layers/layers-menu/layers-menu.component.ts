@@ -14,7 +14,7 @@ import { LayersMenuBasemapComponent } from '../layers-menu-basemap/layers-menu-b
 
 //======================TEST DATA
 
-const osm = L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+/*const osm = L.tileLayer('//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap contributors',
 });
 
@@ -54,7 +54,11 @@ const baseTree = [
       },
     ],
   },
-];
+];*/
+
+/**
+ *test data
+ */
 const overlayTree = [
   {
     label: 'Airports',
