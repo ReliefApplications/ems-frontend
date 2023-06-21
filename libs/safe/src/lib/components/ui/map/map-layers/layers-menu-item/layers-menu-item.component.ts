@@ -56,9 +56,8 @@ export class LayersMenuItemComponent implements OnInit {
   updateChildren() {
     this.checked = !this.checked;
 
-    this.childrenComponents.forEach(
-      (childComponent) => (childComponent.checked = this.checked)
-    );
+    this.updateChildrenCheckboxes();
+
     const layers = this.getChildrenLayers();
     if (this.checked) {
       layers.forEach((layer) => {
@@ -70,6 +69,14 @@ export class LayersMenuItemComponent implements OnInit {
       });
     }
     this.checkedChange.emit();
+  }
+
+  /** updates all children checkboxes for children */
+  updateChildrenCheckboxes() {
+    this.childrenComponents.forEach((childComponent) => {
+      childComponent.checked = this.checked;
+      childComponent.updateChildrenCheckboxes();
+    });
   }
 
   /**
