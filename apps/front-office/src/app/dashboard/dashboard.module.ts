@@ -3,12 +3,12 @@ import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import {
-  SafeApplicationToolbarModule,
   SafeLayoutModule,
   SafeEmptyModule,
   SafeNavbarModule,
 } from '@oort-front/safe';
 import { TranslateModule } from '@ngx-translate/core';
+import { ButtonModule, IconModule, MenuModule } from '@oort-front/ui';
 
 /**
  * Front-Office Dashboard module.
@@ -21,10 +21,12 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonModule,
     SafeLayoutModule,
     DashboardRoutingModule,
-    SafeApplicationToolbarModule,
     SafeEmptyModule,
     TranslateModule,
     SafeNavbarModule,
+    MenuModule,
+    IconModule,
+    ButtonModule,
   ],
 })
 export class DashboardModule {}
