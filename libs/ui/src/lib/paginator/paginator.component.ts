@@ -14,6 +14,7 @@ export class PaginatorComponent {
   @Input() disabled = false;
   @Input() totalItems = 0;
   @Input() pageSize = 10;
+  @Input() skip = 0;
   @Input() pageSizeOptions = [5, 10, 15];
   @Input() ariaLabel = '';
   @Input() pageIndex = 0;
@@ -21,8 +22,6 @@ export class PaginatorComponent {
 
   // Generate random unique identifier for each paginator component
   paginatorId = uuidv4();
-  // Paginator properties
-  skip = 0;
 
   /**
    * Update page data on page change
