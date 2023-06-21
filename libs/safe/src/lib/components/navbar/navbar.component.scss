@@ -54,15 +54,12 @@
     }
   }
   .hide-icons {
-    opacity: 0;
+    display: none;
   }
   &:hover {
     .hide-icons {
-      opacity: 100;
+      display: block;
     }
-  }
-  p {
-    width: calc(100% - 32px);
   }
 }
 
