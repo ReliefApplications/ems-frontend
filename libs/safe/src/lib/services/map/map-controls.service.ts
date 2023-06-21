@@ -16,6 +16,7 @@ import { MapLayersComponent } from '../../components/ui/map/map-layers/map-layer
 import { legendControl } from '../../components/ui/map/controls/legend.control';
 import { MapZoomComponent } from '../../components/ui/map/map-zoom/map-zoom.component';
 import { MapEvent } from '../../components/ui/map/interfaces/map.interface';
+import { MapComponent } from '../../components/ui/map';
 
 /**
  * Shared map control service.
@@ -54,10 +55,16 @@ export class SafeMapControlsService {
   /**
    * Creates the layer control.
    *
-   * @param {L.Map} map map to add the control
+   * @param mapComponent map component
+   * @param basemaps basemaps of the map
+   * @param layers layers used to create the layers tree
    * @returns A button to activate/deactivate the layers
    */
-  public getLayerControl(map: L.Map): void {
+  public getLayerControl(
+    mapComponent: MapComponent,
+    basemaps: L.Control.Layers.TreeObject[],
+    layers: L.Control.Layers.TreeObject[]
+  ): void {
     const layerControl = new L.Control({ position: 'topright' });
     layerControl.onAdd = () => {
       const container = L.DomUtil.create('div');
@@ -65,8 +72,9 @@ export class SafeMapControlsService {
         MapLayersComponent,
         container
       );
-      mapLayersComponent.instance.mapContainer = map.getContainer();
-      mapLayersComponent.instance.map = map;
+      mapLayersComponent.instance.layersTree = layers;
+      mapLayersComponent.instance.mapComponent = mapComponent;
+      mapLayersComponent.instance.basemaps = basemaps;
       return container;
     };
     const container = layerControl.getContainer();
@@ -80,7 +88,7 @@ export class SafeMapControlsService {
         L.DomEvent.stopPropagation(e);
       });
     }
-    return (layerControl as any)?.addTo(map);
+    return (layerControl as any)?.addTo(mapComponent.map);
   }
 
   /**
