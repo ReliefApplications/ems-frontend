@@ -80,7 +80,9 @@ export class ChipListDirective
    * @param fn callback function
    */
   public registerOnChange(fn: any): void {
-    this.onChange = fn;
+    if (!this.onChange) {
+      this.onChange = fn;
+    }
   }
 
   /**
@@ -89,7 +91,9 @@ export class ChipListDirective
    * @param fn callback function
    */
   public registerOnTouched(fn: any): void {
-    this.onTouch = fn;
+    if (!this.onTouch) {
+      this.onTouch = fn;
+    }
   }
 
   /**

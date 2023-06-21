@@ -41,10 +41,11 @@
                 cdkDrag
                 [cdkDragDisabled]="!item.orderable"
                 class="show-icons"
+                *ngIf="canAddPage || item.visible || !appLayout"
               >
                 <li
                   [routerLink]="item.path"
-                  routerLinkActive="text-primary-600 bg-gray-50"
+                  routerLinkActive="text-primary-600 bg-gray-50 group"
                 >
                   <a class="group" (click)="largeDevice ? null : nav.toggle()">
                     <ui-icon variant="grey" [icon]="item.icon"> </ui-icon>
@@ -57,7 +58,7 @@
                     *ngIf="item.action || item.orderable"
                   >
                     <ui-button
-                      class="hide-icons hover:text-primary-600"
+                      class="hide-icons"
                       [isIcon]="true"
                       *ngIf="item.action"
                       size="small"
@@ -67,7 +68,7 @@
                     >
                     </ui-button>
                     <ui-button
-                      class="hide-icons hover:text-primary-600"
+                      class="hide-icons"
                       [isIcon]="true"
                       size="small"
                       cdkDragHandle
@@ -75,6 +76,13 @@
                       icon="drag_indicator"
                     >
                     </ui-button>
+                    <ui-icon
+                      variant="grey"
+                      [size]="18"
+                      *ngIf="!item.visible"
+                      icon="visibility_off"
+                    >
+                    </ui-icon>
                   </div>
                 </li>
                 <!-- Preview when dragging element -->
@@ -126,7 +134,11 @@
         <!-- Classes determine nav-list height for application layout -->
         <ul class="flex">
           <ng-container *ngFor="let item of group.navItems">
-            <div cdkDrag [cdkDragDisabled]="!item.orderable" class="show-icons">
+            <div
+              cdkDrag
+              [cdkDragDisabled]="!item.orderable"
+              class="show-icons w-full max-w-[200px]"
+            >
               <li
                 [routerLink]="item.path"
                 routerLinkActive="text-primary-600 bg-gray-50"
@@ -142,6 +154,7 @@
                   *ngIf="item.action || item.orderable"
                 >
                   <ui-button
+                    variant="danger"
                     class="hide-icons hover:text-primary-600"
                     [isIcon]="true"
                     *ngIf="item.action"
@@ -152,7 +165,8 @@
                   >
                   </ui-button>
                   <ui-button
-                    class="hide-icons hover:text-primary-600"
+                    variant="grey"
+                    class="hover:text-primary-600"
                     [isIcon]="true"
                     size="small"
                     cdkDragHandle

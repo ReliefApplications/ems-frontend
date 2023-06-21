@@ -6,11 +6,10 @@ import { SafeSummaryCardComponent } from './summary-card.component';
 import { SummaryCardItemModule } from './summary-card-item/summary-card-item.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { SafeGridWidgetModule } from '../grid/grid.module';
-import { TooltipModule, ButtonModule } from '@oort-front/ui';
+import { TooltipModule, ButtonModule, PaginatorModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { PagerModule } from '@progress/kendo-angular-pager';
 import { SafeSkeletonModule } from '../../../directives/skeleton/skeleton.module';
 
 /** Summary Card Widget Module */
@@ -29,8 +28,8 @@ import { SafeSkeletonModule } from '../../../directives/skeleton/skeleton.module
     InputsModule,
     FormsModule,
     ReactiveFormsModule,
-    PagerModule,
     SafeSkeletonModule,
+    PaginatorModule,
   ],
   exports: [SafeSummaryCardComponent],
 })

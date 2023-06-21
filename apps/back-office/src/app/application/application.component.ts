@@ -80,6 +80,7 @@ export class ApplicationComponent
                 icon: this.getNavIcon(x.type || ''),
                 class: null,
                 orderable: true,
+                visible: x.visible ?? true,
                 action: x.canDelete && {
                   icon: 'delete',
                   toolTip: this.translate.instant('common.deleteObject', {

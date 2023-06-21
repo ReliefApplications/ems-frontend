@@ -14,6 +14,15 @@
           {{ page ? page.name || '' : step ? step.name || '' : '' }}
         </h1>
       </safe-editable-text>
+      <ui-button
+        *ngIf="page"
+        [isIcon]="true"
+        variant="grey"
+        category="primary"
+        [icon]="page.visible ? 'visibility' : 'visibility_off'"
+        (click)="togglePageVisibility()"
+      >
+      </ui-button>
       <!-- Page access -->
       <safe-access
         [access]="page ? page.permissions : step ? step.permissions : null"

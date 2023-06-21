@@ -74,7 +74,7 @@
           >
             <safe-summary-card-item
               *ngFor="let card of cards; let i = index"
-              class="k-tilelayout-item k-card"
+              class="k-tilelayout-item k-card flex flex-col"
               [style.order]="i"
               style.grid-column-end="{{
                 'span ' +
@@ -91,16 +91,18 @@
       </kendo-pdf-export>
     </div>
     <!-- Pagination -->
-    <kendo-datapager
+    <ui-paginator
       *ngIf="settings.widgetDisplay?.usePagination"
-      [style.width.%]="100"
-      [pageSize]="pageInfo.first"
-      [pageSizeValues]="[10, 25, 50, 100]"
+      [disabled]="loading"
+      [pageIndex]="pageInfo.pageIndex"
+      [pageSize]="pageInfo.pageSize"
       [skip]="pageInfo.skip"
-      [total]="pageInfo.totalCount"
-      (pageChange)="onPageChange($event)"
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      [totalItems]="pageInfo.length"
+      [ariaLabel]="'components.notifications.paginator.ariaLabel' | translate"
+      (pageChange)="onPage($event)"
     >
-    </kendo-datapager>
+    </ui-paginator>
   </ng-container>
   <!-- Grid display mode -->
   <ng-container *ngIf="displayMode === 'grid'">

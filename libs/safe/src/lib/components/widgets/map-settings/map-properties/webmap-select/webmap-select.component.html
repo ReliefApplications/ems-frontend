@@ -4,10 +4,10 @@
     'components.widget.settings.map.properties.webmap' | translate
   }}</label>
   <ui-select-menu
-    (selectedOption)="selectionOnChange($event)"
     (opened)="onOpenSelect()"
     [formControl]="ngControl && $any(ngControl.control)"
     [value]="value"
+    [isGraphQlSelect]="true"
   >
     <!-- Search -->
     <ng-container *ngTemplateOutlet="search"></ng-container>
@@ -19,7 +19,7 @@
   <!-- Remove value -->
   <ui-button
     uiSuffix
-    (click)="selectionOnChange({ value: null }); $event.stopPropagation()"
+    (click)="selectionOnChange(null); $event.stopPropagation()"
     [isIcon]="true"
     icon="close"
     variant="danger"

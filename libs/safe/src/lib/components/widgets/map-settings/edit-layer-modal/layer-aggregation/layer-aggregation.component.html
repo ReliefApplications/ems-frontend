@@ -7,7 +7,8 @@
       }}</label>
       <ui-select-menu formControlName="type">
         <ui-select-option>{{
-          'components.widget.settings.map.edit.reduction.noReduction' | translate
+          'components.widget.settings.map.edit.reduction.noReduction'
+            | translate
         }}</ui-select-option>
         <ui-select-option *ngFor="let type of reductionTypes" [value]="type"
           >{{ type }}
@@ -25,7 +26,6 @@
     <ng-template #mapContainer></ng-template>
   </div>
 </div>
-
 
 <ng-template #clusterRenderer>
   <safe-layer-cluster [formGroup]="formGroup"></safe-layer-cluster>

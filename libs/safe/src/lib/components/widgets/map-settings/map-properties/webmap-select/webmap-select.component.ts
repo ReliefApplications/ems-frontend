@@ -101,11 +101,10 @@ export class WebmapSelectComponent
    */
   public selectionOnChange(e: any) {
     // If no value is set into no this.value return
-    if (!e && !this.value) {
+    if (!e && !this.ngControl?.control?.value) {
       return;
     }
-    this.value = e;
-    this.onChanged(this.value);
+    this.onChanged(e);
   }
 
   /**

@@ -25,8 +25,53 @@
             {{ dashboard.name }}
           </h1>
         </safe-editable-text>
+        <ui-button
+          [isIcon]="true"
+          variant="grey"
+          category="primary"
+          [icon]="dashboard.page?.visible ? 'visibility' : 'visibility_off'"
+          (click)="togglePageVisibility()"
+        >
+        </ui-button>
 
-        <div class="flex items-center gap-1" *ngIf="!formActive">
+        <div
+          class="flex items-center gap-1"
+          *ngIf="!formActive"
+          cdkDropList
+          (cdkDropListDropped)="onButtonActionDrop($event)"
+        >
+          <!-- Button actions -->
+          <div
+            class="relative mr-1"
+            *ngFor="let button of buttonActions; let i = index"
+            cdkDrag
+          >
+            <div
+              class="relative"
+              (mouseenter)="button.isHovered = true"
+              (mouseleave)="button.isHovered = false"
+            >
+              <ui-button
+                [variant]="button.variant"
+                [category]="button.category"
+                (click)="onButtonActionClick(button)"
+              >
+                {{ button.text }}
+              </ui-button>
+              <ui-button
+                *ngIf="button.isHovered"
+                id="delete-button"
+                class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-95"
+                category="primary"
+                variant="danger"
+                [isIcon]="true"
+                icon="delete"
+                size="small"
+                (click)="onDeleteButtonAction(i)"
+              ></ui-button>
+            </div>
+          </div>
+
           <!-- Fullscreen -->
           <ui-button
             variant="grey"
@@ -77,16 +122,20 @@
           <ui-menu #menu>
             <button uiMenuItem (click)="toggleFiltering()">
               <ui-icon icon="tune" variant="grey"></ui-icon>
-              <!-- todo(translate) -->
               {{
-                dashboard.showFilter
-                  ? 'Deactivate filtering'
-                  : 'Activate filtering'
+                (showFilter
+                  ? 'models.dashboard.deactivateFiltering'
+                  : 'models.dashboard.activateFiltering'
+                ) | translate
               }}
             </button>
             <button uiMenuItem (click)="onAppSelection()">
               <ui-icon icon="file_copy" variant="grey"></ui-icon>
               {{ 'common.duplicate' | translate }}
+            </button>
+            <button uiMenuItem (click)="onAddButtonAction()">
+              <ui-icon icon="touch_app" variant="grey"></ui-icon>
+              {{ 'models.dashboard.buttonActions.add' | translate }}
             </button>
             <button uiMenuItem (click)="onShare()">
               <ui-icon icon="share" variant="grey"></ui-icon>

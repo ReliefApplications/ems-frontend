@@ -161,6 +161,14 @@ export class SafeMapSettingsComponent
           arcGisWebMap: value,
         } as MapConstructorSettings)
       );
+    this.tileForm
+      .get('layers')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) =>
+        this.updateMapSettings({
+          layers: value,
+        } as MapConstructorSettings)
+      );
   }
 
   /**
@@ -205,7 +213,6 @@ export class SafeMapSettingsComponent
       this.mapSettings = settings;
     }
     if (this.mapComponent) {
-      // Supposed to trigger changes on the map, but nothing happens
       this.mapComponent.mapSettings = this.mapSettings;
     }
   }
@@ -237,11 +244,11 @@ export class SafeMapSettingsComponent
     }
   }
 
-  /**
-   * Open layer edition
-   *
-   * @param layer layer to open
-   */
+  // /**
+  //  * Open layer edition
+  //  *
+  //  * @param layer layer to open
+  //  */
   // onEditLayer(layer?: LayerModel): void {
   //   // this.openedLayers.unshift(layer);
   //   // We initialize the map settings to default value once we display the map layer editor
@@ -261,11 +268,11 @@ export class SafeMapSettingsComponent
   //   // this.openTab('layer');
   // }
 
-  /**
-   * Delete given layer id from the layers form and updates map view
-   *
-   * @param layerIdToDelete Layer id to  delete
-   */
+  // /**
+  //  * Delete given layer id from the layers form and updates map view
+  //  *
+  //  * @param layerIdToDelete Layer id to  delete
+  //  */
   // onDeleteLayer(layerIdToDelete: string): void {
   //   // Update layer form
   //   this.updateLayersForm(layerIdToDelete, true);
