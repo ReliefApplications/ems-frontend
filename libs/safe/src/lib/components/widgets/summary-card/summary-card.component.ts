@@ -83,6 +83,7 @@ export class SafeSummaryCardComponent
 
   public searchControl = new FormControl('');
   private searching = false;
+  private scrolling = false;
 
   @ViewChild('summaryCardGrid') summaryCardGrid!: ElementRef<HTMLDivElement>;
   @ViewChild('pdf') pdf!: any;
@@ -276,8 +277,10 @@ export class SafeSummaryCardComponent
     }));
 
     this.cachedCards =
-      (this.pageInfo.pageIndex + 1) * this.pageInfo.pageSize >
-        this.cachedCards.length && !this.searching
+      ((this.pageInfo.pageIndex + 1) * this.pageInfo.pageSize >
+        this.cachedCards.length &&
+        !this.searching) ||
+      this.scrolling
         ? [...this.cachedCards, ...newCards]
         : newCards;
 
@@ -295,6 +298,7 @@ export class SafeSummaryCardComponent
       this.pageInfo.skip = this.cards.length;
     }
     this.searching = false;
+    this.scrolling = false;
   }
 
   /**
@@ -431,6 +435,7 @@ export class SafeSummaryCardComponent
             },
           })
           .then(this.updateCards.bind(this));
+        this.scrolling = true;
       }
     }
   }
