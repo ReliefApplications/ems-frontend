@@ -3,6 +3,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
   QueryList,
@@ -18,12 +19,11 @@ import { ButtonModule, CheckboxModule } from '@oort-front/ui';
   standalone: true,
   imports: [CommonModule, ButtonModule, CheckboxModule],
 })
-export class LayersMenuItemComponent implements OnInit {
+export class LayersMenuItemComponent implements OnInit, OnDestroy {
   @ViewChildren(LayersMenuItemComponent)
   childrenComponents: QueryList<LayersMenuItemComponent> = new QueryList();
 
   @Input() item!: L.Control.Layers.TreeObject;
-  @Input() level = 0;
   @Input() map!: L.Map;
   @Output() checkedChange = new EventEmitter();
   expanded = false;
@@ -36,6 +36,24 @@ export class LayersMenuItemComponent implements OnInit {
     } else
       this.checked =
         this.item.layer != null && this.map.hasLayer(this.item.layer);
+    this.item.layer?.on('add', () => this.onAddLayer());
+    this.item.layer?.on('remove', () => this.onRemoveLayer());
+  }
+
+  /**
+   * Handle add layer event.
+   */
+  public onAddLayer() {
+    this.checked = true;
+    this.checkedChange.emit();
+  }
+
+  /**
+   * Handle remove layer event.
+   */
+  public onRemoveLayer() {
+    this.checked = false;
+    this.checkedChange.emit();
   }
 
   handleCheckedChange = () => {
@@ -65,6 +83,7 @@ export class LayersMenuItemComponent implements OnInit {
       });
     } else {
       layers.forEach((layer) => {
+        console.log('removing layer');
         this.map.removeLayer(layer);
       });
     }
@@ -74,7 +93,6 @@ export class LayersMenuItemComponent implements OnInit {
   /** updates all children checkboxes for children */
   updateChildrenCheckboxes() {
     this.childrenComponents.forEach((childComponent) => {
-      childComponent.checked = this.checked;
       childComponent.updateChildrenCheckboxes();
     });
   }
@@ -115,8 +133,15 @@ export class LayersMenuItemComponent implements OnInit {
     if (layer) {
       if (this.checked) this.map.removeLayer(layer);
       else this.map.addLayer(layer);
-      this.checked = !this.checked;
       this.checkedChange.emit();
     }
+  }
+
+  /**
+   * Destroy subscriptions on leaflet events.
+   */
+  ngOnDestroy(): void {
+    this.item.layer?.off('add');
+    this.item.layer?.off('remove');
   }
 }

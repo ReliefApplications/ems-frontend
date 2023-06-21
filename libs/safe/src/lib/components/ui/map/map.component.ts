@@ -265,7 +265,6 @@ export class MapComponent
    * @param initMap Does the map need to be reloaded
    */
   private drawMap(initMap: boolean = true): void {
-    console.log('drawing');
     const {
       initialState,
       maxBounds,
