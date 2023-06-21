@@ -431,6 +431,7 @@
 				"delete": {
 					"confirmationMessage": "Do you confirm the deletion of the page {{name}}?"
 				},
+				"hide": "Hide page in nav bar for end-users",
 				"notReordered": {
 					"plural": "The pages were not reordered. {{error}}",
 					"singular": "The page was not reordered. {{error}}"
@@ -438,7 +439,8 @@
 				"reordered": {
 					"plural": "The pages were successfully reordered.",
 					"singular": "The page was successfully reordered."
-				}
+				},
+				"show": "Make page visible in nav bar for end-users"
 			},
 			"positionAttribute": {
 				"delete": {
