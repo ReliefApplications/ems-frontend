@@ -33,11 +33,7 @@
 <ui-divider class="mt-0 mb-2"></ui-divider>
 
 <!-- BODY -->
-<div
-  class="ml-2 grid grid-cols-1 gap-1"
-  *ngIf="layersMenuExpanded"
-  id="layersDiv"
->
+<div *ngIf="layersMenuExpanded">
   <!--
   <safe-layers-menu-basemap
     *ngFor="let basemap of basemaps"
