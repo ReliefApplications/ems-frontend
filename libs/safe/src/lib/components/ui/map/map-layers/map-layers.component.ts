@@ -2,6 +2,9 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule, DividerModule } from '@oort-front/ui';
+import { SafeLayoutService } from '../../../../services/layout/layout.service';
+import { SafeLayersMenuComponent } from './layers-menu/layers-menu.component';
+import { MapComponent } from '../map.component';
 
 /**
  * Map layers component
@@ -14,69 +17,43 @@ import { ButtonModule, DividerModule } from '@oort-front/ui';
   styleUrls: ['./map-layers.component.scss'],
 })
 export class MapLayersComponent {
-  public layersMenuExpanded = false;
-  public bookmarksMenuExpanded = false;
-  public mapContainer!: HTMLElement;
+  private layersTree!: L.Control.Layers.TreeObject[];
+  private basemaps!: L.Control.Layers.TreeObject[];
+  private mapComponent!: MapComponent;
+
+  /**
+   * Map layers component
+   *
+   * @param layoutService shared layout service
+   */
+  constructor(private layoutService: SafeLayoutService) {}
 
   /** Opens the layers menu */
   openLayersMenu() {
-    this.layersMenuExpanded = true;
-    this.bookmarksMenuExpanded = false;
-    this.mapContainer
-      .querySelector('.leaflet-control-layers')
-      ?.classList.remove('hidden');
-    this.openMenu();
+    this.openSidenavMenu(true, false);
   }
 
   /** Opens the bookmarks menu */
   openBookmarksMenu() {
-    this.bookmarksMenuExpanded = true;
-    this.layersMenuExpanded = false;
-    this.mapContainer
-      .querySelector('.leaflet-control-layers')
-      ?.classList.add('hidden');
-    this.openMenu();
+    this.openSidenavMenu(false, true);
   }
 
   /**
-   * Update menu style
+   * Opens the sidenav menu
+   *
+   * @param layersMenuExpanded true if we start with the layers expanded
+   * @param bookmarksMenuExpanded true if we start with the bookmarks expanded
    */
-  private openMenu() {
-    this.mapContainer
-      .querySelector('.leaflet-top.leaflet-right')
-      ?.classList.add('bg-white');
-    this.mapContainer
-      .querySelector('.leaflet-top.leaflet-right')
-      ?.classList.add('shadow-2lg');
+  openSidenavMenu(layersMenuExpanded: boolean, bookmarksMenuExpanded: boolean) {
+    this.layoutService.setRightSidenav({
+      component: SafeLayersMenuComponent,
+      inputs: {
+        layersMenuExpanded: layersMenuExpanded,
+        bookmarksMenuExpanded: bookmarksMenuExpanded,
+        layersTree: this.layersTree,
+        basemaps: this.basemaps,
+        mapComponent: this.mapComponent,
+      },
+    });
   }
-
-  /** Closes the layers menu */
-  closeLayersMenu() {
-    this.layersMenuExpanded = false;
-    this.bookmarksMenuExpanded = false;
-    this.mapContainer
-      .querySelector('.leaflet-control-layers')
-      ?.classList.add('hidden');
-    this.mapContainer
-      .querySelector('.leaflet-top.leaflet-right')
-      ?.classList.remove('bg-white');
-    this.mapContainer
-      .querySelector('.leaflet-top.leaflet-right')
-      ?.classList.remove('shadow-2lg');
-  }
-
-  /** Sets up */
-  /*
-  setLayersControl() {
-    if (this.layerControl) {
-      this.layerControl.setBaseTree(this.baseTree);
-      this.layerControl.setOverlayTree(this.layersTree);
-    } else {
-      this.layerControl = L.control.layers.tree(
-        this.baseTree,
-        this.layersTree as any,
-        { collapsed: false }
-      );
-    }
-  }*/
 }

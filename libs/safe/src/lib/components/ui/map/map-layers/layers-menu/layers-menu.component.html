@@ -1,0 +1,55 @@
+<div class="flex flex-col max-w-md min-w-[300px]">
+  <!-- HEADER -->
+  <div class="flex gap-2 ml-5 mt-5">
+    <button
+      class="rounded-t-md px-4 py-2"
+      [ngClass]="{
+        'bg-primary-900 text-white': layersMenuExpanded,
+        'bg-slate-200': !layersMenuExpanded
+      }"
+      (click)="openLayersMenu()"
+    >
+      {{ 'common.layers' | translate }}
+    </button>
+    <button
+      class="rounded-t-md px-4 py-2"
+      [ngClass]="{
+        'bg-primary-900 text-white': bookmarksMenuExpanded,
+        'bg-slate-200': !bookmarksMenuExpanded
+      }"
+      (click)="openBookmarksMenu()"
+      [disabled]="true"
+    >
+      {{ 'common.bookmarks' | translate }}
+    </button>
+    <ui-button
+      [isIcon]="true"
+      icon="close"
+      (click)="closeMenu()"
+      class="ml-auto"
+      id="layer-control-button-close"
+    ></ui-button>
+  </div>
+
+  <ui-divider class="mt-0 mb-2"></ui-divider>
+
+  <!-- BODY -->
+  <div *ngIf="layersMenuExpanded" class="mx-5 my-3">
+    <!--
+  <safe-layers-menu-basemap
+    *ngFor="let basemap of basemaps"
+    [basemap]="basemap"
+    [level]="0"
+    [mapComponent]="mapComponent"
+    (checkedChange)="updateBasemaps()"
+  ></safe-layers-menu-basemap>
+
+  <ui-divider class="mt-0"></ui-divider>
+-->
+    <safe-layers-menu-item
+      *ngFor="let item of layersTree"
+      [item]="item"
+      [map]="map"
+    ></safe-layers-menu-item>
+  </div>
+</div>

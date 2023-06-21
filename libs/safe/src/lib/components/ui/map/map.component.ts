@@ -117,9 +117,7 @@ export class MapComponent
 
   // === MARKERS ===
   // private baseTree!: L.Control.Layers.TreeObject;
-  private layersTree: L.Control.Layers.TreeObject[] = [];
   private layerControlButtons: any;
-  private layerControl: any;
 
   // === Controls ===
   // Search
@@ -200,8 +198,6 @@ export class MapComponent
     // Creates the map and adds all the controls we use.
     this.drawMap();
 
-    this.displayLayerIfNeeded();
-
     this.setUpMapListeners();
 
     setTimeout(() => {
@@ -269,7 +265,6 @@ export class MapComponent
    * @param initMap Does the map need to be reloaded
    */
   private drawMap(initMap: boolean = true): void {
-    console.log('drawing');
     const {
       initialState,
       maxBounds,
@@ -435,20 +430,6 @@ export class MapComponent
     }
     // Add legend control
     this.mapControlsService.getLegendControl(this.map, controls.legend ?? true);
-    // Add layer control
-    if (controls.layer) {
-      if (this.layerControl) {
-        this.layerControl.addTo(this.map);
-        this.map
-          .getContainer()
-          .querySelector('.leaflet-control-layers')
-          ?.classList.add('hidden');
-      }
-    } else {
-      if (this.layerControl) {
-        this.layerControl.remove();
-      }
-    }
     // If initializing map: add fixed controls
     if (initMap) {
       // Add leaflet fullscreen control
@@ -468,7 +449,9 @@ export class MapComponent
   ) {
     if (!this.layerControlButtons || !this.layerControlButtons._map) {
       this.layerControlButtons = this.mapControlsService.getLayerControl(
-        this.map
+        this,
+        basemaps,
+        layers
       );
     }
     // this.baseTree = {
@@ -476,35 +459,6 @@ export class MapComponent
     //   children: basemaps,
     //   collapsed: true,
     // };
-    this.layersTree = layers;
-    // Add control to the map layers
-    if (this.layerControl) {
-      if (!this.extractSettings().controls.layer) {
-        this.map.removeControl(this.layerControl);
-        this.renderer.addClass(this.layerControlButtons._container, 'hidden');
-      } else {
-        this.renderer.removeClass(
-          this.layerControlButtons._container,
-          'hidden'
-        );
-      }
-      // this.layerControl.setBaseTree(this.baseTree);
-      this.layerControl.setOverlayTree(this.layersTree);
-    } else {
-      this.layerControl = L.control.layers.tree(
-        // this.baseTree,
-        undefined,
-        this.layersTree as any,
-        { collapsed: false }
-      );
-    }
-    if (this.extractSettings().controls.layer) {
-      this.layerControl.addTo(this.map);
-    }
-    this.map
-      .getContainer()
-      .querySelector('.leaflet-control-layers')
-      ?.classList.add('hidden');
   }
 
   /**
@@ -592,33 +546,6 @@ export class MapComponent
   }
 
   /**
-   * Display the layers if needed
-   *
-   */
-  public displayLayerIfNeeded(): void {
-    if (this.layerControl) {
-      if (!this.extractSettings().controls.layer) {
-        this.map.removeControl(this.layerControl);
-        this.renderer.addClass(this.layerControlButtons._container, 'hidden');
-      } else {
-        this.renderer.removeClass(
-          this.layerControlButtons._container,
-          'hidden'
-        );
-      }
-      // this.layerControl.setBaseTree(this.baseTree);
-      this.layerControl.setOverlayTree(this.layersTree);
-    } else {
-      this.layerControl = L.control.layers.tree(
-        // this.baseTree,
-        undefined,
-        this.layersTree as any,
-        { collapsed: false }
-      );
-    }
-  }
-
-  /**
    * Draw given layers and adds the related controls
    *
    * @param layers Layers to draw
@@ -640,31 +567,6 @@ export class MapComponent
       }
     } else {
       drawLayer(layers);
-    }
-
-    if (this.extractSettings().controls.layer) {
-      // this.layerControl.addTo(this.map);
-      if (this.layerControl && this.extractSettings().controls.layer) {
-        if (this.extractSettings().controls.layer) {
-          this.map.removeControl(this.layerControl);
-        }
-        // this.layerControl.setBaseTree(this.baseTree);
-        this.layerControl.setOverlayTree(layers as any);
-      } else {
-        this.layerControl = L.control.layers.tree(
-          // this.baseTree,
-          undefined,
-          layers as any,
-          { collapsed: false }
-        );
-      }
-      if (this.extractSettings().controls.layer) {
-        this.layerControl.addTo(this.map);
-      }
-      this.map
-        .getContainer()
-        .querySelector('.leaflet-control-layers')
-        ?.classList.add('hidden');
     }
   }
 
@@ -691,11 +593,8 @@ export class MapComponent
     } else {
       deleteLayer(layers);
     }
-    if (this.layerControl) this.map.removeControl(this.layerControl);
     // Reset related properties
     this.layers = [];
-    this.layersTree = [];
-    this.layerControl = undefined;
   }
   //   /**
   //  * Function used to apply options
