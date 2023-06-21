@@ -1,0 +1,31 @@
+<ng-container *ngIf="!item.children"
+  ><div [style.marginLeft.px]="level * 20" class="flex items-center">
+    <ui-checkbox
+      class="items-center"
+      (change)="updateLayer(item.layer)"
+      [checked]="checked"
+    ></ui-checkbox
+    >{{ item.label }}
+  </div></ng-container
+>
+
+<ng-container *ngIf="item.children">
+  <div [style.marginLeft.px]="level * 20" class="flex items-center">
+    <ui-button (click)="toggleExpansion()">{{ expanded ? '-' : '+' }}</ui-button
+    ><ui-checkbox
+      (change)="updateChildren()"
+      [checked]="checked"
+      [indeterminate]="indeterminate"
+    ></ui-checkbox
+    >{{ item.label }}
+  </div>
+  <ng-container *ngIf="expanded">
+    <safe-layers-menu-item
+      *ngFor="let child of item.children"
+      [item]="child"
+      [level]="level + 1"
+      [map]="map"
+      (checkedChange)="handleCheckedChange()"
+    ></safe-layers-menu-item>
+  </ng-container>
+</ng-container>
