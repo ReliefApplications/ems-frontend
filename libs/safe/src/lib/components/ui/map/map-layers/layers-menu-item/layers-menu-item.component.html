@@ -1,23 +1,26 @@
 <ng-container *ngIf="!item.children"
   ><div [style.marginLeft.px]="level * 20" class="flex items-center">
-    <ui-checkbox
-      class="items-center"
+    <input
+      type="checkbox"
       (change)="updateLayer(item.layer)"
       [checked]="checked"
-    ></ui-checkbox
-    >{{ item.label }}
+      class="form-checkbox h-4 w-4 rounded border-gray-300 mr-2"
+    />{{ item.label }}
   </div></ng-container
 >
 
 <ng-container *ngIf="item.children">
   <div [style.marginLeft.px]="level * 20" class="flex items-center">
-    <ui-button (click)="toggleExpansion()">{{ expanded ? '-' : '+' }}</ui-button
-    ><ui-checkbox
+    <ui-button (click)="toggleExpansion()">{{
+      expanded ? '-' : '+'
+    }}</ui-button>
+    <input
+      type="checkbox"
       (change)="updateChildren()"
       [checked]="checked"
       [indeterminate]="indeterminate"
-    ></ui-checkbox
-    >{{ item.label }}
+      class="form-checkbox h-4 w-4 rounded border-gray-300 mr-2"
+    />{{ item.label }}
   </div>
   <ng-container *ngIf="expanded">
     <safe-layers-menu-item
