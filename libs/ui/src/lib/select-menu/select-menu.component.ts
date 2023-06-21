@@ -180,7 +180,9 @@ export class SelectMenuComponent
    * event that took place
    */
   registerOnChange(fn: any) {
-    this.onChange = fn;
+    if (!this.onChange) {
+      this.onChange = fn;
+    }
   }
 
   /**
@@ -190,7 +192,9 @@ export class SelectMenuComponent
    * event that took place
    */
   registerOnTouched(fn: any) {
-    this.onTouch = fn;
+    if (!this.onTouch) {
+      this.onTouch = fn;
+    }
   }
 
   /**
