@@ -620,6 +620,13 @@ export class SafeApplicationService {
     }
   }
 
+  /**
+   * Toggle page visibility
+   * It is about if a page can be seen or not in front-office, in the navbar. Thus, if a page is hidden, it is still accessible through url.
+   *
+   * @param page page to hide / show
+   * @param callback callback method
+   */
   togglePageVisibility(page: Page, callback?: any): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
@@ -652,7 +659,7 @@ export class SafeApplicationService {
                 ...application,
                 pages: application.pages?.map((x) => {
                   if (x.id === page.id) {
-                    x = { ...x, visible: page.visible };
+                    x = { ...x, visible: !page.visible };
                   }
                   return x;
                 }),
