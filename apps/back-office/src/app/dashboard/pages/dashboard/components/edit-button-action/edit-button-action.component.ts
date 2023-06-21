@@ -132,7 +132,6 @@ export class EditButtonActionComponent implements OnInit {
 
   /** On click on the save button close the dialog with the form value */
   public onSubmit(): void {
-    console.log(this.form.value);
     this.dialogRef.close(this.form.value as any);
   }
 }

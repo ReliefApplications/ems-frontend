@@ -29,12 +29,13 @@ import {
   GraphQLSelectModule,
 } from '@oort-front/ui';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { ButtonActionComponent } from './components/button-action/button-action.component';
 
 /**
  * Dashboard page module.
  */
 @NgModule({
-  declarations: [DashboardComponent, ShareUrlComponent],
+  declarations: [DashboardComponent, ShareUrlComponent, ButtonActionComponent],
   imports: [
     CommonModule,
     DashboardRoutingModule,
