@@ -1,5 +1,5 @@
 import {
-  AfterContentInit,
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
   ContentChildren,
@@ -44,7 +44,7 @@ import { TabBodyHostDirective } from './directives/tab-body-host.directive';
     ]),
   ],
 })
-export class TabsComponent implements AfterContentInit, OnDestroy {
+export class TabsComponent implements AfterViewInit, OnDestroy {
   @ContentChildren(TabComponent, { descendants: true })
   tabs!: QueryList<TabComponent>;
 
@@ -97,7 +97,7 @@ export class TabsComponent implements AfterContentInit, OnDestroy {
     return classes;
   }
 
-  ngAfterContentInit() {
+  ngAfterViewInit() {
     // This ensures that the subscription logic is executed for both existing and new tab elements
     this.tabs.changes
       .pipe(startWith(this.tabs), takeUntil(this.destroy$))
