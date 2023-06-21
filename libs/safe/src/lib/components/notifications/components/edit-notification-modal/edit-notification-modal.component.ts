@@ -257,6 +257,7 @@ export class EditNotificationModalComponent
       disableClose: true,
       data: {
         layout: this.layout,
+        queryName: this.resource?.queryName,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {

@@ -6,8 +6,18 @@ import { Page } from '../../../models/page.model';
 
 /** Graphql request for editing a dashboard by its id */
 export const EDIT_DASHBOARD = gql`
-  mutation editDashboard($id: ID!, $structure: JSON, $name: String) {
-    editDashboard(id: $id, structure: $structure, name: $name) {
+  mutation editDashboard(
+    $id: ID!
+    $structure: JSON
+    $name: String
+    $buttons: [ButtonActionInputType]
+  ) {
+    editDashboard(
+      id: $id
+      structure: $structure
+      name: $name
+      buttons: $buttons
+    ) {
       id
       name
       structure
@@ -26,6 +36,7 @@ export const EDIT_DASHBOARD = gql`
           title
         }
       }
+      buttons
       canSee
       canUpdate
       page {
