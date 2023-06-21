@@ -97,6 +97,7 @@ export class SafeMapSettingsComponent
   }
 
   ngAfterViewInit(): void {
+    console.log(this.mapContainerRef);
     const componentRef = this.mapContainerRef.createComponent(MapComponent);
     componentRef.instance.mapSettings = this.mapSettings;
     componentRef.instance.mapEvent.subscribe((event) =>
