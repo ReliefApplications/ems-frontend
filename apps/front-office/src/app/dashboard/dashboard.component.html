@@ -1,5 +1,6 @@
 <safe-layout
   [applications]="applications"
+  [header]="header"
   [toolbar]="toolbar"
   [leftSidenav]="pages"
   [sideMenu]="sideMenu"
@@ -7,10 +8,6 @@
   (openApplication)="onOpenApplication($event)"
 ></safe-layout>
 <ng-template #toolbar>
-  <safe-app-application-toolbar
-    [title]="title"
-    [settings]="adminNavItems"
-  ></safe-app-application-toolbar>
   <!-- Empty indicator -->
   <safe-empty
     *ngIf="empty"
@@ -27,3 +24,33 @@
     [vertical]="!(!sideMenu && largeDevice)"
   ></safe-navbar>
 </ng-template>
+
+<!-- Application header -->
+<ng-template #header>
+  <!-- Title -->
+  <h2 class="!m-0 overflow-hidden text-ellipsis whitespace-nowrap">
+    {{ title }}
+  </h2>
+  <!-- Settings -->
+  <ui-button
+    *ngIf="adminNavItems.length > 0"
+    [isIcon]="true"
+    icon="tune"
+    variant="light"
+    [uiMenuTriggerFor]="settingsMenu"
+  ></ui-button>
+</ng-template>
+
+<!-- Admin pages -->
+<ui-menu #settingsMenu>
+  <a
+    uiMenuItem
+    *ngFor="let setting of adminNavItems"
+    [routerLink]="setting.path"
+    routerLinkActive="text-primary-600 bg-gray-50"
+    class="text-sm font-semibold leading-6"
+  >
+    <ui-icon variant="grey" [icon]="setting.icon"> </ui-icon>
+    {{ setting.name }}
+  </a>
+</ui-menu>
