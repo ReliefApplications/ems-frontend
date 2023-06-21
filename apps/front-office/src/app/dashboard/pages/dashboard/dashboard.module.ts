@@ -8,7 +8,8 @@ import {
   SafeSkeletonModule,
   SafeWidgetGridModule,
 } from '@oort-front/safe';
-import { ButtonModule } from '@oort-front/ui';
+import { ButtonModule, TooltipModule } from '@oort-front/ui';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Dashboard page.
@@ -24,6 +25,8 @@ import { ButtonModule } from '@oort-front/ui';
     SafeSkeletonModule,
     ButtonModule,
     DashboardFilterModule,
+    TooltipModule,
+    TranslateModule,
   ],
   exports: [DashboardComponent],
 })

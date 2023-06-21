@@ -31,6 +31,10 @@
           category="primary"
           [icon]="dashboard.page?.visible ? 'visibility' : 'visibility_off'"
           (click)="togglePageVisibility()"
+          [uiTooltip]="
+              (dashboard.page?.visible ? 'components.application.pages.hide' : 'components.application.pages.show')
+                | translate
+            "
         >
         </ui-button>
 
@@ -78,6 +82,10 @@
             [isIcon]="true"
             icon="{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}"
             (click)="isFullScreen = !isFullScreen"
+            [uiTooltip]="
+              (isFullScreen ? 'common.exitFullscreen' : 'common.openFullScreen')
+                | translate
+            "
           >
           </ui-button>
           <!-- Access -->
