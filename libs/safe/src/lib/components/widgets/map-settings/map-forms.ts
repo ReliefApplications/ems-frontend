@@ -184,6 +184,13 @@ const createLayerDefinitionForm = (type: LayerType, value?: any): FormGroup => {
             'drawingInfo',
             createLayerDrawingInfoForm(drawingInfo)
           );
+          // If new type is heatmap and we currently have a cluster set, reset the featureReduction
+          if (
+            type === 'heatmap' &&
+            formGroup.get('featureReduction.type')?.value === 'cluster'
+          ) {
+            formGroup.get('featureReduction.type')?.patchValue({ type: null });
+          }
           setTypeListeners();
         });
     };

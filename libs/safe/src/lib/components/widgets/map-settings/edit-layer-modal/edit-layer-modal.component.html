@@ -156,7 +156,8 @@
       <!-- Previously : layerDefinition.drawingInfo.renderer.type -->
       <ui-tab
         *ngIf="
-          form.get('layerDefinition.featureReduction')?.value !== 'heatmap'
+          form.get('layerDefinition.drawingInfo.renderer.type')?.value !==
+          'heatmap'
         "
         [disabled]="!isDatasourceValid"
       >

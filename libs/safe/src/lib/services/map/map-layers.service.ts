@@ -154,7 +154,7 @@ export class SafeMapLayersService {
           if (response.errors) {
             throw new Error(response.errors[0].message);
           }
-          return response.data.layer;
+          return this.featureReductionCleaner(response.data.layer);
         })
       );
   }
@@ -176,7 +176,7 @@ export class SafeMapLayersService {
           if (response.errors) {
             throw new Error(response.errors[0].message);
           }
-          return response.data.layers;
+          return response.data.layers.map(this.featureReductionCleaner);
         })
       );
   }
@@ -357,4 +357,23 @@ export class SafeMapLayersService {
       (value.geoField || (value.latitudeField && value.longitudeField))
     );
   };
+
+  /**
+   * Method to disable any previously saved heatmap layers with also a cluster feature reduction
+   * !!!!!! This method should eventually begone !!!!!!
+   *
+   * @param layerModel layerModel data to clean
+   * @returns clean layerModel
+   */
+  private featureReductionCleaner(layerModel: LayerModel): LayerModel {
+    if (
+      layerModel.layerDefinition?.drawingInfo?.renderer?.type === 'heatmap' &&
+      layerModel.layerDefinition.featureReduction
+    ) {
+      layerModel.layerDefinition.featureReduction.clusterRadius = null as any;
+      layerModel.layerDefinition.featureReduction.type = null as any;
+      layerModel.layerDefinition.featureReduction.drawingInfo = null as any;
+    }
+    return layerModel;
+  }
 }
