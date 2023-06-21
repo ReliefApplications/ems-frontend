@@ -49,6 +49,52 @@
         (click)="deselectLayout()"
       ></ui-button>
     </div>
+
+    <ng-container *ngIf="selectedLayout && selectedRecordID">
+      <h2>
+        {{
+          'components.widget.settings.summaryCard.card.dataSource.layoutStyles.title'
+            | translate
+        }}
+      </h2>
+      <ui-checkbox formControlName="useStyles">
+        <ng-container ngProjectAs="label">
+          {{
+            'components.widget.settings.summaryCard.card.dataSource.layoutStyles.use'
+              | translate
+          }}
+        </ng-container>
+      </ui-checkbox>
+      <div *ngIf="this.form.value.useStyles">
+        <p>
+          {{
+            'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.title'
+              | translate
+          }}
+        </p>
+        <div
+          uiRadioGroupDirective="applyStyles"
+          formControlName="wholeCardStyles"
+        >
+          <ui-radio [value]="false">
+            <ng-container ngProjectAs="label">
+              {{
+                'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option1'
+                  | translate
+              }}
+            </ng-container>
+          </ui-radio>
+          <ui-radio [value]="true">
+            <ng-container ngProjectAs="label">
+              {{
+                'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option2'
+                  | translate
+              }}
+            </ng-container>
+          </ui-radio>
+        </div>
+      </div>
+    </ng-container>
   </div>
 
   <div class="flex flex-col mt-2" *ngIf="selectedLayout">
