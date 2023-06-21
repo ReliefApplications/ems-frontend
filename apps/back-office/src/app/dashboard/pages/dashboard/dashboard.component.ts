@@ -779,7 +779,7 @@ export class DashboardComponent
       });
     }
   }
-  
+
   /**
    * Reorders button actions.
    *

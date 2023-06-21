@@ -23,10 +23,12 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { get } from 'lodash';
 import { RawEditorSettings } from 'tinymce';
 import { EditorModule } from '@tinymce/tinymce-angular';
-import { INLINE_EDITOR_CONFIG } from '../../../../../../../../../libs/safe/src/lib/const/tinymce.const';
-import { SafeEditorService } from 'libs/safe/src/lib/services/editor/editor.service';
-import { SafeEditorControlComponent } from 'libs/safe/src/lib/components/editor-control/editor-control.component';
-import { DataTemplateService } from 'libs/safe/src/lib/services/data-template/data-template.service';
+import {
+  SafeEditorService,
+  SafeEditorControlComponent,
+  DataTemplateService,
+  INLINE_EDITOR_CONFIG,
+} from '@oort-front/safe';
 
 export type ButtonActionT = {
   text: string;
