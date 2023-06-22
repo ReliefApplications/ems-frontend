@@ -19,6 +19,7 @@ export class PaginatorComponent {
   @Input() ariaLabel = '';
   @Input() pageIndex = 0;
   @Input() pageNumberNavigation = false;
+  @Input() displayedPageNumbers = 2;
   @Output() pageChange: EventEmitter<UIPageChangeEvent> = new EventEmitter();
 
   // Generate random unique identifier for each paginator component
