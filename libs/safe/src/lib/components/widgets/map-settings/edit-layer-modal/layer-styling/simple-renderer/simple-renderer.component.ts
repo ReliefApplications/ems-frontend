@@ -4,7 +4,12 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IconPickerModule } from '../../../../../icon-picker/icon-picker.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsModule } from '@progress/kendo-angular-inputs';
-import { FormWrapperModule, SliderModule, SpinnerModule } from '@oort-front/ui';
+import {
+  FormWrapperModule,
+  SliderModule,
+  SpinnerModule,
+  DividerModule,
+} from '@oort-front/ui';
 
 /**
  * Layer simple renderer settings component.
@@ -22,6 +27,7 @@ import { FormWrapperModule, SliderModule, SpinnerModule } from '@oort-front/ui';
     InputsModule,
     SpinnerModule,
     SliderModule,
+    DividerModule,
   ],
   templateUrl: './simple-renderer.component.html',
   styleUrls: ['./simple-renderer.component.scss'],
@@ -29,6 +35,10 @@ import { FormWrapperModule, SliderModule, SpinnerModule } from '@oort-front/ui';
 export class SimpleRendererComponent implements AfterViewInit {
   @Input() formGroup!: FormGroup;
   @Input() showSize = true;
+  @Input() type: { shape: 'point' | 'polygon'; enable: boolean } = {
+    shape: 'point',
+    enable: false,
+  };
   public loading = true;
   private primaryColor!: string;
 

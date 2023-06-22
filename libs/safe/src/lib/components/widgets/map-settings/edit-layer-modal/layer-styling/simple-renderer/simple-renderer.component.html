@@ -26,5 +26,60 @@
         </ui-slider>
       </div>
     </div>
+    <ng-container *ngIf="type.enable">
+      <ng-container 
+        *ngTemplateOutlet="type.shape === 'point' ? pointTmpl : polygonTmpl"
+      ></ng-container>
+    </ng-container>
   </div>
 </div>
+
+<ng-template #pointTmpl></ng-template>
+
+<ng-template #polygonTmpl>
+  <ui-divider></ui-divider>
+  <div class="flex flex-row justify-between">
+    <!-- STROKE COLOR -->
+    <div class="flex flex-col">
+      <h4>Stroke</h4>
+      <kendo-colorpicker></kendo-colorpicker>
+    </div>
+      <!-- STROKE WIDTH -->
+    <div uiFormFieldDirective>
+      <label>Stroke width</label>
+      <input
+        type="number"
+        min="0"
+        max="100"
+      />
+    </div>
+    <!-- STROKE OPACITY -->
+    <div uiFormFieldDirective>
+      <label>Stroke opacity</label>
+      <input
+        type="number"
+        step=".1"
+        min="0"
+        max="1"
+      />
+    </div>
+  </div>
+
+  <div class="flex flex-row justify-between gap-4">
+    <!-- FILL COLOR  -->
+    <div class="flex flex-col">
+      <h4>Fill</h4>
+      <kendo-colorpicker></kendo-colorpicker>
+    </div>
+    <!-- FILL OPACITY -->
+    <div uiFormFieldDirective class="flex flex-1 flex-col">
+      <h4>Fill opacity</h4>
+      <input
+        type="number"
+        step=".1"
+        min="0"
+        max="1"
+      />
+    </div>
+  </div>
+</ng-template>
