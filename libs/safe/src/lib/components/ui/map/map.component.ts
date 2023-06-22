@@ -485,6 +485,14 @@ export class MapComponent
       // (from parent) or the one created by the layer itself (if no parent)
       const featureLayer = leafletLayer ?? (await layer.getLayer());
 
+      featureLayer.on('add', () => {
+        layer.visibility = true;
+      });
+
+      featureLayer.on('remove', () => {
+        layer.visibility = false;
+      });
+
       // Adds the layer to the map if not already added
       // note: group layers are of type L.LayerGroup
       // so we should check if the layer is not already added

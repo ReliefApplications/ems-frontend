@@ -783,7 +783,7 @@ export class Layer implements LayerModel {
       if (currZoom > maxZoom || currZoom < minZoom) {
         map.removeLayer(layer);
       } else {
-        map.addLayer(layer);
+        if (this.visibility) map.addLayer(layer);
       }
     });
   }

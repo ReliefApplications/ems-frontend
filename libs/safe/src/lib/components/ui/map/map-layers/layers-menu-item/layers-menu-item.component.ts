@@ -83,7 +83,6 @@ export class LayersMenuItemComponent implements OnInit, OnDestroy {
       });
     } else {
       layers.forEach((layer) => {
-        console.log('removing layer');
         this.map.removeLayer(layer);
       });
     }
