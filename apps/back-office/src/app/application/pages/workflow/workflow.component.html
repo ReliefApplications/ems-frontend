@@ -11,24 +11,26 @@
   <ng-container *ngIf="workflow">
     <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
       <!-- Editable Title -->
-      <safe-editable-text
-        [text]="workflow.name"
-        [canEdit]="canEditName"
-        (onChange)="saveName($event)"
-        (formActiveEvent)="formActive = $event"
-      >
-        <h1 class="!m-0 overflow-hidden text-ellipsis">
-          {{ workflow.name }}
-        </h1>
-      </safe-editable-text>
-      <ui-button
-        [isIcon]="true"
-        variant="grey"
-        category="primary"
-        [icon]="workflow.page?.visible ? 'visibility' : 'visibility_off'"
-        (click)="togglePageVisibility()"
-      >
-      </ui-button>
+      <div class="flex items-center gap-1">
+        <safe-editable-text
+          [text]="workflow.name"
+          [canEdit]="canEditName"
+          (onChange)="saveName($event)"
+          (formActiveEvent)="formActive = $event"
+        >
+          <h1 class="!m-0 overflow-hidden text-ellipsis">
+            {{ workflow.name }}
+          </h1>
+        </safe-editable-text>
+        <ui-button
+          [isIcon]="true"
+          variant="grey"
+          category="primary"
+          [icon]="workflow.page?.visible ? 'visibility' : 'visibility_off'"
+          (click)="togglePageVisibility()"
+        >
+        </ui-button>
+      </div>
 
       <!-- buttons right to title -->
       <div class="flex items-center gap-1" *ngIf="!formActive">

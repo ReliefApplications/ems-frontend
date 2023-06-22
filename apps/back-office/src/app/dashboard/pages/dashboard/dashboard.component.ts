@@ -102,6 +102,9 @@ export class DashboardComponent
   // === BUTTON ACTIONS ===
   public buttonActions: (ButtonActionT & { isHovered: boolean })[] = [];
 
+  // === ROUTE ===
+  public isStep = false;
+
   /**
    * Dashboard page
    *
@@ -142,6 +145,7 @@ export class DashboardComponent
   }
 
   ngOnInit(): void {
+    this.isStep = this.router.url.includes('/workflow/');
     const rootElement = this.elementRef.nativeElement;
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       // Doing this to be able to use custom styles on specific dashboards
@@ -396,7 +400,7 @@ export class DashboardComponent
    * @param e edit event
    */
   saveAccess(e: any): void {
-    if (this.router.url.includes('/workflow/')) {
+    if (this.isStep) {
       this.apollo
         .mutate<EditStepMutationResponse>({
           mutation: EDIT_STEP,
@@ -505,7 +509,7 @@ export class DashboardComponent
       const callback = () => {
         this.dashboard = { ...this.dashboard, name: dashboardName };
       };
-      if (this.router.url.includes('/workflow/')) {
+      if (this.isStep) {
         this.workflowService.updateStepName(
           {
             id: this.dashboard?.step?.id,
