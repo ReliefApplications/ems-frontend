@@ -56,15 +56,6 @@
   </kendo-tilelayout-item-header>
   <!-- Cards display mode -->
   <ng-container *ngIf="displayMode === 'cards'">
-    <!-- Search -->
-    <!-- <div class="bg-zinc-50 p-2" *ngIf="!!settings.widgetDisplay?.searchable">
-      <input
-        [placeholder]="'common.placeholder.search' | translate"
-        kendoTextBox
-        [formControl]="searchControl"
-        class="!w-full"
-      />
-    </div> -->
     <!-- Export -->
     <div class="w-full grow overflow-auto" #summaryCardGrid>
       <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
