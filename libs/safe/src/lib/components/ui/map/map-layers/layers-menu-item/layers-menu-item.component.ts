@@ -20,6 +20,9 @@ import { ButtonModule, CheckboxModule } from '@oort-front/ui';
   imports: [CommonModule, ButtonModule, CheckboxModule],
 })
 export class LayersMenuItemComponent implements OnInit, OnDestroy {
+  // Declare variables to store the event listeners
+  private addLayerListener!: L.LeafletEventHandlerFn;
+  private removeLayerListener!: L.LeafletEventHandlerFn;
   @ViewChildren(LayersMenuItemComponent)
   childrenComponents: QueryList<LayersMenuItemComponent> = new QueryList();
 
@@ -36,14 +39,19 @@ export class LayersMenuItemComponent implements OnInit, OnDestroy {
     } else
       this.checked =
         this.item.layer != null && this.map.hasLayer(this.item.layer);
-    this.item.layer?.on('add', () => this.onAddLayer());
-    this.item.layer?.on('remove', () => this.onRemoveLayer());
+    // Assign the event listeners to the variables
+    this.addLayerListener = () => this.onAddLayer();
+    this.removeLayerListener = () => this.onRemoveLayer();
+    // Attach the event listeners
+    this.item.layer?.on('add', this.addLayerListener);
+    this.item.layer?.on('remove', this.removeLayerListener);
   }
 
   /**
    * Handle add layer event.
    */
   public onAddLayer() {
+    console.log('adding');
     this.checked = true;
     this.checkedChange.emit();
   }
@@ -52,6 +60,7 @@ export class LayersMenuItemComponent implements OnInit, OnDestroy {
    * Handle remove layer event.
    */
   public onRemoveLayer() {
+    console.log('removing');
     this.checked = false;
     this.checkedChange.emit();
   }
@@ -141,7 +150,8 @@ export class LayersMenuItemComponent implements OnInit, OnDestroy {
    * Destroy subscriptions on leaflet events.
    */
   ngOnDestroy(): void {
-    this.item.layer?.off('add');
-    this.item.layer?.off('remove');
+    // Remove the event listeners
+    this.item.layer?.off('add', this.addLayerListener);
+    this.item.layer?.off('remove', this.removeLayerListener);
   }
 }
