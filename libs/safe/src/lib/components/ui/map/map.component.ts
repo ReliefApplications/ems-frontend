@@ -371,7 +371,13 @@ export class MapComponent
         tree.basemaps && basemaps.push(tree.basemaps);
         tree.layers && layers.push(tree.layers);
       }
-      this.setLayersControl(flatten(basemaps), flatten(layers));
+      if (controls.layer) {
+        this.setLayersControl(flatten(basemaps), flatten(layers));
+      } else {
+        if (this.layerControlButtons) {
+          this.layerControlButtons.remove();
+        }
+      }
     });
 
     this.setMapControls(controls, initMap);
