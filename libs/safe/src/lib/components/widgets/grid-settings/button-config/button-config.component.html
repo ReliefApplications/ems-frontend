@@ -112,7 +112,7 @@
         >
           <form
             [formGroup]="$any(modification)"
-            *ngFor="let modification of modificationsArray.controls; index as i"
+            *ngFor="let modification of modificationsArray.controls; let i = index"
             class="update-row"
           >
             <div uiFormFieldDirective [formControlName]="i">
