@@ -12,7 +12,7 @@
     <!-- Search -->
     <ng-container *ngTemplateOutlet="search"></ng-container>
     <!-- Regular options -->
-    <ui-select-option *ngFor="let item of items$ | async" [value]="item.id">
+    <ui-select-option *ngFor="let item of items$ | async" [value]="item.id" [ngClass]="{'hidden': item.id === ngControl.control?.value}">
       {{ item.title }}
     </ui-select-option>
   </ui-select-menu>
