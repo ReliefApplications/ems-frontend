@@ -11,7 +11,14 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
 import { LayerModel } from '../../../../models/layer.model';
 import { createLayerForm, LayerFormT } from '../map-forms';
-import { debounceTime, takeUntil, BehaviorSubject, Subject } from 'rxjs';
+import {
+  debounceTime,
+  takeUntil,
+  BehaviorSubject,
+  Subject,
+  startWith,
+  pairwise,
+} from 'rxjs';
 import { MapComponent } from '../../../ui/map/map.component';
 import {
   MapEvent,
@@ -284,23 +291,24 @@ export class EditLayerModalComponent
   private setUpEditLayerListeners() {
     // Those listeners would handle any change for layer into the map component reference
     this.form.valueChanges
-      .pipe(takeUntil(this.destroy$), debounceTime(1000))
-      .subscribe((value) => {
+      .pipe(
+        takeUntil(this.destroy$),
+        debounceTime(1000),
+        startWith(null),
+        pairwise()
+      )
+      .subscribe(([prev, next]: [any, any]) => {
         this.updateMapLayer({ delete: true });
-        this._layer.setConfig({ ...value, geojson: this._layer.geojson });
-        this._layer.getLayer(true).then((layer) => {
-          this.currentLayer = layer;
-          this.updateMapLayer();
-        });
-      });
-
-    this.form
-      .get('datasource')
-      ?.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(1000))
-      .subscribe(() => {
-        this.updateMapLayer({ delete: true });
-        this.setUpLayer();
-        this.getResource();
+        if (!!prev && prev?.datasource != next.datasource) {
+          this.setUpLayer();
+          this.getResource();
+        } else {
+          this._layer.setConfig({ ...next, geojson: this._layer.geojson });
+          this._layer.getLayer(true).then((layer) => {
+            this.currentLayer = layer;
+            this.updateMapLayer();
+          });
+        }
       });
 
     this.data.mapComponent?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({
