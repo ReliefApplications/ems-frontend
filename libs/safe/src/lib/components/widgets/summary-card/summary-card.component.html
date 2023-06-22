@@ -12,8 +12,10 @@
       settings.title
     }}</span>
     <!-- Searchbar -->
-    <div *ngIf="settings.widgetDisplay?.searchable"
-    class="px-2 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 flex items-center m-1 w-[30%] max-w-[200px]">
+    <div
+      *ngIf="settings.widgetDisplay?.searchable && displayMode === 'cards'"
+      class="px-2 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 flex items-center m-1 w-[30%] max-w-[200px]"
+    >
       <input
         class="h-full bg-transparent w-full"
         [placeholder]="'common.placeholder.search' | translate"
