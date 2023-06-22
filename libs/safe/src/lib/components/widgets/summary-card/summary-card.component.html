@@ -92,6 +92,7 @@
         </div>
       </kendo-pdf-export>
     </div>
+    <ui-spinner *ngIf="scrolling"></ui-spinner>
     <!-- Pagination -->
     <ui-paginator
       *ngIf="settings.widgetDisplay?.usePagination"

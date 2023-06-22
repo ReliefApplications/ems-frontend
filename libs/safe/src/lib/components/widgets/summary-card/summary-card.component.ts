@@ -83,7 +83,7 @@ export class SafeSummaryCardComponent
 
   public searchControl = new FormControl('');
   private searching = false;
-  private scrolling = false;
+  public scrolling = false;
 
   @ViewChild('summaryCardGrid') summaryCardGrid!: ElementRef<HTMLDivElement>;
   @ViewChild('pdf') pdf!: any;
@@ -159,7 +159,9 @@ export class SafeSummaryCardComponent
     ) {
       this.summaryCardGrid.nativeElement.addEventListener(
         'scroll',
-        (event: any) => this.loadOnScroll(event)
+        (event: any) => {
+          this.loadOnScroll(event);
+        }
       );
     }
   }
@@ -426,8 +428,7 @@ export class SafeSummaryCardComponent
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
       50
     ) {
-      if (!this.loading && this.pageInfo.length > this.cards.length) {
-        this.loading = true;
+      if (!this.scrolling && this.pageInfo.length > this.cards.length) {
         this.dataQuery
           ?.fetchMore({
             variables: {
