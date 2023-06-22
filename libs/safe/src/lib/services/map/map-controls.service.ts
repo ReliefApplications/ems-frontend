@@ -12,7 +12,7 @@ import 'leaflet-measure';
 import 'leaflet-timedimension';
 import * as Geocoding from 'esri-leaflet-geocoder';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/language';
-import { MapLayersComponent } from '../../components/ui/map/map-layers/map-layers.component';
+import { MapSidenavControlsComponent } from '../../components/ui/map/map-sidenav-controls/map-sidenav-controls.component';
 import { legendControl } from '../../components/ui/map/controls/legend.control';
 import { MapZoomComponent } from '../../components/ui/map/map-zoom/map-zoom.component';
 import { MapEvent } from '../../components/ui/map/interfaces/map.interface';
@@ -68,13 +68,13 @@ export class SafeMapControlsService {
     const layerControl = new L.Control({ position: 'topright' });
     layerControl.onAdd = () => {
       const container = L.DomUtil.create('div');
-      const mapLayersComponent = this.domService.appendComponentToBody(
-        MapLayersComponent,
+      const mapSidenavControlsComponent = this.domService.appendComponentToBody(
+        MapSidenavControlsComponent,
         container
       );
-      mapLayersComponent.instance.layersTree = layers;
-      mapLayersComponent.instance.mapComponent = mapComponent;
-      mapLayersComponent.instance.basemaps = basemaps;
+      mapSidenavControlsComponent.instance.layersTree = layers;
+      mapSidenavControlsComponent.instance.mapComponent = mapComponent;
+      mapSidenavControlsComponent.instance.basemaps = basemaps;
       return container;
     };
     const container = layerControl.getContainer();
