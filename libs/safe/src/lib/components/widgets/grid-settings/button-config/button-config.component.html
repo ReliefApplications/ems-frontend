@@ -124,7 +124,7 @@
                 <ui-select-option>--</ui-select-option>
                 <ui-select-option
                   *ngFor="let field of scalarFields"
-                  [value]="field"
+                  [value]="field.name"
                   >{{ field.name }}</ui-select-option
                 >
               </ui-select-menu>
@@ -137,11 +137,12 @@
               >
               </ui-button>
             </div>
+           
             <ng-container *ngIf="modification.value.field">
               <!-- @todo: replace with ngSwitch and better manage all types -->
               <ng-container
                 *ngIf="
-                  ['Int', 'Float'].includes(modification.value.field.type.name)
+                  ['Int', 'Float'].includes(getScalarField(modification.value.field).type.name)
                 "
               >
                 <div uiFormFieldDirective>
@@ -153,7 +154,7 @@
                 </div>
               </ng-container>
               <ng-container
-                *ngIf="modification.value.field.type.name === 'Boolean'"
+                *ngIf="getScalarField(modification.value.field).type.name === 'Boolean'"
               >
                 <div uiFormFieldDirective>
                   <label>{{
@@ -174,8 +175,8 @@
               <ng-container
                 *ngIf="
                   !['Int', 'Float'].includes(
-                    modification.value.field.type.name
-                  ) && modification.value.field.type.name !== 'Boolean'
+                    getScalarField(modification.value.field).type.name
+                  ) && getScalarField(modification.value.field).type.name !== 'Boolean'
                 "
               >
                 <div uiFormFieldDirective>
@@ -187,6 +188,7 @@
                 </div>
               </ng-container>
             </ng-container>
+          
           </form>
           <ui-button
             [isIcon]="true"
