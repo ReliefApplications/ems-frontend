@@ -141,12 +141,10 @@ export class SafeTagboxComponent
    * @param choice Choice to remove.
    */
   remove(choice: any): void {
-    const index = this.selectedChoices.findIndex(
-      (x) => x[this.valueKey] === choice[this.valueKey]
-    );
-
-    if (index >= 0) {
-      this.selectedChoices.splice(index, 1);
+    if (choice) {
+      this.selectedChoices = this.selectedChoices.filter(
+        (x) => x[this.valueKey] !== choice[this.valueKey]
+      );
       this.filteredChoices = this.availableChoices.filter(
         (choice) =>
           !this.selectedChoices.find(
