@@ -102,6 +102,12 @@ export class DashboardComponent
   // === BUTTON ACTIONS ===
   public buttonActions: (ButtonActionT & { isHovered: boolean })[] = [];
 
+  // === ROUTE ===
+  /** @returns is dashboard a step or a page */
+  get isStep(): boolean {
+    return this.router.url.includes('/workflow/');
+  }
+
   /**
    * Dashboard page
    *
@@ -396,7 +402,7 @@ export class DashboardComponent
    * @param e edit event
    */
   saveAccess(e: any): void {
-    if (this.router.url.includes('/workflow/')) {
+    if (this.isStep) {
       this.apollo
         .mutate<EditStepMutationResponse>({
           mutation: EDIT_STEP,
@@ -505,7 +511,7 @@ export class DashboardComponent
       const callback = () => {
         this.dashboard = { ...this.dashboard, name: dashboardName };
       };
-      if (this.router.url.includes('/workflow/')) {
+      if (this.isStep) {
         this.workflowService.updateStepName(
           {
             id: this.dashboard?.step?.id,

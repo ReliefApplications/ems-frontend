@@ -15,29 +15,31 @@
     <ng-container *ngIf="dashboard">
       <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
         <!-- Dashboard title -->
-        <safe-editable-text
-          [text]="dashboard.name"
-          [canEdit]="canEditName"
-          (onChange)="saveName($event)"
-          (formActiveEvent)="formActive = $event"
-        >
-          <h1 class="!m-0 overflow-hidden text-ellipsis">
-            {{ dashboard.name }}
-          </h1>
-        </safe-editable-text>
-        <ui-button
-          [isIcon]="true"
-          variant="grey"
-          category="primary"
-          [icon]="dashboard.page?.visible ? 'visibility' : 'visibility_off'"
-          (click)="togglePageVisibility()"
-          [uiTooltip]="
-              (dashboard.page?.visible ? 'components.application.pages.hide' : 'components.application.pages.show')
-                | translate
-            "
-        >
-        </ui-button>
-
+        <div class="flex items-center gap-1">
+          <safe-editable-text
+            [text]="dashboard.name"
+            [canEdit]="canEditName"
+            (onChange)="saveName($event)"
+            (formActiveEvent)="formActive = $event"
+          >
+            <h1 class="!m-0 overflow-hidden text-ellipsis">
+              {{ dashboard.name }}
+            </h1>
+          </safe-editable-text>
+          <ui-button
+            *ngIf="!isStep"
+            [isIcon]="true"
+            variant="grey"
+            category="primary"
+            [icon]="dashboard.page?.visible ? 'visibility' : 'visibility_off'"
+            (click)="togglePageVisibility()"
+            [uiTooltip]="
+            (dashboard.page?.visible ? 'components.application.pages.hide' : 'components.application.pages.show')
+              | translate
+          "
+          >
+          </ui-button>
+        </div>
         <div
           class="flex items-center gap-1"
           *ngIf="!formActive"
