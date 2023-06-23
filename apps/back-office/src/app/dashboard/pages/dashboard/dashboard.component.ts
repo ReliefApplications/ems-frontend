@@ -153,14 +153,14 @@ export class DashboardComponent
       // Doing this to be able to use custom styles on specific dashboards
 
       // if the route has an record or element query, it means we are on a contextual dashboard
-      // therefore, we need to find the contextual dashboard id by querying the backend
+      // therefore, we need to find the contextual dashboard id in the parent dashboard
       this.route.queryParams
         .pipe(takeUntil(this.destroy$))
         .subscribe((queryParams) => {
           const type: 'record' | 'element' =
             'record' in queryParams ? 'record' : 'element';
 
-          // if neither 'record' nor 'element' is in the query params, we are not on a contextual dashboard
+          // if neither 'record' nor 'element' are in the query params, we are not on a contextual dashboard
           // and contextualDashboardId will be undefined
           const resourceId = queryParams[type];
 
@@ -204,6 +204,7 @@ export class DashboardComponent
               }
             });
           } else {
+            // if there is no id, we are not on a contextual dashboard, we simply load the dashboard
             this.initDashboardWithId(params.id);
           }
         });
