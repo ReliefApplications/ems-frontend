@@ -102,6 +102,7 @@
       [skip]="pageInfo.skip"
       [pageSizeOptions]="[10, 25, 50, 100]"
       [totalItems]="pageInfo.length"
+      [displayedPageNumbers]="5"
       [ariaLabel]="'components.notifications.paginator.ariaLabel' | translate"
       (pageChange)="onPage($event)"
     >
