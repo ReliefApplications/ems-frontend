@@ -723,59 +723,20 @@ export class DashboardComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe(async (context: any) => {
         if (context) {
-          console.log('context', context);
-          console.log('currContext', currContext);
-          console.log('this.dashboard', this.dashboard);
-
           if (isEqual(context, currContext)) return;
 
           await this.dashboardService.updateContext(context);
           this.dashboard =
             (await firstValueFrom(this.dashboardService.dashboard$)) ||
             undefined;
-          // this.dashboard = {
-          //   ...this.dashboard,
-          //   page: {
-          //     ...this.dashboard?.page,
-          //     context,
-          //   },
-          // };
-
-          let type: 'record' | 'element' = 'record';
-          if (currContext) {
-            type = 'resource' in currContext ? 'record' : 'element';
-          }
-
-          const newSource =
-            (currContext as any)?.resource !== (context as any).resource ||
-            (currContext as any)?.refData !== (context as any).refData;
-
-          console.log('newSource', newSource);
 
           const urlArr = this.router.url.split('/');
 
-          if (currContext === null) {
-            // if no record is selected yet, navigate to the parent dashboard
-            urlArr[urlArr.length - 1] = `${parentDashboardId}`;
-            this.router.navigateByUrl(urlArr.join('/'));
-          } else {
-            if (
-              newSource &&
-              this.dashboard?.page?.content &&
-              urlArr[urlArr.length - 1] !==
-                `${parentDashboardId}?${type}=${this.dashboard?.page?.content}`
-            ) {
-              // if the source record has changed, navigate to corresponding dashboard
-              urlArr[
-                urlArr.length - 1
-              ] = `${parentDashboardId}?${type}=${this.dashboard?.page?.content}`;
-              console.log('url', urlArr.join('/'));
-              this.router.navigateByUrl(urlArr.join('/'));
-            } else {
-              console.log('update context options');
-              this.updateContextOptions();
-            }
-          }
+          // load the linked data
+          this.updateContextOptions();
+          // go the the parent dashboard
+          urlArr[urlArr.length - 1] = `${parentDashboardId}`;
+          this.router.navigateByUrl(urlArr.join('/'));
         }
       });
   }
@@ -786,7 +747,6 @@ export class DashboardComponent
    */
   private updateContextOptions() {
     const context = this.dashboard?.page?.context;
-    console.log('context', context);
     if (!context) return;
 
     if ('resource' in context) {
@@ -826,8 +786,6 @@ export class DashboardComponent
    * @param value id of the element or record
    */
   private async handleContextChange(value: string | number) {
-    console.log('handleContextChange', value);
-    console.log('handleContextChange', this.dashboard);
     if (
       !this.dashboard?.id ||
       !this.dashboard?.page?.id ||
@@ -850,7 +808,6 @@ export class DashboardComponent
 
     if (dashboardWithContext) {
       urlArr[urlArr.length - 1] = `${parentDashboardId}?${type}=${value}`;
-      console.log('navigating to url', urlArr.join('/'));
       this.router.navigateByUrl(urlArr.join('/'));
     } else {
       const { data } = await this.dashboardService.createDashboardWithContext(
@@ -858,7 +815,6 @@ export class DashboardComponent
         type,
         value
       );
-      console.log('data', data);
       if (!data?.addDashboardWithContext?.id) return;
       urlArr[urlArr.length - 1] = `${parentDashboardId}?${type}=${value}`;
       console.log('navigating to url', urlArr.join('/'));
