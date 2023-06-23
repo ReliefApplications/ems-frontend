@@ -13,18 +13,19 @@ import { ButtonModule, CheckboxModule } from '@oort-front/ui';
 
 /** item for the layer menu */
 @Component({
-  selector: 'safe-layers-menu-item',
-  templateUrl: './layers-menu-item.component.html',
-  styleUrls: ['./layers-menu-item.component.scss'],
+  selector: 'safe-sidenav-controls-menu-item',
+  templateUrl: './sidenav-controls-menu-item.component.html',
+  styleUrls: ['./sidenav-controls-menu-item.component.scss'],
   standalone: true,
   imports: [CommonModule, ButtonModule, CheckboxModule],
 })
-export class LayersMenuItemComponent implements OnInit, OnDestroy {
+export class SidenavControlsMenuItemComponent implements OnInit, OnDestroy {
   // Declare variables to store the event listeners
   private addLayerListener!: L.LeafletEventHandlerFn;
   private removeLayerListener!: L.LeafletEventHandlerFn;
-  @ViewChildren(LayersMenuItemComponent)
-  childrenComponents: QueryList<LayersMenuItemComponent> = new QueryList();
+  @ViewChildren(SidenavControlsMenuItemComponent)
+  childrenComponents: QueryList<SidenavControlsMenuItemComponent> =
+    new QueryList();
 
   @Input() item!: L.Control.Layers.TreeObject;
   @Input() map!: L.Map;
