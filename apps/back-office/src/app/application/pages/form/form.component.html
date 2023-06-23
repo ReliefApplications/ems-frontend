@@ -22,6 +22,12 @@
           category="primary"
           [icon]="page.visible ? 'visibility' : 'visibility_off'"
           (click)="togglePageVisibility()"
+          [uiTooltip]="
+            (page.visible
+              ? 'components.application.pages.hide'
+              : 'components.application.pages.show'
+            ) | translate
+          "
         >
         </ui-button>
       </div>

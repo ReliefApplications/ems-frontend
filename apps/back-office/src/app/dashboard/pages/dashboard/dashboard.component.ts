@@ -103,7 +103,10 @@ export class DashboardComponent
   public buttonActions: (ButtonActionT & { isHovered: boolean })[] = [];
 
   // === ROUTE ===
-  public isStep = false;
+  /** @returns is dashboard a step or a page */
+  get isStep(): boolean {
+    return this.router.url.includes('/workflow/');
+  }
 
   /**
    * Dashboard page
@@ -145,7 +148,6 @@ export class DashboardComponent
   }
 
   ngOnInit(): void {
-    this.isStep = this.router.url.includes('/workflow/');
     const rootElement = this.elementRef.nativeElement;
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       // Doing this to be able to use custom styles on specific dashboards
