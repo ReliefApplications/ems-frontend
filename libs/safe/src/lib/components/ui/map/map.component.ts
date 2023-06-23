@@ -43,6 +43,7 @@ import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 import { flatten, isNil, omitBy } from 'lodash';
 import { takeUntil } from 'rxjs';
 import { SafeMapPopupService } from './map-popup/map-popup.service';
+import { Platform } from '@angular/cdk/platform';
 
 /** Component for the map widget */
 @Component({
@@ -140,6 +141,7 @@ export class MapComponent
    * @param mapLayersService SafeMapLayersService
    * @param mapPopupService The map popup handler service
    * @param renderer Angular renderer
+   * @param platform Platform
    */
   constructor(
     @Inject('environment') environment: any,
@@ -148,7 +150,8 @@ export class MapComponent
     private arcgisService: ArcgisService,
     public mapLayersService: SafeMapLayersService,
     public mapPopupService: SafeMapPopupService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private platform: Platform
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -177,6 +180,13 @@ export class MapComponent
         content: { zoom: this.map.getZoom() },
       });
     });
+
+    // The scroll jump issue only happens on chrome client browser
+    // The following line would overwrite default behavior(preventDefault does not work for this purpose in chrome)
+    if (this.platform.WEBKIT || this.platform.BLINK) {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      this.map.getContainer().focus = () => {};
+    }
 
     // Listen for language change
     this.translate.onLangChange
@@ -292,6 +302,7 @@ export class MapComponent
         maxZoom,
         worldCopyJump,
         timeDimension: true,
+        disableAutoPan: true,
       } as any).setView(
         L.latLng(
           initialState.viewpoint.center.latitude,
