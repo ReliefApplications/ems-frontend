@@ -431,6 +431,7 @@
 				"delete": {
 					"confirmationMessage": "****** {{name}} ******"
 				},
+				"hide": "******",
 				"notReordered": {
 					"plural": "****** {{error}}",
 					"singular": "****** {{error}}"
@@ -438,7 +439,8 @@
 				"reordered": {
 					"plural": "******",
 					"singular": "******"
-				}
+				},
+				"show": "******"
 			},
 			"positionAttribute": {
 				"delete": {
@@ -649,6 +651,7 @@
 			}
 		},
 		"header": {
+			"goToApp": "******",
 			"goToPlatform": "******",
 			"logout": "******",
 			"sidenav": {

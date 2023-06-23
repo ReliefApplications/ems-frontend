@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MapLayersComponent } from './map-layers.component';
+import { SafeLayersMenuComponent } from './layers-menu.component';
 
-describe('MapLayersComponent', () => {
-  let component: MapLayersComponent;
-  let fixture: ComponentFixture<MapLayersComponent>;
+describe('SafeLayersMenuComponent', () => {
+  let component: SafeLayersMenuComponent;
+  let fixture: ComponentFixture<SafeLayersMenuComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MapLayersComponent],
+      declarations: [SafeLayersMenuComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MapLayersComponent);
+    fixture = TestBed.createComponent(SafeLayersMenuComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

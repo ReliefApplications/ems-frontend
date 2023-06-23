@@ -258,7 +258,7 @@ export class SafeMapPopupService {
           const sanitizedHtml = element.text?.replace(scriptRegex, '') ?? '';
           template =
             template +
-            `<div class="m-2 rounded-md border-gray-200 border shadow-md px-1">${sanitizedHtml}</div>`;
+            `<div class="m-2 break-all rounded-md border-gray-200 border shadow-md px-1">${sanitizedHtml}</div>`;
         }
       }
     });

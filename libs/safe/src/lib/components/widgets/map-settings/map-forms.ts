@@ -62,7 +62,7 @@ const DEFAULT_GRADIENT = [
  * @returns new form group
  */
 export const createLayerForm = (value?: LayerModel) => {
-  const type = get(value, 'type', 'FeatureLayer') as LayerType;
+  const type = get(value, 'type') || 'FeatureLayer';
 
   return new FormGroup({
     // Layer properties
