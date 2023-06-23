@@ -289,17 +289,17 @@ export class SelectMenuComponent
    */
   getValuesLabel(selectedValues: any[]) {
     let values = this.optionList.filter((val: any) => {
-      if(typeof selectedValues[0] === 'object'){
-        if(val.value){
-          for(let i  = 0; i < selectedValues.length; i++){
-            if(selectedValues[i].name.includes(val.value.name)){
+      if (typeof selectedValues[0] === 'object') {
+        if (val.value) {
+          for (let i = 0; i < selectedValues.length; i++) {
+            if (selectedValues[i].name.includes(val.value.name)) {
               return val;
             }
           }
         }
-      }else if (selectedValues.includes(val.value)) {
+      } else if (selectedValues.includes(val.value)) {
         return val;
-      } 
+      }
     });
     return (values = values.map((val: any) => {
       if (val.label) {
@@ -308,7 +308,6 @@ export class SelectMenuComponent
         return val.value;
       }
     }));
-
   }
 
   // SELECT DISPLAY LOGIC //
