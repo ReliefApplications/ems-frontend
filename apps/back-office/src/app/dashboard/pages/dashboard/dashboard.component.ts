@@ -22,6 +22,7 @@ import {
   SafeConfirmService,
   SafeReferenceDataService,
   Record,
+  ButtonActionT,
 } from '@oort-front/safe';
 import {
   EditDashboardMutationResponse,
@@ -48,7 +49,6 @@ import { isEqual } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
-import { ButtonActionT } from './components/edit-button-action/edit-button-action.component';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 /** Default number of records fetched per page */

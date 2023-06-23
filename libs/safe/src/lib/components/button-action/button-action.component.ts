@@ -1,24 +1,14 @@
 import { Component, Input } from '@angular/core';
-// import { ButtonActionT } from '../edit-button-action/edit-button-action.component';
 import { TranslateService } from '@ngx-translate/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { SafeDashboardService } from '../../services/dashboard/dashboard.service';
 import { DataTemplateService } from '../../services/data-template/data-template.service';
 import { Dashboard } from '../../models/dashboard.model';
-import { Category, Variant } from '@oort-front/ui';
-// import { ButtonActionT } from './button-action-type';
-
-type ButtonActionT = {
-  text: string;
-  href: string;
-  variant: Variant;
-  category: Category;
-  openInNewTab: boolean;
-};
+import { ButtonActionT } from './button-action-type';
 
 /** Component for display action buttons */
 @Component({
-  selector: 'app-button-action',
+  selector: 'safe-button-action',
   templateUrl: './button-action.component.html',
   styleUrls: ['./button-action.component.scss'],
 })
@@ -26,7 +16,7 @@ export class ButtonActionComponent {
   @Input() buttonActions: (ButtonActionT & { isHovered: boolean })[] = [];
   @Input() dashboard?: Dashboard;
   @Input() canUpdate = true;
-  
+
   /**
    * Action buttons
    *
@@ -66,7 +56,9 @@ export class ButtonActionComponent {
    * @param idx Index of button action to be removed
    */
   public async onDeleteButtonAction(idx: number) {
-    const { SafeConfirmModalComponent } = await import('../confirm-modal/confirm-modal.component');
+    const { SafeConfirmModalComponent } = await import(
+      '../confirm-modal/confirm-modal.component'
+    );
     const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
       data: {
         title: this.translateService.instant('common.deleteObject', {

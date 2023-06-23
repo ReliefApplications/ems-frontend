@@ -9,12 +9,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
  */
 @NgModule({
   declarations: [ButtonActionComponent],
-  imports: [
-    CommonModule,
-    ButtonModule,
-    DragDropModule,
-  ],
+  imports: [CommonModule, ButtonModule, DragDropModule],
   exports: [ButtonActionComponent],
 })
 export class ButtonActionModule {}
-

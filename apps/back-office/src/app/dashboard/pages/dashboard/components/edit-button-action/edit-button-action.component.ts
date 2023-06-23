@@ -1,9 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
-  Category,
   DialogModule,
-  Variant,
   variants as ButtonVariants,
   categories as ButtonCategories,
   FormWrapperModule,
@@ -28,15 +26,8 @@ import {
   SafeEditorControlComponent,
   DataTemplateService,
   INLINE_EDITOR_CONFIG,
+  ButtonActionT,
 } from '@oort-front/safe';
-
-export type ButtonActionT = {
-  text: string;
-  href: string;
-  variant: Variant;
-  category: Category;
-  openInNewTab: boolean;
-};
 
 /**
  * Create a form group for the button action
@@ -109,7 +100,6 @@ export class EditButtonActionComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log(console.log(this.dataTemplateService.getAutoCompleterKeys([])));
     this.editorService.addCalcAndKeysAutoCompleter(
       this.hrefEditor,
       this.dataTemplateService.getAutoCompleterKeys([], false)
