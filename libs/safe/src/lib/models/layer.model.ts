@@ -112,6 +112,7 @@ export interface LayerDatasource {
   geoField?: string;
   latitudeField?: string;
   longitudeField?: string;
+  type: string;
 }
 
 /**

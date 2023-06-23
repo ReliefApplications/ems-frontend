@@ -1,6 +1,6 @@
 <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
   <!-- Styling -->
-  <div [formGroup]="formGroup" class="flex-1">
+  <div [formGroup]="control" class="flex-1">
     <div formGroupName="renderer">
       <div uiFormFieldDirective>
         <label>{{
@@ -12,7 +12,7 @@
           </ui-select-option>
         </ui-select-menu>
       </div>
-      <div class="flex flex-col" [ngSwitch]="formGroup.value.renderer.type">
+      <div class="flex flex-col" [ngSwitch]="control.value.renderer.type">
         <div *ngSwitchCase="'simple'">
           <ng-container *ngTemplateOutlet="simpleRenderer"></ng-container>
         </div>
@@ -33,19 +33,19 @@
 
 <ng-template #simpleRenderer>
   <safe-simple-renderer
-    [formGroup]="$any(formGroup.get('renderer.symbol'))"
+    [control]="$any(control.get('renderer.symbol'))"
   ></safe-simple-renderer>
 </ng-template>
 
 <ng-template #heatmapRenderer>
   <safe-heatmap-renderer
-    [formGroup]="$any(formGroup.get('renderer'))"
+    [control]="$any(control.get('renderer'))"
   ></safe-heatmap-renderer>
 </ng-template>
 
 <ng-template #uniqueValueRenderer>
   <safe-unique-value-renderer
-    [formGroup]="$any(formGroup.get('renderer'))"
+    [control]="$any(control.get('renderer'))"
     [fields$]="fields$"
   ></safe-unique-value-renderer>
 </ng-template>

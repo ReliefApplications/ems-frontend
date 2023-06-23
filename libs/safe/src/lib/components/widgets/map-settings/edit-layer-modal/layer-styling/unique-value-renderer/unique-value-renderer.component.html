@@ -1,5 +1,5 @@
 <!-- todo(gis): translate -->
-<div [formGroup]="formGroup" class="flex flex-col gap-y-8">
+<div [formGroup]="control" class="flex flex-col gap-y-8">
   <!-- Field -->
   <div uiFormFieldDirective>
     <label>Field</label>
@@ -63,7 +63,7 @@
     </div>
     <h3>Symbol</h3>
     <safe-simple-renderer
-      [formGroup]="$any(formGroup.get('defaultSymbol'))"
+      [control]="$any(control.get('defaultSymbol'))"
     ></safe-simple-renderer>
   </div>
 </div>

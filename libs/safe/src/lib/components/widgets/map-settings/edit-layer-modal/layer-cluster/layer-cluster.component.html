@@ -1,7 +1,7 @@
-<div [formGroup]="formGroup" class="flex flex-col">
+<div [formGroup]="control" class="flex flex-col">
   <!-- Custom Symbol -->
   <safe-simple-renderer
-    [formGroup]="$any(formGroup.get('drawingInfo.renderer.symbol'))"
+    [control]="$any(control.get('drawingInfo.renderer.symbol'))"
     [showSize]="false"
   ></safe-simple-renderer>
   <ui-divider class="my-1"></ui-divider>

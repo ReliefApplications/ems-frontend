@@ -20,7 +20,7 @@ const AVAILABLE_REDUCTION_TYPES = ['cluster'];
   styleUrls: ['./layer-aggregation.component.scss'],
 })
 export class LayerAggregationComponent implements AfterViewInit {
-  @Input() formGroup!: FormGroup;
+  @Input() control!: FormGroup;
   public reductionTypes = AVAILABLE_REDUCTION_TYPES;
 
   // Display of map

@@ -35,7 +35,7 @@ import {
   styleUrls: ['./unique-value-renderer.component.scss'],
 })
 export class UniqueValueRendererComponent implements OnInit {
-  @Input() formGroup!: FormGroup;
+  @Input() control!: FormGroup;
   @Input() fields$!: Observable<Fields[]>;
   private scalarFields = new BehaviorSubject<Fields[]>([]);
   public scalarFields$ = this.scalarFields.asObservable();
@@ -44,7 +44,7 @@ export class UniqueValueRendererComponent implements OnInit {
 
   /** @returns get unique infos settings as form array */
   get uniqueValueInfos(): FormArray {
-    return this.formGroup.get('uniqueValueInfos') as FormArray;
+    return this.control.get('uniqueValueInfos') as FormArray;
   }
 
   ngOnInit(): void {

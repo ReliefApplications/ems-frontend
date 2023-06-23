@@ -51,7 +51,7 @@ export class LayerDatasourceComponent
   extends SafeUnsubscribeComponent
   implements OnInit, AfterViewInit
 {
-  @Input() formGroup!: FormGroup;
+  @Input() control!: FormGroup;
   @Input() resourceQuery!: BehaviorSubject<GetResourceQueryResponse | null>;
   public origin!: FormControl<string | null>;
 
@@ -103,10 +103,10 @@ export class LayerDatasourceComponent
 
   ngOnInit(): void {
     // Set origin form control
-    if (this.formGroup.value.resource) {
+    if (this.control.value.resource) {
       this.origin = new FormControl('resource');
     } else {
-      if (this.formGroup.value.refData) {
+      if (this.control.value.refData) {
         this.origin = new FormControl('refData');
       } else {
         this.origin = new FormControl();
@@ -130,10 +130,10 @@ export class LayerDatasourceComponent
     );
 
     // If the form has a resource, get info from
-    const resourceID = this.formGroup.value.resource;
+    const resourceID = this.control.value.resource;
     if (resourceID) {
-      const layoutID = this.formGroup.value.layout;
-      const aggregationID = this.formGroup.value.aggregation;
+      const layoutID = this.control.value.layout;
+      const aggregationID = this.control.value.aggregation;
       this.resourceQuery.subscribe((data: GetResourceQueryResponse | null) => {
         if (data) {
           this.resource = data.resource;
@@ -156,11 +156,11 @@ export class LayerDatasourceComponent
     this.origin.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.resource = null;
       this.refData = null;
-      this.formGroup.patchValue({ resource: null, refData: null });
+      this.control.patchValue({ resource: null, refData: null });
     });
 
     // Listen to resource changes
-    this.formGroup
+    this.control
       .get('resource')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((resourceID) => {
@@ -169,14 +169,14 @@ export class LayerDatasourceComponent
             .getValue()
             .find((x) => x.id === resourceID) || null;
 
-        this.formGroup.get('layout')?.setValue(null);
-        this.formGroup.get('aggregation')?.setValue(null);
+        this.control.get('layout')?.setValue(null);
+        this.control.get('aggregation')?.setValue(null);
         this.layout = null;
         this.aggregation = null;
       });
 
     // If form has a refData, fetch it
-    const refDataID = this.formGroup.get('refData')?.value;
+    const refDataID = this.control.get('refData')?.value;
     if (refDataID) {
       this.apollo
         .query<GetReferenceDataQueryResponse>({
@@ -191,7 +191,7 @@ export class LayerDatasourceComponent
     }
 
     // Listen to refData changes
-    this.formGroup
+    this.control
       .get('refData')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((refDataID) => {
@@ -251,7 +251,7 @@ export class LayerDatasourceComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value) {
-        this.formGroup.get('layout')?.setValue((value as any).id);
+        this.control.get('layout')?.setValue((value as any).id);
         this.layout = value;
         this.fields.emit(this.mapLayersService.getQueryFields(this.layout));
       }
@@ -268,7 +268,7 @@ export class LayerDatasourceComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value) {
-        this.formGroup.get('aggregation')?.setValue((value as any).id);
+        this.control.get('aggregation')?.setValue((value as any).id);
         this.aggregation = value;
         this.fields.emit(
           this.mapLayersService.getAggregationFields(

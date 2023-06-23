@@ -1364,6 +1364,7 @@
 						"layerDatasource": "Source de données de la couche",
 						"layerProperties": "Propriétés",
 						"layerStyling": "Styles",
+						"layerType": "@TODO",
 						"popup": "Popup",
 						"properties": {
 							"defaultVisibility": "Visible par défaut",

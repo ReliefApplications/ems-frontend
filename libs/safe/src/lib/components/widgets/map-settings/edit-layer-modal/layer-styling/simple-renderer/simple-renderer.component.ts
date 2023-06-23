@@ -27,7 +27,7 @@ import { FormWrapperModule, SliderModule, SpinnerModule } from '@oort-front/ui';
   styleUrls: ['./simple-renderer.component.scss'],
 })
 export class SimpleRendererComponent implements AfterViewInit {
-  @Input() formGroup!: FormGroup;
+  @Input() control!: FormGroup;
   @Input() showSize = true;
   public loading = true;
   private primaryColor!: string;
@@ -43,8 +43,8 @@ export class SimpleRendererComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     // If color not chosen, set primary color as default
-    if (!this.formGroup.value.color) {
-      this.formGroup.controls.color.setValue(this.primaryColor);
+    if (!this.control.value.color) {
+      this.control.controls.color.setValue(this.primaryColor);
     }
     this.loading = false;
   }

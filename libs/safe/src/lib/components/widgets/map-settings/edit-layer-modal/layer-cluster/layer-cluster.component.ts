@@ -8,6 +8,6 @@ import { FormGroup } from '@angular/forms';
   styleUrls: ['./layer-cluster.component.scss'],
 })
 export class LayerClusterComponent {
-  @Input() formGroup!: FormGroup;
+  @Input() control!: FormGroup;
   public expansivePanels = ['fields', 'label', 'popups'];
 }

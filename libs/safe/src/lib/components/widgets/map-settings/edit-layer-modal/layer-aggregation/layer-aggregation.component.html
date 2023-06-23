@@ -1,6 +1,6 @@
 <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
   <!-- Aggregation form -->
-  <div [formGroup]="formGroup" class="flex-1">
+  <div [formGroup]="control" class="flex-1">
     <div uiFormFieldDirective>
       <label>{{
         'components.widget.settings.map.edit.reduction.reduction' | translate
@@ -15,7 +15,7 @@
         </ui-select-option>
       </ui-select-menu>
     </div>
-    <div class="flex flex-col" [ngSwitch]="formGroup.value.type">
+    <div class="flex flex-col" [ngSwitch]="control.value.type">
       <div *ngSwitchCase="'cluster'">
         <ng-container *ngTemplateOutlet="clusterRenderer"></ng-container>
       </div>
@@ -28,5 +28,5 @@
 </div>
 
 <ng-template #clusterRenderer>
-  <safe-layer-cluster [formGroup]="formGroup"></safe-layer-cluster>
+  <safe-layer-cluster [control]="control"></safe-layer-cluster>
 </ng-template>

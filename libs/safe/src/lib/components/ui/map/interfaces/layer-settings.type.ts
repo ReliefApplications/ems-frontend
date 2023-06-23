@@ -49,6 +49,7 @@ export interface LayerFormData {
     layout: any;
     aggregation: any;
     refData: any;
+    type: Omit<GeometryTypes, 'LineString'>;
   };
   sublayers?: string[];
 }

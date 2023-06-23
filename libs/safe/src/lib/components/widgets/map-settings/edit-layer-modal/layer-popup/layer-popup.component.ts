@@ -31,7 +31,7 @@ export class LayerPopupComponent
   extends SafeUnsubscribeComponent
   implements OnInit, AfterViewInit
 {
-  @Input() formGroup!: FormGroup;
+  @Input() control!: FormGroup;
   @Input() fields$!: Observable<Fields[]>;
 
   public keys: string[] = [];
@@ -39,7 +39,7 @@ export class LayerPopupComponent
 
   /** @returns popup elements as form array */
   get popupElements(): FormArray {
-    return this.formGroup.get('popupElements') as FormArray;
+    return this.control.get('popupElements') as FormArray;
   }
 
   // Display of map

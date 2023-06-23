@@ -1,6 +1,6 @@
 <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
   <!-- Datasource form -->
-  <form [formGroup]="formGroup" class="flex-1">
+  <form [formGroup]="control" class="flex-1">
     <div class="flex flex-col gap-3 w-full">
       <!-- Origin -->
       <div uiFormFieldDirective>
@@ -88,7 +88,7 @@
           [isIcon]="true"
           icon="close"
           (click)="
-            formGroup.get('datasource.layout')?.setValue(null); layout = null
+            control.get('datasource.layout')?.setValue(null); layout = null
           "
         ></ui-button>
       </div>
@@ -114,7 +114,7 @@
           [isIcon]="true"
           icon="close"
           (click)="
-            formGroup.get('datasource.aggregation')?.setValue(null);
+            control.get('datasource.aggregation')?.setValue(null);
             aggregation = null
           "
         ></ui-button>
@@ -138,7 +138,7 @@
       </div>
 
       <!-- Fields selection -->
-      <ng-container *ngIf="formGroup.get('geoField')?.enabled">
+      <ng-container *ngIf="control.get('geoField')?.enabled">
         <div uiFormFieldDirective>
           <label>{{
             'components.widget.settings.map.layers.dataSource.geoField'
@@ -152,20 +152,19 @@
             >
           </ui-select-menu>
           <ui-button
-            *ngIf="formGroup.get('geoField')?.value"
+            *ngIf="control.get('geoField')?.value"
             uiSuffix
             [isIcon]="true"
             icon="close"
             variant="danger"
             (click)="
-              formGroup.get('geoField')?.setValue(null);
-              $event.stopPropagation()
+              control.get('geoField')?.setValue(null); $event.stopPropagation()
             "
           ></ui-button>
         </div>
       </ng-container>
 
-      <ng-container *ngIf="formGroup.get('latitudeField')?.enabled">
+      <ng-container *ngIf="control.get('latitudeField')?.enabled">
         <div class="flex flex-row justify-between gap-2 flex-wrap">
           <!-- Latitude Field -->
           <div uiFormFieldDirective class="flex-1">
@@ -181,13 +180,13 @@
               >
             </ui-select-menu>
             <ui-button
-              *ngIf="formGroup.get('latitudeField')?.value"
+              *ngIf="control.get('latitudeField')?.value"
               uiSuffix
               [isIcon]="true"
               icon="close"
               variant="danger"
               (click)="
-                formGroup.get('latitudeField')?.setValue(null);
+                control.get('latitudeField')?.setValue(null);
                 $event.stopPropagation()
               "
             ></ui-button>
@@ -206,17 +205,44 @@
               >
             </ui-select-menu>
             <ui-button
-              *ngIf="formGroup.get('longitudeField')?.value"
+              *ngIf="control.get('longitudeField')?.value"
               uiSuffix
               [isIcon]="true"
               icon="close"
               variant="danger"
               (click)="
-                formGroup.get('longitudeField')?.setValue(null);
+                control.get('longitudeField')?.setValue(null);
                 $event.stopPropagation()
               "
             ></ui-button>
           </div>
+        </div>
+      </ng-container>
+
+      <!-- Layer type -->
+      <ng-container
+        *ngIf="
+          control.get('geoField')?.enabled ||
+          control.get('latitudeField')?.enabled
+        "
+      >
+        <div uiFormFieldDirective [outline]="false" class="p-0">
+          <label>{{
+            'components.widget.settings.map.edit.layerType' | translate
+          }}</label>
+          <ui-select-menu formControlName="type">
+            <ui-select-option value="Point">
+              {{
+                'components.widget.settings.map.layers.types.point' | translate
+              }}
+            </ui-select-option>
+            <ui-select-option value="Polygon">
+              {{
+                'components.widget.settings.map.layers.types.polygon'
+                  | translate
+              }}
+            </ui-select-option>
+          </ui-select-menu>
         </div>
       </ng-container>
     </div>
