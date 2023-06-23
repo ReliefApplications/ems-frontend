@@ -230,7 +230,6 @@ export class SelectMenuComponent
   /** Builds the text displayed from selected options */
   private setDisplayTriggerText() {
     const labelValues = this.getValuesLabel(this.selectedValues);
-    console.log(labelValues);
     // Adapt the text to be displayed in the trigger if no custom template for display is provided
     if (!this.customTemplate) {
       if (labelValues?.length) {
@@ -290,27 +289,18 @@ export class SelectMenuComponent
    */
   getValuesLabel(selectedValues: any[]) {
     let values = this.optionList.filter((val: any) => {
-
       if(typeof selectedValues[0] === 'object'){
         if(val.value){
-          if(selectedValues[0].includes(val.value)){
-            return val;
+          for(let i  = 0; i < selectedValues.length; i++){
+            if(selectedValues[i].name.includes(val.value.name)){
+              return val;
+            }
           }
         }
       }else if (selectedValues.includes(val.value)) {
         return val;
       } 
     });
-    if(typeof values[0] === 'object'){
-      return values.map((val: any) => {
-        if(val.label){
-          return val.label;
-        }else{
-          return val.value;
-        }
-      });
-    }
-
     return (values = values.map((val: any) => {
       if (val.label) {
         return val.label;

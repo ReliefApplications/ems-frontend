@@ -306,9 +306,6 @@ export class ButtonConfigComponent
           this.formGroup?.get('selectAll')?.updateValueAndValidity();
         }
       });
-    
-    console.log(this.modificationsArray);
-    console.log(this.scalarFields);
   }
 
   /** Set list of resources user can attach a record to */
