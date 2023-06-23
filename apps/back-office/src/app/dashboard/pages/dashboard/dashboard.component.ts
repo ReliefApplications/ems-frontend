@@ -215,7 +215,6 @@ export class DashboardComponent
    * Init the dashboard
    *
    * @param id Dashboard id
-   * @param loadDashboard Whether to load the dashboard or not
    * @returns Promise
    */
   private async initDashboardWithId(id: string) {
