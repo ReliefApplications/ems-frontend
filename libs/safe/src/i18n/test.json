@@ -1351,7 +1351,9 @@
 						"popup": "******",
 						"properties": {
 							"defaultVisibility": "******",
+							"from": "******",
 							"opacity": "******",
+							"to": "******",
 							"visibilityRange": "******",
 							"zoom": "******"
 						},
