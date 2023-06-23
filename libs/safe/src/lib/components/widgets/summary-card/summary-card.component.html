@@ -11,6 +11,17 @@
     <span class="widget-title" [title]="settings.title">{{
       settings.title
     }}</span>
+    <!-- Searchbar -->
+    <div
+      *ngIf="settings.widgetDisplay?.searchable && displayMode === 'cards'"
+      class="px-2 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 flex items-center m-1 w-[30%] max-w-[200px]"
+    >
+      <input
+        class="h-full bg-transparent w-full"
+        [placeholder]="'common.placeholder.search' | translate"
+        [formControl]="searchControl"
+      />
+    </div>
     <!-- Switch between grid and cards view -->
     <div class="flex">
       <!-- Data source button -->
@@ -47,15 +58,6 @@
   </kendo-tilelayout-item-header>
   <!-- Cards display mode -->
   <ng-container *ngIf="displayMode === 'cards'">
-    <!-- Search -->
-    <div class="bg-zinc-50 p-2" *ngIf="!!settings.widgetDisplay?.searchable">
-      <input
-        [placeholder]="'common.placeholder.search' | translate"
-        kendoTextBox
-        [formControl]="searchControl"
-        class="!w-full"
-      />
-    </div>
     <!-- Export -->
     <div class="w-full grow overflow-auto" #summaryCardGrid>
       <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
@@ -90,6 +92,7 @@
         </div>
       </kendo-pdf-export>
     </div>
+    <ui-spinner *ngIf="scrolling"></ui-spinner>
     <!-- Pagination -->
     <ui-paginator
       *ngIf="settings.widgetDisplay?.usePagination"
