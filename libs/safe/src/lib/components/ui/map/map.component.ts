@@ -217,7 +217,6 @@ export class MapComponent
     this.setUpMapListeners();
 
     setTimeout(() => {
-      console.log('invalidating');
       this.map.invalidateSize();
       this.mapEvent.emit({
         type: MapEventType.FIRST_LOAD,
@@ -336,19 +335,24 @@ export class MapComponent
       if (this.map.getZoom() !== initialState.viewpoint.zoom) {
         this.map.setZoom(initialState.viewpoint.zoom);
       }
-      const currentCenter = this.map.getCenter();
-      if (
-        initialState.viewpoint.center.latitude !== currentCenter.lat ||
-        initialState.viewpoint.center.longitude !== currentCenter.lng
-      ) {
-        this.map.setView(
-          L.latLng(
-            initialState.viewpoint.center.latitude,
-            initialState.viewpoint.center.longitude
-          ),
-          initialState.viewpoint.zoom
-        );
-      }
+      // Could ask the map to do some unwanted movements
+      // const currentCenter = this.map.getCenter();
+      // if (
+      //   initialState.viewpoint.center.latitude !== currentCenter.lat ||
+      //   initialState.viewpoint.center.longitude !== currentCenter.lng
+      // ) {
+      //   console.log([
+      //     initialState.viewpoint.center.latitude,
+      //     initialState.viewpoint.center.longitude,
+      //   ]);
+      //   this.map.setView(
+      //     L.latLng(
+      //       initialState.viewpoint.center.latitude,
+      //       initialState.viewpoint.center.longitude
+      //     ),
+      //     initialState.viewpoint.zoom
+      //   );
+      // }
     }
 
     // Close layers/bookmarks menu
