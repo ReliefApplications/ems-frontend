@@ -519,22 +519,24 @@ export class SafeCoreGridComponent
     } else {
       this.updatedItems.push({ id: item.id, ...value });
     }
-    Object.assign(
-      this.items.find((x) => x.id === item.id),
-      value
-    );
-    item.saved = false;
-    this.loadItems();
 
+    //Use the draft option to apply triggers
     this.apollo
       .mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
         variables: {
           id: item.id,
+          data: value,
+          draft: true,
         },
       })
       .subscribe((res) => {
-        console.log(res);
+        Object.assign(
+          this.items.find((x) => x.id === item.id),
+          res.data?.editRecord.data
+        );
+        item.saved = false;
+        this.loadItems();
       });
   }
 
