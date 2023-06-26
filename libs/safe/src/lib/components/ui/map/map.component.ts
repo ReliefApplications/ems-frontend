@@ -360,7 +360,10 @@ export class MapComponent
       layers?: L.Control.Layers.TreeObject[];
     }>[] = [];
 
+    // Flag to set again basemap or webmap in map even if no basemap or webmap change is done
+    // For layer change case trigger(on layer change all layers, including basemap and webmaps, are deleted by default)
     let layersRemoved = false;
+
     if (
       this.layerIds.length !== layers?.length ||
       difference(layers, this.layerIds).length
