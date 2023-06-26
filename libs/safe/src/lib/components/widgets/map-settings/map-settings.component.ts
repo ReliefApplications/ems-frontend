@@ -26,6 +26,7 @@ import { SafeConfirmService } from '../../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
 import { MapComponent } from '../../ui/map';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
+import { SafeLayoutService } from '../../../services/layout/layout.service';
 
 /** Component for the map widget settings */
 @Component({
@@ -59,6 +60,9 @@ export class SafeMapSettingsComponent
   );
   destroyTab$: Subject<boolean> = new Subject<boolean>();
 
+  // Layers controls right side nav. Store if sidenav is used, to be able to destroy it when closing the view.
+  private openedLayersSideNav = false;
+
   /**
    * Class constructor
    *
@@ -66,12 +70,14 @@ export class SafeMapSettingsComponent
    * @param confirmService SafeConfirmService
    * @param translate TranslateService
    * @param cdr ChangeDetectorRef
+   * @param layoutService Shared layout service
    */
   constructor(
     private mapLayersService: SafeMapLayersService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private layoutService: SafeLayoutService
   ) {
     super();
   }
@@ -104,6 +110,14 @@ export class SafeMapSettingsComponent
     );
     this.mapComponent = componentRef.instance;
     this.currentMapContainerRef.next(this.mapContainerRef);
+
+    this.layoutService.rightSidenav$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((view: any) => {
+        if (view.inputs?.layersMenuExpanded) {
+          this.openedLayersSideNav = true;
+        }
+      });
   }
 
   /**
@@ -363,5 +377,9 @@ export class SafeMapSettingsComponent
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     this.mapContainerRef.detach();
+    // Destroy layers control sidenav when closing the settings
+    if (this.openedLayersSideNav) {
+      this.layoutService.setRightSidenav(null);
+    }
   }
 }
