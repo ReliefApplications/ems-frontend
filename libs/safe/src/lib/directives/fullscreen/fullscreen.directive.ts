@@ -103,7 +103,17 @@ export class FullScreenDirective
    */
   private triggerFullScreenMode(isFullScreenMode: boolean) {
     if (isFullScreenMode) {
-      get(this.el.nativeElement, this.accessorString)?.requestFullscreen();
+      const currentSidenav = this.document.querySelector(
+        'ui-sidenav-container'
+      );
+      let defaultFullScreenContainer = get(
+        this.el.nativeElement,
+        this.accessorString
+      );
+      if (currentSidenav?.contains(defaultFullScreenContainer)) {
+        defaultFullScreenContainer = currentSidenav;
+      }
+      defaultFullScreenContainer?.requestFullscreen();
     } else {
       if (this.document.fullscreenElement) {
         this.document.exitFullscreen();
