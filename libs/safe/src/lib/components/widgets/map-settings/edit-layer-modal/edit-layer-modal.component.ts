@@ -11,7 +11,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
 import { LayerModel } from '../../../../models/layer.model';
 import { createLayerForm, LayerFormT } from '../map-forms';
-import { debounceTime, takeUntil, BehaviorSubject, Subject } from 'rxjs';
+import { takeUntil, BehaviorSubject, Subject, pairwise, startWith } from 'rxjs';
 import { MapComponent } from '../../../ui/map/map.component';
 import {
   MapEvent,
@@ -285,23 +285,42 @@ export class EditLayerModalComponent
   private setUpEditLayerListeners() {
     // Those listeners would handle any change for layer into the map component reference
     this.form.valueChanges
-      .pipe(takeUntil(this.destroy$), debounceTime(1000))
-      .subscribe((value) => {
-        this.updateMapLayer({ delete: true });
-        this._layer.setConfig({ ...value, geojson: this._layer.geojson });
-        this._layer.getLayer(true).then((layer) => {
-          this.currentLayer = layer;
-          this.updateMapLayer();
-        });
+      .pipe(startWith(this.form.value), pairwise(), takeUntil(this.destroy$))
+      .subscribe({
+        next: ([prev, next]) => {
+          this.updateMapLayer({ delete: true });
+          // If any of the main properties to fetch the layer changes, set up layer
+          if (
+            prev.datasource.geoField !== next.datasource.geoField ||
+            prev.datasource.latitudeField !== next.datasource.latitudeField ||
+            prev.datasource.longitudeField !== next.datasource.longitudeField
+          ) {
+            this.setUpLayer();
+          } else {
+            // else update current layer properties
+            this._layer.setConfig({ ...next, geojson: this._layer.geojson });
+            this._layer.getLayer(true).then((layer) => {
+              this.currentLayer = layer;
+              this.updateMapLayer();
+            });
+          }
+        },
       });
 
     this.form
       .get('datasource')
-      ?.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(1000))
-      .subscribe(() => {
-        this.updateMapLayer({ delete: true });
-        this.setUpLayer();
-        this.getResource();
+      ?.valueChanges.pipe(
+        startWith(this.form.get('datasource')?.value),
+        pairwise(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ([prev, next]) => {
+          if (!!prev && prev?.resource != next?.resource) {
+            this.getResource();
+          }
+          // else on aggregation implementation add it here
+        },
       });
 
     this.data.mapComponent?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({
@@ -382,7 +401,7 @@ export class EditLayerModalComponent
             aggregation: aggregationID ? [aggregationID] : [],
           },
         })
-        .pipe(takeUntil(this.destroy$), debounceTime(1000))
+        .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }) => {
           this.resource.next(data);
           // Update fields

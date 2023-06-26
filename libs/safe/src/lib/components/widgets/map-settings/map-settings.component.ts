@@ -138,7 +138,7 @@ export class SafeMapSettingsComponent
     });
     this.tileForm
       .get('initialState')
-      ?.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(1000))
+      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value) =>
         this.updateMapSettings({
           initialState: value,
@@ -146,13 +146,13 @@ export class SafeMapSettingsComponent
       );
     this.tileForm
       .get('basemap')
-      ?.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(1000))
+      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value) =>
         this.updateMapSettings({ basemap: value } as MapConstructorSettings)
       );
     this.tileForm
       .get('controls')
-      ?.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(1000))
+      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value) => {
         this.updateMapSettings({
           controls: value,
@@ -160,7 +160,7 @@ export class SafeMapSettingsComponent
       });
     this.tileForm
       .get('arcGisWebMap')
-      ?.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(1000))
+      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value) =>
         this.updateMapSettings({
           arcGisWebMap: value,
@@ -168,7 +168,7 @@ export class SafeMapSettingsComponent
       );
     this.tileForm
       .get('layers')
-      ?.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(1000))
+      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value) =>
         this.updateMapSettings({
           layers: value,
