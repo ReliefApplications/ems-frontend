@@ -79,7 +79,7 @@ export class DashboardComponent
   private generatedTiles = 0;
 
   // === DASHBOARD NAME EDITION ===
-  public canEditName = false;
+  public canUpdate = false;
   public formActive = false;
 
   // === STEP CHANGE FOR WORKFLOW ===
@@ -99,8 +99,17 @@ export class DashboardComponent
   public refDataValueField = '';
   public contextRecord: Record | null = null;
 
+  /** @returns type of context element */
+  get contextType() {
+    if (this.dashboard?.page?.context) {
+      return 'resource' in this.dashboard.page.context ? 'record' : 'element';
+    } else {
+      return;
+    }
+  }
+
   // === BUTTON ACTIONS ===
-  public buttonActions: (ButtonActionT & { isHovered: boolean })[] = [];
+  public buttonActions: ButtonActionT[] = [];
 
   // === ROUTE ===
   /** @returns is dashboard a step or a page */
@@ -163,28 +172,25 @@ export class DashboardComponent
       this.route.queryParams
         .pipe(takeUntil(this.destroy$))
         .subscribe((queryParams) => {
-          const type: 'record' | 'element' =
-            'record' in queryParams ? 'record' : 'element';
-
-          // if neither 'record' nor 'element' are in the query params, we are not on a contextual dashboard
-          // and contextualDashboardId will be undefined
-          const resourceId = queryParams[type];
+          // If we don't find the view element in the queryParams, then we are not using contextual view
+          const viewId = queryParams.id;
 
           // if there is an id, we need to find the contextual dashboard id and load it
-          if (resourceId) {
+          if (viewId) {
             // load the main dashboard
             this.initDashboardWithId(params.id).then(() => {
               // Find the id of the contextual dashboard and load it
               const dashboardsWithContext =
                 this.dashboard?.page?.contentWithContext;
 
+              const type = this.contextType;
               // find the contextual dashboard id in the list of dashboards from the parent dashboard
               // it's the one where the element or record id matches the one in the query params
               const dashboardWithContext = dashboardsWithContext?.find((d) => {
                 if (type === 'element')
-                  return 'element' in d && d.element === resourceId;
+                  return 'element' in d && d.element === viewId;
                 else if (type === 'record')
-                  return 'record' in d && d.record === resourceId;
+                  return 'record' in d && d.record === viewId;
                 return false;
               });
 
@@ -194,19 +200,23 @@ export class DashboardComponent
               } else {
                 // if we didn't find the contextual dashboard, create it
                 if (!this.dashboard?.page?.id) return;
-                this.dashboardService
-                  .createDashboardWithContext(
-                    this.dashboard?.page?.id, // parent dashboard page id
-                    type, // type of context
-                    resourceId // id of the context
-                  )
-                  .then((res) => {
-                    if (!res.data?.addDashboardWithContext?.id) return;
-                    // load the contextual dashboard
-                    this.initDashboardWithId(
-                      res.data.addDashboardWithContext.id
-                    );
-                  });
+                if (type) {
+                  this.dashboardService
+                    .createDashboardWithContext(
+                      this.dashboard?.page?.id, // parent dashboard page id
+                      type, // type of context
+                      viewId // id of the context
+                    )
+                    .then((res) => {
+                      if (!res.data?.addDashboardWithContext?.id) return;
+                      // load the contextual dashboard
+                      this.initDashboardWithId(
+                        res.data.addDashboardWithContext.id
+                      );
+                    });
+                } else {
+                  return;
+                }
               }
             });
           } else {
@@ -244,7 +254,7 @@ export class DashboardComponent
           this.dashboard = res.data.dashboard;
           this.initContext();
           this.updateContextOptions();
-          this.canEditName =
+          this.canUpdate =
             (this.dashboard?.page
               ? this.dashboard?.page?.canUpdate
               : this.dashboard?.step?.canUpdate) || false;
@@ -262,11 +272,7 @@ export class DashboardComponent
             : this.dashboard.step
             ? this.dashboard.step.workflow?.page?.application?.id
             : '';
-          this.buttonActions =
-            this.dashboard.buttons?.map((b) => ({
-              ...b,
-              isHovered: false,
-            })) || [];
+          this.buttonActions = this.dashboard.buttons || [];
           this.loading = res.loading;
           this.showFilter = this.dashboard.showFilter;
         } else {
@@ -706,7 +712,7 @@ export class DashboardComponent
           [];
 
         this.dashboardService.saveDashboardButtons([...currButtons, button]);
-        this.buttonActions.push({ ...button, isHovered: false });
+        this.buttonActions.push(button);
       });
   }
 
@@ -802,29 +808,30 @@ export class DashboardComponent
 
     // Check if there is a dashboard with the same context
     const dashboardsWithContext = this.dashboard?.page?.contentWithContext;
-    const type: 'record' | 'element' =
-      'resource' in this.dashboard.page.context ? 'record' : 'element';
-    const dashboardWithContext = dashboardsWithContext?.find((d) => {
-      if (type === 'element') return 'element' in d && d.element === value;
-      else if (type === 'record') return 'record' in d && d.record === value;
-      return false;
-    });
+    const type = this.contextType;
+    if (type) {
+      const dashboardWithContext = dashboardsWithContext?.find((d) => {
+        if (type === 'element') return 'element' in d && d.element === value;
+        else if (type === 'record') return 'record' in d && d.record === value;
+        return false;
+      });
 
-    const urlArr = this.router.url.split('/');
+      const urlArr = this.router.url.split('/');
 
-    if (dashboardWithContext) {
-      urlArr[urlArr.length - 1] = `${parentDashboardId}?${type}=${value}`;
-      this.router.navigateByUrl(urlArr.join('/'));
-    } else {
-      const { data } = await this.dashboardService.createDashboardWithContext(
-        this.dashboard?.page?.id,
-        type,
-        value
-      );
-      if (!data?.addDashboardWithContext?.id) return;
-      urlArr[urlArr.length - 1] = `${parentDashboardId}?${type}=${value}`;
-      console.log('navigating to url', urlArr.join('/'));
-      this.router.navigateByUrl(urlArr.join('/'));
+      if (dashboardWithContext) {
+        urlArr[urlArr.length - 1] = `${parentDashboardId}?id=${value}`;
+        this.router.navigateByUrl(urlArr.join('/'));
+      } else {
+        const { data } = await this.dashboardService.createDashboardWithContext(
+          this.dashboard?.page?.id,
+          type,
+          value
+        );
+        if (!data?.addDashboardWithContext?.id) return;
+        urlArr[urlArr.length - 1] = `${parentDashboardId}?id=${value}`;
+        console.log('navigating to url', urlArr.join('/'));
+        this.router.navigateByUrl(urlArr.join('/'));
+      }
     }
   }
 
@@ -872,13 +879,7 @@ export class DashboardComponent
       event.currentIndex
     );
 
-    this.dashboardService.saveDashboardButtons(
-      this.buttonActions.map((b) => {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const { isHovered, ...button } = b;
-        return button;
-      })
-    );
+    this.dashboardService.saveDashboardButtons(this.buttonActions);
   }
 
   /**
