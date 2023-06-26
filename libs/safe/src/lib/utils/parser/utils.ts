@@ -290,8 +290,8 @@ const replaceRecordFields = (
       formattedHtml = formattedHtml.replace(avatarCleanRegex, convertedValue);
     }
   }
-  // replace all /n with <br/> to keep the line breaks
-  formattedHtml = formattedHtml.replace(/\n/g, '<br/>');
+  // replace all /n, removing it since we don't need because tailwind already styles it
+  formattedHtml = formattedHtml.replace(/\n/g, '');
 
   return formattedHtml;
 };

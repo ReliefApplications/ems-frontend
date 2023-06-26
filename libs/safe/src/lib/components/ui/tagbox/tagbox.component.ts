@@ -30,12 +30,15 @@ export class SafeTagboxComponent
   public separatorKeysCodes: number[] = [ENTER, COMMA];
   @ViewChild('textInput') private textInput?: ElementRef<HTMLInputElement>;
 
-  public inputControl: FormControl = new UntypedFormControl('');
-  public showInput = false;
   public choicesEmpty = false;
+  public inputControl: FormControl = new UntypedFormControl({
+    value: '',
+    disabled: this.choicesEmpty,
+  });
+  public showInput = false;
 
   // === OUTPUT CONTROL ===
-  @Input() formControl!: FormControl;
+  @Input() control!: FormControl;
 
   /**
    * Tagbox constructor
@@ -47,9 +50,14 @@ export class SafeTagboxComponent
   ngOnInit(): void {
     this.choices$.pipe(takeUntil(this.destroy$)).subscribe((choices: any[]) => {
       this.choicesEmpty = choices.length === 0;
+      if (this.choicesEmpty) {
+        this.inputControl.disable();
+      } else {
+        this.inputControl.enable();
+      }
       this.selectedChoices = this.choicesEmpty
         ? []
-        : this.formControl.value
+        : this.control.value
             .map((value: string) =>
               choices.find((choice) => value === choice[this.valueKey])
             )
@@ -105,8 +113,7 @@ export class SafeTagboxComponent
    * @param event Chip event with the text input.
    */
   add(event: string | any): void {
-    const value = (event[this.displayKey] ?? event).trim();
-
+    const value = event[this.displayKey] ?? event;
     if (
       value &&
       this.availableChoices.some((x) => x[this.displayKey] === value)
@@ -114,11 +121,12 @@ export class SafeTagboxComponent
       this.selectedChoices.push(
         this.availableChoices.find((x) => x[this.displayKey] === value)
       );
-      this.formControl.setValue(
-        this.selectedChoices.map((x) => x[this.valueKey])
-      );
+      this.control.setValue(this.selectedChoices.map((x) => x[this.valueKey]));
       this.filteredChoices = this.availableChoices.filter(
-        (x) => x[this.displayKey] !== value
+        (choice) =>
+          !this.selectedChoices.find(
+            (x) => x[this.valueKey] === choice[this.valueKey]
+          )
       );
     }
     this.inputControl.setValue('', { emitEvent: false });
@@ -133,21 +141,17 @@ export class SafeTagboxComponent
    * @param choice Choice to remove.
    */
   remove(choice: any): void {
-    const index = this.selectedChoices.findIndex(
-      (x) => x[this.valueKey] === choice[this.valueKey]
-    );
-
-    if (index >= 0) {
-      this.selectedChoices.splice(index, 1);
+    if (choice) {
+      this.selectedChoices = this.selectedChoices.filter(
+        (x) => x[this.valueKey] !== choice[this.valueKey]
+      );
       this.filteredChoices = this.availableChoices.filter(
         (choice) =>
           !this.selectedChoices.find(
             (x) => x[this.valueKey] === choice[this.valueKey]
           )
       );
-      this.formControl.setValue(
-        this.selectedChoices.map((x) => x[this.valueKey])
-      );
+      this.control.setValue(this.selectedChoices.map((x) => x[this.valueKey]));
     }
   }
 }

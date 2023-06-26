@@ -8,6 +8,7 @@
     [showViewHeader]="true"
     [views]="2"
     topView="decade"
+    (activeViewChange)="viewChangeAction = true"
   >
     <kendo-multiviewcalendar-messages
       today="{{ 'kendo.datepicker.today' | translate }}"
