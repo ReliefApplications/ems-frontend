@@ -840,6 +840,7 @@ export class Layer implements LayerModel {
     if (legendControl) {
       legendControl.removeLayer(layer);
     }
+    map.off('zoomend', this.zoomListener);
   }
 
   /**
