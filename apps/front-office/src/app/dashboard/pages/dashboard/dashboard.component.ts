@@ -21,10 +21,11 @@ import {
   SafeUnsubscribeComponent,
   SafeWidgetGridComponent,
   SafeConfirmService,
+  ButtonActionT,
 } from '@oort-front/safe';
 import { TranslateService } from '@ngx-translate/core';
 import { map, takeUntil } from 'rxjs/operators';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 
 /**
@@ -55,6 +56,18 @@ export class DashboardComponent
   @ViewChild(SafeWidgetGridComponent)
   widgetGridComponent!: SafeWidgetGridComponent;
   public showFilter?: boolean;
+
+  // === BUTTON ACTIONS ===
+  public buttonActions: ButtonActionT[] = [];
+
+  /** @returns type of context element */
+  get contextType() {
+    if (this.dashboard?.page?.context) {
+      return 'resource' in this.dashboard.page.context ? 'record' : 'element';
+    } else {
+      return;
+    }
+  }
 
   /**
    * Dashboard page.
@@ -89,49 +102,35 @@ export class DashboardComponent
    * Subscribes to the route to load the dashboard accordingly.
    */
   ngOnInit(): void {
-    const rootElement = this.elementRef.nativeElement;
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      // Doing this to be able to use custom styles on specific dashboards
-      this.renderer.setAttribute(rootElement, 'data-dashboard-id', params.id);
-      this.id = params.id;
-      this.loading = true;
-      this.apollo
-        .watchQuery<GetDashboardByIdQueryResponse>({
-          query: GET_DASHBOARD_BY_ID,
-          variables: {
-            id: this.id,
-          },
-        })
-        .valueChanges.subscribe({
-          next: ({ data, loading }) => {
-            if (data.dashboard) {
-              this.dashboard = data.dashboard;
-              this.dashboardService.openDashboard(this.dashboard);
-              this.widgets = data.dashboard.structure
-                ? data.dashboard.structure
-                : [];
-              this.loading = loading;
-              this.showFilter = this.dashboard.showFilter;
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.accessNotProvided',
-                  {
-                    type: this.translate
-                      .instant('common.dashboard.one')
-                      .toLowerCase(),
-                    error: '',
-                  }
-                ),
-                { error: true }
-              );
-              this.router.navigate(['/applications']);
-            }
-          },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
-            this.router.navigate(['/applications']);
-          },
+      this.route.queryParams
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((queryParams) => {
+          const viewId = queryParams.id;
+          if (viewId) {
+            this.initDashboardWithId(params.id).then(() => {
+              // Find the id of the contextual dashboard and load it
+              const dashboardsWithContext =
+                this.dashboard?.page?.contentWithContext;
+              const type = this.contextType;
+              // find the contextual dashboard id in the list of dashboards from the parent dashboard
+              // it's the one where the element or record id matches the one in the query params
+              const dashboardWithContext = dashboardsWithContext?.find((d) => {
+                if (type === 'element')
+                  return 'element' in d && d.element === viewId;
+                else if (type === 'record')
+                  return 'record' in d && d.record === viewId;
+                return false;
+              });
+              if (dashboardWithContext) {
+                this.initDashboardWithId(dashboardWithContext.content);
+              } else {
+                return;
+              }
+            });
+          } else {
+            this.initDashboardWithId(params.id);
+          }
         });
     });
   }
@@ -170,16 +169,52 @@ export class DashboardComponent
   }
 
   /**
-   * Opens link of button action.
+   * Init the dashboard
    *
-   * @param button Button action to be executed
+   * @param id Dashboard id
+   * @returns Promise
    */
-  public onButtonActionClick(
-    button: NonNullable<Dashboard['buttons']>[number]
-  ) {
-    if (button.href) {
-      if (button.openInNewTab) window.open(button.href, '_blank');
-      else window.location.href = button.href;
-    }
+  private async initDashboardWithId(id: string) {
+    if (this.dashboard?.id === id) return; // don't init the dashboard if the id is the same
+    const rootElement = this.elementRef.nativeElement;
+    // Doing this to be able to use custom styles on specific dashboards
+    this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
+    this.loading = true;
+    this.id = id;
+    return firstValueFrom(
+      this.apollo.query<GetDashboardByIdQueryResponse>({
+        query: GET_DASHBOARD_BY_ID,
+        variables: {
+          id: this.id,
+        },
+      })
+    )
+      .then(({ data, loading }) => {
+        if (data.dashboard) {
+          this.dashboard = data.dashboard;
+          this.dashboardService.openDashboard(this.dashboard);
+          this.widgets = data.dashboard.structure
+            ? data.dashboard.structure
+            : [];
+          this.buttonActions = this.dashboard.buttons || [];
+          this.loading = loading;
+          this.showFilter = this.dashboard.showFilter;
+        } else {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.accessNotProvided', {
+              type: this.translate
+                .instant('common.dashboard.one')
+                .toLowerCase(),
+              error: '',
+            }),
+            { error: true }
+          );
+          this.router.navigate(['/applications']);
+        }
+      })
+      .catch((err) => {
+        this.snackBar.openSnackBar(err.message, { error: true });
+        this.router.navigate(['/applications']);
+      });
   }
 }

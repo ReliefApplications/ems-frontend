@@ -82,6 +82,20 @@ export class DataTemplateService {
   }
 
   /**
+   * Render link from definition
+   *
+   * @param href href value
+   * @returns parsed href
+   */
+  public renderLink(href: string) {
+    console.log(href);
+    // Add available pages to the list of available keys
+    const application = this.applicationService.application.getValue();
+    console.log(application);
+    return parseHtml(href, null, [], this.getPages(application), []);
+  }
+
+  /**
    * Render style from definition
    *
    * @param allContent apply to whole content
@@ -144,8 +158,8 @@ export class DataTemplateService {
         : `${this.environment.backOfficeUri}/applications/${application.id}/${page.type}/${page.content}`;
     } else {
       return page.type === ContentType.form
-        ? `${this.environment.frontOfficeUri}/${page.type}/${page.id}`
-        : `${this.environment.frontOfficeUri}/${page.type}/${page.content}`;
+        ? `${this.environment.frontOfficeUri}/${application.id}/${page.type}/${page.id}`
+        : `${this.environment.frontOfficeUri}/${application.id}/${page.type}/${page.content}`;
     }
   }
 
