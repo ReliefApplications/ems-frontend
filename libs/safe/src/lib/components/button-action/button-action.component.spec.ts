@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MapLayersComponent } from './map-layers.component';
+import { ButtonActionComponent } from './button-action.component';
 
-describe('MapLayersComponent', () => {
-  let component: MapLayersComponent;
-  let fixture: ComponentFixture<MapLayersComponent>;
+describe('ButtonActionComponent', () => {
+  let component: ButtonActionComponent;
+  let fixture: ComponentFixture<ButtonActionComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [MapLayersComponent],
+      declarations: [ButtonActionComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(MapLayersComponent);
+    fixture = TestBed.createComponent(ButtonActionComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -13,18 +13,19 @@ import { ButtonModule, CheckboxModule } from '@oort-front/ui';
 
 /** item for the layer menu */
 @Component({
-  selector: 'safe-layers-menu-item',
-  templateUrl: './layers-menu-item.component.html',
-  styleUrls: ['./layers-menu-item.component.scss'],
+  selector: 'safe-sidenav-controls-menu-item',
+  templateUrl: './sidenav-controls-menu-item.component.html',
+  styleUrls: ['./sidenav-controls-menu-item.component.scss'],
   standalone: true,
   imports: [CommonModule, ButtonModule, CheckboxModule],
 })
-export class LayersMenuItemComponent implements OnInit, OnDestroy {
+export class SidenavControlsMenuItemComponent implements OnInit, OnDestroy {
   // Declare variables to store the event listeners
   private addLayerListener!: L.LeafletEventHandlerFn;
   private removeLayerListener!: L.LeafletEventHandlerFn;
-  @ViewChildren(LayersMenuItemComponent)
-  childrenComponents: QueryList<LayersMenuItemComponent> = new QueryList();
+  @ViewChildren(SidenavControlsMenuItemComponent)
+  childrenComponents: QueryList<SidenavControlsMenuItemComponent> =
+    new QueryList();
 
   @Input() item!: L.Control.Layers.TreeObject;
   @Input() map!: L.Map;
@@ -51,7 +52,6 @@ export class LayersMenuItemComponent implements OnInit, OnDestroy {
    * Handle add layer event.
    */
   public onAddLayer() {
-    console.log('adding');
     this.checked = true;
     this.checkedChange.emit();
   }
@@ -60,7 +60,6 @@ export class LayersMenuItemComponent implements OnInit, OnDestroy {
    * Handle remove layer event.
    */
   public onRemoveLayer() {
-    console.log('removing');
     this.checked = false;
     this.checkedChange.emit();
   }
@@ -92,7 +91,6 @@ export class LayersMenuItemComponent implements OnInit, OnDestroy {
       });
     } else {
       layers.forEach((layer) => {
-        console.log('removing layer');
         this.map.removeLayer(layer);
       });
     }
@@ -140,6 +138,10 @@ export class LayersMenuItemComponent implements OnInit, OnDestroy {
    */
   updateLayer(layer: any) {
     if (layer) {
+      // Manually set visibility of the layer
+      // It has to be set BEFORE we call onAdd / onRemove methods of the layer
+      // By doing that, we ensure that when zooming in / out, we keep the visibility status of the layer, regardless of its configuration
+      layer.shouldDisplay = !this.checked;
       if (this.checked) this.map.removeLayer(layer);
       else this.map.addLayer(layer);
       this.checkedChange.emit();

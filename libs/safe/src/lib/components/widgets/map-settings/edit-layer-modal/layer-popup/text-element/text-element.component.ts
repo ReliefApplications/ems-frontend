@@ -52,7 +52,10 @@ export class TextElementComponent
   ngOnInit(): void {
     // Listen to fields changes
     this.fields$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      const keys = value.map((field) => `{{${field.name}}}`);
+      const keys = value.map((field) => ({
+        value: `{{${field.name}}}`,
+        text: `{{${field.name}}}`,
+      }));
       this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
     });
   }

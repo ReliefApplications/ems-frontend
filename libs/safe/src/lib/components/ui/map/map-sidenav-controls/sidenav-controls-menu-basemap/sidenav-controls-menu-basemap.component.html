@@ -12,10 +12,10 @@
 </div>
 
 <ng-container *ngIf="expanded">
-  <safe-layers-menu-basemap
+  <safe-sidenav-controls-menu-basemap
     *ngFor="let child of basemap.children"
     [basemap]="child"
     [level]="level + 1"
     [mapComponent]="mapComponent"
-  ></safe-layers-menu-basemap>
+  ></safe-sidenav-controls-menu-basemap>
 </ng-container>

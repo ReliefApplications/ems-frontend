@@ -22,6 +22,7 @@ import {
   SafeConfirmService,
   SafeReferenceDataService,
   Record,
+  ButtonActionT,
 } from '@oort-front/safe';
 import {
   EditDashboardMutationResponse,
@@ -48,7 +49,6 @@ import { isEqual } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
-import { ButtonActionT } from './components/edit-button-action/edit-button-action.component';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 
 /** Default number of records fetched per page */
@@ -101,6 +101,12 @@ export class DashboardComponent
 
   // === BUTTON ACTIONS ===
   public buttonActions: (ButtonActionT & { isHovered: boolean })[] = [];
+
+  // === ROUTE ===
+  /** @returns is dashboard a step or a page */
+  get isStep(): boolean {
+    return this.router.url.includes('/workflow/');
+  }
 
   /**
    * Dashboard page
@@ -463,7 +469,7 @@ export class DashboardComponent
    * @param e edit event
    */
   saveAccess(e: any): void {
-    if (this.router.url.includes('/workflow/')) {
+    if (this.isStep) {
       this.apollo
         .mutate<EditStepMutationResponse>({
           mutation: EDIT_STEP,
@@ -572,7 +578,7 @@ export class DashboardComponent
       const callback = () => {
         this.dashboard = { ...this.dashboard, name: dashboardName };
       };
-      if (this.router.url.includes('/workflow/')) {
+      if (this.isStep) {
         this.workflowService.updateStepName(
           {
             id: this.dashboard?.step?.id,
@@ -850,56 +856,6 @@ export class DashboardComponent
         this.contextRecord = data.record;
       });
     }
-  }
-
-  /**
-   * Opens link of button action.
-   *
-   * @param button Button action to be executed
-   */
-  public onButtonActionClick(button: ButtonActionT) {
-    if (button.href) {
-      if (button.openInNewTab) window.open(button.href, '_blank');
-      else window.location.href = button.href;
-    }
-  }
-
-  /**
-   * Removes button action from the dashboard.
-   *
-   * @param idx Index of button action to be removed
-   */
-  public async onDeleteButtonAction(idx: number) {
-    const { SafeConfirmModalComponent } = await import('@oort-front/safe');
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
-      data: {
-        title: this.translateService.instant('common.deleteObject', {
-          name: this.translateService.instant(
-            'models.dashboard.buttonActions.one'
-          ),
-        }),
-        content: this.translateService.instant(
-          'models.dashboard.buttonActions.confirmDelete'
-        ),
-        confirmText: this.translateService.instant(
-          'components.confirmModal.delete'
-        ),
-        cancelText: this.translateService.instant(
-          'components.confirmModal.cancel'
-        ),
-        confirmVariant: 'danger',
-      },
-    });
-
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        const currButtons = this.dashboard?.buttons || [];
-        currButtons.splice(idx, 1);
-
-        this.dashboardService.saveDashboardButtons(currButtons);
-        this.buttonActions.splice(idx, 1);
-      }
-    });
   }
 
   /**

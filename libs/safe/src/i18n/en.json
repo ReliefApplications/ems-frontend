@@ -1351,7 +1351,9 @@
 						"popup": "Pop-up",
 						"properties": {
 							"defaultVisibility": "Visible by default",
+							"from": "from zoom ",
 							"opacity": "Opacity",
+							"to": " to zoom",
 							"visibilityRange": "Visibility range",
 							"zoom": "Current zoom"
 						},

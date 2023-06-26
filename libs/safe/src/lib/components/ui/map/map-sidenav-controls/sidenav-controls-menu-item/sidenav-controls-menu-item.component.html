@@ -27,12 +27,12 @@
   </div>
   <ng-container *ngIf="expanded">
     <div class="ml-5">
-      <safe-layers-menu-item
+      <safe-sidenav-controls-menu-item
         *ngFor="let child of item.children"
         [item]="child"
         [map]="map"
         (checkedChange)="handleCheckedChange()"
-      ></safe-layers-menu-item>
+      ></safe-sidenav-controls-menu-item>
     </div>
   </ng-container>
 </div>
