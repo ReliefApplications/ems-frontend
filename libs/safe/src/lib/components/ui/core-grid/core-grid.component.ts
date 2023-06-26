@@ -525,6 +525,17 @@ export class SafeCoreGridComponent
     );
     item.saved = false;
     this.loadItems();
+
+    this.apollo
+      .mutate<EditRecordMutationResponse>({
+        mutation: EDIT_RECORD,
+        variables: {
+          id: item.id,
+        },
+      })
+      .subscribe((res) => {
+        console.log(res);
+      });
   }
 
   /**
