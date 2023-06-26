@@ -114,7 +114,7 @@ export class SafeMapSettingsComponent
     this.layoutService.rightSidenav$
       .pipe(takeUntil(this.destroy$))
       .subscribe((view: any) => {
-        if (view.inputs?.layersMenuExpanded) {
+        if (view?.inputs?.layersMenuExpanded) {
           this.openedLayersSideNav = true;
         }
       });
