@@ -150,9 +150,9 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
       });
     });
     // Setup editor auto complete
-    this.editorService.addCalcAndKeysAutoCompleter(
-      this.editor,
-      this.dataTemplateService.getAutoCompleterKeys(fields)
-    );
+    this.editorService.addCalcAndKeysAutoCompleter(this.editor, [
+      ...this.dataTemplateService.getAutoCompleterKeys(fields),
+      ...this.dataTemplateService.getAutoCompleterPageKeys(),
+    ]);
   }
 }

@@ -18,7 +18,7 @@
         <div class="flex items-center gap-1">
           <safe-editable-text
             [text]="dashboard.name"
-            [canEdit]="canEditName"
+            [canEdit]="canUpdate"
             (onChange)="saveName($event)"
             (formActiveEvent)="formActive = $event"
           >
@@ -47,36 +47,7 @@
           (cdkDropListDropped)="onButtonActionDrop($event)"
         >
           <!-- Button actions -->
-          <div
-            class="relative mr-1"
-            *ngFor="let button of buttonActions; let i = index"
-            cdkDrag
-          >
-            <div
-              class="relative"
-              (mouseenter)="button.isHovered = true"
-              (mouseleave)="button.isHovered = false"
-            >
-              <ui-button
-                [variant]="button.variant"
-                [category]="button.category"
-                (click)="onButtonActionClick(button)"
-              >
-                {{ button.text }}
-              </ui-button>
-              <ui-button
-                *ngIf="button.isHovered"
-                id="delete-button"
-                class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-95"
-                category="primary"
-                variant="danger"
-                [isIcon]="true"
-                icon="delete"
-                size="small"
-                (click)="onDeleteButtonAction(i)"
-              ></ui-button>
-            </div>
-          </div>
+          <safe-button-action [buttonActions]="buttonActions" [dashboard]="dashboard" [canUpdate]="canUpdate"></safe-button-action>
 
           <!-- Fullscreen -->
           <ui-button

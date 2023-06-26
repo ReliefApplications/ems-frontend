@@ -361,19 +361,23 @@ const applyOperations = (html: string): string => {
  * @param fields Array of fields.
  * @returns list of data keys
  */
-export const getDataKeys = (fields: any): string[] =>
-  fields.map((field: any) => DATA_PREFIX + field.name + PLACEHOLDER_SUFFIX);
+export const getDataKeys = (fields: any): { value: string; text: string }[] =>
+  fields.map((field: any) => ({
+    value: DATA_PREFIX + field.name + PLACEHOLDER_SUFFIX,
+    text: DATA_PREFIX + field.name + PLACEHOLDER_SUFFIX,
+  }));
 
 /**
  * Returns an array with the calc operations keys.
  *
  * @returns List of calc keys
  */
-export const getCalcKeys = (): string[] => {
+export const getCalcKeys = (): { value: string; text: string }[] => {
   const calcObjects = Object.values(calcFunctions);
-  return calcObjects.map(
-    (obj) => CALC_PREFIX + obj.signature + PLACEHOLDER_SUFFIX
-  );
+  return calcObjects.map((obj) => ({
+    value: CALC_PREFIX + obj.signature + PLACEHOLDER_SUFFIX,
+    text: CALC_PREFIX + obj.signature + PLACEHOLDER_SUFFIX,
+  }));
 };
 
 /**
@@ -382,8 +386,13 @@ export const getCalcKeys = (): string[] => {
  * @param pages array of pages
  * @returns list of page keys
  */
-export const getPageKeys = (pages: Page[]): string[] => {
-  return pages.map((page) => `{{page(${page.id})}}`);
+export const getPageKeys = (
+  pages: Page[]
+): { value: string; text: string }[] => {
+  return pages.map((page) => ({
+    value: `{{page(${page.id})}}`,
+    text: page.name || `{{page(${page.id})}}`,
+  }));
 };
 
 /**
