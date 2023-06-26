@@ -101,6 +101,9 @@ export class GeospatialMapComponent
     drawCircle: false,
     drawRectangle: false,
     drawPolygon: false,
+    cutPolygon: false,
+    rotateMode: false,
+    editMode: false,
   };
 
   // output
