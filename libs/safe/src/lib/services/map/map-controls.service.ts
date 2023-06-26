@@ -1,4 +1,10 @@
-import { EventEmitter, Inject, Injectable } from '@angular/core';
+import {
+  EventEmitter,
+  Inject,
+  Injectable,
+  Renderer2,
+  RendererFactory2,
+} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MARKER_OPTIONS } from '../../components/ui/map/const/marker-options';
 import { MapDownloadComponent } from '../../components/ui/map/map-download/map-download.component';
@@ -12,10 +18,11 @@ import 'leaflet-measure';
 import 'leaflet-timedimension';
 import * as Geocoding from 'esri-leaflet-geocoder';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/language';
-import { MapLayersComponent } from '../../components/ui/map/map-layers/map-layers.component';
+import { MapSidenavControlsComponent } from '../../components/ui/map/map-sidenav-controls/map-sidenav-controls.component';
 import { legendControl } from '../../components/ui/map/controls/legend.control';
 import { MapZoomComponent } from '../../components/ui/map/map-zoom/map-zoom.component';
 import { MapEvent } from '../../components/ui/map/interfaces/map.interface';
+import { MapComponent } from '../../components/ui/map';
 
 /**
  * Shared map control service.
@@ -35,18 +42,27 @@ export class SafeMapControlsService {
   private downloadControl!: L.Control | null;
   private legendControl!: L.Control | null;
 
+  // === Listeners ===
+  private renderer!: Renderer2;
+  private sidenavControlClickListener!: any;
+  private sidenavControlWheelListener!: any;
+  private downloadControlClickListener!: any;
+  private downloadControlWheelListener!: any;
   /**
    * Shared map control service
    *
    * @param environment environment
    * @param translate Angular translate service
    * @param domService Shared dom service
+   * @param _renderer RendererFactory2
    */
   constructor(
     @Inject('environment') environment: any,
     private translate: TranslateService,
-    private domService: DomService
+    private domService: DomService,
+    private _renderer: RendererFactory2
   ) {
+    this.renderer = _renderer.createRenderer(null, null);
     this.lang = this.translate.currentLang;
     this.primaryColor = environment.theme.primary;
   }
@@ -54,33 +70,64 @@ export class SafeMapControlsService {
   /**
    * Creates the layer control.
    *
-   * @param {L.Map} map map to add the control
+   * @param mapComponent map component
+   * @param basemaps basemaps of the map
+   * @param layers layers used to create the layers tree
    * @returns A button to activate/deactivate the layers
    */
-  public getLayerControl(map: L.Map): void {
+  public getLayerControl(
+    mapComponent: MapComponent,
+    basemaps: L.Control.Layers.TreeObject[],
+    layers: L.Control.Layers.TreeObject[]
+  ): void {
     const layerControl = new L.Control({ position: 'topright' });
     layerControl.onAdd = () => {
       const container = L.DomUtil.create('div');
-      const mapLayersComponent = this.domService.appendComponentToBody(
-        MapLayersComponent,
+      const mapSidenavControlsComponent = this.domService.appendComponentToBody(
+        MapSidenavControlsComponent,
         container
       );
-      mapLayersComponent.instance.mapContainer = map.getContainer();
-      mapLayersComponent.instance.map = map;
+      mapSidenavControlsComponent.instance.layersTree = layers;
+      mapSidenavControlsComponent.instance.mapComponent = mapComponent;
+      mapSidenavControlsComponent.instance.basemaps = basemaps;
       return container;
+    };
+    layerControl.onRemove = () => {
+      if (this.sidenavControlClickListener) {
+        this.sidenavControlClickListener();
+        this.sidenavControlClickListener = null;
+      }
+      if (this.sidenavControlWheelListener) {
+        this.sidenavControlWheelListener();
+        this.sidenavControlWheelListener = null;
+      }
     };
     const container = layerControl.getContainer();
     if (container) {
+      if (this.sidenavControlClickListener) {
+        this.sidenavControlClickListener();
+      }
       // prevent click events from propagating to the map
-      container.addEventListener('click', (e: any) => {
-        L.DomEvent.stopPropagation(e);
-      });
+      this.sidenavControlClickListener = this.renderer.listen(
+        container,
+        'click',
+        (e: any) => {
+          L.DomEvent.stopPropagation(e);
+        }
+      );
+      if (this.sidenavControlWheelListener) {
+        this.sidenavControlWheelListener();
+      }
       // prevent mouse wheel events from propagating to the map
-      container.addEventListener('wheel', (e: any) => {
-        L.DomEvent.stopPropagation(e);
-      });
+      this.sidenavControlWheelListener = this.renderer.listen(
+        container,
+        'wheel',
+        (e: any) => {
+          L.DomEvent.stopPropagation(e);
+        }
+      );
     }
-    return (layerControl as any)?.addTo(map);
+    return (layerControl as any)?.addTo(mapComponent.map);
   }
 
   /**
@@ -319,18 +366,42 @@ export class SafeMapControlsService {
           const instance: MapDownloadComponent = component.instance;
           return div;
         };
+        this.downloadControl.onRemove = () => {
+          if (this.downloadControlClickListener) {
+            this.downloadControlClickListener();
+            this.downloadControlClickListener = null;
+          }
+          if (this.downloadControlWheelListener) {
+            this.downloadControlWheelListener();
+            this.downloadControlWheelListener = null;
+          }
+        };
         this.downloadControl.addTo(map);
 
         const container = this.downloadControl.getContainer();
         if (container) {
+          if (this.downloadControlClickListener) {
+            this.downloadControlClickListener();
+          }
           // prevent click events from propagating to the map
-          container.addEventListener('click', (e: any) => {
-            L.DomEvent.stopPropagation(e);
-          });
+          this.downloadControlClickListener = this.renderer.listen(
+            container,
+            'click',
+            (e: any) => {
+              L.DomEvent.stopPropagation(e);
+            }
+          );
+          if (this.downloadControlWheelListener) {
+            this.downloadControlWheelListener();
+          }
           // prevent mouse wheel events from propagating to the map
-          container.addEventListener('wheel', (e: any) => {
-            L.DomEvent.stopPropagation(e);
-          });
+          this.downloadControlWheelListener = this.renderer.listen(
+            container,
+            'wheel',
+            (e: any) => {
+              L.DomEvent.stopPropagation(e);
+            }
+          );
         }
       }
     } else {

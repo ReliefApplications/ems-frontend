@@ -27,6 +27,7 @@
         <ng-template uiTabContent>
           <safe-layer-properties
             [form]="form"
+            [currentZoom]="currentZoom"
             [destroyTab$]="destroyTab$"
             [currentMapContainerRef]="data.currentMapContainerRef"
           ></safe-layer-properties>
@@ -156,7 +157,8 @@
       <!-- Previously : layerDefinition.drawingInfo.renderer.type -->
       <ui-tab
         *ngIf="
-          form.get('layerDefinition.featureReduction')?.value !== 'heatmap'
+          form.get('layerDefinition.drawingInfo.renderer.type')?.value !==
+          'heatmap'
         "
         [disabled]="!isDatasourceValid"
       >

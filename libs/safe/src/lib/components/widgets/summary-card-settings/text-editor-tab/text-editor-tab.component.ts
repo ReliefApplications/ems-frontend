@@ -33,6 +33,7 @@ export class SafeTextEditorTabComponent implements OnChanges {
     this.editor.base_url = editorService.url;
     // Set the editor language
     this.editor.language = editorService.language;
+    this.dataTemplateService.setEditorLinkList(this.editor);
   }
 
   ngOnChanges(): void {

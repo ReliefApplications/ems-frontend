@@ -29,6 +29,10 @@
             [isIcon]="true"
             icon="{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}"
             (click)="isFullScreen = !isFullScreen"
+            [uiTooltip]="
+              (isFullScreen ? 'common.exitFullscreen' : 'common.openFullScreen')
+                | translate
+            "
           >
           </ui-button>
         </div>

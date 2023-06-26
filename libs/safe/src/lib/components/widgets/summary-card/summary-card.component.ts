@@ -32,10 +32,9 @@ export type CardT = NonNullable<SummaryCardFormT['value']['card']> &
     cardAggregationData: any;
   }>;
 import { Layout } from '../../../models/layout.model';
-import { PageChangeEvent } from '@progress/kendo-angular-grid';
 import { FormControl } from '@angular/forms';
 import { clone, isNaN } from 'lodash';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 
 /** Maximum width of the widget in column units */
@@ -67,12 +66,11 @@ export class SafeSummaryCardComponent
   // === GRID ===
   public colsNumber = MAX_COL_SPAN;
 
-  // === DYNAMIC CARDS PAGINATION ===
   public pageInfo = {
-    first: DEFAULT_PAGE_SIZE,
+    pageIndex: 0,
+    pageSize: DEFAULT_PAGE_SIZE,
+    length: 0,
     skip: 0,
-    hasNextPage: false,
-    totalCount: 0,
   };
   public loading = true;
 
@@ -84,6 +82,8 @@ export class SafeSummaryCardComponent
   private fields: any[] = [];
 
   public searchControl = new FormControl('');
+  private searching = false;
+  private scrolling = false;
 
   @ViewChild('summaryCardGrid') summaryCardGrid!: ElementRef<HTMLDivElement>;
   @ViewChild('pdf') pdf!: any;
@@ -206,6 +206,8 @@ export class SafeSummaryCardComponent
     const needRefetch = !this.settings.card?.aggregation;
     const skippedFields = ['id', 'incrementalId'];
 
+    this.searching = true;
+
     if (!needRefetch)
       this.cards = this.cachedCards.filter((card: any) => {
         const data = clone(card.record || card.cardAggregationData || {});
@@ -242,9 +244,11 @@ export class SafeSummaryCardComponent
             value: parseFloat(search),
           });
       });
+      this.pageInfo.pageIndex = 0;
       this.pageInfo.skip = 0;
       this.dataQuery?.refetch({
         skip: 0,
+        first: this.pageInfo.pageSize,
         filter: {
           logic: 'or',
           filters,
@@ -273,18 +277,28 @@ export class SafeSummaryCardComponent
     }));
 
     this.cachedCards =
-      this.pageInfo.skip > 0 ? [...this.cachedCards, ...newCards] : newCards;
+      ((this.pageInfo.pageIndex + 1) * this.pageInfo.pageSize >
+        this.cachedCards.length &&
+        !this.searching) ||
+      this.scrolling
+        ? [...this.cachedCards, ...newCards]
+        : newCards;
 
     this.cards = this.settings.widgetDisplay?.usePagination
       ? this.cachedCards.slice(
-          this.pageInfo.skip,
-          this.pageInfo.skip + this.pageInfo.first
+          this.pageInfo.pageSize * this.pageInfo.pageIndex,
+          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
         )
       : this.cachedCards;
-    this.pageInfo.totalCount = get(res.data[layoutQueryName], 'totalCount', 0);
-    this.pageInfo.hasNextPage = this.pageInfo.totalCount > this.cards.length;
+    this.pageInfo.length = get(res.data[layoutQueryName], 'totalCount', 0);
 
     this.loading = res.loading;
+
+    if (this.searching && this.searchControl.value != '') {
+      this.pageInfo.skip = this.cards.length;
+    }
+    this.searching = false;
+    this.scrolling = false;
   }
 
   /**
@@ -330,7 +344,7 @@ export class SafeSummaryCardComponent
             this.dataQuery = this.apollo.watchQuery<any>({
               query: builtQuery,
               variables: {
-                first: this.pageInfo.first,
+                first: this.pageInfo.pageSize,
                 filter: layoutQuery.filter,
                 sortField: get(layoutQuery, 'sort.field', null),
                 sortOrder: get(layoutQuery, 'sort.order', ''),
@@ -412,7 +426,7 @@ export class SafeSummaryCardComponent
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
       50
     ) {
-      if (!this.loading && this.pageInfo.hasNextPage) {
+      if (!this.loading && this.pageInfo.length > this.cards.length) {
         this.loading = true;
         this.dataQuery
           ?.fetchMore({
@@ -421,38 +435,52 @@ export class SafeSummaryCardComponent
             },
           })
           .then(this.updateCards.bind(this));
+        this.scrolling = true;
       }
     }
   }
 
   /**
-   * Triggered when the page changes.
+   * Handles page event.
    *
-   * @param e Kendo paginator page change event
+   * @param e page event.
    */
-  public onPageChange(e: PageChangeEvent) {
-    this.pageInfo.first = e.take;
-    this.pageInfo.skip = e.skip;
+  onPage(e: UIPageChangeEvent): void {
+    this.pageInfo.pageIndex = e.pageIndex;
 
-    this.summaryCardGrid.nativeElement.scroll({
-      top: 0,
-      left: 0,
-      behavior: 'smooth',
-    });
+    // Checks if with new page/size more data needs to be fetched
+    if (
+      (e.pageIndex > e.previousPageIndex ||
+        e.pageSize > this.pageInfo.pageSize) &&
+      (e.pageIndex + 1) * e.pageSize > this.cachedCards.length &&
+      e.totalItems > this.cachedCards.length
+    ) {
+      // Sets the new fetch quantity of data needed
+      this.pageInfo.pageSize =
+        (e.pageIndex + 1) * e.pageSize - this.cachedCards.length;
 
-    // Check if the data is already cached
-    if (this.cachedCards.length >= e.skip + e.take)
-      this.cards = this.cachedCards.slice(e.skip, e.skip + e.take);
-    else {
+      this.summaryCardGrid.nativeElement.scroll({
+        top: 0,
+        left: 0,
+        behavior: 'smooth',
+      });
+
       this.loading = true;
       this.dataQuery
         ?.fetchMore({
           variables: {
+            first: this.pageInfo.pageSize,
             skip: this.cachedCards.length,
           },
         })
         .then(this.updateCards.bind(this));
+    } else {
+      this.cards = this.cachedCards.slice(
+        e.pageSize * this.pageInfo.pageIndex,
+        e.pageSize * (this.pageInfo.pageIndex + 1)
+      );
     }
+    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**

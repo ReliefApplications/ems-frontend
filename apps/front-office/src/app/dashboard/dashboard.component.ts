@@ -211,6 +211,7 @@ export class DashboardComponent
                       ? `./${this.appID}/${x.type}/${x.id}`
                       : `./${this.appID}/${x.type}/${x.content}`,
                   icon: this.getNavIcon(x.type || ''),
+                  visible: x.visible,
                 })),
             },
           ];

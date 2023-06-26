@@ -431,6 +431,7 @@
 				"delete": {
 					"confirmationMessage": "Voulez-vous vraiment supprimer la page {{name}}?"
 				},
+				"hide": "@TODO",
 				"notReordered": {
 					"plural": "Les pages n'ont pas été réorganisées. {{error}}",
 					"singular": "La page n'a pas été réorganisée. {{error}}"
@@ -438,7 +439,8 @@
 				"reordered": {
 					"plural": "Les pages ont été réorganisées avec succès.",
 					"singular": "La page a été réorganisée avec succès."
-				}
+				},
+				"show": "@TODO"
 			},
 			"positionAttribute": {
 				"delete": {
@@ -663,6 +665,7 @@
 			}
 		},
 		"header": {
+			"goToApp": "Ouvrir l'application",
 			"goToPlatform": "Naviguer vers",
 			"logout": "Se déconnecter",
 			"sidenav": {
@@ -1364,7 +1367,9 @@
 						"popup": "Popup",
 						"properties": {
 							"defaultVisibility": "Visible par défaut",
+							"from": "de zoom ",
 							"opacity": "Opacité",
+							"to": " à zoom",
 							"visibilityRange": "Plage de visibilité",
 							"zoom": "Zoom"
 						},
