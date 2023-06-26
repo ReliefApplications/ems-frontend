@@ -415,6 +415,7 @@ export class SafeSummaryCardComponent
           cardAggregationData: x,
         }));
         this.cards = this.cachedCards;
+        this.loading = res.loading;
       });
   }
 
