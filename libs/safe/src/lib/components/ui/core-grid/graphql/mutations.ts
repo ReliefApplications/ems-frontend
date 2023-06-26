@@ -43,6 +43,7 @@ export const EDIT_RECORD = gql`
     $template: ID
     $display: Boolean
     $lang: String
+    $draft: Boolean
   ) {
     editRecord(
       id: $id
@@ -50,6 +51,7 @@ export const EDIT_RECORD = gql`
       version: $version
       template: $template
       lang: $lang
+      draft: $draft
     ) {
       id
       incrementalId
