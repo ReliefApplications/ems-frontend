@@ -78,7 +78,10 @@ export class SafeEditorService {
    * @param editor current editor
    * @param keys list of keys
    */
-  addCalcAndKeysAutoCompleter(editor: RawEditorSettings, keys: string[]) {
+  addCalcAndKeysAutoCompleter(
+    editor: RawEditorSettings,
+    keys: { value: string; text: string }[]
+  ) {
     const defaultSetup = editor.setup;
     editor.setup = (e: Editor) => {
       if (defaultSetup && typeof defaultSetup === 'function') defaultSetup(e);
@@ -104,9 +107,9 @@ export class SafeEditorService {
             this.activeItemScrollListener = null;
           }
           this.allowScrolling();
-          return keys
-            .filter((key) => key.includes(pattern))
-            .map((key) => ({ value: key, text: key }));
+          return keys.filter((key) =>
+            (key.value || key.text).includes(pattern)
+          );
         },
       });
     };

@@ -8,6 +8,7 @@ import {
   SelectMenuModule,
   ButtonModule,
   ToggleModule,
+  DividerModule,
 } from '@oort-front/ui';
 import {
   FormControl,
@@ -28,6 +29,7 @@ import {
   INLINE_EDITOR_CONFIG,
   ButtonActionT,
 } from '@oort-front/safe';
+import { Router } from '@angular/router';
 
 /**
  * Create a form group for the button action
@@ -61,6 +63,7 @@ const createButtonActionForm = (data?: ButtonActionT) => {
     ToggleModule,
     EditorModule,
     SafeEditorControlComponent,
+    DividerModule,
   ],
   templateUrl: './edit-button-action.component.html',
   styleUrls: ['./edit-button-action.component.scss'],
@@ -83,12 +86,14 @@ export class EditButtonActionComponent implements OnInit {
    * @param data initial button action
    * @param editorService editor service used to get main URL and current language
    * @param dataTemplateService Shared data template service
+   * @param router Router service
    */
   constructor(
     public dialogRef: DialogRef<ButtonActionT>,
     @Inject(DIALOG_DATA) private data: ButtonActionT,
     private editorService: SafeEditorService,
-    private dataTemplateService: DataTemplateService
+    private dataTemplateService: DataTemplateService,
+    private router: Router
   ) {
     this.form = createButtonActionForm(data);
     this.isNew = !data;
@@ -102,7 +107,7 @@ export class EditButtonActionComponent implements OnInit {
   ngOnInit(): void {
     this.editorService.addCalcAndKeysAutoCompleter(
       this.hrefEditor,
-      this.dataTemplateService.getAutoCompleterKeys([], false)
+      this.dataTemplateService.getAutoCompleterPageKeys()
     );
   }
 
@@ -118,7 +123,7 @@ export class EditButtonActionComponent implements OnInit {
       }
       const isNewTab = this.form.get('openInNewTab')?.value ?? true;
       if (isNewTab) window.open(href, '_blank');
-      else window.location.href = href;
+      else this.router.navigate([href]);
     }
   }
 

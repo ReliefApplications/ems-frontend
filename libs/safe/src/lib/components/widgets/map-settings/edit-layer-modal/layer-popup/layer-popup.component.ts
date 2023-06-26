@@ -34,7 +34,7 @@ export class LayerPopupComponent
   @Input() formGroup!: FormGroup;
   @Input() fields$!: Observable<Fields[]>;
 
-  public keys: string[] = [];
+  public keys: { text: string; value: string }[] = [];
   public editorConfig = INLINE_EDITOR_CONFIG;
 
   /** @returns popup elements as form array */
@@ -60,7 +60,10 @@ export class LayerPopupComponent
   ngOnInit(): void {
     // Listen to fields changes
     this.fields$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      this.keys = value.map((field) => `{{${field.name}}}`);
+      this.keys = value.map((field) => ({
+        text: `{{${field.name}}}`,
+        value: `{{${field.name}}}`,
+      }));
       this.editorService.addCalcAndKeysAutoCompleter(
         this.editorConfig,
         this.keys

@@ -46,17 +46,22 @@ export class DataTemplateService {
    * Get auto completer keys
    *
    * @param fields available fields
-   * @param CalcKeys boolean to tell if should return CalcKeys
    * @returns available keys
    */
-  public getAutoCompleterKeys(fields: any[], CalcKeys?: boolean) {
+  public getAutoCompleterKeys(fields: any[]) {
+    return [...getDataKeys(fields), ...getCalcKeys()];
+  }
+
+  /**
+   * Get auto completer page keys
+   *
+   * @returns page keys for auto completer
+   */
+  public getAutoCompleterPageKeys() {
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
     const pages = application?.pages || [];
-    if (CalcKeys === false) {
-      return [...getDataKeys(fields), ...getPageKeys(pages)];
-    }
-    return [...getDataKeys(fields), ...getCalcKeys(), ...getPageKeys(pages)];
+    return getPageKeys(pages);
   }
 
   /**

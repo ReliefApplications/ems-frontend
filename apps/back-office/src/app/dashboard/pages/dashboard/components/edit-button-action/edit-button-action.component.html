@@ -68,16 +68,21 @@
         >
       </ui-toggle>
 
-      <!-- Button preview -->
-      <ui-button
-        *ngIf="form.get('text')?.value"
-        class="w-fit mx-auto mt-3"
-        [category]="form.get('category')?.value || 'secondary'"
-        [variant]="form.get('variant')?.value || 'primary'"
-        (click)="preview()"
-      >
-        {{ form.get('text')?.value }}
-      </ui-button>
+      <ui-divider class="my-4"></ui-divider>
+      <!-- todo: translate -->
+      <h3>Preview</h3>
+      <div>
+        <!-- Button preview -->
+        <ui-button
+          *ngIf="form.get('text')?.value"
+          class="w-fit mx-auto mt-3"
+          [category]="form.get('category')?.value || 'secondary'"
+          [variant]="form.get('variant')?.value || 'primary'"
+          (click)="preview()"
+        >
+          {{ form.get('text')?.value }}
+        </ui-button>
+      </div>
     </form>
   </ng-container>
 
