@@ -101,6 +101,9 @@ export class GeospatialMapComponent
     drawCircle: false,
     drawRectangle: false,
     drawPolygon: false,
+    cutPolygon: false,
+    rotateMode: false,
+    editMode: false,
   };
 
   // output
@@ -211,6 +214,15 @@ export class GeospatialMapComponent
 
     // updates question value on removing shapes
     this.mapComponent?.map.on('pm:remove', () => {
+      // As we can only set one marker per geospatial question
+      // We automatically hit the finish button for removal mode after we remove layer
+      // So the user can set a new layer without confirming(click on 'Finish') the removal action and bugging the marker set
+      const finishButton = (
+        this.mapComponent?.map.pm.Toolbar as any
+      ).buttons.removalMode.buttonsDomNode.querySelector('.action-finishMode');
+      if (finishButton) {
+        (finishButton as HTMLAnchorElement).click();
+      }
       this.selectedLayer = null;
       const containsPointMarker = (feature: any) =>
         feature.geometry.type === 'Point';
