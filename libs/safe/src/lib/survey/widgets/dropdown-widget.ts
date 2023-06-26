@@ -57,6 +57,9 @@ export const init = (Survey: any, domService: DomService): void => {
         'visibleChoices',
         question._propertyValueChangedVirtual
       );
+      question.registerFunctionOnPropertyValueChanged('value', () => {
+        dropdownInstance.value = question.value;
+      });
       updateChoices();
       el.parentElement?.appendChild(dropdownDiv);
     },
