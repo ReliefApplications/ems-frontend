@@ -49,10 +49,19 @@ export class DataTemplateService {
    * @returns available keys
    */
   public getAutoCompleterKeys(fields: any[]) {
+    return [...getDataKeys(fields), ...getCalcKeys()];
+  }
+
+  /**
+   * Get auto completer page keys
+   *
+   * @returns page keys for auto completer
+   */
+  public getAutoCompleterPageKeys() {
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
     const pages = application?.pages || [];
-    return [...getDataKeys(fields), ...getCalcKeys(), ...getPageKeys(pages)];
+    return getPageKeys(pages);
   }
 
   /**
@@ -102,6 +111,23 @@ export class DataTemplateService {
         this.downloadService.getFile(path, file.type, file.name);
       }
     }
+  }
+
+  /**
+   * Get button link using application page id
+   *
+   * @param pageId page id
+   * @returns page url
+   */
+  public getButtonLink(pageId: string): string {
+    // Add available pages to the list of available keys
+    const application = this.applicationService.application.getValue();
+    const pages = this.getPages(application);
+    const page = pages.filter((page: any) => page.id === pageId);
+    if (page) {
+      return page[0].url;
+    }
+    return '';
   }
 
   /**

@@ -38,9 +38,9 @@ export class SafeTextEditorTabComponent implements OnChanges {
 
   ngOnChanges(): void {
     // Setup editor auto complete
-    this.editorService.addCalcAndKeysAutoCompleter(
-      this.editor,
-      this.dataTemplateService.getAutoCompleterKeys(this.fields)
-    );
+    this.editorService.addCalcAndKeysAutoCompleter(this.editor, [
+      ...this.dataTemplateService.getAutoCompleterKeys(this.fields),
+      ...this.dataTemplateService.getAutoCompleterPageKeys(),
+    ]);
   }
 }
