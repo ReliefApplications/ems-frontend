@@ -144,7 +144,7 @@ const replaceRecordFields = (
   let formattedHtml = html;
   if (fields) {
     for (const field of fields) {
-      let value = fieldsValue[field.name];
+      const value = fieldsValue[field.name];
       const style = getLayoutsStyle(styles, field.name, fieldsValue);
       let convertedValue = '';
       if (!isNil(value)) {
@@ -161,7 +161,7 @@ const replaceRecordFields = (
         );
         const match = avatarRgx.exec(formattedHtml);
         if (Array.isArray(value) && value.length > 0) {
-          value = value.filter((v: string) => {
+          const avatarValue = value.filter((v: string) => {
             const lowercaseValue = v.toLowerCase();
             return (
               lowercaseValue.endsWith('.jpg') ||
@@ -171,16 +171,18 @@ const replaceRecordFields = (
               lowercaseValue.endsWith('.bmp')
             );
           });
-          const avatarGroup = createAvatarGroup(
-            value,
-            Number(match?.groups?.width),
-            Number(match?.groups?.height),
-            Number(match?.groups?.maxItems)
-          );
-          formattedHtml = formattedHtml.replace(
-            avatarRgx,
-            avatarGroup.innerHTML
-          );
+          if (avatarValue.length > 0) {
+            const avatarGroup = createAvatarGroup(
+              avatarValue,
+              Number(match?.groups?.width),
+              Number(match?.groups?.height),
+              Number(match?.groups?.maxItems)
+            );
+            formattedHtml = formattedHtml.replace(
+              avatarRgx,
+              avatarGroup.innerHTML
+            );
+          }
         } else {
           formattedHtml = formattedHtml.replace(avatarRgx, '');
         }
