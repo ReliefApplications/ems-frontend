@@ -60,7 +60,7 @@ export class SafeMapSettingsComponent
   );
   destroyTab$: Subject<boolean> = new Subject<boolean>();
 
-  // Layers controls right side nav
+  // Layers controls right side nav. Store if sidenav is used, to be able to destroy it when closing the view.
   private openedLayersSideNav = false;
 
   /**
