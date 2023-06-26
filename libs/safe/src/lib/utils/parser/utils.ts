@@ -144,7 +144,7 @@ const replaceRecordFields = (
   let formattedHtml = html;
   if (fields) {
     for (const field of fields) {
-      const value = fieldsValue[field.name];
+      let value = fieldsValue[field.name];
       const style = getLayoutsStyle(styles, field.name, fieldsValue);
       let convertedValue = '';
       if (!isNil(value)) {
@@ -161,6 +161,16 @@ const replaceRecordFields = (
         );
         const match = avatarRgx.exec(formattedHtml);
         if (Array.isArray(value) && value.length > 0) {
+          value = value.filter((v: string) => {
+            const lowercaseValue = v.toLowerCase();
+            return (
+              lowercaseValue.endsWith('.jpg') ||
+              lowercaseValue.endsWith('.png') ||
+              lowercaseValue.endsWith('.jpeg') ||
+              lowercaseValue.endsWith('.gif') ||
+              lowercaseValue.endsWith('.bmp')
+            );
+          });
           const avatarGroup = createAvatarGroup(
             value,
             Number(match?.groups?.width),
