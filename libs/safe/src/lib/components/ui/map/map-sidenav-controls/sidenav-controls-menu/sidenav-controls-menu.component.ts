@@ -9,17 +9,17 @@ import {
 } from '@oort-front/ui';
 import { MapComponent } from '../../map.component';
 import * as L from 'leaflet';
-import { LayersMenuItemComponent } from '../layers-menu-item/layers-menu-item.component';
-import { LayersMenuBasemapComponent } from '../layers-menu-basemap/layers-menu-basemap.component';
+import { SidenavControlsMenuItemComponent } from '../sidenav-controls-menu-item/sidenav-controls-menu-item.component';
+import { SidenavControlsMenuBasemapComponent } from '../sidenav-controls-menu-basemap/sidenav-controls-menu-basemap.component';
 
 /**
  * component for the right sidenav
  */
 @Component({
-  selector: 'safe-layers-menu',
+  selector: 'safe-sidenav-controls-menu',
   standalone: true,
-  templateUrl: './layers-menu.component.html',
-  styleUrls: ['./layers-menu.component.scss'],
+  templateUrl: './sidenav-controls-menu.component.html',
+  styleUrls: ['./sidenav-controls-menu.component.scss'],
   imports: [
     ButtonModule,
     CommonModule,
@@ -27,11 +27,11 @@ import { LayersMenuBasemapComponent } from '../layers-menu-basemap/layers-menu-b
     TranslateModule,
     CheckboxModule,
     RadioModule,
-    LayersMenuItemComponent,
-    LayersMenuBasemapComponent,
+    SidenavControlsMenuItemComponent,
+    SidenavControlsMenuBasemapComponent,
   ],
 })
-export class SafeLayersMenuComponent implements OnInit {
+export class SidenavControlsMenuComponent implements OnInit {
   @Input() layersMenuExpanded = false;
   @Input() bookmarksMenuExpanded = false;
   @Input() layersTree!: L.Control.Layers.TreeObject[];

@@ -4,7 +4,7 @@ import 'leaflet.heat';
 import 'leaflet.markercluster';
 
 import { Feature, Geometry } from 'geojson';
-import { get, set } from 'lodash';
+import { get, isNil, set } from 'lodash';
 import {
   LayerType,
   LayerFilter,
@@ -177,6 +177,9 @@ export class Layer implements LayerModel {
   // Layer fields, extracted from geojson
   private fields: { [key in string]: FieldTypes } = {};
 
+  // Declare variables to store the event listeners
+  private zoomListener!: L.LeafletEventHandlerFn;
+
   /**
    * Apply options to a layer
    *
@@ -296,6 +299,7 @@ export class Layer implements LayerModel {
     this.name = get(options, 'name', '');
     this.type = get<LayerType>(options, 'type', 'FeatureLayer');
     this.opacity = get(options, 'opacity', 1);
+    this.visibility = get(options, 'visibility', true);
 
     if (options.type !== 'GroupLayer') {
       this.sublayersLoaded.next(true);
@@ -764,28 +768,64 @@ export class Layer implements LayerModel {
    * @param layer leaflet layer
    */
   onAddLayer(map: L.Map, layer: L.Layer) {
-    const maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
-    const minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
-    if (map.getZoom() > maxZoom || map.getZoom() < minZoom) {
-      map.removeLayer(layer);
-    } else {
-      map.addLayer(layer);
-      const legendControl = (map as any).legendControl;
-      if (legendControl) {
-        legendControl.addLayer(layer, this.legend);
-      }
+    // Ensure that we do not subscribe multiple times to zoom event
+    if (this.zoomListener) {
+      map.off('zoomend', this.zoomListener);
     }
-    map.on('zoomend', (zoom) => {
-      const currZoom = zoom.target.getZoom();
+    // Using the sidenav-controls-menu-item, we can overwrite visibility property of the layer
+    if (!isNil((layer as any).shouldDisplay)) {
+      this.visibility = (layer as any).shouldDisplay;
+      if (this.visibility) {
+        map.addLayer(layer);
+        const legendControl = (map as any).legendControl;
+        if (legendControl) {
+          legendControl.addLayer(layer, this.legend);
+        }
+      } else {
+        map.removeLayer(layer);
+      }
+    } else {
+      // Classic visibility check based on zoom
       const maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
       const minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
-
-      if (currZoom > maxZoom || currZoom < minZoom) {
+      if (map.getZoom() > maxZoom || map.getZoom() < minZoom) {
+        console.log('should hide layer');
         map.removeLayer(layer);
       } else {
+        console.log('should show layer');
         map.addLayer(layer);
+        const legendControl = (map as any).legendControl;
+        if (legendControl) {
+          legendControl.addLayer(layer, this.legend);
+        }
       }
-    });
+      // Assign the event listener to the variable
+      this.zoomListener = (zoom) => this.onZoom(map, zoom, layer);
+      // Attach the event listener
+      map.on('zoomend', this.zoomListener);
+    }
+  }
+
+  /**
+   * Subscribe to zoom events
+   *
+   * @param map Leaflet map
+   * @param zoom Leaflet zoom event
+   * @param layer Leaflet layer
+   */
+  public onZoom(map: L.Map, zoom: L.LeafletEvent, layer: L.Layer) {
+    console.log('I am zooming !');
+    const currZoom = zoom.target.getZoom();
+    const maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
+    const minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
+
+    if (currZoom > maxZoom || currZoom < minZoom) {
+      map.removeLayer(layer);
+    } else {
+      console.log('I am here');
+      console.log(this.visibility);
+      if (this.visibility) map.addLayer(layer);
+    }
   }
 
   /**

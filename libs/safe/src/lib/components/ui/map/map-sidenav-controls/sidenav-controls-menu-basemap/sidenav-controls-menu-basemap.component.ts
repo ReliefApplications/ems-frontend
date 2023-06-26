@@ -7,13 +7,13 @@ import { ButtonModule, RadioModule } from '@oort-front/ui';
  * basemap item
  */
 @Component({
-  selector: 'safe-layers-menu-basemap',
-  templateUrl: './layers-menu-basemap.component.html',
-  styleUrls: ['./layers-menu-basemap.component.scss'],
+  selector: 'safe-sidenav-controls-menu-basemap',
+  templateUrl: './sidenav-controls-menu-basemap.component.html',
+  styleUrls: ['./sidenav-controls-menu-basemap.component.scss'],
   imports: [CommonModule, RadioModule, ButtonModule],
   standalone: true,
 })
-export class LayersMenuBasemapComponent implements OnInit {
+export class SidenavControlsMenuBasemapComponent implements OnInit {
   @Input() basemap!: L.Control.Layers.TreeObject;
   @Input() mapComponent!: MapComponent;
   @Input() level = 0;
