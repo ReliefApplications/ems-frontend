@@ -211,9 +211,7 @@ export class MapLayersComponent
                     const index = this.mapLayers.findIndex(
                       (layer) => layer.id === id
                     );
-                    if (index > -1) {
-                      // editing already selected layer
-                      this.mapLayers = this.mapLayers.splice(index, 1, res);
+                    if (index !== -1) {
                       this.restoreMapSettingsView();
                     } else {
                       // Selecting a new layer
