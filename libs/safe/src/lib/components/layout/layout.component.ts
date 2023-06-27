@@ -8,6 +8,7 @@ import {
   OnChanges,
   OnInit,
   Output,
+  Renderer2,
   TemplateRef,
   ViewChild,
   ViewContainerRef,
@@ -27,6 +28,7 @@ import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.compo
 import { takeUntil } from 'rxjs/operators';
 import { Breadcrumb } from '@oort-front/ui';
 import { SafeBreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Component for the main layout of the platform
@@ -55,6 +57,12 @@ export class SafeLayoutComponent
 
   @ViewChild('rightSidenav', { read: ViewContainerRef })
   rightSidenav?: ViewContainerRef;
+
+  @ViewChild('rightSidenavFullScreen', { read: ViewContainerRef })
+  rightSidenavFullScreen?: ViewContainerRef;
+
+  @ViewChild('fullScreenDialog')
+  fullScreenDialog?: HTMLDialogElement;
 
   @ViewChild('nav')
   nav?: any;
@@ -94,6 +102,10 @@ export class SafeLayoutComponent
 
   // === BREADCRUMB ===
   public breadcrumbs: Breadcrumb[] = [];
+
+  // Handle fullscreen events
+  private isFullScreen = false;
+  private fullScreenListener!: any;
 
   /**
    * Gets URI of the other office
@@ -164,7 +176,9 @@ export class SafeLayoutComponent
     public dialog: Dialog,
     private translate: TranslateService,
     private dateTranslate: SafeDateTranslateService,
-    private breadcrumbService: SafeBreadcrumbService
+    private breadcrumbService: SafeBreadcrumbService,
+    @Inject(DOCUMENT) private document: Document,
+    private renderer: Renderer2
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
@@ -174,6 +188,33 @@ export class SafeLayoutComponent
     this.getLanguage();
     this.theme = this.environment.theme;
     this.showPreferences = environment.availableLanguages.length > 1;
+    this.fullScreenListener = this.renderer.listen(
+      this.document,
+      'fullscreenchange',
+      (event) => {
+        console.log(event);
+        console.log(this.fullScreenDialog);
+        const dialog = document.querySelector('dialog');
+        if (!this.document.fullscreenElement) {
+          // perhaps we can use cdk dialog?
+          if (this.rightSidenavFullScreen) {
+            const view = this.rightSidenavFullScreen.detach();
+            if (view) {
+              this.rightSidenav?.insert(view);
+            }
+          }
+          dialog?.close();
+        } else {
+          dialog?.showModal();
+          if (this.rightSidenav) {
+            const view = this.rightSidenav.detach();
+            if (view) {
+              this.rightSidenavFullScreen?.insert(view);
+            }
+          }
+        }
+      }
+    );
   }
 
   ngOnInit(): void {
@@ -378,5 +419,12 @@ export class SafeLayoutComponent
       this.translate.use(language);
     }
     return language;
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.fullScreenListener) {
+      this.fullScreenListener();
+    }
   }
 }

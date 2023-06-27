@@ -35,3 +35,12 @@
 kendo-badge-container {
   z-index: 1000;
 }
+
+#fullscreen-dialog {
+  &::backdrop {
+    display: none;
+  }
+  margin: 0;
+  right: 0;
+  height: 100%;
+}
