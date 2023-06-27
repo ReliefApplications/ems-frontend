@@ -1,31 +1,26 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
-import { Geofield } from '../../../models/geofield.model';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { SafeModalModule } from '../../ui/modal/modal.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
+import { ButtonModule, DialogModule, FormWrapperModule } from '@oort-front/ui';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { GeoField } from '../geofield.type';
 
+/**
+ * GeoField editor dialog.
+ * Enable to change the label of the geofields that appear next to map in forms.
+ */
 @Component({
   standalone: true,
   imports: [
     CommonModule,
-    SafeModalModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
     TranslateModule,
+    DialogModule,
+    FormWrapperModule,
+    ButtonModule,
   ],
   selector: 'safe-edit-geofield',
   templateUrl: './edit-geofield.component.html',
@@ -33,7 +28,7 @@ import { TranslateModule } from '@ngx-translate/core';
 })
 export class EditGeofieldComponent implements OnInit {
   // === REACTIVE FORM ===
-  geoFieldForm: UntypedFormGroup = new UntypedFormGroup({});
+  geoFieldForm!: FormGroup;
 
   /**
    * edit GeoField component
@@ -44,11 +39,11 @@ export class EditGeofieldComponent implements OnInit {
    * @param data.geofield geofield to edit
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<EditGeofieldComponent>,
-    @Inject(MAT_DIALOG_DATA)
+    private formBuilder: FormBuilder,
+    public dialogRef: DialogRef<EditGeofieldComponent>,
+    @Inject(DIALOG_DATA)
     public data: {
-      geofield: Geofield;
+      geofield: GeoField;
     }
   ) {}
 

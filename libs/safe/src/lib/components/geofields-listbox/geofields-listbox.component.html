@@ -12,13 +12,13 @@
         <span>
           {{ dataItem.label }}
         </span>
-        <safe-icon
+        <ui-icon
           *ngIf="dataItem.value !== 'coordinates'"
           (click)="editLabel(dataItem)"
           class="hidden group-hover:block"
           icon="edit"
           >
-          </safe-icon>
+          </ui-icon>
       </div>
     </ng-template>
   </kendo-listbox>
@@ -33,13 +33,13 @@
         <span>
           {{ dataItem.label }}
         </span>
-        <safe-icon
+        <ui-icon
           *ngIf="dataItem.value !== 'coordinates'"
           (click)="editLabel(dataItem)"
           class="hidden group-hover:block"
           icon="edit"
         >
-        </safe-icon>
+        </ui-icon>
       </div>
     </ng-template>
   </kendo-listbox>

@@ -1,40 +1,43 @@
-<safe-modal size="small">
-    <h1 mat-dialog-title>{{ 'components.formMapProperties.geofields.editDialog.editGeofield' | translate }}</h1>
-    <div mat-dialog-content>
-      <form [formGroup]="geoFieldForm" class="flex flex-col">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'components.formMapProperties.geofields.editDialog.value' | translate }}</mat-label>
-          <input
-            matInput
-            type="text"
-            [disabled]="true"
-            [value]="data.geofield.value"
-          />
-        </mat-form-field> 
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'components.formMapProperties.geofields.editDialog.label' | translate }}</mat-label>
-          <input
-            matInput
-            formControlName="label"
-            type="text"
-            [value]="data.geofield.label"
-          />
-        </mat-form-field>
-      </form>
-    </div>
-    <div mat-dialog-actions align="end">
-      <safe-button (click)="onClose()">{{
-        'common.close' | translate
-      }}</safe-button>
-      <safe-button
-        category="secondary"
-        variant="primary"
-        [mat-dialog-close]="geoFieldForm.value"
-        cdkFocusInitial
-        [disabled]="!geoFieldForm.valid"
-      >
-        {{ 'common.edit' | translate }}
-      </safe-button>
-    </div>
-  </safe-modal>
-  
+<ui-dialog size="small">
+  <!-- Header -->
+  <ng-container ngProjectAs="header">
+    {{
+      'components.formMapProperties.geofields.editDialog.editGeofield'
+        | translate
+    }}
+  </ng-container>
+  <!-- Form -->
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="geoFieldForm" class="flex flex-col">
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.formMapProperties.geofields.editDialog.value' | translate
+        }}</label>
+        <input type="text" [disabled]="true" [value]="data.geofield.value" />
+      </div>
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.formMapProperties.geofields.editDialog.label' | translate
+        }}</label>
+        <input
+          formControlName="label"
+          type="text"
+          [value]="data.geofield.label"
+        />
+      </div>
+    </form>
+  </ng-container>
+  <!-- Actions -->
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="geoFieldForm.value"
+      cdkFocusInitial
+      [disabled]="!geoFieldForm.valid"
+    >
+      {{ 'common.edit' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

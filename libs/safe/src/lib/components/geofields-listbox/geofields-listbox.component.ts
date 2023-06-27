@@ -13,10 +13,11 @@ import {
 } from '@progress/kendo-angular-listbox';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GeoProperties } from '../../components/geospatial-map/geospatial-map.interface';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { Geofield } from '../../models/geofield.model';
-import { SafeIconModule } from '../ui/icon/icon.module';
+import { Dialog } from '@angular/cdk/dialog';
+import { GeoField } from './geofield.type';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { IconModule } from '@oort-front/ui';
 
 /** All available fields */
 export const ALL_FIELDS: { value: keyof GeoProperties; label: string }[] = [
@@ -40,13 +41,15 @@ export const ALL_FIELDS: { value: keyof GeoProperties; label: string }[] = [
     ListBoxModule,
     FormsModule,
     ReactiveFormsModule,
-    SafeIconModule,
-    MatDialogModule,
+    IconModule,
   ],
   templateUrl: './geofields-listbox.component.html',
   styleUrls: ['./geofields-listbox.component.scss'],
 })
-export class GeofieldsListboxComponent implements OnInit, OnChanges {
+export class GeofieldsListboxComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnChanges
+{
   @Input() selectedFields: { value: keyof GeoProperties; label: string }[] = [];
   public availableFields = ALL_FIELDS;
   public toolbarSettings: ListBoxToolbarConfig = {
@@ -62,17 +65,25 @@ export class GeofieldsListboxComponent implements OnInit, OnChanges {
   };
   @Output() selectionChange = new EventEmitter();
 
-  constructor(public dialog: MatDialog) {}
+  /**
+   * Component for the selection of the interest fields from geospatial question
+   *
+   * @param dialog Dialog service
+   */
+  constructor(public dialog: Dialog) {
+    super();
+  }
 
   ngOnInit(): void {
+    console.log(this.selectedFields);
     this.availableFields = ALL_FIELDS.filter(
-      (x) => !this.selectedFields.some((obj) => obj.value.includes(x.value))
+      (x) => !this.selectedFields.some((obj) => obj.value === x.value)
     );
   }
 
   ngOnChanges(): void {
     this.availableFields = ALL_FIELDS.filter(
-      (x) => !this.selectedFields.some((obj) => obj.value.includes(x.value))
+      (x) => !this.selectedFields.some((obj) => obj.value === x.value)
     );
   }
 
@@ -81,8 +92,12 @@ export class GeofieldsListboxComponent implements OnInit, OnChanges {
     this.selectionChange.emit(this.selectedFields);
   }
 
-  /** Open dialog to edit label */
-  async editLabel(geofield: Geofield): Promise<void> {
+  /**
+   * Open dialog to edit label
+   *
+   * @param geofield Geofield to edit
+   */
+  async editLabel(geofield: GeoField): Promise<void> {
     const { EditGeofieldComponent } = await import(
       './edit-geofield/edit-geofield.component'
     );
@@ -91,7 +106,7 @@ export class GeofieldsListboxComponent implements OnInit, OnChanges {
         geofield,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         const modified_fields = this.availableFields.map((field) => {
           if (field.value === geofield.value) {
