@@ -1,8 +1,11 @@
 import { DOCUMENT } from '@angular/common';
 import {
   AfterViewInit,
+  ApplicationRef,
+  ComponentRef,
   Directive,
   ElementRef,
+  EnvironmentInjector,
   EventEmitter,
   Inject,
   Input,
@@ -11,8 +14,10 @@ import {
   Output,
   Renderer2,
   SimpleChanges,
+  createComponent,
 } from '@angular/core';
 import get from 'lodash/get';
+import { FullscreenComponent } from '../../components/utils/fullscreen/fullscreen.component';
 
 /**
  * Fullscreen directive.
@@ -31,7 +36,7 @@ export class FullScreenDirective
   @Input() parentElementNestedNumber = 2;
   private accessorString = '';
   private fullScreenListener!: any;
-
+  private fullScreenHelperComponent!: ComponentRef<FullscreenComponent>;
   /**
    * Create the accessor to the path of the property for the fullscreen mode
    *
@@ -41,11 +46,15 @@ export class FullScreenDirective
    * @param el Element bind to the directive
    * @param document Document token of the DOM
    * @param renderer Renderer2
+   * @param injector EnvironmentInjector
+   * @param app ApplicationRef
    */
   constructor(
     private el: ElementRef,
     @Inject(DOCUMENT) private document: Document,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private injector: EnvironmentInjector,
+    private app: ApplicationRef
   ) {
     this.accessorString = this.setAccessorPath();
     if (this.fullScreenListener) {
@@ -103,20 +112,38 @@ export class FullScreenDirective
    */
   private triggerFullScreenMode(isFullScreenMode: boolean) {
     if (isFullScreenMode) {
+      this.fullScreenHelperComponent = createComponent(FullscreenComponent, {
+        environmentInjector: this.injector,
+      });
       const currentSidenav = this.document.querySelector(
         'ui-sidenav-container'
       );
-      let defaultFullScreenContainer = get(
+      this.fullScreenHelperComponent.instance.mainContentView = get(
         this.el.nativeElement,
         this.accessorString
       );
-      if (currentSidenav?.contains(defaultFullScreenContainer)) {
-        defaultFullScreenContainer = currentSidenav;
+      const sidenav = currentSidenav?.children.item(0)?.children.item(1);
+      if (sidenav) {
+        this.fullScreenHelperComponent.instance.rightSidenavView = sidenav;
       }
-      defaultFullScreenContainer?.requestFullscreen();
+      this.document.body.appendChild(
+        this.fullScreenHelperComponent.location.nativeElement
+      );
+      this.app.attachView(this.fullScreenHelperComponent.hostView);
+      // const defaultFullScreenContainer = get(
+      //   this.el.nativeElement,
+      //   this.accessorString
+      // );
+      // if (currentSidenav?.contains(defaultFullScreenContainer)) {
+      //   defaultFullScreenContainer = currentSidenav;
+      // }
+      console.log(this.fullScreenHelperComponent);
+      this.fullScreenHelperComponent.location.nativeElement?.requestFullscreen();
     } else {
       if (this.document.fullscreenElement) {
         this.document.exitFullscreen();
+        this.app.detachView(this.fullScreenHelperComponent.hostView);
+        this.fullScreenHelperComponent.destroy();
       }
     }
   }
