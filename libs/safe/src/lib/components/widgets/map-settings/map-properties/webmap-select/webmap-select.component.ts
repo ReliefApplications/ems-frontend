@@ -141,6 +141,13 @@ export class WebmapSelectComponent
   }
 
   /**
+   * Clear search input
+   */
+  clearSearch(): void {
+    if (this.ngControl.value) this.searchControl.setValue('');
+  }
+
+  /**
    * Search for webmap data in argcis-rest-request using arcgis service
    *
    * @param text search text
