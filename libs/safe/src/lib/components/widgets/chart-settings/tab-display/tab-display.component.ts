@@ -75,7 +75,7 @@ export class TabDisplayComponent
 
   ngAfterViewInit(): void {
     this.chartComponent.series$
-      .pipe(takeUntil(this.destroy$), skip(1))
+      .pipe(skip(1), takeUntil(this.destroy$))
       .subscribe((series) => {
         const useCategory = ['pie', 'polar', 'donut', 'radar'].includes(
           this.chartForm.value.type
