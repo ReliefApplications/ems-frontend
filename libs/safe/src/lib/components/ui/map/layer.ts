@@ -11,6 +11,7 @@ import {
   GeoJSON,
 } from './interfaces/layer-settings.type';
 import {
+  createClusterDivIcon,
   createCustomDivIcon,
   DEFAULT_MARKER_ICON_OPTIONS,
 } from './utils/create-div-icon';
@@ -72,12 +73,6 @@ export const DEFAULT_HEATMAP = {
   radius: 25,
   minOpacity: 0.4,
 };
-
-/** Minimum cluster size in pixel */
-const MIN_CLUSTER_SIZE = 20;
-
-/** Maximum cluster size in pixel */
-const MAX_CLUSTER_SIZE = 100;
 
 /** All existing geometry types */
 const GEOMETRY_TYPES = [
@@ -676,18 +671,10 @@ export class Layer implements LayerModel {
                     htmlTemplate.textContent = cluster
                       .getChildCount()
                       .toString();
-                    return createCustomDivIcon(
-                      {
-                        icon: clusterSymbol.style,
-                        color: clusterSymbol.color,
-                        size:
-                          (cluster.getChildCount() / 50) *
-                            (MAX_CLUSTER_SIZE - MIN_CLUSTER_SIZE) +
-                          MIN_CLUSTER_SIZE,
-                        opacity: this.opacity,
-                      },
-                      htmlTemplate,
-                      'leaflet-data-marker'
+                    return createClusterDivIcon(
+                      clusterSymbol.color,
+                      this.opacity,
+                      cluster.getChildCount()
                     );
                   },
                 });
@@ -964,7 +951,7 @@ export class Layer implements LayerModel {
             html += `<div>Clusters</div>`;
             html += `<i style="color: ${
               clusterSymbol.color
-            }"; class="${pipe.transform(clusterSymbol.style, 'fa')} pl-2"></i>`;
+            }"; class="${pipe.transform('circle', 'fa')} pl-2"></i>`;
             break;
           }
           default: {
