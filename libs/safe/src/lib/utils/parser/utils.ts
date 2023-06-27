@@ -162,14 +162,18 @@ const replaceRecordFields = (
         const match = avatarRgx.exec(formattedHtml);
         if (Array.isArray(value) && value.length > 0) {
           const avatarValue = value.filter((v: string) => {
-            const lowercaseValue = v.toLowerCase();
-            return (
-              lowercaseValue.endsWith('.jpg') ||
-              lowercaseValue.endsWith('.png') ||
-              lowercaseValue.endsWith('.jpeg') ||
-              lowercaseValue.endsWith('.gif') ||
-              lowercaseValue.endsWith('.bmp')
-            );
+            if (typeof v === 'string') {
+              const lowercaseValue = v.toLowerCase();
+              return (
+                lowercaseValue.endsWith('.jpg') ||
+                lowercaseValue.endsWith('.png') ||
+                lowercaseValue.endsWith('.jpeg') ||
+                lowercaseValue.endsWith('.gif') ||
+                lowercaseValue.endsWith('.bmp')
+              );
+            } else {
+              return null;
+            }
           });
           if (avatarValue.length > 0) {
             const avatarGroup = createAvatarGroup(
