@@ -98,8 +98,9 @@ export const createLayerForm = (value?: LayerModel) => {
 const createLayerDataSourceForm = (value?: any): FormGroup => {
   const getCanSeeFields = (value: any) => {
     return (
-      (get(value, 'resource') || get(value, 'refData')) &&
-      (get(value, 'layout') || get(value, 'aggregation'))
+      (get(value, 'resource') &&
+        (get(value, 'layout') || get(value, 'aggregation'))) ||
+      get(value, 'refData')
     );
   };
   const canSeeFields = getCanSeeFields(value);

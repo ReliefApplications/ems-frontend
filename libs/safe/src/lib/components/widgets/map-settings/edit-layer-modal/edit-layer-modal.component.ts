@@ -118,30 +118,6 @@ export class EditLayerModalComponent
   }
 
   /**
-   * Get the datasource valid status, so we only display other tabs if valid
-   *
-   * @returns boolean if we have all necessary data to proceed
-   */
-  public get datasourceValid(): boolean {
-    const datasourceForm = this.form?.get('datasource');
-    if (datasourceForm?.get('refData')?.value) {
-      return true;
-    } else if (datasourceForm?.get('resource')?.value) {
-      // If datasource origin is a resource, then geofield OR lat & lng is needed
-      if (
-        (datasourceForm?.get('layout')?.value ||
-          datasourceForm?.get('aggregation')?.value) &&
-        (datasourceForm?.get('geoField')?.value ||
-          (datasourceForm?.get('latitudeField')?.value &&
-            datasourceForm?.get('longitudeField')?.value))
-      ) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
    * Map layer editor.
    *
    * @param confirmService Shared confirm service.
@@ -222,7 +198,14 @@ export class EditLayerModalComponent
    */
   private setIsDatasourceValid(value: any) {
     if (get(value, 'refData')) {
-      this.isDatasourceValid = true;
+      if (
+        get(value, 'geoField') ||
+        (get(value, 'latitudeField') && get(value, 'longitudeField'))
+      ) {
+        this.isDatasourceValid = true;
+      } else {
+        this.isDatasourceValid = false;
+      }
     } else if (get(value, 'resource')) {
       // If datasource origin is a resource, then geofield OR lat & lng is needed
       if (
@@ -231,8 +214,6 @@ export class EditLayerModalComponent
           (get(value, 'latitudeField') && get(value, 'longitudeField')))
       ) {
         this.isDatasourceValid = true;
-      } else {
-        this.isDatasourceValid = false;
       }
     } else {
       this.isDatasourceValid = false;

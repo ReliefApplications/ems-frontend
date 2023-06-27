@@ -35,7 +35,7 @@ import { firstValueFrom } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { inferTypeFromString } from './utils/inferTypeFromString';
 import { get } from 'lodash';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, TextareaComponent } from '@oort-front/ui';
 
 /** Default graphql query */
 const DEFAULT_QUERY = `query {\n  \n}`;
@@ -79,7 +79,7 @@ export class ReferenceDataComponent
   public csvLoading = false;
 
   @ViewChild('fieldInput') fieldInput?: ElementRef<HTMLInputElement>;
-  @ViewChild('csvData') csvData?: ElementRef<HTMLInputElement>;
+  @ViewChild('csvData') csvData?: TextareaComponent;
 
   // === MONACO EDITOR ===
   public editorOptions = {
@@ -498,7 +498,8 @@ export class ReferenceDataComponent
    */
   onValidateCSV(): void {
     this.csvLoading = true;
-    const dataTemp = this.csvData?.nativeElement.value || '';
+    console.log(this.csvData);
+    const dataTemp = this.csvData?.value || '';
     if (dataTemp !== this.csvValue) {
       this.csvValue = dataTemp;
       this.newData = [];
@@ -506,7 +507,7 @@ export class ReferenceDataComponent
       const headers = lines[0].split(',').map((x: string) => x.trim());
       if (lines.length < 2) return;
       // Infer types from first line
-      const fields = headers.reduce((acc, header) => {
+      const fields = headers.reduce((acc: any, header: any) => {
         const value = lines[1].split(',')[headers.indexOf(header)].trim();
         const type = inferTypeFromString(value);
         acc.push({ name: header, type });
