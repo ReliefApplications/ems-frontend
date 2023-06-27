@@ -34,9 +34,11 @@
             [icon]="dashboard.page?.visible ? 'visibility' : 'visibility_off'"
             (click)="togglePageVisibility()"
             [uiTooltip]="
-            (dashboard.page?.visible ? 'components.application.pages.hide' : 'components.application.pages.show')
-              | translate
-          "
+              (dashboard.page?.visible
+                ? 'components.application.pages.hide'
+                : 'components.application.pages.show'
+              ) | translate
+            "
           >
           </ui-button>
         </div>
@@ -47,7 +49,11 @@
           (cdkDropListDropped)="onButtonActionDrop($event)"
         >
           <!-- Button actions -->
-          <safe-button-action [buttonActions]="buttonActions" [dashboard]="dashboard" [canUpdate]="canUpdate"></safe-button-action>
+          <safe-button-action
+            [buttonActions]="buttonActions"
+            [dashboard]="dashboard"
+            [canUpdate]="canUpdate"
+          ></safe-button-action>
 
           <!-- Fullscreen -->
           <ui-button
