@@ -19,6 +19,7 @@ export const GET_LAYER_BY_ID = gql`
         geoField
         latitudeField
         longitudeField
+        type
       }
       layerDefinition {
         minZoom
