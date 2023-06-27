@@ -59,6 +59,8 @@ export class WebmapSelectComponent
   public loading = true;
   private nextPage = true;
   private scrollListener!: any;
+  public selectedLabel = '';
+  public hiddenOptionNotInItems = false;
 
   /**
    * Map Properties of Map widget.
@@ -144,31 +146,47 @@ export class WebmapSelectComponent
    * @param text search text
    */
   private search(text?: string): void {
-    this.arcgis
-      .searchItems({ start: this.start, text, id: this.ngControl.value })
-      .then((search) => {
-        if (search.nextStart > this.start) {
-          this.start = search.nextStart;
-        } else {
-          this.nextPage = false;
-        }
-        if (text) {
-          this.items.next(
-            this.items
-              .getValue()
-              .concat(
-                search.results.filter(
-                  (a) =>
-                    a.id != this.value ||
-                    a.title.toLowerCase().includes(text.toLowerCase())
-                )
+    this.arcgis.searchItems({ start: this.start, text }).then((search) => {
+      if (search.nextStart > this.start) {
+        this.start = search.nextStart;
+      } else {
+        this.nextPage = false;
+      }
+      if (text) {
+        this.items.next(
+          this.items
+            .getValue()
+            .concat(
+              search.results.filter(
+                (a) =>
+                  a.id != this.value ||
+                  a.title.toLowerCase().includes(text.toLowerCase())
               )
-          );
-        } else {
-          this.items.next(this.items.getValue().concat(search.results));
-        }
-        this.loading = false;
-      });
+            )
+        );
+      } else {
+        this.items.next(this.items.getValue().concat(search.results));
+      }
+
+      // if the search result doesn't include the current value, fetch it
+      if (
+        this.ngControl.value &&
+        !this.items.getValue().some((item) => item.id === this.ngControl.value)
+      ) {
+        this.arcgis.searchItems({ id: this.ngControl.value }).then((search) => {
+          // this will somehow return results with different ids (because arcgis search for map of type webmap OR maps with id === id)
+          this.selectedLabel =
+            search.results.find((res) => res.id === this.ngControl.value)
+              ?.title || '';
+          this.hiddenOptionNotInItems = true;
+        });
+      } else {
+        this.selectedLabel = '';
+        this.hiddenOptionNotInItems = false;
+      }
+
+      this.loading = false;
+    });
   }
 
   /**
