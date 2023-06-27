@@ -8,6 +8,8 @@ const DATA_PREFIX = '{{data.';
 const CALC_PREFIX = '{{calc.';
 /** Prefix for avatar keys */
 const AVATAR_PREFIX = '{{avatars.';
+/** Allowed image extensions */
+const ALLOWED_IMAGE_EXTENSIONS = ['.jpg', '.png', '.jpeg', '.gif', '.bmp'];
 /** Suffix for all keys */
 const PLACEHOLDER_SUFFIX = '}}';
 
@@ -147,22 +149,26 @@ const replaceRecordFields = (
       const value = fieldsValue[field.name];
       const style = getLayoutsStyle(styles, field.name, fieldsValue);
       let convertedValue = '';
-      if (!isNil(value)) {
-        // First, try to find cases where the url is used as src of image or link
-        const srcRegex = new RegExp(
-          `src="${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}"`,
-          'gi'
-        );
-        formattedHtml = formattedHtml.replace(srcRegex, `src=${value}`);
-        // Inject avatars
-        const avatarRgx = new RegExp(
-          `{{avatars.(?<name>${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}) (?<width>[0-9]+) (?<height>[0-9]+) (?<maxItems>[0-9]+)}}`,
-          'gi'
-        );
-        const match = avatarRgx.exec(formattedHtml);
-        if (Array.isArray(value) && value.length > 0) {
+      // Inject avatars
+      const avatarRgx = new RegExp(
+        `{{avatars.(?<name>${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}) (?<width>[0-9]+) (?<height>[0-9]+) (?<maxItems>[0-9]+)}}`,
+        'gi'
+      );
+      const match = avatarRgx.exec(formattedHtml);
+      if (Array.isArray(value) && value.length > 0) {
+        const avatarValue = value.filter((v: string) => {
+          if (typeof v === 'string') {
+            const lowercaseValue = v.toLowerCase();
+            return ALLOWED_IMAGE_EXTENSIONS.some((ext) =>
+              lowercaseValue.endsWith(ext)
+            );
+          } else {
+            return false;
+          }
+        });
+        if (avatarValue.length > 0) {
           const avatarGroup = createAvatarGroup(
-            value,
+            avatarValue,
             Number(match?.groups?.width),
             Number(match?.groups?.height),
             Number(match?.groups?.maxItems)
@@ -171,9 +177,17 @@ const replaceRecordFields = (
             avatarRgx,
             avatarGroup.innerHTML
           );
-        } else {
-          formattedHtml = formattedHtml.replace(avatarRgx, '');
         }
+      } else {
+        formattedHtml = formattedHtml.replace(avatarRgx, '');
+      }
+      if (!isNil(value)) {
+        // First, try to find cases where the url is used as src of image or link
+        const srcRegex = new RegExp(
+          `src="${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}"`,
+          'gi'
+        );
+        formattedHtml = formattedHtml.replace(srcRegex, `src=${value}`);
 
         switch (field.type) {
           case 'url': {
