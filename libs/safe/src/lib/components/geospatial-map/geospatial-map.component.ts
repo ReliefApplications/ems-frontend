@@ -140,7 +140,7 @@ export class GeospatialMapComponent
     (['lat', 'lng'] as const).forEach((key) => {
       this.geoForm
         .get(`coordinates.${key}`)
-        ?.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(500))
+        ?.valueChanges.pipe(debounceTime(500), takeUntil(this.destroy$))
         .subscribe(() => {
           const lat = this.geoForm.get('coordinates.lat')?.value;
           const lng = this.geoForm.get('coordinates.lng')?.value;
