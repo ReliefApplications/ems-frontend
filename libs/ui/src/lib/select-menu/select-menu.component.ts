@@ -121,8 +121,9 @@ export class SelectMenuComponent
       }
     );
     if (this.value) {
-      this.selectedValues =
-        this.value instanceof Array ? [...this.value] : [this.value];
+      this.selectedValues.push(
+        this.value instanceof Array ? [...this.value] : this.value
+      );
     }
     this.optionList?.changes
       .pipe(startWith(this.optionList), takeUntil(this.destroy$))
