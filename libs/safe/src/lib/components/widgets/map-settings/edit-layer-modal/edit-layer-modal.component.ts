@@ -11,7 +11,14 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
 import { LayerModel } from '../../../../models/layer.model';
 import { createLayerForm, LayerFormT } from '../map-forms';
-import { takeUntil, BehaviorSubject, Subject, pairwise, startWith } from 'rxjs';
+import {
+  takeUntil,
+  BehaviorSubject,
+  Subject,
+  pairwise,
+  startWith,
+  distinctUntilChanged,
+} from 'rxjs';
 import { MapComponent } from '../../../ui/map/map.component';
 import {
   MapEvent,
@@ -24,7 +31,7 @@ import { SafeMapLayersService } from '../../../../services/map/map-layers.servic
 import { Layer } from '../../../ui/map/layer';
 import { Apollo } from 'apollo-angular';
 import { GetResourceQueryResponse, GET_RESOURCE } from '../graphql/queries';
-import { get } from 'lodash';
+import { get, isEqual } from 'lodash';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { LayerPropertiesModule } from './layer-properties/layer-properties.module';
 import { LayerDatasourceModule } from './layer-datasource/layer-datasource.module';
@@ -143,7 +150,10 @@ export class EditLayerModalComponent
     this.setIsDatasourceValid(this.form.get('datasource')?.value);
     this.form
       .get('datasource')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(
+        distinctUntilChanged((prev, next) => isEqual(prev, next)),
+        takeUntil(this.destroy$)
+      )
       .subscribe((value) => {
         this.setIsDatasourceValid(value);
       });
@@ -297,7 +307,7 @@ export class EditLayerModalComponent
       )
       .subscribe({
         next: ([prev, next]) => {
-          if (!!prev && prev?.resource != next?.resource) {
+          if (!!prev && prev?.resource !== next?.resource && next?.resource) {
             this.getResource();
           }
           // else on aggregation implementation add it here
