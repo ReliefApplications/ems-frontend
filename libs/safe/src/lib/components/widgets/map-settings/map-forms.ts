@@ -19,6 +19,7 @@ import {
 import { IconName } from '../../icon-picker/icon-picker.const';
 import { LayerType } from '../../ui/map/interfaces/layer-settings.type';
 import { set } from 'lodash';
+import { DEFAULT_MARKER_ICON_OPTIONS } from '../../ui/map/utils/create-div-icon';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 
@@ -240,7 +241,14 @@ export const createLayerDrawingInfoForm = (value: any): FormGroup => {
       type: [type, Validators.required],
       ...(type === 'simple' && {
         symbol: fb.group({
-          color: [get(value, 'renderer.symbol.color', ''), Validators.required],
+          color: [
+            get(
+              value,
+              'renderer.symbol.color',
+              DEFAULT_MARKER_ICON_OPTIONS.color
+            ),
+            Validators.required,
+          ],
           size: [get(value, 'renderer.symbol.size', 24)],
           style: new FormControl<IconName>(
             get(value, 'renderer.symbol.style', 'location-dot')
