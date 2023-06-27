@@ -69,6 +69,7 @@ export class DashboardComponent
   public isFullScreen = false;
   // === DATA ===
   public id = '';
+  public prevId = '';
   public applicationId?: string;
   public loading = true;
   public tiles: any[] = [];
@@ -234,7 +235,11 @@ export class DashboardComponent
    * @returns Promise
    */
   private async initDashboardWithId(id: string) {
-    if (this.dashboard?.id === id) return; // don't init the dashboard if the id is the same
+    console.log('initPage');
+
+    // Don't init the dashboard if the id is the same
+    if (this.prevId === id) return;
+    this.prevId = id;
 
     const rootElement = this.elementRef.nativeElement;
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
