@@ -52,11 +52,8 @@ export class WebmapSelectComponent
   private onTouched!: any;
   private onChanged!: any;
 
-  /** The value of the ControlValueAccessor */
   public value = '';
-  /** The items showed on the list */
   public items = new BehaviorSubject<any[]>([]);
-  /** An observable of the list of items */
   public items$ = this.items.asObservable();
   private start = 1;
   public loading = true;
@@ -91,9 +88,6 @@ export class WebmapSelectComponent
     this.searchControl.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value) => {
-        console.log('value', value);
-        console.log('this.items', this.items.getValue());
-        console.log('this.value', this.value);
         this.start = 0;
         this.items.next([]);
         this.search(value);
@@ -110,9 +104,7 @@ export class WebmapSelectComponent
     if (!e && !this.ngControl?.control?.value) {
       return;
     }
-    console.log('onChanged', e);
     this.onChanged(e);
-    this.searchControl.setValue('');
   }
 
   /**
@@ -139,11 +131,19 @@ export class WebmapSelectComponent
    * @param value id of webmap
    */
   writeValue(value: any): void {
-    console.log('writeValue', value);
     if (value) {
       this.value = JSON.parse(JSON.stringify(value));
     } else {
       this.value = value;
+    }
+  }
+
+  /**
+   * Reset search
+   */
+  resetSearch(): void {
+    if (this.searchControl.value) {
+      this.searchControl.setValue('');
     }
   }
 
@@ -153,30 +153,29 @@ export class WebmapSelectComponent
    * @param text search text
    */
   private search(text?: string): void {
-    console.log('this.ngControl.value', this.ngControl?.value);
-    this.arcgis
-      .searchItems({ start: this.start, text, id: text })
-      .then((search) => {
-        if (search.nextStart > this.start) {
-          this.start = search.nextStart;
-        } else {
-          this.nextPage = false;
-        }
-        if (text) {
-          this.items.next(
-            this.items
-              .getValue()
-              .concat(
-                search.results.filter((a) =>
+    this.arcgis.searchItems({ start: this.start, text }).then((search) => {
+      if (search.nextStart > this.start) {
+        this.start = search.nextStart;
+      } else {
+        this.nextPage = false;
+      }
+      if (text) {
+        this.items.next(
+          this.items
+            .getValue()
+            .concat(
+              search.results.filter(
+                (a) =>
+                  a.id != this.value ||
                   a.title.toLowerCase().includes(text.toLowerCase())
-                )
               )
-          );
-        } else {
-          this.items.next(this.items.getValue().concat(search.results));
-        }
-        this.loading = false;
-      });
+            )
+        );
+      } else {
+        this.items.next(this.items.getValue().concat(search.results));
+      }
+      this.loading = false;
+    });
   }
 
   /**

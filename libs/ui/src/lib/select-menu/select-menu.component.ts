@@ -128,6 +128,7 @@ export class SelectMenuComponent
             this.selectedValues.push(
               this.value instanceof Array ? [...this.value] : this.value
             );
+            this.setDisplayTriggerText();
           }
           options.forEach((option) => {
             option.optionClick.pipe(takeUntil(this.destroy$)).subscribe({
@@ -142,7 +143,12 @@ export class SelectMenuComponent
             } else {
               option.selected = false;
             }
-            this.setDisplayTriggerText();
+            // this line causes and issue in webmap-select component
+            // When the searchbar filters out the options, the selected value is not displayed
+            // anymore because it doesn't match an option in the list
+            //
+            // Instead, we call this function when the user clicks on an option
+            // this.setDisplayTriggerText();
           });
         },
       });
@@ -241,10 +247,17 @@ export class SelectMenuComponent
           this.displayTrigger = labelValues[0];
         } else {
           this.displayTrigger =
-            labelValues[0] + ' (+' + (labelValues.length - 1) + ' others)';
+            labelValues[0] + ' (+' + (labelValues.length - 1) + ' others)'; // we should perhaps change this to (+ ' (this.selectedValues.length - 1) + ' others)'
         }
       } else {
-        this.displayTrigger = '';
+        if (!this.selectedValues.length) {
+          this.displayTrigger = '';
+          // if the selected values are not empty but the label values are,
+          // it might mean that the values are not in the list of options
+          // (e.g. when a searchbar filters out the options)
+          // Therefore, we keep the old displayTrigger value, which contains the label
+          // of the previously selected option
+        }
       }
     }
   }
