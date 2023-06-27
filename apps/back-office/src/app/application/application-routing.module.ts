@@ -178,6 +178,14 @@ const routes: Routes = [
         // canActivate: [SafePermissionGuard]
       },
       {
+        path: 'widget/:id',
+        loadChildren: () =>
+          import('../dashboard/pages/widget/widget.module').then(
+            (m) => m.WidgetModule
+          ),
+        // canActivate: [SafePermissionGuard]
+      },
+      {
         path: 'workflow/:id',
         loadChildren: () =>
           import('./pages/workflow/workflow.module').then(

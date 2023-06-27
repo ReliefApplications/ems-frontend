@@ -236,6 +236,8 @@ export class AppPreviewComponent
         return 'linear_scale';
       case 'form':
         return 'description';
+      case 'widget':
+        return 'widgets';
       default:
         return 'dashboard';
     }
