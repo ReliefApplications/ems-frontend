@@ -63,7 +63,7 @@ export class GeospatialMapComponent
 {
   @Input() data?: Feature | FeatureCollection;
   @Input() geometry = 'Point';
-  @Input() fields: (keyof GeoProperties)[] = [];
+  @Input() fields: { value: keyof GeoProperties; label: string }[] = [];
 
   public geoForm!: ReturnType<typeof this.buildGeoForm>;
 

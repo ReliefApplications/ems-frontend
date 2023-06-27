@@ -431,7 +431,7 @@
 				"delete": {
 					"confirmationMessage": "Voulez-vous vraiment supprimer la page {{name}}?"
 				},
-				"hide": "@TODO",
+				"hide": "Cacher la page dans la barre latérale de navigation",
 				"notReordered": {
 					"plural": "Les pages n'ont pas été réorganisées. {{error}}",
 					"singular": "La page n'a pas été réorganisée. {{error}}"
@@ -440,7 +440,7 @@
 					"plural": "Les pages ont été réorganisées avec succès.",
 					"singular": "La page a été réorganisée avec succès."
 				},
-				"show": "@TODO"
+				"show": "Afficher la page dans la barre latérale de navigation"
 			},
 			"positionAttribute": {
 				"delete": {
@@ -647,6 +647,15 @@
 				"missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un modèle pour sauvegarder le formulaire."
 			},
 			"saveSurvey": "Sauvegarde du questionnaire"
+		},
+		"formMapProperties": {
+			"geofields": {
+				"editDialog": {
+					"editGeofield": "Éditer les champs",
+					"label": "Label",
+					"value": "Valeur"
+				}
+			}
 		},
 		"forms": {
 			"isCore": "Est un formulaire source",
