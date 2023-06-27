@@ -2,7 +2,7 @@
 <div *ngIf="!loading" [formGroup]="formGroup">
   <div class="flex flex-col gap-y-2">
     <!-- Symbol style -->
-    <div class="flex flex-col">
+    <div class="flex flex-col" *ngIf="showStyle">
       <div uiFormFieldDirective>
         <label class="mb-4">
           {{ 'components.widget.settings.map.edit.cluster.symbol' | translate }}
