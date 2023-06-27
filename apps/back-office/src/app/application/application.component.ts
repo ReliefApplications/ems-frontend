@@ -80,6 +80,7 @@ export class ApplicationComponent
                 icon: this.getNavIcon(x.type || ''),
                 class: null,
                 orderable: true,
+                visible: x.visible ?? true,
                 action: x.canDelete && {
                   icon: 'delete',
                   toolTip: this.translate.instant('common.deleteObject', {
@@ -217,9 +218,9 @@ export class ApplicationComponent
         { name: item.name }
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
-      confirmColor: 'warn',
+      confirmVariant: 'danger',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.deletePage(item.id);
       }
@@ -250,9 +251,9 @@ export class ApplicationComponent
           'components.widget.settings.close.confirmationMessage'
         ),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
+        confirmVariant: 'primary',
       });
-      return dialogRef.afterClosed().pipe(
+      return dialogRef.closed.pipe(
         map((confirm) => {
           if (confirm) {
             return true;

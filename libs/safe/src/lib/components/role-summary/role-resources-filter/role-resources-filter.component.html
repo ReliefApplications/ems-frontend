@@ -1,12 +1,15 @@
 <div [formGroup]="form" class="flex flex-col gap-4">
-  <div class="flex flex-wrap gap-2 items-center">
-    <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
-      <mat-icon matPrefix>search</mat-icon>
-      <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
-      <input matInput [formControl]="search" type="search" />
-      <mat-spinner *ngIf="loading" diameter="24" matSuffix></mat-spinner>
-    </mat-form-field>
-    <safe-button
+  <div class="flex flex-wrap gap-2">
+    <div uiFormFieldDirective>
+      <ui-icon icon="search" uiPrefix></ui-icon>
+      <input
+        placeholder="{{ 'common.placeholder.search' | translate }}"
+        [formControl]="search"
+        type="text"
+      />
+      <ui-spinner [size]="'small'" *ngIf="loading" uiSuffix></ui-spinner>
+    </div>
+    <ui-button
       icon="filter_list"
       category="tertiary"
       variant="primary"
@@ -17,36 +20,28 @@
           ? ('common.filter.hide' | translate)
           : ('common.filter.show' | translate)
       }}
-    </safe-button>
+    </ui-button>
   </div>
+  <!-- Filters when on "show" mode -->
   <div class="flex flex-wrap gap-2 items-center" *ngIf="show">
-    <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
-      <mat-label>{{ 'common.input.dateRange' | translate }}</mat-label>
-      <mat-date-range-input [rangePicker]="rangePicker">
-        <input formControlName="startDate" matStartDate />
-        <input formControlName="endDate" matEndDate />
-      </mat-date-range-input>
-      <mat-datepicker-toggle
-        matSuffix
-        [for]="rangePicker"
-      ></mat-datepicker-toggle>
-      <mat-date-range-picker #rangePicker>
-        <mat-date-range-picker-actions>
-          <safe-button matDateRangePickerCancel (click)="clearDateFilter()">
-            {{ 'common.clear' | translate }}
-          </safe-button>
-          <safe-button
-            category="secondary"
-            variant="primary"
-            matDateRangePickerApply
-          >
-            {{ 'common.filter.apply' | translate }}
-          </safe-button>
-        </mat-date-range-picker-actions>
-      </mat-date-range-picker>
-    </mat-form-field>
-    <safe-button variant="danger" (click)="clear()">
+    <div uiFormFieldDirective>
+      <label>{{ 'common.input.dateRange' | translate }}</label>
+      <div [uiDateWrapper]="calendar">
+        <input
+          [uiDatePicker]
+          formControlName="startDate"
+          [label]="'kendo.datepicker.startLabel' | translate"
+        />
+        <input
+          [uiDatePicker]
+          formControlName="endDate"
+          [label]="'kendo.datepicker.endLabel' | translate"
+        />
+        <ui-date-range #calendar> </ui-date-range>
+      </div>
+    </div>
+    <ui-button variant="danger" (click)="clear()">
       {{ 'common.filter.clear' | translate }}
-    </safe-button>
+    </ui-button>
   </div>
 </div>

@@ -2,9 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeReferenceDataDropdownComponent } from './reference-data-dropdown.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
+import { FormWrapperModule, SelectMenuModule } from '@oort-front/ui';
 
 /**
  * Reference data dropdown module.
@@ -15,9 +14,9 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatSelectModule,
     TranslateModule,
+    SelectMenuModule,
+    FormWrapperModule,
   ],
   exports: [SafeReferenceDataDropdownComponent],
 })

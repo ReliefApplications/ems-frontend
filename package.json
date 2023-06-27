@@ -1,12 +1,12 @@
 {
   "name": "oort-front",
-  "version": "2.0.0-alpha.12",
+  "version": "2.0.0-alpha.14",
   "license": "MIT",
   "scripts": {
     "check-i18n": "node .scripts/check-i18n",
     "semantic-release": "semantic-release",
     "prepare": "husky install",
-    "lint": "npx nx run-many --target=lint --projects=safe,front-office,back-office,ui"
+    "lint": "npx nx run-many --target=lint --projects=safe,front-office,back-office,ui --verbose"
   },
   "private": true,
   "dependencies": {
@@ -61,6 +61,7 @@
     "@progress/kendo-licensing": "^1.3.0",
     "@progress/kendo-recurrence": "^1.0.3",
     "@progress/kendo-theme-default": "^6.0.3",
+    "@storybook/addon-console": "^1.2.3",
     "@tinymce/tinymce-angular": "^7.0.0",
     "angular-oauth2-oidc": "~13.0.1",
     "apollo-angular": "^4.2.0",
@@ -75,7 +76,7 @@
     "esri-leaflet-geocoder": "^3.1.4",
     "esri-leaflet-heatmap": "^2.0.1",
     "esri-leaflet-renderers": "^3.0.0",
-    "esri-leaflet-vector": "^4.0.1",
+    "esri-leaflet-vector": "^4.1.0",
     "extract-files": "^13.0.0",
     "geojson": "^0.5.0",
     "graphql": "^16",
@@ -133,6 +134,7 @@
     "@storybook/addon-mdx-gfm": "^7.0.5",
     "@storybook/angular": "^7.0.5",
     "@storybook/core-server": "^7.0.5",
+    "@tailwindcss/forms": "^0.5.3",
     "@types/color": "^3.0.3",
     "@types/esri-leaflet": "^2.1.9",
     "@types/extract-files": "^8.1.1",

@@ -1,38 +1,34 @@
-<safe-modal size="medium" [closable]="true">
-  <h2>{{ 'models.dashboard.context.datasource.title' | translate }}</h2>
+<ui-dialog size="medium" [closable]="true">
+  <ng-container ngProjectAs="header">
+    <h2>{{ 'models.dashboard.context.datasource.title' | translate }}</h2>
+  </ng-container>
 
-  <ng-container *ngIf="form">
-    <form
-      [formGroup]="form"
-      class="flex justify-between w-full flex-col m-2"
-    >
-      <safe-alert class="mb-6">
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="form" class="flex justify-between w-full flex-col py-2">
+      <ui-alert class="mb-6">
         {{ 'models.dashboard.context.datasource.alert' | translate }}
-      </safe-alert>
+      </ui-alert>
       <!-- Origin -->
-      <mat-form-field appearance="outline" class="grow">
-        <mat-label>{{
-          'models.dashboard.context.origin' | translate
-        }}</mat-label>
-        <mat-select formControlName="origin">
-          <mat-option value="resource">{{
-            'common.resource.one' | translate
-          }}</mat-option>
-          <mat-option value="refData">{{
-            'common.referenceData.one' | translate
-          }}</mat-option>
-        </mat-select>
-      </mat-form-field>
+      <div uiFormFieldDirective [outline]="false" class="mb-2">
+        <label>{{ 'models.dashboard.context.origin' | translate }}</label>
+        <ui-select-menu formControlName="origin">
+          <ui-select-option value="resource">
+            {{ 'common.resource.one' | translate }}
+          </ui-select-option>
+          <ui-select-option value="refData">
+            {{ 'common.referenceData.one' | translate }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
 
       <!-- Resource selection -->
-      <mat-form-field
-        appearance="outline"
+      <div
+        uiFormFieldDirective
         class="grow"
         *ngIf="form.get('origin')?.value === 'resource'"
       >
-        <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
-
-        <safe-graphql-select
+        <label>{{ 'common.resource.one' | translate }}</label>
+        <ui-graphql-select
           *ngIf="resourcesQuery"
           valueField="id"
           textField="name"
@@ -42,17 +38,17 @@
           (searchChange)="onResourceSearchChange($event)"
           [filterable]="true"
         >
-        </safe-graphql-select>
-      </mat-form-field>
+        </ui-graphql-select>
+      </div>
 
       <!-- Reference data selection  -->
-      <mat-form-field
-        appearance="outline"
+      <div
+        uiFormFieldDirective
         class="grow"
         *ngIf="form.get('origin')?.value === 'refData'"
       >
-        <mat-label>{{ 'common.referenceData.one' | translate }}</mat-label>
-        <safe-graphql-select
+        <label>{{ 'common.referenceData.one' | translate }}</label>
+        <ui-graphql-select
           *ngIf="refDatasQuery"
           valueField="id"
           textField="name"
@@ -60,29 +56,34 @@
           formControlName="refData"
           [selectedElements]="[refData]"
         >
-        </safe-graphql-select>
-      </mat-form-field>
+        </ui-graphql-select>
+      </div>
 
       <!-- Field selection -->
-      <mat-form-field appearance="outline" class="grow">
-        <mat-label>{{
-          'models.dashboard.context.displayField' | translate
-        }}</mat-label>
-        <mat-select formControlName="displayField">
-          <mat-option *ngFor="let field of availableFields" [value]="field">
+      <div uiFormFieldDirective [outline]="false">
+        <label>{{ 'models.dashboard.context.displayField' | translate }}</label>
+        <ui-select-menu formControlName="displayField">
+          <ui-select-option
+            *ngFor="let field of availableFields"
+            [value]="field"
+            uiPrefix
+          >
             {{ field }}
-          </mat-option>
-        </mat-select>
-        <safe-icon
+          </ui-select-option>
+        </ui-select-menu>
+        <ui-icon
           icon="info"
           class="cursor-pointer"
           variant="grey"
-          matSuffix
-          [matTooltip]="'models.dashboard.context.datasource.info' | translate"
-        ></safe-icon>
-      </mat-form-field>
+          uiSuffix
+          [uiTooltip]="'models.dashboard.context.datasource.info' | translate"
+        ></ui-icon>
+      </div>
     </form>
-    <safe-button
+  </ng-container>
+
+  <ng-container ngProjectAs="actions">
+    <ui-button
       category="secondary"
       variant="primary"
       (click)="onSubmit()"
@@ -96,6 +97,6 @@
           : 'models.dashboard.context.datasource.set'
         ) | translate
       }}
-    </safe-button>
+    </ui-button>
   </ng-container>
-</safe-modal>
+</ui-dialog>

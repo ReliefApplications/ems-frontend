@@ -3,11 +3,15 @@ import { CommonModule } from '@angular/common';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import {
+  ButtonActionModule,
+  DashboardFilterModule,
   FullScreenModule,
-  SafeButtonModule,
   SafeSkeletonModule,
   SafeWidgetGridModule,
 } from '@oort-front/safe';
+import { ButtonModule, TooltipModule } from '@oort-front/ui';
+import { TranslateModule } from '@ngx-translate/core';
+
 /**
  * Dashboard page.
  * Dashboard is one of the available content types of application pages.
@@ -20,7 +24,11 @@ import {
     SafeWidgetGridModule,
     FullScreenModule,
     SafeSkeletonModule,
-    SafeButtonModule,
+    ButtonModule,
+    DashboardFilterModule,
+    TooltipModule,
+    TranslateModule,
+    ButtonActionModule,
   ],
   exports: [DashboardComponent],
 })

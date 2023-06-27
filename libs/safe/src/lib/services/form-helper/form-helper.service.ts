@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as Survey from 'survey-angular';
-import { MatLegacyDialogRef } from '@angular/material/legacy-dialog';
 import { Apollo } from 'apollo-angular';
-import { SafeSnackBarService } from '../snackbar/snackbar.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../confirm/confirm.service';
 import { firstValueFrom } from 'rxjs';
@@ -12,6 +10,8 @@ import {
   AddRecordMutationResponse,
   ADD_RECORD,
 } from '../../components/form/graphql/mutations';
+import { DialogRef } from '@angular/cdk/dialog';
+import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
 
 /**
@@ -31,7 +31,7 @@ export class SafeFormHelpersService {
    */
   constructor(
     public apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
   ) {}
@@ -42,7 +42,7 @@ export class SafeFormHelpersService {
    * @param version The version to recover
    * @returns dialogRef
    */
-  createRevertDialog(version: any): MatLegacyDialogRef<any> {
+  createRevertDialog(version: any): DialogRef<any> {
     // eslint-disable-next-line radix
     const date = new Date(parseInt(version.createdAt, 0));
     const formatDate = `${date.getDate()}/${
@@ -55,9 +55,9 @@ export class SafeFormHelpersService {
         { date: formatDate }
       ),
       confirmText: this.translate.instant('components.confirmModal.confirm'),
-      confirmColor: 'primary',
+      confirmVariant: 'primary',
     });
-    return dialogRef;
+    return dialogRef as any;
   }
 
   /**
@@ -209,15 +209,86 @@ export class SafeFormHelpersService {
    * @param survey Survey from which we need to clean cached records.
    */
   cleanCachedRecords(survey: Survey.SurveyModel): void {
+    if (!survey) return;
     survey.getAllQuestions().forEach((question) => {
-      if (
-        question.value &&
-        ['resources', 'resource'].includes(question.getType())
-      ) {
-        question.value.forEach((recordId: any) =>
-          localForage.removeItem(recordId)
-        );
+      if (question.value) {
+        const type = question.getType();
+        if (type === 'resources') {
+          question.value.forEach((recordId: string) =>
+            localForage.removeItem(recordId)
+          );
+        } else if (type === 'resource') {
+          localForage.removeItem(question.value);
+        }
       }
     });
+  }
+
+  /**
+   * Create cache records (from resource/s questions) of passed survey.
+   *
+   * @param survey Survey to get questions from
+   */
+  public async createCachedRecords(survey: Survey.SurveyModel): Promise<void> {
+    const promises: Promise<any>[] = [];
+    const questions = survey.getAllQuestions();
+    const nestedRecordsToAdd: string[] = [];
+
+    // Callbacks to update the ids of new records
+    const updateIds: {
+      [key in string]: (arg0: string) => void;
+    } = {};
+
+    // Get all nested records to add
+    questions.forEach((question) => {
+      const type = question.getType();
+      if (!['resource', 'resources'].includes(type)) return;
+      const uuidv4Pattern =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+      const isResource = type === 'resource';
+
+      const toAdd = (isResource ? [question.value] : question.value).filter(
+        (x: string) => uuidv4Pattern.test(x)
+      );
+      nestedRecordsToAdd.push(...toAdd);
+
+      toAdd.forEach((id: string) => {
+        updateIds[id] = (newId: string) => {
+          question.value = isResource
+            ? newId
+            : question.value.map((x: string) => (x === id ? newId : x));
+        };
+      });
+    });
+
+    for (const localID of nestedRecordsToAdd) {
+      // load them from localForage and add them to the promises
+      const cache = await localForage.getItem(localID);
+      if (!cache) continue;
+
+      const { template, data } = JSON.parse(cache as string);
+
+      promises.push(
+        firstValueFrom(
+          this.apollo.mutate<AddRecordMutationResponse>({
+            mutation: ADD_RECORD,
+            variables: {
+              form: template,
+              data,
+            },
+          })
+        ).then((res) => {
+          // change the localID to the new recordId
+          const newId = res.data?.addRecord?.id;
+          if (!newId) return;
+          updateIds[localID](newId);
+          localForage.removeItem(localID);
+          return;
+        })
+      );
+    }
+
+    await Promise.all(promises);
   }
 }

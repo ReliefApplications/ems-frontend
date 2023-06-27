@@ -1,27 +1,32 @@
 <div *ngIf="formArray.value.length >= 0">
   <div class="flex flex-row justify-between">
     <!-- Serie selection -->
-    <mat-form-field *ngIf="formArray.value.length > 0" appearance="outline">
-      <mat-label>
+    <div *ngIf="formArray.value.length > 0" uiFormFieldDirective class="w-44">
+      <label>
         {{ 'components.widget.settings.chart.series.title' | translate }}
-      </mat-label>
-      <mat-select [formControl]="selectedSerie">
-        <mat-option *ngFor="let serie of formArray.value" [value]="serie.serie">
+      </label>
+      <ui-select-menu [formControl]="selectedSerie">
+        <ui-select-option
+          *ngFor="let serie of formArray.value"
+          [value]="serie.serie"
+        >
           {{
             serie.serie || 'components.widget.settings.chart.other' | translate
           }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
     <!-- Serie Visibility -->
     <div
       *ngIf="formGroup"
       [formGroup]="formGroup"
       class="flex flex-row justify-between mb-5"
     >
-      <mat-slide-toggle formControlName="visible">{{
-        'components.widget.settings.chart.series.showSeries' | translate
-      }}</mat-slide-toggle>
+      <ui-toggle formControlName="visible">
+        <ng-container ngProjectAs="label">
+          {{ 'components.widget.settings.chart.series.showSeries' | translate }}
+        </ng-container>
+      </ui-toggle>
       <br />
     </div>
   </div>
@@ -33,66 +38,65 @@
         </span>
         <kendo-colorpicker formControlName="color"></kendo-colorpicker>
       </div>
-      <mat-form-field *ngIf="formGroup.get('fill')" appearance="outline">
-        <mat-label>{{
-          'components.widget.settings.chart.series.fill'
-            | translate
-        }}</mat-label>
-        <mat-select formControlName="fill">
-          <mat-option>
+      <div *ngIf="formGroup.get('fill')" uiFormFieldDirective class="w-44">
+        <label>
+          {{ 'components.widget.settings.chart.series.fill' | translate }}
+        </label>
+        <ui-select-menu formControlName="fill">
+          <ui-select-option>
             {{ 'components.widget.settings.chart.auto' | translate }}
-          </mat-option>
-          <mat-option *ngFor="let type of fillTypes" [value]="type">
+          </ui-select-option>
+          <ui-select-option *ngFor="let type of fillTypes" [value]="type">
             {{ type }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
     </div>
     <!-- Interpolation (line charts) -->
     <div class="flex flex-row justify-between">
-      <mat-form-field
-        *ngIf="formGroup.get('interpolation')"
-        appearance="outline"
-      >
-        <mat-label>
+      <div *ngIf="formGroup.get('interpolation')" uiFormFieldDirective>
+        <label>
           {{
             'components.widget.settings.chart.series.interpolation.title'
               | translate
           }}
-        </mat-label>
-        <mat-select formControlName="interpolation">
-          <mat-option>
+        </label>
+        <ui-select-menu formControlName="interpolation">
+          <ui-select-option>
             {{ 'components.widget.settings.chart.auto' | translate }}
-          </mat-option>
-          <mat-option *ngFor="let type of interpolationTypes" [value]="type">
+          </ui-select-option>
+          <ui-select-option
+            *ngFor="let type of interpolationTypes"
+            [value]="type"
+          >
             {{ type }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
-      <mat-form-field
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+      <div
         *ngIf="
           formGroup.value.interpolation === 'step' && formGroup.get('stepped')
         "
-        appearance="outline"
+        uiFormFieldDirective
       >
-        <mat-label>
+        <label>
           {{
             'components.widget.settings.chart.series.interpolation.step'
               | translate
           }}
-        </mat-label>
-        <mat-select formControlName="stepped">
-          <mat-option>
+        </label>
+        <ui-select-menu formControlName="stepped">
+          <ui-select-option>
             {{ 'components.widget.settings.chart.auto' | translate }}
-          </mat-option>
-          <mat-option
+          </ui-select-option>
+          <ui-select-option
             *ngFor="let type of stepInterpolationTypes"
             [value]="type"
           >
             {{ type }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
     </div>
     <!-- Categories -->
     <safe-categories-settings

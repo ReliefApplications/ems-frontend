@@ -1,4 +1,4 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<ui-spinner *ngIf="loading"></ui-spinner>
 <ng-container *ngIf="!loading && resource">
   <div class="page-header">
     <h1 class="page-title">
@@ -12,49 +12,52 @@
     >
     </safe-access>
   </div>
-  <nav mat-tab-nav-bar [tabPanel]="tabPanel">
-    <a
-      mat-tab-link
+  <ui-tabs [selectedIndex]="selectedTab">
+    <ui-tab
       (click)="selectedTab = 0"
-      [active]="selectedTab === 0"
       routerLink="./records"
       [state]="{ resource }"
-      >{{ 'common.record.few' | translate }}
-    </a>
-    <a
-      mat-tab-link
+    >
+      <ng-container ngProjectAs="label">{{
+        'common.record.few' | translate
+      }}</ng-container>
+    </ui-tab>
+    <ui-tab
       (click)="selectedTab = 1"
-      [active]="selectedTab === 1"
       routerLink="./forms"
       [state]="{ resource }"
-      >{{ 'common.form.few' | translate }}
-    </a>
-    <a
-      mat-tab-link
+    >
+      <ng-container ngProjectAs="label">{{
+        'common.form.few' | translate
+      }}</ng-container>
+    </ui-tab>
+    <ui-tab
       (click)="selectedTab = 2"
-      [active]="selectedTab === 2"
       routerLink="./layouts"
       [state]="{ resource }"
-      >{{ 'common.layout.few' | translate }}
-    </a>
-    <a
-      mat-tab-link
+    >
+      <ng-container ngProjectAs="label">{{
+        'common.layout.few' | translate
+      }}</ng-container>
+    </ui-tab>
+    <ui-tab
       (click)="selectedTab = 3"
-      [active]="selectedTab === 3"
       routerLink="./aggregations"
       [state]="{ resource }"
-      >{{ 'common.aggregation.few' | translate }}
-    </a>
-    <a
-      mat-tab-link
+    >
+      <ng-container ngProjectAs="label">{{
+        'common.aggregation.few' | translate
+      }}</ng-container>
+    </ui-tab>
+    <ui-tab
       (click)="selectedTab = 4"
-      [active]="selectedTab === 4"
       routerLink="./calculated-fields"
       [state]="{ resource }"
-      >{{ 'common.calculatedField.few' | translate }}
-    </a>
-  </nav>
-  <mat-tab-nav-panel #tabPanel>
-    <router-outlet></router-outlet>
-  </mat-tab-nav-panel>
+    >
+      <ng-container ngProjectAs="label">{{
+        'common.calculatedField.few' | translate
+      }}</ng-container>
+    </ui-tab>
+  </ui-tabs>
+  <router-outlet></router-outlet>
 </ng-container>

@@ -1,18 +1,20 @@
-<safe-modal [closable]="true" size="medium">
-  <h2 mat-dialog-title>
-    {{ 'components.role.summary.autoAssignment.rule.edit' | translate }}
-  </h2>
-  <div mat-dialog-content>
+<ui-dialog [closable]="true" size="medium">
+  <ng-container ngProjectAs="header">
+    <h2>
+      {{ 'components.role.summary.autoAssignment.rule.edit' | translate }}
+    </h2>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <safe-filter [form]="formGroup" [fields]="fields"></safe-filter>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
-    <safe-button
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>{{ 'common.close' | translate }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="formGroup.value"
+      [uiDialogClose]="formGroup.value"
       [disabled]="!formGroup.valid"
-      >{{ 'common.update' | translate }}</safe-button
+      >{{ 'common.update' | translate }}</ui-button
     >
-  </div>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

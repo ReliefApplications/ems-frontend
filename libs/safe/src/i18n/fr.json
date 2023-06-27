@@ -431,6 +431,7 @@
 				"delete": {
 					"confirmationMessage": "Voulez-vous vraiment supprimer la page {{name}}?"
 				},
+				"hide": "@TODO",
 				"notReordered": {
 					"plural": "Les pages n'ont pas été réorganisées. {{error}}",
 					"singular": "La page n'a pas été réorganisée. {{error}}"
@@ -438,7 +439,8 @@
 				"reordered": {
 					"plural": "Les pages ont été réorganisées avec succès.",
 					"singular": "La page a été réorganisée avec succès."
-				}
+				},
+				"show": "@TODO"
 			},
 			"positionAttribute": {
 				"delete": {
@@ -639,6 +641,7 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"duplicatedRelatedName": "Nom lié en double pour la question {{question}} à la page {{page}}. Veuillez fournir un nom lié unique (au format snake_case) pour sauvegarder le formulaire.",
 				"missingGridField": "Champs disponible de table de données manquant pour la question {{question}} à la page {{page}}. Veuillez en sélectionner au moins un dans la propriété Custom Question pour sauvegarder le formulaire.",
 				"missingRelatedName": "Nom lié manquant pour la question {{question}} à la page {{page}}. Veuillez entrer un nom valide pour la valeur de la donnée (au format snake_case) pour sauvegarder le formulaire.",
 				"missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un modèle pour sauvegarder le formulaire."
@@ -671,6 +674,7 @@
 			}
 		},
 		"header": {
+			"goToApp": "Ouvrir l'application",
 			"goToPlatform": "Naviguer vers",
 			"logout": "Se déconnecter",
 			"sidenav": {
@@ -730,10 +734,10 @@
 			"readAll": "Tout marquer comme lu"
 		},
 		"paginator": {
-			"items": "@TODO",
-			"itemsPerPage": "@TODO",
-			"of": "@TODO",
-			"page": "@TODO"
+			"items": "élements",
+			"itemsPerPage": "éléments par page",
+			"of": "de",
+			"page": "Page"
 		},
 		"preferences": {
 			"dateFormat": "Format de date et heure",
@@ -952,6 +956,7 @@
 						"add": "Ajouter une règle d'attribution",
 						"delete": "Supprimer la règle",
 						"edit": "Mettre à jour la règle d'attribution",
+						"none": "Aucune règle d'attribution automatique",
 						"title": "Règle"
 					},
 					"title": "Attribution automatique"
@@ -1363,6 +1368,7 @@
 						},
 						"fields": "Champs",
 						"filter": "Filtre",
+						"groupLayers": "Regrouper les calques",
 						"labels": "Étiquettes",
 						"layerDatasource": "Source de données de la couche",
 						"layerProperties": "Propriétés",
@@ -1370,7 +1376,9 @@
 						"popup": "Popup",
 						"properties": {
 							"defaultVisibility": "Visible par défaut",
+							"from": "de zoom ",
 							"opacity": "Opacité",
+							"to": " à zoom",
 							"visibilityRange": "Plage de visibilité",
 							"zoom": "Zoom"
 						},
@@ -1421,6 +1429,7 @@
 					"layers": {
 						"add": "Ajouter un nouveau calque",
 						"chooseLayer": "Choisir un calque existant",
+						"createGroup": "Créer un nouveau groupe de couches",
 						"createLayer": "Créer un nouveau calque",
 						"dataSource": {
 							"geoField": "GeoField",
@@ -1534,7 +1543,9 @@
 								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
 							}
 						},
-						"preview": {},
+						"preview": {
+							"title": "Prévisualisation"
+						},
 						"textEditor": {
 							"alert": "Vous pouvez ajouter des variables ex: {{data.variable}} et faire des calculs ex: {{calc.round( value ; precision )}}",
 							"title": "Éditeur de texte"
@@ -1576,7 +1587,13 @@
 		}
 	},
 	"kendo": {
+		"combobox": {
+			"noDataText": "No available choice"
+		},
 		"datepicker": {
+			"dateLabel": "Sélectionnez une date",
+			"endLabel": "Date de fin",
+			"startLabel": "Date de début",
 			"today": "Aujourd'hui",
 			"toggle": "Sélectionnez une date"
 		},
@@ -1725,6 +1742,21 @@
 			"unlock": "Déverrouiller",
 			"unstick": "Désépingler"
 		},
+		"multiselect": {
+			"noDataText": "No available choice"
+		},
+		"pager": {
+			"firstPage": "Aller à la première page",
+			"items": "éléments",
+			"itemsPerPage": "éléments par page",
+			"label": "'Navigation de page, page {currentPage} sur {totalPages}'",
+			"lastPage": "Aller à la dernière page",
+			"nextPage": "Aller à la page suivante",
+			"of": "sur",
+			"page": "Page",
+			"pageNumberInputTitle": "Numéro de page",
+			"previousPage": "Aller à la page précédente"
+		},
 		"tilelayout": {
 			"component": {
 				"items": "articles",
@@ -1777,6 +1809,17 @@
 		},
 		"dashboard": {
 			"activateFiltering": "Activer le filtre",
+			"buttonActions": {
+				"add": "Ajouter une action de bouton",
+				"category": "Catégorie de bouton",
+				"confirmDelete": "Voulez-vous vraiment supprimer cette action de bouton ?",
+				"edit": "Modifier l'action du bouton",
+				"href": "Bouton href",
+				"one": "Action du bouton",
+				"openInNewTab": "Ouvrir dans un nouvel onglet",
+				"text": "Texte du bouton",
+				"variant": "Variante de bouton"
+			},
 			"context": {
 				"datasource": {
 					"alert": "Sélectionnez une source de données, afin de définir une page par enregistrement de la source de données. Vous pouvez également définir un modèle qui sera chargé par défaut si aucune page spécifique n'est créée pour un enregistrement.",
@@ -2001,6 +2044,10 @@
 				},
 				"selectApplication": "Application manquante pour un élément de la page : {{page}}. Veuillez sélectionner au moins une application dans les propriétés de {{question}} pour sauvegarder le formulaire.",
 				"snakecase": "Le nom de valeur {{name}} de la page {{page}} est invalide. Veuillez configurer un nom valide (en format snake_case) pour sauvegarder le formulaire."
+			},
+			"move": {
+				"down": "Descendre la question",
+				"up": "Monter la question"
 			},
 			"questionsCategories": {
 				"core": "Bibliothèque de questions"

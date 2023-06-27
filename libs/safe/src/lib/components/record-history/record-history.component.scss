@@ -41,17 +41,25 @@
   margin-top: 0.7rem;
 }
 
-mat-expansion-panel {
-  box-shadow: none !important;
-  border-bottom: solid 1px rgba(0, 0, 0, 0.12);
-  border-radius: 0;
+ui-expansion-panel {
+  display: flex;
+  flex-direction: column;
 }
 
-.mat-expansion-panel-header-title {
+::ng-deep .accordion-item {
   align-items: center;
   font-size: 14px;
+  span:first-child {
+    display: contents;
+  }
 }
 
 ::ng-deep p {
   line-height: 2;
+}
+
+#date-header {
+  ::ng-deep div {
+    margin-left: unset !important;
+  }
 }

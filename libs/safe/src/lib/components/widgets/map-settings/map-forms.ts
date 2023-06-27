@@ -62,14 +62,18 @@ const DEFAULT_GRADIENT = [
  * @returns new form group
  */
 export const createLayerForm = (value?: LayerModel) => {
-  const type = get(value, 'type', 'FeatureLayer') as LayerType;
-  return fb.group({
+  const type = get(value, 'type') || 'FeatureLayer';
+
+  return new FormGroup({
     // Layer properties
-    id: [get(value, 'id', null)],
-    type: [type, Validators.required],
-    name: [get(value, 'name', null), Validators.required],
-    visibility: [get(value, 'visibility', true), Validators.required],
-    opacity: [get(value, 'opacity', 1), Validators.required],
+    id: new FormControl(get(value, 'id', null)),
+    type: new FormControl(type, Validators.required),
+    name: new FormControl(get(value, 'name', null), Validators.required),
+    visibility: new FormControl(
+      get(value, 'visibility', true),
+      Validators.required
+    ),
+    opacity: new FormControl(get(value, 'opacity', 1), Validators.required),
     layerDefinition: createLayerDefinitionForm(
       type,
       get(value, 'layerDefinition')
@@ -78,6 +82,9 @@ export const createLayerForm = (value?: LayerModel) => {
       popupInfo: createPopupInfoForm(get(value, 'popupInfo')),
       // Layer datasource
       datasource: createLayerDataSourceForm(get(value, 'datasource')),
+    }),
+    ...(type === 'GroupLayer' && {
+      sublayers: new FormControl(get(value, 'sublayers', [])),
     }),
   });
 };
@@ -177,6 +184,13 @@ const createLayerDefinitionForm = (type: LayerType, value?: any): FormGroup => {
             'drawingInfo',
             createLayerDrawingInfoForm(drawingInfo)
           );
+          // If new type is heatmap and we currently have a cluster set, reset the featureReduction
+          if (
+            type === 'heatmap' &&
+            formGroup.get('featureReduction.type')?.value === 'cluster'
+          ) {
+            formGroup.get('featureReduction.type')?.patchValue({ type: null });
+          }
           setTypeListeners();
         });
     };

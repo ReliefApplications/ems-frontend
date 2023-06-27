@@ -2,77 +2,78 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table mat-table [dataSource]="dataSource" matSort>
-      <ng-container matColumnDef="field">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+    <table cdk-table uiTableWrapper [dataSource]="dataSource">
+      <ng-container cdkColumnDef="field">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
             {{ 'components.mapping.field' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.field }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.field }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="path">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+      <ng-container cdkColumnDef="path">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
             {{ 'components.mapping.path' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.path }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.path }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="value">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+      <ng-container cdkColumnDef="value">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
             {{ 'components.mapping.value' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.value }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.value }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="text">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+      <ng-container cdkColumnDef="text">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
             {{ 'components.mapping.text' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.text }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.text }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef class="w-16"></th>
-        <td mat-cell *matCellDef="let element; let index = index">
-          <safe-button
+      <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element; let index = index">
+          <ui-button
             [isIcon]="true"
             icon="more_vert"
-            [matMenuTriggerFor]="menu"
+            [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
           >
-          </safe-button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="onEdit(element, index)">
-              <mat-icon>edit</mat-icon>
+          </ui-button>
+          <ui-menu #menu>
+            <button uiMenuItem (click)="onEdit(element, index)">
+              <ui-icon icon="edit" variant="grey"></ui-icon>
               {{ 'common.edit' | translate }}
             </button>
-            <button mat-menu-item (click)="onDelete(index)">
-              <mat-icon>delete</mat-icon>
+            <button uiMenuItem (click)="onDelete(index)">
+              <ui-icon icon="delete" variant="danger"></ui-icon>
               {{ 'common.delete' | translate }}
             </button>
-          </mat-menu>
+          </ui-menu>
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+      <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
     </table>
   </div>
 </div>
+<!-- Actions -->
 <div class="actions flex justify-center mt-4">
-  <safe-button
-    class="w-auto"
+  <ui-button
+    class="w-auto max-w-xs"
     category="tertiary"
     variant="primary"
     (click)="onAdd()"
-    >{{ 'common.add' | translate }}</safe-button
+    >{{ 'common.add' | translate }}</ui-button
   >
 </div>

@@ -8,6 +8,7 @@ import {
 
 /**
  * UI Menu Component
+ * todo(tailwind): use directive instead of class for the menu items
  */
 @Component({
   selector: 'ui-menu',

@@ -4,7 +4,7 @@ import { AvatarGroupComponent } from './avatar-group.component';
 import { AvatarModule } from '../avatar/avatar.module';
 
 /**
- * Avatar group module.
+ * UI Avatar group module.
  */
 @NgModule({
   declarations: [AvatarGroupComponent],

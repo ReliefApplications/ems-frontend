@@ -1,17 +1,20 @@
-<mat-form-field appearance="outline">
-  <mat-label>{{ placeholder }}</mat-label>
-  <mat-select
+<div uiFormFieldDirective>
+  <label>{{ placeholder }}</label>
+  <ui-select-menu
     #recordSelect
     [(ngModel)]="record"
     name="record"
-    (openedChange)="onOpenSelect($event)"
-    (selectionChange)="onSelect($event)"
+    (opened)="onOpenSelect()"
+    (selectedOption)="onSelect($event)"
   >
-    <mat-option *ngIf="selectedRecord" [value]="selectedRecord.id">{{
+    <ui-select-option *ngIf="selectedRecord">{{
       field ? selectedRecord.data[field] : selectedRecord.id
-    }}</mat-option>
-    <mat-option *ngFor="let record of records$ | async" [value]="record.id">
+    }}</ui-select-option>
+    <ui-select-option
+      *ngFor="let record of records$ | async"
+      [value]="record.id"
+    >
       {{ field ? record.data[field] : record.id }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+    </ui-select-option>
+  </ui-select-menu>
+</div>

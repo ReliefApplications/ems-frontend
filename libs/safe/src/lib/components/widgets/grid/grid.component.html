@@ -1,6 +1,13 @@
 <div class="h-full">
   <!-- CLASSIC VIEW -->
-  <kendo-tilelayout-item-header *ngIf="header" class="widget-header">
+  <kendo-tilelayout-item-header
+    *ngIf="header"
+    class="widget-header border-b"
+    [ngClass]="{
+      'border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
+      'border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
+    }"
+  >
     <span class="widget-title" [title]="settings.title">{{
       settings.title
     }}</span>
@@ -57,16 +64,15 @@
 
 <!-- Quick action buttons -->
 <ng-template #floatingButtonsTemplate>
-  <div>
+  <div class="flex">
     <ng-container *ngFor="let floatingButton of settings.floatingButtons">
-      <button
-        mat-button
-        color="primary"
+      <ui-button
+        variant="primary"
         (click)="onQuickAction(floatingButton)"
         *ngIf="floatingButton.show"
       >
         {{ floatingButton.name }}
-      </button>
+      </ui-button>
     </ng-container>
   </div>
 </ng-template>

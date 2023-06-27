@@ -5,13 +5,9 @@ import {
   UntypedFormBuilder,
   Validators,
 } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
-
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
 import { Role } from '@oort-front/safe';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 
 /**
  * Chose role component, to preview application with selected role.
@@ -31,20 +27,21 @@ export class ChoseRoleComponent implements OnInit {
 
   // === ROLES QUERY ===
   public rolesQuery!: QueryRef<GetRolesQueryResponse>;
+
   /**
    * Chose role component, to preview application with selected role.
    *
    * @param formBuilder Angular form builder
-   * @param dialogRef Material dialog ref
+   * @param dialogRef Dialog ref
    * @param apollo Angular service
    * @param data Injected modal data
    * @param data.application application id
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<ChoseRoleComponent>,
+    public dialogRef: DialogRef<ChoseRoleComponent>,
     private apollo: Apollo,
-    @Inject(MAT_DIALOG_DATA)
+    @Inject(DIALOG_DATA)
     public data: {
       application: string;
     }

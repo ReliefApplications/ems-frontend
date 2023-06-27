@@ -1,70 +1,79 @@
 <!-- Header -->
 <div class="flex justify-between items-center">
   <h2>{{ 'common.field.few' | translate }}</h2>
-  <mat-form-field appearance="outline">
-    <mat-label>{{ 'models.form.field.usedIn' | translate }}</mat-label>
-    <mat-select [formControl]="filterId">
-      <mat-option>{{'common.filter.none' | translate }}</mat-option>
-      <mat-option *ngFor="let form of resource.forms" [value]="form.id">{{
-        form.name
-      }}</mat-option>
-    </mat-select>
-  </mat-form-field>
+  <div uiFormFieldDirective class="min-w-[8rem]">
+    <label>{{ 'models.form.field.usedIn' | translate }}</label>
+    <ui-select-menu [formControl]="filterId">
+      <ui-select-option>{{
+        'common.filter.none' | translate
+      }}</ui-select-option>
+      <ui-select-option *ngFor="let form of resource.forms" [value]="form.id">
+        {{ form.name }}
+      </ui-select-option>
+    </ui-select-menu>
+  </div>
 </div>
 <!-- Content -->
 <!-- Table container -->
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table mat-table [dataSource]="fields" *ngIf="fields.data.length > 0">
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>
+    <table
+      cdk-table
+      uiTableWrapper
+      [dataSource]="fields"
+      *ngIf="fields.length > 0"
+    >
+      <ng-container cdkColumnDef="name">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.field.one' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element" class="font-bold">
+        <td
+          uiCell
+          *cdkCellDef="let element"
+          class="!text-gray-900 !font-medium"
+        >
           {{ element.name }}
         </td>
       </ng-container>
-      <ng-container matColumnDef="actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef class="w-16"></th>
-        <td mat-cell *matCellDef="let element">
+      <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
           <div class="flex">
-            <safe-button
+            <ui-button
               [isIcon]="true"
               [icon]="element.canSee ? 'visibility' : 'visibility_off'"
               [variant]="element.canSee ? 'primary' : 'grey'"
               [disabled]="disabled"
-              [matTooltip]="
+              [uiTooltip]="
                 (element.canSee
                   ? 'components.role.tooltip.allowFieldAccessibility'
                   : 'components.role.tooltip.disallowFieldAccessibility'
                 ) | translate : { field: element.name }
               "
-              matTooltipPosition="left"
               (click)="onEditFieldAccess(element, 'canSee')"
             >
-            </safe-button>
-            <safe-button
+            </ui-button>
+            <ui-button
               [isIcon]="true"
               [icon]="element.canUpdate ? 'edit' : 'edit_off'"
               [variant]="element.canUpdate ? 'primary' : 'grey'"
               [disabled]="disabled"
-              [matTooltip]="
+              [uiTooltip]="
                 (element.canUpdate
                   ? 'components.role.tooltip.allowFieldUpdate'
                   : 'components.role.tooltip.disallowFieldUpdate'
                 ) | translate : { field: element.name }
               "
-              matTooltipPosition="left"
               (click)="onEditFieldAccess(element, 'canUpdate')"
             >
-            </safe-button>
+            </ui-button>
           </div>
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+      <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
     </table>
   </div>
 </div>

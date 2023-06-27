@@ -1,14 +1,11 @@
 import { CommonModule } from '@angular/common';
 import { Component, Inject, AfterViewInit, ViewChild } from '@angular/core';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
-import { SafeModalModule } from '../../modal/modal.module';
 import { MapComponent, MapModule } from '../../map';
 import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
 import { LayerDatasource } from '../../../../models/layer.model';
 import get from 'lodash/get';
+import { DialogModule } from '@oort-front/ui';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 
 /**
  * Dialog data interface
@@ -23,7 +20,7 @@ interface DialogData {
  */
 @Component({
   standalone: true,
-  imports: [CommonModule, SafeModalModule, MapModule],
+  imports: [CommonModule, DialogModule, MapModule],
   selector: 'safe-map-modal',
   templateUrl: './map-modal.component.html',
   styleUrls: ['./map-modal.component.scss'],
@@ -38,9 +35,9 @@ export class MapModalComponent implements AfterViewInit {
    * @param data Dialog data
    */
   constructor(
-    public dialogRef: MatDialogRef<MapModalComponent>,
+    public dialogRef: DialogRef<MapModalComponent>,
     private mapLayersService: SafeMapLayersService,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    @Inject(DIALOG_DATA) public data: DialogData
   ) {}
 
   ngAfterViewInit(): void {
@@ -57,7 +54,8 @@ export class MapModalComponent implements AfterViewInit {
           createdAt: new Date(),
           updatedAt: new Date(),
         },
-        mapComponent.mapPopupService
+        mapComponent.mapPopupService,
+        mapComponent.mapLayersService
       )
       .then((layer) => {
         mapComponent.addLayer(layer);

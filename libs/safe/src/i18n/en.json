@@ -412,7 +412,7 @@
 				"filter": {
 					"empty": "No filters have been defined by the administrators",
 					"info": "Dashboard filters can be used between pages to filter their content.",
-					"title": "You are editing dashboard filters"
+					"title": "Dashboard filters configuration"
 				},
 				"filterSettings": "Filter settings",
 				"settings": {
@@ -431,6 +431,7 @@
 				"delete": {
 					"confirmationMessage": "Do you confirm the deletion of the page {{name}}?"
 				},
+				"hide": "Hide page in nav bar for end-users",
 				"notReordered": {
 					"plural": "The pages were not reordered. {{error}}",
 					"singular": "The page was not reordered. {{error}}"
@@ -438,7 +439,8 @@
 				"reordered": {
 					"plural": "The pages were successfully reordered.",
 					"singular": "The page was successfully reordered."
-				}
+				},
+				"show": "Make page visible in nav bar for end-users"
 			},
 			"positionAttribute": {
 				"delete": {
@@ -562,15 +564,6 @@
 			"subject": "Subject",
 			"withoutRecords": "Without records"
 		},
-		"emailPreview": {
-			"errors": {
-				"missingSubject": "Subject cannot be left empty."
-			},
-			"from": "From",
-			"subject": "Subject",
-			"title": "Email Preview",
-			"to": "To"
-		},
 		"form": {
 			"aggregation": {
 				"delete": {
@@ -634,6 +627,7 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"duplicatedRelatedName": "Duplicated related name for question {{question}} on page {{page}}. Please provide a unique related name (snake case format) to save the form.",
 				"missingGridField": "Missing an available field grid for question {{question}} on page {{page}}. Please select a least one in Custom Question Properties to save the form.",
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
@@ -666,6 +660,7 @@
 			}
 		},
 		"header": {
+			"goToApp": "Go to application",
 			"goToPlatform": "Navigate to",
 			"logout": "Logout",
 			"sidenav": {
@@ -947,6 +942,7 @@
 						"add": "Create assignment rule",
 						"delete": "Delete rule",
 						"edit": "Edit assignment rule",
+						"none": "No assignment rule",
 						"title": "Rule"
 					},
 					"title": "Automatic assignment"
@@ -1356,6 +1352,7 @@
 						},
 						"fields": "Fields",
 						"filter": "Filter",
+						"groupLayers": "Group layers",
 						"labels": "Labels",
 						"layerDatasource": "Layer datasource",
 						"layerProperties": "Layer properties",
@@ -1363,7 +1360,9 @@
 						"popup": "Pop-up",
 						"properties": {
 							"defaultVisibility": "Visible by default",
+							"from": "from zoom ",
 							"opacity": "Opacity",
+							"to": " to zoom",
 							"visibilityRange": "Visibility range",
 							"zoom": "Current zoom"
 						},
@@ -1414,6 +1413,7 @@
 					"layers": {
 						"add": "Add new layer",
 						"chooseLayer": "Choose a layer",
+						"createGroup": "Create a new group layer",
 						"createLayer": "Create a new layer",
 						"dataSource": {
 							"geoField": "GeoField",
@@ -1527,6 +1527,9 @@
 								"datasource": "Add a button in widget's header to view card's data source"
 							}
 						},
+						"preview": {
+							"title": "Preview"
+						},
 						"textEditor": {
 							"alert": "You can add variables e.g: {{data.variable}} and calculate e.g: {{calc.round( value ; precision )}}",
 							"title": "Text editor"
@@ -1568,7 +1571,13 @@
 		}
 	},
 	"kendo": {
+		"combobox": {
+			"noDataText": "No available choice"
+		},
 		"datepicker": {
+			"dateLabel": "Select a date",
+			"endLabel": "Select a end date",
+			"startLabel": "Select a start date",
 			"today": "Today",
 			"toggle": "Choose a date"
 		},
@@ -1717,6 +1726,21 @@
 			"unlock": "Unlock",
 			"unstick": "Unstick"
 		},
+		"multiselect": {
+			"noDataText": "No available choice"
+		},
+		"pager": {
+			"firstPage": "Go to the first page",
+			"items": "items",
+			"itemsPerPage": "items per page",
+			"label": "'Page navigation, page {currentPage} of {totalPages}'",
+			"lastPage": "Go to the last page",
+			"nextPage": "Go to the next page",
+			"of": "of",
+			"page": "Page",
+			"pageNumberInputTitle": "Page Number",
+			"previousPage": "Go to the previous page"
+		},
 		"tilelayout": {
 			"component": {
 				"items": "items",
@@ -1769,6 +1793,17 @@
 		},
 		"dashboard": {
 			"activateFiltering": "Activate filtering",
+			"buttonActions": {
+				"add": "Add button action",
+				"category": "Button category",
+				"confirmDelete": "Are you sure you want to delete this button action?",
+				"edit": "Edit button action",
+				"href": "Button href",
+				"one": "Button action",
+				"openInNewTab": "Open in new tab",
+				"text": "Button text",
+				"variant": "Button variant"
+			},
 			"context": {
 				"datasource": {
 					"alert": "Select a datasource, in order to set one page per record of the datasource. You can also set a template, which would be loaded by default if no specific page is created for a record.",
@@ -1993,6 +2028,10 @@
 				},
 				"selectApplication": "Missing value application for an element on page {{page}}. Please select at least one application in properties of {{question}} to save the form.",
 				"snakecase": "The value name {{name}} on page {{page}} is invalid. Please conform to snake_case."
+			},
+			"move": {
+				"down": "Move down",
+				"up": "Move up"
 			},
 			"questionsCategories": {
 				"core": "Question Library"

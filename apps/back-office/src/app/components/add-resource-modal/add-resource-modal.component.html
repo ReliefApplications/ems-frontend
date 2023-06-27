@@ -1,32 +1,31 @@
-<safe-modal size="small">
-  <h1 mat-dialog-title>{{ 'models.resource.create' | translate }}</h1>
-  <div mat-dialog-content>
+<ui-dialog size="small">
+  <ng-container ngProjectAs="header">
+    <h1>{{ 'models.resource.create' | translate }}</h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="addForm">
       <div class="flex flex-col">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.name' | translate }}</mat-label>
+        <div uiFormFieldDirective>
+          <label>{{ 'common.name' | translate }}</label>
           <input
-            matInput
             formControlName="name"
             type="text"
             placeholder="Enter a name"
           />
-        </mat-form-field>
+        </div>
       </div>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button (click)="onClose()">{{
-      'common.close' | translate
-    }}</safe-button>
-    <safe-button
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="addForm.value"
+      [uiDialogClose]="addForm.value"
       cdkFocusInitial
       [disabled]="!addForm.valid"
     >
       {{ 'common.create' | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

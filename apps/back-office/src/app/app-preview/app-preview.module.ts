@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AppPreviewRoutingModule } from './app-preview-routing.module';
 import { AppPreviewComponent } from './app-preview.component';
 import { PreviewToolbarModule } from './components/preview-toolbar/preview-toolbar.module';
-import { SafeLayoutModule, SafeLeftSidenavModule } from '@oort-front/safe';
+import { SafeLayoutModule, SafeNavbarModule } from '@oort-front/safe';
 
 /**
  * Main Module of Application preview capacity.
@@ -15,8 +15,8 @@ import { SafeLayoutModule, SafeLeftSidenavModule } from '@oort-front/safe';
     CommonModule,
     AppPreviewRoutingModule,
     SafeLayoutModule,
-    SafeLeftSidenavModule,
     PreviewToolbarModule,
+    SafeNavbarModule,
   ],
 })
 export class AppPreviewModule {}
