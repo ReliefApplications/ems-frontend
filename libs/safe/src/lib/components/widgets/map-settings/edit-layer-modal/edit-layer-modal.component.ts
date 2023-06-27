@@ -276,7 +276,12 @@ export class EditLayerModalComponent
   private setUpEditLayerListeners() {
     // Those listeners would handle any change for layer into the map component reference
     this.form.valueChanges
-      .pipe(startWith(this.form.value), pairwise(), takeUntil(this.destroy$))
+      .pipe(
+        startWith(this.form.value),
+        distinctUntilChanged((prev, next) => isEqual(prev, next)),
+        pairwise(),
+        takeUntil(this.destroy$)
+      )
       .subscribe({
         next: ([prev, next]) => {
           this.updateMapLayer({ delete: true });
