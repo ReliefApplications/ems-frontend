@@ -7,7 +7,7 @@
     (opened)="onOpenSelect()"
     [formControl]="ngControl && $any(ngControl.control)"
     [value]="value"
-    (selectedOption)="clearSearch()"
+    (selectedOption)="selectedOption($event)"
     [isGraphQlSelect]="true">
     <!-- Search -->
     <ng-container *ngTemplateOutlet="search"></ng-container>
@@ -17,7 +17,7 @@
     </ui-select-option>
     <!-- Add an invisible item to store the label of the selected item -->
     <ui-select-option class="invisible-element" [value]="ngControl.value"
-      *ngIf="hiddenOptionNotInItems">
+      *ngIf="showHiddenOption">
       {{ selectedLabel }}
     </ui-select-option>
   </ui-select-menu>

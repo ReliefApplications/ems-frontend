@@ -60,7 +60,7 @@ export class WebmapSelectComponent
   private nextPage = true;
   private scrollListener!: any;
   public selectedLabel = '';
-  public hiddenOptionNotInItems = false;
+  public showHiddenOption = false;
 
   /**
    * Map Properties of Map widget.
@@ -148,6 +148,18 @@ export class WebmapSelectComponent
   }
 
   /**
+   * Event handler from the select menu
+   *
+   * @param e event
+   */
+  selectedOption(e: any) {
+    // since clearSearch() will trigger the asynchronous search method, it might be necessary to remove it,
+    // or at least to make sure that the setHiddenOption is not called too early
+    this.clearSearch();
+    this.setHiddenOption(e);
+  }
+
+  /**
    * Search for webmap data in argcis-rest-request using arcgis service
    *
    * @param text search text
@@ -175,25 +187,38 @@ export class WebmapSelectComponent
         this.items.next(this.items.getValue().concat(search.results));
       }
 
-      // if the search result doesn't include the current value, fetch it
-      if (
-        this.ngControl.value &&
-        !this.items.getValue().some((item) => item.id === this.ngControl.value)
-      ) {
-        this.arcgis.searchItems({ id: this.ngControl.value }).then((search) => {
-          // this will somehow return results with different ids (because arcgis search for map of type webmap OR maps with id === id)
-          this.selectedLabel =
-            search.results.find((res) => res.id === this.ngControl.value)
-              ?.title || '';
-          this.hiddenOptionNotInItems = true;
-        });
-      } else {
-        this.selectedLabel = '';
-        this.hiddenOptionNotInItems = false;
-      }
+      this.setHiddenOption(this.ngControl.value);
 
       this.loading = false;
     });
+  }
+
+  /**
+   * Handy helper that sets up the hidden option that is used
+   * to make sure the selected value is always displayed,
+   * even if it's not in the list of items
+   *
+   * @param id id of the selected item
+   */
+  private setHiddenOption(id: string): void {
+    // the goal is to set both this.selectedLabel and this.showHiddenOption
+    // if the selected item is in the list of items, need to set
+    // this.showHiddenOption to false
+    const item = this.items.getValue().find((item) => item.id === id);
+    if (item) {
+      this.selectedLabel = item.title;
+      this.showHiddenOption = false;
+    } else {
+      // if the selected item is not in the list of items, we need to fetch it
+      this.arcgis.searchItems({ id }).then((search) => {
+        // this will somehow return results with different ids (because arcgis search for map of type webmap OR maps with id === id)
+        const res = search.results.find((res) => res.id === id);
+        if (res) {
+          this.selectedLabel = res.title;
+          this.showHiddenOption = true;
+        }
+      });
+    }
   }
 
   /**
