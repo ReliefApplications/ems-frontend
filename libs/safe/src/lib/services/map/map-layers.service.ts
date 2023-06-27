@@ -350,12 +350,24 @@ export class SafeMapLayersService {
   }
 
   private isDatasourceValid = (value: LayerDatasource | undefined) => {
-    return (
-      value &&
-      (value.resource || value.refData) &&
-      (value.aggregation || value.layout) &&
-      (value.geoField || (value.latitudeField && value.longitudeField))
-    );
+    if (value) {
+      if (value.refData) {
+        if (value.geoField || (value.latitudeField && value.longitudeField)) {
+          return true;
+        } else {
+          return false;
+        }
+      } else if (value.resource) {
+        // If datasource origin is a resource, then geofield OR lat & lng is needed
+        if (
+          (value.layout || value.aggregation) &&
+          (value.geoField || (value.latitudeField && value.longitudeField))
+        ) {
+          return true;
+        }
+      }
+    }
+    return false;
   };
 
   /**

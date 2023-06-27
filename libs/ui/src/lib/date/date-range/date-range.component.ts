@@ -26,12 +26,15 @@ export class DateRangeComponent {
     end: null,
   } as unknown as SelectionRange;
 
+  viewChangeAction = false;
+
   /**
    * Handles the selection of a content
    *
    * @param event SelectionRange
    */
   public onChange(event: SelectionRange) {
+    this.viewChangeAction = false;
     this.range = event as any;
     this.selectedValue.emit(this.range);
   }

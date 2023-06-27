@@ -1,3 +1,4 @@
+import Color from 'color';
 import { IconName } from '../../../icon-picker/icon-picker.const';
 import * as L from 'leaflet';
 
@@ -15,6 +16,12 @@ export const DEFAULT_MARKER_ICON_OPTIONS: MarkerIconOptions = {
   size: 24,
   opacity: 0.8,
 };
+
+/** Minimum cluster size in pixel */
+const MIN_CLUSTER_SIZE = 20;
+
+/** Maximum cluster size in pixel */
+const MAX_CLUSTER_SIZE = 100;
 
 /**
  * Generates an HTML element for an icon
@@ -120,4 +127,46 @@ export const createCustomDivIcon = (
   });
 
   return divIcon;
+};
+
+/**
+ * Create cluster div icon
+ *
+ * @param color color to apply
+ * @param opacity opacity to apply
+ * @param childCount Cluster children count
+ * @returns leaflet div icon
+ */
+export const createClusterDivIcon = (
+  color: string,
+  opacity: number,
+  childCount: number
+) => {
+  // const htmlTemplate = document.createElement('label');
+  // htmlTemplate.textContent = childCount.toString();
+  const size =
+    (childCount / 50) * (MAX_CLUSTER_SIZE - MIN_CLUSTER_SIZE) +
+    MIN_CLUSTER_SIZE;
+  const mainColor = Color.rgb(
+    // eslint-disable-next-line no-extra-boolean-cast
+    Boolean(color) ? color : DEFAULT_MARKER_ICON_OPTIONS.color
+  )
+    .fade(0.2)
+    .toString();
+  const ringColor = Color.rgb(
+    // eslint-disable-next-line no-extra-boolean-cast
+    Boolean(color) ? color : DEFAULT_MARKER_ICON_OPTIONS.color
+  )
+    .fade(0.7)
+    .toString();
+  const styles = `
+  background-color: ${mainColor};
+  opacity: ${opacity};
+  --tw-ring-color: ${ringColor};
+  `;
+  return L.divIcon({
+    html: `<div style="${styles}" class="ring-4"><span>${childCount}</span></div>`,
+    className: `leaflet-data-cluster`,
+    iconSize: L.point(size, size),
+  });
 };

@@ -11,6 +11,7 @@ import {
   SafeEditableTextModule,
   FullScreenModule,
   DashboardFilterModule,
+  ButtonActionModule,
 } from '@oort-front/safe';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
@@ -61,6 +62,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     GraphQLSelectModule,
     AlertModule,
     DragDropModule,
+    ButtonActionModule,
   ],
   exports: [DashboardComponent],
 })

@@ -1,11 +1,12 @@
 <div [formGroup]="formGroup" class="flex flex-col">
-  <!-- Custom Symbol -->
+  <!-- Custom color for symbol cluster (only color, don't customize the symbols for clusters) -->
   <safe-simple-renderer
     [formGroup]="$any(formGroup.get('drawingInfo.renderer.symbol'))"
     [showSize]="false"
+    [showStyle]="false"
   ></safe-simple-renderer>
-  <ui-divider class="my-1"></ui-divider>
-  <div class="flex flex-col my-4">
+  <ui-divider class="my-4"></ui-divider>
+  <div class="flex flex-col">
     <label>
       {{ 'components.widget.settings.map.edit.cluster.radius' | translate }}
     </label>
