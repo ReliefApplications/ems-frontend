@@ -144,7 +144,15 @@ const replaceRecordFields = (
   let formattedHtml = html;
   if (fields) {
     for (const field of fields) {
-      const value = fieldsValue[field.name];
+      let value = fieldsValue[field.name];
+      console.log(value);
+      if (value && typeof value === 'object') {
+        value = Object.keys(fieldsValue[field.name])
+          .filter((key) => key !== '__typename')
+          .map((key) => `${key}: ${fieldsValue[field.name][key]}`)
+          .join(', ');
+      }
+
       const style = getLayoutsStyle(styles, field.name, fieldsValue);
       let convertedValue = '';
       if (!isNil(value)) {

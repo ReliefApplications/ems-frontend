@@ -36,7 +36,7 @@ import {
 import { Dialog } from '@angular/cdk/dialog';
 
 /** Default number of resources to be fetched per page */
-const ITEMS_PER_PAGE = 10;
+const ITEMS_PER_PAGE = 30;
 /** Define max width of summary card */
 const MAX_COL_SPAN = 8;
 
@@ -127,6 +127,11 @@ export class SummaryCardGeneralComponent
       .get('card.resource')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((resource) => {
+        console.log(
+          resource,
+          'resource',
+          this.resourcesQuery.getCurrentResult().data.resources.edges.length
+        );
         if (!resource) this.resourceChange.emit(null);
         else
           this.resourceChange.emit(
