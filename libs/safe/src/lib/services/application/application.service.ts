@@ -679,6 +679,7 @@ export class SafeApplicationService {
    * Adds a new page to the opened application.
    *
    * @param page new page
+   * @param widget Widget to add to a page
    */
   addPage(page: any, widget?: any): void {
     const application = this.application.getValue();
@@ -706,7 +707,7 @@ export class SafeApplicationService {
               ...application,
               pages: application.pages?.concat([data.addPage]),
             };
-            
+
             //create a dashboard with the widget
             if (widget) {
               this.dashboardService.createDashboard(content, widget);

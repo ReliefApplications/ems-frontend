@@ -1,5 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -128,8 +128,8 @@ export class AddPageComponent
 
     const typesWidget = ['grid', 'map', 'summaryCard'];
     this.availableWidgets = this.availableWidgets.filter((widget: any) => {
-      for (const wid of typesWidget){
-        if(widget.id.includes(wid)){
+      for (const wid of typesWidget) {
+        if (widget.id.includes(wid)) {
           return widget;
         }
       }
@@ -160,9 +160,9 @@ export class AddPageComponent
    * Submit form to application service for creation
    */
   onSubmit(): void {
-    if(this.widget){
+    if (this.widget) {
       this.applicationService.addPage(this.pageForm.value, this.widget);
-    }else{
+    } else {
       this.applicationService.addPage(this.pageForm.value);
     }
   }
@@ -355,5 +355,4 @@ export class AddPageComponent
     this.pageInfo = data.forms.pageInfo;
     this.loadingMore = loading;
   }
-  
 }

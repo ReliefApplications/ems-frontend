@@ -263,13 +263,13 @@ export class SafeDashboardService {
    * @param id Id of dashboard
    * @param widget Widget to be added to the dashboard
    */
-  public createDashboard(id: any, widget: any){
+  public createDashboard(id: any, widget: any) {
     this.apollo
       .mutate<EditDashboardMutationResponse>({
         mutation: EDIT_DASHBOARD,
         variables: {
           id: id,
-          structure: widget
+          structure: widget,
         },
       })
       .subscribe({
