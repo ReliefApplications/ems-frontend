@@ -6,7 +6,6 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Renderer2,
   ViewChild,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -76,14 +75,16 @@ export class SafeSummaryCardComponent
 
   public cards: CardT[] = [];
   private cachedCards: CardT[] = [];
-  private dataQuery?: QueryRef<any>;
+  private sortedCachedCards: CardT[] = [];
+  private dataQuery!: QueryRef<any>;
 
   private layout: Layout | null = null;
   private fields: any[] = [];
 
   public searchControl = new FormControl('');
-  private searching = false;
   public scrolling = false;
+
+  private filters: any = null;
 
   @ViewChild('summaryCardGrid') summaryCardGrid!: ElementRef<HTMLDivElement>;
   @ViewChild('pdf') pdf!: any;
@@ -133,8 +134,7 @@ export class SafeSummaryCardComponent
     private translate: TranslateService,
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: SafeGridLayoutService,
-    private aggregationService: SafeAggregationService,
-    private renderer: Renderer2
+    private aggregationService: SafeAggregationService
   ) {
     super();
   }
@@ -207,11 +207,11 @@ export class SafeSummaryCardComponent
     // Only need to fetch data if is dynamic and not an aggregation
     const needRefetch = !this.settings.card?.aggregation;
     const skippedFields = ['id', 'incrementalId'];
+    this.pageInfo.pageIndex = 0;
+    this.pageInfo.skip = 0;
 
-    this.searching = true;
-
-    if (!needRefetch)
-      this.cards = this.cachedCards.filter((card: any) => {
+    if (!needRefetch) {
+      this.sortedCachedCards = this.cachedCards.filter((card: any) => {
         const data = clone(card.record || card.cardAggregationData || {});
         skippedFields.forEach((field) => delete data[field]);
         const recordValues = Object.values(data);
@@ -225,7 +225,10 @@ export class SafeSummaryCardComponent
               value === parseFloat(search))
         );
       });
-    else {
+      this.cards = this.sortedCachedCards;
+      this.pageInfo.length = this.cards.length;
+    } else {
+      this.loading = true;
       const filters: {
         field: string;
         operator: string;
@@ -246,16 +249,23 @@ export class SafeSummaryCardComponent
             value: parseFloat(search),
           });
       });
-      this.pageInfo.pageIndex = 0;
-      this.pageInfo.skip = 0;
-      this.dataQuery?.refetch({
-        skip: 0,
-        first: this.pageInfo.pageSize,
-        filter: {
-          logic: 'or',
-          filters,
-        },
-      });
+      const searchFilter = {
+        logic: 'or',
+        filters,
+      };
+
+      this.filters = {
+        logic: 'and',
+        filters: [searchFilter, this.layout?.query.filter],
+      };
+
+      this.dataQuery
+        ?.refetch({
+          skip: 0,
+          first: this.pageInfo.pageSize,
+          filter: this.filters,
+        })
+        .then(this.updateCards.bind(this));
     }
   }
 
@@ -278,29 +288,23 @@ export class SafeSummaryCardComponent
       style: e.meta.style,
     }));
 
-    this.cachedCards =
-      ((this.pageInfo.pageIndex + 1) * this.pageInfo.pageSize >
-        this.cachedCards.length &&
-        !this.searching) ||
-      this.scrolling
-        ? [...this.cachedCards, ...newCards]
-        : newCards;
+    // scrolling enabled
+    if (!this.settings.widgetDisplay?.usePagination) {
+      this.cachedCards = [...this.cachedCards, ...newCards];
+      this.cards = this.cachedCards;
+      this.scrolling = false;
+    } else {
+      this.cards = newCards;
 
-    this.cards = this.settings.widgetDisplay?.usePagination
-      ? this.cachedCards.slice(
-          this.pageInfo.pageSize * this.pageInfo.pageIndex,
-          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
-        )
-      : this.cachedCards;
+      this.summaryCardGrid.nativeElement.scroll({
+        top: 0,
+        left: 0,
+        behavior: 'smooth',
+      });
+    }
     this.pageInfo.length = get(res.data[layoutQueryName], 'totalCount', 0);
 
     this.loading = res.loading;
-
-    if (this.searching && this.searchControl.value != '') {
-      this.pageInfo.skip = this.cards.length;
-    }
-    this.searching = false;
-    this.scrolling = false;
   }
 
   /**
@@ -343,11 +347,12 @@ export class SafeSummaryCardComponent
           );
 
           if (builtQuery) {
+            this.filters = layoutQuery.filter;
             this.dataQuery = this.apollo.watchQuery<any>({
               query: builtQuery,
               variables: {
-                first: this.pageInfo.pageSize,
-                filter: layoutQuery.filter,
+                first: DEFAULT_PAGE_SIZE,
+                filter: this.filters,
                 sortField: get(layoutQuery, 'sort.field', null),
                 sortOrder: get(layoutQuery, 'sort.order', ''),
                 styles: layoutQuery.style || null,
@@ -414,8 +419,10 @@ export class SafeSummaryCardComponent
           ...this.settings.card,
           cardAggregationData: x,
         }));
+        this.sortedCachedCards = this.cachedCards;
         this.cards = this.cachedCards;
         this.loading = res.loading;
+        this.pageInfo.length = res.data?.recordsAggregation?.items.length;
       });
   }
 
@@ -443,46 +450,33 @@ export class SafeSummaryCardComponent
   }
 
   /**
-   * Handles page event.
+   * Detects pagination events and update the items loaded.
    *
-   * @param e page event.
+   * @param event Page change event.
    */
-  onPage(e: UIPageChangeEvent): void {
-    this.pageInfo.pageIndex = e.pageIndex;
+  public onPage(event: UIPageChangeEvent): void {
+    this.pageInfo.pageSize = event.pageSize;
+    this.pageInfo.skip = event.skip;
 
-    // Checks if with new page/size more data needs to be fetched
-    if (
-      (e.pageIndex > e.previousPageIndex ||
-        e.pageSize > this.pageInfo.pageSize) &&
-      (e.pageIndex + 1) * e.pageSize > this.cachedCards.length &&
-      e.totalItems > this.cachedCards.length
-    ) {
-      // Sets the new fetch quantity of data needed
-      this.pageInfo.pageSize =
-        (e.pageIndex + 1) * e.pageSize - this.cachedCards.length;
-
-      this.summaryCardGrid.nativeElement.scroll({
-        top: 0,
-        left: 0,
-        behavior: 'smooth',
-      });
-
+    if (this.dataQuery) {
       this.loading = true;
+      const layoutQuery = this.layout?.query;
       this.dataQuery
-        ?.fetchMore({
-          variables: {
-            first: this.pageInfo.pageSize,
-            skip: this.cachedCards.length,
-          },
+        .refetch({
+          first: this.pageInfo.pageSize,
+          skip: event.skip,
+          filters: this.filters,
+          sortField: get(layoutQuery, 'sort.field', null),
+          sortOrder: get(layoutQuery, 'sort.order', ''),
+          styles: layoutQuery.style || null,
         })
         .then(this.updateCards.bind(this));
     } else {
-      this.cards = this.cachedCards.slice(
-        e.pageSize * this.pageInfo.pageIndex,
-        e.pageSize * (this.pageInfo.pageIndex + 1)
+      this.cards = this.sortedCachedCards.slice(
+        event.pageSize * event.pageIndex,
+        event.pageSize * (event.pageIndex + 1)
       );
     }
-    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**
