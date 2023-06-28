@@ -414,6 +414,20 @@ export class Layer implements LayerModel {
         'blue'
       ),
       size: get(this.layerDefinition, 'drawingInfo.renderer.symbol.size', 24),
+      ...(this.datasource?.type === 'Polygon' && {
+        outline: {
+          color: get(
+            this.layerDefinition,
+            'drawingInfo.renderer.symbol.outline.color',
+            'blue'
+          ),
+          width: get(
+            this.layerDefinition,
+            'drawingInfo.renderer.symbol.outline.width',
+            1
+          ),
+        },
+      }),
     };
 
     const rendererType = get(
@@ -475,8 +489,33 @@ export class Layer implements LayerModel {
       }),
       ...(this.datasource?.type === 'Polygon' && {
         style: (feature) => {
+          if (rendererType === 'uniqueValue') {
+            const fieldValue = get(
+              feature,
+              `properties.${uniqueValueField}`,
+              null
+            );
+            const uniqueValueSymbol =
+              uniqueValueInfos.find((x) => x.value === fieldValue)?.symbol ||
+              uniqueValueDefaultSymbol;
+            return {
+              fillColor: uniqueValueSymbol.color,
+              color: uniqueValueSymbol.outline?.color,
+              weight: uniqueValueSymbol.outline?.width,
+              fillOpacity: this.opacity,
+              opacity: this.opacity,
+            };
+          } else {
+            return {
+              fillColor: symbol.color,
+              color: symbol.outline?.color,
+              weight: symbol.outline?.width,
+              fillOpacity: this.opacity,
+              opacity: this.opacity,
+            };
+          }
+          console.log('styling !');
           console.log(feature);
-          return {};
         },
       }),
       onEachFeature: (feature: Feature<any>, layer: L.Layer) => {
