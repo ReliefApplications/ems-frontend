@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   HostListener,
@@ -93,6 +94,7 @@ export class DashboardFilterComponent
    * @param ngZone Triggers html changes
    * @param referenceDataService Reference data service
    * @param elementRef Element reference
+   * @param changeDetectorRef Change detector reference
    * @param _host sidenav container host
    */
   constructor(
@@ -105,6 +107,7 @@ export class DashboardFilterComponent
     private ngZone: NgZone,
     private referenceDataService: SafeReferenceDataService,
     private elementRef: ElementRef,
+    private changeDetectorRef: ChangeDetectorRef,
     @Optional() private _host: SidenavContainerComponent
   ) {
     super();
@@ -112,10 +115,9 @@ export class DashboardFilterComponent
 
   ngAfterViewInit(): void {
     this.resizeObserver = new ResizeObserver(() => {
-      console.log('resize');
       this.setFilterContainerDimensions();
     });
-    console.log(this.elementRef.nativeElement.parentElement); // I would assume this would triggers the resizeObserver, but it doesn't (even tho it resizes)
+    console.log(this.elementRef.nativeElement.parentElement); // I would assume this would trigger the resizeObserver, but it doesn't (even tho it resizes)
     console.log(this.elementRef.nativeElement.parentElement.parentElement);
     this.resizeObserver.observe(
       this.elementRef.nativeElement.parentElement.parentElement
@@ -397,5 +399,7 @@ export class DashboardFilterComponent
         }
       }
     }
+    // force change detection
+    this.changeDetectorRef.detectChanges();
   }
 }
