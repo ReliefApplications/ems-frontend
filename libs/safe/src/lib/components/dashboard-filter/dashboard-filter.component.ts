@@ -10,6 +10,7 @@ import {
   Optional,
   SimpleChanges,
   ViewChild,
+  ViewContainerRef,
 } from '@angular/core';
 import { FilterPosition } from './enums/dashboard-filters.enum';
 import { Dialog } from '@angular/cdk/dialog';
@@ -64,6 +65,8 @@ export class DashboardFilterComponent
   public containerLeftOffset!: string;
   private value: any;
 
+  private resizeObserver!: ResizeObserver;
+
   // Survey
   public survey: Survey.Model = new Survey.Model();
   public surveyStructure: any = {};
@@ -90,6 +93,7 @@ export class DashboardFilterComponent
    * @param contextService Context service
    * @param ngZone Triggers html changes
    * @param referenceDataService Reference data service
+   * @param elementRef Element reference
    * @param _host sidenav container host
    */
   constructor(
@@ -101,12 +105,27 @@ export class DashboardFilterComponent
     private contextService: ContextService,
     private ngZone: NgZone,
     private referenceDataService: SafeReferenceDataService,
+    private elementRef: ElementRef,
     @Optional() private _host: SidenavContainerComponent
   ) {
     super();
   }
 
   ngAfterViewInit(): void {
+    this.resizeObserver = new ResizeObserver(() => {
+      console.log('resize');
+      this.setFilterContainerDimensions();
+    });
+    console.log(this.elementRef.nativeElement.parentElement); // I would assume this would triggers the resizeObserver, but it doesn't (even tho it resizes)
+    console.log(this.elementRef.nativeElement.parentElement.parentElement);
+    this.resizeObserver.observe(
+      this.elementRef.nativeElement.parentElement.parentElement
+    );
+    // this does not trigger
+    // this.resizeObserver.observe(
+    //   this.elementRef.nativeElement.parentElement
+    // );
+
     this.contextService.filter$
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -141,6 +160,11 @@ export class DashboardFilterComponent
     if (changes.isFullScreen) {
       this.setFilterContainerDimensions();
     }
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.resizeObserver.disconnect();
   }
 
   // add ngOnChanges there
