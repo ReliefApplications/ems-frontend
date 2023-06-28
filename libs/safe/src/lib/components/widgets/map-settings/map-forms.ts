@@ -184,6 +184,7 @@ const createLayerDataSourceForm = (value?: any): FormGroup => {
 /**
  * Create layer definition form group
  *
+ * @param geometryType layer geometry type
  * @param type layer type
  * @param value layer definition
  * @returns layer definition form group
@@ -260,6 +261,13 @@ export const createLayerFeatureReductionForm = (value: any) => {
   return formGroup;
 };
 
+/**
+ * Create symbol form for layer
+ *
+ * @param value layer symbol value
+ * @param geometryType layer geometry type
+ * @returns layer symbol form
+ */
 export const createSymbolForm = (
   value: any,
   geometryType: GeometryType = 'Point'
@@ -288,6 +296,7 @@ export const createSymbolForm = (
  * Create layer drawing info form
  *
  * @param value layer drawing info
+ * @param geometryType layer geometry type
  * @returns layer drawing info form
  */
 export const createLayerDrawingInfoForm = (
@@ -342,6 +351,7 @@ export const createLayerDrawingInfoForm = (
 /**
  * Create unique value form group
  *
+ * @param geometryType layer geometry type
  * @param value unique value
  * @returns unique value form group
  */
