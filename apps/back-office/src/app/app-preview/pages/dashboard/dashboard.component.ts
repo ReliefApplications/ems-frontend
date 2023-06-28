@@ -38,6 +38,9 @@ export class DashboardComponent
   public tiles = [];
   public dashboard?: Dashboard;
 
+  // === SUBSCRIPTION ===
+  private dashboardSubscription: any;
+
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
 
@@ -67,43 +70,50 @@ export class DashboardComponent
    */
   ngOnInit(): void {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      if (this.dashboardSubscription && !this.dashboardSubscription.closed) {
+        this.dashboardSubscription.unsubscribe();
+      }
+
       this.loading = true;
       this.id = params.id;
-      this.apollo
-        .query<GetDashboardByIdQueryResponse>({
+      this.dashboardSubscription = this.apollo
+        .watchQuery<GetDashboardByIdQueryResponse>({
           query: GET_DASHBOARD_BY_ID,
           variables: {
             id: this.id,
           },
         })
-        .subscribe({
+        .valueChanges.subscribe({
           next: ({ data, loading }) => {
             if (data.dashboard) {
-              this.dashboard = data.dashboard;
-              this.dashboardService.openDashboard(this.dashboard);
-              this.tiles = data.dashboard.structure
-                ? data.dashboard.structure
-                : [];
-              this.loading = loading;
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.accessNotProvided',
-                  {
-                    type: this.translate
-                      .instant('common.dashboard.one')
-                      .toLowerCase(),
-                    error: '',
-                  }
-                ),
-                { error: true }
-              );
-              this.router.navigate(['/dashboards']);
+              this.dashboardSubscription.unsubscribe();
+              if (data.dashboard) {
+                this.dashboard = data.dashboard;
+                this.dashboardService.openDashboard(this.dashboard);
+                this.tiles = data.dashboard.structure
+                  ? data.dashboard.structure
+                  : [];
+                this.loading = loading;
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.accessNotProvided',
+                    {
+                      type: this.translate
+                        .instant('common.dashboard.one')
+                        .toLowerCase(),
+                      error: '',
+                    }
+                  ),
+                  { error: true }
+                );
+                this.router.navigate(['/dashboards']);
+              }
             }
           },
           error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
-            this.router.navigate(['/dashboards']);
+            this.router.navigate(['/applications']);
           },
         });
     });

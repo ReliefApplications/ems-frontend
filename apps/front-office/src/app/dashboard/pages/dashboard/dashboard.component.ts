@@ -57,6 +57,9 @@ export class DashboardComponent
   widgetGridComponent!: SafeWidgetGridComponent;
   public showFilter?: boolean;
 
+  // === SUBSCRIPTION ===
+  private dashboardSubscription: any;
+
   // === BUTTON ACTIONS ===
   public buttonActions: ButtonActionT[] = [];
 
@@ -106,31 +109,7 @@ export class DashboardComponent
       this.route.queryParams
         .pipe(takeUntil(this.destroy$))
         .subscribe((queryParams) => {
-          const viewId = queryParams.id;
-          if (viewId) {
-            this.initDashboardWithId(params.id).then(() => {
-              // Find the id of the contextual dashboard and load it
-              const dashboardsWithContext =
-                this.dashboard?.page?.contentWithContext;
-              const type = this.contextType;
-              // find the contextual dashboard id in the list of dashboards from the parent dashboard
-              // it's the one where the element or record id matches the one in the query params
-              const dashboardWithContext = dashboardsWithContext?.find((d) => {
-                if (type === 'element')
-                  return 'element' in d && d.element === viewId;
-                else if (type === 'record')
-                  return 'record' in d && d.record === viewId;
-                return false;
-              });
-              if (dashboardWithContext) {
-                this.initDashboardWithId(dashboardWithContext.content);
-              } else {
-                return;
-              }
-            });
-          } else {
-            this.initDashboardWithId(params.id);
-          }
+          this.initDashboardWithId(params.id, queryParams.id);
         });
     });
   }
@@ -149,7 +128,7 @@ export class DashboardComponent
    * @returns boolean of observable of boolean
    */
   canDeactivate(): Observable<boolean> | boolean {
-    if (!this.widgetGridComponent.canDeactivate) {
+    if (this.widgetGridComponent && !this.widgetGridComponent.canDeactivate) {
       const dialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('pages.dashboard.update.exit'),
         content: this.translate.instant('pages.dashboard.update.exitMessage'),
@@ -172,49 +151,80 @@ export class DashboardComponent
    * Init the dashboard
    *
    * @param id Dashboard id
+   * @param viewId Used for the contextual dashboard
    * @returns Promise
    */
-  private async initDashboardWithId(id: string) {
-    if (this.dashboard?.id === id) return; // don't init the dashboard if the id is the same
+  private async initDashboardWithId(id: string, viewId?: any) {
+    if (this.dashboardSubscription && !this.dashboardSubscription.closed) {
+      this.dashboardSubscription.unsubscribe();
+    }
+
     const rootElement = this.elementRef.nativeElement;
     // Doing this to be able to use custom styles on specific dashboards
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.loading = true;
     this.id = id;
-    return firstValueFrom(
-      this.apollo.query<GetDashboardByIdQueryResponse>({
+    this.dashboardSubscription = this.apollo
+      .watchQuery<GetDashboardByIdQueryResponse>({
         query: GET_DASHBOARD_BY_ID,
         variables: {
           id: this.id,
         },
       })
-    )
-      .then(({ data, loading }) => {
-        if (data.dashboard) {
-          this.dashboard = data.dashboard;
-          this.dashboardService.openDashboard(this.dashboard);
-          this.widgets = data.dashboard.structure
-            ? data.dashboard.structure
-            : [];
-          this.buttonActions = this.dashboard.buttons || [];
-          this.loading = loading;
-          this.showFilter = this.dashboard.showFilter;
-        } else {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.accessNotProvided', {
-              type: this.translate
-                .instant('common.dashboard.one')
-                .toLowerCase(),
-              error: '',
-            }),
-            { error: true }
-          );
+      .valueChanges.subscribe({
+        next: ({ data, loading }) => {
+          if (data.dashboard) {
+            this.dashboard = data.dashboard;
+            this.dashboardService.openDashboard(this.dashboard);
+            this.widgets = data.dashboard.structure
+              ? data.dashboard.structure
+              : [];
+            this.buttonActions = this.dashboard.buttons || [];
+            this.loading = loading;
+            this.showFilter = this.dashboard.showFilter;
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.accessNotProvided', {
+                type: this.translate
+                  .instant('common.dashboard.one')
+                  .toLowerCase(),
+                error: '',
+              }),
+              { error: true }
+            );
+            this.router.navigate(['/applications']);
+          }
+
+          // If there is a viewId we load contextual dashboard
+          if (viewId) this.findContextualDashboardAndLoadIt(viewId);
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
           this.router.navigate(['/applications']);
-        }
-      })
-      .catch((err) => {
-        this.snackBar.openSnackBar(err.message, { error: true });
-        this.router.navigate(['/applications']);
+        },
       });
+  }
+
+  /**
+   * If there is an id, we need to find the contextual dashboard id and load it
+   *
+   * @param viewId contextual view id
+   */
+  findContextualDashboardAndLoadIt(viewId: any): void {
+    // Find the id of the contextual dashboard and load it
+    const dashboardsWithContext = this.dashboard?.page?.contentWithContext;
+    const type = this.contextType;
+    // find the contextual dashboard id in the list of dashboards from the parent dashboard
+    // it's the one where the element or record id matches the one in the query params
+    const dashboardWithContext = dashboardsWithContext?.find((d) => {
+      if (type === 'element') return 'element' in d && d.element === viewId;
+      else if (type === 'record') return 'record' in d && d.record === viewId;
+      return false;
+    });
+    if (dashboardWithContext) {
+      this.initDashboardWithId(dashboardWithContext.content);
+    } else {
+      return;
+    }
   }
 }
