@@ -169,42 +169,45 @@
   </ng-container>
 </ng-container>
 <!-- Content -->
-<ui-sidenav-container class="sidenav-container">
-  <!-- Left sidenav -->
-  <div
-    uiSidenavDirective
-    #nav="uiSidenavDirective"
-    [mode]="largeDevice ? 'side' : 'over'"
-    [opened]="largeDevice && sideMenu"
-  >
-    <ng-container *ngIf="leftSidenav">
-      <ng-container
-        [ngTemplateOutlet]="leftSidenav"
-        [ngTemplateOutletContext]="{ $implicit: nav }"
-      ></ng-container>
-    </ng-container>
-  </div>
-  <!-- Right sidenav -->
-  <div
-    uiSidenavDirective
-    class="h-full"
-    position="end"
-    [opened]="showSidenav"
-    #rightNav="uiSidenavDirective"
-  >
-    <ng-template #rightSidenav></ng-template>
-  </div>
+<ng-container #mainContainer></ng-container>
 
-  <ng-container ngProjectAs="content">
-    <ui-breadcrumbs
-      *ngIf="breadcrumbs.length > 1"
-      [breadcrumbs]="breadcrumbs"
-    ></ui-breadcrumbs>
-    <router-outlet></router-outlet>
-  </ng-container>
-</ui-sidenav-container>
-
-<dialog #fullScreenDialog id="fullscreen-dialog">
-  <div>okok</div>
-  <ng-template #rightSidenavFullScreen></ng-template>
+<dialog id="fullscreen-dialog">
+  <ng-container #rightSidenavFullScreen></ng-container>
 </dialog>
+
+<ng-template #content>
+  <ui-sidenav-container class="sidenav-container">
+    <!-- Left sidenav -->
+    <div
+      uiSidenavDirective
+      #nav="uiSidenavDirective"
+      [mode]="largeDevice ? 'side' : 'over'"
+      [opened]="largeDevice && sideMenu"
+    >
+      <ng-container *ngIf="leftSidenav">
+        <ng-container
+          [ngTemplateOutlet]="leftSidenav"
+          [ngTemplateOutletContext]="{ $implicit: nav }"
+        ></ng-container>
+      </ng-container>
+    </div>
+    <!-- Right sidenav -->
+    <div
+      uiSidenavDirective
+      class="h-full"
+      position="end"
+      [opened]="showSidenav"
+      #rightNav="uiSidenavDirective"
+    >
+      <ng-template #rightSidenav></ng-template>
+    </div>
+
+    <ng-container ngProjectAs="content">
+      <ui-breadcrumbs
+        *ngIf="breadcrumbs.length > 1"
+        [breadcrumbs]="breadcrumbs"
+      ></ui-breadcrumbs>
+      <router-outlet></router-outlet>
+    </ng-container>
+  </ui-sidenav-container>
+</ng-template>

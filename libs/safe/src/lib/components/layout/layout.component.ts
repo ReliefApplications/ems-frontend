@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   ComponentRef,
   EventEmitter,
@@ -25,10 +26,11 @@ import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs';
 import { Breadcrumb } from '@oort-front/ui';
 import { SafeBreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
 import { DOCUMENT } from '@angular/common';
+import { SidenavDirective } from '@oort-front/ui';
 
 /**
  * Component for the main layout of the platform
@@ -40,7 +42,7 @@ import { DOCUMENT } from '@angular/common';
 })
 export class SafeLayoutComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, OnChanges
+  implements OnInit, AfterViewInit, OnChanges
 {
   // === HEADER TITLE ===
   @Input() title = '';
@@ -61,8 +63,13 @@ export class SafeLayoutComponent
   @ViewChild('rightSidenavFullScreen', { read: ViewContainerRef })
   rightSidenavFullScreen?: ViewContainerRef;
 
-  @ViewChild('fullScreenDialog')
-  fullScreenDialog?: HTMLDialogElement;
+  @ViewChild('mainContainer', { read: ViewContainerRef })
+  mainContainer?: ViewContainerRef;
+
+  @ViewChild(SidenavDirective) firstSidenav!: SidenavDirective;
+
+  @ViewChild('content', { read: TemplateRef })
+  content?: TemplateRef<any>;
 
   @ViewChild('nav')
   nav?: any;
@@ -165,6 +172,8 @@ export class SafeLayoutComponent
    * @param translate This is the Angular service that translates text
    * @param dateTranslate Service used for date formatting
    * @param breadcrumbService Shared breadcrumb service
+   * @param document Document
+   * @param renderer Renderer2
    */
   constructor(
     @Inject('environment') environment: any,
@@ -188,33 +197,6 @@ export class SafeLayoutComponent
     this.getLanguage();
     this.theme = this.environment.theme;
     this.showPreferences = environment.availableLanguages.length > 1;
-    this.fullScreenListener = this.renderer.listen(
-      this.document,
-      'fullscreenchange',
-      (event) => {
-        console.log(event);
-        console.log(this.fullScreenDialog);
-        const dialog = document.querySelector('dialog');
-        if (!this.document.fullscreenElement) {
-          // perhaps we can use cdk dialog?
-          if (this.rightSidenavFullScreen) {
-            const view = this.rightSidenavFullScreen.detach();
-            if (view) {
-              this.rightSidenav?.insert(view);
-            }
-          }
-          dialog?.close();
-        } else {
-          dialog?.showModal();
-          if (this.rightSidenav) {
-            const view = this.rightSidenav.detach();
-            if (view) {
-              this.rightSidenavFullScreen?.insert(view);
-            }
-          }
-        }
-      }
-    );
   }
 
   ngOnInit(): void {
@@ -273,6 +255,52 @@ export class SafeLayoutComponent
       .subscribe((res) => {
         this.breadcrumbs = res;
       });
+
+    this.fullScreenListener = this.renderer.listen(
+      this.document,
+      'fullscreenchange',
+      (event) => {
+        console.log(event);
+        const dialog = document.querySelector('dialog');
+        if (!this.document.fullscreenElement) {
+          // perhaps we can use cdk dialog?
+          if (this.rightSidenavFullScreen?.length) {
+            const view = this.rightSidenavFullScreen.detach();
+            if (view) {
+              // Reopen the left side nav and resetting default height before inserting it back to the layout component
+              this.renderer.removeStyle((view as any).rootNodes[0], 'height');
+              this.firstSidenav.opened = true;
+              this.mainContainer?.insert(view);
+            }
+          }
+          dialog?.close();
+        } else {
+          if (this.mainContainer?.length) {
+            const view = this.mainContainer.detach();
+            if (view) {
+              // Close the left side nav and set full height before inserting it to the fullscreen dialog
+              this.renderer.setStyle(
+                (view as any).rootNodes[0],
+                'height',
+                '100vh'
+              );
+              this.firstSidenav.opened = false;
+              this.rightSidenavFullScreen?.insert(view);
+            }
+          }
+          dialog?.showModal();
+        }
+      }
+    );
+  }
+
+  ngAfterViewInit(): void {
+    if (this.content) {
+      const viewRef = this.content.createEmbeddedView(null);
+      if (viewRef) {
+        this.mainContainer?.insert(viewRef);
+      }
+    }
   }
 
   /**
