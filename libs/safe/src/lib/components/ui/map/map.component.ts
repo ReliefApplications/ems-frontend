@@ -8,6 +8,7 @@ import {
   Output,
   EventEmitter,
   Renderer2,
+  OnDestroy,
 } from '@angular/core';
 import get from 'lodash/get';
 import difference from 'lodash/difference';
@@ -58,7 +59,7 @@ import { Platform } from '@angular/cdk/platform';
 })
 export class MapComponent
   extends SafeUnsubscribeComponent
-  implements AfterViewInit
+  implements AfterViewInit, OnDestroy
 {
   /** Add or delete layer setter */
   @Input() set addOrDeleteLayer(layerAction: LayerActionOnMap | null) {
@@ -137,6 +138,8 @@ export class MapComponent
   private layers: Layer[] = [];
   private layerIds: string[] = [];
 
+  private resizeObserver?: ResizeObserver;
+
   /**
    * Map widget component
    *
@@ -166,6 +169,11 @@ export class MapComponent
 
   /** Set map listeners */
   private setUpMapListeners() {
+    this.resizeObserver = new ResizeObserver(() => {
+      this.map.invalidateSize();
+    });
+    this.resizeObserver.observe(this.map.getContainer());
+
     // Set event listener to log map bounds when zooming, moving and resizing screen.
     this.map.on('moveend', () => {
       // If searched address marker exists, if we move, the item should disappear
@@ -228,6 +236,11 @@ export class MapComponent
       });
       //}
     }, 1000);
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.resizeObserver?.disconnect();
   }
 
   /**
