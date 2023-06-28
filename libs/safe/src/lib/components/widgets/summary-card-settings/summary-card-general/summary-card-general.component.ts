@@ -127,11 +127,6 @@ export class SummaryCardGeneralComponent
       .get('card.resource')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((resource) => {
-        console.log(
-          resource,
-          'resource',
-          this.resourcesQuery.getCurrentResult().data.resources.edges.length
-        );
         if (!resource) this.resourceChange.emit(null);
         else
           this.resourceChange.emit(
