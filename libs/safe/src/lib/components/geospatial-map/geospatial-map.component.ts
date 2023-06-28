@@ -238,6 +238,16 @@ export class GeospatialMapComponent
       }
     });
 
+    this.mapComponent?.map.on('moveend', () => {
+      const finishContainer = document.querySelector(
+        'div[title="Drag Layers"]'
+      );
+      const finishButton = finishContainer?.querySelector('.action-finishMode');
+      if (finishButton) {
+        (finishButton as HTMLAnchorElement).click();
+      }
+    });
+
     // set language
     const setLang = (lang: string) => {
       if (AVAILABLE_GEOMAN_LANGUAGES.includes(lang)) {
