@@ -9,10 +9,16 @@ export enum BackendLayerTypes {
   FEATURE_LAYER = 'FeatureLayer',
 }
 
+export type LayerSymbolOutline = {
+  color: string;
+  width: number;
+};
+
 export type LayerSymbol = {
   color: string;
   size: number;
   style: IconName;
+  outline?: LayerSymbolOutline;
 };
 
 /**
@@ -101,6 +107,8 @@ export interface PopupInfo {
   popupElements?: PopupElement[];
 }
 
+export type LayerDatasourceType = 'Point' | 'Polygon';
+
 /**
  * Layer Datasource interface
  */
@@ -112,6 +120,7 @@ export interface LayerDatasource {
   geoField?: string;
   latitudeField?: string;
   longitudeField?: string;
+  type?: LayerDatasourceType;
 }
 
 /**

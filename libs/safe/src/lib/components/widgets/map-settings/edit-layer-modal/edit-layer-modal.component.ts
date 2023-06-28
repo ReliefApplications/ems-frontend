@@ -150,7 +150,10 @@ export class EditLayerModalComponent
     this.setIsDatasourceValid(this.form.get('datasource')?.value);
     this.form
       .get('datasource')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(
+        distinctUntilChanged((prev, next) => isEqual(prev, next)),
+        takeUntil(this.destroy$)
+      )
       .subscribe((value) => {
         this.setIsDatasourceValid(value);
       });
@@ -309,7 +312,7 @@ export class EditLayerModalComponent
       )
       .subscribe({
         next: ([prev, next]) => {
-          if (!!prev && prev?.resource != next?.resource) {
+          if (!!prev && prev?.resource !== next?.resource && next?.resource) {
             this.getResource();
           }
           // else on aggregation implementation add it here

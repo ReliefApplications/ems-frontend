@@ -34,6 +34,14 @@
           [filterable]="true"
         >
         </ui-graphql-select>
+        <!-- Remove value -->
+        <ui-button
+          uiSuffix
+          (click)="clearFormField('resource', $event)"
+          [isIcon]="true"
+          icon="close"
+          variant="danger"
+        ></ui-button>
       </div>
 
       <!-- Aggregation or layout selection -->
@@ -135,6 +143,14 @@
           [selectedElements]="[refData]"
         >
         </ui-graphql-select>
+        <!-- Remove value -->
+        <ui-button
+          uiSuffix
+          (click)="clearFormField('refData', $event)"
+          [isIcon]="true"
+          icon="close"
+          variant="danger"
+        ></ui-button>
       </div>
 
       <!-- Fields selection -->
@@ -219,6 +235,19 @@
           </div>
         </div>
       </ng-container>
+
+      <!-- Layer type -->
+      <div uiFormFieldDirective>
+        <label>{{ 'common.type.one' | translate }}</label>
+        <ui-select-menu formControlName="type">
+          <ui-select-option value="Point">{{
+            'components.widget.settings.map.layers.types.point' | translate
+          }}</ui-select-option>
+          <ui-select-option value="Polygon">{{
+            'components.widget.settings.map.layers.types.polygon' | translate
+          }}</ui-select-option>
+        </ui-select-menu>
+      </div>
     </div>
   </form>
   <!-- Map -->

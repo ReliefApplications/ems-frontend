@@ -33,6 +33,7 @@
 
 <ng-template #simpleRenderer>
   <safe-simple-renderer
+    [geometryType]="geometryType"
     [formGroup]="$any(formGroup.get('renderer.symbol'))"
   ></safe-simple-renderer>
 </ng-template>
@@ -45,6 +46,7 @@
 
 <ng-template #uniqueValueRenderer>
   <safe-unique-value-renderer
+    [geometryType]="geometryType"
     [formGroup]="$any(formGroup.get('renderer'))"
     [fields$]="fields$"
   ></safe-unique-value-renderer>
