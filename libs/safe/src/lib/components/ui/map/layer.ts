@@ -9,6 +9,7 @@ import {
   LayerType,
   LayerFilter,
   GeoJSON,
+  GeometryType,
 } from './interfaces/layer-settings.type';
 import {
   createClusterDivIcon,
@@ -402,6 +403,7 @@ export class Layer implements LayerModel {
 
     // data is the filtered geojson
     const data = this.data;
+    const geometryType = get(this.datasource, 'type') || 'Point';
 
     const symbol: LayerSymbol = {
       style: get(
@@ -415,7 +417,7 @@ export class Layer implements LayerModel {
         'blue'
       ),
       size: get(this.layerDefinition, 'drawingInfo.renderer.symbol.size', 24),
-      ...(this.datasource?.type === 'Polygon' && {
+      ...(geometryType === 'Polygon' && {
         outline: {
           color: get(
             this.layerDefinition,
@@ -457,7 +459,7 @@ export class Layer implements LayerModel {
 
     // options used for parsing geojson to leaflet layer
     const geoJSONopts: L.GeoJSONOptions<any> = {
-      ...(this.datasource?.type === 'Point' && {
+      ...(geometryType === 'Point' && {
         pointToLayer: (feature, latlng) => {
           if (rendererType === 'uniqueValue') {
             const fieldValue = get(
@@ -488,7 +490,7 @@ export class Layer implements LayerModel {
           }
         },
       }),
-      ...(this.datasource?.type === 'Polygon' && {
+      ...(geometryType === 'Polygon' && {
         style: (feature) => {
           if (rendererType === 'uniqueValue') {
             const fieldValue = get(
@@ -886,6 +888,7 @@ export class Layer implements LayerModel {
    */
   get legend() {
     let html = '';
+    const geometryType = get(this.datasource, 'type') || 'Point';
     switch (this.type) {
       case 'FeatureLayer': {
         switch (
@@ -917,57 +920,35 @@ export class Layer implements LayerModel {
               this.layerDefinition,
               'drawingInfo.renderer.defaultSymbol'
             );
-            const pipe = new SafeIconDisplayPipe();
             for (const info of get(
               this.layerDefinition,
               'drawingInfo.renderer.uniqueValueInfos',
               []
             )) {
               const symbol: LayerSymbol = info.symbol;
-              html += `<span class="flex gap-2 items-center"><i style="color: ${
-                symbol.color
-              }"; class="${pipe.transform(symbol.style, 'fa')} pl-2"></i>${
+              html += this.getGeoJSONFeatureLegend(
+                geometryType,
+                symbol,
                 info.label
-              }</span>`;
+              );
             }
             if (defaultSymbol) {
-              html += `<span class="flex gap-2 items-center"><i style="color: ${
-                defaultSymbol.color
-              }"; class="${pipe.transform(
-                defaultSymbol.style,
-                'fa'
-              )} pl-2"></i>${get(
-                this.layerDefinition,
-                'drawingInfo.renderer.defaultLabel'
-              )}</span>`;
+              html += this.getGeoJSONFeatureLegend(
+                geometryType,
+                defaultSymbol,
+                get(this.layerDefinition, 'drawingInfo.renderer.defaultLabel')
+              );
             }
 
             break;
           }
           default: {
             // todo: handle polygon
-            const symbol: LayerSymbol = {
-              style: get(
-                this.layerDefinition,
-                'drawingInfo.renderer.symbol.style',
-                'location-dot'
-              ),
-              color: get(
-                this.layerDefinition,
-                'drawingInfo.renderer.symbol.color',
-                'blue'
-              ),
-              size: get(
-                this.layerDefinition,
-                'drawingInfo.renderer.symbol.size',
-                24
-              ),
-            };
-            const pipe = new SafeIconDisplayPipe();
-            html += `<i style="color: ${symbol.color}"; class="${pipe.transform(
-              symbol.style,
-              'fa'
-            )} pl-2"></i>`;
+            const symbol: LayerSymbol = get(
+              this.layerDefinition,
+              'drawingInfo.renderer.symbol'
+            ) as LayerSymbol;
+            html += this.getGeoJSONFeatureLegend(geometryType, symbol);
             break;
           }
         }
@@ -1018,5 +999,53 @@ export class Layer implements LayerModel {
       html = `<div class="font-bold truncate">${this.name}</div>` + html;
     }
     return html;
+  }
+
+  /**
+   *
+   * Create GeoJSON Feature legend
+   * Used by simple & unique values renderer
+   *
+   * @param type Point | Polygon
+   * @param symbol symbol to be drawn
+   * @param label label info
+   * @returns legend string
+   */
+  private getGeoJSONFeatureLegend(
+    type: GeometryType,
+    symbol: LayerSymbol,
+    label?: string
+  ): string {
+    const pipe = new SafeIconDisplayPipe();
+    switch (type) {
+      case 'Polygon': {
+        // We avoid stroke width to be too important
+        const svgTemplate = `<svg 
+              
+                width="16" 
+                height="16"
+                fill="${symbol.color}"
+                stroke="${symbol.outline?.color}"
+                stroke-width="${Math.min(symbol.outline?.width || 0, 10)}px"
+                >
+                  <g>
+                  <rect x="0" y="0" 
+                  width="16" 
+                  height="16" />
+                  </g>
+              </svg>`;
+        return `<span class="flex gap-2 items-center">${svgTemplate}${
+          label || ''
+        }</span>`;
+      }
+      default:
+      case 'Point': {
+        return `<span class="flex gap-2 items-center"><i style="color: ${
+          symbol.color
+        }"; class="${pipe.transform(symbol.style, 'fa')} pl-2"></i>${
+          label || ''
+        }</span>`;
+      }
+    }
   }
 }
