@@ -166,6 +166,11 @@ export class MapComponent
 
   /** Set map listeners */
   private setUpMapListeners() {
+    const resizeObserver = new ResizeObserver(() => {
+      this.map.invalidateSize();
+    });
+    resizeObserver.observe(this.map.getContainer());
+
     // Set event listener to log map bounds when zooming, moving and resizing screen.
     this.map.on('moveend', () => {
       // If searched address marker exists, if we move, the item should disappear
