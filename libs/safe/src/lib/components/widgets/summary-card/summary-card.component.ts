@@ -289,9 +289,8 @@ export class SafeSummaryCardComponent
     }));
 
     // scrolling enabled
-    if (!this.settings.widgetDisplay?.usePagination) {
-      this.cachedCards = [...this.cachedCards, ...newCards];
-      this.cards = this.cachedCards;
+    if (!this.settings.widgetDisplay?.usePagination && this.scrolling) {
+      this.cards = [...this.cards, ...newCards];
       this.scrolling = false;
     } else {
       this.cards = newCards;
@@ -440,7 +439,7 @@ export class SafeSummaryCardComponent
         this.dataQuery
           ?.fetchMore({
             variables: {
-              skip: this.cachedCards.length,
+              skip: this.cards.length,
             },
           })
           .then(this.updateCards.bind(this));
