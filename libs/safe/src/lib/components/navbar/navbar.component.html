@@ -42,11 +42,12 @@
                 [cdkDragDisabled]="!item.orderable"
                 class="show-icons"
               >
-                <li
-                  [routerLink]="item.path"
-                  routerLinkActive="text-primary-600 bg-gray-50"
-                >
-                  <a class="group" (click)="largeDevice ? null : nav.toggle()">
+                <li routerLinkActive="text-primary-600 bg-gray-50">
+                  <a
+                    class="group"
+                    (click)="largeDevice ? null : nav.toggle()"
+                    [routerLink]="item.path"
+                  >
                     <ui-icon variant="grey" [icon]="item.icon"> </ui-icon>
                     <p class="truncate m-0" [uiTooltip]="item.name">
                       {{ item.name }}
@@ -131,11 +132,12 @@
               [cdkDragDisabled]="!item.orderable"
               class="show-icons w-full max-w-[200px]"
             >
-              <li
-                [routerLink]="item.path"
-                routerLinkActive="text-primary-600 bg-gray-50"
-              >
-                <a class="group" (click)="largeDevice ? null : nav.toggle()">
+              <li routerLinkActive="text-primary-600 bg-gray-50">
+                <a
+                  class="group"
+                  (click)="largeDevice ? null : nav.toggle()"
+                  [routerLink]="item.path"
+                >
                   <ui-icon variant="grey" [icon]="item.icon"> </ui-icon>
                   <p class="truncate m-0" [uiTooltip]="item.name">
                     {{ item.name }}
