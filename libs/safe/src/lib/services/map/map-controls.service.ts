@@ -140,7 +140,7 @@ export class SafeMapControlsService {
   public getSearchbarControl(map: L.Map, apiKey: string) {
     const control = Geocoding.geosearch({
       position: 'topleft',
-      // todo(gis): translate
+      // todo: translate
       placeholder: 'Enter an address or place e.g. 1 York St',
       useMapBounds: false,
       providers: [
