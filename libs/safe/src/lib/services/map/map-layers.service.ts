@@ -325,8 +325,13 @@ export class SafeMapLayersService {
     layersService: SafeMapLayersService
   ) {
     if (this.isDatasourceValid(layer.datasource)) {
+      const datasourceMap = {
+        ...layer.datasource,
+        type: (layer.datasource as any).layerType ?? layer.datasource?.type,
+      };
+      delete (datasourceMap as any).layerType;
       const params = new HttpParams({
-        fromObject: omitBy(layer.datasource, isNil),
+        fromObject: omitBy(datasourceMap, isNil),
       });
       const res = await lastValueFrom(
         forkJoin({

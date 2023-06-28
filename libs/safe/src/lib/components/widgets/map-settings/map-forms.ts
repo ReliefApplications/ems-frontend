@@ -154,12 +154,12 @@ const createLayerDataSourceForm = (value?: any): FormGroup => {
           get(value, 'type') === 'Polygon',
       },
     ],
-    type: [get(value, 'type', 'Point')],
+    layerType: [get(value, 'type', 'Point')],
   });
   formGroup.valueChanges.subscribe((value) => {
     const canSeeFields = getCanSeeFields(value);
     if (canSeeFields) {
-      if (value.geoField || value.type === 'Polygon') {
+      if (value.geoField || value.layerType === 'Polygon') {
         formGroup.get('geoField')?.enable({ emitEvent: false });
         formGroup.get('latitudeField')?.disable({ emitEvent: false });
         formGroup.get('longitudeField')?.disable({ emitEvent: false });

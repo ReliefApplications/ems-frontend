@@ -402,6 +402,7 @@ export class Layer implements LayerModel {
 
     // data is the filtered geojson
     const data = this.data;
+    const type = (this.datasource as any).layerType ?? this.datasource?.type;
 
     const symbol: LayerSymbol = {
       style: get(
@@ -415,7 +416,7 @@ export class Layer implements LayerModel {
         'blue'
       ),
       size: get(this.layerDefinition, 'drawingInfo.renderer.symbol.size', 24),
-      ...(this.datasource?.type === 'Polygon' && {
+      ...(type === 'Polygon' && {
         outline: {
           color: get(
             this.layerDefinition,
@@ -457,7 +458,7 @@ export class Layer implements LayerModel {
 
     // options used for parsing geojson to leaflet layer
     const geoJSONopts: L.GeoJSONOptions<any> = {
-      ...(this.datasource?.type === 'Point' && {
+      ...(type === 'Point' && {
         pointToLayer: (feature, latlng) => {
           if (rendererType === 'uniqueValue') {
             const fieldValue = get(
@@ -488,7 +489,7 @@ export class Layer implements LayerModel {
           }
         },
       }),
-      ...(this.datasource?.type === 'Polygon' && {
+      ...(type === 'Polygon' && {
         style: (feature) => {
           if (rendererType === 'uniqueValue') {
             const fieldValue = get(
@@ -885,134 +886,159 @@ export class Layer implements LayerModel {
    * @returns layer legend as html
    */
   get legend() {
+    const type = (this.datasource as any).layerType ?? this.datasource?.type;
     let html = '';
-    switch (this.type) {
-      case 'FeatureLayer': {
-        switch (
-          get(this.layerDefinition, 'drawingInfo.renderer.type', 'simple')
-        ) {
-          case 'heatmap':
-            const gradient = get(
-              this.layerDefinition,
-              'drawingInfo.renderer.gradient',
-              DEFAULT_HEATMAP.gradient
-            );
-            const gradientPipe = new GradientPipe();
-            const container = document.createElement('div');
-            container.className = 'flex gap-1';
-            const linearGradient = document.createElement('div');
-            linearGradient.className = 'w-4 h-16';
-            linearGradient.style.background = gradientPipe.transform(
-              gradient,
-              180
-            );
-            const legend = document.createElement('div');
-            legend.className = 'flex flex-col justify-between';
-            legend.innerHTML = '<span>Min</span><span>Max</span>';
-            container.innerHTML = linearGradient.outerHTML + legend.outerHTML;
-            html = container.outerHTML;
-            break;
-          case 'uniqueValue': {
-            const defaultSymbol: LayerSymbol | undefined = get(
-              this.layerDefinition,
-              'drawingInfo.renderer.defaultSymbol'
-            );
-            const pipe = new SafeIconDisplayPipe();
-            for (const info of get(
-              this.layerDefinition,
-              'drawingInfo.renderer.uniqueValueInfos',
-              []
-            )) {
-              const symbol: LayerSymbol = info.symbol;
-              html += `<span class="flex gap-2 items-center"><i style="color: ${
-                symbol.color
-              }"; class="${pipe.transform(symbol.style, 'fa')} pl-2"></i>${
-                info.label
-              }</span>`;
-            }
-            if (defaultSymbol) {
-              html += `<span class="flex gap-2 items-center"><i style="color: ${
-                defaultSymbol.color
-              }"; class="${pipe.transform(
-                defaultSymbol.style,
-                'fa'
-              )} pl-2"></i>${get(
+    if (type === 'Point') {
+      switch (this.type) {
+        case 'FeatureLayer': {
+          switch (
+            get(this.layerDefinition, 'drawingInfo.renderer.type', 'simple')
+          ) {
+            case 'heatmap':
+              const gradient = get(
                 this.layerDefinition,
-                'drawingInfo.renderer.defaultLabel'
-              )}</span>`;
-            }
+                'drawingInfo.renderer.gradient',
+                DEFAULT_HEATMAP.gradient
+              );
+              const gradientPipe = new GradientPipe();
+              const container = document.createElement('div');
+              container.className = 'flex gap-1';
+              const linearGradient = document.createElement('div');
+              linearGradient.className = 'w-4 h-16';
+              linearGradient.style.background = gradientPipe.transform(
+                gradient,
+                180
+              );
+              const legend = document.createElement('div');
+              legend.className = 'flex flex-col justify-between';
+              legend.innerHTML = '<span>Min</span><span>Max</span>';
+              container.innerHTML = linearGradient.outerHTML + legend.outerHTML;
+              html = container.outerHTML;
+              break;
+            case 'uniqueValue': {
+              const defaultSymbol: LayerSymbol | undefined = get(
+                this.layerDefinition,
+                'drawingInfo.renderer.defaultSymbol'
+              );
+              const pipe = new SafeIconDisplayPipe();
+              for (const info of get(
+                this.layerDefinition,
+                'drawingInfo.renderer.uniqueValueInfos',
+                []
+              )) {
+                const symbol: LayerSymbol = info.symbol;
+                html += `<span class="flex gap-2 items-center"><i style="color: ${
+                  symbol.color
+                }"; class="${pipe.transform(symbol.style, 'fa')} pl-2"></i>${
+                  info.label
+                }</span>`;
+              }
+              if (defaultSymbol) {
+                html += `<span class="flex gap-2 items-center"><i style="color: ${
+                  defaultSymbol.color
+                }"; class="${pipe.transform(
+                  defaultSymbol.style,
+                  'fa'
+                )} pl-2"></i>${get(
+                  this.layerDefinition,
+                  'drawingInfo.renderer.defaultLabel'
+                )}</span>`;
+              }
 
-            break;
+              break;
+            }
+            default: {
+              // todo: handle polygon
+              const symbol: LayerSymbol = {
+                style: get(
+                  this.layerDefinition,
+                  'drawingInfo.renderer.symbol.style',
+                  'location-dot'
+                ),
+                color: get(
+                  this.layerDefinition,
+                  'drawingInfo.renderer.symbol.color',
+                  'blue'
+                ),
+                size: get(
+                  this.layerDefinition,
+                  'drawingInfo.renderer.symbol.size',
+                  24
+                ),
+              };
+              const pipe = new SafeIconDisplayPipe();
+              html += `<i style="color: ${
+                symbol.color
+              }"; class="${pipe.transform(symbol.style, 'fa')} pl-2"></i>`;
+              break;
+            }
           }
-          default: {
-            // todo: handle polygon
-            const symbol: LayerSymbol = {
-              style: get(
+          switch (get(this.layerDefinition, 'featureReduction.type')) {
+            case 'cluster': {
+              // Features legend
+              const symbol: LayerSymbol = {
+                style: get(
+                  this.layerDefinition,
+                  'drawingInfo.renderer.symbol.style',
+                  'location-dot'
+                ),
+                color: get(
+                  this.layerDefinition,
+                  'drawingInfo.renderer.symbol.color',
+                  'blue'
+                ),
+                size: get(
+                  this.layerDefinition,
+                  'drawingInfo.renderer.symbol.size',
+                  24
+                ),
+              };
+              const pipe = new SafeIconDisplayPipe();
+              // Cluster legend
+              const clusterSymbol: LayerSymbol = get(
                 this.layerDefinition,
-                'drawingInfo.renderer.symbol.style',
-                'location-dot'
-              ),
-              color: get(
-                this.layerDefinition,
-                'drawingInfo.renderer.symbol.color',
-                'blue'
-              ),
-              size: get(
-                this.layerDefinition,
-                'drawingInfo.renderer.symbol.size',
-                24
-              ),
-            };
-            const pipe = new SafeIconDisplayPipe();
-            html += `<i style="color: ${symbol.color}"; class="${pipe.transform(
-              symbol.style,
-              'fa'
-            )} pl-2"></i>`;
-            break;
+                'featureReduction.drawingInfo.renderer.symbol',
+                symbol
+              );
+              html += `<div>Clusters</div>`;
+              html += `<i style="color: ${
+                clusterSymbol.color
+              }"; class="${pipe.transform('circle', 'fa')} pl-2"></i>`;
+              break;
+            }
+            default: {
+              break;
+            }
           }
+          break;
         }
-        switch (get(this.layerDefinition, 'featureReduction.type')) {
-          case 'cluster': {
-            // Features legend
-            const symbol: LayerSymbol = {
-              style: get(
-                this.layerDefinition,
-                'drawingInfo.renderer.symbol.style',
-                'location-dot'
-              ),
-              color: get(
-                this.layerDefinition,
-                'drawingInfo.renderer.symbol.color',
-                'blue'
-              ),
-              size: get(
-                this.layerDefinition,
-                'drawingInfo.renderer.symbol.size',
-                24
-              ),
-            };
-            const pipe = new SafeIconDisplayPipe();
-            // Cluster legend
-            const clusterSymbol: LayerSymbol = get(
-              this.layerDefinition,
-              'featureReduction.drawingInfo.renderer.symbol',
-              symbol
-            );
-            html += `<div>Clusters</div>`;
-            html += `<i style="color: ${
-              clusterSymbol.color
-            }"; class="${pipe.transform('circle', 'fa')} pl-2"></i>`;
-            break;
-          }
-          default: {
-            break;
-          }
+        case 'GroupLayer': {
+          break;
         }
-        break;
       }
-      case 'GroupLayer': {
-        break;
-      }
+    } else if (type === 'Polygon') {
+      // case 'Polygon': {
+      // todo: handle polygon
+      const symbol: LayerSymbol = {
+        style: get(
+          this.layerDefinition,
+          'drawingInfo.renderer.symbol.style',
+          'square'
+        ),
+        color: get(
+          this.layerDefinition,
+          'drawingInfo.renderer.symbol.color',
+          'blue'
+        ),
+        size: get(this.layerDefinition, 'drawingInfo.renderer.symbol.size', 24),
+      };
+      const pipe = new SafeIconDisplayPipe();
+      html += `<i style="color: ${symbol.color}"; class="${pipe.transform(
+        symbol.style,
+        'fa'
+      )} pl-2"></i>`;
+      // break;
+      // }
     }
     if (html) {
       html = `<div class="font-bold truncate">${this.name}</div>` + html;
