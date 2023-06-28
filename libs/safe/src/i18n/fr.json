@@ -1411,9 +1411,9 @@
 					"geospatial": {
 						"layersStyles": {
 							"fill": {
-								"color": "La couleur de remplissage",
-								"opacity": "Opacité de remplissage",
-								"title": "Remplir"
+								"color": "Couleur du remplissage",
+								"opacity": "Opacité du remplissage",
+								"title": "Remplissage"
 							},
 							"marker": {
 								"color": "Couleur du marqueur",
