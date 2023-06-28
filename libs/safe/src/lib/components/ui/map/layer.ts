@@ -944,10 +944,10 @@ export class Layer implements LayerModel {
           }
           default: {
             // todo: handle polygon
-            const symbol: LayerSymbol = get(
+            const symbol: LayerSymbol | undefined = get(
               this.layerDefinition,
               'drawingInfo.renderer.symbol'
-            ) as LayerSymbol;
+            );
             html += this.getGeoJSONFeatureLegend(geometryType, symbol);
             break;
           }
@@ -1013,39 +1013,43 @@ export class Layer implements LayerModel {
    */
   private getGeoJSONFeatureLegend(
     type: GeometryType,
-    symbol: LayerSymbol,
+    symbol: LayerSymbol | undefined,
     label?: string
   ): string {
-    const pipe = new SafeIconDisplayPipe();
-    switch (type) {
-      case 'Polygon': {
-        // We avoid stroke width to be too important
-        const svgTemplate = `<svg 
-              
-                width="16" 
-                height="16"
-                fill="${symbol.color}"
-                stroke="${symbol.outline?.color}"
-                stroke-width="${Math.min(symbol.outline?.width || 0, 10)}px"
-                >
-                  <g>
-                  <rect x="0" y="0" 
+    if (symbol) {
+      const pipe = new SafeIconDisplayPipe();
+      switch (type) {
+        case 'Polygon': {
+          // We avoid stroke width to be too important
+          const svgTemplate = `<svg 
+                
                   width="16" 
-                  height="16" />
-                  </g>
-              </svg>`;
-        return `<span class="flex gap-2 items-center">${svgTemplate}${
-          label || ''
-        }</span>`;
+                  height="16"
+                  fill="${symbol.color}"
+                  stroke="${symbol.outline?.color}"
+                  stroke-width="${Math.min(symbol.outline?.width || 0, 10)}px"
+                  >
+                    <g>
+                    <rect x="0" y="0" 
+                    width="16" 
+                    height="16" />
+                    </g>
+                </svg>`;
+          return `<span class="flex gap-2 items-center">${svgTemplate}${
+            label || ''
+          }</span>`;
+        }
+        default:
+        case 'Point': {
+          return `<span class="flex gap-2 items-center"><i style="color: ${
+            symbol.color
+          }"; class="${pipe.transform(symbol.style, 'fa')} pl-2"></i>${
+            label || ''
+          }</span>`;
+        }
       }
-      default:
-      case 'Point': {
-        return `<span class="flex gap-2 items-center"><i style="color: ${
-          symbol.color
-        }"; class="${pipe.transform(symbol.style, 'fa')} pl-2"></i>${
-          label || ''
-        }</span>`;
-      }
+    } else {
+      return '';
     }
   }
 }

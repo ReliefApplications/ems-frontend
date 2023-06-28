@@ -837,6 +837,7 @@ export class SafeCoreGridComponent
               data: {
                 item: event.item,
                 datasource: {
+                  type: 'Point',
                   resource: this.settings.resource,
                   // todo(change)
                   layout: this.settings.id,
