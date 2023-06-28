@@ -45,6 +45,10 @@ export const GET_LAYER_BY_ID = gql`
               color
               size
               style
+              outline {
+                color
+                width
+              }
             }
             blur
             radius
@@ -56,6 +60,10 @@ export const GET_LAYER_BY_ID = gql`
               color
               size
               style
+              outline {
+                color
+                width
+              }
             }
             uniqueValueInfos {
               label
@@ -64,6 +72,10 @@ export const GET_LAYER_BY_ID = gql`
                 color
                 size
                 style
+                outline {
+                  color
+                  width
+                }
               }
             }
           }

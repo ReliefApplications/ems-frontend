@@ -63,6 +63,7 @@
     </div>
     <h3>Symbol</h3>
     <safe-simple-renderer
+      [geometryType]="geometryType"
       [formGroup]="$any(formGroup.get('defaultSymbol'))"
     ></safe-simple-renderer>
   </div>
@@ -88,6 +89,7 @@
       <input formControlName="value" type="text" />
     </div>
     <safe-simple-renderer
+      [geometryType]="geometryType"
       [formGroup]="form.get('symbol')"
     ></safe-simple-renderer>
   </div>

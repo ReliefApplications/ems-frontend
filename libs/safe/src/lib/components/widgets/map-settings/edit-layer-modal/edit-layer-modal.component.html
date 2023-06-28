@@ -78,7 +78,7 @@
         </ng-container>
         <ng-template uiTabContent>
           <safe-map-layers
-            [formControl]="$any(form.get('sublayers'))"
+            [control]="$any(form.get('sublayers'))"
             [mapComponent]="data.mapComponent"
             [destroyTab$]="destroyTab$"
             [currentMapContainerRef]="data.currentMapContainerRef"
@@ -107,6 +107,7 @@
         <ng-template uiTabContent>
           <safe-layer-styling
             [formGroup]="$any(form.get('layerDefinition.drawingInfo'))"
+            [geometryType]="form.get('datasource.type')?.value"
             [fields$]="fields$"
             [destroyTab$]="destroyTab$"
             [currentMapContainerRef]="data.currentMapContainerRef"
@@ -158,7 +159,7 @@
       <ui-tab
         *ngIf="
           form.get('layerDefinition.drawingInfo.renderer.type')?.value !==
-          'heatmap'
+          'heatmap' && form.get('datasource.type')?.value !== 'Polygon'
         "
         [disabled]="!isDatasourceValid"
       >
