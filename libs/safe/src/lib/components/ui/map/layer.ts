@@ -28,6 +28,7 @@ import { SafeIconDisplayPipe } from '../../../pipes/icon-display/icon-display.pi
 import { GradientPipe } from '../../../pipes/gradient/gradient.pipe';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 import { BehaviorSubject, filter, firstValueFrom } from 'rxjs';
+import centroid from '@turf/centroid';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -414,6 +415,20 @@ export class Layer implements LayerModel {
         'blue'
       ),
       size: get(this.layerDefinition, 'drawingInfo.renderer.symbol.size', 24),
+      ...(this.datasource?.type === 'Polygon' && {
+        outline: {
+          color: get(
+            this.layerDefinition,
+            'drawingInfo.renderer.symbol.outline.color',
+            'blue'
+          ),
+          width: get(
+            this.layerDefinition,
+            'drawingInfo.renderer.symbol.outline.width',
+            1
+          ),
+        },
+      }),
     };
 
     const rendererType = get(
@@ -442,42 +457,76 @@ export class Layer implements LayerModel {
 
     // options used for parsing geojson to leaflet layer
     const geoJSONopts: L.GeoJSONOptions<any> = {
-      pointToLayer: (feature, latlng) => {
-        if (rendererType === 'uniqueValue') {
-          const fieldValue = get(
-            feature,
-            `properties.${uniqueValueField}`,
-            null
-          );
-          const uniqueValueSymbol =
-            uniqueValueInfos.find((x) => x.value === fieldValue)?.symbol ||
-            uniqueValueDefaultSymbol;
-          return new L.Marker(latlng).setIcon(
-            createCustomDivIcon({
-              icon: uniqueValueSymbol.style,
-              color: uniqueValueSymbol.color,
-              size: uniqueValueSymbol.size,
+      ...(this.datasource?.type === 'Point' && {
+        pointToLayer: (feature, latlng) => {
+          if (rendererType === 'uniqueValue') {
+            const fieldValue = get(
+              feature,
+              `properties.${uniqueValueField}`,
+              null
+            );
+            const uniqueValueSymbol =
+              uniqueValueInfos.find((x) => x.value === fieldValue)?.symbol ||
+              uniqueValueDefaultSymbol;
+            return new L.Marker(latlng).setIcon(
+              createCustomDivIcon({
+                icon: uniqueValueSymbol.style,
+                color: uniqueValueSymbol.color,
+                size: uniqueValueSymbol.size,
+                opacity: this.opacity,
+              })
+            );
+          } else {
+            return new L.Marker(latlng).setIcon(
+              createCustomDivIcon({
+                icon: symbol.style,
+                color: symbol.color,
+                size: symbol.size,
+                opacity: this.opacity,
+              })
+            );
+          }
+        },
+      }),
+      ...(this.datasource?.type === 'Polygon' && {
+        style: (feature) => {
+          if (rendererType === 'uniqueValue') {
+            const fieldValue = get(
+              feature,
+              `properties.${uniqueValueField}`,
+              null
+            );
+            const uniqueValueSymbol =
+              uniqueValueInfos.find((x) => x.value === fieldValue)?.symbol ||
+              uniqueValueDefaultSymbol;
+            return {
+              fillColor: uniqueValueSymbol.color,
+              color: uniqueValueSymbol.outline?.color,
+              weight: uniqueValueSymbol.outline?.width,
+              fillOpacity: this.opacity,
               opacity: this.opacity,
-            })
-          );
-        } else {
-          return new L.Marker(latlng).setIcon(
-            createCustomDivIcon({
-              icon: symbol.style,
-              color: symbol.color,
-              size: symbol.size,
+            };
+          } else {
+            return {
+              fillColor: symbol.color,
+              color: symbol.outline?.color,
+              weight: symbol.outline?.width,
+              fillOpacity: this.opacity,
               opacity: this.opacity,
-            })
-          );
-        }
-      },
+            };
+          }
+          console.log('styling !');
+          console.log(feature);
+        },
+      }),
       onEachFeature: (feature: Feature<any>, layer: L.Layer) => {
         // Add popup on click because we destroy popup component each time we remove it
         // In order to destroy all event subscriptions and avoid memory leak
         layer.addEventListener('click', () => {
+          const center = centroid(feature);
           const coordinates = {
-            lat: feature.geometry.coordinates[1],
-            lng: feature.geometry.coordinates[0],
+            lat: center.geometry.coordinates[1],
+            lng: center.geometry.coordinates[0],
           };
           // bind this to the popup service
           this.popupService.setPopUp(
@@ -896,6 +945,7 @@ export class Layer implements LayerModel {
             break;
           }
           default: {
+            // todo: handle polygon
             const symbol: LayerSymbol = {
               style: get(
                 this.layerDefinition,

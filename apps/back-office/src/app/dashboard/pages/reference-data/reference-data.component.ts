@@ -77,6 +77,7 @@ export class ReferenceDataComponent
   public csvValue = '';
   public newData: any = [];
   public csvLoading = false;
+  public separator = new FormControl(',');
 
   @ViewChild('fieldInput') fieldInput?: ElementRef<HTMLInputElement>;
   @ViewChild('csvData') csvData?: TextareaComponent;
@@ -498,17 +499,20 @@ export class ReferenceDataComponent
    */
   onValidateCSV(): void {
     this.csvLoading = true;
-    console.log(this.csvData);
     const dataTemp = this.csvData?.value || '';
     if (dataTemp !== this.csvValue) {
       this.csvValue = dataTemp;
       this.newData = [];
       const lines = dataTemp.split('\n');
-      const headers = lines[0].split(',').map((x: string) => x.trim());
+      const headers = lines[0]
+        .split(this.separator.value)
+        .map((x: string) => x.trim());
       if (lines.length < 2) return;
       // Infer types from first line
       const fields = headers.reduce((acc: any, header: any) => {
-        const value = lines[1].split(',')[headers.indexOf(header)].trim();
+        const value = lines[1]
+          .split(this.separator.value)
+          [headers.indexOf(header)].trim();
         const type = inferTypeFromString(value);
         acc.push({ name: header, type });
         return acc;
@@ -517,7 +521,9 @@ export class ReferenceDataComponent
       for (let i = 1; i < lines.length; i++) {
         if (!lines[i]) continue;
         const obj: any = {};
-        const currentline = lines[i].split(',').map((x: string) => x.trim());
+        const currentline = lines[i]
+          .split(this.separator.value)
+          .map((x: string) => x.trim());
         for (let j = 0; j < headers.length; j++) {
           obj[headers[j]] = currentline[j];
         }
