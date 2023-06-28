@@ -138,6 +138,7 @@
               cdkDrag
               [cdkDragDisabled]="!item.orderable"
               class="show-icons w-full max-w-[200px]"
+              *ngIf="item.visible || appLayout"
             >
               <li
                 [routerLink]="item.path"
@@ -174,6 +175,13 @@
                     icon="drag_indicator"
                   >
                   </ui-button>
+                  <ui-icon
+                    variant="grey"
+                    [size]="18"
+                    *ngIf="!item.visible"
+                    icon="visibility_off"
+                    class="mt-[-3px] ml-[2px]"
+                  ></ui-icon>
                 </div>
               </li>
               <!-- Preview when dragging element -->
