@@ -10,7 +10,6 @@ import {
   Optional,
   SimpleChanges,
   ViewChild,
-  ViewContainerRef,
 } from '@angular/core';
 import { FilterPosition } from './enums/dashboard-filters.enum';
 import { Dialog } from '@angular/cdk/dialog';
