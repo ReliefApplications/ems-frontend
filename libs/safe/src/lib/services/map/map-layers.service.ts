@@ -69,6 +69,7 @@ export class SafeMapLayersService {
     delete newLayer.id;
     if (newLayer.datasource) {
       delete newLayer.datasource.origin;
+      newLayer.datasource = this.mapDatasourceType(newLayer.datasource);
     }
     return this.apollo
       .mutate<AddLayerMutationResponse>({
@@ -99,6 +100,7 @@ export class SafeMapLayersService {
     delete newLayer.id;
     if (newLayer.datasource) {
       delete newLayer.datasource.origin;
+      newLayer.datasource = this.mapDatasourceType(newLayer.datasource);
     }
     return this.apollo
       .mutate<EditLayerMutationResponse>({
@@ -325,11 +327,7 @@ export class SafeMapLayersService {
     layersService: SafeMapLayersService
   ) {
     if (this.isDatasourceValid(layer.datasource)) {
-      const datasourceMap = {
-        ...layer.datasource,
-        type: (layer.datasource as any).layerType ?? layer.datasource?.type,
-      };
-      delete (datasourceMap as any).layerType;
+      const datasourceMap = this.mapDatasourceType(layer.datasource);
       const params = new HttpParams({
         fromObject: omitBy(datasourceMap, isNil),
       });
@@ -392,5 +390,23 @@ export class SafeMapLayersService {
       layerModel.layerDefinition.featureReduction.drawingInfo = null as any;
     }
     return layerModel;
+  }
+
+  /**
+   * Map datasource data from the form control editor to suitable backend data
+   *
+   * @param datasource LayerDataSource
+   * @returns mapped data source for backend data
+   */
+  private mapDatasourceType(datasource: LayerDatasource | undefined) {
+    let mappedDatasource!: any;
+    if (datasource) {
+      mappedDatasource = {
+        ...datasource,
+        type: (datasource as any).layerType ?? datasource?.type,
+      };
+      delete (mappedDatasource as any).layerType;
+    }
+    return mappedDatasource;
   }
 }
