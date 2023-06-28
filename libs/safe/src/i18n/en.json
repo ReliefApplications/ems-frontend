@@ -50,6 +50,7 @@
 			"none": "No column",
 			"one": "Column"
 		},
+		"comma": "comma",
 		"create": "Create",
 		"createdOn": "Created on",
 		"customNotification": {
@@ -264,7 +265,9 @@
 		"saveChanges": "Save changes",
 		"searchObject": "Search {{name}}",
 		"select": "Select",
+		"semicolon": "semicolon",
 		"send": "Send",
+		"separator": "SEPARATOR",
 		"settings": "Settings",
 		"status": "Status",
 		"status_active": "Active",

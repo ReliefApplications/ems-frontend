@@ -50,6 +50,7 @@
 			"none": "Aucune colonne",
 			"one": "Colonne"
 		},
+		"comma": "virgule",
 		"create": "Créer",
 		"createdOn": "Date de création",
 		"customNotification": {
@@ -264,7 +265,9 @@
 		"saveChanges": "Sauvegarder les changements",
 		"searchObject": "Rechercher {{name}}",
 		"select": "Sélectionner",
+		"semicolon": "point-virgule",
 		"send": "Envoyer",
+		"separator": "SÉPARATEUR",
 		"settings": "Paramètres",
 		"status": "Statut",
 		"status_active": "Actif",
