@@ -110,6 +110,7 @@ export * from './lib/views/public-api';
 
 // === MODULE ===
 export * from './lib/safe.module';
+export * from './lib/components/widget-choice/widget-choice.module'
 
 // === PIPES ===
 export * from './lib/pipes/date/public-api';
