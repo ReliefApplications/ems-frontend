@@ -1,3 +1,4 @@
+<!-- By default, vertical navigation -->
 <ng-container *ngIf="vertical; else horizontalMenu">
   <section class="pt-2 flex flex-col gap-y-7">
     <ng-container *ngFor="let group of navGroups; let i = index" class="h-full">
@@ -113,6 +114,7 @@
     </ng-container>
   </section>
 </ng-container>
+<!-- Horizontal navigation -->
 <ng-template #horizontalMenu>
   <section class="flex border-b">
     <ng-container *ngFor="let group of navGroups; let i = index" class="h-full">
