@@ -55,9 +55,9 @@ export interface MapControls {
 /** Default values for the map controls */
 export const DefaultMapControls: MapControls = {
   timedimension: false,
-  download: true,
+  download: false,
   legend: true,
   measure: false,
-  layer: true,
-  search: false,
+  layer: false,
+  search: true,
 };
