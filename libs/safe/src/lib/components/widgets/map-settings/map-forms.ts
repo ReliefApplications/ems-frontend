@@ -131,6 +131,7 @@ const createLayerDataSourceForm = (value?: any): FormGroup => {
         disabled: !canSeeFields || get(value, 'geoField'),
       },
     ],
+    type: [get(value, 'type', 'Point')],
   });
   formGroup.valueChanges.subscribe((value) => {
     const canSeeFields = getCanSeeFields(value);

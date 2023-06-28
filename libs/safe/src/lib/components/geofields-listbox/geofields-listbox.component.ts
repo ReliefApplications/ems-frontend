@@ -75,7 +75,6 @@ export class GeofieldsListboxComponent
   }
 
   ngOnInit(): void {
-    console.log(this.selectedFields);
     this.availableFields = ALL_FIELDS.filter(
       (x) => !this.selectedFields.some((obj) => obj.value === x.value)
     );

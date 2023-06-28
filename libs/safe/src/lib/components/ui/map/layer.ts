@@ -442,38 +442,47 @@ export class Layer implements LayerModel {
 
     // options used for parsing geojson to leaflet layer
     const geoJSONopts: L.GeoJSONOptions<any> = {
-      pointToLayer: (feature, latlng) => {
-        if (rendererType === 'uniqueValue') {
-          const fieldValue = get(
-            feature,
-            `properties.${uniqueValueField}`,
-            null
-          );
-          const uniqueValueSymbol =
-            uniqueValueInfos.find((x) => x.value === fieldValue)?.symbol ||
-            uniqueValueDefaultSymbol;
-          return new L.Marker(latlng).setIcon(
-            createCustomDivIcon({
-              icon: uniqueValueSymbol.style,
-              color: uniqueValueSymbol.color,
-              size: uniqueValueSymbol.size,
-              opacity: this.opacity,
-            })
-          );
-        } else {
-          return new L.Marker(latlng).setIcon(
-            createCustomDivIcon({
-              icon: symbol.style,
-              color: symbol.color,
-              size: symbol.size,
-              opacity: this.opacity,
-            })
-          );
-        }
-      },
+      ...(this.datasource?.type === 'Point' && {
+        pointToLayer: (feature, latlng) => {
+          if (rendererType === 'uniqueValue') {
+            const fieldValue = get(
+              feature,
+              `properties.${uniqueValueField}`,
+              null
+            );
+            const uniqueValueSymbol =
+              uniqueValueInfos.find((x) => x.value === fieldValue)?.symbol ||
+              uniqueValueDefaultSymbol;
+            return new L.Marker(latlng).setIcon(
+              createCustomDivIcon({
+                icon: uniqueValueSymbol.style,
+                color: uniqueValueSymbol.color,
+                size: uniqueValueSymbol.size,
+                opacity: this.opacity,
+              })
+            );
+          } else {
+            return new L.Marker(latlng).setIcon(
+              createCustomDivIcon({
+                icon: symbol.style,
+                color: symbol.color,
+                size: symbol.size,
+                opacity: this.opacity,
+              })
+            );
+          }
+        },
+      }),
+      ...(this.datasource?.type === 'Polygon' && {
+        style: (feature) => {
+          console.log(feature);
+          return {};
+        },
+      }),
       onEachFeature: (feature: Feature<any>, layer: L.Layer) => {
         // Add popup on click because we destroy popup component each time we remove it
         // In order to destroy all event subscriptions and avoid memory leak
+        console.log(layer);
         layer.addEventListener('click', () => {
           const coordinates = {
             lat: feature.geometry.coordinates[1],
@@ -896,6 +905,7 @@ export class Layer implements LayerModel {
             break;
           }
           default: {
+            // todo: handle polygon
             const symbol: LayerSymbol = {
               style: get(
                 this.layerDefinition,

@@ -1,5 +1,8 @@
 import { Geometry, FeatureCollection, Feature } from 'geojson';
-import { PopupElement } from '../../../../models/layer.model';
+import {
+  LayerSymbolOutline,
+  PopupElement,
+} from '../../../../models/layer.model';
 import { IconName } from '../../../icon-picker/icon-picker.const';
 
 export type GeoJSON =
@@ -31,6 +34,7 @@ export interface LayerFormData {
           type: string;
           size: number;
           style: IconName;
+          outline?: LayerSymbolOutline;
         };
       };
     };
@@ -43,12 +47,13 @@ export interface LayerFormData {
     description: string;
     popupElements: PopupElement[];
   };
-  datasource: {
+  datasource?: {
     origin?: 'resource' | 'refData';
     resource: any;
     layout: any;
     aggregation: any;
     refData: any;
+    type?: 'Point' | 'Polygon';
   };
   sublayers?: string[];
 }

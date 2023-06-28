@@ -235,6 +235,16 @@
           </div>
         </div>
       </ng-container>
+
+      <!-- Layer type -->
+      <!-- todo: translate -->
+      <div uiFormFieldDirective>
+        <label>TYPE</label>
+        <ui-select-menu formControlName="type">
+          <ui-select-option value="Point">POINT</ui-select-option>
+          <ui-select-option value="Polygon">POLYGON</ui-select-option>
+        </ui-select-menu>
+      </div>
     </div>
   </form>
   <!-- Map -->
