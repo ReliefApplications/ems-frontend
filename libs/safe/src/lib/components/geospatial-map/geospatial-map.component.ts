@@ -238,6 +238,7 @@ export class GeospatialMapComponent
       }
     });
 
+    //Reproduce the same behavior for the "move" feature
     this.mapComponent?.map.on('moveend', () => {
       const finishContainer = document.querySelector(
         'div[title="Drag Layers"]'
