@@ -28,6 +28,7 @@ import { SafeIconDisplayPipe } from '../../../pipes/icon-display/icon-display.pi
 import { GradientPipe } from '../../../pipes/gradient/gradient.pipe';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 import { BehaviorSubject, filter, firstValueFrom } from 'rxjs';
+import centroid from '@turf/centroid';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -521,11 +522,11 @@ export class Layer implements LayerModel {
       onEachFeature: (feature: Feature<any>, layer: L.Layer) => {
         // Add popup on click because we destroy popup component each time we remove it
         // In order to destroy all event subscriptions and avoid memory leak
-        console.log(layer);
         layer.addEventListener('click', () => {
+          const center = centroid(feature);
           const coordinates = {
-            lat: feature.geometry.coordinates[1],
-            lng: feature.geometry.coordinates[0],
+            lat: center.geometry.coordinates[1],
+            lng: center.geometry.coordinates[0],
           };
           // bind this to the popup service
           this.popupService.setPopUp(
