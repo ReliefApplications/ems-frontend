@@ -50,6 +50,7 @@
 			"none": "Aucune colonne",
 			"one": "Colonne"
 		},
+		"comma": "virgule",
 		"create": "Créer",
 		"createdOn": "Date de création",
 		"customNotification": {
@@ -264,7 +265,9 @@
 		"saveChanges": "Sauvegarder les changements",
 		"searchObject": "Rechercher {{name}}",
 		"select": "Sélectionner",
+		"semicolon": "point-virgule",
 		"send": "Envoyer",
+		"separator": "Séparateur",
 		"settings": "Paramètres",
 		"status": "Statut",
 		"status_active": "Actif",
@@ -1408,9 +1411,9 @@
 					"geospatial": {
 						"layersStyles": {
 							"fill": {
-								"color": "La couleur de remplissage",
-								"opacity": "Opacité de remplissage",
-								"title": "Remplir"
+								"color": "Couleur du remplissage",
+								"opacity": "Opacité du remplissage",
+								"title": "Remplissage"
 							},
 							"marker": {
 								"color": "Couleur du marqueur",

@@ -50,6 +50,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"comma": "******",
 		"create": "******",
 		"createdOn": "******",
 		"customNotification": {
@@ -264,7 +265,9 @@
 		"saveChanges": "******",
 		"searchObject": "****** {{name}}",
 		"select": "******",
+		"semicolon": "******",
 		"send": "******",
+		"separator": "******",
 		"settings": "******",
 		"status": "******",
 		"status_active": "******",
