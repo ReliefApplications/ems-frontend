@@ -25,7 +25,7 @@ import {
 } from '@oort-front/safe';
 import { TranslateService } from '@ngx-translate/core';
 import { map, takeUntil } from 'rxjs/operators';
-import { Observable, firstValueFrom } from 'rxjs';
+import { Observable } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 
 /**
