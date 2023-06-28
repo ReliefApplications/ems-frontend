@@ -1,5 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -8,6 +8,7 @@ import {
 import {
   ContentType,
   CONTENT_TYPES,
+  WIDGET_TYPES,
   Form,
   SafeApplicationService,
   SafeUnsubscribeComponent,
@@ -43,6 +44,7 @@ export class AddPageComponent
 {
   // === DATA ===
   public contentTypes = CONTENT_TYPES;
+  public availableWidgets: any[] = WIDGET_TYPES;
   private forms = new BehaviorSubject<Form[]>([]);
   public forms$!: Observable<Form[]>;
   private cachedForms: Form[] = [];
@@ -53,6 +55,8 @@ export class AddPageComponent
   };
   private loading = true;
   public loadingMore = false;
+
+  public widget: any;
 
   // === REACTIVE FORM ===
   public pageForm: UntypedFormGroup = new UntypedFormGroup({});
@@ -121,6 +125,15 @@ export class AddPageComponent
       }
       this.onNext();
     });
+
+    const typesWidget = ['grid', 'map', 'summaryCard'];
+    this.availableWidgets = this.availableWidgets.filter((widget: any) => {
+      for (const wid of typesWidget){
+        if(widget.id.includes(wid)){
+          return widget;
+        }
+      }
+    });
   }
 
   /**
@@ -147,7 +160,11 @@ export class AddPageComponent
    * Submit form to application service for creation
    */
   onSubmit(): void {
-    this.applicationService.addPage(this.pageForm.value);
+    if(this.widget){
+      this.applicationService.addPage(this.pageForm.value, this.widget);
+    }else{
+      this.applicationService.addPage(this.pageForm.value);
+    }
   }
 
   /**
@@ -238,6 +255,21 @@ export class AddPageComponent
   }
 
   /**
+   * Add a new widget
+   *
+   * @param e new widget.
+   */
+  onAddWidget(e: any): void {
+    this.widget = [e];
+    const contentControl = this.pageForm.controls.content;
+    contentControl.setValidators(null);
+    contentControl.setValue(null);
+    contentControl.updateValueAndValidity();
+    this.pageForm.controls.type.setValue('dashboard', e);
+    this.onNext();
+  }
+
+  /**
    * Fetches next page of forms to add to list.
    *
    * @param value boolean that decides wether a next page of forms should be fetched
@@ -323,4 +355,5 @@ export class AddPageComponent
     this.pageInfo = data.forms.pageInfo;
     this.loadingMore = loading;
   }
+  
 }

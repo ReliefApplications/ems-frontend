@@ -87,6 +87,7 @@ import {
 import { SafeRestService } from '../rest/rest.service';
 import { SafeLayoutService } from '../layout/layout.service';
 import { SnackbarService } from '@oort-front/ui';
+import { SafeDashboardService } from '../dashboard/dashboard.service';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -169,6 +170,7 @@ export class SafeApplicationService {
    * @param restService Shared rest service.
    * @param downloadService Shared download service
    * @param layoutService Shared layout service
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -179,7 +181,8 @@ export class SafeApplicationService {
     private translate: TranslateService,
     private restService: SafeRestService,
     private downloadService: SafeDownloadService,
-    private layoutService: SafeLayoutService
+    private layoutService: SafeLayoutService,
+    private dashboardService: SafeDashboardService
   ) {
     this.environment = environment;
   }
@@ -677,7 +680,7 @@ export class SafeApplicationService {
    *
    * @param page new page
    */
-  addPage(page: any): void {
+  addPage(page: any, widget?: any): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo
@@ -697,17 +700,26 @@ export class SafeApplicationService {
                 value: data.addPage.name,
               })
             );
+
             const content = data.addPage.content;
             const newApplication = {
               ...application,
               pages: application.pages?.concat([data.addPage]),
             };
-            this.application.next(newApplication);
-            this.router.navigate([
-              page.type === ContentType.form
-                ? `/applications/${application.id}/${page.type}/${data.addPage.id}`
-                : `/applications/${application.id}/${page.type}/${content}`,
-            ]);
+            
+            //create a dashboard with the widget
+            if (widget) {
+              this.dashboardService.createDashboard(content, widget);
+            }
+
+            setTimeout(() => {
+              this.application.next(newApplication);
+              this.router.navigate([
+                page.type === ContentType.form
+                  ? `/applications/${application.id}/${page.type}/${data.addPage.id}`
+                  : `/applications/${application.id}/${page.type}/${content}`,
+              ]);
+            }, 250);
           } else {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotCreated', {

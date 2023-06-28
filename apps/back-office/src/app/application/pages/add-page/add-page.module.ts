@@ -10,6 +10,7 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
 import { DividerModule, ButtonModule } from '@oort-front/ui';
+import { SafeWidgetChoiceModule } from 'libs/safe/src/lib/components/widget-choice/widget-choice.module';
 
 /**
  * Add page module.
@@ -27,6 +28,7 @@ import { DividerModule, ButtonModule } from '@oort-front/ui';
     DividerModule,
     AbilityModule,
     ButtonModule,
+    SafeWidgetChoiceModule,
   ],
 })
 export class AddPageModule {}

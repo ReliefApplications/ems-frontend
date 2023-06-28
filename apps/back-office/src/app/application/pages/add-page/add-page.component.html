@@ -8,6 +8,15 @@
         formControlName="type"
         [contentTypes]="contentTypes"
       ></safe-content-choice>
+      <br>
+      <ui-divider text="or"></ui-divider>
+      <h2>{{ 'pages.application.addPage.startFromWidget' | translate }}</h2>
+      <safe-widget-choice
+        [floating]="false"
+        [widgetTypes]="availableWidgets"
+        (add)="onAddWidget($event)"
+      >
+      </safe-widget-choice>
     </ng-container>
     <!-- Form selection -->
     <ng-container *ngSwitchCase="2">
