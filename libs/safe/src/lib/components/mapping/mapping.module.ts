@@ -1,16 +1,15 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeMappingComponent } from './mapping.component';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { SafeButtonModule } from '../ui/button/button.module';
-import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
+import { IconModule } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { SafeModalModule } from '../ui/modal/modal.module';
+import {
+  MenuModule,
+  ButtonModule,
+  TableModule,
+  DialogModule,
+} from '@oort-front/ui';
 
 /**
  * Mapping module
@@ -20,16 +19,13 @@ import { SafeModalModule } from '../ui/modal/modal.module';
   imports: [
     CommonModule,
     TranslateModule,
-    MatTableModule,
-    MatMenuModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
+    MenuModule,
+    IconModule,
     FormsModule,
     ReactiveFormsModule,
-    SafeButtonModule,
-    SafeModalModule,
+    DialogModule,
+    ButtonModule,
+    TableModule,
   ],
   exports: [SafeMappingComponent],
 })

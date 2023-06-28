@@ -13,12 +13,12 @@ import {
 } from './graphql/queries';
 import {
   Dashboard,
-  SafeSnackBarService,
   SafeDashboardService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Dashboard component page, for application preview.
@@ -55,7 +55,7 @@ export class DashboardComponent
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private dashboardService: SafeDashboardService,
     private translate: TranslateService
   ) {

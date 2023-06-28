@@ -1,13 +1,29 @@
 :host kendo-datapager {
-  @apply justify-end bg-white border-l-0 border-b-0 border-r-0 border-t;
+  @apply p-3 pr-0 bg-white border-l-0 border-b-0 border-r-0 border-t;
+}
+
+:host ::ng-deep .k-pager-md .k-pager-numbers-wrap .k-button {
+  --tw-border-opacity: 1 !important;
+  border-color: rgb(212 212 212 / var(--tw-border-opacity)) !important;
+  @apply h-full text-base border-r border-l-0 border-t-0 border-b-0;
+}
+
+:host ::ng-deep .hide-last button:last-child,
+:host ::ng-deep .hide-first button:first-child {
+  display: none !important;
+}
+
+:host ::ng-deep kendo-datapager-next-buttons button:first-child {
+  border-right: 0 !important;
+}
+
+:host ::ng-deep kendo-dropdownlist {
+  background-image: none !important;
+  @apply border-0 border-b border-neutral-500 bg-inherit;
 }
 
 :host ::ng-deep kendo-datapager-info {
-  flex-grow: 0;
-}
-
-:host ::ng-deep div.k-pager-numbers-wrap {
-  order: 2;
+  @apply text-sm text-gray-700;
 }
 
 :host ::ng-deep .k-pager {

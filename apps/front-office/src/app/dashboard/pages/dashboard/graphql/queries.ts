@@ -25,8 +25,21 @@ export const GET_DASHBOARD_BY_ID = gql`
           title
         }
       }
+      buttons
       canSee
       canUpdate
+      showFilter
+      page {
+        id
+        visible
+        application {
+          id
+        }
+        canUpdate
+        context
+        content
+        contentWithContext
+      }
     }
   }
 `;

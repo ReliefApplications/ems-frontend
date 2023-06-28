@@ -7,7 +7,6 @@ import {
   OAuthService,
   UrlHelperService,
 } from 'angular-oauth2-oidc';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 
 import { SafeApplicationService } from './application.service';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -24,7 +23,7 @@ describe('SafeApplicationService', () => {
         OAuthLogger,
         DateTimeProvider,
       ],
-      imports: [HttpClientModule, MatSnackBarModule, RouterTestingModule],
+      imports: [HttpClientModule, RouterTestingModule],
     });
     service = TestBed.inject(SafeApplicationService);
   });

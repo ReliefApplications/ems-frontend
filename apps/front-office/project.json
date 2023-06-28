@@ -220,11 +220,59 @@
             "includePaths": ["libs/safe/src/lib/style/themes/oort"]
           }
         },
+        "oort-tailwind": {
+          "fileReplacements": [
+            {
+              "replace": "apps/front-office/src/environments/environment.ts",
+              "with": "apps/front-office/src/environments/environment.oort.tailwind.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ],
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+          }
+        },
         "oort-guyane": {
           "fileReplacements": [
             {
               "replace": "apps/front-office/src/environments/environment.ts",
               "with": "apps/front-office/src/environments/environment.oort.guyane.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ],
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+          }
+        },
+        "oort-alimentaide": {
+          "fileReplacements": [
+            {
+              "replace": "apps/front-office/src/environments/environment.ts",
+              "with": "apps/front-office/src/environments/environment.oort.alimentaide.ts"
             }
           ],
           "budgets": [
@@ -313,7 +361,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/safe/src/lib/style/themes/expertisefr"]
           }
         },
         "oort-local": {

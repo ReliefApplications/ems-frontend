@@ -1,13 +1,12 @@
 <form [formGroup]="form">
   <ng-container formGroupName="card">
     <!-- Indicate possibilities of the template editor -->
-    <safe-alert class="mb-2"
-      ><safe-icon icon="info"></safe-icon>
+    <ui-alert [showIcon]="true" class="mb-2">
       {{
         'components.widget.settings.summaryCard.card.textEditor.alert'
           | translate
       }}
-    </safe-alert>
+    </ui-alert>
     <!-- Template editor -->
     <editor [init]="editor" formControlName="html"></editor>
   </ng-container>

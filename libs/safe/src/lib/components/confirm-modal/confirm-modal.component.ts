@@ -1,11 +1,10 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
 import { CommonModule } from '@angular/common';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { SafeModalModule } from '../ui/modal/modal.module';
+import { DialogModule, Variant } from '@oort-front/ui';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * This interface describes the structure of the data to be displayed in the modal
@@ -15,7 +14,7 @@ interface DialogData {
   content?: string;
   cancelText?: string;
   confirmText?: string;
-  confirmColor?: string;
+  confirmVariant?: Variant;
 }
 
 /**
@@ -23,7 +22,7 @@ interface DialogData {
  */
 @Component({
   standalone: true,
-  imports: [CommonModule, MatDialogModule, MatButtonModule, SafeModalModule],
+  imports: [CommonModule, DialogModule, ButtonModule],
   selector: 'safe-confirm-modal',
   templateUrl: './confirm-modal.component.html',
   styleUrls: ['./confirm-modal.component.scss'],
@@ -33,7 +32,7 @@ export class SafeConfirmModalComponent {
   public content: string;
   public cancelText: string;
   public confirmText: string;
-  public confirmColor: string;
+  public confirmVariant: Variant = 'primary';
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -43,7 +42,7 @@ export class SafeConfirmModalComponent {
    * @param translate The translating service used to translate the different texts except the content of the modal
    */
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    @Inject(DIALOG_DATA) public data: DialogData,
     private translate: TranslateService
   ) {
     this.title = get(
@@ -62,6 +61,6 @@ export class SafeConfirmModalComponent {
       this.translate.instant('components.confirmModal.confirm')
     );
     this.content = get(data, 'content', '');
-    this.confirmColor = get(data, 'confirmColor', 'primary');
+    this.confirmVariant = get(data, 'confirmVariant', this.confirmVariant);
   }
 }

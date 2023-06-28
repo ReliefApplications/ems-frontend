@@ -2,20 +2,18 @@ import { Component } from '@angular/core';
 import { SafeFormModalComponent } from '../form-modal/form-modal.component';
 import { v4 as uuidv4 } from 'uuid';
 import localForage from 'localforage';
-import { MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/tooltip';
 import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
-import { MatDialogModule } from '@angular/material/dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatTabsModule } from '@angular/material/tabs';
-import { SafeButtonModule } from '../ui/button/button.module';
-import { SafeIconModule } from '../ui/icon/icon.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '../ui/modal/modal.module';
-import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
+import {
+  ButtonModule,
+  DialogModule,
+  IconModule,
+  SpinnerModule,
+  TabsModule,
+} from '@oort-front/ui';
 
 /**
  * Factory for creating scroll strategy
@@ -36,45 +34,19 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   selector: 'safe-resource-modal',
   templateUrl: '../form-modal/form-modal.component.html',
   styleUrls: ['../form-modal/form-modal.component.scss'],
-  providers: [
-    {
-      provide: MAT_TOOLTIP_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-  ],
   imports: [
     CommonModule,
-    MatDialogModule,
-    MatIconModule,
-    MatButtonModule,
-    MatTabsModule,
-    SafeButtonModule,
-    SafeIconModule,
+    ButtonModule,
+    IconModule,
     SafeRecordSummaryModule,
     SafeFormActionsModule,
     TranslateModule,
-    SafeModalModule,
-    SafeSpinnerModule,
+    DialogModule,
+    SpinnerModule,
+    TabsModule,
   ],
 })
 export class SafeResourceModalComponent extends SafeFormModalComponent {
-  /**
-   * Calls the complete method of the survey if no error.
-   */
-  public override submit(): void {
-    this.saving = true;
-    if (!this.survey?.hasErrors()) {
-      this.survey?.completeLastPage();
-    } else {
-      this.snackBar.openSnackBar(
-        this.translate.instant('models.form.notifications.savingFailed'),
-        { error: true }
-      );
-      this.saving = false;
-    }
-  }
-
   /**
    * We override this method to not directly save new records
    *
@@ -110,7 +82,7 @@ export class SafeResourceModalComponent extends SafeFormModalComponent {
             id: temporaryId,
             data: survey.data,
           },
-        });
+        } as any);
       });
     }
     survey.showCompletedPage = true;

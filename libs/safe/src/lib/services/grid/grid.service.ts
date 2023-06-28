@@ -20,6 +20,7 @@ const DISABLED_FIELDS = [
   'createdAt',
   'modifiedAt',
   'form',
+  'lastUpdateForm',
 ];
 /**
  * Transforms a list with nested lists into a flat list

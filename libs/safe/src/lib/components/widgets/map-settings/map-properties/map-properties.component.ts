@@ -1,8 +1,17 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  EventEmitter,
+  Input,
+  Output,
+  ViewChild,
+  ViewContainerRef,
+} from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { MapConstructorSettings } from '../../../ui/map/interfaces/map.interface';
 import { BASEMAPS } from '../../../ui/map/const/baseMaps';
+import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 
 /**
  * Map Properties of Map widget.
@@ -12,10 +21,18 @@ import { BASEMAPS } from '../../../ui/map/const/baseMaps';
   templateUrl: './map-properties.component.html',
   styleUrls: ['./map-properties.component.scss'],
 })
-export class MapPropertiesComponent extends SafeUnsubscribeComponent {
+export class MapPropertiesComponent
+  extends SafeUnsubscribeComponent
+  implements AfterViewInit
+{
   @Input() form!: UntypedFormGroup;
   @Input() mapSettings!: MapConstructorSettings;
-  @Input() arcgisteste!: string;
+  @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;
+
+  @ViewChild('mapContainer', { read: ViewContainerRef })
+  mapContainerRef!: ViewContainerRef;
+
+  @Input() destroyTab$!: Subject<boolean>;
 
   public baseMaps = BASEMAPS;
 
@@ -33,6 +50,22 @@ export class MapPropertiesComponent extends SafeUnsubscribeComponent {
     super();
   }
 
+  ngAfterViewInit(): void {
+    this.currentMapContainerRef
+      .pipe(takeUntil(this.destroyTab$))
+      .subscribe((viewContainerRef) => {
+        if (viewContainerRef) {
+          if (viewContainerRef !== this.mapContainerRef) {
+            const view = viewContainerRef.detach();
+            if (view) {
+              this.mapContainerRef.insert(view);
+              this.currentMapContainerRef.next(this.mapContainerRef);
+            }
+          }
+        }
+      });
+  }
+
   /**
    * Set the latitude and longitude of the center of the map using the one in the preview map.
    */
@@ -42,5 +75,19 @@ export class MapPropertiesComponent extends SafeUnsubscribeComponent {
       ?.setValue(this.mapSettings.initialState.viewpoint, {
         emitEvent: false,
       });
+  }
+
+  /**
+   * Reset given form field value if there is a value previously to avoid triggering
+   * not necessary actions
+   *
+   * @param formField Current form field
+   * @param event click event
+   */
+  clearFormField(formField: string, event: Event) {
+    if (this.form.get(formField)?.value) {
+      this.form.get(formField)?.setValue(null);
+    }
+    event.stopPropagation();
   }
 }

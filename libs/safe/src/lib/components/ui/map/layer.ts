@@ -4,13 +4,14 @@ import 'leaflet.heat';
 import 'leaflet.markercluster';
 
 import { Feature, Geometry } from 'geojson';
-import { get, set } from 'lodash';
+import { get, isNil, set } from 'lodash';
 import {
   LayerType,
   LayerFilter,
   GeoJSON,
 } from './interfaces/layer-settings.type';
 import {
+  createClusterDivIcon,
   createCustomDivIcon,
   DEFAULT_MARKER_ICON_OPTIONS,
 } from './utils/create-div-icon';
@@ -25,6 +26,8 @@ import { SafeMapPopupService } from './map-popup/map-popup.service';
 import { haversineDistance } from './utils/haversine';
 import { SafeIconDisplayPipe } from '../../../pipes/icon-display/icon-display.pipe';
 import { GradientPipe } from '../../../pipes/gradient/gradient.pipe';
+import { SafeMapLayersService } from '../../../services/map/map-layers.service';
+import { BehaviorSubject, filter, firstValueFrom } from 'rxjs';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -70,12 +73,6 @@ export const DEFAULT_HEATMAP = {
   radius: 25,
   minOpacity: 0.4,
 };
-
-/** Minimum cluster size in pixel */
-const MIN_CLUSTER_SIZE = 20;
-
-/** Maximum cluster size in pixel */
-const MAX_CLUSTER_SIZE = 100;
 
 /** All existing geometry types */
 const GEOMETRY_TYPES = [
@@ -157,8 +154,12 @@ export class Layer implements LayerModel {
   public createdAt!: Date;
   public updatedAt!: Date;
 
-  // Properties for the layer, if layer type is 'group'
-  public sublayers: Layer[] = [];
+  // If the layer is a group, the sublayers array has the ids of the layers
+  public sublayers: string[] = [];
+
+  public _sublayers: Layer[] = [];
+
+  public sublayersLoaded = new BehaviorSubject(false);
 
   // Layer datasource
   public datasource?: LayerDatasource;
@@ -170,6 +171,9 @@ export class Layer implements LayerModel {
 
   // Layer fields, extracted from geojson
   private fields: { [key in string]: FieldTypes } = {};
+
+  // Declare variables to store the event listeners
+  private zoomListener!: L.LeafletEventHandlerFn;
 
   /**
    * Apply options to a layer
@@ -222,8 +226,9 @@ export class Layer implements LayerModel {
   }
 
   /** @returns the children of the current layer */
-  public getChildren() {
-    return this.sublayers;
+  public async getChildren() {
+    await firstValueFrom(this.sublayersLoaded.pipe(filter((v) => v)));
+    return this._sublayers;
   }
 
   /** @returns the filtered geojson data */
@@ -265,8 +270,13 @@ export class Layer implements LayerModel {
    *
    * @param options Layer options
    * @param popupService Popup service
+   * @param layerService Shared layer service
    */
-  constructor(options: any, private popupService: SafeMapPopupService) {
+  constructor(
+    options: any,
+    private popupService: SafeMapPopupService,
+    private layerService: SafeMapLayersService
+  ) {
     if (options) {
       this.setConfig(options);
     } else {
@@ -279,13 +289,15 @@ export class Layer implements LayerModel {
    *
    * @param options Layer options
    */
-  public setConfig(options: any) {
+  public async setConfig(options: any) {
     this.id = get(options, 'id', '');
     this.name = get(options, 'name', '');
     this.type = get<LayerType>(options, 'type', 'FeatureLayer');
     this.opacity = get(options, 'opacity', 1);
+    this.visibility = get(options, 'visibility', true);
 
-    if (options.type !== 'group') {
+    if (options.type !== 'GroupLayer') {
+      this.sublayersLoaded.next(true);
       // Not group layer, add other properties
       this.datasource = get(options, 'datasource', null);
       this.geojson = get(options, 'geojson', EMPTY_FEATURE_COLLECTION);
@@ -298,9 +310,15 @@ export class Layer implements LayerModel {
       this.setFields();
     } else if (options.sublayers) {
       // Group layer, add sublayers
-      this.sublayers = options.sublayers?.map((child: any) => ({
-        object: new Layer(child, this.popupService),
-      }));
+      this._sublayers = options.sublayers?.length
+        ? await this.layerService.createLayersFromIds(
+            options.sublayers,
+            this.popupService,
+            this.layerService
+          )
+        : [];
+
+      this.sublayersLoaded.next(true);
     }
   }
 
@@ -377,7 +395,7 @@ export class Layer implements LayerModel {
    * @param redraw wether the layer should be redrawn
    * @returns the leaflet layer from layer definition
    */
-  public getLayer(redraw?: boolean): L.Layer {
+  public async getLayer(redraw?: boolean): Promise<L.Layer> {
     // If layer has already been created, return it
     if (this.layer && !redraw) return this.layer;
 
@@ -486,8 +504,13 @@ export class Layer implements LayerModel {
 
     switch (this.type) {
       case 'GroupLayer':
-        this.sublayers.forEach((child) => (child.layer = child.getLayer()));
-        const layers = this.sublayers
+        const sublayers = await this.getChildren();
+
+        for (const child of sublayers) {
+          child.opacity = child.opacity * this.opacity;
+          child.layer = await child.getLayer();
+        }
+        const layers = sublayers
           .map((child) => child.layer)
           .filter((layer) => layer !== undefined) as L.Layer[];
         const layer = L.layerGroup(layers);
@@ -648,18 +671,10 @@ export class Layer implements LayerModel {
                     htmlTemplate.textContent = cluster
                       .getChildCount()
                       .toString();
-                    return createCustomDivIcon(
-                      {
-                        icon: clusterSymbol.style,
-                        color: clusterSymbol.color,
-                        size:
-                          (cluster.getChildCount() / 50) *
-                            (MAX_CLUSTER_SIZE - MIN_CLUSTER_SIZE) +
-                          MIN_CLUSTER_SIZE,
-                        opacity: this.opacity,
-                      },
-                      htmlTemplate,
-                      'leaflet-data-marker'
+                    return createClusterDivIcon(
+                      clusterSymbol.color,
+                      this.opacity,
+                      cluster.getChildCount()
                     );
                   },
                 });
@@ -740,27 +755,64 @@ export class Layer implements LayerModel {
    * @param layer leaflet layer
    */
   onAddLayer(map: L.Map, layer: L.Layer) {
-    const maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
-    const minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
-    if (map.getZoom() > maxZoom || map.getZoom() < minZoom) {
-      map.removeLayer(layer);
-    } else {
-      map.addLayer(layer);
-      const legendControl = (map as any).legendControl;
-      if (legendControl) {
-        legendControl.addLayer(layer, this.legend);
-      }
+    // Ensure that we do not subscribe multiple times to zoom event
+    if (this.zoomListener) {
+      map.off('zoomend', this.zoomListener);
     }
-    map.on('zoomend', (zoom) => {
-      const currZoom = zoom.target.getZoom();
+    // Using the sidenav-controls-menu-item, we can overwrite visibility property of the layer
+    if (!isNil((layer as any).shouldDisplay)) {
+      this.visibility = (layer as any).shouldDisplay;
+      if (this.visibility) {
+        map.addLayer(layer);
+        const legendControl = (map as any).legendControl;
+        if (legendControl) {
+          legendControl.addLayer(layer, this.legend);
+        }
+      } else {
+        map.removeLayer(layer);
+      }
+    } else {
+      // Classic visibility check based on zoom
       const maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
       const minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
-      if (currZoom > maxZoom || currZoom < minZoom) {
+      if (map.getZoom() > maxZoom || map.getZoom() < minZoom) {
+        console.log('should hide layer');
         map.removeLayer(layer);
       } else {
+        console.log('should show layer');
         map.addLayer(layer);
+        const legendControl = (map as any).legendControl;
+        if (legendControl) {
+          legendControl.addLayer(layer, this.legend);
+        }
       }
-    });
+      // Assign the event listener to the variable
+      this.zoomListener = (zoom) => this.onZoom(map, zoom, layer);
+      // Attach the event listener
+      map.on('zoomend', this.zoomListener);
+    }
+  }
+
+  /**
+   * Subscribe to zoom events
+   *
+   * @param map Leaflet map
+   * @param zoom Leaflet zoom event
+   * @param layer Leaflet layer
+   */
+  public onZoom(map: L.Map, zoom: L.LeafletEvent, layer: L.Layer) {
+    console.log('I am zooming !');
+    const currZoom = zoom.target.getZoom();
+    const maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
+    const minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
+
+    if (currZoom > maxZoom || currZoom < minZoom) {
+      map.removeLayer(layer);
+    } else {
+      console.log('I am here');
+      console.log(this.visibility);
+      if (this.visibility) map.addLayer(layer);
+    }
   }
 
   /**
@@ -775,6 +827,7 @@ export class Layer implements LayerModel {
     if (legendControl) {
       legendControl.removeLayer(layer);
     }
+    map.off('zoomend', this.zoomListener);
   }
 
   /**
@@ -898,7 +951,7 @@ export class Layer implements LayerModel {
             html += `<div>Clusters</div>`;
             html += `<i style="color: ${
               clusterSymbol.color
-            }"; class="${pipe.transform(clusterSymbol.style, 'fa')} pl-2"></i>`;
+            }"; class="${pipe.transform('circle', 'fa')} pl-2"></i>`;
             break;
           }
           default: {

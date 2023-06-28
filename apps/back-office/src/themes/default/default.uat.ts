@@ -1,6 +1,6 @@
 /** Application theme */
 export const theme = {
-  headerColor: 'warn',
   prefix: '[UAT]',
   primary: '#008dc9',
+  headerClass: 'bg-red-500',
 };

@@ -431,6 +431,7 @@
 				"delete": {
 					"confirmationMessage": "****** {{name}} ******"
 				},
+				"hide": "******",
 				"notReordered": {
 					"plural": "****** {{error}}",
 					"singular": "****** {{error}}"
@@ -438,7 +439,8 @@
 				"reordered": {
 					"plural": "******",
 					"singular": "******"
-				}
+				},
+				"show": "******"
 			},
 			"positionAttribute": {
 				"delete": {
@@ -562,15 +564,6 @@
 			"subject": "******",
 			"withoutRecords": "******"
 		},
-		"emailPreview": {
-			"errors": {
-				"missingSubject": "******"
-			},
-			"from": "******",
-			"subject": "******",
-			"title": "******",
-			"to": "******"
-		},
 		"form": {
 			"aggregation": {
 				"delete": {
@@ -634,11 +627,21 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"duplicatedRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingGridField": "****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
 			},
 			"saveSurvey": "******"
+		},
+		"formMapProperties": {
+			"geofields": {
+				"editDialog": {
+					"editGeofield": "******",
+					"label": "******",
+					"value": "******"
+				}
+			}
 		},
 		"forms": {
 			"isCore": "******",
@@ -657,6 +660,7 @@
 			}
 		},
 		"header": {
+			"goToApp": "******",
 			"goToPlatform": "******",
 			"logout": "******",
 			"sidenav": {
@@ -938,6 +942,7 @@
 						"add": "******",
 						"delete": "******",
 						"edit": "******",
+						"none": "******",
 						"title": "******"
 					},
 					"title": "******"
@@ -1347,6 +1352,7 @@
 						},
 						"fields": "******",
 						"filter": "******",
+						"groupLayers": "******",
 						"labels": "******",
 						"layerDatasource": "******",
 						"layerProperties": "******",
@@ -1354,7 +1360,9 @@
 						"popup": "******",
 						"properties": {
 							"defaultVisibility": "******",
+							"from": "******",
 							"opacity": "******",
+							"to": "******",
 							"visibilityRange": "******",
 							"zoom": "******"
 						},
@@ -1405,6 +1413,7 @@
 					"layers": {
 						"add": "******",
 						"chooseLayer": "******",
+						"createGroup": "******",
 						"createLayer": "******",
 						"dataSource": {
 							"geoField": "******",
@@ -1518,6 +1527,9 @@
 								"datasource": "******"
 							}
 						},
+						"preview": {
+							"title": "******"
+						},
 						"textEditor": {
 							"alert": "****** {{data.variable}} ****** {{calc.round( value ; precision )}}",
 							"title": "******"
@@ -1559,7 +1571,13 @@
 		}
 	},
 	"kendo": {
+		"combobox": {
+			"noDataText": "******"
+		},
 		"datepicker": {
+			"dateLabel": "******",
+			"endLabel": "******",
+			"startLabel": "******",
 			"today": "******",
 			"toggle": "******"
 		},
@@ -1708,6 +1726,21 @@
 			"unlock": "******",
 			"unstick": "******"
 		},
+		"multiselect": {
+			"noDataText": "******"
+		},
+		"pager": {
+			"firstPage": "******",
+			"items": "******",
+			"itemsPerPage": "******",
+			"label": "******",
+			"lastPage": "******",
+			"nextPage": "******",
+			"of": "******",
+			"page": "******",
+			"pageNumberInputTitle": "******",
+			"previousPage": "******"
+		},
 		"tilelayout": {
 			"component": {
 				"items": "******",
@@ -1760,6 +1793,17 @@
 		},
 		"dashboard": {
 			"activateFiltering": "******",
+			"buttonActions": {
+				"add": "******",
+				"category": "******",
+				"confirmDelete": "******",
+				"edit": "******",
+				"href": "******",
+				"one": "******",
+				"openInNewTab": "******",
+				"text": "******",
+				"variant": "******"
+			},
 			"context": {
 				"datasource": {
 					"alert": "******",
@@ -1995,6 +2039,10 @@
 				},
 				"selectApplication": "****** {{page}} ****** {{question}} ******",
 				"snakecase": "****** {{name}} ****** {{page}} ******"
+			},
+			"move": {
+				"down": "******",
+				"up": "******"
 			},
 			"questionsCategories": {
 				"core": "******"

@@ -1,17 +1,9 @@
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
-import {
-  AbstractControl,
-  FormControl,
-  UntypedFormControl,
-} from '@angular/forms';
-import {
-  MatLegacyAutocompleteSelectedEvent as MatAutocompleteSelectedEvent,
-  MatLegacyAutocompleteTrigger as MatAutocompleteTrigger,
-} from '@angular/material/legacy-autocomplete';
-import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
-import { BehaviorSubject, merge, Observable } from 'rxjs';
-import { startWith, map } from 'rxjs/operators';
+import { FormControl, UntypedFormControl } from '@angular/forms';
+import { Observable } from 'rxjs';
+import { startWith, takeUntil } from 'rxjs/operators';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Custom tagbox component to use in the app
@@ -21,88 +13,74 @@ import { startWith, map } from 'rxjs/operators';
   templateUrl: './tagbox.component.html',
   styleUrls: ['./tagbox.component.scss'],
 })
-export class SafeTagboxComponent implements OnInit {
+export class SafeTagboxComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === CHOICES ===
   @Input() public choices$!: Observable<any[]>;
   @Input() public displayKey = 'name';
   @Input() public valueKey = 'name';
-  public availableChoices = new BehaviorSubject<any[]>([]);
+  public availableChoices: any[] = [];
   public selectedChoices: any[] = [];
-  public filteredChoices?: Observable<any[]>;
+  public filteredChoices: any[] = [];
 
   // === TAGBOX ===
   @Input() public label!: any;
   public separatorKeysCodes: number[] = [ENTER, COMMA];
   @ViewChild('textInput') private textInput?: ElementRef<HTMLInputElement>;
-  @ViewChild(MatAutocompleteTrigger)
-  private autoTrigger?: MatAutocompleteTrigger;
-  public inputControl: AbstractControl = new UntypedFormControl();
-  public showInput = true;
+
   public choicesEmpty = false;
+  public inputControl: FormControl = new UntypedFormControl({
+    value: '',
+    disabled: this.choicesEmpty,
+  });
+  public showInput = false;
 
   // === OUTPUT CONTROL ===
-  @Input() formControl!: FormControl;
+  @Input() control!: FormControl;
+
+  /**
+   * Tagbox constructor
+   */
+  constructor() {
+    super();
+  }
 
   ngOnInit(): void {
-    this.choices$.subscribe((choices: any[]) => {
+    this.choices$.pipe(takeUntil(this.destroy$)).subscribe((choices: any[]) => {
       this.choicesEmpty = choices.length === 0;
+      if (this.choicesEmpty) {
+        this.inputControl.disable();
+      } else {
+        this.inputControl.enable();
+      }
       this.selectedChoices = this.choicesEmpty
         ? []
-        : this.formControl.value
+        : this.control.value
             .map((value: string) =>
               choices.find((choice) => value === choice[this.valueKey])
             )
             .filter((x: any) => x);
-      this.availableChoices.next(
-        choices.filter(
-          (choice) =>
-            !this.selectedChoices.some(
-              (x) => x[this.valueKey] === choice[this.valueKey]
-            )
-        )
-      );
-      // Set up filtered choices for the autocomplete
-      this.filteredChoices = merge(
-        this.inputControl.valueChanges,
-        this.availableChoices.asObservable()
-      ).pipe(
-        startWith(null),
-        map((value: any) => {
-          if (value) {
-            if (typeof value === 'string') {
-              return this.filterChoices(this.currentChoices, value);
-            } else if (Array.isArray(value)) {
-              if (
-                this.inputControl.value &&
-                typeof this.inputControl.value === 'string'
-              ) {
-                return this.filterChoices(value, this.inputControl.value);
-              } else {
-                return [...value];
-              }
-            }
-          }
-          return [...this.currentChoices];
-        }),
-        map((value: any[]) =>
-          value.sort((a: any, b: any) =>
-            a[this.displayKey] > b[this.displayKey] ? 1 : -1
+      this.availableChoices = choices.filter(
+        (choice) =>
+          !this.selectedChoices.some(
+            (x) => x[this.valueKey] === choice[this.valueKey]
           )
-        )
       );
-      // Focus test input when it reappears after removing a selected choice.
-      this.availableChoices.subscribe((value) => {
-        if (!this.choicesEmpty) {
-          if (!this.showInput && value.length > 0) {
-            this.showInput = true;
-            window.requestAnimationFrame(() =>
-              this.textInput?.nativeElement.focus()
+      this.inputControl.valueChanges
+        .pipe(startWith(''), takeUntil(this.destroy$))
+        .subscribe({
+          next: (value: string) => {
+            this.filteredChoices = this.filterChoices(
+              this.availableChoices,
+              value
+            ).sort((a: any, b: any) =>
+              a[this.displayKey] > b[this.displayKey] ? 1 : -1
             );
-          } else {
-            this.showInput = value.length > 0;
-          }
-        }
-      });
+            this.showInput = true;
+          },
+        });
     });
   }
 
@@ -120,24 +98,6 @@ export class SafeTagboxComponent implements OnInit {
   }
 
   /**
-   * Casts the inputControl to a FormControl
-   *
-   * @returns Returns the inputControls as a FormControl
-   */
-  get inputFormControl(): UntypedFormControl {
-    return this.inputControl as UntypedFormControl;
-  }
-
-  /**
-   * Gets the value from availableChoices FormGroup
-   *
-   * @returns Returns the availableChoices as a plain object
-   */
-  get currentChoices(): any[] {
-    return this.availableChoices.value;
-  }
-
-  /**
    * Display function necessary for the autocomplete in order to display selected choice.
    *
    * @param choice Field to display.
@@ -152,26 +112,27 @@ export class SafeTagboxComponent implements OnInit {
    *
    * @param event Chip event with the text input.
    */
-  add(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-
+  add(event: string | any): void {
+    const value = event[this.displayKey] ?? event;
     if (
       value &&
-      this.currentChoices.some((x) => x[this.displayKey] === value)
+      this.availableChoices.some((x) => x[this.displayKey] === value)
     ) {
       this.selectedChoices.push(
-        this.currentChoices.find((x) => x[this.displayKey] === value)
+        this.availableChoices.find((x) => x[this.displayKey] === value)
       );
-      this.formControl.setValue(
-        this.selectedChoices.map((x) => x[this.valueKey])
-      );
-      this.availableChoices.next(
-        this.currentChoices.filter((x) => x[this.displayKey] !== value)
+      this.control.setValue(this.selectedChoices.map((x) => x[this.valueKey]));
+      this.filteredChoices = this.availableChoices.filter(
+        (choice) =>
+          !this.selectedChoices.find(
+            (x) => x[this.valueKey] === choice[this.valueKey]
+          )
       );
     }
-
-    event.chipInput?.clear();
-    this.inputControl.setValue('');
+    this.inputControl.setValue('', { emitEvent: false });
+    setTimeout(() => {
+      window.requestAnimationFrame(() => this.textInput?.nativeElement.focus());
+    }, 10);
   }
 
   /**
@@ -180,45 +141,17 @@ export class SafeTagboxComponent implements OnInit {
    * @param choice Choice to remove.
    */
   remove(choice: any): void {
-    const index = this.selectedChoices.findIndex(
-      (x) => x[this.valueKey] === choice[this.valueKey]
-    );
-
-    if (index >= 0) {
-      this.availableChoices.next([
-        ...this.currentChoices,
-        this.selectedChoices[index],
-      ]);
-      this.selectedChoices.splice(index, 1);
-      this.formControl.setValue(
-        this.selectedChoices.map((x) => x[this.valueKey])
+    if (choice) {
+      this.selectedChoices = this.selectedChoices.filter(
+        (x) => x[this.valueKey] !== choice[this.valueKey]
       );
-    }
-  }
-
-  /**
-   * Add a new selected choice if possible from autocompletion selection.
-   *
-   * @param event Autocomplete event with the selected choice.
-   */
-  selected(event: MatAutocompleteSelectedEvent): void {
-    window.requestAnimationFrame(() => this.autoTrigger?.openPanel());
-    this.selectedChoices.push(
-      this.currentChoices.find(
-        (x) => x[this.valueKey] === event.option.value[this.valueKey]
-      )
-    );
-    this.formControl.setValue(
-      this.selectedChoices.map((x) => x[this.valueKey])
-    );
-    this.availableChoices.next(
-      this.currentChoices.filter(
-        (x) => x[this.valueKey] !== event.option.value[this.valueKey]
-      )
-    );
-    if (this.textInput) {
-      this.textInput.nativeElement.value = '';
-      this.inputControl.setValue('');
+      this.filteredChoices = this.availableChoices.filter(
+        (choice) =>
+          !this.selectedChoices.find(
+            (x) => x[this.valueKey] === choice[this.valueKey]
+          )
+      );
+      this.control.setValue(this.selectedChoices.map((x) => x[this.valueKey]));
     }
   }
 }

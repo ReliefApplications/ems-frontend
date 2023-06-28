@@ -1,35 +1,41 @@
-<mat-form-field appearance="outline">
-  <mat-label *ngIf="!label">{{
+<div uiFormFieldDirective>
+  <label *ngIf="!label">{{
     'components.aggregationBuilder.dataset.select' | translate
-  }}</mat-label>
-  <mat-label *ngIf="label">{{ label }}</mat-label>
+  }}</label>
+  <label *ngIf="label">{{ label }}</label>
   <input
     type="text"
     [placeholder]="'common.placeholder.search' | translate"
-    matInput
     [formControl]="sourceFormControl"
-    [matAutocomplete]="auto"
-  />
-  <mat-autocomplete
-    autoActiveFirstOption
-    #auto="matAutocomplete"
-    [displayWith]="displayName.bind(this)"
+    [uiAutocomplete]="auto"
+    autocompleteDisplayKey="name"
     (opened)="onOpen()"
     (closed)="onClose()"
-  >
-    <mat-option
+  />
+  <ui-autocomplete #auto>
+    <ui-option
       *ngFor="let form of filteredForms"
       [value]="form.id"
+      [label]="form.name"
       class="form-option"
     >
       {{ form.name }}
-      <safe-icon
+      <ng-container ngProjectAs="icon">
+        <ui-icon
+          *ngIf="form.core"
+          icon="storage"
+          variant="primary"
+          [size]="20"
+        ></ui-icon>
+        <!-- <ui-icon
         *ngIf="form.core"
         icon="storage"
         variant="primary"
         [size]="20"
-      ></safe-icon>
-    </mat-option>
-  </mat-autocomplete>
-  <mat-spinner *ngIf="loadingMore" diameter="24" matSuffix></mat-spinner>
-</mat-form-field>
+      ></ui-icon> -->
+      </ng-container>
+    </ui-option>
+  </ui-autocomplete>
+
+  <ui-spinner [size]="'medium'" *ngIf="loadingMore" uiSuffix></ui-spinner>
+</div>

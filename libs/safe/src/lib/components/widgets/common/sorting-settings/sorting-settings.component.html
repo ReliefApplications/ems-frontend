@@ -1,14 +1,13 @@
 <h2>{{ 'models.widget.sorting.management' | translate }}</h2>
 
-<safe-button
-  type="button"
-  (click)="addRow()"
-  variant="primary"
-  category="secondary"
+<ui-button
   class="mb-6"
+  category="secondary"
+  variant="primary"
+  (click)="addRow()"
 >
   {{ 'models.widget.sorting.add' | translate }}
-</safe-button>
+</ui-button>
 
 <form [formGroup]="formGroup">
   <table

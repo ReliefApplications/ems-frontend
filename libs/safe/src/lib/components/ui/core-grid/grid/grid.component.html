@@ -88,7 +88,7 @@
     </ng-container>
     <button
       *ngIf="filterable"
-      [matTooltip]="'components.widget.grid.filter.toggle' | translate"
+      [uiTooltip]="'components.widget.grid.filter.toggle' | translate"
       kendoButton
       icon="eye"
       (click)="onToggleFilter()"
@@ -100,7 +100,7 @@
     <kendo-combobox
       class="w-fit"
       *ngIf="
-        !!widget.settings.widgetDisplay?.sortable &&
+        !!widget?.settings.widgetDisplay?.sortable &&
         data.total &&
         sortFields.length > 0
       "
@@ -231,12 +231,7 @@
               [style]="getStyle(dataItem, field.name)"
             >
               <div #refSpan class="textbox">
-                {{
-                  applyFieldFormat(
-                    getPropertyValue(dataItem, field.name),
-                    field
-                  )
-                }}
+                {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
               </div>
               <button
                 kendoButton
@@ -244,7 +239,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
-                [matTooltip]="'common.viewFullscreen' | translate"
+                [uiTooltip]="'common.viewFullscreen' | translate"
               ></button>
             </div>
           </ng-template>
@@ -266,8 +261,7 @@
               <div #refSpan class="textbox" *ngIf="field.meta.type === 'time'">
                 {{
                   applyFieldFormat(
-                    getPropertyValue(dataItem, field.name)
-                      | safeDate : 'shortTime',
+                    getPropertyValue(dataItem, field) | safeDate : 'shortTime',
                     field
                   )
                 }}
@@ -279,7 +273,7 @@
               >
                 {{
                   applyFieldFormat(
-                    getPropertyValue(dataItem, field.name) | safeDate : 'short',
+                    getPropertyValue(dataItem, field) | safeDate : 'short',
                     field
                   )
                 }}
@@ -287,8 +281,7 @@
               <div #refSpan class="textbox" *ngIf="field.meta.type === 'date'">
                 {{
                   applyFieldFormat(
-                    getPropertyValue(dataItem, field.name)
-                      | safeDate : 'shortDate',
+                    getPropertyValue(dataItem, field) | safeDate : 'shortDate',
                     field
                   )
                 }}
@@ -309,48 +302,39 @@
               <a
                 *ngIf="field.meta.type === 'url'"
                 class="url-container textbox"
-                href="{{ getUrl(getPropertyValue(dataItem, field.name)) }}"
+                href="{{ getUrl(getPropertyValue(dataItem, field)) }}"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <div #refSpan>
                   {{
-                    applyFieldFormat(
-                      getPropertyValue(dataItem, field.name),
-                      field
-                    )
+                    applyFieldFormat(getPropertyValue(dataItem, field), field)
                   }}
                 </div>
               </a>
               <a
                 *ngIf="field.meta.type === 'email'"
                 class="url-container textbox"
-                href="mailto:{{ getPropertyValue(dataItem, field.name) }}"
+                href="mailto:{{ getPropertyValue(dataItem, field) }}"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <div #refSpan>
                   {{
-                    applyFieldFormat(
-                      getPropertyValue(dataItem, field.name),
-                      field
-                    )
+                    applyFieldFormat(getPropertyValue(dataItem, field), field)
                   }}
                 </div>
               </a>
               <a
                 *ngIf="field.meta.type === 'tel'"
                 class="url-container textbox"
-                href="tel:{{ getPropertyValue(dataItem, field.name) }}"
+                href="tel:{{ getPropertyValue(dataItem, field) }}"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <div #refSpan>
                   {{
-                    applyFieldFormat(
-                      getPropertyValue(dataItem, field.name),
-                      field
-                    )
+                    applyFieldFormat(getPropertyValue(dataItem, field), field)
                   }}
                 </div>
               </a>
@@ -360,7 +344,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
-                [matTooltip]="'common.viewFullscreen' | translate"
+                [uiTooltip]="'common.viewFullscreen' | translate"
               ></button>
             </div>
           </ng-template>
@@ -394,12 +378,7 @@
               [style]="getStyle(dataItem, field.name)"
             >
               <div #refSpan class="textbox">
-                {{
-                  applyFieldFormat(
-                    getPropertyValue(dataItem, field.name),
-                    field
-                  )
-                }}
+                {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
               </div>
               <button
                 kendoButton
@@ -407,7 +386,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
-                [matTooltip]="'common.viewFullscreen' | translate"
+                [uiTooltip]="'common.viewFullscreen' | translate"
               ></button>
             </div>
           </ng-template>
@@ -431,7 +410,7 @@
                 #refSpan
                 class="textbox hover:cursor-pointer text-primary-500"
                 *ngIf="dataItem[field.name].length > 0"
-                [matTooltip]="
+                [uiTooltip]="
                   'components.widget.grid.actions.detail' | translate
                 "
                 (click)="
@@ -465,9 +444,7 @@
               class="textbox-container"
               [style]="getStyle(dataItem, field.name)"
             >
-              {{
-                applyFieldFormat(getPropertyValue(dataItem, field.name), field)
-              }}
+              {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
             </div>
           </ng-template>
         </ng-container>
@@ -480,13 +457,15 @@
         >
           <!-- EDITION ( text / comment ) -->
           <ng-container *ngIf="field.meta.type === 'text'">
-            <textarea
-              rows="2"
+            <ui-textarea
               [formControl]="formGroup.get(field.name)"
-              kendoGridFocusable
+              [minRows]="2"
+              [maxRows]="2"
               [name]="field.name"
-              class="k-textbox"
-            ></textarea>
+              class="w-full"
+              kendoGridFocusable
+            >
+            </ui-textarea>
           </ng-container>
           <!-- EDITION ( url / email / tel ) -->
           <ng-container
@@ -494,9 +473,9 @@
           >
             <input
               [formControl]="formGroup.get(field.name)"
-              kendoGridFocusable
               [name]="field.name"
               class="k-textbox"
+              kendoGridFocusable
             />
           </ng-container>
           <!-- EDITION ( color ) -->
@@ -617,11 +596,7 @@
               >
                 {{
                   applyFieldFormat(
-                    getReferenceDataPropertyValue(
-                      dataItem,
-                      field.name,
-                      subField.meta.name
-                    ),
+                    getPropertyValue(dataItem, field, subField),
                     field
                   )
                 }}
@@ -652,7 +627,7 @@
               class="url-container textbox cursor-pointer"
               rel="noopener noreferrer"
               (click)="onOpenMapModal(dataItem, field)"
-              [matTooltip]="
+              [uiTooltip]="
                 'components.widget.grid.tooltip.displayMap' | translate
               "
             >
@@ -712,9 +687,7 @@
             class="textbox-container"
             [style]="getStyle(dataItem, field.name)"
           >
-            {{
-              applyFieldFormat(getPropertyValue(dataItem, field.name), field)
-            }}
+            {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
           </div>
         </ng-template>
         <ng-template
@@ -753,7 +726,7 @@
               kendoButton
               *ngFor="let file of dataItem[field.name]"
               [look]="'flat'"
-              [matTooltip]="file.name"
+              [uiTooltip]="file.name"
               (click)="onDownload(file)"
               class="w-full justify-start overflow-hidden text-overflow-ellipsis"
             >
@@ -890,15 +863,17 @@
                   <ng-container *ngIf="field.meta.type === 'matrixdropdown'">
                     <li *ngFor="let row of field.meta.rows">
                       <ng-container *ngIf="column.type === 'text'">
-                        <textarea
-                          rows="2"
+                        <ui-textarea
                           [formControl]="
                             formGroup.get([field.name, row.name, column.name])
                           "
-                          kendoGridFocusable
+                          [minRows]="2"
+                          [maxRows]="2"
                           [name]="row.name"
-                          class="k-textbox"
-                        ></textarea>
+                          class="w-full"
+                          kendoGridFocusable
+                        >
+                        </ui-textarea>
                       </ng-container>
                       <ng-container
                         *ngIf="['dropdown', 'radiogroup'].includes(column.type)"
@@ -926,13 +901,15 @@
                       [formGroup]="group"
                     >
                       <ng-container *ngIf="column.cellType === 'text'">
-                        <textarea
-                          rows="2"
+                        <ui-textarea
                           [formControlName]="column.name"
-                          kendoGridFocusable
                           [name]="field.name + i"
-                          class="k-textbox"
-                        ></textarea>
+                          [minRows]="2"
+                          [maxRows]="2"
+                          class="w-full"
+                          kendoGridFocusable
+                        >
+                        </ui-textarea>
                       </ng-container>
                       <ng-container
                         *ngIf="
@@ -974,13 +951,15 @@
               </ng-container>
               <!-- EDITION ( multipletext ) -->
               <ng-container *ngIf="field.meta.type === 'multipletext'">
-                <textarea
-                  rows="2"
+                <ui-textarea
                   [formControl]="formGroup.get([field.name, column.name])"
-                  kendoGridFocusable
+                  [minRows]="2"
+                  [maxRows]="2"
                   [name]="column.name"
-                  class="k-textbox"
-                ></textarea>
+                  class="w-full"
+                  kendoGridFocusable
+                >
+                </ui-textarea>
               </ng-container>
             </ng-template>
           </kendo-grid-column>
@@ -999,10 +978,10 @@
         <button
           class="text-center"
           kendoButton
-          [icon]="'detail-section'"
+          icon="detail-section"
           [look]="'flat'"
           (click)="action.emit({ action: 'details', items: dataItem })"
-          [matTooltip]="'components.widget.grid.actions.detail' | translate"
+          [uiTooltip]="'components.widget.grid.actions.detail' | translate"
         ></button>
       </ng-template>
     </kendo-grid-column>
@@ -1032,7 +1011,7 @@
           look="flat"
           class="k-color-error"
           (click)="showErrors(dataItem)"
-          [matTooltip]="
+          [uiTooltip]="
             'components.widget.grid.tooltip.uploadFailed' | translate
           "
         ></button>
@@ -1042,7 +1021,7 @@
           icon="exclamation-circle"
           look="flat"
           class="k-color-warning cursor-default"
-          [matTooltip]="'components.widget.grid.tooltip.unsaved' | translate"
+          [uiTooltip]="'components.widget.grid.tooltip.unsaved' | translate"
         ></span>
         <span
           *ngIf="dataItem.saved"
@@ -1050,7 +1029,7 @@
           icon="check-outline"
           look="flat"
           class="k-color-success cursor-default"
-          [matTooltip]="'components.widget.grid.tooltip.saved' | translate"
+          [uiTooltip]="'components.widget.grid.tooltip.saved' | translate"
         ></span>
       </ng-template>
     </kendo-grid-column>
@@ -1059,7 +1038,7 @@
   <ng-template kendoGridNoRecordsTemplate>
     {{ statusMessage }}
     <div class="mt-8 flex justify-center">
-      <safe-button
+      <ui-button
         *ngIf="
           !loadingSettings &&
           !loadingRecords &&
@@ -1070,7 +1049,7 @@
         category="secondary"
         (click)="openSettings()"
         >{{ 'components.widget.grid.openSettings' | translate }}
-      </safe-button>
+      </ui-button>
     </div>
   </ng-template>
 </kendo-grid>

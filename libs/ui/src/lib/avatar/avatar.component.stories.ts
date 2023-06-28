@@ -1,24 +1,24 @@
 import { moduleMetadata, StoryObj, Meta } from '@storybook/angular';
 import { AvatarComponent } from './avatar.component';
-import { AvatarSize } from './enums/avatar-size.enum';
+import { sizes } from '../types/size';
+import { categories } from '../types/category';
 import { AvatarModule } from './avatar.module';
-import { AvatarVariant } from './enums/avatar-variant.enum';
-import { AvatarShape } from './enums/avatar-shape.enum';
+import { avatarShapes } from './types/avatar-shape';
 
 export default {
   title: 'Avatar',
   component: AvatarComponent,
   argTypes: {
     size: {
-      options: AvatarSize,
+      options: sizes,
       control: 'select',
     },
     shape: {
-      options: AvatarShape,
+      options: avatarShapes,
       control: 'select',
     },
     variant: {
-      options: AvatarVariant,
+      options: categories,
       control: 'select',
     },
   },
@@ -38,11 +38,11 @@ export const Defaut: StoryObj<AvatarComponent> = {
  */
 export const PrimaryCircleAvatarSmall: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.SMALL,
-    shape: AvatarShape.CIRCLE,
+    size: 'small',
+    shape: 'circle',
     initials: '',
     image: '',
-    variant: AvatarVariant.PRIMARY,
+    variant: 'primary',
   },
 };
 /**
@@ -50,11 +50,11 @@ export const PrimaryCircleAvatarSmall: StoryObj<AvatarComponent> = {
  */
 export const PrimaryCircleAvatarMedium: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.MEDIUM,
-    shape: AvatarShape.CIRCLE,
+    size: 'medium',
+    shape: 'circle',
     initials: '',
     image: '',
-    variant: AvatarVariant.PRIMARY,
+    variant: 'primary',
   },
 };
 /**
@@ -62,11 +62,11 @@ export const PrimaryCircleAvatarMedium: StoryObj<AvatarComponent> = {
  */
 export const PrimaryCircleAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.LARGE,
-    shape: AvatarShape.CIRCLE,
+    size: 'large',
+    shape: 'circle',
     initials: '',
     image: '',
-    variant: AvatarVariant.PRIMARY,
+    variant: 'primary',
   },
 };
 /**
@@ -74,12 +74,12 @@ export const PrimaryCircleAvatarLarge: StoryObj<AvatarComponent> = {
  */
 export const PrimaryCircleImageAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.LARGE,
-    shape: AvatarShape.CIRCLE,
+    size: 'large',
+    shape: 'circle',
     initials: '',
     image:
       'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    variant: AvatarVariant.PRIMARY,
+    variant: 'primary',
   },
 };
 /**
@@ -87,11 +87,11 @@ export const PrimaryCircleImageAvatarLarge: StoryObj<AvatarComponent> = {
  */
 export const SecondaryCircleAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.LARGE,
-    shape: AvatarShape.CIRCLE,
+    size: 'large',
+    shape: 'circle',
     initials: '',
     image: '',
-    variant: AvatarVariant.SECONDARY,
+    variant: 'secondary',
   },
 };
 /**
@@ -99,11 +99,11 @@ export const SecondaryCircleAvatarLarge: StoryObj<AvatarComponent> = {
  */
 export const TertiaryCircleAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.LARGE,
-    shape: AvatarShape.CIRCLE,
+    size: 'large',
+    shape: 'circle',
     initials: '',
     image: '',
-    variant: AvatarVariant.TERTIARY,
+    variant: 'tertiary',
   },
 };
 /**
@@ -111,11 +111,11 @@ export const TertiaryCircleAvatarLarge: StoryObj<AvatarComponent> = {
  */
 export const PrimaryRectangleAvatarSmall: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.SMALL,
-    shape: AvatarShape.RECTANGLE,
+    size: 'small',
+    shape: 'rectangle',
     initials: '',
     image: '',
-    variant: AvatarVariant.PRIMARY,
+    variant: 'primary',
   },
 };
 /**
@@ -123,11 +123,11 @@ export const PrimaryRectangleAvatarSmall: StoryObj<AvatarComponent> = {
  */
 export const PrimaryRectangleAvatarMedium: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.MEDIUM,
-    shape: AvatarShape.RECTANGLE,
+    size: 'medium',
+    shape: 'rectangle',
     initials: '',
     image: '',
-    variant: AvatarVariant.PRIMARY,
+    variant: 'primary',
   },
 };
 /**
@@ -135,11 +135,11 @@ export const PrimaryRectangleAvatarMedium: StoryObj<AvatarComponent> = {
  */
 export const PrimaryRectangleAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.LARGE,
-    shape: AvatarShape.RECTANGLE,
+    size: 'large',
+    shape: 'rectangle',
     initials: '',
     image: '',
-    variant: AvatarVariant.PRIMARY,
+    variant: 'primary',
   },
 };
 /**
@@ -147,12 +147,12 @@ export const PrimaryRectangleAvatarLarge: StoryObj<AvatarComponent> = {
  */
 export const PrimaryRectangleImageAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.LARGE,
-    shape: AvatarShape.RECTANGLE,
+    size: 'large',
+    shape: 'rectangle',
     initials: '',
     image:
       'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    variant: AvatarVariant.PRIMARY,
+    variant: 'primary',
   },
 };
 /**
@@ -160,11 +160,11 @@ export const PrimaryRectangleImageAvatarLarge: StoryObj<AvatarComponent> = {
  */
 export const SecondaryRectangleAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.LARGE,
-    shape: AvatarShape.RECTANGLE,
+    size: 'large',
+    shape: 'rectangle',
     initials: '',
     image: '',
-    variant: AvatarVariant.SECONDARY,
+    variant: 'secondary',
   },
 };
 /**
@@ -172,10 +172,10 @@ export const SecondaryRectangleAvatarLarge: StoryObj<AvatarComponent> = {
  */
 export const TertiaryRectangleAvatarLarge: StoryObj<AvatarComponent> = {
   args: {
-    size: AvatarSize.LARGE,
-    shape: AvatarShape.RECTANGLE,
+    size: 'large',
+    shape: 'rectangle',
     initials: '',
     image: '',
-    variant: AvatarVariant.TERTIARY,
+    variant: 'tertiary',
   },
 };

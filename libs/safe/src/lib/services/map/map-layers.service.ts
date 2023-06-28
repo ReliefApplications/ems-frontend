@@ -9,7 +9,6 @@ import {
   mergeMap,
   Observable,
   of,
-  tap,
 } from 'rxjs';
 import { LayerFormData } from '../../components/ui/map/interfaces/layer-settings.type';
 import { Layer, EMPTY_FEATURE_COLLECTION } from '../../components/ui/map/layer';
@@ -59,9 +58,6 @@ export class SafeMapLayersService {
     private queryBuilder: QueryBuilderService,
     private aggregationBuilder: AggregationBuilderService
   ) {}
-
-  // Layers saved in the database
-  currentLayers: LayerModel[] = [];
   /**
    * Save a new layer in the DB
    *
@@ -158,7 +154,7 @@ export class SafeMapLayersService {
           if (response.errors) {
             throw new Error(response.errors[0].message);
           }
-          return response.data.layer;
+          return this.featureReductionCleaner(response.data.layer);
         })
       );
   }
@@ -176,14 +172,11 @@ export class SafeMapLayersService {
       })
       .pipe(
         filter((response) => !!response.data),
-        // We are creating/destroying components in order to use the same map view for the layer edition and the map settings view
-        // So we have to use service properties in order to not keep loading same queries when creating/destroying component views
-        tap((response) => (this.currentLayers = response.data.layers)),
         map((response) => {
           if (response.errors) {
             throw new Error(response.errors[0].message);
           }
-          return response.data.layers;
+          return response.data.layers.map(this.featureReductionCleaner);
         })
       );
   }
@@ -266,11 +259,13 @@ export class SafeMapLayersService {
    *
    * @param layerIds layer settings saved from the layer editor
    * @param popupService popup service
+   * @param layerService Shared layer service
    * @returns Observable of LayerSettingsI
    */
   async createLayersFromIds(
     layerIds: string[],
-    popupService: SafeMapPopupService
+    popupService: SafeMapPopupService,
+    layerService: SafeMapLayersService
   ): Promise<Layer[]> {
     const promises: Promise<Layer>[] = [];
     for (const id of layerIds) {
@@ -300,7 +295,8 @@ export class SafeMapLayersService {
               (layer: { layer: LayerModel; geojson: any }) =>
                 new Layer(
                   { ...layer.layer, geojson: layer.geojson },
-                  popupService
+                  popupService,
+                  layerService
                 )
             )
           )
@@ -320,11 +316,13 @@ export class SafeMapLayersService {
    *
    * @param layer Layer to get definition of.
    * @param popupService Shared popup service
+   * @param layersService Shared layers service
    * @returns Layer for map widget
    */
   async createLayerFromDefinition(
     layer: LayerModel,
-    popupService: SafeMapPopupService
+    popupService: SafeMapPopupService,
+    layersService: SafeMapLayersService
   ) {
     if (this.isDatasourceValid(layer.datasource)) {
       const params = new HttpParams({
@@ -343,19 +341,51 @@ export class SafeMapLayersService {
           ...res.layer,
           geojson: res.geojson,
         },
-        popupService
+        popupService,
+        layersService
       );
     } else {
-      return new Layer(layer, popupService);
+      return new Layer(layer, popupService, layersService);
     }
   }
 
   private isDatasourceValid = (value: LayerDatasource | undefined) => {
-    return (
-      value &&
-      (value.resource || value.refData) &&
-      (value.aggregation || value.layout) &&
-      (value.geoField || (value.latitudeField && value.longitudeField))
-    );
+    if (value) {
+      if (value.refData) {
+        if (value.geoField || (value.latitudeField && value.longitudeField)) {
+          return true;
+        } else {
+          return false;
+        }
+      } else if (value.resource) {
+        // If datasource origin is a resource, then geofield OR lat & lng is needed
+        if (
+          (value.layout || value.aggregation) &&
+          (value.geoField || (value.latitudeField && value.longitudeField))
+        ) {
+          return true;
+        }
+      }
+    }
+    return false;
   };
+
+  /**
+   * Method to disable any previously saved heatmap layers with also a cluster feature reduction
+   * !!!!!! This method should eventually begone !!!!!!
+   *
+   * @param layerModel layerModel data to clean
+   * @returns clean layerModel
+   */
+  private featureReductionCleaner(layerModel: LayerModel): LayerModel {
+    if (
+      layerModel.layerDefinition?.drawingInfo?.renderer?.type === 'heatmap' &&
+      layerModel.layerDefinition.featureReduction
+    ) {
+      layerModel.layerDefinition.featureReduction.clusterRadius = null as any;
+      layerModel.layerDefinition.featureReduction.type = null as any;
+      layerModel.layerDefinition.featureReduction.drawingInfo = null as any;
+    }
+    return layerModel;
+  }
 }

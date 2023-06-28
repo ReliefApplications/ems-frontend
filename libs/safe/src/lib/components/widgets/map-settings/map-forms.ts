@@ -19,6 +19,7 @@ import {
 import { IconName } from '../../icon-picker/icon-picker.const';
 import { LayerType } from '../../ui/map/interfaces/layer-settings.type';
 import { set } from 'lodash';
+import { DEFAULT_MARKER_ICON_OPTIONS } from '../../ui/map/utils/create-div-icon';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 
@@ -62,14 +63,18 @@ const DEFAULT_GRADIENT = [
  * @returns new form group
  */
 export const createLayerForm = (value?: LayerModel) => {
-  const type = get(value, 'type', 'FeatureLayer') as LayerType;
-  return fb.group({
+  const type = get(value, 'type') || 'FeatureLayer';
+
+  return new FormGroup({
     // Layer properties
-    id: [get(value, 'id', null)],
-    type: [type, Validators.required],
-    name: [get(value, 'name', null), Validators.required],
-    visibility: [get(value, 'visibility', true), Validators.required],
-    opacity: [get(value, 'opacity', 1), Validators.required],
+    id: new FormControl(get(value, 'id', null)),
+    type: new FormControl(type, Validators.required),
+    name: new FormControl(get(value, 'name', null), Validators.required),
+    visibility: new FormControl(
+      get(value, 'visibility', true),
+      Validators.required
+    ),
+    opacity: new FormControl(get(value, 'opacity', 1), Validators.required),
     layerDefinition: createLayerDefinitionForm(
       type,
       get(value, 'layerDefinition')
@@ -78,6 +83,9 @@ export const createLayerForm = (value?: LayerModel) => {
       popupInfo: createPopupInfoForm(get(value, 'popupInfo')),
       // Layer datasource
       datasource: createLayerDataSourceForm(get(value, 'datasource')),
+    }),
+    ...(type === 'GroupLayer' && {
+      sublayers: new FormControl(get(value, 'sublayers', [])),
     }),
   });
 };
@@ -91,8 +99,9 @@ export const createLayerForm = (value?: LayerModel) => {
 const createLayerDataSourceForm = (value?: any): FormGroup => {
   const getCanSeeFields = (value: any) => {
     return (
-      (get(value, 'resource') || get(value, 'refData')) &&
-      (get(value, 'layout') || get(value, 'aggregation'))
+      (get(value, 'resource') &&
+        (get(value, 'layout') || get(value, 'aggregation'))) ||
+      get(value, 'refData')
     );
   };
   const canSeeFields = getCanSeeFields(value);
@@ -177,6 +186,13 @@ const createLayerDefinitionForm = (type: LayerType, value?: any): FormGroup => {
             'drawingInfo',
             createLayerDrawingInfoForm(drawingInfo)
           );
+          // If new type is heatmap and we currently have a cluster set, reset the featureReduction
+          if (
+            type === 'heatmap' &&
+            formGroup.get('featureReduction.type')?.value === 'cluster'
+          ) {
+            formGroup.get('featureReduction.type')?.patchValue({ type: null });
+          }
           setTypeListeners();
         });
     };
@@ -225,7 +241,14 @@ export const createLayerDrawingInfoForm = (value: any): FormGroup => {
       type: [type, Validators.required],
       ...(type === 'simple' && {
         symbol: fb.group({
-          color: [get(value, 'renderer.symbol.color', ''), Validators.required],
+          color: [
+            get(
+              value,
+              'renderer.symbol.color',
+              DEFAULT_MARKER_ICON_OPTIONS.color
+            ),
+            Validators.required,
+          ],
           size: [get(value, 'renderer.symbol.size', 24)],
           style: new FormControl<IconName>(
             get(value, 'renderer.symbol.style', 'location-dot')

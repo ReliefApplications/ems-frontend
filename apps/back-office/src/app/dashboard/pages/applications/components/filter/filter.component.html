@@ -1,15 +1,18 @@
-<div [formGroup]="form" class="flex flex-col gap-4">
+<div [formGroup]="form" class="flex flex-col gap-x-4">
   <!-- Default filter -->
-  <div class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row">
+  <div class="flex flex-wrap gap-2 flex-col sm:flex-row">
     <!-- Search text filter -->
-    <mat-form-field appearance="outline" class="p-0 mat-form-field-sm">
-      <mat-icon matPrefix>search</mat-icon>
-      <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
-      <input matInput [formControl]="search" type="search" />
-      <mat-spinner *ngIf="loading" diameter="24" matSuffix></mat-spinner>
-    </mat-form-field>
+    <div uiFormFieldDirective>
+      <ui-icon icon="search" uiPrefix></ui-icon>
+      <input
+        placeholder="{{ 'common.placeholder.search' | translate }}"
+        [formControl]="search"
+        type="text"
+      />
+      <ui-spinner [size]="'small'" *ngIf="loading" uiSuffix></ui-spinner>
+    </div>
     <!-- Toggle advanced filters -->
-    <safe-button
+    <ui-button
       class="max-sm:!w-auto"
       icon="filter_list"
       category="tertiary"
@@ -20,7 +23,7 @@
           ? ('common.filter.hide' | translate)
           : ('common.filter.show' | translate)
       }}
-    </safe-button>
+    </ui-button>
   </div>
   <!-- Advanced filters -->
   <div
@@ -28,50 +31,40 @@
     class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row"
   >
     <!-- Date range filter -->
-    <mat-form-field class="p-0 mat-form-field-sm" appearance="outline">
-      <mat-label>{{ 'common.input.dateRange' | translate }}</mat-label>
-      <mat-date-range-input [rangePicker]="rangePicker">
-        <input formControlName="startDate" matStartDate />
-        <input formControlName="endDate" matEndDate />
-      </mat-date-range-input>
-      <mat-datepicker-toggle
-        matSuffix
-        [for]="rangePicker"
-      ></mat-datepicker-toggle>
-      <mat-date-range-picker #rangePicker>
-        <mat-date-range-picker-actions>
-          <safe-button matDateRangePickerCancel (click)="clearDateFilter()">
-            {{ 'common.clear' | translate }}
-          </safe-button>
-          <safe-button
-            category="secondary"
-            variant="primary"
-            matDateRangePickerApply
-          >
-            {{ 'common.filter.apply' | translate }}
-          </safe-button>
-        </mat-date-range-picker-actions>
-      </mat-date-range-picker>
-    </mat-form-field>
+    <div uiFormFieldDirective>
+      <label>{{ 'common.input.dateRange' | translate }}</label>
+      <div [formGroup]="form" [uiDateWrapper]="calendar">
+        <input
+          [uiDatePicker]
+          formControlName="startDate"
+          [label]="'kendo.datepicker.startLabel' | translate"
+        />
+        <input
+          [uiDatePicker]
+          formControlName="endDate"
+          [label]="'kendo.datepicker.endLabel' | translate"
+        />
+        <ui-date-range #calendar> </ui-date-range>
+      </div>
+    </div>
     <!-- Status filter -->
-    <mat-form-field class="p-0 mat-form-field-sm" appearance="outline">
-      <mat-label>{{ 'common.status' | translate }}</mat-label>
-      <mat-select formControlName="status">
-        <mat-option>-</mat-option>
-        <mat-option value="active">
+    <div uiFormFieldDirective [outline]="false" class="p-0 w-44">
+      <label>{{ 'common.status' | translate }}</label>
+      <ui-select-menu formControlName="status">
+        <ui-select-option>-</ui-select-option>
+        <ui-select-option value="active">
           {{ 'common.status_active' | translate }}
-        </mat-option>
-        <mat-option value="pending">
+        </ui-select-option>
+        <ui-select-option value="pending">
           {{ 'common.status_pending' | translate }}
-        </mat-option>
-        <mat-option value="archived">
+        </ui-select-option>
+        <ui-select-option value="archived">
           {{ 'common.status_archived' | translate }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <!-- Clear filters -->
-    <safe-button variant="danger" (click)="clear()" class="max-sm:!w-auto">{{
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
+    <ui-button variant="danger" (click)="clear()" class="max-sm:!w-auto">{{
       'common.filter.clear' | translate
-    }}</safe-button>
+    }}</ui-button>
   </div>
 </div>

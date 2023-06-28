@@ -2,116 +2,118 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" mat-table [dataSource]="forms">
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>
+    <table *ngIf="!loading" cdk-table uiTableWrapper [dataSource]="forms">
+      <ng-container cdkColumnDef="name">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.name' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element" class="font-bold">
+        <td
+          uiCell
+          *cdkCellDef="let element"
+          class="!text-gray-900 !font-medium"
+        >
           {{ element.name }}
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="createdAt">
-        <th mat-header-cell *matHeaderCellDef>
+      <ng-container cdkColumnDef="createdAt">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.createdOn' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ element.createdAt | safeDate }}
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="status">
-        <th mat-header-cell *matHeaderCellDef>
+      <ng-container cdkColumnDef="status">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.status' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element">
-          <mat-chip-list>
-            <mat-chip
-              class="success-chip !rounded-lg"
-              disabled
+        <td uiCell *cdkCellDef="let element">
+          <div uiChipList>
+            <ui-chip
+              class="!rounded-lg"
+              variant="success"
               *ngIf="element.status === 'active'"
             >
               {{ 'common.status_active' | translate | titlecase }}
-            </mat-chip>
-            <mat-chip
-              class="accent-chip !rounded-lg"
-              disabled
-              color="accent"
+            </ui-chip>
+            <ui-chip
+              class="!rounded-lg"
+              variant="warning"
               *ngIf="element.status === 'pending'"
             >
               {{ 'common.status_pending' | translate | titlecase }}
-            </mat-chip>
-            <mat-chip
-              class="warn-chip !rounded-lg"
-              disabled
-              color="warn"
+            </ui-chip>
+            <ui-chip
+              class="!rounded-lg"
+              variant="danger"
               *ngIf="element.status === 'archived'"
             >
               {{ 'common.status_archived' | translate | titlecase }}
-            </mat-chip>
-          </mat-chip-list>
+            </ui-chip>
+          </div>
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="recordsCount">
-        <th mat-header-cell *matHeaderCellDef>
+      <ng-container cdkColumnDef="recordsCount">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.record.few' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ element.recordsCount }}
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="core">
-        <th mat-header-cell *matHeaderCellDef>
+      <ng-container cdkColumnDef="core">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'components.forms.isCore' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element">
-          <mat-chip-list *ngIf="element.core">
-            <mat-chip class="primary-chip !rounded-lg" disabled>{{
+        <td uiCell *cdkCellDef="let element">
+          <div uiChipList *ngIf="element.core">
+            <ui-chip class="!rounded-lg" variant="primary">{{
               'models.form.core' | translate
-            }}</mat-chip>
-          </mat-chip-list>
+            }}</ui-chip>
+          </div>
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="_actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef class="w-16"></th>
-        <td mat-cell *matCellDef="let element">
-          <safe-button
+      <ng-container cdkColumnDef="_actions" [stickyEnd]="true">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
+          <ui-button
             [isIcon]="true"
             icon="more_vert"
-            [matMenuTriggerFor]="resMenu"
+            [uiMenuTriggerFor]="resMenu"
             (click)="$event.stopPropagation()"
             [disabled]="!(element.canUpdate || element.canDelete)"
           >
-          </safe-button>
-          <mat-menu #resMenu="matMenu">
+          </ui-button>
+          <ui-menu #resMenu>
             <button
-              mat-menu-item
+              uiMenuItem
               *ngIf="element.canUpdate"
               [routerLink]="[element.id + '/builder']"
             >
-              <mat-icon>edit</mat-icon>
+              <ui-icon icon="edit" variant="grey"></ui-icon>
               {{ 'common.edit' | translate }}
             </button>
             <button
-              mat-menu-item
+              uiMenuItem
               (click)="deleteForm(element, $event)"
               *ngIf="element.canDelete"
             >
-              <mat-icon>delete</mat-icon>
+              <ui-icon icon="delete" variant="danger"></ui-icon>
               {{ 'common.delete' | translate }}
             </button>
-          </mat-menu>
+          </ui-menu>
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumnsForms"></tr>
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumnsForms"></tr>
       <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumnsForms"
+        cdk-row
+        *cdkRowDef="let row; columns: displayedColumnsForms"
         [ngClass]="{
           'cursor-pointer': row.canCreateRecords && row.status === 'active'
         }"
@@ -122,6 +124,7 @@
         "
       ></tr>
     </table>
+    <!-- Skeleton table when loading -->
     <safe-skeleton-table
       *ngIf="loading"
       [columns]="[

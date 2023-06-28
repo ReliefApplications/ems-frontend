@@ -4,12 +4,15 @@ import {
   ElementRef,
   HostListener,
   Input,
+  OnDestroy,
   OnInit,
+  Renderer2,
   ViewChild,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import { debounceTime, distinctUntilChanged, firstValueFrom } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
@@ -17,6 +20,7 @@ import {
   GetResourceMetadataQueryResponse,
   GET_RESOURCE_METADATA,
 } from './graphql/queries';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { SummaryCardFormT } from '../summary-card-settings/summary-card-settings.component';
 import { Record } from '../../../models/record.model';
 
@@ -28,9 +32,10 @@ export type CardT = NonNullable<SummaryCardFormT['value']['card']> &
     cardAggregationData: any;
   }>;
 import { Layout } from '../../../models/layout.model';
-import { PageChangeEvent } from '@progress/kendo-angular-grid';
 import { FormControl } from '@angular/forms';
 import { clone, isNaN } from 'lodash';
+import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
+import { Dialog } from '@angular/cdk/dialog';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -46,7 +51,10 @@ const DEFAULT_PAGE_SIZE = 25;
   templateUrl: './summary-card.component.html',
   styleUrls: ['./summary-card.component.scss'],
 })
-export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
+export class SafeSummaryCardComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @Input() widget: any;
   @Input() header = true;
   @Input() export = true;
@@ -58,12 +66,11 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   // === GRID ===
   public colsNumber = MAX_COL_SPAN;
 
-  // === DYNAMIC CARDS PAGINATION ===
   public pageInfo = {
-    first: DEFAULT_PAGE_SIZE,
+    pageIndex: 0,
+    pageSize: DEFAULT_PAGE_SIZE,
+    length: 0,
     skip: 0,
-    hasNextPage: false,
-    totalCount: 0,
   };
   public loading = true;
 
@@ -76,6 +83,8 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
   public sortFields: any[] = [];
 
   public searchControl = new FormControl('');
+  private searching = false;
+  public scrolling = false;
 
   @ViewChild('summaryCardGrid') summaryCardGrid!: ElementRef<HTMLDivElement>;
   @ViewChild('pdf') pdf!: any;
@@ -110,16 +119,26 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
    * Constructor for summary card component
    *
    * @param apollo Apollo service
+   * @param dialog Dialog service
+   * @param snackBar Shared snackbar service
+   * @param translate Angular translate service
    * @param queryBuilder Query builder service
    * @param gridLayoutService Shared grid layout service
    * @param aggregationService Aggregation service
+   * @param renderer Renderer2
    */
   constructor(
     private apollo: Apollo,
+    private dialog: Dialog,
+    private snackBar: SnackbarService,
+    private translate: TranslateService,
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: SafeGridLayoutService,
-    private aggregationService: SafeAggregationService
-  ) {}
+    private aggregationService: SafeAggregationService,
+    private renderer: Renderer2
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.setupDynamicCards();
@@ -141,7 +160,9 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
     ) {
       this.summaryCardGrid.nativeElement.addEventListener(
         'scroll',
-        (event: any) => this.loadOnScroll(event)
+        (event: any) => {
+          this.loadOnScroll(event);
+        }
       );
     }
   }
@@ -188,6 +209,8 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
     const needRefetch = !this.settings.card?.aggregation;
     const skippedFields = ['id', 'incrementalId'];
 
+    this.searching = true;
+
     if (!needRefetch) {
       this.cards = this.cachedCards.filter((card: any) => {
         const data = clone(card.record || card.cardAggregationData || {});
@@ -224,9 +247,11 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
             value: parseFloat(search),
           });
       });
+      this.pageInfo.pageIndex = 0;
       this.pageInfo.skip = 0;
       this.dataQuery?.refetch({
         skip: 0,
+        first: this.pageInfo.pageSize,
         filter: {
           logic: 'or',
           filters,
@@ -251,21 +276,32 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
       record: e.node,
       layout: this.layout,
       metadata: this.fields,
+      style: e.meta.style,
     }));
 
     this.cachedCards =
-      this.pageInfo.skip > 0 ? [...this.cachedCards, ...newCards] : newCards;
+      ((this.pageInfo.pageIndex + 1) * this.pageInfo.pageSize >
+        this.cachedCards.length &&
+        !this.searching) ||
+      this.scrolling
+        ? [...this.cachedCards, ...newCards]
+        : newCards;
 
     this.cards = this.settings.widgetDisplay?.usePagination
       ? this.cachedCards.slice(
-          this.pageInfo.skip,
-          this.pageInfo.skip + this.pageInfo.first
+          this.pageInfo.pageSize * this.pageInfo.pageIndex,
+          this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
         )
       : this.cachedCards;
-    this.pageInfo.totalCount = get(res.data[layoutQueryName], 'totalCount', 0);
-    this.pageInfo.hasNextPage = this.pageInfo.totalCount > this.cards.length;
+    this.pageInfo.length = get(res.data[layoutQueryName], 'totalCount', 0);
 
     this.loading = res.loading;
+
+    if (this.searching && this.searchControl.value != '') {
+      this.pageInfo.skip = this.cards.length;
+    }
+    this.searching = false;
+    this.scrolling = false;
   }
 
   /**
@@ -320,10 +356,11 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
             this.dataQuery = this.apollo.watchQuery<any>({
               query: builtQuery,
               variables: {
-                first: this.pageInfo.first,
+                first: this.pageInfo.pageSize,
                 filter: layoutQuery.filter,
                 sortField: get(layoutQuery, 'sort.field', null),
                 sortOrder: get(layoutQuery, 'sort.order', ''),
+                styles: layoutQuery.style || null,
               },
               fetchPolicy: 'network-only',
               nextFetchPolicy: 'cache-first',
@@ -388,6 +425,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
           cardAggregationData: x,
         }));
         this.cards = this.cachedCards;
+        this.loading = res.loading;
       });
   }
 
@@ -401,8 +439,7 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
       50
     ) {
-      if (!this.loading && this.pageInfo.hasNextPage) {
-        this.loading = true;
+      if (!this.scrolling && this.pageInfo.length > this.cards.length) {
         this.dataQuery
           ?.fetchMore({
             variables: {
@@ -410,41 +447,88 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
             },
           })
           .then(this.updateCards.bind(this));
+        this.scrolling = true;
       }
     }
   }
 
   /**
-   * Triggered when the page changes.
+   * Handles page event.
    *
-   * @param e Kendo paginator page change event
+   * @param e page event.
    */
-  public onPageChange(e: PageChangeEvent) {
-    this.pageInfo.first = e.take;
-    this.pageInfo.skip = e.skip;
+  onPage(e: UIPageChangeEvent): void {
+    this.pageInfo.pageIndex = e.pageIndex;
 
-    this.summaryCardGrid.nativeElement.scroll({
-      top: 0,
-      left: 0,
-      behavior: 'smooth',
-    });
+    // Checks if with new page/size more data needs to be fetched
+    if (
+      (e.pageIndex > e.previousPageIndex ||
+        e.pageSize > this.pageInfo.pageSize) &&
+      (e.pageIndex + 1) * e.pageSize > this.cachedCards.length &&
+      e.totalItems > this.cachedCards.length
+    ) {
+      // Sets the new fetch quantity of data needed
+      this.pageInfo.pageSize =
+        (e.pageIndex + 1) * e.pageSize - this.cachedCards.length;
 
-    // Check if the data is already cached
-    if (this.cachedCards.length >= e.skip + e.take) {
-      this.cards = this.cachedCards.slice(e.skip, e.skip + e.take);
-    } else {
+      this.summaryCardGrid.nativeElement.scroll({
+        top: 0,
+        left: 0,
+        behavior: 'smooth',
+      });
+
       this.loading = true;
       this.dataQuery
         ?.fetchMore({
           variables: {
+            first: this.pageInfo.pageSize,
             skip: this.cachedCards.length,
           },
         })
         .then(this.updateCards.bind(this));
+    } else {
+      this.cards = this.cachedCards.slice(
+        e.pageSize * this.pageInfo.pageIndex,
+        e.pageSize * (this.pageInfo.pageIndex + 1)
+      );
+    }
+    this.pageInfo.pageSize = e.pageSize;
+  }
+
+  /**
+   * Open the dataSource modal.
+   */
+  public async openDataSource(): Promise<void> {
+    if (this.layout?.query) {
+      const { SafeResourceGridModalComponent } = await import(
+        '../../search-resource-grid-modal/search-resource-grid-modal.component'
+      );
+      this.dialog.open(SafeResourceGridModalComponent, {
+        data: {
+          gridSettings: clone(this.layout.query),
+        },
+      });
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'components.widget.summaryCard.errors.invalidSource'
+        ),
+        { error: true }
+      );
     }
   }
 
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+  }
+
+  /**
+   * Handles sorting on the cards.
+   *
+   * @param e Kendo combobox selection change event
+   */
   public sortData(e: any) {
+    if (!this.dataQuery) return;
     const layoutQuery = this.layout?.query;
     let field = get(layoutQuery, 'sort.field', null);
     let order = get(layoutQuery, 'sort.order', null);
@@ -454,9 +538,9 @@ export class SafeSummaryCardComponent implements OnInit, AfterViewInit {
       order = e.order;
     }
 
-    (this.dataQuery as any)
+    this.dataQuery
       .refetch({
-        first: this.pageInfo.first,
+        first: this.pageInfo.pageSize,
         filter: this.layout?.query.filter,
         sortField: field || undefined,
         sortOrder: order,

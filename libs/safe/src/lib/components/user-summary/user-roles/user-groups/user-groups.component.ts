@@ -3,8 +3,8 @@ import { UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Group, User } from '../../../../models/user.model';
-import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 import { GET_GROUPS, GetGroupsQueryResponse } from '../../graphql/queries';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Back-office groups section the user summary */
 @Component({
@@ -39,7 +39,7 @@ export class UserGroupsComponent implements OnInit {
   constructor(
     private fb: UntypedFormBuilder,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService
+    private snackBar: SnackbarService
   ) {}
 
   ngOnInit(): void {

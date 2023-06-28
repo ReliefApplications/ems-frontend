@@ -27,7 +27,7 @@ import { GradientPipe } from '../../pipes/gradient/gradient.pipe';
 const arcgisProj =
   '+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs';
 
-type TreeObject = { label: string; layer: L.Layer };
+export type TreeObject = { label: string; layer: L.Layer };
 
 /**
  * Shared ArcGIS service map.
@@ -128,56 +128,100 @@ export class ArcgisService {
     // BaseMaps
     const baseMaps: TreeObject[] = [];
     const baseMapLayers: L.Layer[] = [];
+    let zIndex = 0;
     for (const layer of webMap.baseMap.baseMapLayers) {
+      const paneName = `basemap:${zIndex}`;
+      const pane = map.createPane(paneName);
       const opacity = get(layer, 'opacity', 1);
-      switch (layer.layerType) {
-        case 'VectorTileLayer': {
-          // When using the styleUrl of the given layer, the built in vectorTileLayer function duplicates the url to fetch it
-          // So we will use the id in the styleUrls to fetch the vector tile layer
-          // This regex matches the content for => {{url}}/items/tileLayerId/blabla/blabla
-          let id = layer.styleUrl.match(/(?<=items\/).*?(?=\/)/gi);
-          let esriUrlContent: any = null;
-          // Get the styleUrl content to use the esriUrlContent.serviceItemId (if it exists) instead of the id
-          const styleUrlContent: any = await this.httpGet(layer.styleUrl);
-          if (styleUrlContent.sources.esri?.url) {
-            esriUrlContent = await this.httpGet(
-              styleUrlContent.sources.esri.url
-            );
+      if (get(layer, 'visibility', true)) {
+        switch (layer.layerType) {
+          case 'VectorTileLayer': {
+            // Automatically load layer
+            if (layer.itemId) {
+              zIndex += 1;
+              pane.style.zIndex = zIndex.toString();
+              if (
+                layer.styleUrl &&
+                layer.styleUrl.includes('VectorTileServer')
+              ) {
+                const url = layer.styleUrl.substring(
+                  0,
+                  layer.styleUrl.indexOf('VectorTileServer') +
+                    'VectorTileServer'.length
+                );
+                // const styleUrlContent: any = await this.httpGet(layer.styleUrl);
+                // ('https://tiles.arcgis.com/tiles/5T5nSi527N4F7luB/arcgis/rest/services/WHO_Polygon_Basemap_labels/VectorTileServer');
+                // one possible issue could be about the projection!
+                const vectorTileLayer = Vector.vectorTileLayer(url, {
+                  token: this.esriApiKey,
+                  opacity,
+                  pane,
+                });
+                vectorTileLayer.label = layer.title;
+                baseMapLayers.push(vectorTileLayer);
+              } else {
+                const vectorTileLayer = Vector.vectorTileLayer(layer.itemId, {
+                  token: this.esriApiKey,
+                  opacity,
+                  pane,
+                });
+                vectorTileLayer.label = layer.title;
+                baseMapLayers.push(vectorTileLayer);
+              }
+            } else {
+              // When using the styleUrl of the given layer, the built in vectorTileLayer function duplicates the url to fetch it
+              // So we will use the id in the styleUrls to fetch the vector tile layer
+              // This regex matches the content for => {{url}}/items/tileLayerId/blabla/blabla
+              let id = layer.styleUrl.match(/(?<=items\/).*?(?=\/)/gi);
+              let esriUrlContent: any = null;
+              const styleUrlContent: any = await this.httpGet(layer.styleUrl);
+              // @TODO WHO map contains buggy basemap within(id=b047fc319898445287111763e4fcf300) which breaks the whole
+              // layer flow, current one and the next ones
+              // this would solve that and only load the no buggy layers
+              try {
+                // Get the styleUrl content to use the esriUrlContent.serviceItemId (if it exists) instead of the id
+                if (styleUrlContent.sources.esri?.url) {
+                  esriUrlContent = await this.httpGet(
+                    styleUrlContent.sources.esri.url
+                  );
+                }
+              } catch (error) {
+                console.error(error);
+                break;
+              }
+              id = esriUrlContent ? esriUrlContent?.serviceItemId : id;
+              const vectorTileLayer = Vector.vectorTileLayer(id, {
+                token: this.esriApiKey,
+                opacity,
+                pane,
+              });
+              vectorTileLayer.label = layer.title;
+              baseMapLayers.push(vectorTileLayer);
+            }
+            break;
           }
-          id = esriUrlContent
-            ? esriUrlContent?.serviceItemId
-            : id
-            ? id
-            : layer.itemId;
-          const vectorTileLayer = Vector.vectorTileLayer(id, {
-            token: this.esriApiKey,
-            opacity,
-          });
-          vectorTileLayer.label = layer.title;
-          baseMapLayers.push(vectorTileLayer);
-          break;
-        }
-        case 'ArcGISTiledMapServiceLayer': {
-          const tiledMapLayer = Esri.tiledMapLayer({
-            pane: 'tilePane',
-            url: layer.url,
-            token: this.esriApiKey,
-            opacity,
-          });
-          (tiledMapLayer as any).label = layer.title;
-          baseMapLayers.push(tiledMapLayer);
-          break;
-        }
-        // case 'ArcGISImageServiceLayer': {
-        //   (Esri as any).imageMapLayer({
-        //     pane: 'tilePane',
-        //     url: layer.url,
-        //     token: this.esriApiKey,
-        //   }).addTo(map);
-        //   break;
-        // }
-        default: {
-          break;
+          case 'ArcGISTiledMapServiceLayer': {
+            const tiledMapLayer = Esri.tiledMapLayer({
+              url: layer.url,
+              token: this.esriApiKey,
+              opacity,
+              pane: paneName,
+            });
+            (tiledMapLayer as any).label = layer.title;
+            baseMapLayers.push(tiledMapLayer);
+            break;
+          }
+          // case 'ArcGISImageServiceLayer': {
+          //   (Esri as any).imageMapLayer({
+          //     pane: 'tilePane',
+          //     url: layer.url,
+          //     token: this.esriApiKey,
+          //   }).addTo(map);
+          //   break;
+          // }
+          default: {
+            break;
+          }
         }
       }
     }
@@ -261,7 +305,6 @@ export class ArcgisService {
         break;
       }
       case 'ArcGISFeatureLayer': {
-        console.log(layer);
         let featureLayer: L.Layer | undefined = undefined;
         if (layer.url) {
           // if (layer.itemId) {

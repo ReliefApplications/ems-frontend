@@ -3,22 +3,17 @@ import {
   Component,
   ElementRef,
   HostBinding,
-  Inject,
   Input,
   OnChanges,
   OnDestroy,
   Optional,
   Self,
   ViewChild,
+  forwardRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
-import {
-  MatLegacyFormField as MatFormField,
-  MatLegacyFormFieldControl as MatFormFieldControl,
-  MAT_LEGACY_FORM_FIELD as MAT_FORM_FIELD,
-} from '@angular/material/legacy-form-field';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import {
   EditorComponent,
@@ -27,6 +22,7 @@ import {
 } from '@tinymce/tinymce-angular';
 import { SafeEditorService } from '../../services/editor/editor.service';
 import { RawEditorSettings } from 'tinymce';
+import { FormControlComponent } from '@oort-front/ui';
 
 /** Component for using TinyMCE editor with formControl */
 @Component({
@@ -36,20 +32,16 @@ import { RawEditorSettings } from 'tinymce';
   templateUrl: './editor-control.component.html',
   styleUrls: ['./editor-control.component.scss'],
   providers: [
-    {
-      provide: MatFormFieldControl,
-      useExisting: SafeEditorControlComponent,
-    },
     { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+    {
+      provide: FormControlComponent,
+      useExisting: forwardRef(() => SafeEditorControlComponent),
+    },
   ],
 })
 export class SafeEditorControlComponent
-  implements
-    ControlValueAccessor,
-    MatFormFieldControl<string | null>,
-    OnDestroy,
-    AfterViewInit,
-    OnChanges
+  extends FormControlComponent
+  implements ControlValueAccessor, OnDestroy, AfterViewInit, OnChanges
 {
   static nextId = 0;
 
@@ -168,20 +160,20 @@ export class SafeEditorControlComponent
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;
 
+  private destroy$ = new Subject<void>();
   /**
    * Component for using TinyMCE editor with formControl
    *
    * @param editorService editor service
    * @param elementRef shared element ref service
-   * @param formField MatFormField
    * @param ngControl form control shared service
    */
   constructor(
     private editorService: SafeEditorService,
     private elementRef: ElementRef<HTMLElement>,
-    @Optional() @Inject(MAT_FORM_FIELD) public formField: MatFormField,
     @Optional() @Self() public ngControl: NgControl
   ) {
+    super();
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
@@ -197,12 +189,34 @@ export class SafeEditorControlComponent
   }
 
   ngAfterViewInit(): void {
-    this.editor.onFocusIn.subscribe(() => {
+    this.editor.onFocusIn.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.onFocusIn();
     });
-
-    this.editor.onFocusOut.subscribe((e) => {
+    this.editor.onFocusOut.pipe(takeUntil(this.destroy$)).subscribe((e) => {
       this.onFocusOut(e.event);
+    });
+    this.editor.onKeyDown.pipe(takeUntil(this.destroy$)).subscribe((e) => {
+      if (e.event.code === 'ArrowDown' || e.event.code === 'ArrowUp') {
+        const collectionGroup = document.querySelector(
+          '.tox-collection__group'
+        );
+        // If autocomplete list in the DOM, trigger scrolling events
+        if (collectionGroup) {
+          if (!this.editorService.activeItemScrollListener) {
+            // Initialize listener
+            this.editorService.initScrollActive(
+              collectionGroup,
+              e.editor.getElement()
+            );
+            // Execute directly first keydown event when no listener is ready
+            this.editorService.handleKeyDownEvent(
+              e.event,
+              collectionGroup,
+              e.editor.getElement()
+            );
+          }
+        }
+      }
     });
     // this.editor.onInit.subscribe(() => {});
   }
@@ -288,6 +302,8 @@ export class SafeEditorControlComponent
 
   ngOnDestroy(): void {
     this.stateChanges.complete();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   /** Updates the value when the editor content changes */

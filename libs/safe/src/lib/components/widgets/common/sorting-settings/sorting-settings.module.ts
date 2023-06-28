@@ -6,7 +6,6 @@ import { MatTableModule } from '@angular/material/table';
 import { MatIconModule } from '@angular/material/icon';
 import { MatMenuModule } from '@angular/material/menu';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SafeButtonModule } from '../../../ui/button/button.module';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { BrowserModule } from '@angular/platform-browser';
@@ -14,6 +13,7 @@ import { SafeSortingSettingsComponent } from './sorting-settings.component';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Module for the sorting-settings component
@@ -29,7 +29,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
     DragDropModule,
     FormsModule,
     ReactiveFormsModule,
-    SafeButtonModule,
+    ButtonModule,
     MatFormFieldModule,
     MatInputModule,
     BrowserModule,

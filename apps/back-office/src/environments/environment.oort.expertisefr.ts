@@ -1,9 +1,9 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
-import { theme } from '../themes/oort/oort.prod';
+import { theme } from '../themes/expertisefr/expertisefr.prod';
 import { sharedEnvironment } from './environment.shared';
 
 /**
- * Authentification configuration
+ * Authentication configuration
  */
 const authConfig: AuthConfig = {
   issuer: 'https://id-tess-mav.oortcloud.tech/auth/realms/oort',
@@ -38,5 +38,6 @@ export const environment = {
     'grid',
     'text',
     'map',
+    'summaryCard',
   ],
 };

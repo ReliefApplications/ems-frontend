@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AbilityBuilder } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
@@ -82,7 +82,14 @@ export class AppPreviewComponent
    * Role to preview with.
    */
   public role = '';
-
+  /**
+   * Use side menu or not.
+   */
+  public sideMenu = false;
+  /**
+   * Is large device.
+   */
+  public largeDevice: boolean;
   /**
    * Main component of Application preview capacity.
    *
@@ -100,6 +107,17 @@ export class AppPreviewComponent
     private translate: TranslateService
   ) {
     super();
+    this.largeDevice = window.innerWidth > 1024;
+  }
+
+  /**
+   * Change the display depending on windows size.
+   *
+   * @param event Event that implies a change in window size
+   */
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    this.largeDevice = event.target.innerWidth > 1024;
   }
 
   /**
@@ -121,6 +139,7 @@ export class AppPreviewComponent
           this.title = application.name + ' (Preview)';
           const ability = getAbilityForAppPreview(application, this.role);
           const adminNavItems: any[] = [];
+          this.sideMenu = application?.sideMenu ?? false;
           if (ability.can('read', 'User')) {
             adminNavItems.push({
               name: this.translate.instant('common.user.few'),

@@ -1,0 +1,30 @@
+<ui-spinner diameter="45" class="page-loader" *ngIf="loading"></ui-spinner>
+<div *ngIf="!loading" [formGroup]="formGroup">
+  <div class="flex flex-col gap-y-2">
+    <!-- Symbol style -->
+    <div class="flex flex-col" *ngIf="showStyle">
+      <div uiFormFieldDirective>
+        <label class="mb-4">
+          {{ 'components.widget.settings.map.edit.cluster.symbol' | translate }}
+        </label>
+        <safe-icon-picker
+          formControlName="style"
+          [color]="formGroup.value.color"
+        ></safe-icon-picker>
+      </div>
+    </div>
+    <div class="flex flex-row justify-between gap-4">
+      <!-- Symbol color -->
+      <div class="flex flex-col">
+        <h4>Color</h4>
+        <kendo-colorpicker formControlName="color"></kendo-colorpicker>
+      </div>
+      <!-- Symbol size -->
+      <div class="flex flex-1 flex-col" *ngIf="showSize">
+        <h4>Size</h4>
+        <ui-slider formControlName="size" [minValue]="1" [maxValue]="100">
+        </ui-slider>
+      </div>
+    </div>
+  </div>
+</div>

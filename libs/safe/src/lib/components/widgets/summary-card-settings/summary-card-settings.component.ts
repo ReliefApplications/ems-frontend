@@ -1,10 +1,10 @@
 import {
+  AfterViewInit,
   Component,
-  OnInit,
-  Output,
   EventEmitter,
   Input,
-  AfterViewInit,
+  OnInit,
+  Output,
 } from '@angular/core';
 import {
   Validators,
@@ -14,15 +14,15 @@ import {
   FormBuilder,
 } from '@angular/forms';
 
-import { get } from 'lodash';
-import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { Apollo } from 'apollo-angular';
-import { Resource } from '../../../models/resource.model';
-import { Layout } from '../../../models/layout.model';
+import { get } from 'lodash';
 import { Aggregation } from '../../../models/aggregation.model';
-import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
+import { Layout } from '../../../models/layout.model';
+import { Resource } from '../../../models/resource.model';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
-import { MatLegacyTabChangeEvent } from '@angular/material/legacy-tabs';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
+import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
 
 /** Define max height of summary card */
 const MAX_ROW_SPAN = 4;
@@ -103,7 +103,10 @@ export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
   templateUrl: './summary-card-settings.component.html',
   styleUrls: ['./summary-card-settings.component.scss'],
 })
-export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
+export class SafeSummaryCardSettingsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, AfterViewInit
+{
   // === REACTIVE FORM ===
   public tileForm: SummaryCardFormT | undefined;
 
@@ -133,7 +136,9 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
     private apollo: Apollo,
     private aggregationService: SafeAggregationService,
     private formBuilder: FormBuilder
-  ) {}
+  ) {
+    super();
+  }
 
   /**
    * Build the settings form, using the widget saved parameters.
@@ -188,8 +193,8 @@ export class SafeSummaryCardSettingsComponent implements OnInit, AfterViewInit {
    *
    * @param e Change tab event.
    */
-  handleTabChange(e: MatLegacyTabChangeEvent) {
-    this.activeTabIndex = e.index;
+  handleTabChange(e: number) {
+    this.activeTabIndex = e;
   }
 
   /**
