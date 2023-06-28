@@ -126,13 +126,14 @@
       </div>
       <div class="flex gap-2 items-center">
         <div uiFormFieldDirective class="flex-1">
-          <!-- todo: translate -->
-          <label>SEPARATOR</label>
+          <label>{{ 'common.separator' | translate }}</label>
           <ui-select-menu [formControl]="separator">
-            <!-- todo: translate -->
-            <ui-select-option value=",">comma</ui-select-option>
-            <!-- todo: translate -->
-            <ui-select-option value=";">semicolon</ui-select-option>
+            <ui-select-option value=",">{{
+              'common.comma' | translate
+            }}</ui-select-option>
+            <ui-select-option value=";">{{
+              'common.semicolon' | translate
+            }}</ui-select-option>
           </ui-select-menu>
         </div>
         <ui-button

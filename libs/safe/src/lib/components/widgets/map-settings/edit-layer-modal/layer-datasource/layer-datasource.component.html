@@ -237,12 +237,15 @@
       </ng-container>
 
       <!-- Layer type -->
-      <!-- todo: translate -->
       <div uiFormFieldDirective>
-        <label>TYPE</label>
+        <label>{{ 'common.type.one' | translate }}</label>
         <ui-select-menu formControlName="layerType">
-          <ui-select-option value="Point">POINT</ui-select-option>
-          <ui-select-option value="Polygon">POLYGON</ui-select-option>
+          <ui-select-option value="Point">{{
+            'components.widget.settings.map.layers.types.point' | translate
+          }}</ui-select-option>
+          <ui-select-option value="Polygon">{{
+            'components.widget.settings.map.layers.types.polygon' | translate
+          }}</ui-select-option>
         </ui-select-menu>
       </div>
     </div>
