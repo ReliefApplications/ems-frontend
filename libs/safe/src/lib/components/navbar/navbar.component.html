@@ -138,7 +138,7 @@
               cdkDrag
               [cdkDragDisabled]="!item.orderable"
               class="show-icons w-full max-w-[200px]"
-              *ngIf="item.visible || appLayout"
+              *ngIf="canAddPage || item.visible || !appLayout"
             >
               <li
                 [routerLink]="item.path"
@@ -180,7 +180,7 @@
                     [size]="18"
                     *ngIf="!item.visible"
                     icon="visibility_off"
-                    class="mt-[-3px] ml-[2px]"
+                    class="flex"
                   ></ui-icon>
                 </div>
               </li>
