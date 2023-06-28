@@ -93,7 +93,6 @@ export class DashboardFilterComponent
    * @param contextService Context service
    * @param ngZone Triggers html changes
    * @param referenceDataService Reference data service
-   * @param elementRef Element reference
    * @param changeDetectorRef Change detector reference
    * @param _host sidenav container host
    */
@@ -106,7 +105,6 @@ export class DashboardFilterComponent
     private contextService: ContextService,
     private ngZone: NgZone,
     private referenceDataService: SafeReferenceDataService,
-    private elementRef: ElementRef,
     private changeDetectorRef: ChangeDetectorRef,
     @Optional() private _host: SidenavContainerComponent
   ) {
@@ -114,16 +112,12 @@ export class DashboardFilterComponent
   }
 
   ngAfterViewInit(): void {
-    this.resizeObserver = new ResizeObserver(() => {
-      this.setFilterContainerDimensions();
-    });
-    this.resizeObserver.observe(
-      this.elementRef.nativeElement.parentElement.parentElement
-    );
-    // this does not trigger, even tho it should 🤷‍♀️
-    // this.resizeObserver.observe(
-    //   this.elementRef.nativeElement.parentElement
-    // );
+    if (this._host) {
+      this.resizeObserver = new ResizeObserver(() => {
+        this.setFilterContainerDimensions();
+      });
+      this.resizeObserver.observe(this._host.content.nativeElement);
+    }
 
     this.contextService.filter$
       .pipe(takeUntil(this.destroy$))
