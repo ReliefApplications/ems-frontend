@@ -79,11 +79,12 @@
       <safe-display-settings [formGroup]="formGroup">
         <!-- Specific settings for grid -->
         <ui-toggle
+          *ngIf="formGroup.get('widgetDisplay.sortable')"
           [formControl]="$any(formGroup.get('widgetDisplay.sortable'))"
         >
           <ng-container ngProjectAs="label">
-            {{ 'models.widget.display.sortable' | translate }}</ng-container
-          >
+            {{ 'models.widget.display.sortable' | translate }}
+          </ng-container>
         </ui-toggle>
       </safe-display-settings>
     </ng-template>

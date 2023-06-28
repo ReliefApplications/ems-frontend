@@ -2,7 +2,7 @@
   <!-- Header -->
   <kendo-tilelayout-item-header
     *ngIf="header"
-    class="widget-header border-b"
+    class="widget-header border-b h-[45px]"
     [ngClass]="{
       'border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
       'border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
@@ -21,6 +21,38 @@
         [placeholder]="'common.placeholder.search' | translate"
         [formControl]="searchControl"
       />
+    </div>
+
+    <!-- Sort selection -->
+    <div
+      class="w-[30%] max-w-[200px] m-1"
+      uiFormFieldDirective
+      *ngIf="
+        !!settings.widgetDisplay?.sortable &&
+        cards.length !== 0 &&
+        sortFields.length > 0 &&
+        displayMode === 'cards'
+      "
+    >
+      <ui-select-menu
+        (selectedOption)="sortData($event)"
+        value="DEFAULT_OPTION"
+      >
+        <ui-select-option value="DEFAULT_OPTION" class="opacity-70">{{
+          'models.widget.sorting.select' | translate
+        }}</ui-select-option>
+        <ui-select-option *ngFor="let sort of sortFields" [value]="sort">
+          {{ sort.label }}
+        </ui-select-option>
+      </ui-select-menu>
+      <ui-icon
+        uiSuffix
+        icon="info_outline"
+        variant="grey"
+        [uiTooltip]="
+          'components.widget.settings.grid.tooltip.template' | translate
+        "
+      ></ui-icon>
     </div>
     <!-- Switch between grid and cards view -->
     <div class="flex">
@@ -58,31 +90,6 @@
   </kendo-tilelayout-item-header>
   <!-- Cards display mode -->
   <ng-container *ngIf="displayMode === 'cards'">
-    <!-- Search -->
-    <div
-      class="bg-zinc-50 p-2 flex gap-2"
-      *ngIf="!!settings.widgetDisplay?.searchable"
-    >
-      <input
-        [placeholder]="'common.placeholder.search' | translate"
-        kendoTextBox
-        [formControl]="searchControl"
-      />
-      <kendo-combobox
-        class="w-fit"
-        *ngIf="
-          !!settings.widgetDisplay?.sortable &&
-          cards.length !== 0 &&
-          sortFields.length > 0
-        "
-        [data]="sortFields"
-        textField="label"
-        valueField="label"
-        (selectionChange)="sortData($event)"
-        [placeholder]="'models.widget.sorting.select' | translate"
-      >
-      </kendo-combobox>
-    </div>
     <!-- Export -->
     <div class="w-full grow overflow-auto" #summaryCardGrid>
       <kendo-pdf-export #pdf paperSize="A4" margin="2cm">

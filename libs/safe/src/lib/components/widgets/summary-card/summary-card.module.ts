@@ -11,6 +11,8 @@ import {
   ButtonModule,
   PaginatorModule,
   SpinnerModule,
+  SelectMenuModule,
+  FormWrapperModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsModule } from '@progress/kendo-angular-inputs';
@@ -38,6 +40,8 @@ import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
     PaginatorModule,
     SpinnerModule,
     DropDownsModule,
+    SelectMenuModule,
+    FormWrapperModule,
   ],
   exports: [SafeSummaryCardComponent],
 })

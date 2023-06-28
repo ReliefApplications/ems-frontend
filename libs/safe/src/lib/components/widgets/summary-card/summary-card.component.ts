@@ -525,7 +525,7 @@ export class SafeSummaryCardComponent
   /**
    * Handles sorting on the cards.
    *
-   * @param e Kendo combobox selection change event
+   * @param e Selected sort option.
    */
   public sortData(e: any) {
     if (!this.dataQuery) return;
@@ -533,7 +533,7 @@ export class SafeSummaryCardComponent
     let field = get(layoutQuery, 'sort.field', null);
     let order = get(layoutQuery, 'sort.order', null);
 
-    if (e) {
+    if (e && e !== 'DEFAULT_OPTION') {
       field = e.field;
       order = e.order;
     }

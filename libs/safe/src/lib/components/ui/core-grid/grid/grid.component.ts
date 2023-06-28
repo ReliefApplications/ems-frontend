@@ -411,6 +411,11 @@ export class SafeGridComponent
     }
   }
 
+  /**
+   * Handles sorting on the cards.
+   *
+   * @param e Kendo combobox selection change event
+   */
   public sortData(e: any): void {
     if (e) {
       this.onSortChange([{ field: e.field, dir: e.order }]);
