@@ -281,8 +281,8 @@ export class SafeSummaryCardSettingsComponent
    */
   handleResourceChange(resource: Resource | null) {
     // clear sort fields array
-    const sortFields = this.tileForm?.get('sortFields') as any;
-    while (sortFields.length != 0) sortFields.removeAt(0);
+    const sortFields = this.tileForm?.get('sortFields') as FormArray;
+    sortFields.clear();
 
     this.selectedResource = resource;
     this.fields = [];

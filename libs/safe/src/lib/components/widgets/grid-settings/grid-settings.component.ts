@@ -13,6 +13,7 @@ import {
   Validators,
   FormBuilder,
   FormControl,
+  FormArray,
 } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import {
@@ -155,8 +156,8 @@ export class SafeGridSettingsComponent
         }
 
         // clear sort fields array
-        const sortFields = this.formGroup?.get('sortFields') as any;
-        while (sortFields.length != 0) sortFields.removeAt(0);
+        const sortFields = this.formGroup?.get('sortFields') as FormArray;
+        sortFields.clear();
       });
 
     // Subscribe to form aggregations changes
