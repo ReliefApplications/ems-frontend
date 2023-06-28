@@ -117,12 +117,10 @@ export class DashboardFilterComponent
     this.resizeObserver = new ResizeObserver(() => {
       this.setFilterContainerDimensions();
     });
-    console.log(this.elementRef.nativeElement.parentElement); // I would assume this would trigger the resizeObserver, but it doesn't (even tho it resizes)
-    console.log(this.elementRef.nativeElement.parentElement.parentElement);
     this.resizeObserver.observe(
       this.elementRef.nativeElement.parentElement.parentElement
     );
-    // this does not trigger
+    // this does not trigger, even tho it should 🤷‍♀️
     // this.resizeObserver.observe(
     //   this.elementRef.nativeElement.parentElement
     // );
