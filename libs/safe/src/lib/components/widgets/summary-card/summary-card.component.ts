@@ -125,7 +125,6 @@ export class SafeSummaryCardComponent
    * @param queryBuilder Query builder service
    * @param gridLayoutService Shared grid layout service
    * @param aggregationService Aggregation service
-   * @param renderer Renderer2
    */
   constructor(
     private apollo: Apollo,
@@ -153,10 +152,7 @@ export class SafeSummaryCardComponent
   }
 
   ngAfterViewInit(): void {
-    if (
-      !this.settings.widgetDisplay?.usePagination &&
-      !this.settings.card?.aggregation
-    ) {
+    if (!this.settings.widgetDisplay?.usePagination) {
       this.summaryCardGrid.nativeElement.addEventListener(
         'scroll',
         (event: any) => {
@@ -225,8 +221,8 @@ export class SafeSummaryCardComponent
               value === parseFloat(search))
         );
       });
-      this.cards = this.sortedCachedCards;
-      this.pageInfo.length = this.cards.length;
+      this.cards = this.sortedCachedCards.slice(0, this.pageInfo.pageSize);
+      this.pageInfo.length = this.sortedCachedCards.length;
     } else {
       this.loading = true;
       const filters: {
@@ -419,7 +415,7 @@ export class SafeSummaryCardComponent
           cardAggregationData: x,
         }));
         this.sortedCachedCards = this.cachedCards;
-        this.cards = this.cachedCards;
+        this.cards = this.cachedCards.slice(0, this.pageInfo.pageSize);
         this.loading = res.loading;
         this.pageInfo.length = res.data?.recordsAggregation?.items.length;
       });
@@ -435,7 +431,18 @@ export class SafeSummaryCardComponent
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
       50
     ) {
-      if (!this.scrolling && this.pageInfo.length > this.cards.length) {
+      // check if is in aggregation mode
+      if (this.settings.card?.aggregation) {
+        if (this.cards.length < this.sortedCachedCards.length) {
+          this.cards = [
+            ...this.cards,
+            ...this.sortedCachedCards.slice(
+              this.cards.length,
+              this.cards.length + this.pageInfo.pageSize
+            ),
+          ];
+        }
+      } else if (!this.scrolling && this.pageInfo.length > this.cards.length) {
         this.dataQuery
           ?.fetchMore({
             variables: {
