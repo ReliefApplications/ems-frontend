@@ -20,8 +20,6 @@ import { SnackbarService } from '@oort-front/ui';
   providedIn: 'root',
 })
 export class SafeFormBuilderService {
-  public selectedPageIndex: BehaviorSubject<number> =
-    new BehaviorSubject<number>(0);
   /**
    * Constructor of the service
    *
@@ -136,11 +134,13 @@ export class SafeFormBuilderService {
    *
    * @param survey Survey where to add the callbacks
    * @param pages Pages of the current survey
+   * @param selectedPageIndex Current page of the survey
    * @param temporaryFilesStorage Temporary files saved while executing the survey
    */
   public addEventsCallBacksToSurvey(
     survey: Survey.SurveyModel,
     pages: BehaviorSubject<any[]>,
+    selectedPageIndex: BehaviorSubject<number>,
     temporaryFilesStorage: any
   ) {
     survey.onClearFiles.add((_, options: any) => this.onClearFiles(options));
@@ -161,7 +161,7 @@ export class SafeFormBuilderService {
     });
     survey.onCurrentPageChanged.add((survey: Survey.SurveyModel) => {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
-      this.selectedPageIndex.next(survey.currentPageNo);
+      selectedPageIndex.next(survey.currentPageNo);
     });
   }
 
