@@ -14,7 +14,7 @@ import { Apollo } from 'apollo-angular';
 import { UploadApplicationStyleMutationResponse } from './graphql/mutations';
 import { UPLOAD_APPLICATION_STYLE } from './graphql/mutations';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ButtonModule, SnackbarService } from '@oort-front/ui';
+import { ButtonModule, SnackbarService, SpinnerModule } from '@oort-front/ui';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';
@@ -30,6 +30,7 @@ const DEFAULT_STYLE = '';
     MonacoEditorModule,
     TranslateModule,
     ButtonModule,
+    SpinnerModule,
   ],
   templateUrl: './custom-style.component.html',
   styleUrls: ['./custom-style.component.scss'],
@@ -49,6 +50,7 @@ export class CustomStyleComponent
   };
   private styleApplied: HTMLStyleElement;
   private savedStyle = '';
+  public loading = false;
 
   /**
    * Creates an instance of CustomStyleComponent, form and updates.
@@ -124,6 +126,7 @@ export class CustomStyleComponent
 
   /** Save application custom css styling */
   async onSave(): Promise<void> {
+    this.loading = true;
     const file = new File(
       [this.formControl.value as string],
       'customStyle.scss',
@@ -144,6 +147,7 @@ export class CustomStyleComponent
         },
       })
     );
+    this.loading = false;
     if (res.errors) {
       this.snackBar.openSnackBar(res.errors[0].message, { error: true });
       return;

@@ -32,7 +32,7 @@ export class DashboardComponent
   /** Application title */
   public title = '';
   /** Stores current app ID */
-  public appID = '';
+  public appId = '';
   /** Stores current app page */
   public appPage = '';
   /** List of accessible applications */
@@ -51,6 +51,8 @@ export class DashboardComponent
   public sideMenu = false;
   /** Is large device */
   public largeDevice: boolean;
+  /** Is the dashboard still loading */
+  public loading = true;
 
   /** @returns True if applications is empty */
   get empty(): boolean {
@@ -102,26 +104,31 @@ export class DashboardComponent
           const applications = user.applications || [];
           if (applications.length > 0) {
             this.applications = applications;
+            const splitUrl = this.router.url.split('/');
+            const appId = splitUrl[2];
+            console.log(splitUrl, appId);
             this.applications.map((element) => {
-              if (element.id === this.router.url.slice(1, 25)) {
-                this.appID = this.router.url.slice(1, 25);
-                const temp = this.router.url.split('/');
-                if (temp[2]) {
-                  this.appPage = temp[2];
-                  if (temp[3]) {
-                    this.appPage += '/' + temp[3];
+              if (element.id === appId) {
+                this.appId = appId;
+                if (splitUrl[3]) {
+                  this.appPage = splitUrl[3];
+                  if (splitUrl[4]) {
+                    this.appPage += '/' + splitUrl[4];
                   }
                 }
               }
             });
-            if (this.appID.length <= 0) {
+            if (this.appId.length <= 0) {
               if (user.favoriteApp) {
-                this.appID = user.favoriteApp;
+                this.appId = user.favoriteApp;
               } else {
-                this.appID = applications[0].id || '';
+                this.appId = applications[0].id || '';
               }
             }
-            this.applicationService.loadApplication(this.appID);
+            this.applicationService.loadApplication(this.appId);
+            this.applicationService.loading.subscribe((loading) => {
+              this.loading = loading;
+            });
             this.roles = user.roles || [];
             this.permissions = user.permissions || [];
           }
@@ -132,7 +139,7 @@ export class DashboardComponent
       .subscribe((application: Application | null) => {
         if (application) {
           this.title = application.name || '';
-          this.appID = application.id || '';
+          this.appId = application.id || '';
           this.adminNavItems = [];
           if (
             this.ability.can(
@@ -143,7 +150,7 @@ export class DashboardComponent
             // if can see users globally / can manage apps / can see users in app
             this.adminNavItems.push({
               name: this.translate.instant('common.user.few'),
-              path: `./${this.appID}/settings/users`,
+              path: `./${this.appId}/settings/users`,
               icon: 'supervisor_account',
             });
           }
@@ -156,7 +163,7 @@ export class DashboardComponent
             // if can see roles globally / can manage apps / can see roles in app
             this.adminNavItems.push({
               name: this.translate.instant('common.role.few'),
-              path: `./${this.appID}/settings/roles`,
+              path: `./${this.appId}/settings/roles`,
               icon: 'admin_panel_settings',
             });
           }
@@ -169,7 +176,7 @@ export class DashboardComponent
             // if can manage apps / can manage templates in app
             this.adminNavItems.push({
               name: this.translate.instant('common.template.few'),
-              path: `./${this.appID}/settings/templates`,
+              path: `./${this.appId}/settings/templates`,
               icon: 'description',
             });
           }
@@ -182,7 +189,7 @@ export class DashboardComponent
             // if can manage apps / can manage distribution lists in app
             this.adminNavItems.push({
               name: this.translate.instant('common.distributionList.few'),
-              path: `./${this.appID}/settings/distribution-lists`,
+              path: `./${this.appId}/settings/distribution-lists`,
               icon: 'mail',
             });
           }
@@ -208,8 +215,8 @@ export class DashboardComponent
                   name: x.name,
                   path:
                     x.type === ContentType.form
-                      ? `./${this.appID}/${x.type}/${x.id}`
-                      : `./${this.appID}/${x.type}/${x.content}`,
+                      ? `./${this.appId}/${x.type}/${x.id}`
+                      : `./${this.appId}/${x.type}/${x.content}`,
                   icon: this.getNavIcon(x.type || ''),
                   visible: x.visible,
                 })),
@@ -229,7 +236,7 @@ export class DashboardComponent
               if (firstPage) {
                 this.router.navigate(
                   [
-                    `./${this.appID}/${firstPage.type}/${
+                    `./${this.appId}/${firstPage.type}/${
                       firstPage.type === ContentType.form
                         ? firstPage.id
                         : firstPage.content
@@ -238,14 +245,14 @@ export class DashboardComponent
                   { relativeTo: this.route }
                 );
               } else {
-                this.router.navigate([`./${this.appID}`], {
+                this.router.navigate([`./${this.appId}`], {
                   relativeTo: this.route,
                 });
               }
             }
           }
           this.application = application;
-          this.appID = application.id || '';
+          this.appId = application.id || '';
           this.sideMenu = this.application?.sideMenu ?? false;
         } else {
           this.navGroups = [];
@@ -259,6 +266,7 @@ export class DashboardComponent
    * @param application Application to open
    */
   onOpenApplication(application: Application): void {
+    this.applicationService.leaveApplication();
     this.applicationService.loadApplication(application.id || '');
   }
 

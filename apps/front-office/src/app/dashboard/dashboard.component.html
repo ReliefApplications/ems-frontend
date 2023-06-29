@@ -1,11 +1,14 @@
+<ui-spinner class="flex justify-center items-center h-screen" *ngIf="loading"></ui-spinner>
+
 <safe-layout
   [applications]="applications"
   [header]="header"
   [toolbar]="toolbar"
   [leftSidenav]="pages"
   [sideMenu]="sideMenu"
-  [profileRoute]="'/' + appID + '/profile'"
+  [profileRoute]="'/' + appId + '/profile'"
   (openApplication)="onOpenApplication($event)"
+  *ngIf="!loading"
 ></safe-layout>
 <ng-template #toolbar>
   <!-- Empty indicator -->
