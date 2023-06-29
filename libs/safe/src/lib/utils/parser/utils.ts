@@ -151,7 +151,7 @@ const replaceRecordFields = (
       let convertedValue = '';
       // Inject avatars
       const avatarRgx = new RegExp(
-        `{{avatars.(?<name>${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}) (?<shape>[a-z]+) (?<width>[0-9]+) (?<height>[0-9]+) (?<maxItems>[0-9]+)}}`,
+        `{{avatars.(?<name>${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX})( (?<shape>[a-z]+))? (?<width>[0-9]+) (?<height>[0-9]+) (?<maxItems>[0-9]+)}}`,
         'gi'
       );
       const matches = formattedHtml.matchAll(avatarRgx);
