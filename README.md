@@ -202,5 +202,5 @@ set NODE_OPTIONS="--max-old-space-size=4096"
 In case you still face issues, you can still increase it:
 
 ```
-set NODE_OPTIONS="--max-old-space-size=8192" 
+set NODE_OPTIONS="--max-old-space-size=8192"
 ```
