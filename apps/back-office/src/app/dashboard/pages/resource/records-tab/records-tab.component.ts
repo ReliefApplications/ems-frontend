@@ -373,8 +373,9 @@ export class RecordsTabComponent
    * @returns Formatted value
    */
   formatValue(value: any): string {
-    // Geospacial field
+    // Geo spatial field
     if (
+      value &&
       typeof value === 'object' &&
       value.type === 'Feature' &&
       value.geometry
