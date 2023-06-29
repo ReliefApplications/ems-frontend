@@ -57,6 +57,15 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
                 label: 'Max items', //TODO: Translate
               },
               {
+                type: 'listbox',
+                name: 'shape',
+                label: 'Shape', //TODO: Translate
+                items: [
+                  { text: 'Circle', value: 'circle' }, //TODO: Translate
+                  { text: 'Square', value: 'square' }, //TODO: Translate
+                ],
+              },
+              {
                 type: 'bar',
                 items: [
                   {
@@ -76,6 +85,7 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
           initialData: {
             avatarsSource: '',
             avatarsMaxItems: '3',
+            shape: 'circle',
             avatarsWidth: '24',
             avatarsHeight: '24',
           },
@@ -96,7 +106,7 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
           },
           onSubmit: (api) => {
             const data = api.getData();
-            const html = `{{avatars.${data.avatarsSource} ${data.avatarsWidth} ${data.avatarsHeight} ${data.avatarsMaxItems}}}`;
+            const html = `{{avatars.${data.avatarsSource} ${data.shape} ${data.avatarsWidth} ${data.avatarsHeight} ${data.avatarsMaxItems}}}`;
             editor.insertContent(html);
             api.close();
           },

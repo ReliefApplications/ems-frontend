@@ -151,7 +151,7 @@ const replaceRecordFields = (
       let convertedValue = '';
       // Inject avatars
       const avatarRgx = new RegExp(
-        `{{avatars.(?<name>${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}) (?<width>[0-9]+) (?<height>[0-9]+) (?<maxItems>[0-9]+)}}`,
+        `{{avatars.(?<name>${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}) (?<shape>[a-z]+) (?<width>[0-9]+) (?<height>[0-9]+) (?<maxItems>[0-9]+)}}`,
         'gi'
       );
       const match = avatarRgx.exec(formattedHtml);
@@ -169,6 +169,7 @@ const replaceRecordFields = (
         if (avatarValue.length > 0) {
           const avatarGroup = createAvatarGroup(
             avatarValue,
+            match?.groups?.shape as Shape,
             Number(match?.groups?.width),
             Number(match?.groups?.height),
             Number(match?.groups?.maxItems)
@@ -581,10 +582,13 @@ const applyFilters = (filter: any, fields: any): boolean => {
   }
 };
 
+type Shape = 'circle' | 'square';
+
 /**
  * Creates the html element faking an avatar group
  *
  * @param value Array of urls of the images
+ * @param shape Shape of the avatars (circle or square for now)
  * @param width Width of the avatars
  * @param height Height of the avatars
  * @param maxItems Maximum number of avatars to show
@@ -592,6 +596,7 @@ const applyFilters = (filter: any, fields: any): boolean => {
  */
 const createAvatarGroup = (
   value: string[],
+  shape: Shape | undefined,
   width: number | undefined,
   height: number | undefined,
   maxItems: number | undefined
@@ -620,7 +625,20 @@ const createAvatarGroup = (
 
     const span = document.createElement('span');
     avatar.appendChild(span);
-    span.className = `rounded-full ${sizeClass} bg-transparent block border-2 overflow-hidden ring-2 ring-transparent`;
+    let shapeClass = '';
+    switch (shape) {
+      case 'circle':
+        shapeClass = 'rounded-full';
+        break;
+      case 'square':
+        shapeClass = 'rounded-md';
+        break;
+      default:
+        shapeClass = 'rounded-full';
+        break;
+    }
+
+    span.className = `${shapeClass} ${sizeClass} bg-transparent block border-2 overflow-hidden ring-2 ring-transparent`;
 
     const img = document.createElement('img');
     span.appendChild(img);
