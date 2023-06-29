@@ -84,17 +84,25 @@ export class SidenavControlsMenuItemComponent implements OnInit, OnDestroy {
 
     this.updateChildrenCheckboxes();
 
-    const layers = this.getChildrenLayers();
-    if (this.checked) {
-      layers.forEach((layer) => {
-        this.map.addLayer(layer);
+    if (this.childrenComponents.length > 0) {
+      this.childrenComponents.forEach((childComponent) => {
+        childComponent.updateLayer(childComponent.item.layer);
       });
     } else {
-      layers.forEach((layer) => {
-        this.map.removeLayer(layer);
-      });
+      const layers = this.getChildrenLayers();
+      if (this.checked) {
+        layers.forEach((layer) => {
+          (layer as any).shouldDisplay = true;
+          this.map.addLayer(layer);
+        });
+      } else {
+        layers.forEach((layer) => {
+          (layer as any).shouldDisplay = false;
+          this.map.removeLayer(layer);
+        });
+      }
+      this.checkedChange.emit();
     }
-    this.checkedChange.emit();
   }
 
   /** updates all children checkboxes for children */
