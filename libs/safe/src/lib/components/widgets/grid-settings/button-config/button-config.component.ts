@@ -440,12 +440,13 @@ export class ButtonConfigComponent
     this.deleteButton.emit(true);
   }
 
-  public getScalarField(field: string): any {
-    const scalarField = this.scalarFields.filter((val: any) => {
-      if (val.name === field) {
-        return val;
-      }
-    });
-    return scalarField[0];
+  /**
+   * Get scalar field from name
+   *
+   * @param fieldName field name
+   * @returns scalar field ( if exists )
+   */
+  public scalarField(fieldName: string): any {
+    return this.scalarFields.find((field: any) => field.name === fieldName);
   }
 }
