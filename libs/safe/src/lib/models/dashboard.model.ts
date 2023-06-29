@@ -6,6 +6,8 @@ import { SafeMapSettingsComponent } from '../components/widgets/map-settings/map
 import { SafeEditorSettingsComponent } from '../components/widgets/editor-settings/editor-settings.component';
 import { SafeSummaryCardSettingsComponent } from '../components/widgets/summary-card-settings/summary-card-settings.component';
 import { Category, Variant } from '@oort-front/ui';
+import { SafeTabsWidgetSettingsComponent } from '../components/widgets/tabs-widget-settings/tabs-widget-settings.component';
+
 /** Model for IWidgetType object */
 export interface IWidgetType {
   id: string;
@@ -196,6 +198,24 @@ export const WIDGET_TYPES = [
     minRow: 1,
     component: 'summaryCard',
     settingsTemplate: SafeSummaryCardSettingsComponent,
+  },
+  {
+    id: 'tabs',
+    name: 'Tabs',
+    icon: '/assets/text.svg',
+    color: '#2F383E',
+    settings: {
+      title: 'Tabs widget',
+      source: null,
+      fields: [],
+      toolbar: false,
+      canAdd: false,
+    },
+    defaultCols: 8,
+    defaultRows: 4,
+    minRow: 2,
+    component: 'tabs',
+    settingsTemplate: SafeTabsWidgetSettingsComponent,
   },
 ];
 

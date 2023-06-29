@@ -1,0 +1,50 @@
+<div class="h-full">
+  <!-- CLASSIC VIEW -->
+  <kendo-tilelayout-item-header
+    *ngIf="header"
+    class="widget-header border-b"
+    [ngClass]="{
+      'border-transparent': !(settings?.widgetDisplay?.showBorder ?? true),
+      'border-b-gray-300': settings?.widgetDisplay?.showBorder ?? true
+    }"
+  >
+    <span class="widget-title" [title]="settings?.title">{{
+      settings?.title
+    }}</span>
+    <!-- Core grid actions -->
+    <ng-container *ngIf="true">
+      <ng-container *ngTemplateOutlet="floatingButtonsTemplate"></ng-container>
+    </ng-container>
+  </kendo-tilelayout-item-header>
+  <ng-container *ngIf="tabs.length">
+    <ui-tabs [selectedIndex]="selectedTab">
+      <ng-container *ngFor="let tab of tabs; let i = index">
+        <ui-tab (click)="changeTab(tab.route, i)">
+          <ng-container ngProjectAs="label">{{
+            tab.label | translate
+          }}</ng-container>
+        </ui-tab>
+      </ng-container>
+    </ui-tabs>
+  </ng-container>
+  <div class="h-full w-full p-2">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+<!-- Quick action buttons -->
+<ng-template #floatingButtonsTemplate>
+  <div class="flex">
+    <ng-container
+      *ngFor="let floatingButton of settings?.floatingButtons ?? []"
+    >
+      <ui-button
+        variant="primary"
+        (click)="onQuickAction(floatingButton)"
+        *ngIf="floatingButton.show"
+      >
+        {{ floatingButton.name }}
+      </ui-button>
+    </ng-container>
+  </div>
+</ng-template>

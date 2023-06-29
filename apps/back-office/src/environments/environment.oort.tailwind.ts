@@ -43,5 +43,6 @@ export const environment = {
     'text',
     'map',
     'summaryCard',
+    'tabs',
   ],
 };

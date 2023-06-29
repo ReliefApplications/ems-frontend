@@ -8,6 +8,7 @@ import { SafeGridWidgetModule } from '../widgets/grid/grid.module';
 import { SafeSummaryCardModule } from '../widgets/summary-card/summary-card.module';
 import { SafeMapWidgetModule } from '../widgets/map/map.module';
 import 'hammerjs';
+import { RouterOutlet } from '@angular/router';
 
 /**
  * Main Widget Module.
@@ -24,6 +25,7 @@ import 'hammerjs';
     SafeMapWidgetModule,
     // SafeSchedulerModule,
     SafeSummaryCardModule,
+    RouterOutlet,
   ],
   exports: [SafeWidgetComponent],
 })

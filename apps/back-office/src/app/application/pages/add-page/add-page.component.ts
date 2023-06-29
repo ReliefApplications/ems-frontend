@@ -23,6 +23,7 @@ import {
 } from '../../../utils/update-queries';
 import { SnackbarService } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
+import { ActivatedRoute } from '@angular/router';
 
 /**
  * Number of items per page.
@@ -67,6 +68,7 @@ export class AddPageComponent
    * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
+   * @param activatedRoute ActivatedRoute
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -74,12 +76,25 @@ export class AddPageComponent
     private applicationService: SafeApplicationService,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private activatedRoute: ActivatedRoute
   ) {
     super();
   }
 
   ngOnInit(): void {
+    this.activatedRoute.data.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (data) => {
+        if (data.source === 'widget') {
+          this.contentTypes = CONTENT_TYPES.filter(
+            (ct) => ct.value !== 'workflow'
+          );
+        } else {
+          this.contentTypes = CONTENT_TYPES;
+        }
+      },
+    });
+
     this.pageForm = this.formBuilder.group({
       type: ['', Validators.required],
       content: [''],
