@@ -76,7 +76,7 @@
           variant="primary"
           cdkFocusInitial
           *ngIf="pages.length > 1"
-          (click)="survey.prevPage()"
+          (click)="survey.prevPage(); selectedTabIndex = selectedTabIndex - 1"
           [disabled]="survey.isFirstPage"
         >
           {{ 'common.previous' | translate }}
@@ -86,7 +86,7 @@
           variant="primary"
           cdkFocusInitial
           *ngIf="pages.length > 1"
-          (click)="survey.nextPage()"
+          (click)="survey.nextPage(); selectedTabIndex = selectedTabIndex + 1"
           [disabled]="survey.isLastPage"
         >
           {{ 'common.next' | translate }}
