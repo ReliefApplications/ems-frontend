@@ -606,14 +606,36 @@ const createAvatarGroup = (
   avatarGroup.appendChild(innerDiv);
   innerDiv.className = 'flex -space-x-2 overflow-hidden isolate';
 
-  const size = computeSize(width, height);
-  let sizeClass;
-  if (size <= 10) {
-    sizeClass = 'h-6 w-6';
-  } else if (size <= 20) {
-    sizeClass = 'h-10 w-10';
-  } else {
-    sizeClass = 'h-14 w-14';
+  // const size = computeSize(width, height);
+  let sizeClass = '';
+  if (width && height) {
+    if (width <= 10) {
+      sizeClass += 'w-6';
+    } else if (width <= 20) {
+      sizeClass += 'w-10';
+    } else {
+      sizeClass += 'w-14';
+    }
+    if (height <= 10) {
+      sizeClass += ' h-6';
+    } else if (height <= 20) {
+      sizeClass += ' h-10';
+    } else {
+      sizeClass += ' h-14';
+    }
+  }
+
+  let shapeClass = '';
+  switch (shape) {
+    case 'circle':
+      shapeClass = 'rounded-full';
+      break;
+    case 'square':
+      shapeClass = 'rounded-md';
+      break;
+    default:
+      shapeClass = 'rounded-full';
+      break;
   }
 
   for (const [index, image] of value
@@ -625,18 +647,6 @@ const createAvatarGroup = (
 
     const span = document.createElement('span');
     avatar.appendChild(span);
-    let shapeClass = '';
-    switch (shape) {
-      case 'circle':
-        shapeClass = 'rounded-full';
-        break;
-      case 'square':
-        shapeClass = 'rounded-md';
-        break;
-      default:
-        shapeClass = 'rounded-full';
-        break;
-    }
 
     span.className = `${shapeClass} ${sizeClass} bg-transparent block border-2 overflow-hidden ring-2 ring-transparent`;
 
@@ -653,7 +663,7 @@ const createAvatarGroup = (
 
     const span = document.createElement('span');
     avatar.appendChild(span);
-    span.className = `rounded-full ${sizeClass} bg-gray-500 inline-flex items-center justify-center border-2 overflow-hidden ring-2 ring-transparent`;
+    span.className = `${shapeClass} ${sizeClass} bg-gray-500 inline-flex items-center justify-center border-2 overflow-hidden ring-2 ring-transparent`;
     span.style.borderRadius = '50%';
 
     const innerSpan = document.createElement('span');
