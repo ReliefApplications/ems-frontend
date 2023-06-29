@@ -86,8 +86,8 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
             avatarsSource: '',
             avatarsMaxItems: '3',
             shape: 'circle',
-            avatarsWidth: '24',
-            avatarsHeight: '24',
+            avatarsWidth: '48',
+            avatarsHeight: '48',
           },
           onChange: (api) => {
             // validate the data types

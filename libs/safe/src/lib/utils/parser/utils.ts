@@ -154,33 +154,35 @@ const replaceRecordFields = (
         `{{avatars.(?<name>${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}) (?<shape>[a-z]+) (?<width>[0-9]+) (?<height>[0-9]+) (?<maxItems>[0-9]+)}}`,
         'gi'
       );
-      const match = avatarRgx.exec(formattedHtml);
-      if (Array.isArray(value) && value.length > 0) {
-        const avatarValue = value.filter((v: string) => {
-          if (typeof v === 'string') {
-            const lowercaseValue = v.toLowerCase();
-            return ALLOWED_IMAGE_EXTENSIONS.some((ext) =>
-              lowercaseValue.endsWith(ext)
+      const matches = formattedHtml.matchAll(avatarRgx);
+      for (const match of matches) {
+        if (Array.isArray(value) && value.length > 0) {
+          const avatarValue = value.filter((v: string) => {
+            if (typeof v === 'string') {
+              const lowercaseValue = v.toLowerCase();
+              return ALLOWED_IMAGE_EXTENSIONS.some((ext) =>
+                lowercaseValue.endsWith(ext)
+              );
+            } else {
+              return false;
+            }
+          });
+          if (avatarValue.length > 0) {
+            const avatarGroup = createAvatarGroup(
+              avatarValue,
+              match?.groups?.shape as Shape,
+              Number(match?.groups?.width),
+              Number(match?.groups?.height),
+              Number(match?.groups?.maxItems)
             );
-          } else {
-            return false;
+            formattedHtml = formattedHtml.replace(
+              match[0],
+              avatarGroup.innerHTML
+            );
           }
-        });
-        if (avatarValue.length > 0) {
-          const avatarGroup = createAvatarGroup(
-            avatarValue,
-            match?.groups?.shape as Shape,
-            Number(match?.groups?.width),
-            Number(match?.groups?.height),
-            Number(match?.groups?.maxItems)
-          );
-          formattedHtml = formattedHtml.replace(
-            avatarRgx,
-            avatarGroup.innerHTML
-          );
+        } else {
+          formattedHtml = formattedHtml.replace(avatarRgx, '');
         }
-      } else {
-        formattedHtml = formattedHtml.replace(avatarRgx, '');
       }
       if (!isNil(value)) {
         // First, try to find cases where the url is used as src of image or link
@@ -607,23 +609,23 @@ const createAvatarGroup = (
   innerDiv.className = 'flex -space-x-2 overflow-hidden isolate';
 
   // const size = computeSize(width, height);
-  let sizeClass = '';
-  if (width && height) {
-    if (width <= 10) {
-      sizeClass += 'w-6';
-    } else if (width <= 20) {
-      sizeClass += 'w-10';
-    } else {
-      sizeClass += 'w-14';
-    }
-    if (height <= 10) {
-      sizeClass += ' h-6';
-    } else if (height <= 20) {
-      sizeClass += ' h-10';
-    } else {
-      sizeClass += ' h-14';
-    }
-  }
+  // let sizeClass = '';
+  // if (width && height) {
+  //   if (width <= 10) {
+  //     sizeClass += 'w-6';
+  //   } else if (width <= 20) {
+  //     sizeClass += 'w-10';
+  //   } else {
+  //     sizeClass += 'w-14';
+  //   }
+  //   if (height <= 10) {
+  //     sizeClass += ' h-6';
+  //   } else if (height <= 20) {
+  //     sizeClass += ' h-10';
+  //   } else {
+  //     sizeClass += ' h-14';
+  //   }
+  // }
 
   let shapeClass = '';
   switch (shape) {
@@ -648,7 +650,9 @@ const createAvatarGroup = (
     const span = document.createElement('span');
     avatar.appendChild(span);
 
-    span.className = `${shapeClass} ${sizeClass} bg-transparent block border-2 overflow-hidden ring-2 ring-transparent`;
+    span.className = `${shapeClass} bg-transparent block border-2 overflow-hidden ring-2 ring-transparent`;
+    span.style.height = `${height}px`;
+    span.style.width = `${width}px`;
 
     const img = document.createElement('img');
     span.appendChild(img);
@@ -663,7 +667,9 @@ const createAvatarGroup = (
 
     const span = document.createElement('span');
     avatar.appendChild(span);
-    span.className = `${shapeClass} ${sizeClass} bg-gray-500 inline-flex items-center justify-center border-2 overflow-hidden ring-2 ring-transparent`;
+    span.className = `${shapeClass} bg-gray-500 inline-flex items-center justify-center border-2 overflow-hidden ring-2 ring-transparent`;
+    span.style.height = `${height}px`;
+    span.style.width = `${width}px`;
     span.style.borderRadius = '50%';
 
     const innerSpan = document.createElement('span');
