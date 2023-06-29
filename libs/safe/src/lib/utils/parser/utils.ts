@@ -674,20 +674,3 @@ const createAvatarGroup = (
 
   return avatarGroup;
 };
-
-/**
- * Compute the size of the avatar
- *
- * @param width Width of the avatar
- * @param height Height of the avatar
- * @returns The size of the avatar
- */
-const computeSize = (
-  width: number | undefined,
-  height: number | undefined
-): number => {
-  if (width && height) {
-    return (width + height) / 2;
-  }
-  return 32;
-};
