@@ -148,8 +148,6 @@ export class SafeGridWidgetComponent
 
   ngOnInit() {
     this.gridSettings = { ...this.settings };
-    console.log(this.gridSettings);
-    console.log(this.settings);
     delete this.gridSettings.query;
     if (this.settings.resource) {
       const layouts = get(this.settings, 'layouts', []);
@@ -473,7 +471,6 @@ export class SafeGridWidgetComponent
     modifications: any[],
     ids: any[]
   ): Promise<any> {
-    console.log(modifications);
     const update: any = {};
     for (const modification of modifications) {
       update[modification.field] = modification.value;
