@@ -53,6 +53,8 @@ export class FormBuilderComponent implements OnInit {
   public hasChanges = false;
   private isStep = false;
 
+  public isModalOpened = false;
+
   /**
    * Form builder page
    *
@@ -84,7 +86,13 @@ export class FormBuilderComponent implements OnInit {
    * @returns boolean of observable of boolean
    */
   canDeactivate(): Observable<boolean> | boolean {
+    if (this.isModalOpened) {
+      this.isModalOpened = false;
+      return false;
+    }
+
     if (this.hasChanges) {
+      this.isModalOpened = true;
       const dialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('components.form.update.exit'),
         content: this.translate.instant('components.form.update.exitMessage'),
@@ -93,6 +101,7 @@ export class FormBuilderComponent implements OnInit {
       });
       return dialogRef.closed.pipe(
         map((value) => {
+          this.isModalOpened = false;
           if (value) {
             this.authService.canLogout.next(true);
             window.localStorage.removeItem(`form:${this.id}`);
