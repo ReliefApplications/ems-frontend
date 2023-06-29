@@ -1,5 +1,7 @@
 <ui-dialog [closable]="true" size="medium">
-  <div class="h-[600px] w-full">
-    <safe-map></safe-map>
-  </div>
+  <ng-container ngProjectAs="content">
+    <div class="h-[600px] w-full">
+      <safe-map class="w-full h-full"></safe-map>
+    </div>
+  </ng-container>
 </ui-dialog>

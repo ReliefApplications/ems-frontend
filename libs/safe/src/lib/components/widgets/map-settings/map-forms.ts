@@ -100,7 +100,8 @@ export const createLayerForm = (value?: LayerModel) => {
           geometryType,
           type,
           formGroup.get('layerDefinition')?.value
-        )
+        ),
+        { emitEvent: false }
       );
     });
   }

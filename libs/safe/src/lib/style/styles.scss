@@ -300,6 +300,11 @@ body {
   }
 }
 
+// === OVERLAY ===
+.cdk-overlay-container {
+  z-index: 1003;
+}
+
 /* === Tailwindcss === */
 // Allow to use @apply in not visible by default elements
 @layer components {

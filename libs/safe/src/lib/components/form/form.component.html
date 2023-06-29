@@ -14,7 +14,7 @@
 <!-- Form pages -->
 <ui-tabs
   class="mb-4"
-  [selectedIndex]="selectedTabIndex"
+  [selectedIndex]="(selectedPageIndex$ | async)!"
   (selectedIndexChange)="onShowPage($event)"
 >
   <ui-tab *ngFor="let page of pages$ | async">
