@@ -606,26 +606,7 @@ const createAvatarGroup = (
   const avatarGroup = document.createElement('avatar-group');
   const innerDiv = document.createElement('div');
   avatarGroup.appendChild(innerDiv);
-  innerDiv.className = 'flex -space-x-2 overflow-hidden isolate';
-
-  // const size = computeSize(width, height);
-  // let sizeClass = '';
-  // if (width && height) {
-  //   if (width <= 10) {
-  //     sizeClass += 'w-6';
-  //   } else if (width <= 20) {
-  //     sizeClass += 'w-10';
-  //   } else {
-  //     sizeClass += 'w-14';
-  //   }
-  //   if (height <= 10) {
-  //     sizeClass += ' h-6';
-  //   } else if (height <= 20) {
-  //     sizeClass += ' h-10';
-  //   } else {
-  //     sizeClass += ' h-14';
-  //   }
-  // }
+  innerDiv.className = 'flex gap-1 overflow-hidden isolate';
 
   let shapeClass = '';
   switch (shape) {
@@ -640,12 +621,9 @@ const createAvatarGroup = (
       break;
   }
 
-  for (const [index, image] of value
-    .slice(0, maxItems ? maxItems : value.length)
-    .entries()) {
+  for (const image of value.slice(0, maxItems ? maxItems : value.length)) {
     const avatar = document.createElement('avatar');
     innerDiv.appendChild(avatar);
-    avatar.style.zIndex = `${value.length - index}`;
 
     const span = document.createElement('span');
     avatar.appendChild(span);
