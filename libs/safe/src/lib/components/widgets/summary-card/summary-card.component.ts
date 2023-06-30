@@ -10,7 +10,12 @@ import {
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
-import { debounceTime, distinctUntilChanged, firstValueFrom } from 'rxjs';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  firstValueFrom,
+  takeUntil,
+} from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
@@ -271,18 +276,30 @@ export class SafeSummaryCardComponent
    * @param res Query result
    */
   private updateCards(res: any) {
-    if (!this.layout || !res?.data) return;
-    const layoutQueryName = this.layout.query.name;
-    const edges = res.data?.[layoutQueryName].edges;
-    if (!edges) return;
+    if (!res?.data) return;
+    let newCards: any[] = [];
 
-    const newCards = edges.map((e: any) => ({
-      ...this.settings.card,
-      record: e.node,
-      layout: this.layout,
-      metadata: this.fields,
-      style: e.meta.style,
-    }));
+    const layoutQueryName = this.layout?.query.name;
+    if (this.layout) {
+      const edges = res.data?.[layoutQueryName].edges;
+      if (!edges) return;
+
+      newCards = edges.map((e: any) => ({
+        ...this.settings.card,
+        record: e.node,
+        layout: this.layout,
+        metadata: this.fields,
+        style: e.meta.style,
+      }));
+    } else if (this.settings.card?.aggregation) {
+      if (!res.data?.recordsAggregation?.items) return;
+      newCards = res.data.recordsAggregation.items.map((x: any) => ({
+        ...this.settings.card,
+        cardAggregationData: x,
+      }));
+    } else {
+      return;
+    }
 
     // scrolling enabled
     if (!this.settings.widgetDisplay?.usePagination && this.scrolling) {
@@ -297,7 +314,11 @@ export class SafeSummaryCardComponent
         behavior: 'smooth',
       });
     }
-    this.pageInfo.length = get(res.data[layoutQueryName], 'totalCount', 0);
+    this.pageInfo.length = get(
+      res.data[layoutQueryName ?? 'recordsAggregation'],
+      'totalCount',
+      0
+    );
 
     this.loading = res.loading;
   }
@@ -355,7 +376,9 @@ export class SafeSummaryCardComponent
               fetchPolicy: 'network-only',
               nextFetchPolicy: 'cache-first',
             });
-            this.dataQuery.valueChanges.subscribe(this.updateCards.bind(this));
+            this.dataQuery.valueChanges
+              .pipe(takeUntil(this.destroy$))
+              .subscribe(this.updateCards.bind(this));
           }
         }
       });
@@ -406,19 +429,17 @@ export class SafeSummaryCardComponent
     card: NonNullable<SummaryCardFormT['value']['card']>
   ) {
     if (!card.aggregation || !card.resource) return;
-    this.aggregationService
-      .aggregationDataQuery(card.resource, card.aggregation)
-      ?.subscribe((res) => {
-        if (!res.data?.recordsAggregation?.items) return;
-        this.cachedCards = res.data.recordsAggregation.items.map((x: any) => ({
-          ...this.settings.card,
-          cardAggregationData: x,
-        }));
-        this.sortedCachedCards = this.cachedCards;
-        this.cards = this.cachedCards.slice(0, this.pageInfo.pageSize);
-        this.loading = res.loading;
-        this.pageInfo.length = res.data?.recordsAggregation?.items.length;
-      });
+    this.loading = true;
+    this.dataQuery = this.aggregationService.aggregationDataWatchQuery(
+      card.resource,
+      card.aggregation,
+      DEFAULT_PAGE_SIZE,
+      0
+    );
+
+    this.dataQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(this.updateCards.bind(this));
   }
 
   /**
@@ -431,18 +452,7 @@ export class SafeSummaryCardComponent
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
       50
     ) {
-      // check if is in aggregation mode
-      if (this.settings.card?.aggregation) {
-        if (this.cards.length < this.sortedCachedCards.length) {
-          this.cards = [
-            ...this.cards,
-            ...this.sortedCachedCards.slice(
-              this.cards.length,
-              this.cards.length + this.pageInfo.pageSize
-            ),
-          ];
-        }
-      } else if (!this.scrolling && this.pageInfo.length > this.cards.length) {
+      if (!this.scrolling && this.pageInfo.length > this.cards.length) {
         this.dataQuery
           ?.fetchMore({
             variables: {
@@ -474,14 +484,9 @@ export class SafeSummaryCardComponent
           filters: this.filters,
           sortField: get(layoutQuery, 'sort.field', null),
           sortOrder: get(layoutQuery, 'sort.order', ''),
-          styles: layoutQuery.style || null,
+          styles: layoutQuery?.style || null,
         })
         .then(this.updateCards.bind(this));
-    } else {
-      this.cards = this.sortedCachedCards.slice(
-        event.pageSize * event.pageIndex,
-        event.pageSize * (event.pageIndex + 1)
-      );
     }
   }
 
