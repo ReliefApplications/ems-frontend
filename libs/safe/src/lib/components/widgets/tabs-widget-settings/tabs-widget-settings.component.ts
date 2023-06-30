@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 
+/**
+ * Tabs widget settings
+ */
 @Component({
-  selector: 'safe-tabs-settings',
-  standalone: true,
-  imports: [CommonModule],
+  selector: 'safe-tabs-widget-settings',
   templateUrl: './tabs-widget-settings.component.html',
   styleUrls: ['./tabs-widget-settings.component.scss'],
 })

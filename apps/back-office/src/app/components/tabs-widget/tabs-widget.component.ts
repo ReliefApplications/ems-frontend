@@ -1,7 +1,6 @@
 import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SafeAuthService } from '../../../services/auth/auth.service';
-import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { SafeAuthService, SafeUnsubscribeComponent } from '@oort-front/safe';
 
 import { Location } from '@angular/common';
 
@@ -9,11 +8,11 @@ import { Location } from '@angular/common';
  * Tabs widget component
  */
 @Component({
-  selector: 'safe-tabs-widget',
+  selector: 'app-tabs-widget',
   templateUrl: './tabs-widget.component.html',
   styleUrls: ['./tabs-widget.component.scss'],
 })
-export class SafeTabsWidgetComponent
+export class TabsWidgetComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
@@ -118,5 +117,9 @@ export class SafeTabsWidgetComponent
     if (options.selectAll) {
       console.log(options);
     }
+  }
+
+  getCurrentTabContent(content: any) {
+    console.log(content);
   }
 }

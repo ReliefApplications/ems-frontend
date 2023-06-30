@@ -13,9 +13,9 @@ const routes: Routes = [
       {
         path: 'tab',
         loadChildren: () =>
-          import(
-            '../../../../../../../libs/safe/src/lib/components/widgets/tabs-widget/public-api'
-          ).then((m) => m.SafeTabsWidgetModule),
+          import('../../../components/tabs-widget/tabs-widget.module').then(
+            (m) => m.TabsWidgetModule
+          ),
         outlet: 'tabWidget',
       },
     ],
