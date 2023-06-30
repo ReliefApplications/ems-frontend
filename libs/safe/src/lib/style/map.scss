@@ -1,22 +1,22 @@
 // === Measure plugin ===
 ::ng-deep .leaflet-control-measure a.start::before {
-  content: "► ";
+  content: '► ';
 }
 
 ::ng-deep .leaflet-control-measure a.finish::before {
-  content: "✔ ";
+  content: '✔ ';
 }
 
 ::ng-deep .leaflet-control-measure a.cancel::before {
-  content: "✖ ";
+  content: '✖ ';
 }
 
 ::ng-deep .leaflet-measure-resultpopup a.zoomto::before {
-  content: "⇱ ";
+  content: '⇱ ';
 }
 
 ::ng-deep .leaflet-measure-resultpopup a.deletemarkup::before {
-  content: "♻ ";
+  content: '♻ ';
 }
 
 // Clustering
@@ -33,7 +33,8 @@
       margin: auto;
       color: white;
       font-weight: 600;
-      text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+      text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+        1px 1px 0 #000;
       // text-align: center;
     }
   }

@@ -159,7 +159,7 @@
       <ui-tab
         *ngIf="
           form.get('layerDefinition.drawingInfo.renderer.type')?.value !==
-          'heatmap' && form.get('datasource.type')?.value !== 'Polygon'
+            'heatmap' && form.get('datasource.type')?.value !== 'Polygon'
         "
         [disabled]="!isDatasourceValid"
       >
