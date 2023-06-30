@@ -11,9 +11,9 @@ import {
 
 import { Location } from '@angular/common';
 import { Subscription, takeUntil } from 'rxjs';
-import { AddPageComponent } from '../../application/pages/add-page/add-page.component';
-import { FormsComponent } from '../../dashboard/pages/forms/forms.component';
-import { DashboardComponent } from '../../dashboard/pages/dashboard/dashboard.component';
+// import { AddPageComponent } from '../../application/pages/add-page/add-page.component';
+// import { FormsComponent } from '../../dashboard/pages/forms/forms.component';
+// import { DashboardComponent } from '../../dashboard/pages/dashboard/dashboard.component';
 
 interface PageTab {
   label: string;
@@ -176,10 +176,10 @@ export class ApplicationWidgetComponent
    * @param content Loaded page by route
    */
   getCurrentTabContent(content: any) {
-    if (content instanceof AddPageComponent) {
-    } else if (content instanceof FormsComponent) {
-    } else if (content instanceof DashboardComponent) {
-    }
+    // if (content instanceof AddPageComponent) {
+    // } else if (content instanceof FormsComponent) {
+    // } else if (content instanceof DashboardComponent) {
+    // }
     console.log(content);
   }
 
