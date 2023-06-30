@@ -437,7 +437,7 @@ export type LayerFormT = ReturnType<typeof createLayerForm>;
  */
 export const createMapControlsForm = (value?: MapControls): FormGroup =>
   fb.group({
-    timedimension: [get(value, 'timedimension', false)],
+    // timedimension: [get(value, 'timedimension', false)],
     download: [get(value, 'download', true)],
     legend: [get(value, 'legend', true)],
     measure: [get(value, 'measure', false)],

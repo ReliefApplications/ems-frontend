@@ -35,11 +35,11 @@ import {
   MapControls,
 } from './interfaces/map.interface';
 import { BASEMAP_LAYERS } from './const/baseMaps';
-import { timeDimensionGeoJSON } from './test/timedimension-test';
+// import { timeDimensionGeoJSON } from './test/timedimension-test';
 import { SafeMapControlsService } from '../../../services/map/map-controls.service';
 import * as L from 'leaflet';
 import { Layer } from './layer';
-import { GeoJsonObject } from 'geojson';
+// import { GeoJsonObject } from 'geojson';
 import {
   ArcgisService,
   TreeObject,
@@ -139,6 +139,9 @@ export class MapComponent
   private layerIds: string[] = [];
 
   private resizeObserver?: ResizeObserver;
+
+  private basemapTree: L.Control.Layers.TreeObject[][] = [];
+  private overlaysTree: L.Control.Layers.TreeObject[][] = [];
 
   /**
    * Map widget component
@@ -319,7 +322,7 @@ export class MapComponent
         minZoom,
         maxZoom,
         worldCopyJump,
-        timeDimension: true,
+        // timeDimension: true,
         disableAutoPan: true,
       } as any).setView(
         L.latLng(
@@ -415,23 +418,38 @@ export class MapComponent
       }
     }
 
-    // Add layers on map
+    // We need to fetch new layers
     if (promises.length) {
       Promise.all(promises).then((trees) => {
-        const basemaps: L.Control.Layers.TreeObject[][] = [];
-        const layers: L.Control.Layers.TreeObject[][] = [];
+        this.basemapTree = [];
+        this.overlaysTree = [];
         for (const tree of trees) {
-          tree.basemaps && basemaps.push(tree.basemaps);
-          tree.layers && layers.push(tree.layers);
+          tree.basemaps && this.basemapTree.push(tree.basemaps);
+          tree.layers && this.overlaysTree.push(tree.layers);
         }
         if (controls.layer) {
-          this.setLayersControl(flatten(basemaps), flatten(layers));
+          this.setLayersControl(
+            flatten(this.basemapTree),
+            flatten(this.overlaysTree)
+          );
         } else {
           if (this.layerControlButtons) {
             this.layerControlButtons.remove();
           }
         }
       });
+    } else {
+      // No update on the layers, we only update the controls
+      if (controls.layer) {
+        this.setLayersControl(
+          flatten(this.basemapTree),
+          flatten(this.overlaysTree)
+        );
+      } else {
+        if (this.layerControlButtons) {
+          this.layerControlButtons.remove();
+        }
+      }
     }
 
     this.setMapControls(controls, initMap);
@@ -468,11 +486,11 @@ export class MapComponent
     }
 
     // Add TimeDimension control
-    this.mapControlsService.setTimeDimension(
-      this.map,
-      controls.timedimension ?? false,
-      timeDimensionGeoJSON as GeoJsonObject
-    );
+    // this.mapControlsService.setTimeDimension(
+    //   this.map,
+    //   controls.timedimension ?? false,
+    //   timeDimensionGeoJSON as GeoJsonObject
+    // );
     // Add download button and download menu
     this.mapControlsService.getDownloadControl(
       this.map,
