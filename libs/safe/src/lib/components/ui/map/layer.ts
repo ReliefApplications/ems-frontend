@@ -503,6 +503,7 @@ export class Layer implements LayerModel {
 
         for (const child of sublayers) {
           child.opacity = child.opacity * this.opacity;
+          child.visibility = this.visibility && child.visibility;
           child.layer = await child.getLayer();
         }
         const layers = sublayers
@@ -768,9 +769,10 @@ export class Layer implements LayerModel {
       }
     } else {
       // Classic visibility check based on zoom
+      const currZoom = map.getZoom();
       const maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
       const minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
-      if (map.getZoom() > maxZoom || map.getZoom() < minZoom) {
+      if (currZoom > maxZoom || currZoom < minZoom) {
         map.removeLayer(layer);
       } else {
         if (this.visibility) {
@@ -802,11 +804,15 @@ export class Layer implements LayerModel {
     const maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
     const minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
 
-    if (currZoom > maxZoom || currZoom < minZoom) {
-      map.removeLayer(layer);
-    } else {
-      if (this.visibility) {
-        map.addLayer(layer);
+    if (isNil((layer as any).shouldDisplay)) {
+      if (currZoom > maxZoom || currZoom < minZoom) {
+        map.removeLayer(layer);
+      } else {
+        if (this.visibility) {
+          map.addLayer(layer);
+        } else {
+          map.removeLayer(layer);
+        }
       }
     }
   }
@@ -823,7 +829,13 @@ export class Layer implements LayerModel {
     if (legendControl) {
       legendControl.removeLayer(layer);
     }
-    map.off('zoomend', this.zoomListener);
+    if (!isNil((layer as any).shouldDisplay)) {
+      // Ensure that we do not subscribe multiple times to zoom event
+      if (this.zoomListener) {
+        map.off('zoomend', this.zoomListener);
+      }
+    }
+    // map.off('zoomend', this.zoomListener);
   }
 
   /**
