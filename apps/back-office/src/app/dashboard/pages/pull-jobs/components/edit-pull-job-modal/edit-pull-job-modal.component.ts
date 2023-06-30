@@ -27,7 +27,13 @@ import {
   GetRoutingKeysQueryResponse,
   GET_ROUTING_KEYS,
 } from '../../graphql/queries';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subscription,
+  debounceTime,
+  distinctUntilChanged,
+} from 'rxjs';
 import get from 'lodash/get';
 import {
   getCachedValues,
@@ -261,6 +267,22 @@ export class EditPullJobModalComponent implements OnInit {
           );
         }
       });
+
+    this.formGroup
+      .get('mapping')
+      ?.valueChanges.pipe(debounceTime(2000), distinctUntilChanged())
+      .subscribe(() => {
+        const mapping = this.getActiveMapping();
+        this.setMappingControl(mapping);
+      });
+
+    this.formGroup
+      .get('rawMapping')
+      ?.valueChanges.pipe(debounceTime(2000), distinctUntilChanged())
+      .subscribe(() => {
+        const mapping = this.getActiveMapping();
+        this.setMappingControl(mapping);
+      });
   }
 
   /**
@@ -328,31 +350,40 @@ export class EditPullJobModalComponent implements OnInit {
    * Toggles the edit mode and update form values accordingly.
    */
   toggleRawJSON(): void {
-    if (this.openRawJSON) {
-      const mapping = JSON.parse(this.formGroup.get('rawMapping')?.value || '');
-      this.formGroup.setControl(
-        'mapping',
-        this.formBuilder.array(
-          Object.keys(mapping).map((x: any) =>
-            this.formBuilder.group({
-              name: [x, Validators.required],
-              value: [mapping[x], Validators.required],
-            })
-          )
-        )
-      );
-    } else {
-      const mapping = this.formGroup
+    const mapping = this.getActiveMapping();
+    if (!this.openRawJSON) {
+      this.formGroup
+        .get('rawMapping')
+        ?.setValue(JSON.stringify(mapping, null, 2));
+    }
+    this.setMappingControl(mapping);
+    this.openRawJSON = !this.openRawJSON;
+  }
+
+  getActiveMapping() {
+    if (this.openRawJSON)
+      return JSON.parse(this.formGroup.get('rawMapping')?.value || '{}');
+    else
+      return this.formGroup
         .get('mapping')
         ?.value.reduce(
           (o: any, field: any) => ({ ...o, [field.name]: field.value }),
           {}
         );
-      this.formGroup
-        .get('rawMapping')
-        ?.setValue(JSON.stringify(mapping, null, 2));
-    }
-    this.openRawJSON = !this.openRawJSON;
+  }
+
+  setMappingControl(mapping: any) {
+    this.formGroup.setControl(
+      'mapping',
+      this.formBuilder.array(
+        Object.keys(mapping).map((x: any) =>
+          this.formBuilder.group({
+            name: [x, Validators.required],
+            value: [mapping[x], Validators.required],
+          })
+        )
+      )
+    );
   }
 
   /**
