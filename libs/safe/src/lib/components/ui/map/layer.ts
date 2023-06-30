@@ -14,7 +14,6 @@ import {
 import {
   createClusterDivIcon,
   createCustomDivIcon,
-  DEFAULT_MARKER_ICON_OPTIONS,
 } from './utils/create-div-icon';
 import {
   LayerDatasource,
