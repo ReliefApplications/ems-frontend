@@ -15,7 +15,6 @@ import {
   AfterContentInit,
   Optional,
   Self,
-  HostListener,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { SelectOptionComponent } from './components/select-option.component';
@@ -80,7 +79,7 @@ export class SelectMenuComponent
   private overlayRef!: OverlayRef;
 
   private wheelListener!: any;
-    
+
   //Control access value functions
   onChange!: (value: any) => void;
   onTouch!: () => void;
@@ -107,7 +106,6 @@ export class SelectMenuComponent
       this.control.valueAccessor = this;
     }
   }
-  
 
   ngAfterContentInit(): void {
     this.clickOutsideListener = this.renderer.listen(
@@ -125,21 +123,16 @@ export class SelectMenuComponent
       }
     );
 
-    this.wheelListener = this.renderer.listen(
-      window,
-      'wheel',
-      (event) => {
-        if (
-          !(
-            this.el.nativeElement.contains(event.target) ||
-            this.document.getElementById('optionList')?.contains(event.target)
-          )
-        ) {
-          this.closeSelectPanel();
-        }
+    this.wheelListener = this.renderer.listen(window, 'wheel', (event) => {
+      if (
+        !(
+          this.el.nativeElement.contains(event.target) ||
+          this.document.getElementById('optionList')?.contains(event.target)
+        )
+      ) {
+        this.closeSelectPanel();
       }
-    );
-
+    });
 
     this.optionList?.changes
       .pipe(startWith(this.optionList), takeUntil(this.destroy$))
@@ -302,7 +295,7 @@ export class SelectMenuComponent
     if (this.clickOutsideListener) {
       this.clickOutsideListener();
     }
-    if(this.wheelListener){
+    if (this.wheelListener) {
       this.wheelListener();
     }
     this.destroy$.next();
