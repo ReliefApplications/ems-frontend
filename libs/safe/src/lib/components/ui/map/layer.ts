@@ -909,43 +909,49 @@ export class Layer implements LayerModel {
             break;
           }
         }
-        switch (get(this.layerDefinition, 'featureReduction.type')) {
-          case 'cluster': {
-            // Features legend
-            const symbol: LayerSymbol = {
-              style: get(
+        if (
+          get(this.layerDefinition, 'drawingInfo.renderer.type', 'simple') !==
+          'heatmap'
+        ) {
+          switch (get(this.layerDefinition, 'featureReduction.type')) {
+            case 'cluster': {
+              // Features legend
+              const symbol: LayerSymbol = {
+                style: get(
+                  this.layerDefinition,
+                  'drawingInfo.renderer.symbol.style',
+                  'location-dot'
+                ),
+                color: get(
+                  this.layerDefinition,
+                  'drawingInfo.renderer.symbol.color',
+                  'blue'
+                ),
+                size: get(
+                  this.layerDefinition,
+                  'drawingInfo.renderer.symbol.size',
+                  24
+                ),
+              };
+              const pipe = new SafeIconDisplayPipe();
+              // Cluster legend
+              const clusterSymbol: LayerSymbol = get(
                 this.layerDefinition,
-                'drawingInfo.renderer.symbol.style',
-                'location-dot'
-              ),
-              color: get(
-                this.layerDefinition,
-                'drawingInfo.renderer.symbol.color',
-                'blue'
-              ),
-              size: get(
-                this.layerDefinition,
-                'drawingInfo.renderer.symbol.size',
-                24
-              ),
-            };
-            const pipe = new SafeIconDisplayPipe();
-            // Cluster legend
-            const clusterSymbol: LayerSymbol = get(
-              this.layerDefinition,
-              'featureReduction.drawingInfo.renderer.symbol',
-              symbol
-            );
-            html += `<div>Clusters</div>`;
-            html += `<i style="color: ${
-              clusterSymbol.color
-            }"; class="${pipe.transform('circle', 'fa')} pl-2"></i>`;
-            break;
-          }
-          default: {
-            break;
+                'featureReduction.drawingInfo.renderer.symbol',
+                symbol
+              );
+              html += `<div>Clusters</div>`;
+              html += `<i style="color: ${
+                clusterSymbol.color
+              }"; class="${pipe.transform('circle', 'fa')} pl-2"></i>`;
+              break;
+            }
+            default: {
+              break;
+            }
           }
         }
+
         break;
       }
       case 'GroupLayer': {

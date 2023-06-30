@@ -20,7 +20,7 @@ export class GradientPipe implements PipeTransform {
    */
   transform(value?: Gradient, degrees?: number): string {
     if (value) {
-      const sorted = value.sort((a, b) => a.ratio - b.ratio);
+      const sorted = value.slice().sort((a, b) => a.ratio - b.ratio);
       if (degrees) {
         return (
           'linear-gradient(' +
