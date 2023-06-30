@@ -11,6 +11,7 @@ import {
   Form,
   SafeApplicationService,
   SafeUnsubscribeComponent,
+  SafeApplicationWidgetService,
 } from '@oort-front/safe';
 import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
 import { AddFormMutationResponse, ADD_FORM } from './graphql/mutations';
@@ -54,6 +55,7 @@ export class AddPageComponent
   };
   private loading = true;
   public loadingMore = false;
+  private origin!: string;
 
   // === REACTIVE FORM ===
   public pageForm: UntypedFormGroup = new UntypedFormGroup({});
@@ -65,6 +67,7 @@ export class AddPageComponent
    * @param formBuilder Angular form builder
    * @param apollo Apollo service
    * @param applicationService Shared application service
+   * @param applicationWidgetService Widget application service
    * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
@@ -74,6 +77,7 @@ export class AddPageComponent
     private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
+    private applicationWidgetService: SafeApplicationWidgetService,
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private translate: TranslateService,
@@ -86,6 +90,7 @@ export class AddPageComponent
     this.activatedRoute.data.pipe(takeUntil(this.destroy$)).subscribe({
       next: (data) => {
         if (data.source === 'widget') {
+          this.origin = data.source;
           this.contentTypes = CONTENT_TYPES.filter(
             (ct) => ct.value !== 'workflow'
           );
@@ -162,7 +167,11 @@ export class AddPageComponent
    * Submit form to application service for creation
    */
   onSubmit(): void {
-    this.applicationService.addPage(this.pageForm.value);
+    if (this.origin === 'widget') {
+      this.applicationWidgetService.addPage(this.pageForm.value);
+    } else {
+      this.applicationService.addPage(this.pageForm.value);
+    }
   }
 
   /**

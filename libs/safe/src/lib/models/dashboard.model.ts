@@ -6,7 +6,7 @@ import { SafeMapSettingsComponent } from '../components/widgets/map-settings/map
 import { SafeEditorSettingsComponent } from '../components/widgets/editor-settings/editor-settings.component';
 import { SafeSummaryCardSettingsComponent } from '../components/widgets/summary-card-settings/summary-card-settings.component';
 import { Category, Variant } from '@oort-front/ui';
-import { SafeTabsWidgetSettingsComponent } from '../components/widgets/tabs-widget-settings/tabs-widget-settings.component';
+import { SafeApplicationWidgetSettingsComponent } from '../components/widgets/application-widget-settings/application-widget-settings.component';
 
 /** Model for IWidgetType object */
 export interface IWidgetType {
@@ -215,7 +215,7 @@ export const WIDGET_TYPES = [
     defaultRows: 4,
     minRow: 2,
     component: 'tabs',
-    settingsTemplate: SafeTabsWidgetSettingsComponent,
+    settingsTemplate: SafeApplicationWidgetSettingsComponent,
   },
 ];
 

@@ -19,10 +19,8 @@
   <ng-container *ngIf="tabs.length">
     <ui-tabs [selectedIndex]="selectedTab">
       <ng-container *ngFor="let tab of tabs; let i = index">
-        <ui-tab (click)="changeTab(tab.route, i)">
-          <ng-container ngProjectAs="label">{{
-            tab.label | translate
-          }}</ng-container>
+        <ui-tab (click)="changeTab(tab, i)">
+          <ng-container ngProjectAs="label">{{ tab.label }}</ng-container>
         </ui-tab>
       </ng-container>
     </ui-tabs>

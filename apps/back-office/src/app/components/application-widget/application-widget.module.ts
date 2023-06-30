@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LayoutModule } from '@progress/kendo-angular-layout';
-import { TabsWidgetRoutingModule } from './tabs-widget-routing.module';
+import { TabsWidgetRoutingModule } from './application-widget-routing.module';
 import { ButtonModule, TabsModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { TabsWidgetComponent } from './tabs-widget.component';
+import { ApplicationWidgetComponent } from './application-widget.component';
 
 /**
  * Tabs widget module
  */
 @NgModule({
-  declarations: [TabsWidgetComponent],
+  declarations: [ApplicationWidgetComponent],
   imports: [
     CommonModule,
     LayoutModule,
@@ -19,6 +19,6 @@ import { TabsWidgetComponent } from './tabs-widget.component';
     ButtonModule,
     TabsWidgetRoutingModule,
   ],
-  exports: [TabsWidgetComponent],
+  exports: [ApplicationWidgetComponent],
 })
-export class TabsWidgetModule {}
+export class ApplicationWidgetModule {}

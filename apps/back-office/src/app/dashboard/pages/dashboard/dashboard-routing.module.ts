@@ -13,9 +13,9 @@ const routes: Routes = [
       {
         path: 'tab',
         loadChildren: () =>
-          import('../../../components/tabs-widget/tabs-widget.module').then(
-            (m) => m.TabsWidgetModule
-          ),
+          import(
+            '../../../components/application-widget/application-widget.module'
+          ).then((m) => m.ApplicationWidgetModule),
         outlet: 'tabWidget',
       },
     ],

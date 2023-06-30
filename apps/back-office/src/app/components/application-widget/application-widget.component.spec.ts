@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SafeTabsWidgetComponent } from './tabs-widget.component';
+import { ApplicationWidgetComponent } from './application-widget.component';
 
 describe('TabsComponent', () => {
-  let component: SafeTabsWidgetComponent;
-  let fixture: ComponentFixture<SafeTabsWidgetComponent>;
+  let component: ApplicationWidgetComponent;
+  let fixture: ComponentFixture<ApplicationWidgetComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [SafeTabsWidgetComponent],
+      imports: [ApplicationWidgetComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SafeTabsWidgetComponent);
+    fixture = TestBed.createComponent(ApplicationWidgetComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

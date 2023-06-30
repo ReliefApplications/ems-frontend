@@ -61,9 +61,11 @@ export class SafeTileDataComponent
       this.data.template
     );
     componentRef.instance.tile = this.data.tile;
-    componentRef.instance.change.subscribe((e: any) => {
-      this.tileForm = e;
-    });
+    componentRef.instance.change
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((e: any) => {
+        this.tileForm = e;
+      });
   }
 
   /**

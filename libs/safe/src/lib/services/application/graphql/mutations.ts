@@ -10,6 +10,30 @@ import { Template } from '../../../models/template.model';
 import { DistributionList } from '../../../models/distribution-list.model';
 import { CustomNotification } from '../../../models/custom-notification.model';
 
+// === ADD APPLICATION ===
+/** Add application gql mutation definition */
+export const ADD_APPLICATION = gql`
+  mutation addApplication {
+    addApplication {
+      id
+      name
+      pages {
+        id
+        name
+        createdAt
+        type
+        content
+      }
+      createdAt
+    }
+  }
+`;
+
+/** Add application gql mutation response interface */
+export interface AddApplicationMutationResponse {
+  addApplication: Application;
+}
+
 // === ADD PAGE ===
 /** Graphql request for adding a new page of a given type to an application */
 export const ADD_PAGE = gql`

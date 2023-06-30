@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { TabsWidgetComponent } from './tabs-widget.component';
+import { ApplicationWidgetComponent } from './application-widget.component';
 
 /** List of routes of dashboard module */
 const routes: Routes = [
   {
     path: '',
-    component: TabsWidgetComponent,
+    component: ApplicationWidgetComponent,
     children: [
       {
         path: 'add-page',
