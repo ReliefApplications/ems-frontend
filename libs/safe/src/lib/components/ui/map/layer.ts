@@ -177,56 +177,6 @@ export class Layer implements LayerModel {
   // Declare variables to store the event listeners
   private zoomListener!: L.LeafletEventHandlerFn;
 
-  /**
-   * Apply options to a layer
-   *
-   * @param map current map
-   * @param layer layer to edit
-   * @param options options to apply
-   * @param iconProperties custom icon properties
-   */
-  public static applyOptionsToLayer(
-    map: L.Map,
-    layer: any,
-    options: any,
-    iconProperties?: any
-  ) {
-    if (layer?.children) {
-      this.applyOptionsToLayer(map, layer.children, options);
-    } else {
-      const layers = get(layer, '_layers', [layer]);
-      for (const layerKey in layers) {
-        if (layers[layerKey]) {
-          if (iconProperties && layers[layerKey] instanceof L.Marker) {
-            const icon = createCustomDivIcon({
-              icon: iconProperties.style,
-              color: iconProperties.color || DEFAULT_MARKER_ICON_OPTIONS.color,
-              size: iconProperties.size || DEFAULT_MARKER_ICON_OPTIONS.size,
-              opacity: options.opacity || DEFAULT_MARKER_ICON_OPTIONS.opacity,
-            });
-            layers[layerKey].setIcon(icon);
-            layers[layerKey].options = {
-              ...layers[layerKey].options,
-              ...options,
-            };
-          } else {
-            layers[layerKey].setStyle(options);
-          }
-          map.removeLayer(layers[layerKey]);
-          if (
-            layers[layerKey].options.visibility &&
-            !(
-              map.getZoom() > layers[layerKey].options.maxZoom ||
-              map.getZoom() < layers[layerKey].options.minZoom
-            )
-          ) {
-            map.addLayer(layers[layerKey]);
-          }
-        }
-      }
-    }
-  }
-
   /** @returns the children of the current layer */
   public async getChildren() {
     await firstValueFrom(this.sublayersLoaded.pipe(filter((v) => v)));
@@ -251,9 +201,6 @@ export class Layer implements LayerModel {
     // If the geojson is a feature collection, return a new feature collection
     // with the features that satisfy the filter
     if (this.geojson.type === 'FeatureCollection') {
-      // console.log(this.geojson.features);
-      // const types = uniqBy(this.geojson.features, 'geometry.type');
-      // console.log(types);
       return {
         type: 'FeatureCollection',
         features: this.geojson.features.filter((feature) =>
@@ -517,8 +464,6 @@ export class Layer implements LayerModel {
               opacity: this.opacity,
             };
           }
-          console.log('styling !');
-          console.log(feature);
         },
       }),
       onEachFeature: (feature: Feature<any>, layer: L.Layer) => {
@@ -827,14 +772,16 @@ export class Layer implements LayerModel {
       const maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
       const minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
       if (map.getZoom() > maxZoom || map.getZoom() < minZoom) {
-        console.log('should hide layer');
         map.removeLayer(layer);
       } else {
-        console.log('should show layer');
-        map.addLayer(layer);
-        const legendControl = (map as any).legendControl;
-        if (legendControl) {
-          legendControl.addLayer(layer, this.legend);
+        if (this.visibility) {
+          map.addLayer(layer);
+          const legendControl = (map as any).legendControl;
+          if (legendControl) {
+            legendControl.addLayer(layer, this.legend);
+          }
+        } else {
+          map.removeLayer(layer);
         }
       }
       // Assign the event listener to the variable
@@ -852,7 +799,6 @@ export class Layer implements LayerModel {
    * @param layer Leaflet layer
    */
   public onZoom(map: L.Map, zoom: L.LeafletEvent, layer: L.Layer) {
-    console.log('I am zooming !');
     const currZoom = zoom.target.getZoom();
     const maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
     const minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
@@ -860,9 +806,9 @@ export class Layer implements LayerModel {
     if (currZoom > maxZoom || currZoom < minZoom) {
       map.removeLayer(layer);
     } else {
-      console.log('I am here');
-      console.log(this.visibility);
-      if (this.visibility) map.addLayer(layer);
+      if (this.visibility) {
+        map.addLayer(layer);
+      }
     }
   }
 
