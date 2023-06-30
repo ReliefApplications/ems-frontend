@@ -249,18 +249,17 @@ export class SafeFormComponent
   public onComplete = async () => {
     let mutation: any;
     this.surveyActive = false;
-    const promises: Promise<any>[] =
-      this.formHelpersService.uploadTemporaryRecords(this.survey);
-    promises.push(
-      this.formHelpersService.uploadFiles(
-        this.survey,
-        this.temporaryFilesStorage,
-        this.form?.id
-      )
+    // const promises: Promise<any>[] =
+    //   this.formHelpersService.uploadTemporaryRecords(this.survey);
+
+    await this.formHelpersService.uploadFiles(
+      this.survey,
+      this.temporaryFilesStorage,
+      this.form?.id
     );
     this.formHelpersService.setEmptyQuestions(this.survey);
     // We wait for the resources questions to update their ids
-    await Promise.allSettled(promises);
+    // await Promise.allSettled(promises);
     await this.formHelpersService.createCachedRecords(this.survey);
     // this.survey.data = surveyData;
     // If is an already saved record, edit it
