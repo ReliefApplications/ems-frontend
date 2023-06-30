@@ -321,16 +321,13 @@ export class SafeFormModalComponent
    * @param survey current survey
    */
   public async onUpdate(survey: any): Promise<void> {
-    const promises = this.formHelpersService.uploadTemporaryRecords(survey);
-    promises.push(
-      this.formHelpersService.uploadFiles(
-        survey,
-        this.temporaryFilesStorage,
-        this.form?.id
-      )
+    // const promises = this.formHelpersService.uploadTemporaryRecords(survey);
+    await this.formHelpersService.uploadFiles(
+      survey,
+      this.temporaryFilesStorage,
+      this.form?.id
     );
-
-    await Promise.allSettled(promises);
+    // await Promise.allSettled(promises);
     await this.formHelpersService.createCachedRecords(survey);
 
     if (this.data.recordId) {

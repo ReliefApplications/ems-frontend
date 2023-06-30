@@ -95,6 +95,7 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
     } else {
       classes.push('border-b');
       classes.push('mb-4');
+      classes.push('overflow-x-auto');
     }
     return classes;
   }

@@ -81,6 +81,7 @@
         <safe-display-settings [formGroup]="tileForm">
           <!-- Specific settings for summary card -->
           <ui-toggle
+            *ngIf="tileForm.get('widgetDisplay.searchable')?.enabled"
             [formControl]="$any(tileForm.get('widgetDisplay.searchable'))"
           >
             <ng-container ngProjectAs="label">{{
