@@ -12,7 +12,7 @@ import { TabsWidgetComponent } from './tabs-widget.component';
 @NgModule({
   declarations: [TabsWidgetComponent],
   imports: [
-    CommonModule, 
+    CommonModule,
     LayoutModule,
     TabsModule,
     TranslateModule,
