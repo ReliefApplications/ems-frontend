@@ -13,6 +13,7 @@ import {
 import { DialogRef } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
+import { cloneDeep } from 'lodash';
 
 /**
  * Shared survey helper service.
@@ -94,7 +95,7 @@ export class SafeFormHelpersService {
    * @param formId Form where to upload the files
    */
   async uploadFiles(
-    survey: any,
+    survey: Survey.SurveyModel,
     temporaryFilesStorage: any,
     formId: string | undefined
   ): Promise<void> {
@@ -119,11 +120,32 @@ export class SafeFormHelpersService {
           this.snackBar.openSnackBar(res.errors[0].message, { error: true });
           return;
         } else {
-          data[name][index].content = res.data?.uploadFile;
+          const uploadedFileID = res.data?.uploadFile;
+          const fileContent = data[name][index].content;
+          data[name][index].content = uploadedFileID;
+
+          // Check if any other question is using the same file
+          survey.getAllQuestions().forEach((question) => {
+            const questionType = question.getType();
+            if (
+              questionType !== 'file' ||
+              // Only change files that are not in the temporary storage
+              // meaning their values came from the default values
+              !!temporaryFilesStorage[question.name]
+            )
+              return;
+
+            const files = data[question.name] ?? [];
+            files.forEach((file: any) => {
+              if (file && file.content === fileContent) {
+                file.content = uploadedFileID;
+              }
+            });
+          });
         }
       }
     }
-    survey.data = data;
+    survey.data = cloneDeep(data);
   }
 
   /**
