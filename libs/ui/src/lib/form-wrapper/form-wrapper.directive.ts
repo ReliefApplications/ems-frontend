@@ -20,6 +20,7 @@ import { FormControlName, Validators, FormControlStatus } from '@angular/forms';
 import { ChipListDirective } from '../chip/chip-list.directive';
 import { DateWrapperDirective } from '../date/date-wrapper.directive';
 import { AutocompleteComponent } from '../autocomplete/autocomplete.component';
+import { FormControlComponent } from './form-control/form-control.component';
 
 /**
  * UI Form Wrapper Directive
@@ -53,6 +54,8 @@ export class FormWrapperDirective
   private chipListElement!: ElementRef;
   @ContentChild(DateWrapperDirective, { read: ElementRef })
   private dateWrapperElement!: ElementRef;
+  @ContentChild(FormControlComponent, { read: ElementRef })
+  private formControlElement!: ElementRef;
 
   @ContentChild(FormControlName) control!: FormControlName;
 
@@ -70,6 +73,7 @@ export class FormWrapperDirective
   ] as const;
 
   private inputClassesNoOutline = [
+    'form-input',
     'bg-transparent',
     'block',
     'overflow-hidden',
@@ -86,6 +90,7 @@ export class FormWrapperDirective
   ] as const;
 
   private inputClassesOutline = [
+    'form-input',
     'bg-transparent',
     'block',
     'w-full',
@@ -109,7 +114,7 @@ export class FormWrapperDirective
     'bg-gray-50',
   ] as const;
 
-  private beyondLabelGeneral = ['relative', 'py-1.5', 'px-2'] as const;
+  private beyondLabelGeneral = ['relative', 'flex', 'py-1.5', 'px-2'] as const;
   private beyondLabelNoChipList = ['flex', 'items-center', 'w-full'] as const;
   private beyondLabelNoOutline = [
     'focus-within:ring-2',
@@ -200,7 +205,7 @@ export class FormWrapperDirective
         this.renderer.addClass(selectButton, 'bg-gray-50');
       }
       // this.renderer.addClass(this.elementRef.nativeElement, 'pb-4');
-      //Add reworked element to beyond label
+      // Add reworked element to beyond label
       this.renderer.appendChild(
         this.beyondLabelContainer,
         currentElement.nativeElement
@@ -278,6 +283,7 @@ export class FormWrapperDirective
     for (const cl of this.beyondLabelGeneral) {
       this.renderer.addClass(this.beyondLabelContainer, cl);
     }
+
     if (!this.outline) {
       for (const cl of this.beyondLabelNoOutline) {
         this.renderer.addClass(this.beyondLabelContainer, cl);
@@ -286,6 +292,12 @@ export class FormWrapperDirective
       for (const cl of this.beyondLabelOutline) {
         this.renderer.addClass(this.beyondLabelContainer, cl);
       }
+    }
+
+    // Remove right padding for select
+    if (this.currentSelectElement || this.currentGraphQLSelectComponent) {
+      this.renderer.removeClass(this.beyondLabelContainer, 'px-2');
+      this.renderer.addClass(this.beyondLabelContainer, 'pl-2');
     }
 
     if (this.currentInputElement && !this.dateWrapperElement) {
@@ -314,8 +326,17 @@ export class FormWrapperDirective
       );
       this.renderer.removeClass(this.beyondLabelContainer, 'flex');
     } else {
-      for (const cl of this.beyondLabelNoChipList) {
-        this.renderer.addClass(this.beyondLabelContainer, cl);
+      if (this.formControlElement) {
+        this.renderer.insertBefore(
+          this.beyondLabelContainer,
+          this.formControlElement.nativeElement,
+          this.currentInputElement
+        );
+        // this.renderer.removeClass(this.beyondLabelContainer, 'flex');
+      } else {
+        for (const cl of this.beyondLabelNoChipList) {
+          this.renderer.addClass(this.beyondLabelContainer, cl);
+        }
       }
     }
 
@@ -415,7 +436,7 @@ export class FormWrapperDirective
    */
   private applySuffixClasses(suffixElement: any) {
     this.renderer.addClass(suffixElement, 'order-last');
-    this.renderer.addClass(suffixElement, 'pl-2');
+    this.renderer.addClass(suffixElement, 'px-2');
   }
 
   /**

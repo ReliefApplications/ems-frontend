@@ -3,7 +3,7 @@ import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
 import { CommonModule } from '@angular/common';
-import { DialogModule } from '@oort-front/ui';
+import { DialogModule, Variant } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
 
 /**
@@ -14,7 +14,7 @@ interface DialogData {
   content?: string;
   cancelText?: string;
   confirmText?: string;
-  confirmColor?: string;
+  confirmVariant?: Variant;
 }
 
 /**
@@ -32,7 +32,7 @@ export class SafeConfirmModalComponent {
   public content: string;
   public cancelText: string;
   public confirmText: string;
-  public confirmColor: string;
+  public confirmVariant: Variant = 'primary';
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -61,6 +61,6 @@ export class SafeConfirmModalComponent {
       this.translate.instant('components.confirmModal.confirm')
     );
     this.content = get(data, 'content', '');
-    this.confirmColor = get(data, 'confirmColor', 'primary');
+    this.confirmVariant = get(data, 'confirmVariant', this.confirmVariant);
   }
 }

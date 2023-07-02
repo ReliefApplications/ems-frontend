@@ -50,7 +50,7 @@ export class AddChannelModalComponent implements OnInit {
    * Add channel component
    *
    * @param formBuilder Angular form builder
-   * @param dialogRef Material dialog ref
+   * @param dialogRef Dialog ref
    */
   constructor(
     private formBuilder: UntypedFormBuilder,

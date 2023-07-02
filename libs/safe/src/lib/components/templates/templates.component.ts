@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import { SafeApplicationService } from '../../services/application/application.service';
 import { TemplateTypeEnum } from '../../models/template.model';
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SnackbarService } from '@oort-front/ui';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * A component to display the list of templates of an application
@@ -31,7 +31,7 @@ export class SafeTemplatesComponent
   /**
    * Constructor of the templates component
    *
-   * @param dialog The material dialog service
+   * @param dialog The Dialog service
    * @param translate The translation service
    * @param snackBar Shared snackbar service
    */
@@ -107,7 +107,7 @@ export class SafeTemplatesComponent
         ),
         confirmText: this.translate.instant('components.confirmModal.delete'),
         cancelText: this.translate.instant('components.confirmModal.cancel'),
-        confirmColor: 'warn',
+        confirmVariant: 'danger',
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {

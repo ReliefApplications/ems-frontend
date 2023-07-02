@@ -96,7 +96,7 @@ import { SnackbarService } from '@oort-front/ui';
 })
 export class SafeApplicationService {
   /** Current application */
-  private application = new BehaviorSubject<Application | null>(null);
+  public application = new BehaviorSubject<Application | null>(null);
   /** @returns Current application as observable */
   get application$(): Observable<Application | null> {
     return this.application.asObservable();
@@ -608,6 +608,58 @@ export class SafeApplicationService {
                 pages: application.pages?.map((x) => {
                   if (x.id === page.id) {
                     x = { ...x, name: page.name };
+                  }
+                  return x;
+                }),
+              };
+              this.application.next(newApplication);
+              if (callback) callback();
+            }
+          }
+        });
+    }
+  }
+
+  /**
+   * Toggle page visibility
+   * It is about if a page can be seen or not in front-office, in the navbar. Thus, if a page is hidden, it is still accessible through url.
+   *
+   * @param page page to hide / show
+   * @param callback callback method
+   */
+  togglePageVisibility(page: Page, callback?: any): void {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      this.apollo
+        .mutate<EditPageMutationResponse>({
+          mutation: EDIT_PAGE,
+          variables: {
+            id: page.id,
+            visible: !page.visible,
+          },
+        })
+        .subscribe(({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.page.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.page.one'),
+                  value: '',
+                })
+              );
+              const newApplication = {
+                ...application,
+                pages: application.pages?.map((x) => {
+                  if (x.id === page.id) {
+                    x = { ...x, visible: !page.visible };
                   }
                   return x;
                 }),

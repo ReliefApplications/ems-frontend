@@ -9,7 +9,6 @@
   </ng-container>
   <ng-container ngProjectAs="content">
     <form [formGroup]="accessForm" class="flex flex-col">
-
       <div uiFormFieldDirective>
         <label>{{ 'components.access.canSee' | translate }}</label>
         <ui-select-menu formControlName="canSee" [multiselect]="true">
@@ -19,7 +18,6 @@
         </ui-select-menu>
       </div>
       <ng-container *ngIf="!data.application">
-        
         <div uiFormFieldDirective>
           <label>{{ 'components.access.canUpdate' | translate }}</label>
           <ui-select-menu formControlName="canUpdate" [multiselect]="true">
@@ -40,9 +38,7 @@
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button (click)="onClose()">{{
-      'common.close' | translate
-    }}</ui-button>
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"

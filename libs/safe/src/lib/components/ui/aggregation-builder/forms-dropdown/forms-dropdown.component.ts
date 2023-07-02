@@ -4,18 +4,17 @@ import {
   OnInit,
   Output,
   EventEmitter,
-  ViewChild,
-  DoCheck,
-  ElementRef,
+  Renderer2,
+  Inject,
 } from '@angular/core';
 import { AbstractControl, UntypedFormControl } from '@angular/forms';
-import { MatLegacyAutocomplete as MatAutocomplete } from '@angular/material/legacy-autocomplete';
 import { isMongoId } from '../../../../utils/is-mongo-id';
 import { Observable } from 'rxjs';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Form } from '../../../../models/form.model';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * This component is used to display a dropdown where the user chan choose a form
@@ -27,7 +26,7 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class SafeFormsDropdownComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, DoCheck
+  implements OnInit
 {
   // === DATA ===
   @Input() public forms$!: Observable<Form[]>;
@@ -44,9 +43,8 @@ export class SafeFormsDropdownComponent
   @Input() label!: string;
 
   // === SCROLL DETECTION ===
-  @ViewChild('auto') autocomplete?: MatAutocomplete;
-  private initializeScrollListener = false;
-  private panel?: ElementRef;
+  private scrollListenerHandler!: any;
+  private panel?: HTMLElement;
   @Output() scrolled = new EventEmitter<boolean>();
 
   // === FILTER ===
@@ -54,8 +52,14 @@ export class SafeFormsDropdownComponent
 
   /**
    * Constructor for the dropdown of forms
+   *
+   * @param renderer Renderer2
+   * @param document Document
    */
-  constructor() {
+  constructor(
+    private renderer: Renderer2,
+    @Inject(DOCUMENT) private document: Document
+  ) {
     super();
   }
 
@@ -78,6 +82,9 @@ export class SafeFormsDropdownComponent
           this.sourceFilter = value;
           this.filter.emit(value);
           this.filteredForms = this.filterForms(value);
+          this.sourceFormControl.setErrors({ pattern: true });
+        } else {
+          this.sourceFormControl.setErrors({ pattern: false });
         }
       });
   }
@@ -104,24 +111,22 @@ export class SafeFormsDropdownComponent
   }
 
   /**
-   * Display function necessary for the autocomplete in order to display selected choice.
-   *
-   * @param formId the ID of the form
-   * @returns the name of the form with matching ID if currentForms exists and has a length,
-   * otherwise returns the formId
-   */
-  public displayName(formId: string): string {
-    return this.currentForms && this.currentForms.length
-      ? this.currentForms.find((x) => x.id === formId)?.name || formId
-      : formId;
-  }
-
-  /**
    * Trigger add scroll listener to autocomplete.
    *
    */
   public onOpen() {
-    this.initializeScrollListener = true;
+    const panel = this.document.getElementById('autocompleteList');
+    if (panel) {
+      this.panel = panel;
+      if (this.scrollListenerHandler) {
+        this.scrollListenerHandler();
+      }
+      this.scrollListenerHandler = this.renderer.listen(
+        this.panel,
+        'scroll',
+        (event: any) => this.scrollListener(event)
+      );
+    }
   }
 
   /**
@@ -130,28 +135,11 @@ export class SafeFormsDropdownComponent
    */
   public onClose() {
     if (this.panel) {
-      this.panel.nativeElement.removeEventListener('scroll', (event: any) =>
-        this.scrollListener(event)
-      );
-    }
-    this.loading = false;
-  }
-
-  /**
-   * Needs to use a DoCheck directive in order to access the autocomplete panel
-   * because it is not yet initialized in the opened event.
-   */
-  ngDoCheck() {
-    if (this.initializeScrollListener) {
-      const panel = this.autocomplete?.panel;
-      if (panel) {
-        this.panel = panel;
-        this.panel.nativeElement.addEventListener('scroll', (event: any) =>
-          this.scrollListener(event)
-        );
-        this.initializeScrollListener = false;
+      if (this.scrollListenerHandler) {
+        this.scrollListenerHandler();
       }
     }
+    this.loading = false;
   }
 
   /**

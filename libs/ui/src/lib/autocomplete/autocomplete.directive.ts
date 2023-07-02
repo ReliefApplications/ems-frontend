@@ -17,19 +17,13 @@ import {
 } from '@angular/core';
 import { AutocompleteComponent } from './autocomplete.component';
 import { isEqual } from 'lodash';
-import {
-  Observable,
-  Subject,
-  Subscription,
-  fromEvent,
-  merge,
-  takeUntil,
-} from 'rxjs';
+import { Observable, Subject, Subscription, merge, takeUntil } from 'rxjs';
 import { OptionComponent } from './components/option.component';
 import { NgControl } from '@angular/forms';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { DOCUMENT } from '@angular/common';
+import { ScrollStrategies } from './types/scroll-strategies';
 
 /**
  * UI Autocomplete directive
@@ -44,6 +38,7 @@ export class AutocompleteDirective
   autocompletePanel!: AutocompleteComponent;
 
   @Input() autocompleteDisplayKey?: any;
+  @Input() scrollStrategy?: ScrollStrategies = 'close';
 
   @Output() opened: EventEmitter<void> = new EventEmitter();
   @Output() closed: EventEmitter<void> = new EventEmitter();
@@ -52,12 +47,13 @@ export class AutocompleteDirective
   public overlayRef!: OverlayRef;
 
   private inputElement!: HTMLInputElement;
-  private selectedOption!: any;
+  private value!: any;
   private inputEventListener!: any;
   private destroy$ = new Subject<void>();
   private control!: NgControl;
   private autocompleteClosingActionsSubscription!: Subscription;
   private selectOptionListener!: any;
+  private clickOutsideListener!: any;
 
   /**
    * Get the value from the option to set in the input host element
@@ -137,9 +133,9 @@ export class AutocompleteDirective
       }
     );
     if (this.control?.control) {
-      this.selectedOption = this.control.control.value;
+      this.value = this.control.control.value;
     } else if (this.inputElement?.value) {
-      this.selectedOption = this.inputElement.value;
+      this.value = this.inputElement.value;
     }
   }
 
@@ -154,6 +150,22 @@ export class AutocompleteDirective
           },
         });
     }
+    this.clickOutsideListener = this.renderer.listen(
+      window,
+      'click',
+      (event) => {
+        if (
+          !(
+            this.inputElement.contains(event.target) ||
+            this.document
+              .getElementById('autocompleteList')
+              ?.contains(event.target)
+          )
+        ) {
+          this.closeAutocompletePanel();
+        }
+      }
+    );
   }
 
   /**
@@ -162,7 +174,7 @@ export class AutocompleteDirective
   private highLightSelectedOption() {
     this.getNotGroupOptionList().forEach((option: OptionComponent) => {
       // Highlight selected option
-      if (isEqual(this.selectedOption, option.value)) {
+      if (isEqual(this.value, option.value)) {
         option.selected = true;
       } else {
         option.selected = false;
@@ -218,15 +230,15 @@ export class AutocompleteDirective
    */
   private updateListAndSelectedOption(value: string) {
     if (
-      this.selectedOption &&
+      this.value &&
       !isEqual(
         this.getOptionValue({
-          value: this.selectedOption,
+          value: this.value,
         } as OptionComponent),
         this.inputElement.value
       )
     ) {
-      this.selectedOption = null;
+      this.value = null;
       this.highLightSelectedOption();
     }
     if (this.autocompletePanel.openPanel) {
@@ -248,7 +260,10 @@ export class AutocompleteDirective
     this.overlayRef = this.overlay.create({
       hasBackdrop: false,
       // close autocomplete on user scroll - default behavior, could be changed
-      scrollStrategy: this.overlay.scrollStrategies.close(),
+      scrollStrategy:
+        this.scrollStrategy === 'close'
+          ? this.overlay.scrollStrategies.close()
+          : this.overlay.scrollStrategies.block(),
       // We position the displayed autocomplete taking current directive host element as reference
       positionStrategy: this.overlay
         .position()
@@ -306,18 +321,18 @@ export class AutocompleteDirective
             event.target.getAttribute('data-selected')
           );
           if (isSelected) {
-            this.selectedOption = optionValue;
+            this.value = optionValue;
           } else {
-            this.selectedOption = null;
+            this.value = null;
           }
           if (this.control?.control) {
-            this.control.control.setValue(this.selectedOption, {
+            this.control.control.setValue(this.value, {
               emitEvent: false,
             });
-          } else {
-            this.inputElement.value = this.selectedOption;
           }
-          this.optionSelected.emit(this.selectedOption);
+          this.inputElement.value =
+            event.target.getAttribute('data-label') || this.value;
+          this.optionSelected.emit(this.value);
           this.closeAutocompletePanel();
         }
       }
@@ -350,10 +365,9 @@ export class AutocompleteDirective
    * @returns Observable of actions
    */
   private autocompleteClosingActions(): Observable<Event | void> {
-    const outsideClick$ = fromEvent(this.inputElement, 'focusout');
     const detachment$ = this.overlayRef.detachments();
 
-    return merge(outsideClick$, detachment$);
+    return merge(detachment$);
   }
 
   /**
@@ -381,6 +395,9 @@ export class AutocompleteDirective
     }
     if (this.selectOptionListener) {
       this.selectOptionListener();
+    }
+    if (this.clickOutsideListener) {
+      this.clickOutsideListener();
     }
     this.destroy$.next();
     this.destroy$.complete();

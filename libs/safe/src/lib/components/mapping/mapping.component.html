@@ -2,7 +2,7 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table cdk-table  uiTableWrapper [dataSource]="dataSource">
+    <table cdk-table uiTableWrapper [dataSource]="dataSource">
       <ng-container cdkColumnDef="field">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
@@ -51,11 +51,11 @@
           </ui-button>
           <ui-menu #menu>
             <button uiMenuItem (click)="onEdit(element, index)">
-              <ui-icon icon="edit"></ui-icon>
+              <ui-icon icon="edit" variant="grey"></ui-icon>
               {{ 'common.edit' | translate }}
             </button>
             <button uiMenuItem (click)="onDelete(index)">
-              <ui-icon icon="delete"></ui-icon>
+              <ui-icon icon="delete" variant="danger"></ui-icon>
               {{ 'common.delete' | translate }}
             </button>
           </ui-menu>

@@ -22,7 +22,6 @@ import {
   EDIT_WORKFLOW,
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
-import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 
@@ -67,7 +66,7 @@ export class WorkflowComponent
    * @param applicationService Shared application service
    * @param route Angular activated route
    * @param router Angular router
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param authService Shared authentication service
    * @param confirmService Shared confirm service
@@ -103,20 +102,43 @@ export class WorkflowComponent
           this.steps = workflow.steps || [];
           this.loading = false;
           if (!this.workflow || workflow.id !== this.workflow.id) {
-            const firstStep = get(workflow, 'steps', [])[0];
+            const firstStep = this.steps[0];
             if (firstStep) {
-              if (firstStep.type === ContentType.form) {
+              const firstStepIsForm = firstStep.type === ContentType.form;
+              const currentStepId = this.router.url.split('/').pop();
+              // If redirect to the workflow beginning, just go to the firstStep
+              let currentStep: Step = firstStep;
+              let currentActiveStep = 0;
+              if (
+                !(firstStepIsForm
+                  ? firstStep.id === currentStepId
+                  : firstStep.content === currentStepId)
+              ) {
+                // If not, URL contains the step id so redirect to the selected step (used for when refresh page or shared dashboard step link)
+                workflow?.steps?.forEach((step: Step, index: number) => {
+                  const stepIsForm = step.type === ContentType.form;
+                  if (
+                    (stepIsForm && step.id === currentStepId) ||
+                    step.content === currentStepId
+                  ) {
+                    currentStep = step;
+                    currentActiveStep = index;
+                    return;
+                  }
+                });
+              }
+              if (currentStep.type === ContentType.form) {
                 this.router.navigate(
-                  ['./' + firstStep.type + '/' + firstStep.id],
+                  ['./' + currentStep.type + '/' + currentStep.id],
                   { relativeTo: this.route }
                 );
               } else {
                 this.router.navigate(
-                  ['./' + firstStep.type + '/' + firstStep.content],
+                  ['./' + currentStep.type + '/' + currentStep.content],
                   { relativeTo: this.route }
                 );
               }
-              this.activeStep = 0;
+              this.activeStep = currentActiveStep;
             }
             if (!firstStep) {
               this.router.navigate([`./`], { relativeTo: this.route });
@@ -260,7 +282,7 @@ export class WorkflowComponent
           { step: step.name }
         ),
         confirmText: this.translate.instant('components.confirmModal.delete'),
-        confirmColor: 'warn',
+        confirmVariant: 'danger',
       });
       dialogRef.closed
         .pipe(takeUntil(this.destroy$))
@@ -333,10 +355,12 @@ export class WorkflowComponent
    * @param elementRef Element ref of workflow component
    */
   onActivate(elementRef: any): void {
-    if (elementRef.goToNextStep) {
-      elementRef.goToNextStep.subscribe((event: any) => {
-        if (event) {
+    if (elementRef.changeStep) {
+      elementRef.changeStep.subscribe((event: number) => {
+        if (event > 0) {
           this.goToNextStep();
+        } else {
+          this.goToPreviousStep();
         }
       });
     }
@@ -411,6 +435,29 @@ export class WorkflowComponent
   }
 
   /**
+   * Navigates to the previous step if possible and change selected step / index consequently
+   */
+  private goToPreviousStep(): void {
+    if (this.activeStep > 0) {
+      this.onOpenStep(this.activeStep - 1);
+    } else if (this.activeStep === 0) {
+      this.onOpenStep(this.steps.length - 1);
+      this.snackBar.openSnackBar(
+        this.translate.instant('models.workflow.notifications.goToStep', {
+          step: this.steps[this.steps.length - 1].name,
+        })
+      );
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'models.workflow.notifications.cannotGoToPreviousStep'
+        ),
+        { error: true }
+      );
+    }
+  }
+
+  /**
    * Open selected step
    *
    * @param index index of selected step
@@ -431,5 +478,27 @@ export class WorkflowComponent
     } else {
       this.router.navigate(['./'], { relativeTo: this.route });
     }
+  }
+
+  /**
+   * Toggle page visibility.
+   */
+  togglePageVisibility() {
+    const callback = () => {
+      this.workflow = {
+        ...this.workflow,
+        page: {
+          ...this.workflow?.page,
+          visible: !this.workflow?.page?.visible,
+        },
+      };
+    };
+    this.applicationService.togglePageVisibility(
+      {
+        id: this.workflow?.page?.id,
+        visible: this.workflow?.page?.visible,
+      },
+      callback
+    );
   }
 }

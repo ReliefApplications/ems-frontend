@@ -35,20 +35,20 @@
       >
         <ng-container cdkColumnDef="name">
           <th uiTableHeaderSort="name" uiCellHeader *cdkHeaderCellDef>
-            <span class="headerTitle">
-              {{ 'common.name' | translate }}
-            </span>
+            {{ 'common.name' | translate }}
           </th>
-          <td uiCell *cdkCellDef="let element" class="font-bold">
+          <td
+            uiCell
+            *cdkCellDef="let element"
+            class="!text-gray-900 !font-medium"
+          >
             {{ element.name }}
           </td>
         </ng-container>
 
         <ng-container cdkColumnDef="createdAt">
           <th uiTableHeaderSort="createdAt" uiCellHeader *cdkHeaderCellDef>
-            <span class="headerTitle">
-              {{ 'common.createdOn' | translate }}
-            </span>
+            {{ 'common.createdOn' | translate }}
           </th>
           <td uiCell *cdkCellDef="let element">
             {{ element.createdAt | safeDate }}
@@ -57,9 +57,7 @@
 
         <ng-container cdkColumnDef="status">
           <th uiCellHeader *cdkHeaderCellDef>
-            <span class="headerTitle">
-              {{ 'common.status' | translate }}
-            </span>
+            {{ 'common.status' | translate }}
           </th>
           <td uiCell *cdkCellDef="let element">
             <div uiChipList>
@@ -111,7 +109,7 @@
             </ui-button>
             <ui-menu #menu>
               <button uiMenuItem (click)="onPreview(element)">
-                <ui-icon icon="preview"></ui-icon>
+                <ui-icon icon="preview" variant="grey"></ui-icon>
                 {{ 'common.preview' | translate }}
               </button>
               <safe-access
@@ -126,13 +124,13 @@
                 (click)="onClone(element)"
                 *ngIf="element.canDelete"
               >
-                <ui-icon icon="file_copy"></ui-icon>
+                <ui-icon icon="file_copy" variant="grey"></ui-icon>
                 {{ 'common.duplicate' | translate }}
               </button>
               <ng-container *ngIf="element.canDelete">
-                <ui-divider class="m-0"></ui-divider>
+                <ui-divider class="py-1"></ui-divider>
                 <button uiMenuItem (click)="onDelete(element, $event)">
-                  <ui-icon icon="delete"></ui-icon>
+                  <ui-icon icon="delete" variant="danger"></ui-icon>
                   {{ 'common.delete' | translate }}
                 </button>
               </ng-container>

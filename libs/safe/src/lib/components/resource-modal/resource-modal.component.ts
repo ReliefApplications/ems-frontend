@@ -48,22 +48,6 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
 })
 export class SafeResourceModalComponent extends SafeFormModalComponent {
   /**
-   * Calls the complete method of the survey if no error.
-   */
-  public override submit(): void {
-    this.saving = true;
-    if (!this.survey?.hasErrors()) {
-      this.survey?.completeLastPage();
-    } else {
-      this.snackBar.openSnackBar(
-        this.translate.instant('models.form.notifications.savingFailed'),
-        { error: true }
-      );
-      this.saving = false;
-    }
-  }
-
-  /**
    * We override this method to not directly save new records
    *
    * @param survey current survey

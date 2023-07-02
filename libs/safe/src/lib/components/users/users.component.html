@@ -1,6 +1,6 @@
-<div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row">
+<div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row items-start">
   <!-- Filters -->
-  <div class="flex flex-col gap-4">
+  <div class="flex flex-col gap-x-4">
     <!-- Default filter -->
     <div class="flex flex-wrap gap-2 flex-col sm:flex-row">
       <!-- Search text filter -->
@@ -34,11 +34,11 @@
       *ngIf="showFilters"
     >
       <!-- Title filter -->
-      <div uiFormFieldDirective>
+      <div uiFormFieldDirective class="w-44">
         <label>{{ 'common.title' | translate }}</label>
         <ui-select-menu
           [ngModel]="roleFilter"
-          (selectionChange)="applyFilter('role', $event)"
+          (selectedOption)="applyFilter('role', $event)"
         >
           <ui-select-option>-</ui-select-option>
           <ui-select-option [value]="role.title" *ngFor="let role of roles">
@@ -102,7 +102,12 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" cdk-table uiTableWrapper [dataSource]="users">
+    <table
+      *ngIf="!loading"
+      cdk-table
+      uiTableWrapper
+      [dataSource]="filteredUsers"
+    >
       <!-- Checkbox Column -->
       <ng-container cdkColumnDef="select">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
@@ -139,7 +144,11 @@
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td uiCell *cdkCellDef="let element" class="font-bold">
+        <td
+          uiCell
+          *cdkCellDef="let element"
+          class="!text-gray-900 !font-medium"
+        >
           {{ element.name }}
         </td>
       </ng-container>
@@ -176,7 +185,7 @@
           </ui-button>
           <ui-menu #menu>
             <button uiMenuItem (click)="onDelete([element])">
-              <ui-icon icon="delete"></ui-icon>
+              <ui-icon icon="delete" variant="danger"></ui-icon>
               {{ 'common.delete' | translate }}
             </button>
           </ui-menu>

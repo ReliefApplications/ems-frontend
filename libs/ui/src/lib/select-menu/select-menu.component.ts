@@ -1,6 +1,5 @@
 import {
   Component,
-  forwardRef,
   Input,
   Output,
   EventEmitter,
@@ -13,14 +12,11 @@ import {
   ViewChild,
   ViewContainerRef,
   Inject,
-  Injector,
   AfterContentInit,
+  Optional,
+  Self,
 } from '@angular/core';
-import {
-  ControlValueAccessor,
-  NG_VALUE_ACCESSOR,
-  NgControl,
-} from '@angular/forms';
+import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { SelectOptionComponent } from './components/select-option.component';
 import {
   Observable,
@@ -33,6 +29,7 @@ import {
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { DOCUMENT } from '@angular/common';
+import { isNil } from 'lodash';
 
 /**
  * UI Select Menu component
@@ -41,13 +38,6 @@ import { DOCUMENT } from '@angular/common';
   selector: 'ui-select-menu',
   templateUrl: './select-menu.component.html',
   styleUrls: ['./select-menu.component.scss'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => SelectMenuComponent),
-      multi: true,
-    },
-  ],
 })
 export class SelectMenuComponent
   implements ControlValueAccessor, AfterContentInit, OnDestroy
@@ -56,6 +46,8 @@ export class SelectMenuComponent
   @Input() multiselect = false;
   // Tells if the select menu should be disabled
   @Input() disabled = false;
+  // Tells if some styles to the current ul element should be applied
+  @Input() isGraphQlSelect = false;
   // Default selected value
   @Input() value?: string | string[];
   // Any custom template provided for display
@@ -80,13 +72,11 @@ export class SelectMenuComponent
   public listBoxFocused = false;
   // Text to be displayed in the trigger when some selections are made
   public displayTrigger = '';
-  public isGraphQlSelect = false;
 
   private destroy$ = new Subject<void>();
   private clickOutsideListener!: any;
   private selectClosingActionsSubscription!: Subscription;
   private overlayRef!: OverlayRef;
-  private control!: NgControl;
 
   //Control access value functions
   onChange!: (value: any) => void;
@@ -95,7 +85,7 @@ export class SelectMenuComponent
   /**
    * Ui Select constructor
    *
-   * @param injector Injector
+   * @param control host element NgControl instance
    * @param el Host element reference
    * @param renderer Renderer2
    * @param viewContainerRef ViewContainerRef
@@ -103,13 +93,17 @@ export class SelectMenuComponent
    * @param document document
    */
   constructor(
-    private injector: Injector,
+    @Optional() @Self() private control: NgControl,
     public el: ElementRef,
     private renderer: Renderer2,
     private viewContainerRef: ViewContainerRef,
     private overlay: Overlay,
     @Inject(DOCUMENT) private document: Document
-  ) {}
+  ) {
+    if (this.control) {
+      this.control.valueAccessor = this;
+    }
+  }
 
   ngAfterContentInit(): void {
     this.clickOutsideListener = this.renderer.listen(
@@ -152,12 +146,11 @@ export class SelectMenuComponent
           });
         },
       });
-    this.control = this.injector.get(NgControl);
     if (this.control) {
       this.control.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe({
         next: (value) => {
           // If the value is cleared from outside, reset displayed values
-          if (!value || !value.length) {
+          if (isNil(value) || value.length === 0) {
             this.selectedValues = [];
             this.optionList.forEach((option) => (option.selected = false));
             this.setDisplayTriggerText();
@@ -187,7 +180,9 @@ export class SelectMenuComponent
    * event that took place
    */
   registerOnChange(fn: any) {
-    this.onChange = fn;
+    if (!this.onChange) {
+      this.onChange = fn;
+    }
   }
 
   /**
@@ -197,7 +192,9 @@ export class SelectMenuComponent
    * event that took place
    */
   registerOnTouched(fn: any) {
-    this.onTouch = fn;
+    if (!this.onTouch) {
+      this.onTouch = fn;
+    }
   }
 
   /**
@@ -238,16 +235,16 @@ export class SelectMenuComponent
   private setDisplayTriggerText() {
     const labelValues = this.getValuesLabel(this.selectedValues);
     // Adapt the text to be displayed in the trigger if no custom template for display is provided
-    if (labelValues?.length) {
-      if (!this.customTemplate) {
+    if (!this.customTemplate) {
+      if (labelValues?.length) {
         if (labelValues.length === 1) {
           this.displayTrigger = labelValues[0];
-        } else if (labelValues.length >= 1) {
+        } else {
           this.displayTrigger =
             labelValues[0] + ' (+' + (labelValues.length - 1) + ' others)';
-        } else {
-          this.displayTrigger = '';
         }
+      } else {
+        this.displayTrigger = '';
       }
     }
   }

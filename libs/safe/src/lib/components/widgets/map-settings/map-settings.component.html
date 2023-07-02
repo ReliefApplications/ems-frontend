@@ -1,60 +1,52 @@
-<ng-container *ngIf="tileForm">
-  <ui-tabs [vertical]="true" class="grow">
-    <!-- GENERAL SETTINGS -->
-    <ui-tab>
-      <ng-container ngProjectAs="label">
-        <ui-icon
-          icon="preview"
-          [size]="24"
-          uiTooltip="{{ 'common.general' | translate }}"
-        ></ui-icon>
-        <span>{{ 'common.general' | translate }}</span>
-      </ng-container>
-      <safe-map-general *ngIf="tileForm" [form]="tileForm"></safe-map-general>
-    </ui-tab>
-    <!-- LAYERS CONFIGURATION -->
-    <ui-tab>
-      <ng-container ngProjectAs="label">
-        <ui-icon
-          icon="layers"
-          [size]="24"
-          uiTooltip="{{ 'common.layers' | translate }}"
-        ></ui-icon>
-        <span>{{ 'common.layers' | translate }}</span>
-      </ng-container>
-      <safe-map-layers
+<ui-tabs
+  class="grow"
+  [vertical]="true"
+  (selectedIndexChange)="selectedIndexChange()"
+>
+  <!-- Map properties -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="map" [size]="24"> </ui-icon>
+      <span>{{
+        'components.widget.settings.map.properties.title' | translate
+      }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <safe-map-properties
         [form]="tileForm"
-        [selectedFields]="selectedFields"
-        [formattedSelectedFields]="formattedSelectedFields"
+        [mapSettings]="mapSettings"
+        [destroyTab$]="destroyTab$"
+        [currentMapContainerRef]="currentMapContainerRef"
+      ></safe-map-properties>
+    </ng-template>
+  </ui-tab>
+  <!-- Map layers -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="layers" [size]="24"> </ui-icon>
+      <span>{{ 'common.layers' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <safe-map-layers
+        [control]="$any(tileForm.get('layers'))"
+        [mapComponent]="mapComponent"
+        [destroyTab$]="destroyTab$"
+        [currentMapContainerRef]="currentMapContainerRef"
       ></safe-map-layers>
-    </ui-tab>
-    <!-- MAP PARAMETERS -->
-    <ui-tab>
-      <ng-container ngProjectAs="label">
-        <ui-icon
-          icon="map"
-          [size]="24"
-          uiTooltip="{{
-            'components.widget.settings.map.properties.title' | translate
-          }}"
-        ></ui-icon>
-        <span>{{
-          'components.widget.settings.map.properties.title' | translate
-        }}</span>
-      </ng-container>
-      <safe-map-properties [form]="tileForm"></safe-map-properties>
-    </ui-tab>
-    <!-- Widget display options -->
-    <ui-tab>
-      <ng-container ngProjectAs="label">
-        <ui-icon
-          icon="settings_overscan"
-          [size]="24"
-          [uiTooltip]="'models.widget.display.title' | translate"
-        ></ui-icon>
-        <span>{{ 'models.widget.display.title' | translate }}</span>
-      </ng-container>
+    </ng-template>
+  </ui-tab>
+  <!-- General widget display -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="settings_overscan" [size]="24"> </ui-icon>
+      <span>{{ 'models.widget.display.title' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
       <safe-display-settings [formGroup]="tileForm"></safe-display-settings>
-    </ui-tab>
-  </ui-tabs>
-</ng-container>
+    </ng-template>
+  </ui-tab>
+</ui-tabs>
+
+<div class="hidden">
+  <ng-template #mapContainer></ng-template>
+</div>

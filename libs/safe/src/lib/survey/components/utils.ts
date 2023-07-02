@@ -8,7 +8,7 @@ import { surveyLocalization } from 'survey-angular';
  * @param question The question object
  * @param fieldsSettingsForm The form used for the button
  * @param multiselect Indicate if we need multiselect
- * @param dialog The material dialog service
+ * @param dialog The Dialog service
  * @returns The button DOM element
  */
 export const buildSearchButton = (
@@ -63,7 +63,7 @@ export const buildSearchButton = (
  *
  * @param question The question object
  * @param multiselect Indicate if we need multiselect
- * @param dialog The material dialog service
+ * @param dialog The Dialog service
  * @returns The button DOM element
  */
 export const buildAddButton = (
@@ -76,7 +76,7 @@ export const buildAddButton = (
     'oort:addNewRecord',
     question.survey.locale
   );
-  if (question.addRecord && question.addTemplate) {
+  if (question.addRecord && question.addTemplate && !question.isReadOnly) {
     addButton.onclick = async () => {
       const { SafeResourceModalComponent } = await import(
         '../../components/resource-modal/resource-modal.component'
@@ -136,6 +136,14 @@ export const buildAddButton = (
     };
   }
   addButton.style.display =
-    question.addRecord && question.addTemplate ? '' : 'none';
+    question.addRecord && question.addTemplate && !question.isReadOnly
+      ? ''
+      : 'none';
+  question.registerFunctionOnPropertyValueChanged(
+    'readOnly',
+    (value: boolean) => {
+      addButton.style.display = value ? 'none' : '';
+    }
+  );
   return addButton;
 };

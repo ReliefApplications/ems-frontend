@@ -48,11 +48,27 @@ export class SafeEmailPreviewComponent implements OnInit {
   /** tinymce editor */
   public editor: any = EMAIL_EDITOR_CONFIG;
 
-  @ViewChild('emailsInput') emailsInput?: ElementRef<HTMLInputElement>;
+  @ViewChild('emailsInput') emailsInput!: ElementRef<HTMLInputElement>;
 
   /** @returns list of emails */
   get emails(): string[] {
     return this.form.get('to')?.value || [];
+  }
+
+  /**
+   * Get error message of field
+   *
+   * @returns error message
+   */
+  get emailsError(): string {
+    const control = this.form.get('to');
+    if (control?.hasError('required')) {
+      return 'components.distributionLists.errors.emails.required';
+    }
+    if (control?.hasError('pattern')) {
+      return 'components.distributionLists.errors.emails.pattern';
+    }
+    return '';
   }
 
   /**
@@ -92,32 +108,32 @@ export class SafeEmailPreviewComponent implements OnInit {
    * @param event The event triggered when we exit the input
    */
   addEmail(event: any): void {
+    const control = this.form.get('to');
     // use setTimeout to prevent add input value on focusout
     setTimeout(
       () => {
-        const input =
-          event.type === 'focusout'
-            ? this.emailsInput?.nativeElement
-            : event.input;
         const value =
           event.type === 'focusout'
-            ? this.emailsInput?.nativeElement.value
-            : event.value;
+            ? this.emailsInput.nativeElement.value
+            : event;
 
         // Add the mail
         const emails = [...this.emails];
         if ((value || '').trim()) {
           if (EMAIL_REGEX.test(value.trim())) {
             emails.push(value.trim());
-            this.form.get('to')?.setValue(emails);
-            this.form.get('to')?.updateValueAndValidity();
-            // Reset the input value
-            if (input) {
-              input.value = '';
+            control?.setValue(emails);
+            control?.updateValueAndValidity();
+            if (event.type === 'focusout') {
+              this.emailsInput.nativeElement.value = '';
             }
           } else {
-            this.form.get('to')?.setErrors({ pattern: true });
+            control?.setErrors({ pattern: true });
           }
+        } else {
+          // no value
+          control?.setErrors({ pattern: false });
+          control?.updateValueAndValidity();
         }
       },
       event.type === 'focusout' ? 500 : 0
@@ -137,21 +153,5 @@ export class SafeEmailPreviewComponent implements OnInit {
       this.form.get('to')?.setValue(emails);
       this.form.get('to')?.updateValueAndValidity();
     }
-  }
-
-  /**
-   * Get error message of field
-   *
-   * @returns error message
-   */
-  public errorMessage(): string {
-    const control = this.form.get('to');
-    if (control?.hasError('required')) {
-      return 'components.distributionLists.errors.emails.required';
-    }
-    if (control?.hasError('pattern')) {
-      return 'components.distributionLists.errors.emails.pattern';
-    }
-    return '';
   }
 }

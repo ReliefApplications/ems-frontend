@@ -2,6 +2,7 @@ import { ComboBoxComponent } from '@progress/kendo-angular-dropdowns';
 import { DomService } from '../../services/dom/dom.service';
 import { Question } from '../types';
 import { QuestionDropdown } from 'survey-knockout';
+import { isArray, isObject } from 'lodash';
 
 /**
  * Init dropdown widget
@@ -23,12 +24,16 @@ export const init = (Survey: any, domService: DomService): void => {
       dropdownDiv = document.createElement('div');
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const dropdownInstance = createDropdownInstance(dropdownDiv);
-      dropdownInstance.value = question.value;
+      if (!isObject(question.value) && !isArray(question.value)) {
+        dropdownInstance.value = question.value;
+      }
       dropdownInstance.placeholder = question.placeholder;
       dropdownInstance.readonly = question.isReadOnly;
       dropdownInstance.disabled = question.isReadOnly;
       dropdownInstance.registerOnChange((value: any) => {
-        question.value = value;
+        if (!isObject(value) && !isArray(value)) {
+          question.value = value;
+        }
       });
       const updateChoices = () => {
         if (question.visibleChoices && Array.isArray(question.visibleChoices)) {
@@ -51,6 +56,16 @@ export const init = (Survey: any, domService: DomService): void => {
       question.registerFunctionOnPropertyValueChanged(
         'visibleChoices',
         question._propertyValueChangedVirtual
+      );
+      question.registerFunctionOnPropertyValueChanged('value', () => {
+        dropdownInstance.value = question.value;
+      });
+      question.registerFunctionOnPropertyValueChanged(
+        'readOnly',
+        (value: boolean) => {
+          dropdownInstance.readonly = value;
+          dropdownInstance.disabled = value;
+        }
       );
       updateChoices();
       el.parentElement?.appendChild(dropdownDiv);
@@ -79,9 +94,9 @@ export const init = (Survey: any, domService: DomService): void => {
       element
     );
     const dropdownInstance: ComboBoxComponent = dropdown.instance;
-    // dropdownInstance.virtual = {
-    //   itemHeight: 28,
-    // };
+    dropdownInstance.virtual = {
+      itemHeight: 28,
+    };
     dropdownInstance.valuePrimitive = true;
     dropdownInstance.textField = 'text';
     dropdownInstance.valueField = 'value';

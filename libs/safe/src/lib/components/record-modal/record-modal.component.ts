@@ -4,7 +4,6 @@ import {
   Component,
   ElementRef,
   Inject,
-  OnInit,
   ViewChild,
 } from '@angular/core';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
@@ -21,7 +20,7 @@ import addCustomFunctions from '../../utils/custom-functions';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { EDIT_RECORD, EditRecordMutationResponse } from './graphql/mutations';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
-import { BehaviorSubject, firstValueFrom, Observable, takeUntil } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, takeUntil } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import isEqual from 'lodash/isEqual';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
@@ -71,17 +70,15 @@ interface DialogData {
 })
 export class SafeRecordModalComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements AfterViewInit
 {
   // === DATA ===
   public loading = true;
   public form?: Form;
   public record: Record = {};
   public modifiedAt: Date | null = null;
-  public selectedTabIndex = 0;
   public survey!: Survey.SurveyModel;
   public surveyNext?: Survey.SurveyModel;
-  private pages = new BehaviorSubject<any[]>([]);
   public canEdit: boolean | undefined = false;
 
   @ViewChild('formContainer', { static: false })
@@ -91,14 +88,15 @@ export class SafeRecordModalComponent
 
   environment: any;
 
-  /**
-   * Getter for the different pages of the form
-   *
-   * @returns The pages as an observable
-   */
-  public get pages$(): Observable<any[]> {
-    return this.pages.asObservable();
-  }
+  /** Selected page index */
+  public selectedPageIndex: BehaviorSubject<number> =
+    new BehaviorSubject<number>(0);
+  /** Selected page index as observable */
+  public selectedPageIndex$ = this.selectedPageIndex.asObservable();
+  /** Available pages*/
+  private pages = new BehaviorSubject<any[]>([]);
+  /** Pages as observable */
+  public pages$ = this.pages.asObservable();
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -107,7 +105,7 @@ export class SafeRecordModalComponent
    * @param dialogRef This is the reference to the dialog that is being opened.
    * @param data This is the data that is passed to the modal when it is opened.
    * @param apollo This is the Apollo client that we'll use to make GraphQL requests.
-   * @param dialog This is the Material dialog service
+   * @param dialog This is the Dialog service
    * @param authService This is the service that handles the authentication of the user
    * @param snackBar This is the service that allows you to display a snackbar message to the user.
    * @param formBuilderService This is the service that will be used to build forms.
@@ -126,10 +124,6 @@ export class SafeRecordModalComponent
     private translate: TranslateService
   ) {
     super();
-  }
-
-  ngOnInit(): void {
-    this.setFormListeners();
   }
 
   async ngAfterViewInit(): Promise<void> {
@@ -184,16 +178,6 @@ export class SafeRecordModalComponent
   }
 
   /**
-   * Set needed listeners for the component
-   */
-  private setFormListeners() {
-    this.formBuilderService.selectedPageIndex
-      .asObservable()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((pageIndex: number) => (this.selectedTabIndex = pageIndex));
-  }
-
-  /**
    * Initializes the form
    */
   private initSurvey() {
@@ -214,6 +198,13 @@ export class SafeRecordModalComponent
     this.survey.data = this.record.data;
 
     this.survey.mode = 'display';
+    // After the survey is created we add common callback to survey events
+    this.formBuilderService.addEventsCallBacksToSurvey(
+      this.survey,
+      this.pages,
+      this.selectedPageIndex,
+      {}
+    );
     this.survey.render(this.formContainer.nativeElement);
 
     if (this.data.compareTo) {
@@ -225,6 +216,13 @@ export class SafeRecordModalComponent
       );
       this.surveyNext.data = this.data.compareTo.data;
       this.surveyNext.mode = 'display';
+      // After the survey is created we add common callback to survey events
+      this.formBuilderService.addEventsCallBacksToSurvey(
+        this.surveyNext,
+        this.pages,
+        this.selectedPageIndex,
+        {}
+      );
       this.surveyNext.render(this.formContainerNext.nativeElement);
       // Set list of updated questions
       const updatedQuestions: string[] = [];
@@ -239,14 +237,13 @@ export class SafeRecordModalComponent
           updatedQuestions.push(question);
         }
       }
-      // @TODO CHECK => Repeated, the callback below is the only one applied
-      // this.survey.onAfterRenderQuestion.add(
-      //   (survey: Survey.SurveyModel, options: any): void => {
-      //     if (updatedQuestions.includes(options.question.valueName)) {
-      //       options.htmlElement.style.background = '#b2ebbf';
-      //     }
-      //   }
-      // );
+      this.survey.onAfterRenderQuestion.add(
+        (survey: Survey.SurveyModel, options: any): void => {
+          if (updatedQuestions.includes(options.question.valueName)) {
+            options.htmlElement.style.background = '#b2ebbf';
+          }
+        }
+      );
       this.surveyNext.onAfterRenderQuestion.add(
         (survey: Survey.SurveyModel, options: any): void => {
           if (updatedQuestions.includes(options.question.valueName)) {
@@ -265,7 +262,6 @@ export class SafeRecordModalComponent
    */
   public onShowPage(i: number): void {
     this.survey.currentPageNo = i;
-    this.selectedTabIndex = i;
     if (this.data.compareTo && this.surveyNext) {
       this.surveyNext.currentPageNo = i;
     }

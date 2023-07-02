@@ -43,7 +43,7 @@ import { SafeDownloadService } from '../../../../services/download/download.serv
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { GridLayout } from '../models/grid-layout.model';
 import { get, intersection } from 'lodash';
-import { applyLayoutFormat } from '../../../widgets/summary-card/parser/utils';
+import { applyLayoutFormat } from '../../../../utils/parser/utils';
 import { SafeDashboardService } from '../../../../services/dashboard/dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
@@ -202,7 +202,7 @@ export class SafeGridComponent
    * Constructor of the grid component
    *
    * @param environment Current environment
-   * @param dialog The material dialog service
+   * @param dialog The Dialog service
    * @param gridService The grid service
    * @param renderer The renderer library
    * @param downloadService The download service
@@ -256,14 +256,20 @@ export class SafeGridComponent
    * Returns property value in object from path.
    *
    * @param item Item to get property of.
-   * @param path Path of the property.
+   * @param field parent field
+   * @param subField subfield ( optional, used by reference data)
    * @returns Value of the property.
    */
-  public getPropertyValue(item: any, path: string): any {
-    const meta = this.fields.find((x) => x.name === path)?.meta;
-    const value = get(item, path);
+  public getPropertyValue(item: any, field: any, subField?: any): any {
+    let value = get(item, field.name);
+    const meta = subField ? subField.meta : field.meta;
     if (meta.choices) {
       if (Array.isArray(value)) {
+        if (subField) {
+          if (meta.graphQLFieldName) {
+            value = value.map((x) => get(x, meta.graphQLFieldName));
+          }
+        }
         const text = meta.choices.reduce(
           (acc: string[], x: any) =>
             value.includes(x.value) ? acc.concat([x.text]) : acc,
@@ -278,9 +284,32 @@ export class SafeGridComponent
         return meta.choices.find((x: any) => x.value === value)?.text || value;
       }
     } else {
+      if (meta.type === 'geospatial') {
+        return [
+          get(value, 'properties.address'),
+          get(value, 'properties.countryName'),
+        ]
+          .filter((x) => x)
+          .join(', ');
+      }
       return value;
     }
   }
+
+  // find field with the path name
+  // const field = this.fields.find((x) => x.name === path);
+  // const fieldMeta = field?.meta ?? {};
+  // if (!fieldMeta) return '';
+
+  // const graphQLName = Object.keys(fieldMeta).find(
+  //   (x) => fieldMeta[x].name === attribute
+  // );
+  // if (!graphQLName) return '';
+
+  // const values = get(item, path);
+  // if (Array.isArray(values)) {
+  //   return values.map((x) => x[graphQLName]).join(', ');
+  // }
 
   /**
    * Returns property value in object from path. Specific for multiselect reference data.
@@ -811,5 +840,19 @@ export class SafeGridComponent
     if (this.loadingRecords)
       return this.translate.instant('components.widget.grid.loading.records');
     return this.translate.instant('kendo.grid.noRecords');
+  }
+
+  /**
+   * Open map around clicked item
+   *
+   * @param dataItem Clicked item
+   * @param field geometry field
+   */
+  public onOpenMapModal(dataItem: any, field: any) {
+    this.action.emit({
+      action: 'map',
+      item: dataItem,
+      field,
+    });
   }
 }

@@ -57,7 +57,7 @@ export class SafeWidgetGridComponent
   @Output() add: EventEmitter<any> = new EventEmitter();
 
   // === STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+  @Output() changeStep: EventEmitter<number> = new EventEmitter();
 
   @ViewChildren(SafeWidgetComponent)
   widgetComponents!: QueryList<SafeWidgetComponent>;
@@ -88,7 +88,7 @@ export class SafeWidgetGridComponent
    * Constructor of the grid widget component
    *
    * @param environment This is the environment in which we are running the application
-   * @param dialog The material dialog service
+   * @param dialog The Dialog service
    * @param dashboardService Shared dashboard service
    */
   constructor(
@@ -164,10 +164,10 @@ export class SafeWidgetGridComponent
       },
       autoFocus: false,
     });
-    dialogRef.componentInstance?.goToNextStep
+    dialogRef.componentInstance?.changeStep
       .pipe(takeUntil(this.destroy$))
       .subscribe((event: any) => {
-        this.goToNextStep.emit(event);
+        this.changeStep.emit(event);
         dialogRef.close();
       });
   }

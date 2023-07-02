@@ -86,7 +86,7 @@ export class SafeRecordHistoryComponent
   /**
    * Constructor of the record history component
    *
-   * @param dialog The material dialog service
+   * @param dialog The Dialog service
    * @param downloadService The download service
    * @param translate The translation service
    * @param dateFormat The dateTranslation service
@@ -290,6 +290,7 @@ export class SafeRecordHistoryComponent
     // empty => 'All fields' selected
     // other => Field name for filter
     if (fields) this.filterFields = fields;
+    if (!fields) this.filterFields = [];
 
     const startDate = this.filtersDate.get('startDate')?.value
       ? new Date(this.filtersDate.get('startDate')?.value as any)

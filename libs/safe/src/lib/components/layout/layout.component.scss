@@ -11,22 +11,13 @@
   overflow-y: auto;
 }
 
-.account-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  align-content: center;
-  font-size: 12px;
-  margin-left: auto;
-
-  .account-property {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: normal;
-    @media only screen and (max-width: 600px) {
-      display: none;
-    }
+.account-property {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: normal;
+  @media only screen and (max-width: 600px) {
+    display: none;
   }
 }
 

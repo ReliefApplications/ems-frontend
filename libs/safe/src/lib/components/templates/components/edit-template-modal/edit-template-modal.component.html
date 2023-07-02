@@ -27,9 +27,19 @@
       </div>
       <div uiFormFieldDirective>
         <label>{{ 'components.templates.edit.subject' | translate }}</label>
-        <input formControlName="subject" type="text" />
+        <safe-editor-control
+          formControlName="subject"
+          [editorConfig]="subjectEditor"
+        ></safe-editor-control>
+        <ui-icon
+          icon="info"
+          class="cursor-pointer"
+          variant="grey"
+          uiSuffix
+          [uiTooltip]="'common.tooltip.editor.insert' | translate"
+        ></ui-icon>
       </div>
-      <editor [init]="editor" formControlName="body"></editor>
+      <editor [init]="bodyEditor" formControlName="body"></editor>
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">

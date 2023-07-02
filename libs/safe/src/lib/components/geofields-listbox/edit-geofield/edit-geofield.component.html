@@ -1,0 +1,43 @@
+<ui-dialog size="small">
+  <!-- Header -->
+  <ng-container ngProjectAs="header">
+    {{
+      'components.formMapProperties.geofields.editDialog.editGeofield'
+        | translate
+    }}
+  </ng-container>
+  <!-- Form -->
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="geoFieldForm" class="flex flex-col">
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.formMapProperties.geofields.editDialog.value' | translate
+        }}</label>
+        <input type="text" [disabled]="true" [value]="data.geofield.value" />
+      </div>
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.formMapProperties.geofields.editDialog.label' | translate
+        }}</label>
+        <input
+          formControlName="label"
+          type="text"
+          [value]="data.geofield.label"
+        />
+      </div>
+    </form>
+  </ng-container>
+  <!-- Actions -->
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="geoFieldForm.value"
+      cdkFocusInitial
+      [disabled]="!geoFieldForm.valid"
+    >
+      {{ 'common.edit' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

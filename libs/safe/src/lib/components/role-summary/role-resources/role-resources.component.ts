@@ -137,6 +137,7 @@ export class RoleResourcesComponent
         icon: this.getIcon(resource, x),
         variant: this.getVariant(resource, x),
         tooltip: this.getTooltip(resource, x),
+        isOutlined: this.getIconOutlined(resource, x),
       })),
     };
   }
@@ -510,6 +511,26 @@ export class RoleResourcesComponent
             return 'delete';
           }
         }
+    }
+  }
+
+  /**
+   * Gets if icon should be outlined
+   *
+   * @param resource A resource
+   * @param permission The permission name
+   * @returns is icon outlined
+   */
+  private getIconOutlined(resource: Resource, permission: Permission) {
+    const permissionLevel = this.permissionLevel(resource, permission);
+    switch (permissionLevel) {
+      case 'limited': {
+        return true;
+      }
+      case 'full':
+      default: {
+        return false;
+      }
     }
   }
 

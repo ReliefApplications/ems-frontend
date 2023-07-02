@@ -265,7 +265,7 @@ export class SafeCoreGridComponent
    *
    * @param environment platform environment
    * @param apollo Apollo service
-   * @param dialog Material dialog
+   * @param dialog Dialog
    * @param queryBuilder Shared query builder
    * @param layoutService Shared layout service
    * @param snackBar Shared snackbar service
@@ -830,6 +830,26 @@ export class SafeCoreGridComponent
         this.resetDefaultLayout();
         break;
       }
+      case 'map': {
+        import('./map-modal/map-modal.component').then(
+          ({ MapModalComponent }) => {
+            this.dialog.open(MapModalComponent, {
+              data: {
+                item: event.item,
+                datasource: {
+                  type: 'Point',
+                  resource: this.settings.resource,
+                  // todo(change)
+                  layout: this.settings.id,
+                  geoField: event.field.name,
+                },
+              },
+            });
+          }
+        );
+
+        break;
+      }
       default: {
         break;
       }
@@ -998,7 +1018,7 @@ export class SafeCoreGridComponent
         }
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
-      confirmColor: 'warn',
+      confirmVariant: 'danger',
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
@@ -1097,7 +1117,7 @@ export class SafeCoreGridComponent
         { date: formatDate }
       ),
       confirmText: this.translate.instant('components.confirmModal.confirm'),
-      confirmColor: 'primary',
+      confirmVariant: 'primary',
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {

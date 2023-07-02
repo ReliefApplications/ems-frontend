@@ -12,11 +12,11 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
+import { AutocompleteModule } from '@oort-front/ui';
 
 describe('SafeAddUserComponent', () => {
   let component: SafeAddUserComponent;
@@ -40,7 +40,7 @@ describe('SafeAddUserComponent', () => {
             useClass: TranslateFakeLoader,
           },
         }),
-        MatAutocompleteModule,
+        AutocompleteModule,
         ApolloTestingModule,
       ],
     }).compileComponents();

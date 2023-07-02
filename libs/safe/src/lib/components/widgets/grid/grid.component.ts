@@ -39,6 +39,7 @@ import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../../utils/cleanRecord';
 import get from 'lodash/get';
+import set from 'lodash/set';
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { Aggregation } from '../../../models/aggregation.model';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
@@ -91,7 +92,7 @@ export class SafeGridWidgetComponent
   } = { error: false };
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+  @Output() changeStep: EventEmitter<number> = new EventEmitter();
 
   // === EMIT EVENT ===
   @Output() edit: EventEmitter<any> = new EventEmitter();
@@ -114,7 +115,7 @@ export class SafeGridWidgetComponent
    *
    * @param environment Environment variables
    * @param apollo The apollo client
-   * @param dialog Material dialogs service
+   * @param dialog Dialogs service
    * @param snackBar Shared snack bar service
    * @param workflowService Shared workflow service
    * @param safeAuthService Shared authentication service
@@ -354,52 +355,45 @@ export class SafeGridWidgetComponent
           this.applicationService.distributionLists.find(
             (x) => x.id === options.distributionList
           )?.emails || [];
-        if (recipients.length === 0) {
-          // no recipient found, skip
-          this.snackBar.openSnackBar(
-            this.translate.instant(
-              'common.notifications.email.errors.noDistributionList'
-            ),
-            { error: true }
-          );
-        } else {
-          // select template
-          const { EmailTemplateModalComponent } = await import(
-            '../../email-template-modal/email-template-modal.component'
-          );
-          const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
-            data: {
-              templates,
+
+        // select template
+        const { EmailTemplateModalComponent } = await import(
+          '../../email-template-modal/email-template-modal.component'
+        );
+        const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
+          data: {
+            templates,
+          },
+        });
+
+        const value = await firstValueFrom<any>(
+          dialogRef.closed.pipe(takeUntil(this.destroy$))
+        );
+        const template = value?.template;
+
+        if (template) {
+          this.emailService.previewMail(
+            recipients,
+            template.content.subject,
+            template.content.body,
+            {
+              logic: 'and',
+              filters: [
+                {
+                  operator: 'eq',
+                  field: 'ids',
+                  value: this.grid.selectedRows,
+                },
+              ],
             },
-          });
-
-          const value = (await firstValueFrom(dialogRef.closed)) as any;
-          const template = value?.template;
-
-          if (template) {
-            this.emailService.previewMail(
-              recipients,
-              template.content.subject,
-              template.content.body,
-              {
-                logic: 'and',
-                filters: [
-                  {
-                    operator: 'eq',
-                    field: 'ids',
-                    value: this.grid.selectedRows,
-                  },
-                ],
-              },
-              {
-                name: this.grid.settings.query.name,
-                fields: options.bodyFields,
-              },
-              this.grid.sortField || undefined,
-              this.grid.sortOrder || undefined,
-              options.export
-            );
-          }
+            {
+              name: this.grid.settings.query.name,
+              fields: options.bodyFields,
+            },
+            this.grid.sortField || undefined,
+            this.grid.sortOrder || undefined,
+            options.export
+          );
         }
       }
     }
@@ -438,10 +432,16 @@ export class SafeGridWidgetComponent
       });
     }
 
-    // Workflow only: goes to next step, or closes the workflow.
-    if (options.goToNextStep || options.closeWorkflow) {
+    // Workflow only: goes to next step, goes to the previous step, or closes the workflow.
+    if (
+      options.goToNextStep ||
+      options.goToPreviousStep ||
+      options.closeWorkflow
+    ) {
       if (options.goToNextStep) {
-        this.goToNextStep.emit(true);
+        this.changeStep.emit(1);
+      } else if (options.goToPreviousStep) {
+        this.changeStep.emit(-1);
       } else {
         const dialogRef = this.confirmService.openConfirmModal({
           title: this.translate.instant(
@@ -451,7 +451,7 @@ export class SafeGridWidgetComponent
           confirmText: this.translate.instant(
             'components.confirmModal.confirm'
           ),
-          confirmColor: 'primary',
+          confirmVariant: 'primary',
         });
         dialogRef.closed
           .pipe(takeUntil(this.destroy$))
@@ -480,7 +480,9 @@ export class SafeGridWidgetComponent
   ): Promise<any> {
     const update: any = {};
     for (const modification of modifications) {
-      update[modification.field.name] = modification.value;
+      if (modification.field) {
+        set(update, modification.field, modification.value);
+      }
     }
     const data = cleanRecord(update);
     return firstValueFrom(

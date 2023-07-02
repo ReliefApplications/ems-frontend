@@ -6,17 +6,18 @@ import {
 } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { FIELD_EDITOR_CONFIG } from '../../const/tinymce.const';
+import { INLINE_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { SafeEditorService } from '../../services/editor/editor.service';
 import { getCalcKeys, getDataKeys, getInfoKeys } from './utils/keys';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import { SafeEditorControlComponent } from '../editor-control/editor-control.component';
 import {
   DialogModule,
   ButtonModule,
   TooltipModule,
   FormWrapperModule,
+  IconModule,
 } from '@oort-front/ui';
 /**
  * Interface describing the structure of the data displayed in the dialog
@@ -35,14 +36,12 @@ interface DialogData {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    IconModule,
+    SafeEditorControlComponent,
     FormWrapperModule,
     DialogModule,
-    EditorModule,
     ButtonModule,
     TooltipModule,
-  ],
-  providers: [
-    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
   ],
   selector: 'safe-edit-calculated-field-modal',
   templateUrl: './edit-calculated-field-modal.component.html',
@@ -55,7 +54,7 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
   public resourceFields: any[] = [];
 
   /** tinymce editor */
-  public editor: any = FIELD_EDITOR_CONFIG;
+  public editor: any = INLINE_EDITOR_CONFIG;
 
   /**
    * Modal to edit Calculated field.
@@ -97,7 +96,10 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
       ...getInfoKeys(),
       ...getDataKeys(this.resourceFields),
     ];
-    this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
+    this.editorService.addCalcAndKeysAutoCompleter(
+      this.editor,
+      keys.map((key) => ({ value: key, text: key }))
+    );
   }
 
   /**

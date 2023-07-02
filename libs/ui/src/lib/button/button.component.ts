@@ -20,6 +20,9 @@ export class ButtonComponent {
   @Input() size: Size = 'medium';
   @Input() variant: Variant = 'default';
   @Input() isIcon = false;
+  @HostBinding('class.flex')
+  @Input()
+  isBlock = false;
   @Input() loading = false;
   @HostBinding('class.disabled')
   @Input()
@@ -47,6 +50,7 @@ export class ButtonComponent {
   /** @returns general resolved classes and variant for button*/
   get resolveButtonClasses(): string[] {
     const classes = [];
+    if (this.isBlock) classes.push('flex-1');
     classes.push(this.isIcon ? 'ui-button-icon' : 'ui-button');
     classes.push(this.category);
     classes.push(this.size);

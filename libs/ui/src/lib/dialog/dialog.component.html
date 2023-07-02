@@ -16,7 +16,9 @@
     <ng-content select="content"></ng-content>
   </div>
   <!-- Dialog footer -->
-  <div class="py-2 flex flex-wrap min-h-[52px] items-center box-content -mb-4 justify-end gap-2">
+  <div
+    class="py-2 flex flex-wrap min-h-[52px] items-center box-content -mb-4 justify-end gap-2 empty:hidden"
+  >
     <ng-content select="actions"></ng-content>
   </div>
 </div>

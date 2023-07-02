@@ -30,18 +30,19 @@ export class CellDirective extends CdkCell implements AfterContentInit {
 
   classes = [
     'whitespace-nowrap',
-    'py-4',
+    'h-16',
     'pl-4',
     'pr-3',
     'text-sm',
-    'font-normal',
-    'text-gray-900',
+    'text-gray-500',
     'bg-white',
   ];
 
   ngAfterContentInit(): void {
-    for (const cl of this.classes) {
-      this.renderer.addClass(this.elRef.nativeElement, cl);
-    }
+    const classList = [
+      ...this.elRef.nativeElement.classList,
+      ...this.classes,
+    ].join(' ');
+    this.renderer.setProperty(this.elRef.nativeElement, 'classList', classList);
   }
 }

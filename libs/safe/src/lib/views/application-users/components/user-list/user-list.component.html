@@ -58,7 +58,11 @@
                 {{ 'common.name' | translate }}
               </span>
             </th>
-            <td uiCell *cdkCellDef="let element" class="font-bold">
+            <td
+              uiCell
+              *cdkCellDef="let element"
+              class="!text-gray-900 !font-medium"
+            >
               {{ element.name }}
             </td>
           </ng-container>
@@ -108,7 +112,7 @@
               </ui-button>
               <ui-menu #menu>
                 <button uiMenuItem (click)="onDelete([element])">
-                  <ui-icon icon="delete"></ui-icon>
+                  <ui-icon icon="delete" variant="danger"></ui-icon>
                   {{ 'common.delete' | translate }}
                 </button>
               </ui-menu>

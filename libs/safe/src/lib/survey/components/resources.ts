@@ -38,7 +38,7 @@ export const resourceConditions = [
  * @param Survey Survey library
  * @param domService Shared DOM service
  * @param apollo Apollo client
- * @param dialog Material dialog service
+ * @param dialog Dialog service
  * @param formBuilder Angular form service
  */
 export const init = (
@@ -820,7 +820,11 @@ export const init = (
             );
             question.registerFunctionOnPropertyValueChanged('addRecord', () => {
               addBtn.style.display =
-                question.addRecord && question.addTemplate ? '' : 'none';
+                question.addRecord &&
+                question.addTemplate &&
+                !question.isReadOnly
+                  ? ''
+                  : 'none';
             });
           }
         }

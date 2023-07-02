@@ -60,7 +60,6 @@ export const init = (Survey: any, domService: DomService): void => {
     htmlTemplate: '<div></div>',
     afterRender: (question: any, el: HTMLElement): void => {
       widget.willUnmount(question);
-      console.log('creating tagbox...');
       let tagboxDiv: HTMLDivElement | null = null;
       tagboxDiv = document.createElement('div');
       tagboxDiv.id = 'tagbox';
@@ -94,6 +93,13 @@ export const init = (Survey: any, domService: DomService): void => {
       question.registerFunctionOnPropertyValueChanged(
         'visibleChoices',
         question._propertyValueChangedVirtual
+      );
+      question.registerFunctionOnPropertyValueChanged(
+        'readOnly',
+        (value: boolean) => {
+          tagboxInstance.readonly = value;
+          tagboxInstance.disabled = value;
+        }
       );
       updateChoices();
       el.parentElement?.appendChild(tagboxDiv);

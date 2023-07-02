@@ -42,7 +42,7 @@
     </ui-graphql-select>
   </div>
   <ng-container *ngIf="resource">
-    <h2>{{ 'common.aggregation.one' | translate }}</h2>
+    <!-- Aggregation -->
     <ng-container *ngIf="formGroup.value.chart.aggregationId">
       <div *ngIf="aggregation" uiFormFieldDirective>
         <label>{{ 'common.aggregation.one' | translate }}</label>
@@ -66,20 +66,22 @@
           (click)="formGroup.get('chart.aggregationId')?.setValue(null)"
         ></ui-button>
       </div>
-      <h3>{{ 'components.mapping.title' | translate }}</h3>
+      <!-- Series Mapping -->
+      <h3 class="mb-1">{{ 'components.mapping.title' | translate }}</h3>
       <safe-series-mapping
         [availableFields]="availableSeriesFields"
         [formGroup]="$any(formGroup.get('chart.mapping'))"
       ></safe-series-mapping>
     </ng-container>
     <ng-container *ngIf="!formGroup.value.chart.aggregationId">
-      <ui-button
-        class="!w-auto"
-        category="tertiary"
-        variant="primary"
-        (click)="addAggregation()"
-        >{{ 'components.aggregation.add.title' | translate }}</ui-button
-      >
+      <div class="flex justify-center">
+        <ui-button
+          category="tertiary"
+          variant="primary"
+          (click)="addAggregation()"
+          >{{ 'components.aggregation.add.title' | translate }}</ui-button
+        >
+      </div>
     </ng-container>
   </ng-container>
 </div>

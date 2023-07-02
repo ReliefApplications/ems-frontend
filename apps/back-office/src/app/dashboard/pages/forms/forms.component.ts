@@ -71,7 +71,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
    * Forms page component
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param router Angular router
    * @param snackBar Shared snackbar
    * @param authService Shared authentication service
@@ -224,7 +224,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
         }
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
-      confirmColor: 'warn',
+      confirmVariant: 'danger',
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {

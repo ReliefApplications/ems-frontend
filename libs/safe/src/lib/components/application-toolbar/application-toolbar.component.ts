@@ -39,7 +39,7 @@ export class SafeApplicationToolbarComponent
    *
    * @param applicationService Shared application service
    * @param router Angular router
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
@@ -88,7 +88,7 @@ export class SafeApplicationToolbarComponent
           name: this.application?.name,
         }
       ),
-      confirmColor: 'primary',
+      confirmVariant: 'primary',
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.applicationService.toggleApplicationLock();
@@ -114,7 +114,7 @@ export class SafeApplicationToolbarComponent
             name: this.application?.name,
           }
         ),
-        confirmColor: 'primary',
+        confirmVariant: 'primary',
       });
       dialogRef.closed
         .pipe(takeUntil(this.destroy$))

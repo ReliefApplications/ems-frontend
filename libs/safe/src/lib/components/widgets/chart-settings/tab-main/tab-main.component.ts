@@ -61,7 +61,7 @@ export class TabMainComponent
    * Main tab of chart settings modal.
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param aggregationBuilder Shared aggregation builder service
    * @param queryBuilder Shared query builder service
    * @param aggregationService Shared aggregation service
@@ -100,7 +100,6 @@ export class TabMainComponent
         sortField: 'name',
       },
     });
-    console.log(this.formGroup);
   }
 
   /**

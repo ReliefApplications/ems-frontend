@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { SafeReferenceDataDropdownComponent } from './reference-data-dropdown.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { SelectMenuModule } from '@oort-front/ui';
+import { FormWrapperModule, SelectMenuModule } from '@oort-front/ui';
 
 /**
  * Reference data dropdown module.
@@ -16,6 +16,7 @@ import { SelectMenuModule } from '@oort-front/ui';
     ReactiveFormsModule,
     TranslateModule,
     SelectMenuModule,
+    FormWrapperModule,
   ],
   exports: [SafeReferenceDataDropdownComponent],
 })

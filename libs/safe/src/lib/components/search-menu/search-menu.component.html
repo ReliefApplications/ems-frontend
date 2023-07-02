@@ -1,7 +1,7 @@
 <div class="mt-1" *ngIf="headerTemplate">
   <ng-container [ngTemplateOutlet]="headerTemplate"></ng-container>
 </div>
-<div uiFormFieldDirective >
+<div uiFormFieldDirective>
   <input
     [placeholder]="'common.placeholder.search' | translate"
     [(ngModel)]="search"
@@ -15,6 +15,7 @@
       class="!w-auto"
       variant="primary"
       (click)="onClick(currentApplication)"
+      [isBlock]="true"
       >{{ currentApplication.name }}</ui-button
     >
   </div>
@@ -25,6 +26,7 @@
       class="!w-auto block"
       (click)="onClick(item)"
       [uiTooltip]="item.name"
+      [isBlock]="true"
       >{{ item.name }}</ui-button
     >
   </div>

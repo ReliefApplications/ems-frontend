@@ -100,7 +100,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
-   * @param dialog This is the Angular Material Dialog service used to display dialog modals
+   * @param dialog This is the Angular Dialog service used to display dialog modals
    * @param snackBar This is the service that will be used to display the snackbar.
    * @param translate Angular translate service
    * @param referenceDataService Reference data service

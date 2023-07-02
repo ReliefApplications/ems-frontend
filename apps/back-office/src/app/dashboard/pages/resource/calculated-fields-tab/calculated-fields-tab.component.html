@@ -47,11 +47,11 @@
             </ui-button>
             <ui-menu #resMenu>
               <button uiMenuItem (click)="onEditCalculatedField(element)">
-                <ui-icon icon="edit"></ui-icon>
+                <ui-icon icon="edit" variant="grey"></ui-icon>
                 {{ 'common.edit' | translate }}
               </button>
               <button uiMenuItem (click)="onDeleteCalculatedField(element)">
-                <ui-icon icon="delete"></ui-icon>
+                <ui-icon icon="delete" variant="danger"></ui-icon>
                 {{ 'common.delete' | translate }}
               </button>
             </ui-menu>

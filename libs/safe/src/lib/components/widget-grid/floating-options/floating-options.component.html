@@ -6,12 +6,21 @@
 >
 </ui-button>
 <ui-menu #menu>
-  <ng-container *ngFor="let item of items">
-    <ui-divider *ngIf="item.name === 'Delete'" class="m-0"></ui-divider>
-
-    <button uiMenuItem (click)="onClick(item)" [disabled]="item.disabled">
-      <ui-icon [icon]="item.icon"></ui-icon>
-      <span>{{ item.text }}</span>
-    </button>
-  </ng-container>
+  <button
+    uiMenuItem
+    (click)="onClick('Settings')"
+    [disabled]="!this.widget || !this.widget.settings"
+  >
+    <ui-icon icon="insert_chart" variant="grey"></ui-icon>
+    <span>{{ 'common.settings' | translate }}</span>
+  </button>
+  <button uiMenuItem (click)="onClick('Expand')">
+    <ui-icon icon="open_in_full" variant="grey"></ui-icon>
+    <span>{{ 'components.widget.expand' | translate }}</span>
+  </button>
+  <ui-divider class="py-1"></ui-divider>
+  <button uiMenuItem (click)="onClick('Delete')">
+    <ui-icon icon="delete" variant="danger"></ui-icon>
+    <span>{{ 'common.delete' | translate }}</span>
+  </button>
 </ui-menu>

@@ -4,10 +4,7 @@
       {{ 'components.widget.settings.grid.actions.title' | translate }}
     </h2>
     <div class="flex flex-col gap-2">
-      <ui-toggle
-        *ngFor="let action of actions"
-        [formControlName]="action.name"
-      >
+      <ui-toggle *ngFor="let action of actions" [formControlName]="action.name">
         <ng-container ngProjectAs="label">
           {{ action.text | translate
           }}<ui-icon

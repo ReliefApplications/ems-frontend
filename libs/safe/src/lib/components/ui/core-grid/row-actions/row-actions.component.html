@@ -10,7 +10,6 @@
   <button
     *ngIf="actions.update && item.canUpdate"
     uiMenuItem
-    color="warn"
     (click)="action.emit({ action: 'update', item: item })"
   >
     {{ 'common.update' | translate }}
@@ -18,7 +17,6 @@
   <button
     *ngIf="actions.history"
     uiMenuItem
-    color="warn"
     (click)="action.emit({ action: 'history', item: item })"
   >
     {{ 'common.history' | translate }}
@@ -26,7 +24,6 @@
   <button
     *ngIf="actions.convert && item.canUpdate"
     uiMenuItem
-    color="warn"
     (click)="action.emit({ action: 'convert', item: item })"
   >
     {{ 'models.record.convert' | translate }}
@@ -34,7 +31,6 @@
   <button
     *ngIf="actions.delete && item.canDelete"
     uiMenuItem
-    color="warn"
     (click)="action.emit({ action: 'delete', item: item })"
   >
     {{ 'common.delete' | translate }}
@@ -42,7 +38,6 @@
   <button
     *ngIf="actions.remove"
     uiMenuItem
-    color="warn"
     (click)="action.emit({ action: 'remove', item: item })"
   >
     {{ 'components.widget.settings.grid.actions.remove' | translate }}

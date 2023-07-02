@@ -7,10 +7,15 @@ import {
   FormWrapperModule,
   SelectMenuModule,
   IconModule,
+  ButtonModule,
+  DividerModule,
+  CheckboxModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
+import { MapControlsModule } from './map-controls/map-controls.module';
+import { WebmapSelectComponent } from './webmap-select/webmap-select.component';
 import { TooltipModule, ErrorMessageModule } from '@oort-front/ui';
-import { SafeMapModule } from '../../map/map.module';
+// import { SafeMapModule } from '../../map/map.module';
 
 /**
  * Module of Map Properties of Map Widget.
@@ -22,11 +27,19 @@ import { SafeMapModule } from '../../map/map.module';
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
+    TooltipModule,
+    SelectMenuModule,
+    IconModule,
+    ButtonModule,
+    DividerModule,
+    CheckboxModule,
+    MapControlsModule,
+    WebmapSelectComponent,
     FormWrapperModule,
     SliderModule,
     TooltipModule,
     IconModule,
-    SafeMapModule,
+    // SafeMapModule,
     SelectMenuModule,
     ErrorMessageModule,
   ],

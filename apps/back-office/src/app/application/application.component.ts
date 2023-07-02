@@ -24,18 +24,17 @@ export class ApplicationComponent
   extends SafeUnsubscribeComponent
   implements OnInit, OnDestroy
 {
-  // === HEADER TITLE ===
-
+  /** Application title */
   public title = '';
-
-  // === AVAILABLE ROUTES, DEPENDS ON USER ===
+  /** List of application pages */
   public navGroups: any[] = [];
+  /** List of settings pages */
   public adminNavItems: any[] = [];
-
-  // === APPLICATION ===
+  /** Current application */
   public application?: Application;
-
+  /** Use side menu or not */
   public sideMenu = false;
+  /** Is large device */
   public largeDevice: boolean;
 
   /**
@@ -80,6 +79,7 @@ export class ApplicationComponent
                 icon: this.getNavIcon(x.type || ''),
                 class: null,
                 orderable: true,
+                visible: x.visible ?? true,
                 action: x.canDelete && {
                   icon: 'delete',
                   toolTip: this.translate.instant('common.deleteObject', {
@@ -217,7 +217,7 @@ export class ApplicationComponent
         { name: item.name }
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
-      confirmColor: 'warn',
+      confirmVariant: 'danger',
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
@@ -250,7 +250,7 @@ export class ApplicationComponent
           'components.widget.settings.close.confirmationMessage'
         ),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
+        confirmVariant: 'primary',
       });
       return dialogRef.closed.pipe(
         map((confirm) => {
