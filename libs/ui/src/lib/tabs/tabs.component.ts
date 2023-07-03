@@ -5,9 +5,11 @@ import {
   ContentChildren,
   EventEmitter,
   Input,
+  OnChanges,
   OnDestroy,
   Output,
   QueryList,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { Variant } from '../types/variant';
@@ -44,7 +46,7 @@ import { TabBodyHostDirective } from './directives/tab-body-host.directive';
     ]),
   ],
 })
-export class TabsComponent implements AfterViewInit, OnDestroy {
+export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
   @ContentChildren(TabComponent, { descendants: true })
   tabs!: QueryList<TabComponent>;
 
@@ -93,6 +95,7 @@ export class TabsComponent implements AfterViewInit, OnDestroy {
     } else {
       classes.push('border-b');
       classes.push('mb-4');
+      classes.push('overflow-x-auto');
     }
     return classes;
   }
@@ -109,6 +112,12 @@ export class TabsComponent implements AfterViewInit, OnDestroy {
           this.subscribeToOpenTabEvents();
         }
       });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedIndex']) {
+      this.setSelectedTab();
+    }
   }
 
   /**

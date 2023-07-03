@@ -81,7 +81,7 @@ export class GeospatialMapComponent
     pmIgnore: false,
     worldCopyJump: true,
     controls: {
-      timedimension: false,
+      // timedimension: false,
       download: false,
       legend: false,
       measure: true,

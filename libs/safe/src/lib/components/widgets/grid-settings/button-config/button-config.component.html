@@ -131,7 +131,7 @@
                 <ui-select-option>--</ui-select-option>
                 <ui-select-option
                   *ngFor="let field of scalarFields"
-                  [value]="field"
+                  [value]="field.name"
                   >{{ field.name }}</ui-select-option
                 >
               </ui-select-menu>
@@ -144,55 +144,22 @@
               >
               </ui-button>
             </div>
-            <ng-container *ngIf="modification.value.field">
-              <!-- @todo: replace with ngSwitch and better manage all types -->
+
+            <ng-container
+              *ngIf="
+                modification.value.field &&
+                scalarField(modification.value.field)
+              "
+            >
               <ng-container
-                *ngIf="
-                  ['Int', 'Float'].includes(modification.value.field.type.name)
+                *ngTemplateOutlet="
+                  modificationTemplate;
+                  context: {
+                    formGroup: $any(modification),
+                    field: scalarField(modification.value.field)
+                  }
                 "
-              >
-                <div uiFormFieldDirective>
-                  <label>{{
-                    'components.widget.settings.grid.buttons.callback.modifyValue'
-                      | translate
-                  }}</label>
-                  <input formControlName="value" type="number" />
-                </div>
-              </ng-container>
-              <ng-container
-                *ngIf="modification.value.field.type.name === 'Boolean'"
-              >
-                <div uiFormFieldDirective>
-                  <label>{{
-                    'components.widget.settings.grid.buttons.callback.modifyValue'
-                      | translate
-                  }}</label>
-                  <ui-select-menu formControlName="value">
-                    <ui-select-option>--</ui-select-option>
-                    <ui-select-option [value]="true">{{
-                      'common.true' | translate
-                    }}</ui-select-option>
-                    <ui-select-option [value]="false">{{
-                      'common.false' | translate
-                    }}</ui-select-option>
-                  </ui-select-menu>
-                </div>
-              </ng-container>
-              <ng-container
-                *ngIf="
-                  !['Int', 'Float'].includes(
-                    modification.value.field.type.name
-                  ) && modification.value.field.type.name !== 'Boolean'
-                "
-              >
-                <div uiFormFieldDirective>
-                  <label>{{
-                    'components.widget.settings.grid.buttons.callback.modifyValue'
-                      | translate
-                  }}</label>
-                  <input formControlName="value" type="string" />
-                </div>
-              </ng-container>
+              ></ng-container>
             </ng-container>
           </form>
           <ui-button
@@ -455,3 +422,50 @@
     </ng-container>
   </div>
 </form>
+
+<!-- Template for auto modification -->
+<ng-template #modificationTemplate let-field="field" let-formGroup="formGroup">
+  <div [formGroup]="formGroup">
+    <!-- @todo: replace with ngSwitch and better manage all types -->
+    <ng-container *ngIf="['Int', 'Float'].includes(field.type.name)">
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.widget.settings.grid.buttons.callback.modifyValue'
+            | translate
+        }}</label>
+        <input formControlName="value" type="number" />
+      </div>
+    </ng-container>
+    <ng-container *ngIf="field.type.name === 'Boolean'">
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.widget.settings.grid.buttons.callback.modifyValue'
+            | translate
+        }}</label>
+        <ui-select-menu formControlName="value">
+          <ui-select-option>--</ui-select-option>
+          <ui-select-option [value]="true">{{
+            'common.true' | translate
+          }}</ui-select-option>
+          <ui-select-option [value]="false">{{
+            'common.false' | translate
+          }}</ui-select-option>
+        </ui-select-menu>
+      </div>
+    </ng-container>
+    <ng-container
+      *ngIf="
+        !['Int', 'Float'].includes(field.type.name) &&
+        field.type.name !== 'Boolean'
+      "
+    >
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.widget.settings.grid.buttons.callback.modifyValue'
+            | translate
+        }}</label>
+        <input formControlName="value" type="string" />
+      </div>
+    </ng-container>
+  </div>
+</ng-template>

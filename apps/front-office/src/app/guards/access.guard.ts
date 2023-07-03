@@ -34,6 +34,7 @@ export class AccessGuard implements CanActivate {
       map((res) => {
         if (res.data.me) {
           this.authService.user.next(res.data.me);
+          console.log('true');
           return true;
         } else {
           if (this.authService.account) {

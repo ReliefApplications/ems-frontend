@@ -51,8 +51,6 @@ export class UniqueValueRendererComponent implements OnInit {
 
   ngOnInit(): void {
     this.fields$.subscribe((value) => {
-      console.log('fields');
-      console.log(value);
       this.scalarFields.next(
         value.filter((field) => ['string'].includes(field.type.toLowerCase()))
       );

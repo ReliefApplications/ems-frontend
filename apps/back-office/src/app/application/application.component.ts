@@ -24,18 +24,17 @@ export class ApplicationComponent
   extends SafeUnsubscribeComponent
   implements OnInit, OnDestroy
 {
-  // === HEADER TITLE ===
-
+  /** Application title */
   public title = '';
-
-  // === AVAILABLE ROUTES, DEPENDS ON USER ===
+  /** List of application pages */
   public navGroups: any[] = [];
+  /** List of settings pages */
   public adminNavItems: any[] = [];
-
-  // === APPLICATION ===
+  /** Current application */
   public application?: Application;
-
+  /** Use side menu or not */
   public sideMenu = false;
+  /** Is large device */
   public largeDevice: boolean;
 
   /**
