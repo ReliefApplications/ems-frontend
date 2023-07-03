@@ -1871,6 +1871,7 @@
 		},
 		"page": {
 			"add": "Ajouter une page",
+			"remove": "Supprimer une page",
 			"tooltip": {
 				"duplicate": "Sélectionner l'application où copier la page"
 			}

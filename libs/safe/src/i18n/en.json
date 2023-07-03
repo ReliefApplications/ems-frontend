@@ -1855,6 +1855,7 @@
 		},
 		"page": {
 			"add": "Add a Page",
+			"remove": "Remove Page",
 			"tooltip": {
 				"duplicate": "Select the application you want to put the copy in"
 			}

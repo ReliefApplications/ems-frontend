@@ -206,9 +206,8 @@ export const WIDGET_TYPES = [
     color: '#2F383E',
     settings: {
       title: 'Tabs widget',
-      source: null,
-      fields: [],
-      toolbar: false,
+      tabs: [],
+      applicationId: null,
       canAdd: false,
     },
     defaultCols: 8,

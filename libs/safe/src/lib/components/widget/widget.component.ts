@@ -5,6 +5,7 @@ import {
   EventEmitter,
   ViewChild,
   OnInit,
+  OnDestroy,
 } from '@angular/core';
 import { SafeChartComponent } from '../widgets/chart/chart.component';
 import { SafeEditorComponent } from '../widgets/editor/editor.component';
@@ -12,6 +13,7 @@ import { SafeGridWidgetComponent } from '../widgets/grid/grid.component';
 import { SafeMapWidgetComponent } from '../widgets/map/map.component';
 import { SafeSummaryCardComponent } from '../widgets/summary-card/summary-card.component';
 import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription, filter } from 'rxjs';
 
 /** Component for the widgets */
 @Component({
@@ -19,10 +21,12 @@ import { ActivatedRoute, Router } from '@angular/router';
   templateUrl: './widget.component.html',
   styleUrls: ['./widget.component.scss'],
 })
-export class SafeWidgetComponent implements OnInit {
+export class SafeWidgetComponent implements OnInit, OnDestroy {
   @Input() widget: any;
   @Input() header = true;
   @Input() canUpdate = false;
+
+  private activeComponentSubscriptions = new Subscription();
 
   /** @returns would component block navigation */
   get canDeactivate() {
@@ -67,5 +71,33 @@ export class SafeWidgetComponent implements OnInit {
         skipLocationChange: true,
       });
     }
+  }
+
+  setWidgetListeners(component: any) {
+    console.log('ACTIVATED :', component);
+    this.activeComponentSubscriptions.add(
+      component.edit
+        .pipe(
+          filter(
+            (applicationConfig: { id: string; tabs: any[] }) =>
+              !!applicationConfig.id
+          )
+        )
+        .subscribe({
+          next: (applicationConfig: { id: string; tabs: any[] }) => {
+            this.widget.settings.applicationId = applicationConfig.id;
+            this.widget.settings.tabs = applicationConfig.tabs;
+          },
+        })
+    );
+  }
+
+  removeWidgetListeners(component: any) {
+    console.log(component);
+    this.activeComponentSubscriptions.unsubscribe();
+  }
+
+  ngOnDestroy(): void {
+    this.activeComponentSubscriptions.unsubscribe();
   }
 }

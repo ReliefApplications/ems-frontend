@@ -556,7 +556,6 @@ export class SafeApplicationWidgetService {
                 pages: app.pages?.filter((x) => x.id !== data?.deletePage.id),
               };
               this.application.next(newApplication);
-              this.router.navigate([`./applications/${app.id}`]);
             }
           } else {
             this.snackBar.openSnackBar(
@@ -768,10 +767,6 @@ export class SafeApplicationWidgetService {
               pages: application.pages?.concat([data.addPage]),
             };
             this.application.next(newApplication);
-            this.router.navigate([`./`, { outlets: { tabWidget: 'tab' } }], {
-              relativeTo: this.activatedRoute,
-              skipLocationChange: true,
-            });
           } else {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotCreated', {

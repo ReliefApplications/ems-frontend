@@ -16,11 +16,33 @@
       <ng-container *ngTemplateOutlet="floatingButtonsTemplate"></ng-container>
     </ng-container>
   </kendo-tilelayout-item-header>
-  <ng-container *ngIf="tabs.length">
+  <ng-container *ngIf="pages.length">
     <ui-tabs [selectedIndex]="selectedTab">
-      <ng-container *ngFor="let tab of tabs; let i = index">
-        <ui-tab (click)="changeTab(tab, i)">
-          <ng-container ngProjectAs="label">{{ tab.label }}</ng-container>
+      <ng-container *ngFor="let page of pages; let i = index;">
+        <ui-tab (click)="loadPage(i)">
+          <ng-container ngProjectAs="label">
+            <ng-container *ngIf="page.label; else addPageTmpl">
+              <div class="flex items-center gap-1">
+                <ng-container *ngIf="page.label">
+                  {{ page.label }}
+                </ng-container>
+                <ui-button
+                  (click)="removePage($event, i)"
+                  variant="danger"
+                  [isIcon]="true"
+                  [icon]="page.icon ?? ''"
+                  [uiTooltip]="'models.page.remove' | translate"
+                ></ui-button>
+              </div>
+            </ng-container>
+            <ng-template #addPageTmpl>
+              <ui-button
+                [isIcon]="true"
+                [icon]="page.icon ?? 'add_circle'"
+                [uiTooltip]="'models.page.add' | translate"
+              ></ui-button>
+            </ng-template>
+          </ng-container>
         </ui-tab>
       </ng-container>
     </ui-tabs>

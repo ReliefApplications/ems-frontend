@@ -1,4 +1,10 @@
-import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  EventEmitter,
+  Inject,
+  OnInit,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
   Application,
@@ -11,12 +17,15 @@ import {
 
 import { Location } from '@angular/common';
 import { Subscription, takeUntil } from 'rxjs';
-// import { AddPageComponent } from '../../application/pages/add-page/add-page.component';
 // import { FormsComponent } from '../../dashboard/pages/forms/forms.component';
 // import { DashboardComponent } from '../../dashboard/pages/dashboard/dashboard.component';
 
+/**
+ * Tabs for application widget
+ */
 interface PageTab {
   label: string;
+  icon?: string;
   route: string;
   id?: string;
 }
@@ -44,7 +53,12 @@ export class ApplicationWidgetComponent
   // </safe-tabs-widget>
   // === DATA ===
   widget: any;
-  tabs: PageTab[] = [];
+  pages: PageTab[] = [];
+  addPageTab: PageTab = {
+    label: '',
+    icon: 'add_circle',
+    route: 'add-page',
+  };
   application!: Application;
 
   // === PERMISSIONS ===
@@ -55,7 +69,7 @@ export class ApplicationWidgetComponent
   // === SETTINGS ===
   header = true;
   settings: any = null;
-  id = '';
+  id!: any;
   canUpdate = false;
   selectedTab = 0;
   status: {
@@ -94,7 +108,8 @@ export class ApplicationWidgetComponent
     private activatedRoute: ActivatedRoute,
     private safeAuthService: SafeAuthService,
     private applicationWidgetService: SafeApplicationWidgetService,
-    private location: Location
+    private location: Location,
+    private cdr: ChangeDetectorRef
   ) {
     super();
     const data = this.router.getCurrentNavigation()?.extras.state;
@@ -102,6 +117,7 @@ export class ApplicationWidgetComponent
       this.header = data.header ?? this.header;
       this.widget = data.widget ?? this.widget;
       this.settings = data.widget?.settings ?? this.settings;
+      this.id = data.widget?.settings?.id ?? this.id;
     }
     this.isAdmin =
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
@@ -126,36 +142,50 @@ export class ApplicationWidgetComponent
         next: (application) => {
           if (application) {
             this.application = application;
-            if (application.pages?.length) {
-              this.updateTabs(application.pages);
-              this.changeTab(
-                this.tabs[this.tabs.length - 1],
-                this.tabs.length - 1
-              );
-            } else {
-              this.changeTab({ route: 'add-page' } as PageTab);
-            }
+
+            this.updateTabs(application.pages?.length ? application.pages : []);
+            this.loadPage(
+              application.pages?.length ? application.pages?.length : -1
+            );
           } else {
             this.applicationWidgetService.createApplication();
           }
-          console.log(application);
+          this.edit.emit({ id: this.id, pages: this.pages });
         },
       });
   }
 
   /**
-   * Set to view the given tab
+   * Set to view the page for the given index
    *
-   * @param tab tab name
-   * @param tabIndex tab index
+   * @param pageIndex index of page to load
    */
-  changeTab(tab: PageTab, tabIndex: number = 0) {
-    this.selectedTab = tabIndex;
-    const route = `./${tab.route}${tab.id ? '/' + tab.id : ''}`;
+  loadPage(pageIndex: number) {
+    const page =
+      pageIndex !== -1
+        ? this.pages[pageIndex]
+        : ({ route: 'add-page' } as PageTab);
+    const route = `./${page.route}${page.id ? '/' + page.id : ''}`;
     this.router.navigate([route], {
       relativeTo: this.activatedRoute,
       skipLocationChange: true,
     });
+    this.selectedTab = pageIndex !== -1 ? pageIndex : 0;
+  }
+
+  /**
+   * Delete page for the given index
+   *
+   * @param event click event
+   * @param pageIndex index of page to delete
+   */
+  removePage(event: MouseEvent, pageIndex: number) {
+    event.preventDefault();
+    event.stopPropagation();
+    const pageToDelete = this.pages[pageIndex];
+    if (pageToDelete.id) {
+      this.applicationWidgetService.deletePage(pageToDelete.id);
+    }
   }
 
   /**
@@ -176,8 +206,7 @@ export class ApplicationWidgetComponent
    * @param content Loaded page by route
    */
   getCurrentTabContent(content: any) {
-    // if (content instanceof AddPageComponent) {
-    // } else if (content instanceof FormsComponent) {
+    // if (content instanceof FormsComponent) {
     // } else if (content instanceof DashboardComponent) {
     // }
     console.log(content);
@@ -189,15 +218,20 @@ export class ApplicationWidgetComponent
    * @param pages page collection
    */
   private updateTabs(pages: Page[]) {
-    this.tabs = [];
+    this.pages = [];
+    if (pages.length) {
+      this.pages.push(this.addPageTab);
+    }
     pages.forEach((page) => {
       const newTab: PageTab = {
         label: page.name as string,
+        icon: 'close',
         route: page.type as keyof typeof ContentType as string,
         id: page.id,
       };
-      this.tabs.push(newTab);
+      this.pages.push(newTab);
     });
+    this.cdr.detectChanges();
   }
 
   override ngOnDestroy(): void {

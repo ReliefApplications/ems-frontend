@@ -1855,6 +1855,7 @@
 		},
 		"page": {
 			"add": "******",
+			"remove": "******",
 			"tooltip": {
 				"duplicate": "******"
 			}
