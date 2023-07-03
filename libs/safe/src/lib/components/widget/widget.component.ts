@@ -14,6 +14,7 @@ import { SafeMapWidgetComponent } from '../widgets/map/map.component';
 import { SafeSummaryCardComponent } from '../widgets/summary-card/summary-card.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, filter } from 'rxjs';
+import { SafeApplicationWidgetService } from '../../services/application/application-widget.service';
 
 /** Component for the widgets */
 @Component({
@@ -57,7 +58,11 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
    * @param router Router
    * @param activatedRoute ActivatedRoute
    */
-  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private applicationWidgetService: SafeApplicationWidgetService
+  ) {}
 
   ngOnInit(): void {
     if (this.widget.component === 'tabs') {
@@ -73,27 +78,25 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
     }
   }
 
-  setWidgetListeners(component: any) {
-    console.log('ACTIVATED :', component);
+  setWidgetListeners() {
     this.activeComponentSubscriptions.add(
-      component.edit
+      this.applicationWidgetService.applicationWidgetTile$
         .pipe(
-          filter(
-            (applicationConfig: { id: string; tabs: any[] }) =>
-              !!applicationConfig.id
-          )
+          filter((applicationSettings: any | null) => !!applicationSettings)
         )
         .subscribe({
-          next: (applicationConfig: { id: string; tabs: any[] }) => {
-            this.widget.settings.applicationId = applicationConfig.id;
-            this.widget.settings.tabs = applicationConfig.tabs;
+          next: (applicationSettings: any) => {
+            this.edit.emit({
+              id: this.widget.id,
+              options: applicationSettings,
+              type: 'data',
+            });
           },
         })
     );
   }
 
-  removeWidgetListeners(component: any) {
-    console.log(component);
+  removeWidgetListeners() {
     this.activeComponentSubscriptions.unsubscribe();
   }
 

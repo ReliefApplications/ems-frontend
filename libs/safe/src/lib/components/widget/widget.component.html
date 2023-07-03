@@ -55,8 +55,8 @@
 <ng-container *ngIf="widget.component === 'tabs'">
   <div class="h-full w-full">
     <router-outlet
-      (activate)="setWidgetListeners($event)"
-      (deactivate)="removeWidgetListeners($event)"
+      (activate)="setWidgetListeners()"
+      (deactivate)="removeWidgetListeners()"
       name="tabWidget"
     ></router-outlet>
   </div>

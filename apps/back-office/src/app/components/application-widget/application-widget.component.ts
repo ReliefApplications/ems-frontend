@@ -69,7 +69,6 @@ export class ApplicationWidgetComponent
   // === SETTINGS ===
   header = true;
   settings: any = null;
-  id!: any;
   canUpdate = false;
   selectedTab = 0;
   status: {
@@ -117,7 +116,6 @@ export class ApplicationWidgetComponent
       this.header = data.header ?? this.header;
       this.widget = data.widget ?? this.widget;
       this.settings = data.widget?.settings ?? this.settings;
-      this.id = data.widget?.settings?.id ?? this.id;
     }
     this.isAdmin =
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
@@ -127,8 +125,8 @@ export class ApplicationWidgetComponent
     console.log(this.location.getState());
     console.log(history.state);
     this.setUpListeners();
-    if (this.id) {
-      this.applicationWidgetService.loadApplication(this.id);
+    if (this.settings?.id) {
+      this.applicationWidgetService.loadApplication(this.settings.id);
     }
   }
 
@@ -142,7 +140,6 @@ export class ApplicationWidgetComponent
         next: (application) => {
           if (application) {
             this.application = application;
-
             this.updateTabs(application.pages?.length ? application.pages : []);
             this.loadPage(
               application.pages?.length ? application.pages?.length : -1
@@ -150,7 +147,15 @@ export class ApplicationWidgetComponent
           } else {
             this.applicationWidgetService.createApplication();
           }
-          this.edit.emit({ id: this.id, pages: this.pages });
+          if (this.application?.id) {
+            this.settings = {
+              ...this.settings,
+              pages: this.pages.filter((p) => !!p.id),
+            };
+            this.applicationWidgetService.applicationWidgetTile.next(
+              this.settings
+            );
+          }
         },
       });
   }

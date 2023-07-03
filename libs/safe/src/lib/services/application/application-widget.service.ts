@@ -111,6 +111,13 @@ export class SafeApplicationWidgetService {
     return this.application.asObservable();
   }
 
+  /** Current application widget tile */
+  public applicationWidgetTile = new BehaviorSubject<any | null>(null);
+  /** @returns Current application as observable */
+  get applicationWidgetTile$(): Observable<any | null> {
+    return this.applicationWidgetTile.asObservable();
+  }
+
   /** Notifications query subscription */
   private notificationSubscription?: Subscription;
 
@@ -825,9 +832,6 @@ export class SafeApplicationWidgetService {
               };
               this.application.next(newApplication);
             }
-            this.router.navigate([
-              `/applications/${applicationId}/${newPage?.type}/${newPage?.content}`,
-            ]);
           }
         }
       });

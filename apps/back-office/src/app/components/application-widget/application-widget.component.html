@@ -18,10 +18,10 @@
   </kendo-tilelayout-item-header>
   <ng-container *ngIf="pages.length">
     <ui-tabs [selectedIndex]="selectedTab">
-      <ng-container *ngFor="let page of pages; let i = index;">
+      <ng-container *ngFor="let page of pages; let i = index">
         <ui-tab (click)="loadPage(i)">
           <ng-container ngProjectAs="label">
-            <ng-container *ngIf="page.label; else addPageTmpl">
+            <ng-container *ngIf="page.id; else addPageTmpl">
               <div class="flex items-center gap-1">
                 <ng-container *ngIf="page.label">
                   {{ page.label }}

@@ -373,11 +373,8 @@ export class DashboardComponent
         case 'display': {
           this.tiles = this.tiles.map((x) => {
             if (x.id === e.id) {
-              x = {
-                ...x,
-                defaultCols: options.cols,
-                defaultRows: options.rows,
-              };
+              x.defaultCols = options.cols;
+              x.defaultRows = options.rows;
             }
             return x;
           });
@@ -387,7 +384,7 @@ export class DashboardComponent
         case 'data': {
           this.tiles = this.tiles.map((x) => {
             if (x.id === e.id) {
-              x = { ...x, settings: options };
+              x.settings = { ...x.settings, ...options };
             }
             return x;
           });
