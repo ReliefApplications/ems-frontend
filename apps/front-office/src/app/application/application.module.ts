@@ -1,32 +1,37 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { DashboardComponent } from './dashboard.component';
-import { DashboardRoutingModule } from './dashboard-routing.module';
+import { ApplicationComponent } from './application.component';
+import { ApplicationRoutingModule } from './application-routing.module';
 import {
   SafeLayoutModule,
   SafeEmptyModule,
   SafeNavbarModule,
 } from '@oort-front/safe';
 import { TranslateModule } from '@ngx-translate/core';
-import { ButtonModule, IconModule, MenuModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  IconModule,
+  MenuModule,
+  SpinnerModule,
+} from '@oort-front/ui';
 
 /**
- * Front-Office Dashboard module.
+ * Front-Office Application module.
  * Accessible if user is authenticated.
- * Main Navigation.
  */
 @NgModule({
-  declarations: [DashboardComponent],
+  declarations: [ApplicationComponent],
   imports: [
     CommonModule,
     SafeLayoutModule,
-    DashboardRoutingModule,
+    ApplicationRoutingModule,
     SafeEmptyModule,
     TranslateModule,
     SafeNavbarModule,
     MenuModule,
     IconModule,
     ButtonModule,
+    SpinnerModule,
   ],
 })
-export class DashboardModule {}
+export class ApplicationModule {}

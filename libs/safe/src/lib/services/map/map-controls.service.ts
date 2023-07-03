@@ -9,7 +9,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MARKER_OPTIONS } from '../../components/ui/map/const/marker-options';
 import { MapDownloadComponent } from '../../components/ui/map/map-download/map-download.component';
 import { DomService } from '../dom/dom.service';
-import { GeoJsonObject } from 'geojson';
+// import { GeoJsonObject } from 'geojson';
 /// <reference path="../../../../typings/leaflet/index.d.ts" />
 import * as L from 'leaflet';
 import 'esri-leaflet';
@@ -36,8 +36,8 @@ export class SafeMapControlsService {
   // === THEME ===
   private primaryColor = '';
   // === Time Dimension ===
-  private timeDimensionLayer!: any | null;
-  private timeDimensionControl!: L.Control | null;
+  // private timeDimensionLayer!: any | null;
+  // private timeDimensionControl!: L.Control | null;
   // === Map controls ===
   private downloadControl!: L.Control | null;
   private legendControl!: L.Control | null;
@@ -141,7 +141,7 @@ export class SafeMapControlsService {
     const control = Geocoding.geosearch({
       position: 'topleft',
       // todo: translate
-      placeholder: 'Enter an address or place e.g. 1 York St',
+      placeholder: this.translate.instant('common.placeholder.address'), // 'Enter an address or place e.g. 1 York St'
       useMapBounds: false,
       providers: [
         Geocoding.arcgisOnlineProvider({
@@ -477,69 +477,69 @@ export class SafeMapControlsService {
     createCorner('verticalcenter', 'right');
   }
 
-  /**
-   * Add or remove the TimeDimension in the map
-   * todo(gis): only for mockups
-   *
-   * @param {L.Map} map map where to add or remove the timeDimension feature
-   * @param {boolean} addTimeDimension boolean to indicates if should add or remove TimeDimension control
-   * @param {GeoJsonObject | GeoJsonObject[]} timeDimensionGeoJSON Geojson object for the time dimension
-   */
-  public setTimeDimension(
-    map: L.Map,
-    addTimeDimension: boolean,
-    timeDimensionGeoJSON: GeoJsonObject | GeoJsonObject[]
-  ): void {
-    if (addTimeDimension) {
-      if (!this.timeDimensionControl) {
-        this.createTimeDimensionControl(map);
-        const geoJSON = L.geoJson(timeDimensionGeoJSON);
-        this.timeDimensionLayer = (L as any).timeDimension.layer
-          .geoJson(geoJSON)
-          .addTo(map);
-      }
-    } else {
-      if (this.timeDimensionControl) {
-        this.timeDimensionControl.remove();
-        this.timeDimensionLayer.remove();
-        this.timeDimensionControl = null;
-        this.timeDimensionLayer = null;
-      }
-    }
-  }
+  // /**
+  //  * Add or remove the TimeDimension in the map
+  //  * todo(gis): only for mockups
+  //  *
+  //  * @param {L.Map} map map where to add or remove the timeDimension feature
+  //  * @param {boolean} addTimeDimension boolean to indicates if should add or remove TimeDimension control
+  //  * @param {GeoJsonObject | GeoJsonObject[]} timeDimensionGeoJSON Geojson object for the time dimension
+  //  */
+  // public setTimeDimension(
+  //   map: L.Map,
+  //   addTimeDimension: boolean,
+  //   timeDimensionGeoJSON: GeoJsonObject | GeoJsonObject[]
+  // ): void {
+  //   if (addTimeDimension) {
+  //     if (!this.timeDimensionControl) {
+  //       this.createTimeDimensionControl(map);
+  //       const geoJSON = L.geoJson(timeDimensionGeoJSON);
+  //       this.timeDimensionLayer = (L as any).timeDimension.layer
+  //         .geoJson(geoJSON)
+  //         .addTo(map);
+  //     }
+  //   } else {
+  //     if (this.timeDimensionControl) {
+  //       this.timeDimensionControl.remove();
+  //       this.timeDimensionLayer.remove();
+  //       this.timeDimensionControl = null;
+  //       this.timeDimensionLayer = null;
+  //     }
+  //   }
+  // }
 
-  /**
-   * Creates the TimeDimension Control
-   *
-   * @param {L.Map} map map where to add or remove the timeDimension control
-   */
-  private createTimeDimensionControl(map: L.Map): void {
-    const timeDimension = (map as any).timeDimension;
-    timeDimension.options = {
-      period: 'PT1H', // todo(gis): should be part of time settings
-      timeInterval: '2017-06-01/2017-09-01', // todo(gis): should be part of time settings
-      currentTime: '2017-06-01', // todo(gis): should be part of time settings
-    };
+  // /**
+  //  * Creates the TimeDimension Control
+  //  *
+  //  * @param {L.Map} map map where to add or remove the timeDimension control
+  //  */
+  // private createTimeDimensionControl(map: L.Map): void {
+  //   const timeDimension = (map as any).timeDimension;
+  //   timeDimension.options = {
+  //     period: 'PT1H', // todo(gis): should be part of time settings
+  //     timeInterval: '2017-06-01/2017-09-01', // todo(gis): should be part of time settings
+  //     currentTime: '2017-06-01', // todo(gis): should be part of time settings
+  //   };
 
-    const player = new (L as any).TimeDimension.Player(
-      { transitionTime: 1000, startOver: true },
-      timeDimension
-    );
+  //   const player = new (L as any).TimeDimension.Player(
+  //     { transitionTime: 1000, startOver: true },
+  //     timeDimension
+  //   );
 
-    const timeDimensionControlOptions = {
-      player,
-      timeDimension,
-      position: 'bottomleft',
-      autoPlay: false,
-      timeSliderDragUpdate: true,
-    };
+  //   const timeDimensionControlOptions = {
+  //     player,
+  //     timeDimension,
+  //     position: 'bottomleft',
+  //     autoPlay: false,
+  //     timeSliderDragUpdate: true,
+  //   };
 
-    this.timeDimensionControl = new (L.Control as any).TimeDimension(
-      timeDimensionControlOptions
-    );
+  //   this.timeDimensionControl = new (L.Control as any).TimeDimension(
+  //     timeDimensionControlOptions
+  //   );
 
-    if (this.timeDimensionControl) {
-      map.addControl(this.timeDimensionControl);
-    }
-  }
+  //   if (this.timeDimensionControl) {
+  //     map.addControl(this.timeDimensionControl);
+  //   }
+  // }
 }

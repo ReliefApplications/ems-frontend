@@ -67,7 +67,6 @@ const DEFAULT_GRADIENT = [
  */
 export const createLayerForm = (value?: LayerModel) => {
   const type = get(value, 'type') || 'FeatureLayer';
-  console.log(value);
   const formGroup = fb.group({
     // Layer properties
     id: new FormControl(get(value, 'id', null)),
@@ -273,7 +272,6 @@ export const createSymbolForm = (
   value: any,
   geometryType: GeometryType = 'Point'
 ): FormGroup => {
-  console.log(geometryType);
   return fb.group({
     color: [
       get(value, 'color', DEFAULT_MARKER_ICON_OPTIONS.color),
@@ -439,7 +437,7 @@ export type LayerFormT = ReturnType<typeof createLayerForm>;
  */
 export const createMapControlsForm = (value?: MapControls): FormGroup =>
   fb.group({
-    timedimension: [get(value, 'timedimension', false)],
+    // timedimension: [get(value, 'timedimension', false)],
     download: [get(value, 'download', true)],
     legend: [get(value, 'legend', true)],
     measure: [get(value, 'measure', false)],

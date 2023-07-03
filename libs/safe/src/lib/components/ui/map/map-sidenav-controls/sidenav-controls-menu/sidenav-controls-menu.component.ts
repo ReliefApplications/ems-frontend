@@ -57,10 +57,6 @@ export class SidenavControlsMenuComponent implements OnInit {
     this.layersMenuExpanded = false;
   }
 
-  /** unchecks all basemaps */
-  updateBasemaps() {
-    console.log('should update the basemaps now');
-  }
   /**
    * returns an array of flattened basemaps
    *

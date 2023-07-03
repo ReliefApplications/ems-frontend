@@ -1,7 +1,12 @@
 import { Apollo } from 'apollo-angular';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subscription,
+  firstValueFrom,
+} from 'rxjs';
 import { Role } from '../../models/user.model';
 import { Page, ContentType } from '../../models/page.model';
 import { Application } from '../../models/application.model';
@@ -191,6 +196,11 @@ export class SafeApplicationService {
    * @param asRole Role to use to preview
    */
   loadApplication(id: string, asRole?: string): void {
+    // First make sure we close the opened application, if any
+    if (this.application.getValue()) {
+      this.leaveApplication();
+    }
+    // Then, open the new application
     this.applicationSubscription = this.apollo
       .query<GetApplicationByIdQueryResponse>({
         query: GET_APPLICATION_BY_ID,
@@ -199,14 +209,13 @@ export class SafeApplicationService {
           asRole,
         },
       })
-      .subscribe(({ data }) => {
+      .subscribe(async ({ data }) => {
         // extend user abilities for application
         if (data.application)
           this.authService.extendAbilityForApplication(data.application);
+        await this.getCustomStyle(data.application);
         this.application.next(data.application);
         const application = this.application.getValue();
-        this.getCustomStyle();
-        this.customStyleEdited = false;
         if (data.application.locked) {
           if (!application?.lockedByUser) {
             this.snackBar.openSnackBar(
@@ -1886,15 +1895,16 @@ export class SafeApplicationService {
   }
 
   /** Check if open application has custom style to apply */
-  getCustomStyle(): void {
-    const application = this.application.getValue();
+  getCustomStyle(application: Application): Promise<void> {
     const path = `style/application/${application?.id}`;
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
     });
-    this.restService.get(path, { responseType: 'blob', headers }).subscribe({
-      next: async (res) => {
+    return firstValueFrom(
+      this.restService.get(path, { responseType: 'blob', headers })
+    )
+      .then(async (res) => {
         if (res.type === 'application/octet-stream') {
           const styleFromFile = await res.text();
           this.customStyle = document.createElement('style');
@@ -1903,10 +1913,10 @@ export class SafeApplicationService {
             .getElementsByTagName('body')[0]
             .appendChild(this.customStyle);
         }
-      },
-      error: (err) => {
+      })
+      .catch((err) => {
         this.snackBar.openSnackBar(err.message, { error: true });
-      },
-    });
+      })
+      .finally(() => (this.customStyleEdited = false));
   }
 }

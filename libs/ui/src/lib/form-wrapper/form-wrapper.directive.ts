@@ -173,7 +173,6 @@ export class FormWrapperDirective
 
   //We need to use afterViewInit for select menu, otherwise removing class does not work
   ngAfterViewInit() {
-    console.log(this.formControlElement);
     // Do the same with selectMenu
     if (this.currentSelectElement || this.currentGraphQLSelectComponent) {
       if (this.currentGraphQLSelectComponent) {

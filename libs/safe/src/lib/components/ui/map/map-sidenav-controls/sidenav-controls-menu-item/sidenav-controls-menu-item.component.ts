@@ -87,10 +87,12 @@ export class SidenavControlsMenuItemComponent implements OnInit, OnDestroy {
     const layers = this.getChildrenLayers();
     if (this.checked) {
       layers.forEach((layer) => {
+        (layer as any).shouldDisplay = true;
         this.map.addLayer(layer);
       });
     } else {
       layers.forEach((layer) => {
+        (layer as any).shouldDisplay = false;
         this.map.removeLayer(layer);
       });
     }
