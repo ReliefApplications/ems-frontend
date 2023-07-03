@@ -157,7 +157,6 @@ export class EditPullJobModalComponent implements OnInit {
     private formBuilder: UntypedFormBuilder,
     public dialogRef: DialogRef<EditPullJobModalComponent>,
     private apollo: Apollo,
-    private dialog: Dialog,
     @Inject(DOCUMENT) private document: Document,
     @Inject(DIALOG_DATA)
     public data: {
@@ -269,19 +268,21 @@ export class EditPullJobModalComponent implements OnInit {
       });
 
     this.formGroup
-      .get('mapping')
-      ?.valueChanges.pipe(debounceTime(2000), distinctUntilChanged())
-      .subscribe(() => {
-        const mapping = this.getActiveMapping();
-        this.setMappingControl(mapping);
-      });
-
-    this.formGroup
       .get('rawMapping')
-      ?.valueChanges.pipe(debounceTime(2000), distinctUntilChanged())
-      .subscribe(() => {
-        const mapping = this.getActiveMapping();
-        this.setMappingControl(mapping);
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        const mapping = JSON.parse(value || '{}');
+        this.formGroup.setControl(
+          'mapping',
+          this.formBuilder.array(
+            Object.keys(mapping).map((x: any) =>
+              this.formBuilder.group({
+                name: [x, Validators.required],
+                value: [mapping[x], Validators.required],
+              })
+            )
+          )
+        );
       });
   }
 
@@ -350,40 +351,18 @@ export class EditPullJobModalComponent implements OnInit {
    * Toggles the edit mode and update form values accordingly.
    */
   toggleRawJSON(): void {
-    const mapping = this.getActiveMapping();
     if (!this.openRawJSON) {
-      this.formGroup
-        .get('rawMapping')
-        ?.setValue(JSON.stringify(mapping, null, 2));
-    }
-    this.setMappingControl(mapping);
-    this.openRawJSON = !this.openRawJSON;
-  }
-
-  getActiveMapping() {
-    if (this.openRawJSON)
-      return JSON.parse(this.formGroup.get('rawMapping')?.value || '{}');
-    else
-      return this.formGroup
+      const mapping = this.formGroup
         .get('mapping')
         ?.value.reduce(
           (o: any, field: any) => ({ ...o, [field.name]: field.value }),
           {}
         );
-  }
-
-  setMappingControl(mapping: any) {
-    this.formGroup.setControl(
-      'mapping',
-      this.formBuilder.array(
-        Object.keys(mapping).map((x: any) =>
-          this.formBuilder.group({
-            name: [x, Validators.required],
-            value: [mapping[x], Validators.required],
-          })
-        )
-      )
-    );
+      this.formGroup
+        .get('rawMapping')
+        ?.setValue(JSON.stringify(mapping, null, 2));
+    }
+    this.openRawJSON = !this.openRawJSON;
   }
 
   /**

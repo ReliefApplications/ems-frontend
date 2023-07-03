@@ -238,10 +238,10 @@
             [multiselect]="true"
           >
             <ui-select-option
-              *ngFor="let element of mappingArray.controls"
-              [value]="element.value.value"
+              *ngFor="let element of mappingArray.value"
+              [value]="element.value"
             >
-              {{ element.value.value }}
+              {{ element.value }}
             </ui-select-option>
           </ui-select-menu>
         </div>
