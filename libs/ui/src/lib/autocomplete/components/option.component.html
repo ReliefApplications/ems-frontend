@@ -1,0 +1,18 @@
+<li
+  *ngIf="display"
+  [attr.data-label]="label"
+  [attr.data-value]="getValue"
+  [attr.data-selected]="selected"
+  [attr.data-is-group]="isGroup"
+  [ngClass]="{
+    'bg-primary-300 text-white': !isGroup && selected,
+    'cursor-pointer hover:bg-primary-200 hover:text-white gap-2 flex items-center text-gray-900':
+      !isGroup,
+    'text-gray-500 pb-2': isGroup
+  }"
+  class="px-2 py-1 relative pl-2 w-full justify-between"
+  (click)="selected = !selected"
+>
+  <ng-content></ng-content>
+  <ng-content select="icon"></ng-content>
+</li>

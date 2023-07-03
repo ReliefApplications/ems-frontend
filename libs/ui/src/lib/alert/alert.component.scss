@@ -1,0 +1,30 @@
+// $spacing-left: 0.8em;
+// $spacing-right: 0.8em;
+
+// :host {
+//   display: block;
+// }
+
+// .ui-alert-content {
+//   flex-grow: 1;
+//   padding: $spacing-left $spacing-right;
+//   display: flex;
+//   align-items: center;
+//   gap: 8px;
+// }
+
+// .close-alert {
+//   animation: close-sequence 300ms ease-in-out forwards;
+// }
+
+// .close-button {
+//   ::ng-deep button:not(:hover) {
+//     box-shadow: none;
+//   }
+// }
+
+// @keyframes close-sequence {
+//   100% {
+//     opacity: 0;
+//   }
+// }

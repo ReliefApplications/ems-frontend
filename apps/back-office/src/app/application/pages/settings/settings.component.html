@@ -1,0 +1,103 @@
+<form [formGroup]="settingsForm" *ngIf="settingsForm">
+  <!-- Header -->
+  <div class="flex gap-2 flex-wrap justify-between mb-8">
+    <h1 class="!m-0">{{ 'common.general' | translate }}</h1>
+    <!-- Selection of status -->
+    <div uiFormFieldDirective [outline]="false" class="p-0">
+      <label>{{ 'common.status' | translate }}</label>
+      <ui-select-menu formControlName="status">
+        <ui-select-option value="active">
+          {{ 'common.status_active' | translate }}
+        </ui-select-option>
+        <ui-select-option value="pending">
+          {{ 'common.status_pending' | translate }}
+        </ui-select-option>
+        <ui-select-option value="archived">
+          {{ 'common.status_archived' | translate }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
+  </div>
+  <!-- Settings -->
+  <div class="flex flex-col gap-4">
+    <div class="flex gap-x-2 flex-wrap">
+      <div uiFormFieldDirective class="flex-auto">
+        <label>
+          {{ 'common.name' | translate }}
+        </label>
+        <input
+          formControlName="name"
+          type="text"
+          [placeholder]="'common.placeholder.name' | translate"
+        />
+      </div>
+      <div uiFormFieldDirective class="flex-1">
+        <label>
+          {{ 'models.application.id' | translate }}
+        </label>
+        <input formControlName="id" type="text" />
+      </div>
+    </div>
+    <div uiFormFieldDirective>
+      <label>
+        {{ 'models.application.description' | translate }}
+      </label>
+      <ui-textarea
+        formControlName="description"
+        [placeholder]="
+          'components.application.update.placeholder.description' | translate
+        "
+        [minRows]="2"
+        [maxRows]="5"
+        name="textarea"
+      >
+      </ui-textarea>
+    </div>
+    <div class="mb-6">
+      <ui-toggle formControlName="sideMenu">
+        <ng-container ngProjectAs="label">
+          {{ 'models.application.menu' | translate }}</ng-container
+        >
+      </ui-toggle>
+    </div>
+  </div>
+  <ui-button
+    category="secondary"
+    variant="primary"
+    (click)="onSubmit()"
+    [disabled]="settingsForm.invalid || !settingsForm.dirty"
+  >
+    {{ 'common.saveChanges' | translate }}
+  </ui-button>
+</form>
+<!-- Actions -->
+<div
+  *ngIf="application && (application.canUpdate || application.canDelete)"
+  class="mt-8"
+>
+  <h1>{{ 'pages.application.settings.actions' | translate }}</h1>
+  <div class="flex gap-2 flex-wrap">
+    <!-- Styling -->
+    <ui-button category="secondary" variant="primary" (click)="onOpenStyle()">
+      {{ 'components.application.customStyling' | translate }}
+    </ui-button>
+    <ui-button
+      icon="file_copy"
+      category="tertiary"
+      variant="primary"
+      (click)="onDuplicate()"
+      *ngIf="application.canUpdate"
+    >
+      {{ 'common.duplicate' | translate }}
+    </ui-button>
+    <ui-button
+      icon="delete"
+      category="tertiary"
+      variant="danger"
+      (click)="onDelete()"
+      *ngIf="application.canDelete"
+    >
+      {{ 'common.delete' | translate }}
+    </ui-button>
+  </div>
+</div>

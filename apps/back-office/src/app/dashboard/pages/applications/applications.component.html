@@ -1,0 +1,174 @@
+<ng-container>
+  <!-- FILTERING -->
+  <app-filter
+    (filter)="onFilter($event)"
+    [loading]="updating"
+    class="block mb-8"
+  ></app-filter>
+
+  <!-- NEW APPLICATIONS -->
+  <h2>{{ 'pages.applications.recent' | translate }}</h2>
+  <safe-applications-summary
+    class="block mb-14"
+    [loading]="loading"
+    [canCreate]="'create' | able : 'Application'"
+    (add)="onAdd()"
+    [applications]="newApplications"
+    (openApplication)="onOpenApplication($event)"
+    (delete)="onDelete($event)"
+    (preview)="onPreview($event)"
+    (clone)="onClone($event)"
+  ></safe-applications-summary>
+
+  <!-- APPLICATIONS TABLE -->
+  <h2>{{ 'pages.applications.all' | translate }}</h2>
+  <!-- Table container -->
+  <div class="overflow-x-hidden shadow-2lg">
+    <!-- Table scroll container -->
+    <div class="overflow-x-auto">
+      <table
+        *ngIf="!loading"
+        cdk-table
+        uiTableWrapper
+        [dataSource]="applications"
+        (sortChange)="onSort($event)"
+      >
+        <ng-container cdkColumnDef="name">
+          <th uiTableHeaderSort="name" uiCellHeader *cdkHeaderCellDef>
+            {{ 'common.name' | translate }}
+          </th>
+          <td
+            uiCell
+            *cdkCellDef="let element"
+            class="!text-gray-900 !font-medium"
+          >
+            {{ element.name }}
+          </td>
+        </ng-container>
+
+        <ng-container cdkColumnDef="createdAt">
+          <th uiTableHeaderSort="createdAt" uiCellHeader *cdkHeaderCellDef>
+            {{ 'common.createdOn' | translate }}
+          </th>
+          <td uiCell *cdkCellDef="let element">
+            {{ element.createdAt | safeDate }}
+          </td>
+        </ng-container>
+
+        <ng-container cdkColumnDef="status">
+          <th uiCellHeader *cdkHeaderCellDef>
+            {{ 'common.status' | translate }}
+          </th>
+          <td uiCell *cdkCellDef="let element">
+            <div uiChipList>
+              <ui-chip
+                class="!rounded-lg"
+                variant="success"
+                *ngIf="element.status === 'active'"
+              >
+                {{ 'common.status_active' | translate | titlecase }}
+              </ui-chip>
+              <ui-chip
+                class="!rounded-lg"
+                variant="warning"
+                *ngIf="element.status === 'pending'"
+              >
+                {{ 'common.status_pending' | translate | titlecase }}
+              </ui-chip>
+              <ui-chip
+                class="!rounded-lg"
+                variant="danger"
+                *ngIf="element.status === 'archived'"
+              >
+                {{ 'common.status_archived' | translate | titlecase }}
+              </ui-chip>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container cdkColumnDef="usersCount">
+          <th uiCellHeader *cdkHeaderCellDef>
+            <span class="headerTitle">
+              {{ 'common.user.few' | translate }}
+            </span>
+          </th>
+          <td uiCell *cdkCellDef="let element">
+            {{ element.users?.totalCount }}
+          </td>
+        </ng-container>
+
+        <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+          <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>
+          <td uiCell *cdkCellDef="let element">
+            <ui-button
+              [isIcon]="true"
+              icon="more_vert"
+              [uiMenuTriggerFor]="menu"
+              (click)="$event.stopPropagation()"
+            >
+            </ui-button>
+            <ui-menu #menu>
+              <button uiMenuItem (click)="onPreview(element)">
+                <ui-icon icon="preview" variant="grey"></ui-icon>
+                {{ 'common.preview' | translate }}
+              </button>
+              <safe-access
+                [menuItem]="true"
+                [access]="element.permissions"
+                [objectTypeName]="'common.application.one' | translate"
+                (save)="saveAccess($event, element)"
+                *ngIf="element.canUpdate"
+              ></safe-access>
+              <button
+                uiMenuItem
+                (click)="onClone(element)"
+                *ngIf="element.canDelete"
+              >
+                <ui-icon icon="file_copy" variant="grey"></ui-icon>
+                {{ 'common.duplicate' | translate }}
+              </button>
+              <ng-container *ngIf="element.canDelete">
+                <ui-divider class="py-1"></ui-divider>
+                <button uiMenuItem (click)="onDelete(element, $event)">
+                  <ui-icon icon="delete" variant="danger"></ui-icon>
+                  {{ 'common.delete' | translate }}
+                </button>
+              </ng-container>
+            </ui-menu>
+          </td>
+        </ng-container>
+
+        <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+        <tr
+          class="cursor-pointer"
+          cdk-row
+          *cdkRowDef="let row; columns: displayedColumns"
+          [routerLink]="['/applications', row.id]"
+        ></tr>
+      </table>
+      <!-- Loading indicator -->
+      <safe-skeleton-table
+        *ngIf="loading"
+        [columns]="[
+          'common.name',
+          'common.createdOn',
+          'common.status',
+          'common.user.few'
+        ]"
+        [actions]="true"
+      >
+      </safe-skeleton-table>
+    </div>
+  </div>
+  <!-- Pagination -->
+  <ui-paginator
+    [disabled]="loading || updating"
+    [pageIndex]="pageInfo.pageIndex"
+    [pageSize]="pageInfo.pageSize"
+    [pageSizeOptions]="[10, 25, 50]"
+    [totalItems]="pageInfo.length"
+    [ariaLabel]="'components.applications.paginator.ariaLabel' | translate"
+    (pageChange)="onPage($event)"
+  >
+  </ui-paginator>
+</ng-container>

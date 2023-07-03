@@ -1,0 +1,28 @@
+<!-- Table container -->
+<div class="overflow-x-hidden shadow-2lg">
+  <!-- Table scroll container -->
+  <div class="overflow-x-auto">
+    <!-- Records table -->
+    <table cdk-table [dataSource]="dataSource">
+      <ng-container cdkColumnDef="id">
+        <th uiCellHeader *cdkHeaderCellDef>{{ 'common.id' | translate }}</th>
+        <td uiCell *cdkCellDef="let element">{{ element.id }}</td>
+      </ng-container>
+
+      <ng-container cdkColumnDef="createdAt">
+        <th uiCellHeader *cdkHeaderCellDef>
+          {{ 'common.createdOn' | translate }}
+        </th>
+        <td uiCell *cdkCellDef="let element">
+          {{ element.createdAt | safeDate }}
+        </td>
+      </ng-container>
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+      <tr
+        cdk-row
+        *cdkRowDef="let row; columns: displayedColumns"
+        (click)="openVersion(row)"
+      ></tr>
+    </table>
+  </div>
+</div>

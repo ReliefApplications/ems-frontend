@@ -1,0 +1,72 @@
+<ng-container *ngIf="fields.length">
+  <ng-container *ngTemplateOutlet="newField"> </ng-container>
+</ng-container>
+<ng-template #newField>
+  <div class="self-end">
+    <ui-button
+      variant="primary"
+      class="actions"
+      category="secondary"
+      (click)="onAddCalculatedField()"
+    >
+      {{ 'components.calculatedFields.add' | translate }}</ui-button
+    >
+  </div>
+</ng-template>
+<ng-container *ngIf="fields.length; else emptyTmpl">
+  <div class="overflow-x-hidden shadow-2lg">
+    <!-- Table scroll container -->
+    <div class="overflow-x-auto">
+      <table cdk-table uiTableWrapper [dataSource]="fields">
+        <ng-container cdkColumnDef="name">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            {{ 'models.form.field.name' | translate }}
+          </th>
+          <td uiCell *cdkCellDef="let element">{{ element.name }}</td>
+        </ng-container>
+
+        <ng-container cdkColumnDef="createdAt">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            {{ 'components.calculatedFields.expression' | translate }}
+          </th>
+          <td uiCell *cdkCellDef="let element">
+            {{ element.expression }}
+          </td>
+        </ng-container>
+
+        <ng-container cdkColumnDef="_actions" [stickyEnd]="true">
+          <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+          <td uiCell *cdkCellDef="let element">
+            <ui-button
+              [isIcon]="true"
+              icon="more_vert"
+              [uiMenuTriggerFor]="resMenu"
+              (click)="$event.stopPropagation()"
+              [disabled]="!resource.canUpdate"
+            >
+            </ui-button>
+            <ui-menu #resMenu>
+              <button uiMenuItem (click)="onEditCalculatedField(element)">
+                <ui-icon icon="edit" variant="grey"></ui-icon>
+                {{ 'common.edit' | translate }}
+              </button>
+              <button uiMenuItem (click)="onDeleteCalculatedField(element)">
+                <ui-icon icon="delete" variant="danger"></ui-icon>
+                {{ 'common.delete' | translate }}
+              </button>
+            </ui-menu>
+          </td>
+        </ng-container>
+
+        <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+        <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  </div>
+</ng-container>
+<ng-template #emptyTmpl>
+  <safe-empty
+    [title]="'components.resource.empty.calculatedFields' | translate"
+    [footerTemplate]="newField"
+  ></safe-empty>
+</ng-template>

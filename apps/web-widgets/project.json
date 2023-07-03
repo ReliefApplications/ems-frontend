@@ -1,0 +1,156 @@
+{
+  "name": "web-widgets",
+  "$schema": "../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "sourceRoot": "apps/web-widgets/src",
+  "prefix": "oort-front",
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/web-widgets",
+        "index": "apps/web-widgets/src/index.html",
+        "main": "apps/web-widgets/src/main.ts",
+        "polyfills": ["apps/web-widget/src/polyfills.ts"],
+        "tsConfig": "apps/web-widgets/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "libs/safe/src/i18n/",
+            "output": "/assets/i18n/"
+          },
+          {
+            "glob": "**/*",
+            "input": "assets/",
+            "output": "/assets/"
+          },
+          "apps/web-widgets/src/favicon.ico",
+          {
+            "glob": "**/*",
+            "input": "node_modules/tinymce",
+            "output": "/tinymce/"
+          },
+          {
+            "glob": "**/*",
+            "input": "libs/safe/src/i18n/tinymce/",
+            "output": "/tinymce/langs"
+          }
+        ],
+        "styles": [
+          "apps/web-widgets/src/styles.scss",
+          "libs/safe/src/lib/style/styles.scss",
+          "node_modules/survey-angular/survey.min.css",
+          "node_modules/survey-creator/survey-creator.min.css",
+          "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
+          "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+          "node_modules/select2/dist/css/select2.min.css"
+        ],
+        "scripts": [
+          "node_modules/jquery/dist/jquery.js",
+          "node_modules/select2/dist/js/select2.min.js",
+          "node_modules/tinymce/tinymce.js",
+          "node_modules/tinymce/themes/silver/theme.js"
+        ],
+        "allowedCommonJsDependencies": [
+          "minimatch",
+          "hammerjs",
+          "survey-creator",
+          "survey-knockout",
+          "surveyjs-widgets",
+          "subscriptions-transport-ws",
+          "zen-observable",
+          "lodash",
+          "cronstrue",
+          "cron-parser",
+          "cron-validator",
+          "localforage",
+          "survey-angular",
+          "fast-sha256"
+        ]
+      },
+      "configurations": {
+        "oort-dev": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "1mb",
+              "maximumError": "2mb"
+            }
+          ],
+          "stylePreprocessorOptions": {
+            "includePaths": ["apps/safe/src/lib/style/themes/default"]
+          },
+          "fileReplacements": [
+            {
+              "replace": "apps/web-widgets/src/environments/environment.ts",
+              "with": "apps/web-widgets/src/environments/environment.oort.dev.ts"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true,
+          "stylePreprocessorOptions": {
+            "includePaths": ["apps/safe/src/lib/style/themes/default"]
+          }
+        }
+      },
+      "defaultConfiguration": "oort-dev"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "oort-dev": {
+          "browserTarget": "web-widgets:build:oort-dev"
+        },
+        "development": {
+          "browserTarget": "web-widgets:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "web-widgets:build"
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "apps/web-widgets/**/*.ts",
+          "apps/web-widgets/**/*.html"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/web-widgets/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}

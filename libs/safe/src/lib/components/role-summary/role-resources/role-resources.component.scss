@@ -1,0 +1,14 @@
+.expanded-form {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  & > * {
+    margin-block: 16px;
+  }
+}
+
+.mat-column-expandedDetail {
+  @apply bg-zinc-200;
+}

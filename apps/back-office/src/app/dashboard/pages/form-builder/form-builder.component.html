@@ -1,0 +1,69 @@
+<ng-container *ngIf="form">
+  <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+    <div class="flex items-center overflow-hidden">
+      <safe-editable-text
+        [text]="form.name"
+        [canEdit]="canEditName"
+        (onChange)="saveName($event)"
+        (formActiveEvent)="formActive = $event"
+      >
+        <h1 class="!m-0 overflow-hidden text-ellipsis">
+          {{ form.name }} {{ activeVersion ? activeVersion.id : '' }}
+        </h1>
+      </safe-editable-text>
+
+      <safe-access
+        [access]="form.permissions"
+        [objectTypeName]="'common.form.one' | translate"
+        (save)="saveAccess($event)"
+        *ngIf="form.canUpdate && !formActive"
+      ></safe-access>
+    </div>
+    <div class="flex items-center" *ngIf="!formActive">
+      <div uiFormFieldDirective [outline]="false" class="p-0">
+        <label>{{ 'common.status' | translate }}</label>
+        <ui-select-menu
+          [formControl]="statusControl"
+          [customTemplate]="{
+            template: statusTemplate,
+            context: { $implicit: statusControl.value }
+          }"
+        >
+          <ui-select-option
+            *ngFor="let status of statusChoices"
+            [value]="status"
+          >
+            <ng-container
+              *ngTemplateOutlet="statusTemplate; context: { $implicit: status }"
+            ></ng-container>
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+    </div>
+  </div>
+  <app-history
+    *ngIf="activeVersions"
+    [dataSource]="form.versions || []"
+    (open)="onOpenVersion($event)"
+  ></app-history>
+  <safe-form-builder
+    [form]="form"
+    (save)="onSave($event)"
+    (formChange)="formStructureChange($event)"
+  ></safe-form-builder>
+</ng-container>
+
+<!-- Template to display status -->
+<ng-template #statusTemplate let-status>
+  <div uiChipList>
+    <ui-chip class="!rounded-lg" variant="success" *ngIf="status === 'active'">
+      {{ 'common.status_active' | translate | titlecase }}
+    </ui-chip>
+    <ui-chip class="!rounded-lg" variant="warning" *ngIf="status === 'pending'">
+      {{ 'common.status_pending' | translate | titlecase }}
+    </ui-chip>
+    <ui-chip class="!rounded-lg" variant="danger" *ngIf="status === 'archived'">
+      {{ 'common.status_archived' | translate | titlecase }}
+    </ui-chip>
+  </div>
+</ng-template>

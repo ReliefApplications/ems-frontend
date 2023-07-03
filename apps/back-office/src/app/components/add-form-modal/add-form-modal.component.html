@@ -1,0 +1,118 @@
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h1>{{ 'models.form.new' | translate }}</h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="form">
+      <div class="flex flex-col">
+        <div uiFormFieldDirective>
+          <label>{{ 'common.name' | translate }}</label>
+          <input
+            formControlName="name"
+            type="text"
+            placeholder="Enter a name"
+          />
+        </div>
+        <div
+          class="flex flex-col mb-5 gap-1"
+          formControlName="newResource"
+          uiRadioGroupDirective="newResourceOptions"
+        >
+          <ui-radio [value]="true">
+            <ng-container ngProjectAs="label">
+              {{ 'components.form.create.choice.resource' | translate }}
+              <ui-icon
+                [size]="18"
+                icon="info_outline"
+                variant="grey"
+                [uiTooltip]="
+                  'components.form.create.tooltip.resource' | translate
+                "
+              >
+              </ui-icon>
+            </ng-container>
+          </ui-radio>
+          <ui-radio [value]="false">
+            <ng-container ngProjectAs="label">
+              {{ 'components.form.create.choice.inherit' | translate }}
+              <ui-icon
+                [size]="18"
+                icon="info_outline"
+                variant="grey"
+                [uiTooltip]="
+                  'components.form.create.tooltip.inherit' | translate
+                "
+              >
+              </ui-icon>
+            </ng-container>
+          </ui-radio>
+        </div>
+        <ng-container *ngIf="!form.value.newResource">
+          <div uiFormFieldDirective>
+            <label>{{
+              'components.form.create.template.title' | translate
+            }}</label>
+            <ui-graphql-select
+              valueField="id"
+              textField="name"
+              [query]="resourcesQuery"
+              formControlName="resource"
+              (searchChange)="onResourceSearchChange($event)"
+              [filterable]="true"
+            >
+            </ui-graphql-select>
+          </div>
+          <ng-container *ngIf="form.controls.resource.value !== null">
+            <ui-toggle formControlName="inheritsTemplate" class="mb-5">
+              <ng-container ngProjectAs="label">
+                {{ 'components.form.create.choice.template' | translate }}
+                <ui-icon
+                  icon="info_outline"
+                  variant="grey"
+                  [size]="18"
+                  [uiTooltip]="
+                    'components.form.create.tooltip.template' | translate
+                  "
+                ></ui-icon>
+              </ng-container>
+            </ui-toggle>
+            <ng-container *ngIf="form.controls.inheritsTemplate.value">
+              <div uiFormFieldDirective [outline]="false">
+                <label>{{
+                  'components.form.create.template.from' | translate
+                }}</label>
+                <ui-select-menu formControlName="template">
+                  <ui-select-option
+                    *ngFor="let template of templates"
+                    [value]="template.id"
+                  >
+                    {{ template.name }}
+                    <ng-container ngProjectAs="icon">
+                      <div uiChipList *ngIf="template.core">
+                        <ui-chip class="!rounded-lg" variant="grey">{{
+                          'models.form.core' | translate
+                        }}</ui-chip>
+                      </div>
+                    </ng-container>
+                  </ui-select-option>
+                </ui-select-menu>
+              </div>
+            </ng-container>
+          </ng-container>
+        </ng-container>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="form.value"
+      cdkFocusInitial
+      [disabled]="!form.valid"
+    >
+      {{ 'common.create' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

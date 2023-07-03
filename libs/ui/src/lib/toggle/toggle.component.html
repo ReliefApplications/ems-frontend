@@ -1,0 +1,74 @@
+<div class="flex items-center">
+  <!-- TOGGLE -->
+  <button
+    type="button"
+    role="switch"
+    aria-labelledby="toggle-label"
+    aria-describedby="toggle-description"
+    [attr.aria-checked]="value"
+    [disabled]="disabled"
+    class="toggle-button"
+    [ngClass]="toggleClasses"
+    (click)="onSelect()"
+  >
+    <span
+      aria-hidden="true"
+      [ngClass]="{
+        'span-simple': type === 'simple',
+        'span-short': type === 'short',
+        'translate-x-0': !value && type === 'simple',
+        'translate-x-5': value && type === 'simple'
+      }"
+      class="pointer-events-none"
+    >
+      <!-- ICON -->
+      <ng-container *ngIf="icon">
+        <ng-container *ngTemplateOutlet="iconTemplate"></ng-container>
+      </ng-container>
+    </span>
+
+    <ng-container *ngIf="type === 'short'">
+      <ng-container *ngTemplateOutlet="shortToggleTemplate"></ng-container>
+    </ng-container>
+  </button>
+  <!-- LABEL -->
+  <div
+    [ngClass]="{
+      'order-2': labelPosition === 'right',
+      'order-1': labelPosition === 'left'
+    }"
+    class="text-sm"
+  >
+    <span
+      class="flex font-medium leading-6 text-gray-900 flex-wrap whitespace-pre-wrap"
+    >
+      <!-- TEXT -->
+      <ng-content select="label"></ng-content>
+    </span>
+    <!-- DESCRIPTION -->
+    <p class="m-0 font-normal text-gray-500">
+      <ng-content select="description"></ng-content>
+    </p>
+  </div>
+</div>
+
+<ng-template #shortToggleTemplate>
+  <span aria-hidden="true" [ngClass]="shortToggleClasses" class="short-color">
+  </span>
+  <span
+    aria-hidden="true"
+    [ngClass]="{ 'translate-x-0': !value, 'translate-x-5': value }"
+    class="short-translate"
+  >
+  </span>
+</ng-template>
+
+<ng-template #iconTemplate>
+  <!-- ICON FOR SIMPLE TOGGLES -->
+  <span class="icon" aria-hidden="true">
+    <ui-icon
+      [icon]="value ? icon.enableIcon : icon.disableIcon"
+      [size]="12"
+    ></ui-icon>
+  </span>
+</ng-template>

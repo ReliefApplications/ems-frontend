@@ -1,0 +1,114 @@
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{
+        data.subscription
+          ? ('common.editObject'
+            | translate : { name: 'common.subscription.one' | translate })
+          : ('models.subscription.new' | translate)
+      }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="subscriptionForm">
+      <div class="flex flex-col">
+        <div uiFormFieldDirective>
+          <label>{{ 'common.title' | translate }}</label>
+          <input
+            type="text"
+            [placeholder]="'common.placeholder.title' | translate"
+            formControlName="title"
+          />
+        </div>
+        <div uiFormFieldDirective>
+          <label>{{
+            'components.application.subscription.modal.listenTo' | translate
+          }}</label>
+          <input
+            type="text"
+            [placeholder]="
+              'components.application.subscription.modal.placeholder.listenTo'
+                | translate
+            "
+            formControlName="routingKey"
+            [uiAutocomplete]="auto"
+            (opened)="onOpenApplicationSelect()"
+          />
+          <ui-autocomplete #auto>
+            <ui-option
+              [isGroup]="true"
+              [label]="application.name || ''"
+              *ngFor="let application of applications$ | async"
+            >
+              {{ application.name || '' }}
+              <ui-option
+                *ngFor="let channel of application.channels"
+                [value]="channel.routingKey"
+                [label]="channel.title ?? ''"
+              >
+                {{ channel.title ?? '' }}
+              </ui-option>
+            </ui-option>
+          </ui-autocomplete>
+          <ui-button
+            *ngIf="routingKey"
+            uiSuffix
+            [isIcon]="true"
+            icon="close"
+            variant="primary"
+            uiSuffix
+            [uiTooltip]="
+              'components.application.subscription.modal.routingKey.clear.ariaLabel'
+                | translate
+            "
+            (click)="routingKey = ''"
+          ></ui-button>
+          <ui-icon
+            icon="info"
+            class="cursor-pointer"
+            variant="grey"
+            uiSuffix
+            [uiTooltip]="
+              'components.application.subscription.modal.hint.listenTo'
+                | translate
+            "
+          ></ui-icon>
+        </div>
+        <div uiFormFieldDirective>
+          <label>{{ 'components.record.convert.select' | translate }}</label>
+          <ui-graphql-select
+            valueField="id"
+            textField="name"
+            [query]="formsQuery"
+            [selectedElements]="[defaultForm]"
+            (searchChange)="onSearchChange($event)"
+            [filterable]="true"
+          ></ui-graphql-select>
+        </div>
+        <div uiFormFieldDirective>
+          <label>{{ 'components.channel.dropdown.select' | translate }}</label>
+          <ui-select-menu formControlName="channel">
+            <ui-select-option
+              *ngFor="let channel of data.channels"
+              [value]="channel.id"
+            >
+              {{ channel.title }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="subscriptionForm.value"
+      cdkFocusInitial
+      [disabled]="!subscriptionForm.valid"
+    >
+      {{ (data.subscription ? 'common.update' : 'common.create') | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

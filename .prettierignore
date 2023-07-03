@@ -1,8 +1,11 @@
+# Test
+/coverage
+
 # Doc
-documentation/*
+/documentation
 
 # Widgets
-widgets/*
+/widgets
 
 # Dist
-dist/*
+/dist

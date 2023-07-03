@@ -1,0 +1,253 @@
+<ui-spinner *ngIf="loading"></ui-spinner>
+<ng-container *ngIf="!loading && apiConfiguration">
+  <div class="page-header">
+    <h1 class="page-title">
+      {{ apiConfiguration.name }}
+    </h1>
+    <safe-access
+      [access]="apiConfiguration.permissions"
+      [objectTypeName]="'common.apiConfiguration.one' | translate"
+      (save)="saveAccess($event)"
+      *ngIf="apiConfiguration?.canUpdate"
+    ></safe-access>
+  </div>
+  <form [formGroup]="apiForm" *ngIf="apiForm">
+    <!-- General settings -->
+    <div class="flex justify-between mt-8">
+      <h2>{{ 'common.general' | translate }}</h2>
+      <!-- Status -->
+      <div uiFormFieldDirective [outline]="false" class="p-0">
+        <label>{{ 'common.status' | translate }}</label>
+        <ui-select-menu
+          formControlName="status"
+          [customTemplate]="{
+            template: statusTemplate,
+            context: { $implicit: apiForm.value.status }
+          }"
+        >
+          <ui-select-option
+            *ngFor="let status of statusChoices"
+            [value]="status"
+          >
+            <ng-container
+              *ngTemplateOutlet="statusTemplate; context: { $implicit: status }"
+            ></ng-container>
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+    </div>
+    <div class="flex flex-col last:mb-0">
+      <div class="flex gap-x-2 flex-wrap">
+        <!-- Name -->
+        <div
+          [uiErrorMessage]="
+            'components.apiConfiguration.create.errors.name' | translate
+          "
+          [uiErrorMessageIf]="name?.errors && name?.touched"
+          uiFormFieldDirective
+          class="flex-auto"
+        >
+          <label>
+            {{ 'common.name' | translate }}
+          </label>
+          <input
+            formControlName="name"
+            type="text"
+            [placeholder]="'common.placeholder.name' | translate"
+          />
+        </div>
+        <!-- Authentication type -->
+
+        <div uiFormFieldDirective [outline]="false" class="flex-1">
+          <label>{{ 'models.apiConfiguration.authType' | translate }}</label>
+          <ui-select-menu formControlName="authType">
+            <ui-select-option
+              *ngFor="let authTypeChoice of authTypeChoices"
+              [value]="authTypeChoice"
+              >{{ authTypeChoice }}</ui-select-option
+            >
+          </ui-select-menu>
+        </div>
+      </div>
+    </div>
+
+    <!-- Host settings ( endpoint / ping ) -->
+    <div class="flex justify-between mt-8">
+      <h2>
+        {{ 'pages.apiConfiguration.host' | translate }}
+      </h2>
+      <!-- Send ping request -->
+      <ui-button
+        icon="online_prediction"
+        category="secondary"
+        variant="primary"
+        (click)="onPing()"
+        [disabled]="!apiForm.value.pingUrl || !apiForm.value.endpoint"
+      >
+        {{ 'pages.apiConfiguration.ping' | translate }}
+      </ui-button>
+    </div>
+    <div class="flex gap-x-2">
+      <!-- Endpoint -->
+      <div uiFormFieldDirective class="flex-auto">
+        <label>
+          {{ 'pages.apiConfiguration.baseUrl' | translate }}
+        </label>
+        <input
+          formControlName="endpoint"
+          type="text"
+          [placeholder]="
+            'pages.apiConfiguration.placeholder.baseUrl' | translate
+          "
+        />
+      </div>
+      <!-- Path to ping -->
+      <div uiFormFieldDirective class="flex-1">
+        <label>
+          {{ 'pages.apiConfiguration.pingUrl' | translate }}
+        </label>
+        <input
+          formControlName="pingUrl"
+          type="text"
+          [placeholder]="
+            'pages.apiConfiguration.placeholder.pingUrl' | translate
+          "
+        />
+      </div>
+    </div>
+
+    <!-- Authentication settings -->
+    <ng-container *ngIf="apiForm.value.authType !== authType.public">
+      <h2 class="mt-8">
+        {{ 'pages.apiConfiguration.authentication' | translate }}
+      </h2>
+      <!-- Service to service connection -->
+      <ng-container
+        *ngIf="apiForm.value.authType === authType.serviceToService"
+      >
+        <div formGroupName="settings" class="flex flex-col">
+          <!-- Token url -->
+          <div uiFormFieldDirective>
+            <label>
+              {{ 'pages.apiConfiguration.tokenUrl' | translate }}
+            </label>
+            <input
+              formControlName="authTargetUrl"
+              type="text"
+              [placeholder]="
+                'pages.apiConfiguration.placeholder.tokenUrl' | translate
+              "
+              onfocus="this.value=''"
+            />
+          </div>
+          <!-- Client id -->
+          <div uiFormFieldDirective>
+            <label>
+              {{ 'pages.apiConfiguration.clientId' | translate }}
+            </label>
+            <input
+              formControlName="apiClientID"
+              type="text"
+              [placeholder]="
+                'pages.apiConfiguration.placeholder.clientId' | translate
+              "
+              onfocus="this.value=''"
+            />
+          </div>
+          <!-- Client secret -->
+          <div uiFormFieldDirective>
+            <label>
+              {{ 'pages.apiConfiguration.secret' | translate }}
+            </label>
+            <input
+              formControlName="safeSecret"
+              type="text"
+              [placeholder]="
+                'pages.apiConfiguration.placeholder.secret' | translate
+              "
+              onfocus="this.value=''"
+            />
+          </div>
+          <!-- Token scope -->
+          <div uiFormFieldDirective>
+            <label>
+              {{ 'pages.apiConfiguration.scope' | translate }}
+            </label>
+            <input
+              formControlName="scope"
+              type="text"
+              [placeholder]="
+                'pages.apiConfiguration.placeholder.scope' | translate
+              "
+              onfocus="this.value=''"
+            />
+          </div>
+        </div>
+      </ng-container>
+      <!-- User to service connection -->
+      <ng-container *ngIf="apiForm.value.authType === authType.userToService">
+        <div formGroupName="settings" class="flex flex-col">
+          <!-- Token -->
+          <div uiFormFieldDirective>
+            <label>
+              {{ 'pages.apiConfiguration.token' | translate }}
+            </label>
+            <input
+              formControlName="token"
+              type="text"
+              [placeholder]="
+                'pages.apiConfiguration.placeholder.token' | translate
+              "
+              onfocus="this.value=''"
+            />
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+
+    <!-- GraphQL settings -->
+    <h2 class="mt-8">
+      {{ 'pages.apiConfiguration.graphQL.title' | translate }}
+    </h2>
+    <div class="flex flex-col">
+      <!-- GraphQL endpoint -->
+      <div uiFormFieldDirective>
+        <label>
+          {{ 'pages.apiConfiguration.graphQL.endpoint' | translate }}
+        </label>
+        <input
+          formControlName="graphQLEndpoint"
+          type="text"
+          [placeholder]="
+            'pages.apiConfiguration.placeholder.graphQLEndpoint' | translate
+          "
+        />
+      </div>
+    </div>
+
+    <!-- Save button -->
+    <ui-button
+      category="secondary"
+      variant="primary"
+      (click)="onSave()"
+      [disabled]="apiForm.invalid || !apiForm.dirty"
+    >
+      {{ 'common.save' | translate }}
+    </ui-button>
+  </form>
+</ng-container>
+
+<!-- Template to display status -->
+<ng-template #statusTemplate let-status>
+  <div uiChipList>
+    <ui-chip class="!rounded-lg" variant="success" *ngIf="status === 'active'">
+      {{ 'common.status_active' | translate | titlecase }}
+    </ui-chip>
+    <ui-chip class="!rounded-lg" variant="warning" *ngIf="status === 'pending'">
+      {{ 'common.status_pending' | translate | titlecase }}
+    </ui-chip>
+    <ui-chip class="!rounded-lg" variant="danger" *ngIf="status === 'archived'">
+      {{ 'common.status_archived' | translate | titlecase }}
+    </ui-chip>
+  </div>
+</ng-template>
