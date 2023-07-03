@@ -86,7 +86,6 @@ export class ApplicationComponent
   ngOnInit(): void {
     // Subscribe to params change
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      console.log('new new');
       this.loading = true;
       this.applicationService.loadApplication(params.id);
     });
@@ -142,7 +141,6 @@ export class ApplicationComponent
    */
   onOpenApplication(application: Application): void {
     this.router.navigate([`/${application.id}`]);
-    // this.applicationService.loadApplication(application.id || '');
   }
 
   /**
