@@ -1,0 +1,23 @@
+<label for="{{ name }}" class="inline-flex">
+  <span class="mr-2">
+    <input
+      [attr.aria-describedby]="name + '-description'"
+      [attr.aria-label]="ariaLabel"
+      id="{{ name }}"
+      name="{{ name }}"
+      type="checkbox"
+      [checked]="checked"
+      [indeterminate]="indeterminate"
+      [ngClass]="checkboxClasses"
+      class="form-checkbox h-4 w-4 rounded border-gray-300"
+      (click)="onSelect()"
+    />
+  </span>
+  <span class="text-sm text-dark-100 font-medium leading-6">
+    <ng-content select="label"></ng-content>
+    <ng-content select="icon"></ng-content>
+    <p id="{{ name }}-description" class="m-0 font-normal text-gray-500">
+      <ng-content select="description"></ng-content>
+    </p>
+  </span>
+</label>

@@ -1,0 +1,35 @@
+<ui-dialog size="small">
+  <ng-container ngProjectAs="header">
+    <h1>{{ 'models.apiConfiguration.new' | translate }}</h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="apiForm" class="flex flex-col">
+      <div
+        [uiErrorMessage]="
+          'components.apiConfiguration.create.errors.name' | translate
+        "
+        [uiErrorMessageIf]="name?.errors && name?.touched"
+        uiFormFieldDirective
+      >
+        <label>{{ 'common.name' | translate }}</label>
+        <input
+          formControlName="name"
+          type="text"
+          [placeholder]="'common.placeholder.name' | translate"
+        />
+      </div>
+    </form>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="apiForm.value"
+      cdkFocusInitial
+      [disabled]="!apiForm.valid"
+    >
+      {{ 'common.create' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

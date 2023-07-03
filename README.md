@@ -15,7 +15,6 @@ beta | ![GitHub package.json version (branch)](https://img.shields.io/github/pac
 
 This front-end was made using [Angular](https://angular.io/). It uses multiple external packages, but the relevant ones are:
 
-*   [Material Angular](https://material.angular.io/), for the UI
 *   [KendoUI Angular](https://www.telerik.com/kendo-angular-ui), for the widgets of the dashboards
 *   [SurveyJS](https://surveyjs.io/), for the form builder
 *   [Apollo Angular](https://www.apollographql.com/docs/angular/), as a GraphQL client, to interact with the back-end
@@ -27,32 +26,35 @@ To read more about the project, and how to setup the back-end, please refer to t
 *   [Setup](https://gitlab.com/who-ems/ui-doc#how-to-setup)
 *   [Deployment](https://gitlab.com/who-ems/ui-doc#how-to-deploy)
 
+In top of Angular, [Nx](https://nx.dev/) was installed, to better split projects and libs.
+
 
 # General
 
-The project is seperated into four sub-projects:
+The project is seperated into three sub-projects:
 - back-office, an application accessible to administrators
 - front-office, an application that would depend on the logged user
-- safe, a library shared by both other projects
 - web-widgets, an application to genereate the web components
 
-Every change made to the shared library will require a new build of the library, please refer to the commands section to see the command to execute.
+One library exists:
+- safe, a library for common ui / capacity, shared with other projects
+
+Library changes should automatically be detected when serving the other projects.
 
 # Azure configuration
 
-If you want to deploy on Azure, start building the shared library:
+If you want to deploy on Azure, build back-office and front-office:
 ```
-ng build safe
-```
-
-Then, build the back-office with Azure environment file:
-```
-ng build --configuration azure
+npx nx run back-office:build:azure-dev
+npx nx run front-office:build:azure-dev
 ```
 
-The compiled code can be found there in ./dist/back-office folder.
+For prod, replace `azure-dev` with `azure-prod`.
+For uat, replace `azure-dev` with `azure-uat`.
 
-# Bundle Analysis
+The compiled applications can be found there in ./dist/apps/ folder.
+
+<!-- # Bundle Analysis
 
 First, install globally the bundle analyzer:
 ```
@@ -70,95 +72,85 @@ Finally, run:
 ```
 webpack-bundle-analyzer ./dist/<project-name>/stats.json
 ```
-and your browser will pop up the page at localhost:8888.
+and your browser will pop up the page at localhost:8888. -->
 
 # Useful commands
 
-## Compodoc
-
-The package.json contains commands to generate Angular documentation.
-
-Commands have to be executed once per project, and executed again after any modification of the related code.
-
-Subsequent command will generate the documentation:
-```
-npm run compodoc:<project>
-```
-
-If the command fails, check that compodoc is installed on your computer.
-You can execute following command for that:
-```
-npm i -g compodoc
-```
-
-A subfolder should be generated under *documentation* folder.
-
-You can drag and drop the index.html file of this subfolder directly in a browser to see the documentation of an angular project.
-
 ## Development server
 
-To launch the dev server of a project, run:
-```bash
-ng serve <project-name>
+To serve a project, run:
+```
+npx nx run <project>:server:<config>
 ```
 Navigate to [http://localhost:4200/](http://localhost:4200/). The app will automatically reload if you change any of the source files.
 
-By default, if you omit the `<project-name>`, it will run the `back-office` project.
+For example:
 
-### Running both front-office and back-office
-If you want to run the dev server of the back-office and front-office at the same time:
-* in the `back-office` project:
-    * in the `environment.ts` file, update the `frontOfficeUri` property to `http://localhost:4201/`
-* in the `front-office` project:
-    * in the `environment.ts` file, update the following properties:
-        - `redirectUri`: `'http://localhost:4201/'`
-        - `postLogoutRedirectUri`: `'http://localhost:4201/auth/'`
-        - `frontOfficeUri`: `'http://localhost:4201/'`
-    * in the `protractor.conf.js` file, update the `baseUrl` property to `http://localhost:4201/`
-* in the `backend` local repository, add `http://localhost:4201` to the list of `ALLOWED_ORIGINS` in your `.env` file
-* finally run:
-    ```bash
-    ng serve back-office
-    ng serve front-office --port 4201
-    ```
+```
+npx nx run back-office:serve
+```
+
+will serve back-office with default development configuration.
+
+```
+npx nx run back-office:serve:oort-local
+```
+
+will serve back-office, connecting to the deployed back-end for development.
 
 ## Code scaffolding
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+Generate a component:
+```
+npx nx g component <component-name>
+```
+
+Generate a module:
+```
+npx nx g module <module-name>
+```
+
+You can also use `npx nx generate directive|pipe|service|class|guard|interface|enum|module`.
+
 
 ## Build
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Run `npx nx run <project>:build:<config>` to build a project. The build artifacts will be stored in the `dist/apps/` directory.
 
-It is needed to use the `--project` flag in order to build a specific project.
+## Prettify scss and html
 
-For example, in order to build the *safe* library, the command is:
+Run `npx prettier --write "**/*.{scss,html}"` to execute prettier and update all scss / html files locally.
+
+## Analyze bundle
+
+Start by building apps adding `--stats-json` flag. For example:
+
 ```
-ng build --project=safe
-```
-
-If you're working on the library, you can see the changes in direct time using this command:
-```
-ng build --watch --project=safe
-```
-
-## Deploy the package
-
-Deployment of the npm @safe/builder package is a 3-steps process:
-
-- check that the current package version isn't already deployed. Increase it if a version exists.
-
-- Build the package:
-```
-ng build --prod safe
+npx nx run back-office:build -- --stats-json
 ```
 
-- Deploy the package ( subsequent command can be executed if you're at the root of the project. Otherwise, change the path ):
+Then, run `webpack-bundle-analyzer` command to see the tree of your bundles:
+
 ```
-npm publish ./dist/safe
+npx webpack-bundle-analyzer dist/apps/back-office/stats.json
 ```
 
-## Build the web components
+## Storybook
+
+UI library has its own storybook definition. To execute storybook locally, you can run:
+
+```
+npx nx run ui:storybook
+```
+
+To build it, you can run:
+```
+npx nx run ui:build-storybook
+```
+
+Pushing the code on the repo should automatically deploy storybook on a public environment.
+
+<!-- ## Build the web components
 
 We first need to generate the elements, using this command:
 ```
@@ -168,31 +160,47 @@ npm run build:elem
 Then, a bundle can be generated from the files using this command:
 ```
 npm run bundle:elem
-```
+``` -->
 
-## Running unit tests
+<!-- ## Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
 ## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/). -->
 
-## Prettify scss and html
+<!-- ## Further help
 
-Run `npx prettier --write "**/*.{scss,html}"` to execute prettier and update all scss / html files locally.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md). -->
 
 # Common issues
 
 ## Javascript heap out of memory
 
-Error can appear when executing the front-end due to a memory limit.
+In case you encounter any memory issue, open your terminal and type following command, depending on your vscode terminal.
+You should then be able to pass your commands as before.
 
-You can use this command to serve the front-end if the error occurs:
+### Bash
+
 ```
-node --max_old_space_size=8048 ./node_modules/@angular/cli/bin/ng serve
+export NODE_OPTIONS="--max-old-space-size=4096"
+```
+
+In case you still face issues, you can still increase it:
+
+```
+export NODE_OPTIONS="--max-old-space-size=8192"
+```
+
+### Powershell
+
+```
+set NODE_OPTIONS="--max-old-space-size=4096"
+```
+
+In case you still face issues, you can still increase it:
+
+```
+set NODE_OPTIONS="--max-old-space-size=8192"
 ```

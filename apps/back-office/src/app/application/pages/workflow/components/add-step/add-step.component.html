@@ -1,0 +1,54 @@
+<form [formGroup]="stepForm">
+  <div class="flex flex-col items-center" [ngSwitch]="stage">
+    <!-- Selection of type of content -->
+    <ng-container *ngSwitchCase="1">
+      <h2>{{ 'pages.workflow.addStep.selectType' | translate }}</h2>
+      <safe-content-choice
+        class="mt-8"
+        formControlName="type"
+        [contentTypes]="contentTypes"
+      ></safe-content-choice>
+    </ng-container>
+    <!-- Form selection -->
+    <ng-container *ngSwitchCase="2">
+      <div class="flex flex-col w-80">
+        <!-- Existing form -->
+        <safe-forms-dropdown
+          class="self-center"
+          [forms$]="forms$"
+          [label]="'models.form.select' | translate"
+          [sourceControl]="stepForm.controls.content"
+          [loadingMore]="loadingMore"
+          (filter)="onFilterDataSource($event)"
+          (scrolled)="onScrollDataSource($event)"
+        ></safe-forms-dropdown>
+        <ui-divider [text]="'or'"></ui-divider>
+        <!-- New form -->
+        <ui-button
+          class="mt-4 self-center"
+          icon="add"
+          category="secondary"
+          variant="primary"
+          (click)="onAdd()"
+          [disabled]="!('create' | able : 'Form')"
+        >
+          {{ 'models.form.create' | translate }}
+        </ui-button>
+      </div>
+    </ng-container>
+  </div>
+</form>
+<!-- Actions -->
+<div class="flex flex-row justify-center mt-16" *ngIf="stage !== 1">
+  <ui-button [disabled]="stage <= 1" (click)="onBack()" class="my-0 mx-1">{{
+    'common.back' | translate
+  }}</ui-button>
+  <ui-button
+    class="my-0 mx-1"
+    category="secondary"
+    variant="primary"
+    (click)="onNext()"
+    [disabled]="!isStageValid(stage)"
+    >{{ 'common.next' | translate }}</ui-button
+  >
+</div>

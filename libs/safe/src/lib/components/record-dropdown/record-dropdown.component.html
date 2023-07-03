@@ -1,0 +1,20 @@
+<div uiFormFieldDirective>
+  <label>{{ placeholder }}</label>
+  <ui-select-menu
+    #recordSelect
+    [(ngModel)]="record"
+    name="record"
+    (opened)="onOpenSelect()"
+    (selectedOption)="onSelect($event)"
+  >
+    <ui-select-option *ngIf="selectedRecord">{{
+      field ? selectedRecord.data[field] : selectedRecord.id
+    }}</ui-select-option>
+    <ui-select-option
+      *ngFor="let record of records$ | async"
+      [value]="record.id"
+    >
+      {{ field ? record.data[field] : record.id }}
+    </ui-select-option>
+  </ui-select-menu>
+</div>

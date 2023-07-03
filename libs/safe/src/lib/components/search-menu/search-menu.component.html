@@ -1,0 +1,36 @@
+<div class="mt-1" *ngIf="headerTemplate">
+  <ng-container [ngTemplateOutlet]="headerTemplate"></ng-container>
+</div>
+<div uiFormFieldDirective>
+  <input
+    [placeholder]="'common.placeholder.search' | translate"
+    [(ngModel)]="search"
+    (ngModelChange)="onSearch()"
+  />
+  <ui-icon icon="search" uiSuffix></ui-icon>
+</div>
+<div class="flex flex-col gap-2 -mt-3.5">
+  <div *ngIf="currentApplication">
+    <ui-button
+      class="!w-auto"
+      variant="primary"
+      (click)="onClick(currentApplication)"
+      [isBlock]="true"
+      >{{ currentApplication.name }}</ui-button
+    >
+  </div>
+  <ui-divider *ngIf="currentApplication" class="m-0"></ui-divider>
+  <div class="search-application-list">
+    <ui-button
+      *ngFor="let item of searchResults"
+      class="!w-auto block"
+      (click)="onClick(item)"
+      [uiTooltip]="item.name"
+      [isBlock]="true"
+      >{{ item.name }}</ui-button
+    >
+  </div>
+  <p class="text-center opacity-50" *ngIf="searchResults.length === 0">
+    {{ 'common.filter.empty' | translate }}
+  </p>
+</div>

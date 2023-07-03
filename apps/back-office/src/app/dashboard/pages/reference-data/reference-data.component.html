@@ -1,0 +1,213 @@
+<ui-spinner *ngIf="loading"></ui-spinner>
+<ng-container *ngIf="!loading && referenceData">
+  <!-- Header -->
+  <div class="page-header">
+    <h1 class="page-title">
+      {{ referenceData.name }}
+    </h1>
+    <safe-access
+      [access]="referenceData.permissions"
+      [objectTypeName]="'common.referenceData.one' | translate"
+      (save)="saveAccess($event)"
+      *ngIf="referenceData?.canUpdate"
+    ></safe-access>
+  </div>
+  <!-- Form -->
+  <form [formGroup]="referenceForm" class="flex flex-col mb-8">
+    <div class="flex gap-x-2">
+      <!-- Name -->
+      <div uiFormFieldDirective class="flex-auto">
+        <label>{{ 'common.name' | translate }}</label>
+        <input
+          formControlName="name"
+          type="text"
+          [placeholder]="'common.placeholder.name' | translate"
+        />
+      </div>
+      <!-- Type selection -->
+      <div uiFormFieldDirective class="w-44">
+        <label>{{ 'common.type.one' | translate }}</label>
+        <ui-select-menu formControlName="type">
+          <ui-select-option
+            *ngFor="let referenceTypeChoice of referenceTypeChoices"
+            [value]="referenceTypeChoice"
+          >
+            {{ referenceTypeChoice }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+    </div>
+    <!-- Specific to GraphQL and Rest type -->
+    <div *ngIf="['rest', 'graphql'].includes(type)" class="flex flex-col">
+      <div class="flex gap-x-2" [class.flex-col]="type === 'graphql'">
+        <!-- API Configuration -->
+        <div uiFormFieldDirective class="flex-auto">
+          <label>{{ 'common.apiConfiguration.one' | translate }}</label>
+          <ui-graphql-select
+            valueField="id"
+            textField="name"
+            [query]="apiConfigurationsQuery"
+            formControlName="apiConfiguration"
+            [selectedElements]="[selectedApiConfiguration]"
+          >
+          </ui-graphql-select>
+        </div>
+        <!-- QueryName -->
+        <div uiFormFieldDirective class="flex-1">
+          <label>{{ 'pages.referenceData.queryName' | translate }}</label>
+          <input
+            formControlName="query"
+            type="text"
+            [placeholder]="'common.placeholder.name' | translate"
+          />
+        </div>
+        <!-- GraphQL Query -->
+        <ngx-monaco-editor
+          *ngIf="type === 'graphql' && queryControl"
+          (onInit)="initEditor($event)"
+          [options]="editorOptions"
+          [formControl]="queryControl"
+          class="mb-2"
+        ></ngx-monaco-editor>
+      </div>
+      <!-- Fields -->
+      <kendo-grid [data]="valueFields" class="mb-5" *ngIf="!loading">
+        <kendo-grid-column
+          field="name"
+          title="{{ 'pages.referenceData.fields.title' | translate }}"
+        ></kendo-grid-column>
+        <kendo-grid-column
+          field="type"
+          title="{{ 'pages.referenceData.type' | translate }}"
+        ></kendo-grid-column>
+        <!-- remove button -->
+        <kendo-grid-column
+          [columnMenu]="false"
+          [width]="86"
+          [resizable]="false"
+        >
+          <ng-template kendoGridCellTemplate let-dataItem>
+            <button
+              kendoButton
+              class="text-center"
+              icon="delete"
+              [look]="'flat'"
+              (click)="onRemoveField(dataItem)"
+            ></button>
+          </ng-template>
+        </kendo-grid-column>
+        <ng-template kendoGridNoRecordsTemplate>
+          <div *ngIf="triedToGetFields && !loadingFields">
+            {{ 'pages.referenceData.fields.noFields' | translate }}
+          </div>
+          <ui-button
+            *ngIf="!loadingFields"
+            category="secondary"
+            variant="primary"
+            (click)="$event.preventDefault(); getFields()"
+            class="mx-auto my-1"
+          >
+            {{ 'pages.referenceData.fields.fetch' | translate }}
+          </ui-button>
+          <ui-spinner class="my-2" *ngIf="loadingFields"></ui-spinner>
+        </ng-template>
+      </kendo-grid>
+    </div>
+    <!-- CSV Input for static type -->
+    <div *ngIf="type === 'static'" class="flex gap-2">
+      <div uiFormFieldDirective class="flex-auto">
+        <label>{{ 'pages.referenceData.csv' | translate }}</label>
+        <ui-textarea
+          #csvData
+          [placeholder]="'pages.referenceData.placeholder.csv' | translate"
+          [value]="csvValue"
+        >
+        </ui-textarea>
+      </div>
+      <ui-button
+        category="secondary"
+        variant="primary"
+        (click)="onValidateCSV()"
+        class="mt-8"
+      >
+        {{ 'pages.referenceData.validateCsv' | translate }}
+      </ui-button>
+    </div>
+    <ui-spinner *ngIf="csvLoading"></ui-spinner>
+    <div class="flex gap-x-2">
+      <!-- Path -->
+      <div
+        class="flex-auto"
+        uiFormFieldDirective
+        *ngIf="['rest', 'graphql'].includes(type)"
+      >
+        <label>{{ 'pages.referenceData.path' | translate }}</label>
+        <input
+          formControlName="path"
+          type="text"
+          [placeholder]="'common.placeholder.name' | translate"
+        />
+        <ui-icon
+          icon="info_outline"
+          class="cursor-pointer"
+          variant="grey"
+          uiSuffix
+          [uiTooltip]="'pages.referenceData.tooltip.path' | translate"
+        ></ui-icon>
+      </div>
+      <!-- Value field to be displayed -->
+      <div
+        uiFormFieldDirective
+        class="flex-1"
+        *ngIf="!csvLoading && type && valueFields.length > 0"
+      >
+        <label>{{ 'pages.referenceData.valueField' | translate }}</label>
+        <ui-select-menu formControlName="valueField">
+          <ui-select-option
+            *ngFor="let value of valueFields"
+            [value]="value.name"
+            >{{ value.name }}</ui-select-option
+          >
+        </ui-select-menu>
+      </div>
+    </div>
+    <!-- For graphql -->
+    <!-- <div uiFormFieldDirective *ngIf="type === 'graphql'">
+      <label>{{ 'pages.referenceData.graphQLFilter' | translate }} </label>
+      <input
+        formControlName="graphQLFilter"
+        type="text"
+        [placeholder]="
+          'pages.referenceData.placeholder.graphQLFilter' | translate
+        "
+      />
+      <ui-icon
+        icon="info_outline"
+        class="cursor-pointer"
+        variant="grey"
+        uiSuffix
+        [uiTooltip]="'pages.referenceData.tooltip.graphQLFilter' | translate"
+      ></ui-icon>
+    </div> -->
+    <!-- Kendo grid to preview data on static type -->
+    <div *ngIf="!csvLoading && csvValue && type === 'static'">
+      <kendo-grid [data]="newData">
+        <kendo-grid-column
+          *ngFor="let field of valueFields"
+          [field]="field.name"
+          [title]="field.name + ' (' + field.type + ')'"
+        ></kendo-grid-column>
+      </kendo-grid>
+    </div>
+  </form>
+  <!-- Submit button -->
+  <ui-button
+    class="!w-auto"
+    category="secondary"
+    variant="primary"
+    (click)="onSave()"
+    [disabled]="referenceForm.invalid || !referenceForm.dirty"
+  >
+    {{ 'common.save' | translate }}
+  </ui-button>
+</ng-container>

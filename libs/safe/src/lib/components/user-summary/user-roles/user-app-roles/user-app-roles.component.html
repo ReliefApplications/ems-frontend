@@ -1,0 +1,30 @@
+<div class="flex flex-col">
+  <h2>{{ 'components.user.summary.roles.application' | translate }}</h2>
+  <!-- Selection of application -->
+  <div uiFormFieldDirective>
+    <label>{{
+      'components.user.summary.roles.selectedApplication' | translate
+    }}</label>
+    <ui-graphql-select
+      valueField="id"
+      textField="name"
+      [query]="applicationsQuery"
+      [formControl]="selectedApplication"
+      [selectedElements]="[application]"
+      (searchChange)="onApplicationSearchChange($event)"
+      [filterable]="true"
+    >
+    </ui-graphql-select>
+  </div>
+  <!-- Selection of roles -->
+  <div uiFormFieldDirective>
+    <label>{{
+      'components.user.summary.roles.selectedRoles' | translate
+    }}</label>
+    <ui-select-menu [formControl]="selectedRoles" [multiselect]="true">
+      <ui-select-option *ngFor="let role of roles" [value]="role.id">
+        {{ role.title }}
+      </ui-select-option>
+    </ui-select-menu>
+  </div>
+</div>

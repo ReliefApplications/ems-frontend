@@ -1,0 +1,27 @@
+<ng-container *ngIf="items.length > 0 && display">
+  <!-- <button *ngIf="actions.update && canUpdate" kendoButton (click)="action.emit({ action: 'update', items: items })">
+        Update
+    </button> -->
+  <button
+    *ngIf="actions.convert && canUpdate"
+    kendoButton
+    (click)="action.emit({ action: 'convert', items: items })"
+  >
+    {{ 'models.record.convert' | translate }}
+  </button>
+  <button
+    *ngIf="actions.delete && canDelete"
+    kendoButton
+    (click)="action.emit({ action: 'delete', items: items })"
+  >
+    {{ 'common.delete' | translate }}
+  </button>
+
+  <button
+    *ngIf="actions.remove"
+    kendoButton
+    (click)="action.emit({ action: 'remove', items: items })"
+  >
+    {{ 'components.widget.settings.grid.actions.remove' | translate }}
+  </button>
+</ng-container>

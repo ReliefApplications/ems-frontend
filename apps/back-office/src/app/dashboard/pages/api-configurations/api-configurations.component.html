@@ -1,0 +1,196 @@
+<div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row">
+  <!-- Filters -->
+  <div class="flex flex-col gap-x-4">
+    <!-- Default filter -->
+    <div class="flex flex-wrap gap-2 flex-col sm:flex-row">
+      <!-- Search text filter -->
+      <div uiFormFieldDirective>
+        <ui-icon icon="search" uiPrefix></ui-icon>
+        <input
+          [ngModel]="searchText"
+          (keyup)="applyFilter('', $event)"
+          type="text"
+          [placeholder]="'common.placeholder.search' | translate"
+        />
+      </div>
+      <!-- Toggle advanced filters -->
+      <ui-button
+        class="max-sm:!w-auto"
+        icon="filter_list"
+        category="tertiary"
+        variant="primary"
+        (click)="showFilters = !showFilters"
+      >
+        {{
+          showFilters
+            ? ('common.filter.hide' | translate)
+            : ('common.filter.show' | translate)
+        }}
+      </ui-button>
+    </div>
+    <!-- Advanced filters -->
+    <div
+      *ngIf="showFilters"
+      class="flex flex-wrap gap-x-2 sm:items-center flex-col sm:flex-row"
+    >
+      <!-- Status filter -->
+      <div uiFormFieldDirective [outline]="false" class="w-32">
+        <label>{{ 'common.status' | translate }}</label>
+        <ui-select-menu
+          [ngModel]="statusFilter"
+          (selectedOption)="applyFilter('status', $event)"
+        >
+          <ui-select-option>-</ui-select-option>
+          <ui-select-option value="active">
+            {{ 'common.status_active' | translate }}
+          </ui-select-option>
+          <ui-select-option value="pending">
+            {{ 'common.status_pending' | translate }}
+          </ui-select-option>
+          <ui-select-option value="archived">
+            {{ 'common.status_archived' | translate }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+      <!-- Clear filters -->
+      <ui-button
+        variant="danger"
+        (click)="clearAllFilters()"
+        class="max-sm:!w-auto"
+        >{{ 'common.filter.clear' | translate }}</ui-button
+      >
+    </div>
+  </div>
+  <!-- Actions -->
+  <ui-button
+    icon="add"
+    category="secondary"
+    variant="primary"
+    (click)="onAdd()"
+    *ngIf="'create' | able : 'ApiConfiguration'"
+  >
+    {{ 'pages.apiConfigurations.create' | translate }}
+  </ui-button>
+</div>
+
+<!-- Table container -->
+<div class="overflow-x-hidden shadow-2lg">
+  <!-- Table scroll container -->
+  <div class="overflow-x-auto">
+    <table
+      *ngIf="!loading"
+      cdk-table
+      uiTableWrapper
+      (sortChange)="onSort($event)"
+      [dataSource]="filteredDataSources"
+    >
+      <ng-container cdkColumnDef="name">
+        <th uiTableHeaderSort="name" uiCellHeader *cdkHeaderCellDef>
+          <span class="headerTitle">
+            {{ 'common.name' | translate }}
+          </span>
+        </th>
+        <td
+          uiCell
+          *cdkCellDef="let element"
+          class="!text-gray-900 !font-medium"
+        >
+          {{ element.name }}
+        </td>
+      </ng-container>
+
+      <ng-container cdkColumnDef="status">
+        <th uiTableHeaderSort="status" uiCellHeader *cdkHeaderCellDef>
+          <span class="headerTitle">
+            {{ 'common.status' | translate }}
+          </span>
+        </th>
+        <td uiCell *cdkCellDef="let element">
+          <div uiChipList="">
+            <ui-chip
+              class="!rounded-lg"
+              variant="success"
+              *ngIf="element.status === 'active'"
+            >
+              {{ 'common.status_active' | translate | titlecase }}
+            </ui-chip>
+            <ui-chip
+              class="!rounded-lg"
+              variant="warning"
+              *ngIf="element.status === 'pending'"
+            >
+              {{ 'common.status_pending' | translate | titlecase }}
+            </ui-chip>
+            <ui-chip
+              class="!rounded-lg"
+              variant="danger"
+              *ngIf="element.status === 'archived'"
+            >
+              {{ 'common.status_archived' | translate | titlecase }}
+            </ui-chip>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container cdkColumnDef="authType">
+        <th uiTableHeaderSort="authType" uiCellHeader *cdkHeaderCellDef>
+          <span class="headerTitle">
+            {{ 'models.apiConfiguration.authType' | translate }}
+          </span>
+        </th>
+        <td uiCell *cdkCellDef="let element">{{ element.authType }}</td>
+      </ng-container>
+
+      <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+        <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
+          <ui-button
+            [isIcon]="true"
+            icon="more_vert"
+            [uiMenuTriggerFor]="menu"
+            (click)="$event.stopPropagation()"
+            [disabled]="!(element.canUpdate || element.canDelete)"
+          >
+          </ui-button>
+          <ui-menu #menu>
+            <button
+              uiMenuItem
+              (click)="onDelete(element, $event)"
+              *ngIf="element.canDelete"
+            >
+              <ui-icon icon="delete" variant="danger"></ui-icon>
+              {{ 'common.delete' | translate }}
+            </button>
+          </ui-menu>
+        </td>
+      </ng-container>
+
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+      <tr
+        cdk-row
+        *cdkRowDef="let row; columns: displayedColumns"
+        class="cursor-pointer"
+        [routerLink]="['/settings/apiconfigurations', row.id]"
+      ></tr>
+    </table>
+    <safe-skeleton-table
+      *ngIf="loading"
+      [columns]="[
+        'common.name',
+        'common.status',
+        'models.apiConfiguration.authType'
+      ]"
+      [actions]="true"
+    >
+    </safe-skeleton-table>
+  </div>
+</div>
+<ui-paginator
+  [disabled]="loading"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [totalItems]="pageInfo.length"
+  [ariaLabel]="'components.apiConfiguration.paginator.ariaLabel' | translate"
+  (pageChange)="onPage($event)"
+>
+</ui-paginator>

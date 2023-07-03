@@ -1,0 +1,13 @@
+<kendo-upload
+  class="flex-1"
+  #fileReader
+  name="Upload XLSX"
+  data-max-size="5120"
+  (upload)="onUpload($event)"
+  accept=".xlsx"
+  [multiple]="false"
+>
+</kendo-upload>
+<ui-button variant="primary" category="tertiary" (click)="onDownloadTemplate()">
+  {{ 'common.downloadTemplate' | translate }}
+</ui-button>

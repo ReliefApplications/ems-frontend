@@ -1,0 +1,226 @@
+<div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row">
+  <!-- FILTERING -->
+  <app-filter (filter)="onFilter($event)" [loading]="updating"></app-filter>
+  <!-- ACTIONS -->
+  <ui-button
+    icon="add"
+    category="secondary"
+    variant="primary"
+    (click)="onAdd()"
+    *ngIf="'create' | able : 'Form'"
+  >
+    {{ 'models.form.create' | translate }}
+  </ui-button>
+</div>
+<!-- Table container -->
+<div class="overflow-x-hidden shadow-2lg">
+  <!-- Table scroll container -->
+  <div class="overflow-x-auto">
+    <table
+      *ngIf="!loading"
+      cdk-table
+      uiTableWrapper
+      (sortChange)="onSort($event)"
+      [dataSource]="forms"
+    >
+      <ng-container cdkColumnDef="name">
+        <th uiCellHeader uiTableHeaderSort="name" *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
+            {{ 'common.name' | translate }}
+          </span>
+        </th>
+        <td
+          uiCell
+          *cdkCellDef="let element"
+          class="!text-gray-900 !font-medium"
+        >
+          {{ element.name }}
+        </td>
+      </ng-container>
+
+      <ng-container cdkColumnDef="createdAt">
+        <th
+          uiTableHeaderSort="createdAt"
+          uiCellHeader
+          *cdkHeaderCellDef
+          scope="col"
+        >
+          <span class="headerTitle">
+            {{ 'common.createdOn' | translate }}
+          </span>
+        </th>
+        <td uiCell *cdkCellDef="let element">
+          {{ element.createdAt | safeDate }}
+        </td>
+      </ng-container>
+
+      <ng-container cdkColumnDef="status">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
+            {{ 'common.status' | translate }}
+          </span>
+        </th>
+        <td uiCell *cdkCellDef="let element">
+          <div uiChipList>
+            <ui-chip
+              class="!rounded-lg"
+              variant="success"
+              *ngIf="element.status === 'active'"
+            >
+              {{ 'common.status_active' | translate | titlecase }}
+            </ui-chip>
+            <ui-chip
+              class="!rounded-lg"
+              variant="warning"
+              *ngIf="element.status === 'pending'"
+            >
+              {{ 'common.status_pending' | translate | titlecase }}
+            </ui-chip>
+            <ui-chip
+              class="!rounded-lg"
+              variant="danger"
+              *ngIf="element.status === 'archived'"
+            >
+              {{ 'common.status_archived' | translate | titlecase }}
+            </ui-chip>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container cdkColumnDef="versionsCount">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
+            {{ 'common.history' | translate }}
+          </span>
+        </th>
+        <td uiCell *cdkCellDef="let element">{{ element.versionsCount }}</td>
+      </ng-container>
+
+      <ng-container cdkColumnDef="recordsCount">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
+            {{ 'common.record.few' | translate }}
+          </span>
+        </th>
+        <td uiCell *cdkCellDef="let element">{{ element.recordsCount }}</td>
+      </ng-container>
+
+      <ng-container cdkColumnDef="core">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
+            {{ 'components.forms.isCore' | translate }}
+          </span>
+        </th>
+        <td uiCell *cdkCellDef="let element">
+          <div uiChipList *ngIf="element.core">
+            <ui-chip class="!rounded-lg" variant="primary">{{
+              'models.form.core' | translate
+            }}</ui-chip>
+          </div>
+        </td>
+      </ng-container>
+
+      <ng-container cdkColumnDef="parentForm">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
+            {{ 'components.forms.parent' | translate }}
+          </span>
+        </th>
+        <td uiCell *cdkCellDef="let element">
+          <ui-button
+            *ngIf="!element.core && element.resource?.coreForm?.name"
+            [routerLink]="[element.resource.coreForm.id + '/builder']"
+          >
+            {{ element.resource.coreForm.name }}
+          </ui-button>
+        </td>
+      </ng-container>
+
+      <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
+          <ui-button
+            [isIcon]="true"
+            icon="more_vert"
+            [uiMenuTriggerFor]="menu"
+            (click)="$event.stopPropagation()"
+            [disabled]="
+              !(
+                element.canUpdate ||
+                element.canDelete ||
+                element.recordsCount > 0
+              )
+            "
+          >
+          </ui-button>
+          <ui-menu #menu>
+            <button
+              uiMenuItem
+              [routerLink]="[element.id + '/builder']"
+              *ngIf="element.canUpdate"
+            >
+              <ui-icon icon="edit" variant="grey"></ui-icon>
+              {{ 'common.edit' | translate }}
+            </button>
+            <ng-container *ngIf="element.canSee">
+              <button uiMenuItem [routerLink]="[element.id + '/records']">
+                <ui-icon icon="plagiarism" variant="grey"></ui-icon>
+                {{
+                  'common.viewObject'
+                    | translate : { name: 'common.record.few' | translate }
+                }}
+              </button>
+            </ng-container>
+            <ng-container *ngIf="element.canDelete">
+              <ui-divider class="py-1"></ui-divider>
+              <button uiMenuItem (click)="onDelete(element, $event)">
+                <ui-icon icon="delete" variant="danger"></ui-icon>
+                {{ 'common.delete' | translate }}
+              </button>
+            </ng-container>
+          </ui-menu>
+        </td>
+      </ng-container>
+
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+      <tr
+        cdk-row
+        *cdkRowDef="let row; columns: displayedColumns"
+        [ngClass]="{
+          'cursor-pointer': row.canCreateRecords && row.status === 'active'
+        }"
+        [routerLink]="
+          row.canCreateRecords && row.status === 'active'
+            ? [row.id + '/answer']
+            : []
+        "
+      ></tr>
+    </table>
+    <!-- Loading indicator -->
+    <safe-skeleton-table
+      *ngIf="loading"
+      [columns]="[
+        'common.name',
+        'common.createdOn',
+        'common.status',
+        'common.history',
+        'common.record.few',
+        'components.forms.isCore',
+        'components.forms.parent'
+      ]"
+      [actions]="true"
+    >
+    </safe-skeleton-table>
+  </div>
+</div>
+<!-- Pagination -->
+<ui-paginator
+  [disabled]="loading || updating"
+  [pageIndex]="pageInfo.pageIndex"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [totalItems]="pageInfo.length"
+  [ariaLabel]="'components.forms.paginator.ariaLabel' | translate"
+  (pageChange)="onPage($event)"
+>
+</ui-paginator>

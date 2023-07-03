@@ -1,0 +1,7 @@
+:host {
+  display: flex;
+  font-size: 12px;
+  @apply text-gray-400;
+  gap: 16px;
+  justify-content: space-between;
+}

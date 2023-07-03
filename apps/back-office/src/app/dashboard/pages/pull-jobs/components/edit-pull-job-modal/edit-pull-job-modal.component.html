@@ -1,0 +1,280 @@
+<ui-dialog size="medium">
+  <!-- Modal header -->
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{
+        data.pullJob
+          ? ('common.editObject'
+            | translate : { name: 'common.pullJob.one' | translate })
+          : ('models.pullJob.new' | translate)
+      }}
+    </h1>
+  </ng-container>
+
+  <!-- Modal content -->
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="formGroup">
+      <div class="flex flex-col pb-1">
+        <div class="flex gap-x-2 flex-wrap">
+          <!-- Title -->
+          <div uiFormFieldDirective class="flex-auto">
+            <label>{{ 'common.name' | translate }}</label>
+            <input
+              type="text"
+              [placeholder]="'common.placeholder.name' | translate"
+              formControlName="name"
+            />
+          </div>
+          <!-- Status -->
+
+          <div uiFormFieldDirective [outline]="false" class="flex-1">
+            <label>{{ 'common.status' | translate }}</label>
+            <ui-select-menu
+              formControlName="status"
+              [customTemplate]="{
+                template: statusTemplate,
+                context: { $implicit: formGroup.value.status }
+              }"
+            >
+              <ui-select-option
+                *ngFor="let status of statusChoices"
+                [value]="status"
+              >
+                <ng-container
+                  *ngTemplateOutlet="
+                    statusTemplate;
+                    context: { $implicit: status }
+                  "
+                ></ng-container>
+              </ui-select-option>
+            </ui-select-menu>
+          </div>
+        </div>
+        <!-- Schedule -->
+        <safe-cron-expression-control
+          class="flex"
+          formControlName="schedule"
+        ></safe-cron-expression-control>
+        <!-- API to use -->
+        <div uiFormFieldDirective class="flex-1">
+          <label>{{ 'common.apiConfiguration.one' | translate }}</label>
+          <ui-graphql-select
+            valueField="id"
+            textField="name"
+            [required]="true"
+            [query]="apiConfigurationsQuery"
+            formControlName="apiConfiguration"
+            [selectedElements]="[defaultApiConfiguration]"
+          >
+          </ui-graphql-select>
+        </div>
+        <div class="flex gap-x-2 flex-wrap" *ngIf="!isHardcoded">
+          <!-- Url to pull -->
+          <div uiFormFieldDirective class="flex-1">
+            <label>{{ 'models.pullJob.url' | translate }}</label>
+            <input
+              type="text"
+              [placeholder]="
+                'components.pullJob.modal.placeholder.url' | translate
+              "
+              formControlName="url"
+            />
+            <ui-icon
+              icon="info"
+              class="cursor-pointer"
+              variant="grey"
+              uiSuffix
+              [uiTooltip]="'components.pullJob.modal.hint.url' | translate"
+            ></ui-icon>
+          </div>
+          <!-- Path to pull -->
+          <div uiFormFieldDirective class="flex-1">
+            <label>{{ 'models.pullJob.path' | translate }}</label>
+            <input
+              type="text"
+              [placeholder]="
+                'components.pullJob.modal.placeholder.path' | translate
+              "
+              formControlName="path"
+            />
+            <ui-icon
+              icon="info"
+              class="cursor-pointer"
+              variant="grey"
+              uiSuffix
+              [uiTooltip]="'components.pullJob.modal.hint.path' | translate"
+            ></ui-icon>
+          </div>
+        </div>
+        <div class="flex gap-x-2 flex-wrap">
+          <!-- Resource to use for conversion -->
+          <div uiFormFieldDirective class="flex-auto">
+            <label>{{ 'components.record.convert.select' | translate }}</label>
+            <ui-graphql-select
+              valueField="id"
+              textField="name"
+              [query]="formsQuery"
+              formControlName="convertTo"
+              [selectedElements]="[defaultForm]"
+              (searchChange)="onFormSearchChange($event)"
+              [filterable]="true"
+            >
+            </ui-graphql-select>
+          </div>
+          <!-- Channel to notify on -->
+
+          <div uiFormFieldDirective [outline]="false" class="flex-1">
+            <label>{{
+              'components.channel.dropdown.select' | translate
+            }}</label>
+            <ui-select-menu
+              formControlName="channel"
+              (opened)="onOpenApplicationSelect()"
+            >
+              <ui-select-option
+                *ngFor="let application of applications | async"
+                [isGroup]="true"
+              >
+                {{ application.name }}
+                <ui-select-option
+                  *ngFor="let channel of application.channels"
+                  [value]="channel.id"
+                >
+                  {{ channel.title }}
+                </ui-select-option>
+              </ui-select-option>
+            </ui-select-menu>
+          </div>
+        </div>
+        <!-- Mapping -->
+        <ui-expansion-panel
+          [expanded]="false"
+          [disabled]="!formGroup.value.convertTo"
+        >
+          <ng-container ngProjectAs="title">
+            {{ 'components.pullJob.modal.mapping' | translate }}
+          </ng-container>
+          <div class="flex flex-col gap-4">
+            <div class="flex justify-end">
+              <!-- Switch edition mode (raw / ui) -->
+              <ui-button
+                icon="edit_note"
+                category="secondary"
+                variant="primary"
+                (click)="toggleRawJSON()"
+              >
+                {{ 'components.pullJob.modal.switch' | translate }}
+              </ui-button>
+            </div>
+            <!-- Raw edition mode (json) -->
+            <ng-container *ngIf="openRawJSON">
+              <div uiFormFieldDirective>
+                <label>{{ 'common.input.rawJson' | translate }}</label>
+                <ui-textarea
+                  formControlName="rawMapping"
+                  placeholder="Please enter a JSON for the data mapping between the API and the Form."
+                  [minRows]="2"
+                >
+                </ui-textarea>
+              </div>
+            </ng-container>
+            <!-- UI edition mode -->
+            <ng-container *ngIf="!openRawJSON">
+              <div class="flex flex-col gap-2 overflow-x-auto">
+                <form
+                  [formGroup]="$any(element)"
+                  *ngFor="let element of mappingArray.controls; index as i"
+                  class="flex gap-x-2 items-center"
+                >
+                  <div uiFormFieldDirective [outline]="false" class="flex-1">
+                    <label>{{ 'common.field.one' | translate }}</label>
+                    <ui-select-menu formControlName="name">
+                      <ui-select-option
+                        *ngFor="let field of filteredFields(element.value.name)"
+                        [value]="field.name"
+                      >
+                        {{ field.name }}
+                      </ui-select-option>
+                    </ui-select-menu>
+                  </div>
+                  <div
+                    uiFormFieldDirective
+                    *ngIf="element.value.name"
+                    class="flex-1"
+                  >
+                    <label>{{ 'common.value.one' | translate }}</label>
+                    <input formControlName="value" type="string" />
+                  </div>
+                  <ui-button
+                    [isIcon]="true"
+                    icon="remove_circle_outline"
+                    variant="danger"
+                    (click)="onDeleteElement(i)"
+                  >
+                  </ui-button>
+                </form>
+                <ui-button
+                  *ngIf="filteredFields('').length > 0"
+                  [isIcon]="true"
+                  icon="add_circle_outline"
+                  variant="primary"
+                  (click)="onAddElement()"
+                >
+                </ui-button>
+              </div>
+            </ng-container>
+          </div>
+        </ui-expansion-panel>
+        <!-- Unique identifiers -->
+        <div
+          *ngIf="mappingArray.controls.length > 0"
+          uiFormFieldDirective
+          [outline]="false"
+          class="mt-4"
+        >
+          <label>{{ 'components.pullJob.modal.identifier' | translate }}</label>
+          <ui-select-menu
+            formControlName="uniqueIdentifiers"
+            [multiselect]="true"
+          >
+            <ui-select-option
+              *ngFor="let element of mappingArray.controls"
+              [value]="element.value.value"
+            >
+              {{ element.value.value }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+  <!-- Modal actions -->
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>{{ 'common.close' | translate }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="returnFormValue()"
+      cdkFocusInitial
+      [disabled]="!formGroup.valid"
+      (click)="toggleRawJSON()"
+    >
+      {{ (data.pullJob ? 'common.update' : 'common.create') | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>
+
+<!-- Template to display status -->
+<ng-template #statusTemplate let-status>
+  <div uiChipList>
+    <ui-chip class="!rounded-lg" variant="success" *ngIf="status === 'active'">
+      {{ 'common.status_active' | translate | titlecase }}
+    </ui-chip>
+    <ui-chip class="!rounded-lg" variant="warning" *ngIf="status === 'pending'">
+      {{ 'common.status_pending' | translate | titlecase }}
+    </ui-chip>
+    <ui-chip class="!rounded-lg" variant="danger" *ngIf="status === 'archived'">
+      {{ 'common.status_archived' | translate | titlecase }}
+    </ui-chip>
+  </div>
+</ng-template>

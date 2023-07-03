@@ -3,9 +3,9 @@
 module.exports = {
   important: true,
   content: [
-    './projects/**/src/**/*.{html,ts}',
-    './dist/safe/**/*.{html,ts,js,mjs}',
-    './node_modules/safe/**/*.mjs',
+    './apps/**/src/**/*.{html,ts}',
+    './libs/safe/**/*.{html,ts,js,mjs}',
+    './libs/ui/**/*.{html,ts,js,mjs}',
   ],
   theme: {
     extend: {
@@ -30,9 +30,30 @@ module.exports = {
           100: 'rgb(var(--secondary-100) / <alpha-value>)', //lighter
           150: 'rgb(var(--secondary-150) / <alpha-value>)', //darker
           200: 'rgb(var(--secondary-200) / <alpha-value>)', //200
-        }
-      }
+        },
+      },
+      keyframes: {
+        fadeIn: {
+          '0%': { opacity: 0 },
+          '100%': { opacity: 1 },
+        },
+        fadeOut: {
+          '0%': { opacity: 1 },
+          '100%': { opacity: 0 },
+        },
+      },
+      animation: {
+        fadeIn: 'fadeIn 0.5s forwards',
+        fadeOut: 'fadeOut 0.1s forwards',
+      },
+    },
+    fontFamily: {
+      'system-ui': ['Roboto', 'Helvetica Neue', 'sans-serif'],
     },
   },
-  plugins: [],
+  plugins: [
+    require('@tailwindcss/forms')({
+      strategy: 'class', // only generate classes
+    }),
+  ],
 };
