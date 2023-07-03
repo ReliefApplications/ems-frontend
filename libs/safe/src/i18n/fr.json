@@ -211,6 +211,7 @@
 		},
 		"placeholder": {
 			"email": "Entrez un email",
+			"enterAddress": "Entrez une adresse exemple : 1 rue de la paix, Paris",
 			"name": "Entrez un nom",
 			"search": "Rechercher...",
 			"title": "Entrez un titre"
@@ -1512,6 +1513,13 @@
 						"title": "Affichage par défaut",
 						"webmap": "WebMap",
 						"zoom": "Zoom par défaut"
+					},
+					"renderer": {
+						"default": "Défaut",
+						"defaultLabel": "Libellé par défaut",
+						"label": "Libellé",
+						"symbol": "Symbole",
+						"value": "Valeur"
 					},
 					"tooltip": {
 						"category": "Sélectionnez un champ pour séparer vos enregistrements en différentes catégories",

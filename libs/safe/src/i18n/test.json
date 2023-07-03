@@ -211,6 +211,7 @@
 		},
 		"placeholder": {
 			"email": "******",
+			"enterAddress": "******",
 			"name": "******",
 			"search": "******",
 			"title": "******"
@@ -1496,6 +1497,13 @@
 						"title": "******",
 						"webmap": "******",
 						"zoom": "******"
+					},
+					"renderer": {
+						"default": "******",
+						"defaultLabel": "******",
+						"label": "******",
+						"symbol": "******",
+						"value": "******"
 					},
 					"tooltip": {
 						"category": "******",
