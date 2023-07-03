@@ -210,6 +210,7 @@
 			"of": "of"
 		},
 		"placeholder": {
+			"address": "Enter an address or place e.g. 1 York St",
 			"email": "Enter email",
 			"name": "Enter a name",
 			"search": "Search...",
@@ -1496,6 +1497,13 @@
 						"title": "Map Parameters",
 						"webmap": "WebMap",
 						"zoom": "Default zoom"
+					},
+					"renderer": {
+						"default": "Default",
+						"defaultLabel": "Default label",
+						"label": "Label",
+						"symbol": "Symbol",
+						"value": "Value"
 					},
 					"tooltip": {
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
