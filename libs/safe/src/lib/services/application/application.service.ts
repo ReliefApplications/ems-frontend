@@ -89,6 +89,9 @@ import { SafeLayoutService } from '../layout/layout.service';
 import { SnackbarService } from '@oort-front/ui';
 import { SafeDashboardService } from '../dashboard/dashboard.service';
 
+/** Maximum width of the widget in column units */
+const MAX_COL_SPAN = 8;
+
 /**
  * Shared application service. Handles events of opened application.
  */
@@ -710,6 +713,7 @@ export class SafeApplicationService {
 
             //create a dashboard with the widget
             if (widget) {
+              widget[0].defaultCols = MAX_COL_SPAN;
               this.dashboardService.createDashboard(content, widget);
             }
 
