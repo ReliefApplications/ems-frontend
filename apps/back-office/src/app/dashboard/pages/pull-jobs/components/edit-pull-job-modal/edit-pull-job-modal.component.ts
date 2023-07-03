@@ -5,7 +5,7 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import {
   ApiConfiguration,
   Application,
@@ -147,7 +147,6 @@ export class EditPullJobModalComponent implements OnInit {
    * @param formBuilder Angular form builder
    * @param dialogRef Dialog ref
    * @param apollo Apollo service
-   * @param dialog Dialog service
    * @param document Document
    * @param data Modal injected data
    * @param data.channels list of available channels
