@@ -210,8 +210,8 @@
 			"of": "of"
 		},
 		"placeholder": {
+			"address": "Enter an address or place e.g. 1 York St",
 			"email": "Enter email",
-			"enterAddress": "Enter an address or place e.g. 1 York St",
 			"name": "Enter a name",
 			"search": "Search...",
 			"title": "Enter a title"

@@ -210,8 +210,8 @@
 			"of": "de"
 		},
 		"placeholder": {
+			"address": "Entrez une adresse exemple : 1 rue de la paix, Paris",
 			"email": "Entrez un email",
-			"enterAddress": "Entrez une adresse exemple : 1 rue de la paix, Paris",
 			"name": "Entrez un nom",
 			"search": "Rechercher...",
 			"title": "Entrez un titre"
