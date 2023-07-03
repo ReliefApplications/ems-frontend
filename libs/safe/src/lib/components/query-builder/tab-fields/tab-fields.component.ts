@@ -14,10 +14,7 @@ import {
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { FIELD_EDITOR_CONFIG } from '../../../const/tinymce.const';
 import { SafeEditorService } from '../../../services/editor/editor.service';
-import {
-  getCalcKeys,
-  getDataKeys,
-} from '../../widgets/summary-card/parser/utils';
+import { getCalcKeys, getDataKeys } from '../../../utils/parser/utils';
 import { addNewField } from '../query-builder-forms';
 import { SafeQueryBuilderComponent } from '../query-builder.component';
 

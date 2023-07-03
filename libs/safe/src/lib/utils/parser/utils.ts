@@ -1,5 +1,6 @@
 import { get, isArray, isNil } from 'lodash';
 import calcFunctions from './calcFunctions';
+import { Page } from '../../models/page.model';
 
 /** Prefix for data keys */
 const DATA_PREFIX = '{{data.';
@@ -53,6 +54,7 @@ const ICON_EXTENSIONS: any = {
  * @param html The html text.
  * @param fieldsValue Field value.
  * @param fields Available fields.
+ * @param pages list of application pages
  * @param styles Array of layout styles.
  * @returns The parsed html.
  */
@@ -60,18 +62,20 @@ export const parseHtml = (
   html: string,
   fieldsValue: any,
   fields: any,
+  pages: any[],
   styles?: any[]
 ) => {
+  const htmlWithLinks = replacePages(html, pages);
   if (fieldsValue) {
     const htmlWithRecord = replaceRecordFields(
-      html,
+      htmlWithLinks,
       fieldsValue,
       fields,
       styles
     );
     return applyOperations(htmlWithRecord);
   } else {
-    return applyOperations(html);
+    return applyOperations(htmlWithLinks);
   }
 };
 
@@ -79,14 +83,14 @@ export const parseHtml = (
  * gets the style for the cards
  *
  * @param wholeCardStyles boolean
- * @param styles available
  * @param fieldsValue array of fields to apply the filters
+ * @param styles available
  * @returns the html styles
  */
 export const getCardStyle = (
   wholeCardStyles: boolean = false,
-  styles: any[] = [],
-  fieldsValue: any
+  fieldsValue: any,
+  styles: any[] = []
 ) => {
   if (wholeCardStyles) {
     let lastRowStyle = '';
@@ -102,6 +106,24 @@ export const getCardStyle = (
     return lastRowStyle;
   }
   return '';
+};
+
+/**
+ * Replace page keys with links
+ *
+ * @param html html template
+ * @param pages array of pages
+ * @returns formatted html
+ */
+const replacePages = (html: string, pages: any[]): string => {
+  let formattedHtml = html;
+  if (pages) {
+    for (const page of pages) {
+      const regex = new RegExp(`{{page\\(${page.id}\\b\\)}}`, 'gi');
+      formattedHtml = formattedHtml.replace(regex, page.url);
+    }
+  }
+  return formattedHtml;
 };
 
 /**
@@ -268,8 +290,8 @@ const replaceRecordFields = (
       formattedHtml = formattedHtml.replace(avatarCleanRegex, convertedValue);
     }
   }
-  // replace all /n with <br/> to keep the line breaks
-  formattedHtml = formattedHtml.replace(/\n/g, '<br/>');
+  // replace all /n, removing it since we don't need because tailwind already styles it
+  formattedHtml = formattedHtml.replace(/\n/g, '');
 
   return formattedHtml;
 };
@@ -352,6 +374,16 @@ export const getCalcKeys = (): string[] => {
   return calcObjects.map(
     (obj) => CALC_PREFIX + obj.signature + PLACEHOLDER_SUFFIX
   );
+};
+
+/**
+ * Return an array with the page keys.
+ *
+ * @param pages array of pages
+ * @returns list of page keys
+ */
+export const getPageKeys = (pages: Page[]): string[] => {
+  return pages.map((page) => `{{page(${page.id})}}`);
 };
 
 /**

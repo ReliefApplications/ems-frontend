@@ -7,7 +7,7 @@
 }
 
 :host button {
-  pointer-events: auto;
+  pointer-events: inherit;
 }
 
 .ui-button {
