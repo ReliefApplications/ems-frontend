@@ -58,6 +58,7 @@ import {
   IconModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 /** Items per page for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -85,6 +86,7 @@ const DEFAULT_FIELDS = ['createdBy'];
     SelectMenuModule,
     FormWrapperModule,
     ChipModule,
+    MonacoEditorModule,
   ],
   selector: 'app-edit-pull-job-modal',
   templateUrl: './edit-pull-job-modal.component.html',
@@ -140,6 +142,13 @@ export class EditPullJobModalComponent implements OnInit {
   get defaultChannel(): Channel | null {
     return this.data.pullJob?.channel || null;
   }
+
+  /** Monaco editor configuration, for raw edition */
+  public editorOptions = {
+    theme: 'vs-dark',
+    language: 'json',
+    fixedOverflowWidgets: true,
+  };
 
   /**
    * Pull job modal component
