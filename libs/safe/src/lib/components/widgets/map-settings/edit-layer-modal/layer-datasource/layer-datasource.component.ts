@@ -201,7 +201,6 @@ export class LayerDatasourceComponent
         })
         .subscribe(({ data }) => {
           this.refData = data.referenceData;
-          console.log(this.getFieldsFromRefData(this.refData.fields || []));
           this.fields.next(
             this.getFieldsFromRefData(this.refData.fields || [])
           );
@@ -218,7 +217,6 @@ export class LayerDatasourceComponent
             .getValue()
             .find((x) => x.id === refDataID) || null;
         if (this.refData) {
-          console.log(this.getFieldsFromRefData(this.refData.fields || []));
           this.fields.next(
             this.getFieldsFromRefData(this.refData.fields || [])
           );

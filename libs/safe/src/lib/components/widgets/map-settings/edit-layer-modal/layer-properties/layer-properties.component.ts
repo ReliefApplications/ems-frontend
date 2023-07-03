@@ -36,7 +36,6 @@ export class LayerPropertiesComponent implements AfterViewInit {
             const view = viewContainerRef.detach();
             if (view) {
               this.mapContainerRef.insert(view);
-              console.log(this.mapContainerRef.get(0));
               this.currentMapContainerRef.next(this.mapContainerRef);
             }
           }

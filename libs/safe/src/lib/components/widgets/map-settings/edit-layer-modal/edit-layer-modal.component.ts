@@ -170,7 +170,6 @@ export class EditLayerModalComponent
     }
     this.setUpEditLayerListeners();
     this.getResource();
-    console.log(this.form);
   }
 
   ngAfterViewInit(): void {
