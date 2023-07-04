@@ -6,7 +6,6 @@ import {
   Input,
   OnDestroy,
   OnInit,
-  Renderer2,
   ViewChild,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -42,6 +41,7 @@ import { clone, isNaN } from 'lodash';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { ContextService } from '../../../services/context/context.service';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -87,7 +87,10 @@ export class SafeSummaryCardComponent
 
   private layout: Layout | null = null;
   private fields: any[] = [];
-  private dashboardFilters!: any;
+  private contextFilters: CompositeFilterDescriptor = {
+    logic: 'and',
+    filters: [],
+  };
 
   public searchControl = new FormControl('');
   public scrolling = false;
@@ -133,7 +136,6 @@ export class SafeSummaryCardComponent
    * @param queryBuilder Query builder service
    * @param gridLayoutService Shared grid layout service
    * @param aggregationService Aggregation service
-   * @param renderer Renderer2
    * @param contextService ContextService
    */
   constructor(
@@ -144,13 +146,17 @@ export class SafeSummaryCardComponent
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: SafeGridLayoutService,
     private aggregationService: SafeAggregationService,
-    private renderer: Renderer2,
     private contextService: ContextService
   ) {
     super();
   }
 
   ngOnInit(): void {
+    // TODO: Replace once we have a proper UI
+    this.contextFilters = this.widget.settings.contextFilters
+      ? JSON.parse(this.widget.settings.contextFilters)
+      : this.contextFilters;
+
     this.setupDynamicCards();
 
     this.colsNumber = this.setColsNumber(window.innerWidth);
@@ -162,14 +168,12 @@ export class SafeSummaryCardComponent
         this.handleSearch(value || '');
       });
 
-    this.contextService.filter$.pipe(takeUntil(this.destroy$)).subscribe({
-      next: (filter) => {
-        if (filter) {
-          this.dashboardFilters = filter;
-          this.setupDynamicCards();
-        }
-      },
-    });
+    this.contextService.filter$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.setupDynamicCards();
+        this.setupGridSettings();
+      });
   }
 
   ngAfterViewInit(): void {
@@ -378,11 +382,18 @@ export class SafeSummaryCardComponent
             }
           );
 
-          if (this.dashboardFilters && layoutQuery.filter.filters.length) {
-            layoutQuery.filter.filters =
-              this.contextService.injectDashboardFilterValues(
-                layoutQuery.filter?.filters
-              );
+          if (this.contextFilters && layoutQuery.filter) {
+            layoutQuery.filter = this.contextService.isFilterEnable.getValue()
+              ? {
+                  logic: 'and',
+                  filters: [
+                    layoutQuery.filter,
+                    this.contextService.injectDashboardFilterValues(
+                      this.contextFilters
+                    ),
+                  ],
+                }
+              : layoutQuery.filter;
           }
 
           if (builtQuery) {
@@ -453,11 +464,15 @@ export class SafeSummaryCardComponent
   ) {
     if (!card.aggregation || !card.resource) return;
     this.loading = true;
+
     this.dataQuery = this.aggregationService.aggregationDataWatchQuery(
       card.resource,
       card.aggregation,
       DEFAULT_PAGE_SIZE,
-      0
+      0,
+      this.contextService.isFilterEnable.getValue()
+        ? this.contextService.injectDashboardFilterValues(this.contextFilters)
+        : undefined
     );
 
     this.dataQuery.valueChanges

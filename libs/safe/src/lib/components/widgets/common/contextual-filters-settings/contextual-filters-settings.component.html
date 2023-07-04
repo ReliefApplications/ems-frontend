@@ -1,0 +1,6 @@
+<ngx-monaco-editor
+  class="h-full"
+  (onInit)="initEditor($event)"
+  [options]="editorOptions"
+  [formControl]="$any(form.get('contextFilters'))"
+></ngx-monaco-editor>

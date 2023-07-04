@@ -56,6 +56,7 @@ export interface LayerFormData {
     type?: GeometryType;
   };
   sublayers?: string[];
+  contextFilters: string;
 }
 
 export type LayerLabel = {

@@ -36,6 +36,7 @@ import {
 import { HttpParams } from '@angular/common/http';
 import { omitBy, isNil, get } from 'lodash';
 import { SafeMapPopupService } from '../../components/ui/map/map-popup/map-popup.service';
+import { ContextService } from '../context/context.service';
 
 /**
  * Shared map layer service
@@ -51,12 +52,14 @@ export class SafeMapLayersService {
    * @param restService SafeRestService
    * @param queryBuilder Query builder service
    * @param aggregationBuilder Aggregation builder service
+   * @param contextService Application context service
    */
   constructor(
     private apollo: Apollo,
     private restService: SafeRestService,
     private queryBuilder: QueryBuilderService,
-    private aggregationBuilder: AggregationBuilderService
+    private aggregationBuilder: AggregationBuilderService,
+    private contextService: ContextService
   ) {}
   /**
    * Save a new layer in the DB
@@ -274,8 +277,19 @@ export class SafeMapLayersService {
           this.getLayerById(id).pipe(
             mergeMap((layer: LayerModel) => {
               if (this.isDatasourceValid(layer.datasource)) {
+                const contextFilters = layer.contextFilters
+                  ? this.contextService.injectDashboardFilterValues(
+                      JSON.parse(layer.contextFilters)
+                    )
+                  : {};
                 const params = new HttpParams({
-                  fromObject: omitBy(layer.datasource, isNil),
+                  fromObject: omitBy(
+                    {
+                      ...layer.datasource,
+                      contextFilters: JSON.stringify(contextFilters),
+                    },
+                    isNil
+                  ),
                 });
                 // Get the current layer + its geojson
                 return forkJoin({
@@ -326,7 +340,7 @@ export class SafeMapLayersService {
   ) {
     if (this.isDatasourceValid(layer.datasource)) {
       const params = new HttpParams({
-        fromObject: omitBy(layer.datasource, isNil),
+        fromObject: { ...omitBy(layer.datasource, isNil), test: 'test' },
       });
       const res = await lastValueFrom(
         forkJoin({

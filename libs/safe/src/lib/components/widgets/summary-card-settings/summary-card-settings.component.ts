@@ -28,6 +28,12 @@ const DEFAULT_CARD_HEIGHT = 2;
 /** Define max width of summary card */
 const DEFAULT_CARD_WIDTH = 2;
 
+/** TODO: Replace once we have UI */
+const DEFAULT_CONTEXT_FILTER = `{
+  "logic": "and",
+  "filters": []
+}`;
+
 /**
  * Create a card form
  *
@@ -72,6 +78,11 @@ const createSummaryCardForm = (def: any) => {
     id: new FormControl<number>(def.id),
     title: new FormControl<string>(get(settings, 'title', '')),
     card: createCardForm(get(settings, 'card', null)),
+
+    // TODO: to be changed once UI is defined
+    contextFilters: new FormControl<string>(
+      get(settings, 'contextFilters', DEFAULT_CONTEXT_FILTER)
+    ),
   });
 
   const isUsingAggregation = !!get(settings, 'card.aggregation', null);

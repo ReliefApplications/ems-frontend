@@ -1,9 +1,13 @@
 import { Injectable } from '@angular/core';
-import { differenceBy } from 'lodash';
 import { BehaviorSubject } from 'rxjs';
 import { SafeApplicationService } from '../application/application.service';
 import { Application } from '../../models/application.model';
 import localForage from 'localforage';
+import {
+  CompositeFilterDescriptor,
+  FilterDescriptor,
+} from '@progress/kendo-data-query';
+import { cloneDeep } from '@apollo/client/utilities';
 
 /**
  * Application context service
@@ -19,7 +23,7 @@ export class ContextService {
     value: string;
   }[] = [];
 
-  public filter = new BehaviorSubject<any>(null);
+  public filter = new BehaviorSubject<Record<string, any>>({});
   public filterStructure = new BehaviorSubject<any>(null);
   public filterPosition = new BehaviorSubject<any>(null);
   private currentApplicationId?: string | null = null;
@@ -62,7 +66,7 @@ export class ContextService {
         if (application) {
           if (this.currentApplicationId !== application.id) {
             this.currentApplicationId = application.id;
-            this.filter.next(null);
+            this.filter.next({});
             this.filterStructure.next(application.contextualFilter);
             localForage.getItem(this.positionKey).then((position) => {
               if (position) {
@@ -74,7 +78,7 @@ export class ContextService {
           }
         } else {
           this.currentApplicationId = null;
-          this.filter.next(null);
+          this.filter.next({});
           this.filterStructure.next(null);
           this.filterPosition.next(null);
         }
@@ -90,38 +94,36 @@ export class ContextService {
   /**
    * Injects current dashboard filter into an object.
    *
-   * @param filters object to inject context into
-   * @returns filters with values from dashboard filters
+   * @param f filter to inject context into
+   * @returns filter with values from dashboard filter
    */
-  public injectDashboardFilterValues(filters: any[]): any {
+  public injectDashboardFilterValues<
+    T extends CompositeFilterDescriptor | FilterDescriptor
+  >(f: T): T {
+    const filter = cloneDeep(f);
     const regex = /(?<={{filter\.)(.*?)(?=}})/gim;
     const availableFilterFields = this.filter.getValue();
-    // No dashboard filters return current ones
-    if (!availableFilterFields) {
-      return filters;
-    }
-    let dashboardFilters = filters.filter((filter) =>
-      (filter.value as string).startsWith('{{filter.')
-    );
-    // If given filters does not contain any filter from the dashboard one, return current ones
-    if (!dashboardFilters.length) {
-      return filters;
-    }
-    // Get all the remaining filters into the original array
-    filters = differenceBy(filters, dashboardFilters, 'field');
-    // Replace value for all the dashboard filters
-    dashboardFilters.map((dashboardFilter) => {
-      const filterName = (dashboardFilter.value as string).match(regex)?.[0];
+
+    if ('field' in filter && filter.field) {
+      // If it's a filter descriptor, replace value
+      const filterName = filter.value?.match(regex)?.[0];
       if (filterName && availableFilterFields[filterName]) {
-        dashboardFilter.value = availableFilterFields[filterName];
-      } else {
-        dashboardFilter.value = null;
+        filter.value = availableFilterFields[filterName];
       }
-    });
-    // Skip all the dashboard filters with no value or not available
-    dashboardFilters = dashboardFilters.filter((df) => !!df.value);
-    // Concat the remaining dashboard filters into the original filter array
-    filters = filters.concat(dashboardFilters);
-    return filters;
+    } else if ('filters' in filter && filter.filters) {
+      // If it's a composite filter, replace values in filters
+      filter.filters = filter.filters
+        .map((f) => this.injectDashboardFilterValues(f))
+        .filter((f) => {
+          // Filter out fields that are not in the available filter fields
+          // Meaning, their values are still using the {{filter.}} syntax
+          if ('value' in f && f.value) {
+            const filterName = f.value?.match(regex)?.[0];
+            return !(filterName && !availableFilterFields[filterName]);
+          } else return true;
+        });
+    }
+
+    return filter;
   }
 }

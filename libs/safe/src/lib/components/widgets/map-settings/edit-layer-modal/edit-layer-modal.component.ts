@@ -53,6 +53,7 @@ import {
 import { Fields } from './layer-fields/layer-fields.component';
 import { MapLayersModule } from '../map-layers/map-layers.module';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { ContextualFiltersSettingsComponent } from '../../common/contextual-filters-settings/contextual-filters-settings.component';
 
 /**
  * Interface of dialog input
@@ -88,6 +89,7 @@ interface DialogData {
     LayerFilterModule,
     LayerStylingModule,
     MapLayersModule,
+    ContextualFiltersSettingsComponent,
   ],
   templateUrl: './edit-layer-modal.component.html',
   styleUrls: ['./edit-layer-modal.component.scss'],

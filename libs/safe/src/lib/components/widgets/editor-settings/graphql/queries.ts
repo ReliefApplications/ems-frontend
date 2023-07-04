@@ -28,6 +28,9 @@ export const GET_RESOURCES = gql`
           layouts {
             totalCount
           }
+          aggregations {
+            totalCount
+          }
           metadata {
             name
             type

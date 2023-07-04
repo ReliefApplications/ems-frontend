@@ -138,4 +138,5 @@ export interface LayerModel {
   datasource?: LayerDatasource;
   createdAt: Date;
   updatedAt: Date;
+  contextFilters?: string;
 }

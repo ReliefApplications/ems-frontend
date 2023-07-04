@@ -11,9 +11,10 @@ import { SafeBarChartComponent } from '../../ui/charts/bar-chart/bar-chart.compo
 import { uniq, get, groupBy, isEqual } from 'lodash';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { ContextService } from '../../../services/context/context.service';
 
 /**
  * Default file name for chart exports
@@ -76,12 +77,21 @@ export class SafeChartComponent
    *
    * @param aggregationService Shared aggregation service
    * @param translate Angular translate service
+   * @param contextService Shared context service
    */
   constructor(
     private aggregationService: SafeAggregationService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private contextService: ContextService
   ) {
     super();
+
+    this.contextService.filter$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.loadChart();
+        this.getOptions();
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -103,37 +113,46 @@ export class SafeChartComponent
         ),
       },
     };
-    if (!isEqual(previousDatasource, currentDatasource)) {
-      this.loading = true;
-      if (this.settings.resource) {
-        this.aggregationService
-          .getAggregations(this.settings.resource, {
-            ids: [get(this.settings, 'chart.aggregationId', null)],
-            first: 1,
-          })
-          .then((res) => {
-            const aggregation = res.edges[0]?.node || null;
-            if (aggregation) {
-              this.dataQuery = this.aggregationService.aggregationDataQuery(
-                this.settings.resource,
-                aggregation.id || '',
-                get(this.settings, 'chart.mapping', null)
-              );
-              if (this.dataQuery) {
-                this.getData();
-              } else {
-                this.loading = false;
-              }
+
+    if (!isEqual(previousDatasource, currentDatasource)) this.loadChart();
+    this.getOptions();
+  }
+
+  /** Loads chart */
+  private loadChart(): void {
+    this.loading = true;
+    if (this.settings.resource) {
+      this.aggregationService
+        .getAggregations(this.settings.resource, {
+          ids: [get(this.settings, 'chart.aggregationId', null)],
+          first: 1,
+        })
+        .then((res) => {
+          const aggregation = res.edges[0]?.node || null;
+          if (aggregation) {
+            this.dataQuery = this.aggregationService.aggregationDataQuery(
+              this.settings.resource,
+              aggregation.id || '',
+              get(this.settings, 'chart.mapping', null),
+              this.settings.contextFilters
+                ? this.contextService.injectDashboardFilterValues(
+                    JSON.parse(this.settings.contextFilters)
+                  )
+                : undefined
+            );
+            if (this.dataQuery) {
+              this.getData();
             } else {
               this.loading = false;
             }
-          })
-          .catch(() => (this.loading = false));
-      } else {
-        this.loading = false;
-      }
+          } else {
+            this.loading = false;
+          }
+        })
+        .catch(() => (this.loading = false));
+    } else {
+      this.loading = false;
     }
-    this.getOptions();
   }
 
   /**
