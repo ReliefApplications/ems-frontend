@@ -340,7 +340,7 @@ export class SafeMapLayersService {
   ) {
     if (this.isDatasourceValid(layer.datasource)) {
       const params = new HttpParams({
-        fromObject: { ...omitBy(layer.datasource, isNil), test: 'test' },
+        fromObject: omitBy(layer.datasource, isNil),
       });
       const res = await lastValueFrom(
         forkJoin({
