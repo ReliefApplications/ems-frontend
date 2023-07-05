@@ -12,6 +12,7 @@ import { CardT } from '../summary-card.component';
 })
 export class SummaryCardItemComponent implements OnInit, OnChanges {
   @Input() card!: CardT;
+  @Input() customCSS: any = null;
   public fields: any[] = [];
   public fieldsValue: any = null;
   public styles: any[] = [];
@@ -48,6 +49,21 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
     // this.layout = this.card.layout;
     this.styles = get(this.card.layout, 'query.style', []);
     // this.styles = get(this.card, 'meta.style', []);
+  }
+
+  /**
+   * Gets a customCSS properties
+   *
+   * @param className class name
+   * @returns property object
+   */
+  getCustomCSSProperties(className: string): object {
+    try {
+      const customObject = JSON.parse(this.customCSS);
+      return customObject[className as keyof typeof customObject];
+    } catch (e) {
+      return {};
+    }
   }
 
   /**

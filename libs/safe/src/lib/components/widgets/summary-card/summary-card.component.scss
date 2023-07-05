@@ -5,12 +5,9 @@
   padding: 16px;
   grid-auto-flow: row;
   background-color: unset;
-  max-height: 80vh;
+}
 
-  .k-card {
-    border: none;
-    border-radius: 0;
-    overflow: hidden;
-    box-shadow: 0 2px 5px 0 rgba(134, 134, 134, 0.2);
-  }
+.summary-card-content {
+  border: 1px solid #d1d5db;
+  box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 }

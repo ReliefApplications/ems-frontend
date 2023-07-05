@@ -21,6 +21,7 @@ import { SafeDisplayTabModule } from './display-tab/display.module';
 import { SummaryCardGeneralComponent } from './summary-card-general/summary-card-general.component';
 import { SafeSummaryCardSettingsComponent } from './summary-card-settings.component';
 import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 /** Summary Card Settings Module */
 @NgModule({
@@ -47,6 +48,7 @@ import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
     SafeSummaryCardModule,
     TabsModule,
     ToggleModule,
+    MonacoEditorModule,
   ],
   exports: [SafeSummaryCardSettingsComponent],
 })

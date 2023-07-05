@@ -1927,6 +1927,7 @@
 			},
 			"display": {
 				"border": "******",
+				"customizable": "******",
 				"searchable": "******",
 				"title": "******"
 			},

@@ -516,4 +516,21 @@ export class SafeSummaryCardComponent
   override ngOnDestroy(): void {
     super.ngOnDestroy();
   }
+
+  /**
+   * Gets a customCSS properties
+   *
+   * @param className class name
+   * @returns property object
+   */
+  getCustomCSSProperties(className: string): object {
+    try {
+      const customObject = JSON.parse(
+        this.settings.widgetDisplay?.customCSS as string
+      );
+      return customObject[className as keyof typeof customObject];
+    } catch (e) {
+      return {};
+    }
+  }
 }

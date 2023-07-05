@@ -1,7 +1,11 @@
 <!-- Default Header -->
-<div class="widget-header k-card-header" *ngIf="card.title">
+<div
+  class="card-header rounded-t-lg"
+  *ngIf="card.title"
+  [ngStyle]="customCSS ? getCustomCSSProperties('.card-header') : {}"
+>
   <!-- Title -->
-  <span class="widget-title" [title]="card.title">{{ card.title }}</span>
+  <span class="card-title" [title]="card.title">{{ card.title }}</span>
   <!-- Actions -->
   <div class="floating-button"></div>
 </div>
@@ -17,6 +21,7 @@
   [fieldsValue]="fieldsValue"
   [styles]="card.useStyles ? styles : []"
   [wholeCardStyles]="card.wholeCardStyles"
-  class="flex-1 overflow-auto p-[14px]"
+  class="flex-1 overflow-auto p-[14px] rounded-b-lg"
+  [ngStyle]="customCSS ? getCustomCSSProperties('.card-content') : {}"
 >
 </safe-summary-card-item-content>

@@ -1,0 +1,22 @@
+.card-header {
+  box-sizing: border-box;
+  height: 40px;
+  position: relative;
+  z-index: 1001;
+  color: black;
+  text-align: left;
+  line-height: 40px;
+  padding: 0 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  border-bottom: 1px solid #d1d5db;
+
+  .card-title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    flex: 1;
+    margin: unset;
+  }
+}

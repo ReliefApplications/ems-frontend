@@ -66,8 +66,13 @@
     <div class="w-full grow overflow-auto" #summaryCardGrid>
       <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
         <div
-          class="summary-card-container k-widget k-tile-layout k-grid-flow-col"
+          class="summary-card-container"
           style.grid-template-columns="{{ 'repeat(' + colsNumber + ', 1fr)' }}"
+          [ngStyle]="
+            settings.widgetDisplay?.customizable
+              ? getCustomCSSProperties('.card-grid-wrapper')
+              : {}
+          "
         >
           <ng-container
             *safeSkeleton="
@@ -80,7 +85,7 @@
           >
             <safe-summary-card-item
               *ngFor="let card of cards; let i = index"
-              class="k-tilelayout-item k-card flex flex-col"
+              class="flex flex-col rounded-lg overflow-hidden summary-card-content"
               [style.order]="i"
               style.grid-column-end="{{
                 'span ' +
@@ -90,6 +95,16 @@
               }}"
               style.grid-row-end="{{ 'span ' + card.height }}"
               [card]="card"
+              [customCSS]="
+                settings.widgetDisplay?.customizable
+                  ? settings.widgetDisplay?.customCSS
+                  : null
+              "
+              [ngStyle]="
+                settings.widgetDisplay?.customizable
+                  ? getCustomCSSProperties('.card-container')
+                  : {}
+              "
             >
             </safe-summary-card-item>
           </ng-container>

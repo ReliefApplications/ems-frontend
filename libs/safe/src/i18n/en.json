@@ -1927,6 +1927,7 @@
 			},
 			"display": {
 				"border": "Show widget border",
+				"customizable": "Allow customization",
 				"searchable": "Allow search",
 				"title": "Widget display"
 			},

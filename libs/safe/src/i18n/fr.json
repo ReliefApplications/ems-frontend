@@ -1943,6 +1943,7 @@
 			},
 			"display": {
 				"border": "Afficher la bordure du widget",
+				"customizable": "Autoriser la customisation",
 				"searchable": "Autoriser la recherche",
 				"title": "Affichage des widgets"
 			},

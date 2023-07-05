@@ -5,6 +5,7 @@ import {
   Input,
   OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
@@ -17,6 +18,7 @@ import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.co
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
 import { takeUntil } from 'rxjs';
+import { SafeSummaryCardComponent } from '../summary-card/summary-card.component';
 
 /** Define max height of summary card */
 const MAX_ROW_SPAN = 4;
@@ -27,6 +29,14 @@ const MAX_COL_SPAN = 8;
 const DEFAULT_CARD_HEIGHT = 2;
 /** Define max width of summary card */
 const DEFAULT_CARD_WIDTH = 2;
+
+/** Define the customizable structure */
+const CUSTOM_TEMPLATE = {
+  '.card-grid-wrapper': {},
+  '.card-container': {},
+  '.card-header': { 'background-color': 'lightblue' }, // example
+  '.card-content': {},
+};
 
 /**
  * Create a card form
@@ -81,6 +91,12 @@ const createSummaryCardForm = (def: any) => {
 
   const extendedForm = extendWidgetForm(form, settings?.widgetDisplay, {
     searchable: new FormControl(searchable),
+    customizable: new FormControl(
+      get<boolean>(settings, 'widgetDisplay.customizable', false)
+    ),
+    customCSS: new FormControl(
+      get<string>(settings, 'widgetDisplay.customCSS', '')
+    ),
     usePagination: new FormControl(
       get<boolean>(settings, 'widgetDisplay.usePagination', false)
     ),
@@ -124,6 +140,16 @@ export class SafeSummaryCardSettingsComponent
   public fields: any[] = [];
   public activeTabIndex: number | undefined;
 
+  @ViewChild('summaryCard') summaryCard!: SafeSummaryCardComponent;
+
+  /** Monaco editor configuration, for customization */
+  public editorOptions = {
+    theme: 'vs-dark',
+    language: 'json',
+    fixedOverflowWidgets: true,
+    lineNumbers: 'off',
+  };
+
   /**
    * Summary Card Settings component.
    *
@@ -143,6 +169,12 @@ export class SafeSummaryCardSettingsComponent
   ngOnInit(): void {
     this.tileForm = createSummaryCardForm(this.tile);
     this.change.emit(this.tileForm);
+
+    if (this.tileForm.value.widgetDisplay?.customCSS == '') {
+      this.tileForm
+        ?.get('widgetDisplay.customCSS')
+        ?.setValue(JSON.stringify(CUSTOM_TEMPLATE, null, '\t'));
+    }
 
     const resourceID = this.tileForm?.get('card.resource')?.value;
     if (resourceID) {
@@ -167,6 +199,11 @@ export class SafeSummaryCardSettingsComponent
   /** @returns a FormControl for the searchable field */
   get searchableControl(): FormControl {
     return this.tileForm?.get('widgetDisplay.searchable') as any;
+  }
+
+  /** @returns a FormControl for the customizable field */
+  get customizableControl(): FormControl {
+    return this.tileForm?.get('widgetDisplay.customizable') as any;
   }
 
   /** @returns a FormControl for the usePagination field */
