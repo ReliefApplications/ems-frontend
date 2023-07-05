@@ -5,7 +5,7 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import {
   ApiConfiguration,
   Application,
@@ -27,7 +27,13 @@ import {
   GetRoutingKeysQueryResponse,
   GET_ROUTING_KEYS,
 } from '../../graphql/queries';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subscription,
+  debounceTime,
+  distinctUntilChanged,
+} from 'rxjs';
 import get from 'lodash/get';
 import {
   getCachedValues,
@@ -52,6 +58,7 @@ import {
   IconModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 /** Items per page for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -79,6 +86,7 @@ const DEFAULT_FIELDS = ['createdBy'];
     SelectMenuModule,
     FormWrapperModule,
     ChipModule,
+    MonacoEditorModule,
   ],
   selector: 'app-edit-pull-job-modal',
   templateUrl: './edit-pull-job-modal.component.html',
@@ -135,13 +143,19 @@ export class EditPullJobModalComponent implements OnInit {
     return this.data.pullJob?.channel || null;
   }
 
+  /** Monaco editor configuration, for raw edition */
+  public editorOptions = {
+    theme: 'vs-dark',
+    language: 'json',
+    fixedOverflowWidgets: true,
+  };
+
   /**
    * Pull job modal component
    *
    * @param formBuilder Angular form builder
    * @param dialogRef Dialog ref
    * @param apollo Apollo service
-   * @param dialog Dialog service
    * @param document Document
    * @param data Modal injected data
    * @param data.channels list of available channels
@@ -151,7 +165,6 @@ export class EditPullJobModalComponent implements OnInit {
     private formBuilder: UntypedFormBuilder,
     public dialogRef: DialogRef<EditPullJobModalComponent>,
     private apollo: Apollo,
-    private dialog: Dialog,
     @Inject(DOCUMENT) private document: Document,
     @Inject(DIALOG_DATA)
     public data: {
@@ -261,6 +274,24 @@ export class EditPullJobModalComponent implements OnInit {
           );
         }
       });
+
+    this.formGroup
+      .get('rawMapping')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        const mapping = JSON.parse(value || '{}');
+        this.formGroup.setControl(
+          'mapping',
+          this.formBuilder.array(
+            Object.keys(mapping).map((x: any) =>
+              this.formBuilder.group({
+                name: [x, Validators.required],
+                value: [mapping[x], Validators.required],
+              })
+            )
+          )
+        );
+      });
   }
 
   /**
@@ -328,20 +359,7 @@ export class EditPullJobModalComponent implements OnInit {
    * Toggles the edit mode and update form values accordingly.
    */
   toggleRawJSON(): void {
-    if (this.openRawJSON) {
-      const mapping = JSON.parse(this.formGroup.get('rawMapping')?.value || '');
-      this.formGroup.setControl(
-        'mapping',
-        this.formBuilder.array(
-          Object.keys(mapping).map((x: any) =>
-            this.formBuilder.group({
-              name: [x, Validators.required],
-              value: [mapping[x], Validators.required],
-            })
-          )
-        )
-      );
-    } else {
+    if (!this.openRawJSON) {
       const mapping = this.formGroup
         .get('mapping')
         ?.value.reduce(

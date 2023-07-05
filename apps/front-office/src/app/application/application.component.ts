@@ -1,19 +1,16 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { subject } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
   User,
-  Role,
   SafeAuthService,
   SafeApplicationService,
-  Permission,
   ContentType,
   SafeUnsubscribeComponent,
   AppAbility,
 } from '@oort-front/safe';
-import { SnackbarService } from '@oort-front/ui';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
 
@@ -27,7 +24,7 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class ApplicationComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   /** Application title */
   public title = '';
@@ -43,14 +40,12 @@ export class ApplicationComponent
   public adminNavItems: any[] = [];
   /** Current application */
   public application: Application | null = null;
-  /** Permissions of the user */
-  private permissions: Permission[] = [];
-  /** Roles of the user */
-  private roles: Role[] = [];
   /** Use side menu or not */
   public sideMenu = false;
   /** Is large device */
   public largeDevice: boolean;
+  /** Is loading */
+  public loading = true;
 
   /**
    * Front-office Application component.
@@ -58,7 +53,6 @@ export class ApplicationComponent
    * @param authService Shared authentication service
    * @param applicationService Shared application service
    * @param route Angular current route
-   * @param snackBar Shared snackbar service
    * @param router Angular router
    * @param translate Angular translate service
    * @param ability user ability
@@ -67,7 +61,6 @@ export class ApplicationComponent
     private authService: SafeAuthService,
     private applicationService: SafeApplicationService,
     public route: ActivatedRoute,
-    private snackBar: SnackbarService,
     private router: Router,
     private translate: TranslateService,
     private ability: AppAbility
@@ -93,6 +86,7 @@ export class ApplicationComponent
   ngOnInit(): void {
     // Subscribe to params change
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.loading = true;
       this.applicationService.loadApplication(params.id);
     });
     // Get list of available applications
@@ -106,6 +100,7 @@ export class ApplicationComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((application: Application | null) => {
         if (application) {
+          this.loading = false;
           this.title = application.name || '';
           this.adminNavItems = [];
           this.setAdminNavItems(application);
@@ -146,7 +141,6 @@ export class ApplicationComponent
    */
   onOpenApplication(application: Application): void {
     this.router.navigate([`/${application.id}`]);
-    // this.applicationService.loadApplication(application.id || '');
   }
 
   /**
@@ -257,26 +251,31 @@ export class ApplicationComponent
     }
   }
 
-  /**
-   * Checks if route page is valid.
-   *
-   * @param app application to check pages of
-   * @returns Is page valid or not
-   */
-  private validPage(app: any): boolean {
-    if (
-      this.appPage &&
-      (this.appPage === 'profile' ||
-        this.appPage === 'settings/users' ||
-        this.appPage === 'settings/roles' ||
-        app.pages?.find(
-          (val: any) =>
-            val.type + '/' + val.content === this.appPage ||
-            val.type + '/' + val.id === this.appPage
-        ))
-    ) {
-      return true;
-    }
-    return false;
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.applicationService.leaveApplication();
   }
+
+  // /**
+  //  * Checks if route page is valid.
+  //  *
+  //  * @param app application to check pages of
+  //  * @returns Is page valid or not
+  //  */
+  // private validPage(app: any): boolean {
+  //   if (
+  //     this.appPage &&
+  //     (this.appPage === 'profile' ||
+  //       this.appPage === 'settings/users' ||
+  //       this.appPage === 'settings/roles' ||
+  //       app.pages?.find(
+  //         (val: any) =>
+  //           val.type + '/' + val.content === this.appPage ||
+  //           val.type + '/' + val.id === this.appPage
+  //       ))
+  //   ) {
+  //     return true;
+  //   }
+  //   return false;
+  // }
 }

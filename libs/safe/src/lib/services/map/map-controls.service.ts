@@ -141,7 +141,7 @@ export class SafeMapControlsService {
     const control = Geocoding.geosearch({
       position: 'topleft',
       // todo: translate
-      placeholder: 'Enter an address or place e.g. 1 York St',
+      placeholder: this.translate.instant('common.placeholder.address'), // 'Enter an address or place e.g. 1 York St'
       useMapBounds: false,
       providers: [
         Geocoding.arcgisOnlineProvider({

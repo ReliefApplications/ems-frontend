@@ -8,7 +8,12 @@ import {
   SafeNavbarModule,
 } from '@oort-front/safe';
 import { TranslateModule } from '@ngx-translate/core';
-import { ButtonModule, IconModule, MenuModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  IconModule,
+  MenuModule,
+  SpinnerModule,
+} from '@oort-front/ui';
 
 /**
  * Front-Office Application module.
@@ -26,6 +31,7 @@ import { ButtonModule, IconModule, MenuModule } from '@oort-front/ui';
     MenuModule,
     IconModule,
     ButtonModule,
+    SpinnerModule,
   ],
 })
 export class ApplicationModule {}

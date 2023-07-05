@@ -826,7 +826,6 @@ export class DashboardComponent
         );
         if (!data?.addDashboardWithContext?.id) return;
         urlArr[urlArr.length - 1] = `${parentDashboardId}?id=${value}`;
-        console.log('navigating to url', urlArr.join('/'));
         this.router.navigateByUrl(urlArr.join('/'));
       }
     }
