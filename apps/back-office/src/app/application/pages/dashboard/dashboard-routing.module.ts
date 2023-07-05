@@ -9,6 +9,19 @@ const routes: Routes = [
     path: '',
     component: DashboardComponent,
     canDeactivate: [CanDeactivateGuard],
+    children: [
+      {
+        path: 'tab',
+        loadChildren: () =>
+          import('../../outlet/tabs-widget/tabs-widget.module').then(
+            (m) => m.TabsWidgetModule
+          ),
+        outlet: 'tabWidget',
+        // loadChildren: () => import(
+
+        // )
+      },
+    ],
   },
 ];
 

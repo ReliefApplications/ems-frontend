@@ -1,0 +1,8 @@
+<div [formGroup]="formGroup" class="flex flex-col">
+  <h2>{{ 'common.general' | translate }}</h2>
+  <!-- Title -->
+  <div uiFormFieldDirective>
+    <label>{{ 'common.title' | translate }}</label>
+    <input formControlName="title" type="string" />
+  </div>
+</div>

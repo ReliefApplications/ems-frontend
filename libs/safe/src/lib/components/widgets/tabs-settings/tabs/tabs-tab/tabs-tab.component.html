@@ -1,0 +1,17 @@
+<!-- todo: translate -->
+<div class="flex flex-col">
+  <!-- Header -->
+  <h2>TABS</h2>
+  <ui-button class="self-end" icon="add" variant="primary" (click)="addTab($event)"
+    >ADD TAB</ui-button
+  >
+  <!-- Available tabs -->
+  <ui-tabs *ngIf="formArray.length > 0">
+    <ui-tab *ngFor="let tab of formArray.controls; let i = index">
+      <ng-container ngProjectAs="label">
+        <span>tab.value.label</span>
+      </ng-container>
+      <ng-template uiTabContent> CONTENT OF TAB </ng-template>
+    </ui-tab>
+  </ui-tabs>
+</div>

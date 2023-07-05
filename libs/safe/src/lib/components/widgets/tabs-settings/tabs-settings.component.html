@@ -1,0 +1,41 @@
+<!-- todo: translate -->
+<ui-tabs [vertical]="true" class="grow">
+  <!-- General -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon
+        icon="preview"
+        [size]="24"
+        [uiTooltip]="'common.general' | translate"
+      ></ui-icon>
+      <span>{{ 'common.general' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <safe-general-tab [formGroup]="formGroup"></safe-general-tab>
+    </ng-template>
+  </ui-tab>
+  <!-- Tabs -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="tab" [size]="24"> </ui-icon>
+      <span>TABS</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <safe-tabs-tab [formArray]="$any(formGroup.get('tabs'))"></safe-tabs-tab>
+    </ng-template>
+  </ui-tab>
+  <!-- Display -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon
+        icon="settings_overscan"
+        [size]="24"
+        [uiTooltip]="'models.widget.display.title' | translate"
+      ></ui-icon>
+      <span>{{ 'models.widget.display.title' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <safe-display-settings [formGroup]="formGroup"></safe-display-settings>
+    </ng-template>
+  </ui-tab>
+</ui-tabs>

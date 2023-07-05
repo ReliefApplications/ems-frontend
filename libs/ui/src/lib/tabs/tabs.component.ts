@@ -148,7 +148,7 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
    * Update select state of all the tabs
    */
   public setSelectedTab() {
-    this.tabs.forEach((tab) => {
+    this.tabs?.forEach((tab) => {
       if (tab.index === this.selectedIndex) {
         tab.selected = true;
       } else {
@@ -161,7 +161,7 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
    * Gets all the tabs, initialize them and listen to the openTab event
    */
   private subscribeToOpenTabEvents(): void {
-    this.tabs.forEach((tab, index) => {
+    this.tabs?.forEach((tab, index) => {
       tab.variant = this.variant;
       tab.vertical = this.vertical;
       tab.index = index;
@@ -173,7 +173,7 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
         });
     });
     // To avoid that we select all tabs by default
-    this.tabs.forEach((tab) => {
+    this.tabs?.forEach((tab) => {
       if (tab.index === this.selectedIndex) {
         this.showContent(tab);
       }

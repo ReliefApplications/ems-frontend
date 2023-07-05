@@ -14,6 +14,9 @@ const routes: Routes = [
           import('../dashboard/dashboard.module').then(
             (m) => m.DashboardModule
           ),
+        data: {
+          view: 'workflow',
+        },
       },
       {
         path: 'form/:id',

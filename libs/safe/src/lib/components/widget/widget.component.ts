@@ -10,6 +10,7 @@ import { SafeEditorComponent } from '../widgets/editor/editor.component';
 import { SafeGridWidgetComponent } from '../widgets/grid/grid.component';
 import { SafeMapWidgetComponent } from '../widgets/map/map.component';
 import { SafeSummaryCardComponent } from '../widgets/summary-card/summary-card.component';
+import { ActivatedRoute, Router } from '@angular/router';
 
 /** Component for the widgets */
 @Component({
@@ -44,4 +45,20 @@ export class SafeWidgetComponent {
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
+
+  constructor(private router: Router, private activatedRoute: ActivatedRoute) {}
+
+  ngOnInit(): void {
+    if (this.widget.component === 'tabs') {
+      this.router.navigate(['./', { outlets: { tabWidget: 'tab' } }], {
+        state: {
+          header: this.header,
+          widget: this.widget,
+          settings: this.widget?.settings,
+        },
+        relativeTo: this.activatedRoute,
+        skipLocationChange: true,
+      });
+    }
+  }
 }

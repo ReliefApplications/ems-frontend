@@ -172,9 +172,12 @@ const routes: Routes = [
       {
         path: 'dashboard/:id',
         loadChildren: () =>
-          import('../dashboard/pages/dashboard/dashboard.module').then(
+          import('./pages/dashboard/dashboard.module').then(
             (m) => m.DashboardModule
           ),
+        data: {
+          view: 'page',
+        },
         // canActivate: [SafePermissionGuard]
       },
       {

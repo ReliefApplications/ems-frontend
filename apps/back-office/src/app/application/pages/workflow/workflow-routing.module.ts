@@ -23,9 +23,12 @@ const routes: Routes = [
       {
         path: 'dashboard/:id',
         loadChildren: () =>
-          import('../../../dashboard/pages/dashboard/dashboard.module').then(
+          import('../dashboard/dashboard.module').then(
             (m) => m.DashboardModule
           ),
+        data: {
+          view: 'workflow',
+        },
       },
       {
         path: 'form/:id',

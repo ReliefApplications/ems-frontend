@@ -40,7 +40,6 @@ import {
   GET_RECORD_BY_ID,
   GET_RESOURCE_RECORDS,
 } from './graphql/queries';
-import { TranslateService } from '@ngx-translate/core';
 import { map, takeUntil } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { firstValueFrom } from 'rxjs';
@@ -50,6 +49,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { TranslateService } from '@ngx-translate/core';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -80,7 +80,7 @@ export class DashboardComponent
 
   // === DASHBOARD NAME EDITION ===
   public canUpdate = false;
-  public formActive = false;
+  public editing = false;
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
@@ -91,6 +91,9 @@ export class DashboardComponent
 
   @ViewChild(SafeWidgetGridComponent)
   widgetGridComponent!: SafeWidgetGridComponent;
+
+  /** Type of view the dashboard is part of */
+  public viewType: 'page' | 'workflow' | 'widget' = 'page';
 
   // === CONTEXT ===
   public refDataElements: any[] = [];
@@ -111,12 +114,6 @@ export class DashboardComponent
   // === BUTTON ACTIONS ===
   public buttonActions: ButtonActionT[] = [];
 
-  // === ROUTE ===
-  /** @returns is dashboard a step or a page */
-  get isStep(): boolean {
-    return this.router.url.includes('/workflow/');
-  }
-
   /**
    * Dashboard page
    *
@@ -128,13 +125,13 @@ export class DashboardComponent
    * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param dashboardService Shared dashboard service
-   * @param translateService Angular translate service
    * @param authService Shared authentication service
    * @param confirmService Shared confirm service
    * @param refDataService Shared reference data service
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
    * @param translate Translate service
+   * @param activatedRoute Activated route
    */
   constructor(
     private applicationService: SafeApplicationService,
@@ -145,13 +142,13 @@ export class DashboardComponent
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private dashboardService: SafeDashboardService,
-    private translateService: TranslateService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     private refDataService: SafeReferenceDataService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private activatedRoute: ActivatedRoute
   ) {
     super();
   }
@@ -172,6 +169,11 @@ export class DashboardComponent
       this.route.queryParams
         .pipe(takeUntil(this.destroy$))
         .subscribe((queryParams) => {
+          this.activatedRoute.data
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((data) => {
+              this.viewType = data.view;
+            });
           // If we don't find the view element in the queryParams, then we are not using contextual view
           const viewId = queryParams.id;
 
@@ -238,7 +240,7 @@ export class DashboardComponent
 
     const rootElement = this.elementRef.nativeElement;
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
-    this.formActive = false;
+    this.editing = false;
     this.loading = true;
     this.id = id;
     return firstValueFrom(
@@ -255,9 +257,11 @@ export class DashboardComponent
           this.initContext();
           this.updateContextOptions();
           this.canUpdate =
-            (this.dashboard?.page
-              ? this.dashboard?.page?.canUpdate
-              : this.dashboard?.step?.canUpdate) || false;
+            (this.viewType !== 'widget' &&
+              (this.dashboard?.page
+                ? this.dashboard?.page?.canUpdate
+                : this.dashboard?.step?.canUpdate)) ||
+            false;
 
           this.dashboardService.openDashboard(this.dashboard);
           this.tiles = this.dashboard.structure
@@ -277,15 +281,12 @@ export class DashboardComponent
           this.showFilter = this.dashboard.showFilter;
         } else {
           this.snackBar.openSnackBar(
-            this.translateService.instant(
-              'common.notifications.accessNotProvided',
-              {
-                type: this.translateService
-                  .instant('common.dashboard.one')
-                  .toLowerCase(),
-                error: '',
-              }
-            ),
+            this.translate.instant('common.notifications.accessNotProvided', {
+              type: this.translate
+                .instant('common.dashboard.one')
+                .toLowerCase(),
+              error: '',
+            }),
             { error: true }
           );
           this.router.navigate(['/applications']);
@@ -315,13 +316,9 @@ export class DashboardComponent
   canDeactivate(): Observable<boolean> | boolean {
     if (!this.widgetGridComponent.canDeactivate) {
       const dialogRef = this.confirmService.openConfirmModal({
-        title: this.translateService.instant('pages.dashboard.update.exit'),
-        content: this.translateService.instant(
-          'pages.dashboard.update.exitMessage'
-        ),
-        confirmText: this.translateService.instant(
-          'components.confirmModal.confirm'
-        ),
+        title: this.translate.instant('pages.dashboard.update.exit'),
+        content: this.translate.instant('pages.dashboard.update.exitMessage'),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmVariant: 'primary',
       });
       return dialogRef.closed.pipe(takeUntil(this.destroy$)).pipe(
@@ -440,24 +437,18 @@ export class DashboardComponent
         next: ({ errors }) => {
           if (errors) {
             this.snackBar.openSnackBar(
-              this.translateService.instant(
-                'common.notifications.objectNotUpdated',
-                {
-                  type: this.translateService.instant('common.dashboard.one'),
-                  error: errors ? errors[0].message : '',
-                }
-              ),
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.dashboard.one'),
+                error: errors ? errors[0].message : '',
+              }),
               { error: true }
             );
           } else {
             this.snackBar.openSnackBar(
-              this.translateService.instant(
-                'common.notifications.objectUpdated',
-                {
-                  type: this.translateService.instant('common.dashboard.one'),
-                  value: '',
-                }
-              )
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.dashboard.one'),
+                value: '',
+              })
             );
             this.dashboardService.openDashboard({
               ...this.dashboard,
@@ -475,90 +466,89 @@ export class DashboardComponent
    * @param e edit event
    */
   saveAccess(e: any): void {
-    if (this.isStep) {
-      this.apollo
-        .mutate<EditStepMutationResponse>({
-          mutation: EDIT_STEP,
-          variables: {
-            id: this.dashboard?.step?.id,
-            permissions: e,
-          },
-        })
-        .subscribe({
-          next: ({ errors, data }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(
-                this.translateService.instant(
-                  'common.notifications.objectNotUpdated',
-                  {
-                    type: this.translateService.instant('common.step.one'),
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translateService.instant(
-                  'common.notifications.objectUpdated',
-                  {
-                    type: this.translateService.instant('common.step.one'),
+    switch (this.viewType) {
+      case 'workflow': {
+        this.apollo
+          .mutate<EditStepMutationResponse>({
+            mutation: EDIT_STEP,
+            variables: {
+              id: this.dashboard?.step?.id,
+              permissions: e,
+            },
+          })
+          .subscribe({
+            next: ({ errors, data }) => {
+              if (errors) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.objectNotUpdated',
+                    {
+                      type: this.translate.instant('common.step.one'),
+                      error: errors ? errors[0].message : '',
+                    }
+                  ),
+                  { error: true }
+                );
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectUpdated', {
+                    type: this.translate.instant('common.step.one'),
                     value: '',
-                  }
-                )
-              );
-              this.dashboard = {
-                ...this.dashboard,
-                permissions: data?.editStep.permissions,
-              };
-            }
-          },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
-          },
-        });
-    } else {
-      this.apollo
-        .mutate<EditPageMutationResponse>({
-          mutation: EDIT_PAGE,
-          variables: {
-            id: this.dashboard?.page?.id,
-            permissions: e,
-          },
-        })
-        .subscribe({
-          next: ({ errors, data }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(
-                this.translateService.instant(
-                  'common.notifications.objectNotUpdated',
-                  {
-                    type: this.translateService.instant('common.step.one'),
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translateService.instant(
-                  'common.notifications.objectUpdated',
-                  {
-                    type: this.translateService.instant('common.step.one'),
+                  })
+                );
+                this.dashboard = {
+                  ...this.dashboard,
+                  permissions: data?.editStep.permissions,
+                };
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
+          });
+        break;
+      }
+      case 'page': {
+        this.apollo
+          .mutate<EditPageMutationResponse>({
+            mutation: EDIT_PAGE,
+            variables: {
+              id: this.dashboard?.page?.id,
+              permissions: e,
+            },
+          })
+          .subscribe({
+            next: ({ errors, data }) => {
+              if (errors) {
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'common.notifications.objectNotUpdated',
+                    {
+                      type: this.translate.instant('common.step.one'),
+                      error: errors ? errors[0].message : '',
+                    }
+                  ),
+                  { error: true }
+                );
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('common.notifications.objectUpdated', {
+                    type: this.translate.instant('common.step.one'),
                     value: '',
-                  }
-                )
-              );
-              this.dashboard = {
-                ...this.dashboard,
-                permissions: data?.editPage.permissions,
-              };
-            }
-          },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
-          },
-        });
+                  })
+                );
+                this.dashboard = {
+                  ...this.dashboard,
+                  permissions: data?.editPage.permissions,
+                };
+              }
+            },
+            error: (err) => {
+              this.snackBar.openSnackBar(err.message, { error: true });
+            },
+          });
+        break;
+      }
     }
   }
 
@@ -571,7 +561,7 @@ export class DashboardComponent
         ? this.dashboard.page.canUpdate
         : this.dashboard?.step?.canUpdate
     ) {
-      this.formActive = !this.formActive;
+      this.editing = !this.editing;
     }
   }
   /**
@@ -583,23 +573,29 @@ export class DashboardComponent
     if (dashboardName && dashboardName !== this.dashboard?.name) {
       const callback = () => {
         this.dashboard = { ...this.dashboard, name: dashboardName };
+        this.editing = false;
       };
-      if (this.isStep) {
-        this.workflowService.updateStepName(
-          {
-            id: this.dashboard?.step?.id,
-            name: dashboardName,
-          },
-          callback
-        );
-      } else {
-        this.applicationService.updatePageName(
-          {
-            id: this.dashboard?.page?.id,
-            name: dashboardName,
-          },
-          callback
-        );
+      switch (this.viewType) {
+        case 'workflow': {
+          this.workflowService.updateStepName(
+            {
+              id: this.dashboard?.step?.id,
+              name: dashboardName,
+            },
+            callback
+          );
+          break;
+        }
+        case 'page': {
+          this.applicationService.updatePageName(
+            {
+              id: this.dashboard?.page?.id,
+              name: dashboardName,
+            },
+            callback
+          );
+          break;
+        }
       }
     }
   }
@@ -622,10 +618,10 @@ export class DashboardComponent
           next: ({ data, errors }) => {
             if (errors) {
               this.snackBar.openSnackBar(
-                this.translateService.instant(
+                this.translate.instant(
                   'common.notifications.objectNotUpdated',
                   {
-                    type: this.translateService.instant('common.dashboard.one'),
+                    type: this.translate.instant('common.dashboard.one'),
                     error: errors ? errors[0].message : '',
                   }
                 ),
@@ -633,13 +629,10 @@ export class DashboardComponent
               );
             } else {
               this.snackBar.openSnackBar(
-                this.translateService.instant(
-                  'common.notifications.objectUpdated',
-                  {
-                    type: this.translateService.instant('common.dashboard.one'),
-                    value: '',
-                  }
-                )
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.dashboard.one'),
+                  value: '',
+                })
               );
               this.dashboardService.openDashboard({
                 ...this.dashboard,

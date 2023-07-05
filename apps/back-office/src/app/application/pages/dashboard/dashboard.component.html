@@ -20,14 +20,14 @@
             [text]="dashboard.name"
             [canEdit]="canUpdate"
             (onChange)="saveName($event)"
-            (formActiveEvent)="formActive = $event"
+            (formActiveEvent)="editing = $event"
           >
             <h1 class="!m-0 overflow-hidden text-ellipsis">
               {{ dashboard.name }}
             </h1>
           </safe-editable-text>
           <ui-button
-            *ngIf="!isStep"
+            *ngIf="viewType === 'page' && !editing"
             [isIcon]="true"
             variant="grey"
             category="primary"
@@ -44,7 +44,7 @@
         </div>
         <div
           class="flex items-center gap-1"
-          *ngIf="!formActive"
+          *ngIf="!editing"
           cdkDropList
           (cdkDropListDropped)="onButtonActionDrop($event)"
         >
@@ -73,17 +73,12 @@
             [application]="applicationId"
             [objectTypeName]="'common.page.one' | translate"
             (save)="saveAccess($event)"
-            *ngIf="
-              dashboard.page
-                ? dashboard.page.canUpdate
-                : dashboard.step
-                ? dashboard.step.canUpdate
-                : false
-            "
+            *ngIf="canUpdate && viewType !== 'widget'"
           >
           </safe-access>
           <!-- Context -->
           <ui-button
+            *ngIf="canUpdate && viewType !== 'widget'"
             variant="grey"
             [isIcon]="true"
             [icon]="dashboard.page?.context ? 'cached' : 'add'"
@@ -97,58 +92,60 @@
           >
           </ui-button>
           <!-- More options -->
-          <ui-button
-            variant="grey"
-            [isIcon]="true"
-            icon="more_vert"
-            [uiMenuTriggerFor]="menu"
-            cdkOverlayOrigin
-            #appMenuTrigger="cdkOverlayOrigin"
-          >
-          </ui-button>
-          <ui-menu #menu>
-            <button uiMenuItem (click)="toggleFiltering()">
-              <ui-icon icon="tune" variant="grey"></ui-icon>
-              {{
-                (showFilter
-                  ? 'models.dashboard.deactivateFiltering'
-                  : 'models.dashboard.activateFiltering'
-                ) | translate
-              }}
-            </button>
-            <button uiMenuItem (click)="onAppSelection()">
-              <ui-icon icon="file_copy" variant="grey"></ui-icon>
-              {{ 'common.duplicate' | translate }}
-            </button>
-            <button uiMenuItem (click)="onAddButtonAction()">
-              <ui-icon icon="touch_app" variant="grey"></ui-icon>
-              {{ 'models.dashboard.buttonActions.add' | translate }}
-            </button>
-            <button uiMenuItem (click)="onShare()">
-              <ui-icon icon="share" variant="grey"></ui-icon>
-              {{ 'models.dashboard.share' | translate }}
-            </button>
-          </ui-menu>
+          <ng-container *ngIf="canUpdate">
+            <ui-button
+              variant="grey"
+              [isIcon]="true"
+              icon="more_vert"
+              [uiMenuTriggerFor]="menu"
+              cdkOverlayOrigin
+              #appMenuTrigger="cdkOverlayOrigin"
+            >
+            </ui-button>
+            <ui-menu #menu>
+              <button uiMenuItem (click)="toggleFiltering()">
+                <ui-icon icon="tune" variant="grey"></ui-icon>
+                {{
+                  (showFilter
+                    ? 'models.dashboard.deactivateFiltering'
+                    : 'models.dashboard.activateFiltering'
+                  ) | translate
+                }}
+              </button>
+              <button uiMenuItem (click)="onAppSelection()">
+                <ui-icon icon="file_copy" variant="grey"></ui-icon>
+                {{ 'common.duplicate' | translate }}
+              </button>
+              <button uiMenuItem (click)="onAddButtonAction()">
+                <ui-icon icon="touch_app" variant="grey"></ui-icon>
+                {{ 'models.dashboard.buttonActions.add' | translate }}
+              </button>
+              <button uiMenuItem (click)="onShare()">
+                <ui-icon icon="share" variant="grey"></ui-icon>
+                {{ 'models.dashboard.share' | translate }}
+              </button>
+            </ui-menu>
 
-          <ng-template #searchMenuHeaderTemplate>
-            <ui-alert [closable]="true">
-              {{ 'models.page.tooltip.duplicate' | translate }}
-            </ui-alert>
-          </ng-template>
+            <ng-template #searchMenuHeaderTemplate>
+              <ui-alert [closable]="true">
+                {{ 'models.page.tooltip.duplicate' | translate }}
+              </ui-alert>
+            </ng-template>
 
-          <ng-template
-            cdkConnectedOverlay
-            [cdkConnectedOverlayOrigin]="appMenuTrigger"
-            [cdkConnectedOverlayOpen]="showAppMenu"
-          >
-            <safe-search-menu
-              [headerTemplate]="searchMenuHeaderTemplate"
-              [currentApplicationId]="applicationId"
-              [applications]="applications"
-              (close)="showAppMenu = false"
-              (open)="onDuplicate($event)"
-            ></safe-search-menu>
-          </ng-template>
+            <ng-template
+              cdkConnectedOverlay
+              [cdkConnectedOverlayOrigin]="appMenuTrigger"
+              [cdkConnectedOverlayOpen]="showAppMenu"
+            >
+              <safe-search-menu
+                [headerTemplate]="searchMenuHeaderTemplate"
+                [currentApplicationId]="applicationId"
+                [applications]="applications"
+                (close)="showAppMenu = false"
+                (open)="onDuplicate($event)"
+              ></safe-search-menu>
+            </ng-template>
+          </ng-container>
         </div>
       </div>
       <ng-container *ngIf="dashboard.page?.context">
@@ -210,7 +207,7 @@
   <safe-widget-grid
     [loading]="loading"
     [widgets]="tiles"
-    [canUpdate]="dashboard?.canUpdate || false"
+    [canUpdate]="canUpdate"
     (move)="onMove($event)"
     (edit)="onEditTile($event)"
     (delete)="onDeleteTile($event)"
