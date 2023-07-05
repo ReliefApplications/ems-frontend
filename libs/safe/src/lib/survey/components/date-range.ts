@@ -58,6 +58,8 @@ export const init = (Survey: Survey, domService: DomService): void => {
       const dropdown = domService.appendComponentToBody(DateRangeComponent, el);
       const instance: DateRangeComponent = dropdown.instance;
 
+      instance.hasInputs = true;
+
       // subscribe to changes
       instance.selectedValue.subscribe((value) => {
         question.value = [value.start, value.end];

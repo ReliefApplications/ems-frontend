@@ -118,6 +118,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'labelFalse',
   'valueTrue',
   'valueFalse',
+  'inputType',
 ];
 
 /**
