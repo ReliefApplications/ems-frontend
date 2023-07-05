@@ -322,6 +322,7 @@ export const createChartWidgetForm = (id: any, value: any) =>
     title: [get(value, 'title', ''), Validators.required],
     chart: createChartForm(get(value, 'chart')),
     resource: [get(value, 'resource', null), Validators.required],
+    referenceData: [get(value, 'referenceData', null), Validators.required],
   });
 
 /**

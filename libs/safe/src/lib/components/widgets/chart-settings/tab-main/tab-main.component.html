@@ -29,6 +29,21 @@
     </div>
   </ng-container>
   <div uiFormFieldDirective>
+    <label>{{
+      'components.widget.settings.map.edit.datasource.origin' | translate
+    }}</label>
+    <ui-select-menu [formControl]="origin">
+      <ui-select-option value="resource">{{
+        'common.resource.one' | translate
+      }}</ui-select-option>
+      <ui-select-option value="refData">{{
+        'common.referenceData.one' | translate
+      }}</ui-select-option>
+    </ui-select-menu>
+  </div>
+
+  <!-- Resource selection -->
+  <div uiFormFieldDirective class="flex-1" *ngIf="origin.value === 'resource'">
     <label>{{ 'common.resource.one' | translate }}</label>
     <ui-graphql-select
       valueField="id"
@@ -40,6 +55,35 @@
       [filterable]="true"
     >
     </ui-graphql-select>
+    <!-- Remove value -->
+    <ui-button
+      uiSuffix
+      (click)="clearFormField('resource', $event)"
+      [isIcon]="true"
+      icon="close"
+      variant="danger"
+    ></ui-button>
+  </div>
+
+  <!-- Reference data selection  -->
+  <div uiFormFieldDirective class="flex-1" *ngIf="origin.value === 'refData'">
+    <label>{{ 'common.referenceData.one' | translate }}</label>
+    <ui-graphql-select
+      valueField="id"
+      textField="name"
+      [query]="referenceDatasQuery"
+      formControlName="referenceData"
+      [selectedElements]="[referenceData]"
+    >
+    </ui-graphql-select>
+    <!-- Remove value -->
+    <ui-button
+      uiSuffix
+      (click)="clearFormField('referenceData', $event)"
+      [isIcon]="true"
+      icon="close"
+      variant="danger"
+    ></ui-button>
   </div>
   <ng-container *ngIf="resource">
     <!-- Aggregation -->

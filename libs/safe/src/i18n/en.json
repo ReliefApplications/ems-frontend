@@ -389,7 +389,7 @@
 				"custom": "Defines a custom aggregation function or expression in JavaScript.",
 				"filter": "Returns an array with only those elements that match the condition.",
 				"group": "Groups input documents by the specified 'id' expression and for each distinct grouping, outputs a document.",
-				"selectedFields": "Only unused fields can removed.",
+				"selectedFields": "Only unused fields can be removed.",
 				"sort": "Sorts all input documents and returns them to the pipeline in sorted order.",
 				"unwind": "Deconstructs an array field from the input documents to output a document for each element."
 			}

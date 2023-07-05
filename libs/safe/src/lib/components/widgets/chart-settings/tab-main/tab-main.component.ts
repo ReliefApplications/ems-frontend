@@ -1,7 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { UntypedFormGroup } from '@angular/forms';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Resource } from '../../../../models/resource.model';
+import { ReferenceData } from '../../../../models/reference-data.model';
 import { Subject } from 'rxjs';
 import { CHART_TYPES } from '../constants';
 import {
@@ -9,6 +10,7 @@ import {
   GetResourcesQueryResponse,
   GET_RESOURCE,
   GET_RESOURCES,
+  GET_REFERENCE_DATAS,
 } from '../graphql/queries';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
@@ -18,6 +20,7 @@ import { get } from 'lodash';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { Dialog } from '@angular/cdk/dialog';
+import { GetReferenceDatasQueryResponse } from '../../../reference-data-dropdown/graphql/queries';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -36,9 +39,12 @@ export class TabMainComponent
 {
   @Input() formGroup!: UntypedFormGroup;
   @Input() type: any;
+  public origin!: FormControl<string | null>;
   public types = CHART_TYPES;
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
-  public resource?: Resource;
+  public resource?: Resource | null;
+  public referenceDatasQuery!: QueryRef<GetReferenceDatasQueryResponse>;
+  public referenceData?: ReferenceData | null;
   public aggregation?: Aggregation;
   public availableSeriesFields: any[] = [];
 
@@ -77,6 +83,16 @@ export class TabMainComponent
   }
 
   ngOnInit(): void {
+    // Set origin form control
+    if (this.formGroup.value.resource) {
+      this.origin = new FormControl('resource');
+    } else {
+      if (this.formGroup.value.refData) {
+        this.origin = new FormControl('refData');
+      } else {
+        this.origin = new FormControl();
+      }
+    }
     this.formGroup
       .get('chart.type')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
@@ -99,6 +115,19 @@ export class TabMainComponent
         first: ITEMS_PER_PAGE,
         sortField: 'name',
       },
+    });
+    this.referenceDatasQuery =
+      this.apollo.watchQuery<GetReferenceDatasQueryResponse>({
+        query: GET_REFERENCE_DATAS,
+        variables: {
+          first: ITEMS_PER_PAGE,
+        },
+      });
+    // Listen to origin changes
+    this.origin.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.resource = null;
+      this.referenceData = null;
+      this.formGroup.patchValue({ resource: null, refData: null });
     });
   }
 
@@ -201,6 +230,7 @@ export class TabMainComponent
     const { SafeEditAggregationModalComponent } = await import(
       '../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component'
     );
+    console.log(this.resource, this.aggregation);
     const dialogRef = this.dialog.open(SafeEditAggregationModalComponent, {
       disableClose: true,
       data: {
@@ -242,5 +272,19 @@ export class TabMainComponent
         ],
       },
     });
+  }
+
+  /**
+   * Reset given form field value if there is a value previously to avoid triggering
+   * not necessary actions
+   *
+   * @param formField Current form field
+   * @param event click event
+   */
+  clearFormField(formField: string, event: Event) {
+    if (this.formGroup.get(formField)?.value) {
+      this.formGroup.get(formField)?.setValue(null);
+    }
+    event.stopPropagation();
   }
 }
