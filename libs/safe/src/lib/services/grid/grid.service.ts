@@ -82,27 +82,19 @@ export class SafeGridService {
     },
     refDataSubField = false
   ): any[] {
-    // console.log('getFields fields', fields)
-    console.log('getFields options', options)
-    // console.log('getFields metaFields', metaFields)
     return flatDeep(
       fields.map((f) => {
-        console.log('---> f: ', f)
         const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
         let metaData = get(metaFields, fullName);
-    console.log('metaData ', metaData)
         const canSee = get(metaData, 'permissions.canSee', true);
         const canUpdate = get(metaData, 'permissions.canUpdate', false);
         const hidden: boolean =
           (!isNil(canSee) && !canSee) || options.hidden || false;
         const disabled: boolean = (options.disabled || !canUpdate) && !refDataSubField;
         const isRefData = f.type.endsWith(REFERENCE_DATA_END) || refDataSubField;
-            console.log(' metaData', metaData)
-            console.log(' disabled', disabled)
 
         switch (f.kind) {
           case 'OBJECT': {
-          console.log('----------- OBJECT:', f.name)
             return this.getFields(
               f.fields,
               metaFields,
@@ -116,7 +108,6 @@ export class SafeGridService {
             );
           }
           case 'LIST': {
-          console.log('----------- LIST:', f.name)
             metaData = Object.assign([], metaData);
             if (isRefData) {
               metaData.type = 'referenceData';
@@ -159,7 +150,6 @@ export class SafeGridService {
             };
           }
           default: {
-          console.log('----------- default:', f.name)
             const cachedField = get(layoutFields, fullName);
             const title = f.label ? f.label : prettifyLabel(f.name);
             return {
@@ -405,8 +395,6 @@ export class SafeGridService {
     fields
       .filter((x) => !x.disabled)
       .forEach((field) => {
-        console.log('field', field)
-        console.log('dataItem', dataItem)
         if (
           field.type !== 'JSON' ||
           MULTISELECT_TYPES.includes(field.meta.type)
