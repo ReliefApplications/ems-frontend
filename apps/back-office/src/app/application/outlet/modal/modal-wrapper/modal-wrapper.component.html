@@ -1,0 +1,12 @@
+<ui-dialog size="fullscreen" [closable]="true">
+  <ng-container ngProjectAs="header">
+    <ui-button uiDialogClose>Go back to application</ui-button>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <ng-container *ngTemplateOutlet="data.content"></ng-container>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>Close</ui-button>
+    <ui-button>Save</ui-button>
+  </ng-container>
+</ui-dialog>

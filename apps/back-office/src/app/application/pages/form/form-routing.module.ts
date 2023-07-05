@@ -7,6 +7,14 @@ const routes: Routes = [
   {
     path: '',
     component: FormComponent,
+    children: [
+      {
+        path: 'builder',
+        outlet: 'modal',
+        loadChildren: () =>
+          import('../../outlet/modal/modal.module').then((m) => m.ModalModule),
+      },
+    ],
   },
 ];
 

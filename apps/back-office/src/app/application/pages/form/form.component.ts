@@ -309,14 +309,41 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
    */
   editForm(): void {
     if (this.isStep && this.step) {
-      this.router.navigate([`./builder/${this.step.content}`], {
-        relativeTo: this.route,
-      });
+      // this.router.navigate([`./builder/${this.step.content}`], {
+      //   relativeTo: this.route,
+      // });
+      this.router.navigate(
+        [
+          {
+            outlets: {
+              modal: `form/${this.step.content}`,
+            },
+          },
+        ],
+        {
+          relativeTo: this.route,
+          skipLocationChange: true,
+        }
+      );
     } else {
       if (this.page) {
-        this.router.navigate([`./builder/${this.page.content}`], {
-          relativeTo: this.route,
-        });
+        // this.router.navigate([`./builder/${this.page.content}`], {
+        //   relativeTo: this.route,
+        // });
+        this.router.navigate(
+          [
+            './',
+            {
+              outlets: {
+                modal: `builder/form/${this.page.content}`,
+              },
+            },
+          ],
+          {
+            relativeTo: this.route,
+            skipLocationChange: true,
+          }
+        );
       }
     }
   }
