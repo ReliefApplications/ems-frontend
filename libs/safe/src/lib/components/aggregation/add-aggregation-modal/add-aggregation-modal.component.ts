@@ -6,6 +6,8 @@ import { SafeAggregationService } from '../../../services/aggregation/aggregatio
 import {
   GetResourceAggregationsResponse,
   GET_RESOURCE_AGGREGATIONS,
+  GetReferenceDataAggregationsResponse,
+  GET_REFERENCE_DATA_AGGREGATIONS,
 } from './graphql/queries';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { UntypedFormControl } from '@angular/forms';
@@ -20,6 +22,7 @@ import {
 import { ButtonModule } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { ReferenceData } from '../../../models/reference-data.model';
 
 /**
  * Data needed for the dialog, should contain an aggregations array, a form and a resource
@@ -28,6 +31,7 @@ interface DialogData {
   hasAggregations: boolean;
   form?: Form;
   resource?: Resource;
+  referenceData?: ReferenceData;
 }
 
 /**
@@ -54,10 +58,13 @@ export class AddAggregationModalComponent
 {
   private form?: Form;
   private resource?: Resource;
+  private referenceData?: ReferenceData;
   public hasAggregations = false;
   public nextStep = false;
 
-  public queryRef!: QueryRef<GetResourceAggregationsResponse>;
+  public queryRef!:
+    | QueryRef<GetResourceAggregationsResponse>
+    | QueryRef<GetReferenceDataAggregationsResponse>;
 
   public selectedAggregationControl = new UntypedFormControl('');
 
@@ -86,16 +93,25 @@ export class AddAggregationModalComponent
     this.hasAggregations = data.hasAggregations;
     this.form = data.form;
     this.resource = data.resource;
+    this.referenceData = data.referenceData;
   }
 
   ngOnInit(): void {
-    this.queryRef = this.apollo.watchQuery<GetResourceAggregationsResponse>({
-      query: GET_RESOURCE_AGGREGATIONS,
-      variables: {
-        resource: this.resource?.id,
-      },
-    });
-
+    if (this.resource)
+      this.queryRef = this.apollo.watchQuery<GetResourceAggregationsResponse>({
+        query: GET_RESOURCE_AGGREGATIONS,
+        variables: {
+          resource: this.resource?.id,
+        },
+      });
+    else if (this.referenceData)
+      this.queryRef =
+        this.apollo.watchQuery<GetReferenceDataAggregationsResponse>({
+          query: GET_REFERENCE_DATA_AGGREGATIONS,
+          variables: {
+            referenceData: this.referenceData?.id,
+          },
+        });
     // emits selected aggregation
     this.selectedAggregationControl.valueChanges.subscribe((value) => {
       if (value) {
@@ -119,6 +135,7 @@ export class AddAggregationModalComponent
       disableClose: true,
       data: {
         resource: this.resource,
+        referenceData: this.referenceData,
       },
     });
     dialogRef.closed

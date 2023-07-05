@@ -8,9 +8,12 @@ import { CHART_TYPES } from '../constants';
 import {
   GetResourceByIdQueryResponse,
   GetResourcesQueryResponse,
+  GetReferenceDatasQueryResponse,
+  GetReferenceDataQueryResponse,
   GET_RESOURCE,
   GET_RESOURCES,
   GET_REFERENCE_DATAS,
+  GET_REFERENCE_DATA,
 } from '../graphql/queries';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
@@ -20,7 +23,6 @@ import { get } from 'lodash';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { Dialog } from '@angular/cdk/dialog';
-import { GetReferenceDatasQueryResponse } from '../../../reference-data-dropdown/graphql/queries';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -88,7 +90,7 @@ export class TabMainComponent
       this.origin = new FormControl('resource');
     } else {
       if (this.formGroup.value.refData) {
-        this.origin = new FormControl('refData');
+        this.origin = new FormControl('referenceData');
       } else {
         this.origin = new FormControl();
       }
@@ -103,12 +105,23 @@ export class TabMainComponent
       .get('resource')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        this.getResource(value);
-        this.formGroup.get('chart.aggregationId')?.setValue(null);
+        if (value) {
+          this.getResource(value);
+          this.formGroup.get('chart.aggregationId')?.setValue(null);
+        }
       });
     if (this.formGroup.value.resource) {
       this.getResource(this.formGroup.value.resource);
     }
+    this.formGroup
+      .get('referenceData')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.getReferenceData(value);
+          this.formGroup.get('chart.aggregationId')?.setValue(null);
+        }
+      });
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
       query: GET_RESOURCES,
       variables: {
@@ -153,6 +166,25 @@ export class TabMainComponent
           this.aggregation = this.resource.aggregations.edges[0].node;
           this.setAvailableSeriesFields();
         }
+      });
+  }
+
+  /**
+   * Get a reference data by id
+   *
+   * @param id reference data id
+   */
+  private getReferenceData(id: string): void {
+    this.apollo
+      .query<GetReferenceDataQueryResponse>({
+        query: GET_REFERENCE_DATA,
+        variables: {
+          id,
+        },
+      })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data }) => {
+        this.referenceData = data.referenceData;
       });
   }
 
@@ -211,6 +243,7 @@ export class TabMainComponent
       data: {
         hasAggregations: get(this.resource, 'aggregations.totalCount', 0) > 0, // check if at least one existing aggregation
         resource: this.resource,
+        referenceData: this.referenceData,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
@@ -218,7 +251,6 @@ export class TabMainComponent
         this.formGroup.get('chart.aggregationId')?.setValue(value.id);
         this.aggregation = value;
         this.setAvailableSeriesFields();
-        // this.getResource(this.resource?.id as string);
       }
     });
   }
@@ -230,11 +262,11 @@ export class TabMainComponent
     const { SafeEditAggregationModalComponent } = await import(
       '../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component'
     );
-    console.log(this.resource, this.aggregation);
     const dialogRef = this.dialog.open(SafeEditAggregationModalComponent, {
       disableClose: true,
       data: {
         resource: this.resource,
+        referenceData: this.referenceData,
         aggregation: this.aggregation,
       },
     });

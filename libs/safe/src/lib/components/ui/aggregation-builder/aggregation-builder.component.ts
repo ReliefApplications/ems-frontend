@@ -7,6 +7,7 @@ import { QueryBuilderService } from '../../../services/query-builder/query-build
 import { Resource } from '../../../models/resource.model';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { ReferenceData } from '../../../models/reference-data.model';
 
 /**
  * Main component of Aggregation builder.
@@ -23,7 +24,8 @@ export class SafeAggregationBuilderComponent
 {
   // === REACTIVE FORM ===
   @Input() aggregationForm: UntypedFormGroup = new UntypedFormGroup({});
-  @Input() resource!: Resource;
+  @Input() resource?: Resource;
+  @Input() referenceData?: ReferenceData;
 
   @Input() reload$!: Observable<boolean>;
 
@@ -121,16 +123,19 @@ export class SafeAggregationBuilderComponent
    * Updates fields depending on selected form.
    */
   private updateFields(): void {
-    const fields = this.queryBuilder
-      .getFields(this.resource.queryName as string)
-      .filter(
-        (field: any) =>
-          !(
-            field.name.includes('_id') &&
-            (field.type.name === 'ID' ||
-              (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
-          )
-      );
+    let fields: any;
+    if (this.resource)
+      fields = this.queryBuilder
+        .getFields(this.resource.queryName as string)
+        .filter(
+          (field: any) =>
+            !(
+              field.name.includes('_id') &&
+              (field.type.name === 'ID' ||
+                (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
+            )
+        );
+    else if (this.referenceData) console.log(this.referenceData);
     this.fields.next(fields);
   }
 
