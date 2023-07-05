@@ -16,7 +16,7 @@ const routes: Routes = [
           import(
             '../../../components/application-widget/application-widget.module'
           ).then((m) => m.ApplicationWidgetModule),
-        outlet: 'tabWidget',
+        outlet: '',
       },
     ],
   },

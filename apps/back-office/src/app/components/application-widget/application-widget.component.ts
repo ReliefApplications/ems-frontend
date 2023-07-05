@@ -4,6 +4,7 @@ import {
   EventEmitter,
   Inject,
   OnInit,
+  SkipSelf,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -14,9 +15,7 @@ import {
   SafeAuthService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
-
-import { Location } from '@angular/common';
-import { Subscription, takeUntil } from 'rxjs';
+import { Subscription, filter, takeUntil } from 'rxjs';
 // import { FormsComponent } from '../../dashboard/pages/forms/forms.component';
 // import { DashboardComponent } from '../../dashboard/pages/dashboard/dashboard.component';
 
@@ -37,20 +36,12 @@ interface PageTab {
   selector: 'app-application-widget',
   templateUrl: './application-widget.component.html',
   styleUrls: ['./application-widget.component.scss'],
+  providers: [SafeApplicationWidgetService],
 })
 export class ApplicationWidgetComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  //   <safe-tabs-widget
-  //   #widgetContent
-  //   class="flex-1 h-full w-full"
-  //   [header]="header"
-  //   [settings]="widget.settings"
-  //   (edit)="edit.emit($event)"
-  //   [widget]="widget"
-  // >
-  // </safe-tabs-widget>
   // === DATA ===
   widget: any;
   pages: PageTab[] = [];
@@ -58,7 +49,7 @@ export class ApplicationWidgetComponent
     label: '',
     icon: 'add_circle',
     route: 'add-page',
-  };
+  } as const;
   application!: Application;
 
   // === PERMISSIONS ===
@@ -99,34 +90,39 @@ export class ApplicationWidgetComponent
    * @param activatedRoute ActivatedRoute
    * @param safeAuthService SafeAuthService
    * @param applicationWidgetService SafeApplicationWidgetService
-   * @param location Location
+   * @param cdr ChangeDetectorRef
    */
   constructor(
     @Inject('environment') environment: any,
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private safeAuthService: SafeAuthService,
-    private applicationWidgetService: SafeApplicationWidgetService,
-    private location: Location,
+    @SkipSelf() private applicationWidgetService: SafeApplicationWidgetService,
     private cdr: ChangeDetectorRef
   ) {
     super();
-    const data = this.router.getCurrentNavigation()?.extras.state;
-    if (data) {
-      this.header = data.header ?? this.header;
-      this.widget = data.widget ?? this.widget;
-      this.settings = data.widget?.settings ?? this.settings;
-    }
     this.isAdmin =
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
   }
 
   ngOnInit(): void {
-    console.log(this.location.getState());
-    console.log(history.state);
+    console.log(this.router.routerState.snapshot);
     this.setUpListeners();
-    if (this.settings?.id) {
-      this.applicationWidgetService.loadApplication(this.settings.id);
+    if (this.applicationWidgetService.widgetState) {
+      this.header =
+        this.applicationWidgetService.widgetState.header ?? this.header;
+      this.widget =
+        this.applicationWidgetService.widgetState.widget ?? this.widget;
+      this.settings =
+        this.applicationWidgetService.widgetState.widget?.settings ??
+        this.settings;
+    }
+    if (this.settings?.applicationId) {
+      this.applicationWidgetService.loadApplication(
+        this.settings.applicationId
+      );
+    } else {
+      this.applicationWidgetService.createApplication();
     }
   }
 
@@ -135,19 +131,19 @@ export class ApplicationWidgetComponent
    */
   private setUpListeners() {
     this.applicationWidgetService.application
-      .pipe(takeUntil(this.destroy$))
+      .pipe(
+        filter((app) => !!app),
+        takeUntil(this.destroy$)
+      )
       .subscribe({
         next: (application) => {
           if (application) {
-            this.application = application;
             this.updateTabs(application.pages?.length ? application.pages : []);
             this.loadPage(
               application.pages?.length ? application.pages?.length : -1
             );
-          } else {
-            this.applicationWidgetService.createApplication();
           }
-          if (this.application?.id) {
+          if (this.application && application?.id) {
             this.settings = {
               ...this.settings,
               pages: this.pages.filter((p) => !!p.id),
@@ -156,6 +152,7 @@ export class ApplicationWidgetComponent
               this.settings
             );
           }
+          this.application = application ?? this.application;
         },
       });
   }

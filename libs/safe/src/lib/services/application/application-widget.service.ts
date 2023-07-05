@@ -1,14 +1,7 @@
 import { Apollo } from 'apollo-angular';
 import { Inject, Injectable } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import {
-  BehaviorSubject,
-  Observable,
-  Subscription,
-  map,
-  of,
-  switchMap,
-} from 'rxjs';
+import { Router } from '@angular/router';
+import { BehaviorSubject, Observable, Subscription } from 'rxjs';
 import { Role } from '../../models/user.model';
 import { Page, ContentType } from '../../models/page.model';
 import { Application } from '../../models/application.model';
@@ -100,9 +93,7 @@ import { SnackbarService } from '@oort-front/ui';
 /**
  * Shared application service. Handles events of opened application.
  */
-@Injectable({
-  providedIn: 'root',
-})
+@Injectable()
 export class SafeApplicationWidgetService {
   /** Current application */
   public application = new BehaviorSubject<Application | null>(null);
@@ -118,8 +109,14 @@ export class SafeApplicationWidgetService {
     return this.applicationWidgetTile.asObservable();
   }
 
+  widgetState!: { header: any; widget: any; settings: any };
+
   /** Notifications query subscription */
   private notificationSubscription?: Subscription;
+  /** Application query subscription */
+  private applicationSubscription?: Subscription;
+  /** Edit right subscription */
+  private lockSubscription?: Subscription;
 
   /** Current environment */
   private environment: any;
@@ -182,7 +179,6 @@ export class SafeApplicationWidgetService {
    * @param restService Shared rest service.
    * @param downloadService Shared download service
    * @param layoutService Shared layout service
-   * @param activatedRoute ActivatedRoute
    */
   constructor(
     @Inject('environment') environment: any,
@@ -193,8 +189,7 @@ export class SafeApplicationWidgetService {
     private translate: TranslateService,
     private restService: SafeRestService,
     private downloadService: SafeDownloadService,
-    private layoutService: SafeLayoutService,
-    private activatedRoute: ActivatedRoute
+    private layoutService: SafeLayoutService
   ) {
     this.environment = environment;
   }
@@ -245,64 +240,51 @@ export class SafeApplicationWidgetService {
    * @param asRole Role to use to preview
    */
   loadApplication(id: string, asRole?: string): void {
-    this.apollo
+    this.applicationSubscription = this.apollo
+      .query<GetApplicationByIdQueryResponse>({
+        query: GET_APPLICATION_BY_ID,
+        variables: {
+          id,
+          asRole,
+        },
+      })
+      .subscribe(({ data }) => {
+        // extend user abilities for application
+        if (data.application) {
+          this.authService.extendAbilityForApplication(data.application);
+        }
+        this.application.next(data.application);
+        const application = this.application.getValue();
+        this.getCustomStyle();
+        this.customStyleEdited = false;
+        if (data.application.locked) {
+          if (!application?.lockedByUser) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectLocked', {
+                name: data.application.name,
+              })
+            );
+          }
+        }
+      });
+    this.lockSubscription = this.apollo
       .subscribe<ApplicationUnlockedSubscriptionResponse>({
         query: APPLICATION_UNLOCKED_SUBSCRIPTION,
         variables: {
           id,
         },
       })
-      .pipe(
-        switchMap(({ data }) => {
-          if (data?.applicationUnlocked) {
-            const locked = data?.applicationUnlocked.locked;
-            const lockedByUser = data?.applicationUnlocked.lockedByUser;
-            return this.apollo
-              .query<GetApplicationByIdQueryResponse>({
-                query: GET_APPLICATION_BY_ID,
-                variables: {
-                  id,
-                  asRole,
-                },
-              })
-              .pipe(
-                map(({ data }) => {
-                  return {
-                    data: {
-                      ...data,
-                      locked,
-                      lockedByUser,
-                    },
-                  };
-                })
-              );
-          } else {
-            return of({ data: null });
-          }
-        })
-      )
       .subscribe(({ data }) => {
-        if (data) {
-          // extend user abilities for application
-          if (data.application) {
-            this.authService.extendAbilityForApplication(data.application);
-          }
-          this.application.next(data.application);
+        if (data?.applicationUnlocked) {
           const application = this.application.getValue();
-          this.getCustomStyle();
-          this.customStyleEdited = false;
-          if (data.application.locked) {
-            if (!application?.lockedByUser) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectLocked', {
-                  name: data.application.name,
-                })
-              );
-            }
-          }
+          const newApplication = {
+            ...application,
+            locked: data?.applicationUnlocked.locked,
+            lockedByUser: data?.applicationUnlocked.lockedByUser,
+          };
+          this.application.next(newApplication);
         }
       });
-
     this.notificationSubscription = this.apollo
       .subscribe<ApplicationEditedSubscriptionResponse>({
         query: APPLICATION_EDITED_SUBSCRIPTION,

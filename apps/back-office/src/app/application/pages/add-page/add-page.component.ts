@@ -1,5 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Optional, SkipSelf } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -38,6 +38,7 @@ const ITEMS_PER_PAGE = 10;
   selector: 'app-add-page',
   templateUrl: './add-page.component.html',
   styleUrls: ['./add-page.component.scss'],
+  providers: [SafeApplicationWidgetService],
 })
 export class AddPageComponent
   extends SafeUnsubscribeComponent
@@ -55,7 +56,6 @@ export class AddPageComponent
   };
   private loading = true;
   public loadingMore = false;
-  private origin!: string;
 
   // === REACTIVE FORM ===
   public pageForm: UntypedFormGroup = new UntypedFormGroup({});
@@ -77,6 +77,8 @@ export class AddPageComponent
     private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
+    @Optional()
+    @SkipSelf()
     private applicationWidgetService: SafeApplicationWidgetService,
     public dialog: Dialog,
     private snackBar: SnackbarService,
@@ -90,7 +92,6 @@ export class AddPageComponent
     this.activatedRoute.data.pipe(takeUntil(this.destroy$)).subscribe({
       next: (data) => {
         if (data.source === 'widget') {
-          this.origin = data.source;
           this.contentTypes = CONTENT_TYPES.filter(
             (ct) => ct.value !== 'workflow'
           );
@@ -167,7 +168,7 @@ export class AddPageComponent
    * Submit form to application service for creation
    */
   onSubmit(): void {
-    if (this.origin === 'widget') {
+    if (this.applicationWidgetService) {
       this.applicationWidgetService.addPage(this.pageForm.value);
     } else {
       this.applicationService.addPage(this.pageForm.value);
