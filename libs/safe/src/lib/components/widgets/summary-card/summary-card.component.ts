@@ -423,35 +423,32 @@ export class SafeSummaryCardComponent
    */
   private async setupGridSettings() {
     const card = this.settings.card;
-    if (!card || !card.resource || !card.layout) return;
+    if (!card || !card.resource || (!card.layout && !card.aggregation)) return;
 
-    this.gridLayoutService
-      .getLayouts(card.resource, { ids: [card.layout], first: 1 })
-      .then((res) => {
-        const layouts = res.edges.map((edge) => edge.node);
-        if (layouts.length > 0) {
-          const layout = layouts[0] || null;
-          this.gridSettings = {
-            ...{ template: get(this.settings, 'template', null) }, //TO MODIFY
-            ...{ resource: card.resource },
-            ...{ layouts: layout.id },
-            ...{
-              actions: {
-                //default actions, might need to modify later
-                addRecord: false,
-                convert: true,
-                delete: true,
-                export: true,
-                history: true,
-                inlineEdition: true,
-                showDetails: true,
-                update: true,
-              },
-            },
-          };
-        }
-      });
-    return;
+    const settings = {
+      template: get(this.settings, 'template', null), //TO MODIFY
+      resource: card.resource,
+      actions: {
+        //default actions, might need to modify later
+        addRecord: false,
+        convert: true,
+        delete: true,
+        export: true,
+        history: true,
+        inlineEdition: true,
+        showDetails: true,
+        update: true,
+      },
+    };
+
+    Object.assign(
+      settings,
+      card.aggregation
+        ? { aggregations: card.aggregation }
+        : { layouts: card.layout }
+    );
+
+    this.gridSettings = settings;
   }
 
   /**

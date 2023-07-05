@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   Input,
   OnChanges,
@@ -78,11 +79,13 @@ export class SafeChartComponent
    * @param aggregationService Shared aggregation service
    * @param translate Angular translate service
    * @param contextService Shared context service
+   * @param cdr Angular change detector
    */
   constructor(
     private aggregationService: SafeAggregationService,
     private translate: TranslateService,
-    private contextService: ContextService
+    private contextService: ContextService,
+    private cdr: ChangeDetectorRef
   ) {
     super();
 
@@ -92,6 +95,14 @@ export class SafeChartComponent
         this.loadChart();
         this.getOptions();
       });
+
+    // Not entirely sure why the change detection is not happening automatically
+    // when the series are updated, but this forces it to happen
+    this.series$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      setTimeout(() => {
+        this.cdr.detectChanges();
+      }, 100);
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -278,7 +289,7 @@ export class SafeChartComponent
                 })
               );
             } else {
-              // Group under same serie
+              // Group under same series
               this.series.next([
                 {
                   data: aggregationData,
