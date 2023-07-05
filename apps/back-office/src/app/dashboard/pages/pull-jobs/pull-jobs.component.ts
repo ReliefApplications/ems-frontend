@@ -356,12 +356,13 @@ export class PullJobsComponent
                 );
               } else {
                 if (data?.editPullJob) {
+                  console.log(data);
                   this.snackBar.openSnackBar(
                     this.translate.instant(
                       'common.notifications.objectUpdated',
                       {
                         type: this.translate.instant('common.pullJob.one')
-                          .toLowerCase,
+                          .toLowerCase(),
                         value: value.name,
                       }
                     )
