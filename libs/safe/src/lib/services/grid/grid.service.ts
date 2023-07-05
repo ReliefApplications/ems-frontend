@@ -67,6 +67,7 @@ export class SafeGridService {
    * @param options.disabled disable the grid
    * @param options.hidden hide the grid
    * @param options.filter filter options for the grid
+   * @param refDataSubField if field is a subfield from a reference data, enable edition
    * @returns The list of fields formatted for a grid component
    */
   public getFields(
@@ -78,35 +79,46 @@ export class SafeGridService {
       disabled: false,
       hidden: false,
       filter: true,
-    }
+    },
+    refDataSubField = false
   ): any[] {
+    // console.log('getFields fields', fields)
+    console.log('getFields options', options)
+    // console.log('getFields metaFields', metaFields)
     return flatDeep(
       fields.map((f) => {
+        console.log('---> f: ', f)
         const fullName: string = prefix ? `${prefix}.${f.name}` : f.name;
         let metaData = get(metaFields, fullName);
+    console.log('metaData ', metaData)
         const canSee = get(metaData, 'permissions.canSee', true);
         const canUpdate = get(metaData, 'permissions.canUpdate', false);
         const hidden: boolean =
           (!isNil(canSee) && !canSee) || options.hidden || false;
-        const disabled: boolean = options.disabled || !canUpdate;
+        const disabled: boolean = (options.disabled || !canUpdate) && !refDataSubField;
+        const isRefData = f.type.endsWith(REFERENCE_DATA_END) || refDataSubField;
+            console.log(' metaData', metaData)
+            console.log(' disabled', disabled)
 
         switch (f.kind) {
           case 'OBJECT': {
+          console.log('----------- OBJECT:', f.name)
             return this.getFields(
               f.fields,
               metaFields,
               layoutFields,
               fullName,
               {
-                disabled: true,
+                disabled: !isRefData,
                 hidden,
                 filter: prefix ? false : options.filter,
               }
             );
           }
           case 'LIST': {
+          console.log('----------- LIST:', f.name)
             metaData = Object.assign([], metaData);
-            if (f.type.endsWith(REFERENCE_DATA_END)) {
+            if (isRefData) {
               metaData.type = 'referenceData';
             } else {
               metaData.type = 'records';
@@ -120,9 +132,10 @@ export class SafeGridService {
               fullName,
               {
                 disabled: true,
-                hidden: !f.type.endsWith(REFERENCE_DATA_END),
+                hidden: !isRefData,
                 filter: false,
-              }
+              },
+              isRefData
             );
             return {
               name: fullName,
@@ -132,7 +145,7 @@ export class SafeGridService {
               editor: this.getFieldEditor(f.type),
               filter: prefix ? '' : this.getFieldFilter(f.type),
               meta: metaData,
-              disabled: true,
+              disabled: !isRefData,
               hidden: hidden || cachedField?.hidden || false,
               width: cachedField?.width || title.length * 7 + 50,
               order: cachedField?.order,
@@ -146,6 +159,7 @@ export class SafeGridService {
             };
           }
           default: {
+          console.log('----------- default:', f.name)
             const cachedField = get(layoutFields, fullName);
             const title = f.label ? f.label : prettifyLabel(f.name);
             return {
@@ -154,14 +168,14 @@ export class SafeGridService {
               type: f.type,
               layoutFormat: f.format,
               format: this.getFieldFormat(f.type),
-              editor: this.getFieldEditor(f.type),
-              filter: !options.filter ? '' : this.getFieldFilter(f.type),
+              editor: this.getFieldEditor(f.type, isRefData),
+              filter: !options.filter ? '' : this.getFieldFilter(f.type, isRefData),
               meta: metaData ? metaData : { type: 'text' },
               disabled:
-                disabled ||
                 DISABLED_FIELDS.includes(f.name) ||
                 metaData?.readOnly ||
-                metaData?.isCalculated,
+                metaData?.isCalculated ||
+                disabled,
               hidden: hidden || cachedField?.hidden || false,
               width: cachedField?.width || title.length * 7 + 50,
               order: cachedField?.order,
@@ -181,7 +195,7 @@ export class SafeGridService {
    * @param type Field type.
    * @returns name of the editor.
    */
-  private getFieldEditor(type: any): string {
+  private getFieldEditor(type: any, isRefData = false): string {
     switch (type) {
       case 'Int': {
         return 'numeric';
@@ -202,7 +216,7 @@ export class SafeGridService {
         return 'time';
       }
       case 'JSON': {
-        return '';
+        return 'text';
       }
       default: {
         return 'text';
@@ -235,7 +249,7 @@ export class SafeGridService {
    * @param type Type of the field.
    * @returns Name of the field filter.
    */
-  private getFieldFilter(type: any): string {
+  private getFieldFilter(type: any, isRefData = false): string {
     switch (type) {
       case 'Int': {
         return 'numeric';
@@ -256,7 +270,7 @@ export class SafeGridService {
         return 'date';
       }
       case 'JSON': {
-        return '';
+        return 'text';
       }
       default: {
         return 'text';
@@ -391,11 +405,18 @@ export class SafeGridService {
     fields
       .filter((x) => !x.disabled)
       .forEach((field) => {
+        console.log('field', field)
+        console.log('dataItem', dataItem)
         if (
           field.type !== 'JSON' ||
           MULTISELECT_TYPES.includes(field.meta.type)
         ) {
-          formGroup[field.name] = [dataItem[field.name]];
+          // If field is a reference data, name could have the subfield name with it
+          const index = field.name.indexOf('.');
+          const fieldName = index !== -1
+            ? field.name.substring(0, index)
+            : field.name;
+          formGroup[fieldName] = [dataItem[fieldName]];
         } else {
           if (field.meta.type === 'multipletext') {
             const fieldGroup: any = {};

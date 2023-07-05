@@ -478,7 +478,8 @@
           <!-- EDITION ( dropdown / radiogroup ) -->
           <ng-container
             *ngIf="
-              field.meta.type === 'dropdown' || field.meta.type === 'radiogroup'
+              field.meta.type === 'dropdown' || field.meta.type === 'radiogroup' ||
+              (field.meta.type === 'referenceData' && field.meta.choices)
             "
           >
             <kendo-dropdownlist
@@ -490,6 +491,21 @@
             ></kendo-dropdownlist>
           </ng-container>
         </ng-template>
+          <!-- EDITION ( tagbox ) -->
+        <ng-container
+          *ngIf="field.meta.type === 'tagbox' || (field.meta.type === 'referenceData' && !field.meta.choices)"
+        >
+        <!-- [data]="getTagboxChoices(field)" -->
+          <kendo-multiselect
+            [data]="field.meta.choices"
+            textField="text"
+            [valueField]="'value'"
+            [valuePrimitive]="true"
+            [formControl]="$any(formGroup.get(field.name))"
+            [autoClose]="false"
+          >
+          </kendo-multiselect>
+        </ng-container>
         <!-- EDITION ( date ) -->
         <ng-template
           kendoGridEditTemplate
@@ -625,7 +641,7 @@
       <!-- MULTI SELECT QUESTION TYPES ( checkbox / tagbox / owner / users ) -->
       <kendo-grid-column
         *ngIf="
-          field.type === 'JSON' && multiSelectTypes.includes(field.meta.type)
+          field.type === 'JSON' && multiSelectTypes.includes(field.meta.type) && field.meta.type !== 'tagbox' 
         "
         [field]="field.name"
         [filterable]="false"
