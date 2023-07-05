@@ -15,24 +15,56 @@
     <ng-container *ngIf="dashboard">
       <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
         <!-- Dashboard title -->
-        <safe-editable-text
-          [text]="dashboard.name"
-          [canEdit]="canEditName"
-          (onChange)="saveName($event)"
-          (formActiveEvent)="formActive = $event"
+        <div class="flex items-center gap-1">
+          <safe-editable-text
+            [text]="dashboard.name"
+            [canEdit]="canUpdate"
+            (onChange)="saveName($event)"
+            (formActiveEvent)="formActive = $event"
+          >
+            <h1 class="!m-0 overflow-hidden text-ellipsis">
+              {{ dashboard.name }}
+            </h1>
+          </safe-editable-text>
+          <ui-button
+            *ngIf="!isStep"
+            [isIcon]="true"
+            variant="grey"
+            category="primary"
+            [icon]="dashboard.page?.visible ? 'visibility' : 'visibility_off'"
+            (click)="togglePageVisibility()"
+            [uiTooltip]="
+              (dashboard.page?.visible
+                ? 'components.application.pages.hide'
+                : 'components.application.pages.show'
+              ) | translate
+            "
+          >
+          </ui-button>
+        </div>
+        <div
+          class="flex items-center gap-1"
+          *ngIf="!formActive"
+          cdkDropList
+          (cdkDropListDropped)="onButtonActionDrop($event)"
         >
-          <h1 class="!m-0 overflow-hidden text-ellipsis">
-            {{ dashboard.name }}
-          </h1>
-        </safe-editable-text>
+          <!-- Button actions -->
+          <safe-button-action
+            [buttonActions]="buttonActions"
+            [dashboard]="dashboard"
+            [canUpdate]="canUpdate"
+          ></safe-button-action>
 
-        <div class="flex items-center gap-1" *ngIf="!formActive">
           <!-- Fullscreen -->
           <ui-button
             variant="grey"
             [isIcon]="true"
             icon="{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}"
             (click)="isFullScreen = !isFullScreen"
+            [uiTooltip]="
+              (isFullScreen ? 'common.exitFullscreen' : 'common.openFullScreen')
+                | translate
+            "
           >
           </ui-button>
           <!-- Access -->
@@ -77,16 +109,20 @@
           <ui-menu #menu>
             <button uiMenuItem (click)="toggleFiltering()">
               <ui-icon icon="tune" variant="grey"></ui-icon>
-              <!-- todo(translate) -->
               {{
-                dashboard.showFilter
-                  ? 'Deactivate filtering'
-                  : 'Activate filtering'
+                (showFilter
+                  ? 'models.dashboard.deactivateFiltering'
+                  : 'models.dashboard.activateFiltering'
+                ) | translate
               }}
             </button>
             <button uiMenuItem (click)="onAppSelection()">
               <ui-icon icon="file_copy" variant="grey"></ui-icon>
               {{ 'common.duplicate' | translate }}
+            </button>
+            <button uiMenuItem (click)="onAddButtonAction()">
+              <ui-icon icon="touch_app" variant="grey"></ui-icon>
+              {{ 'models.dashboard.buttonActions.add' | translate }}
             </button>
             <button uiMenuItem (click)="onShare()">
               <ui-icon icon="share" variant="grey"></ui-icon>
@@ -116,7 +152,6 @@
         </div>
       </div>
       <ng-container *ngIf="dashboard.page?.context">
-        <!-- todo(translate) -->
         <ui-alert *ngIf="!contextRecord" class="mb-4">{{
           'models.dashboard.context.edition.template' | translate
         }}</ui-alert>

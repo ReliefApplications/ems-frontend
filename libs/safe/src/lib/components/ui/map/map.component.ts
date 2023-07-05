@@ -8,8 +8,10 @@ import {
   Output,
   EventEmitter,
   Renderer2,
+  OnDestroy,
 } from '@angular/core';
 import get from 'lodash/get';
+import difference from 'lodash/difference';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 // Leaflet plugins
 import 'leaflet';
@@ -33,16 +35,20 @@ import {
   MapControls,
 } from './interfaces/map.interface';
 import { BASEMAP_LAYERS } from './const/baseMaps';
-import { timeDimensionGeoJSON } from './test/timedimension-test';
+// import { timeDimensionGeoJSON } from './test/timedimension-test';
 import { SafeMapControlsService } from '../../../services/map/map-controls.service';
 import * as L from 'leaflet';
 import { Layer } from './layer';
-import { GeoJsonObject } from 'geojson';
-import { ArcgisService } from '../../../services/map/arcgis.service';
+// import { GeoJsonObject } from 'geojson';
+import {
+  ArcgisService,
+  TreeObject,
+} from '../../../services/map/arcgis.service';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 import { flatten, isNil, omitBy } from 'lodash';
 import { takeUntil } from 'rxjs';
 import { SafeMapPopupService } from './map-popup/map-popup.service';
+import { Platform } from '@angular/cdk/platform';
 
 /** Component for the map widget */
 @Component({
@@ -53,7 +59,7 @@ import { SafeMapPopupService } from './map-popup/map-popup.service';
 })
 export class MapComponent
   extends SafeUnsubscribeComponent
-  implements AfterViewInit
+  implements AfterViewInit, OnDestroy
 {
   /** Add or delete layer setter */
   @Input() set addOrDeleteLayer(layerAction: LayerActionOnMap | null) {
@@ -72,6 +78,7 @@ export class MapComponent
   public mapId: string;
   public map!: L.Map;
   private basemap: any;
+  private currentBasemapKey!: string;
   private esriApiKey!: string;
   /**
    * Update map settings and redraw it with those
@@ -117,9 +124,7 @@ export class MapComponent
 
   // === MARKERS ===
   // private baseTree!: L.Control.Layers.TreeObject;
-  private layersTree: L.Control.Layers.TreeObject[] = [];
   private layerControlButtons: any;
-  private layerControl: any;
 
   // === Controls ===
   // Search
@@ -131,6 +136,12 @@ export class MapComponent
 
   // === LAYERS ===
   private layers: Layer[] = [];
+  private layerIds: string[] = [];
+
+  private resizeObserver?: ResizeObserver;
+
+  private basemapTree: L.Control.Layers.TreeObject[][] = [];
+  private overlaysTree: L.Control.Layers.TreeObject[][] = [];
 
   /**
    * Map widget component
@@ -142,6 +153,7 @@ export class MapComponent
    * @param mapLayersService SafeMapLayersService
    * @param mapPopupService The map popup handler service
    * @param renderer Angular renderer
+   * @param platform Platform
    */
   constructor(
     @Inject('environment') environment: any,
@@ -150,7 +162,8 @@ export class MapComponent
     private arcgisService: ArcgisService,
     public mapLayersService: SafeMapLayersService,
     public mapPopupService: SafeMapPopupService,
-    private renderer: Renderer2
+    private renderer: Renderer2,
+    private platform: Platform
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -159,6 +172,11 @@ export class MapComponent
 
   /** Set map listeners */
   private setUpMapListeners() {
+    this.resizeObserver = new ResizeObserver(() => {
+      this.map.invalidateSize();
+    });
+    this.resizeObserver.observe(this.map.getContainer());
+
     // Set event listener to log map bounds when zooming, moving and resizing screen.
     this.map.on('moveend', () => {
       // If searched address marker exists, if we move, the item should disappear
@@ -180,6 +198,13 @@ export class MapComponent
       });
     });
 
+    // The scroll jump issue only happens on chrome client browser
+    // The following line would overwrite default behavior(preventDefault does not work for this purpose in chrome)
+    if (this.platform.WEBKIT || this.platform.BLINK) {
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
+      this.map.getContainer().focus = () => {};
+    }
+
     // Listen for language change
     this.translate.onLangChange
       .pipe(takeUntil(this.destroy$))
@@ -200,12 +225,9 @@ export class MapComponent
     // Creates the map and adds all the controls we use.
     this.drawMap();
 
-    this.displayLayerIfNeeded();
-
     this.setUpMapListeners();
 
     setTimeout(() => {
-      console.log('invalidating');
       this.map.invalidateSize();
       this.mapEvent.emit({
         type: MapEventType.FIRST_LOAD,
@@ -217,6 +239,11 @@ export class MapComponent
       });
       //}
     }, 1000);
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.resizeObserver?.disconnect();
   }
 
   /**
@@ -240,7 +267,7 @@ export class MapComponent
       [-90, -180],
       [90, 180],
     ]);
-    const basemap = get(mapSettings, 'basemap');
+    const basemap = get(mapSettings, 'basemap', 'OSM');
     const maxZoom = get(mapSettings, 'maxZoom', 18);
     const minZoom = get(mapSettings, 'minZoom', 2);
     const worldCopyJump = get(mapSettings, 'worldCopyJump', true);
@@ -269,7 +296,6 @@ export class MapComponent
    * @param initMap Does the map need to be reloaded
    */
   private drawMap(initMap: boolean = true): void {
-    console.log('drawing');
     const {
       initialState,
       maxBounds,
@@ -296,7 +322,8 @@ export class MapComponent
         minZoom,
         maxZoom,
         worldCopyJump,
-        timeDimension: true,
+        // timeDimension: true,
+        disableAutoPan: true,
       } as any).setView(
         L.latLng(
           initialState.viewpoint.center.latitude,
@@ -324,19 +351,24 @@ export class MapComponent
       if (this.map.getZoom() !== initialState.viewpoint.zoom) {
         this.map.setZoom(initialState.viewpoint.zoom);
       }
-      const currentCenter = this.map.getCenter();
-      if (
-        initialState.viewpoint.center.latitude !== currentCenter.lat ||
-        initialState.viewpoint.center.longitude !== currentCenter.lng
-      ) {
-        this.map.setView(
-          L.latLng(
-            initialState.viewpoint.center.latitude,
-            initialState.viewpoint.center.longitude
-          ),
-          initialState.viewpoint.zoom
-        );
-      }
+      // Could ask the map to do some unwanted movements
+      // const currentCenter = this.map.getCenter();
+      // if (
+      //   initialState.viewpoint.center.latitude !== currentCenter.lat ||
+      //   initialState.viewpoint.center.longitude !== currentCenter.lng
+      // ) {
+      //   console.log([
+      //     initialState.viewpoint.center.latitude,
+      //     initialState.viewpoint.center.longitude,
+      //   ]);
+      //   this.map.setView(
+      //     L.latLng(
+      //       initialState.viewpoint.center.latitude,
+      //       initialState.viewpoint.center.longitude
+      //     ),
+      //     initialState.viewpoint.zoom
+      //   );
+      // }
     }
 
     // Close layers/bookmarks menu
@@ -348,36 +380,77 @@ export class MapComponent
       layers?: L.Control.Layers.TreeObject[];
     }>[] = [];
 
-    if (this.basemap) {
-      this.basemap.removeFrom(this.map);
-    }
-    this.map.eachLayer((layer) => {
-      this.map.removeLayer(layer);
-    });
+    // Flag to set again basemap or webmap in map even if no basemap or webmap change is done
+    // For layer change case trigger(on layer change all layers, including basemap and webmaps, are deleted by default)
+    let layersRemoved = false;
 
-    // Get arcgis layers
-    if (arcGisWebMap) {
-      // Load arcgis webmap
-      promises.push(this.setWebmap(arcGisWebMap));
-    } else {
-      // else, load basemap ( default to osm )
-      promises.push(this.setBasemap(this.map, basemap));
-    }
-
-    if (layers?.length) {
-      promises.push(this.getLayers(layers));
-    }
-
-    // Add layers on map
-    Promise.all(promises).then((trees) => {
-      const basemaps: L.Control.Layers.TreeObject[][] = [];
-      const layers: L.Control.Layers.TreeObject[][] = [];
-      for (const tree of trees) {
-        tree.basemaps && basemaps.push(tree.basemaps);
-        tree.layers && layers.push(tree.layers);
+    if (
+      this.layerIds.length !== layers?.length ||
+      difference(layers, this.layerIds).length
+    ) {
+      this.map.eachLayer((layer) => {
+        this.map.removeLayer(layer);
+      });
+      layersRemoved = true;
+      this.layerIds = layers ?? [];
+      if (layers?.length) {
+        promises.push(this.getLayers(layers));
       }
-      this.setLayersControl(flatten(basemaps), flatten(layers));
-    });
+    }
+
+    if (
+      (!arcGisWebMap && basemap && basemap !== this.currentBasemapKey) ||
+      (arcGisWebMap && arcGisWebMap !== this.arcGisWebMap) ||
+      (this.arcGisWebMap && !arcGisWebMap) ||
+      layersRemoved
+    ) {
+      if (this.basemap) {
+        this.basemap.removeFrom(this.map);
+      }
+      // Get arcgis layers
+      if (arcGisWebMap) {
+        // Load arcgis webmap
+        promises.push(this.setWebmap(arcGisWebMap));
+      } else {
+        this.arcGisWebMap = undefined;
+        // else, load basemap ( default to osm )
+        promises.push(this.setBasemap(this.map, basemap));
+      }
+    }
+
+    // We need to fetch new layers
+    if (promises.length) {
+      Promise.all(promises).then((trees) => {
+        this.basemapTree = [];
+        this.overlaysTree = [];
+        for (const tree of trees) {
+          tree.basemaps && this.basemapTree.push(tree.basemaps);
+          tree.layers && this.overlaysTree.push(tree.layers);
+        }
+        if (controls.layer) {
+          this.setLayersControl(
+            flatten(this.basemapTree),
+            flatten(this.overlaysTree)
+          );
+        } else {
+          if (this.layerControlButtons) {
+            this.layerControlButtons.remove();
+          }
+        }
+      });
+    } else {
+      // No update on the layers, we only update the controls
+      if (controls.layer) {
+        this.setLayersControl(
+          flatten(this.basemapTree),
+          flatten(this.overlaysTree)
+        );
+      } else {
+        if (this.layerControlButtons) {
+          this.layerControlButtons.remove();
+        }
+      }
+    }
 
     this.setMapControls(controls, initMap);
   }
@@ -413,11 +486,11 @@ export class MapComponent
     }
 
     // Add TimeDimension control
-    this.mapControlsService.setTimeDimension(
-      this.map,
-      controls.timedimension ?? false,
-      timeDimensionGeoJSON as GeoJsonObject
-    );
+    // this.mapControlsService.setTimeDimension(
+    //   this.map,
+    //   controls.timedimension ?? false,
+    //   timeDimensionGeoJSON as GeoJsonObject
+    // );
     // Add download button and download menu
     this.mapControlsService.getDownloadControl(
       this.map,
@@ -435,20 +508,6 @@ export class MapComponent
     }
     // Add legend control
     this.mapControlsService.getLegendControl(this.map, controls.legend ?? true);
-    // Add layer control
-    if (controls.layer) {
-      if (this.layerControl) {
-        this.layerControl.addTo(this.map);
-        this.map
-          .getContainer()
-          .querySelector('.leaflet-control-layers')
-          ?.classList.add('hidden');
-      }
-    } else {
-      if (this.layerControl) {
-        this.layerControl.remove();
-      }
-    }
     // If initializing map: add fixed controls
     if (initMap) {
       // Add leaflet fullscreen control
@@ -468,7 +527,9 @@ export class MapComponent
   ) {
     if (!this.layerControlButtons || !this.layerControlButtons._map) {
       this.layerControlButtons = this.mapControlsService.getLayerControl(
-        this.map
+        this,
+        basemaps,
+        layers
       );
     }
     // this.baseTree = {
@@ -476,35 +537,6 @@ export class MapComponent
     //   children: basemaps,
     //   collapsed: true,
     // };
-    this.layersTree = layers;
-    // Add control to the map layers
-    if (this.layerControl) {
-      if (!this.extractSettings().controls.layer) {
-        this.map.removeControl(this.layerControl);
-        this.renderer.addClass(this.layerControlButtons._container, 'hidden');
-      } else {
-        this.renderer.removeClass(
-          this.layerControlButtons._container,
-          'hidden'
-        );
-      }
-      // this.layerControl.setBaseTree(this.baseTree);
-      this.layerControl.setOverlayTree(this.layersTree);
-    } else {
-      this.layerControl = L.control.layers.tree(
-        // this.baseTree,
-        undefined,
-        this.layersTree as any,
-        { collapsed: false }
-      );
-    }
-    if (this.extractSettings().controls.layer) {
-      this.layerControl.addTo(this.map);
-    }
-    this.map
-      .getContainer()
-      .querySelector('.leaflet-control-layers')
-      ?.classList.add('hidden');
   }
 
   /**
@@ -592,33 +624,6 @@ export class MapComponent
   }
 
   /**
-   * Display the layers if needed
-   *
-   */
-  public displayLayerIfNeeded(): void {
-    if (this.layerControl) {
-      if (!this.extractSettings().controls.layer) {
-        this.map.removeControl(this.layerControl);
-        this.renderer.addClass(this.layerControlButtons._container, 'hidden');
-      } else {
-        this.renderer.removeClass(
-          this.layerControlButtons._container,
-          'hidden'
-        );
-      }
-      // this.layerControl.setBaseTree(this.baseTree);
-      this.layerControl.setOverlayTree(this.layersTree);
-    } else {
-      this.layerControl = L.control.layers.tree(
-        // this.baseTree,
-        undefined,
-        this.layersTree as any,
-        { collapsed: false }
-      );
-    }
-  }
-
-  /**
    * Draw given layers and adds the related controls
    *
    * @param layers Layers to draw
@@ -640,31 +645,6 @@ export class MapComponent
       }
     } else {
       drawLayer(layers);
-    }
-
-    if (this.extractSettings().controls.layer) {
-      // this.layerControl.addTo(this.map);
-      if (this.layerControl && this.extractSettings().controls.layer) {
-        if (this.extractSettings().controls.layer) {
-          this.map.removeControl(this.layerControl);
-        }
-        // this.layerControl.setBaseTree(this.baseTree);
-        this.layerControl.setOverlayTree(layers as any);
-      } else {
-        this.layerControl = L.control.layers.tree(
-          // this.baseTree,
-          undefined,
-          layers as any,
-          { collapsed: false }
-        );
-      }
-      if (this.extractSettings().controls.layer) {
-        this.layerControl.addTo(this.map);
-      }
-      this.map
-        .getContainer()
-        .querySelector('.leaflet-control-layers')
-        ?.classList.add('hidden');
     }
   }
 
@@ -691,11 +671,8 @@ export class MapComponent
     } else {
       deleteLayer(layers);
     }
-    if (this.layerControl) this.map.removeControl(this.layerControl);
     // Reset related properties
     this.layers = [];
-    this.layersTree = [];
-    this.layerControl = undefined;
   }
   //   /**
   //  * Function used to apply options
@@ -882,6 +859,7 @@ export class MapComponent
     map: L.Map,
     basemap: any
   ): Promise<{ basemaps: L.Control.Layers.TreeObject[] }> {
+    this.currentBasemapKey = basemap as string;
     const basemapName = get(BASEMAP_LAYERS, basemap, BASEMAP_LAYERS.OSM);
     this.basemap = Vector.vectorBasemapLayer(basemapName, {
       apiKey: this.esriApiKey,
@@ -902,7 +880,10 @@ export class MapComponent
    * @param webmap String containing the id (name) of the webmap
    * @returns loaded basemaps and layers as Promise
    */
-  public setWebmap(webmap: any) {
+  public setWebmap(webmap: any): Promise<{
+    basemaps: TreeObject[];
+    layers: TreeObject[];
+  }> {
     this.arcGisWebMap = webmap;
     return this.arcgisService.loadWebMap(this.map, this.arcGisWebMap);
   }

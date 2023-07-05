@@ -17,58 +17,56 @@
   </ui-button>
   <!-- Available buttons -->
   <ui-tabs *ngIf="buttons.length > 0">
-    <ng-container *ngFor="let button of buttons.controls; let i = index">
-      <ui-tab>
-        <!-- Button label - tab label -->
-        <ng-container ngProjectAs="label">
-          <div
-            (cdkDropListDropped)="onReorder($event)"
-            [cdkDropListConnectedTo]="(tabIds$ | async)!"
-            [id]="TAB_ID_NAME + i"
-            cdkDropListOrientation="horizontal"
-            cdkDropList
-          >
-            <div class="flex items-center" cdkDrag>
-              <!-- Drag placeholder-->
-              <div *cdkDragPlaceholder></div>
-              <!-- Drag indicator -->
-              <ui-icon
-                cdkDragHandle
-                class="draggable"
-                icon="drag_indicator"
-              ></ui-icon>
-              <!-- Button name -->
-              <span
-                class="max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap"
-                >{{
-                  button.value.name.length > 0
-                    ? button.value.name
-                    : ('components.widget.settings.grid.buttons.defaultName'
-                      | translate)
-                }}
-              </span>
-              <!-- Error indicator -->
-              <ui-icon
-                *ngIf="button.invalid"
-                icon="error_outline"
-                variant="danger"
-                [size]="18"
-              ></ui-icon>
-            </div>
-          </div>
-        </ng-container>
-        <!-- Button form - tab content -->
-        <safe-button-config
-          [formGroup]="$any(button)"
-          [fields]="fields"
-          [channels]="channels"
-          [templates]="templates"
-          [distributionLists]="distributionLists"
-          [relatedForms]="relatedForms"
-          (deleteButton)="deleteButton(i)"
+    <ui-tab *ngFor="let button of buttons.controls; let i = index">
+      <!-- Button label - tab label -->
+      <ng-container ngProjectAs="label">
+        <div
+          (cdkDropListDropped)="onReorder($event)"
+          [cdkDropListConnectedTo]="(tabIds$ | async)!"
+          [id]="TAB_ID_NAME + i"
+          cdkDropListOrientation="horizontal"
+          cdkDropList
         >
-        </safe-button-config>
-      </ui-tab>
-    </ng-container>
+          <div class="flex items-center" cdkDrag>
+            <!-- Drag placeholder-->
+            <div *cdkDragPlaceholder></div>
+            <!-- Drag indicator -->
+            <ui-icon
+              cdkDragHandle
+              class="draggable"
+              icon="drag_indicator"
+            ></ui-icon>
+            <!-- Button name -->
+            <span
+              class="max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap"
+              >{{
+                button.value.name.length > 0
+                  ? button.value.name
+                  : ('components.widget.settings.grid.buttons.defaultName'
+                    | translate)
+              }}
+            </span>
+            <!-- Error indicator -->
+            <ui-icon
+              *ngIf="button.invalid"
+              icon="error_outline"
+              variant="danger"
+              [size]="18"
+            ></ui-icon>
+          </div>
+        </div>
+      </ng-container>
+      <!-- Button form - tab content -->
+      <safe-button-config
+        [formGroup]="$any(button)"
+        [fields]="fields"
+        [channels]="channels"
+        [templates]="templates"
+        [distributionLists]="distributionLists"
+        [relatedForms]="relatedForms"
+        (deleteButton)="deleteButton(i)"
+      >
+      </safe-button-config>
+    </ui-tab>
   </ui-tabs>
 </div>

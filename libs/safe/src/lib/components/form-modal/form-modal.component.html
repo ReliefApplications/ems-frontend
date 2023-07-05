@@ -10,7 +10,7 @@
         <safe-form-actions *ngIf="survey" [survey]="survey"></safe-form-actions>
       </div>
       <ui-tabs
-        [selectedIndex]="selectedTabIndex"
+        [selectedIndex]="(selectedPageIndex$ | async)!"
         (selectedIndexChange)="onShowPage($event)"
       >
         <ui-tab *ngFor="let page of pages$ | async">

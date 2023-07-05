@@ -30,7 +30,7 @@ import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
-import { BehaviorSubject, firstValueFrom, Observable, takeUntil } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, takeUntil } from 'rxjs';
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
 import { TranslateService } from '@ngx-translate/core';
@@ -97,20 +97,19 @@ export class SafeFormModalComponent
   private storedMergedData: any;
 
   public survey!: Survey.SurveyModel;
-  public selectedTabIndex = 0;
-  private pages = new BehaviorSubject<any[]>([]);
   protected temporaryFilesStorage: any = {};
 
   @ViewChild('formContainer') formContainer!: ElementRef;
 
-  /**
-   * Getter for the pages property
-   *
-   * @returns pages as an Observable
-   */
-  public get pages$(): Observable<any[]> {
-    return this.pages.asObservable();
-  }
+  /** Selected page index */
+  public selectedPageIndex: BehaviorSubject<number> =
+    new BehaviorSubject<number>(0);
+  /** Selected page index as observable */
+  public selectedPageIndex$ = this.selectedPageIndex.asObservable();
+  /** Available pages*/
+  private pages = new BehaviorSubject<any[]>([]);
+  /** Pages as observable */
+  public pages$ = this.pages.asObservable();
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -145,8 +144,6 @@ export class SafeFormModalComponent
   }
 
   async ngOnInit(): Promise<void> {
-    this.setFormListeners();
-
     this.data = { ...DEFAULT_DIALOG_DATA, ...this.data };
     Survey.StylesManager.applyTheme();
 
@@ -231,6 +228,7 @@ export class SafeFormModalComponent
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
       this.pages,
+      this.selectedPageIndex,
       this.temporaryFilesStorage
     );
 
@@ -249,16 +247,6 @@ export class SafeFormModalComponent
     this.survey.render(this.formContainer.nativeElement);
     // this.survey.render(this.containerId);
     this.loading = false;
-  }
-
-  /**
-   * Set needed listeners for the component
-   */
-  private setFormListeners() {
-    this.formBuilderService.selectedPageIndex
-      .asObservable()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((pageIndex: number) => (this.selectedTabIndex = pageIndex));
   }
 
   /**
@@ -333,15 +321,15 @@ export class SafeFormModalComponent
    * @param survey current survey
    */
   public async onUpdate(survey: any): Promise<void> {
-    const promises = this.formHelpersService.uploadTemporaryRecords(survey);
-    promises.push(
-      this.formHelpersService.uploadFiles(
-        survey,
-        this.temporaryFilesStorage,
-        this.form?.id
-      )
+    // const promises = this.formHelpersService.uploadTemporaryRecords(survey);
+    await this.formHelpersService.uploadFiles(
+      survey,
+      this.temporaryFilesStorage,
+      this.form?.id
     );
-    await Promise.allSettled(promises);
+    // await Promise.allSettled(promises);
+    await this.formHelpersService.createCachedRecords(survey);
+
     if (this.data.recordId) {
       if (this.isMultiEdition) {
         this.updateMultipleData(this.data.recordId, survey);
@@ -487,7 +475,6 @@ export class SafeFormModalComponent
     if (this.survey) {
       this.survey.currentPageNo = i;
     }
-    this.selectedTabIndex = i;
   }
 
   /**

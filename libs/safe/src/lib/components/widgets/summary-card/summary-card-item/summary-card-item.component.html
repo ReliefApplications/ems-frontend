@@ -1,37 +1,22 @@
-<ng-container *ngIf="!loading">
-  <!-- Template Header, injected from parent -->
-  <ng-container
-    *ngIf="headerTemplate"
-    [ngTemplateOutlet]="headerTemplate"
-  ></ng-container>
-  <!-- Default Header -->
-  <div class="widget-header k-card-header" *ngIf="!headerTemplate">
-    <!-- Title -->
-    <span class="widget-title" [title]="card.title">{{ card.title }}</span>
-    <!-- Actions -->
-    <div class="floating-button"></div>
-  </div>
-  <!-- HTML content -->
-  <safe-summary-card-item-content
-    *ngIf="
-      card.html &&
-      card.wholeCardStyles !== null &&
-      card.wholeCardStyles !== undefined
-    "
-    [html]="card.html"
-    [fields]="fields"
-    [fieldsValue]="fieldsValue"
-    [styles]="card.useStyles ? styles : []"
-    [wholeCardStyles]="card.wholeCardStyles"
-    style="flex: 1"
-  >
-  </safe-summary-card-item-content>
-</ng-container>
-<!-- Loading indicator -->
-<kendo-skeleton
-  *ngIf="loading"
-  shape="rectangle"
-  animation="pulse"
-  width="100%"
-  height="100%"
-></kendo-skeleton>
+<!-- Default Header -->
+<div class="widget-header k-card-header" *ngIf="card.title">
+  <!-- Title -->
+  <span class="widget-title" [title]="card.title">{{ card.title }}</span>
+  <!-- Actions -->
+  <div class="floating-button"></div>
+</div>
+<!-- HTML content -->
+<safe-summary-card-item-content
+  *ngIf="
+    card.html &&
+    card.wholeCardStyles !== null &&
+    card.wholeCardStyles !== undefined
+  "
+  [html]="card.html"
+  [fields]="fields"
+  [fieldsValue]="fieldsValue"
+  [styles]="card.useStyles ? styles : []"
+  [wholeCardStyles]="card.wholeCardStyles"
+  class="flex-1 overflow-auto p-[14px]"
+>
+</safe-summary-card-item-content>

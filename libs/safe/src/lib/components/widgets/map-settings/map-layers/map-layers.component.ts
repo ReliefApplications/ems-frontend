@@ -31,7 +31,7 @@ export class MapLayersComponent
   implements OnInit, AfterViewInit
 {
   @Input() mapComponent?: MapComponent;
-  @Input() formControl!: UntypedFormControl;
+  @Input() control!: UntypedFormControl;
 
   // Display of map
   @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;
@@ -99,7 +99,7 @@ export class MapLayersComponent
   private updateLayerList(): void {
     // todo: add filtering
     this.mapLayersService.getLayers().subscribe((layers) => {
-      const layerIds = this.formControl.value;
+      const layerIds = this.control.value;
       this.mapLayers = layers
         .filter((x) => layerIds.includes(x.id))
         .sort((a, b) => layerIds.indexOf(a.id) - layerIds.indexOf(b.id));
@@ -115,7 +115,7 @@ export class MapLayersComponent
   public onDeleteLayer(index: number) {
     // this.deleteLayer.emit(this.mapLayers[index].id);
     this.mapLayers.splice(index, 1);
-    this.formControl.setValue(this.mapLayers.map((x) => x.id));
+    this.control.setValue(this.mapLayers.map((x) => x.id));
     this.cdkTable.renderRows();
   }
 
@@ -139,15 +139,13 @@ export class MapLayersComponent
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      console.log('add');
-      console.log(value);
       if (value) {
         this.loading = true;
         this.mapLayersService.addLayer(value).subscribe({
           next: (res) => {
             if (res) {
-              const value = this.formControl.value;
-              this.formControl.setValue([...value, res.id]);
+              const value = this.control.value;
+              this.control.setValue([...value, res.id]);
               this.mapLayers.push(res);
             }
           },
@@ -201,8 +199,6 @@ export class MapLayersComponent
         dialogRef.closed
           .pipe(takeUntil(this.destroy$))
           .subscribe((value: any) => {
-            console.log('edit');
-            console.log(value);
             if (value) {
               this.loading = true;
               this.mapLayersService.editLayer(value).subscribe({
@@ -211,14 +207,12 @@ export class MapLayersComponent
                     const index = this.mapLayers.findIndex(
                       (layer) => layer.id === id
                     );
-                    if (index > -1) {
-                      // editing already selected layer
-                      this.mapLayers = this.mapLayers.splice(index, 1, res);
+                    if (index !== -1) {
                       this.restoreMapSettingsView();
                     } else {
                       // Selecting a new layer
-                      const value = this.formControl.value;
-                      this.formControl.setValue([...value, res.id]);
+                      const value = this.control.value;
+                      this.control.setValue([...value, res.id]);
                       this.mapLayers.push(res);
                     }
                   }
@@ -242,7 +236,7 @@ export class MapLayersComponent
     moveItemInArray(this.mapLayers, e.previousIndex, e.currentIndex);
     this.mapLayers = [...this.mapLayers];
     // const value = this.formControl.value;
-    this.formControl.setValue(
+    this.control.setValue(
       this.mapLayers.map((x) => x.id),
       { emitEvent: false }
     );

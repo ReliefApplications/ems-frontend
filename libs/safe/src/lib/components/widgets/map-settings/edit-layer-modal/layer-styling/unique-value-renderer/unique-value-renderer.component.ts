@@ -13,6 +13,8 @@ import {
   IconModule,
   SelectMenuModule,
 } from '@oort-front/ui';
+import { GeometryType } from '../../../../../ui/map/interfaces/layer-settings.type';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Unique value renderer layer settings.
@@ -30,11 +32,13 @@ import {
     SelectMenuModule,
     DragDropModule,
     IconModule,
+    TranslateModule,
   ],
   templateUrl: './unique-value-renderer.component.html',
   styleUrls: ['./unique-value-renderer.component.scss'],
 })
 export class UniqueValueRendererComponent implements OnInit {
+  @Input() geometryType: GeometryType = 'Point';
   @Input() formGroup!: FormGroup;
   @Input() fields$!: Observable<Fields[]>;
   private scalarFields = new BehaviorSubject<Fields[]>([]);
@@ -50,14 +54,14 @@ export class UniqueValueRendererComponent implements OnInit {
   ngOnInit(): void {
     this.fields$.subscribe((value) => {
       this.scalarFields.next(
-        value.filter((field) => ['String'].includes(field.type))
+        value.filter((field) => ['string'].includes(field.type.toLowerCase()))
       );
     });
   }
 
   /** Add new info form group */
   onAddInfo(): void {
-    this.uniqueValueInfos.push(createUniqueValueInfoForm());
+    this.uniqueValueInfos.push(createUniqueValueInfoForm(this.geometryType));
     this.openedIndex = this.uniqueValueInfos.length - 1;
   }
 

@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   HostListener,
@@ -65,6 +66,8 @@ export class DashboardFilterComponent
   public containerLeftOffset!: string;
   private value: any;
 
+  private resizeObserver!: ResizeObserver;
+
   // Survey
   public survey: Survey.Model = new Survey.Model();
   public surveyStructure: any = {};
@@ -92,6 +95,7 @@ export class DashboardFilterComponent
    * @param ngZone Triggers html changes
    * @param referenceDataService Reference data service
    * @param formService Shared form service
+   * @param changeDetectorRef Change detector reference
    * @param _host sidenav container host
    */
   constructor(
@@ -104,6 +108,7 @@ export class DashboardFilterComponent
     private ngZone: NgZone,
     private referenceDataService: SafeReferenceDataService,
     private formService: SafeFormService,
+    private changeDetectorRef: ChangeDetectorRef,
     @Optional() private _host: SidenavContainerComponent
   ) {
     super();
@@ -113,6 +118,13 @@ export class DashboardFilterComponent
   }
 
   ngAfterViewInit(): void {
+    if (this._host) {
+      this.resizeObserver = new ResizeObserver(() => {
+        this.setFilterContainerDimensions();
+      });
+      this.resizeObserver.observe(this._host.content.nativeElement);
+    }
+
     this.contextService.filter$
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -151,6 +163,11 @@ export class DashboardFilterComponent
     if (changes.isFullScreen) {
       this.setFilterContainerDimensions();
     }
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.resizeObserver.disconnect();
   }
 
   // add ngOnChanges there
@@ -389,5 +406,7 @@ export class DashboardFilterComponent
         }
       }
     }
+    // force change detection
+    this.changeDetectorRef.detectChanges();
   }
 }

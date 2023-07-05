@@ -1,8 +1,7 @@
-<!-- todo(gis): translate -->
 <div [formGroup]="formGroup" class="flex flex-col gap-y-8">
   <!-- Field -->
   <div uiFormFieldDirective>
-    <label>Field</label>
+    <label>{{ 'common.field.one' | translate }}</label>
     <ui-select-menu formControlName="field1">
       <ui-select-option
         *ngFor="let field of scalarFields$ | async"
@@ -14,7 +13,7 @@
   <!-- Unique values -->
   <div>
     <div class="flex gap-1 items-center mb-2">
-      <h2 class="m-0">Unique values</h2>
+      <h2 class="m-0">{{ 'common.value.none' | translate }}</h2>
       <ui-button
         (click)="onAddInfo()"
         [isIcon]="true"
@@ -56,13 +55,16 @@
 
   <!-- Default -->
   <div>
-    <h2>Default</h2>
+    <h2>{{ 'components.widget.settings.map.renderer.default' | translate }}</h2>
     <div uiFormFieldDirective>
-      <label>Default label</label>
+      <label>{{
+        'components.widget.settings.map.renderer.defaultLabel' | translate
+      }}</label>
       <input formControlName="defaultLabel" type="text" />
     </div>
-    <h3>Symbol</h3>
+    <h3>{{ 'components.widget.settings.map.renderer.symbol' | translate }}</h3>
     <safe-simple-renderer
+      [geometryType]="geometryType"
       [formGroup]="$any(formGroup.get('defaultSymbol'))"
     ></safe-simple-renderer>
   </div>
@@ -80,14 +82,19 @@
   </div>
   <div [formGroup]="form" class="flex flex-col pt-2">
     <div uiFormFieldDirective>
-      <label>Label</label>
+      <label>{{
+        'components.widget.settings.map.renderer.label' | translate
+      }}</label>
       <input formControlName="label" type="text" />
     </div>
     <div uiFormFieldDirective>
-      <label>Value</label>
+      <label>{{
+        'components.widget.settings.map.renderer.value' | translate
+      }}</label>
       <input formControlName="value" type="text" />
     </div>
     <safe-simple-renderer
+      [geometryType]="geometryType"
       [formGroup]="form.get('symbol')"
     ></safe-simple-renderer>
   </div>

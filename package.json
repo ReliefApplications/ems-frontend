@@ -1,6 +1,6 @@
 {
   "name": "oort-front",
-  "version": "2.0.0-alpha.12",
+  "version": "2.1.0-beta.1",
   "license": "MIT",
   "scripts": {
     "check-i18n": "node .scripts/check-i18n",
@@ -63,6 +63,7 @@
     "@progress/kendo-theme-default": "^6.0.3",
     "@storybook/addon-console": "^1.2.3",
     "@tinymce/tinymce-angular": "^7.0.0",
+    "@turf/centroid": "^6.5.0",
     "angular-oauth2-oidc": "~13.0.1",
     "apollo-angular": "^4.2.0",
     "chart.js": "^4.2.1",

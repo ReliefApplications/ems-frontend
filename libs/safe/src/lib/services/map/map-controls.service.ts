@@ -1,9 +1,15 @@
-import { EventEmitter, Inject, Injectable } from '@angular/core';
+import {
+  EventEmitter,
+  Inject,
+  Injectable,
+  Renderer2,
+  RendererFactory2,
+} from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { MARKER_OPTIONS } from '../../components/ui/map/const/marker-options';
 import { MapDownloadComponent } from '../../components/ui/map/map-download/map-download.component';
 import { DomService } from '../dom/dom.service';
-import { GeoJsonObject } from 'geojson';
+// import { GeoJsonObject } from 'geojson';
 /// <reference path="../../../../typings/leaflet/index.d.ts" />
 import * as L from 'leaflet';
 import 'esri-leaflet';
@@ -12,10 +18,11 @@ import 'leaflet-measure';
 import 'leaflet-timedimension';
 import * as Geocoding from 'esri-leaflet-geocoder';
 import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/language';
-import { MapLayersComponent } from '../../components/ui/map/map-layers/map-layers.component';
+import { MapSidenavControlsComponent } from '../../components/ui/map/map-sidenav-controls/map-sidenav-controls.component';
 import { legendControl } from '../../components/ui/map/controls/legend.control';
 import { MapZoomComponent } from '../../components/ui/map/map-zoom/map-zoom.component';
 import { MapEvent } from '../../components/ui/map/interfaces/map.interface';
+import { MapComponent } from '../../components/ui/map';
 
 /**
  * Shared map control service.
@@ -29,24 +36,33 @@ export class SafeMapControlsService {
   // === THEME ===
   private primaryColor = '';
   // === Time Dimension ===
-  private timeDimensionLayer!: any | null;
-  private timeDimensionControl!: L.Control | null;
+  // private timeDimensionLayer!: any | null;
+  // private timeDimensionControl!: L.Control | null;
   // === Map controls ===
   private downloadControl!: L.Control | null;
   private legendControl!: L.Control | null;
 
+  // === Listeners ===
+  private renderer!: Renderer2;
+  private sidenavControlClickListener!: any;
+  private sidenavControlWheelListener!: any;
+  private downloadControlClickListener!: any;
+  private downloadControlWheelListener!: any;
   /**
    * Shared map control service
    *
    * @param environment environment
    * @param translate Angular translate service
    * @param domService Shared dom service
+   * @param _renderer RendererFactory2
    */
   constructor(
     @Inject('environment') environment: any,
     private translate: TranslateService,
-    private domService: DomService
+    private domService: DomService,
+    private _renderer: RendererFactory2
   ) {
+    this.renderer = _renderer.createRenderer(null, null);
     this.lang = this.translate.currentLang;
     this.primaryColor = environment.theme.primary;
   }
@@ -54,33 +70,64 @@ export class SafeMapControlsService {
   /**
    * Creates the layer control.
    *
-   * @param {L.Map} map map to add the control
+   * @param mapComponent map component
+   * @param basemaps basemaps of the map
+   * @param layers layers used to create the layers tree
    * @returns A button to activate/deactivate the layers
    */
-  public getLayerControl(map: L.Map): void {
+  public getLayerControl(
+    mapComponent: MapComponent,
+    basemaps: L.Control.Layers.TreeObject[],
+    layers: L.Control.Layers.TreeObject[]
+  ): void {
     const layerControl = new L.Control({ position: 'topright' });
     layerControl.onAdd = () => {
       const container = L.DomUtil.create('div');
-      const mapLayersComponent = this.domService.appendComponentToBody(
-        MapLayersComponent,
+      const mapSidenavControlsComponent = this.domService.appendComponentToBody(
+        MapSidenavControlsComponent,
         container
       );
-      mapLayersComponent.instance.mapContainer = map.getContainer();
-      mapLayersComponent.instance.map = map;
+      mapSidenavControlsComponent.instance.layersTree = layers;
+      mapSidenavControlsComponent.instance.mapComponent = mapComponent;
+      mapSidenavControlsComponent.instance.basemaps = basemaps;
       return container;
+    };
+    layerControl.onRemove = () => {
+      if (this.sidenavControlClickListener) {
+        this.sidenavControlClickListener();
+        this.sidenavControlClickListener = null;
+      }
+      if (this.sidenavControlWheelListener) {
+        this.sidenavControlWheelListener();
+        this.sidenavControlWheelListener = null;
+      }
     };
     const container = layerControl.getContainer();
     if (container) {
+      if (this.sidenavControlClickListener) {
+        this.sidenavControlClickListener();
+      }
       // prevent click events from propagating to the map
-      container.addEventListener('click', (e: any) => {
-        L.DomEvent.stopPropagation(e);
-      });
+      this.sidenavControlClickListener = this.renderer.listen(
+        container,
+        'click',
+        (e: any) => {
+          L.DomEvent.stopPropagation(e);
+        }
+      );
+      if (this.sidenavControlWheelListener) {
+        this.sidenavControlWheelListener();
+      }
       // prevent mouse wheel events from propagating to the map
-      container.addEventListener('wheel', (e: any) => {
-        L.DomEvent.stopPropagation(e);
-      });
+      this.sidenavControlWheelListener = this.renderer.listen(
+        container,
+        'wheel',
+        (e: any) => {
+          L.DomEvent.stopPropagation(e);
+        }
+      );
     }
-    return (layerControl as any)?.addTo(map);
+    return (layerControl as any)?.addTo(mapComponent.map);
   }
 
   /**
@@ -93,8 +140,8 @@ export class SafeMapControlsService {
   public getSearchbarControl(map: L.Map, apiKey: string) {
     const control = Geocoding.geosearch({
       position: 'topleft',
-      // todo(gis): translate
-      placeholder: 'Enter an address or place e.g. 1 York St',
+      // todo: translate
+      placeholder: this.translate.instant('common.placeholder.address'), // 'Enter an address or place e.g. 1 York St'
       useMapBounds: false,
       providers: [
         Geocoding.arcgisOnlineProvider({
@@ -319,18 +366,42 @@ export class SafeMapControlsService {
           const instance: MapDownloadComponent = component.instance;
           return div;
         };
+        this.downloadControl.onRemove = () => {
+          if (this.downloadControlClickListener) {
+            this.downloadControlClickListener();
+            this.downloadControlClickListener = null;
+          }
+          if (this.downloadControlWheelListener) {
+            this.downloadControlWheelListener();
+            this.downloadControlWheelListener = null;
+          }
+        };
         this.downloadControl.addTo(map);
 
         const container = this.downloadControl.getContainer();
         if (container) {
+          if (this.downloadControlClickListener) {
+            this.downloadControlClickListener();
+          }
           // prevent click events from propagating to the map
-          container.addEventListener('click', (e: any) => {
-            L.DomEvent.stopPropagation(e);
-          });
+          this.downloadControlClickListener = this.renderer.listen(
+            container,
+            'click',
+            (e: any) => {
+              L.DomEvent.stopPropagation(e);
+            }
+          );
+          if (this.downloadControlWheelListener) {
+            this.downloadControlWheelListener();
+          }
           // prevent mouse wheel events from propagating to the map
-          container.addEventListener('wheel', (e: any) => {
-            L.DomEvent.stopPropagation(e);
-          });
+          this.downloadControlWheelListener = this.renderer.listen(
+            container,
+            'wheel',
+            (e: any) => {
+              L.DomEvent.stopPropagation(e);
+            }
+          );
         }
       }
     } else {
@@ -406,69 +477,69 @@ export class SafeMapControlsService {
     createCorner('verticalcenter', 'right');
   }
 
-  /**
-   * Add or remove the TimeDimension in the map
-   * todo(gis): only for mockups
-   *
-   * @param {L.Map} map map where to add or remove the timeDimension feature
-   * @param {boolean} addTimeDimension boolean to indicates if should add or remove TimeDimension control
-   * @param {GeoJsonObject | GeoJsonObject[]} timeDimensionGeoJSON Geojson object for the time dimension
-   */
-  public setTimeDimension(
-    map: L.Map,
-    addTimeDimension: boolean,
-    timeDimensionGeoJSON: GeoJsonObject | GeoJsonObject[]
-  ): void {
-    if (addTimeDimension) {
-      if (!this.timeDimensionControl) {
-        this.createTimeDimensionControl(map);
-        const geoJSON = L.geoJson(timeDimensionGeoJSON);
-        this.timeDimensionLayer = (L as any).timeDimension.layer
-          .geoJson(geoJSON)
-          .addTo(map);
-      }
-    } else {
-      if (this.timeDimensionControl) {
-        this.timeDimensionControl.remove();
-        this.timeDimensionLayer.remove();
-        this.timeDimensionControl = null;
-        this.timeDimensionLayer = null;
-      }
-    }
-  }
+  // /**
+  //  * Add or remove the TimeDimension in the map
+  //  * todo(gis): only for mockups
+  //  *
+  //  * @param {L.Map} map map where to add or remove the timeDimension feature
+  //  * @param {boolean} addTimeDimension boolean to indicates if should add or remove TimeDimension control
+  //  * @param {GeoJsonObject | GeoJsonObject[]} timeDimensionGeoJSON Geojson object for the time dimension
+  //  */
+  // public setTimeDimension(
+  //   map: L.Map,
+  //   addTimeDimension: boolean,
+  //   timeDimensionGeoJSON: GeoJsonObject | GeoJsonObject[]
+  // ): void {
+  //   if (addTimeDimension) {
+  //     if (!this.timeDimensionControl) {
+  //       this.createTimeDimensionControl(map);
+  //       const geoJSON = L.geoJson(timeDimensionGeoJSON);
+  //       this.timeDimensionLayer = (L as any).timeDimension.layer
+  //         .geoJson(geoJSON)
+  //         .addTo(map);
+  //     }
+  //   } else {
+  //     if (this.timeDimensionControl) {
+  //       this.timeDimensionControl.remove();
+  //       this.timeDimensionLayer.remove();
+  //       this.timeDimensionControl = null;
+  //       this.timeDimensionLayer = null;
+  //     }
+  //   }
+  // }
 
-  /**
-   * Creates the TimeDimension Control
-   *
-   * @param {L.Map} map map where to add or remove the timeDimension control
-   */
-  private createTimeDimensionControl(map: L.Map): void {
-    const timeDimension = (map as any).timeDimension;
-    timeDimension.options = {
-      period: 'PT1H', // todo(gis): should be part of time settings
-      timeInterval: '2017-06-01/2017-09-01', // todo(gis): should be part of time settings
-      currentTime: '2017-06-01', // todo(gis): should be part of time settings
-    };
+  // /**
+  //  * Creates the TimeDimension Control
+  //  *
+  //  * @param {L.Map} map map where to add or remove the timeDimension control
+  //  */
+  // private createTimeDimensionControl(map: L.Map): void {
+  //   const timeDimension = (map as any).timeDimension;
+  //   timeDimension.options = {
+  //     period: 'PT1H', // todo(gis): should be part of time settings
+  //     timeInterval: '2017-06-01/2017-09-01', // todo(gis): should be part of time settings
+  //     currentTime: '2017-06-01', // todo(gis): should be part of time settings
+  //   };
 
-    const player = new (L as any).TimeDimension.Player(
-      { transitionTime: 1000, startOver: true },
-      timeDimension
-    );
+  //   const player = new (L as any).TimeDimension.Player(
+  //     { transitionTime: 1000, startOver: true },
+  //     timeDimension
+  //   );
 
-    const timeDimensionControlOptions = {
-      player,
-      timeDimension,
-      position: 'bottomleft',
-      autoPlay: false,
-      timeSliderDragUpdate: true,
-    };
+  //   const timeDimensionControlOptions = {
+  //     player,
+  //     timeDimension,
+  //     position: 'bottomleft',
+  //     autoPlay: false,
+  //     timeSliderDragUpdate: true,
+  //   };
 
-    this.timeDimensionControl = new (L.Control as any).TimeDimension(
-      timeDimensionControlOptions
-    );
+  //   this.timeDimensionControl = new (L.Control as any).TimeDimension(
+  //     timeDimensionControlOptions
+  //   );
 
-    if (this.timeDimensionControl) {
-      map.addControl(this.timeDimensionControl);
-    }
-  }
+  //   if (this.timeDimensionControl) {
+  //     map.addControl(this.timeDimensionControl);
+  //   }
+  // }
 }

@@ -479,4 +479,26 @@ export class WorkflowComponent
       this.router.navigate(['./'], { relativeTo: this.route });
     }
   }
+
+  /**
+   * Toggle page visibility.
+   */
+  togglePageVisibility() {
+    const callback = () => {
+      this.workflow = {
+        ...this.workflow,
+        page: {
+          ...this.workflow?.page,
+          visible: !this.workflow?.page?.visible,
+        },
+      };
+    };
+    this.applicationService.togglePageVisibility(
+      {
+        id: this.workflow?.page?.id,
+        visible: this.workflow?.page?.visible,
+      },
+      callback
+    );
+  }
 }

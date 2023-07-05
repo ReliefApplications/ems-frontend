@@ -1,7 +1,6 @@
-<div class="html-content" (click)="onClick($event)">
-  <div
-    class="w-fit h-fit no-tailwindcss-base"
-    [innerHTML]="formattedHtml"
-    [style]="cardStyle"
-  ></div>
-</div>
+<div
+  (click)="onClick($event)"
+  class="w-full h-fit no-tailwindcss-base"
+  [innerHTML]="formattedHtml"
+  [style]="formattedStyle"
+></div>

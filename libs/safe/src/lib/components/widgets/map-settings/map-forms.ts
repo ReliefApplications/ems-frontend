@@ -17,8 +17,12 @@ import {
   UniqueValueInfo,
 } from '../../../models/layer.model';
 import { IconName } from '../../icon-picker/icon-picker.const';
-import { LayerType } from '../../ui/map/interfaces/layer-settings.type';
+import {
+  GeometryType,
+  LayerType,
+} from '../../ui/map/interfaces/layer-settings.type';
 import { set } from 'lodash';
+import { DEFAULT_MARKER_ICON_OPTIONS } from '../../ui/map/utils/create-div-icon';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 
@@ -62,9 +66,8 @@ const DEFAULT_GRADIENT = [
  * @returns new form group
  */
 export const createLayerForm = (value?: LayerModel) => {
-  const type = get(value, 'type', 'FeatureLayer') as LayerType;
-
-  return new FormGroup({
+  const type = get(value, 'type') || 'FeatureLayer';
+  const formGroup = fb.group({
     // Layer properties
     id: new FormControl(get(value, 'id', null)),
     type: new FormControl(type, Validators.required),
@@ -75,6 +78,7 @@ export const createLayerForm = (value?: LayerModel) => {
     ),
     opacity: new FormControl(get(value, 'opacity', 1), Validators.required),
     layerDefinition: createLayerDefinitionForm(
+      get(value, 'datasource.type') || 'Point',
       type,
       get(value, 'layerDefinition')
     ),
@@ -87,6 +91,20 @@ export const createLayerForm = (value?: LayerModel) => {
       sublayers: new FormControl(get(value, 'sublayers', [])),
     }),
   });
+  if (type !== 'GroupLayer') {
+    formGroup.get('datasource.type')?.valueChanges.subscribe((geometryType) => {
+      formGroup.setControl(
+        'layerDefinition',
+        createLayerDefinitionForm(
+          geometryType,
+          type,
+          formGroup.get('layerDefinition')?.value
+        ),
+        { emitEvent: false }
+      );
+    });
+  }
+  return formGroup;
 };
 
 /**
@@ -98,8 +116,9 @@ export const createLayerForm = (value?: LayerModel) => {
 const createLayerDataSourceForm = (value?: any): FormGroup => {
   const getCanSeeFields = (value: any) => {
     return (
-      (get(value, 'resource') || get(value, 'refData')) &&
-      (get(value, 'layout') || get(value, 'aggregation'))
+      (get(value, 'resource') &&
+        (get(value, 'layout') || get(value, 'aggregation'))) ||
+      get(value, 'refData')
     );
   };
   const canSeeFields = getCanSeeFields(value);
@@ -120,20 +139,28 @@ const createLayerDataSourceForm = (value?: any): FormGroup => {
     latitudeField: [
       {
         value: get(value, 'latitudeField', null),
-        disabled: !canSeeFields || get(value, 'geoField'),
+        disabled:
+          !canSeeFields ||
+          get(value, 'geoField') ||
+          get(value, 'type') === 'Polygon',
       },
     ],
     longitudeField: [
       {
         value: get(value, 'longitudeField', null),
-        disabled: !canSeeFields || get(value, 'geoField'),
+        disabled:
+          !canSeeFields ||
+          get(value, 'geoField') ||
+          get(value, 'type') === 'Polygon',
       },
     ],
+    type: [get(value, 'type', 'Point')],
   });
   formGroup.valueChanges.subscribe((value) => {
     const canSeeFields = getCanSeeFields(value);
     if (canSeeFields) {
-      if (value.geoField) {
+      if (value.geoField || value.type === 'Polygon') {
+        formGroup.get('geoField')?.enable({ emitEvent: false });
         formGroup.get('latitudeField')?.disable({ emitEvent: false });
         formGroup.get('longitudeField')?.disable({ emitEvent: false });
       } else {
@@ -157,18 +184,26 @@ const createLayerDataSourceForm = (value?: any): FormGroup => {
 /**
  * Create layer definition form group
  *
+ * @param geometryType layer geometry type
  * @param type layer type
  * @param value layer definition
  * @returns layer definition form group
  */
-const createLayerDefinitionForm = (type: LayerType, value?: any): FormGroup => {
+const createLayerDefinitionForm = (
+  geometryType: GeometryType = 'Point',
+  type: LayerType,
+  value?: any
+): FormGroup => {
   const formGroup = fb.group({
     minZoom: [get(value, 'minZoom', 2), Validators.required],
     maxZoom: [get(value, 'maxZoom', 18), Validators.required],
     ...(type !== 'GroupLayer' && {
-      drawingInfo: createLayerDrawingInfoForm(get(value, 'drawingInfo')),
+      drawingInfo: createLayerDrawingInfoForm(
+        get(value, 'drawingInfo'),
+        geometryType
+      ),
       featureReduction: createLayerFeatureReductionForm(
-        get(value, 'featureReduction')
+        geometryType === 'Point' ? get(value, 'featureReduction') : null
       ),
     }),
   });
@@ -182,8 +217,15 @@ const createLayerDefinitionForm = (type: LayerType, value?: any): FormGroup => {
           set(drawingInfo, 'renderer.type', type);
           formGroup.setControl(
             'drawingInfo',
-            createLayerDrawingInfoForm(drawingInfo)
+            createLayerDrawingInfoForm(drawingInfo, geometryType)
           );
+          // If new type is heatmap and we currently have a cluster set, reset the featureReduction
+          if (
+            type === 'heatmap' &&
+            formGroup.get('featureReduction.type')?.value === 'cluster'
+          ) {
+            formGroup.get('featureReduction.type')?.patchValue({ type: null });
+          }
           setTypeListeners();
         });
     };
@@ -220,24 +262,56 @@ export const createLayerFeatureReductionForm = (value: any) => {
 };
 
 /**
+ * Create symbol form for layer
+ *
+ * @param value layer symbol value
+ * @param geometryType layer geometry type
+ * @returns layer symbol form
+ */
+export const createSymbolForm = (
+  value: any,
+  geometryType: GeometryType = 'Point'
+): FormGroup => {
+  return fb.group({
+    color: [
+      get(value, 'color', DEFAULT_MARKER_ICON_OPTIONS.color),
+      Validators.required,
+    ],
+    size: [get(value, 'size', 24)],
+    style: new FormControl<IconName>(get(value, 'style', 'location-dot')),
+    ...(geometryType === 'Polygon' && {
+      outline: fb.group({
+        color: [
+          get(value, 'outline.color', DEFAULT_MARKER_ICON_OPTIONS.color),
+          Validators.required,
+        ],
+        width: [get(value, 'outline.width', 1)],
+      }),
+    }),
+  });
+};
+
+/**
  * Create layer drawing info form
  *
  * @param value layer drawing info
+ * @param geometryType layer geometry type
  * @returns layer drawing info form
  */
-export const createLayerDrawingInfoForm = (value: any): FormGroup => {
-  const type = get(value, 'renderer.type', 'simple');
+export const createLayerDrawingInfoForm = (
+  value: any,
+  geometryType: GeometryType = 'Point'
+): FormGroup => {
+  let type = get(value, 'renderer.type', 'simple');
+  // Avoid heatmap to be used if not point
+  if (geometryType !== 'Point' && type === 'heatmap') {
+    type = 'simple';
+  }
   const formGroup = fb.group({
     renderer: fb.group({
       type: [type, Validators.required],
       ...(type === 'simple' && {
-        symbol: fb.group({
-          color: [get(value, 'renderer.symbol.color', ''), Validators.required],
-          size: [get(value, 'renderer.symbol.size', 24)],
-          style: new FormControl<IconName>(
-            get(value, 'renderer.symbol.style', 'location-dot')
-          ),
-        }),
+        symbol: createSymbolForm(get(value, 'renderer.symbol'), geometryType),
       }),
       ...(type === 'heatmap' && {
         gradient: [
@@ -256,21 +330,15 @@ export const createLayerDrawingInfoForm = (value: any): FormGroup => {
       }),
       ...(type === 'uniqueValue' && {
         defaultLabel: get(value, 'renderer.defaultLabel', 'Other'),
-        defaultSymbol: fb.group({
-          color: [
-            get(value, 'renderer.defaultSymbol.color', ''),
-            Validators.required,
-          ],
-          size: [get(value, 'renderer.defaultSymbol.size', 24)],
-          style: new FormControl<IconName>(
-            get(value, 'renderer.defaultSymbol.style', 'location-dot')
-          ),
-        }),
+        defaultSymbol: createSymbolForm(
+          get(value, 'renderer.defaultSymbol'),
+          geometryType
+        ),
         field1: [get(value, 'renderer.field1', null), Validators.required],
         uniqueValueInfos: fb.array(
           get(value, 'renderer.uniqueValueInfos', []).map(
             (uniqueValueInfo: UniqueValueInfo) =>
-              createUniqueValueInfoForm(uniqueValueInfo)
+              createUniqueValueInfoForm(geometryType, uniqueValueInfo)
           )
         ),
       }),
@@ -282,20 +350,18 @@ export const createLayerDrawingInfoForm = (value: any): FormGroup => {
 /**
  * Create unique value form group
  *
+ * @param geometryType layer geometry type
  * @param value unique value
  * @returns unique value form group
  */
-export const createUniqueValueInfoForm = (value?: any) =>
+export const createUniqueValueInfoForm = (
+  geometryType: GeometryType = 'Point',
+  value?: any
+) =>
   fb.group({
     label: [get(value, 'label', ''), Validators.required],
     value: [get(value, 'value', ''), Validators.required],
-    symbol: fb.group({
-      color: [get(value, 'symbol.color', ''), Validators.required],
-      size: [get(value, 'symbol.size', 24)],
-      style: new FormControl<IconName>(
-        get(value, 'symbol.style', 'location-dot')
-      ),
-    }),
+    symbol: createSymbolForm(get(value, 'symbol'), geometryType),
   });
 
 /**
@@ -371,7 +437,7 @@ export type LayerFormT = ReturnType<typeof createLayerForm>;
  */
 export const createMapControlsForm = (value?: MapControls): FormGroup =>
   fb.group({
-    timedimension: [get(value, 'timedimension', false)],
+    // timedimension: [get(value, 'timedimension', false)],
     download: [get(value, 'download', true)],
     legend: [get(value, 'legend', true)],
     measure: [get(value, 'measure', false)],

@@ -90,7 +90,8 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
             this.document
               .getElementsByTagName('kendo-multiviewcalendar')
               .item(0)
-              ?.contains(event.target)
+              ?.contains(event.target) ||
+            this.uiDateWrapper.viewChangeAction
           )
         ) {
           this.closeCalendar();
@@ -193,36 +194,38 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
    * Open the associated calendar
    */
   openCalendar(): void {
-    this.isCalendarOpen = true;
-    const overlayOriginPosition = this.setOverlayOriginPosition();
-    // We create an overlay for the displayed calendar
-    this.overlayRef = this.overlay.create({
-      hasBackdrop: false,
-      // close calendar on user scroll - default behavior, could be changed
-      scrollStrategy: this.overlay.scrollStrategies.close(),
-      // We position the displayed calendar taking current directive host element as reference
-      positionStrategy: this.overlay
-        .position()
-        .flexibleConnectedTo(this.el)
-        .withPositions(overlayOriginPosition),
-    });
-    // Create the template portal for the current calendar
-    const templatePortal = new TemplatePortal(
-      this.uiDateWrapper.calendar,
-      this.viewContainerRef
-    );
-    // Attach it to our overlay
-    this.overlayRef.attach(templatePortal);
-    // We add the needed classes to create the animation on calendar display
-    setTimeout(() => {
-      this.applyCalendarDisplayAnimation(true);
-    }, 0);
-    // Subscribe to all actions that close the calendar
-    this.calendarClosingActionsSubscription =
-      this.calendarClosingActions().subscribe(
-        // If so, close calendar
-        () => this.closeCalendar()
+    if (!this.isCalendarOpen) {
+      this.isCalendarOpen = true;
+      const overlayOriginPosition = this.setOverlayOriginPosition();
+      // We create an overlay for the displayed calendar
+      this.overlayRef = this.overlay.create({
+        hasBackdrop: false,
+        // close calendar on user scroll - default behavior, could be changed
+        scrollStrategy: this.overlay.scrollStrategies.close(),
+        // We position the displayed calendar taking current directive host element as reference
+        positionStrategy: this.overlay
+          .position()
+          .flexibleConnectedTo(this.el)
+          .withPositions(overlayOriginPosition),
+      });
+      // Create the template portal for the current calendar
+      const templatePortal = new TemplatePortal(
+        this.uiDateWrapper.calendar,
+        this.viewContainerRef
       );
+      // Attach it to our overlay
+      this.overlayRef.attach(templatePortal);
+      // We add the needed classes to create the animation on calendar display
+      setTimeout(() => {
+        this.applyCalendarDisplayAnimation(true);
+      }, 0);
+      // Subscribe to all actions that close the calendar
+      this.calendarClosingActionsSubscription =
+        this.calendarClosingActions().subscribe(
+          // If so, close calendar
+          () => this.closeCalendar()
+        );
+    }
   }
 
   /**

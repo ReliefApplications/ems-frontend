@@ -18,14 +18,12 @@ import {
   MapEvent,
   MapEventType,
 } from '../../ui/map/interfaces/map.interface';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, debounceTime, takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { LayerModel } from '../../../models/layer.model';
-import { SafeMapLayersService } from '../../../services/map/map-layers.service';
-import { SafeConfirmService } from '../../../services/confirm/confirm.service';
-import { TranslateService } from '@ngx-translate/core';
 import { MapComponent } from '../../ui/map';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
+import { SafeLayoutService } from '../../../services/layout/layout.service';
 
 /** Component for the map widget settings */
 @Component({
@@ -59,19 +57,18 @@ export class SafeMapSettingsComponent
   );
   destroyTab$: Subject<boolean> = new Subject<boolean>();
 
+  // Layers controls right side nav. Store if sidenav is used, to be able to destroy it when closing the view.
+  private openedLayersSideNav = false;
+
   /**
    * Class constructor
    *
-   * @param mapLayersService SafeMapLayersService to add/edit/remove layers
-   * @param confirmService SafeConfirmService
-   * @param translate TranslateService
    * @param cdr ChangeDetectorRef
+   * @param layoutService Shared layout service
    */
   constructor(
-    private mapLayersService: SafeMapLayersService,
-    private confirmService: SafeConfirmService,
-    private translate: TranslateService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private layoutService: SafeLayoutService
   ) {
     super();
   }
@@ -104,6 +101,14 @@ export class SafeMapSettingsComponent
     );
     this.mapComponent = componentRef.instance;
     this.currentMapContainerRef.next(this.mapContainerRef);
+
+    this.layoutService.rightSidenav$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((view: any) => {
+        if (view?.inputs?.layersMenuExpanded) {
+          this.openedLayersSideNav = true;
+        }
+      });
   }
 
   /**
@@ -133,7 +138,7 @@ export class SafeMapSettingsComponent
     });
     this.tileForm
       .get('initialState')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value) =>
         this.updateMapSettings({
           initialState: value,
@@ -141,13 +146,13 @@ export class SafeMapSettingsComponent
       );
     this.tileForm
       .get('basemap')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value) =>
         this.updateMapSettings({ basemap: value } as MapConstructorSettings)
       );
     this.tileForm
       .get('controls')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value) => {
         this.updateMapSettings({
           controls: value,
@@ -155,7 +160,7 @@ export class SafeMapSettingsComponent
       });
     this.tileForm
       .get('arcGisWebMap')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value) =>
         this.updateMapSettings({
           arcGisWebMap: value,
@@ -163,7 +168,7 @@ export class SafeMapSettingsComponent
       );
     this.tileForm
       .get('layers')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value) =>
         this.updateMapSettings({
           layers: value,
@@ -203,7 +208,6 @@ export class SafeMapSettingsComponent
    * @param settings new settings
    */
   private updateMapSettings(settings: MapConstructorSettings) {
-    console.log('update');
     if (this.mapSettings) {
       this.mapSettings = {
         ...this.mapSettings,
@@ -244,11 +248,11 @@ export class SafeMapSettingsComponent
     }
   }
 
-  /**
-   * Open layer edition
-   *
-   * @param layer layer to open
-   */
+  // /**
+  //  * Open layer edition
+  //  *
+  //  * @param layer layer to open
+  //  */
   // onEditLayer(layer?: LayerModel): void {
   //   // this.openedLayers.unshift(layer);
   //   // We initialize the map settings to default value once we display the map layer editor
@@ -363,5 +367,9 @@ export class SafeMapSettingsComponent
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     this.mapContainerRef.detach();
+    // Destroy layers control sidenav when closing the settings
+    if (this.openedLayersSideNav) {
+      this.layoutService.setRightSidenav(null);
+    }
   }
 }

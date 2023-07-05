@@ -11,7 +11,14 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
 import { LayerModel } from '../../../../models/layer.model';
 import { createLayerForm, LayerFormT } from '../map-forms';
-import { debounceTime, takeUntil, BehaviorSubject, Subject } from 'rxjs';
+import {
+  takeUntil,
+  BehaviorSubject,
+  Subject,
+  pairwise,
+  startWith,
+  distinctUntilChanged,
+} from 'rxjs';
 import { MapComponent } from '../../../ui/map/map.component';
 import {
   MapEvent,
@@ -24,7 +31,7 @@ import { SafeMapLayersService } from '../../../../services/map/map-layers.servic
 import { Layer } from '../../../ui/map/layer';
 import { Apollo } from 'apollo-angular';
 import { GetResourceQueryResponse, GET_RESOURCE } from '../graphql/queries';
-import { get } from 'lodash';
+import { get, isEqual } from 'lodash';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { LayerPropertiesModule } from './layer-properties/layer-properties.module';
 import { LayerDatasourceModule } from './layer-datasource/layer-datasource.module';
@@ -118,30 +125,6 @@ export class EditLayerModalComponent
   }
 
   /**
-   * Get the datasource valid status, so we only display other tabs if valid
-   *
-   * @returns boolean if we have all necessary data to proceed
-   */
-  public get datasourceValid(): boolean {
-    const datasourceForm = this.form?.get('datasource');
-    if (datasourceForm?.get('refData')?.value) {
-      return true;
-    } else if (datasourceForm?.get('resource')?.value) {
-      // If datasource origin is a resource, then geofield OR lat & lng is needed
-      if (
-        (datasourceForm?.get('layout')?.value ||
-          datasourceForm?.get('aggregation')?.value) &&
-        (datasourceForm?.get('geoField')?.value ||
-          (datasourceForm?.get('latitudeField')?.value &&
-            datasourceForm?.get('longitudeField')?.value))
-      ) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
    * Map layer editor.
    *
    * @param confirmService Shared confirm service.
@@ -167,7 +150,10 @@ export class EditLayerModalComponent
     this.setIsDatasourceValid(this.form.get('datasource')?.value);
     this.form
       .get('datasource')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(
+        distinctUntilChanged((prev, next) => isEqual(prev, next)),
+        takeUntil(this.destroy$)
+      )
       .subscribe((value) => {
         this.setIsDatasourceValid(value);
       });
@@ -221,7 +207,14 @@ export class EditLayerModalComponent
    */
   private setIsDatasourceValid(value: any) {
     if (get(value, 'refData')) {
-      this.isDatasourceValid = true;
+      if (
+        get(value, 'geoField') ||
+        (get(value, 'latitudeField') && get(value, 'longitudeField'))
+      ) {
+        this.isDatasourceValid = true;
+      } else {
+        this.isDatasourceValid = false;
+      }
     } else if (get(value, 'resource')) {
       // If datasource origin is a resource, then geofield OR lat & lng is needed
       if (
@@ -230,8 +223,6 @@ export class EditLayerModalComponent
           (get(value, 'latitudeField') && get(value, 'longitudeField')))
       ) {
         this.isDatasourceValid = true;
-      } else {
-        this.isDatasourceValid = false;
       }
     } else {
       this.isDatasourceValid = false;
@@ -284,23 +275,47 @@ export class EditLayerModalComponent
   private setUpEditLayerListeners() {
     // Those listeners would handle any change for layer into the map component reference
     this.form.valueChanges
-      .pipe(takeUntil(this.destroy$), debounceTime(1000))
-      .subscribe((value) => {
-        this.updateMapLayer({ delete: true });
-        this._layer.setConfig({ ...value, geojson: this._layer.geojson });
-        this._layer.getLayer(true).then((layer) => {
-          this.currentLayer = layer;
-          this.updateMapLayer();
-        });
+      .pipe(
+        startWith(this.form.value),
+        distinctUntilChanged((prev, next) => isEqual(prev, next)),
+        pairwise(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ([prev, next]) => {
+          this.updateMapLayer({ delete: true });
+          // If any of the main properties to fetch the layer changes, set up layer
+          if (
+            prev.datasource.geoField !== next.datasource.geoField ||
+            prev.datasource.latitudeField !== next.datasource.latitudeField ||
+            prev.datasource.longitudeField !== next.datasource.longitudeField
+          ) {
+            this.setUpLayer();
+          } else {
+            // else update current layer properties
+            this._layer.setConfig({ ...next, geojson: this._layer.geojson });
+            this._layer.getLayer(true).then((layer) => {
+              this.currentLayer = layer;
+              this.updateMapLayer();
+            });
+          }
+        },
       });
 
     this.form
       .get('datasource')
-      ?.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(1000))
-      .subscribe(() => {
-        this.updateMapLayer({ delete: true });
-        this.setUpLayer();
-        this.getResource();
+      ?.valueChanges.pipe(
+        startWith(this.form.get('datasource')?.value),
+        pairwise(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ([prev, next]) => {
+          if (!!prev && prev?.resource !== next?.resource && next?.resource) {
+            this.getResource();
+          }
+          // else on aggregation implementation add it here
+        },
       });
 
     this.data.mapComponent?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({
@@ -381,7 +396,7 @@ export class EditLayerModalComponent
             aggregation: aggregationID ? [aggregationID] : [],
           },
         })
-        .pipe(takeUntil(this.destroy$), debounceTime(1000))
+        .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }) => {
           this.resource.next(data);
           // Update fields

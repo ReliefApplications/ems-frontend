@@ -1,3 +1,4 @@
+<!-- By default, vertical navigation -->
 <ng-container *ngIf="vertical; else horizontalMenu">
   <section class="pt-2 flex flex-col gap-y-7">
     <ng-container *ngFor="let group of navGroups; let i = index" class="h-full">
@@ -41,12 +42,17 @@
                 cdkDrag
                 [cdkDragDisabled]="!item.orderable"
                 class="show-icons"
+                *ngIf="canAddPage || item.visible || !appLayout"
               >
                 <li
                   [routerLink]="item.path"
                   routerLinkActive="text-primary-600 bg-gray-50"
                 >
-                  <a class="group" (click)="largeDevice ? null : nav.toggle()">
+                  <a
+                    class="group"
+                    [routerLink]="item.path"
+                    (click)="largeDevice ? null : nav.toggle()"
+                  >
                     <ui-icon variant="grey" [icon]="item.icon"> </ui-icon>
                     <p class="truncate m-0" [uiTooltip]="item.name">
                       {{ item.name }}
@@ -57,7 +63,7 @@
                     *ngIf="item.action || item.orderable"
                   >
                     <ui-button
-                      class="hide-icons hover:text-primary-600"
+                      class="hide-icons"
                       [isIcon]="true"
                       *ngIf="item.action"
                       size="small"
@@ -67,7 +73,7 @@
                     >
                     </ui-button>
                     <ui-button
-                      class="hide-icons hover:text-primary-600"
+                      class="hide-icons"
                       [isIcon]="true"
                       size="small"
                       cdkDragHandle
@@ -75,6 +81,13 @@
                       icon="drag_indicator"
                     >
                     </ui-button>
+                    <ui-icon
+                      variant="grey"
+                      [size]="18"
+                      *ngIf="!item.visible"
+                      icon="visibility_off"
+                    >
+                    </ui-icon>
                   </div>
                 </li>
                 <!-- Preview when dragging element -->
@@ -112,6 +125,7 @@
     </ng-container>
   </section>
 </ng-container>
+<!-- Horizontal navigation -->
 <ng-template #horizontalMenu>
   <section class="flex border-b">
     <ng-container *ngFor="let group of navGroups; let i = index" class="h-full">
@@ -130,12 +144,14 @@
               cdkDrag
               [cdkDragDisabled]="!item.orderable"
               class="show-icons w-full max-w-[200px]"
+              *ngIf="canAddPage || item.visible || !appLayout"
             >
-              <li
-                [routerLink]="item.path"
-                routerLinkActive="text-primary-600 bg-gray-50"
-              >
-                <a class="group" (click)="largeDevice ? null : nav.toggle()">
+              <li routerLinkActive="text-primary-600 bg-gray-50">
+                <a
+                  class="group"
+                  (click)="largeDevice ? null : nav.toggle()"
+                  [routerLink]="item.path"
+                >
                   <ui-icon variant="grey" [icon]="item.icon"> </ui-icon>
                   <p class="truncate m-0" [uiTooltip]="item.name">
                     {{ item.name }}
@@ -166,6 +182,13 @@
                     icon="drag_indicator"
                   >
                   </ui-button>
+                  <ui-icon
+                    variant="grey"
+                    [size]="18"
+                    *ngIf="!item.visible"
+                    icon="visibility_off"
+                    class="flex"
+                  ></ui-icon>
                 </div>
               </li>
               <!-- Preview when dragging element -->

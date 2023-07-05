@@ -39,6 +39,7 @@ import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../../utils/cleanRecord';
 import get from 'lodash/get';
+import set from 'lodash/set';
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { Aggregation } from '../../../models/aggregation.model';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
@@ -479,7 +480,9 @@ export class SafeGridWidgetComponent
   ): Promise<any> {
     const update: any = {};
     for (const modification of modifications) {
-      update[modification.field.name] = modification.value;
+      if (modification.field) {
+        set(update, modification.field, modification.value);
+      }
     }
     const data = cleanRecord(update);
     return firstValueFrom(

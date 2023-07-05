@@ -61,7 +61,7 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,,,,,,,,
+      // A700: #ffffff,,,,,,,,,
     ),
 );
 
@@ -298,6 +298,11 @@ body {
   .legend-division-hide {
     opacity: 0.4;
   }
+}
+
+// === OVERLAY ===
+.cdk-overlay-container {
+  z-index: 1003;
 }
 
 /* === Tailwindcss === */

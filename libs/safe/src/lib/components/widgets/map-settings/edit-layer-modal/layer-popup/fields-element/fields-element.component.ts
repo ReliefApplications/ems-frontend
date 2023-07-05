@@ -76,7 +76,10 @@ export class FieldsElementComponent
       this.availableFields = value.map((field) => field.name);
       this.editorService.addCalcAndKeysAutoCompleter(
         this.editorConfig,
-        this.availableFields.map((field) => `{{${field}}}`)
+        this.availableFields.map((field) => ({
+          text: `{{${field}}}`,
+          value: `{{${field}}}`,
+        }))
       );
     });
 
