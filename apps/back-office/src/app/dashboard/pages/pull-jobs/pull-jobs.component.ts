@@ -361,7 +361,8 @@ export class PullJobsComponent
                     this.translate.instant(
                       'common.notifications.objectUpdated',
                       {
-                        type: this.translate.instant('common.pullJob.one')
+                        type: this.translate
+                          .instant('common.pullJob.one')
                           .toLowerCase(),
                         value: value.name,
                       }
