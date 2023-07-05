@@ -223,15 +223,13 @@ export class SafeCoreGridComponent
         filters: gridFilters,
       };
     }
-    return this.contextService.isFilterEnable.getValue()
-      ? {
-          logic: 'and',
-          filters: [
-            filter,
-            this.contextService.injectDashboardFilterValues(this.contextFilter),
-          ],
-        }
-      : filter;
+    return {
+      logic: 'and',
+      filters: [
+        filter,
+        this.contextService.injectDashboardFilterValues(this.contextFilter),
+      ],
+    };
   }
 
   // === LAYOUT CHANGES ===

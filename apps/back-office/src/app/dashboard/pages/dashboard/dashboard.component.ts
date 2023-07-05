@@ -278,7 +278,7 @@ export class DashboardComponent
           this.buttonActions = this.dashboard.buttons || [];
           this.loading = res.loading;
           this.showFilter = this.dashboard.showFilter ?? false;
-          this.contextService.isFilterEnable.next(this.showFilter);
+          this.contextService.isFilterEnabled.next(this.showFilter);
         } else {
           this.snackBar.openSnackBar(
             this.translateService.instant(
@@ -653,7 +653,7 @@ export class DashboardComponent
           },
           complete: () => {
             this.loading = false;
-            this.contextService.isFilterEnable.next(this.showFilter);
+            this.contextService.isFilterEnabled.next(this.showFilter);
           },
         });
     }

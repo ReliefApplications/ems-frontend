@@ -96,6 +96,13 @@ export class SafeChartComponent
         this.getOptions();
       });
 
+    this.contextService.isFilterEnabled$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.loadChart();
+        this.getOptions();
+      });
+
     // Not entirely sure why the change detection is not happening automatically
     // when the series are updated, but this forces it to happen
     this.series$.pipe(takeUntil(this.destroy$)).subscribe(() => {

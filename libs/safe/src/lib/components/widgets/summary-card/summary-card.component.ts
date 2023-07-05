@@ -172,7 +172,12 @@ export class SafeSummaryCardComponent
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => {
         this.setupDynamicCards();
-        this.setupGridSettings();
+      });
+
+    this.contextService.isFilterEnabled$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.setupDynamicCards();
       });
   }
 
@@ -383,17 +388,15 @@ export class SafeSummaryCardComponent
           );
 
           if (this.contextFilters && layoutQuery.filter) {
-            layoutQuery.filter = this.contextService.isFilterEnable.getValue()
-              ? {
-                  logic: 'and',
-                  filters: [
-                    layoutQuery.filter,
-                    this.contextService.injectDashboardFilterValues(
-                      this.contextFilters
-                    ),
-                  ],
-                }
-              : layoutQuery.filter;
+            layoutQuery.filter = {
+              logic: 'and',
+              filters: [
+                layoutQuery.filter,
+                this.contextService.injectDashboardFilterValues(
+                  this.contextFilters
+                ),
+              ],
+            };
           }
 
           if (builtQuery) {
@@ -467,9 +470,7 @@ export class SafeSummaryCardComponent
       card.aggregation,
       DEFAULT_PAGE_SIZE,
       0,
-      this.contextService.isFilterEnable.getValue()
-        ? this.contextService.injectDashboardFilterValues(this.contextFilters)
-        : undefined
+      this.contextService.injectDashboardFilterValues(this.contextFilters)
     );
 
     this.dataQuery.valueChanges

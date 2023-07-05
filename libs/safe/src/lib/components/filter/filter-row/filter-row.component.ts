@@ -66,7 +66,7 @@ export class FilterRowComponent
   }
 
   ngOnInit(): void {
-    // this.contextService.isFilterEnable$
+    // this.contextService.isFilterEnabled$
     //   .pipe(takeUntil(this.destroy$))
     //   .subscribe({
     //     next: (isFilterEnable: boolean) => {

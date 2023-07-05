@@ -90,6 +90,12 @@ export class SafeAggregationGridComponent
       .subscribe(() => {
         this.getAggregationData();
       });
+
+    this.contextService.isFilterEnabled$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.getAggregationData();
+      });
   }
 
   ngOnChanges(): void {

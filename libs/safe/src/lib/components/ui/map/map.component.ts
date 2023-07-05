@@ -246,6 +246,12 @@ export class MapComponent
       .subscribe(() => {
         this.drawMap(false);
       });
+
+    this.contextService.isFilterEnabled$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.drawMap(false);
+      });
   }
 
   override ngOnDestroy(): void {

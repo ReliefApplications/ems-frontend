@@ -48,11 +48,11 @@ export class ContextService {
     return this.currentApplicationId + ':filterPosition';
   }
 
-  public isFilterEnable = new BehaviorSubject<boolean>(false);
+  public isFilterEnabled = new BehaviorSubject<boolean>(false);
 
   /** @returns  isFilterEnable value as observable */
-  get isFilterEnable$() {
-    return this.isFilterEnable.asObservable();
+  get isFilterEnabled$() {
+    return this.isFilterEnabled.asObservable();
   }
 
   /**
@@ -101,6 +101,11 @@ export class ContextService {
     T extends CompositeFilterDescriptor | FilterDescriptor
   >(f: T): T {
     const filter = cloneDeep(f);
+    if (!this.isFilterEnabled.getValue() && 'filters' in filter) {
+      filter.filters = [];
+      return filter;
+    }
+
     const regex = /(?<={{filter\.)(.*?)(?=}})/gim;
     const availableFilterFields = this.filter.getValue();
 
