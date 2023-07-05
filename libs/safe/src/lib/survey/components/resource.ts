@@ -7,13 +7,24 @@ import {
 import * as SurveyCreator from 'survey-creator';
 import { resourceConditions } from './resources';
 import { Dialog } from '@angular/cdk/dialog';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import {
+  FormControl,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+} from '@angular/forms';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
 import { DomService } from '../../services/dom/dom.service';
-import { buildSearchButton, buildAddButton } from './utils';
+import {
+  buildSearchButton,
+  buildAddButton,
+  processNewCreatedRecords,
+} from './utils';
 import get from 'lodash/get';
 import { Question, QuestionResource } from '../types';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
+
+/** Question's temporary records */
+export const temporaryRecordsForm = new FormControl([]);
 
 /**
  * Inits the resource question component of for survey.
@@ -541,6 +552,20 @@ export const init = (
             this.populateChoices(question);
           }
         }
+        if (question.addRecord && question.canSearch) {
+          // If search button exists, updates grid displayed records when new records are created with the add button
+          question.registerFunctionOnPropertyValueChanged(
+            'newCreatedRecords',
+            async () => {
+              const settings = await processNewCreatedRecords(
+                question,
+                false,
+                []
+              );
+              temporaryRecordsForm.setValue(settings.query.temporaryRecords);
+            }
+          );
+        }
       }
     },
     /**
@@ -607,7 +632,8 @@ export const init = (
           question,
           question.gridFieldsSettings,
           false,
-          dialog
+          dialog,
+          temporaryRecordsForm
         );
         actionsButtons.appendChild(searchBtn);
 
