@@ -31,6 +31,8 @@ import { SidenavContainerComponent, SnackbarService } from '@oort-front/ui';
 import { SafeReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { SafeFormService } from '../../services/form/form.service';
+import { SafeDatePipe } from '../../pipes/date/date.pipe';
+import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
 
 /**
  * Interface for quick filters
@@ -109,6 +111,7 @@ export class DashboardFilterComponent
     private referenceDataService: SafeReferenceDataService,
     private formService: SafeFormService,
     private changeDetectorRef: ChangeDetectorRef,
+    private dateTranslate: SafeDateTranslateService,
     @Optional() private _host: SidenavContainerComponent
   ) {
     super();
@@ -350,7 +353,12 @@ export class DashboardFilterComponent
    * when a value changes.
    */
   private onValueChange() {
-    const surveyData = this.survey.data;
+    let surveyData = this.survey.data;
+    Object.keys(surveyData).forEach(key => {
+      if (this.isDate(surveyData[key])){
+        surveyData[key] = {start: surveyData[key][0], end: surveyData[key][1]};
+      }
+    })
     const displayValues = this.survey.getPlainData();
     this.contextService.filter.next(surveyData);
     this.ngZone.run(() => {
@@ -364,6 +372,14 @@ export class DashboardFilterComponent
               tooltip: question.displayValue,
             };
           } else {
+            if (this.isDate(question.displayValue)) {
+              question.displayValue = question.displayValue.map((q:any) => {
+                const inputDate = new Date(q);
+                const formattedDate = new SafeDatePipe(this.dateTranslate).transform(inputDate, 'mediumDate');
+                return formattedDate;
+              })
+              question.displayValue = `${question.displayValue[0]} - ${question.displayValue[1]}`
+            }
             mappedQuestion = {
               label: question.displayValue,
             };
@@ -371,6 +387,16 @@ export class DashboardFilterComponent
           return mappedQuestion;
         });
     });
+  }
+
+  private isDate(date: any): boolean {
+    if(date instanceof Array){
+      const datetimeRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+      if (datetimeRegex.test(date[0])){
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
