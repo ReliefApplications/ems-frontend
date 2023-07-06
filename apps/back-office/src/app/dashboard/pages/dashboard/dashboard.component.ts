@@ -165,6 +165,10 @@ export class DashboardComponent
         }
       });
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      // Reset scroll when changing page
+      const pageContainer = document.getElementById('appPageContainer');
+      if (pageContainer) pageContainer.scrollTop = 0;
+
       // Doing this to be able to use custom styles on specific dashboards
 
       // if the route has an record or element query, it means we are on a contextual dashboard
