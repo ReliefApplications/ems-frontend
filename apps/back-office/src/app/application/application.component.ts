@@ -36,6 +36,8 @@ export class ApplicationComponent
   public sideMenu = false;
   /** Is large device */
   public largeDevice: boolean;
+  /** Is loading */
+  public loading = true;
 
   /**
    * Main component of application view
@@ -59,12 +61,14 @@ export class ApplicationComponent
 
   ngOnInit(): void {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.loading = true;
       this.applicationService.loadApplication(params.id);
     });
     this.applicationService.application$
       .pipe(takeUntil(this.destroy$))
       .subscribe((application: Application | null) => {
         if (application) {
+          this.loading = false;
           this.title = application.name || '';
           const displayNavItems: any[] =
             application.pages
@@ -167,11 +171,11 @@ export class ApplicationComponent
             }
           }
           this.application = application;
+          this.sideMenu = this.application?.sideMenu ?? false;
         } else {
           this.title = '';
           this.navGroups = [];
         }
-        this.sideMenu = this.application?.sideMenu ?? false;
       });
   }
 

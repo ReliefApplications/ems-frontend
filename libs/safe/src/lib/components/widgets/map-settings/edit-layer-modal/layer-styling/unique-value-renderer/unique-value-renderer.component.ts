@@ -14,6 +14,7 @@ import {
   SelectMenuModule,
 } from '@oort-front/ui';
 import { GeometryType } from '../../../../../ui/map/interfaces/layer-settings.type';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Unique value renderer layer settings.
@@ -31,6 +32,7 @@ import { GeometryType } from '../../../../../ui/map/interfaces/layer-settings.ty
     SelectMenuModule,
     DragDropModule,
     IconModule,
+    TranslateModule,
   ],
   templateUrl: './unique-value-renderer.component.html',
   styleUrls: ['./unique-value-renderer.component.scss'],

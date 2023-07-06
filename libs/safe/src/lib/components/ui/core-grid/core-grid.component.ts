@@ -655,7 +655,7 @@ export class SafeCoreGridComponent
               console.error(error);
             }
           }
-          if (this.settings.query.temporaryRecords) {
+          if (this.settings.query.temporaryRecords?.length) {
             //Handles temporary records for resources creation in forms
             this.getTemporaryRecords();
           }
