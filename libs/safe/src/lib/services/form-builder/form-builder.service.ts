@@ -11,7 +11,7 @@ import { Metadata } from '../../models/metadata.model';
 import { SafeRestService } from '../rest/rest.service';
 import { BehaviorSubject } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
-import { SafeAuthService } from '../auth/auth.service';
+import { SafeFormHelpersService } from '../form-helper/form-helper.service';
 
 /**
  * Shared form builder service.
@@ -29,7 +29,7 @@ export class SafeFormBuilderService {
    * @param apollo Apollo service
    * @param snackBar Service used to show a snackbar.
    * @param restService This is the service that is used to make http requests.
-   * @param authService Shared auth service
+   * @param formHelpersService Shared form helper service.
    */
   constructor(
     private referenceDataService: SafeReferenceDataService,
@@ -37,7 +37,7 @@ export class SafeFormBuilderService {
     private apollo: Apollo,
     private snackBar: SnackbarService,
     private restService: SafeRestService,
-    private authService: SafeAuthService
+    private formHelpersService: SafeFormHelpersService
   ) {}
 
   /**
@@ -56,7 +56,7 @@ export class SafeFormBuilderService {
     record?: Record
   ): Survey.SurveyModel {
     const survey = new Survey.Model(structure);
-    this.addUserVariables(survey);
+    this.formHelpersService.addUserVariables(survey);
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
     );
@@ -326,23 +326,4 @@ export class SafeFormBuilderService {
         });
     }
   }
-
-  /**
-   * Registration of new custom variables for the survey.
-   * Custom variables can be used in the logic fields.
-   *
-   * @param survey Survey instance
-   */
-  public addUserVariables = (survey: Survey.SurveyModel) => {
-    const user = this.authService.user.getValue();
-
-    // set user variables
-    survey.setVariable('user.firstName', user?.firstName ?? '');
-    survey.setVariable('user.lastName', user?.lastName ?? '');
-    survey.setVariable('user.email', user?.username ?? '');
-
-    // would allow us to do some cool stuff like
-    // {user.roles} contains '62e3e676c9bcb900656c95c9'
-    survey.setVariable('user.roles', user?.roles?.map((r) => r.id || '') ?? []);
-  };
 }
