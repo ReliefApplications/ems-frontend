@@ -7,6 +7,7 @@ import {
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
 import { AppComponent } from './app.component';
+import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
 import { FormWidgetModule } from './widgets/form-widget/form-widget.module';
 import { environment } from '../environments/environment';
 import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
@@ -115,7 +116,6 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       },
     }),
     OverlayModule,
-    DateTimePickerModule,
     FormWidgetModule,
     GraphQLModule,
     DateInputsModule,
@@ -170,5 +170,17 @@ export class AppModule {
   constructor(private translate: TranslateService) {
     this.translate.addLangs(environment.availableLanguages);
     this.translate.setDefaultLang(environment.availableLanguages[0]);
+  }
+
+  /**
+   * Bootstrap the project.
+   * Create the web elements.
+   */
+  ngDoBootstrap(): void {
+    // Form
+    const form = createCustomElement(FormWidgetComponent, {
+      injector: this.injector,
+    });
+    customElements.define('form-widget', form);
   }
 }
