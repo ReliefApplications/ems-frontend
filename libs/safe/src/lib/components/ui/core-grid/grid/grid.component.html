@@ -487,7 +487,11 @@
               textField="text"
               valueField="value"
               [valuePrimitive]="true"
-              [formControl]="formGroup.get(field.name)"
+              [formControl]="
+                field.name.indexOf('.') === -1
+                  ? formGroup.get(field.name)
+                  : formGroup.get(field.name.substring(0, field.name.indexOf('.')))
+              "
             ></kendo-dropdownlist>
           </ng-container>
         </ng-template>
@@ -495,7 +499,6 @@
         <ng-container
           *ngIf="field.meta.type === 'tagbox' || (field.meta.type === 'referenceData' && !field.meta.choices)"
         >
-        <!-- [data]="getTagboxChoices(field)" -->
           <kendo-multiselect
             [data]="field.meta.choices"
             textField="text"

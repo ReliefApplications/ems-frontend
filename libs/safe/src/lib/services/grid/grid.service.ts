@@ -404,7 +404,12 @@ export class SafeGridService {
           const fieldName = index !== -1
             ? field.name.substring(0, index)
             : field.name;
-          formGroup[fieldName] = [dataItem[fieldName]];
+          // and its value shouldn't be the object saved, but only the value of the subfield
+          const fieldData = fieldName !== field.name
+            ? field.name.substring(index + 1, field.name.length)
+            : field.name;
+          // TODO: tagbox using reference data: how to get "value field" from red data and set value correctly?
+          formGroup[fieldName] = [dataItem[fieldData] ?? dataItem[fieldName][fieldData]];
         } else {
           if (field.meta.type === 'multipletext') {
             const fieldGroup: any = {};
