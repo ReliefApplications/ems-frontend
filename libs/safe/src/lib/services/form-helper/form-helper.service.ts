@@ -309,8 +309,12 @@ export class SafeFormHelpersService {
     survey.setVariable('user.lastName', user?.lastName ?? '');
     survey.setVariable('user.email', user?.username ?? '');
 
-    // would allow us to do some cool stuff like
+    // Allow us to do some cool stuff like
     // {user.roles} contains '62e3e676c9bcb900656c95c9'
     survey.setVariable('user.roles', user?.roles?.map((r) => r.id || '') ?? []);
+
+    // Allow us to select the current user
+    // as a default question for Users question type
+    survey.setVariable('user.id', user?.id || '');
   };
 }
