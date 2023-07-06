@@ -30,6 +30,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import { SnackbarService } from '@oort-front/ui';
+import { cloneDeep } from 'lodash';
 
 /**
  * This component is used to display forms
@@ -223,9 +224,19 @@ export class SafeFormComponent
    * Handles the value change event when the user completes the survey
    */
   public valueChange(): void {
+    // Cache the survey data, but remove the files from it
+    // to avoid hitting the local storage limit
+    const data = cloneDeep(this.survey.data);
+    Object.keys(data).forEach((key) => {
+      const question = this.survey.getQuestionByName(key);
+      if (question && question.getType() === 'file') {
+        delete data[key];
+      }
+    });
+
     localStorage.setItem(
       this.storageId,
-      JSON.stringify({ data: this.survey.data, date: new Date() })
+      JSON.stringify({ data, date: new Date() })
     );
   }
 
