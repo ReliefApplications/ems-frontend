@@ -53,6 +53,7 @@ import { SafeApplicationService } from '../../../services/application/applicatio
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { firstValueFrom, Subject } from 'rxjs';
+import { getSearchFilters } from '../../../utils/filter/fillter-formater';
 
 /**
  * Default file name when exporting grid data.
@@ -198,19 +199,19 @@ export class SafeCoreGridComponent
       gridFilters.push(this.settings?.query?.filter);
     }
     if (this.search) {
-      const textFields = this.fields.filter(
-        (x) => x.meta && x.meta.type === 'text'
-      );
-      const searchFilters = textFields.map((x) => ({
-        field: x.name,
-        operator: 'contains',
-        value: this.search,
-      }));
+      const skippedFields = ['id', 'incrementalId', 'form']; // Searching in form breaks the filter
       return {
         logic: 'and',
         filters: [
           { logic: 'and', filters: gridFilters },
-          { logic: 'or', filters: searchFilters },
+          {
+            logic: 'or',
+            filters: getSearchFilters(
+              this.search,
+              this.fields.map((field) => field.meta),
+              skippedFields
+            ),
+          },
         ],
       };
     } else {
