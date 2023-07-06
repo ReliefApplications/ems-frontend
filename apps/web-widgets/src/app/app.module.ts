@@ -14,14 +14,8 @@ import {
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
 import { AppComponent } from './app.component';
-import { ApplicationWidgetComponent } from './widgets/application-widget/application-widget.component';
-import { ApplicationWidgetModule } from './widgets/application-widget/application-widget.module';
-import { DashboardWidgetComponent } from './widgets/dashboard-widget/dashboard-widget.component';
-import { DashboardWidgetModule } from './widgets/dashboard-widget/dashboard-widget.module';
 import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
 import { FormWidgetModule } from './widgets/form-widget/form-widget.module';
-import { WorkflowWidgetComponent } from './widgets/workflow-widget/workflow-widget.component';
-import { WorkflowWidgetModule } from './widgets/workflow-widget/workflow-widget.module';
 import { environment } from '../environments/environment';
 import { RouterModule } from '@angular/router';
 import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
@@ -96,10 +90,7 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       },
     }),
     OverlayModule,
-    DashboardWidgetModule,
     FormWidgetModule,
-    WorkflowWidgetModule,
-    ApplicationWidgetModule,
     GraphQLModule,
   ],
   providers: [
@@ -163,25 +154,10 @@ export class AppModule implements DoBootstrap {
    * Create the web elements.
    */
   ngDoBootstrap(): void {
-    // Dashboard
-    const dashboard = createCustomElement(DashboardWidgetComponent, {
-      injector: this.injector,
-    });
-    customElements.define('dashboard-widget', dashboard);
     // Form
     const form = createCustomElement(FormWidgetComponent, {
       injector: this.injector,
     });
     customElements.define('form-widget', form);
-    // Workflow
-    const workflow = createCustomElement(WorkflowWidgetComponent, {
-      injector: this.injector,
-    });
-    customElements.define('workflow-widget', workflow);
-    // Application
-    const application = createCustomElement(ApplicationWidgetComponent, {
-      injector: this.injector,
-    });
-    customElements.define('application-widget', application);
   }
 }

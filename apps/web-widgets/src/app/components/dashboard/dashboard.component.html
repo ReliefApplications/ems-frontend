@@ -1,7 +1,0 @@
-<ui-spinner *ngIf="loading"></ui-spinner>
-<ng-container *ngIf="!loading && dashboard">
-  <safe-widget-grid
-    [widgets]="tiles"
-    (goToNextStep)="goToNextStep.emit($event)"
-  ></safe-widget-grid>
-</ng-container>
