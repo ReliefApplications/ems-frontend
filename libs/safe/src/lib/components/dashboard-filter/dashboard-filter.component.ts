@@ -98,6 +98,7 @@ export class DashboardFilterComponent
    * @param referenceDataService Reference data service
    * @param formService Shared form service
    * @param changeDetectorRef Change detector reference
+   * @param dateTranslate Shared date translate service
    * @param _host sidenav container host
    */
   constructor(
@@ -353,12 +354,15 @@ export class DashboardFilterComponent
    * when a value changes.
    */
   private onValueChange() {
-    let surveyData = this.survey.data;
-    Object.keys(surveyData).forEach(key => {
-      if (this.isDate(surveyData[key])){
-        surveyData[key] = {start: surveyData[key][0], end: surveyData[key][1]};
+    const surveyData = this.survey.data;
+    Object.keys(surveyData).forEach((key) => {
+      if (this.isDate(surveyData[key])) {
+        surveyData[key] = {
+          start: surveyData[key][0],
+          end: surveyData[key][1],
+        };
       }
-    })
+    });
     const displayValues = this.survey.getPlainData();
     this.contextService.filter.next(surveyData);
     this.ngZone.run(() => {
@@ -373,12 +377,14 @@ export class DashboardFilterComponent
             };
           } else {
             if (this.isDate(question.displayValue)) {
-              question.displayValue = question.displayValue.map((q:any) => {
+              question.displayValue = question.displayValue.map((q: any) => {
                 const inputDate = new Date(q);
-                const formattedDate = new SafeDatePipe(this.dateTranslate).transform(inputDate, 'mediumDate');
+                const formattedDate = new SafeDatePipe(
+                  this.dateTranslate
+                ).transform(inputDate, 'mediumDate');
                 return formattedDate;
-              })
-              question.displayValue = `${question.displayValue[0]} - ${question.displayValue[1]}`
+              });
+              question.displayValue = `${question.displayValue[0]} - ${question.displayValue[1]}`;
             }
             mappedQuestion = {
               label: question.displayValue,
@@ -389,10 +395,16 @@ export class DashboardFilterComponent
     });
   }
 
+  /**
+   * Verify if a survey data field is in date format
+   *
+   * @param date survey data field
+   * @returns boolean
+   */
   private isDate(date: any): boolean {
-    if(date instanceof Array){
+    if (date instanceof Array) {
       const datetimeRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
-      if (datetimeRegex.test(date[0])){
+      if (datetimeRegex.test(date[0]) || datetimeRegex.test(date[1])) {
         return true;
       }
     }
