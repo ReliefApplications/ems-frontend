@@ -3,7 +3,7 @@
   "$schema": "../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/web-widgets/src",
-  "prefix": "oort-front",
+  "prefix": "app",
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
@@ -12,7 +12,7 @@
         "outputPath": "dist/apps/web-widgets",
         "index": "apps/web-widgets/src/index.html",
         "main": "apps/web-widgets/src/main.ts",
-        "polyfills": ["apps/web-widget/src/polyfills.ts"],
+        "polyfills": ["apps/web-widgets/src/polyfills.ts"],
         "tsConfig": "apps/web-widgets/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
@@ -41,6 +41,7 @@
         "styles": [
           "apps/web-widgets/src/styles.scss",
           "libs/safe/src/lib/style/styles.scss",
+          "libs/safe/src/lib/style/widgets.scss",
           "node_modules/survey-angular/survey.min.css",
           "node_modules/survey-creator/survey-creator.min.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
@@ -67,7 +68,11 @@
           "cron-validator",
           "localforage",
           "survey-angular",
-          "fast-sha256"
+          "fast-sha256",
+          "leaflet",
+          "esri-leaflet-vector",
+          "leaflet.markercluster",
+          "jsonpath"
         ]
       },
       "configurations": {
@@ -85,7 +90,7 @@
             }
           ],
           "stylePreprocessorOptions": {
-            "includePaths": ["apps/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/safe/src/lib/style/themes/default"]
           },
           "fileReplacements": [
             {
@@ -103,7 +108,7 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": ["apps/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/safe/src/lib/style/themes/default"]
           }
         }
       },
