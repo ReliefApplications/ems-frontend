@@ -1,19 +1,36 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<ui-spinner *ngIf="loading"></ui-spinner>
 <ng-container *ngIf="!loading && form">
   <!-- Page header -->
   <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
     <div class="flex items-center overflow-hidden">
       <!-- Page name and name edition -->
-      <safe-editable-text
-        [text]="page ? page.name || '' : step ? step.name || '' : ''"
-        [canEdit]="canEditName"
-        (onChange)="saveName($event)"
-        (formActiveEvent)="formActive = $event"
-      >
-        <h1 class="!m-0 overflow-hidden text-ellipsis">
-          {{ page ? page.name || '' : step ? step.name || '' : '' }}
-        </h1>
-      </safe-editable-text>
+      <div class="flex items-center gap-1">
+        <safe-editable-text
+          [text]="page ? page.name || '' : step ? step.name || '' : ''"
+          [canEdit]="canEditName"
+          (onChange)="saveName($event)"
+          (formActiveEvent)="formActive = $event"
+        >
+          <h1 class="!m-0 overflow-hidden text-ellipsis">
+            {{ page ? page.name || '' : step ? step.name || '' : '' }}
+          </h1>
+        </safe-editable-text>
+        <ui-button
+          *ngIf="page && !isStep"
+          [isIcon]="true"
+          variant="grey"
+          category="primary"
+          [icon]="page.visible ? 'visibility' : 'visibility_off'"
+          (click)="togglePageVisibility()"
+          [uiTooltip]="
+            (page.visible
+              ? 'components.application.pages.hide'
+              : 'components.application.pages.show'
+            ) | translate
+          "
+        >
+        </ui-button>
+      </div>
       <!-- Page access -->
       <safe-access
         [access]="page ? page.permissions : step ? step.permissions : null"
@@ -28,7 +45,7 @@
     <!-- Page actions -->
     <div class="flex items-center" *ngIf="!formActive">
       <!-- Edit name -->
-      <safe-button
+      <ui-button
         icon="edit"
         category="secondary"
         variant="primary"
@@ -39,7 +56,7 @@
           'common.editObject'
             | translate : { name: 'common.form.one' | translate }
         }}
-      </safe-button>
+      </ui-button>
     </div>
   </div>
   <!-- Form -->
@@ -50,12 +67,14 @@
     *ngIf="completed && !form.uniqueRecord && !hideNewRecord"
   >
     <!-- New record -->
-    <safe-button
+    <ui-button
+      [isBlock]="true"
       class="flex-1 max-w-xs"
       variant="primary"
       category="secondary"
       (click)="clearForm()"
-      >{{ 'models.record.new' | translate }}</safe-button
     >
+      {{ 'models.record.new' | translate }}
+    </ui-button>
   </div>
 </ng-container>

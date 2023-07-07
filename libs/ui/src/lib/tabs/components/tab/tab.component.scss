@@ -1,0 +1,50 @@
+.button-min-width {
+  min-width: 150px;
+  @media (max-width: 598px) {
+    min-width: unset !important;
+  }
+}
+
+.ui-tab__horizontal {
+  @apply border-b-2 border-transparent px-3 flex justify-center gap-1.5;
+  &[selected='false']:not([disabled]) {
+    @apply text-gray-500 hover:bg-gray-100 hover:border-gray-500 hover:text-gray-700;
+  }
+}
+
+.ui-tab__vertical {
+  @apply rounded-md text-left p-2 text-gray-700 gap-1.5 inline-flex items-center;
+  &[selected='false']:not([disabled]) {
+    @apply hover:text-gray-700 text-gray-500;
+  }
+}
+
+// === VARIANTS ===
+.ui-tab__primary {
+  @apply text-primary-400 border-primary-300 focus:ring-primary-600;
+}
+
+.ui-tab__success {
+  @apply text-green-400 border-green-300 focus:ring-green-600;
+}
+
+.ui-tab__danger {
+  @apply text-red-400 border-red-300 focus:ring-red-600;
+}
+
+.ui-tab__grey {
+  @apply text-gray-400 border-gray-300 focus:ring-gray-600;
+}
+
+@media (max-width: 598px) {
+  .ui-tab__vertical {
+    width: unset !important;
+    padding: 1rem;
+    ::ng-deep span {
+      display: none !important;
+    }
+    ui-icon {
+      pointer-events: all !important;
+    }
+  }
+}

@@ -30,6 +30,7 @@
 		},
 		"auto": "******",
 		"back": "******",
+		"bookmarks": "******",
 		"calculatedField": {
 			"few": "******",
 			"none": "******",
@@ -49,6 +50,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"comma": "******",
 		"create": "******",
 		"createdOn": "******",
 		"customNotification": {
@@ -84,6 +86,7 @@
 		"errors": {
 			"objectDuplicated": "{{type}} ****** {{value}} ******"
 		},
+		"exitFullscreen": "******",
 		"export": "******",
 		"exportObject": "****** {{name}}",
 		"false": "******",
@@ -207,6 +210,7 @@
 			"of": "******"
 		},
 		"placeholder": {
+			"address": "******",
 			"email": "******",
 			"name": "******",
 			"search": "******",
@@ -262,7 +266,9 @@
 		"saveChanges": "******",
 		"searchObject": "****** {{name}}",
 		"select": "******",
+		"semicolon": "******",
 		"send": "******",
+		"separator": "******",
 		"settings": "******",
 		"status": "******",
 		"status_active": "******",
@@ -284,6 +290,11 @@
 			"one": "******"
 		},
 		"title": "******",
+		"tooltip": {
+			"editor": {
+				"insert": "******"
+			}
+		},
 		"true": "******",
 		"type": {
 			"few": "******",
@@ -303,6 +314,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"viewFullscreen": "******",
 		"viewObject": "****** {{name}}",
 		"workflow": {
 			"few": "******",
@@ -401,6 +413,11 @@
 			"dashboard": {
 				"editFilter": "******",
 				"empty": "******",
+				"filter": {
+					"empty": "******",
+					"info": "******",
+					"title": "******"
+				},
 				"filterSettings": "******",
 				"settings": {
 					"defaultPosition": "******"
@@ -418,6 +435,7 @@
 				"delete": {
 					"confirmationMessage": "****** {{name}} ******"
 				},
+				"hide": "******",
 				"notReordered": {
 					"plural": "****** {{error}}",
 					"singular": "****** {{error}}"
@@ -425,7 +443,8 @@
 				"reordered": {
 					"plural": "******",
 					"singular": "******"
-				}
+				},
+				"show": "******"
 			},
 			"positionAttribute": {
 				"delete": {
@@ -612,11 +631,21 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"duplicatedRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingGridField": "****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
 			},
 			"saveSurvey": "******"
+		},
+		"formMapProperties": {
+			"geofields": {
+				"editDialog": {
+					"editGeofield": "******",
+					"label": "******",
+					"value": "******"
+				}
+			}
 		},
 		"forms": {
 			"isCore": "******",
@@ -635,6 +664,7 @@
 			}
 		},
 		"header": {
+			"goToApp": "******",
 			"goToPlatform": "******",
 			"logout": "******",
 			"sidenav": {
@@ -662,6 +692,23 @@
 		"logout": {
 			"confirmationMessage": "******",
 			"title": "******"
+		},
+		"map": {
+			"controls": {
+				"download": {
+					"layers": {
+						"all": "******",
+						"selected": "******",
+						"visible": "******"
+					},
+					"output": "******",
+					"selectLayers": "******",
+					"view": {
+						"all": "******",
+						"current": "******"
+					}
+				}
+			}
 		},
 		"mapping": {
 			"field": "******",
@@ -899,6 +946,7 @@
 						"add": "******",
 						"delete": "******",
 						"edit": "******",
+						"none": "******",
 						"title": "******"
 					},
 					"title": "******"
@@ -1111,6 +1159,7 @@
 				},
 				"openSettings": "******",
 				"tooltip": {
+					"displayMap": "******",
 					"saved": "******",
 					"unsaved": "******",
 					"uploadFailed": "******"
@@ -1154,11 +1203,12 @@
 					},
 					"position": "******",
 					"series": {
+						"fill": "******",
 						"interpolation": {
 							"step": "******",
 							"title": "******"
 						},
-						"showSerie": "******",
+						"showSeries": "******",
 						"stack": {
 							"enable": "******",
 							"usePercentage": "******"
@@ -1181,6 +1231,10 @@
 				},
 				"close": {
 					"confirmationMessage": "******"
+				},
+				"editor": {
+					"recordSelection": "******",
+					"title": "******"
 				},
 				"grid": {
 					"actions": {
@@ -1223,7 +1277,8 @@
 							"workflow": {
 								"close": "******",
 								"confirm": "******",
-								"next": "******"
+								"next": "******",
+								"previous": "******"
 							}
 						},
 						"create": "******",
@@ -1259,39 +1314,117 @@
 								"create": "******",
 								"load": "******"
 							},
-							"select": "******",
 							"title": "******"
 						},
 						"edit": {
 							"title": "******"
 						},
+						"select": "******",
 						"title": "******"
 					},
 					"tooltip": {
 						"template": "******"
 					}
 				},
+				"iconPicker": {
+					"default": "******",
+					"placeholder": "******"
+				},
 				"map": {
 					"basemap": "******",
 					"category": "******",
 					"dataset": "******",
+					"edit": {
+						"aggregation": "******",
+						"cluster": {
+							"cluster": "******",
+							"clusterSettings": "******",
+							"fields": "******",
+							"high": "******",
+							"label": "******",
+							"low": "******",
+							"max": "******",
+							"min": "******",
+							"overrideSymbol": "******",
+							"popups": "******",
+							"radius": "******",
+							"sizeRange": "******",
+							"symbol": "******"
+						},
+						"datasource": {
+							"origin": "******"
+						},
+						"fields": "******",
+						"filter": "******",
+						"groupLayers": "******",
+						"labels": "******",
+						"layerDatasource": "******",
+						"layerProperties": "******",
+						"layerStyling": "******",
+						"popup": "******",
+						"properties": {
+							"defaultVisibility": "******",
+							"from": "******",
+							"opacity": "******",
+							"to": "******",
+							"visibilityRange": "******",
+							"zoom": "******"
+						},
+						"reduction": {
+							"noReduction": "******",
+							"reduction": "******"
+						},
+						"style": {
+							"color": "******",
+							"icon": "******",
+							"size": "******",
+							"stylingType": "{{layerType}} ******"
+						},
+						"styling": {
+							"heatmapOptions": {
+								"blur": "******",
+								"gradient": "******",
+								"minOpacity": "******",
+								"radius": "******"
+							}
+						}
+					},
 					"errors": {
 						"latitude": "******",
 						"longitude": "******"
 					},
-					"layers": {
-						"clorophlet": {
-							"add": "******",
-							"division": {
-								"add": "******",
+					"geospatial": {
+						"layersStyles": {
+							"fill": {
+								"color": "******",
+								"opacity": "******",
 								"title": "******"
 							},
-							"geoJSON": "******",
-							"geoJSONidentifier": "******",
-							"identifier": "******",
-							"info": "******",
+							"marker": {
+								"color": "******",
+								"opacity": "******",
+								"title": "******"
+							},
+							"outline": {
+								"color": "******",
+								"opacity": "******",
+								"title": "******",
+								"width": "******"
+							},
 							"title": "******"
+						}
+					},
+					"layers": {
+						"add": "******",
+						"chooseLayer": "******",
+						"createGroup": "******",
+						"createLayer": "******",
+						"dataSource": {
+							"geoField": "******",
+							"latitude": "******",
+							"longitude": "******"
 						},
+						"edit": "****** {{name}}",
 						"online": {
 							"info": "******",
 							"select": "******",
@@ -1307,17 +1440,70 @@
 							"rulesInfo": "******",
 							"size": "******",
 							"title": "******"
+						},
+						"popup": {
+							"addField": "******",
+							"description": "******",
+							"fields": "******",
+							"fieldsElements": {
+								"description": "******",
+								"title": "******"
+							},
+							"popup": "******",
+							"popupElements": "******",
+							"text": "******",
+							"title": "******",
+							"tooltip": {
+								"text": "******"
+							}
+						},
+						"remove": "******",
+						"selectLayer": "******",
+						"styling": {
+							"style": "******"
+						},
+						"types": {
+							"cluster": "******",
+							"heatmap": "******",
+							"point": "******",
+							"polygon": "******"
 						}
 					},
+					"legend": {
+						"high": "******",
+						"low": "******",
+						"title": "******"
+					},
 					"popup": {
-						"label": "******"
+						"label": "******",
+						"location": "******",
+						"of": "{{current}} ****** {{total}}",
+						"zoomTo": "******"
 					},
 					"properties": {
 						"basemap": "******",
+						"controls": {
+							"download": "******",
+							"layer": "******",
+							"legend": "******",
+							"measure": "******",
+							"search": "******",
+							"timedimension": "******",
+							"title": "******"
+						},
 						"latitude": "******",
 						"longitude": "******",
+						"setByMap": "******",
 						"title": "******",
+						"webmap": "******",
 						"zoom": "******"
+					},
+					"renderer": {
+						"default": "******",
+						"defaultLabel": "******",
+						"label": "******",
+						"symbol": "******",
+						"value": "******"
 					},
 					"tooltip": {
 						"category": "******",
@@ -1352,7 +1538,11 @@
 								"datasource": "******"
 							}
 						},
+						"preview": {
+							"title": "******"
+						},
 						"textEditor": {
+							"alert": "****** {{data.variable}} ****** {{calc.round( value ; precision )}}",
 							"title": "******"
 						},
 						"title": "******",
@@ -1369,6 +1559,11 @@
 					"dynamic": "******",
 					"hint": {
 						"dynamic": "******"
+					},
+					"loadMore": {
+						"infiniteScroll": "******",
+						"pagination": "******",
+						"title": "******"
 					},
 					"options": {
 						"ariaLabel": "******"
@@ -1387,7 +1582,13 @@
 		}
 	},
 	"kendo": {
+		"combobox": {
+			"noDataText": "******"
+		},
 		"datepicker": {
+			"dateLabel": "******",
+			"endLabel": "******",
+			"startLabel": "******",
 			"today": "******",
 			"toggle": "******"
 		},
@@ -1456,6 +1657,7 @@
 			"underline": "******",
 			"undo": "******",
 			"unlink": "******",
+			"unselectAll": "******",
 			"viewSource": "******"
 		},
 		"fileselect": {
@@ -1535,6 +1737,29 @@
 			"unlock": "******",
 			"unstick": "******"
 		},
+		"multiselect": {
+			"noDataText": "******"
+		},
+		"pager": {
+			"firstPage": "******",
+			"items": "******",
+			"itemsPerPage": "******",
+			"label": "******",
+			"lastPage": "******",
+			"nextPage": "******",
+			"of": "******",
+			"page": "******",
+			"pageNumberInputTitle": "******",
+			"previousPage": "******"
+		},
+		"tilelayout": {
+			"component": {
+				"items": "******",
+				"itemsPerPage": "******",
+				"of": "******",
+				"page": "******"
+			}
+		},
 		"timepicker": {
 			"accept": "******",
 			"acceptLabel": "******",
@@ -1556,6 +1781,7 @@
 		"application": {
 			"description": "******",
 			"id": "******",
+			"menu": "******",
 			"new": "******",
 			"notifications": {
 				"notPublished": "******",
@@ -1578,6 +1804,17 @@
 		},
 		"dashboard": {
 			"activateFiltering": "******",
+			"buttonActions": {
+				"add": "******",
+				"category": "******",
+				"confirmDelete": "******",
+				"edit": "******",
+				"href": "******",
+				"one": "******",
+				"openInNewTab": "******",
+				"text": "******",
+				"variant": "******"
+			},
 			"context": {
 				"datasource": {
 					"alert": "******",
@@ -1649,7 +1886,8 @@
 				"rowsNotAdded": "******",
 				"uploadSuccessful": "******"
 			},
-			"restore": "******"
+			"restore": "******",
+			"select": "******"
 		},
 		"referenceData": {
 			"add": "******"
@@ -1689,6 +1927,7 @@
 			},
 			"display": {
 				"border": "******",
+				"searchable": "******",
 				"title": "******"
 			},
 			"map": {
@@ -1710,6 +1949,7 @@
 		"workflow": {
 			"notifications": {
 				"cannotGoToNextStep": "******",
+				"cannotGoToPreviousStep": "******",
 				"goToStep": "****** {{step}} ******"
 			}
 		}
@@ -1800,6 +2040,10 @@
 				"selectApplication": "****** {{page}} ****** {{question}} ******",
 				"snakecase": "****** {{name}} ****** {{page}} ******"
 			},
+			"move": {
+				"down": "******",
+				"up": "******"
+			},
 			"questionsCategories": {
 				"core": "******"
 			},
@@ -1834,7 +2078,8 @@
 			},
 			"queryName": "******",
 			"tooltip": {
-				"graphQLFilter": "****** {{lastUpdate}} ******"
+				"graphQLFilter": "****** {{lastUpdate}} ******",
+				"path": "******"
 			},
 			"type": "******",
 			"validateCsv": "******",

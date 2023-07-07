@@ -1,24 +1,19 @@
-<safe-modal>
-  <h1 mat-dialog-title>{{ title }}</h1>
-  <mat-dialog-content *ngIf="content">{{ content }}</mat-dialog-content>
-  <div mat-dialog-actions align="end">
-    <!-- <button mat-button mat-dialog-close>{{ cancelText }}</button>
-    <button
-      mat-flat-button
-      [color]="confirmColor"
-      cdkFocusInitial
-      [mat-dialog-close]="true"
-    >
-      {{ confirmText }}
-    </button> -->
-    <safe-button mat-dialog-close>{{ cancelText }}</safe-button>
-    <safe-button
+<ui-dialog>
+  <ng-container ngProjectAs="header">
+    <h1>{{ title }}</h1>
+  </ng-container>
+  <ng-container *ngIf="content" ngProjectAs="content">
+    {{ content }}
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>{{ cancelText }}</ui-button>
+    <ui-button
       category="secondary"
-      variant="primary"
-      [mat-dialog-close]="true"
+      [variant]="confirmVariant"
+      [uiDialogClose]="true"
       cdkFocusInitial
     >
       {{ confirmText }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

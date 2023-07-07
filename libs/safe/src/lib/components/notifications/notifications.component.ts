@@ -1,16 +1,17 @@
+import { Dialog } from '@angular/cdk/dialog';
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Subscription } from 'rxjs';
+import { Subscription, takeUntil } from 'rxjs';
 import { Application } from '../../models/application.model';
 import { CustomNotification } from '../../models/custom-notification.model';
 import { SafeApplicationService } from '../../services/application/application.service';
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import {
-  GetCustomNotificationsQueryResponse,
   GET_CUSTOM_NOTIFICATIONS,
+  GetCustomNotificationsQueryResponse,
 } from './graphql/queries';
 
 /** Default number of items per request for pagination */
@@ -24,10 +25,13 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './notifications.component.html',
   styleUrls: ['./notifications.component.scss'],
 })
-export class NotificationsComponent implements OnInit, OnDestroy {
+export class NotificationsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnDestroy
+{
   // === INPUT DATA ===
-  public notifications: MatTableDataSource<CustomNotification> =
-    new MatTableDataSource<CustomNotification>([]);
+  public notifications: Array<CustomNotification> =
+    new Array<CustomNotification>();
   private cachedNotifications: CustomNotification[] = [];
   private notificationsQuery!: QueryRef<GetCustomNotificationsQueryResponse>;
   private applicationSubscription?: Subscription;
@@ -47,19 +51,23 @@ export class NotificationsComponent implements OnInit, OnDestroy {
   /**
    * Custom notifications table component.
    *
-   * @param dialog The material dialog service
+   * @param dialog The Dialog service
    * @param translate The translation service
    * @param confirmService Shared confirmation service
    * @param apollo Apollo service
    * @param applicationService Shared application service
+   * @param snackBar Shared snackbar service
    */
   constructor(
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private translate: TranslateService,
     private confirmService: SafeConfirmService,
     private apollo: Apollo,
-    private applicationService: SafeApplicationService
-  ) {}
+    private applicationService: SafeApplicationService,
+    private snackBar: SnackbarService
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.applicationSubscription =
@@ -79,7 +87,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
                 res.data.application.customNotifications.edges.map(
                   (x) => x.node
                 );
-              this.notifications.data = this.cachedNotifications.slice(
+              this.notifications = this.cachedNotifications.slice(
                 this.pageInfo.pageSize * this.pageInfo.pageIndex,
                 this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
               );
@@ -100,7 +108,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     console.log(e);
   }
 
@@ -118,7 +126,7 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       disableClose: true,
       autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.updating = true;
         this.applicationService.updateCustomNotification(
@@ -127,6 +135,12 @@ export class NotificationsComponent implements OnInit, OnDestroy {
           () => {
             this.notificationsQuery.refetch();
           }
+        );
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectUpdated', {
+            value: value.name,
+            type: this.translate.instant('common.customNotification.one'),
+          })
         );
       }
     });
@@ -148,15 +162,20 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       //   { step: step.name }
       // ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
-      confirmColor: 'warn',
+      confirmVariant: 'danger',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.deleteCustomNotification(
           notification.id,
           () => {
             this.notificationsQuery.refetch();
           }
+        );
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectDeleted', {
+            value: notification.name,
+          })
         );
       }
     });
@@ -171,16 +190,23 @@ export class NotificationsComponent implements OnInit, OnDestroy {
       disableClose: true,
       autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.addCustomNotification(value, () => {
           this.notificationsQuery.refetch();
         });
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectCreated', {
+            value: value.name,
+            type: this.translate.instant('common.customNotification.one'),
+          })
+        );
       }
     });
   }
 
-  ngOnDestroy(): void {
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
     if (this.applicationSubscription) {
       this.applicationSubscription.unsubscribe();
     }

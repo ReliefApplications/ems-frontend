@@ -9,6 +9,7 @@ export const GET_APPLICATION_BY_ID = gql`
       id
       name
       description
+      sideMenu
       createdAt
       status
       templates {
@@ -25,6 +26,7 @@ export const GET_APPLICATION_BY_ID = gql`
       pages {
         id
         name
+        visible
         type
         content
         createdAt

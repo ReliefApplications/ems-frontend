@@ -6,21 +6,21 @@ import {
 } from '@storybook/angular';
 import { DividerComponent } from './divider.component';
 import { DividerModule } from './divider.module';
-import { DividerPosition } from './enums/divider-position.enum';
-import { DividerOrientation } from './enums/divider-orientation.enum';
+import { dividerPositions } from './types/divider-position';
+import { dividerOrientations } from './types/divider-orientation';
 
 export default {
   title: 'Divider',
   component: DividerComponent,
   argTypes: {
     position: {
-      options: DividerPosition,
+      options: dividerPositions,
       control: {
         type: 'select',
       },
     },
     orientation: {
-      options: DividerOrientation,
+      options: dividerOrientations,
       control: {
         type: 'select',
       },
@@ -44,16 +44,16 @@ export default {
 /** Horizontal divider */
 export const Horizontal: StoryObj<DividerComponent> = {
   args: {
-    position: DividerPosition.CENTER,
+    position: 'center',
     text: 'Test',
-    orientation: DividerOrientation.HORIZONTAL,
+    orientation: 'horizontal',
   },
 };
 
 /** Vertical divider */
 export const Vertical: StoryObj<DividerComponent> = {
   args: {
-    position: DividerPosition.CENTER,
-    orientation: DividerOrientation.VERTICAL,
+    position: 'center',
+    orientation: 'vertical',
   },
 };

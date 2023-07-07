@@ -22,15 +22,6 @@
 .field-form {
   display: flex;
   align-items: baseline;
-  .mat-radio-group {
-    display: flex;
-    flex-flow: column;
-    .mat-radio-button {
-      &:first-child {
-        margin-bottom: 10px;
-      }
-    }
-  }
 }
 
 .field-name {

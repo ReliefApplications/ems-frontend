@@ -1,0 +1,30 @@
+<!-- Component wrapper -->
+<div class="relative flex flex-col items-center">
+  <button
+    class="w-6 h-6 relative flex items-center justify-center bg-white rounded-md border-2 border-solid border-black border-opacity-20"
+    (click)="zoomIn()"
+  >
+    <span class="font-bold">+</span>
+  </button>
+  <!-- Actual input range -->
+  <div class="h-24 w-6 flex items-center justify-center">
+    <input
+      name="slider"
+      style="--value:{{ currentZoom }}; --min:{{ minZoom }}; --max:{{
+        maxZoom
+      }}"
+      type="range"
+      min="{{ minZoom }}"
+      max="{{ maxZoom }}"
+      value="{{ currentZoom }}"
+      step="1"
+      (input)="onChangeFunction($event.target)"
+    />
+  </div>
+  <button
+    class="w-6 h-6 relative flex items-center justify-center bg-white rounded-md border-2 border-solid border-black border-opacity-20"
+    (click)="zoomOut()"
+  >
+    <span class="font-bold">-</span>
+  </button>
+</div>

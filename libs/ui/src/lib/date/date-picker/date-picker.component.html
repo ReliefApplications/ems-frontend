@@ -1,0 +1,32 @@
+<ng-template>
+  <kendo-multiviewcalendar
+    class="px-2 pb-3 left-0 transition-all duration-150 ease-in bg-white rounded-lg shadow-[0px_2px_15px_-3px_rgba(0,0,0,.07),_0px_10px_20px_-2px_rgba(0,0,0,.04)] z-[1066]"
+    [disabled]="disabled"
+    [showViewHeader]="false"
+    [views]="1"
+    [focusedDate]="value"
+    [value]="value"
+    topView="decade"
+    (valueChange)="handleChange($event)"
+    (activeViewChange)="viewChangeAction = true"
+  >
+    <kendo-multiviewcalendar-messages
+      today="{{ 'kendo.datepicker.today' | translate }}"
+    >
+    </kendo-multiviewcalendar-messages>
+    <ng-template kendoCalendarMonthCellTemplate let-date>
+      <span>{{ date.getDate() }}</span>
+    </ng-template>
+    <ng-template kendoCalendarYearCellTemplate let-context="cellContext">
+      <span>{{ context.formattedValue }}</span>
+    </ng-template>
+    <ng-template kendoCalendarDecadeCellTemplate let-context="cellContext">
+      <span>{{ context.formattedValue }}</span>
+    </ng-template>
+    <ng-template kendoCalendarHeaderTitleTemplate let-title>
+      <span class="p-2.5">
+        {{ title }}
+      </span>
+    </ng-template>
+  </kendo-multiviewcalendar>
+</ng-template>

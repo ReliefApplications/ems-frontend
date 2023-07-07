@@ -8,7 +8,7 @@ import {
   UntypedFormBuilder,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 
 export default {
   component: SafeMappingComponent,
@@ -19,7 +19,7 @@ export default {
         BrowserAnimationsModule,
         StorybookTranslateModule,
         ReactiveFormsModule,
-        MatDialogModule,
+        DialogCdkModule,
       ],
       providers: [
         {
@@ -65,6 +65,9 @@ const TEMPLATE: StoryFn<SafeMappingComponent> = () => ({
   },
 });
 
+/**
+ * Default story.
+ */
 export const DEFAULT = {
   render: TEMPLATE,
   name: 'Full',
@@ -84,6 +87,9 @@ const TEMPLATE_EMPTY: StoryFn<SafeMappingComponent> = () => ({
   },
 });
 
+/**
+ * Empty story.
+ */
 export const EMPTY = {
   render: TEMPLATE_EMPTY,
   name: 'Empty',

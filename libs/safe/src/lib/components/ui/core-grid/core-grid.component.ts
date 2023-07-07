@@ -9,7 +9,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import {
   GridDataResult,
   PageChangeEvent,
@@ -23,7 +23,6 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { SafeAuthService } from '../../../services/auth/auth.service';
 import { SafeDownloadService } from '../../../services/download/download.service';
 import { SafeLayoutService } from '../../../services/layout/layout.service';
-import { SafeSnackBarService } from '../../../services/snackbar/snackbar.service';
 import {
   QueryBuilderService,
   QueryResponse,
@@ -38,7 +37,6 @@ import {
 } from './graphql/mutations';
 import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from './graphql/queries';
 import { SafeConfirmService } from '../../../services/confirm/confirm.service';
-import { Form } from '../../../models/form.model';
 import { Record } from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
 import { GridSettings } from './models/grid-settings.model';
@@ -53,6 +51,7 @@ import { SafeApplicationService } from '../../../services/application/applicatio
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { firstValueFrom, Subject } from 'rxjs';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Default file name when exporting grid data.
@@ -266,7 +265,7 @@ export class SafeCoreGridComponent
    *
    * @param environment platform environment
    * @param apollo Apollo service
-   * @param dialog Material dialog
+   * @param dialog Dialog
    * @param queryBuilder Shared query builder
    * @param layoutService Shared layout service
    * @param snackBar Shared snackbar service
@@ -281,10 +280,10 @@ export class SafeCoreGridComponent
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private queryBuilder: QueryBuilderService,
     private layoutService: SafeLayoutService,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,
     private gridService: SafeGridService,
@@ -656,7 +655,7 @@ export class SafeCoreGridComponent
               console.error(error);
             }
           }
-          if (this.settings.query.temporaryRecords) {
+          if (this.settings.query.temporaryRecords?.length) {
             //Handles temporary records for resources creation in forms
             this.getTemporaryRecords();
           }
@@ -831,6 +830,26 @@ export class SafeCoreGridComponent
         this.resetDefaultLayout();
         break;
       }
+      case 'map': {
+        import('./map-modal/map-modal.component').then(
+          ({ MapModalComponent }) => {
+            this.dialog.open(MapModalComponent, {
+              data: {
+                item: event.item,
+                datasource: {
+                  type: 'Point',
+                  resource: this.settings.resource,
+                  // todo(change)
+                  layout: this.settings.id,
+                  geoField: event.field.name,
+                },
+              },
+            });
+          }
+        );
+
+        break;
+      }
       default: {
         break;
       }
@@ -853,11 +872,13 @@ export class SafeCoreGridComponent
         },
         autoFocus: false,
       });
-      dialogRef.afterClosed().subscribe((value) => {
-        if (value) {
-          this.reloadData();
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.reloadData();
+          }
+        });
     }
   }
 
@@ -926,10 +947,9 @@ export class SafeCoreGridComponent
         },
         autoFocus: false,
       });
-      dialogRef
-        .afterClosed()
+      dialogRef.closed
         .pipe(takeUntil(this.destroy$))
-        .subscribe((value) => {
+        .subscribe((value: any) => {
           if (value) {
             this.onUpdate(isArray ? items : [items]);
           }
@@ -955,7 +975,7 @@ export class SafeCoreGridComponent
       },
       autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.validateRecords(ids);
         this.reloadData();
@@ -998,9 +1018,9 @@ export class SafeCoreGridComponent
         }
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
-      confirmColor: 'warn',
+      confirmVariant: 'danger',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<EditRecordMutationResponse>({
@@ -1034,30 +1054,28 @@ export class SafeCoreGridComponent
         record: items[0].id ? items[0].id : items[0],
       },
     });
-    dialogRef
-      .afterClosed()
-      .subscribe((value: { targetForm: Form; copyRecord: boolean }) => {
-        if (value) {
-          const promises: Promise<any>[] = [];
-          for (const item of items) {
-            promises.push(
-              firstValueFrom(
-                this.apollo.mutate<ConvertRecordMutationResponse>({
-                  mutation: CONVERT_RECORD,
-                  variables: {
-                    id: item.id ? item.id : item,
-                    form: value.targetForm.id,
-                    copyRecord: value.copyRecord,
-                  },
-                })
-              )
-            );
-          }
-          Promise.all(promises).then(() => {
-            this.reloadData();
-          });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        const promises: Promise<any>[] = [];
+        for (const item of items) {
+          promises.push(
+            firstValueFrom(
+              this.apollo.mutate<ConvertRecordMutationResponse>({
+                mutation: CONVERT_RECORD,
+                variables: {
+                  id: item.id ? item.id : item,
+                  form: value.targetForm.id,
+                  copyRecord: value.copyRecord,
+                },
+              })
+            )
+          );
         }
-      });
+        Promise.all(promises).then(() => {
+          this.reloadData();
+        });
+      }
+    });
   }
 
   // === HISTORY ===
@@ -1099,9 +1117,9 @@ export class SafeCoreGridComponent
         { date: formatDate }
       ),
       confirmText: this.translate.instant('components.confirmModal.confirm'),
-      confirmColor: 'primary',
+      confirmVariant: 'primary',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<EditRecordMutationResponse>({
@@ -1232,14 +1250,16 @@ export class SafeCoreGridComponent
     this.skip = event.skip;
     this.pageSize = event.take;
     this.pageSizeChanged.emit(this.pageSize);
-    this.dataQuery.refetch({
-      first: this.pageSize,
-      skip: this.skip,
-      filter: this.queryFilter,
-      sortField: this.sortField || undefined,
-      sortOrder: this.sortOrder,
-      styles: this.style,
-    });
+    this.dataQuery
+      .refetch({
+        first: this.pageSize,
+        skip: this.skip,
+        filter: this.queryFilter,
+        sortField: this.sortField || undefined,
+        sortOrder: this.sortOrder,
+        styles: this.style,
+      })
+      .then(() => (this.loading = false));
   }
 
   // === FILTERING ===

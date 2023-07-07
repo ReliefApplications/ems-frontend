@@ -1,31 +1,25 @@
-<mat-accordion
-  cdkDropList
-  (cdkDropListDropped)="drop($event)"
-  class="collapsible-form-group"
->
-  <mat-expansion-panel
+<cdk-accordion cdkDropList (cdkDropListDropped)="drop($event)">
+  <ui-expansion-panel
     cdkDrag
     *ngFor="let stageForm of pipelineForm.controls; let index = index"
+    [index]="index"
+    class="bg-white"
   >
-    <mat-expansion-panel-header cdkDragHandle>
-      <mat-panel-title>
-        {{
-          'components.aggregationBuilder.stages.' + stageForm.value.type
+    <ng-container ngProjectAs="title">
+      {{
+        'components.aggregationBuilder.stages.' + stageForm.value.type
+          | translate
+      }}
+      <ui-icon
+        icon="info_outline"
+        variant="grey"
+        [size]="18"
+        [uiTooltip]="
+          'components.aggregationBuilder.tooltip.' + stageForm.value.type
             | translate
-        }}
-        <safe-icon
-          icon="info_outline"
-          variant="grey"
-          [inline]="true"
-          [size]="18"
-          [matTooltip]="
-            'components.aggregationBuilder.tooltip.' + stageForm.value.type
-              | translate
-          "
-          matTooltipPosition="right"
-        ></safe-icon>
-      </mat-panel-title>
-    </mat-expansion-panel-header>
+        "
+      ></ui-icon>
+    </ng-container>
     <ng-container [ngSwitch]="stageForm.value.type">
       <ng-container *ngSwitchCase="stageType.FILTER">
         <safe-filter
@@ -58,44 +52,43 @@
         ></safe-field-dropdown>
       </ng-container>
       <ng-container *ngSwitchCase="stageType.CUSTOM">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.input.rawJson' | translate }}</mat-label>
-          <textarea
-            matInput
+        <div uiFormFieldDirective>
+          <label>{{ 'common.input.rawJson' | translate }}</label>
+          <ui-textarea
             [formControl]="$any(stageForm).controls.form.controls.raw"
-            [cdkTextareaAutosize]="true"
-            [cdkAutosizeMinRows]="5"
-          ></textarea>
-        </mat-form-field>
+            [minRows]="4"
+            [maxRows]="20"
+          >
+          </ui-textarea>
+        </div>
       </ng-container>
     </ng-container>
-    <mat-action-row>
-      <safe-button
+    <div class="panel-actions">
+      <ui-button
         [isIcon]="true"
         icon="delete"
         variant="danger"
         (click)="deleteStage(index)"
-      ></safe-button>
-    </mat-action-row>
-  </mat-expansion-panel>
-</mat-accordion>
-<div>
-  <safe-button
+      ></ui-button>
+    </div>
+  </ui-expansion-panel>
+</cdk-accordion>
+<div class="flex justify-center">
+  <ui-button
     icon="add"
     category="primary"
-    [matMenuTriggerFor]="menu"
-    class="!w-auto"
+    [uiMenuTriggerFor]="menu"
     (click)="$event.stopPropagation()"
   >
     {{ 'components.aggregationBuilder.addStage' | translate }}
-  </safe-button>
-  <mat-menu #menu="matMenu">
+  </ui-button>
+  <ui-menu #menu>
     <button
       *ngFor="let stage of stageList"
-      mat-menu-item
+      uiMenuItem
       (click)="addStage(stage)"
     >
       {{ 'components.aggregationBuilder.stages.' + stage | translate }}
     </button>
-  </mat-menu>
+  </ui-menu>
 </div>

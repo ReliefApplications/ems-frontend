@@ -1,30 +1,36 @@
 <div [formGroup]="formGroup" class="flex flex-col last:mb-0">
   <h2>{{ 'common.general' | translate }}</h2>
-  <mat-form-field appearance="outline">
-    <mat-label>{{ 'common.title' | translate }}</mat-label>
-    <input matInput formControlName="title" type="string" />
-  </mat-form-field>
+  <div uiFormFieldDirective>
+    <label>{{ 'common.title' | translate }}</label>
+    <input formControlName="title" type="string" />
+  </div>
   <ng-container formGroupName="chart">
-    <mat-form-field appearance="outline">
-      <mat-label>{{
-        'components.widget.settings.chart.type' | translate
-      }}</mat-label>
-      <mat-select formControlName="type">
-        <mat-select-trigger>
-          <img class="chart-icon" [src]="type.icon" />{{
-            type.name | uppercase
-          }}
-        </mat-select-trigger>
-        <mat-option *ngFor="let type of types" [value]="type.name">
-          <img class="chart-icon" [src]="type.icon" />
+    <div uiFormFieldDirective>
+      <label>{{ 'components.widget.settings.chart.type' | translate }}</label>
+      <ng-template #chartTemplate let-type>
+        <img class="chart-icon" [src]="type?.icon" />{{
+          type?.name | uppercase
+        }}
+      </ng-template>
+      <ui-select-menu
+        [customTemplate]="{
+          template: chartTemplate,
+          context: { $implicit: selectedChartType }
+        }"
+        formControlName="type"
+      >
+        <ui-select-option *ngFor="let type of types" [value]="type.name">
+          <ng-container ngProjectAs="icon">
+            <img class="chart-icon" [src]="type.icon" />
+          </ng-container>
           {{ type.name | uppercase }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
   </ng-container>
-  <mat-form-field appearance="outline">
-    <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
-    <safe-graphql-select
+  <div uiFormFieldDirective>
+    <label>{{ 'common.resource.one' | translate }}</label>
+    <ui-graphql-select
       valueField="id"
       textField="name"
       [query]="resourcesQuery"
@@ -33,47 +39,49 @@
       (searchChange)="onResourceSearchChange($event)"
       [filterable]="true"
     >
-    </safe-graphql-select>
-  </mat-form-field>
+    </ui-graphql-select>
+  </div>
   <ng-container *ngIf="resource">
-    <h2>{{ 'common.aggregation.one' | translate }}</h2>
+    <!-- Aggregation -->
     <ng-container *ngIf="formGroup.value.chart.aggregationId">
-      <mat-form-field appearance="outline" *ngIf="aggregation">
-        <mat-label>{{ 'common.aggregation.one' | translate }}</mat-label>
-        <mat-select [disabled]="true" [value]="aggregation.id">
-          <mat-option [value]="aggregation.id">{{
+      <div *ngIf="aggregation" uiFormFieldDirective>
+        <label>{{ 'common.aggregation.one' | translate }}</label>
+        <ui-select-menu [disabled]="true" [value]="aggregation.id">
+          <ui-select-option [value]="aggregation.id">{{
             aggregation.name
-          }}</mat-option>
-        </mat-select>
-        <safe-button
-          matSuffix
+          }}</ui-select-option>
+        </ui-select-menu>
+        <ui-button
+          uiSuffix
           variant="primary"
           [isIcon]="true"
           icon="edit"
           (click)="editAggregation()"
-        ></safe-button>
-        <safe-button
-          matSuffix
+        ></ui-button>
+        <ui-button
+          uiSuffix
           variant="danger"
           [isIcon]="true"
           icon="close"
           (click)="formGroup.get('chart.aggregationId')?.setValue(null)"
-        ></safe-button>
-      </mat-form-field>
-      <h3>{{ 'components.mapping.title' | translate }}</h3>
+        ></ui-button>
+      </div>
+      <!-- Series Mapping -->
+      <h3 class="mb-1">{{ 'components.mapping.title' | translate }}</h3>
       <safe-series-mapping
         [availableFields]="availableSeriesFields"
         [formGroup]="$any(formGroup.get('chart.mapping'))"
       ></safe-series-mapping>
     </ng-container>
     <ng-container *ngIf="!formGroup.value.chart.aggregationId">
-      <safe-button
-        class="!w-auto"
-        category="tertiary"
-        variant="primary"
-        (click)="addAggregation()"
-        >{{ 'components.aggregation.add.title' | translate }}</safe-button
-      >
+      <div class="flex justify-center">
+        <ui-button
+          category="tertiary"
+          variant="primary"
+          (click)="addAggregation()"
+          >{{ 'components.aggregation.add.title' | translate }}</ui-button
+        >
+      </div>
     </ng-container>
   </ng-container>
 </div>

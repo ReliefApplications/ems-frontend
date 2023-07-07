@@ -8,9 +8,10 @@ import get from 'lodash/get';
 import { Record } from '../../models/record.model';
 import { EditRecordMutationResponse, EDIT_RECORD } from './graphql/mutations';
 import { Metadata } from '../../models/metadata.model';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeRestService } from '../rest/rest.service';
 import { BehaviorSubject } from 'rxjs';
+import { SnackbarService } from '@oort-front/ui';
+import { SafeFormHelpersService } from '../form-helper/form-helper.service';
 
 /**
  * Shared form builder service.
@@ -20,8 +21,6 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class SafeFormBuilderService {
-  public selectedPageIndex: BehaviorSubject<number> =
-    new BehaviorSubject<number>(0);
   /**
    * Constructor of the service
    *
@@ -30,13 +29,15 @@ export class SafeFormBuilderService {
    * @param apollo Apollo service
    * @param snackBar Service used to show a snackbar.
    * @param restService This is the service that is used to make http requests.
+   * @param formHelpersService Shared form helper service.
    */
   constructor(
     private referenceDataService: SafeReferenceDataService,
     private translate: TranslateService,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
-    private restService: SafeRestService
+    private snackBar: SnackbarService,
+    private restService: SafeRestService,
+    private formHelpersService: SafeFormHelpersService
   ) {}
 
   /**
@@ -55,11 +56,13 @@ export class SafeFormBuilderService {
     record?: Record
   ): Survey.SurveyModel {
     const survey = new Survey.Model(structure);
+    this.formHelpersService.addUserVariables(survey);
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
     );
     survey.onCompleting.add(() => {
       for (const page of survey.toJSON().pages) {
+        if (!page.elements) continue;
         for (const element of page.elements) {
           if (element.type === 'resources' || element.type === 'resource') {
             // if its a single record, the value will be string
@@ -135,11 +138,13 @@ export class SafeFormBuilderService {
    *
    * @param survey Survey where to add the callbacks
    * @param pages Pages of the current survey
+   * @param selectedPageIndex Current page of the survey
    * @param temporaryFilesStorage Temporary files saved while executing the survey
    */
   public addEventsCallBacksToSurvey(
     survey: Survey.SurveyModel,
     pages: BehaviorSubject<any[]>,
+    selectedPageIndex: BehaviorSubject<number>,
     temporaryFilesStorage: any
   ) {
     survey.onClearFiles.add((_, options: any) => this.onClearFiles(options));
@@ -160,7 +165,7 @@ export class SafeFormBuilderService {
     });
     survey.onCurrentPageChanged.add((survey: Survey.SurveyModel) => {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
-      this.selectedPageIndex.next(survey.currentPageNo);
+      selectedPageIndex.next(survey.currentPageNo);
     });
   }
 

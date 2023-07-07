@@ -6,13 +6,11 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-  MatLegacyDialog as MatDialog,
-} from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../../services/confirm/confirm.service';
+import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
 
 /** Model for dialog data */
 interface DialogData {
@@ -27,7 +25,10 @@ interface DialogData {
   styleUrls: ['./tile-data.component.scss'],
 })
 /** Modal content to edit the settings of a component. */
-export class SafeTileDataComponent implements AfterViewInit {
+export class SafeTileDataComponent
+  extends SafeUnsubscribeComponent
+  implements AfterViewInit
+{
   // === REACTIVE FORM ===
   tileForm?: UntypedFormGroup;
 
@@ -38,19 +39,21 @@ export class SafeTileDataComponent implements AfterViewInit {
   /**
    * Constructor of a data tile
    *
-   * @param dialogRef Reference to a dialog opened via the material dialog service
+   * @param dialogRef Reference to a dialog opened via the Dialog service
    * @param data The dialog data
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    */
   constructor(
-    public dialogRef: MatDialogRef<SafeTileDataComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    public dialogRef: DialogRef<SafeTileDataComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
-    private dialog: MatDialog
-  ) {}
+    private dialog: Dialog
+  ) {
+    super();
+  }
 
   /** Once the template is ready, inject the settings component linked to the widget type passed as a parameter. */
   ngAfterViewInit(): void {
@@ -84,13 +87,15 @@ export class SafeTileDataComponent implements AfterViewInit {
           'components.widget.settings.close.confirmationMessage'
         ),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'warn',
+        confirmVariant: 'danger',
       });
-      confirmDialogRef.afterClosed().subscribe((value) => {
-        if (value) {
-          this.dialogRef.close();
-        }
-      });
+      confirmDialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.dialogRef.close();
+          }
+        });
     }
   }
 }

@@ -2,6 +2,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { SafeRestService } from '../rest/rest.service';
+import { ApiConfiguration } from '../../models/apiConfiguration.model';
 
 /**
  * Shared API Proxy service.
@@ -38,18 +39,25 @@ export class SafeApiProxyService {
   /**
    * Sends a ping request using the passed arguments
    *
-   * @param name - The name of the API
-   * @param pingUrl - The url to ping
-   * @returns An observable with results of the request, or null if name is
-   * undefined or empty
+   * @param api Current API configuration
+   * @returns rest service post ping request
    */
-  public buildPingRequest(name: string | undefined, pingUrl: string): any {
-    if (name) {
-      const url = `${this.baseUrl}${name}${pingUrl}`;
+  public buildPingRequest(api: ApiConfiguration): any {
+    if (api.pingUrl) {
+      const url = this.buildPingUrl(api.pingUrl);
       const headers = this.buildHeaders();
-      return this.restService.get(url, { headers });
+      return this.restService.post(url, api, { headers });
+
+      // if (name) {
+      //   const url = this.buildPingUrl(name, pingUrl);
+      //   const headers = this.buildHeaders();
+      //   if (body) {
+      //     return this.restService.post(this.baseUrl, body, { headers });
+      //   }
+      //   return this.restService.get(url, { headers });
+      // }
+      // return null;
     }
-    return null;
   }
 
   /**
@@ -68,7 +76,7 @@ export class SafeApiProxyService {
    *
    * @param url URL string.
    * @param body body of the request.
-   * @param options standard http otions.
+   * @param options standard http options.
    * @returns Promised http request
    */
   public buildPostRequest(
@@ -80,5 +88,18 @@ export class SafeApiProxyService {
     return firstValueFrom(
       this.restService.post(url, body, { ...options, headers })
     );
+  }
+
+  /**
+   * Builds the ping url to call the backend
+   *
+   * @param {string} pingUrl ping extension url
+   * @returns string ping url
+   */
+  private buildPingUrl(pingUrl: string): string {
+    // if (!apiName.endsWith('/') && !pingUrl.startsWith('/')) {
+    //   apiName = apiName + '/';
+    // }
+    return `${this.baseUrl}/ping/${pingUrl}`;
   }
 }

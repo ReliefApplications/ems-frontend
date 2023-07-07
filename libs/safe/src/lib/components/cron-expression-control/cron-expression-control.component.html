@@ -1,9 +1,13 @@
-<mat-form-field appearance="outline" class="flex-1">
-  <mat-label>{{ 'models.pullJob.schedule' | translate }}</mat-label>
+<div
+  [uiErrorMessage]="'components.pullJob.modal.errors.schedule' | translate"
+  [uiErrorMessageIf]="ngControl.errors && ngControl.touched"
+  uiFormFieldDirective
+  class="flex-1"
+>
+  <label>{{ 'models.pullJob.schedule' | translate }}</label>
   <input
     type="text"
     [placeholder]="'components.pullJob.modal.placeholder.schedule' | translate"
-    matInput
     readonly
     value="{{
       ngControl.invalid
@@ -11,15 +15,12 @@
         : (value | safeReadableCron)
     }}"
   />
-  <safe-icon
+  <ui-icon
     icon="edit"
     class="cursor-pointer"
     variant="grey"
-    matSuffix
+    uiSuffix
     (click)="onEdit()"
-    [matTooltip]="'components.pullJob.modal.hint.schedule' | translate"
-  ></safe-icon>
-  <mat-error *ngIf="ngControl.errors">
-    {{ 'components.pullJob.modal.errors.schedule' | translate }}
-  </mat-error>
-</mat-form-field>
+    [uiTooltip]="'components.pullJob.modal.hint.schedule' | translate"
+  ></ui-icon>
+</div>

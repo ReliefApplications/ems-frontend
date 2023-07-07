@@ -74,10 +74,21 @@ export interface DeletePageMutationResponse {
 // === EDIT PAGE ===
 /** Edit page gql mutation definition */
 export const EDIT_PAGE = gql`
-  mutation editPage($id: ID!, $name: String, $permissions: JSON) {
-    editPage(id: $id, name: $name, permissions: $permissions) {
+  mutation editPage(
+    $id: ID!
+    $name: String
+    $permissions: JSON
+    $visible: Boolean
+  ) {
+    editPage(
+      id: $id
+      name: $name
+      permissions: $permissions
+      visible: $visible
+    ) {
       id
       name
+      visible
       permissions {
         canSee {
           id
@@ -452,6 +463,7 @@ export const EDIT_APPLICATION = gql`
     $pages: [ID]
     $permissions: JSON
     $description: String
+    $sideMenu: Boolean
   ) {
     editApplication(
       id: $id
@@ -460,9 +472,11 @@ export const EDIT_APPLICATION = gql`
       pages: $pages
       permissions: $permissions
       description: $description
+      sideMenu: $sideMenu
     ) {
       id
       description
+      sideMenu
       name
       createdAt
       modifiedAt

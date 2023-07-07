@@ -1,10 +1,9 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormArray } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { createFormGroup, Mapping, Mappings } from './mapping-forms';
+import { Dialog } from '@angular/cdk/dialog';
 
 /**
  * Mapping component to handle all mapping grids.
@@ -22,23 +21,23 @@ export class SafeMappingComponent
   @Input() mappingForm!: UntypedFormArray;
   // === TABLE ===
   displayedColumns = ['field', 'path', 'value', 'text', 'actions'];
-  dataSource = new MatTableDataSource<Mapping>([]);
+  dataSource = new Array<Mapping>();
 
   /**
    * Mapping component constructor.
    *
-   * @param dialog Angular Material dialog service.
+   * @param dialog Angular Dialog service.
    */
-  constructor(private dialog: MatDialog) {
+  constructor(private dialog: Dialog) {
     super();
   }
 
   ngOnInit(): void {
-    this.dataSource.data = [...this.mappingForm.value];
+    this.dataSource = [...this.mappingForm.value];
     this.mappingForm.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((mappings: Mappings) => {
-        this.dataSource.data = [...mappings];
+        this.dataSource = [...mappings];
       });
   }
 
@@ -57,12 +56,14 @@ export class SafeMappingComponent
         mapping: element,
       },
     });
-    dialogRef.afterClosed().subscribe((mapping: Mapping) => {
-      if (mapping) {
-        this.mappingForm.at(index).setValue(mapping);
-        this.mappingForm.markAsDirty();
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((mapping: any) => {
+        if (mapping) {
+          this.mappingForm.at(index).setValue(mapping);
+          this.mappingForm.markAsDirty();
+        }
+      });
   }
 
   /**
@@ -87,11 +88,13 @@ export class SafeMappingComponent
         mapping: null,
       },
     });
-    dialogRef.afterClosed().subscribe((mapping: Mapping) => {
-      if (mapping) {
-        this.mappingForm.push(createFormGroup(mapping));
-        this.mappingForm.markAsDirty();
-      }
-    });
+    dialogRef.closed
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((mapping: any) => {
+        if (mapping) {
+          this.mappingForm.push(createFormGroup(mapping));
+          this.mappingForm.markAsDirty();
+        }
+      });
   }
 }

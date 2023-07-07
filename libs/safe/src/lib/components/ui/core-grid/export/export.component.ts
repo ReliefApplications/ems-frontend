@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { EXPORT_SETTINGS } from '../grid/grid.constants';
 
 /** The data for the dialogs input */
@@ -27,7 +27,7 @@ export class SafeExportComponent implements OnInit {
    *
    * @param data The dialog data
    */
-  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+  constructor(@Inject(DIALOG_DATA) public data: DialogData) {}
 
   ngOnInit(): void {
     this.export = this.data.export;

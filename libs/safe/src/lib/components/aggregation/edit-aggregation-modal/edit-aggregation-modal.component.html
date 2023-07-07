@@ -1,20 +1,24 @@
-<safe-modal [closable]="true" size="fullscreen">
-  <h1 mat-dialog-title>
-    {{ 'components.aggregation.edit.title' | translate }}
-  </h1>
-  <mat-dialog-content>
+<ui-dialog [closable]="true" size="fullscreen">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{ 'components.aggregation.edit.title' | translate }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="formGroup" class="flex flex-col gap-8">
       <div class="flex flex-col">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.name' | translate }}</mat-label>
-          <input matInput formControlName="name" type="string" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
-          <mat-select [disabled]="true" [value]="resource.id">
-            <mat-option [value]="resource.id">{{ resource.name }}</mat-option>
-          </mat-select>
-        </mat-form-field>
+        <div uiFormFieldDirective>
+          <label>{{ 'common.name' | translate }}</label>
+          <input formControlName="name" type="string" />
+        </div>
+        <div uiFormFieldDirective>
+          <label>{{ 'common.resource.one' | translate }}</label>
+          <ui-select-menu [value]="resource.id" [disabled]="true">
+            <ui-select-option [value]="resource.id" [disabled]="true">
+              {{ resource.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
       </div>
       <div class="flex flex-col">
         <safe-aggregation-builder
@@ -23,12 +27,12 @@
         ></safe-aggregation-builder>
       </div>
     </form>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       (click)="onSubmit()"
@@ -36,6 +40,6 @@
       [disabled]="!formGroup.valid"
     >
       {{ 'common.save' | translate }}
-    </safe-button>
-  </mat-dialog-actions>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

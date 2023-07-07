@@ -3,7 +3,7 @@ import { theme } from '../themes/oort/oort.prod';
 import { sharedEnvironment } from './environment.shared';
 
 /**
- * Authentification configuration
+ * Authentication configuration
  */
 const authConfig: AuthConfig = {
   issuer: 'https://id-lift.oortcloud.tech/auth/realms/oort',
@@ -27,7 +27,6 @@ export const environment = {
   backOfficeUri: 'https://lift.oortcloud.tech/admin/',
   availableLanguages: ['en', 'fr'],
   authConfig,
-  esriApiKey: '',
   theme,
   availableWidgets: [
     'donut-chart',
@@ -38,5 +37,6 @@ export const environment = {
     'grid',
     'text',
     'map',
+    'summaryCard',
   ],
 };

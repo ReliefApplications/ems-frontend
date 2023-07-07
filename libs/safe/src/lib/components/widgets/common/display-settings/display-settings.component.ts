@@ -1,8 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
 import { TranslateModule } from '@ngx-translate/core';
+import { ToggleModule } from '@oort-front/ui';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 /** Component for selecting the widget display options */
 @Component({
@@ -12,12 +13,18 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatSlideToggleModule,
+    ToggleModule,
     TranslateModule,
+    MonacoEditorModule,
   ],
   templateUrl: './display-settings.component.html',
   styleUrls: ['./display-settings.component.scss'],
 })
 export class DisplaySettingsComponent {
   @Input() formGroup!: FormGroup;
+  public editorOptions = {
+    theme: 'vs-dark',
+    language: 'scss',
+    fixedOverflowWidgets: true,
+  };
 }

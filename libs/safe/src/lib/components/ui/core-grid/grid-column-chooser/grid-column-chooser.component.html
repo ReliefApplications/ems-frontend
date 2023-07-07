@@ -1,0 +1,42 @@
+<div class="mt-1">
+  <!-- Select all / unselect all -->
+  <div class="flex flex-col px-2 gap-1">
+    <button kendoButton (click)="uncheckAllCheckboxes()">
+      {{ 'kendo.editor.unselectAll' | translate }}
+    </button>
+    <button kendoButton (click)="checkAllCheckboxes()">
+      {{ 'kendo.editor.selectAll' | translate }}
+    </button>
+  </div>
+
+  <ui-divider class="my-2"></ui-divider>
+
+  <!-- Columns -->
+  <div class="flex flex-col gap-1 px-2 max-h-52 overflow-auto">
+    <ng-container *ngFor="let column of columns">
+      <label
+        *ngIf="column.title"
+        class="flex items-center gap-1 cursor-pointer hover:bg-gray-300"
+      >
+        <input type="checkbox" kendoCheckBox [(ngModel)]="column.visible" />
+        <span>{{ column.title }}</span>
+      </label>
+    </ng-container>
+  </div>
+
+  <!-- Actions -->
+  <div class="flex flex-row p-2 gap-2 mt-4">
+    <button
+      (click)="reset()"
+      class="k-button k-button-solid-base k-button-solid k-button-md k-rounded-md k-button-rectangle mr-px"
+    >
+      {{ 'kendo.grid.columnsReset' | translate }}
+    </button>
+    <button
+      class="k-button k-button-solid-primary k-button-solid k-button-md k-rounded-md k-button-rectangle ml-px"
+      (click)="apply()"
+    >
+      {{ 'kendo.grid.columnsApply' | translate }}
+    </button>
+  </div>
+</div>

@@ -1,19 +1,23 @@
 import { moduleMetadata, Meta, StoryObj } from '@storybook/angular';
 import { AvatarGroupComponent } from './avatar-group.component';
 import { AvatarGroupModule } from './avatar-group.module';
-import { AvatarShape } from '../avatar/enums/avatar-shape.enum';
-import { AvatarSize } from '../avatar/enums/avatar-size.enum';
+import { AvatarShape, avatarShapes } from '../avatar/types/avatar-shape';
+import { Size, sizes } from '../types/size';
+import { Category, categories } from '../types/category';
 
 type MockedAvatar = {
-  size: string;
-  variant: string;
-  shape: string;
+  size: Size;
+  variant: Category;
+  shape: AvatarShape;
   image: string;
   initials: string;
 };
 
 type StoryType = AvatarGroupComponent & { avatars?: any[] };
 
+/**
+ * Mocked avatar array
+ */
 const avatars: MockedAvatar[] = [
   {
     size: 'large',
@@ -53,11 +57,15 @@ export default {
   component: AvatarGroupComponent,
   argTypes: {
     shape: {
-      options: AvatarShape,
+      options: avatarShapes,
+      control: 'select',
+    },
+    variant: {
+      options: categories,
       control: 'select',
     },
     size: {
-      options: AvatarSize,
+      options: sizes,
       control: 'select',
     },
     limit: {

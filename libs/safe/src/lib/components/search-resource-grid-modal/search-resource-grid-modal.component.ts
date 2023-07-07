@@ -1,19 +1,15 @@
 import { ApplicationRef, Component, Inject } from '@angular/core';
-import {
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-  MatLegacyDialogRef as MatDialogRef,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
 import { CommonModule } from '@angular/common';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { SpinnerModule } from '@oort-front/ui';
 import { SafeResourceDropdownModule } from '../resource-dropdown/resource-dropdown.module';
 import { SafeApplicationDropdownModule } from '../application-dropdown/application-dropdown.module';
 import { SafeRecordDropdownModule } from '../record-dropdown/record-dropdown.module';
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '../ui/modal/modal.module';
+import { ButtonModule } from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
 
 /**
  * Dialog data interface of the component
@@ -32,15 +28,14 @@ interface DialogData {
   standalone: true,
   imports: [
     CommonModule,
-    MatDialogModule,
-    MatProgressSpinnerModule,
-    MatButtonModule,
+    DialogModule,
+    SpinnerModule,
     SafeResourceDropdownModule,
     SafeApplicationDropdownModule,
     SafeRecordDropdownModule,
     SafeCoreGridModule,
     TranslateModule,
-    SafeModalModule,
+    ButtonModule,
   ],
   selector: 'safe-search-resource-grid-modal',
   templateUrl: './search-resource-grid-modal.component.html',
@@ -64,12 +59,12 @@ export class SafeResourceGridModalComponent {
    * Grid of records for resource / resources questions.
    *
    * @param data dialog data
-   * @param dialogRef Material dialog reference of the component
+   * @param dialogRef Dialog reference of the component
    * @param ref Application reference
    */
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    public dialogRef: MatDialogRef<SafeResourceGridModalComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData,
+    public dialogRef: DialogRef<SafeResourceGridModalComponent>,
     private ref: ApplicationRef
   ) {
     if (this.data.multiselect !== undefined)
@@ -127,7 +122,7 @@ export class SafeResourceGridModalComponent {
   closeModal(saveChanges: boolean = true): void {
     this.ref.tick();
     if (saveChanges) {
-      this.dialogRef.close(this.selectedRows);
+      this.dialogRef.close(this.selectedRows as any);
     }
   }
 }

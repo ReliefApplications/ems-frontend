@@ -4,7 +4,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   ContentType,
   Step,
-  SafeSnackBarService,
   Workflow,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
@@ -15,6 +14,7 @@ import {
 import { PreviewService } from '../../../services/preview.service';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Workflow page component for application preview.
@@ -55,7 +55,7 @@ export class WorkflowComponent
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private router: Router,
     private previewService: PreviewService,
     private translate: TranslateService
@@ -120,10 +120,12 @@ export class WorkflowComponent
    * @param elementRef Element ref.
    */
   onActivate(elementRef: any): void {
-    if (elementRef.goToNextStep) {
-      elementRef.goToNextStep.subscribe((event: any) => {
-        if (event) {
+    if (elementRef.changeStep) {
+      elementRef.changeStep.subscribe((event: any) => {
+        if (event > 0) {
           this.goToNextStep();
+        } else {
+          this.goToPreviousStep();
         }
       });
     }
@@ -146,6 +148,29 @@ export class WorkflowComponent
       this.snackBar.openSnackBar(
         this.translate.instant(
           'models.workflow.notifications.cannotGoToNextStep'
+        ),
+        { error: true }
+      );
+    }
+  }
+
+  /**
+   * Navigates to the previous step if possible and change selected step / index consequently
+   */
+  private goToPreviousStep(): void {
+    if (this.activeStep > 0) {
+      this.onOpenStep(this.activeStep - 1);
+    } else if (this.activeStep === 0) {
+      this.onOpenStep(this.steps.length - 1);
+      this.snackBar.openSnackBar(
+        this.translate.instant('models.workflow.notifications.goToStep', {
+          step: this.steps[this.steps.length - 1].name,
+        })
+      );
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'models.workflow.notifications.cannotGoToPreviousStep'
         ),
         { error: true }
       );

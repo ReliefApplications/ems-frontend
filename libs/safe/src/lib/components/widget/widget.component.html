@@ -14,7 +14,7 @@
     class="flex-1 h-full w-full"
     [header]="header"
     [settings]="widget.settings"
-    (goToNextStep)="goToNextStep.emit($event)"
+    (changeStep)="changeStep.emit($event)"
     (edit)="edit.emit($event)"
     [widget]="widget"
     [canUpdate]="canUpdate"
@@ -22,12 +22,12 @@
 </ng-container>
 <!-- MAP -->
 <ng-container *ngIf="widget.component === 'map'">
-  <safe-map
+  <safe-map-widget
     #widgetContent
     class="flex-1 h-full w-full"
     [header]="header"
     [settings]="widget.settings"
-  ></safe-map>
+  ></safe-map-widget>
 </ng-container>
 <!-- TEXT EDITOR -->
 <ng-container *ngIf="widget.component === 'editor'">
@@ -35,8 +35,7 @@
     #widgetContent
     class="flex-1 h-full w-full"
     [header]="header"
-    [title]="widget.settings.title"
-    [text]="widget.settings.text"
+    [settings]="widget.settings"
   >
   </safe-editor>
 </ng-container>
@@ -47,7 +46,6 @@
     class="flex-1 h-full w-full"
     [header]="header"
     [settings]="widget.settings"
-    (goToNextStep)="goToNextStep.emit($event)"
     (edit)="edit.emit($event)"
     [widget]="widget"
   >
