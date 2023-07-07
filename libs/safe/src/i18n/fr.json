@@ -1531,6 +1531,9 @@
 						}
 					}
 				},
+				"style": {
+					"customStyling": "Style personnalisé"
+				},
 				"summaryCard": {
 					"add": "Ajouter un carte",
 					"card": {
@@ -1586,9 +1589,6 @@
 					},
 					"static": "Statique"
 				}
-			},
-			"style": {
-				"customStyling": "Style personnalisé"
 			},
 			"summaryCard": {
 				"dataSource": "Source",

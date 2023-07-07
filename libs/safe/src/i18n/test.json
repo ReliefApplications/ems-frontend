@@ -1515,6 +1515,9 @@
 						}
 					}
 				},
+				"style": {
+					"customStyling": "******"
+				},
 				"summaryCard": {
 					"add": "******",
 					"card": {
