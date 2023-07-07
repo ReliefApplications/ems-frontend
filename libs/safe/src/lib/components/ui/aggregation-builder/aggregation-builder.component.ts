@@ -123,19 +123,21 @@ export class SafeAggregationBuilderComponent
    * Updates fields depending on selected form.
    */
   private updateFields(): void {
-    let fields: any;
-    if (this.resource)
-      fields = this.queryBuilder
-        .getFields(this.resource.queryName as string)
-        .filter(
-          (field: any) =>
-            !(
-              field.name.includes('_id') &&
-              (field.type.name === 'ID' ||
-                (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
-            )
-        );
-    else if (this.referenceData) console.log(this.referenceData);
+    const queryName = this.resource
+      ? this.resource.queryName
+      : (this.referenceData?.name as string).replace(/^\w/, (match) =>
+          match.toUpperCase()
+        ) + 'Ref';
+    const fields = this.queryBuilder
+      .getFields(queryName as string)
+      .filter(
+        (field: any) =>
+          !(
+            field.name.includes('_id') &&
+            (field.type.name === 'ID' ||
+              (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
+          )
+      );
     this.fields.next(fields);
   }
 

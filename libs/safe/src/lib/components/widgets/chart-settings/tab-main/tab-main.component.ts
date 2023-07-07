@@ -9,7 +9,7 @@ import {
   GetResourceByIdQueryResponse,
   GetResourcesQueryResponse,
   GetReferenceDatasQueryResponse,
-  GetReferenceDataQueryResponse,
+  GetReferenceDataByIdQueryResponse,
   GET_RESOURCE,
   GET_RESOURCES,
   GET_REFERENCE_DATAS,
@@ -89,7 +89,7 @@ export class TabMainComponent
     if (this.formGroup.value.resource) {
       this.origin = new FormControl('resource');
     } else {
-      if (this.formGroup.value.refData) {
+      if (this.formGroup.value.referenceData) {
         this.origin = new FormControl('referenceData');
       } else {
         this.origin = new FormControl();
@@ -122,6 +122,9 @@ export class TabMainComponent
           this.formGroup.get('chart.aggregationId')?.setValue(null);
         }
       });
+    if (this.formGroup.value.referenceData) {
+      this.getReferenceData(this.formGroup.value.referenceData);
+    }
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
       query: GET_RESOURCES,
       variables: {
@@ -175,16 +178,22 @@ export class TabMainComponent
    * @param id reference data id
    */
   private getReferenceData(id: string): void {
+    const aggregationId = this.formGroup.get('chart.aggregationId')?.value;
     this.apollo
-      .query<GetReferenceDataQueryResponse>({
+      .query<GetReferenceDataByIdQueryResponse>({
         query: GET_REFERENCE_DATA,
         variables: {
           id,
+          aggregationIds: aggregationId ? [aggregationId] : null,
         },
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ data }) => {
         this.referenceData = data.referenceData;
+        if (aggregationId && this.referenceData.aggregations?.edges[0]) {
+          this.aggregation = this.referenceData.aggregations.edges[0].node;
+          this.setAvailableSeriesFields();
+        }
       });
   }
 
@@ -193,8 +202,13 @@ export class TabMainComponent
    */
   private setAvailableSeriesFields(): void {
     if (this.aggregation) {
+      const queryName = this.resource
+        ? this.resource.queryName
+        : (this.referenceData?.name as string).replace(/^\w/, (match) =>
+            match.toUpperCase()
+          ) + 'Ref';
       const fields = this.queryBuilder
-        .getFields(this.resource?.queryName as string)
+        .getFields(queryName as string)
         .filter(
           (field: any) =>
             !(
@@ -241,7 +255,9 @@ export class TabMainComponent
     );
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
-        hasAggregations: get(this.resource, 'aggregations.totalCount', 0) > 0, // check if at least one existing aggregation
+        hasAggregations:
+          get(this.resource, 'aggregations.totalCount', 0) > 0 ||
+          get(this.referenceData, 'aggregations.totalCount', 0) > 0, // check if at least one existing aggregation
         resource: this.resource,
         referenceData: this.referenceData,
       },
@@ -273,11 +289,18 @@ export class TabMainComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value && this.aggregation) {
         this.aggregationService
-          .editAggregation(this.aggregation, value, this.resource?.id)
+          .editAggregation(
+            this.aggregation,
+            value,
+            this.resource?.id,
+            this.referenceData?.id
+          )
           .pipe(takeUntil(this.destroy$))
           .subscribe(({ data }) => {
             if (data?.editAggregation) {
-              this.getResource(this.resource?.id as string);
+              if (this.resource) this.getResource(this.resource.id as string);
+              if (this.referenceData)
+                this.getReferenceData(this.referenceData.id as string);
             }
           });
       }

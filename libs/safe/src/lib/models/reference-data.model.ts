@@ -1,3 +1,5 @@
+import { Connection } from '../utils/graphql/connection.type';
+import { Aggregation } from './aggregation.model';
 import { ApiConfiguration } from './apiConfiguration.model';
 
 /** Enum of referenceDataType. */
@@ -24,4 +26,5 @@ export interface ReferenceData {
   canSee?: boolean;
   canUpdate?: boolean;
   canDelete?: boolean;
+  aggregations?: Connection<Aggregation>;
 }

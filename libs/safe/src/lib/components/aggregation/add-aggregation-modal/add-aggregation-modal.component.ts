@@ -143,7 +143,11 @@ export class AddAggregationModalComponent
       .subscribe((aggregation: any) => {
         if (aggregation) {
           this.aggregationService
-            .addAggregation(aggregation, this.resource?.id, this.form?.id)
+            .addAggregation(
+              aggregation,
+              this.resource?.id,
+              this.referenceData?.id
+            )
             .subscribe(({ data }) => {
               if (data?.addAggregation) {
                 this.dialogRef.close(data.addAggregation as any);

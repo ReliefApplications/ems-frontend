@@ -96,6 +96,7 @@ export class SafeAggregationGridComponent
     this.loading = true;
     this.dataQuery = this.aggregationService.aggregationDataWatchQuery(
       this.resourceId,
+      '',
       this.aggregation.id as string,
       this.pageSize,
       this.skip

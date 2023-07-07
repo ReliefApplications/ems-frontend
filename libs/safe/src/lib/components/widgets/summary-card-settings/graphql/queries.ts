@@ -2,6 +2,8 @@ import { gql } from 'apollo-angular';
 import { Record } from '../../../../models/record.model';
 import { Resource } from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
+import { ReferenceData } from '../../../../models/reference-data.model';
+import { Connection } from '../../../../utils/public-api';
 
 // === GET RECORD BY ID ===
 /** Graphql request for getting a record by its id */
@@ -81,6 +83,9 @@ export const GET_RESOURCES = gql`
           layouts {
             totalCount
           }
+          aggregations {
+            totalCount
+          }
           metadata {
             name
             type
@@ -158,4 +163,66 @@ export const GET_RESOURCE = gql`
 /** Model for GetResourceByIdQueryResponse object */
 export interface GetResourceByIdQueryResponse {
   resource: Resource;
+}
+
+/** Get list of ref data gql query definition */
+export const GET_REFERENCE_DATAS = gql`
+  query GetReferenceDatas($first: Int, $afterCursor: ID) {
+    referenceDatas(first: $first, afterCursor: $afterCursor) {
+      edges {
+        node {
+          id
+          name
+          type
+          aggregations {
+            totalCount
+          }
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
+/** Get list of ref data gql query response interface */
+export interface GetReferenceDatasQueryResponse {
+  referenceDatas: Connection<ReferenceData>;
+}
+
+/** Get ref data gql query definition */
+export const GET_REFERENCE_DATA = gql`
+  query GetReferenceData($id: ID!, $aggregationIds: [ID]) {
+    referenceData(id: $id) {
+      id
+      name
+      type
+      fields
+      aggregations(ids: $aggregationIds) {
+        edges {
+          node {
+            id
+            name
+            sourceFields
+            pipeline
+            createdAt
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
+      }
+    }
+  }
+`;
+
+/** Get ref data gql query response interface */
+export interface GetReferenceDataByIdQueryResponse {
+  referenceData: ReferenceData;
 }

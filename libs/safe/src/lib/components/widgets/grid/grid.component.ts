@@ -199,7 +199,7 @@ export class SafeGridWidgetComponent
 
       if (aggregations.length > 0) {
         this.aggregationService
-          .getAggregations(this.settings.resource, {
+          .getAggregations(this.settings.resource, '', {
             ids: aggregations,
             first: aggregations.length,
           })

@@ -18,9 +18,11 @@
         <safe-summary-card-general
           [tileForm]="tileForm"
           [selectedResource]="selectedResource"
+          [selectedReferenceData]="selectedReferenceData"
           [selectedLayout]="selectedLayout"
           [selectedAggregation]="selectedAggregation"
           (resourceChange)="handleResourceChange($event)"
+          (referenceDataChange)="handleReferenceDataChange($event)"
           (layoutChange)="handleLayoutChange($event)"
           (aggregationChange)="handleAggregationChange($event)"
         ></safe-summary-card-general>

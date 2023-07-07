@@ -12,10 +12,16 @@ import { get } from 'lodash';
 import { Aggregation } from '../../../models/aggregation.model';
 import { Layout } from '../../../models/layout.model';
 import { Resource } from '../../../models/resource.model';
+import { ReferenceData } from '../../../models/reference-data.model';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
-import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
+import {
+  GET_RESOURCE,
+  GetResourceByIdQueryResponse,
+  GET_REFERENCE_DATA,
+  GetReferenceDataByIdQueryResponse,
+} from './graphql/queries';
 import { takeUntil } from 'rxjs';
 
 /** Define max height of summary card */
@@ -46,6 +52,7 @@ const createCardForm = (value?: any) => {
       Validators.max(MAX_COL_SPAN),
     ]),
     resource: new FormControl<string>(get(value, 'resource', null)),
+    referenceData: new FormControl<string>(get(value, 'referenceData', null)),
     layout: new FormControl<string>(get(value, 'layout', null)),
     aggregation: new FormControl<string>(get(value, 'aggregation', null)),
     html: new FormControl<string>(get(value, 'html', null)),
@@ -117,6 +124,7 @@ export class SafeSummaryCardSettingsComponent
   @Output() change: EventEmitter<any> = new EventEmitter();
 
   public selectedResource: Resource | null = null;
+  public selectedReferenceData: ReferenceData | null = null;
   public selectedLayout: Layout | null = null;
   public selectedAggregation: Aggregation | null = null;
   public customAggregation: any;
@@ -148,7 +156,10 @@ export class SafeSummaryCardSettingsComponent
     if (resourceID) {
       this.getResource(resourceID);
     }
-
+    const referenceDataID = this.tileForm?.get('card.referenceData')?.value;
+    if (referenceDataID) {
+      this.getReferenceData(referenceDataID);
+    }
     // Subscribe to aggregation changes
     this.tileForm
       .get('card.aggregation')
@@ -218,6 +229,7 @@ export class SafeSummaryCardSettingsComponent
           form.get('card.layout')?.patchValue(null);
           form.get('card.aggregation')?.patchValue(null);
           this.selectedResource = null;
+          this.selectedReferenceData = null;
           this.selectedLayout = null;
           this.selectedAggregation = null;
         } else {
@@ -245,14 +257,58 @@ export class SafeSummaryCardSettingsComponent
   }
 
   /**
+   * Get reference data by id, doing graphQL query
+   *
+   * @param id reference data id
+   */
+  private getReferenceData(id: string): void {
+    const form = this.tileForm;
+    if (!form) return;
+    const aggregationID = form.get('card.aggregation')?.value;
+    this.fields = [];
+    this.apollo
+      .query<GetReferenceDataByIdQueryResponse>({
+        query: GET_REFERENCE_DATA,
+        variables: {
+          id,
+          aggregation: aggregationID ? [aggregationID] : undefined,
+        },
+      })
+      .subscribe((res) => {
+        if (res.errors) {
+          form.get('card.referenceData')?.patchValue(null);
+          form.get('card.layout')?.patchValue(null);
+          form.get('card.aggregation')?.patchValue(null);
+          this.selectedAggregation = null;
+          this.selectedResource = null;
+          this.selectedLayout = null;
+          this.selectedAggregation = null;
+        } else {
+          this.selectedAggregation = res.data.referenceData;
+
+          if (aggregationID) {
+            this.selectedAggregation =
+              res.data?.referenceData.aggregations?.edges[0]?.node || null;
+            this.getCustomAggregation();
+          }
+        }
+      });
+  }
+
+  /**
    * Gets the custom aggregation
-   * for the selected resource and aggregation.
+   * for the selected (resource or reference data) and aggregation.
    */
   private getCustomAggregation(): void {
-    if (!this.selectedAggregation || !this.selectedResource?.id) return;
+    if (
+      !this.selectedAggregation ||
+      (!this.selectedResource?.id && !this.selectedReferenceData?.id)
+    )
+      return;
     this.aggregationService
       .aggregationDataQuery(
-        this.selectedResource.id,
+        this.selectedResource?.id ?? '',
+        this.selectedReferenceData?.id ?? '',
         this.selectedAggregation.id || ''
       )
       ?.subscribe((res) => {
@@ -276,6 +332,23 @@ export class SafeSummaryCardSettingsComponent
    */
   handleResourceChange(resource: Resource | null) {
     this.selectedResource = resource;
+    this.fields = [];
+
+    // clear layout and record
+    this.tileForm?.get('card.layout')?.setValue(null);
+    this.tileForm?.get('card.aggregation')?.setValue(null);
+    this.selectedLayout = null;
+    this.selectedAggregation = null;
+    this.customAggregation = null;
+  }
+
+  /**
+   * Updates modified reference data
+   *
+   * @param referenceData the modified reference data
+   */
+  handleReferenceDataChange(referenceData: ReferenceData | null) {
+    this.selectedReferenceData = referenceData;
     this.fields = [];
 
     // clear layout and record

@@ -87,6 +87,7 @@ export class SafeChartComponent
   ngOnChanges(changes: SimpleChanges): void {
     const previousDatasource = {
       resource: get(changes, 'settings.previousValue.resource'),
+      referenceData: get(changes, 'settings.previousValue.referenceData'),
       chart: {
         aggregationId: get(
           changes,
@@ -96,6 +97,7 @@ export class SafeChartComponent
     };
     const currentDatasource = {
       resource: get(changes, 'settings.currentValue.resource'),
+      referenceData: get(changes, 'settings.currentValue.referenceData'),
       chart: {
         aggregationId: get(
           changes,
@@ -105,17 +107,22 @@ export class SafeChartComponent
     };
     if (!isEqual(previousDatasource, currentDatasource)) {
       this.loading = true;
-      if (this.settings.resource) {
+      if (this.settings.resource || this.settings.referenceData) {
         this.aggregationService
-          .getAggregations(this.settings.resource, {
-            ids: [get(this.settings, 'chart.aggregationId', null)],
-            first: 1,
-          })
+          .getAggregations(
+            this.settings.resource,
+            this.settings.referenceData,
+            {
+              ids: [get(this.settings, 'chart.aggregationId', null)],
+              first: 1,
+            }
+          )
           .then((res) => {
             const aggregation = res.edges[0]?.node || null;
             if (aggregation) {
               this.dataQuery = this.aggregationService.aggregationDataQuery(
                 this.settings.resource,
+                this.settings.referenceData,
                 aggregation.id || '',
                 get(this.settings, 'chart.mapping', null)
               );
@@ -207,6 +214,7 @@ export class SafeChartComponent
     this.dataQuery
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ errors, data, loading }: any) => {
+        console.log(data);
         if (errors) {
           this.loading = false;
           this.hasError = true;

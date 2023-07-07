@@ -4,10 +4,28 @@
     <input formControlName="title" type="string" />
   </div>
 
+  <div uiFormFieldDirective>
+    <label>{{
+      'components.widget.settings.map.edit.datasource.origin' | translate
+    }}</label>
+    <ui-select-menu [formControl]="origin">
+      <ui-select-option value="resource">{{
+        'common.resource.one' | translate
+      }}</ui-select-option>
+      <ui-select-option value="refData">{{
+        'common.referenceData.one' | translate
+      }}</ui-select-option>
+    </ui-select-menu>
+  </div>
+
   <ng-container formGroupName="card">
-    <!-- RESOURCE SELECTION  -->
-    <div uiFormFieldDirective>
-      <label>{{ 'models.resource.select' | translate }}</label>
+    <!-- Resource selection -->
+    <div
+      uiFormFieldDirective
+      class="flex-1"
+      *ngIf="origin.value === 'resource'"
+    >
+      <label>{{ 'common.resource.one' | translate }}</label>
       <ui-graphql-select
         valueField="id"
         textField="name"
@@ -16,7 +34,37 @@
         [selectedElements]="[selectedResource]"
         (searchChange)="onResourceSearchChange($event)"
         [filterable]="true"
-      ></ui-graphql-select>
+      >
+      </ui-graphql-select>
+      <!-- Remove value -->
+      <ui-button
+        uiSuffix
+        (click)="clearFormField('resource', $event)"
+        [isIcon]="true"
+        icon="close"
+        variant="danger"
+      ></ui-button>
+    </div>
+
+    <!-- Reference data selection  -->
+    <div uiFormFieldDirective class="flex-1" *ngIf="origin.value === 'refData'">
+      <label>{{ 'common.referenceData.one' | translate }}</label>
+      <ui-graphql-select
+        valueField="id"
+        textField="name"
+        [query]="referenceDatasQuery"
+        formControlName="referenceData"
+        [selectedElements]="[selectedReferenceData]"
+      >
+      </ui-graphql-select>
+      <!-- Remove value -->
+      <ui-button
+        uiSuffix
+        (click)="clearFormField('referenceData', $event)"
+        [isIcon]="true"
+        icon="close"
+        variant="danger"
+      ></ui-button>
     </div>
 
     <!-- SELECT AGGREGATION OR LAYOUT -->
@@ -43,6 +91,15 @@
         *ngIf="!selectedAggregation && !selectedLayout"
         [text]="'common.or' | translate"
       ></ui-divider>
+    </div>
+
+    <div
+      class="flex flex-col mt-8 gap-8"
+      *ngIf="
+        tileForm.get('card.resource')?.value ||
+        tileForm.get('card.referenceData')?.value
+      "
+    >
       <div *ngIf="!selectedLayout">
         <h2>{{ 'common.aggregation.one' | translate }}</h2>
       </div>
@@ -132,7 +189,11 @@
     </ng-container>
     <!-- FROM AGGREGATIONS -->
     <ng-container
-      *ngIf="selectedAggregation && tileForm.get('card.resource')?.value"
+      *ngIf="
+        selectedAggregation &&
+        (tileForm.get('card.resource')?.value ||
+          tileForm.get('card.referenceData')?.value)
+      "
     >
       <div uiFormFieldDirective>
         <label>{{ 'common.aggregation.one' | translate }}</label>

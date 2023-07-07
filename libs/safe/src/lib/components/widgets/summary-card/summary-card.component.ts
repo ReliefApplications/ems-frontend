@@ -428,10 +428,11 @@ export class SafeSummaryCardComponent
   private async getCardsFromAggregation(
     card: NonNullable<SummaryCardFormT['value']['card']>
   ) {
-    if (!card.aggregation || !card.resource) return;
+    if (!card.aggregation || (!card.resource && !card.referenceData)) return;
     this.loading = true;
     this.dataQuery = this.aggregationService.aggregationDataWatchQuery(
-      card.resource,
+      card.resource ?? '',
+      card.referenceData ?? '',
       card.aggregation,
       DEFAULT_PAGE_SIZE,
       0

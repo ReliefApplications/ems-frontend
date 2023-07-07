@@ -7,13 +7,18 @@ import {
   Output,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SummaryCardItemModule } from '../../summary-card/summary-card-item/summary-card-item.module';
 import { SummaryCardFormT } from '../summary-card-settings.component';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { GET_RESOURCES, GetResourcesQueryResponse } from '../graphql/queries';
+import {
+  GET_RESOURCES,
+  GetResourcesQueryResponse,
+  GET_REFERENCE_DATAS,
+  GetReferenceDatasQueryResponse,
+} from '../graphql/queries';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { Resource } from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
@@ -34,6 +39,7 @@ import {
   SelectOptionModule,
 } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
+import { ReferenceData } from '../../../../models/reference-data.model';
 
 /** Default number of resources to be fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -71,10 +77,12 @@ export class SummaryCardGeneralComponent
   @Input() tileForm!: SummaryCardFormT;
 
   @Input() selectedResource: Resource | null = null;
+  @Input() selectedReferenceData: ReferenceData | null = null;
   @Input() selectedLayout: Layout | null = null;
   @Input() selectedAggregation: Aggregation | null = null;
 
   @Output() resourceChange = new EventEmitter<Resource | null>();
+  @Output() referenceDataChange = new EventEmitter<ReferenceData | null>();
   @Output() layoutChange = new EventEmitter<Layout | null>();
   @Output() aggregationChange = new EventEmitter<Aggregation | null>();
 
@@ -83,7 +91,8 @@ export class SummaryCardGeneralComponent
 
   // === DATA ===
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
-
+  public referenceDatasQuery!: QueryRef<GetReferenceDatasQueryResponse>;
+  public origin!: FormControl<string | null>;
   /**
    * Changes display when windows size changes.
    *
@@ -112,6 +121,18 @@ export class SummaryCardGeneralComponent
   }
 
   ngOnInit(): void {
+    console.log(this.selectedResource, this.selectedReferenceData);
+    // Set origin form control
+    if (this.selectedResource) {
+      this.origin = new FormControl('resource');
+    } else {
+      if (this.selectedReferenceData) {
+        this.origin = new FormControl('referenceData');
+      } else {
+        this.origin = new FormControl();
+      }
+    }
+
     this.colsNumber = this.setColsNumber(window.innerWidth);
 
     this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
@@ -122,6 +143,14 @@ export class SummaryCardGeneralComponent
       },
     });
 
+    this.referenceDatasQuery =
+      this.apollo.watchQuery<GetReferenceDatasQueryResponse>({
+        query: GET_REFERENCE_DATAS,
+        variables: {
+          first: ITEMS_PER_PAGE,
+          sortField: 'name',
+        },
+      });
     // Resource change
     this.tileForm
       .get('card.resource')
@@ -136,6 +165,30 @@ export class SummaryCardGeneralComponent
               null
           );
       });
+
+    // Reference data change
+    this.tileForm
+      .get('card.referenceData')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((referenceData) => {
+        if (!referenceData) this.referenceDataChange.emit(null);
+        else
+          this.referenceDataChange.emit(
+            this.referenceDatasQuery
+              .getCurrentResult()
+              .data.referenceDatas.edges.find(
+                (r) => r.node.id === referenceData
+              )?.node || null
+          );
+      });
+
+    // Listen to origin changes
+    this.origin.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.selectedResource = null;
+      this.selectedReferenceData = null;
+      this.tileForm.get('card.resource')?.setValue(null);
+      this.tileForm.get('card.referenceData')?.setValue(null);
+    });
   }
 
   /**
@@ -219,8 +272,10 @@ export class SummaryCardGeneralComponent
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
         hasAggregations:
-          get(this.selectedResource, 'aggregations.totalCount', 0) > 0, // check if at least one existing aggregation
+          get(this.selectedResource, 'aggregations.totalCount', 0) > 0 ||
+          get(this.selectedReferenceData, 'aggregations.totalCount', 0) > 0, // check if at least one existing aggregation
         resource: this.selectedResource,
+        referenceData: this.selectedReferenceData,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
@@ -246,6 +301,7 @@ export class SummaryCardGeneralComponent
       disableClose: true,
       data: {
         resource: this.selectedResource,
+        referenceData: this.selectedReferenceData,
         aggregation: this.selectedAggregation,
       },
     });
@@ -255,7 +311,8 @@ export class SummaryCardGeneralComponent
           .editAggregation(
             this.selectedAggregation,
             value,
-            this.selectedResource?.id
+            this.selectedResource?.id,
+            this.selectedReferenceData?.id
           )
           .subscribe((res) => {
             this.aggregationChange.emit(res.data?.editAggregation || null);
@@ -284,5 +341,41 @@ export class SummaryCardGeneralComponent
         ],
       },
     });
+  }
+
+  /**
+   * Changes the query according to search text
+   *
+   * @param search Search text from the graphql select
+   */
+  public onReferenceDataSearchChange(search: string): void {
+    const variables = this.referenceDatasQuery.variables;
+    this.referenceDatasQuery.refetch({
+      ...variables,
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+            field: 'name',
+            operator: 'contains',
+            value: search,
+          },
+        ],
+      },
+    });
+  }
+
+  /**
+   * Reset given form field value if there is a value previously to avoid triggering
+   * not necessary actions
+   *
+   * @param formField Current form field
+   * @param event click event
+   */
+  clearFormField(formField: string, event: Event) {
+    if (this.tileForm.get(formField)?.value) {
+      this.tileForm.get(formField)?.setValue(null);
+    }
+    event.stopPropagation();
   }
 }
