@@ -82,7 +82,6 @@ export class SafeDrawerPositionerDirective
    * @param position Position to set
    */
   private setPosition(position: FilterPosition) {
-    this.renderer.setStyle(this.el.nativeElement, 'position', 'relative');
     // Reset drawer containers styles
     this.renderer.setStyle(this.el.nativeElement, 'height', 'max-content');
     this.renderer.setStyle(this.el.nativeElement, 'width', 'max-content');
