@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0...v2.0.1) (2023-07-07)
+
+
+### Bug Fixes
+
+* deploy not working ([e9b6dbb](https://github.com/ReliefApplications/oort-frontend/commit/e9b6dbb574643579a4fde5646bc7a9ec463b7792))
+
 # [2.0.0](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.13...v2.0.0) (2023-07-03)
 
 
