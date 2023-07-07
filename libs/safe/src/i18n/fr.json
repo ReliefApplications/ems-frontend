@@ -1587,6 +1587,9 @@
 					"static": "Statique"
 				}
 			},
+			"style": {
+				"customStyling": "Style personnalisé"
+			},
 			"summaryCard": {
 				"dataSource": "Source",
 				"errors": {
