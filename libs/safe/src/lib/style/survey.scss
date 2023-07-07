@@ -59,6 +59,11 @@
   }
 }
 
+::ng-deep .k-combobox,
+::ng-deep .k-multiselect {
+  z-index: 999; //over leaflet, below sidebar
+}
+
 ::ng-deep .sv_main {
   .k-button {
     border-color: rgba(0, 0, 0, 0.08) !important;
