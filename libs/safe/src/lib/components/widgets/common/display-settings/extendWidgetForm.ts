@@ -7,6 +7,7 @@ import { get } from 'lodash';
  * @param form widget form
  * @param settings settings to apply
  * @param settings.showBorder show border setting
+ * @param settings.style custom style of the widget
  * @param specificControls specific controls to add to the form, on a widget basis
  * @returns form with the common fields
  */
@@ -17,16 +18,25 @@ export const extendWidgetForm = <
   form: FormGroup<T>,
   settings?: {
     showBorder?: boolean;
+    style?: string;
   },
   specificControls?: T2
 ) => {
   const controls = {
     showBorder: new FormControl(get(settings, 'showBorder', true)),
+    style: new FormControl(get(settings, 'style', '')),
   };
   Object.assign(controls, specificControls);
   (form as any).addControl('widgetDisplay', new FormGroup(controls));
 
   return form as any as FormGroup<
-    T & { widgetDisplay: FormGroup<{ showBorder: FormControl<boolean> } & T2> }
+    T & {
+      widgetDisplay: FormGroup<
+        {
+          showBorder: FormControl<boolean>;
+          style: FormControl<string>;
+        } & T2
+      >;
+    }
   >;
 };

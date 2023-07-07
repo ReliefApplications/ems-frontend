@@ -2,7 +2,6 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  HostListener,
   Input,
   OnDestroy,
   OnInit,
@@ -91,6 +90,8 @@ export class SafeSummaryCardComponent
 
   private filters: any = null;
 
+  private resizeObserver!: ResizeObserver;
+
   @ViewChild('summaryCardGrid') summaryCardGrid!: ElementRef<HTMLDivElement>;
   @ViewChild('pdf') pdf!: any;
 
@@ -111,16 +112,6 @@ export class SafeSummaryCardComponent
   }
 
   /**
-   * Changes display when windows size changes.
-   *
-   * @param event window resize event
-   */
-  @HostListener('window:resize', ['$event'])
-  onWindowResize(event: any): void {
-    this.colsNumber = this.setColsNumber(event.target.innerWidth);
-  }
-
-  /**
    * Constructor for summary card component
    *
    * @param apollo Apollo service
@@ -130,6 +121,7 @@ export class SafeSummaryCardComponent
    * @param queryBuilder Query builder service
    * @param gridLayoutService Shared grid layout service
    * @param aggregationService Aggregation service
+   * @param elementRef Element Ref
    */
   constructor(
     private apollo: Apollo,
@@ -138,17 +130,15 @@ export class SafeSummaryCardComponent
     private translate: TranslateService,
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: SafeGridLayoutService,
-    private aggregationService: SafeAggregationService
+    private aggregationService: SafeAggregationService,
+    private elementRef: ElementRef
   ) {
     super();
   }
 
   ngOnInit(): void {
     this.setupDynamicCards();
-
-    this.colsNumber = this.setColsNumber(window.innerWidth);
     this.setupGridSettings();
-
     this.searchControl.valueChanges
       .pipe(debounceTime(2000), distinctUntilChanged())
       .subscribe((value) => {
@@ -157,6 +147,17 @@ export class SafeSummaryCardComponent
   }
 
   ngAfterViewInit(): void {
+    if (this.elementRef.nativeElement.parentElement) {
+      this.colsNumber = this.setColsNumber(
+        this.elementRef.nativeElement.parentElement.clientWidth
+      );
+      this.resizeObserver = new ResizeObserver(() => {
+        this.colsNumber = this.setColsNumber(
+          this.elementRef.nativeElement.parentElement.clientWidth
+        );
+      });
+      this.resizeObserver.observe(this.elementRef.nativeElement.parentElement);
+    }
     if (!this.settings.widgetDisplay?.usePagination) {
       this.summaryCardGrid.nativeElement.addEventListener(
         'scroll',
@@ -174,6 +175,7 @@ export class SafeSummaryCardComponent
    * @returns new number of cols.
    */
   private setColsNumber(width: number): number {
+    console.log(width);
     if (width <= 480) {
       return 1;
     }
@@ -515,5 +517,6 @@ export class SafeSummaryCardComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    this.resizeObserver.disconnect();
   }
 }

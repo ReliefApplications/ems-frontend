@@ -1531,6 +1531,9 @@
 						}
 					}
 				},
+				"style": {
+					"customStyling": "Style personnalisé"
+				},
 				"summaryCard": {
 					"add": "Ajouter un carte",
 					"card": {

@@ -20,7 +20,7 @@
     (click)="onExport()"
   >
   </ui-button>
-  <div class="group flex-1">
+  <div class="group flex-1 overflow-hidden">
     <safe-line-chart
       #chartWrapper
       *ngIf="settings.chart.type === 'line'"

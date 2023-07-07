@@ -6,7 +6,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Aggregation } from '../../../models/aggregation.model';
@@ -18,16 +18,6 @@ import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
 import { takeUntil } from 'rxjs';
 
-/** Define max height of summary card */
-const MAX_ROW_SPAN = 4;
-/** Define max width of summary card */
-const MAX_COL_SPAN = 8;
-
-/** Define default height of summary card */
-const DEFAULT_CARD_HEIGHT = 2;
-/** Define max width of summary card */
-const DEFAULT_CARD_WIDTH = 2;
-
 /**
  * Create a card form
  *
@@ -37,14 +27,6 @@ const DEFAULT_CARD_WIDTH = 2;
 const createCardForm = (value?: any) => {
   return new FormGroup({
     title: new FormControl<string>(get(value, 'title', 'New Card')),
-    height: new FormControl<number>(get(value, 'height', DEFAULT_CARD_HEIGHT), [
-      Validators.min(1),
-      Validators.max(MAX_ROW_SPAN),
-    ]),
-    width: new FormControl<number>(get(value, 'width', DEFAULT_CARD_WIDTH), [
-      Validators.min(1),
-      Validators.max(MAX_COL_SPAN),
-    ]),
     resource: new FormControl<string>(get(value, 'resource', null)),
     layout: new FormControl<string>(get(value, 'layout', null)),
     aggregation: new FormControl<string>(get(value, 'aggregation', null)),
