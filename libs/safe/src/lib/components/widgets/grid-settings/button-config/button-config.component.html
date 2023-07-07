@@ -4,7 +4,7 @@
       <ui-toggle formControlName="show">
         <ng-container ngProjectAs="label">{{
           'components.widget.settings.grid.buttons.enable' | translate
-        }}</ng-container>
+        }}AAA</ng-container>
       </ui-toggle>
       <ui-button
         icon="remove_circle_outline"
@@ -420,6 +420,7 @@
 <ng-template #modificationTemplate let-field="field" let-formGroup="formGroup">
   <div [formGroup]="formGroup">
     <!-- @todo: replace with ngSwitch and better manage all types -->
+    
     <ng-container *ngIf="['Int', 'Float'].includes(field.type.name)">
       <div uiFormFieldDirective>
         <label>{{
@@ -429,6 +430,7 @@
         <input formControlName="value" type="number" />
       </div>
     </ng-container>
+    
     <ng-container *ngIf="field.type.name === 'Boolean'">
       <div uiFormFieldDirective>
         <label>{{
@@ -446,6 +448,7 @@
         </ui-select-menu>
       </div>
     </ng-container>
+    
     <ng-container
       *ngIf="
         !['Int', 'Float'].includes(field.type.name) &&
@@ -460,5 +463,6 @@
         <input formControlName="value" type="string" />
       </div>
     </ng-container>
+  
   </div>
 </ng-template>

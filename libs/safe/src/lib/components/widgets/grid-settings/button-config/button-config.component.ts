@@ -306,6 +306,8 @@ export class ButtonConfigComponent
           this.formGroup?.get('selectAll')?.updateValueAndValidity();
         }
       });
+    
+    // this.formGroup.clearValidators();
   }
 
   /** Set list of resources user can attach a record to */
@@ -358,7 +360,7 @@ export class ButtonConfigComponent
     this.modificationsArray.push(
       this.formBuilder.group({
         field: ['', Validators.required],
-        value: ['', Validators.required],
+        value: [''],
       })
     );
   }

@@ -30,6 +30,10 @@ export class TabButtonsComponent implements OnInit {
 
   ngOnInit(): void {
     this.recalculateUniqIdsForDragDrop();
+    this.buttons.controls.forEach((btn: any) => {
+      console.log(btn);
+      console.log(btn.invalid);
+    })  
   }
 
   /** @returns List of the floating buttons */
