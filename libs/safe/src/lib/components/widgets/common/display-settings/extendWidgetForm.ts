@@ -17,16 +17,25 @@ export const extendWidgetForm = <
   form: FormGroup<T>,
   settings?: {
     showBorder?: boolean;
+    style?: string;
   },
   specificControls?: T2
 ) => {
   const controls = {
     showBorder: new FormControl(get(settings, 'showBorder', true)),
+    style: new FormControl(get(settings, 'style', '')),
   };
   Object.assign(controls, specificControls);
   (form as any).addControl('widgetDisplay', new FormGroup(controls));
 
   return form as any as FormGroup<
-    T & { widgetDisplay: FormGroup<{ showBorder: FormControl<boolean> } & T2> }
+    T & {
+      widgetDisplay: FormGroup<
+        {
+          showBorder: FormControl<boolean>;
+          style: FormControl<string>;
+        } & T2
+      >;
+    }
   >;
 };

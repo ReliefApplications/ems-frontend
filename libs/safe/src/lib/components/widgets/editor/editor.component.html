@@ -1,4 +1,4 @@
-<div class="h-full flex flex-col">
+<div class="h-full flex flex-col" id="super-test">
   <kendo-tilelayout-item-header
     *ngIf="header"
     class="widget-header border-b"
@@ -22,7 +22,7 @@
       </ui-button>
     </div>
   </kendo-tilelayout-item-header>
-  <div class="flex-1 overflow-auto p-[14px]" (click)="onClick($event)">
+  <div #greatTest class="flex-1 overflow-auto p-[14px]" (click)="onClick($event)">
     <div
       class="w-full h-fit no-tailwindcss-base"
       [innerHtml]="formattedHtml"

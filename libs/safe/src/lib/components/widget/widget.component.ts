@@ -14,6 +14,8 @@ import { SafeGridWidgetComponent } from '../widgets/grid/grid.component';
 import { SafeMapWidgetComponent } from '../widgets/map/map.component';
 import { SafeSummaryCardComponent } from '../widgets/summary-card/summary-card.component';
 import { v4 as uuidv4 } from 'uuid';
+import get from 'lodash/get';
+import { SafeRestService } from '../../services/rest/rest.service';
 
 /** Component for the widgets */
 @Component({
@@ -54,23 +56,37 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
 
+  /**
+   * Widget component
+   *
+   * @param restService Shared rest service
+   */
+  constructor(private restService: SafeRestService) {}
+
   ngOnInit(): void {
-    console.log('init widget');
-    // Deactivate that to use custom styling
-    // const css = `#${this.id} {
-    //   background-color: red;
-    // }`;
-    // const head = document.getElementsByTagName('head')[0];
-    // this.customStyle = document.createElement('style');
-    // this.customStyle.appendChild(document.createTextNode(css));
-    // head.appendChild(this.customStyle);
+    // Get style from widget definition
+    const style = get(this.widget, 'settings.widgetDisplay.style') || '';
+    if (style) {
+      const scss = `#${this.id} {
+        ${style}
+      }`;
+      // Compile to css ( we store style as scss )
+      this.restService
+        .post('style/scss-to-css', { scss }, { responseType: 'text' })
+        .subscribe((css) => {
+          // Add to head of document
+          const head = document.getElementsByTagName('head')[0];
+          this.customStyle = document.createElement('style');
+          this.customStyle.appendChild(document.createTextNode(css));
+          head.appendChild(this.customStyle);
+        });
+    }
   }
 
   ngOnDestroy(): void {
-    console.log('destroy widget');
-    // Deactivate that to use custom stying
-    // if (this.customStyle) {
-    //   document.getElementsByTagName('head')[0].removeChild(this.customStyle);
-    // }
+    // Remove style from head if exists, to avoid too many styles to be active at same time
+    if (this.customStyle) {
+      document.getElementsByTagName('head')[0].removeChild(this.customStyle);
+    }
   }
 }
