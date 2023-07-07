@@ -1,3 +1,10 @@
+## [2.0.1](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0...v2.0.1) (2023-07-07)
+
+
+### Bug Fixes
+
+* choicesByUrl could fail to display depending on text ([c382ff2](https://github.com/ReliefApplications/oort-frontend/commit/c382ff2c70fdc3e8e0dacffbea32c24834251f0c))
+
 # [2.0.0](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.13...v2.0.0) (2023-07-03)
 
 
