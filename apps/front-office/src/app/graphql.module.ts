@@ -25,6 +25,7 @@ export const createApollo = (httpLink: HttpLink): ApolloClientOptions<any> => {
     headers: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       Accept: 'charset=utf-8',
+      UserTimeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     },
   }));
 

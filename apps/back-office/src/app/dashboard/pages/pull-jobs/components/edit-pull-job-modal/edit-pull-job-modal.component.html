@@ -168,7 +168,14 @@
             </div>
             <!-- Raw edition mode (json) -->
             <ng-container *ngIf="openRawJSON">
-              <div uiFormFieldDirective>
+              <div class="grow h-[300px]">
+                <ngx-monaco-editor
+                  class="!h-full"
+                  formControlName="rawMapping"
+                  [options]="editorOptions"
+                ></ngx-monaco-editor>
+              </div>
+              <!-- <div uiFormFieldDirective>
                 <label>{{ 'common.input.rawJson' | translate }}</label>
                 <ui-textarea
                   formControlName="rawMapping"
@@ -176,7 +183,7 @@
                   [minRows]="2"
                 >
                 </ui-textarea>
-              </div>
+              </div> -->
             </ng-container>
             <!-- UI edition mode -->
             <ng-container *ngIf="!openRawJSON">
@@ -238,10 +245,10 @@
             [multiselect]="true"
           >
             <ui-select-option
-              *ngFor="let element of mappingArray.controls"
-              [value]="element.value.value"
+              *ngFor="let element of mappingArray.value"
+              [value]="element.value"
             >
-              {{ element.value.value }}
+              {{ element.value }}
             </ui-select-option>
           </ui-select-menu>
         </div>

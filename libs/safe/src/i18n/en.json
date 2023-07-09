@@ -210,6 +210,7 @@
 			"of": "of"
 		},
 		"placeholder": {
+			"address": "Enter an address or place e.g. 1 York St",
 			"email": "Enter email",
 			"name": "Enter a name",
 			"search": "Search...",
@@ -1497,6 +1498,13 @@
 						"webmap": "WebMap",
 						"zoom": "Default zoom"
 					},
+					"renderer": {
+						"default": "Default",
+						"defaultLabel": "Default label",
+						"label": "Label",
+						"symbol": "Symbol",
+						"value": "Value"
+					},
 					"tooltip": {
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
 						"dataset": "Select data points below and drag them to 'selected fields' on the right. They will be displayed in the pop-up when clicking on a marker",
@@ -1506,6 +1514,9 @@
 							"zoom": "Select a default zoom for the map display"
 						}
 					}
+				},
+				"style": {
+					"customStyling": "Custom Styling"
 				},
 				"summaryCard": {
 					"add": "Add new card",
