@@ -277,26 +277,10 @@ export class SafeMapLayersService {
           this.getLayerById(id).pipe(
             mergeMap((layer: LayerModel) => {
               if (this.isDatasourceValid(layer.datasource)) {
-                const contextFilters = layer.contextFilters
-                  ? this.contextService.injectDashboardFilterValues(
-                      JSON.parse(layer.contextFilters)
-                    )
-                  : {};
-                const params = new HttpParams({
-                  fromObject: omitBy(
-                    {
-                      ...layer.datasource,
-                      contextFilters: JSON.stringify(contextFilters),
-                    },
-                    isNil
-                  ),
-                });
                 // Get the current layer + its geojson
                 return forkJoin({
                   layer: of(layer),
-                  geojson: this.restService
-                    .get(`${this.restService.apiUrl}/gis/feature`, { params })
-                    .pipe(catchError(() => of(EMPTY_FEATURE_COLLECTION))),
+                  geojson: this.getLayerGeoJson(layer),
                 });
               } else {
                 return of({
@@ -339,15 +323,10 @@ export class SafeMapLayersService {
     layersService: SafeMapLayersService
   ) {
     if (this.isDatasourceValid(layer.datasource)) {
-      const params = new HttpParams({
-        fromObject: omitBy(layer.datasource, isNil),
-      });
       const res = await lastValueFrom(
         forkJoin({
           layer: of(layer),
-          geojson: this.restService
-            .get(`${this.restService.apiUrl}/gis/feature`, { params })
-            .pipe(catchError(() => of(EMPTY_FEATURE_COLLECTION))),
+          geojson: this.getLayerGeoJson(layer),
         })
       );
       return new Layer(
@@ -361,6 +340,34 @@ export class SafeMapLayersService {
     } else {
       return new Layer(layer, popupService, layersService);
     }
+  }
+
+  /**
+   * Get layer geojson from definition
+   *
+   * @param layer layer model
+   * @returns Layer GeoJSON query
+   */
+  async getLayerGeoJson(layer: LayerModel) {
+    const contextFilters = layer.contextFilters
+      ? this.contextService.injectDashboardFilterValues(
+          JSON.parse(layer.contextFilters)
+        )
+      : {};
+    const params = new HttpParams({
+      fromObject: omitBy(
+        {
+          ...layer.datasource,
+          contextFilters: JSON.stringify(contextFilters),
+        },
+        isNil
+      ),
+    });
+    return lastValueFrom(
+      this.restService
+        .get(`${this.restService.apiUrl}/gis/feature`, { params })
+        .pipe(catchError(() => of(EMPTY_FEATURE_COLLECTION)))
+    );
   }
 
   private isDatasourceValid = (value: LayerDatasource | undefined) => {

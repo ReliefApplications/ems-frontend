@@ -191,15 +191,11 @@ export class FormWrapperDirective
       // Add related classes to select menu element
       if (!this.outline) {
         for (const cl of this.selectClassesNoOutline) {
-          if (cl !== 'pr-1') {
-            this.renderer.addClass(currentElement.nativeElement, cl);
-          }
+          this.renderer.addClass(currentElement.nativeElement, cl);
         }
       } else {
         for (const cl of this.selectClassesOutline) {
-          if (cl !== 'pr-1') {
-            this.renderer.addClass(currentElement.nativeElement, cl);
-          }
+          this.renderer.addClass(currentElement.nativeElement, cl);
         }
         this.renderer.removeClass(selectButton, 'bg-white');
         this.renderer.addClass(selectButton, 'bg-gray-50');
