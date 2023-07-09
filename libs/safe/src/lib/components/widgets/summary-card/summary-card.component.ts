@@ -39,6 +39,8 @@ import { FormControl } from '@angular/forms';
 import { clone, isNaN } from 'lodash';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
+import { ContextService } from '../../../services/context/context.service';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -84,6 +86,10 @@ export class SafeSummaryCardComponent
 
   private layout: Layout | null = null;
   private fields: any[] = [];
+  private contextFilters: CompositeFilterDescriptor = {
+    logic: 'and',
+    filters: [],
+  };
 
   public searchControl = new FormControl('');
   public scrolling = false;
@@ -121,6 +127,7 @@ export class SafeSummaryCardComponent
    * @param queryBuilder Query builder service
    * @param gridLayoutService Shared grid layout service
    * @param aggregationService Aggregation service
+   * @param contextService ContextService
    * @param elementRef Element Ref
    */
   constructor(
@@ -131,18 +138,36 @@ export class SafeSummaryCardComponent
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: SafeGridLayoutService,
     private aggregationService: SafeAggregationService,
+    private contextService: ContextService,
     private elementRef: ElementRef
   ) {
     super();
   }
 
   ngOnInit(): void {
+    // TODO: Replace once we have a proper UI
+    this.contextFilters = this.widget.settings.contextFilters
+      ? JSON.parse(this.widget.settings.contextFilters)
+      : this.contextFilters;
+
     this.setupDynamicCards();
     this.setupGridSettings();
     this.searchControl.valueChanges
       .pipe(debounceTime(2000), distinctUntilChanged())
       .subscribe((value) => {
         this.handleSearch(value || '');
+      });
+
+    this.contextService.filter$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.setupDynamicCards();
+      });
+
+    this.contextService.isFilterEnabled$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.setupDynamicCards();
       });
   }
 
@@ -364,6 +389,18 @@ export class SafeSummaryCardComponent
             }
           );
 
+          if (this.contextFilters && layoutQuery.filter) {
+            layoutQuery.filter = {
+              logic: 'and',
+              filters: [
+                layoutQuery.filter,
+                this.contextService.injectDashboardFilterValues(
+                  this.contextFilters
+                ),
+              ],
+            };
+          }
+
           if (builtQuery) {
             this.filters = layoutQuery.filter;
             this.dataQuery = this.apollo.watchQuery<any>({
@@ -391,35 +428,32 @@ export class SafeSummaryCardComponent
    */
   private async setupGridSettings() {
     const card = this.settings.card;
-    if (!card || !card.resource || !card.layout) return;
+    if (!card || !card.resource || (!card.layout && !card.aggregation)) return;
 
-    this.gridLayoutService
-      .getLayouts(card.resource, { ids: [card.layout], first: 1 })
-      .then((res) => {
-        const layouts = res.edges.map((edge) => edge.node);
-        if (layouts.length > 0) {
-          const layout = layouts[0] || null;
-          this.gridSettings = {
-            ...{ template: get(this.settings, 'template', null) }, //TO MODIFY
-            ...{ resource: card.resource },
-            ...{ layouts: layout.id },
-            ...{
-              actions: {
-                //default actions, might need to modify later
-                addRecord: false,
-                convert: true,
-                delete: true,
-                export: true,
-                history: true,
-                inlineEdition: true,
-                showDetails: true,
-                update: true,
-              },
-            },
-          };
-        }
-      });
-    return;
+    const settings = {
+      template: get(this.settings, 'template', null), //TO MODIFY
+      resource: card.resource,
+      actions: {
+        //default actions, might need to modify later
+        addRecord: false,
+        convert: true,
+        delete: true,
+        export: true,
+        history: true,
+        inlineEdition: true,
+        showDetails: true,
+        update: true,
+      },
+    };
+
+    Object.assign(
+      settings,
+      card.aggregation
+        ? { aggregations: card.aggregation }
+        : { layouts: card.layout }
+    );
+
+    this.gridSettings = settings;
   }
 
   /**
@@ -432,11 +466,13 @@ export class SafeSummaryCardComponent
   ) {
     if (!card.aggregation || !card.resource) return;
     this.loading = true;
+
     this.dataQuery = this.aggregationService.aggregationDataWatchQuery(
       card.resource,
       card.aggregation,
       DEFAULT_PAGE_SIZE,
-      0
+      0,
+      this.contextService.injectDashboardFilterValues(this.contextFilters)
     );
 
     this.dataQuery.valueChanges

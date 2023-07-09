@@ -309,6 +309,12 @@ export const createChartForm = (value: any) => {
   return formGroup;
 };
 
+/** TODO: Replace once we have UI */
+const DEFAULT_CONTEXT_FILTER = `{
+  "logic": "and",
+  "filters": []
+}`;
+
 /**
  * Create chart widget form group
  *
@@ -322,6 +328,7 @@ export const createChartWidgetForm = (id: any, value: any) =>
     title: [get(value, 'title', ''), Validators.required],
     chart: createChartForm(get(value, 'chart')),
     resource: [get(value, 'resource', null), Validators.required],
+    contextFilters: [get(value, 'contextFilters', DEFAULT_CONTEXT_FILTER)],
   });
 
 /**
