@@ -339,4 +339,17 @@ export class SafeFormHelpersService {
     // as a default question for Users question type
     survey.setVariable('user.id', user?.id || '');
   };
+
+  /**
+   * Clears the temporary files storage
+   *
+   * @param storage Storage to clear
+   */
+  public clearTemporaryFilesStorage(
+    storage: Record<string, Array<File>>
+  ): void {
+    Object.keys(storage).forEach((key) => {
+      delete storage[key];
+    });
+  }
 }
