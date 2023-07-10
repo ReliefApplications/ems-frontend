@@ -118,6 +118,7 @@ export class SafeApplicationService {
 
   /** Application custom style */
   public customStyle?: HTMLStyleElement;
+  public customStyleCss?: HTMLStyleElement;
   public customStyleEdited = false;
 
   /** @returns Path to download application users */
@@ -269,9 +270,10 @@ export class SafeApplicationService {
    * Leaves application and unsubscribe to application changes.
    */
   leaveApplication(): void {
-    if (this.customStyle) {
-      document.getElementsByTagName('body')[0].removeChild(this.customStyle);
+    if (this.customStyle && this.customStyleCss) {
+      document.getElementsByTagName('body')[0].removeChild(this.customStyleCss);
       this.customStyle = undefined;
+      this.customStyleCss = undefined;
       this.layoutService.closeRightSidenav = true;
     }
     const application = this.application.getValue();
@@ -1912,11 +1914,28 @@ export class SafeApplicationService {
       .then(async (res) => {
         if (res.type === 'application/octet-stream') {
           const styleFromFile = await res.text();
+          const scss = styleFromFile as string;
+          this.customStyleCss = document.createElement('style');
+          this.restService
+            .post('style/scss-to-css', { scss }, { responseType: 'text' })
+            .subscribe({
+              next: (css) => {
+                if(this.customStyleCss){
+                  this.customStyleCss.innerText = css;
+                  document
+                    .getElementsByTagName('body')[0]
+                    .appendChild(this.customStyleCss);
+                }
+              },
+              error: () => {
+                if(this.customStyleCss){
+                  this.customStyleCss.innerText = styleFromFile;
+                }
+              }
+            })
+          
           this.customStyle = document.createElement('style');
           this.customStyle.innerText = styleFromFile;
-          document
-            .getElementsByTagName('body')[0]
-            .appendChild(this.customStyle);
         }
       })
       .catch((err) => {
