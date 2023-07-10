@@ -2,8 +2,8 @@
   *ngIf="header"
   class="widget-header border-b"
   [ngClass]="{
-    'border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
-    'border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
+    '!border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
+    '!border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
   }"
 >
   <span class="widget-title" [title]="settings.title">{{
@@ -20,7 +20,7 @@
     (click)="onExport()"
   >
   </ui-button>
-  <div class="group flex-1">
+  <div class="group flex-1 overflow-hidden">
     <safe-line-chart
       #chartWrapper
       *ngIf="settings.chart.type === 'line'"

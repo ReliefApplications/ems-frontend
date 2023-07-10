@@ -19,6 +19,7 @@ import { DisplaySettingsComponent } from '../common/display-settings/display-set
 import { SafeChartSettingsComponent } from './chart-settings.component';
 import { TabDisplayModule } from './tab-display/tab-display.module';
 import { TabMainModule } from './tab-main/tab-main.module';
+import { ContextualFiltersSettingsComponent } from '../common/contextual-filters-settings/contextual-filters-settings.component';
 
 /** Module for the chart settings component */
 @NgModule({
@@ -42,6 +43,7 @@ import { TabMainModule } from './tab-main/tab-main.module';
     TooltipModule,
     SelectMenuModule,
     DisplaySettingsComponent,
+    ContextualFiltersSettingsComponent,
   ],
   exports: [SafeChartSettingsComponent],
 })

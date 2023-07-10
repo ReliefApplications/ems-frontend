@@ -230,6 +230,18 @@
           ></safe-layer-fields>
         </ng-template>
       </ui-tab>
+      <!-- Context filter settings -->
+      <ui-tab>
+        <ng-container ngProjectAs="label">
+          <ui-icon icon="filter_list" [size]="24"></ui-icon>
+          <span>{{ 'models.dashboard.dashboardFilter' | translate }}</span>
+        </ng-container>
+        <ng-template uiTabContent>
+          <safe-contextual-filters-settings
+            [form]="form"
+          ></safe-contextual-filters-settings>
+        </ng-template>
+      </ui-tab>
       <!-- Layer labels -->
       <!-- <ui-tab>
         <ng-container ngProjectAs="label">
