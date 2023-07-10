@@ -7,7 +7,12 @@ import {
   EventEmitter,
   AfterViewInit,
 } from '@angular/core';
-import { UntypedFormGroup, UntypedFormArray, Validators, FormArray } from '@angular/forms';
+import {
+  UntypedFormGroup,
+  UntypedFormArray,
+  Validators,
+  FormArray,
+} from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import {
   GetChannelsQueryResponse,
@@ -254,14 +259,14 @@ export class SafeGridSettingsComponent
     }
 
     //remove the validator from value field in modification array
-    const floatingButtons = this.formGroup.controls.floatingButtons as FormArray;
-    floatingButtons.controls.forEach((btn:any) => {
+    const floatingButtons = this.formGroup.controls
+      .floatingButtons as FormArray;
+    floatingButtons.controls.forEach((btn: any) => {
       const modificationsArray = btn.controls.modifications;
-      modificationsArray.controls.forEach((mod:any) => {
+      modificationsArray.controls.forEach((mod: any) => {
         mod.controls.value.clearValidators();
-      })
-    })
-    
+      });
+    });
   }
 
   /**
