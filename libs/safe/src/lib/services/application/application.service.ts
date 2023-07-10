@@ -1920,7 +1920,7 @@ export class SafeApplicationService {
             .post('style/scss-to-css', { scss }, { responseType: 'text' })
             .subscribe({
               next: (css) => {
-                if(this.customStyleCss){
+                if (this.customStyleCss) {
                   this.customStyleCss.innerText = css;
                   document
                     .getElementsByTagName('body')[0]
@@ -1928,12 +1928,11 @@ export class SafeApplicationService {
                 }
               },
               error: () => {
-                if(this.customStyleCss){
+                if (this.customStyleCss) {
                   this.customStyleCss.innerText = styleFromFile;
                 }
-              }
-            })
-          
+              },
+            });
           this.customStyle = document.createElement('style');
           this.customStyle.innerText = styleFromFile;
         }

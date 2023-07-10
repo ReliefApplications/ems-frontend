@@ -7,6 +7,7 @@ import {
   SafeApplicationService,
   SafeUnsubscribeComponent,
   SafeConfirmService,
+  SafeRestService,
 } from '@oort-front/safe';
 import { firstValueFrom } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -15,7 +16,6 @@ import { UploadApplicationStyleMutationResponse } from './graphql/mutations';
 import { UPLOAD_APPLICATION_STYLE } from './graphql/mutations';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ButtonModule, SnackbarService, SpinnerModule } from '@oort-front/ui';
-import { SafeRestService } from 'libs/safe/src/lib/services/rest/rest.service';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 /** Default css style example to initialize the form and editor */
@@ -87,11 +87,12 @@ export class CustomStyleComponent
           .subscribe({
             next: (css) => {
               this.styleAppliedCss.innerText = css;
-              document.getElementsByTagName('body')[0].appendChild(this.styleAppliedCss);
+              document
+                .getElementsByTagName('body')[0]
+                .appendChild(this.styleAppliedCss);
               this.style.emit(css);
             },
-          })
-        
+          });
         this.applicationService.customStyleEdited = true;
         this.styleApplied.innerText = value;
       });
