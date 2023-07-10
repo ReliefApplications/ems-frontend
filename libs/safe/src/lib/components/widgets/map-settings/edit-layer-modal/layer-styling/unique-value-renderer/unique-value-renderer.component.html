@@ -1,0 +1,135 @@
+<div [formGroup]="formGroup" class="flex flex-col gap-y-8">
+  <!-- Field -->
+  <div uiFormFieldDirective>
+    <label>{{ 'common.field.one' | translate }}</label>
+    <ui-select-menu formControlName="field1">
+      <ui-select-option
+        *ngFor="let field of scalarFields$ | async"
+        [value]="field.name"
+        >{{ field.label }}</ui-select-option
+      >
+    </ui-select-menu>
+  </div>
+  <!-- Unique values -->
+  <div>
+    <div class="flex gap-1 items-center mb-2">
+      <h2 class="m-0">{{ 'common.value.none' | translate }}</h2>
+      <ui-button
+        (click)="onAddInfo()"
+        [isIcon]="true"
+        icon="add_circle_outline"
+        variant="primary"
+      ></ui-button>
+    </div>
+
+    <ul
+      *ngIf="uniqueValueInfos.length > 0"
+      class="divide-y divide-gray-100 bg-white ring-1 ring-gray-900/5 rounded-xl mx-2"
+      cdkDropList
+      (cdkDropListDropped)="onDrop($event)"
+    >
+      <li
+        *ngFor="let info of uniqueValueInfos.controls; let index = index"
+        class="hover:bg-gray-50 p-4 flex flex-col divide-y divide-gray-100"
+        cdkDrag
+      >
+        <ng-container *ngIf="index === openedIndex">
+          <ng-container
+            *ngTemplateOutlet="
+              openedTemplate;
+              context: { form: uniqueValueInfos.at(index) }
+            "
+          ></ng-container>
+        </ng-container>
+        <ng-container *ngIf="index !== openedIndex">
+          <ng-container
+            *ngTemplateOutlet="
+              defaultTemplate;
+              context: { value: uniqueValueInfos.at(index).value, index: index }
+            "
+          ></ng-container>
+        </ng-container>
+      </li>
+    </ul>
+  </div>
+
+  <!-- Default -->
+  <div>
+    <h2>{{ 'components.widget.settings.map.renderer.default' | translate }}</h2>
+    <div uiFormFieldDirective>
+      <label>{{
+        'components.widget.settings.map.renderer.defaultLabel' | translate
+      }}</label>
+      <input formControlName="defaultLabel" type="text" />
+    </div>
+    <h3>{{ 'components.widget.settings.map.renderer.symbol' | translate }}</h3>
+    <safe-simple-renderer
+      [geometryType]="geometryType"
+      [formGroup]="$any(formGroup.get('defaultSymbol'))"
+    ></safe-simple-renderer>
+  </div>
+</div>
+
+<!-- Opened unique value template -->
+<ng-template #openedTemplate let-form="form" let-index="index">
+  <div class="pb-2">
+    <ng-container
+      *ngTemplateOutlet="
+        headerTemplate;
+        context: { value: form.value, index: index }
+      "
+    ></ng-container>
+  </div>
+  <div [formGroup]="form" class="flex flex-col pt-2">
+    <div uiFormFieldDirective>
+      <label>{{
+        'components.widget.settings.map.renderer.label' | translate
+      }}</label>
+      <input formControlName="label" type="text" />
+    </div>
+    <div uiFormFieldDirective>
+      <label>{{
+        'components.widget.settings.map.renderer.value' | translate
+      }}</label>
+      <input formControlName="value" type="text" />
+    </div>
+    <safe-simple-renderer
+      [geometryType]="geometryType"
+      [formGroup]="form.get('symbol')"
+    ></safe-simple-renderer>
+  </div>
+</ng-template>
+
+<!-- Default unique value template -->
+<ng-template #defaultTemplate let-value="value" let-index="index">
+  <ng-container
+    *ngTemplateOutlet="headerTemplate; context: { value: value, index: index }"
+  ></ng-container>
+</ng-template>
+
+<!-- Unique value header template -->
+<ng-template #headerTemplate let-value="value" let-index="index">
+  <div class="flex justify-between items-center">
+    <div class="flex flex-1 gap-4 items-center cursor-pointer">
+      <ui-icon
+        cdkDraghandle
+        icon="drag_indicator"
+        variant="grey"
+        class="cursor-move"
+      ></ui-icon>
+      <div class="flex flex-1 gap-2 items-center" (click)="openedIndex = index">
+        <i
+          [style.color]="value.symbol.color"
+          class="{{ value.symbol.style | safeIconDisplay : 'fa' }}"
+        ></i>
+        <span>{{ value.label }}</span>
+      </div>
+    </div>
+    <ui-button
+      (click)="onRemoveInfo(index)"
+      [isIcon]="true"
+      icon="delete"
+      variant="danger"
+    ></ui-button>
+  </div>
+</ng-template>

@@ -1,29 +1,28 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   ContentType,
   CONTENT_TYPES,
   Form,
   SafeApplicationService,
-  SafeSnackBarService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
 import { AddFormMutationResponse, ADD_FORM } from './graphql/mutations';
 import { GET_FORMS, GetFormsQueryResponse } from './graphql/queries';
-import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 import { TranslateService } from '@ngx-translate/core';
 import { ApolloQueryResult } from '@apollo/client';
 import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
+import { SnackbarService } from '@oort-front/ui';
+import { Dialog } from '@angular/cdk/dialog';
 
 /**
  * Number of items per page.
@@ -55,8 +54,6 @@ export class AddPageComponent
   private loading = true;
   public loadingMore = false;
 
-  @ViewChild('formSelect') formSelect?: MatSelect;
-
   // === REACTIVE FORM ===
   public pageForm: UntypedFormGroup = new UntypedFormGroup({});
   public step = 1;
@@ -67,7 +64,7 @@ export class AddPageComponent
    * @param formBuilder Angular form builder
    * @param apollo Apollo service
    * @param applicationService Shared application service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    */
@@ -75,8 +72,8 @@ export class AddPageComponent
     private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
-    public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    public dialog: Dialog,
+    private snackBar: SnackbarService,
     private translate: TranslateService
   ) {
     super();
@@ -191,7 +188,7 @@ export class AddPageComponent
       '../../../components/add-form-modal/add-form-modal.component'
     );
     const dialogRef = this.dialog.open(AddFormModalComponent);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         const variablesData = { name: value.name };
         Object.assign(

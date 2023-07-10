@@ -15,27 +15,34 @@ import { Layout } from '../../../models/layout.model';
 import { Apollo } from 'apollo-angular';
 import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
 import { get } from 'lodash';
-import { getCalcKeys, getDataKeys } from '../summary-card/parser/utils';
+import { DataTemplateService } from '../../../services/data-template/data-template.service';
 
 /**
  * Creates the form for the editor widget settings.
  *
- * @param tile editor widget
+ * @param value editor widget
  * @returns the editor widget form group
  */
-const createEditorForm = (tile: any) => {
+const createEditorForm = (value: any) => {
   const form = new FormGroup({
-    id: new FormControl<string>(tile.id),
-    title: new FormControl<string>(tile.settings.title),
-    text: new FormControl<string>(tile.settings.text),
-
+    id: new FormControl<string>(value.id),
+    title: new FormControl<string>(get(value, 'settings.title', '')),
+    text: new FormControl<string>(get(value, 'settings.text', '')),
     // for record selection
-    resource: new FormControl<string>(tile.settings.resource),
-    layout: new FormControl<string>(tile.settings.layout),
-    record: new FormControl<string>(tile.settings.record),
+    resource: new FormControl<string>(get(value, 'settings.resource', null)),
+    layout: new FormControl<string>(get(value, 'settings.layout', null)),
+    record: new FormControl<string>(get(value, 'settings.record', null)),
+    showDataSourceLink: new FormControl<boolean>(
+      get(value, 'showDataSourceLink', false)
+    ),
+    // Style
+    useStyles: new FormControl<boolean>(get(value, 'settings.useStyles', true)),
+    wholeCardStyles: new FormControl<boolean>(
+      get(value, 'settings.wholeCardStyles', false)
+    ),
   });
 
-  return extendWidgetForm(form, tile?.settings?.widgetDisplay);
+  return extendWidgetForm(form, value?.settings?.widgetDisplay);
 };
 
 export type EditorFormType = ReturnType<typeof createEditorForm>;
@@ -69,15 +76,18 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
    *
    * @param editorService Editor service used to get main URL and current language
    * @param apollo Apollo service
+   * @param dataTemplateService Shared data template service
    */
   constructor(
     private editorService: SafeEditorService,
-    private apollo: Apollo
+    private apollo: Apollo,
+    private dataTemplateService: DataTemplateService
   ) {
     // Set the editor base url based on the environment file
     this.editor.base_url = editorService.url;
     // Set the editor language
     this.editor.language = editorService.language;
+    this.dataTemplateService.setEditorLinkList(this.editor);
   }
 
   /**
@@ -121,6 +131,8 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
       this.tile.settings.text = this.tileForm.value.text;
       this.tile.settings.record = this.tileForm.value.record;
       this.tile.settings.title = this.tileForm.value.title;
+      this.tile.settings.resource = this.tileForm.value.resource;
+      this.tile.settings.layout = this.tileForm.value.layout;
     });
     this.updateFields();
   }
@@ -137,10 +149,10 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
         }
       });
     });
-    const dataKeys = getDataKeys(fields);
-    const calcKeys = getCalcKeys();
-    const keys = dataKeys.concat(calcKeys);
     // Setup editor auto complete
-    this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
+    this.editorService.addCalcAndKeysAutoCompleter(this.editor, [
+      ...this.dataTemplateService.getAutoCompleterKeys(fields),
+      ...this.dataTemplateService.getAutoCompleterPageKeys(),
+    ]);
   }
 }

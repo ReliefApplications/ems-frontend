@@ -1,12 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SafeButtonModule } from '../../button/button.module';
 import { SafeGridColumnChooserComponent } from './grid-column-chooser.component';
 import { FormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeDividerModule } from '../../divider/divider.module';
 import { ButtonModule } from '@progress/kendo-angular-buttons';
 import { InputsModule } from '@progress/kendo-angular-inputs';
+import { DividerModule } from '@oort-front/ui';
 
 /**
  * Component to replace the kendo column chooser
@@ -15,10 +14,10 @@ import { InputsModule } from '@progress/kendo-angular-inputs';
   declarations: [SafeGridColumnChooserComponent],
   imports: [
     CommonModule,
-    SafeButtonModule,
+    ButtonModule,
     FormsModule,
     TranslateModule,
-    SafeDividerModule,
+    DividerModule,
     ButtonModule,
     InputsModule,
   ],

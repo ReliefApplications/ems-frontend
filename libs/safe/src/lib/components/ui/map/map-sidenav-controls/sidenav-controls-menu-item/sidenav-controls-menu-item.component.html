@@ -1,0 +1,38 @@
+<ng-container *ngIf="!item.children"
+  ><div class="flex items-center">
+    <input
+      type="checkbox"
+      (change)="updateLayer(item.layer)"
+      [checked]="checked"
+      class="form-checkbox h-4 w-4 rounded border-gray-300 mr-2"
+    />{{ item.label }}
+  </div></ng-container
+>
+
+<div *ngIf="item.children">
+  <div class="flex items-center relative">
+    <button
+      (click)="toggleExpansion()"
+      class="absolute cursor-pointer -left-[14px]"
+    >
+      {{ expanded ? '-' : '+' }}
+    </button>
+    <input
+      type="checkbox"
+      (change)="updateChildren()"
+      [checked]="checked"
+      [indeterminate]="indeterminate"
+      class="form-checkbox h-4 w-4 rounded border-gray-300 mr-2"
+    />{{ item.label }}
+  </div>
+  <ng-container *ngIf="expanded">
+    <div class="ml-5">
+      <safe-sidenav-controls-menu-item
+        *ngFor="let child of item.children"
+        [item]="child"
+        [map]="map"
+        (checkedChange)="handleCheckedChange()"
+      ></safe-sidenav-controls-menu-item>
+    </div>
+  </ng-container>
+</div>

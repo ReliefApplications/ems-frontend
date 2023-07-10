@@ -1,0 +1,21 @@
+<div (click)="onOpenSelect()" #trigger="cdkOverlayOrigin" cdkOverlayOrigin>
+  <i
+    *ngIf="value"
+    [style.color]="color"
+    class="{{ value | safeIconDisplay : fontFamily }} mr-2"
+  ></i
+  >{{ value }}
+</div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="showList"
+>
+  <safe-icon-picker-popup
+    [fontFamily]="fontFamily"
+    [icons]="icons"
+    [color]="color"
+    (close)="setIcon($event)"
+  ></safe-icon-picker-popup>
+</ng-template>

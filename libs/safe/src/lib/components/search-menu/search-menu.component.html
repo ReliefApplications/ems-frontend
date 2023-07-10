@@ -1,35 +1,33 @@
 <div class="mt-1" *ngIf="headerTemplate">
   <ng-container [ngTemplateOutlet]="headerTemplate"></ng-container>
 </div>
-<mat-form-field appearance="outline">
+<div uiFormFieldDirective>
   <input
-    matInput
     [placeholder]="'common.placeholder.search' | translate"
     [(ngModel)]="search"
     (ngModelChange)="onSearch()"
-    autocomplete="off"
   />
-  <mat-icon matSuffix>search</mat-icon>
-</mat-form-field>
+  <ui-icon icon="search" uiSuffix></ui-icon>
+</div>
 <div class="flex flex-col gap-2 -mt-3.5">
   <div *ngIf="currentApplication">
-    <safe-button
+    <ui-button
       class="!w-auto"
       variant="primary"
       (click)="onClick(currentApplication)"
-      >{{ currentApplication.name }}</safe-button
+      [isBlock]="true"
+      >{{ currentApplication.name }}</ui-button
     >
   </div>
-  <safe-divider *ngIf="currentApplication" class="m-0"></safe-divider>
+  <ui-divider *ngIf="currentApplication" class="m-0"></ui-divider>
   <div class="search-application-list">
-    <safe-button
+    <ui-button
       *ngFor="let item of searchResults"
       class="!w-auto block"
       (click)="onClick(item)"
-      [matTooltip]="item.name"
-      matTooltipShowDelay="1000"
-      matTooltipPosition="right"
-      >{{ item.name }}</safe-button
+      [uiTooltip]="item.name"
+      [isBlock]="true"
+      >{{ item.name }}</ui-button
     >
   </div>
   <p class="text-center opacity-50" *ngIf="searchResults.length === 0">

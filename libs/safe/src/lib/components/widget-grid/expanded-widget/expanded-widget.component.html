@@ -1,9 +1,9 @@
-<safe-modal [closable]="true" size="fullscreen">
-  <div mat-dialog-content class="max-h-full h-full">
+<ui-dialog [closable]="true" size="fullscreen">
+  <ng-container ngProjectAs="content">
     <safe-widget
       [widget]="data.widget"
       [header]="false"
-      (goToNextStep)="goToNextStep.emit($event)"
+      (changeStep)="changeStep.emit($event)"
     ></safe-widget>
-  </div>
-</safe-modal>
+  </ng-container>
+</ui-dialog>

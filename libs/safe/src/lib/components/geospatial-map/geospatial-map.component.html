@@ -1,0 +1,14 @@
+<div class="flex flew-wrap gap-2 flex-col lg:flex-row lg:h-full">
+  <safe-geospatial-fields
+    *ngIf="fields.length > 0"
+    class="flex-1"
+    [fields]="fields"
+    [geoForm]="geoForm"
+  >
+  </safe-geospatial-fields>
+  <safe-map
+    [mapSettings]="mapSettings"
+    (search)="onSearch($event)"
+    class="lg:flex-1 max-lg:min-w-full h-96 lg:min-h-full"
+  ></safe-map>
+</div>

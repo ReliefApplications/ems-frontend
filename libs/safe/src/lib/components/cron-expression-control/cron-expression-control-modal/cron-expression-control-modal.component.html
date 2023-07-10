@@ -1,21 +1,26 @@
-<safe-modal size="medium">
-  <!-- Show readable value of the schedule -->
-  <safe-alert *ngIf="control.valid" variant="primary" class="mb-6">
-    <safe-icon icon="schedule"></safe-icon>
-    {{ control.value | safeReadableCron }}
-  </safe-alert>
-  <!-- Cron editor -->
-  <cron-editor [formControl]="control" [options]="cronOptions"></cron-editor>
-  <!-- Modal actions -->
-  <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
-    <safe-button
+<ui-dialog size="big">
+  <ng-container ngProjectAs="content" class="flex flex-col">
+    <!-- Show readable value of the schedule -->
+    <ui-alert *ngIf="control.valid" variant="primary" class="mb-6">
+      {{ control.value | safeReadableCron }}
+    </ui-alert>
+    <!-- Cron editor -->
+    <cron-editor
+      [formControl]="control"
+      [options]="cronOptions"
+      class="grow"
+    ></cron-editor>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <!-- Modal actions -->
+    <ui-button uiDialogClose>{{ 'common.close' | translate }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="control.value"
+      [uiDialogClose]="control.value"
       [disabled]="!control.valid"
     >
       {{ 'common.save' | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

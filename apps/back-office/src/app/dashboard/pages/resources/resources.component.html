@@ -5,16 +5,14 @@
     [loading]="filterLoading"
   ></app-filter>
   <!-- ACTIONS -->
-  <div class="flex items-center">
-    <safe-button
-      icon="add"
-      category="secondary"
-      variant="primary"
-      (click)="onAdd()"
-    >
-      {{ 'models.resource.create' | translate }}
-    </safe-button>
-  </div>
+  <ui-button
+    icon="add"
+    category="secondary"
+    variant="primary"
+    (click)="onAdd()"
+  >
+    {{ 'models.resource.create' | translate }}
+  </ui-button>
 </div>
 
 <!-- Table container -->
@@ -23,67 +21,76 @@
   <div class="overflow-x-auto">
     <table
       *ngIf="!loading"
-      mat-table
+      cdk-table
+      uiTableWrapper
       [dataSource]="resources"
-      matSort
-      (matSortChange)="onSort($event)"
+      (sortChange)="onSort($event)"
     >
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header="name">
+      <ng-container cdkColumnDef="name">
+        <th uiTableHeaderSort="name" uiCellHeader *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element" class="font-bold">
+        <td
+          uiCell
+          *cdkCellDef="let element"
+          class="!text-gray-900 !font-medium"
+        >
           {{ element.name }}
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="createdAt">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header="createdAt">
+      <ng-container cdkColumnDef="createdAt">
+        <th
+          uiTableHeaderSort="createdAt"
+          uiCellHeader
+          *cdkHeaderCellDef
+          scope="col"
+        >
+          <span class="headerTitle">
             {{ 'common.createdOn' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ element.createdAt | safeDate }}
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="recordsCount">
-        <th mat-header-cell *matHeaderCellDef>
+      <ng-container cdkColumnDef="recordsCount">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'common.record.few' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.recordsCount }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.recordsCount }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef class="w-16"></th>
-        <td mat-cell *matCellDef="let element">
-          <safe-button
+      <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
+          <ui-button
             [isIcon]="true"
             icon="more_vert"
-            [matMenuTriggerFor]="menu"
+            [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
             [disabled]="!element.canDelete"
           >
-          </safe-button>
-          <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="onDelete(element)">
-              <mat-icon>delete</mat-icon>
+          </ui-button>
+          <ui-menu #menu>
+            <button uiMenuItem (click)="onDelete(element)">
+              <ui-icon icon="delete" variant="danger"></ui-icon>
               {{ 'common.delete' | translate }}
             </button>
-          </mat-menu>
+          </ui-menu>
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
       <tr
         class="cursor-pointer"
-        mat-row
-        *matRowDef="let row; columns: displayedColumns"
+        cdk-row
+        *cdkRowDef="let row; columns: displayedColumns"
         [routerLink]="['/resources', row.id]"
       ></tr>
     </table>
@@ -95,15 +102,15 @@
     >
     </safe-skeleton-table>
   </div>
-  <!-- Pagination -->
-  <mat-paginator
-    [disabled]="loading || updating"
-    [pageIndex]="pageInfo.pageIndex"
-    [pageSize]="pageInfo.pageSize"
-    [pageSizeOptions]="[10, 25, 50]"
-    [length]="pageInfo.length"
-    [ariaLabel]="'components.resource.paginator.ariaLabel' | translate"
-    (page)="onPage($event)"
-  >
-  </mat-paginator>
 </div>
+<!-- Pagination -->
+<ui-paginator
+  [disabled]="loading || updating"
+  [pageIndex]="pageInfo.pageIndex"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [totalItems]="pageInfo.length"
+  [ariaLabel]="'components.resource.paginator.ariaLabel' | translate"
+  (pageChange)="onPage($event)"
+>
+</ui-paginator>

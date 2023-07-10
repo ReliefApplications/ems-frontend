@@ -1,23 +1,23 @@
-<!-- <div class="relative flex items-start">
-  <div class="flex h-6 items-center">
+<label for="{{ name }}" class="inline-flex">
+  <span class="mr-2">
     <input
-      id="{{ id }}"
-      aria-describedby="{{ name }}-description"
-      aria-label="{{ ariaLabel }}"
+      [attr.aria-describedby]="name + '-description'"
+      [attr.aria-label]="ariaLabel"
+      id="{{ name }}"
       name="{{ name }}"
       type="checkbox"
       [checked]="checked"
       [indeterminate]="indeterminate"
-      (change)="onChange($event.target.value)"
-      class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-600"
+      [ngClass]="checkboxClasses"
+      class="form-checkbox h-4 w-4 rounded border-gray-300"
+      (click)="onSelect()"
     />
-  </div>
-  <div class="ml-3 text-sm leading-6">
-    <label for="{{ name }}" class="font-medium text-gray-900">{{
-      (label | translate) ?? label
-    }}</label>
-    <p id="{{ name }}-description" class="text-gray-500">
-      {{ (description | translate) ?? description }}
+  </span>
+  <span class="text-sm text-dark-100 font-medium leading-6">
+    <ng-content select="label"></ng-content>
+    <ng-content select="icon"></ng-content>
+    <p id="{{ name }}-description" class="m-0 font-normal text-gray-500">
+      <ng-content select="description"></ng-content>
     </p>
-  </div>
-</div> -->
+  </span>
+</label>

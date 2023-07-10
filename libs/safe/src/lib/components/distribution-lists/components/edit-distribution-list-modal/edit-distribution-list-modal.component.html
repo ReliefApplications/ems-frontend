@@ -1,58 +1,74 @@
-<safe-modal size="medium">
-  <h1 mat-dialog-title>
-    {{
-      (data
-        ? 'components.distributionLists.edit.update'
-        : 'components.distributionLists.edit.new'
-      ) | translate
-    }}
-  </h1>
-  <div mat-dialog-content>
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{
+        (data
+          ? 'components.distributionLists.edit.update'
+          : 'components.distributionLists.edit.new'
+        ) | translate
+      }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="form" class="flex flex-col">
       <div class="flex flex-col">
-        <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>{{
+        <div
+          [uiErrorMessage]="
+            'components.distributionLists.errors.name.required' | translate
+          "
+          [uiErrorMessageIf]="
+            form.get('name')?.errors && form.get('name')?.touched
+          "
+          uiFormFieldDirective
+          class="flex-1"
+        >
+          <label>{{
             'components.distributionLists.edit.name' | translate
-          }}</mat-label>
-          <input matInput formControlName="name" type="text" />
-          <mat-error>{{ errorMessage('name') | translate }}</mat-error>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.email.few' | translate }}</mat-label>
-          <mat-chip-list #chipList formControlName="emails">
-            <mat-chip
-              *ngFor="let email of emails"
-              [selectable]="true"
+          }}</label>
+          <input formControlName="name" type="text" />
+        </div>
+        <div
+          [uiErrorMessage]="emailsError | translate"
+          [uiErrorMessageIf]="
+            form.get('emails')?.errors && form.get('emails')?.touched
+          "
+          uiFormFieldDirective
+        >
+          <label class="block text-sm font-medium leading-6 text-gray-900">{{
+            'common.email.few' | translate
+          }}</label>
+          <div uiChipList #chipList formControlName="emails">
+            <ui-chip
+              *ngFor="let email of form.get('emails')?.value"
               [removable]="true"
+              [value]="email"
               (removed)="removeEmail(email)"
             >
               {{ email }}
-              <safe-icon matChipRemove icon="cancel" [size]="18"></safe-icon>
-            </mat-chip>
-            <input
-              #emailsInput
-              [matChipInputFor]="chipList"
-              [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-              (focusout)="addEmail($event)"
-              (matChipInputTokenEnd)="addEmail($event)"
-            />
-          </mat-chip-list>
-          <mat-error>{{ errorMessage('emails') | translate }}</mat-error>
-        </mat-form-field>
+            </ui-chip>
+          </div>
+          <input
+            #emailsInput
+            [uiChipListFor]="chipList"
+            [chipInputSeparatorKeyCodes]="separatorKeysCodes"
+            (focusout)="addEmail($event)"
+            (chipTokenEnd)="addEmail($event)"
+          />
+        </div>
       </div>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="form.value"
+      [uiDialogClose]="form.value"
       [disabled]="!form.valid"
     >
       {{ (data ? 'common.update' : 'common.create') | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

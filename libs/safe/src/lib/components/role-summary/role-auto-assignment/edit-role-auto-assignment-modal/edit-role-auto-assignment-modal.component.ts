@@ -1,9 +1,10 @@
 import { Component, Inject } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
 import { CommonModule } from '@angular/common';
-import { SafeModalModule } from '../../../ui/modal/modal.module';
 import { SafeFilterModule } from '../../../filter/filter.module';
+import { ButtonModule } from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
+import { DIALOG_DATA } from '@angular/cdk/dialog';
 
 /** Interface of component dialog data */
 interface DialogData {
@@ -16,7 +17,7 @@ interface DialogData {
  */
 @Component({
   standalone: true,
-  imports: [CommonModule, SafeModalModule, SafeFilterModule],
+  imports: [CommonModule, DialogModule, SafeFilterModule, ButtonModule],
   selector: 'safe-edit-role-auto-assignment-modal',
   templateUrl: './edit-role-auto-assignment-modal.component.html',
   styleUrls: ['./edit-role-auto-assignment-modal.component.scss'],
@@ -31,7 +32,7 @@ export class EditRoleAutoAssignmentModalComponent {
    * @param data component modal data
    */
   constructor(
-    @Inject(MAT_DIALOG_DATA)
+    @Inject(DIALOG_DATA)
     public data: DialogData
   ) {
     this.formGroup = data.formGroup;

@@ -1,0 +1,19 @@
+<div
+  (click)="onOpenSelect()"
+  #trigger="cdkOverlayOrigin"
+  cdkOverlayOrigin
+  class="h-4"
+  [ngStyle]="{
+    background: value | safeGradient
+  }"
+></div>
+
+<ng-template
+  cdkConnectedOverlay
+  [cdkConnectedOverlayOrigin]="trigger"
+  [cdkConnectedOverlayOpen]="showList"
+>
+  <safe-gradient-picker-popup
+    (close)="setGradient($event)"
+  ></safe-gradient-picker-popup>
+</ng-template>

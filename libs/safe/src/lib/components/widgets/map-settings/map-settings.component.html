@@ -1,77 +1,52 @@
-<ng-container *ngIf="tileForm">
-  <mat-tab-group
-    mat-align-tabs="start"
-    animationDuration="0ms"
-    vertical
-    class="grow"
-  >
-    <!-- GENERAL SETTINGS -->
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <safe-icon
-          icon="preview"
-          [size]="24"
-          matTooltip="{{ 'common.general' | translate }}"
-          matTooltipPosition="right"
-        ></safe-icon>
-        <span>{{ 'common.general' | translate }}</span>
-      </ng-template>
-      <ng-template matTabContent>
-        <safe-map-general *ngIf="tileForm" [form]="tileForm"></safe-map-general>
-      </ng-template>
-    </mat-tab>
-    <!-- LAYERS CONFIGURATION -->
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <safe-icon
-          icon="layers"
-          [size]="24"
-          matTooltip="{{ 'common.layers' | translate }}"
-          matTooltipPosition="right"
-        ></safe-icon>
-        <span>{{ 'common.layers' | translate }}</span>
-      </ng-template>
-      <ng-template matTabContent>
-        <safe-map-layers
-          [form]="tileForm"
-          [selectedFields]="selectedFields"
-          [formattedSelectedFields]="formattedSelectedFields"
-        ></safe-map-layers>
-      </ng-template>
-    </mat-tab>
-    <!-- MAP PARAMETERS -->
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <safe-icon
-          icon="map"
-          [size]="24"
-          matTooltip="{{
-            'components.widget.settings.map.properties.title' | translate
-          }}"
-          matTooltipPosition="right"
-        ></safe-icon>
-        <span>{{
-          'components.widget.settings.map.properties.title' | translate
-        }}</span>
-      </ng-template>
-      <ng-template matTabContent>
-        <safe-map-properties [form]="tileForm"></safe-map-properties>
-      </ng-template>
-    </mat-tab>
-    <!-- Widget display options -->
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <safe-icon
-          icon="settings_overscan"
-          [size]="24"
-          matTooltip="{{ 'models.widget.display.title' | translate }}"
-          matTooltipPosition="right"
-        ></safe-icon>
-        <span>{{ 'models.widget.display.title' | translate }}</span>
-      </ng-template>
-      <ng-template matTabContent>
-        <safe-display-settings [formGroup]="tileForm"></safe-display-settings>
-      </ng-template>
-    </mat-tab>
-  </mat-tab-group>
-</ng-container>
+<ui-tabs
+  class="grow"
+  [vertical]="true"
+  (selectedIndexChange)="selectedIndexChange()"
+>
+  <!-- Map properties -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="map" [size]="24"> </ui-icon>
+      <span>{{
+        'components.widget.settings.map.properties.title' | translate
+      }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <safe-map-properties
+        [form]="tileForm"
+        [mapSettings]="mapSettings"
+        [destroyTab$]="destroyTab$"
+        [currentMapContainerRef]="currentMapContainerRef"
+      ></safe-map-properties>
+    </ng-template>
+  </ui-tab>
+  <!-- Map layers -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="layers" [size]="24"> </ui-icon>
+      <span>{{ 'common.layers' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <safe-map-layers
+        [control]="$any(tileForm.get('layers'))"
+        [mapComponent]="mapComponent"
+        [destroyTab$]="destroyTab$"
+        [currentMapContainerRef]="currentMapContainerRef"
+      ></safe-map-layers>
+    </ng-template>
+  </ui-tab>
+  <!-- General widget display -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="settings_overscan" [size]="24"> </ui-icon>
+      <span>{{ 'models.widget.display.title' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <safe-display-settings [formGroup]="tileForm"></safe-display-settings>
+    </ng-template>
+  </ui-tab>
+</ui-tabs>
+
+<div class="hidden">
+  <ng-template #mapContainer></ng-template>
+</div>

@@ -3,24 +3,24 @@
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <!-- Records table -->
-    <table mat-table [dataSource]="dataSource">
-      <ng-container matColumnDef="id">
-        <th mat-header-cell *matHeaderCellDef>{{ 'common.id' | translate }}</th>
-        <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+    <table cdk-table [dataSource]="dataSource">
+      <ng-container cdkColumnDef="id">
+        <th uiCellHeader *cdkHeaderCellDef>{{ 'common.id' | translate }}</th>
+        <td uiCell *cdkCellDef="let element">{{ element.id }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="createdAt">
-        <th mat-header-cell *matHeaderCellDef>
+      <ng-container cdkColumnDef="createdAt">
+        <th uiCellHeader *cdkHeaderCellDef>
           {{ 'common.createdOn' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ element.createdAt | safeDate }}
         </td>
       </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
       <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumns"
+        cdk-row
+        *cdkRowDef="let row; columns: displayedColumns"
         (click)="openVersion(row)"
       ></tr>
     </table>

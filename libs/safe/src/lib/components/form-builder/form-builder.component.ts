@@ -6,16 +6,16 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import * as SurveyCreator from 'survey-creator';
 import * as Survey from 'survey-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { snakeCase, get, uniqBy, difference } from 'lodash';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { Form } from '../../models/form.model';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
-
+import { SnackbarService } from '@oort-front/ui';
+import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 /**
  * Array containing the different types of questions.
  * Commented types are not yet implemented.
@@ -94,20 +94,24 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   surveyCreator!: SurveyCreator.SurveyCreator;
   public json: any;
 
+  private relatedNames!: string[];
+
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
-   * @param dialog This is the Angular Material Dialog service used to display dialog modals
+   * @param dialog This is the Angular Dialog service used to display dialog modals
    * @param snackBar This is the service that will be used to display the snackbar.
    * @param translate Angular translate service
    * @param referenceDataService Reference data service
+   * @param formHelpersService Shared form helper service.
    */
   constructor(
-    public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    public dialog: Dialog,
+    private snackBar: SnackbarService,
     private translate: TranslateService,
-    private referenceDataService: SafeReferenceDataService
+    private referenceDataService: SafeReferenceDataService,
+    private formHelpersService: SafeFormHelpersService
   ) {
     // translate the editor in the same language as the interface
     SurveyCreator.localization.currentLocale = this.translate.currentLang;
@@ -167,6 +171,12 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       'surveyCreatorContainer',
       creatorOptions
     );
+
+    this.surveyCreator.onTestSurveyCreated.add((_: any, options: any) => {
+      const survey: Survey.SurveyModel = options.survey;
+      this.formHelpersService.addUserVariables(survey);
+    });
+
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.text = structure;
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
@@ -376,6 +386,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * Makes sure that value names are existent and snake case, to not cause backend problems.
    */
   private async validateValueNames(): Promise<void> {
+    this.relatedNames = [];
     const survey = new Survey.SurveyModel(this.surveyCreator.JSON);
     survey.pages.forEach((page: Survey.PageModel) => {
       page.questions.forEach((question: Survey.Question) =>
@@ -516,6 +527,19 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     if (['resource', 'resources'].includes(question.getType())) {
       if (question.relatedName) {
         question.relatedName = this.toSnakeCase(question.relatedName);
+        if (this.relatedNames.includes(question.relatedName)) {
+          throw new Error(
+            this.translate.instant(
+              'components.formBuilder.errors.duplicatedRelatedName',
+              {
+                question: question.name,
+                page: page.name,
+              }
+            )
+          );
+        } else {
+          this.relatedNames.push(question.relatedName);
+        }
       } else {
         throw new Error(
           this.translate.instant(

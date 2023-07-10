@@ -1,15 +1,13 @@
 <div class="flex flex-col">
   <h2>{{ 'common.group.few' | translate }}</h2>
-  <mat-form-field appearance="outline">
-    <mat-label>
-      {{
-        'components.user.summary.roles.selectedGroups' | translate
-      }}</mat-label
+  <div uiFormFieldDirective>
+    <label>
+      {{ 'components.user.summary.roles.selectedGroups' | translate }}</label
     >
-    <mat-select [formControl]="selectedGroups" multiple>
-      <mat-option *ngFor="let group of groups" [value]="group.id">
+    <ui-select-menu [formControl]="selectedGroups" [multiselect]="true">
+      <ui-select-option *ngFor="let group of groups" [value]="group.id">
         {{ group.title }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+      </ui-select-option>
+    </ui-select-menu>
+  </div>
 </div>

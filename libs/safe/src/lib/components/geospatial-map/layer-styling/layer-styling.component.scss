@@ -1,0 +1,25 @@
+:host {
+  ::ng-deep {
+    .mat-form-field-appearance-outline .mat-form-field-infix {
+      padding-block: 7px;
+    }
+  }
+  form {
+    max-height: 344px;
+    overflow-y: auto;
+
+    // Hide scrollbar
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    mat-form-field {
+      width: 100%;
+      input {
+        border: none !important;
+      }
+    }
+  }
+}

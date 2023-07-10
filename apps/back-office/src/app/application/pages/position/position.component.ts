@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
@@ -30,13 +30,13 @@ export class PositionComponent
   /**
    * Application position component
    *
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param applicationService Shared application service
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
    */
   constructor(
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private applicationService: SafeApplicationService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
@@ -70,7 +70,7 @@ export class PositionComponent
         add: true,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value) {
         this.applicationService.addPositionAttributeCategory(value);
       }
@@ -92,7 +92,7 @@ export class PositionComponent
         title: positionCategory.title,
       },
     });
-    dialogRef.afterClosed().subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.editPositionAttributeCategory(
           value,
@@ -119,9 +119,9 @@ export class PositionComponent
         }
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
-      confirmColor: 'warn',
+      confirmVariant: 'danger',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.deletePositionAttributeCategory(
           positionCategory

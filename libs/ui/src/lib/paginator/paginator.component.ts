@@ -14,15 +14,16 @@ export class PaginatorComponent {
   @Input() disabled = false;
   @Input() totalItems = 0;
   @Input() pageSize = 10;
+  @Input() skip = 0;
   @Input() pageSizeOptions = [5, 10, 15];
+  @Input() hideFirstLastButtons = true;
   @Input() ariaLabel = '';
+  @Input() pageIndex = 0;
+  @Input() displayedPageNumbers = 0;
   @Output() pageChange: EventEmitter<UIPageChangeEvent> = new EventEmitter();
 
   // Generate random unique identifier for each paginator component
   paginatorId = uuidv4();
-  // Paginator properties
-  skip = 0;
-  currentPageIndex = 0;
 
   /**
    * Update page data on page change
@@ -39,8 +40,8 @@ export class PaginatorComponent {
       skip: this.skip,
       totalItems: this.totalItems,
       pageIndex: currentPage,
-      previousPageIndex: this.currentPageIndex,
+      previousPageIndex: this.pageIndex,
     });
-    this.currentPageIndex = currentPage;
+    this.pageIndex = currentPage;
   }
 }

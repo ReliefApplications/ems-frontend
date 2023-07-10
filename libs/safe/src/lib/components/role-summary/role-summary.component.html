@@ -1,51 +1,63 @@
 <h1>
   {{ role?.title ? role?.title : '' }}
 </h1>
-<mat-tab-group>
-  <mat-tab [label]="'components.role.summary.title' | translate">
-    <ng-template matTabContent>
+<ui-tabs>
+  <ui-tab>
+    <ng-container ngProjectAs="label">{{
+      'components.role.summary.title' | translate
+    }}</ng-container>
+    <ng-template uiTabContent>
       <safe-role-details
         *ngIf="role"
         [role]="role"
         (edit)="onEditRole($event)"
         [loading]="loading"
       ></safe-role-details>
-      <safe-spinner *ngIf="loading"></safe-spinner>
+      <ui-spinner *ngIf="loading"></ui-spinner>
     </ng-template>
-  </mat-tab>
-  <mat-tab [label]="'components.role.summary.autoAssignment.title' | translate">
-    <ng-template matTabContent>
+  </ui-tab>
+  <ui-tab>
+    <ng-container ngProjectAs="label">{{
+      'components.role.summary.autoAssignment.title' | translate
+    }}</ng-container>
+    <ng-template uiTabContent>
       <safe-role-auto-assignment
         *ngIf="role"
         [role]="role"
         (edit)="onEditRole($event)"
         [loading]="loading"
       ></safe-role-auto-assignment>
-      <safe-spinner *ngIf="loading"></safe-spinner>
+      <ui-spinner *ngIf="loading"></ui-spinner>
     </ng-template>
-  </mat-tab>
-  <mat-tab [label]="'common.resource.few' | translate">
-    <ng-template matTabContent>
+  </ui-tab>
+  <ui-tab>
+    <ng-container ngProjectAs="label">{{
+      'common.resource.few' | translate
+    }}</ng-container>
+    <ng-template uiTabContent>
       <safe-role-resources *ngIf="role" [role]="role"></safe-role-resources>
-      <safe-spinner *ngIf="loading"></safe-spinner>
+      <ui-spinner *ngIf="loading"></ui-spinner>
     </ng-template>
-  </mat-tab>
-  <mat-tab
-    [label]="'components.role.summary.features' | translate"
-    *ngIf="application"
-  >
-    <ng-template matTabContent>
+  </ui-tab>
+  <ui-tab *ngIf="application">
+    <ng-container ngProjectAs="label">{{
+      'components.role.summary.features' | translate
+    }}</ng-container>
+    <ng-template uiTabContent>
       <safe-role-features
         *ngIf="role"
         [role]="role"
         [application]="application"
         [loading]="loading"
       ></safe-role-features>
-      <safe-spinner *ngIf="loading"></safe-spinner>
+      <ui-spinner *ngIf="loading"></ui-spinner>
     </ng-template>
-  </mat-tab>
-  <mat-tab [label]="'common.channel.few' | translate">
-    <ng-template matTabContent>
+  </ui-tab>
+  <ui-tab>
+    <ng-container ngProjectAs="label">{{
+      'common.channel.few' | translate
+    }}</ng-container>
+    <ng-template uiTabContent>
       <safe-role-channels
         *ngIf="role"
         [role]="role"
@@ -53,7 +65,7 @@
         (edit)="onEditRole($event)"
         [loading]="loading"
       ></safe-role-channels>
-      <safe-spinner *ngIf="loading"></safe-spinner>
+      <ui-spinner *ngIf="loading"></ui-spinner>
     </ng-template>
-  </mat-tab>
-</mat-tab-group>
+  </ui-tab>
+</ui-tabs>

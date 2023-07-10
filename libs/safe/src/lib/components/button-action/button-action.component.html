@@ -1,0 +1,25 @@
+<div
+  class="inline-flex mr-1"
+  *ngFor="let button of buttonActions; let i = index"
+  cdkDrag
+>
+  <div class="group relative">
+    <ui-button
+      [variant]="button.variant"
+      [category]="button.category"
+      (click)="onButtonActionClick(button)"
+    >
+      {{ button.text }}
+    </ui-button>
+    <ui-button
+      *ngIf="canUpdate"
+      class="!hidden group-hover:!block absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 opacity-95"
+      category="primary"
+      variant="danger"
+      [isIcon]="true"
+      icon="delete"
+      size="small"
+      (click)="onDeleteButtonAction(i)"
+    ></ui-button>
+  </div>
+</div>

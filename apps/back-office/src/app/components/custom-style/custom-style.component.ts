@@ -2,11 +2,9 @@ import { Component, Output, EventEmitter, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
-import { SafeButtonModule } from '@oort-front/safe';
 import {
   Application,
   SafeApplicationService,
-  SafeSnackBarService,
   SafeUnsubscribeComponent,
   SafeConfirmService,
 } from '@oort-front/safe';
@@ -16,6 +14,7 @@ import { Apollo } from 'apollo-angular';
 import { UploadApplicationStyleMutationResponse } from './graphql/mutations';
 import { UPLOAD_APPLICATION_STYLE } from './graphql/mutations';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ButtonModule, SnackbarService, SpinnerModule } from '@oort-front/ui';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';
@@ -29,8 +28,9 @@ const DEFAULT_STYLE = '';
     FormsModule,
     ReactiveFormsModule,
     MonacoEditorModule,
-    SafeButtonModule,
     TranslateModule,
+    ButtonModule,
+    SpinnerModule,
   ],
   templateUrl: './custom-style.component.html',
   styleUrls: ['./custom-style.component.scss'],
@@ -50,6 +50,7 @@ export class CustomStyleComponent
   };
   private styleApplied: HTMLStyleElement;
   private savedStyle = '';
+  public loading = false;
 
   /**
    * Creates an instance of CustomStyleComponent, form and updates.
@@ -62,7 +63,7 @@ export class CustomStyleComponent
    */
   constructor(
     private applicationService: SafeApplicationService,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private apollo: Apollo,
     private translate: TranslateService,
     private confirmService: SafeConfirmService
@@ -109,20 +110,23 @@ export class CustomStyleComponent
           'components.widget.settings.close.confirmationMessage'
         ),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'warn',
+        confirmVariant: 'danger',
       });
-      confirmDialogRef.afterClosed().subscribe((confirm) => {
-        if (confirm) {
-          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-          this.applicationService.customStyle!.innerText = this.savedStyle;
-          this.cancel.emit(true);
-        }
-      });
+      confirmDialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((confirm: any) => {
+          if (confirm) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this.applicationService.customStyle!.innerText = this.savedStyle;
+            this.cancel.emit(true);
+          }
+        });
     }
   }
 
   /** Save application custom css styling */
   async onSave(): Promise<void> {
+    this.loading = true;
     const file = new File(
       [this.formControl.value as string],
       'customStyle.scss',
@@ -157,6 +161,7 @@ export class CustomStyleComponent
       this.applicationService.customStyleEdited = false;
       this.applicationService.customStyle = this.styleApplied;
     }
+    this.loading = false;
   }
 
   /**

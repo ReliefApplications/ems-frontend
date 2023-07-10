@@ -2,25 +2,20 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ResourcesRoutingModule } from './resources-routing.module';
 import { ResourcesComponent } from './resources.component';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { MatSortModule } from '@angular/material/sort';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  SafeButtonModule,
-  SafeSkeletonTableModule,
-  SafeDateModule,
-} from '@oort-front/safe';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
+import { SafeSkeletonTableModule, SafeDateModule } from '@oort-front/safe';
 import { FilterComponent } from './filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
+import {
+  MenuModule,
+  ButtonModule,
+  SpinnerModule,
+  TableModule,
+  FormWrapperModule,
+  IconModule,
+  PaginatorModule,
+  DateModule,
+} from '@oort-front/ui';
 
 /**
  * Resources page module.
@@ -30,23 +25,19 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     ResourcesRoutingModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    MatIconModule,
-    MatDialogModule,
-    MatMenuModule,
-    MatSortModule,
-    MatInputModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatFormFieldModule,
+    SpinnerModule,
+    IconModule,
+    MenuModule,
     FormsModule,
-    SafeButtonModule,
-    MatPaginatorModule,
+    PaginatorModule,
     ReactiveFormsModule,
     TranslateModule,
     SafeSkeletonTableModule,
     SafeDateModule,
+    ButtonModule,
+    FormWrapperModule,
+    TableModule,
+    DateModule,
   ],
   exports: [ResourcesComponent],
 })

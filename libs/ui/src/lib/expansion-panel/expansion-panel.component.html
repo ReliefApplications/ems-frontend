@@ -1,0 +1,51 @@
+<cdk-accordion-item
+  #accordionItem="cdkAccordionItem"
+  [ngClass]="{ 'cursor-default opacity-50': disabled }"
+  role="button"
+  [attr.aria-expanded]="accordionItem.expanded"
+  [disabled]="disabled"
+  [attr.id]="'accordion-header-' + index"
+  [attr.aria-controls]="'accordion-body-' + index"
+  (closed)="onClosed()"
+  (opened)="onOpened()"
+>
+  <div
+    [ngClass]="{
+      'focus:ring-4 focus:ring-gray-200 hover:bg-gray-100': !disabled,
+      'rounded-t-xl': !index,
+      'border-t-0': index
+    }"
+    class="accordion-item justify-between"
+    (click)="accordionItem.toggle()"
+  >
+    <span>
+      <ng-content select="title"></ng-content>
+    </span>
+    <ng-container *ngIf="displayIcon">
+      <svg
+        data-accordion-icon
+        class="w-6 rounded-md h-6 shrink-0"
+        fill="currentColor"
+        viewBox="0 0 20 20"
+        xmlns="http://www.w3.org/2000/svg"
+        [@iconChange]="accordionItem.expanded ? 'down' : 'up'"
+      >
+        <path
+          fill-rule="evenodd"
+          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+          clip-rule="evenodd"
+        ></path>
+      </svg>
+    </ng-container>
+  </div>
+  <div
+    #contentContainer
+    [@contentExpansion]="accordionItem.expanded ? 'expanded' : 'collapsed'"
+    class="accordion-content hidden"
+    role="region"
+    [attr.id]="'accordion-body-' + index"
+    [attr.aria-labelledby]="'accordion-header-' + index"
+  >
+    <ng-content></ng-content>
+  </div>
+</cdk-accordion-item>

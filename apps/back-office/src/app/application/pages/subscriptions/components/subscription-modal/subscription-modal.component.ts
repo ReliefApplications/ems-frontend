@@ -1,14 +1,10 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
 import {
   Application,
   Channel,
@@ -24,34 +20,30 @@ import {
   GetFormsQueryResponse,
 } from '../../graphql/queries';
 import { map, startWith, takeUntil } from 'rxjs/operators';
-import { MatLegacyAutocomplete as MatAutocomplete } from '@angular/material/legacy-autocomplete';
 import get from 'lodash/get';
 import { ApolloQueryResult } from '@apollo/client';
 import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../../../utils/update-queries';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
+import { IconModule } from '@oort-front/ui';
 import { SubscriptionsRoutingModule } from '../../subscriptions-routing.module';
-import {
-  SafeButtonModule,
-  SafeIconModule,
-  SafeGraphQLSelectModule,
-  SafeModalModule,
-  SafeDividerModule,
-} from '@oort-front/safe';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyAutocompleteModule as MatAutocompleteModule } from '@angular/material/legacy-autocomplete';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import {
+  SpinnerModule,
+  DividerModule,
+  MenuModule,
+  TooltipModule,
+  ButtonModule,
+  SelectMenuModule,
+  FormWrapperModule,
+  AutocompleteModule,
+  GraphQLSelectModule,
+} from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 
 /** Items per query for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -66,22 +58,18 @@ const ITEMS_PER_PAGE = 10;
     SubscriptionsRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    MatButtonModule,
-    MatFormFieldModule,
-    MatIconModule,
-    MatInputModule,
-    MatSelectModule,
-    MatMenuModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    MatAutocompleteModule,
-    SafeDividerModule,
-    SafeButtonModule,
-    SafeIconModule,
+    IconModule,
+    SpinnerModule,
+    MenuModule,
+    DividerModule,
     TranslateModule,
-    MatTooltipModule,
-    SafeGraphQLSelectModule,
-    SafeModalModule,
+    GraphQLSelectModule,
+    DialogModule,
+    TooltipModule,
+    ButtonModule,
+    AutocompleteModule,
+    SelectMenuModule,
+    FormWrapperModule,
   ],
   selector: 'app-subscription-modal',
   templateUrl: './subscription-modal.component.html',
@@ -92,7 +80,7 @@ export class SubscriptionModalComponent
   implements OnInit
 {
   // === REACTIVE FORM ===
-  subscriptionForm: UntypedFormGroup = new UntypedFormGroup({});
+  subscriptionForm!: UntypedFormGroup;
 
   // === DATA ===
   public formsQuery!: QueryRef<GetFormsQueryResponse>;
@@ -108,8 +96,6 @@ export class SubscriptionModalComponent
     hasNextPage: true,
   };
   private applicationsLoading = true;
-
-  @ViewChild('applicationSelect') applicationSelect?: MatAutocomplete;
 
   /** @returns subscription routing key */
   get routingKey(): string {
@@ -132,21 +118,23 @@ export class SubscriptionModalComponent
    * Subscription modal component
    *
    * @param formBuilder Angular form builder
-   * @param dialogRef Material dialog ref
+   * @param dialogRef Dialog ref
    * @param apollo Apollo service
    * @param data Injected dialog data
    * @param data.channels list of channels
    * @param data.subscription subscription
+   * @param document Document
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<SubscriptionModalComponent>,
+    public dialogRef: DialogRef<SubscriptionModalComponent>,
     private apollo: Apollo,
-    @Inject(MAT_DIALOG_DATA)
+    @Inject(DIALOG_DATA)
     public data: {
       channels: Channel[];
       subscription?: Subscription;
-    }
+    },
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
   }
@@ -224,13 +212,9 @@ export class SubscriptionModalComponent
    * Adds scroll listener to auto complete.
    */
   onOpenApplicationSelect(): void {
-    if (this.applicationSelect) {
-      setTimeout(() => {
-        const panel = this.applicationSelect?.panel.nativeElement;
-        if (panel) {
-          panel.onscroll = (event: any) => this.loadOnScrollApplication(event);
-        }
-      }, 0);
+    const panel = this.document.getElementById('autocompleteList');
+    if (panel) {
+      panel.onscroll = (event: any) => this.loadOnScrollApplication(event);
     }
   }
 

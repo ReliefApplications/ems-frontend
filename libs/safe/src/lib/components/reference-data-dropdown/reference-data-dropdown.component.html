@@ -1,25 +1,22 @@
-<mat-form-field class="grow" appearance="outline">
-  <mat-label>{{
-    'components.referenceData.dropdown.select' | translate
-  }}</mat-label>
-  <mat-select
+<div uiFormFieldDirective class="flex-1">
+  <ui-select-menu
     #referenceDataSelect
     [(ngModel)]="referenceData"
     name="referenceData"
-    (openedChange)="onOpenSelect($event)"
-    (selectionChange)="onSelect($event)"
+    (opened)="onOpenSelect()"
+    (selectedOption)="onSelect($event)"
   >
-    <mat-option>{{ 'common.input.none' | translate }}</mat-option>
-    <mat-option
+    <ui-select-option>{{ 'common.input.none' | translate }}</ui-select-option>
+    <ui-select-option
       *ngIf="selectedReferenceData"
       [value]="selectedReferenceData.id"
-      >{{ selectedReferenceData.name }}</mat-option
+      >{{ selectedReferenceData.name }}</ui-select-option
     >
-    <mat-option
+    <ui-select-option
       *ngFor="let referenceData of referenceDatas$ | async"
       [value]="referenceData.id"
     >
       {{ referenceData.name }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+    </ui-select-option>
+  </ui-select-menu>
+</div>

@@ -1,52 +1,52 @@
-<safe-modal>
-  <h1 mat-dialog-title>
-    {{
-      'components.access.description'
-        | translate : { name: data.objectTypeName }
-    }}
-  </h1>
-  <div mat-dialog-content>
+<ui-dialog>
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{
+        'components.access.description'
+          | translate : { name: data.objectTypeName }
+      }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="accessForm" class="flex flex-col">
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'components.access.canSee' | translate }}</mat-label>
-        <mat-select formControlName="canSee" multiple>
-          <mat-option *ngFor="let role of roles" [value]="role.id">
+      <div uiFormFieldDirective>
+        <label>{{ 'components.access.canSee' | translate }}</label>
+        <ui-select-menu formControlName="canSee" [multiselect]="true">
+          <ui-select-option *ngFor="let role of roles" [value]="role.id">
             {{ role.title }}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
       <ng-container *ngIf="!data.application">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'components.access.canUpdate' | translate }}</mat-label>
-          <mat-select formControlName="canUpdate" multiple>
-            <mat-option *ngFor="let role of roles" [value]="role.id">
+        <div uiFormFieldDirective>
+          <label>{{ 'components.access.canUpdate' | translate }}</label>
+          <ui-select-menu formControlName="canUpdate" [multiselect]="true">
+            <ui-select-option *ngFor="let role of roles" [value]="role.id">
               {{ role.title }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'components.access.canDelete' | translate }}</mat-label>
-          <mat-select formControlName="canDelete" multiple>
-            <mat-option *ngFor="let role of roles" [value]="role.id">
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+        <div uiFormFieldDirective>
+          <label>{{ 'components.access.canDelete' | translate }}</label>
+          <ui-select-menu formControlName="canDelete" [multiselect]="true">
+            <ui-select-option *ngFor="let role of roles" [value]="role.id">
               {{ role.title }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
       </ng-container>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button (click)="onClose()">{{
-      'common.close' | translate
-    }}</safe-button>
-    <safe-button
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="accessForm.value"
+      [uiDialogClose]="accessForm.value"
       cdkFocusInitial
       [disabled]="!accessForm.valid"
     >
       {{ 'common.update' | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

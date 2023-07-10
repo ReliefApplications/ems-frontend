@@ -1,61 +1,62 @@
-<safe-modal [closable]="true" size="medium">
-  <h1 mat-dialog-title>{{ 'components.preferences.title' | translate }}</h1>
-  <mat-dialog-content>
+<ui-dialog [closable]="true" [size]="'medium'">
+  <ng-container ngProjectAs="header">
+    <h1>{{ 'components.preferences.title' | translate }}</h1>
+  </ng-container>
+
+  <ng-container ngProjectAs="content">
     <form [formGroup]="preferencesForm">
-      <mat-tab-group vertical animationDuration="0ms">
-        <mat-tab>
-          <ng-template mat-tab-label>
-            <safe-icon
+      <ui-tabs [vertical]="true">
+        <ui-tab>
+          <ng-container ngProjectAs="label">
+            <ui-icon
               icon="language"
               [size]="18"
-              matTooltip="{{ 'components.preferences.language' | translate }}"
-              matTooltipPosition="right"
-            ></safe-icon>
+              uiTooltip="{{ 'components.preferences.language' | translate }}"
+            ></ui-icon>
             <span>{{ 'components.preferences.language' | translate }}</span>
-          </ng-template>
+          </ng-container>
           <div class="flex flex-col">
             <!-- LANGUAGE SELECTION -->
-            <mat-form-field appearance="outline">
-              <mat-label>{{
-                'components.preferences.language' | translate
-              }}</mat-label>
-              <mat-select formControlName="language">
-                <mat-option *ngFor="let lang of languages" [value]="lang.value">
-                  {{ lang.name | titlecase }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+            <div uiFormFieldDirective>
+              <label>{{ 'components.preferences.language' | translate }}</label>
+              <ui-select-menu formControlName="language">
+                <ui-select-option
+                  *ngFor="let lang of languages"
+                  [value]="lang.value"
+                >
+                  {{ lang.name }}
+                </ui-select-option>
+              </ui-select-menu>
+            </div>
             <!-- DATE LANGUAGE SELECTION -->
-            <mat-form-field appearance="outline">
-              <mat-label>{{
+            <div uiFormFieldDirective>
+              <label>{{
                 'components.preferences.dateFormat' | translate
-              }}</mat-label>
-              <mat-select formControlName="dateFormat">
-                <mat-option
+              }}</label>
+              <ui-select-menu formControlName="dateFormat">
+                <ui-select-option
                   *ngFor="let dateLang of dateFormats"
                   [value]="dateLang.value"
                 >
                   {{ dateLang.name }}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
+                </ui-select-option>
+              </ui-select-menu>
+            </div>
           </div>
-        </mat-tab>
-      </mat-tab-group>
+        </ui-tab>
+      </ui-tabs>
     </form>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>{{
-      'common.cancel' | translate
-    }}</safe-button>
-    <safe-button
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>{{ 'common.cancel' | translate }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       [disabled]="!preferencesForm.valid"
-      [mat-dialog-close]="preferencesForm"
+      [uiDialogClose]="preferencesForm"
       cdkFocusInitial
     >
       {{ 'common.save' | translate }}
-    </safe-button>
-  </mat-dialog-actions>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

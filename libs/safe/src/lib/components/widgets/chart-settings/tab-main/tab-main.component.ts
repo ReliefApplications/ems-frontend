@@ -10,7 +10,6 @@ import {
   GET_RESOURCE,
   GET_RESOURCES,
 } from '../graphql/queries';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
@@ -18,6 +17,7 @@ import { SafeAggregationService } from '../../../../services/aggregation/aggrega
 import { get } from 'lodash';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Dialog } from '@angular/cdk/dialog';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -44,19 +44,31 @@ export class TabMainComponent
 
   private reload = new Subject<boolean>();
   public reload$ = this.reload.asObservable();
+  /**
+   * Get the selected chart type object
+   *
+   * @returns chart type object
+   */
+  public get selectedChartType() {
+    return (
+      this.types.find(
+        (type) => type.name === this.formGroup.get('chart.type')?.value
+      ) ?? { name: '', icon: null }
+    );
+  }
 
   /**
    * Main tab of chart settings modal.
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param aggregationBuilder Shared aggregation builder service
    * @param queryBuilder Shared query builder service
    * @param aggregationService Shared aggregation service
    */
   constructor(
     private apollo: Apollo,
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private aggregationBuilder: AggregationBuilderService,
     private queryBuilder: QueryBuilderService,
     private aggregationService: SafeAggregationService
@@ -172,7 +184,7 @@ export class TabMainComponent
         resource: this.resource,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.formGroup.get('chart.aggregationId')?.setValue(value.id);
         this.aggregation = value;
@@ -196,7 +208,7 @@ export class TabMainComponent
         aggregation: this.aggregation,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value && this.aggregation) {
         this.aggregationService
           .editAggregation(this.aggregation, value, this.resource?.id)
