@@ -1,10 +1,10 @@
 /**
- * Returns the filters formatted to accomodate the searched string
+ * Returns the filters formatted to accommodate the searched string
  *
  * @param search Searched string
  * @param fields List of available fields
  * @param skippedFields List of fields to skip
- * @returns Formated filter object
+ * @returns Formatted filter object
  */
 export const searchFilters = (
   search: string,
@@ -77,7 +77,7 @@ export const searchFilters = (
       filters.push({
         field: field.name,
         operator: 'eq',
-        value: new Date(search),
+        value: search,
       });
     }
   });

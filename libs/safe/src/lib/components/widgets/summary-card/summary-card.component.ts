@@ -235,7 +235,7 @@ export class SafeSummaryCardComponent
   private handleSearch(search: string) {
     // Only need to fetch data if is dynamic and not an aggregation
     const needRefetch = !this.settings.card?.aggregation;
-    const skippedFields = ['id', 'incrementalId', 'form'];
+    const skippedFields = ['id', 'incrementalId'];
     this.pageInfo.pageIndex = 0;
     this.pageInfo.skip = 0;
 

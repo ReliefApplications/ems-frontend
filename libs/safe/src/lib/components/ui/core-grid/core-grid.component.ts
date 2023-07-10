@@ -203,7 +203,7 @@ export class SafeCoreGridComponent
     }
     let filter: CompositeFilterDescriptor | undefined;
     if (this.search) {
-      const skippedFields = ['id', 'incrementalId', 'form']; // Searching in form breaks the filter
+      const skippedFields = ['id', 'incrementalId'];
       filter = {
         logic: 'and',
         filters: [
