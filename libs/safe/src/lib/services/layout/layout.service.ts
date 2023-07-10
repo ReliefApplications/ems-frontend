@@ -10,6 +10,8 @@ import { BehaviorSubject, Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class SafeLayoutService {
+  public currentWidgetStyle!: any;
+
   /** Close right sidenav opened when navigating */
   public closeRightSidenav = true;
   /** Current right sidenav */
