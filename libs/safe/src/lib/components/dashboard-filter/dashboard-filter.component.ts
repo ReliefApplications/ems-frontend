@@ -33,6 +33,7 @@ import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { SafeFormService } from '../../services/form/form.service';
 import { SafeDatePipe } from '../../pipes/date/date.pipe';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
+import { IQuestionPlainData } from 'question';
 
 /**
  * Interface for quick filters
@@ -370,60 +371,65 @@ export class DashboardFilterComponent
    */
   private onValueChange() {
     const surveyData = this.survey.data;
-    Object.keys(surveyData).forEach((key) => {
-      if (this.isDate(surveyData[key])) {
-        surveyData[key] = {
-          start: surveyData[key][0],
-          end: surveyData[key][1],
-        };
-      }
-    });
     const displayValues = this.survey.getPlainData();
     this.contextService.filter.next(surveyData);
     this.ngZone.run(() => {
       this.quickFilters = displayValues
         .filter((question) => !!question.value)
-        .map((question: any) => {
-          let mappedQuestion;
+        .map((question: IQuestionPlainData) => {
           if (question.value instanceof Array && question.value.length > 2) {
-            mappedQuestion = {
+            return {
               label: question.title + ` (${question.value.length})`,
               tooltip: question.displayValue,
             };
           } else {
-            if (this.isDate(question.displayValue)) {
-              question.displayValue = question.displayValue.map((q: any) => {
-                const inputDate = new Date(q);
-                const formattedDate = new SafeDatePipe(
-                  this.dateTranslate
-                ).transform(inputDate, 'mediumDate');
-                return formattedDate;
-              });
-              question.displayValue = `${question.displayValue[0]} - ${question.displayValue[1]}`;
-            }
-            mappedQuestion = {
-              label: question.displayValue,
+            const formattedDate = this.formatDate(question);
+            return {
+              label: formattedDate || question.displayValue,
             };
           }
-          return mappedQuestion;
         });
     });
   }
 
   /**
-   * Verify if a survey data field is in date format
+   * If question is a date (date-range or text date), returns a readable date string
    *
-   * @param date survey data field
-   * @returns boolean
+   * @private
+   * @param {IQuestionPlainData} question the question to test
+   * @returns formatted date string or empty string if question isn't a date
    */
-  private isDate(date: any): boolean {
-    if (date instanceof Array) {
-      const datetimeRegex = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
-      if (datetimeRegex.test(date[0]) || datetimeRegex.test(date[1])) {
-        return true;
-      }
+  private formatDate(question: IQuestionPlainData): string {
+    // retrieve the type of the question
+    if (typeof question.name === 'number') return '';
+    const questionType = this.survey.getQuestionByName(question.name).getType();
+
+    // if question is a text, check if it's a date
+    if (questionType === 'text') {
+      const inputDate = new Date(question.value);
+      const formattedDate = new SafeDatePipe(this.dateTranslate).transform(
+        inputDate,
+        'mediumDate'
+      );
+      return formattedDate || '';
     }
-    return false;
+
+    // if question is a date range, return a readable date range
+    if (questionType === 'daterange') {
+      const startDate = new Date(question.value[0]);
+      const formattedStartDate = new SafeDatePipe(this.dateTranslate).transform(
+        startDate,
+        'mediumDate'
+      );
+      const endDate = new Date(question.value[1]);
+      const formattedEndDate = new SafeDatePipe(this.dateTranslate).transform(
+        endDate,
+        'mediumDate'
+      );
+      return `${formattedStartDate} - ${formattedEndDate}`;
+    }
+
+    return '';
   }
 
   /**
