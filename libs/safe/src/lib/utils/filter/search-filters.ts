@@ -6,7 +6,7 @@
  * @param skippedFields List of fields to skip
  * @returns Formated filter object
  */
-export const getSearchFilters = (
+export const searchFilters = (
   search: string,
   fields: any[],
   skippedFields: any[] = []
@@ -84,3 +84,5 @@ export const getSearchFilters = (
 
   return filters;
 };
+
+export default searchFilters;

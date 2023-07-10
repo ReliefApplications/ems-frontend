@@ -50,7 +50,7 @@ import { SafeApplicationService } from '../../../services/application/applicatio
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { firstValueFrom, Subject } from 'rxjs';
-import { getSearchFilters } from '../../../utils/filter/fillter-formater';
+import { searchFilters } from '../../../utils/filter/search-filters';
 import { SnackbarService } from '@oort-front/ui';
 import { ContextService } from '../../../services/context/context.service';
 
@@ -210,7 +210,7 @@ export class SafeCoreGridComponent
           { logic: 'and', filters: gridFilters },
           {
             logic: 'or',
-            filters: getSearchFilters(
+            filters: searchFilters(
               this.search,
               this.fields.map((field) => field.meta),
               skippedFields
