@@ -29,11 +29,7 @@ export class TabButtonsComponent implements OnInit {
   tabIds$ = new BehaviorSubject<string[]>([]);
 
   ngOnInit(): void {
-    this.recalculateUniqIdsForDragDrop();
-    this.buttons.controls.forEach((btn: any) => {
-      console.log(btn);
-      console.log(btn.invalid);
-    })  
+    this.recalculateUniqIdsForDragDrop(); 
   }
 
   /** @returns List of the floating buttons */

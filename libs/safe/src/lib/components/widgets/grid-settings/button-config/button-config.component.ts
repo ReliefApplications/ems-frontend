@@ -305,9 +305,7 @@ export class ButtonConfigComponent
           this.formGroup?.controls.selectAll.setValue(false);
           this.formGroup?.get('selectAll')?.updateValueAndValidity();
         }
-      });
-    
-    // this.formGroup.clearValidators();
+      });    
   }
 
   /** Set list of resources user can attach a record to */

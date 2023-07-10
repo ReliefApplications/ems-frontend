@@ -475,10 +475,13 @@ export class SafeGridWidgetComponent
     const update: any = {};
     for (const modification of modifications) {
       if (modification.field) {
+        if(modification.value === undefined || modification.value === ''){
+          modification.value = null;
+        }
         set(update, modification.field, modification.value);
       }
     }
-    const data = cleanRecord(update);
+    const data = update;
     return firstValueFrom(
       this.apollo.mutate<EditRecordsMutationResponse>({
         mutation: EDIT_RECORDS,
