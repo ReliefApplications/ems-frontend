@@ -175,6 +175,7 @@ export class FilterRowComponent
     // this.isFilterEditorOnView = false;
     if (get(field, 'filter.template', null)) {
       this.editor = field.filter.template;
+    } else {
       //   editorSet = true;
       // } else if (typeof value === 'string' && value.startsWith('{{filter.')) {
       //   if (this.isFilterEnable) {

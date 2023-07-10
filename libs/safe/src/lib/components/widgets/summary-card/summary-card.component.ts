@@ -201,7 +201,6 @@ export class SafeSummaryCardComponent
    * @returns new number of cols.
    */
   private setColsNumber(width: number): number {
-    console.log(width);
     if (width <= 480) {
       return 1;
     }

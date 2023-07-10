@@ -15,9 +15,10 @@
           </ui-select-option>
           <ng-container *ngIf="field.type.kind !== 'SCALAR'">
             <ui-select-option
-              *ngIf="field.type.kind !== 'SCALAR'"
+              *ngIf="field.type.kind !== 'SCALAR' && field.fields"
               [isGroup]="true"
             >
+              {{ field.name }}
               <ui-select-option
                 *ngFor="let subField of field.fields"
                 [value]="field.name + '.' + subField.name"
