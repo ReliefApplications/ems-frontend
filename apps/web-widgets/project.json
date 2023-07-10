@@ -71,6 +71,8 @@
           "fast-sha256",
           "leaflet",
           "esri-leaflet-vector",
+          "esri-leaflet-geocoder",
+          "esri-leaflet-heatmap",
           "leaflet.markercluster",
           "jsonpath"
         ]

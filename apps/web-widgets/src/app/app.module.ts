@@ -1,11 +1,4 @@
-import {
-  APP_INITIALIZER,
-  DoBootstrap,
-  ElementRef,
-  Injector,
-  NgModule,
-} from '@angular/core';
-import { createCustomElement } from '@angular/elements';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 // Http
 import {
@@ -14,7 +7,6 @@ import {
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
 import { AppComponent } from './app.component';
-import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
 import { FormWidgetModule } from './widgets/form-widget/form-widget.module';
 import { environment } from '../environments/environment';
 import { RouterModule } from '@angular/router';
@@ -27,17 +19,17 @@ import {
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MessageService } from '@progress/kendo-angular-l10n';
 import {
+  AppAbility,
   KendoTranslationService,
   SafeAuthInterceptorService,
 } from '@oort-front/safe';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
 import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
 import { Platform } from '@angular/cdk/platform';
 import { AppOverlayContainer } from './utils/overlay-container';
 // Apollo / GraphQL
 import { GraphQLModule } from './graphql.module';
-import { MAT_LEGACY_TOOLTIP_DEFAULT_OPTIONS as MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/legacy-tooltip';
+import { PureAbility } from '@casl/ability';
 
 /**
  * Initialize authentication in the platform.
@@ -105,19 +97,6 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       deps: [OAuthService],
     },
     {
-      provide: POPUP_CONTAINER,
-      useFactory: () =>
-        // return the container ElementRef, where the popup will be injected
-        ({ nativeElement: document.body } as ElementRef),
-    },
-    // Default parameters of material tooltip
-    {
-      provide: MAT_TOOLTIP_DEFAULT_OPTIONS,
-      useValue: {
-        showDelay: 500,
-      },
-    },
-    {
       provide: OverlayContainer,
       useFactory: provideOverlay,
       deps: [Platform],
@@ -135,29 +114,26 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       useClass: SafeAuthInterceptorService,
       multi: true,
     },
+    {
+      provide: AppAbility,
+      useValue: new AppAbility(),
+    },
+    {
+      provide: PureAbility,
+      useExisting: AppAbility,
+    },
   ],
+  bootstrap: [AppComponent],
 })
-export class AppModule implements DoBootstrap {
+export class AppModule {
   /**
    * Main project root module
    *
    * @param injector Angular injector
    * @param translate Angular translate service
    */
-  constructor(private injector: Injector, private translate: TranslateService) {
+  constructor(private translate: TranslateService) {
     this.translate.addLangs(environment.availableLanguages);
     this.translate.setDefaultLang(environment.availableLanguages[0]);
-  }
-
-  /**
-   * Bootstrap the project.
-   * Create the web elements.
-   */
-  ngDoBootstrap(): void {
-    // Form
-    const form = createCustomElement(FormWidgetComponent, {
-      injector: this.injector,
-    });
-    customElements.define('form-widget', form);
   }
 }

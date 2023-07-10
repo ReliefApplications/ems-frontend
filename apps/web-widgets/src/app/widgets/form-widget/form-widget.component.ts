@@ -4,12 +4,11 @@ import {
   Component,
   ComponentRef,
   Input,
-  OnInit,
   ViewChild,
   ViewContainerRef,
   ViewEncapsulation,
 } from '@angular/core';
-import { SafeFormService, SafeLayoutService } from '@oort-front/safe';
+import { SafeLayoutService } from '@oort-front/safe';
 import { AppOverlayContainer } from '../../utils/overlay-container';
 
 /** Form web widget component */
@@ -19,7 +18,7 @@ import { AppOverlayContainer } from '../../utils/overlay-container';
   styleUrls: ['./form-widget.component.scss'],
   encapsulation: ViewEncapsulation.ShadowDom,
 })
-export class FormWidgetComponent implements OnInit, AfterViewInit {
+export class FormWidgetComponent implements AfterViewInit {
   @Input() id = '';
 
   @ViewChild('rightSidenav', { read: ViewContainerRef })
@@ -36,11 +35,10 @@ export class FormWidgetComponent implements OnInit, AfterViewInit {
    */
   constructor(
     private layoutService: SafeLayoutService,
-    private overlayContainer: OverlayContainer,
-    private formService: SafeFormService
+    private overlayContainer: OverlayContainer // private formService: SafeFormService
   ) {}
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     this.layoutService.rightSidenav$.subscribe((view) => {
       if (view && this.rightSidenav) {
         // this is necessary to prevent have more than one history component at the same time.
@@ -62,9 +60,6 @@ export class FormWidgetComponent implements OnInit, AfterViewInit {
         }
       }
     });
-  }
-
-  ngAfterViewInit(): void {
     const test: AppOverlayContainer = this
       .overlayContainer as AppOverlayContainer;
     test.updateContainer('form-widget');
