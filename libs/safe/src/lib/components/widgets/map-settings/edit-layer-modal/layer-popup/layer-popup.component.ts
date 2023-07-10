@@ -13,7 +13,7 @@ import {
   PopupElementType,
 } from '../../../../../models/layer.model';
 import { createPopupElementForm } from '../../map-forms';
-import { Fields } from '../layer-fields/layer-fields.component';
+import { Fields } from '../../../../../models/layer.model';
 import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
 import { INLINE_EDITOR_CONFIG } from '../../../../../const/tinymce.const';
 import { SafeEditorService } from '../../../../../services/editor/editor.service';

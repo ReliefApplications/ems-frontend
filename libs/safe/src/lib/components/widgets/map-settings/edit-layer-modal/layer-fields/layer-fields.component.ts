@@ -1,22 +1,16 @@
 import {
   AfterViewInit,
   Component,
+  EventEmitter,
   Input,
+  Output,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
 import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
 import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
+import { Fields } from '../../../../../models/layer.model';
 
-/**
- * Fields interface
- */
-export interface Fields {
-  label: string;
-  name: string;
-  type: string;
-  [key: string]: string;
-}
 /**
  * Map layer fields settings component.
  */
@@ -34,6 +28,8 @@ export class LayerFieldsComponent implements AfterViewInit {
   mapContainerRef!: ViewContainerRef;
   @Input() destroyTab$!: Subject<boolean>;
 
+  @Output() updatedField: EventEmitter<Fields> = new EventEmitter();
+
   /**
    * Creates an instance of LayerFieldsComponent.
    *
@@ -45,13 +41,13 @@ export class LayerFieldsComponent implements AfterViewInit {
    * Save value of the input
    *
    * @param event event of the input.
-   * @param index index of the field.
+   * @param field field to update.
    */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  saveLabel(event: string, index: number): void {
-    // if (event && this.fields[index]) {
-    //   this.fields[index].label = event;
-    // }
+  saveLabel(event: string, field: Fields): void {
+    if (event) {
+      field.label = event;
+      this.updatedField.emit(field);
+    }
   }
 
   ngAfterViewInit(): void {
