@@ -425,9 +425,12 @@ export class DashboardComponent
    * @param e style event
    */
   onStyleTile(e: any): void {
-    this.layoutService.currentWidgetStyle = e;
     this.layoutService.setRightSidenav({
       component: CustomWidgetStyleComponent,
+      inputs: {
+        widgetComp: e,
+        save: (tile: any) => this.onEditTile(tile),
+      },
     });
     this.layoutService.closeRightSidenav = false;
   }

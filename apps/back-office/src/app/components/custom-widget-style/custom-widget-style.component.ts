@@ -1,14 +1,10 @@
-import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import { Component, Output, EventEmitter, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
-import {
-  SafeUnsubscribeComponent,
-  SafeLayoutService,
-  SafeConfirmService,
-} from '@oort-front/safe';
+import { SafeUnsubscribeComponent, SafeConfirmService } from '@oort-front/safe';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ButtonModule, SnackbarService, SpinnerModule } from '@oort-front/ui';
+import { ButtonModule, SpinnerModule } from '@oort-front/ui';
 import { SafeRestService } from 'libs/safe/src/lib/services/rest/rest.service';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 
@@ -36,7 +32,6 @@ export class CustomWidgetStyleComponent
   implements OnInit
 {
   public formControl = new FormControl(DEFAULT_STYLE);
-  @Output() style = new EventEmitter<string>();
   @Output() cancel = new EventEmitter();
   public editorOptions = {
     theme: 'vs-dark',
@@ -46,47 +41,51 @@ export class CustomWidgetStyleComponent
   private styleApplied: HTMLStyleElement;
   public loading = false;
 
+  private initialStyle = '';
+
+  @Input() widgetComp: any;
+  @Input() save!: (tile: any) => void;
+
   /**
    * Creates an instance of CustomStyleComponent, form and updates.
    *
-   * @param layoutService Shared layout service
-   * @param snackBar Shared snackbar service
    * @param restService Shared rest service
    * @param translate Angular translate service
    * @param confirmService Shared confirmation service
    */
   constructor(
-    private layoutService: SafeLayoutService,
     private restService: SafeRestService,
-    private snackBar: SnackbarService,
     private translate: TranslateService,
     private confirmService: SafeConfirmService
   ) {
     super();
+
     this.styleApplied = document.createElement('style');
     // Updates the style when the value changes
     this.formControl.valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value: any) => {
-        const scss = `#${this.layoutService.currentWidgetStyle.id} {
+        const scss = `#${this.widgetComp.domId} {
         ${value}
       }`;
 
         this.restService
           .post('style/scss-to-css', { scss }, { responseType: 'text' })
           .subscribe((css) => {
+            this.widgetComp.widget.settings.widgetDisplay.style = value;
             this.styleApplied.innerText = css;
             document
               .getElementsByTagName('head')[0]
               .appendChild(this.styleApplied);
-            this.style.emit(value);
           });
       });
   }
 
   ngOnInit(): void {
-    if (this.layoutService.currentWidgetStyle.style) {
-      this.formControl.setValue(this.layoutService.currentWidgetStyle.style);
+    const style = this.widgetComp.widget.settings.widgetDisplay.style;
+    if (style) {
+      this.formControl.setValue(style);
+      this.initialStyle = style;
       this.formControl.markAsPristine();
     }
   }
@@ -109,9 +108,7 @@ export class CustomWidgetStyleComponent
         .pipe(takeUntil(this.destroy$))
         .subscribe((confirm: any) => {
           if (confirm) {
-            this.formControl.setValue(
-              this.layoutService.currentWidgetStyle.style
-            );
+            this.formControl.setValue(this.initialStyle);
             this.cancel.emit(true);
           }
         });
@@ -121,30 +118,14 @@ export class CustomWidgetStyleComponent
   /** Save widget custom css styling */
   async onSave(): Promise<void> {
     this.loading = true;
-    // const res = await firstValueFrom(
-    //   this.apollo.mutate<UploadApplicationStyleMutationResponse>({
-    //     mutation: UPLOAD_APPLICATION_STYLE,
-    //     variables: {
-    //       file,
-    //       application: this.applicationId,
-    //     },
-    //     context: {
-    //       useMultipart: true,
-    //     },
-    //   })
-    // );
-    // if (res.errors) {
-    //   this.snackBar.openSnackBar(res.errors[0].message, { error: true });
-    //   return;
-    // } else {
-    //   this.snackBar.openSnackBar(
-    //     this.translate.instant('common.notifications.objectUpdated', {
-    //       value: this.translate.instant('components.application.customStyling'),
-    //       type: '',
-    //     })
-    //   );
-    //   this.formControl.markAsPristine();
-    // }
+    this.save({
+      type: 'data',
+      id: this.widgetComp.widget.id,
+      options: this.widgetComp.widget.settings,
+    });
+
+    this.formControl.markAsPristine();
+    this.cancel.emit(true);
     this.loading = false;
   }
 

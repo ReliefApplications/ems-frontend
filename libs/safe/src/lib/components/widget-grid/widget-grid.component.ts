@@ -155,10 +155,12 @@ export class SafeWidgetGridComponent
    * @param e widget to style.
    */
   onStyleWidget(e: any): void {
-    const widgetComp = this.widgetComponents.find((v) => v.widget.id == e.id);
+    const widgetComp = this.widgetComponents.find(
+      (v) => v.widget.id == e.widget.id
+    );
     this.style.emit({
-      id: widgetComp?.id,
-      style: widgetComp?.widget.settings.widgetDisplay.style,
+      domId: widgetComp?.id,
+      widget: e.widget,
     });
   }
 

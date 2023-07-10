@@ -41,7 +41,6 @@ export class SafeFloatingOptionsComponent extends SafeUnsubscribeComponent {
     private translate: TranslateService
   ) {
     super();
-    console.log(this.widget);
   }
 
   /**
@@ -71,7 +70,7 @@ export class SafeFloatingOptionsComponent extends SafeUnsubscribeComponent {
       this.expand.emit({ id: this.widget.id });
     }
     if (action === 'Style') {
-      this.style.emit({ id: this.widget.id });
+      this.style.emit({ widget: this.widget });
     }
     if (action === 'Delete') {
       const dialogRef = this.confirmService.openConfirmModal({
