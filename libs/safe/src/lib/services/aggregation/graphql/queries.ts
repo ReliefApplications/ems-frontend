@@ -107,4 +107,5 @@ export const GET_REFERENCE_DATA_AGGREGATION_DATA = gql`
 /** Interface for get aggregation data query */
 export interface GetAggregationDataQueryResponse {
   recordsAggregation: any | { items: any[]; totalCount: number };
+  referenceDataAggregation: any | { items: any[]; totalCount: number };
 }

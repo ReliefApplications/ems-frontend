@@ -108,6 +108,7 @@ export class TabMainComponent
         if (value) {
           this.getResource(value);
           this.formGroup.get('chart.aggregationId')?.setValue(null);
+          this.formGroup.get('referenceData')?.setValue(null);
         }
       });
     if (this.formGroup.value.resource) {
@@ -120,6 +121,7 @@ export class TabMainComponent
         if (value) {
           this.getReferenceData(value);
           this.formGroup.get('chart.aggregationId')?.setValue(null);
+          this.formGroup.get('resource')?.setValue(null);
         }
       });
     if (this.formGroup.value.referenceData) {

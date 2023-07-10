@@ -121,12 +121,11 @@ export class SummaryCardGeneralComponent
   }
 
   ngOnInit(): void {
-    console.log(this.selectedResource, this.selectedReferenceData);
     // Set origin form control
-    if (this.selectedResource) {
+    if (this.tileForm.get('card.resource')?.value) {
       this.origin = new FormControl('resource');
     } else {
-      if (this.selectedReferenceData) {
+      if (this.tileForm.get('card.referenceData')?.value) {
         this.origin = new FormControl('referenceData');
       } else {
         this.origin = new FormControl();

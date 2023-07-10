@@ -292,8 +292,16 @@ export class SafeSummaryCardComponent
         style: e.meta.style,
       }));
     } else if (this.settings.card?.aggregation) {
-      if (!res.data?.recordsAggregation?.items) return;
-      newCards = res.data.recordsAggregation.items.map((x: any) => ({
+      if (
+        !res.data?.recordsAggregation?.items &&
+        !res.data?.referenceDataAggregation?.items
+      )
+        return;
+      const aggregationItems = res.data.recordsAggregation
+        ? res.data.recordsAggregation.items
+        : res.data.referenceDataAggregation.items;
+
+      newCards = aggregationItems.map((x: any) => ({
         ...this.settings.card,
         cardAggregationData: x,
       }));
@@ -314,8 +322,12 @@ export class SafeSummaryCardComponent
         behavior: 'smooth',
       });
     }
+    const aggregationType = res.data.recordsAggregation
+      ? 'recordsAggregation'
+      : 'referenceDataAggregation';
+
     this.pageInfo.length = get(
-      res.data[layoutQueryName ?? 'recordsAggregation'],
+      res.data[layoutQueryName ?? aggregationType],
       'totalCount',
       0
     );

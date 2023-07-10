@@ -27,7 +27,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   /** Sets the content of the card */
   private async setContent() {
     this.fields = this.card.metadata || [];
-    if (!this.card.resource) return;
+    if (!this.card.resource && !this.card.referenceData) return;
     if (this.card.aggregation) {
       this.fieldsValue = this.card.cardAggregationData;
       this.setContentFromAggregation();

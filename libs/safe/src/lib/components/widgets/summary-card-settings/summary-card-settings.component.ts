@@ -174,6 +174,9 @@ export class SafeSummaryCardSettingsComponent
           searchableControl?.disable();
         } else this.tileForm?.get('widgetDisplay.searchable')?.enable();
       });
+    this.tileForm?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.change.emit(this.tileForm);
+    });
   }
   /** @returns a FormControl for the searchable field */
   get searchableControl(): FormControl {
@@ -279,12 +282,12 @@ export class SafeSummaryCardSettingsComponent
           form.get('card.referenceData')?.patchValue(null);
           form.get('card.layout')?.patchValue(null);
           form.get('card.aggregation')?.patchValue(null);
-          this.selectedAggregation = null;
+          this.selectedReferenceData = null;
           this.selectedResource = null;
           this.selectedLayout = null;
           this.selectedAggregation = null;
         } else {
-          this.selectedAggregation = res.data.referenceData;
+          this.selectedReferenceData = res.data.referenceData;
 
           if (aggregationID) {
             this.selectedAggregation =
@@ -312,8 +315,12 @@ export class SafeSummaryCardSettingsComponent
         this.selectedAggregation.id || ''
       )
       ?.subscribe((res) => {
-        if (res.data?.recordsAggregation) {
-          this.customAggregation = res.data.recordsAggregation;
+        if (
+          res.data?.recordsAggregation ||
+          res.data?.referenceDataAggregation
+        ) {
+          this.customAggregation =
+            res.data.recordsAggregation ?? res.data.referenceDataAggregation;
           // @TODO: Figure out fields' types from aggregation
           this.fields = this.customAggregation.items[0]
             ? Object.keys(this.customAggregation.items[0]).map((f) => ({

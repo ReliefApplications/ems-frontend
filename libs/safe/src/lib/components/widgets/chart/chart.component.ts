@@ -214,12 +214,12 @@ export class SafeChartComponent
     this.dataQuery
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ errors, data, loading }: any) => {
-        console.log(data);
         if (errors) {
           this.loading = false;
           this.hasError = true;
           this.series.next([]);
         } else {
+          console.log(data, 'data');
           this.hasError = false;
           const today = new Date();
           this.lastUpdate =
@@ -237,8 +237,11 @@ export class SafeChartComponent
               'polar',
             ].includes(this.settings.chart.type)
           ) {
+            const aggregationType = data.recordsAggregation
+              ? 'recordsAggregation'
+              : 'referenceDataAggregation';
             const aggregationData = JSON.parse(
-              JSON.stringify(data.recordsAggregation)
+              JSON.stringify(data[aggregationType])
             );
             // If series
             if (get(this.settings, 'chart.mapping.series', null)) {

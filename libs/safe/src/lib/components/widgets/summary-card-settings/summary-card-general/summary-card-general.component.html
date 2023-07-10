@@ -12,7 +12,7 @@
       <ui-select-option value="resource">{{
         'common.resource.one' | translate
       }}</ui-select-option>
-      <ui-select-option value="refData">{{
+      <ui-select-option value="referenceData">{{
         'common.referenceData.one' | translate
       }}</ui-select-option>
     </ui-select-menu>
@@ -47,7 +47,7 @@
     </div>
 
     <!-- Reference data selection  -->
-    <div uiFormFieldDirective class="flex-1" *ngIf="origin.value === 'refData'">
+    <div uiFormFieldDirective class="flex-1" *ngIf="origin.value === 'referenceData'">
       <label>{{ 'common.referenceData.one' | translate }}</label>
       <ui-graphql-select
         valueField="id"

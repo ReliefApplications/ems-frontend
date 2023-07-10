@@ -196,13 +196,13 @@ export interface GetReferenceDatasQueryResponse {
 
 /** Get ref data gql query definition */
 export const GET_REFERENCE_DATA = gql`
-  query GetReferenceData($id: ID!, $aggregationIds: [ID]) {
+  query GetReferenceData($id: ID!, $aggregation: [ID]) {
     referenceData(id: $id) {
       id
       name
       type
       fields
-      aggregations(ids: $aggregationIds) {
+      aggregations(ids: $aggregation) {
         edges {
           node {
             id
