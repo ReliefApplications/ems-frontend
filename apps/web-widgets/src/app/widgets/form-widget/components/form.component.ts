@@ -4,7 +4,7 @@ import { SafeFormComponent, Form } from '@oort-front/safe/widgets';
 import {
   GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
-} from './graphql/queries';
+} from '../graphql/queries';
 
 /** Form component */
 @Component({

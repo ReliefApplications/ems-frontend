@@ -10,19 +10,20 @@ import {
   ViewContainerRef,
   ViewEncapsulation,
 } from '@angular/core';
-import { SafeFormService, SafeLayoutService } from '@oort-front/safe';
+import { SafeLayoutService } from '@oort-front/safe/widgets';
 import { AppOverlayContainer } from '../../utils/overlay-container';
 import { SnackbarService } from '@oort-front/ui';
 
 /** Form web widget component */
 @Component({
-  selector: 'app-form-widget',
+  selector: 'form-widget',
   templateUrl: './form-widget.component.html',
   styleUrls: ['./form-widget.component.scss'],
   encapsulation: ViewEncapsulation.ShadowDom,
 })
 export class FormWidgetComponent implements AfterViewInit {
   @Input() id = '626b96227ad4dd0c96f3b8a1';
+  // @Input() id = '642061d1b7109549fa3035e8';
 
   @ViewChild('rightSidenav', { read: ViewContainerRef })
   rightSidenav?: ViewContainerRef;
@@ -46,7 +47,7 @@ export class FormWidgetComponent implements AfterViewInit {
     this.snackBarService.shadowDom = el.nativeElement.shadowRoot;
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     this.layoutService.rightSidenav$.subscribe((view) => {
       if (view && this.rightSidenav) {
         // this is necessary to prevent have more than one history component at the same time.
@@ -68,9 +69,7 @@ export class FormWidgetComponent implements AfterViewInit {
         }
       }
     });
-  }
 
-  ngAfterViewInit(): void {
     const test: AppOverlayContainer = this
       .overlayContainer as AppOverlayContainer;
     test.updateContainer('form-widget');

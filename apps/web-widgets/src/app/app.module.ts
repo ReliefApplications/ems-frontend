@@ -1,11 +1,10 @@
 import {
   APP_INITIALIZER,
+  ApplicationRef,
   DoBootstrap,
-  ElementRef,
   Injector,
   NgModule,
 } from '@angular/core';
-import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
 // Http
 import {
@@ -43,7 +42,6 @@ import { PureAbility } from '@casl/ability';
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 import { createCustomElement } from '@angular/elements';
 import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
-import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
 
 /**
  * Initialize authentication in the platform.
@@ -118,6 +116,7 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     BrowserAnimationsModule,
     HttpClientModule,
     OAuthModule.forRoot(),
+    DialogCdkModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -191,33 +190,15 @@ export class AppModule implements DoBootstrap {
    * @param injector Angular injector
    * @param formService SafeFormService
    */
-  constructor(
-    private injector: Injector,
-    private translate: TranslateService,
-    private formService: SafeFormService
-  ) {
+  constructor(private injector: Injector, private translate: TranslateService) {
     this.translate.addLangs(environment.availableLanguages);
     this.translate.setDefaultLang(environment.availableLanguages[0]);
   }
 
-  ngDoBootstrap(): void {
+  ngDoBootstrap(appRef: ApplicationRef): void {
     const form = createCustomElement(FormWidgetComponent, {
       injector: this.injector,
     });
     customElements.define('form-widget', form);
-
-    const fonts = [
-      'https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap',
-      'https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined',
-      'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0',
-    ];
-    // Make sure that the needed fonts are always available wherever the web component is placed
-    fonts.forEach((font) => {
-      const link = document.createElement('link');
-      link.href = font;
-      link.rel = 'stylesheet';
-      // Add them at the beginning of the head element in order to not interfere with any font of the same type
-      document.head.prepend(link);
-    });
   }
 }
