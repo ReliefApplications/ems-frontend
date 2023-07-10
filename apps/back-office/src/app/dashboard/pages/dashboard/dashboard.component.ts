@@ -381,11 +381,13 @@ export class DashboardComponent
         case 'display': {
           this.tiles = this.tiles.map((x) => {
             if (x.id === e.id) {
-              x = {
-                ...x,
-                defaultCols: options.cols,
-                defaultRows: options.rows,
-              };
+              // x = {
+              //   ...x,
+              //   defaultCols: options.cols,
+              //   defaultRows: options.rows,
+              // }; // this creates a new object, thus triggering the change detection and re-rendering the widget
+              x.defaultCols = options.cols;
+              x.defaultRows = options.rows;
             }
             return x;
           });
