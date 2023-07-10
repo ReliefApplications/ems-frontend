@@ -8,18 +8,18 @@ import {
   ViewContainerRef,
   ViewEncapsulation,
 } from '@angular/core';
-import { SafeLayoutService } from '@oort-front/safe';
+import { SafeLayoutService } from '@oort-front/safe/widgets';
 import { AppOverlayContainer } from '../../utils/overlay-container';
 
 /** Form web widget component */
 @Component({
-  selector: 'app-form-widget',
+  selector: 'form-widget',
   templateUrl: './form-widget.component.html',
   styleUrls: ['./form-widget.component.scss'],
   encapsulation: ViewEncapsulation.ShadowDom,
 })
 export class FormWidgetComponent implements AfterViewInit {
-  @Input() id = '';
+  @Input() id = '620236aa030f3a5e5db78319';
 
   @ViewChild('rightSidenav', { read: ViewContainerRef })
   rightSidenav?: ViewContainerRef;
@@ -35,7 +35,7 @@ export class FormWidgetComponent implements AfterViewInit {
    */
   constructor(
     private layoutService: SafeLayoutService,
-    private overlayContainer: OverlayContainer // private formService: SafeFormService
+    private overlayContainer: OverlayContainer
   ) {}
 
   ngAfterViewInit(): void {

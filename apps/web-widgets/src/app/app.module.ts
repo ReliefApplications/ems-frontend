@@ -1,4 +1,10 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import {
+  APP_INITIALIZER,
+  ApplicationRef,
+  DoBootstrap,
+  Injector,
+  NgModule,
+} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 // Http
 import {
@@ -30,6 +36,10 @@ import { AppOverlayContainer } from './utils/overlay-container';
 // Apollo / GraphQL
 import { GraphQLModule } from './graphql.module';
 import { PureAbility } from '@casl/ability';
+// Config
+import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
+import { createCustomElement } from '@angular/elements';
+import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
 
 /**
  * Initialize authentication in the platform.
@@ -74,6 +84,7 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     HttpClientModule,
     RouterModule.forRoot([]),
     OAuthModule.forRoot(),
+    DialogCdkModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -123,17 +134,23 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       useExisting: AppAbility,
     },
   ],
-  bootstrap: [AppComponent],
 })
-export class AppModule {
+export class AppModule implements DoBootstrap {
   /**
    * Main project root module
    *
    * @param injector Angular injector
    * @param translate Angular translate service
    */
-  constructor(private translate: TranslateService) {
+  constructor(private injector: Injector, private translate: TranslateService) {
     this.translate.addLangs(environment.availableLanguages);
     this.translate.setDefaultLang(environment.availableLanguages[0]);
+  }
+
+  ngDoBootstrap(appRef: ApplicationRef): void {
+    const form = createCustomElement(FormWidgetComponent, {
+      injector: this.injector,
+    });
+    customElements.define('form-widget', form);
   }
 }

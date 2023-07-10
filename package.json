@@ -6,7 +6,9 @@
     "check-i18n": "node .scripts/check-i18n",
     "semantic-release": "semantic-release",
     "prepare": "husky install",
-    "lint": "npx nx run-many --target=lint --projects=safe,front-office,back-office,ui --verbose"
+    "lint": "npx nx run-many --target=lint --projects=safe,front-office,back-office,ui --verbose",
+    "bundle:widgets": "node .scripts/build-widgets.js",
+    "widgets:local": "set NODE_OPTIONS=--max_old_space_size=4096 && npx nx run web-widgets:serve"
   },
   "private": true,
   "dependencies": {
@@ -69,6 +71,7 @@
     "chart.js": "^4.2.1",
     "chartjs-plugin-datalabels": "^2.2.0",
     "color": "^4.2.3",
+    "concat": "^1.0.3",
     "cron-parser": "^4.7.0",
     "cron-validator": "^1.3.1",
     "cronstrue": "^2.20.0",
@@ -153,7 +156,6 @@
     "@types/ws": "^7.4.1",
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
-    "concat": "^1.0.3",
     "cypress": "^12.2.0",
     "esbuild": "^0.17.5",
     "eslint": "~8.15.0",
@@ -163,7 +165,6 @@
     "eslint-plugin-prefer-arrow-functions": "^3.1.4",
     "eslint-plugin-prettier": "^4.2.1",
     "eslint-plugin-storybook": "^0.6.11",
-    "fs-extra": "^11.1.1",
     "html-webpack-plugin": "^5.5.0",
     "husky": "^8.0.3",
     "jest": "28.1.1",
