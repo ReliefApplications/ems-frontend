@@ -50,6 +50,7 @@ import { SafeApplicationService } from '../../../services/application/applicatio
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { firstValueFrom, Subject } from 'rxjs';
+import { searchFilters } from '../../../utils/filter/search-filters';
 import { SnackbarService } from '@oort-front/ui';
 import { ContextService } from '../../../services/context/context.service';
 
@@ -202,19 +203,19 @@ export class SafeCoreGridComponent
     }
     let filter: CompositeFilterDescriptor | undefined;
     if (this.search) {
-      const textFields = this.fields.filter(
-        (x) => x.meta && x.meta.type === 'text'
-      );
-      const searchFilters = textFields.map((x) => ({
-        field: x.name,
-        operator: 'contains',
-        value: this.search,
-      }));
+      const skippedFields = ['id', 'incrementalId'];
       filter = {
         logic: 'and',
         filters: [
           { logic: 'and', filters: gridFilters },
-          { logic: 'or', filters: searchFilters },
+          {
+            logic: 'or',
+            filters: searchFilters(
+              this.search,
+              this.fields.map((field) => field.meta),
+              skippedFields
+            ),
+          },
         ],
       };
     } else {

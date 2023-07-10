@@ -37,6 +37,7 @@ export type CardT = NonNullable<SummaryCardFormT['value']['card']> &
 import { Layout } from '../../../models/layout.model';
 import { FormControl } from '@angular/forms';
 import { clone, isNaN } from 'lodash';
+import { searchFilters } from '../../../utils/filter/search-filters';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { ContextService } from '../../../services/context/context.service';
@@ -257,34 +258,18 @@ export class SafeSummaryCardComponent
       this.pageInfo.length = this.sortedCachedCards.length;
     } else {
       this.loading = true;
-      const filters: {
-        field: string;
-        operator: string;
-        value: string | number;
-      }[] = [];
-      this.fields.forEach((field) => {
-        if (skippedFields.includes(field.name)) return;
-        if (field?.type === 'text')
-          filters.push({
-            field: field.name,
-            operator: 'contains',
-            value: search,
-          });
-        if (field?.type === 'numeric' && !isNaN(parseFloat(search)))
-          filters.push({
-            field: field.name,
-            operator: 'eq',
-            value: parseFloat(search),
-          });
-      });
-      const searchFilter = {
-        logic: 'or',
-        filters,
-      };
-
       this.filters = {
         logic: 'and',
-        filters: [searchFilter, this.layout?.query.filter],
+        filters: [
+          {
+            logic: 'and',
+            filters: [this.layout?.query.filter],
+          },
+          {
+            logic: 'or',
+            filters: searchFilters(search, this.fields, skippedFields),
+          },
+        ],
       };
 
       this.dataQuery
