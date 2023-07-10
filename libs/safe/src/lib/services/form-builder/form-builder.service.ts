@@ -5,7 +5,7 @@ import { SafeReferenceDataService } from '../reference-data/reference-data.servi
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
-import { Record } from '../../models/record.model';
+import { Record as RecordModel } from '../../models/record.model';
 import { EditRecordMutationResponse, EDIT_RECORD } from './graphql/mutations';
 import { Metadata } from '../../models/metadata.model';
 import { SafeRestService } from '../rest/rest.service';
@@ -53,7 +53,7 @@ export class SafeFormBuilderService {
     structure: string,
     pages: BehaviorSubject<any[]>,
     fields: Metadata[] = [],
-    record?: Record
+    record?: RecordModel
   ): Survey.SurveyModel {
     const survey = new Survey.Model(structure);
     this.formHelpersService.addUserVariables(survey);
@@ -145,7 +145,7 @@ export class SafeFormBuilderService {
     survey: Survey.SurveyModel,
     pages: BehaviorSubject<any[]>,
     selectedPageIndex: BehaviorSubject<number>,
-    temporaryFilesStorage: any
+    temporaryFilesStorage: Record<string, Array<File>>
   ) {
     survey.onClearFiles.add((_, options: any) => this.onClearFiles(options));
     survey.onUploadFiles.add((_, options: any) =>

@@ -19,7 +19,7 @@ import {
   EDIT_RECORD,
 } from './graphql/mutations';
 import { Form } from '../../models/form.model';
-import { Record } from '../../models/record.model';
+import { Record as RecordModel } from '../../models/record.model';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeAuthService } from '../../services/auth/auth.service';
@@ -45,7 +45,7 @@ export class SafeFormComponent
   implements OnInit, OnDestroy, AfterViewInit
 {
   @Input() form!: Form;
-  @Input() record?: Record;
+  @Input() record?: RecordModel;
   @Output() save: EventEmitter<{
     completed: boolean;
     hideNewRecord?: boolean;
@@ -54,7 +54,7 @@ export class SafeFormComponent
   // === SURVEYJS ===
   public survey!: Survey.SurveyModel;
   public surveyActive = true;
-  private temporaryFilesStorage: any = {};
+  public temporaryFilesStorage: Record<string, Array<File>> = {};
 
   @ViewChild('formContainer') formContainer!: ElementRef;
 
@@ -213,7 +213,9 @@ export class SafeFormComponent
    */
   public reset(): void {
     this.survey.clear();
-    this.temporaryFilesStorage = {};
+    this.formHelpersService.clearTemporaryFilesStorage(
+      this.temporaryFilesStorage
+    );
     this.survey.showCompletedPage = false;
     this.save.emit({ completed: false });
     this.survey.render();
@@ -347,7 +349,9 @@ export class SafeFormComponent
     } else {
       this.survey.clear();
     }
-    this.temporaryFilesStorage = {};
+    this.formHelpersService.clearTemporaryFilesStorage(
+      this.temporaryFilesStorage
+    );
     localStorage.removeItem(this.storageId);
     this.formHelpersService.cleanCachedRecords(this.survey);
     this.isFromCacheData = false;
