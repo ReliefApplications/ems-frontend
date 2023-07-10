@@ -1,5 +1,5 @@
 <!-- Content -->
-<ui-sidenav-container class="sidenav-container w-full">
+<ui-sidenav-container class="sidenav-container w-100">
   <!-- Right sidenav -->
   <div
     uiSidenavDirective
@@ -10,7 +10,11 @@
     #rightNav="uiSidenavDirective"
   >
     <ng-template #rightSidenav></ng-template>
-  </mat-sidenav>
-</mat-sidenav-container>
+  </div>
+
+  <ng-container ngProjectAs="content">
+    <app-form [id]="id"></app-form>
+  </ng-container>
+</ui-sidenav-container>
 
 <div id="angular-app-root" cdkOverlayOrigin></div>

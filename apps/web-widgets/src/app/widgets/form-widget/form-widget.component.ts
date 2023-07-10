@@ -5,7 +5,6 @@ import {
   ComponentRef,
   ElementRef,
   Input,
-  OnInit,
   ViewChild,
   ViewContainerRef,
   ViewEncapsulation,
@@ -40,12 +39,8 @@ export class FormWidgetComponent implements AfterViewInit {
    */
   constructor(
     private layoutService: SafeLayoutService,
-    private overlayContainer: OverlayContainer,
-    private snackBarService: SnackbarService,
-    el: ElementRef
-  ) {
-    this.snackBarService.shadowDom = el.nativeElement.shadowRoot;
-  }
+    private overlayContainer: OverlayContainer // private formService: SafeFormService
+  ) {}
 
   ngAfterViewInit(): void {
     this.layoutService.rightSidenav$.subscribe((view) => {
@@ -69,7 +64,6 @@ export class FormWidgetComponent implements AfterViewInit {
         }
       }
     });
-
     const test: AppOverlayContainer = this
       .overlayContainer as AppOverlayContainer;
     test.updateContainer('form-widget');

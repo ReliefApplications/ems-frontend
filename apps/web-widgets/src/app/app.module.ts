@@ -1,10 +1,4 @@
-import {
-  APP_INITIALIZER,
-  ApplicationRef,
-  DoBootstrap,
-  Injector,
-  NgModule,
-} from '@angular/core';
+import { APP_INITIALIZER, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 // Http
 import {
@@ -12,6 +6,7 @@ import {
   HttpClientModule,
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
+import { AppComponent } from './app.component';
 import { FormWidgetModule } from './widgets/form-widget/form-widget.module';
 import { environment } from '../environments/environment';
 import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
@@ -31,17 +26,12 @@ import {
   SafeFormService,
 } from '@oort-front/safe';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
 import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
 import { Platform } from '@angular/cdk/platform';
 import { AppOverlayContainer } from './utils/overlay-container';
 // Apollo / GraphQL
 import { GraphQLModule } from './graphql.module';
 import { PureAbility } from '@casl/ability';
-// Config
-import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
-import { createCustomElement } from '@angular/elements';
-import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
 
 /**
  * Initialize authentication in the platform.
@@ -142,18 +132,6 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       deps: [OAuthService],
     },
     {
-      provide: POPUP_CONTAINER,
-      useFactory: () =>
-        // return the container ElementRef, where the popup will be injected
-        ({ nativeElement: document.body } as ElementRef),
-    },
-    {
-      provide: POPUP_CONTAINER,
-      useFactory: () =>
-        // return the container ElementRef, where the popup will be injected
-        ({ nativeElement: document.body } as ElementRef),
-    },
-    {
       provide: OverlayContainer,
       useFactory: provideOverlay,
       deps: [Platform],
@@ -179,26 +157,18 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       provide: PureAbility,
       useExisting: AppAbility,
     },
-    PopupService,
-    ResizeBatchService,
   ],
+  bootstrap: [AppComponent],
 })
-export class AppModule implements DoBootstrap {
+export class AppModule {
   /**
    * Main project root module
    *
    * @param injector Angular injector
    * @param formService SafeFormService
    */
-  constructor(private injector: Injector, private translate: TranslateService) {
+  constructor(private translate: TranslateService) {
     this.translate.addLangs(environment.availableLanguages);
     this.translate.setDefaultLang(environment.availableLanguages[0]);
-  }
-
-  ngDoBootstrap(appRef: ApplicationRef): void {
-    const form = createCustomElement(FormWidgetComponent, {
-      injector: this.injector,
-    });
-    customElements.define('form-widget', form);
   }
 }

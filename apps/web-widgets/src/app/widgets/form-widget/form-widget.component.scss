@@ -400,3 +400,9 @@ body {
     --secondary-200: #{$secondary_200};
   }
 }
+.sidenav-container {
+  flex: 1;
+  display: flex;
+  position: unset;
+  overflow-y: auto;
+}

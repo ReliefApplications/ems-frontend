@@ -1,8 +1,8 @@
 import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormWidgetComponent } from './form-widget.component';
+import { FormModule } from '../../components/form/form.module';
 import { SidenavContainerModule } from '@oort-front/ui';
-import { FormModule } from './components/form.module';
 
 /** Form Web widget module. */
 @NgModule({
