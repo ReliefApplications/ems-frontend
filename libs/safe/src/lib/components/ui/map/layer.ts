@@ -2,7 +2,7 @@
 import * as L from 'leaflet';
 import 'leaflet.heat';
 import 'leaflet.markercluster';
-
+import 'leaflet.vectorgrid';
 import { Feature, Geometry } from 'geojson';
 import { get, isNil, set } from 'lodash';
 import {
@@ -729,19 +729,26 @@ export class Layer implements LayerModel {
                 (this.layer as any).id = this.id;
                 return this.layer;
               default:
-                const layer = L.geoJSON(data, geoJSONopts);
+                const layer = L.vectorGrid.slicer(data);
+                // L.geoJSON(data, geoJSONopts);
 
                 layer.onAdd = (map: L.Map) => {
-                  const l = L.GeoJSON.prototype.onAdd.call(layer, map);
+                  const l = L.VectorGrid.Slicer.prototype.onAdd.call(
+                    layer,
+                    map
+                  );
                   this.onAddLayer(map, layer);
                   return l;
                 };
                 layer.onRemove = (map: L.Map) => {
-                  const l = L.GeoJSON.prototype.onRemove.call(layer, map);
+                  const l = L.VectorGrid.Slicer.prototype.onRemove.call(
+                    layer,
+                    map
+                  );
                   this.onRemoveLayer(map, layer);
                   return l;
                 };
-                this.layer = layer;
+                this.layer = layer as L.Layer;
                 (this.layer as any).origin = 'app-builder';
                 (this.layer as any).id = this.id;
                 return this.layer;
