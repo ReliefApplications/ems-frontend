@@ -7,9 +7,9 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Fields } from '../layer-fields/layer-fields.component';
 import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
 import { GeometryType } from '../../../../ui/map/interfaces/layer-settings.type';
+import { Fields } from '../../../../../models/layer.model';
 
 /** Available renderer types for point */
 const POINT_RENDERER_TYPES = ['simple', 'heatmap', 'uniqueValue'];
