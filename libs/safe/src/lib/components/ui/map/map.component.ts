@@ -244,13 +244,13 @@ export class MapComponent
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => {
-        this.drawMap(false);
+        this.filterLayers();
       });
 
     this.contextService.isFilterEnabled$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => {
-        this.drawMap(false);
+        this.filterLayers();
       });
   }
 
@@ -399,11 +399,7 @@ export class MapComponent
 
     if (
       this.layerIds.length !== layers?.length ||
-      difference(layers, this.layerIds).length ||
-      !isEqual(
-        this.appliedDashboardFilters,
-        this.contextService.filter.getValue()
-      )
+      difference(layers, this.layerIds).length
     ) {
       this.map.eachLayer((layer) => {
         this.map.removeLayer(layer);
@@ -903,5 +899,54 @@ export class MapComponent
   }> {
     this.arcGisWebMap = webmap;
     return this.arcgisService.loadWebMap(this.map, this.arcGisWebMap);
+  }
+
+  /** Set the new layers based on the filter value */
+  private async filterLayers() {
+    const filters = this.contextService.filter.getValue();
+    if (isEqual(filters, this.appliedDashboardFilters)) return;
+    this.appliedDashboardFilters = filters;
+    const { layers: layersToGet } = this.extractSettings();
+
+    // get which layers are currently visible
+    const oldLeafletLayers = await Promise.all(
+      this.layers.map(async (l) => await l.getLayer())
+    );
+    const visibleLayers = oldLeafletLayers.map((l) => this.map.hasLayer(l));
+
+    // remove zoom listeners from old layers
+    this.layers.forEach((l, i) => {
+      l.onRemoveLayer(this.map, oldLeafletLayers[i]);
+    });
+
+    // remove feature layers only from the map
+    this.map.eachLayer((layer) => {
+      if ((layer as any).feature) layer.remove();
+    });
+
+    // get new layers, with filters applied
+    this.layers = [];
+    const l = await this.getLayers(layersToGet ?? []);
+    this.overlaysTree = [l.layers];
+
+    const newLeafletLayers = await Promise.all(
+      this.layers.map(async (l) => await l.getLayer())
+    );
+
+    // reflect old visibility before creating new layer controls
+    this.layers.forEach((l, i) => {
+      // it's safe to use the index here, since the new layer array will always be the same length as the old one
+      // even if there's no features in the layer, it will still be there
+      if (!visibleLayers[i]) {
+        l.visibility = false;
+        newLeafletLayers[i].removeFrom(this.map);
+      }
+    });
+
+    // remove current layer controls
+    this.layerControlButtons.remove();
+
+    // create new layer controls, from newly created layers
+    this.setLayersControl(flatten(this.basemapTree), l.layers);
   }
 }
