@@ -187,7 +187,7 @@ export class EditLayerModalComponent
       }
     }
     // If datasource changes, update fields form control
-    this.fields.pipe(takeUntil(this.destroy$)).subscribe((fields: any,) => {
+    this.fields.pipe(takeUntil(this.destroy$)).subscribe((fields: any) => {
       fields.forEach((field: Fields) => this.updateFormField(field));
     });
   }
@@ -466,9 +466,12 @@ export class EditLayerModalComponent
    * need to be update nad not initialized
    */
   updateFormField(field: Fields, initializing = true): void {
-    const fieldsInfo = (this.form.get('popupInfo')?.get('fieldsInfo') as FormArray).controls;
-    const control = fieldsInfo.find((fieldControl: any) =>
-      (fieldControl as FormArray)?.get('name')?.value === field.name
+    const fieldsInfo = (
+      this.form.get('popupInfo')?.get('fieldsInfo') as FormArray
+    ).controls;
+    const control = fieldsInfo.find(
+      (fieldControl: any) =>
+        (fieldControl as FormArray)?.get('name')?.value === field.name
     );
     if (!control) {
       const newControl = this.formBuilder.group({
@@ -480,6 +483,7 @@ export class EditLayerModalComponent
     } else {
       if (!initializing) {
         control.get('label')?.setValue(get(field, 'label', ''));
+        this.fields.next(this.form.get('popupInfo')?.get('fieldsInfo')?.value);
       } else {
         field.label = control.get('label')?.value ?? '';
       }

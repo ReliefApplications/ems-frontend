@@ -206,9 +206,9 @@ export class SafeMapPopupService {
 
     // Templates use for the property name and the property value to be displayed
     const propertyNameTemplate = (propertyName: string) =>
-      `<p class="break-all m-0 capitalize text-gray-400">${propertyName}</p>`;
+      `<p class="break-all !m-0 capitalize text-gray-400">${propertyName}</p>`;
     const propertyValueTemplate = (property: any) =>
-      `<p class="m-0 break-all">{{${property}}}</p>`;
+      `<p class="!m-0 break-all">{{${property}}}</p>`;
     // Template for the image
     const imageTemplate = (img: string) =>
       `<img src="{{${img}}}" class="flex-1" />`;
@@ -233,10 +233,15 @@ export class SafeMapPopupService {
         // Extract properties and check that fields were selected in the popup info
         for (const property in feature.properties) {
           if (property && element.fields?.includes(property)) {
+            const field = popupInfo.fieldsInfo?.find(
+              (field) => field.name === property
+            );
             if (!property.toLowerCase().includes('img')) {
-              contentGridTemplate = `${contentGridTemplate} ${propertyNameTemplate(
-                property
-              )} ${propertyValueTemplate(property)}`;
+              if (field) {
+                contentGridTemplate = `${contentGridTemplate} ${propertyNameTemplate(
+                  field?.label || property
+                )} ${propertyValueTemplate(property)}`;
+              }
             } else {
               imageElement = imageTemplate(property);
             }

@@ -7,7 +7,6 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
 import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
 import { Fields } from '../../../../../models/layer.model';
 
@@ -31,13 +30,6 @@ export class LayerFieldsComponent implements AfterViewInit {
   @Output() updatedField: EventEmitter<Fields> = new EventEmitter();
 
   /**
-   * Creates an instance of LayerFieldsComponent.
-   *
-   * @param mapLayersService Shared map layer Service.
-   */
-  constructor(private mapLayersService: SafeMapLayersService) {}
-
-  /**
    * Save value of the input
    *
    * @param event event of the input.
@@ -45,8 +37,7 @@ export class LayerFieldsComponent implements AfterViewInit {
    */
   saveLabel(event: string, field: Fields): void {
     if (event) {
-      field.label = event;
-      this.updatedField.emit(field);
+      this.updatedField.emit({ ...field, label: event });
     }
   }
 
