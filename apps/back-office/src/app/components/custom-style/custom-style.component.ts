@@ -50,8 +50,7 @@ export class CustomStyleComponent
     language: 'scss',
     fixedOverflowWidgets: true,
   };
-  private styleApplied: HTMLStyleElement;
-  private styleAppliedCss: HTMLStyleElement;
+  private rawCustomStyle!: string;
   private savedStyle = '';
   public loading = false;
 
@@ -74,8 +73,7 @@ export class CustomStyleComponent
     private restService: SafeRestService
   ) {
     super();
-    this.styleApplied = document.createElement('style');
-    this.styleAppliedCss = document.createElement('style');
+    // this.customStyle = document.createElement('style');
 
     // Updates the style when the value changes
     this.formControl.valueChanges
@@ -86,26 +84,33 @@ export class CustomStyleComponent
           .post('style/scss-to-css', { scss }, { responseType: 'text' })
           .subscribe({
             next: (css) => {
-              this.styleAppliedCss.innerText = css;
-              document
-                .getElementsByTagName('body')[0]
-                .appendChild(this.styleAppliedCss);
-              this.style.emit(css);
+              console.log(this.applicationService.customStyle);
+              if (this.applicationService.customStyle) {
+                this.applicationService.customStyle.innerText = css;
+              }
+              // document
+              //   .getElementsByTagName('body')[0]
+              //   .appendChild(this.customStyle);
+              // this.style.emit(css);
             },
           });
         this.applicationService.customStyleEdited = true;
-        this.styleApplied.innerText = value;
+        this.rawCustomStyle = value;
       });
   }
 
   ngOnInit(): void {
-    if (this.applicationService.customStyle) {
-      this.savedStyle = this.applicationService.customStyle.innerText;
-      this.styleApplied = this.applicationService.customStyle;
-      this.formControl.setValue(this.styleApplied.innerText);
+    if (this.applicationService.rawCustomStyle) {
+      this.savedStyle = this.applicationService.customStyle?.innerText || '';
+      this.rawCustomStyle = this.applicationService.rawCustomStyle;
+      this.formControl.setValue(this.rawCustomStyle, { emitEvent: false });
       this.formControl.markAsPristine();
     } else {
-      this.applicationService.customStyle = this.styleApplied;
+      const styleElement = document.createElement('style');
+      styleElement.innerText = '';
+      document.getElementsByTagName('head')[0].appendChild(styleElement);
+      this.applicationService.rawCustomStyle = this.rawCustomStyle;
+      this.applicationService.customStyle = styleElement;
     }
 
     this.applicationService.application$
@@ -136,7 +141,11 @@ export class CustomStyleComponent
         .subscribe((confirm: any) => {
           if (confirm) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.applicationService.customStyle!.innerText = this.savedStyle;
+
+            if (this.applicationService.customStyle) {
+              this.applicationService.customStyleEdited = false;
+              this.applicationService.customStyle.innerText = this.savedStyle;
+            }
             this.cancel.emit(true);
           }
         });
@@ -179,7 +188,8 @@ export class CustomStyleComponent
       );
       this.formControl.markAsPristine();
       this.applicationService.customStyleEdited = false;
-      this.applicationService.customStyle = this.styleApplied;
+      this.applicationService.rawCustomStyle = this.rawCustomStyle;
+      this.savedStyle = this.applicationService.customStyle?.innerText || '';
     }
     this.loading = false;
   }
@@ -200,6 +210,17 @@ export class CustomStyleComponent
             this.applicationService.customStyleEdited = false;
           });
       }, 100);
+    }
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (
+      this.applicationService.customStyleEdited &&
+      this.applicationService.customStyle
+    ) {
+      this.applicationService.customStyleEdited = false;
+      this.applicationService.customStyle.innerText = this.savedStyle;
     }
   }
 }

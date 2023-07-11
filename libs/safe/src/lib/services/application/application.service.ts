@@ -117,8 +117,8 @@ export class SafeApplicationService {
   private environment: any;
 
   /** Application custom style */
+  public rawCustomStyle?: string;
   public customStyle?: HTMLStyleElement;
-  public customStyleCss?: HTMLStyleElement;
   public customStyleEdited = false;
 
   /** @returns Path to download application users */
@@ -270,10 +270,10 @@ export class SafeApplicationService {
    * Leaves application and unsubscribe to application changes.
    */
   leaveApplication(): void {
-    if (this.customStyle && this.customStyleCss) {
-      document.getElementsByTagName('body')[0].removeChild(this.customStyleCss);
+    if (this.customStyle) {
+      document.getElementsByTagName('head')[0].removeChild(this.customStyle);
+      this.rawCustomStyle = undefined;
       this.customStyle = undefined;
-      this.customStyleCss = undefined;
       this.layoutService.closeRightSidenav = true;
     }
     const application = this.application.getValue();
@@ -1915,26 +1915,25 @@ export class SafeApplicationService {
         if (res.type === 'application/octet-stream') {
           const styleFromFile = await res.text();
           const scss = styleFromFile as string;
-          this.customStyleCss = document.createElement('style');
+          this.customStyle = document.createElement('style');
           this.restService
             .post('style/scss-to-css', { scss }, { responseType: 'text' })
             .subscribe({
               next: (css) => {
-                if (this.customStyleCss) {
-                  this.customStyleCss.innerText = css;
+                if (this.customStyle) {
+                  this.customStyle.innerText = css;
                   document
-                    .getElementsByTagName('body')[0]
-                    .appendChild(this.customStyleCss);
+                    .getElementsByTagName('head')[0]
+                    .appendChild(this.customStyle);
                 }
               },
               error: () => {
-                if (this.customStyleCss) {
-                  this.customStyleCss.innerText = styleFromFile;
+                if (this.customStyle) {
+                  this.customStyle.innerText = styleFromFile;
                 }
               },
             });
-          this.customStyle = document.createElement('style');
-          this.customStyle.innerText = styleFromFile;
+          this.rawCustomStyle = styleFromFile;
         }
       })
       .catch((err) => {
