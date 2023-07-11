@@ -12,7 +12,7 @@
           [isIcon]="true"
           icon="check"
           (click)="onSave()"
-          [disabled]="formControl.pristine"
+          [disabled]="formControl.pristine || loading"
         >
         </ui-button>
         <ui-button [isIcon]="true" icon="close" (click)="onClose()">
@@ -20,9 +20,8 @@
       </div>
     </div>
   </div>
-  <ui-spinner class="my-2" *ngIf="loading"></ui-spinner>
   <!-- Style editor -->
-  <div class="grow overflow-y-auto" *ngIf="!loading">
+  <div class="grow overflow-y-auto">
     <ngx-monaco-editor
       class="h-full"
       (onInit)="initEditor($event)"

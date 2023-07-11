@@ -4,9 +4,9 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { SafeUnsubscribeComponent, SafeConfirmService } from '@oort-front/safe';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ButtonModule, SpinnerModule } from '@oort-front/ui';
+import { ButtonModule } from '@oort-front/ui';
 import { SafeRestService } from 'libs/safe/src/lib/services/rest/rest.service';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';
@@ -22,7 +22,6 @@ const DEFAULT_STYLE = '';
     MonacoEditorModule,
     TranslateModule,
     ButtonModule,
-    SpinnerModule,
   ],
   templateUrl: './custom-widget-style.component.html',
   styleUrls: ['./custom-widget-style.component.scss'],
@@ -38,7 +37,7 @@ export class CustomWidgetStyleComponent
     language: 'scss',
     fixedOverflowWidgets: true,
   };
-  private styleApplied: HTMLStyleElement;
+  private styleApplied!: HTMLStyleElement;
   public loading = false;
 
   private initialStyle = '';
@@ -60,15 +59,18 @@ export class CustomWidgetStyleComponent
   ) {
     super();
 
-    this.styleApplied = document.createElement('style');
+    // Avoids saving until the style is updated
+    this.formControl.valueChanges.subscribe(() => {
+      this.loading = true;
+    });
+
     // Updates the style when the value changes
     this.formControl.valueChanges
-      .pipe(debounceTime(1000), distinctUntilChanged())
+      .pipe(debounceTime(1000))
       .subscribe((value: any) => {
         const scss = `#${this.widgetComp.domId} {
         ${value}
       }`;
-
         this.restService
           .post('style/scss-to-css', { scss }, { responseType: 'text' })
           .subscribe((css) => {
@@ -77,11 +79,19 @@ export class CustomWidgetStyleComponent
             document
               .getElementsByTagName('head')[0]
               .appendChild(this.styleApplied);
+            this.loading = false;
           });
       });
   }
 
   ngOnInit(): void {
+    // Avoids style duplication for the same element
+    const widgetStyle = Array.from(document.querySelectorAll('style')).filter(
+      (style) => style.innerHTML.includes(this.widgetComp.domId)
+    )[0];
+    if (widgetStyle) this.styleApplied = widgetStyle;
+    else this.styleApplied = document.createElement('style');
+
     const style = this.widgetComp.widget.settings.widgetDisplay.style;
     if (style) {
       this.formControl.setValue(style);
@@ -117,7 +127,6 @@ export class CustomWidgetStyleComponent
 
   /** Save widget custom css styling */
   async onSave(): Promise<void> {
-    this.loading = true;
     this.save({
       type: 'data',
       id: this.widgetComp.widget.id,
@@ -126,7 +135,6 @@ export class CustomWidgetStyleComponent
 
     this.formControl.markAsPristine();
     this.cancel.emit(true);
-    this.loading = false;
   }
 
   /**
