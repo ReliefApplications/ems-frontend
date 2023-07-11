@@ -906,7 +906,7 @@ export class MapComponent
     const filters = this.contextService.filter.getValue();
     if (isEqual(filters, this.appliedDashboardFilters)) return;
     this.appliedDashboardFilters = filters;
-    const { layers: layersToGet } = this.extractSettings();
+    const { layers: layersToGet, controls } = this.extractSettings();
 
     // get which layers are currently visible
     const oldLeafletLayers = await Promise.all(
@@ -943,10 +943,12 @@ export class MapComponent
       }
     });
 
-    // remove current layer controls
-    this.layerControlButtons.remove();
+    if (controls.layer) {
+      // remove current layer controls
+      this.layerControlButtons.remove();
 
-    // create new layer controls, from newly created layers
-    this.setLayersControl(flatten(this.basemapTree), l.layers);
+      // create new layer controls, from newly created layers
+      this.setLayersControl(flatten(this.basemapTree), l.layers);
+    }
   }
 }
