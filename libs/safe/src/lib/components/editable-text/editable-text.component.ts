@@ -43,6 +43,7 @@ export class SafeEditableTextComponent implements OnInit {
         this.formControl.setValue(this.text);
       }
       this.formControl.disable();
+      this.formActiveEvent.next(this.formControl.enabled);
     });
   }
 

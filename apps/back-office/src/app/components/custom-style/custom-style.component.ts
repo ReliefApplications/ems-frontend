@@ -1,4 +1,10 @@
-import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import {
+  Component,
+  Output,
+  EventEmitter,
+  OnInit,
+  OnDestroy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
@@ -7,6 +13,7 @@ import {
   SafeApplicationService,
   SafeUnsubscribeComponent,
   SafeConfirmService,
+  SafeRestService,
 } from '@oort-front/safe';
 import { firstValueFrom } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
@@ -15,6 +22,7 @@ import { UploadApplicationStyleMutationResponse } from './graphql/mutations';
 import { UPLOAD_APPLICATION_STYLE } from './graphql/mutations';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ButtonModule, SnackbarService, SpinnerModule } from '@oort-front/ui';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';
@@ -37,7 +45,7 @@ const DEFAULT_STYLE = '';
 })
 export class CustomStyleComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   public formControl = new FormControl(DEFAULT_STYLE);
   public applicationId?: string;
@@ -48,7 +56,7 @@ export class CustomStyleComponent
     language: 'scss',
     fixedOverflowWidgets: true,
   };
-  private styleApplied: HTMLStyleElement;
+  private rawCustomStyle!: string;
   private savedStyle = '';
   public loading = false;
 
@@ -60,33 +68,49 @@ export class CustomStyleComponent
    * @param apollo Apollo service
    * @param translate Angular translate service
    * @param confirmService Shared confirmation service
+   * @param restService Shared rest service
    */
   constructor(
     private applicationService: SafeApplicationService,
     private snackBar: SnackbarService,
     private apollo: Apollo,
     private translate: TranslateService,
-    private confirmService: SafeConfirmService
+    private confirmService: SafeConfirmService,
+    private restService: SafeRestService
   ) {
     super();
-    this.styleApplied = document.createElement('style');
     // Updates the style when the value changes
-    this.formControl.valueChanges.subscribe((value: any) => {
-      this.applicationService.customStyleEdited = true;
-      this.styleApplied.innerText = value;
-      document.getElementsByTagName('body')[0].appendChild(this.styleApplied);
-      this.style.emit(value);
-    });
+    this.formControl.valueChanges
+      .pipe(debounceTime(1000), distinctUntilChanged())
+      .subscribe((value: any) => {
+        const scss = value as string;
+        this.restService
+          .post('style/scss-to-css', { scss }, { responseType: 'text' })
+          .subscribe({
+            next: (css) => {
+              console.log(this.applicationService.customStyle);
+              if (this.applicationService.customStyle) {
+                this.applicationService.customStyle.innerText = css;
+              }
+            },
+          });
+        this.applicationService.customStyleEdited = true;
+        this.rawCustomStyle = value;
+      });
   }
 
   ngOnInit(): void {
-    if (this.applicationService.customStyle) {
-      this.savedStyle = this.applicationService.customStyle.innerText;
-      this.styleApplied = this.applicationService.customStyle;
-      this.formControl.setValue(this.styleApplied.innerText);
+    if (this.applicationService.rawCustomStyle) {
+      this.savedStyle = this.applicationService.customStyle?.innerText || '';
+      this.rawCustomStyle = this.applicationService.rawCustomStyle;
+      this.formControl.setValue(this.rawCustomStyle, { emitEvent: false });
       this.formControl.markAsPristine();
     } else {
-      this.applicationService.customStyle = this.styleApplied;
+      const styleElement = document.createElement('style');
+      styleElement.innerText = '';
+      document.getElementsByTagName('head')[0].appendChild(styleElement);
+      this.applicationService.rawCustomStyle = this.rawCustomStyle;
+      this.applicationService.customStyle = styleElement;
     }
 
     this.applicationService.application$
@@ -117,7 +141,11 @@ export class CustomStyleComponent
         .subscribe((confirm: any) => {
           if (confirm) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.applicationService.customStyle!.innerText = this.savedStyle;
+
+            if (this.applicationService.customStyle) {
+              this.applicationService.customStyleEdited = false;
+              this.applicationService.customStyle.innerText = this.savedStyle;
+            }
             this.cancel.emit(true);
           }
         });
@@ -127,6 +155,7 @@ export class CustomStyleComponent
   /** Save application custom css styling */
   async onSave(): Promise<void> {
     this.loading = true;
+
     const file = new File(
       [this.formControl.value as string],
       'customStyle.scss',
@@ -159,7 +188,8 @@ export class CustomStyleComponent
       );
       this.formControl.markAsPristine();
       this.applicationService.customStyleEdited = false;
-      this.applicationService.customStyle = this.styleApplied;
+      this.applicationService.rawCustomStyle = this.rawCustomStyle;
+      this.savedStyle = this.applicationService.customStyle?.innerText || '';
     }
     this.loading = false;
   }
@@ -180,6 +210,17 @@ export class CustomStyleComponent
             this.applicationService.customStyleEdited = false;
           });
       }, 100);
+    }
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (
+      this.applicationService.customStyleEdited &&
+      this.applicationService.customStyle
+    ) {
+      this.applicationService.customStyleEdited = false;
+      this.applicationService.customStyle.innerText = this.savedStyle;
     }
   }
 }
