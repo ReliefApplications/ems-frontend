@@ -432,7 +432,7 @@ export class DashboardComponent
         save: (tile: any) => this.onEditTile(tile),
       },
     });
-    this.layoutService.closeRightSidenav = false;
+    this.layoutService.closeRightSidenav = true;
   }
 
   /**
