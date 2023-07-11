@@ -1916,23 +1916,27 @@ export class SafeApplicationService {
           const styleFromFile = await res.text();
           const scss = styleFromFile as string;
           this.customStyle = document.createElement('style');
-          this.restService
-            .post('style/scss-to-css', { scss }, { responseType: 'text' })
-            .subscribe({
-              next: (css) => {
-                if (this.customStyle) {
-                  this.customStyle.innerText = css;
-                  document
-                    .getElementsByTagName('head')[0]
-                    .appendChild(this.customStyle);
-                }
-              },
-              error: () => {
-                if (this.customStyle) {
-                  this.customStyle.innerText = styleFromFile;
-                }
-              },
+          await firstValueFrom(
+            this.restService.post(
+              'style/scss-to-css',
+              { scss },
+              { responseType: 'text' }
+            )
+          )
+            .then((css) => {
+              if (this.customStyle) {
+                this.customStyle.innerText = css;
+                document
+                  .getElementsByTagName('head')[0]
+                  .appendChild(this.customStyle);
+              }
+            })
+            .catch(() => {
+              if (this.customStyle) {
+                this.customStyle.innerText = styleFromFile;
+              }
             });
+
           this.rawCustomStyle = styleFromFile;
         }
       })
