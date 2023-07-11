@@ -8,7 +8,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { Fields } from '../../layer-fields/layer-fields.component';
+import { Fields } from '../../../../../../models/layer.model';
 import { Observable, takeUntil } from 'rxjs';
 import { SafeEditorControlComponent } from '../../../../../editor-control/editor-control.component';
 import { INLINE_EDITOR_CONFIG } from '../../../../../../const/tinymce.const';
