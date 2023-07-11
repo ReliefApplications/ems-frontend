@@ -1,4 +1,10 @@
-import { Component, Output, EventEmitter, OnInit } from '@angular/core';
+import {
+  Component,
+  Output,
+  EventEmitter,
+  OnInit,
+  OnDestroy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
@@ -39,7 +45,7 @@ const DEFAULT_STYLE = '';
 })
 export class CustomStyleComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   public formControl = new FormControl(DEFAULT_STYLE);
   public applicationId?: string;
@@ -73,8 +79,6 @@ export class CustomStyleComponent
     private restService: SafeRestService
   ) {
     super();
-    // this.customStyle = document.createElement('style');
-
     // Updates the style when the value changes
     this.formControl.valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
@@ -88,10 +92,6 @@ export class CustomStyleComponent
               if (this.applicationService.customStyle) {
                 this.applicationService.customStyle.innerText = css;
               }
-              // document
-              //   .getElementsByTagName('body')[0]
-              //   .appendChild(this.customStyle);
-              // this.style.emit(css);
             },
           });
         this.applicationService.customStyleEdited = true;
