@@ -42,7 +42,15 @@ import {
   TreeObject,
 } from '../../../services/map/arcgis.service';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
-import { flatten, isNil, omitBy, get, difference, isEqual } from 'lodash';
+import {
+  flatten,
+  isNil,
+  omitBy,
+  get,
+  difference,
+  isEqual,
+  flatMapDeep,
+} from 'lodash';
 import { debounceTime, takeUntil } from 'rxjs';
 import { SafeMapPopupService } from './map-popup/map-popup.service';
 import { Platform } from '@angular/cdk/platform';
@@ -244,13 +252,13 @@ export class MapComponent
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => {
-        this.drawMap(false);
+        this.filterLayers();
       });
 
     this.contextService.isFilterEnabled$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => {
-        this.drawMap(false);
+        this.filterLayers();
       });
   }
 
@@ -399,11 +407,7 @@ export class MapComponent
 
     if (
       this.layerIds.length !== layers?.length ||
-      difference(layers, this.layerIds).length ||
-      !isEqual(
-        this.appliedDashboardFilters,
-        this.contextService.filter.getValue()
-      )
+      difference(layers, this.layerIds).length
     ) {
       this.map.eachLayer((layer) => {
         this.map.removeLayer(layer);
@@ -903,5 +907,62 @@ export class MapComponent
   }> {
     this.arcGisWebMap = webmap;
     return this.arcgisService.loadWebMap(this.map, this.arcGisWebMap);
+  }
+
+  /** Set the new layers based on the filter value */
+  private async filterLayers() {
+    document.getElementById('layer-control-button-close')?.click();
+    const filters = this.contextService.filter.getValue();
+    if (isEqual(filters, this.appliedDashboardFilters)) return;
+    this.appliedDashboardFilters = filters;
+    const { layers: layersToGet, controls } = this.extractSettings();
+
+    const shouldDisplayStatuses: Record<string, boolean> = {};
+
+    const flattenOverlaysTree = (tree: L.Control.Layers.TreeObject): any => {
+      return [tree, flatMapDeep(tree.children, flattenOverlaysTree)];
+    };
+
+    // remove zoom listeners from old layers
+    flatMapDeep(this.overlaysTree.flat(), flattenOverlaysTree)
+      .filter((x) => x.layer && (x.layer as any).origin === 'app-builder')
+      .forEach((x) => {
+        // Store visibility status of the layer
+        const shouldDisplay = (x.layer as any).shouldDisplay;
+        if (!isNil(shouldDisplay)) {
+          shouldDisplayStatuses[(x.layer as any).id] = shouldDisplay;
+        }
+        (x.layer as any).deleted = true;
+        (x.layer as L.Layer).remove();
+      });
+
+    // get new layers, with filters applied
+    this.layers = [];
+    const l = await this.getLayers(layersToGet ?? []);
+    this.overlaysTree = [l.layers];
+
+    flatMapDeep(this.overlaysTree.flat(), flattenOverlaysTree).forEach((x) => {
+      if (x.layer) {
+        const id = (x.layer as any).id;
+        if (!isNil(shouldDisplayStatuses[id])) {
+          (x.layer as any).shouldDisplay = shouldDisplayStatuses[id];
+          if (!shouldDisplayStatuses[id]) {
+            x.layer.remove();
+          }
+        }
+      }
+    });
+
+    if (controls.layer) {
+      // remove current layer controls
+      this.layerControlButtons.remove();
+      this.layerControlButtons = null;
+
+      // create new layer controls, from newly created layers
+      this.setLayersControl(
+        flatten(this.basemapTree),
+        flatten(this.overlaysTree)
+      );
+    }
   }
 }
