@@ -161,6 +161,7 @@ export class EditLayerModalComponent
       .subscribe((value) => {
         this.setIsDatasourceValid(value);
       });
+    console.log(this.data);
     if (this.data.mapComponent) {
       const encapsulatedSettings =
         this.data.mapComponent.mapSettingsWithoutLayers;
@@ -172,11 +173,16 @@ export class EditLayerModalComponent
       this.currentZoom = this.data.mapComponent.map.getZoom();
       this.setUpLayer();
     }
+
+    console.log(this.data.mapComponent.mapLayersService.getLayers());
     this.setUpEditLayerListeners();
     this.getResource();
+
   }
 
   ngAfterViewInit(): void {
+    console.log(this.data);
+    this.data.mapComponent.deleteLayers(this.data.layer);
     this.data.editingLayer.next(true);
     const currentContainerRef = this.data.currentMapContainerRef.getValue();
     if (currentContainerRef) {
@@ -190,6 +196,8 @@ export class EditLayerModalComponent
     this.fields.pipe(takeUntil(this.destroy$)).subscribe((fields: any) => {
       fields.forEach((field: Fields) => this.updateFormField(field));
     });
+    console.log(this.data.mapComponent.mapLayersService.getLayers());
+
   }
 
   /**
@@ -241,6 +249,7 @@ export class EditLayerModalComponent
    * Set default layer for editor
    */
   private setUpLayer() {
+    console.log(this.data);
     if (!this.data.mapComponent) return;
     this.mapLayersService
       .createLayerFromDefinition(
@@ -250,6 +259,8 @@ export class EditLayerModalComponent
       )
       .then((layer) => {
         if (layer) {
+          console.log("abc123");
+          console.log(layer);
           this._layer = layer;
           layer.getLayer().then((l) => {
             this.currentLayer = l;
@@ -266,15 +277,20 @@ export class EditLayerModalComponent
    * @param options.delete delete existing layer
    */
   private updateMapLayer(options: { delete: boolean } = { delete: false }) {
+    console.log("aaaaaaaa");
+    console.log(options);
+    console.log("\n");
     if (this.data.mapComponent) {
-      this.data.mapComponent.addOrDeleteLayer = {
-        layerData: this.overlays,
-        isDelete: options.delete,
-      };
+        this.data.mapComponent.addOrDeleteLayer = {
+          layerData: this.overlays,
+          isDelete: options.delete,
+        };
       if (options.delete) {
         this.currentLayer = undefined as unknown as L.Layer;
       }
     }
+
+    console.log(this.currentLayer);
   }
 
   /**

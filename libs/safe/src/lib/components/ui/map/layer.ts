@@ -808,6 +808,13 @@ export class Layer implements LayerModel {
    * @param layer Leaflet layer
    */
   public onZoom(map: L.Map, zoom: L.LeafletEvent, layer: L.Layer) {
+    console.log("\nzzz");
+    console.log(map);
+    console.log(layer);
+    console.log((layer as any).deleted);
+    console.log((layer as any).layers);
+    console.log("zzz\n");
+
     const currZoom = zoom.target.getZoom();
     const maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
     const minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
@@ -817,7 +824,8 @@ export class Layer implements LayerModel {
         map.removeLayer(layer);
       } else {
         if (this.visibility && !(layer as any).deleted) {
-          map.addLayer(layer);
+          console.log("ABCDEF");
+          // map.addLayer(layer);
         } else {
           map.removeLayer(layer);
         }

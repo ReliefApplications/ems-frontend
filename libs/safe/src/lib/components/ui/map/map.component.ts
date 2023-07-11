@@ -674,7 +674,7 @@ export class MapComponent
    *
    * @param layers Layers to delete
    */
-  private deleteLayers(layers: any) {
+  public deleteLayers(layers: any) {
     const deleteLayer = (layer: any) => {
       if (layer.children) {
         for (const child of layer.children) {
