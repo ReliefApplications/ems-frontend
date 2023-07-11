@@ -522,6 +522,8 @@ export class Layer implements LayerModel {
           return l;
         };
         this.layer = layer;
+        (this.layer as any).origin = 'app-builder';
+        (this.layer as any).id = this.id;
         return this.layer;
 
       default:
@@ -646,6 +648,8 @@ export class Layer implements LayerModel {
               return l;
             };
             this.layer = layer;
+            (this.layer as any).origin = 'app-builder';
+            (this.layer as any).id = this.id;
             return this.layer;
           default:
             switch (get(this.layerDefinition, 'featureReduction.type')) {
@@ -721,6 +725,8 @@ export class Layer implements LayerModel {
                 };
                 clusterGroup.addLayer(clusterLayer);
                 this.layer = clusterGroup;
+                (this.layer as any).origin = 'app-builder';
+                (this.layer as any).id = this.id;
                 return this.layer;
               default:
                 const layer = L.geoJSON(data, geoJSONopts);
@@ -736,6 +742,8 @@ export class Layer implements LayerModel {
                   return l;
                 };
                 this.layer = layer;
+                (this.layer as any).origin = 'app-builder';
+                (this.layer as any).id = this.id;
                 return this.layer;
             }
         }
@@ -808,7 +816,7 @@ export class Layer implements LayerModel {
       if (currZoom > maxZoom || currZoom < minZoom) {
         map.removeLayer(layer);
       } else {
-        if (this.visibility) {
+        if (this.visibility && !(layer as any).deleted) {
           map.addLayer(layer);
         } else {
           map.removeLayer(layer);
@@ -829,7 +837,7 @@ export class Layer implements LayerModel {
     if (legendControl) {
       legendControl.removeLayer(layer);
     }
-    if (!isNil((layer as any).shouldDisplay)) {
+    if (!isNil((layer as any).shouldDisplay) || (layer as any).deleted) {
       // Ensure that we do not subscribe multiple times to zoom event
       if (this.zoomListener) {
         map.off('zoomend', this.zoomListener);

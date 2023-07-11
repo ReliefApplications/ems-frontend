@@ -42,7 +42,15 @@ import {
   TreeObject,
 } from '../../../services/map/arcgis.service';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
-import { flatten, isNil, omitBy, get, difference, isEqual } from 'lodash';
+import {
+  flatten,
+  isNil,
+  omitBy,
+  get,
+  difference,
+  isEqual,
+  flatMapDeep,
+} from 'lodash';
 import { debounceTime, takeUntil } from 'rxjs';
 import { SafeMapPopupService } from './map-popup/map-popup.service';
 import { Platform } from '@angular/cdk/platform';
@@ -903,52 +911,58 @@ export class MapComponent
 
   /** Set the new layers based on the filter value */
   private async filterLayers() {
+    document.getElementById('layer-control-button-close')?.click();
     const filters = this.contextService.filter.getValue();
     if (isEqual(filters, this.appliedDashboardFilters)) return;
     this.appliedDashboardFilters = filters;
     const { layers: layersToGet, controls } = this.extractSettings();
 
-    // get which layers are currently visible
-    const oldLeafletLayers = await Promise.all(
-      this.layers.map(async (l) => await l.getLayer())
-    );
-    const visibleLayers = oldLeafletLayers.map((l) => this.map.hasLayer(l));
+    const shouldDisplayStatuses: Record<string, boolean> = {};
+
+    const flattenOverlaysTree = (tree: L.Control.Layers.TreeObject): any => {
+      return [tree, flatMapDeep(tree.children, flattenOverlaysTree)];
+    };
 
     // remove zoom listeners from old layers
-    this.layers.forEach((l, i) => {
-      l.onRemoveLayer(this.map, oldLeafletLayers[i]);
-    });
-
-    // remove feature layers only from the map
-    this.map.eachLayer((layer) => {
-      if ((layer as any).feature) layer.remove();
-    });
+    flatMapDeep(this.overlaysTree.flat(), flattenOverlaysTree)
+      .filter((x) => x.layer && (x.layer as any).origin === 'app-builder')
+      .forEach((x) => {
+        // Store visibility status of the layer
+        const shouldDisplay = (x.layer as any).shouldDisplay;
+        if (!isNil(shouldDisplay)) {
+          shouldDisplayStatuses[(x.layer as any).id] = shouldDisplay;
+        }
+        (x.layer as any).deleted = true;
+        (x.layer as L.Layer).remove();
+      });
 
     // get new layers, with filters applied
     this.layers = [];
     const l = await this.getLayers(layersToGet ?? []);
     this.overlaysTree = [l.layers];
 
-    const newLeafletLayers = await Promise.all(
-      this.layers.map(async (l) => await l.getLayer())
-    );
-
-    // reflect old visibility before creating new layer controls
-    this.layers.forEach((l, i) => {
-      // it's safe to use the index here, since the new layer array will always be the same length as the old one
-      // even if there's no features in the layer, it will still be there
-      if (!visibleLayers[i]) {
-        l.visibility = false;
-        newLeafletLayers[i].removeFrom(this.map);
+    flatMapDeep(this.overlaysTree.flat(), flattenOverlaysTree).forEach((x) => {
+      if (x.layer) {
+        const id = (x.layer as any).id;
+        if (!isNil(shouldDisplayStatuses[id])) {
+          (x.layer as any).shouldDisplay = shouldDisplayStatuses[id];
+          if (!shouldDisplayStatuses[id]) {
+            x.layer.remove();
+          }
+        }
       }
     });
 
     if (controls.layer) {
       // remove current layer controls
       this.layerControlButtons.remove();
+      this.layerControlButtons = null;
 
       // create new layer controls, from newly created layers
-      this.setLayersControl(flatten(this.basemapTree), l.layers);
+      this.setLayersControl(
+        flatten(this.basemapTree),
+        flatten(this.overlaysTree)
+      );
     }
   }
 }
