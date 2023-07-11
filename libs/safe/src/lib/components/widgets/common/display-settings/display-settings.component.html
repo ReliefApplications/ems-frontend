@@ -8,16 +8,6 @@
         'models.widget.display.border' | translate
       }}</ng-container>
     </ui-toggle>
-
-    <!-- Style editor -->
-    <h2 class="mt-3">{{'components.widget.settings.style.customStyling' | translate }}</h2>
-    <div class="grow overflow-y-auto h-[300px]">
-      <ngx-monaco-editor
-        class="h-full"
-        [options]="editorOptions"
-        formControlName="style"
-      ></ngx-monaco-editor>
-    </div>
   </ng-container>
   <!-- Other specific options for each widget type -->
   <ng-content></ng-content>
