@@ -1236,6 +1236,7 @@
 							"notify": {
 								"message": "Notification message"
 							},
+							"null": "Set to null",
 							"prefill": "Pre-fill form with selected data",
 							"save": "Auto-save",
 							"selectAllRecords": "Select all records",

@@ -1243,6 +1243,7 @@
 							"notify": {
 								"message": "Message de notification"
 							},
+							"null": "Définir comme nul",
 							"prefill": "Préremplir le formulaire avec les données sélectionnées",
 							"save": "Sauvegarder automatiquement",
 							"selectAllRecords": "Sélectionner tous les enregistrements",

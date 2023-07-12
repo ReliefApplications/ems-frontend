@@ -149,7 +149,8 @@
                   modificationTemplate;
                   context: {
                     formGroup: $any(modification),
-                    field: scalarField(modification.value.field)
+                    field: scalarField(modification.value.field),
+                    index: i
                   }
                 "
               ></ng-container>
@@ -417,20 +418,32 @@
 </form>
 
 <!-- Template for auto modification -->
-<ng-template #modificationTemplate let-field="field" let-formGroup="formGroup">
+<ng-template
+  #modificationTemplate
+  let-field="field"
+  let-index="index"
+  let-formGroup="formGroup"
+>
   <div [formGroup]="formGroup">
     <!-- @todo: replace with ngSwitch and better manage all types -->
-    
+
     <ng-container *ngIf="['Int', 'Float'].includes(field.type.name)">
-      <div uiFormFieldDirective>
-        <label>{{
-          'components.widget.settings.grid.buttons.callback.modifyValue'
-            | translate
-        }}</label>
-        <input formControlName="value" type="number" />
+      <div class="flex gap-3 items-end">
+        <div uiFormFieldDirective class="flex-1">
+          <label>{{
+            'components.widget.settings.grid.buttons.callback.modifyValue'
+              | translate
+          }}</label>
+          <input formControlName="value" type="number" placeholder="null" />
+        </div>
+        <ui-button (click)="setModificationValueToNull(index)" class="mb-4">
+          {{
+            'components.widget.settings.grid.buttons.callback.null' | translate
+          }}
+        </ui-button>
       </div>
     </ng-container>
-    
+
     <ng-container *ngIf="field.type.name === 'Boolean'">
       <div uiFormFieldDirective>
         <label>{{
@@ -448,21 +461,27 @@
         </ui-select-menu>
       </div>
     </ng-container>
-    
+
     <ng-container
       *ngIf="
         !['Int', 'Float'].includes(field.type.name) &&
         field.type.name !== 'Boolean'
       "
     >
-      <div uiFormFieldDirective>
-        <label>{{
-          'components.widget.settings.grid.buttons.callback.modifyValue'
-            | translate
-        }}</label>
-        <input formControlName="value" type="string" />
+      <div class="flex gap-3 items-end">
+        <div uiFormFieldDirective class="flex-1">
+          <label>{{
+            'components.widget.settings.grid.buttons.callback.modifyValue'
+              | translate
+          }}</label>
+          <input formControlName="value" type="string" placeholder="null" />
+        </div>
+        <ui-button (click)="setModificationValueToNull(index)" class="mb-4">
+          {{
+            'components.widget.settings.grid.buttons.callback.null' | translate
+          }}
+        </ui-button>
       </div>
     </ng-container>
-  
   </div>
 </ng-template>
