@@ -56,15 +56,4 @@ export class SortGroupComponent {
     });
     this.sortFields.push(sortField);
   }
-
-  /**
-   * Add new sortField group
-   */
-  addGroup(): void {
-    const sortField = this.fb.group({
-      logic: 'and',
-      sortFields: this.fb.array([]),
-    });
-    this.sortFields.push(sortField);
-  }
 }

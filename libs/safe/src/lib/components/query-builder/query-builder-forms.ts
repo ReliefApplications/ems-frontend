@@ -45,6 +45,19 @@ export const createFilterGroup = (filter: any): UntypedFormGroup => {
 };
 
 /**
+ * Builds a sort form
+ *
+ * @param sortField Initial sort fields
+ * @returns Sort fields form
+ */
+export const createSortGroup = (sortField: any): UntypedFormGroup =>
+  formBuilder.group({
+    field: get(sortField, 'field', ''),
+    operator: get(sortField, 'order', 'asc'),
+    first: sortField.first,
+  });
+
+/**
  * Adds a field to the query
  *
  * @param field Field definition
@@ -152,6 +165,9 @@ export const createQueryForm = (
       field: [get(value, 'sort.field', '')],
       order: [get(value, 'sort.order', 'asc')],
     }),
+    // sort: formBuilder.array(
+    //   get(value, 'sort', [{ field: '', order: 'asc' }]).map((x: any) => createSortGroup(x))
+    // ),
     filter: createFilterGroup(get(value, 'filter', {})),
     style: formBuilder.array(
       get(value, 'style', []).map((x: any) => createStyleForm(x))

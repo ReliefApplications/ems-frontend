@@ -776,7 +776,6 @@
 				"limitTitle": "Sort & Limit",
 				"logic": "Sort logic",
 				"new": "Add new sort field",
-				"newGroup": "Add new sort field group",
 				"order": "Sort order",
 				"title": "Sort"
 			},
