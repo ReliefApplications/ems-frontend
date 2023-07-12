@@ -200,10 +200,18 @@ export class LayerDatasourceComponent
           },
         })
         .subscribe(({ data }) => {
+          console.log('ref data', data.referenceData);
+          const aggregationID = this.formGroup.value.aggregation;
           this.refData = data.referenceData;
           this.fields.next(
             this.getFieldsFromRefData(this.refData.fields || [])
           );
+          if (aggregationID) {
+            this.aggregation =
+              data.referenceData.aggregations?.edges.find(
+                (aggregation) => aggregation.node.id === aggregationID
+              )?.node ?? null;
+          }
         });
     }
 
@@ -282,10 +290,18 @@ export class LayerDatasourceComponent
 
   /** Opens modal for aggregation selection/creation */
   selectAggregation(): void {
+    console.log(
+      get(this.resource ?? this.refData, 'aggregations.totalCount', 0),
+      this.resource,
+      this.refData,
+      this.resource ?? this.refData
+    );
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
-        hasAggregations: get(this.resource, 'aggregations.totalCount', 0) > 0,
+        hasAggregations:
+          get(this.resource ?? this.refData, 'aggregations.totalCount', 0) > 0,
         resource: this.resource,
+        referenceData: this.refData,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
@@ -295,6 +311,7 @@ export class LayerDatasourceComponent
         this.fields.emit(
           this.mapLayersService.getAggregationFields(
             this.resource,
+            this.refData,
             this.aggregation
           )
         );
@@ -344,6 +361,7 @@ export class LayerDatasourceComponent
             this.fields.emit(
               this.mapLayersService.getAggregationFields(
                 this.resource,
+                this.refData,
                 this.aggregation
               )
             );

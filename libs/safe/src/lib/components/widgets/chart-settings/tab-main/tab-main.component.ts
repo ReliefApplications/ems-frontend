@@ -258,8 +258,11 @@ export class TabMainComponent
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
         hasAggregations:
-          get(this.resource, 'aggregations.totalCount', 0) > 0 ||
-          get(this.referenceData, 'aggregations.totalCount', 0) > 0, // check if at least one existing aggregation
+          get(
+            this.resource ?? this.referenceData,
+            'aggregations.totalCount',
+            0
+          ) > 0, // check if at least one existing aggregation
         resource: this.resource,
         referenceData: this.referenceData,
       },

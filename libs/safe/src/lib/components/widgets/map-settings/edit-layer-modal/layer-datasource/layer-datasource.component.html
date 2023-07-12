@@ -47,10 +47,10 @@
       <!-- Aggregation or layout selection -->
       <div
         class="flex flex-col gap-8"
-        *ngIf="resource && !layout && !aggregation"
+        *ngIf="(resource || refData) && !layout && !aggregation"
       >
         <h2>{{ 'common.layout.one' | translate }}</h2>
-        <div class="flex justify-center mt-4">
+        <div class="flex justify-center mt-4" *ngIf="!refData">
           <ui-button
             category="tertiary"
             variant="primary"
@@ -61,7 +61,7 @@
           >
         </div>
         <ui-divider
-          *ngIf="!layout && !aggregation"
+          *ngIf="!layout && !aggregation && !refData"
           [text]="'common.or' | translate"
         ></ui-divider>
         <h2>{{ 'common.aggregation.one' | translate }}</h2>

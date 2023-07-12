@@ -36,6 +36,7 @@ import {
 import { HttpParams } from '@angular/common/http';
 import { omitBy, isNil, get } from 'lodash';
 import { SafeMapPopupService } from '../../components/ui/map/map-popup/map-popup.service';
+import { ReferenceData } from '../../models/reference-data.model';
 
 /**
  * Shared map layer service
@@ -195,16 +196,18 @@ export class SafeMapLayersService {
    * Get fields from aggregation
    *
    * @param resource A resource
+   * @param referenceData A reference data
    * @param aggregation A aggregation
    * @returns aggregation fields
    */
   public getAggregationFields(
     resource: Resource | null,
+    referenceData: ReferenceData | null,
     aggregation: Aggregation | null
   ) {
     //@TODO this part should be refactored
     // Get fields
-    const fields = this.getAvailableSeriesFields(resource);
+    const fields = this.getAvailableSeriesFields(resource ?? referenceData);
     const selectedFields = aggregation?.sourceFields
       .map((x: string) => {
         const field = fields.find((y) => x === y.name);
@@ -237,10 +240,19 @@ export class SafeMapLayersService {
    * Set available series fields, from resource fields and aggregation definition.
    *
    * @param resource A resource
+   * @param referenceData A reference data
    */
-  private getAvailableSeriesFields(resource: Resource | null): any[] {
+  private getAvailableSeriesFields(
+    resource?: Resource | null,
+    referenceData?: ReferenceData | null
+  ): any[] {
     return this.queryBuilder
-      .getFields(resource?.queryName as string)
+      .getFields(
+        (resource?.queryName as string) ??
+          (referenceData?.name as string).replace(/^\w/, (match) =>
+            match.toUpperCase()
+          ) + 'Ref'
+      )
       .filter(
         (field: any) =>
           !(

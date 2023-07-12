@@ -271,8 +271,11 @@ export class SummaryCardGeneralComponent
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
         hasAggregations:
-          get(this.selectedResource, 'aggregations.totalCount', 0) > 0 ||
-          get(this.selectedReferenceData, 'aggregations.totalCount', 0) > 0, // check if at least one existing aggregation
+          get(
+            this.selectedResource ?? this.selectedReferenceData,
+            'aggregations.totalCount',
+            0
+          ) > 0, // check if at least one existing aggregation
         resource: this.selectedResource,
         referenceData: this.selectedReferenceData,
       },

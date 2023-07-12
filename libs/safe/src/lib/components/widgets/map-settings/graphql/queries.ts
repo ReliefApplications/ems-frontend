@@ -153,6 +153,18 @@ export const GET_REFERENCE_DATA = gql`
       name
       type
       fields
+      aggregations(ids: $aggregation) {
+        edges {
+          node {
+            id
+            name
+            sourceFields
+            pipeline
+            createdAt
+          }
+        }
+        totalCount
+      }
     }
   }
 `;

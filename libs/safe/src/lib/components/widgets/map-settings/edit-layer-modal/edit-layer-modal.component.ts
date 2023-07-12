@@ -413,6 +413,7 @@ export class EditLayerModalComponent
               this.fields.next(
                 this.mapLayersService.getAggregationFields(
                   data.resource,
+                  null,
                   aggregation
                 )
               );
