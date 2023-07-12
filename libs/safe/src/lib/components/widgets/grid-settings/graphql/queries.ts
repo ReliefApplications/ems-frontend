@@ -2,6 +2,7 @@ import { gql } from 'apollo-angular';
 import { Channel } from '../../../../models/channel.model';
 import { Form } from '../../../../models/form.model';
 import { Resource } from '../../../../models/resource.model';
+import { ReferenceData } from '../../../../models/reference-data.model';
 
 // === GET CHANNELS ===
 
@@ -127,6 +128,43 @@ export interface GetFormByIdQueryResponse {
 /** Model for GetResourceByIdQueryResponse object */
 export interface GetResourceByIdQueryResponse {
   resource: Resource;
+}
+
+// === GET RELATED FORMS FROM RESOURCE ===
+
+/** Graphql request for getting resource meta date for a grid */
+export const GET_GRID_REFERENCE_DATA_META = gql`
+  query GetGridResourceMeta(
+    $referenceData: ID!
+    $aggregationIds: [ID]
+    $firstAggregations: Int
+  ) {
+    referenceData(id: $referenceData) {
+      id
+      name
+      aggregations(ids: $aggregationIds, first: $firstAggregations) {
+        edges {
+          node {
+            id
+            name
+            sourceFields
+            pipeline
+            createdAt
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
+      }
+    }
+  }
+`;
+
+/** Model for GetReferenceDataByIdQueryResponse object */
+export interface GetReferenceDataByIdQueryResponse {
+  referenceData: ReferenceData;
 }
 
 // === GET QUERY TYPES ===
@@ -289,6 +327,42 @@ export interface GetResourcesQueryResponse {
   resources: {
     edges: {
       node: Resource;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    };
+    totalCount: number;
+  };
+}
+
+// === GET REFERENCE DATAS ===
+/** Graphql query for getting multiple reference datas with a cursor */
+export const GET_REFERENCE_DATAS = gql`
+  query GetReferenceDatas($first: Int, $afterCursor: ID, $filter: JSON) {
+    referenceDatas(first: $first, afterCursor: $afterCursor, filter: $filter) {
+      edges {
+        node {
+          id
+          name
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
+/** Model for Get object */
+export interface GetReferenceDatasQueryResponse {
+  referenceDatas: {
+    edges: {
+      node: ReferenceData;
       cursor: string;
     }[];
     pageInfo: {

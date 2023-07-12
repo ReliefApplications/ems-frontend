@@ -11,7 +11,7 @@
   [sortable]="false"
   [selectable]="false"
   [status]="status"
-  [blank]="!resourceId || !aggregation"
+  [blank]="(!resourceId && !referenceDataId) || !aggregation"
   [widget]="widget"
 >
 </safe-grid>

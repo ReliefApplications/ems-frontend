@@ -1,4 +1,5 @@
 import {
+  FormGroup,
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
@@ -56,6 +57,7 @@ export const createButtonFormGroup = (value: any): UntypedFormGroup => {
     ),
     attachToRecord: [get(value, 'attachToRecord', false)],
     targetResource: [get(value, 'targetResource', null)],
+    targetReferenceData: [get(value, 'targetReferenceData', null)],
     targetForm: [get(value, 'targetForm', null)],
     targetFormField: [get(value, 'targetFormField', null)],
     targetFormQuery: createQueryForm(
@@ -114,6 +116,23 @@ export const createButtonFormGroup = (value: any): UntypedFormGroup => {
 };
 
 /**
+ * Ensures that one and only one reference data or resource exists in the form
+ *
+ * @param group formGroup to check
+ * @returns a validator
+ */
+function resourceOrReferenceDataRequired(group: FormGroup) {
+  const resource = group.get('resource')?.value;
+  const referenceData = group.get('referenceData')?.value;
+
+  if ((!resource && !referenceData) || (resource && referenceData)) {
+    return { atLeastOneRequired: true };
+  }
+
+  return null;
+}
+
+/**
  * Create a grid widget form group.
  *
  * @param id id of the widget
@@ -124,30 +143,37 @@ export const createGridWidgetFormGroup = (
   id: string,
   configuration: any
 ): UntypedFormGroup => {
-  const formGroup = fb.group({
-    id,
-    title: [get(configuration, 'title', ''), Validators.required],
-    resource: [get(configuration, 'resource', null), Validators.required],
-    template: [get(configuration, 'template', null)],
-    layouts: [get(configuration, 'layouts', []), Validators.required],
-    aggregations: [get(configuration, 'aggregations', []), Validators.required],
-    actions: fb.group({
-      delete: [get(configuration, 'actions.delete', true)],
-      history: [get(configuration, 'actions.history', true)],
-      convert: [get(configuration, 'actions.convert', true)],
-      update: [get(configuration, 'actions.update', true)],
-      inlineEdition: [get(configuration, 'actions.inlineEdition', true)],
-      addRecord: [get(configuration, 'actions.addRecord', false)],
-      export: [get(configuration, 'actions.export', true)],
-      showDetails: [get(configuration, 'actions.showDetails', true)],
-    }),
-    floatingButtons: fb.array(
-      configuration.floatingButtons && configuration.floatingButtons.length
-        ? configuration.floatingButtons.map((x: any) =>
-            createButtonFormGroup(x)
-          )
-        : [createButtonFormGroup(null)]
-    ),
-  });
+  const formGroup = fb.group(
+    {
+      id,
+      title: [get(configuration, 'title', ''), Validators.required],
+      resource: [get(configuration, 'resource', null)],
+      referenceData: [get(configuration, 'referenceData', null)],
+      template: [get(configuration, 'template', null)],
+      layouts: [get(configuration, 'layouts', []), Validators.required],
+      aggregations: [
+        get(configuration, 'aggregations', []),
+        Validators.required,
+      ],
+      actions: fb.group({
+        delete: [get(configuration, 'actions.delete', true)],
+        history: [get(configuration, 'actions.history', true)],
+        convert: [get(configuration, 'actions.convert', true)],
+        update: [get(configuration, 'actions.update', true)],
+        inlineEdition: [get(configuration, 'actions.inlineEdition', true)],
+        addRecord: [get(configuration, 'actions.addRecord', false)],
+        export: [get(configuration, 'actions.export', true)],
+        showDetails: [get(configuration, 'actions.showDetails', true)],
+      }),
+      floatingButtons: fb.array(
+        configuration.floatingButtons && configuration.floatingButtons.length
+          ? configuration.floatingButtons.map((x: any) =>
+              createButtonFormGroup(x)
+            )
+          : [createButtonFormGroup(null)]
+      ),
+    },
+    { validators: resourceOrReferenceDataRequired }
+  );
   return formGroup;
 };

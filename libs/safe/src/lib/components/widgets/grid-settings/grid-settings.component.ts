@@ -14,12 +14,15 @@ import {
   GET_CHANNELS,
   GET_GRID_RESOURCE_META,
   GetResourceByIdQueryResponse,
+  GET_GRID_REFERENCE_DATA_META,
+  GetReferenceDataByIdQueryResponse,
 } from './graphql/queries';
 import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
+import { ReferenceData } from '../../../models/reference-data.model';
 import { createGridWidgetFormGroup } from './grid-settings.forms';
 import { DistributionList } from '../../../models/distribution-list.model';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -60,6 +63,7 @@ export class SafeGridSettingsComponent
   private allQueries: any[] = [];
   public filteredQueries: any[] = [];
   public resource: Resource | null = null;
+  public referenceData: ReferenceData | null = null;
 
   /** Stores the selected tab */
   public selectedTab = 0;
@@ -108,6 +112,8 @@ export class SafeGridSettingsComponent
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         if (value) {
+          this.formGroup?.get('referenceData')?.setValue(null);
+          this.referenceData = null;
           // Check if the query changed to clean modifications and fields for email in floating button
           if (value !== this.resource?.id) {
             // this.queryName = name;
@@ -115,6 +121,44 @@ export class SafeGridSettingsComponent
             this.formGroup?.get('aggregations')?.setValue([]);
             this.formGroup?.get('template')?.setValue(null);
             this.formGroup?.get('template')?.enable();
+            const floatingButtons = this.formGroup?.get(
+              'floatingButtons'
+            ) as UntypedFormArray;
+            for (const floatingButton of floatingButtons.controls) {
+              const modifications = floatingButton.get(
+                'modifications'
+              ) as UntypedFormArray;
+              modifications.clear();
+              this.formGroup
+                ?.get('floatingButton.modifySelectedRows')
+                ?.setValue(false);
+              const bodyFields = floatingButton.get(
+                'bodyFields'
+              ) as UntypedFormArray;
+              bodyFields.clear();
+            }
+          }
+          this.getQueryMetaData();
+        } else {
+          this.fields = [];
+        }
+      });
+
+    // Subscribe to form reference data changes
+    this.formGroup
+      .get('referenceData')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.formGroup?.get('resource')?.setValue(null);
+          this.resource = null;
+          // Check if the query changed to clean modifications and fields for email in floating button
+          if (value !== this.referenceData?.id) {
+            // this.queryName = name;
+            this.formGroup?.get('layouts')?.setValue([]);
+            this.formGroup?.get('aggregations')?.setValue([]);
+            this.formGroup?.get('template')?.setValue(null);
+            this.formGroup?.get('template')?.disable();
             const floatingButtons = this.formGroup?.get(
               'floatingButtons'
             ) as UntypedFormArray;
@@ -289,10 +333,40 @@ export class SafeGridSettingsComponent
             this.fields = [];
           }
         });
+    } else if (this.formGroup.get('referenceData')?.value) {
+      const aggregationIds: string[] | undefined =
+        this.formGroup?.get('aggregations')?.value;
+      this.apollo
+        .query<GetReferenceDataByIdQueryResponse>({
+          query: GET_GRID_REFERENCE_DATA_META,
+          variables: {
+            referenceData: this.formGroup.get('referenceData')?.value,
+            aggregationIds,
+            firstAggregations: aggregationIds?.length || 10,
+          },
+        })
+        .subscribe(({ data }) => {
+          if (data) {
+            this.referenceData = data.referenceData;
+            this.relatedForms = [];
+            this.templates = [];
+            this.fields = this.queryBuilder.getFields(
+              (this.referenceData?.name as string).replace(/^\w/, (match) =>
+                match.toUpperCase()
+              ) + 'Ref'
+            );
+          } else {
+            this.relatedForms = [];
+            this.templates = [];
+            this.referenceData = null;
+            this.fields = [];
+          }
+        });
     } else {
       this.relatedForms = [];
       this.templates = [];
       this.resource = null;
+      this.referenceData = null;
       this.fields = [];
     }
   }

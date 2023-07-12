@@ -220,6 +220,33 @@ export class SafeGridWidgetComponent
         return;
       }
     }
+    if (this.settings.referenceData) {
+      const aggregations = get(this.settings, 'aggregations', []);
+
+      this.canCreateRecords = false;
+      if (aggregations.length > 0) {
+        this.aggregationService
+          .getAggregations('', this.settings.referenceData, {
+            ids: aggregations,
+            first: aggregations.length,
+          })
+          .then((res) => {
+            this.aggregations = res.edges
+              .map((edge) => edge.node)
+              .sort(
+                (a, b) =>
+                  aggregations.indexOf(a.id) - aggregations.indexOf(b.id)
+              );
+            if (!this.aggregation) {
+              this.status = {
+                error: true,
+              };
+            }
+            this.aggregation = this.aggregations[0] || null;
+          });
+        return;
+      }
+    }
   }
 
   /**

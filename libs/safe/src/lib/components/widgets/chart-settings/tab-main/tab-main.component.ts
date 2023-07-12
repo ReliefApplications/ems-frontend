@@ -145,7 +145,7 @@ export class TabMainComponent
     this.origin.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.resource = null;
       this.referenceData = null;
-      this.formGroup.patchValue({ resource: null, refData: null });
+      this.formGroup.patchValue({ resource: null, referenceData: null });
     });
   }
 

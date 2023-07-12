@@ -26,6 +26,12 @@ export const GET_RESOURCES = gql`
             id
             name
           }
+          layouts {
+            totalCount
+          }
+          aggregations {
+            totalCount
+          }
         }
         cursor
       }
@@ -98,7 +104,9 @@ export const GET_REFERENCE_DATAS = gql`
           id
           name
           type
-          fields
+          aggregations {
+            totalCount
+          }
         }
         cursor
       }
