@@ -1,0 +1,60 @@
+<form [formGroup]="form">
+  <!-- HEADER -->
+  <div class="group-header">
+    <div uiFormFieldDirective [outline]="false" class="w-28">
+      <label>{{ 'components.queryBuilder.sort.logic' | translate }}</label>
+      <ui-select-menu formControlName="logic">
+        <ui-select-option value="or">{{
+          'components.queryBuilder.filter.or' | translate
+        }}</ui-select-option>
+        <ui-select-option value="and">{{
+          'components.queryBuilder.filter.and' | translate
+        }}</ui-select-option>
+      </ui-select-menu>
+    </div>
+
+    <ui-button category="tertiary" (click)="addSortField()">
+      {{ 'components.queryBuilder.sort.new' | translate }}
+    </ui-button>
+    <ui-button category="tertiary" (click)="addGroup()">
+      {{ 'components.queryBuilder.sort.newGroup' | translate }}
+    </ui-button>
+    <ui-button
+      [isIcon]="true"
+      icon="delete"
+      variant="danger"
+      (click)="delete.emit()"
+    >
+    </ui-button>
+  </div>
+
+    <!-- SORT FIELDS -->
+    <div
+    formArrayName="sortFields"
+    class="group-fields"
+    *ngIf="sortFields && sortFields.length > 0"
+  >
+    <ng-container *ngFor="let sortField of sortFields.controls; let i = index">
+      <ng-container *ngIf="sortField.value.logic">
+        <!-- NESTED SORT FIELDs GROUP -->
+        <safe-sort-group
+          class="group-item"
+          [form]="$any(sortField)"
+          [fields]="fields"
+          [showLimit]="showLimit"
+          (delete)="deleteSortField(i)"
+        ></safe-sort-group>
+      </ng-container>
+      <ng-container *ngIf="!sortField.value.logic">
+        <!-- NESTED SORT FIELD ROW -->
+        <safe-sort-row
+          class="group-item"
+          [form]="$any(sortField)"
+          [fields]="fields"
+          [showLimit]="showLimit"
+          (delete)="deleteSortField(i)"
+        ></safe-sort-row>
+      </ng-container>
+    </ng-container>
+  </div>
+</form>

@@ -20,6 +20,7 @@ import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { SliderModule } from '@oort-front/ui';
 import { SafeTabPaginationComponent } from './tab-pagination/tab-pagination.component';
 import { SafeFilterModule } from '../filter/filter.module';
+import { SafeSortModule } from '../sort/sort.module';
 import { DateFilterEditorComponent } from './date-filter-editor/date-filter-editor.component';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import {
@@ -79,6 +80,7 @@ import {
     AlertModule,
     FormWrapperModule,
     SelectMenuModule,
+    SafeSortModule,
   ],
   exports: [
     SafeQueryBuilderComponent,
