@@ -36,6 +36,11 @@
             "glob": "**/*",
             "input": "libs/safe/src/i18n/tinymce/",
             "output": "/tinymce/langs"
+          },
+          {
+            "glob": "**/*",
+            "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
+            "output": "/assets/webfonts/"
           }
         ],
         "styles": [
