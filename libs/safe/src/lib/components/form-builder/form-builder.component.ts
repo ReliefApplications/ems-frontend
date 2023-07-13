@@ -159,7 +159,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   private setFormBuilder(structure: string) {
     const creatorOptions = {
       showEmbededSurveyTab: false,
-      showJSONEditorTab: false,
+      showJSONEditorTab: true,
       generateValidJSON: true,
       showTranslationTab: true,
       questionTypes: QUESTION_TYPES,
