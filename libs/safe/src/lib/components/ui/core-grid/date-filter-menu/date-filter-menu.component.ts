@@ -14,7 +14,6 @@ import { PopupSettings } from '@progress/kendo-angular-dateinputs';
 import { takeUntil } from 'rxjs';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../../../filter/filter.const';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { DatePipe } from '@angular/common';
 
 /**
  * Required in order to prevent the kendo datepicker to close the menu on click.
@@ -41,7 +40,6 @@ const closest = (
   selector: 'safe-date-filter-menu',
   templateUrl: './date-filter-menu.component.html',
   styleUrls: ['./date-filter-menu.component.scss'],
-  providers: [DatePipe],
 })
 export class SafeDateFilterMenuComponent
   extends SafeUnsubscribeComponent
@@ -84,14 +82,12 @@ export class SafeDateFilterMenuComponent
    * @param translate The translation service
    * @param element element ref
    * @param popupService kendo popup service
-   * @param datePipe DatePipe service
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
     public translate: TranslateService,
     private element: ElementRef,
-    private popupService: SinglePopupService,
-    private datePipe: DatePipe
+    private popupService: SinglePopupService
   ) {
     super();
     const type = FIELD_TYPES.find((x) => x.editor === 'datetime');
@@ -143,16 +139,18 @@ export class SafeDateFilterMenuComponent
       ]),
     });
     this.form.valueChanges.subscribe((value) => {
-      const date = value.filters.at(0).value;
-      const originalDate: Date = new Date(date);
-      const formattedDate: string | null = this.datePipe.transform(
-        originalDate,
-        'yyyy-MM-dd'
-      );
-      const valueChanged = value;
-      valueChanged.filters.at(0).value = formattedDate;
-      console.log(formattedDate);
-      this.filterService?.filter(valueChanged);
+      const currentData = value.filters.at(0).value;
+      const valueToAdjustTimezone = (currentData as Date).getTimezoneOffset()/60;
+      
+      const dateObj = new Date(currentData);
+      dateObj.setHours(dateObj.getHours() + valueToAdjustTimezone);
+      // Convert the modified date back to the original format
+      const modifiedDateString = dateObj.toISOString().replace('T00:00:00.000Z', '');
+      const modifiedDate = new Date(modifiedDateString);
+      
+      console.log(value);
+      value.filters.at(0).value = modifiedDate;
+      this.filterService?.filter(value);
     });
   }
 }
