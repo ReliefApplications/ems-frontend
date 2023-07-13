@@ -14,6 +14,7 @@ import { PopupSettings } from '@progress/kendo-angular-dateinputs';
 import { takeUntil } from 'rxjs';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../../../filter/filter.const';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { DatePipe } from '@angular/common';
 
 /**
  * Required in order to prevent the kendo datepicker to close the menu on click.
@@ -40,6 +41,7 @@ const closest = (
   selector: 'safe-date-filter-menu',
   templateUrl: './date-filter-menu.component.html',
   styleUrls: ['./date-filter-menu.component.scss'],
+  providers: [DatePipe]
 })
 export class SafeDateFilterMenuComponent
   extends SafeUnsubscribeComponent
@@ -87,7 +89,8 @@ export class SafeDateFilterMenuComponent
     private formBuilder: UntypedFormBuilder,
     public translate: TranslateService,
     private element: ElementRef,
-    private popupService: SinglePopupService
+    private popupService: SinglePopupService,
+    private datePipe: DatePipe
   ) {
     super();
     const type = FIELD_TYPES.find((x) => x.editor === 'datetime');
@@ -139,7 +142,13 @@ export class SafeDateFilterMenuComponent
       ]),
     });
     this.form.valueChanges.subscribe((value) => {
-      this.filterService?.filter(value);
+      const date = value.filters.at(0).value;
+      const originalDate: Date = new Date(date);
+      const formattedDate: string| null = this.datePipe.transform(originalDate, 'yyyy-MM-dd');
+      let valueChanged = value;
+      valueChanged.filters.at(0).value = formattedDate;
+      console.log(formattedDate);
+      this.filterService?.filter(valueChanged);
     });
   }
 }
