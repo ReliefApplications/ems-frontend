@@ -1,3 +1,11 @@
+## [2.0.1](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0...v2.0.1) (2023-07-13)
+
+
+### Bug Fixes
+
+* choicesByUrl could fail to display depending on text ([c382ff2](https://github.com/ReliefApplications/oort-frontend/commit/c382ff2c70fdc3e8e0dacffbea32c24834251f0c))
+* unable to attach to another form in grid actions ([3d2c9a5](https://github.com/ReliefApplications/oort-frontend/commit/3d2c9a5d5df19e9ed898414674f9dcda0a9c19fa))
+
 ## [2.0.1](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0...v2.0.1) (2023-07-07)
 
 
