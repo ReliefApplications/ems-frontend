@@ -3,6 +3,7 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
 } from '@angular/core';
@@ -85,7 +86,7 @@ const CORE_FIELD_CLASS = 'core-question';
   templateUrl: './form-builder.component.html',
   styleUrls: ['./form-builder.component.scss'],
 })
-export class SafeFormBuilderComponent implements OnInit, OnChanges {
+export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
   @Input() form!: Form;
   @Output() save: EventEmitter<any> = new EventEmitter();
   @Output() formChange: EventEmitter<any> = new EventEmitter();
@@ -147,6 +148,10 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         renderGlobalProperties(this.referenceDataService)
       );
     }
+  }
+
+  ngOnDestroy(): void {
+    this.surveyCreator.survey.dispose();
   }
 
   /**
