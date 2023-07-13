@@ -2,6 +2,7 @@
 import * as L from 'leaflet';
 import 'leaflet.heat';
 import 'leaflet.markercluster';
+import 'leaflet.vectorgrid';
 
 import { Feature, Geometry } from 'geojson';
 import { get, isNil, set } from 'lodash';
@@ -729,6 +730,65 @@ export class Layer implements LayerModel {
                 (this.layer as any).id = this.id;
                 return this.layer;
               default:
+                // const layer = L.vectorGrid.slicer(data, {
+                //   interactive: true,
+                //   rendererFactory: L.svg.tile,
+                //   vectorTileLayerStyles: {
+                //     sliced: (properties: any) => {
+                //       if (rendererType === 'uniqueValue') {
+                //         const fieldValue = get(
+                //           properties,
+                //           `${uniqueValueField}`,
+                //           null
+                //         );
+                //         const uniqueValueSymbol =
+                //           uniqueValueInfos.find((x) => x.value === fieldValue)
+                //             ?.symbol || uniqueValueDefaultSymbol;
+                //         return {
+                //           fill: true,
+                //           stroke: false,
+                //           fillColor: uniqueValueSymbol.color,
+                //           fillOpacity: this.opacity,
+                //           radius: uniqueValueSymbol.size / 3,
+                //         };
+                //       } else {
+                //         return {
+                //           fill: true,
+                //           stroke: false,
+                //           fillColor: symbol.color,
+                //           fillOpacity: this.opacity,
+                //           radius: symbol.size / 3,
+                //           strokeColor: '#000',
+                //           // icon: L.icon({
+                //           //   iconUrl:
+                //           //     'https://static.vecteezy.com/system/resources/previews/013/743/847/original/planet-earth-icon-png.png',
+                //           //   iconSize: [20, 20],
+                //           //   iconAnchor: [10, 10],
+                //           // }),
+                //         };
+                //       }
+                //     },
+                //   } as any,
+                // });
+
+                // // on added to map
+                // layer.on('add', (event: any) => {
+                //   const map = event.target._map;
+
+                //   this.onAddLayer(map, layer);
+                // });
+
+                // // on removed from map
+                // layer.on('remove', (event: any) => {
+                //   const map = event.target._map;
+                //   this.onRemoveLayer(map, layer);
+                // });
+
+                // // click event
+                // layer.on('click', (event: any) => {
+                //   console.log('click', event);
+                // });
+
                 const layer = L.geoJSON(data, geoJSONopts);
 
                 layer.onAdd = (map: L.Map) => {
