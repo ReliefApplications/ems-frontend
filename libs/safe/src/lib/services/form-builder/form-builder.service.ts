@@ -52,6 +52,8 @@ export class SafeFormBuilderService {
     fields: Metadata[] = [],
     record?: Record
   ): Survey.SurveyModel {
+    Survey.settings.useCachingForChoicesRestful = false;
+    Survey.settings.useCachingForChoicesRestfull = false;
     const survey = new Survey.Model(structure);
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
