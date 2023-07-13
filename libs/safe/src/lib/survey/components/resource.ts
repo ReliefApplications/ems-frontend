@@ -475,16 +475,14 @@ export const init = (
         if (question.selectQuestion) {
           filters[0].operator = question.filterCondition;
           filters[0].field = question.filterBy;
-          if (question.selectQuestion) {
-            question.registerFunctionOnPropertyValueChanged(
-              'filterCondition',
-              () => {
-                filters.map((i: any) => {
-                  i.operator = question.filterCondition;
-                });
-              }
-            );
-          }
+          question.registerFunctionOnPropertyValueChanged(
+            'filterCondition',
+            () => {
+              filters.map((i: any) => {
+                i.operator = question.filterCondition;
+              });
+            }
+          );
         }
         if (!question.filterBy || question.filterBy.length < 1) {
           this.populateChoices(question);
