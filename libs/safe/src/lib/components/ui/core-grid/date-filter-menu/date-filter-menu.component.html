@@ -22,6 +22,7 @@
           *ngIf="firstDateMode === 'date'"
           formControlName="value"
           [popupSettings]="popupSettings"
+          format="yyyy-MM-dd"
         ></kendo-datepicker>
 
         <button
@@ -75,6 +76,7 @@
           *ngIf="secondDateMode === 'date'"
           formControlName="value"
           [popupSettings]="popupSettings"
+          format="yyyy-MM-dd"
         ></kendo-datepicker>
 
         <button
