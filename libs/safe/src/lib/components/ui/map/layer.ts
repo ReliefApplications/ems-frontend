@@ -265,8 +265,42 @@ export class Layer implements LayerModel {
             this.layerService
           )
         : [];
-
-      this.sublayersLoaded.next(true);
+      console.log(
+        'sublayer init 1',
+        this._sublayers,
+        options.sublayers,
+        options
+      );
+      for (const sublayer of this._sublayers) {
+        console.log(
+          sublayer?.layerDefinition?.minZoom,
+          sublayer?.layerDefinition?.maxZoom,
+          '/',
+          options.layerDefinition.minZoom,
+          options.layerDefinition.maxZoom
+        );
+        if (
+          (sublayer?.layerDefinition?.minZoom ?? 0) >=
+            options.layerDefinition.minZoom &&
+          (sublayer?.layerDefinition?.minZoom ?? 0) <=
+            options.layerDefinition.maxZoom &&
+          (sublayer?.layerDefinition?.maxZoom ?? 0) >=
+            options.layerDefinition.minZoom &&
+          (sublayer?.layerDefinition?.maxZoom ?? 0) <=
+            options.layerDefinition.maxZoom
+        ) {
+          sublayer.visibility = true;
+        } else {
+          sublayer.visibility = false;
+        } // la valeur n'est pas mis à jour lors du zoom dans la map, uniquement à l'initialisation
+      }
+      if (options.layerDefinition.minZoom) this.sublayersLoaded.next(true);
+      console.log(
+        'sublayer init 2',
+        this._sublayers,
+        options.sublayers,
+        options
+      );
     }
   }
 
