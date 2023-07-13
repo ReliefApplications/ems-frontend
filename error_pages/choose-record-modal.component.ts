@@ -25,7 +25,6 @@ import {
   SelectMenuModule,
   ButtonModule,
 } from '@oort-front/ui';
-import {} from '@oort-front/ui';
 
 /**
  * A constant that is used to set the number of items to be displayed on the page.
@@ -125,7 +124,6 @@ export class SafeChooseRecordModalComponent
     @Inject(DOCUMENT) public document: Document
   ) {
     super();
-    console.log(data);
   }
 
   ngOnInit(): void {
@@ -155,11 +153,9 @@ export class SafeChooseRecordModalComponent
       },
     });
     if (this.dataQuery) {
-      console.log('ici');
       this.records$ = this.records.asObservable();
       this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
         next: ({ data, loading }: any) => {
-          console.log('là');
           this.updateValues(data, loading);
         },
         complete: () => (this.loading = false),
