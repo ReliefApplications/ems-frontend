@@ -59,6 +59,8 @@ export class LayerDatasourceComponent
 {
   @Input() formGroup!: FormGroup;
   @Input() resourceQuery!: BehaviorSubject<GetResourceQueryResponse | null>;
+  @Input()
+  referenceDataQuery!: BehaviorSubject<GetReferenceDataQueryResponse | null>;
   public origin!: FormControl<string | null>;
 
   // Resource
@@ -180,11 +182,13 @@ export class LayerDatasourceComponent
             .getValue()
             .find((x) => x.id === resourceID) || null;
 
-        this.formGroup.get('layout')?.setValue(null);
-        this.formGroup.get('aggregation')?.setValue(null);
-        this.formGroup.get('geoField')?.setValue(null);
-        this.formGroup.get('latitudeField')?.setValue(null);
-        this.formGroup.get('longitudeField')?.setValue(null);
+        this.formGroup.patchValue({
+          layout: null,
+          aggregation: null,
+          geoField: null,
+          latitudeField: null,
+          longitudeField: null,
+        });
         this.layout = null;
         this.aggregation = null;
       });
@@ -200,18 +204,18 @@ export class LayerDatasourceComponent
           },
         })
         .subscribe(({ data }) => {
-          console.log('ref data', data.referenceData);
           const aggregationID = this.formGroup.value.aggregation;
           this.refData = data.referenceData;
-          this.fields.next(
-            this.getFieldsFromRefData(this.refData.fields || [])
-          );
           if (aggregationID) {
             this.aggregation =
               data.referenceData.aggregations?.edges.find(
                 (aggregation) => aggregation.node.id === aggregationID
               )?.node ?? null;
-          }
+          } //only load fields if we do not have an aggregation
+          else
+            this.fields.next(
+              this.getFieldsFromRefData(this.refData.fields || [])
+            );
         });
     }
 
@@ -224,6 +228,19 @@ export class LayerDatasourceComponent
           this.refDataSelect?.elements
             .getValue()
             .find((x) => x.id === refDataID) || null;
+        this.formGroup.get('layout')?.setValue(null);
+        this.formGroup.get('aggregation')?.setValue(null);
+        this.formGroup.get('geoField')?.setValue(null);
+        this.formGroup.get('latitudeField')?.setValue(null);
+        this.formGroup.get('longitudeField')?.setValue(null);
+        this.formGroup.patchValue({
+          layout: null,
+          aggregation: null,
+          geoField: null,
+          latitudeField: null,
+          longitudeField: null,
+        });
+        this.aggregation = null;
         if (this.refData) {
           this.fields.next(
             this.getFieldsFromRefData(this.refData.fields || [])
@@ -290,12 +307,6 @@ export class LayerDatasourceComponent
 
   /** Opens modal for aggregation selection/creation */
   selectAggregation(): void {
-    console.log(
-      get(this.resource ?? this.refData, 'aggregations.totalCount', 0),
-      this.resource,
-      this.refData,
-      this.resource ?? this.refData
-    );
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
         hasAggregations:
@@ -349,6 +360,7 @@ export class LayerDatasourceComponent
       disableClose: true,
       data: {
         resource: this.resource,
+        referenceData: this.refData,
         aggregation: this.aggregation,
       },
     });

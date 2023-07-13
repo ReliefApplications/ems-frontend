@@ -207,7 +207,7 @@ export class SafeMapLayersService {
   ) {
     //@TODO this part should be refactored
     // Get fields
-    const fields = this.getAvailableSeriesFields(resource ?? referenceData);
+    const fields = this.getAvailableSeriesFields(resource, referenceData);
     const selectedFields = aggregation?.sourceFields
       .map((x: string) => {
         const field = fields.find((y) => x === y.name);

@@ -219,7 +219,6 @@ export class SafeChartComponent
           this.hasError = true;
           this.series.next([]);
         } else {
-          console.log(data, 'data');
           this.hasError = false;
           const today = new Date();
           this.lastUpdate =

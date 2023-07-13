@@ -30,7 +30,12 @@ import * as L from 'leaflet';
 import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
 import { Layer } from '../../../ui/map/layer';
 import { Apollo } from 'apollo-angular';
-import { GetResourceQueryResponse, GET_RESOURCE } from '../graphql/queries';
+import {
+  GetResourceQueryResponse,
+  GET_RESOURCE,
+  GetReferenceDataQueryResponse,
+  GET_REFERENCE_DATA,
+} from '../graphql/queries';
 import { get, isEqual } from 'lodash';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { LayerPropertiesModule } from './layer-properties/layer-properties.module';
@@ -104,6 +109,8 @@ export class EditLayerModalComponent
 
   public resource: BehaviorSubject<GetResourceQueryResponse | null> =
     new BehaviorSubject<GetResourceQueryResponse | null>(null);
+  public refData: BehaviorSubject<GetReferenceDataQueryResponse | null> =
+    new BehaviorSubject<GetReferenceDataQueryResponse | null>(null);
   public fields = new BehaviorSubject<Fields[]>([]);
   public fields$ = this.fields.asObservable();
 
@@ -170,6 +177,7 @@ export class EditLayerModalComponent
     }
     this.setUpEditLayerListeners();
     this.getResource();
+    this.getRefData();
   }
 
   ngAfterViewInit(): void {
@@ -314,6 +322,9 @@ export class EditLayerModalComponent
           if (!!prev && prev?.resource !== next?.resource && next?.resource) {
             this.getResource();
           }
+          if (!!prev && prev?.refData !== next?.refData && next?.refData) {
+            this.getRefData();
+          }
           // else on aggregation implementation add it here
         },
       });
@@ -418,6 +429,41 @@ export class EditLayerModalComponent
                 )
               );
             }
+          }
+        });
+    }
+  }
+
+  /** If the form has a reference data, fetch it */
+  getRefData(): void {
+    const refDataId = this.form.get('datasource')?.value?.refData;
+    if (refDataId) {
+      const aggregationID = this.form.get('datasource')?.value?.aggregation;
+      this.apollo
+        .query<GetReferenceDataQueryResponse>({
+          query: GET_REFERENCE_DATA,
+          variables: {
+            id: refDataId,
+            aggregation: aggregationID ? [aggregationID] : [],
+          },
+        })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(({ data }) => {
+          this.refData.next(data);
+          // Update fields
+          if (aggregationID) {
+            const aggregation = get(
+              data,
+              'referenceData.aggregations.edges[0].node',
+              null
+            );
+            this.fields.next(
+              this.mapLayersService.getAggregationFields(
+                null,
+                data.referenceData,
+                aggregation
+              )
+            );
           }
         });
     }
