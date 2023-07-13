@@ -41,7 +41,7 @@ const closest = (
   selector: 'safe-date-filter-menu',
   templateUrl: './date-filter-menu.component.html',
   styleUrls: ['./date-filter-menu.component.scss'],
-  providers: [DatePipe]
+  providers: [DatePipe],
 })
 export class SafeDateFilterMenuComponent
   extends SafeUnsubscribeComponent
@@ -84,6 +84,7 @@ export class SafeDateFilterMenuComponent
    * @param translate The translation service
    * @param element element ref
    * @param popupService kendo popup service
+   * @param datePipe DatePipe service
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -144,8 +145,11 @@ export class SafeDateFilterMenuComponent
     this.form.valueChanges.subscribe((value) => {
       const date = value.filters.at(0).value;
       const originalDate: Date = new Date(date);
-      const formattedDate: string| null = this.datePipe.transform(originalDate, 'yyyy-MM-dd');
-      let valueChanged = value;
+      const formattedDate: string | null = this.datePipe.transform(
+        originalDate,
+        'yyyy-MM-dd'
+      );
+      const valueChanged = value;
       valueChanged.filters.at(0).value = formattedDate;
       console.log(formattedDate);
       this.filterService?.filter(valueChanged);
