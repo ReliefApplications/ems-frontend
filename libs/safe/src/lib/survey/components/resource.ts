@@ -40,8 +40,16 @@ const addRecordToSurveyContext = (
   question: QuestionResource,
   recordID: string
 ) => {
-  if (!recordID) return;
   const survey = question.survey as SurveyModel;
+  if (!recordID) {
+    // get survey variables
+    survey.getVariableNames().forEach((variable) => {
+      // remove variable if starts with question name
+      if (variable.startsWith(`${question.name}.`))
+        survey.setVariable(variable, null);
+    });
+    return;
+  }
   // get record from cache
   const record = loadedRecords.get(recordID);
   if (!record) return;
