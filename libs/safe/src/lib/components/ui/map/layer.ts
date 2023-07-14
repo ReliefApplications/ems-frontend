@@ -130,6 +130,46 @@ const featureSatisfiesFilter = (
   }
 };
 
+/**
+ * Gets if a layer is in bounds of the map
+ *
+ * @param layer Layer to check if it is in bounds
+ * @param map Map to check if the layer is in bounds
+ * @returns Whether the layer is in bounds
+ */
+const isLayerInBounds = (layer: L.Layer, map: L.Map) => {
+  const mapBounds = map.getBounds();
+
+  // For markers
+  if (layer instanceof L.Marker) {
+    const coords = layer.getLatLng();
+    return (
+      coords.lat >= mapBounds.getSouthWest().lat &&
+      coords.lat <= mapBounds.getNorthEast().lat &&
+      coords.lng >= mapBounds.getSouthWest().lng &&
+      coords.lng <= mapBounds.getNorthEast().lng
+    );
+  }
+
+  // For polygons, circles, etc
+  if (
+    layer instanceof L.Polygon ||
+    layer instanceof L.Circle ||
+    layer instanceof L.Polyline
+  ) {
+    const bounds = layer.getBounds();
+    return (
+      bounds.getSouthWest().lat <= mapBounds.getNorthEast().lat &&
+      bounds.getNorthEast().lat >= mapBounds.getSouthWest().lat &&
+      bounds.getSouthWest().lng <= mapBounds.getNorthEast().lng &&
+      bounds.getNorthEast().lng >= mapBounds.getSouthWest().lng
+    );
+  }
+
+  // If not a marker, polygon, circle, etc, assume it is in bounds
+  return true;
+};
+
 /** Objects represent a map layer */
 export class Layer implements LayerModel {
   // Map layer
@@ -176,6 +216,7 @@ export class Layer implements LayerModel {
 
   // Declare variables to store the event listeners
   private zoomListener!: L.LeafletEventHandlerFn;
+  private moveListener!: L.LeafletEventHandlerFn;
 
   /** @returns the children of the current layer */
   public async getChildren() {
@@ -823,6 +864,11 @@ export class Layer implements LayerModel {
     if (this.zoomListener) {
       map.off('zoomend', this.zoomListener);
     }
+    // Ensure that we do not subscribe multiple times to moveend event
+    if (this.moveListener) {
+      map.off('moveend', this.moveListener);
+    }
+
     // Using the sidenav-controls-menu-item, we can overwrite visibility property of the layer
     if (!isNil((layer as any).shouldDisplay)) {
       this.visibility = (layer as any).shouldDisplay;
@@ -840,7 +886,12 @@ export class Layer implements LayerModel {
       const currZoom = map.getZoom();
       const maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
       const minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
-      if (currZoom > maxZoom || currZoom < minZoom) {
+
+      if (
+        currZoom > maxZoom ||
+        currZoom < minZoom ||
+        !isLayerInBounds(layer, map)
+      ) {
         map.removeLayer(layer);
       } else {
         if (this.visibility) {
@@ -853,11 +904,16 @@ export class Layer implements LayerModel {
           map.removeLayer(layer);
         }
       }
-      // Assign the event listener to the variable
-      this.zoomListener = (zoom) => this.onZoom(map, zoom, layer);
-      // Attach the event listener
-      map.on('zoomend', this.zoomListener);
     }
+    // Assign the event listener to the variable
+    this.zoomListener = (zoom) => this.onZoom(map, zoom, layer);
+    // Attach the event listener
+    map.on('zoomend', this.zoomListener);
+
+    // Assign the event listener to the variable
+    this.moveListener = () => this.onMove(map, layer);
+    // Attach the event listener
+    map.on('moveend', this.moveListener);
   }
 
   /**
@@ -886,6 +942,35 @@ export class Layer implements LayerModel {
   }
 
   /**
+   * Subscribe to move events
+   *
+   * @param map Leaflet map
+   * @param layer Leaflet layer
+   */
+  private onMove(map: L.Map, layer: L.Layer) {
+    // Check if is layer is geojson
+    if ((layer as any).addData) {
+      (layer as L.GeoJSON).eachLayer((l) => {
+        this.onMove(map, l);
+      });
+      return;
+    }
+
+    const isInBounds = isLayerInBounds(layer, map);
+    if (isNil((layer as any).shouldDisplay)) {
+      if (!isInBounds) {
+        map.removeLayer(layer);
+      } else {
+        if (this.visibility && !(layer as any).deleted) {
+          map.addLayer(layer);
+        } else {
+          map.removeLayer(layer);
+        }
+      }
+    }
+  }
+
+  /**
    * Handle layer deletion, to subscribe to map event:
    * - remove legend if any
    *
@@ -902,8 +987,12 @@ export class Layer implements LayerModel {
       if (this.zoomListener) {
         map.off('zoomend', this.zoomListener);
       }
+
+      // Ensure that we do not subscribe multiple times to moveend event
+      if (this.moveListener) {
+        map.off('moveend', this.moveListener);
+      }
     }
-    // map.off('zoomend', this.zoomListener);
   }
 
   /**
