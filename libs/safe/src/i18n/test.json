@@ -1157,6 +1157,10 @@
 					"records": "******",
 					"settings": "******"
 				},
+				"map": {
+					"mapDetailsTitle": "******",
+					"mapDetailsTooltip": "******"
+				},
 				"openSettings": "******",
 				"tooltip": {
 					"displayMap": "******",
