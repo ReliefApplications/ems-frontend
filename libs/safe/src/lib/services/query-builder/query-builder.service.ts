@@ -17,8 +17,7 @@ interface QueryVariables {
   first?: number;
   skip?: number;
   filter?: any;
-  sortField?: string;
-  sortOrder?: string;
+  sort?: any;
   display?: boolean;
   styles?: any;
 }
@@ -67,11 +66,14 @@ interface Query {
   name: string;
   fields: QueryField[];
   filter?: CompositeFilterDescriptor;
-  sort?: {
-    field?: string;
-    order?: 'asc' | 'desc';
-  };
+  sort?: SortField[];
   style?: any;
+}
+
+/** SortField interface definition */
+export interface SortField {
+  field?: string;
+  order?: 'asc' | 'desc';
 }
 
 /** List of fields part of the schema but not selectable */
@@ -356,12 +358,11 @@ export class QueryBuilderService {
    */
   public graphqlQuery(name: string, fields: string[] | string) {
     return gql<QueryResponse, QueryVariables>`
-    query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $display: Boolean, $styles: JSON) {
+    query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sort: JSON, $display: Boolean, $styles: JSON) {
       ${name}(
       first: $first,
       skip: $skip,
-      sortField: $sortField,
-      sortOrder: $sortOrder,
+      sort: $sort,
       filter: $filter,
       display: $display
       styles: $styles

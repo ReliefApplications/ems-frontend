@@ -23,10 +23,10 @@ export class SortGroupComponent {
   /**
    * Getter for the sort fields
    *
-   * @returns The fields in an array
+   * @returns The sort fields in an array
    */
   get sortFields(): UntypedFormArray {
-    return this.form.get('sortFields') as UntypedFormArray;
+    return this.form.get('sort') as UntypedFormArray;
   }
 
   /**

@@ -8,6 +8,7 @@ import { firstValueFrom, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeRestService } from '../rest/rest.service';
 import { SnackbarService } from '@oort-front/ui';
+import { SortField } from '../query-builder/query-builder.service';
 
 /**
  * Takes an array, and returns a new array with all the nested arrays flattened
@@ -73,8 +74,7 @@ export class SafeEmailService {
    * @param query Query settings
    * @param query.name Name of the query
    * @param query.fields Fields requested in the query
-   * @param sortField Sort field (optional).
-   * @param sortOrder Sort order (optional).
+   * @param sort Sort fields and their orders (optional).
    * @param attachment Whether an excel with the dataset is attached to the mail
    * or not (optional).
    * @param files List of files to send with the mail (optional).
@@ -88,8 +88,7 @@ export class SafeEmailService {
       name: string;
       fields: any[];
     },
-    sortField?: string,
-    sortOrder?: string,
+    sort?: SortField[],
     attachment?: boolean,
     files?: any[]
   ): Promise<void> {
@@ -126,8 +125,7 @@ export class SafeEmailService {
           filter,
           query,
           fields: this.getFields(query.fields),
-          sortField,
-          sortOrder,
+          sort,
           attachment,
           ...(fileFolderId && { files: fileFolderId }),
         },
@@ -163,8 +161,7 @@ export class SafeEmailService {
    * @param query Query settings
    * @param query.name Name of the query
    * @param query.fields Fields requested in the query
-   * @param sortField Sort field (optional).
-   * @param sortOrder Sort order (optional).
+   * @param sort Sort fields and their order (optional).
    * @param attachment Whether an excel with the dataset is attached to the mail
    * or not (optional).
    */
@@ -177,8 +174,7 @@ export class SafeEmailService {
       name: string;
       fields: any[];
     },
-    sortField?: string,
-    sortOrder?: string,
+    sort?: SortField[],
     attachment?: boolean
   ): Promise<void> {
     const snackBarRef = this.snackBar.openComponentSnackBar(
@@ -206,8 +202,7 @@ export class SafeEmailService {
           filter,
           query,
           fields: this.getFields(query.fields),
-          sortField,
-          sortOrder,
+          sort,
           attachment,
         },
         { headers }
@@ -236,8 +231,7 @@ export class SafeEmailService {
                 value.html,
                 filter,
                 query,
-                sortField,
-                sortOrder,
+                sort,
                 attachment,
                 value.files
               );

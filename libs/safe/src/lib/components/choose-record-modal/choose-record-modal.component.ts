@@ -145,11 +145,9 @@ export class SafeChooseRecordModalComponent
         ...{
           first: ITEMS_PER_PAGE,
           filter: this.filter,
-          sortField:
-            this.settings.query?.sort && this.settings.query.sort.field
-              ? this.settings.query.sort.field
-              : undefined,
-          sortOrder: this.settings.query?.sort?.order || '',
+          sort: this.settings.query?.sort
+            ? this.settings.query.sort
+            : undefined,
         },
       },
     });

@@ -53,7 +53,7 @@ export const createFilterGroup = (filter: any): UntypedFormGroup => {
 export const createSortGroup = (sortField: any): UntypedFormGroup =>
   formBuilder.group({
     field: get(sortField, 'field', ''),
-    operator: get(sortField, 'order', 'asc'),
+    order: get(sortField, 'order', 'asc'),
     first: sortField.first,
   });
 
@@ -161,13 +161,11 @@ export const createQueryForm = (
       get(value, 'fields', []).map((x: any) => addNewField(x)),
       validators ? Validators.required : null
     ),
-    sort: formBuilder.group({
-      field: [get(value, 'sort.field', '')],
-      order: [get(value, 'sort.order', 'asc')],
-    }),
-    // sort: formBuilder.array(
-    //   get(value, 'sort', [{ field: '', order: 'asc' }]).map((x: any) => createSortGroup(x))
-    // ),
+    sort: formBuilder.array(
+      get(value, 'sort', [{ field: '', order: 'asc' }]).map((x: any) =>
+        createSortGroup(x)
+      )
+    ),
     filter: createFilterGroup(get(value, 'filter', {})),
     style: formBuilder.array(
       get(value, 'style', []).map((x: any) => createStyleForm(x))

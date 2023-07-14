@@ -1,5 +1,5 @@
 <form [formGroup]="form" class="flex items-center gap-2">
-  <div class="flex gap-2" formGroupName="sort">
+  <div class="flex gap-2">
     <div uiFormFieldDirective class="w-44">
       <label>{{ 'components.queryBuilder.sort.field' | translate }}</label>
       <ui-select-menu formControlName="field">
@@ -29,8 +29,7 @@
         </ng-container>
       </ui-select-menu>
     </div>
-    <!-- *ngIf="form.value.field" -->
-    <div uiFormFieldDirective class="w-44">
+    <div *ngIf="form.value.field" uiFormFieldDirective class="w-44">
       <label>{{ 'components.queryBuilder.sort.order' | translate }}</label>
       <ui-select-menu formControlName="order">
         <ui-select-option value="asc">{{

@@ -139,10 +139,12 @@ export class SafeQueryBuilderComponent
               );
               this.form?.setControl(
                 'sort',
-                this.formBuilder.group({
-                  field: [''],
-                  order: ['asc'],
-                })
+                this.formBuilder.array([
+                  this.formBuilder.group({
+                    field: [''],
+                    order: ['asc'],
+                  }),
+                ])
               );
               if (this.form?.get('clorophlets')) {
                 this.form?.setControl(
@@ -156,12 +158,12 @@ export class SafeQueryBuilderComponent
               this.form?.setControl('fields', this.formBuilder.array([]));
               this.form?.setControl(
                 'sort',
-                // this.formBuilder.array([
+                this.formBuilder.array([
                   this.formBuilder.group({
                     field: [''],
                     order: ['asc'],
-                  })
-                // ])
+                  }),
+                ])
               );
               if (this.form?.get('clorophlets')) {
                 this.form?.setControl(

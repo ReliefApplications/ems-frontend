@@ -369,8 +369,7 @@ export class SafeSummaryCardComponent
               variables: {
                 first: DEFAULT_PAGE_SIZE,
                 filter: this.filters,
-                sortField: get(layoutQuery, 'sort.field', null),
-                sortOrder: get(layoutQuery, 'sort.order', ''),
+                sort: get(layoutQuery, 'sort', null),
                 styles: layoutQuery.style || null,
               },
               fetchPolicy: 'network-only',
@@ -482,8 +481,7 @@ export class SafeSummaryCardComponent
           first: this.pageInfo.pageSize,
           skip: event.skip,
           filters: this.filters,
-          sortField: get(layoutQuery, 'sort.field', null),
-          sortOrder: get(layoutQuery, 'sort.order', ''),
+          sort: get(layoutQuery, 'sort', null),
           styles: layoutQuery?.style || null,
         })
         .then(this.updateCards.bind(this));

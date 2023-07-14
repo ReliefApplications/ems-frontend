@@ -164,20 +164,13 @@ export class SafeCoreGridComponent
   // === SORTING ===
   public sort: SortDescriptor[] = [];
 
-  /** @returns current field used for sorting */
-  get sortField(): string | null {
-    return this.sort.length > 0 && this.sort[0].dir
-      ? this.sort[0].field
-      : this.settings.query?.sort && this.settings.query.sort.field
-      ? this.settings.query.sort.field
-      : null;
-  }
-
-  /** @returns current sorting order */
-  get sortOrder(): string {
-    return this.sort.length > 0 && this.sort[0].dir
-      ? this.sort[0].dir
-      : this.settings.query?.sort?.order || '';
+  /** @returns current sorting fields with order */
+  get sortFields(): any {
+    if (this.sort.length > 0 && this.sort[0].dir) {
+      return [{ field: this.sort[0].field, order: this.sort[0].dir }];
+    } else {
+      return this.settings.query?.sort ? this.settings.query.sort : null;
+    }
   }
 
   /** @returns grid styling rules */
@@ -358,8 +351,7 @@ export class SafeCoreGridComponent
           variables: {
             first: this.pageSize,
             filter: this.queryFilter,
-            sortField: this.sortField || undefined,
-            sortOrder: this.sortOrder,
+            sort: this.sortFields,
             styles: this.style,
           },
           fetchPolicy: 'no-cache',
@@ -1175,8 +1167,7 @@ export class SafeCoreGridComponent
             }
           : this.queryFilter,
       query: this.settings.query,
-      sortField: this.sortField,
-      sortOrder: this.sortOrder,
+      sort: this.sortFields,
       format: e.format,
       application: this.applicationService.name,
       fileName: this.fileName,
@@ -1235,8 +1226,7 @@ export class SafeCoreGridComponent
         first: this.pageSize,
         skip: this.skip,
         filter: this.queryFilter,
-        sortField: this.sortField || undefined,
-        sortOrder: this.sortOrder,
+        sort: this.sortFields,
         styles: this.style,
       })
       .then(() => (this.loading = false));
