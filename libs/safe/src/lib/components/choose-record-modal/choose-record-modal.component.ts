@@ -125,7 +125,6 @@ export class SafeChooseRecordModalComponent
     @Inject(DOCUMENT) public document: Document
   ) {
     super();
-    console.log(data);
   }
 
   ngOnInit(): void {
@@ -155,11 +154,9 @@ export class SafeChooseRecordModalComponent
       },
     });
     if (this.dataQuery) {
-      console.log('ici');
       this.records$ = this.records.asObservable();
       this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
         next: ({ data, loading }: any) => {
-          console.log('là');
           this.updateValues(data, loading);
         },
         complete: () => (this.loading = false),
