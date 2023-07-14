@@ -49,8 +49,6 @@
             "inject": true
           },
           "apps/web-widgets/src/styles.scss",
-          "libs/safe/src/lib/style/styles.scss",
-          "libs/safe/src/lib/style/widgets.scss",
           "node_modules/survey-angular/survey.min.css",
           "node_modules/survey-creator/survey-creator.min.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
@@ -101,7 +99,10 @@
             }
           ],
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": [
+              "libs/ui/src/style/themes/default",
+              "apps/web-widgets/src/app/styles"
+            ]
           },
           "fileReplacements": [
             {
@@ -119,7 +120,10 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": [
+              "libs/ui/src/style/themes/default",
+              "apps/web-widgets/src/app/styles"
+            ]
           }
         }
       },

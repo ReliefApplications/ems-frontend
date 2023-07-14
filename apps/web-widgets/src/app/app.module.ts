@@ -2,6 +2,7 @@ import {
   APP_INITIALIZER,
   ApplicationRef,
   DoBootstrap,
+  ElementRef,
   Injector,
   NgModule,
 } from '@angular/core';
@@ -40,6 +41,7 @@ import { PureAbility } from '@casl/ability';
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 import { createCustomElement } from '@angular/elements';
 import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
+import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
 
 /**
  * Initialize authentication in the platform.
@@ -106,6 +108,12 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       useFactory: initializeAuth,
       multi: true,
       deps: [OAuthService],
+    },
+    {
+      provide: POPUP_CONTAINER,
+      useFactory: () =>
+        // return the container ElementRef, where the popup will be injected
+        ({ nativeElement: document.body } as ElementRef),
     },
     {
       provide: OverlayContainer,
