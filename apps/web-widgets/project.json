@@ -97,7 +97,7 @@
           ],
           "stylePreprocessorOptions": {
             "includePaths": [
-              "libs/ui/src/style/themes/oort",
+              "libs/ui/src/style/themes/default",
               "apps/web-widgets/src/app/styles"
             ]
           },
@@ -117,7 +117,10 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": ["apps/safe/src/lib/style/themes/default"]
+            "includePaths": [
+              "libs/ui/src/style/themes/default",
+              "apps/web-widgets/src/app/styles"
+            ]
           }
         }
       },

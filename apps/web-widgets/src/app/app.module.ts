@@ -43,16 +43,7 @@ import { PureAbility } from '@casl/ability';
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 import { createCustomElement } from '@angular/elements';
 import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
-import { POPUP_CONTAINER, PopupService } from '@progress/kendo-angular-popup';
-import { LOCATION_INITIALIZED } from '@angular/common';
-import { ResizeBatchService } from '@progress/kendo-angular-common';
-
-import { registerLocaleData } from '@angular/common';
-import localeFr from '@angular/common/locales/fr';
-import localeEn from '@angular/common/locales/en';
-// Register local translations for dates
-registerLocaleData(localeFr);
-registerLocaleData(localeEn);
+import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
 
 /**
  * Initialize authentication in the platform.
@@ -149,20 +140,19 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       provide: APP_INITIALIZER,
       useFactory: initializeAuthAndTranslations,
       multi: true,
-      deps: [OAuthService, TranslateService, Injector],
+      deps: [OAuthService],
     },
     {
       provide: POPUP_CONTAINER,
-      useFactory: () => {
-        // const popupContainer = Array.from(
-        //   document.getElementsByTagName('*')
-        // ).filter((element) => element.shadowRoot);
+      useFactory: () =>
         // return the container ElementRef, where the popup will be injected
-        return {
-          nativeElement: document.body,
-          // nativeElement: popupContainer ? popupContainer[0] : document.body,
-        } as ElementRef;
-      },
+        ({ nativeElement: document.body } as ElementRef),
+    },
+    {
+      provide: POPUP_CONTAINER,
+      useFactory: () =>
+        // return the container ElementRef, where the popup will be injected
+        ({ nativeElement: document.body } as ElementRef),
     },
     {
       provide: OverlayContainer,
