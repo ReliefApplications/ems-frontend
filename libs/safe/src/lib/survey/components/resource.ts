@@ -22,10 +22,36 @@ import {
 import get from 'lodash/get';
 import { Question, QuestionResource } from '../types';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
+import { Record } from '../../models/record.model';
 
 /** Question's temporary records */
 export const temporaryRecordsForm = new FormControl([]);
 
+/** Cache for loaded records */
+const loadedRecords: Map<string, Record> = new Map();
+
+/**
+ * Adds the selected record to the survey context.
+ *
+ * @param question resource question
+ * @param recordID id of record to add context of
+ */
+const addRecordToSurveyContext = (
+  question: QuestionResource,
+  recordID: string
+) => {
+  if (!recordID) return;
+  const survey = question.survey as SurveyModel;
+  // get record from cache
+  const record = loadedRecords.get(recordID);
+  if (!record) return;
+
+  const data = record?.data || {};
+  for (const field in data) {
+    // create survey expression in the format {[questionName].[fieldName]} = [value]
+    survey.setVariable(`${question.name}.${field}`, data[field]);
+  }
+};
 /**
  * Inits the resource question component of for survey.
  *
@@ -596,12 +622,14 @@ export const init = (
                 value: item?.id,
                 text: item?.data[question.displayField || 'id'],
               });
+              loadedRecords.set(item?.id || '', item);
             }
             question.contentQuestion.choices = res;
             if (!question.placeholder) {
               question.contentQuestion.optionsCaption =
                 'Select a record from ' + data.resource.name + '...';
             }
+            addRecordToSurveyContext(question, question.value);
           }
         );
       } else {
@@ -665,6 +693,13 @@ export const init = (
             question.addRecord && question.addTemplate && !question.isReadOnly
               ? ''
               : 'none';
+        });
+
+        const survey: SurveyModel = question.survey as SurveyModel;
+
+        // Listen to value changes
+        survey.onValueChanged.add((_, options) => {
+          addRecordToSurveyContext(options.question, options.value);
         });
       }
     },
