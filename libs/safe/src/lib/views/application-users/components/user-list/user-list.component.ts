@@ -52,6 +52,8 @@ export class UserListComponent
   public loading = true;
   public updating = false;
 
+  public teste = "";
+
   public pageInfo = {
     pageIndex: 0,
     pageSize: DEFAULT_PAGE_SIZE,
@@ -155,6 +157,7 @@ export class UserListComponent
   fetchUsers(refetch?: boolean): void {
     this.updating = true;
     if (refetch) {
+      console.log("aqui789");
       this.cachedUsers = [];
       this.pageInfo.pageIndex = 0;
       this.usersQuery.refetch({
@@ -162,14 +165,21 @@ export class UserListComponent
         afterCursor: null,
       });
     } else {
+      console.log("aqui10");
+      console.log(this.pageInfo);
+      console.log(this.pageInfo.endCursor);
       this.usersQuery
         .fetchMore({
           variables: {
             first: this.pageInfo.pageSize,
-            afterCursor: this.pageInfo.endCursor,
+            //afterCursor: this.pageInfo.endCursor,
+            automated: this.autoAssigned,
           },
         })
-        .then((results) => this.updateValues(results.data, results.loading));
+        .then((results) => {
+          console.log(results);
+          this.updateValues(results.data, results.loading);
+        });
     }
   }
 
@@ -270,6 +280,7 @@ export class UserListComponent
     data: GetApplicationUsersQueryResponse,
     loading: boolean
   ) {
+    console.log(data);
     const mappedValues = data.application.users.edges.map((x) => x.node);
     this.cachedUsers = updateQueryUniqueValues(this.cachedUsers, mappedValues);
 
@@ -278,5 +289,6 @@ export class UserListComponent
     this.pageInfo.endCursor = data.application.users.pageInfo.endCursor;
     this.loading = loading;
     this.updating = false;
+
   }
 }

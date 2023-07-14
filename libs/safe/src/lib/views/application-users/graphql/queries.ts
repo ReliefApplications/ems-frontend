@@ -27,11 +27,11 @@ export const GET_APPLICATION_USERS = gql`
           }
           cursor
         }
-        pageInfo {
-          endCursor
-          hasNextPage
-        }
         totalCount
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
       }
     }
   }

@@ -641,6 +641,7 @@ export class RoleResourcesComponent
    * @param loading loading status
    */
   private updateValues(data: GetResourcesQueryResponse, loading: boolean) {
+    console.log(data);
     const mappedValues = data.resources.edges.map((x) => x.node);
     this.cachedResources = updateQueryUniqueValues(
       this.cachedResources,
