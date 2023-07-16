@@ -29,7 +29,9 @@
       *ngIf="isSearchActivated"
       [settings]="settings"
       [multiSelect]="false"
-      [selectedRows]="selectedRows"
+      [selectedRows]="
+        chooseRecordForm.value.record ? [chooseRecordForm.value.record] : []
+      "
       (selectionChange)="onSelectionChange($event)"
       class="h-96"
     >

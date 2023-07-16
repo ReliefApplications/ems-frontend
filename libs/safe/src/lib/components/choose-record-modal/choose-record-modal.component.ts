@@ -7,19 +7,11 @@ import { QueryBuilderService } from '../../services/query-builder/query-builder.
 import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
 import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { GraphQLSelectModule, SpinnerModule } from '@oort-front/ui';
-import { SafeResourceDropdownModule } from '../resource-dropdown/resource-dropdown.module';
-import { SafeApplicationDropdownModule } from '../application-dropdown/application-dropdown.module';
-import { SafeRecordDropdownModule } from '../record-dropdown/record-dropdown.module';
+import { GraphQLSelectModule } from '@oort-front/ui';
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
-import {
-  DialogModule,
-  FormWrapperModule,
-  SelectMenuModule,
-  ButtonModule,
-} from '@oort-front/ui';
+import { DialogModule, FormWrapperModule, ButtonModule } from '@oort-front/ui';
 
 /**
  * A constant that is used to set the number of items to be displayed on the page.
@@ -44,16 +36,11 @@ interface DialogData {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    SpinnerModule,
-    SafeResourceDropdownModule,
-    SafeApplicationDropdownModule,
-    SafeRecordDropdownModule,
     SafeCoreGridModule,
     TranslateModule,
     DialogModule,
     ButtonModule,
     FormWrapperModule,
-    SelectMenuModule,
     GraphQLSelectModule,
   ],
   selector: 'safe-choose-record-modal',
@@ -78,7 +65,6 @@ export class SafeChooseRecordModalComponent
 
   // === LOAD DATA ===
   public isSearchActivated = false;
-  public selectedRows: any[] = [];
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
