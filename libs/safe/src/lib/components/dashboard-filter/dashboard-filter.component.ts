@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   HostListener,
@@ -64,6 +65,8 @@ export class DashboardFilterComponent
   public containerLeftOffset!: string;
   private value: any;
 
+  private resizeObserver!: ResizeObserver;
+
   // Survey
   public survey: Survey.Model = new Survey.Model();
   public surveyStructure: any = {};
@@ -90,6 +93,7 @@ export class DashboardFilterComponent
    * @param contextService Context service
    * @param ngZone Triggers html changes
    * @param referenceDataService Reference data service
+   * @param changeDetectorRef Change detector reference
    * @param _host sidenav container host
    */
   constructor(
@@ -101,12 +105,20 @@ export class DashboardFilterComponent
     private contextService: ContextService,
     private ngZone: NgZone,
     private referenceDataService: SafeReferenceDataService,
+    private changeDetectorRef: ChangeDetectorRef,
     @Optional() private _host: SidenavContainerComponent
   ) {
     super();
   }
 
   ngAfterViewInit(): void {
+    if (this._host) {
+      this.resizeObserver = new ResizeObserver(() => {
+        this.setFilterContainerDimensions();
+      });
+      this.resizeObserver.observe(this._host.content.nativeElement);
+    }
+
     this.contextService.filter$
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -141,6 +153,11 @@ export class DashboardFilterComponent
     if (changes.isFullScreen) {
       this.setFilterContainerDimensions();
     }
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.resizeObserver.disconnect();
   }
 
   // add ngOnChanges there
@@ -234,6 +251,9 @@ export class DashboardFilterComponent
     if (this.value) {
       this.survey.data = this.value;
     }
+
+    this.setAvailableFiltersForContext();
+
     this.survey.showCompletedPage = false;
     this.survey.showNavigationButtons = false;
 
@@ -246,6 +266,18 @@ export class DashboardFilterComponent
     );
     this.survey.render(this.dashboardSurveyCreatorContainer?.nativeElement);
     this.onValueChange();
+  }
+
+  /**
+   * Set the available filters of dashboard filter in the shared context service
+   */
+  private setAvailableFiltersForContext() {
+    this.contextService.availableFilterFields = this.survey.getAllQuestions()
+      .length
+      ? this.survey
+          .getAllQuestions()
+          .map((question) => ({ name: question.title, value: question.name }))
+      : [];
   }
 
   /**
@@ -374,5 +406,7 @@ export class DashboardFilterComponent
         }
       }
     }
+    // force change detection
+    this.changeDetectorRef.detectChanges();
   }
 }

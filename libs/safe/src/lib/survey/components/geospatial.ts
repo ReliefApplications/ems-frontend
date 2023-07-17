@@ -8,6 +8,27 @@ import {
 } from '../../components/geofields-listbox/geofields-listbox.component';
 
 /**
+ * Extract geofields from question ( to match with latest version of the available ones )
+ *
+ * @param question Geospatial question
+ * @returns clean list of selected geofields
+ */
+const getGeoFields = (question: any) => {
+  const rawSelectedFields: any[] = (question.geoFields || []).map(
+    (field: any) =>
+      typeof field === 'string'
+        ? {
+            value: field,
+            label: ALL_FIELDS.find((x) => x.value === field)?.label || field,
+          }
+        : field
+  );
+  return rawSelectedFields.filter((x) =>
+    (ALL_FIELDS.map((field) => field.value) as string[]).includes(x.value)
+  );
+};
+
+/**
  * Inits the geospatial component.
  *
  * @param Survey Survey library.
@@ -58,9 +79,7 @@ export const init = (Survey: any, domService: DomService): void => {
             htmlElement
           );
           const instance: GeofieldsListboxComponent = listbox.instance;
-          instance.selectedFields = (question.geoFields || []).filter(
-            (x: string) => (ALL_FIELDS as string[]).includes(x)
-          );
+          instance.selectedFields = getGeoFields(question);
           instance.selectionChange.subscribe((fields) => {
             question.geoFields = fields || [];
           });
@@ -84,7 +103,7 @@ export const init = (Survey: any, domService: DomService): void => {
       if (question.value) instance.data = question.value;
 
       // Set geo fields
-      instance.fields = question.geoFields || [];
+      instance.fields = getGeoFields(question);
 
       // Listen to change on geofields
       question.registerFunctionOnPropertyValueChanged('geoFields', () => {

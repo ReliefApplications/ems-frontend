@@ -9,10 +9,16 @@ export enum BackendLayerTypes {
   FEATURE_LAYER = 'FeatureLayer',
 }
 
+export type LayerSymbolOutline = {
+  color: string;
+  width: number;
+};
+
 export type LayerSymbol = {
   color: string;
   size: number;
   style: IconName;
+  outline?: LayerSymbolOutline;
 };
 
 /**
@@ -80,6 +86,16 @@ export interface PopupElementFields {
   fields?: string[];
 }
 
+/**
+ * Layer Popup Fields type interface
+ */
+export interface Fields {
+  label: string;
+  name: string;
+  type: string;
+  [key: string]: string;
+}
+
 /** Possible types of Popup element */
 export type PopupElementType = 'text' | 'fields';
 
@@ -99,7 +115,10 @@ export interface PopupInfo {
   title?: string;
   description?: string;
   popupElements?: PopupElement[];
+  fieldsInfo?: Fields[];
 }
+
+export type LayerDatasourceType = 'Point' | 'Polygon';
 
 /**
  * Layer Datasource interface
@@ -112,6 +131,7 @@ export interface LayerDatasource {
   geoField?: string;
   latitudeField?: string;
   longitudeField?: string;
+  type?: LayerDatasourceType;
 }
 
 /**
@@ -129,4 +149,5 @@ export interface LayerModel {
   datasource?: LayerDatasource;
   createdAt: Date;
   updatedAt: Date;
+  contextFilters?: string;
 }

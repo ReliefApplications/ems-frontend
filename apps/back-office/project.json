@@ -287,6 +287,32 @@
             "includePaths": ["libs/safe/src/lib/style/themes/oort"]
           }
         },
+        "oort-alimentaide": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.oort.alimentaide.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ],
+          "baseHref": "/admin/",
+          "deployUrl": "/admin/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+          }
+        },
         "oort-demo": {
           "fileReplacements": [
             {

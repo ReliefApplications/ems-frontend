@@ -4,13 +4,28 @@
     *ngIf="header"
     class="widget-header border-b"
     [ngClass]="{
-      'border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
-      'border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
+      '!border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
+      '!border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
     }"
   >
     <span class="widget-title" [title]="settings.title">{{
       settings.title
     }}</span>
+    <!-- Searchbar -->
+    <div
+      *ngIf="
+        settings.widgetDisplay?.searchable &&
+        !settings.card?.aggregation &&
+        displayMode === 'cards'
+      "
+      class="px-2 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 flex items-center m-1 w-[30%] max-w-[200px]"
+    >
+      <input
+        class="h-full bg-transparent w-full"
+        [placeholder]="'common.placeholder.search' | translate"
+        [formControl]="searchControl"
+      />
+    </div>
     <!-- Switch between grid and cards view -->
     <div class="flex">
       <!-- Data source button -->
@@ -47,15 +62,6 @@
   </kendo-tilelayout-item-header>
   <!-- Cards display mode -->
   <ng-container *ngIf="displayMode === 'cards'">
-    <!-- Search -->
-    <div class="bg-zinc-50 p-2" *ngIf="!!settings.widgetDisplay?.searchable">
-      <input
-        [placeholder]="'common.placeholder.search' | translate"
-        kendoTextBox
-        [formControl]="searchControl"
-        class="!w-full"
-      />
-    </div>
     <!-- Export -->
     <div class="w-full grow overflow-auto" #summaryCardGrid>
       <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
@@ -74,15 +80,12 @@
           >
             <safe-summary-card-item
               *ngFor="let card of cards; let i = index"
-              class="k-tilelayout-item k-card"
+              class="k-tilelayout-item k-card flex flex-col"
               [style.order]="i"
               style.grid-column-end="{{
-                'span ' +
-                  (card.width && card.width > colsNumber
-                    ? colsNumber
-                    : card.width)
+                'span ' + (2 > colsNumber ? colsNumber : 2)
               }}"
-              style.grid-row-end="{{ 'span ' + card.height }}"
+              style.grid-row-end="{{ 'span ' + 2 }}"
               [card]="card"
             >
             </safe-summary-card-item>
@@ -90,17 +93,22 @@
         </div>
       </kendo-pdf-export>
     </div>
+    <ui-spinner *ngIf="scrolling"></ui-spinner>
     <!-- Pagination -->
-    <kendo-datapager
+    <ui-paginator
       *ngIf="settings.widgetDisplay?.usePagination"
-      [style.width.%]="100"
-      [pageSize]="pageInfo.first"
-      [pageSizeValues]="[10, 25, 50, 100]"
+      [disabled]="loading"
+      [pageIndex]="pageInfo.pageIndex"
+      [pageSize]="pageInfo.pageSize"
+      [hideFirstLastButtons]="false"
       [skip]="pageInfo.skip"
-      [total]="pageInfo.totalCount"
-      (pageChange)="onPageChange($event)"
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      [totalItems]="pageInfo.length"
+      [displayedPageNumbers]="5"
+      [ariaLabel]="'components.notifications.paginator.ariaLabel' | translate"
+      (pageChange)="onPage($event)"
     >
-    </kendo-datapager>
+    </ui-paginator>
   </ng-container>
   <!-- Grid display mode -->
   <ng-container *ngIf="displayMode === 'grid'">

@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
-import { parseHtml } from '../summary-card/parser/utils';
 import { firstValueFrom } from 'rxjs';
 import {
   GET_LAYOUT,
@@ -9,8 +8,12 @@ import {
   GetLayoutQueryResponse,
   GetResourceMetadataQueryResponse,
 } from '../summary-card/graphql/queries';
-import { get } from 'lodash';
+import { clone, get } from 'lodash';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
+import { DataTemplateService } from '../../../services/data-template/data-template.service';
+import { Dialog } from '@angular/cdk/dialog';
+import { SnackbarService } from '@oort-front/ui';
+import { TranslateService } from '@ngx-translate/core';
 
 /**
  * Text widget component using KendoUI
@@ -29,48 +32,62 @@ export class SafeEditorComponent implements OnInit {
   private fields: any[] = [];
   private fieldsValue: any;
   private styles: any[] = [];
+  private wholeCardStyles = false;
 
-  // === TEXT SANITIZED ===
-  public safeHtml: SafeHtml = '';
+  public formattedHtml: SafeHtml = '';
+  public formattedStyle?: string;
 
   /**
    * Constructor for safe-editor component
    *
-   * @param sanitizer Dom sanitizer instance
    * @param apollo Apollo instance
    * @param queryBuilder Query builder service
+   * @param dataTemplateService Shared data template service, used to render content from template
+   * @param dialog Dialog service
+   * @param snackBar Shared snackbar service
+   * @param translate Angular translate service
    */
   constructor(
-    private sanitizer: DomSanitizer,
     private apollo: Apollo,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private dataTemplateService: DataTemplateService,
+    private dialog: Dialog,
+    private snackBar: SnackbarService,
+    private translate: TranslateService
   ) {}
 
   /** Sanitizes the text. */
   ngOnInit(): void {
-    if (!this.settings.record) {
-      this.safeHtml = this.sanitizer.bypassSecurityTrustHtml(
-        this.settings.text
-      );
-    } else {
-      this.setContentFromLayout();
-    }
+    this.setContentFromLayout();
   }
 
   /**
-   * Sets content of the text widget, querying associated record.
+   * Sets content of the text widget, querying associated record if any.
    */
   private async setContentFromLayout(): Promise<void> {
-    await this.getStyles();
-    await this.getData();
-
-    this.safeHtml = this.sanitizer.bypassSecurityTrustHtml(
-      parseHtml(this.settings.text, this.fieldsValue, this.fields, this.styles)
-    );
+    if (this.settings.record) {
+      await this.getLayout();
+      await this.getData();
+      this.formattedStyle = this.dataTemplateService.renderStyle(
+        this.settings.wholeCardStyles || false,
+        this.fieldsValue,
+        this.styles
+      );
+      this.formattedHtml = this.dataTemplateService.renderHtml(
+        this.settings.text,
+        this.fieldsValue,
+        this.fields,
+        this.styles
+      );
+    } else {
+      this.formattedHtml = this.dataTemplateService.renderHtml(
+        this.settings.text
+      );
+    }
   }
 
-  /** Sets layout style. */
-  private async getStyles(): Promise<void> {
+  /** Sets layout */
+  private async getLayout(): Promise<void> {
     const apolloRes = await firstValueFrom(
       this.apollo.query<GetLayoutQueryResponse>({
         query: GET_LAYOUT,
@@ -83,7 +100,9 @@ export class SafeEditorComponent implements OnInit {
 
     if (get(apolloRes, 'data')) {
       this.layout = apolloRes.data.resource.layouts?.edges[0].node;
-      this.styles = this.layout?.query.style;
+      if (this.settings.useStyles) {
+        this.styles = this.layout?.query.style;
+      }
     }
   }
 
@@ -135,6 +154,38 @@ export class SafeEditorComponent implements OnInit {
       );
       const record: any = get(res.data, `${queryName}.edges[0].node`, null);
       this.fieldsValue = { ...record };
+    }
+  }
+
+  /**
+   * Pass click event to data template service
+   *
+   * @param event Click event
+   */
+  public onClick(event: any) {
+    this.dataTemplateService.onClick(event, this.fieldsValue);
+  }
+
+  /**
+   * Open the dataSource modal.
+   */
+  public async openDataSource(): Promise<void> {
+    if (this.layout?.query) {
+      const { SafeResourceGridModalComponent } = await import(
+        '../../search-resource-grid-modal/search-resource-grid-modal.component'
+      );
+      this.dialog.open(SafeResourceGridModalComponent, {
+        data: {
+          gridSettings: clone(this.layout.query),
+        },
+      });
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'components.widget.summaryCard.errors.invalidSource'
+        ),
+        { error: true }
+      );
     }
   }
 }

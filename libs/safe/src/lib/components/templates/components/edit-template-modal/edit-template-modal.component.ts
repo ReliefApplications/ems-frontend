@@ -103,11 +103,11 @@ export class EditTemplateModalComponent implements OnInit {
     });
     this.editorService.addCalcAndKeysAutoCompleter(
       this.bodyEditor,
-      BODY_EDITOR_AUTOCOMPLETE_KEYS
+      BODY_EDITOR_AUTOCOMPLETE_KEYS.map((key) => ({ value: key, text: key }))
     );
     this.editorService.addCalcAndKeysAutoCompleter(
       this.subjectEditor,
-      SUBJECT_EDITOR_AUTOCOMPLETE_KEYS
+      SUBJECT_EDITOR_AUTOCOMPLETE_KEYS.map((key) => ({ value: key, text: key }))
     );
   }
 }

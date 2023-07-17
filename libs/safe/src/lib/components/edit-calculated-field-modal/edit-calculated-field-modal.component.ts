@@ -96,7 +96,10 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
       ...getInfoKeys(),
       ...getDataKeys(this.resourceFields),
     ];
-    this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
+    this.editorService.addCalcAndKeysAutoCompleter(
+      this.editor,
+      keys.map((key) => ({ value: key, text: key }))
+    );
   }
 
   /**

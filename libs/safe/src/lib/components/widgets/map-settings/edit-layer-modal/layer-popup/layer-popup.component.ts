@@ -13,7 +13,7 @@ import {
   PopupElementType,
 } from '../../../../../models/layer.model';
 import { createPopupElementForm } from '../../map-forms';
-import { Fields } from '../layer-fields/layer-fields.component';
+import { Fields } from '../../../../../models/layer.model';
 import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
 import { INLINE_EDITOR_CONFIG } from '../../../../../const/tinymce.const';
 import { SafeEditorService } from '../../../../../services/editor/editor.service';
@@ -34,7 +34,7 @@ export class LayerPopupComponent
   @Input() formGroup!: FormGroup;
   @Input() fields$!: Observable<Fields[]>;
 
-  public keys: string[] = [];
+  public keys: { text: string; value: string }[] = [];
   public editorConfig = INLINE_EDITOR_CONFIG;
 
   /** @returns popup elements as form array */
@@ -60,7 +60,10 @@ export class LayerPopupComponent
   ngOnInit(): void {
     // Listen to fields changes
     this.fields$.pipe(takeUntil(this.destroy$)).subscribe((value) => {
-      this.keys = value.map((field) => `{{${field.name}}}`);
+      this.keys = value.map((field) => ({
+        text: `{{${field.name}}}`,
+        value: `{{${field.name}}}`,
+      }));
       this.editorService.addCalcAndKeysAutoCompleter(
         this.editorConfig,
         this.keys

@@ -8,9 +8,8 @@
   @apply h-full text-base border-r border-l-0 border-t-0 border-b-0;
 }
 
-// Last and first page are hidden as we cannot use them as the paginator logic is implemented currently
-:host ::ng-deep kendo-datapager-next-buttons button:last-child,
-:host ::ng-deep kendo-datapager-prev-buttons button:first-child {
+:host ::ng-deep .hide-last button:last-child,
+:host ::ng-deep .hide-first button:first-child {
   display: none !important;
 }
 

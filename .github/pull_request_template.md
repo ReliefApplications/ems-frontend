@@ -23,7 +23,7 @@ Please describe the tests that you ran to verify your changes. Provide instructi
 - [ ] Test A
 - [ ] Test B
 
-## Sreenshots
+## Screenshots
 
 Please include screenshots of this change. If this issue is only back-end related, and does not involve any visual change of the platform, you can skip this part.
 
@@ -37,7 +37,6 @@ Please include screenshots of this change. If this issue is only back-end relate
 - [ ] * I have commented my code, particularly in hard-to-understand areas
 - [ ] * I have put JSDoc comment in all required places
 - [ ] * My changes generate no new warnings
-- [ ] * I have included screenshots describing my changes if relevant
 - [ ] * I have included screenshots describing my changes if relevant
 - [ ] * I have selected labels in the Pull Request, according to the changes with code brings
 - [ ] I have made corresponding changes to the documentation ( if required )

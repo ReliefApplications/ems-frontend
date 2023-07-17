@@ -43,7 +43,7 @@ import { SafeDownloadService } from '../../../../services/download/download.serv
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { GridLayout } from '../models/grid-layout.model';
 import { get, intersection } from 'lodash';
-import { applyLayoutFormat } from '../../../widgets/summary-card/parser/utils';
+import { applyLayoutFormat } from '../../../../utils/parser/utils';
 import { SafeDashboardService } from '../../../../services/dashboard/dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
@@ -854,27 +854,5 @@ export class SafeGridComponent
       item: dataItem,
       field,
     });
-    // const layerDefinition = {
-    //   datasource: {
-
-    //   }
-    // }
-    // let markerToZoomOn = this.getPropertyValue(dataItem, field.name)?.geometry
-    //   ?.coordinates;
-    // let markersCoords: [number, number][] = [];
-    // this.data.data.forEach((item) =>
-    //   markersCoords.push(
-    //     this.getPropertyValue(item, field.name)?.geometry?.coordinates
-    //   )
-    // );
-    // markerToZoomOn = [markerToZoomOn[1], markerToZoomOn[0]];
-    // markersCoords = markersCoords.map((coords) => [coords[1], coords[0]]); // We invert the coords beacause they are stored weirdly
-    // this.dialog.open(MapModalComponent, {
-    //   data: {
-    //     markers: markersCoords,
-    //     defaultPosition: markerToZoomOn ? markerToZoomOn : [45, 45],
-    //     defaultZoom: 10,
-    //   },
-    // });
   }
 }

@@ -95,3 +95,7 @@
     position: relative !important;
   }
 }
+
+::ng-deep .sv_custom_header {
+  display: none;
+}

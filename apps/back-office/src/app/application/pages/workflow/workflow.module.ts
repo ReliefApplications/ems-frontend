@@ -11,7 +11,7 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { SafeSearchMenuModule } from '@oort-front/safe';
-import { IconModule } from '@oort-front/ui';
+import { IconModule, TooltipModule } from '@oort-front/ui';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import {
   AlertModule,
@@ -41,6 +41,7 @@ import {
     SafeEditableTextModule,
     ButtonModule,
     AlertModule,
+    TooltipModule,
   ],
   exports: [WorkflowComponent],
 })

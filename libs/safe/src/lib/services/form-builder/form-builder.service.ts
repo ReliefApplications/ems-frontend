@@ -5,12 +5,13 @@ import { SafeReferenceDataService } from '../reference-data/reference-data.servi
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
-import { Record } from '../../models/record.model';
+import { Record as RecordModel } from '../../models/record.model';
 import { EditRecordMutationResponse, EDIT_RECORD } from './graphql/mutations';
 import { Metadata } from '../../models/metadata.model';
 import { SafeRestService } from '../rest/rest.service';
 import { BehaviorSubject } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
+import { SafeFormHelpersService } from '../form-helper/form-helper.service';
 
 /**
  * Shared form builder service.
@@ -20,8 +21,6 @@ import { SnackbarService } from '@oort-front/ui';
   providedIn: 'root',
 })
 export class SafeFormBuilderService {
-  public selectedPageIndex: BehaviorSubject<number> =
-    new BehaviorSubject<number>(0);
   /**
    * Constructor of the service
    *
@@ -30,13 +29,15 @@ export class SafeFormBuilderService {
    * @param apollo Apollo service
    * @param snackBar Service used to show a snackbar.
    * @param restService This is the service that is used to make http requests.
+   * @param formHelpersService Shared form helper service.
    */
   constructor(
     private referenceDataService: SafeReferenceDataService,
     private translate: TranslateService,
     private apollo: Apollo,
     private snackBar: SnackbarService,
-    private restService: SafeRestService
+    private restService: SafeRestService,
+    private formHelpersService: SafeFormHelpersService
   ) {}
 
   /**
@@ -52,9 +53,10 @@ export class SafeFormBuilderService {
     structure: string,
     pages: BehaviorSubject<any[]>,
     fields: Metadata[] = [],
-    record?: Record
+    record?: RecordModel
   ): Survey.SurveyModel {
     const survey = new Survey.Model(structure);
+    this.formHelpersService.addUserVariables(survey);
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
     );
@@ -136,12 +138,14 @@ export class SafeFormBuilderService {
    *
    * @param survey Survey where to add the callbacks
    * @param pages Pages of the current survey
+   * @param selectedPageIndex Current page of the survey
    * @param temporaryFilesStorage Temporary files saved while executing the survey
    */
   public addEventsCallBacksToSurvey(
     survey: Survey.SurveyModel,
     pages: BehaviorSubject<any[]>,
-    temporaryFilesStorage: any
+    selectedPageIndex: BehaviorSubject<number>,
+    temporaryFilesStorage: Record<string, Array<File>>
   ) {
     survey.onClearFiles.add((_, options: any) => this.onClearFiles(options));
     survey.onUploadFiles.add((_, options: any) =>
@@ -161,7 +165,7 @@ export class SafeFormBuilderService {
     });
     survey.onCurrentPageChanged.add((survey: Survey.SurveyModel) => {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
-      this.selectedPageIndex.next(survey.currentPageNo);
+      selectedPageIndex.next(survey.currentPageNo);
     });
   }
 

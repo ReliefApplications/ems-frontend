@@ -54,6 +54,7 @@
 			"none": "No column",
 			"one": "Column"
 		},
+		"comma": "comma",
 		"create": "Create",
 		"createdOn": "Created on",
 		"customNotification": {
@@ -213,6 +214,7 @@
 			"of": "of"
 		},
 		"placeholder": {
+			"address": "Enter an address or place e.g. 1 York St",
 			"email": "Enter email",
 			"name": "Enter a name",
 			"search": "Search...",
@@ -268,7 +270,9 @@
 		"saveChanges": "Save changes",
 		"searchObject": "Search {{name}}",
 		"select": "Select",
+		"semicolon": "semicolon",
 		"send": "Send",
+		"separator": "Separator",
 		"settings": "Settings",
 		"status": "Status",
 		"status_active": "Active",
@@ -439,6 +443,7 @@
 				"delete": {
 					"confirmationMessage": "Do you confirm the deletion of the page {{name}}?"
 				},
+				"hide": "Hide page in nav bar for end-users",
 				"notReordered": {
 					"plural": "The pages were not reordered. {{error}}",
 					"singular": "The page was not reordered. {{error}}"
@@ -446,7 +451,8 @@
 				"reordered": {
 					"plural": "The pages were successfully reordered.",
 					"singular": "The page was successfully reordered."
-				}
+				},
+				"show": "Make page visible in nav bar for end-users"
 			},
 			"positionAttribute": {
 				"delete": {
@@ -640,6 +646,15 @@
 			},
 			"saveSurvey": "SavingSurvey"
 		},
+		"formMapProperties": {
+			"geofields": {
+				"editDialog": {
+					"editGeofield": "Edit Geo fields",
+					"label": "Label",
+					"value": "Value"
+				}
+			}
+		},
 		"forms": {
 			"isCore": "Is core",
 			"paginator": {
@@ -657,6 +672,7 @@
 			}
 		},
 		"header": {
+			"goToApp": "Go to application",
 			"goToPlatform": "Navigate to",
 			"logout": "Logout",
 			"sidenav": {
@@ -1356,7 +1372,9 @@
 						"popup": "Pop-up",
 						"properties": {
 							"defaultVisibility": "Visible by default",
+							"from": "from zoom ",
 							"opacity": "Opacity",
+							"to": " to zoom",
 							"visibilityRange": "Visibility range",
 							"zoom": "Current zoom"
 						},
@@ -1488,6 +1506,13 @@
 						"webmap": "WebMap",
 						"zoom": "Default zoom"
 					},
+					"renderer": {
+						"default": "Default",
+						"defaultLabel": "Default label",
+						"label": "Label",
+						"symbol": "Symbol",
+						"value": "Value"
+					},
 					"tooltip": {
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
 						"dataset": "Select data points below and drag them to 'selected fields' on the right. They will be displayed in the pop-up when clicking on a marker",
@@ -1497,6 +1522,9 @@
 							"zoom": "Select a default zoom for the map display"
 						}
 					}
+				},
+				"style": {
+					"customStyling": "Custom Styling"
 				},
 				"summaryCard": {
 					"add": "Add new card",
@@ -1787,6 +1815,17 @@
 		},
 		"dashboard": {
 			"activateFiltering": "Activate filtering",
+			"buttonActions": {
+				"add": "Add button action",
+				"category": "Button category",
+				"confirmDelete": "Are you sure you want to delete this button action?",
+				"edit": "Edit button action",
+				"href": "Button href",
+				"one": "Button action",
+				"openInNewTab": "Open in new tab",
+				"text": "Button text",
+				"variant": "Button variant"
+			},
 			"context": {
 				"datasource": {
 					"alert": "Select a datasource, in order to set one page per record of the datasource. You can also set a template, which would be loaded by default if no specific page is created for a record.",
@@ -1805,8 +1844,13 @@
 					"element": "Element"
 				}
 			},
+			"dashboardFilter": "Dashboard filter",
 			"deactivateFiltering": "Deactivate filtering",
-			"share": "Share Dashboard"
+			"share": "Share Dashboard",
+			"tooltip": {
+				"useDashboardFilterEditor": "Use dashboard filter editor",
+				"useDefaultEditor": "Use default editor"
+			}
 		},
 		"form": {
 			"core": "Core",

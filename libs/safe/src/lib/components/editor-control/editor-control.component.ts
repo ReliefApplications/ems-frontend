@@ -13,7 +13,7 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
-import { Subject } from 'rxjs';
+import { Subject, takeUntil } from 'rxjs';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import {
   EditorComponent,
@@ -160,6 +160,7 @@ export class SafeEditorControlComponent
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;
 
+  private destroy$ = new Subject<void>();
   /**
    * Component for using TinyMCE editor with formControl
    *
@@ -188,12 +189,34 @@ export class SafeEditorControlComponent
   }
 
   ngAfterViewInit(): void {
-    this.editor.onFocusIn.subscribe(() => {
+    this.editor.onFocusIn.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.onFocusIn();
     });
-
-    this.editor.onFocusOut.subscribe((e) => {
+    this.editor.onFocusOut.pipe(takeUntil(this.destroy$)).subscribe((e) => {
       this.onFocusOut(e.event);
+    });
+    this.editor.onKeyDown.pipe(takeUntil(this.destroy$)).subscribe((e) => {
+      if (e.event.code === 'ArrowDown' || e.event.code === 'ArrowUp') {
+        const collectionGroup = document.querySelector(
+          '.tox-collection__group'
+        );
+        // If autocomplete list in the DOM, trigger scrolling events
+        if (collectionGroup) {
+          if (!this.editorService.activeItemScrollListener) {
+            // Initialize listener
+            this.editorService.initScrollActive(
+              collectionGroup,
+              e.editor.getElement()
+            );
+            // Execute directly first keydown event when no listener is ready
+            this.editorService.handleKeyDownEvent(
+              e.event,
+              collectionGroup,
+              e.editor.getElement()
+            );
+          }
+        }
+      }
     });
     // this.editor.onInit.subscribe(() => {});
   }
@@ -279,6 +302,8 @@ export class SafeEditorControlComponent
 
   ngOnDestroy(): void {
     this.stateChanges.complete();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   /** Updates the value when the editor content changes */

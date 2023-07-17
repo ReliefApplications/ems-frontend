@@ -6,15 +6,22 @@ import {
 } from '../graphql/queries';
 import { BehaviorSubject } from 'rxjs';
 import * as SurveyCreator from 'survey-creator';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import {
+  FormControl,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+} from '@angular/forms';
 import { Dialog } from '@angular/cdk/dialog';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
 import { SafeCoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
 import { DomService } from '../../services/dom/dom.service';
-import { buildSearchButton, buildAddButton } from './utils';
+import {
+  buildSearchButton,
+  buildAddButton,
+  processNewCreatedRecords,
+} from './utils';
 import { QuestionResource } from '../types';
 import { SurveyModel } from 'survey-angular';
-import localForage from 'localforage';
 
 /** Create the list of filter values for resources */
 export const resourcesFilterValues = new BehaviorSubject<
@@ -31,6 +38,9 @@ export const resourceConditions = [
   { value: '>=', text: 'greater or equals' },
   { value: '<=', text: 'less or equals' },
 ];
+
+/** Question temporary records */
+const temporaryRecordsForm = new FormControl([]);
 
 /**
  * Inits the resources question component for survey.
@@ -787,7 +797,8 @@ export const init = (
               question,
               question.gridFieldsSettings,
               true,
-              dialog
+              dialog,
+              temporaryRecordsForm
             );
             actionsButtons.appendChild(searchBtn);
 
@@ -894,53 +905,8 @@ export const init = (
     question: any
   ) => {
     instance.multiSelect = true;
-    const query = question.gridFieldsSettings || {};
-    const temporaryRecords: any[] = [];
     const promises: any[] = [];
-    question.newCreatedRecords?.forEach((recordId: string) => {
-      const promise = new Promise<void>((resolve, reject) => {
-        localForage
-          .getItem(recordId)
-          .then((data: any) => {
-            if (data != null) {
-              // We ensure to make it only if such a record is found
-              const parsedData = JSON.parse(data);
-              temporaryRecords.push({
-                id: recordId,
-                template: parsedData.template,
-                ...parsedData.data,
-                isTemporary: true,
-              });
-            }
-            resolve();
-          })
-          .catch((error: any) => {
-            console.error(error); // Handle any errors that occur while getting the item
-            reject(error);
-          });
-      });
-      promises.push(promise);
-    });
-    const uuidRegExpr =
-      /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/i;
-    const settings = {
-      query: {
-        ...query,
-        temporaryRecords: temporaryRecords,
-        filter: {
-          logic: 'and',
-          filters: [
-            {
-              field: 'ids',
-              operator: 'eq',
-              value:
-                question.value.filter((id: string) => !uuidRegExpr.test(id)) ||
-                [], //We exclude the temporary records by excluding id in UUID format
-            },
-          ],
-        },
-      },
-    };
+    const settings = await processNewCreatedRecords(question, true, promises);
     if (!question.readOnlyGrid) {
       Object.assign(settings, {
         actions: {
@@ -952,6 +918,10 @@ export const init = (
           remove: true,
         },
       });
+    }
+    // If search button exists, updates grid displayed records
+    if (question.canSearch) {
+      temporaryRecordsForm.setValue(settings.query.temporaryRecords);
     }
     instance.settings = settings;
     Promise.allSettled(promises).then(() => {

@@ -230,4 +230,30 @@ export class SafeDashboardService {
       })
     );
   }
+
+  /**
+   * Saves the buttons of the dashboard.
+   *
+   * @param buttons Button actions to save
+   */
+  public saveDashboardButtons(buttons: Dashboard['buttons']) {
+    const dashboard = this.dashboard.getValue();
+    if (!dashboard?.id) return;
+    buttons = buttons || [];
+
+    this.apollo
+      .mutate<EditDashboardMutationResponse>({
+        mutation: EDIT_DASHBOARD,
+        variables: {
+          id: dashboard.id,
+          buttons,
+        },
+      })
+      .subscribe(() => {
+        this.dashboard.next({
+          ...dashboard,
+          buttons,
+        });
+      });
+  }
 }

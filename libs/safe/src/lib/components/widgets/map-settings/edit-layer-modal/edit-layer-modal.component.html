@@ -27,6 +27,7 @@
         <ng-template uiTabContent>
           <safe-layer-properties
             [form]="form"
+            [currentZoom]="currentZoom"
             [destroyTab$]="destroyTab$"
             [currentMapContainerRef]="data.currentMapContainerRef"
           ></safe-layer-properties>
@@ -77,7 +78,7 @@
         </ng-container>
         <ng-template uiTabContent>
           <safe-map-layers
-            [formControl]="$any(form.get('sublayers'))"
+            [control]="$any(form.get('sublayers'))"
             [mapComponent]="data.mapComponent"
             [destroyTab$]="destroyTab$"
             [currentMapContainerRef]="data.currentMapContainerRef"
@@ -106,6 +107,7 @@
         <ng-template uiTabContent>
           <safe-layer-styling
             [formGroup]="$any(form.get('layerDefinition.drawingInfo'))"
+            [geometryType]="form.get('datasource.type')?.value"
             [fields$]="fields$"
             [destroyTab$]="destroyTab$"
             [currentMapContainerRef]="data.currentMapContainerRef"
@@ -156,7 +158,10 @@
       <!-- Previously : layerDefinition.drawingInfo.renderer.type -->
       <ui-tab
         *ngIf="
-          form.get('layerDefinition.featureReduction')?.value !== 'heatmap'
+          form.get('type')?.value !== 'GroupLayer' &&
+          form.get('layerDefinition.drawingInfo.renderer.type')?.value !==
+            'heatmap' &&
+          form.get('datasource.type')?.value !== 'Polygon'
         "
         [disabled]="!isDatasourceValid"
       >
@@ -224,7 +229,20 @@
             [fields$]="fields$"
             [destroyTab$]="destroyTab$"
             [currentMapContainerRef]="data.currentMapContainerRef"
+            (updatedField)="updateFormField($event, false)"
           ></safe-layer-fields>
+        </ng-template>
+      </ui-tab>
+      <!-- Context filter settings -->
+      <ui-tab *ngIf="form.get('datasource')" [disabled]="!isDatasourceValid">
+        <ng-container ngProjectAs="label">
+          <ui-icon icon="filter_list" [size]="24"></ui-icon>
+          <span>{{ 'models.dashboard.dashboardFilter' | translate }}</span>
+        </ng-container>
+        <ng-template uiTabContent>
+          <safe-contextual-filters-settings
+            [form]="form"
+          ></safe-contextual-filters-settings>
         </ng-template>
       </ui-tab>
       <!-- Layer labels -->

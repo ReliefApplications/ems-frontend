@@ -34,6 +34,18 @@
       ></safe-tab-display>
     </ng-template>
   </ui-tab>
+  <!-- Context filter settings -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="filter_list" [size]="24"></ui-icon>
+      <span>{{ 'models.dashboard.dashboardFilter' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <safe-contextual-filters-settings
+        [form]="formGroup"
+      ></safe-contextual-filters-settings>
+    </ng-template>
+  </ui-tab>
   <!-- Widget display options -->
   <ui-tab>
     <ng-container ngProjectAs="label">

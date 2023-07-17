@@ -15,6 +15,7 @@ export * from './lib/paginator/paginator.module';
 export * from './lib/avatar-group/avatar-group.module';
 export * from './lib/toggle/toggle.module';
 export * from './lib/textarea/textarea.module';
+export * from './lib/textarea/textarea.component';
 export * from './lib/breadcrumbs/breadcrumbs.module';
 export * from './lib/divider/divider.module';
 export * from './lib/autocomplete/autocomplete.module';

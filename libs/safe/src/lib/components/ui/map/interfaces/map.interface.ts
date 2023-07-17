@@ -44,7 +44,7 @@ export interface MapEvent {
 
 /** Map controls interface */
 export interface MapControls {
-  timedimension: boolean;
+  // timedimension: boolean;
   download: boolean;
   legend: boolean;
   measure: boolean;
@@ -54,10 +54,10 @@ export interface MapControls {
 
 /** Default values for the map controls */
 export const DefaultMapControls: MapControls = {
-  timedimension: false,
-  download: true,
+  // timedimension: false,
+  download: false,
   legend: true,
   measure: false,
-  layer: true,
-  search: false,
+  layer: false,
+  search: true,
 };

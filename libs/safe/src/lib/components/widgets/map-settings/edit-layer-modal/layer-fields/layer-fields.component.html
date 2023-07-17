@@ -2,10 +2,10 @@
   <!-- Fields form -->
   <div class="flex-1 flex flex-col">
     <safe-editable-text
-      *ngFor="let field of fields$ | async; index as i"
+      *ngFor="let field of fields$ | async"
       [text]="field.label"
       [canEdit]="true"
-      (onChange)="saveLabel($event, i)"
+      (onChange)="saveLabel($event, field)"
     >
       <div class="flex items-center justify-between w-full p-1">
         <div class="!m-0 overflow-hidden text-ellipsis">

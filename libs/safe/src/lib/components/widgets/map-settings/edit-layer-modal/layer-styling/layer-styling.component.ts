@@ -2,15 +2,19 @@ import {
   AfterViewInit,
   Component,
   Input,
+  OnInit,
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Fields } from '../layer-fields/layer-fields.component';
 import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
+import { GeometryType } from '../../../../ui/map/interfaces/layer-settings.type';
+import { Fields } from '../../../../../models/layer.model';
 
-/** Available renderer types */
-const AVAILABLE_RENDERER_TYPES = ['simple', 'heatmap', 'uniqueValue'];
+/** Available renderer types for point */
+const POINT_RENDERER_TYPES = ['simple', 'heatmap', 'uniqueValue'];
+/** Available renderer types for polygon */
+const POLYGON_RENDERER_TYPES = ['simple', 'uniqueValue'];
 
 /**
  * Layer styling component.
@@ -20,9 +24,10 @@ const AVAILABLE_RENDERER_TYPES = ['simple', 'heatmap', 'uniqueValue'];
   templateUrl: './layer-styling.component.html',
   styleUrls: ['./layer-styling.component.scss'],
 })
-export class LayerStylingComponent implements AfterViewInit {
+export class LayerStylingComponent implements AfterViewInit, OnInit {
+  @Input() geometryType: GeometryType = 'Point';
   @Input() formGroup!: FormGroup;
-  public rendererTypes = AVAILABLE_RENDERER_TYPES;
+  public rendererTypes!: string[];
   @Input() fields$!: Observable<Fields[]>;
 
   // Display of map
@@ -30,6 +35,18 @@ export class LayerStylingComponent implements AfterViewInit {
   @ViewChild('mapContainer', { read: ViewContainerRef })
   mapContainerRef!: ViewContainerRef;
   @Input() destroyTab$!: Subject<boolean>;
+
+  ngOnInit(): void {
+    switch (this.geometryType) {
+      case 'Polygon':
+        this.rendererTypes = POLYGON_RENDERER_TYPES;
+        break;
+      default:
+      case 'Point':
+        this.rendererTypes = POINT_RENDERER_TYPES;
+        break;
+    }
+  }
 
   ngAfterViewInit(): void {
     this.currentMapContainerRef

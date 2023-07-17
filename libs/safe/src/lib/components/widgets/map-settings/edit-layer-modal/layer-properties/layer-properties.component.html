@@ -40,6 +40,12 @@
             'components.widget.settings.map.edit.properties.visibilityRange'
               | translate
           }}
+          ({{
+            'components.widget.settings.map.edit.properties.from' | translate
+          }}
+          {{ form.get('layerDefinition')?.get('minZoom')?.value }}
+          {{ 'components.widget.settings.map.edit.properties.to' | translate }}
+          {{ form.get('layerDefinition')?.get('maxZoom')?.value }})
         </h3>
         <!--@TODO TAILWIND-->
         <div class="flex flex-row gap-2">

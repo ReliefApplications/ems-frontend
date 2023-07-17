@@ -94,6 +94,13 @@ export const init = (Survey: any, domService: DomService): void => {
         'visibleChoices',
         question._propertyValueChangedVirtual
       );
+      question.registerFunctionOnPropertyValueChanged(
+        'readOnly',
+        (value: boolean) => {
+          tagboxInstance.readonly = value;
+          tagboxInstance.disabled = value;
+        }
+      );
       updateChoices();
       el.parentElement?.appendChild(tagboxDiv);
     },

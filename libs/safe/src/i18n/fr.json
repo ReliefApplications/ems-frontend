@@ -54,6 +54,7 @@
 			"none": "Aucune colonne",
 			"one": "Colonne"
 		},
+		"comma": "virgule",
 		"create": "Créer",
 		"createdOn": "Date de création",
 		"customNotification": {
@@ -213,6 +214,7 @@
 			"of": "de"
 		},
 		"placeholder": {
+			"address": "Entrez une adresse exemple : 1 rue de la paix, Paris",
 			"email": "Entrez un email",
 			"name": "Entrez un nom",
 			"search": "Rechercher...",
@@ -268,7 +270,9 @@
 		"saveChanges": "Sauvegarder les changements",
 		"searchObject": "Rechercher {{name}}",
 		"select": "Sélectionner",
+		"semicolon": "point-virgule",
 		"send": "Envoyer",
+		"separator": "Séparateur",
 		"settings": "Paramètres",
 		"status": "Statut",
 		"status_active": "Actif",
@@ -439,6 +443,7 @@
 				"delete": {
 					"confirmationMessage": "Voulez-vous vraiment supprimer la page {{name}}?"
 				},
+				"hide": "Cacher la page dans la barre latérale de navigation",
 				"notReordered": {
 					"plural": "Les pages n'ont pas été réorganisées. {{error}}",
 					"singular": "La page n'a pas été réorganisée. {{error}}"
@@ -446,7 +451,8 @@
 				"reordered": {
 					"plural": "Les pages ont été réorganisées avec succès.",
 					"singular": "La page a été réorganisée avec succès."
-				}
+				},
+				"show": "Afficher la page dans la barre latérale de navigation"
 			},
 			"positionAttribute": {
 				"delete": {
@@ -654,6 +660,15 @@
 			},
 			"saveSurvey": "Sauvegarde du questionnaire"
 		},
+		"formMapProperties": {
+			"geofields": {
+				"editDialog": {
+					"editGeofield": "Éditer les champs",
+					"label": "Label",
+					"value": "Valeur"
+				}
+			}
+		},
 		"forms": {
 			"isCore": "Est un formulaire source",
 			"paginator": {
@@ -671,6 +686,7 @@
 			}
 		},
 		"header": {
+			"goToApp": "Ouvrir l'application",
 			"goToPlatform": "Naviguer vers",
 			"logout": "Se déconnecter",
 			"sidenav": {
@@ -1372,7 +1388,9 @@
 						"popup": "Popup",
 						"properties": {
 							"defaultVisibility": "Visible par défaut",
+							"from": "de zoom ",
 							"opacity": "Opacité",
+							"to": " à zoom",
 							"visibilityRange": "Plage de visibilité",
 							"zoom": "Zoom"
 						},
@@ -1402,9 +1420,9 @@
 					"geospatial": {
 						"layersStyles": {
 							"fill": {
-								"color": "La couleur de remplissage",
-								"opacity": "Opacité de remplissage",
-								"title": "Remplir"
+								"color": "Couleur du remplissage",
+								"opacity": "Opacité du remplissage",
+								"title": "Remplissage"
 							},
 							"marker": {
 								"color": "Couleur du marqueur",
@@ -1504,6 +1522,13 @@
 						"webmap": "WebMap",
 						"zoom": "Zoom par défaut"
 					},
+					"renderer": {
+						"default": "Défaut",
+						"defaultLabel": "Libellé par défaut",
+						"label": "Libellé",
+						"symbol": "Symbole",
+						"value": "Valeur"
+					},
 					"tooltip": {
 						"category": "Sélectionnez un champ pour séparer vos enregistrements en différentes catégories",
 						"dataset": "Sélectionnez des champs ci-dessous et déplacez-les vers 'champs sélectionnés' sur la droite. Ils seront présents dans le pop-up affiché en cliquant sur les marqueurs",
@@ -1513,6 +1538,9 @@
 							"zoom": "Sélectionnez un zoom par défaut"
 						}
 					}
+				},
+				"style": {
+					"customStyling": "Style personnalisé"
 				},
 				"summaryCard": {
 					"add": "Ajouter un carte",
@@ -1803,6 +1831,17 @@
 		},
 		"dashboard": {
 			"activateFiltering": "Activer le filtre",
+			"buttonActions": {
+				"add": "Ajouter une action de bouton",
+				"category": "Catégorie de bouton",
+				"confirmDelete": "Voulez-vous vraiment supprimer cette action de bouton ?",
+				"edit": "Modifier l'action du bouton",
+				"href": "Bouton href",
+				"one": "Action du bouton",
+				"openInNewTab": "Ouvrir dans un nouvel onglet",
+				"text": "Texte du bouton",
+				"variant": "Variante de bouton"
+			},
 			"context": {
 				"datasource": {
 					"alert": "Sélectionnez une source de données, afin de définir une page par enregistrement de la source de données. Vous pouvez également définir un modèle qui sera chargé par défaut si aucune page spécifique n'est créée pour un enregistrement.",
@@ -1821,8 +1860,13 @@
 					"element": "Élément"
 				}
 			},
+			"dashboardFilter": "Filtre de tableaux de bord",
 			"deactivateFiltering": "Désactiver le filtre",
-			"share": "Partager le tableau de bord"
+			"share": "Partager le tableau de bord",
+			"tooltip": {
+				"useDashboardFilterEditor": "Utiliser l'éditeur de tableaux de bord",
+				"useDefaultEditor": "Utiliser l'éditeur par défaut"
+			}
 		},
 		"form": {
 			"core": "Source",

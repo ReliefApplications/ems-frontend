@@ -54,6 +54,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"comma": "******",
 		"create": "******",
 		"createdOn": "******",
 		"customNotification": {
@@ -213,6 +214,7 @@
 			"of": "******"
 		},
 		"placeholder": {
+			"address": "******",
 			"email": "******",
 			"name": "******",
 			"search": "******",
@@ -268,7 +270,9 @@
 		"saveChanges": "******",
 		"searchObject": "****** {{name}}",
 		"select": "******",
+		"semicolon": "******",
 		"send": "******",
+		"separator": "******",
 		"settings": "******",
 		"status": "******",
 		"status_active": "******",
@@ -439,6 +443,7 @@
 				"delete": {
 					"confirmationMessage": "****** {{name}} ******"
 				},
+				"hide": "******",
 				"notReordered": {
 					"plural": "****** {{error}}",
 					"singular": "****** {{error}}"
@@ -446,7 +451,8 @@
 				"reordered": {
 					"plural": "******",
 					"singular": "******"
-				}
+				},
+				"show": "******"
 			},
 			"positionAttribute": {
 				"delete": {
@@ -640,6 +646,15 @@
 			},
 			"saveSurvey": "******"
 		},
+		"formMapProperties": {
+			"geofields": {
+				"editDialog": {
+					"editGeofield": "******",
+					"label": "******",
+					"value": "******"
+				}
+			}
+		},
 		"forms": {
 			"isCore": "******",
 			"paginator": {
@@ -657,6 +672,7 @@
 			}
 		},
 		"header": {
+			"goToApp": "******",
 			"goToPlatform": "******",
 			"logout": "******",
 			"sidenav": {
@@ -1356,7 +1372,9 @@
 						"popup": "******",
 						"properties": {
 							"defaultVisibility": "******",
+							"from": "******",
 							"opacity": "******",
+							"to": "******",
 							"visibilityRange": "******",
 							"zoom": "******"
 						},
@@ -1488,6 +1506,13 @@
 						"webmap": "******",
 						"zoom": "******"
 					},
+					"renderer": {
+						"default": "******",
+						"defaultLabel": "******",
+						"label": "******",
+						"symbol": "******",
+						"value": "******"
+					},
 					"tooltip": {
 						"category": "******",
 						"dataset": "******",
@@ -1497,6 +1522,9 @@
 							"zoom": "******"
 						}
 					}
+				},
+				"style": {
+					"customStyling": "******"
 				},
 				"summaryCard": {
 					"add": "******",
@@ -1787,6 +1815,17 @@
 		},
 		"dashboard": {
 			"activateFiltering": "******",
+			"buttonActions": {
+				"add": "******",
+				"category": "******",
+				"confirmDelete": "******",
+				"edit": "******",
+				"href": "******",
+				"one": "******",
+				"openInNewTab": "******",
+				"text": "******",
+				"variant": "******"
+			},
 			"context": {
 				"datasource": {
 					"alert": "******",
@@ -1805,8 +1844,13 @@
 					"element": "******"
 				}
 			},
+			"dashboardFilter": "******",
 			"deactivateFiltering": "******",
-			"share": "******"
+			"share": "******",
+			"tooltip": {
+				"useDashboardFilterEditor": "******",
+				"useDefaultEditor": "******"
+			}
 		},
 		"form": {
 			"core": "******",

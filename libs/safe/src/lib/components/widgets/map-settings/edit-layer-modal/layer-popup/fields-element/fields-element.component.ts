@@ -8,7 +8,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { Fields } from '../../layer-fields/layer-fields.component';
+import { Fields } from '../../../../../../models/layer.model';
 import { Observable, takeUntil } from 'rxjs';
 import { SafeEditorControlComponent } from '../../../../../editor-control/editor-control.component';
 import { INLINE_EDITOR_CONFIG } from '../../../../../../const/tinymce.const';
@@ -76,7 +76,10 @@ export class FieldsElementComponent
       this.availableFields = value.map((field) => field.name);
       this.editorService.addCalcAndKeysAutoCompleter(
         this.editorConfig,
-        this.availableFields.map((field) => `{{${field}}}`)
+        this.availableFields.map((field) => ({
+          text: `{{${field}}}`,
+          value: `{{${field}}}`,
+        }))
       );
     });
 

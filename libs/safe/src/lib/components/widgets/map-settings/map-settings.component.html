@@ -28,7 +28,7 @@
     </ng-container>
     <ng-template uiTabContent>
       <safe-map-layers
-        [formControl]="$any(tileForm.get('layers'))"
+        [control]="$any(tileForm.get('layers'))"
         [mapComponent]="mapComponent"
         [destroyTab$]="destroyTab$"
         [currentMapContainerRef]="currentMapContainerRef"

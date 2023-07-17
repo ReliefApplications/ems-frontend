@@ -35,6 +35,7 @@ import { CronExpressionControlModule } from './components/cron-expression-contro
 import { MapModule } from './components/ui/map';
 import { FullScreenModule } from './directives/fullscreen/fullscreen.module';
 import { DashboardFilterModule } from './components/dashboard-filter/dashboard-filter.module';
+import { ButtonActionModule } from './components/button-action/button-action.module';
 import { GraphQLSelectModule } from '@oort-front/ui';
 import { SafeApplicationsArchiveModule } from './components/applications-archive/applications-archive.module';
 
@@ -67,6 +68,7 @@ import { SafeApplicationsArchiveModule } from './components/applications-archive
     CronExpressionControlModule,
     MapModule,
     DashboardFilterModule,
+    ButtonActionModule,
     // === Pipes ===
     SafeDateModule,
     SafeReadableCronModule,
