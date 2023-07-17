@@ -343,7 +343,6 @@ export class FormRecordsComponent
    */
   public async onViewHistory(record: Record) {
     if (!record.id) return;
-    // const data = await this.getRecordDetails(id);
     this.historyId = record.id;
     import('@oort-front/safe').then(({ SafeRecordHistoryComponent }) => {
       this.layoutService.setRightSidenav({
