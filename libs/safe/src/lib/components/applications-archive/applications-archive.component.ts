@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 
 /**
  * Mocked Interface
  */
-export interface ArchiveApp {
+export interface ArchivePage {
+  id: string;
   name: string;
   deleteDate: Date;
 }
@@ -18,14 +19,8 @@ export interface ArchiveApp {
 })
 export class ApplicationsArchiveComponent implements OnInit {
   loading = false;
-  archiveList: ArchiveApp[] = [
-    { name: 'Application 1', deleteDate: new Date() },
-    { name: 'Application 2', deleteDate: new Date() },
-    { name: 'Application 3', deleteDate: new Date() },
-    { name: 'Application 4', deleteDate: new Date() },
-    { name: 'Application 5', deleteDate: new Date() },
-  ];
-  public filteredArchiveList: Array<ArchiveApp> = new Array<ArchiveApp>();
+  @Input() itemList: ArchivePage[] = [];
+  public filteredArchiveList: Array<ArchivePage> = new Array<ArchivePage>();
   public displayedColumns = ['name', 'deleteDate'];
 
   // === FILTERS ===
@@ -44,8 +39,8 @@ export class ApplicationsArchiveComponent implements OnInit {
    * Filter roles and users.
    */
   private filterPredicate(): void {
-    this.filteredArchiveList = this.archiveList.filter(
-      (data: ArchiveApp) =>
+    this.filteredArchiveList = this.itemList.filter(
+      (data: ArchivePage) =>
         (this.searchText.trim().length === 0 ||
           (this.searchText.trim().length > 0 &&
             data.name.toLowerCase().includes(this.searchText.trim()))) &&
@@ -88,7 +83,7 @@ export class ApplicationsArchiveComponent implements OnInit {
    *
    * @param archiveApp ArchiveApp
    */
-  onSelectArchive(archiveApp: ArchiveApp) {
+  onSelectArchive(archiveApp: ArchivePage) {
     console.log(archiveApp);
   }
 }

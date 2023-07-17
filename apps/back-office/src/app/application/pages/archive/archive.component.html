@@ -1,1 +1,13 @@
-<safe-applications-archive></safe-applications-archive>
+<h1>{{ 'common.archive.few' | translate }}</h1>
+<ng-container *ngIf="!loading; else loadingTmpl">
+  <safe-applications-archive [itemList]="itemList"></safe-applications-archive>
+</ng-container>
+<ng-template #loadingTmpl>
+  <safe-skeleton-table
+    [columns]="[
+      'components.application.archive.name',
+      'components.application.archive.deleteDate'
+    ]"
+  >
+  </safe-skeleton-table>
+</ng-template>

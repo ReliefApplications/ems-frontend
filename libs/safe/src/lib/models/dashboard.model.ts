@@ -220,4 +220,5 @@ export interface Dashboard {
     category: Category;
     openInNewTab: boolean;
   }[];
+  status?: 'active' | 'archived';
 }

@@ -1,6 +1,4 @@
-<h1>{{ 'common.archive.few' | translate }}</h1>
-<ng-container *ngIf="!loading; else loadingTmpl">
-  <ng-container *ngIf="archiveList?.length">
+  <ng-container *ngIf="itemList?.length">
     <div class="flex justify-start flex-col sm:flex-row">
       <!-- Search text filter -->
       <div uiFormFieldDirective>
@@ -14,7 +12,7 @@
       </div>
     </div>
   </ng-container>
-  <ng-container *ngIf="archiveList?.length; else emptyTmpl">
+  <ng-container *ngIf="itemList?.length; else emptyTmpl">
     <!-- Table container -->
     <div class="mt-4 overflow-x-hidden shadow-2lg">
       <!-- Table scroll container -->
@@ -61,13 +59,3 @@
     <!-- Empty indicator -->
     <safe-empty [title]="'common.archive.none' | translate"></safe-empty>
   </ng-template>
-</ng-container>
-<ng-template #loadingTmpl>
-  <safe-skeleton-table
-    [columns]="[
-      'components.application.archive.name',
-      'components.application.archive.deleteDate'
-    ]"
-  >
-  </safe-skeleton-table>
-</ng-template>

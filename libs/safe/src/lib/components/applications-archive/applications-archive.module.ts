@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApplicationsArchiveComponent } from './applications-archive.component';
-import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
 import {
   TableModule,
   SelectMenuModule,
@@ -21,7 +20,6 @@ import { FormsModule } from '@angular/forms';
   imports: [
     CommonModule,
     FormsModule,
-    SafeSkeletonTableModule,
     SelectMenuModule,
     TableModule,
     SafeEmptyModule,

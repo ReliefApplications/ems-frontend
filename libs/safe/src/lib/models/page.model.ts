@@ -88,4 +88,5 @@ export interface Page {
   ) & {
     content: string;
   })[];
+  status?: 'active' | 'archived';
 }
