@@ -13,7 +13,7 @@ import { SnackbarService } from '@oort-front/ui';
 import { combineLatest, of } from 'rxjs';
 import { PreviewService } from '../../../services/preview.service';
 import {
-  GET_APPLICATION_BY_ID_ARCHIVED_PAGES,
+  GET_APPLICATION_ARCHIVED_PAGES,
   GetApplicationByIdQueryResponse,
 } from './graphql/queries';
 
@@ -68,7 +68,7 @@ export class ArchiveComponent
         switchMap(([id, asRole]) => {
           if (id !== null) {
             return this.apollo.query<GetApplicationByIdQueryResponse>({
-              query: GET_APPLICATION_BY_ID_ARCHIVED_PAGES,
+              query: GET_APPLICATION_ARCHIVED_PAGES,
               variables: {
                 id,
                 asRole,
