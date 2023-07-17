@@ -93,10 +93,6 @@ export class SafeRecordModalComponent
     new BehaviorSubject<number>(0);
   /** Selected page index as observable */
   public selectedPageIndex$ = this.selectedPageIndex.asObservable();
-  /** Available pages*/
-  private pages = new BehaviorSubject<any[]>([]);
-  /** Pages as observable */
-  public pages$ = this.pages.asObservable();
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -184,13 +180,11 @@ export class SafeRecordModalComponent
     this.data.isTemporary
       ? (this.survey = this.formBuilderService.createSurvey(
           this.form?.structure || '',
-          this.pages,
           this.form?.metadata,
           this.record
         ))
       : (this.survey = this.formBuilderService.createSurvey(
           this.form?.structure || '',
-          this.pages,
           this.form?.metadata
         ));
 
@@ -201,7 +195,6 @@ export class SafeRecordModalComponent
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
-      this.pages,
       this.selectedPageIndex,
       {}
     );
@@ -210,7 +203,6 @@ export class SafeRecordModalComponent
     if (this.data.compareTo) {
       this.surveyNext = this.formBuilderService.createSurvey(
         this.form?.structure || '',
-        this.pages,
         this.form?.metadata,
         this.record
       );
@@ -219,7 +211,6 @@ export class SafeRecordModalComponent
       // After the survey is created we add common callback to survey events
       this.formBuilderService.addEventsCallBacksToSurvey(
         this.surveyNext,
-        this.pages,
         this.selectedPageIndex,
         {}
       );
