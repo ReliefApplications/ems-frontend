@@ -251,6 +251,9 @@ export class DashboardFilterComponent
     if (this.value) {
       this.survey.data = this.value;
     }
+
+    this.setAvailableFiltersForContext();
+
     this.survey.showCompletedPage = false;
     this.survey.showNavigationButtons = false;
 
@@ -263,6 +266,18 @@ export class DashboardFilterComponent
     );
     this.survey.render(this.dashboardSurveyCreatorContainer?.nativeElement);
     this.onValueChange();
+  }
+
+  /**
+   * Set the available filters of dashboard filter in the shared context service
+   */
+  private setAvailableFiltersForContext() {
+    this.contextService.availableFilterFields = this.survey.getAllQuestions()
+      .length
+      ? this.survey
+          .getAllQuestions()
+          .map((question) => ({ name: question.title, value: question.name }))
+      : [];
   }
 
   /**

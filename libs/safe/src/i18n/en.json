@@ -1515,6 +1515,9 @@
 						}
 					}
 				},
+				"style": {
+					"customStyling": "Custom Styling"
+				},
 				"summaryCard": {
 					"add": "Add new card",
 					"card": {
@@ -1833,8 +1836,13 @@
 					"element": "Element"
 				}
 			},
+			"dashboardFilter": "Dashboard filter",
 			"deactivateFiltering": "Deactivate filtering",
-			"share": "Share Dashboard"
+			"share": "Share Dashboard",
+			"tooltip": {
+				"useDashboardFilterEditor": "Use dashboard filter editor",
+				"useDefaultEditor": "Use default editor"
+			}
 		},
 		"form": {
 			"core": "Core",

@@ -103,6 +103,9 @@ export class DashboardComponent
    */
   ngOnInit(): void {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      // Reset scroll when changing page
+      const pageContainer = document.getElementById('appPageContainer');
+      if (pageContainer) pageContainer.scrollTop = 0;
       this.route.queryParams
         .pipe(takeUntil(this.destroy$))
         .subscribe((queryParams) => {

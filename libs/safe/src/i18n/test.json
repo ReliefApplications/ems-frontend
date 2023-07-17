@@ -1515,6 +1515,9 @@
 						}
 					}
 				},
+				"style": {
+					"customStyling": "******"
+				},
 				"summaryCard": {
 					"add": "******",
 					"card": {
@@ -1833,8 +1836,13 @@
 					"element": "******"
 				}
 			},
+			"dashboardFilter": "******",
 			"deactivateFiltering": "******",
-			"share": "******"
+			"share": "******",
+			"tooltip": {
+				"useDashboardFilterEditor": "******",
+				"useDefaultEditor": "******"
+			}
 		},
 		"form": {
 			"core": "******",

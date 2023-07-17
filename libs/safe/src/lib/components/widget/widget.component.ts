@@ -4,6 +4,7 @@ import {
   Output,
   EventEmitter,
   ViewChild,
+  HostBinding,
   OnInit,
   OnDestroy,
 } from '@angular/core';
@@ -16,6 +17,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { SafeApplicationWidgetService } from '../../services/application/application-widget.service';
 import { SafeApplicationService } from '../../services/application/application.service';
+import { v4 as uuidv4 } from 'uuid';
+import get from 'lodash/get';
+import { SafeRestService } from '../../services/rest/rest.service';
 
 /** Component for the widgets */
 @Component({
@@ -41,6 +45,11 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
     }
   }
 
+  private customStyle?: HTMLStyleElement;
+
+  @HostBinding()
+  id = `widget-${uuidv4()}`;
+
   @ViewChild('widgetContent')
   widgetContentComponent!:
     | SafeChartComponent
@@ -62,15 +71,35 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
    * @param activatedRoute ActivatedRoute
    * @param applicationService SafeApplicationService
    * @param applicationWidgetService SafeApplicationWidgetService
+   * @param restService SafeRestService
    */
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private applicationService: SafeApplicationService,
-    private applicationWidgetService: SafeApplicationWidgetService
+    private applicationWidgetService: SafeApplicationWidgetService,
+    private restService: SafeRestService
   ) {}
 
   ngOnInit(): void {
+    // Get style from widget definition
+    const style = get(this.widget, 'settings.widgetDisplay.style') || '';
+    if (style) {
+      const scss = `#${this.id} {
+            ${style}
+          }`;
+      // Compile to css ( we store style as scss )
+      this.restService
+        .post('style/scss-to-css', { scss }, { responseType: 'text' })
+        .subscribe((css) => {
+          // Add to head of document
+          const head = document.getElementsByTagName('head')[0];
+          this.customStyle = document.createElement('style');
+          this.customStyle.appendChild(document.createTextNode(css));
+          head.appendChild(this.customStyle);
+        });
+    }
+
     if (this.widget.component === 'tabs') {
       this.buildName = `applicationWidget${
         this.applicationService.application
@@ -146,5 +175,9 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.activeComponentSubscriptions.unsubscribe();
+    // Remove style from head if exists, to avoid too many styles to be active at same time
+    if (this.customStyle) {
+      document.getElementsByTagName('head')[0].removeChild(this.customStyle);
+    }
   }
 }

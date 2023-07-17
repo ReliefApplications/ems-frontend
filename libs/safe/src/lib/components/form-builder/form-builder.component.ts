@@ -15,7 +15,7 @@ import { SafeReferenceDataService } from '../../services/reference-data/referenc
 import { Form } from '../../models/form.model';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { SnackbarService } from '@oort-front/ui';
-
+import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 /**
  * Array containing the different types of questions.
  * Commented types are not yet implemented.
@@ -104,12 +104,14 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * @param snackBar This is the service that will be used to display the snackbar.
    * @param translate Angular translate service
    * @param referenceDataService Reference data service
+   * @param formHelpersService Shared form helper service.
    */
   constructor(
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private translate: TranslateService,
-    private referenceDataService: SafeReferenceDataService
+    private referenceDataService: SafeReferenceDataService,
+    private formHelpersService: SafeFormHelpersService
   ) {
     // translate the editor in the same language as the interface
     SurveyCreator.localization.currentLocale = this.translate.currentLang;
@@ -169,6 +171,12 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       'surveyCreatorContainer',
       creatorOptions
     );
+
+    this.surveyCreator.onTestSurveyCreated.add((_: any, options: any) => {
+      const survey: Survey.SurveyModel = options.survey;
+      this.formHelpersService.addUserVariables(survey);
+    });
+
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.text = structure;
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;

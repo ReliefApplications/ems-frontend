@@ -56,3 +56,7 @@
 ::ng-deep .leaflet-control-layers-base {
   padding: 0 !important;
 }
+
+::ng-deep .leaflet-container {
+  z-index: 0;
+}

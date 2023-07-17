@@ -1531,6 +1531,9 @@
 						}
 					}
 				},
+				"style": {
+					"customStyling": "Style personnalisé"
+				},
 				"summaryCard": {
 					"add": "Ajouter un carte",
 					"card": {
@@ -1849,8 +1852,13 @@
 					"element": "Élément"
 				}
 			},
+			"dashboardFilter": "Filtre de tableaux de bord",
 			"deactivateFiltering": "Désactiver le filtre",
-			"share": "Partager le tableau de bord"
+			"share": "Partager le tableau de bord",
+			"tooltip": {
+				"useDashboardFilterEditor": "Utiliser l'éditeur de tableaux de bord",
+				"useDefaultEditor": "Utiliser l'éditeur par défaut"
+			}
 		},
 		"form": {
 			"core": "Source",

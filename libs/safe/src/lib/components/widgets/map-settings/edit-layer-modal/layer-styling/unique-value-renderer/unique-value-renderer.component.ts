@@ -4,7 +4,7 @@ import { FormArray, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { SimpleRendererComponent } from '../simple-renderer/simple-renderer.component';
 import { createUniqueValueInfoForm } from '../../../map-forms';
 import { SafeIconDisplayModule } from '../../../../../../pipes/icon-display/icon-display.module';
-import { Fields } from '../../layer-fields/layer-fields.component';
+import { Fields } from '../../../../../../models/layer.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import {

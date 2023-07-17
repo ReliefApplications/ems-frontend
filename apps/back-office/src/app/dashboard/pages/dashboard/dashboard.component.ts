@@ -50,6 +50,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { ContextService } from '@oort-front/safe';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -73,7 +74,7 @@ export class DashboardComponent
   public loading = true;
   public tiles: any[] = [];
   public dashboard?: Dashboard;
-  public showFilter?: boolean;
+  public showFilter!: boolean;
 
   // === GRID ===
   private generatedTiles = 0;
@@ -131,6 +132,7 @@ export class DashboardComponent
    * @param translateService Angular translate service
    * @param authService Shared authentication service
    * @param confirmService Shared confirm service
+   * @param contextService Dashboard context service
    * @param refDataService Shared reference data service
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
@@ -148,6 +150,7 @@ export class DashboardComponent
     private translateService: TranslateService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
+    private contextService: ContextService,
     private refDataService: SafeReferenceDataService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
@@ -165,6 +168,10 @@ export class DashboardComponent
         }
       });
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      // Reset scroll when changing page
+      const pageContainer = document.getElementById('appPageContainer');
+      if (pageContainer) pageContainer.scrollTop = 0;
+
       // Doing this to be able to use custom styles on specific dashboards
 
       // if the route has an record or element query, it means we are on a contextual dashboard
@@ -274,7 +281,8 @@ export class DashboardComponent
             : '';
           this.buttonActions = this.dashboard.buttons || [];
           this.loading = res.loading;
-          this.showFilter = this.dashboard.showFilter;
+          this.showFilter = this.dashboard.showFilter ?? false;
+          this.contextService.isFilterEnabled.next(this.showFilter);
         } else {
           this.snackBar.openSnackBar(
             this.translateService.instant(
@@ -644,7 +652,10 @@ export class DashboardComponent
               });
             }
           },
-          complete: () => (this.loading = false),
+          complete: () => {
+            this.loading = false;
+            this.contextService.isFilterEnabled.next(this.showFilter);
+          },
         });
     }
   }
