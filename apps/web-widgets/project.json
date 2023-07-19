@@ -100,7 +100,7 @@
           ],
           "stylePreprocessorOptions": {
             "includePaths": [
-              "libs/ui/src/style/themes/default",
+              "libs/ui/src/style/themes/oort",
               "apps/web-widgets/src/app/styles"
             ]
           },

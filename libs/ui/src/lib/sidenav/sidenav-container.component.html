@@ -1,5 +1,5 @@
 <!-- Never set as relative, while we use kendo tile layouts for widget grid -->
-<div [ngClass]="{ flex: mode[0] === 'side' }" class="w-screen overflow-y-auto">
+<div [ngClass]="{ flex: mode[0] === 'side' }" class="w-full overflow-y-auto">
   <!-- SIDENAV CONTENT -->
   <ng-container *ngFor="let sidenav of uiSidenavDirective; let i = index">
     <div

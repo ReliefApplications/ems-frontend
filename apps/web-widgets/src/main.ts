@@ -10,4 +10,9 @@ if (environment.production) {
 
 platformBrowserDynamic()
   .bootstrapModule(AppModule)
+  .then(() => {
+    const body = document.getElementById('bodyPlaceholder');
+    const formWidget = document.createElement('form-widget');
+    body?.appendChild(formWidget);
+  })
   .catch((err) => console.error(err));
