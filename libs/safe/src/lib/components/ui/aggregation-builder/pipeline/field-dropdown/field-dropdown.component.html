@@ -4,19 +4,26 @@
     <ui-select-option *ngIf="nullable">{{
       'common.input.none' | translate
     }}</ui-select-option>
-    <ng-container *ngFor="let field of fields">
-      <ui-select-option
-        *ngIf="field.type.kind === 'SCALAR'"
-        [value]="field.name"
-        >{{ field.name }}</ui-select-option
-      >
-      <ui-select-option [isGroup]="true" *ngIf="field.type.kind !== 'SCALAR'">
-        <ui-select-option
-          *ngFor="let subField of field.fields"
-          [value]="field.name + '.' + subField.name"
-          >{{ subField.name }}
-        </ui-select-option>
-      </ui-select-option>
+    <ng-container
+      *ngFor="let field of fields"
+      [ngTemplateOutlet]="fieldNode"
+      [ngTemplateOutletContext]="{ $implicit: field }"
+    >
     </ng-container>
   </ui-select-menu>
 </div>
+
+<ng-template #fieldNode let-data>
+  <ui-select-option [value]="data.name" *ngIf="data.type.kind === 'SCALAR'">{{
+    data.name
+  }}</ui-select-option>
+  <ui-select-option [isGroup]="true" *ngIf="data.type.kind === 'LIST'">
+    <span class="text-red-700 font-bold">{{ data.name }}</span>
+    <ng-container
+      *ngFor="let subField of data.fields"
+      [ngTemplateOutlet]="fieldNode"
+      [ngTemplateOutletContext]="{ $implicit: subField }"
+    >
+    </ng-container>
+  </ui-select-option>
+</ng-template>

@@ -135,6 +135,35 @@ export class SafeAggregationBuilderComponent
   }
 
   /**
+   * gets the right fields to be displayed in group
+   *
+   * @param type type to get fields from
+   * @param previousTypes param to avoid circular dependencies and infinite loading
+   * @returns field deconfined
+   */
+  private deconfineFields(type: any, previousTypes: Set<any>): any {
+    console.log(type.ofType?.name, previousTypes, 'ok la rue');
+    return this.queryBuilder
+      .getFieldsFromType(type.kind === 'OBJECT' ? type.name : type.ofType.name)
+      .filter(
+        (field) =>
+          field.type.name !== 'ID' &&
+          (field.type.kind === 'SCALAR' || field.type.kind === 'LIST') &&
+          !previousTypes.has(field.type.ofType?.name)
+      )
+      .map((field: any) => {
+        if (field.type.kind === 'LIST') {
+          field.fields = this.deconfineFields(
+            field.type,
+            previousTypes?.add(field.type.ofType.name)
+          );
+          return field;
+        }
+        return field;
+      });
+  }
+
+  /**
    * Updates selected, meta and mapping fields depending on tagbox value.
    *
    * @param fieldsNames Tagbox value.
@@ -145,13 +174,11 @@ export class SafeAggregationBuilderComponent
       const selectedFields = fieldsNames.map((x: string) => {
         const field = { ...currentFields.find((y) => x === y.name) };
         if (field.type.kind !== 'SCALAR') {
-          field.fields = this.queryBuilder
-            .getFieldsFromType(
-              field.type.kind === 'OBJECT'
-                ? field.type.name
-                : field.type.ofType.name
-            )
-            .filter((y) => y.type.name !== 'ID' && y.type.kind === 'SCALAR');
+          field.fields = this.deconfineFields(
+            field.type,
+            new Set().add(this.resource.name).add(field.type.ofType.name)
+          );
+          console.log('list fields', field.fields);
         }
         return field;
       });
