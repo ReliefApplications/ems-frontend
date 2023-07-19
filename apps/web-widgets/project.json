@@ -96,7 +96,10 @@
             }
           ],
           "stylePreprocessorOptions": {
-            "includePaths": ["apps/safe/src/lib/style/themes/default"]
+            "includePaths": [
+              "libs/ui/src/style/themes/oort",
+              "apps/web-widgets/src/app/styles"
+            ]
           },
           "fileReplacements": [
             {

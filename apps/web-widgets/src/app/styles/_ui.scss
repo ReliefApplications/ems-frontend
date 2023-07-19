@@ -14,10 +14,9 @@
 @import 'libs/ui/src/style/widgets.scss';
 @import 'libs/ui/src/style/survey.scss';
 @import 'libs/ui/src/style/styles.scss';
-@import 'libs/ui/src/style/theme.scss';
 
-/* Definition of the scss properties in the shadow root host element, won't affect any other element outside shadow-root */
 @import 'variables.scss';
+
 @layer base {
   :host {
     --primary-50: #{$primary_50};
