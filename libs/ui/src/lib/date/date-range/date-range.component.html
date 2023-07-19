@@ -1,93 +1,93 @@
-<ng-template *ngIf="!hasInputs">
-  <kendo-multiviewcalendar
-    kendoDateRangeSelection
-    [selectionRange]="range"
-    (selectionRangeChange)="onChange($event)"
-    class="px-2 pb-3 transition-all duration-150 ease-in bg-white rounded-lg shadow-[0px_2px_15px_-3px_rgba(0,0,0,.07),_0px_10px_20px_-2px_rgba(0,0,0,.04)] z-[1066]"
-    [disabled]="disabled"
-    [showViewHeader]="true"
-    [views]="2"
-    topView="decade">
-    <kendo-multiviewcalendar-messages
-      today="{{ 'kendo.datepicker.today' | translate }}"
-    >
-    </kendo-multiviewcalendar-messages>
-    <ng-template kendoCalendarMonthCellTemplate let-date>
-      <span>{{ date.getDate() }}</span>
-    </ng-template>
-    <ng-template kendoCalendarYearCellTemplate let-context="cellContext">
-      <span>{{ context.formattedValue }}</span>
-    </ng-template>
-    <ng-template kendoCalendarDecadeCellTemplate let-context="cellContext">
-      <span>{{ context.formattedValue }}</span>
-    </ng-template>
-    <ng-template kendoCalendarHeaderTitleTemplate let-title>
-      <span class="p-2.5">
-        {{ title }}
-      </span>
-    </ng-template>
-  </kendo-multiviewcalendar>
-</ng-template>
-
-<div *ngIf="hasInputs">
-  <kendo-daterange class="flex flex-wrap">
-    <div class="relative">
-      <kendo-dateinput
-        class="w-[200px] pointer-events-auto"
-        kendoDateRangeStartInput
-        [(value)]="range.start"
-        [placeholder]="'kendo.datepicker.startLabel' | translate"
-      ></kendo-dateinput>
-      <!-- Messy code, best looking result -->
-      <div class="pointer-events-none absolute h-[27px] bg-[#f5f5f5] w-[28px] m-[2px] top-0 right-0 z-50 border-l-2 border-color-[#e7e7e7] flex justify-center items-center">
-        <span class="k-icon k-i-calendar"></span>
-      </div>
-    </div>
-    <div class="relative">
-      <kendo-dateinput
-        class="w-[200px]"
-        kendoDateRangeEndInput
-        [(value)]="range.end"
-        [placeholder]="'kendo.datepicker.endLabel' | translate"
-      ></kendo-dateinput>
-      <!-- Messy code, best looking result -->
-      <div class="pointer-events-none absolute h-[27px] bg-[#f5f5f5] w-[28px] m-[2px] top-0 right-0 z-50 border-l-2 border-color-[#e7e7e7] flex justify-center items-center">
-        <span class="k-icon k-i-calendar"></span>
-      </div>
-    </div>
-
-    <kendo-daterange-popup>
-      <ng-template kendoDateRangePopupTemplate>
-        <kendo-multiviewcalendar
-          kendoDateRangeSelection
-          [selectionRange]="range"
-          (selectionRangeChange)="onChange($event)"
-          class="px-2 pb-3 transition-all duration-150 ease-in bg-white rounded-lg shadow-[0px_2px_15px_-3px_rgba(0,0,0,.07),_0px_10px_20px_-2px_rgba(0,0,0,.04)] z-[1066]"
-          [disabled]="disabled"
-          [showViewHeader]="true"
-          [views]="2"
-          topView="decade"
-        >
-          <kendo-multiviewcalendar-messages
-            today="{{ 'kendo.datepicker.today' | translate }}"
-          >
-          </kendo-multiviewcalendar-messages>
-          <ng-template kendoCalendarMonthCellTemplate let-date>
-            <span>{{ date.getDate() }}</span>
-          </ng-template>
-          <ng-template kendoCalendarYearCellTemplate let-context="cellContext">
-            <span>{{ context.formattedValue }}</span>
-          </ng-template>
-          <ng-template kendoCalendarDecadeCellTemplate let-context="cellContext">
-            <span>{{ context.formattedValue }}</span>
-          </ng-template>
-          <ng-template kendoCalendarHeaderTitleTemplate let-title>
-            <span class="p-2.5">
-              {{ title }}
-            </span>
-          </ng-template>
-        </kendo-multiviewcalendar>
+<ng-template>
+  <div *ngIf="!hasInputs">
+    <kendo-multiviewcalendar
+      kendoDateRangeSelection
+      [selectionRange]="range"
+      (selectionRangeChange)="onChange($event)"
+      class="px-2 pb-3 transition-all duration-150 ease-in bg-white rounded-lg shadow-[0px_2px_15px_-3px_rgba(0,0,0,.07),_0px_10px_20px_-2px_rgba(0,0,0,.04)] z-[1066]"
+      [disabled]="disabled"
+      [showViewHeader]="true"
+      [views]="2"
+      topView="decade">
+      <kendo-multiviewcalendar-messages
+        today="{{ 'kendo.datepicker.today' | translate }}">
+      </kendo-multiviewcalendar-messages>
+      <ng-template kendoCalendarMonthCellTemplate let-date>
+        <span>{{ date.getDate() }}</span>
       </ng-template>
-    </kendo-daterange-popup>
-  </kendo-daterange>
-</div>
+      <ng-template kendoCalendarYearCellTemplate let-context="cellContext">
+        <span>{{ context.formattedValue }}</span>
+      </ng-template>
+      <ng-template kendoCalendarDecadeCellTemplate let-context="cellContext">
+        <span>{{ context.formattedValue }}</span>
+      </ng-template>
+      <ng-template kendoCalendarHeaderTitleTemplate let-title>
+        <span class="p-2.5">
+          {{ title }}
+        </span>
+      </ng-template>
+    </kendo-multiviewcalendar>
+  </div>
+
+  <div *ngIf="hasInputs">
+    <kendo-daterange class="flex flex-wrap">
+      <div class="relative">
+        <kendo-dateinput
+          class="w-[200px] pointer-events-auto"
+          kendoDateRangeStartInput
+          [(value)]="range.start"
+          [placeholder]="'kendo.datepicker.startLabel' | translate"></kendo-dateinput>
+        <!-- Messy code, best looking result -->
+        <div
+          class="pointer-events-none absolute h-[27px] bg-[#f5f5f5] w-[28px] m-[2px] top-0 right-0 z-50 border-l-2 border-color-[#e7e7e7] flex justify-center items-center">
+          <span class="k-icon k-i-calendar"></span>
+        </div>
+      </div>
+      <div class="relative">
+        <kendo-dateinput
+          class="w-[200px]"
+          kendoDateRangeEndInput
+          [(value)]="range.end"
+          [placeholder]="'kendo.datepicker.endLabel' | translate"></kendo-dateinput>
+        <!-- Messy code, best looking result -->
+        <div
+          class="pointer-events-none absolute h-[27px] bg-[#f5f5f5] w-[28px] m-[2px] top-0 right-0 z-50 border-l-2 border-color-[#e7e7e7] flex justify-center items-center">
+          <span class="k-icon k-i-calendar"></span>
+        </div>
+      </div>
+
+      <kendo-daterange-popup>
+        <ng-template kendoDateRangePopupTemplate>
+          <kendo-multiviewcalendar
+            kendoDateRangeSelection
+            [selectionRange]="range"
+            (selectionRangeChange)="onChange($event)"
+            class="px-2 pb-3 transition-all duration-150 ease-in bg-white rounded-lg shadow-[0px_2px_15px_-3px_rgba(0,0,0,.07),_0px_10px_20px_-2px_rgba(0,0,0,.04)] z-[1066]"
+            [disabled]="disabled"
+            [showViewHeader]="true"
+            [views]="2"
+            topView="decade">
+            <kendo-multiviewcalendar-messages
+              today="{{ 'kendo.datepicker.today' | translate }}">
+            </kendo-multiviewcalendar-messages>
+            <ng-template kendoCalendarMonthCellTemplate let-date>
+              <span>{{ date.getDate() }}</span>
+            </ng-template>
+            <ng-template kendoCalendarYearCellTemplate let-context="cellContext">
+              <span>{{ context.formattedValue }}</span>
+            </ng-template>
+            <ng-template kendoCalendarDecadeCellTemplate
+              let-context="cellContext">
+              <span>{{ context.formattedValue }}</span>
+            </ng-template>
+            <ng-template kendoCalendarHeaderTitleTemplate let-title>
+              <span class="p-2.5">
+                {{ title }}
+              </span>
+            </ng-template>
+          </kendo-multiviewcalendar>
+        </ng-template>
+      </kendo-daterange-popup>
+    </kendo-daterange>
+  </div>
+</ng-template>
