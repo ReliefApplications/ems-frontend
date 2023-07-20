@@ -154,36 +154,13 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     {
       provide: POPUP_CONTAINER,
       useFactory: () => {
-        const currentPopupHolder: any = Array.from(
-          document.getElementsByTagName('*')
-        ).filter((element) => element.shadowRoot);
-
-        // REACTIVE CODE, WOULD IT WORK?? //
-        // Callback function to execute when mutations are observed
-        // const updatePopupHolder = (mutationList: any) => {
-        //   for (const mutation of mutationList) {
-        //     if (mutation.type === 'childList') {
-        //       currentPopupHolder = Array.from(
-        //         document.getElementsByTagName('*')
-        //       ).filter((element) => element.shadowRoot);
-        //     }
-        //   }
-        // };
-
-        // // Create an observer instance linked to the updatePopupHolder function
-        // const observer = new MutationObserver(updatePopupHolder);
-        // // Start observing the target node for configured mutations
-        // observer.observe(document.body, {
-        //   attributes: false,
-        //   childList: true,
-        //   subtree: true,
-        // });
-
+        // const popupContainer = Array.from(
+        //   document.getElementsByTagName('*')
+        // ).filter((element) => element.shadowRoot);
         // return the container ElementRef, where the popup will be injected
         return {
-          nativeElement: currentPopupHolder
-            ? currentPopupHolder[0].shadowRoot
-            : document.body,
+          nativeElement: document.body,
+          // nativeElement: popupContainer ? popupContainer[0] : document.body,
         } as ElementRef;
       },
     },
