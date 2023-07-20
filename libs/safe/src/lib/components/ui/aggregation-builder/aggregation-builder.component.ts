@@ -142,7 +142,6 @@ export class SafeAggregationBuilderComponent
    * @returns field deconfined
    */
   private deconfineFields(type: any, previousTypes: Set<any>): any {
-    console.log(type.ofType?.name, previousTypes, 'ok la rue');
     return this.queryBuilder
       .getFieldsFromType(type.kind === 'OBJECT' ? type.name : type.ofType.name)
       .filter(
@@ -178,7 +177,6 @@ export class SafeAggregationBuilderComponent
             field.type,
             new Set().add(this.resource.name).add(field.type.ofType.name)
           );
-          console.log('list fields', field.fields);
         }
         return field;
       });

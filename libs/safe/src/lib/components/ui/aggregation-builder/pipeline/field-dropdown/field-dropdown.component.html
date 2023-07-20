@@ -1,6 +1,6 @@
 <div uiFormFieldDirective class="flex-1 w-44">
   <label>{{ label || 'common.field.one' | translate }}</label>
-  <ui-select-menu [formControl]="fieldControl">
+  <ui-select-menu [formControl]="fieldControl" [supplementaryOptions]="fieldComponents">
     <ui-select-option *ngIf="nullable">{{
       'common.input.none' | translate
     }}</ui-select-option>
@@ -13,16 +13,22 @@
   </ui-select-menu>
 </div>
 
-<ng-template #fieldNode let-data>
-  <ui-select-option [value]="data.name" *ngIf="data.type.kind === 'SCALAR'">{{
-    data.name
-  }}</ui-select-option>
+<ng-template #fieldNode let-data let-parentName="parentName">
+  <ui-select-option
+    [value]="parentName ? parentName + '.' + data.name : data.name"
+    *ngIf="data.type.kind === 'SCALAR'"
+    #field
+    >{{ data.name }}</ui-select-option
+  >
   <ui-select-option [isGroup]="true" *ngIf="data.type.kind === 'LIST'">
     <span class="text-red-700 font-bold">{{ data.name }}</span>
     <ng-container
       *ngFor="let subField of data.fields"
       [ngTemplateOutlet]="fieldNode"
-      [ngTemplateOutletContext]="{ $implicit: subField }"
+      [ngTemplateOutletContext]="{
+        $implicit: subField,
+        parentName: parentName ? parentName + '.' + data.name : data.name
+      }"
     >
     </ng-container>
   </ui-select-option>

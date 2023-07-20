@@ -63,6 +63,7 @@ export class SelectMenuComponent
 
   @ContentChildren(SelectOptionComponent, { descendants: true })
   optionList!: QueryList<SelectOptionComponent>;
+  @Input() supplementaryOptions?: QueryList<SelectOptionComponent>; //options added to handle recursion
 
   @ViewChild('optionPanel', { static: true }) optionPanel!: TemplateRef<any>;
 
@@ -146,6 +147,37 @@ export class SelectMenuComponent
           });
         },
       });
+    console.log('supplementary', this.supplementaryOptions);
+    this.supplementaryOptions?.changes
+      .pipe(startWith(this.supplementaryOptions), takeUntil(this.destroy$))
+      .subscribe({
+        next: (options: QueryList<SelectOptionComponent>) => {
+          console.log(
+            'got value',
+            options.map((option) => option.value)
+          );
+          if (this.value) {
+            this.selectedValues.push(
+              this.value instanceof Array ? [...this.value] : this.value
+            );
+          }
+          options.forEach((option) => {
+            option.optionClick.pipe(takeUntil(this.destroy$)).subscribe({
+              next: (isSelected: boolean) => {
+                this.updateSelectedValues(option, isSelected);
+                this.onChangeFunction();
+              },
+            });
+            // Initialize any selected values
+            if (this.selectedValues.includes(option.value)) {
+              option.selected = true;
+            } else {
+              option.selected = false;
+            }
+            this.setDisplayTriggerText();
+          });
+        },
+      });
     if (this.control) {
       this.control.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe({
         next: (value) => {
@@ -153,6 +185,9 @@ export class SelectMenuComponent
           if (isNil(value) || value.length === 0) {
             this.selectedValues = [];
             this.optionList.forEach((option) => (option.selected = false));
+            this.supplementaryOptions?.forEach(
+              (option) => (option.selected = false)
+            );
             this.setDisplayTriggerText();
           }
         },
@@ -267,6 +302,11 @@ export class SelectMenuComponent
             option.selected = false;
           }
         });
+        this.supplementaryOptions?.forEach((option: SelectOptionComponent) => {
+          if (selectedOption.value !== option.value) {
+            option.selected = false;
+          }
+        });
         this.selectedValues = [selectedOption.value];
       } else {
         this.selectedValues = [...this.selectedValues, selectedOption.value];
@@ -292,7 +332,8 @@ export class SelectMenuComponent
    * @returns mapped values
    */
   getValuesLabel(selectedValues: any[]) {
-    let values = this.optionList.filter((val: any) => {
+    const options = this.supplementaryOptions ?? this.optionList;
+    let values = options.filter((val: any) => {
       if (selectedValues.includes(val.value)) {
         return val;
       }
