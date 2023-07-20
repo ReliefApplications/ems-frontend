@@ -111,9 +111,16 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     },
     {
       provide: POPUP_CONTAINER,
-      useFactory: () =>
+      useFactory: () => {
+        // const popupContainer = Array.from(
+        //   document.getElementsByTagName('*')
+        // ).filter((element) => element.shadowRoot);
         // return the container ElementRef, where the popup will be injected
-        ({ nativeElement: document.body } as ElementRef),
+        return {
+          nativeElement: document.body,
+          // nativeElement: popupContainer ? popupContainer[0] : document.body,
+        } as ElementRef;
+      },
     },
     {
       provide: OverlayContainer,
