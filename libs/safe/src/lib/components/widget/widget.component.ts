@@ -81,6 +81,35 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
     private restService: SafeRestService
   ) {}
 
+  private getOutletPath(routeObj: any, currPath: string[]): string[] {
+    if (routeObj.outlet) {
+      return [''];
+    }
+    const pathFound: string[] = [];
+    const path = routeObj.children ? 'children' : '_loadedRoutes';
+    if (routeObj[path]?.length) {
+      for (let index = 0; index < routeObj[path].length; index++) {
+        if (routeObj[path][index].outlet !== undefined) {
+          pathFound.push(path);
+          currPath.push(...pathFound);
+          return pathFound;
+        } else {
+          const actualPathFound = this.getOutletPath(
+            routeObj[path][index],
+            currPath
+          );
+          if (actualPathFound[0] !== '' || actualPathFound.length > 1) {
+            pathFound.push(index.toString());
+            pathFound.push(path);
+            currPath.push(...pathFound);
+            return pathFound;
+          }
+        }
+      }
+    }
+    return [''];
+  }
+
   ngOnInit(): void {
     // Get style from widget definition
     const style = get(this.widget, 'settings.widgetDisplay.style') || '';
@@ -106,24 +135,33 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
           .getValue()
           ?.pages?.filter((p) => p.id === 'tabs').length
       }`;
-      //@ TODO Improve this access to the route config with the outlet
-      const newSubRoute = [
-        (
-          this.router['config'][1]?.['children']?.[1]?.['children']?.[0] as any
-        )?.(['_loadedRoutes']?.[0]?.['children' as any]?.[3] as any)?.[
-          '_loadedRoutes'
-        ]?.[0]?.['children'],
-      ];
-      // Set the outlet name
-      newSubRoute[0].outlet = this.buildName;
-      // Merge with the current route config
-      const newRoutes = [
-        // 4
-        ...this.router.config,
-        ...newSubRoute,
-      ];
-      // Reset the config with the outleted config and see if it goes to that router-outlet
-      this.router.resetConfig(newRoutes);
+      const pathArray: string[] = [];
+      this.getOutletPath(this.router['config'][1], pathArray);
+
+      const outletPath = pathArray.reverse();
+      const outletRouteConfigArray = get(this.router['config'][1], outletPath);
+
+      let newRoute = false;
+      if (
+        outletRouteConfigArray[0].outlet !== '' &&
+        outletRouteConfigArray[0].outlet !== this.buildName
+      ) {
+        const newOutletRouteConfig = { ...outletRouteConfigArray[0] };
+        newOutletRouteConfig.outlet = this.buildName;
+        outletRouteConfigArray.push(newOutletRouteConfig);
+        newRoute = true;
+      } else if (outletRouteConfigArray[0].outlet === '') {
+        outletRouteConfigArray[0].outlet = this.buildName;
+        newRoute = true;
+      }
+
+      if (newRoute) {
+        console.log(this.activatedRoute);
+        // Reset the config with the outleted config and see if it goes to that router-outlet
+        this.router.resetConfig(this.router.config);
+        // location.reload();
+        // return;
+      }
 
       this.applicationWidgetService.widgetState = {
         header: this.header,
@@ -131,15 +169,12 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
         settings: this.widget.settings,
       };
       if (this.buildName) {
-        setTimeout(() => {
-          this.router.navigate(
-            ['./', { outlets: { [this.buildName]: 'tab' } }],
-            {
-              relativeTo: this.activatedRoute,
-              skipLocationChange: true,
-            }
-          );
-        }, 0);
+        this.router.navigateByUrl(
+          `${location.pathname}/(${this.buildName}:tab)`,
+          {
+            skipLocationChange: true,
+          }
+        );
       }
     }
   }
