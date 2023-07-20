@@ -712,7 +712,7 @@
               *ngFor="let file of dataItem[field.name]"
               [look]="'flat'"
               [uiTooltip]="file.name"
-              (click)="onDownload(file)"
+              (click)="onDownload(file, dataItem.id, field.name)"
               class="w-full justify-start overflow-hidden text-overflow-ellipsis"
             >
               <span [class]="'k-icon ' + getFileIcon(file.name)"></span>

@@ -119,7 +119,7 @@ export class DataTemplateService {
       const index = event.target.getAttribute('index');
       const file = get(data, `${fieldName}[${index}]`, null);
       if (file) {
-        const path = `download/file/${file.content}`;
+        const path = `download/file/${file.content}/${data.id}/${fieldName}`;
         this.downloadService.getFile(path, file.type, file.name);
       }
     }

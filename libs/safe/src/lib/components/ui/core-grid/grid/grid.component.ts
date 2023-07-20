@@ -655,15 +655,17 @@ export class SafeGridComponent
    * Downloads file of record.
    *
    * @param file File to download.
+   * @param recordId Record id.
+   * @param fieldName Name of the field.
    */
-  public onDownload(file: any): void {
+  public onDownload(file: any, recordId: string, fieldName: string): void {
     if (file.content.startsWith('data')) {
       const downloadLink = document.createElement('a');
       downloadLink.href = file.content;
       downloadLink.download = file.name;
       downloadLink.click();
     } else {
-      const path = `download/file/${file.content}`;
+      const path = `download/file/${file.content}/${recordId}/${fieldName}`;
       this.downloadService.getFile(path, file.type, file.name);
     }
   }
