@@ -20,8 +20,7 @@ export class DistributionListsComponent
   implements OnInit
 {
   // === INPUT DATA ===
-  public distributionLists: Array<DistributionList> =
-    new Array<DistributionList>();
+  public distributionLists: DistributionList[] = [];
   @Input() applicationService!: SafeApplicationService;
   // === DISPLAYED COLUMNS ===
   public displayedColumns = ['name', 'actions'];
