@@ -3,6 +3,7 @@ import {
   Component,
   Input,
   QueryList,
+  ViewChild,
   ViewChildren,
 } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
@@ -21,11 +22,9 @@ export class SafeFieldDropdownComponent implements AfterViewInit {
   @Input() label = '';
   @Input() nullable = false;
   @ViewChildren('field') fieldComponents!: QueryList<any>;
+  @ViewChild('menu') selectMenu!: any;
 
   ngAfterViewInit(): void {
-    console.log(
-      this.fieldComponents.map((field) => field.value),
-      'ok'
-    );
+    this.selectMenu.forceOptionList(this.fieldComponents);
   }
 }

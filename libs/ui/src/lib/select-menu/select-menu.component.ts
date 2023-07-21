@@ -63,7 +63,6 @@ export class SelectMenuComponent
 
   @ContentChildren(SelectOptionComponent, { descendants: true })
   optionList!: QueryList<SelectOptionComponent>;
-  @Input() supplementaryOptions?: QueryList<SelectOptionComponent>; //options added to handle recursion
 
   @ViewChild('optionPanel', { static: true }) optionPanel!: TemplateRef<any>;
 
@@ -147,15 +146,31 @@ export class SelectMenuComponent
           });
         },
       });
-    console.log('supplementary', this.supplementaryOptions);
-    this.supplementaryOptions?.changes
-      .pipe(startWith(this.supplementaryOptions), takeUntil(this.destroy$))
+    if (this.control) {
+      this.control.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe({
+        next: (value) => {
+          // If the value is cleared from outside, reset displayed values
+          if (isNil(value) || value.length === 0) {
+            this.selectedValues = [];
+            this.optionList.forEach((option) => (option.selected = false));
+            this.setDisplayTriggerText();
+          }
+        },
+      });
+    }
+  }
+
+  /**
+   * forces the options list when they cannot be successfully loaded through contentchildren
+   *
+   * @param optionList the optionList we want to
+   */
+  forceOptionList(optionList: QueryList<SelectOptionComponent>) {
+    this.optionList = optionList;
+    this.optionList?.changes
+      .pipe(startWith(this.optionList), takeUntil(this.destroy$))
       .subscribe({
         next: (options: QueryList<SelectOptionComponent>) => {
-          console.log(
-            'got value',
-            options.map((option) => option.value)
-          );
           if (this.value) {
             this.selectedValues.push(
               this.value instanceof Array ? [...this.value] : this.value
@@ -178,21 +193,6 @@ export class SelectMenuComponent
           });
         },
       });
-    if (this.control) {
-      this.control.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe({
-        next: (value) => {
-          // If the value is cleared from outside, reset displayed values
-          if (isNil(value) || value.length === 0) {
-            this.selectedValues = [];
-            this.optionList.forEach((option) => (option.selected = false));
-            this.supplementaryOptions?.forEach(
-              (option) => (option.selected = false)
-            );
-            this.setDisplayTriggerText();
-          }
-        },
-      });
-    }
   }
 
   /**
@@ -302,11 +302,6 @@ export class SelectMenuComponent
             option.selected = false;
           }
         });
-        this.supplementaryOptions?.forEach((option: SelectOptionComponent) => {
-          if (selectedOption.value !== option.value) {
-            option.selected = false;
-          }
-        });
         this.selectedValues = [selectedOption.value];
       } else {
         this.selectedValues = [...this.selectedValues, selectedOption.value];
@@ -332,8 +327,7 @@ export class SelectMenuComponent
    * @returns mapped values
    */
   getValuesLabel(selectedValues: any[]) {
-    const options = this.supplementaryOptions ?? this.optionList;
-    let values = options.filter((val: any) => {
+    let values = this.optionList.filter((val: any) => {
       if (selectedValues.includes(val.value)) {
         return val;
       }
