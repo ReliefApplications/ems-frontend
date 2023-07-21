@@ -31,7 +31,7 @@ export class SafeDrawerPositionerDirective
   // If the element is open or not
   @Input() opened = false;
   @Input()
-  dashboardSurveyCreatorContainer!: any;
+  dashboardSurveyCreatorContainer!: any; // looks like an ElementRef<HTMLElement> ?
 
   /**
    * Class constructor

@@ -45,7 +45,9 @@ const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
  *
  * @returns A function which returns an object with the separator keys
  */
-export function codesFactory(): () => any {
+export function codesFactory(): () => {
+  separatorKeyCodes: number[];
+} {
   const codes = () => ({ separatorKeyCodes: SEPARATOR_KEYS_CODE });
   return codes;
 }

@@ -58,13 +58,20 @@ export class DashboardFilterComponent
     FilterPosition.RIGHT,
   ] as const;
   public isDrawerOpen = false;
+  /** Either left, right, top or bottom */
   public filterPosition = FilterPosition;
+  /** computed width of the parent container (or the window size if fullscreen) */
   public containerWidth!: string;
+  /** computed height of the parent container (or the window size if fullscreen) */
   public containerHeight!: string;
+  /** computed left offset of the parent container (or 0 if fullscreen) */
   public containerTopOffset!: string;
+  /** computed top offset of the parent container (or 0 if fullscreen) */
   public containerLeftOffset!: string;
-  private value: any;
+  /** Represents the survey's value */
+  private value: Record<string, any> | undefined;
 
+  /** Resize observer for the sidenav container */
   private resizeObserver!: ResizeObserver;
 
   // Survey
@@ -134,12 +141,12 @@ export class DashboardFilterComponent
     this.contextService.filterStructure$
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        this.surveyStructure = value || '';
+        this.surveyStructure = value || ''; // so is it a string ? a JSON ? an object ? nobody knows
         this.initSurvey();
       });
     this.contextService.filterPosition$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
+      .subscribe((value: FilterPosition | undefined) => {
         if (value) {
           this.position = value as FilterPosition;
         } else {
@@ -185,7 +192,7 @@ export class DashboardFilterComponent
    */
   public changeFilterPosition(position: FilterPosition) {
     this.position = position;
-    this.contextService.filterPosition.next(position);
+    this.contextService.filterPosition.next(position); // any but we pass them FilterPosition ?
   }
 
   /**
@@ -255,6 +262,8 @@ export class DashboardFilterComponent
     this.setAvailableFiltersForContext();
 
     this.survey.showCompletedPage = false;
+    // The doc says 'bottom' (default) | 'top' | 'both' | 'none' but says nothing about boolean values
+    // yet we pass them boolean values because it says "string | any"
     this.survey.showNavigationButtons = false;
 
     this.survey.onValueChanged.add(this.onValueChange.bind(this));
@@ -286,7 +295,7 @@ export class DashboardFilterComponent
    * @param survey survey model
    */
   public onAfterRenderSurvey(survey: Survey.SurveyModel) {
-    this.empty = !(survey.getAllQuestions().length > 0);
+    this.empty = survey.getAllQuestions().length === 0;
   }
 
   /**
@@ -334,7 +343,7 @@ export class DashboardFilterComponent
           );
         } else {
           this.position = defaultPosition;
-          this.contextService.filterPosition.next(defaultPosition);
+          this.contextService.filterPosition.next(defaultPosition); // any but we pass them FilterPosition ?
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectUpdated', {
               type: this.translate.instant('common.filter.one').toLowerCase(),
@@ -356,7 +365,7 @@ export class DashboardFilterComponent
     this.ngZone.run(() => {
       this.quickFilters = displayValues
         .filter((question) => !!question.value)
-        .map((question: any) => {
+        .map((question) => {
           let mappedQuestion;
           if (question.value instanceof Array && question.value.length > 2) {
             mappedQuestion = {
