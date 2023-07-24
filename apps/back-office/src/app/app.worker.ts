@@ -8,7 +8,6 @@ import {
 
 @AngularWebWorker()
 export class AppWorker implements OnWorkerInit {
-  constructor() {}
   a = 0;
   onWorkerInit() {
     console.log('Web worker is working');
