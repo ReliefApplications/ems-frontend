@@ -1,13 +1,16 @@
 import { Apollo } from 'apollo-angular';
 import {
   GET_SHORT_RESOURCE_BY_ID,
-  GET_RESOURCE_BY_ID,
   GetResourceByIdQueryResponse,
 } from '../graphql/queries';
 import * as SurveyCreator from 'survey-creator';
 import { resourceConditions } from './resources';
 import { Dialog } from '@angular/cdk/dialog';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import {
+  FormControl,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+} from '@angular/forms';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
 import { DomService } from '../../services/dom/dom.service';
 import { buildSearchButton, buildAddButton } from './utils';
@@ -15,6 +18,13 @@ import get from 'lodash/get';
 import { Question, QuestionResource } from '../types';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
 import { NgZone } from '@angular/core';
+import {
+  GET_RESOURCE_RECORDS,
+  GetResourceRecordsQueryResponse,
+} from '../../components/record-dropdown/graphql/queries';
+
+/** Question's temporary records */
+export const temporaryRecordsForm = new FormControl([]);
 
 /**
  * Inits the resource question component of for survey.
@@ -56,12 +66,14 @@ export const init = (
   const getResourceRecordsById = (data: {
     id: string;
     filters?: { field: string; operator: string; value: string }[];
+    first: number;
   }) =>
-    apollo.query<GetResourceByIdQueryResponse>({
-      query: GET_RESOURCE_BY_ID,
+    apollo.query<GetResourceRecordsQueryResponse>({
+      query: GET_RESOURCE_RECORDS,
       variables: {
         id: data.id,
         filter: data.filters,
+        first: data.first,
       },
       fetchPolicy: 'no-cache',
     });
@@ -231,7 +243,7 @@ export const init = (
         visibleIndex: 3,
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource) {
-            getResourceRecordsById({ id: obj.resource }).subscribe(
+            getResourceRecordsById({ id: obj.resource, first: 15 }).subscribe(
               ({ data }) => {
                 const choices = mapQuestionChoices(data, obj);
                 choices.unshift({ value: null });
@@ -561,7 +573,7 @@ export const init = (
     },
     populateChoices: (question: QuestionResource): void => {
       if (question.resource) {
-        getResourceRecordsById({ id: question.resource, filters }).subscribe(
+        getResourceRecordsById({ id: question.resource, first: 20 }).subscribe(
           ({ data }) => {
             const choices = mapQuestionChoices(data, question);
             question.contentQuestion.choices = choices;

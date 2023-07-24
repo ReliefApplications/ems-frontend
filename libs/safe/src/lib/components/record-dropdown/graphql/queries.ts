@@ -45,6 +45,7 @@ export const GET_RESOURCE_RECORDS = gql`
     $display: Boolean
   ) {
     resource(id: $id) {
+      name
       records(first: $first, afterCursor: $afterCursor, filter: $filter) {
         edges {
           node {
@@ -74,6 +75,7 @@ export const GET_RESOURCE_RECORDS = gql`
 /** Modelf for GetResouceRecordsQueryResponse object */
 export interface GetResourceRecordsQueryResponse {
   resource: {
+    name: string;
     records: {
       edges: {
         node: Record;
