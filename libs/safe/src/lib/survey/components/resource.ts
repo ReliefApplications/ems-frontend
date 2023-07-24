@@ -1,6 +1,7 @@
 import { Apollo } from 'apollo-angular';
 import {
   GET_SHORT_RESOURCE_BY_ID,
+  GET_RESOURCE_BY_ID,
   GetResourceByIdQueryResponse,
 } from '../graphql/queries';
 import * as SurveyCreator from 'survey-creator';
@@ -17,11 +18,8 @@ import { buildSearchButton, buildAddButton } from './utils';
 import get from 'lodash/get';
 import { Question, QuestionResource } from '../types';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
+import { SafeTestServiceDropdownComponent } from '../../components/test-service-dropdown/test-service-dropdown.component';
 import { NgZone } from '@angular/core';
-import {
-  GET_RESOURCE_RECORDS,
-  GetResourceRecordsQueryResponse,
-} from '../../components/record-dropdown/graphql/queries';
 
 /** Question's temporary records */
 export const temporaryRecordsForm = new FormControl([]);
@@ -66,14 +64,12 @@ export const init = (
   const getResourceRecordsById = (data: {
     id: string;
     filters?: { field: string; operator: string; value: string }[];
-    first: number;
   }) =>
-    apollo.query<GetResourceRecordsQueryResponse>({
-      query: GET_RESOURCE_RECORDS,
+    apollo.query<GetResourceByIdQueryResponse>({
+      query: GET_RESOURCE_BY_ID,
       variables: {
         id: data.id,
         filter: data.filters,
-        first: data.first,
       },
       fetchPolicy: 'no-cache',
     });
@@ -240,19 +236,30 @@ export const init = (
         required: true,
         visibleIf: (obj: null | QuestionResource) =>
           !!obj && !!obj.resource && !!obj.displayField,
+        type: 'testServiceDropdown',
         visibleIndex: 3,
-        choices: (obj: QuestionResource, choicesCallback: any) => {
-          if (obj.resource) {
-            getResourceRecordsById({ id: obj.resource, first: 15 }).subscribe(
-              ({ data }) => {
-                const choices = mapQuestionChoices(data, obj);
-                choices.unshift({ value: null });
-                choicesCallback(choices);
-              }
-            );
-          }
-        },
       });
+
+      const testServiceEditor = {
+        render: (editor: any, htmlElement: any) => {
+          const question = editor.object;
+          const dropdown = domService.appendComponentToBody(
+            SafeTestServiceDropdownComponent,
+            htmlElement
+          );
+          const instance: SafeTestServiceDropdownComponent = dropdown.instance;
+          instance.resource = question.resource;
+          instance.record = question['test service'];
+          instance.textField = question.displayField;
+          instance.choice.subscribe((res: any) => editor.onChanged(res));
+        },
+      };
+
+      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
+        'testServiceDropdown',
+        testServiceEditor
+      );
+
       serializer.addProperty('resource', {
         name: 'addRecord:boolean',
         category: 'Custom Questions',
@@ -557,6 +564,7 @@ export const init = (
     },
     /**
      * Update the question properties when the resource property is changed
+     * and when the displayField is algo selected to display the test service
      *
      * @param question The current question
      * @param propertyName The name of the property
@@ -573,7 +581,7 @@ export const init = (
     },
     populateChoices: (question: QuestionResource): void => {
       if (question.resource) {
-        getResourceRecordsById({ id: question.resource, first: 20 }).subscribe(
+        getResourceRecordsById({ id: question.resource, filters }).subscribe(
           ({ data }) => {
             const choices = mapQuestionChoices(data, question);
             question.contentQuestion.choices = choices;

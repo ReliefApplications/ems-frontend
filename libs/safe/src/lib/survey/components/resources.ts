@@ -9,6 +9,7 @@ import * as SurveyCreator from 'survey-creator';
 import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Dialog } from '@angular/cdk/dialog';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
+import { SafeTestServiceDropdownComponent } from '../../components/test-service-dropdown/test-service-dropdown.component';
 import { SafeCoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
 import { DomService } from '../../services/dom/dom.service';
 import { buildSearchButton, buildAddButton } from './utils';
@@ -132,7 +133,6 @@ export const init = (
           const instance: SafeResourceDropdownComponent = dropdown.instance;
           instance.resource = question.resource;
           instance.choice.subscribe((res) => editor.onChanged(res));
-          // instance.
         },
       };
 
@@ -269,19 +269,30 @@ export const init = (
             return true;
           }
         },
+        type: 'testServiceDropdown',
         visibleIndex: 3,
-        choices: (obj: any, choicesCallback: any) => {
-          if (obj.resource) {
-            getResourceRecordsById({ id: obj.resource }).subscribe(
-              ({ data }) => {
-                const choices = mapQuestionChoices(data, obj);
-                choices.unshift({ value: null });
-                choicesCallback(choices);
-              }
-            );
-          }
-        },
       });
+
+      const testServiceEditor = {
+        render: (editor: any, htmlElement: any) => {
+          const question = editor.object;
+          const dropdown = domService.appendComponentToBody(
+            SafeTestServiceDropdownComponent,
+            htmlElement
+          );
+          const instance: SafeTestServiceDropdownComponent = dropdown.instance;
+          instance.resource = question.resource;
+          instance.record = question['test service'];
+          instance.textField = question.displayField;
+          instance.choice.subscribe((res: any) => editor.onChanged(res));
+        },
+      };
+
+      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
+        'testServiceDropdown',
+        testServiceEditor
+      );
+
       Survey.Serializer.addProperty('resources', {
         name: 'displayAsGrid:boolean',
         category: 'Custom Questions',
