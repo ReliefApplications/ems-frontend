@@ -20,9 +20,6 @@
     },
     {
       "path": "./tsconfig.editor.json"
-    },
-    {
-      "path": "./tsconfig.worker.json"
     }
   ],
   "extends": "../../tsconfig.base.json",

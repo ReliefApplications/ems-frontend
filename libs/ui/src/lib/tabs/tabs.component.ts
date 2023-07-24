@@ -148,7 +148,7 @@ export class TabsComponent implements AfterContentInit, OnDestroy, OnChanges {
    * Update select state of all the tabs
    */
   public setSelectedTab() {
-    this.tabs.forEach((tab) => {
+    this.tabs?.forEach((tab) => {
       if (tab.index === this.selectedIndex) {
         tab.selected = true;
       } else {

@@ -15,6 +15,7 @@ import { SafeApiProxyService } from '../api-proxy/api-proxy.service';
 import { firstValueFrom } from 'rxjs';
 import { ApiConfiguration } from '../../models/apiConfiguration.model';
 import jsonpath from 'jsonpath';
+import { SafeWorkerService } from '../web-worker/public-api';
 
 /** Local storage key for last modified */
 const LAST_MODIFIED_KEY = '_last_modified';
@@ -40,8 +41,15 @@ export class SafeReferenceDataService {
    *
    * @param apollo The apollo client
    * @param apiProxy The api proxy service
+   * @param workerService The web worker service
    */
-  constructor(private apollo: Apollo, private apiProxy: SafeApiProxyService) {}
+  constructor(
+    private apollo: Apollo,
+    private apiProxy: SafeApiProxyService,
+    private workerService: SafeWorkerService
+  ) {
+    workerService.registerWorker();
+  }
 
   /**
    * Return a promise with the reference data corresponding to the id passed.
@@ -87,16 +95,17 @@ export class SafeReferenceDataService {
       operator: string;
     }
   ): Promise<{ value: string | number; text: string }[]> {
-    const sortByDisplayField = (a: any, b: any) =>
-      a[displayField] > b[displayField] ? 1 : -1;
-
     // get items
-    const stored = (await localForage.getItem(referenceDataID)) as CachedItems;
+    const stored = await this.workerService.getStoredData(referenceDataID);
     const items_ = stored?.items || [];
     const valueField = stored?.valueField || '';
 
     // sort items by displayField
-    const items = items_.sort(sortByDisplayField);
+    const items = await this.workerService.sortItemsByField(
+      items_,
+      displayField
+    );
+
     const foreignIsMultiselect = Array.isArray(filter?.foreignValue);
     // if we ask to filter and there is a value in foreign field
     if (
@@ -125,24 +134,21 @@ export class SafeReferenceDataService {
           (item) => get(item, foreignValueField) === filter.foreignValue
         )[filter.foreignField];
       }
-      return items
-        .filter((item) =>
-          this.operate(
-            selectedForeignValue,
-            filter.operator,
-            item[filter.localField]
-          )
-        )
-        .map((item) => ({
-          value: item[valueField],
-          text: item[displayField],
-        }));
+      const mappedChoices: { value: string | number; text: string }[] =
+        await this.workerService.mapChoices(
+          items,
+          selectedForeignValue,
+          filter.operator,
+          { valueField, displayField }
+        );
+      return mappedChoices;
     }
+    const mappedChoices = await this.workerService.mapChoices(items, {
+      valueField,
+      displayField,
+    });
     // if we don't have to filter
-    return items.map((item) => ({
-      value: item[valueField],
-      text: item[displayField],
-    }));
+    return mappedChoices;
   }
 
   /**
@@ -181,29 +187,9 @@ export class SafeReferenceDataService {
           ? jsonpath.query(data, referenceData.path)
           : data;
         // Cache items
-        if (isCached) {
-          const { items: cache } = (await localForage.getItem(
-            cacheKey
-          )) as CachedItems;
-          if (cache && items && items.length) {
-            for (const newItem of items) {
-              const cachedItemIndex = cache.findIndex(
-                (cachedItem) => cachedItem[valueField] === newItem[valueField]
-              );
-              if (cachedItemIndex !== -1) {
-                cache[cachedItemIndex] = newItem;
-              } else {
-                cache.push(newItem);
-              }
-            }
-          }
-          items = cache || [];
+        if (!isCached) {
+          this.workerService.updateCacheStore(cacheKey, items, valueField);
         }
-        localForage.setItem(cacheKey, { items, valueField });
-        localStorage.setItem(
-          cacheKey + LAST_REQUEST_KEY,
-          this.formatDateSQL(new Date())
-        );
       } else {
         // If referenceData has not changed, use cached value for non graphQL.
         items = ((await localForage.getItem(cacheKey)) as CachedItems)?.items;

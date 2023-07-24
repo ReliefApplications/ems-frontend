@@ -14,7 +14,7 @@
         "main": "apps/back-office/src/main.ts",
         "polyfills": ["apps/back-office/src/polyfills.ts"],
         "tsConfig": "apps/back-office/tsconfig.app.json",
-        "webWorkerTsConfig": "apps/back-office/tsconfig.worker.json",
+        "webWorkerTsConfig": "libs/safe/tsconfig.worker.json",
         "inlineStyleLanguage": "scss",
         "assets": [
           {
