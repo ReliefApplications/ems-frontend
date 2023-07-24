@@ -4,7 +4,7 @@ import {
   GET_RESOURCE_BY_ID,
   GetResourceByIdQueryResponse,
 } from '../graphql/queries';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, lastValueFrom } from 'rxjs';
 import * as SurveyCreator from 'survey-creator';
 import {
   FormControl,
@@ -618,36 +618,7 @@ export const init = (
         question.contentQuestion.optionsCaption = question.placeholder;
       }
       if (question.resource) {
-        if (question.selectQuestion) {
-          if (filters.length === 0) {
-            filters = [
-              {
-                field: '',
-                operator: '',
-                value: '',
-              },
-            ];
-          }
-          filters[0].operator = question.filterCondition;
-          filters[0].field = question.filterBy;
-          if (question.displayAsGrid) {
-            resourcesFilterValues.next(filters);
-          }
-          if (question.selectQuestion) {
-            question.registerFunctionOnPropertyValueChanged(
-              'filterCondition',
-              () => {
-                const resourcesFilters = resourcesFilterValues.getValue();
-                resourcesFilters[0].operator = question.filterCondition;
-                resourcesFilterValues.next(resourcesFilters);
-                resourcesFilters.map((i: any) => {
-                  i.operator = question.filterCondition;
-                });
-              }
-            );
-          }
-        }
-        getResourceRecordsById({ id: question.resource }).subscribe(
+        lastValueFrom(getResourceRecordsById({ id: question.resource })).then(
           ({ data }) => {
             const choices = mapQuestionChoices(data, question);
             question.contentQuestion.choices = choices;
@@ -658,56 +629,83 @@ export const init = (
             if (!question.filterBy || question.filterBy.length < 1) {
               this.populateChoices(question);
             }
-          }
-        );
-        if (question.selectQuestion) {
-          if (question.selectQuestion === '#staticValue') {
-            setAdvanceFilter(question.staticValue, question);
-            this.populateChoices(question);
-          } else {
-            question.survey.onValueChanged.add((_: any, options: any) => {
-              if (options.name === question.selectQuestion) {
-                if (!!options.value || options.question.customQuestion) {
-                  setAdvanceFilter(options.value, question);
-                  if (question.displayAsGrid) {
-                    resourcesFilterValues.next(filters);
-                  } else {
-                    this.populateChoices(question);
-                  }
-                }
+            if (question.selectQuestion) {
+              if (filters.length === 0) {
+                filters = [
+                  {
+                    field: '',
+                    operator: '',
+                    value: '',
+                  },
+                ];
               }
-            });
-          }
-        } else if (
-          !question.selectQuestion &&
-          question.customFilter &&
-          question.customFilter.trim().length > 0
-        ) {
-          const obj = JSON.parse(question.customFilter);
-          if (obj) {
-            for (const objElement of obj) {
-              const value = objElement.value;
-              if (typeof value === 'string' && value.match(/^{*.*}$/)) {
-                const quest = value.substr(1, value.length - 2);
-                objElement.value = '';
+              filters[0].operator = question.filterCondition;
+              filters[0].field = question.filterBy;
+              if (question.displayAsGrid) {
+                resourcesFilterValues.next(filters);
+              }
+              question.registerFunctionOnPropertyValueChanged(
+                'filterCondition',
+                () => {
+                  const resourcesFilters = resourcesFilterValues.getValue();
+                  resourcesFilters[0].operator = question.filterCondition;
+                  resourcesFilterValues.next(resourcesFilters);
+                  resourcesFilters.map((i: any) => {
+                    i.operator = question.filterCondition;
+                  });
+                }
+              );
+              if (question.selectQuestion === '#staticValue') {
+                setAdvanceFilter(question.staticValue, question);
+                this.populateChoices(question);
+              } else {
                 question.survey.onValueChanged.add((_: any, options: any) => {
-                  if (options.question.name === quest) {
-                    if (options.value) {
-                      setAdvanceFilter(options.value, objElement.field);
+                  if (options.name === question.selectQuestion) {
+                    if (!!options.value || options.question.customQuestion) {
+                      setAdvanceFilter(options.value, question);
                       if (question.displayAsGrid) {
                         resourcesFilterValues.next(filters);
                       } else {
-                        this.populateChoices(question, objElement.field);
+                        this.populateChoices(question);
                       }
                     }
                   }
                 });
               }
+            } else if (
+              !question.selectQuestion &&
+              question.customFilter &&
+              question.customFilter.trim().length > 0
+            ) {
+              const obj = JSON.parse(question.customFilter);
+              if (obj) {
+                for (const objElement of obj) {
+                  const value = objElement.value;
+                  if (typeof value === 'string' && value.match(/^{*.*}$/)) {
+                    const quest = value.substr(1, value.length - 2);
+                    objElement.value = '';
+                    question.survey.onValueChanged.add(
+                      (_: any, options: any) => {
+                        if (options.question.name === quest) {
+                          if (options.value) {
+                            setAdvanceFilter(options.value, objElement.field);
+                            if (question.displayAsGrid) {
+                              resourcesFilterValues.next(filters);
+                            } else {
+                              this.populateChoices(question, objElement.field);
+                            }
+                          }
+                        }
+                      }
+                    );
+                  }
+                }
+                filters = obj;
+                this.populateChoices(question);
+              }
             }
-            filters = obj;
-            this.populateChoices(question);
           }
-        }
+        );
       }
     },
     populateChoices: (question: any, field?: string): void => {
@@ -721,13 +719,6 @@ export const init = (
         } else if (question.customFilter) {
           resourcesFilterValues.next(filters);
         }
-      } else {
-        getResourceRecordsById({ id: question.resource, filters }).subscribe(
-          ({ data }) => {
-            const choices = mapQuestionChoices(data, question);
-            question.contentQuestion.choices = choices;
-          }
-        );
       }
     },
     /**

@@ -478,6 +478,7 @@ export const init = (
      * @param question The current resource question
      */
     onLoaded(question: QuestionResource): void {
+      let questionsPopulated = false;
       if (question.placeholder) {
         question.contentQuestion.optionsCaption = question.placeholder;
       }
@@ -495,15 +496,10 @@ export const init = (
               }
             );
           }
-        }
-        if (!question.filterBy || question.filterBy.length < 1) {
-          this.populateChoices(question);
-        }
-
-        if (question.selectQuestion) {
           if (question.selectQuestion === '#staticValue') {
             setAdvanceFilter(question.staticValue, question);
             this.populateChoices(question);
+            questionsPopulated = true;
           } else {
             (question.survey as SurveyModel).onValueChanged.add(
               (_: any, options: any) => {
@@ -548,9 +544,18 @@ export const init = (
               }
             }
             filters = obj;
-            this.populateChoices(question);
+            if (!questionsPopulated) {
+              this.populateChoices(question);
+            }
           }
         }
+        if (
+          !question.filterBy ||
+          (question.filterBy.length < 1 && !questionsPopulated)
+        ) {
+          this.populateChoices(question);
+        }
+
         if (question.addRecord && question.canSearch) {
           // If search button exists, updates grid displayed records when new records are created with the add button
           question.registerFunctionOnPropertyValueChanged(
