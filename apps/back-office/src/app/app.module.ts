@@ -50,6 +50,9 @@ import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 // Code editor component for Angular applications
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
+import { WorkerModule } from 'angular-web-worker/angular';
+import { AppWorker } from './app.worker';
+
 // Fullscreen
 import {
   OverlayContainer,
@@ -85,6 +88,12 @@ export const httpTranslateLoader = (http: HttpClient) =>
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    WorkerModule.forWorkers([
+      {
+        worker: AppWorker,
+        initFn: () => new Worker(new URL('./app.worker', import.meta.url)),
+      },
+    ]),
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
