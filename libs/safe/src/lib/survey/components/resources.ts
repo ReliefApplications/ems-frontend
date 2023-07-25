@@ -626,41 +626,37 @@ export const init = (
           if (question.displayAsGrid) {
             resourcesFilterValues.next(filters);
           }
-          if (question.selectQuestion) {
-            question.registerFunctionOnPropertyValueChanged(
-              'filterCondition',
-              () => {
-                const resourcesFilters = resourcesFilterValues.getValue();
-                resourcesFilters[0].operator = question.filterCondition;
-                resourcesFilterValues.next(resourcesFilters);
-                resourcesFilters.map((i: any) => {
-                  i.operator = question.filterCondition;
-                });
-              }
-            );
-          }
-        }
-        getResourceRecordsById({ id: question.resource }).subscribe(
-          ({ data }) => {
-            const serverRes =
-              data.resource.records?.edges?.map((x) => x.node) || [];
-            const res = [];
-            for (const item of serverRes) {
-              res.push({
-                value: item?.id,
-                text: item?.data[question.displayField],
+          question.registerFunctionOnPropertyValueChanged(
+            'filterCondition',
+            () => {
+              const resourcesFilters = resourcesFilterValues.getValue();
+              resourcesFilters[0].operator = question.filterCondition;
+              resourcesFilterValues.next(resourcesFilters);
+              resourcesFilters.map((i: any) => {
+                i.operator = question.filterCondition;
               });
             }
-            question.contentQuestion.choices = res;
-            if (!question.placeholder) {
-              question.contentQuestion.optionsCaption =
-                'Select a record from ' + data.resource.name + '...';
-            }
-            if (!question.filterBy || question.filterBy.length < 1) {
-              this.populateChoices(question);
-            }
+          );
+          if (!question.filterBy || question.filterBy.length < 1) {
+            this.populateChoices(question);
           }
-        );
+        }
+        getResourceById({ id: question.resource }).subscribe(({ data }) => {
+          // const serverRes =
+          //   data.resource.records?.edges?.map((x) => x.node) || [];
+          // const res = [];
+          // for (const item of serverRes) {
+          //   res.push({
+          //     value: item?.id,
+          //     text: item?.data[question.displayField],
+          //   });
+          // }
+          // question.contentQuestion.choices = res;
+          if (!question.placeholder) {
+            question.contentQuestion.optionsCaption =
+              'Select a record from ' + data.resource.name + '...';
+          }
+        });
         if (question.selectQuestion) {
           if (question.selectQuestion === '#staticValue') {
             setAdvanceFilter(question.staticValue, question);
@@ -714,7 +710,7 @@ export const init = (
     populateChoices: (question: any, field?: string): void => {
       if (question.displayAsGrid) {
         if (question.selectQuestion) {
-          const f = field ? field : question.filteryBy;
+          const f = field ? field : question.filterBy;
           const obj = filters.filter((i: any) => i.field === f);
           if (obj.length > 0) {
             resourcesFilterValues.next(obj);

@@ -137,7 +137,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           )
           .subscribe(({ data, loading }) => {
             this.form = data.form;
-            this.canEditName = this.step?.canUpdate || false;
+            this.canEditName = this.page?.canUpdate || false;
             this.applicationId = this.page?.application?.id || '';
             this.loading = loading;
           });

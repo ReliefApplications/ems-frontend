@@ -4,6 +4,7 @@ import {
   Component,
   ElementRef,
   Inject,
+  OnDestroy,
   ViewChild,
 } from '@angular/core';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
@@ -70,7 +71,7 @@ interface DialogData {
 })
 export class SafeRecordModalComponent
   extends SafeUnsubscribeComponent
-  implements AfterViewInit
+  implements AfterViewInit, OnDestroy
 {
   // === DATA ===
   public loading = true;
@@ -338,5 +339,11 @@ export class SafeRecordModalComponent
           });
       }
     });
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.survey.dispose();
+    this.surveyNext?.dispose();
   }
 }
