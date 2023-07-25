@@ -68,7 +68,6 @@
           "hammerjs",
           "survey-creator",
           "survey-knockout",
-          "surveyjs-widgets",
           "subscriptions-transport-ws",
           "zen-observable",
           "lodash",
