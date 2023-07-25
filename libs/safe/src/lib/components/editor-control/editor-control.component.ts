@@ -82,8 +82,8 @@ export class SafeEditorControlComponent
   /**
    * Sets the placeholder
    */
-  set placeholder(plh) {
-    this.ePlaceholder = plh;
+  set placeholder(placeholder: string) {
+    this.ePlaceholder = placeholder;
     this.stateChanges.next();
   }
   private ePlaceholder = '';
@@ -122,7 +122,7 @@ export class SafeEditorControlComponent
   /**
    * Sets whether the field is required
    */
-  set required(req) {
+  set required(req: boolean) {
     this.isRequired = coerceBooleanProperty(req);
     this.stateChanges.next();
   }

@@ -47,7 +47,7 @@ export class GraphQLSelectComponent
   @Input() valueField = '';
   @Input() textField = '';
   @Input() path = '';
-  @Input() selectedElements: any[] = [];
+  @Input() selectedElements: any[] = []; // it would be really great if it was typed, or if the component was generic (GraphQLSelectComponent<T>)
   @Input() filterable = false;
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;

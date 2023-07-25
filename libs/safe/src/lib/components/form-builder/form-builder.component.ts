@@ -134,7 +134,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       // skip if form is core
       if (!this.form.core) {
         const coreFields =
-          this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || [];
+          this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || []; // it's really hard to debug those without proper typing
         // Highlight core fields
         this.addCustomClassToCoreFields(coreFields);
       }
@@ -197,6 +197,8 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
     // Notify parent that form structure has changed
     this.surveyCreator.onModified.add((survey: any) => {
+      // Is it Survey.SurveyModel?
+      // we're totally blind here, onModified isn't even documented
       this.formChange.emit(survey.text);
     });
     this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
@@ -216,6 +218,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       // Remove core fields adorners
       this.surveyCreator.onElementAllowOperations.add(
         (sender: any, opt: any) => {
+          // this is a nightmare
           const obj = opt.obj;
           if (!obj || !obj.page) {
             return;
@@ -252,7 +255,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       this.addCustomClassToCoreFields(coreFields);
     }
 
-    // Scroll to question when adde
+    // Scroll to question when added
     this.surveyCreator.onQuestionAdded.add((sender: any, opt: any) => {
       const name = opt.question.name;
       setTimeout(() => {
@@ -275,7 +278,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
     // add move up/down buttons
     this.surveyCreator.onDefineElementMenuItems.add(
-      (sender: any, options: any) => {
+      (sender: SurveyCreator.SurveyCreator, options: any) => {
         const moveUpButton = {
           name: 'move-up',
           text: this.translate.instant('pages.formBuilder.move.up'),

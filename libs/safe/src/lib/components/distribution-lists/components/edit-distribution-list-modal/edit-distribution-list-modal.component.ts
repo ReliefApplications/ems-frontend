@@ -133,7 +133,7 @@ export class EditDistributionListModalComponent implements OnInit {
     // use setTimeout to prevent add input value on focusout
     setTimeout(
       () => {
-        const value =
+        const value: string =
           event.type === 'focusout'
             ? this.emailsInput.nativeElement.value
             : event;

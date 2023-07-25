@@ -65,7 +65,7 @@ export class GeospatialMapComponent
   @Input() geometry = 'Point';
   @Input() fields: { value: keyof GeoProperties; label: string }[] = [];
 
-  public geoForm!: ReturnType<typeof this.buildGeoForm>;
+  public geoForm!: ReturnType<typeof this.buildGeoForm>; // wow that's cool
 
   // === MAP ===
   public mapSettings: MapConstructorSettings = {
@@ -92,7 +92,7 @@ export class GeospatialMapComponent
   };
 
   // Layer to edit
-  public selectedLayer: any;
+  public selectedLayer: any; // L.Layer ? L.Marker | L.Polygon | L.Circle ?
   public controls: any = {
     position: 'topright',
     drawText: false,
