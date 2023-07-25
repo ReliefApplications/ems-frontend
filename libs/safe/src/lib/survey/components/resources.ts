@@ -269,27 +269,42 @@ export const init = (
             return true;
           }
         },
-        type: 'testServiceDropdown',
+        type: 'testServiceDropdownType',
         visibleIndex: 3,
       });
 
       const testServiceEditor = {
-        render: (editor: any, htmlElement: any) => {
+        render: (editor: any, htmlElement: HTMLElement) => {
           const question = editor.object;
-          const dropdown = domService.appendComponentToBody(
-            SafeTestServiceDropdownComponent,
-            htmlElement
+          let dropdownDiv: HTMLDivElement | null = null;
+          const updateDropdownInstance = () => {
+            if (question.displayField) {
+              if (dropdownDiv) {
+                dropdownDiv.remove();
+              }
+              dropdownDiv = document.createElement('div');
+              const instance = createTestServiceInstance(dropdownDiv);
+              if (instance) {
+                instance.resource = question.resource;
+                instance.record = question['test service'];
+                instance.textField = question.displayField;
+                instance.choice.subscribe((res: any) => editor.onChanged(res));
+              }
+              htmlElement.appendChild(dropdownDiv);
+            }
+          };
+          question.registerFunctionOnPropertyValueChanged(
+            'displayField',
+            updateDropdownInstance,
+            // eslint-disable-next-line no-underscore-dangle
+            editor.property_.name // a unique key to distinguish multiple
           );
-          const instance: SafeTestServiceDropdownComponent = dropdown.instance;
-          instance.resource = question.resource;
-          instance.record = question['test service'];
-          instance.textField = question.displayField;
-          instance.choice.subscribe((res: any) => editor.onChanged(res));
+          updateDropdownInstance();
         },
       };
 
       SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'testServiceDropdown',
+        'testServiceDropdownType',
         testServiceEditor
       );
 
@@ -948,5 +963,22 @@ export const init = (
     Promise.allSettled(promises).then(() => {
       instance.configureGrid();
     });
+  };
+
+  /**
+   * Creates the SafeTestServiceDropdownComponent instance for the test service property
+   *
+   * @param htmlElement - The element that the directive is attached to.
+   * @returns The SafeTestServiceDropdownComponent instance
+   */
+  const createTestServiceInstance = (
+    htmlElement: any
+  ): SafeTestServiceDropdownComponent => {
+    const dropdown = domService.appendComponentToBody(
+      SafeTestServiceDropdownComponent,
+      htmlElement
+    );
+    const instance: SafeTestServiceDropdownComponent = dropdown.instance;
+    return instance;
   };
 };

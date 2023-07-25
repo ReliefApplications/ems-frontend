@@ -79,15 +79,16 @@ export class SafeTestServiceDropdownComponent
           }
         });
     }
-    this.recordsQuery = this.apollo.watchQuery<GetResourceRecordsQueryResponse>(
-      {
-        query: GET_RESOURCE_RECORDS,
-        variables: {
-          id: this.resource,
-          first: ITEMS_PER_PAGE,
-        },
-      }
-    );
+    if (this.resource) {
+      this.recordsQuery =
+        this.apollo.watchQuery<GetResourceRecordsQueryResponse>({
+          query: GET_RESOURCE_RECORDS,
+          variables: {
+            id: this.resource,
+            first: ITEMS_PER_PAGE,
+          },
+        });
+    }
   }
 
   /**

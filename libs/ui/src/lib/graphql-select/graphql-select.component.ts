@@ -259,7 +259,7 @@ export class GraphQLSelectComponent
 
   ngOnInit(): void {
     this.elements$ = this.elements.asObservable();
-    this.query.valueChanges
+    this.query?.valueChanges
       .pipe(takeUntil(this.destroy$), takeUntil(this.queryChange$))
       .subscribe(({ data, loading }) => {
         this.queryName = Object.keys(data)[0];
