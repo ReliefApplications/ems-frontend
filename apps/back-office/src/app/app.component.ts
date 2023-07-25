@@ -45,6 +45,6 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.workerService.client?.destroy();
+    this.workerService.destroyWorker();
   }
 }

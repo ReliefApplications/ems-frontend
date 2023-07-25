@@ -2,6 +2,7 @@ import {
   AngularWebWorker,
   bootstrapWorker,
   Callable,
+  OnWorkerInit,
 } from 'angular-web-worker';
 import localForage from 'localforage';
 import { isArray, isEqual } from 'lodash';
@@ -20,7 +21,10 @@ interface CachedItems {
  * Angular web worker
  */
 @AngularWebWorker()
-export class SafeAppWebWorker {
+export class SafeAppWebWorker implements OnWorkerInit {
+  onWorkerInit() {
+    console.log('Worker instance laoded');
+  }
   @Callable()
   public mapChoices(
     items: any[],
@@ -43,6 +47,21 @@ export class SafeAppWebWorker {
       text: item[mapProperties.displayField],
     }));
     return mappedItems;
+  }
+
+  @Callable()
+  mapWidgetData(choices: any[], valueField: string, textField: string) {
+    return choices.map((choice: any) =>
+      typeof choice === 'string'
+        ? {
+            text: choice,
+            value: choice,
+          }
+        : {
+            text: choice[textField],
+            value: choice[valueField],
+          }
+    );
   }
 
   @Callable()

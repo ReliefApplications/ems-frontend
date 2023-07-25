@@ -96,7 +96,8 @@ export const httpTranslateLoader = (http: HttpClient) =>
             new URL(
               'libs/safe/src/lib/services/web-worker/web.worker',
               import.meta.url
-            )
+            ),
+            { type: 'module' }
           ),
       },
     ]),

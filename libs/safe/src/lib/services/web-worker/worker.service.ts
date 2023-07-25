@@ -10,7 +10,7 @@ const LAST_REQUEST_KEY = '_last_request';
   providedIn: 'root',
 })
 export class SafeWorkerService {
-  public client!: WorkerClient<SafeAppWebWorker>;
+  private client!: WorkerClient<SafeAppWebWorker>;
 
   constructor(private workerManager: WorkerManager) {}
 
@@ -26,6 +26,11 @@ export class SafeWorkerService {
       console.log('Web worker connected');
     });
   }
+
+  public destroyWorker() {
+    this.client?.destroy();
+  }
+
   /**
    *
    * Maps the given choices to a valid choices list for surveyjs
@@ -51,6 +56,22 @@ export class SafeWorkerService {
     return mappedChoices;
   }
 
+  /**
+   * Map given widget data
+   *
+   * @param choices
+   * @returns
+   */
+  public async mapWidgetData(
+    choices: any[],
+    valueField: string,
+    textField: string
+  ): Promise<any[]> {
+    const mappedWidgetData = await this.client.call((w) =>
+      w.mapWidgetData(choices, valueField, textField)
+    );
+    return mappedWidgetData;
+  }
   /**
    * Updates cache with the given items and cache key
    *
