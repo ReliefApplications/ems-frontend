@@ -33,16 +33,16 @@ jobs:
       - name: Build Back-office ${{ github.event.client_payload.environment }} - ${{ steps.get_version.outputs.version }}
         run: |
           if ${{startsWith(steps.get_version.outputs.version, '1.')}}; then
-            npm run build -- --configuration=${{ secrets.CONFIG }} --project=back-office
+            npm run build -- --configuration=${{ secrets.CONFIG }} --project=back-office --outputPath=dist/apps/back-office
           else
-            npx nx run back-office:build:${{ secrets.CONFIG }} --outputPath=dist/back-office
+            npx nx run back-office:build:${{ secrets.CONFIG }}
           fi
       - name: Build Front-office ${{ github.event.client_payload.environment }} - ${{ steps.get_version.outputs.version }}
         run: |
           if ${{startsWith(steps.get_version.outputs.version, '1.')}}; then
-            npm run build -- --configuration=${{ secrets.CONFIG }} --project=front-office
+            npm run build -- --configuration=${{ secrets.CONFIG }} --project=front-office --outputPath=dist/apps/front-office
           else
-            npx nx run front-office:build:${{ secrets.CONFIG }} --outputPath=dist/front-office
+            npx nx run front-office:build:${{ secrets.CONFIG }}
           fi
       - name: Archive build Back-office
         if: success()
