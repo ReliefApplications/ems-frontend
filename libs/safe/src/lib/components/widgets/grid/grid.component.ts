@@ -91,6 +91,8 @@ export class SafeGridWidgetComponent
     error: boolean;
   } = { error: false };
 
+  private blockModifySelectedRows = false;
+
   // === EMIT STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
 
@@ -255,6 +257,7 @@ export class SafeGridWidgetComponent
    * @param options action options.
    */
   public async onQuickAction(options: any): Promise<void> {
+    this.blockModifySelectedRows = false;
     // Select all the records in the grid
     if (options.selectAll) {
       const query = this.queryBuilder.graphqlQuery(
@@ -283,24 +286,21 @@ export class SafeGridWidgetComponent
     if (options.autoSave) {
       await Promise.all(this.promisedChanges(this.grid.updatedItems));
     }
-    // Auto modify the selected rows
-    if (options.modifySelectedRows) {
-      await this.promisedRowsModifications(
-        options.modifications,
-        this.grid.selectedRows
-      );
-    }
-
+    
     // Attaches the records to another one.
     if (options.attachToRecord && this.grid.selectedRows.length > 0) {
+      this.blockModifySelectedRows = true;
       await this.promisedAttachToRecord(
         this.grid.selectedRows,
         options.targetForm,
         options.targetFormField,
-        options.targetFormQuery
+        options.targetFormQuery,
+        options
       );
     }
+
     const promises: Promise<any>[] = [];
+
     // Notifies on a channel.
     if (options.notify && this.grid.selectedRows.length > 0) {
       promises.push(
@@ -417,12 +417,14 @@ export class SafeGridWidgetComponent
       const records = (await Promise.all(promisedRecords)).map(
         (x) => x.data.record
       );
+      
+      this.blockModifySelectedRows = true;
 
       // Opens a modal containing the prefilled form.
       const { SafeFormModalComponent } = await import(
         '../../form-modal/form-modal.component'
       );
-      this.dialog.open(SafeFormModalComponent, {
+      const dialogRef = this.dialog.open(SafeFormModalComponent, {
         data: {
           template: options.prefillTargetForm,
           prefillRecords: records,
@@ -430,6 +432,28 @@ export class SafeGridWidgetComponent
         },
         autoFocus: false,
       });
+
+      const savedSelectedRows = this.grid.selectedRows;
+
+      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+        if (value) {
+          if (this.blockModifySelectedRows && options.modifySelectedRows) {
+            this.promisedRowsModifications(
+              options.modifications,
+              savedSelectedRows
+            );
+            this.grid.reloadData();
+          }
+        }
+      })
+    }
+
+    // Auto modify the selected rows
+    if (options.modifySelectedRows && !this.blockModifySelectedRows) {
+      await this.promisedRowsModifications(
+        options.modifications,
+        this.grid.selectedRows
+      );
     }
 
     // Workflow only: goes to next step, or closes the workflow.
@@ -500,12 +524,14 @@ export class SafeGridWidgetComponent
    * @param targetForm Target template id
    * @param targetFormField The form field
    * @param targetFormQuery The form query
+   * @param options The options
    */
   private async promisedAttachToRecord(
     selectedRecords: string[],
     targetForm: string,
     targetFormField: string,
-    targetFormQuery: any
+    targetFormQuery: any,
+    options: any
   ): Promise<void> {
     this.apollo
       .query<GetFormByIdQueryResponse>({
@@ -591,7 +617,7 @@ export class SafeGridWidgetComponent
                           const { SafeFormModalComponent } = await import(
                             '../../form-modal/form-modal.component'
                           );
-                          this.dialog.open(SafeFormModalComponent, {
+                          const dialogRef = this.dialog.open(SafeFormModalComponent, {
                             disableClose: true,
                             data: {
                               recordId: record.id,
@@ -599,6 +625,18 @@ export class SafeGridWidgetComponent
                             },
                             autoFocus: false,
                           });
+
+                          dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+                            if (value) {
+                              if (this.blockModifySelectedRows && options.modifySelectedRows) {
+                                this.promisedRowsModifications(
+                                  options.modifications,
+                                  selectedRecords
+                                );
+                                this.grid.reloadData();
+                              }
+                            }
+                          })
                         }
                       }
                     }
