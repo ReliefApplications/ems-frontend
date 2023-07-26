@@ -1,5 +1,6 @@
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 import { AppModule } from './app/app.module';
+// Sentry
 import * as Sentry from '@sentry/angular-ivy';
 import { environment } from './environments/environment';
 
