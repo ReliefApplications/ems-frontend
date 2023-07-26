@@ -223,33 +223,6 @@ export class SafeGridWidgetComponent
   }
 
   /**
-   * Send changes on multiple records to the backend
-   *
-   * @param items A list of item representing the changes for each record
-   * @returns A list of promise with the result of the request
-   */
-  private promisedChanges(items: any[]): Promise<any>[] {
-    const promises: Promise<any>[] = [];
-    for (const item of items) {
-      const data = Object.assign({}, item);
-      delete data.id;
-      promises.push(
-        firstValueFrom(
-          this.apollo.mutate<EditRecordMutationResponse>({
-            mutation: EDIT_RECORD,
-            variables: {
-              id: item.id,
-              data,
-              template: get(this.settings, 'template', null),
-            },
-          })
-        )
-      );
-    }
-    return promises;
-  }
-
-  /**
    * Executes sequentially actions enabled by settings for the floating button
    *
    * @param options action options.
@@ -281,7 +254,9 @@ export class SafeGridWidgetComponent
 
     // Auto save all records
     if (options.autoSave) {
-      await Promise.all(this.promisedChanges(this.grid.updatedItems));
+      setTimeout(() => {
+        this.grid.onSaveChanges();
+      }, 100); // prevent saving before syncing updates
     }
     // Auto modify the selected rows
     if (options.modifySelectedRows) {
