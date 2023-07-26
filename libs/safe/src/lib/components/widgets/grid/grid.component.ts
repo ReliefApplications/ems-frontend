@@ -286,7 +286,7 @@ export class SafeGridWidgetComponent
     if (options.autoSave) {
       await Promise.all(this.promisedChanges(this.grid.updatedItems));
     }
-    
+
     // Attaches the records to another one.
     if (options.attachToRecord && this.grid.selectedRows.length > 0) {
       this.blockModifySelectedRows = true;
@@ -417,7 +417,7 @@ export class SafeGridWidgetComponent
       const records = (await Promise.all(promisedRecords)).map(
         (x) => x.data.record
       );
-      
+
       this.blockModifySelectedRows = true;
 
       // Opens a modal containing the prefilled form.
@@ -435,17 +435,19 @@ export class SafeGridWidgetComponent
 
       const savedSelectedRows = this.grid.selectedRows;
 
-      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-        if (value) {
-          if (this.blockModifySelectedRows && options.modifySelectedRows) {
-            this.promisedRowsModifications(
-              options.modifications,
-              savedSelectedRows
-            );
-            this.grid.reloadData();
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            if (this.blockModifySelectedRows && options.modifySelectedRows) {
+              this.promisedRowsModifications(
+                options.modifications,
+                savedSelectedRows
+              );
+              this.grid.reloadData();
+            }
           }
-        }
-      })
+        });
     }
 
     // Auto modify the selected rows
@@ -617,26 +619,34 @@ export class SafeGridWidgetComponent
                           const { SafeFormModalComponent } = await import(
                             '../../form-modal/form-modal.component'
                           );
-                          const dialogRef = this.dialog.open(SafeFormModalComponent, {
-                            disableClose: true,
-                            data: {
-                              recordId: record.id,
-                              template: targetForm,
-                            },
-                            autoFocus: false,
-                          });
-
-                          dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-                            if (value) {
-                              if (this.blockModifySelectedRows && options.modifySelectedRows) {
-                                this.promisedRowsModifications(
-                                  options.modifications,
-                                  selectedRecords
-                                );
-                                this.grid.reloadData();
-                              }
+                          const dialogRef = this.dialog.open(
+                            SafeFormModalComponent,
+                            {
+                              disableClose: true,
+                              data: {
+                                recordId: record.id,
+                                template: targetForm,
+                              },
+                              autoFocus: false,
                             }
-                          })
+                          );
+
+                          dialogRef.closed
+                            .pipe(takeUntil(this.destroy$))
+                            .subscribe((value: any) => {
+                              if (value) {
+                                if (
+                                  this.blockModifySelectedRows &&
+                                  options.modifySelectedRows
+                                ) {
+                                  this.promisedRowsModifications(
+                                    options.modifications,
+                                    selectedRecords
+                                  );
+                                  this.grid.reloadData();
+                                }
+                              }
+                            });
                         }
                       }
                     }
