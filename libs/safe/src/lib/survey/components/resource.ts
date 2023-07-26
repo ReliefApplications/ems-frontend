@@ -39,6 +39,17 @@ export const init = (
       },
     });
 
+  const mapQuestionChoices = (data: any, question: any) => {
+    return (
+      data.resource.records?.edges?.map((x: any) => {
+        return {
+          value: x.node?.id,
+          text: x.node?.data[question.displayField || 'id'],
+        };
+      }) || []
+    );
+  };
+
   const getResourceRecordsById = (data: {
     id: string;
     filters?: { field: string; operator: string; value: string }[];
@@ -122,15 +133,15 @@ export const init = (
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource) {
             getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const serverRes = data.resource.fields;
-              const res = [];
-              res.push({ value: null });
-              for (const item of serverRes) {
-                if (item.type !== 'matrix') {
-                  res.push({ value: item.name });
-                }
-              }
-              choicesCallback(res);
+              const choices = (data.resource.fields || [])
+                .filter((item: any) => item.type !== 'matrix')
+                .map((item: any) => {
+                  return {
+                    value: item.name,
+                  };
+                });
+              choices.unshift({ value: null });
+              choicesCallback(choices);
             });
           }
         },
@@ -219,17 +230,9 @@ export const init = (
           if (obj.resource) {
             getResourceRecordsById({ id: obj.resource }).subscribe(
               ({ data }) => {
-                const serverRes =
-                  data.resource.records?.edges?.map((x) => x.node) || [];
-                const res = [];
-                res.push({ value: null });
-                for (const item of serverRes) {
-                  res.push({
-                    value: item?.id,
-                    text: item?.data[obj.displayField || 'id'],
-                  });
-                }
-                choicesCallback(res);
+                const choices = mapQuestionChoices(data, obj);
+                choices.unshift({ value: null });
+                choicesCallback(choices);
               }
             );
           }
@@ -259,13 +262,11 @@ export const init = (
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource && obj.addRecord) {
             getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const serverRes = data.resource.forms || [];
-              const res: any[] = [];
-              res.push({ value: null });
-              for (const item of serverRes) {
-                res.push({ value: item.id, text: item.name });
-              }
-              choicesCallback(res);
+              const choices = (data.resource.forms || []).map((item: any) => {
+                return { value: item.id, text: item.name };
+              });
+              choices.unshift({ value: null, text: '' });
+              choicesCallback(choices);
             });
           }
         },
@@ -326,12 +327,10 @@ export const init = (
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource) {
             getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const serverRes = data.resource.fields;
-              const res = [];
-              for (const item of serverRes) {
-                res.push({ value: item.name });
-              }
-              choicesCallback(res);
+              const choices = (data.resource.fields || []).map((item: any) => {
+                return { value: item.name };
+              });
+              choicesCallback(choices);
             });
           }
         },
@@ -561,16 +560,8 @@ export const init = (
       if (question.resource) {
         getResourceRecordsById({ id: question.resource, filters }).subscribe(
           ({ data }) => {
-            const serverRes =
-              data.resource.records?.edges?.map((x) => x.node) || [];
-            const res: any[] = [];
-            for (const item of serverRes) {
-              res.push({
-                value: item?.id,
-                text: item?.data[question.displayField || 'id'],
-              });
-            }
-            question.contentQuestion.choices = res;
+            const choices = mapQuestionChoices(data, question);
+            question.contentQuestion.choices = choices;
             if (!question.placeholder) {
               question.contentQuestion.optionsCaption =
                 'Select a record from ' + data.resource.name + '...';
