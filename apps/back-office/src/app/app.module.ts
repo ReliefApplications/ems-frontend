@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { NgModule, ErrorHandler, APP_INITIALIZER } from '@angular/core';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -55,6 +55,10 @@ import {
   OverlayContainer,
   FullscreenOverlayContainer,
 } from '@angular/cdk/overlay';
+
+// Sentry
+import { Router } from '@angular/router';
+import * as Sentry from '@sentry/angular-ivy';
 
 /**
  * Initialize authentication in the platform.
@@ -145,6 +149,28 @@ export const httpTranslateLoader = (http: HttpClient) =>
     ResizeBatchService,
     IconsService,
     { provide: OverlayContainer, useClass: FullscreenOverlayContainer },
+    // Sentry
+    ...(environment.sentry
+      ? [
+          {
+            provide: ErrorHandler,
+            useValue: Sentry.createErrorHandler({
+              showDialog: true,
+            }),
+          },
+          {
+            provide: Sentry.TraceService,
+            deps: [Router],
+          },
+          {
+            provide: APP_INITIALIZER,
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            useFactory: () => () => {},
+            deps: [Sentry.TraceService],
+            multi: true,
+          },
+        ]
+      : []),
   ],
   bootstrap: [AppComponent],
 })
