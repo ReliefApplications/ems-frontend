@@ -15,6 +15,7 @@ import { buildSearchButton, buildAddButton } from './utils';
 import { QuestionResource } from '../types';
 import { SurveyModel } from 'survey-angular';
 import localForage from 'localforage';
+import { NgZone } from '@angular/core';
 
 /** Create the list of filter values for resources */
 export const resourcesFilterValues = new BehaviorSubject<
@@ -40,13 +41,15 @@ export const resourceConditions = [
  * @param apollo Apollo client
  * @param dialog Dialog service
  * @param formBuilder Angular form service
+ * @param ngZone Angular Service to execute code inside Angular environment
  */
 export const init = (
   Survey: any,
   domService: DomService,
   apollo: Apollo,
   dialog: Dialog,
-  formBuilder: UntypedFormBuilder
+  formBuilder: UntypedFormBuilder,
+  ngZone: NgZone
 ): void => {
   const getResourceById = (data: { id: string }) =>
     apollo.query<GetResourceByIdQueryResponse>({
@@ -768,7 +771,7 @@ export const init = (
             );
             actionsButtons.appendChild(searchBtn);
 
-            const addBtn = buildAddButton(question, true, dialog);
+            const addBtn = buildAddButton(question, true, dialog, ngZone);
             actionsButtons.appendChild(addBtn);
 
             parentElement.insertBefore(
