@@ -25,10 +25,13 @@ import {
 } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MessageService } from '@progress/kendo-angular-l10n';
+import { DateTimePickerModule } from '@progress/kendo-angular-dateinputs';
+
 import {
   AppAbility,
   KendoTranslationService,
   SafeAuthInterceptorService,
+  SafeFormService,
 } from '@oort-front/safe';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
@@ -95,6 +98,7 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       },
     }),
     OverlayModule,
+    DateTimePickerModule,
     FormWidgetModule,
     GraphQLModule,
   ],
@@ -157,12 +161,16 @@ export class AppModule implements DoBootstrap {
    * @param injector Angular injector
    * @param translate Angular translate service
    */
-  constructor(private injector: Injector, private translate: TranslateService) {
+  constructor(
+    private injector: Injector,
+    private translate: TranslateService,
+    private formService: SafeFormService
+  ) {
     this.translate.addLangs(environment.availableLanguages);
     this.translate.setDefaultLang(environment.availableLanguages[0]);
   }
 
-  ngDoBootstrap(appRef: ApplicationRef): void {
+  ngDoBootstrap(): void {
     const form = createCustomElement(FormWidgetComponent, {
       injector: this.injector,
     });
