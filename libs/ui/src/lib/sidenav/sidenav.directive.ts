@@ -31,8 +31,8 @@ export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
   @Input() position: SidenavPositionTypes = 'start';
   @Output() openedChange = new EventEmitter<boolean>();
 
-  private clickOutsideListener!: any;
-  private fullscreenListener!: any;
+  private clickOutsideListener!: () => void;
+  private fullscreenListener!: () => void;
   private toggleUsed = false;
 
   private overlayRef?: OverlayRef;
