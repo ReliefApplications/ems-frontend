@@ -164,6 +164,10 @@ export class DashboardComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         if (value) {
+          console.log("\n");
+          console.log(this.dashboard?.page?.context);
+          console.log(value);
+          console.log("\n");
           this.handleContextChange(value);
         }
       });
@@ -766,7 +770,9 @@ export class DashboardComponent
    * Loads elements from reference data or records from resource.
    */
   private updateContextOptions() {
+    console.log("jaewnaojwe");
     const context = this.dashboard?.page?.context;
+    console.log("context", context);
     if (!context) return;
 
     if ('resource' in context) {
@@ -780,7 +786,10 @@ export class DashboardComponent
         });
     }
 
+    console.log(this.recordsQuery);
+
     if ('refData' in context) {
+      console.log("aqui456");
       this.refDataService.loadReferenceData(context.refData).then((refData) => {
         this.refDataValueField = refData.valueField || '';
         this.refDataService.fetchItems(refData).then((items) => {
@@ -844,32 +853,36 @@ export class DashboardComponent
 
   /** Initializes the dashboard context;  */
   private initContext() {
-    if (!this.dashboard?.page?.context || !this.dashboard?.id) return;
-    // Checks if the dashboard has context attached to it
-    const contentWithContext = this.dashboard?.page?.contentWithContext || [];
-    const id = this.dashboard.id;
-    const dContext = contentWithContext.find((c) => c.content === id);
+    // if (!this.dashboard?.page?.context || !this.dashboard?.id) return;
+    // // Checks if the dashboard has context attached to it
+    // const contentWithContext = this.dashboard?.page?.contentWithContext || [];
+    // const id = this.dashboard.id;
+    // const dContext = contentWithContext.find((c) => c.content === id);
 
-    if (!dContext) return;
+    // if (!dContext) return;
 
-    // If it has updated the form
-    if ('element' in dContext) {
-      this.contextId.setValue(dContext.element);
-    } else if ('record' in dContext) {
-      this.contextId.setValue(dContext.record);
+    // // If it has updated the form
+    // if ('element' in dContext) {
+    //   this.contextId.setValue(dContext.element);
+    // } else if ('record' in dContext) {
+    //   this.contextId.setValue(dContext.record);
 
-      // Get record by id
-      firstValueFrom(
-        this.apollo.query<GetRecordByIdQueryResponse>({
-          query: GET_RECORD_BY_ID,
-          variables: {
-            id: dContext.record,
-          },
-        })
-      ).then(({ data }) => {
-        this.contextRecord = data.record;
-      });
-    }
+    //   // Get record by id
+    //   firstValueFrom(
+    //     this.apollo.query<GetRecordByIdQueryResponse>({
+    //       query: GET_RECORD_BY_ID,
+    //       variables: {
+    //         id: dContext.record,
+    //       },
+    //     })
+    //   ).then(({ data }) => {
+    //     //this.contextRecord = data.record;
+
+    //     console.log("---------");
+    //     console.log(this.contextRecord);
+    //     console.log("---------");
+    //   });
+    // }
   }
 
   /**
