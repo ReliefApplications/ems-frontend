@@ -154,7 +154,7 @@
           <label>{{ 'models.form.field.label' | translate }}</label>
           <input formControlName="label" type="text" />
         </div>
-        <div uiFormFieldDirective>
+        <div *ngIf="displayColumnWidth" uiFormFieldDirective>
           <label>
             {{ 'components.queryBuilder.fields.column' | translate }}
           </label>
