@@ -23,8 +23,8 @@ import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
   styleUrls: ['./form-widget.component.scss'],
   encapsulation: ViewEncapsulation.ShadowDom,
 })
-export class FormWidgetComponent implements OnInit, AfterViewInit {
-  @Input() id = '';
+export class FormWidgetComponent implements AfterViewInit {
+  @Input() id = '626b96227ad4dd0c96f3b8a1';
 
   @ViewChild('rightSidenav', { read: ViewContainerRef })
   rightSidenav?: ViewContainerRef;
