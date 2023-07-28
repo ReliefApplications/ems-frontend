@@ -24,6 +24,7 @@ import {
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MessageService } from '@progress/kendo-angular-l10n';
 import {
+  AppAbility,
   KendoTranslationService,
   SafeAuthInterceptorService,
   SafeFormService,
@@ -47,7 +48,6 @@ import { ResizeBatchService } from '@progress/kendo-angular-common';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import localeEn from '@angular/common/locales/en';
-import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 // Register local translations for dates
 registerLocaleData(localeFr);
 registerLocaleData(localeEn);
@@ -91,14 +91,13 @@ const initializeAuthAndTranslations =
             );
           },
           complete: () => {
-            console.log(translate.instant('kendo.datetimepicker.now'));
+            // console.log(translate.instant('kendo.datetimepicker.now'));
             resolve(null);
           },
         });
       });
     });
   };
-
 /**
  * Sets up translator.
  *
@@ -145,11 +144,16 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     },
     {
       provide: APP_INITIALIZER,
+      useFactory: initializeAuthAndTranslations,
       multi: true,
+      deps: [OAuthService, TranslateService, Injector],
     },
     {
       provide: POPUP_CONTAINER,
       useFactory: () => {
+        const currentPopupHolder: any = Array.from(
+          document.getElementsByTagName('*')
+        ).filter((element) => element.shadowRoot);
         // return the container ElementRef, where the popup will be injected
         return {
           nativeElement: document.body,
@@ -174,6 +178,16 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       useClass: SafeAuthInterceptorService,
       multi: true,
     },
+    {
+      provide: AppAbility,
+      useValue: new AppAbility(),
+    },
+    {
+      provide: PureAbility,
+      useExisting: AppAbility,
+    },
+    PopupService,
+    ResizeBatchService,
   ],
 })
 export class AppModule implements DoBootstrap {
@@ -181,12 +195,12 @@ export class AppModule implements DoBootstrap {
    * Main project root module
    *
    * @param injector Angular injector
-   * @param translate Angular translate service
+   * @param formService SafeFormService
    */
-  constructor(private injector: Injector, private translate: TranslateService) {
-    this.translate.addLangs(environment.availableLanguages);
-    this.translate.setDefaultLang(environment.availableLanguages[0]);
-  }
+  constructor(
+    private injector: Injector,
+    private formService: SafeFormService
+  ) {}
 
   /**
    * On bootstrapping module define any custom web component
