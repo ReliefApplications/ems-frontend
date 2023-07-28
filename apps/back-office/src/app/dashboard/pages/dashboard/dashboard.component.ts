@@ -41,9 +41,8 @@ import {
   GET_RESOURCE_RECORDS,
 } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
-import { map, takeUntil } from 'rxjs/operators';
-import { Observable } from 'rxjs';
-import { firstValueFrom } from 'rxjs';
+import { map, takeUntil, debounceTime } from 'rxjs/operators';
+import { Observable, firstValueFrom, take } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { isEqual } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
@@ -161,23 +160,17 @@ export class DashboardComponent
 
   ngOnInit(): void {
     this.contextId.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(debounceTime(500),takeUntil(this.destroy$))
       .subscribe((value) => {
         if (value) {
-          console.log("\n");
-          console.log(this.dashboard?.page?.context);
-          console.log(value);
-          console.log("\n");
           this.handleContextChange(value);
         }
       });
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+    this.route.params.pipe(debounceTime(500),takeUntil(this.destroy$)).subscribe((params) => {
       // Reset scroll when changing page
       const pageContainer = document.getElementById('appPageContainer');
       if (pageContainer) pageContainer.scrollTop = 0;
-
       // Doing this to be able to use custom styles on specific dashboards
-
       // if the route has an record or element query, it means we are on a contextual dashboard
       // therefore, we need to find the contextual dashboard id in the parent dashboard
       this.route.queryParams
@@ -185,51 +178,51 @@ export class DashboardComponent
         .subscribe((queryParams) => {
           // If we don't find the view element in the queryParams, then we are not using contextual view
           const viewId = queryParams.id;
-
           // if there is an id, we need to find the contextual dashboard id and load it
           if (viewId) {
             // load the main dashboard
-            this.initDashboardWithId(params.id).then(() => {
-              // Find the id of the contextual dashboard and load it
-              const dashboardsWithContext =
-                this.dashboard?.page?.contentWithContext;
-
-              const type = this.contextType;
-              // find the contextual dashboard id in the list of dashboards from the parent dashboard
-              // it's the one where the element or record id matches the one in the query params
-              const dashboardWithContext = dashboardsWithContext?.find((d) => {
-                if (type === 'element')
-                  return 'element' in d && d.element === viewId;
-                else if (type === 'record')
-                  return 'record' in d && d.record === viewId;
-                return false;
-              });
-
-              if (dashboardWithContext) {
-                // if we found the contextual dashboard, load it
-                this.initDashboardWithId(dashboardWithContext.content);
-              } else {
-                // if we didn't find the contextual dashboard, create it
-                if (!this.dashboard?.page?.id) return;
-                if (type) {
-                  this.dashboardService
-                    .createDashboardWithContext(
-                      this.dashboard?.page?.id, // parent dashboard page id
-                      type, // type of context
-                      viewId // id of the context
-                    )
-                    .then((res) => {
-                      if (!res.data?.addDashboardWithContext?.id) return;
-                      // load the contextual dashboard
-                      this.initDashboardWithId(
-                        res.data.addDashboardWithContext.id
-                      );
-                    });
-                } else {
-                  return;
-                }
-              }
+            // Find the id of the contextual dashboard and load it
+            const dashboardsWithContext =
+              this.dashboard?.page?.contentWithContext;
+            const type = this.contextType;
+            // find the contextual dashboard id in the list of dashboards from the parent dashboard
+            // it's the one where the element or record id matches the one in the query params
+            const dashboardWithContext = dashboardsWithContext?.find((d) => {
+              if (type === 'element')
+                return 'element' in d && d.element.toString() === viewId;
+              else if (type === 'record')
+                return 'record' in d && d.record.toString() === viewId;
+              return false;
             });
+
+            if (dashboardWithContext) {
+              // if we found the contextual dashboard, load it
+              this.initDashboardWithId(dashboardWithContext.content);
+            } else {
+              // if we didn't find the contextual dashboard, create it
+              if (!this.dashboard?.page?.id){
+                this.initDashboardWithId(params.id);
+                return;
+              }
+              if (type) {
+                this.dashboardService
+                  .createDashboardWithContext(
+                    this.dashboard?.page?.id, // parent dashboard page id
+                    type, // type of context
+                    viewId // id of the context
+                  )
+                  .then((res) => {
+                    if (!res.data?.addDashboardWithContext?.id) return;
+                    // load the contextual dashboard
+                    this.initDashboardWithId(
+                      res.data.addDashboardWithContext.id
+                    );
+                  });
+              } else {
+                this.initDashboardWithId(params.id);
+                return;
+              }
+            }
           } else {
             // if there is no id, we are not on a contextual dashboard, we simply load the dashboard
             this.initDashboardWithId(params.id);
@@ -770,9 +763,7 @@ export class DashboardComponent
    * Loads elements from reference data or records from resource.
    */
   private updateContextOptions() {
-    console.log("jaewnaojwe");
     const context = this.dashboard?.page?.context;
-    console.log("context", context);
     if (!context) return;
 
     if ('resource' in context) {
@@ -786,10 +777,7 @@ export class DashboardComponent
         });
     }
 
-    console.log(this.recordsQuery);
-
     if ('refData' in context) {
-      console.log("aqui456");
       this.refDataService.loadReferenceData(context.refData).then((refData) => {
         this.refDataValueField = refData.valueField || '';
         this.refDataService.fetchItems(refData).then((items) => {
@@ -828,8 +816,8 @@ export class DashboardComponent
     const type = this.contextType;
     if (type) {
       const dashboardWithContext = dashboardsWithContext?.find((d) => {
-        if (type === 'element') return 'element' in d && d.element === value;
-        else if (type === 'record') return 'record' in d && d.record === value;
+        if (type === 'element') return 'element' in d && d.element.toString() === value;
+        else if (type === 'record') return 'record' in d && d.record.toString() === value;
         return false;
       });
 
@@ -853,36 +841,32 @@ export class DashboardComponent
 
   /** Initializes the dashboard context;  */
   private initContext() {
-    // if (!this.dashboard?.page?.context || !this.dashboard?.id) return;
-    // // Checks if the dashboard has context attached to it
-    // const contentWithContext = this.dashboard?.page?.contentWithContext || [];
-    // const id = this.dashboard.id;
-    // const dContext = contentWithContext.find((c) => c.content === id);
+    if (!this.dashboard?.page?.context || !this.dashboard?.id) return;
+    // Checks if the dashboard has context attached to it
+    const contentWithContext = this.dashboard?.page?.contentWithContext || [];
+    const id = this.dashboard.id;
+    const dContext = contentWithContext.find((c) => c.content === id);
 
-    // if (!dContext) return;
+    if (!dContext) return;
 
-    // // If it has updated the form
-    // if ('element' in dContext) {
-    //   this.contextId.setValue(dContext.element);
-    // } else if ('record' in dContext) {
-    //   this.contextId.setValue(dContext.record);
+    // If it has updated the form
+    if ('element' in dContext) {
+      this.contextId.setValue(dContext.element);
+    } else if ('record' in dContext) {
+      this.contextId.setValue(dContext.record);
 
-    //   // Get record by id
-    //   firstValueFrom(
-    //     this.apollo.query<GetRecordByIdQueryResponse>({
-    //       query: GET_RECORD_BY_ID,
-    //       variables: {
-    //         id: dContext.record,
-    //       },
-    //     })
-    //   ).then(({ data }) => {
-    //     //this.contextRecord = data.record;
-
-    //     console.log("---------");
-    //     console.log(this.contextRecord);
-    //     console.log("---------");
-    //   });
-    // }
+      // Get record by id
+      this.apollo.query<GetRecordByIdQueryResponse>({
+        query: GET_RECORD_BY_ID,
+        variables: {
+          id: dContext.record,
+        },
+      })
+      .pipe(take(1), takeUntil(this.destroy$))
+      .subscribe((data: any) => {
+        this.contextRecord = data.record;
+      })
+    }
   }
 
   /**
