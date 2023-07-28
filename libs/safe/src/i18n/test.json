@@ -93,7 +93,11 @@
 		"field": {
 			"few": "******",
 			"none": "******",
-			"one": "******"
+			"one": "******",
+			"permissions": {
+				"description": "******",
+				"title": "******"
+			}
 		},
 		"filter": {
 			"apply": "******",

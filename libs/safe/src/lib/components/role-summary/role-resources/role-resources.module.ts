@@ -15,8 +15,8 @@ import {
 import { FilterComponent } from '../role-resources-filter/role-resources-filter.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SpinnerModule, FormWrapperModule, IconModule } from '@oort-front/ui';
-import { ResourceFieldsComponent } from './resource-fields/resource-fields.component';
 import { SafeRoleResourceFiltersComponent } from './resource-access-filters/resource-access-filters.component';
+import { ResourceFieldsModule } from './resource-fields/resource-fields.module';
 import { SafeFilterModule } from '../../filter/filter.module';
 
 /**
@@ -26,7 +26,6 @@ import { SafeFilterModule } from '../../filter/filter.module';
   declarations: [
     RoleResourcesComponent,
     FilterComponent,
-    ResourceFieldsComponent,
     SafeRoleResourceFiltersComponent,
   ],
   imports: [
@@ -35,6 +34,7 @@ import { SafeFilterModule } from '../../filter/filter.module';
     PaginatorModule,
     TranslateModule,
     SafeDateModule,
+    ResourceFieldsModule,
     SafeSkeletonTableModule,
     FormsModule,
     ReactiveFormsModule,

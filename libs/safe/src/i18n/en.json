@@ -93,7 +93,11 @@
 		"field": {
 			"few": "Fields",
 			"none": "No field",
-			"one": "Field"
+			"one": "Field",
+			"permissions": {
+				"description": "Set view and update permissions for selected fields",
+				"title": "Set permissions"
+			}
 		},
 		"filter": {
 			"apply": "Apply",

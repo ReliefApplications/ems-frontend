@@ -1,7 +1,19 @@
 <!-- Header -->
-<div class="flex justify-between items-center">
+<div class="flex gap-5 mb-4">
   <h2>{{ 'common.field.few' | translate }}</h2>
-  <div uiFormFieldDirective class="min-w-[8rem]">
+  <!-- Actions when selected items -->
+  <ng-container *ngIf="selection.selected.length > 1">
+    <ui-button
+      (click)="onDelete(selection.selected)"
+      [uiTooltip]="'common.field.permissions.description' | translate"
+      category="secondary"
+      variant="primary"
+      icon="tune"
+    >
+      {{ 'common.field.permissions.title' | translate }}
+    </ui-button>
+  </ng-container>
+  <div uiFormFieldDirective class="min-w-[8rem] ml-auto">
     <label>{{ 'models.form.field.usedIn' | translate }}</label>
     <ui-select-menu [formControl]="filterId">
       <ui-select-option>{{
@@ -24,6 +36,26 @@
       [dataSource]="fields"
       *ngIf="fields.length > 0"
     >
+      <ng-container cdkColumnDef="select">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          <ui-checkbox
+            (change)="$event ? masterToggle() : null"
+            [checked]="selection.hasValue() && isAllSelected()"
+            [indeterminate]="selection.hasValue() && !isAllSelected()"
+            [ariaLabel]="checkboxLabel()"
+          >
+          </ui-checkbox>
+        </th>
+        <td uiCell *cdkCellDef="let row">
+          <ui-checkbox
+            (click)="$event.stopPropagation()"
+            (change)="$event ? selection.toggle(row) : null"
+            [checked]="selection.isSelected(row)"
+            [ariaLabel]="checkboxLabel(row)"
+          >
+          </ui-checkbox>
+        </td>
+      </ng-container>
       <ng-container cdkColumnDef="name">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.field.one' | translate }}

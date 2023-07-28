@@ -93,7 +93,11 @@
 		"field": {
 			"few": "Champs",
 			"none": "Aucun champ",
-			"one": "Champ"
+			"one": "Champ",
+			"permissions": {
+				"description": "Définir les autorisations d'affichage et de mise à jour pour les champs sélectionnés",
+				"title": "Définir les autorisations"
+			}
 		},
 		"filter": {
 			"apply": "Appliquer",

@@ -1,0 +1,58 @@
+<ui-dialog size="small">
+  <ng-container ngProjectAs="header">
+    <h1>{{ 'models.resource.create' | translate }}</h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="setForm">
+      <div class="flex gap-3">
+        <ui-button
+          [isIcon]="true"
+          [icon]="canSee ? 'visibility' : 'visibility_off'"
+          [variant]="canSee ? 'primary' : 'grey'"
+        >
+        </ui-button>
+        <p>
+          {{
+            (canSee
+              ? 'components.role.tooltip.allowFieldAccessibility'
+              : 'components.role.tooltip.disallowFieldAccessibility'
+            ) | translate
+          }}
+        </p>
+      </div>
+      <div class="flex gap-3">
+        <ui-button
+          [isIcon]="true"
+          [icon]="canUpdate ? 'edit' : 'edit_off'"
+          [variant]="canUpdate ? 'primary' : 'grey'"
+          [uiTooltip]="
+            (canUpdate
+              ? 'components.role.tooltip.allowFieldUpdate'
+              : 'components.role.tooltip.disallowFieldUpdate'
+            ) | translate
+          "
+        >
+        </ui-button>
+        <p>
+          {{
+            (canUpdate
+              ? 'components.role.tooltip.allowFieldUpdate'
+              : 'components.role.tooltip.disallowFieldUpdate'
+            ) | translate
+          }}
+        </p>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="setForm.value"
+      cdkFocusInitial
+    >
+      {{ 'common.update' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>
