@@ -16,6 +16,7 @@
         "tsConfig": "apps/web-widgets/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
+          "apps/web-widgets/src/favicon.ico",
           {
             "glob": "**/*",
             "input": "libs/safe/src/i18n/",
@@ -26,7 +27,6 @@
             "input": "assets/",
             "output": "/assets/"
           },
-          "apps/web-widgets/src/favicon.ico",
           {
             "glob": "**/*",
             "input": "node_modules/tinymce",
@@ -41,6 +41,16 @@
             "glob": "**/*",
             "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
             "output": "/assets/webfonts/"
+          },
+          {
+            "glob": "**/*",
+            "input": "node_modules/leaflet/dist/images/",
+            "output": "/"
+          },
+          {
+            "glob": "**/*",
+            "input": "node_modules/monaco-editor",
+            "output": "/assets/monaco/"
           }
         ],
         "styles": [
@@ -48,12 +58,7 @@
             "input": "node_modules/@progress/kendo-theme-default/dist/all.css",
             "inject": true
           },
-          "apps/web-widgets/src/styles.scss",
-          "node_modules/survey-angular/survey.min.css",
-          "node_modules/survey-creator/survey-creator.min.css",
-          "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
-          "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
-          "node_modules/select2/dist/css/select2.min.css"
+          "apps/web-widgets/src/styles.scss"
         ],
         "scripts": [
           "node_modules/jquery/dist/jquery.js",

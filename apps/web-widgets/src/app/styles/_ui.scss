@@ -1,3 +1,16 @@
+@use 'node_modules/survey-angular/survey.min.css';
+@use 'node_modules/survey-creator/survey-creator.min.css';
+@use 'node_modules/select2/dist/css/select2.min.css';
+@use 'node_modules/leaflet/dist/leaflet.css' as leaflet;
+@use 'node_modules/leaflet.markercluster/dist/MarkerCluster.css' as marker;
+@use 'node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css' as
+  markerDefault;
+@use 'node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css' as
+  leafletFullscreen;
+@use 'node_modules/leaflet-measure/dist/leaflet-measure.css';
+@use 'node_modules/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css';
+@use 'node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
+
 @import 'libs/ui/src/style/widgets.scss';
 @import 'libs/ui/src/style/survey.scss';
 @import 'libs/ui/src/style/styles.scss';
