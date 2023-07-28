@@ -28,6 +28,7 @@ export const init = (Survey: any, domService: DomService): void => {
     },
     widgetIsLoaded: (): boolean => true,
     isFit: (question: Question): boolean => {
+      console.log(question);
       return question.getType() === componentName;
     },
     init: () => {
@@ -136,7 +137,15 @@ export const init = (Survey: any, domService: DomService): void => {
     tagboxInstance.valueField = 'value';
     return tagboxInstance;
   };
-
+  // ⚠ danger ⚠
+  /**
+   * Solution to prevent tagbox to freeze if too many items. We are overriding the surveyjs logic, in order to prevent some built-in methods to be called.
+   * Whenever we update surveyjs, we need to check that the logic hasn't changed on their side.
+   */
+  Survey.DropdownMultiSelectListModel.prototype.syncFilterStringPlaceholder =
+    function () {
+      this.filterStringPlaceholder = this.question.placeholder;
+    };
   // there, we define that we want, with 'customtype', that the widget also appears in the list of questions
   Survey.CustomWidgetCollection.Instance.add(widget, 'customtype');
 };

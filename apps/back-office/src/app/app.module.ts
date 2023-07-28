@@ -59,6 +59,8 @@ import {
 // Sentry
 import { Router } from '@angular/router';
 import * as Sentry from '@sentry/angular-ivy';
+import { DropdownMultiSelectListModel as AngularDropdownMultiSelectListModel } from 'survey-angular';
+import { DropdownMultiSelectListModel as KnockoutDropdownMultiSelectListModel } from 'survey-knockout';
 
 /**
  * Initialize authentication in the platform.
@@ -82,6 +84,20 @@ const initializeAuth =
  */
 export const httpTranslateLoader = (http: HttpClient) =>
   new TranslateHttpLoader(http);
+
+class OverrideAngularDropdownMultiSelectListModel extends AngularDropdownMultiSelectListModel {
+  private syncFilterStringPlaceHolder() {
+    console.log('I am ici');
+    this.filterStringPlaceholder = this.question.placeholder;
+  }
+}
+
+class OverrideKnockoutDropdownMultiSelectListModel extends KnockoutDropdownMultiSelectListModel {
+  private syncFilterStringPlaceHolder() {
+    console.log('I am ici');
+    this.filterStringPlaceholder = this.question.placeholder;
+  }
+}
 
 /**
  * Main module of Back-Office project.
@@ -149,6 +165,14 @@ export const httpTranslateLoader = (http: HttpClient) =>
     ResizeBatchService,
     IconsService,
     { provide: OverlayContainer, useClass: FullscreenOverlayContainer },
+    {
+      provide: AngularDropdownMultiSelectListModel,
+      useClass: OverrideAngularDropdownMultiSelectListModel,
+    },
+    {
+      provide: KnockoutDropdownMultiSelectListModel,
+      useClass: OverrideKnockoutDropdownMultiSelectListModel,
+    },
     // Sentry
     ...(environment.sentry
       ? [
