@@ -43,7 +43,16 @@ import { PureAbility } from '@casl/ability';
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 import { createCustomElement } from '@angular/elements';
 import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
-import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
+import { POPUP_CONTAINER, PopupService } from '@progress/kendo-angular-popup';
+import { LOCATION_INITIALIZED } from '@angular/common';
+import { ResizeBatchService } from '@progress/kendo-angular-common';
+
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+import localeEn from '@angular/common/locales/en';
+// Register local translations for dates
+registerLocaleData(localeFr);
+registerLocaleData(localeEn);
 
 /**
  * Initialize authentication in the platform.
@@ -51,14 +60,46 @@ import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
  * Use oAuth
  *
  * @param oauth OAuth Service
- * @returns oAuth configuration
+ * @param translate Translate service
+ * @param injector Injector
+ * @returns oAuth configuration and translation content loaded
  */
-const initializeAuth =
-  (oauth: OAuthService): any =>
+const initializeAuthAndTranslations =
+  (
+    oauth: OAuthService,
+    translate: TranslateService,
+    injector: Injector
+  ): (() => Promise<any>) =>
   () => {
     oauth.configure(environment.authConfig);
+    // Make sure that all translations are available before the app initializes
+    return new Promise<any>((resolve: any) => {
+      const locationInitialized = injector.get(
+        LOCATION_INITIALIZED,
+        Promise.resolve(null)
+      );
+      locationInitialized.then(() => {
+        translate.addLangs(environment.availableLanguages);
+        translate.setDefaultLang(environment.availableLanguages[0]);
+        translate.use(environment.availableLanguages[0]).subscribe({
+          next: () => {
+            console.log(
+              `Successfully initialized '${environment.availableLanguages[0]}' language.'`
+            );
+          },
+          error: () => {
+            console.error(
+              `Problem with '${environment.availableLanguages[0]}' language initialization.'`
+            );
+          },
+          complete: () => {
+            // console.log(translate.instant('kendo.datetimepicker.now'));
+            resolve(null);
+          },
+        });
+      });
+    });
   };
-
 /**
  * Sets up translator.
  *
@@ -108,9 +149,9 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     },
     {
       provide: APP_INITIALIZER,
-      useFactory: initializeAuth,
+      useFactory: initializeAuthAndTranslations,
       multi: true,
-      deps: [OAuthService],
+      deps: [OAuthService, TranslateService, Injector],
     },
     {
       provide: POPUP_CONTAINER,
@@ -118,28 +159,6 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
         const currentPopupHolder: any = Array.from(
           document.getElementsByTagName('*')
         ).filter((element) => element.shadowRoot);
-
-        // REACTIVE CODE, WOULD IT WORK?? //
-        // Callback function to execute when mutations are observed
-        // const updatePopupHolder = (mutationList: any) => {
-        //   for (const mutation of mutationList) {
-        //     if (mutation.type === 'childList') {
-        //       currentPopupHolder = Array.from(
-        //         document.getElementsByTagName('*')
-        //       ).filter((element) => element.shadowRoot);
-        //     }
-        //   }
-        // };
-
-        // // Create an observer instance linked to the updatePopupHolder function
-        // const observer = new MutationObserver(updatePopupHolder);
-        // // Start observing the target node for configured mutations
-        // observer.observe(document.body, {
-        //   attributes: false,
-        //   childList: true,
-        //   subtree: true,
-        // });
-
         // return the container ElementRef, where the popup will be injected
         return {
           nativeElement: currentPopupHolder
@@ -174,6 +193,8 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       provide: PureAbility,
       useExisting: AppAbility,
     },
+    PopupService,
+    ResizeBatchService,
   ],
 })
 export class AppModule implements DoBootstrap {
@@ -181,16 +202,12 @@ export class AppModule implements DoBootstrap {
    * Main project root module
    *
    * @param injector Angular injector
-   * @param translate Angular translate service
+   * @param formService SafeFormService
    */
   constructor(
     private injector: Injector,
-    private translate: TranslateService,
     private formService: SafeFormService
-  ) {
-    this.translate.addLangs(environment.availableLanguages);
-    this.translate.setDefaultLang(environment.availableLanguages[0]);
-  }
+  ) {}
 
   ngDoBootstrap(): void {
     const form = createCustomElement(FormWidgetComponent, {
