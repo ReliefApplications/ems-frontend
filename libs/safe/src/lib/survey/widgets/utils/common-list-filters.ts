@@ -4,6 +4,11 @@ import {
 } from '@progress/kendo-angular-dropdowns';
 
 /**
+ * Default options length displayed in the widgets list
+ */
+const DEFAULT_VISIBLE_OPTIONS = 100;
+
+/**
  * Update visible choices of the given widget and attached question choices with the given search value
  *
  * @param widget Widget shown in the surveyjs question
@@ -29,7 +34,7 @@ function updateChoices(
               value: choice.value,
             }
       )
-      .slice(0, 100);
+      .slice(0, DEFAULT_VISIBLE_OPTIONS);
   } else {
     // Filters the data to those that include the search value and sets the choices to the first 100
     if (
@@ -53,12 +58,11 @@ function updateChoices(
                 value: choice.value,
               }
         )
-        .slice(0, 100);
+        .slice(0, DEFAULT_VISIBLE_OPTIONS);
       widget.data = dataToShow;
     }
   }
   widget.loading = false;
   widget.wrapper.nativeElement.click();
 }
-
 export default updateChoices;
