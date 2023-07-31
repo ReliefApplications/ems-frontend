@@ -96,7 +96,9 @@
 			"one": "Champ",
 			"permissions": {
 				"description": "Définir les autorisations d'affichage et de mise à jour pour les champs sélectionnés",
-				"title": "Définir les autorisations"
+				"see": "Autoriser ce rôle à voir les champs sélectionnés",
+				"title": "Définir les autorisations",
+				"update": "Autoriser ce rôle à mettre à jour les champs sélectionnés"
 			}
 		},
 		"filter": {

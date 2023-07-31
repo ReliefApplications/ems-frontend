@@ -96,7 +96,9 @@
 			"one": "******",
 			"permissions": {
 				"description": "******",
-				"title": "******"
+				"see": "******",
+				"title": "******",
+				"update": "******"
 			}
 		},
 		"filter": {

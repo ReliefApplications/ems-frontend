@@ -125,6 +125,25 @@ export interface EditResourceFieldPermissionMutationResponse {
   editResource: Resource;
 }
 
+/** Edits the permissions for a several resource fields */
+export const EDIT_RESOURCE_FIELDS_PERMISSIONS = gql`
+  mutation editResourceFields($id: ID!, $fieldsPermissions: JSON, $role: ID!) {
+    editResource(
+      id: $id
+      fieldsPermissions: $fieldsPermissions
+      multipleFields: true
+    ) {
+      ...ShortResourceFields
+    }
+  }
+  ${SHORT_RESOURCE_FIELDS}
+`;
+
+/** Interface of edit resource field permission mutation response */
+export interface EditResourceFieldPermissionMutationResponse {
+  editResource: Resource;
+}
+
 /** Edit Role auto assignment mutation */
 export const EDIT_ROLE_AUTO_ASSIGNMENT = gql`
   mutation editRole($id: ID!, $autoAssignment: JSON) {

@@ -1,7 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
-import { ButtonModule, DialogModule, TooltipModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  DialogModule,
+  ToggleModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import { DialogRef } from '@angular/cdk/dialog';
 import {
   FormsModule,
@@ -9,6 +14,7 @@ import {
   UntypedFormBuilder,
   UntypedFormGroup,
 } from '@angular/forms';
+import { ToggleComponent } from '../../../../../../../../ui/src/lib/toggle/toggle.component';
 
 @Component({
   standalone: true,
@@ -19,6 +25,7 @@ import {
     ButtonModule,
     TooltipModule,
     FormsModule,
+    ToggleModule,
     ReactiveFormsModule,
   ],
   selector: 'safe-set-fields-permissions-modal',
@@ -27,8 +34,8 @@ import {
 })
 export class SetFieldsPermissionsModalComponent {
   public setForm: UntypedFormGroup = new UntypedFormGroup({});
-  public canSee = true;
-  public canUpdate = true;
+
+  @ViewChild('canUpdateToggle') canUpdateToggle?: ToggleComponent;
 
   /**
    * Modal to add a new resource.
@@ -46,8 +53,12 @@ export class SetFieldsPermissionsModalComponent {
    */
   ngOnInit(): void {
     this.setForm = this.formBuilder.group({
-      see: this.canSee,
-      update: this.canUpdate,
+      canSee: [true],
+      canUpdate: [true],
+    });
+
+    this.setForm.controls.canSee.valueChanges.subscribe((value: boolean) => {
+      this.canUpdateToggle?.setDisabledState(!value);
     });
   }
 

@@ -105,6 +105,13 @@
                     $event.permission
                   )
                 "
+                (onSetPermissions)="
+                  onEditFieldsPermissions(
+                    $event.resource,
+                    $event.fields,
+                    $event.permissions
+                  )
+                "
               ></safe-resource-fields>
             </ng-container>
           </div>

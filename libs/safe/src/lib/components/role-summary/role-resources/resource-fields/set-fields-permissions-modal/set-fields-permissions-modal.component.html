@@ -1,46 +1,23 @@
-<ui-dialog size="small">
+<ui-dialog size="medium">
   <ng-container ngProjectAs="header">
-    <h1>{{ 'models.resource.create' | translate }}</h1>
+    <h1>{{ 'common.field.permissions.title' | translate }}</h1>
   </ng-container>
   <ng-container ngProjectAs="content">
     <form [formGroup]="setForm">
-      <div class="flex gap-3">
-        <ui-button
-          [isIcon]="true"
-          [icon]="canSee ? 'visibility' : 'visibility_off'"
-          [variant]="canSee ? 'primary' : 'grey'"
-        >
-        </ui-button>
-        <p>
-          {{
-            (canSee
-              ? 'components.role.tooltip.allowFieldAccessibility'
-              : 'components.role.tooltip.disallowFieldAccessibility'
-            ) | translate
-          }}
-        </p>
+      <div uiFormFieldDirective>
+        <ui-toggle formControlName="canSee">
+          <ng-container ngProjectAs="label">{{
+            'common.field.permissions.see' | translate
+          }}</ng-container>
+        </ui-toggle>
       </div>
-      <div class="flex gap-3">
-        <ui-button
-          [isIcon]="true"
-          [icon]="canUpdate ? 'edit' : 'edit_off'"
-          [variant]="canUpdate ? 'primary' : 'grey'"
-          [uiTooltip]="
-            (canUpdate
-              ? 'components.role.tooltip.allowFieldUpdate'
-              : 'components.role.tooltip.disallowFieldUpdate'
-            ) | translate
-          "
-        >
-        </ui-button>
-        <p>
-          {{
-            (canUpdate
-              ? 'components.role.tooltip.allowFieldUpdate'
-              : 'components.role.tooltip.disallowFieldUpdate'
-            ) | translate
-          }}
-        </p>
+
+      <div uiFormFieldDirective>
+        <ui-toggle formControlName="canUpdate" #canUpdateToggle>
+          <ng-container ngProjectAs="label">{{
+            'common.field.permissions.update' | translate
+          }}</ng-container>
+        </ui-toggle>
       </div>
     </form>
   </ng-container>

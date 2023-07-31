@@ -6,7 +6,7 @@ import { FormControl } from '@angular/forms';
 import { SelectionModel } from '@angular/cdk/collections';
 import { takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
-import { SafeUnsubscribeComponent } from '@oort-front/safe';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 type ResourceField = {
   name: string;
@@ -37,12 +37,18 @@ export class ResourceFieldsComponent
     permission: 'canSee' | 'canUpdate';
   }>();
 
+  @Output() onSetPermissions = new EventEmitter<{
+    resource: Resource;
+    fields: ResourceField[];
+    permissions: { canSee: boolean; canUpdate: boolean };
+  }>();
+
   public filterId = new FormControl<string | null | undefined>(undefined);
 
-  public fields = new Array<ResourceField[]>([]);
+  public fields = new Array<ResourceField>();
   public displayedColumns: string[] = ['select', 'name', 'actions'];
 
-  selection = new SelectionModel<ResourceField[]>(true, []);
+  selection = new SelectionModel<ResourceField>(true, []);
 
   /**
    * ResourcesComponent constructor.
@@ -154,17 +160,23 @@ export class ResourceFieldsComponent
   }
 
   /**
-   * Show a dialog to confirm the deletion of users
+   * Show a dialog to edit permissions of the selected fields
    *
-   * @param users The list of users to delete
+   * @param fields The list of fields to edit
    */
-  async onDelete(fields: ResourceField[][]): Promise<void> {
+  async onEditPermissions(fields: ResourceField[]): Promise<void> {
     const { SetFieldsPermissionsModalComponent } = await import(
       '../resource-fields/set-fields-permissions-modal/set-fields-permissions-modal.component'
     );
     const dialogRef = this.dialog.open(SetFieldsPermissionsModalComponent);
+
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      console.log(value);
+      console.log(fields);
+      this.onSetPermissions.emit({
+        resource: this.resource,
+        fields: fields,
+        permissions: value,
+      });
     });
   }
 }

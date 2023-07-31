@@ -96,7 +96,9 @@
 			"one": "Field",
 			"permissions": {
 				"description": "Set view and update permissions for selected fields",
-				"title": "Set permissions"
+				"see": "Allow this role to see the selected fields",
+				"title": "Set permissions",
+				"update": "Allow this role to update the selected fields"
 			}
 		},
 		"filter": {

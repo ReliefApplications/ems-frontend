@@ -4,7 +4,7 @@
   <!-- Actions when selected items -->
   <ng-container *ngIf="selection.selected.length > 1">
     <ui-button
-      (click)="onDelete(selection.selected)"
+      (click)="onEditPermissions(selection.selected)"
       [uiTooltip]="'common.field.permissions.description' | translate"
       category="secondary"
       variant="primary"
