@@ -109,7 +109,7 @@ export class NotificationsComponent
    * @param e page event.
    */
   onPage(e: UIPageChangeEvent): void {
-    // console.log(e);
+    console.log(e);
   }
 
   /**
