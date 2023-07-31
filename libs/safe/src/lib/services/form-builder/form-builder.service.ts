@@ -21,6 +21,8 @@ import { SafeFormHelpersService } from '../form-helper/form-helper.service';
   providedIn: 'root',
 })
 export class SafeFormBuilderService {
+  /** If updating record, saves recordId if necessary gets files from questions */
+  public recordId?: string;
   /**
    * Constructor of the service
    *
@@ -248,11 +250,17 @@ export class SafeFormBuilderService {
       options.content.indexOf('http') !== -1
     ) {
       options.callback('success', options.content);
-    } else {
+    } else if (this.recordId) {
+      /**
+       * Only gets here if: editing record (we need to download the file to be available)
+       * OR saving a new record with files (because when we edit the file.content after the uploadFile
+       * mutation the survey.onDownloadFile() event is triggered, but we don't need to download the file
+       *  in this case and the undefined this.recordId prevents this unnecessary call)
+       */
       const xhr = new XMLHttpRequest();
       xhr.open(
         'GET',
-        `${this.restService.apiUrl}/download/file/${options.content}`
+        `${this.restService.apiUrl}/download/file/${options.content}/${this.recordId}/${options.name}`
       );
       xhr.setRequestHeader(
         'Authorization',

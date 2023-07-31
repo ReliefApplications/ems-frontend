@@ -105,6 +105,7 @@ export class SafeFormComponent
   ngOnInit(): void {
     Survey.StylesManager.applyTheme();
     addCustomFunctions(Survey, this.authService, this.record);
+    this.formBuilderService.recordId = this.record?.id;
 
     const structure = JSON.parse(this.form.structure || '{}');
     if (structure && !structure.completedHtml) {

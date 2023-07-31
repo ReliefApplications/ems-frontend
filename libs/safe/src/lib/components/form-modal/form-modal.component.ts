@@ -165,6 +165,7 @@ export class SafeFormModalComponent
           })
         ).then(({ data }) => {
           this.record = data.record;
+          this.formBuilderService.recordId = this.record?.id;
           this.modifiedAt = this.isMultiEdition
             ? null
             : this.record.modifiedAt || null;
