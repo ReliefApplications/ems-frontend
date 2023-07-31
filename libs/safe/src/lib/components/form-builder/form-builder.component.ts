@@ -488,7 +488,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
           );
         }
       } else {
-        // As we already have the reference data value to get the choices, we dont want to save them again with the form structure
+        // As we already have the reference data value to get the choices, we don't want to save them again with the form structure
         question.choices = [];
       }
     }
@@ -508,20 +508,27 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       });
     }
     if (question.getType() === 'matrix') {
-      question.columns.forEach(
-        (x: any) => (x.value = this.toSnakeCase(x.value || x.text || x))
-      );
-      question.rows.forEach(
-        (x: any) => (x.value = this.toSnakeCase(x.value || x.text || x))
-      );
+      question.columns.forEach((x: any) => {
+        const snakeCaseValue = this.toSnakeCase(x.value || x.text || x);
+        x.text = x.text || x.value;
+        x.value = snakeCaseValue;
+      });
+      question.rows.forEach((x: any) => {
+        const snakeCaseValue = this.toSnakeCase(x.value || x.text || x);
+        x.text = x.text || x.value;
+        x.value = snakeCaseValue;
+      });
     }
     if (question.getType() === 'matrixdropdown') {
       question.columns.forEach((x: any) => {
-        x.name = this.toSnakeCase(x.name || x.title || x);
+        const snakeCaseName = this.toSnakeCase(x.name || x.title || x);
         x.title = x.title || x.name || x;
+        x.name = snakeCaseName;
       });
       question.rows.forEach((x: any) => {
-        x.value = this.toSnakeCase(x.value || x.text || x);
+        const snakeCaseValue = this.toSnakeCase(x.value || x.text || x);
+        x.text = x.text || x.value;
+        x.value = snakeCaseValue;
       });
     }
     if (['resource', 'resources'].includes(question.getType())) {
