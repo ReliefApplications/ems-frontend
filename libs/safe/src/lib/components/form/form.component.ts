@@ -71,10 +71,6 @@ export class SafeFormComponent
     new BehaviorSubject<number>(0);
   /** Selected page index as observable */
   public selectedPageIndex$ = this.selectedPageIndex.asObservable();
-  /** Available pages*/
-  private pages = new BehaviorSubject<any[]>([]);
-  /** Pages as observable */
-  public pages$ = this.pages.asObservable();
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -116,14 +112,12 @@ export class SafeFormComponent
 
     this.survey = this.formBuilderService.createSurvey(
       JSON.stringify(structure),
-      this.pages,
       this.form.metadata,
       this.record
     );
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
-      this.pages,
       this.selectedPageIndex,
       this.temporaryFilesStorage
     );
