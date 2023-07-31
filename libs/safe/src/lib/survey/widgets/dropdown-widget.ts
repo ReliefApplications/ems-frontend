@@ -3,7 +3,7 @@ import { DomService } from '../../services/dom/dom.service';
 import { Question } from '../types';
 import { QuestionDropdown } from 'survey-knockout';
 import { isArray, isObject } from 'lodash';
-import { debounceTime, map, tap } from 'rxjs';
+import { Subscription, debounceTime, map, tap } from 'rxjs';
 import updateChoices from './utils/common-list-filters';
 
 /**
@@ -14,8 +14,7 @@ import updateChoices from './utils/common-list-filters';
  */
 export const init = (Survey: any, domService: DomService): void => {
   let currentSearchValue = '';
-  let filterChangeSubscription!: any;
-  let openOnLoadingSubscription!: any;
+  const componentSubscriptions = new Subscription();
   const widget = {
     name: 'dropdown-widget',
     widgetIsLoaded: (): boolean => true,
@@ -34,29 +33,25 @@ export const init = (Survey: any, domService: DomService): void => {
       }
       dropdownInstance.placeholder = question.placeholder;
       dropdownInstance.readonly = question.isReadOnly;
-      dropdownInstance.disabled = question.isReadOnly;
       dropdownInstance.registerOnChange((value: any) => {
         if (!isObject(value) && !isArray(value)) {
           question.value = value;
         }
       });
-      // Prevent dropdown display in the UI if the data is loading
-      openOnLoadingSubscription = dropdownInstance.open.subscribe((event) => {
-        if (dropdownInstance.loading) {
-          event.preventDefault();
-        }
-      });
+
       // We subscribe to whatever you write on the field so we can filter the data accordingly
-      filterChangeSubscription = dropdownInstance.filterChange
-        .pipe(
-          debounceTime(500), // Debounce time to limit quantity of updates
-          tap(() => (dropdownInstance.loading = true)),
-          map((searchValue: string) => searchValue?.toLowerCase()) // Make the filter non-case sensitive
-        )
-        .subscribe((searchValue: string) => {
-          currentSearchValue = searchValue;
-          updateChoices(dropdownInstance, question, searchValue);
-        });
+      componentSubscriptions.add(
+        dropdownInstance.filterChange
+          .pipe(
+            debounceTime(500), // Debounce time to limit quantity of updates
+            tap(() => (dropdownInstance.loading = true)),
+            map((searchValue: string) => searchValue?.toLowerCase()) // Make the filter non-case sensitive
+          )
+          .subscribe((searchValue: string) => {
+            currentSearchValue = searchValue;
+            updateChoices(dropdownInstance, question, searchValue);
+          })
+      );
 
       question._propertyValueChangedVirtual = () => {
         updateChoices(
@@ -99,8 +94,7 @@ export const init = (Survey: any, domService: DomService): void => {
         question._propertyValueChangedVirtual
       );
       question._propertyValueChangedVirtual = undefined;
-      filterChangeSubscription?.unsubscribe();
-      openOnLoadingSubscription?.unsubscribe();
+      componentSubscriptions.unsubscribe();
     },
   };
 
@@ -122,6 +116,7 @@ export const init = (Survey: any, domService: DomService): void => {
     dropdownInstance.valuePrimitive = true;
     dropdownInstance.filterable = true;
     dropdownInstance.loading = true;
+    dropdownInstance.disabled = true;
     dropdownInstance.textField = 'text';
     dropdownInstance.valueField = 'value';
     return dropdownInstance;

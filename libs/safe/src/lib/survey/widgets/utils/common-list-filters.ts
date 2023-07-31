@@ -68,7 +68,6 @@ function updateChoices(
   if (hasDefaultValue) {
     const choicesAux = surveyQuestion.visibleChoices.filter((ch: any) => {
       const searchValue = typeof ch === 'string' ? ch : ch.value;
-      typeof ch === 'string';
       return widget instanceof ComboBoxComponent
         ? searchValue === surveyQuestion.value
         : surveyQuestion.value.includes(searchValue);
@@ -94,6 +93,7 @@ function updateChoices(
   }
 
   widget.loading = false;
+  widget.disabled = surveyQuestion.isReadOnly;
   widget.wrapper.nativeElement.click();
 }
 export default updateChoices;
