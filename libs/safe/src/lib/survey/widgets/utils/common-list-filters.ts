@@ -23,20 +23,18 @@ function updateChoices(
   hasDefaultValue: boolean = false
 ) {
   if (searchValue === '') {
-    // Without search value shows the first 100 values
-    widget.data = surveyQuestion.visibleChoices
-      .map((choice: any) =>
-        typeof choice === 'string'
-          ? {
-              text: choice,
-              value: choice,
-            }
-          : {
-              text: choice.text,
-              value: choice.value,
-            }
-      )
-      .slice(0, DEFAULT_VISIBLE_OPTIONS);
+    // Without search value uses virtualization
+    widget.data = surveyQuestion.visibleChoices.map((choice: any) =>
+      typeof choice === 'string'
+        ? {
+            text: choice,
+            value: choice,
+          }
+        : {
+            text: choice.text,
+            value: choice.value,
+          }
+    );
   } else {
     // Filters the data to those that include the search value and sets the choices to the first 100
     if (

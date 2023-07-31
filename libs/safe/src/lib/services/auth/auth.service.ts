@@ -146,7 +146,7 @@ export class SafeAuthService {
           // Chrome does not delete state and session state params once the oauth is successful
           // Which triggers a new token fetch with an invalid(deprecated) code
           // can cause an issue with navigation
-          console.log(e);
+          // console.log(e);
           // this.router.navigateByUrl(this.origin);
         }
         localStorage.removeItem('redirectPath');
