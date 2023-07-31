@@ -1157,6 +1157,10 @@
 					"records": "Loading records...",
 					"settings": "Loading settings..."
 				},
+				"map": {
+					"mapDetailsTitle": "Map with the complete dataset",
+					"mapDetailsTooltip": "Initially centered on the selected record answer"
+				},
 				"openSettings": "Open settings",
 				"tooltip": {
 					"displayMap": "Display map",
