@@ -3,6 +3,8 @@ import { DomService } from '../../services/dom/dom.service';
 import { Question } from '../types';
 import { QuestionDropdown } from 'survey-knockout';
 import { isArray, isObject } from 'lodash';
+import { debounceTime, map, tap } from 'rxjs';
+import updateChoices from './utils/common-list-filters';
 
 /**
  * Init dropdown widget
@@ -11,6 +13,9 @@ import { isArray, isObject } from 'lodash';
  * @param domService Shared dom service
  */
 export const init = (Survey: any, domService: DomService): void => {
+  let currentSearchValue = '';
+  let filterChangeSubscription!: any;
+  let openOnLoadingSubscription!: any;
   const widget = {
     name: 'dropdown-widget',
     widgetIsLoaded: (): boolean => true,
@@ -35,23 +40,26 @@ export const init = (Survey: any, domService: DomService): void => {
           question.value = value;
         }
       });
-      const updateChoices = () => {
-        if (question.visibleChoices && Array.isArray(question.visibleChoices)) {
-          dropdownInstance.data = question.visibleChoices.map((choice: any) =>
-            typeof choice === 'string'
-              ? {
-                  text: choice,
-                  value: choice,
-                }
-              : {
-                  text: choice.text,
-                  value: choice.value,
-                }
-          );
+      // Prevent dropdown display in the UI if the data is loading
+      openOnLoadingSubscription = dropdownInstance.open.subscribe((event) => {
+        if (dropdownInstance.loading) {
+          event.preventDefault();
         }
-      };
+      });
+      // We subscribe to whatever you write on the field so we can filter the data accordingly
+      filterChangeSubscription = dropdownInstance.filterChange
+        .pipe(
+          debounceTime(500), // Debounce time to limit quantity of updates
+          tap(() => (dropdownInstance.loading = true)),
+          map((searchValue: string) => searchValue?.toLowerCase()) // Make the filter non-case sensitive
+        )
+        .subscribe((searchValue: string) => {
+          currentSearchValue = searchValue;
+          updateChoices(dropdownInstance, question, searchValue);
+        });
+
       question._propertyValueChangedVirtual = () => {
-        updateChoices();
+        updateChoices(dropdownInstance, question, currentSearchValue);
       };
       question.registerFunctionOnPropertyValueChanged(
         'visibleChoices',
@@ -67,7 +75,6 @@ export const init = (Survey: any, domService: DomService): void => {
           dropdownInstance.disabled = value;
         }
       );
-      updateChoices();
       el.parentElement?.appendChild(dropdownDiv);
     },
     willUnmount: (question: any): void => {
@@ -79,6 +86,8 @@ export const init = (Survey: any, domService: DomService): void => {
         question._propertyValueChangedVirtual
       );
       question._propertyValueChangedVirtual = undefined;
+      filterChangeSubscription?.unsubscribe();
+      openOnLoadingSubscription?.unsubscribe();
     },
   };
 
@@ -98,6 +107,8 @@ export const init = (Survey: any, domService: DomService): void => {
       itemHeight: 28,
     };
     dropdownInstance.valuePrimitive = true;
+    dropdownInstance.filterable = true;
+    dropdownInstance.loading = true;
     dropdownInstance.textField = 'text';
     dropdownInstance.valueField = 'value';
     return dropdownInstance;
