@@ -2,12 +2,8 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
-  GetFormByIdQueryResponse,
   GetFormRecordsQueryResponse,
-  GetRecordDetailsQueryResponse,
-  GET_FORM_BY_ID,
   GET_FORM_RECORDS,
-  GET_RECORD_DETAILS,
 } from './graphql/queries';
 import {
   EditRecordMutationResponse,
@@ -70,7 +66,7 @@ export class FormRecordsComponent
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,
     length: 0,
-    endCursor: '',
+    endCursor: null as string | null,
   };
 
   /** @returns True if the layouts tab is empty */
@@ -135,7 +131,7 @@ export class FormRecordsComponent
 
     this.recordsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data }) => {
+      .subscribe(({ errors, data, loading }) => {
         this.cachedRecords.push(
           ...data.form.records.edges.map((x: any) => x.node)
         );
@@ -146,29 +142,12 @@ export class FormRecordsComponent
         this.pageInfo.length = data.form.records.totalCount;
         this.pageInfo.endCursor = data.form.records.pageInfo.endCursor;
         this.loadingMore = false;
-      });
 
-    // get the form detail
-    this.apollo
-      .watchQuery<GetFormByIdQueryResponse>({
-        query: GET_FORM_BY_ID,
-        variables: {
-          id: this.id,
-          display: true,
-          showDeletedRecords: this.showDeletedRecords,
-        },
-      })
-      .valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe(({ errors, data, loading }) => {
-        if (data.form) {
-          this.form = data.form;
-          this.breadcrumbService.setBreadcrumb(
-            '@form',
-            this.form.name as string
-          );
-          this.setDisplayedColumns();
-          this.loading = loading;
-        }
+        this.form = data.form;
+        this.breadcrumbService.setBreadcrumb('@form', this.form.name as string);
+        this.setDisplayedColumns();
+        this.loading = loading;
+
         if (errors) {
           // TO-DO: Check why it's not working as intended.
           this.snackBar.openSnackBar(
@@ -306,7 +285,7 @@ export class FormRecordsComponent
    * Open confirm modal to ask user for reversion of data
    *
    * @param record record to update
-   * @param version version to applu
+   * @param version version to apply
    */
   private confirmRevertDialog(record: any, version: any): void {
     // eslint-disable-next-line radix
@@ -360,29 +339,20 @@ export class FormRecordsComponent
   /**
    * Open the history of the record on the right side of the screen.
    *
-   * @param id id of version
+   * @param record to get history from
    */
-  public onViewHistory(id: string): void {
-    this.apollo
-      .query<GetRecordDetailsQueryResponse>({
-        query: GET_RECORD_DETAILS,
-        variables: {
-          id,
+  public async onViewHistory(record: Record) {
+    if (!record.id) return;
+    this.historyId = record.id;
+    import('@oort-front/safe').then(({ SafeRecordHistoryComponent }) => {
+      this.layoutService.setRightSidenav({
+        component: SafeRecordHistoryComponent,
+        inputs: {
+          id: record.id,
+          revert: (version: any) => this.confirmRevertDialog(record, version),
         },
-      })
-      .subscribe(({ data }) => {
-        this.historyId = id;
-        import('@oort-front/safe').then(({ SafeRecordHistoryComponent }) => {
-          this.layoutService.setRightSidenav({
-            component: SafeRecordHistoryComponent,
-            inputs: {
-              id: data.record.id,
-              revert: (version: any) =>
-                this.confirmRevertDialog(data.record, version),
-            },
-          });
-        });
       });
+    });
   }
 
   /**
