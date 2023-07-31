@@ -232,6 +232,16 @@ export class SafeFormModalComponent
       this.temporaryFilesStorage
     );
 
+    // Set questions readOnly propriety
+    const structure = JSON.parse(this.form?.structure || '');
+    const pages = structure.pages;
+    pages.forEach((page: any) => {
+      page.elements?.forEach((question: any) => {
+        this.survey.getQuestionByName(question.name).readOnly =
+          question.readOnly ?? false;
+      });
+    });
+
     if (this.data.recordId && this.record) {
       addCustomFunctions(Survey, this.authService, this.record);
       this.survey.data = this.isMultiEdition ? null : this.record.data;
@@ -246,6 +256,16 @@ export class SafeFormModalComponent
     }
     this.survey.render(this.formContainer.nativeElement);
     // this.survey.render(this.containerId);
+    // this.pages.getValue().forEach((page: any) => {
+    //   console.log('page', page)
+    //   page.questions?.forEach((question: any) => {
+    //     const q = this.survey.getQuestionByName(question.name)
+    //     console.log('question',  q.name, question.readOnly, question.isReadOnly)
+    //     this.survey.getQuestionByName(question.name).readOnly = question.isReadyOnly ?? false;
+    //     console.log('question',  q.name, q.readOnly, q.isReadOnly)
+
+    //   });
+    // });
     this.loading = false;
   }
 

@@ -134,14 +134,12 @@ export class SafeFormComponent
     this.survey.onValueChanged.add(this.valueChange.bind(this));
     this.survey.onComplete.add(this.onComplete);
 
-    // Unset readOnly fields if it's the record creation
-    if (!this.record) {
-      this.form.fields?.forEach((field) => {
-        if (field.readOnly) {
-          this.survey.getQuestionByName(field.name).readOnly = false;
-        }
-      });
-    }
+    // Set questions readOnly propriety
+    this.form.fields?.forEach((field) => {
+      if (field.readOnly) {
+        this.survey.getQuestionByName(field.name).readOnly = field.readOnly;
+      }
+    });
     // Fetch cached data from local storage
     this.storageId = `record:${this.record ? 'update' : ''}:${this.form.id}`;
     const storedData = localStorage.getItem(this.storageId);
