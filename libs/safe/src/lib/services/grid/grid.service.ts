@@ -365,7 +365,7 @@ export class SafeGridService {
           .map((x: any) => {
             const value = (
               choicesByUrl.value ? get(x, choicesByUrl.value) : x
-            ).toString();
+            )?.toString();
             return {
               value,
               text: (choicesByUrl.text && get(x, choicesByUrl.text)) || value,
