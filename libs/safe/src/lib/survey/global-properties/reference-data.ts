@@ -9,6 +9,7 @@ import { DomService } from '../../services/dom/dom.service';
 import { SafeReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { SafeReferenceDataDropdownComponent } from '../../components/reference-data-dropdown/reference-data-dropdown.component';
 import { Question, QuestionSelectBase } from '../types';
+import { BehaviorSubject, distinctUntilChanged } from 'rxjs';
 
 /**
  * Check if a question is of select type
@@ -254,13 +255,57 @@ export const render = (
       }
     };
 
-    // init the choices
-    if (!question.referenceDataChoicesLoaded && question.referenceData) {
-      referenceDataService
-        .cacheItems(question.referenceData)
-        .then(() => updateChoices());
-      question.referenceDataChoicesLoaded = true;
+    // Adds a behaviour subject and subscribes to it so we can redo the query when we get a new searchValue
+    question.currentSearchValue = new BehaviorSubject<string>('');
+    question.currentSearchValue
+      .pipe(distinctUntilChanged())
+      .subscribe((searchValue: string) => {
+        if (searchValue !== undefined && searchValue !== null) {
+          if (question.referenceData) {
+            // TODO: make referenceDataService.cacheItems work with searchValue as a query filter
+            //
+            // referenceDataService
+            //   .cacheItems(question.referenceData, searchValue)
+            //   .then(() => {
+            //     updateChoices();
+            //   });
+          }
+        }
+      });
+
+    if (question.referenceData) {
+      if (question.value) {
+        switch (question.getType()) {
+          case 'dropdown':
+            question.setPropertyValue('visibleChoices', [
+              new ItemValue(
+                question.value,
+                'Value selected, click the box to load it'
+              ),
+            ]);
+            break;
+          case 'tagbox':
+            // TODO: Not working?
+            const valueLength = question.value.length;
+            if (valueLength > 0) {
+              question.setPropertyValue('visibleChoices', [
+                new ItemValue(
+                  question.value[0],
+                  valueLength +
+                    (valueLength === 1 ? ' value' : ' values') +
+                    ' selected, click the box to load ' +
+                    (valueLength === 1 ? 'it' : 'them')
+                ),
+              ]);
+            }
+            break;
+
+          default:
+            break;
+        }
+      }
     }
+
     // Prevent selected choices to be removed when sending the value
     question.clearIncorrectValuesCallback = () => {
       // console.log(question.visibleChoices);
