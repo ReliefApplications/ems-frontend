@@ -72,13 +72,6 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
         this.form.at(index).setErrors({ invalid: true });
       }
     });
-    console.log(
-      'fieldForm',
-      this.fieldForm,
-      this.editor.base_url,
-      this.selectedFields,
-      selectedFields
-    );
   }
 
   ngOnChanges(): void {
@@ -89,7 +82,6 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
     this.selectedFields = selectedFields.map(
       (x) => this.fields.find((f) => f.name === x) || { name: x }
     );
-    console.log('om change fieldForm', this.fieldForm, this.editor.base_url);
   }
 
   /**
