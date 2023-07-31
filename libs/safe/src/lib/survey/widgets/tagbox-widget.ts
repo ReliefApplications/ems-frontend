@@ -32,7 +32,6 @@ export const init = (Survey: any, domService: DomService): void => {
     },
     widgetIsLoaded: (): boolean => true,
     isFit: (question: Question): boolean => {
-      console.log(question);
       return question.getType() === componentName;
     },
     init: () => {
