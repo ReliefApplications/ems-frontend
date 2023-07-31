@@ -95,7 +95,12 @@ export const init = (Survey: any, domService: DomService): void => {
         });
 
       question._propertyValueChangedVirtual = () => {
-        updateChoices(tagboxInstance, question, currentSearchValue);
+        updateChoices(
+          tagboxInstance,
+          question,
+          currentSearchValue,
+          Boolean(question.value)
+        );
       };
       question.registerFunctionOnPropertyValueChanged(
         'visibleChoices',
@@ -108,6 +113,14 @@ export const init = (Survey: any, domService: DomService): void => {
           tagboxInstance.disabled = value;
         }
       );
+      if (question.visibleChoices.length) {
+        updateChoices(
+          tagboxInstance,
+          question,
+          currentSearchValue,
+          Boolean(question.value)
+        );
+      }
       el.parentElement?.appendChild(tagboxDiv);
     },
     willUnmount: (question: any): void => {

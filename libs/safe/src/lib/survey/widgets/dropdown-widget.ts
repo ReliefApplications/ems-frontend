@@ -59,7 +59,12 @@ export const init = (Survey: any, domService: DomService): void => {
         });
 
       question._propertyValueChangedVirtual = () => {
-        updateChoices(dropdownInstance, question, currentSearchValue);
+        updateChoices(
+          dropdownInstance,
+          question,
+          currentSearchValue,
+          Boolean(question.value)
+        );
       };
       question.registerFunctionOnPropertyValueChanged(
         'visibleChoices',
@@ -75,6 +80,14 @@ export const init = (Survey: any, domService: DomService): void => {
           dropdownInstance.disabled = value;
         }
       );
+      if (question.visibleChoices.length) {
+        updateChoices(
+          dropdownInstance,
+          question,
+          currentSearchValue,
+          Boolean(question.value)
+        );
+      }
       el.parentElement?.appendChild(dropdownDiv);
     },
     willUnmount: (question: any): void => {
