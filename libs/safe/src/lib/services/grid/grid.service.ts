@@ -358,12 +358,12 @@ export class SafeGridService {
       otherText?: string;
     }
   ): { value: string; text: string }[] {
+    console.log(choicesByUrl);
     let choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
     choices = choices
       ? choices.map((x: any) => {
           const value = (
-            (choicesByUrl.value && get(x, choicesByUrl.value)) ||
-            x
+            choicesByUrl.value ? get(x, choicesByUrl.value) : x
           ).toString();
           return {
             value,
