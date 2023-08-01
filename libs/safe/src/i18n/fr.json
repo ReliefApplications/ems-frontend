@@ -1174,8 +1174,8 @@
 					"settings": "Chargement des paramètres..."
 				},
 				"map": {
-					"mapDetailsTitle": "Carte avec le jeu de données complet",
-					"mapDetailsTooltip": "Initialement centré sur la réponse de l'enregistrement sélectionné"
+					"mapDetailsTitle": "Cartographie des données",
+					"mapDetailsTooltip": "Centré par defaut sur l'enregistrement sélectionné"
 				},
 				"openSettings": "Ouvrir les paramètres",
 				"tooltip": {

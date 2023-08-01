@@ -1158,8 +1158,8 @@
 					"settings": "Loading settings..."
 				},
 				"map": {
-					"mapDetailsTitle": "Map with the complete dataset",
-					"mapDetailsTooltip": "Initially centered on the selected record answer"
+					"mapDetailsTitle": "Query Map View",
+					"mapDetailsTooltip": "Centered by default on selected record"
 				},
 				"openSettings": "Open settings",
 				"tooltip": {
