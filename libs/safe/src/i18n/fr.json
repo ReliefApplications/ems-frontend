@@ -1173,6 +1173,10 @@
 					"records": "Chargement des enregistrements...",
 					"settings": "Chargement des paramètres..."
 				},
+				"map": {
+					"mapDetailsTitle": "Cartographie des données",
+					"mapDetailsTooltip": "Centré par defaut sur l'enregistrement sélectionné"
+				},
 				"openSettings": "Ouvrir les paramètres",
 				"tooltip": {
 					"displayMap": "Afficher la carte",
