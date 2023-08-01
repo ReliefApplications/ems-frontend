@@ -1,3 +1,13 @@
+## [2.0.3](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.2...v2.0.3) (2023-08-01)
+
+
+### Bug Fixes
+
+* add loading indicator in dropdown and tagbox in survey questions ([c06ad98](https://github.com/ReliefApplications/oort-frontend/commit/c06ad989b51e0163f63a9b84c3b962275308505a)), closes [fix/AB#71072](https://github.com/fix/AB/issues/71072) [fix/AB#71072](https://github.com/fix/AB/issues/71072) [fix/AB#71072](https://github.com/fix/AB/issues/71072) [fix/AB#71072](https://github.com/fix/AB/issues/71072) [fix/AB#71072](https://github.com/fix/AB/issues/71072)
+* choices coming from url could be displayed as object due to missing value ([f42a536](https://github.com/ReliefApplications/oort-frontend/commit/f42a5362451e1daf920060f1959d02379830f6f9))
+* toString in extractChoices in grids should now get correct value ([a2b9de5](https://github.com/ReliefApplications/oort-frontend/commit/a2b9de500c6f39667690256cefbc2094c270cded))
+* when editing roles, channel would not get initial value if set ([bfcadeb](https://github.com/ReliefApplications/oort-frontend/commit/bfcadebabf988733e162fa34585d416275bc44b2))
+
 ## [2.0.2](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.1...v2.0.2) (2023-07-31)
 
 
