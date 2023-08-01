@@ -10,9 +10,11 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 import { SidenavDirective } from './sidenav.directive';
 import { Subject, takeUntil } from 'rxjs';
 import { SidenavPositionTypes, SidenavTypes } from './types/sidenavs';
+import { filter } from 'rxjs/operators';
 
 /**
  * UI Sidenav component
@@ -26,6 +28,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   @ContentChildren(SidenavDirective) uiSidenavDirective!: SidenavDirective[];
   @ViewChild('content') content!: ElementRef;
   @ViewChildren('sidenav') sidenav!: QueryList<any>;
+  @ViewChild('container') container!: ElementRef;
 
   public showSidenav: boolean[] = [];
   public mode: SidenavTypes[] = [];
@@ -40,12 +43,24 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
    * @param renderer Renderer2
    * @param cdr ChangeDetectorRef
    * @param el elementRef
+   * @param router Angular router
    */
   constructor(
     private renderer: Renderer2,
     private cdr: ChangeDetectorRef,
-    public el: ElementRef
-  ) {}
+    public el: ElementRef,
+    private router: Router
+  ) {
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe(() => {
+        this.container.nativeElement.scroll({
+          top: 0,
+          left: 0,
+          behavior: 'smooth',
+        });
+      });
+  }
 
   ngAfterViewInit() {
     // Initialize width and show sidenav value
