@@ -142,8 +142,6 @@ export const init = (Survey: any): void => {
     Object.assign(options, { method: this.usePost ? 'POST' : 'GET' });
     if (this.requestBody) Object.assign(options, { body: this.requestBody });
 
-    const loadingObjHash = this.objHash;
-
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
 
@@ -157,15 +155,14 @@ export const init = (Survey: any): void => {
         }
       })
       .then((data) => {
-        self.onLoad(self.parseResponse(data), loadingObjHash);
+        self.onLoad(self.parseResponse(data), self.objHash);
       })
       .catch((error) => {
         self.onError(error.message);
       });
 
     if (Survey.ChoicesRestful.onBeforeSendRequest) {
-      const beforeSendOptions = { request: options };
-      Survey.ChoicesRestful.onBeforeSendRequest(this, beforeSendOptions);
+      Survey.ChoicesRestful.onBeforeSendRequest(this, { request: options });
     }
 
     this.beforeSendRequest();
