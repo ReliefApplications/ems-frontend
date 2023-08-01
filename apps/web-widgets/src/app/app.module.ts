@@ -14,7 +14,6 @@ import {
 } from '@angular/common/http';
 import { FormWidgetModule } from './widgets/form-widget/form-widget.module';
 import { environment } from '../environments/environment';
-import { RouterModule } from '@angular/router';
 import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
 import {
   TranslateLoader,
@@ -23,7 +22,6 @@ import {
 } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MessageService } from '@progress/kendo-angular-l10n';
-import { DateTimePickerModule } from '@progress/kendo-angular-dateinputs';
 
 import {
   AppAbility,
@@ -49,6 +47,7 @@ import { ResizeBatchService } from '@progress/kendo-angular-common';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import localeEn from '@angular/common/locales/en';
+import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 // Register local translations for dates
 registerLocaleData(localeFr);
 registerLocaleData(localeEn);
@@ -125,7 +124,6 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    RouterModule.forRoot([]),
     OAuthModule.forRoot(),
     DialogCdkModule,
     TranslateModule.forRoot({
@@ -136,9 +134,9 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       },
     }),
     OverlayModule,
-    DateTimePickerModule,
     FormWidgetModule,
     GraphQLModule,
+    DateInputsModule,
   ],
   providers: [
     {
