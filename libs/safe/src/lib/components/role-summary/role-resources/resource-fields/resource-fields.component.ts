@@ -97,5 +97,14 @@ export class ResourceFieldsComponent implements OnInit {
       permission,
       resource: this.resource,
     });
+    // if canSee is toggled off, we should remove canUpdate as well
+    if (permission === 'canSee' && field.canSee && field.canUpdate) {
+      // this will likely cause 2 renderings. We should emit events for both permissions at once
+      this.onToggle.emit({
+        field,
+        permission: 'canUpdate',
+        resource: this.resource,
+      });
+    }
   }
 }
