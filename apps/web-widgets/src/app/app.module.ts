@@ -13,7 +13,6 @@ import {
   HttpClientModule,
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
-import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
 import { FormWidgetModule } from './widgets/form-widget/form-widget.module';
 import { environment } from '../environments/environment';
 import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
@@ -92,6 +91,7 @@ const initializeAuthAndTranslations =
             );
           },
           complete: () => {
+            console.log(translate.instant('kendo.datetimepicker.now'));
             resolve(null);
           },
         });
@@ -149,15 +149,11 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     },
     {
       provide: POPUP_CONTAINER,
-      useFactory: () =>
+      useFactory: () => {
         // return the container ElementRef, where the popup will be injected
-        ({ nativeElement: document.body } as ElementRef),
-    },
-    // Default parameters of material tooltip
-    {
-      provide: MAT_TOOLTIP_DEFAULT_OPTIONS,
-      useValue: {
-        showDelay: 500,
+        return {
+          nativeElement: document.body,
+        } as ElementRef;
       },
     },
     {
