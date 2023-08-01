@@ -123,6 +123,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.setFormBuilder(get(this.form, 'structure', ''));
+    console.log(this.form.fields);
   }
 
   ngOnChanges(): void {
@@ -133,6 +134,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       }
       // skip if form is core
       if (!this.form.core) {
+        console.log(this.form.fields);
         const coreFields =
           this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || []; // it's really hard to debug those without proper typing
         // Highlight core fields

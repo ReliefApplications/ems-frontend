@@ -141,7 +141,7 @@ export class DashboardFilterComponent
     this.contextService.filterStructure$
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        this.surveyStructure = value || ''; // so is it a string ? a JSON ? an object ? nobody knows
+        this.surveyStructure = value || '';
         this.initSurvey();
       });
     this.contextService.filterPosition$
@@ -192,7 +192,7 @@ export class DashboardFilterComponent
    */
   public changeFilterPosition(position: FilterPosition) {
     this.position = position;
-    this.contextService.filterPosition.next(position); // any but we pass them FilterPosition ?
+    this.contextService.filterPosition.next(position);
   }
 
   /**
@@ -261,10 +261,8 @@ export class DashboardFilterComponent
 
     this.setAvailableFiltersForContext();
 
-    this.survey.showCompletedPage = false;
-    // The doc says 'bottom' (default) | 'top' | 'both' | 'none' but says nothing about boolean values
-    // yet we pass them boolean values because it says "string | any"
-    this.survey.showNavigationButtons = false;
+    this.survey.showCompletedPage = false; // Hide completed page from the survey
+    this.survey.showNavigationButtons = false; // Hide navigation buttons from the survey
 
     this.survey.onValueChanged.add(this.onValueChange.bind(this));
     this.survey.onAfterRenderSurvey.add(this.onAfterRenderSurvey.bind(this));

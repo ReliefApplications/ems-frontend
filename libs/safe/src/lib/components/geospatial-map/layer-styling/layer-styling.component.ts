@@ -17,7 +17,7 @@ export class LayerStylingComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  private _selectedLayer: any; // should be L.Polygon | L.Marker | L.Circle, or L.Layer ?
+  private _selectedLayer?: L.Layer; // should be L.Polygon | L.Marker | L.Circle, or L.Layer ?
 
   /** Sets the selected layer */
   @Input() set selectedLayer(value: any) {

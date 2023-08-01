@@ -123,7 +123,7 @@ export class GradientPickerComponent
    */
   @Input()
   get disabled(): boolean {
-    return this.ngControl.disabled || false; // this.ngControl.disabled ?? false; is more idiomatic
+    return this.ngControl.disabled || false;
   }
 
   /** Sets whether the field is disabled */
