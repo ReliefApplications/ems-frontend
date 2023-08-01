@@ -28,7 +28,7 @@ import {
   KendoTranslationService,
   SafeAuthInterceptorService,
   SafeFormService,
-} from '@oort-front/safe';
+} from '@oort-front/safe/widgets';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
 import { Platform } from '@angular/cdk/platform';
@@ -199,10 +199,27 @@ export class AppModule implements DoBootstrap {
     private formService: SafeFormService
   ) {}
 
+  /**
+   * On bootstrapping module define any custom web component
+   */
   ngDoBootstrap(): void {
     const form = createCustomElement(FormWidgetComponent, {
       injector: this.injector,
     });
     customElements.define('form-widget', form);
+
+    const fonts = [
+      'https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap',
+      'https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined',
+      'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0',
+    ];
+    // Make sure that the needed fonts are always available wherever the web component is placed
+    fonts.forEach((font) => {
+      const link = document.createElement('link');
+      link.href = font;
+      link.rel = 'stylesheet';
+      // Add them at the beginning of the head element in order to not interfere with any font of the same type
+      document.head.prepend(link);
+    });
   }
 }

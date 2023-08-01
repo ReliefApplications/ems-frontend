@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { SafeFormComponent, Form } from '@oort-front/safe';
+import { SafeFormComponent, Form } from '@oort-front/safe/widgets';
 import {
   GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
