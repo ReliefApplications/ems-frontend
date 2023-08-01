@@ -488,23 +488,6 @@ export class MapComponent
       this.map,
       controls.measure ?? false
     );
-    // Add leaflet geosearch control
-    if (controls.search) {
-      if (!this.searchControl) {
-        this.searchControl = this.mapControlsService.getSearchbarControl(
-          this.map,
-          this.esriApiKey
-        );
-        (this.searchControl as any)?.on('results', (data: any) => {
-          if ((data.results || []).length > 0) {
-            this.search.emit(data.results[0]);
-          }
-        });
-      }
-    } else {
-      this.searchControl?.remove();
-      this.searchControl = undefined;
-    }
 
     // Add TimeDimension control
     // this.mapControlsService.setTimeDimension(
@@ -533,6 +516,23 @@ export class MapComponent
     if (initMap) {
       // Add leaflet fullscreen control
       this.mapControlsService.getFullScreenControl(this.map);
+    }
+    // Add leaflet geosearch control
+    if (controls.search) {
+      if (!this.searchControl) {
+        this.searchControl = this.mapControlsService.getSearchbarControl(
+          this.map,
+          this.esriApiKey
+        );
+        (this.searchControl as any)?.on('results', (data: any) => {
+          if ((data.results || []).length > 0) {
+            this.search.emit(data.results[0]);
+          }
+        });
+      }
+    } else {
+      this.searchControl?.remove();
+      this.searchControl = undefined;
     }
   }
 
