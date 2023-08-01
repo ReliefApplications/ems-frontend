@@ -17,7 +17,6 @@ import {
 } from './graphql/queries';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
-import * as Survey from 'survey-angular';
 import {
   EditRecordMutationResponse,
   EDIT_RECORD,
@@ -45,6 +44,7 @@ import { SpinnerModule } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import { DialogModule } from '@oort-front/ui';
+import { StylesManager, SurveyModel } from 'survey-core';
 
 /**
  * Interface of Dialog data.
@@ -96,7 +96,7 @@ export class SafeFormModalComponent
   protected isMultiEdition = false;
   private storedMergedData: any;
 
-  public survey!: Survey.SurveyModel;
+  public survey!: SurveyModel;
   protected temporaryFilesStorage: any = {};
 
   @ViewChild('formContainer') formContainer!: ElementRef;
@@ -145,7 +145,7 @@ export class SafeFormModalComponent
 
   async ngOnInit(): Promise<void> {
     this.data = { ...DEFAULT_DIALOG_DATA, ...this.data };
-    Survey.StylesManager.applyTheme();
+    StylesManager.applyTheme();
 
     this.isMultiEdition = Array.isArray(this.data.recordId);
     const promises: Promise<
@@ -233,7 +233,7 @@ export class SafeFormModalComponent
     );
 
     if (this.data.recordId && this.record) {
-      addCustomFunctions(Survey, this.authService, this.record);
+      addCustomFunctions(this.authService, this.record);
       this.survey.data = this.isMultiEdition ? null : this.record.data;
       this.survey.showCompletedPage = false;
     }

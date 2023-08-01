@@ -11,7 +11,6 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import * as Survey from 'survey-angular';
 import {
   AddRecordMutationResponse,
   ADD_RECORD,
@@ -31,6 +30,7 @@ import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.compo
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import { SnackbarService } from '@oort-front/ui';
 import { cloneDeep } from 'lodash';
+import { StylesManager, SurveyModel } from 'survey-core';
 
 /**
  * This component is used to display forms
@@ -52,7 +52,7 @@ export class SafeFormComponent
   }> = new EventEmitter();
 
   // === SURVEYJS ===
-  public survey!: Survey.SurveyModel;
+  public survey!: SurveyModel;
   public surveyActive = true;
   public temporaryFilesStorage: Record<string, Array<File>> = {};
 
@@ -103,8 +103,8 @@ export class SafeFormComponent
   }
 
   ngOnInit(): void {
-    Survey.StylesManager.applyTheme();
-    addCustomFunctions(Survey, this.authService, this.record);
+    StylesManager.applyTheme();
+    addCustomFunctions(this.authService, this.record);
 
     const structure = JSON.parse(this.form.structure || '{}');
     if (structure && !structure.completedHtml) {

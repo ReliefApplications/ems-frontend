@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
-import * as Survey from 'survey-angular';
 import { getLanguageNativeName } from '../../utils/languages';
+import { SurveyModel, surveyLocalization } from 'survey-core';
 
 /** Interface for a lang object */
 interface LangObject {
@@ -10,8 +10,8 @@ interface LangObject {
 
 /** Default locale of the survey */
 const DEFAULT_LOCALE_SURVEY: LangObject = {
-  code: Survey.surveyLocalization.defaultLocale,
-  nativeName: getLanguageNativeName(Survey.surveyLocalization.defaultLocale),
+  code: surveyLocalization.defaultLocale,
+  nativeName: getLanguageNativeName(surveyLocalization.defaultLocale),
 };
 
 /**
@@ -23,8 +23,8 @@ const DEFAULT_LOCALE_SURVEY: LangObject = {
   styleUrls: ['./form-actions.component.scss'],
 })
 export class SafeFormActionsComponent implements OnInit {
-  @Input() survey!: Survey.SurveyModel;
-  @Input() surveyNext?: Survey.SurveyModel;
+  @Input() survey!: SurveyModel;
+  @Input() surveyNext?: SurveyModel;
   @Input() surveyActive = true;
   public usedLocalesSurvey: LangObject[] = [];
   public currentLocaleSurvey = DEFAULT_LOCALE_SURVEY;

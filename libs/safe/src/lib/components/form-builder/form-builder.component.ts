@@ -7,8 +7,7 @@ import {
   Output,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import * as SurveyCreator from 'survey-creator';
-import * as Survey from 'survey-angular';
+// import * as SurveyCreator from 'survey-creator';
 import { TranslateService } from '@ngx-translate/core';
 import { snakeCase, get, uniqBy, difference } from 'lodash';
 import { SafeReferenceDataService } from '../../services/reference-data/reference-data.service';
@@ -16,6 +15,7 @@ import { Form } from '../../models/form.model';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { SnackbarService } from '@oort-front/ui';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
+import { PageModel, Question, StylesManager, SurveyModel } from 'survey-core';
 /**
  * Array containing the different types of questions.
  * Commented types are not yet implemented.
@@ -91,7 +91,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   @Output() formChange: EventEmitter<any> = new EventEmitter();
 
   // === CREATOR ===
-  surveyCreator!: SurveyCreator.SurveyCreator;
+  surveyCreator!: SurveyCreator;
   public json: any;
 
   private relatedNames!: string[];
@@ -114,9 +114,9 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     private formHelpersService: SafeFormHelpersService
   ) {
     // translate the editor in the same language as the interface
-    SurveyCreator.localization.currentLocale = this.translate.currentLang;
+    localization.currentLocale = this.translate.currentLang;
     this.translate.onLangChange.subscribe(() => {
-      SurveyCreator.localization.currentLocale = this.translate.currentLang;
+      localization.currentLocale = this.translate.currentLang;
       this.setFormBuilder(this.surveyCreator.text);
     });
   }
@@ -140,8 +140,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       }
 
       this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
-        (survey: Survey.SurveyModel, options: any) =>
-          this.onSetCustomCss(options)
+        (survey: SurveyModel, options: any) => this.onSetCustomCss(options)
       );
 
       // add the rendering of custom properties
@@ -173,7 +172,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     );
 
     this.surveyCreator.onTestSurveyCreated.add((_: any, options: any) => {
-      const survey: Survey.SurveyModel = options.survey;
+      const survey: SurveyModel = options.survey;
       this.formHelpersService.addUserVariables(survey);
     });
 
@@ -200,7 +199,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       this.formChange.emit(survey.text);
     });
     this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
-      (survey: Survey.SurveyModel, options: any) => this.onSetCustomCss(options)
+      (survey: SurveyModel, options: any) => this.onSetCustomCss(options)
     );
     this.surveyCreator.onTestSurveyCreated.add((sender: any, opt: any) => {
       opt.survey.onUpdateQuestionCssClasses.add((_: any, opt2: any) =>
@@ -353,7 +352,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    */
   private addCustomClassToCoreFields(coreFields: string[]): void {
     this.surveyCreator.survey.onAfterRenderQuestion.add(
-      (survey: Survey.SurveyModel, options: any) => {
+      (survey: SurveyModel, options: any) => {
         if (coreFields.includes(options.question.valueName)) {
           options.htmlElement.children[0].className += ` ${CORE_FIELD_CLASS}`;
         }
@@ -365,7 +364,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * Set a theme for the form builder depending on the environment
    */
   setCustomTheme(): void {
-    Survey.StylesManager.applyTheme();
+    StylesManager.applyTheme();
     SurveyCreator.StylesManager.applyTheme();
   }
 
@@ -387,9 +386,9 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    */
   private async validateValueNames(): Promise<void> {
     this.relatedNames = [];
-    const survey = new Survey.SurveyModel(this.surveyCreator.JSON);
-    survey.pages.forEach((page: Survey.PageModel) => {
-      page.questions.forEach((question: Survey.Question) =>
+    const survey = new SurveyModel(this.surveyCreator.JSON);
+    survey.pages.forEach((page: PageModel) => {
+      page.questions.forEach((question: Question) =>
         this.setQuestionNames(question, page)
       );
       // Search for duplicated value names
@@ -441,10 +440,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * @param question The question of the form whose name we need to set
    * @param page The page of the form
    */
-  private setQuestionNames(
-    question: Survey.Question,
-    page: Survey.PageModel
-  ): void {
+  private setQuestionNames(question: Question, page: PageModel): void {
     // create the valueName of the element in snake case
     if (!question.valueName) {
       if (question.title) {

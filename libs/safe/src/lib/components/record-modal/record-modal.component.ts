@@ -9,7 +9,6 @@ import {
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
-import * as Survey from 'survey-angular';
 import {
   GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
@@ -34,6 +33,7 @@ import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { SafeDateModule } from '../../pipes/date/date.module';
 import { SpinnerModule, ButtonModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
+import { StylesManager, SurveyModel } from 'survey-core';
 
 /**
  * Interface that describes the structure of the data that will be shown in the dialog
@@ -77,8 +77,8 @@ export class SafeRecordModalComponent
   public form?: Form;
   public record: Record = {};
   public modifiedAt: Date | null = null;
-  public survey!: Survey.SurveyModel;
-  public surveyNext?: Survey.SurveyModel;
+  public survey!: SurveyModel;
+  public surveyNext?: SurveyModel;
   public canEdit: boolean | undefined = false;
 
   @ViewChild('formContainer', { static: false })
@@ -128,7 +128,7 @@ export class SafeRecordModalComponent
 
   async ngAfterViewInit(): Promise<void> {
     this.canEdit = this.data.canUpdate;
-    Survey.StylesManager.applyTheme();
+    StylesManager.applyTheme();
 
     const promises: Promise<
       GetFormByIdQueryResponse | GetRecordByIdQueryResponse | void
@@ -194,7 +194,7 @@ export class SafeRecordModalComponent
           this.form?.metadata
         ));
 
-    addCustomFunctions(Survey, this.authService, this.record);
+    addCustomFunctions(this.authService, this.record);
     this.survey.data = this.record.data;
 
     this.survey.mode = 'display';
@@ -238,14 +238,14 @@ export class SafeRecordModalComponent
         }
       }
       this.survey.onAfterRenderQuestion.add(
-        (survey: Survey.SurveyModel, options: any): void => {
+        (survey: SurveyModel, options: any): void => {
           if (updatedQuestions.includes(options.question.valueName)) {
             options.htmlElement.style.background = '#b2ebbf';
           }
         }
       );
       this.surveyNext.onAfterRenderQuestion.add(
-        (survey: Survey.SurveyModel, options: any): void => {
+        (survey: SurveyModel, options: any): void => {
           if (updatedQuestions.includes(options.question.valueName)) {
             options.htmlElement.style.background = '#EBB2B2';
           }

@@ -5,8 +5,8 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import * as SurveyCreator from 'survey-creator';
-import * as Survey from 'survey-angular';
+// import * as SurveyCreator from 'survey-creator';
+import { StylesManager, SurveyModel } from 'survey-core';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { SafeFormService } from '../../../services/form/form.service';
 import { CommonModule } from '@angular/common';
@@ -142,7 +142,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
 export class FilterBuilderModalComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
-  surveyCreator!: SurveyCreator.SurveyCreator;
+  surveyCreator!: SurveyCreator;
 
   /**
    * Dialog component to build the filter
@@ -216,7 +216,7 @@ export class FilterBuilderModalComponent
     );
 
     // Set content
-    const survey = new Survey.SurveyModel(this.data?.surveyStructure || {});
+    const survey = new SurveyModel(this.data?.surveyStructure || {});
     this.surveyCreator.JSON = survey.toJSON();
   }
 
@@ -224,7 +224,7 @@ export class FilterBuilderModalComponent
    * Set a theme for the form builder depending on the environment
    */
   setCustomTheme(): void {
-    Survey.StylesManager.applyTheme();
+    StylesManager.applyTheme();
     SurveyCreator.StylesManager.applyTheme('default');
   }
 

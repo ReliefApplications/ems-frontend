@@ -98,9 +98,8 @@
     "proj4": "^2.9.0",
     "rxjs": "~7.8.0",
     "subscriptions-transport-ws": "^0.9.18",
-    "survey-angular": "1.9.71",
-    "survey-creator": "1.9.71",
-    "survey-knockout": "1.9.71",
+    "survey-angular-ui": "1.9.100",
+    "survey-core": "1.9.100",
     "surveyjs-widgets": "1.9.71",
     "tinymce": "^5.10.7",
     "tslib": "^2.3.0",
@@ -184,4 +183,3 @@
     "url": "https://github.com/ReliefApplications/oort-frontend.git"
   }
 }
-
