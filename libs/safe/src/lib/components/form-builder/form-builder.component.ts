@@ -123,7 +123,6 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.setFormBuilder(get(this.form, 'structure', ''));
-    console.log(this.form.fields);
   }
 
   ngOnChanges(): void {
@@ -134,9 +133,18 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       }
       // skip if form is core
       if (!this.form.core) {
-        console.log(this.form.fields);
+        // Typing for survey fields
+        // {
+        //   type: string;
+        //   resource?: string;
+        //   referenceData?: {
+        //     id: string;
+        //     displayField: string;
+        //   };
+        //   name?: string;
+        // }
         const coreFields =
-          this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || []; // it's really hard to debug those without proper typing
+          this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || [];
         // Highlight core fields
         this.addCustomClassToCoreFields(coreFields);
       }
@@ -198,9 +206,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     );
 
     // Notify parent that form structure has changed
-    this.surveyCreator.onModified.add((survey: any) => {
-      // Is it Survey.SurveyModel?
-      // we're totally blind here, onModified isn't even documented
+    this.surveyCreator.onModified.add((survey: SurveyCreator.SurveyCreator) => {
       this.formChange.emit(survey.text);
     });
     this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
@@ -219,23 +225,22 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || [];
       // Remove core fields adorners
       this.surveyCreator.onElementAllowOperations.add(
-        (sender: any, opt: any) => {
-          // this is a nightmare
-          const obj = opt.obj;
+        (sender: any, options: any) => {
+          const obj = options.obj;
           if (!obj || !obj.page) {
             return;
           }
           // If it is a core field
           if (coreFields.includes(obj.valueName)) {
             // Disable deleting, editing, changing type and changing if required or not
-            opt.allowDelete = false;
-            opt.allowChangeType = false;
-            opt.allowChangeRequired = false;
-            opt.allowAddToToolbox = false;
-            opt.allowCopy = false;
-            opt.allowShowEditor = false;
-            opt.allowShowHideTitle = false;
-            opt.allowDragging = true;
+            options.allowDelete = false;
+            options.allowChangeType = false;
+            options.allowChangeRequired = false;
+            options.allowAddToToolbox = false;
+            options.allowCopy = false;
+            options.allowShowEditor = false;
+            options.allowShowHideTitle = false;
+            options.allowDragging = true;
           }
         }
       );
