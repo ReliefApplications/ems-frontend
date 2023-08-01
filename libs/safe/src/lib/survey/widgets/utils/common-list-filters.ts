@@ -44,7 +44,7 @@ function updateChoices(
       const filterData = surveyQuestion.visibleChoices.filter((choice: any) =>
         typeof choice === 'string'
           ? choice.toLowerCase().includes(searchValue)
-          : choice.text.toLowerCase().includes(searchValue)
+          : choice.text?.toLowerCase().includes(searchValue)
       );
       const dataToShow = filterData
         .map((choice: any) =>
