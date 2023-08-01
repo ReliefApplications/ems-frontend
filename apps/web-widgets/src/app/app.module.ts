@@ -14,13 +14,11 @@ import {
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
 import { AppComponent } from './app.component';
-import { ApplicationWidgetComponent } from './widgets/application-widget/application-widget.component';
 import { ApplicationWidgetModule } from './widgets/application-widget/application-widget.module';
 import { DashboardWidgetComponent } from './widgets/dashboard-widget/dashboard-widget.component';
 import { DashboardWidgetModule } from './widgets/dashboard-widget/dashboard-widget.module';
 import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
 import { FormWidgetModule } from './widgets/form-widget/form-widget.module';
-import { WorkflowWidgetComponent } from './widgets/workflow-widget/workflow-widget.component';
 import { WorkflowWidgetModule } from './widgets/workflow-widget/workflow-widget.module';
 import { environment } from '../environments/environment';
 import { RouterModule } from '@angular/router';
@@ -52,12 +50,44 @@ import { MAT_LEGACY_TOOLTIP_DEFAULT_OPTIONS as MAT_TOOLTIP_DEFAULT_OPTIONS } fro
  * Use oAuth
  *
  * @param oauth OAuth Service
- * @returns oAuth configuration
+ * @param translate Translate service
+ * @param injector Injector
+ * @returns oAuth configuration and translation content loaded
  */
-const initializeAuth =
-  (oauth: OAuthService): any =>
+const initializeAuthAndTranslations =
+  (
+    oauth: OAuthService,
+    translate: TranslateService,
+    injector: Injector
+  ): (() => Promise<any>) =>
   () => {
     oauth.configure(environment.authConfig);
+    // Make sure that all translations are available before the app initializes
+    return new Promise<any>((resolve: any) => {
+      const locationInitialized = injector.get(
+        LOCATION_INITIALIZED,
+        Promise.resolve(null)
+      );
+      locationInitialized.then(() => {
+        translate.addLangs(environment.availableLanguages);
+        translate.setDefaultLang(environment.availableLanguages[0]);
+        translate.use(environment.availableLanguages[0]).subscribe({
+          next: () => {
+            console.log(
+              `Successfully initialized '${environment.availableLanguages[0]}' language.'`
+            );
+          },
+          error: () => {
+            console.error(
+              `Problem with '${environment.availableLanguages[0]}' language initialization.'`
+            );
+          },
+          complete: () => {
+            resolve(null);
+          },
+        });
+      });
+    });
   };
 
 /**
