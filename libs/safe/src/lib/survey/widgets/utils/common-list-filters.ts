@@ -14,13 +14,11 @@ const DEFAULT_VISIBLE_OPTIONS = 100;
  * @param widget Widget shown in the surveyjs question
  * @param surveyQuestion surveyjs question instance for the given widget
  * @param searchValue search value to filter item list
- * @param hasDefaultValue if question contains a value set
  */
 function updateChoices(
   widget: ComboBoxComponent | MultiSelectComponent,
   surveyQuestion: any,
-  searchValue: string = '',
-  hasDefaultValue: boolean = false
+  searchValue: string = ''
 ) {
   if (searchValue === '') {
     // Without search value uses virtualization
@@ -60,33 +58,6 @@ function updateChoices(
         )
         .slice(0, DEFAULT_VISIBLE_OPTIONS);
       widget.data = dataToShow;
-    }
-  }
-
-  if (hasDefaultValue) {
-    const choicesAux = surveyQuestion.visibleChoices.filter((ch: any) => {
-      const searchValue = typeof ch === 'string' ? ch : ch.value;
-      return widget instanceof ComboBoxComponent
-        ? searchValue === surveyQuestion.value
-        : surveyQuestion.value.includes(searchValue);
-    });
-
-    // Set the default values selected at the start of the list
-    if (choicesAux.length) {
-      widget.data = [
-        ...choicesAux.map((choice: any) =>
-          typeof choice === 'string'
-            ? {
-                text: choice,
-                value: choice,
-              }
-            : {
-                text: choice.text,
-                value: choice.value,
-              }
-        ),
-        ...widget.data,
-      ];
     }
   }
 
