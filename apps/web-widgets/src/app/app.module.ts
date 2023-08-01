@@ -13,15 +13,9 @@ import {
   HttpClientModule,
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
-import { AppComponent } from './app.component';
-import { ApplicationWidgetModule } from './widgets/application-widget/application-widget.module';
-import { DashboardWidgetComponent } from './widgets/dashboard-widget/dashboard-widget.component';
-import { DashboardWidgetModule } from './widgets/dashboard-widget/dashboard-widget.module';
 import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
 import { FormWidgetModule } from './widgets/form-widget/form-widget.module';
-import { WorkflowWidgetModule } from './widgets/workflow-widget/workflow-widget.module';
 import { environment } from '../environments/environment';
-import { RouterModule } from '@angular/router';
 import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
 import {
   TranslateLoader,
@@ -42,7 +36,22 @@ import { Platform } from '@angular/cdk/platform';
 import { AppOverlayContainer } from './utils/overlay-container';
 // Apollo / GraphQL
 import { GraphQLModule } from './graphql.module';
-import { MAT_LEGACY_TOOLTIP_DEFAULT_OPTIONS as MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/legacy-tooltip';
+import { PureAbility } from '@casl/ability';
+// Config
+import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
+import { createCustomElement } from '@angular/elements';
+import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
+import { POPUP_CONTAINER, PopupService } from '@progress/kendo-angular-popup';
+import { LOCATION_INITIALIZED } from '@angular/common';
+import { ResizeBatchService } from '@progress/kendo-angular-common';
+
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+import localeEn from '@angular/common/locales/en';
+import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
+// Register local translations for dates
+registerLocaleData(localeFr);
+registerLocaleData(localeEn);
 
 /**
  * Initialize authentication in the platform.
@@ -112,12 +121,10 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
  * Web Widget project root module.
  */
 @NgModule({
-  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    RouterModule.forRoot([]),
     OAuthModule.forRoot(),
     TranslateModule.forRoot({
       loader: {
@@ -127,11 +134,9 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       },
     }),
     OverlayModule,
-    DashboardWidgetModule,
     FormWidgetModule,
-    WorkflowWidgetModule,
-    ApplicationWidgetModule,
     GraphQLModule,
+    DateInputsModule,
   ],
   providers: [
     {
@@ -140,9 +145,7 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     },
     {
       provide: APP_INITIALIZER,
-      useFactory: initializeAuth,
       multi: true,
-      deps: [OAuthService],
     },
     {
       provide: POPUP_CONTAINER,
@@ -193,12 +196,6 @@ export class AppModule implements DoBootstrap {
    * On bootstrapping module define any custom web component
    */
   ngDoBootstrap(): void {
-    // Dashboard
-    const dashboard = createCustomElement(DashboardWidgetComponent, {
-      injector: this.injector,
-    });
-    customElements.define('dashboard-widget', dashboard);
-    // Form
     const form = createCustomElement(FormWidgetComponent, {
       injector: this.injector,
     });
