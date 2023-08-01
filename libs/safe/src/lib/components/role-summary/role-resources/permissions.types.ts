@@ -24,3 +24,9 @@ export type ResourceRolePermissions = {
     access?: Access;
   }[];
 };
+
+/** Permission type for Resource Field */
+export enum FieldPermission {
+  SEE = 'canSee',
+  UPDATE = 'canUpdate',
+}

@@ -22,11 +22,15 @@ import {
   EDIT_RESOURCE_ACCESS,
   EditResourceFieldPermissionMutationResponse,
 } from '../graphql/mutations';
-import { Permission } from './permissions.types';
+import { FieldPermission, Permission } from './permissions.types';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { updateQueryUniqueValues } from '../../../utils/update-queries';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
+import {
+  FieldAccesses,
+  ResourceField,
+} from './resource-fields/resource-fields.component';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;
@@ -320,12 +324,11 @@ export class RoleResourcesComponent
         Object.assign(updatedUpdatePermission, {
           remove: [{ role: this.role.id }],
         });
+        // add the updated permission to the permissions object
+        Object.assign(permissions, {
+          [Permission.UPDATE]: updatedUpdatePermission,
+        });
       }
-
-      // add the updated permission to the permissions object
-      Object.assign(permissions, {
-        [Permission.UPDATE]: updatedUpdatePermission,
-      });
     }
 
     this.apollo
@@ -333,7 +336,7 @@ export class RoleResourcesComponent
         mutation: EDIT_RESOURCE_ACCESS,
         variables: {
           id: resource.id,
-          permissions: permissions,
+          permissions,
           role: this.role.id as string,
         },
       })
@@ -422,33 +425,39 @@ export class RoleResourcesComponent
    * Edits the specified field permissions array
    *
    * @param resource the resource containing the field to be updated
-   * @param field the field to be edited
-   * @param field.name the name of the field to be edited
-   * @param field.canSee whether the field can be seen
-   * @param field.canUpdate whether the field can be edited
-   * @param action the permission to be edited
+   * @param fieldsPermissions the field to be edited with your permissions
+   * @param fieldsPermissions.field the field to be edited
+   * @param fieldsPermissions.field.name the name of the field to be edited
+   * @param fieldsPermissions.field.canSee whether the field can be seen
+   * @param fieldsPermissions.field.canUpdate whether the field can be edited
+   * @param fieldsPermissions.permissions the permissions to be edited
    */
   onEditFieldAccess(
     resource: Resource,
-    field: { name: string; canSee: boolean; canUpdate: boolean },
-    action: 'canSee' | 'canUpdate'
+    fieldsPermissions: FieldAccesses
   ): void {
     if (!this.role.id) return;
-
+    const field: ResourceField = fieldsPermissions.field;
     this.updating = true;
     const updatedPermissions: {
-      add?: { field: string; role: string };
-      remove?: { field: string; role: string };
+      [key in FieldPermission]?: {
+        add?: { field: string; role: string };
+        remove?: { field: string; role: string };
+      };
     } = {};
 
-    if (field[action]) {
-      Object.assign(updatedPermissions, {
-        remove: { field: field.name, role: this.role.id },
-      });
-    } else
-      Object.assign(updatedPermissions, {
-        add: { field: field.name, role: this.role.id },
-      });
+    fieldsPermissions.permissions.forEach(
+      (permission: 'canSee' | 'canUpdate') => {
+        if (field[permission]) {
+          Object.assign(updatedPermissions, {
+            [permission]: { remove: { field: field.name, role: this.role.id } },
+          });
+        } else
+          Object.assign(updatedPermissions, {
+            [permission]: { add: { field: field.name, role: this.role.id } },
+          });
+      }
+    );
 
     this.apollo
       .mutate<EditResourceFieldPermissionMutationResponse>({
@@ -456,9 +465,7 @@ export class RoleResourcesComponent
         variables: {
           id: resource.id,
           role: this.role.id,
-          fieldsPermissions: {
-            [action]: updatedPermissions,
-          },
+          fieldsPermissions: updatedPermissions,
         },
       })
       .pipe(takeUntil(this.destroy$))

@@ -4,10 +4,15 @@ import { Resource } from '../../../../models/resource.model';
 import { Role } from '../../../../models/user.model';
 import { FormControl } from '@angular/forms';
 
-type ResourceField = {
+export type ResourceField = {
   name: string;
   canSee: boolean;
   canUpdate: boolean;
+};
+
+export type FieldAccesses = {
+  field: ResourceField;
+  permissions: ('canSee' | 'canUpdate')[];
 };
 
 /**
@@ -26,8 +31,7 @@ export class ResourceFieldsComponent implements OnInit {
   // eslint-disable-next-line @angular-eslint/no-output-on-prefix
   @Output() onToggle = new EventEmitter<{
     resource: Resource;
-    field: ResourceField;
-    permission: 'canSee' | 'canUpdate';
+    field: FieldAccesses;
   }>();
 
   public filterId = new FormControl<string | null | undefined>(undefined);
@@ -92,19 +96,17 @@ export class ResourceFieldsComponent implements OnInit {
     field: ResourceField,
     permission: 'canSee' | 'canUpdate'
   ) {
-    this.onToggle.emit({
+    const fieldsPermissions: FieldAccesses = {
       field,
-      permission,
-      resource: this.resource,
-    });
+      permissions: [permission],
+    };
     // if canSee is toggled off, we should remove canUpdate as well
     if (permission === 'canSee' && field.canSee && field.canUpdate) {
-      // this will likely cause 2 renderings. We should emit events for both permissions at once
-      this.onToggle.emit({
-        field,
-        permission: 'canUpdate',
-        resource: this.resource,
-      });
+      fieldsPermissions.permissions.push('canUpdate');
     }
+    this.onToggle.emit({
+      resource: this.resource,
+      field: fieldsPermissions,
+    });
   }
 }
