@@ -1157,6 +1157,10 @@
 					"records": "Loading records...",
 					"settings": "Loading settings..."
 				},
+				"map": {
+					"mapDetailsTitle": "Query Map View",
+					"mapDetailsTooltip": "Centered by default on selected record"
+				},
 				"openSettings": "Open settings",
 				"tooltip": {
 					"displayMap": "Display map",
