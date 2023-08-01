@@ -108,6 +108,23 @@ export const init = (Survey: any): void => {
     return res;
   };
 
+  /** Overwrites clear method, to also clear requestBody and usePost */
+  Survey.ChoicesRestful.prototype.clear = function () {
+    this.requestBody = '';
+    this.usePost = false;
+
+    // Previous code
+    this.url = '';
+    this.path = '';
+    this.valueName = '';
+    this.titleName = '';
+    this.imageLinkName = '';
+    const properties = this.getCustomPropertiesNames();
+    for (let i = 0; i < properties.length; i++) {
+      if (this[properties[i]]) this[properties[i]] = '';
+    }
+  };
+
   /**
    * Overwrite choices restful getResultAfterPath method to allow nested paths
    *
