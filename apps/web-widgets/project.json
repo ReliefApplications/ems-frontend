@@ -36,6 +36,21 @@
             "glob": "**/*",
             "input": "libs/safe/src/i18n/tinymce/",
             "output": "/tinymce/langs"
+          },
+          {
+            "glob": "**/*",
+            "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
+            "output": "/assets/webfonts/"
+          },
+          {
+            "glob": "**/*",
+            "input": "node_modules/leaflet/dist/images/",
+            "output": "/assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "node_modules/monaco-editor",
+            "output": "/assets/monaco/"
           }
         ],
         "styles": [

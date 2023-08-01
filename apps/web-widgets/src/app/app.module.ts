@@ -35,7 +35,8 @@ import { MessageService } from '@progress/kendo-angular-l10n';
 import {
   KendoTranslationService,
   SafeAuthInterceptorService,
-} from '@oort-front/safe';
+  SafeFormService,
+} from '@oort-front/safe/widgets';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
 import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
@@ -159,8 +160,7 @@ export class AppModule implements DoBootstrap {
   }
 
   /**
-   * Bootstrap the project.
-   * Create the web elements.
+   * On bootstrapping module define any custom web component
    */
   ngDoBootstrap(): void {
     // Dashboard
@@ -173,15 +173,19 @@ export class AppModule implements DoBootstrap {
       injector: this.injector,
     });
     customElements.define('form-widget', form);
-    // Workflow
-    const workflow = createCustomElement(WorkflowWidgetComponent, {
-      injector: this.injector,
+
+    const fonts = [
+      'https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap',
+      'https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined',
+      'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0',
+    ];
+    // Make sure that the needed fonts are always available wherever the web component is placed
+    fonts.forEach((font) => {
+      const link = document.createElement('link');
+      link.href = font;
+      link.rel = 'stylesheet';
+      // Add them at the beginning of the head element in order to not interfere with any font of the same type
+      document.head.prepend(link);
     });
-    customElements.define('workflow-widget', workflow);
-    // Application
-    const application = createCustomElement(ApplicationWidgetComponent, {
-      injector: this.injector,
-    });
-    customElements.define('application-widget', application);
   }
 }
