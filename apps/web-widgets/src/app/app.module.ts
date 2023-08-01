@@ -12,7 +12,6 @@ import {
   HttpClientModule,
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
-import { AppComponent } from './app.component';
 import { FormWidgetModule } from './widgets/form-widget/form-widget.module';
 import { environment } from '../environments/environment';
 import { RouterModule } from '@angular/router';
@@ -93,7 +92,7 @@ const initializeAuthAndTranslations =
             );
           },
           complete: () => {
-            // console.log(translate.instant('kendo.datetimepicker.now'));
+            console.log(translate.instant('kendo.datetimepicker.now'));
             resolve(null);
           },
         });
@@ -122,7 +121,6 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
  * Web Widget project root module.
  */
 @NgModule({
-  declarations: [AppComponent],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
@@ -156,14 +154,9 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     {
       provide: POPUP_CONTAINER,
       useFactory: () => {
-        const currentPopupHolder: any = Array.from(
-          document.getElementsByTagName('*')
-        ).filter((element) => element.shadowRoot);
         // return the container ElementRef, where the popup will be injected
         return {
-          nativeElement: currentPopupHolder
-            ? currentPopupHolder[0].shadowRoot
-            : document.body,
+          nativeElement: document.body,
         } as ElementRef;
       },
     },

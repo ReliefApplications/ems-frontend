@@ -1,3 +1,6 @@
+/* All the styling that would be applied for the web component within the shadow root */
+
+/* All the styling used for the leaflet maps and controls */
 @use 'node_modules/survey-angular/survey.min.css';
 @use 'node_modules/survey-creator/survey-creator.min.css';
 @use 'node_modules/select2/dist/css/select2.min.css';
@@ -11,13 +14,14 @@
 @use 'node_modules/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css';
 @use 'node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css';
 
+/* All the needed fonts for the web component */
 @import 'libs/ui/src/style/widgets.scss';
 @import 'libs/ui/src/style/survey.scss';
 @import 'libs/ui/src/style/styles.scss';
 @import 'libs/ui/src/style/theme.scss';
 
+/* Definition of the scss properties in the shadow root host element, won't affect any other element outside shadow-root */
 @import 'variables.scss';
-
 @layer base {
   :host {
     --primary-50: #{$primary_50};
