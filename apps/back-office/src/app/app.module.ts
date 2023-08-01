@@ -27,6 +27,7 @@ import {
   KendoTranslationService,
   SafeAuthInterceptorService,
   AppAbility,
+  SafeAppWebWorker,
 } from '@oort-front/safe';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
@@ -49,6 +50,8 @@ import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 
 // Code editor component for Angular applications
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
+
+import { WorkerModule } from 'angular-web-worker/angular';
 
 // Fullscreen
 import {
@@ -89,6 +92,19 @@ export const httpTranslateLoader = (http: HttpClient) =>
 @NgModule({
   declarations: [AppComponent],
   imports: [
+    WorkerModule.forWorkers([
+      {
+        worker: SafeAppWebWorker,
+        initFn: () =>
+          new Worker(
+            new URL(
+              'libs/safe/src/lib/services/web-worker/web.worker',
+              import.meta.url
+            ),
+            { type: 'module' }
+          ),
+      },
+    ]),
     BrowserModule,
     AppRoutingModule,
     HttpClientModule,
