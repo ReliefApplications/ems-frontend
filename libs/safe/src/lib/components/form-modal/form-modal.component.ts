@@ -228,13 +228,8 @@ export class SafeFormModalComponent
     );
 
     // Set questions readOnly propriety
-    const structure = JSON.parse(this.form?.structure || '');
-    const pages = structure.pages;
-    pages.forEach((page: any) => {
-      page.elements?.forEach((question: any) => {
-        this.survey.getQuestionByName(question.name).readOnly =
-          question.readOnly ?? false;
-      });
+    this.survey.getAllQuestions().forEach((question) => {
+      question.readOnly ||= false;
     });
 
     if (this.data.recordId && this.record) {
@@ -250,17 +245,6 @@ export class SafeFormModalComponent
       };
     }
     this.survey.render(this.formContainer.nativeElement);
-    // this.survey.render(this.containerId);
-    // this.pages.getValue().forEach((page: any) => {
-    //   console.log('page', page)
-    //   page.questions?.forEach((question: any) => {
-    //     const q = this.survey.getQuestionByName(question.name)
-    //     console.log('question',  q.name, question.readOnly, question.isReadOnly)
-    //     this.survey.getQuestionByName(question.name).readOnly = question.isReadyOnly ?? false;
-    //     console.log('question',  q.name, q.readOnly, q.isReadOnly)
-
-    //   });
-    // });
     this.loading = false;
   }
 
