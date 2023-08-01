@@ -291,14 +291,49 @@ export class RoleResourcesComponent
       }
     }
 
+    /// The permissions to send to the server for update
+    const permissions: {
+      [key in Permission]?: {
+        add?: string[] | { role: string }[];
+        remove?: string[] | { role: string }[];
+      };
+    } = {};
+
+    // add the updated permission to the permissions object
+    Object.assign(permissions, {
+      [permission]: updatedPermissions,
+    });
+
+    // if Permission.SEE is toggled off, we should remove Permission.UPDATE
+    if (permission === Permission.SEE && !!permissionLevel) {
+      /// The permission level of Permission.UPDATE
+      const updatedUpdatePermission: {
+        add?: string[] | { role: string }[];
+        remove?: string[] | { role: string }[];
+      } = {};
+
+      const updatePermissionLevel = this.permissionLevel(
+        resource,
+        Permission.UPDATE
+      );
+      if (updatePermissionLevel) {
+        Object.assign(updatedUpdatePermission, {
+          remove: [{ role: this.role.id }],
+        });
+      }
+
+      // add the updated permission to the permissions object
+      Object.assign(permissions, {
+        [Permission.UPDATE]: updatedUpdatePermission,
+      });
+    }
+
     this.apollo
       .mutate<EditResourceAccessMutationResponse>({
         mutation: EDIT_RESOURCE_ACCESS,
         variables: {
           id: resource.id,
-          permissions: {
-            [permission]: updatedPermissions,
-          },
+          permissions: permissions,
           role: this.role.id as string,
         },
       })
