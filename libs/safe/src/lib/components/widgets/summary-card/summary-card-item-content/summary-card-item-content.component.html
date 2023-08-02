@@ -1,6 +1,7 @@
 <div
   (click)="onClick($event)"
-  class="w-full h-fit no-tailwindcss-base"
-  [innerHTML]="formattedHtml"
-  [style]="formattedStyle"
-></div>
+  class="w-full h-fit no-tailwindcss-base">
+  <safe-isolated-html
+    [html]="formattedHtml"
+    [style]="formattedStyle" />
+</div>
