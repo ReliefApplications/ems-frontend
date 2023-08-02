@@ -236,7 +236,7 @@ export class SafeFormModalComponent
     const structure = JSON.parse(this.form?.structure || '');
     const pages = structure.pages;
     const initReadOnly = (elements: any): void => {
-      elements?.forEach((question: any) => {
+      elements.forEach((question: any) => {
         if (question.elements) {
           // If question is a panel type that has sub-questions
           initReadOnly(question.elements);
@@ -245,12 +245,14 @@ export class SafeFormModalComponent
           initReadOnly(question.templateElements);
         } else if (this.survey.getQuestionByName(question.name)) {
           this.survey.getQuestionByName(question.name).readOnly =
-            question?.readOnly ?? false;
+            question.readOnly ?? false;
         }
       });
     };
     pages.forEach((page: any) => {
-      initReadOnly(page.elements);
+      if (page.elements) {
+        initReadOnly(page.elements);
+      }
     });
 
     if (this.data.recordId && this.record) {
