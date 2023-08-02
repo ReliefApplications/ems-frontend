@@ -33,7 +33,7 @@ Please include screenshots of this change. If this issue is only back-end relate
 
 ( * == Mandatory ) 
 
-- [ ] * The pull request is linked to an existing milestone ( if possible )
+- [ ] * I have set myself as assignee of the pull request
 - [ ] * My code follows the style guidelines of this project
 - [ ] * Linting does not generate new warnings
 - [ ] * I have performed a self-review of my own code
