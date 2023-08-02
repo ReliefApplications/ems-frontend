@@ -12,6 +12,7 @@
 
 survey,
 survey-creator {
+  --font-size: 1em;
   --main-color: #{rgb($primary_500)};
   --main-hover-color: #{rgb($primary_600)};
   --primary: #{rgb($primary_500)};
@@ -63,7 +64,7 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,,,,,,,,,,
+      // A700: #ffffff,,
     ),
 );
 

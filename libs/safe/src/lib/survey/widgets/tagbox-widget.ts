@@ -61,9 +61,12 @@ export const init = (domService: DomService): void => {
         default: false,
       });
     },
-    isDefaultRender: false,
-    htmlTemplate: '<div></div>',
+    isDefaultRender: true,
     afterRender: (question: QuestionTagboxModel, el: HTMLElement): void => {
+      const defaultTagbox = el.querySelector('sv-ng-tagbox-question');
+      if (defaultTagbox) {
+        el.removeChild(defaultTagbox);
+      }
       widget.willUnmount(question);
       let tagboxDiv: HTMLDivElement | null = null;
       tagboxDiv = document.createElement('div');

@@ -20,6 +20,10 @@ export const init = (domService: DomService): void => {
       question: QuestionDropdownModel,
       el: HTMLInputElement
     ): void => {
+      const defaultDropdown = el.querySelector('sv-ng-dropdown-question');
+      if (defaultDropdown) {
+        el.removeChild(defaultDropdown);
+      }
       widget.willUnmount(question);
       // remove default render
       el.parentElement?.querySelector('.sv_select_wrapper')?.remove();
