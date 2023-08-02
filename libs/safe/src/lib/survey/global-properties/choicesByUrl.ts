@@ -1,5 +1,5 @@
 import { get } from 'lodash';
-import { QuestionSelectBase } from 'survey-angular';
+import { QuestionSelectBase, SurveyModel } from 'survey-angular';
 
 /** Class used internally by surveyJS, but not exported */
 class XmlParser {
@@ -144,6 +144,29 @@ export const init = (Survey: any): void => {
 
   /** Overwrites sendRequest to be able to make POST requests */
   Survey.ChoicesRestful.prototype.sendRequest = function () {
+    this.error = null;
+    const survey: SurveyModel = this.owner.survey;
+    let requestBody = this.requestBody;
+
+    survey.getAllQuestions().forEach((question) => {
+      const name = question.name;
+
+      // replace {questionName} with question value
+      if (requestBody.includes(`{${name}}`)) {
+        const regex = new RegExp(`{${name}}`, 'g');
+        requestBody = requestBody.replace(regex, question.value);
+
+        // listen to question value changes
+        question.registerFunctionOnPropertyValueChanged(
+          'value',
+          () => {
+            this.sendRequest();
+          },
+          'choicesByUrl'
+        );
+      }
+    });
+
     const headers = new Headers();
     headers.append(
       'Content-Type',
@@ -157,7 +180,7 @@ export const init = (Survey: any): void => {
     };
 
     Object.assign(options, { method: this.usePost ? 'POST' : 'GET' });
-    if (this.requestBody) Object.assign(options, { body: this.requestBody });
+    if (this.requestBody) Object.assign(options, { body: requestBody });
 
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
