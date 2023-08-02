@@ -3,7 +3,7 @@ import { DomService } from '../../services/dom/dom.service';
 import { Question } from '../types';
 import { QuestionDropdown } from 'survey-knockout';
 import { isArray, isObject } from 'lodash';
-import { Subscription, debounceTime, map, tap } from 'rxjs';
+import { debounceTime, map, tap } from 'rxjs';
 import updateChoices from './utils/common-list-filters';
 
 /**
@@ -14,7 +14,6 @@ import updateChoices from './utils/common-list-filters';
  */
 export const init = (Survey: any, domService: DomService): void => {
   let currentSearchValue = '';
-  const componentSubscriptions = new Subscription();
   const widget = {
     name: 'dropdown-widget',
     widgetIsLoaded: (): boolean => true,
@@ -40,18 +39,16 @@ export const init = (Survey: any, domService: DomService): void => {
       });
 
       // We subscribe to whatever you write on the field so we can filter the data accordingly
-      componentSubscriptions.add(
-        dropdownInstance.filterChange
-          .pipe(
-            debounceTime(500), // Debounce time to limit quantity of updates
-            tap(() => (dropdownInstance.loading = true)),
-            map((searchValue: string) => searchValue?.toLowerCase()) // Make the filter non-case sensitive
-          )
-          .subscribe((searchValue: string) => {
-            currentSearchValue = searchValue;
-            updateChoices(dropdownInstance, question, searchValue);
-          })
-      );
+      dropdownInstance.filterChange
+        .pipe(
+          debounceTime(500), // Debounce time to limit quantity of updates
+          tap(() => (dropdownInstance.loading = true)),
+          map((searchValue: string) => searchValue?.toLowerCase()) // Make the filter non-case sensitive
+        )
+        .subscribe((searchValue: string) => {
+          currentSearchValue = searchValue;
+          updateChoices(dropdownInstance, question, searchValue);
+        });
 
       question._propertyValueChangedVirtual = () => {
         updateChoices(dropdownInstance, question, currentSearchValue);
@@ -84,7 +81,6 @@ export const init = (Survey: any, domService: DomService): void => {
         question._propertyValueChangedVirtual
       );
       question._propertyValueChangedVirtual = undefined;
-      componentSubscriptions.unsubscribe();
     },
   };
 
