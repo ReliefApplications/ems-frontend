@@ -644,5 +644,6 @@ export class SafeFormModalComponent
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     this.formHelpersService.cleanCachedRecords(this.survey);
+    this.survey.dispose();
   }
 }

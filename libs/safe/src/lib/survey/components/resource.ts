@@ -14,6 +14,7 @@ import { buildSearchButton, buildAddButton } from './utils';
 import get from 'lodash/get';
 import { Question, QuestionResource } from '../types';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
+import { NgZone } from '@angular/core';
 
 /**
  * Inits the resource question component of for survey.
@@ -23,13 +24,15 @@ import { JsonMetadata, SurveyModel } from 'survey-angular';
  * @param apollo Apollo client
  * @param dialog Dialog
  * @param formBuilder Angular form service
+ * @param ngZone Angular Service to execute code inside Angular environment
  */
 export const init = (
   Survey: any,
   domService: DomService,
   apollo: Apollo,
   dialog: Dialog,
-  formBuilder: UntypedFormBuilder
+  formBuilder: UntypedFormBuilder,
+  ngZone: NgZone
 ): void => {
   const getResourceById = (data: { id: string }) =>
     apollo.query<GetResourceByIdQueryResponse>({
@@ -38,6 +41,17 @@ export const init = (
         id: data.id,
       },
     });
+
+  const mapQuestionChoices = (data: any, question: any) => {
+    return (
+      data.resource.records?.edges?.map((x: any) => {
+        return {
+          value: x.node?.id,
+          text: x.node?.data[question.displayField || 'id'],
+        };
+      }) || []
+    );
+  };
 
   const getResourceRecordsById = (data: {
     id: string;
@@ -122,15 +136,15 @@ export const init = (
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource) {
             getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const serverRes = data.resource.fields;
-              const res = [];
-              res.push({ value: null });
-              for (const item of serverRes) {
-                if (item.type !== 'matrix') {
-                  res.push({ value: item.name });
-                }
-              }
-              choicesCallback(res);
+              const choices = (data.resource.fields || [])
+                .filter((item: any) => item.type !== 'matrix')
+                .map((item: any) => {
+                  return {
+                    value: item.name,
+                  };
+                });
+              choices.unshift({ value: null });
+              choicesCallback(choices);
             });
           }
         },
@@ -219,17 +233,9 @@ export const init = (
           if (obj.resource) {
             getResourceRecordsById({ id: obj.resource }).subscribe(
               ({ data }) => {
-                const serverRes =
-                  data.resource.records?.edges?.map((x) => x.node) || [];
-                const res = [];
-                res.push({ value: null });
-                for (const item of serverRes) {
-                  res.push({
-                    value: item?.id,
-                    text: item?.data[obj.displayField || 'id'],
-                  });
-                }
-                choicesCallback(res);
+                const choices = mapQuestionChoices(data, obj);
+                choices.unshift({ value: null });
+                choicesCallback(choices);
               }
             );
           }
@@ -259,13 +265,11 @@ export const init = (
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource && obj.addRecord) {
             getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const serverRes = data.resource.forms || [];
-              const res: any[] = [];
-              res.push({ value: null });
-              for (const item of serverRes) {
-                res.push({ value: item.id, text: item.name });
-              }
-              choicesCallback(res);
+              const choices = (data.resource.forms || []).map((item: any) => {
+                return { value: item.id, text: item.name };
+              });
+              choices.unshift({ value: null, text: '' });
+              choicesCallback(choices);
             });
           }
         },
@@ -326,12 +330,10 @@ export const init = (
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource) {
             getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const serverRes = data.resource.fields;
-              const res = [];
-              for (const item of serverRes) {
-                res.push({ value: item.name });
-              }
-              choicesCallback(res);
+              const choices = (data.resource.fields || []).map((item: any) => {
+                return { value: item.name };
+              });
+              choicesCallback(choices);
             });
           }
         },
@@ -475,16 +477,14 @@ export const init = (
         if (question.selectQuestion) {
           filters[0].operator = question.filterCondition;
           filters[0].field = question.filterBy;
-          if (question.selectQuestion) {
-            question.registerFunctionOnPropertyValueChanged(
-              'filterCondition',
-              () => {
-                filters.map((i: any) => {
-                  i.operator = question.filterCondition;
-                });
-              }
-            );
-          }
+          question.registerFunctionOnPropertyValueChanged(
+            'filterCondition',
+            () => {
+              filters.map((i: any) => {
+                i.operator = question.filterCondition;
+              });
+            }
+          );
         }
         if (!question.filterBy || question.filterBy.length < 1) {
           this.populateChoices(question);
@@ -563,16 +563,8 @@ export const init = (
       if (question.resource) {
         getResourceRecordsById({ id: question.resource, filters }).subscribe(
           ({ data }) => {
-            const serverRes =
-              data.resource.records?.edges?.map((x) => x.node) || [];
-            const res: any[] = [];
-            for (const item of serverRes) {
-              res.push({
-                value: item?.id,
-                text: item?.data[question.displayField || 'id'],
-              });
-            }
-            question.contentQuestion.choices = res;
+            const choices = mapQuestionChoices(data, question);
+            question.contentQuestion.choices = choices;
             if (!question.placeholder) {
               question.contentQuestion.optionsCaption =
                 'Select a record from ' + data.resource.name + '...';
@@ -611,7 +603,7 @@ export const init = (
         );
         actionsButtons.appendChild(searchBtn);
 
-        const addBtn = buildAddButton(question, false, dialog);
+        const addBtn = buildAddButton(question, false, dialog, ngZone);
         actionsButtons.appendChild(addBtn);
 
         const parentElement = el.querySelector('.safe-qst-content');

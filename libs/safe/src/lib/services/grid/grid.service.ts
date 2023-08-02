@@ -358,16 +358,20 @@ export class SafeGridService {
       otherText?: string;
     }
   ): { value: string; text: string }[] {
+    console.log(choicesByUrl);
     let choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
     choices = choices
-      ? choices.map((x: any) => ({
-          value: (choicesByUrl.value ? x[choicesByUrl.value] : x).toString(),
-          text: choicesByUrl.text
-            ? x[choicesByUrl.text]
-            : choicesByUrl.value
-            ? x[choicesByUrl.value]
-            : x,
-        }))
+      ? choices
+          .map((x: any) => {
+            const value = (
+              choicesByUrl.value ? get(x, choicesByUrl.value) : x
+            )?.toString();
+            return {
+              value,
+              text: (choicesByUrl.text && get(x, choicesByUrl.text)) || value,
+            };
+          })
+          .filter((x) => !isNil(x.text))
       : [];
     if (choicesByUrl.hasOther) {
       choices.push({
