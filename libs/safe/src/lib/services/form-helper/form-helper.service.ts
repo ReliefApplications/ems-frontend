@@ -291,4 +291,32 @@ export class SafeFormHelpersService {
 
     await Promise.all(promises);
   }
+
+  /**
+   * Gets survey data from the survey and adds empty arrays multiple option questions
+   *
+   * @param survey The survey to get the data from
+   * @returns The survey data
+   */
+  public getSurveyData(survey: Survey.SurveyModel): Record<string, any> {
+    const data = survey.data;
+
+    const multipleOptionTypes = ['checkbox', 'tagbox', 'resources'];
+
+    // We want to include empty arrays multiple option questions
+    survey.getAllQuestions().forEach((question) => {
+      console.log(question.getType());
+      if (
+        multipleOptionTypes.includes(question.getType()) &&
+        question.visible
+      ) {
+        const name = question.name;
+        if (!data[name]) {
+          data[name] = [];
+        }
+      }
+    });
+
+    return data;
+  }
 }

@@ -271,7 +271,7 @@ export class SafeFormComponent
         mutation: EDIT_RECORD,
         variables: {
           id: recordId,
-          data: this.survey.data,
+          data: this.formHelpersService.getSurveyData(this.survey),
           template:
             this.form.id !== this.record?.form?.id ? this.form.id : null,
         },
@@ -282,7 +282,7 @@ export class SafeFormComponent
         mutation: ADD_RECORD,
         variables: {
           form: this.form.id,
-          data: this.survey.data,
+          data: this.formHelpersService.getSurveyData(this.survey),
         },
       });
     }

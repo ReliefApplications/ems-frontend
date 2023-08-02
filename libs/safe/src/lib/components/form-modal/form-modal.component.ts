@@ -383,7 +383,7 @@ export class SafeFormModalComponent
         mutation: EDIT_RECORD,
         variables: {
           id,
-          data: survey.data,
+          data: this.formHelpersService.getSurveyData(survey),
           template: this.data.template,
         },
       })
