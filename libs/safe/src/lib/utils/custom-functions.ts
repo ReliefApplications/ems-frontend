@@ -13,7 +13,6 @@ import {
  * Registration of new custom functions for the survey.
  * Custom functions can be used in the logic fields.
  *
- * @param survey Survey instance
  * @param authService Shared auth service
  * @param record Current record
  */

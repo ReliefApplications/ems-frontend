@@ -12,7 +12,6 @@ import {
 /**
  * Add support for custom properties to the survey
  *
- * @param Survey Survey library
  * @param environment Current environment
  */
 export const init = (environment: any): void => {

@@ -8,8 +8,6 @@ import { SafeQuestion, QuestionComment } from '../types';
 
 /**
  * Custom definition for overriding the comment question. Add edit functionality.
- *
- * @param Survey Survey library
  */
 export const init = (): void => {
   const widget = {
