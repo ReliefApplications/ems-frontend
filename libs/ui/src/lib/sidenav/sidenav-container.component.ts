@@ -26,9 +26,9 @@ import { filter } from 'rxjs/operators';
 })
 export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   @ContentChildren(SidenavDirective) uiSidenavDirective!: SidenavDirective[];
-  @ViewChild('content') content!: ElementRef;
+  @ViewChild('contentContainer') contentContainer!: ElementRef;
   @ViewChildren('sidenav') sidenav!: QueryList<any>;
-  @ViewChild('container') container!: ElementRef;
+  @ViewChild('contentWrapper') contentWrapper!: ElementRef;
 
   public showSidenav: boolean[] = [];
   public mode: SidenavTypes[] = [];
@@ -52,9 +52,12 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
     private router: Router
   ) {
     this.router.events
-      .pipe(filter((event) => event instanceof NavigationEnd))
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntil(this.destroy$)
+      )
       .subscribe(() => {
-        this.container.nativeElement.scroll({
+        this.contentWrapper.nativeElement.scroll({
           top: 0,
           left: 0,
           behavior: 'smooth',
@@ -125,7 +128,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
    */
   private setTransitionForContent() {
     this.animationClasses.forEach((aClass) => {
-      this.renderer.addClass(this.content.nativeElement, aClass);
+      this.renderer.addClass(this.contentContainer.nativeElement, aClass);
       this.sidenav.forEach((side) => {
         this.renderer.addClass(side.nativeElement, aClass);
       });
