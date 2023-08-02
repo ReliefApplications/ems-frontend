@@ -90,12 +90,7 @@ export const init = (Survey: any, domService: DomService): void => {
       );
 
       question._propertyValueChangedVirtual = () => {
-        updateChoices(
-          tagboxInstance,
-          question,
-          currentSearchValue,
-          Boolean(question.value)
-        );
+        updateChoices(tagboxInstance, question, currentSearchValue);
       };
       question.registerFunctionOnPropertyValueChanged(
         'visibleChoices',
@@ -109,12 +104,7 @@ export const init = (Survey: any, domService: DomService): void => {
         }
       );
       if (question.visibleChoices.length) {
-        updateChoices(
-          tagboxInstance,
-          question,
-          currentSearchValue,
-          Boolean(question.value)
-        );
+        updateChoices(tagboxInstance, question, currentSearchValue);
       }
       el.parentElement?.appendChild(tagboxDiv);
     },

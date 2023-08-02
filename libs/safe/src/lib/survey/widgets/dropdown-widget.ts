@@ -54,12 +54,7 @@ export const init = (Survey: any, domService: DomService): void => {
       );
 
       question._propertyValueChangedVirtual = () => {
-        updateChoices(
-          dropdownInstance,
-          question,
-          currentSearchValue,
-          Boolean(question.value)
-        );
+        updateChoices(dropdownInstance, question, currentSearchValue);
       };
       question.registerFunctionOnPropertyValueChanged(
         'visibleChoices',
@@ -76,12 +71,7 @@ export const init = (Survey: any, domService: DomService): void => {
         }
       );
       if (question.visibleChoices.length) {
-        updateChoices(
-          dropdownInstance,
-          question,
-          currentSearchValue,
-          Boolean(question.value)
-        );
+        updateChoices(dropdownInstance, question, currentSearchValue);
       }
       el.parentElement?.appendChild(dropdownDiv);
     },
