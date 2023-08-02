@@ -30,7 +30,7 @@
   </ui-tab>
 </ui-tabs>
 <!-- Form -->
-<div #formContainer></div>
+<survey [model]="survey"></survey>
 <!-- Form actions -->
 <div *ngIf="surveyActive" class="flex justify-end gap-2 mt-4 flex-wrap">
   <ng-container *ngIf="pages$ | async as pages">

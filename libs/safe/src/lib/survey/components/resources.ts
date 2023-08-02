@@ -5,7 +5,6 @@ import {
   GetResourceByIdQueryResponse,
 } from '../graphql/queries';
 import { BehaviorSubject } from 'rxjs';
-import * as SurveyCreator from 'survey-creator';
 import {
   FormControl,
   UntypedFormBuilder,
@@ -21,7 +20,13 @@ import {
   processNewCreatedRecords,
 } from './utils';
 import { QuestionResource } from '../types';
-import { SurveyModel } from 'survey-angular';
+import {
+  ComponentCollection,
+  JsonObject,
+  Serializer,
+  SurveyModel,
+  SvgRegistry,
+} from 'survey-core';
 
 /** Create the list of filter values for resources */
 export const resourcesFilterValues = new BehaviorSubject<
@@ -45,14 +50,12 @@ const temporaryRecordsForm = new FormControl([]);
 /**
  * Inits the resources question component for survey.
  *
- * @param Survey Survey library
  * @param domService Shared DOM service
  * @param apollo Apollo client
  * @param dialog Dialog service
  * @param formBuilder Angular form service
  */
 export const init = (
-  Survey: any,
   domService: DomService,
   apollo: Apollo,
   dialog: Dialog,
@@ -91,7 +94,7 @@ export const init = (
   ];
 
   // registers icon-resources in the SurveyJS library
-  Survey.SvgRegistry.registerIconFromSvg(
+  SvgRegistry.registerIconFromSvg(
     'resources',
     '<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="18px" viewBox="0 0 20 20" width="18px" fill="#000000"><g><rect fill="none" height="20" width="20" x="0"/></g><g><g><path d="M2.5,5H1v10.5C1,16.33,1.67,17,2.5,17h13.18v-1.5H2.5V5z"/><path d="M16.5,4H11L9,2H5.5C4.67,2,4,2.67,4,3.5v9C4,13.33,4.67,14,5.5,14h11c0.83,0,1.5-0.67,1.5-1.5v-7C18,4.67,17.33,4,16.5,4z M16.5,12.5h-11v-9h2.88l2,2h6.12V12.5z"/></g></g></svg>'
   );
@@ -110,7 +113,7 @@ export const init = (
     },
     resourceFieldsName: [] as any[],
     onInit: (): void => {
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         name: 'resource',
         category: 'Custom Questions',
         type: 'resourcesDropdown',
@@ -132,12 +135,9 @@ export const init = (
         },
       };
 
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'resourcesDropdown',
-        resourceEditor
-      );
+      Serializer.addProperty('resourcesDropdown', resourceEditor);
 
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         name: 'displayField',
         category: 'Custom Questions',
         dependsOn: 'resource',
@@ -167,7 +167,7 @@ export const init = (
         },
       });
 
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         name: 'relatedName',
         category: 'Custom Questions',
         dependsOn: 'resource',
@@ -184,7 +184,7 @@ export const init = (
       });
 
       // Build set available grid fields button
-      Survey.JsonObject.metaData.addProperty('resources', {
+      JsonObject.metaData.addProperty('resources', {
         name: 'Search resource table',
         type: 'resourcesFields',
         isRequired: true,
@@ -250,12 +250,9 @@ export const init = (
         },
       };
 
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'resourcesFields',
-        availableFieldsEditor
-      );
+      Serializer.addProperty('resourcesFields', availableFieldsEditor);
 
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         name: 'test service',
         category: 'Custom Questions',
         dependsOn: ['resource', 'displayField'],
@@ -288,7 +285,7 @@ export const init = (
           }
         },
       });
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         name: 'displayAsGrid:boolean',
         category: 'Custom Questions',
         dependsOn: 'resource',
@@ -301,7 +298,7 @@ export const init = (
         },
         visibleIndex: 3,
       });
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         name: 'addRecord:boolean',
         displayName: 'Add new records',
         category: 'Custom Questions',
@@ -316,7 +313,7 @@ export const init = (
         },
         visibleIndex: 2,
       });
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         name: 'canDelete:boolean',
         displayName: 'Delete records',
         category: 'Custom Questions',
@@ -330,7 +327,7 @@ export const init = (
         },
         visibleIndex: 3,
       });
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         name: 'history:boolean',
         displayName: 'Show history',
         category: 'Custom Questions',
@@ -344,7 +341,7 @@ export const init = (
         },
         visibleIndex: 3,
       });
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         name: 'convert:boolean',
         displayName: 'Convert records',
         category: 'Custom Questions',
@@ -358,7 +355,7 @@ export const init = (
         },
         visibleIndex: 3,
       });
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         name: 'update:boolean',
         dislayName: 'Update records',
         category: 'Custom Questions',
@@ -372,7 +369,7 @@ export const init = (
         },
         visibleIndex: 3,
       });
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         name: 'inlineEdition:boolean',
         displayName: 'Inline edition',
         category: 'Custom Questions',
@@ -386,7 +383,7 @@ export const init = (
         },
         visibleIndex: 3,
       });
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         name: 'export:boolean',
         displayName: 'Export records',
         category: 'Custom Questions',
@@ -400,7 +397,7 @@ export const init = (
         },
         visibleIndex: 3,
       });
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         name: 'canSearch:boolean',
         category: 'Custom Questions',
         dependsOn: 'resource',
@@ -415,7 +412,7 @@ export const init = (
         },
         visibleIndex: 3,
       });
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         name: 'addTemplate',
         category: 'Custom Questions',
         dependsOn: ['addRecord', 'resource'],
@@ -446,7 +443,7 @@ export const init = (
           }
         },
       });
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         name: 'prefillWithCurrentRecord:boolean',
         category: 'Custom Questions',
         dependsOn: ['addRecord', 'resource'],
@@ -459,7 +456,7 @@ export const init = (
         },
         visibleIndex: 8,
       });
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         name: 'selectQuestion:dropdown',
         category: 'Filter by Questions',
         dependsOn: ['resource', 'displayField'],
@@ -488,7 +485,7 @@ export const init = (
         },
       });
       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         name: 'gridFieldsSettings',
         dependsOn: 'resource',
         visibleIf: (obj: any) => {
@@ -498,7 +495,7 @@ export const init = (
           return false;
         },
       });
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         type: 'string',
         name: 'staticValue',
         category: 'Filter by Questions',
@@ -507,7 +504,7 @@ export const init = (
           obj.selectQuestion === '#staticValue' && obj.displayField,
         visibleIndex: 3,
       });
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         type: 'dropdown',
         name: 'filterBy',
         category: 'Filter by Questions',
@@ -527,7 +524,7 @@ export const init = (
         },
         visibleIndex: 3,
       });
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         type: 'dropdown',
         name: 'filterCondition',
         category: 'Filter by Questions',
@@ -550,7 +547,7 @@ export const init = (
         },
         visibleIndex: 3,
       });
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         category: 'Filter by Questions',
         type: 'selectResourceText',
         name: 'selectResourceText',
@@ -568,12 +565,9 @@ export const init = (
           htmlElement.appendChild(text);
         },
       };
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'selectResourceText',
-        selectResourceText
-      );
+      Serializer.addProperty('selectResourceText', selectResourceText);
 
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         category: 'Filter by Questions',
         type: 'customFilter',
         name: 'customFilterEl',
@@ -583,7 +577,7 @@ export const init = (
         visibleIndex: 3,
       });
 
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         category: 'Filter by Questions',
         type: 'text',
         name: 'customFilter',
@@ -593,19 +587,19 @@ export const init = (
         visibleIndex: 4,
       });
 
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         name: 'newCreatedRecords',
         category: 'Custom Questions',
         visible: false,
       });
 
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         name: 'afterRecordCreation',
         // type: 'expression',
         category: 'logic',
       });
 
-      Survey.Serializer.addProperty('resources', {
+      Serializer.addProperty('resources', {
         name: 'afterRecordSelection',
         // type: 'expression',
         category: 'logic',
@@ -842,7 +836,7 @@ export const init = (
       }
     },
   };
-  Survey.ComponentCollection.Instance.add(component);
+  ComponentCollection.Instance.add(component);
 
   /**
    * Set an advance filter

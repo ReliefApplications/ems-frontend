@@ -24,11 +24,11 @@ import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';
 import { initLocalization } from './localization';
 import { Dialog } from '@angular/cdk/dialog';
+import { ComponentCollection, CustomWidgetCollection } from 'survey-core';
 
 /**
  * Executes all init methods of custom SurveyJS.
  *
- * @param Survey surveyjs or surveyjsCreator library
  * @param domService Shared DOM service, used to inject components on the go
  * @param dialog dialog service
  * @param apollo apollo service
@@ -39,7 +39,6 @@ import { Dialog } from '@angular/cdk/dialog';
  * @param containsCustomQuestions If survey contains custom questions or not
  */
 export const initCustomSurvey = (
-  Survey: any,
   domService: DomService,
   dialog: Dialog,
   apollo: Apollo,
@@ -51,30 +50,30 @@ export const initCustomSurvey = (
 ): void => {
   // If the survey created does not contain custom questions, we destroy previously set custom questions if so
   if (!containsCustomQuestions) {
-    Survey.CustomWidgetCollection.Instance.clear();
-    Survey.ComponentCollection.Instance.clear();
+    CustomWidgetCollection.Instance.clear();
+    ComponentCollection.Instance.clear();
   }
 
-  TagboxWidget.init(Survey, domService);
-  TextWidget.init(Survey, domService);
-  DropdownWidget.init(Survey, domService);
+  TagboxWidget.init(domService);
+  TextWidget.init(domService);
+  DropdownWidget.init(domService);
 
   if (containsCustomQuestions) {
-    CommentWidget.init(Survey);
+    CommentWidget.init();
     // load components (same as widgets, but with less configuration options)
-    ResourceComponent.init(Survey, domService, apollo, dialog, formBuilder);
-    ResourcesComponent.init(Survey, domService, apollo, dialog, formBuilder);
-    OwnerComponent.init(Survey, domService, apollo);
-    UsersComponent.init(Survey, domService, apollo);
-    GeospatialComponent.init(Survey, domService);
+    ResourceComponent.init(domService, apollo, dialog, formBuilder);
+    ResourcesComponent.init(domService, apollo, dialog, formBuilder);
+    OwnerComponent.init(domService, apollo);
+    UsersComponent.init(domService, apollo);
+    GeospatialComponent.init(domService);
   }
 
   // load global properties
-  ReferenceDataProperties.init(Survey, domService, referenceDataService);
-  TooltipProperty.init(Survey);
-  OtherProperties.init(Survey, environment);
+  ReferenceDataProperties.init(domService, referenceDataService);
+  TooltipProperty.init();
+  OtherProperties.init(environment);
   // set localization
-  initLocalization(Survey);
+  initLocalization();
   // load internal functions
-  addCustomFunctions(Survey, authService);
+  addCustomFunctions(authService);
 };

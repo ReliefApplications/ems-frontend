@@ -1,7 +1,7 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { UntypedFormControl } from '@angular/forms';
-import { surveyLocalization } from 'survey-angular';
 import localForage from 'localforage';
+import { surveyLocalization } from 'survey-core';
 
 /**
  * Build the search button for resource and resources components

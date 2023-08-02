@@ -1,6 +1,5 @@
 import { Apollo } from 'apollo-angular';
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
@@ -42,7 +41,7 @@ import { StylesManager, SurveyModel } from 'survey-core';
 })
 export class SafeFormComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, OnDestroy, AfterViewInit
+  implements OnInit, OnDestroy
 {
   @Input() form!: Form;
   @Input() record?: RecordModel;
@@ -188,26 +187,6 @@ export class SafeFormComponent
     // }
   }
 
-  ngAfterViewInit(): void {
-    this.survey?.render(this.formContainer.nativeElement);
-    // this.translate.onLangChange.subscribe(() => {
-    //   const currentLang = this.usedLocales.find(
-    //     (lang) => lang.value === this.translate.currentLang
-    //   );
-    //   if (currentLang && currentLang.text !== this.survey.locale) {
-    //     this.setLanguage(currentLang.text);
-    //     this.surveyLanguage = (LANGUAGES as any)[currentLang.value];
-    //   } else if (
-    //     !currentLang &&
-    //     this.survey.locale !== this.translate.currentLang
-    //   ) {
-    //     this.survey.locale = this.translate.currentLang;
-    //     this.surveyLanguage = (LANGUAGES as any).en;
-    //     this.survey.render();
-    //   }
-    // });
-  }
-
   /**
    * Reset the survey to empty
    */
@@ -218,7 +197,6 @@ export class SafeFormComponent
     );
     this.survey.showCompletedPage = false;
     this.save.emit({ completed: false });
-    this.survey.render();
     setTimeout(() => (this.surveyActive = true), 100);
   }
 
@@ -356,7 +334,6 @@ export class SafeFormComponent
     this.formHelpersService.cleanCachedRecords(this.survey);
     this.isFromCacheData = false;
     this.storageDate = undefined;
-    this.survey.render();
   }
 
   /**

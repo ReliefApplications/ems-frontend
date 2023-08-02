@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import * as Survey from 'survey-angular';
 import { SafeReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Apollo } from 'apollo-angular';
@@ -12,6 +11,7 @@ import { SafeRestService } from '../rest/rest.service';
 import { BehaviorSubject } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { SafeFormHelpersService } from '../form-helper/form-helper.service';
+import { Model, SurveyModel } from 'survey-core';
 
 /**
  * Shared form builder service.
@@ -54,8 +54,8 @@ export class SafeFormBuilderService {
     pages: BehaviorSubject<any[]>,
     fields: Metadata[] = [],
     record?: RecordModel
-  ): Survey.SurveyModel {
-    const survey = new Survey.Model(structure);
+  ): SurveyModel {
+    const survey = new Model(structure);
     this.formHelpersService.addUserVariables(survey);
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
@@ -142,7 +142,7 @@ export class SafeFormBuilderService {
    * @param temporaryFilesStorage Temporary files saved while executing the survey
    */
   public addEventsCallBacksToSurvey(
-    survey: Survey.SurveyModel,
+    survey: SurveyModel,
     pages: BehaviorSubject<any[]>,
     selectedPageIndex: BehaviorSubject<number>,
     temporaryFilesStorage: Record<string, Array<File>>
@@ -163,7 +163,7 @@ export class SafeFormBuilderService {
     survey.onSettingQuestionErrors.add(() => {
       this.setPages(survey, pages);
     });
-    survey.onCurrentPageChanged.add((survey: Survey.SurveyModel) => {
+    survey.onCurrentPageChanged.add((survey: SurveyModel) => {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
       selectedPageIndex.next(survey.currentPageNo);
     });
@@ -175,10 +175,7 @@ export class SafeFormBuilderService {
    * @param survey Current survey
    * @param pages Page number emitter
    */
-  private setPages(
-    survey: Survey.SurveyModel,
-    pages: BehaviorSubject<any[]>
-  ): void {
+  private setPages(survey: SurveyModel, pages: BehaviorSubject<any[]>): void {
     const pageList = [];
     if (survey) {
       for (const page of survey.pages) {

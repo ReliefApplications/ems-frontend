@@ -1,14 +1,14 @@
-import * as SurveyCreator from 'survey-creator';
-import {
-  JsonMetadata,
-  SurveyModel,
-  Serializer,
-  ItemValue,
-} from 'survey-angular';
 import { DomService } from '../../services/dom/dom.service';
 import { SafeReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { SafeReferenceDataDropdownComponent } from '../../components/reference-data-dropdown/reference-data-dropdown.component';
-import { Question, QuestionSelectBase } from '../types';
+import { SafeQuestionSelectBase, SafeQuestion } from '../types';
+import {
+  ItemValue,
+  JsonMetadata,
+  Serializer,
+  SurveyModel,
+  surveyLocalization,
+} from 'survey-core';
 
 /**
  * Check if a question is of select type
@@ -16,23 +16,21 @@ import { Question, QuestionSelectBase } from '../types';
  * @param question The question to check
  * @returns A boolean indicating if the question is a select type
  */
-const isSelectQuestion = (question: Question): boolean =>
+const isSelectQuestion = (question: SafeQuestion): boolean =>
   Serializer.isDescendantOf(question.getType(), 'selectbase');
 
 /**
  * Add support for custom properties to the survey
  *
- * @param Survey Survey library
  * @param domService Dom service.
  * @param referenceDataService Reference data service
  */
 export const init = (
-  Survey: any,
   domService: DomService,
   referenceDataService: SafeReferenceDataService
 ): void => {
   // declare the serializer
-  const serializer: JsonMetadata = Survey.Serializer;
+  const serializer: JsonMetadata = Serializer;
 
   for (const type of ['tagbox', 'dropdown']) {
     // add properties
@@ -49,11 +47,11 @@ export const init = (
       category: 'Choices from Reference data',
       required: true,
       dependsOn: 'referenceData',
-      visibleIf: (obj: null | QuestionSelectBase): boolean =>
+      visibleIf: (obj: null | SafeQuestionSelectBase): boolean =>
         Boolean(obj?.referenceData),
       visibleIndex: 2,
       choices: (
-        obj: null | QuestionSelectBase,
+        obj: null | SafeQuestionSelectBase,
         choicesCallback: (choices: any[]) => void
       ) => {
         if (obj?.referenceData) {
@@ -72,27 +70,27 @@ export const init = (
       type: 'dropdown',
       category: 'Choices from Reference data',
       dependsOn: 'referenceData',
-      visibleIf: (obj: null | QuestionSelectBase): boolean =>
+      visibleIf: (obj: null | SafeQuestionSelectBase): boolean =>
         Boolean(obj?.referenceData),
       visibleIndex: 3,
       choices: (
-        obj: null | QuestionSelectBase,
+        obj: null | SafeQuestionSelectBase,
         choicesCallback: (choices: any[]) => void
       ) => {
-        const defaultOption = new Survey.ItemValue(
+        const defaultOption = new ItemValue(
           '',
-          SurveyCreator.localization.getString('pe.conditionSelectQuestion')
+          surveyLocalization.getString('pe.conditionSelectQuestion')
         );
         const survey = obj?.survey as SurveyModel;
         if (!survey) return choicesCallback([defaultOption]);
         const questions = survey
           .getAllQuestions()
           .filter((question) => isSelectQuestion(question) && question !== obj)
-          .map((question) => question as QuestionSelectBase)
+          .map((question) => question as SafeQuestionSelectBase)
           .filter((question) => question.referenceData);
         const qItems = questions.map((q) => {
           const text = q.locTitle.renderedHtml || q.name;
-          return new Survey.ItemValue(q.name, text);
+          return new ItemValue(q.name, text);
         });
         qItems.sort((el1, el2) => el1.text.localeCompare(el2.text));
         qItems.unshift(defaultOption);
@@ -106,11 +104,11 @@ export const init = (
       category: 'Choices from Reference data',
       required: true,
       dependsOn: 'referenceDataFilterFilterFromQuestion',
-      visibleIf: (obj: null | QuestionSelectBase): boolean =>
+      visibleIf: (obj: null | SafeQuestionSelectBase): boolean =>
         Boolean(obj?.referenceDataFilterFilterFromQuestion),
       visibleIndex: 4,
       choices: (
-        obj: null | QuestionSelectBase,
+        obj: null | SafeQuestionSelectBase,
         choicesCallback: (choices: any[]) => void
       ) => {
         if (obj?.referenceDataFilterFilterFromQuestion) {
@@ -118,7 +116,7 @@ export const init = (
             .getAllQuestions()
             .find(
               (q) => q.name === obj.referenceDataFilterFilterFromQuestion
-            ) as QuestionSelectBase | undefined;
+            ) as SafeQuestionSelectBase | undefined;
           if (foreignQuestion?.referenceData) {
             referenceDataService
               .loadReferenceData(foreignQuestion.referenceData)
@@ -136,7 +134,7 @@ export const init = (
       category: 'Choices from Reference data',
       required: true,
       dependsOn: 'referenceDataFilterFilterFromQuestion',
-      visibleIf: (obj: null | QuestionSelectBase): boolean =>
+      visibleIf: (obj: null | SafeQuestionSelectBase): boolean =>
         Boolean(obj?.referenceDataFilterFilterFromQuestion),
       visibleIndex: 5,
       choices: [
@@ -159,11 +157,11 @@ export const init = (
       category: 'Choices from Reference data',
       required: true,
       dependsOn: 'referenceDataFilterFilterFromQuestion',
-      visibleIf: (obj: null | QuestionSelectBase): boolean =>
+      visibleIf: (obj: null | SafeQuestionSelectBase): boolean =>
         Boolean(obj?.referenceDataFilterFilterFromQuestion),
       visibleIndex: 6,
       choices: (
-        obj: null | QuestionSelectBase,
+        obj: null | SafeQuestionSelectBase,
         choicesCallback: (choices: any[]) => void
       ) => {
         if (obj?.referenceData) {
@@ -180,7 +178,7 @@ export const init = (
   // custom editor for the reference data dropdown
   const referenceDataEditor = {
     render: (editor: any, htmlElement: HTMLElement) => {
-      const question = editor.object as QuestionSelectBase;
+      const question = editor.object as SafeQuestionSelectBase;
       const dropdown = domService.appendComponentToBody(
         SafeReferenceDataDropdownComponent,
         htmlElement
@@ -190,10 +188,7 @@ export const init = (
       instance.choice.subscribe((res) => editor.onChanged(res));
     },
   };
-  SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-    'referenceDataDropdown',
-    referenceDataEditor
-  );
+  Serializer.addProperty('referenceDataDropdown', referenceDataEditor);
 };
 
 /**
@@ -203,11 +198,11 @@ export const init = (
  * @param referenceDataService The reference data service
  */
 export const render = (
-  questionElement: Question,
+  questionElement: SafeQuestion,
   referenceDataService: SafeReferenceDataService
 ): void => {
   if (isSelectQuestion(questionElement)) {
-    const question = questionElement as QuestionSelectBase;
+    const question = questionElement as SafeQuestionSelectBase;
 
     const updateChoices = () => {
       if (question.referenceData && question.referenceDataDisplayField) {
@@ -224,7 +219,7 @@ export const render = (
             .find(
               (x: any) =>
                 x.name === question.referenceDataFilterFilterFromQuestion
-            ) as QuestionSelectBase;
+            ) as SafeQuestionSelectBase;
           if (foreign.referenceData && !!foreign.value) {
             filter = {
               foreignReferenceData: foreign.referenceData,
@@ -290,7 +285,7 @@ export const render = (
       .getAllQuestions()
       .find(
         (x: any) => x.name === question.referenceDataFilterFilterFromQuestion
-      ) as QuestionSelectBase | undefined;
+      ) as SafeQuestionSelectBase | undefined;
     foreignQuestion?.registerFunctionOnPropertyValueChanged(
       'value',
       updateChoices

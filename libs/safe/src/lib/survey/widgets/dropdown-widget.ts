@@ -1,22 +1,25 @@
 import { ComboBoxComponent } from '@progress/kendo-angular-dropdowns';
 import { DomService } from '../../services/dom/dom.service';
-import { Question } from '../types';
-import { QuestionDropdown } from 'survey-knockout';
+import { SafeQuestion } from '../types';
 import { isArray, isObject } from 'lodash';
+import { CustomWidgetCollection, QuestionDropdownModel } from 'survey-core';
 
 /**
  * Init dropdown widget
  *
- * @param Survey Survey instance
  * @param domService Shared dom service
  */
-export const init = (Survey: any, domService: DomService): void => {
+export const init = (domService: DomService): void => {
   const widget = {
     name: 'dropdown-widget',
     widgetIsLoaded: (): boolean => true,
-    isFit: (question: Question): boolean => question.getType() === 'dropdown',
+    isFit: (question: SafeQuestion): boolean =>
+      question.getType() === 'dropdown',
     isDefaultRender: true,
-    afterRender: (question: QuestionDropdown, el: HTMLInputElement): void => {
+    afterRender: (
+      question: QuestionDropdownModel,
+      el: HTMLInputElement
+    ): void => {
       widget.willUnmount(question);
       // remove default render
       el.parentElement?.querySelector('.sv_select_wrapper')?.remove();
@@ -103,8 +106,5 @@ export const init = (Survey: any, domService: DomService): void => {
     return dropdownInstance;
   };
 
-  Survey.CustomWidgetCollection.Instance.addCustomWidget(
-    widget,
-    'customwidget'
-  );
+  CustomWidgetCollection.Instance.addCustomWidget(widget, 'customwidget');
 };

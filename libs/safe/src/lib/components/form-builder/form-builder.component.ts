@@ -7,7 +7,6 @@ import {
   Output,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-// import * as SurveyCreator from 'survey-creator';
 import { TranslateService } from '@ngx-translate/core';
 import { snakeCase, get, uniqBy, difference } from 'lodash';
 import { SafeReferenceDataService } from '../../services/reference-data/reference-data.service';
@@ -15,7 +14,16 @@ import { Form } from '../../models/form.model';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { SnackbarService } from '@oort-front/ui';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
-import { PageModel, Question, StylesManager, SurveyModel } from 'survey-core';
+import {
+  PageModel,
+  Question,
+  StylesManager,
+  SurveyModel,
+  UpdateQuestionCssClassesEvent,
+  surveyLocalization,
+} from 'survey-core';
+import { SurveyCreatorModel } from 'survey-creator-core';
+
 /**
  * Array containing the different types of questions.
  * Commented types are not yet implemented.
@@ -91,7 +99,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   @Output() formChange: EventEmitter<any> = new EventEmitter();
 
   // === CREATOR ===
-  surveyCreator!: SurveyCreator;
+  surveyCreator!: SurveyCreatorModel;
   public json: any;
 
   private relatedNames!: string[];
@@ -114,9 +122,9 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     private formHelpersService: SafeFormHelpersService
   ) {
     // translate the editor in the same language as the interface
-    localization.currentLocale = this.translate.currentLang;
+    surveyLocalization.currentLocale = this.translate.currentLang;
     this.translate.onLangChange.subscribe(() => {
-      localization.currentLocale = this.translate.currentLang;
+      surveyLocalization.currentLocale = this.translate.currentLang;
       this.setFormBuilder(this.surveyCreator.text);
     });
   }
@@ -139,13 +147,16 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         this.addCustomClassToCoreFields(coreFields);
       }
 
-      this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
-        (survey: SurveyModel, options: any) => this.onSetCustomCss(options)
-      );
+      this.surveyCreator.survey.onUpdateQuestionCssClasses.add(((
+        sender: SurveyModel,
+        options: UpdateQuestionCssClassesEvent
+      ) => {
+        this.onSetCustomCss(options);
+      }) as any);
 
       // add the rendering of custom properties
       this.surveyCreator.survey.onAfterRenderQuestion.add(
-        renderGlobalProperties(this.referenceDataService)
+        renderGlobalProperties(this.referenceDataService) as any
       );
     }
   }
@@ -166,10 +177,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
     this.setCustomTheme();
 
-    this.surveyCreator = new SurveyCreator.SurveyCreator(
-      'surveyCreatorContainer',
-      creatorOptions
-    );
+    this.surveyCreator = new SurveyCreatorModel(creatorOptions);
 
     this.surveyCreator.onTestSurveyCreated.add((_: any, options: any) => {
       const survey: SurveyModel = options.survey;
@@ -179,8 +187,10 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.text = structure;
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
-    this.surveyCreator.showToolbox = 'right';
-    this.surveyCreator.showPropertyGrid = 'right';
+    this.surveyCreator.showToolbox = true;
+    this.surveyCreator.toolboxLocation = 'right';
+    this.surveyCreator.showPropertyGrid = true;
+    this.surveyCreator.sidebarLocation = 'right';
     this.surveyCreator.rightContainerActiveItem('toolbox');
     if (!this.form.structure) {
       this.surveyCreator.survey.showQuestionNumbers = 'off';
@@ -198,9 +208,12 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     this.surveyCreator.onModified.add((survey: any) => {
       this.formChange.emit(survey.text);
     });
-    this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
-      (survey: SurveyModel, options: any) => this.onSetCustomCss(options)
-    );
+    this.surveyCreator.survey.onUpdateQuestionCssClasses.add(((
+      survey: SurveyModel,
+      options: UpdateQuestionCssClassesEvent
+    ) => {
+      this.onSetCustomCss(options);
+    }) as any);
     this.surveyCreator.onTestSurveyCreated.add((sender: any, opt: any) => {
       opt.survey.onUpdateQuestionCssClasses.add((_: any, opt2: any) =>
         this.onSetCustomCss(opt2)
@@ -251,19 +264,19 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       this.addCustomClassToCoreFields(coreFields);
     }
 
-    // Scroll to question when adde
+    // Scroll to question when added
     this.surveyCreator.onQuestionAdded.add((sender: any, opt: any) => {
       const name = opt.question.name;
       setTimeout(() => {
         const el = document.querySelector('[data-name="' + name + '"]');
         el?.scrollIntoView({ behavior: 'smooth' });
-        this.surveyCreator.showQuestionEditor(opt.question);
+        this.surveyCreator.selectElement(el, opt.question.name, false, true);
       });
     });
 
     // add the rendering of custom properties
     this.surveyCreator.survey.onAfterRenderQuestion.add(
-      renderGlobalProperties(this.referenceDataService)
+      renderGlobalProperties(this.referenceDataService) as any
     );
     this.surveyCreator.onTestSurveyCreated.add((sender: any, opt: any) =>
       opt.survey.onAfterRenderQuestion.add(
@@ -351,13 +364,14 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * @param coreFields list of core fields
    */
   private addCustomClassToCoreFields(coreFields: string[]): void {
-    this.surveyCreator.survey.onAfterRenderQuestion.add(
-      (survey: SurveyModel, options: any) => {
-        if (coreFields.includes(options.question.valueName)) {
-          options.htmlElement.children[0].className += ` ${CORE_FIELD_CLASS}`;
-        }
+    this.surveyCreator.survey.onAfterRenderQuestion.add(((
+      survey: SurveyModel,
+      options: any
+    ) => {
+      if (coreFields.includes(options.question.valueName)) {
+        options.htmlElement.children[0].className += ` ${CORE_FIELD_CLASS}`;
       }
-    );
+    }) as any);
   }
 
   /**
@@ -365,7 +379,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    */
   setCustomTheme(): void {
     StylesManager.applyTheme();
-    SurveyCreator.StylesManager.applyTheme();
+    // SurveyCreator.StylesManager.applyTheme();
   }
 
   /**

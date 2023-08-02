@@ -1,13 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import {
-  Component,
-  ElementRef,
-  Inject,
-  NgZone,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, Inject, NgZone, OnDestroy, OnInit } from '@angular/core';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import {
   GetFormByIdQueryResponse,
@@ -45,6 +37,7 @@ import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.compo
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import { DialogModule } from '@oort-front/ui';
 import { StylesManager, SurveyModel } from 'survey-core';
+import { SurveyModule } from 'survey-angular-ui';
 
 /**
  * Interface of Dialog data.
@@ -79,6 +72,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     DialogModule,
     ButtonModule,
     SpinnerModule,
+    SurveyModule,
   ],
 })
 export class SafeFormModalComponent
@@ -98,8 +92,6 @@ export class SafeFormModalComponent
 
   public survey!: SurveyModel;
   protected temporaryFilesStorage: any = {};
-
-  @ViewChild('formContainer') formContainer!: ElementRef;
 
   /** Selected page index */
   public selectedPageIndex: BehaviorSubject<number> =
@@ -244,8 +236,6 @@ export class SafeFormModalComponent
         ...omitBy(this.storedMergedData, isNil),
       };
     }
-    this.survey.render(this.formContainer.nativeElement);
-    // this.survey.render(this.containerId);
     this.loading = false;
   }
 

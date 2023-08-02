@@ -1,11 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import {
-  AfterViewInit,
-  Component,
-  ElementRef,
-  Inject,
-  ViewChild,
-} from '@angular/core';
+import { AfterViewInit, Component, Inject } from '@angular/core';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
@@ -34,6 +28,7 @@ import { SafeDateModule } from '../../pipes/date/date.module';
 import { SpinnerModule, ButtonModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 import { StylesManager, SurveyModel } from 'survey-core';
+import { SurveyModule } from 'survey-angular-ui';
 
 /**
  * Interface that describes the structure of the data that will be shown in the dialog
@@ -63,6 +58,7 @@ interface DialogData {
     SafeDateModule,
     ButtonModule,
     SpinnerModule,
+    SurveyModule,
   ],
   selector: 'safe-record-modal',
   templateUrl: './record-modal.component.html',
@@ -80,12 +76,6 @@ export class SafeRecordModalComponent
   public survey!: SurveyModel;
   public surveyNext?: SurveyModel;
   public canEdit: boolean | undefined = false;
-
-  @ViewChild('formContainer', { static: false })
-  formContainer!: ElementRef;
-  @ViewChild('formContainerNext', { static: false })
-  formContainerNext!: ElementRef;
-
   environment: any;
 
   /** Selected page index */
@@ -205,7 +195,6 @@ export class SafeRecordModalComponent
       this.selectedPageIndex,
       {}
     );
-    this.survey.render(this.formContainer.nativeElement);
 
     if (this.data.compareTo) {
       this.surveyNext = this.formBuilderService.createSurvey(
@@ -223,7 +212,6 @@ export class SafeRecordModalComponent
         this.selectedPageIndex,
         {}
       );
-      this.surveyNext.render(this.formContainerNext.nativeElement);
       // Set list of updated questions
       const updatedQuestions: string[] = [];
       const allQuestions = [this.surveyNext.data, this.survey.data].reduce(

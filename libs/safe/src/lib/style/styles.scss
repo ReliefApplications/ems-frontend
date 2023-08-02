@@ -10,19 +10,21 @@
 @import 'tailwindcss/utilities';
 @import '~@fortawesome/fontawesome-free/css/all.css';
 
-.sv_main,
-.svd_container {
+survey,
+survey-creator {
   --main-color: #{rgb($primary_500)};
   --main-hover-color: #{rgb($primary_600)};
-  --primary-color: #{rgb($primary_500)};
-  --secondary-color: #{rgb($primary_500)};
+  --primary: #{rgb($primary_500)};
+  --secondary: #{rgb($primary_500)};
   --progress-buttons-color: #{rgb($primary_500)};
+  --radio-checked-color: #{rgb($primary_500)};
   --header-background-color: transparent;
+  --answer-background-color: transparent;
   // --primary-text-color: #676a6c;
   // --secondary-text-color: #a7a7a7;
   // --inverted-text-color: #ffffff;
-  --primary-hover-color: #{rgb($primary_600)};
-  --selection-border-color: #{rgb($primary_500)};
+  --primary-hover: #{rgb($primary_600)};
+  --selection-border: #{rgb($primary_500)};
   // --primary-icon-color: #3d4d5d;
   // --primary-bg-color: #fff;
   // --secondary-bg-color: #f4f4f4;
@@ -61,7 +63,7 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,,,,,,,,,
+      // A700: #ffffff,,,,,,,,,,
     ),
 );
 

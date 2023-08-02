@@ -47,13 +47,10 @@ export class SafeFormActionsComponent implements OnInit {
    */
   public setLanguage(langItem: LangObject): void {
     this.survey.locale = langItem.code;
-    this.survey.render();
     if (this.surveyNext) {
       this.surveyNext.locale = langItem.code;
-      this.surveyNext.render();
     }
     this.currentLocaleSurvey = langItem;
     localStorage.setItem('surveyLang', langItem.code);
-    // this.survey.render(this.containerId);
   }
 }
