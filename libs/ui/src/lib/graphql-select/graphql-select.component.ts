@@ -240,7 +240,7 @@ export class GraphQLSelectComponent
    *
    * @param fn onChange function
    */
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (_: any) => void): void {
     this.onChange = fn;
   }
 
@@ -249,7 +249,7 @@ export class GraphQLSelectComponent
    *
    * @param fn onTouched function
    */
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 

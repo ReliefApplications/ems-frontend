@@ -260,7 +260,7 @@ export class SafeEditorControlComponent
    *
    * @param fn onChange function from the parent form
    */
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (_: any) => void): void {
     this.onChange = fn;
   }
 
@@ -269,7 +269,7 @@ export class SafeEditorControlComponent
    *
    * @param fn onTouched function from the parent form
    */
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
