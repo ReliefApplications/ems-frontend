@@ -23,7 +23,7 @@ export interface GetRolesFromApplicationsQueryResponse {
 /** Graphql request for getting data of a resource by its id */
 export const GET_RESOURCE_BY_ID = gql`
   query GetResourceById($id: ID!, $filter: JSON, $display: Boolean) {
-    resource(id: $id, first: 50) {
+    resource(id: $id) {
       id
       name
       createdAt
