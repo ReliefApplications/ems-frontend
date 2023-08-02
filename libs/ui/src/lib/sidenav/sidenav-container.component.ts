@@ -50,7 +50,10 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
     private cdr: ChangeDetectorRef,
     public el: ElementRef,
     private router: Router
-  ) {
+  ) {}
+
+  ngAfterViewInit() {
+    // Listen to router events to auto scroll to top of the view
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
@@ -63,9 +66,6 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
           behavior: 'smooth',
         });
       });
-  }
-
-  ngAfterViewInit() {
     // Initialize width and show sidenav value
     this.uiSidenavDirective.forEach((sidenavDirective, index) => {
       this.showSidenav[index] = sidenavDirective.opened;

@@ -13,6 +13,7 @@ export const GET_ROLE_USERS = gql`
       users(first: $first, afterCursor: $afterCursor, automated: $automated) {
         edges {
           node {
+            id
             name
             username
           }
