@@ -142,6 +142,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         //     displayField: string;
         //   };
         //   name?: string;
+        //   isCore?: boolean;
         // }
         const coreFields =
           this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || [];

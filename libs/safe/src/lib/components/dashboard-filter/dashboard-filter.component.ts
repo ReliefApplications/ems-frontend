@@ -341,7 +341,7 @@ export class DashboardFilterComponent
           );
         } else {
           this.position = defaultPosition;
-          this.contextService.filterPosition.next(defaultPosition); // any but we pass them FilterPosition ?
+          this.contextService.filterPosition.next(defaultPosition);
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectUpdated', {
               type: this.translate.instant('common.filter.one').toLowerCase(),

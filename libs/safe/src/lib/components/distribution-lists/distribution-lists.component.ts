@@ -67,7 +67,7 @@ export class DistributionListsComponent
       disableClose: true,
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      // { name: string; emails: string[] }
+      // value: { name: string; emails: string[] }
       if (value) {
         this.applicationService.editDistributionList({
           id: distributionList.id,

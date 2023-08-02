@@ -24,8 +24,9 @@ import { RawEditorSettings } from 'tinymce';
  * Interface describing the structure of the data displayed in the dialog
  */
 interface DialogData {
-  calculatedField?: any; // please type this
-  resourceFields: any[]; // for real, it's a nightmare
+  /** TODO: Add type to fields */
+  calculatedField?: any;
+  resourceFields: any[];
 }
 
 /**
