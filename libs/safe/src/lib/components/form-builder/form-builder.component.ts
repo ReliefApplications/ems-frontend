@@ -177,10 +177,14 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
       creatorOptions
     );
 
-    this.surveyCreator.onTestSurveyCreated.add((_: any, options: any) => {
-      const survey: Survey.SurveyModel = options.survey;
-      this.formHelpersService.addUserVariables(survey);
-    });
+    // Not sure why we're getting a type error here now, wasn't a problem before... casting to any for now
+    // Either way, when we upgrade the version, we should use onPreviewSurveyCreated instead
+    (this.surveyCreator.onTestSurveyCreated as any).add(
+      (_: any, options: any) => {
+        const survey: Survey.SurveyModel = options.survey;
+        this.formHelpersService.addUserVariables(survey);
+      }
+    );
 
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.text = structure;

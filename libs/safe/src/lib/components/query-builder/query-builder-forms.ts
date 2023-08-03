@@ -162,9 +162,7 @@ export const createQueryForm = (
       validators ? Validators.required : null
     ),
     sort: formBuilder.array(
-      get(value, 'sort', [{ field: '', order: 'asc' }]).map((x: any) =>
-        createSortGroup(x)
-      )
+      get(value, 'sort', []).map((x: any) => createSortGroup(x))
     ),
     filter: createFilterGroup(get(value, 'filter', {})),
     style: formBuilder.array(

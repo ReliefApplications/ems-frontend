@@ -52,7 +52,6 @@ export class SortGroupComponent {
     const sortField = this.fb.group({
       field: '',
       order: 'asc',
-      first: null,
     });
     this.sortFields.push(sortField);
   }

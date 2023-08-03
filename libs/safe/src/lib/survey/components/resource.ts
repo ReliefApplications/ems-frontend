@@ -668,6 +668,7 @@ export const init = (
       }
       const auxForm = formBuilder.group(gridSettingsRaw);
       auxForm.controls.fields.setValue(gridSettingsRaw.fields);
+      auxForm.controls.sort.setValue(gridSettingsRaw.sort);
       return auxForm;
     },
   };

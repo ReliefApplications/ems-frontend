@@ -216,6 +216,7 @@ export const init = (
           htmlElement.appendChild(btn);
           btn.onclick = () => {
             const currentQuestion = editor.object;
+            console.log('currentQuestion', currentQuestion);
             getResourceById({ id: currentQuestion.resource }).subscribe(
               async ({ data }) => {
                 if (data.resource && data.resource.name) {
@@ -257,6 +258,7 @@ export const init = (
             }
             const auxForm = formBuilder.group(gridSettingsRaw);
             auxForm.controls.fields.setValue(gridSettingsRaw.fields);
+            auxForm.controls.sort.setValue(gridSettingsRaw.sort);
             return auxForm;
           };
         },

@@ -26,7 +26,7 @@ interface DialogData {
 }
 
 /**
- * This component is used in the grids to display a modal to configurate the fields in the grid
+ * This component is used in the grids to display a modal to configure the fields in the grid
  */
 @Component({
   standalone: true,
@@ -75,7 +75,7 @@ export class ConfigDisplayGridFieldsModalComponent implements OnInit {
         this.form = createQueryForm({
           name: queryName,
           fields: hasDataForm ? this.data.form.value.fields : [],
-          sort: hasDataForm ? this.data.form.value.sort : {},
+          sort: hasDataForm ? this.data.form.value.sort : [],
           filter: hasDataForm ? this.data.form.value.filter : {},
         });
         this.loading = false;
