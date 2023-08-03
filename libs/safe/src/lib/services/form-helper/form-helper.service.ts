@@ -305,7 +305,6 @@ export class SafeFormHelpersService {
 
     // We want to include empty arrays multiple option questions
     survey.getAllQuestions().forEach((question) => {
-      console.log(question.getType());
       if (
         multipleOptionTypes.includes(question.getType()) &&
         question.visible
