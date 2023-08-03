@@ -13,7 +13,7 @@
         [selectedIndex]="(selectedPageIndex$ | async)!"
         (selectedIndexChange)="onShowPage($event)"
       >
-        <ui-tab *ngFor="let page of pages$ | async">
+        <ui-tab *ngFor="let page of survey?.visiblePages ?? []">
           <ng-container ngProjectAs="label">
             {{ page.title ? page.title : page.name }}
             <ui-icon
@@ -38,7 +38,7 @@
     <ui-button (click)="onClose()" variant="danger">{{
       'common.cancel' | translate
     }}</ui-button>
-    <ng-container *ngIf="pages$ | async as pages">
+    <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
       <ui-button
         category="secondary"
         variant="primary"
