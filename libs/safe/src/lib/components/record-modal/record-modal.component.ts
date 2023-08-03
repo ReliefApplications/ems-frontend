@@ -185,13 +185,11 @@ export class SafeRecordModalComponent
     this.data.isTemporary
       ? (this.survey = this.formBuilderService.createSurvey(
           this.form?.structure || '',
-          this.pages,
           this.form?.metadata,
           this.record
         ))
       : (this.survey = this.formBuilderService.createSurvey(
           this.form?.structure || '',
-          this.pages,
           this.form?.metadata
         ));
 
@@ -202,7 +200,6 @@ export class SafeRecordModalComponent
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
-      this.pages,
       this.selectedPageIndex,
       {}
     );
@@ -211,7 +208,6 @@ export class SafeRecordModalComponent
     if (this.data.compareTo) {
       this.surveyNext = this.formBuilderService.createSurvey(
         this.form?.structure || '',
-        this.pages,
         this.form?.metadata,
         this.record
       );
@@ -220,7 +216,6 @@ export class SafeRecordModalComponent
       // After the survey is created we add common callback to survey events
       this.formBuilderService.addEventsCallBacksToSurvey(
         this.surveyNext,
-        this.pages,
         this.selectedPageIndex,
         {}
       );
