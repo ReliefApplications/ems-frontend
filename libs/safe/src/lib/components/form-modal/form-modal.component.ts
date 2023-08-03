@@ -36,7 +36,7 @@ import { SpinnerModule } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import { DialogModule } from '@oort-front/ui';
-import { StylesManager, SurveyModel } from 'survey-core';
+import { SurveyModel } from 'survey-core';
 import { SurveyModule } from 'survey-angular-ui';
 
 /**

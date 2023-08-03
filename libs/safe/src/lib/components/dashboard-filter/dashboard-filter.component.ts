@@ -12,7 +12,7 @@ import {
 } from '@angular/core';
 import { FilterPosition } from './enums/dashboard-filters.enum';
 import { Dialog } from '@angular/cdk/dialog';
-import { Model, StylesManager, SurveyModel } from 'survey-core';
+import { Model, SurveyModel } from 'survey-core';
 import { Apollo } from 'apollo-angular';
 import { SafeApplicationService } from '../../services/application/application.service';
 import { Application } from '../../models/application.model';

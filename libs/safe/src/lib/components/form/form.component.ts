@@ -29,7 +29,7 @@ import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.compo
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import { SnackbarService } from '@oort-front/ui';
 import { cloneDeep } from 'lodash';
-import { StylesManager, SurveyModel } from 'survey-core';
+import { SurveyModel } from 'survey-core';
 
 /**
  * This component is used to display forms

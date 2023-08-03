@@ -27,7 +27,7 @@ import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { SafeDateModule } from '../../pipes/date/date.module';
 import { SpinnerModule, ButtonModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
-import { StylesManager, SurveyModel } from 'survey-core';
+import { SurveyModel } from 'survey-core';
 import { SurveyModule } from 'survey-angular-ui';
 
 /**
