@@ -229,7 +229,7 @@ export class SafeRecordModalComponent
       for (const question of allQuestions) {
         const valueNext = this.surveyNext.data[question];
         const value = this.survey.data[question];
-        if (!isEqual(value, valueNext)) {
+        if (!isEqual(value, valueNext) && (value || valueNext)) {
           updatedQuestions.push(question);
         }
       }
