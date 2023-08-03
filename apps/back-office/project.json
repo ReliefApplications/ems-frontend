@@ -61,7 +61,7 @@
           },
           "apps/back-office/src/styles.scss",
           "libs/safe/src/lib/style/styles.scss",
-          "node_modules/survey-core/modern.min.css",
+          "node_modules/survey-core/defaultV2.min.css",
           "node_modules/survey-creator-core/survey-creator-core.min.css",
           "node_modules/leaflet/dist/leaflet.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.css",

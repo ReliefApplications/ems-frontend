@@ -17,12 +17,14 @@ import { SafeFormHelpersService } from '../../services/form-helper/form-helper.s
 import {
   PageModel,
   Question,
-  StylesManager,
   SurveyModel,
   UpdateQuestionCssClassesEvent,
   surveyLocalization,
 } from 'survey-core';
-import { SurveyCreatorModel } from 'survey-creator-core';
+import {
+  SurveyCreatorModel,
+  StylesManager as CreatorStylesManager,
+} from 'survey-creator-core';
 
 /**
  * Array containing the different types of questions.
@@ -129,10 +131,6 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     });
   }
 
-  ngOnInit(): void {
-    this.setFormBuilder(get(this.form, 'structure', ''));
-  }
-
   ngOnChanges(): void {
     if (this.surveyCreator) {
       this.surveyCreator.text = this.form.structure || '';
@@ -161,6 +159,10 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     }
   }
 
+  ngOnInit(): void {
+    this.setFormBuilder(get(this.form, 'structure', ''));
+  }
+
   /**
    * Creates the form builder and sets up all the options.
    *
@@ -181,6 +183,9 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
 
     this.surveyCreator.onTestSurveyCreated.add((_: any, options: any) => {
       const survey: SurveyModel = options.survey;
+      survey.applyTheme({
+        isPanelless: true,
+      });
       this.formHelpersService.addUserVariables(survey);
     });
 
@@ -189,12 +194,14 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
     this.surveyCreator.showToolbox = true;
     this.surveyCreator.toolboxLocation = 'right';
-    this.surveyCreator.showPropertyGrid = true;
+    this.surveyCreator.showSidebar = true;
     this.surveyCreator.sidebarLocation = 'right';
-    this.surveyCreator.rightContainerActiveItem('toolbox');
+
     if (!this.form.structure) {
       this.surveyCreator.survey.showQuestionNumbers = 'off';
     }
+    this.surveyCreator.toolbox.forceCompact = false;
+    this.surveyCreator.toolbox.allowExpandMultipleCategories = true;
     this.surveyCreator.toolbox.changeCategories(
       QUESTION_TYPES.map((x) => ({
         name: x,
@@ -270,7 +277,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       setTimeout(() => {
         const el = document.querySelector('[data-name="' + name + '"]');
         el?.scrollIntoView({ behavior: 'smooth' });
-        this.surveyCreator.selectElement(el, opt.question.name, false, true);
+        // this.surveyCreator.selectElement(el, opt.question.name, false, true);
       });
     });
 
@@ -378,8 +385,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * Set a theme for the form builder depending on the environment
    */
   setCustomTheme(): void {
-    StylesManager.applyTheme();
-    // SurveyCreator.StylesManager.applyTheme();
+    CreatorStylesManager.applyTheme('default');
   }
 
   /**

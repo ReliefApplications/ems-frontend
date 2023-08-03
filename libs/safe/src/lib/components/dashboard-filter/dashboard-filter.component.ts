@@ -240,10 +240,9 @@ export class DashboardFilterComponent
 
   /** Render the survey using the saved structure */
   private initSurvey(): void {
-    StylesManager.applyTheme();
     const surveyStructure = this.surveyStructure;
     this.survey = new Model(surveyStructure);
-
+    this.survey.applyTheme({ isPanelless: true });
     if (this.value) {
       this.survey.data = this.value;
     }

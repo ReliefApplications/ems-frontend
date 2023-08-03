@@ -102,7 +102,6 @@ export class SafeFormComponent
   }
 
   ngOnInit(): void {
-    StylesManager.applyTheme();
     addCustomFunctions(this.authService, this.record);
 
     const structure = JSON.parse(this.form.structure || '{}');
@@ -118,6 +117,7 @@ export class SafeFormComponent
       this.form.metadata,
       this.record
     );
+    this.survey.applyTheme({ isPanelless: true });
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,

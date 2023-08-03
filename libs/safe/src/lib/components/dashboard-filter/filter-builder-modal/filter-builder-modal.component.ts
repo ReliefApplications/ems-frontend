@@ -5,7 +5,7 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import { StylesManager, SurveyModel } from 'survey-core';
+import { SurveyModel } from 'survey-core';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { SafeFormService } from '../../../services/form/form.service';
 import { CommonModule } from '@angular/common';
@@ -15,7 +15,10 @@ import { TooltipModule } from '@oort-front/ui';
 import { DialogModule, AlertModule } from '@oort-front/ui';
 import { renderGlobalProperties } from '../../../survey/render-global-properties';
 import { SafeReferenceDataService } from '../../../services/reference-data/reference-data.service';
-import { SurveyCreatorModel } from 'survey-creator-core';
+import {
+  SurveyCreatorModel,
+  StylesManager as CreatorStylesManager,
+} from 'survey-creator-core';
 import { SurveyCreatorModule } from 'survey-creator-angular';
 /**
  * Data passed to initialize the filter builder
@@ -225,8 +228,7 @@ export class FilterBuilderModalComponent
    * Set a theme for the form builder depending on the environment
    */
   setCustomTheme(): void {
-    StylesManager.applyTheme();
-    // SurveyCreatorModel..applyTheme('default');
+    CreatorStylesManager.applyTheme('default');
   }
 
   /**
