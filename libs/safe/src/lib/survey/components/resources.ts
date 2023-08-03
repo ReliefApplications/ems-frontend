@@ -216,7 +216,6 @@ export const init = (
           htmlElement.appendChild(btn);
           btn.onclick = () => {
             const currentQuestion = editor.object;
-            console.log('currentQuestion', currentQuestion);
             getResourceById({ id: currentQuestion.resource }).subscribe(
               async ({ data }) => {
                 if (data.resource && data.resource.name) {
