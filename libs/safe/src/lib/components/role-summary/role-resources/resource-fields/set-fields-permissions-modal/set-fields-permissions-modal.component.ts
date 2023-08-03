@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
@@ -7,17 +7,17 @@ import {
   ToggleModule,
   TooltipModule,
 } from '@oort-front/ui';
-import { DialogRef } from '@angular/cdk/dialog';
 import {
   FormsModule,
   ReactiveFormsModule,
   UntypedFormBuilder,
   UntypedFormGroup,
 } from '@angular/forms';
-import { ToggleComponent } from '../../../../../../../../ui/src/lib/toggle/toggle.component';
+import { SafeUnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
+import { takeUntil } from 'rxjs';
 
 /**
- * Modal content to edit the permissions over resources.
+ * Modal to update multiple fields permissions.
  */
 @Component({
   standalone: true,
@@ -35,24 +35,23 @@ import { ToggleComponent } from '../../../../../../../../ui/src/lib/toggle/toggl
   templateUrl: './set-fields-permissions-modal.component.html',
   styleUrls: ['./set-fields-permissions-modal.component.scss'],
 })
-export class SetFieldsPermissionsModalComponent implements OnInit {
+export class SetFieldsPermissionsModalComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   public setForm: UntypedFormGroup = new UntypedFormGroup({});
 
-  @ViewChild('canUpdateToggle') canUpdateToggle?: ToggleComponent;
-
   /**
-   * Modal to add a new resource.
+   * Constructor of the component.
    *
    * @param formBuilder Angular Form builder service
-   * @param dialogRef Dialog reference
    */
-  constructor(
-    private formBuilder: UntypedFormBuilder,
-    public dialogRef: DialogRef<SetFieldsPermissionsModalComponent>
-  ) {}
+  constructor(private formBuilder: UntypedFormBuilder) {
+    super();
+  }
 
   /**
-   * Loads the resources and build the form.
+   * Build the form and subscribe to changes.
    */
   ngOnInit(): void {
     this.setForm = this.formBuilder.group({
@@ -60,16 +59,16 @@ export class SetFieldsPermissionsModalComponent implements OnInit {
       canUpdate: [true],
     });
 
-    this.setForm.controls.canSee.valueChanges.subscribe((value: boolean) => {
-      this.canUpdateToggle?.setDisabledState(!value);
-      if (!value) this.canUpdateToggle?.writeValue(false);
-    });
-  }
-
-  /**
-   * Closes the modal without sending any data.
-   */
-  onClose(): void {
-    this.dialogRef.close();
+    this.setForm.controls.canSee.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: boolean) => {
+        if (!value) {
+          // Is necessary provide permission to see before allow permission to update.
+          this.setForm.controls.canUpdate.disable();
+          this.setForm.controls.canUpdate.setValue(false);
+        } else {
+          this.setForm.controls.canUpdate.enable();
+        }
+      });
   }
 }

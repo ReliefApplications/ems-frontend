@@ -2,7 +2,9 @@
 <div class="flex gap-5 mb-4">
   <h2>{{ 'common.field.few' | translate }}</h2>
   <!-- Actions when selected items -->
-  <ng-container *ngIf="selection.selected.length > 1">
+  <ng-container *ngIf="selection.selected.length > 1 &&
+    !!(resource.rolePermissions?.canSeeRecords || resource.rolePermissions?.canCreateRecords)"
+  >
     <ui-button
       (click)="onEditPermissions(selection.selected)"
       [uiTooltip]="'common.field.permissions.description' | translate"

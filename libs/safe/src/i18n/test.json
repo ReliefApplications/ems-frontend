@@ -1006,6 +1006,7 @@
 				"notGrantFilterUpdateRecordsPermission": "******",
 				"notGrantReadRecordsPermission": "******",
 				"notGrantUpdateRecordsPermission": "******",
+				"permissionNotVisible": "******",
 				"showFeature": "****** {{page}} ******"
 			},
 			"update": {

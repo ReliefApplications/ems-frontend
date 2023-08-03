@@ -31,13 +31,13 @@ export class ResourceFieldsComponent
   @Input() role!: Role;
   @Input() disabled = false;
   // eslint-disable-next-line @angular-eslint/no-output-on-prefix
-  @Output() onToggle = new EventEmitter<{
+  @Output() toggle = new EventEmitter<{
     resource: Resource;
     field: ResourceField;
     permission: 'canSee' | 'canUpdate';
   }>();
 
-  @Output() onSetPermissions = new EventEmitter<{
+  @Output() setPermissions = new EventEmitter<{
     resource: Resource;
     fields: ResourceField[];
     permissions: { canSee: boolean; canUpdate: boolean };
@@ -116,7 +116,7 @@ export class ResourceFieldsComponent
     field: ResourceField,
     permission: 'canSee' | 'canUpdate'
   ) {
-    this.onToggle.emit({
+    this.toggle.emit({
       field,
       permission,
       resource: this.resource,
@@ -171,11 +171,13 @@ export class ResourceFieldsComponent
     const dialogRef = this.dialog.open(SetFieldsPermissionsModalComponent);
 
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      this.onSetPermissions.emit({
-        resource: this.resource,
-        fields: fields,
-        permissions: value,
-      });
+      if (value) {
+        this.setPermissions.emit({
+          resource: this.resource,
+          fields: fields,
+          permissions: value,
+        });
+      }
     });
   }
 }

@@ -98,14 +98,14 @@
                 [disabled]="loading || updating"
                 [role]="role"
                 [resource]="openedResource"
-                (onToggle)="
+                (toggle)="
                   onEditFieldAccess(
                     $event.resource,
                     $event.field,
                     $event.permission
                   )
                 "
-                (onSetPermissions)="
+                (setPermissions)="
                   onEditFieldsPermissions(
                     $event.resource,
                     $event.fields,

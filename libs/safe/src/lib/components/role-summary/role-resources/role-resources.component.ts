@@ -462,11 +462,13 @@ export class RoleResourcesComponent
    * Edits the specified field permissions array
    *
    * @param resource the resource containing the field to be updated
-   * @param field the field to be edited
-   * @param field.name the name of the field to be edited
-   * @param field.canSee whether the field can be seen
-   * @param field.canUpdate whether the field can be edited
-   * @param action the permission to be edited
+   * @param fields the field to be edited
+   * @param fields.name the fields array to be edited
+   * @param fields.canSee whether the field can be seen
+   * @param fields.canUpdate whether the field can be edited
+   * @param permissions the permissions to be edited
+   * @param permissions.canSee the canSee permission new value
+   * @param permissions.canUpdate the canSee permission new value
    */
   onEditFieldsPermissions(
     resource: Resource,

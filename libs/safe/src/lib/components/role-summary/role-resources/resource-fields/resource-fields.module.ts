@@ -12,7 +12,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ResourceFieldsComponent } from './resource-fields.component';
 
 /**
- * Resource fields array of Role ressources component.
+ * Resource fields array of Role resources component.
  */
 @NgModule({
   declarations: [ResourceFieldsComponent],
