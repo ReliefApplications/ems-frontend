@@ -132,7 +132,6 @@ export class SafeFormBuilderService {
    * and temporary files storage
    *
    * @param survey Survey where to add the callbacks
-   * @param pages Pages of the current survey
    * @param selectedPageIndex Current page of the survey
    * @param temporaryFilesStorage Temporary files saved while executing the survey
    */
