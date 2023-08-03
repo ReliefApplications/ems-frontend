@@ -151,7 +151,7 @@ export class QueryBuilderService {
     };
     args: any;
   }[] {
-    return type.fields
+    const fields = type.fields
       .filter(
         (x: any) =>
           !NON_SELECTABLE_FIELDS.includes(x.name) &&
@@ -174,6 +174,8 @@ export class QueryBuilderService {
         return x;
       })
       .sort((a: any, b: any) => a.name.localeCompare(b.name));
+    console.log(type.name, type.fields, fields);
+    return fields;
   }
 
   /**

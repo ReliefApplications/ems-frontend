@@ -68,16 +68,38 @@ export class AggregationBuilderService {
                 newField.type = { ...groupByField.type };
                 if (rule.field.includes('.')) {
                   const fieldArray = rule.field.split('.');
-                  const sub = fieldArray.pop();
+                  fieldArray.shift();
+                  const addFields = (newField: any) => {
+                    const sub = fieldArray.shift();
+                    if (fieldArray.length > 0) {
+                      newField.fields = newField.fields.map((x: any) =>
+                        x.name === sub
+                          ? {
+                              ...x,
+                              type: {
+                                ...x.type,
+                                kind: 'OBJECT',
+                              },
+                            }
+                          : x
+                      );
+                    } else {
+                      newField.fields = newField.fields.map((x: any) =>
+                        x.name === sub
+                          ? {
+                              ...x,
+                              type: {
+                                ...x.type,
+                                kind: 'SCALAR',
+                                name: 'String',
+                              },
+                            }
+                          : x
+                      );
+                    }
+                  };
                   newField.type.kind = 'OBJECT';
-                  newField.fields = newField.fields.map((x: any) =>
-                    x.name === sub
-                      ? {
-                          ...x,
-                          type: { ...x.type, kind: 'SCALAR', name: 'String' },
-                        }
-                      : x
-                  );
+                  addFields(newField);
                 } else {
                   newField.type.kind = 'SCALAR';
                   newField.type.name = 'String';
@@ -182,18 +204,21 @@ export class AggregationBuilderService {
     if (!outField && fieldName.includes('.')) {
       const fieldArray = fieldName.split('.');
       const parent = fieldArray.shift();
-      const sub = fieldArray.pop();
-      outField = fields.reduce((o, field) => {
-        if (
-          field.name === parent &&
-          field.fields.some((x: any) => x.name === sub)
-        ) {
-          const newField = { ...field };
-          newField.fields = field.fields.filter((x: any) => x.name === sub);
-          return newField;
+      let sub: string | undefined;
+      const findSubfield: any = (fields: any[]) => {
+        sub = fieldArray.shift();
+        if (fieldArray.length > 0) {
+          const subField = fields.filter((x: any) => x.name === sub);
+          return subField.map((x) => {
+            return { ...x, fields: findSubfield(x.fields) };
+          });
+        } else {
+          return fields.filter((x: any) => x.name === sub);
         }
-        return o;
-      }, null);
+      };
+
+      outField = fields.find((x) => x.name === parent);
+      outField.fields = findSubfield(outField.fields);
     } else {
       outField = { ...outField };
     }

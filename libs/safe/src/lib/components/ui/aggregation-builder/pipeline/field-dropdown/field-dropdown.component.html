@@ -20,7 +20,7 @@
     #field
     >{{ data.name }}</ui-select-option
   >
-  <ui-select-option [isGroup]="true" *ngIf="data.type.kind === 'LIST'">
+  <ui-select-option [isGroup]="true" *ngIf="data.type.kind === 'LIST' || data.type.kind === 'OBJECT'">
     <span class="text-red-700 font-bold">{{ data.name }}</span>
     <ng-container
       *ngFor="let subField of data.fields"
