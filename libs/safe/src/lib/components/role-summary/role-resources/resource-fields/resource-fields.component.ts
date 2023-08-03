@@ -171,7 +171,6 @@ export class ResourceFieldsComponent
     const dialogRef = this.dialog.open(SetFieldsPermissionsModalComponent);
 
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      console.log(fields);
       this.onSetPermissions.emit({
         resource: this.resource,
         fields: fields,

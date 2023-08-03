@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
@@ -16,6 +16,9 @@ import {
 } from '@angular/forms';
 import { ToggleComponent } from '../../../../../../../../ui/src/lib/toggle/toggle.component';
 
+/**
+ * Modal content to edit the permissions over resources.
+ */
 @Component({
   standalone: true,
   imports: [
@@ -32,7 +35,7 @@ import { ToggleComponent } from '../../../../../../../../ui/src/lib/toggle/toggl
   templateUrl: './set-fields-permissions-modal.component.html',
   styleUrls: ['./set-fields-permissions-modal.component.scss'],
 })
-export class SetFieldsPermissionsModalComponent {
+export class SetFieldsPermissionsModalComponent implements OnInit {
   public setForm: UntypedFormGroup = new UntypedFormGroup({});
 
   @ViewChild('canUpdateToggle') canUpdateToggle?: ToggleComponent;
@@ -59,6 +62,7 @@ export class SetFieldsPermissionsModalComponent {
 
     this.setForm.controls.canSee.valueChanges.subscribe((value: boolean) => {
       this.canUpdateToggle?.setDisabledState(!value);
+      if (!value) this.canUpdateToggle?.writeValue(false);
     });
   }
 
