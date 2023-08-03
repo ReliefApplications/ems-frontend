@@ -101,6 +101,7 @@ export class SafeGridComponent
   @Output() export = new EventEmitter();
 
   // === EDITION ===
+  /** If inlineEdition is allowed */
   @Input() editable = false;
   @Input() hasChanges = false;
   @Output() edit: EventEmitter<any> = new EventEmitter();
@@ -706,7 +707,7 @@ export class SafeGridComponent
         value: get(item, field),
         readonly:
           !this.actions.update ||
-          !item.canUpdate ||
+          !this.editable ||
           this.fields.find((val) => val.name === field).meta.readOnly,
       },
       autoFocus: false,
