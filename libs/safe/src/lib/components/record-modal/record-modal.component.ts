@@ -1,10 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import {
-  AfterViewInit,
-  Component,
-  Inject,
-  OnDestroy,
-} from '@angular/core';
+import { AfterViewInit, Component, Inject, OnDestroy } from '@angular/core';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
