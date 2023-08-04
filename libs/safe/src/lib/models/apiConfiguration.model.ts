@@ -6,6 +6,7 @@ export enum authType {
   public = 'public',
   serviceToService = 'serviceToService',
   userToService = 'userToService',
+  token = 'token',
 }
 
 /** Model for ApiConfiguration object. */

@@ -185,7 +185,70 @@
         </div>
       </ng-container>
       <!-- User to service connection -->
-      <ng-container *ngIf="apiForm.value.authType === authType.userToService">
+      <ng-container
+        *ngIf="apiForm.value.authType === authType.userToService"
+      >
+        <div formGroupName="settings" class="flex flex-col">
+          <!-- Token url -->
+          <div uiFormFieldDirective>
+            <label>
+              {{ 'pages.apiConfiguration.tokenUrl' | translate }}
+            </label>
+            <input
+              formControlName="authTargetUrl"
+              type="text"
+              [placeholder]="
+                'pages.apiConfiguration.placeholder.tokenUrl' | translate
+              "
+              onfocus="this.value=''"
+            />
+          </div>
+          <!-- Client id -->
+          <div uiFormFieldDirective>
+            <label>
+              {{ 'pages.apiConfiguration.clientId' | translate }}
+            </label>
+            <input
+              formControlName="apiClientID"
+              type="text"
+              [placeholder]="
+                'pages.apiConfiguration.placeholder.clientId' | translate
+              "
+              onfocus="this.value=''"
+            />
+          </div>
+          <!-- Client secret -->
+          <div uiFormFieldDirective>
+            <label>
+              {{ 'pages.apiConfiguration.secret' | translate }}
+            </label>
+            <input
+              formControlName="safeSecret"
+              type="text"
+              [placeholder]="
+                'pages.apiConfiguration.placeholder.secret' | translate
+              "
+              onfocus="this.value=''"
+            />
+          </div>
+          <!-- Token scope -->
+          <div uiFormFieldDirective>
+            <label>
+              {{ 'pages.apiConfiguration.scope' | translate }}
+            </label>
+            <input
+              formControlName="scope"
+              type="text"
+              [placeholder]="
+                'pages.apiConfiguration.placeholder.scope' | translate
+              "
+              onfocus="this.value=''"
+            />
+          </div>
+        </div>
+      </ng-container>
+      <!-- Token connection -->
+      <ng-container *ngIf="apiForm.value.token === authType.token">
         <div formGroupName="settings" class="flex flex-col">
           <!-- Token -->
           <div uiFormFieldDirective>

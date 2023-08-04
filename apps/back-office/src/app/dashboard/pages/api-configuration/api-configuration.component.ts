@@ -159,7 +159,7 @@ export class ApiConfigurationComponent
    * @returns settings form group
    */
   private buildSettingsForm(type: string): UntypedFormGroup {
-    if (type === authType.serviceToService) {
+    if (type === authType.serviceToService || authType.userToService) {
       return this.formBuilder.group({
         authTargetUrl: [
           this.apiConfiguration?.settings &&
