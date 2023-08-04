@@ -3,7 +3,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TooltipComponent } from './tooltip.component';
 import { TooltipDirective } from './tooltip.directive';
 import { By } from '@angular/platform-browser';
-import { Renderer2 } from '@angular/core';
 
 describe('TooltipComponent', () => {
   let component: TooltipComponent;
