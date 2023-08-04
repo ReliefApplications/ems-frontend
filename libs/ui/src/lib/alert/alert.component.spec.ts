@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { AlertComponent } from './alert.component';
+import { AlertModule } from './alert.module';
 
 describe('AlertComponent', () => {
   let component: AlertComponent;
@@ -9,6 +10,7 @@ describe('AlertComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [AlertComponent],
+      imports: [AlertModule],
     }).compileComponents();
   });
 
