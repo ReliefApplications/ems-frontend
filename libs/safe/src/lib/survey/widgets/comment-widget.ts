@@ -8,8 +8,12 @@ import { SafeQuestion, QuestionComment } from '../types';
 
 /**
  * Custom definition for overriding the comment question. Add edit functionality.
+ *
+ * @param customWidgetCollectionInstance CustomWidgetCollection
  */
-export const init = (): void => {
+export const init = (
+  customWidgetCollectionInstance: CustomWidgetCollection
+): void => {
   const widget = {
     name: 'comment-widget',
     widgetIsLoaded: (): boolean => true,
@@ -56,5 +60,5 @@ export const init = (): void => {
     },
   };
 
-  CustomWidgetCollection.Instance.addCustomWidget(widget, 'customwidget');
+  customWidgetCollectionInstance.addCustomWidget(widget, 'customwidget');
 };

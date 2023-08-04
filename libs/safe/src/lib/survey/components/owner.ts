@@ -13,8 +13,13 @@ import { ComponentCollection, Serializer, SvgRegistry } from 'survey-core';
  *
  * @param domService Dom service.
  * @param apollo Apollo client.
+ * @param componentCollectionInstance ComponentCollection
  */
-export const init = (domService: DomService, apollo: Apollo): void => {
+export const init = (
+  domService: DomService,
+  apollo: Apollo,
+  componentCollectionInstance: ComponentCollection
+): void => {
   // registers icon-owner in the SurveyJS library
   SvgRegistry.registerIconFromSvg(
     'owner',
@@ -79,5 +84,5 @@ export const init = (domService: DomService, apollo: Apollo): void => {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     onAfterRender: (): void => {},
   };
-  ComponentCollection.Instance.add(component);
+  componentCollectionInstance.add(component);
 };

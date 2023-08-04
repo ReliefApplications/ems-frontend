@@ -72,12 +72,14 @@ const addRecordToSurveyContext = (
  * @param apollo Apollo client
  * @param dialog Dialog
  * @param formBuilder Angular form service
+ * @param componentCollectionInstance ComponentCollection
  */
 export const init = (
   domService: DomService,
   apollo: Apollo,
   dialog: Dialog,
-  formBuilder: UntypedFormBuilder
+  formBuilder: UntypedFormBuilder,
+  componentCollectionInstance: ComponentCollection
 ): void => {
   const getResourceById = (data: { id: string }) =>
     apollo.query<GetResourceByIdQueryResponse>({
@@ -716,7 +718,7 @@ export const init = (
       return auxForm;
     },
   };
-  ComponentCollection.Instance.add(component);
+  componentCollectionInstance.add(component);
 
   const setAdvanceFilter = (value: string, question: string | any) => {
     const field = typeof question !== 'string' ? question.filterBy : question;

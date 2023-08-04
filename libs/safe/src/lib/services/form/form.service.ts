@@ -7,6 +7,7 @@ import { Apollo } from 'apollo-angular';
 import { UntypedFormBuilder } from '@angular/forms';
 import { SafeAuthService } from '../auth/auth.service';
 import { SafeReferenceDataService } from '../reference-data/reference-data.service';
+import * as Survey from 'survey-core';
 
 /**
  * Shared survey service.
@@ -16,6 +17,7 @@ import { SafeReferenceDataService } from '../reference-data/reference-data.servi
 @Injectable({ providedIn: 'root' })
 export class SafeFormService {
   private environment: any;
+
   /**
    * Shared survey service.
    * Initializes the additional code we made on top of the default logic of the library.
@@ -54,9 +56,10 @@ export class SafeFormService {
     }
   ) {
     // === CREATOR SETTINGS ===
-    initCreatorSettings();
+    initCreatorSettings(Survey);
     // === CUSTOM WIDGETS / COMPONENTS ===
     initCustomSurvey(
+      Survey,
       this.domService,
       this.dialog,
       this.apollo,

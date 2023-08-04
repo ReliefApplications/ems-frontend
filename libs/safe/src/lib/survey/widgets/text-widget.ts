@@ -21,8 +21,12 @@ type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
  * Custom definition for overriding the text question. Allowed support for dates.
  *
  * @param domService Shared DOM service
+ * @param customWidgetCollectionInstance CustomWidgetCollection
  */
-export const init = (domService: DomService): void => {
+export const init = (
+  domService: DomService,
+  customWidgetCollectionInstance: CustomWidgetCollection
+): void => {
   const widget = {
     name: 'text-widget',
     widgetIsLoaded: (): boolean => true,
@@ -402,5 +406,5 @@ export const init = (domService: DomService): void => {
     }
   };
 
-  CustomWidgetCollection.Instance.addCustomWidget(widget, 'customwidget');
+  customWidgetCollectionInstance.addCustomWidget(widget, 'customwidget');
 };

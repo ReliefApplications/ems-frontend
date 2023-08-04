@@ -54,12 +54,14 @@ const temporaryRecordsForm = new FormControl([]);
  * @param apollo Apollo client
  * @param dialog Dialog service
  * @param formBuilder Angular form service
+ * @param componentCollectionInstance ComponentCollection
  */
 export const init = (
   domService: DomService,
   apollo: Apollo,
   dialog: Dialog,
-  formBuilder: UntypedFormBuilder
+  formBuilder: UntypedFormBuilder,
+  componentCollectionInstance: ComponentCollection
 ): void => {
   const getResourceById = (data: { id: string }) =>
     apollo.query<GetResourceByIdQueryResponse>({
@@ -836,7 +838,7 @@ export const init = (
       }
     },
   };
-  ComponentCollection.Instance.add(component);
+  componentCollectionInstance.add(component);
 
   /**
    * Set an advance filter

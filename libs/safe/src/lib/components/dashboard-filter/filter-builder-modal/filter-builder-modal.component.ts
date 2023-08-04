@@ -15,10 +15,7 @@ import { TooltipModule } from '@oort-front/ui';
 import { DialogModule, AlertModule } from '@oort-front/ui';
 import { renderGlobalProperties } from '../../../survey/render-global-properties';
 import { SafeReferenceDataService } from '../../../services/reference-data/reference-data.service';
-import {
-  SurveyCreatorModel,
-  StylesManager as CreatorStylesManager,
-} from 'survey-creator-core';
+import { SurveyCreatorModel } from 'survey-creator-core';
 import { SurveyCreatorModule } from 'survey-creator-angular';
 /**
  * Data passed to initialize the filter builder
@@ -184,7 +181,6 @@ export class FilterBuilderModalComponent
       showTranslationTab: false,
       questionTypes: QUESTION_TYPES,
     };
-    this.setCustomTheme();
     this.surveyCreator = new SurveyCreatorModel(creatorOptions);
     // this.surveyCreator.text = '';
     this.surveyCreator.showToolbox = true;
@@ -222,13 +218,6 @@ export class FilterBuilderModalComponent
     // Set content
     const survey = new SurveyModel(this.data?.surveyStructure || {});
     this.surveyCreator.JSON = survey.toJSON();
-  }
-
-  /**
-   * Set a theme for the form builder depending on the environment
-   */
-  setCustomTheme(): void {
-    CreatorStylesManager.applyTheme('default');
   }
 
   /**

@@ -56,9 +56,6 @@
         "allowedCommonJsDependencies": [
           "minimatch",
           "hammerjs",
-          "survey-creator",
-          "survey-knockout",
-          "surveyjs-widgets",
           "subscriptions-transport-ws",
           "zen-observable",
           "lodash",
@@ -66,9 +63,10 @@
           "cron-parser",
           "cron-validator",
           "localforage",
-          "survey-angular-ui",
-          "survey-creator-core",
           "survey-core",
+          "survey-creator-core",
+          "survey-angular-ui",
+          "surveyjs-widgets",
           "fast-sha256"
         ]
       },

@@ -8,8 +8,12 @@ import { CustomWidgetCollection, QuestionDropdownModel } from 'survey-core';
  * Init dropdown widget
  *
  * @param domService Shared dom service
+ * @param customWidgetCollectionInstance CustomWidgetCollection
  */
-export const init = (domService: DomService): void => {
+export const init = (
+  domService: DomService,
+  customWidgetCollectionInstance: CustomWidgetCollection
+): void => {
   const widget = {
     name: 'dropdown-widget',
     widgetIsLoaded: (): boolean => true,
@@ -110,5 +114,5 @@ export const init = (domService: DomService): void => {
     return dropdownInstance;
   };
 
-  CustomWidgetCollection.Instance.addCustomWidget(widget, 'customwidget');
+  customWidgetCollectionInstance.addCustomWidget(widget, 'customwidget');
 };

@@ -37,8 +37,12 @@ const getGeoFields = (question: any) => {
  * Inits the geospatial component.
  *
  * @param domService DOM service.
+ * @param componentCollectionInstance ComponentCollection
  */
-export const init = (domService: DomService): void => {
+export const init = (
+  domService: DomService,
+  componentCollectionInstance: ComponentCollection
+): void => {
   // registers icon-geospatial in the SurveyJS library
   SvgRegistry.registerIconFromSvg(
     'geospatial',
@@ -117,5 +121,5 @@ export const init = (domService: DomService): void => {
       });
     },
   };
-  ComponentCollection.Instance.add(component);
+  componentCollectionInstance.add(component);
 };

@@ -24,11 +24,11 @@ import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';
 import { initLocalization } from './localization';
 import { Dialog } from '@angular/cdk/dialog';
-import { ComponentCollection, CustomWidgetCollection } from 'survey-core';
 
 /**
  * Executes all init methods of custom SurveyJS.
  *
+ * @param Survey Survey instance
  * @param domService Shared DOM service, used to inject components on the go
  * @param dialog dialog service
  * @param apollo apollo service
@@ -39,6 +39,7 @@ import { ComponentCollection, CustomWidgetCollection } from 'survey-core';
  * @param containsCustomQuestions If survey contains custom questions or not
  */
 export const initCustomSurvey = (
+  Survey: any,
   domService: DomService,
   dialog: Dialog,
   apollo: Apollo,
@@ -46,26 +47,47 @@ export const initCustomSurvey = (
   authService: SafeAuthService,
   environment: any,
   referenceDataService: SafeReferenceDataService,
+
   containsCustomQuestions: boolean
 ): void => {
   // If the survey created does not contain custom questions, we destroy previously set custom questions if so
   if (!containsCustomQuestions) {
-    CustomWidgetCollection.Instance.clear();
-    ComponentCollection.Instance.clear();
+    Survey.CustomWidgetCollection.Instance.clear();
+    Survey.ComponentCollection.Instance.clear();
   }
 
-  TagboxWidget.init(domService);
-  TextWidget.init(domService);
-  DropdownWidget.init(domService);
+  TagboxWidget.init(domService, Survey.CustomWidgetCollection.Instance);
+  TextWidget.init(domService, Survey.CustomWidgetCollection.Instance);
+  DropdownWidget.init(domService, Survey.CustomWidgetCollection.Instance);
 
   if (containsCustomQuestions) {
-    CommentWidget.init();
+    CommentWidget.init(Survey.CustomWidgetCollection.Instance);
     // load components (same as widgets, but with less configuration options)
-    ResourceComponent.init(domService, apollo, dialog, formBuilder);
-    ResourcesComponent.init(domService, apollo, dialog, formBuilder);
-    OwnerComponent.init(domService, apollo);
-    UsersComponent.init(domService, apollo);
-    GeospatialComponent.init(domService);
+    ResourceComponent.init(
+      domService,
+      apollo,
+      dialog,
+      formBuilder,
+      Survey.ComponentCollection.Instance
+    );
+    ResourcesComponent.init(
+      domService,
+      apollo,
+      dialog,
+      formBuilder,
+      Survey.ComponentCollection.Instance
+    );
+    OwnerComponent.init(
+      domService,
+      apollo,
+      Survey.ComponentCollection.Instance
+    );
+    UsersComponent.init(
+      domService,
+      apollo,
+      Survey.ComponentCollection.Instance
+    );
+    GeospatialComponent.init(domService, Survey.ComponentCollection.Instance);
   }
 
   // load global properties

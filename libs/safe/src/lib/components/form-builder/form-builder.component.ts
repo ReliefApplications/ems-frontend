@@ -21,10 +21,7 @@ import {
   UpdateQuestionCssClassesEvent,
   surveyLocalization,
 } from 'survey-core';
-import {
-  SurveyCreatorModel,
-  StylesManager as CreatorStylesManager,
-} from 'survey-creator-core';
+import { SurveyCreatorModel } from 'survey-creator-core';
 
 /**
  * Array containing the different types of questions.
@@ -177,14 +174,14 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       questionTypes: QUESTION_TYPES,
     };
 
-    this.setCustomTheme();
-
     this.surveyCreator = new SurveyCreatorModel(creatorOptions);
-
     this.surveyCreator.onTestSurveyCreated.add((_: any, options: any) => {
       const survey: SurveyModel = options.survey;
       survey.applyTheme({
         isPanelless: true,
+        cssVariables: {
+          '--sjs-base-unit': '.66em',
+        },
       });
       this.formHelpersService.addUserVariables(survey);
     });
@@ -379,13 +376,6 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
         options.htmlElement.children[0].className += ` ${CORE_FIELD_CLASS}`;
       }
     }) as any);
-  }
-
-  /**
-   * Set a theme for the form builder depending on the environment
-   */
-  setCustomTheme(): void {
-    CreatorStylesManager.applyTheme('default');
   }
 
   /**

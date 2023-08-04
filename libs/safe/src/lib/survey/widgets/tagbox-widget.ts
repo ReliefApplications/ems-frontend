@@ -12,8 +12,12 @@ import {
  * Init tagbox question
  *
  * @param domService Shared dom service
+ * @param customWidgetCollectionInstance CustomWidgetCollection
  */
-export const init = (domService: DomService): void => {
+export const init = (
+  domService: DomService,
+  customWidgetCollectionInstance: CustomWidgetCollection
+): void => {
   const iconId = 'icon-tagbox';
 
   // registers icon-resources in the SurveyJS library
@@ -146,5 +150,5 @@ export const init = (domService: DomService): void => {
   };
 
   // there, we define that we want, with 'customtype', that the widget also appears in the list of questions
-  CustomWidgetCollection.Instance.add(widget, 'customtype');
+  customWidgetCollectionInstance.add(widget, 'customtype');
 };
