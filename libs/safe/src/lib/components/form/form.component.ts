@@ -131,9 +131,8 @@ export class SafeFormComponent
 
     // Set questions readOnly propriety
     this.form.fields?.forEach((field) => {
-      if (field.readOnly) {
-        this.survey.getQuestionByName(field.name).readOnly = field.readOnly;
-      }
+      this.survey.getQuestionByName(field.name).readOnly =
+        field.readOnly ?? false;
     });
     // Fetch cached data from local storage
     this.storageId = `record:${this.record ? 'update' : ''}:${this.form.id}`;
