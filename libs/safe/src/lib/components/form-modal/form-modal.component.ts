@@ -220,14 +220,12 @@ export class SafeFormModalComponent
   private initSurvey(): void {
     this.survey = this.formBuilderService.createSurvey(
       this.form?.structure || '',
-      this.pages,
       this.form?.metadata,
       this.record
     );
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
-      this.pages,
       this.selectedPageIndex,
       this.temporaryFilesStorage
     );
@@ -644,5 +642,6 @@ export class SafeFormModalComponent
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     this.formHelpersService.cleanCachedRecords(this.survey);
+    this.survey.dispose();
   }
 }

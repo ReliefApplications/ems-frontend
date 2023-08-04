@@ -98,7 +98,7 @@
           (click)="
             formGroup.get('datasource.layout')?.setValue(null);
             layout = null;
-            this.fields.next([]);
+            this.fields.next([])
           "
         ></ui-button>
       </div>
@@ -126,7 +126,7 @@
           (click)="
             formGroup.get('datasource.aggregation')?.setValue(null);
             aggregation = null;
-            this.fields.next([]);
+            this.fields.next([])
           "
         ></ui-button>
       </div>
@@ -157,7 +157,11 @@
       </div>
 
       <!-- Fields selection -->
-      <ng-container *ngIf="formGroup.get('geoField')?.enabled && (fields$ | async)?.length! > 0">
+      <ng-container
+        *ngIf="
+          formGroup.get('geoField')?.enabled && (fields$ | async)?.length! > 0
+        "
+      >
         <div uiFormFieldDirective>
           <label>{{
             'components.widget.settings.map.layers.dataSource.geoField'
@@ -184,7 +188,12 @@
         </div>
       </ng-container>
 
-      <ng-container *ngIf="formGroup.get('latitudeField')?.enabled && (fields$ | async)?.length! > 0">
+      <ng-container
+        *ngIf="
+          formGroup.get('latitudeField')?.enabled &&
+          (fields$ | async)?.length! > 0
+        "
+      >
         <div class="flex flex-row justify-between gap-2 flex-wrap">
           <!-- Latitude Field -->
           <div uiFormFieldDirective class="flex-1">

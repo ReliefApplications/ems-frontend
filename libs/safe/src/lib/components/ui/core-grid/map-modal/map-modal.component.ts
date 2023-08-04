@@ -4,7 +4,7 @@ import { MapComponent, MapModule } from '../../map';
 import { SafeMapLayersService } from '../../../../services/map/map-layers.service';
 import { LayerDatasource } from '../../../../models/layer.model';
 import get from 'lodash/get';
-import { DialogModule } from '@oort-front/ui';
+import { DialogModule, IconModule, TooltipModule } from '@oort-front/ui';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 
 /**
@@ -20,7 +20,7 @@ interface DialogData {
  */
 @Component({
   standalone: true,
-  imports: [CommonModule, DialogModule, MapModule],
+  imports: [CommonModule, DialogModule, MapModule, IconModule, TooltipModule],
   selector: 'safe-map-modal',
   templateUrl: './map-modal.component.html',
   styleUrls: ['./map-modal.component.scss'],

@@ -115,14 +115,12 @@ export class SafeFormComponent
 
     this.survey = this.formBuilderService.createSurvey(
       JSON.stringify(structure),
-      this.pages,
       this.form.metadata,
       this.record
     );
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
-      this.pages,
       this.selectedPageIndex,
       this.temporaryFilesStorage
     );
@@ -421,5 +419,6 @@ export class SafeFormComponent
     super.ngOnDestroy();
     localStorage.removeItem(this.storageId);
     this.formHelpersService.cleanCachedRecords(this.survey);
+    this.survey.dispose();
   }
 }
