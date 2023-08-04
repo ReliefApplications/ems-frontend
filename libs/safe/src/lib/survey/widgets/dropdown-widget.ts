@@ -3,6 +3,8 @@ import { DomService } from '../../services/dom/dom.service';
 import { SafeQuestion } from '../types';
 import { isArray, isObject } from 'lodash';
 import { CustomWidgetCollection, QuestionDropdownModel } from 'survey-core';
+import { debounceTime, map, tap } from 'rxjs';
+import updateChoices from './utils/common-list-filters';
 
 /**
  * Init dropdown widget
@@ -14,6 +16,7 @@ export const init = (
   domService: DomService,
   customWidgetCollectionInstance: CustomWidgetCollection
 ): void => {
+  let currentSearchValue = '';
   const widget = {
     name: 'dropdown-widget',
     widgetIsLoaded: (): boolean => true,
@@ -40,29 +43,26 @@ export const init = (
       }
       dropdownInstance.placeholder = question.placeholder;
       dropdownInstance.readonly = question.isReadOnly;
-      dropdownInstance.disabled = question.isReadOnly;
       dropdownInstance.registerOnChange((value: any) => {
         if (!isObject(value) && !isArray(value)) {
           question.value = value;
         }
       });
-      const updateChoices = () => {
-        if (question.visibleChoices && Array.isArray(question.visibleChoices)) {
-          dropdownInstance.data = question.visibleChoices.map((choice: any) =>
-            typeof choice === 'string'
-              ? {
-                  text: choice,
-                  value: choice,
-                }
-              : {
-                  text: choice.text,
-                  value: choice.value,
-                }
-          );
-        }
-      };
+
+      // We subscribe to whatever you write on the field so we can filter the data accordingly
+      dropdownInstance.filterChange
+        .pipe(
+          debounceTime(500), // Debounce time to limit quantity of updates
+          tap(() => (dropdownInstance.loading = true)),
+          map((searchValue: string) => searchValue?.toLowerCase()) // Make the filter non-case sensitive
+        )
+        .subscribe((searchValue: string) => {
+          currentSearchValue = searchValue;
+          updateChoices(dropdownInstance, question, searchValue);
+        });
+
       question._propertyValueChangedVirtual = () => {
-        updateChoices();
+        updateChoices(dropdownInstance, question, currentSearchValue);
       };
       question.registerFunctionOnPropertyValueChanged(
         'visibleChoices',
@@ -78,7 +78,9 @@ export const init = (
           dropdownInstance.disabled = value;
         }
       );
-      updateChoices();
+      if (question.visibleChoices.length) {
+        updateChoices(dropdownInstance, question, currentSearchValue);
+      }
       el.parentElement?.appendChild(dropdownDiv);
     },
     willUnmount: (question: any): void => {
@@ -109,6 +111,9 @@ export const init = (
       itemHeight: 28,
     };
     dropdownInstance.valuePrimitive = true;
+    dropdownInstance.filterable = true;
+    dropdownInstance.loading = true;
+    dropdownInstance.disabled = true;
     dropdownInstance.textField = 'text';
     dropdownInstance.valueField = 'value';
     return dropdownInstance;

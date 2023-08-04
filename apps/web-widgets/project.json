@@ -44,12 +44,9 @@
           "node_modules/survey-core/defaultV2.min.css",
           "node_modules/survey-creator-core/survey-creator-core.min.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
-          "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
-          "node_modules/select2/dist/css/select2.min.css"
+          "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css"
         ],
         "scripts": [
-          "node_modules/jquery/dist/jquery.js",
-          "node_modules/select2/dist/js/select2.min.js",
           "node_modules/tinymce/tinymce.js",
           "node_modules/tinymce/themes/silver/theme.js"
         ],
@@ -66,7 +63,6 @@
           "survey-core",
           "survey-creator-core",
           "survey-angular-ui",
-          "surveyjs-widgets",
           "fast-sha256"
         ]
       },

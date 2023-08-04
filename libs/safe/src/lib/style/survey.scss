@@ -73,6 +73,11 @@
   }
 }
 
+// todo: check
+// ::ng-deep .sv_main.sv_default_css .sv_body {
+//   width: inherit !important;
+// }
+
 ::ng-deep survey {
   .sv-radio--allowhover:hover .sv-radio__svg {
     fill: var(--primary, rgba(64, 64, 64, 0.5)) !important;

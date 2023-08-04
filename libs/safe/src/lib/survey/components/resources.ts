@@ -27,6 +27,8 @@ import {
   SurveyModel,
   SvgRegistry,
 } from 'survey-core';
+// import { SurveyModel } from 'survey-angular';
+import { NgZone } from '@angular/core';
 
 /** Create the list of filter values for resources */
 export const resourcesFilterValues = new BehaviorSubject<
@@ -55,13 +57,15 @@ const temporaryRecordsForm = new FormControl([]);
  * @param dialog Dialog service
  * @param formBuilder Angular form service
  * @param componentCollectionInstance ComponentCollection
+ * @param ngZone Angular Service to execute code inside Angular environment
  */
 export const init = (
   domService: DomService,
   apollo: Apollo,
   dialog: Dialog,
   formBuilder: UntypedFormBuilder,
-  componentCollectionInstance: ComponentCollection
+  componentCollectionInstance: ComponentCollection,
+  ngZone: NgZone
 ): void => {
   const getResourceById = (data: { id: string }) =>
     apollo.query<GetResourceByIdQueryResponse>({
@@ -70,6 +74,17 @@ export const init = (
         id: data.id,
       },
     });
+
+  const mapQuestionChoices = (data: any, question: any) => {
+    return (
+      data.resource.records?.edges?.map((x: any) => {
+        return {
+          value: x.node?.id,
+          text: x.node?.data[question.displayField || 'id'],
+        };
+      }) || []
+    );
+  };
 
   const getResourceRecordsById = (data: {
     id: string;
@@ -155,15 +170,13 @@ export const init = (
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
             getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const serverRes = data.resource.fields;
-              const res = [];
-              res.push({ value: null });
-              for (const item of serverRes) {
-                if (item.type !== 'matrix') {
-                  res.push({ value: item.name });
-                }
-              }
-              choicesCallback(res);
+              const choices = (data.resource.fields || [])
+                .filter((item: any) => item.type !== 'matrix')
+                .map((item: any) => {
+                  return { value: item.name };
+                });
+              choices.unshift({ value: null });
+              choicesCallback(choices);
             });
           }
         },
@@ -271,17 +284,9 @@ export const init = (
           if (obj.resource) {
             getResourceRecordsById({ id: obj.resource }).subscribe(
               ({ data }) => {
-                const serverRes =
-                  data.resource.records?.edges?.map((x) => x.node) || [];
-                const res = [];
-                res.push({ value: null });
-                for (const item of serverRes) {
-                  res.push({
-                    value: item?.id,
-                    text: item?.data[obj.displayField],
-                  });
-                }
-                choicesCallback(res);
+                const choices = mapQuestionChoices(data, obj);
+                choices.unshift({ value: null });
+                choicesCallback(choices);
               }
             );
           }
@@ -434,13 +439,11 @@ export const init = (
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource && obj.addRecord) {
             getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const serverRes = data.resource.forms || [];
-              const res = [];
-              res.push({ value: null });
-              for (const item of serverRes) {
-                res.push({ value: item.id, text: item.name });
-              }
-              choicesCallback(res);
+              const choices = (data.resource.forms || []).map((item: any) => {
+                return { value: item.id, text: item.name };
+              });
+              choices.unshift({ value: null, text: '' });
+              choicesCallback(choices);
             });
           }
         },
@@ -515,12 +518,10 @@ export const init = (
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
             getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const serverRes = data.resource.fields;
-              const res = [];
-              for (const item of serverRes) {
-                res.push({ value: item.name });
-              }
-              choicesCallback(res);
+              const choices = (data.resource.fields || []).map((item: any) => {
+                return { value: item.name };
+              });
+              choicesCallback(choices);
             });
           }
         },
@@ -632,41 +633,29 @@ export const init = (
           if (question.displayAsGrid) {
             resourcesFilterValues.next(filters);
           }
-          if (question.selectQuestion) {
-            question.registerFunctionOnPropertyValueChanged(
-              'filterCondition',
-              () => {
-                const resourcesFilters = resourcesFilterValues.getValue();
-                resourcesFilters[0].operator = question.filterCondition;
-                resourcesFilterValues.next(resourcesFilters);
-                resourcesFilters.map((i: any) => {
-                  i.operator = question.filterCondition;
-                });
-              }
-            );
-          }
-        }
-        getResourceRecordsById({ id: question.resource }).subscribe(
-          ({ data }) => {
-            const serverRes =
-              data.resource.records?.edges?.map((x) => x.node) || [];
-            const res = [];
-            for (const item of serverRes) {
-              res.push({
-                value: item?.id,
-                text: item?.data[question.displayField],
+          question.registerFunctionOnPropertyValueChanged(
+            'filterCondition',
+            () => {
+              const resourcesFilters = resourcesFilterValues.getValue();
+              resourcesFilters[0].operator = question.filterCondition;
+              resourcesFilterValues.next(resourcesFilters);
+              resourcesFilters.map((i: any) => {
+                i.operator = question.filterCondition;
               });
             }
-            question.contentQuestion.choices = res;
-            if (!question.placeholder) {
-              question.contentQuestion.optionsCaption =
-                'Select a record from ' + data.resource.name + '...';
-            }
-            if (!question.filterBy || question.filterBy.length < 1) {
-              this.populateChoices(question);
-            }
+          );
+          if (!question.filterBy || question.filterBy.length < 1) {
+            this.populateChoices(question);
           }
-        );
+        }
+        getResourceById({ id: question.resource }).subscribe(({ data }) => {
+          // const choices = mapQuestionChoices(data, question);
+          // question.contentQuestion.choices = choices;
+          if (!question.placeholder) {
+            question.contentQuestion.optionsCaption =
+              'Select a record from ' + data.resource.name + '...';
+          }
+        });
         if (question.selectQuestion) {
           if (question.selectQuestion === '#staticValue') {
             setAdvanceFilter(question.staticValue, question);
@@ -720,7 +709,7 @@ export const init = (
     populateChoices: (question: any, field?: string): void => {
       if (question.displayAsGrid) {
         if (question.selectQuestion) {
-          const f = field ? field : question.filteryBy;
+          const f = field ? field : question.filterBy;
           const obj = filters.filter((i: any) => i.field === f);
           if (obj.length > 0) {
             resourcesFilterValues.next(obj);
@@ -731,16 +720,8 @@ export const init = (
       } else {
         getResourceRecordsById({ id: question.resource, filters }).subscribe(
           ({ data }) => {
-            const serverRes =
-              data.resource.records?.edges?.map((x) => x.node) || [];
-            const res: any[] = [];
-            for (const item of serverRes) {
-              res.push({
-                value: item?.id,
-                text: item?.data[question.displayField],
-              });
-            }
-            question.contentQuestion.choices = res;
+            const choices = mapQuestionChoices(data, question);
+            question.contentQuestion.choices = choices;
           }
         );
       }
@@ -798,7 +779,7 @@ export const init = (
             );
             actionsButtons.appendChild(searchBtn);
 
-            const addBtn = buildAddButton(question, true, dialog);
+            const addBtn = buildAddButton(question, true, dialog, ngZone);
             actionsButtons.appendChild(addBtn);
 
             parentElement.insertBefore(

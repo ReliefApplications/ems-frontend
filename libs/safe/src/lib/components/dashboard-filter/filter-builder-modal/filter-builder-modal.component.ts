@@ -209,10 +209,11 @@ export class FilterBuilderModalComponent
     this.surveyCreator.survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService) as any
     );
-    this.surveyCreator.onTestSurveyCreated.add((sender: any, opt: any) =>
-      opt.survey.onAfterRenderQuestion.add(
-        renderGlobalProperties(this.referenceDataService)
-      )
+    (this.surveyCreator.onTestSurveyCreated as any).add(
+      (sender: any, opt: any) =>
+        opt.survey.onAfterRenderQuestion.add(
+          renderGlobalProperties(this.referenceDataService)
+        )
     );
 
     // Set content
