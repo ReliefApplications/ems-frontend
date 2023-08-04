@@ -98,11 +98,18 @@
                 [disabled]="loading || updating"
                 [role]="role"
                 [resource]="openedResource"
-                (onToggle)="
+                (toggle)="
                   onEditFieldAccess(
                     $event.resource,
                     $event.field,
                     $event.permission
+                  )
+                "
+                (setPermissions)="
+                  onEditFieldsPermissions(
+                    $event.resource,
+                    $event.fields,
+                    $event.permissions
                   )
                 "
               ></safe-resource-fields>

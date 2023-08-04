@@ -3,6 +3,10 @@ import { isEqual, sortBy } from 'lodash';
 import { Resource } from '../../../../models/resource.model';
 import { Role } from '../../../../models/user.model';
 import { FormControl } from '@angular/forms';
+import { SelectionModel } from '@angular/cdk/collections';
+import { takeUntil } from 'rxjs';
+import { Dialog } from '@angular/cdk/dialog';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 type ResourceField = {
   name: string;
@@ -19,21 +23,41 @@ type ResourceField = {
   templateUrl: './resource-fields.component.html',
   styleUrls: ['./resource-fields.component.scss'],
 })
-export class ResourceFieldsComponent implements OnInit {
+export class ResourceFieldsComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() resource!: Resource;
   @Input() role!: Role;
   @Input() disabled = false;
   // eslint-disable-next-line @angular-eslint/no-output-on-prefix
-  @Output() onToggle = new EventEmitter<{
+  @Output() toggle = new EventEmitter<{
     resource: Resource;
     field: ResourceField;
     permission: 'canSee' | 'canUpdate';
   }>();
 
+  @Output() setPermissions = new EventEmitter<{
+    resource: Resource;
+    fields: ResourceField[];
+    permissions: { canSee: boolean; canUpdate: boolean };
+  }>();
+
   public filterId = new FormControl<string | null | undefined>(undefined);
 
-  public fields = new Array<ResourceField[]>([]);
-  public displayedColumns: string[] = ['name', 'actions'];
+  public fields = new Array<ResourceField>();
+  public displayedColumns: string[] = ['select', 'name', 'actions'];
+
+  selection = new SelectionModel<ResourceField>(true, []);
+
+  /**
+   * ResourcesComponent constructor.
+   *
+   * @param dialog Used for opening a dialog.
+   */
+  constructor(private dialog: Dialog) {
+    super();
+  }
 
   ngOnInit() {
     this.fields = sortBy(
@@ -92,10 +116,68 @@ export class ResourceFieldsComponent implements OnInit {
     field: ResourceField,
     permission: 'canSee' | 'canUpdate'
   ) {
-    this.onToggle.emit({
+    this.toggle.emit({
       field,
       permission,
       resource: this.resource,
+    });
+  }
+
+  /**
+   * Whether the number of selected elements matches the total number of rows.
+   *
+   * @returns True if it matches, else False
+   */
+  isAllSelected(): boolean {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.fields.length;
+    return numSelected === numRows;
+  }
+
+  /**
+   * Selects all rows if they are not all selected; otherwise clear selection.
+   */
+  masterToggle(): void {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+    this.isAllSelected()
+      ? this.selection.clear()
+      : this.fields.forEach((row) => this.selection.select(row));
+  }
+
+  /**
+   * Get the label for the checkbox on the passed row
+   *
+   * @param row The current row
+   * @returns The label for the checkbox
+   */
+  checkboxLabel(row?: any): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'select' : 'deselect'} all`;
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${
+      row.position + 1
+    }`;
+  }
+
+  /**
+   * Show a dialog to edit permissions of the selected fields
+   *
+   * @param fields The list of fields to edit
+   */
+  async onEditPermissions(fields: ResourceField[]): Promise<void> {
+    const { SetFieldsPermissionsModalComponent } = await import(
+      '../resource-fields/set-fields-permissions-modal/set-fields-permissions-modal.component'
+    );
+    const dialogRef = this.dialog.open(SetFieldsPermissionsModalComponent);
+
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        this.setPermissions.emit({
+          resource: this.resource,
+          fields: fields,
+          permissions: value,
+        });
+      }
     });
   }
 }

@@ -93,7 +93,13 @@
 		"field": {
 			"few": "Fields",
 			"none": "No field",
-			"one": "Field"
+			"one": "Field",
+			"permissions": {
+				"description": "Set view and update permissions for selected fields",
+				"see": "Allow this role to see the selected fields",
+				"title": "Set permissions",
+				"update": "Allow this role to update the selected fields"
+			}
 		},
 		"filter": {
 			"apply": "Apply",
@@ -1000,6 +1006,7 @@
 				"notGrantFilterUpdateRecordsPermission": "Does not grant permission to update records that satisfies filter",
 				"notGrantReadRecordsPermission": "Does not grant permission to see records",
 				"notGrantUpdateRecordsPermission": "Does not grant permission to update records",
+				"permissionNotVisible": "Please provide permission to see fields before providing permission to edit them.",
 				"showFeature": "Show {{page}} to this role"
 			},
 			"update": {

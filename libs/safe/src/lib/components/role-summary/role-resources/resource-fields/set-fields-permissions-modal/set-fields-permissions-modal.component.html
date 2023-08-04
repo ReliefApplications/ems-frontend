@@ -1,0 +1,42 @@
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h1>{{ 'common.field.permissions.title' | translate }}</h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="setForm">
+      <div uiFormFieldDirective>
+        <ui-toggle formControlName="canSee">
+          <ng-container ngProjectAs="label">{{
+            'common.field.permissions.see' | translate
+          }}</ng-container>
+        </ui-toggle>
+      </div>
+
+      <div uiFormFieldDirective>
+        <ui-toggle formControlName="canUpdate"
+          [uiTooltip]="
+            (!setForm.controls.canSee.value
+              ? 'components.role.tooltip.permissionNotVisible'
+              : ''
+            ) | translate
+          "
+        >
+          <ng-container ngProjectAs="label">{{
+            'common.field.permissions.update' | translate
+          }}</ng-container>
+        </ui-toggle>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>{{ 'common.close' | translate }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="setForm.value"
+      cdkFocusInitial
+    >
+      {{ 'common.update' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

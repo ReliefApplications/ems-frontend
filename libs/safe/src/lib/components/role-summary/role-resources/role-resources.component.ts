@@ -21,6 +21,7 @@ import {
   EDIT_RESOURCE_FIELD_PERMISSION,
   EDIT_RESOURCE_ACCESS,
   EditResourceFieldPermissionMutationResponse,
+  EDIT_RESOURCE_FIELDS_PERMISSIONS,
 } from '../graphql/mutations';
 import { Permission } from './permissions.types';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -424,6 +425,92 @@ export class RoleResourcesComponent
           fieldsPermissions: {
             [action]: updatedPermissions,
           },
+          multipleFields: true,
+        },
+      })
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: ({ errors, data }) => {
+          if (data?.editResource) {
+            const index = this.resources.findIndex(
+              (x) => x.resource.id === resource.id
+            );
+            const tableElements = [...this.resources];
+            tableElements[index] = this.setTableElement(
+              isEqual(resource.id, this.openedResource?.id)
+                ? { ...this.openedResource, ...data?.editResource }
+                : data?.editResource
+            );
+            this.resources = tableElements;
+            if (isEqual(resource.id, this.openedResource?.id)) {
+              this.openedResource = tableElements[index].resource;
+            }
+          }
+          if (errors) {
+            this.snackBar.openSnackBar(errors[0].message, { error: true });
+          }
+          this.updating = false;
+        },
+        error: (err) => {
+          this.snackBar.openSnackBar(err.message, { error: true });
+          this.updating = false;
+        },
+      });
+  }
+
+  /**
+   * Edits the specified field permissions array
+   *
+   * @param resource the resource containing the field to be updated
+   * @param fields the field to be edited
+   * @param fields.name the fields array to be edited
+   * @param fields.canSee whether the field can be seen
+   * @param fields.canUpdate whether the field can be edited
+   * @param permissions the permissions to be edited
+   * @param permissions.canSee the canSee permission new value
+   * @param permissions.canUpdate the canSee permission new value
+   */
+  onEditFieldsPermissions(
+    resource: Resource,
+    fields: { name: string; canSee: boolean; canUpdate: boolean }[],
+    permissions: { canSee: boolean; canUpdate: boolean }
+  ): void {
+    if (!this.role.id) return;
+
+    this.updating = true;
+
+    if (!permissions.canSee) permissions.canUpdate = false;
+
+    const fieldsName = fields.map((field) => field.name);
+
+    const updatedPermissions: {
+      canSee: {
+        add?: { fields: string[]; role: string };
+        remove?: { fields: string[]; role: string };
+      };
+      canUpdate: {
+        add?: { fields: string[]; role: string };
+        remove?: { fields: string[]; role: string };
+      };
+    } = { canSee: {}, canUpdate: {} };
+
+    updatedPermissions.canSee[permissions.canSee ? 'add' : 'remove'] = {
+      fields: fieldsName,
+      role: this.role.id,
+    };
+
+    updatedPermissions.canUpdate[permissions.canUpdate ? 'add' : 'remove'] = {
+      fields: fieldsName,
+      role: this.role.id,
+    };
+
+    this.apollo
+      .mutate<EditResourceFieldPermissionMutationResponse>({
+        mutation: EDIT_RESOURCE_FIELDS_PERMISSIONS,
+        variables: {
+          id: resource.id,
+          role: this.role.id,
+          fieldsPermissions: updatedPermissions,
         },
       })
       .pipe(takeUntil(this.destroy$))

@@ -93,7 +93,13 @@
 		"field": {
 			"few": "Champs",
 			"none": "Aucun champ",
-			"one": "Champ"
+			"one": "Champ",
+			"permissions": {
+				"description": "Définir les autorisations d'affichage et de mise à jour pour les champs sélectionnés",
+				"see": "Autoriser ce rôle à voir les champs sélectionnés",
+				"title": "Définir les autorisations",
+				"update": "Autoriser ce rôle à mettre à jour les champs sélectionnés"
+			}
 		},
 		"filter": {
 			"apply": "Appliquer",
@@ -1014,6 +1020,7 @@
 				"notGrantFilterUpdateRecordsPermission": "Ne donne pas la permission de mettre à jour les enregistrements satisfaisant le filtre",
 				"notGrantReadRecordsPermission": "Ne donne pas la permission de voir les enregistrements",
 				"notGrantUpdateRecordsPermission": "Ne donne pas la permission de mettre à jour les enregistrements",
+				"permissionNotVisible": "Veuillez donner la permission de voir les champs avant de donner la permission de les modifier.",
 				"showFeature": "Afficher {{page}} pour ce rôle"
 			},
 			"update": {
