@@ -14,58 +14,58 @@
     </safe-widget-choice>
   </div>
   <!-- GRID OF WIDGETS -->
-  <kendo-tilelayout
-    [columns]="colsNumber"
+  <ktd-grid
+    [cols]="colsNumber"
     [rowHeight]="200"
-    [resizable]="canUpdate"
-    [reorderable]="canUpdate"
-    (reorder)="onReorder($event)"
-    (resize)="onResize($event)"
+    [layout]="layout"
+    (resizeEnded)="onEditTile($event)"
+    [gap]="16"
     class="-m-4"
   >
-    <kendo-tilelayout-item
-      *ngFor="let widget of widgets; let i = index"
-      [colSpan]="
-        widget.defaultCols > colsNumber || (!canUpdate && widgets.length === 1)
-          ? colsNumber
-          : widget.defaultCols
-      "
-      [rowSpan]="!canUpdate && widgets.length === 1 ? 4 : widget.defaultRows"
+    <ktd-grid-item
+      *ngFor="let item of layout; let i = index; trackBy:trackById" [id]="widgets[i].id"
+      [resizable]="canUpdate"
+      [draggable]="canUpdate"
+      dragStartThreshold="0"
       class="!rounded-lg !border focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2"
       [ngClass]="{
         '!shadow-sm !border-gray-300':
-          widget.settings.widgetDisplay?.showBorder ?? true,
+          widgets[i].settings.widgetDisplay?.showBorder ?? true,
         '!border-transparent': !(
-          widget.settings.widgetDisplay?.showBorder ?? true
+          widgets[i].settings.widgetDisplay?.showBorder ?? true
         ),
         'hover:!border-gray-400 hover:!shadow-sm': isBackOffice
       }"
     >
+      <!-- <div ktdGridDragHandle style="height: 26px; width: 26px; background-color: pink; position: absolute; z-index: 1050;"></div> -->
       <!-- Settings -->
       <safe-floating-options
         *ngIf="canUpdate"
         class="absolute top-0 right-0 z-[1100]"
-        [widget]="widget"
+        [widget]="widgets[i]"
         (edit)="onEditWidget($event)"
         (delete)="onDeleteWidget($event)"
         (expand)="onExpandWidget($event)"
       >
       </safe-floating-options>
       <safe-widget
-        [widget]="widget"
+        [widget]="widgets[i]"
         (changeStep)="changeStep.emit($event)"
-        [id]="'widget-' + widget.id"
+        [id]="'widget-' + widgets[i].id"
         (edit)="onEditWidget($event)"
         [canUpdate]="canUpdate"
+        class="bg-white"
       ></safe-widget>
       <!-- Move widget -->
-      <ui-icon
-        *ngIf="canUpdate"
-        icon="drag_indicator"
-        class="absolute cursor-grab top-2 left-2 z-[1100] pointer-events-none"
-        variant="grey"
-      >
-      </ui-icon>
+      <div class="absolute cursor-grab top-2 left-2 z-[1100]" ktdGridDragHandle>
+        <ui-icon
+          *ngIf="canUpdate"
+          icon="drag_indicator"
+          class="pointer-events-none"
+          variant="grey"
+        >
+        </ui-icon>
+      </div>
       <!-- Expand button -->
       <ui-button
         *ngIf="!canUpdate"
@@ -73,11 +73,15 @@
         icon="open_in_full"
         variant="grey"
         class="absolute top-0 right-0 z-[1100]"
-        (click)="onExpandWidget(widget)"
+        (click)="onExpandWidget(widgets[i])"
       >
       </ui-button>
-    </kendo-tilelayout-item>
-  </kendo-tilelayout>
+      <!-- Placeholder -->
+      <ng-template ktdGridItemPlaceholder>
+        <div class="w-full h-full border rounded-lg"></div>
+      </ng-template>
+    </ktd-grid-item>
+  </ktd-grid>
 </div>
 <!-- LOADING INDICATOR -->
 <div *ngIf="loading" class="mt-6">

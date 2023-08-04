@@ -29,6 +29,7 @@
     "@esri/arcgis-rest-request": "^4.1.2",
     "@fortawesome/fontawesome-free": "^6.3.0",
     "@geoman-io/leaflet-geoman-free": "^2.14.2",
+    "@katoid/angular-grid-layout": "^2.2.0",
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
     "@nrwl/angular": "15.7.2",

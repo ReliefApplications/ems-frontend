@@ -11,14 +11,11 @@ import {
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { WIDGET_TYPES } from '../../models/dashboard.model';
-import {
-  TileLayoutReorderEvent,
-  TileLayoutResizeEvent,
-} from '@progress/kendo-angular-layout';
 import { SafeDashboardService } from '../../services/dashboard/dashboard.service';
 import { SafeWidgetComponent } from '../widget/widget.component';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { ktdTrackById } from '@katoid/angular-grid-layout';
 
 /** Maximum height of the widget in row units */
 const MAX_ROW_SPAN = 4;
@@ -44,11 +41,26 @@ export class SafeWidgetGridComponent
   /** Skeletons for loading */
   public skeletons: { colSpan: number; rowSpan: number }[] = [];
 
-  @Input() widgets: any[] = [];
+  /** Formatted layout array for angular-grid-layout */
+  public layout: any[] = [];
+
+  /** Widgets array, custom setter so we can update the layout */
+  private _widgets: any[] = [];
+  @Input()
+  set widgets(widgets: any[]) {
+    this._widgets = widgets;
+    this.updateLayout(widgets);
+  }
+  get widgets() {
+    return this._widgets;
+  }
   @Input() canUpdate = false;
+
+  dragIconSelected = false;
 
   // === GRID ===
   colsNumber = MAX_COL_SPAN;
+  trackById = ktdTrackById;
 
   // === EVENT EMITTER ===
   @Output() move: EventEmitter<any> = new EventEmitter();
@@ -82,6 +94,7 @@ export class SafeWidgetGridComponent
   onWindowResize(event: any): void {
     this.colsNumber = this.setColsNumber(event.target.innerWidth);
     this.skeletons = this.getSkeletons();
+    this.updateLayout(this.widgets);
   }
 
   /**
@@ -128,6 +141,27 @@ export class SafeWidgetGridComponent
       return 6;
     }
     return MAX_COL_SPAN;
+  }
+
+  /**
+   * Updates layout based on the passed widget array.
+   *
+   * @param widgets Array with the list of present widgets on the dashboard
+   */
+  private updateLayout(widgets: any[]) {
+    this.layout = widgets.map((widget) => {
+      return {
+        id: widget.id.toString(),
+        x: 0, // Don't exist with the prev tile layout, a new algorithm
+        y: 0, // should be implemented to calculate the pos when it doesn't exist.
+        w:
+          widget.defaultCols > this.colsNumber ||
+          (!this.canUpdate && widgets.length === 1)
+            ? this.colsNumber
+            : widget.defaultCols,
+        h: !this.canUpdate && widgets.length === 1 ? 4 : widget.defaultRows,
+      };
+    });
   }
 
   /**
@@ -182,39 +216,22 @@ export class SafeWidgetGridComponent
   }
 
   /**
-   * Emits reorder event.
+   * Emits an action when a tile is edited (Size and position)
    *
-   * @param e reorder event.
+   * @param e Updated layout.
    */
-  public onReorder(e: TileLayoutReorderEvent): void {
-    this.move.emit(e);
-  }
-
-  /**
-   * Handles resize widget event.
-   *
-   * @param e resize event.
-   */
-  public onResize(e: TileLayoutResizeEvent) {
-    const widgetDefinition = this.availableWidgets.find(
-      (x) => x.component === this.widgets[e.item.order].component
-    );
-    if (e.newRowSpan < widgetDefinition.minRow) {
-      e.newRowSpan = widgetDefinition.minRow;
-    }
-    if (e.newRowSpan > MAX_ROW_SPAN) {
-      e.newRowSpan = MAX_ROW_SPAN;
-    }
-    if (e.newColSpan > MAX_COL_SPAN) {
-      e.newColSpan = MAX_COL_SPAN;
-    }
+  onEditTile(e: any): void {
+    console.log(parseInt(e.layoutItem.id, 10));
     this.edit.emit({
       type: 'display',
-      id: this.widgets[e.item.order].id,
+      id: e.layoutItem.id,
       options: {
-        id: this.widgets[e.item.order].id,
-        cols: e.newColSpan,
-        rows: e.newRowSpan,
+        id: e.layoutItem.id,
+        cols: e.layoutItem.w,
+        rows: e.layoutItem.h,
+        // We don't have these properties yet
+        // x: e.layoutItem.x,
+        // y: e.layoutItem.y,
       },
     });
   }
