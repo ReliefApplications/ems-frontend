@@ -260,6 +260,7 @@
 		},
 		"save": "Sauvegarder",
 		"saveChanges": "Sauvegarder les changements",
+		"search": "Recherche",
 		"searchObject": "Rechercher {{name}}",
 		"select": "Sélectionner",
 		"send": "Envoyer",
