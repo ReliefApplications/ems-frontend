@@ -60,7 +60,7 @@ export class RoleUsersComponent
       variables: {
         id: this.role.id,
         first: DEFAULT_PAGE_SIZE,
-        automated: true,
+        automated: this.autoAssigned,
       },
     });
     this.usersQuery.valueChanges

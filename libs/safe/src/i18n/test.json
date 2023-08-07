@@ -264,6 +264,7 @@
 		},
 		"save": "******",
 		"saveChanges": "******",
+		"search": "******",
 		"searchObject": "****** {{name}}",
 		"select": "******",
 		"semicolon": "******",
@@ -1108,6 +1109,7 @@
 					"history": "******"
 				},
 				"errors": {
+					"autoSaveFailed": "******",
 					"invalid": {
 						"backoffice": "******",
 						"frontoffice": "******"
