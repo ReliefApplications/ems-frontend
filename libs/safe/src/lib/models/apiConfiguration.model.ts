@@ -20,6 +20,8 @@ export interface ApiConfiguration {
   pingUrl?: string;
   settings?: any;
   permissions?: any;
+  userId: string;
+  userToken: string;
   canSee?: boolean;
   canUpdate?: boolean;
   canDelete?: boolean;
