@@ -15,6 +15,7 @@ import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
 import { cloneDeep, set } from 'lodash';
 import { SafeAuthService } from '../auth/auth.service';
+import { SafeWorkflowService } from '../workflow/workflow.service';
 
 /**
  * Shared survey helper service.
@@ -31,13 +32,15 @@ export class SafeFormHelpersService {
    * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service that allows us to translate the text in our application.
    * @param authService Shared auth service
+   * @param workflowService Shared workflow service
    */
   constructor(
     public apollo: Apollo,
     private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
-    private authService: SafeAuthService
+    private authService: SafeAuthService,
+    private workflowService: SafeWorkflowService
   ) {}
 
   /**
@@ -341,6 +344,28 @@ export class SafeFormHelpersService {
     // Allow us to select the current user
     // as a default question for Users question type
     survey.setVariable('user.id', user?.id || '');
+  };
+
+  /**
+   * Registers custom variables based on the workflow state
+   * to be used in the survey.
+   *
+   * @param survey Survey instance
+   */
+  public addWorkflowVariables = (survey: Survey.SurveyModel) => {
+    firstValueFrom(this.workflowService.workflowContext$).then((context) => {
+      const dashboardIds = Object.keys(context || {});
+      dashboardIds.forEach((dashboardId) => {
+        const widgets = Object.keys(context[dashboardId] || {});
+        widgets.forEach((widgetId) => {
+          const selectedIds = context[dashboardId][widgetId];
+          survey.setVariable(
+            `workflow_${dashboardId}_${widgetId}`,
+            selectedIds
+          );
+        });
+      });
+    });
   };
 
   /**
