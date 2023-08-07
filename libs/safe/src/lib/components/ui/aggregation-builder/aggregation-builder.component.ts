@@ -7,6 +7,7 @@ import { QueryBuilderService } from '../../../services/query-builder/query-build
 import { Resource } from '../../../models/resource.model';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { cloneDeep } from 'lodash';
 
 /**
  * Main component of Aggregation builder.
@@ -143,20 +144,21 @@ export class SafeAggregationBuilderComponent
    */
   private deconfineFields(type: any, previousTypes: Set<any>): any {
     return this.queryBuilder
-      .getFieldsFromType(type.kind === 'OBJECT' ? type.name : type.ofType.name)
+      .getFieldsFromType(type.name ?? type.ofType.name)
       .filter(
         (field) =>
           field.type.name !== 'ID' &&
-          (field.type.kind === 'SCALAR' || field.type.kind === 'LIST') &&
-          !previousTypes.has(field.type.ofType?.name)
+          (field.type.kind === 'SCALAR' ||
+            field.type.kind === 'LIST' ||
+            field.type.kind === 'OBJECT') &&
+          !previousTypes.has(field.type.ofType?.name) //prevents infinite loops
       )
       .map((field: any) => {
-        if (field.type.kind === 'LIST') {
+        if (field.type.kind === 'LIST' || field.type.kind === 'OBJECT') {
           field.fields = this.deconfineFields(
             field.type,
-            previousTypes?.add(field.type.ofType.name)
+            previousTypes?.add(field.type.name ?? field.type.ofType.name)
           );
-          return field;
         }
         return field;
       });
@@ -173,13 +175,20 @@ export class SafeAggregationBuilderComponent
       const selectedFields = fieldsNames.map((x: string) => {
         const field = { ...currentFields.find((y) => x === y.name) };
         if (field.type.kind !== 'SCALAR') {
-          field.fields = this.deconfineFields(
+          const newField = cloneDeep(field);
+          const deconfinedFields = this.deconfineFields(
             field.type,
-            new Set().add(this.resource.name).add(field.type.ofType.name)
+            new Set()
+              .add(this.resource.name)
+              .add(field.type.name ?? field.type.ofType.name)
           );
+          newField.fields = deconfinedFields;
+          console.log(deconfinedFields, 'fields deconfined', newField);
+          return newField;
         }
         return field;
       });
+      console.log(selectedFields, 'okay maybe??');
 
       this.selectedFields.next(selectedFields);
 

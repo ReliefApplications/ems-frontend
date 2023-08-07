@@ -174,7 +174,6 @@ export class QueryBuilderService {
         return x;
       })
       .sort((a: any, b: any) => a.name.localeCompare(b.name));
-    console.log(type.name, type.fields, fields);
     return fields;
   }
 

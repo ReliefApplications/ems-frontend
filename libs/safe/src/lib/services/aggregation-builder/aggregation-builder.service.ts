@@ -54,6 +54,7 @@ export class AggregationBuilderService {
    * @returns Fields remaining at the end of the pipeline.
    */
   public fieldsAfter(initialFields: any[], pipeline: any[]): any[] {
+    console.log(initialFields);
     let fields = [...initialFields];
     for (const stage of pipeline) {
       switch (stage.type) {

@@ -136,20 +136,21 @@ export class TabMainComponent
    */
   private deconfineFields(type: any, previousTypes: Set<any>): any {
     return this.queryBuilder
-      .getFieldsFromType(type.kind === 'OBJECT' ? type.name : type.ofType.name)
+      .getFieldsFromType(type.name ?? type.ofType.name)
       .filter(
         (field) =>
           field.type.name !== 'ID' &&
-          (field.type.kind === 'SCALAR' || field.type.kind === 'LIST') &&
-          !previousTypes.has(field.type.ofType?.name)
+          (field.type.kind === 'SCALAR' ||
+            field.type.kind === 'LIST' ||
+            field.type.kind === 'OBJECT') &&
+          !previousTypes.has(field.type.ofType?.name) //prevents infinite loops
       )
       .map((field: any) => {
-        if (field.type.kind === 'LIST') {
+        if (field.type.kind === 'LIST' || field.type.kind === 'OBJECT') {
           field.fields = this.deconfineFields(
             field.type,
-            previousTypes?.add(field.type.ofType.name)
+            previousTypes?.add(field.type.name ?? field.type.ofType.name)
           );
-          return field;
         }
         return field;
       });
