@@ -177,10 +177,12 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
       creatorOptions
     );
 
-    this.surveyCreator.onTestSurveyCreated.add((_: any, options: any) => {
-      const survey: Survey.SurveyModel = options.survey;
-      this.formHelpersService.addUserVariables(survey);
-    });
+    (this.surveyCreator.onTestSurveyCreated as any).add(
+      (_: any, options: any) => {
+        const survey: Survey.SurveyModel = options.survey;
+        this.formHelpersService.addUserVariables(survey);
+      }
+    );
 
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.text = structure;
