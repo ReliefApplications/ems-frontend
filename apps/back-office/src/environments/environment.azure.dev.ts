@@ -1,6 +1,7 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/default/default.dev';
 import { sharedEnvironment } from './environment.shared';
+import { Environment } from './environment.type';
 
 /**
  * Authentification configuration
@@ -20,7 +21,7 @@ const authConfig: AuthConfig = {
 /**
  * Environment file for local development.
  */
-export const environment = {
+export const environment: Environment = {
   ...sharedEnvironment,
   production: true,
   apiUrl: 'https://ems-safe-dev.who.int/api',
