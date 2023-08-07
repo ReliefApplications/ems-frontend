@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SnackbarComponent } from './snackbar.component';
 import { SnackbarModule } from './snackbar.module';
 import { SNACKBAR_DATA, SnackBarData } from './snackbar.token';
-import { TranslateMockModule } from '@hetznercloud/ngx-translate-mock';
+import { TranslateTestingModule } from 'ngx-translate-testing';
 import { BehaviorSubject } from 'rxjs';
 
 describe('SnackbarComponent', () => {
@@ -12,7 +12,7 @@ describe('SnackbarComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SnackbarComponent],
-      imports: [SnackbarModule, TranslateMockModule],
+      imports: [SnackbarModule, TranslateTestingModule],
       providers: [
         {
           provide: SNACKBAR_DATA,

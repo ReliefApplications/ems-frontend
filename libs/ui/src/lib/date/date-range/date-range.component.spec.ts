@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DateRangeComponent } from './date-range.component';
 import { DateRangeModule } from './date-range.module';
-import { TranslateMockModule } from '@hetznercloud/ngx-translate-mock';
+import { TranslateTestingModule } from 'ngx-translate-testing';
 
 describe('DateRangeComponent', () => {
   let component: DateRangeComponent;
@@ -10,7 +10,7 @@ describe('DateRangeComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [DateRangeComponent],
-      imports: [DateRangeModule, TranslateMockModule],
+      imports: [DateRangeModule, TranslateTestingModule],
     }).compileComponents();
   });
 

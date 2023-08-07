@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DatePickerComponent } from './date-picker.component';
 import { DatePickerModule } from './date-picker.module';
-import { TranslateMockModule } from '@hetznercloud/ngx-translate-mock';
+import { TranslateTestingModule } from 'ngx-translate-testing';
 
 describe('DatePickerComponent', () => {
   let component: DatePickerComponent;
@@ -10,7 +10,7 @@ describe('DatePickerComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [DatePickerComponent],
-      imports: [DatePickerModule, TranslateMockModule],
+      imports: [DatePickerModule, TranslateTestingModule],
     }).compileComponents();
   });
 

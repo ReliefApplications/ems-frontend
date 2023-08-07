@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TabContentDirective } from './tab-content.directive';
 import { TranslateModule } from '@ngx-translate/core';
 import { Component, TemplateRef, ViewChild } from '@angular/core';
-import { TranslateMockModule } from '@hetznercloud/ngx-translate-mock';
+import { TranslateTestingModule } from 'ngx-translate-testing';
 import { TabsModule } from '../tabs.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -32,7 +32,13 @@ describe('TabContentDirective', () => {
   let templateRef!: TemplateRef<any>;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TestingComponent, TranslateMockModule, BrowserAnimationsModule],
+      imports: [
+        TestingComponent,
+        TranslateTestingModule.withTranslations('en', {
+          components: { queryBuilder: { fields: { title: 'Fields' } } },
+        }),
+        BrowserAnimationsModule,
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestingComponent);

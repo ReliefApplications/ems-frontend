@@ -1,22 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { GraphQLSelectComponent } from './graphql-select.component';
 import { GraphQLSelectModule } from './graphql-select.module';
-import { TranslateMockModule } from '@hetznercloud/ngx-translate-mock';
+import { TranslateTestingModule } from 'ngx-translate-testing';
 import { Component, ViewChild } from '@angular/core';
-import { TranslateModule } from '@ngx-translate/core';
-import { FormFieldModule } from '@progress/kendo-angular-inputs';
 import {
   FormControl,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { FormWrapperModule } from '../form-wrapper/form-wrapper.module';
 
 /**
  * Testing component
  */
 @Component({
-  standalone: true,
   template: ` <form [formGroup]="form">
     <div uiFormFieldDirective>
       <label>{{ 'components.record.convert.select' | translate }}</label>
@@ -29,13 +27,6 @@ import {
       ></ui-graphql-select>
     </div>
   </form>`,
-  imports: [
-    TranslateModule,
-    GraphQLSelectModule,
-    FormFieldModule,
-    FormsModule,
-    ReactiveFormsModule,
-  ],
 })
 class TestingComponent {
   form = new FormGroup({
@@ -49,13 +40,21 @@ describe('GraphQLSelectComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      declarations: [TestingComponent],
       imports: [
-        TestingComponent,
         GraphQLSelectModule,
-        TranslateMockModule,
+        FormWrapperModule,
         FormsModule,
         ReactiveFormsModule,
-        FormFieldModule,
+        TranslateTestingModule.withTranslations('en', {
+          components: {
+            record: {
+              convert: {
+                select: 'Convert to',
+              },
+            },
+          },
+        }),
       ],
     }).compileComponents();
 

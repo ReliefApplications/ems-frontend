@@ -3,7 +3,7 @@ import { MenuItemDirective } from './menu-item.directive';
 import { Component, Renderer2 } from '@angular/core';
 import { MenuModule } from '../menu.module';
 import { IconModule } from '../../icon/icon.module';
-import { TranslateMockModule } from '@hetznercloud/ngx-translate-mock';
+import { TranslateTestingModule } from 'ngx-translate-testing';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -42,7 +42,12 @@ describe('MenuItemDirective', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TestingComponent, TranslateMockModule],
+      imports: [
+        TestingComponent,
+        TranslateTestingModule.withTranslations('en', {
+          common: { edit: 'Edit', delete: 'Delete' },
+        }),
+      ],
       providers: [{ provide: Renderer2, useClass: mockRenderer2 }],
     }).compileComponents();
 

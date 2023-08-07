@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { TabsModule } from '../tabs.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { TranslateMockModule } from '@hetznercloud/ngx-translate-mock';
+import { TranslateTestingModule } from 'ngx-translate-testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 /**
@@ -38,7 +38,13 @@ describe('TabBodyHostDirective', () => {
   let viewContainerRef!: ViewContainerRef;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TestingComponent, TranslateMockModule, BrowserAnimationsModule],
+      imports: [
+        TestingComponent,
+        TranslateTestingModule.withTranslations('en', {
+          components: { queryBuilder: { fields: { title: 'Fields' } } },
+        }),
+        BrowserAnimationsModule,
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestingComponent);
