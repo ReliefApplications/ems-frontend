@@ -419,6 +419,6 @@ export class SafeFormComponent
     super.ngOnDestroy();
     localStorage.removeItem(this.storageId);
     this.formHelpersService.cleanCachedRecords(this.survey);
-    this.survey.dispose();
+    this.survey?.dispose();
   }
 }

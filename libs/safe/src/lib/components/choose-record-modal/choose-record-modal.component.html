@@ -8,42 +8,43 @@
     </h1>
   </ng-container>
   <ng-container ngProjectAs="content">
-    <ui-spinner *ngIf="loading"></ui-spinner>
-    <ng-container *ngIf="!loading">
-      <form [formGroup]="chooseRecordForm" *ngIf="!isSearchActivated">
-        <div class="flex flex-col">
-          <div uiFormFieldDirective>
-            <label>{{ 'common.record.one' | translate }}</label>
-            <ui-select-menu formControlName="record" (opened)="onOpenSelect()">
-              <ui-select-option
-                *ngFor="let record of records$ | async"
-                [value]="record.value"
-              >
-                {{ record.label }}
-              </ui-select-option>
-            </ui-select-menu>
-          </div>
+    <form [formGroup]="chooseRecordForm" *ngIf="!isSearchActivated">
+      <div class="flex flex-col">
+        <div uiFormFieldDirective>
+          <label>{{ 'common.record.one' | translate }}</label>
+          <ui-graphql-select
+            *ngIf="dataQuery"
+            [query]="dataQuery"
+            formControlName="record"
+            valueField="id"
+            [textField]="this.data.targetFormField"
+            (searchChange)="onSearchChange($event)"
+            [filterable]="true"
+          >
+          </ui-graphql-select>
         </div>
-      </form>
-      <safe-core-grid
-        *ngIf="isSearchActivated"
-        [settings]="settings"
-        [multiSelect]="false"
-        [selectedRows]="selectedRows"
-        (selectionChange)="onSelectionChange($event)"
-        class="h-96"
-      >
-      </safe-core-grid>
-    </ng-container>
+      </div>
+    </form>
+    <safe-core-grid
+      *ngIf="isSearchActivated"
+      [settings]="settings"
+      [multiSelect]="false"
+      [selectedRows]="
+        chooseRecordForm.value.record ? [chooseRecordForm.value.record] : []
+      "
+      (selectionChange)="onSelectionChange($event)"
+      class="h-96"
+    >
+    </safe-core-grid>
   </ng-container>
   <ng-container ngProjectAs="actions">
     <ui-button
       category="secondary"
       cdkFocusInitial
-      (click)="onSearch()"
-      *ngIf="!loading && data.targetFormQuery"
+      (click)="isSearchActivated = !isSearchActivated"
+      *ngIf="data.targetFormQuery"
     >
-      {{ isSearchActivated ? 'Select' : 'Search' }}
+      {{ (isSearchActivated ? 'common.select' : 'common.search') | translate }}
     </ui-button>
     <ui-button (click)="onClose()">{{ 'common.cancel' | translate }}</ui-button>
     <ui-button
@@ -51,7 +52,7 @@
       variant="primary"
       [uiDialogClose]="chooseRecordForm.value"
       cdkFocusInitial
-      [disabled]="loading || !chooseRecordForm.valid"
+      [disabled]="!chooseRecordForm.valid"
     >
       {{ 'components.record.attach.confirm' | translate }}
     </ui-button>
