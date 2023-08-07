@@ -5,7 +5,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { SafeUnsubscribeComponent, SafeConfirmService } from '@oort-front/safe';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from '@oort-front/ui';
-import { SafeRestService } from 'libs/safe/src/lib/services/rest/rest.service';
+import { SafeRestService } from '@oort-front/safe';
 import { debounceTime, takeUntil } from 'rxjs';
 
 /** Default css style example to initialize the form and editor */
