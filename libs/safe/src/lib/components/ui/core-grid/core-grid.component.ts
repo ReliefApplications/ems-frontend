@@ -501,13 +501,13 @@ export class SafeCoreGridComponent
   /**
    * Saves all inline changes and then reload data.
    */
-  public onSaveChanges(): void {
+  public onSaveChanges() {
     if (this.hasChanges) {
       for (const item of this.items) {
         delete item.saved;
         delete item.validationErrors;
       }
-      Promise.all(this.promisedChanges()).then((allRes) => {
+      return Promise.all(this.promisedChanges()).then((allRes) => {
         for (const res of allRes) {
           const resRecord: Record = res.data.editRecord;
           const updatedIndex = this.updatedItems.findIndex(
@@ -552,13 +552,17 @@ export class SafeCoreGridComponent
               duration: 8000,
             }
           );
+          return true;
           // update the displayed items
           this.loadItems();
         } else {
+          return false;
           // if no error, reload the grid
           this.reloadData();
         }
       });
+    } else {
+      return Promise.resolve(true);
     }
   }
 
@@ -771,7 +775,13 @@ export class SafeCoreGridComponent
         break;
       }
       case 'save': {
-        this.onSaveChanges();
+        this.onSaveChanges().then((hasError) => {
+          if (hasError) {
+            this.loadItems();
+          } else {
+            this.reloadData();
+          }
+        });
         break;
       }
       case 'cancel': {
