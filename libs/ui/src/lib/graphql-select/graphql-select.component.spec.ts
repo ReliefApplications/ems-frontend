@@ -63,7 +63,7 @@ describe('GraphQLSelectComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create an instance', () => {
     expect(component.graphQLComponent).toBeInstanceOf(GraphQLSelectComponent);
     expect(component).toBeTruthy();
   });

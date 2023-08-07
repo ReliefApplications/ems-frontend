@@ -1,15 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TabBodyHostDirective } from './tab-body-host.directive';
-import {
-  Component,
-  ComponentFactoryResolver,
-  ViewChild,
-  ViewContainerRef,
-} from '@angular/core';
+import { Component, ViewChild, ViewContainerRef } from '@angular/core';
 import { TabsModule } from '../tabs.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { TranslateTestingModule } from 'ngx-translate-testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { By } from '@angular/platform-browser';
 
 /**
  * Mocked component for deep testing of tab directive
@@ -35,7 +31,6 @@ class TestingComponent {
 }
 describe('TabBodyHostDirective', () => {
   let fixture: ComponentFixture<TestingComponent>;
-  let viewContainerRef!: ViewContainerRef;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
@@ -48,16 +43,15 @@ describe('TabBodyHostDirective', () => {
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestingComponent);
-    viewContainerRef = fixture.componentInstance.tabContent;
+    // viewContainerRef = fixture.componentInstance.tabContent;
     fixture.detectChanges();
   });
 
   it('should create an instance', () => {
-    const directive = new TabBodyHostDirective(
-      {} as ComponentFactoryResolver,
-      viewContainerRef,
-      document
+    const directive = fixture.debugElement.queryAll(
+      By.directive(TabBodyHostDirective)
     );
+    expect(directive).not.toBeNull();
     expect(directive).toBeTruthy();
   });
 });

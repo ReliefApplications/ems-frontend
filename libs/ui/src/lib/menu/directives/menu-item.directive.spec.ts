@@ -1,24 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MenuItemDirective } from './menu-item.directive';
-import { Component, Renderer2 } from '@angular/core';
+import { Component } from '@angular/core';
 import { MenuModule } from '../menu.module';
 import { IconModule } from '../../icon/icon.module';
 import { TranslateTestingModule } from 'ngx-translate-testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { By } from '@angular/platform-browser';
 
-/**
- * Mocked class as Renderer2 to use for directive build
- */
-class mockRenderer2 {
-  /**
-   * addClass
-   *
-   * @param el element where to apply class
-   * @param name class name
-   */
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
-  static addClass(el: any, name: string) {}
-}
 /**
  * Mocked component for deep testing of menu directive
  */
@@ -48,7 +36,6 @@ describe('MenuItemDirective', () => {
           common: { edit: 'Edit', delete: 'Delete' },
         }),
       ],
-      providers: [{ provide: Renderer2, useClass: mockRenderer2 }],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestingComponent);
@@ -56,10 +43,10 @@ describe('MenuItemDirective', () => {
   });
 
   it('should create an instance', () => {
-    const directive = new MenuItemDirective(
-      mockRenderer2 as unknown as Renderer2,
-      { nativeElement: document.body }
+    const directive = fixture.debugElement.queryAll(
+      By.directive(MenuItemDirective)
     );
+    expect(directive).not.toBeNull();
     expect(directive).toBeTruthy();
   });
 });

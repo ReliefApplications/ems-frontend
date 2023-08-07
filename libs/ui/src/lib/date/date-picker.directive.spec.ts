@@ -10,10 +10,10 @@ import { FormWrapperModule } from '../form-wrapper/form-wrapper.module';
 import { DateModule } from './date.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TranslateTestingModule } from 'ngx-translate-testing';
+import { DatePickerDirective } from './date-picker.directive';
 import { CommonModule } from '@angular/common';
-import { DateWrapperDirective } from './date-wrapper.directive';
-import { By } from '@angular/platform-browser';
 import { ButtonComponent } from '../button/button.component';
+import { By } from '@angular/platform-browser';
 
 /**
  * Component for testing purposes
@@ -21,7 +21,7 @@ import { ButtonComponent } from '../button/button.component';
 @Component({
   standalone: true,
   template: ` <form [formGroup]="form">
-    <div uiFormFieldDirective [uiDateWrapper]="calendar">
+    <div uiFormFieldDirective>
       <label>{{ 'common.input.dateRange' | translate }}</label>
       <div [formGroup]="form">
         <input
@@ -55,7 +55,7 @@ class TestingComponent {
   });
 }
 
-describe('DateWrapperDirective', () => {
+describe('DatePickerDirective', () => {
   let fixture!: ComponentFixture<TestingComponent>;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -81,9 +81,8 @@ describe('DateWrapperDirective', () => {
   });
 
   it('should create an instance', () => {
-    fixture.detectChanges();
-    const directive = fixture.debugElement.queryAll(
-      By.directive(DateWrapperDirective)
+    const directive = fixture.debugElement.query(
+      By.directive(DatePickerDirective)
     );
     expect(directive).not.toBeNull();
     expect(directive).toBeTruthy();

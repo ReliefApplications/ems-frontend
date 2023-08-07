@@ -18,7 +18,7 @@ describe('TooltipComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create an instance', () => {
     const directiveEl = fixture.debugElement.query(
       By.directive(TooltipDirective)
     );
