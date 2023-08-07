@@ -29,11 +29,11 @@ export const init = (Survey: any, environment: any): void => {
   // Pass token before the request to fetch choices by URL if it's targeting SAFE API
   Survey.ChoicesRestful.onBeforeSendRequest = (
     sender: ChoicesRestful,
-    options: { request: XMLHttpRequest }
+    options: { request: { headers: Headers } }
   ) => {
     if (sender.url.includes(environment.apiUrl)) {
       const token = localStorage.getItem('idtoken');
-      options.request.setRequestHeader('Authorization', `Bearer ${token}`);
+      options.request.headers.append('Authorization', `Bearer ${token}`);
     }
   };
 
