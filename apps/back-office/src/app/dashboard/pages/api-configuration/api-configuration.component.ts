@@ -190,7 +190,7 @@ export class ApiConfigurationComponent
           null,
         ],
       });
-    } else if (type === authType.userToService) {
+    } else if (type === authType.token) {
       return this.formBuilder.group({
         token: [
           this.apiConfiguration?.settings &&
