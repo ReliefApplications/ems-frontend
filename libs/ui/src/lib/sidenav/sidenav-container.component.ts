@@ -150,8 +150,8 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
       classes.push('fixed');
     }
     if (this.position[index] === 'end') {
-      classes.push('absolute ');
-      classes.push('right-0 ');
+      classes.push('absolute');
+      classes.push('right-0');
       classes.push("data-[sidenav-show='false']:translate-x-full");
       classes.push('z-[997]');
       classes.push(

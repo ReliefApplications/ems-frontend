@@ -338,7 +338,7 @@ export class SafeRecordModalComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    this.survey.dispose();
+    this.survey?.dispose();
     this.surveyNext?.dispose();
   }
 }

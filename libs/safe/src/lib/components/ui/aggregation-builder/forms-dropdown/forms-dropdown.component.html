@@ -17,9 +17,8 @@
       *ngFor="let form of filteredForms"
       [value]="form.id"
       [label]="form.name"
-      class="form-option"
     >
-      {{ form.name }}
+      <span class="flex-auto text-ellipsis whitespace-nowrap overflow-hidden">{{ form.name }}</span>
       <ng-container ngProjectAs="icon">
         <ui-icon
           *ngIf="form.core"
@@ -27,12 +26,6 @@
           variant="primary"
           [size]="20"
         ></ui-icon>
-        <!-- <ui-icon
-        *ngIf="form.core"
-        icon="storage"
-        variant="primary"
-        [size]="20"
-      ></ui-icon> -->
       </ng-container>
     </ui-option>
   </ui-autocomplete>
