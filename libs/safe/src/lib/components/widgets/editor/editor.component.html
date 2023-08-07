@@ -3,8 +3,8 @@
     *ngIf="header"
     class="widget-header border-b"
     [ngClass]="{
-      'border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
-      'border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
+      '!border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
+      '!border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
     }"
   >
     <span class="widget-title" [title]="settings.title">{{
@@ -22,7 +22,11 @@
       </ui-button>
     </div>
   </kendo-tilelayout-item-header>
-  <div #greatTest class="flex-1 overflow-auto p-[14px]" (click)="onClick($event)">
+  <div
+    #greatTest
+    class="flex-1 overflow-auto p-[14px]"
+    (click)="onClick($event)"
+  >
     <div
       class="w-full h-fit no-tailwindcss-base"
       [innerHtml]="formattedHtml"

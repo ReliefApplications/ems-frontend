@@ -117,6 +117,7 @@ export class SafeApplicationService {
   private environment: any;
 
   /** Application custom style */
+  public rawCustomStyle?: string;
   public customStyle?: HTMLStyleElement;
   public customStyleEdited = false;
 
@@ -270,7 +271,8 @@ export class SafeApplicationService {
    */
   leaveApplication(): void {
     if (this.customStyle) {
-      document.getElementsByTagName('body')[0].removeChild(this.customStyle);
+      document.getElementsByTagName('head')[0].removeChild(this.customStyle);
+      this.rawCustomStyle = undefined;
       this.customStyle = undefined;
       this.layoutService.closeRightSidenav = true;
     }
@@ -1912,11 +1914,30 @@ export class SafeApplicationService {
       .then(async (res) => {
         if (res.type === 'application/octet-stream') {
           const styleFromFile = await res.text();
+          const scss = styleFromFile as string;
           this.customStyle = document.createElement('style');
-          this.customStyle.innerText = styleFromFile;
-          document
-            .getElementsByTagName('body')[0]
-            .appendChild(this.customStyle);
+          await firstValueFrom(
+            this.restService.post(
+              'style/scss-to-css',
+              { scss },
+              { responseType: 'text' }
+            )
+          )
+            .then((css) => {
+              if (this.customStyle) {
+                this.customStyle.innerText = css;
+                document
+                  .getElementsByTagName('head')[0]
+                  .appendChild(this.customStyle);
+              }
+            })
+            .catch(() => {
+              if (this.customStyle) {
+                this.customStyle.innerText = styleFromFile;
+              }
+            });
+
+          this.rawCustomStyle = styleFromFile;
         }
       })
       .catch((err) => {

@@ -52,6 +52,7 @@ import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CustomWidgetStyleComponent } from '../../../components/custom-widget-style/custom-widget-style.component';
+import { ContextService } from '@oort-front/safe';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -75,7 +76,7 @@ export class DashboardComponent
   public loading = true;
   public tiles: any[] = [];
   public dashboard?: Dashboard;
-  public showFilter?: boolean;
+  public showFilter!: boolean;
 
   // === GRID ===
   private generatedTiles = 0;
@@ -133,6 +134,7 @@ export class DashboardComponent
    * @param translateService Angular translate service
    * @param authService Shared authentication service
    * @param confirmService Shared confirm service
+   * @param contextService Dashboard context service
    * @param refDataService Shared reference data service
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
@@ -151,6 +153,7 @@ export class DashboardComponent
     private translateService: TranslateService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
+    private contextService: ContextService,
     private refDataService: SafeReferenceDataService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
@@ -269,12 +272,12 @@ export class DashboardComponent
 
           this.dashboardService.openDashboard(this.dashboard);
           this.tiles = this.dashboard.structure
-            ? [...this.dashboard.structure]
+            ? [...this.dashboard.structure.filter((x: any) => x !== null)]
             : [];
           this.generatedTiles =
             this.tiles.length === 0
               ? 0
-              : Math.max(...this.tiles.map((x) => x.id)) + 1;
+              : Math.max(...this.tiles.map((x) => x && x?.id)) + 1;
           this.applicationId = this.dashboard.page
             ? this.dashboard.page.application?.id
             : this.dashboard.step
@@ -282,7 +285,8 @@ export class DashboardComponent
             : '';
           this.buttonActions = this.dashboard.buttons || [];
           this.loading = res.loading;
-          this.showFilter = this.dashboard.showFilter;
+          this.showFilter = this.dashboard.showFilter ?? false;
+          this.contextService.isFilterEnabled.next(this.showFilter);
         } else {
           this.snackBar.openSnackBar(
             this.translateService.instant(
@@ -381,11 +385,8 @@ export class DashboardComponent
         case 'display': {
           this.tiles = this.tiles.map((x) => {
             if (x.id === e.id) {
-              x = {
-                ...x,
-                defaultCols: options.cols,
-                defaultRows: options.rows,
-              };
+              x.defaultCols = options.cols;
+              x.defaultRows = options.rows;
             }
             return x;
           });
@@ -671,7 +672,10 @@ export class DashboardComponent
               });
             }
           },
-          complete: () => (this.loading = false),
+          complete: () => {
+            this.loading = false;
+            this.contextService.isFilterEnabled.next(this.showFilter);
+          },
         });
     }
   }
