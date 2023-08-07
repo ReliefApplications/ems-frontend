@@ -30,7 +30,6 @@ import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { DOCUMENT } from '@angular/common';
 import { isNil } from 'lodash';
-import { TranslateService } from '@ngx-translate/core';
 
 /**
  * UI Select Menu component
@@ -100,7 +99,6 @@ export class SelectMenuComponent
     private renderer: Renderer2,
     private viewContainerRef: ViewContainerRef,
     private overlay: Overlay,
-    private translate: TranslateService,
     @Inject(DOCUMENT) private document: Document
   ) {
     if (this.control) {
@@ -147,9 +145,6 @@ export class SelectMenuComponent
             }
             this.setDisplayTriggerText();
           });
-          if (!this.optionList.length) {
-            this.displayTrigger = this.translate.instant('common.noOptions');
-          }
         },
       });
     if (this.control) {
@@ -164,12 +159,6 @@ export class SelectMenuComponent
         },
       });
     }
-
-    this.translate.onLangChange.subscribe(() => {
-      if (!this.optionList.length) {
-        this.displayTrigger = this.translate.instant('common.noOptions');
-      }
-    });
   }
 
   /**
@@ -320,7 +309,7 @@ export class SelectMenuComponent
    */
   openSelectPanel() {
     //Do nothing if the box is disabled
-    if (this.disabled || !this.optionList.length) {
+    if (this.disabled) {
       return;
     }
     // Open the box + emit outputs
