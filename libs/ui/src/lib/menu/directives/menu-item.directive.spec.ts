@@ -16,6 +16,7 @@ class mockRenderer2 {
    * @param el element where to apply class
    * @param name class name
    */
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   static addClass(el: any, name: string) {}
 }
 /**
