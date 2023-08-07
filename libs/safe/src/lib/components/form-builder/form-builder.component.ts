@@ -151,7 +151,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.surveyCreator.survey.dispose();
+    this.surveyCreator.survey?.dispose();
   }
 
   /**
