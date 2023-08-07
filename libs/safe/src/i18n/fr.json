@@ -260,6 +260,7 @@
 		},
 		"save": "Sauvegarder",
 		"saveChanges": "Sauvegarder les changements",
+		"search": "Recherche",
 		"searchObject": "Rechercher {{name}}",
 		"select": "Sélectionner",
 		"send": "Envoyer",
@@ -1084,6 +1085,7 @@
 				},
 				"empty": "Aucun enregistrement détecté pour cette configuration de réseau",
 				"errors": {
+					"autoSaveFailed": "L'exécution de l'action a été stoppé à cause d'enregistrement(s) non valide(s). Veuillez les vérifier avant de lancer une autre action.",
 					"invalid": {
 						"backoffice": "Configuration de grille invalide",
 						"frontoffice": "Configuration de grille non valide, veuillez contacter votre administrateur"

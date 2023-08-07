@@ -260,6 +260,7 @@
 		},
 		"save": "******",
 		"saveChanges": "******",
+		"search": "******",
 		"searchObject": "****** {{name}}",
 		"select": "******",
 		"send": "******",
@@ -1077,6 +1078,7 @@
 					"history": "******"
 				},
 				"errors": {
+					"autoSaveFailed": "******",
 					"invalid": {
 						"backoffice": "******",
 						"frontoffice": "******"
