@@ -564,16 +564,7 @@ export class SafeGridComponent
       return;
     }
     // Closes current inline edition.
-    if (this.currentEditedItem) {
-      if (this.formGroup.dirty) {
-        this.action.emit({
-          action: 'edit',
-          item: this.currentEditedItem,
-          value: this.formGroup.value,
-        });
-      }
-      this.closeEditor();
-    }
+    this.closeEditor();
     // creates the form group.
     this.formGroup = this.gridService.createFormGroup(dataItem, this.fields);
     this.currentEditedItem = dataItem;
@@ -596,13 +587,6 @@ export class SafeGridComponent
         '#recordsGrid tbody *, #recordsGrid .k-grid-toolbar .k-button .k-animation-container'
       )
     ) {
-      if (this.formGroup.dirty) {
-        this.action.emit({
-          action: 'edit',
-          item: this.currentEditedItem,
-          value: this.formGroup.value,
-        });
-      }
       this.closeEditor();
     }
   }
@@ -610,7 +594,16 @@ export class SafeGridComponent
   /**
    * Closes the inline edition.
    */
-  private closeEditor(): void {
+  public closeEditor(): void {
+    if (this.currentEditedItem) {
+      if (this.formGroup.dirty) {
+        this.action.emit({
+          action: 'edit',
+          item: this.currentEditedItem,
+          value: this.formGroup.value,
+        });
+      }
+    }
     this.grid?.closeRow(this.currentEditedRow);
     this.grid?.cancelCell();
     this.currentEditedRow = 0;
@@ -624,13 +617,6 @@ export class SafeGridComponent
    */
   public onSave(): void {
     // Closes the editor, and saves the value locally
-    if (this.formGroup.dirty) {
-      this.action.emit({
-        action: 'edit',
-        item: this.currentEditedItem,
-        value: this.formGroup.value,
-      });
-    }
     this.closeEditor();
     this.action.emit({ action: 'save' });
   }
