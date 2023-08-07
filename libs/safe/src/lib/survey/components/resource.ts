@@ -14,6 +14,7 @@ import { buildSearchButton, buildAddButton } from './utils';
 import get from 'lodash/get';
 import { Question, QuestionResource } from '../types';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
+import { NgZone } from '@angular/core';
 
 /**
  * Inits the resource question component of for survey.
@@ -23,13 +24,15 @@ import { JsonMetadata, SurveyModel } from 'survey-angular';
  * @param apollo Apollo client
  * @param dialog Dialog
  * @param formBuilder Angular form service
+ * @param ngZone Angular Service to execute code inside Angular environment
  */
 export const init = (
   Survey: any,
   domService: DomService,
   apollo: Apollo,
   dialog: Dialog,
-  formBuilder: UntypedFormBuilder
+  formBuilder: UntypedFormBuilder,
+  ngZone: NgZone
 ): void => {
   const getResourceById = (data: { id: string }) =>
     apollo.query<GetResourceByIdQueryResponse>({
@@ -600,7 +603,7 @@ export const init = (
         );
         actionsButtons.appendChild(searchBtn);
 
-        const addBtn = buildAddButton(question, false, dialog);
+        const addBtn = buildAddButton(question, false, dialog, ngZone);
         actionsButtons.appendChild(addBtn);
 
         const parentElement = el.querySelector('.safe-qst-content');

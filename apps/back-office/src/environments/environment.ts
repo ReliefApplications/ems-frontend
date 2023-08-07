@@ -1,6 +1,7 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/default/default.local';
 import { sharedEnvironment } from './environment.shared';
+import { Environment } from './environment.type';
 
 // const authConfig: AuthConfig = {
 //   issuer:
@@ -30,7 +31,7 @@ const authConfig: AuthConfig = {
 /**
  * Environment file for local development.
  */
-export const environment = {
+export const environment: Environment = {
   ...sharedEnvironment,
   production: false,
   apiUrl: 'http://localhost:3000',
