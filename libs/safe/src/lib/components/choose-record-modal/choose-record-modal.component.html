@@ -8,35 +8,32 @@
     </h1>
   </ng-container>
   <ng-container ngProjectAs="content">
-    <ui-spinner *ngIf="loading"></ui-spinner>
-    <ng-container *ngIf="!loading">
-      <form [formGroup]="chooseRecordForm" *ngIf="!isSearchActivated">
-        <div class="flex flex-col">
-          <div uiFormFieldDirective>
-            <label>{{ 'common.record.one' | translate }}</label>
-            <ui-graphql-select
-              *ngIf="dataQuery"
-              [query]="dataQuery"
-              formControlName="record"
-              valueField="id"
-              [textField]="this.data.targetFormField"
-              (searchChange)="onSearchChange($event)"
-              [filterable]="true"
-            >
-            </ui-graphql-select>
-          </div>
+    <form [formGroup]="chooseRecordForm" *ngIf="!isSearchActivated">
+      <div class="flex flex-col">
+        <div uiFormFieldDirective>
+          <label>{{ 'common.record.one' | translate }}</label>
+          <ui-graphql-select
+            *ngIf="dataQuery"
+            [query]="dataQuery"
+            formControlName="record"
+            valueField="id"
+            [textField]="this.data.targetFormField"
+            (searchChange)="onSearchChange($event)"
+            [filterable]="true"
+          >
+          </ui-graphql-select>
         </div>
-      </form>
-      <safe-core-grid
-        *ngIf="isSearchActivated"
-        [settings]="settings"
-        [multiSelect]="false"
-        [selectedRows]="selectedRows"
-        (selectionChange)="onSelectionChange($event)"
-        class="h-96"
-      >
-      </safe-core-grid>
-    </ng-container>
+      </div>
+    </form>
+    <safe-core-grid
+      *ngIf="isSearchActivated"
+      [settings]="settings"
+      [multiSelect]="false"
+      [selectedRows]="selectedRows"
+      (selectionChange)="onSelectionChange($event)"
+      class="h-96"
+    >
+    </safe-core-grid>
   </ng-container>
   <ng-container ngProjectAs="actions">
     <ui-button
