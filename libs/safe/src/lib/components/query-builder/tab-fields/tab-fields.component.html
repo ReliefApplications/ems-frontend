@@ -35,7 +35,7 @@
       >
         <ng-container *ngFor="let field of availableFields">
           <div
-            class="field-box !z-[1003]"
+            class="field-box"
             cdkDrag
             *ngIf="
               searchAvailable.length < 1 ||
@@ -79,7 +79,7 @@
       >
         <ng-container *ngFor="let field of selectedFields; let index = index">
           <div
-            class="field-box !z-[1003]"
+            class="field-box"
             *ngIf="
               searchSelected.length < 1 ||
               field.name.toLowerCase().includes(searchSelected.toLowerCase())
