@@ -500,8 +500,11 @@ export class SafeCoreGridComponent
 
   /**
    * Saves all inline changes and then reload data.
+   *
+   * @returns result of save as promise. Boolean to indicate if error.
    */
   public onSaveChanges() {
+    this.grid?.closeEditor();
     if (this.hasChanges) {
       for (const item of this.items) {
         delete item.saved;
@@ -553,16 +556,12 @@ export class SafeCoreGridComponent
             }
           );
           return true;
-          // update the displayed items
-          this.loadItems();
         } else {
           return false;
-          // if no error, reload the grid
-          this.reloadData();
         }
       });
     } else {
-      return Promise.resolve(true);
+      return Promise.resolve(false);
     }
   }
 
@@ -777,8 +776,10 @@ export class SafeCoreGridComponent
       case 'save': {
         this.onSaveChanges().then((hasError) => {
           if (hasError) {
+            // update the displayed items
             this.loadItems();
           } else {
+            // if no error, reload the grid
             this.reloadData();
           }
         });

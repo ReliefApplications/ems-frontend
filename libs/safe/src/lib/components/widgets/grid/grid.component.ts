@@ -255,14 +255,22 @@ export class SafeGridWidgetComponent
     // Auto save all records
     if (options.autoSave) {
       const hasError = await this.grid.onSaveChanges();
-      console.log(`Has error : ${hasError}`);
-      // setTimeout(() => {
-      //   this.grid.onSaveChanges();
-      // }, 100); // prevent saving before syncing updates
+      if (hasError) {
+        this.snackBar.openSnackBar(
+          this.translate.instant(
+            'components.widget.grid.errors.autoSaveFailed'
+          ),
+          {
+            error: true,
+            duration: 8000,
+          }
+        );
+        // Close the action if error detected during auto save
+        return;
+      }
     }
     // Auto modify the selected rows
     if (options.modifySelectedRows) {
-      console.log('auto modify');
       await this.promisedRowsModifications(
         options.modifications,
         this.grid.selectedRows
