@@ -60,7 +60,11 @@
         </svg>
       </span>
     </button>
-    <ng-container *ngIf="expansionSubTree ? expansionSubTree.expanded : true">
+    <div
+      [ngClass]="{
+        hidden: expansionSubTree ? !expansionSubTree.expanded : true
+      }"
+    >
       <ng-container
         *ngFor="let subField of data.fields"
         [ngTemplateOutlet]="fieldNode"
@@ -73,6 +77,6 @@
         }"
       >
       </ng-container>
-    </ng-container>
+    </div>
   </ui-select-option>
 </ng-template>

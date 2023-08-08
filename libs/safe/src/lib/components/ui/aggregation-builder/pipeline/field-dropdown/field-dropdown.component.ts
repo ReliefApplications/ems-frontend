@@ -42,10 +42,13 @@ export class SafeFieldDropdownComponent implements AfterViewInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.fields.currentValue != changes.fields.previousValue) {
+    if (changes.fields?.currentValue != changes.fields?.previousValue) {
       this.expansionTree = {};
       this.buildExpansionTree(this.fields, this.expansionTree);
       this.unnestCurrentValue(); //we unnest as soon as our fields are loaded
+    }
+    if (changes.fieldControl?.currentValue.value) {
+      this.currentValueUnnested = !this.fieldControl.value.includes('.'); //forces the new field to be unnested
     }
   }
 
@@ -76,7 +79,8 @@ export class SafeFieldDropdownComponent implements AfterViewInit, OnChanges {
       const array: string[] = this.fieldControl.value.split('.');
       for (let i = 1; i < array.length; i++) {
         this.currentValueUnnested = this.toggleNodeExpansion(
-          array.slice(0, i).join('.')
+          array.slice(0, i).join('.'),
+          true
         );
       }
     }
@@ -86,9 +90,10 @@ export class SafeFieldDropdownComponent implements AfterViewInit, OnChanges {
    * expands target node
    *
    * @param path path to be expanded
+   * @param expand force a state for the expansion
    * @returns whether the operation was a success
    */
-  toggleNodeExpansion(path: string): boolean {
+  toggleNodeExpansion(path: string, expand?: boolean): boolean {
     const pathSegments = path.split('.');
     let node = this.expansionTree;
 
@@ -99,7 +104,7 @@ export class SafeFieldDropdownComponent implements AfterViewInit, OnChanges {
     for (const segment of pathSegments) {
       node = node[segment] as ExpansionTree;
     }
-    node.expanded = !node.expanded;
+    node.expanded = expand ?? !node.expanded;
     return true;
   }
 }
