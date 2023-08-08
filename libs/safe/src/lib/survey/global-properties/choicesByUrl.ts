@@ -185,6 +185,11 @@ export const init = (Survey: any): void => {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
 
+    if (Survey.ChoicesRestful.onBeforeSendRequest) {
+      Survey.ChoicesRestful.onBeforeSendRequest(this, { request: options });
+    }
+    this.beforeSendRequest();
+
     fetch(this.processedUrl, options)
       .then((response) => {
         self.beforeLoadRequest();
@@ -200,12 +205,6 @@ export const init = (Survey: any): void => {
       .catch((error) => {
         self.onError(error.message);
       });
-
-    if (Survey.ChoicesRestful.onBeforeSendRequest) {
-      Survey.ChoicesRestful.onBeforeSendRequest(this, { request: options });
-    }
-
-    this.beforeSendRequest();
   };
 
   /**
