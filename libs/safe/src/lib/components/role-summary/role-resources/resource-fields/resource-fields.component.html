@@ -3,7 +3,7 @@
   <h2>{{ 'common.field.few' | translate }}</h2>
   <!-- Actions when selected items -->
   <ng-container *ngIf="selection.selected.length > 1 &&
-    !!(resource.rolePermissions?.canSeeRecords || resource.rolePermissions?.canCreateRecords)"
+    (resource.rolePermissions?.canSeeRecords || resource.rolePermissions?.canCreateRecords)"
   >
     <ui-button
       (click)="onEditPermissions(selection.selected)"
