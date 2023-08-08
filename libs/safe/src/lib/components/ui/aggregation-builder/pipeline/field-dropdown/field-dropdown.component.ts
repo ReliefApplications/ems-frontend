@@ -36,13 +36,16 @@ export class SafeFieldDropdownComponent implements AfterViewInit, OnChanges {
 
   ngAfterViewInit(): void {
     this.selectMenu.forceOptionList(this.fieldComponents);
+    if (!this.fieldControl.value || !this.fieldControl.value.includes('.')) {
+      this.currentValueUnnested = true; //unnesting needs to be done only if there is a value to be unnested at first
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.fields.currentValue != changes.fields.previousValue) {
       this.expansionTree = {};
       this.buildExpansionTree(this.fields, this.expansionTree);
-      this.unnestCurrentValue();
+      this.unnestCurrentValue(); //we unnest as soon as our fields are loaded
     }
   }
 
@@ -69,9 +72,6 @@ export class SafeFieldDropdownComponent implements AfterViewInit, OnChanges {
 
   /** Unnests the value that is displayed inside of the select menu */
   unnestCurrentValue() {
-    if (!this.fieldControl.value || !this.fieldControl.value.includes('.')) {
-      this.currentValueUnnested = true;
-    }
     if (!this.currentValueUnnested) {
       const array: string[] = this.fieldControl.value.split('.');
       for (let i = 1; i < array.length; i++) {
