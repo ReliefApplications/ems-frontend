@@ -415,6 +415,7 @@ export class MapComponent
       layersRemoved = true;
       this.layerIds = layers ?? [];
       if (layers?.length) {
+        this.resetLayers();
         promises.push(this.getLayers(layers));
       }
     }
@@ -578,7 +579,9 @@ export class MapComponent
       leafletLayer?: L.Layer
     ): Promise<OverlayLayerTree> => {
       // Add to the layers array if not already added
-      if (!this.layers.find((l) => l.id === layer.id)) this.layers.push(layer);
+      if (!this.layers.find((l) => l.id === layer.id)) {
+        this.layers.push(layer);
+      }
 
       // Gets the leaflet layer. Either the one passed as parameter
       // (from parent) or the one created by the layer itself (if no parent)
@@ -587,7 +590,9 @@ export class MapComponent
       // Adds the layer to the map if not already added
       // note: group layers are of type L.LayerGroup
       // so we should check if the layer is not already added
-      if (!this.map.hasLayer(featureLayer)) this.map.addLayer(featureLayer);
+      if (!this.map.hasLayer(featureLayer)) {
+        this.map.addLayer(featureLayer);
+      }
 
       const children = await layer.getChildren();
 
@@ -681,7 +686,9 @@ export class MapComponent
           deleteLayer(child);
         }
       } else {
-        if (layer.layer) this.map.removeLayer(layer.layer);
+        if (layer.layer) {
+          this.map.removeLayer(layer.layer);
+        }
       }
     };
 
@@ -693,7 +700,7 @@ export class MapComponent
       deleteLayer(layers);
     }
     // Reset related properties
-    this.layers = [];
+    this.resetLayers();
   }
   //   /**
   //  * Function used to apply options
@@ -913,7 +920,9 @@ export class MapComponent
   private async filterLayers() {
     document.getElementById('layer-control-button-close')?.click();
     const filters = this.contextService.filter.getValue();
-    if (isEqual(filters, this.appliedDashboardFilters)) return;
+    if (isEqual(filters, this.appliedDashboardFilters)) {
+      return;
+    }
     this.appliedDashboardFilters = filters;
     const { layers: layersToGet, controls } = this.extractSettings();
 
@@ -937,7 +946,7 @@ export class MapComponent
       });
 
     // get new layers, with filters applied
-    this.layers = [];
+    this.resetLayers();
     const l = await this.getLayers(layersToGet ?? []);
     this.overlaysTree = [l.layers];
 
@@ -964,5 +973,15 @@ export class MapComponent
         flatten(this.overlaysTree)
       );
     }
+  }
+
+  /**
+   * Reset current saved layers and remove all attached listeners of those Layer instances
+   */
+  resetLayers() {
+    this.layers.forEach((layer) => {
+      layer.removeAllListeners(this.map);
+    });
+    this.layers = [];
   }
 }

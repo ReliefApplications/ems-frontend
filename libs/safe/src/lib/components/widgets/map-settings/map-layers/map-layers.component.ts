@@ -128,6 +128,7 @@ export class MapLayersComponent
     const { EditLayerModalComponent } = await import(
       '../edit-layer-modal/edit-layer-modal.component'
     );
+    this.mapComponent?.resetLayers();
     const dialogRef = this.dialog.open(EditLayerModalComponent, {
       disableClose: true,
       autoFocus: false,
@@ -186,6 +187,7 @@ export class MapLayersComponent
         const { EditLayerModalComponent } = await import(
           '../edit-layer-modal/edit-layer-modal.component'
         );
+        this.mapComponent?.resetLayers();
         const dialogRef = this.dialog.open(EditLayerModalComponent, {
           disableClose: true,
           autoFocus: false,

@@ -175,6 +175,7 @@ export class Layer implements LayerModel {
 
   // Declare variables to store the event listeners
   private zoomListener!: L.LeafletEventHandlerFn;
+  private listeners: any[] = [];
 
   /** @returns the children of the current layer */
   public async getChildren() {
@@ -184,10 +185,14 @@ export class Layer implements LayerModel {
 
   /** @returns the filtered geojson data */
   get data(): GeoJSON {
-    if (!this.geojson) return EMPTY_FEATURE_COLLECTION;
+    if (!this.geojson) {
+      return EMPTY_FEATURE_COLLECTION;
+    }
 
     // If no filter is set, return the geojson data
-    if (!this.filter) return this.geojson;
+    if (!this.filter) {
+      return this.geojson;
+    }
 
     // If the geojson is a feature, return it if it satisfies the filter
     // if not, return an empty feature collection
@@ -276,19 +281,28 @@ export class Layer implements LayerModel {
     const fields = this.fields;
     // If the geojson is a geometry, there are no fields to add
     // since it has not properties
-    if (GEOMETRY_TYPES.includes(geojson.type)) return;
+    if (GEOMETRY_TYPES.includes(geojson.type)) {
+      return;
+    }
 
     const getFieldType = (field: string, value: any) => {
       let valueType: FieldTypes | null = null;
-      if (typeof value === 'number') valueType = 'number';
-      if (typeof value === 'boolean') valueType = 'boolean';
+      if (typeof value === 'number') {
+        valueType = 'number';
+      }
+      if (typeof value === 'boolean') {
+        valueType = 'boolean';
+      }
       if (typeof value === 'string') {
         // Check if the string is a date using regex ISO 8601
         const regex = new RegExp(
           '^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})(\\.[0-9]{3})?Z$'
         );
-        if (regex.test(value)) valueType = 'date';
-        else valueType = 'string';
+        if (regex.test(value)) {
+          valueType = 'date';
+        } else {
+          valueType = 'string';
+        }
       }
 
       // check if field already exists, and if it has the same value type
@@ -345,7 +359,9 @@ export class Layer implements LayerModel {
    */
   public async getLayer(redraw?: boolean): Promise<L.Layer> {
     // If layer has already been created, return it
-    if (this.layer && !redraw) return this.layer;
+    if (this.layer && !redraw) {
+      return this.layer;
+    }
 
     // data is the filtered geojson
     const data = this.data;
@@ -468,7 +484,7 @@ export class Layer implements LayerModel {
       onEachFeature: (feature: Feature<any>, layer: L.Layer) => {
         // Add popup on click because we destroy popup component each time we remove it
         // In order to destroy all event subscriptions and avoid memory leak
-        layer.addEventListener('click', () => {
+        const setPopupListener = () => {
           const center = centroid(feature);
           const coordinates = {
             lat: center.geometry.coordinates[1],
@@ -481,7 +497,9 @@ export class Layer implements LayerModel {
             this.popupInfo,
             layer
           );
-        });
+        };
+        layer.addEventListener('click', setPopupListener);
+        this.listeners.push(setPopupListener);
       },
       // style: (feature: Feature<Geometry> | undefined) => {
       //   if (!feature) return {};
@@ -532,10 +550,11 @@ export class Layer implements LayerModel {
         ) {
           case 'heatmap':
             // check data type
-            if (data.type !== 'FeatureCollection')
+            if (data.type !== 'FeatureCollection') {
               throw new Error(
                 'Impossible to create a heatmap from this data, geojson type is not FeatureCollection'
               );
+            }
             const heatArray: any[] = [];
 
             data.features.forEach((feature: any) => {
@@ -767,7 +786,6 @@ export class Layer implements LayerModel {
     if (!isNil((layer as any).shouldDisplay)) {
       this.visibility = (layer as any).shouldDisplay;
       if (this.visibility) {
-        map.addLayer(layer);
         const legendControl = (map as any).legendControl;
         if (legendControl) {
           legendControl.addLayer(layer, this.legend);
@@ -784,7 +802,6 @@ export class Layer implements LayerModel {
         map.removeLayer(layer);
       } else {
         if (this.visibility) {
-          map.addLayer(layer);
           const legendControl = (map as any).legendControl;
           if (legendControl) {
             legendControl.addLayer(layer, this.legend);
@@ -816,10 +833,12 @@ export class Layer implements LayerModel {
       if (currZoom > maxZoom || currZoom < minZoom) {
         map.removeLayer(layer);
       } else {
-        if (this.visibility && !(layer as any).deleted) {
+        if (
+          this.visibility &&
+          !(layer as any).deleted &&
+          !map.hasLayer(layer)
+        ) {
           map.addLayer(layer);
-        } else {
-          map.removeLayer(layer);
         }
       }
     }
@@ -1022,5 +1041,21 @@ export class Layer implements LayerModel {
     } else {
       return '';
     }
+  }
+
+  /**
+   * Remove all event listeners related to this Layer instance for the given map
+   *
+   * @param map L.Map
+   */
+  public removeAllListeners(map: L.Map) {
+    if (this.zoomListener) {
+      map.off('zoomend', this.zoomListener);
+    }
+    this.zoomListener = null as unknown as L.LeafletEventHandlerFn;
+    this.listeners.forEach((listener) => {
+      listener();
+    });
+    this.listeners = [];
   }
 }
