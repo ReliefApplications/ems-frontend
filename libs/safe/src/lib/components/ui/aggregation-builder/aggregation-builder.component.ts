@@ -7,7 +7,6 @@ import { QueryBuilderService } from '../../../services/query-builder/query-build
 import { Resource } from '../../../models/resource.model';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { cloneDeep } from 'lodash';
 
 /**
  * Main component of Aggregation builder.
@@ -151,7 +150,7 @@ export class SafeAggregationBuilderComponent
           (field.type.kind === 'SCALAR' ||
             field.type.kind === 'LIST' ||
             field.type.kind === 'OBJECT') &&
-          !previousTypes.has(field.type.ofType?.name) //prevents infinite loops
+          !previousTypes.has(field.type.name ?? field.type.ofType.name) //prevents infinite loops
       )
       .map((field: any) => {
         if (field.type.kind === 'LIST' || field.type.kind === 'OBJECT') {
@@ -175,20 +174,15 @@ export class SafeAggregationBuilderComponent
       const selectedFields = fieldsNames.map((x: string) => {
         const field = { ...currentFields.find((y) => x === y.name) };
         if (field.type.kind !== 'SCALAR') {
-          const newField = cloneDeep(field);
-          const deconfinedFields = this.deconfineFields(
+          field.fields = this.deconfineFields(
             field.type,
             new Set()
               .add(this.resource.name)
               .add(field.type.name ?? field.type.ofType.name)
           );
-          newField.fields = deconfinedFields;
-          console.log(deconfinedFields, 'fields deconfined', newField);
-          return newField;
         }
         return field;
       });
-      console.log(selectedFields, 'okay maybe??');
 
       this.selectedFields.next(selectedFields);
 

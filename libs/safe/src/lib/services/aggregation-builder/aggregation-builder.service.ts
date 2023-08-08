@@ -3,6 +3,7 @@ import { PipelineStage } from '../../components/ui/aggregation-builder/pipeline/
 import { Accumulators } from '../../components/ui/aggregation-builder/pipeline/expressions/operators';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { addNewField } from '../../components/query-builder/query-builder-forms';
+import { cloneDeep } from 'lodash';
 
 /**
  * Shared aggregation service.
@@ -54,8 +55,7 @@ export class AggregationBuilderService {
    * @returns Fields remaining at the end of the pipeline.
    */
   public fieldsAfter(initialFields: any[], pipeline: any[]): any[] {
-    console.log(initialFields);
-    let fields = [...initialFields];
+    let fields = cloneDeep([...initialFields]);
     for (const stage of pipeline) {
       switch (stage.type) {
         case PipelineStage.GROUP: {
@@ -69,38 +69,16 @@ export class AggregationBuilderService {
                 newField.type = { ...groupByField.type };
                 if (rule.field.includes('.')) {
                   const fieldArray = rule.field.split('.');
-                  fieldArray.shift();
-                  const addFields = (newField: any) => {
-                    const sub = fieldArray.shift();
-                    if (fieldArray.length > 0) {
-                      newField.fields = newField.fields.map((x: any) =>
-                        x.name === sub
-                          ? {
-                              ...x,
-                              type: {
-                                ...x.type,
-                                kind: 'OBJECT',
-                              },
-                            }
-                          : x
-                      );
-                    } else {
-                      newField.fields = newField.fields.map((x: any) =>
-                        x.name === sub
-                          ? {
-                              ...x,
-                              type: {
-                                ...x.type,
-                                kind: 'SCALAR',
-                                name: 'String',
-                              },
-                            }
-                          : x
-                      );
-                    }
-                  };
+                  const sub = fieldArray.pop();
                   newField.type.kind = 'OBJECT';
-                  addFields(newField);
+                  newField.fields = newField.fields.map((x: any) =>
+                    x.name === sub
+                      ? {
+                          ...x,
+                          type: { ...x.type, kind: 'SCALAR', name: 'String' },
+                        }
+                      : x
+                  );
                 } else {
                   newField.type.kind = 'SCALAR';
                   newField.type.name = 'String';
@@ -218,7 +196,7 @@ export class AggregationBuilderService {
         }
       };
 
-      outField = fields.find((x) => x.name === parent);
+      outField = { ...fields.find((x) => x.name === parent) };
       outField.fields = findSubfield(outField.fields);
     } else {
       outField = { ...outField };

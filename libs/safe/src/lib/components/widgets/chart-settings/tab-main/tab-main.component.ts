@@ -143,7 +143,7 @@ export class TabMainComponent
           (field.type.kind === 'SCALAR' ||
             field.type.kind === 'LIST' ||
             field.type.kind === 'OBJECT') &&
-          !previousTypes.has(field.type.ofType?.name) //prevents infinite loops
+          !previousTypes.has(field.type.name ?? field.type.ofType.name) //prevents infinite loops
       )
       .map((field: any) => {
         if (field.type.kind === 'LIST' || field.type.kind === 'OBJECT') {
