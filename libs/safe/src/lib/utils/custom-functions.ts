@@ -197,6 +197,18 @@ const addCustomFunctions = (
     if (!Array.isArray(params[0])) return 0;
     return params[0].length;
   });
+
+  // Get field from an object
+  survey.FunctionFactory.Instance.register('getField', (params: any[]) => {
+    const object = params[0];
+    const field = params[1];
+
+    if (!object || typeof object !== 'object' || Array.isArray(object))
+      return null;
+    if (!field) return null;
+
+    return object[field] ?? null;
+  });
 };
 
 export default addCustomFunctions;
