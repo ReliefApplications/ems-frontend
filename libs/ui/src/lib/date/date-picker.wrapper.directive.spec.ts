@@ -23,19 +23,17 @@ import { ButtonComponent } from '../button/button.component';
   template: ` <form [formGroup]="form">
     <div uiFormFieldDirective [uiDateWrapper]="calendar">
       <label>{{ 'common.input.dateRange' | translate }}</label>
-      <div [formGroup]="form">
-        <input
-          [uiDatePicker]
-          formControlName="startDate"
-          [label]="'kendo.datepicker.startLabel' | translate"
-        />
-        <input
-          [uiDatePicker]
-          formControlName="endDate"
-          [label]="'kendo.datepicker.endLabel' | translate"
-        />
-        <ui-date-range #calendar> </ui-date-range>
-      </div>
+      <input
+        [uiDatePicker]
+        formControlName="startDate"
+        [label]="'kendo.datepicker.startLabel' | translate"
+      />
+      <input
+        [uiDatePicker]
+        formControlName="endDate"
+        [label]="'kendo.datepicker.endLabel' | translate"
+      />
+      <ui-date-range #calendar> </ui-date-range>
     </div>
   </form>`,
   imports: [
@@ -81,7 +79,6 @@ describe('DateWrapperDirective', () => {
   });
 
   it('should create an instance', () => {
-    fixture.detectChanges();
     const directive = fixture.debugElement.queryAll(
       By.directive(DateWrapperDirective)
     );
