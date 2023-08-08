@@ -221,12 +221,12 @@ export class SafeWidgetGridComponent
    * @param e Updated layout.
    */
   onEditTile(e: any): void {
-    console.log(parseInt(e.layoutItem.id, 10));
+    const id = parseInt(e.layoutItem.id, 10);
     this.edit.emit({
       type: 'display',
-      id: e.layoutItem.id,
+      id,
       options: {
-        id: e.layoutItem.id,
+        id,
         cols: e.layoutItem.w,
         rows: e.layoutItem.h,
         // We don't have these properties yet

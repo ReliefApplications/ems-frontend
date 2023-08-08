@@ -24,7 +24,7 @@
     class="-m-4"
   >
     <ktd-grid-item
-      *ngFor="let item of layout; let i = index; trackBy:trackById" [id]="widgets[i].id"
+      *ngFor="let item of layout; let i = index; trackBy:trackById" [id]="item.id"
       [resizable]="canUpdate"
       [draggable]="canUpdate"
       dragStartThreshold="0"
