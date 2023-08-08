@@ -75,9 +75,10 @@ export class SafeFieldDropdownComponent implements AfterViewInit, OnChanges {
     if (!this.currentValueUnnested) {
       const array: string[] = this.fieldControl.value.split('.');
       for (let i = 1; i < array.length; i++) {
-        this.toggleNodeExpansion(array.slice(0, i).join('.'));
+        this.currentValueUnnested = this.toggleNodeExpansion(
+          array.slice(0, i).join('.')
+        );
       }
-      this.currentValueUnnested = this.toggleNodeExpansion(array.join('.'));
     }
   }
 
@@ -96,7 +97,6 @@ export class SafeFieldDropdownComponent implements AfterViewInit, OnChanges {
     }
 
     for (const segment of pathSegments) {
-      console.log(node, segment);
       node = node[segment] as ExpansionTree;
     }
     node.expanded = !node.expanded;
