@@ -197,6 +197,33 @@ const addCustomFunctions = (
     if (!Array.isArray(params[0])) return 0;
     return params[0].length;
   });
+
+  // Get nth element of an array
+  survey.FunctionFactory.Instance.register('elementAt', (params: any[]) => {
+    const array = params[0];
+    const index = params[1];
+
+    if (!Array.isArray(array)) return null;
+    if (isNaN(Number(index))) return null;
+
+    return array[index] ?? null;
+  });
+
+  // Returns the specified workflow context variable
+  survey.FunctionFactory.Instance.register(
+    'getWorkflowContext',
+    function (this: { survey: SurveyModel }, params: any[]) {
+      // First param is the dashboard id
+      const dashboardId = params[0];
+      if (!dashboardId) return null;
+      // Second param is the widget id
+      const widgetId = params[1];
+      if (isNil(widgetId)) return null;
+
+      // Return the variable
+      return this.survey.getVariable(`workflow_${dashboardId}_${widgetId}`);
+    }
+  );
 };
 
 export default addCustomFunctions;

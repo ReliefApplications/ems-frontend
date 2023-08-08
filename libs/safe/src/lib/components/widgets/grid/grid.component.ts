@@ -47,6 +47,7 @@ import { firstValueFrom, takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { SafeDashboardService } from '../../../services/dashboard/dashboard.service';
 
 /** Component for the grid widget */
 @Component({
@@ -118,6 +119,7 @@ export class SafeGridWidgetComponent
    * @param dialog Dialogs service
    * @param snackBar Shared snack bar service
    * @param workflowService Shared workflow service
+   * @param dashboardService Shared dashboard service
    * @param safeAuthService Shared authentication service
    * @param emailService Shared email service
    * @param queryBuilder Shared query builder service
@@ -133,6 +135,7 @@ export class SafeGridWidgetComponent
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private workflowService: SafeWorkflowService,
+    private dashboardService: SafeDashboardService,
     private safeAuthService: SafeAuthService,
     private emailService: SafeEmailService,
     private queryBuilder: QueryBuilderService,
@@ -424,9 +427,22 @@ export class SafeGridWidgetComponent
       options.goToPreviousStep ||
       options.closeWorkflow
     ) {
+      const addToWorkflowContext = async () => {
+        const dashboard = await firstValueFrom(
+          this.dashboardService.dashboard$
+        );
+        if (!dashboard?.id) return;
+        this.workflowService.addToContext(
+          dashboard.id,
+          this.settings.id,
+          this.grid.selectedRows
+        );
+      };
       if (options.goToNextStep) {
+        await addToWorkflowContext();
         this.changeStep.emit(1);
       } else if (options.goToPreviousStep) {
+        await addToWorkflowContext();
         this.changeStep.emit(-1);
       } else {
         const dialogRef = this.confirmService.openConfirmModal({
