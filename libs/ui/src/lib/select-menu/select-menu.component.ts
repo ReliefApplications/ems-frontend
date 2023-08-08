@@ -90,7 +90,6 @@ export class SelectMenuComponent
    * @param renderer Renderer2
    * @param viewContainerRef ViewContainerRef
    * @param overlay Overlay
-   * @param translate Angular translate service
    * @param document document
    */
   constructor(
