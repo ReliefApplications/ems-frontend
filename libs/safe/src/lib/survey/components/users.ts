@@ -72,7 +72,7 @@ export const init = (
                 value: r.id,
                 text: r.title?.split(' - ')[1],
               }));
-              choicesCallback(['', ...roles]);
+              choicesCallback([{value: null, text: ''}, ...roles]);
             });
           }
         },
