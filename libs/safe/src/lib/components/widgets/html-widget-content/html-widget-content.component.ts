@@ -7,12 +7,12 @@ import { SafeHtml } from '@angular/platform-browser';
  * Allows to render HTML with custom styles without interfering with the rest of the application.
  */
 @Component({
-  selector: 'safe-isolated-html',
-  templateUrl: './isolated-html.component.html',
-  styleUrls: ['./isolated-html.component.scss'],
+  selector: 'safe-html-widget-content',
+  templateUrl: './html-widget-content.component.html',
+  styleUrls: ['./html-widget-content.component.scss'],
   encapsulation: ViewEncapsulation.ShadowDom,
 })
-export class IsolatedHtmlComponent {
+export class HtmlWidgetContentComponent {
   @Input() html: SafeHtml = '';
   @Input() style?: string;
 }

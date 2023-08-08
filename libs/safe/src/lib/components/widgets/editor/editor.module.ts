@@ -4,7 +4,7 @@ import { SafeEditorComponent } from './editor.component';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { ButtonModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeIsolatedHtmlModule } from '../isolated-html/isolated-html.module';
+import { SafeHtmlWidgetContentModule } from '../html-widget-content/html-widget-content.module';
 
 /**
  * Module for the safeEditor component
@@ -16,7 +16,7 @@ import { SafeIsolatedHtmlModule } from '../isolated-html/isolated-html.module';
     LayoutModule,
     ButtonModule,
     TranslateModule,
-    SafeIsolatedHtmlModule,
+    SafeHtmlWidgetContentModule,
   ],
   exports: [SafeEditorComponent],
 })

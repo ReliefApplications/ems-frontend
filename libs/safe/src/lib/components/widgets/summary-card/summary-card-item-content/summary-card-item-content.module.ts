@@ -1,14 +1,14 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SummaryCardItemContentComponent } from './summary-card-item-content.component';
-import { SafeIsolatedHtmlModule } from '../../isolated-html/isolated-html.module';
+import { SafeHtmlWidgetContentModule } from '../../html-widget-content/html-widget-content.module';
 
 /**
  * Content of Single Item of Summary Card.
  */
 @NgModule({
   declarations: [SummaryCardItemContentComponent],
-  imports: [CommonModule, SafeIsolatedHtmlModule],
+  imports: [CommonModule, SafeHtmlWidgetContentModule],
   exports: [SummaryCardItemContentComponent],
 })
 export class SummaryCardItemContentModule {}

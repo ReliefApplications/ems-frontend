@@ -638,7 +638,7 @@ const createAvatarGroup = (
     img.className = 'inline-block h-full w-full';
   }
 
-  if (!isNil(maxItems) && value.length > maxItems) {
+  if (!isNil(maxItems) && maxItems > 0 && value.length > maxItems) {
     const avatar = document.createElement('avatar');
     innerDiv.appendChild(avatar);
     avatar.style.zIndex = '0';

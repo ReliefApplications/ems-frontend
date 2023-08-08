@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IsolatedHtmlComponent } from './isolated-html.component';
+import { HtmlWidgetContentComponent } from './html-widget-content.component';
 
 describe('IsolatedHtmlComponent', () => {
-  let component: IsolatedHtmlComponent;
-  let fixture: ComponentFixture<IsolatedHtmlComponent>;
+  let component: HtmlWidgetContentComponent;
+  let fixture: ComponentFixture<HtmlWidgetContentComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [IsolatedHtmlComponent],
+      declarations: [HtmlWidgetContentComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(IsolatedHtmlComponent);
+    fixture = TestBed.createComponent(HtmlWidgetContentComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
