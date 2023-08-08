@@ -7,11 +7,8 @@ import {
   Inject,
   Output,
   EventEmitter,
-  Renderer2,
   OnDestroy,
 } from '@angular/core';
-import get from 'lodash/get';
-import difference from 'lodash/difference';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 // Leaflet plugins
 import 'leaflet';
@@ -35,20 +32,29 @@ import {
   MapControls,
 } from './interfaces/map.interface';
 import { BASEMAP_LAYERS } from './const/baseMaps';
-import { timeDimensionGeoJSON } from './test/timedimension-test';
+// import { timeDimensionGeoJSON } from './test/timedimension-test';
 import { SafeMapControlsService } from '../../../services/map/map-controls.service';
 import * as L from 'leaflet';
 import { Layer } from './layer';
-import { GeoJsonObject } from 'geojson';
+// import { GeoJsonObject } from 'geojson';
 import {
   ArcgisService,
   TreeObject,
 } from '../../../services/map/arcgis.service';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
-import { flatten, isNil, omitBy } from 'lodash';
-import { takeUntil } from 'rxjs';
+import {
+  flatten,
+  isNil,
+  omitBy,
+  get,
+  difference,
+  isEqual,
+  flatMapDeep,
+} from 'lodash';
+import { debounceTime, takeUntil } from 'rxjs';
 import { SafeMapPopupService } from './map-popup/map-popup.service';
 import { Platform } from '@angular/cdk/platform';
+import { ContextService } from '../../../services/context/context.service';
 
 /** Component for the map widget */
 @Component({
@@ -133,12 +139,16 @@ export class MapComponent
 
   // === QUERY UPDATE INFO ===
   public lastUpdate = '';
+  private appliedDashboardFilters: Record<string, any>;
 
   // === LAYERS ===
   private layers: Layer[] = [];
   private layerIds: string[] = [];
 
   private resizeObserver?: ResizeObserver;
+
+  private basemapTree: L.Control.Layers.TreeObject[][] = [];
+  private overlaysTree: L.Control.Layers.TreeObject[][] = [];
 
   /**
    * Map widget component
@@ -149,7 +159,7 @@ export class MapComponent
    * @param arcgisService Shared arcgis service
    * @param mapLayersService SafeMapLayersService
    * @param mapPopupService The map popup handler service
-   * @param renderer Angular renderer
+   * @param contextService The context service
    * @param platform Platform
    */
   constructor(
@@ -159,12 +169,13 @@ export class MapComponent
     private arcgisService: ArcgisService,
     public mapLayersService: SafeMapLayersService,
     public mapPopupService: SafeMapPopupService,
-    private renderer: Renderer2,
+    private contextService: ContextService,
     private platform: Platform
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
     this.mapId = uuidv4();
+    this.appliedDashboardFilters = this.contextService.filter.getValue();
   }
 
   /** Set map listeners */
@@ -236,6 +247,19 @@ export class MapComponent
       });
       //}
     }, 1000);
+
+    // Listen to dashboard filters changes
+    this.contextService.filter$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.filterLayers();
+      });
+
+    this.contextService.isFilterEnabled$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.filterLayers();
+      });
   }
 
   override ngOnDestroy(): void {
@@ -319,7 +343,7 @@ export class MapComponent
         minZoom,
         maxZoom,
         worldCopyJump,
-        timeDimension: true,
+        // timeDimension: true,
         disableAutoPan: true,
       } as any).setView(
         L.latLng(
@@ -415,23 +439,38 @@ export class MapComponent
       }
     }
 
-    // Add layers on map
+    // We need to fetch new layers
     if (promises.length) {
       Promise.all(promises).then((trees) => {
-        const basemaps: L.Control.Layers.TreeObject[][] = [];
-        const layers: L.Control.Layers.TreeObject[][] = [];
+        this.basemapTree = [];
+        this.overlaysTree = [];
         for (const tree of trees) {
-          tree.basemaps && basemaps.push(tree.basemaps);
-          tree.layers && layers.push(tree.layers);
+          tree.basemaps && this.basemapTree.push(tree.basemaps);
+          tree.layers && this.overlaysTree.push(tree.layers);
         }
         if (controls.layer) {
-          this.setLayersControl(flatten(basemaps), flatten(layers));
+          this.setLayersControl(
+            flatten(this.basemapTree),
+            flatten(this.overlaysTree)
+          );
         } else {
           if (this.layerControlButtons) {
             this.layerControlButtons.remove();
           }
         }
       });
+    } else {
+      // No update on the layers, we only update the controls
+      if (controls.layer) {
+        this.setLayersControl(
+          flatten(this.basemapTree),
+          flatten(this.overlaysTree)
+        );
+      } else {
+        if (this.layerControlButtons) {
+          this.layerControlButtons.remove();
+        }
+      }
     }
 
     this.setMapControls(controls, initMap);
@@ -449,30 +488,13 @@ export class MapComponent
       this.map,
       controls.measure ?? false
     );
-    // Add leaflet geosearch control
-    if (controls.search) {
-      if (!this.searchControl) {
-        this.searchControl = this.mapControlsService.getSearchbarControl(
-          this.map,
-          this.esriApiKey
-        );
-        (this.searchControl as any)?.on('results', (data: any) => {
-          if ((data.results || []).length > 0) {
-            this.search.emit(data.results[0]);
-          }
-        });
-      }
-    } else {
-      this.searchControl?.remove();
-      this.searchControl = undefined;
-    }
 
     // Add TimeDimension control
-    this.mapControlsService.setTimeDimension(
-      this.map,
-      controls.timedimension ?? false,
-      timeDimensionGeoJSON as GeoJsonObject
-    );
+    // this.mapControlsService.setTimeDimension(
+    //   this.map,
+    //   controls.timedimension ?? false,
+    //   timeDimensionGeoJSON as GeoJsonObject
+    // );
     // Add download button and download menu
     this.mapControlsService.getDownloadControl(
       this.map,
@@ -494,6 +516,23 @@ export class MapComponent
     if (initMap) {
       // Add leaflet fullscreen control
       this.mapControlsService.getFullScreenControl(this.map);
+    }
+    // Add leaflet geosearch control
+    if (controls.search) {
+      if (!this.searchControl) {
+        this.searchControl = this.mapControlsService.getSearchbarControl(
+          this.map,
+          this.esriApiKey
+        );
+        (this.searchControl as any)?.on('results', (data: any) => {
+          if ((data.results || []).length > 0) {
+            this.search.emit(data.results[0]);
+          }
+        });
+      }
+    } else {
+      this.searchControl?.remove();
+      this.searchControl = undefined;
     }
   }
 
@@ -868,5 +907,62 @@ export class MapComponent
   }> {
     this.arcGisWebMap = webmap;
     return this.arcgisService.loadWebMap(this.map, this.arcGisWebMap);
+  }
+
+  /** Set the new layers based on the filter value */
+  private async filterLayers() {
+    document.getElementById('layer-control-button-close')?.click();
+    const filters = this.contextService.filter.getValue();
+    if (isEqual(filters, this.appliedDashboardFilters)) return;
+    this.appliedDashboardFilters = filters;
+    const { layers: layersToGet, controls } = this.extractSettings();
+
+    const shouldDisplayStatuses: Record<string, boolean> = {};
+
+    const flattenOverlaysTree = (tree: L.Control.Layers.TreeObject): any => {
+      return [tree, flatMapDeep(tree.children, flattenOverlaysTree)];
+    };
+
+    // remove zoom listeners from old layers
+    flatMapDeep(this.overlaysTree.flat(), flattenOverlaysTree)
+      .filter((x) => x.layer && (x.layer as any).origin === 'app-builder')
+      .forEach((x) => {
+        // Store visibility status of the layer
+        const shouldDisplay = (x.layer as any).shouldDisplay;
+        if (!isNil(shouldDisplay)) {
+          shouldDisplayStatuses[(x.layer as any).id] = shouldDisplay;
+        }
+        (x.layer as any).deleted = true;
+        (x.layer as L.Layer).remove();
+      });
+
+    // get new layers, with filters applied
+    this.layers = [];
+    const l = await this.getLayers(layersToGet ?? []);
+    this.overlaysTree = [l.layers];
+
+    flatMapDeep(this.overlaysTree.flat(), flattenOverlaysTree).forEach((x) => {
+      if (x.layer) {
+        const id = (x.layer as any).id;
+        if (!isNil(shouldDisplayStatuses[id])) {
+          (x.layer as any).shouldDisplay = shouldDisplayStatuses[id];
+          if (!shouldDisplayStatuses[id]) {
+            x.layer.remove();
+          }
+        }
+      }
+    });
+
+    if (controls.layer) {
+      // remove current layer controls
+      this.layerControlButtons.remove();
+      this.layerControlButtons = null;
+
+      // create new layer controls, from newly created layers
+      this.setLayersControl(
+        flatten(this.basemapTree),
+        flatten(this.overlaysTree)
+      );
+    }
   }
 }

@@ -3,5 +3,6 @@ div.accordion-item {
 }
 
 div.accordion-content {
-  @apply p-5 hidden border-l border-r border-b border-gray-200;
+  // todo: check hidden
+  @apply p-5 hidden border-l border-r border-b border-gray-200 overflow-hidden;
 }

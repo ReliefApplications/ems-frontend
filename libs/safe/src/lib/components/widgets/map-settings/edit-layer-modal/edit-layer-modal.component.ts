@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
-import { LayerModel } from '../../../../models/layer.model';
+import { Fields, LayerModel } from '../../../../models/layer.model';
 import { createLayerForm, LayerFormT } from '../map-forms';
 import {
   takeUntil,
@@ -50,9 +50,10 @@ import {
   TabsModule,
   TooltipModule,
 } from '@oort-front/ui';
-import { Fields } from './layer-fields/layer-fields.component';
 import { MapLayersModule } from '../map-layers/map-layers.module';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { ContextualFiltersSettingsComponent } from '../../common/contextual-filters-settings/contextual-filters-settings.component';
+import { FormArray, UntypedFormBuilder } from '@angular/forms';
 
 /**
  * Interface of dialog input
@@ -88,6 +89,7 @@ interface DialogData {
     LayerFilterModule,
     LayerStylingModule,
     MapLayersModule,
+    ContextualFiltersSettingsComponent,
   ],
   templateUrl: './edit-layer-modal.component.html',
   styleUrls: ['./edit-layer-modal.component.scss'],
@@ -133,6 +135,7 @@ export class EditLayerModalComponent
    * @param apollo Apollo service
    * @param {DialogData} data Dialog input
    * @param dialogRef Dialog ref
+   * @param formBuilder Angular form builder
    */
   constructor(
     private confirmService: SafeConfirmService,
@@ -140,7 +143,8 @@ export class EditLayerModalComponent
     private mapLayersService: SafeMapLayersService,
     private apollo: Apollo,
     @Inject(DIALOG_DATA) public data: DialogData,
-    public dialogRef: DialogRef<LayerFormData>
+    public dialogRef: DialogRef<LayerFormData>,
+    private formBuilder: UntypedFormBuilder
   ) {
     super();
   }
@@ -170,7 +174,6 @@ export class EditLayerModalComponent
     }
     this.setUpEditLayerListeners();
     this.getResource();
-    console.log(this.form);
   }
 
   ngAfterViewInit(): void {
@@ -183,6 +186,10 @@ export class EditLayerModalComponent
         this.data.currentMapContainerRef.next(this.mapContainerRef);
       }
     }
+    // If datasource changes, update fields form control
+    this.fields.pipe(takeUntil(this.destroy$)).subscribe((fields: any) => {
+      fields.forEach((field: Fields) => this.updateFormField(field));
+    });
   }
 
   /**
@@ -448,5 +455,38 @@ export class EditLayerModalComponent
     const sublayers = this.form.get('sublayers')?.value;
     const filtered = sublayers?.filter((l) => l !== layerIdToDelete);
     this.form.get('sublayers')?.setValue(filtered);
+  }
+
+  /**
+   * Updates or creates a new form control when editing the layer field
+   * or changing the datasource
+   *
+   * @param field field object with the updated info
+   * @param initializing indicates if datasource didn't changed and fields list
+   * need to be update nad not initialized
+   */
+  updateFormField(field: Fields, initializing = true): void {
+    const fieldsInfo = (
+      this.form.get('popupInfo')?.get('fieldsInfo') as FormArray
+    ).controls;
+    const control = fieldsInfo.find(
+      (fieldControl: any) =>
+        (fieldControl as FormArray)?.get('name')?.value === field.name
+    );
+    if (!control) {
+      const newControl = this.formBuilder.group({
+        label: get(field, 'label', ''),
+        name: get(field, 'name', ''),
+        type: get(field, 'type', ''),
+      });
+      fieldsInfo.push(newControl);
+    } else {
+      if (!initializing) {
+        control.get('label')?.setValue(get(field, 'label', ''));
+        this.fields.next(this.form.get('popupInfo')?.get('fieldsInfo')?.value);
+      } else {
+        field.label = control.get('label')?.value ?? '';
+      }
+    }
   }
 }

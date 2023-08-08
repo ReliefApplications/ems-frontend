@@ -9,11 +9,11 @@ import {
   LayerType,
   LayerFilter,
   GeoJSON,
+  GeometryType,
 } from './interfaces/layer-settings.type';
 import {
   createClusterDivIcon,
   createCustomDivIcon,
-  DEFAULT_MARKER_ICON_OPTIONS,
 } from './utils/create-div-icon';
 import {
   LayerDatasource,
@@ -176,56 +176,6 @@ export class Layer implements LayerModel {
   // Declare variables to store the event listeners
   private zoomListener!: L.LeafletEventHandlerFn;
 
-  /**
-   * Apply options to a layer
-   *
-   * @param map current map
-   * @param layer layer to edit
-   * @param options options to apply
-   * @param iconProperties custom icon properties
-   */
-  public static applyOptionsToLayer(
-    map: L.Map,
-    layer: any,
-    options: any,
-    iconProperties?: any
-  ) {
-    if (layer?.children) {
-      this.applyOptionsToLayer(map, layer.children, options);
-    } else {
-      const layers = get(layer, '_layers', [layer]);
-      for (const layerKey in layers) {
-        if (layers[layerKey]) {
-          if (iconProperties && layers[layerKey] instanceof L.Marker) {
-            const icon = createCustomDivIcon({
-              icon: iconProperties.style,
-              color: iconProperties.color || DEFAULT_MARKER_ICON_OPTIONS.color,
-              size: iconProperties.size || DEFAULT_MARKER_ICON_OPTIONS.size,
-              opacity: options.opacity || DEFAULT_MARKER_ICON_OPTIONS.opacity,
-            });
-            layers[layerKey].setIcon(icon);
-            layers[layerKey].options = {
-              ...layers[layerKey].options,
-              ...options,
-            };
-          } else {
-            layers[layerKey].setStyle(options);
-          }
-          map.removeLayer(layers[layerKey]);
-          if (
-            layers[layerKey].options.visibility &&
-            !(
-              map.getZoom() > layers[layerKey].options.maxZoom ||
-              map.getZoom() < layers[layerKey].options.minZoom
-            )
-          ) {
-            map.addLayer(layers[layerKey]);
-          }
-        }
-      }
-    }
-  }
-
   /** @returns the children of the current layer */
   public async getChildren() {
     await firstValueFrom(this.sublayersLoaded.pipe(filter((v) => v)));
@@ -250,9 +200,6 @@ export class Layer implements LayerModel {
     // If the geojson is a feature collection, return a new feature collection
     // with the features that satisfy the filter
     if (this.geojson.type === 'FeatureCollection') {
-      // console.log(this.geojson.features);
-      // const types = uniqBy(this.geojson.features, 'geometry.type');
-      // console.log(types);
       return {
         type: 'FeatureCollection',
         features: this.geojson.features.filter((feature) =>
@@ -402,6 +349,7 @@ export class Layer implements LayerModel {
 
     // data is the filtered geojson
     const data = this.data;
+    const geometryType = get(this.datasource, 'type') || 'Point';
 
     const symbol: LayerSymbol = {
       style: get(
@@ -415,7 +363,7 @@ export class Layer implements LayerModel {
         'blue'
       ),
       size: get(this.layerDefinition, 'drawingInfo.renderer.symbol.size', 24),
-      ...(this.datasource?.type === 'Polygon' && {
+      ...(geometryType === 'Polygon' && {
         outline: {
           color: get(
             this.layerDefinition,
@@ -457,7 +405,7 @@ export class Layer implements LayerModel {
 
     // options used for parsing geojson to leaflet layer
     const geoJSONopts: L.GeoJSONOptions<any> = {
-      ...(this.datasource?.type === 'Point' && {
+      ...(geometryType === 'Point' && {
         pointToLayer: (feature, latlng) => {
           if (rendererType === 'uniqueValue') {
             const fieldValue = get(
@@ -488,7 +436,7 @@ export class Layer implements LayerModel {
           }
         },
       }),
-      ...(this.datasource?.type === 'Polygon' && {
+      ...(geometryType === 'Polygon' && {
         style: (feature) => {
           if (rendererType === 'uniqueValue') {
             const fieldValue = get(
@@ -515,8 +463,6 @@ export class Layer implements LayerModel {
               opacity: this.opacity,
             };
           }
-          console.log('styling !');
-          console.log(feature);
         },
       }),
       onEachFeature: (feature: Feature<any>, layer: L.Layer) => {
@@ -557,6 +503,7 @@ export class Layer implements LayerModel {
 
         for (const child of sublayers) {
           child.opacity = child.opacity * this.opacity;
+          child.visibility = this.visibility && child.visibility;
           child.layer = await child.getLayer();
         }
         const layers = sublayers
@@ -575,6 +522,8 @@ export class Layer implements LayerModel {
           return l;
         };
         this.layer = layer;
+        (this.layer as any).origin = 'app-builder';
+        (this.layer as any).id = this.id;
         return this.layer;
 
       default:
@@ -699,6 +648,8 @@ export class Layer implements LayerModel {
               return l;
             };
             this.layer = layer;
+            (this.layer as any).origin = 'app-builder';
+            (this.layer as any).id = this.id;
             return this.layer;
           default:
             switch (get(this.layerDefinition, 'featureReduction.type')) {
@@ -774,6 +725,8 @@ export class Layer implements LayerModel {
                 };
                 clusterGroup.addLayer(clusterLayer);
                 this.layer = clusterGroup;
+                (this.layer as any).origin = 'app-builder';
+                (this.layer as any).id = this.id;
                 return this.layer;
               default:
                 const layer = L.geoJSON(data, geoJSONopts);
@@ -789,6 +742,8 @@ export class Layer implements LayerModel {
                   return l;
                 };
                 this.layer = layer;
+                (this.layer as any).origin = 'app-builder';
+                (this.layer as any).id = this.id;
                 return this.layer;
             }
         }
@@ -822,17 +777,20 @@ export class Layer implements LayerModel {
       }
     } else {
       // Classic visibility check based on zoom
+      const currZoom = map.getZoom();
       const maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
       const minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
-      if (map.getZoom() > maxZoom || map.getZoom() < minZoom) {
-        console.log('should hide layer');
+      if (currZoom > maxZoom || currZoom < minZoom) {
         map.removeLayer(layer);
       } else {
-        console.log('should show layer');
-        map.addLayer(layer);
-        const legendControl = (map as any).legendControl;
-        if (legendControl) {
-          legendControl.addLayer(layer, this.legend);
+        if (this.visibility) {
+          map.addLayer(layer);
+          const legendControl = (map as any).legendControl;
+          if (legendControl) {
+            legendControl.addLayer(layer, this.legend);
+          }
+        } else {
+          map.removeLayer(layer);
         }
       }
       // Assign the event listener to the variable
@@ -850,17 +808,20 @@ export class Layer implements LayerModel {
    * @param layer Leaflet layer
    */
   public onZoom(map: L.Map, zoom: L.LeafletEvent, layer: L.Layer) {
-    console.log('I am zooming !');
     const currZoom = zoom.target.getZoom();
     const maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
     const minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
 
-    if (currZoom > maxZoom || currZoom < minZoom) {
-      map.removeLayer(layer);
-    } else {
-      console.log('I am here');
-      console.log(this.visibility);
-      if (this.visibility) map.addLayer(layer);
+    if (isNil((layer as any).shouldDisplay)) {
+      if (currZoom > maxZoom || currZoom < minZoom) {
+        map.removeLayer(layer);
+      } else {
+        if (this.visibility && !(layer as any).deleted) {
+          map.addLayer(layer);
+        } else {
+          map.removeLayer(layer);
+        }
+      }
     }
   }
 
@@ -876,7 +837,13 @@ export class Layer implements LayerModel {
     if (legendControl) {
       legendControl.removeLayer(layer);
     }
-    map.off('zoomend', this.zoomListener);
+    if (!isNil((layer as any).shouldDisplay) || (layer as any).deleted) {
+      // Ensure that we do not subscribe multiple times to zoom event
+      if (this.zoomListener) {
+        map.off('zoomend', this.zoomListener);
+      }
+    }
+    // map.off('zoomend', this.zoomListener);
   }
 
   /**
@@ -886,6 +853,7 @@ export class Layer implements LayerModel {
    */
   get legend() {
     let html = '';
+    const geometryType = get(this.datasource, 'type') || 'Point';
     switch (this.type) {
       case 'FeatureLayer': {
         switch (
@@ -917,97 +885,81 @@ export class Layer implements LayerModel {
               this.layerDefinition,
               'drawingInfo.renderer.defaultSymbol'
             );
-            const pipe = new SafeIconDisplayPipe();
             for (const info of get(
               this.layerDefinition,
               'drawingInfo.renderer.uniqueValueInfos',
               []
             )) {
               const symbol: LayerSymbol = info.symbol;
-              html += `<span class="flex gap-2 items-center"><i style="color: ${
-                symbol.color
-              }"; class="${pipe.transform(symbol.style, 'fa')} pl-2"></i>${
+              html += this.getGeoJSONFeatureLegend(
+                geometryType,
+                symbol,
                 info.label
-              }</span>`;
+              );
             }
             if (defaultSymbol) {
-              html += `<span class="flex gap-2 items-center"><i style="color: ${
-                defaultSymbol.color
-              }"; class="${pipe.transform(
-                defaultSymbol.style,
-                'fa'
-              )} pl-2"></i>${get(
-                this.layerDefinition,
-                'drawingInfo.renderer.defaultLabel'
-              )}</span>`;
+              html += this.getGeoJSONFeatureLegend(
+                geometryType,
+                defaultSymbol,
+                get(this.layerDefinition, 'drawingInfo.renderer.defaultLabel')
+              );
             }
 
             break;
           }
           default: {
             // todo: handle polygon
-            const symbol: LayerSymbol = {
-              style: get(
-                this.layerDefinition,
-                'drawingInfo.renderer.symbol.style',
-                'location-dot'
-              ),
-              color: get(
-                this.layerDefinition,
-                'drawingInfo.renderer.symbol.color',
-                'blue'
-              ),
-              size: get(
-                this.layerDefinition,
-                'drawingInfo.renderer.symbol.size',
-                24
-              ),
-            };
-            const pipe = new SafeIconDisplayPipe();
-            html += `<i style="color: ${symbol.color}"; class="${pipe.transform(
-              symbol.style,
-              'fa'
-            )} pl-2"></i>`;
-            break;
-          }
-        }
-        switch (get(this.layerDefinition, 'featureReduction.type')) {
-          case 'cluster': {
-            // Features legend
-            const symbol: LayerSymbol = {
-              style: get(
-                this.layerDefinition,
-                'drawingInfo.renderer.symbol.style',
-                'location-dot'
-              ),
-              color: get(
-                this.layerDefinition,
-                'drawingInfo.renderer.symbol.color',
-                'blue'
-              ),
-              size: get(
-                this.layerDefinition,
-                'drawingInfo.renderer.symbol.size',
-                24
-              ),
-            };
-            const pipe = new SafeIconDisplayPipe();
-            // Cluster legend
-            const clusterSymbol: LayerSymbol = get(
+            const symbol: LayerSymbol | undefined = get(
               this.layerDefinition,
-              'featureReduction.drawingInfo.renderer.symbol',
-              symbol
+              'drawingInfo.renderer.symbol'
             );
-            html += `<div>Clusters</div>`;
-            html += `<i style="color: ${
-              clusterSymbol.color
-            }"; class="${pipe.transform('circle', 'fa')} pl-2"></i>`;
-            break;
-          }
-          default: {
+            html += this.getGeoJSONFeatureLegend(geometryType, symbol);
             break;
           }
         }
+        if (
+          get(this.layerDefinition, 'drawingInfo.renderer.type', 'simple') !==
+          'heatmap'
+        ) {
+          switch (get(this.layerDefinition, 'featureReduction.type')) {
+            case 'cluster': {
+              // Features legend
+              const symbol: LayerSymbol = {
+                style: get(
+                  this.layerDefinition,
+                  'drawingInfo.renderer.symbol.style',
+                  'location-dot'
+                ),
+                color: get(
+                  this.layerDefinition,
+                  'drawingInfo.renderer.symbol.color',
+                  'blue'
+                ),
+                size: get(
+                  this.layerDefinition,
+                  'drawingInfo.renderer.symbol.size',
+                  24
+                ),
+              };
+              const pipe = new SafeIconDisplayPipe();
+              // Cluster legend
+              const clusterSymbol: LayerSymbol = get(
+                this.layerDefinition,
+                'featureReduction.drawingInfo.renderer.symbol',
+                symbol
+              );
+              html += `<div>Clusters</div>`;
+              html += `<i style="color: ${
+                clusterSymbol.color
+              }"; class="${pipe.transform('circle', 'fa')} pl-2"></i>`;
+              break;
+            }
+            default: {
+              break;
+            }
+          }
+        }
+
         break;
       }
       case 'GroupLayer': {
@@ -1018,5 +970,57 @@ export class Layer implements LayerModel {
       html = `<div class="font-bold truncate">${this.name}</div>` + html;
     }
     return html;
+  }
+
+  /**
+   *
+   * Create GeoJSON Feature legend
+   * Used by simple & unique values renderer
+   *
+   * @param type Point | Polygon
+   * @param symbol symbol to be drawn
+   * @param label label info
+   * @returns legend string
+   */
+  private getGeoJSONFeatureLegend(
+    type: GeometryType,
+    symbol: LayerSymbol | undefined,
+    label?: string
+  ): string {
+    if (symbol) {
+      const pipe = new SafeIconDisplayPipe();
+      switch (type) {
+        case 'Polygon': {
+          // We avoid stroke width to be too important
+          const svgTemplate = `<svg 
+                
+                  width="16" 
+                  height="16"
+                  fill="${symbol.color}"
+                  stroke="${symbol.outline?.color}"
+                  stroke-width="${Math.min(symbol.outline?.width || 0, 10)}px"
+                  >
+                    <g>
+                    <rect x="0" y="0" 
+                    width="16" 
+                    height="16" />
+                    </g>
+                </svg>`;
+          return `<span class="flex gap-2 items-center">${svgTemplate}${
+            label || ''
+          }</span>`;
+        }
+        default:
+        case 'Point': {
+          return `<span class="flex gap-2 items-center"><i style="color: ${
+            symbol.color
+          }"; class="${pipe.transform(symbol.style, 'fa')} pl-2"></i>${
+            label || ''
+          }</span>`;
+        }
+      }
+    } else {
+      return '';
+    }
   }
 }

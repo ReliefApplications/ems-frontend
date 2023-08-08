@@ -6,14 +6,17 @@ import {
   OnChanges,
   OnInit,
   Output,
+  // SimpleChanges,
   TemplateRef,
   ViewChild,
 } from '@angular/core';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { clone, get } from 'lodash';
+// import { clone, get, isEqual } from 'lodash';
 import { takeUntil } from 'rxjs/operators';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../filter.const';
+// import { ContextService } from '../../../services/context/context.service';
 
 /**
  * Composite filter row.
@@ -46,17 +49,40 @@ export class FilterRowComponent
   @ViewChild('numericEditor', { static: false })
   numericEditor!: TemplateRef<any>;
   @ViewChild('dateEditor', { static: false }) dateEditor!: TemplateRef<any>;
+  // @ViewChild('dashboardFilterEditor', { static: false })
+  // dashboardFilterEditor!: TemplateRef<any>;
+
+  // isFilterEnable = false;
+  // isFilterEditorOnView = false;
+  // availableFilterFields: { name: string; value: string }[] = [];
 
   public operators: any[] = [];
 
   /**
    * Constructor of filter row
    */
-  constructor() {
+  constructor(/*private contextService: ContextService*/) {
     super();
   }
 
   ngOnInit(): void {
+    // this.contextService.isFilterEnabled$
+    //   .pipe(takeUntil(this.destroy$))
+    //   .subscribe({
+    //     next: (isFilterEnable: boolean) => {
+    //       this.isFilterEnable = isFilterEnable;
+    //       const availableFilterFields =
+    //         this.contextService.availableFilterFields;
+    //       if (isFilterEnable && availableFilterFields.length) {
+    //         this.availableFilterFields =
+    //           this.contextService.availableFilterFields.map((field) => ({
+    //             name: field.name,
+    //             value: `{{filter.${field.value}}}`,
+    //           }));
+    //       }
+    //     },
+    //   });
+
     this.form
       .get('field')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
@@ -85,9 +111,13 @@ export class FilterRowComponent
     }
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(/*changes: SimpleChanges*/): void {
     const initialField = this.form.get('field')?.value;
-    if (initialField && this.fields.length > 0) {
+    if (
+      initialField &&
+      this.fields.length > 0 /*&&
+      !isEqual(changes.fields?.previousValue, changes.fields?.currentValue)*/
+    ) {
       this.setField(initialField);
     }
   }
@@ -140,9 +170,24 @@ export class FilterRowComponent
    * @param field filter field
    */
   private setEditor(field: any) {
+    // let editorSet = false;
+    // const value = this.form.get('value')?.value;
+    // this.isFilterEditorOnView = false;
     if (get(field, 'filter.template', null)) {
       this.editor = field.filter.template;
     } else {
+      //   editorSet = true;
+      // } else if (typeof value === 'string' && value.startsWith('{{filter.')) {
+      //   if (this.isFilterEnable) {
+      //     this.editor = this.dashboardFilterEditor;
+      //     this.isFilterEditorOnView = true;
+      //     editorSet = true;
+      //   } else {
+      //     this.form.get('value')?.setValue(null);
+      //     this.isFilterEditorOnView = false;
+      //   }
+      // }
+      // if (!editorSet) {
       switch (field.editor) {
         case 'text': {
           this.editor = this.textEditor;
@@ -172,4 +217,16 @@ export class FilterRowComponent
       }
     }
   }
+
+  /** Toggles filter editor */
+  // public toggleFilterEditor() {
+  //   this.form.get('value')?.setValue(null);
+  //   if (this.editor === this.dashboardFilterEditor) {
+  //     this.setEditor(this.field);
+  //     this.isFilterEditorOnView = false;
+  //   } else {
+  //     this.editor = this.dashboardFilterEditor;
+  //     this.isFilterEditorOnView = true;
+  //   }
+  // }
 }

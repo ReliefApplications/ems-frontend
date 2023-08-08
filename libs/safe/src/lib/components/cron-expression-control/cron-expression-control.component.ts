@@ -91,9 +91,6 @@ export class CronExpressionControlComponent
     );
     const dialogRef = this.dialog.open(CronExpressionControlModalComponent, {
       autoFocus: false,
-      data: {
-        value: this.value,
-      },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {

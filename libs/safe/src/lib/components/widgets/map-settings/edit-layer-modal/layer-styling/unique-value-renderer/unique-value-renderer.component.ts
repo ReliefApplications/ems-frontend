@@ -4,7 +4,7 @@ import { FormArray, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { SimpleRendererComponent } from '../simple-renderer/simple-renderer.component';
 import { createUniqueValueInfoForm } from '../../../map-forms';
 import { SafeIconDisplayModule } from '../../../../../../pipes/icon-display/icon-display.module';
-import { Fields } from '../../layer-fields/layer-fields.component';
+import { Fields } from '../../../../../../models/layer.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import {
@@ -14,6 +14,7 @@ import {
   SelectMenuModule,
 } from '@oort-front/ui';
 import { GeometryType } from '../../../../../ui/map/interfaces/layer-settings.type';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Unique value renderer layer settings.
@@ -31,6 +32,7 @@ import { GeometryType } from '../../../../../ui/map/interfaces/layer-settings.ty
     SelectMenuModule,
     DragDropModule,
     IconModule,
+    TranslateModule,
   ],
   templateUrl: './unique-value-renderer.component.html',
   styleUrls: ['./unique-value-renderer.component.scss'],
@@ -51,8 +53,6 @@ export class UniqueValueRendererComponent implements OnInit {
 
   ngOnInit(): void {
     this.fields$.subscribe((value) => {
-      console.log('fields');
-      console.log(value);
       this.scalarFields.next(
         value.filter((field) => ['string'].includes(field.type.toLowerCase()))
       );

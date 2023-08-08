@@ -139,8 +139,6 @@ export class MapLayersComponent
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      console.log('add');
-      console.log(value);
       if (value) {
         this.loading = true;
         this.mapLayersService.addLayer(value).subscribe({
@@ -201,8 +199,6 @@ export class MapLayersComponent
         dialogRef.closed
           .pipe(takeUntil(this.destroy$))
           .subscribe((value: any) => {
-            console.log('edit');
-            console.log(value);
             if (value) {
               this.loading = true;
               this.mapLayersService.editLayer(value).subscribe({

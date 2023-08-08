@@ -42,19 +42,28 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
       tooltip: 'Avatar',
       onAction: () => {
         editor.windowManager.open({
-          title: 'Avatars', //TODO: Translate
+          title: 'Avatars',
           body: {
             type: 'panel',
             items: [
               {
                 type: 'input',
                 name: 'avatarsSource',
-                label: 'Source', //TODO: Translate
+                label: 'Source',
               },
               {
                 type: 'input',
                 name: 'avatarsMaxItems',
-                label: 'Max items', //TODO: Translate
+                label: 'Max items',
+              },
+              {
+                type: 'listbox',
+                name: 'shape',
+                label: 'Shape',
+                items: [
+                  { text: 'Circle', value: 'circle' },
+                  { text: 'Square', value: 'square' },
+                ],
               },
               {
                 type: 'bar',
@@ -62,12 +71,12 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
                   {
                     type: 'input',
                     name: 'avatarsWidth',
-                    label: 'Width', //TODO: Translate
+                    label: 'Width',
                   },
                   {
                     type: 'input',
                     name: 'avatarsHeight',
-                    label: 'Height', //TODO: Translate
+                    label: 'Height',
                   },
                 ],
               },
@@ -76,8 +85,9 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
           initialData: {
             avatarsSource: '',
             avatarsMaxItems: '3',
-            avatarsWidth: '24',
-            avatarsHeight: '24',
+            shape: 'circle',
+            avatarsWidth: '48',
+            avatarsHeight: '48',
           },
           onChange: (api) => {
             // validate the data types
@@ -96,17 +106,17 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
           },
           onSubmit: (api) => {
             const data = api.getData();
-            const html = `{{avatars.${data.avatarsSource} ${data.avatarsWidth} ${data.avatarsHeight} ${data.avatarsMaxItems}}}`;
+            const html = `{{avatars.${data.avatarsSource} ${data.shape} ${data.avatarsWidth} ${data.avatarsHeight} ${data.avatarsMaxItems}}}`;
             editor.insertContent(html);
             api.close();
           },
           buttons: [
             {
-              text: 'Close', //TODO: Translate
+              text: 'Close',
               type: 'cancel',
             },
             {
-              text: 'Insert', //TODO: Translate
+              text: 'Insert',
               type: 'submit',
               name: 'submit',
               primary: true,

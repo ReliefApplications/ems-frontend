@@ -40,7 +40,7 @@ import { SafeAggregationService } from '../../../../../services/aggregation/aggr
 import { SafeEditAggregationModalComponent } from '../../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
-import { Fields } from '../layer-fields/layer-fields.component';
+import { Fields } from '../../../../../models/layer.model';
 import { GraphQLSelectComponent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 
@@ -201,7 +201,6 @@ export class LayerDatasourceComponent
         })
         .subscribe(({ data }) => {
           this.refData = data.referenceData;
-          console.log(this.getFieldsFromRefData(this.refData.fields || []));
           this.fields.next(
             this.getFieldsFromRefData(this.refData.fields || [])
           );
@@ -218,7 +217,6 @@ export class LayerDatasourceComponent
             .getValue()
             .find((x) => x.id === refDataID) || null;
         if (this.refData) {
-          console.log(this.getFieldsFromRefData(this.refData.fields || []));
           this.fields.next(
             this.getFieldsFromRefData(this.refData.fields || [])
           );
