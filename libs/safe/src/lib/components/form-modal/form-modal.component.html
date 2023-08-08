@@ -38,7 +38,7 @@
     <ui-button (click)="onClose()" variant="danger">{{
       'common.cancel' | translate
     }}</ui-button>
-    <ng-container *ngIf="survey?.visiblePages as pages">
+    <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
       <ui-button
         category="secondary"
         variant="primary"
