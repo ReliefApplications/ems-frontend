@@ -130,6 +130,7 @@
 		"modifiedOn": "Modified On",
 		"name": "Name",
 		"next": "Next",
+		"noOptions": "No available choices",
 		"notifications": {
 			"accessDenied": "You don't have permission to see the {{type}}.",
 			"accessNotProvided": "No access provided to this {{type}}. {{error}}",
