@@ -2030,7 +2030,8 @@
 				"form": {
 					"title": "Formulaires disponibles"
 				},
-				"selectType": "Sélectionnez le type de page que vous voulez créer"
+				"selectType": "Sélectionnez le type de page que vous voulez créer",
+				"startFromWidget": "@TODO"
 			},
 			"empty": {
 				"add": "Ajouter une page",

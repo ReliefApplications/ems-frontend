@@ -2014,7 +2014,8 @@
 				"form": {
 					"title": "******"
 				},
-				"selectType": "******"
+				"selectType": "******",
+				"startFromWidget": "******"
 			},
 			"empty": {
 				"add": "******",
