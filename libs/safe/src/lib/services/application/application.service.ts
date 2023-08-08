@@ -92,10 +92,6 @@ import {
 import { SafeRestService } from '../rest/rest.service';
 import { SafeLayoutService } from '../layout/layout.service';
 import { SnackbarService } from '@oort-front/ui';
-import { SafeDashboardService } from '../dashboard/dashboard.service';
-
-/** Maximum width of the widget in column units */
-const MAX_COL_SPAN = 8;
 
 /**
  * Shared application service. Handles events of opened application.
@@ -179,7 +175,6 @@ export class SafeApplicationService {
    * @param restService Shared rest service.
    * @param downloadService Shared download service
    * @param layoutService Shared layout service
-   * @param dashboardService Shared dashboard service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -190,8 +185,7 @@ export class SafeApplicationService {
     private translate: TranslateService,
     private restService: SafeRestService,
     private downloadService: SafeDownloadService,
-    private layoutService: SafeLayoutService,
-    private dashboardService: SafeDashboardService
+    private layoutService: SafeLayoutService
   ) {
     this.environment = environment;
   }
@@ -693,9 +687,9 @@ export class SafeApplicationService {
    * Adds a new page to the opened application.
    *
    * @param page new page
-   * @param widget Widget to add to a page
+   * @param structure page structure ( only for new dashboard pages )
    */
-  addPage(page: any, widget?: any): void {
+  addPage(page: any, structure?: any): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo
@@ -705,6 +699,7 @@ export class SafeApplicationService {
             type: page.type,
             content: page.content,
             application: application.id,
+            structure,
           },
         })
         .subscribe(({ errors, data }) => {
@@ -721,21 +716,12 @@ export class SafeApplicationService {
               ...application,
               pages: application.pages?.concat([data.addPage]),
             };
-
-            //create a dashboard with the widget
-            if (widget) {
-              widget[0].defaultCols = MAX_COL_SPAN;
-              this.dashboardService.createDashboard(content, widget);
-            }
-
-            setTimeout(() => {
-              this.application.next(newApplication);
-              this.router.navigate([
-                page.type === ContentType.form
-                  ? `/applications/${application.id}/${page.type}/${data.addPage.id}`
-                  : `/applications/${application.id}/${page.type}/${content}`,
-              ]);
-            }, 250);
+            this.application.next(newApplication);
+            this.router.navigate([
+              page.type === ContentType.form
+                ? `/applications/${application.id}/${page.type}/${data.addPage.id}`
+                : `/applications/${application.id}/${page.type}/${content}`,
+            ]);
           } else {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotCreated', {

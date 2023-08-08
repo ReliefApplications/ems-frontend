@@ -29,6 +29,8 @@ import { Dialog } from '@angular/cdk/dialog';
  * Number of items per page.
  */
 const ITEMS_PER_PAGE = 10;
+/** Widget types that can be used as single widget page */
+const SINGLE_WIDGET_PAGE_TYPES = ['grid', 'map', 'summaryCard'];
 
 /**
  * Add page component.
@@ -55,8 +57,6 @@ export class AddPageComponent
   };
   private loading = true;
   public loadingMore = false;
-
-  public widget: any;
 
   // === REACTIVE FORM ===
   public pageForm: UntypedFormGroup = new UntypedFormGroup({});
@@ -126,9 +126,9 @@ export class AddPageComponent
       this.onNext();
     });
 
-    const typesWidget = ['grid', 'map', 'summaryCard'];
+    // Set the available widgets that can directly be added as single widget dashboard
     this.availableWidgets = this.availableWidgets.filter((widget: any) => {
-      for (const wid of typesWidget) {
+      for (const wid of SINGLE_WIDGET_PAGE_TYPES) {
         if (widget.id.includes(wid)) {
           return widget;
         }
@@ -157,14 +157,10 @@ export class AddPageComponent
   }
 
   /**
-   * Submit form to application service for creation
+   * Submit form to application service for creation of a new page
    */
   onSubmit(): void {
-    if (this.widget) {
-      this.applicationService.addPage(this.pageForm.value, this.widget);
-    } else {
-      this.applicationService.addPage(this.pageForm.value);
-    }
+    this.applicationService.addPage(this.pageForm.value);
   }
 
   /**
@@ -255,18 +251,26 @@ export class AddPageComponent
   }
 
   /**
-   * Add a new widget
+   * Add a new widget as a dashboard page.
+   * Skip the onSubmit method, and use custom event handling to call application service to add the page with new content.
    *
-   * @param e new widget.
+   * @param widget new widget.
    */
-  onAddWidget(e: any): void {
-    this.widget = [e];
-    const contentControl = this.pageForm.controls.content;
-    contentControl.setValidators(null);
-    contentControl.setValue(null);
-    contentControl.updateValueAndValidity();
-    this.pageForm.controls.type.setValue('dashboard', e);
-    this.onNext();
+  onAddWidget(widget: any): void {
+    // Build the structure and set width of widget
+    const structure = [
+      {
+        ...widget,
+        defaultCols: 8,
+      },
+    ];
+    // Directly call application service to add page with structure
+    this.applicationService.addPage(
+      {
+        type: 'dashboard',
+      },
+      structure
+    );
   }
 
   /**

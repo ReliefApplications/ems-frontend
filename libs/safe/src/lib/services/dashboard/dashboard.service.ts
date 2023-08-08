@@ -256,24 +256,4 @@ export class SafeDashboardService {
         });
       });
   }
-
-  /**
-   * Create a dashbord by an id and widget
-   *
-   * @param id Id of dashboard
-   * @param widget Widget to be added to the dashboard
-   */
-  public createDashboard(id: any, widget: any) {
-    this.apollo
-      .mutate<EditDashboardMutationResponse>({
-        mutation: EDIT_DASHBOARD,
-        variables: {
-          id: id,
-          structure: widget,
-        },
-      })
-      .subscribe({
-        error: (error) => console.log(error),
-      });
-  }
 }
