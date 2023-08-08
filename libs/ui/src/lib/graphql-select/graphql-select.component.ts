@@ -409,7 +409,7 @@ export class GraphQLSelectComponent
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
       50
     ) {
-      if (!this.loading && this.pageInfo.hasNextPage) {
+      if (!this.loading && this.pageInfo?.hasNextPage) {
         // Check if original query is using skip or afterCursor
         const queryDefinition = this.query.options.query.definitions[0];
         const isSkip =

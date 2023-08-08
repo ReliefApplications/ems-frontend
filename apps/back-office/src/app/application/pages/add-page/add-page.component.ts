@@ -316,7 +316,7 @@ export class AddPageComponent
   private updateValues(data: GetFormsQueryResponse, loading: boolean) {
     this.cachedForms = updateQueryUniqueValues(
       this.cachedForms,
-      data.forms.edges.map((x) => x.node),
+      data.forms?.edges?.map((x) => x.node),
       'id'
     );
     this.forms.next(this.cachedForms);

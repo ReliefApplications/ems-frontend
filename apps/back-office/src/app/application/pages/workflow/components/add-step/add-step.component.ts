@@ -296,7 +296,7 @@ export class AddStepComponent
   private updateValues(data: GetFormsQueryResponse, loading: boolean) {
     this.cachedForms = updateQueryUniqueValues(
       this.cachedForms,
-      data.forms.edges.map((x) => x.node)
+      data.forms?.edges?.map((x) => x.node)
     );
     this.forms.next(this.cachedForms);
     this.pageInfo = data.forms.pageInfo;

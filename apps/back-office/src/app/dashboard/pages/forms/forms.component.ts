@@ -328,7 +328,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
    * @param loading Loading state
    */
   private updateValues(data: GetFormsQueryResponse, loading: boolean): void {
-    const mappedValues = data.forms.edges.map((x) => x.node);
+    const mappedValues = data.forms?.edges?.map((x) => x.node);
     this.cachedForms = updateQueryUniqueValues(this.cachedForms, mappedValues);
     this.forms = mappedValues;
     this.pageInfo.length = data.forms.totalCount;
