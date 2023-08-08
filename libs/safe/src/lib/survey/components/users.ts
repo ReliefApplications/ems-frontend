@@ -2,7 +2,13 @@ import { Apollo } from 'apollo-angular';
 import * as SurveyCreator from 'survey-creator';
 import { DomService } from '../../services/dom/dom.service';
 import { SafeApplicationDropdownComponent } from '../../components/application-dropdown/application-dropdown.component';
-import { GetUsersQueryResponse, GET_USERS } from '../graphql/queries';
+import {
+  GetUsersQueryResponse,
+  GET_USERS,
+  GET_ROLES_FROM_APPLICATIONS,
+  GetRolesFromApplicationsQueryResponse,
+} from '../graphql/queries';
+import { Question } from 'survey-angular';
 
 /**
  * Inits the users component.
@@ -16,6 +22,14 @@ export const init = (
   domService: DomService,
   apollo: Apollo
 ): void => {
+  const getApplicationRoles = (ids: string[]) =>
+    apollo.query<GetRolesFromApplicationsQueryResponse>({
+      query: GET_ROLES_FROM_APPLICATIONS,
+      variables: {
+        applications: ids,
+      },
+    });
+
   // registers icon-users in the SurveyJS library
   Survey.SvgRegistry.registerIconFromSvg(
     'users',
@@ -41,6 +55,27 @@ export const init = (
         isDynamicChoices: true,
         visibleIndex: 3,
         required: true,
+      });
+
+      Survey.Serializer.addProperty('users', {
+        name: 'filterBy',
+        category: 'Users properties',
+        dependsOn: 'applications',
+        // Only makes sense to show this property if there is only one application selected
+        visibleIf: (obj: null | Question) => obj?.applications?.length === 1,
+        visibleIndex: 3,
+        choices: (obj: Question, choicesCallback: any) => {
+          if (obj.applications?.length) {
+            getApplicationRoles(obj.applications).subscribe(({ data }) => {
+              if (!data) choicesCallback([]);
+              const roles = data.rolesFromApplications.map((r) => ({
+                value: r.id,
+                text: r.title?.split(' - ')[1],
+              }));
+              choicesCallback(['', ...roles]);
+            });
+          }
+        },
       });
 
       const applicationEditor = {
@@ -71,10 +106,18 @@ export const init = (
         })
         .subscribe(({ data }) => {
           if (data.users) {
-            const users: any = [];
+            const users: { value: string; text: string }[] = [];
             for (const user of data.users) {
-              if (!users.some((el: any) => el.value === user.id)) {
-                users.push({ value: user.id, text: user.username });
+              if (
+                user.id &&
+                user.username &&
+                !users.find((el) => el.value === user.id)
+              ) {
+                if (
+                  !question.filterBy ||
+                  user.roles?.find((r) => r.id === question.filterBy)
+                )
+                  users.push({ value: user.id, text: user.username });
               }
             }
             question.contentQuestion.choices = users;

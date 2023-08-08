@@ -74,7 +74,7 @@ export interface GetResourceByIdQueryResponse {
 
 // === GET USERS ===
 
-/** Graphql request for getting users (optionnally by a list of application ids) */
+/** Graphql request for getting users (optionally by a list of application ids) */
 export const GET_USERS = gql`
   query GetUsers($applications: [ID]) {
     users(applications: $applications) {
@@ -82,6 +82,9 @@ export const GET_USERS = gql`
       username
       name
       oid
+      roles {
+        id
+      }
     }
   }
 `;
