@@ -257,7 +257,6 @@ export class SafeGridWidgetComponent
   public async onQuickAction(options: any): Promise<void> {
     // Select all the records in the grid
     if (options.selectAll) {
-      console.log('comes from there');
       const query = this.queryBuilder.graphqlQuery(
         this.grid.settings.query.name,
         'id\n'
