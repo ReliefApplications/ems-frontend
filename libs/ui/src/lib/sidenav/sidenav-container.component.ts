@@ -37,6 +37,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   private destroy$ = new Subject<void>();
   animationClasses = ['transition-all', 'duration-500', 'ease-in-out'] as const;
 
+  /** @returns height of element */
   get height() {
     return `${this.el.nativeElement.offsetHeight}px`;
   }
