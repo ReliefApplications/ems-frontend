@@ -1,17 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AutocompleteComponent } from './autocomplete.component';
 
-import { ButtonComponent } from './button.component';
-
-describe('ButtonComponent', () => {
-  let component: ButtonComponent;
-  let fixture: ComponentFixture<ButtonComponent>;
+describe('AutocompleteComponent', () => {
+  let component: AutocompleteComponent;
+  let fixture: ComponentFixture<AutocompleteComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ButtonComponent],
+      declarations: [AutocompleteComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ButtonComponent);
+    fixture = TestBed.createComponent(AutocompleteComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
