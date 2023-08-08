@@ -419,10 +419,12 @@ export class EditLayerModalComponent
                 null
               );
               this.fields.next(
-                this.mapLayersService.getAggregationFields(
-                  data.resource,
-                  aggregation
-                )
+                aggregation
+                  ? this.mapLayersService.getAggregationFields(
+                      data.resource,
+                      aggregation
+                    )
+                  : []
               );
             }
           }
