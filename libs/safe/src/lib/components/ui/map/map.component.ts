@@ -983,4 +983,15 @@ export class MapComponent
     });
     this.layers = [];
   }
+
+  /**
+   * Enable/Disable all handlers in the leaflet map
+   *
+   * @param disable If handlers must be disabled or not
+   */
+  disableMapHandlers(disable: boolean) {
+    (this.map as any)['_handlers']?.forEach((handler: L.Handler) => {
+      disable ? handler.disable() : handler.enable();
+    });
+  }
 }

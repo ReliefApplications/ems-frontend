@@ -612,52 +612,56 @@ export class Layer implements LayerModel {
             };
 
             const layer = L.heatLayer(heatArray, heatmapOptions);
+            const setPopupListener = (event: any, map: L.Map) => {
+              const layerClass = event.originalEvent.target?.className;
+              // We are setting the click event in the whole map, so in order to trigger the popup for heatmap we filter the target from the heatmap
+              if (
+                typeof layerClass === 'string' &&
+                layerClass?.includes('heatmap')
+              ) {
+                const zoom = map.getZoom();
+                const radius = 1000 / zoom;
+                const coordinates = {
+                  lat: event.latlng.lat,
+                  lng: event.latlng.lng,
+                };
+                // checks if the point is within the calculate radius
+                const matchedPoints = data.features.filter((feature) => {
+                  if (
+                    feature.type === 'Feature' &&
+                    feature.geometry.type === 'Point'
+                  ) {
+                    const pointData = [
+                      feature.geometry.coordinates[1],
+                      feature.geometry.coordinates[0],
+                      get(feature, 'properties.weight', 1),
+                    ];
+                    const distance = haversineDistance(
+                      event.latlng.lat,
+                      event.latlng.lng,
+                      pointData[0],
+                      pointData[1]
+                    );
+                    return distance < radius;
+                  } else return false;
+                });
 
+                this.popupService.setPopUp(
+                  matchedPoints,
+                  coordinates,
+                  this.popupInfo
+                );
+              }
+            };
             layer.onAdd = (map: L.Map) => {
               // So we can use onAdd method from HeatLayer class
               const l = (L as any).HeatLayer.prototype.onAdd.call(layer, map);
               // Leaflet.heat doesn't support click events, so we have to do it ourselves
-              map.on('click', (event: any) => {
-                const layerClass = event.originalEvent.target?.className;
-                // We are setting the click event in the whole map, so in order to trigger the popup for heatmap we filter the target from the heatmap
-                if (
-                  typeof layerClass === 'string' &&
-                  layerClass?.includes('heatmap')
-                ) {
-                  const zoom = map.getZoom();
-                  const radius = 1000 / zoom;
-                  const coordinates = {
-                    lat: event.latlng.lat,
-                    lng: event.latlng.lng,
-                  };
-                  // checks if the point is within the calculate radius
-                  const matchedPoints = data.features.filter((feature) => {
-                    if (
-                      feature.type === 'Feature' &&
-                      feature.geometry.type === 'Point'
-                    ) {
-                      const pointData = [
-                        feature.geometry.coordinates[1],
-                        feature.geometry.coordinates[0],
-                        get(feature, 'properties.weight', 1),
-                      ];
-                      const distance = haversineDistance(
-                        event.latlng.lat,
-                        event.latlng.lng,
-                        pointData[0],
-                        pointData[1]
-                      );
-                      return distance < radius;
-                    } else return false;
-                  });
-
-                  this.popupService.setPopUp(
-                    matchedPoints,
-                    coordinates,
-                    this.popupInfo
-                  );
-                }
-              });
+              map.on(
+                'click',
+                (event: any) => setPopupListener(event, map),
+                layer
+              );
               this.onAddLayer(map, layer);
               return l;
             };
@@ -665,6 +669,12 @@ export class Layer implements LayerModel {
               const l = (L as any).HeatLayer.prototype.onRemove.call(
                 layer,
                 map
+              );
+              // Remove previously added listener on layer removal
+              map.off(
+                'click',
+                (event: any) => setPopupListener(event, map),
+                layer
               );
               this.onRemoveLayer(map, layer);
               return l;

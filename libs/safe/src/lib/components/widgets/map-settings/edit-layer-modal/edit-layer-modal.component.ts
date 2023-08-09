@@ -20,6 +20,7 @@ import {
   distinctUntilChanged,
   filter,
   combineLatest,
+  tap,
 } from 'rxjs';
 import { MapComponent } from '../../../ui/map/map.component';
 import {
@@ -289,6 +290,8 @@ export class EditLayerModalComponent
       };
       if (options.delete) {
         this.currentLayer = undefined as unknown as L.Layer;
+      } else {
+        this.data.mapComponent.disableMapHandlers(false);
       }
       this.triggerFormChange.next(lastFormValue);
     }
@@ -314,6 +317,8 @@ export class EditLayerModalComponent
             this.triggerFormChange.getValue() &&
             !isEqual(this.triggerFormChange.getValue(), next)
         ),
+        // Disable all map handlers while map data is updating to avoid any unwanted side effects
+        tap(() => this.data.mapComponent.disableMapHandlers(true)),
         takeUntil(this.destroy$)
       )
       .subscribe({
