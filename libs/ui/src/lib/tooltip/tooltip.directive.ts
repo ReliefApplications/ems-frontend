@@ -77,7 +77,6 @@ export class TooltipDirective implements OnDestroy {
    * Destroy the tooltip and stop its display
    */
   private removeHint() {
-    console.log(this.document.body);
     if (this.document.body.contains(this.elToolTip)) {
       this.renderer.removeChild(this.document.body, this.elToolTip);
     }
