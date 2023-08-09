@@ -1,6 +1,7 @@
 import { get, isArray, isNil } from 'lodash';
 import calcFunctions from './calcFunctions';
 import { Page } from '../../models/page.model';
+import { REFERENCE_DATA_END } from '../../services/query-builder/query-builder.service';
 
 /** Prefix for data keys */
 const DATA_PREFIX = '{{data.';
@@ -159,7 +160,17 @@ const replaceRecordFields = (
       const matches = formattedHtml.matchAll(avatarRgx);
       for (const match of matches) {
         if (Array.isArray(value) && value.length > 0) {
-          const avatarValue = value.filter((v: string) => {
+          // Map value array to use only string values in case of reference data objects
+          const checkedValue = value.map((v: any) => {
+            const refData =
+              v.__typename && v.__typename.endsWith(REFERENCE_DATA_END);
+            let refDataValue = null;
+            if (refData) {
+              refDataValue = v[v.__typename.slice(0, -3)];
+            }
+            return refDataValue === null ? v : refDataValue;
+          });
+          const avatarValue = checkedValue.filter((v: string) => {
             if (typeof v === 'string') {
               const lowercaseValue = v.toLowerCase();
               return ALLOWED_IMAGE_EXTENSIONS.some((ext) =>
