@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HtmlWidgetContentComponent } from './html-widget-content.component';
 
-describe('IsolatedHtmlComponent', () => {
+describe('HtmlWidgetContentComponent', () => {
   let component: HtmlWidgetContentComponent;
   let fixture: ComponentFixture<HtmlWidgetContentComponent>;
 

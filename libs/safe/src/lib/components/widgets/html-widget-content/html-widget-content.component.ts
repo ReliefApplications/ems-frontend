@@ -2,7 +2,7 @@ import { Component, Input, ViewEncapsulation } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 
 /**
- * Isolated HTML component
+ * HTML Widget content component
  *
  * Allows to render HTML with custom styles without interfering with the rest of the application.
  */

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { HtmlWidgetContentComponent } from './html-widget-content.component';
 
 /**
- * Module for the IsolatedHtml component
+ * Module for the HtmlWidgetContentComponent component
  */
 @NgModule({
   declarations: [HtmlWidgetContentComponent],
