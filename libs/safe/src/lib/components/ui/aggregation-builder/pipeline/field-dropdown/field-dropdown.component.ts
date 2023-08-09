@@ -49,6 +49,9 @@ export class SafeFieldDropdownComponent implements AfterViewInit, OnChanges {
     }
     if (changes.fieldControl?.currentValue.value) {
       this.currentValueUnnested = !this.fieldControl.value.includes('.'); //forces the new field to be unnested
+      if (this.fields) {
+        this.unnestCurrentValue();
+      }
     }
   }
 
