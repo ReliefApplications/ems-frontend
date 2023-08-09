@@ -9,7 +9,6 @@ import {
   ContentType,
   CONTENT_TYPES,
   Form,
-  SafeAuthService,
   SafeUnsubscribeComponent,
   SafeWorkflowService,
 } from '@oort-front/safe';
@@ -64,18 +63,16 @@ export class AddStepComponent
    * @param formBuilder Angular form builder
    * @param dialog Dialog service
    * @param snackBar Shared snackbar service
-   * @param authService Shared authentication service
    * @param apollo Apollo service
-   * @param workflowServive Shared workflow service
+   * @param workflowService Shared workflow service
    */
   constructor(
     private route: ActivatedRoute,
     private formBuilder: UntypedFormBuilder,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private authService: SafeAuthService,
     private apollo: Apollo,
-    private workflowServive: SafeWorkflowService
+    private workflowService: SafeWorkflowService
   ) {
     super();
   }
@@ -147,7 +144,7 @@ export class AddStepComponent
    * Submit form to workflow service
    */
   onSubmit(): void {
-    this.workflowServive.addStep(this.stepForm.value, this.route);
+    this.workflowService.addStep(this.stepForm.value, this.route);
   }
 
   /**
