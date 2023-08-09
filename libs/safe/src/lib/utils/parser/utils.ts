@@ -145,6 +145,8 @@ const replaceRecordFields = (
 ): string => {
   let formattedHtml = html;
   if (fields) {
+    const links = formattedHtml.match(`href=["]?[^" >]+`);
+
     for (const field of fields) {
       const value = fieldsValue[field.name];
       const style = getLayoutsStyle(styles, field.name, fieldsValue);
@@ -191,6 +193,19 @@ const replaceRecordFields = (
           'gi'
         );
         formattedHtml = formattedHtml.replace(srcRegex, `src=${value}`);
+
+        // Prevent URL from containing style
+        links?.forEach((link) => {
+          if (
+            link.match(`${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}`)
+          ) {
+            const formattedLink = link.replace(
+              `${DATA_PREFIX}${field.name}${PLACEHOLDER_SUFFIX}`,
+              value
+            );
+            formattedHtml = formattedHtml.replace(link, formattedLink);
+          }
+        });
 
         switch (field.type) {
           case 'url': {
