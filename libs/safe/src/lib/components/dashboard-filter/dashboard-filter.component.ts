@@ -116,7 +116,7 @@ export class DashboardFilterComponent
       this.resizeObserver = new ResizeObserver(() => {
         this.setFilterContainerDimensions();
       });
-      this.resizeObserver.observe(this._host.content.nativeElement);
+      this.resizeObserver.observe(this._host.contentContainer.nativeElement);
     }
 
     this.contextService.filter$

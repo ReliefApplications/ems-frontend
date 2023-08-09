@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   SafeContentChoiceModule,
   SafeFormsDropdownModule,
+  SafeWidgetChoiceModule,
 } from '@oort-front/safe';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
@@ -27,6 +28,7 @@ import { DividerModule, ButtonModule } from '@oort-front/ui';
     DividerModule,
     AbilityModule,
     ButtonModule,
+    SafeWidgetChoiceModule,
   ],
 })
 export class AddPageModule {}
