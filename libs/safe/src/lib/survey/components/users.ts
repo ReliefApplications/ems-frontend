@@ -9,6 +9,7 @@ import {
   GetRolesFromApplicationsQueryResponse,
 } from '../graphql/queries';
 import { Question } from 'survey-angular';
+import { uniqWith } from 'lodash';
 
 /**
  * Inits the users component.
@@ -72,7 +73,7 @@ export const init = (
                 value: r.id,
                 text: r.title?.split(' - ')[1],
               }));
-              choicesCallback([{value: null, text: ''}, ...roles]);
+              choicesCallback([{ value: null, text: '' }, ...roles]);
             });
           }
         },
@@ -108,19 +109,21 @@ export const init = (
           if (data.users) {
             const users: { value: string; text: string }[] = [];
             for (const user of data.users) {
+              if (!user.id || !user.username) {
+                continue;
+              }
+
               if (
-                user.id &&
-                user.username &&
-                !users.find((el) => el.value === user.id)
+                !question.filterBy ||
+                user.roles?.find((r) => r.id === question.filterBy)
               ) {
-                if (
-                  !question.filterBy ||
-                  user.roles?.find((r) => r.id === question.filterBy)
-                )
-                  users.push({ value: user.id, text: user.username });
+                users.push({ value: user.id, text: user.username });
               }
             }
-            question.contentQuestion.choices = users;
+            question.contentQuestion.choices = uniqWith(
+              users,
+              (u1, u2) => u1.value === u2.value
+            );
           }
         });
     },
