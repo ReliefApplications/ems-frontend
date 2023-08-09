@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import {
   catchError,
@@ -35,7 +35,6 @@ import {
 } from './graphql/queries';
 import { HttpParams } from '@angular/common/http';
 import { omitBy, isNil, get } from 'lodash';
-import { SafeMapPopupService } from '../../components/ui/map/map-popup/map-popup.service';
 import { ContextService } from '../context/context.service';
 
 /**
@@ -261,14 +260,12 @@ export class SafeMapLayersService {
    * todo(gis): extended model is useless
    *
    * @param layerIds layer settings saved from the layer editor
-   * @param popupService popup service
-   * @param layerService Shared layer service
+   * @param injector Injector containing all needed providers for layer class
    * @returns Observable of LayerSettingsI
    */
   async createLayersFromIds(
     layerIds: string[],
-    popupService: SafeMapPopupService,
-    layerService: SafeMapLayersService
+    injector: Injector
   ): Promise<Layer[]> {
     const promises: Promise<Layer>[] = [];
     for (const id of layerIds) {
@@ -291,11 +288,7 @@ export class SafeMapLayersService {
             }),
             map(
               (layer: { layer: LayerModel; geojson: any }) =>
-                new Layer(
-                  { ...layer.layer, geojson: layer.geojson },
-                  popupService,
-                  layerService
-                )
+                new Layer({ ...layer.layer, geojson: layer.geojson }, injector)
             )
           )
         )
@@ -313,15 +306,10 @@ export class SafeMapLayersService {
    * Create layer from its definition
    *
    * @param layer Layer to get definition of.
-   * @param popupService Shared popup service
-   * @param layersService Shared layers service
+   * @param injector Injector containing all needed providers for layer class
    * @returns Layer for map widget
    */
-  async createLayerFromDefinition(
-    layer: LayerModel,
-    popupService: SafeMapPopupService,
-    layersService: SafeMapLayersService
-  ) {
+  async createLayerFromDefinition(layer: LayerModel, injector: Injector) {
     if (this.isDatasourceValid(layer.datasource)) {
       const res = await lastValueFrom(
         forkJoin({
@@ -334,11 +322,10 @@ export class SafeMapLayersService {
           ...res.layer,
           geojson: res.geojson,
         },
-        popupService,
-        layersService
+        injector
       );
     } else {
-      return new Layer(layer, popupService, layersService);
+      return new Layer(layer, injector);
     }
   }
 

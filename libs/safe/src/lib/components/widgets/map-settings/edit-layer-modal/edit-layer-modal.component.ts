@@ -135,20 +135,20 @@ export class EditLayerModalComponent
   /**
    * Map layer editor.
    *
+   * @param {DialogData} data Dialog input
    * @param confirmService Shared confirm service.
    * @param translate Angular translate service.
    * @param mapLayersService Shared map layer Service.
    * @param apollo Apollo service
-   * @param {DialogData} data Dialog input
    * @param dialogRef Dialog ref
    * @param formBuilder Angular form builder
    */
   constructor(
+    @Inject(DIALOG_DATA) public data: DialogData,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private mapLayersService: SafeMapLayersService,
     private apollo: Apollo,
-    @Inject(DIALOG_DATA) public data: DialogData,
     public dialogRef: DialogRef<LayerFormData>,
     private formBuilder: UntypedFormBuilder
   ) {
@@ -255,8 +255,7 @@ export class EditLayerModalComponent
     this.mapLayersService
       .createLayerFromDefinition(
         this.form.value as LayerModel,
-        this.data.mapComponent.mapPopupService,
-        this.data.mapComponent.mapLayersService
+        this.data.mapComponent.injector
       )
       .then((layer) => {
         if (layer) {

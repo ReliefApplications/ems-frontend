@@ -8,6 +8,7 @@ import {
   Output,
   EventEmitter,
   OnDestroy,
+  Injector,
 } from '@angular/core';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 // Leaflet plugins
@@ -161,6 +162,7 @@ export class MapComponent
    * @param mapPopupService The map popup handler service
    * @param contextService The context service
    * @param platform Platform
+   * @param injector Injector containing all needed providers
    */
   constructor(
     @Inject('environment') environment: any,
@@ -170,7 +172,8 @@ export class MapComponent
     public mapLayersService: SafeMapLayersService,
     public mapPopupService: SafeMapPopupService,
     private contextService: ContextService,
-    private platform: Platform
+    private platform: Platform,
+    public injector: Injector
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -622,11 +625,7 @@ export class MapComponent
 
     return new Promise<{ layers: L.Control.Layers.TreeObject[] }>((resolve) => {
       this.mapLayersService
-        .createLayersFromIds(
-          layerIds,
-          this.mapPopupService,
-          this.mapLayersService
-        )
+        .createLayersFromIds(layerIds, this.injector)
         .then((layers) => {
           const layersTree: any[] = [];
           // Add each layer to the tree

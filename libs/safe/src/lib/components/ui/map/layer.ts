@@ -29,6 +29,7 @@ import { GradientPipe } from '../../../pipes/gradient/gradient.pipe';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 import { BehaviorSubject, filter, firstValueFrom } from 'rxjs';
 import centroid from '@turf/centroid';
+import { Injector, Renderer2 } from '@angular/core';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -131,6 +132,11 @@ const featureSatisfiesFilter = (
 
 /** Objects represent a map layer */
 export class Layer implements LayerModel {
+  // Services and classes for layer class
+  private popupService!: SafeMapPopupService;
+  private layerService!: SafeMapLayersService;
+  private renderer!: Renderer2;
+
   // Map layer
   private layer: L.Layer | null = null;
 
@@ -222,15 +228,13 @@ export class Layer implements LayerModel {
    * Constructor for the Layer class
    *
    * @param options Layer options
-   * @param popupService Popup service
-   * @param layerService Shared layer service
+   * @param injector Injector containing all needed providers for layer class
    */
-  constructor(
-    options: any,
-    private popupService: SafeMapPopupService,
-    private layerService: SafeMapLayersService
-  ) {
+  constructor(options: any, private injector: Injector) {
     if (options) {
+      this.popupService = injector.get(SafeMapPopupService);
+      this.layerService = injector.get(SafeMapLayersService);
+      this.renderer = injector.get(Renderer2);
       this.setConfig(options);
     } else {
       throw 'No settings provided';
@@ -266,8 +270,7 @@ export class Layer implements LayerModel {
       this._sublayers = options.sublayers?.length
         ? await this.layerService.createLayersFromIds(
             options.sublayers,
-            this.popupService,
-            this.layerService
+            this.injector
           )
         : [];
 
@@ -498,8 +501,8 @@ export class Layer implements LayerModel {
             layer
           );
         };
-        layer.addEventListener('click', setPopupListener);
-        this.listeners.push(setPopupListener);
+        const listener = this.renderer.listen(layer, 'click', setPopupListener);
+        this.listeners.push(listener);
       },
       // style: (feature: Feature<Geometry> | undefined) => {
       //   if (!feature) return {};
