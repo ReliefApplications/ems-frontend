@@ -30,9 +30,7 @@ describe('FormComponent', () => {
         }),
       ],
       declarations: [FormComponent],
-      providers: [
-        TranslateService,
-      ]
+      providers: [TranslateService],
     }).compileComponents();
   });
 

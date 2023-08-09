@@ -44,7 +44,7 @@ describe('DashboardComponent', () => {
             params: of({}),
           },
         },
-      ]
+      ],
     }).compileComponents();
   });
 

@@ -11,7 +11,11 @@ describe('LoginComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, OAuthModule.forRoot(), ApolloTestingModule],
+      imports: [
+        HttpClientTestingModule,
+        OAuthModule.forRoot(),
+        ApolloTestingModule,
+      ],
       providers: [
         Ability,
         {

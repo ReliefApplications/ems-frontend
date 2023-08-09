@@ -34,7 +34,7 @@ describe('ShareComponent', () => {
             useClass: TranslateFakeLoader,
           },
         }),
-      ]
+      ],
     }).compileComponents();
   });
 

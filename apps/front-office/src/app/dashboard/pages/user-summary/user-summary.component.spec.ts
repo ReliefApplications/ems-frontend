@@ -52,7 +52,7 @@ describe('UserSummaryComponent', () => {
             useClass: TranslateFakeLoader,
           },
         }),
-      ]
+      ],
     }).compileComponents();
   });
 

@@ -11,14 +11,19 @@ describe('AuthGuard', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule, RouterTestingModule, OAuthModule.forRoot(), ApolloTestingModule],
+      imports: [
+        HttpClientTestingModule,
+        RouterTestingModule,
+        OAuthModule.forRoot(),
+        ApolloTestingModule,
+      ],
       providers: [
         Ability,
         {
           provide: 'environment',
           useValue: {},
         },
-      ]
+      ],
     });
     guard = TestBed.inject(AuthGuard);
   });

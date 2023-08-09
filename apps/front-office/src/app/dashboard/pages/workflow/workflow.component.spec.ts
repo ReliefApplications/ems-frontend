@@ -30,7 +30,7 @@ describe('WorkflowComponent', () => {
         }),
       ],
       declarations: [WorkflowComponent],
-      providers: [TranslateService]
+      providers: [TranslateService],
     }).compileComponents();
   });
 
