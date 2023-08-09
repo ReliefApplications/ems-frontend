@@ -46,11 +46,13 @@ export class SafeWidgetGridComponent
 
   /** Widgets array, custom setter so we can update the layout */
   private _widgets: any[] = [];
+  /** Set widgets array and updates layout with it */
   @Input()
   set widgets(widgets: any[]) {
     this._widgets = widgets;
     this.updateLayout(widgets);
   }
+  /** @returns widgets array */
   get widgets() {
     return this._widgets;
   }
