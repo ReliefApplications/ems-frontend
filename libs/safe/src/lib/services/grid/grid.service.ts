@@ -358,7 +358,6 @@ export class SafeGridService {
       otherText?: string;
     }
   ): { value: string; text: string }[] {
-    console.log(choicesByUrl);
     let choices = choicesByUrl.path ? [...res[choicesByUrl.path]] : [...res];
     choices = choices
       ? choices

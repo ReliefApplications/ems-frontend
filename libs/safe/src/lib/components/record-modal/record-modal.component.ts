@@ -185,13 +185,11 @@ export class SafeRecordModalComponent
     this.data.isTemporary
       ? (this.survey = this.formBuilderService.createSurvey(
           this.form?.structure || '',
-          this.pages,
           this.form?.metadata,
           this.record
         ))
       : (this.survey = this.formBuilderService.createSurvey(
           this.form?.structure || '',
-          this.pages,
           this.form?.metadata
         ));
 
@@ -202,7 +200,6 @@ export class SafeRecordModalComponent
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
-      this.pages,
       this.selectedPageIndex,
       {}
     );
@@ -211,7 +208,6 @@ export class SafeRecordModalComponent
     if (this.data.compareTo) {
       this.surveyNext = this.formBuilderService.createSurvey(
         this.form?.structure || '',
-        this.pages,
         this.form?.metadata,
         this.record
       );
@@ -220,7 +216,6 @@ export class SafeRecordModalComponent
       // After the survey is created we add common callback to survey events
       this.formBuilderService.addEventsCallBacksToSurvey(
         this.surveyNext,
-        this.pages,
         this.selectedPageIndex,
         {}
       );
@@ -234,7 +229,7 @@ export class SafeRecordModalComponent
       for (const question of allQuestions) {
         const valueNext = this.surveyNext.data[question];
         const value = this.survey.data[question];
-        if (!isEqual(value, valueNext)) {
+        if (!isEqual(value, valueNext) && (value || valueNext)) {
           updatedQuestions.push(question);
         }
       }
@@ -343,7 +338,7 @@ export class SafeRecordModalComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    this.survey.dispose();
+    this.survey?.dispose();
     this.surveyNext?.dispose();
   }
 }

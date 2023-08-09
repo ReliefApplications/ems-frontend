@@ -150,7 +150,7 @@ export class DashboardComponent
    * @returns boolean of observable of boolean
    */
   canDeactivate(): Observable<boolean> | boolean {
-    if (!this.widgetGridComponent.canDeactivate) {
+    if (this.widgetGridComponent && !this.widgetGridComponent?.canDeactivate) {
       const dialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('pages.dashboard.update.exit'),
         content: this.translate.instant('pages.dashboard.update.exitMessage'),
