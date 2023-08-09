@@ -144,27 +144,6 @@ export class SafeWidgetGridComponent
   }
 
   /**
-   * Updates layout based on the passed widget array.
-   *
-   * @param widgets Array with the list of present widgets on the dashboard
-   */
-  private updateLayout(widgets: any[]) {
-    this.layout = widgets.map((widget) => {
-      return {
-        id: widget.id.toString(),
-        x: 0, // Don't exist with the prev tile layout, a new algorithm
-        y: 0, // should be implemented to calculate the pos when it doesn't exist.
-        w:
-          widget.defaultCols > this.colsNumber ||
-          (!this.canUpdate && widgets.length === 1)
-            ? this.colsNumber
-            : widget.defaultCols,
-        h: !this.canUpdate && widgets.length === 1 ? 4 : widget.defaultRows,
-      };
-    });
-  }
-
-  /**
    * Emits edition event.
    *
    * @param e widget to edit.
@@ -229,7 +208,7 @@ export class SafeWidgetGridComponent
         id,
         cols: e.layoutItem.w,
         rows: e.layoutItem.h,
-        // We don't have these properties yet
+        // We need to add these two properties
         // x: e.layoutItem.x,
         // y: e.layoutItem.y,
       },
@@ -256,5 +235,110 @@ export class SafeWidgetGridComponent
       });
     }
     return skeletons;
+  }
+
+  /**
+   * Fills the matrix with the passed item
+   *
+   * @param item Object with the size of the element and position
+   * @param item.w Width
+   * @param item.h Heigh
+   * @param item.x X position
+   * @param item.y Y position
+   * @param matrix Array of boolean arrays, it will be dynamically expanded as needed
+   */
+  private fillMatrix(
+    item: { w: number; h: number; x: number; y: number },
+    matrix: boolean[][]
+  ) {
+    for (let h = 0; h < item.h; h++) {
+      for (let w = 0; w < item.w; w++) {
+        matrix[item.y + h][item.x + w] = true;
+      }
+    }
+  }
+
+  /**
+   * Returns the first available position on the matrix
+   *
+   * @param size Object with the size of the element
+   * @param size.w Width
+   * @param size.h Heigh
+   * @param matrix Array of boolean arrays, it will be dynamically expanded as needed
+   * @returns Object with x & y properties;
+   */
+  private getFreeSpotOnMatrix(
+    size: { w: number; h: number },
+    matrix: boolean[][]
+  ): { x: number; y: number } {
+    let w = size.w; // Needed columns
+    let h = size.h; // Needed rows
+    let row = 0; // Tracks current row loop
+    let col = 0; // Tracks current column loop
+    for (; h > 0; row++) {
+      if (!matrix[row]) {
+        // No row available, adds a new row and considers it avilable
+        matrix.push(new Array(this.colsNumber).fill(false));
+        h--;
+        col = 0;
+      } else {
+        // Row already exists, check if it has free space as the item width
+        for (col = 0; w > 0 && col < this.colsNumber; col++) {
+          matrix[row][col] ? (w = size.w) : w--;
+        }
+        // If it has it considers the row available
+        // If not it resets the available rows
+        w === 0 ? h-- : (h = size.h);
+        w = size.w;
+      }
+    }
+
+    return {
+      x: col > 0 ? col - size.w : 0,
+      y: row - size.h,
+    };
+  }
+
+  /**
+   * Updates layout based on the passed widget array.
+   *
+   * @param widgets Array with the list of present widgets on the dashboard
+   */
+  private updateLayout(widgets: any[]) {
+    // Will simulate the grid so we can get x & y position from the array position;
+    const matrix: boolean[][] = [];
+
+    this.layout = widgets.map((widget) => {
+      // Calculate w & h of the widget;
+      const w =
+        widget.defaultCols > this.colsNumber ||
+        (!this.canUpdate && widgets.length === 1)
+          ? this.colsNumber
+          : widget.defaultCols;
+      const h =
+        !this.canUpdate && widgets.length === 1 ? 4 : widget.defaultRows;
+
+      // Ideally we would remove all this code and just migrate all the dashboard widget setting to use x & y.
+      // The logic below takes into account that you could be fed widgets without x & y positions.
+      // The possibility to have widgets with and without x & y in a same dashboard is not considered.
+
+      let pos: { x: number; y: number };
+
+      if (widget.x && widget.y) {
+        // If x & y properties are available saves them to pos
+        pos = { x: widget.x, y: widget.y };
+      } else {
+        // Else it gets the free spot on the matrix
+        pos = this.getFreeSpotOnMatrix({ w, h }, matrix);
+        this.fillMatrix({ ...pos, w, h }, matrix);
+      }
+
+      return {
+        ...pos,
+        id: widget.id.toString(),
+        w,
+        h,
+      };
+    });
   }
 }
