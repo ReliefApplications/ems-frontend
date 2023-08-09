@@ -21,17 +21,6 @@
   }
 }
 
-.notification-menu {
-  display: flex;
-  align-items: flex-end;
-  flex-direction: column;
-  a {
-    display: inline-flex;
-    padding-right: 8px;
-    cursor: pointer;
-  }
-}
-
 kendo-badge-container {
   z-index: 1000;
 }
