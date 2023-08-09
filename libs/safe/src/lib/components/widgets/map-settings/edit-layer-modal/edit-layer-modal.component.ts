@@ -294,9 +294,9 @@ export class EditLayerModalComponent
           this.updateMapLayer({ delete: true });
           // If any of the main properties to fetch the layer changes, set up layer
           if (
-            prev.datasource.geoField !== next.datasource.geoField ||
-            prev.datasource.latitudeField !== next.datasource.latitudeField ||
-            prev.datasource.longitudeField !== next.datasource.longitudeField
+            prev.datasource?.geoField !== next.datasource?.geoField ||
+            prev.datasource?.latitudeField !== next.datasource?.latitudeField ||
+            prev.datasource?.longitudeField !== next.datasource?.longitudeField
           ) {
             this.setUpLayer();
           } else {
