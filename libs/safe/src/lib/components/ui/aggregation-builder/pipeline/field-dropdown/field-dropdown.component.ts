@@ -67,7 +67,9 @@ export class SafeFieldDropdownComponent implements AfterViewInit, OnChanges {
     }
     for (const field of fields) {
       if (field.type.kind === 'LIST' || field.type.kind === 'OBJECT') {
-        expansionTreeInstance[field.name] = { expanded: false };
+        expansionTreeInstance[field.name] = {
+          expanded: fields.length === 1 ? true : false,
+        }; //if it is the only field, we unnest it automatically
         this.buildExpansionTree(
           field.fields,
           expansionTreeInstance[field.name] as ExpansionTree
