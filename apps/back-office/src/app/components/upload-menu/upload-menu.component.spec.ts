@@ -28,9 +28,7 @@ describe('UploadMenuComponent', () => {
         }),
         ButtonModule,
       ],
-      providers: [
-        TranslateService,
-      ]
+      providers: [TranslateService],
     }).compileComponents();
   });
 

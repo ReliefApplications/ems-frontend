@@ -31,10 +31,10 @@ describe('AddFormModalComponent', () => {
         {
           provide: DialogRef,
           useValue: {
-            updateSize: jest.fn()
+            updateSize: jest.fn(),
           },
         },
-      ]
+      ],
     }).compileComponents();
   });
 

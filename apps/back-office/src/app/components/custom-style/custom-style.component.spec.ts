@@ -45,7 +45,7 @@ describe('CustomStyleComponent', () => {
         Ability,
         { provide: 'environment', useValue: {} },
         { provide: NGX_MONACO_EDITOR_CONFIG, useValue: {} },
-      ]
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CustomStyleComponent);

@@ -32,11 +32,11 @@ describe('DuplicateApplicationModalComponent', () => {
           provide: DialogRef,
           useValue: {
             updateSize: jest.fn(),
-            removePanelClass: jest.fn()
+            removePanelClass: jest.fn(),
           },
         },
-        { provide: DIALOG_DATA, useValue: {} }
-      ]
+        { provide: DIALOG_DATA, useValue: {} },
+      ],
     }).compileComponents();
   });
 
