@@ -6,8 +6,8 @@ import {
   OAuthService,
   UrlHelperService,
 } from 'angular-oauth2-oidc';
-
-import { SafeAuthService } from './auth.service';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { AppAbility, SafeAuthService } from './auth.service';
 
 describe('SafeAuthService', () => {
   let service: SafeAuthService;
@@ -19,9 +19,12 @@ describe('SafeAuthService', () => {
         UrlHelperService,
         OAuthLogger,
         DateTimeProvider,
+        { provide: 'environment', useValue: {} },
+        AppAbility,
       ],
-      imports: [HttpClientModule],
+      imports: [HttpClientModule, ApolloTestingModule],
     });
+
     service = TestBed.inject(SafeAuthService);
   });
 
