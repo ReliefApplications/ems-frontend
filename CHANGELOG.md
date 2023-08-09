@@ -1,3 +1,24 @@
+## [2.0.6](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.5...v2.0.6) (2023-08-09)
+
+
+### Bug Fixes
+
+* add possibility to do POST requests on choicesByUrl fields in surveyjs ([b45bff9](https://github.com/ReliefApplications/oort-frontend/commit/b45bff9d1e18166099e153b871e1216f20bfdefa)), closes [#1698](https://github.com/ReliefApplications/oort-frontend/issues/1698)
+* add possibility to do POST requests on choicesByUrl fields in surveyjs ([71c235c](https://github.com/ReliefApplications/oort-frontend/commit/71c235c538ffba72cf4298a73df7b66f3e182973))
+* autosave action could lead to some conflicts, with the UI, and the logic of subsequent steps of the grid action ([cad5c47](https://github.com/ReliefApplications/oort-frontend/commit/cad5c4740e9a0a4896f172e6c806c703a0c4f074))
+* expanded comment wrong behavior in many cases ([93f85c6](https://github.com/ReliefApplications/oort-frontend/commit/93f85c62477fc76be66302a493b94ca0f7ea3cc8))
+* history partially hidden when seen in sidenav ([0ef9785](https://github.com/ReliefApplications/oort-frontend/commit/0ef97858ab2f6d9f9d0f810a394884321e706dfe))
+* issue where closing the expand grid cell modal would set the cell value to null ([1564923](https://github.com/ReliefApplications/oort-frontend/commit/1564923f36f3413745910965dc796899e2f8a796))
+* multiple issues detected by Sentry ([45f0d84](https://github.com/ReliefApplications/oort-frontend/commit/45f0d84e5f48f06d1be0c88a8cd03ccace99faf7))
+* Pagination on choose record modal for attach to record button ([#1640](https://github.com/ReliefApplications/oort-frontend/issues/1640)) ([ed0ac2b](https://github.com/ReliefApplications/oort-frontend/commit/ed0ac2bc5ee13a4fb294ff9e31e92bec49640701)), closes [fix/AB#69369](https://github.com/fix/AB/issues/69369)
+* survey dispose method could block interaction with UI when survey would not exist ([666a40e](https://github.com/ReliefApplications/oort-frontend/commit/666a40ef78116e82ebaf72dd200be1f731a8d60c))
+* when editing user, changing application to assign roles of the user wouldn't clear the roles list ([d5f5502](https://github.com/ReliefApplications/oort-frontend/commit/d5f5502f08a2c52adc8f2bfc05bb2b258cabdd28))
+
+
+### Reverts
+
+* Revert "fix: add possibility to do POST requests on choicesByUrl fields in surveyjs" (#1698) ([d60414c](https://github.com/ReliefApplications/oort-frontend/commit/d60414c662c785cbfad9eff40977b25fe84ef618)), closes [#1698](https://github.com/ReliefApplications/oort-frontend/issues/1698)
+
 ## [2.0.5](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.4...v2.0.5) (2023-08-03)
 
 
