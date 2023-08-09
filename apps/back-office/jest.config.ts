@@ -2,6 +2,7 @@
 export default {
   displayName: 'back-office',
   preset: '../../jest.preset.js',
+  setupFiles: [`../../jest-shim.ts`],
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
     'ts-jest': {
