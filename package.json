@@ -7,7 +7,7 @@
     "semantic-release": "semantic-release",
     "prepare": "husky install",
     "lint": "npx nx run-many --target=lint --projects=safe,front-office,back-office,ui --verbose",
-    "ui:test": "npx nx test --project=ui --verbose"
+    "test": "npx nx run-many --target=test --projects=safe,front-office,back-office,ui --verbose"
   },
   "private": true,
   "dependencies": {
