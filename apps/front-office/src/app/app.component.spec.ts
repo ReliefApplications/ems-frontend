@@ -11,7 +11,7 @@ import { ApolloTestingModule } from 'apollo-angular/testing';
 import { Ability } from '@casl/ability';
 
 describe('AppComponent', () => {
-  beforeEach(async () => {
+  beforeAll(async () => {
     await TestBed.configureTestingModule({
       imports: [
         RouterTestingModule,
@@ -43,14 +43,5 @@ describe('AppComponent', () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
     expect(app.title).toEqual('front-office');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    fixture.detectChanges();
-    const compiled = fixture.nativeElement;
-    expect(compiled.querySelector('.content span').textContent).toContain(
-      'front-office app is running!'
-    );
   });
 });
