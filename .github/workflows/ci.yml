@@ -2,6 +2,15 @@ name: CI
 
 on:
   workflow_dispatch:
+    inputs:
+      project:
+        type: choice
+        description: Select project ( leave blank to run on all projects )
+        options:
+          - front-office
+          - back-office
+          - ui
+          - safe
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -37,4 +46,9 @@ jobs:
       - name: Install Dependencies
         run: npm i
       - name: Run tests - ${{ steps.get_version.outputs.version }}
-        run: npm run test
+        run: |
+          if ${{github.events.inputs.project}}; then
+            npx nx run --target=test --projects=${{github.events.inputs.project}} --verbose
+          else
+            npm run test
+          fi
