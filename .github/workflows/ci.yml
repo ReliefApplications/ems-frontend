@@ -47,8 +47,8 @@ jobs:
         run: npm i
       - name: Run tests - ${{ steps.get_version.outputs.version }}
         run: |
-          if ${{github.events.inputs.project}}; then
-            npx nx run --target=test --projects=${{github.events.inputs.project}} --verbose
+          if ${{ github.event.inputs.project }}; then
+            npx nx run --target=test --projects=${{ github.event.inputs.project }} --verbose
           else
             npm run test
           fi
