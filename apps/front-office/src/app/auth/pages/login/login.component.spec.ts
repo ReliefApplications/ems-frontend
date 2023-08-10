@@ -4,6 +4,7 @@ import { OAuthModule } from 'angular-oauth2-oidc';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { LoginComponent } from './login.component';
 import { Ability } from '@casl/ability';
+import { SpinnerModule } from '@oort-front/ui';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
@@ -15,6 +16,7 @@ describe('LoginComponent', () => {
         HttpClientTestingModule,
         OAuthModule.forRoot(),
         ApolloTestingModule,
+        SpinnerModule,
       ],
       providers: [
         Ability,

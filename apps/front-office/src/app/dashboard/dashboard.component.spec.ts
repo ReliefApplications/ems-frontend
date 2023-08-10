@@ -12,6 +12,13 @@ import {
 } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
+import {
+  SafeEmptyModule,
+  SafeLayoutModule,
+  SafeNavbarModule,
+} from '@oort-front/safe';
+import { DialogModule } from '@angular/cdk/dialog';
+import { MenuModule } from '@oort-front/ui';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -22,6 +29,11 @@ describe('DashboardComponent', () => {
       imports: [
         HttpClientTestingModule,
         OAuthModule.forRoot(),
+        DialogModule,
+        SafeLayoutModule,
+        MenuModule,
+        SafeNavbarModule,
+        SafeEmptyModule,
         ApolloTestingModule,
         TranslateModule.forRoot({
           loader: {
@@ -36,7 +48,10 @@ describe('DashboardComponent', () => {
         Ability,
         {
           provide: 'environment',
-          useValue: {},
+          useValue: {
+            availableLanguages: [],
+            theme: {},
+          },
         },
         {
           provide: ActivatedRoute,
