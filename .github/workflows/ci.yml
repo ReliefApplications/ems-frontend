@@ -6,6 +6,7 @@ on:
       project:
         type: choice
         description: Select project ( leave blank to run on all projects )
+        required: false
         options:
           - front-office
           - back-office
