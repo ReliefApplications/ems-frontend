@@ -90,7 +90,7 @@ export class SafeBreadcrumbService {
     const breadcrumbs = this.breadcrumbs.getValue();
     const breadcrumb = breadcrumbs.find((x) => x.alias === alias);
     if (breadcrumb) {
-      breadcrumb.text = label[0].toUpperCase() + label.slice(1);
+      breadcrumb.text = label ? label[0].toUpperCase() + label.slice(1) : '';
       this.breadcrumbs.next(breadcrumbs);
     }
   }
