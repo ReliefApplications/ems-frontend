@@ -2,9 +2,11 @@
 
 Please include a summary of the change and which issue is fixed. Please also include relevant motivation and context. List any dependencies that are required for this change.
 
-## Ticket
+## Useful links
 
-Please insert link to ticket
+- Please insert link to ticket
+- Please insert link to back-end branch if any
+- Please insert any useful link ( documentation you used for example )
 
 ## Type of change
 
@@ -31,10 +33,11 @@ Please include screenshots of this change. If this issue is only back-end relate
 
 ( * == Mandatory ) 
 
-- [ ] * The pull request is linked to an existing milestone
+- [ ] * I have set myself as assignee of the pull request
 - [ ] * My code follows the style guidelines of this project
 - [ ] * Linting does not generate new warnings
 - [ ] * I have performed a self-review of my own code
+- [ ] * I have put the ticket for review, adding the oort-frontend team to the list of reviewers
 - [ ] * I have commented my code, particularly in hard-to-understand areas
 - [ ] * I have put JSDoc comment in all required places
 - [ ] * My changes generate no new warnings

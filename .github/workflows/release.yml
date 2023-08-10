@@ -1,25 +1,21 @@
-name: CI
+name: Release
 
 on:
-  workflow_dispatch:
-    inputs:
-      project:
-        type: choice
-        description: Select project ( leave blank to run on all projects )
-        options:
-          - 
-          - front-office
-          - back-office
-          - ui
-          - safe
+  push:
+    branches:
+      - main
+      - next
+      - next-major
+      - beta
+      - alpha
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
-  test:
-    name: Test
+  build:
+    name: Build
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -46,9 +42,28 @@ jobs:
             ${{ runner.OS }}-
       - name: Install Dependencies
         run: npm i
-      - name: Run ${{ github.event.inputs.project }} tests - ${{ steps.get_version.outputs.version }}
-        run: npx nx run ${{ github.event.inputs.project }}:test:ci
-        if: ${{ github.event.inputs.project != '' }}
-      - name: Run all tests - ${{ steps.get_version.outputs.version }}
-        run: npm run test
-        if: ${{ github.event.inputs.project == '' }}
+      - name: Build Back-office - ${{ steps.get_version.outputs.version }}
+        run: npx nx run back-office:build:${{ secrets.CONFIG }}
+      - name: Build Front-office - ${{ steps.get_version.outputs.version }}
+        run: npx nx run front-office:build:${{ secrets.CONFIG }}
+
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 'lts/*'
+      - name: Install dependencies
+        run: npm ci
+      - name: Release
+        env:
+          GITHUB_TOKEN: ${{ secrets.SEMANTIC_RELEASE_TOKEN }}
+        run: npx semantic-release
