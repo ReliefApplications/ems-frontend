@@ -37,4 +37,4 @@ jobs:
       - name: Install Dependencies
         run: npm i
       - name: Run tests - ${{ steps.get_version.outputs.version }}
-        run: npx nx run test
+        run: npm run test
