@@ -45,10 +45,9 @@ jobs:
             ${{ runner.OS }}-
       - name: Install Dependencies
         run: npm i
-      - name: Run tests - ${{ steps.get_version.outputs.version }}
-        run: |
-          if ${{ github.event.inputs.project }}; then
-            npx nx run --target=test --projects=${{ github.event.inputs.project }} --verbose
-          else
-            npm run test
-          fi
+      - name: Run ${{ github.event.inputs.project }} tests - ${{ steps.get_version.outputs.version }}
+        run: npx nx run --target=test --projects=${{ github.event.inputs.project }} --verbose
+        if: ${{ github.event.inputs.project != '' }}
+      - name: Run all tests - ${{ steps.get_version.outputs.version }}
+        run: npm run test
+        if: ${{ github.event.inputs.project == '' }}
