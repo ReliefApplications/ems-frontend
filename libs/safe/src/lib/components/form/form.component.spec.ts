@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { environment } from 'projects/back-office/src/environments/environment';
 import {
   DialogModule as DialogCdkModule,
   DialogRef,
@@ -20,6 +19,12 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { AppAbility } from '../../services/auth/auth.service';
+import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
+import { SafeFormActionsModule } from '../form-actions/form-actions.module';
+import { ButtonModule, TabsModule } from '@oort-front/ui';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('SafeFormComponent', () => {
   let component: SafeFormComponent;
@@ -28,7 +33,7 @@ describe('SafeFormComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: 'environment', useValue: environment },
+        { provide: 'environment', useValue: {} },
         { provide: DialogRef, useValue: {} },
         {
           provide: DIALOG_DATA,
@@ -41,12 +46,19 @@ describe('SafeFormComponent', () => {
         OAuthLogger,
         DateTimeProvider,
         TranslateService,
+        AppAbility,
       ],
       declarations: [SafeFormComponent],
       imports: [
         DialogCdkModule,
         HttpClientModule,
+        ApolloTestingModule,
         RouterTestingModule,
+        SafeRecordSummaryModule,
+        SafeFormActionsModule,
+        TabsModule,
+        ButtonModule,
+        BrowserAnimationsModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

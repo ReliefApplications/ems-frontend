@@ -7,6 +7,7 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
+import { ButtonModule, TooltipModule } from '@oort-front/ui';
 
 describe('SafeAccessComponent', () => {
   let component: SafeAccessComponent;
@@ -18,6 +19,8 @@ describe('SafeAccessComponent', () => {
       declarations: [SafeAccessComponent],
       imports: [
         DialogCdkModule,
+        ButtonModule,
+        TooltipModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

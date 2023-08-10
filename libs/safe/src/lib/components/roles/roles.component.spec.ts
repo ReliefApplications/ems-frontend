@@ -4,7 +4,6 @@ import {
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
-import { environment } from 'projects/back-office/src/environments/environment';
 import { SafeRolesComponent } from './roles.component';
 import {
   DateTimeProvider,
@@ -25,6 +24,11 @@ import {
   ApolloTestingController,
 } from 'apollo-angular/testing';
 import { GET_ROLES } from './graphql/queries';
+import { AbilityModule } from '@casl/angular';
+import { Ability, PureAbility } from '@casl/ability';
+import { TabsModule } from '@oort-front/ui';
+import { SafeRoleListModule } from './components/role-list/role-list.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('SafeRolesComponent', () => {
   let component: SafeRolesComponent;
@@ -36,7 +40,9 @@ describe('SafeRolesComponent', () => {
       providers: [
         { provide: DialogRef, useValue: {} },
         { provide: DIALOG_DATA, useValue: {} },
-        { provide: 'environment', useValue: environment },
+        { provide: 'environment', useValue: {} },
+        { provide: Ability, useValue: new Ability() },
+        { provide: PureAbility, useExisting: Ability },
         OAuthService,
         UrlHelperService,
         OAuthLogger,
@@ -48,6 +54,10 @@ describe('SafeRolesComponent', () => {
         DialogCdkModule,
         HttpClientModule,
         RouterTestingModule,
+        BrowserAnimationsModule,
+        TabsModule,
+        SafeRoleListModule,
+        AbilityModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

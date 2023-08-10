@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { environment } from 'projects/back-office/src/environments/environment';
 import {
   DateTimeProvider,
   OAuthLogger,
@@ -20,13 +19,21 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-import { MenuModule } from '@oort-front/ui';
+import {
+  DividerModule,
+  MenuModule,
+  SidenavContainerModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
 import { GET_NOTIFICATIONS } from './graphql/queries';
 import { NOTIFICATION_SUBSCRIPTION } from './graphql/subscriptions';
+import { AppAbility } from '../../services/auth/auth.service';
+import { IndicatorsModule } from '@progress/kendo-angular-indicators';
+import { ButtonModule } from '@oort-front/ui';
 
 describe('SafeLayoutComponent', () => {
   let component: SafeLayoutComponent;
@@ -36,11 +43,15 @@ describe('SafeLayoutComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: 'environment', useValue: environment },
+        {
+          provide: 'environment',
+          useValue: { availableLanguages: 2, theme: {} },
+        },
         OAuthService,
         UrlHelperService,
         OAuthLogger,
         DateTimeProvider,
+        AppAbility,
         { provide: DialogRef, useValue: {} },
         { provide: DIALOG_DATA, useValue: {} },
         TranslateService,
@@ -49,6 +60,11 @@ describe('SafeLayoutComponent', () => {
       imports: [
         RouterTestingModule,
         HttpClientModule,
+        IndicatorsModule,
+        DividerModule,
+        ButtonModule,
+        TooltipModule,
+        SidenavContainerModule,
         DialogCdkModule,
         TranslateModule.forRoot({
           loader: {

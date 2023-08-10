@@ -7,7 +7,6 @@ import {
   OAuthService,
   UrlHelperService,
 } from 'angular-oauth2-oidc';
-import { environment } from 'projects/back-office/src/environments/environment';
 import {
   TranslateModule,
   TranslateService,
@@ -16,7 +15,12 @@ import {
 } from '@ngx-translate/core';
 
 import { SafeUsersComponent } from './users.component';
-import { MenuModule } from '@oort-front/ui';
+import { ButtonModule, IconModule, MenuModule } from '@oort-front/ui';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
+import { FormsModule } from '@angular/forms';
 
 describe('SafeUsersComponent', () => {
   let component: SafeUsersComponent;
@@ -25,17 +29,28 @@ describe('SafeUsersComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: 'environment', useValue: environment },
+        { provide: 'environment', useValue: {} },
         OAuthService,
         UrlHelperService,
         OAuthLogger,
         DateTimeProvider,
         TranslateService,
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({}),
+          },
+        },
       ],
       declarations: [SafeUsersComponent],
       imports: [
         HttpClientModule,
+        ApolloTestingModule,
         DialogCdkModule,
+        FormsModule,
+        IconModule,
+        ButtonModule,
+        SafeSkeletonTableModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
