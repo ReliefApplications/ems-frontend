@@ -5,15 +5,19 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
 import { FormWrapperModule } from '../form-wrapper/form-wrapper.module';
 import { DateModule } from './date.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateTestingModule } from 'ngx-translate-testing';
 import { DatePickerDirective } from './date-picker.directive';
 import { CommonModule } from '@angular/common';
 import { ButtonComponent } from '../button/button.component';
 import { By } from '@angular/platform-browser';
+import {
+  TranslateFakeLoader,
+  TranslateLoader,
+  TranslateModule,
+  TranslateService,
+} from '@ngx-translate/core';
 
 /**
  * Component for testing purposes
@@ -60,22 +64,19 @@ describe('DatePickerDirective', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [ButtonComponent],
+      providers: [TranslateService],
       imports: [
         TestingComponent,
-        TranslateTestingModule.withTranslations('en', {
-          common: {
-            input: { dateRange: 'Date Range' },
-          },
-          kendo: {
-            datepicker: {
-              startLabel: 'Start Date',
-              endLabel: 'End Date',
-            },
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
           },
         }),
       ],
       schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
+    TestBed.inject(TranslateService);
     fixture = TestBed.createComponent(TestingComponent);
     fixture.detectChanges();
   });
