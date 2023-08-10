@@ -35,7 +35,7 @@ export class CustomWidgetStyleComponent
   public editorOptions = {
     theme: 'vs-dark',
     language: 'scss',
-    fixedOverflowWidgets: true,
+    fixedOverflowWidgets: false,
   };
   private styleApplied!: HTMLStyleElement;
   public loading = false;
