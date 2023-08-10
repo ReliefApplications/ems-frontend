@@ -782,7 +782,7 @@ export class Layer implements LayerModel {
     } else {
       // Classic visibility check based on zoom
       const currZoom = map.getZoom();
-      const [maxZoom, minZoom] = this.getMinMaxZoom(map);
+      const [minZoom, maxZoom] = this.getMinMaxZoom(map);
       if (currZoom > maxZoom || currZoom < minZoom) {
         map.removeLayer(layer);
       } else {
@@ -804,20 +804,18 @@ export class Layer implements LayerModel {
   }
 
   /**
-   * Get maximum and minimum zoom based on layer and group layer
+   * Get minimum and maximum zoom based on layer and group layer
    *
    * @param map Leaflet map
-   * @returns maximum and minimum zoom
+   * @returns minimum and maximum zoom
    */
   public getMinMaxZoom(map: L.Map) {
-    let maxZoom = 0;
-    let minZoom = 0;
+    let minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
+    let maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
 
     if (this.parentLayer) {
       const parentMaxZoom = this.parentLayer.maxZoom || map.getMaxZoom();
       const parentMinZoom = this.parentLayer.minZoom || map.getMinZoom();
-      maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
-      minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
 
       if (parentMaxZoom < maxZoom) {
         maxZoom = parentMaxZoom;
@@ -825,11 +823,8 @@ export class Layer implements LayerModel {
       if (parentMinZoom > minZoom) {
         minZoom = parentMinZoom;
       }
-    } else {
-      maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
-      minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
     }
-    return [maxZoom, minZoom];
+    return [minZoom, maxZoom];
   }
 
   /**
@@ -841,7 +836,7 @@ export class Layer implements LayerModel {
    */
   public onZoom(map: L.Map, zoom: L.LeafletEvent, layer: L.Layer) {
     const currZoom = zoom.target.getZoom();
-    const [maxZoom, minZoom] = this.getMinMaxZoom(map);
+    const [minZoom, maxZoom] = this.getMinMaxZoom(map);
 
     if (isNil((layer as any).shouldDisplay)) {
       if (currZoom > maxZoom || currZoom < minZoom) {
