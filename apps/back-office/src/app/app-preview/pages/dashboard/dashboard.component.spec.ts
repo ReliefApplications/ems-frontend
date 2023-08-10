@@ -38,7 +38,7 @@ describe('DashboardComponent', () => {
           provide: 'environment',
           useValue: {},
         },
-      ]
+      ],
     }).compileComponents();
   });
 

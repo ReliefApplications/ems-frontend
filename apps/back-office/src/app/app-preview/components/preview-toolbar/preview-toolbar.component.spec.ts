@@ -24,9 +24,7 @@ describe('PreviewToolbarComponent', () => {
           },
         }),
       ],
-      providers: [
-        TranslateService,
-      ]
+      providers: [TranslateService]
     }).compileComponents();
   });
 
