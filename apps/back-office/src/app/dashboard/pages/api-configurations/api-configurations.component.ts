@@ -129,7 +129,7 @@ export class ApiConfigurationsComponent
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
       let neededSize = e.pageSize;
-      // If the fetch is for a new page size, the old page size is substracted from the new one
+      // If the fetch is for a new page size, the old page size is subtracted from the new one
       if (e.pageSize > this.pageInfo.pageSize) {
         neededSize -= this.pageInfo.pageSize;
       }
@@ -343,7 +343,11 @@ export class ApiConfigurationsComponent
       this.cachedApiConfigurations,
       mappedValues
     );
-    this.dataSource = mappedValues;
+    // then slice the array to correctly match the items in the current page
+    this.dataSource = this.cachedApiConfigurations.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
     this.pageInfo.length = data.apiConfigurations.totalCount;
     this.pageInfo.endCursor = data.apiConfigurations.pageInfo.endCursor;
     this.loading = loading;
