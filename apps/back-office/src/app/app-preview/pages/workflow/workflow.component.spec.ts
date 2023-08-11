@@ -1,6 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ApolloTestingModule } from 'apollo-angular/testing';
 import { WorkflowComponent } from './workflow.component';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+import {
+  TranslateFakeLoader,
+  TranslateLoader,
+  TranslateModule,
+  TranslateService,
+} from '@ngx-translate/core';
+import { SafeWorkflowStepperModule } from '@oort-front/safe';
 
 describe('WorkflowComponent', () => {
   let component: WorkflowComponent;
@@ -9,6 +18,25 @@ describe('WorkflowComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [WorkflowComponent],
+      imports: [
+        ApolloTestingModule,
+        SafeWorkflowStepperModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
+        }),
+      ],
+      providers: [
+        TranslateService,
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({}),
+          },
+        },
+      ]
     }).compileComponents();
   });
 
