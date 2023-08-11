@@ -1,11 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { MenuItemDirective } from './menu-item.directive';
 import { Component } from '@angular/core';
 import { MenuModule } from '../menu.module';
 import { IconModule } from '../../icon/icon.module';
 import { TranslateTestingModule } from 'ngx-translate-testing';
 import { TranslateModule } from '@ngx-translate/core';
-import { By } from '@angular/platform-browser';
 
 /**
  * Mocked component for deep testing of menu directive
@@ -13,34 +11,39 @@ import { By } from '@angular/platform-browser';
 @Component({
   standalone: true,
   imports: [MenuModule, IconModule, TranslateModule],
-  template: ` <button uiMenuItem>
-    <ui-icon icon="edit" variant="grey"></ui-icon>
-    {{ 'common.edit' | translate }}
-  </button>`,
+  template: ` <ui-menu #menu>
+    <button uiMenuItem>
+      <ui-icon icon="edit" variant="grey"></ui-icon>
+      {{ 'common.edit' | translate }}
+    </button>
+    <button uiMenuItem>
+      <ui-icon icon="delete" variant="danger"></ui-icon>
+      {{ 'common.delete' | translate }}
+    </button>
+  </ui-menu>`,
 })
 class TestingComponent {}
-describe('MenuItemDirective', () => {
+describe('MenuTriggerForDirective', () => {
   let fixture: ComponentFixture<TestingComponent>;
+  let component: TestingComponent;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
         TestingComponent,
         TranslateTestingModule.withTranslations('en', {
-          common: { edit: 'Edit' },
+          common: { edit: 'Edit', delete: 'Delete' },
         }),
       ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TestingComponent);
     fixture.detectChanges();
+    component = fixture.componentInstance;
   });
 
   it('should create an instance', () => {
-    const directive = fixture.debugElement.queryAll(
-      By.directive(MenuItemDirective)
-    );
-    expect(directive).not.toBeNull();
-    expect(directive).toBeTruthy();
+    expect(component).not.toBeNull();
+    expect(component).toBeTruthy();
   });
 });
