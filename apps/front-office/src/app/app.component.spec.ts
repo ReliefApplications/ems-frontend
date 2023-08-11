@@ -1,5 +1,5 @@
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
@@ -11,6 +11,8 @@ import { ApolloTestingModule } from 'apollo-angular/testing';
 import { Ability } from '@casl/ability';
 
 describe('AppComponent', () => {
+  let fixture: ComponentFixture<AppComponent>;
+  let component: AppComponent;
   beforeAll(async () => {
     await TestBed.configureTestingModule({
       imports: [
@@ -31,17 +33,15 @@ describe('AppComponent', () => {
         },
       ],
     }).compileComponents();
+    fixture = TestBed.createComponent(AppComponent);
+    component = fixture.componentInstance;
   });
 
   it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 
   it(`should have as title 'front-office'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('front-office');
+    expect(component.title).toEqual('front-office');
   });
 });
