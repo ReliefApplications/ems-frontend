@@ -11,6 +11,8 @@ import {
   ApolloTestingController,
 } from 'apollo-angular/testing';
 import { GET_RESOURCES } from './graphql/queries';
+import { GraphQLSelectModule } from '@oort-front/ui';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 describe('SafeResourceDropdownComponent', () => {
   let component: SafeResourceDropdownComponent;
@@ -29,6 +31,9 @@ describe('SafeResourceDropdownComponent', () => {
           },
         }),
         ApolloTestingModule,
+        GraphQLSelectModule,
+        FormsModule,
+        ReactiveFormsModule,
       ],
     }).compileComponents();
 
@@ -46,6 +51,11 @@ describe('SafeResourceDropdownComponent', () => {
       data: {
         resources: {
           edges: [],
+          totalCount: '',
+          pageInfo: {
+            hasNextPage: '',
+            endCursor: '',
+          },
         },
       },
     });

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SafeWidgetChoiceComponent } from './widget-choice.component';
 
 describe('SafeWidgetChoiceComponent', () => {

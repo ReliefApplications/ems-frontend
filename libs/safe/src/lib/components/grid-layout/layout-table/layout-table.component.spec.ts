@@ -6,8 +6,10 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-
 import { LayoutTableComponent } from './layout-table.component';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { HttpClientModule } from '@angular/common/http';
+import { ButtonModule } from '@oort-front/ui';
 
 describe('LayoutTableComponent', () => {
   let component: LayoutTableComponent;
@@ -25,6 +27,9 @@ describe('LayoutTableComponent', () => {
             useClass: TranslateFakeLoader,
           },
         }),
+        ApolloTestingModule,
+        HttpClientModule,
+        ButtonModule,
       ],
     }).compileComponents();
   });

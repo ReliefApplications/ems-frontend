@@ -3,7 +3,6 @@ import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import { environment } from 'projects/back-office/src/environments/environment';
 import { SafePreferencesModalComponent } from './preferences-modal.component';
 import {
   DialogModule as DialogCdkModule,
@@ -17,6 +16,7 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('SafePreferencesModalComponent', () => {
   let component: SafePreferencesModalComponent;
@@ -28,25 +28,27 @@ describe('SafePreferencesModalComponent', () => {
       providers: [
         UntypedFormBuilder,
         TranslateService,
-        { provide: 'environment', useValue: environment },
-        { provide: DialogRef, useValue: {} },
+        { provide: 'environment', useValue: {} },
+        { provide: DialogRef, useValue: { updateSize: jest.fn() } },
         {
           provide: DIALOG_DATA,
           useValue: {
             access: { canSee: null, canUpdate: null, canDelete: null },
+            languages: [],
           },
         },
       ],
-      declarations: [SafePreferencesModalComponent],
       imports: [
         ApolloTestingModule,
         DialogCdkModule,
+        BrowserAnimationsModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
             useClass: TranslateFakeLoader,
           },
         }),
+        SafePreferencesModalComponent,
       ],
     }).compileComponents();
 

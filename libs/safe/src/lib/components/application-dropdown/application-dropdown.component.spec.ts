@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SafeApplicationDropdownComponent } from './application-dropdown.component';
 import {
   TranslateModule,
@@ -12,6 +11,8 @@ import {
   ApolloTestingController,
 } from 'apollo-angular/testing';
 import { GET_APPLICATIONS } from './graphql/queries';
+import { FormWrapperModule, SelectMenuModule } from '@oort-front/ui';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 describe('SafeApplicationDropdownComponent', () => {
   let component: SafeApplicationDropdownComponent;
@@ -30,6 +31,10 @@ describe('SafeApplicationDropdownComponent', () => {
           },
         }),
         ApolloTestingModule,
+        SelectMenuModule,
+        FormWrapperModule,
+        ReactiveFormsModule,
+        FormsModule,
       ],
     }).compileComponents();
 
@@ -47,6 +52,11 @@ describe('SafeApplicationDropdownComponent', () => {
       data: {
         applications: {
           edges: [],
+          totalCount: '',
+          pageInfo: {
+            hasNextPage: '',
+            endCursor: '',
+          },
         },
       },
     });

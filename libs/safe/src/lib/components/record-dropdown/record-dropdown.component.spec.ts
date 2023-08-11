@@ -6,6 +6,9 @@ import {
   TranslateLoader,
 } from '@ngx-translate/core';
 import { SafeRecordDropdownComponent } from './record-dropdown.component';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { SelectMenuModule } from '@oort-front/ui';
+import { FormsModule } from '@angular/forms';
 
 describe('SafeRecordDropdownComponent', () => {
   let component: SafeRecordDropdownComponent;
@@ -22,6 +25,9 @@ describe('SafeRecordDropdownComponent', () => {
             useClass: TranslateFakeLoader,
           },
         }),
+        ApolloTestingModule,
+        SelectMenuModule,
+        FormsModule,
       ],
     }).compileComponents();
   });

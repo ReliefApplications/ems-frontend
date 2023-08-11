@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SafeSnackbarSpinnerComponent } from './snackbar-spinner.component';
+import { IconModule } from '@oort-front/ui';
 
 describe('SafeSnackbarSpinnerComponent', () => {
   let component: SafeSnackbarSpinnerComponent;
@@ -9,7 +9,7 @@ describe('SafeSnackbarSpinnerComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SafeSnackbarSpinnerComponent],
-      imports: [],
+      imports: [IconModule],
     }).compileComponents();
   });
 

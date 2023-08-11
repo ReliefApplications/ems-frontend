@@ -13,8 +13,9 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-
 import { SafeProfileComponent } from './profile.component';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { AppAbility } from '../../services/auth/auth.service';
 
 describe('SafeProfileComponent', () => {
   let component: SafeProfileComponent;
@@ -29,6 +30,8 @@ describe('SafeProfileComponent', () => {
         DateTimeProvider,
         UntypedFormBuilder,
         TranslateService,
+        { provide: 'environment', useValue: {} },
+        AppAbility,
       ],
       declarations: [SafeProfileComponent],
       imports: [
@@ -39,6 +42,8 @@ describe('SafeProfileComponent', () => {
             useClass: TranslateFakeLoader,
           },
         }),
+        ApolloTestingModule,
+        HttpClientModule,
       ],
     }).compileComponents();
   });

@@ -4,7 +4,6 @@ import {
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
-import { environment } from 'projects/back-office/src/environments/environment';
 import { SafeRecordHistoryComponent } from './record-history.component';
 import {
   DateTimeProvider,
@@ -19,7 +18,17 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-import { MenuModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  DateModule,
+  ExpansionPanelModule,
+  MenuModule,
+  SelectMenuModule,
+} from '@oort-front/ui';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { IndicatorsModule } from '@progress/kendo-angular-indicators';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('SafeRecordHistoryComponent', () => {
   let component: SafeRecordHistoryComponent;
@@ -35,7 +44,7 @@ describe('SafeRecordHistoryComponent', () => {
             access: { canSee: null, canUpdate: null, canDelete: null },
           },
         },
-        { provide: 'environment', useValue: environment },
+        { provide: 'environment', useValue: {} },
         OAuthService,
         UrlHelperService,
         OAuthLogger,
@@ -46,6 +55,15 @@ describe('SafeRecordHistoryComponent', () => {
       imports: [
         DialogCdkModule,
         HttpClientModule,
+        ButtonModule,
+        SelectMenuModule,
+        ApolloTestingModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        ExpansionPanelModule,
+        IndicatorsModule,
+        DateModule,
+        ReactiveFormsModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

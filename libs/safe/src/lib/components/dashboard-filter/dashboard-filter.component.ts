@@ -1,5 +1,5 @@
 import {
-  AfterViewInit,
+  AfterContentInit,
   Component,
   ElementRef,
   HostListener,
@@ -46,7 +46,7 @@ interface QuickFilter {
 })
 export class DashboardFilterComponent
   extends SafeUnsubscribeComponent
-  implements OnDestroy, OnChanges, AfterViewInit
+  implements OnDestroy, OnChanges, AfterContentInit
 {
   // Filter
   position!: FilterPosition;
@@ -106,7 +106,7 @@ export class DashboardFilterComponent
     super();
   }
 
-  ngAfterViewInit(): void {
+  ngAfterContentInit(): void {
     this.contextService.filter$
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {

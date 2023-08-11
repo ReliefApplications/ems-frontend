@@ -6,6 +6,8 @@ import {
   TranslateLoader,
 } from '@ngx-translate/core';
 import { SafeSearchMenuComponent } from './search-menu.component';
+import { IconModule } from '@oort-front/ui';
+import { FormsModule } from '@angular/forms';
 
 describe('SafeSearchMenuComponent', () => {
   let component: SafeSearchMenuComponent;
@@ -22,6 +24,8 @@ describe('SafeSearchMenuComponent', () => {
             useClass: TranslateFakeLoader,
           },
         }),
+        IconModule,
+        FormsModule,
       ],
     }).compileComponents();
   });

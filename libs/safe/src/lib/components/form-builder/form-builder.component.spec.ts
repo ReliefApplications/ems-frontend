@@ -1,11 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { environment } from 'projects/back-office/src/environments/environment';
 import { SafeFormBuilderComponent } from './form-builder.component';
 import {
   DialogModule as DialogCdkModule,
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('SafeFormBuilderComponent', () => {
   let component: SafeFormBuilderComponent;
@@ -16,10 +18,16 @@ describe('SafeFormBuilderComponent', () => {
       providers: [
         { provide: DialogRef, useValue: {} },
         { provide: DIALOG_DATA, useValue: {} },
-        { provide: 'environment', useValue: environment },
+        { provide: 'environment', useValue: {} },
+        TranslateService,
       ],
       declarations: [SafeFormBuilderComponent],
-      imports: [DialogCdkModule],
+      imports: [
+        DialogCdkModule,
+        TranslateModule.forRoot(),
+        ApolloTestingModule,
+        HttpClientModule,
+      ],
     }).compileComponents();
   });
 

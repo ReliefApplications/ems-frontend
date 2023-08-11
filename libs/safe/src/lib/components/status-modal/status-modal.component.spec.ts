@@ -16,16 +16,14 @@ describe('StatusModalComponent', () => {
         {
           provide: DialogRef,
           useValue: {
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            updateSize: () => {},
-            // eslint-disable-next-line @typescript-eslint/no-empty-function
-            addPanelClass: () => {},
+            updateSize: jest.fn(),
+            addPanelClass: jest.fn(),
+            removePanelClass: jest.fn(),
           },
         },
         { provide: DIALOG_DATA, useValue: { title: '', content: '' } },
       ],
-      declarations: [SafeStatusModalComponent],
-      imports: [DialogCdkModule],
+      imports: [DialogCdkModule, SafeStatusModalComponent],
     }).compileComponents();
   });
 

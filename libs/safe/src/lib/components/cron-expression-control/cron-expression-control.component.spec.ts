@@ -1,6 +1,15 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CronExpressionControlComponent } from './cron-expression-control.component';
+import { Dialog } from '@angular/cdk/dialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { SafeReadableCronModule } from '../../pipes/readable-cron/readable-cron.module';
+import {
+  TooltipModule,
+  FormWrapperModule,
+  IconModule,
+  ErrorMessageModule,
+  DialogModule,
+} from '@oort-front/ui';
 
 describe('CronExpressionControlComponent', () => {
   let component: CronExpressionControlComponent;
@@ -8,11 +17,22 @@ describe('CronExpressionControlComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [Dialog, TranslateService],
       declarations: [CronExpressionControlComponent],
+      imports: [
+        DialogModule,
+        TranslateModule.forRoot(),
+        SafeReadableCronModule,
+        IconModule,
+        TooltipModule,
+        FormWrapperModule,
+        ErrorMessageModule,
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CronExpressionControlComponent);
     component = fixture.componentInstance;
+    component.ngControl = { errors: [] } as any;
     fixture.detectChanges();
   });
 

@@ -12,6 +12,7 @@ import {
   ApolloTestingController,
 } from 'apollo-angular/testing';
 import { GET_QUERY_TYPES } from './graphql/queries';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 describe('SafeChooseRecordModalComponent', () => {
   let component: SafeChooseRecordModalComponent;
@@ -23,11 +24,16 @@ describe('SafeChooseRecordModalComponent', () => {
       providers: [
         QueryBuilderService,
         UntypedFormBuilder,
-        { provide: DialogRef, useValue: {} },
-        { provide: DIALOG_DATA, useValue: {} },
+        { provide: DialogRef, useValue: { updateSize: jest.fn() } },
+        { provide: DIALOG_DATA, useValue: { targetForm: {} } },
+        TranslateService,
       ],
-      declarations: [SafeChooseRecordModalComponent],
-      imports: [DialogCdkModule, ApolloTestingModule],
+      imports: [
+        TranslateModule.forRoot(),
+        DialogCdkModule,
+        ApolloTestingModule,
+        SafeChooseRecordModalComponent,
+      ],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);
@@ -38,21 +44,15 @@ describe('SafeChooseRecordModalComponent', () => {
     component = fixture.componentInstance;
     fixture.detectChanges();
 
-    const op1 = controller.expectOne(GET_QUERY_TYPES);
+    const op = controller.expectOne(GET_QUERY_TYPES);
 
-    op1.flush({
+    op.flush({
       data: {
         __schema: {
           types: [],
+          queryType: { name: '', kind: '', fields: [] },
         },
-        fields: [],
       },
-    });
-
-    const op2 = controller.expectOne('GetCustomQuery');
-
-    op2.flush({
-      data: {},
     });
   });
 

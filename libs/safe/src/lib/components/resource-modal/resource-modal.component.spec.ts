@@ -15,6 +15,8 @@ import {
 } from '@ngx-translate/core';
 import { DialogModule } from '@oort-front/ui';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { AppAbility } from '../../services/auth/auth.service';
 
 describe('SafeResourceModalComponent', () => {
   let component: SafeResourceModalComponent;
@@ -23,18 +25,21 @@ describe('SafeResourceModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: DialogRef, useValue: {} },
+        { provide: DialogRef, useValue: { updateSize: jest.fn() } },
         { provide: DIALOG_DATA, useValue: {} },
+        { provide: 'environment', useValue: {} },
         OAuthService,
         UrlHelperService,
         OAuthLogger,
         DateTimeProvider,
         TranslateService,
+        AppAbility,
       ],
-      declarations: [SafeResourceModalComponent],
       imports: [
+        SafeResourceModalComponent,
         DialogModule,
         HttpClientModule,
+        ApolloTestingModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

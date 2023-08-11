@@ -79,7 +79,15 @@ describe('SafeRolesComponent', () => {
     const op = controller.expectOne(GET_ROLES);
 
     op.flush({
-      data: {},
+      data: {
+        roles: {
+          id: '',
+          title: '',
+          users: {
+            totalCount: '',
+          },
+        },
+      },
     });
   });
 

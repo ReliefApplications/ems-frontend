@@ -5,7 +5,6 @@ import {
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
-import { environment } from 'projects/back-office/src/environments/environment';
 import { SafeFormModalComponent } from './form-modal.component';
 import {
   DateTimeProvider,
@@ -19,6 +18,8 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { AppAbility } from '../../services/auth/auth.service';
 
 describe('SafeFormModalComponent', () => {
   let component: SafeFormModalComponent;
@@ -27,19 +28,21 @@ describe('SafeFormModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: DialogRef, useValue: {} },
+        { provide: DialogRef, useValue: { updateSize: jest.fn() } },
         { provide: DIALOG_DATA, useValue: {} },
-        { provide: 'environment', useValue: environment },
+        { provide: 'environment', useValue: {} },
         OAuthService,
         UrlHelperService,
         OAuthLogger,
         DateTimeProvider,
         TranslateService,
+        AppAbility,
       ],
-      declarations: [SafeFormModalComponent],
       imports: [
         DialogCdkModule,
+        SafeFormModalComponent,
         HttpClientModule,
+        ApolloTestingModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

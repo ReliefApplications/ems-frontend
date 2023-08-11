@@ -21,11 +21,14 @@ describe('SafeConvertModalComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         UntypedFormBuilder,
-        { provide: DialogRef, useValue: {} },
+        { provide: DialogRef, useValue: { removePanelClass: jest.fn() } },
         { provide: DIALOG_DATA, useValue: {} },
       ],
-      declarations: [SafeConvertModalComponent],
-      imports: [DialogCdkModule, ApolloTestingModule],
+      imports: [
+        SafeConvertModalComponent,
+        DialogCdkModule,
+        ApolloTestingModule,
+      ],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);
@@ -39,7 +42,48 @@ describe('SafeConvertModalComponent', () => {
     const op = controller.expectOne(GET_RECORD_DETAILS);
 
     op.flush({
-      data: {},
+      data: {
+        record: {
+          id: '',
+          data: '',
+          createdAt: '',
+          modifiedAt: '',
+          createdBy: {
+            name: '',
+          },
+          form: {
+            id: '',
+            name: '',
+            createdAt: '',
+            structure: '',
+            fields: '',
+            core: '',
+            resource: {
+              id: '',
+              name: '',
+              forms: [
+                {
+                  id: '',
+                  name: '',
+                  structure: '',
+                  fields: '',
+                  core: '',
+                },
+              ],
+            },
+          },
+          versions: [
+            {
+              id: '',
+              createdAt: '',
+              data: '',
+              createdBy: {
+                name: '',
+              },
+            },
+          ],
+        },
+      },
     });
   });
 

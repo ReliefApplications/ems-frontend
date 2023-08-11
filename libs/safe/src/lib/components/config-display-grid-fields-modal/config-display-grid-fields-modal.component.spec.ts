@@ -24,13 +24,13 @@ describe('ConfigDisplayGridFieldsModalComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         UntypedFormBuilder,
-        { provide: DialogRef, useValue: {} },
+        { provide: DialogRef, useValue: { removePanelClass: jest.fn() } },
         { provide: DIALOG_DATA, useValue: { types: [] } },
         TranslateService,
         QueryBuilderService,
       ],
-      declarations: [ConfigDisplayGridFieldsModalComponent],
       imports: [
+        ConfigDisplayGridFieldsModalComponent,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
@@ -56,6 +56,8 @@ describe('ConfigDisplayGridFieldsModalComponent', () => {
         __schema: {
           types: [],
           queryType: {
+            name: '',
+            kind: '',
             fields: [],
           },
         },

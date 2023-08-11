@@ -12,7 +12,6 @@ import {
   OAuthService,
   UrlHelperService,
 } from 'angular-oauth2-oidc';
-import { environment } from 'projects/back-office/src/environments/environment';
 import {
   ApolloTestingModule,
   ApolloTestingController,
@@ -24,6 +23,7 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
+import { AppAbility } from '../../services/auth/auth.service';
 
 describe('SafeRecordModalComponent', () => {
   let component: SafeRecordModalComponent;
@@ -33,16 +33,16 @@ describe('SafeRecordModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: DialogRef, useValue: {} },
+        { provide: DialogRef, useValue: { updateSize: jest.fn() } },
         { provide: DIALOG_DATA, useValue: {} },
-        { provide: 'environment', useValue: environment },
+        { provide: 'environment', useValue: {} },
         OAuthService,
         UrlHelperService,
         OAuthLogger,
         DateTimeProvider,
         TranslateService,
+        AppAbility,
       ],
-      declarations: [SafeRecordModalComponent],
       imports: [
         DialogCdkModule,
         HttpClientModule,
@@ -53,6 +53,7 @@ describe('SafeRecordModalComponent', () => {
           },
         }),
         ApolloTestingModule,
+        SafeRecordModalComponent,
       ],
     }).compileComponents();
 
@@ -67,7 +68,34 @@ describe('SafeRecordModalComponent', () => {
     const op = controller.expectOne(GET_RECORD_BY_ID);
 
     op.flush({
-      data: {},
+      data: {
+        record: {
+          id: '',
+          data: '',
+          createdAt: '',
+          modifiedAt: '',
+          createdBy: {
+            name: '',
+          },
+          modifiedBy: {
+            name: '',
+          },
+          form: {
+            id: '',
+            structure: '',
+            permissions: {
+              recordsUnicity: '',
+            },
+            fields: [],
+            metadata: {
+              name: '',
+              automated: '',
+              canSee: '',
+              canUpdate: '',
+            },
+          },
+        },
+      },
     });
   });
 

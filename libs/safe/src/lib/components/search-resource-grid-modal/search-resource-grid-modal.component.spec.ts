@@ -24,10 +24,11 @@ describe('ResourceTableModalComponent', () => {
           provide: DIALOG_DATA,
           useValue: { gridSettings: { sort: { field: [] } } },
         },
+        { provide: 'environment', useValue: {} },
         TranslateService,
       ],
-      declarations: [SafeResourceGridModalComponent],
       imports: [
+        SafeResourceGridModalComponent,
         DialogCdkModule,
         TranslateModule.forRoot({
           loader: {

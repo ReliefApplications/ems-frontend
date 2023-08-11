@@ -22,16 +22,21 @@ describe('SafeEditCalculatedFieldModalComponent', () => {
       providers: [
         UntypedFormBuilder,
         TranslateService,
-        { provide: DialogRef, useValue: {} },
+        {
+          provide: 'environment',
+          useValue: { frontOfficeUri: 'http://a.com' },
+        },
+        { provide: DialogRef, useValue: { updateSize: jest.fn() } },
         {
           provide: DIALOG_DATA,
           useValue: {
             access: { canSee: null, canUpdate: null, canDelete: null },
+            resourceFields: [],
           },
         },
       ],
-      declarations: [SafeEditCalculatedFieldModalComponent],
       imports: [
+        SafeEditCalculatedFieldModalComponent,
         DialogCdkModule,
         TranslateModule.forRoot({
           loader: {

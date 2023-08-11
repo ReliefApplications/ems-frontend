@@ -88,13 +88,40 @@ describe('SafeLayoutComponent', () => {
     const op1 = controller.expectOne(GET_NOTIFICATIONS);
 
     op1.flush({
-      data: {},
+      data: {
+        notifications: {
+          edges: [],
+          totalCount: '',
+          pageInfo: {
+            hasNextPage: '',
+            endCursor: '',
+          },
+        },
+      },
     });
 
     const op2 = controller.expectOne(NOTIFICATION_SUBSCRIPTION);
 
     op2.flush({
-      data: {},
+      data: {
+        notification: {
+          id: '',
+          action: '',
+          content: '',
+          createdAt: '',
+          channel: {
+            id: '',
+            title: '',
+            application: {
+              id: '',
+            },
+          },
+          seenBy: {
+            id: '',
+            name: '',
+          },
+        },
+      },
     });
   });
 

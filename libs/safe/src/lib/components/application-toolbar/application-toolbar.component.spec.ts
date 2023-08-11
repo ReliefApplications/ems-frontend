@@ -1,19 +1,47 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { ApplicationToolbarComponent } from './application-toolbar.component';
+import { SafeApplicationToolbarComponent } from './application-toolbar.component';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { HttpClientModule } from '@angular/common/http';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import {
+  DateTimeProvider,
+  OAuthLogger,
+  OAuthService,
+  UrlHelperService,
+} from 'angular-oauth2-oidc';
+import { AppAbility } from '../../services/auth/auth.service';
+import { Dialog, DialogModule } from '@angular/cdk/dialog';
+import { MenuModule } from '@oort-front/ui';
 
 describe('ApplicationToolbarComponent', () => {
-  let component: ApplicationToolbarComponent;
-  let fixture: ComponentFixture<ApplicationToolbarComponent>;
+  let component: SafeApplicationToolbarComponent;
+  let fixture: ComponentFixture<SafeApplicationToolbarComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ApplicationToolbarComponent],
+      providers: [
+        { provide: 'environment', useValue: {} },
+        TranslateService,
+        OAuthService,
+        UrlHelperService,
+        OAuthLogger,
+        DateTimeProvider,
+        AppAbility,
+        Dialog,
+      ],
+      declarations: [SafeApplicationToolbarComponent],
+      imports: [
+        ApolloTestingModule,
+        HttpClientModule,
+        TranslateModule.forRoot(),
+        DialogModule,
+        MenuModule,
+      ],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ApplicationToolbarComponent);
+    fixture = TestBed.createComponent(SafeApplicationToolbarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

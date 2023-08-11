@@ -25,11 +25,11 @@ describe('SafeConfirmModalComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         TranslateService,
-        { provide: DialogRef, useValue: {} },
+        { provide: DialogRef, useValue: { removePanelClass: jest.fn() } },
         { provide: DIALOG_DATA, useValue: {} },
       ],
-      declarations: [SafeConfirmModalComponent],
       imports: [
+        SafeConfirmModalComponent,
         DialogCdkModule,
         TranslateModule.forRoot({
           loader: {

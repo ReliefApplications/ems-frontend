@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SafeWidgetComponent } from './widget.component';
 
 describe('SafeWidgetComponent', () => {
