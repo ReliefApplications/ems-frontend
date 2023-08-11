@@ -1,26 +1,22 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { SafeSkeletonDirective } from './skeleton.directive';
+import { SuffixDirective } from './suffix.directive';
 
 /**
  * Host component to use the directive on
  */
 @Component({
-  template: `<ng-container
-    *safeSkeleton
-    [loading]="true"
-    [repeat]="10"
-  ></ng-container>`,
+  template: ``,
 })
 class TestComponent {}
 
-describe('SafeSkeletonDirective', () => {
+describe('SuffixDirective', () => {
   let fixture: ComponentFixture<TestComponent>;
   let component: TestComponent;
 
   beforeEach(() => {
     fixture = TestBed.configureTestingModule({
-      declarations: [SafeSkeletonDirective, TestComponent],
+      declarations: [SuffixDirective, TestComponent],
     }).createComponent(TestComponent);
 
     fixture.detectChanges(); // initial binding

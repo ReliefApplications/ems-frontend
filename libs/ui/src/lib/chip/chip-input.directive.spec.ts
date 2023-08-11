@@ -1,11 +1,15 @@
-import { TranslateModule } from '@ngx-translate/core';
 import { ChipModule } from './chip.module';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ChipInputDirective } from './chip-input.directive';
 import { By } from '@angular/platform-browser';
 import { Component } from '@angular/core';
 import { TitleCasePipe } from '@angular/common';
-import { TranslateTestingModule } from 'ngx-translate-testing';
+import {
+  TranslateFakeLoader,
+  TranslateLoader,
+  TranslateModule,
+  TranslateService,
+} from '@ngx-translate/core';
 
 /**
  * Component for testing purposes
@@ -31,19 +35,18 @@ describe('ChipInputDirective', () => {
   let fixture!: ComponentFixture<TestingComponent>;
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [TranslateService],
       imports: [
         TestingComponent,
-        TranslateTestingModule.withTranslations('en', {
-          common: {
-            status: {
-              active: 'Active',
-              pending: 'Pending',
-              archived: 'Archived',
-            },
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
           },
         }),
       ],
     }).compileComponents();
+    TestBed.inject(TranslateService);
     fixture = TestBed.createComponent(TestingComponent);
     fixture.detectChanges();
   });

@@ -1,10 +1,14 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { TabContentDirective } from './tab-content.directive';
-import { TranslateModule } from '@ngx-translate/core';
 import { Component, TemplateRef, ViewChild } from '@angular/core';
-import { TranslateTestingModule } from 'ngx-translate-testing';
 import { TabsModule } from '../tabs.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {
+  TranslateFakeLoader,
+  TranslateLoader,
+  TranslateModule,
+  TranslateService,
+} from '@ngx-translate/core';
 
 /**
  * Mocked component for deep testing of tab directive
@@ -34,13 +38,17 @@ describe('TabContentDirective', () => {
     await TestBed.configureTestingModule({
       imports: [
         TestingComponent,
-        TranslateTestingModule.withTranslations('en', {
-          components: { queryBuilder: { fields: { title: 'Fields' } } },
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
         }),
         BrowserAnimationsModule,
       ],
     }).compileComponents();
 
+    TestBed.inject(TranslateService);
     fixture = TestBed.createComponent(TestingComponent);
     templateRef = fixture.componentInstance.tabContent;
     fixture.detectChanges();
