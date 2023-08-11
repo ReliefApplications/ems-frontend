@@ -276,6 +276,7 @@ export class SafeSummaryCardComponent
    * @param res Query result
    */
   private updateCards(res: any) {
+    // typing...
     if (!res?.data) return;
     let newCards: any[] = [];
 
@@ -298,7 +299,7 @@ export class SafeSummaryCardComponent
         cardAggregationData: x,
       }));
     } else {
-      return;
+      return; // .....
     }
 
     // scrolling enabled

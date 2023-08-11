@@ -12,7 +12,7 @@ import {
 } from './graphql/queries';
 import {
   AddApiConfigurationMutationResponse,
-  ADD_API_CONFIGURATIION,
+  ADD_API_CONFIGURATION,
   DeleteApiConfigurationMutationResponse,
   DELETE_API_CONFIGURATION,
 } from './graphql/mutations';
@@ -218,7 +218,7 @@ export class ApiConfigurationsComponent
       if (value) {
         this.apollo
           .mutate<AddApiConfigurationMutationResponse>({
-            mutation: ADD_API_CONFIGURATIION,
+            mutation: ADD_API_CONFIGURATION,
             variables: {
               name: value.name,
             },
