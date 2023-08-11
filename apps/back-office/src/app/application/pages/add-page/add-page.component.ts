@@ -8,6 +8,7 @@ import {
 import {
   ContentType,
   CONTENT_TYPES,
+  WIDGET_TYPES,
   Form,
   SafeApplicationService,
   SafeUnsubscribeComponent,
@@ -30,6 +31,8 @@ import { ActivatedRoute } from '@angular/router';
  * Number of items per page.
  */
 const ITEMS_PER_PAGE = 10;
+/** Widget types that can be used as single widget page */
+const SINGLE_WIDGET_PAGE_TYPES = ['grid', 'map', 'summaryCard'];
 
 /**
  * Add page component.
@@ -46,6 +49,7 @@ export class AddPageComponent
 {
   // === DATA ===
   public contentTypes = CONTENT_TYPES;
+  public availableWidgets: any[] = WIDGET_TYPES;
   private forms = new BehaviorSubject<Form[]>([]);
   public forms$!: Observable<Form[]>;
   private cachedForms: Form[] = [];
@@ -142,6 +146,15 @@ export class AddPageComponent
       }
       this.onNext();
     });
+
+    // Set the available widgets that can directly be added as single widget dashboard
+    this.availableWidgets = this.availableWidgets.filter((widget: any) => {
+      for (const wid of SINGLE_WIDGET_PAGE_TYPES) {
+        if (widget.id.includes(wid)) {
+          return widget;
+        }
+      }
+    });
   }
 
   /**
@@ -165,7 +178,7 @@ export class AddPageComponent
   }
 
   /**
-   * Submit form to application service for creation
+   * Submit form to application service for creation of a new page
    */
   onSubmit(): void {
     if (this.applicationWidgetService) {
@@ -260,6 +273,29 @@ export class AddPageComponent
           });
       }
     });
+  }
+
+  /**
+   * Add a new widget as a dashboard page.
+   * Skip the onSubmit method, and use custom event handling to call application service to add the page with new content.
+   *
+   * @param widget new widget.
+   */
+  onAddWidget(widget: any): void {
+    // Build the structure and set width of widget
+    const structure = [
+      {
+        ...widget,
+        defaultCols: 8,
+      },
+    ];
+    // Directly call application service to add page with structure
+    this.applicationService.addPage(
+      {
+        type: 'dashboard',
+      },
+      structure
+    );
   }
 
   /**

@@ -264,6 +264,7 @@
 		},
 		"save": "Save",
 		"saveChanges": "Save changes",
+		"search": "Search",
 		"searchObject": "Search {{name}}",
 		"select": "Select",
 		"semicolon": "semicolon",
@@ -1108,6 +1109,7 @@
 					"history": "Show history"
 				},
 				"errors": {
+					"autoSaveFailed": "Action stopped due to some invalid records. Please review them before taking any other action.",
 					"invalid": {
 						"backoffice": "Invalid grid configuration",
 						"frontoffice": "Invalid grid configuration, please contact your admin"
@@ -1156,6 +1158,10 @@
 				"loading": {
 					"records": "Loading records...",
 					"settings": "Loading settings..."
+				},
+				"map": {
+					"mapDetailsTitle": "Query Map View",
+					"mapDetailsTooltip": "Centered by default on selected record"
 				},
 				"openSettings": "Open settings",
 				"tooltip": {
@@ -2009,7 +2015,8 @@
 				"form": {
 					"title": "Available forms"
 				},
-				"selectType": "Select which type of page you want to create"
+				"selectType": "Select which type of page you want to create",
+				"startFromWidget": "Start from a widget"
 			},
 			"empty": {
 				"add": "Add a Page",

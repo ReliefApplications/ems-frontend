@@ -268,12 +268,12 @@ export class DashboardComponent
 
           this.dashboardService.openDashboard(this.dashboard);
           this.tiles = this.dashboard.structure
-            ? [...this.dashboard.structure]
+            ? [...this.dashboard.structure.filter((x: any) => x !== null)]
             : [];
           this.generatedTiles =
             this.tiles.length === 0
               ? 0
-              : Math.max(...this.tiles.map((x) => x.id)) + 1;
+              : Math.max(...this.tiles.map((x) => x && x?.id)) + 1;
           this.applicationId = this.dashboard.page
             ? this.dashboard.page.application?.id
             : this.dashboard.step

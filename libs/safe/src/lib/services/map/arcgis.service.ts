@@ -595,10 +595,10 @@ export class ArcgisService {
   /**
    * Set the map default view
    *
-   * @param webMap arcgis webMap
    * @param map leaflet map
+   * @param webMap arcgis webMap
    */
-  private setDefaultView(webMap: any, map: L.Map): void {
+  private setDefaultView(map: L.Map, webMap: any): void {
     // Get the xmin, xmax, ymin and ymax from arcgis coordinates
     if (get(webMap, 'initialState.viewpoint.targetGeometry')) {
       const xmin = parseFloat(
