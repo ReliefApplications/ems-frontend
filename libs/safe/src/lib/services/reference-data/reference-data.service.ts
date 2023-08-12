@@ -11,10 +11,15 @@ import {
   GetReferenceDataByIdQueryResponse,
   GET_REFERENCE_DATA_BY_ID,
 } from './graphql/queries';
+import {
+  EditApiConfigurationMutationResponse,
+  EDIT_API_CONFIGURATION,
+} from './graphql/mutation';
 import { SafeApiProxyService } from '../api-proxy/api-proxy.service';
 import { firstValueFrom } from 'rxjs';
-import { ApiConfiguration } from '../../models/apiConfiguration.model';
+import { ApiConfiguration, authType } from '../../models/apiConfiguration.model';
 import jsonpath from 'jsonpath';
+import { SafeAuthService } from '../auth/auth.service';
 
 /** Local storage key for last modified */
 const LAST_MODIFIED_KEY = '_last_modified';
@@ -41,7 +46,7 @@ export class SafeReferenceDataService {
    * @param apollo The apollo client
    * @param apiProxy The api proxy service
    */
-  constructor(private apollo: Apollo, private apiProxy: SafeApiProxyService) {}
+  constructor(private apollo: Apollo, private apiProxy: SafeApiProxyService, private auth: SafeAuthService) {}
 
   /**
    * Return a promise with the reference data corresponding to the id passed.
@@ -50,7 +55,7 @@ export class SafeReferenceDataService {
    * @returns Promised ReferenceData.
    */
   public loadReferenceData(id: string): Promise<ReferenceData> {
-    return firstValueFrom(
+    const referenceData = firstValueFrom(
       this.apollo
         .query<GetReferenceDataByIdQueryResponse>({
           query: GET_REFERENCE_DATA_BY_ID,
@@ -58,9 +63,33 @@ export class SafeReferenceDataService {
             id,
           },
         })
-        .pipe(map(({ data }) => data.referenceData))
+        .pipe(
+          map(({ data }) => data.referenceData)
+        )
     );
+
+    const refData = referenceData as ReferenceData;
+    if (refData.apiConfiguration?.authType === authType.userToService && refData.apiConfiguration.id) {
+      this.updateUserApiConfiguration(refData.apiConfiguration.id);
+    }
+    return referenceData;
   }
+
+  private updateUserApiConfiguration(id: string) {
+    this.apollo
+    .mutate<EditApiConfigurationMutationResponse>({
+      mutation: EDIT_API_CONFIGURATION,
+      variables: {
+        id: id,
+        userToken: this.auth.getAuthToken,
+        userId: this.auth.user.getValue()?.id
+      },
+    })
+    .subscribe(({ errors, data, loading }) => {
+      
+    })
+  }
+  
 
   /**
    * Asynchronously fetch choices from ReferenceData and return them in the right format for a selectable questions.
