@@ -46,6 +46,8 @@ export class SelectMenuComponent
   @Input() multiselect = false;
   // Tells if the select menu should be disabled
   @Input() disabled = false;
+  // Tells if the select menu is filterable
+  @Input() filterable = false;
   // Tells if some styles to the current ul element should be applied
   @Input() isGraphQlSelect = false;
   // Default selected value

@@ -1,19 +1,15 @@
 <!-- Wrapper of the entire select menu, has focusout event -->
 <button
   class="min-h-[32px] relative flex justify-between items-center w-full cursor-default rounded-md px-3 text-left shadow-sm ring-1 ring-inset ring-gray-300 sm:leading-6 overflow-hidden"
-  (click)="openSelectPanel()"
-  [ngClass]="{
+  (click)="openSelectPanel()" [ngClass]="{
     'non_selectable text-gray-400': disabled,
     'bg-white text-gray-900 focus:outline-none cursor-pointer': !disabled
-  }"
->
+  }">
   <ng-container *ngIf="customTemplate">
-    <ng-container
-      *ngTemplateOutlet="
+    <ng-container *ngTemplateOutlet="
         customTemplate.template;
         context: customTemplate.context
-      "
-    ></ng-container>
+      "></ng-container>
   </ng-container>
   <div class="default flex-1">
     <ng-container *ngIf="!customTemplate">
@@ -23,38 +19,25 @@
 
   <!-- icon at right of the button -->
   <span class="pointer-events-none flex items-center">
-    <svg
-      class="h-5 w-5 text-gray-400"
-      viewBox="0 0 20 20"
-      fill="currentColor"
-      aria-hidden="true"
-    >
-      <path
-        fill-rule="evenodd"
+    <svg class="h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+      <path fill-rule="evenodd"
         d="M10 3a.75.75 0 01.55.24l3.25 3.5a.75.75 0 11-1.1 1.02L10 4.852 7.3 7.76a.75.75 0 01-1.1-1.02l3.25-3.5A.75.75 0 0110 3zm-3.76 9.2a.75.75 0 011.06.04l2.7 2.908 2.7-2.908a.75.75 0 111.1 1.02l-3.25 3.5a.75.75 0 01-1.1 0l-3.25-3.5a.75.75 0 01.04-1.06z"
-        clip-rule="evenodd"
-      />
+        clip-rule="evenodd" />
     </svg>
   </span>
 </button>
 <!-- Listbox showing when focus on the component, change in function of inputs -->
 <ng-template #optionPanel>
   <div class="relative w-full">
-    <ul
-      id="optionList"
-      [ngClass]="{
+    <ul id="optionList" [ngClass]="{
         'max-h-36 py-1': !isGraphQlSelect,
         'max-h-52': isGraphQlSelect
       }"
-      class="shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm ease-in-out duration-100 w-full overflow-auto rounded-md bg-white text-base"
-    >
+      class="shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm ease-in-out duration-100 w-full overflow-auto rounded-md bg-white text-base">
       <!-- Display the elements of the list -->
-      <ng-content *ngIf="optionList.length"></ng-content>
+      <ng-content *ngIf="optionList.length || filterable"></ng-content>
       <!-- Display a message to indicate the list is empty -->
-      <div
-        *ngIf="!optionList.length"
-        class="h-24 flex flex-col gap-2 justify-center items-center"
-      >
+      <div *ngIf="!optionList.length && !filterable" class="h-24 flex flex-col gap-2 justify-center items-center">
         <ui-icon icon="error_outline" variant="grey"></ui-icon>
         <p class="text-neutral-400 font-medium">
           {{ 'common.noOptions' | translate }}
