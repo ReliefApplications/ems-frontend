@@ -99,7 +99,7 @@ export class SafeEditorComponent implements OnInit {
     );
 
     if (get(apolloRes, 'data')) {
-      this.layout = apolloRes.data.resource.layouts?.edges[0].node;
+      this.layout = apolloRes.data.resource.layouts?.edges[0]?.node;
       if (this.settings.useStyles) {
         this.styles = this.layout?.query.style;
       }

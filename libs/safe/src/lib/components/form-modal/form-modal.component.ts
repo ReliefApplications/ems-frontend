@@ -167,9 +167,9 @@ export class SafeFormModalComponent
           this.record = data.record;
           this.modifiedAt = this.isMultiEdition
             ? null
-            : this.record.modifiedAt || null;
+            : this.record?.modifiedAt || null;
           if (!this.data.template) {
-            this.form = this.record.form;
+            this.form = this.record?.form;
           }
         })
       );
