@@ -133,6 +133,7 @@
 		"modifiedOn": "******",
 		"name": "******",
 		"next": "******",
+		"noOptions": "******",
 		"notifications": {
 			"accessDenied": "****** {{type}} ******",
 			"accessNotProvided": "****** {{type}} ****** {{error}}",
@@ -2015,7 +2016,8 @@
 				"form": {
 					"title": "******"
 				},
-				"selectType": "******"
+				"selectType": "******",
+				"startFromWidget": "******"
 			},
 			"empty": {
 				"add": "******",

@@ -133,6 +133,7 @@
 		"modifiedOn": "Modified On",
 		"name": "Name",
 		"next": "Next",
+		"noOptions": "No available choices",
 		"notifications": {
 			"accessDenied": "You don't have permission to see the {{type}}.",
 			"accessNotProvided": "No access provided to this {{type}}. {{error}}",
@@ -2015,7 +2016,8 @@
 				"form": {
 					"title": "Available forms"
 				},
-				"selectType": "Select which type of page you want to create"
+				"selectType": "Select which type of page you want to create",
+				"startFromWidget": "Start from a widget"
 			},
 			"empty": {
 				"add": "Add a Page",

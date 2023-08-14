@@ -316,7 +316,7 @@ export class ResourcesComponent
    * @param loading loading status
    */
   updateValues(data: GetResourcesQueryResponse, loading: boolean) {
-    const mappedValues = data.resources.edges.map((x) => x.node);
+    const mappedValues = data.resources?.edges?.map((x) => x.node);
     this.cachedResources = updateQueryUniqueValues(
       this.cachedResources,
       mappedValues
