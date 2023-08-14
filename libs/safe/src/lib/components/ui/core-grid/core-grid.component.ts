@@ -1178,6 +1178,7 @@ export class SafeCoreGridComponent
     const currentLayout = this.layout;
     const body = {
       ids,
+      columns: e.fields,
       filter:
         e.records === 'selected'
           ? {
