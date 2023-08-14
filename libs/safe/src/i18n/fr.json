@@ -133,6 +133,7 @@
 		"modifiedOn": "Modifié le ",
 		"name": "Nom",
 		"next": "Suivant",
+		"noOptions": "Aucun choix disponible",
 		"notifications": {
 			"accessDenied": "Vous n'avez pas la permission pour accéder à cet objet de type {{type}}.",
 			"accessNotProvided": "Pas d'accès fourni à cet objet de type {{type}}. {{error}}",
@@ -2030,7 +2031,8 @@
 				"form": {
 					"title": "Formulaires disponibles"
 				},
-				"selectType": "Sélectionnez le type de page que vous voulez créer"
+				"selectType": "Sélectionnez le type de page que vous voulez créer",
+				"startFromWidget": "@TODO"
 			},
 			"empty": {
 				"add": "Ajouter une page",

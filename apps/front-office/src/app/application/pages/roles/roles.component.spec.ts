@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 import { RolesComponent } from './roles.component';
 
@@ -9,6 +10,7 @@ describe('RolesComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [RolesComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   });
 
