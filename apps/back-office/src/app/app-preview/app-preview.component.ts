@@ -232,6 +232,14 @@ export class AppPreviewComponent
   }
 
   /**
+   * Remove application data such as styling when exiting preview.
+   */
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.applicationService.leaveApplication();
+  }
+
+  /**
    * Returns nav icon from the page's content type.
    *
    * @param type content type of the page.
