@@ -18,7 +18,9 @@
       [value]="form.id"
       [label]="form.name"
     >
-      <span class="flex-auto text-ellipsis whitespace-nowrap overflow-hidden">{{ form.name }}</span>
+      <span class="flex-auto text-ellipsis whitespace-nowrap overflow-hidden">{{
+        form.name
+      }}</span>
       <ng-container ngProjectAs="icon">
         <ui-icon
           *ngIf="form.core"
