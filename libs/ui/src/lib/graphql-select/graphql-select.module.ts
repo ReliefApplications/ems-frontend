@@ -6,7 +6,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SpinnerModule } from '../spinner/spinner.module';
 import { ButtonModule } from '../button/button.module';
 import { SelectMenuModule } from '../select-menu/select-menu.module';
-import { IconModule } from '../icon/icon.module';
 
 /**
  * Select module for GraphQL queries.
@@ -21,7 +20,6 @@ import { IconModule } from '../icon/icon.module';
     SpinnerModule,
     ButtonModule,
     SelectMenuModule,
-    IconModule,
   ],
   exports: [GraphQLSelectComponent],
 })
