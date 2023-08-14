@@ -1581,6 +1581,7 @@
 					"static": "Static"
 				}
 			},
+			"styling": "Edit styling",
 			"summaryCard": {
 				"dataSource": "Data Source",
 				"errors": {
