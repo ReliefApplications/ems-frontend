@@ -1,12 +1,19 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import { ApolloTestingModule } from 'apollo-angular/testing';
 
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [RouterTestingModule],
+      imports: [RouterTestingModule, ApolloTestingModule],
       declarations: [AppComponent],
+      providers: [
+        {
+          provide: 'environment',
+          useValue: {},
+        },
+      ]
     }).compileComponents();
   });
 

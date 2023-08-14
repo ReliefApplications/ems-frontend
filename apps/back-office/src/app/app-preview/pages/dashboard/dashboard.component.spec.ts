@@ -9,6 +9,13 @@ import {
   TranslateModule,
   TranslateService,
 } from '@ngx-translate/core';
+import { SafeWidgetGridModule } from '@oort-front/safe';
+import {
+  OAuthService,
+  UrlHelperService,
+  OAuthLogger,
+  DateTimeProvider,
+} from 'angular-oauth2-oidc';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -19,6 +26,7 @@ describe('DashboardComponent', () => {
       declarations: [DashboardComponent],
       imports: [
         ApolloTestingModule,
+        SafeWidgetGridModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
@@ -28,6 +36,10 @@ describe('DashboardComponent', () => {
       ],
       providers: [
         TranslateService,
+        OAuthService,
+        UrlHelperService,
+        OAuthLogger,
+        DateTimeProvider,
         {
           provide: ActivatedRoute,
           useValue: {
@@ -36,7 +48,10 @@ describe('DashboardComponent', () => {
         },
         {
           provide: 'environment',
-          useValue: {},
+          useValue: {
+            availableWidgets: [],
+            theme: {},
+          },
         },
       ],
     }).compileComponents();

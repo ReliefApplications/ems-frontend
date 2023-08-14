@@ -112,7 +112,7 @@ export class FormBuilderComponent implements OnInit {
         this.updateStatus(status);
       }
     });
-    this.id = this.route.snapshot.paramMap.get('id') || '';
+    this.id = this.route?.snapshot?.paramMap?.get('id') || '';
     if (this.id !== null) {
       this.apollo
         .watchQuery<GetFormByIdQueryResponse>({

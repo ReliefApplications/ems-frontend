@@ -10,6 +10,7 @@ import {
   TranslateService,
 } from '@ngx-translate/core';
 import { SafeWorkflowStepperModule } from '@oort-front/safe';
+import { WorkflowRoutingModule } from './workflow-routing.module';
 
 describe('WorkflowComponent', () => {
   let component: WorkflowComponent;
@@ -21,6 +22,7 @@ describe('WorkflowComponent', () => {
       imports: [
         ApolloTestingModule,
         SafeWorkflowStepperModule,
+        WorkflowRoutingModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

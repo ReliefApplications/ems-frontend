@@ -63,9 +63,9 @@ export class EditChannelModalComponent implements OnInit {
   ) {}
 
   /** Load data and build the form. */
-  ngOnInit(): void {
+  ngOnInit(): void {    
     this.roleForm = this.formBuilder.group({
-      title: [this.data.channel.title, Validators.required],
+      title: [this.data?.channel?.title, Validators.required],
     });
   }
 

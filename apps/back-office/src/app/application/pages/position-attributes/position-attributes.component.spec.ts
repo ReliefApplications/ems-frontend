@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ApolloTestingModule } from 'apollo-angular/testing';
 import { PositionAttributesComponent } from './position-attributes.component';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
+import { SpinnerModule } from '@oort-front/ui';
 
 describe('PositionComponent', () => {
   let component: PositionAttributesComponent;
@@ -9,6 +12,15 @@ describe('PositionComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [PositionAttributesComponent],
+      imports: [ApolloTestingModule, SpinnerModule],
+      providers: [
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({}),
+          },
+        },
+      ]
     }).compileComponents();
   });
 
