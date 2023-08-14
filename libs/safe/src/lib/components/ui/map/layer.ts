@@ -2,7 +2,6 @@
 import * as L from 'leaflet';
 import 'leaflet.heat';
 import 'leaflet.markercluster';
-
 import { Feature, Geometry } from 'geojson';
 import { get, isNil, set } from 'lodash';
 import {
@@ -1061,9 +1060,15 @@ export class Layer implements LayerModel {
    *
    * @param map L.Map
    */
-  public removeAllListeners(map: L.Map) {
+  public async removeAllListeners(map: L.Map) {
     if (this.zoomListener) {
       map.off('zoomend', this.zoomListener);
+    }
+    const children = await this.getChildren();
+    if (children.length) {
+      children.forEach((cl) => {
+        cl.removeAllListeners(map);
+      });
     }
     this.zoomListener = null as unknown as L.LeafletEventHandlerFn;
     this.listeners.forEach((listener) => {

@@ -143,7 +143,7 @@ export class MapComponent
   private appliedDashboardFilters: Record<string, any>;
 
   // === LAYERS ===
-  private layers: Layer[] = [];
+  layers: Layer[] = [];
   private layerIds: string[] = [];
 
   private resizeObserver?: ResizeObserver;
@@ -398,48 +398,65 @@ export class MapComponent
     // Close layers/bookmarks menu
     document.getElementById('layer-control-button-close')?.click();
 
+    this.setupMapLayers({ layers, controls, arcGisWebMap, basemap });
+    this.setMapControls(controls, initMap);
+  }
+
+  setupMapLayers(
+    settings: {
+      layers: string[] | undefined;
+      controls: MapControls;
+      arcGisWebMap: string | undefined;
+      basemap: string | undefined;
+    },
+    reset = false
+  ) {
     // Get layers
     const promises: Promise<{
       basemaps?: L.Control.Layers.TreeObject[];
       layers?: L.Control.Layers.TreeObject[];
     }>[] = [];
-
     // Flag to set again basemap or webmap in map even if no basemap or webmap change is done
     // For layer change case trigger(on layer change all layers, including basemap and webmaps, are deleted by default)
     let layersRemoved = false;
 
     if (
-      this.layerIds.length !== layers?.length ||
-      difference(layers, this.layerIds).length
+      this.layerIds.length !== settings.layers?.length ||
+      difference(settings.layers, this.layerIds).length ||
+      reset
     ) {
       this.map.eachLayer((layer) => {
         this.map.removeLayer(layer);
       });
       layersRemoved = true;
-      this.layerIds = layers ?? [];
-      if (layers?.length) {
+      this.layerIds = settings.layers ?? [];
+      if (settings.layers?.length || reset) {
         this.resetLayers();
-        promises.push(this.getLayers(layers));
+        if (settings.layers?.length) {
+          promises.push(this.getLayers(settings.layers));
+        }
       }
     }
 
     if (
-      (!arcGisWebMap && basemap && basemap !== this.currentBasemapKey) ||
-      (arcGisWebMap && arcGisWebMap !== this.arcGisWebMap) ||
-      (this.arcGisWebMap && !arcGisWebMap) ||
+      (!settings.arcGisWebMap &&
+        settings.basemap &&
+        settings.basemap !== this.currentBasemapKey) ||
+      (settings.arcGisWebMap && settings.arcGisWebMap !== this.arcGisWebMap) ||
+      (this.arcGisWebMap && !settings.arcGisWebMap) ||
       layersRemoved
     ) {
       if (this.basemap) {
         this.basemap.removeFrom(this.map);
       }
       // Get arcgis layers
-      if (arcGisWebMap) {
+      if (settings.arcGisWebMap) {
         // Load arcgis webmap
-        promises.push(this.setWebmap(arcGisWebMap));
+        promises.push(this.setWebmap(settings.arcGisWebMap));
       } else {
         this.arcGisWebMap = undefined;
         // else, load basemap ( default to osm )
-        promises.push(this.setBasemap(this.map, basemap));
+        promises.push(this.setBasemap(this.map, settings.basemap));
       }
     }
 
@@ -452,7 +469,7 @@ export class MapComponent
           tree.basemaps && this.basemapTree.push(tree.basemaps);
           tree.layers && this.overlaysTree.push(tree.layers);
         }
-        if (controls.layer) {
+        if (settings.controls.layer) {
           this.setLayersControl(
             flatten(this.basemapTree),
             flatten(this.overlaysTree)
@@ -465,7 +482,7 @@ export class MapComponent
       });
     } else {
       // No update on the layers, we only update the controls
-      if (controls.layer) {
+      if (settings.controls.layer) {
         this.setLayersControl(
           flatten(this.basemapTree),
           flatten(this.overlaysTree)
@@ -476,8 +493,6 @@ export class MapComponent
         }
       }
     }
-
-    this.setMapControls(controls, initMap);
   }
 
   /**
@@ -978,8 +993,8 @@ export class MapComponent
    * Reset current saved layers and remove all attached listeners of those Layer instances
    */
   resetLayers() {
-    this.layers.forEach((layer) => {
-      layer.removeAllListeners(this.map);
+    this.layers.forEach(async (layer) => {
+      await layer.removeAllListeners(this.map);
     });
     this.layers = [];
   }

@@ -171,6 +171,16 @@ export class EditLayerModalComponent
     if (this.data.mapComponent) {
       const encapsulatedSettings =
         this.data.mapComponent.mapSettingsWithoutLayers;
+      // Reset all map layers to keep basemaps or arcGISmaps on loading map editor
+      this.data.mapComponent.setupMapLayers(
+        {
+          layers: [],
+          arcGisWebMap: encapsulatedSettings.settings.arcGisWebMap,
+          basemap: encapsulatedSettings.settings.basemap,
+          controls: encapsulatedSettings.settings.controls,
+        },
+        true
+      );
       // Reset the current map view in order to only see the layer on edition
       this.data.mapComponent.mapSettings = {
         ...encapsulatedSettings.settings,
@@ -245,6 +255,15 @@ export class EditLayerModalComponent
   }
 
   /**
+   * Update current map instance layers array in order to keep up to date all the related layers for listener removal
+   */
+  private updateCurrentMapInstanceLayerCount() {
+    if (!this.data.mapComponent.layers.find((l) => l.id !== this._layer.id)) {
+      this.data.mapComponent.layers.push(this._layer);
+    }
+  }
+
+  /**
    * Set default layer for editor
    *
    * @param lastFormValue Last value triggered from the layer editor form
@@ -260,10 +279,8 @@ export class EditLayerModalComponent
       )
       .then((layer) => {
         if (layer) {
-          if (this._layer instanceof Layer) {
-            this._layer.removeAllListeners(this.data.mapComponent.map);
-          }
           this._layer = layer;
+          this.updateCurrentMapInstanceLayerCount();
           this._layer.getLayer().then((l) => {
             this.currentLayer = l;
             this.updateMapLayer({ delete: false }, lastFormValue);
@@ -323,20 +340,23 @@ export class EditLayerModalComponent
       )
       .subscribe({
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        next: ([[prev, next], trigger]) => {
+        next: async ([[prev, next], trigger]) => {
           this.updateMapLayer({ delete: true });
-          // If any of the main properties to fetch the layer changes, set up layer
           if (
-            prev.datasource.geoField !== next.datasource.geoField ||
-            prev.datasource.latitudeField !== next.datasource.latitudeField ||
-            prev.datasource.longitudeField !== next.datasource.longitudeField
+            prev.datasource?.geoField !== next.datasource?.geoField ||
+            prev.datasource?.latitudeField !== next.datasource?.latitudeField ||
+            prev.datasource?.longitudeField !== next.datasource?.longitudeField
           ) {
             this.setUpLayer(next);
           } else {
-            // else update current layer properties
-            this._layer.setConfig({ ...next, geojson: this._layer.geojson });
-            this._layer.getLayer(true).then((layer) => {
-              this.currentLayer = layer;
+            await this._layer.removeAllListeners(this.data.mapComponent.map);
+            await this._layer.setConfig({
+              ...next,
+              geojson: this._layer.geojson,
+            });
+            this.updateCurrentMapInstanceLayerCount();
+            this._layer.getLayer(true).then((l) => {
+              this.currentLayer = l;
               this.updateMapLayer({ delete: false }, next);
             });
           }
@@ -477,9 +497,6 @@ export class EditLayerModalComponent
         layerData: overlays,
         isDelete: true,
       };
-    }
-    if (this._layer instanceof Layer) {
-      this._layer.removeAllListeners(this.data.mapComponent.map);
     }
   }
 

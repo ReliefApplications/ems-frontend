@@ -210,6 +210,10 @@ export class MapLayersComponent
                       (layer) => layer.id === id
                     );
                     if (index !== -1) {
+                      this.mapLayers.splice(index, 1, {
+                        ...res,
+                        name: value.name,
+                      });
                       this.restoreMapSettingsView();
                     } else {
                       // Selecting a new layer
