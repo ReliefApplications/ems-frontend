@@ -9,9 +9,16 @@ import {
 } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
-import { LayerModel } from '../../../../models/layer.model';
+import { Fields, LayerModel } from '../../../../models/layer.model';
 import { createLayerForm, LayerFormT } from '../map-forms';
-import { debounceTime, takeUntil, BehaviorSubject, Subject } from 'rxjs';
+import {
+  takeUntil,
+  BehaviorSubject,
+  Subject,
+  pairwise,
+  startWith,
+  distinctUntilChanged,
+} from 'rxjs';
 import { MapComponent } from '../../../ui/map/map.component';
 import {
   MapEvent,
@@ -24,7 +31,7 @@ import { SafeMapLayersService } from '../../../../services/map/map-layers.servic
 import { Layer } from '../../../ui/map/layer';
 import { Apollo } from 'apollo-angular';
 import { GetResourceQueryResponse, GET_RESOURCE } from '../graphql/queries';
-import { get } from 'lodash';
+import { get, isEqual } from 'lodash';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { LayerPropertiesModule } from './layer-properties/layer-properties.module';
 import { LayerDatasourceModule } from './layer-datasource/layer-datasource.module';
@@ -43,9 +50,10 @@ import {
   TabsModule,
   TooltipModule,
 } from '@oort-front/ui';
-import { Fields } from './layer-fields/layer-fields.component';
 import { MapLayersModule } from '../map-layers/map-layers.module';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { ContextualFiltersSettingsComponent } from '../../common/contextual-filters-settings/contextual-filters-settings.component';
+import { FormArray, UntypedFormBuilder } from '@angular/forms';
 
 /**
  * Interface of dialog input
@@ -81,6 +89,7 @@ interface DialogData {
     LayerFilterModule,
     LayerStylingModule,
     MapLayersModule,
+    ContextualFiltersSettingsComponent,
   ],
   templateUrl: './edit-layer-modal.component.html',
   styleUrls: ['./edit-layer-modal.component.scss'],
@@ -118,30 +127,6 @@ export class EditLayerModalComponent
   }
 
   /**
-   * Get the datasource valid status, so we only display other tabs if valid
-   *
-   * @returns boolean if we have all necessary data to proceed
-   */
-  public get datasourceValid(): boolean {
-    const datasourceForm = this.form?.get('datasource');
-    if (datasourceForm?.get('refData')?.value) {
-      return true;
-    } else if (datasourceForm?.get('resource')?.value) {
-      // If datasource origin is a resource, then geofield OR lat & lng is needed
-      if (
-        (datasourceForm?.get('layout')?.value ||
-          datasourceForm?.get('aggregation')?.value) &&
-        (datasourceForm?.get('geoField')?.value ||
-          (datasourceForm?.get('latitudeField')?.value &&
-            datasourceForm?.get('longitudeField')?.value))
-      ) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  /**
    * Map layer editor.
    *
    * @param confirmService Shared confirm service.
@@ -150,6 +135,7 @@ export class EditLayerModalComponent
    * @param apollo Apollo service
    * @param {DialogData} data Dialog input
    * @param dialogRef Dialog ref
+   * @param formBuilder Angular form builder
    */
   constructor(
     private confirmService: SafeConfirmService,
@@ -157,7 +143,8 @@ export class EditLayerModalComponent
     private mapLayersService: SafeMapLayersService,
     private apollo: Apollo,
     @Inject(DIALOG_DATA) public data: DialogData,
-    public dialogRef: DialogRef<LayerFormData>
+    public dialogRef: DialogRef<LayerFormData>,
+    private formBuilder: UntypedFormBuilder
   ) {
     super();
   }
@@ -167,7 +154,10 @@ export class EditLayerModalComponent
     this.setIsDatasourceValid(this.form.get('datasource')?.value);
     this.form
       .get('datasource')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(
+        distinctUntilChanged((prev, next) => isEqual(prev, next)),
+        takeUntil(this.destroy$)
+      )
       .subscribe((value) => {
         this.setIsDatasourceValid(value);
       });
@@ -184,7 +174,6 @@ export class EditLayerModalComponent
     }
     this.setUpEditLayerListeners();
     this.getResource();
-    console.log(this.form);
   }
 
   ngAfterViewInit(): void {
@@ -197,6 +186,10 @@ export class EditLayerModalComponent
         this.data.currentMapContainerRef.next(this.mapContainerRef);
       }
     }
+    // If datasource changes, update fields form control
+    this.fields.pipe(takeUntil(this.destroy$)).subscribe((fields: any) => {
+      fields.forEach((field: Fields) => this.updateFormField(field));
+    });
   }
 
   /**
@@ -222,7 +215,14 @@ export class EditLayerModalComponent
    */
   private setIsDatasourceValid(value: any) {
     if (get(value, 'refData')) {
-      this.isDatasourceValid = true;
+      if (
+        get(value, 'geoField') ||
+        (get(value, 'latitudeField') && get(value, 'longitudeField'))
+      ) {
+        this.isDatasourceValid = true;
+      } else {
+        this.isDatasourceValid = false;
+      }
     } else if (get(value, 'resource')) {
       // If datasource origin is a resource, then geofield OR lat & lng is needed
       if (
@@ -231,8 +231,6 @@ export class EditLayerModalComponent
           (get(value, 'latitudeField') && get(value, 'longitudeField')))
       ) {
         this.isDatasourceValid = true;
-      } else {
-        this.isDatasourceValid = false;
       }
     } else {
       this.isDatasourceValid = false;
@@ -285,23 +283,47 @@ export class EditLayerModalComponent
   private setUpEditLayerListeners() {
     // Those listeners would handle any change for layer into the map component reference
     this.form.valueChanges
-      .pipe(takeUntil(this.destroy$), debounceTime(1000))
-      .subscribe((value) => {
-        this.updateMapLayer({ delete: true });
-        this._layer.setConfig({ ...value, geojson: this._layer.geojson });
-        this._layer.getLayer(true).then((layer) => {
-          this.currentLayer = layer;
-          this.updateMapLayer();
-        });
+      .pipe(
+        startWith(this.form.value),
+        distinctUntilChanged((prev, next) => isEqual(prev, next)),
+        pairwise(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ([prev, next]) => {
+          this.updateMapLayer({ delete: true });
+          // If any of the main properties to fetch the layer changes, set up layer
+          if (
+            prev.datasource.geoField !== next.datasource.geoField ||
+            prev.datasource.latitudeField !== next.datasource.latitudeField ||
+            prev.datasource.longitudeField !== next.datasource.longitudeField
+          ) {
+            this.setUpLayer();
+          } else {
+            // else update current layer properties
+            this._layer.setConfig({ ...next, geojson: this._layer.geojson });
+            this._layer.getLayer(true).then((layer) => {
+              this.currentLayer = layer;
+              this.updateMapLayer();
+            });
+          }
+        },
       });
 
     this.form
       .get('datasource')
-      ?.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(1000))
-      .subscribe(() => {
-        this.updateMapLayer({ delete: true });
-        this.setUpLayer();
-        this.getResource();
+      ?.valueChanges.pipe(
+        startWith(this.form.get('datasource')?.value),
+        pairwise(),
+        takeUntil(this.destroy$)
+      )
+      .subscribe({
+        next: ([prev, next]) => {
+          if (!!prev && prev?.resource !== next?.resource && next?.resource) {
+            this.getResource();
+          }
+          // else on aggregation implementation add it here
+        },
       });
 
     this.data.mapComponent?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({
@@ -382,7 +404,7 @@ export class EditLayerModalComponent
             aggregation: aggregationID ? [aggregationID] : [],
           },
         })
-        .pipe(takeUntil(this.destroy$), debounceTime(1000))
+        .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }) => {
           this.resource.next(data);
           // Update fields
@@ -433,5 +455,38 @@ export class EditLayerModalComponent
     const sublayers = this.form.get('sublayers')?.value;
     const filtered = sublayers?.filter((l) => l !== layerIdToDelete);
     this.form.get('sublayers')?.setValue(filtered);
+  }
+
+  /**
+   * Updates or creates a new form control when editing the layer field
+   * or changing the datasource
+   *
+   * @param field field object with the updated info
+   * @param initializing indicates if datasource didn't changed and fields list
+   * need to be update nad not initialized
+   */
+  updateFormField(field: Fields, initializing = true): void {
+    const fieldsInfo = (
+      this.form.get('popupInfo')?.get('fieldsInfo') as FormArray
+    ).controls;
+    const control = fieldsInfo.find(
+      (fieldControl: any) =>
+        (fieldControl as FormArray)?.get('name')?.value === field.name
+    );
+    if (!control) {
+      const newControl = this.formBuilder.group({
+        label: get(field, 'label', ''),
+        name: get(field, 'name', ''),
+        type: get(field, 'type', ''),
+      });
+      fieldsInfo.push(newControl);
+    } else {
+      if (!initializing) {
+        control.get('label')?.setValue(get(field, 'label', ''));
+        this.fields.next(this.form.get('popupInfo')?.get('fieldsInfo')?.value);
+      } else {
+        field.label = control.get('label')?.value ?? '';
+      }
+    }
   }
 }

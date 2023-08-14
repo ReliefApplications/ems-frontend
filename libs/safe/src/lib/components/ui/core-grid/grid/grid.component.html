@@ -617,9 +617,7 @@
                 'components.widget.grid.tooltip.displayMap' | translate
               "
             >
-              {{
-                applyFieldFormat(getPropertyValue(dataItem, field.name), field)
-              }}
+              {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
             </a>
           </div>
         </ng-template>
@@ -630,9 +628,10 @@
           field.type === 'JSON' && multiSelectTypes.includes(field.meta.type)
         "
         [field]="field.name"
-        [filterable]="false"
+        [filterable]="true"
         [title]="field.title"
-        [editable]="false"
+        [editor]="field.editor"
+        [editable]="!field.disabled"
         [width]="field.width"
         [hidden]="field.hidden"
         [minResizableWidth]="50"

@@ -27,7 +27,7 @@ import { GradientPipe } from '../../pipes/gradient/gradient.pipe';
 const arcgisProj =
   '+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +wktext  +no_defs';
 
-type TreeObject = { label: string; layer: L.Layer };
+export type TreeObject = { label: string; layer: L.Layer };
 
 /**
  * Shared ArcGIS service map.
@@ -595,10 +595,10 @@ export class ArcgisService {
   /**
    * Set the map default view
    *
-   * @param webMap arcgis webMap
    * @param map leaflet map
+   * @param webMap arcgis webMap
    */
-  private setDefaultView(webMap: any, map: L.Map): void {
+  private setDefaultView(map: L.Map, webMap: any): void {
     // Get the xmin, xmax, ymin and ymax from arcgis coordinates
     if (get(webMap, 'initialState.viewpoint.targetGeometry')) {
       const xmin = parseFloat(

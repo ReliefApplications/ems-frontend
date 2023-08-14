@@ -38,7 +38,7 @@
       </ng-container>
       <ng-container cdkColumnDef="actions" [stickyEnd]="true">
         <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
-        <td uiCell *cdkCellDef="let element">
+        <td uiCell *cdkCellDef="let element; let index = index">
           <div class="flex">
             <ui-button
               [isIcon]="true"
@@ -51,7 +51,7 @@
                   : 'components.role.tooltip.disallowFieldAccessibility'
                 ) | translate : { field: element.name }
               "
-              (click)="onEditFieldAccess(element, 'canSee')"
+              (click)="onEditFieldAccess(index, element, 'canSee')"
             >
             </ui-button>
             <ui-button
@@ -65,7 +65,7 @@
                   : 'components.role.tooltip.disallowFieldUpdate'
                 ) | translate : { field: element.name }
               "
-              (click)="onEditFieldAccess(element, 'canUpdate')"
+              (click)="onEditFieldAccess(index, element, 'canUpdate')"
             >
             </ui-button>
           </div>

@@ -15,6 +15,7 @@ export * from './lib/paginator/paginator.module';
 export * from './lib/avatar-group/avatar-group.module';
 export * from './lib/toggle/toggle.module';
 export * from './lib/textarea/textarea.module';
+export * from './lib/textarea/textarea.component';
 export * from './lib/breadcrumbs/breadcrumbs.module';
 export * from './lib/divider/divider.module';
 export * from './lib/autocomplete/autocomplete.module';
@@ -57,6 +58,7 @@ export * from './lib/table/interfaces/table-column.interface';
 export * from './lib/toggle/interfaces/toggle-icon.interface';
 export * from './lib/breadcrumbs/interfaces/breadcrumb.interface';
 export * from './lib/paginator/interfaces/paginator.interfaces';
+export * from './lib/snackbar/interfaces/snackbar.interfaces';
 
 // === TOKENS === //
 export * from './lib/snackbar/snackbar.token';

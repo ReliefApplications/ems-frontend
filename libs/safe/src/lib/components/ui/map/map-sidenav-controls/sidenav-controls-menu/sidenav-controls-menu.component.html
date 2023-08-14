@@ -1,10 +1,10 @@
-<div class="flex flex-col max-w-md min-w-[300px]">
+<div class="flex flex-col w-[33vw] min-w-[300px]">
   <!-- HEADER -->
   <div class="flex gap-2 ml-5 mt-5">
     <button
       class="rounded-t-md px-4 py-2"
       [ngClass]="{
-        'bg-primary-900 text-white': layersMenuExpanded,
+        'bg-primary-900 text-white font-bold': layersMenuExpanded,
         'bg-slate-200': !layersMenuExpanded
       }"
       (click)="openLayersMenu()"
@@ -14,7 +14,7 @@
     <button
       class="rounded-t-md px-4 py-2"
       [ngClass]="{
-        'bg-primary-900 text-white': bookmarksMenuExpanded,
+        'bg-primary-900 text-white font-bold': bookmarksMenuExpanded,
         'bg-slate-200': !bookmarksMenuExpanded
       }"
       (click)="openBookmarksMenu()"
@@ -35,17 +35,6 @@
 
   <!-- BODY -->
   <div *ngIf="layersMenuExpanded" class="mx-5 my-3">
-    <!--
-  <safe-layers-menu-basemap
-    *ngFor="let basemap of basemaps"
-    [basemap]="basemap"
-    [level]="0"
-    [mapComponent]="mapComponent"
-    (checkedChange)="updateBasemaps()"
-  ></safe-layers-menu-basemap>
-
-  <ui-divider class="mt-0"></ui-divider>
--->
     <safe-sidenav-controls-menu-item
       *ngFor="let item of layersTree"
       [item]="item"

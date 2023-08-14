@@ -23,6 +23,7 @@ export class SafeFloatingOptionsComponent extends SafeUnsubscribeComponent {
   @Output() edit: EventEmitter<any> = new EventEmitter();
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() expand: EventEmitter<any> = new EventEmitter();
+  @Output() style: EventEmitter<any> = new EventEmitter();
 
   /**
    * Button on top left of each widget, if user can see it, with menu of possible
@@ -67,6 +68,9 @@ export class SafeFloatingOptionsComponent extends SafeUnsubscribeComponent {
     }
     if (action === 'Expand') {
       this.expand.emit({ id: this.widget.id });
+    }
+    if (action === 'Style') {
+      this.style.emit({ widget: this.widget });
     }
     if (action === 'Delete') {
       const dialogRef = this.confirmService.openConfirmModal({

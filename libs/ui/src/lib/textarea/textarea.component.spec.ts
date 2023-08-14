@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TextareaComponent } from './textarea.component';
+import { TextFieldModule } from '@angular/cdk/text-field';
 
 describe('TextareaComponent', () => {
   let component: TextareaComponent;
@@ -9,6 +10,7 @@ describe('TextareaComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [TextareaComponent],
+      imports: [TextFieldModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TextareaComponent);
@@ -16,7 +18,7 @@ describe('TextareaComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create an instance', () => {
     expect(component).toBeTruthy();
   });
 });

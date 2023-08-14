@@ -13,9 +13,9 @@ import { ButtonActionT } from './button-action-type';
   styleUrls: ['./button-action.component.scss'],
 })
 export class ButtonActionComponent {
-  @Input() buttonActions: (ButtonActionT & { isHovered: boolean })[] = [];
+  @Input() buttonActions: ButtonActionT[] = [];
   @Input() dashboard?: Dashboard;
-  @Input() canUpdate = true;
+  @Input() canUpdate = false;
 
   /**
    * Action buttons
@@ -39,14 +39,9 @@ export class ButtonActionComponent {
    */
   public onButtonActionClick(button: ButtonActionT) {
     if (button.href) {
-      //regex to verify if it's a page id key
-      const regex = /{{page\((.*?)\)}}/;
-      const match = button.href.match(regex);
-      if (match) {
-        button.href = this.dataTemplateService.getButtonLink(match[1]);
-      }
-      if (button.openInNewTab) window.open(button.href, '_blank');
-      else window.location.href = button.href;
+      const href = this.dataTemplateService.renderLink(button.href);
+      if (button.openInNewTab) window.open(href, '_blank');
+      else window.location.href = href;
     }
   }
 
@@ -84,7 +79,6 @@ export class ButtonActionComponent {
         const currButtons = this.dashboard?.buttons || [];
         currButtons.splice(idx, 1);
         this.dashboardService.saveDashboardButtons(currButtons);
-        this.buttonActions.splice(idx, 1);
       }
     });
   }

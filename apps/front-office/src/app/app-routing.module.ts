@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard } from './guards/auth.guard';
+import { AccessGuard } from './guards/access.guard';
 
 /**
  * List of top level routes of the Front-Office.
@@ -16,21 +17,26 @@ const routes: Routes = [
       {
         path: '',
         loadChildren: () =>
-          import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
+          import('./redirect/redirect.module').then((m) => m.RedirectModule),
+        pathMatch: 'full',
+        // canActivate: [AccessGuard],
       },
       {
         path: ':id',
         loadChildren: () =>
-          import('./dashboard/dashboard.module').then((m) => m.DashboardModule),
+          import('./application/application.module').then(
+            (m) => m.ApplicationModule
+          ),
+        // canActivate: [AccessGuard],
       },
     ],
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, AccessGuard],
   },
-  {
-    path: '**',
-    redirectTo: '',
-    pathMatch: 'full',
-  },
+  // {
+  //   path: '**',
+  //   redirectTo: '',
+  //   pathMatch: 'full',
+  // },
 ];
 
 /**
@@ -38,7 +44,7 @@ const routes: Routes = [
  * Use lazy loading for performance.
  */
 @NgModule({
-  imports: [RouterModule.forRoot(routes, {})],
+  imports: [RouterModule.forRoot(routes)],
   exports: [RouterModule],
 })
 export class AppRoutingModule {}

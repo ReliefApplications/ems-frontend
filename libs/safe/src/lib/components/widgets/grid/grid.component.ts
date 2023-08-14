@@ -39,6 +39,7 @@ import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../../utils/cleanRecord';
 import get from 'lodash/get';
+import set from 'lodash/set';
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { Aggregation } from '../../../models/aggregation.model';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
@@ -222,33 +223,6 @@ export class SafeGridWidgetComponent
   }
 
   /**
-   * Send changes on multiple records to the backend
-   *
-   * @param items A list of item representing the changes for each record
-   * @returns A list of promise with the result of the request
-   */
-  private promisedChanges(items: any[]): Promise<any>[] {
-    const promises: Promise<any>[] = [];
-    for (const item of items) {
-      const data = Object.assign({}, item);
-      delete data.id;
-      promises.push(
-        firstValueFrom(
-          this.apollo.mutate<EditRecordMutationResponse>({
-            mutation: EDIT_RECORD,
-            variables: {
-              id: item.id,
-              data,
-              template: get(this.settings, 'template', null),
-            },
-          })
-        )
-      );
-    }
-    return promises;
-  }
-
-  /**
    * Executes sequentially actions enabled by settings for the floating button
    *
    * @param options action options.
@@ -280,7 +254,20 @@ export class SafeGridWidgetComponent
 
     // Auto save all records
     if (options.autoSave) {
-      await Promise.all(this.promisedChanges(this.grid.updatedItems));
+      const hasError = await this.grid.onSaveChanges();
+      if (hasError) {
+        this.snackBar.openSnackBar(
+          this.translate.instant(
+            'components.widget.grid.errors.autoSaveFailed'
+          ),
+          {
+            error: true,
+            duration: 8000,
+          }
+        );
+        // Close the action if error detected during auto save
+        return;
+      }
     }
     // Auto modify the selected rows
     if (options.modifySelectedRows) {
@@ -479,7 +466,9 @@ export class SafeGridWidgetComponent
   ): Promise<any> {
     const update: any = {};
     for (const modification of modifications) {
-      update[modification.field.name] = modification.value;
+      if (modification.field) {
+        set(update, modification.field, modification.value);
+      }
     }
     const data = cleanRecord(update);
     return firstValueFrom(

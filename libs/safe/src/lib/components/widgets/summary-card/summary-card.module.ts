@@ -6,7 +6,12 @@ import { SafeSummaryCardComponent } from './summary-card.component';
 import { SummaryCardItemModule } from './summary-card-item/summary-card-item.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { SafeGridWidgetModule } from '../grid/grid.module';
-import { TooltipModule, ButtonModule, PaginatorModule } from '@oort-front/ui';
+import {
+  TooltipModule,
+  ButtonModule,
+  PaginatorModule,
+  SpinnerModule,
+} from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -30,6 +35,7 @@ import { SafeSkeletonModule } from '../../../directives/skeleton/skeleton.module
     ReactiveFormsModule,
     SafeSkeletonModule,
     PaginatorModule,
+    SpinnerModule,
   ],
   exports: [SafeSummaryCardComponent],
 })

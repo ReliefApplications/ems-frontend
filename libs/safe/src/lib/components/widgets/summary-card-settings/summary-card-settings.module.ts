@@ -21,6 +21,7 @@ import { SafeDisplayTabModule } from './display-tab/display.module';
 import { SummaryCardGeneralComponent } from './summary-card-general/summary-card-general.component';
 import { SafeSummaryCardSettingsComponent } from './summary-card-settings.component';
 import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
+import { ContextualFiltersSettingsComponent } from '../common/contextual-filters-settings/contextual-filters-settings.component';
 
 /** Summary Card Settings Module */
 @NgModule({
@@ -47,6 +48,7 @@ import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
     SafeSummaryCardModule,
     TabsModule,
     ToggleModule,
+    ContextualFiltersSettingsComponent,
   ],
   exports: [SafeSummaryCardSettingsComponent],
 })

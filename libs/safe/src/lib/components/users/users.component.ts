@@ -102,7 +102,9 @@ export class SafeUsersComponent
         (this.searchText.trim().length === 0 ||
           (this.searchText.trim().length > 0 &&
             !!data.name &&
-            data.name.toLowerCase().includes(this.searchText.trim()))) &&
+            data.name.toLowerCase().includes(this.searchText.trim())) ||
+          (!!data.username &&
+            data.username.toLowerCase().includes(this.searchText.trim()))) &&
         (this.roleFilter.trim().toLowerCase().length === 0 ||
           (this.roleFilter.trim().toLowerCase().length > 0 &&
             !!data.roles &&

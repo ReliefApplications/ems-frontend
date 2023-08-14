@@ -90,9 +90,9 @@ export class DateWrapperDirective implements AfterContentInit, OnDestroy {
             this.document
               .getElementsByTagName('kendo-multiviewcalendar')
               .item(0)
-              ?.contains(event.target)
-          ) ||
-          typeof +event.target.textContent !== 'number'
+              ?.contains(event.target) ||
+            this.uiDateWrapper.viewChangeAction
+          )
         ) {
           this.closeCalendar();
         }

@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { GridDataResult, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { GetAggregationDataQueryResponse } from '../../../services/aggregation/graphql/queries';
@@ -7,7 +7,7 @@ import { AggregationBuilderService } from '../../../services/aggregation-builder
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { PAGER_SETTINGS } from './aggregation-grid.constants';
 import { GetResourceByIdQueryResponse, GET_RESOURCE } from './graphql/queries';
-import { Subscription } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import {
   QueryBuilderService,
@@ -15,6 +15,8 @@ import {
 } from '../../../services/query-builder/query-builder.service';
 import { SafeGridService } from '../../../services/grid/grid.service';
 import { createDefaultField } from '../../query-builder/query-builder-forms';
+import { ContextService } from '../../../services/context/context.service';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Shared aggregation grid component.
@@ -25,7 +27,8 @@ import { createDefaultField } from '../../query-builder/query-builder-forms';
   styleUrls: ['./aggregation-grid.component.scss'],
 })
 export class SafeAggregationGridComponent
-  implements OnInit, OnChanges, OnDestroy
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnChanges
 {
   public gridData: GridDataResult = { data: [], total: 0 };
   public fields: any[] = [];
@@ -40,13 +43,12 @@ export class SafeAggregationGridComponent
   public pageSize = 10;
   public skip = 0;
   private dataQuery!: QueryRef<GetAggregationDataQueryResponse>;
-  private dataSubscription?: Subscription;
   public pagerSettings = PAGER_SETTINGS;
   public showFilter = false;
 
   @Input() resourceId!: string;
   @Input() aggregation!: Aggregation;
-  @Input() widget!: any;
+  @Input() contextFilters: string | undefined;
 
   /** @returns The column menu */
   get columnMenu(): { columnChooser: boolean; filter: boolean } {
@@ -65,6 +67,7 @@ export class SafeAggregationGridComponent
    * @param gridService Shared grid service
    * @param apollo Apollo service
    * @param translate Angular translate service
+   * @param contextService Shared context service
    */
   constructor(
     private aggregationService: SafeAggregationService,
@@ -72,21 +75,32 @@ export class SafeAggregationGridComponent
     private queryBuilder: QueryBuilderService,
     private gridService: SafeGridService,
     private apollo: Apollo,
-    private translate: TranslateService
-  ) {}
+    private translate: TranslateService,
+    private contextService: ContextService
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.getAggregationData();
     this.getAggregationFields();
+
+    this.contextService.filter$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.getAggregationData();
+      });
+
+    this.contextService.isFilterEnabled$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.getAggregationData();
+      });
   }
 
   ngOnChanges(): void {
     this.getAggregationData();
     this.getAggregationFields();
-  }
-
-  ngOnDestroy(): void {
-    if (this.dataSubscription) this.dataSubscription.unsubscribe();
   }
 
   /**
@@ -98,9 +112,14 @@ export class SafeAggregationGridComponent
       this.resourceId,
       this.aggregation.id as string,
       this.pageSize,
-      this.skip
+      this.skip,
+      this.contextFilters
+        ? this.contextService.injectDashboardFilterValues(
+            JSON.parse(this.contextFilters)
+          )
+        : undefined
     );
-    this.dataSubscription = this.dataQuery.valueChanges.subscribe({
+    this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
       next: ({ data, loading }) => {
         this.updateValues(data, loading);
       },
@@ -145,15 +164,15 @@ export class SafeAggregationGridComponent
             allGqlFields
               ?.filter((x) => this.aggregation.sourceFields.includes(x.name))
               .map((field: any) => {
-                if (field.type.kind !== 'SCALAR') {
+                if (field.type?.kind !== 'SCALAR') {
                   field.fields = this.queryBuilder
                     .getFieldsFromType(
-                      field.type.kind === 'OBJECT'
+                      field.type?.kind === 'OBJECT'
                         ? field.type.name
                         : field.type.ofType.name
                     )
                     .filter(
-                      (y) => y.type.name !== 'ID' && y.type.kind === 'SCALAR'
+                      (y) => y.type.name !== 'ID' && y.type?.kind === 'SCALAR'
                     );
                 }
                 return field;

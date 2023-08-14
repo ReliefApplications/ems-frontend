@@ -7,6 +7,20 @@
     [toolbar]="toolbarSettings"
     (actionClick)="handleActionClick()"
   >
+    <ng-template kendoListBoxItemTemplate let-dataItem>
+      <div class="group inline-flex w-full">
+        <span>
+          {{ dataItem.label }}
+        </span>
+        <ui-icon
+          *ngIf="dataItem.value !== 'coordinates'"
+          (click)="editLabel(dataItem)"
+          class="!hidden group-hover:!block"
+          icon="edit"
+        >
+        </ui-icon>
+      </div>
+    </ng-template>
   </kendo-listbox>
   <kendo-listbox
     class="h-72 flex-1"
@@ -14,5 +28,19 @@
     [data]="selectedFields"
     [toolbar]="false"
   >
+    <ng-template kendoListBoxItemTemplate let-dataItem>
+      <div class="group inline-flex w-full">
+        <span>
+          {{ dataItem.label }}
+        </span>
+        <ui-icon
+          *ngIf="dataItem.value !== 'coordinates'"
+          (click)="editLabel(dataItem)"
+          class="!hidden group-hover:!block"
+          icon="edit"
+        >
+        </ui-icon>
+      </div>
+    </ng-template>
   </kendo-listbox>
 </div>

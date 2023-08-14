@@ -5,9 +5,11 @@ import {
   ContentChildren,
   EventEmitter,
   Input,
+  OnChanges,
   OnDestroy,
   Output,
   QueryList,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { Variant } from '../types/variant';
@@ -44,7 +46,7 @@ import { TabBodyHostDirective } from './directives/tab-body-host.directive';
     ]),
   ],
 })
-export class TabsComponent implements AfterViewInit, OnDestroy {
+export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
   @ContentChildren(TabComponent, { descendants: true })
   tabs!: QueryList<TabComponent>;
 
@@ -93,6 +95,7 @@ export class TabsComponent implements AfterViewInit, OnDestroy {
     } else {
       classes.push('border-b');
       classes.push('mb-4');
+      classes.push('overflow-x-auto');
     }
     return classes;
   }
@@ -109,6 +112,12 @@ export class TabsComponent implements AfterViewInit, OnDestroy {
           this.subscribeToOpenTabEvents();
         }
       });
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedIndex']) {
+      this.setSelectedTab();
+    }
   }
 
   /**
@@ -139,7 +148,7 @@ export class TabsComponent implements AfterViewInit, OnDestroy {
    * Update select state of all the tabs
    */
   public setSelectedTab() {
-    this.tabs.forEach((tab) => {
+    this.tabs?.forEach((tab) => {
       if (tab.index === this.selectedIndex) {
         tab.selected = true;
       } else {
@@ -152,19 +161,19 @@ export class TabsComponent implements AfterViewInit, OnDestroy {
    * Gets all the tabs, initialize them and listen to the openTab event
    */
   private subscribeToOpenTabEvents(): void {
-    this.tabs.forEach((tab, index) => {
+    this.tabs?.forEach((tab, index) => {
       tab.variant = this.variant;
       tab.vertical = this.vertical;
       tab.index = index;
       tab.openTab
-        .pipe(takeUntil(this.destroy$), takeUntil(this.reorder$))
+        .pipe(takeUntil(this.reorder$), takeUntil(this.destroy$))
         .subscribe(() => {
           this.showContent(tab);
           this.selectedIndex = index;
         });
     });
     // To avoid that we select all tabs by default
-    this.tabs.forEach((tab) => {
+    this.tabs?.forEach((tab) => {
       if (tab.index === this.selectedIndex) {
         this.showContent(tab);
       }

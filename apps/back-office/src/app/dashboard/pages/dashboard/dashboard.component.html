@@ -18,7 +18,7 @@
         <div class="flex items-center gap-1">
           <safe-editable-text
             [text]="dashboard.name"
-            [canEdit]="canEditName"
+            [canEdit]="canUpdate"
             (onChange)="saveName($event)"
             (formActiveEvent)="formActive = $event"
           >
@@ -34,9 +34,11 @@
             [icon]="dashboard.page?.visible ? 'visibility' : 'visibility_off'"
             (click)="togglePageVisibility()"
             [uiTooltip]="
-            (dashboard.page?.visible ? 'components.application.pages.hide' : 'components.application.pages.show')
-              | translate
-          "
+              (dashboard.page?.visible
+                ? 'components.application.pages.hide'
+                : 'components.application.pages.show'
+              ) | translate
+            "
           >
           </ui-button>
         </div>
@@ -47,7 +49,11 @@
           (cdkDropListDropped)="onButtonActionDrop($event)"
         >
           <!-- Button actions -->
-          <safe-button-action [buttonActions]="buttonActions" [dashboard]="dashboard"></safe-button-action>
+          <safe-button-action
+            [buttonActions]="buttonActions"
+            [dashboard]="dashboard"
+            [canUpdate]="canUpdate"
+          ></safe-button-action>
 
           <!-- Fullscreen -->
           <ui-button
@@ -146,7 +152,6 @@
         </div>
       </div>
       <ng-container *ngIf="dashboard.page?.context">
-        <!-- todo(translate) -->
         <ui-alert *ngIf="!contextRecord" class="mb-4">{{
           'models.dashboard.context.edition.template' | translate
         }}</ui-alert>
@@ -209,6 +214,7 @@
     (move)="onMove($event)"
     (edit)="onEditTile($event)"
     (delete)="onDeleteTile($event)"
+    (style)="onStyleTile($event)"
     (changeStep)="changeStep.emit($event)"
     (add)="onAdd($event)"
   ></safe-widget-grid>

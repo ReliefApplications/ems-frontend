@@ -1,0 +1,54 @@
+<!-- Loading indicator -->
+<ui-spinner
+  class="flex justify-center items-center h-screen"
+  *ngIf="loading"
+></ui-spinner>
+<!-- Application wrapper -->
+<safe-layout
+  *ngIf="!loading"
+  [applications]="applications"
+  [header]="header"
+  [leftSidenav]="pages"
+  [sideMenu]="sideMenu"
+  [profileRoute]="'/' + appID + '/profile'"
+  (openApplication)="onOpenApplication($event)"
+></safe-layout>
+<!--Need the nav variable, don't remove let-nav, used in layout-->
+<ng-template #pages let-nav>
+  <safe-navbar
+    [nav]="nav"
+    [appLayout]="true"
+    [navGroups]="navGroups"
+    [vertical]="!(!sideMenu && largeDevice)"
+  ></safe-navbar>
+</ng-template>
+
+<!-- Application header -->
+<ng-template #header>
+  <!-- Title -->
+  <h2 class="!m-0 overflow-hidden text-ellipsis whitespace-nowrap">
+    {{ title }}
+  </h2>
+  <!-- Settings -->
+  <ui-button
+    *ngIf="adminNavItems.length > 0"
+    [isIcon]="true"
+    icon="tune"
+    variant="light"
+    [uiMenuTriggerFor]="settingsMenu"
+  ></ui-button>
+</ng-template>
+
+<!-- Admin pages -->
+<ui-menu #settingsMenu>
+  <a
+    uiMenuItem
+    *ngFor="let setting of adminNavItems"
+    [routerLink]="setting.path"
+    routerLinkActive="text-primary-600 bg-gray-50"
+    class="text-sm font-semibold leading-6"
+  >
+    <ui-icon variant="grey" [icon]="setting.icon"> </ui-icon>
+    {{ setting.name }}
+  </a>
+</ui-menu>
