@@ -14,7 +14,8 @@ export const EDIT_API_CONFIGURATION = gql`
     $pingUrl: String
     $settings: JSON
     $permissions: JSON
-    $user
+    $userToken: String
+    $userId: String
   ) {
     editApiConfiguration(
       id: $id
@@ -26,6 +27,8 @@ export const EDIT_API_CONFIGURATION = gql`
       pingUrl: $pingUrl
       settings: $settings
       permissions: $permissions
+      userToken: $userToken
+      userId: $userId
     ) {
       id
       name
@@ -52,6 +55,8 @@ export const EDIT_API_CONFIGURATION = gql`
       canSee
       canUpdate
       canDelete
+      userToken
+      userId
     }
   }
 `;

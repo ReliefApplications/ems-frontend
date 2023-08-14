@@ -46,7 +46,11 @@ export class SafeReferenceDataService {
    * @param apollo The apollo client
    * @param apiProxy The api proxy service
    */
-  constructor(private apollo: Apollo, private apiProxy: SafeApiProxyService, private auth: SafeAuthService) {}
+  constructor(
+    private apollo: Apollo,
+    private apiProxy: SafeApiProxyService,
+    private auth: SafeAuthService,
+  ) {}
 
   /**
    * Return a promise with the reference data corresponding to the id passed.
@@ -67,26 +71,33 @@ export class SafeReferenceDataService {
           map(({ data }) => data.referenceData)
         )
     );
-
+    
     const refData = referenceData as ReferenceData;
-    if (refData.apiConfiguration?.authType === authType.userToService && refData.apiConfiguration.id) {
-      this.updateUserApiConfiguration(refData.apiConfiguration.id);
+    const apiConfig = refData.apiConfiguration;
+
+    if (apiConfig?.authType === authType.userToService &&
+      apiConfig?.id &&
+      apiConfig.userToken != this.auth.getAuthToken()
+    ) {
+      this.updateUserApiConfiguration(apiConfig.id);
     }
     return referenceData;
   }
 
+  /**
+   * Update the userToken and userId in ApiConfiguration to the id passed.
+   *
+   * @param id ApiConfiguration ID.
+   */
   private updateUserApiConfiguration(id: string) {
     this.apollo
     .mutate<EditApiConfigurationMutationResponse>({
       mutation: EDIT_API_CONFIGURATION,
       variables: {
         id: id,
-        userToken: this.auth.getAuthToken,
+        userToken: this.auth.getAuthToken(),
         userId: this.auth.user.getValue()?.id
       },
-    })
-    .subscribe(({ errors, data, loading }) => {
-      
     })
   }
   
