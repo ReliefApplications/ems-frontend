@@ -653,7 +653,7 @@ export class RoleResourcesComponent
    * @param loading loading status
    */
   private updateValues(data: GetResourcesQueryResponse, loading: boolean) {
-    const mappedValues = data.resources.edges.map((x) => x.node);
+    const mappedValues = data.resources?.edges?.map((x) => x.node);
     this.cachedResources = updateQueryUniqueValues(
       this.cachedResources,
       mappedValues

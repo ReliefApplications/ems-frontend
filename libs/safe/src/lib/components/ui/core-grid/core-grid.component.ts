@@ -1291,7 +1291,7 @@ export class SafeCoreGridComponent
     this.pageSize = event.take;
     this.pageSizeChanged.emit(this.pageSize);
     this.dataQuery
-      .refetch({
+      ?.refetch({
         first: this.pageSize,
         skip: this.skip,
         filter: this.queryFilter,

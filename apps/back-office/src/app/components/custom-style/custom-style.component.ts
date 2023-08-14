@@ -54,7 +54,7 @@ export class CustomStyleComponent
   public editorOptions = {
     theme: 'vs-dark',
     language: 'scss',
-    fixedOverflowWidgets: true,
+    fixedOverflowWidgets: false,
   };
   private rawCustomStyle!: string;
   private savedStyle = '';

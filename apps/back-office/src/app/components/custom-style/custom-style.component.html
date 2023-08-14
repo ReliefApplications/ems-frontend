@@ -22,7 +22,7 @@
   </div>
   <ui-spinner class="my-2" *ngIf="loading"></ui-spinner>
   <!-- Style editor -->
-  <div class="grow overflow-y-auto" *ngIf="!loading">
+  <div class="grow overflow-y-auto overflow-x-hidden">
     <ngx-monaco-editor
       class="!h-full"
       (onInit)="initEditor($event)"

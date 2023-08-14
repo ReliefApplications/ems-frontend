@@ -259,12 +259,14 @@ export class GraphQLSelectComponent
 
   ngOnInit(): void {
     this.elements$ = this.elements.asObservable();
-    this.query.valueChanges
-      .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))
-      .subscribe(({ data, loading }) => {
-        this.queryName = Object.keys(data)[0];
-        this.updateValues(data, loading);
-      });
+    if (this.query) {
+      this.query.valueChanges
+        .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))
+        .subscribe(({ data, loading }) => {
+          this.queryName = Object.keys(data)[0];
+          this.updateValues(data, loading);
+        });
+    }
     this.ngControl?.valueChanges
       ?.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -407,7 +409,7 @@ export class GraphQLSelectComponent
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
       50
     ) {
-      if (!this.loading && this.pageInfo.hasNextPage) {
+      if (!this.loading && this.pageInfo?.hasNextPage) {
         // Check if original query is using skip or afterCursor
         const queryDefinition = this.query.options.query.definitions[0];
         const isSkip =
