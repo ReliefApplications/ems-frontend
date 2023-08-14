@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AbilityBuilder } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
@@ -64,7 +64,7 @@ const getAbilityForAppPreview = (app: Application, role: string) => {
 })
 export class AppPreviewComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   /**
    * Title of application.
