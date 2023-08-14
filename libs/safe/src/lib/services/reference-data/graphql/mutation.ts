@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { ApiConfiguration } from '@oort-front/safe';
+import { ApiConfiguration } from '../../../models/apiConfiguration.model';
 
 // === EDIT API CONFIGURATION ===
 /** Edit API configuration mutation definition */

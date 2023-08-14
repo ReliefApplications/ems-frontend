@@ -17,7 +17,10 @@ import {
 } from './graphql/mutation';
 import { SafeApiProxyService } from '../api-proxy/api-proxy.service';
 import { firstValueFrom } from 'rxjs';
-import { ApiConfiguration, authType } from '../../models/apiConfiguration.model';
+import {
+  ApiConfiguration,
+  authType,
+} from '../../models/apiConfiguration.model';
 import jsonpath from 'jsonpath';
 import { SafeAuthService } from '../auth/auth.service';
 
@@ -45,11 +48,12 @@ export class SafeReferenceDataService {
    *
    * @param apollo The apollo client
    * @param apiProxy The api proxy service
+   * @param auth The auth service
    */
   constructor(
     private apollo: Apollo,
     private apiProxy: SafeApiProxyService,
-    private auth: SafeAuthService,
+    private auth: SafeAuthService
   ) {}
 
   /**
@@ -67,15 +71,14 @@ export class SafeReferenceDataService {
             id,
           },
         })
-        .pipe(
-          map(({ data }) => data.referenceData)
-        )
+        .pipe(map(({ data }) => data.referenceData))
     );
-    
+
     const refData = referenceData as ReferenceData;
     const apiConfig = refData.apiConfiguration;
 
-    if (apiConfig?.authType === authType.userToService &&
+    if (
+      apiConfig?.authType === authType.userToService &&
       apiConfig?.id &&
       apiConfig.userToken != this.auth.getAuthToken()
     ) {
@@ -90,17 +93,15 @@ export class SafeReferenceDataService {
    * @param id ApiConfiguration ID.
    */
   private updateUserApiConfiguration(id: string) {
-    this.apollo
-    .mutate<EditApiConfigurationMutationResponse>({
+    this.apollo.mutate<EditApiConfigurationMutationResponse>({
       mutation: EDIT_API_CONFIGURATION,
       variables: {
         id: id,
         userToken: this.auth.getAuthToken(),
-        userId: this.auth.user.getValue()?.id
+        userId: this.auth.user.getValue()?.id,
       },
-    })
+    });
   }
-  
 
   /**
    * Asynchronously fetch choices from ReferenceData and return them in the right format for a selectable questions.
