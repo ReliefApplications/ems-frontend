@@ -80,7 +80,7 @@ export class LayoutsTabComponent
     this.layoutsQuery = this.apollo.watchQuery<GetResourceByIdQueryResponse>({
       query: GET_RESOURCE_LAYOUTS,
       variables: {
-        id: this.resource.id,
+        id: this.resource?.id,
         first: this.pageInfo.pageSize,
         afterCursor: this.pageInfo.endCursor,
       },

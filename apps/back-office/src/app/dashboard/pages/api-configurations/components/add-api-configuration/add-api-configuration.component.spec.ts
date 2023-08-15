@@ -8,8 +8,9 @@ import {
   TranslateModule,
   TranslateService,
 } from '@ngx-translate/core';
-import { ButtonModule, ErrorMessageModule, DialogModule } from '@oort-front/ui';
-//ISSUE
+import { ButtonModule, DialogModule } from '@oort-front/ui';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
+
 describe('AddApiConfigurationComponent', () => {
   let component: AddApiConfigurationComponent;
   let fixture: ComponentFixture<AddApiConfigurationComponent>;
@@ -21,7 +22,6 @@ describe('AddApiConfigurationComponent', () => {
         FormsModule,
         ReactiveFormsModule,
         ButtonModule,
-        ErrorMessageModule,
         DialogModule,
         TranslateModule.forRoot({
           loader: {
@@ -39,7 +39,8 @@ describe('AddApiConfigurationComponent', () => {
             updateSize: jest.fn(),
           }
         },
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
   });
 

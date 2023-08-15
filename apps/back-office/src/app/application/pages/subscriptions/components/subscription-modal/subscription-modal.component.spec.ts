@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { SubscriptionModalComponent } from './subscription-modal.component';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import {
   TranslateFakeLoader,
@@ -8,7 +8,8 @@ import {
   TranslateModule,
   TranslateService,
 } from '@ngx-translate/core';
-//ISSUE
+import { FormWrapperModule } from '@oort-front/ui';
+
 describe('SubscriptionModalComponent', () => {
   let component: SubscriptionModalComponent;
   let fixture: ComponentFixture<SubscriptionModalComponent>;
@@ -18,6 +19,7 @@ describe('SubscriptionModalComponent', () => {
       imports: [
         SubscriptionModalComponent,
         ApolloTestingModule,
+        FormWrapperModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
@@ -28,10 +30,10 @@ describe('SubscriptionModalComponent', () => {
       providers: [
         TranslateService,
         {
-          provide: DialogRef, 
+          provide: DialogRef,
           useValue: {
             updateSize: jest.fn(),
-          }
+          },
         },
         {
           provide: DIALOG_DATA,

@@ -173,7 +173,7 @@ export class SafeLayoutComponent
     this.languages = this.translate.getLangs();
     this.getLanguage();
     this.theme = this.environment.theme;
-    this.showPreferences = environment.availableLanguages.length > 1;
+    this.showPreferences = environment.availableLanguages?.length > 1;
   }
 
   ngOnInit(): void {

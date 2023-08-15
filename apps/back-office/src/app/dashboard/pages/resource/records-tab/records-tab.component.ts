@@ -96,7 +96,7 @@ export class RecordsTabComponent
       {
         query: GET_RESOURCE_RECORDS,
         variables: {
-          id: this.resource.id,
+          id: this.resource?.id,
           first: ITEMS_PER_PAGE,
           afterCursor: null,
           display: false,
@@ -240,15 +240,17 @@ export class RecordsTabComponent
    */
   private setDisplayedColumns(core: boolean): void {
     let columns = [];
-    if (core) {
-      for (const field of this.resource.fields.filter(
-        (x: any) => x.isRequired === true
-      )) {
-        columns.push(field.name);
-      }
-    } else {
-      for (const field of this.resource.fields) {
-        columns.push(field.name);
+    if (this.resource?.fields) {
+      if (core) {
+        for (const field of this.resource.fields.filter(
+          (x: any) => x.isRequired === true
+        )) {
+          columns.push(field.name);
+        }
+      } else {
+        for (const field of this.resource.fields) {
+          columns.push(field.name);
+        }
       }
     }
     const metadata = get(this.resource, 'metadata', []);
