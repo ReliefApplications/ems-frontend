@@ -8,6 +8,7 @@ import {
 } from '@ngx-translate/core';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { ButtonModule } from '@oort-front/ui';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('ShareUrlComponent', () => {
   let component: ShareUrlComponent;
@@ -37,7 +38,8 @@ describe('ShareUrlComponent', () => {
           provide: DIALOG_DATA,
           useValue: {}
         }
-      ]
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
     }).compileComponents();
   }));
 
