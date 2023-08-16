@@ -140,8 +140,8 @@ export class GraphQLSelectComponent
   private isRequired = false;
   private scrollListener!: any;
 
-  @ViewChild(SelectMenuComponent)
-  elementSelect!: SelectMenuComponent;
+  @ViewChild(SelectMenuComponent) elementSelect!: SelectMenuComponent;
+  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
   /**
    * Indicates whether the label should be in the floating position
@@ -259,12 +259,14 @@ export class GraphQLSelectComponent
 
   ngOnInit(): void {
     this.elements$ = this.elements.asObservable();
-    this.query.valueChanges
-      .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))
-      .subscribe(({ data, loading }) => {
-        this.queryName = Object.keys(data)[0];
-        this.updateValues(data, loading);
-      });
+    if (this.query) {
+      this.query.valueChanges
+        .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))
+        .subscribe(({ data, loading }) => {
+          this.queryName = Object.keys(data)[0];
+          this.updateValues(data, loading);
+        });
+    }
     this.ngControl?.valueChanges
       ?.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -378,10 +380,12 @@ export class GraphQLSelectComponent
   }
 
   /**
-   * Adds scroll listener to select.
+   * Adds scroll listener to select and focuses on input.
    *
    */
   onOpenSelect(): void {
+    // focus on search input, if filterable
+    if (this.filterable) this.searchInput?.nativeElement.focus();
     const panel = document.getElementById('optionList');
     if (this.scrollListener) {
       this.scrollListener();
@@ -406,12 +410,22 @@ export class GraphQLSelectComponent
       50
     ) {
       if (!this.loading && this.pageInfo?.hasNextPage) {
+        // Check if original query is using skip or afterCursor
+        const queryDefinition = this.query.options.query.definitions[0];
+        const isSkip =
+          queryDefinition?.kind === 'OperationDefinition' &&
+          !!queryDefinition.variableDefinitions?.find(
+            (x) => x.variable.name.value === 'skip'
+          );
+
         this.loading = true;
         this.query
           .fetchMore({
             variables: {
               first: ITEMS_PER_RELOAD,
-              afterCursor: this.pageInfo.endCursor,
+              ...(isSkip
+                ? { skip: this.cachedElements.length }
+                : { afterCursor: this.pageInfo.endCursor }),
             },
           })
           .then((results) => {

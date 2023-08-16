@@ -1,7 +1,6 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
-import { environment } from 'projects/back-office/src/environments/environment';
 import {
   TranslateModule,
   TranslateService,
@@ -16,10 +15,7 @@ describe('SafeEmailService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        { provide: 'environment', useValue: environment },
-        TranslateService,
-      ],
+      providers: [{ provide: 'environment', useValue: {} }, TranslateService],
       imports: [
         HttpClientModule,
         DialogCdkModule,

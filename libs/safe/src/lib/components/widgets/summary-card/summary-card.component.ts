@@ -76,7 +76,6 @@ export class SafeSummaryCardComponent
     pageIndex: 0,
     pageSize: DEFAULT_PAGE_SIZE,
     length: 0,
-    skip: 0,
   };
   public loading = true;
 
@@ -236,7 +235,6 @@ export class SafeSummaryCardComponent
     const needRefetch = !this.settings.card?.aggregation;
     const skippedFields = ['id', 'incrementalId'];
     this.pageInfo.pageIndex = 0;
-    this.pageInfo.skip = 0;
 
     if (!needRefetch) {
       this.sortedCachedCards = this.cachedCards.filter((card: any) => {
@@ -494,7 +492,6 @@ export class SafeSummaryCardComponent
    */
   public onPage(event: UIPageChangeEvent): void {
     this.pageInfo.pageSize = event.pageSize;
-    this.pageInfo.skip = event.skip;
 
     if (this.dataQuery) {
       this.loading = true;
