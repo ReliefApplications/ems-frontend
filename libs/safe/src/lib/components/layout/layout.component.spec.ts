@@ -44,12 +44,12 @@ describe('SafeLayoutComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { 
-          provide: 'environment', 
+        {
+          provide: 'environment',
           useValue: {
             theme: {},
-            availableLanguages: []
-          } 
+            availableLanguages: [],
+          },
         },
         OAuthService,
         UrlHelperService,
