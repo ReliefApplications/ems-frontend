@@ -13,7 +13,6 @@ import { Question } from '../types';
  */
 export const init = (Survey: any, environment: any): void => {
   const serializer: JsonMetadata = Survey.Serializer;
-
   // change the prefix for comments
   Survey.settings.commentPrefix = '_comment';
   // override default expression properties
@@ -28,13 +27,13 @@ export const init = (Survey: any, environment: any): void => {
     required: true,
   });
   // Pass token before the request to fetch choices by URL if it's targeting SAFE API
-  Survey.ChoicesRestfull.onBeforeSendRequest = (
+  Survey.ChoicesRestful.onBeforeSendRequest = (
     sender: ChoicesRestful,
-    options: { request: XMLHttpRequest }
+    options: { request: { headers: Headers } }
   ) => {
     if (sender.url.includes(environment.apiUrl)) {
       const token = localStorage.getItem('idtoken');
-      options.request.setRequestHeader('Authorization', `Bearer ${token}`);
+      options.request.headers.append('Authorization', `Bearer ${token}`);
     }
   };
 

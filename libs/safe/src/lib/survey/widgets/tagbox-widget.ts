@@ -1,6 +1,8 @@
 import { MultiSelectComponent } from '@progress/kendo-angular-dropdowns';
 import { DomService } from '../../services/dom/dom.service';
 import { Question } from '../types';
+import { debounceTime, map, tap } from 'rxjs';
+import updateChoices from './utils/common-list-filters';
 
 /**
  * Init tagbox question
@@ -16,7 +18,7 @@ export const init = (Survey: any, domService: DomService): void => {
     'tagbox',
     '<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g><path d="M15,11H0V5h15V11z M1,10h13V6H1V10z"/></g><rect x="2" y="7" width="4" height="2"/><rect x="7" y="7" width="4" height="2"/></svg>'
   );
-
+  let currentSearchValue = '';
   const componentName = 'tagbox';
   const widget = {
     name: 'tagbox',
@@ -68,27 +70,24 @@ export const init = (Survey: any, domService: DomService): void => {
       tagboxInstance.value = question.value;
       tagboxInstance.placeholder = question.placeholder;
       tagboxInstance.readonly = question.isReadOnly;
-      tagboxInstance.disabled = question.isReadOnly;
       tagboxInstance.registerOnChange((value: any) => {
         question.value = value;
       });
-      const updateChoices = () => {
-        if (question.visibleChoices && Array.isArray(question.visibleChoices)) {
-          tagboxInstance.data = question.visibleChoices.map((choice: any) =>
-            typeof choice === 'string'
-              ? {
-                  text: choice,
-                  value: choice,
-                }
-              : {
-                  text: choice.text,
-                  value: choice.value,
-                }
-          );
-        }
-      };
+
+      // We subscribe to whatever you write on the field so we can filter the data accordingly
+      tagboxInstance.filterChange
+        .pipe(
+          debounceTime(500), // Debounce time to limit quantity of updates
+          tap(() => (tagboxInstance.loading = true)),
+          map((searchValue: string) => searchValue?.toLowerCase()) // Make the filter non-case sensitive
+        )
+        .subscribe((searchValue: string) => {
+          currentSearchValue = searchValue;
+          updateChoices(tagboxInstance, question, searchValue);
+        });
+
       question._propertyValueChangedVirtual = () => {
-        updateChoices();
+        updateChoices(tagboxInstance, question, currentSearchValue);
       };
       question.registerFunctionOnPropertyValueChanged(
         'visibleChoices',
@@ -101,7 +100,9 @@ export const init = (Survey: any, domService: DomService): void => {
           tagboxInstance.disabled = value;
         }
       );
-      updateChoices();
+      if (question.visibleChoices.length) {
+        updateChoices(tagboxInstance, question, currentSearchValue);
+      }
       el.parentElement?.appendChild(tagboxDiv);
     },
     willUnmount: (question: any): void => {
@@ -132,11 +133,22 @@ export const init = (Survey: any, domService: DomService): void => {
       itemHeight: 28,
     };
     tagboxInstance.valuePrimitive = true;
+    tagboxInstance.filterable = true;
+    tagboxInstance.loading = true;
+    tagboxInstance.disabled = true;
     tagboxInstance.textField = 'text';
     tagboxInstance.valueField = 'value';
     return tagboxInstance;
   };
-
+  // ⚠ danger ⚠
+  /**
+   * Solution to prevent tagbox to freeze if too many items. We are overriding the surveyjs logic, in order to prevent some built-in methods to be called.
+   * Whenever we update surveyjs, we need to check that the logic hasn't changed on their side.
+   */
+  Survey.DropdownMultiSelectListModel.prototype.syncFilterStringPlaceholder =
+    function () {
+      this.filterStringPlaceholder = this.question.placeholder;
+    };
   // there, we define that we want, with 'customtype', that the widget also appears in the list of questions
   Survey.CustomWidgetCollection.Instance.add(widget, 'customtype');
 };

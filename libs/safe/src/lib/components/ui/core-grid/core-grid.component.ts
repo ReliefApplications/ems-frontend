@@ -529,14 +529,17 @@ export class SafeCoreGridComponent
 
   /**
    * Saves all inline changes and then reload data.
+   *
+   * @returns result of save as promise. Boolean to indicate if error.
    */
-  public onSaveChanges(): void {
+  public onSaveChanges() {
+    this.grid?.closeEditor();
     if (this.hasChanges) {
       for (const item of this.items) {
         delete item.saved;
         delete item.validationErrors;
       }
-      Promise.all(this.promisedChanges()).then((allRes) => {
+      return Promise.all(this.promisedChanges()).then((allRes) => {
         for (const res of allRes) {
           const resRecord: Record = res.data.editRecord;
           const updatedIndex = this.updatedItems.findIndex(
@@ -581,13 +584,13 @@ export class SafeCoreGridComponent
               duration: 8000,
             }
           );
-          // update the displayed items
-          this.loadItems();
+          return true;
         } else {
-          // if no error, reload the grid
-          this.reloadData();
+          return false;
         }
       });
+    } else {
+      return Promise.resolve(false);
     }
   }
 
@@ -800,7 +803,15 @@ export class SafeCoreGridComponent
         break;
       }
       case 'save': {
-        this.onSaveChanges();
+        this.onSaveChanges().then((hasError) => {
+          if (hasError) {
+            // update the displayed items
+            this.loadItems();
+          } else {
+            // if no error, reload the grid
+            this.reloadData();
+          }
+        });
         break;
       }
       case 'cancel': {
@@ -1280,7 +1291,7 @@ export class SafeCoreGridComponent
     this.pageSize = event.take;
     this.pageSizeChanged.emit(this.pageSize);
     this.dataQuery
-      .refetch({
+      ?.refetch({
         first: this.pageSize,
         skip: this.skip,
         filter: this.queryFilter,
