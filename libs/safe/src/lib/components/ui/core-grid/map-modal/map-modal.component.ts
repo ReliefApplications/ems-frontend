@@ -42,7 +42,9 @@ export class MapModalComponent implements AfterViewInit {
 
   ngAfterViewInit(): void {
     const mapComponent = this.mapComponent;
-    if (!mapComponent) return;
+    if (!mapComponent) {
+      return;
+    }
     this.mapLayersService
       .createLayerFromDefinition(
         {
@@ -54,8 +56,7 @@ export class MapModalComponent implements AfterViewInit {
           createdAt: new Date(),
           updatedAt: new Date(),
         },
-        mapComponent.mapPopupService,
-        mapComponent.mapLayersService
+        mapComponent.injector
       )
       .then((layer) => {
         mapComponent.addLayer(layer);
