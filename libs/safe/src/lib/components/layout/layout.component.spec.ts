@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { environment } from '../../../../../../apps/back-office/src/environments/environment'
 import {
   DateTimeProvider,
   OAuthLogger,
@@ -45,7 +44,13 @@ describe('SafeLayoutComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: 'environment', useValue: environment },
+        { 
+          provide: 'environment', 
+          useValue: {
+            theme: {},
+            availableLanguages: []
+          } 
+        },
         OAuthService,
         UrlHelperService,
         OAuthLogger,
@@ -74,7 +79,7 @@ describe('SafeLayoutComponent', () => {
           },
         }),
       ],
-      schemas: [NO_ERRORS_SCHEMA]
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);
