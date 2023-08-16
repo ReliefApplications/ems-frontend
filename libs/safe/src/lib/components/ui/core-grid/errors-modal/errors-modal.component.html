@@ -11,33 +11,35 @@
     </h1>
   </ng-container>
   <ng-container ngProjectAs="content">
-    <p>{{ 'components.widget.grid.validation.subtitle' | translate }}</p>
-    <!-- Table container -->
-    <div class="overflow-x-hidden shadow-2lg">
-      <!-- Table scroll container -->
-      <div class="overflow-x-auto">
-        <table class="mb-6" cdk-table uiTableWrapper [dataSource]="data.errors">
-          <ng-container cdkColumnDef="question">
-            <th uiCellHeader *cdkHeaderCellDef scope="col">Field</th>
-            <td uiCell *cdkCellDef="let element">{{ element.question }}</td>
-          </ng-container>
-          <ng-container cdkColumnDef="errors">
-            <th uiCellHeader *cdkHeaderCellDef scope="col">Errors</th>
-            <td uiCell *cdkCellDef="let element">
-              <ul>
-                <li *ngFor="let error of element.errors">
-                  {{ error }}
-                </li>
-              </ul>
-            </td>
-          </ng-container>
+    <div class="flex flex-col gap-4">
+      <p>{{ 'components.widget.grid.validation.subtitle' | translate }}</p>
+      <!-- Table container -->
+      <div class="overflow-x-hidden shadow-2lg">
+        <!-- Table scroll container -->
+        <div class="overflow-x-auto">
+          <table cdk-table uiTableWrapper [dataSource]="data.errors">
+            <ng-container cdkColumnDef="question">
+              <th uiCellHeader *cdkHeaderCellDef scope="col">Field</th>
+              <td uiCell *cdkCellDef="let element">{{ element.question }}</td>
+            </ng-container>
+            <ng-container cdkColumnDef="errors">
+              <th uiCellHeader *cdkHeaderCellDef scope="col">Errors</th>
+              <td uiCell *cdkCellDef="let element">
+                <ul>
+                  <li *ngFor="let error of element.errors">
+                    {{ error }}
+                  </li>
+                </ul>
+              </td>
+            </ng-container>
 
-          <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-          <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
-        </table>
+            <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+            <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
+          </table>
+        </div>
       </div>
+      <p>{{ 'components.widget.grid.validation.help' | translate }}</p>
     </div>
-    <p>{{ 'components.widget.grid.validation.help' | translate }}</p>
   </ng-container>
   <ng-container ngProjectAs="actions">
     <ui-button uiDialogClose>

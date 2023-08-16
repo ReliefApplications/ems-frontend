@@ -1,16 +1,15 @@
 import { TestBed } from '@angular/core/testing';
-import { environment } from 'projects/back-office/src/environments/environment';
 import { HttpClientModule } from '@angular/common/http';
-
 import { SafeApiProxyService } from './api-proxy.service';
+import { ApolloTestingModule } from 'apollo-angular/testing';
 
 describe('SafeApiProxyService', () => {
   let service: SafeApiProxyService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [{ provide: 'environment', useValue: environment }],
-      imports: [HttpClientModule],
+      providers: [{ provide: 'environment', useValue: {} }],
+      imports: [HttpClientModule, ApolloTestingModule],
     });
     service = TestBed.inject(SafeApiProxyService);
   });

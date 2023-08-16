@@ -133,6 +133,7 @@
 		"modifiedOn": "Modifié le ",
 		"name": "Nom",
 		"next": "Suivant",
+		"noOptions": "Aucun choix disponible",
 		"notifications": {
 			"accessDenied": "Vous n'avez pas la permission pour accéder à cet objet de type {{type}}.",
 			"accessNotProvided": "Pas d'accès fourni à cet objet de type {{type}}. {{error}}",
@@ -264,6 +265,7 @@
 		},
 		"save": "Sauvegarder",
 		"saveChanges": "Sauvegarder les changements",
+		"search": "Recherche",
 		"searchObject": "Rechercher {{name}}",
 		"select": "Sélectionner",
 		"semicolon": "point-virgule",
@@ -1124,6 +1126,7 @@
 				},
 				"empty": "Aucun enregistrement détecté pour cette configuration de réseau",
 				"errors": {
+					"autoSaveFailed": "L'exécution de l'action a été stoppé à cause d'enregistrement(s) non valide(s). Veuillez les vérifier avant de lancer une autre action.",
 					"invalid": {
 						"backoffice": "Configuration de grille invalide",
 						"frontoffice": "Configuration de grille non valide, veuillez contacter votre administrateur"
@@ -1172,6 +1175,10 @@
 				"loading": {
 					"records": "Chargement des enregistrements...",
 					"settings": "Chargement des paramètres..."
+				},
+				"map": {
+					"mapDetailsTitle": "Cartographie des données",
+					"mapDetailsTooltip": "Centré par defaut sur l'enregistrement sélectionné"
 				},
 				"openSettings": "Ouvrir les paramètres",
 				"tooltip": {
@@ -1590,6 +1597,7 @@
 					"static": "Statique"
 				}
 			},
+			"styling": "Modifier le style",
 			"summaryCard": {
 				"dataSource": "Source",
 				"errors": {
@@ -2024,7 +2032,8 @@
 				"form": {
 					"title": "Formulaires disponibles"
 				},
-				"selectType": "Sélectionnez le type de page que vous voulez créer"
+				"selectType": "Sélectionnez le type de page que vous voulez créer",
+				"startFromWidget": "@TODO"
 			},
 			"empty": {
 				"add": "Ajouter une page",

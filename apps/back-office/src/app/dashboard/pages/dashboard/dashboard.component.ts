@@ -23,6 +23,7 @@ import {
   SafeReferenceDataService,
   Record,
   ButtonActionT,
+  SafeLayoutService,
 } from '@oort-front/safe';
 import {
   EditDashboardMutationResponse,
@@ -50,6 +51,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CustomWidgetStyleComponent } from '../../../components/custom-widget-style/custom-widget-style.component';
 import { ContextService } from '@oort-front/safe';
 
 /** Default number of records fetched per page */
@@ -137,6 +139,7 @@ export class DashboardComponent
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
    * @param translate Translate service
+   * @param layoutService Shared layout service
    */
   constructor(
     private applicationService: SafeApplicationService,
@@ -154,7 +157,8 @@ export class DashboardComponent
     private refDataService: SafeReferenceDataService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private layoutService: SafeLayoutService
   ) {
     super();
   }
@@ -321,7 +325,7 @@ export class DashboardComponent
    * @returns boolean of observable of boolean
    */
   canDeactivate(): Observable<boolean> | boolean {
-    if (!this.widgetGridComponent.canDeactivate) {
+    if (this.widgetGridComponent && !this.widgetGridComponent?.canDeactivate) {
       const dialogRef = this.confirmService.openConfirmModal({
         title: this.translateService.instant('pages.dashboard.update.exit'),
         content: this.translateService.instant(
@@ -414,6 +418,22 @@ export class DashboardComponent
   onDeleteTile(e: any): void {
     this.tiles = this.tiles.filter((x) => x.id !== e.id);
     this.autoSaveChanges();
+  }
+
+  /**
+   * Style a widget from the dashboard.
+   *
+   * @param e style event
+   */
+  onStyleTile(e: any): void {
+    this.layoutService.setRightSidenav({
+      component: CustomWidgetStyleComponent,
+      inputs: {
+        widgetComp: e,
+        save: (tile: any) => this.onEditTile(tile),
+      },
+    });
+    this.layoutService.closeRightSidenav = true;
   }
 
   /**

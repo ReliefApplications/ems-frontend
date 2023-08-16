@@ -44,6 +44,9 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
 
   @Input() showLimit = false;
 
+  /** Is the column width field displayed */
+  @Input() showColumnWidth = false;
+
   /**
    * The constructor function is a special function that is called when a new instance of the class is created.
    *
