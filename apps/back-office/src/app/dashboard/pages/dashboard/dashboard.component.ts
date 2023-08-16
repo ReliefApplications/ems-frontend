@@ -173,6 +173,8 @@ export class DashboardComponent
     this.route.params
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe((params) => {
+        this.contextRecord = null;
+        this.contextId.reset();
         // Reset scroll when changing page
         const pageContainer = document.getElementById('appPageContainer');
         if (pageContainer) pageContainer.scrollTop = 0;
@@ -888,7 +890,7 @@ export class DashboardComponent
             id: dContext.record,
           },
         })
-        .pipe(take(1), takeUntil(this.destroy$))
+        .pipe(takeUntil(this.destroy$))
         .subscribe((data: any) => {
           this.contextRecord = data.record;
         });
