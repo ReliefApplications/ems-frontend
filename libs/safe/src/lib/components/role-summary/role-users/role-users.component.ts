@@ -87,7 +87,7 @@ export class RoleUsersComponent
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
       let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is substracted from the new one
+      // If the fetch is for a new page size, the old page size is subtracted from the new one
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
@@ -126,9 +126,12 @@ export class RoleUsersComponent
   private updateValues(data: GetRoleQueryResponse, loading: boolean) {
     const mappedValues = data.role.users?.edges.map((x) => x.node) ?? [];
     this.cachedUsers = updateQueryUniqueValues(this.cachedUsers, mappedValues);
-    this.users = mappedValues;
     this.pageInfo.length = data.role.users.totalCount;
     this.pageInfo.endCursor = data.role.users.pageInfo.endCursor;
+    this.users = this.cachedUsers.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
     this.loading = loading;
     this.updating = false;
   }
