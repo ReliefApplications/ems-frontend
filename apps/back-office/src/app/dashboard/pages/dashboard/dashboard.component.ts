@@ -184,6 +184,12 @@ export class DashboardComponent
         this.route.queryParams
           .pipe(takeUntil(this.destroy$))
           .subscribe((queryParams) => {
+            console.log(queryParams);
+            console.log(this.dashboard);
+            console.log(this.route);
+            console.log(this.route.params);
+            console.log(this.route.pathFromRoot);
+            console.log(this.route.url);
             // If we don't find the view element in the queryParams, then we are not using contextual view
             const viewId = queryParams.id;
             // if there is an id, we need to find the contextual dashboard id and load it
@@ -195,6 +201,7 @@ export class DashboardComponent
               const type = this.contextType;
               // find the contextual dashboard id in the list of dashboards from the parent dashboard
               // it's the one where the element or record id matches the one in the query params
+              console.log(dashboardsWithContext);
               const dashboardWithContext = dashboardsWithContext?.find((d) => {
                 if (type === 'element')
                   return 'element' in d && d.element.toString() === viewId;
@@ -202,6 +209,8 @@ export class DashboardComponent
                   return 'record' in d && d.record.toString() === viewId;
                 return false;
               });
+
+              console.log(dashboardWithContext);
 
               if (dashboardWithContext) {
                 // if we found the contextual dashboard, load it
