@@ -664,7 +664,7 @@ export const init = (
             setAdvanceFilter(question.staticValue, question);
             this.populateChoices(question);
           } else {
-            question.survey.onValueChanged.add((_: any, options: any) => {
+            question.survey?.onValueChanged.add((_: any, options: any) => {
               if (options.name === question.selectQuestion) {
                 if (!!options.value || options.question.customQuestion) {
                   setAdvanceFilter(options.value, question);
@@ -689,7 +689,7 @@ export const init = (
               if (typeof value === 'string' && value.match(/^{*.*}$/)) {
                 const quest = value.substr(1, value.length - 2);
                 objElement.value = '';
-                question.survey.onValueChanged.add((_: any, options: any) => {
+                question.survey?.onValueChanged.add((_: any, options: any) => {
                   if (options.question.name === quest) {
                     if (options.value) {
                       setAdvanceFilter(options.value, objElement.field);
@@ -864,7 +864,7 @@ export const init = (
       );
       instance = grid.instance;
       setGridInputs(instance, question);
-      question.survey.onValueChanged.add((_: any, options: any) => {
+      question.survey?.onValueChanged.add((_: any, options: any) => {
         if (options.name === question.name) {
           setGridInputs(instance, question);
         }
