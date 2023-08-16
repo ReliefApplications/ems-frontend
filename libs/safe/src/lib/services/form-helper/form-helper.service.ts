@@ -13,7 +13,8 @@ import {
 import { DialogRef } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, set } from 'lodash';
+import { SafeAuthService } from '../auth/auth.service';
 
 /**
  * Shared survey helper service.
@@ -29,12 +30,14 @@ export class SafeFormHelpersService {
    * @param snackBar This is the service that allows you to display a snackbar.
    * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service that allows us to translate the text in our application.
+   * @param authService Shared auth service
    */
   constructor(
     public apollo: Apollo,
     private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private authService: SafeAuthService
   ) {}
 
   /**
@@ -69,6 +72,7 @@ export class SafeFormHelpersService {
   setEmptyQuestions(survey: Survey.SurveyModel): void {
     // We get all the questions from the survey and check which ones contains values
     const questions = survey.getAllQuestions();
+    const data = { ...survey.data };
     for (const field in questions) {
       if (questions[field]) {
         const key = questions[field].getValueName();
@@ -76,15 +80,17 @@ export class SafeFormHelpersService {
         if (!survey.data[key]) {
           // And is not boolean(false by default, we want to save that), we nullify it
           if (questions[field].getType() !== 'boolean') {
-            survey.data[key] = null;
+            // survey.data[key] = null;
+            set(data, key, null);
           }
           // Or if is not visible or not actionable by the user, we don't want to save it, just delete the field from the data
           if (questions[field].readOnly || !questions[field].visible) {
-            delete survey.data[key];
+            delete data[key];
           }
         }
       }
     }
+    survey.data = data;
   }
 
   /**
@@ -312,5 +318,41 @@ export class SafeFormHelpersService {
     }
 
     await Promise.all(promises);
+  }
+
+  /**
+   * Registration of new custom variables for the survey.
+   * Custom variables can be used in the logic fields.
+   *
+   * @param survey Survey instance
+   */
+  public addUserVariables = (survey: Survey.SurveyModel) => {
+    const user = this.authService.user.getValue();
+
+    // set user variables
+    survey.setVariable('user.firstName', user?.firstName ?? '');
+    survey.setVariable('user.lastName', user?.lastName ?? '');
+    survey.setVariable('user.email', user?.username ?? '');
+
+    // Allow us to do some cool stuff like
+    // {user.roles} contains '62e3e676c9bcb900656c95c9'
+    survey.setVariable('user.roles', user?.roles?.map((r) => r.id || '') ?? []);
+
+    // Allow us to select the current user
+    // as a default question for Users question type
+    survey.setVariable('user.id', user?.id || '');
+  };
+
+  /**
+   * Clears the temporary files storage
+   *
+   * @param storage Storage to clear
+   */
+  public clearTemporaryFilesStorage(
+    storage: Record<string, Array<File>>
+  ): void {
+    Object.keys(storage).forEach((key) => {
+      delete storage[key];
+    });
   }
 }

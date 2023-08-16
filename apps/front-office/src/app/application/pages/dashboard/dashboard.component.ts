@@ -103,6 +103,9 @@ export class DashboardComponent
    */
   ngOnInit(): void {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      // Reset scroll when changing page
+      const pageContainer = document.getElementById('appPageContainer');
+      if (pageContainer) pageContainer.scrollTop = 0;
       this.route.queryParams
         .pipe(takeUntil(this.destroy$))
         .subscribe((queryParams) => {
@@ -149,7 +152,7 @@ export class DashboardComponent
    * @returns boolean of observable of boolean
    */
   canDeactivate(): Observable<boolean> | boolean {
-    if (!this.widgetGridComponent.canDeactivate) {
+    if (this.widgetGridComponent && !this.widgetGridComponent.canDeactivate) {
       const dialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('pages.dashboard.update.exit'),
         content: this.translate.instant('pages.dashboard.update.exitMessage'),

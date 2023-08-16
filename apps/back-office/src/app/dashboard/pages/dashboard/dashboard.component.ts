@@ -23,6 +23,7 @@ import {
   SafeReferenceDataService,
   Record,
   ButtonActionT,
+  SafeLayoutService,
 } from '@oort-front/safe';
 import {
   EditDashboardMutationResponse,
@@ -50,6 +51,8 @@ import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CustomWidgetStyleComponent } from '../../../components/custom-widget-style/custom-widget-style.component';
+import { ContextService } from '@oort-front/safe';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -73,7 +76,7 @@ export class DashboardComponent
   public loading = true;
   public tiles: any[] = [];
   public dashboard?: Dashboard;
-  public showFilter?: boolean;
+  public showFilter!: boolean;
 
   // === GRID ===
   private generatedTiles = 0;
@@ -131,10 +134,12 @@ export class DashboardComponent
    * @param translateService Angular translate service
    * @param authService Shared authentication service
    * @param confirmService Shared confirm service
+   * @param contextService Dashboard context service
    * @param refDataService Shared reference data service
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
    * @param translate Translate service
+   * @param layoutService Shared layout service
    */
   constructor(
     private applicationService: SafeApplicationService,
@@ -148,10 +153,12 @@ export class DashboardComponent
     private translateService: TranslateService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
+    private contextService: ContextService,
     private refDataService: SafeReferenceDataService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private layoutService: SafeLayoutService
   ) {
     super();
   }
@@ -165,6 +172,10 @@ export class DashboardComponent
         }
       });
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      // Reset scroll when changing page
+      const pageContainer = document.getElementById('appPageContainer');
+      if (pageContainer) pageContainer.scrollTop = 0;
+
       // Doing this to be able to use custom styles on specific dashboards
 
       // if the route has an record or element query, it means we are on a contextual dashboard
@@ -261,12 +272,12 @@ export class DashboardComponent
 
           this.dashboardService.openDashboard(this.dashboard);
           this.tiles = this.dashboard.structure
-            ? [...this.dashboard.structure]
+            ? [...this.dashboard.structure.filter((x: any) => x !== null)]
             : [];
           this.generatedTiles =
             this.tiles.length === 0
               ? 0
-              : Math.max(...this.tiles.map((x) => x.id)) + 1;
+              : Math.max(...this.tiles.map((x) => x && x?.id)) + 1;
           this.applicationId = this.dashboard.page
             ? this.dashboard.page.application?.id
             : this.dashboard.step
@@ -274,7 +285,8 @@ export class DashboardComponent
             : '';
           this.buttonActions = this.dashboard.buttons || [];
           this.loading = res.loading;
-          this.showFilter = this.dashboard.showFilter;
+          this.showFilter = this.dashboard.showFilter ?? false;
+          this.contextService.isFilterEnabled.next(this.showFilter);
         } else {
           this.snackBar.openSnackBar(
             this.translateService.instant(
@@ -313,7 +325,7 @@ export class DashboardComponent
    * @returns boolean of observable of boolean
    */
   canDeactivate(): Observable<boolean> | boolean {
-    if (!this.widgetGridComponent.canDeactivate) {
+    if (this.widgetGridComponent && !this.widgetGridComponent?.canDeactivate) {
       const dialogRef = this.confirmService.openConfirmModal({
         title: this.translateService.instant('pages.dashboard.update.exit'),
         content: this.translateService.instant(
@@ -373,11 +385,8 @@ export class DashboardComponent
         case 'display': {
           this.tiles = this.tiles.map((x) => {
             if (x.id === e.id) {
-              x = {
-                ...x,
-                defaultCols: options.cols,
-                defaultRows: options.rows,
-              };
+              x.defaultCols = options.cols;
+              x.defaultRows = options.rows;
             }
             return x;
           });
@@ -409,6 +418,22 @@ export class DashboardComponent
   onDeleteTile(e: any): void {
     this.tiles = this.tiles.filter((x) => x.id !== e.id);
     this.autoSaveChanges();
+  }
+
+  /**
+   * Style a widget from the dashboard.
+   *
+   * @param e style event
+   */
+  onStyleTile(e: any): void {
+    this.layoutService.setRightSidenav({
+      component: CustomWidgetStyleComponent,
+      inputs: {
+        widgetComp: e,
+        save: (tile: any) => this.onEditTile(tile),
+      },
+    });
+    this.layoutService.closeRightSidenav = true;
   }
 
   /**
@@ -647,7 +672,10 @@ export class DashboardComponent
               });
             }
           },
-          complete: () => (this.loading = false),
+          complete: () => {
+            this.loading = false;
+            this.contextService.isFilterEnabled.next(this.showFilter);
+          },
         });
     }
   }

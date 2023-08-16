@@ -17,7 +17,7 @@
       <div class="flex flex-col pb-1">
         <div class="flex gap-x-2 flex-wrap">
           <!-- Title -->
-          <div uiFormFieldDirective class="flex-auto">
+          <div uiFormFieldDirective class="flex-1 max-w-[50%]">
             <label>{{ 'common.name' | translate }}</label>
             <input
               type="text"
@@ -27,7 +27,7 @@
           </div>
           <!-- Status -->
 
-          <div uiFormFieldDirective [outline]="false" class="flex-1">
+          <div uiFormFieldDirective class="flex-1 max-w-[50%]">
             <label>{{ 'common.status' | translate }}</label>
             <ui-select-menu
               formControlName="status"
@@ -70,7 +70,7 @@
         </div>
         <div class="flex gap-x-2 flex-wrap" *ngIf="!isHardcoded">
           <!-- Url to pull -->
-          <div uiFormFieldDirective class="flex-1">
+          <div uiFormFieldDirective class="flex-1 max-w-[50%]">
             <label>{{ 'models.pullJob.url' | translate }}</label>
             <input
               type="text"
@@ -88,7 +88,7 @@
             ></ui-icon>
           </div>
           <!-- Path to pull -->
-          <div uiFormFieldDirective class="flex-1">
+          <div uiFormFieldDirective class="flex-1 max-w-[50%]">
             <label>{{ 'models.pullJob.path' | translate }}</label>
             <input
               type="text"
@@ -108,7 +108,7 @@
         </div>
         <div class="flex gap-x-2 flex-wrap">
           <!-- Resource to use for conversion -->
-          <div uiFormFieldDirective class="flex-auto">
+          <div uiFormFieldDirective class="flex-1 max-w-[50%]">
             <label>{{ 'components.record.convert.select' | translate }}</label>
             <ui-graphql-select
               valueField="id"
@@ -123,7 +123,7 @@
           </div>
           <!-- Channel to notify on -->
 
-          <div uiFormFieldDirective [outline]="false" class="flex-1">
+          <div uiFormFieldDirective class="flex-1 max-w-[50%]">
             <label>{{
               'components.channel.dropdown.select' | translate
             }}</label>
@@ -170,7 +170,7 @@
             <ng-container *ngIf="openRawJSON">
               <div class="grow h-[300px]">
                 <ngx-monaco-editor
-                  class="h-full"
+                  class="!h-full"
                   formControlName="rawMapping"
                   [options]="editorOptions"
                 ></ngx-monaco-editor>

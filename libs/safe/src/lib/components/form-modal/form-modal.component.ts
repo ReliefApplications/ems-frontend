@@ -167,9 +167,9 @@ export class SafeFormModalComponent
           this.record = data.record;
           this.modifiedAt = this.isMultiEdition
             ? null
-            : this.record.modifiedAt || null;
+            : this.record?.modifiedAt || null;
           if (!this.data.template) {
-            this.form = this.record.form;
+            this.form = this.record?.form;
           }
         })
       );
@@ -220,14 +220,12 @@ export class SafeFormModalComponent
   private initSurvey(): void {
     this.survey = this.formBuilderService.createSurvey(
       this.form?.structure || '',
-      this.pages,
       this.form?.metadata,
       this.record
     );
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
-      this.pages,
       this.selectedPageIndex,
       this.temporaryFilesStorage
     );
@@ -236,6 +234,10 @@ export class SafeFormModalComponent
       addCustomFunctions(Survey, this.authService, this.record);
       this.survey.data = this.isMultiEdition ? null : this.record.data;
       this.survey.showCompletedPage = false;
+      this.form?.fields?.forEach((field) => {
+        if (field.readOnly && this.survey.getQuestionByName(field.name))
+          this.survey.getQuestionByName(field.name).readOnly = true;
+      });
     }
     this.survey.onComplete.add(this.onComplete);
     if (this.storedMergedData) {
@@ -644,5 +646,6 @@ export class SafeFormModalComponent
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     this.formHelpersService.cleanCachedRecords(this.survey);
+    this.survey?.dispose();
   }
 }

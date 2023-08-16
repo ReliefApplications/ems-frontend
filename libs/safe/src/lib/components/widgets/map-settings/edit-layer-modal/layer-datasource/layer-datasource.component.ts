@@ -40,7 +40,7 @@ import { SafeAggregationService } from '../../../../../services/aggregation/aggr
 import { SafeEditAggregationModalComponent } from '../../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
-import { Fields } from '../layer-fields/layer-fields.component';
+import { Fields } from '../../../../../models/layer.model';
 import { GraphQLSelectComponent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 

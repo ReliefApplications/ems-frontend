@@ -80,7 +80,7 @@ export class SafeRecordHistoryComponent
       month: 'short',
       day: 'numeric',
     })} ${today.getFullYear()}`;
-    return `${this.record.incrementalId} ${formatDate}`;
+    return `${this.record?.incrementalId} ${formatDate}`;
   }
 
   /**

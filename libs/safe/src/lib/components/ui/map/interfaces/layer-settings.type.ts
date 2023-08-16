@@ -1,5 +1,6 @@
 import { Geometry, FeatureCollection, Feature } from 'geojson';
 import {
+  Fields,
   LayerSymbolOutline,
   PopupElement,
 } from '../../../../models/layer.model';
@@ -46,6 +47,7 @@ export interface LayerFormData {
     title: string;
     description: string;
     popupElements: PopupElement[];
+    fieldsInfo?: Fields[];
   };
   datasource?: {
     origin?: 'resource' | 'refData';
@@ -56,6 +58,7 @@ export interface LayerFormData {
     type?: GeometryType;
   };
   sublayers?: string[];
+  contextFilters: string;
 }
 
 export type LayerLabel = {

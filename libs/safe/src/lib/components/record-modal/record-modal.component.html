@@ -17,7 +17,7 @@
         [selectedIndex]="(selectedPageIndex$ | async)!"
         (selectedIndexChange)="onShowPage($event)"
       >
-        <ui-tab *ngFor="let page of pages$ | async">
+        <ui-tab *ngFor="let page of survey?.visiblePages ?? []">
           <ng-container ngProjectAs="label">{{
             page.title ? page.title : page.name
           }}</ng-container>
@@ -43,8 +43,8 @@
     </ng-container>
     <ng-container *ngIf="data.compareTo">
       <div class="flex flex-row">
-        <div #formContainerNext class="grow"></div>
-        <div #formContainer class="grow"></div>
+        <div #formContainerNext class="grow max-w-[50%]"></div>
+        <div #formContainer class="grow max-w-[50%]"></div>
       </div>
     </ng-container>
     <div *ngIf="loading" class="h-full w-full flex">
@@ -70,7 +70,7 @@
         {{ 'common.close' | translate }}
       </ui-button>
 
-      <ng-container *ngIf="pages$ | async as pages">
+      <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
         <ui-button
           category="secondary"
           variant="primary"
