@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FormWrapperDirective } from './form-wrapper.directive';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 /**
  * Component for testing purposes
@@ -27,6 +28,7 @@ describe('FormWrapperDirective', () => {
   beforeEach(() => {
     fixture = TestBed.configureTestingModule({
       declarations: [FormWrapperDirective, TestingComponent],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).createComponent(TestingComponent);
 
     fixture.detectChanges(); // initial binding
