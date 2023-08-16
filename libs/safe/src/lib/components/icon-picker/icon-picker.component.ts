@@ -234,7 +234,7 @@ export class IconPickerComponent
    *
    * @param fn onChange function from the parent form
    */
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (_: any) => void): void {
     this.onChange = fn;
   }
 
@@ -243,7 +243,7 @@ export class IconPickerComponent
    *
    * @param fn onTouched function from the parent form
    */
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 

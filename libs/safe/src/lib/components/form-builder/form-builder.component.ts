@@ -134,6 +134,17 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
       }
       // skip if form is core
       if (!this.form.core) {
+        // Typing for survey fields
+        // {
+        //   type: string;
+        //   resource?: string;
+        //   referenceData?: {
+        //     id: string;
+        //     displayField: string;
+        //   };
+        //   name?: string;
+        //   isCore?: boolean;
+        // }
         const coreFields =
           this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || [];
         // Highlight core fields
@@ -203,15 +214,17 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
     );
 
     // Notify parent that form structure has changed
-    (this.surveyCreator.onModified as any).add((survey: any) => {
-      this.formChange.emit(survey.text);
-    });
+    (this.surveyCreator.onModified as any).add(
+      (survey: SurveyCreator.SurveyCreator) => {
+        this.formChange.emit(survey.text);
+      }
+    );
     this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
       (survey: Survey.SurveyModel, options: any) => this.onSetCustomCss(options)
     );
     (this.surveyCreator.onTestSurveyCreated as any).add(
-      (sender: any, opt: any) => {
-        opt.survey.onUpdateQuestionCssClasses.add((_: any, opt2: any) =>
+      (sender: any, options: any) => {
+        options.survey.onUpdateQuestionCssClasses.add((_: any, opt2: any) =>
           this.onSetCustomCss(opt2)
         );
       }
@@ -224,37 +237,37 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
         this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || [];
       // Remove core fields adorners
       (this.surveyCreator.onElementAllowOperations as any).add(
-        (sender: any, opt: any) => {
-          const obj = opt.obj;
+        (sender: any, options: any) => {
+          const obj = options.obj;
           if (!obj || !obj.page) {
             return;
           }
           // If it is a core field
           if (coreFields.includes(obj.valueName)) {
             // Disable deleting, editing, changing type and changing if required or not
-            opt.allowDelete = false;
-            opt.allowChangeType = false;
-            opt.allowChangeRequired = false;
-            opt.allowAddToToolbox = false;
-            opt.allowCopy = false;
-            opt.allowShowEditor = false;
-            opt.allowShowHideTitle = false;
-            opt.allowDragging = true;
+            options.allowDelete = false;
+            options.allowChangeType = false;
+            options.allowChangeRequired = false;
+            options.allowAddToToolbox = false;
+            options.allowCopy = false;
+            options.allowShowEditor = false;
+            options.allowShowHideTitle = false;
+            options.allowDragging = true;
           }
         }
       );
       // Block core fields edition
-      this.surveyCreator.onShowingProperty.add((sender: any, opt: any) => {
-        const obj = opt.obj;
+      this.surveyCreator.onShowingProperty.add((sender: any, options: any) => {
+        const obj = options.obj;
         if (!obj || !obj.page) {
           return;
         }
         // If it is a core field
         if (
           coreFields.includes(obj.valueName) &&
-          !CORE_QUESTION_ALLOWED_PROPERTIES.includes(opt.property.name)
+          !CORE_QUESTION_ALLOWED_PROPERTIES.includes(options.property.name)
         ) {
-          opt.canShow = false;
+          options.canShow = false;
         }
       });
       // Highlight core fields
@@ -262,22 +275,24 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     // Scroll to question when added
-    (this.surveyCreator.onQuestionAdded as any).add((sender: any, opt: any) => {
-      const name = opt.question.name;
-      setTimeout(() => {
-        const el = document.querySelector('[data-name="' + name + '"]');
-        el?.scrollIntoView({ behavior: 'smooth' });
-        this.surveyCreator.showQuestionEditor(opt.question);
-      });
-    });
+    (this.surveyCreator.onQuestionAdded as any).add(
+      (sender: any, options: any) => {
+        const name = options.question.name;
+        setTimeout(() => {
+          const el = document.querySelector('[data-name="' + name + '"]');
+          el?.scrollIntoView({ behavior: 'smooth' });
+          this.surveyCreator.showQuestionEditor(options.question);
+        });
+      }
+    );
 
     // add the rendering of custom properties
     this.surveyCreator.survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
     );
     (this.surveyCreator.onTestSurveyCreated as any).add(
-      (sender: any, opt: any) =>
-        opt.survey.onAfterRenderQuestion.add(
+      (sender: any, options: any) =>
+        options.survey.onAfterRenderQuestion.add(
           renderGlobalProperties(this.referenceDataService)
         )
     );
@@ -285,7 +300,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
 
     // add move up/down buttons
     this.surveyCreator.onDefineElementMenuItems.add(
-      (sender: any, options: any) => {
+      (sender: SurveyCreator.SurveyCreator, options: any) => {
         const moveUpButton = {
           name: 'move-up',
           text: this.translate.instant('pages.formBuilder.move.up'),
