@@ -3,6 +3,7 @@ import {
   Component,
   EventEmitter,
   Inject,
+  OnDestroy,
   OnInit,
   SkipSelf,
 } from '@angular/core';
@@ -40,7 +41,7 @@ interface PageTab {
 })
 export class ApplicationWidgetComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   // === DATA ===
   widget: any;
@@ -221,7 +222,7 @@ export class ApplicationWidgetComponent
    */
   private updateTabs(pages: Page[]) {
     this.pages = [];
-    if (pages.length) {
+    if (!pages.length) {
       this.pages.push(this.addPageTab);
     }
     pages.forEach((page) => {

@@ -730,8 +730,9 @@ export class SafeApplicationWidgetService {
    * Adds a new page to the opened application.
    *
    * @param page new page
+   * @param structure page structure ( only for new dashboard pages )
    */
-  addPage(page: any): void {
+  addPage(page: any, structure?: any): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo
@@ -741,6 +742,7 @@ export class SafeApplicationWidgetService {
             type: page.type,
             content: page.content,
             application: application.id,
+            structure,
           },
         })
         .subscribe(({ errors, data }) => {

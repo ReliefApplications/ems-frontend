@@ -84,42 +84,6 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
     private cdr: ChangeDetectorRef
   ) {}
 
-  /**
-   * Extracts the path to the outlet property of the given router config
-   *
-   * @param routeObj Router config
-   * @param currPath Array of router config paths to outlet property
-   * @returns currPath
-   */
-  private getOutletPath(routeObj: any, currPath: string[]): string[] {
-    if (routeObj.outlet) {
-      return [''];
-    }
-    const pathFound: string[] = [];
-    const path = routeObj.children ? 'children' : '_loadedRoutes';
-    if (routeObj[path]?.length) {
-      for (let index = 0; index < routeObj[path].length; index++) {
-        if (routeObj[path][index].outlet !== undefined) {
-          pathFound.push(path);
-          currPath.push(...pathFound);
-          return pathFound;
-        } else {
-          const actualPathFound = this.getOutletPath(
-            routeObj[path][index],
-            currPath
-          );
-          if (actualPathFound[0] !== '' || actualPathFound.length > 1) {
-            pathFound.push(index.toString());
-            pathFound.push(path);
-            currPath.push(...pathFound);
-            return pathFound;
-          }
-        }
-      }
-    }
-    return [''];
-  }
-
   ngOnInit(): void {
     // Get style from widget definition
     const style = get(this.widget, 'settings.widgetDisplay.style') || '';
@@ -164,6 +128,42 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
         );
       }
     }
+  }
+
+  /**
+   * Extracts the path to the outlet property of the given router config
+   *
+   * @param routeObj Router config
+   * @param currPath Array of router config paths to outlet property
+   * @returns currPath
+   */
+  private getOutletPath(routeObj: any, currPath: string[]): string[] {
+    if (routeObj.outlet) {
+      return [''];
+    }
+    const pathFound: string[] = [];
+    const path = routeObj.children ? 'children' : '_loadedRoutes';
+    if (routeObj[path]?.length) {
+      for (let index = 0; index < routeObj[path].length; index++) {
+        if (routeObj[path][index].outlet !== undefined) {
+          pathFound.push(path);
+          currPath.push(...pathFound);
+          return pathFound;
+        } else {
+          const actualPathFound = this.getOutletPath(
+            routeObj[path][index],
+            currPath
+          );
+          if (actualPathFound[0] !== '' || actualPathFound.length > 1) {
+            pathFound.push(index.toString());
+            pathFound.push(path);
+            currPath.push(...pathFound);
+            return pathFound;
+          }
+        }
+      }
+    }
+    return [''];
   }
 
   /**

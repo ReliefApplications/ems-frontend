@@ -289,13 +289,22 @@ export class AddPageComponent
         defaultCols: 8,
       },
     ];
-    // Directly call application service to add page with structure
-    this.applicationService.addPage(
-      {
-        type: 'dashboard',
-      },
-      structure
-    );
+    if (this.applicationWidgetService) {
+      this.applicationWidgetService.addPage(
+        {
+          type: 'dashboard',
+        },
+        structure
+      );
+    } else {
+      // Directly call application service to add page with structure
+      this.applicationService.addPage(
+        {
+          type: 'dashboard',
+        },
+        structure
+      );
+    }
   }
 
   /**
