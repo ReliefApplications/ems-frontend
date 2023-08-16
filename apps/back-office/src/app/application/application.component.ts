@@ -275,6 +275,9 @@ export class ApplicationComponent
     return true;
   }
 
+  /**
+   * Remove application data such as styling when existing application edition.
+   */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     this.applicationService.leaveApplication();
