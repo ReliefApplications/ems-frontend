@@ -43,7 +43,7 @@ import {
 } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { map, takeUntil, debounceTime } from 'rxjs/operators';
-import { Observable, firstValueFrom, take } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { isEqual } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
