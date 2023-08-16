@@ -32,7 +32,6 @@ describe('CalculatedFieldsTabComponent', () => {
       ],
       providers: [
         TranslateService,
-        // {provide: 'this.resource', useValue: {}}
       ]
     }).compileComponents();
   });

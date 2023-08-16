@@ -198,7 +198,7 @@ export class ReferenceDataComponent
    * Create the Reference data query, and subscribe to the query changes.
    */
   ngOnInit(): void {
-    this.id = this.route?.snapshot?.paramMap?.get('id') || '';
+    this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id) {
       this.apollo
         .watchQuery<GetReferenceDataQueryResponse>({

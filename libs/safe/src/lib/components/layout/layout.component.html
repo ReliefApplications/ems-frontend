@@ -2,7 +2,7 @@
 <nav
   id="app-header"
   class="flex p-4 items-center md:justify-between text-white bg-primary-600"
-  [ngClass]="theme?.headerClass"
+  [ngClass]="theme.headerClass"
 >
   <div class="flex-shrink-0 flex flex-wrap min-w-0">
     <ui-button
@@ -38,7 +38,7 @@
         class="text-xl mb-0 whitespace-nowrap text-clip font-medium"
         *ngIf="!route"
       >
-        {{ theme?.prefix }}
+        {{ theme.prefix }}
         {{ 'common.platform.backOffice' | translate }}
       </h1>
       <h1 class="text-base mb-0 whitespace-nowrap text-clip" *ngIf="route">

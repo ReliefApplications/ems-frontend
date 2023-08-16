@@ -33,8 +33,10 @@ describe('EditChannelModalComponent', () => {
         },
         {
           provide: DIALOG_DATA,
-          useValue: {}
-        }
+          useValue: {
+            channel: {}
+          }
+        },
       ]
     }).compileComponents();
   });

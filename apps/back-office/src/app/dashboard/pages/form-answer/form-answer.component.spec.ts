@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { FormAnswerComponent } from './form-answer.component';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
 
 describe('FormAnswerComponent', () => {
   let component: FormAnswerComponent;
@@ -16,7 +15,11 @@ describe('FormAnswerComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            params: of({}),
+            snapshot: {
+              paramMap: {
+                get: () => {return {}}
+              }
+            }
           },
         },
       ]

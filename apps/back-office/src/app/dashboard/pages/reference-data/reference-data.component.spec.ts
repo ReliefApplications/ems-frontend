@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { ReferenceDataComponent } from './reference-data.component';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
 import {
   TranslateFakeLoader,
   TranslateLoader,
@@ -35,7 +34,11 @@ describe('ReferenceDataComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            params: of({}),
+            snapshot: {
+              paramMap: {
+                get: () => {return {}}
+              }
+            }
           },
         },
         {

@@ -40,7 +40,7 @@ export class PositionAttributesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.id = this.route?.snapshot?.paramMap?.get('id') || '';
+    this.id = this.route.snapshot.paramMap.get('id') || '';
     this.backPath = this.router.url.replace(`/${this.id}`, '');
     this.apollo
       .query<GetPositionAttributesFromCategoryQueryResponse>({

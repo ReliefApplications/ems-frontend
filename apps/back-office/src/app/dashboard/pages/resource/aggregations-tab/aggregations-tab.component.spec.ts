@@ -53,6 +53,11 @@ describe('AggregationsTabComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(AggregationsTabComponent);
     component = fixture.componentInstance;
+    component.resource = {
+      id: "1"
+    }
+    console.log(component);
+    console.log(component.resource);
     fixture.detectChanges();
   });
 

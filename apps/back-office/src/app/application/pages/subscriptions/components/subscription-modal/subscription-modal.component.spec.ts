@@ -8,7 +8,19 @@ import {
   TranslateModule,
   TranslateService,
 } from '@ngx-translate/core';
-import { FormWrapperModule } from '@oort-front/ui';
+import {
+  SpinnerModule,
+  DividerModule,
+  MenuModule,
+  TooltipModule,
+  ButtonModule,
+  SelectMenuModule,
+  FormWrapperModule,
+  AutocompleteModule,
+  GraphQLSelectModule,
+  IconModule
+} from '@oort-front/ui';
+import { FormsModule, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 
 describe('SubscriptionModalComponent', () => {
   let component: SubscriptionModalComponent;
@@ -19,7 +31,18 @@ describe('SubscriptionModalComponent', () => {
       imports: [
         SubscriptionModalComponent,
         ApolloTestingModule,
+        SpinnerModule,
+        DividerModule,
+        MenuModule,
+        TooltipModule,
+        ButtonModule,
+        SelectMenuModule,
         FormWrapperModule,
+        AutocompleteModule,
+        GraphQLSelectModule,
+        FormsModule,
+        ReactiveFormsModule,
+        IconModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
@@ -28,6 +51,7 @@ describe('SubscriptionModalComponent', () => {
         }),
       ],
       providers: [
+        UntypedFormBuilder,
         TranslateService,
         {
           provide: DialogRef,
@@ -37,7 +61,27 @@ describe('SubscriptionModalComponent', () => {
         },
         {
           provide: DIALOG_DATA,
-          useValue: {}
+          useValue: {
+            subscription: {
+              routingKey: "",
+              title: "",
+              convertTo: "",
+              channel: {
+                id: "",
+                title:"",
+                application: {},
+                subscribedRoles: [],
+                routingKey: ""
+              }
+            },
+            channel: {
+              id: "",
+              title:"",
+              application: {},
+              subscribedRoles: [],
+              routingKey: ""
+            }
+          }
         }
       ]
     }).compileComponents();

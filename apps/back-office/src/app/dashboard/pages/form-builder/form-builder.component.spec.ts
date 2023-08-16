@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { FormBuilderComponent } from './form-builder.component';
-import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import {
   TranslateFakeLoader,
@@ -47,7 +46,11 @@ describe('FormBuilderComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            params: of({}),
+            snapshot: {
+              paramMap: {
+                get: () => {return {}}
+              }
+            }
           },
         },
         {

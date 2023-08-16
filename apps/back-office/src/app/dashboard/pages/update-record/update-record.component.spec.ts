@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { UpdateRecordComponent } from './update-record.component';
-import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import {
   TranslateFakeLoader,
@@ -31,7 +30,11 @@ describe('UpdateRecordComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            params: of({}),
+            snapshot: {
+              paramMap: {
+                get: () => {return {}}
+              }
+            }
           },
         },
       ]

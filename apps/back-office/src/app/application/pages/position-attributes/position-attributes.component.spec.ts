@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { PositionAttributesComponent } from './position-attributes.component';
 import { ActivatedRoute } from '@angular/router';
-import { of } from 'rxjs';
 import { SpinnerModule } from '@oort-front/ui';
 
 describe('PositionComponent', () => {
@@ -17,7 +16,11 @@ describe('PositionComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            params: of({}),
+            snapshot: {
+              paramMap: {
+                get: () => {return {}}
+              }
+            }
           },
         },
       ]

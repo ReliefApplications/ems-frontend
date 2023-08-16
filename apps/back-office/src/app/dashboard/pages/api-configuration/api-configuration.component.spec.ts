@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { ApiConfigurationComponent } from './api-configuration.component';
-import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import {
   TranslateFakeLoader,
@@ -35,7 +34,11 @@ describe('ApiConfigurationComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            params: of({}),
+            snapshot: {
+              paramMap: {
+                get: () => {return {}}
+              }
+            }
           },
         },
         {
