@@ -40,7 +40,7 @@ export class SelectOptionComponent implements AfterContentInit {
 
   ngAfterContentInit(): void {
     this.label =
-      this.el.nativeElement.querySelector('span').firstChild.textContent;
+      this.el.nativeElement.querySelector('span').firstChild?.textContent ?? '';
   }
 
   /**

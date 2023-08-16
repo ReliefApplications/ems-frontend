@@ -1,0 +1,32 @@
+<div class="w-80 h-full flex flex-col">
+  <!-- Header -->
+  <div class="items-center p-4 border-b">
+    <div class="flex justify-between items-center mb-2">
+      <h2 class="mb-0">
+        {{ 'components.application.customStyling' | translate }}
+      </h2>
+      <div class="flex">
+        <ui-button
+          variant="primary"
+          category="tertiary"
+          [isIcon]="true"
+          icon="check"
+          (click)="onSave()"
+          [disabled]="formControl.pristine || loading"
+        >
+        </ui-button>
+        <ui-button [isIcon]="true" icon="close" (click)="onClose()">
+        </ui-button>
+      </div>
+    </div>
+  </div>
+  <!-- Style editor -->
+  <div class="grow overflow-y-auto overflow-x-hidden">
+    <ngx-monaco-editor
+      class="!h-full"
+      (onInit)="initEditor($event)"
+      [options]="editorOptions"
+      [formControl]="formControl"
+    ></ngx-monaco-editor>
+  </div>
+</div>

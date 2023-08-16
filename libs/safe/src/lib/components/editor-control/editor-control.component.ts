@@ -141,8 +141,11 @@ export class SafeEditorControlComponent
   /** Sets whether the field is disabled */
   set disabled(value: boolean) {
     const isDisabled = coerceBooleanProperty(value);
-    if (isDisabled) this.ngControl.control?.disable();
-    else this.ngControl.control?.enable();
+    if (isDisabled) {
+      this.ngControl.control?.disable();
+    } else {
+      this.ngControl.control?.enable();
+    }
     this.stateChanges.next();
   }
 
@@ -235,7 +238,9 @@ export class SafeEditorControlComponent
     const controlElement = this.elementRef.nativeElement.querySelector(
       '.safe-editor-control'
     );
-    if (!controlElement) return;
+    if (!controlElement) {
+      return;
+    }
     controlElement.setAttribute('aria-describedby', ids.join(' '));
   }
 
@@ -243,7 +248,9 @@ export class SafeEditorControlComponent
    * Handles mouse click on container
    */
   onContainerClick() {
-    if (this.editor) this.editor.editor.focus();
+    if (this.editor) {
+      this.editor.editor.focus();
+    }
   }
 
   /**

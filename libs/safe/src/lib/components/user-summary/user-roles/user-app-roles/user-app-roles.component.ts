@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 import { Role, User } from '../../../../models/user.model';
 import { Application } from '../../../../models/application.model';
 import {
@@ -80,7 +80,7 @@ export class UserAppRolesComponent
     this.selectedApplication.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        this.selectedRoles.setValue([], { emitEvent: false });
+        this.selectedRoles.setValue([], { emitEvent: isNil(value) });
         this.roles = [];
         if (value) {
           this.getApplicationRoles(value);
