@@ -7,6 +7,7 @@ import {
   HostBinding,
   OnInit,
   OnDestroy,
+  ChangeDetectorRef,
 } from '@angular/core';
 import { SafeChartComponent } from '../widgets/chart/chart.component';
 import { SafeEditorComponent } from '../widgets/editor/editor.component';
@@ -72,15 +73,24 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
    * @param applicationService SafeApplicationService
    * @param applicationWidgetService SafeApplicationWidgetService
    * @param restService SafeRestService
+   * @param cdr ChangeDetectorRef
    */
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
     private applicationService: SafeApplicationService,
     private applicationWidgetService: SafeApplicationWidgetService,
-    private restService: SafeRestService
+    private restService: SafeRestService,
+    private cdr: ChangeDetectorRef
   ) {}
 
+  /**
+   * Extracts the path to the outlet property of the given router config
+   *
+   * @param routeObj Router config
+   * @param currPath Array of router config paths to outlet property
+   * @returns currPath
+   */
   private getOutletPath(routeObj: any, currPath: string[]): string[] {
     if (routeObj.outlet) {
       return [''];
@@ -135,39 +145,16 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
           .getValue()
           ?.pages?.filter((p) => p.id === 'tabs').length
       }`;
-      const pathArray: string[] = [];
-      this.getOutletPath(this.router['config'][1], pathArray);
-
-      const outletPath = pathArray.reverse();
-      const outletRouteConfigArray = get(this.router['config'][1], outletPath);
-
-      let newRoute = false;
-      if (
-        outletRouteConfigArray[0].outlet !== '' &&
-        outletRouteConfigArray[0].outlet !== this.buildName
-      ) {
-        const newOutletRouteConfig = { ...outletRouteConfigArray[0] };
-        newOutletRouteConfig.outlet = this.buildName;
-        outletRouteConfigArray.push(newOutletRouteConfig);
-        newRoute = true;
-      } else if (outletRouteConfigArray[0].outlet === '') {
-        outletRouteConfigArray[0].outlet = this.buildName;
-        newRoute = true;
-      }
-
-      if (newRoute) {
-        console.log(this.activatedRoute);
-        // Reset the config with the outleted config and see if it goes to that router-outlet
-        this.router.resetConfig(this.router.config);
-        // location.reload();
-        // return;
-      }
-
       this.applicationWidgetService.widgetState = {
         header: this.header,
         widget: this.widget,
         settings: this.widget.settings,
       };
+      const newRoute = this.buildNewTabRouteConfig();
+      if (newRoute) {
+        this.router.resetConfig(newRoute);
+        this.cdr.detectChanges();
+      }
       if (this.buildName) {
         this.router.navigateByUrl(
           `${location.pathname}/(${this.buildName}:tab)`,
@@ -177,6 +164,35 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
         );
       }
     }
+  }
+
+  /**
+   * Check and update current application router config in order to add a new tab route
+   *
+   * @returns true if a application router configuration is updated with a new tab
+   */
+  private buildNewTabRouteConfig(): any {
+    const pathArray: string[] = [];
+    const currentConfig = this.router['config'];
+    this.getOutletPath(currentConfig[1], pathArray);
+
+    const outletPath = pathArray.reverse();
+    const outletRouteConfigArray = get(currentConfig[1], outletPath);
+
+    let newRoute;
+    if (
+      outletRouteConfigArray[0].outlet !== '' &&
+      outletRouteConfigArray[0].outlet !== this.buildName
+    ) {
+      const newOutletRouteConfig = { ...outletRouteConfigArray[0] };
+      newOutletRouteConfig.outlet = this.buildName;
+      outletRouteConfigArray.push(newOutletRouteConfig);
+      newRoute = currentConfig;
+    } else if (outletRouteConfigArray[0].outlet === '') {
+      outletRouteConfigArray[0].outlet = this.buildName;
+      newRoute = currentConfig;
+    }
+    return newRoute;
   }
 
   /**

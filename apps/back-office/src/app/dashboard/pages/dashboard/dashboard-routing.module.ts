@@ -16,7 +16,8 @@ const routes: Routes = [
           import(
             '../../../components/application-widget/application-widget.module'
           ).then((m) => m.ApplicationWidgetModule),
-        outlet: '',
+        // First case by default is added directly in order to trigger first load of the module with named outlet correctly
+        outlet: 'applicationWidget0',
       },
     ],
   },
