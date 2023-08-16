@@ -10,6 +10,7 @@ import {
   TranslateModule,
   TranslateService,
 } from '@ngx-translate/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('WorkflowComponent', () => {
   let component: WorkflowComponent;
@@ -31,6 +32,7 @@ describe('WorkflowComponent', () => {
       ],
       declarations: [WorkflowComponent],
       providers: [TranslateService],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   });
 

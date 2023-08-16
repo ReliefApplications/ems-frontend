@@ -9,6 +9,7 @@ import {
   TranslateModule,
   TranslateService,
 } from '@ngx-translate/core';
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 
 describe('ShareComponent', () => {
   let component: ShareComponent;
@@ -35,6 +36,7 @@ describe('ShareComponent', () => {
           },
         }),
       ],
+      schemas: [CUSTOM_ELEMENTS_SCHEMA],
     }).compileComponents();
   });
 

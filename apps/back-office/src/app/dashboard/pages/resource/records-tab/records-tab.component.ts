@@ -353,7 +353,7 @@ export class RecordsTabComponent
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
       let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is substracted from the new one
+      // If the fetch is for a new page size, the old page size is subtracted from the new one
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
@@ -421,9 +421,12 @@ export class RecordsTabComponent
       this.cachedRecords,
       mappedValues
     );
-    this.dataSource = mappedValues;
     this.pageInfo.length = data.resource.records.totalCount;
     this.pageInfo.endCursor = data.resource.records.pageInfo.endCursor;
+    this.dataSource = this.cachedRecords.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
     this.loading = loading;
   }
 }

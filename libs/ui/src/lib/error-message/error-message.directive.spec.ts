@@ -1,12 +1,16 @@
 import { Component } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { TranslateTestingModule } from 'ngx-translate-testing';
 import { ErrorMessageDirective } from './error-message.directive';
 import { ErrorMessageModule } from './error-message.module';
 import { FormWrapperModule } from '../form-wrapper/form-wrapper.module';
-import { TranslateModule } from '@ngx-translate/core';
 import { By } from '@angular/platform-browser';
+import {
+  TranslateFakeLoader,
+  TranslateLoader,
+  TranslateModule,
+  TranslateService,
+} from '@ngx-translate/core';
 
 /**
  * Component for testing purposes
@@ -46,19 +50,15 @@ describe('ErrorMessageDirective', () => {
     await TestBed.configureTestingModule({
       imports: [
         TestingComponent,
-        TranslateTestingModule.withTranslations('en', {
-          common: {
-            placeholder: { name: 'Enter a name' },
-            name: 'Name',
-          },
-          components: {
-            errors: {
-              name: 'Invalid name',
-            },
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
           },
         }),
       ],
     }).compileComponents();
+    TestBed.inject(TranslateService);
     fixture = TestBed.createComponent(TestingComponent);
     fixture.detectChanges();
   });
