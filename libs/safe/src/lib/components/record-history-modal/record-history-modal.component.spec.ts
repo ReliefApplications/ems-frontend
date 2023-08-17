@@ -5,7 +5,7 @@ import {
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
 import { RecordHistoryModalComponent } from './record-history-modal.component';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { HttpClientModule } from '@angular/common/http';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -23,7 +23,6 @@ describe('HistoryModalComponent', () => {
         },
         { provide: DIALOG_DATA, useValue: {} },
         { provide: 'environment', useValue: {} },
-        TranslateService,
       ],
       imports: [
         DialogCdkModule,

@@ -12,7 +12,7 @@ import {
   ApolloTestingController,
 } from 'apollo-angular/testing';
 import { GET_QUERY_TYPES } from './graphql/queries';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SafeChooseRecordModalComponent', () => {
   let component: SafeChooseRecordModalComponent;
@@ -26,7 +26,6 @@ describe('SafeChooseRecordModalComponent', () => {
         UntypedFormBuilder,
         { provide: DialogRef, useValue: { updateSize: jest.fn() } },
         { provide: DIALOG_DATA, useValue: { targetForm: {} } },
-        TranslateService,
       ],
       imports: [
         TranslateModule.forRoot(),

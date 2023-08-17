@@ -5,7 +5,7 @@ import {
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { HttpClientModule } from '@angular/common/http';
 
@@ -19,7 +19,6 @@ describe('SafeFormBuilderComponent', () => {
         { provide: DialogRef, useValue: {} },
         { provide: DIALOG_DATA, useValue: {} },
         { provide: 'environment', useValue: {} },
-        TranslateService,
       ],
       declarations: [SafeFormBuilderComponent],
       imports: [

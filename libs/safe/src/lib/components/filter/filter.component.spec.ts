@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SafeFilterComponent } from './filter.component';
 import { FilterGroupComponent } from './filter-group/filter-group.component';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
   FormWrapperModule,
@@ -21,7 +21,6 @@ describe('SafeFilterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [TranslateService],
       imports: [
         TranslateModule,
         SelectMenuModule,

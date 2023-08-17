@@ -3,7 +3,7 @@ import { RoleUsersComponent } from './role-users.component';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { SafeSkeletonTableModule } from '../../skeleton/skeleton-table/skeleton-table.module';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('RoleUsersComponent', () => {
   let component: RoleUsersComponent;
@@ -11,7 +11,6 @@ describe('RoleUsersComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [TranslateService],
       declarations: [RoleUsersComponent],
       imports: [
         ApolloTestingModule,

@@ -3,7 +3,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SafeUserSummaryComponent } from './user-summary.component';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { HttpClientModule } from '@angular/common/http';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { SpinnerModule, TabsModule } from '@oort-front/ui';
@@ -16,7 +16,6 @@ describe('UserSummaryComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        TranslateService,
         {
           provide: ActivatedRoute,
           useValue: {

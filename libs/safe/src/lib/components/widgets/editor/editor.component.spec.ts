@@ -2,7 +2,7 @@ import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SafeEditorComponent } from './editor.component';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { HttpClientModule } from '@angular/common/http';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { AppAbility } from '../../../services/auth/auth.service';
 import { DialogModule } from '@oort-front/ui';
 import { OAuthModule } from 'angular-oauth2-oidc';
@@ -13,11 +13,7 @@ describe('SafeEditorComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      providers: [
-        TranslateService,
-        { provide: 'environment', useValue: {} },
-        AppAbility,
-      ],
+      providers: [{ provide: 'environment', useValue: {} }, AppAbility],
       declarations: [SafeEditorComponent],
       imports: [
         OAuthModule.forRoot(),

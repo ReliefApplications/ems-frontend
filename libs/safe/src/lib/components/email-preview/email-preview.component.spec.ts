@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { SafeEmailPreviewComponent } from './email-preview.component';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   ChipModule,
   DialogModule,
@@ -25,8 +25,7 @@ describe('SafeEmailPreviewComponent', () => {
         {
           provide: 'environment',
           useValue: {
-            backOfficeUri: 'http://localhost:4200/',
-            frontOfficeUri: 'http://localhost:4200/',
+            frontOfficeUri: 'http://.',
           },
         },
         { provide: DialogRef, useValue: { removePanelClass: jest.fn() } },
@@ -37,7 +36,6 @@ describe('SafeEmailPreviewComponent', () => {
           },
         },
         UntypedFormBuilder,
-        TranslateService,
       ],
       declarations: [SafeEmailPreviewComponent],
       imports: [

@@ -3,7 +3,7 @@ import { SafeReferenceDataDropdownComponent } from './reference-data-dropdown.co
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { SelectMenuModule } from '@oort-front/ui';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 describe('SafeReferenceDataDropdownComponent', () => {
@@ -12,7 +12,6 @@ describe('SafeReferenceDataDropdownComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [TranslateService],
       declarations: [SafeReferenceDataDropdownComponent],
       imports: [
         ApolloTestingModule,

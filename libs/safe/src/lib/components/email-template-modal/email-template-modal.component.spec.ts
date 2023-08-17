@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { EmailTemplateModalComponent } from './email-template-modal.component';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('EmailTemplateModalComponent', () => {
   let component: EmailTemplateModalComponent;
@@ -12,7 +12,6 @@ describe('EmailTemplateModalComponent', () => {
       providers: [
         { provide: DialogRef, useValue: { updateSize: jest.fn() } },
         { provide: DIALOG_DATA, useValue: { templates: [] } },
-        TranslateService,
       ],
       imports: [EmailTemplateModalComponent, TranslateModule.forRoot()],
     }).compileComponents();

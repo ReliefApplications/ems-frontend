@@ -3,7 +3,7 @@ import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
 import { SafeChartComponent } from './chart.component';
 import { ApolloTestingModule } from 'apollo-angular/testing';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule, SpinnerModule } from '@oort-front/ui';
 
 describe('SafeChartComponent', () => {
@@ -12,11 +12,7 @@ describe('SafeChartComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      providers: [
-        UntypedFormBuilder,
-        { provide: 'environment', useValue: {} },
-        TranslateService,
-      ],
+      providers: [UntypedFormBuilder, { provide: 'environment', useValue: {} }],
       declarations: [SafeChartComponent],
       imports: [
         HttpClientModule,

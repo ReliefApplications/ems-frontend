@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SafeMappingComponent } from './mapping.component';
 import { ButtonModule, DialogModule, TableModule } from '@oort-front/ui';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { UntypedFormArray } from '@angular/forms';
 
 describe('SafeMappingComponent', () => {
@@ -10,7 +10,6 @@ describe('SafeMappingComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [TranslateService],
       imports: [
         DialogModule,
         ButtonModule,
