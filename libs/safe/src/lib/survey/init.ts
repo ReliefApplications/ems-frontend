@@ -52,8 +52,8 @@ export type CustomQuestions = (typeof CUSTOM_QUESTIONS)[number];
  * @param authService custom auth service
  * @param environment injected environment
  * @param referenceDataService Reference data service
- * @param ngZone Angular Service to execute code inside Angular environment
  * @param customQuestions list of custom questions to be added to the survey
+ * @param ngZone Angular Service to execute code inside Angular environment
  */
 export const initCustomSurvey = (
   Survey: any,
@@ -64,8 +64,8 @@ export const initCustomSurvey = (
   authService: SafeAuthService,
   environment: any,
   referenceDataService: SafeReferenceDataService,
-  ngZone: NgZone,
-  customQuestions: (typeof CUSTOM_QUESTIONS)[number][] = []
+  customQuestions: (typeof CUSTOM_QUESTIONS)[number][] = [],
+  ngZone: NgZone
 ): void => {
   // If the survey created does not contain custom questions, we destroy previously set custom questions if so
   Survey.CustomWidgetCollection.Instance.clear();
