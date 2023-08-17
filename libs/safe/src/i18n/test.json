@@ -19,8 +19,10 @@
 			"one": "******"
 		},
 		"archive": {
+			"delete": "******",
 			"few": "******",
-			"none": "******"
+			"none": "******",
+			"restore": "******"
 		},
 		"ariaLabel": {
 			"search": {

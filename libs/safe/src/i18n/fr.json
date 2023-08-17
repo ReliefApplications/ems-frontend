@@ -19,8 +19,10 @@
 			"one": "Application"
 		},
 		"archive": {
+			"delete": "Supprimer",
 			"few": "@TODO",
-			"none": "@TODO"
+			"none": "@TODO",
+			"restore": "Restaurer"
 		},
 		"ariaLabel": {
 			"search": {

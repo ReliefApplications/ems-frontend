@@ -21,7 +21,7 @@ export class ApplicationsArchiveComponent implements OnInit {
   loading = false;
   @Input() itemList: ArchivePage[] = [];
   public filteredArchiveList: Array<ArchivePage> = new Array<ArchivePage>();
-  public displayedColumns = ['name', 'deleteDate'];
+  public displayedColumns = ['name', 'deleteDate', 'actions'];
 
   // === FILTERS ===
   public filters = [

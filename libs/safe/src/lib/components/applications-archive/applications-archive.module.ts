@@ -12,6 +12,8 @@ import { SafeDateModule } from '../../pipes/date/date.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 
+import { ButtonModule, MenuModule } from '@oort-front/ui';
+
 /**
  * Safe Applications Archive module
  */
@@ -19,6 +21,8 @@ import { FormsModule } from '@angular/forms';
   declarations: [ApplicationsArchiveComponent],
   imports: [
     CommonModule,
+    ButtonModule,
+    MenuModule,
     FormsModule,
     SelectMenuModule,
     TableModule,
