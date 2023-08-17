@@ -59,10 +59,6 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
   /**
    * Widget constructor
    *
-   * @param router Router
-   * @param activatedRoute ActivatedRoute
-   * @param applicationService SafeApplicationService
-   * @param applicationWidgetService SafeApplicationWidgetService
    * @param restService SafeRestService
    */
   constructor(private restService: SafeRestService) {}
