@@ -95,7 +95,7 @@ export class SliderComponent
    *
    * @param fn event that took place
    */
-  registerOnChange(fn: any) {
+  registerOnChange(fn: (value: number) => void) {
     if (!this.onChange) {
       this.onChange = fn;
     }
@@ -106,7 +106,7 @@ export class SliderComponent
    *
    * @param fn event that took place
    */
-  registerOnTouched(fn: any) {
+  registerOnTouched(fn: () => void) {
     if (!this.onTouch) {
       this.onTouch = fn;
     }

@@ -17,7 +17,7 @@ export class LayerStylingComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  private _selectedLayer: any;
+  private _selectedLayer?: L.Layer;
 
   /** Sets the selected layer */
   @Input() set selectedLayer(value: any) {
