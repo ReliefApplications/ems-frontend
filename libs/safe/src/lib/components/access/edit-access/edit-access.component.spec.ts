@@ -1,22 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { UntypedFormBuilder } from '@angular/forms';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  UntypedFormBuilder,
+} from '@angular/forms';
 import {
   DialogModule as DialogCdkModule,
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { SafeEditAccessComponent } from './edit-access.component';
 import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
 import { GET_ROLES } from './graphql/queries';
+import { ButtonModule, DialogModule, SelectMenuModule } from '@oort-front/ui';
 
 describe('SafeEditAccessComponent', () => {
   let component: SafeEditAccessComponent;
@@ -27,24 +27,23 @@ describe('SafeEditAccessComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         UntypedFormBuilder,
-        { provide: DialogRef, useValue: {} },
+        { provide: DialogRef, useValue: { removePanelClass: jest.fn() } },
         {
           provide: DIALOG_DATA,
           useValue: {
             access: { canSee: null, canUpdate: null, canDelete: null },
           },
         },
-        TranslateService,
       ],
       declarations: [SafeEditAccessComponent],
       imports: [
         DialogCdkModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        SelectMenuModule,
+        DialogModule,
+        FormsModule,
+        ReactiveFormsModule,
+        ButtonModule,
+        TranslateModule.forRoot(),
         ApolloTestingModule,
       ],
     }).compileComponents();
@@ -60,7 +59,7 @@ describe('SafeEditAccessComponent', () => {
     const op = controller.expectOne(GET_ROLES);
 
     op.flush({
-      data: {},
+      data: { roles: [] },
     });
   });
 

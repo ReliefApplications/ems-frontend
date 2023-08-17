@@ -30,12 +30,7 @@ describe('ResourceTableModalComponent', () => {
       imports: [
         SafeResourceGridModalComponent,
         DialogCdkModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
       ],
     }).compileComponents();
   });

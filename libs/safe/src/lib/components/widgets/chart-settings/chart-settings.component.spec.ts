@@ -1,15 +1,15 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
-import { environment } from 'projects/back-office/src/environments/environment';
 import {
   TranslateModule,
   TranslateService,
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-
 import { SafeChartSettingsComponent } from './chart-settings.component';
+import { IconModule, TabsModule, TooltipModule } from '@oort-front/ui';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('SafeChartSettingsComponent', () => {
   let component: SafeChartSettingsComponent;
@@ -19,18 +19,17 @@ describe('SafeChartSettingsComponent', () => {
     TestBed.configureTestingModule({
       providers: [
         UntypedFormBuilder,
-        { provide: 'environment', useValue: environment },
+        { provide: 'environment', useValue: {} },
         TranslateService,
       ],
       declarations: [SafeChartSettingsComponent],
       imports: [
+        BrowserAnimationsModule,
         HttpClientModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TabsModule,
+        TranslateModule.forRoot(),
+        IconModule,
+        TooltipModule,
       ],
     }).compileComponents();
   }));

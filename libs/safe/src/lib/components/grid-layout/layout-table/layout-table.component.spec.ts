@@ -21,12 +21,7 @@ describe('LayoutTableComponent', () => {
       declarations: [LayoutTableComponent],
       imports: [
         DialogCdkModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         ApolloTestingModule,
         HttpClientModule,
         ButtonModule,

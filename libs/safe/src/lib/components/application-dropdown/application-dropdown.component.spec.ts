@@ -1,11 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SafeApplicationDropdownComponent } from './application-dropdown.component';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   ApolloTestingModule,
   ApolloTestingController,
@@ -21,15 +16,9 @@ describe('SafeApplicationDropdownComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [TranslateService],
       declarations: [SafeApplicationDropdownComponent],
       imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         ApolloTestingModule,
         SelectMenuModule,
         FormWrapperModule,

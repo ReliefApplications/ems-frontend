@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SafeMapPopupComponent } from './map-popup.component';
 
 describe('SafeMapPopupComponent', () => {

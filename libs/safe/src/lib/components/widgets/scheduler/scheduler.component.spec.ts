@@ -6,6 +6,9 @@ import {
   TranslateLoader,
 } from '@ngx-translate/core';
 import { SafeSchedulerComponent } from './scheduler.component';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { HttpClientModule } from '@angular/common/http';
+import { SchedulerModule } from '@progress/kendo-angular-scheduler';
 
 describe('SafeSchedulerComponent', () => {
   let component: SafeSchedulerComponent;
@@ -16,12 +19,10 @@ describe('SafeSchedulerComponent', () => {
       providers: [TranslateService],
       declarations: [SafeSchedulerComponent],
       imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
+        ApolloTestingModule,
+        HttpClientModule,
+        SchedulerModule,
       ],
     }).compileComponents();
   }));

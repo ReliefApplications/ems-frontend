@@ -10,8 +10,9 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-
 import { AddLayoutModalComponent } from './add-layout-modal.component';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('AddLayoutModalComponent', () => {
   let component: AddLayoutModalComponent;
@@ -20,19 +21,16 @@ describe('AddLayoutModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: DialogRef, useValue: {} },
+        { provide: DialogRef, useValue: { updateSize: jest.fn() } },
         { provide: DIALOG_DATA, useValue: {} },
         TranslateService,
       ],
-      declarations: [AddLayoutModalComponent],
       imports: [
+        AddLayoutModalComponent,
+        ApolloTestingModule,
+        HttpClientModule,
         DialogCdkModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
       ],
     }).compileComponents();
   });

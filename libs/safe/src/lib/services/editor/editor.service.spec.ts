@@ -14,12 +14,7 @@ describe('SafeEditorService', () => {
     TestBed.configureTestingModule({
       providers: [{ provide: 'environment', useValue: {} }, TranslateService],
       imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
       ],
     });
     service = TestBed.inject(SafeEditorService);

@@ -1,11 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import {
-  DateTimeProvider,
-  OAuthLogger,
-  OAuthService,
-  UrlHelperService,
-} from 'angular-oauth2-oidc';
 import { SafeLayoutComponent } from './layout.component';
 import { HttpClientModule } from '@angular/common/http';
 import {
@@ -13,12 +7,7 @@ import {
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   DividerModule,
   MenuModule,
@@ -34,6 +23,7 @@ import { NOTIFICATION_SUBSCRIPTION } from './graphql/subscriptions';
 import { AppAbility } from '../../services/auth/auth.service';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { ButtonModule } from '@oort-front/ui';
+import { OAuthModule } from 'angular-oauth2-oidc';
 
 describe('SafeLayoutComponent', () => {
   let component: SafeLayoutComponent;
@@ -47,17 +37,13 @@ describe('SafeLayoutComponent', () => {
           provide: 'environment',
           useValue: { availableLanguages: 2, theme: {} },
         },
-        OAuthService,
-        UrlHelperService,
-        OAuthLogger,
-        DateTimeProvider,
         AppAbility,
         { provide: DialogRef, useValue: {} },
         { provide: DIALOG_DATA, useValue: {} },
-        TranslateService,
       ],
       declarations: [SafeLayoutComponent],
       imports: [
+        OAuthModule.forRoot(),
         RouterTestingModule,
         HttpClientModule,
         IndicatorsModule,
@@ -66,12 +52,7 @@ describe('SafeLayoutComponent', () => {
         TooltipModule,
         SidenavContainerModule,
         DialogCdkModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         MenuModule,
         ApolloTestingModule,
       ],

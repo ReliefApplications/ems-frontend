@@ -2,7 +2,7 @@
 export default {
   displayName: 'safe',
   preset: '../../jest.preset.js',
-  setupFiles: [`../../jest-shim.ts`],
+  setupFiles: [`../../jest-shim.ts`, 'jest-canvas-mock'],
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
     'ts-jest': {

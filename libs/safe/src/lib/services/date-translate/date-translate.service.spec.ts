@@ -14,12 +14,7 @@ describe('SafeDateTranslateService', () => {
     TestBed.configureTestingModule({
       providers: [TranslateService],
       imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
       ],
     });
     service = TestBed.inject(SafeDateTranslateService);

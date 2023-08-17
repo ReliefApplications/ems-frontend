@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SummaryCardItemComponent } from './summary-card-item.component';
 
 describe('SummaryCardItemComponent', () => {
@@ -15,6 +14,7 @@ describe('SummaryCardItemComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SummaryCardItemComponent);
     component = fixture.componentInstance;
+    component.card = {};
     fixture.detectChanges();
   });
 

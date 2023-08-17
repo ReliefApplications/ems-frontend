@@ -1,17 +1,13 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-
 import { SafeMapComponent } from './map.component';
+require('leaflet');
+require('@esri');
 
 describe('SafeMapComponent', () => {
   let component: SafeMapComponent;
@@ -20,17 +16,12 @@ describe('SafeMapComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      providers: [UntypedFormBuilder, TranslateService],
-      declarations: [SafeMapComponent],
-      imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
-        ApolloTestingModule,
+      providers: [
+        UntypedFormBuilder,
+        { provide: 'environment', useValue: {} }, //TODOTEST: find a way to include leaflet, this does not work
       ],
+      declarations: [SafeMapComponent],
+      imports: [TranslateModule.forRoot(), ApolloTestingModule],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);

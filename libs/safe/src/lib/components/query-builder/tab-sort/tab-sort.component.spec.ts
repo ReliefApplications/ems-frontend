@@ -1,11 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { SafeTabSortComponent } from './tab-sort.component';
+import { FormWrapperModule, SelectMenuModule } from '@oort-front/ui';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  UntypedFormControl,
+  UntypedFormGroup,
+} from '@angular/forms';
 
 describe('SafeTabSortComponent', () => {
   let component: SafeTabSortComponent;
@@ -13,15 +15,13 @@ describe('SafeTabSortComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [TranslateService],
       declarations: [SafeTabSortComponent],
       imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
+        SelectMenuModule,
+        FormsModule,
+        ReactiveFormsModule,
+        FormWrapperModule,
       ],
     }).compileComponents();
   });
@@ -29,7 +29,9 @@ describe('SafeTabSortComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeTabSortComponent);
     component = fixture.componentInstance;
-    fixture.detectChanges();
+    component.form = new UntypedFormGroup({
+      sort: new UntypedFormControl({ field: [''] }),
+    });
   });
 
   it('should create', () => {

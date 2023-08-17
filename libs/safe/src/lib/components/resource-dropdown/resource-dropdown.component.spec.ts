@@ -24,12 +24,7 @@ describe('SafeResourceDropdownComponent', () => {
       providers: [TranslateService],
       declarations: [SafeResourceDropdownComponent],
       imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         ApolloTestingModule,
         GraphQLSelectModule,
         FormsModule,

@@ -16,12 +16,7 @@ describe('SafeDatePipe', () => {
     TestBed.configureTestingModule({
       providers: [SafeDateTranslateService, TranslateService],
       imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
       ],
     });
     translate = TestBed.inject(SafeDateTranslateService);

@@ -1,22 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormArray, UntypedFormBuilder } from '@angular/forms';
-import { environment } from 'projects/back-office/src/environments/environment';
-import {
-  DateTimeProvider,
-  OAuthLogger,
-  OAuthService,
-  UrlHelperService,
-} from 'angular-oauth2-oidc';
 import { SafePipelineComponent } from './pipeline.component';
 import { HttpClientModule } from '@angular/common/http';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { MenuModule } from '@oort-front/ui';
 import { Observable } from 'rxjs';
+import { CdkAccordionModule } from '@angular/cdk/accordion';
 
 describe('SafePipelineComponent', () => {
   let component: SafePipelineComponent;
@@ -24,24 +13,12 @@ describe('SafePipelineComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        UntypedFormBuilder,
-        { provide: 'environment', useValue: environment },
-        OAuthService,
-        UrlHelperService,
-        OAuthLogger,
-        DateTimeProvider,
-        TranslateService,
-      ],
+      providers: [UntypedFormBuilder, { provide: 'environment', useValue: {} }],
       declarations: [SafePipelineComponent],
       imports: [
+        CdkAccordionModule,
         HttpClientModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         MenuModule,
       ],
     }).compileComponents();

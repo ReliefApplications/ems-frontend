@@ -1,24 +1,14 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
-import {
-  DateTimeProvider,
-  OAuthLogger,
-  OAuthService,
-  UrlHelperService,
-} from 'angular-oauth2-oidc';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { SafeTemplatesComponent } from './templates.component';
 import { ButtonModule, MenuModule } from '@oort-front/ui';
 import { SafeApplicationService } from '../../services/application/application.service';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { AppAbility } from '../../services/auth/auth.service';
 import { SafeEmptyModule } from '../ui/empty/empty.module';
+import { OAuthModule } from 'angular-oauth2-oidc';
 
 describe('SafeTemplatesComponent', () => {
   let component: SafeTemplatesComponent;
@@ -29,26 +19,17 @@ describe('SafeTemplatesComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         { provide: 'environment', useValue: {} },
-        OAuthService,
-        UrlHelperService,
-        OAuthLogger,
-        DateTimeProvider,
-        TranslateService,
         SafeApplicationService,
         AppAbility,
       ],
       declarations: [SafeTemplatesComponent],
       imports: [
+        OAuthModule.forRoot(),
         HttpClientModule,
         DialogCdkModule,
         SafeEmptyModule,
         ButtonModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         MenuModule,
         ApolloTestingModule,
       ],

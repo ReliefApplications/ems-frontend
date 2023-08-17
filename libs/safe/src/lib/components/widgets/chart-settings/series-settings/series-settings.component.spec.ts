@@ -1,18 +1,19 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { SeriesSettingsComponent } from './series-settings.component';
+import { SafeSeriesSettingsComponent } from './series-settings.component';
+import { UntypedFormArray } from '@angular/forms';
 
 describe('SeriesSettingsComponent', () => {
-  let component: SeriesSettingsComponent;
-  let fixture: ComponentFixture<SeriesSettingsComponent>;
+  let component: SafeSeriesSettingsComponent;
+  let fixture: ComponentFixture<SafeSeriesSettingsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SeriesSettingsComponent],
+      declarations: [SafeSeriesSettingsComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(SeriesSettingsComponent);
+    fixture = TestBed.createComponent(SafeSeriesSettingsComponent);
     component = fixture.componentInstance;
+    component.formArray = new UntypedFormArray([]);
     fixture.detectChanges();
   });
 

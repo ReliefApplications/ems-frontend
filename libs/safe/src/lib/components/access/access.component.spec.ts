@@ -1,12 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SafeAccessComponent } from './access.component';
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule, TooltipModule } from '@oort-front/ui';
 
 describe('SafeAccessComponent', () => {
@@ -15,18 +10,12 @@ describe('SafeAccessComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [TranslateService],
       declarations: [SafeAccessComponent],
       imports: [
         DialogCdkModule,
         ButtonModule,
         TooltipModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
       ],
     }).compileComponents();
   });

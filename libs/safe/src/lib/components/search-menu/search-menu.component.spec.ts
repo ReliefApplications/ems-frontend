@@ -18,12 +18,7 @@ describe('SafeSearchMenuComponent', () => {
       providers: [TranslateService],
       declarations: [SafeSearchMenuComponent],
       imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         IconModule,
         FormsModule,
       ],

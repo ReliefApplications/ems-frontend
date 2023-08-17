@@ -4,14 +4,10 @@ import {
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
-
+import { TranslateModule } from '@ngx-translate/core';
 import { AddAggregationModalComponent } from './add-aggregation-modal.component';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('AddAggregationModalComponent', () => {
   let component: AddAggregationModalComponent;
@@ -20,19 +16,15 @@ describe('AddAggregationModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: DialogRef, useValue: {} },
+        { provide: DialogRef, useValue: { updateSize: jest.fn() } },
         { provide: DIALOG_DATA, useValue: {} },
-        TranslateService,
       ],
-      declarations: [AddAggregationModalComponent],
       imports: [
+        AddAggregationModalComponent,
         DialogCdkModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
+        ApolloTestingModule,
+        HttpClientModule,
       ],
     }).compileComponents();
   });

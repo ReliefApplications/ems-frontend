@@ -7,23 +7,13 @@ import {
 } from '@angular/cdk/dialog';
 import { SafeRecordModalComponent } from './record-modal.component';
 import {
-  DateTimeProvider,
-  OAuthLogger,
-  OAuthService,
-  UrlHelperService,
-} from 'angular-oauth2-oidc';
-import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
 import { GET_RECORD_BY_ID } from './graphql/queries';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { AppAbility } from '../../services/auth/auth.service';
+import { OAuthModule } from 'angular-oauth2-oidc';
 
 describe('SafeRecordModalComponent', () => {
   let component: SafeRecordModalComponent;
@@ -36,22 +26,13 @@ describe('SafeRecordModalComponent', () => {
         { provide: DialogRef, useValue: { updateSize: jest.fn() } },
         { provide: DIALOG_DATA, useValue: {} },
         { provide: 'environment', useValue: {} },
-        OAuthService,
-        UrlHelperService,
-        OAuthLogger,
-        DateTimeProvider,
-        TranslateService,
         AppAbility,
       ],
       imports: [
+        OAuthModule.forRoot(),
         DialogCdkModule,
         HttpClientModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         ApolloTestingModule,
         SafeRecordModalComponent,
       ],

@@ -1,12 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { SafeApplicationSummaryComponent } from './application-summary.component';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
-import { MenuModule } from '@oort-front/ui';
+import { TranslateModule } from '@ngx-translate/core';
+import { ButtonModule, IconModule, MenuModule } from '@oort-front/ui';
+import { SafeDateModule } from '../../../../pipes/date/date.module';
 
 describe('SafeApplicationSummaryComponent', () => {
   let component: SafeApplicationSummaryComponent;
@@ -14,16 +10,13 @@ describe('SafeApplicationSummaryComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [TranslateService],
       declarations: [SafeApplicationSummaryComponent],
       imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         MenuModule,
+        IconModule,
+        SafeDateModule,
+        ButtonModule,
       ],
     }).compileComponents();
   });
@@ -31,7 +24,6 @@ describe('SafeApplicationSummaryComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeApplicationSummaryComponent);
     component = fixture.componentInstance;
-
     component.application = {
       name: 'Dummy Application',
       createdAt: new Date(),

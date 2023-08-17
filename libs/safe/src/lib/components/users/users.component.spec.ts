@@ -1,19 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
-import {
-  DateTimeProvider,
-  OAuthLogger,
-  OAuthService,
-  UrlHelperService,
-} from 'angular-oauth2-oidc';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
-
+import { TranslateModule } from '@ngx-translate/core';
 import { SafeUsersComponent } from './users.component';
 import { ButtonModule, IconModule, MenuModule } from '@oort-front/ui';
 import { ApolloTestingModule } from 'apollo-angular/testing';
@@ -30,11 +18,6 @@ describe('SafeUsersComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         { provide: 'environment', useValue: {} },
-        OAuthService,
-        UrlHelperService,
-        OAuthLogger,
-        DateTimeProvider,
-        TranslateService,
         {
           provide: ActivatedRoute,
           useValue: {
@@ -51,12 +34,7 @@ describe('SafeUsersComponent', () => {
         IconModule,
         ButtonModule,
         SafeSkeletonTableModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         MenuModule,
       ],
     }).compileComponents();

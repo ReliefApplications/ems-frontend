@@ -18,12 +18,7 @@ describe('SafeFormBuilderService', () => {
       imports: [
         ApolloTestingModule,
         HttpClientModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
       ],
     });
     service = TestBed.inject(SafeFormBuilderService);

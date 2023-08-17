@@ -1,14 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { UntypedFormControl } from '@angular/forms';
 import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+  FormsModule,
+  ReactiveFormsModule,
+  UntypedFormControl,
+} from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { SafeFormsDropdownComponent } from './forms-dropdown.component';
-import { AutocompleteModule } from '@oort-front/ui';
+import { AutocompleteModule, SpinnerModule } from '@oort-front/ui';
 
 describe('SafeFormsDropdownComponent', () => {
   let component: SafeFormsDropdownComponent;
@@ -16,16 +15,13 @@ describe('SafeFormsDropdownComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [TranslateService],
       declarations: [SafeFormsDropdownComponent],
       imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         AutocompleteModule,
+        FormsModule,
+        ReactiveFormsModule,
+        SpinnerModule,
       ],
     }).compileComponents();
   });

@@ -1,19 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { SkeletonTableComponent } from './skeleton-table.component';
+import { SafeSkeletonTableComponent } from './skeleton-table.component';
+import { TableModule } from '@oort-front/ui';
 
 describe('SkeletonTableComponent', () => {
-  let component: SkeletonTableComponent;
-  let fixture: ComponentFixture<SkeletonTableComponent>;
+  let component: SafeSkeletonTableComponent;
+  let fixture: ComponentFixture<SafeSkeletonTableComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SkeletonTableComponent],
+      declarations: [SafeSkeletonTableComponent],
+      imports: [TableModule],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SkeletonTableComponent);
+    fixture = TestBed.createComponent(SafeSkeletonTableComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

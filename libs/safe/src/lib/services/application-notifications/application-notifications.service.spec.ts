@@ -2,43 +2,21 @@ import { TestBed } from '@angular/core/testing';
 import { SafeApplicationNotificationsService } from './application-notifications.service';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { HttpClientModule } from '@angular/common/http';
-import {
-  TranslateFakeLoader,
-  TranslateLoader,
-  TranslateModule,
-  TranslateService,
-} from '@ngx-translate/core';
-import {
-  DateTimeProvider,
-  OAuthLogger,
-  OAuthService,
-  UrlHelperService,
-} from 'angular-oauth2-oidc';
+import { TranslateModule } from '@ngx-translate/core';
 import { AppAbility } from '../auth/auth.service';
+import { OAuthModule } from 'angular-oauth2-oidc';
 
 describe('SafeApplicationNotificationsService', () => {
   let service: SafeApplicationNotificationsService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        { provide: 'environment', useValue: {} },
-        TranslateService,
-        OAuthService,
-        UrlHelperService,
-        OAuthLogger,
-        DateTimeProvider,
-        AppAbility,
-      ],
+      providers: [{ provide: 'environment', useValue: {} }, AppAbility],
       imports: [
+        OAuthModule.forRoot(),
         ApolloTestingModule,
         HttpClientModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
       ],
     });
     service = TestBed.inject(SafeApplicationNotificationsService);

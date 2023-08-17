@@ -1,12 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { UntypedFormGroup } from '@angular/forms';
 import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+  FormsModule,
+  ReactiveFormsModule,
+  UntypedFormArray,
+  UntypedFormControl,
+  UntypedFormGroup,
+} from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { SafeQueryStyleComponent } from './query-style.component';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { HttpClientModule } from '@angular/common/http';
+import { SafeFilterModule } from '../../../filter/filter.module';
+import { ButtonModule, RadioModule } from '@oort-front/ui';
+import { InputsModule } from '@progress/kendo-angular-inputs';
 
 describe('SafeQueryStyleComponent', () => {
   let component: SafeQueryStyleComponent;
@@ -14,15 +20,18 @@ describe('SafeQueryStyleComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [TranslateService],
+      providers: [],
       declarations: [SafeQueryStyleComponent],
       imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
+        ApolloTestingModule,
+        HttpClientModule,
+        SafeFilterModule,
+        ButtonModule,
+        InputsModule,
+        RadioModule,
+        FormsModule,
+        ReactiveFormsModule,
       ],
     }).compileComponents();
   });
@@ -30,7 +39,17 @@ describe('SafeQueryStyleComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeQueryStyleComponent);
     component = fixture.componentInstance;
-    component.form = new UntypedFormGroup({});
+    component.query = { fields: [] };
+    component.form = new UntypedFormGroup({
+      name: new UntypedFormControl(),
+      background: new UntypedFormGroup({ color: new UntypedFormControl() }),
+      text: new UntypedFormGroup({ color: new UntypedFormControl() }),
+      fields: new UntypedFormArray([]),
+      filter: new UntypedFormGroup({
+        logic: new UntypedFormControl(),
+        filters: new UntypedFormArray([]),
+      }),
+    });
     fixture.detectChanges();
   });
 

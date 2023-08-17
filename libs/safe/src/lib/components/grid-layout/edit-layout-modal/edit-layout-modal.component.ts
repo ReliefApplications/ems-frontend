@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -45,7 +45,7 @@ interface DialogData {
   templateUrl: './edit-layout-modal.component.html',
   styleUrls: ['./edit-layout-modal.component.scss'],
 })
-export class SafeEditLayoutModalComponent implements OnInit, AfterViewInit {
+export class SafeEditLayoutModalComponent implements OnInit {
   @Input() layout: any;
   public form!: UntypedFormGroup;
   public templates: any[] = [];
@@ -70,9 +70,7 @@ export class SafeEditLayoutModalComponent implements OnInit, AfterViewInit {
       query: createQueryForm(this.data.layout?.query),
       display: createDisplayForm(this.data.layout?.display),
     });
-  }
 
-  ngAfterViewInit(): void {
     this.layoutPreviewData = {
       form: this.form,
       defaultLayout: this.data.layout?.display,

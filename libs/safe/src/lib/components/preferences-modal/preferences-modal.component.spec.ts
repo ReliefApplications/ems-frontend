@@ -42,12 +42,7 @@ describe('SafePreferencesModalComponent', () => {
         ApolloTestingModule,
         DialogCdkModule,
         BrowserAnimationsModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         SafePreferencesModalComponent,
       ],
     }).compileComponents();

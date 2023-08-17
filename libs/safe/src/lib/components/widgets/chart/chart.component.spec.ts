@@ -1,9 +1,10 @@
 import { HttpClientModule } from '@angular/common/http';
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
-import { environment } from 'projects/back-office/src/environments/environment';
-
 import { SafeChartComponent } from './chart.component';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { ButtonModule, SpinnerModule } from '@oort-front/ui';
 
 describe('SafeChartComponent', () => {
   let component: SafeChartComponent;
@@ -13,10 +14,18 @@ describe('SafeChartComponent', () => {
     TestBed.configureTestingModule({
       providers: [
         UntypedFormBuilder,
-        { provide: 'environment', useValue: environment },
+        { provide: 'environment', useValue: {} },
+        TranslateService,
       ],
       declarations: [SafeChartComponent],
-      imports: [HttpClientModule],
+      imports: [
+        HttpClientModule,
+        ApolloTestingModule,
+        HttpClientModule,
+        SpinnerModule,
+        ButtonModule,
+        TranslateModule.forRoot(),
+      ],
     }).compileComponents();
   }));
 

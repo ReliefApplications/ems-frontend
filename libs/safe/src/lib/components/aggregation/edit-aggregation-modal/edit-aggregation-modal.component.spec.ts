@@ -12,6 +12,8 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('SafeEditAggregationModalComponent', () => {
   let component: SafeEditAggregationModalComponent;
@@ -22,23 +24,21 @@ describe('SafeEditAggregationModalComponent', () => {
       providers: [
         UntypedFormBuilder,
         TranslateService,
-        { provide: DialogRef, useValue: {} },
+        { provide: DialogRef, useValue: { addPanelClass: jest.fn() } },
         {
           provide: DIALOG_DATA,
           useValue: {
             access: { canSee: null, canUpdate: null, canDelete: null },
+            resource: {},
           },
         },
       ],
-      declarations: [SafeEditAggregationModalComponent],
       imports: [
+        SafeEditAggregationModalComponent,
         DialogCdkModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
+        ApolloTestingModule,
+        HttpClientModule,
       ],
     }).compileComponents();
   });

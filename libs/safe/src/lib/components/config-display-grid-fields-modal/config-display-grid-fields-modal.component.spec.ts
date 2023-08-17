@@ -31,12 +31,7 @@ describe('ConfigDisplayGridFieldsModalComponent', () => {
       ],
       imports: [
         ConfigDisplayGridFieldsModalComponent,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         ApolloTestingModule,
       ],
     }).compileComponents();

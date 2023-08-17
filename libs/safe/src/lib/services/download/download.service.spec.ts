@@ -18,12 +18,7 @@ describe('SafeDownloadService', () => {
       imports: [
         HttpClientModule,
         ApolloTestingModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
       ],
     });
     service = TestBed.inject(SafeDownloadService);

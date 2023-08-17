@@ -6,8 +6,13 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-
 import { SafeEditorSettingsComponent } from './editor-settings.component';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { HttpClientModule } from '@angular/common/http';
+import { OAuthModule } from 'angular-oauth2-oidc';
+import { AppAbility } from '../../../services/auth/auth.service';
+import { IconModule, TabsModule, TooltipModule } from '@oort-front/ui';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('SafeEditorSettingsComponent', () => {
   let component: SafeEditorSettingsComponent;
@@ -15,15 +20,22 @@ describe('SafeEditorSettingsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      providers: [UntypedFormBuilder, TranslateService],
+      providers: [
+        UntypedFormBuilder,
+        TranslateService,
+        { provide: 'environment', useValue: { frontOfficeUri: 'http://.' } },
+        AppAbility,
+      ],
       declarations: [SafeEditorSettingsComponent],
       imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        BrowserAnimationsModule,
+        TranslateModule.forRoot(),
+        ApolloTestingModule,
+        HttpClientModule,
+        TabsModule,
+        IconModule,
+        TooltipModule,
+        OAuthModule.forRoot(),
       ],
     }).compileComponents();
   }));

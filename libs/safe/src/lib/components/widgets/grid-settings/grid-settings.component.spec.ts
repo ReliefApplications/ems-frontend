@@ -1,28 +1,23 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
-import { environment } from 'projects/back-office/src/environments/environment';
-import {
-  DateTimeProvider,
-  OAuthLogger,
-  OAuthService,
-  UrlHelperService,
-} from 'angular-oauth2-oidc';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
-
 import { SafeGridSettingsComponent } from './grid-settings.component';
 import { GET_CHANNELS, GET_QUERY_TYPES } from './graphql/queries';
-import { AutocompleteModule } from '@oort-front/ui';
+import {
+  AutocompleteModule,
+  IconModule,
+  TabsModule,
+  TooltipModule,
+} from '@oort-front/ui';
+import { AppAbility } from '../../../services/auth/auth.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OAuthModule } from 'angular-oauth2-oidc';
 
 describe('SafeGridSettingsComponent', () => {
   let component: SafeGridSettingsComponent;
@@ -33,23 +28,19 @@ describe('SafeGridSettingsComponent', () => {
     TestBed.configureTestingModule({
       providers: [
         UntypedFormBuilder,
-        { provide: 'environment', useValue: environment },
-        OAuthService,
-        UrlHelperService,
-        OAuthLogger,
-        DateTimeProvider,
-        TranslateService,
+        { provide: 'environment', useValue: {} },
+        AppAbility,
       ],
       declarations: [SafeGridSettingsComponent],
       imports: [
+        OAuthModule.forRoot(),
+        BrowserAnimationsModule,
         HttpClientModule,
         RouterTestingModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TooltipModule,
+        IconModule,
+        TabsModule,
+        TranslateModule.forRoot(),
         AutocompleteModule,
         ApolloTestingModule,
       ],
@@ -70,15 +61,15 @@ describe('SafeGridSettingsComponent', () => {
       data: {
         __schema: {
           types: [],
+          queryType: { name: '', kind: '', fields: [] },
         },
-        fields: [],
       },
     });
 
     const op2 = controller.expectOne(GET_CHANNELS);
 
     op2.flush({
-      data: {},
+      data: { channels: [] },
     });
   });
 

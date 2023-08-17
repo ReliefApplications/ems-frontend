@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SafeMappingModalComponent } from './mapping-modal.component';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SafeMappingModalComponent', () => {
   let component: SafeMappingModalComponent;
@@ -8,7 +9,11 @@ describe('SafeMappingModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SafeMappingModalComponent],
+      providers: [
+        { provide: DIALOG_DATA, useValue: {} },
+        { provide: DialogRef, useValue: { removePanelClass: jest.fn() } },
+      ],
+      imports: [SafeMappingModalComponent, TranslateModule.forRoot()],
     }).compileComponents();
   });
 

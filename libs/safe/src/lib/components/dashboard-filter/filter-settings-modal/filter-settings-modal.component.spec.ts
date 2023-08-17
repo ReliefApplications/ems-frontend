@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { FilterSettingsModalComponent } from './filter-settings-modal.component';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('FilterSettingsModalComponent', () => {
   let component: FilterSettingsModalComponent;
@@ -8,7 +9,11 @@ describe('FilterSettingsModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FilterSettingsModalComponent],
+      providers: [
+        { provide: DialogRef, useValue: { removePanelClass: jest.fn() } },
+        { provide: DIALOG_DATA, useValue: {} },
+      ],
+      imports: [FilterSettingsModalComponent, TranslateModule.forRoot()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(FilterSettingsModalComponent);

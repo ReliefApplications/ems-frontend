@@ -32,12 +32,7 @@ describe('ContextService', () => {
       ],
       imports: [
         ApolloTestingModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         HttpClientModule,
       ],
     });

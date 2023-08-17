@@ -1,21 +1,11 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
-import {
-  DateTimeProvider,
-  OAuthLogger,
-  OAuthService,
-  UrlHelperService,
-} from 'angular-oauth2-oidc';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { SafeProfileComponent } from './profile.component';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { AppAbility } from '../../services/auth/auth.service';
+import { OAuthModule } from 'angular-oauth2-oidc';
 
 describe('SafeProfileComponent', () => {
   let component: SafeProfileComponent;
@@ -24,24 +14,15 @@ describe('SafeProfileComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        OAuthService,
-        UrlHelperService,
-        OAuthLogger,
-        DateTimeProvider,
         UntypedFormBuilder,
-        TranslateService,
         { provide: 'environment', useValue: {} },
         AppAbility,
       ],
       declarations: [SafeProfileComponent],
       imports: [
+        OAuthModule.forRoot(),
         HttpClientModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         ApolloTestingModule,
         HttpClientModule,
       ],

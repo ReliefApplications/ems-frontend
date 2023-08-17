@@ -1,12 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import {
-  DateTimeProvider,
-  OAuthLogger,
-  OAuthService,
-  UrlHelperService,
-} from 'angular-oauth2-oidc';
-import { environment } from 'projects/back-office/src/environments/environment';
-import {
   DialogModule as DialogCdkModule,
   DialogRef,
   DIALOG_DATA,
@@ -21,12 +14,10 @@ import {
 } from 'apollo-angular/testing';
 import { GET_QUERY_TYPES } from './graphql/queries';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { OAuthModule } from 'angular-oauth2-oidc';
+import { AppAbility } from '../../../services/auth/auth.service';
+import { SafeGridModule } from './grid/grid.module';
 
 describe('SafeCoreGridComponent', () => {
   let component: SafeCoreGridComponent;
@@ -38,27 +29,20 @@ describe('SafeCoreGridComponent', () => {
       providers: [
         { provide: DialogRef, useValue: {} },
         { provide: DIALOG_DATA, useValue: {} },
-        { provide: 'environment', useValue: environment },
-        OAuthService,
-        UrlHelperService,
-        OAuthLogger,
-        DateTimeProvider,
+        { provide: 'environment', useValue: {} },
         UntypedFormBuilder,
         QueryBuilderService,
-        TranslateService,
+        AppAbility,
       ],
       declarations: [SafeCoreGridComponent],
       imports: [
+        OAuthModule.forRoot(),
         HttpClientModule,
         DialogCdkModule,
         RouterTestingModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         ApolloTestingModule,
+        SafeGridModule,
       ],
     }).compileComponents();
 
@@ -76,8 +60,8 @@ describe('SafeCoreGridComponent', () => {
       data: {
         __schema: {
           types: [],
+          queryType: { name: '', kind: '', fields: [] },
         },
-        fields: [],
       },
     });
   });

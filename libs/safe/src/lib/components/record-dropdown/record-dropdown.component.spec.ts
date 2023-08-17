@@ -19,12 +19,7 @@ describe('SafeRecordDropdownComponent', () => {
       providers: [TranslateService],
       declarations: [SafeRecordDropdownComponent],
       imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         ApolloTestingModule,
         SelectMenuModule,
         FormsModule,

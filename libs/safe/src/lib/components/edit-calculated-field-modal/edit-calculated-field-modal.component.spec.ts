@@ -38,12 +38,7 @@ describe('SafeEditCalculatedFieldModalComponent', () => {
       imports: [
         SafeEditCalculatedFieldModalComponent,
         DialogCdkModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
       ],
     }).compileComponents();
   });

@@ -1,27 +1,18 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 import { RouterTestingModule } from '@angular/router/testing';
-import { environment } from 'projects/back-office/src/environments/environment';
 import { SafeGridWidgetComponent } from './grid.component';
-import {
-  DateTimeProvider,
-  OAuthLogger,
-  OAuthService,
-  UrlHelperService,
-} from 'angular-oauth2-oidc';
 import { HttpClientModule } from '@angular/common/http';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { UntypedFormBuilder } from '@angular/forms';
 import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import { GET_QUERY_TYPES } from './graphql/queries';
+import { GET_QUERY_TYPES, GET_USER_ROLES_PERMISSIONS } from './graphql/queries';
+import { AppAbility } from '../../../services/auth/auth.service';
+import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
+import { OAuthModule } from 'angular-oauth2-oidc';
 
 describe('SafeGridWidgetComponent', () => {
   let component: SafeGridWidgetComponent;
@@ -31,25 +22,18 @@ describe('SafeGridWidgetComponent', () => {
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       providers: [
-        { provide: 'environment', useValue: environment },
-        OAuthService,
-        UrlHelperService,
-        OAuthLogger,
-        DateTimeProvider,
-        TranslateService,
+        { provide: 'environment', useValue: {} },
         UntypedFormBuilder,
+        AppAbility,
       ],
       declarations: [SafeGridWidgetComponent],
       imports: [
+        OAuthModule.forRoot(),
         DialogCdkModule,
         RouterTestingModule,
         HttpClientModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        SafeCoreGridModule,
+        TranslateModule.forRoot(),
         ApolloTestingModule,
       ],
     }).compileComponents();
@@ -73,10 +57,14 @@ describe('SafeGridWidgetComponent', () => {
       data: {
         __schema: {
           types: [],
+          queryType: { name: '', kind: '', fields: [] },
         },
-        fields: [],
       },
     });
+
+    const op2 = controller.expectOne(GET_USER_ROLES_PERMISSIONS);
+
+    op2.flush({ data: { resource: { canCreateRecords: '' } } });
   });
 
   afterEach(() => {

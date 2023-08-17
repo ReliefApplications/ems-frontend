@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CronExpressionControlComponent } from './cron-expression-control.component';
-import { Dialog } from '@angular/cdk/dialog';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { SafeReadableCronModule } from '../../pipes/readable-cron/readable-cron.module';
 import {
   TooltipModule,
@@ -17,7 +16,6 @@ describe('CronExpressionControlComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [Dialog, TranslateService],
       declarations: [CronExpressionControlComponent],
       imports: [
         DialogModule,

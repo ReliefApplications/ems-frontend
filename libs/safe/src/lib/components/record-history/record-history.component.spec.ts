@@ -5,19 +5,9 @@ import {
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
 import { SafeRecordHistoryComponent } from './record-history.component';
-import {
-  DateTimeProvider,
-  OAuthLogger,
-  OAuthService,
-  UrlHelperService,
-} from 'angular-oauth2-oidc';
+
 import { HttpClientModule } from '@angular/common/http';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
   DateModule,
@@ -45,11 +35,6 @@ describe('SafeRecordHistoryComponent', () => {
           },
         },
         { provide: 'environment', useValue: {} },
-        OAuthService,
-        UrlHelperService,
-        OAuthLogger,
-        DateTimeProvider,
-        TranslateService,
       ],
       declarations: [SafeRecordHistoryComponent],
       imports: [
@@ -64,12 +49,7 @@ describe('SafeRecordHistoryComponent', () => {
         IndicatorsModule,
         DateModule,
         ReactiveFormsModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         MenuModule,
       ],
     }).compileComponents();

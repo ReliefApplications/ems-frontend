@@ -19,12 +19,7 @@ describe('SafeEmailService', () => {
       imports: [
         HttpClientModule,
         DialogCdkModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
       ],
     });
     service = TestBed.inject(SafeEmailService);

@@ -16,12 +16,7 @@ describe('SafeFieldDropdownComponent', () => {
       providers: [TranslateService],
       declarations: [SafeFieldDropdownComponent],
       imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
       ],
     }).compileComponents();
   });

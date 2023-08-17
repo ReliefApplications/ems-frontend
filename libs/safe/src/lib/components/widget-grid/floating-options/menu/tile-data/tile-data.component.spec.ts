@@ -39,12 +39,7 @@ describe('SafeTileDataComponent', () => {
       declarations: [SafeTileDataComponent],
       imports: [
         DialogCdkModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         HttpClientModule,
       ],
     }).compileComponents();

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SafeStepComponent } from './step.component';
 
 describe('SafeStepComponent', () => {

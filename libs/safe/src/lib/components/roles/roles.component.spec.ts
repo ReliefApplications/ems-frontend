@@ -5,30 +5,21 @@ import {
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
 import { SafeRolesComponent } from './roles.component';
-import {
-  DateTimeProvider,
-  OAuthLogger,
-  OAuthService,
-  UrlHelperService,
-} from 'angular-oauth2-oidc';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
 import { GET_ROLES } from './graphql/queries';
 import { AbilityModule } from '@casl/angular';
-import { Ability, PureAbility } from '@casl/ability';
 import { TabsModule } from '@oort-front/ui';
 import { SafeRoleListModule } from './components/role-list/role-list.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AppAbility } from '../../services/auth/auth.service';
+import { OAuthModule } from 'angular-oauth2-oidc';
+import { PureAbility } from '@casl/ability';
 
 describe('SafeRolesComponent', () => {
   let component: SafeRolesComponent;
@@ -41,16 +32,12 @@ describe('SafeRolesComponent', () => {
         { provide: DialogRef, useValue: {} },
         { provide: DIALOG_DATA, useValue: {} },
         { provide: 'environment', useValue: {} },
-        { provide: Ability, useValue: new Ability() },
-        { provide: PureAbility, useExisting: Ability },
-        OAuthService,
-        UrlHelperService,
-        OAuthLogger,
-        DateTimeProvider,
-        TranslateService,
+        AppAbility,
+        PureAbility,
       ],
       declarations: [SafeRolesComponent],
       imports: [
+        OAuthModule.forRoot(),
         DialogCdkModule,
         HttpClientModule,
         RouterTestingModule,
@@ -58,12 +45,7 @@ describe('SafeRolesComponent', () => {
         TabsModule,
         SafeRoleListModule,
         AbilityModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         ApolloTestingModule,
       ],
     }).compileComponents();

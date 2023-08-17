@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SafeQueryStylePreviewComponent } from './query-style-preview.component';
 
 describe('SafeQueryStylePreviewComponent', () => {

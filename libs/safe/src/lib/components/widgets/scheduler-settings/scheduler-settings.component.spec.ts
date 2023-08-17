@@ -1,13 +1,19 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { UntypedFormBuilder } from '@angular/forms';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  UntypedFormBuilder,
+} from '@angular/forms';
 import {
   TranslateModule,
   TranslateService,
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-
 import { SafeSchedulerSettingsComponent } from './scheduler-settings.component';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { HttpClientModule } from '@angular/common/http';
+import { RadioModule, SelectMenuModule } from '@oort-front/ui';
 
 describe('SafeSchedulerSettingsComponent', () => {
   let component: SafeSchedulerSettingsComponent;
@@ -18,12 +24,13 @@ describe('SafeSchedulerSettingsComponent', () => {
       providers: [UntypedFormBuilder, TranslateService],
       declarations: [SafeSchedulerSettingsComponent],
       imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
+        ApolloTestingModule,
+        HttpClientModule,
+        RadioModule,
+        SelectMenuModule,
+        FormsModule,
+        ReactiveFormsModule,
       ],
     }).compileComponents();
   }));

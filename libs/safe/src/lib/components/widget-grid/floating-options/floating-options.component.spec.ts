@@ -1,14 +1,20 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
-import { MenuModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  DividerModule,
+  IconModule,
+  MenuModule,
+} from '@oort-front/ui';
 import {
   TranslateModule,
   TranslateService,
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-
 import { SafeFloatingOptionsComponent } from './floating-options.component';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('SafeFloatingOptionsComponent', () => {
   let component: SafeFloatingOptionsComponent;
@@ -16,17 +22,17 @@ describe('SafeFloatingOptionsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      providers: [TranslateService],
+      providers: [TranslateService, { provide: 'environment', useValue: {} }],
       declarations: [SafeFloatingOptionsComponent],
       imports: [
         DialogCdkModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         MenuModule,
+        ApolloTestingModule,
+        HttpClientModule,
+        IconModule,
+        DividerModule,
+        ButtonModule,
       ],
     }).compileComponents();
   }));
