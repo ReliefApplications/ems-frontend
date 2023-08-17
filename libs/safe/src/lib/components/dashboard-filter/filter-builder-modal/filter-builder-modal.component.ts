@@ -118,6 +118,8 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'labelFalse',
   'valueTrue',
   'valueFalse',
+  'valueName',
+  'inputType',
 ];
 
 /**
@@ -191,6 +193,7 @@ export class FilterBuilderModalComponent
 
     // Block core fields edition
     this.surveyCreator.onShowingProperty.add((sender: any, opt: any) => {
+      // opt: { obj: any, property: Survey.JsonObjectProperty, canShow: boolean and more...}
       const obj = opt.obj;
       if (!obj || !obj.page) {
         return;
@@ -198,7 +201,6 @@ export class FilterBuilderModalComponent
 
       // If it is a core field
       if (!CORE_QUESTION_ALLOWED_PROPERTIES.includes(opt.property.name)) {
-        // console.log(opt.property.name);
         opt.canShow = false;
       }
     });
@@ -207,10 +209,11 @@ export class FilterBuilderModalComponent
     this.surveyCreator.survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
     );
-    this.surveyCreator.onTestSurveyCreated.add((sender: any, opt: any) =>
-      opt.survey.onAfterRenderQuestion.add(
-        renderGlobalProperties(this.referenceDataService)
-      )
+    (this.surveyCreator.onTestSurveyCreated as any).add(
+      (sender: any, opt: any) =>
+        opt.survey.onAfterRenderQuestion.add(
+          renderGlobalProperties(this.referenceDataService)
+        )
     );
 
     // Set content

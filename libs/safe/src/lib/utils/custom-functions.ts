@@ -191,6 +191,12 @@ const addCustomFunctions = (
       });
     }
   );
+
+  // Get length of an array
+  survey.FunctionFactory.Instance.register('length', (params: any[]) => {
+    if (!Array.isArray(params[0])) return 0;
+    return params[0].length;
+  });
 };
 
 export default addCustomFunctions;

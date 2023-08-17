@@ -16,6 +16,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import {
   DialogModule,
+  FormWrapperModule,
   GraphQLSelectComponent,
   GraphQLSelectModule,
 } from '@oort-front/ui';
@@ -47,6 +48,7 @@ interface DialogData {
     GraphQLSelectModule,
     ReactiveFormsModule,
     ButtonModule,
+    FormWrapperModule,
   ],
   selector: 'safe-add-aggregation-modal',
   templateUrl: './add-aggregation-modal.component.html',

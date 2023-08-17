@@ -133,6 +133,7 @@
 		"modifiedOn": "Modified On",
 		"name": "Name",
 		"next": "Next",
+		"noOptions": "No available choices",
 		"notifications": {
 			"accessDenied": "You don't have permission to see the {{type}}.",
 			"accessNotProvided": "No access provided to this {{type}}. {{error}}",
@@ -264,6 +265,7 @@
 		},
 		"save": "Save",
 		"saveChanges": "Save changes",
+		"search": "Search",
 		"searchObject": "Search {{name}}",
 		"select": "Select",
 		"semicolon": "semicolon",
@@ -1108,6 +1110,7 @@
 					"history": "Show history"
 				},
 				"errors": {
+					"autoSaveFailed": "Action stopped due to some invalid records. Please review them before taking any other action.",
 					"invalid": {
 						"backoffice": "Invalid grid configuration",
 						"frontoffice": "Invalid grid configuration, please contact your admin"
@@ -1156,6 +1159,10 @@
 				"loading": {
 					"records": "Loading records...",
 					"settings": "Loading settings..."
+				},
+				"map": {
+					"mapDetailsTitle": "Query Map View",
+					"mapDetailsTooltip": "Centered by default on selected record"
 				},
 				"openSettings": "Open settings",
 				"tooltip": {
@@ -1515,6 +1522,9 @@
 						}
 					}
 				},
+				"style": {
+					"customStyling": "Custom Styling"
+				},
 				"summaryCard": {
 					"add": "Add new card",
 					"card": {
@@ -1571,6 +1581,7 @@
 					"static": "Static"
 				}
 			},
+			"styling": "Edit styling",
 			"summaryCard": {
 				"dataSource": "Data Source",
 				"errors": {
@@ -1833,8 +1844,13 @@
 					"element": "Element"
 				}
 			},
+			"dashboardFilter": "Dashboard filter",
 			"deactivateFiltering": "Deactivate filtering",
-			"share": "Share Dashboard"
+			"share": "Share Dashboard",
+			"tooltip": {
+				"useDashboardFilterEditor": "Use dashboard filter editor",
+				"useDefaultEditor": "Use default editor"
+			}
 		},
 		"form": {
 			"core": "Core",
@@ -2000,7 +2016,8 @@
 				"form": {
 					"title": "Available forms"
 				},
-				"selectType": "Select which type of page you want to create"
+				"selectType": "Select which type of page you want to create",
+				"startFromWidget": "Start from a widget"
 			},
 			"empty": {
 				"add": "Add a Page",

@@ -4,8 +4,8 @@
     *ngIf="header"
     class="widget-header border-b"
     [ngClass]="{
-      'border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
-      'border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
+      '!border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
+      '!border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
     }"
   >
     <span class="widget-title" [title]="settings.title">{{
@@ -83,12 +83,9 @@
               class="k-tilelayout-item k-card flex flex-col"
               [style.order]="i"
               style.grid-column-end="{{
-                'span ' +
-                  (card.width && card.width > colsNumber
-                    ? colsNumber
-                    : card.width)
+                'span ' + (2 > colsNumber ? colsNumber : 2)
               }}"
-              style.grid-row-end="{{ 'span ' + card.height }}"
+              style.grid-row-end="{{ 'span ' + 2 }}"
               [card]="card"
             >
             </safe-summary-card-item>
@@ -104,7 +101,6 @@
       [pageIndex]="pageInfo.pageIndex"
       [pageSize]="pageInfo.pageSize"
       [hideFirstLastButtons]="false"
-      [skip]="pageInfo.skip"
       [pageSizeOptions]="[10, 25, 50, 100]"
       [totalItems]="pageInfo.length"
       [displayedPageNumbers]="5"

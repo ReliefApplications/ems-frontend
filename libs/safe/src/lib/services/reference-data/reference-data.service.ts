@@ -196,8 +196,8 @@ export class SafeReferenceDataService {
                 cache.push(newItem);
               }
             }
+            items = cache || [];
           }
-          items = cache || [];
         }
         localForage.setItem(cacheKey, { items, valueField });
         localStorage.setItem(

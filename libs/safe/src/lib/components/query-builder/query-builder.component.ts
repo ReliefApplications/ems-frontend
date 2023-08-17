@@ -37,6 +37,7 @@ export class SafeQueryBuilderComponent
 
   public allQueries: any[] = [];
   public filteredQueries: any[] = [];
+
   /**
    * Getter for the available scalar fields
    *

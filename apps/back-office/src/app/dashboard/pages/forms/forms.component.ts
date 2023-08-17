@@ -129,7 +129,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
       let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is substracted from the new one
+      // If the fetch is for a new page size, the old page size is subtracted from the new one
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
@@ -328,11 +328,14 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
    * @param loading Loading state
    */
   private updateValues(data: GetFormsQueryResponse, loading: boolean): void {
-    const mappedValues = data.forms.edges.map((x) => x.node);
+    const mappedValues = data.forms?.edges?.map((x) => x.node);
     this.cachedForms = updateQueryUniqueValues(this.cachedForms, mappedValues);
-    this.forms = mappedValues;
     this.pageInfo.length = data.forms.totalCount;
     this.pageInfo.endCursor = data.forms.pageInfo.endCursor;
+    this.forms = this.cachedForms.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
     this.loading = loading;
     this.updating = loading;
   }

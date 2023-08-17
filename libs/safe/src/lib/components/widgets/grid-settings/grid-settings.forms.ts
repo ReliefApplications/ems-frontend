@@ -13,6 +13,12 @@ import {
 /** Default action name */
 const DEFAULT_ACTION_NAME = 'Action';
 
+/** TODO: Replace once we have UI */
+const DEFAULT_CONTEXT_FILTER = `{
+  "logic": "and",
+  "filters": []
+}`;
+
 /** Creating a new instance of the FormBuilder class. */
 const fb = new UntypedFormBuilder();
 
@@ -172,6 +178,9 @@ export const createGridWidgetFormGroup = (
             )
           : [createButtonFormGroup(null)]
       ),
+      contextFilters: [
+        get(configuration, 'contextFilters', DEFAULT_CONTEXT_FILTER),
+      ],
     },
     { validators: resourceOrReferenceDataRequired }
   );

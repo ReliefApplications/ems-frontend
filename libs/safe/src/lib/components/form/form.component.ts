@@ -19,7 +19,7 @@ import {
   EDIT_RECORD,
 } from './graphql/mutations';
 import { Form } from '../../models/form.model';
-import { Record } from '../../models/record.model';
+import { Record as RecordModel } from '../../models/record.model';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeAuthService } from '../../services/auth/auth.service';
@@ -30,6 +30,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import { SnackbarService } from '@oort-front/ui';
+import { cloneDeep, isNil } from 'lodash';
 
 /**
  * This component is used to display forms
@@ -44,7 +45,7 @@ export class SafeFormComponent
   implements OnInit, OnDestroy, AfterViewInit
 {
   @Input() form!: Form;
-  @Input() record?: Record;
+  @Input() record?: RecordModel;
   @Output() save: EventEmitter<{
     completed: boolean;
     hideNewRecord?: boolean;
@@ -53,7 +54,7 @@ export class SafeFormComponent
   // === SURVEYJS ===
   public survey!: Survey.SurveyModel;
   public surveyActive = true;
-  private temporaryFilesStorage: any = {};
+  public temporaryFilesStorage: Record<string, Array<File>> = {};
 
   @ViewChild('formContainer') formContainer!: ElementRef;
 
@@ -114,14 +115,12 @@ export class SafeFormComponent
 
     this.survey = this.formBuilderService.createSurvey(
       JSON.stringify(structure),
-      this.pages,
       this.form.metadata,
       this.record
     );
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
-      this.pages,
       this.selectedPageIndex,
       this.temporaryFilesStorage
     );
@@ -134,11 +133,11 @@ export class SafeFormComponent
     this.survey.onComplete.add(this.onComplete);
 
     // Unset readOnly fields if it's the record creation
-    if (!this.record) {
+    // It's a requirement to let all fields been editable during addition of records
+    if (!isNil(this.record)) {
       this.form.fields?.forEach((field) => {
-        if (field.readOnly) {
-          this.survey.getQuestionByName(field.name).readOnly = false;
-        }
+        if (field.readOnly && this.survey.getQuestionByName(field.name))
+          this.survey.getQuestionByName(field.name).readOnly = true;
       });
     }
     // Fetch cached data from local storage
@@ -212,7 +211,9 @@ export class SafeFormComponent
    */
   public reset(): void {
     this.survey.clear();
-    this.temporaryFilesStorage = {};
+    this.formHelpersService.clearTemporaryFilesStorage(
+      this.temporaryFilesStorage
+    );
     this.survey.showCompletedPage = false;
     this.save.emit({ completed: false });
     this.survey.render();
@@ -223,9 +224,19 @@ export class SafeFormComponent
    * Handles the value change event when the user completes the survey
    */
   public valueChange(): void {
+    // Cache the survey data, but remove the files from it
+    // to avoid hitting the local storage limit
+    const data = cloneDeep(this.survey.data);
+    Object.keys(data).forEach((key) => {
+      const question = this.survey.getQuestionByName(key);
+      if (question && question.getType() === 'file') {
+        delete data[key];
+      }
+    });
+
     localStorage.setItem(
       this.storageId,
-      JSON.stringify({ data: this.survey.data, date: new Date() })
+      JSON.stringify({ data, date: new Date() })
     );
   }
 
@@ -336,7 +347,9 @@ export class SafeFormComponent
     } else {
       this.survey.clear();
     }
-    this.temporaryFilesStorage = {};
+    this.formHelpersService.clearTemporaryFilesStorage(
+      this.temporaryFilesStorage
+    );
     localStorage.removeItem(this.storageId);
     this.formHelpersService.cleanCachedRecords(this.survey);
     this.isFromCacheData = false;
@@ -406,5 +419,6 @@ export class SafeFormComponent
     super.ngOnDestroy();
     localStorage.removeItem(this.storageId);
     this.formHelpersService.cleanCachedRecords(this.survey);
+    this.survey?.dispose();
   }
 }

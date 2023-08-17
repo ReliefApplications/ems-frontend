@@ -4,8 +4,8 @@
     *ngIf="header"
     class="widget-header border-b"
     [ngClass]="{
-      'border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
-      'border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
+      '!border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
+      '!border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
     }"
   >
     <span class="widget-title" [title]="settings.title">{{
@@ -60,17 +60,19 @@
     [resourceId]="settings.resource"
     [referenceDataId]="settings.referenceData"
     [aggregation]="aggregation"
+    [contextFilters]="widget.settings.contextFilters"
   ></safe-aggregation-grid>
 </ng-template>
 
 <!-- Quick action buttons -->
 <ng-template #floatingButtonsTemplate>
-  <div class="flex">
+  <div class="flex overflow-hidden flex-1 max-w-fit">
     <ng-container *ngFor="let floatingButton of settings.floatingButtons">
       <ui-button
         variant="primary"
         (click)="onQuickAction(floatingButton)"
         *ngIf="floatingButton.show"
+        class="whitespace-nowrap"
       >
         {{ floatingButton.name }}
       </ui-button>
@@ -82,7 +84,7 @@
 <ng-template #layoutsTemplate>
   <ng-container *ngIf="layouts.length > 1">
     <kendo-dropdownlist
-      class="m-auto w-auto"
+      class="!my-auto flex-1 max-w-fit"
       [data]="layouts"
       textField="name"
       valueField="id"
@@ -97,7 +99,7 @@
 <ng-template #aggregationsTemplate>
   <ng-container *ngIf="aggregations.length > 1">
     <kendo-dropdownlist
-      class="m-auto w-auto"
+      class="!my-auto flex-1 max-w-fit"
       [data]="aggregations"
       textField="name"
       valueField="id"

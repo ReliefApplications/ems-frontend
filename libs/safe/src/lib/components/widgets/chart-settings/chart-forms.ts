@@ -309,6 +309,12 @@ export const createChartForm = (value: any) => {
   return formGroup;
 };
 
+/** TODO: Replace once we have UI */
+const DEFAULT_CONTEXT_FILTER = `{
+  "logic": "and",
+  "filters": []
+}`;
+
 /**
  * Ensures that one and only one reference data or resource exists in the form
  *
@@ -343,6 +349,7 @@ export const createChartWidgetForm = (id: any, value: any) => {
       chart: createChartForm(get(value, 'chart')),
       resource: [get(value, 'resource', null)],
       referenceData: [get(value, 'referenceData', null)],
+      contextFilters: [get(value, 'contextFilters', DEFAULT_CONTEXT_FILTER)],
     },
     { validators: atLeastOneRequiredValidator }
   );

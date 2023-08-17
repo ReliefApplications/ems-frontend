@@ -5,12 +5,13 @@ import { SafeReferenceDataService } from '../reference-data/reference-data.servi
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
-import { Record } from '../../models/record.model';
+import { Record as RecordModel } from '../../models/record.model';
 import { EditRecordMutationResponse, EDIT_RECORD } from './graphql/mutations';
 import { Metadata } from '../../models/metadata.model';
 import { SafeRestService } from '../rest/rest.service';
 import { BehaviorSubject } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
+import { SafeFormHelpersService } from '../form-helper/form-helper.service';
 
 /**
  * Shared form builder service.
@@ -28,31 +29,34 @@ export class SafeFormBuilderService {
    * @param apollo Apollo service
    * @param snackBar Service used to show a snackbar.
    * @param restService This is the service that is used to make http requests.
+   * @param formHelpersService Shared form helper service.
    */
   constructor(
     private referenceDataService: SafeReferenceDataService,
     private translate: TranslateService,
     private apollo: Apollo,
     private snackBar: SnackbarService,
-    private restService: SafeRestService
+    private restService: SafeRestService,
+    private formHelpersService: SafeFormHelpersService
   ) {}
 
   /**
    * Creates new survey from the structure and add on complete expression to it.
    *
    * @param structure form structure
-   * @param pages Pages of the current survey
    * @param fields list of fields used to check if the fields should be hidden or disabled
    * @param record record that'll be edited, if any
    * @returns New survey
    */
   createSurvey(
     structure: string,
-    pages: BehaviorSubject<any[]>,
     fields: Metadata[] = [],
-    record?: Record
+    record?: RecordModel
   ): Survey.SurveyModel {
+    Survey.settings.useCachingForChoicesRestful = false;
+    Survey.settings.useCachingForChoicesRestfull = false;
     const survey = new Survey.Model(structure);
+    this.formHelpersService.addUserVariables(survey);
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
     );
@@ -124,7 +128,6 @@ export class SafeFormBuilderService {
     survey.showNavigationButtons = 'none';
     survey.showProgressBar = 'off';
     survey.focusFirstQuestionAutomatic = false;
-    this.setPages(survey, pages);
     return survey;
   }
 
@@ -133,15 +136,13 @@ export class SafeFormBuilderService {
    * and temporary files storage
    *
    * @param survey Survey where to add the callbacks
-   * @param pages Pages of the current survey
    * @param selectedPageIndex Current page of the survey
    * @param temporaryFilesStorage Temporary files saved while executing the survey
    */
   public addEventsCallBacksToSurvey(
     survey: Survey.SurveyModel,
-    pages: BehaviorSubject<any[]>,
     selectedPageIndex: BehaviorSubject<number>,
-    temporaryFilesStorage: any
+    temporaryFilesStorage: Record<string, Array<File>>
   ) {
     survey.onClearFiles.add((_, options: any) => this.onClearFiles(options));
     survey.onUploadFiles.add((_, options: any) =>
@@ -153,37 +154,10 @@ export class SafeFormBuilderService {
     survey.onUpdateQuestionCssClasses.add((_, options: any) =>
       this.onSetCustomCss(options)
     );
-    survey.onPageVisibleChanged.add(() => {
-      this.setPages(survey, pages);
-    });
-    survey.onSettingQuestionErrors.add(() => {
-      this.setPages(survey, pages);
-    });
     survey.onCurrentPageChanged.add((survey: Survey.SurveyModel) => {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
       selectedPageIndex.next(survey.currentPageNo);
     });
-  }
-
-  /**
-   * Set the pages of the survey
-   *
-   * @param survey Current survey
-   * @param pages Page number emitter
-   */
-  private setPages(
-    survey: Survey.SurveyModel,
-    pages: BehaviorSubject<any[]>
-  ): void {
-    const pageList = [];
-    if (survey) {
-      for (const page of survey.pages) {
-        if (page.isVisible) {
-          pageList.push(page);
-        }
-      }
-    }
-    pages.next(pageList);
   }
 
   /**

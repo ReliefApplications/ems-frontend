@@ -27,10 +27,12 @@ export class CronExpressionControlComponent
   //   this.ngControl.control?.setValue(value);
   // }
   public value: string | undefined | null;
-
-  private onTouched!: any;
-  private onChanged!: any;
   public disabled = false;
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  private onTouched = () => {};
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+  private onChanged = (_: any) => {};
 
   /**
    *  Cron expression form control
@@ -62,7 +64,7 @@ export class CronExpressionControlComponent
    *
    * @param fn callback
    */
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (_: any) => void): void {
     this.onChanged = fn;
   }
 
@@ -71,7 +73,7 @@ export class CronExpressionControlComponent
    *
    * @param fn callback
    */
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
@@ -91,9 +93,6 @@ export class CronExpressionControlComponent
     );
     const dialogRef = this.dialog.open(CronExpressionControlModalComponent, {
       autoFocus: false,
-      data: {
-        value: this.value,
-      },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {

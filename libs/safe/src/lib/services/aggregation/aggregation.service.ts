@@ -20,6 +20,7 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { firstValueFrom, Observable } from 'rxjs';
 import { ApolloQueryResult } from '@apollo/client';
 import { Connection } from '../../utils/graphql/connection.type';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { GetReferenceDataAggregationsResponse } from '../../components/aggregation/add-aggregation-modal/graphql/queries';
 
 /** Fallback AggregationConnection */
@@ -103,13 +104,15 @@ export class SafeAggregationService {
    * @param referenceData ReferenceData Id
    * @param aggregation Aggregation definition
    * @param mapping aggregation mapping ( category, field, series )
+   * @param contextFilters context filters, if any
    * @returns Aggregation query
    */
   aggregationDataQuery(
     resource: string,
     referenceData: string,
     aggregation: string,
-    mapping?: any
+    mapping?: any,
+    contextFilters?: CompositeFilterDescriptor
   ): Observable<ApolloQueryResult<GetAggregationDataQueryResponse>> {
     return resource
       ? this.apollo.query<GetAggregationDataQueryResponse>({
@@ -118,6 +121,7 @@ export class SafeAggregationService {
             resource,
             aggregation,
             mapping,
+            contextFilters,
           },
         })
       : this.apollo.query<GetAggregationDataQueryResponse>({
@@ -138,6 +142,7 @@ export class SafeAggregationService {
    * @param aggregation Aggregation definition
    * @param first size of the page
    * @param skip index of the page
+   * @param contextFilters context filters, if any
    * @returns Aggregation query
    */
   aggregationDataWatchQuery(
@@ -145,7 +150,8 @@ export class SafeAggregationService {
     referenceData: string,
     aggregation: string,
     first: number,
-    skip: number
+    skip: number,
+    contextFilters?: CompositeFilterDescriptor
   ): QueryRef<GetAggregationDataQueryResponse> {
     return resource
       ? this.apollo.watchQuery<GetAggregationDataQueryResponse>({
@@ -155,7 +161,8 @@ export class SafeAggregationService {
             aggregation,
             first,
             skip,
-          },
+            contextFilters,
+      },
         })
       : this.apollo.watchQuery<GetAggregationDataQueryResponse>({
           query: GET_REFERENCE_DATA_AGGREGATION_DATA,

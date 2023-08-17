@@ -89,8 +89,8 @@ export class SafeArrayFilterMenuComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.choices1 = this.data.slice();
-    this.choices2 = this.data.slice();
+    this.choices1 = (this.data || []).slice();
+    this.choices2 = (this.data || []).slice();
     this.form = this.fb.group({
       logic: this.filter.logic,
       filters: this.fb.array([

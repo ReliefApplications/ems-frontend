@@ -6,7 +6,7 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { FormControl, FormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Aggregation } from '../../../models/aggregation.model';
@@ -24,15 +24,11 @@ import {
 } from './graphql/queries';
 import { takeUntil } from 'rxjs';
 
-/** Define max height of summary card */
-const MAX_ROW_SPAN = 4;
-/** Define max width of summary card */
-const MAX_COL_SPAN = 8;
-
-/** Define default height of summary card */
-const DEFAULT_CARD_HEIGHT = 2;
-/** Define max width of summary card */
-const DEFAULT_CARD_WIDTH = 2;
+/** TODO: Replace once we have UI */
+const DEFAULT_CONTEXT_FILTER = `{
+  "logic": "and",
+  "filters": []
+}`;
 
 /**
  * Create a card form
@@ -43,14 +39,6 @@ const DEFAULT_CARD_WIDTH = 2;
 const createCardForm = (value?: any) => {
   return new FormGroup({
     title: new FormControl<string>(get(value, 'title', 'New Card')),
-    height: new FormControl<number>(get(value, 'height', DEFAULT_CARD_HEIGHT), [
-      Validators.min(1),
-      Validators.max(MAX_ROW_SPAN),
-    ]),
-    width: new FormControl<number>(get(value, 'width', DEFAULT_CARD_WIDTH), [
-      Validators.min(1),
-      Validators.max(MAX_COL_SPAN),
-    ]),
     resource: new FormControl<string>(get(value, 'resource', null)),
     referenceData: new FormControl<string>(get(value, 'referenceData', null)),
     layout: new FormControl<string>(get(value, 'layout', null)),
@@ -79,6 +67,11 @@ const createSummaryCardForm = (def: any) => {
     id: new FormControl<number>(def.id),
     title: new FormControl<string>(get(settings, 'title', '')),
     card: createCardForm(get(settings, 'card', null)),
+
+    // TODO: to be changed once UI is defined
+    contextFilters: new FormControl<string>(
+      get(settings, 'contextFilters', DEFAULT_CONTEXT_FILTER)
+    ),
   });
 
   const isUsingAggregation = !!get(settings, 'card.aggregation', null);

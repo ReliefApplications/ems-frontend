@@ -25,10 +25,12 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
 })
 export class MapControlsComponent implements ControlValueAccessor {
   @Input() form: UntypedFormGroup = new UntypedFormGroup({});
-
-  private onTouched!: any;
-  private onChanged!: any;
   private disabled = false;
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  private onTouched = () => {};
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+  private onChanged = (_: any) => {};
 
   /**
    * Write new value
@@ -44,7 +46,7 @@ export class MapControlsComponent implements ControlValueAccessor {
    *
    * @param fn callback
    */
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (_: any) => void): void {
     this.onChanged = fn;
   }
 
@@ -53,7 +55,7 @@ export class MapControlsComponent implements ControlValueAccessor {
    *
    * @param fn callback
    */
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 

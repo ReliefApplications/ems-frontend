@@ -40,7 +40,7 @@ import { SafeAggregationService } from '../../../../../services/aggregation/aggr
 import { SafeEditAggregationModalComponent } from '../../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
-import { Fields } from '../layer-fields/layer-fields.component';
+import { Fields } from '../../../../../models/layer.model';
 import { GraphQLSelectComponent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 
@@ -182,13 +182,15 @@ export class LayerDatasourceComponent
             .getValue()
             .find((x) => x.id === resourceID) || null;
 
-        this.formGroup.patchValue({
-          layout: null,
-          aggregation: null,
-          geoField: null,
-          latitudeField: null,
-          longitudeField: null,
-        });
+        this.formGroup.get('layout')?.setValue(null, { emitEvent: false });
+        this.formGroup.get('aggregation')?.setValue(null, { emitEvent: false });
+        this.formGroup.get('geoField')?.setValue(null, { emitEvent: false });
+        this.formGroup
+          .get('latitudeField')
+          ?.setValue(null, { emitEvent: false });
+        this.formGroup
+          .get('longitudeField')
+          ?.setValue(null, { emitEvent: false });
         this.layout = null;
         this.aggregation = null;
       });
@@ -214,7 +216,7 @@ export class LayerDatasourceComponent
           } //only load fields if we do not have an aggregation
           else
             this.fields.next(
-              this.getFieldsFromRefData(this.refData.fields || [])
+              this.getFieldsFromRefData(this.refData?.fields || [])
             );
         });
     }
