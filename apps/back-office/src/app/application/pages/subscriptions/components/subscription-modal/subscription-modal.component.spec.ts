@@ -20,7 +20,11 @@ import {
   GraphQLSelectModule,
   IconModule
 } from '@oort-front/ui';
-import { FormsModule, ReactiveFormsModule, UntypedFormBuilder } from '@angular/forms';
+import { 
+  FormsModule,
+  ReactiveFormsModule,
+  UntypedFormBuilder,
+} from '@angular/forms';
 
 describe('SubscriptionModalComponent', () => {
   let component: SubscriptionModalComponent;
@@ -61,27 +65,7 @@ describe('SubscriptionModalComponent', () => {
         },
         {
           provide: DIALOG_DATA,
-          useValue: {
-            subscription: {
-              routingKey: "",
-              title: "",
-              convertTo: "",
-              channel: {
-                id: "",
-                title:"",
-                application: {},
-                subscribedRoles: [],
-                routingKey: ""
-              }
-            },
-            channel: {
-              id: "",
-              title:"",
-              application: {},
-              subscribedRoles: [],
-              routingKey: ""
-            }
-          }
+          useValue: {}
         }
       ]
     }).compileComponents();
@@ -90,6 +74,17 @@ describe('SubscriptionModalComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SubscriptionModalComponent);
     component = fixture.componentInstance;
+    component.data = {
+      channels: [],
+      subscription: {
+        routingKey: "",
+        title: "",
+        convertTo: {
+          name: ""
+        },
+        channel: {}
+      }
+    }
     fixture.detectChanges();
   });
 

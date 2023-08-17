@@ -55,7 +55,10 @@ describe('DashboardComponent', () => {
         },
         {
           provide: 'environment',
-          useValue: {},
+          useValue: {
+            theme: {},
+            availableLanguages: []
+          },
         },
       ]
     }).compileComponents();
