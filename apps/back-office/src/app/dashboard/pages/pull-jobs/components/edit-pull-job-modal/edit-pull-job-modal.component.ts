@@ -226,7 +226,7 @@ export class EditPullJobModalComponent implements OnInit {
         (this.apiConfigurations = data.apiConfigurations.edges.map(
           (x) => x.node
         ))
-    );
+    ); // TODO: how to filter the API configuration so that userToService types should not display? (would not work with pulljobs). Simple .filter() doesn't seem to work since the html has the query as input.
 
     // Fetch form fields if any for mapping
     if (this.data.pullJob?.convertTo?.id) {
