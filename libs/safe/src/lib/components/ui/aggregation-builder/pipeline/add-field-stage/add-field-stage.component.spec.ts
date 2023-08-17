@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormArray } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeAddFieldStageComponent } from './add-field-stage.component';
+import { ButtonModule } from '@oort-front/ui';
 
 describe('SafeAddFieldStageComponent', () => {
   let component: SafeAddFieldStageComponent;
@@ -10,7 +11,7 @@ describe('SafeAddFieldStageComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SafeAddFieldStageComponent],
-      imports: [TranslateModule.forRoot()],
+      imports: [TranslateModule.forRoot(), ButtonModule],
     }).compileComponents();
   });
 

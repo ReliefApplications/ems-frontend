@@ -1,7 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  UntypedFormControl,
+  UntypedFormGroup,
+} from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeExpressionsComponent } from './expressions.component';
+import { SelectMenuModule } from '@oort-front/ui';
 
 describe('SafeExpressionsComponent', () => {
   let component: SafeExpressionsComponent;
@@ -10,7 +16,12 @@ describe('SafeExpressionsComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SafeExpressionsComponent],
-      imports: [TranslateModule.forRoot()],
+      imports: [
+        TranslateModule.forRoot(),
+        SelectMenuModule,
+        FormsModule,
+        ReactiveFormsModule,
+      ],
     }).compileComponents();
   });
 

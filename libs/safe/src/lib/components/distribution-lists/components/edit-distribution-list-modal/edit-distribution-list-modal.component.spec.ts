@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { EditDistributionListModalComponent } from './edit-distribution-list-modal.component';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('EditDistributionListModalComponent', () => {
   let component: EditDistributionListModalComponent;
@@ -8,7 +9,11 @@ describe('EditDistributionListModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [EditDistributionListModalComponent],
+      providers: [
+        { provide: DialogRef, useValue: { updateSize: jest.fn() } },
+        { provide: DIALOG_DATA, useValue: {} },
+      ],
+      imports: [EditDistributionListModalComponent, TranslateModule.forRoot()],
     }).compileComponents();
   });
 
