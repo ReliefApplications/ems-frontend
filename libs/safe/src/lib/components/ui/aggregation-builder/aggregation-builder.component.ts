@@ -124,18 +124,16 @@ export class SafeAggregationBuilderComponent
    */
   private updateFields(): void {
     const queryName = this.resource
-      ? this.resource.queryName
-      : (this.referenceData?.name as string).replace(/^\w/, (match) =>
-          match.toUpperCase()
-        ) + 'Ref';
+      ? this.resource?.queryName
+      : (this.referenceData?.name as string)?.replace(/\s/g, '') + 'Ref';
     const fields = this.queryBuilder
       .getFields(queryName as string)
       .filter(
         (field: any) =>
           !(
             field.name.includes('_id') &&
-            (field.type.name === 'ID' ||
-              (field.type?.kind === 'LIST' && field.type.ofType.name === 'ID'))
+            (field.type?.name === 'ID' ||
+              (field.type?.kind === 'LIST' && field.type?.ofType.name === 'ID'))
           )
       );
     this.fields.next(fields);
@@ -155,10 +153,10 @@ export class SafeAggregationBuilderComponent
           field.fields = this.queryBuilder
             .getFieldsFromType(
               field.type?.kind === 'OBJECT'
-                ? field.type.name
-                : field.type.ofType.name
+                ? field.type?.name
+                : field.type?.ofType.name
             )
-            .filter((y) => y.type.name !== 'ID' && y.type?.kind === 'SCALAR');
+            .filter((y) => y.type?.name !== 'ID' && y.type?.kind === 'SCALAR');
         }
         return field;
       });

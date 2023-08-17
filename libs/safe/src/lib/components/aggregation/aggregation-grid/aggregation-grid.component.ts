@@ -296,9 +296,7 @@ export class SafeAggregationGridComponent
           next: (res) => {
             const referenceData = res.data.referenceData;
             const allGqlFields = this.queryBuilder.getFields(
-              (referenceData.name as string).replace(/^\w/, (match) =>
-                match.toUpperCase()
-              ) + 'Ref' || ''
+              (referenceData.name as string)?.replace(/\s/g, '') + 'Ref' || ''
             );
             // Fetch fields at the end of the pipeline
             const aggFields = this.aggregationBuilderService.fieldsAfter(

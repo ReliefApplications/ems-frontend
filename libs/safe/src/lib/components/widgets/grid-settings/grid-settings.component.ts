@@ -351,9 +351,7 @@ export class SafeGridSettingsComponent
             this.relatedForms = [];
             this.templates = [];
             this.fields = this.queryBuilder.getFields(
-              (this.referenceData?.name as string).replace(/^\w/, (match) =>
-                match.toUpperCase()
-              ) + 'Ref'
+              (this.referenceData?.name as string)?.replace(/\s/g, '') + 'Ref'
             );
           } else {
             this.relatedForms = [];

@@ -180,12 +180,12 @@ export class QueryBuilderService {
   public getFields(queryName: string) {
     const query = this.availableQueries
       .getValue()
-      .find((x) => x.name === queryName);
+      .find((x) => x.name.toLowerCase() === queryName.toLowerCase());
     let typeName = query?.type?.name?.replace('Connection', '') || ''; //might be dangerous if a resource has Connection in its name
     if (!query?.type?.name) typeName = queryName; //this is the case for reference data
     const type = this.availableTypes
       .getValue()
-      .find((x) => x.name === typeName);
+      .find((x) => x.name.toLowerCase() === typeName.toLowerCase());
     return type ? this.extractFieldsFromType(type) : [];
   }
 

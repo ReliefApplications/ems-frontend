@@ -206,9 +206,7 @@ export class TabMainComponent
     if (this.aggregation) {
       const queryName = this.resource
         ? this.resource.queryName
-        : (this.referenceData?.name as string).replace(/^\w/, (match) =>
-            match.toUpperCase()
-          ) + 'Ref';
+        : (this.referenceData?.name as string).replace(/\s/g, '') + 'Ref';
       const fields = this.queryBuilder
         .getFields(queryName as string)
         .filter(

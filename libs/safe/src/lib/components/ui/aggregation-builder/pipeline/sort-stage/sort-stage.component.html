@@ -8,12 +8,12 @@
         }}</ui-select-option>
         <ng-container *ngFor="let field of fields">
           <ui-select-option
-            *ngIf="field.type.kind === 'SCALAR'"
+            *ngIf="field.type?.kind === 'SCALAR'"
             [value]="field.name"
           >
             {{ field.name }}
           </ui-select-option>
-          <ng-container *ngIf="field.type.kind !== 'SCALAR'">
+          <ng-container *ngIf="field.type?.kind !== 'SCALAR'">
             <ui-select-option [isGroup]="true">
               {{ field.name }}
               <ui-select-option

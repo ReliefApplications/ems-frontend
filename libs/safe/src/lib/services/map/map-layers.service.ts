@@ -251,9 +251,7 @@ export class SafeMapLayersService {
     return this.queryBuilder
       .getFields(
         (resource?.queryName as string) ??
-          (referenceData?.name as string).replace(/^\w/, (match) =>
-            match.toUpperCase()
-          ) + 'Ref'
+          (referenceData?.name as string)?.replace(/\s/g, '') + 'Ref'
       )
       .filter(
         (field: any) =>
