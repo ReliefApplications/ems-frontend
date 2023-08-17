@@ -17,7 +17,7 @@
   [selectedIndex]="(selectedPageIndex$ | async)!"
   (selectedIndexChange)="onShowPage($event)"
 >
-  <ui-tab *ngFor="let page of pages$ | async">
+  <ui-tab *ngFor="let page of survey.visiblePages ?? []">
     <ng-container ngProjectAs="label">
       {{ page.title ? page.title : page.name }}
       <ui-icon
@@ -33,7 +33,7 @@
 <div #formContainer></div>
 <!-- Form actions -->
 <div *ngIf="surveyActive" class="flex justify-end gap-2 mt-4 flex-wrap">
-  <ng-container *ngIf="pages$ | async as pages">
+  <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
     <ui-button
       *ngIf="pages.length > 1"
       [disabled]="survey.isFirstPage"

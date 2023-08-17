@@ -119,14 +119,14 @@ export const init = (Survey: any, domService: DomService): void => {
             // create button that clears the date picker
             const button = document.createElement('button');
             button.classList.add(
-              'grid',
-              'place-items-center',
-              'bg-transparent',
-              'border-none',
-              'outline-none',
-              'hidden',
-              'min-w-0',
-              'px-2'
+              '!grid',
+              '!place-items-center',
+              '!bg-transparent',
+              '!border-none',
+              '!outline-none',
+              '!hidden',
+              '!min-w-0',
+              '!px-2'
             );
 
             const icon = domService.appendComponentToBody(
@@ -145,7 +145,7 @@ export const init = (Survey: any, domService: DomService): void => {
               if (value) {
                 question.value = setDateValue(value, question.inputType);
                 // show the clear button
-                button.classList.remove('hidden');
+                button.classList.remove('!hidden');
               } else {
                 question.value = null;
               }
@@ -177,7 +177,7 @@ export const init = (Survey: any, domService: DomService): void => {
 
             button.onclick = () => {
               question.value = null;
-              button.classList.add('hidden');
+              button.classList.add('!hidden');
               pickerInstance?.writeValue(null as any);
             };
 

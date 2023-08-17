@@ -128,7 +128,7 @@ export class SafeAggregationBuilderComponent
           !(
             field.name.includes('_id') &&
             (field.type.name === 'ID' ||
-              (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
+              (field.type?.kind === 'LIST' && field.type.ofType.name === 'ID'))
           )
       );
     this.fields.next(fields);
@@ -144,14 +144,14 @@ export class SafeAggregationBuilderComponent
       const currentFields = this.fields.value;
       const selectedFields = fieldsNames.map((x: string) => {
         const field = { ...currentFields.find((y) => x === y.name) };
-        if (field.type.kind !== 'SCALAR') {
+        if (field.type?.kind !== 'SCALAR') {
           field.fields = this.queryBuilder
             .getFieldsFromType(
-              field.type.kind === 'OBJECT'
+              field.type?.kind === 'OBJECT'
                 ? field.type.name
                 : field.type.ofType.name
             )
-            .filter((y) => y.type.name !== 'ID' && y.type.kind === 'SCALAR');
+            .filter((y) => y.type.name !== 'ID' && y.type?.kind === 'SCALAR');
         }
         return field;
       });

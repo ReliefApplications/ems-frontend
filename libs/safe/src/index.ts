@@ -25,6 +25,7 @@ export * from './lib/services/paginator-translate'; // todo: update
 export * from './lib/services/context/context.service';
 export * from './lib/services/data-template/data-template.service';
 export * from './lib/services/editor/editor.service';
+export * from './lib/services/rest/rest.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/skeleton/public-api';
@@ -111,6 +112,7 @@ export * from './lib/views/public-api';
 
 // === MODULE ===
 export * from './lib/safe.module';
+export * from './lib/components/widget-choice/widget-choice.module';
 
 // === PIPES ===
 export * from './lib/pipes/date/public-api';

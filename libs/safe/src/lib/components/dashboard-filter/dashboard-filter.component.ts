@@ -62,13 +62,20 @@ export class DashboardFilterComponent
     FilterPosition.RIGHT,
   ] as const;
   public isDrawerOpen = false;
+  /** Either left, right, top or bottom */
   public filterPosition = FilterPosition;
+  /** computed width of the parent container (or the window size if fullscreen) */
   public containerWidth!: string;
+  /** computed height of the parent container (or the window size if fullscreen) */
   public containerHeight!: string;
+  /** computed left offset of the parent container (or 0 if fullscreen) */
   public containerTopOffset!: string;
+  /** computed top offset of the parent container (or 0 if fullscreen) */
   public containerLeftOffset!: string;
-  private value: any;
+  /** Represents the survey's value */
+  private value: Record<string, any> | undefined;
 
+  /** Resize observer for the sidenav container */
   private resizeObserver!: ResizeObserver;
 
   // Survey
@@ -127,7 +134,7 @@ export class DashboardFilterComponent
       this.resizeObserver = new ResizeObserver(() => {
         this.setFilterContainerDimensions();
       });
-      this.resizeObserver.observe(this._host.content.nativeElement);
+      this.resizeObserver.observe(this._host.contentContainer.nativeElement);
     }
 
     this.contextService.filter$
@@ -150,7 +157,7 @@ export class DashboardFilterComponent
       });
     this.contextService.filterPosition$
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
+      .subscribe((value: FilterPosition | undefined) => {
         if (value) {
           this.position = value as FilterPosition;
         } else {
@@ -274,8 +281,8 @@ export class DashboardFilterComponent
 
     this.setAvailableFiltersForContext();
 
-    this.survey.showCompletedPage = false;
-    this.survey.showNavigationButtons = false;
+    this.survey.showCompletedPage = false; // Hide completed page from the survey
+    this.survey.showNavigationButtons = false; // Hide navigation buttons from the survey
 
     this.survey.onValueChanged.add(this.onValueChange.bind(this));
     this.survey.onAfterRenderSurvey.add(this.onAfterRenderSurvey.bind(this));
@@ -306,7 +313,7 @@ export class DashboardFilterComponent
    * @param survey survey model
    */
   public onAfterRenderSurvey(survey: Survey.SurveyModel) {
-    this.empty = !(survey.getAllQuestions().length > 0);
+    this.empty = survey.getAllQuestions().length === 0;
   }
 
   /**

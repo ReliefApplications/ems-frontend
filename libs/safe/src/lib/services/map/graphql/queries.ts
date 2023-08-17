@@ -84,6 +84,11 @@ export const GET_LAYER_BY_ID = gql`
       popupInfo {
         title
         description
+        fieldsInfo {
+          type
+          name
+          label
+        }
         popupElements {
           text
           type

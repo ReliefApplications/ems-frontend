@@ -24,8 +24,8 @@ export class SafeContentChoiceComponent implements ControlValueAccessor {
 
   selected!: string;
   disabled = false;
-  private onTouched!: any;
-  private onChanged!: any;
+  private onTouched!: () => void;
+  private onChanged!: (value: string) => void;
 
   /**
    * Handles the selection of a content
@@ -51,7 +51,7 @@ export class SafeContentChoiceComponent implements ControlValueAccessor {
    *
    * @param fn callback function
    */
-  public registerOnChange(fn: any): void {
+  public registerOnChange(fn: (value: string) => void): void {
     this.onChanged = fn;
   }
 
@@ -60,7 +60,7 @@ export class SafeContentChoiceComponent implements ControlValueAccessor {
    *
    * @param fn callback function
    */
-  public registerOnTouched(fn: any): void {
+  public registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 

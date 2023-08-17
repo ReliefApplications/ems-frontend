@@ -1,7 +1,5 @@
 // This is needed for compilation of some packages with strict option enabled.
 // eslint-disable-next-line @typescript-eslint/triple-slash-reference
-/// <reference path="../../typings/surveyjs-widgets/index.d.ts" />
-// eslint-disable-next-line @typescript-eslint/triple-slash-reference
 /// <reference path="../../typings/extract-files/index.d.ts" />
 
 import { Apollo } from 'apollo-angular';
@@ -21,10 +19,12 @@ import * as CommentWidget from './widgets/comment-widget';
 import * as DropdownWidget from './widgets/dropdown-widget';
 import * as TagboxWidget from './widgets/tagbox-widget';
 import * as OtherProperties from './global-properties/others';
+import * as ChoicesByUrlProperties from './global-properties/choicesByUrl';
 import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';
 import { initLocalization } from './localization';
 import { Dialog } from '@angular/cdk/dialog';
+import { NgZone } from '@angular/core';
 import { Survey as SurveyModel } from 'survey-knockout';
 import { loadDateEditor } from './editors/date';
 
@@ -52,6 +52,7 @@ export type CustomQuestions = (typeof CUSTOM_QUESTIONS)[number];
  * @param authService custom auth service
  * @param environment injected environment
  * @param referenceDataService Reference data service
+ * @param ngZone Angular Service to execute code inside Angular environment
  * @param customQuestions list of custom questions to be added to the survey
  */
 export const initCustomSurvey = (
@@ -63,6 +64,7 @@ export const initCustomSurvey = (
   authService: SafeAuthService,
   environment: any,
   referenceDataService: SafeReferenceDataService,
+  ngZone: NgZone,
   customQuestions: (typeof CUSTOM_QUESTIONS)[number][] = []
 ): void => {
   // If the survey created does not contain custom questions, we destroy previously set custom questions if so
@@ -80,10 +82,24 @@ export const initCustomSurvey = (
   if (customQuestions.includes('comment')) CommentWidget.init(Survey);
 
   if (customQuestions.includes('resource'))
-    ResourceComponent.init(Survey, domService, apollo, dialog, formBuilder);
+    ResourceComponent.init(
+      Survey,
+      domService,
+      apollo,
+      dialog,
+      formBuilder,
+      ngZone
+    );
 
   if (customQuestions.includes('resources'))
-    ResourcesComponent.init(Survey, domService, apollo, dialog, formBuilder);
+    ResourcesComponent.init(
+      Survey,
+      domService,
+      apollo,
+      dialog,
+      formBuilder,
+      ngZone
+    );
 
   if (customQuestions.includes('date-range')) {
     DateRangeComponent.init(Survey, domService);
@@ -102,6 +118,10 @@ export const initCustomSurvey = (
   ReferenceDataProperties.init(Survey, domService, referenceDataService);
   TooltipProperty.init(Survey);
   OtherProperties.init(Survey, environment);
+
+  // enables POST requests for choicesByUrl
+  ChoicesByUrlProperties.init(Survey);
+
   // set localization
   initLocalization(Survey);
   // load internal functions

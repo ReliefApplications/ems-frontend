@@ -4,7 +4,7 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeEditorService } from '../../../../../../services/editor/editor.service';
 import { POPUP_EDITOR_CONFIG } from '../../../../../../const/tinymce.const';
 import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
-import { Fields } from '../../layer-fields/layer-fields.component';
+import { Fields } from '../../../../../../models/layer.model';
 import { SafeMapLayersService } from '../../../../../../services/map/map-layers.service';
 import { Observable, takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../../../utils/unsubscribe/unsubscribe.component';

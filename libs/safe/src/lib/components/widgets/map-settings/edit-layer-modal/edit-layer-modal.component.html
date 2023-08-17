@@ -158,8 +158,10 @@
       <!-- Previously : layerDefinition.drawingInfo.renderer.type -->
       <ui-tab
         *ngIf="
+          form.get('type')?.value !== 'GroupLayer' &&
           form.get('layerDefinition.drawingInfo.renderer.type')?.value !==
-            'heatmap' && form.get('datasource.type')?.value !== 'Polygon'
+            'heatmap' &&
+          form.get('datasource.type')?.value !== 'Polygon'
         "
         [disabled]="!isDatasourceValid"
       >
@@ -227,11 +229,12 @@
             [fields$]="fields$"
             [destroyTab$]="destroyTab$"
             [currentMapContainerRef]="data.currentMapContainerRef"
+            (updatedField)="updateFormField($event, false)"
           ></safe-layer-fields>
         </ng-template>
       </ui-tab>
       <!-- Context filter settings -->
-      <ui-tab>
+      <ui-tab *ngIf="form.get('datasource')" [disabled]="!isDatasourceValid">
         <ng-container ngProjectAs="label">
           <ui-icon icon="filter_list" [size]="24"></ui-icon>
           <span>{{ 'models.dashboard.dashboardFilter' | translate }}</span>

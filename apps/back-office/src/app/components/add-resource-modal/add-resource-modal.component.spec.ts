@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddResourceModalComponent } from './add-resource.component';
+import { AddResourceModalComponent } from './add-resource-modal.component';
 
 describe('AddResourceModalComponent', () => {
   let component: AddResourceModalComponent;

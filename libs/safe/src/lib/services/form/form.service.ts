@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@angular/core';
+import { Inject, Injectable, NgZone } from '@angular/core';
 import * as SurveyKo from 'survey-knockout';
 import * as Survey from 'survey-angular';
 import { initCreatorSettings } from '../../survey/creator';
@@ -30,6 +30,7 @@ export class SafeFormService {
    * @param formBuilder Angular form builder
    * @param authService Shared authentication service
    * @param referenceDataService Reference data service
+   * @param ngZone Angular Service to execute code inside Angular environment
    */
   constructor(
     @Inject('environment') environment: any,
@@ -38,7 +39,8 @@ export class SafeFormService {
     public apollo: Apollo,
     public formBuilder: UntypedFormBuilder,
     public authService: SafeAuthService,
-    public referenceDataService: SafeReferenceDataService
+    public referenceDataService: SafeReferenceDataService,
+    public ngZone: NgZone
   ) {
     this.environment = environment;
     this.setSurveyCreatorInstance();
@@ -72,7 +74,8 @@ export class SafeFormService {
       this.authService,
       this.environment,
       this.referenceDataService,
-      additionalQuestions.customQuestions
+      additionalQuestions.customQuestions,
+      this.ngZone
     );
     // === CREATOR SETTINGS ===
     initCreatorSettings(SurveyKo);
@@ -86,7 +89,8 @@ export class SafeFormService {
       this.authService,
       this.environment,
       this.referenceDataService,
-      additionalQuestions.customQuestions
+      additionalQuestions.customQuestions,
+      this.ngZone
     );
   }
 }
