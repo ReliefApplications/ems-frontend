@@ -30,7 +30,6 @@ export class SafeWidgetTabHostComponent implements OnInit, OnDestroy {
 
   // === EMIT EVENT ===
   @Output() edit: EventEmitter<any> = new EventEmitter();
-  @Output() triggerNavigation: EventEmitter<string> = new EventEmitter();
 
   private activeComponentSubscriptions = new Subscription();
   private destroy$ = new Subject<void>();

@@ -408,10 +408,4 @@ export class SafeWidgetGridComponent
     }
     return skeletons;
   }
-
-  triggerNavigation(outlet: string) {
-    this.router.navigateByUrl(`${location.pathname}/(${outlet})`, {
-      skipLocationChange: true,
-    });
-  }
 }
