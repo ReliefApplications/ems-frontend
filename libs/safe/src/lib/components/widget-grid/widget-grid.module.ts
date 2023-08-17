@@ -12,6 +12,7 @@ import { LayoutModule } from '@progress/kendo-angular-layout';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { DialogModule, IconModule, SelectMenuModule } from '@oort-front/ui';
 import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
+import { SafeWidgetTabHostComponent } from '../widget-tab-host/widget-tab-host.component';
 
 /** Module for the widget-related components */
 @NgModule({
@@ -36,6 +37,7 @@ import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
     ButtonModule,
     IconModule,
     SelectMenuModule,
+    SafeWidgetTabHostComponent,
   ],
   exports: [SafeWidgetGridComponent, SafeTileDataComponent],
 })

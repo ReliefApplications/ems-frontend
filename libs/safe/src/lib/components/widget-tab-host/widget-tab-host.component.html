@@ -1,0 +1,7 @@
+<div class="h-full w-full">
+  <router-outlet
+    (activate)="setApplicationWidgetListeners()"
+    (deactivate)="removeApplicationWidgetListeners()"
+    [name]="widget.settings.outletName"
+  ></router-outlet>
+</div>

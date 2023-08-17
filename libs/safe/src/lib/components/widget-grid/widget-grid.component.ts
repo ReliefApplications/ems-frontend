@@ -4,9 +4,11 @@ import {
   HostListener,
   Inject,
   Input,
+  OnChanges,
   OnInit,
   Output,
   QueryList,
+  SimpleChanges,
   ViewChildren,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
@@ -19,6 +21,9 @@ import { SafeDashboardService } from '../../services/dashboard/dashboard.service
 import { SafeWidgetComponent } from '../widget/widget.component';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { Route, Router } from '@angular/router';
+import get from 'lodash/get';
+import { differenceBy } from 'lodash';
 
 /** Maximum height of the widget in row units */
 const MAX_ROW_SPAN = 4;
@@ -36,7 +41,7 @@ const MAX_COL_SPAN = 8;
 })
 export class SafeWidgetGridComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnChanges
 {
   public availableWidgets: any[] = WIDGET_TYPES;
 
@@ -75,6 +80,15 @@ export class SafeWidgetGridComponent
   public isBackOffice = false;
 
   /**
+   * Get widgets that are tabs type
+   *
+   * @returns tabs type widgets
+   */
+  get tabWidgets() {
+    return this.widgets.filter((widget) => widget.component === 'tabs');
+  }
+
+  /**
    * Changes display when windows size changes.
    *
    * @param event window resize event
@@ -91,11 +105,13 @@ export class SafeWidgetGridComponent
    * @param environment This is the environment in which we are running the application
    * @param dialog The Dialog service
    * @param dashboardService Shared dashboard service
+   * @param router Router
    */
   constructor(
     @Inject('environment') environment: any,
     public dialog: Dialog,
-    private dashboardService: SafeDashboardService
+    private dashboardService: SafeDashboardService,
+    private router: Router
   ) {
     super();
     if (environment.module === 'backoffice') {
@@ -103,10 +119,141 @@ export class SafeWidgetGridComponent
     }
   }
 
+  /**
+   * Extracts the path to the outlet property of the given router config
+   *
+   * @param routeObj Router config
+   * @param currPath Array of router config paths to outlet property
+   * @returns currPath
+   */
+  private getOutletPath(routeObj: any, currPath: string[]): string[] {
+    if (routeObj.outlet) {
+      return [''];
+    }
+    const pathFound: string[] = [];
+    const path = routeObj.children ? 'children' : '_loadedRoutes';
+    if (routeObj[path]?.length) {
+      for (let index = 0; index < routeObj[path].length; index++) {
+        if (routeObj[path][index].outlet !== undefined) {
+          pathFound.push(path);
+          currPath.push(...pathFound);
+          return pathFound;
+        } else {
+          const actualPathFound = this.getOutletPath(
+            routeObj[path][index],
+            currPath
+          );
+          if (actualPathFound[0] !== '' || actualPathFound.length > 1) {
+            pathFound.push(index.toString());
+            pathFound.push(path);
+            currPath.push(...pathFound);
+            return pathFound;
+          }
+        }
+      }
+    }
+    return [''];
+  }
+
+  /**
+   * Check and update current application router config in order to add a new tab route
+   *
+   * @param outletName outlet name to check/set
+   * @param pathName path name to check/set
+   * @returns true if a application router configuration is updated with a new tab
+   */
+  private buildNewTabRouteConfig(outletName: string, pathName: string): any {
+    const pathArray: string[] = [];
+    const currentConfig = this.router['config'];
+    this.getOutletPath(currentConfig[1], pathArray);
+
+    const outletPath = pathArray.reverse();
+    const outletRouteConfigArray = get(currentConfig[1], outletPath);
+
+    let newRoute;
+    if (
+      !outletRouteConfigArray.find(
+        (routeConfig: Route) => routeConfig.outlet === outletName
+      )
+    ) {
+      const newOutletRouteConfig = { ...outletRouteConfigArray[0] };
+      newOutletRouteConfig.outlet = outletName;
+      newOutletRouteConfig.path = pathName;
+      outletRouteConfigArray.push(newOutletRouteConfig);
+      newRoute = currentConfig;
+    }
+    return newRoute;
+  }
+
+  /**
+   * Set the path and outlet config for the given application tab widgets
+   *
+   * @returns isRouteCreated if a new route is created we return true
+   */
+  private buildTabWidgetRoutes() {
+    let isRouteCreated = false;
+    for (let index = 0; index < this.tabWidgets.length; index++) {
+      const widget = this.tabWidgets[index];
+      widget.settings.outletName = `applicationWidget${
+        this.tabWidgets.length - 1
+      }`;
+      widget.settings.pathName = `tab${this.tabWidgets.length - 1}`;
+      const newRoute = this.buildNewTabRouteConfig(
+        widget.settings.outletName,
+        widget.settings.pathName
+      );
+      if (newRoute) {
+        this.router.resetConfig(newRoute);
+        isRouteCreated = true;
+      }
+    }
+    return isRouteCreated;
+  }
+
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);
     this.skeletons = this.getSkeletons();
     this.availableWidgets = this.dashboardService.availableWidgets;
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    const isApplicationWidgetChange = differenceBy(
+      changes['widgets'].currentValue,
+      changes['widgets'].previousValue,
+      'settings.applicationId'
+    ).length;
+    if (
+      (changes['widgets'].currentValue && isApplicationWidgetChange !== 0) ||
+      (isApplicationWidgetChange === 0 &&
+        changes['widgets'].previousValue.length !==
+          changes['widgets'].currentValue.length)
+    ) {
+      // Disable/enable option to add a new tabs widget component once we have/haven't one set
+      if (this.tabWidgets.length) {
+        this.availableWidgets = this.dashboardService.availableWidgets?.filter(
+          (widget) => widget.component !== 'tabs'
+        );
+      } else {
+        this.availableWidgets = this.dashboardService.availableWidgets;
+      }
+      const newRouteWasCreated = this.buildTabWidgetRoutes();
+      // Rerun navigation to set the new route config
+      if (newRouteWasCreated) {
+        this.router.navigateByUrl(`${location.pathname}`);
+        return;
+      }
+      // Trigger navigation for each of the application tab widgets
+      this.tabWidgets.forEach((widget, index) => {
+        setTimeout(() => {
+          this.router.navigateByUrl(
+            `${location.pathname}/(${widget.settings.outletName}:${widget.settings.pathName})`,
+            {
+              skipLocationChange: true,
+            }
+          );
+        }, 1000 * index);
+      });
+    }
   }
 
   /**
@@ -255,5 +402,11 @@ export class SafeWidgetGridComponent
       });
     }
     return skeletons;
+  }
+
+  triggerNavigation(outlet: string) {
+    this.router.navigateByUrl(`${location.pathname}/(${outlet})`, {
+      skipLocationChange: true,
+    });
   }
 }

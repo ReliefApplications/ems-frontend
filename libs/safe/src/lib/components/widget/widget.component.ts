@@ -7,17 +7,12 @@ import {
   HostBinding,
   OnInit,
   OnDestroy,
-  ChangeDetectorRef,
 } from '@angular/core';
 import { SafeChartComponent } from '../widgets/chart/chart.component';
 import { SafeEditorComponent } from '../widgets/editor/editor.component';
 import { SafeGridWidgetComponent } from '../widgets/grid/grid.component';
 import { SafeMapWidgetComponent } from '../widgets/map/map.component';
 import { SafeSummaryCardComponent } from '../widgets/summary-card/summary-card.component';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { SafeApplicationWidgetService } from '../../services/application/application-widget.service';
-import { SafeApplicationService } from '../../services/application/application.service';
 import { v4 as uuidv4 } from 'uuid';
 import get from 'lodash/get';
 import { SafeRestService } from '../../services/rest/rest.service';
@@ -27,15 +22,11 @@ import { SafeRestService } from '../../services/rest/rest.service';
   selector: 'safe-widget',
   templateUrl: './widget.component.html',
   styleUrls: ['./widget.component.scss'],
-  providers: [SafeApplicationWidgetService],
 })
 export class SafeWidgetComponent implements OnInit, OnDestroy {
   @Input() widget: any;
   @Input() header = true;
   @Input() canUpdate = false;
-
-  private activeComponentSubscriptions = new Subscription();
-  buildName!: string;
 
   /** @returns would component block navigation */
   get canDeactivate() {
@@ -73,16 +64,8 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
    * @param applicationService SafeApplicationService
    * @param applicationWidgetService SafeApplicationWidgetService
    * @param restService SafeRestService
-   * @param cdr ChangeDetectorRef
    */
-  constructor(
-    private router: Router,
-    private activatedRoute: ActivatedRoute,
-    private applicationService: SafeApplicationService,
-    private applicationWidgetService: SafeApplicationWidgetService,
-    private restService: SafeRestService,
-    private cdr: ChangeDetectorRef
-  ) {}
+  constructor(private restService: SafeRestService) {}
 
   ngOnInit(): void {
     // Get style from widget definition
@@ -102,130 +85,9 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
           head.appendChild(this.customStyle);
         });
     }
-
-    if (this.widget.component === 'tabs') {
-      this.buildName = `applicationWidget${
-        this.applicationService.application
-          .getValue()
-          ?.pages?.filter((p) => p.id === 'tabs').length
-      }`;
-      this.applicationWidgetService.widgetState = {
-        header: this.header,
-        widget: this.widget,
-        settings: this.widget.settings,
-      };
-      const newRoute = this.buildNewTabRouteConfig();
-      if (newRoute) {
-        this.router.resetConfig(newRoute);
-        this.cdr.detectChanges();
-      }
-      if (this.buildName) {
-        this.router.navigateByUrl(
-          `${location.pathname}/(${this.buildName}:tab)`,
-          {
-            skipLocationChange: true,
-          }
-        );
-      }
-    }
-  }
-
-  /**
-   * Extracts the path to the outlet property of the given router config
-   *
-   * @param routeObj Router config
-   * @param currPath Array of router config paths to outlet property
-   * @returns currPath
-   */
-  private getOutletPath(routeObj: any, currPath: string[]): string[] {
-    if (routeObj.outlet) {
-      return [''];
-    }
-    const pathFound: string[] = [];
-    const path = routeObj.children ? 'children' : '_loadedRoutes';
-    if (routeObj[path]?.length) {
-      for (let index = 0; index < routeObj[path].length; index++) {
-        if (routeObj[path][index].outlet !== undefined) {
-          pathFound.push(path);
-          currPath.push(...pathFound);
-          return pathFound;
-        } else {
-          const actualPathFound = this.getOutletPath(
-            routeObj[path][index],
-            currPath
-          );
-          if (actualPathFound[0] !== '' || actualPathFound.length > 1) {
-            pathFound.push(index.toString());
-            pathFound.push(path);
-            currPath.push(...pathFound);
-            return pathFound;
-          }
-        }
-      }
-    }
-    return [''];
-  }
-
-  /**
-   * Check and update current application router config in order to add a new tab route
-   *
-   * @returns true if a application router configuration is updated with a new tab
-   */
-  private buildNewTabRouteConfig(): any {
-    const pathArray: string[] = [];
-    const currentConfig = this.router['config'];
-    this.getOutletPath(currentConfig[1], pathArray);
-
-    const outletPath = pathArray.reverse();
-    const outletRouteConfigArray = get(currentConfig[1], outletPath);
-
-    let newRoute;
-    if (
-      outletRouteConfigArray[0].outlet !== '' &&
-      outletRouteConfigArray[0].outlet !== this.buildName
-    ) {
-      const newOutletRouteConfig = { ...outletRouteConfigArray[0] };
-      newOutletRouteConfig.outlet = this.buildName;
-      outletRouteConfigArray.push(newOutletRouteConfig);
-      newRoute = currentConfig;
-    } else if (outletRouteConfigArray[0].outlet === '') {
-      outletRouteConfigArray[0].outlet = this.buildName;
-      newRoute = currentConfig;
-    }
-    return newRoute;
-  }
-
-  /**
-   * Add listeners to listen for application widget changes
-   */
-  setApplicationWidgetListeners() {
-    this.activeComponentSubscriptions
-      .add
-      // this.applicationWidgetService.applicationWidgetTile$
-      //   .pipe(
-      //     filter((applicationSettings: any | null) => !!applicationSettings)
-      //   )
-      //   .subscribe({
-      //     next: (applicationSettings: any) => {
-      //       this.edit.emit({
-      //         id: this.widget.id,
-      //         options: applicationSettings,
-      //         type: 'data',
-      //       });
-      //     },
-      //   })
-      ();
-  }
-
-  /**
-   * Remove all listeners for application widget changes
-   */
-  removeApplicationWidgetListeners() {
-    this.activeComponentSubscriptions.unsubscribe();
   }
 
   ngOnDestroy(): void {
-    this.activeComponentSubscriptions.unsubscribe();
     // Remove style from head if exists, to avoid too many styles to be active at same time
     if (this.customStyle) {
       document.getElementsByTagName('head')[0].removeChild(this.customStyle);

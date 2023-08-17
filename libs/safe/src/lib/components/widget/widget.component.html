@@ -51,13 +51,3 @@
   >
   </safe-summary-card>
 </ng-container>
-<!-- TABS WIDGET CARD -->
-<ng-container *ngIf="widget.component === 'tabs'">
-  <div class="h-full w-full">
-    <router-outlet
-      (activate)="setApplicationWidgetListeners()"
-      (deactivate)="removeApplicationWidgetListeners()"
-      [name]="buildName"
-    ></router-outlet>
-  </div>
-</ng-container>

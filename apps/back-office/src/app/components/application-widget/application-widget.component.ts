@@ -145,6 +145,7 @@ export class ApplicationWidgetComponent
             );
           }
           if (this.application && application?.id) {
+            this.settings.applicationId = this.application.id;
             this.settings = {
               ...this.settings,
               pages: this.pages.filter((p) => !!p.id),
@@ -172,6 +173,7 @@ export class ApplicationWidgetComponent
     this.router.navigate([route], {
       relativeTo: this.activatedRoute,
       skipLocationChange: true,
+      state: { applicationWidgetService: this.applicationWidgetService },
     });
     this.selectedTab = pageIndex !== -1 ? pageIndex : 0;
   }
@@ -222,7 +224,7 @@ export class ApplicationWidgetComponent
    */
   private updateTabs(pages: Page[]) {
     this.pages = [];
-    if (!pages.length) {
+    if (pages.length) {
       this.pages.push(this.addPageTab);
     }
     pages.forEach((page) => {

@@ -245,8 +245,9 @@ export class DashboardComponent
    * @returns Promise
    */
   private async initDashboardWithId(id: string) {
-    if (this.dashboard?.id === id) return; // don't init the dashboard if the id is the same
-
+    if (this.dashboard?.id === id) {
+      return; // don't init the dashboard if the id is the same
+    }
     const rootElement = this.elementRef.nativeElement;
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
     this.formActive = false;

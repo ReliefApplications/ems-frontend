@@ -1,5 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Component, OnInit, Optional, SkipSelf } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -19,7 +19,7 @@ import { GET_FORMS, GetFormsQueryResponse } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 /**
  * Number of items per page.
@@ -35,7 +35,6 @@ const SINGLE_WIDGET_PAGE_TYPES = ['grid', 'map', 'summaryCard'];
   selector: 'app-add-page',
   templateUrl: './add-page.component.html',
   styleUrls: ['./add-page.component.scss'],
-  providers: [SafeApplicationWidgetService],
 })
 export class AddPageComponent
   extends SafeUnsubscribeComponent
@@ -50,6 +49,7 @@ export class AddPageComponent
   public pageForm: UntypedFormGroup = new UntypedFormGroup({});
   public step = 1;
 
+  private applicationWidgetService!: SafeApplicationWidgetService;
   /**
    * Add page component
    *
@@ -61,20 +61,22 @@ export class AddPageComponent
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param activatedRoute ActivatedRoute
+   * @param router Router
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
-    @Optional()
-    @SkipSelf()
-    private applicationWidgetService: SafeApplicationWidgetService,
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private translate: TranslateService,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private router: Router
   ) {
     super();
+    // Get the applicationWidgetService instance associated to the application widget host if exists
+    this.applicationWidgetService =
+      this.router.getCurrentNavigation()?.extras?.state?.applicationWidgetService;
   }
 
   ngOnInit(): void {

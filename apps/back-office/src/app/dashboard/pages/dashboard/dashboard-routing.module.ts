@@ -11,7 +11,7 @@ const routes: Routes = [
     canDeactivate: [CanDeactivateGuard],
     children: [
       {
-        path: 'tab',
+        path: 'tab0',
         loadChildren: () =>
           import(
             '../../../components/application-widget/application-widget.module'

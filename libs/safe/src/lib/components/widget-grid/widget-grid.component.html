@@ -5,7 +5,9 @@
     *ngIf="canUpdate"
     [ngClass]="{ 'floating-widget-choice-wrapper': widgets.length > 0 }"
   >
-    <h2 *ngIf="widgets.length === 0">{{ 'models.widget.add' | translate }}</h2>
+    <h2 *ngIf="widgets.length === 0">
+      {{ 'models.widget.add' | translate }}
+    </h2>
     <safe-widget-choice
       [floating]="widgets.length > 0"
       [widgetTypes]="availableWidgets"
@@ -52,13 +54,21 @@
         (style)="onStyleWidget($event)"
       >
       </safe-floating-options>
-      <safe-widget
-        [widget]="widget"
-        (changeStep)="changeStep.emit($event)"
-        [id]="'widget-' + widget.id"
-        (edit)="onEditWidget($event)"
-        [canUpdate]="canUpdate"
-      ></safe-widget>
+      <ng-container *ngIf="widget.component === 'tabs'; else defaultWidgetTmpl">
+        <safe-widget-tab-host
+          [widget]="widget"
+          (edit)="onEditWidget($event)"
+        ></safe-widget-tab-host>
+      </ng-container>
+      <ng-template #defaultWidgetTmpl>
+        <safe-widget
+          [widget]="widget"
+          (changeStep)="changeStep.emit($event)"
+          [id]="'widget-' + widget.id"
+          (edit)="onEditWidget($event)"
+          [canUpdate]="canUpdate"
+        ></safe-widget>
+      </ng-template>
       <!-- Move widget -->
       <ui-icon
         *ngIf="canUpdate"
