@@ -42,27 +42,27 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
       tooltip: 'Avatar',
       onAction: () => {
         editor.windowManager.open({
-          title: 'Avatars', //TODO: Translate
+          title: 'Avatars',
           body: {
             type: 'panel',
             items: [
               {
                 type: 'input',
                 name: 'avatarsSource',
-                label: 'Source', //TODO: Translate
+                label: 'Source',
               },
               {
                 type: 'input',
                 name: 'avatarsMaxItems',
-                label: 'Max items', //TODO: Translate
+                label: 'Max items',
               },
               {
                 type: 'listbox',
                 name: 'shape',
-                label: 'Shape', //TODO: Translate
+                label: 'Shape',
                 items: [
-                  { text: 'Circle', value: 'circle' }, //TODO: Translate
-                  { text: 'Square', value: 'square' }, //TODO: Translate
+                  { text: 'Circle', value: 'circle' },
+                  { text: 'Square', value: 'square' },
                 ],
               },
               {
@@ -71,12 +71,12 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
                   {
                     type: 'input',
                     name: 'avatarsWidth',
-                    label: 'Width', //TODO: Translate
+                    label: 'Width',
                   },
                   {
                     type: 'input',
                     name: 'avatarsHeight',
-                    label: 'Height', //TODO: Translate
+                    label: 'Height',
                   },
                 ],
               },
@@ -112,11 +112,11 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
           },
           buttons: [
             {
-              text: 'Close', //TODO: Translate
+              text: 'Close',
               type: 'cancel',
             },
             {
-              text: 'Insert', //TODO: Translate
+              text: 'Insert',
               type: 'submit',
               name: 'submit',
               primary: true,

@@ -42,18 +42,14 @@ export class RedirectComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((user: User | null) => {
         if (user) {
-          console.log(user);
           this.applications = user?.applications || [];
           if (user.favoriteApp) {
             if (this.applications.find((app) => app.id === user.favoriteApp)) {
-              console.log(`./${user.favoriteApp}`);
               this.router.navigate([`./${user.favoriteApp}`]);
             } else {
-              console.log(`./${this.applications[0].id}`);
               this.router.navigate([`./${this.applications[0].id}`]);
             }
           } else {
-            console.log(`./${this.applications[0].id}`);
             this.router.navigate([`./${this.applications[0].id}`]);
           }
         } else {

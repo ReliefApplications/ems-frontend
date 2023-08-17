@@ -11,6 +11,7 @@ import {
   MapConstructorSettings,
 } from '../../ui/map/interfaces/map.interface';
 import {
+  Fields,
   LayerModel,
   PopupElement,
   PopupElementType,
@@ -59,6 +60,12 @@ const DEFAULT_GRADIENT = [
   },
 ];
 
+/** TODO: Replace once we have UI */
+const DEFAULT_CONTEXT_FILTER = `{
+  "logic": "and",
+  "filters": []
+}`;
+
 /**
  * Create layer form from value
  *
@@ -90,6 +97,11 @@ export const createLayerForm = (value?: LayerModel) => {
     ...(type === 'GroupLayer' && {
       sublayers: new FormControl(get(value, 'sublayers', [])),
     }),
+
+    // TODO: replace when we have a proper UI for this
+    contextFilters: new FormControl(
+      get(value, 'contextFilters', DEFAULT_CONTEXT_FILTER)
+    ),
   });
   if (type !== 'GroupLayer') {
     formGroup.get('datasource.type')?.valueChanges.subscribe((geometryType) => {
@@ -379,6 +391,11 @@ export const createPopupInfoForm = (value: any) =>
         createPopupElementForm(element)
       )
     ),
+    fieldsInfo: fb.array(
+      get(value, 'fieldsInfo', []).map((element: Fields) =>
+        createFieldsInfoForm(element)
+      )
+    ),
   });
 
 /**
@@ -406,6 +423,19 @@ export const createPopupElementForm = (value: PopupElement): FormGroup => {
     }
   }
 };
+
+/**
+ * Create popup fields form group
+ *
+ * @param value fields info value
+ * @returns fields form group
+ */
+export const createFieldsInfoForm = (value: Fields): FormGroup =>
+  fb.group({
+    label: get(value, 'label', ''),
+    name: get(value, 'name', ''),
+    type: get(value, 'type', ''),
+  });
 
 /**
  * Create layer cluster form from value

@@ -2,7 +2,6 @@
 import * as L from 'leaflet';
 import 'leaflet.heat';
 import 'leaflet.markercluster';
-
 import { Feature, Geometry } from 'geojson';
 import { get, isNil, set } from 'lodash';
 import {
@@ -29,6 +28,7 @@ import { GradientPipe } from '../../../pipes/gradient/gradient.pipe';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
 import { BehaviorSubject, filter, firstValueFrom } from 'rxjs';
 import centroid from '@turf/centroid';
+import { Injector, Renderer2 } from '@angular/core';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -131,6 +131,11 @@ const featureSatisfiesFilter = (
 
 /** Objects represent a map layer */
 export class Layer implements LayerModel {
+  // Services and classes for layer class
+  private popupService!: SafeMapPopupService;
+  private layerService!: SafeMapLayersService;
+  private renderer!: Renderer2;
+
   // Map layer
   private layer: L.Layer | null = null;
 
@@ -175,6 +180,7 @@ export class Layer implements LayerModel {
 
   // Declare variables to store the event listeners
   private zoomListener!: L.LeafletEventHandlerFn;
+  private listeners: any[] = [];
 
   /** @returns the children of the current layer */
   public async getChildren() {
@@ -184,10 +190,14 @@ export class Layer implements LayerModel {
 
   /** @returns the filtered geojson data */
   get data(): GeoJSON {
-    if (!this.geojson) return EMPTY_FEATURE_COLLECTION;
+    if (!this.geojson) {
+      return EMPTY_FEATURE_COLLECTION;
+    }
 
     // If no filter is set, return the geojson data
-    if (!this.filter) return this.geojson;
+    if (!this.filter) {
+      return this.geojson;
+    }
 
     // If the geojson is a feature, return it if it satisfies the filter
     // if not, return an empty feature collection
@@ -217,15 +227,13 @@ export class Layer implements LayerModel {
    * Constructor for the Layer class
    *
    * @param options Layer options
-   * @param popupService Popup service
-   * @param layerService Shared layer service
+   * @param injector Injector containing all needed providers for layer class
    */
-  constructor(
-    options: any,
-    private popupService: SafeMapPopupService,
-    private layerService: SafeMapLayersService
-  ) {
+  constructor(options: any, private injector: Injector) {
     if (options) {
+      this.popupService = injector.get(SafeMapPopupService);
+      this.layerService = injector.get(SafeMapLayersService);
+      this.renderer = injector.get(Renderer2);
       this.setConfig(options);
     } else {
       throw 'No settings provided';
@@ -261,8 +269,7 @@ export class Layer implements LayerModel {
       this._sublayers = options.sublayers?.length
         ? await this.layerService.createLayersFromIds(
             options.sublayers,
-            this.popupService,
-            this.layerService
+            this.injector
           )
         : [];
 
@@ -276,19 +283,28 @@ export class Layer implements LayerModel {
     const fields = this.fields;
     // If the geojson is a geometry, there are no fields to add
     // since it has not properties
-    if (GEOMETRY_TYPES.includes(geojson.type)) return;
+    if (GEOMETRY_TYPES.includes(geojson.type)) {
+      return;
+    }
 
     const getFieldType = (field: string, value: any) => {
       let valueType: FieldTypes | null = null;
-      if (typeof value === 'number') valueType = 'number';
-      if (typeof value === 'boolean') valueType = 'boolean';
+      if (typeof value === 'number') {
+        valueType = 'number';
+      }
+      if (typeof value === 'boolean') {
+        valueType = 'boolean';
+      }
       if (typeof value === 'string') {
         // Check if the string is a date using regex ISO 8601
         const regex = new RegExp(
           '^([0-9]{4})-([0-9]{2})-([0-9]{2})T([0-9]{2}):([0-9]{2}):([0-9]{2})(\\.[0-9]{3})?Z$'
         );
-        if (regex.test(value)) valueType = 'date';
-        else valueType = 'string';
+        if (regex.test(value)) {
+          valueType = 'date';
+        } else {
+          valueType = 'string';
+        }
       }
 
       // check if field already exists, and if it has the same value type
@@ -345,7 +361,9 @@ export class Layer implements LayerModel {
    */
   public async getLayer(redraw?: boolean): Promise<L.Layer> {
     // If layer has already been created, return it
-    if (this.layer && !redraw) return this.layer;
+    if (this.layer && !redraw) {
+      return this.layer;
+    }
 
     // data is the filtered geojson
     const data = this.data;
@@ -468,7 +486,7 @@ export class Layer implements LayerModel {
       onEachFeature: (feature: Feature<any>, layer: L.Layer) => {
         // Add popup on click because we destroy popup component each time we remove it
         // In order to destroy all event subscriptions and avoid memory leak
-        layer.addEventListener('click', () => {
+        const setPopupListener = () => {
           const center = centroid(feature);
           const coordinates = {
             lat: center.geometry.coordinates[1],
@@ -481,7 +499,9 @@ export class Layer implements LayerModel {
             this.popupInfo,
             layer
           );
-        });
+        };
+        const listener = this.renderer.listen(layer, 'click', setPopupListener);
+        this.listeners.push(listener);
       },
       // style: (feature: Feature<Geometry> | undefined) => {
       //   if (!feature) return {};
@@ -522,6 +542,8 @@ export class Layer implements LayerModel {
           return l;
         };
         this.layer = layer;
+        (this.layer as any).origin = 'app-builder';
+        (this.layer as any).id = this.id;
         return this.layer;
 
       default:
@@ -530,10 +552,11 @@ export class Layer implements LayerModel {
         ) {
           case 'heatmap':
             // check data type
-            if (data.type !== 'FeatureCollection')
+            if (data.type !== 'FeatureCollection') {
               throw new Error(
                 'Impossible to create a heatmap from this data, geojson type is not FeatureCollection'
               );
+            }
             const heatArray: any[] = [];
 
             data.features.forEach((feature: any) => {
@@ -588,52 +611,56 @@ export class Layer implements LayerModel {
             };
 
             const layer = L.heatLayer(heatArray, heatmapOptions);
+            const setPopupListener = (event: any, map: L.Map) => {
+              const layerClass = event.originalEvent.target?.className;
+              // We are setting the click event in the whole map, so in order to trigger the popup for heatmap we filter the target from the heatmap
+              if (
+                typeof layerClass === 'string' &&
+                layerClass?.includes('heatmap')
+              ) {
+                const zoom = map.getZoom();
+                const radius = 1000 / zoom;
+                const coordinates = {
+                  lat: event.latlng.lat,
+                  lng: event.latlng.lng,
+                };
+                // checks if the point is within the calculate radius
+                const matchedPoints = data.features.filter((feature) => {
+                  if (
+                    feature.type === 'Feature' &&
+                    feature.geometry.type === 'Point'
+                  ) {
+                    const pointData = [
+                      feature.geometry.coordinates[1],
+                      feature.geometry.coordinates[0],
+                      get(feature, 'properties.weight', 1),
+                    ];
+                    const distance = haversineDistance(
+                      event.latlng.lat,
+                      event.latlng.lng,
+                      pointData[0],
+                      pointData[1]
+                    );
+                    return distance < radius;
+                  } else return false;
+                });
 
+                this.popupService.setPopUp(
+                  matchedPoints,
+                  coordinates,
+                  this.popupInfo
+                );
+              }
+            };
             layer.onAdd = (map: L.Map) => {
               // So we can use onAdd method from HeatLayer class
               const l = (L as any).HeatLayer.prototype.onAdd.call(layer, map);
               // Leaflet.heat doesn't support click events, so we have to do it ourselves
-              map.on('click', (event: any) => {
-                const layerClass = event.originalEvent.target?.className;
-                // We are setting the click event in the whole map, so in order to trigger the popup for heatmap we filter the target from the heatmap
-                if (
-                  typeof layerClass === 'string' &&
-                  layerClass?.includes('heatmap')
-                ) {
-                  const zoom = map.getZoom();
-                  const radius = 1000 / zoom;
-                  const coordinates = {
-                    lat: event.latlng.lat,
-                    lng: event.latlng.lng,
-                  };
-                  // checks if the point is within the calculate radius
-                  const matchedPoints = data.features.filter((feature) => {
-                    if (
-                      feature.type === 'Feature' &&
-                      feature.geometry.type === 'Point'
-                    ) {
-                      const pointData = [
-                        feature.geometry.coordinates[1],
-                        feature.geometry.coordinates[0],
-                        get(feature, 'properties.weight', 1),
-                      ];
-                      const distance = haversineDistance(
-                        event.latlng.lat,
-                        event.latlng.lng,
-                        pointData[0],
-                        pointData[1]
-                      );
-                      return distance < radius;
-                    } else return false;
-                  });
-
-                  this.popupService.setPopUp(
-                    matchedPoints,
-                    coordinates,
-                    this.popupInfo
-                  );
-                }
-              });
+              map.on(
+                'click',
+                (event: any) => setPopupListener(event, map),
+                layer
+              );
               this.onAddLayer(map, layer);
               return l;
             };
@@ -642,10 +669,18 @@ export class Layer implements LayerModel {
                 layer,
                 map
               );
+              // Remove previously added listener on layer removal
+              map.off(
+                'click',
+                (event: any) => setPopupListener(event, map),
+                layer
+              );
               this.onRemoveLayer(map, layer);
               return l;
             };
             this.layer = layer;
+            (this.layer as any).origin = 'app-builder';
+            (this.layer as any).id = this.id;
             return this.layer;
           default:
             switch (get(this.layerDefinition, 'featureReduction.type')) {
@@ -721,6 +756,8 @@ export class Layer implements LayerModel {
                 };
                 clusterGroup.addLayer(clusterLayer);
                 this.layer = clusterGroup;
+                (this.layer as any).origin = 'app-builder';
+                (this.layer as any).id = this.id;
                 return this.layer;
               default:
                 const layer = L.geoJSON(data, geoJSONopts);
@@ -736,6 +773,8 @@ export class Layer implements LayerModel {
                   return l;
                 };
                 this.layer = layer;
+                (this.layer as any).origin = 'app-builder';
+                (this.layer as any).id = this.id;
                 return this.layer;
             }
         }
@@ -759,7 +798,6 @@ export class Layer implements LayerModel {
     if (!isNil((layer as any).shouldDisplay)) {
       this.visibility = (layer as any).shouldDisplay;
       if (this.visibility) {
-        map.addLayer(layer);
         const legendControl = (map as any).legendControl;
         if (legendControl) {
           legendControl.addLayer(layer, this.legend);
@@ -776,7 +814,6 @@ export class Layer implements LayerModel {
         map.removeLayer(layer);
       } else {
         if (this.visibility) {
-          map.addLayer(layer);
           const legendControl = (map as any).legendControl;
           if (legendControl) {
             legendControl.addLayer(layer, this.legend);
@@ -808,10 +845,12 @@ export class Layer implements LayerModel {
       if (currZoom > maxZoom || currZoom < minZoom) {
         map.removeLayer(layer);
       } else {
-        if (this.visibility) {
+        if (
+          this.visibility &&
+          !(layer as any).deleted &&
+          !map.hasLayer(layer)
+        ) {
           map.addLayer(layer);
-        } else {
-          map.removeLayer(layer);
         }
       }
     }
@@ -829,7 +868,7 @@ export class Layer implements LayerModel {
     if (legendControl) {
       legendControl.removeLayer(layer);
     }
-    if (!isNil((layer as any).shouldDisplay)) {
+    if (!isNil((layer as any).shouldDisplay) || (layer as any).deleted) {
       // Ensure that we do not subscribe multiple times to zoom event
       if (this.zoomListener) {
         map.off('zoomend', this.zoomListener);
@@ -1014,5 +1053,27 @@ export class Layer implements LayerModel {
     } else {
       return '';
     }
+  }
+
+  /**
+   * Remove all event listeners related to this Layer instance for the given map
+   *
+   * @param map L.Map
+   */
+  public async removeAllListeners(map: L.Map) {
+    if (this.zoomListener) {
+      map.off('zoomend', this.zoomListener);
+    }
+    const children = await this.getChildren();
+    if (children.length) {
+      children.forEach((cl) => {
+        cl.removeAllListeners(map);
+      });
+    }
+    this.zoomListener = null as unknown as L.LeafletEventHandlerFn;
+    this.listeners.forEach((listener) => {
+      listener();
+    });
+    this.listeners = [];
   }
 }

@@ -31,7 +31,7 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   providers: [CONTROL_VALUE_ACCESSOR],
 })
 export class TextareaComponent implements ControlValueAccessor {
-  @Input() value: any = '';
+  @Input() value = '';
   @Input() placeholder = '';
   @Input() name!: string;
   /**
@@ -72,7 +72,7 @@ export class TextareaComponent implements ControlValueAccessor {
    *
    * @param fn callback
    */
-  public registerOnChange(fn: any): void {
+  public registerOnChange(fn: (value: string) => void): void {
     this.onChanged = fn;
   }
 
@@ -81,7 +81,7 @@ export class TextareaComponent implements ControlValueAccessor {
    *
    * @param fn callback
    */
-  public registerOnTouched(fn: any): void {
+  public registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
@@ -114,6 +114,6 @@ export class TextareaComponent implements ControlValueAccessor {
       this.onTouched();
       this.onChanged(this.value);
     }
-    this.valueChange.emit(this.value);
+    this.valueChange.emit(!!this.value);
   }
 }

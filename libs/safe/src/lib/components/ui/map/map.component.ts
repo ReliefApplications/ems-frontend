@@ -7,11 +7,9 @@ import {
   Inject,
   Output,
   EventEmitter,
-  Renderer2,
   OnDestroy,
+  Injector,
 } from '@angular/core';
-import get from 'lodash/get';
-import difference from 'lodash/difference';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 // Leaflet plugins
 import 'leaflet';
@@ -45,10 +43,19 @@ import {
   TreeObject,
 } from '../../../services/map/arcgis.service';
 import { SafeMapLayersService } from '../../../services/map/map-layers.service';
-import { flatten, isNil, omitBy } from 'lodash';
-import { takeUntil } from 'rxjs';
+import {
+  flatten,
+  isNil,
+  omitBy,
+  get,
+  difference,
+  isEqual,
+  flatMapDeep,
+} from 'lodash';
+import { debounceTime, takeUntil } from 'rxjs';
 import { SafeMapPopupService } from './map-popup/map-popup.service';
 import { Platform } from '@angular/cdk/platform';
+import { ContextService } from '../../../services/context/context.service';
 
 /** Component for the map widget */
 @Component({
@@ -133,9 +140,10 @@ export class MapComponent
 
   // === QUERY UPDATE INFO ===
   public lastUpdate = '';
+  private appliedDashboardFilters: Record<string, any>;
 
   // === LAYERS ===
-  private layers: Layer[] = [];
+  layers: Layer[] = [];
   private layerIds: string[] = [];
 
   private resizeObserver?: ResizeObserver;
@@ -152,8 +160,9 @@ export class MapComponent
    * @param arcgisService Shared arcgis service
    * @param mapLayersService SafeMapLayersService
    * @param mapPopupService The map popup handler service
-   * @param renderer Angular renderer
+   * @param contextService The context service
    * @param platform Platform
+   * @param injector Injector containing all needed providers
    */
   constructor(
     @Inject('environment') environment: any,
@@ -162,12 +171,14 @@ export class MapComponent
     private arcgisService: ArcgisService,
     public mapLayersService: SafeMapLayersService,
     public mapPopupService: SafeMapPopupService,
-    private renderer: Renderer2,
-    private platform: Platform
+    private contextService: ContextService,
+    private platform: Platform,
+    public injector: Injector
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
     this.mapId = uuidv4();
+    this.appliedDashboardFilters = this.contextService.filter.getValue();
   }
 
   /** Set map listeners */
@@ -239,6 +250,19 @@ export class MapComponent
       });
       //}
     }, 1000);
+
+    // Listen to dashboard filters changes
+    this.contextService.filter$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.filterLayers();
+      });
+
+    this.contextService.isFilterEnabled$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.filterLayers();
+      });
   }
 
   override ngOnDestroy(): void {
@@ -374,47 +398,75 @@ export class MapComponent
     // Close layers/bookmarks menu
     document.getElementById('layer-control-button-close')?.click();
 
+    this.setupMapLayers({ layers, controls, arcGisWebMap, basemap });
+    this.setMapControls(controls, initMap);
+  }
+
+  /**
+   * Setup the map layers from the settings
+   *
+   * @param settings map settings
+   * @param settings.layers list of layers ids
+   * @param settings.controls available map controls
+   * @param settings.arcGisWebMap arcgis webmap
+   * @param settings.basemap arcgis basemap
+   * @param reset reset the layers
+   */
+  setupMapLayers(
+    settings: {
+      layers: string[] | undefined;
+      controls: MapControls;
+      arcGisWebMap: string | undefined;
+      basemap: string | undefined;
+    },
+    reset = false
+  ) {
     // Get layers
     const promises: Promise<{
       basemaps?: L.Control.Layers.TreeObject[];
       layers?: L.Control.Layers.TreeObject[];
     }>[] = [];
-
     // Flag to set again basemap or webmap in map even if no basemap or webmap change is done
     // For layer change case trigger(on layer change all layers, including basemap and webmaps, are deleted by default)
     let layersRemoved = false;
 
     if (
-      this.layerIds.length !== layers?.length ||
-      difference(layers, this.layerIds).length
+      this.layerIds.length !== settings.layers?.length ||
+      difference(settings.layers, this.layerIds).length ||
+      reset
     ) {
       this.map.eachLayer((layer) => {
         this.map.removeLayer(layer);
       });
       layersRemoved = true;
-      this.layerIds = layers ?? [];
-      if (layers?.length) {
-        promises.push(this.getLayers(layers));
+      this.layerIds = settings.layers ?? [];
+      if (settings.layers?.length || reset) {
+        this.resetLayers();
+        if (settings.layers?.length) {
+          promises.push(this.getLayers(settings.layers));
+        }
       }
     }
 
     if (
-      (!arcGisWebMap && basemap && basemap !== this.currentBasemapKey) ||
-      (arcGisWebMap && arcGisWebMap !== this.arcGisWebMap) ||
-      (this.arcGisWebMap && !arcGisWebMap) ||
+      (!settings.arcGisWebMap &&
+        settings.basemap &&
+        settings.basemap !== this.currentBasemapKey) ||
+      (settings.arcGisWebMap && settings.arcGisWebMap !== this.arcGisWebMap) ||
+      (this.arcGisWebMap && !settings.arcGisWebMap) ||
       layersRemoved
     ) {
       if (this.basemap) {
         this.basemap.removeFrom(this.map);
       }
       // Get arcgis layers
-      if (arcGisWebMap) {
+      if (settings.arcGisWebMap) {
         // Load arcgis webmap
-        promises.push(this.setWebmap(arcGisWebMap));
+        promises.push(this.setWebmap(settings.arcGisWebMap));
       } else {
         this.arcGisWebMap = undefined;
         // else, load basemap ( default to osm )
-        promises.push(this.setBasemap(this.map, basemap));
+        promises.push(this.setBasemap(this.map, settings.basemap));
       }
     }
 
@@ -427,7 +479,7 @@ export class MapComponent
           tree.basemaps && this.basemapTree.push(tree.basemaps);
           tree.layers && this.overlaysTree.push(tree.layers);
         }
-        if (controls.layer) {
+        if (settings.controls.layer) {
           this.setLayersControl(
             flatten(this.basemapTree),
             flatten(this.overlaysTree)
@@ -440,7 +492,7 @@ export class MapComponent
       });
     } else {
       // No update on the layers, we only update the controls
-      if (controls.layer) {
+      if (settings.controls.layer) {
         this.setLayersControl(
           flatten(this.basemapTree),
           flatten(this.overlaysTree)
@@ -451,8 +503,6 @@ export class MapComponent
         }
       }
     }
-
-    this.setMapControls(controls, initMap);
   }
 
   /**
@@ -467,23 +517,6 @@ export class MapComponent
       this.map,
       controls.measure ?? false
     );
-    // Add leaflet geosearch control
-    if (controls.search) {
-      if (!this.searchControl) {
-        this.searchControl = this.mapControlsService.getSearchbarControl(
-          this.map,
-          this.esriApiKey
-        );
-        (this.searchControl as any)?.on('results', (data: any) => {
-          if ((data.results || []).length > 0) {
-            this.search.emit(data.results[0]);
-          }
-        });
-      }
-    } else {
-      this.searchControl?.remove();
-      this.searchControl = undefined;
-    }
 
     // Add TimeDimension control
     // this.mapControlsService.setTimeDimension(
@@ -512,6 +545,23 @@ export class MapComponent
     if (initMap) {
       // Add leaflet fullscreen control
       this.mapControlsService.getFullScreenControl(this.map);
+    }
+    // Add leaflet geosearch control
+    if (controls.search) {
+      if (!this.searchControl) {
+        this.searchControl = this.mapControlsService.getSearchbarControl(
+          this.map,
+          this.esriApiKey
+        );
+        (this.searchControl as any)?.on('results', (data: any) => {
+          if ((data.results || []).length > 0) {
+            this.search.emit(data.results[0]);
+          }
+        });
+      }
+    } else {
+      this.searchControl?.remove();
+      this.searchControl = undefined;
     }
   }
 
@@ -557,7 +607,9 @@ export class MapComponent
       leafletLayer?: L.Layer
     ): Promise<OverlayLayerTree> => {
       // Add to the layers array if not already added
-      if (!this.layers.find((l) => l.id === layer.id)) this.layers.push(layer);
+      if (!this.layers.find((l) => l.id === layer.id)) {
+        this.layers.push(layer);
+      }
 
       // Gets the leaflet layer. Either the one passed as parameter
       // (from parent) or the one created by the layer itself (if no parent)
@@ -566,7 +618,9 @@ export class MapComponent
       // Adds the layer to the map if not already added
       // note: group layers are of type L.LayerGroup
       // so we should check if the layer is not already added
-      if (!this.map.hasLayer(featureLayer)) this.map.addLayer(featureLayer);
+      if (!this.map.hasLayer(featureLayer)) {
+        this.map.addLayer(featureLayer);
+      }
 
       const children = await layer.getChildren();
 
@@ -596,11 +650,7 @@ export class MapComponent
 
     return new Promise<{ layers: L.Control.Layers.TreeObject[] }>((resolve) => {
       this.mapLayersService
-        .createLayersFromIds(
-          layerIds,
-          this.mapPopupService,
-          this.mapLayersService
-        )
+        .createLayersFromIds(layerIds, this.injector)
         .then((layers) => {
           const layersTree: any[] = [];
           // Add each layer to the tree
@@ -660,7 +710,9 @@ export class MapComponent
           deleteLayer(child);
         }
       } else {
-        if (layer.layer) this.map.removeLayer(layer.layer);
+        if (layer.layer) {
+          this.map.removeLayer(layer.layer);
+        }
       }
     };
 
@@ -672,7 +724,7 @@ export class MapComponent
       deleteLayer(layers);
     }
     // Reset related properties
-    this.layers = [];
+    this.resetLayers();
   }
   //   /**
   //  * Function used to apply options
@@ -886,5 +938,85 @@ export class MapComponent
   }> {
     this.arcGisWebMap = webmap;
     return this.arcgisService.loadWebMap(this.map, this.arcGisWebMap);
+  }
+
+  /** Set the new layers based on the filter value */
+  private async filterLayers() {
+    document.getElementById('layer-control-button-close')?.click();
+    const filters = this.contextService.filter.getValue();
+    if (isEqual(filters, this.appliedDashboardFilters)) {
+      return;
+    }
+    this.appliedDashboardFilters = filters;
+    const { layers: layersToGet, controls } = this.extractSettings();
+
+    const shouldDisplayStatuses: Record<string, boolean> = {};
+
+    const flattenOverlaysTree = (tree: L.Control.Layers.TreeObject): any => {
+      return [tree, flatMapDeep(tree.children, flattenOverlaysTree)];
+    };
+
+    // remove zoom listeners from old layers
+    flatMapDeep(this.overlaysTree.flat(), flattenOverlaysTree)
+      .filter((x) => x.layer && (x.layer as any).origin === 'app-builder')
+      .forEach((x) => {
+        // Store visibility status of the layer
+        const shouldDisplay = (x.layer as any).shouldDisplay;
+        if (!isNil(shouldDisplay)) {
+          shouldDisplayStatuses[(x.layer as any).id] = shouldDisplay;
+        }
+        (x.layer as any).deleted = true;
+        (x.layer as L.Layer).remove();
+      });
+
+    // get new layers, with filters applied
+    this.resetLayers();
+    const l = await this.getLayers(layersToGet ?? []);
+    this.overlaysTree = [l.layers];
+
+    flatMapDeep(this.overlaysTree.flat(), flattenOverlaysTree).forEach((x) => {
+      if (x.layer) {
+        const id = (x.layer as any).id;
+        if (!isNil(shouldDisplayStatuses[id])) {
+          (x.layer as any).shouldDisplay = shouldDisplayStatuses[id];
+          if (!shouldDisplayStatuses[id]) {
+            x.layer.remove();
+          }
+        }
+      }
+    });
+
+    if (controls.layer) {
+      // remove current layer controls
+      this.layerControlButtons.remove();
+      this.layerControlButtons = null;
+
+      // create new layer controls, from newly created layers
+      this.setLayersControl(
+        flatten(this.basemapTree),
+        flatten(this.overlaysTree)
+      );
+    }
+  }
+
+  /**
+   * Reset current saved layers and remove all attached listeners of those Layer instances
+   */
+  resetLayers() {
+    this.layers.forEach(async (layer) => {
+      await layer.removeAllListeners(this.map);
+    });
+    this.layers = [];
+  }
+
+  /**
+   * Enable/Disable all handlers in the leaflet map
+   *
+   * @param disable If handlers must be disabled or not
+   */
+  disableMapHandlers(disable: boolean) {
+    (this.map as any)['_handlers']?.forEach((handler: L.Handler) => {
+      disable ? handler.disable() : handler.enable();
+    });
   }
 }

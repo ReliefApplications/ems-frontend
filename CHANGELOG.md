@@ -1,3 +1,88 @@
+## [2.0.7](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.6...v2.0.7) (2023-08-17)
+
+
+### Bug Fixes
+
+* could not edit form page name ([2ce6e41](https://github.com/ReliefApplications/oort-frontend/commit/2ce6e414e4976112b53a2ba5f51e83d775fa9a6d))
+* empty list display would hide some additional content that should be displayed in select elements ([6dac854](https://github.com/ReliefApplications/oort-frontend/commit/6dac85494d98102f7a79bf8d3feb8c15e8522303))
+* in application style editor, autocomplete would not appear ([d8ed2d6](https://github.com/ReliefApplications/oort-frontend/commit/d8ed2d6b9d9c1d4d08d9ce88ba223570fdff04b4))
+* incorrect pagination on some tables, using paginator component ([2fbd37e](https://github.com/ReliefApplications/oort-frontend/commit/2fbd37ec9fd546b6a6c7e0bfd5d519bfc63b57a9)), closes [fix/AB#72105](https://github.com/fix/AB/issues/72105)
+* selection of form when adding new page / step would not work ([13f3b4d](https://github.com/ReliefApplications/oort-frontend/commit/13f3b4dcdf7fb27dd7fad03fc40377c671a2df1f))
+
+## [2.0.6](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.5...v2.0.6) (2023-08-09)
+
+
+### Bug Fixes
+
+* add possibility to do POST requests on choicesByUrl fields in surveyjs ([b45bff9](https://github.com/ReliefApplications/oort-frontend/commit/b45bff9d1e18166099e153b871e1216f20bfdefa)), closes [#1698](https://github.com/ReliefApplications/oort-frontend/issues/1698)
+* add possibility to do POST requests on choicesByUrl fields in surveyjs ([71c235c](https://github.com/ReliefApplications/oort-frontend/commit/71c235c538ffba72cf4298a73df7b66f3e182973))
+* autosave action could lead to some conflicts, with the UI, and the logic of subsequent steps of the grid action ([cad5c47](https://github.com/ReliefApplications/oort-frontend/commit/cad5c4740e9a0a4896f172e6c806c703a0c4f074))
+* expanded comment wrong behavior in many cases ([93f85c6](https://github.com/ReliefApplications/oort-frontend/commit/93f85c62477fc76be66302a493b94ca0f7ea3cc8))
+* history partially hidden when seen in sidenav ([0ef9785](https://github.com/ReliefApplications/oort-frontend/commit/0ef97858ab2f6d9f9d0f810a394884321e706dfe))
+* issue where closing the expand grid cell modal would set the cell value to null ([1564923](https://github.com/ReliefApplications/oort-frontend/commit/1564923f36f3413745910965dc796899e2f8a796))
+* multiple issues detected by Sentry ([45f0d84](https://github.com/ReliefApplications/oort-frontend/commit/45f0d84e5f48f06d1be0c88a8cd03ccace99faf7))
+* Pagination on choose record modal for attach to record button ([#1640](https://github.com/ReliefApplications/oort-frontend/issues/1640)) ([ed0ac2b](https://github.com/ReliefApplications/oort-frontend/commit/ed0ac2bc5ee13a4fb294ff9e31e92bec49640701)), closes [fix/AB#69369](https://github.com/fix/AB/issues/69369)
+* survey dispose method could block interaction with UI when survey would not exist ([666a40e](https://github.com/ReliefApplications/oort-frontend/commit/666a40ef78116e82ebaf72dd200be1f731a8d60c))
+* when editing user, changing application to assign roles of the user wouldn't clear the roles list ([d5f5502](https://github.com/ReliefApplications/oort-frontend/commit/d5f5502f08a2c52adc8f2bfc05bb2b258cabdd28))
+
+
+### Reverts
+
+* Revert "fix: add possibility to do POST requests on choicesByUrl fields in surveyjs" (#1698) ([d60414c](https://github.com/ReliefApplications/oort-frontend/commit/d60414c662c785cbfad9eff40977b25fe84ef618)), closes [#1698](https://github.com/ReliefApplications/oort-frontend/issues/1698)
+
+## [2.0.5](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.4...v2.0.5) (2023-08-03)
+
+
+### Bug Fixes
+
+* fields could not be set to null in survey ([64bcb87](https://github.com/ReliefApplications/oort-frontend/commit/64bcb87b01eaf21c6cf2eda9b0b022ba66431c6b))
+* pages logic in survey could be wrong, now using data from the survey directly ([52f64b5](https://github.com/ReliefApplications/oort-frontend/commit/52f64b54b069c36ccfe7427897d19fb6de46f530))
+* values set to null in survey could raise unwanted updates while seeing history of records ([d6dc660](https://github.com/ReliefApplications/oort-frontend/commit/d6dc660e2bc72e951a4604c14d0f0c4f29e991d3))
+
+## [2.0.4](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.3...v2.0.4) (2023-08-03)
+
+
+### Bug Fixes
+
+* breadcrumbs could go out of bounds and expand size of screen ([d5b10e3](https://github.com/ReliefApplications/oort-frontend/commit/d5b10e3b9a7f088c4efe3b0d77b56cdc12cda90a)), closes [fix/AB#70863](https://github.com/fix/AB/issues/70863)
+* filtering on dropdown / tagbox in survey would only work for first rendering ([86aac64](https://github.com/ReliefApplications/oort-frontend/commit/86aac64f796ba60fa884bb69dd8fc49287a0f7f4))
+* filtering options in survey could fail due to inexistence of option text ([4f2f611](https://github.com/ReliefApplications/oort-frontend/commit/4f2f611385c5f2cf6179c726fdf123de1d89fa59))
+* scroll would remain while moving between pages ([86bc1ea](https://github.com/ReliefApplications/oort-frontend/commit/86bc1eaa0f89a74339e6567fb08ec997d16ef5d4))
+* seeing users of role / application not working ([6012dc8](https://github.com/ReliefApplications/oort-frontend/commit/6012dc8cd6a5efbbabeadd53c7cdc91639e927a2))
+* survey with default / selected value in dropdown / tagbox would break filtering ([e3af66b](https://github.com/ReliefApplications/oort-frontend/commit/e3af66bd36557fc6f4e591f9b9e95ecf9caa7b43))
+
+## [2.0.3](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.2...v2.0.3) (2023-08-01)
+
+
+### Bug Fixes
+
+* add loading indicator in dropdown and tagbox in survey questions ([c06ad98](https://github.com/ReliefApplications/oort-frontend/commit/c06ad989b51e0163f63a9b84c3b962275308505a)), closes [fix/AB#71072](https://github.com/fix/AB/issues/71072) [fix/AB#71072](https://github.com/fix/AB/issues/71072) [fix/AB#71072](https://github.com/fix/AB/issues/71072) [fix/AB#71072](https://github.com/fix/AB/issues/71072) [fix/AB#71072](https://github.com/fix/AB/issues/71072)
+* choices coming from url could be displayed as object due to missing value ([f42a536](https://github.com/ReliefApplications/oort-frontend/commit/f42a5362451e1daf920060f1959d02379830f6f9))
+* toString in extractChoices in grids should now get correct value ([a2b9de5](https://github.com/ReliefApplications/oort-frontend/commit/a2b9de500c6f39667690256cefbc2094c270cded))
+* when editing roles, channel would not get initial value if set ([bfcadeb](https://github.com/ReliefApplications/oort-frontend/commit/bfcadebabf988733e162fa34585d416275bc44b2))
+
+## [2.0.2](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.1...v2.0.2) (2023-07-31)
+
+
+### Bug Fixes
+
+* choicesByUrl could fail to display depending on text ([c382ff2](https://github.com/ReliefApplications/oort-frontend/commit/c382ff2c70fdc3e8e0dacffbea32c24834251f0c))
+* edition of form page was not linked to correct model if not in a step ([ead55c3](https://github.com/ReliefApplications/oort-frontend/commit/ead55c349ff3851964611c526a83d4ffe0a58723))
+* incorrect notification when editing a pull job ([c49ac2d](https://github.com/ReliefApplications/oort-frontend/commit/c49ac2d6bc2ed6892b18cb9a0f379f830ca78e92))
+* remove select2 files from import ([2f5d63f](https://github.com/ReliefApplications/oort-frontend/commit/2f5d63fc5ead92a2031362b2d2c77186907e8fea))
+* resource modal opening as a blank page until we click anywhere ([#1664](https://github.com/ReliefApplications/oort-frontend/issues/1664)) ([4b4c98f](https://github.com/ReliefApplications/oort-frontend/commit/4b4c98f2c82a1bf54a09c49fa1bb5fcdc2cf8adf))
+* resources question would consume too much memory because of stored records ([872485f](https://github.com/ReliefApplications/oort-frontend/commit/872485ff8eaee524a057beba2116cb1985ddd584))
+* tabs component could raise issues due to missing tabs ([2f230bb](https://github.com/ReliefApplications/oort-frontend/commit/2f230bbc702001a52bb106c3c337c69cae7929ef))
+* tagbox would freeze if too many items in forms ([8386e8b](https://github.com/ReliefApplications/oort-frontend/commit/8386e8b6c22d2d452254df205e5d95b422272d21))
+* unable to attach to another form in grid actions ([3d2c9a5](https://github.com/ReliefApplications/oort-frontend/commit/3d2c9a5d5df19e9ed898414674f9dcda0a9c19fa))
+
+## [2.0.1](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.0...v2.0.1) (2023-07-07)
+
+
+### Bug Fixes
+
+* deploy not working ([e9b6dbb](https://github.com/ReliefApplications/oort-frontend/commit/e9b6dbb574643579a4fde5646bc7a9ec463b7792))
+
 # [2.0.0](https://github.com/ReliefApplications/oort-frontend/compare/v1.3.13...v2.0.0) (2023-07-03)
 
 

@@ -56,3 +56,24 @@
 ::ng-deep .leaflet-control-layers-base {
   padding: 0 !important;
 }
+
+::ng-deep .leaflet-container {
+  z-index: 0;
+}
+
+/**
+  Lowers the height of the zoom control so it has less space if another control is added on the same corner.
+  It also moves the border style from the div wrapper to the main element so it correctly displays.
+*/
+::ng-deep .leaflet-control-fullscreen {
+  height: 26px !important;
+  border: none !important;
+
+  a {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 4px !important;
+    border: 2px solid rgba(0, 0, 0, 0.2) !important;
+    background-clip: padding-box !important;
+  }
+}

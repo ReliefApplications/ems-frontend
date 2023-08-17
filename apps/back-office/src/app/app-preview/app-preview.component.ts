@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit } from '@angular/core';
+import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AbilityBuilder } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
@@ -64,7 +64,7 @@ const getAbilityForAppPreview = (app: Application, role: string) => {
 })
 export class AppPreviewComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   /**
    * Title of application.
@@ -145,6 +145,7 @@ export class AppPreviewComponent
               name: this.translate.instant('common.user.few'),
               path: './settings/users',
               icon: 'supervisor_account',
+              visible: true,
             });
           }
           if (ability.can('read', 'Role')) {
@@ -152,6 +153,7 @@ export class AppPreviewComponent
               name: this.translate.instant('common.role.few'),
               path: './settings/roles',
               icon: 'admin_panel_settings',
+              visible: true,
             });
           }
           if (ability.can('manage', 'Template')) {
@@ -159,6 +161,7 @@ export class AppPreviewComponent
               name: this.translate.instant('common.template.few'),
               path: './settings/templates',
               icon: 'description',
+              visible: true,
             });
           }
           if (ability.can('manage', 'DistributionList')) {
@@ -166,6 +169,7 @@ export class AppPreviewComponent
               name: this.translate.instant('common.distributionList.few'),
               path: './settings/distribution-lists',
               icon: 'mail',
+              visible: true,
             });
           }
           if (ability.can('manage', 'CustomNotification')) {
@@ -173,6 +177,7 @@ export class AppPreviewComponent
               name: this.translate.instant('common.customNotification.few'),
               path: './settings/notifications',
               icon: 'schedule_send',
+              visible: true,
             });
           }
           this.navGroups = [
@@ -187,6 +192,7 @@ export class AppPreviewComponent
                       ? `./${x.type}/${x.id}`
                       : `./${x.type}/${x.content}`,
                   icon: this.getNavIcon(x.type || ''),
+                  visible: x.visible ?? false,
                 })),
             },
             {
@@ -199,7 +205,8 @@ export class AppPreviewComponent
             if (
               this.router.url.endsWith('/') ||
               (this.application && application.id !== this.application?.id) ||
-              !firstPage
+              !firstPage ||
+              (!this.application && application)
             ) {
               if (firstPage) {
                 this.router.navigate(
@@ -222,6 +229,14 @@ export class AppPreviewComponent
           this.navGroups = [];
         }
       });
+  }
+
+  /**
+   * Remove application data such as styling when exiting preview.
+   */
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.applicationService.leaveApplication();
   }
 
   /**

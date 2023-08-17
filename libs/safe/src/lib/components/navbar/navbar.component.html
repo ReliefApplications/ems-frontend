@@ -46,7 +46,7 @@
               >
                 <li
                   [routerLink]="item.path"
-                  routerLinkActive="text-primary-600 bg-gray-50"
+                  routerLinkActive="!text-primary-600 bg-gray-50"
                 >
                   <a
                     class="group"
@@ -146,7 +146,7 @@
               class="show-icons w-full max-w-[200px]"
               *ngIf="canAddPage || item.visible || !appLayout"
             >
-              <li routerLinkActive="text-primary-600 bg-gray-50">
+              <li routerLinkActive="!text-primary-600 bg-gray-50">
                 <a
                   class="group"
                   (click)="largeDevice ? null : nav.toggle()"

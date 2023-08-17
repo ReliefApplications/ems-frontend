@@ -18,6 +18,7 @@ import {
   GetRecordHistoryByIdResponse,
 } from './graphql/queries';
 import { FormControl, FormGroup } from '@angular/forms';
+import isNil from 'lodash/isNil';
 
 /**
  * Return the type of the old value if existing, else the type of the new value.
@@ -80,7 +81,7 @@ export class SafeRecordHistoryComponent
       month: 'short',
       day: 'numeric',
     })} ${today.getFullYear()}`;
-    return `${this.record.incrementalId} ${formatDate}`;
+    return `${this.record?.incrementalId} ${formatDate}`;
   }
 
   /**
@@ -235,12 +236,15 @@ export class SafeRecordHistoryComponent
 
     // objects - non arrays
     const res: any[] = [];
-    const keys = Object.keys(object);
-    keys.forEach((key, i) => {
-      res.push(
-        `${i ? ' ' : ''}${key} (${this.toReadableObjectValue(object[key])})`
-      );
-    });
+    // Prevent errors to be thrown on null objects
+    if (!isNil(object)) {
+      const keys = Object.keys(object);
+      keys.forEach((key, i) => {
+        res.push(
+          `${i ? ' ' : ''}${key} (${this.toReadableObjectValue(object[key])})`
+        );
+      });
+    }
 
     return res;
   }

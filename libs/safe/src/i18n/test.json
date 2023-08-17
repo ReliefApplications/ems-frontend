@@ -133,6 +133,7 @@
 		"modifiedOn": "******",
 		"name": "******",
 		"next": "******",
+		"noOptions": "******",
 		"notifications": {
 			"accessDenied": "****** {{type}} ******",
 			"accessNotProvided": "****** {{type}} ****** {{error}}",
@@ -210,6 +211,7 @@
 			"of": "******"
 		},
 		"placeholder": {
+			"address": "******",
 			"email": "******",
 			"name": "******",
 			"search": "******",
@@ -263,6 +265,7 @@
 		},
 		"save": "******",
 		"saveChanges": "******",
+		"search": "******",
 		"searchObject": "****** {{name}}",
 		"select": "******",
 		"semicolon": "******",
@@ -1107,6 +1110,7 @@
 					"history": "******"
 				},
 				"errors": {
+					"autoSaveFailed": "******",
 					"invalid": {
 						"backoffice": "******",
 						"frontoffice": "******"
@@ -1155,6 +1159,10 @@
 				"loading": {
 					"records": "******",
 					"settings": "******"
+				},
+				"map": {
+					"mapDetailsTitle": "******",
+					"mapDetailsTooltip": "******"
 				},
 				"openSettings": "******",
 				"tooltip": {
@@ -1497,6 +1505,13 @@
 						"webmap": "******",
 						"zoom": "******"
 					},
+					"renderer": {
+						"default": "******",
+						"defaultLabel": "******",
+						"label": "******",
+						"symbol": "******",
+						"value": "******"
+					},
 					"tooltip": {
 						"category": "******",
 						"dataset": "******",
@@ -1506,6 +1521,9 @@
 							"zoom": "******"
 						}
 					}
+				},
+				"style": {
+					"customStyling": "******"
 				},
 				"summaryCard": {
 					"add": "******",
@@ -1563,6 +1581,7 @@
 					"static": "******"
 				}
 			},
+			"styling": "******",
 			"summaryCard": {
 				"dataSource": "******",
 				"errors": {
@@ -1825,8 +1844,13 @@
 					"element": "******"
 				}
 			},
+			"dashboardFilter": "******",
 			"deactivateFiltering": "******",
-			"share": "******"
+			"share": "******",
+			"tooltip": {
+				"useDashboardFilterEditor": "******",
+				"useDefaultEditor": "******"
+			}
 		},
 		"form": {
 			"core": "******",
@@ -1992,7 +2016,8 @@
 				"form": {
 					"title": "******"
 				},
-				"selectType": "******"
+				"selectType": "******",
+				"startFromWidget": "******"
 			},
 			"empty": {
 				"add": "******",
