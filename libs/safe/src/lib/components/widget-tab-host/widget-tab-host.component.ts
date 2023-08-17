@@ -10,7 +10,7 @@ import {
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { SafeApplicationWidgetService } from '../../services/application/application-widget.service';
-import { Subscription, filter } from 'rxjs';
+import { Subject, Subscription, filter, takeUntil } from 'rxjs';
 import { v4 as uuidv4 } from 'uuid';
 
 /**
@@ -31,7 +31,10 @@ export class SafeWidgetTabHostComponent implements OnInit, OnDestroy {
   // === EMIT EVENT ===
   @Output() edit: EventEmitter<any> = new EventEmitter();
   @Output() triggerNavigation: EventEmitter<string> = new EventEmitter();
+
   private activeComponentSubscriptions = new Subscription();
+  private destroy$ = new Subject<void>();
+
   outletName!: string;
   pathName!: string;
 
@@ -57,11 +60,11 @@ export class SafeWidgetTabHostComponent implements OnInit, OnDestroy {
    * Add listeners to listen for application widget changes
    */
   setApplicationWidgetListeners() {
-    console.log(`${this.widget.settings.outletName} has been  activated`);
     this.activeComponentSubscriptions.add(
       this.applicationWidgetService.applicationWidgetTile$
         .pipe(
-          filter((applicationSettings: any | null) => !!applicationSettings)
+          filter((applicationSettings: any | null) => !!applicationSettings),
+          takeUntil(this.destroy$)
         )
         .subscribe({
           next: (applicationSettings: any) => {
@@ -79,11 +82,12 @@ export class SafeWidgetTabHostComponent implements OnInit, OnDestroy {
    * Remove all listeners for application widget changes
    */
   removeApplicationWidgetListeners() {
-    console.log(`${this.widget.settings.outletName} has been deactivated`);
     this.activeComponentSubscriptions.unsubscribe();
   }
 
   ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
     this.removeApplicationWidgetListeners();
   }
 }

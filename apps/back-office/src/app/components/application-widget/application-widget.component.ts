@@ -144,8 +144,8 @@ export class ApplicationWidgetComponent
               application.pages?.length ? application.pages?.length : -1
             );
           }
-          if (this.application && application?.id) {
-            this.settings.applicationId = this.application.id;
+          if (application?.id) {
+            this.settings.applicationId = application.id;
             this.settings = {
               ...this.settings,
               pages: this.pages.filter((p) => !!p.id),

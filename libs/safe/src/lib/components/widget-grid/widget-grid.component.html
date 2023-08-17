@@ -56,6 +56,7 @@
       </safe-floating-options>
       <ng-container *ngIf="widget.component === 'tabs'; else defaultWidgetTmpl">
         <safe-widget-tab-host
+          [style.height]="tabWidgetHeight"
           [widget]="widget"
           (edit)="onEditWidget($event)"
         ></safe-widget-tab-host>
