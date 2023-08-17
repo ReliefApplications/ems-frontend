@@ -14,10 +14,11 @@ import {
 import { SidenavPositionTypes, SidenavTypes } from './types/sidenavs';
 import { DOCUMENT } from '@angular/common';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
-import { DomPortal, DomPortalOutlet } from '@angular/cdk/portal';
+import { DomPortal } from '@angular/cdk/portal';
 
 /**
- * UI Sidenav directive
+ * UI Sidenav directive.
+ * The sidenav appears in a cdk overlay when fullscreen is triggered.
  */
 @Directive({
   selector: '[uiSidenavDirective]',
@@ -37,7 +38,6 @@ export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
 
   private overlayRef?: OverlayRef;
   private portal?: DomPortal;
-  private portalOutlet?: DomPortalOutlet;
 
   /**
    * UI Sidenav directive constructor
@@ -99,7 +99,6 @@ export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
     this.opened = change['opened']?.currentValue ?? false;
     if (this.overlayRef) {
       if (this.opened) {
-        console.log(this.portal);
         this.overlayRef.updateSize({ width: this.portal?.element.offsetWidth });
         this.overlayRef.updatePosition();
       } else {
@@ -136,7 +135,6 @@ export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
     this.portal = new DomPortal(this.el.nativeElement);
     this.overlayRef.attach(this.portal);
     if (this.opened) {
-      console.log(this.portal);
       this.overlayRef.updateSize({
         width: this.portal?.element.offsetWidth,
       });
