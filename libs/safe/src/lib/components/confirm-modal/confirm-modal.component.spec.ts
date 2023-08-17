@@ -9,12 +9,7 @@ import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SafeConfirmModalComponent', () => {
   let component: SafeConfirmModalComponent;
@@ -24,7 +19,6 @@ describe('SafeConfirmModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        TranslateService,
         { provide: DialogRef, useValue: { removePanelClass: jest.fn() } },
         { provide: DIALOG_DATA, useValue: {} },
       ],

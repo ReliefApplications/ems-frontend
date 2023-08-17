@@ -1,12 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { SafeEmailService } from './email.service';
 
@@ -15,12 +10,8 @@ describe('SafeEmailService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [{ provide: 'environment', useValue: {} }, TranslateService],
-      imports: [
-        HttpClientModule,
-        DialogCdkModule,
-        TranslateModule.forRoot(),
-      ],
+      providers: [{ provide: 'environment', useValue: {} }],
+      imports: [HttpClientModule, DialogCdkModule, TranslateModule.forRoot()],
     });
     service = TestBed.inject(SafeEmailService);
   });

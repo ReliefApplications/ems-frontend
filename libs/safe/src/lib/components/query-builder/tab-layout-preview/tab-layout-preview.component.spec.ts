@@ -1,10 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { SafeTabLayoutPreviewComponent } from './tab-layout-preview.component';
 import { AlertModule } from '@oort-front/ui';
 import { SafeCoreGridModule } from '../../ui/core-grid/core-grid.module';
@@ -19,11 +14,7 @@ describe('SafeTabLayoutPreviewComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        TranslateService,
-        { provide: 'environment', useValue: {} },
-        AppAbility,
-      ],
+      providers: [{ provide: 'environment', useValue: {} }, AppAbility],
       declarations: [SafeTabLayoutPreviewComponent],
       imports: [
         TranslateModule.forRoot(),

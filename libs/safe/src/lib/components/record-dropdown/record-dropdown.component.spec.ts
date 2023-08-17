@@ -1,10 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { SafeRecordDropdownComponent } from './record-dropdown.component';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { SelectMenuModule } from '@oort-front/ui';
@@ -16,7 +11,6 @@ describe('SafeRecordDropdownComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [TranslateService],
       declarations: [SafeRecordDropdownComponent],
       imports: [
         TranslateModule.forRoot(),

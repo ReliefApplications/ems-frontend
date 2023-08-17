@@ -6,12 +6,7 @@ import {
   IconModule,
   MenuModule,
 } from '@oort-front/ui';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { SafeFloatingOptionsComponent } from './floating-options.component';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { HttpClientModule } from '@angular/common/http';
@@ -22,7 +17,7 @@ describe('SafeFloatingOptionsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      providers: [TranslateService, { provide: 'environment', useValue: {} }],
+      providers: [{ provide: 'environment', useValue: {} }],
       declarations: [SafeFloatingOptionsComponent],
       imports: [
         DialogCdkModule,

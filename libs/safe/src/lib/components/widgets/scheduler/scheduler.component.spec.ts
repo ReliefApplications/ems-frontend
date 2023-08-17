@@ -1,10 +1,5 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { SafeSchedulerComponent } from './scheduler.component';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { HttpClientModule } from '@angular/common/http';
@@ -16,7 +11,6 @@ describe('SafeSchedulerComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      providers: [TranslateService],
       declarations: [SafeSchedulerComponent],
       imports: [
         TranslateModule.forRoot(),

@@ -5,12 +5,7 @@ import {
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
 import { SafeResourceGridModalComponent } from './search-resource-grid-modal.component';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('ResourceTableModalComponent', () => {
   let component: SafeResourceGridModalComponent;
@@ -25,7 +20,6 @@ describe('ResourceTableModalComponent', () => {
           useValue: { gridSettings: { sort: { field: [] } } },
         },
         { provide: 'environment', useValue: {} },
-        TranslateService,
       ],
       imports: [
         SafeResourceGridModalComponent,

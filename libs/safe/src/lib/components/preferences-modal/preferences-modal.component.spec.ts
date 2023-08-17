@@ -9,13 +9,7 @@ import {
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
-import { UntypedFormBuilder } from '@angular/forms';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('SafePreferencesModalComponent', () => {
@@ -26,8 +20,6 @@ describe('SafePreferencesModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        UntypedFormBuilder,
-        TranslateService,
         { provide: 'environment', useValue: {} },
         { provide: DialogRef, useValue: { updateSize: jest.fn() } },
         {

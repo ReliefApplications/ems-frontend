@@ -2,19 +2,14 @@ import { TestBed } from '@angular/core/testing';
 import { SafeFormBuilderService } from './form-builder.service';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { HttpClientModule } from '@angular/common/http';
-import {
-  TranslateFakeLoader,
-  TranslateLoader,
-  TranslateModule,
-  TranslateService,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SafeFormBuilderService', () => {
   let service: SafeFormBuilderService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [{ provide: 'environment', useValue: {} }, TranslateService],
+      providers: [{ provide: 'environment', useValue: {} }],
       imports: [
         ApolloTestingModule,
         HttpClientModule,

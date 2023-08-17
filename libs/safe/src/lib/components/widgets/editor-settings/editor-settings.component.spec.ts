@@ -1,11 +1,6 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { SafeEditorSettingsComponent } from './editor-settings.component';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { HttpClientModule } from '@angular/common/http';
@@ -22,7 +17,6 @@ describe('SafeEditorSettingsComponent', () => {
     TestBed.configureTestingModule({
       providers: [
         UntypedFormBuilder,
-        TranslateService,
         { provide: 'environment', useValue: { frontOfficeUri: 'http://.' } },
         AppAbility,
       ],

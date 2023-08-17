@@ -4,12 +4,7 @@ import {
   ReactiveFormsModule,
   UntypedFormBuilder,
 } from '@angular/forms';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   ApolloTestingModule,
   ApolloTestingController,
@@ -31,11 +26,7 @@ describe('SafeMapSettingsComponent', () => {
   beforeEach(waitForAsync(() => {
     //TODOTEST
     TestBed.configureTestingModule({
-      providers: [
-        UntypedFormBuilder,
-        TranslateService,
-        { provide: 'environment', useValue: {} },
-      ],
+      providers: [UntypedFormBuilder, { provide: 'environment', useValue: {} }],
       declarations: [SafeMapSettingsComponent],
       imports: [
         BrowserAnimationsModule,

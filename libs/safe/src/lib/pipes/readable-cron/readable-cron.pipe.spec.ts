@@ -1,9 +1,4 @@
-import {
-  TranslateFakeLoader,
-  TranslateLoader,
-  TranslateModule,
-  TranslateService,
-} from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ReadableCronPipe } from './readable-cron.pipe';
 import { TestBed } from '@angular/core/testing';
 
@@ -13,10 +8,7 @@ describe('ReadableCronPipe', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [TranslateService],
-      imports: [
-        TranslateModule.forRoot(),
-      ],
+      imports: [TranslateModule.forRoot()],
     });
     translate = TestBed.inject(TranslateService);
     pipe = new ReadableCronPipe(translate);

@@ -2,12 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { ConfigDisplayGridFieldsModalComponent } from './config-display-grid-fields-modal.component';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import {
   ApolloTestingModule,
@@ -26,7 +21,6 @@ describe('ConfigDisplayGridFieldsModalComponent', () => {
         UntypedFormBuilder,
         { provide: DialogRef, useValue: { removePanelClass: jest.fn() } },
         { provide: DIALOG_DATA, useValue: { types: [] } },
-        TranslateService,
         QueryBuilderService,
       ],
       imports: [

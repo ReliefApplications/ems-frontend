@@ -1,15 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import {
-  FormsModule,
-  ReactiveFormsModule,
-  UntypedFormBuilder,
-} from '@angular/forms';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { SafeSchedulerSettingsComponent } from './scheduler-settings.component';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { HttpClientModule } from '@angular/common/http';
@@ -21,7 +12,6 @@ describe('SafeSchedulerSettingsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      providers: [UntypedFormBuilder, TranslateService],
       declarations: [SafeSchedulerSettingsComponent],
       imports: [
         TranslateModule.forRoot(),

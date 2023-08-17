@@ -1,18 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { ContextService } from './context.service';
 import { ApolloTestingModule } from 'apollo-angular/testing';
-import {
-  TranslateFakeLoader,
-  TranslateLoader,
-  TranslateModule,
-  TranslateService,
-} from '@ngx-translate/core';
-import {
-  DateTimeProvider,
-  OAuthLogger,
-  OAuthService,
-  UrlHelperService,
-} from 'angular-oauth2-oidc';
+import { TranslateModule } from '@ngx-translate/core';
+import { OAuthModule } from 'angular-oauth2-oidc';
 import { HttpClientModule } from '@angular/common/http';
 import { AppAbility } from '../auth/auth.service';
 
@@ -21,16 +11,9 @@ describe('ContextService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        { provide: 'environment', useValue: {} },
-        TranslateService,
-        OAuthService,
-        OAuthLogger,
-        DateTimeProvider,
-        AppAbility,
-        UrlHelperService,
-      ],
+      providers: [{ provide: 'environment', useValue: {} }, AppAbility],
       imports: [
+        OAuthModule.forRoot(),
         ApolloTestingModule,
         TranslateModule.forRoot(),
         HttpClientModule,

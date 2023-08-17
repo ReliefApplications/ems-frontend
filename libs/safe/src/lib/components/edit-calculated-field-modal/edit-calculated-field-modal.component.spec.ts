@@ -6,12 +6,7 @@ import {
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
 import { SafeEditCalculatedFieldModalComponent } from './edit-calculated-field-modal.component';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SafeEditCalculatedFieldModalComponent', () => {
   let component: SafeEditCalculatedFieldModalComponent;
@@ -21,7 +16,6 @@ describe('SafeEditCalculatedFieldModalComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         UntypedFormBuilder,
-        TranslateService,
         {
           provide: 'environment',
           useValue: { frontOfficeUri: 'http://a.com' },

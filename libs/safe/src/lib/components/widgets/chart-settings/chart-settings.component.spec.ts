@@ -1,12 +1,7 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { SafeChartSettingsComponent } from './chart-settings.component';
 import { IconModule, TabsModule, TooltipModule } from '@oort-front/ui';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -17,11 +12,7 @@ describe('SafeChartSettingsComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      providers: [
-        UntypedFormBuilder,
-        { provide: 'environment', useValue: {} },
-        TranslateService,
-      ],
+      providers: [UntypedFormBuilder, { provide: 'environment', useValue: {} }],
       declarations: [SafeChartSettingsComponent],
       imports: [
         BrowserAnimationsModule,

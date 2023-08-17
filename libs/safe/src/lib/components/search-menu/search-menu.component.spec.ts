@@ -1,10 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { SafeSearchMenuComponent } from './search-menu.component';
 import { IconModule } from '@oort-front/ui';
 import { FormsModule } from '@angular/forms';
@@ -15,13 +10,8 @@ describe('SafeSearchMenuComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [TranslateService],
       declarations: [SafeSearchMenuComponent],
-      imports: [
-        TranslateModule.forRoot(),
-        IconModule,
-        FormsModule,
-      ],
+      imports: [TranslateModule.forRoot(), IconModule, FormsModule],
     }).compileComponents();
   });
 

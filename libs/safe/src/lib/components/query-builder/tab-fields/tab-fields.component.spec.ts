@@ -4,12 +4,7 @@ import {
   ReactiveFormsModule,
   UntypedFormBuilder,
 } from '@angular/forms';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { SafeTabFieldsComponent } from './tab-fields.component';
 import {
@@ -28,7 +23,6 @@ describe('SafeTabFieldsComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         UntypedFormBuilder,
-        TranslateService,
         QueryBuilderService,
         {
           provide: 'environment',

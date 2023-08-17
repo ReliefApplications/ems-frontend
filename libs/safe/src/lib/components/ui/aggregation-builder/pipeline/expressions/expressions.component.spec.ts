@@ -1,11 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { SafeExpressionsComponent } from './expressions.component';
 
 describe('SafeExpressionsComponent', () => {
@@ -14,11 +9,8 @@ describe('SafeExpressionsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [TranslateService],
       declarations: [SafeExpressionsComponent],
-      imports: [
-        TranslateModule.forRoot(),
-      ],
+      imports: [TranslateModule.forRoot()],
     }).compileComponents();
   });
 

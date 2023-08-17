@@ -1,12 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
 import { SafeDatePipe } from './date.pipe';
-import {
-  TranslateFakeLoader,
-  TranslateLoader,
-  TranslateModule,
-  TranslateService,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SafeDatePipe', () => {
   let pipe: SafeDatePipe;
@@ -14,10 +9,8 @@ describe('SafeDatePipe', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [SafeDateTranslateService, TranslateService],
-      imports: [
-        TranslateModule.forRoot(),
-      ],
+      providers: [SafeDateTranslateService],
+      imports: [TranslateModule.forRoot()],
     });
     translate = TestBed.inject(SafeDateTranslateService);
     pipe = new SafeDatePipe(translate);
