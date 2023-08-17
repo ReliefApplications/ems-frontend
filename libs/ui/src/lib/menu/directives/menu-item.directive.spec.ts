@@ -13,16 +13,10 @@ import { By } from '@angular/platform-browser';
 @Component({
   standalone: true,
   imports: [MenuModule, IconModule, TranslateModule],
-  template: ` <ui-menu #menu>
-    <button uiMenuItem>
-      <ui-icon icon="edit" variant="grey"></ui-icon>
-      {{ 'common.edit' | translate }}
-    </button>
-    <button uiMenuItem>
-      <ui-icon icon="delete" variant="danger"></ui-icon>
-      {{ 'common.delete' | translate }}
-    </button>
-  </ui-menu>`,
+  template: ` <button uiMenuItem>
+    <ui-icon icon="edit" variant="grey"></ui-icon>
+    {{ 'common.edit' | translate }}
+  </button>`,
 })
 class TestingComponent {}
 describe('MenuItemDirective', () => {
@@ -33,7 +27,7 @@ describe('MenuItemDirective', () => {
       imports: [
         TestingComponent,
         TranslateTestingModule.withTranslations('en', {
-          common: { edit: 'Edit', delete: 'Delete' },
+          common: { edit: 'Edit' },
         }),
       ],
     }).compileComponents();

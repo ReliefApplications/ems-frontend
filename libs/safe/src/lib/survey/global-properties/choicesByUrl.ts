@@ -1,5 +1,21 @@
-import { get } from 'lodash';
-import { QuestionSelectBase, SurveyModel } from 'survey-angular';
+import { get, isNil, set } from 'lodash';
+import { Question } from 'survey-angular';
+
+/** Default properties of the ChoicesRestful class */
+const DEFAULT_PROPERTIES = [
+  // New properties
+  'usePost',
+  'requestBody',
+
+  // Default properties
+  'url',
+  'path',
+  'valueName',
+  'titleName',
+  'imageLinkName',
+  'allowEmptyResponse',
+  'attachOriginalItems',
+] as const;
 
 /** Class used internally by surveyJS, but not exported */
 class XmlParser {
@@ -48,15 +64,35 @@ class XmlParser {
  * @param Survey Survey instance
  */
 export const init = (Survey: any): void => {
-  Survey.Serializer.findClass('choicesByUrl').createProperty({
-    name: 'usePost:boolean',
-    displayName: 'Use POST',
+  Survey.Serializer.addProperty('selectBase', {
+    name: 'requestBody:expression',
+    category: 'choicesByUrl',
+    visibleIndex: 3,
+    required: true,
+    onExecuteExpression: (obj: Question, res: string) => {
+      if (!obj.choicesByUrl) {
+        return;
+      }
+      // Checks if Is GraphQL query or not
+      if (obj.isGraphQL) {
+        obj.choicesByUrl.requestBody = JSON.stringify({ query: res });
+      } else {
+        obj.choicesByUrl.requestBody = res;
+      }
+      obj.choicesByUrl.sendRequest();
+    },
   });
 
-  Survey.Serializer.findClass('choicesByUrl').createProperty({
-    name: 'requestBody:text',
-    dependsOn: 'usePost',
-    visibleIf: (obj: QuestionSelectBase) => obj.usePost,
+  Survey.Serializer.addProperty('selectBase', {
+    name: 'isGraphQL:boolean',
+    displayName: 'Is GraphQL query',
+    category: 'choicesByUrl',
+  });
+
+  Survey.Serializer.addProperty('selectBase', {
+    name: 'usePost:boolean',
+    displayName: 'Use POST',
+    category: 'choicesByUrl',
   });
 
   /**
@@ -66,23 +102,14 @@ export const init = (Survey: any): void => {
    */
   Survey.ChoicesRestful.prototype.setData = function (json: any) {
     this.clear();
-    // adds requestBody
-    if (json.requestBody) this.requestBody = json.requestBody;
-    if (json.usePost !== undefined) this.usePost = json.usePost;
 
-    // Previous code
-    if (json.url) this.url = json.url;
-    if (json.path) this.path = json.path;
-    if (json.valueName) this.valueName = json.valueName;
-    if (json.titleName) this.titleName = json.titleName;
-    if (json.imageLinkName) this.imageLinkName = json.imageLinkName;
-    if (json.allowEmptyResponse !== undefined)
-      this.allowEmptyResponse = json.allowEmptyResponse;
-    if (json.attachOriginalItems !== undefined)
-      this.attachOriginalItems = json.attachOriginalItems;
-    const properties = this.getCustomPropertiesNames();
+    const properties = (this.getCustomPropertiesNames() ?? []).concat(
+      DEFAULT_PROPERTIES
+    );
     for (let i = 0; i < properties.length; i++) {
-      if (json[properties[i]]) this[properties[i]] = json[properties[i]];
+      if (!isNil(json[properties[i]])) {
+        set(this, properties[i], json[properties[i]]);
+      }
     }
   };
 
@@ -90,20 +117,13 @@ export const init = (Survey: any): void => {
   Survey.ChoicesRestful.prototype.getData = function () {
     if (this.isEmpty) return null;
     const res = {} as any;
-    if (this.url) res['url'] = this.url;
-    if (this.path) res['path'] = this.path;
-    if (this.valueName) res['valueName'] = this.valueName;
-    if (this.titleName) res['titleName'] = this.titleName;
-    if (this.imageLinkName) res['imageLinkName'] = this.imageLinkName;
-    if (this.requestBody) res['requestBody'] = this.requestBody;
-    if (this.usePost) res['usePost'] = this.usePost;
-    if (this.allowEmptyResponse)
-      res['allowEmptyResponse'] = this.allowEmptyResponse;
-    if (this.attachOriginalItems)
-      res['attachOriginalItems'] = this.attachOriginalItems;
-    const properties = this.getCustomPropertiesNames();
+    const properties = (this.getCustomPropertiesNames() ?? []).concat(
+      DEFAULT_PROPERTIES
+    );
     for (let i = 0; i < properties.length; i++) {
-      if (this[properties[i]]) res[properties[i]] = this[properties[i]];
+      if (!isNil(this[properties[i]])) {
+        set(res, properties[i], this[properties[i]]);
+      }
     }
     return res;
   };
@@ -121,7 +141,9 @@ export const init = (Survey: any): void => {
     this.imageLinkName = '';
     const properties = this.getCustomPropertiesNames();
     for (let i = 0; i < properties.length; i++) {
-      if (this[properties[i]]) this[properties[i]] = '';
+      if (this[properties[i]]) {
+        set(this, properties[i], '');
+      }
     }
   };
 
@@ -145,27 +167,6 @@ export const init = (Survey: any): void => {
   /** Overwrites sendRequest to be able to make POST requests */
   Survey.ChoicesRestful.prototype.sendRequest = function () {
     this.error = null;
-    const survey: SurveyModel = this.owner.survey;
-    let requestBody = this.requestBody;
-
-    survey.getAllQuestions().forEach((question) => {
-      const name = question.name;
-
-      // replace {questionName} with question value
-      if (requestBody.includes(`{${name}}`)) {
-        const regex = new RegExp(`{${name}}`, 'g');
-        requestBody = requestBody.replace(regex, question.value);
-
-        // listen to question value changes
-        question.registerFunctionOnPropertyValueChanged(
-          'value',
-          () => {
-            this.sendRequest();
-          },
-          'choicesByUrl'
-        );
-      }
-    });
 
     const headers = new Headers();
     headers.append(
@@ -180,7 +181,7 @@ export const init = (Survey: any): void => {
     };
 
     Object.assign(options, { method: this.usePost ? 'POST' : 'GET' });
-    if (this.requestBody) Object.assign(options, { body: requestBody });
+    if (this.requestBody) Object.assign(options, { body: this.requestBody });
 
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
