@@ -132,6 +132,7 @@ export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
         .withGrowAfterOpen(),
       minHeight: '100vh',
     });
+    this.renderer.addClass(this.el.nativeElement, 'h-screen');
     this.portal = new DomPortal(this.el.nativeElement);
     this.overlayRef.attach(this.portal);
     if (this.opened) {
@@ -148,6 +149,9 @@ export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
    */
   private closeOverlay() {
     this.overlayRef?.dispose();
+    if (this.opened) {
+      this.renderer.removeClass(this.el.nativeElement, 'h-screen');
+    }
   }
 
   /** Handles the toggle of the sidenav status */
