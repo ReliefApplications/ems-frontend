@@ -82,8 +82,8 @@ export class SafeEditorControlComponent
   /**
    * Sets the placeholder
    */
-  set placeholder(plh) {
-    this.ePlaceholder = plh;
+  set placeholder(placeholder: string) {
+    this.ePlaceholder = placeholder;
     this.stateChanges.next();
   }
   private ePlaceholder = '';
@@ -122,7 +122,7 @@ export class SafeEditorControlComponent
   /**
    * Sets whether the field is required
    */
-  set required(req) {
+  set required(req: boolean) {
     this.isRequired = coerceBooleanProperty(req);
     this.stateChanges.next();
   }
@@ -141,8 +141,11 @@ export class SafeEditorControlComponent
   /** Sets whether the field is disabled */
   set disabled(value: boolean) {
     const isDisabled = coerceBooleanProperty(value);
-    if (isDisabled) this.ngControl.control?.disable();
-    else this.ngControl.control?.enable();
+    if (isDisabled) {
+      this.ngControl.control?.disable();
+    } else {
+      this.ngControl.control?.enable();
+    }
     this.stateChanges.next();
   }
 
@@ -235,7 +238,9 @@ export class SafeEditorControlComponent
     const controlElement = this.elementRef.nativeElement.querySelector(
       '.safe-editor-control'
     );
-    if (!controlElement) return;
+    if (!controlElement) {
+      return;
+    }
     controlElement.setAttribute('aria-describedby', ids.join(' '));
   }
 
@@ -243,7 +248,9 @@ export class SafeEditorControlComponent
    * Handles mouse click on container
    */
   onContainerClick() {
-    if (this.editor) this.editor.editor.focus();
+    if (this.editor) {
+      this.editor.editor.focus();
+    }
   }
 
   /**
@@ -260,7 +267,7 @@ export class SafeEditorControlComponent
    *
    * @param fn onChange function from the parent form
    */
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (_: any) => void): void {
     this.onChange = fn;
   }
 
@@ -269,7 +276,7 @@ export class SafeEditorControlComponent
    *
    * @param fn onTouched function from the parent form
    */
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 

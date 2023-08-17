@@ -47,6 +47,7 @@ export class GraphQLSelectComponent
   @Input() valueField = '';
   @Input() textField = '';
   @Input() path = '';
+  /** Add type to selectedElements */
   @Input() selectedElements: any[] = [];
   @Input() filterable = false;
   // eslint-disable-next-line @angular-eslint/no-input-rename
@@ -239,7 +240,7 @@ export class GraphQLSelectComponent
    *
    * @param fn onChange function
    */
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (_: any) => void): void {
     this.onChange = fn;
   }
 
@@ -248,7 +249,7 @@ export class GraphQLSelectComponent
    *
    * @param fn onTouched function
    */
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 

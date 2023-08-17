@@ -41,7 +41,7 @@ export class ToggleComponent implements ControlValueAccessor {
 
   /** @returns general toggle classes and variant */
   get toggleClasses(): string[] {
-    const classes = [];
+    const classes: string[] = [];
     // Disable state
     classes.push(this.disabled ? 'opacity-70' : '');
     // Space from button to label depending on label position
@@ -65,7 +65,7 @@ export class ToggleComponent implements ControlValueAccessor {
 
   /** @returns shot toggle classes and variant */
   get shortToggleClasses(): string[] {
-    const classes = [];
+    const classes: string[] = [];
     if (!this.value) {
       classes.push('bg-gray-200');
     } else {
@@ -101,7 +101,7 @@ export class ToggleComponent implements ControlValueAccessor {
    *
    * @param fn callback function
    */
-  public registerOnChange(fn: any): void {
+  public registerOnChange(fn: (value: boolean) => void): void {
     if (!this.onChange) {
       this.onChange = fn;
     }
@@ -112,7 +112,7 @@ export class ToggleComponent implements ControlValueAccessor {
    *
    * @param fn callback function
    */
-  public registerOnTouched(fn: any): void {
+  public registerOnTouched(fn: () => void): void {
     if (!this.onTouch) {
       this.onTouch = fn;
     }
