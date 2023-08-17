@@ -167,7 +167,6 @@ export class DashboardComponent
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe((value) => {
         if (value) {
-          console.log(value);
           this.handleContextChange(value);
         }
       });
