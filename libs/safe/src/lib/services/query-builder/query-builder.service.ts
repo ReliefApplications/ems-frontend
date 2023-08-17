@@ -11,6 +11,7 @@ import { UntypedFormBuilder } from '@angular/forms';
 import { ApolloQueryResult } from '@apollo/client';
 import get from 'lodash/get';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { Connection } from '../../utils/public-api';
 
 /** Interface for the variables of a query */
 interface QueryVariables {
@@ -25,13 +26,7 @@ interface QueryVariables {
 
 /** Interface for a query response */
 export interface QueryResponse {
-  [key: string]: {
-    totalCount: number;
-    edges: {
-      node: any;
-      meta: any;
-    }[];
-  };
+  [key: string]: Connection<any>;
 }
 
 /** Field interface definition */
@@ -373,6 +368,10 @@ export class QueryBuilderService {
           meta
         }
         totalCount
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
       }
     }
   `;

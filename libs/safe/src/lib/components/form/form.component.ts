@@ -30,7 +30,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import { SnackbarService } from '@oort-front/ui';
-import { cloneDeep } from 'lodash';
+import { cloneDeep, isNil } from 'lodash';
 
 /**
  * This component is used to display forms
@@ -116,14 +116,12 @@ export class SafeFormComponent
 
     this.survey = this.formBuilderService.createSurvey(
       JSON.stringify(structure),
-      this.pages,
       this.form.metadata,
       this.record
     );
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
-      this.pages,
       this.selectedPageIndex,
       this.temporaryFilesStorage
     );
@@ -136,11 +134,11 @@ export class SafeFormComponent
     this.survey.onComplete.add(this.onComplete);
 
     // Unset readOnly fields if it's the record creation
-    if (!this.record) {
+    // It's a requirement to let all fields been editable during addition of records
+    if (!isNil(this.record)) {
       this.form.fields?.forEach((field) => {
-        if (field.readOnly) {
-          this.survey.getQuestionByName(field.name).readOnly = false;
-        }
+        if (field.readOnly && this.survey.getQuestionByName(field.name))
+          this.survey.getQuestionByName(field.name).readOnly = true;
       });
     }
     // Fetch cached data from local storage
@@ -422,5 +420,6 @@ export class SafeFormComponent
     super.ngOnDestroy();
     localStorage.removeItem(this.storageId);
     this.formHelpersService.cleanCachedRecords(this.survey);
+    this.survey?.dispose();
   }
 }

@@ -3,7 +3,6 @@ import {
   AbstractControl,
   FormControl,
   FormGroup,
-  UntypedFormBuilder,
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -110,7 +109,6 @@ export class ReferenceDataComponent
    * @param route Angular route
    * @param snackBar Shared snackbar service
    * @param router Angular router
-   * @param formBuilder Angular form builder
    * @param translateService Angular translate service
    * @param breadcrumbService Setups the breadcrumb component variables
    * @param refDataService Reference data service
@@ -120,7 +118,6 @@ export class ReferenceDataComponent
     private route: ActivatedRoute,
     private snackBar: SnackbarService,
     private router: Router,
-    private formBuilder: UntypedFormBuilder,
     private translateService: TranslateService,
     private breadcrumbService: SafeBreadcrumbService,
     private refDataService: SafeReferenceDataService
@@ -505,13 +502,13 @@ export class ReferenceDataComponent
       this.newData = [];
       const lines = dataTemp.split('\n');
       const headers = lines[0]
-        .split(this.separator.value)
+        .split(this.separator.value || ',')
         .map((x: string) => x.trim());
       if (lines.length < 2) return;
       // Infer types from first line
       const fields = headers.reduce((acc: any, header: any) => {
         const value = lines[1]
-          .split(this.separator.value)
+          .split(this.separator.value || ',')
           [headers.indexOf(header)].trim();
         const type = inferTypeFromString(value);
         acc.push({ name: header, type });
@@ -522,7 +519,7 @@ export class ReferenceDataComponent
         if (!lines[i]) continue;
         const obj: any = {};
         const currentline = lines[i]
-          .split(this.separator.value)
+          .split(this.separator.value || ',')
           .map((x: string) => x.trim());
         for (let j = 0; j < headers.length; j++) {
           obj[headers[j]] = currentline[j];

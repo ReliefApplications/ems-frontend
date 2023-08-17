@@ -92,7 +92,7 @@ export class GeospatialMapComponent
   };
 
   // Layer to edit
-  public selectedLayer: any;
+  public selectedLayer?: L.Layer;
   public controls: any = {
     position: 'topright',
     drawText: false,
@@ -268,7 +268,7 @@ export class GeospatialMapComponent
 
     // updates question value on removing shapes
     this.mapComponent?.map.on('pm:remove', () => {
-      this.selectedLayer = null;
+      this.selectedLayer = undefined;
       // If no markers, we enable the point marker control again
       if (this.noLayerContent()) {
         this.geoForm.setValue(DEFAULT_GEOCODING);
