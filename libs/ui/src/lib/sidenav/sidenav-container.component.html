@@ -4,7 +4,7 @@
   <ng-container *ngFor="let sidenav of uiSidenavDirective; let i = index">
     <div
       #sidenav
-      class="will-change-transform overflow-y-auto bg-white translate-x-0"
+      class="will-change-transform overflow-y-auto bg-white translate-x-0 h-full"
       [attr.data-sidenav-show]="showSidenav[i]"
       [ngClass]="resolveSidenavClasses(i)">
       <div class="flex flex-col h-full"></div>

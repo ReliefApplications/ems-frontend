@@ -119,14 +119,15 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
     sidenavElement: any,
     sidenavDirective: SidenavDirective
   ) {
-    if (sidenavDirective.position === 'end') {
-      this.renderer.removeClass(sidenavElement, 'h-full');
-      this.renderer.setStyle(
-        sidenavElement,
-        'height',
-        `${this.el.nativeElement.clientHeight}px`
-      );
-    }
+    console.log(sidenavElement, sidenavDirective);
+    // if (sidenavDirective.position === 'end') {
+    //   this.renderer.removeClass(sidenavElement, 'h-full');
+    //   this.renderer.setStyle(
+    //     sidenavElement,
+    //     'height',
+    //     `${this.el.nativeElement.clientHeight}px`
+    //   );
+    // }
   }
   /**
    * Resolve sidenav classes by given properties
@@ -145,7 +146,6 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
       classes.push('border-gray-200');
     }
     if (this.mode[index] === 'over') {
-      classes.push('h-full');
       classes.push('left-0');
       classes.push('top-0');
       classes.push('fixed');
