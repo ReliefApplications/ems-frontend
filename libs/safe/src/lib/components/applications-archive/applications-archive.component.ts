@@ -1,5 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
 
+import { TranslateService } from '@ngx-translate/core';
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
+import {
+  SafeApplicationService,
+  SafeConfirmService,
+  SafeUnsubscribeComponent,
+} from '@oort-front/safe';
+import { takeUntil } from 'rxjs';
+
 /**
  * Mocked Interface
  */
@@ -17,7 +26,10 @@ export interface ArchivePage {
   templateUrl: './applications-archive.component.html',
   styleUrls: ['./applications-archive.component.scss'],
 })
-export class ApplicationsArchiveComponent implements OnInit {
+export class ApplicationsArchiveComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   loading = false;
   @Input() itemList: ArchivePage[] = [];
   public filteredArchiveList: Array<ArchivePage> = new Array<ArchivePage>();
@@ -85,5 +97,51 @@ export class ApplicationsArchiveComponent implements OnInit {
    */
   onSelectArchive(archiveApp: ArchivePage) {
     console.log(archiveApp);
+  }
+
+  constructor(
+    private applicationService: SafeApplicationService,
+    private translate: TranslateService,
+    private confirmService: SafeConfirmService
+  ) {
+    super();
+  }
+
+  onDelete(item: any): void {
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('common.deleteObject', {
+        name: this.translate.instant('common.page.one'),
+      }),
+      content: this.translate.instant(
+        'components.application.pages.delete.confirmationMessage',
+        { name: item.name }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmVariant: 'danger',
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        this.applicationService.deletePage(item.id);
+      }
+    });
+  }
+
+  onRestore(item: any): void {
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translate.instant('common.restoreObject', {
+        name: this.translate.instant('common.page.one'),
+      }),
+      content: this.translate.instant(
+        'components.application.pages.restore.confirmationMessage',
+        { name: item.name }
+      ),
+      confirmText: this.translate.instant('components.confirmModal.restore'),
+      confirmVariant: 'danger',
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        // this.applicationService.restorePage(item.id);
+      }
+    });
   }
 }

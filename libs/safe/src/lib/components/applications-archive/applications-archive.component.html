@@ -49,11 +49,11 @@
           <td uiCell *cdkCellDef="let element">
             <ui-button [isIcon]="true" icon="more_vert" [uiMenuTriggerFor]="menu"></ui-button>
             <ui-menu #menu>
-              <button uiMenuItem>
+              <button uiMenuItem (click)="onRestore(element)">
                 <ui-icon icon="restore_page" variant="grey"></ui-icon>
                 {{ 'common.archive.restore' | translate }}
               </button>
-              <button uiMenuItem>
+              <button uiMenuItem (click)="onDelete(element)">
                 <ui-icon icon="delete" variant="grey"></ui-icon>
                 {{ 'common.archive.delete' | translate }}
               </button>

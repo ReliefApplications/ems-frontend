@@ -83,7 +83,7 @@ export class ArchiveComponent
       )
       .subscribe({
         next: ({ data }) => {
-          console.log(data);
+          // console.log(data);
           if (data) {
             this.itemList =
               data.application.pages
