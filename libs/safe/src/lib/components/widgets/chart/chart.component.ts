@@ -143,20 +143,16 @@ export class SafeChartComponent
     this.loading = true;
     if (this.settings.resource || this.settings.referenceData) {
       this.aggregationService
-        .getAggregations(
-            this.settings.resource,
-            this.settings.referenceData,
-            {
-              ids: [get(this.settings, 'chart.aggregationId', null)],
-              first: 1,
-            }
-        )
+        .getAggregations(this.settings.resource, this.settings.referenceData, {
+          ids: [get(this.settings, 'chart.aggregationId', null)],
+          first: 1,
+        })
         .then((res) => {
           const aggregation = res.edges[0]?.node || null;
           if (aggregation) {
             this.dataQuery = this.aggregationService.aggregationDataQuery(
               this.settings.resource,
-                this.settings.referenceData,
+              this.settings.referenceData,
               aggregation.id || '',
               get(this.settings, 'chart.mapping', null),
               this.settings.contextFilters

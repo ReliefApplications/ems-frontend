@@ -162,7 +162,7 @@ export class SafeAggregationService {
             first,
             skip,
             contextFilters,
-      },
+          },
         })
       : this.apollo.watchQuery<GetAggregationDataQueryResponse>({
           query: GET_REFERENCE_DATA_AGGREGATION_DATA,
