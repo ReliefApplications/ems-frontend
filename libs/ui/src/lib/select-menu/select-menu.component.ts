@@ -53,6 +53,8 @@ export class SelectMenuComponent
   /** Any custom template provided for display */
   @Input()
   customTemplate!: { template: TemplateRef<any>; context: any };
+  /** Add extra classes that will apply to the wrapper element */
+  @Input() extraClasses?: string;
 
   // Emits when the list is opened
   @Output() opened = new EventEmitter<void>();

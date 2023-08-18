@@ -372,6 +372,7 @@ export class SafeSummaryCardComponent
             }
           );
 
+          this.sortFields = [];
           // select sort fields that match the current layout
           const layoutFieldsName = layoutFields.map((a: any) => a.name);
 
@@ -380,6 +381,7 @@ export class SafeSummaryCardComponent
               this.sortFields.push(sortField);
             }
           });
+
           if (this.contextFilters && layoutQuery.filter) {
             layoutQuery.filter = {
               logic: 'and',

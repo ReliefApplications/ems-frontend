@@ -25,12 +25,6 @@ import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
 import { takeUntil } from 'rxjs';
 
-/** TODO: Replace once we have UI */
-const DEFAULT_CONTEXT_FILTER = `{
-  "logic": "and",
-  "filters": []
-}`;
-
 /**
  * Create a card form
  *
