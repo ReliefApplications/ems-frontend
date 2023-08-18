@@ -277,10 +277,7 @@ export class SafeGridWidgetComponent
     // Attaches the records to another one.
     if (options.attachToRecord && this.grid.selectedRows.length > 0) {
       this.blockModifySelectedRows = true;
-      await this.promisedAttachToRecord(
-        this.grid.selectedRows,
-        options
-      );
+      await this.promisedAttachToRecord(this.grid.selectedRows, options);
     }
 
     const promises: Promise<any>[] = [];
@@ -489,14 +486,16 @@ export class SafeGridWidgetComponent
     }
     const data = cleanRecord(update);
     return firstValueFrom(
-      this.apollo.mutate<EditRecordsMutationResponse>({
-        mutation: EDIT_RECORDS,
-        variables: {
-          ids,
-          data,
-          template: get(this.settings, 'template', null),
-        },
-      }).pipe(map(() => this.grid.reloadData()))
+      this.apollo
+        .mutate<EditRecordsMutationResponse>({
+          mutation: EDIT_RECORDS,
+          variables: {
+            ids,
+            data,
+            template: get(this.settings, 'template', null),
+          },
+        })
+        .pipe(map(() => this.grid.reloadData()))
     );
   }
 
