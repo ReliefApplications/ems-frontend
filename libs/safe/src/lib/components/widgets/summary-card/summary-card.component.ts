@@ -37,8 +37,11 @@ export type CardT = NonNullable<SummaryCardFormT['value']['card']> &
 import { Layout } from '../../../models/layout.model';
 import { FormControl } from '@angular/forms';
 import { clone, isNaN } from 'lodash';
+import { searchFilters } from '../../../utils/filter/search-filters';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
+import { ContextService } from '../../../services/context/context.service';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -73,7 +76,6 @@ export class SafeSummaryCardComponent
     pageIndex: 0,
     pageSize: DEFAULT_PAGE_SIZE,
     length: 0,
-    skip: 0,
   };
   public loading = true;
 
@@ -84,6 +86,10 @@ export class SafeSummaryCardComponent
 
   private layout: Layout | null = null;
   private fields: any[] = [];
+  private contextFilters: CompositeFilterDescriptor = {
+    logic: 'and',
+    filters: [],
+  };
 
   public searchControl = new FormControl('');
   public scrolling = false;
@@ -121,6 +127,7 @@ export class SafeSummaryCardComponent
    * @param queryBuilder Query builder service
    * @param gridLayoutService Shared grid layout service
    * @param aggregationService Aggregation service
+   * @param contextService ContextService
    * @param elementRef Element Ref
    */
   constructor(
@@ -131,18 +138,36 @@ export class SafeSummaryCardComponent
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: SafeGridLayoutService,
     private aggregationService: SafeAggregationService,
+    private contextService: ContextService,
     private elementRef: ElementRef
   ) {
     super();
   }
 
   ngOnInit(): void {
+    // TODO: Replace once we have a proper UI
+    this.contextFilters = this.widget.settings.contextFilters
+      ? JSON.parse(this.widget.settings.contextFilters)
+      : this.contextFilters;
+
     this.setupDynamicCards();
     this.setupGridSettings();
     this.searchControl.valueChanges
       .pipe(debounceTime(2000), distinctUntilChanged())
       .subscribe((value) => {
         this.handleSearch(value || '');
+      });
+
+    this.contextService.filter$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.setupDynamicCards();
+      });
+
+    this.contextService.isFilterEnabled$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.setupDynamicCards();
       });
   }
 
@@ -175,7 +200,6 @@ export class SafeSummaryCardComponent
    * @returns new number of cols.
    */
   private setColsNumber(width: number): number {
-    console.log(width);
     if (width <= 480) {
       return 1;
     }
@@ -211,7 +235,6 @@ export class SafeSummaryCardComponent
     const needRefetch = !this.settings.card?.aggregation;
     const skippedFields = ['id', 'incrementalId'];
     this.pageInfo.pageIndex = 0;
-    this.pageInfo.skip = 0;
 
     if (!needRefetch) {
       this.sortedCachedCards = this.cachedCards.filter((card: any) => {
@@ -232,34 +255,18 @@ export class SafeSummaryCardComponent
       this.pageInfo.length = this.sortedCachedCards.length;
     } else {
       this.loading = true;
-      const filters: {
-        field: string;
-        operator: string;
-        value: string | number;
-      }[] = [];
-      this.fields.forEach((field) => {
-        if (skippedFields.includes(field.name)) return;
-        if (field?.type === 'text')
-          filters.push({
-            field: field.name,
-            operator: 'contains',
-            value: search,
-          });
-        if (field?.type === 'numeric' && !isNaN(parseFloat(search)))
-          filters.push({
-            field: field.name,
-            operator: 'eq',
-            value: parseFloat(search),
-          });
-      });
-      const searchFilter = {
-        logic: 'or',
-        filters,
-      };
-
       this.filters = {
         logic: 'and',
-        filters: [searchFilter, this.layout?.query.filter],
+        filters: [
+          {
+            logic: 'and',
+            filters: [this.layout?.query.filter],
+          },
+          {
+            logic: 'or',
+            filters: searchFilters(search, this.fields, skippedFields),
+          },
+        ],
       };
 
       this.dataQuery
@@ -364,6 +371,18 @@ export class SafeSummaryCardComponent
             }
           );
 
+          if (this.contextFilters && layoutQuery.filter) {
+            layoutQuery.filter = {
+              logic: 'and',
+              filters: [
+                layoutQuery.filter,
+                this.contextService.injectDashboardFilterValues(
+                  this.contextFilters
+                ),
+              ],
+            };
+          }
+
           if (builtQuery) {
             this.filters = layoutQuery.filter;
             this.dataQuery = this.apollo.watchQuery<any>({
@@ -391,35 +410,32 @@ export class SafeSummaryCardComponent
    */
   private async setupGridSettings() {
     const card = this.settings.card;
-    if (!card || !card.resource || !card.layout) return;
+    if (!card || !card.resource || (!card.layout && !card.aggregation)) return;
 
-    this.gridLayoutService
-      .getLayouts(card.resource, { ids: [card.layout], first: 1 })
-      .then((res) => {
-        const layouts = res.edges.map((edge) => edge.node);
-        if (layouts.length > 0) {
-          const layout = layouts[0] || null;
-          this.gridSettings = {
-            ...{ template: get(this.settings, 'template', null) }, //TO MODIFY
-            ...{ resource: card.resource },
-            ...{ layouts: layout.id },
-            ...{
-              actions: {
-                //default actions, might need to modify later
-                addRecord: false,
-                convert: true,
-                delete: true,
-                export: true,
-                history: true,
-                inlineEdition: true,
-                showDetails: true,
-                update: true,
-              },
-            },
-          };
-        }
-      });
-    return;
+    const settings = {
+      template: get(this.settings, 'template', null), //TO MODIFY
+      resource: card.resource,
+      actions: {
+        //default actions, might need to modify later
+        addRecord: false,
+        convert: true,
+        delete: true,
+        export: true,
+        history: true,
+        inlineEdition: true,
+        showDetails: true,
+        update: true,
+      },
+    };
+
+    Object.assign(
+      settings,
+      card.aggregation
+        ? { aggregations: card.aggregation }
+        : { layouts: card.layout }
+    );
+
+    this.gridSettings = settings;
   }
 
   /**
@@ -432,11 +448,13 @@ export class SafeSummaryCardComponent
   ) {
     if (!card.aggregation || !card.resource) return;
     this.loading = true;
+
     this.dataQuery = this.aggregationService.aggregationDataWatchQuery(
       card.resource,
       card.aggregation,
       DEFAULT_PAGE_SIZE,
-      0
+      0,
+      this.contextService.injectDashboardFilterValues(this.contextFilters)
     );
 
     this.dataQuery.valueChanges
@@ -474,7 +492,6 @@ export class SafeSummaryCardComponent
    */
   public onPage(event: UIPageChangeEvent): void {
     this.pageInfo.pageSize = event.pageSize;
-    this.pageInfo.skip = event.skip;
 
     if (this.dataQuery) {
       this.loading = true;

@@ -5,4 +5,5 @@ export interface Breadcrumb {
   text?: string;
   key?: string;
   queryParams?: any;
+  showLabel: boolean;
 }

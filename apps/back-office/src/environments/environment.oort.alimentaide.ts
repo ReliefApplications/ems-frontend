@@ -1,6 +1,7 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/oort/oort.prod';
 import { sharedEnvironment } from './environment.shared';
+import { Environment } from './environment.type';
 
 /**
  * Authentication configuration
@@ -19,7 +20,7 @@ const authConfig: AuthConfig = {
 /**
  * Environment file for local development.
  */
-export const environment = {
+export const environment: Environment = {
   ...sharedEnvironment,
   production: true,
   apiUrl: 'https://alimentaide-973-guyane.oortcloud.tech/api',

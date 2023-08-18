@@ -128,6 +128,7 @@ export class MapLayersComponent
     const { EditLayerModalComponent } = await import(
       '../edit-layer-modal/edit-layer-modal.component'
     );
+    this.mapComponent?.resetLayers();
     const dialogRef = this.dialog.open(EditLayerModalComponent, {
       disableClose: true,
       autoFocus: false,
@@ -186,6 +187,7 @@ export class MapLayersComponent
         const { EditLayerModalComponent } = await import(
           '../edit-layer-modal/edit-layer-modal.component'
         );
+        this.mapComponent?.resetLayers();
         const dialogRef = this.dialog.open(EditLayerModalComponent, {
           disableClose: true,
           autoFocus: false,
@@ -208,6 +210,10 @@ export class MapLayersComponent
                       (layer) => layer.id === id
                     );
                     if (index !== -1) {
+                      this.mapLayers.splice(index, 1, {
+                        ...res,
+                        name: value.name,
+                      });
                       this.restoreMapSettingsView();
                     } else {
                       // Selecting a new layer

@@ -27,23 +27,10 @@ jobs:
         run: echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
       - name: Install Dependencies
         run: npm i
-      - name: Build Shared Library - ${{ steps.get_version.outputs.version }}
-        run: npm run build -- --configuration=production safe
-        if: ${{startsWith(steps.get_version.outputs.version, '1.')}}
       - name: Build Back-office ${{ github.event.client_payload.environment }} - ${{ steps.get_version.outputs.version }}
-        run: |
-          if ${{startsWith(steps.get_version.outputs.version, '1.')}}; then
-            npm run build -- --configuration=${{ secrets.CONFIG }} --project=back-office
-          else
-            npx nx run back-office:build:${{ secrets.CONFIG }} --outputPath=dist/back-office
-          fi
+        run: npx nx run back-office:build:${{ secrets.CONFIG }}
       - name: Build Front-office ${{ github.event.client_payload.environment }} - ${{ steps.get_version.outputs.version }}
-        run: |
-          if ${{startsWith(steps.get_version.outputs.version, '1.')}}; then
-            npm run build -- --configuration=${{ secrets.CONFIG }} --project=front-office
-          else
-            npx nx run front-office:build:${{ secrets.CONFIG }} --outputPath=dist/front-office
-          fi
+        run: npx nx run front-office:build:${{ secrets.CONFIG }}
       - name: Archive build Back-office
         if: success()
         uses: actions/upload-artifact@v3

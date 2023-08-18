@@ -117,6 +117,7 @@ export class SafeApplicationService {
   private environment: any;
 
   /** Application custom style */
+  public rawCustomStyle?: string;
   public customStyle?: HTMLStyleElement;
   public customStyleEdited = false;
 
@@ -216,7 +217,7 @@ export class SafeApplicationService {
         await this.getCustomStyle(data.application);
         this.application.next(data.application);
         const application = this.application.getValue();
-        if (data.application.locked) {
+        if (data.application?.locked) {
           if (!application?.lockedByUser) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectLocked', {
@@ -257,8 +258,8 @@ export class SafeApplicationService {
           const application = this.application.getValue();
           const newApplication = {
             ...application,
-            locked: data?.applicationUnlocked.locked,
-            lockedByUser: data?.applicationUnlocked.lockedByUser,
+            locked: data?.applicationUnlocked?.locked,
+            lockedByUser: data?.applicationUnlocked?.lockedByUser,
           };
           this.application.next(newApplication);
         }
@@ -270,7 +271,8 @@ export class SafeApplicationService {
    */
   leaveApplication(): void {
     if (this.customStyle) {
-      document.getElementsByTagName('body')[0].removeChild(this.customStyle);
+      document.getElementsByTagName('head')[0].removeChild(this.customStyle);
+      this.rawCustomStyle = undefined;
       this.customStyle = undefined;
       this.layoutService.closeRightSidenav = true;
     }
@@ -310,7 +312,7 @@ export class SafeApplicationService {
           if (!data.toggleApplicationLock.lockedByUser) {
             const newApplication = {
               ...application,
-              locked: data?.toggleApplicationLock.locked,
+              locked: data?.toggleApplicationLock?.locked,
               lockedByUser: data?.toggleApplicationLock.lockedByUser,
             };
             this.application.next(newApplication);
@@ -685,8 +687,9 @@ export class SafeApplicationService {
    * Adds a new page to the opened application.
    *
    * @param page new page
+   * @param structure page structure ( only for new dashboard pages )
    */
-  addPage(page: any): void {
+  addPage(page: any, structure?: any): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo
@@ -696,6 +699,7 @@ export class SafeApplicationService {
             type: page.type,
             content: page.content,
             application: application.id,
+            structure,
           },
         })
         .subscribe(({ errors, data }) => {
@@ -706,6 +710,7 @@ export class SafeApplicationService {
                 value: data.addPage.name,
               })
             );
+
             const content = data.addPage.content;
             const newApplication = {
               ...application,
@@ -1912,11 +1917,30 @@ export class SafeApplicationService {
       .then(async (res) => {
         if (res.type === 'application/octet-stream') {
           const styleFromFile = await res.text();
+          const scss = styleFromFile as string;
           this.customStyle = document.createElement('style');
-          this.customStyle.innerText = styleFromFile;
-          document
-            .getElementsByTagName('body')[0]
-            .appendChild(this.customStyle);
+          await firstValueFrom(
+            this.restService.post(
+              'style/scss-to-css',
+              { scss },
+              { responseType: 'text' }
+            )
+          )
+            .then((css) => {
+              if (this.customStyle) {
+                this.customStyle.innerText = css;
+                document
+                  .getElementsByTagName('head')[0]
+                  .appendChild(this.customStyle);
+              }
+            })
+            .catch(() => {
+              if (this.customStyle) {
+                this.customStyle.innerText = styleFromFile;
+              }
+            });
+
+          this.rawCustomStyle = styleFromFile;
         }
       })
       .catch((err) => {

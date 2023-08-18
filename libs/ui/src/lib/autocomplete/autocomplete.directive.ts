@@ -48,12 +48,12 @@ export class AutocompleteDirective
 
   private inputElement!: HTMLInputElement;
   private value!: any;
-  private inputEventListener!: any;
+  private inputEventListener!: () => void;
   private destroy$ = new Subject<void>();
   private control!: NgControl;
   private autocompleteClosingActionsSubscription!: Subscription;
-  private selectOptionListener!: any;
-  private clickOutsideListener!: any;
+  private selectOptionListener!: () => void;
+  private clickOutsideListener!: () => void;
 
   /**
    * Get the value from the option to set in the input host element

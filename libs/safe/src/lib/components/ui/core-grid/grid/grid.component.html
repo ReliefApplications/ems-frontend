@@ -628,9 +628,10 @@
           field.type === 'JSON' && multiSelectTypes.includes(field.meta.type)
         "
         [field]="field.name"
-        [filterable]="false"
+        [filterable]="true"
         [title]="field.title"
-        [editable]="false"
+        [editor]="field.editor"
+        [editable]="!field.disabled"
         [width]="field.width"
         [hidden]="field.hidden"
         [minResizableWidth]="50"

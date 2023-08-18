@@ -86,6 +86,16 @@ export interface PopupElementFields {
   fields?: string[];
 }
 
+/**
+ * Layer Popup Fields type interface
+ */
+export interface Fields {
+  label: string;
+  name: string;
+  type: string;
+  [key: string]: string;
+}
+
 /** Possible types of Popup element */
 export type PopupElementType = 'text' | 'fields';
 
@@ -105,6 +115,7 @@ export interface PopupInfo {
   title?: string;
   description?: string;
   popupElements?: PopupElement[];
+  fieldsInfo?: Fields[];
 }
 
 export type LayerDatasourceType = 'Point' | 'Polygon';
@@ -138,4 +149,5 @@ export interface LayerModel {
   datasource?: LayerDatasource;
   createdAt: Date;
   updatedAt: Date;
+  contextFilters?: string;
 }

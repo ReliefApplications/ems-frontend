@@ -1,6 +1,7 @@
 import { get, isArray, isNil } from 'lodash';
 import calcFunctions from './calcFunctions';
 import { Page } from '../../models/page.model';
+import { REFERENCE_DATA_END } from '../../services/query-builder/query-builder.service';
 
 /** Prefix for data keys */
 const DATA_PREFIX = '{{data.';
@@ -145,6 +146,8 @@ const replaceRecordFields = (
 ): string => {
   let formattedHtml = html;
   if (fields) {
+    const links = formattedHtml.match(`href=["]?[^" >]+`);
+
     for (const field of fields) {
       const value = fieldsValue[field.name];
       const style = getLayoutsStyle(styles, field.name, fieldsValue);
@@ -157,7 +160,17 @@ const replaceRecordFields = (
       const matches = formattedHtml.matchAll(avatarRgx);
       for (const match of matches) {
         if (Array.isArray(value) && value.length > 0) {
-          const avatarValue = value.filter((v: string) => {
+          // Map value array to use only string values in case of reference data objects
+          const checkedValue = value.map((v: any) => {
+            const refData =
+              v.__typename && v.__typename.endsWith(REFERENCE_DATA_END);
+            let refDataValue = null;
+            if (refData) {
+              refDataValue = v[v.__typename.slice(0, -3)];
+            }
+            return refDataValue === null ? v : refDataValue;
+          });
+          const avatarValue = checkedValue.filter((v: string) => {
             if (typeof v === 'string') {
               const lowercaseValue = v.toLowerCase();
               return ALLOWED_IMAGE_EXTENSIONS.some((ext) =>
@@ -191,6 +204,19 @@ const replaceRecordFields = (
           'gi'
         );
         formattedHtml = formattedHtml.replace(srcRegex, `src=${value}`);
+
+        // Prevent URL from containing style
+        links?.forEach((link) => {
+          if (
+            link.match(`${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}`)
+          ) {
+            const formattedLink = link.replace(
+              `${DATA_PREFIX}${field.name}${PLACEHOLDER_SUFFIX}`,
+              value
+            );
+            formattedHtml = formattedHtml.replace(link, formattedLink);
+          }
+        });
 
         switch (field.type) {
           case 'url': {
@@ -677,7 +703,7 @@ const createAvatarGroup = (
     img.className = 'inline-block h-full w-full';
   }
 
-  if (!isNil(maxItems) && value.length > maxItems) {
+  if (!isNil(maxItems) && maxItems > 0 && value.length > maxItems) {
     const avatar = document.createElement('avatar');
     innerDiv.appendChild(avatar);
     avatar.style.zIndex = '0';

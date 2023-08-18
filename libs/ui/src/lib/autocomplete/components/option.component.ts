@@ -16,7 +16,7 @@ import {
 })
 export class OptionComponent {
   @Input() value!: any;
-  @Input() label: any = '';
+  @Input() label? = '';
   @Input() isGroup = false;
   @ContentChildren(forwardRef(() => OptionComponent))
   options!: QueryList<OptionComponent>;

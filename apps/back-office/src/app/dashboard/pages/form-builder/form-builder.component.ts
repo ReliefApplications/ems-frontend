@@ -444,7 +444,7 @@ export class FormBuilderComponent implements OnInit {
   formStructureChange(event: any): void {
     this.hasChanges = !isEqual(
       JSON.parse(event),
-      JSON.parse(this.form?.structure || '')
+      JSON.parse(this.form?.structure || '{}')
     );
     localStorage.setItem(`form:${this.id}`, event);
     this.authService.canLogout.next(!this.hasChanges);
