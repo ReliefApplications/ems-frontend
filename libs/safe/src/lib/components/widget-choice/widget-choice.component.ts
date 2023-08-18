@@ -1,5 +1,8 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IWidgetType } from '../../models/dashboard.model';
+import { ActivatedRoute } from '@angular/router';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Component for widget choice
@@ -9,7 +12,10 @@ import { IWidgetType } from '../../models/dashboard.model';
   templateUrl: './widget-choice.component.html',
   styleUrls: ['./widget-choice.component.scss'],
 })
-export class SafeWidgetChoiceComponent {
+export class SafeWidgetChoiceComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   public hovered = '';
   public collapsed = false;
 
@@ -21,6 +27,24 @@ export class SafeWidgetChoiceComponent {
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close = new EventEmitter();
 
+  /**
+   * Widget choice constructor
+   *
+   * @param activatedRoute ActivatedRoute
+   */
+  constructor(private activatedRoute: ActivatedRoute) {
+    super();
+  }
+
+  ngOnInit(): void {
+    this.activatedRoute.data.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (data) => {
+        if (data.source === 'widget') {
+          this.collapsed = true;
+        }
+      },
+    });
+  }
   /**
    * Emit an add event on selection
    *

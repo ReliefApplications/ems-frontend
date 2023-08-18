@@ -3,8 +3,13 @@
 }
 
 // === DASHBOARD WIDGETS===
-.floating-widget-choice-wrapper {
-  position: fixed;
+.floating-widget-choice {
+  &.wrapper {
+    position: fixed;
+  }
+  &.tab-wrapper {
+    position: absolute;
+  }
   bottom: 48px;
   left: 0;
   right: 0;

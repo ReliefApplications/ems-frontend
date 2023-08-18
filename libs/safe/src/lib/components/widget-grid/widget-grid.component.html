@@ -3,7 +3,11 @@
   <div
     class="widget-choice-wrapper"
     *ngIf="canUpdate"
-    [ngClass]="{ 'floating-widget-choice-wrapper': widgets.length > 0 }"
+    [ngClass]="{
+      'floating-widget-choice': widgets.length > 0,
+      wrapper: !displayedAsTabWidget,
+      'tab-wrapper': displayedAsTabWidget
+    }"
   >
     <h2 *ngIf="widgets.length === 0">
       {{ 'models.widget.add' | translate }}
