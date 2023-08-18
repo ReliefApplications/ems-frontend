@@ -226,7 +226,6 @@ export class SafeGridComponent
   }
 
   ngOnInit(): void {
-    console.log(this.data);
     this.setSelectedItems();
     this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
     // this way we can wait for 2s before sending an update
