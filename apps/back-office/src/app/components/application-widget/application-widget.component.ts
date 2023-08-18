@@ -232,7 +232,7 @@ export class ApplicationWidgetComponent
         label: page.name as string,
         icon: 'close',
         route: page.type as keyof typeof ContentType as string,
-        id: page.id,
+        id: page.type === ContentType.dashboard ? page.content : page.id,
       };
       this.pages.push(newTab);
     });

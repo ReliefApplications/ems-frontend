@@ -24,6 +24,7 @@ import {
   Record,
   ButtonActionT,
   SafeLayoutService,
+  SafeApplicationWidgetService,
 } from '@oort-front/safe';
 import {
   EditDashboardMutationResponse,
@@ -100,6 +101,7 @@ export class DashboardComponent
   public contextId = new FormControl<string | number | null>(null);
   public refDataValueField = '';
   public contextRecord: Record | null = null;
+  private applicationWidgetService!: SafeApplicationWidgetService;
 
   /** @returns type of context element */
   get contextType() {
@@ -160,6 +162,9 @@ export class DashboardComponent
     private layoutService: SafeLayoutService
   ) {
     super();
+    // Get the applicationWidgetService instance associated to the application widget host if exists
+    this.applicationWidgetService =
+      this.router.getCurrentNavigation()?.extras?.state?.applicationWidgetService;
   }
 
   ngOnInit(): void {
@@ -620,7 +625,9 @@ export class DashboardComponent
           callback
         );
       } else {
-        this.applicationService.updatePageName(
+        const currentApplicationService =
+          this.applicationWidgetService ?? this.applicationService;
+        currentApplicationService.updatePageName(
           {
             id: this.dashboard?.page?.id,
             name: dashboardName,
@@ -702,7 +709,9 @@ export class DashboardComponent
    * @param event duplication event
    */
   public onDuplicate(event: any): void {
-    this.applicationService.duplicatePage(event.id, {
+    const currentApplicationService =
+      this.applicationWidgetService ?? this.applicationService;
+    currentApplicationService.duplicatePage(event.id, {
       pageId: this.dashboard?.page?.id,
       stepId: this.dashboard?.step?.id,
     });
@@ -928,7 +937,9 @@ export class DashboardComponent
         },
       };
     };
-    this.applicationService.togglePageVisibility(
+    const currentApplicationService =
+      this.applicationWidgetService ?? this.applicationService;
+    currentApplicationService.togglePageVisibility(
       {
         id: this.dashboard?.page?.id,
         visible: this.dashboard?.page?.visible,

@@ -10,6 +10,7 @@ import {
   SafeApplicationService,
   SafeWorkflowService,
   SafeUnsubscribeComponent,
+  SafeApplicationWidgetService,
 } from '@oort-front/safe';
 import {
   GetFormByIdQueryResponse,
@@ -57,6 +58,8 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
   public step?: Step;
   public isStep = false;
 
+  private applicationWidgetService!: SafeApplicationWidgetService;
+
   /**
    * Form page in application
    *
@@ -78,6 +81,9 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
     private translate: TranslateService
   ) {
     super();
+    // Get the applicationWidgetService instance associated to the application widget host if exists
+    this.applicationWidgetService =
+      this.router.getCurrentNavigation()?.extras?.state?.applicationWidgetService;
   }
 
   ngOnInit(): void {
@@ -179,7 +185,9 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
         const callback = () => {
           this.page = { ...this.page, name: tabName };
         };
-        this.applicationService.updatePageName(
+        const currentApplicationService =
+          this.applicationWidgetService ?? this.applicationService;
+        currentApplicationService.updatePageName(
           {
             id: this.id,
             name: tabName,
@@ -329,7 +337,9 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
     const callback = () => {
       this.page = { ...this.page, visible: !this.page?.visible };
     };
-    this.applicationService.togglePageVisibility(
+    const currentApplicationService =
+      this.applicationWidgetService ?? this.applicationService;
+    currentApplicationService.togglePageVisibility(
       {
         id: this.id,
         visible: this.page?.visible,

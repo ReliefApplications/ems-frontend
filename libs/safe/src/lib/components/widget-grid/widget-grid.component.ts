@@ -21,7 +21,7 @@ import { SafeDashboardService } from '../../services/dashboard/dashboard.service
 import { SafeWidgetComponent } from '../widget/widget.component';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 // import get from 'lodash/get';
 import { differenceBy } from 'lodash';
 
@@ -54,6 +54,7 @@ export class SafeWidgetGridComponent
 
   // === GRID ===
   colsNumber = MAX_COL_SPAN;
+  displayedAsTabWidget = false;
 
   // === EVENT EMITTER ===
   @Output() move: EventEmitter<any> = new EventEmitter();
@@ -107,12 +108,14 @@ export class SafeWidgetGridComponent
    * @param dialog The Dialog service
    * @param dashboardService Shared dashboard service
    * @param router Router
+   * @param activatedRoute ActivatedRoute
    */
   constructor(
     @Inject('environment') environment: any,
     public dialog: Dialog,
     private dashboardService: SafeDashboardService,
-    private router: Router
+    private router: Router,
+    private activatedRoute: ActivatedRoute
   ) {
     super();
     if (environment.module === 'backoffice') {
@@ -210,6 +213,11 @@ export class SafeWidgetGridComponent
   }
 
   ngOnInit(): void {
+    this.activatedRoute.data.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (data) => {
+        this.displayedAsTabWidget = data.source === 'widget';
+      },
+    });
     this.colsNumber = this.setColsNumber(window.innerWidth);
     this.skeletons = this.getSkeletons();
     this.availableWidgets = this.dashboardService.availableWidgets;

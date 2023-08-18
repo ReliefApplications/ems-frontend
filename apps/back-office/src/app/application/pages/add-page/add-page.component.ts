@@ -150,11 +150,9 @@ export class AddPageComponent
    * Submit form to application service for creation of a new page
    */
   onSubmit(): void {
-    if (this.applicationWidgetService) {
-      this.applicationWidgetService.addPage(this.pageForm.value);
-    } else {
-      this.applicationService.addPage(this.pageForm.value);
-    }
+    const currentApplicationService =
+      this.applicationWidgetService ?? this.applicationService;
+    currentApplicationService.addPage(this.pageForm.value);
   }
 
   /**
@@ -258,22 +256,15 @@ export class AddPageComponent
         defaultCols: 8,
       },
     ];
-    if (this.applicationWidgetService) {
-      this.applicationWidgetService.addPage(
-        {
-          type: 'dashboard',
-        },
-        structure
-      );
-    } else {
-      // Directly call application service to add page with structure
-      this.applicationService.addPage(
-        {
-          type: 'dashboard',
-        },
-        structure
-      );
-    }
+    const currentApplicationService =
+      this.applicationWidgetService ?? this.applicationService;
+    // Directly call application service to add page with structure
+    currentApplicationService.addPage(
+      {
+        type: 'dashboard',
+      },
+      structure
+    );
   }
 
   /**
