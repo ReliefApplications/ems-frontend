@@ -13,7 +13,7 @@ export default {
   coverageDirectory: '../../coverage/apps/back-office',
   testPathIgnorePatterns: [
     "/node_modules/",
-    "<rootDir>/**/__mocks__/"
+    "<rootDir>/**/*/__mocks__/"
   ],
   transform: {
     '^.+\\.(ts|mjs|js|html)$': 'jest-preset-angular',
