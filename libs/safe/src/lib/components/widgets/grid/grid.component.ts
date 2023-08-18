@@ -47,6 +47,7 @@ import { firstValueFrom, takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { map } from 'rxjs/operators';
 
 /** Component for the grid widget */
 @Component({
@@ -278,9 +279,6 @@ export class SafeGridWidgetComponent
       this.blockModifySelectedRows = true;
       await this.promisedAttachToRecord(
         this.grid.selectedRows,
-        options.targetForm,
-        options.targetFormField,
-        options.targetFormQuery,
         options
       );
     }
@@ -430,7 +428,6 @@ export class SafeGridWidgetComponent
                 options.modifications,
                 savedSelectedRows
               );
-              this.grid.reloadData();
             }
           }
         });
@@ -499,7 +496,7 @@ export class SafeGridWidgetComponent
           data,
           template: get(this.settings, 'template', null),
         },
-      })
+      }).pipe(map(() => this.grid.reloadData()))
     );
   }
 
@@ -516,11 +513,11 @@ export class SafeGridWidgetComponent
    */
   private async promisedAttachToRecord(
     selectedRecords: string[],
-    targetForm: string,
-    targetFormField: string,
-    targetFormQuery: any,
     options: any
   ): Promise<void> {
+    const targetForm = options.targetForm;
+    const targetFormField = options.targetFormField;
+    const targetFormQuery = options.targetFormQuery;
     this.apollo
       .query<GetFormByIdQueryResponse>({
         query: GET_FORM_BY_ID,
@@ -629,7 +626,6 @@ export class SafeGridWidgetComponent
                                     options.modifications,
                                     selectedRecords
                                   );
-                                  this.grid.reloadData();
                                 }
                               }
                             });
