@@ -67,6 +67,8 @@ import {
   ADD_CUSTOM_NOTIFICATION,
   DeleteCustomNotificationMutationResponse,
   DELETE_CUSTOM_NOTIFICATION,
+  RestorePageMutationResponse,
+  RESTORE_PAGE,
 } from './graphql/mutations';
 import {
   GetApplicationByIdQueryResponse,
@@ -506,6 +508,52 @@ export class SafeApplicationService {
           } else {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectNotDeleted', {
+                value: this.translate.instant('common.page.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          }
+        });
+    }
+  }
+
+  /**
+   * Restore a page and the associated content.
+   *
+   * @param id id of the page
+   */
+  restorePage(id: string) {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      this.apollo
+        .mutate<RestorePageMutationResponse>({
+          mutation: RESTORE_PAGE,
+          variables: {
+            id,
+          },
+        })
+        .subscribe(({ errors, data }) => {
+          if (data) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectRestored', {
+                value: this.translate.instant('common.page.one'),
+              })
+            );
+            const app = this.application.getValue();
+            if (app) {
+              const newApplication = {
+                ...app,
+                pages: app.pages?.filter((x) => x.id !== data?.restorePage.id),
+              };
+              this.application.next(newApplication);
+              this.router.navigate([
+                `./applications/${app.id}/settings/archive`,
+              ]);
+            }
+          } else {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotRestored', {
                 value: this.translate.instant('common.page.one'),
                 error: errors ? errors[0].message : '',
               }),

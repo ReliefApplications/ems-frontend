@@ -140,7 +140,7 @@ export class ApplicationsArchiveComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        // this.applicationService.restorePage(item.id);
+        this.applicationService.restorePage(item.id);
       }
     });
   }
