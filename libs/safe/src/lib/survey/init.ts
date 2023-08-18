@@ -17,10 +17,12 @@ import * as CommentWidget from './widgets/comment-widget';
 import * as DropdownWidget from './widgets/dropdown-widget';
 import * as TagboxWidget from './widgets/tagbox-widget';
 import * as OtherProperties from './global-properties/others';
+import * as ChoicesByUrlProperties from './global-properties/choicesByUrl';
 import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';
 import { initLocalization } from './localization';
 import { Dialog } from '@angular/cdk/dialog';
+import { NgZone } from '@angular/core';
 
 /**
  * Executes all init methods of custom SurveyJS.
@@ -34,6 +36,7 @@ import { Dialog } from '@angular/cdk/dialog';
  * @param environment injected environment
  * @param referenceDataService Reference data service
  * @param containsCustomQuestions If survey contains custom questions or not
+ * @param ngZone Angular Service to execute code inside Angular environment
  */
 export const initCustomSurvey = (
   Survey: any,
@@ -44,7 +47,8 @@ export const initCustomSurvey = (
   authService: SafeAuthService,
   environment: any,
   referenceDataService: SafeReferenceDataService,
-  containsCustomQuestions: boolean
+  containsCustomQuestions: boolean,
+  ngZone: NgZone
 ): void => {
   // If the survey created does not contain custom questions, we destroy previously set custom questions if so
   if (!containsCustomQuestions) {
@@ -59,8 +63,22 @@ export const initCustomSurvey = (
   if (containsCustomQuestions) {
     CommentWidget.init(Survey);
     // load components (same as widgets, but with less configuration options)
-    ResourceComponent.init(Survey, domService, apollo, dialog, formBuilder);
-    ResourcesComponent.init(Survey, domService, apollo, dialog, formBuilder);
+    ResourceComponent.init(
+      Survey,
+      domService,
+      apollo,
+      dialog,
+      formBuilder,
+      ngZone
+    );
+    ResourcesComponent.init(
+      Survey,
+      domService,
+      apollo,
+      dialog,
+      formBuilder,
+      ngZone
+    );
     OwnerComponent.init(Survey, domService, apollo);
     UsersComponent.init(Survey, domService, apollo);
   }
@@ -69,6 +87,10 @@ export const initCustomSurvey = (
   ReferenceDataProperties.init(Survey, domService, referenceDataService);
   TooltipProperty.init(Survey);
   OtherProperties.init(Survey, environment);
+
+  // enables POST requests for choicesByUrl
+  ChoicesByUrlProperties.init(Survey);
+
   // set localization
   initLocalization(Survey);
   // load internal functions

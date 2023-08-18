@@ -18,7 +18,7 @@ export interface DeleteApiConfigurationMutationResponse {
 
 // === ADD API CONFIGURATION ===
 /** Add api config gql mutation definition */
-export const ADD_API_CONFIGURATIION = gql`
+export const ADD_API_CONFIGURATION = gql`
   mutation addApiConfiguration($name: String!) {
     addApiConfiguration(name: $name) {
       id

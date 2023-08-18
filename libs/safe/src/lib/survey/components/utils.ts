@@ -1,4 +1,5 @@
 import { Dialog } from '@angular/cdk/dialog';
+import { NgZone } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { surveyLocalization } from 'survey-angular';
 
@@ -64,12 +65,14 @@ export const buildSearchButton = (
  * @param question The question object
  * @param multiselect Indicate if we need multiselect
  * @param dialog The Dialog service
+ * @param ngZone Angular Service to execute code inside Angular environment
  * @returns The button DOM element
  */
 export const buildAddButton = (
   question: any,
   multiselect: boolean,
-  dialog: Dialog
+  dialog: Dialog,
+  ngZone: NgZone
 ): any => {
   const addButton = document.createElement('button');
   addButton.innerText = surveyLocalization.getString(
@@ -78,60 +81,61 @@ export const buildAddButton = (
   );
   if (question.addRecord && question.addTemplate && !question.isReadOnly) {
     addButton.onclick = async () => {
-      const { SafeResourceModalComponent } = await import(
-        '../../components/resource-modal/resource-modal.component'
-      );
-      const dialogRef = dialog.open(SafeResourceModalComponent, {
-        disableClose: true,
-        data: {
-          template: question.addTemplate,
-          locale: question.resource.value,
-          askForConfirm: false,
-          ...(question.prefillWithCurrentRecord && {
-            prefillData: question.survey.data,
-          }),
-        },
-        height: '98%',
-        width: '100vw',
-        panelClass: 'full-screen-modal',
-        autoFocus: false,
-      });
-      dialogRef.closed.subscribe((result: any) => {
-        if (result) {
-          const { data } = result;
-          // TODO: call reload method
-          // if (question.displayAsGrid && gridComponent) {
-          //   gridComponent.availableRecords.push({
-          //     value: data.id,
-          //     text: data.data[question.displayField]
-          //   });
-          // }
-          if (multiselect) {
-            const newItem = {
-              value: data.id,
-              text: data.data[question.displayField],
-            };
-            question.contentQuestion.choices = [
-              newItem,
-              ...question.contentQuestion.choices,
-            ];
-            question.newCreatedRecords = question.newCreatedRecords
-              ? question.newCreatedRecords.concat(data.id)
-              : [data.id];
-            question.value = question.value.concat(data.id);
-          } else {
-            const newItem = {
-              value: data.id,
-              text: data.data[question.displayField],
-            };
-            question.contentQuestion.choices = [
-              newItem,
-              ...question.contentQuestion.choices,
-            ];
-            question.newCreatedRecords = data.id;
-            question.value = data.id;
+      ngZone.run(async () => {
+        const { SafeResourceModalComponent } = await import(
+          '../../components/resource-modal/resource-modal.component'
+        );
+        const dialogRef = dialog.open(SafeResourceModalComponent, {
+          disableClose: true,
+          data: {
+            template: question.addTemplate,
+            locale: question.resource.value,
+            askForConfirm: false,
+            ...(question.prefillWithCurrentRecord && {
+              prefillData: question.survey.data,
+            }),
+          },
+          height: '98%',
+          width: '100vw',
+          panelClass: 'full-screen-modal',
+        });
+        dialogRef.closed.subscribe((result: any) => {
+          if (result) {
+            const { data } = result;
+            // TODO: call reload method
+            // if (question.displayAsGrid && gridComponent) {
+            //   gridComponent.availableRecords.push({
+            //     value: data.id,
+            //     text: data.data[question.displayField]
+            //   });
+            // }
+            if (multiselect) {
+              const newItem = {
+                value: data.id,
+                text: data.data[question.displayField],
+              };
+              question.contentQuestion.choices = [
+                newItem,
+                ...question.contentQuestion.choices,
+              ];
+              question.newCreatedRecords = question.newCreatedRecords
+                ? question.newCreatedRecords.concat(data.id)
+                : [data.id];
+              question.value = question.value.concat(data.id);
+            } else {
+              const newItem = {
+                value: data.id,
+                text: data.data[question.displayField],
+              };
+              question.contentQuestion.choices = [
+                newItem,
+                ...question.contentQuestion.choices,
+              ];
+              question.newCreatedRecords = data.id;
+              question.value = data.id;
+            }
           }
-        }
+        });
       });
     };
   }

@@ -145,15 +145,15 @@ export class SafeAggregationGridComponent
             allGqlFields
               ?.filter((x) => this.aggregation.sourceFields.includes(x.name))
               .map((field: any) => {
-                if (field.type.kind !== 'SCALAR') {
+                if (field.type?.kind !== 'SCALAR') {
                   field.fields = this.queryBuilder
                     .getFieldsFromType(
-                      field.type.kind === 'OBJECT'
+                      field.type?.kind === 'OBJECT'
                         ? field.type.name
                         : field.type.ofType.name
                     )
                     .filter(
-                      (y) => y.type.name !== 'ID' && y.type.kind === 'SCALAR'
+                      (y) => y.type.name !== 'ID' && y.type?.kind === 'SCALAR'
                     );
                 }
                 return field;

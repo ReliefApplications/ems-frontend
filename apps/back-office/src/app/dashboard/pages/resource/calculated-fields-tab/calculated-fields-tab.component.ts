@@ -49,7 +49,11 @@ export class CalculatedFieldsTabComponent
     const state = history.state;
     this.resource = get(state, 'resource', null);
 
-    this.fields = this.resource.fields.filter((f: any) => f.isCalculated);
+    if (this.resource && this.resource.fields) {
+      this.fields = this.resource.fields.filter((f: any) => f.isCalculated);
+    } else {
+      this.fields = [];
+    }
   }
 
   /**
