@@ -55,6 +55,7 @@ export class SafeWidgetGridComponent
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() edit: EventEmitter<any> = new EventEmitter();
   @Output() add: EventEmitter<any> = new EventEmitter();
+  @Output() style: EventEmitter<any> = new EventEmitter();
 
   // === STEP CHANGE FOR WORKFLOW ===
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
@@ -146,6 +147,21 @@ export class SafeWidgetGridComponent
    */
   onDeleteWidget(e: any): void {
     this.delete.emit(e);
+  }
+
+  /**
+   * Emits style event.
+   *
+   * @param e widget to style.
+   */
+  onStyleWidget(e: any): void {
+    const widgetComp = this.widgetComponents.find(
+      (v) => v.widget.id == e.widget.id
+    );
+    this.style.emit({
+      domId: widgetComp?.id,
+      widget: e.widget,
+    });
   }
 
   /**

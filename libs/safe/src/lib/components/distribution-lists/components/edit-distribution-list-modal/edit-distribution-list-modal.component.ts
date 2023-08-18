@@ -45,7 +45,9 @@ const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
  *
  * @returns A function which returns an object with the separator keys
  */
-export function codesFactory(): () => any {
+export function codesFactory(): () => {
+  separatorKeyCodes: number[];
+} {
   const codes = () => ({ separatorKeyCodes: SEPARATOR_KEYS_CODE });
   return codes;
 }
@@ -131,7 +133,7 @@ export class EditDistributionListModalComponent implements OnInit {
     // use setTimeout to prevent add input value on focusout
     setTimeout(
       () => {
-        const value =
+        const value: string =
           event.type === 'focusout'
             ? this.emailsInput.nativeElement.value
             : event;

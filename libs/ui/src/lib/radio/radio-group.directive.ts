@@ -72,7 +72,7 @@ export class RadioGroupDirective
    *
    * @param fn callback
    */
-  public registerOnChange(fn: any): void {
+  public registerOnChange(fn: (value: string) => void): void {
     this.onChanged = fn;
   }
 
@@ -81,7 +81,7 @@ export class RadioGroupDirective
    *
    * @param fn callback
    */
-  public registerOnTouched(fn: any): void {
+  public registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 

@@ -13,6 +13,10 @@ export const GET_ROLE = gql`
       id
       title
       description
+      channels {
+        id
+        title
+      }
       permissions {
         id
         type
