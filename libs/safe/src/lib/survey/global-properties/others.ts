@@ -45,6 +45,14 @@ export const init = (Survey: any, environment: any): void => {
       { name: 'enableIf', index: 20 },
     ],
   };
+
+  // Adds a property that makes it so the question is validated on every value change
+  serializer.addProperty('question', {
+    name: 'validateOnValueChange:boolean',
+    category: 'validation',
+    visibleIndex: 4,
+    default: false,
+  });
 };
 
 /**

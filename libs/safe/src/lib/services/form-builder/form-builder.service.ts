@@ -62,6 +62,16 @@ export class SafeFormBuilderService {
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
     );
+
+    // For each question, if validateOnValueChange is true, we will add a listener to the value change event
+    survey.getAllQuestions().forEach((question) => {
+      if (question.validateOnValueChange) {
+        question.registerFunctionOnPropertyValueChanged('value', () => {
+          question.validate();
+        });
+      }
+    });
+
     survey.onCompleting.add(() => {
       for (const page of survey.toJSON().pages) {
         if (!page.elements) continue;
