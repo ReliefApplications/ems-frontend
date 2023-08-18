@@ -17,14 +17,7 @@ import {
 } from '@angular/core';
 import { AutocompleteComponent } from './autocomplete.component';
 import { isEqual } from 'lodash';
-import {
-  Observable,
-  Subject,
-  Subscription,
-  fromEvent,
-  merge,
-  takeUntil,
-} from 'rxjs';
+import { Observable, Subject, Subscription, merge, takeUntil } from 'rxjs';
 import { OptionComponent } from './components/option.component';
 import { NgControl } from '@angular/forms';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
@@ -60,6 +53,7 @@ export class AutocompleteDirective
   private control!: NgControl;
   private autocompleteClosingActionsSubscription!: Subscription;
   private selectOptionListener!: any;
+  private clickOutsideListener!: any;
 
   /**
    * Get the value from the option to set in the input host element
@@ -156,6 +150,22 @@ export class AutocompleteDirective
           },
         });
     }
+    this.clickOutsideListener = this.renderer.listen(
+      window,
+      'click',
+      (event) => {
+        if (
+          !(
+            this.inputElement.contains(event.target) ||
+            this.document
+              .getElementById('autocompleteList')
+              ?.contains(event.target)
+          )
+        ) {
+          this.closeAutocompletePanel();
+        }
+      }
+    );
   }
 
   /**
@@ -355,10 +365,9 @@ export class AutocompleteDirective
    * @returns Observable of actions
    */
   private autocompleteClosingActions(): Observable<Event | void> {
-    const outsideClick$ = fromEvent(this.inputElement, 'focusout');
     const detachment$ = this.overlayRef.detachments();
 
-    return merge(outsideClick$, detachment$);
+    return merge(detachment$);
   }
 
   /**
@@ -386,6 +395,9 @@ export class AutocompleteDirective
     }
     if (this.selectOptionListener) {
       this.selectOptionListener();
+    }
+    if (this.clickOutsideListener) {
+      this.clickOutsideListener();
     }
     this.destroy$.next();
     this.destroy$.complete();

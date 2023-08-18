@@ -1,6 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { AddChannelModalComponent } from './add-channel.component';
+import { DialogRef } from '@angular/cdk/dialog';
+import { AddChannelModalComponent } from './add-channel-modal.component';
+import {
+  TranslateFakeLoader,
+  TranslateLoader,
+  TranslateModule,
+  TranslateService,
+} from '@ngx-translate/core';
 
 describe('AddChannelModalComponent', () => {
   let component: AddChannelModalComponent;
@@ -8,7 +14,24 @@ describe('AddChannelModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AddChannelModalComponent],
+      imports: [
+        AddChannelModalComponent,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
+        }),
+      ],
+      providers: [
+        TranslateService,
+        {
+          provide: DialogRef,
+          useValue: {
+            updateSize: jest.fn(),
+          },
+        },
+      ]
     }).compileComponents();
   });
 

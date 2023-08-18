@@ -3,6 +3,7 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
 } from '@angular/core';
@@ -15,6 +16,7 @@ import { SafeReferenceDataService } from '../../services/reference-data/referenc
 import { Form } from '../../models/form.model';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { SnackbarService } from '@oort-front/ui';
+import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 
 /**
  * Array containing the different types of questions.
@@ -85,7 +87,7 @@ const CORE_FIELD_CLASS = 'core-question';
   templateUrl: './form-builder.component.html',
   styleUrls: ['./form-builder.component.scss'],
 })
-export class SafeFormBuilderComponent implements OnInit, OnChanges {
+export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
   @Input() form!: Form;
   @Output() save: EventEmitter<any> = new EventEmitter();
   @Output() formChange: EventEmitter<any> = new EventEmitter();
@@ -104,12 +106,14 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * @param snackBar This is the service that will be used to display the snackbar.
    * @param translate Angular translate service
    * @param referenceDataService Reference data service
+   * @param formHelpersService Shared form helper service.
    */
   constructor(
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private translate: TranslateService,
-    private referenceDataService: SafeReferenceDataService
+    private referenceDataService: SafeReferenceDataService,
+    private formHelpersService: SafeFormHelpersService
   ) {
     // translate the editor in the same language as the interface
     SurveyCreator.localization.currentLocale = this.translate.currentLang;
@@ -149,6 +153,10 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     }
   }
 
+  ngOnDestroy(): void {
+    this.surveyCreator.survey?.dispose();
+  }
+
   /**
    * Creates the form builder and sets up all the options.
    *
@@ -169,6 +177,12 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       'surveyCreatorContainer',
       creatorOptions
     );
+    (this.surveyCreator.onTestSurveyCreated as any).add(
+      (_: any, options: any) => {
+        const survey: Survey.SurveyModel = options.survey;
+        this.formHelpersService.addUserVariables(survey);
+      }
+    );
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.text = structure;
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
@@ -188,17 +202,19 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     );
 
     // Notify parent that form structure has changed
-    this.surveyCreator.onModified.add((survey: any) => {
+    (this.surveyCreator.onModified as any).add((survey: any) => {
       this.formChange.emit(survey.text);
     });
     this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
       (survey: Survey.SurveyModel, options: any) => this.onSetCustomCss(options)
     );
-    this.surveyCreator.onTestSurveyCreated.add((sender: any, opt: any) => {
-      opt.survey.onUpdateQuestionCssClasses.add((_: any, opt2: any) =>
-        this.onSetCustomCss(opt2)
-      );
-    });
+    (this.surveyCreator.onTestSurveyCreated as any).add(
+      (sender: any, opt: any) => {
+        opt.survey.onUpdateQuestionCssClasses.add((_: any, opt2: any) =>
+          this.onSetCustomCss(opt2)
+        );
+      }
+    );
 
     // === CORE QUESTIONS FOR CHILD FORM ===
     // Skip if form is core
@@ -206,7 +222,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       const coreFields =
         this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || [];
       // Remove core fields adorners
-      this.surveyCreator.onElementAllowOperations.add(
+      (this.surveyCreator.onElementAllowOperations as any).add(
         (sender: any, opt: any) => {
           const obj = opt.obj;
           if (!obj || !obj.page) {
@@ -244,8 +260,8 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       this.addCustomClassToCoreFields(coreFields);
     }
 
-    // Scroll to question when adde
-    this.surveyCreator.onQuestionAdded.add((sender: any, opt: any) => {
+    // Scroll to question when added
+    (this.surveyCreator.onQuestionAdded as any).add((sender: any, opt: any) => {
       const name = opt.question.name;
       setTimeout(() => {
         const el = document.querySelector('[data-name="' + name + '"]');
@@ -258,10 +274,11 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     this.surveyCreator.survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
     );
-    this.surveyCreator.onTestSurveyCreated.add((sender: any, opt: any) =>
-      opt.survey.onAfterRenderQuestion.add(
-        renderGlobalProperties(this.referenceDataService)
-      )
+    (this.surveyCreator.onTestSurveyCreated as any).add(
+      (sender: any, opt: any) =>
+        opt.survey.onAfterRenderQuestion.add(
+          renderGlobalProperties(this.referenceDataService)
+        )
     );
     // this.surveyCreator.survey.locale = this.translate.currentLang; // -> set the defaultLanguage property also
 

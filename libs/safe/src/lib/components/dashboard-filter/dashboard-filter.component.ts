@@ -1,4 +1,5 @@
 import {
+  AfterViewInit,
   Component,
   ElementRef,
   HostListener,
@@ -6,7 +7,6 @@ import {
   NgZone,
   OnChanges,
   OnDestroy,
-  OnInit,
   Optional,
   SimpleChanges,
   ViewChild,
@@ -27,7 +27,6 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../services/context/context.service';
 import { SidenavContainerComponent, SnackbarService } from '@oort-front/ui';
-import localForage from 'localforage';
 import { SafeReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 
@@ -47,7 +46,7 @@ interface QuickFilter {
 })
 export class DashboardFilterComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, OnDestroy, OnChanges
+  implements OnDestroy, OnChanges, AfterViewInit
 {
   // Filter
   position!: FilterPosition;
@@ -107,7 +106,7 @@ export class DashboardFilterComponent
     super();
   }
 
-  ngOnInit(): void {
+  ngAfterViewInit(): void {
     this.contextService.filter$
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -118,31 +117,24 @@ export class DashboardFilterComponent
       .subscribe((application: Application | null) => {
         if (application) {
           this.applicationId = application.id;
-          localForage
-            .getItem(this.applicationId + 'contextualFilter')
-            .then((contextualFilter) => {
-              if (contextualFilter) {
-                this.surveyStructure = contextualFilter;
-                this.initSurvey();
-              } else if (application.contextualFilter) {
-                this.surveyStructure = application.contextualFilter;
-                this.initSurvey();
-              }
-            });
-          localForage
-            .getItem(this.applicationId + 'contextualFilterPosition')
-            .then((contextualFilterPosition) => {
-              if (contextualFilterPosition) {
-                this.position = contextualFilterPosition as FilterPosition;
-              } else if (application.contextualFilterPosition) {
-                this.position = application.contextualFilterPosition;
-              } else {
-                this.position = FilterPosition.BOTTOM; //case where there are no default position set up
-              }
-            });
         }
       });
-    this.setFilterContainerDimensions();
+    this.contextService.filterStructure$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.surveyStructure = value || '';
+        this.initSurvey();
+      });
+    this.contextService.filterPosition$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.position = value as FilterPosition;
+        } else {
+          this.position = FilterPosition.BOTTOM; // case where there are no default position set up
+        }
+        this.setFilterContainerDimensions();
+      });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -176,6 +168,7 @@ export class DashboardFilterComponent
    */
   public changeFilterPosition(position: FilterPosition) {
     this.position = position;
+    this.contextService.filterPosition.next(position);
   }
 
   /**
@@ -193,10 +186,6 @@ export class DashboardFilterComponent
           .subscribe((newStructure) => {
             if (newStructure) {
               this.surveyStructure = newStructure;
-              localForage.setItem(
-                this.applicationId + 'contextualFilter',
-                this.surveyStructure
-              );
               this.initSurvey();
               this.saveFilter();
             }
@@ -225,6 +214,7 @@ export class DashboardFilterComponent
             { error: true }
           );
         } else {
+          this.contextService.filterStructure.next(this.surveyStructure);
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectUpdated', {
               type: this.translate.instant('common.filter.one').toLowerCase(),
@@ -255,6 +245,7 @@ export class DashboardFilterComponent
       renderGlobalProperties(this.referenceDataService)
     );
     this.survey.render(this.dashboardSurveyCreatorContainer?.nativeElement);
+    this.onValueChange();
   }
 
   /**
@@ -310,10 +301,8 @@ export class DashboardFilterComponent
             { error: true }
           );
         } else {
-          localForage.setItem(
-            this.applicationId + 'contextualFilterPosition',
-            defaultPosition
-          );
+          this.position = defaultPosition;
+          this.contextService.filterPosition.next(defaultPosition);
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectUpdated', {
               type: this.translate.instant('common.filter.one').toLowerCase(),

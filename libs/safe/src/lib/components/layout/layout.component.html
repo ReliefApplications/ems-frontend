@@ -1,7 +1,7 @@
 <!-- Header -->
 <nav
   id="app-header"
-  class="flex p-4 items-center md:justify-between text-gray-200 bg-primary-600"
+  class="flex p-4 items-center md:justify-between text-white bg-primary-600"
   [ngClass]="theme.headerClass"
 >
   <div class="flex-shrink-0 flex flex-wrap min-w-0">
@@ -31,8 +31,9 @@
     >
     </ui-button>
   </div>
-  <ng-container *ngIf="!applications || applications.length === 0">
-    <div class="min-w-0 overflow-hidden flex items-center">
+  <div class="min-w-0 overflow-hidden flex items-center">
+    <div id="app-logo"></div>
+    <ng-container *ngIf="!header">
       <h1
         class="text-xl mb-0 whitespace-nowrap text-clip font-medium"
         *ngIf="!route"
@@ -43,31 +44,11 @@
       <h1 class="text-base mb-0 whitespace-nowrap text-clip" *ngIf="route">
         {{ 'common.back' | translate }}
       </h1>
-      <div id="app-logo"></div>
-    </div>
-  </ng-container>
-  <ng-container *ngIf="applications && applications.length > 0">
-    <ui-button
-      [size]="'large'"
-      icon="arrow_drop_down"
-      (click)="showAppMenu = !showAppMenu"
-      cdkOverlayOrigin
-      #appMenuTrigger="cdkOverlayOrigin"
-    >
-      {{ theme.prefix }} {{ title }}
-    </ui-button>
-    <ng-template
-      cdkConnectedOverlay
-      [cdkConnectedOverlayOrigin]="appMenuTrigger"
-      [cdkConnectedOverlayOpen]="showAppMenu"
-    >
-      <safe-search-menu
-        [applications]="this.applications"
-        (close)="showAppMenu = false"
-        (open)="onOpenApplication($event)"
-      ></safe-search-menu>
-    </ng-template>
-  </ng-container>
+    </ng-container>
+    <ng-container *ngIf="header">
+      <ng-container *ngTemplateOutlet="header"></ng-container>
+    </ng-container>
+  </div>
   <!-- Account icon and info -->
   <div
     class="flex flex-col items-end content-center font-medium text-xs ml-auto"
@@ -112,6 +93,28 @@
         {{ 'components.preferences.title' | translate }}
       </button>
     </ng-container>
+    <ng-container *ngIf="applications && applications.length > 0">
+      <ui-divider class="py-1"></ui-divider>
+      <button
+        uiMenuItem
+        (click)="showAppMenu = !showAppMenu"
+        cdkOverlayOrigin
+        #appMenuTrigger="cdkOverlayOrigin"
+      >
+        {{ 'components.header.goToApp' | translate }}
+      </button>
+      <ng-template
+        cdkConnectedOverlay
+        [cdkConnectedOverlayOrigin]="appMenuTrigger"
+        [cdkConnectedOverlayOpen]="showAppMenu"
+      >
+        <safe-search-menu
+          [applications]="this.applications"
+          (close)="showAppMenu = false"
+          (open)="onOpenApplication($event)"
+        ></safe-search-menu>
+      </ng-template>
+    </ng-container>
     <ng-container *ngIf="user && user.isAdmin">
       <ui-divider class="py-1"></ui-divider>
       <a uiMenuItem [href]="otherOfficeUri">
@@ -128,12 +131,17 @@
       {{ environment.version }}
     </div>
   </ui-menu>
+  <!-- Notification menu -->
   <ui-menu #notificationMenu>
-    <div class="notification-menu">
-      <a (click)="onMarkAllNotificationsAsRead()">
-        {{ 'components.notifications.readAll' | translate }}
-        <ui-icon icon="check_circle_outline"></ui-icon>
-      </a>
+    <!-- Remove visible notifications -->
+    <ui-button
+      (click)="onMarkAllNotificationsAsRead()"
+      class="self-end"
+      icon="check_circle_outline"
+      >{{ 'components.notifications.readAll' | translate }}</ui-button
+    >
+    <!-- List of notifications -->
+    <div class="flex flex-col overflow-y-auto max-h-[50vh]">
       <button
         uiMenuItem
         (click)="onNotificationClick(notification)"
@@ -142,11 +150,12 @@
         {{ notification.action }} - {{ notification.createdAt | safeDate }}
       </button>
     </div>
+    <!-- Load more notifications -->
     <ui-button
       *ngIf="hasMoreNotifications"
       category="primary"
       variant="primary"
-      class="!w-auto"
+      [isBlock]="true"
       [disabled]="loadingNotifications"
       [loading]="loadingNotifications"
       (click)="onLoadMoreNotifications($event)"

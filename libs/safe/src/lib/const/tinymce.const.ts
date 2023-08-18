@@ -31,6 +31,7 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
     'shortcuts', // the default shortcuts tab
     'keyboardnav', // the default keyboard navigation tab
   ],
+  convert_urls: false,
   setup: (editor) => {
     editor.ui.registry.addIcon(
       'avatar-icon',
@@ -143,6 +144,7 @@ export const EMAIL_EDITOR_CONFIG: RawEditorSettings = {
     'shortcuts', // the default shortcuts tab
     'keyboardnav', // the default keyboard navigation tab
   ],
+  convert_urls: false,
 };
 
 /** Field Editor tinymce configuration. */

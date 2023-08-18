@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, Inject, Input, OnInit } from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormGroup,
@@ -45,9 +45,9 @@ interface DialogData {
   templateUrl: './edit-layout-modal.component.html',
   styleUrls: ['./edit-layout-modal.component.scss'],
 })
-export class SafeEditLayoutModalComponent implements OnInit {
+export class SafeEditLayoutModalComponent implements OnInit, AfterViewInit {
   @Input() layout: any;
-  public form?: UntypedFormGroup;
+  public form!: UntypedFormGroup;
   public templates: any[] = [];
   public layoutPreviewData!: { form: UntypedFormGroup; defaultLayout: any };
 
@@ -70,19 +70,24 @@ export class SafeEditLayoutModalComponent implements OnInit {
       query: createQueryForm(this.data.layout?.query),
       display: createDisplayForm(this.data.layout?.display),
     });
+  }
 
+  ngAfterViewInit(): void {
     this.layoutPreviewData = {
       form: this.form,
       defaultLayout: this.data.layout?.display,
     };
     // Remove fields from layout that are not part of the query
     const fieldNames = this.getFieldNames(this.form.getRawValue().query.fields);
-    const layoutFields = this.layoutPreviewData.defaultLayout.fields;
-    for (const key in layoutFields) {
-      if (!fieldNames.includes(key)) {
-        delete layoutFields[key];
+    if (this.layoutPreviewData.defaultLayout) {
+      const layoutFields = this.layoutPreviewData.defaultLayout.fields;
+      for (const key in layoutFields) {
+        if (!fieldNames.includes(key)) {
+          delete layoutFields[key];
+        }
       }
     }
+    // Subscribe to changes to set display of the query
     this.form.get('display')?.valueChanges.subscribe((value: any) => {
       this.layoutPreviewData.defaultLayout = value;
     });

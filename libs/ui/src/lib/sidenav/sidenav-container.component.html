@@ -4,15 +4,16 @@
   <ng-container *ngFor="let sidenav of uiSidenavDirective; let i = index">
     <div
       #sidenav
-      class="will-change-transform h-full overflow-y-auto bg-white translate-x-0"
+      class="will-change-transform overflow-y-auto bg-white translate-x-0"
       [attr.data-sidenav-show]="showSidenav[i]"
       [ngClass]="resolveSidenavClasses(i)"
+      [style.height]="height"
     >
       <div class="flex flex-col h-full"></div>
     </div>
   </ng-container>
   <!-- CONTENT -->
-  <div class="flex-1 overflow-y-auto" #content>
+  <div class="flex-1 overflow-y-auto" #contentContainer>
     <div
       [ngClass]="{
         'visible bg-black opacity-50': showSidenav[0] && mode[0] === 'over',
@@ -20,7 +21,7 @@
       }"
       class="block w-full overflow-y-auto min-h-full transition-visibility duration-500 transition-all ease-in-out absolute inset-0 pointer-events-none z-[998]"
     ></div>
-    <div class="py-[32px] h-full px-[24px]">
+    <div class="py-[32px] overflow-y-auto h-full px-[24px]" #contentWrapper>
       <ng-content select="content"></ng-content>
     </div>
   </div>
