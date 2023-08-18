@@ -405,7 +405,10 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
         }
       })
       .catch((error) => {
-        this.snackBar.openSnackBar(error.message, { error: true });
+        this.snackBar.openSnackBar(error.message, {
+          error: true,
+          duration: 15000,
+        });
       });
   };
 
