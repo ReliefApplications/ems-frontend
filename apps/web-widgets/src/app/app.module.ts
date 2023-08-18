@@ -1,4 +1,10 @@
-import { APP_INITIALIZER, NgModule } from '@angular/core';
+import {
+  APP_INITIALIZER,
+  DoBootstrap,
+  ElementRef,
+  Injector,
+  NgModule,
+} from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 // Http
 import {
@@ -6,8 +12,6 @@ import {
   HttpClientModule,
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
-import { AppComponent } from './app.component';
-import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
 import { FormWidgetModule } from './widgets/form-widget/form-widget.module';
 import { environment } from '../environments/environment';
 import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
@@ -33,6 +37,21 @@ import { AppOverlayContainer } from './utils/overlay-container';
 // Apollo / GraphQL
 import { GraphQLModule } from './graphql.module';
 import { PureAbility } from '@casl/ability';
+// Config
+import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
+import { createCustomElement } from '@angular/elements';
+import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
+import { POPUP_CONTAINER, PopupService } from '@progress/kendo-angular-popup';
+import { LOCATION_INITIALIZED } from '@angular/common';
+import { ResizeBatchService } from '@progress/kendo-angular-common';
+
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+import localeEn from '@angular/common/locales/en';
+import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
+// Register local translations for dates
+registerLocaleData(localeFr);
+registerLocaleData(localeEn);
 
 /**
  * Initialize authentication in the platform.
@@ -157,20 +176,21 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       provide: PureAbility,
       useExisting: AppAbility,
     },
+    PopupService,
+    ResizeBatchService,
   ],
-  bootstrap: [AppComponent],
 })
-export class AppModule {
+export class AppModule implements DoBootstrap {
   /**
    * Main project root module
    *
    * @param injector Angular injector
    * @param formService SafeFormService
    */
-  constructor(private translate: TranslateService) {
-    this.translate.addLangs(environment.availableLanguages);
-    this.translate.setDefaultLang(environment.availableLanguages[0]);
-  }
+  constructor(
+    private injector: Injector,
+    private formService: SafeFormService
+  ) {}
 
   /**
    * Bootstrap the project.
@@ -182,5 +202,19 @@ export class AppModule {
       injector: this.injector,
     });
     customElements.define('form-widget', form);
+
+    const fonts = [
+      'https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap',
+      'https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined',
+      'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@48,400,0,0',
+    ];
+    // Make sure that the needed fonts are always available wherever the web component is placed
+    fonts.forEach((font) => {
+      const link = document.createElement('link');
+      link.href = font;
+      link.rel = 'stylesheet';
+      // Add them at the beginning of the head element in order to not interfere with any font of the same type
+      document.head.prepend(link);
+    });
   }
 }
