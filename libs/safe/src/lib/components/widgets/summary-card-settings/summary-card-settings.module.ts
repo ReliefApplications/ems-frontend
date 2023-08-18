@@ -22,6 +22,7 @@ import { SummaryCardGeneralComponent } from './summary-card-general/summary-card
 import { SafeSummaryCardSettingsComponent } from './summary-card-settings.component';
 import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
 import { SafeSortingSettingsModule } from '../common/sorting-settings/sorting-settings.module';
+import { ContextualFiltersSettingsComponent } from '../common/contextual-filters-settings/contextual-filters-settings.component';
 
 /** Summary Card Settings Module */
 @NgModule({
@@ -49,6 +50,7 @@ import { SafeSortingSettingsModule } from '../common/sorting-settings/sorting-se
     TabsModule,
     ToggleModule,
     SafeSortingSettingsModule,
+    ContextualFiltersSettingsComponent,
   ],
   exports: [SafeSummaryCardSettingsComponent],
 })

@@ -48,9 +48,9 @@
 
 .show-icons {
   & > li {
-    @apply min-h-[54px] flex justify-between items-center cursor-pointer flex-row text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md px-2 py-3;
+    @apply min-h-[54px] flex justify-between items-center cursor-pointer flex-row text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md;
     & > a {
-      @apply flex overflow-clip flex-row gap-x-3 text-sm leading-6 items-center font-semibold;
+      @apply flex flex-1 overflow-clip flex-row gap-x-3 text-sm leading-6 items-center font-semibold px-2 py-3;
     }
   }
   .hide-icons {
@@ -82,7 +82,7 @@
 .app-sidenav {
   // Subtracts topbar, sub-topbar, header height
   max-height: calc(100vh - 64px - 60px - 48px);
-  overflow: auto;
+  overflow: hidden;
 }
 
 .app-sidenav-phone {

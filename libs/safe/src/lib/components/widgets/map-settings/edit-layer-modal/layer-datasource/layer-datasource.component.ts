@@ -40,7 +40,7 @@ import { SafeAggregationService } from '../../../../../services/aggregation/aggr
 import { SafeEditAggregationModalComponent } from '../../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
-import { Fields } from '../layer-fields/layer-fields.component';
+import { Fields } from '../../../../../models/layer.model';
 import { GraphQLSelectComponent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 
@@ -180,11 +180,15 @@ export class LayerDatasourceComponent
             .getValue()
             .find((x) => x.id === resourceID) || null;
 
-        this.formGroup.get('layout')?.setValue(null);
-        this.formGroup.get('aggregation')?.setValue(null);
-        this.formGroup.get('geoField')?.setValue(null);
-        this.formGroup.get('latitudeField')?.setValue(null);
-        this.formGroup.get('longitudeField')?.setValue(null);
+        this.formGroup.get('layout')?.setValue(null, { emitEvent: false });
+        this.formGroup.get('aggregation')?.setValue(null, { emitEvent: false });
+        this.formGroup.get('geoField')?.setValue(null, { emitEvent: false });
+        this.formGroup
+          .get('latitudeField')
+          ?.setValue(null, { emitEvent: false });
+        this.formGroup
+          .get('longitudeField')
+          ?.setValue(null, { emitEvent: false });
         this.layout = null;
         this.aggregation = null;
       });
@@ -201,9 +205,8 @@ export class LayerDatasourceComponent
         })
         .subscribe(({ data }) => {
           this.refData = data.referenceData;
-          console.log(this.getFieldsFromRefData(this.refData.fields || []));
           this.fields.next(
-            this.getFieldsFromRefData(this.refData.fields || [])
+            this.getFieldsFromRefData(this.refData?.fields || [])
           );
         });
     }
@@ -218,7 +221,6 @@ export class LayerDatasourceComponent
             .getValue()
             .find((x) => x.id === refDataID) || null;
         if (this.refData) {
-          console.log(this.getFieldsFromRefData(this.refData.fields || []));
           this.fields.next(
             this.getFieldsFromRefData(this.refData.fields || [])
           );

@@ -19,7 +19,7 @@ export class ChipComponent {
 
   /** @returns general chip classes and variant */
   get chipClasses(): string[] {
-    const classes = [];
+    const classes: string[] = [];
     // Disable state
     if (this.disabled) {
       classes.push('opacity-70 bg-gray-300 text-gray-400 pointer-events-none');

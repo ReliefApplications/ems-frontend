@@ -5,6 +5,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SnackbarService } from '@oort-front/ui';
+import { DistributionList } from '../../models/distribution-list.model';
 
 /**
  * Component to show the list of distribution lists of an application
@@ -19,7 +20,7 @@ export class DistributionListsComponent
   implements OnInit
 {
   // === INPUT DATA ===
-  public distributionLists: Array<any> = new Array<any>();
+  public distributionLists: DistributionList[] = [];
   @Input() applicationService!: SafeApplicationService;
   // === DISPLAYED COLUMNS ===
   public displayedColumns = ['name', 'actions'];
@@ -55,7 +56,9 @@ export class DistributionListsComponent
    *
    * @param distributionList the distribution list to modify.
    */
-  async editDistributionList(distributionList: any): Promise<void> {
+  async editDistributionList(
+    distributionList: DistributionList
+  ): Promise<void> {
     const { EditDistributionListModalComponent } = await import(
       './components/edit-distribution-list-modal/edit-distribution-list-modal.component'
     );
@@ -64,6 +67,7 @@ export class DistributionListsComponent
       disableClose: true,
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      // value: { name: string; emails: string[] }
       if (value) {
         this.applicationService.editDistributionList({
           id: distributionList.id,
@@ -112,7 +116,9 @@ export class DistributionListsComponent
    *
    * @param distributionList distribution list ot be deleted
    */
-  async deleteDistributionList(distributionList: any): Promise<void> {
+  async deleteDistributionList(
+    distributionList: DistributionList
+  ): Promise<void> {
     const { SafeConfirmModalComponent } = await import(
       '../confirm-modal/confirm-modal.component'
     );
@@ -134,7 +140,9 @@ export class DistributionListsComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        this.applicationService.deleteDistributionList(distributionList.id);
+        this.applicationService.deleteDistributionList(
+          distributionList.id || ''
+        );
         this.snackBar.openSnackBar(
           this.translate.instant('common.notifications.objectDeleted', {
             value: distributionList.name,

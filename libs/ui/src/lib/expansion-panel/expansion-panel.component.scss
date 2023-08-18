@@ -3,5 +3,5 @@ div.accordion-item {
 }
 
 div.accordion-content {
-  @apply p-5 hidden border-l border-r border-b border-gray-200;
+  @apply p-5 border-l border-r border-b border-gray-200 overflow-hidden;
 }

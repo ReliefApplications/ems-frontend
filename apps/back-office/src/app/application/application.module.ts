@@ -7,6 +7,7 @@ import {
   SafeApplicationToolbarModule,
   SafeNavbarModule,
 } from '@oort-front/safe';
+import { SpinnerModule } from '@oort-front/ui';
 
 /**
  * Application module.
@@ -19,6 +20,7 @@ import {
     SafeApplicationToolbarModule,
     SafeLayoutModule,
     SafeNavbarModule,
+    SpinnerModule,
   ],
   exports: [ApplicationComponent],
 })

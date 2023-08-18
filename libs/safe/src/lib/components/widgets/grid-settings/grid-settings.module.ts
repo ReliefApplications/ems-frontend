@@ -14,6 +14,7 @@ import {
 } from '@oort-front/ui';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 import { SafeSortingSettingsModule } from '../common/sorting-settings/sorting-settings.module';
+import { ContextualFiltersSettingsComponent } from '../common/contextual-filters-settings/contextual-filters-settings.component';
 
 /** Module for the grid widget settings component */
 @NgModule({
@@ -32,6 +33,7 @@ import { SafeSortingSettingsModule } from '../common/sorting-settings/sorting-se
     DisplaySettingsComponent,
     SafeSortingSettingsModule,
     ToggleModule,
+    ContextualFiltersSettingsComponent,
   ],
   exports: [SafeGridSettingsComponent],
 })

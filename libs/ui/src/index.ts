@@ -58,6 +58,7 @@ export * from './lib/table/interfaces/table-column.interface';
 export * from './lib/toggle/interfaces/toggle-icon.interface';
 export * from './lib/breadcrumbs/interfaces/breadcrumb.interface';
 export * from './lib/paginator/interfaces/paginator.interfaces';
+export * from './lib/snackbar/interfaces/snackbar.interfaces';
 
 // === TOKENS === //
 export * from './lib/snackbar/snackbar.token';

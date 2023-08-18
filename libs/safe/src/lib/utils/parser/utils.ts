@@ -1,6 +1,7 @@
 import { get, isArray, isNil } from 'lodash';
 import calcFunctions from './calcFunctions';
 import { Page } from '../../models/page.model';
+import { REFERENCE_DATA_END } from '../../services/query-builder/query-builder.service';
 
 /** Prefix for data keys */
 const DATA_PREFIX = '{{data.';
@@ -145,41 +146,56 @@ const replaceRecordFields = (
 ): string => {
   let formattedHtml = html;
   if (fields) {
+    const links = formattedHtml.match(`href=["]?[^" >]+`);
+
     for (const field of fields) {
       const value = fieldsValue[field.name];
       const style = getLayoutsStyle(styles, field.name, fieldsValue);
       let convertedValue = '';
       // Inject avatars
       const avatarRgx = new RegExp(
-        `{{avatars.(?<name>${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}) (?<width>[0-9]+) (?<height>[0-9]+) (?<maxItems>[0-9]+)}}`,
+        `{{avatars.(?<name>${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX})( (?<shape>[a-z]+))? (?<width>[0-9]+) (?<height>[0-9]+) (?<maxItems>[0-9]+)}}`,
         'gi'
       );
-      const match = avatarRgx.exec(formattedHtml);
-      if (Array.isArray(value) && value.length > 0) {
-        const avatarValue = value.filter((v: string) => {
-          if (typeof v === 'string') {
-            const lowercaseValue = v.toLowerCase();
-            return ALLOWED_IMAGE_EXTENSIONS.some((ext) =>
-              lowercaseValue.endsWith(ext)
+      const matches = formattedHtml.matchAll(avatarRgx);
+      for (const match of matches) {
+        if (Array.isArray(value) && value.length > 0) {
+          // Map value array to use only string values in case of reference data objects
+          const checkedValue = value.map((v: any) => {
+            const refData =
+              v.__typename && v.__typename.endsWith(REFERENCE_DATA_END);
+            let refDataValue = null;
+            if (refData) {
+              refDataValue = v[v.__typename.slice(0, -3)];
+            }
+            return refDataValue === null ? v : refDataValue;
+          });
+          const avatarValue = checkedValue.filter((v: string) => {
+            if (typeof v === 'string') {
+              const lowercaseValue = v.toLowerCase();
+              return ALLOWED_IMAGE_EXTENSIONS.some((ext) =>
+                lowercaseValue.endsWith(ext)
+              );
+            } else {
+              return false;
+            }
+          });
+          if (avatarValue.length > 0) {
+            const avatarGroup = createAvatarGroup(
+              avatarValue,
+              match?.groups?.shape as Shape,
+              Number(match?.groups?.width),
+              Number(match?.groups?.height),
+              Number(match?.groups?.maxItems)
             );
-          } else {
-            return false;
+            formattedHtml = formattedHtml.replace(
+              match[0],
+              avatarGroup.innerHTML
+            );
           }
-        });
-        if (avatarValue.length > 0) {
-          const avatarGroup = createAvatarGroup(
-            avatarValue,
-            Number(match?.groups?.width),
-            Number(match?.groups?.height),
-            Number(match?.groups?.maxItems)
-          );
-          formattedHtml = formattedHtml.replace(
-            avatarRgx,
-            avatarGroup.innerHTML
-          );
+        } else {
+          formattedHtml = formattedHtml.replace(avatarRgx, '');
         }
-      } else {
-        formattedHtml = formattedHtml.replace(avatarRgx, '');
       }
       if (!isNil(value)) {
         // First, try to find cases where the url is used as src of image or link
@@ -188,6 +204,19 @@ const replaceRecordFields = (
           'gi'
         );
         formattedHtml = formattedHtml.replace(srcRegex, `src=${value}`);
+
+        // Prevent URL from containing style
+        links?.forEach((link) => {
+          if (
+            link.match(`${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}`)
+          ) {
+            const formattedLink = link.replace(
+              `${DATA_PREFIX}${field.name}${PLACEHOLDER_SUFFIX}`,
+              value
+            );
+            formattedHtml = formattedHtml.replace(link, formattedLink);
+          }
+        });
 
         switch (field.type) {
           case 'url': {
@@ -581,10 +610,13 @@ const applyFilters = (filter: any, fields: any): boolean => {
   }
 };
 
+type Shape = 'circle' | 'square';
+
 /**
  * Creates the html element faking an avatar group
  *
  * @param value Array of urls of the images
+ * @param shape Shape of the avatars (circle or square for now)
  * @param width Width of the avatars
  * @param height Height of the avatars
  * @param maxItems Maximum number of avatars to show
@@ -592,6 +624,7 @@ const applyFilters = (filter: any, fields: any): boolean => {
  */
 const createAvatarGroup = (
   value: string[],
+  shape: Shape | undefined,
   width: number | undefined,
   height: number | undefined,
   maxItems: number | undefined
@@ -599,28 +632,31 @@ const createAvatarGroup = (
   const avatarGroup = document.createElement('avatar-group');
   const innerDiv = document.createElement('div');
   avatarGroup.appendChild(innerDiv);
-  innerDiv.className = 'flex -space-x-2 overflow-hidden isolate';
+  innerDiv.className = 'flex gap-1 overflow-hidden isolate';
 
-  const size = computeSize(width, height);
-  let sizeClass;
-  if (size <= 10) {
-    sizeClass = 'h-6 w-6';
-  } else if (size <= 20) {
-    sizeClass = 'h-10 w-10';
-  } else {
-    sizeClass = 'h-14 w-14';
+  let shapeClass = '';
+  switch (shape) {
+    case 'circle':
+      shapeClass = 'rounded-full';
+      break;
+    case 'square':
+      shapeClass = 'rounded-md';
+      break;
+    default:
+      shapeClass = 'rounded-full';
+      break;
   }
 
-  for (const [index, image] of value
-    .slice(0, maxItems ? maxItems : value.length)
-    .entries()) {
+  for (const image of value.slice(0, maxItems ? maxItems : value.length)) {
     const avatar = document.createElement('avatar');
     innerDiv.appendChild(avatar);
-    avatar.style.zIndex = `${value.length - index}`;
 
     const span = document.createElement('span');
     avatar.appendChild(span);
-    span.className = `rounded-full ${sizeClass} bg-transparent block border-2 overflow-hidden ring-2 ring-transparent`;
+
+    span.className = `${shapeClass} bg-transparent block border-2 overflow-hidden ring-2 ring-transparent`;
+    span.style.height = `${height}px`;
+    span.style.width = `${width}px`;
 
     const img = document.createElement('img');
     span.appendChild(img);
@@ -628,14 +664,16 @@ const createAvatarGroup = (
     img.className = 'inline-block h-full w-full';
   }
 
-  if (!isNil(maxItems) && value.length > maxItems) {
+  if (!isNil(maxItems) && maxItems > 0 && value.length > maxItems) {
     const avatar = document.createElement('avatar');
     innerDiv.appendChild(avatar);
     avatar.style.zIndex = '0';
 
     const span = document.createElement('span');
     avatar.appendChild(span);
-    span.className = `rounded-full ${sizeClass} bg-gray-500 inline-flex items-center justify-center border-2 overflow-hidden ring-2 ring-transparent`;
+    span.className = `${shapeClass} bg-gray-500 inline-flex items-center justify-center border-2 overflow-hidden ring-2 ring-transparent`;
+    span.style.height = `${height}px`;
+    span.style.width = `${width}px`;
     span.style.borderRadius = '50%';
 
     const innerSpan = document.createElement('span');
@@ -645,21 +683,4 @@ const createAvatarGroup = (
   }
 
   return avatarGroup;
-};
-
-/**
- * Compute the size of the avatar
- *
- * @param width Width of the avatar
- * @param height Height of the avatar
- * @returns The size of the avatar
- */
-const computeSize = (
-  width: number | undefined,
-  height: number | undefined
-): number => {
-  if (width && height) {
-    return (width + height) / 2;
-  }
-  return 32;
 };

@@ -23,16 +23,13 @@ import { SafeAggregationService } from '../../../services/aggregation/aggregatio
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
+import { takeUntil } from 'rxjs';
 
-/** Define max height of summary card */
-const MAX_ROW_SPAN = 4;
-/** Define max width of summary card */
-const MAX_COL_SPAN = 8;
-
-/** Define default height of summary card */
-const DEFAULT_CARD_HEIGHT = 2;
-/** Define max width of summary card */
-const DEFAULT_CARD_WIDTH = 2;
+/** TODO: Replace once we have UI */
+const DEFAULT_CONTEXT_FILTER = `{
+  "logic": "and",
+  "filters": []
+}`;
 
 /**
  * Create a card form
@@ -43,14 +40,6 @@ const DEFAULT_CARD_WIDTH = 2;
 const createCardForm = (value?: any) => {
   return new FormGroup({
     title: new FormControl<string>(get(value, 'title', 'New Card')),
-    height: new FormControl<number>(get(value, 'height', DEFAULT_CARD_HEIGHT), [
-      Validators.min(1),
-      Validators.max(MAX_ROW_SPAN),
-    ]),
-    width: new FormControl<number>(get(value, 'width', DEFAULT_CARD_WIDTH), [
-      Validators.min(1),
-      Validators.max(MAX_COL_SPAN),
-    ]),
     resource: new FormControl<string>(get(value, 'resource', null)),
     layout: new FormControl<string>(get(value, 'layout', null)),
     aggregation: new FormControl<string>(get(value, 'aggregation', null)),
@@ -81,10 +70,13 @@ const createSummaryCardForm = (def: any) => {
     sortFields: new FormArray([]),
   });
 
-  return extendWidgetForm(form, settings?.widgetDisplay, {
-    searchable: new FormControl(
-      get<boolean>(settings, 'widgetDisplay.searchable', false)
-    ),
+  const isUsingAggregation = !!get(settings, 'card.aggregation', null);
+  const searchable = isUsingAggregation
+    ? false
+    : get<boolean>(settings, 'widgetDisplay.searchable', false);
+
+  const extendedForm = extendWidgetForm(form, settings?.widgetDisplay, {
+    searchable: new FormControl(searchable),
     sortable: new FormControl(
       get<boolean>(settings, 'widgetDisplay.sortable', false)
     ),
@@ -92,6 +84,12 @@ const createSummaryCardForm = (def: any) => {
       get<boolean>(settings, 'widgetDisplay.usePagination', false)
     ),
   });
+
+  // disable searchable if aggregation is selected
+  if (isUsingAggregation)
+    extendedForm.get('widgetDisplay.searchable')?.disable();
+
+  return extendedForm;
 };
 export type SummaryCardFormT = ReturnType<typeof createSummaryCardForm>;
 
@@ -152,6 +150,21 @@ export class SafeSummaryCardSettingsComponent
       this.getResource(resourceID);
     }
 
+    // Subscribe to aggregation changes
+    this.tileForm
+      .get('card.aggregation')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((aggregationID) => {
+        // disable searchable if aggregation is selected
+        if (aggregationID) {
+          const searchableControl = this.tileForm?.get(
+            'widgetDisplay.searchable'
+          );
+          searchableControl?.setValue(false);
+          searchableControl?.disable();
+        } else this.tileForm?.get('widgetDisplay.searchable')?.enable();
+      });
+
     this.initSortFields();
   }
 
@@ -183,7 +196,7 @@ export class SafeSummaryCardSettingsComponent
    * Detect the form changes to emit the new configuration.
    */
   ngAfterViewInit(): void {
-    this.tileForm?.valueChanges.subscribe(() => {
+    this.tileForm?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.change.emit(this.tileForm);
     });
   }

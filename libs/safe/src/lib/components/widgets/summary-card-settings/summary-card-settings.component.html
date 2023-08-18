@@ -67,6 +67,18 @@
         <safe-display-tab [form]="tileForm"></safe-display-tab>
       </ng-template>
     </ui-tab>
+    <!-- Context filter settings -->
+    <ui-tab>
+      <ng-container ngProjectAs="label">
+        <ui-icon icon="filter_list" [size]="24"></ui-icon>
+        <span>{{ 'models.dashboard.dashboardFilter' | translate }}</span>
+      </ng-container>
+      <ng-template uiTabContent>
+        <safe-contextual-filters-settings
+          [form]="tileForm"
+        ></safe-contextual-filters-settings>
+      </ng-template>
+    </ui-tab>
     <!-- Widget display options -->
     <ui-tab>
       <ng-container ngProjectAs="label">
@@ -81,6 +93,7 @@
         <safe-display-settings [formGroup]="tileForm">
           <!-- Specific settings for summary card -->
           <ui-toggle
+            *ngIf="tileForm.get('widgetDisplay.searchable')?.enabled"
             [formControl]="$any(tileForm.get('widgetDisplay.searchable'))"
           >
             <ng-container ngProjectAs="label">{{
