@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import { Component } from '@angular/core';
 import { SnackBarConfig } from '@oort-front/ui';
 import { of } from 'rxjs';

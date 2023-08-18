@@ -192,7 +192,7 @@ export class GraphQLSelectComponent
     private renderer: Renderer2,
     @Inject(DOCUMENT) private document: Document
   ) {
-    if (this.ngControl != null) {
+    if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
   }
