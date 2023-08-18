@@ -98,6 +98,7 @@ export class FormBuilderComponent implements OnInit {
             window.localStorage.removeItem(`form:${this.id}`);
             return true;
           }
+          this.authService.canLogout.next(false);
           return false;
         })
       );
@@ -147,7 +148,6 @@ export class FormBuilderComponent implements OnInit {
                 : this.form.structure;
               if (this.structure !== this.form.structure) {
                 this.hasChanges = true;
-                this.authService.canLogout.next(!this.hasChanges);
               }
             } else {
               this.snackBar.openSnackBar(
@@ -231,7 +231,6 @@ export class FormBuilderComponent implements OnInit {
               this.structure = structure;
               localStorage.removeItem(`form:${this.id}`);
               this.hasChanges = false;
-              this.authService.canLogout.next(true);
               statusModal.close();
             }
           },
@@ -447,6 +446,5 @@ export class FormBuilderComponent implements OnInit {
       JSON.parse(this.form?.structure || '{}')
     );
     localStorage.setItem(`form:${this.id}`, event);
-    this.authService.canLogout.next(!this.hasChanges);
   }
 }

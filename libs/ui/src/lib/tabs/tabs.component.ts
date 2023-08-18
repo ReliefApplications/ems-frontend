@@ -166,7 +166,7 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
       tab.vertical = this.vertical;
       tab.index = index;
       tab.openTab
-        .pipe(takeUntil(this.reorder$), takeUntil(this.destroy$))
+        .pipe(takeUntil(this.reorder$ || this.destroy$))
         .subscribe(() => {
           this.showContent(tab);
           this.selectedIndex = index;

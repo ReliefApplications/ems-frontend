@@ -279,7 +279,7 @@ export class SafeLayoutComponent
    * Call logout method of authService.
    */
   logout(): void {
-    if (!this.authService.canLogout.value) {
+    if (!this.authService.canLogout.getValue()) {
       const dialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('components.logout.title'),
         content: this.translate.instant(

@@ -324,6 +324,12 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
       if (this.page) {
         this.router.navigate([`./builder/${this.page.content}`], {
           relativeTo: this.route,
+          ...(this.applicationWidgetService && {
+            skipLocationChange: true,
+            state: {
+              applicationWidgetService: this.applicationWidgetService,
+            },
+          }),
         });
       }
     }

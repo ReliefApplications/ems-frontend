@@ -41,6 +41,8 @@ import {
   GET_DASHBOARD_BY_ID,
   GET_RECORD_BY_ID,
   GET_RESOURCE_RECORDS,
+  GetPageByIdQueryResponse,
+  GET_PAGE_BY_ID,
 } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { map, takeUntil, debounceTime } from 'rxjs/operators';
@@ -237,8 +239,25 @@ export class DashboardComponent
                 }
               }
             } else {
-              // if there is no id, we are not on a contextual dashboard, we simply load the dashboard
-              this.initDashboardWithId(params.id);
+              if (this.applicationWidgetService) {
+                this.apollo
+                  .query<GetPageByIdQueryResponse>({
+                    query: GET_PAGE_BY_ID,
+                    variables: {
+                      id: params.id,
+                    },
+                  })
+                  .subscribe({
+                    next: ({ data }) => {
+                      if (data.page.content) {
+                        this.initDashboardWithId(data.page.content);
+                      }
+                    },
+                  });
+              } else {
+                // if there is no id, we are not on a contextual dashboard, we simply load the dashboard
+                this.initDashboardWithId(params.id);
+              }
             }
           });
       });

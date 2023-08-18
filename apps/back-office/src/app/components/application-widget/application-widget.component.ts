@@ -7,7 +7,12 @@ import {
   OnInit,
   SkipSelf,
 } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
+import {
+  ActivatedRoute,
+  NavigationCancel,
+  NavigationEnd,
+  Router,
+} from '@angular/router';
 import {
   Application,
   ContentType,
@@ -17,8 +22,11 @@ import {
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import { Subscription, filter, takeUntil } from 'rxjs';
-// import { FormsComponent } from '../../dashboard/pages/forms/forms.component';
-// import { DashboardComponent } from '../../dashboard/pages/dashboard/dashboard.component';
+import { FormsComponent } from '../../dashboard/pages/forms/forms.component';
+import { DashboardComponent } from '../../dashboard/pages/dashboard/dashboard.component';
+import { FormBuilderComponent } from '../../dashboard/pages/form-builder/form-builder.component';
+import { TabComponent } from '@oort-front/ui';
+import { Location } from '@angular/common';
 
 /**
  * Tabs for application widget
@@ -73,6 +81,8 @@ export class ApplicationWidgetComponent
 
   // === PAGES EVENTS === //
   private subscriptions: Subscription = new Subscription();
+  currentTabContent!: any;
+  lastOpenedTab!: TabComponent;
 
   /**
    * Test if the grid uses a layout, and if a layout is used, if any item is currently updated.
@@ -92,6 +102,7 @@ export class ApplicationWidgetComponent
    * @param safeAuthService SafeAuthService
    * @param applicationWidgetService SafeApplicationWidgetService
    * @param cdr ChangeDetectorRef
+   * @param location Location
    */
   constructor(
     @Inject('environment') environment: any,
@@ -99,11 +110,31 @@ export class ApplicationWidgetComponent
     private activatedRoute: ActivatedRoute,
     private safeAuthService: SafeAuthService,
     @SkipSelf() private applicationWidgetService: SafeApplicationWidgetService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private location: Location
   ) {
     super();
     this.isAdmin =
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
+    this.router.events.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (event) => {
+        if (event instanceof NavigationEnd) {
+          this.setCurrentTabContentListeners();
+        }
+        if (event instanceof NavigationCancel) {
+          // Restore default url state
+          if (this.currentTabContent instanceof FormBuilderComponent) {
+            const regex = /(?=(^.*)\/tab0)/im;
+            if (regex) {
+              const baseRoute = this.location.path().match(regex)?.[1];
+              if (baseRoute) {
+                this.location.replaceState(baseRoute);
+              }
+            }
+          }
+        }
+      },
+    });
   }
 
   ngOnInit(): void {
@@ -139,10 +170,7 @@ export class ApplicationWidgetComponent
       .subscribe({
         next: (application) => {
           if (application) {
-            this.updateTabs(application.pages?.length ? application.pages : []);
-            this.loadPage(
-              application.pages?.length ? application.pages?.length : -1
-            );
+            this.updateApplicationWidgetUI(application);
           }
           if (application?.id) {
             this.settings.applicationId = application.id;
@@ -160,6 +188,33 @@ export class ApplicationWidgetComponent
   }
 
   /**
+   * Update current application content displayed in the widget
+   *
+   * @param application Current application content
+   */
+  private updateApplicationWidgetUI(application: Application) {
+    this.updateTabs(application.pages?.length ? application.pages : []);
+    if (
+      this.selectedTab === 0 ||
+      this.application?.pages?.length !== application.pages?.length
+    ) {
+      const selectedIndex = !application.pages?.length
+        ? -1
+        : this.selectedTab === application.pages.length + 1
+        ? application.pages.length
+        : this.selectedTab
+        ? this.selectedTab
+        : this.selectedTab === 0 &&
+          !this.application &&
+          application.pages?.length
+        ? 1
+        : application.pages?.length;
+
+      this.loadPage(selectedIndex);
+      this.selectedTab = selectedIndex !== -1 ? selectedIndex : 0;
+    }
+  }
+  /**
    * Set to view the page for the given index
    *
    * @param pageIndex index of page to load
@@ -175,7 +230,6 @@ export class ApplicationWidgetComponent
       skipLocationChange: true,
       state: { applicationWidgetService: this.applicationWidgetService },
     });
-    this.selectedTab = pageIndex !== -1 ? pageIndex : 0;
   }
 
   /**
@@ -208,13 +262,16 @@ export class ApplicationWidgetComponent
   /**
    * Handle each page type subscriptions and listeners on rendering them
    *
-   * @param content Loaded page by route
    */
-  getCurrentTabContent(content: any) {
-    // if (content instanceof FormsComponent) {
-    // } else if (content instanceof DashboardComponent) {
-    // }
-    console.log(content);
+  setCurrentTabContentListeners() {
+    this.subscriptions.unsubscribe();
+    if (this.currentTabContent instanceof FormsComponent) {
+      console.log(this.currentTabContent);
+    } else if (this.currentTabContent instanceof DashboardComponent) {
+      console.log(this.currentTabContent);
+    } else if (this.currentTabContent instanceof FormBuilderComponent) {
+      this.safeAuthService.canLogout.next(false);
+    }
   }
 
   /**
@@ -232,7 +289,7 @@ export class ApplicationWidgetComponent
         label: page.name as string,
         icon: 'close',
         route: page.type as keyof typeof ContentType as string,
-        id: page.type === ContentType.dashboard ? page.content : page.id,
+        id: page.id,
       };
       this.pages.push(newTab);
     });
@@ -242,5 +299,17 @@ export class ApplicationWidgetComponent
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     this.subscriptions.unsubscribe();
+  }
+
+  /**
+   * Disable current tabs if we are in the formBuilder(nested url that keeps confirmation modal)
+   *
+   * @returns disable state given the current tab content and state
+   */
+  get isDisabled() {
+    return (
+      this.currentTabContent instanceof FormBuilderComponent &&
+      !this.safeAuthService.canLogout.getValue()
+    );
   }
 }

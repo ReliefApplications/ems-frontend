@@ -53,12 +53,6 @@ export class SafeWidgetTabHostComponent implements OnInit, OnDestroy {
       widget: this.widget,
       settings: this.widget.settings,
     };
-  }
-
-  /**
-   * Add listeners to listen for application widget changes
-   */
-  setApplicationWidgetListeners() {
     this.activeComponentSubscriptions.add(
       this.applicationWidgetService.applicationWidgetTile$
         .pipe(
@@ -77,16 +71,9 @@ export class SafeWidgetTabHostComponent implements OnInit, OnDestroy {
     );
   }
 
-  /**
-   * Remove all listeners for application widget changes
-   */
-  removeApplicationWidgetListeners() {
-    this.activeComponentSubscriptions.unsubscribe();
-  }
-
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    this.removeApplicationWidgetListeners();
+    this.activeComponentSubscriptions.unsubscribe();
   }
 }

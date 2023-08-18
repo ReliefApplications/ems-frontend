@@ -19,7 +19,7 @@
   <ng-container *ngIf="pages.length">
     <ui-tabs [selectedIndex]="selectedTab">
       <ng-container *ngFor="let page of pages; let i = index">
-        <ui-tab (click)="loadPage(i)">
+        <ui-tab [disabled]="isDisabled" (click)="loadPage(i)">
           <ng-container ngProjectAs="label">
             <ng-container *ngIf="page.id; else addPageTmpl">
               <div class="flex items-center gap-1">
@@ -48,7 +48,7 @@
     </ui-tabs>
   </ng-container>
   <div class="h-full overflow-y-auto w-full p-2">
-    <router-outlet (activate)="getCurrentTabContent($event)"></router-outlet>
+    <router-outlet (activate)="currentTabContent = $event"></router-outlet>
   </div>
 </div>
 

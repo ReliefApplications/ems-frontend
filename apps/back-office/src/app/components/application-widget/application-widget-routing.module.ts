@@ -17,28 +17,27 @@ const routes: Routes = [
         data: { source: 'widget' },
       },
       {
-        path: 'form',
-        loadChildren: () =>
-          import('../../application/pages/form/form.module').then(
-            (m) => m.FormModule
-          ),
-        data: { source: 'widget' },
-      },
-      {
         path: 'form/:id',
-        loadChildren: () =>
-          import('../../application/pages/form/form.module').then(
-            (m) => m.FormModule
-          ),
-        data: { source: 'widget' },
-      },
-      {
-        path: 'dashboard',
-        loadChildren: () =>
-          import('../../dashboard/pages/dashboard/dashboard.module').then(
-            (m) => m.DashboardModule
-          ),
-        data: { source: 'widget' },
+        children: [
+          {
+            path: '',
+            loadChildren: () =>
+              import('../../application/pages/form/form.module').then(
+                (m) => m.FormModule
+              ),
+            data: { source: 'widget' },
+            // canActivate: [SafePermissionGuard]
+          },
+          {
+            path: 'builder/:id',
+            loadChildren: () =>
+              import(
+                '../../dashboard/pages/form-builder/form-builder.module'
+              ).then((m) => m.FormBuilderModule),
+            data: { source: 'widget' },
+            // canActivate: [SafePermissionGuard]
+          },
+        ],
       },
       {
         path: 'dashboard/:id',
