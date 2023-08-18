@@ -42,7 +42,7 @@ export class UpdateRecordComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
-    const template = history.state.template;
+    const template = history.state?.template;
     if (template) {
       this.apollo
         .watchQuery<GetFormByIdQueryResponse>({
