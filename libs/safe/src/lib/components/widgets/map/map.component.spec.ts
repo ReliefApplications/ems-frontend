@@ -6,13 +6,17 @@ import {
   ApolloTestingController,
 } from 'apollo-angular/testing';
 import { SafeMapComponent } from './map.component';
-require('leaflet');
-require('@esri');
+import 'leaflet';
+import 'L.esri';
 
 describe('SafeMapComponent', () => {
   let component: SafeMapComponent;
   let fixture: ComponentFixture<SafeMapComponent>;
   let controller: ApolloTestingController;
+  jest.mock('L.esri', () => ({
+    ...jest.requireActual('L.esri'),
+    Vector: { vectorBasemapLayer: jest.fn() },
+  }));
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
