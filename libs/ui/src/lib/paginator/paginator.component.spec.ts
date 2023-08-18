@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { PaginatorComponent } from './paginator.component';
+import { PaginatorModule } from './paginator.module';
+import { TranslateTestingModule } from 'ngx-translate-testing';
 
 describe('PaginatorComponent', () => {
   let component: PaginatorComponent;
@@ -9,6 +10,19 @@ describe('PaginatorComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [PaginatorComponent],
+      imports: [
+        PaginatorModule,
+        TranslateTestingModule.withTranslations('en', {
+          components: {
+            paginator: {
+              page: 'Page',
+              of: 'of',
+              items: 'items',
+              itemsPerPage: 'items per page',
+            },
+          },
+        }),
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(PaginatorComponent);
@@ -16,7 +30,7 @@ describe('PaginatorComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create an instance', () => {
     expect(component).toBeTruthy();
   });
 });

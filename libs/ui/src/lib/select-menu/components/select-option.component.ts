@@ -23,7 +23,7 @@ export class SelectOptionComponent implements AfterContentInit {
   @Input() selected = false;
   @Input() isGroup = false;
   @Input() disabled = false;
-  @Output() optionClick = new EventEmitter<any>();
+  @Output() optionClick = new EventEmitter<boolean>();
 
   @ContentChildren(forwardRef(() => SelectOptionComponent))
   options!: QueryList<SelectOptionComponent>;
@@ -40,7 +40,7 @@ export class SelectOptionComponent implements AfterContentInit {
 
   ngAfterContentInit(): void {
     this.label =
-      this.el.nativeElement.querySelector('span').firstChild.textContent;
+      this.el.nativeElement.querySelector('span').firstChild?.textContent ?? '';
   }
 
   /**

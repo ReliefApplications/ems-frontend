@@ -1,6 +1,7 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/default/default.uat';
 import { sharedEnvironment } from './environment.shared';
+import { Environment } from './environment.type';
 
 /** Authentication configuration of the module. */
 const authConfig: AuthConfig = {
@@ -16,7 +17,7 @@ const authConfig: AuthConfig = {
 };
 
 /** Environment configuration */
-export const environment = {
+export const environment: Environment = {
   ...sharedEnvironment,
   production: true,
   apiUrl: 'https://ems-safe-test.who.int/api',
@@ -26,4 +27,9 @@ export const environment = {
   availableLanguages: ['en'],
   authConfig,
   theme,
+  sentry: {
+    environment: 'staging',
+    dns: 'https://da63b46285f94315b2d6f8e9c69d7c8c@o4505563078918144.ingest.sentry.io/4505563106312192',
+    tracePropagationTargets: ['ems-safe-test.who.int'],
+  },
 };

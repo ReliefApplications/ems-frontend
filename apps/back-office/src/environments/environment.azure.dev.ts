@@ -1,6 +1,7 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/default/default.dev';
 import { sharedEnvironment } from './environment.shared';
+import { Environment } from './environment.type';
 
 /**
  * Authentification configuration
@@ -20,7 +21,7 @@ const authConfig: AuthConfig = {
 /**
  * Environment file for local development.
  */
-export const environment = {
+export const environment: Environment = {
   ...sharedEnvironment,
   production: true,
   apiUrl: 'https://ems-safe-dev.who.int/api',
@@ -44,4 +45,9 @@ export const environment = {
     'map',
     'summaryCard',
   ],
+  sentry: {
+    environment: 'development',
+    dns: 'https://da63b46285f94315b2d6f8e9c69d7c8c@o4505563078918144.ingest.sentry.io/4505563106312192',
+    tracePropagationTargets: ['ems-safe-dev.who.int'],
+  },
 };
