@@ -79,9 +79,10 @@
               <ui-icon icon="tune" variant="grey"></ui-icon>
               <!-- todo(translate) -->
               {{
-                dashboard.showFilter
-                  ? 'Deactivate filtering'
-                  : 'Activate filtering'
+                (showFilter
+                  ? 'models.dashboard.deactivateFiltering'
+                  : 'models.dashboard.activateFiltering'
+                ) | translate
               }}
             </button>
             <button uiMenuItem (click)="onAppSelection()">
@@ -185,9 +186,11 @@
   <safe-dashboard-filter
     *ngIf="showFilter && isFullScreen"
     [editable]="true"
+    [isFullScreen]="isFullScreen"
   ></safe-dashboard-filter>
 </div>
 <safe-dashboard-filter
   *ngIf="showFilter && !isFullScreen"
   [editable]="true"
+  [isFullScreen]="isFullScreen"
 ></safe-dashboard-filter>

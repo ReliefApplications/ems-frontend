@@ -1,4 +1,4 @@
-<div uiFormFieldDirective class="flex-1">
+<div uiFormFieldDirective class="flex-1 w-44">
   <label>{{ label || 'common.field.one' | translate }}</label>
   <ui-select-menu [formControl]="fieldControl">
     <ui-select-option *ngIf="nullable">{{
@@ -10,10 +10,7 @@
         [value]="field.name"
         >{{ field.name }}</ui-select-option
       >
-      <ui-select-option
-        [isGroup]="true"
-        *ngIf="field.type.kind !== 'SCALAR'"
-      >
+      <ui-select-option [isGroup]="true" *ngIf="field.type.kind !== 'SCALAR'">
         <ui-select-option
           *ngFor="let subField of field.fields"
           [value]="field.name + '.' + subField.name"

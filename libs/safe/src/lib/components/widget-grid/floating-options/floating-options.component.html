@@ -6,7 +6,11 @@
 >
 </ui-button>
 <ui-menu #menu>
-  <button uiMenuItem (click)="onClick('Settings')" [disabled]="!this.widget || !this.widget.settings">
+  <button
+    uiMenuItem
+    (click)="onClick('Settings')"
+    [disabled]="!this.widget || !this.widget.settings"
+  >
     <ui-icon icon="insert_chart" variant="grey"></ui-icon>
     <span>{{ 'common.settings' | translate }}</span>
   </button>

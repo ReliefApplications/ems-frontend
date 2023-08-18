@@ -18,35 +18,45 @@
       routerLink="./records"
       [state]="{ resource }"
     >
-      <ng-container ngProjectAs="label">{{ 'common.record.few' | translate }}</ng-container>
+      <ng-container ngProjectAs="label">{{
+        'common.record.few' | translate
+      }}</ng-container>
     </ui-tab>
     <ui-tab
       (click)="selectedTab = 1"
       routerLink="./forms"
       [state]="{ resource }"
     >
-      <ng-container ngProjectAs="label">{{ 'common.form.few' | translate }}</ng-container>
+      <ng-container ngProjectAs="label">{{
+        'common.form.few' | translate
+      }}</ng-container>
     </ui-tab>
     <ui-tab
       (click)="selectedTab = 2"
       routerLink="./layouts"
       [state]="{ resource }"
     >
-      <ng-container ngProjectAs="label">{{ 'common.layout.few' | translate }}</ng-container>
+      <ng-container ngProjectAs="label">{{
+        'common.layout.few' | translate
+      }}</ng-container>
     </ui-tab>
     <ui-tab
       (click)="selectedTab = 3"
       routerLink="./aggregations"
       [state]="{ resource }"
     >
-      <ng-container ngProjectAs="label">{{ 'common.aggregation.few' | translate }}</ng-container>
+      <ng-container ngProjectAs="label">{{
+        'common.aggregation.few' | translate
+      }}</ng-container>
     </ui-tab>
     <ui-tab
       (click)="selectedTab = 4"
       routerLink="./calculated-fields"
       [state]="{ resource }"
     >
-      <ng-container ngProjectAs="label">{{ 'common.calculatedField.few' | translate }}</ng-container>
+      <ng-container ngProjectAs="label">{{
+        'common.calculatedField.few' | translate
+      }}</ng-container>
     </ui-tab>
   </ui-tabs>
   <router-outlet></router-outlet>

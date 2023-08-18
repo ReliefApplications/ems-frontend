@@ -6,7 +6,7 @@
   </ng-container>
   <ng-container ngProjectAs="content">
     <form [formGroup]="referenceForm" class="flex flex-col">
-      <div uiFormFieldDirective >
+      <div uiFormFieldDirective>
         <label>{{ 'common.name' | translate }}</label>
         <input
           formControlName="name"
@@ -17,9 +17,7 @@
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button (click)="onClose()">{{
-      'common.close' | translate
-    }}</ui-button>
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"

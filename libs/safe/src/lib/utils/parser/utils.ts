@@ -1,10 +1,13 @@
 import { get, isArray, isNil } from 'lodash';
 import calcFunctions from './calcFunctions';
+import { Page } from '../../models/page.model';
 
 /** Prefix for data keys */
 const DATA_PREFIX = '{{data.';
 /** Prefix for calc keys */
 const CALC_PREFIX = '{{calc.';
+/** Prefix for avatar keys */
+const AVATAR_PREFIX = '{{avatars.';
 /** Suffix for all keys */
 const PLACEHOLDER_SUFFIX = '}}';
 
@@ -51,6 +54,7 @@ const ICON_EXTENSIONS: any = {
  * @param html The html text.
  * @param fieldsValue Field value.
  * @param fields Available fields.
+ * @param pages list of application pages
  * @param styles Array of layout styles.
  * @returns The parsed html.
  */
@@ -58,18 +62,20 @@ export const parseHtml = (
   html: string,
   fieldsValue: any,
   fields: any,
+  pages: any[],
   styles?: any[]
 ) => {
+  const htmlWithLinks = replacePages(html, pages);
   if (fieldsValue) {
     const htmlWithRecord = replaceRecordFields(
-      html,
+      htmlWithLinks,
       fieldsValue,
       fields,
       styles
     );
     return applyOperations(htmlWithRecord);
   } else {
-    return applyOperations(html);
+    return applyOperations(htmlWithLinks);
   }
 };
 
@@ -77,14 +83,14 @@ export const parseHtml = (
  * gets the style for the cards
  *
  * @param wholeCardStyles boolean
- * @param styles available
  * @param fieldsValue array of fields to apply the filters
+ * @param styles available
  * @returns the html styles
  */
 export const getCardStyle = (
   wholeCardStyles: boolean = false,
-  styles: any[] = [],
-  fieldsValue: any
+  fieldsValue: any,
+  styles: any[] = []
 ) => {
   if (wholeCardStyles) {
     let lastRowStyle = '';
@@ -100,6 +106,24 @@ export const getCardStyle = (
     return lastRowStyle;
   }
   return '';
+};
+
+/**
+ * Replace page keys with links
+ *
+ * @param html html template
+ * @param pages array of pages
+ * @returns formatted html
+ */
+const replacePages = (html: string, pages: any[]): string => {
+  let formattedHtml = html;
+  if (pages) {
+    for (const page of pages) {
+      const regex = new RegExp(`{{page\\(${page.id}\\b\\)}}`, 'gi');
+      formattedHtml = formattedHtml.replace(regex, page.url);
+    }
+  }
+  return formattedHtml;
 };
 
 /**
@@ -124,15 +148,35 @@ const replaceRecordFields = (
       const style = getLayoutsStyle(styles, field.name, fieldsValue);
       let convertedValue = '';
       if (!isNil(value)) {
+        // First, try to find cases where the url is used as src of image or link
+        const srcRegex = new RegExp(
+          `src="${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}"`,
+          'gi'
+        );
+        formattedHtml = formattedHtml.replace(srcRegex, `src=${value}`);
+        // Inject avatars
+        const avatarRgx = new RegExp(
+          `{{avatars.(?<name>${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}) (?<width>[0-9]+) (?<height>[0-9]+) (?<maxItems>[0-9]+)}}`,
+          'gi'
+        );
+        const match = avatarRgx.exec(formattedHtml);
+        if (Array.isArray(value) && value.length > 0) {
+          const avatarGroup = createAvatarGroup(
+            value,
+            Number(match?.groups?.width),
+            Number(match?.groups?.height),
+            Number(match?.groups?.maxItems)
+          );
+          formattedHtml = formattedHtml.replace(
+            avatarRgx,
+            avatarGroup.innerHTML
+          );
+        } else {
+          formattedHtml = formattedHtml.replace(avatarRgx, '');
+        }
+
         switch (field.type) {
           case 'url': {
-            // Specific case
-            // First, try to find cases where the url is used as src of image or link
-            const srcRegex = new RegExp(
-              `src="${DATA_PREFIX}${field.name}\\b${PLACEHOLDER_SUFFIX}"`,
-              'gi'
-            );
-            formattedHtml = formattedHtml.replace(srcRegex, `src=${value}`);
             // Then, follow same logic than for other fields
             convertedValue = `<a href="${value}" style="${style}" target="_blank">${applyLayoutFormat(
               value,
@@ -239,10 +283,15 @@ const replaceRecordFields = (
         'gi'
       );
       formattedHtml = formattedHtml.replace(regex, convertedValue);
+      const avatarCleanRegex = new RegExp(
+        `${AVATAR_PREFIX}${field.name}[ 0-9]+${PLACEHOLDER_SUFFIX}`,
+        'gi'
+      );
+      formattedHtml = formattedHtml.replace(avatarCleanRegex, convertedValue);
     }
   }
-  // replace all /n with <br/> to keep the line breaks
-  formattedHtml = formattedHtml.replace(/\n/g, '<br/>');
+  // replace all /n, removing it since we don't need because tailwind already styles it
+  formattedHtml = formattedHtml.replace(/\n/g, '');
 
   return formattedHtml;
 };
@@ -325,6 +374,16 @@ export const getCalcKeys = (): string[] => {
   return calcObjects.map(
     (obj) => CALC_PREFIX + obj.signature + PLACEHOLDER_SUFFIX
   );
+};
+
+/**
+ * Return an array with the page keys.
+ *
+ * @param pages array of pages
+ * @returns list of page keys
+ */
+export const getPageKeys = (pages: Page[]): string[] => {
+  return pages.map((page) => `{{page(${page.id})}}`);
 };
 
 /**
@@ -497,4 +556,87 @@ const applyFilters = (filter: any, fields: any): boolean => {
       return false;
     }
   }
+};
+
+/**
+ * Creates the html element faking an avatar group
+ *
+ * @param value Array of urls of the images
+ * @param width Width of the avatars
+ * @param height Height of the avatars
+ * @param maxItems Maximum number of avatars to show
+ * @returns The html element
+ */
+const createAvatarGroup = (
+  value: string[],
+  width: number | undefined,
+  height: number | undefined,
+  maxItems: number | undefined
+): HTMLElement => {
+  const avatarGroup = document.createElement('avatar-group');
+  const innerDiv = document.createElement('div');
+  avatarGroup.appendChild(innerDiv);
+  innerDiv.className = 'flex -space-x-2 overflow-hidden isolate';
+
+  const size = computeSize(width, height);
+  let sizeClass;
+  if (size <= 10) {
+    sizeClass = 'h-6 w-6';
+  } else if (size <= 20) {
+    sizeClass = 'h-10 w-10';
+  } else {
+    sizeClass = 'h-14 w-14';
+  }
+
+  for (const [index, image] of value
+    .slice(0, maxItems ? maxItems : value.length)
+    .entries()) {
+    const avatar = document.createElement('avatar');
+    innerDiv.appendChild(avatar);
+    avatar.style.zIndex = `${value.length - index}`;
+
+    const span = document.createElement('span');
+    avatar.appendChild(span);
+    span.className = `rounded-full ${sizeClass} bg-transparent block border-2 overflow-hidden ring-2 ring-transparent`;
+
+    const img = document.createElement('img');
+    span.appendChild(img);
+    img.src = image;
+    img.className = 'inline-block h-full w-full';
+  }
+
+  if (!isNil(maxItems) && value.length > maxItems) {
+    const avatar = document.createElement('avatar');
+    innerDiv.appendChild(avatar);
+    avatar.style.zIndex = '0';
+
+    const span = document.createElement('span');
+    avatar.appendChild(span);
+    span.className = `rounded-full ${sizeClass} bg-gray-500 inline-flex items-center justify-center border-2 overflow-hidden ring-2 ring-transparent`;
+    span.style.borderRadius = '50%';
+
+    const innerSpan = document.createElement('span');
+    span.appendChild(innerSpan);
+    innerSpan.className = 'text-white text-xs font-medium leading-none';
+    innerSpan.innerText = `+${value.length - maxItems}`;
+  }
+
+  return avatarGroup;
+};
+
+/**
+ * Compute the size of the avatar
+ *
+ * @param width Width of the avatar
+ * @param height Height of the avatar
+ * @returns The size of the avatar
+ */
+const computeSize = (
+  width: number | undefined,
+  height: number | undefined
+): number => {
+  if (width && height) {
+    return (width + height) / 2;
+  }
+  return 32;
 };

@@ -73,12 +73,11 @@
     </div>
   </ui-expansion-panel>
 </cdk-accordion>
-<div>
+<div class="flex justify-center">
   <ui-button
     icon="add"
     category="primary"
     [uiMenuTriggerFor]="menu"
-    class="!w-auto"
     (click)="$event.stopPropagation()"
   >
     {{ 'components.aggregationBuilder.addStage' | translate }}

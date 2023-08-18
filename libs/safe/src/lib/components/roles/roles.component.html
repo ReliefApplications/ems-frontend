@@ -3,12 +3,15 @@
 <ui-tabs *ngIf="!inApplication">
   <ui-tab>
     <ng-container ngProjectAs="label">{{
-      (inApplication ? 'common.application.few' : 'common.platform.backOffice') | translate
+      (inApplication ? 'common.application.few' : 'common.platform.backOffice')
+        | translate
     }}</ng-container>
     <safe-role-list [inApplication]="inApplication"></safe-role-list>
   </ui-tab>
   <ui-tab *ngIf="!inApplication && ('read' | able : 'Group')">
-    <ng-container ngProjectAs="label">{{'common.group.few' | translate}}</ng-container>
+    <ng-container ngProjectAs="label">{{
+      'common.group.few' | translate
+    }}</ng-container>
     <safe-group-list></safe-group-list>
   </ui-tab>
 </ui-tabs>

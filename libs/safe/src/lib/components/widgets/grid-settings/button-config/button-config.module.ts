@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { ButtonConfigComponent } from './button-config.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IconModule, SelectMenuModule, TabsModule } from '@oort-front/ui';
 import { SafeQueryBuilderModule } from '../../../query-builder/query-builder.module';
 import {
   CheckboxModule,
@@ -12,6 +11,9 @@ import {
   ButtonModule,
   FormWrapperModule,
   ErrorMessageModule,
+  IconModule,
+  TabsModule,
+  SelectMenuModule,
 } from '@oort-front/ui';
 
 /**
@@ -34,6 +36,9 @@ import {
     FormWrapperModule,
     SelectMenuModule,
     ErrorMessageModule,
+    IconModule,
+    SelectMenuModule,
+    TabsModule,
   ],
   exports: [ButtonConfigComponent],
 })

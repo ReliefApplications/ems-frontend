@@ -41,7 +41,12 @@ export class ErrorMessageDirective implements OnDestroy {
   }
   private currentErrorMessage = '';
   private errorMessageTemplate!: HTMLSpanElement;
-  private errorMessageClasses = ['block', 'text-red-400', 'py-2'] as const;
+  private errorMessageClasses = [
+    'block',
+    'text-red-400',
+    'py-2',
+    'text-xs',
+  ] as const;
   private destroy$ = new Subject<void>();
   private hostIsReady = false;
   /**

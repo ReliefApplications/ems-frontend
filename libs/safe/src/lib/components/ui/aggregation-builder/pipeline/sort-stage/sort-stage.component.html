@@ -26,7 +26,7 @@
         </ng-container>
       </ui-select-menu>
     </div>
-    <div uiFormFieldDirective *ngIf="form.value.field">
+    <div uiFormFieldDirective *ngIf="form.value.field" class="flex-1">
       <label>{{ 'components.queryBuilder.sort.order' | translate }}</label>
       <ui-select-menu formControlName="order">
         <ui-select-option value="asc">{{

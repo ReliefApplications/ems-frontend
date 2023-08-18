@@ -10,7 +10,7 @@
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <table
-      cdk-table 
+      cdk-table
       uiTableWrapper
       [dataSource]="filters"
       *ngIf="filters.length > 0"
@@ -59,11 +59,10 @@
           uiCell
           *cdkCellDef="let element; let i = dataIndex"
           [attr.colspan]="displayedColumns.length"
+          [ngClass]="i === openedFilterIndex ? '' : 'hidden'"
         >
           <div
-            [ngClass]="{
-              'expanded-filter': i === openedFilterIndex
-            }"
+            class="expanded-filter"
             [@detailExpand]="i === openedFilterIndex ? 'expanded' : 'collapsed'"
           >
             <safe-filter
@@ -94,11 +93,7 @@
         (click)="toggleFilterEdition(i)"
         class="cursor-pointer"
       ></tr>
-      <tr
-        cdk-row
-        *cdkRowDef="let row; columns: ['expandedDetail']"
-        class="cursor-pointer h-0"
-      ></tr>
+      <tr cdk-row *cdkRowDef="let row; columns: ['expandedDetail']"></tr>
     </table>
   </div>
 </div>

@@ -1,13 +1,13 @@
-@use "@angular/material" as mat;
-@import "variables.scss";
+@use '@angular/material' as mat;
+@import 'variables.scss';
 
 // Material ( to remove )
 @include mat.legacy-core();
 @include mat.core();
 
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
 
 .sv_main,
 .svd_container {
@@ -60,7 +60,7 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,,,,
+      // A700: #ffffff,,,,,,,,,
     ),
 );
 
@@ -222,12 +222,12 @@ body {
 }
 
 // === KENDO THEME ===
-@import "theme.scss";
+@import 'theme.scss';
 
 // === TINYMCE ===
 .tox-editor-header *,
 .tox-tinymce-aux * {
-  font-family: Roboto, "Helvetica Neue", sans-serif !important;
+  font-family: Roboto, 'Helvetica Neue', sans-serif !important;
 }
 
 // === SCROLL BARS ===

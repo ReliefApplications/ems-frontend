@@ -4,23 +4,16 @@ import {
   Input,
   HostListener,
   QueryList,
-  forwardRef,
-  Provider,
   ContentChildren,
   Output,
   EventEmitter,
+  Optional,
+  Self,
 } from '@angular/core';
 import { RadioComponent } from './radio.component';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-
-/**
- * Control value accessor
- */
-const CONTROL_VALUE_ACCESSOR: Provider = {
-  provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => RadioGroupDirective),
-  multi: true,
-};
+import { ControlValueAccessor } from '@angular/forms';
+import { NgControl } from '@angular/forms';
+import { isNil } from 'lodash';
 
 /**
  * UI Radio group directive
@@ -29,7 +22,6 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
  */
 @Directive({
   selector: '[uiRadioGroupDirective]',
-  providers: [CONTROL_VALUE_ACCESSOR],
 })
 export class RadioGroupDirective
   implements AfterContentInit, ControlValueAccessor
@@ -38,13 +30,34 @@ export class RadioGroupDirective
   @ContentChildren(RadioComponent) radioComponents!: QueryList<RadioComponent>;
   // If radio group with no form control is added we want to get radio selection as well
   @Output() groupValueChange = new EventEmitter<any>();
-
   private groupValue: any;
 
+  disabled = false;
   onTouched!: () => void;
   onChanged!: (value: string) => void;
 
+  /**
+   * Creates an instance of RadioGroupDirective.
+   *
+   * @param control host element NgControl instance
+   */
+  constructor(@Optional() @Self() private control: NgControl) {
+    if (this.control) {
+      this.control.valueAccessor = this;
+    }
+  }
+
   ngAfterContentInit() {
+    if (!isNil(this.control?.value)) {
+      this.radioComponents.forEach((radio: RadioComponent) => {
+        radio.checked = radio.value === this.control.value;
+      });
+    }
+    this.control?.valueChanges?.subscribe((value) => {
+      this.radioComponents.forEach(
+        (radio: RadioComponent) => (radio.checked = radio.value === value)
+      );
+    });
     this.radioComponents.toArray().forEach((val: any) => {
       if (!this.onTouched && !this.onChanged && val.checked) {
         this.groupValue = val.value;
@@ -79,6 +92,19 @@ export class RadioGroupDirective
    */
   writeValue(value: string): void {
     this.groupValue = value;
+  }
+
+  /**
+   * Set disabled state of the control
+   *
+   * @param isDisabled is control disabled
+   */
+  public setDisabledState(isDisabled: boolean): void {
+    this.disabled = isDisabled;
+    // Disable/enable radios when form control disabled status changes
+    this.radioComponents?.forEach((radio: RadioComponent) => {
+      radio.disabled = isDisabled;
+    });
   }
 
   /**

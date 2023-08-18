@@ -3,7 +3,7 @@
     <h1>{{ 'components.emailPreview.title' | translate }}</h1>
   </ng-container>
   <ng-container ngProjectAs="content">
-    <form class="flex flex-col gap-4" [formGroup]="form" *ngIf="form">
+    <form class="flex flex-col" [formGroup]="form" *ngIf="form">
       <div
         [uiErrorMessage]="
           'components.emailPreview.errors.missingSubject' | translate
@@ -19,7 +19,7 @@
         <input formControlName="from" type="text" />
       </div>
       <div
-        [uiErrorMessage]="errorMessage() | translate"
+        [uiErrorMessage]="emailsError | translate"
         [uiErrorMessageIf]="this.form.controls.to.invalid"
         uiFormFieldDirective
         id="previewEmailTo"

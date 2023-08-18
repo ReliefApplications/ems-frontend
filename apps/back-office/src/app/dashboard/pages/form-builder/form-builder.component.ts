@@ -25,6 +25,7 @@ import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { FormControl } from '@angular/forms';
+import { isEqual } from 'lodash';
 
 /**
  * Form builder page
@@ -441,7 +442,10 @@ export class FormBuilderComponent implements OnInit {
    * @param event update event
    */
   formStructureChange(event: any): void {
-    this.hasChanges = event !== this.form?.structure;
+    this.hasChanges = !isEqual(
+      JSON.parse(event),
+      JSON.parse(this.form?.structure || '{}')
+    );
     localStorage.setItem(`form:${this.id}`, event);
     this.authService.canLogout.next(!this.hasChanges);
   }

@@ -1,7 +1,7 @@
 <div *ngIf="formArray.value.length >= 0">
   <div class="flex flex-row justify-between">
     <!-- Serie selection -->
-    <div *ngIf="formArray.value.length > 0" uiFormFieldDirective>
+    <div *ngIf="formArray.value.length > 0" uiFormFieldDirective class="w-44">
       <label>
         {{ 'components.widget.settings.chart.series.title' | translate }}
       </label>
@@ -38,7 +38,7 @@
         </span>
         <kendo-colorpicker formControlName="color"></kendo-colorpicker>
       </div>
-      <div *ngIf="formGroup.get('fill')" uiFormFieldDirective>
+      <div *ngIf="formGroup.get('fill')" uiFormFieldDirective class="w-44">
         <label>
           {{ 'components.widget.settings.chart.series.fill' | translate }}
         </label>

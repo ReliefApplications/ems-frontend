@@ -12,18 +12,12 @@
         uiRadioGroupDirective="fromOptions"
         (groupValueChange)="getSources()"
       >
-        <ui-radio
-          value="resource"
-          [checked]="tileForm.get('from')?.value === 'resource'"
-        >
+        <ui-radio value="resource">
           <ng-container ngProjectAs="label">
             {{ 'widgets.scheduler.useRecords' | translate }}
           </ng-container>
         </ui-radio>
-        <ui-radio
-          value="form"
-          [checked]="tileForm.get('from')?.value === 'form'"
-        >
+        <ui-radio value="form">
           <ng-container ngProjectAs="label">
             {{ 'widgets.scheduler.useForm' | translate }}
           </ng-container>

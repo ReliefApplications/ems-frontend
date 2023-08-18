@@ -21,12 +21,14 @@ import { SidenavPositionTypes, SidenavTypes } from './types/sidenavs';
 })
 export class SidenavDirective implements OnInit, OnDestroy, OnChanges {
   @Input() opened = true;
+  @Input() visible = true;
   @Input() mode: SidenavTypes = 'side';
   @Input() position: SidenavPositionTypes = 'start';
   @Output() openedChange = new EventEmitter<boolean>();
 
   private clickOutsideListener!: any;
   private toggleUsed = false;
+
   /**
    * UI Sidenav directive constructor
    *

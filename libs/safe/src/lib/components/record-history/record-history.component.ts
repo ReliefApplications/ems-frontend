@@ -80,7 +80,7 @@ export class SafeRecordHistoryComponent
       month: 'short',
       day: 'numeric',
     })} ${today.getFullYear()}`;
-    return `${this.record.incrementalId} ${formatDate}`;
+    return `${this.record?.incrementalId} ${formatDate}`;
   }
 
   /**
@@ -290,6 +290,7 @@ export class SafeRecordHistoryComponent
     // empty => 'All fields' selected
     // other => Field name for filter
     if (fields) this.filterFields = fields;
+    if (!fields) this.filterFields = [];
 
     const startDate = this.filtersDate.get('startDate')?.value
       ? new Date(this.filtersDate.get('startDate')?.value as any)

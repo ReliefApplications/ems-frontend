@@ -261,8 +261,6 @@ export const init = (Survey: any, domService: DomService): void => {
           const domElem = (button.hostView as EmbeddedViewRef<any>)
             .rootNodes[0] as HTMLElement;
           (domElem.firstChild as HTMLElement).style.minWidth = 'unset';
-          (domElem.firstChild as HTMLElement).style.backgroundColor = 'unset';
-          (domElem.firstChild as HTMLElement).style.color = 'black';
 
           // Set the default styling of the parent
           parentElement.style.display = 'flex';

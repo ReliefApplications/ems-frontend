@@ -7,6 +7,7 @@ import {
   ButtonModule,
   SelectMenuModule,
   DateModule,
+  FormWrapperModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule } from '../../pipes/date/date.module';
@@ -32,6 +33,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     DateModule,
     SelectMenuModule,
     ReactiveFormsModule,
+    FormWrapperModule,
   ],
   exports: [SafeRecordHistoryComponent],
 })

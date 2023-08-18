@@ -18,11 +18,7 @@ import {
 import { QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { get } from 'lodash';
-import {
-  NgControl,
-  ControlValueAccessor,
-  UntypedFormControl,
-} from '@angular/forms';
+import { NgControl, ControlValueAccessor, FormControl } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { takeUntil } from 'rxjs/operators';
@@ -59,7 +55,7 @@ export class GraphQLSelectComponent
    * @returns the value
    */
   @Input() get value(): string | string[] | null {
-    return this.ngControl.value;
+    return this.ngControl?.value;
   }
   /** Sets the value */
   set value(val: string | string[] | null) {
@@ -105,13 +101,13 @@ export class GraphQLSelectComponent
    */
   @Input()
   get disabled(): boolean {
-    return this.ngControl.disabled || false;
+    return this.ngControl?.disabled || false;
   }
   /** Sets whether the field is disabled */
   set disabled(value: boolean) {
     const isDisabled = coerceBooleanProperty(value);
-    if (isDisabled) this.ngControl.control?.disable();
-    else this.ngControl.control?.enable();
+    if (isDisabled) this.ngControl?.control?.disable();
+    else this.ngControl?.control?.enable();
     this.stateChanges.next();
   }
 
@@ -119,7 +115,7 @@ export class GraphQLSelectComponent
   @Output() searchChange = new EventEmitter<string>();
 
   public stateChanges = new Subject<void>();
-  public searchControl = new UntypedFormControl('');
+  public searchControl = new FormControl('', { nonNullable: true });
   public controlType = 'ui-graphql-select';
   public elements = new BehaviorSubject<any[]>([]);
   public elements$!: Observable<any[]>;
@@ -140,8 +136,8 @@ export class GraphQLSelectComponent
   private isRequired = false;
   private scrollListener!: any;
 
-  @ViewChild(SelectMenuComponent)
-  elementSelect!: SelectMenuComponent;
+  @ViewChild(SelectMenuComponent) elementSelect!: SelectMenuComponent;
+  @ViewChild('searchInput') searchInput!: ElementRef<HTMLInputElement>;
 
   /**
    * Indicates whether the label should be in the floating position
@@ -163,7 +159,7 @@ export class GraphQLSelectComponent
    */
   get empty() {
     // return !this.selected.value;
-    return !this.ngControl.control?.value;
+    return !this.ngControl?.control?.value;
   }
 
   /**
@@ -172,7 +168,7 @@ export class GraphQLSelectComponent
    * @returns whether the input is in an error state
    */
   get errorState(): boolean {
-    return (this.ngControl.invalid && this.touched) || false;
+    return (this.ngControl?.invalid && this.touched) || false;
     // return this.ngControl.invalid && this.touched;
     // return this.selected.invalid && this.touched;
   }
@@ -192,7 +188,7 @@ export class GraphQLSelectComponent
     private renderer: Renderer2,
     @Inject(DOCUMENT) private document: Document
   ) {
-    if (this.ngControl != null) {
+    if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
   }
@@ -259,13 +255,15 @@ export class GraphQLSelectComponent
 
   ngOnInit(): void {
     this.elements$ = this.elements.asObservable();
-    this.query.valueChanges
-      .pipe(takeUntil(this.destroy$), takeUntil(this.queryChange$))
-      .subscribe(({ data, loading }) => {
-        this.queryName = Object.keys(data)[0];
-        this.updateValues(data, loading);
-      });
-    this.ngControl.valueChanges
+    if (this.query) {
+      this.query.valueChanges
+        .pipe(takeUntil(this.destroy$), takeUntil(this.queryChange$))
+        .subscribe(({ data, loading }) => {
+          this.queryName = Object.keys(data)[0];
+          this.updateValues(data, loading);
+        });
+    }
+    this.ngControl?.valueChanges
       ?.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         const elements = this.elements.getValue();
@@ -316,7 +314,7 @@ export class GraphQLSelectComponent
       this.searchControl.setValue('');
 
       // Clear the form control
-      this.ngControl.control?.setValue(null);
+      this.ngControl?.control?.setValue(null);
 
       // Emit the selection change
       this.selectionChange.emit(null);
@@ -378,10 +376,12 @@ export class GraphQLSelectComponent
   }
 
   /**
-   * Adds scroll listener to select.
+   * Adds scroll listener to select and focuses on input.
    *
    */
   onOpenSelect(): void {
+    // focus on search input, if filterable
+    if (this.filterable) this.searchInput?.nativeElement.focus();
     const panel = document.getElementById('optionList');
     if (this.scrollListener) {
       this.scrollListener();
@@ -405,13 +405,23 @@ export class GraphQLSelectComponent
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
       50
     ) {
-      if (!this.loading && this.pageInfo.hasNextPage) {
+      if (!this.loading && this.pageInfo?.hasNextPage) {
+        // Check if original query is using skip or afterCursor
+        const queryDefinition = this.query.options.query.definitions[0];
+        const isSkip =
+          queryDefinition?.kind === 'OperationDefinition' &&
+          !!queryDefinition.variableDefinitions?.find(
+            (x) => x.variable.name.value === 'skip'
+          );
+
         this.loading = true;
         this.query
           .fetchMore({
             variables: {
               first: ITEMS_PER_RELOAD,
-              afterCursor: this.pageInfo.endCursor,
+              ...(isSkip
+                ? { skip: this.cachedElements.length }
+                : { afterCursor: this.pageInfo.endCursor }),
             },
           })
           .then((results) => {

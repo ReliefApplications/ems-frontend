@@ -1,3 +1,4 @@
+<!-- By default, vertical navigation -->
 <ng-container *ngIf="vertical; else horizontalMenu">
   <section class="pt-2 flex flex-col gap-y-7">
     <ng-container *ngFor="let group of navGroups; let i = index" class="h-full">
@@ -42,11 +43,12 @@
                 [cdkDragDisabled]="!item.orderable"
                 class="show-icons"
               >
-                <li
-                  [routerLink]="item.path"
-                  routerLinkActive="text-primary-600 bg-gray-50"
-                >
-                  <a class="group" (click)="largeDevice ? null : nav.toggle()">
+                <li routerLinkActive="text-primary-600 bg-gray-50">
+                  <a
+                    class="group"
+                    (click)="largeDevice ? null : nav.toggle()"
+                    [routerLink]="item.path"
+                  >
                     <ui-icon variant="grey" [icon]="item.icon"> </ui-icon>
                     <p class="truncate m-0" [uiTooltip]="item.name">
                       {{ item.name }}
@@ -112,6 +114,7 @@
     </ng-container>
   </section>
 </ng-container>
+<!-- Horizontal navigation -->
 <ng-template #horizontalMenu>
   <section class="flex border-b">
     <ng-container *ngFor="let group of navGroups; let i = index" class="h-full">
@@ -126,12 +129,17 @@
         <!-- Classes determine nav-list height for application layout -->
         <ul class="flex">
           <ng-container *ngFor="let item of group.navItems">
-            <div cdkDrag [cdkDragDisabled]="!item.orderable" class="show-icons">
-              <li
-                [routerLink]="item.path"
-                routerLinkActive="text-primary-600 bg-gray-50"
-              >
-                <a class="group" (click)="largeDevice ? null : nav.toggle()">
+            <div
+              cdkDrag
+              [cdkDragDisabled]="!item.orderable"
+              class="show-icons w-full max-w-[200px]"
+            >
+              <li routerLinkActive="text-primary-600 bg-gray-50">
+                <a
+                  class="group"
+                  (click)="largeDevice ? null : nav.toggle()"
+                  [routerLink]="item.path"
+                >
                   <ui-icon variant="grey" [icon]="item.icon"> </ui-icon>
                   <p class="truncate m-0" [uiTooltip]="item.name">
                     {{ item.name }}
@@ -142,6 +150,7 @@
                   *ngIf="item.action || item.orderable"
                 >
                   <ui-button
+                    variant="danger"
                     class="hide-icons hover:text-primary-600"
                     [isIcon]="true"
                     *ngIf="item.action"
@@ -152,7 +161,8 @@
                   >
                   </ui-button>
                   <ui-button
-                    class="hide-icons hover:text-primary-600"
+                    variant="grey"
+                    class="hover:text-primary-600"
                     [isIcon]="true"
                     size="small"
                     cdkDragHandle

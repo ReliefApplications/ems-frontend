@@ -3,7 +3,7 @@
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <!-- Records table -->
-    <table cdk-table  [dataSource]="dataSource">
+    <table cdk-table [dataSource]="dataSource">
       <ng-container cdkColumnDef="id">
         <th uiCellHeader *cdkHeaderCellDef>{{ 'common.id' | translate }}</th>
         <td uiCell *cdkCellDef="let element">{{ element.id }}</td>

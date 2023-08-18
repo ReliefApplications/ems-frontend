@@ -7,20 +7,16 @@
   <ng-container ngProjectAs="content">
     <form [formGroup]="form">
       <div uiFormFieldDirective [outline]="false" class="w-full">
-        <label>{{ 
-          'components.templates.edit.name' | translate 
-        }}</label>
-        <ui-select-menu 
-          formControlName="template"
-        >
-        <ui-select-option 
-          *ngFor="let template of templates" 
-          [value]="template"
-        >
-          {{ template.name }}
-        </ui-select-option>
+        <label>{{ 'components.templates.edit.name' | translate }}</label>
+        <ui-select-menu formControlName="template">
+          <ui-select-option
+            *ngFor="let template of templates"
+            [value]="template"
+          >
+            {{ template.name }}
+          </ui-select-option>
         </ui-select-menu>
-      </div> 
+      </div>
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">

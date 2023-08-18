@@ -146,12 +146,7 @@
             </ng-container>
           </ui-radio> -->
           <!-- Using distribution list -->
-          <ui-radio
-            value="distributionList"
-            [checked]="
-              formGroup.get('recipientsType')?.value === 'distributionList'
-            "
-          >
+          <ui-radio value="distributionList">
             <ng-container ngProjectAs="label">
               {{
                 'components.customNotifications.edit.recipients.distributionList'
@@ -160,10 +155,7 @@
             </ng-container>
           </ui-radio>
           <!-- Using email -->
-          <ui-radio
-            value="email"
-            [checked]="formGroup.get('recipientsType')?.value === 'email'"
-          >
+          <ui-radio value="email">
             <ng-container ngProjectAs="label">
               {{
                 'components.customNotifications.edit.recipients.email'

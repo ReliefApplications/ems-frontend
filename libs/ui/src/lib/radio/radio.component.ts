@@ -31,6 +31,9 @@ export class RadioComponent {
         ? 'radio-grey'
         : 'radio-' + this.variant,
     ];
+    if (this.disabled) {
+      classes.push('opacity-70 bg-gray-300 pointer-events-none');
+    }
     return classes;
   }
 }

@@ -145,7 +145,7 @@ export class SafeApplicationDropdownComponent
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
       50
     ) {
-      if (!this.loading && this.pageInfo.hasNextPage) {
+      if (!this.loading && this.pageInfo?.hasNextPage) {
         this.loading = true;
         this.applicationsQuery
           .fetchMore({

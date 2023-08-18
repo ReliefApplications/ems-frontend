@@ -1,6 +1,7 @@
+<!-- Header -->
 <nav
   id="app-header"
-  class="flex p-4 items-center md:justify-between text-gray-200 bg-primary-600"
+  class="flex p-4 items-center md:justify-between text-white bg-primary-600"
   [ngClass]="theme.headerClass"
 >
   <div class="flex-shrink-0 flex flex-wrap min-w-0">
@@ -10,7 +11,7 @@
       variant="light"
       [size]="'large'"
       icon="menu"
-      (click)="nav.toggle()"
+      (click)="nav?.toggle()"
       [uiTooltip]="
         (nav?.opened
           ? 'components.header.sidenav.collapse'
@@ -30,8 +31,9 @@
     >
     </ui-button>
   </div>
-  <ng-container *ngIf="!applications || applications.length === 0">
-    <div class="min-w-0 overflow-hidden flex items-center">
+  <div class="min-w-0 overflow-hidden flex items-center">
+    <div id="app-logo"></div>
+    <ng-container *ngIf="!header">
       <h1
         class="text-xl mb-0 whitespace-nowrap text-clip font-medium"
         *ngIf="!route"
@@ -42,31 +44,11 @@
       <h1 class="text-base mb-0 whitespace-nowrap text-clip" *ngIf="route">
         {{ 'common.back' | translate }}
       </h1>
-      <div id="app-logo"></div>
-    </div>
-  </ng-container>
-  <ng-container *ngIf="applications && applications.length > 0">
-    <ui-button
-      [size]="'large'"
-      icon="arrow_drop_down"
-      (click)="showAppMenu = !showAppMenu"
-      cdkOverlayOrigin
-      #appMenuTrigger="cdkOverlayOrigin"
-    >
-      {{ theme.prefix }} {{ title }}
-    </ui-button>
-    <ng-template
-      cdkConnectedOverlay
-      [cdkConnectedOverlayOrigin]="appMenuTrigger"
-      [cdkConnectedOverlayOpen]="showAppMenu"
-    >
-      <safe-search-menu
-        [applications]="this.applications"
-        (close)="showAppMenu = false"
-        (open)="onOpenApplication($event)"
-      ></safe-search-menu>
-    </ng-template>
-  </ng-container>
+    </ng-container>
+    <ng-container *ngIf="header">
+      <ng-container *ngTemplateOutlet="header"></ng-container>
+    </ng-container>
+  </div>
   <!-- Account icon and info -->
   <div
     class="flex flex-col items-end content-center font-medium text-xs ml-auto"
@@ -105,10 +87,34 @@
     <a uiMenuItem [routerLink]="[profileRoute]">
       {{ 'pages.profile.title' | translate }}
     </a>
-    <ui-divider class="py-1"></ui-divider>
-    <button uiMenuItem (click)="onOpenPreferences()" *ngIf="showPreferences">
-      {{ 'components.preferences.title' | translate }}
-    </button>
+    <ng-container *ngIf="showPreferences">
+      <ui-divider class="py-1"></ui-divider>
+      <button uiMenuItem (click)="onOpenPreferences()">
+        {{ 'components.preferences.title' | translate }}
+      </button>
+    </ng-container>
+    <ng-container *ngIf="applications && applications.length > 0">
+      <ui-divider class="py-1"></ui-divider>
+      <button
+        uiMenuItem
+        (click)="showAppMenu = !showAppMenu"
+        cdkOverlayOrigin
+        #appMenuTrigger="cdkOverlayOrigin"
+      >
+        {{ 'components.header.goToApp' | translate }}
+      </button>
+      <ng-template
+        cdkConnectedOverlay
+        [cdkConnectedOverlayOrigin]="appMenuTrigger"
+        [cdkConnectedOverlayOpen]="showAppMenu"
+      >
+        <safe-search-menu
+          [applications]="this.applications"
+          (close)="showAppMenu = false"
+          (open)="onOpenApplication($event)"
+        ></safe-search-menu>
+      </ng-template>
+    </ng-container>
     <ng-container *ngIf="user && user.isAdmin">
       <ui-divider class="py-1"></ui-divider>
       <a uiMenuItem [href]="otherOfficeUri">
@@ -125,12 +131,17 @@
       {{ environment.version }}
     </div>
   </ui-menu>
+  <!-- Notification menu -->
   <ui-menu #notificationMenu>
-    <div class="notification-menu">
-      <a (click)="onMarkAllNotificationsAsRead()">
-        {{ 'components.notifications.readAll' | translate }}
-        <ui-icon icon="check_circle_outline"></ui-icon>
-      </a>
+    <!-- Remove visible notifications -->
+    <ui-button
+      (click)="onMarkAllNotificationsAsRead()"
+      class="self-end"
+      icon="check_circle_outline"
+      >{{ 'components.notifications.readAll' | translate }}</ui-button
+    >
+    <!-- List of notifications -->
+    <div class="flex flex-col overflow-y-auto max-h-[50vh]">
       <button
         uiMenuItem
         (click)="onNotificationClick(notification)"
@@ -139,11 +150,12 @@
         {{ notification.action }} - {{ notification.createdAt | safeDate }}
       </button>
     </div>
+    <!-- Load more notifications -->
     <ui-button
       *ngIf="hasMoreNotifications"
       category="primary"
       variant="primary"
-      class="!w-auto"
+      [isBlock]="true"
       [disabled]="loadingNotifications"
       [loading]="loadingNotifications"
       (click)="onLoadMoreNotifications($event)"
@@ -152,55 +164,48 @@
     </ui-button>
   </ui-menu>
 </nav>
+<!-- Sub-header -->
 <ng-container *ngIf="toolbar">
   <ng-container *ngTemplateOutlet="toolbar"></ng-container>
 </ng-container>
-<ng-container *ngIf="!sideMenu && largeDevice; else sidenavTmpl">
+<!-- Vertical navigation -->
+<ng-container *ngIf="!sideMenu && largeDevice">
   <ng-container *ngIf="leftSidenav">
     <ng-container [ngTemplateOutlet]="leftSidenav"></ng-container>
   </ng-container>
-  <div></div>
-  <div id="horizontalSidenavContent" class="flex-1 overflow-y-auto">
-    <div class="py-[32px] h-full px-[24px]">
-      <ui-breadcrumbs
-        *ngIf="breadcrumbs.length > 1"
-        [breadcrumbs]="breadcrumbs"
-      ></ui-breadcrumbs>
-      <router-outlet></router-outlet>
-    </div>
-  </div>
 </ng-container>
-<ng-template #sidenavTmpl>
-  <ui-sidenav-container class="sidenav-container">
-    <div
-      uiSidenavDirective
-      #nav="uiSidenavDirective"
-      [mode]="largeDevice ? 'side' : 'over'"
-      [opened]="largeDevice"
-    >
-      <ng-container *ngIf="leftSidenav">
-        <ng-container
-          [ngTemplateOutlet]="leftSidenav"
-          [ngTemplateOutletContext]="{ $implicit: nav }"
-        ></ng-container>
-      </ng-container>
-    </div>
-    <div
-      uiSidenavDirective
-      class="h-full"
-      position="end"
-      [opened]="showSidenav"
-      #rightNav="uiSidenavDirective"
-    >
-      <ng-template #rightSidenav></ng-template>
-    </div>
-
-    <ng-container ngProjectAs="content">
-      <ui-breadcrumbs
-        *ngIf="breadcrumbs.length > 1"
-        [breadcrumbs]="breadcrumbs"
-      ></ui-breadcrumbs>
-      <router-outlet></router-outlet>
+<!-- Content -->
+<ui-sidenav-container class="sidenav-container">
+  <!-- Left sidenav -->
+  <div
+    uiSidenavDirective
+    #nav="uiSidenavDirective"
+    [mode]="largeDevice ? 'side' : 'over'"
+    [opened]="largeDevice && sideMenu"
+  >
+    <ng-container *ngIf="leftSidenav">
+      <ng-container
+        [ngTemplateOutlet]="leftSidenav"
+        [ngTemplateOutletContext]="{ $implicit: nav }"
+      ></ng-container>
     </ng-container>
-  </ui-sidenav-container>
-</ng-template>
+  </div>
+  <!-- Right sidenav -->
+  <div
+    uiSidenavDirective
+    class="h-full"
+    position="end"
+    [opened]="showSidenav"
+    #rightNav="uiSidenavDirective"
+  >
+    <ng-template #rightSidenav></ng-template>
+  </div>
+
+  <ng-container ngProjectAs="content">
+    <ui-breadcrumbs
+      *ngIf="breadcrumbs.length > 1"
+      [breadcrumbs]="breadcrumbs"
+    ></ui-breadcrumbs>
+    <router-outlet></router-outlet>
+  </ng-container>
+</ui-sidenav-container>

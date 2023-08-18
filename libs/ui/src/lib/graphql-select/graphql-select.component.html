@@ -3,6 +3,7 @@
   (opened)="onOpenSelect()"
   (closed)="onCloseSelect()"
   [required]="required"
+  [isGraphQlSelect]="true"
   (focusin)="onFocusIn()"
   (focusout)="onFocusOut($event)"
 >
@@ -28,6 +29,7 @@
       [formControl]="searchControl"
       [placeholder]="'common.placeholder.search' | translate"
       type="text"
+      #searchInput
     />
     <ui-spinner
       [size]="'medium'"

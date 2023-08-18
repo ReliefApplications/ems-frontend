@@ -14,7 +14,8 @@ import { SafeFormBuilderModule } from '../../form-builder/form-builder.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule } from '@oort-front/ui';
 import { DialogModule, AlertModule } from '@oort-front/ui';
-
+import { renderGlobalProperties } from '../../../survey/render-global-properties';
+import { SafeReferenceDataService } from '../../../services/reference-data/reference-data.service';
 /**
  * Data passed to initialize the filter builder
  */
@@ -53,6 +54,22 @@ const QUESTION_TYPES = [
  * Allowed properties for a core question in a child form.
  */
 const CORE_QUESTION_ALLOWED_PROPERTIES = [
+  'name',
+  'title',
+  'size',
+  'min',
+  'max',
+  'minValueExpression',
+  'maxValueExpression',
+  'minErrorText',
+  'maxErrorText',
+  'step',
+  'maxLength',
+  'placeholder',
+  'dateMin',
+  'dateMax',
+  'description',
+  'hideNumber',
   'width',
   'maxWidth',
   'minWidth',
@@ -69,6 +86,14 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'addTemplate',
   'Search resource table',
   'visible',
+  'choicesFromQuestion',
+  'choices',
+  'choicesFromQuestionMode',
+  'choicesOrder',
+  'choicesByUrl',
+  'hideIfChoicesEmpty',
+  'choicesVisibleIf',
+  'choicesEnableIf',
   'readOnly',
   'isRequired',
   'placeHolder',
@@ -81,6 +106,18 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'referenceDataFilterForeignField',
   'referenceDataFilterFilterCondition',
   'referenceDataFilterLocalField',
+  'showSelectAllItem',
+  'showNoneItem',
+  'showClearButton',
+  'bindings',
+  'choicesMin',
+  'choicesMax',
+  'allowClear',
+  'autoGrow',
+  'labelTrue',
+  'labelFalse',
+  'valueTrue',
+  'valueFalse',
 ];
 
 /**
@@ -111,11 +148,13 @@ export class FilterBuilderModalComponent
    * @param formService Shared form service
    * @param dialogRef reference to the dialog component
    * @param data data passed to initialize the filter builder
+   * @param referenceDataService reference data service
    */
   constructor(
     private formService: SafeFormService,
     private dialogRef: DialogRef<FilterBuilderModalComponent>,
-    @Inject(DIALOG_DATA) public data: DialogData
+    @Inject(DIALOG_DATA) public data: DialogData,
+    private referenceDataService: SafeReferenceDataService
   ) {}
 
   ngOnInit(): void {
@@ -156,11 +195,24 @@ export class FilterBuilderModalComponent
       if (!obj || !obj.page) {
         return;
       }
+
       // If it is a core field
       if (!CORE_QUESTION_ALLOWED_PROPERTIES.includes(opt.property.name)) {
+        // console.log(opt.property.name);
         opt.canShow = false;
       }
     });
+
+    // add the rendering of custom properties
+    this.surveyCreator.survey.onAfterRenderQuestion.add(
+      renderGlobalProperties(this.referenceDataService)
+    );
+    (this.surveyCreator.onTestSurveyCreated as any).add(
+      (sender: any, opt: any) =>
+        opt.survey.onAfterRenderQuestion.add(
+          renderGlobalProperties(this.referenceDataService)
+        )
+    );
 
     // Set content
     const survey = new Survey.SurveyModel(this.data?.surveyStructure || {});

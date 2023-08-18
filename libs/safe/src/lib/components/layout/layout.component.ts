@@ -47,6 +47,8 @@ export class SafeLayoutComponent
 
   @Input() route?: ActivatedRoute;
 
+  @Input() header?: TemplateRef<any>;
+
   @Input() toolbar?: TemplateRef<any>;
 
   @Input() leftSidenav?: TemplateRef<any>;

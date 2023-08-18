@@ -95,6 +95,12 @@ const calcFunctions: Record<string, { signature: string }> = {
   toInt: {
     signature: 'toInt( value )',
   },
+  toLong: {
+    signature: 'toLong( value )',
+  },
+  includes: {
+    signature: 'includes( array ; element )',
+  },
 
   // ONE OR NO ARGUMENTS
   today: {

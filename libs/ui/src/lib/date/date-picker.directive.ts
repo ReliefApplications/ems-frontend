@@ -36,22 +36,15 @@ export class DatePickerDirective implements OnInit, OnDestroy {
   private inputClasses = [
     'peer',
     'block',
-    'min-h-[auto]',
+    'min-h-[32px]',
     'min-w-[200px]',
     'w-full',
     'rounded',
     'border-0',
     'bg-transparent',
     'px-2',
-    'py-[0.32rem]',
     'leading-[1.6]',
     'outline-none',
-    'transition-all',
-    'duration-200',
-    'ease-linear',
-    'focus:placeholder:opacity-100',
-    'peer-focus:text-primary',
-    'motion-reduce:transition-none',
   ] as const;
 
   private labelClasses = [
@@ -59,6 +52,8 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     'absolute',
     'left-2',
     'bg-white',
+    'my-[2px]',
+    'mr-[5px]',
     'top-0',
     'right-0',
     'bottom-0',
@@ -80,6 +75,24 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     'right-0.5',
     'top-1/2',
     '-translate-y-1/2',
+  ] as const;
+
+  private divClasses = [
+    'relative',
+    'focus-within:ring-2',
+    'focus-within:ring-inset',
+    'focus-within:ring-primary-600',
+    'shadow-sm',
+    'rounded-md',
+    'border-0',
+    'ring-1',
+    'ring-inset',
+    'ring-gray-300',
+    'pl-2',
+    'flex',
+    'items-center',
+    'w-full',
+    'py-0.5',
   ] as const;
 
   /**
@@ -158,9 +171,10 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     });
 
     const inputWrapper = this.renderer.createElement('div');
-    this.renderer.addClass(inputWrapper, 'relative');
-    this.renderer.addClass(inputWrapper, 'border');
-    this.renderer.addClass(inputWrapper, 'rounded');
+
+    this.divClasses.forEach((iClass) => {
+      this.renderer.addClass(inputWrapper, iClass);
+    });
 
     this.renderer.appendChild(
       this.el.nativeElement.parentElement,

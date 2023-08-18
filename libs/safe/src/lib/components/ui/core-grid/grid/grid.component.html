@@ -217,12 +217,7 @@
               [style]="getStyle(dataItem, field.name)"
             >
               <div #refSpan class="textbox">
-                {{
-                  applyFieldFormat(
-                    getPropertyValue(dataItem, field.name),
-                    field
-                  )
-                }}
+                {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
               </div>
               <button
                 kendoButton
@@ -252,8 +247,7 @@
               <div #refSpan class="textbox" *ngIf="field.meta.type === 'time'">
                 {{
                   applyFieldFormat(
-                    getPropertyValue(dataItem, field.name)
-                      | safeDate : 'shortTime',
+                    getPropertyValue(dataItem, field) | safeDate : 'shortTime',
                     field
                   )
                 }}
@@ -265,7 +259,7 @@
               >
                 {{
                   applyFieldFormat(
-                    getPropertyValue(dataItem, field.name) | safeDate : 'short',
+                    getPropertyValue(dataItem, field) | safeDate : 'short',
                     field
                   )
                 }}
@@ -273,8 +267,7 @@
               <div #refSpan class="textbox" *ngIf="field.meta.type === 'date'">
                 {{
                   applyFieldFormat(
-                    getPropertyValue(dataItem, field.name)
-                      | safeDate : 'shortDate',
+                    getPropertyValue(dataItem, field) | safeDate : 'shortDate',
                     field
                   )
                 }}
@@ -295,48 +288,39 @@
               <a
                 *ngIf="field.meta.type === 'url'"
                 class="url-container textbox"
-                href="{{ getUrl(getPropertyValue(dataItem, field.name)) }}"
+                href="{{ getUrl(getPropertyValue(dataItem, field)) }}"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <div #refSpan>
                   {{
-                    applyFieldFormat(
-                      getPropertyValue(dataItem, field.name),
-                      field
-                    )
+                    applyFieldFormat(getPropertyValue(dataItem, field), field)
                   }}
                 </div>
               </a>
               <a
                 *ngIf="field.meta.type === 'email'"
                 class="url-container textbox"
-                href="mailto:{{ getPropertyValue(dataItem, field.name) }}"
+                href="mailto:{{ getPropertyValue(dataItem, field) }}"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <div #refSpan>
                   {{
-                    applyFieldFormat(
-                      getPropertyValue(dataItem, field.name),
-                      field
-                    )
+                    applyFieldFormat(getPropertyValue(dataItem, field), field)
                   }}
                 </div>
               </a>
               <a
                 *ngIf="field.meta.type === 'tel'"
                 class="url-container textbox"
-                href="tel:{{ getPropertyValue(dataItem, field.name) }}"
+                href="tel:{{ getPropertyValue(dataItem, field) }}"
                 target="_blank"
                 rel="noopener noreferrer"
               >
                 <div #refSpan>
                   {{
-                    applyFieldFormat(
-                      getPropertyValue(dataItem, field.name),
-                      field
-                    )
+                    applyFieldFormat(getPropertyValue(dataItem, field), field)
                   }}
                 </div>
               </a>
@@ -380,12 +364,7 @@
               [style]="getStyle(dataItem, field.name)"
             >
               <div #refSpan class="textbox">
-                {{
-                  applyFieldFormat(
-                    getPropertyValue(dataItem, field.name),
-                    field
-                  )
-                }}
+                {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
               </div>
               <button
                 kendoButton
@@ -451,9 +430,7 @@
               class="textbox-container"
               [style]="getStyle(dataItem, field.name)"
             >
-              {{
-                applyFieldFormat(getPropertyValue(dataItem, field.name), field)
-              }}
+              {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
             </div>
           </ng-template>
         </ng-container>
@@ -605,11 +582,7 @@
               >
                 {{
                   applyFieldFormat(
-                    getReferenceDataPropertyValue(
-                      dataItem,
-                      field.name,
-                      subField.meta.name
-                    ),
+                    getPropertyValue(dataItem, field, subField),
                     field
                   )
                 }}
@@ -668,9 +641,7 @@
             class="textbox-container"
             [style]="getStyle(dataItem, field.name)"
           >
-            {{
-              applyFieldFormat(getPropertyValue(dataItem, field.name), field)
-            }}
+            {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
           </div>
         </ng-template>
         <ng-template

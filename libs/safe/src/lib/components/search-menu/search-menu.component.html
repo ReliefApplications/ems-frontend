@@ -1,7 +1,7 @@
 <div class="mt-1" *ngIf="headerTemplate">
   <ng-container [ngTemplateOutlet]="headerTemplate"></ng-container>
 </div>
-<div uiFormFieldDirective >
+<div uiFormFieldDirective>
   <input
     [placeholder]="'common.placeholder.search' | translate"
     [(ngModel)]="search"

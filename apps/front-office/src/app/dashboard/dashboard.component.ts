@@ -225,45 +225,23 @@ export class DashboardComponent
                 application.id !== this.application?.id ||
                 !firstPage)
             ) {
-              this.adminNavItems.push({
-                name: this.translate.instant('common.distributionList.few'),
-                path: `./${this.appID}/settings/distribution-lists`,
-                icon: 'mail',
-              });
+              if (firstPage) {
+                this.router.navigate(
+                  [
+                    `./${this.appID}/${firstPage.type}/${
+                      firstPage.type === ContentType.form
+                        ? firstPage.id
+                        : firstPage.content
+                    }`,
+                  ],
+                  { relativeTo: this.route }
+                );
+              } else {
+                this.router.navigate([`./${this.appID}`], {
+                  relativeTo: this.route,
+                });
+              }
             }
-            // if (
-            //   this.permissions.some(
-            //     (x) =>
-            //       (x.type === Permissions.canManageCustomNotifications &&
-            //         this.roles.some(
-            //           (y) =>
-            //             y.application?.id === application.id &&
-            //             y.permissions?.some((perm) => perm.id === x.id)
-            //         )) ||
-            //       (x.type === Permissions.canManageApplications && x.global)
-            //   )
-            // ) {
-            //   this.adminNavItems.push({
-            //     name: this.translate.instant('common.customNotification.few'),
-            //     path: `./${this.appID}/settings/notifications`,
-            //     icon: 'mail',
-            //   });
-            // }
-            this.navGroups = [
-              {
-                name: 'Pages',
-                navItems: application.pages
-                  ?.filter((x) => x.content)
-                  .map((x) => ({
-                    name: x.name,
-                    path:
-                      x.type === ContentType.form
-                        ? `./${this.appID}/${x.type}/${x.id}`
-                        : `./${this.appID}/${x.type}/${x.content}`,
-                    icon: this.getNavIcon(x.type || ''),
-                  })),
-              },
-            ];
           }
           this.application = application;
           this.appID = application.id || '';
@@ -273,35 +251,6 @@ export class DashboardComponent
         }
       });
   }
-
-  // if (!this.application || application.id !== this.application.id) {
-  //   const firstPage = get(application, 'pages', [])[0];
-  //   const find = !this.application
-  //     ? this.validPage(application)
-  //     : false;
-  //   if (
-  //     !find &&
-  //     (this.router.url.endsWith('/') ||
-  //       application.id !== this.application?.id ||
-  //       !firstPage)
-  //   ) {
-  //     if (firstPage) {
-  //       this.router.navigate(
-  //         [
-  //           `./${this.appID}/${firstPage.type}/${
-  //             firstPage.type === ContentType.form
-  //               ? firstPage.id
-  //               : firstPage.content
-  //           }`,
-  //         ],
-  //         { relativeTo: this.route }
-  //       );
-  //     } else {
-  //       this.router.navigate([`./${this.appID}`], {
-  //         relativeTo: this.route,
-  //       });
-  //     }
-  //   }
 
   /**
    * Opens an application, contacting the application service.

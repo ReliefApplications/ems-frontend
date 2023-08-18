@@ -3,7 +3,9 @@
 </h1>
 <ui-tabs>
   <ui-tab>
-    <ng-container ngProjectAs="label">{{'components.user.summary.title' | translate}}</ng-container>
+    <ng-container ngProjectAs="label">{{
+      'components.user.summary.title' | translate
+    }}</ng-container>
     <safe-user-details
       *ngIf="user"
       [user]="user"
@@ -13,7 +15,9 @@
     <ui-spinner *ngIf="loading"></ui-spinner>
   </ui-tab>
   <ui-tab>
-    <ng-container ngProjectAs="label">{{'common.role.few' | translate}}</ng-container>
+    <ng-container ngProjectAs="label">{{
+      'common.role.few' | translate
+    }}</ng-container>
     <safe-user-roles
       *ngIf="user"
       [user]="user"

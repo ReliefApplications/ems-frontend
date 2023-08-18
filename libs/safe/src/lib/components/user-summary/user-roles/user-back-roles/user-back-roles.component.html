@@ -5,10 +5,7 @@
       {{ 'components.user.summary.roles.selectedRoles' | translate }}</label
     >
     <ui-select-menu [formControl]="selectedRoles" [multiselect]="true">
-      <ui-select-option
-        *ngFor="let role of roles"
-        [value]="role.id"
-      >
+      <ui-select-option *ngFor="let role of roles" [value]="role.id">
         {{ role.title }}
       </ui-select-option>
     </ui-select-menu>

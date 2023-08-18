@@ -20,8 +20,6 @@ import { SnackbarService } from '@oort-front/ui';
   providedIn: 'root',
 })
 export class SafeFormBuilderService {
-  public selectedPageIndex: BehaviorSubject<number> =
-    new BehaviorSubject<number>(0);
   /**
    * Constructor of the service
    *
@@ -43,17 +41,17 @@ export class SafeFormBuilderService {
    * Creates new survey from the structure and add on complete expression to it.
    *
    * @param structure form structure
-   * @param pages Pages of the current survey
    * @param fields list of fields used to check if the fields should be hidden or disabled
    * @param record record that'll be edited, if any
    * @returns New survey
    */
   createSurvey(
     structure: string,
-    pages: BehaviorSubject<any[]>,
     fields: Metadata[] = [],
     record?: Record
   ): Survey.SurveyModel {
+    Survey.settings.useCachingForChoicesRestful = false;
+    Survey.settings.useCachingForChoicesRestfull = false;
     const survey = new Survey.Model(structure);
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
@@ -126,7 +124,6 @@ export class SafeFormBuilderService {
     survey.showNavigationButtons = 'none';
     survey.showProgressBar = 'off';
     survey.focusFirstQuestionAutomatic = false;
-    this.setPages(survey, pages);
     return survey;
   }
 
@@ -135,12 +132,12 @@ export class SafeFormBuilderService {
    * and temporary files storage
    *
    * @param survey Survey where to add the callbacks
-   * @param pages Pages of the current survey
+   * @param selectedPageIndex Current page of the survey
    * @param temporaryFilesStorage Temporary files saved while executing the survey
    */
   public addEventsCallBacksToSurvey(
     survey: Survey.SurveyModel,
-    pages: BehaviorSubject<any[]>,
+    selectedPageIndex: BehaviorSubject<number>,
     temporaryFilesStorage: any
   ) {
     survey.onClearFiles.add((_, options: any) => this.onClearFiles(options));
@@ -153,37 +150,10 @@ export class SafeFormBuilderService {
     survey.onUpdateQuestionCssClasses.add((_, options: any) =>
       this.onSetCustomCss(options)
     );
-    survey.onPageVisibleChanged.add(() => {
-      this.setPages(survey, pages);
-    });
-    survey.onSettingQuestionErrors.add(() => {
-      this.setPages(survey, pages);
-    });
     survey.onCurrentPageChanged.add((survey: Survey.SurveyModel) => {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
-      this.selectedPageIndex.next(survey.currentPageNo);
+      selectedPageIndex.next(survey.currentPageNo);
     });
-  }
-
-  /**
-   * Set the pages of the survey
-   *
-   * @param survey Current survey
-   * @param pages Page number emitter
-   */
-  private setPages(
-    survey: Survey.SurveyModel,
-    pages: BehaviorSubject<any[]>
-  ): void {
-    const pageList = [];
-    if (survey) {
-      for (const page of survey.pages) {
-        if (page.isVisible) {
-          pageList.push(page);
-        }
-      }
-    }
-    pages.next(pageList);
   }
 
   /**

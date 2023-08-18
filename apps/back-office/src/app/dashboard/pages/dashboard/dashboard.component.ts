@@ -1,10 +1,12 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   Component,
+  ElementRef,
   EventEmitter,
   OnDestroy,
   OnInit,
   Output,
+  Renderer2,
   ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -110,6 +112,8 @@ export class DashboardComponent
    * @param authService Shared authentication service
    * @param confirmService Shared confirm service
    * @param refDataService Shared reference data service
+   * @param renderer Angular renderer
+   * @param elementRef Angular element ref
    */
   constructor(
     private applicationService: SafeApplicationService,
@@ -123,13 +127,18 @@ export class DashboardComponent
     private translateService: TranslateService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
-    private refDataService: SafeReferenceDataService
+    private refDataService: SafeReferenceDataService,
+    private renderer: Renderer2,
+    private elementRef: ElementRef
   ) {
     super();
   }
 
   ngOnInit(): void {
+    const rootElement = this.elementRef.nativeElement;
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      // Doing this to be able to use custom styles on specific dashboards
+      this.renderer.setAttribute(rootElement, 'data-dashboard-id', params.id);
       this.formActive = false;
       this.loading = true;
       this.id = params.id;
@@ -213,7 +222,7 @@ export class DashboardComponent
    * @returns boolean of observable of boolean
    */
   canDeactivate(): Observable<boolean> | boolean {
-    if (!this.widgetGridComponent.canDeactivate) {
+    if (this.widgetGridComponent && !this.widgetGridComponent?.canDeactivate) {
       const dialogRef = this.confirmService.openConfirmModal({
         title: this.translateService.instant('pages.dashboard.update.exit'),
         content: this.translateService.instant(

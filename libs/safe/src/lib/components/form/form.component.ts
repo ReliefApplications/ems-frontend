@@ -20,7 +20,7 @@ import {
 } from './graphql/mutations';
 import { Form } from '../../models/form.model';
 import { Record } from '../../models/record.model';
-import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
+import { BehaviorSubject, takeUntil } from 'rxjs';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { SafeLayoutService } from '../../services/layout/layout.service';
@@ -53,8 +53,6 @@ export class SafeFormComponent
   // === SURVEYJS ===
   public survey!: Survey.SurveyModel;
   public surveyActive = true;
-  public selectedTabIndex = 0;
-  private pages = new BehaviorSubject<any[]>([]);
   private temporaryFilesStorage: any = {};
 
   @ViewChild('formContainer') formContainer!: ElementRef;
@@ -67,14 +65,15 @@ export class SafeFormComponent
   public storageDate?: Date;
   public isFromCacheData = false;
 
-  /**
-   * Getter for the pages of the form
-   *
-   * @returns the pages as an Observable
-   */
-  public get pages$(): Observable<any[]> {
-    return this.pages.asObservable();
-  }
+  /** Selected page index */
+  public selectedPageIndex: BehaviorSubject<number> =
+    new BehaviorSubject<number>(0);
+  /** Selected page index as observable */
+  public selectedPageIndex$ = this.selectedPageIndex.asObservable();
+  /** Available pages*/
+  private pages = new BehaviorSubject<any[]>([]);
+  /** Pages as observable */
+  public pages$ = this.pages.asObservable();
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -103,8 +102,6 @@ export class SafeFormComponent
   }
 
   ngOnInit(): void {
-    this.setFormListeners();
-
     Survey.StylesManager.applyTheme();
     addCustomFunctions(Survey, this.authService, this.record);
 
@@ -117,14 +114,13 @@ export class SafeFormComponent
 
     this.survey = this.formBuilderService.createSurvey(
       JSON.stringify(structure),
-      this.pages,
       this.form.metadata,
       this.record
     );
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
-      this.pages,
+      this.selectedPageIndex,
       this.temporaryFilesStorage
     );
 
@@ -189,16 +185,6 @@ export class SafeFormComponent
     // }
   }
 
-  /**
-   * Set needed listeners for the component
-   */
-  private setFormListeners() {
-    this.formBuilderService.selectedPageIndex
-      .asObservable()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((pageIndex: number) => (this.selectedTabIndex = pageIndex));
-  }
-
   ngAfterViewInit(): void {
     this.survey?.render(this.formContainer.nativeElement);
     // this.translate.onLangChange.subscribe(() => {
@@ -261,18 +247,18 @@ export class SafeFormComponent
   public onComplete = async () => {
     let mutation: any;
     this.surveyActive = false;
-    const promises: Promise<any>[] =
-      this.formHelpersService.uploadTemporaryRecords(this.survey);
-    promises.push(
-      this.formHelpersService.uploadFiles(
-        this.survey,
-        this.temporaryFilesStorage,
-        this.form?.id
-      )
+    // const promises: Promise<any>[] =
+    //   this.formHelpersService.uploadTemporaryRecords(this.survey);
+
+    await this.formHelpersService.uploadFiles(
+      this.survey,
+      this.temporaryFilesStorage,
+      this.form?.id
     );
     this.formHelpersService.setEmptyQuestions(this.survey);
     // We wait for the resources questions to update their ids
-    await Promise.allSettled(promises);
+    // await Promise.allSettled(promises);
+    await this.formHelpersService.createCachedRecords(this.survey);
     // this.survey.data = surveyData;
     // If is an already saved record, edit it
     if (this.record || this.form.uniqueRecord) {
@@ -335,10 +321,6 @@ export class SafeFormComponent
     if (this.survey) {
       this.survey.currentPageNo = i;
     }
-    // if (this.survey.compareTo) {
-    //   this.survey.currentPageNo = i;
-    // }
-    this.selectedTabIndex = i;
   }
 
   /**
@@ -422,6 +404,6 @@ export class SafeFormComponent
     super.ngOnDestroy();
     localStorage.removeItem(this.storageId);
     this.formHelpersService.cleanCachedRecords(this.survey);
-    this.formBuilderService.selectedPageIndex.next(0);
+    this.survey?.dispose();
   }
 }

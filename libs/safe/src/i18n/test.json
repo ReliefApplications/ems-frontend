@@ -130,6 +130,7 @@
 		"modifiedOn": "******",
 		"name": "******",
 		"next": "******",
+		"noOptions": "******",
 		"notifications": {
 			"accessDenied": "****** {{type}} ******",
 			"accessNotProvided": "****** {{type}} ****** {{error}}",
@@ -260,6 +261,7 @@
 		},
 		"save": "******",
 		"saveChanges": "******",
+		"search": "******",
 		"searchObject": "****** {{name}}",
 		"select": "******",
 		"send": "******",
@@ -650,6 +652,7 @@
 			}
 		},
 		"header": {
+			"goToApp": "******",
 			"goToPlatform": "******",
 			"logout": "******",
 			"sidenav": {
@@ -1076,6 +1079,7 @@
 					"history": "******"
 				},
 				"errors": {
+					"autoSaveFailed": "******",
 					"invalid": {
 						"backoffice": "******",
 						"frontoffice": "******"

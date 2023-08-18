@@ -30,7 +30,7 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
     'overflow-x-auto',
     'shadow',
     'border',
-    'py-2',
+    'pt-2',
     'sm:rounded-lg',
     'bg-gray-50',
   ];

@@ -137,6 +137,7 @@ export class RoleResourcesComponent
         icon: this.getIcon(resource, x),
         variant: this.getVariant(resource, x),
         tooltip: this.getTooltip(resource, x),
+        isOutlined: this.getIconOutlined(resource, x),
       })),
     };
   }
@@ -514,6 +515,26 @@ export class RoleResourcesComponent
   }
 
   /**
+   * Gets if icon should be outlined
+   *
+   * @param resource A resource
+   * @param permission The permission name
+   * @returns is icon outlined
+   */
+  private getIconOutlined(resource: Resource, permission: Permission) {
+    const permissionLevel = this.permissionLevel(resource, permission);
+    switch (permissionLevel) {
+      case 'limited': {
+        return true;
+      }
+      case 'full':
+      default: {
+        return false;
+      }
+    }
+  }
+
+  /**
    * Gets the correspondent variant for a given permission
    *
    * @param resource A resource
@@ -620,12 +641,17 @@ export class RoleResourcesComponent
    * @param loading loading status
    */
   private updateValues(data: GetResourcesQueryResponse, loading: boolean) {
-    const mappedValues = data.resources.edges.map((x) => x.node);
+    const mappedValues = data.resources?.edges?.map((x) => x.node);
     this.cachedResources = updateQueryUniqueValues(
       this.cachedResources,
       mappedValues
     );
-    this.resources = this.setTableElements(mappedValues);
+    this.resources = this.setTableElements(
+      this.cachedResources.slice(
+        this.pageInfo.pageSize * this.pageInfo.pageIndex,
+        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+      )
+    );
     this.pageInfo.length = data.resources.totalCount;
     this.pageInfo.endCursor = data.resources.pageInfo.endCursor;
     this.loading = loading;

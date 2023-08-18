@@ -5,9 +5,11 @@ import {
   ContentChildren,
   EventEmitter,
   Input,
+  OnChanges,
   OnDestroy,
   Output,
   QueryList,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import { Variant } from '../types/variant';
@@ -19,7 +21,7 @@ import {
   animate,
 } from '@angular/animations';
 import { TabComponent } from './components/tab/tab.component';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, startWith } from 'rxjs';
 import { TabBodyHostDirective } from './directives/tab-body-host.directive';
 
 /**
@@ -44,7 +46,7 @@ import { TabBodyHostDirective } from './directives/tab-body-host.directive';
     ]),
   ],
 })
-export class TabsComponent implements AfterContentInit, OnDestroy {
+export class TabsComponent implements AfterContentInit, OnDestroy, OnChanges {
   @ContentChildren(TabComponent, { descendants: true })
   tabs!: QueryList<TabComponent>;
 
@@ -70,8 +72,10 @@ export class TabsComponent implements AfterContentInit, OnDestroy {
   @ViewChild(TabBodyHostDirective)
   tabBodyHost!: TabBodyHostDirective;
 
+  previousTabsLength = 0;
   triggerAnimation = false;
   destroy$ = new Subject<void>();
+  reorder$ = new Subject<void>();
 
   /**
    * Ui Sidenav constructor
@@ -91,26 +95,29 @@ export class TabsComponent implements AfterContentInit, OnDestroy {
     } else {
       classes.push('border-b');
       classes.push('mb-4');
+      classes.push('overflow-x-auto');
     }
     return classes;
   }
 
   ngAfterContentInit() {
-    // Timeout will trigger change detection accordingly to avoid change cycle errors
-    setTimeout(() => {
-      // Initialize tab components
-      this.tabs.forEach((tab, index) => {
-        tab.variant = this.variant;
-        tab.vertical = this.vertical;
-        tab.index = index;
-        tab.openTab.pipe(takeUntil(this.destroy$)).subscribe(() => {
-          this.showContent(tab);
-        });
-        if (index === this.selectedIndex) {
-          this.showContent(tab);
+    // This ensures that the subscription logic is executed for both existing and new tab elements
+    this.tabs.changes
+      .pipe(startWith(this.tabs), takeUntil(this.destroy$))
+      .subscribe((tabs: QueryList<TabComponent>) => {
+        this.cdr.detectChanges();
+        if (tabs.length !== this.previousTabsLength) {
+          this.reorder$.next();
+          this.previousTabsLength = tabs.length;
+          this.subscribeToOpenTabEvents();
         }
       });
-    }, 0);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['selectedIndex']) {
+      this.setSelectedTab();
+    }
   }
 
   /**
@@ -124,7 +131,6 @@ export class TabsComponent implements AfterContentInit, OnDestroy {
       this.setSelectedTab();
 
       // Clean up previous displayed content
-      // this.deleteContent();
       this.triggerAnimation = false;
 
       // Creates the content element thanks to the hidden html content of the tab component
@@ -132,7 +138,6 @@ export class TabsComponent implements AfterContentInit, OnDestroy {
       setTimeout(() => {
         this.triggerAnimation = true;
         this.openedTab.emit(tab);
-        // this.createContent(tab);
       }, 100);
       // Emits the current selected index
       this.selectedIndexChange.emit(this.selectedIndex);
@@ -143,8 +148,8 @@ export class TabsComponent implements AfterContentInit, OnDestroy {
    * Update select state of all the tabs
    */
   public setSelectedTab() {
-    this.tabs.forEach((tab, index) => {
-      if (index === this.selectedIndex) {
+    this.tabs?.forEach((tab) => {
+      if (tab.index === this.selectedIndex) {
         tab.selected = true;
       } else {
         tab.selected = false;
@@ -153,25 +158,27 @@ export class TabsComponent implements AfterContentInit, OnDestroy {
   }
 
   /**
-   * Delete content displayed currently
+   * Gets all the tabs, initialize them and listen to the openTab event
    */
-  deleteContent() {
-    this.triggerAnimation = false;
-    // if (this.content) {
-    //   this.content.clear();
-    // }
+  private subscribeToOpenTabEvents(): void {
+    this.tabs?.forEach((tab, index) => {
+      tab.variant = this.variant;
+      tab.vertical = this.vertical;
+      tab.index = index;
+      tab.openTab
+        .pipe(takeUntil(this.destroy$), takeUntil(this.reorder$))
+        .subscribe(() => {
+          this.showContent(tab);
+          this.selectedIndex = index;
+        });
+    });
+    // To avoid that we select all tabs by default
+    this.tabs?.forEach((tab) => {
+      if (tab.index === this.selectedIndex) {
+        this.showContent(tab);
+      }
+    });
   }
-
-  /**
-   * Creates the content element thanks to the hidden html content of the tab component targeted
-   *
-   * @param target dom element clicked
-   */
-  // createContent(target: TabComponent) {
-  //   this.triggerAnimation = true;
-  //   // this.content.createEmbeddedView(target.content);
-  //   this.portalHost.attach(target.content);
-  // }
 
   ngOnDestroy(): void {
     this.destroy$.next();

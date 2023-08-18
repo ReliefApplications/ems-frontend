@@ -13,6 +13,7 @@ import {
 import { DialogRef } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
+import set from 'lodash/set';
 
 /**
  * Shared survey helper service.
@@ -68,6 +69,7 @@ export class SafeFormHelpersService {
   setEmptyQuestions(survey: Survey.SurveyModel): void {
     // We get all the questions from the survey and check which ones contains values
     const questions = survey.getAllQuestions();
+    const data = { ...survey.data };
     for (const field in questions) {
       if (questions[field]) {
         const key = questions[field].getValueName();
@@ -75,15 +77,17 @@ export class SafeFormHelpersService {
         if (!survey.data[key]) {
           // And is not boolean(false by default, we want to save that), we nullify it
           if (questions[field].getType() !== 'boolean') {
-            survey.data[key] = null;
+            // survey.data[key] = null;
+            set(data, key, null);
           }
           // Or if is not visible or not actionable by the user, we don't want to save it, just delete the field from the data
           if (questions[field].readOnly || !questions[field].visible) {
-            delete survey.data[key];
+            delete data[key];
           }
         }
       }
     }
+    survey.data = data;
   }
 
   /**
@@ -209,15 +213,86 @@ export class SafeFormHelpersService {
    * @param survey Survey from which we need to clean cached records.
    */
   cleanCachedRecords(survey: Survey.SurveyModel): void {
+    if (!survey) return;
     survey.getAllQuestions().forEach((question) => {
-      if (
-        question.value &&
-        ['resources', 'resource'].includes(question.getType())
-      ) {
-        question.value.forEach((recordId: any) =>
-          localForage.removeItem(recordId)
-        );
+      if (question.value) {
+        const type = question.getType();
+        if (type === 'resources') {
+          question.value.forEach((recordId: string) =>
+            localForage.removeItem(recordId)
+          );
+        } else if (type === 'resource') {
+          localForage.removeItem(question.value);
+        }
       }
     });
+  }
+
+  /**
+   * Create cache records (from resource/s questions) of passed survey.
+   *
+   * @param survey Survey to get questions from
+   */
+  public async createCachedRecords(survey: Survey.SurveyModel): Promise<void> {
+    const promises: Promise<any>[] = [];
+    const questions = survey.getAllQuestions();
+    const nestedRecordsToAdd: string[] = [];
+
+    // Callbacks to update the ids of new records
+    const updateIds: {
+      [key in string]: (arg0: string) => void;
+    } = {};
+
+    // Get all nested records to add
+    questions.forEach((question) => {
+      const type = question.getType();
+      if (!['resource', 'resources'].includes(type)) return;
+      const uuidv4Pattern =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+      const isResource = type === 'resource';
+
+      const toAdd = (isResource ? [question.value] : question.value).filter(
+        (x: string) => uuidv4Pattern.test(x)
+      );
+      nestedRecordsToAdd.push(...toAdd);
+
+      toAdd.forEach((id: string) => {
+        updateIds[id] = (newId: string) => {
+          question.value = isResource
+            ? newId
+            : question.value.map((x: string) => (x === id ? newId : x));
+        };
+      });
+    });
+
+    for (const localID of nestedRecordsToAdd) {
+      // load them from localForage and add them to the promises
+      const cache = await localForage.getItem(localID);
+      if (!cache) continue;
+
+      const { template, data } = JSON.parse(cache as string);
+
+      promises.push(
+        firstValueFrom(
+          this.apollo.mutate<AddRecordMutationResponse>({
+            mutation: ADD_RECORD,
+            variables: {
+              form: template,
+              data,
+            },
+          })
+        ).then((res) => {
+          // change the localID to the new recordId
+          const newId = res.data?.addRecord?.id;
+          if (!newId) return;
+          updateIds[localID](newId);
+          localForage.removeItem(localID);
+          return;
+        })
+      );
+    }
+
+    await Promise.all(promises);
   }
 }

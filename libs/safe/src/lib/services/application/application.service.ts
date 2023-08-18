@@ -96,7 +96,7 @@ import { SnackbarService } from '@oort-front/ui';
 })
 export class SafeApplicationService {
   /** Current application */
-  private application = new BehaviorSubject<Application | null>(null);
+  public application = new BehaviorSubject<Application | null>(null);
   /** @returns Current application as observable */
   get application$(): Observable<Application | null> {
     return this.application.asObservable();
@@ -207,7 +207,7 @@ export class SafeApplicationService {
         const application = this.application.getValue();
         this.getCustomStyle();
         this.customStyleEdited = false;
-        if (data.application.locked) {
+        if (data.application?.locked) {
           if (!application?.lockedByUser) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectLocked', {
@@ -248,8 +248,8 @@ export class SafeApplicationService {
           const application = this.application.getValue();
           const newApplication = {
             ...application,
-            locked: data?.applicationUnlocked.locked,
-            lockedByUser: data?.applicationUnlocked.lockedByUser,
+            locked: data?.applicationUnlocked?.locked,
+            lockedByUser: data?.applicationUnlocked?.lockedByUser,
           };
           this.application.next(newApplication);
         }
@@ -301,7 +301,7 @@ export class SafeApplicationService {
           if (!data.toggleApplicationLock.lockedByUser) {
             const newApplication = {
               ...application,
-              locked: data?.toggleApplicationLock.locked,
+              locked: data?.toggleApplicationLock?.locked,
               lockedByUser: data?.toggleApplicationLock.lockedByUser,
             };
             this.application.next(newApplication);

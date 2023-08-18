@@ -7,18 +7,20 @@
           [record]="record"
           (showHistory)="onShowHistory()"
         ></safe-record-summary>
-  
+
         <safe-form-actions
           [survey]="survey"
           [surveyNext]="surveyNext || undefined"
         ></safe-form-actions>
       </div>
       <ui-tabs
-        [selectedIndex]="selectedTabIndex"
+        [selectedIndex]="(selectedPageIndex$ | async)!"
         (selectedIndexChange)="onShowPage($event)"
       >
-        <ui-tab *ngFor="let page of pages$ | async">
-          <ng-container ngProjectAs="label">{{page.title ? page.title : page.name}}</ng-container>
+        <ui-tab *ngFor="let page of survey?.visiblePages ?? []">
+          <ng-container ngProjectAs="label">{{
+            page.title ? page.title : page.name
+          }}</ng-container>
         </ui-tab>
       </ui-tabs>
       <div class="versions-info" *ngIf="data.compareTo">
@@ -40,8 +42,10 @@
       <div #formContainer class="grow"></div>
     </ng-container>
     <ng-container *ngIf="data.compareTo">
-      <div #formContainerNext class="grow"></div>
-      <div #formContainer class="grow"></div>
+      <div class="flex flex-row">
+        <div #formContainerNext class="grow max-w-[50%]"></div>
+        <div #formContainer class="grow max-w-[50%]"></div>
+      </div>
     </ng-container>
     <div *ngIf="loading" class="h-full w-full flex">
       <ui-spinner class="m-auto block"></ui-spinner>
@@ -65,8 +69,8 @@
       <ui-button (click)="onClose()" variant="danger">
         {{ 'common.close' | translate }}
       </ui-button>
-  
-      <ng-container *ngIf="pages$ | async as pages">
+
+      <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
         <ui-button
           category="secondary"
           variant="primary"

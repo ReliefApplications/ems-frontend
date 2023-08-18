@@ -32,12 +32,18 @@ export default {
   },
 } as Meta<TabsComponent>;
 
+/**
+ * Default story
+ */
 export const Default: StoryObj<TabsComponent> = {
   args: {
     vertical: false,
   },
 };
 
+/**
+ * Vertical story
+ */
 export const Vertical: StoryObj<TabsComponent> = {
   args: {
     vertical: true,

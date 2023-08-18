@@ -51,7 +51,7 @@
           <label>{{ 'models.form.field.name' | translate }}</label>
           <input formControlName="name" type="text" />
         </div>
-        <div uiFormFieldDirective>
+        <div uiFormFieldDirective *ngIf="form.get('label')">
           <label>{{ 'models.form.field.label' | translate }}</label>
           <input formControlName="label" type="text" />
         </div>
@@ -63,12 +63,14 @@
           'components.queryBuilder.fields.title' | translate
         }}</ng-container>
 
-        <safe-tab-fields
-          *ngIf="availableFields.length > 0"
-          [form]="$any(form.controls.fields)"
-          [fields]="availableFields"
-          [showLimit]="true"
-        ></safe-tab-fields>
+        <ng-template uiTabContent>
+          <safe-tab-fields
+            *ngIf="availableFields.length > 0"
+            [form]="$any(form.controls.fields)"
+            [fields]="availableFields"
+            [showLimit]="true"
+          ></safe-tab-fields>
+        </ng-template>
       </ui-tab>
       <ui-tab *ngIf="form.get('sort')">
         <ng-container ngProjectAs="label">{{
@@ -78,42 +80,49 @@
           ) | translate
         }}</ng-container>
 
-        <safe-tab-sort
-          [form]="form"
-          [fields]="availableScalarFields"
-          [showLimit]="showLimit && form.get('first') !== null"
-        ></safe-tab-sort>
+        <ng-template uiTabContent>
+          <safe-tab-sort
+            [form]="form"
+            [fields]="availableScalarFields"
+            [showLimit]="showLimit && form.get('first') !== null"
+          ></safe-tab-sort>
+        </ng-template>
       </ui-tab>
       <ui-tab *ngIf="showFilter && form.get('filter')">
         <ng-container ngProjectAs="label">{{
           'components.queryBuilder.filter.title' | translate
         }}</ng-container>
 
-        <safe-tab-filter
-          [form]="$any(form.controls.filter)"
-          [query]="form.getRawValue()"
-        >
-        </safe-tab-filter>
+        <ng-template uiTabContent>
+          <safe-tab-filter
+            [form]="$any(form.controls.filter)"
+            [query]="form.getRawValue()"
+          >
+          </safe-tab-filter>
+        </ng-template>
       </ui-tab>
       <ui-tab *ngIf="showStyle && form.get('style')">
         <ng-container ngProjectAs="label">{{
           'components.queryBuilder.style.title' | translate
         }}</ng-container>
 
-        <safe-tab-style
-          [form]="$any(form.controls.style)"
-          [scalarFields]="availableScalarFields"
-          [query]="form.getRawValue()"
-        >
-        </safe-tab-style>
+        <ng-template uiTabContent>
+          <safe-tab-style
+            [form]="$any(form.controls.style)"
+            [scalarFields]="availableScalarFields"
+            [query]="form.getRawValue()"
+          >
+          </safe-tab-style>
+        </ng-template>
       </ui-tab>
       <ui-tab *ngIf="layoutPreviewData">
         <ng-container ngProjectAs="label">{{
           'common.preview' | translate
         }}</ng-container>
-
-        <safe-tab-layout-preview [data]="layoutPreviewData">
-        </safe-tab-layout-preview>
+        <ng-template uiTabContent>
+          <safe-tab-layout-preview [data]="layoutPreviewData">
+          </safe-tab-layout-preview>
+        </ng-template>
       </ui-tab>
     </ui-tabs>
   </form>

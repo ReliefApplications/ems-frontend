@@ -6,12 +6,16 @@ import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   ButtonModule,
+  CheckboxModule,
+  DividerModule,
   FormWrapperModule,
   GraphQLSelectModule,
   IconModule,
+  RadioModule,
   SelectMenuModule,
   SelectOptionModule,
   TabsModule,
+  ToggleModule,
   TooltipModule,
 } from '@oort-front/ui';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
@@ -41,6 +45,10 @@ import { SafeEditorModule } from '../editor/editor.module';
     TabsModule,
     TooltipModule,
     IconModule,
+    CheckboxModule,
+    RadioModule,
+    DividerModule,
+    ToggleModule,
   ],
   exports: [SafeEditorSettingsComponent],
   providers: [

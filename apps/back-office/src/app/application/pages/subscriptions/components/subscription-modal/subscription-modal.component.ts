@@ -80,7 +80,7 @@ export class SubscriptionModalComponent
   implements OnInit
 {
   // === REACTIVE FORM ===
-  subscriptionForm: UntypedFormGroup = new UntypedFormGroup({});
+  subscriptionForm!: UntypedFormGroup;
 
   // === DATA ===
   public formsQuery!: QueryRef<GetFormsQueryResponse>;

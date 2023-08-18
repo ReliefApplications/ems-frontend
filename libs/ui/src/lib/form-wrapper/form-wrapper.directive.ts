@@ -70,6 +70,7 @@ export class FormWrapperDirective
   ] as const;
 
   private inputClassesNoOutline = [
+    'form-input',
     'bg-transparent',
     'block',
     'overflow-hidden',
@@ -86,6 +87,7 @@ export class FormWrapperDirective
   ] as const;
 
   private inputClassesOutline = [
+    'form-input',
     'bg-transparent',
     'block',
     'w-full',
@@ -418,7 +420,7 @@ export class FormWrapperDirective
    */
   private applySuffixClasses(suffixElement: any) {
     this.renderer.addClass(suffixElement, 'order-last');
-    this.renderer.addClass(suffixElement, 'pl-2');
+    this.renderer.addClass(suffixElement, 'px-2');
   }
 
   /**

@@ -31,6 +31,7 @@
   aria-label="Breadcrumb"
 >
   <ol
+    #breadcrumbList
     class="mb-2"
     role="list"
     [ngClass]="{
@@ -40,27 +41,44 @@
     }"
   >
     <!-- For each breadcrumb in the breadcrumbs list -->
-    <li *ngFor="let breadcrumb of breadcrumbs; let f = first" class="flex">
-      <div *ngIf="!f">
+    <li
+      *ngFor="let breadcrumb of breadcrumbs; let first = first; let last = last"
+      (mouseenter)="breadcrumb.showLabel = true"
+      (mouseleave)="breadcrumb.showLabel = false"
+      class="flex pr-4"
+    >
+      <div *ngIf="!first">
         <ng-container *ngTemplateOutlet="separatorTmpl"></ng-container>
       </div>
       <!-- Breadcrumb link -->
-      <div [ngClass]="{ 'ml-4': !f }" class="flex items-center">
+      <div [ngClass]="{ 'ml-4': !first }" class="flex items-center">
         <a
           *ngIf="breadcrumb.key || breadcrumb.text"
           [routerLink]="[breadcrumb.uri]"
           class="text-sm font-medium text-gray-500 hover:text-gray-700"
         >
-          <span>{{
-            breadcrumb.key ? (breadcrumb.key | translate) : breadcrumb.text
-          }}</span>
+          <span
+            class="whitespace-nowrap"
+            *ngIf="
+              !isBreadcrumbOffLimits ||
+                (isBreadcrumbOffLimits &&
+                  (first || last || breadcrumb.showLabel));
+              else dotTmpl
+            "
+            >{{
+              breadcrumb.key ? (breadcrumb.key | translate) : breadcrumb.text
+            }}</span
+          >
+          <ng-template #dotTmpl>
+            <span class="text-sm font-medium text-gray-500">...</span>
+          </ng-template>
         </a>
-         <!-- Loading indicator if text not set -->
-          <kendo-skeleton
-            *ngIf="!breadcrumb.key && !breadcrumb.text"
-            width="3em"
-          ></kendo-skeleton>
-        </div>
+        <!-- Loading indicator if text not set -->
+        <kendo-skeleton
+          *ngIf="!breadcrumb.key && !breadcrumb.text"
+          width="3em"
+        ></kendo-skeleton>
+      </div>
     </li>
   </ol>
 </nav>

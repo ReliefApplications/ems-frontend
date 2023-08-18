@@ -29,9 +29,7 @@
               >
                 {{ position.value }}
                 <ng-container ngProjectAs="icon">
-                  <ui-icon
-                    icon="{{ position.icon }}"
-                  ></ui-icon>
+                  <ui-icon icon="{{ position.icon }}"></ui-icon>
                 </ng-container>
               </ui-select-option>
             </ui-select-menu>
@@ -52,7 +50,7 @@
             </div>
             <div class="flex gap-2 items-center">
               <!-- Font size -->
-              <div uiFormFieldDirective>
+              <div uiFormFieldDirective class="flex-1">
                 <label>{{
                   'components.widget.settings.chart.size' | translate
                 }}</label>
@@ -63,7 +61,7 @@
                 </ui-select-menu>
               </div>
               <!-- Position -->
-              <div uiFormFieldDirective>
+              <div uiFormFieldDirective class="flex-1">
                 <label>{{
                   'components.widget.settings.chart.position' | translate
                 }}</label>
@@ -80,9 +78,7 @@
                   >
                     {{ position.value }}
                     <ng-container ngProjectAs="icon">
-                      <ui-icon
-                        icon="{{ position.icon }}"
-                      ></ui-icon>
+                      <ui-icon icon="{{ position.icon }}"></ui-icon>
                     </ng-container>
                   </ui-select-option>
                 </ui-select-menu>
@@ -337,7 +333,7 @@
                   | translate
               }}</ng-container>
             </ui-toggle>
-            <ui-divider></ui-divider>
+            <ui-divider class="my-1"></ui-divider>
           </div>
           <safe-series-settings
             [formArray]="$any(formGroup.get('chart.series'))"

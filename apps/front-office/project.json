@@ -49,12 +49,10 @@
           "node_modules/survey-angular/survey.min.css",
           "node_modules/survey-creator/survey-creator.min.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
-          "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
-          "node_modules/select2/dist/css/select2.min.css"
+          "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css"
         ],
         "scripts": [
           "node_modules/jquery/dist/jquery.js",
-          "node_modules/select2/dist/js/select2.min.js",
           "node_modules/tinymce/tinymce.js",
           "node_modules/tinymce/themes/silver/theme.js"
         ],
@@ -63,7 +61,6 @@
           "hammerjs",
           "survey-creator",
           "survey-knockout",
-          "surveyjs-widgets",
           "subscriptions-transport-ws",
           "zen-observable",
           "lodash",
@@ -226,6 +223,30 @@
             {
               "replace": "apps/front-office/src/environments/environment.ts",
               "with": "apps/front-office/src/environments/environment.oort.guyane.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ],
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+          }
+        },
+        "oort-alimentaide": {
+          "fileReplacements": [
+            {
+              "replace": "apps/front-office/src/environments/environment.ts",
+              "with": "apps/front-office/src/environments/environment.oort.alimentaide.ts"
             }
           ],
           "budgets": [

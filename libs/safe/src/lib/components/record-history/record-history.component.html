@@ -12,9 +12,13 @@
   </div>
   <!-- FILTER -->
   <div class="clear-both flex flex-col">
-    <div uiFormFieldDirective>
+    <div uiFormFieldDirective id="date-header">
       <label>{{ 'common.input.dateRange' | translate }}</label>
-      <div [formGroup]="filtersDate" [uiDateWrapper]="calendar">
+      <div
+        [formGroup]="filtersDate"
+        [uiDateWrapper]="calendar"
+        class="flex-col"
+      >
         <input
           [uiDatePicker]
           formControlName="startDate"
@@ -63,7 +67,7 @@
 <ng-container *ngIf="!loading; else loadingTmpl">
   <ng-container *ngIf="filterHistory.length; else emptyTmpl">
     <!-- HISTORY CHANGES -->
-    <div class="history-container">
+    <div>
       <ng-container *ngFor="let item of filterHistory; let i = index">
         <ui-expansion-panel [index]="i" (closePanel)="showMore = false">
           <ng-container ngProjectAs="title">
@@ -76,7 +80,7 @@
             }}</span>
           </ng-container>
 
-          <div class="flex flex-col">
+          <div class="flex flex-col text-sm">
             <div
               class="changes-content"
               *ngFor="
