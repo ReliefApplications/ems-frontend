@@ -11,6 +11,10 @@
     <span class="widget-title" [title]="settings.title">{{
       settings.title
     }}</span>
+    <!-- Sort selector -->
+    <ng-container *ngIf="sortFields.length > 0">
+      <ng-container *ngTemplateOutlet="sortTemplate"></ng-container>
+    </ng-container>
     <!-- Core grid actions -->
     <ng-container *ngIf="aggregations.length === 0">
       <ng-container *ngTemplateOutlet="layoutsTemplate"></ng-container>
@@ -77,6 +81,22 @@
       </ui-button>
     </ng-container>
   </div>
+</ng-template>
+
+<!-- Selection of sort -->
+<ng-template #sortTemplate>
+  <ng-container *ngIf="sortFields.length > 1">
+    <div uiFormFieldDirective class="!m-0 w-44">
+      <ui-select-menu
+        (selectedOption)="onSort($event)"
+        [placeholder]="'models.widget.sorting.select' | translate"
+      >
+        <ui-select-option *ngFor="let sort of sortFields" [value]="sort">
+          {{ sort.label }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
+  </ng-container>
 </ng-template>
 
 <!-- Selection of layouts -->

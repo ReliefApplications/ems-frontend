@@ -1,6 +1,6 @@
 <!-- Wrapper of the entire select menu, has focusout event -->
 <button
-  class="min-h-[32px] relative flex justify-between items-center w-full cursor-default rounded-md px-3 text-left shadow-sm ring-1 ring-inset ring-gray-300 sm:leading-6 overflow-hidden"
+  [class]="'min-h-[32px] relative flex justify-between items-center w-full cursor-default rounded-md px-3 text-left shadow-sm ring-1 ring-inset ring-gray-300 sm:leading-6 overflow-hidden ' + extraClasses!"
   (click)="openSelectPanel()"
   [ngClass]="{
     'non_selectable text-gray-400': disabled,
@@ -49,7 +49,7 @@
       class="shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm ease-in-out duration-100 w-full overflow-auto rounded-md bg-white text-base"
     >
       <!-- Display the elements of the list -->
-      <ng-content *ngIf="optionList.length"></ng-content>
+      <ng-content></ng-content>
       <!-- Display a message to indicate the list is empty -->
       <div
         *ngIf="!optionList.length"

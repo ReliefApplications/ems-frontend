@@ -28,8 +28,8 @@ export class SafePaletteControlComponent implements ControlValueAccessor {
 
   @Input() formControlName!: string;
 
-  private onTouched!: any;
-  private onChanged!: any;
+  private onTouched!: () => void;
+  private onChanged!: (value: string[]) => void;
 
   public value: string[] = [];
   public colors: string[] = [];
@@ -40,7 +40,7 @@ export class SafePaletteControlComponent implements ControlValueAccessor {
    *
    * @param fn callback
    */
-  public registerOnChange(fn: any): void {
+  public registerOnChange(fn: (value: string[]) => void): void {
     this.onChanged = fn;
   }
 
@@ -49,7 +49,7 @@ export class SafePaletteControlComponent implements ControlValueAccessor {
    *
    * @param fn callback
    */
-  public registerOnTouched(fn: any): void {
+  public registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 

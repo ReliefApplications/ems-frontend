@@ -1983,6 +1983,7 @@
 			"display": {
 				"border": "Afficher la bordure du widget",
 				"searchable": "Autoriser la recherche",
+				"sortable": "Autoriser le tri",
 				"title": "Affichage des widgets"
 			},
 			"map": {
@@ -1993,6 +1994,16 @@
 			},
 			"scheduler": {
 				"defaultTitle": "Widget Calendrier"
+			},
+			"sorting": {
+				"add": "Ajouter un champ",
+				"delete": "Supprimer le champ de tri",
+				"field": "Champ",
+				"label": "Étiquette",
+				"management": "Gestion des champs de tri",
+				"order": "Ordre",
+				"select": "Sélectionnez un champ de tri...",
+				"title": "Tri"
 			},
 			"tooltip": {
 				"selector": {
