@@ -1961,7 +1961,7 @@
 				"delete": "Delete sort field",
 				"field": "Field",
 				"label": "Label",
-				"management": "Sort fields management",
+				"management": "Sort fields",
 				"order": "Order",
 				"select": "Select a sort field...",
 				"title": "Sorting"

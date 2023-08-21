@@ -27,13 +27,16 @@
         *cdkCellDef="let element; let rowIndex = index"
         [formGroupName]="rowIndex"
       >
-        <kendo-dropdownlist
-          formControlName="field"
-          [data]="fields"
-          [valuePrimitive]="true"
-          textField="name"
-          valueField="name"
-        ></kendo-dropdownlist>
+        <div uiFormFieldDirective class="!m-0">
+          <ui-select-menu formControlName="field">
+            <ui-select-option
+              *ngFor="let option of fields"
+              [value]="option.name"
+            >
+              {{ option.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
       </td>
     </ng-container>
     <ng-container cdkColumnDef="order">
@@ -45,13 +48,16 @@
         *cdkCellDef="let element; let rowIndex = index"
         [formGroupName]="rowIndex"
       >
-        <kendo-dropdownlist
-          formControlName="order"
-          [data]="orderList"
-          [valuePrimitive]="true"
-          textField="text"
-          valueField="value"
-        ></kendo-dropdownlist>
+        <div uiFormFieldDirective class="!m-0">
+          <ui-select-menu formControlName="order">
+            <ui-select-option
+              *ngFor="let option of orderList"
+              [value]="option.value"
+            >
+              {{ option.text }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
       </td>
     </ng-container>
     <ng-container cdkColumnDef="label">
@@ -63,14 +69,17 @@
         *cdkCellDef="let element; let rowIndex = index"
         [formGroupName]="rowIndex"
       >
-        <kendo-textbox formControlName="label"></kendo-textbox>
+        <div uiFormFieldDirective class="!m-0">
+          <input formControlName="label" />
+        </div>
       </td>
     </ng-container>
     <ng-container cdkColumnDef="actions">
       <th uiCellHeader *cdkHeaderCellDef></th>
       <td uiCell *cdkCellDef="let element; let rowIndex = index">
-        <div class="flex gap-2 text-neutral-500">
+        <div class="flex gap-2 text-neutral-500 justify-end">
           <ui-button
+            variant="danger"
             [isIcon]="true"
             icon="delete"
             (click)="removeRow(rowIndex)"
