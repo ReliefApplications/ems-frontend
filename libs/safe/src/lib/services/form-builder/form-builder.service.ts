@@ -11,6 +11,7 @@ import { Metadata } from '../../models/metadata.model';
 import { SafeRestService } from '../rest/rest.service';
 import { BehaviorSubject } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
+import { SafeFormHelpersService } from '../form-helper/form-helper.service';
 
 /**
  * Shared form builder service.
@@ -28,13 +29,15 @@ export class SafeFormBuilderService {
    * @param apollo Apollo service
    * @param snackBar Service used to show a snackbar.
    * @param restService This is the service that is used to make http requests.
+   * @param formHelpersService Shared form helper service.
    */
   constructor(
     private referenceDataService: SafeReferenceDataService,
     private translate: TranslateService,
     private apollo: Apollo,
     private snackBar: SnackbarService,
-    private restService: SafeRestService
+    private restService: SafeRestService,
+    private formHelpersService: SafeFormHelpersService
   ) {}
 
   /**
@@ -53,6 +56,7 @@ export class SafeFormBuilderService {
     Survey.settings.useCachingForChoicesRestful = false;
     Survey.settings.useCachingForChoicesRestfull = false;
     const survey = new Survey.Model(structure);
+    this.formHelpersService.addUserVariables(survey);
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
     );

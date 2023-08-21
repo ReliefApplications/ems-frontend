@@ -86,7 +86,7 @@ export class AggregationsTabComponent
         query: GET_RESOURCE_AGGREGATIONS,
         variables: {
           first: this.pageInfo.pageSize,
-          id: this.resource.id,
+          id: this.resource?.id,
           afterCursor: this.pageInfo.endCursor,
         },
       });
@@ -114,7 +114,7 @@ export class AggregationsTabComponent
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
       let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is substracted from the new one
+      // If the fetch is for a new page size, the old page size is subtracted from the new one
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
@@ -264,10 +264,13 @@ export class AggregationsTabComponent
         this.cachedAggregations,
         mappedValues
       );
-      this.aggregations = mappedValues;
       this.pageInfo.length = data.resource.aggregations?.totalCount || 0;
       this.pageInfo.endCursor =
         data.resource.aggregations?.pageInfo.endCursor || '';
+      this.aggregations = this.cachedAggregations.slice(
+        this.pageInfo.pageSize * this.pageInfo.pageIndex,
+        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+      );
     }
     this.loading = loading;
   }

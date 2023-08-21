@@ -1,5 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
+import {
+  DateTimeProvider,
+  OAuthLogger,
+  OAuthModule,
+  OAuthService,
+  UrlHelperService,
+} from 'angular-oauth2-oidc';
 import { SafeLayoutComponent } from './layout.component';
 import { HttpClientModule } from '@angular/common/http';
 import {
@@ -7,13 +14,11 @@ import {
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
-import { TranslateModule } from '@ngx-translate/core';
 import {
-  DividerModule,
-  MenuModule,
-  SidenavContainerModule,
-  TooltipModule,
-} from '@oort-front/ui';
+  TranslateModule,
+  TranslateFakeLoader,
+  TranslateLoader,
+} from '@ngx-translate/core';
 import {
   ApolloTestingModule,
   ApolloTestingController,
@@ -21,9 +26,16 @@ import {
 import { GET_NOTIFICATIONS } from './graphql/queries';
 import { NOTIFICATION_SUBSCRIPTION } from './graphql/subscriptions';
 import { AppAbility } from '../../services/auth/auth.service';
+import {
+  BreadcrumbsModule,
+  DividerModule,
+  TooltipModule,
+  ButtonModule,
+  SidenavContainerModule,
+  MenuModule,
+} from '@oort-front/ui';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
-import { ButtonModule } from '@oort-front/ui';
-import { OAuthModule } from 'angular-oauth2-oidc';
 
 describe('SafeLayoutComponent', () => {
   let component: SafeLayoutComponent;
@@ -35,8 +47,15 @@ describe('SafeLayoutComponent', () => {
       providers: [
         {
           provide: 'environment',
-          useValue: { availableLanguages: 2, theme: {} },
+          useValue: {
+            theme: {},
+            availableLanguages: [],
+          },
         },
+        OAuthService,
+        UrlHelperService,
+        OAuthLogger,
+        DateTimeProvider,
         AppAbility,
         { provide: DialogRef, useValue: {} },
         { provide: DIALOG_DATA, useValue: {} },
@@ -52,10 +71,21 @@ describe('SafeLayoutComponent', () => {
         TooltipModule,
         SidenavContainerModule,
         DialogCdkModule,
-        TranslateModule.forRoot(),
+        DividerModule,
+        ButtonModule,
+        SidenavContainerModule,
+        BreadcrumbsModule,
+        TooltipModule,
         MenuModule,
         ApolloTestingModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
+        }),
       ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);

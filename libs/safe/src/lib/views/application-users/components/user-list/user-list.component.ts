@@ -273,9 +273,12 @@ export class UserListComponent
     const mappedValues = data.application.users.edges.map((x) => x.node);
     this.cachedUsers = updateQueryUniqueValues(this.cachedUsers, mappedValues);
 
-    this.users = mappedValues;
     this.pageInfo.length = data.application.users.totalCount;
     this.pageInfo.endCursor = data.application.users.pageInfo.endCursor;
+    this.users = this.cachedUsers.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
     this.loading = loading;
     this.updating = false;
   }

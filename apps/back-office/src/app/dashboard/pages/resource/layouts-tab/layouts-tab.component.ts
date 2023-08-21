@@ -80,7 +80,7 @@ export class LayoutsTabComponent
     this.layoutsQuery = this.apollo.watchQuery<GetResourceByIdQueryResponse>({
       query: GET_RESOURCE_LAYOUTS,
       variables: {
-        id: this.resource.id,
+        id: this.resource?.id,
         first: this.pageInfo.pageSize,
         afterCursor: this.pageInfo.endCursor,
       },
@@ -108,7 +108,7 @@ export class LayoutsTabComponent
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
       let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is substracted from the new one
+      // If the fetch is for a new page size, the old page size is subtracted from the new one
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
@@ -254,9 +254,12 @@ export class LayoutsTabComponent
         this.cachedLayouts,
         mappedValues
       );
-      this.layouts = mappedValues;
       this.pageInfo.length = data.resource.layouts?.totalCount || 0;
       this.pageInfo.endCursor = data.resource.layouts?.pageInfo.endCursor || '';
+      this.layouts = this.cachedLayouts.slice(
+        this.pageInfo.pageSize * this.pageInfo.pageIndex,
+        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+      );
     }
     this.loading = loading;
   }
