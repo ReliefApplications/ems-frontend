@@ -282,7 +282,11 @@ export class SafeGridWidgetComponent
     if (options.attachToRecord && this.grid.selectedRows.length > 0) {
       //will block the other steps, unblocking if the opened modal was saved
       this.blockModifySelectedRows = true;
-      await this.promisedAttachToRecord(this.grid.selectedRows, options, promises);
+      await this.promisedAttachToRecord(
+        this.grid.selectedRows,
+        options,
+        promises
+      );
     }
 
     // Opens a form with selected records.
@@ -296,17 +300,25 @@ export class SafeGridWidgetComponent
     if (options.modifySelectedRows && !this.blockModifySelectedRows) {
       await this.promisedRowsModifications(
         options.modifications,
-        this.grid.selectedRows,
+        this.grid.selectedRows
       );
     }
 
     // Notifies on a channel.
-    if (options.notify && this.grid.selectedRows.length > 0 && !this.blockModifySelectedRows) {
+    if (
+      options.notify &&
+      this.grid.selectedRows.length > 0 &&
+      !this.blockModifySelectedRows
+    ) {
       this.quickActionNotify(options, promises);
     }
 
     // Publishes on a channel.
-    if (options.publish && this.grid.selectedRows.length > 0 && !this.blockModifySelectedRows) {
+    if (
+      options.publish &&
+      this.grid.selectedRows.length > 0 &&
+      !this.blockModifySelectedRows
+    ) {
       this.quickActionPublish(options, promises);
     }
     if (promises.length > 0) {
@@ -319,7 +331,10 @@ export class SafeGridWidgetComponent
     }
 
     // Workflow only: goes to next step, or closes the workflow.
-    if ((options.goToNextStep || options.closeWorkflow) && !this.blockModifySelectedRows) {
+    if (
+      (options.goToNextStep || options.closeWorkflow) &&
+      !this.blockModifySelectedRows
+    ) {
       this.quickActionWorkflow(options);
     } else if (!this.blockModifySelectedRows) {
       this.grid.reloadData();
@@ -364,40 +379,38 @@ export class SafeGridWidgetComponent
       autoFocus: false,
     });
 
-    dialogRef.closed
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value: any) => {
-        if (value) {
-          if (this.blockModifySelectedRows && options.modifySelectedRows) {
-            this.promisedRowsModifications(
-              options.modifications,
-              this.grid.selectedRows,
-            );
-            //continuing the steps
-            if (options.notify && this.grid.selectedRows.length > 0) {
-              this.quickActionNotify(options, promises);
-            }
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        if (this.blockModifySelectedRows && options.modifySelectedRows) {
+          this.promisedRowsModifications(
+            options.modifications,
+            this.grid.selectedRows
+          );
+          //continuing the steps
+          if (options.notify && this.grid.selectedRows.length > 0) {
+            this.quickActionNotify(options, promises);
+          }
 
-            if (options.publish && this.grid.selectedRows.length > 0) {
-              this.quickActionPublish(options, promises);
-            }
+          if (options.publish && this.grid.selectedRows.length > 0) {
+            this.quickActionPublish(options, promises);
+          }
 
-            if (promises.length > 0) {
-              Promise.all(promises);
-            }
+          if (promises.length > 0) {
+            Promise.all(promises);
+          }
 
-            if (options.sendMail) {
-              this.quickActionSendMail(options);
-            }
+          if (options.sendMail) {
+            this.quickActionSendMail(options);
+          }
 
-            if (options.goToNextStep || options.closeWorkflow) {
-              this.quickActionWorkflow(options);
-            } else {
-              this.grid.reloadData();
-            }
+          if (options.goToNextStep || options.closeWorkflow) {
+            this.quickActionWorkflow(options);
+          } else {
+            this.grid.reloadData();
           }
         }
-      });
+      }
+    });
   }
 
   /**
@@ -450,64 +463,62 @@ export class SafeGridWidgetComponent
    */
   private async quickActionSendMail(options: any) {
     const templates =
-        this.applicationService.templates.filter((x) =>
-          options.templates?.includes(x.id)
-        ) || [];
-      if (templates.length === 0) {
-        // no template found, skip
-        this.snackBar.openSnackBar(
-          this.translate.instant(
-            'common.notifications.email.errors.noTemplate'
-          ),
-          { error: true }
-        );
-      } else {
-        // find recipients
-        const recipients =
-          this.applicationService.distributionLists.find(
-            (x) => x.id === options.distributionList
-          )?.emails || [];
+      this.applicationService.templates.filter((x) =>
+        options.templates?.includes(x.id)
+      ) || [];
+    if (templates.length === 0) {
+      // no template found, skip
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.email.errors.noTemplate'),
+        { error: true }
+      );
+    } else {
+      // find recipients
+      const recipients =
+        this.applicationService.distributionLists.find(
+          (x) => x.id === options.distributionList
+        )?.emails || [];
 
-        // select template
-        const { EmailTemplateModalComponent } = await import(
-          '../../email-template-modal/email-template-modal.component'
-        );
-        const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
-          data: {
-            templates,
+      // select template
+      const { EmailTemplateModalComponent } = await import(
+        '../../email-template-modal/email-template-modal.component'
+      );
+      const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
+        data: {
+          templates,
+        },
+      });
+
+      const value = await firstValueFrom<any>(
+        dialogRef.closed.pipe(takeUntil(this.destroy$))
+      );
+      const template = value?.template;
+
+      if (template) {
+        this.emailService.previewMail(
+          recipients,
+          template.content.subject,
+          template.content.body,
+          {
+            logic: 'and',
+            filters: [
+              {
+                operator: 'eq',
+                field: 'ids',
+                value: this.grid.selectedRows,
+              },
+            ],
           },
-        });
-
-        const value = await firstValueFrom<any>(
-          dialogRef.closed.pipe(takeUntil(this.destroy$))
+          {
+            name: this.grid.settings.query.name,
+            fields: options.bodyFields,
+          },
+          this.grid.sortField || undefined,
+          this.grid.sortOrder || undefined,
+          options.export
         );
-        const template = value?.template;
-
-        if (template) {
-          this.emailService.previewMail(
-            recipients,
-            template.content.subject,
-            template.content.body,
-            {
-              logic: 'and',
-              filters: [
-                {
-                  operator: 'eq',
-                  field: 'ids',
-                  value: this.grid.selectedRows,
-                },
-              ],
-            },
-            {
-              name: this.grid.settings.query.name,
-              fields: options.bodyFields,
-            },
-            this.grid.sortField || undefined,
-            this.grid.sortOrder || undefined,
-            options.export
-          );
-        }
       }
+    }
   }
 
   /**
@@ -524,9 +535,7 @@ export class SafeGridWidgetComponent
           'components.widget.settings.grid.buttons.callback.workflow.close'
         ),
         content: options.confirmationText,
-        confirmText: this.translate.instant(
-          'components.confirmModal.confirm'
-        ),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmVariant: 'primary',
       });
       dialogRef.closed
@@ -549,7 +558,7 @@ export class SafeGridWidgetComponent
    */
   private promisedRowsModifications(
     modifications: any[],
-    ids: any[],
+    ids: any[]
   ): Promise<any> {
     const update: any = {};
     for (const modification of modifications) {
@@ -578,10 +587,8 @@ export class SafeGridWidgetComponent
    * The inputs comes from 'attach to record' button from grid component
    *
    * @param selectedRecords The list of selected records
-   * @param targetForm Target template id
-   * @param targetFormField The form field
-   * @param targetFormQuery The form query
    * @param options The options
+   * @param promises array of promises
    */
   private async promisedAttachToRecord(
     selectedRecords: string[],
@@ -702,12 +709,21 @@ export class SafeGridWidgetComponent
                                   //if options.prefill will unblock only if the new opened modal be saved
                                   if (!options.prefillForm) {
                                     //continuing the steps
-                                    if (options.notify && this.grid.selectedRows.length > 0) {
+                                    if (
+                                      options.notify &&
+                                      this.grid.selectedRows.length > 0
+                                    ) {
                                       this.quickActionNotify(options, promises);
                                     }
 
-                                    if (options.publish && this.grid.selectedRows.length > 0) {
-                                      this.quickActionPublish(options, promises);
+                                    if (
+                                      options.publish &&
+                                      this.grid.selectedRows.length > 0
+                                    ) {
+                                      this.quickActionPublish(
+                                        options,
+                                        promises
+                                      );
                                     }
 
                                     if (promises.length > 0) {
@@ -717,16 +733,21 @@ export class SafeGridWidgetComponent
                                     if (options.sendMail) {
                                       this.quickActionSendMail(options);
                                     }
-                                    
-                                    if (options.goToNextStep || options.closeWorkflow) {
+
+                                    if (
+                                      options.goToNextStep ||
+                                      options.closeWorkflow
+                                    ) {
                                       this.quickActionWorkflow(options);
                                     } else {
                                       this.grid.reloadData();
                                     }
-
                                   } else {
-                                    this.quickActionPrefillForm(options, promises);
-                                  }                                  
+                                    this.quickActionPrefillForm(
+                                      options,
+                                      promises
+                                    );
+                                  }
                                 }
                               }
                             });
