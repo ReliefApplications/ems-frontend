@@ -34,6 +34,14 @@
           [filterable]="true"
         >
         </ui-graphql-select>
+        <!-- Remove value -->
+        <ui-button
+          uiSuffix
+          (click)="clearFormField('resource', $event)"
+          [isIcon]="true"
+          icon="close"
+          variant="danger"
+        ></ui-button>
       </div>
 
       <!-- Aggregation or layout selection -->
@@ -88,7 +96,9 @@
           [isIcon]="true"
           icon="close"
           (click)="
-            formGroup.get('datasource.layout')?.setValue(null); layout = null
+            formGroup.get('datasource.layout')?.setValue(null);
+            layout = null;
+            this.fields.next([])
           "
         ></ui-button>
       </div>
@@ -115,7 +125,8 @@
           icon="close"
           (click)="
             formGroup.get('datasource.aggregation')?.setValue(null);
-            aggregation = null
+            aggregation = null;
+            this.fields.next([])
           "
         ></ui-button>
       </div>
@@ -135,10 +146,22 @@
           [selectedElements]="[refData]"
         >
         </ui-graphql-select>
+        <!-- Remove value -->
+        <ui-button
+          uiSuffix
+          (click)="clearFormField('refData', $event)"
+          [isIcon]="true"
+          icon="close"
+          variant="danger"
+        ></ui-button>
       </div>
 
       <!-- Fields selection -->
-      <ng-container *ngIf="formGroup.get('geoField')?.enabled">
+      <ng-container
+        *ngIf="
+          formGroup.get('geoField')?.enabled && (fields$ | async)?.length! > 0
+        "
+      >
         <div uiFormFieldDirective>
           <label>{{
             'components.widget.settings.map.layers.dataSource.geoField'
@@ -165,7 +188,12 @@
         </div>
       </ng-container>
 
-      <ng-container *ngIf="formGroup.get('latitudeField')?.enabled">
+      <ng-container
+        *ngIf="
+          formGroup.get('latitudeField')?.enabled &&
+          (fields$ | async)?.length! > 0
+        "
+      >
         <div class="flex flex-row justify-between gap-2 flex-wrap">
           <!-- Latitude Field -->
           <div uiFormFieldDirective class="flex-1">
@@ -219,6 +247,19 @@
           </div>
         </div>
       </ng-container>
+
+      <!-- Layer type -->
+      <div uiFormFieldDirective>
+        <label>{{ 'common.type.one' | translate }}</label>
+        <ui-select-menu formControlName="type">
+          <ui-select-option value="Point">{{
+            'components.widget.settings.map.layers.types.point' | translate
+          }}</ui-select-option>
+          <ui-select-option value="Polygon">{{
+            'components.widget.settings.map.layers.types.polygon' | translate
+          }}</ui-select-option>
+        </ui-select-menu>
+      </div>
     </div>
   </form>
   <!-- Map -->

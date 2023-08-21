@@ -31,7 +31,7 @@
         'w-full':
           position === filterPosition.TOP || position === filterPosition.BOTTOM
       }"
-      class="relative flex justify-between text-white pointer-events-auto"
+      class="relative flex justify-between text-white"
     >
       <!-- Toggle opened status -->
       <div
@@ -44,7 +44,9 @@
         class="dashboard-filter-tab h-10 py-2 px-3 flex bg-primary-500"
         (click)="isDrawerOpen = !isDrawerOpen"
       >
-        <ui-icon icon="view_stream" class="cursor-pointer"></ui-icon>
+        <div class="pointer-events-auto">
+          <ui-icon icon="view_stream" class="cursor-pointer"></ui-icon>
+        </div>
       </div>
     </header>
     <div
@@ -77,7 +79,7 @@
             position === filterPosition.TOP ||
             position === filterPosition.BOTTOM
         }"
-        class="relative flex justify-between bg-primary-500 text-white pointer-events-auto"
+        class="relative flex justify-between bg-primary-500 text-white"
       >
         <!-- Edition -->
         <div

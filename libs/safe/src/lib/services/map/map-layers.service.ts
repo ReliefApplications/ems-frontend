@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Injector } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import {
   catchError,
@@ -35,7 +35,7 @@ import {
 } from './graphql/queries';
 import { HttpParams } from '@angular/common/http';
 import { omitBy, isNil, get } from 'lodash';
-import { SafeMapPopupService } from '../../components/ui/map/map-popup/map-popup.service';
+import { ContextService } from '../context/context.service';
 
 /**
  * Shared map layer service
@@ -51,12 +51,14 @@ export class SafeMapLayersService {
    * @param restService SafeRestService
    * @param queryBuilder Query builder service
    * @param aggregationBuilder Aggregation builder service
+   * @param contextService Application context service
    */
   constructor(
     private apollo: Apollo,
     private restService: SafeRestService,
     private queryBuilder: QueryBuilderService,
-    private aggregationBuilder: AggregationBuilderService
+    private aggregationBuilder: AggregationBuilderService,
+    private contextService: ContextService
   ) {}
   /**
    * Save a new layer in the DB
@@ -154,7 +156,7 @@ export class SafeMapLayersService {
           if (response.errors) {
             throw new Error(response.errors[0].message);
           }
-          return this.featureReductionCleaner(response.data.layer);
+          return response.data.layer;
         })
       );
   }
@@ -176,7 +178,7 @@ export class SafeMapLayersService {
           if (response.errors) {
             throw new Error(response.errors[0].message);
           }
-          return response.data.layers.map(this.featureReductionCleaner);
+          return response.data.layers;
         })
       );
   }
@@ -258,14 +260,12 @@ export class SafeMapLayersService {
    * todo(gis): extended model is useless
    *
    * @param layerIds layer settings saved from the layer editor
-   * @param popupService popup service
-   * @param layerService Shared layer service
+   * @param injector Injector containing all needed providers for layer class
    * @returns Observable of LayerSettingsI
    */
   async createLayersFromIds(
     layerIds: string[],
-    popupService: SafeMapPopupService,
-    layerService: SafeMapLayersService
+    injector: Injector
   ): Promise<Layer[]> {
     const promises: Promise<Layer>[] = [];
     for (const id of layerIds) {
@@ -274,15 +274,10 @@ export class SafeMapLayersService {
           this.getLayerById(id).pipe(
             mergeMap((layer: LayerModel) => {
               if (this.isDatasourceValid(layer.datasource)) {
-                const params = new HttpParams({
-                  fromObject: omitBy(layer.datasource, isNil),
-                });
                 // Get the current layer + its geojson
                 return forkJoin({
                   layer: of(layer),
-                  geojson: this.restService
-                    .get(`${this.restService.apiUrl}/gis/feature`, { params })
-                    .pipe(catchError(() => of(EMPTY_FEATURE_COLLECTION))),
+                  geojson: this.getLayerGeoJson(layer),
                 });
               } else {
                 return of({
@@ -293,11 +288,7 @@ export class SafeMapLayersService {
             }),
             map(
               (layer: { layer: LayerModel; geojson: any }) =>
-                new Layer(
-                  { ...layer.layer, geojson: layer.geojson },
-                  popupService,
-                  layerService
-                )
+                new Layer({ ...layer.layer, geojson: layer.geojson }, injector)
             )
           )
         )
@@ -315,25 +306,15 @@ export class SafeMapLayersService {
    * Create layer from its definition
    *
    * @param layer Layer to get definition of.
-   * @param popupService Shared popup service
-   * @param layersService Shared layers service
+   * @param injector Injector containing all needed providers for layer class
    * @returns Layer for map widget
    */
-  async createLayerFromDefinition(
-    layer: LayerModel,
-    popupService: SafeMapPopupService,
-    layersService: SafeMapLayersService
-  ) {
+  async createLayerFromDefinition(layer: LayerModel, injector: Injector) {
     if (this.isDatasourceValid(layer.datasource)) {
-      const params = new HttpParams({
-        fromObject: omitBy(layer.datasource, isNil),
-      });
       const res = await lastValueFrom(
         forkJoin({
           layer: of(layer),
-          geojson: this.restService
-            .get(`${this.restService.apiUrl}/gis/feature`, { params })
-            .pipe(catchError(() => of(EMPTY_FEATURE_COLLECTION))),
+          geojson: this.getLayerGeoJson(layer),
         })
       );
       return new Layer(
@@ -341,12 +322,39 @@ export class SafeMapLayersService {
           ...res.layer,
           geojson: res.geojson,
         },
-        popupService,
-        layersService
+        injector
       );
     } else {
-      return new Layer(layer, popupService, layersService);
+      return new Layer(layer, injector);
     }
+  }
+
+  /**
+   * Get layer geojson from definition
+   *
+   * @param layer layer model
+   * @returns Layer GeoJSON query
+   */
+  async getLayerGeoJson(layer: LayerModel) {
+    const contextFilters = layer.contextFilters
+      ? this.contextService.injectDashboardFilterValues(
+          JSON.parse(layer.contextFilters)
+        )
+      : {};
+    const params = new HttpParams({
+      fromObject: omitBy(
+        {
+          ...layer.datasource,
+          contextFilters: JSON.stringify(contextFilters),
+        },
+        isNil
+      ),
+    });
+    return lastValueFrom(
+      this.restService
+        .get(`${this.restService.apiUrl}/gis/feature`, { params })
+        .pipe(catchError(() => of(EMPTY_FEATURE_COLLECTION)))
+    );
   }
 
   private isDatasourceValid = (value: LayerDatasource | undefined) => {
@@ -369,23 +377,4 @@ export class SafeMapLayersService {
     }
     return false;
   };
-
-  /**
-   * Method to disable any previously saved heatmap layers with also a cluster feature reduction
-   * !!!!!! This method should eventually begone !!!!!!
-   *
-   * @param layerModel layerModel data to clean
-   * @returns clean layerModel
-   */
-  private featureReductionCleaner(layerModel: LayerModel): LayerModel {
-    if (
-      layerModel.layerDefinition?.drawingInfo?.renderer?.type === 'heatmap' &&
-      layerModel.layerDefinition.featureReduction
-    ) {
-      layerModel.layerDefinition.featureReduction.clusterRadius = null as any;
-      layerModel.layerDefinition.featureReduction.type = null as any;
-      layerModel.layerDefinition.featureReduction.drawingInfo = null as any;
-    }
-    return layerModel;
-  }
 }

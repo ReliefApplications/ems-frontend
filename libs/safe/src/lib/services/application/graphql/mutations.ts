@@ -13,8 +13,18 @@ import { CustomNotification } from '../../../models/custom-notification.model';
 // === ADD PAGE ===
 /** Graphql request for adding a new page of a given type to an application */
 export const ADD_PAGE = gql`
-  mutation addPage($type: ContentEnumType!, $content: ID, $application: ID!) {
-    addPage(type: $type, content: $content, application: $application) {
+  mutation addPage(
+    $type: ContentEnumType!
+    $content: ID
+    $application: ID!
+    $structure: JSON
+  ) {
+    addPage(
+      type: $type
+      content: $content
+      application: $application
+      structure: $structure
+    ) {
       id
       name
       type

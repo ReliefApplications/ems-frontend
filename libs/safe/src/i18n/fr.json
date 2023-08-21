@@ -50,6 +50,7 @@
 			"none": "Aucune colonne",
 			"one": "Colonne"
 		},
+		"comma": "virgule",
 		"create": "Créer",
 		"createdOn": "Date de création",
 		"customNotification": {
@@ -132,6 +133,7 @@
 		"modifiedOn": "Modifié le ",
 		"name": "Nom",
 		"next": "Suivant",
+		"noOptions": "Aucun choix disponible",
 		"notifications": {
 			"accessDenied": "Vous n'avez pas la permission pour accéder à cet objet de type {{type}}.",
 			"accessNotProvided": "Pas d'accès fourni à cet objet de type {{type}}. {{error}}",
@@ -209,6 +211,7 @@
 			"of": "de"
 		},
 		"placeholder": {
+			"address": "Entrez une adresse exemple : 1 rue de la paix, Paris",
 			"email": "Entrez un email",
 			"name": "Entrez un nom",
 			"search": "Rechercher...",
@@ -262,9 +265,12 @@
 		},
 		"save": "Sauvegarder",
 		"saveChanges": "Sauvegarder les changements",
+		"search": "Recherche",
 		"searchObject": "Rechercher {{name}}",
 		"select": "Sélectionner",
+		"semicolon": "point-virgule",
 		"send": "Envoyer",
+		"separator": "Séparateur",
 		"settings": "Paramètres",
 		"status": "Statut",
 		"status_active": "Actif",
@@ -1120,6 +1126,7 @@
 				},
 				"empty": "Aucun enregistrement détecté pour cette configuration de réseau",
 				"errors": {
+					"autoSaveFailed": "L'exécution de l'action a été stoppé à cause d'enregistrement(s) non valide(s). Veuillez les vérifier avant de lancer une autre action.",
 					"invalid": {
 						"backoffice": "Configuration de grille invalide",
 						"frontoffice": "Configuration de grille non valide, veuillez contacter votre administrateur"
@@ -1168,6 +1175,10 @@
 				"loading": {
 					"records": "Chargement des enregistrements...",
 					"settings": "Chargement des paramètres..."
+				},
+				"map": {
+					"mapDetailsTitle": "Cartographie des données",
+					"mapDetailsTooltip": "Centré par defaut sur l'enregistrement sélectionné"
 				},
 				"openSettings": "Ouvrir les paramètres",
 				"tooltip": {
@@ -1408,9 +1419,9 @@
 					"geospatial": {
 						"layersStyles": {
 							"fill": {
-								"color": "La couleur de remplissage",
-								"opacity": "Opacité de remplissage",
-								"title": "Remplir"
+								"color": "Couleur du remplissage",
+								"opacity": "Opacité du remplissage",
+								"title": "Remplissage"
 							},
 							"marker": {
 								"color": "Couleur du marqueur",
@@ -1510,6 +1521,13 @@
 						"webmap": "WebMap",
 						"zoom": "Zoom par défaut"
 					},
+					"renderer": {
+						"default": "Défaut",
+						"defaultLabel": "Libellé par défaut",
+						"label": "Libellé",
+						"symbol": "Symbole",
+						"value": "Valeur"
+					},
 					"tooltip": {
 						"category": "Sélectionnez un champ pour séparer vos enregistrements en différentes catégories",
 						"dataset": "Sélectionnez des champs ci-dessous et déplacez-les vers 'champs sélectionnés' sur la droite. Ils seront présents dans le pop-up affiché en cliquant sur les marqueurs",
@@ -1519,6 +1537,9 @@
 							"zoom": "Sélectionnez un zoom par défaut"
 						}
 					}
+				},
+				"style": {
+					"customStyling": "Style personnalisé"
 				},
 				"summaryCard": {
 					"add": "Ajouter un carte",
@@ -1576,6 +1597,7 @@
 					"static": "Statique"
 				}
 			},
+			"styling": "Modifier le style",
 			"summaryCard": {
 				"dataSource": "Source",
 				"errors": {
@@ -1838,8 +1860,13 @@
 					"element": "Élément"
 				}
 			},
+			"dashboardFilter": "Filtre de tableaux de bord",
 			"deactivateFiltering": "Désactiver le filtre",
-			"share": "Partager le tableau de bord"
+			"share": "Partager le tableau de bord",
+			"tooltip": {
+				"useDashboardFilterEditor": "Utiliser l'éditeur de tableaux de bord",
+				"useDefaultEditor": "Utiliser l'éditeur par défaut"
+			}
 		},
 		"form": {
 			"core": "Source",
@@ -1933,6 +1960,7 @@
 			"display": {
 				"border": "Afficher la bordure du widget",
 				"searchable": "Autoriser la recherche",
+				"sortable": "Autoriser le tri",
 				"title": "Affichage des widgets"
 			},
 			"map": {
@@ -1943,6 +1971,16 @@
 			},
 			"scheduler": {
 				"defaultTitle": "Widget Calendrier"
+			},
+			"sorting": {
+				"add": "Ajouter un champ",
+				"delete": "Supprimer le champ de tri",
+				"field": "Champ",
+				"label": "Étiquette",
+				"management": "Gestion des champs de tri",
+				"order": "Ordre",
+				"select": "Sélectionnez un champ de tri...",
+				"title": "Tri"
 			},
 			"tooltip": {
 				"selector": {
@@ -2005,7 +2043,8 @@
 				"form": {
 					"title": "Formulaires disponibles"
 				},
-				"selectType": "Sélectionnez le type de page que vous voulez créer"
+				"selectType": "Sélectionnez le type de page que vous voulez créer",
+				"startFromWidget": "@TODO"
 			},
 			"empty": {
 				"add": "Ajouter une page",

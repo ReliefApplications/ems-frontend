@@ -9,9 +9,19 @@ import {
 } from '@angular/core';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
-import { LayerModel } from '../../../../models/layer.model';
+import { Fields, LayerModel } from '../../../../models/layer.model';
 import { createLayerForm, LayerFormT } from '../map-forms';
-import { takeUntil, BehaviorSubject, Subject, pairwise, startWith } from 'rxjs';
+import {
+  takeUntil,
+  BehaviorSubject,
+  Subject,
+  pairwise,
+  startWith,
+  distinctUntilChanged,
+  filter,
+  combineLatest,
+  tap,
+} from 'rxjs';
 import { MapComponent } from '../../../ui/map/map.component';
 import {
   MapEvent,
@@ -24,7 +34,7 @@ import { SafeMapLayersService } from '../../../../services/map/map-layers.servic
 import { Layer } from '../../../ui/map/layer';
 import { Apollo } from 'apollo-angular';
 import { GetResourceQueryResponse, GET_RESOURCE } from '../graphql/queries';
-import { get } from 'lodash';
+import { get, isEqual } from 'lodash';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { LayerPropertiesModule } from './layer-properties/layer-properties.module';
 import { LayerDatasourceModule } from './layer-datasource/layer-datasource.module';
@@ -43,9 +53,10 @@ import {
   TabsModule,
   TooltipModule,
 } from '@oort-front/ui';
-import { Fields } from './layer-fields/layer-fields.component';
 import { MapLayersModule } from '../map-layers/map-layers.module';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { ContextualFiltersSettingsComponent } from '../../common/contextual-filters-settings/contextual-filters-settings.component';
+import { FormArray, UntypedFormBuilder } from '@angular/forms';
 
 /**
  * Interface of dialog input
@@ -81,6 +92,7 @@ interface DialogData {
     LayerFilterModule,
     LayerStylingModule,
     MapLayersModule,
+    ContextualFiltersSettingsComponent,
   ],
   templateUrl: './edit-layer-modal.component.html',
   styleUrls: ['./edit-layer-modal.component.scss'],
@@ -105,6 +117,10 @@ export class EditLayerModalComponent
   private currentLayer!: L.Layer;
   public isDatasourceValid = false;
 
+  // This property would handle the form change side effects to be triggered once all
+  // layer related updates are done in order to avoid multiple mismatches and duplications between
+  // a property change, layer data retrieval and form update
+  private triggerFormChange = new BehaviorSubject(true);
   /**
    * Get the overlay tree object of the current map
    *
@@ -120,20 +136,22 @@ export class EditLayerModalComponent
   /**
    * Map layer editor.
    *
+   * @param {DialogData} data Dialog input
    * @param confirmService Shared confirm service.
    * @param translate Angular translate service.
    * @param mapLayersService Shared map layer Service.
    * @param apollo Apollo service
-   * @param {DialogData} data Dialog input
    * @param dialogRef Dialog ref
+   * @param formBuilder Angular form builder
    */
   constructor(
+    @Inject(DIALOG_DATA) public data: DialogData,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private mapLayersService: SafeMapLayersService,
     private apollo: Apollo,
-    @Inject(DIALOG_DATA) public data: DialogData,
-    public dialogRef: DialogRef<LayerFormData>
+    public dialogRef: DialogRef<LayerFormData>,
+    private formBuilder: UntypedFormBuilder
   ) {
     super();
   }
@@ -143,24 +161,36 @@ export class EditLayerModalComponent
     this.setIsDatasourceValid(this.form.get('datasource')?.value);
     this.form
       .get('datasource')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(
+        distinctUntilChanged((prev, next) => isEqual(prev, next)),
+        takeUntil(this.destroy$)
+      )
       .subscribe((value) => {
         this.setIsDatasourceValid(value);
       });
     if (this.data.mapComponent) {
       const encapsulatedSettings =
         this.data.mapComponent.mapSettingsWithoutLayers;
+      // Reset all map layers to keep basemaps or arcGISmaps on loading map editor
+      this.data.mapComponent.setupMapLayers(
+        {
+          layers: [],
+          arcGisWebMap: encapsulatedSettings.settings.arcGisWebMap,
+          basemap: encapsulatedSettings.settings.basemap,
+          controls: encapsulatedSettings.settings.controls,
+        },
+        true
+      );
       // Reset the current map view in order to only see the layer on edition
       this.data.mapComponent.mapSettings = {
         ...encapsulatedSettings.settings,
         layers: [],
       };
       this.currentZoom = this.data.mapComponent.map.getZoom();
-      this.setUpLayer();
+      this.setUpLayer(true);
     }
     this.setUpEditLayerListeners();
     this.getResource();
-    console.log(this.form);
   }
 
   ngAfterViewInit(): void {
@@ -173,6 +203,10 @@ export class EditLayerModalComponent
         this.data.currentMapContainerRef.next(this.mapContainerRef);
       }
     }
+    // If datasource changes, update fields form control
+    this.fields.pipe(takeUntil(this.destroy$)).subscribe((fields: any) => {
+      fields.forEach((field: Fields) => this.updateFormField(field));
+    });
   }
 
   /**
@@ -221,22 +255,35 @@ export class EditLayerModalComponent
   }
 
   /**
-   * Set default layer for editor
+   * Update current map instance layers array in order to keep up to date all the related layers for listener removal
    */
-  private setUpLayer() {
-    if (!this.data.mapComponent) return;
+  private updateCurrentMapInstanceLayerCount() {
+    if (!this.data.mapComponent.layers.find((l) => l.id !== this._layer.id)) {
+      this.data.mapComponent.layers.push(this._layer);
+    }
+  }
+
+  /**
+   * Set default layer for editor
+   *
+   * @param lastFormValue Last value triggered from the layer editor form
+   */
+  private setUpLayer(lastFormValue?: any) {
+    if (!this.data.mapComponent) {
+      return;
+    }
     this.mapLayersService
       .createLayerFromDefinition(
         this.form.value as LayerModel,
-        this.data.mapComponent.mapPopupService,
-        this.data.mapComponent.mapLayersService
+        this.data.mapComponent.injector
       )
       .then((layer) => {
         if (layer) {
           this._layer = layer;
-          layer.getLayer().then((l) => {
+          this.updateCurrentMapInstanceLayerCount();
+          this._layer.getLayer().then((l) => {
             this.currentLayer = l;
-            this.updateMapLayer();
+            this.updateMapLayer({ delete: false }, lastFormValue);
           });
         }
       });
@@ -247,8 +294,12 @@ export class EditLayerModalComponent
    *
    * @param options update options
    * @param options.delete delete existing layer
+   * @param lastFormValue Last emitted value from the layer editor form
    */
-  private updateMapLayer(options: { delete: boolean } = { delete: false }) {
+  private updateMapLayer(
+    options: { delete: boolean } = { delete: false },
+    lastFormValue: any = null
+  ) {
     if (this.data.mapComponent) {
       this.data.mapComponent.addOrDeleteLayer = {
         layerData: this.overlays,
@@ -256,7 +307,10 @@ export class EditLayerModalComponent
       };
       if (options.delete) {
         this.currentLayer = undefined as unknown as L.Layer;
+      } else {
+        this.data.mapComponent.disableMapHandlers(false);
       }
+      this.triggerFormChange.next(lastFormValue);
     }
   }
 
@@ -265,24 +319,45 @@ export class EditLayerModalComponent
    */
   private setUpEditLayerListeners() {
     // Those listeners would handle any change for layer into the map component reference
-    this.form.valueChanges
-      .pipe(startWith(this.form.value), pairwise(), takeUntil(this.destroy$))
+    // Main problem of duplicated layers is that form change triggers values before the updateLayer has fetch the needed info from server to update current map state
+    // Combining form change(as it's a complex mix of different type of component and forms with different behaviors) we won't trigger any form change value until the triggerForm is set
+    // triggerFormChange would be set once after the first form change is received and all needed data for map update is done,
+    // Then it would trigger this stream again to check if during that time there has been any new change in the form, which would be loaded again avoiding any duplicate layers as they would be always added on sequence
+    combineLatest([
+      this.form.valueChanges.pipe(startWith(this.form.value), pairwise()),
+      this.triggerFormChange.asObservable(),
+    ])
+      .pipe(
+        filter(
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          ([[prev, next], trigger]) =>
+            this.triggerFormChange.getValue() &&
+            !isEqual(this.triggerFormChange.getValue(), next)
+        ),
+        // Disable all map handlers while map data is updating to avoid any unwanted side effects
+        tap(() => this.data.mapComponent.disableMapHandlers(true)),
+        takeUntil(this.destroy$)
+      )
       .subscribe({
-        next: ([prev, next]) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        next: async ([[prev, next], trigger]) => {
           this.updateMapLayer({ delete: true });
-          // If any of the main properties to fetch the layer changes, set up layer
           if (
-            prev.datasource.geoField !== next.datasource.geoField ||
-            prev.datasource.latitudeField !== next.datasource.latitudeField ||
-            prev.datasource.longitudeField !== next.datasource.longitudeField
+            prev.datasource?.geoField !== next.datasource?.geoField ||
+            prev.datasource?.latitudeField !== next.datasource?.latitudeField ||
+            prev.datasource?.longitudeField !== next.datasource?.longitudeField
           ) {
-            this.setUpLayer();
+            this.setUpLayer(next);
           } else {
-            // else update current layer properties
-            this._layer.setConfig({ ...next, geojson: this._layer.geojson });
-            this._layer.getLayer(true).then((layer) => {
-              this.currentLayer = layer;
-              this.updateMapLayer();
+            await this._layer.removeAllListeners(this.data.mapComponent.map);
+            await this._layer.setConfig({
+              ...next,
+              geojson: this._layer.geojson,
+            });
+            this.updateCurrentMapInstanceLayerCount();
+            this._layer.getLayer(true).then((l) => {
+              this.currentLayer = l;
+              this.updateMapLayer({ delete: false }, next);
             });
           }
         },
@@ -297,7 +372,7 @@ export class EditLayerModalComponent
       )
       .subscribe({
         next: ([prev, next]) => {
-          if (!!prev && prev?.resource != next?.resource) {
+          if (!!prev && prev?.resource !== next?.resource && next?.resource) {
             this.getResource();
           }
           // else on aggregation implementation add it here
@@ -397,10 +472,12 @@ export class EditLayerModalComponent
                 null
               );
               this.fields.next(
-                this.mapLayersService.getAggregationFields(
-                  data.resource,
-                  aggregation
-                )
+                aggregation
+                  ? this.mapLayersService.getAggregationFields(
+                      data.resource,
+                      aggregation
+                    )
+                  : []
               );
             }
           }
@@ -433,5 +510,38 @@ export class EditLayerModalComponent
     const sublayers = this.form.get('sublayers')?.value;
     const filtered = sublayers?.filter((l) => l !== layerIdToDelete);
     this.form.get('sublayers')?.setValue(filtered);
+  }
+
+  /**
+   * Updates or creates a new form control when editing the layer field
+   * or changing the datasource
+   *
+   * @param field field object with the updated info
+   * @param initializing indicates if datasource didn't changed and fields list
+   * need to be update nad not initialized
+   */
+  updateFormField(field: Fields, initializing = true): void {
+    const fieldsInfo = (
+      this.form.get('popupInfo')?.get('fieldsInfo') as FormArray
+    ).controls;
+    const control = fieldsInfo.find(
+      (fieldControl: any) =>
+        (fieldControl as FormArray)?.get('name')?.value === field.name
+    );
+    if (!control) {
+      const newControl = this.formBuilder.group({
+        label: get(field, 'label', ''),
+        name: get(field, 'name', ''),
+        type: get(field, 'type', ''),
+      });
+      fieldsInfo.push(newControl);
+    } else {
+      if (!initializing) {
+        control.get('label')?.setValue(get(field, 'label', ''));
+        this.fields.next(this.form.get('popupInfo')?.get('fieldsInfo')?.value);
+      } else {
+        field.label = control.get('label')?.value ?? '';
+      }
+    }
   }
 }

@@ -1,7 +1,7 @@
 <!-- Header -->
 <nav
   id="app-header"
-  class="flex p-4 items-center md:justify-between text-gray-200 bg-primary-600"
+  class="flex p-4 items-center md:justify-between text-white bg-primary-600"
   [ngClass]="theme.headerClass"
 >
   <div class="flex-shrink-0 flex flex-wrap min-w-0">
@@ -74,10 +74,11 @@
       [isIcon]="true"
     >
     </ui-button>
-    <kendo-badge-container class="absolute right-0 top-0">
+    <kendo-badge-container>
       <kendo-badge
         shape="dot"
         themeColor="error"
+        size="small"
         class="absolute -translate-x-1/4 translate-y-full scale-50"
         *ngIf="notifications.length > 0"
       ></kendo-badge>
@@ -126,17 +127,22 @@
       {{ 'components.header.logout' | translate }}
     </button>
     <div
-      class="absolute bottom-0 right-1 text-white text-xs pointer-events-none"
+      class="absolute bottom-0 right-1 text-gray-400 text-xs pointer-events-none"
     >
       {{ environment.version }}
     </div>
   </ui-menu>
+  <!-- Notification menu -->
   <ui-menu #notificationMenu>
-    <div class="notification-menu">
-      <a (click)="onMarkAllNotificationsAsRead()">
-        {{ 'components.notifications.readAll' | translate }}
-        <ui-icon icon="check_circle_outline"></ui-icon>
-      </a>
+    <!-- Remove visible notifications -->
+    <ui-button
+      (click)="onMarkAllNotificationsAsRead()"
+      class="self-end"
+      icon="check_circle_outline"
+      >{{ 'components.notifications.readAll' | translate }}</ui-button
+    >
+    <!-- List of notifications -->
+    <div class="flex flex-col overflow-y-auto max-h-[50vh]">
       <button
         uiMenuItem
         (click)="onNotificationClick(notification)"
@@ -145,11 +151,12 @@
         {{ notification.action }} - {{ notification.createdAt | safeDate }}
       </button>
     </div>
+    <!-- Load more notifications -->
     <ui-button
       *ngIf="hasMoreNotifications"
       category="primary"
       variant="primary"
-      class="!w-auto"
+      [isBlock]="true"
       [disabled]="loadingNotifications"
       [loading]="loadingNotifications"
       (click)="onLoadMoreNotifications($event)"
@@ -190,6 +197,7 @@
     class="h-full"
     position="end"
     [opened]="showSidenav"
+    [keepFullscreen]="true"
     #rightNav="uiSidenavDirective"
   >
     <ng-template #rightSidenav></ng-template>

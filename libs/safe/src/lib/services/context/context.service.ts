@@ -3,6 +3,11 @@ import { BehaviorSubject } from 'rxjs';
 import { SafeApplicationService } from '../application/application.service';
 import { Application } from '../../models/application.model';
 import localForage from 'localforage';
+import {
+  CompositeFilterDescriptor,
+  FilterDescriptor,
+} from '@progress/kendo-data-query';
+import { cloneDeep } from '@apollo/client/utilities';
 
 /**
  * Application context service
@@ -12,7 +17,13 @@ import localForage from 'localforage';
   providedIn: 'root',
 })
 export class ContextService {
-  public filter = new BehaviorSubject<any>(null);
+  /** Current dashboard filter available questions*/
+  public availableFilterFields: {
+    name: string;
+    value: string;
+  }[] = [];
+
+  public filter = new BehaviorSubject<Record<string, any>>({});
   public filterStructure = new BehaviorSubject<any>(null);
   public filterPosition = new BehaviorSubject<any>(null);
   private currentApplicationId?: string | null = null;
@@ -37,6 +48,13 @@ export class ContextService {
     return this.currentApplicationId + ':filterPosition';
   }
 
+  public isFilterEnabled = new BehaviorSubject<boolean>(false);
+
+  /** @returns  isFilterEnable value as observable */
+  get isFilterEnabled$() {
+    return this.isFilterEnabled.asObservable();
+  }
+
   /**
    * Application context service
    *
@@ -48,7 +66,7 @@ export class ContextService {
         if (application) {
           if (this.currentApplicationId !== application.id) {
             this.currentApplicationId = application.id;
-            this.filter.next(null);
+            this.filter.next({});
             this.filterStructure.next(application.contextualFilter);
             localForage.getItem(this.positionKey).then((position) => {
               if (position) {
@@ -60,7 +78,7 @@ export class ContextService {
           }
         } else {
           this.currentApplicationId = null;
-          this.filter.next(null);
+          this.filter.next({});
           this.filterStructure.next(null);
           this.filterPosition.next(null);
         }
@@ -71,5 +89,46 @@ export class ContextService {
         localForage.setItem(this.positionKey, position);
       }
     });
+  }
+
+  /**
+   * Injects current dashboard filter into an object.
+   *
+   * @param f filter to inject context into
+   * @returns filter with values from dashboard filter
+   */
+  public injectDashboardFilterValues<
+    T extends CompositeFilterDescriptor | FilterDescriptor
+  >(f: T): T {
+    const filter = cloneDeep(f);
+    if (!this.isFilterEnabled.getValue() && 'filters' in filter) {
+      filter.filters = [];
+      return filter;
+    }
+
+    const regex = /(?<={{filter\.)(.*?)(?=}})/gim;
+    const availableFilterFields = this.filter.getValue();
+
+    if ('field' in filter && filter.field) {
+      // If it's a filter descriptor, replace value
+      const filterName = filter.value?.match(regex)?.[0];
+      if (filterName && availableFilterFields[filterName]) {
+        filter.value = availableFilterFields[filterName];
+      }
+    } else if ('filters' in filter && filter.filters) {
+      // If it's a composite filter, replace values in filters
+      filter.filters = filter.filters
+        .map((f) => this.injectDashboardFilterValues(f))
+        .filter((f) => {
+          // Filter out fields that are not in the available filter fields
+          // Meaning, their values are still using the {{filter.}} syntax
+          if ('value' in f && f.value) {
+            const filterName = f.value?.match(regex)?.[0];
+            return !(filterName && !availableFilterFields[filterName]);
+          } else return true;
+        });
+    }
+
+    return filter;
   }
 }
