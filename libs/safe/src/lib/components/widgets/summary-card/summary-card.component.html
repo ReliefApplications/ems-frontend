@@ -2,7 +2,7 @@
   <!-- Header -->
   <kendo-tilelayout-item-header
     *ngIf="header"
-    class="widget-header border-b"
+    class="widget-header border-b h-[45px]"
     [ngClass]="{
       '!border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
       '!border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
@@ -26,6 +26,12 @@
         [formControl]="searchControl"
       />
     </div>
+
+    <!-- Sort selector -->
+    <ng-container *ngIf="sortFields.length > 0">
+      <ng-container *ngTemplateOutlet="sortTemplate"></ng-container>
+    </ng-container>
+
     <!-- Switch between grid and cards view -->
     <div class="flex">
       <!-- Data source button -->
@@ -121,3 +127,19 @@
     </div>
   </ng-container>
 </div>
+
+<!-- Selection of sort -->
+<ng-template #sortTemplate>
+  <ng-container *ngIf="sortFields.length > 1">
+    <div uiFormFieldDirective class="!m-0 w-44">
+      <ui-select-menu
+        (selectedOption)="onSort($event)"
+        [placeholder]="'models.widget.sorting.select' | translate"
+      >
+        <ui-select-option *ngFor="let sort of sortFields" [value]="sort">
+          {{ sort.label }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
+  </ng-container>
+</ng-template>

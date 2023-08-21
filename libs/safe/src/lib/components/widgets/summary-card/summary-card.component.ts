@@ -42,6 +42,7 @@ import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { ContextService } from '../../../services/context/context.service';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { SafeGridWidgetComponent } from '../grid/grid.component';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -86,6 +87,7 @@ export class SafeSummaryCardComponent
 
   private layout: Layout | null = null;
   private fields: any[] = [];
+  public sortFields: any[] = [];
   private contextFilters: CompositeFilterDescriptor = {
     logic: 'and',
     filters: [],
@@ -100,6 +102,9 @@ export class SafeSummaryCardComponent
 
   @ViewChild('summaryCardGrid') summaryCardGrid!: ElementRef<HTMLDivElement>;
   @ViewChild('pdf') pdf!: any;
+
+  /** Reference to grid component, when grid view is activated */
+  @ViewChild(SafeGridWidgetComponent) gridComponent?: SafeGridWidgetComponent;
 
   /**
    * Get the summary card pdf name
@@ -371,6 +376,12 @@ export class SafeSummaryCardComponent
             }
           );
 
+          // Set sort fields
+          this.sortFields = [];
+          this.widget.settings.sortFields?.forEach((sortField: any) => {
+            this.sortFields.push(sortField);
+          });
+
           if (this.contextFilters && layoutQuery.filter) {
             layoutQuery.filter = {
               logic: 'and',
@@ -535,5 +546,26 @@ export class SafeSummaryCardComponent
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     this.resizeObserver.disconnect();
+  }
+
+  /**
+   * Handles sorting on the cards.
+   *
+   * @param e Selected sort option.
+   */
+  public onSort(e: any) {
+    if (this.gridComponent) {
+      this.gridComponent.onSort(e);
+    } else {
+      if (!this.dataQuery) return;
+      this.dataQuery
+        .refetch({
+          first: this.pageInfo.pageSize,
+          filter: this.layout?.query.filter,
+          sortField: e.field || undefined,
+          sortOrder: e.order,
+        })
+        .then(() => (this.loading = false));
+    }
   }
 }
