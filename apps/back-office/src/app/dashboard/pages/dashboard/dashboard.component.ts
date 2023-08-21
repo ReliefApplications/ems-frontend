@@ -671,6 +671,10 @@ export class DashboardComponent
           this.dashboard =
             (await firstValueFrom(this.dashboardService.dashboard$)) ??
             undefined;
+          // Remove page context id from url and navigate to the dashboard without context
+          const urlArr = this.router.url.split('/');
+          urlArr[urlArr.length - 1] = this.dashboard?.page?.content ?? '';
+          this.router.navigateByUrl(urlArr.join('/'));
         }
       });
   }

@@ -65,13 +65,15 @@ export const DELETE_PAGE_CONTEXT = gql`
   mutation deletePageContext($id: ID!) {
     deletePageContext(id: $id) {
       id
+      context
+      contentWithContext
     }
   }
 `;
 
 /** Model for DeletePageContextMutationResponse object */
 export interface DeletePageContextMutationResponse {
-  deletePageContext: Page;
+  deletePageContext: Pick<Page, 'context' | 'id' | 'contentWithContext'>;
 }
 
 /** GraphQL mutation for creating a dashboard with context */

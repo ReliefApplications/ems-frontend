@@ -232,7 +232,9 @@ export class SafeDashboardService {
         this.dashboard.next({
           ...dashboard,
           page: {
-            ...data.deletePageContext,
+            ...dashboard?.page,
+            context: data.deletePageContext.context,
+            contentWithContext: data.deletePageContext.contentWithContext,
           },
         });
       }
