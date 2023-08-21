@@ -18,10 +18,20 @@
     <ui-icon icon="palette" variant="grey"></ui-icon>
     <span>{{ 'components.widget.styling' | translate }}</span>
   </button>
-  <button uiMenuItem (click)="onClick('Expand')">
-    <ui-icon icon="open_in_full" variant="grey"></ui-icon>
-    <span>{{ 'components.widget.expand' | translate }}</span>
-  </button>
+  <ng-container
+    *ngIf="widget.component === 'tabs'; else defaultWidgetActionTmpl"
+  >
+    <button uiMenuItem (click)="onClick('NewTab')">
+      <ui-icon icon="open_in_new" variant="grey"></ui-icon>
+      <span>{{ 'components.widget.open.newTab' | translate }}</span>
+    </button>
+  </ng-container>
+  <ng-template #defaultWidgetActionTmpl>
+    <button uiMenuItem (click)="onClick('Expand')">
+      <ui-icon icon="open_in_full" variant="grey"></ui-icon>
+      <span>{{ 'components.widget.expand' | translate }}</span>
+    </button>
+  </ng-template>
   <ui-divider class="py-1"></ui-divider>
   <button uiMenuItem (click)="onClick('Delete')">
     <ui-icon icon="delete" variant="danger"></ui-icon>

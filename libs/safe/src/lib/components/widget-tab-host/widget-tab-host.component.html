@@ -1,3 +1,18 @@
 <div class="h-full w-full">
+  <!-- CLASSIC VIEW -->
+  <kendo-tilelayout-item-header
+    *ngIf="header"
+    class="widget-header border-b"
+    [ngClass]="{
+      'border-transparent': !(
+        widget?.settings?.widgetDisplay?.showBorder ?? true
+      ),
+      'border-b-gray-300': widget?.settings?.widgetDisplay?.showBorder ?? true
+    }"
+  >
+    <span class="widget-title" [title]="widget?.settings?.title">{{
+      widget?.settings?.title
+    }}</span>
+  </kendo-tilelayout-item-header>
   <router-outlet></router-outlet>
 </div>

@@ -23,11 +23,10 @@
   <kendo-tilelayout
     [columns]="colsNumber"
     [rowHeight]="200"
-    [resizable]="canUpdate"
+    [resizable]="canUpdate && !displayedAsTabWidget"
     [reorderable]="canUpdate"
     (reorder)="onReorder($event)"
     (resize)="onResize($event)"
-    class="-m-4"
   >
     <kendo-tilelayout-item
       *ngFor="let widget of widgets; let i = index"
@@ -55,6 +54,7 @@
         (edit)="onEditWidget($event)"
         (delete)="onDeleteWidget($event)"
         (expand)="onExpandWidget($event)"
+        (openTab)="onOpenWidgetInNewTab($event)"
         (style)="onStyleWidget($event)"
       >
       </safe-floating-options>
@@ -97,7 +97,7 @@
 </div>
 <!-- LOADING INDICATOR -->
 <div *ngIf="loading" class="mt-6">
-  <kendo-tilelayout [rowHeight]="200" [columns]="colsNumber" class="-m-4">
+  <kendo-tilelayout [rowHeight]="200" [columns]="colsNumber">
     <kendo-tilelayout-item
       *ngFor="let skeleton of skeletons"
       [colSpan]="skeleton.colSpan"

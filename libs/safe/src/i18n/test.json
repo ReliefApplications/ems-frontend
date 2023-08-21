@@ -1178,6 +1178,9 @@
 					"title": "****** {{record}}"
 				}
 			},
+			"open": {
+				"newTab": "******"
+			},
 			"settings": {
 				"chart": {
 					"auto": "******",

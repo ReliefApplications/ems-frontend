@@ -7,6 +7,7 @@ const routes: Routes = [
   {
     path: '',
     component: ApplicationWidgetComponent,
+    data: { source: 'widget' },
     children: [
       {
         path: 'add-page',

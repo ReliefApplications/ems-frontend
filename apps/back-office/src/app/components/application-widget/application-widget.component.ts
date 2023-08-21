@@ -248,18 +248,6 @@ export class ApplicationWidgetComponent
   }
 
   /**
-   * Executes sequentially actions enabled by settings for the floating button
-   *
-   * @param options action options.
-   */
-  public async onQuickAction(options: any): Promise<void> {
-    // Handle action
-    if (options.selectAll) {
-      console.log(options);
-    }
-  }
-
-  /**
    * Handle each page type subscriptions and listeners on rendering them
    *
    */

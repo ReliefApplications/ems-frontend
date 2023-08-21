@@ -23,7 +23,6 @@ import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { ActivatedRoute, Router } from '@angular/router';
 // import get from 'lodash/get';
-import { differenceBy } from 'lodash';
 
 /** Maximum height of the widget in row units */
 const MAX_ROW_SPAN = 4;
@@ -224,45 +223,51 @@ export class SafeWidgetGridComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    const isApplicationWidgetChange = differenceBy(
-      changes['widgets']?.currentValue,
-      changes['widgets']?.previousValue,
-      'settings.applicationId'
-    ).length;
     if (
-      (changes['widgets'].currentValue && isApplicationWidgetChange !== 0) ||
-      (isApplicationWidgetChange === 0 &&
-        changes['widgets'].previousValue?.length !==
-          changes['widgets'].currentValue?.length)
+      !this.displayedAsTabWidget &&
+      changes['widgets']?.currentValue?.filter(
+        (widget: any) => 'applicationId' in widget.settings
+      ).length !==
+        changes['widgets']?.previousValue?.filter(
+          (widget: any) => 'applicationId' in widget.settings
+        ).length
     ) {
-      // Disable/enable option to add a new tabs widget component once we have/haven't one set
-      if (this.tabWidgets.length) {
-        this.availableWidgets = this.dashboardService.availableWidgets?.filter(
-          (widget) => widget.component !== 'tabs'
-        );
-      } else {
-        this.availableWidgets = this.dashboardService.availableWidgets;
-      }
-      this.buildTabWidgetRoutes();
-      // const newRouteWasCreated = this.buildTabWidgetRoutes();
-      // // Rerun navigation to set the new route config
-      // if (newRouteWasCreated) {
-      //   this.router.navigateByUrl(`${location.pathname}`);
-      //   return;
-      // }
-      // Trigger navigation for each of the application tab widgets
-      this.tabWidgets.forEach((widget) => {
-        this.tabWidgetHeight = `${widget.defaultRows * 200 - 100}px`;
-        // setTimeout(() => {
-        const subRoute = widget.settings.outletName
-          ? `(${widget.settings.outletName}:${widget.settings.pathName})`
-          : `${widget.settings.pathName}`;
-        this.router.navigateByUrl(`${location.pathname}/${subRoute}`, {
-          skipLocationChange: true,
-        });
-        // }, 1000 * index);
-      });
+      this.handleApplicationWidgetUpdate();
     }
+  }
+
+  /**
+   * Handles any tab update and specific routings within the application widget when the widget-grid is displayed as it
+   *
+   */
+  private handleApplicationWidgetUpdate() {
+    // Disable/enable option to add a new tabs widget component once we have/haven't one set
+    if (this.tabWidgets.length) {
+      this.availableWidgets = this.dashboardService.availableWidgets?.filter(
+        (widget) => widget.component !== 'tabs'
+      );
+    } else {
+      this.availableWidgets = this.dashboardService.availableWidgets;
+    }
+    this.buildTabWidgetRoutes();
+    // const newRouteWasCreated = this.buildTabWidgetRoutes();
+    // // Rerun navigation to set the new route config
+    // if (newRouteWasCreated) {
+    //   this.router.navigateByUrl(`${location.pathname}`);
+    //   return;
+    // }
+    // Trigger navigation for each of the application tab widgets
+    this.tabWidgets.forEach((widget) => {
+      this.tabWidgetHeight = `${widget.defaultRows * 200 - 100}px`;
+      // setTimeout(() => {
+      const subRoute = widget.settings.outletName
+        ? `(${widget.settings.outletName}:${widget.settings.pathName})`
+        : `${widget.settings.pathName}`;
+      this.router.navigateByUrl(`${location.pathname}/${subRoute}`, {
+        skipLocationChange: true,
+      });
+      // }, 1000 * index);
+    });
   }
 
   /**
@@ -299,18 +304,20 @@ export class SafeWidgetGridComponent
   /**
    * Emits delete event.
    *
-   * @param e widget to delete.
+   * @param e Emitted event
+   * @param e.id Widget to delete
    */
-  onDeleteWidget(e: any): void {
+  onDeleteWidget(e: { id: string }): void {
     this.delete.emit(e);
   }
 
   /**
    * Emits style event.
    *
-   * @param e widget to style.
+   * @param e Emitted event
+   * @param e.widget Widget to style
    */
-  onStyleWidget(e: any): void {
+  onStyleWidget(e: { widget: any }): void {
     const widgetComp = this.widgetComponents.find(
       (v) => v.widget.id == e.widget.id
     );
@@ -323,9 +330,10 @@ export class SafeWidgetGridComponent
   /**
    * Expands widget in a full size screen popup.
    *
-   * @param e widget to open.
+   * @param e Emitted event
+   * @param e.id Widget to expand
    */
-  async onExpandWidget(e: any): Promise<void> {
+  async onExpandWidget(e: { id: string }): Promise<void> {
     const widget = this.widgets.find((x) => x.id === e.id);
     const { SafeExpandedWidgetComponent } = await import(
       './expanded-widget/expanded-widget.component'
@@ -342,6 +350,22 @@ export class SafeWidgetGridComponent
         this.changeStep.emit(event);
         dialogRef.close();
       });
+  }
+
+  /**
+   * Open given application widget in a new tab
+   *
+   * @param e Emitted event
+   * @param e.applicationId Application id to open in the new tab
+   */
+  onOpenWidgetInNewTab(e: { applicationId: string }) {
+    if (e.applicationId) {
+      window.open(
+        `${window.location.origin}/applications/${e.applicationId}`,
+        '_blank',
+        'noopener,noreferrer'
+      );
+    }
   }
 
   /**

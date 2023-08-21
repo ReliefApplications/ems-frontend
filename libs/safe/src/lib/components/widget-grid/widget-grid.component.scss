@@ -21,7 +21,8 @@
 kendo-tilelayout {
   grid-auto-flow: row;
   background-color: unset;
-
+  padding-left: 0 !important;
+  padding-right: 0 !important;
   kendo-tilelayout-item {
     overflow: hidden;
   }

@@ -1178,6 +1178,9 @@
 					"title": "Validation failed for record {{record}}"
 				}
 			},
+			"open": {
+				"newTab": "Open in new tab"
+			},
 			"settings": {
 				"chart": {
 					"auto": "auto",

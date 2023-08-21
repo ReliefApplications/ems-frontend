@@ -20,10 +20,13 @@ export class SafeFloatingOptionsComponent extends SafeUnsubscribeComponent {
   @Input() widget: any;
 
   // === EMIT ACTION SELECTED ===
-  @Output() edit: EventEmitter<any> = new EventEmitter();
-  @Output() delete: EventEmitter<any> = new EventEmitter();
-  @Output() expand: EventEmitter<any> = new EventEmitter();
-  @Output() style: EventEmitter<any> = new EventEmitter();
+  @Output() edit: EventEmitter<{ type: 'data'; id: string; options: any }> =
+    new EventEmitter();
+  @Output() delete: EventEmitter<{ id: string }> = new EventEmitter();
+  @Output() expand: EventEmitter<{ id: string }> = new EventEmitter();
+  @Output() openTab: EventEmitter<{ applicationId: string }> =
+    new EventEmitter();
+  @Output() style: EventEmitter<{ widget: any }> = new EventEmitter();
 
   /**
    * Button on top left of each widget, if user can see it, with menu of possible
@@ -68,6 +71,9 @@ export class SafeFloatingOptionsComponent extends SafeUnsubscribeComponent {
     }
     if (action === 'Expand') {
       this.expand.emit({ id: this.widget.id });
+    }
+    if (action === 'NewTab') {
+      this.openTab.emit({ applicationId: this.widget.settings?.applicationId });
     }
     if (action === 'Style') {
       this.style.emit({ widget: this.widget });

@@ -1194,6 +1194,9 @@
 					"title": "L'enregistrement du document {{record}} a échoué"
 				}
 			},
+			"open": {
+				"newTab": "Ouvrir dans un nouvel onglet"
+			},
 			"settings": {
 				"chart": {
 					"auto": "auto",
