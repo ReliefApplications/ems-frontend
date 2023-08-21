@@ -100,7 +100,11 @@ export const buildAddButton = (
             locale: question.resource.value,
             askForConfirm: false,
             ...(question.prefillWithCurrentRecord && {
-              prefillData: question.survey.data,
+              prefillData: {
+                ...question.survey.data,
+                [`owner_${question.resource}`]:
+                  question.survey.getVariable('record.id'),
+              },
             }),
           },
           height: '98%',
