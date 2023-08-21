@@ -36,7 +36,7 @@ import {
 import { Dialog } from '@angular/cdk/dialog';
 
 /** Default number of resources to be fetched per page */
-const ITEMS_PER_PAGE = 30;
+const ITEMS_PER_PAGE = 10;
 /** Define max width of summary card */
 const MAX_COL_SPAN = 8;
 
