@@ -361,10 +361,45 @@ export class SafeGridComponent
    * @param filter Filter event.
    */
   public onFilterChange(filter: CompositeFilterDescriptor): void {
+    this.cleanDateFiltersWithoutTimeZone(filter);
+
     if (!this.loadingRecords) {
       this.filter = filter;
       this.filterChange.emit(filter);
     }
+  }
+
+  /**
+   * Adjusts date filters no matter timezone
+   *
+   * @param filter Filter event.
+   */
+  //
+  public cleanDateFiltersWithoutTimeZone(filter: any) {
+    filter.filters.forEach((filter: any) => {
+      // if there are sub filters
+      if (filter.filters) {
+        this.cleanDateFiltersWithoutTimeZone(filter);
+      } else if (filter.value instanceof Date) {
+        const currentDate = filter.value;
+        const hoursToAdjustTimezone = Math.floor(
+          (currentDate as Date).getTimezoneOffset() / 60
+        );
+        const minutesToAdjustTimezone =
+          (currentDate as Date).getTimezoneOffset() % 60;
+
+        const dateObj = new Date(currentDate);
+        dateObj.setHours(dateObj.getHours() - hoursToAdjustTimezone);
+        dateObj.setMinutes(dateObj.getMinutes() - minutesToAdjustTimezone);
+        // Convert the modified date back to the original format
+        const modifiedDateString = dateObj
+          .toISOString()
+          .replace('T00:00:00.000Z', '');
+        const modifiedDate = new Date(modifiedDateString);
+
+        filter.value = modifiedDate;
+      }
+    });
   }
 
   /**

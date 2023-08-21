@@ -139,28 +139,6 @@ export class SafeDateFilterMenuComponent
       ]),
     });
     this.form.valueChanges.subscribe((value) => {
-      //adjust time to when pass to the filterService get the selected date no matter timezone
-      value.filters.forEach((filter: any) => {
-        if (filter.value) {
-          const currentDate = filter.value;
-          const hoursToAdjustTimezone = Math.floor(
-            (currentDate as Date).getTimezoneOffset() / 60
-          );
-          const minutesToAdjustTimezone =
-            (currentDate as Date).getTimezoneOffset() % 60;
-
-          const dateObj = new Date(currentDate);
-          dateObj.setHours(dateObj.getHours() - hoursToAdjustTimezone);
-          dateObj.setMinutes(dateObj.getMinutes() - minutesToAdjustTimezone);
-          // Convert the modified date back to the original format
-          const modifiedDateString = dateObj
-            .toISOString()
-            .replace('T00:00:00.000Z', '');
-          const modifiedDate = new Date(modifiedDateString);
-
-          filter.value = modifiedDate;
-        }
-      });
       this.filterService?.filter(value);
     });
   }
