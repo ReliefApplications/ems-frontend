@@ -1944,6 +1944,7 @@
 			"display": {
 				"border": "******",
 				"searchable": "******",
+				"sortable": "******",
 				"title": "******"
 			},
 			"map": {
@@ -1954,6 +1955,16 @@
 			},
 			"scheduler": {
 				"defaultTitle": "******"
+			},
+			"sorting": {
+				"add": "******",
+				"delete": "******",
+				"field": "******",
+				"label": "******",
+				"management": "******",
+				"order": "******",
+				"select": "******",
+				"title": "******"
 			},
 			"tooltip": {
 				"selector": {
