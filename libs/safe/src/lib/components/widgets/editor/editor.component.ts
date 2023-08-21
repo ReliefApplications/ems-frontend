@@ -59,6 +59,7 @@ export class SafeEditorComponent implements OnInit {
   /** Sanitizes the text. */
   ngOnInit(): void {
     this.setContentFromLayout();
+    this.formattedStyle = this.settings.widgetDisplay.style;
   }
 
   /**

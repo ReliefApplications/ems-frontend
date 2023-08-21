@@ -1,4 +1,10 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import {
+  Component,
+  Input,
+  ViewEncapsulation,
+  ElementRef,
+  OnInit,
+} from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 
 /**
@@ -12,7 +18,17 @@ import { SafeHtml } from '@angular/platform-browser';
   styleUrls: ['./html-widget-content.component.scss'],
   encapsulation: ViewEncapsulation.ShadowDom,
 })
-export class HtmlWidgetContentComponent {
+export class HtmlWidgetContentComponent implements OnInit {
   @Input() html: SafeHtml = '';
   @Input() style?: string;
+
+  constructor(private elementRef: ElementRef) {}
+
+  ngOnInit(): void {
+    if (this.style) {
+      const style = document.createElement('style');
+      style.innerHTML = this.style;
+      this.elementRef.nativeElement.shadowRoot?.appendChild(style);
+    }
+  }
 }
