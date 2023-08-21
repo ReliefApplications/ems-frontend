@@ -22,8 +22,6 @@ import {
 } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MessageService } from '@progress/kendo-angular-l10n';
-import { DateTimePickerModule } from '@progress/kendo-angular-dateinputs';
-
 import {
   AppAbility,
   KendoTranslationService,
@@ -148,7 +146,7 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       provide: APP_INITIALIZER,
       useFactory: initializeAuthAndTranslations,
       multi: true,
-      deps: [OAuthService],
+      deps: [OAuthService, TranslateService, Injector],
     },
     {
       provide: OverlayContainer,
@@ -176,6 +174,14 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
       provide: PureAbility,
       useExisting: AppAbility,
     },
+    {
+      provide: POPUP_CONTAINER,
+      useFactory: () => {
+        return {
+          nativeElement: document.body,
+        } as ElementRef;
+      },
+    },
     PopupService,
     ResizeBatchService,
   ],
@@ -187,10 +193,8 @@ export class AppModule implements DoBootstrap {
    * @param injector Angular injector
    * @param formService SafeFormService
    */
-  constructor(
-    private injector: Injector,
-    private formService: SafeFormService
-  ) {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  constructor(private injector: Injector, formService: SafeFormService) {}
 
   /**
    * Bootstrap the project.

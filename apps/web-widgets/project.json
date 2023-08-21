@@ -39,6 +39,11 @@
           },
           {
             "glob": "**/*",
+            "input": "node_modules/leaflet/dist/images/",
+            "output": "/assets/"
+          },
+          {
+            "glob": "**/*",
             "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
             "output": "/assets/webfonts/"
           }
@@ -54,8 +59,7 @@
           "node_modules/survey-angular/survey.min.css",
           "node_modules/survey-creator/survey-creator.min.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
-          "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
-          "node_modules/select2/dist/css/select2.min.css"
+          "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css"
         ],
         "scripts": [
           "node_modules/jquery/dist/jquery.js",
@@ -97,7 +101,10 @@
             }
           ],
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": [
+              "libs/ui/src/style/themes/default",
+              "apps/web-widgets/src/app/styles"
+            ]
           },
           "fileReplacements": [
             {
@@ -115,7 +122,10 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": [
+              "libs/ui/src/style/themes/default",
+              "apps/web-widgets/src/app/styles"
+            ]
           }
         }
       },

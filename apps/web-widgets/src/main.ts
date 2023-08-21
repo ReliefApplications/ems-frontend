@@ -11,8 +11,11 @@ if (environment.production) {
 platformBrowserDynamic()
   .bootstrapModule(AppModule)
   .then(() => {
+    /** Automatic insertion of form widget on application bootstrap on locally serving it */
     const body = document.getElementById('bodyPlaceholder');
-    const formWidget = document.createElement('form-widget');
-    body?.appendChild(formWidget);
+    if (body) {
+      const formWidget = document.createElement('form-widget');
+      body.appendChild(formWidget);
+    }
   })
   .catch((err) => console.error(err));

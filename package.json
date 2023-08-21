@@ -9,8 +9,6 @@
     "lint": "npx nx run-many --target=lint --projects=safe,front-office,back-office,ui --verbose",
     "test": "npx nx run-many --target=test --projects=safe,front-office,back-office,ui --configuration=ci",
     "bundle:widgets": "set NODE_OPTIONS=--max_old_space_size=4096 && npx nx build web-widgets --configuration=oort-dev  && node .scripts/build-widgets.js",
-    "widgets:local": "set NODE_OPTIONS=--max_old_space_size=4096 && npx nx run web-widgets:serve",
-    "bundle:widgets": "node .scripts/build-widgets.js",
     "widgets:local": "set NODE_OPTIONS=--max_old_space_size=4096 && npx nx run web-widgets:serve"
   },
   "private": true,

@@ -4,6 +4,7 @@ import {
   Component,
   ComponentRef,
   ElementRef,
+  Injector,
   Input,
   ViewChild,
   ViewContainerRef,
@@ -12,6 +13,7 @@ import {
 import { SafeLayoutService } from '@oort-front/safe/widgets';
 import { AppOverlayContainer } from '../../utils/overlay-container';
 import { SnackbarService } from '@oort-front/ui';
+import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
 
 /** Form web widget component */
 @Component({
@@ -36,11 +38,19 @@ export class FormWidgetComponent implements AfterViewInit {
    * @param overlayContainer Angular overlay container
    * @param snackBarService SnackbarService,
    * @param el ElementRef
+   * @param injector Injector
    */
   constructor(
     private layoutService: SafeLayoutService,
-    private overlayContainer: OverlayContainer // private formService: SafeFormService
-  ) {}
+    private overlayContainer: OverlayContainer,
+    private snackBarService: SnackbarService,
+    el: ElementRef,
+    injector: Injector
+  ) {
+    const kendoPopupHost = injector.get(POPUP_CONTAINER);
+    kendoPopupHost.nativeElement = el.nativeElement.shadowRoot;
+    this.snackBarService.shadowDom = el.nativeElement.shadowRoot;
+  }
 
   ngAfterViewInit(): void {
     this.layoutService.rightSidenav$.subscribe((view) => {

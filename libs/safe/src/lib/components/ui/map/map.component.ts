@@ -316,7 +316,7 @@ export class MapComponent
         document.getElementsByTagName('*')
       ).filter((element) => element.shadowRoot);
 
-      const shadowRootMapHolder = isShadowRoot
+      const shadowRootMapHolder = isShadowRoot.length
         ? isShadowRoot[0].shadowRoot?.getElementById(this.mapId)
         : null;
 

@@ -1,12 +1,11 @@
 <!-- Content -->
-<ui-sidenav-container class="sidenav-container w-100">
+<ui-sidenav-container class="sidenav-container h-full w-full">
   <!-- Right sidenav -->
   <div
     uiSidenavDirective
     class="h-full"
     position="end"
     [opened]="showSidenav"
-    [keepFullscreen]="true"
     #rightNav="uiSidenavDirective"
   >
     <ng-template #rightSidenav></ng-template>
