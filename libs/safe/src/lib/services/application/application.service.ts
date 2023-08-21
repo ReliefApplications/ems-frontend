@@ -537,6 +537,7 @@ export class SafeApplicationService {
           if (data) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectRestored', {
+                type: this.translate.instant('common.page.one'),
                 value: this.translate.instant('common.page.one'),
               })
             );

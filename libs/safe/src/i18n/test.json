@@ -21,6 +21,19 @@
 		"archive": {
 			"delete": "******",
 			"few": "******",
+			"modal": {
+				"delete": {
+					"action": "******",
+					"confirmationMessage": "****** {{name}} ******",
+					"title": "******"
+				},
+				"one": "******",
+				"restore": {
+					"action": "******",
+					"confirmationMessage": "****** {{name}} ******",
+					"title": "******"
+				}
+			},
 			"none": "******",
 			"restore": "******"
 		},

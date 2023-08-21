@@ -21,6 +21,19 @@
 		"archive": {
 			"delete": "Supprimer",
 			"few": "@TODO",
+			"modal": {
+				"delete": {
+					"action": "Supprimer",
+					"confirmationMessage": "Voulez-vous supprimer l'archive {{name}}?",
+					"title": "Supprimer?"
+				},
+				"one": "@TODO",
+				"restore": {
+					"action": "Restaurer",
+					"confirmationMessage": "Voulez-vous restaurer {{name}}?",
+					"title": "Restaurer?"
+				}
+			},
 			"none": "@TODO",
 			"restore": "Restaurer"
 		},

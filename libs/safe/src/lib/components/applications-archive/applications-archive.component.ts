@@ -109,14 +109,14 @@ export class ApplicationsArchiveComponent
 
   onDelete(item: any): void {
     const dialogRef = this.confirmService.openConfirmModal({
-      title: this.translate.instant('common.deleteObject', {
-        name: this.translate.instant('common.page.one'),
-      }),
+      title: this.translate.instant('common.archive.modal.delete.title'),
       content: this.translate.instant(
-        'components.application.pages.delete.confirmationMessage',
-        { name: item.name }
+        'common.archive.modal.delete.confirmationMessage',
+        {
+          name: this.translate.instant('common.archive.modal.one'),
+        }
       ),
-      confirmText: this.translate.instant('components.confirmModal.delete'),
+      confirmText: this.translate.instant('common.archive.modal.delete.action'),
       confirmVariant: 'danger',
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
@@ -128,14 +128,16 @@ export class ApplicationsArchiveComponent
 
   onRestore(item: any): void {
     const dialogRef = this.confirmService.openConfirmModal({
-      title: this.translate.instant('common.restoreObject', {
-        name: this.translate.instant('common.page.one'),
-      }),
+      title: this.translate.instant('common.archive.modal.restore.title'),
       content: this.translate.instant(
-        'components.application.pages.restore.confirmationMessage',
-        { name: item.name }
+        'common.archive.modal.restore.confirmationMessage',
+        {
+          name: this.translate.instant('common.archive.modal.one'),
+        }
       ),
-      confirmText: this.translate.instant('components.confirmModal.restore'),
+      confirmText: this.translate.instant(
+        'common.archive.modal.restore.action'
+      ),
       confirmVariant: 'danger',
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {

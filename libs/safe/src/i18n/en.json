@@ -21,6 +21,19 @@
 		"archive": {
 			"delete": "Delete",
 			"few": "Archives",
+			"modal": {
+				"delete": {
+					"action": "Delete",
+					"confirmationMessage": "Do you want to delete archive {{name}}?",
+					"title": "Delete?"
+				},
+				"one": "page",
+				"restore": {
+					"action": "Restore",
+					"confirmationMessage": "Do you want to restore the {{name}}?",
+					"title": "Restore?"
+				}
+			},
 			"none": "No archive list",
 			"restore": "Restore"
 		},
