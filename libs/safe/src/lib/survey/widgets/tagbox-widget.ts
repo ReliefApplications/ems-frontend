@@ -12,12 +12,6 @@ import updateChoices from './utils/common-list-filters';
  */
 export const init = (Survey: any, domService: DomService): void => {
   const iconId = 'icon-tagbox';
-
-  // registers icon-resources in the SurveyJS library
-  Survey.SvgRegistry.registerIconFromSvg(
-    'tagbox',
-    '<svg viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><g><path d="M15,11H0V5h15V11z M1,10h13V6H1V10z"/></g><rect x="2" y="7" width="4" height="2"/><rect x="7" y="7" width="4" height="2"/></svg>'
-  );
   let currentSearchValue = '';
   const componentName = 'tagbox';
   const widget = {

@@ -160,8 +160,10 @@ export class FilterBuilderModalComponent
   ) {}
 
   ngOnInit(): void {
-    // Initialize survey creator instance without custom questions
-    this.formService.setSurveyCreatorInstance({ customQuestions: false });
+    // Initialize survey creator instance with only the date-range custom question
+    this.formService.setSurveyCreatorInstance({
+      customQuestions: ['date-range'],
+    });
   }
 
   ngAfterViewInit(): void {

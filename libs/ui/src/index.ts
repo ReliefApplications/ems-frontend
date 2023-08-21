@@ -35,6 +35,7 @@ export * from './lib/tabs/tabs.component';
 export * from './lib/tabs/components/tab/tab.component';
 export * from './lib/alert/alert.module';
 export * from './lib/date/date.module';
+export * from './lib/date/date-range/date-range.component';
 export * from './lib/graphql-select/graphql-select.module';
 export * from './lib/graphql-select/graphql-select.component';
 export * from './lib/error-message/error-message.module';

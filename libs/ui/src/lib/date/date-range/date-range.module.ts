@@ -9,7 +9,7 @@ import { IconModule } from '../../icon/icon.module';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
- * UI Daterange module
+ * UI Date range module
  */
 @NgModule({
   declarations: [DateRangeComponent],

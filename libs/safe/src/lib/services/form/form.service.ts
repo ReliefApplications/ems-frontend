@@ -2,7 +2,7 @@ import { Inject, Injectable, NgZone } from '@angular/core';
 import * as SurveyKo from 'survey-knockout';
 import * as Survey from 'survey-angular';
 import { initCreatorSettings } from '../../survey/creator';
-import { initCustomSurvey } from '../../survey/init';
+import { CustomQuestions, initCustomSurvey } from '../../survey/init';
 import { DomService } from '../dom/dom.service';
 import { Dialog } from '@angular/cdk/dialog';
 import { Apollo } from 'apollo-angular';
@@ -50,11 +50,18 @@ export class SafeFormService {
    * Set any custom components needed for our survey creator instance
    *
    * @param additionalQuestions Object narrowing the question types that the survey has to have
-   * @param additionalQuestions.customQuestions If the survey creator should contain custom questions
+   * @param additionalQuestions.customQuestions Custom questions to be added to the survey
    */
   setSurveyCreatorInstance(
-    additionalQuestions: { customQuestions: boolean } = {
-      customQuestions: true,
+    additionalQuestions: { customQuestions: CustomQuestions[] } = {
+      customQuestions: [
+        'resource',
+        'resources',
+        'owner',
+        'users',
+        'comment',
+        'geospatial',
+      ],
     }
   ) {
     // === CUSTOM WIDGETS / COMPONENTS ===

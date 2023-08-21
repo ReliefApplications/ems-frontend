@@ -1598,7 +1598,7 @@
 		},
 		"datepicker": {
 			"dateLabel": "Select a date",
-			"endLabel": "Select a end date",
+			"endLabel": "Select an end date",
 			"startLabel": "Select a start date",
 			"today": "Today",
 			"toggle": "Choose a date"

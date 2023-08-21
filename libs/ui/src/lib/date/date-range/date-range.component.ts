@@ -18,10 +18,13 @@ import { SelectionRange } from '@progress/kendo-angular-dateinputs';
 })
 export class DateRangeComponent {
   @Input() disabled = false;
+  @Input() min!: Date;
+  @Input() max!: Date;
+  @Input() hasInputs = false;
   @Output() selectedValue = new EventEmitter<SelectionRange>();
   @ViewChild(TemplateRef) calendar!: TemplateRef<any>;
 
-  range: SelectionRange = {
+  @Input() range: SelectionRange = {
     start: null,
     end: null,
   } as unknown as SelectionRange;

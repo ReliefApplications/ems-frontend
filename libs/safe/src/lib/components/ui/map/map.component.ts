@@ -403,14 +403,14 @@ export class MapComponent
   }
 
   /**
-   * Setup the map layers from the settings
+   * Sets up map layers and controls based on the provided settings.
    *
-   * @param settings map settings
-   * @param settings.layers list of layers ids
-   * @param settings.controls available map controls
-   * @param settings.arcGisWebMap arcgis webmap
-   * @param settings.basemap arcgis basemap
-   * @param reset reset the layers
+   * @param {object} settings - Configuration settings for map layers and controls.
+   * @param {string[]|undefined} settings.layers - An array of layer IDs or `undefined`.
+   * @param {MapControls} settings.controls - An object representing map controls.
+   * @param {string|undefined} settings.arcGisWebMap - URL of an ArcGIS web map or `undefined`.
+   * @param {string|undefined} settings.basemap - Basemap name or `undefined`.
+   * @param {boolean} [reset=false] - Whether to reset the map layers or not.
    */
   setupMapLayers(
     settings: {
