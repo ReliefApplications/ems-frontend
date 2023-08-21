@@ -3,16 +3,10 @@ import {
   Component,
   EventEmitter,
   Inject,
-  OnDestroy,
   OnInit,
   SkipSelf,
 } from '@angular/core';
-import {
-  ActivatedRoute,
-  NavigationCancel,
-  NavigationEnd,
-  Router,
-} from '@angular/router';
+import { ActivatedRoute, NavigationCancel, Router } from '@angular/router';
 import {
   Application,
   ContentType,
@@ -21,11 +15,8 @@ import {
   SafeAuthService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
-import { Subscription, filter, takeUntil } from 'rxjs';
-import { FormsComponent } from '../../dashboard/pages/forms/forms.component';
-import { DashboardComponent } from '../../dashboard/pages/dashboard/dashboard.component';
+import { BehaviorSubject, filter, pairwise, takeUntil } from 'rxjs';
 import { FormBuilderComponent } from '../../dashboard/pages/form-builder/form-builder.component';
-import { TabComponent } from '@oort-front/ui';
 import { Location } from '@angular/common';
 
 /**
@@ -49,7 +40,7 @@ interface PageTab {
 })
 export class ApplicationWidgetComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, OnDestroy
+  implements OnInit
 {
   // === DATA ===
   widget: any;
@@ -80,9 +71,12 @@ export class ApplicationWidgetComponent
   edit: EventEmitter<any> = new EventEmitter();
 
   // === PAGES EVENTS === //
-  private subscriptions: Subscription = new Subscription();
   currentTabContent!: any;
-  lastOpenedTab!: TabComponent;
+  private currentIndexTab: BehaviorSubject<number | string> =
+    new BehaviorSubject<number | string>(this.selectedTab);
+  private previousAndCurrentIndexTab = this.currentIndexTab
+    .asObservable()
+    .pipe(pairwise());
 
   /**
    * Test if the grid uses a layout, and if a layout is used, if any item is currently updated.
@@ -118,9 +112,6 @@ export class ApplicationWidgetComponent
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
     this.router.events.pipe(takeUntil(this.destroy$)).subscribe({
       next: (event) => {
-        if (event instanceof NavigationEnd) {
-          this.setCurrentTabContentListeners();
-        }
         if (event instanceof NavigationCancel) {
           // Restore default url state
           if (this.currentTabContent instanceof FormBuilderComponent) {
@@ -128,6 +119,9 @@ export class ApplicationWidgetComponent
             if (regex) {
               const baseRoute = this.location.path().match(regex)?.[1];
               if (baseRoute) {
+                // Set previous tab and update again current tab with the previous value
+                this.currentIndexTab.next('previous');
+                this.currentIndexTab.next(this.selectedTab);
                 this.location.replaceState(baseRoute);
               }
             }
@@ -138,7 +132,6 @@ export class ApplicationWidgetComponent
   }
 
   ngOnInit(): void {
-    console.log(this.router.routerState.snapshot);
     this.setUpListeners();
     if (this.applicationWidgetService.widgetState) {
       this.header =
@@ -185,6 +178,17 @@ export class ApplicationWidgetComponent
           this.application = application ?? this.application;
         },
       });
+
+    this.previousAndCurrentIndexTab.pipe(takeUntil(this.destroy$)).subscribe({
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      next: ([prev, curr]) => {
+        if (typeof curr === 'string') {
+          this.selectedTab = prev as number;
+        } else {
+          this.selectedTab = curr;
+        }
+      },
+    });
   }
 
   /**
@@ -209,11 +213,16 @@ export class ApplicationWidgetComponent
           application.pages?.length
         ? 1
         : application.pages?.length;
-
+      this.currentIndexTab.next(selectedIndex !== -1 ? selectedIndex : 0);
+      // Trigger tab index value twice in order to update previous value with the tab containing the FormBuilder component
+      // So we can handle nested cancel modal event correctly
+      if (this.currentTabContent instanceof FormBuilderComponent) {
+        this.currentIndexTab.next(this.selectedTab);
+      }
       this.loadPage(selectedIndex);
-      this.selectedTab = selectedIndex !== -1 ? selectedIndex : 0;
     }
   }
+
   /**
    * Set to view the page for the given index
    *
@@ -248,21 +257,6 @@ export class ApplicationWidgetComponent
   }
 
   /**
-   * Handle each page type subscriptions and listeners on rendering them
-   *
-   */
-  setCurrentTabContentListeners() {
-    this.subscriptions.unsubscribe();
-    if (this.currentTabContent instanceof FormsComponent) {
-      console.log(this.currentTabContent);
-    } else if (this.currentTabContent instanceof DashboardComponent) {
-      console.log(this.currentTabContent);
-    } else if (this.currentTabContent instanceof FormBuilderComponent) {
-      this.safeAuthService.canLogout.next(false);
-    }
-  }
-
-  /**
    * Update current widget application tabs
    *
    * @param pages page collection
@@ -284,20 +278,14 @@ export class ApplicationWidgetComponent
     this.cdr.detectChanges();
   }
 
-  override ngOnDestroy(): void {
-    super.ngOnDestroy();
-    this.subscriptions.unsubscribe();
-  }
-
   /**
-   * Disable current tabs if we are in the formBuilder(nested url that keeps confirmation modal)
+   * Keep track of pagetab in ngfor in order to avoid unnecessary re render
    *
-   * @returns disable state given the current tab content and state
+   * @param index Page tab index
+   * @param pageTab PageTab
+   * @returns page tab id
    */
-  get isDisabled() {
-    return (
-      this.currentTabContent instanceof FormBuilderComponent &&
-      !this.safeAuthService.canLogout.getValue()
-    );
+  trackById(index: number, pageTab: PageTab) {
+    return pageTab.id;
   }
 }

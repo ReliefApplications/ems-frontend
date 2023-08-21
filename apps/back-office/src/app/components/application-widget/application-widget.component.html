@@ -1,8 +1,10 @@
 <div class="h-full">
   <ng-container *ngIf="pages.length">
-    <ui-tabs [selectedIndex]="selectedTab">
-      <ng-container *ngFor="let page of pages; let i = index">
-        <ui-tab [disabled]="isDisabled" (click)="loadPage(i); selectedTab = i">
+    <ui-tabs [(selectedIndex)]="selectedTab">
+      <ng-container
+        *ngFor="let page of pages; let i = index; trackBy: trackById"
+      >
+        <ui-tab (click)="loadPage(i)">
           <ng-container ngProjectAs="label">
             <ng-container *ngIf="page.id; else addPageTmpl">
               <div class="flex items-center gap-1">

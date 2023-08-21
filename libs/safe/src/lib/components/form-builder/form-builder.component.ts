@@ -280,7 +280,11 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
         const name = options.question.name;
         setTimeout(() => {
           const el = document.querySelector('[data-name="' + name + '"]');
-          el?.scrollIntoView({ behavior: 'smooth' });
+          el?.scrollIntoView({
+            block: 'nearest',
+            inline: 'nearest',
+            behavior: 'smooth',
+          });
           this.surveyCreator.showQuestionEditor(options.question);
         });
       }

@@ -43,6 +43,7 @@ export class SafeWidgetGridComponent
   implements OnInit, OnChanges
 {
   public availableWidgets: any[] = WIDGET_TYPES;
+  DEFAULT_ROW_HEIGHT = 200 as const;
 
   @Input() loading = false;
   /** Skeletons for loading */
@@ -258,7 +259,10 @@ export class SafeWidgetGridComponent
     // }
     // Trigger navigation for each of the application tab widgets
     this.tabWidgets.forEach((widget) => {
-      this.tabWidgetHeight = `${widget.defaultRows * 200 - 100}px`;
+      this.tabWidgetHeight = `${
+        widget.defaultRows * this.DEFAULT_ROW_HEIGHT -
+        this.DEFAULT_ROW_HEIGHT / 2
+      }px`;
       // setTimeout(() => {
       const subRoute = widget.settings.outletName
         ? `(${widget.settings.outletName}:${widget.settings.pathName})`
