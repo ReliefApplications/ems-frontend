@@ -195,7 +195,6 @@ export class SafeGridWidgetComponent
               this.widget.settings.sortFields?.forEach((sortField: any) => {
                 this.sortFields.push(sortField);
               });
-              console.log(this.sortFields);
             }
             this.gridSettings = {
               ...this.settings,

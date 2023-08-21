@@ -27,38 +27,11 @@
       />
     </div>
 
-    <!-- Sort selection -->
-    <div
-      class="w-[30%] max-w-[200px] m-1"
-      uiFormFieldDirective
-      *ngIf="
-        !!settings.widgetDisplay?.sortable &&
-        cards.length !== 0 &&
-        sortFields.length > 0 &&
-        displayMode === 'cards'
-      "
-    >
-      <ui-select-menu
-        (selectedOption)="sortData($event)"
-        value="DEFAULT_OPTION"
-        extraClasses="min-h-[27px]"
-      >
-        <ui-select-option value="DEFAULT_OPTION" class="opacity-70">{{
-          'models.widget.sorting.select' | translate
-        }}</ui-select-option>
-        <ui-select-option *ngFor="let sort of sortFields" [value]="sort">
-          {{ sort.label }}
-        </ui-select-option>
-      </ui-select-menu>
-      <ui-icon
-        uiSuffix
-        icon="info_outline"
-        variant="grey"
-        [uiTooltip]="
-          'components.widget.settings.grid.tooltip.template' | translate
-        "
-      ></ui-icon>
-    </div>
+    <!-- Sort selector -->
+    <ng-container *ngIf="sortFields.length > 0">
+      <ng-container *ngTemplateOutlet="sortTemplate"></ng-container>
+    </ng-container>
+
     <!-- Switch between grid and cards view -->
     <div class="flex">
       <!-- Data source button -->
@@ -154,3 +127,19 @@
     </div>
   </ng-container>
 </div>
+
+<!-- Selection of sort -->
+<ng-template #sortTemplate>
+  <ng-container *ngIf="sortFields.length > 1">
+    <div uiFormFieldDirective class="!m-0 w-44">
+      <ui-select-menu
+        (selectedOption)="onSort($event)"
+        [placeholder]="'models.widget.sorting.select' | translate"
+      >
+        <ui-select-option *ngFor="let sort of sortFields" [value]="sort">
+          {{ sort.label }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
+  </ng-container>
+</ng-template>

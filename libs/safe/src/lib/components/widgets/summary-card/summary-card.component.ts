@@ -42,6 +42,7 @@ import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 import { ContextService } from '../../../services/context/context.service';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { SafeGridWidgetComponent } from '../grid/grid.component';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -101,6 +102,9 @@ export class SafeSummaryCardComponent
 
   @ViewChild('summaryCardGrid') summaryCardGrid!: ElementRef<HTMLDivElement>;
   @ViewChild('pdf') pdf!: any;
+
+  /** Reference to grid component, when grid view is activated */
+  @ViewChild(SafeGridWidgetComponent) gridComponent?: SafeGridWidgetComponent;
 
   /**
    * Get the summary card pdf name
@@ -372,14 +376,10 @@ export class SafeSummaryCardComponent
             }
           );
 
+          // Set sort fields
           this.sortFields = [];
-          // select sort fields that match the current layout
-          const layoutFieldsName = layoutFields.map((a: any) => a.name);
-
           this.widget.settings.sortFields?.forEach((sortField: any) => {
-            if (layoutFieldsName.includes(sortField.field)) {
-              this.sortFields.push(sortField);
-            }
+            this.sortFields.push(sortField);
           });
 
           if (this.contextFilters && layoutQuery.filter) {
@@ -553,24 +553,19 @@ export class SafeSummaryCardComponent
    *
    * @param e Selected sort option.
    */
-  public sortData(e: any) {
-    if (!this.dataQuery) return;
-    const layoutQuery = this.layout?.query;
-    let field = get(layoutQuery, 'sort.field', null);
-    let order = get(layoutQuery, 'sort.order', null);
-
-    if (e && e !== 'DEFAULT_OPTION') {
-      field = e.field;
-      order = e.order;
+  public onSort(e: any) {
+    if (this.gridComponent) {
+      this.gridComponent.onSort(e);
+    } else {
+      if (!this.dataQuery) return;
+      this.dataQuery
+        .refetch({
+          first: this.pageInfo.pageSize,
+          filter: this.layout?.query.filter,
+          sortField: e.field || undefined,
+          sortOrder: e.order,
+        })
+        .then(() => (this.loading = false));
     }
-
-    this.dataQuery
-      .refetch({
-        first: this.pageInfo.pageSize,
-        filter: this.layout?.query.filter,
-        sortField: field || undefined,
-        sortOrder: order,
-      })
-      .then(() => (this.loading = false));
   }
 }
