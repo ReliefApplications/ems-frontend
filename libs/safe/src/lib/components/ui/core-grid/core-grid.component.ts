@@ -520,7 +520,7 @@ export class SafeCoreGridComponent
       this.updatedItems.push({ id: item.id, ...value });
     }
 
-    //Use the draft option to apply triggers
+    // Use the draft option to apply triggers, and then update the data
     this.apollo
       .mutate<EditRecordMutationResponse>({
         mutation: EDIT_RECORD,
@@ -536,6 +536,8 @@ export class SafeCoreGridComponent
           res.data?.editRecord.data
         );
         item.saved = false;
+        const index = this.updatedItems.findIndex((x) => x.id === item.id);
+        this.updatedItems.splice(index, 1, item);
         this.loadItems();
       });
   }
