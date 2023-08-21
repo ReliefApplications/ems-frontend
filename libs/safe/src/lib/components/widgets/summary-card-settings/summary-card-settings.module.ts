@@ -21,6 +21,7 @@ import { SafeDisplayTabModule } from './display-tab/display.module';
 import { SummaryCardGeneralComponent } from './summary-card-general/summary-card-general.component';
 import { SafeSummaryCardSettingsComponent } from './summary-card-settings.component';
 import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
+import { SafeSortingSettingsModule } from '../common/sorting-settings/sorting-settings.module';
 import { ContextualFiltersSettingsComponent } from '../common/contextual-filters-settings/contextual-filters-settings.component';
 
 /** Summary Card Settings Module */
@@ -48,6 +49,7 @@ import { ContextualFiltersSettingsComponent } from '../common/contextual-filters
     SafeSummaryCardModule,
     TabsModule,
     ToggleModule,
+    SafeSortingSettingsModule,
     ContextualFiltersSettingsComponent,
   ],
   exports: [SafeSummaryCardSettingsComponent],
