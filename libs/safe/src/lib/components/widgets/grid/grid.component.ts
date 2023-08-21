@@ -232,6 +232,7 @@ export class SafeGridWidgetComponent
    */
   public async onQuickAction(options: any): Promise<void> {
     this.blockModifySelectedRows = false;
+
     // Select all the records in the grid
     if (options.selectAll) {
       const query = this.queryBuilder.graphqlQuery(
@@ -251,6 +252,7 @@ export class SafeGridWidgetComponent
         this.grid.settings.query.name
       ].edges.map((x: any) => x.node.id);
     }
+
     // Select all the records in the active page
     if (options.selectPage) {
       this.grid.selectedRows = this.grid.gridData.data.map((x) => x.id);
@@ -274,51 +276,180 @@ export class SafeGridWidgetComponent
       }
     }
 
-    // Attaches the records to another one.
-    if (options.attachToRecord && this.grid.selectedRows.length > 0) {
-      this.blockModifySelectedRows = true;
-      await this.promisedAttachToRecord(this.grid.selectedRows, options);
-    }
-
     const promises: Promise<any>[] = [];
 
-    // Notifies on a channel.
-    if (options.notify && this.grid.selectedRows.length > 0) {
-      promises.push(
-        firstValueFrom(
-          this.apollo.mutate<PublishNotificationMutationResponse>({
-            mutation: PUBLISH_NOTIFICATION,
-            variables: {
-              action: options.notificationMessage
-                ? options.notificationMessage
-                : 'Records update',
-              content: this.grid.selectedItems,
-              channel: options.notificationChannel,
-            },
-          })
-        )
+    // Attaches the records to another one.
+    if (options.attachToRecord && this.grid.selectedRows.length > 0) {
+      //will block the other steps, unblocking if the opened modal was saved
+      this.blockModifySelectedRows = true;
+      await this.promisedAttachToRecord(this.grid.selectedRows, options, promises);
+    }
+
+    // Opens a form with selected records.
+    if (options.prefillForm && !this.blockModifySelectedRows) {
+      //will block the other steps, unblocking if the opened modal was saved
+      this.blockModifySelectedRows = true;
+      this.quickActionPrefillForm(options, promises);
+    }
+
+    // Auto modify the selected rows
+    if (options.modifySelectedRows && !this.blockModifySelectedRows) {
+      await this.promisedRowsModifications(
+        options.modifications,
+        this.grid.selectedRows,
       );
     }
+
+    // Notifies on a channel.
+    if (options.notify && this.grid.selectedRows.length > 0 && !this.blockModifySelectedRows) {
+      this.quickActionNotify(options, promises);
+    }
+
     // Publishes on a channel.
-    if (options.publish && this.grid.selectedRows.length > 0) {
-      promises.push(
-        firstValueFrom(
-          this.apollo.mutate<PublishMutationResponse>({
-            mutation: PUBLISH,
-            variables: {
-              ids: this.grid.selectedRows,
-              channel: options.publicationChannel,
-            },
-          })
-        )
-      );
+    if (options.publish && this.grid.selectedRows.length > 0 && !this.blockModifySelectedRows) {
+      this.quickActionPublish(options, promises);
     }
     if (promises.length > 0) {
       await Promise.all(promises);
     }
+
     // Send email using backend mail service.
-    if (options.sendMail) {
-      const templates =
+    if (options.sendMail && !this.blockModifySelectedRows) {
+      this.quickActionSendMail(options);
+    }
+
+    // Workflow only: goes to next step, or closes the workflow.
+    if ((options.goToNextStep || options.closeWorkflow) && !this.blockModifySelectedRows) {
+      this.quickActionWorkflow(options);
+    } else if (!this.blockModifySelectedRows) {
+      this.grid.reloadData();
+    }
+  }
+
+  /**
+   * Calls quickAction PrefillForm function
+   *
+   * @param options action options.
+   * @param promises array of promises
+   */
+  private async quickActionPrefillForm(options: any, promises: Promise<any>[]) {
+    const promisedRecords: Promise<any>[] = [];
+    // Fetches the record object for each selected record.
+    for (const record of this.grid.selectedItems) {
+      promisedRecords.push(
+        firstValueFrom(
+          this.apollo.query<GetRecordDetailsQueryResponse>({
+            query: GET_RECORD_DETAILS,
+            variables: {
+              id: record.id,
+            },
+          })
+        )
+      );
+    }
+    const records = (await Promise.all(promisedRecords)).map(
+      (x) => x.data.record
+    );
+
+    // Opens a modal containing the prefilled form.
+    const { SafeFormModalComponent } = await import(
+      '../../form-modal/form-modal.component'
+    );
+    const dialogRef = this.dialog.open(SafeFormModalComponent, {
+      data: {
+        template: options.prefillTargetForm,
+        prefillRecords: records,
+        askForConfirm: false,
+      },
+      autoFocus: false,
+    });
+
+    dialogRef.closed
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value: any) => {
+        if (value) {
+          if (this.blockModifySelectedRows && options.modifySelectedRows) {
+            this.promisedRowsModifications(
+              options.modifications,
+              this.grid.selectedRows,
+            );
+            //continuing the steps
+            if (options.notify && this.grid.selectedRows.length > 0) {
+              this.quickActionNotify(options, promises);
+            }
+
+            if (options.publish && this.grid.selectedRows.length > 0) {
+              this.quickActionPublish(options, promises);
+            }
+
+            if (promises.length > 0) {
+              Promise.all(promises);
+            }
+
+            if (options.sendMail) {
+              this.quickActionSendMail(options);
+            }
+
+            if (options.goToNextStep || options.closeWorkflow) {
+              this.quickActionWorkflow(options);
+            } else {
+              this.grid.reloadData();
+            }
+          }
+        }
+      });
+  }
+
+  /**
+   * Calls quickAction Notify function
+   *
+   * @param options action options.
+   * @param promises array of promises
+   */
+  private quickActionNotify(options: any, promises: Promise<any>[]) {
+    promises.push(
+      firstValueFrom(
+        this.apollo.mutate<PublishNotificationMutationResponse>({
+          mutation: PUBLISH_NOTIFICATION,
+          variables: {
+            action: options.notificationMessage
+              ? options.notificationMessage
+              : 'Records update',
+            content: this.grid.selectedItems,
+            channel: options.notificationChannel,
+          },
+        })
+      )
+    );
+  }
+
+  /**
+   * Calls quickAction Publish function
+   *
+   * @param options action options.
+   * @param promises array of promises
+   */
+  private quickActionPublish(options: any, promises: Promise<any>[]) {
+    promises.push(
+      firstValueFrom(
+        this.apollo.mutate<PublishMutationResponse>({
+          mutation: PUBLISH,
+          variables: {
+            ids: this.grid.selectedRows,
+            channel: options.publicationChannel,
+          },
+        })
+      )
+    );
+  }
+
+  /**
+   * Calls quickAction SendMail function
+   *
+   * @param options action options.
+   */
+  private async quickActionSendMail(options: any) {
+    const templates =
         this.applicationService.templates.filter((x) =>
           options.templates?.includes(x.id)
         ) || [];
@@ -377,92 +508,34 @@ export class SafeGridWidgetComponent
           );
         }
       }
-    }
+  }
 
-    // Opens a form with selected records.
-    if (options.prefillForm) {
-      const promisedRecords: Promise<any>[] = [];
-      // Fetches the record object for each selected record.
-      for (const record of this.grid.selectedItems) {
-        promisedRecords.push(
-          firstValueFrom(
-            this.apollo.query<GetRecordDetailsQueryResponse>({
-              query: GET_RECORD_DETAILS,
-              variables: {
-                id: record.id,
-              },
-            })
-          )
-        );
-      }
-      const records = (await Promise.all(promisedRecords)).map(
-        (x) => x.data.record
-      );
-
-      this.blockModifySelectedRows = true;
-
-      // Opens a modal containing the prefilled form.
-      const { SafeFormModalComponent } = await import(
-        '../../form-modal/form-modal.component'
-      );
-      const dialogRef = this.dialog.open(SafeFormModalComponent, {
-        data: {
-          template: options.prefillTargetForm,
-          prefillRecords: records,
-          askForConfirm: false,
-        },
-        autoFocus: false,
+  /**
+   * Calls quickAction Workflow function to verify if it has next step or should close workflow
+   *
+   * @param options action options.
+   */
+  private async quickActionWorkflow(options: any) {
+    if (options.goToNextStep) {
+      this.goToNextStep.emit(true);
+    } else {
+      const dialogRef = this.confirmService.openConfirmModal({
+        title: this.translate.instant(
+          'components.widget.settings.grid.buttons.callback.workflow.close'
+        ),
+        content: options.confirmationText,
+        confirmText: this.translate.instant(
+          'components.confirmModal.confirm'
+        ),
+        confirmVariant: 'primary',
       });
-
-      const savedSelectedRows = this.grid.selectedRows;
-
       dialogRef.closed
         .pipe(takeUntil(this.destroy$))
-        .subscribe((value: any) => {
-          if (value) {
-            if (this.blockModifySelectedRows && options.modifySelectedRows) {
-              this.promisedRowsModifications(
-                options.modifications,
-                savedSelectedRows
-              );
-            }
+        .subscribe((confirm: any) => {
+          if (confirm) {
+            this.workflowService.closeWorkflow();
           }
         });
-    }
-
-    // Auto modify the selected rows
-    if (options.modifySelectedRows && !this.blockModifySelectedRows) {
-      await this.promisedRowsModifications(
-        options.modifications,
-        this.grid.selectedRows
-      );
-    }
-
-    // Workflow only: goes to next step, or closes the workflow.
-    if (options.goToNextStep || options.closeWorkflow) {
-      if (options.goToNextStep) {
-        this.goToNextStep.emit(true);
-      } else {
-        const dialogRef = this.confirmService.openConfirmModal({
-          title: this.translate.instant(
-            'components.widget.settings.grid.buttons.callback.workflow.close'
-          ),
-          content: options.confirmationText,
-          confirmText: this.translate.instant(
-            'components.confirmModal.confirm'
-          ),
-          confirmVariant: 'primary',
-        });
-        dialogRef.closed
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((confirm: any) => {
-            if (confirm) {
-              this.workflowService.closeWorkflow();
-            }
-          });
-      }
-    } else {
-      this.grid.reloadData();
     }
   }
 
@@ -476,7 +549,7 @@ export class SafeGridWidgetComponent
    */
   private promisedRowsModifications(
     modifications: any[],
-    ids: any[]
+    ids: any[],
   ): Promise<any> {
     const update: any = {};
     for (const modification of modifications) {
@@ -512,7 +585,8 @@ export class SafeGridWidgetComponent
    */
   private async promisedAttachToRecord(
     selectedRecords: string[],
-    options: any
+    options: any,
+    promises: Promise<any>[]
   ): Promise<void> {
     const targetForm = options.targetForm;
     const targetFormField = options.targetFormField;
@@ -625,6 +699,34 @@ export class SafeGridWidgetComponent
                                     options.modifications,
                                     selectedRecords
                                   );
+                                  //if options.prefill will unblock only if the new opened modal be saved
+                                  if (!options.prefillForm) {
+                                    //continuing the steps
+                                    if (options.notify && this.grid.selectedRows.length > 0) {
+                                      this.quickActionNotify(options, promises);
+                                    }
+
+                                    if (options.publish && this.grid.selectedRows.length > 0) {
+                                      this.quickActionPublish(options, promises);
+                                    }
+
+                                    if (promises.length > 0) {
+                                      Promise.all(promises);
+                                    }
+
+                                    if (options.sendMail) {
+                                      this.quickActionSendMail(options);
+                                    }
+                                    
+                                    if (options.goToNextStep || options.closeWorkflow) {
+                                      this.quickActionWorkflow(options);
+                                    } else {
+                                      this.grid.reloadData();
+                                    }
+
+                                  } else {
+                                    this.quickActionPrefillForm(options, promises);
+                                  }                                  
                                 }
                               }
                             });

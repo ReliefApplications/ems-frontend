@@ -1276,7 +1276,8 @@
 							"showDetails": "******",
 							"update": "******"
 						},
-						"buttons": "******"
+						"buttons": "******",
+						"steps": "******"
 					},
 					"layouts": {
 						"add": {

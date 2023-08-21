@@ -1276,7 +1276,8 @@
 							"showDetails": "User can see full details of visible records",
 							"update": "If authorized, user can update visible records"
 						},
-						"buttons": "Quick action buttons will appear on the widget and allow you to complete any of the actions below"
+						"buttons": "Quick action buttons will appear on the widget and allow you to complete any of the actions below",
+						"steps": "The steps will be executed in the displayed order"
 					},
 					"layouts": {
 						"add": {
