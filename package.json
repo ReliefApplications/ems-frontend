@@ -1,6 +1,6 @@
 {
   "name": "oort-front",
-  "version": "2.1.0-beta.1",
+  "version": "2.1.0-beta.2",
   "license": "MIT",
   "scripts": {
     "check-i18n": "node .scripts/check-i18n",
@@ -186,4 +186,3 @@
     "url": "https://github.com/ReliefApplications/oort-frontend.git"
   }
 }
-

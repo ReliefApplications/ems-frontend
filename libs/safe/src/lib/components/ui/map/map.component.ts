@@ -402,6 +402,16 @@ export class MapComponent
     this.setMapControls(controls, initMap);
   }
 
+  /**
+   * Setup the map layers from the settings
+   *
+   * @param settings map settings
+   * @param settings.layers list of layers ids
+   * @param settings.controls available map controls
+   * @param settings.arcGisWebMap arcgis webmap
+   * @param settings.basemap arcgis basemap
+   * @param reset reset the layers
+   */
   setupMapLayers(
     settings: {
       layers: string[] | undefined;
