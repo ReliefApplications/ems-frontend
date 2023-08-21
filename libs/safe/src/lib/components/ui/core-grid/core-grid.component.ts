@@ -132,7 +132,6 @@ export class SafeCoreGridComponent
 
   // === DATA ===
   @Input() widget: any;
-  @Input() sortFields: any;
   @Input() canUpdate = false;
   public gridData: GridDataResult = { data: [], total: 0 };
   private totalCount = 0;

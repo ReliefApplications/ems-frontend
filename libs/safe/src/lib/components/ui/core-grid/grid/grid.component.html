@@ -97,20 +97,6 @@
         (showFilter ? 'common.filter.hide' : 'common.filter.show') | translate
       }}
     </button>
-    <kendo-combobox
-      class="w-fit"
-      *ngIf="
-        !!widget?.settings.widgetDisplay?.sortable &&
-        data.total &&
-        sortFields.length > 0
-      "
-      [data]="sortFields"
-      textField="label"
-      valueField="label"
-      (selectionChange)="sortData($event)"
-      [placeholder]="'models.widget.sorting.select' | translate"
-    >
-    </kendo-combobox>
     <!-- ADMIN FEATURES -->
     <ng-container *ngIf="admin">
       <span kendotooltip>

@@ -186,7 +186,6 @@ export class SafeGridComponent
   @Input() sortable = true;
   @Input() sort: SortDescriptor[] = [];
   @Output() sortChange = new EventEmitter();
-  @Input() sortFields = []; // sort fields select
 
   // === TEMPLATE ===
   @ViewChild(GridComponent)
@@ -409,19 +408,6 @@ export class SafeGridComponent
     if (!this.loadingRecords) {
       this.sort = sort;
       this.sortChange.emit(sort);
-    }
-  }
-
-  /**
-   * Handles sorting on the cards.
-   *
-   * @param e Kendo combobox selection change event
-   */
-  public sortData(e: any): void {
-    if (e) {
-      this.onSortChange([{ field: e.field, dir: e.order }]);
-    } else {
-      this.onSortChange([{ field: '', dir: 'asc' }]);
     }
   }
 
