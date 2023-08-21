@@ -27,7 +27,7 @@ import {
   EditRecordsMutationResponse,
 } from './graphql/mutations';
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
-import addCustomFunctions from '../../utils/custom-functions';
+import addCustomFunctions from '../../survey/custom-functions';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
 import { BehaviorSubject, firstValueFrom, takeUntil } from 'rxjs';

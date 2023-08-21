@@ -17,7 +17,7 @@ import {
   GetFormByIdQueryResponse,
   GET_FORM_STRUCTURE,
 } from './graphql/queries';
-import addCustomFunctions from '../../utils/custom-functions';
+import addCustomFunctions from '../../survey/custom-functions';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { EDIT_RECORD, EditRecordMutationResponse } from './graphql/mutations';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';

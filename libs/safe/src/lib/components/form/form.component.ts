@@ -21,7 +21,7 @@ import {
 import { Form } from '../../models/form.model';
 import { Record as RecordModel } from '../../models/record.model';
 import { BehaviorSubject, takeUntil } from 'rxjs';
-import addCustomFunctions from '../../utils/custom-functions';
+import addCustomFunctions from '../../survey/custom-functions';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { SafeLayoutService } from '../../services/layout/layout.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
