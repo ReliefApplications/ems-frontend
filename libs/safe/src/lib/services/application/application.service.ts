@@ -541,15 +541,17 @@ export class SafeApplicationService {
                 value: this.translate.instant('common.page.one'),
               })
             );
-            const app = this.application.getValue();
-            if (app) {
+            const application = this.application.getValue();
+            if (application) {
               const newApplication = {
-                ...app,
-                pages: app.pages?.filter((x) => x.id !== data?.restorePage.id),
+                ...application,
+                pages: application.pages?.concat([data.restorePage]),
               };
               this.application.next(newApplication);
               this.router.navigate([
-                `./applications/${app.id}/settings/archive`,
+                data.restorePage.type === ContentType.form
+                  ? `/applications/${application.id}/${data.restorePage.type}/${data.restorePage.id}`
+                  : `/applications/${application.id}/${data.restorePage.type}/${data.restorePage.content}`,
               ]);
             }
           } else {

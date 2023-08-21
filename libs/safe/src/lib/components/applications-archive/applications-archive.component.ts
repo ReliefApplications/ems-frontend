@@ -107,13 +107,19 @@ export class ApplicationsArchiveComponent
     super();
   }
 
-  onDelete(item: any): void {
+  /**
+   * Ask admin for confirmation to delete the page.
+   * Then, use app service to delete it if confirmed.
+   *
+   * @param page page to delete
+   */
+  onDelete(page: any): void {
     const dialogRef = this.confirmService.openConfirmModal({
       title: this.translate.instant('common.archive.modal.delete.title'),
       content: this.translate.instant(
         'common.archive.modal.delete.confirmationMessage',
         {
-          name: this.translate.instant('common.archive.modal.one'),
+          name: page.name || page.id,
         }
       ),
       confirmText: this.translate.instant('common.archive.modal.delete.action'),
@@ -121,18 +127,24 @@ export class ApplicationsArchiveComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        this.applicationService.deletePage(item.id);
+        this.applicationService.deletePage(page.id);
       }
     });
   }
 
-  onRestore(item: any): void {
+  /**
+   * Ask admin for confirmation to restore the page.
+   * Then, use app service to restore it if confirmed.
+   *
+   * @param page page to restore
+   */
+  onRestore(page: any): void {
     const dialogRef = this.confirmService.openConfirmModal({
       title: this.translate.instant('common.archive.modal.restore.title'),
       content: this.translate.instant(
         'common.archive.modal.restore.confirmationMessage',
         {
-          name: this.translate.instant('common.archive.modal.one'),
+          name: page.name || page.id,
         }
       ),
       confirmText: this.translate.instant(
@@ -142,7 +154,7 @@ export class ApplicationsArchiveComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        this.applicationService.restorePage(item.id);
+        this.applicationService.restorePage(page.id);
       }
     });
   }

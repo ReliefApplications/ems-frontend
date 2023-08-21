@@ -53,8 +53,9 @@
                 <ui-icon icon="restore_page" variant="grey"></ui-icon>
                 {{ 'common.archive.restore' | translate }}
               </button>
+              <ui-divider></ui-divider>
               <button uiMenuItem (click)="onDelete(element)">
-                <ui-icon icon="delete" variant="grey"></ui-icon>
+                <ui-icon icon="delete" variant="danger"></ui-icon>
                 {{ 'common.archive.delete' | translate }}
               </button>
             </ui-menu>

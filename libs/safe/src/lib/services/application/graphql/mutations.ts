@@ -81,6 +81,13 @@ export const RESTORE_PAGE = gql`
   mutation restorePage($id: ID!) {
     restorePage(id: $id) {
       id
+      name
+      type
+      content
+      createdAt
+      canSee
+      canUpdate
+      canDelete
     }
   }
 `;

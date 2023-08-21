@@ -20,21 +20,21 @@
 		},
 		"archive": {
 			"delete": "Delete",
-			"few": "Archives",
+			"few": "Archive",
 			"modal": {
 				"delete": {
 					"action": "Delete",
-					"confirmationMessage": "Do you want to delete archive {{name}}?",
+					"confirmationMessage": "Do you want to delete archived page: {{name}}?",
 					"title": "Delete?"
 				},
 				"one": "page",
 				"restore": {
 					"action": "Restore",
-					"confirmationMessage": "Do you want to restore the {{name}}?",
+					"confirmationMessage": "Do you want to restore the archived page: {{name}}?",
 					"title": "Restore?"
 				}
 			},
-			"none": "No archive list",
+			"none": "No archived items",
 			"restore": "Restore"
 		},
 		"ariaLabel": {

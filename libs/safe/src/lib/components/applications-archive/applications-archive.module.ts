@@ -6,6 +6,7 @@ import {
   SelectMenuModule,
   FormWrapperModule,
   IconModule,
+  DividerModule,
 } from '@oort-front/ui';
 import { SafeEmptyModule } from '../ui/empty/empty.module';
 import { SafeDateModule } from '../../pipes/date/date.module';
@@ -31,6 +32,7 @@ import { ButtonModule, MenuModule } from '@oort-front/ui';
     IconModule,
     SafeDateModule,
     TranslateModule,
+    DividerModule,
   ],
   exports: [ApplicationsArchiveComponent],
 })
