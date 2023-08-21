@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
@@ -32,6 +32,8 @@ export class SafeWorkflowService {
   get workflow$(): Observable<Workflow | null> {
     return this.workflow.asObservable();
   }
+
+  public nextStep = new EventEmitter<void>();
 
   /**
    * Workflow service. Handles modification of workflow ( step addition / step name update ) and some workflow actions.
