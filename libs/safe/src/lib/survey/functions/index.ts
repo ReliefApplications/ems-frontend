@@ -10,6 +10,8 @@ import nextYear from './nextYear';
 import nl2br from './nl2br';
 import weekday from './weekday';
 import getField from './getField';
+import elementAt from './elementAt';
+import getWorkflowContext from './getWorkflowContext';
 
 /** Custom functions used  */
 export const functions = [
@@ -25,4 +27,6 @@ export const functions = [
   length,
   intersect,
   getField,
+  elementAt,
+  getWorkflowContext,
 ];
