@@ -404,7 +404,10 @@ export class SafeSummaryCardComponent
           this.widget.settings.sortFields?.forEach((sortField: any) => {
             this.sortFields.push(sortField);
           });
-          if (this.contextFilters.filters.length > 0 && layoutQuery.filter.filters.length > 0) {
+          if (
+            this.contextFilters.filters.length > 0 &&
+            layoutQuery.filter.filters.length > 0
+          ) {
             layoutQuery.filter = {
               logic: 'and',
               filters: [
