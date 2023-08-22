@@ -1,4 +1,5 @@
 import { SurveyModel } from 'survey-angular';
+import { isNil } from 'lodash';
 
 /**
  * Returns the specified workflow context variable
