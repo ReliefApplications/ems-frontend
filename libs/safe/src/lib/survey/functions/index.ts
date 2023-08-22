@@ -9,6 +9,7 @@ import listRowsWithColValue from './listRowsWithColValue';
 import nextYear from './nextYear';
 import nl2br from './nl2br';
 import weekday from './weekday';
+import getField from './getField';
 
 /** Custom functions used  */
 export const functions = [
@@ -23,4 +24,5 @@ export const functions = [
   getMatrixTitles,
   length,
   intersect,
+  getField,
 ];
