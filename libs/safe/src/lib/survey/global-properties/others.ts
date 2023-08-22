@@ -29,15 +29,15 @@ export const init = (Survey: any, environment: any): void => {
   // Pass token before the request to fetch choices by URL if it's targeting SAFE API
   Survey.ChoicesRestful.onBeforeSendRequest = (
     sender: ChoicesRestful,
-    options: { request: XMLHttpRequest }
+    options: { request: { headers: Headers } }
   ) => {
     if (sender.url.includes(environment.apiUrl)) {
       const token = localStorage.getItem('idtoken');
-      options.request.setRequestHeader('Authorization', `Bearer ${token}`);
+      options.request.headers.append('Authorization', `Bearer ${token}`);
     }
   };
 
-  // // Add file option for file columns on matrix questions
+  // Add file option for file columns on matrix questions
   Survey.matrixDropdownColumnTypes.file = {
     properties: ['showPreview', 'imageHeight', 'imageWidth'],
     tabs: [
@@ -45,6 +45,20 @@ export const init = (Survey: any, environment: any): void => {
       { name: 'enableIf', index: 20 },
     ],
   };
+
+  // Adds property that clears the value when condition is met
+  serializer.addProperty('question', {
+    name: 'clearIf:condition',
+    category: 'logic',
+    visibleIndex: 4,
+    default: '',
+    isLocalizable: true,
+    onExecuteExpression: (obj: Question, res: boolean) => {
+      if (res) {
+        obj.value = null;
+      }
+    },
+  });
 
   // Adds a property that makes it so the question is validated on every value change
   serializer.addProperty('question', {

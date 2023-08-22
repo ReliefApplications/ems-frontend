@@ -133,6 +133,7 @@
 		"modifiedOn": "Modifié le ",
 		"name": "Nom",
 		"next": "Suivant",
+		"noOptions": "Aucun choix disponible",
 		"notifications": {
 			"accessDenied": "Vous n'avez pas la permission pour accéder à cet objet de type {{type}}.",
 			"accessNotProvided": "Pas d'accès fourni à cet objet de type {{type}}. {{error}}",
@@ -1596,6 +1597,7 @@
 					"static": "Statique"
 				}
 			},
+			"styling": "Modifier le style",
 			"summaryCard": {
 				"dataSource": "Source",
 				"errors": {
@@ -1958,6 +1960,7 @@
 			"display": {
 				"border": "Afficher la bordure du widget",
 				"searchable": "Autoriser la recherche",
+				"sortable": "Autoriser le tri",
 				"title": "Affichage des widgets"
 			},
 			"map": {
@@ -1968,6 +1971,16 @@
 			},
 			"scheduler": {
 				"defaultTitle": "Widget Calendrier"
+			},
+			"sorting": {
+				"add": "Ajouter un champ",
+				"delete": "Supprimer le champ de tri",
+				"field": "Champ",
+				"label": "Étiquette",
+				"management": "Gestion des champs de tri",
+				"order": "Ordre",
+				"select": "Sélectionnez un champ de tri...",
+				"title": "Tri"
 			},
 			"tooltip": {
 				"selector": {

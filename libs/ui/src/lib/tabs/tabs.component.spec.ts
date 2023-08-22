@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { TabsComponent } from './tabs.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { TabBodyHostDirective } from './directives/tab-body-host.directive';
 
 describe('TabsComponent', () => {
   let component: TabsComponent;
@@ -8,7 +10,8 @@ describe('TabsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [TabsComponent],
+      declarations: [TabsComponent, TabBodyHostDirective],
+      imports: [BrowserAnimationsModule],
     }).compileComponents();
 
     fixture = TestBed.createComponent(TabsComponent);
@@ -16,7 +19,7 @@ describe('TabsComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create an instance', () => {
     expect(component).toBeTruthy();
   });
 });

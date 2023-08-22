@@ -38,6 +38,11 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   private destroy$ = new Subject<void>();
   animationClasses = ['transition-all', 'duration-500', 'ease-in-out'] as const;
 
+  /** @returns height of element */
+  get height() {
+    return `${this.el.nativeElement.offsetHeight}px`;
+  }
+
   /**
    * Set the drawer height and width on resize
    */
@@ -145,6 +150,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
       classes.push('border-gray-200');
     }
     if (this.mode[index] === 'over') {
+      classes.push('h-full');
       classes.push('left-0');
       classes.push('top-0');
       classes.push('fixed');

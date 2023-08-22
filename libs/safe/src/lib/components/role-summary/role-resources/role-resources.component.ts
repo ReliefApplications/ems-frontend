@@ -653,12 +653,17 @@ export class RoleResourcesComponent
    * @param loading loading status
    */
   private updateValues(data: GetResourcesQueryResponse, loading: boolean) {
-    const mappedValues = data.resources.edges.map((x) => x.node);
+    const mappedValues = data.resources?.edges?.map((x) => x.node);
     this.cachedResources = updateQueryUniqueValues(
       this.cachedResources,
       mappedValues
     );
-    this.resources = this.setTableElements(mappedValues);
+    this.resources = this.setTableElements(
+      this.cachedResources.slice(
+        this.pageInfo.pageSize * this.pageInfo.pageIndex,
+        this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+      )
+    );
     this.pageInfo.length = data.resources.totalCount;
     this.pageInfo.endCursor = data.resources.pageInfo.endCursor;
     this.loading = loading;

@@ -70,16 +70,16 @@ export class TooltipDirective implements OnDestroy {
    */
   @HostListener('mouseleave')
   onMouseLeave() {
-    if (this.elToolTip) {
-      this.removeHint();
-    }
+    this.removeHint();
   }
 
   /**
    * Destroy the tooltip and stop its display
    */
   private removeHint() {
-    this.renderer.removeChild(this.document.body, this.elToolTip);
+    if (this.document.body.contains(this.elToolTip)) {
+      this.renderer.removeChild(this.document.body, this.elToolTip);
+    }
   }
 
   /**

@@ -133,6 +133,7 @@
 		"modifiedOn": "Modified On",
 		"name": "Name",
 		"next": "Next",
+		"noOptions": "No available choices",
 		"notifications": {
 			"accessDenied": "You don't have permission to see the {{type}}.",
 			"accessNotProvided": "No access provided to this {{type}}. {{error}}",
@@ -1580,6 +1581,7 @@
 					"static": "Static"
 				}
 			},
+			"styling": "Edit styling",
 			"summaryCard": {
 				"dataSource": "Data Source",
 				"errors": {
@@ -1942,6 +1944,7 @@
 			"display": {
 				"border": "Show widget border",
 				"searchable": "Allow search",
+				"sortable": "Allow sorting",
 				"title": "Widget display"
 			},
 			"map": {
@@ -1952,6 +1955,16 @@
 			},
 			"scheduler": {
 				"defaultTitle": "Scheduler Widget"
+			},
+			"sorting": {
+				"add": "Add a field",
+				"delete": "Delete sort field",
+				"field": "Field",
+				"label": "Label",
+				"management": "Sort fields",
+				"order": "Order",
+				"select": "Select a sort field...",
+				"title": "Sorting"
 			},
 			"tooltip": {
 				"selector": {

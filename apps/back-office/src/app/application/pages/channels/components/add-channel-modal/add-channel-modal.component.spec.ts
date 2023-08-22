@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddChannelModalComponent } from './add-channel.component';
+import { AddChannelModalComponent } from './add-channel-modal.component';
 
 describe('AddChannelModalComponent', () => {
   let component: AddChannelModalComponent;

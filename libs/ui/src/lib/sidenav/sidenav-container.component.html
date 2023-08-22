@@ -2,11 +2,13 @@
 <div [ngClass]="{ flex: mode[0] === 'side' }" class="w-screen overflow-y-auto">
   <!-- SIDENAV CONTENT -->
   <ng-container *ngFor="let sidenav of uiSidenavDirective; let i = index">
+    <!-- ngStyle prevent the left sidenav to have a fixed height -->
     <div
       #sidenav
-      class="will-change-transform h-full overflow-y-auto bg-white translate-x-0"
+      class="will-change-transform overflow-y-auto bg-white translate-x-0"
       [attr.data-sidenav-show]="showSidenav[i]"
       [ngClass]="resolveSidenavClasses(i)"
+      [ngStyle]="(i > 0 && { height: height }) || null"
     >
       <div class="flex flex-col h-full"></div>
     </div>

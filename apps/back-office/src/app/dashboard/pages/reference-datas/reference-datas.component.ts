@@ -325,9 +325,12 @@ export class ReferenceDatasComponent
       this.cachedReferenceDatas,
       mappedValues
     );
-    this.dataSource = mappedValues;
     this.pageInfo.length = data.referenceDatas.totalCount;
     this.pageInfo.endCursor = data.referenceDatas.pageInfo.endCursor;
+    this.dataSource = this.cachedReferenceDatas.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
     this.loading = loading;
     this.filterLoading = false;
   }

@@ -181,7 +181,7 @@ export class SafeReferenceDataService {
           ? jsonpath.query(data, referenceData.path)
           : data;
         // Cache items
-        if (!isCached) {
+        if (isCached) {
           const { items: cache } = (await localForage.getItem(
             cacheKey
           )) as CachedItems;
@@ -196,8 +196,8 @@ export class SafeReferenceDataService {
                 cache.push(newItem);
               }
             }
+            items = cache || [];
           }
-          items = cache || [];
         }
         localForage.setItem(cacheKey, { items, valueField });
         localStorage.setItem(

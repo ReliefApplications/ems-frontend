@@ -74,6 +74,9 @@ export class SafeGridWidgetComponent
   public layout: Layout | null = null;
   public layouts: Layout[] = [];
 
+  // === SORT FIELDS SELECT ===
+  public sortFields: any[] = [];
+
   // === AGGREGATION ===
   public aggregation: Aggregation | null = null;
   public aggregations: Aggregation[] = [];
@@ -190,6 +193,11 @@ export class SafeGridWidgetComponent
               this.status = {
                 error: true,
               };
+            } else {
+              // Build list of available sort fields
+              this.widget.settings.sortFields?.forEach((sortField: any) => {
+                this.sortFields.push(sortField);
+              });
             }
             this.gridSettings = {
               ...this.settings,
@@ -223,6 +231,20 @@ export class SafeGridWidgetComponent
         return;
       }
     }
+  }
+
+  /**
+   * Query sort change of the grid.
+   *
+   * @param e sort event
+   */
+  public onSort(e: any): void {
+    this.coreGridComponent?.onSortChange([
+      {
+        field: e.field,
+        dir: e.order,
+      },
+    ]);
   }
 
   /**
@@ -629,6 +651,16 @@ export class SafeGridWidgetComponent
       ...this.layout,
       ...{ template: get(this.settings, 'template', null) },
     };
+
+    // select sort fields that match the current layout
+    this.sortFields = [];
+    const layoutFieldsName = this.layout.query.fields.map((a: any) => a.name);
+
+    this.widget.settings.sortFields?.forEach((sortField: any) => {
+      if (layoutFieldsName.includes(sortField.field)) {
+        this.sortFields.push(sortField);
+      }
+    });
   }
 
   /**

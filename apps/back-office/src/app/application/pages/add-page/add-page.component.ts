@@ -9,19 +9,13 @@ import {
   ContentType,
   CONTENT_TYPES,
   WIDGET_TYPES,
-  Form,
   SafeApplicationService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
-import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
+import { takeUntil } from 'rxjs';
 import { AddFormMutationResponse, ADD_FORM } from './graphql/mutations';
 import { GET_FORMS, GetFormsQueryResponse } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
-import { ApolloQueryResult } from '@apollo/client';
-import {
-  getCachedValues,
-  updateQueryUniqueValues,
-} from '../../../utils/update-queries';
 import { SnackbarService } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 
@@ -47,16 +41,7 @@ export class AddPageComponent
   // === DATA ===
   public contentTypes = CONTENT_TYPES;
   public availableWidgets: any[] = WIDGET_TYPES;
-  private forms = new BehaviorSubject<Form[]>([]);
-  public forms$!: Observable<Form[]>;
-  private cachedForms: Form[] = [];
-  private formsQuery!: QueryRef<GetFormsQueryResponse>;
-  private pageInfo = {
-    endCursor: '',
-    hasNextPage: true,
-  };
-  private loading = true;
-  public loadingMore = false;
+  public formsQuery!: QueryRef<GetFormsQueryResponse>;
 
   // === REACTIVE FORM ===
   public pageForm: UntypedFormGroup = new UntypedFormGroup({});
@@ -96,26 +81,9 @@ export class AddPageComponent
           query: GET_FORMS,
           variables: {
             first: ITEMS_PER_PAGE,
-            afterCursor: null,
-            filter: {
-              logic: 'and',
-              filters: [
-                {
-                  field: 'name',
-                  operator: 'contains',
-                  value: '',
-                },
-              ],
-            },
+            sortField: 'name',
           },
         });
-
-        this.forms$ = this.forms.asObservable();
-        this.formsQuery.valueChanges
-          .pipe(takeUntil(this.destroy$))
-          .subscribe((results) => {
-            this.updateValues(results.data, results.loading);
-          });
         contentControl.setValidators([Validators.required]);
         contentControl.updateValueAndValidity();
       } else {
@@ -274,89 +242,24 @@ export class AddPageComponent
   }
 
   /**
-   * Fetches next page of forms to add to list.
+   * Update query based on text search.
    *
-   * @param value boolean that decides wether a next page of forms should be fetched
+   * @param search Search text from the graphql select
    */
-  public onScrollDataSource(value: boolean): void {
-    if (!this.loadingMore && this.pageInfo.hasNextPage) {
-      this.loadingMore = true;
-      this.fetchMoreForms(value);
-    }
-  }
-
-  /**
-   * Filters forms by name
-   *
-   * @param filter string used to filter.
-   */
-  public onFilterDataSource(filter: string): void {
-    if (!this.loadingMore) {
-      this.loadingMore = true;
-      this.fetchMoreForms(false, filter);
-    }
-  }
-
-  /**
-   * Fetches more forms using filtering and pagination.
-   *
-   * @param nextPage boolean to indicate if we must fetch the next page.
-   * @param filter the forms fetched must respect this filter
-   */
-  public fetchMoreForms(nextPage: boolean = false, filter: string = '') {
-    const variables: any = {
-      first: ITEMS_PER_PAGE,
-      afterCursor: nextPage ? this.pageInfo.endCursor : null,
+  onSearchChange(search: string): void {
+    const variables = this.formsQuery.variables;
+    this.formsQuery.refetch({
+      ...variables,
       filter: {
         logic: 'and',
         filters: [
           {
             field: 'name',
             operator: 'contains',
-            value: filter,
+            value: search,
           },
         ],
       },
-    };
-    const cachedValues: GetFormsQueryResponse = getCachedValues(
-      this.apollo.client,
-      GET_FORMS,
-      variables
-    );
-    if (filter || !nextPage) {
-      this.cachedForms = [];
-    }
-    if (cachedValues) {
-      this.updateValues(cachedValues, false);
-    } else {
-      if (filter) {
-        this.formsQuery.refetch(variables);
-      } else {
-        this.formsQuery
-          .fetchMore({
-            variables,
-          })
-          .then((results: ApolloQueryResult<GetFormsQueryResponse>) => {
-            this.updateValues(results.data, results.loading);
-          });
-      }
-    }
-  }
-
-  /**
-   * Updates local list with given data
-   *
-   * @param data New values to update forms
-   * @param loading Loading state
-   */
-  private updateValues(data: GetFormsQueryResponse, loading: boolean) {
-    this.cachedForms = updateQueryUniqueValues(
-      this.cachedForms,
-      data.forms.edges.map((x) => x.node),
-      'id'
-    );
-    this.forms.next(this.cachedForms);
-    this.pageInfo = data.forms.pageInfo;
-    this.loadingMore = loading;
+    });
   }
 }

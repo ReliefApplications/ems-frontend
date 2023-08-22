@@ -1,10 +1,9 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
-import { SafeButtonModule } from '../../button/button.module';
-import { SafeIconModule } from '../../icon/icon.module';
 import { LegendDefinition } from '../interfaces/layer-legend.type';
 import { SafeIconDisplayModule } from '../../../../pipes/icon-display/icon-display.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { ButtonModule, IconModule } from '@oort-front/ui';
 
 /**
  * Map legend component
@@ -14,8 +13,8 @@ import { TranslateModule } from '@ngx-translate/core';
   selector: 'safe-map-legend',
   imports: [
     CommonModule,
-    SafeButtonModule,
-    SafeIconModule,
+    IconModule,
+    ButtonModule,
     SafeIconDisplayModule,
     TranslateModule,
   ],

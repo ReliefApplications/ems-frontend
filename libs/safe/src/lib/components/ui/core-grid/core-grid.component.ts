@@ -519,12 +519,27 @@ export class SafeCoreGridComponent
     } else {
       this.updatedItems.push({ id: item.id, ...value });
     }
-    Object.assign(
-      this.items.find((x) => x.id === item.id),
-      value
-    );
-    item.saved = false;
-    this.loadItems();
+
+    // Use the draft option to apply triggers, and then update the data
+    this.apollo
+      .mutate<EditRecordMutationResponse>({
+        mutation: EDIT_RECORD,
+        variables: {
+          id: item.id,
+          data: value,
+          draft: true,
+        },
+      })
+      .subscribe((res) => {
+        Object.assign(
+          this.items.find((x) => x.id === item.id),
+          res.data?.editRecord.data
+        );
+        item.saved = false;
+        const index = this.updatedItems.findIndex((x) => x.id === item.id);
+        this.updatedItems.splice(index, 1, item);
+        this.loadItems();
+      });
   }
 
   /**
@@ -1291,7 +1306,7 @@ export class SafeCoreGridComponent
     this.pageSize = event.take;
     this.pageSizeChanged.emit(this.pageSize);
     this.dataQuery
-      .refetch({
+      ?.refetch({
         first: this.pageSize,
         skip: this.skip,
         filter: this.queryFilter,
