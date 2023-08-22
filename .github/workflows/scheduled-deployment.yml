@@ -12,7 +12,7 @@ jobs:
       matrix:
         include:
           - environment: OORT_DEV
-            ref: alpha
+            ref: 2.1.x
     environment:
       name: ${{ matrix.environment }}
     steps:

@@ -49,9 +49,6 @@ export class WebmapSelectComponent
 {
   public searchControl = new UntypedFormControl('');
 
-  private onTouched!: any;
-  private onChanged!: any;
-
   public value = '';
   public items = new BehaviorSubject<any[]>([]);
   public items$ = this.items.asObservable();
@@ -61,6 +58,11 @@ export class WebmapSelectComponent
   private scrollListener!: any;
   public selectedLabel = '';
   public showHiddenOption = false;
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  private onTouched = () => {};
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+  private onChanged = (_: any) => {};
 
   /**
    * Map Properties of Map widget.
@@ -114,7 +116,7 @@ export class WebmapSelectComponent
    *
    * @param fn callback
    */
-  public registerOnChange(fn: any): void {
+  public registerOnChange(fn: (_: any) => void): void {
     this.onChanged = fn;
   }
 
@@ -123,7 +125,7 @@ export class WebmapSelectComponent
    *
    * @param fn callback
    */
-  public registerOnTouched(fn: any): void {
+  public registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 

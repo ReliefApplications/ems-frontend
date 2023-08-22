@@ -1,11 +1,15 @@
-<ui-dialog size="medium">
-  <ng-container ngProjectAs="content">
+<ui-dialog size="big">
+  <ng-container ngProjectAs="content" class="flex flex-col">
     <!-- Show readable value of the schedule -->
     <ui-alert *ngIf="control.valid" variant="primary" class="mb-6">
       {{ control.value | safeReadableCron }}
     </ui-alert>
     <!-- Cron editor -->
-    <cron-editor [formControl]="control" [options]="cronOptions"></cron-editor>
+    <cron-editor
+      [formControl]="control"
+      [options]="cronOptions"
+      class="grow"
+    ></cron-editor>
   </ng-container>
   <ng-container ngProjectAs="actions">
     <!-- Modal actions -->

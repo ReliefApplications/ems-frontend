@@ -87,10 +87,12 @@ export class SidenavControlsMenuItemComponent implements OnInit, OnDestroy {
     const layers = this.getChildrenLayers();
     if (this.checked) {
       layers.forEach((layer) => {
+        (layer as any).shouldDisplay = true;
         this.map.addLayer(layer);
       });
     } else {
       layers.forEach((layer) => {
+        (layer as any).shouldDisplay = false;
         this.map.removeLayer(layer);
       });
     }
@@ -119,7 +121,9 @@ export class SidenavControlsMenuItemComponent implements OnInit, OnDestroy {
      */
     function traverse(layer: L.Control.Layers.TreeObject) {
       if (!layer.children) {
-        if (layer.layer) layers.push(layer.layer);
+        if (layer.layer) {
+          layers.push(layer.layer);
+        }
       } else {
         layer.children.forEach((child) => {
           traverse(child);
@@ -142,8 +146,11 @@ export class SidenavControlsMenuItemComponent implements OnInit, OnDestroy {
       // It has to be set BEFORE we call onAdd / onRemove methods of the layer
       // By doing that, we ensure that when zooming in / out, we keep the visibility status of the layer, regardless of its configuration
       layer.shouldDisplay = !this.checked;
-      if (this.checked) this.map.removeLayer(layer);
-      else this.map.addLayer(layer);
+      if (this.checked) {
+        this.map.removeLayer(layer);
+      } else {
+        this.map.addLayer(layer);
+      }
       this.checkedChange.emit();
     }
   }

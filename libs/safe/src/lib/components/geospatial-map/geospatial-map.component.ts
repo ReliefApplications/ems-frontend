@@ -81,7 +81,7 @@ export class GeospatialMapComponent
     pmIgnore: false,
     worldCopyJump: true,
     controls: {
-      timedimension: false,
+      // timedimension: false,
       download: false,
       legend: false,
       measure: true,
@@ -92,7 +92,7 @@ export class GeospatialMapComponent
   };
 
   // Layer to edit
-  public selectedLayer: any;
+  public selectedLayer?: L.Layer;
   public controls: any = {
     position: 'topright',
     drawText: false,
@@ -105,6 +105,8 @@ export class GeospatialMapComponent
     rotateMode: false,
     editMode: false,
   };
+
+  private disableGeomanToolsFlag = false;
 
   // output
   private timeout: ReturnType<typeof setTimeout> | null = null;
@@ -162,6 +164,50 @@ export class GeospatialMapComponent
     });
   }
 
+  /**
+   * Disables/Enables all buttons from geoman tools if there is a current action on going or finished
+   *
+   * @param triggeredButton Button clicked by user
+   * @param e event triggered from geoman tools
+   */
+  private disableGeomanTools(triggeredButton: string, e: any) {
+    // If we are clicking on the button itself, we are starting/ending an action
+    if (e.type === 'pm:buttonclick') {
+      this.disableGeomanToolsFlag = !this.disableGeomanToolsFlag;
+    } else {
+      // If is another type of event it's always a finished action, therefor enable geoman tools
+      this.disableGeomanToolsFlag = false;
+    }
+    const buttons = Object.keys(
+      (this.mapComponent?.map.pm.Toolbar as any).buttons
+    );
+    buttons.forEach((button) => {
+      if (
+        (button !== triggeredButton && button !== 'drawMarker') ||
+        (triggeredButton !== 'drawMarker' &&
+          button === 'drawMarker' &&
+          this.noLayerContent())
+      ) {
+        this.mapComponent?.map.pm.Toolbar.setButtonDisabled(
+          button,
+          this.disableGeomanToolsFlag
+        );
+      }
+    });
+  }
+
+  /**
+   * Check if there is no marker set in the current geospatial map
+   *
+   * @returns true if there is any content, false otherwise
+   */
+  private noLayerContent(): boolean {
+    const containsPointMarker = (feature: any) =>
+      feature.geometry.type === 'Point';
+    const content = getMapFeature(this.mapComponent?.map);
+    return !content || !containsPointMarker(content);
+  }
+
   /** Set geoman listeners */
   private setUpPmListeners() {
     // By default all drawn layer types have this property to false except for markers and circleMarkers
@@ -186,6 +232,7 @@ export class GeospatialMapComponent
             properties: this.geoForm.value,
           });
         });
+        this.disableGeomanTools('drawMarker', l);
         // If we add a Marker, we will disable the control to set new markers(currently we want to add just one)
         this.mapComponent?.map.pm.Toolbar.setButtonDisabled('drawMarker', true);
       }
@@ -211,28 +258,19 @@ export class GeospatialMapComponent
         }
       });
     });
+    this.mapComponent?.map.on('pm:buttonclick', (e) => {
+      this.disableGeomanTools(e.btnName, e);
+    });
+
+    this.mapComponent?.map.on('pm:actionclick', (e) => {
+      this.disableGeomanTools(e.btnName, e);
+    });
 
     // updates question value on removing shapes
     this.mapComponent?.map.on('pm:remove', () => {
-      // As we can only set one marker per geospatial question
-      // We automatically hit the finish button for removal mode after we remove layer
-      // So the user can set a new layer without confirming(click on 'Finish') the removal action and bugging the marker set
-      const finishButton = (
-        this.mapComponent?.map.pm.Toolbar as any
-      ).buttons.removalMode.buttonsDomNode.querySelector('.action-finishMode');
-      if (finishButton) {
-        (finishButton as HTMLAnchorElement).click();
-      }
-      this.selectedLayer = null;
-      const containsPointMarker = (feature: any) =>
-        feature.geometry.type === 'Point';
-      const content = getMapFeature(this.mapComponent?.map);
+      this.selectedLayer = undefined;
       // If no markers, we enable the point marker control again
-      if (!content || !containsPointMarker(content)) {
-        this.mapComponent?.map.pm.Toolbar.setButtonDisabled(
-          'drawMarker',
-          false
-        );
+      if (this.noLayerContent()) {
         this.geoForm.setValue(DEFAULT_GEOCODING);
         this.mapChange.emit();
       }

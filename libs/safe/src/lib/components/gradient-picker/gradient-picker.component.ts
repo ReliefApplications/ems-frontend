@@ -3,18 +3,14 @@ import {
   Component,
   ElementRef,
   HostBinding,
-  Inject,
   Input,
   OnDestroy,
   Optional,
   Self,
+  forwardRef,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
-import {
-  MatLegacyFormField as MatFormField,
-  MatLegacyFormFieldControl as MatFormFieldControl,
-  MAT_LEGACY_FORM_FIELD as MAT_FORM_FIELD,
-} from '@angular/material/legacy-form-field';
+import { FormControlComponent } from '@oort-front/ui';
 import { Subject } from 'rxjs';
 
 export type Gradient = { color: string; ratio: number }[];
@@ -30,16 +26,14 @@ type FormFieldValue = Gradient | null;
   styleUrls: ['./gradient-picker.component.scss'],
   providers: [
     {
-      provide: MatFormFieldControl,
-      useExisting: GradientPickerComponent,
+      provide: FormControlComponent,
+      useExisting: forwardRef(() => GradientPickerComponent),
     },
   ],
 })
 export class GradientPickerComponent
-  implements
-    ControlValueAccessor,
-    MatFormFieldControl<FormFieldValue>,
-    OnDestroy
+  extends FormControlComponent
+  implements ControlValueAccessor, OnDestroy
 {
   static nextId = 0;
   public showList = false;
@@ -160,14 +154,13 @@ export class GradientPickerComponent
    * Gradient picker component
    *
    * @param elementRef shared element ref service
-   * @param formField MatFormField
    * @param ngControl form control shared service
    */
   constructor(
     private elementRef: ElementRef<HTMLElement>,
-    @Optional() @Inject(MAT_FORM_FIELD) public formField: MatFormField,
     @Optional() @Self() public ngControl: NgControl
   ) {
+    super();
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
@@ -216,7 +209,7 @@ export class GradientPickerComponent
    *
    * @param fn onChange function from the parent form
    */
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (_: any) => void): void {
     this.onChange = fn;
   }
 
@@ -225,7 +218,7 @@ export class GradientPickerComponent
    *
    * @param fn onTouched function from the parent form
    */
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 

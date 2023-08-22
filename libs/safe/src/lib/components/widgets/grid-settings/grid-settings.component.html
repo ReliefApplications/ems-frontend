@@ -65,6 +65,18 @@
       ></safe-tab-buttons>
     </ng-template>
   </ui-tab>
+  <!-- Context filter settings -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="filter_list" [size]="24"></ui-icon>
+      <span>{{ 'models.dashboard.dashboardFilter' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <safe-contextual-filters-settings
+        [form]="formGroup"
+      ></safe-contextual-filters-settings>
+    </ng-template>
+  </ui-tab>
   <!-- Widget display options -->
   <ui-tab>
     <ng-container ngProjectAs="label">
@@ -76,7 +88,36 @@
       <span>{{ 'models.widget.display.title' | translate }}</span>
     </ng-container>
     <ng-template uiTabContent>
-      <safe-display-settings [formGroup]="formGroup"></safe-display-settings>
+      <safe-display-settings [formGroup]="formGroup">
+        <!-- Specific settings for grid -->
+        <ui-toggle
+          *ngIf="formGroup.get('widgetDisplay.sortable')"
+          [formControl]="$any(formGroup.get('widgetDisplay.sortable'))"
+        >
+          <ng-container ngProjectAs="label">
+            {{ 'models.widget.display.sortable' | translate }}
+          </ng-container>
+        </ui-toggle>
+      </safe-display-settings>
+    </ng-template>
+  </ui-tab>
+  <!-- Widget filters options -->
+  <ui-tab *ngIf="formGroup?.get('widgetDisplay.sortable')?.value">
+    <ng-container ngProjectAs="label">
+      <ui-icon
+        icon="filter_alt"
+        [size]="24"
+        [uiTooltip]="'models.widget.sorting.title' | translate"
+      ></ui-icon>
+      <span>{{ 'models.widget.sorting.title' | translate }}</span>
+    </ng-container>
+
+    <ng-template uiTabContent>
+      <safe-sorting-settings
+        [fields]="fields"
+        [formArray]="$any(formGroup.get('sortFields'))"
+        [formGroup]="formGroup"
+      ></safe-sorting-settings>
     </ng-template>
   </ui-tab>
 </ui-tabs>

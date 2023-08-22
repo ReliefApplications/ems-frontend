@@ -11,9 +11,11 @@ import {
   ViewChild,
   ViewChildren,
 } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 import { SidenavDirective } from './sidenav.directive';
 import { Subject, takeUntil } from 'rxjs';
 import { SidenavPositionTypes, SidenavTypes } from './types/sidenavs';
+import { filter } from 'rxjs/operators';
 
 /**
  * UI Sidenav component
@@ -25,8 +27,9 @@ import { SidenavPositionTypes, SidenavTypes } from './types/sidenavs';
 })
 export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   @ContentChildren(SidenavDirective) uiSidenavDirective!: SidenavDirective[];
-  @ViewChild('content') content!: ElementRef;
+  @ViewChild('contentContainer') contentContainer!: ElementRef;
   @ViewChildren('sidenav') sidenav!: QueryList<any>;
+  @ViewChild('contentWrapper') contentWrapper!: ElementRef;
 
   public showSidenav: boolean[] = [];
   public mode: SidenavTypes[] = [];
@@ -34,6 +37,11 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   public visible: boolean[] = [];
   private destroy$ = new Subject<void>();
   animationClasses = ['transition-all', 'duration-500', 'ease-in-out'] as const;
+
+  /** @returns height of element */
+  get height() {
+    return `${this.el.nativeElement.offsetHeight}px`;
+  }
 
   /**
    * Set the drawer height and width on resize
@@ -54,14 +62,29 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
    * @param renderer Renderer2
    * @param cdr ChangeDetectorRef
    * @param el elementRef
+   * @param router Angular router
    */
   constructor(
     private renderer: Renderer2,
     private cdr: ChangeDetectorRef,
-    public el: ElementRef
+    public el: ElementRef,
+    private router: Router
   ) {}
 
   ngAfterViewInit() {
+    // Listen to router events to auto scroll to top of the view
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.contentWrapper.nativeElement.scroll({
+          top: 0,
+          left: 0,
+          behavior: 'smooth',
+        });
+      });
     // Initialize width and show sidenav value
     this.uiSidenavDirective.forEach((sidenavDirective, index) => {
       this.showSidenav[index] = sidenavDirective.opened;
@@ -121,19 +144,20 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
     if (this.position[index] === 'start') {
       classes.push("data-[sidenav-show='false']:-translate-x-full");
       classes.push("data-[sidenav-show='false']:w-0");
-      classes.push('z-[999]');
+      classes.push('z-[1002]');
       classes.push('w-60');
       classes.push('border-r');
       classes.push('border-gray-200');
     }
     if (this.mode[index] === 'over') {
+      classes.push('h-full');
       classes.push('left-0');
       classes.push('top-0');
       classes.push('fixed');
     }
     if (this.position[index] === 'end') {
-      classes.push('absolute ');
-      classes.push('right-0 ');
+      classes.push('absolute');
+      classes.push('right-0');
       classes.push("data-[sidenav-show='false']:translate-x-full");
       classes.push('z-[997]');
       classes.push(
@@ -148,7 +172,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
    */
   private setTransitionForContent() {
     this.animationClasses.forEach((aClass) => {
-      this.renderer.addClass(this.content.nativeElement, aClass);
+      this.renderer.addClass(this.contentContainer.nativeElement, aClass);
       this.sidenav.forEach((side) => {
         this.renderer.addClass(side.nativeElement, aClass);
       });

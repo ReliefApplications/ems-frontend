@@ -147,8 +147,18 @@ export const createClusterDivIcon = (
   const size =
     (childCount / 50) * (MAX_CLUSTER_SIZE - MIN_CLUSTER_SIZE) +
     MIN_CLUSTER_SIZE;
-  const mainColor = Color.rgb(color).fade(0.2).toString();
-  const ringColor = Color.rgb(color).fade(0.7).toString();
+  const mainColor = Color.rgb(
+    // eslint-disable-next-line no-extra-boolean-cast
+    Boolean(color) ? color : DEFAULT_MARKER_ICON_OPTIONS.color
+  )
+    .fade(0.2)
+    .toString();
+  const ringColor = Color.rgb(
+    // eslint-disable-next-line no-extra-boolean-cast
+    Boolean(color) ? color : DEFAULT_MARKER_ICON_OPTIONS.color
+  )
+    .fade(0.7)
+    .toString();
   const styles = `
   background-color: ${mainColor};
   opacity: ${opacity};

@@ -88,10 +88,8 @@ export class DataTemplateService {
    * @returns parsed href
    */
   public renderLink(href: string) {
-    console.log(href);
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
-    console.log(application);
     return parseHtml(href, null, [], this.getPages(application), []);
   }
 

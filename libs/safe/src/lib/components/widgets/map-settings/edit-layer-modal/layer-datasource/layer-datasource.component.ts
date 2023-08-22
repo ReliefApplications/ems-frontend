@@ -10,7 +10,13 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { takeUntil, BehaviorSubject, Observable, Subject } from 'rxjs';
+import {
+  takeUntil,
+  BehaviorSubject,
+  Observable,
+  Subject,
+  distinctUntilChanged,
+} from 'rxjs';
 import { Resource } from '../../../../../models/resource.model';
 import { ReferenceData } from '../../../../../models/reference-data.model';
 import { Aggregation } from '../../../../../models/aggregation.model';
@@ -26,7 +32,7 @@ import {
   GET_REFERENCE_DATA,
 } from '../../graphql/queries';
 import { AddLayoutModalComponent } from '../../../../grid-layout/add-layout-modal/add-layout-modal.component';
-import { get } from 'lodash';
+import { get, isEqual } from 'lodash';
 import { AddAggregationModalComponent } from '../../../../aggregation/add-aggregation-modal/add-aggregation-modal.component';
 import { SafeEditLayoutModalComponent } from '../../../../grid-layout/edit-layout-modal/edit-layout-modal.component';
 import { SafeGridLayoutService } from '../../../../../services/grid-layout/grid-layout.service';
@@ -34,7 +40,7 @@ import { SafeAggregationService } from '../../../../../services/aggregation/aggr
 import { SafeEditAggregationModalComponent } from '../../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
 import { FormControl, FormGroup } from '@angular/forms';
 import { SafeMapLayersService } from '../../../../../services/map/map-layers.service';
-import { Fields } from '../layer-fields/layer-fields.component';
+import { Fields } from '../../../../../models/layer.model';
 import { GraphQLSelectComponent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 
@@ -132,20 +138,22 @@ export class LayerDatasourceComponent
     // If the form has a resource, get info from
     const resourceID = this.formGroup.value.resource;
     if (resourceID) {
-      const layoutID = this.formGroup.value.layout;
-      const aggregationID = this.formGroup.value.aggregation;
       this.resourceQuery.subscribe((data: GetResourceQueryResponse | null) => {
+        const layoutID = this.formGroup.value.layout;
+        const aggregationID = this.formGroup.value.aggregation;
         if (data) {
           this.resource = data.resource;
           if (layoutID) {
-            this.layout = get(data, 'resource.layouts.edges[0].node', null);
+            this.layout =
+              data.resource.layouts?.edges.find(
+                (layout) => layout.node.id === layoutID
+              )?.node ?? null;
           } else {
             if (aggregationID) {
-              this.aggregation = get(
-                data,
-                'resource.aggregations.edges[0].node',
-                null
-              );
+              this.aggregation =
+                data.resource.aggregations?.edges.find(
+                  (layout) => layout.node.id === aggregationID
+                )?.node ?? null;
             }
           }
         }
@@ -162,15 +170,25 @@ export class LayerDatasourceComponent
     // Listen to resource changes
     this.formGroup
       .get('resource')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(
+        distinctUntilChanged((prev, next) => isEqual(prev, next)),
+        takeUntil(this.destroy$)
+      )
       .subscribe((resourceID) => {
         this.resource =
           this.resourceSelect?.elements
             .getValue()
             .find((x) => x.id === resourceID) || null;
 
-        this.formGroup.get('layout')?.setValue(null);
-        this.formGroup.get('aggregation')?.setValue(null);
+        this.formGroup.get('layout')?.setValue(null, { emitEvent: false });
+        this.formGroup.get('aggregation')?.setValue(null, { emitEvent: false });
+        this.formGroup.get('geoField')?.setValue(null, { emitEvent: false });
+        this.formGroup
+          .get('latitudeField')
+          ?.setValue(null, { emitEvent: false });
+        this.formGroup
+          .get('longitudeField')
+          ?.setValue(null, { emitEvent: false });
         this.layout = null;
         this.aggregation = null;
       });
@@ -187,9 +205,8 @@ export class LayerDatasourceComponent
         })
         .subscribe(({ data }) => {
           this.refData = data.referenceData;
-          console.log(this.getFieldsFromRefData(this.refData.fields || []));
           this.fields.next(
-            this.getFieldsFromRefData(this.refData.fields || [])
+            this.getFieldsFromRefData(this.refData?.fields || [])
           );
         });
     }
@@ -204,7 +221,6 @@ export class LayerDatasourceComponent
             .getValue()
             .find((x) => x.id === refDataID) || null;
         if (this.refData) {
-          console.log(this.getFieldsFromRefData(this.refData.fields || []));
           this.fields.next(
             this.getFieldsFromRefData(this.refData.fields || [])
           );
@@ -356,5 +372,19 @@ export class LayerDatasourceComponent
           type: field.type,
         } as Fields;
       });
+  }
+
+  /**
+   * Reset given form field value if there is a value previously to avoid triggering
+   * not necessary actions
+   *
+   * @param formField Current form field
+   * @param event click event
+   */
+  clearFormField(formField: string, event: Event) {
+    if (this.formGroup.get(formField)?.value) {
+      this.formGroup.get(formField)?.setValue(null);
+    }
+    event.stopPropagation();
   }
 }

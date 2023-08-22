@@ -37,6 +37,8 @@ import { FullScreenModule } from './directives/fullscreen/fullscreen.module';
 import { DashboardFilterModule } from './components/dashboard-filter/dashboard-filter.module';
 import { ButtonActionModule } from './components/button-action/button-action.module';
 import { GraphQLSelectModule } from '@oort-front/ui';
+import { SafeSortingSettingsModule } from './components/widgets/common/sorting-settings/sorting-settings.module';
+import { SafeWidgetChoiceModule } from './components/widget-choice/widget-choice.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -50,6 +52,7 @@ import { GraphQLSelectModule } from '@oort-front/ui';
     SafeGridSettingsModule,
     SafeMapSettingsModule,
     SafeWidgetGridModule,
+    SafeSortingSettingsModule,
     SafeUsersModule,
     SafeRolesModule,
     SafeRecordHistoryModule,
@@ -67,6 +70,7 @@ import { GraphQLSelectModule } from '@oort-front/ui';
     MapModule,
     DashboardFilterModule,
     ButtonActionModule,
+    SafeWidgetChoiceModule,
     // === Pipes ===
     SafeDateModule,
     SafeReadableCronModule,

@@ -15,10 +15,10 @@
         <ui-icon
           *ngIf="dataItem.value !== 'coordinates'"
           (click)="editLabel(dataItem)"
-          class="hidden group-hover:block"
+          class="!hidden group-hover:!block"
           icon="edit"
-          >
-          </ui-icon>
+        >
+        </ui-icon>
       </div>
     </ng-template>
   </kendo-listbox>
@@ -36,7 +36,7 @@
         <ui-icon
           *ngIf="dataItem.value !== 'coordinates'"
           (click)="editLabel(dataItem)"
-          class="hidden group-hover:block"
+          class="!hidden group-hover:!block"
           icon="edit"
         >
         </ui-icon>

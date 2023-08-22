@@ -152,7 +152,7 @@ export class SafeRecordDropdownComponent
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
       50
     ) {
-      if (!this.loading && this.pageInfo.hasNextPage && this.resourceId) {
+      if (!this.loading && this.pageInfo?.hasNextPage && this.resourceId) {
         this.loading = true;
         this.recordsQuery
           .fetchMore({

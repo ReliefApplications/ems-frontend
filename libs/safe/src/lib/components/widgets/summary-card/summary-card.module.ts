@@ -11,11 +11,14 @@ import {
   ButtonModule,
   PaginatorModule,
   SpinnerModule,
+  SelectMenuModule,
+  FormWrapperModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeSkeletonModule } from '../../../directives/skeleton/skeleton.module';
+import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 
 /** Summary Card Widget Module */
 @NgModule({
@@ -36,6 +39,9 @@ import { SafeSkeletonModule } from '../../../directives/skeleton/skeleton.module
     SafeSkeletonModule,
     PaginatorModule,
     SpinnerModule,
+    DropDownsModule,
+    SelectMenuModule,
+    FormWrapperModule,
   ],
   exports: [SafeSummaryCardComponent],
 })
