@@ -15,7 +15,7 @@ import { isEqual } from 'lodash';
  * @param params params passed to the function
  * @returns The list of rows that have that value in the column.
  */
-export default function (this: { survey: SurveyModel }, params: any[]) {
+function listRowsWithColValue(this: { survey: SurveyModel }, params: any[]) {
   const [questionName, colName] = params;
   if (!questionName || !colName) return [];
 
@@ -49,3 +49,5 @@ export default function (this: { survey: SurveyModel }, params: any[]) {
   const rows = Object.keys(matrix);
   return rows.filter((row) => isEqual(matrix[row]?.[colName], colValue));
 }
+
+export default listRowsWithColValue;

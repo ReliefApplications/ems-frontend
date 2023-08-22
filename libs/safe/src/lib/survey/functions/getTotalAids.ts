@@ -8,10 +8,7 @@ import { SurveyModel } from 'survey-angular';
  * @param params Params passed to the function
  * @returns The total number of aids
  */
-export default function (this: { survey: SurveyModel }, params: any[]) {
-  // const startDate = new Date(this.survey.getValue('start'));
-  // const endDate = new Date(this.survey.getValue('end'));
-  // const aidFrequency = this.survey.getValue('aid_frequency');
+function getTotalAids(this: { survey: SurveyModel }, params: any[]) {
   const [startDate, endDate, aidFrequency] = params;
   if (!startDate || !endDate || !aidFrequency) {
     return null;
@@ -27,3 +24,5 @@ export default function (this: { survey: SurveyModel }, params: any[]) {
   // result is the number of months between the two dates times the frequency
   return months * aidFrequency;
 }
+
+export default getTotalAids;

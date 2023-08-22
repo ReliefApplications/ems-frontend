@@ -8,7 +8,7 @@ import { SurveyModel } from 'survey-angular';
  * @param params params passed to the function
  * @returns The total number of aids
  */
-export default function (this: { survey: SurveyModel }, params: any[]) {
+function getAidsGiven(this: { survey: SurveyModel }, params: any[]) {
   // get question name from params
   const [questionName] = params;
   // get question from survey
@@ -25,3 +25,5 @@ export default function (this: { survey: SurveyModel }, params: any[]) {
     0
   );
 }
+
+export default getAidsGiven;

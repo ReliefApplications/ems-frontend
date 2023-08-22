@@ -9,7 +9,7 @@ import { isNil } from 'lodash';
  * @param params params passed to the function (dashboardId, widgetId)
  * @returns The specified workflow context variable
  */
-export default function (this: { survey: SurveyModel }, params: any[]) {
+function getWorkflowContext(this: { survey: SurveyModel }, params: any[]) {
   // First param is the dashboard id
   const dashboardId = params[0];
   if (!dashboardId) return null;
@@ -19,3 +19,5 @@ export default function (this: { survey: SurveyModel }, params: any[]) {
   // Return the variable
   return this.survey.getVariable(`workflow_${dashboardId}_${widgetId}`);
 }
+
+export default getWorkflowContext;

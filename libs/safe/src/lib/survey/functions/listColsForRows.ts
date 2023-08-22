@@ -15,7 +15,7 @@ import { isArray, isNil } from 'lodash';
  * @param params params passed to the function
  * @returns The list of rows that have that value in the column.
  */
-export default function (this: { survey: SurveyModel }, params: any[]) {
+function listColsForRows(this: { survey: SurveyModel }, params: any[]) {
   const [questionName, rows] = params;
   if (!questionName || !rows) return [];
 
@@ -73,3 +73,5 @@ export default function (this: { survey: SurveyModel }, params: any[]) {
     .filter((value: string) => !!value)
     .join('\n');
 }
+
+export default listColsForRows;

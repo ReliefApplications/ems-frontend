@@ -14,7 +14,7 @@ import { isNil } from 'lodash';
  * @param params params passed to the function
  * @returns The list of rows that have that value in the column.
  */
-export default function (this: { survey: SurveyModel }, params: any[]) {
+function getMatrixTitles(this: { survey: SurveyModel }, params: any[]) {
   const [questionName, names, isRow] = params;
   if (!questionName || !names) return [];
 
@@ -35,3 +35,5 @@ export default function (this: { survey: SurveyModel }, params: any[]) {
       : matrix.columns.find((col) => col.name === name)?.title || name;
   });
 }
+
+export default getMatrixTitles;

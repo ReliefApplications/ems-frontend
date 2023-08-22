@@ -4,7 +4,7 @@
  * @param params Array of parameters (object, field)
  * @returns Field value or null
  */
-export default (params: any[]) => {
+const getField = (params: any[]) => {
   const object = params[0];
   const field = params[1];
 
@@ -14,3 +14,5 @@ export default (params: any[]) => {
 
   return object[field] ?? null;
 };
+
+export default getField;
