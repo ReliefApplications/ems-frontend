@@ -9,10 +9,6 @@ import { Role } from '../../models/user.model';
 import { SafeApplicationService } from '../../services/application/application.service';
 import { UserListComponent } from './components/user-list/user-list.component';
 import { AddUsersMutationResponse, ADD_USERS } from './graphql/mutations';
-import {
-  GET_APPLICATION_STATUS,
-  GetApplicationStatusQueryResponse,
-} from './graphql/queries';
 import { SnackbarService } from '@oort-front/ui';
 
 /**
@@ -96,42 +92,29 @@ export class SafeApplicationUsersComponent
             },
           })
           .subscribe(({ errors, data }) => {
-            const data1 = data; // there is probably a better way to do this 😅
             if (!errors) {
-              // check the status of te application
-              this.apollo
-                .query<GetApplicationStatusQueryResponse>({
-                  query: GET_APPLICATION_STATUS,
-                  variables: {
-                    id: this.roles[0].application?.id,
-                  },
-                })
-                .subscribe(({ data }) => {
-                  console.log(data);
-                  if (data?.application?.status === 'active') {
-                    // again, we should probably store it on a const file somewhere
-                    if (data1?.addUsers.length) {
-                      this.snackBar.openSnackBar(
-                        this.translate.instant(
-                          'components.users.onInvite.plural'
-                        )
-                      );
-                    } else {
-                      this.snackBar.openSnackBar(
-                        this.translate.instant(
-                          'components.users.onInvite.singular'
-                        )
-                      );
-                    }
-                    this.userList?.fetchUsers(true);
-                  } else {
-                    this.snackBar.openSnackBar(
-                      this.translate.instant('components.user.invite.error')
-                    );
-                  }
-                });
+              if (this.applicationService.status === 'active') {
+                if (data?.addUsers && data.addUsers.length > 1) {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'components.users.onInvite.plural'
+                    )
+                  );
+                } else {
+                  this.snackBar.openSnackBar(
+                    this.translate.instant(
+                      'components.users.onInvite.singular'
+                    )
+                  );
+                }
+                this.userList?.fetchUsers(true);
+              } else {
+                this.snackBar.openSnackBar(
+                  this.translate.instant('components.user.invite.error')
+                );
+              }
             } else {
-              if (data?.addUsers?.length) {
+              if (data?.addUsers && data.addUsers.length > 1) {
                 this.snackBar.openSnackBar(
                   this.translate.instant(
                     'components.users.onNotInvite.plural',

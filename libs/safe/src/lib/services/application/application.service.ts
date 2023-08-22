@@ -147,6 +147,11 @@ export class SafeApplicationService {
     return this.application.value?.name || '';
   }
 
+  /** @returns Status of the current application */
+  get status(): string {
+    return this.application.value?.status || '';
+  }
+
   /** @returns Current application's templates */
   get templates(): Template[] {
     return this.application.value?.templates || [];
