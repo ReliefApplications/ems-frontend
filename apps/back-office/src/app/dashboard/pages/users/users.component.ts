@@ -1,7 +1,5 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import {
   GetUsersQueryResponse,
   GET_USERS,
@@ -23,7 +21,7 @@ import { Role, User } from '@oort-front/safe';
 export class UsersComponent implements OnInit {
   // === DATA ===
   public loading = true;
-  public users = new MatTableDataSource<User>([]);
+  public users = new Array<User>();
   public roles: Role[] = [];
   public displayedColumns = ['name', 'username', 'oid', 'roles', 'actions'];
 
@@ -42,7 +40,7 @@ export class UsersComponent implements OnInit {
       })
       .valueChanges.subscribe((resUsers) => {
         this.loading = true;
-        this.users.data = resUsers.data.users;
+        this.users = resUsers.data.users;
         this.apollo
           .watchQuery<GetRolesQueryResponse>({
             query: GET_ROLES,

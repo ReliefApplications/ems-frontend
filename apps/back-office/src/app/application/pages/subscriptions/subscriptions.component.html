@@ -1,74 +1,92 @@
-<!-- Subscriptions page -->
-<!-- Spinner if loading -->
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<!-- Page if not loading -->
-<ng-container *ngIf="!loading">
-  <!-- Button to add a subscription -->
-  <div class="mb-4 flex flex-row justify-end">
-    <safe-button
+<ng-container *ngIf="!loading; else loadingTmpl">
+  <ng-container *ngIf="subscriptions.length">
+    <div class="flex justify-end">
+      <ng-container *ngTemplateOutlet="newSubscription"></ng-container>
+    </div>
+  </ng-container>
+  <ng-template #newSubscription>
+    <ui-button
       icon="add"
       category="secondary"
       variant="primary"
       (click)="onAdd()"
     >
       {{ 'models.application.subscription.create' | translate }}
-    </safe-button>
-  </div>
-  <!-- Table container -->
-  <div class="overflow-x-hidden shadow-2lg">
-    <!-- Table scroll container -->
-    <div class="overflow-x-auto">
-      <table mat-table [dataSource]="subscriptions">
-        <ng-container matColumnDef="title">
-          <th mat-header-cell *matHeaderCellDef>
-            {{ 'common.title' | translate }}
-          </th>
-          <td mat-cell *matCellDef="let element" class="font-bold">
-            {{ element.title }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="convertTo">
-          <th mat-header-cell *matHeaderCellDef>
-            {{ 'components.record.convert.select' | translate }}
-          </th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.convertTo ? element.convertTo.name : '-' }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="channel">
-          <th mat-header-cell *matHeaderCellDef>
-            {{ 'components.channel.dropdown.select' | translate }}
-          </th>
-          <td mat-cell *matCellDef="let element">
-            {{ element.channel ? element.channel.title : '-' }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="actions" [stickyEnd]="true">
-          <th mat-header-cell *matHeaderCellDef class="w-16"></th>
-          <td mat-cell *matCellDef="let element">
-            <safe-button
-              [isIcon]="true"
-              icon="more_vert"
-              [matMenuTriggerFor]="menu"
-              (click)="$event.stopPropagation()"
+    </ui-button>
+  </ng-template>
+  <ng-container *ngIf="subscriptions.length; else emptyTmpl">
+    <!-- Table container -->
+    <div class="mt-4 overflow-x-hidden shadow-2lg">
+      <!-- Table scroll container -->
+      <div class="overflow-x-auto">
+        <table cdk-table uiTableWrapper [dataSource]="subscriptions">
+          <ng-container cdkColumnDef="title">
+            <th uiCellHeader *cdkHeaderCellDef>
+              {{ 'common.title' | translate }}
+            </th>
+            <td
+              uiCell
+              *cdkCellDef="let element"
+              class="!text-gray-900 !font-medium"
             >
-            </safe-button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="onEdit(element)">
-                <mat-icon>edit</mat-icon>
-                {{ 'common.edit' | translate }}
-              </button>
-              <safe-divider class="m-0"></safe-divider>
-              <button mat-menu-item color="warn" (click)="onDelete(element)">
-                <mat-icon>delete</mat-icon>
-                {{ 'common.delete' | translate }}
-              </button>
-            </mat-menu>
-          </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
-      </table>
+              {{ element.title }}
+            </td>
+          </ng-container>
+          <ng-container cdkColumnDef="convertTo">
+            <th uiCellHeader *cdkHeaderCellDef>
+              {{ 'components.record.convert.select' | translate }}
+            </th>
+            <td uiCell *cdkCellDef="let element">
+              {{ element.convertTo ? element.convertTo.name : '-' }}
+            </td>
+          </ng-container>
+          <ng-container cdkColumnDef="channel">
+            <th uiCellHeader *cdkHeaderCellDef>
+              {{ 'components.channel.dropdown.select' | translate }}
+            </th>
+            <td uiCell *cdkCellDef="let element">
+              {{ element.channel ? element.channel.title : '-' }}
+            </td>
+          </ng-container>
+          <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+            <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>
+            <td uiCell *cdkCellDef="let element">
+              <ui-button
+                [isIcon]="true"
+                icon="more_vert"
+                [uiMenuTriggerFor]="menu"
+                (click)="$event.stopPropagation()"
+              >
+              </ui-button>
+              <ui-menu #menu>
+                <button uiMenuItem (click)="onEdit(element)">
+                  <ui-icon icon="edit" variant="grey"></ui-icon>
+                  {{ 'common.edit' | translate }}
+                </button>
+                <ui-divider class="py-1"></ui-divider>
+                <button uiMenuItem (click)="onDelete(element)">
+                  <ui-icon icon="delete" variant="danger"></ui-icon>
+                  {{ 'common.delete' | translate }}
+                </button>
+              </ui-menu>
+            </td>
+          </ng-container>
+          <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+          <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
+        </table>
+      </div>
     </div>
-  </div>
+  </ng-container>
+  <ng-template #emptyTmpl>
+    <!-- Empty indicator -->
+    <safe-empty
+      [title]="'common.subscription.none' | translate"
+      [footerTemplate]="newSubscription"
+    ></safe-empty>
+  </ng-template>
 </ng-container>
+<ng-template #loadingTmpl>
+  <!-- Loading indicator -->
+  <safe-skeleton-table [columns]="displayedColumns" [actions]="true">
+  </safe-skeleton-table>
+</ng-template>

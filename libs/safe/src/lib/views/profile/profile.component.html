@@ -3,96 +3,100 @@
   <!-- User details -->
   <div class="flex flex-col">
     <div class="flex gap-2 flex-wrap">
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>
+      <div uiFormFieldDirective class="flex-1">
+        <label>
           {{ 'models.user.firstName' | translate }}
-        </mat-label>
-        <input matInput formControlName="firstName" type="text" />
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>
+        </label>
+        <input formControlName="firstName" type="text" />
+      </div>
+      <div uiFormFieldDirective class="flex-1">
+        <label>
           {{ 'models.user.lastName' | translate }}
-        </mat-label>
-        <input matInput formControlName="lastName" type="text" />
-      </mat-form-field>
+        </label>
+        <input formControlName="lastName" type="text" />
+      </div>
     </div>
-    <mat-form-field appearance="outline">
-      <mat-label>
+    <div uiFormFieldDirective>
+      <label>
         {{ 'models.user.username' | translate }}
-      </mat-label>
-      <input matInput formControlName="username" type="text" />
-    </mat-form-field>
+      </label>
+      <input formControlName="username" type="text" />
+    </div>
   </div>
-  <safe-button
+  <ui-button
     category="secondary"
     variant="primary"
     (click)="onSubmit()"
     [disabled]="userForm.invalid || !userForm.dirty"
   >
     {{ 'common.saveChanges' | translate }}
-  </safe-button>
+  </ui-button>
   <!-- Table container -->
   <div class="overflow-x-hidden shadow-2lg mt-6">
     <!-- Table scroll container -->
     <div class="overflow-x-auto">
-      <table mat-table [dataSource]="user.applications">
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef>
-            <span class="headerTitle" mat-sort-header>
+      <table cdk-table uiTableWrapper [dataSource]="user.applications">
+        <ng-container cdkColumnDef="name">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            <span class="headerTitle">
               {{ 'common.application.few' | translate }} ({{
                 user.applications.length
               }})
             </span>
           </th>
-          <td mat-cell *matCellDef="let element" class="font-bold">
+          <td
+            uiCell
+            *cdkCellDef="let element"
+            class="!text-gray-900 !font-medium"
+          >
             {{ element.name
             }}<span *ngIf="user.favoriteApp === element.id">
-              <mat-icon inline="true" color="primary">star</mat-icon>
+              <ui-icon icon="star" inline="true" variant="primary"></ui-icon>
             </span>
           </td>
         </ng-container>
-        <ng-container matColumnDef="role">
-          <th mat-header-cell *matHeaderCellDef>
-            <span class="headerTitle" mat-sort-header>
+        <ng-container cdkColumnDef="role">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            <span class="headerTitle">
               {{ 'common.role.one' | translate }}
             </span>
           </th>
-          <td mat-cell *matCellDef="let element">
+          <td uiCell *cdkCellDef="let element">
             {{ element.role ? element.role.title : '' }}
           </td>
         </ng-container>
-        <ng-container matColumnDef="positionAttributes">
-          <th mat-header-cell *matHeaderCellDef>
-            <span class="headerTitle" mat-sort-header>
+        <ng-container cdkColumnDef="positionAttributes">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            <span class="headerTitle">
               {{ 'common.positionAttribute.few' | translate }}
             </span>
           </th>
-          <td mat-cell *matCellDef="let element">
+          <td uiCell *cdkCellDef="let element">
             <span *ngFor="let e of element.positionAttributes"
               >{{ e.value }},
             </span>
           </td>
         </ng-container>
-        <ng-container matColumnDef="actions" [stickyEnd]="true">
-          <th mat-header-cell *matHeaderCellDef class="w-16"></th>
-          <td mat-cell *matCellDef="let element">
-            <safe-button
+        <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+          <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+          <td uiCell *cdkCellDef="let element">
+            <ui-button
               [isIcon]="true"
               icon="more_vert"
-              [matMenuTriggerFor]="menu"
+              [uiMenuTriggerFor]="menu"
               (click)="$event.stopPropagation()"
             >
-            </safe-button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="onSelectFavorite(element)">
-                <mat-icon>star</mat-icon>
+            </ui-button>
+            <ui-menu #menu>
+              <button uiMenuItem (click)="onSelectFavorite(element)">
+                <ui-icon icon="star" variant="grey"></ui-icon>
                 {{ 'models.application.setAsFavorite' | translate }}
               </button>
-            </mat-menu>
+            </ui-menu>
           </td>
         </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumnsApps"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumnsApps"></tr>
+        <tr cdk-header-row *cdkHeaderRowDef="displayedColumnsApps"></tr>
+        <tr cdk-row *cdkRowDef="let row; columns: displayedColumnsApps"></tr>
       </table>
     </div>
   </div>

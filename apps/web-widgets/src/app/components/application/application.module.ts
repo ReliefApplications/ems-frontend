@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApplicationComponent } from './application.component';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { SpinnerModule } from '@oort-front/ui';
 import { WorkflowModule } from '../workflow/workflow.module';
 import { DashboardModule } from '../dashboard/dashboard.module';
 import { FormModule } from '../form/form.module';
@@ -11,7 +11,7 @@ import { FormModule } from '../form/form.module';
   declarations: [ApplicationComponent],
   imports: [
     CommonModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
     WorkflowModule,
     DashboardModule,
     FormModule,

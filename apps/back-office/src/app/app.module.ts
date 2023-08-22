@@ -1,11 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER } from '@angular/core';
+import { NgModule, ErrorHandler, APP_INITIALIZER } from '@angular/core';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
 
 // Http
 import {
@@ -18,9 +16,7 @@ import {
 import { environment } from '../environments/environment';
 
 // Config
-import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
+import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 
 // TRANSLATOR
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
@@ -49,12 +45,7 @@ import { IconsService } from '@progress/kendo-angular-icons';
 // import { touchEnabled } from '@progress/kendo-common';
 // Apollo / GraphQL
 import { GraphQLModule } from './graphql.module';
-import { MAT_LEGACY_TOOLTIP_DEFAULT_OPTIONS as MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/legacy-tooltip';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
-
-// Importing the paginators translation service
-import { MatPaginationIntlService } from '@oort-front/safe';
-import { MatPaginatorIntl } from '@angular/material/paginator';
 
 // Code editor component for Angular applications
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
@@ -64,6 +55,10 @@ import {
   OverlayContainer,
   FullscreenOverlayContainer,
 } from '@angular/cdk/overlay';
+
+// Sentry
+import { Router } from '@angular/router';
+import * as Sentry from '@sentry/angular-ivy';
 
 /**
  * Initialize authentication in the platform.
@@ -99,11 +94,8 @@ export const httpTranslateLoader = (http: HttpClient) =>
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    MatSnackBarModule,
     BrowserAnimationsModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatDialogModule,
+    DialogCdkModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -114,7 +106,6 @@ export const httpTranslateLoader = (http: HttpClient) =>
     OAuthModule.forRoot(),
     GraphQLModule,
     DateInputsModule,
-    MatTabsModule,
     MonacoEditorModule.forRoot(),
   ],
   providers: [
@@ -131,18 +122,6 @@ export const httpTranslateLoader = (http: HttpClient) =>
     {
       provide: MessageService,
       useClass: KendoTranslationService,
-    },
-    // only used to force date language in 1.2.0, remove in 1.3.0
-    {
-      provide: MAT_DATE_LOCALE,
-      useValue: 'en-GB',
-    },
-    // Default parameters of material tooltip
-    {
-      provide: MAT_TOOLTIP_DEFAULT_OPTIONS,
-      useValue: {
-        showDelay: 500,
-      },
     },
     {
       provide: OAuthStorage,
@@ -166,14 +145,32 @@ export const httpTranslateLoader = (http: HttpClient) =>
       provide: PureAbility,
       useExisting: AppAbility,
     },
-    {
-      provide: MatPaginatorIntl,
-      useClass: MatPaginationIntlService,
-    },
     PopupService,
     ResizeBatchService,
     IconsService,
     { provide: OverlayContainer, useClass: FullscreenOverlayContainer },
+    // Sentry
+    ...(environment.sentry
+      ? [
+          {
+            provide: ErrorHandler,
+            useValue: Sentry.createErrorHandler({
+              showDialog: false,
+            }),
+          },
+          {
+            provide: Sentry.TraceService,
+            deps: [Router],
+          },
+          {
+            provide: APP_INITIALIZER,
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            useFactory: () => () => {},
+            deps: [Sentry.TraceService],
+            multi: true,
+          },
+        ]
+      : []),
   ],
   bootstrap: [AppComponent],
 })

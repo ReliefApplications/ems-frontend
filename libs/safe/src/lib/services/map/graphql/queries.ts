@@ -19,6 +19,7 @@ export const GET_LAYER_BY_ID = gql`
         geoField
         latitudeField
         longitudeField
+        type
       }
       layerDefinition {
         minZoom
@@ -44,6 +45,10 @@ export const GET_LAYER_BY_ID = gql`
               color
               size
               style
+              outline {
+                color
+                width
+              }
             }
             blur
             radius
@@ -55,6 +60,10 @@ export const GET_LAYER_BY_ID = gql`
               color
               size
               style
+              outline {
+                color
+                width
+              }
             }
             uniqueValueInfos {
               label
@@ -63,6 +72,10 @@ export const GET_LAYER_BY_ID = gql`
                 color
                 size
                 style
+                outline {
+                  color
+                  width
+                }
               }
             }
           }
@@ -71,6 +84,11 @@ export const GET_LAYER_BY_ID = gql`
       popupInfo {
         title
         description
+        fieldsInfo {
+          type
+          name
+          label
+        }
         popupElements {
           text
           type
@@ -80,6 +98,7 @@ export const GET_LAYER_BY_ID = gql`
         }
       }
       sublayers
+      contextFilters
     }
   }
 `;

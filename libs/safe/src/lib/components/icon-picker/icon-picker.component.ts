@@ -8,16 +8,13 @@ import {
   OnDestroy,
   Optional,
   Self,
+  forwardRef,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
 import { Subject } from 'rxjs';
 import { FA_ICONS, IconName } from './icon-picker.const';
-import {
-  MatLegacyFormField as MatFormField,
-  MatLegacyFormFieldControl as MatFormFieldControl,
-  MAT_LEGACY_FORM_FIELD as MAT_FORM_FIELD,
-} from '@angular/material/legacy-form-field';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
+import { FormControlComponent } from '@oort-front/ui';
 
 type FormFieldValue = IconName | null;
 
@@ -30,16 +27,14 @@ type FormFieldValue = IconName | null;
   styleUrls: ['./icon-picker.component.scss'],
   providers: [
     {
-      provide: MatFormFieldControl,
-      useExisting: IconPickerComponent,
+      provide: FormControlComponent,
+      useExisting: forwardRef(() => IconPickerComponent),
     },
   ],
 })
 export class IconPickerComponent
-  implements
-    ControlValueAccessor,
-    MatFormFieldControl<FormFieldValue>,
-    OnDestroy
+  extends FormControlComponent
+  implements ControlValueAccessor, OnDestroy
 {
   static nextId = 0;
 
@@ -183,15 +178,14 @@ export class IconPickerComponent
    *
    * @param environment platform environment
    * @param elementRef shared element ref service
-   * @param formField MatFormField
    * @param ngControl form control shared service
    */
   constructor(
     @Inject('environment') environment: any,
     private elementRef: ElementRef<HTMLElement>,
-    @Optional() @Inject(MAT_FORM_FIELD) public formField: MatFormField,
     @Optional() @Self() public ngControl: NgControl
   ) {
+    super();
     this.primaryColor = environment.theme.primary;
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
@@ -240,7 +234,7 @@ export class IconPickerComponent
    *
    * @param fn onChange function from the parent form
    */
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (_: any) => void): void {
     this.onChange = fn;
   }
 
@@ -249,7 +243,7 @@ export class IconPickerComponent
    *
    * @param fn onTouched function from the parent form
    */
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 

@@ -1,0 +1,99 @@
+<ui-dialog size="medium" [closable]="true">
+  <ng-container ngProjectAs="header">
+    <h2>
+      {{
+        (isNew
+          ? 'models.dashboard.buttonActions.add'
+          : 'models.dashboard.buttonActions.edit'
+        ) | translate
+      }}
+    </h2>
+  </ng-container>
+
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="form" class="flex justify-between w-full flex-col py-2">
+      <!-- Title -->
+      <div uiFormFieldDirective>
+        <label>{{ 'models.dashboard.buttonActions.text' | translate }}</label>
+        <input formControlName="text" type="string" />
+      </div>
+
+      <!-- href -->
+      <div uiFormFieldDirective>
+        <label>{{ 'models.dashboard.buttonActions.href' | translate }}</label>
+        <safe-editor-control
+          formControlName="href"
+          [editorConfig]="hrefEditor"
+        ></safe-editor-control>
+      </div>
+
+      <div class="flex gap-2 mb-2">
+        <!-- Category  -->
+        <div uiFormFieldDirective [outline]="false" class="grow">
+          <label>{{
+            'models.dashboard.buttonActions.category' | translate
+          }}</label>
+          <ui-select-menu formControlName="category">
+            <ui-select-option
+              *ngFor="let category of categories"
+              [value]="category"
+            >
+              {{ category }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+
+        <!-- Variant -->
+        <div uiFormFieldDirective [outline]="false" class="grow">
+          <label>{{
+            'models.dashboard.buttonActions.variant' | translate
+          }}</label>
+          <ui-select-menu formControlName="variant">
+            <ui-select-option
+              *ngFor="let variant of variants"
+              [value]="variant"
+            >
+              {{ variant }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+      </div>
+
+      <!-- New tab toggle -->
+      <ui-toggle formControlName="openInNewTab">
+        <ng-container ngProjectAs="label">
+          {{
+            'models.dashboard.buttonActions.openInNewTab' | translate
+          }}</ng-container
+        >
+      </ui-toggle>
+
+      <ui-divider class="my-4"></ui-divider>
+      <h3>{{ 'common.preview' | translate }}</h3>
+      <div>
+        <!-- Button preview -->
+        <ui-button
+          *ngIf="form.get('text')?.value"
+          class="w-fit mx-auto mt-3"
+          [category]="form.get('category')?.value || 'secondary'"
+          [variant]="form.get('variant')?.value || 'primary'"
+          (click)="preview()"
+        >
+          {{ form.get('text')?.value }}
+        </ui-button>
+      </div>
+    </form>
+  </ng-container>
+
+  <ng-container ngProjectAs="actions">
+    <ui-button
+      category="secondary"
+      variant="primary"
+      (click)="onSubmit()"
+      cdkFocusInitial
+      [disabled]="!form.valid"
+    >
+      {{ 'common.save' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

@@ -4,7 +4,6 @@
 
 // === SERVICES ===
 export * from './lib/services/auth/auth.service';
-export * from './lib/services/snackbar/snackbar.service';
 export * from './lib/services/grid/grid.service';
 export * from './lib/services/application/application.service';
 export * from './lib/services/download/download.service';
@@ -23,6 +22,10 @@ export * from './lib/services/aggregation/aggregation.service';
 export * from './lib/services/auth-interceptor/auth-interceptor.service';
 export * from './lib/services/confirm/confirm.service';
 export * from './lib/services/paginator-translate'; // todo: update
+export * from './lib/services/context/context.service';
+export * from './lib/services/data-template/data-template.service';
+export * from './lib/services/editor/editor.service';
+export * from './lib/services/rest/rest.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/skeleton/public-api';
@@ -56,7 +59,6 @@ export * from './lib/models/metadata.model';
 // === COMPONENTS ===
 export * from './lib/components/aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
 export * from './lib/components/layout/public-api';
-export * from './lib/components/left-sidenav/public-api';
 export * from './lib/components/navbar/public-api';
 export * from './lib/components/application-toolbar/public-api';
 export * from './lib/components/access/public-api';
@@ -89,32 +91,28 @@ export * from './lib/components/reference-data-dropdown/public-api';
 export * from './lib/components/skeleton/skeleton-table/public-api';
 export * from './lib/components/mapping/public-api';
 export * from './lib/components/role-summary/public-api';
-export * from './lib/components/graphql-select/public-api';
-export * from './lib/components/ui/modal/public-api';
 export * from './lib/components/ui/empty/public-api';
-export * from './lib/components/ui/divider/public-api';
 export * from './lib/components/edit-calculated-field-modal/public-api';
 export * from './lib/components/utils/unsubscribe/public-api';
 export * from './lib/components/editable-text/public-api';
 export * from './lib/components/cron-expression-control/public-api';
 export * from './lib/components/dashboard-filter/public-api';
+export * from './lib/components/editor-control/editor-control.component';
+export * from './lib/components/button-action/public-api';
 
 /** Grid Layouts */
 export * from './lib/components/grid-layout/edit-layout-modal/public-api';
-export * from './lib/components/snackbar-spinner/public-api';
 
 // === UI ===
-export * from './lib/components/ui/button/public-api';
-export * from './lib/components/ui/alert/public-api';
 export * from './lib/components/ui/aggregation-builder/public-api';
 export * from './lib/components/ui/tagbox/public-api';
-export * from './lib/components/ui/icon/public-api';
 
 // === VIEWS ===
 export * from './lib/views/public-api';
 
 // === MODULE ===
 export * from './lib/safe.module';
+export * from './lib/components/widget-choice/widget-choice.module';
 
 // === PIPES ===
 export * from './lib/pipes/date/public-api';
@@ -123,3 +121,6 @@ export * from './lib/pipes/cron-parser/public-api';
 
 // === UTILS ===
 export * from './lib/utils/public-api';
+
+// === CONST ===
+export * from './lib/const/tinymce.const';

@@ -1,37 +1,37 @@
-<safe-modal size="medium">
-  <h1 mat-dialog-title>{{ 'components.users.invite.add' | translate }}</h1>
-  <div mat-dialog-content>
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h1>{{ 'components.users.invite.add' | translate }}</h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="form">
       <div class="flex flex-col">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.email.one' | translate }}</mat-label>
+        <div uiFormFieldDirective>
+          <label>{{ 'common.email.one' | translate }}</label>
           <input
-            matInput
             [placeholder]="'common.placeholder.email' | translate"
             #emailInput
             formControlName="email"
-            [matAutocomplete]="auto"
+            [uiAutocomplete]="auto"
           />
-          <mat-autocomplete #auto="matAutocomplete">
-            <mat-option
+          <ui-autocomplete #auto>
+            <ui-option
               *ngFor="let user of filteredUsers | async"
               [value]="user.username"
             >
               {{ user.username }}
-            </mat-option>
-          </mat-autocomplete>
-        </mat-form-field>
-        <label class="invite-label">{{
-          'components.user.invite.role.description' | translate
-        }}</label>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.role.one' | translate }}</mat-label>
-          <mat-select formControlName="role">
-            <mat-option *ngFor="let role of data.roles" [value]="role.id">{{
-              role.title
-            }}</mat-option>
-          </mat-select>
-        </mat-form-field>
+            </ui-option>
+          </ui-autocomplete>
+        </div>
+        <div uiFormFieldDirective>
+          <label>{{
+            'components.user.invite.role.description' | translate
+          }}</label>
+          <ui-select-menu formControlName="role">
+            <ui-select-option *ngFor="let role of data.roles" [value]="role.id">
+              {{ role.title }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
         <ng-container
           *ngIf="
             data.positionAttributeCategories &&
@@ -41,41 +41,40 @@
         >
           <ng-container formArrayName="positionAttributes">
             <label class="invite-label">Set additional attributes</label>
-            <mat-form-field
-              appearance="outline"
+            <div
+              uiFormFieldDirective
               *ngFor="
                 let category of positionAttributes.controls;
                 let index = index
               "
               [formGroup]="$any(category)"
             >
-              <mat-label>{{
+              <label>{{
                 data.positionAttributeCategories[index].title | titlecase
-              }}</mat-label>
+              }}</label>
               <input
-                matInput
                 formControlName="value"
                 type="text"
                 placeholder="Enter a value for the category"
               />
-            </mat-form-field>
+            </div>
           </ng-container>
         </ng-container>
       </div>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button (click)="onClose()">
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onClose()">
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="form.value"
+      [uiDialogClose]="form.value"
       cdkFocusInitial
       [disabled]="!form.valid"
     >
       {{ 'components.user.invite.confirm' | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

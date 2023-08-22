@@ -1,87 +1,52 @@
-<mat-drawer-container class="grow bg-transparent" autosize *ngIf="tileForm">
-  <mat-drawer class="border-none pr-2" mode="side" [opened]="true">
-    <safe-button
-      icon="map"
-      [attr.data-selected]="currentTab === 'parameters'"
-      (click)="handleTabChange('parameters')"
-    >
-      {{ 'components.widget.settings.map.properties.title' | translate }}
-    </safe-button>
-
-    <safe-button
-      icon="layers"
-      [attr.data-selected]="currentTab === 'layers'"
-      (click)="handleTabChange('layers')"
-    >
-      {{ 'common.layers' | translate }}
-    </safe-button>
-    <safe-button
-      icon="settings_overscan"
-      [attr.data-selected]="currentTab === 'display'"
-      (click)="handleTabChange('display')"
-    >
-      {{ 'models.widget.display.title' | translate }}
-    </safe-button>
-    <ng-container *ngIf="currentTab === 'layer' && layerComponent">
-      <safe-divider></safe-divider>
-      <ng-container
-        [ngTemplateOutlet]="layerComponent.layerNavigationTemplate"
-      ></ng-container>
+<ui-tabs
+  class="grow"
+  [vertical]="true"
+  (selectedIndexChange)="selectedIndexChange()"
+>
+  <!-- Map properties -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="map" [size]="24"> </ui-icon>
+      <span>{{
+        'components.widget.settings.map.properties.title' | translate
+      }}</span>
     </ng-container>
-  </mat-drawer>
-
-  <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
-    <ng-container *ngIf="currentTab">
-      <div
-        [ngClass]="{ 'overflow-auto': currentTab !== 'layer' }"
-        [ngSwitch]="currentTab"
-        class="lg:basis-1/2 lg:max-h-full px-2"
-      >
-        <!-- MAP PARAMETERS -->
-        <ng-container *ngSwitchCase="'parameters'">
-          <safe-map-properties
-            [form]="tileForm"
-            [mapSettings]="mapSettings"
-            (close)="currentTab = null"
-          ></safe-map-properties>
-        </ng-container>
-        <!-- MAP LAYERS -->
-        <ng-container *ngSwitchCase="'layers'">
-          <safe-map-layers
-            [layerIds]="layerIds"
-            (close)="currentTab = null"
-            (editLayer)="onEditLayer($event)"
-            (deleteLayer)="onDeleteLayer($event)"
-          ></safe-map-layers>
-        </ng-container>
-        <ng-container *ngSwitchCase="'layer'">
-          <ng-container *ngIf="layerComponent">
-            <ng-container
-              [ngTemplateOutlet]="layerComponent.layerSettingsTemplate"
-            ></ng-container>
-          </ng-container>
-        </ng-container>
-        <ng-container *ngSwitchCase="'display'">
-          <safe-display-settings [formGroup]="tileForm"></safe-display-settings>
-        </ng-container>
-      </div>
-    </ng-container>
-    <!-- MAP PREVIEW -->
-    <div class="lg:flex-1 max-lg:min-w-full h-80 lg:min-h-full flex-shrink-0">
-      <safe-map
-        class="w-full h-full"
-        (mapEvent)="handleMapEvent($event)"
+    <ng-template uiTabContent>
+      <safe-map-properties
+        [form]="tileForm"
         [mapSettings]="mapSettings"
-      ></safe-map>
-    </div>
-  </div>
-</mat-drawer-container>
+        [destroyTab$]="destroyTab$"
+        [currentMapContainerRef]="currentMapContainerRef"
+      ></safe-map-properties>
+    </ng-template>
+  </ui-tab>
+  <!-- Map layers -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="layers" [size]="24"> </ui-icon>
+      <span>{{ 'common.layers' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <safe-map-layers
+        [control]="$any(tileForm.get('layers'))"
+        [mapComponent]="mapComponent"
+        [destroyTab$]="destroyTab$"
+        [currentMapContainerRef]="currentMapContainerRef"
+      ></safe-map-layers>
+    </ng-template>
+  </ui-tab>
+  <!-- General widget display -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="settings_overscan" [size]="24"> </ui-icon>
+      <span>{{ 'models.widget.display.title' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <safe-display-settings [formGroup]="tileForm"></safe-display-settings>
+    </ng-template>
+  </ui-tab>
+</ui-tabs>
 
-<ng-container *ngIf="currentTab === 'layer'">
-  <safe-map-layer
-    [layer]="openedLayers[0]"
-    [mapComponent]="mapComponent"
-    (layerToSave)="saveLayer($event)"
-    (layerToOpen)="onEditLayer($event)"
-  ></safe-map-layer>
-</ng-container>
+<div class="hidden">
+  <ng-template #mapContainer></ng-template>
+</div>

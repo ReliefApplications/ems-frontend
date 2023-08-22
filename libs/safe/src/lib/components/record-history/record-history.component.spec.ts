@@ -1,9 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import {
-  MatLegacyDialogModule as MatDialogModule,
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import { environment } from 'projects/back-office/src/environments/environment';
 import { SafeRecordHistoryComponent } from './record-history.component';
 import {
@@ -19,7 +19,7 @@ import {
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { MenuModule } from '@oort-front/ui';
 
 describe('SafeRecordHistoryComponent', () => {
   let component: SafeRecordHistoryComponent;
@@ -28,9 +28,9 @@ describe('SafeRecordHistoryComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: MatDialogRef, useValue: {} },
+        { provide: DialogRef, useValue: {} },
         {
-          provide: MAT_DIALOG_DATA,
+          provide: DIALOG_DATA,
           useValue: {
             access: { canSee: null, canUpdate: null, canDelete: null },
           },
@@ -44,7 +44,7 @@ describe('SafeRecordHistoryComponent', () => {
       ],
       declarations: [SafeRecordHistoryComponent],
       imports: [
-        MatDialogModule,
+        DialogCdkModule,
         HttpClientModule,
         TranslateModule.forRoot({
           loader: {
@@ -52,7 +52,7 @@ describe('SafeRecordHistoryComponent', () => {
             useClass: TranslateFakeLoader,
           },
         }),
-        MatMenuModule,
+        MenuModule,
       ],
     }).compileComponents();
   });

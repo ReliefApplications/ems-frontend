@@ -3,7 +3,6 @@
     class="safe-content-type shadow-2lg"
     *ngFor="let type of contentTypes"
     (click)="onSelect(type.value)"
-    matRipple
     [style.background]="type.color"
   >
     <img [src]="type.img" />

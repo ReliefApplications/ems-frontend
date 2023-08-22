@@ -1,42 +1,50 @@
-<safe-modal>
-  <h1 mat-dialog-title>{{ 'components.emailPreview.title' | translate }}</h1>
-  <div mat-dialog-content>
-    <form class="flex flex-col gap-4" [formGroup]="form" *ngIf="form">
-      <mat-form-field>
-        <mat-label>{{
-          'components.emailPreview.subject' | translate
-        }}</mat-label>
-        <input matInput formControlName="subject" type="text" />
-        <mat-error *ngIf="this.form.controls.subject.hasError('required')">
-          {{ 'components.emailPreview.errors.missingSubject' | translate }}
-        </mat-error>
-      </mat-form-field>
-      <mat-form-field>
-        <mat-label>{{ 'components.emailPreview.from' | translate }}</mat-label>
-        <input matInput formControlName="from" type="text" />
-      </mat-form-field>
-      <mat-form-field id="previewEmailTo">
-        <mat-label>{{ 'components.emailPreview.to' | translate }}</mat-label>
-        <mat-chip-list #chipList formControlName="to">
-          <mat-chip
-            *ngFor="let email of emails"
-            [selectable]="true"
+<ui-dialog>
+  <ng-container ngProjectAs="header">
+    <h1>{{ 'components.emailPreview.title' | translate }}</h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form class="flex flex-col" [formGroup]="form" *ngIf="form">
+      <div
+        [uiErrorMessage]="
+          'components.emailPreview.errors.missingSubject' | translate
+        "
+        [uiErrorMessageIf]="this.form.controls.subject.hasError('required')"
+        uiFormFieldDirective
+      >
+        <label>{{ 'components.emailPreview.subject' | translate }}</label>
+        <input formControlName="subject" type="text" />
+      </div>
+      <div uiFormFieldDirective>
+        <label>{{ 'components.emailPreview.from' | translate }}</label>
+        <input formControlName="from" type="text" />
+      </div>
+      <div
+        [uiErrorMessage]="emailsError | translate"
+        [uiErrorMessageIf]="this.form.controls.to.invalid"
+        uiFormFieldDirective
+        id="previewEmailTo"
+      >
+        <label class="block text-sm font-medium leading-6 text-gray-900">{{
+          'components.emailPreview.to' | translate
+        }}</label>
+        <div uiChipList formControlName="to" #chipList>
+          <ui-chip
             [removable]="true"
             (removed)="removeEmail(email)"
+            [value]="email"
+            *ngFor="let email of emails"
           >
             {{ email }}
-            <safe-icon matChipRemove icon="cancel" [size]="18"></safe-icon>
-          </mat-chip>
-          <input
-            #emailsInput
-            [matChipInputFor]="chipList"
-            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-            (focusout)="addEmail($event)"
-            (matChipInputTokenEnd)="addEmail($event)"
-          />
-        </mat-chip-list>
-        <mat-error>{{ errorMessage() | translate }}</mat-error>
-      </mat-form-field>
+          </ui-chip>
+        </div>
+        <input
+          #emailsInput
+          [uiChipListFor]="chipList"
+          [chipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (focusout)="addEmail($event)"
+          (chipTokenEnd)="addEmail($event)"
+        />
+      </div>
       <kendo-fileselect
         class="mb-4"
         [multiple]="true"
@@ -44,19 +52,19 @@
       ></kendo-fileselect>
       <editor [init]="editor" formControlName="html"></editor>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
       {{ 'common.dismiss' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="form.value"
+      [uiDialogClose]="form.value"
       cdkFocusInitial
       [disabled]="!form.valid"
     >
       {{ 'common.send' | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

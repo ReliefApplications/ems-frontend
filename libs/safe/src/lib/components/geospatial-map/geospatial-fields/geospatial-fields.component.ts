@@ -23,6 +23,6 @@ import { FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 })
 export class GeospatialFieldsComponent {
   @Input() userLocation!: boolean;
-  @Input() fields: (keyof GeoProperties)[] = [];
+  @Input() fields: { value: keyof GeoProperties; label: string }[] = [];
   @Input() geoForm!: FormGroup;
 }

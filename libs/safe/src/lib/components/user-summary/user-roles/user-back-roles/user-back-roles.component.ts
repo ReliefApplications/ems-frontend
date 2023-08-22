@@ -4,7 +4,7 @@ import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Role, User } from '../../../../models/user.model';
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
-import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Back-office roles section the user summary */
 @Component({
@@ -37,7 +37,7 @@ export class UserBackRolesComponent implements OnInit {
   constructor(
     private fb: UntypedFormBuilder,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService
+    private snackBar: SnackbarService
   ) {}
 
   ngOnInit(): void {

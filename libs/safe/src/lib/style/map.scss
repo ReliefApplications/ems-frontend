@@ -20,18 +20,23 @@
 }
 
 // Clustering
-::ng-deep .leaflet-data-marker {
-  label {
-    display: block;
-    position: absolute;
-    inset: 0;
-    font-size: 1.125rem;
-    margin: 0;
-    color: white;
-    font-weight: 600;
-    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
-      1px 1px 0 #000;
-    text-align: center;
+::ng-deep .leaflet-data-cluster {
+  div {
+    display: flex;
+    height: 100%;
+    border-radius: 50%;
+    span {
+      // display: block;
+      // position: absolute;
+      // inset: 0;
+      font-size: 14px;
+      margin: auto;
+      color: white;
+      font-weight: 600;
+      text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
+        1px 1px 0 #000;
+      // text-align: center;
+    }
   }
 }
 

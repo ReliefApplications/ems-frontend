@@ -71,7 +71,7 @@ export class GeospatialMapComponent
   @Input() data?: Feature | FeatureCollection;
   @Input() geometry = 'Point';
   @Input() userLocation!: boolean;
-  @Input() fields: (keyof GeoProperties)[] = [];
+  @Input() fields: { value: keyof GeoProperties; label: string }[] = [];
 
   public geoForm!: ReturnType<typeof this.buildGeoForm>;
 
@@ -89,7 +89,7 @@ export class GeospatialMapComponent
     pmIgnore: false,
     worldCopyJump: true,
     controls: {
-      timedimension: false,
+      // timedimension: false,
       download: false,
       legend: false,
       measure: true,
@@ -100,7 +100,7 @@ export class GeospatialMapComponent
   };
 
   // Layer to edit
-  public selectedLayer: any;
+  public selectedLayer?: L.Layer;
   public controls: any = {
     position: 'topright',
     drawText: false,
@@ -109,7 +109,12 @@ export class GeospatialMapComponent
     drawCircle: false,
     drawRectangle: false,
     drawPolygon: false,
+    cutPolygon: false,
+    rotateMode: false,
+    editMode: false,
   };
+
+  private disableGeomanToolsFlag = false;
 
   // output
   private timeout: ReturnType<typeof setTimeout> | null = null;
@@ -145,7 +150,7 @@ export class GeospatialMapComponent
     (['lat', 'lng'] as const).forEach((key) => {
       this.geoForm
         .get(`coordinates.${key}`)
-        ?.valueChanges.pipe(takeUntil(this.destroy$), debounceTime(500))
+        ?.valueChanges.pipe(debounceTime(500), takeUntil(this.destroy$))
         .subscribe(() => {
           const lat = this.geoForm.get('coordinates.lat')?.value;
           const lng = this.geoForm.get('coordinates.lng')?.value;
@@ -165,6 +170,50 @@ export class GeospatialMapComponent
           }
         });
     });
+  }
+
+  /**
+   * Disables/Enables all buttons from geoman tools if there is a current action on going or finished
+   *
+   * @param triggeredButton Button clicked by user
+   * @param e event triggered from geoman tools
+   */
+  private disableGeomanTools(triggeredButton: string, e: any) {
+    // If we are clicking on the button itself, we are starting/ending an action
+    if (e.type === 'pm:buttonclick') {
+      this.disableGeomanToolsFlag = !this.disableGeomanToolsFlag;
+    } else {
+      // If is another type of event it's always a finished action, therefor enable geoman tools
+      this.disableGeomanToolsFlag = false;
+    }
+    const buttons = Object.keys(
+      (this.mapComponent?.map.pm.Toolbar as any).buttons
+    );
+    buttons.forEach((button) => {
+      if (
+        (button !== triggeredButton && button !== 'drawMarker') ||
+        (triggeredButton !== 'drawMarker' &&
+          button === 'drawMarker' &&
+          this.noLayerContent())
+      ) {
+        this.mapComponent?.map.pm.Toolbar.setButtonDisabled(
+          button,
+          this.disableGeomanToolsFlag
+        );
+      }
+    });
+  }
+
+  /**
+   * Check if there is no marker set in the current geospatial map
+   *
+   * @returns true if there is any content, false otherwise
+   */
+  private noLayerContent(): boolean {
+    const containsPointMarker = (feature: any) =>
+      feature.geometry.type === 'Point';
+    const content = getMapFeature(this.mapComponent?.map);
+    return !content || !containsPointMarker(content);
   }
 
   /** Set geoman listeners */
@@ -191,6 +240,7 @@ export class GeospatialMapComponent
             properties: this.geoForm.value,
           });
         });
+        this.disableGeomanTools('drawMarker', l);
         // If we add a Marker, we will disable the control to set new markers(currently we want to add just one)
         this.mapComponent?.map.pm.Toolbar.setButtonDisabled('drawMarker', true);
       }
@@ -216,19 +266,19 @@ export class GeospatialMapComponent
         }
       });
     });
+    this.mapComponent?.map.on('pm:buttonclick', (e) => {
+      this.disableGeomanTools(e.btnName, e);
+    });
+
+    this.mapComponent?.map.on('pm:actionclick', (e) => {
+      this.disableGeomanTools(e.btnName, e);
+    });
 
     // updates question value on removing shapes
     this.mapComponent?.map.on('pm:remove', () => {
-      this.selectedLayer = null;
-      const containsPointMarker = (feature: any) =>
-        feature.geometry.type === 'Point';
-      const content = getMapFeature(this.mapComponent?.map);
+      this.selectedLayer = undefined;
       // If no markers, we enable the point marker control again
-      if (!content || !containsPointMarker(content)) {
-        this.mapComponent?.map.pm.Toolbar.setButtonDisabled(
-          'drawMarker',
-          false
-        );
+      if (this.noLayerContent()) {
         this.geoForm.setValue(DEFAULT_GEOCODING);
         this.mapChange.emit();
       }

@@ -1,8 +1,8 @@
 <!-- Header -->
 <h2>{{ 'common.filter.few' | translate }}</h2>
 <!-- Content -->
-<div *ngIf="filters.data.length === 0" class="flex flex-col p-4 items-center">
-  <safe-icon icon="folder_open"></safe-icon>
+<div *ngIf="filters.length === 0" class="flex flex-col p-4 items-center">
+  <ui-icon icon="folder_open"></ui-icon>
   <h3>{{ 'components.role.summary.noFilters' | translate }}</h3>
 </div>
 <!-- Table container -->
@@ -10,60 +10,59 @@
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <table
-      mat-table
+      cdk-table
+      uiTableWrapper
       [dataSource]="filters"
-      *ngIf="filters.data.length > 0"
+      *ngIf="filters.length > 0"
       multiTemplateDataRows
     >
-      <ng-container matColumnDef="filter">
-        <th mat-header-cell *matHeaderCellDef>
+      <ng-container cdkColumnDef="filter">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'components.queryBuilder.filter.title' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ getAccessString(element.access) }}
         </td>
       </ng-container>
-      <ng-container matColumnDef="actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef class="text-end w-16">
-          <safe-button
+      <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="text-end w-16">
+          <ui-button
             [disabled]="disabled"
             variant="primary"
             category="tertiary"
             (click)="save()"
-            >{{ 'common.save' | translate }}</safe-button
+            >{{ 'common.save' | translate }}</ui-button
           >
         </th>
-        <td mat-cell *matCellDef="let element; let i = dataIndex">
+        <td uiCell *cdkCellDef="let element; let i = dataIndex">
           <div class="flex">
             <ng-container *ngFor="let permission of element.permissions">
-              <safe-button
+              <ui-button
                 [disabled]="disabled"
                 *ngIf="permission.name !== 'canCreateRecords'"
                 [isIcon]="true"
                 [icon]="permission.icon"
                 [variant]="permission.variant"
-                [matTooltip]="permission.tooltip | translate"
-                matTooltipPosition="left"
+                [uiTooltip]="permission.tooltip | translate"
                 (click)="
                   $event.stopPropagation();
                   toggleFilterAccess(i, permission.name)
                 "
               >
-              </safe-button>
+              </ui-button>
             </ng-container>
           </div>
         </td>
       </ng-container>
-      <ng-container matColumnDef="expandedDetail">
+      <ng-container cdkColumnDef="expandedDetail">
         <td
-          mat-cell
-          *matCellDef="let element; let i = dataIndex"
+          uiCell
+          *cdkCellDef="let element; let i = dataIndex"
           [attr.colspan]="displayedColumns.length"
+          [ngClass]="i === openedFilterIndex ? '' : 'hidden'"
         >
           <div
-            [ngClass]="{
-              'expanded-filter': i === openedFilterIndex
-            }"
+            class="expanded-filter"
             [@detailExpand]="i === openedFilterIndex ? 'expanded' : 'collapsed'"
           >
             <safe-filter
@@ -72,7 +71,7 @@
               [fields]="filterFields"
             >
             </safe-filter>
-            <safe-button
+            <ui-button
               *ngIf="i === openedFilterIndex"
               [disabled]="disabled"
               variant="danger"
@@ -82,27 +81,23 @@
               class="w-fit"
             >
               {{ 'components.role.summary.removeFilter' | translate }}
-            </safe-button>
+            </ui-button>
           </div>
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
       <tr
-        *matRowDef="let row; columns: displayedColumns; let i = dataIndex"
-        mat-row
+        *cdkRowDef="let row; columns: displayedColumns; let i = dataIndex"
+        cdk-row
         (click)="toggleFilterEdition(i)"
         class="cursor-pointer"
       ></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; columns: ['expandedDetail']"
-        class="cursor-pointer h-0"
-      ></tr>
+      <tr cdk-row *cdkRowDef="let row; columns: ['expandedDetail']"></tr>
     </table>
   </div>
 </div>
-<safe-button
+<ui-button
   [disabled]="disabled"
   variant="primary"
   category="secondary"
@@ -110,4 +105,4 @@
   class="self-center"
 >
   {{ 'components.role.summary.addFilter' | translate }}
-</safe-button>
+</ui-button>

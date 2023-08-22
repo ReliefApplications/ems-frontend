@@ -1,62 +1,58 @@
-<safe-modal size="medium">
-  <h1 mat-dialog-title>
-    {{
-      (data
-        ? 'components.templates.edit.update'
-        : 'components.templates.edit.new'
-      ) | translate
-    }}
-  </h1>
-  <div mat-dialog-content>
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{
+        (data
+          ? 'components.templates.edit.update'
+          : 'components.templates.edit.new'
+        ) | translate
+      }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="form" class="flex flex-col">
       <div class="flex gap-2">
-        <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>{{
-            'components.templates.type.title' | translate
-          }}</mat-label>
-          <mat-select formControlName="type" [disabled]="true">
-            <mat-option value="email">{{
+        <div uiFormFieldDirective class="flex-1">
+          <label>{{ 'components.templates.type.title' | translate }}</label>
+          <ui-select-menu formControlName="type" [disabled]="true">
+            <ui-select-option value="email">{{
               'components.templates.type.email' | translate
-            }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>{{
-            'components.templates.edit.name' | translate
-          }}</mat-label>
-          <input matInput formControlName="name" type="text" />
-        </mat-form-field>
+            }}</ui-select-option>
+          </ui-select-menu>
+        </div>
+        <div uiFormFieldDirective class="flex-1">
+          <label>{{ 'components.templates.edit.name' | translate }}</label>
+          <input formControlName="name" type="text" />
+        </div>
       </div>
-      <mat-form-field appearance="outline">
-        <mat-label>{{
-          'components.templates.edit.subject' | translate
-        }}</mat-label>
+      <div uiFormFieldDirective>
+        <label>{{ 'components.templates.edit.subject' | translate }}</label>
         <safe-editor-control
           formControlName="subject"
           [editorConfig]="subjectEditor"
         ></safe-editor-control>
-        <safe-icon
+        <ui-icon
           icon="info"
           class="cursor-pointer"
           variant="grey"
-          matSuffix
-          [matTooltip]="'common.tooltip.editor.insert' | translate"
-        ></safe-icon>
-      </mat-form-field>
+          uiSuffix
+          [uiTooltip]="'common.tooltip.editor.insert' | translate"
+        ></ui-icon>
+      </div>
       <editor [init]="bodyEditor" formControlName="body"></editor>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="form.value"
+      [uiDialogClose]="form.value"
       [disabled]="!form.valid"
     >
       {{ (data ? 'common.update' : 'common.create') | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

@@ -7,7 +7,14 @@ import {
   EventEmitter,
   AfterViewInit,
 } from '@angular/core';
-import { UntypedFormGroup, UntypedFormArray, Validators } from '@angular/forms';
+import {
+  UntypedFormGroup,
+  UntypedFormArray,
+  Validators,
+  FormBuilder,
+  FormControl,
+  FormArray,
+} from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import {
   GetChannelsQueryResponse,
@@ -19,16 +26,13 @@ import { Application } from '../../../models/application.model';
 import { Channel } from '../../../models/channel.model';
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { Form } from '../../../models/form.model';
-import { Overlay } from '@angular/cdk/overlay';
-import { MAT_LEGACY_AUTOCOMPLETE_SCROLL_STRATEGY as MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/legacy-autocomplete';
-import { scrollFactory } from '../../../utils/scroll-factory';
 import { Resource } from '../../../models/resource.model';
-import { MatLegacyTabChangeEvent as MatTabChangeEvent } from '@angular/material/legacy-tabs';
 import { createGridWidgetFormGroup } from './grid-settings.forms';
 import { DistributionList } from '../../../models/distribution-list.model';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
+import { get } from 'lodash';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -37,13 +41,6 @@ import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
   selector: 'safe-grid-settings',
   templateUrl: './grid-settings.component.html',
   styleUrls: ['./grid-settings.component.scss'],
-  providers: [
-    {
-      provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-  ],
 })
 export class SafeGridSettingsComponent
   extends SafeUnsubscribeComponent
@@ -51,6 +48,7 @@ export class SafeGridSettingsComponent
 {
   // === REACTIVE FORM ===
   public formGroup!: UntypedFormGroup;
+  public filtersFormArray: any = null;
 
   // === WIDGET ===
   @Input() tile: any;
@@ -89,11 +87,13 @@ export class SafeGridSettingsComponent
    * @param apollo The apollo client
    * @param applicationService The application service
    * @param queryBuilder The query builder service
+   * @param formBuilder FormBuilder instance
    */
   constructor(
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
-    private queryBuilder: QueryBuilderService
+    private queryBuilder: QueryBuilderService,
+    private formBuilder: FormBuilder
   ) {
     super();
   }
@@ -103,9 +103,16 @@ export class SafeGridSettingsComponent
     const tileSettings = this.tile.settings;
     this.formGroup = extendWidgetForm(
       createGridWidgetFormGroup(this.tile.id, tileSettings),
-      tileSettings?.widgetDisplay
+      tileSettings?.widgetDisplay,
+      {
+        sortable: new FormControl(
+          get<boolean>(tileSettings, 'widgetDisplay.sortable', false)
+        ),
+      }
     );
+
     this.change.emit(this.formGroup);
+
     // this.formGroup?.get('query.name')?.valueChanges.subscribe((res) => {
     //   this.filteredQueries = this.filterQueries(res);
     // });
@@ -147,6 +154,10 @@ export class SafeGridSettingsComponent
         } else {
           this.fields = [];
         }
+
+        // clear sort fields array
+        const sortFields = this.formGroup?.get('sortFields') as FormArray;
+        sortFields.clear();
       });
 
     // Subscribe to form aggregations changes
@@ -226,6 +237,22 @@ export class SafeGridSettingsComponent
     if (this.formGroup.get('layouts')?.value.length > 0) {
       this.formGroup.controls.aggregations.clearValidators();
     }
+
+    this.initSortFields();
+  }
+
+  /**
+   * Adds sortFields to the formGroup
+   */
+  initSortFields(): void {
+    this.tile.settings.sortFields?.forEach((item: any) => {
+      const row = this.formBuilder.group({
+        field: [item.field, Validators.required],
+        order: [item.order, Validators.required],
+        label: [item.label, Validators.required],
+      });
+      (this.formGroup?.get('sortFields') as any).push(row);
+    });
   }
 
   ngAfterViewInit(): void {
@@ -324,7 +351,7 @@ export class SafeGridSettingsComponent
    *
    * @param event Event triggered on tab switch
    */
-  handleTabChange(event: MatTabChangeEvent): void {
-    this.selectedTab = event.index;
+  handleTabChange(event: number): void {
+    this.selectedTab = event;
   }
 }

@@ -2,13 +2,18 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MapLayersComponent } from './map-layers.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  ButtonModule,
+  DividerModule,
+  IconModule,
+  MenuModule,
+  TableModule,
+  TabsModule,
+} from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule } from '../../../ui/button/button.module';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { MatIconModule } from '@angular/material/icon';
-import { SafeDividerModule } from '../../../ui/divider/divider.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { SafeEmptyModule } from '../../../ui/empty/empty.module';
+import { SafeSkeletonTableModule } from '../../../skeleton/skeleton-table/skeleton-table.module';
 
 /**
  * Map Widget layers configuration module.
@@ -20,12 +25,15 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    SafeButtonModule,
-    MatTableModule,
-    MatMenuModule,
-    MatIconModule,
-    SafeDividerModule,
+    ButtonModule,
+    TableModule,
+    MenuModule,
+    IconModule,
+    DividerModule,
     DragDropModule,
+    TabsModule,
+    SafeEmptyModule,
+    SafeSkeletonTableModule,
   ],
   exports: [MapLayersComponent],
 })

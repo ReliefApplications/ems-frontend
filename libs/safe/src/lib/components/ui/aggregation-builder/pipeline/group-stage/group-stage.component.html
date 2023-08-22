@@ -16,17 +16,17 @@
         [operators]="$any(dateOperators)"
         [displayField]="false"
       ></safe-expressions>
-      <safe-button
+      <ui-button
         *ngIf="i > 0"
         (click)="onDeleteRule(i)"
         [isIcon]="true"
         icon="delete"
         variant="danger"
-      ></safe-button>
+      ></ui-button>
     </div>
-    <safe-button icon="add" category="tertiary" (click)="onAddRule()">{{
+    <ui-button icon="add" category="tertiary" (click)="onAddRule()">{{
       'components.aggregationBuilder.addRule' | translate
-    }}</safe-button>
+    }}</ui-button>
   </div>
 </div>
 

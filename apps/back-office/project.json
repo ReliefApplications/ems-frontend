@@ -68,14 +68,12 @@
           "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
           "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
           "node_modules/leaflet-measure/dist/leaflet-measure.css",
-          "node_modules/select2/dist/css/select2.min.css",
           "node_modules/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css",
           "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css",
           "node_modules/leaflet-timedimension/dist/leaflet.timedimension.control.min.css"
         ],
         "scripts": [
           "node_modules/jquery/dist/jquery.js",
-          "node_modules/select2/dist/js/select2.min.js",
           "node_modules/tinymce/tinymce.js",
           "node_modules/tinymce/themes/silver/theme.js"
         ],
@@ -84,7 +82,6 @@
           "hammerjs",
           "survey-creator",
           "survey-knockout",
-          "surveyjs-widgets",
           "subscriptions-transport-ws",
           "zen-observable",
           "lodash",
@@ -235,11 +232,63 @@
             "includePaths": ["libs/safe/src/lib/style/themes/oort"]
           }
         },
+        "oort-tailwind": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.oort.tailwind.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ],
+          "baseHref": "/admin/",
+          "deployUrl": "/admin/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/safe/src/lib/style/themes/Default"]
+          }
+        },
         "oort-guyane": {
           "fileReplacements": [
             {
               "replace": "apps/back-office/src/environments/environment.ts",
               "with": "apps/back-office/src/environments/environment.oort.guyane.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ],
+          "baseHref": "/admin/",
+          "deployUrl": "/admin/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+          }
+        },
+        "oort-alimentaide": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.oort.alimentaide.ts"
             }
           ],
           "budgets": [
@@ -310,7 +359,7 @@
           "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/safe/src/lib/style/themes/lift"]
           }
         },
         "oort-expertisefr": {

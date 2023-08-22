@@ -1,28 +1,29 @@
-<form [formGroup]="form">
+<form [formGroup]="form" class="my-8">
   <div class="flex flex-col">
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'common.channel.few' | translate }}</mat-label>
-      <mat-select matNativeControl multiple formControlName="channels">
-        <mat-optgroup
+    <div uiFormFieldDirective>
+      <label>{{ 'common.channel.few' | translate }}</label>
+      <ui-select-menu [multiselect]="true" formControlName="channels">
+        <ui-select-option
+          [isGroup]="true"
           *ngFor="let application of applications"
-          [label]="application.name || ''"
         >
-          <mat-option
+          {{ application.name }}
+          <ui-select-option
             *ngFor="let channel of application.channels"
             [value]="channel.id"
           >
             {{ channel.title }}
-          </mat-option>
-        </mat-optgroup>
-      </mat-select>
-    </mat-form-field>
+          </ui-select-option>
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
   </div>
 </form>
-<safe-button
+<ui-button
   variant="primary"
   category="secondary"
   type="submit"
   [disabled]="!form.valid"
   (click)="onUpdate()"
-  >{{ 'common.saveChanges' | translate }}</safe-button
+  >{{ 'common.saveChanges' | translate }}</ui-button
 >

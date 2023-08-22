@@ -2,29 +2,40 @@
   <div class="flex flex-col items-center" [ngSwitch]="step">
     <!-- Selection of type of content -->
     <ng-container *ngSwitchCase="1">
+      <!-- Select a type of page -->
       <h2>{{ 'pages.application.addPage.selectType' | translate }}</h2>
       <safe-content-choice
-        class="mt-8"
+        class="mt-4"
         formControlName="type"
         [contentTypes]="contentTypes"
       ></safe-content-choice>
+      <ui-divider class="m-8" [text]="'common.or' | translate"></ui-divider>
+      <!-- Select a type of widget -->
+      <h2>{{ 'pages.application.addPage.startFromWidget' | translate }}</h2>
+      <safe-widget-choice
+        class="mt-4"
+        [floating]="false"
+        [widgetTypes]="availableWidgets"
+        (add)="onAddWidget($event)"
+      >
+      </safe-widget-choice>
     </ng-container>
     <!-- Form selection -->
     <ng-container *ngSwitchCase="2">
-      <div class="flex flex-col w-80 items-center">
+      <div class="flex flex-col w-80">
         <!-- Existing form -->
-        <safe-forms-dropdown
-          [forms$]="forms$"
-          [label]="'models.form.select' | translate"
-          [sourceControl]="pageForm.controls.content"
-          [loadingMore]="loadingMore"
-          (filter)="onFilterDataSource($event)"
-          (scrolled)="onScrollDataSource($event)"
-        ></safe-forms-dropdown>
-        <safe-divider [text]="'or'"></safe-divider>
+        <ui-graphql-select
+          formControlName="content"
+          valueField="id"
+          textField="name"
+          [query]="formsQuery"
+          (searchChange)="onSearchChange($event)"
+          [filterable]="true"
+        ></ui-graphql-select>
+        <ui-divider [text]="'or'" class="my-4"></ui-divider>
         <!-- New form -->
-        <safe-button
-          class="mt-4"
+        <ui-button
+          class="self-center"
           icon="add"
           category="secondary"
           variant="primary"
@@ -32,22 +43,23 @@
           [disabled]="!('create' | able : 'Form')"
         >
           {{ 'models.form.create' | translate }}
-        </safe-button>
+        </ui-button>
       </div>
     </ng-container>
   </div>
 </form>
 <!-- Actions -->
 <div class="flex flex-row justify-center mt-16" *ngIf="step !== 1">
-  <safe-button [disabled]="step <= 1" (click)="onBack()" class="my-0 mx-1">{{
+  <ui-button [disabled]="step <= 1" (click)="onBack()" class="my-0 mx-1">{{
     'common.back' | translate
-  }}</safe-button>
-  <safe-button
+  }}</ui-button>
+  <ui-button
     class="my-0 mx-1"
     category="secondary"
     variant="primary"
     (click)="onNext()"
     [disabled]="!isStepValid(step)"
-    >{{ 'common.next' | translate }}</safe-button
   >
+    {{ 'common.next' | translate }}
+  </ui-button>
 </div>

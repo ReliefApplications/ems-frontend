@@ -1,0 +1,53 @@
+<div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
+  <!-- Styling -->
+  <div [formGroup]="formGroup" class="flex-1">
+    <div formGroupName="renderer">
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.widget.settings.map.layers.styling.style' | translate
+        }}</label>
+        <ui-select-menu formControlName="type">
+          <ui-select-option *ngFor="let type of rendererTypes" [value]="type"
+            >{{ type }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+      <div class="flex flex-col" [ngSwitch]="formGroup.value.renderer.type">
+        <div *ngSwitchCase="'simple'">
+          <ng-container *ngTemplateOutlet="simpleRenderer"></ng-container>
+        </div>
+        <div *ngSwitchCase="'heatmap'">
+          <ng-container *ngTemplateOutlet="heatmapRenderer"></ng-container>
+        </div>
+        <div *ngSwitchCase="'uniqueValue'">
+          <ng-container *ngTemplateOutlet="uniqueValueRenderer"></ng-container>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Map -->
+  <div class="lg:flex-1 max-lg:min-w-full h-80 lg:h-[400px] flex-shrink-0">
+    <ng-template #mapContainer></ng-template>
+  </div>
+</div>
+
+<ng-template #simpleRenderer>
+  <safe-simple-renderer
+    [geometryType]="geometryType"
+    [formGroup]="$any(formGroup.get('renderer.symbol'))"
+  ></safe-simple-renderer>
+</ng-template>
+
+<ng-template #heatmapRenderer>
+  <safe-heatmap-renderer
+    [formGroup]="$any(formGroup.get('renderer'))"
+  ></safe-heatmap-renderer>
+</ng-template>
+
+<ng-template #uniqueValueRenderer>
+  <safe-unique-value-renderer
+    [geometryType]="geometryType"
+    [formGroup]="$any(formGroup.get('renderer'))"
+    [fields$]="fields$"
+  ></safe-unique-value-renderer>
+</ng-template>

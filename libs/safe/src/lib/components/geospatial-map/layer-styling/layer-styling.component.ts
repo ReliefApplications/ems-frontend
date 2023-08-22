@@ -5,7 +5,7 @@ import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.co
 
 /** Leaflet */
 import * as L from 'leaflet';
-import { GeometryTypes } from '../../ui/map/interfaces/layer-settings.type';
+import { GeometryType } from '../../ui/map/interfaces/layer-settings.type';
 
 /** Component for styling leaflet layers */
 @Component({
@@ -17,7 +17,7 @@ export class LayerStylingComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  private _selectedLayer: any;
+  private _selectedLayer?: L.Layer;
 
   /** Sets the selected layer */
   @Input() set selectedLayer(value: any) {
@@ -33,13 +33,12 @@ export class LayerStylingComponent
   }
 
   /** @returns the geometry type of the selected layer */
-  get selectedLayerType(): GeometryTypes | null {
+  get selectedLayerType(): GeometryType | null {
     // If the layer is a circle, can be considered as a polygon for styling purposes
     if (this.selectedLayer instanceof L.Circle) return 'Polygon';
 
     // Return geometry type if it is a valid type
     if (this.selectedLayer instanceof L.Polygon) return 'Polygon';
-    if (this.selectedLayer instanceof L.Polyline) return 'LineString';
     if (this.selectedLayer instanceof L.Marker) return 'Point';
 
     // Otherwise, return null
@@ -87,12 +86,6 @@ export class LayerStylingComponent
       case 'Point':
         return new FormGroup({
           color: new FormControl('#3388ff'),
-          opacity: new FormControl(1.0),
-        });
-      case 'LineString':
-        return new FormGroup({
-          color: new FormControl('#3388ff'),
-          weight: new FormControl(3),
           opacity: new FormControl(1.0),
         });
       case 'Polygon':

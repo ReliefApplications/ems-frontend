@@ -52,10 +52,16 @@ export const GET_RESOURCES = gql`
     $first: Int
     $afterCursor: ID
     $sortField: String
+    $filter: JSON
     $layout: [ID!]
     $aggregation: [ID!]
   ) {
-    resources(first: $first, afterCursor: $afterCursor, sortField: $sortField) {
+    resources(
+      first: $first
+      afterCursor: $afterCursor
+      sortField: $sortField
+      filter: $filter
+    ) {
       edges {
         node {
           id

@@ -1,35 +1,37 @@
-<safe-modal size="small">
-  <h1 mat-dialog-title>
-    {{ 'components.widget.settings.map.layers.chooseLayer' | translate }}
-  </h1>
-  <div mat-dialog-content>
+<ui-dialog size="small">
+  <ng-container ngProjectsAs="header">
+    <h1>
+      {{ 'components.widget.settings.map.layers.chooseLayer' | translate }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form class="flex flex-col">
       <!-- API to use -->
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>{{ 'common.layers' | translate }}</mat-label>
-        <safe-graphql-select
+      <div uiFormFieldDirective class="flex-1">
+        <label>{{ 'common.layers' | translate }}</label>
+        <ui-graphql-select
           valueField="id"
           textField="name"
           [required]="true"
           [query]="layersQuery"
           [formControl]="layerControl"
         >
-        </safe-graphql-select>
-      </mat-form-field>
+        </ui-graphql-select>
+      </div>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close="discard">{{
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose]="'discard'">{{
       'common.close' | translate
-    }}</safe-button>
-    <safe-button
+    }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       cdkFocusInitial
-      [mat-dialog-close]="layerControl.value"
+      [uiDialogClose]="layerControl.value"
       [disabled]="!layerControl.value"
     >
       {{ 'common.select' | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

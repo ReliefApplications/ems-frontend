@@ -1,5 +1,4 @@
 import { Apollo } from 'apollo-angular';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import {
   EDIT_RECORD,
   EditRecordMutationResponse,
@@ -29,7 +28,6 @@ import {
   EventEmitter,
   Inject,
 } from '@angular/core';
-import { SafeSnackBarService } from '../../../services/snackbar/snackbar.service';
 import { SafeWorkflowService } from '../../../services/workflow/workflow.service';
 import { SafeAuthService } from '../../../services/auth/auth.service';
 import { SafeEmailService } from '../../../services/email/email.service';
@@ -41,10 +39,14 @@ import { Layout } from '../../../models/layout.model';
 import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../../utils/cleanRecord';
 import get from 'lodash/get';
+import set from 'lodash/set';
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { Aggregation } from '../../../models/aggregation.model';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, takeUntil } from 'rxjs';
+import { Dialog } from '@angular/cdk/dialog';
+import { SnackbarService } from '@oort-front/ui';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /** Component for the grid widget */
 @Component({
@@ -53,7 +55,10 @@ import { firstValueFrom } from 'rxjs';
   styleUrls: ['./grid.component.scss'],
 })
 /** Grid widget using KendoUI. */
-export class SafeGridWidgetComponent implements OnInit {
+export class SafeGridWidgetComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === TEMPLATE REFERENCE ===
   @ViewChild(SafeCoreGridComponent)
   private grid!: SafeCoreGridComponent;
@@ -67,6 +72,9 @@ export class SafeGridWidgetComponent implements OnInit {
   // === CACHED CONFIGURATION ===
   public layout: Layout | null = null;
   public layouts: Layout[] = [];
+
+  // === SORT FIELDS SELECT ===
+  public sortFields: any[] = [];
 
   // === AGGREGATION ===
   public aggregation: Aggregation | null = null;
@@ -110,7 +118,7 @@ export class SafeGridWidgetComponent implements OnInit {
    *
    * @param environment Environment variables
    * @param apollo The apollo client
-   * @param dialog Material dialogs service
+   * @param dialog Dialogs service
    * @param snackBar Shared snack bar service
    * @param workflowService Shared workflow service
    * @param safeAuthService Shared authentication service
@@ -121,13 +129,12 @@ export class SafeGridWidgetComponent implements OnInit {
    * @param applicationService The safe application service
    * @param translate Angular translate service
    * @param aggregationService Shared aggregation service
-   * @param snackbarService Shared snackbar service
    */
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
-    public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    public dialog: Dialog,
+    private snackBar: SnackbarService,
     private workflowService: SafeWorkflowService,
     private safeAuthService: SafeAuthService,
     private emailService: SafeEmailService,
@@ -136,9 +143,9 @@ export class SafeGridWidgetComponent implements OnInit {
     private confirmService: SafeConfirmService,
     private applicationService: SafeApplicationService,
     private translate: TranslateService,
-    private aggregationService: SafeAggregationService,
-    private snackbarService: SafeSnackBarService
+    private aggregationService: SafeAggregationService
   ) {
+    super();
     this.isAdmin =
       this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
   }
@@ -183,6 +190,11 @@ export class SafeGridWidgetComponent implements OnInit {
               this.status = {
                 error: true,
               };
+            } else {
+              // Build list of available sort fields
+              this.widget.settings.sortFields?.forEach((sortField: any) => {
+                this.sortFields.push(sortField);
+              });
             }
             this.gridSettings = {
               ...this.settings,
@@ -219,30 +231,17 @@ export class SafeGridWidgetComponent implements OnInit {
   }
 
   /**
-   * Send changes on multiple records to the backend
+   * Query sort change of the grid.
    *
-   * @param items A list of item representing the changes for each record
-   * @returns A list of promise with the result of the request
+   * @param e sort event
    */
-  private promisedChanges(items: any[]): Promise<any>[] {
-    const promises: Promise<any>[] = [];
-    for (const item of items) {
-      const data = Object.assign({}, item);
-      delete data.id;
-      promises.push(
-        firstValueFrom(
-          this.apollo.mutate<EditRecordMutationResponse>({
-            mutation: EDIT_RECORD,
-            variables: {
-              id: item.id,
-              data,
-              template: get(this.settings, 'template', null),
-            },
-          })
-        )
-      );
-    }
-    return promises;
+  public onSort(e: any): void {
+    this.coreGridComponent?.onSortChange([
+      {
+        field: e.field,
+        dir: e.order,
+      },
+    ]);
   }
 
   /**
@@ -277,7 +276,20 @@ export class SafeGridWidgetComponent implements OnInit {
 
     // Auto save all records
     if (options.autoSave) {
-      await Promise.all(this.promisedChanges(this.grid.updatedItems));
+      const hasError = await this.grid.onSaveChanges();
+      if (hasError) {
+        this.snackBar.openSnackBar(
+          this.translate.instant(
+            'components.widget.grid.errors.autoSaveFailed'
+          ),
+          {
+            error: true,
+            duration: 8000,
+          }
+        );
+        // Close the action if error detected during auto save
+        return;
+      }
     }
     // Auto modify the selected rows
     if (options.modifySelectedRows) {
@@ -339,7 +351,7 @@ export class SafeGridWidgetComponent implements OnInit {
         ) || [];
       if (templates.length === 0) {
         // no template found, skip
-        this.snackbarService.openSnackBar(
+        this.snackBar.openSnackBar(
           this.translate.instant(
             'common.notifications.email.errors.noTemplate'
           ),
@@ -351,52 +363,45 @@ export class SafeGridWidgetComponent implements OnInit {
           this.applicationService.distributionLists.find(
             (x) => x.id === options.distributionList
           )?.emails || [];
-        if (recipients.length === 0) {
-          // no recipient found, skip
-          this.snackbarService.openSnackBar(
-            this.translate.instant(
-              'common.notifications.email.errors.noDistributionList'
-            ),
-            { error: true }
-          );
-        } else {
-          // select template
-          const { EmailTemplateModalComponent } = await import(
-            '../../email-template-modal/email-template-modal.component'
-          );
-          const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
-            data: {
-              templates,
+
+        // select template
+        const { EmailTemplateModalComponent } = await import(
+          '../../email-template-modal/email-template-modal.component'
+        );
+        const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
+          data: {
+            templates,
+          },
+        });
+
+        const value = await firstValueFrom<any>(
+          dialogRef.closed.pipe(takeUntil(this.destroy$))
+        );
+        const template = value?.template;
+
+        if (template) {
+          this.emailService.previewMail(
+            recipients,
+            template.content.subject,
+            template.content.body,
+            {
+              logic: 'and',
+              filters: [
+                {
+                  operator: 'eq',
+                  field: 'ids',
+                  value: this.grid.selectedRows,
+                },
+              ],
             },
-          });
-
-          const value = await firstValueFrom(dialogRef.afterClosed());
-          const template = value?.template;
-
-          if (template) {
-            this.emailService.previewMail(
-              recipients,
-              template.content.subject,
-              template.content.body,
-              {
-                logic: 'and',
-                filters: [
-                  {
-                    operator: 'eq',
-                    field: 'ids',
-                    value: this.grid.selectedRows,
-                  },
-                ],
-              },
-              {
-                name: this.grid.settings.query.name,
-                fields: options.bodyFields,
-              },
-              this.grid.sortField || undefined,
-              this.grid.sortOrder || undefined,
-              options.export
-            );
-          }
+            {
+              name: this.grid.settings.query.name,
+              fields: options.bodyFields,
+            },
+            this.grid.sortField || undefined,
+            this.grid.sortOrder || undefined,
+            options.export
+          );
         }
       }
     }
@@ -454,13 +459,15 @@ export class SafeGridWidgetComponent implements OnInit {
           confirmText: this.translate.instant(
             'components.confirmModal.confirm'
           ),
-          confirmColor: 'primary',
+          confirmVariant: 'primary',
         });
-        dialogRef.afterClosed().subscribe((confirm: boolean) => {
-          if (confirm) {
-            this.workflowService.closeWorkflow();
-          }
-        });
+        dialogRef.closed
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((confirm: any) => {
+            if (confirm) {
+              this.workflowService.closeWorkflow();
+            }
+          });
       }
     } else {
       this.grid.reloadData();
@@ -481,7 +488,9 @@ export class SafeGridWidgetComponent implements OnInit {
   ): Promise<any> {
     const update: any = {};
     for (const modification of modifications) {
-      update[modification.field.name] = modification.value;
+      if (modification.field) {
+        set(update, modification.field, modification.value);
+      }
     }
     const data = cleanRecord(update);
     return firstValueFrom(
@@ -533,7 +542,7 @@ export class SafeGridWidgetComponent implements OnInit {
             },
           });
           const value = await Promise.resolve(
-            firstValueFrom(dialogRef.afterClosed())
+            firstValueFrom(dialogRef.closed) as any
           );
           if (value && value.record) {
             this.apollo
@@ -626,6 +635,16 @@ export class SafeGridWidgetComponent implements OnInit {
       ...this.layout,
       ...{ template: get(this.settings, 'template', null) },
     };
+
+    // select sort fields that match the current layout
+    this.sortFields = [];
+    const layoutFieldsName = this.layout.query.fields.map((a: any) => a.name);
+
+    this.widget.settings.sortFields?.forEach((sortField: any) => {
+      if (layoutFieldsName.includes(sortField.field)) {
+        this.sortFields.push(sortField);
+      }
+    });
   }
 
   /**

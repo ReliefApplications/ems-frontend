@@ -50,6 +50,7 @@
 			"none": "No column",
 			"one": "Column"
 		},
+		"comma": "comma",
 		"create": "Create",
 		"createdOn": "Created on",
 		"customNotification": {
@@ -132,6 +133,7 @@
 		"modifiedOn": "Modified On",
 		"name": "Name",
 		"next": "Next",
+		"noOptions": "No available choices",
 		"notifications": {
 			"accessDenied": "You don't have permission to see the {{type}}.",
 			"accessNotProvided": "No access provided to this {{type}}. {{error}}",
@@ -209,6 +211,7 @@
 			"of": "of"
 		},
 		"placeholder": {
+			"address": "Enter an address or place e.g. 1 York St",
 			"email": "Enter email",
 			"name": "Enter a name",
 			"search": "Search...",
@@ -262,9 +265,12 @@
 		},
 		"save": "Save",
 		"saveChanges": "Save changes",
+		"search": "Search",
 		"searchObject": "Search {{name}}",
 		"select": "Select",
+		"semicolon": "semicolon",
 		"send": "Send",
+		"separator": "Separator",
 		"settings": "Settings",
 		"status": "Status",
 		"status_active": "Active",
@@ -409,6 +415,11 @@
 			"dashboard": {
 				"editFilter": "Edit filter",
 				"empty": "No content available. Wait for your administrator to build some.",
+				"filter": {
+					"empty": "No filters have been defined by the administrators",
+					"info": "Dashboard filters can be used between pages to filter their content.",
+					"title": "Dashboard filters configuration"
+				},
 				"filterSettings": "Filter settings",
 				"settings": {
 					"defaultPosition": "Default position for the filter"
@@ -426,6 +437,7 @@
 				"delete": {
 					"confirmationMessage": "Do you confirm the deletion of the page {{name}}?"
 				},
+				"hide": "Hide page in nav bar for end-users",
 				"notReordered": {
 					"plural": "The pages were not reordered. {{error}}",
 					"singular": "The page was not reordered. {{error}}"
@@ -433,7 +445,8 @@
 				"reordered": {
 					"plural": "The pages were successfully reordered.",
 					"singular": "The page was successfully reordered."
-				}
+				},
+				"show": "Make page visible in nav bar for end-users"
 			},
 			"positionAttribute": {
 				"delete": {
@@ -620,11 +633,21 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"duplicatedRelatedName": "Duplicated related name for question {{question}} on page {{page}}. Please provide a unique related name (snake case format) to save the form.",
 				"missingGridField": "Missing an available field grid for question {{question}} on page {{page}}. Please select a least one in Custom Question Properties to save the form.",
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
 			},
 			"saveSurvey": "SavingSurvey"
+		},
+		"formMapProperties": {
+			"geofields": {
+				"editDialog": {
+					"editGeofield": "Edit Geo fields",
+					"label": "Label",
+					"value": "Value"
+				}
+			}
 		},
 		"forms": {
 			"isCore": "Is core",
@@ -643,6 +666,7 @@
 			}
 		},
 		"header": {
+			"goToApp": "Go to application",
 			"goToPlatform": "Navigate to",
 			"logout": "Logout",
 			"sidenav": {
@@ -924,6 +948,7 @@
 						"add": "Create assignment rule",
 						"delete": "Delete rule",
 						"edit": "Edit assignment rule",
+						"none": "No assignment rule",
 						"title": "Rule"
 					},
 					"title": "Automatic assignment"
@@ -1085,6 +1110,7 @@
 					"history": "Show history"
 				},
 				"errors": {
+					"autoSaveFailed": "Action stopped due to some invalid records. Please review them before taking any other action.",
 					"invalid": {
 						"backoffice": "Invalid grid configuration",
 						"frontoffice": "Invalid grid configuration, please contact your admin"
@@ -1133,6 +1159,10 @@
 				"loading": {
 					"records": "Loading records...",
 					"settings": "Loading settings..."
+				},
+				"map": {
+					"mapDetailsTitle": "Query Map View",
+					"mapDetailsTooltip": "Centered by default on selected record"
 				},
 				"openSettings": "Open settings",
 				"tooltip": {
@@ -1341,7 +1371,9 @@
 						"popup": "Pop-up",
 						"properties": {
 							"defaultVisibility": "Visible by default",
+							"from": "from zoom ",
 							"opacity": "Opacity",
+							"to": " to zoom",
 							"visibilityRange": "Visibility range",
 							"zoom": "Current zoom"
 						},
@@ -1473,6 +1505,13 @@
 						"webmap": "WebMap",
 						"zoom": "Default zoom"
 					},
+					"renderer": {
+						"default": "Default",
+						"defaultLabel": "Default label",
+						"label": "Label",
+						"symbol": "Symbol",
+						"value": "Value"
+					},
 					"tooltip": {
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
 						"dataset": "Select data points below and drag them to 'selected fields' on the right. They will be displayed in the pop-up when clicking on a marker",
@@ -1483,6 +1522,9 @@
 						}
 					},
 					"userLocation": "My location"
+				},
+				"style": {
+					"customStyling": "Custom Styling"
 				},
 				"summaryCard": {
 					"add": "Add new card",
@@ -1540,6 +1582,7 @@
 					"static": "Static"
 				}
 			},
+			"styling": "Edit styling",
 			"summaryCard": {
 				"dataSource": "Data Source",
 				"errors": {
@@ -1551,7 +1594,13 @@
 		}
 	},
 	"kendo": {
+		"combobox": {
+			"noDataText": "No available choice"
+		},
 		"datepicker": {
+			"dateLabel": "Select a date",
+			"endLabel": "Select a end date",
+			"startLabel": "Select a start date",
 			"today": "Today",
 			"toggle": "Choose a date"
 		},
@@ -1700,6 +1749,9 @@
 			"unlock": "Unlock",
 			"unstick": "Unstick"
 		},
+		"multiselect": {
+			"noDataText": "No available choice"
+		},
 		"pager": {
 			"firstPage": "Go to the first page",
 			"items": "items",
@@ -1764,6 +1816,17 @@
 		},
 		"dashboard": {
 			"activateFiltering": "Activate filtering",
+			"buttonActions": {
+				"add": "Add button action",
+				"category": "Button category",
+				"confirmDelete": "Are you sure you want to delete this button action?",
+				"edit": "Edit button action",
+				"href": "Button href",
+				"one": "Button action",
+				"openInNewTab": "Open in new tab",
+				"text": "Button text",
+				"variant": "Button variant"
+			},
 			"context": {
 				"datasource": {
 					"alert": "Select a datasource, in order to set one page per record of the datasource. You can also set a template, which would be loaded by default if no specific page is created for a record.",
@@ -1782,8 +1845,13 @@
 					"element": "Element"
 				}
 			},
+			"dashboardFilter": "Dashboard filter",
 			"deactivateFiltering": "Deactivate filtering",
-			"share": "Share Dashboard"
+			"share": "Share Dashboard",
+			"tooltip": {
+				"useDashboardFilterEditor": "Use dashboard filter editor",
+				"useDefaultEditor": "Use default editor"
+			}
 		},
 		"form": {
 			"core": "Core",
@@ -1877,6 +1945,7 @@
 			"display": {
 				"border": "Show widget border",
 				"searchable": "Allow search",
+				"sortable": "Allow sorting",
 				"title": "Widget display"
 			},
 			"map": {
@@ -1887,6 +1956,16 @@
 			},
 			"scheduler": {
 				"defaultTitle": "Scheduler Widget"
+			},
+			"sorting": {
+				"add": "Add a field",
+				"delete": "Delete sort field",
+				"field": "Field",
+				"label": "Label",
+				"management": "Sort fields",
+				"order": "Order",
+				"select": "Select a sort field...",
+				"title": "Sorting"
 			},
 			"tooltip": {
 				"selector": {
@@ -1949,7 +2028,8 @@
 				"form": {
 					"title": "Available forms"
 				},
-				"selectType": "Select which type of page you want to create"
+				"selectType": "Select which type of page you want to create",
+				"startFromWidget": "Start from a widget"
 			},
 			"empty": {
 				"add": "Add a Page",

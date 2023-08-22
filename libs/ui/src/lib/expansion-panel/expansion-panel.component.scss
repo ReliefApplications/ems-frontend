@@ -1,0 +1,7 @@
+div.accordion-item {
+  @apply flex items-center w-full p-5 font-medium text-left text-gray-500 border border-gray-200;
+}
+
+div.accordion-content {
+  @apply p-5 border-l border-r border-b border-gray-200 overflow-hidden;
+}

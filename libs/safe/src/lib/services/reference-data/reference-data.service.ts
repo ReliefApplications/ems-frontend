@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { isArray, isEqual } from 'lodash';
+import { isArray, isEqual, get } from 'lodash';
 import { map } from 'rxjs/operators';
 import localForage from 'localforage';
 import {
@@ -122,7 +122,7 @@ export class SafeReferenceDataService {
         );
       } else {
         selectedForeignValue = foreignItems.find(
-          (item) => item[foreignValueField] === filter.foreignValue
+          (item) => get(item, foreignValueField) === filter.foreignValue
         )[filter.foreignField];
       }
       return items
@@ -196,8 +196,8 @@ export class SafeReferenceDataService {
                 cache.push(newItem);
               }
             }
+            items = cache || [];
           }
-          items = cache || [];
         }
         localForage.setItem(cacheKey, { items, valueField });
         localStorage.setItem(

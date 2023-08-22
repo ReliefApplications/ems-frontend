@@ -1,16 +1,16 @@
 <span>{{ data.message }}</span>
-<safe-spinner *ngIf="data.loading"></safe-spinner>
+<ui-spinner [size]="'medium'" *ngIf="data.loading"></ui-spinner>
 <ng-container *ngIf="!data.loading">
-  <safe-icon
+  <ui-icon
     class="h-6"
     *ngIf="!data.error"
     icon="check"
     variant="success"
-  ></safe-icon>
-  <safe-icon
+  ></ui-icon>
+  <ui-icon
     class="h-6"
     *ngIf="data.error"
     icon="error"
     variant="danger"
-  ></safe-icon>
+  ></ui-icon>
 </ng-container>

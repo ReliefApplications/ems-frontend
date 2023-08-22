@@ -1,0 +1,70 @@
+<div [formGroup]="formGroup" class="flex flex-col">
+  <!-- Custom color for symbol cluster (only color, don't customize the symbols for clusters) -->
+  <safe-simple-renderer
+    [formGroup]="$any(formGroup.get('drawingInfo.renderer.symbol'))"
+    [showSize]="false"
+    [showStyle]="false"
+  ></safe-simple-renderer>
+  <ui-divider class="my-4"></ui-divider>
+  <div class="flex flex-col">
+    <label>
+      {{ 'components.widget.settings.map.edit.cluster.radius' | translate }}
+    </label>
+    <ui-slider formControlName="clusterRadius" [minValue]="1" [maxValue]="100">
+    </ui-slider>
+    <div class="flex flex-row justify-between">
+      <label>{{
+        'components.widget.settings.map.edit.cluster.low' | translate
+      }}</label>
+      <label>{{
+        'components.widget.settings.map.edit.cluster.high' | translate
+      }}</label>
+    </div>
+  </div>
+</div>
+
+<!-- <div class="flex flex-col overflow-hidden">
+  <form [formGroup]="form">
+    <div class="flex flex-row justify-between my-4">
+      <mat-label>{{
+        'components.widget.settings.map.edit.cluster.overrideSymbol' | translate
+      }}</mat-label>
+      <mat-slide-toggle formControlName="overrideSymbol"></mat-slide-toggle>
+    </div>
+    <ui-divider></ui-divider>
+    <div class="flex flex-col my-4">
+      <mat-label>
+        {{
+          'components.widget.settings.map.edit.cluster.sizeRange' | translate
+        }}
+      </mat-label>
+      <mat-slider min="1" max="10" step="1" [discrete]="true">
+        <input formControlName="sizeRangeStart" matSliderStartThumb />
+        <input formControlName="sizeRangeEnd" matSliderEndThumb />
+      </mat-slider>
+      <div class="flex flex-row justify-between">
+        <mat-label>{{
+          'components.widget.settings.map.edit.cluster.min' | translate
+        }}</mat-label>
+        <mat-label>{{
+          'components.widget.settings.map.edit.cluster.max' | translate
+        }}</mat-label>
+      </div>
+    </div>
+    <ui-divider></ui-divider>
+    <mat-accordion>
+      <mat-expansion-panel
+        *ngFor="let panel of expansivePanels"
+        [expanded]="false"
+      >
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            {{
+              'components.widget.settings.map.edit.cluster.' + panel | translate
+            }}
+          </mat-panel-title>
+        </mat-expansion-panel-header>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </form>
+</div> -->

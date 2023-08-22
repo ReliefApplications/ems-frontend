@@ -16,7 +16,7 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
   imagetools_cors_hosts: ['picsum.photos'],
   menubar: 'edit view insert format tools table help',
   toolbar:
-    'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link',
+    'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link avatar',
   toolbar_sticky: true,
   image_advtab: true,
   importcss_append: true,
@@ -31,6 +31,102 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
     'shortcuts', // the default shortcuts tab
     'keyboardnav', // the default keyboard navigation tab
   ],
+  convert_urls: false,
+  setup: (editor) => {
+    editor.ui.registry.addIcon(
+      'avatar-icon',
+      '<svg width="24" height="24"><ellipse style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" cx="12.051" cy="8.44" rx="4.407" ry="4.457"></ellipse><ellipse style="fill: none; stroke: rgb(0, 0, 0);" cx="12" cy="12" ry="11" rx="11"></ellipse><path style="fill: rgb(216, 216, 216); stroke: rgb(0, 0, 0);" d="M 3.859 19.172 C 4.12 10.79 20.414 11.589 20.143 19.122 C 20.141 19.179 3.857 19.247 3.859 19.172 Z"></path></svg>'
+    );
+    editor.ui.registry.addButton('avatar', {
+      icon: 'avatar-icon',
+      tooltip: 'Avatar',
+      onAction: () => {
+        editor.windowManager.open({
+          title: 'Avatars',
+          body: {
+            type: 'panel',
+            items: [
+              {
+                type: 'input',
+                name: 'avatarsSource',
+                label: 'Source',
+              },
+              {
+                type: 'input',
+                name: 'avatarsMaxItems',
+                label: 'Max items',
+              },
+              {
+                type: 'listbox',
+                name: 'shape',
+                label: 'Shape',
+                items: [
+                  { text: 'Circle', value: 'circle' },
+                  { text: 'Square', value: 'square' },
+                ],
+              },
+              {
+                type: 'bar',
+                items: [
+                  {
+                    type: 'input',
+                    name: 'avatarsWidth',
+                    label: 'Width',
+                  },
+                  {
+                    type: 'input',
+                    name: 'avatarsHeight',
+                    label: 'Height',
+                  },
+                ],
+              },
+            ],
+          },
+          initialData: {
+            avatarsSource: '',
+            avatarsMaxItems: '3',
+            shape: 'circle',
+            avatarsWidth: '48',
+            avatarsHeight: '48',
+          },
+          onChange: (api) => {
+            // validate the data types
+            const data = api.getData();
+            const submitDisabled = !(
+              !isNaN(Number(data.avatarsHeight)) &&
+              Number(data.avatarsHeight) > 0 &&
+              !isNaN(Number(data.avatarsWidth)) &&
+              Number(data.avatarsWidth) > 0 &&
+              !isNaN(Number(data.avatarsMaxItems)) &&
+              Number(data.avatarsMaxItems) > 0 &&
+              data.avatarsSource.length > 0
+            );
+            if (submitDisabled) api.disable('submit');
+            else api.enable('submit');
+          },
+          onSubmit: (api) => {
+            const data = api.getData();
+            const html = `{{avatars.${data.avatarsSource} ${data.shape} ${data.avatarsWidth} ${data.avatarsHeight} ${data.avatarsMaxItems}}}`;
+            editor.insertContent(html);
+            api.close();
+          },
+          buttons: [
+            {
+              text: 'Close',
+              type: 'cancel',
+            },
+            {
+              text: 'Insert',
+              type: 'submit',
+              name: 'submit',
+              primary: true,
+              disabled: true,
+            },
+          ],
+        });
+      },
+    });
+  },
 };
 
 /** Email Editor tinymce configuration. */
@@ -58,6 +154,7 @@ export const EMAIL_EDITOR_CONFIG: RawEditorSettings = {
     'shortcuts', // the default shortcuts tab
     'keyboardnav', // the default keyboard navigation tab
   ],
+  convert_urls: false,
 };
 
 /** Field Editor tinymce configuration. */

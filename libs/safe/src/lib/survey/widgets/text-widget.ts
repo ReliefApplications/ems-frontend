@@ -6,12 +6,10 @@ import {
 } from '@progress/kendo-angular-dateinputs';
 import * as SurveyCreator from 'survey-creator';
 import { EmbeddedViewRef } from '@angular/core';
-import { ButtonCategory } from '../../components/ui/button/button-category.enum';
-import { SafeButtonComponent } from '../../components/ui/button/button.component';
-import { ButtonSize } from '../../components/ui/button/button-size.enum';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
 import { Question, QuestionText } from '../types';
-import { SafeIconComponent } from '../../components/ui/icon/icon.component';
+import { ButtonComponent } from '@oort-front/ui';
+import { IconComponent } from '@oort-front/ui';
 
 type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
 
@@ -147,25 +145,25 @@ export const init = (Survey: any, domService: DomService): void => {
             // create button that clears the date picker
             const button = document.createElement('button');
             button.classList.add(
-              'grid',
-              'place-items-center',
-              'bg-transparent',
-              'border-none',
-              'outline-none',
-              'hidden',
-              'min-w-0',
-              'px-2'
+              '!grid',
+              '!place-items-center',
+              '!bg-transparent',
+              '!border-none',
+              '!outline-none',
+              '!hidden',
+              '!min-w-0',
+              '!px-2'
             );
 
             const icon = domService.appendComponentToBody(
-              SafeIconComponent,
+              IconComponent,
               button
             );
 
             // add the button to the DOM
             pickerDiv.appendChild(button);
 
-            const iconInstance: SafeIconComponent = icon.instance;
+            const iconInstance: IconComponent = icon.instance;
             iconInstance.icon = 'close';
             iconInstance.variant = 'grey';
 
@@ -173,7 +171,7 @@ export const init = (Survey: any, domService: DomService): void => {
               if (value) {
                 question.value = setDateValue(value, question.inputType);
                 // show the clear button
-                button.classList.remove('hidden');
+                button.classList.remove('!hidden');
               } else {
                 question.value = null;
               }
@@ -205,7 +203,7 @@ export const init = (Survey: any, domService: DomService): void => {
 
             button.onclick = () => {
               question.value = null;
-              button.classList.add('hidden');
+              button.classList.add('!hidden');
               pickerInstance?.writeValue(null as any);
             };
 
@@ -223,6 +221,13 @@ export const init = (Survey: any, domService: DomService): void => {
                     pickerInstance.writeValue(null as any);
                   }
                 }
+              }
+            );
+            question.registerFunctionOnPropertyValueChanged(
+              'readOnly',
+              (value: boolean) => {
+                pickerInstance.readonly = value;
+                pickerInstance.disabled = value;
               }
             );
           }
@@ -244,21 +249,18 @@ export const init = (Survey: any, domService: DomService): void => {
         if (parentElement) {
           // Generate the dynamic component with its parameters
           const button = domService.appendComponentToBody(
-            SafeButtonComponent,
+            ButtonComponent,
             parentElement
           );
-          const instance: SafeButtonComponent = button.instance;
+          const instance: ButtonComponent = button.instance;
           instance.isIcon = true;
           instance.icon = 'open_in_new';
-          instance.size = ButtonSize.SMALL;
-          instance.category = ButtonCategory.TERTIARY;
-          instance.variant = 'default';
+          instance.size = 'small';
+          instance.category = 'tertiary';
           // we override the css of the component
           const domElem = (button.hostView as EmbeddedViewRef<any>)
             .rootNodes[0] as HTMLElement;
           (domElem.firstChild as HTMLElement).style.minWidth = 'unset';
-          (domElem.firstChild as HTMLElement).style.backgroundColor = 'unset';
-          (domElem.firstChild as HTMLElement).style.color = 'black';
 
           // Set the default styling of the parent
           parentElement.style.display = 'flex';

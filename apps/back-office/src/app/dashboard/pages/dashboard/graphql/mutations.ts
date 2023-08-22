@@ -49,10 +49,21 @@ export interface EditStepMutationResponse {
 // === EDIT PAGE ===
 /** Edit page gql mutation definition */
 export const EDIT_PAGE = gql`
-  mutation editPage($id: ID!, $name: String, $permissions: JSON) {
-    editPage(id: $id, name: $name, permissions: $permissions) {
+  mutation editPage(
+    $id: ID!
+    $name: String
+    $permissions: JSON
+    $visible: Boolean
+  ) {
+    editPage(
+      id: $id
+      name: $name
+      permissions: $permissions
+      visible: $visible
+    ) {
       id
       name
+      visible
       permissions {
         canSee {
           id

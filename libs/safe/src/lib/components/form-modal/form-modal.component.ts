@@ -8,11 +8,7 @@ import {
   OnInit,
   ViewChild,
 } from '@angular/core';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-  MatLegacyDialog as MatDialog,
-} from '@angular/material/legacy-dialog';
+import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import {
   GetFormByIdQueryResponse,
   GetRecordByIdQueryResponse,
@@ -32,28 +28,23 @@ import {
 } from './graphql/mutations';
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import addCustomFunctions from '../../utils/custom-functions';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
-import { BehaviorSubject, firstValueFrom, Observable, takeUntil } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, takeUntil } from 'rxjs';
 import isNil from 'lodash/isNil';
 import omitBy from 'lodash/omitBy';
 import { TranslateService } from '@ngx-translate/core';
 import { cleanRecord } from '../../utils/cleanRecord';
 import { CommonModule } from '@angular/common';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { SafeButtonModule } from '../ui/button/button.module';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
-import { SafeIconModule } from '../ui/icon/icon.module';
+import { IconModule } from '@oort-front/ui';
+import { ButtonModule, SnackbarService, TabsModule } from '@oort-front/ui';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '../ui/modal/modal.module';
-import { SafeSpinnerModule } from '../ui/spinner/spinner.module';
+import { SpinnerModule } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
+import { DialogModule } from '@oort-front/ui';
 
 /**
  * Interface of Dialog data.
@@ -80,17 +71,14 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
   styleUrls: ['./form-modal.component.scss'],
   imports: [
     CommonModule,
-    MatDialogModule,
-    MatIconModule,
-    MatButtonModule,
-    MatTabsModule,
-    SafeButtonModule,
-    SafeIconModule,
+    IconModule,
+    TabsModule,
     SafeRecordSummaryModule,
     SafeFormActionsModule,
     TranslateModule,
-    SafeModalModule,
-    SafeSpinnerModule,
+    DialogModule,
+    ButtonModule,
+    SpinnerModule,
   ],
 })
 export class SafeFormModalComponent
@@ -109,27 +97,26 @@ export class SafeFormModalComponent
   private storedMergedData: any;
 
   public survey!: Survey.SurveyModel;
-  public selectedTabIndex = 0;
-  private pages = new BehaviorSubject<any[]>([]);
   protected temporaryFilesStorage: any = {};
 
   @ViewChild('formContainer') formContainer!: ElementRef;
 
-  /**
-   * Getter for the pages property
-   *
-   * @returns pages as an Observable
-   */
-  public get pages$(): Observable<any[]> {
-    return this.pages.asObservable();
-  }
+  /** Selected page index */
+  public selectedPageIndex: BehaviorSubject<number> =
+    new BehaviorSubject<number>(0);
+  /** Selected page index as observable */
+  public selectedPageIndex$ = this.selectedPageIndex.asObservable();
+  /** Available pages*/
+  private pages = new BehaviorSubject<any[]>([]);
+  /** Pages as observable */
+  public pages$ = this.pages.asObservable();
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
    * @param data This is the data that is passed to the modal when it is opened.
-   * @param dialog This is the Angular Material Dialog service.
+   * @param dialog This is the Angular Dialog service.
    * @param dialogRef This is the reference to the dialog.
    * @param apollo This is the Apollo client that we'll use to make GraphQL requests.
    * @param snackBar This is the service that allows you to display a snackbar.
@@ -141,11 +128,11 @@ export class SafeFormModalComponent
    * @param ngZone Angular Service to execute code inside Angular environment
    */
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    public dialog: MatDialog,
-    public dialogRef: MatDialogRef<SafeFormModalComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData,
+    public dialog: Dialog,
+    public dialogRef: DialogRef<SafeFormModalComponent>,
     private apollo: Apollo,
-    protected snackBar: SafeSnackBarService,
+    protected snackBar: SnackbarService,
     private authService: SafeAuthService,
     private formBuilderService: SafeFormBuilderService,
     protected formHelpersService: SafeFormHelpersService,
@@ -157,8 +144,6 @@ export class SafeFormModalComponent
   }
 
   async ngOnInit(): Promise<void> {
-    this.setFormListeners();
-
     this.data = { ...DEFAULT_DIALOG_DATA, ...this.data };
     Survey.StylesManager.applyTheme();
 
@@ -182,9 +167,9 @@ export class SafeFormModalComponent
           this.record = data.record;
           this.modifiedAt = this.isMultiEdition
             ? null
-            : this.record.modifiedAt || null;
+            : this.record?.modifiedAt || null;
           if (!this.data.template) {
-            this.form = this.record.form;
+            this.form = this.record?.form;
           }
         })
       );
@@ -235,14 +220,13 @@ export class SafeFormModalComponent
   private initSurvey(): void {
     this.survey = this.formBuilderService.createSurvey(
       this.form?.structure || '',
-      this.pages,
       this.form?.metadata,
       this.record
     );
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
-      this.pages,
+      this.selectedPageIndex,
       this.temporaryFilesStorage
     );
 
@@ -250,6 +234,10 @@ export class SafeFormModalComponent
       addCustomFunctions(Survey, this.authService, this.record);
       this.survey.data = this.isMultiEdition ? null : this.record.data;
       this.survey.showCompletedPage = false;
+      this.form?.fields?.forEach((field) => {
+        if (field.readOnly && this.survey.getQuestionByName(field.name))
+          this.survey.getQuestionByName(field.name).readOnly = true;
+      });
     }
     this.survey.onComplete.add(this.onComplete);
     if (this.storedMergedData) {
@@ -261,16 +249,6 @@ export class SafeFormModalComponent
     this.survey.render(this.formContainer.nativeElement);
     // this.survey.render(this.containerId);
     this.loading = false;
-  }
-
-  /**
-   * Set needed listeners for the component
-   */
-  private setFormListeners() {
-    this.formBuilderService.selectedPageIndex
-      .asObservable()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((pageIndex: number) => (this.selectedTabIndex = pageIndex));
   }
 
   /**
@@ -322,15 +300,17 @@ export class SafeFormModalComponent
           }
         ),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
+        confirmVariant: 'primary',
       });
-      dialogRef.afterClosed().subscribe(async (value) => {
-        if (value) {
-          await this.onUpdate(survey);
-        } else {
-          this.saving = false;
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(async (value: any) => {
+          if (value) {
+            await this.onUpdate(survey);
+          } else {
+            this.saving = false;
+          }
+        });
       // Updates the data directly.
     } else {
       this.onUpdate(survey);
@@ -343,15 +323,15 @@ export class SafeFormModalComponent
    * @param survey current survey
    */
   public async onUpdate(survey: any): Promise<void> {
-    const promises = this.formHelpersService.uploadTemporaryRecords(survey);
-    promises.push(
-      this.formHelpersService.uploadFiles(
-        survey,
-        this.temporaryFilesStorage,
-        this.form?.id
-      )
+    // const promises = this.formHelpersService.uploadTemporaryRecords(survey);
+    await this.formHelpersService.uploadFiles(
+      survey,
+      this.temporaryFilesStorage,
+      this.form?.id
     );
-    await Promise.allSettled(promises);
+    // await Promise.allSettled(promises);
+    await this.formHelpersService.createCachedRecords(survey);
+
     if (this.data.recordId) {
       if (this.isMultiEdition) {
         this.updateMultipleData(this.data.recordId, survey);
@@ -381,7 +361,7 @@ export class SafeFormModalComponent
                 this.dialogRef.close({
                   template: this.data.template,
                   data: data?.addRecord,
-                });
+                } as any);
               });
             }
           },
@@ -430,7 +410,7 @@ export class SafeFormModalComponent
               this.dialogRef.close({
                 template: this.form?.id,
                 data: data.editRecord,
-              });
+              } as any);
             }
           }
         },
@@ -478,7 +458,7 @@ export class SafeFormModalComponent
               this.dialogRef.close({
                 template: this.form?.id,
                 data: data.editRecords,
-              });
+              } as any);
             }
           }
         },
@@ -497,7 +477,6 @@ export class SafeFormModalComponent
     if (this.survey) {
       this.survey.currentPageNo = i;
     }
-    this.selectedTabIndex = i;
   }
 
   /**
@@ -586,10 +565,10 @@ export class SafeFormModalComponent
     //       title: 'Confirm',
     //       content: 'Record has been modified. You can cancel to continue editing, or discard you changes.',
     //       confirmText: 'Discard changes',
-    //       confirmColor: 'primary'
+    //       confirmVariant: 'primary'
     //     }
     //   });
-    //   closeDialogRef.afterClosed().subscribe((value) => {
+    //   closeDialogRef.closed.subscribe((value: any) => {
     //     if(value){
     //       this.dialogRef.close();
     //     }
@@ -627,7 +606,7 @@ export class SafeFormModalComponent
    */
   private confirmRevertDialog(record: any, version: any) {
     const dialogRef = this.formHelpersService.createRevertDialog(version);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<EditRecordMutationResponse>({
@@ -667,5 +646,6 @@ export class SafeFormModalComponent
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     this.formHelpersService.cleanCachedRecords(this.survey);
+    this.survey?.dispose();
   }
 }

@@ -17,7 +17,7 @@ import {
   RowArgs,
   SelectionEvent,
 } from '@progress/kendo-angular-grid';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import {
   EXPORT_SETTINGS,
   GRADIENT_SETTINGS,
@@ -30,10 +30,6 @@ import {
   CompositeFilterDescriptor,
   SortDescriptor,
 } from '@progress/kendo-data-query';
-import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
-import { MAT_LEGACY_MENU_SCROLL_STRATEGY as MAT_MENU_SCROLL_STRATEGY } from '@angular/material/legacy-menu';
-import { MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY } from '@angular/material/legacy-select';
-import { MAT_LEGACY_TOOLTIP_SCROLL_STRATEGY as MAT_TOOLTIP_SCROLL_STRATEGY } from '@angular/material/legacy-tooltip';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
 // import {
 //   CalendarDOMService,
@@ -44,28 +40,14 @@ import { PopupService } from '@progress/kendo-angular-popup';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { SafeGridService } from '../../../../services/grid/grid.service';
 import { SafeDownloadService } from '../../../../services/download/download.service';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { GridLayout } from '../models/grid-layout.model';
-import { get, intersection } from 'lodash';
-import { applyLayoutFormat } from '../../../widgets/summary-card/parser/utils';
+import { get, intersection, isNil } from 'lodash';
+import { applyLayoutFormat } from '../../../../utils/parser/utils';
 import { SafeDashboardService } from '../../../../services/dashboard/dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
-import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
-import {
-  MatLegacySnackBarRef as MatSnackBarRef,
-  LegacyTextOnlySnackBar as TextOnlySnackBar,
-} from '@angular/material/legacy-snack-bar';
-
-/**
- * Factory for creating scroll strategy
- *
- * @param overlay The overlay
- * @returns A function that returns a block scroll strategy
- */
-export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
-  const block = () => overlay.scrollStrategies.block();
-  return block;
-}
+import { SnackbarService } from '@oort-front/ui';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Test if an element match a css selector
@@ -88,24 +70,12 @@ const matches = (el: any, selector: any) =>
     // CalendarDOMService,
     // MonthViewService,
     // WeekNamesService,
-    {
-      provide: MAT_SELECT_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-    {
-      provide: MAT_TOOLTIP_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-    {
-      provide: MAT_MENU_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
   ],
 })
-export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
+export class SafeGridComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, AfterViewInit, OnChanges
+{
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
   public environment: 'frontoffice' | 'backoffice';
@@ -131,6 +101,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() export = new EventEmitter();
 
   // === EDITION ===
+  /** If inlineEdition is allowed */
   @Input() editable = false;
   @Input() hasChanges = false;
   @Output() edit: EventEmitter<any> = new EventEmitter();
@@ -226,13 +197,13 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   @Output() columnChange = new EventEmitter();
 
   // === SNACKBAR ===
-  private snackBarRef: MatSnackBarRef<TextOnlySnackBar> | undefined;
+  private snackBarRef!: any;
 
   /**
    * Constructor of the grid component
    *
    * @param environment Current environment
-   * @param dialog The material dialog service
+   * @param dialog The Dialog service
    * @param gridService The grid service
    * @param renderer The renderer library
    * @param downloadService The download service
@@ -242,14 +213,15 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
    */
   constructor(
     @Inject('environment') environment: any,
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private gridService: SafeGridService,
     private renderer: Renderer2,
     private downloadService: SafeDownloadService,
     private dashboardService: SafeDashboardService,
     private translate: TranslateService,
-    private snackBar: SafeSnackBarService
+    private snackBar: SnackbarService
   ) {
+    super();
     this.environment = environment.module || 'frontoffice';
   }
 
@@ -285,14 +257,20 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
    * Returns property value in object from path.
    *
    * @param item Item to get property of.
-   * @param path Path of the property.
+   * @param field parent field
+   * @param subField subfield ( optional, used by reference data)
    * @returns Value of the property.
    */
-  public getPropertyValue(item: any, path: string): any {
-    const meta = this.fields.find((x) => x.name === path)?.meta;
-    const value = get(item, path);
+  public getPropertyValue(item: any, field: any, subField?: any): any {
+    let value = get(item, field.name);
+    const meta = subField ? subField.meta : field.meta;
     if (meta.choices) {
       if (Array.isArray(value)) {
+        if (subField) {
+          if (meta.graphQLFieldName) {
+            value = value.map((x) => get(x, meta.graphQLFieldName));
+          }
+        }
         const text = meta.choices.reduce(
           (acc: string[], x: any) =>
             value.includes(x.value) ? acc.concat([x.text]) : acc,
@@ -318,6 +296,21 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
       return value;
     }
   }
+
+  // find field with the path name
+  // const field = this.fields.find((x) => x.name === path);
+  // const fieldMeta = field?.meta ?? {};
+  // if (!fieldMeta) return '';
+
+  // const graphQLName = Object.keys(fieldMeta).find(
+  //   (x) => fieldMeta[x].name === attribute
+  // );
+  // if (!graphQLName) return '';
+
+  // const values = get(item, path);
+  // if (Array.isArray(values)) {
+  //   return values.map((x) => x[graphQLName]).join(', ');
+  // }
 
   /**
    * Returns property value in object from path. Specific for multiselect reference data.
@@ -579,16 +572,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
       return;
     }
     // Closes current inline edition.
-    if (this.currentEditedItem) {
-      if (this.formGroup.dirty) {
-        this.action.emit({
-          action: 'edit',
-          item: this.currentEditedItem,
-          value: this.formGroup.value,
-        });
-      }
-      this.closeEditor();
-    }
+    this.closeEditor();
     // creates the form group.
     this.formGroup = this.gridService.createFormGroup(dataItem, this.fields);
     this.currentEditedItem = dataItem;
@@ -611,13 +595,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
         '#recordsGrid tbody *, #recordsGrid .k-grid-toolbar .k-button .k-animation-container'
       )
     ) {
-      if (this.formGroup.dirty) {
-        this.action.emit({
-          action: 'edit',
-          item: this.currentEditedItem,
-          value: this.formGroup.value,
-        });
-      }
       this.closeEditor();
     }
   }
@@ -625,7 +602,16 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   /**
    * Closes the inline edition.
    */
-  private closeEditor(): void {
+  public closeEditor(): void {
+    if (this.currentEditedItem) {
+      if (this.formGroup.dirty) {
+        this.action.emit({
+          action: 'edit',
+          item: this.currentEditedItem,
+          value: this.formGroup.value,
+        });
+      }
+    }
     this.grid?.closeRow(this.currentEditedRow);
     this.grid?.cancelCell();
     this.currentEditedRow = 0;
@@ -639,13 +625,6 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
    */
   public onSave(): void {
     // Closes the editor, and saves the value locally
-    if (this.formGroup.dirty) {
-      this.action.emit({
-        action: 'edit',
-        item: this.currentEditedItem,
-        value: this.formGroup.value,
-      });
-    }
     this.closeEditor();
     this.action.emit({ action: 'save' });
   }
@@ -687,7 +666,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
       },
       autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe((res) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       if (res) {
         this.exportSettings = res;
         this.export.emit(this.exportSettings);
@@ -713,6 +692,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
    * @param field field name.
    */
   public async onExpandText(item: any, field: string): Promise<void> {
+    // Lazy load expended comment component
     const { SafeExpandedCommentComponent } = await import(
       '../expanded-comment/expanded-comment.component'
     );
@@ -720,17 +700,22 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
       data: {
         title: field,
         value: get(item, field),
+        // Disable edition if cannot update / cannot do inline edition / cannot update item / field is readonly
         readonly:
           !this.actions.update ||
+          !this.editable ||
           !item.canUpdate ||
           this.fields.find((val) => val.name === field).meta.readOnly,
       },
       autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe((res) => {
-      if (res && res !== get(item, field)) {
-        const value = { field: res };
-        this.action.emit({ action: 'edit', item, value });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      // Only update if value is not null or undefined, and different from previous value
+      if (!isNil(value) && value !== get(item, field)) {
+        // Create update
+        const update = { [field]: value };
+        // Emit update so the grid can handle the event and update its content
+        this.action.emit({ action: 'edit', item, value: update });
       }
     });
   }
@@ -751,7 +736,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
       },
       autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe((res) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       if (res) {
         this.action.emit({ action: 'update', item });
       }
@@ -772,7 +757,7 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
         template: this.dashboardService.findSettingsTemplate(this.widget),
       },
     });
-    dialogRef.afterClosed().subscribe((res) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
       if (res) {
         this.edit.emit({ type: 'data', id: this.widget.id, options: res });
       }
@@ -824,7 +809,9 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
   public getStatusMessage(): string {
     if (this.status.error) {
       if (this.status.message && this.environment === 'backoffice') {
-        if (this.snackBarRef) this.snackBarRef.dismiss();
+        if (this.snackBarRef) {
+          this.snackBarRef.instance.dismiss();
+        }
         this.snackBarRef = this.snackBar.openSnackBar(this.status.message, {
           error: true,
         });
@@ -860,27 +847,5 @@ export class SafeGridComponent implements OnInit, AfterViewInit, OnChanges {
       item: dataItem,
       field,
     });
-    // const layerDefinition = {
-    //   datasource: {
-
-    //   }
-    // }
-    // let markerToZoomOn = this.getPropertyValue(dataItem, field.name)?.geometry
-    //   ?.coordinates;
-    // let markersCoords: [number, number][] = [];
-    // this.data.data.forEach((item) =>
-    //   markersCoords.push(
-    //     this.getPropertyValue(item, field.name)?.geometry?.coordinates
-    //   )
-    // );
-    // markerToZoomOn = [markerToZoomOn[1], markerToZoomOn[0]];
-    // markersCoords = markersCoords.map((coords) => [coords[1], coords[0]]); // We invert the coords beacause they are stored weirdly
-    // this.dialog.open(MapModalComponent, {
-    //   data: {
-    //     markers: markersCoords,
-    //     defaultPosition: markerToZoomOn ? markerToZoomOn : [45, 45],
-    //     defaultZoom: 10,
-    //   },
-    // });
   }
 }

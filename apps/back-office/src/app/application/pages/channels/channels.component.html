@@ -1,81 +1,103 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading">
-  <!-- Add a channel button -->
-  <div class="mb-4 flex flex-row justify-end">
-    <safe-button
+<ng-container *ngIf="!loading; else loadingTmpl">
+  <ng-container *ngIf="channelsData.length">
+    <div class="flex justify-end">
+      <ng-container *ngTemplateOutlet="newChannel"></ng-container>
+    </div>
+  </ng-container>
+  <ng-template #newChannel>
+    <ui-button
       icon="add"
       category="secondary"
       variant="primary"
       (click)="onAdd()"
     >
       {{ 'models.channel.create' | translate }}
-    </safe-button>
-  </div>
-  <!-- Table container -->
-  <div class="overflow-x-hidden shadow-2lg">
-    <!-- Table scroll container -->
-    <div class="overflow-x-auto">
-      <table mat-table [dataSource]="channelsData">
-        <ng-container matColumnDef="title">
-          <th mat-header-cell *matHeaderCellDef>
-            {{ 'common.title' | translate }}
-          </th>
-          <td mat-cell *matCellDef="let element" class="font-bold">
-            {{ element.title }}
-          </td>
-        </ng-container>
-        <ng-container matColumnDef="subscribedRoles">
-          <th mat-header-cell *matHeaderCellDef>
-            {{ 'common.role.few' | translate }}
-          </th>
-          <td mat-cell *matCellDef="let element">
-            <span
-              *ngFor="
-                let subscribedApplication of element.subscribedApplications
-              "
+    </ui-button>
+  </ng-template>
+
+  <ng-container *ngIf="channelsData.length; else emptyTmpl">
+    <!-- Table container -->
+    <div class="overflow-x-hidden mt-4 shadow-2lg">
+      <!-- Table scroll container -->
+      <div class="overflow-x-auto">
+        <table cdk-table uiTableWrapper [dataSource]="channelsData">
+          <ng-container cdkColumnDef="title">
+            <th uiCellHeader *cdkHeaderCellDef scope="col">
+              {{ 'common.title' | translate }}
+            </th>
+            <td
+              uiCell
+              *cdkCellDef="let element"
+              class="!text-gray-900 !font-medium"
             >
-              <span *ngIf="subscribedApplication.roles.length > 0"
-                >[{{ subscribedApplication.name }}] :
+              {{ element.title }}
+            </td>
+          </ng-container>
+          <ng-container cdkColumnDef="subscribedRoles">
+            <th uiCellHeader *cdkHeaderCellDef scope="col">
+              {{ 'common.role.few' | translate }}
+            </th>
+            <td uiCell *cdkCellDef="let element">
+              <span
+                *ngFor="
+                  let subscribedApplication of element.subscribedApplications
+                "
+              >
+                <span *ngIf="subscribedApplication.roles.length > 0"
+                  >[{{ subscribedApplication.name }}] :
+                </span>
+                <span *ngFor="let role of subscribedApplication.roles">
+                  <span> {{ role.title }}, </span>
+                </span>
               </span>
-              <span *ngFor="let role of subscribedApplication.roles">
-                <span> {{ role.title }}, </span>
-              </span>
-            </span>
-          </td>
-        </ng-container>
+            </td>
+          </ng-container>
 
-        <ng-container matColumnDef="recordsCount">
-          <th mat-header-cell *matHeaderCellDef>Records</th>
-          <td mat-cell *matCellDef="let element">{{ element.recordsCount }}</td>
-        </ng-container>
+          <ng-container cdkColumnDef="recordsCount">
+            <th uiCellHeader *cdkHeaderCellDef scope="col">Records</th>
+            <td uiCell *cdkCellDef="let element">{{ element.recordsCount }}</td>
+          </ng-container>
 
-        <ng-container matColumnDef="actions" [stickyEnd]="true">
-          <th mat-header-cell *matHeaderCellDef class="w-16"></th>
-          <td mat-cell *matCellDef="let element">
-            <safe-button
-              [isIcon]="true"
-              icon="more_vert"
-              [matMenuTriggerFor]="menu"
-              (click)="$event.stopPropagation()"
-            >
-            </safe-button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="onEdit(element)">
-                <mat-icon>edit</mat-icon>
-                {{ 'common.edit' | translate }}
-              </button>
-              <safe-divider class="m-0"></safe-divider>
-              <button mat-menu-item (click)="onDelete(element)">
-                <mat-icon>delete</mat-icon>
-                {{ 'common.delete' | translate }}
-              </button>
-            </mat-menu>
-          </td>
-        </ng-container>
+          <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+            <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+            <td uiCell *cdkCellDef="let element">
+              <ui-button
+                [isIcon]="true"
+                icon="more_vert"
+                [uiMenuTriggerFor]="menu"
+                (click)="$event.stopPropagation()"
+              >
+              </ui-button>
+              <ui-menu #menu>
+                <button uiMenuItem (click)="onEdit(element)">
+                  <ui-icon icon="edit" variant="grey"></ui-icon>
+                  {{ 'common.edit' | translate }}
+                </button>
+                <ui-divider class="py-1"></ui-divider>
+                <button uiMenuItem (click)="onDelete(element)">
+                  <ui-icon icon="delete" variant="danger"></ui-icon>
+                  {{ 'common.delete' | translate }}
+                </button>
+              </ui-menu>
+            </td>
+          </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
-      </table>
+          <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+          <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
+        </table>
+      </div>
     </div>
-  </div>
+  </ng-container>
+  <ng-template #emptyTmpl>
+    <!-- Empty indicator -->
+    <safe-empty
+      [title]="'common.channel.none' | translate"
+      [footerTemplate]="newChannel"
+    ></safe-empty>
+  </ng-template>
 </ng-container>
+<ng-template #loadingTmpl>
+  <!-- Loading indicator -->
+  <safe-skeleton-table [columns]="displayedColumns" [actions]="true">
+  </safe-skeleton-table>
+</ng-template>

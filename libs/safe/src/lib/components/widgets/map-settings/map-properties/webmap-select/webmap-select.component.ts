@@ -1,6 +1,13 @@
-import { Component, ViewChild, OnInit, Optional, Self } from '@angular/core';
+import {
+  Component,
+  Inject,
+  OnDestroy,
+  OnInit,
+  Optional,
+  Renderer2,
+  Self,
+} from '@angular/core';
 import { ArcgisService } from '../../../../../../lib/services/map/arcgis.service';
-import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
 import {
   ControlValueAccessor,
   UntypedFormControl,
@@ -8,13 +15,15 @@ import {
   ReactiveFormsModule,
   NgControl,
 } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { CommonModule } from '@angular/common';
-import { SafeButtonModule } from '../../../../ui/button/button.module';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { BehaviorSubject, debounceTime, distinctUntilChanged } from 'rxjs';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
+import {
+  ButtonModule,
+  FormWrapperModule,
+  SelectMenuModule,
+  SpinnerModule,
+} from '@oort-front/ui';
 
 /**
  *
@@ -23,41 +32,48 @@ import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy
   standalone: true,
   imports: [
     CommonModule,
-    MatFormFieldModule,
+    FormWrapperModule,
     TranslateModule,
-    MatSelectModule,
-    SafeButtonModule,
+    SelectMenuModule,
+    ButtonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatInputModule,
+    SpinnerModule,
   ],
   selector: 'safe-webmap-select',
   templateUrl: './webmap-select.component.html',
   styleUrls: ['./webmap-select.component.scss'],
 })
-export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
+export class WebmapSelectComponent
+  implements ControlValueAccessor, OnInit, OnDestroy
+{
   public searchControl = new UntypedFormControl('');
 
-  private onTouched!: any;
-  private onChanged!: any;
-
-  public value: string | null | undefined = '';
+  public value = '';
   public items = new BehaviorSubject<any[]>([]);
   public items$ = this.items.asObservable();
   private start = 1;
-  private loading = true;
+  public loading = true;
   private nextPage = true;
+  private scrollListener!: any;
 
-  @ViewChild('arcGisWebMap') elementSelect?: MatSelect;
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  private onTouched = () => {};
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+  private onChanged = (_: any) => {};
 
   /**
    * Map Properties of Map widget.
    *
    * @param arcgis service
+   * @param document Document
+   * @param renderer current renderer
    * @param ngControl current ng control
    */
   constructor(
     private arcgis: ArcgisService,
+    @Inject(DOCUMENT) private document: Document,
+    private renderer: Renderer2,
     @Optional() @Self() public ngControl: NgControl
   ) {
     if (this.ngControl != null) {
@@ -87,11 +103,10 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
    */
   public selectionOnChange(e: any) {
     // If no value is set into no this.value return
-    if (!e.value && !this.value) {
+    if (!e && !this.ngControl?.control?.value) {
       return;
     }
-    this.value = e.value;
-    this.onChanged(this.value);
+    this.onChanged(e);
   }
 
   /**
@@ -99,7 +114,7 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
    *
    * @param fn callback
    */
-  public registerOnChange(fn: any): void {
+  public registerOnChange(fn: (_: any) => void): void {
     this.onChanged = fn;
   }
 
@@ -108,7 +123,7 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
    *
    * @param fn callback
    */
-  public registerOnTouched(fn: any): void {
+  public registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
@@ -117,7 +132,7 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
    *
    * @param value id of webmap
    */
-  writeValue(value: string | null | undefined): void {
+  writeValue(value: any): void {
     if (value) {
       this.value = JSON.parse(JSON.stringify(value));
     } else {
@@ -161,13 +176,17 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
   /**
    * Adds scroll listener to select.
    *
-   * @param e open select event.
    */
-  onOpenSelect(e: any): void {
-    if (e && this.elementSelect) {
-      const panel = this.elementSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) =>
-        this.loadOnScroll(event)
+  onOpenSelect(): void {
+    const panel = this.document.getElementById('optionList');
+    if (panel) {
+      if (this.scrollListener) {
+        this.scrollListener();
+      }
+      this.scrollListener = this.renderer.listen(
+        panel,
+        'scroll',
+        (event: any) => this.loadOnScroll(event)
       );
     }
   }
@@ -187,6 +206,12 @@ export class WebmapSelectComponent implements ControlValueAccessor, OnInit {
         this.loading = true;
         this.search(this.searchControl.value);
       }
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.scrollListener) {
+      this.scrollListener();
     }
   }
 }

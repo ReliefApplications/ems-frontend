@@ -1,98 +1,116 @@
 <div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row">
-  <!-- Filters -->
+  <!-- Default filter -->
   <app-filter
     (filter)="onFilter($event)"
     [loading]="filterLoading"
   ></app-filter>
   <!-- Actions -->
-  <div class="flex items-center">
-    <safe-button
-      icon="add"
-      category="secondary"
-      variant="primary"
-      (click)="onAdd()"
-      *ngIf="'create' | able : 'ReferenceData'"
-    >
-      {{ 'models.referenceData.add' | translate }}
-    </safe-button>
-  </div>
+  <ui-button
+    icon="add"
+    category="secondary"
+    variant="primary"
+    (click)="onAdd()"
+    *ngIf="'create' | able : 'ReferenceData'"
+  >
+    {{ 'models.referenceData.add' | translate }}
+  </ui-button>
 </div>
 
 <!-- Table container -->
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" mat-table [dataSource]="dataSource" matSort>
-      <ng-container matColumnDef="name">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+    <table
+      *ngIf="!loading"
+      cdk-table
+      uiTableWrapper
+      [dataSource]="dataSource"
+      (sortChange)="onSort($event)"
+    >
+      <ng-container cdkColumnDef="name">
+        <th uiTableHeaderSort="name" uiCellHeader *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
             {{ 'common.name' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element" class="font-bold">
+        <td
+          uiCell
+          *cdkCellDef="let element"
+          class="!text-gray-900 !font-medium"
+        >
           {{ element.name }}
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="type">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+      <ng-container cdkColumnDef="type">
+        <th uiTableHeaderSort="type" uiCellHeader *cdkHeaderCellDef scope="col">
+          <span class="headerTitle">
             {{ 'pages.referenceData.type' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.type }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.type }}</td>
       </ng-container>
 
-      <ng-container matColumnDef="apiConfiguration">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+      <ng-container cdkColumnDef="apiConfiguration">
+        <th
+          uiTableHeaderSort="apiConfiguration"
+          uiCellHeader
+          *cdkHeaderCellDef
+          scope="col"
+        >
+          <span class="headerTitle">
             {{ 'common.apiConfiguration.one' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ element.apiConfiguration ? element.apiConfiguration.name : '' }}
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="modifiedAt">
-        <th mat-header-cell *matHeaderCellDef>
-          <span class="headerTitle" mat-sort-header>
+      <ng-container cdkColumnDef="modifiedAt">
+        <th
+          uiTableHeaderSort="modifiedAt"
+          uiCellHeader
+          *cdkHeaderCellDef
+          scope="col"
+        >
+          <span class="headerTitle">
             {{ 'common.modifiedOn' | translate }}
           </span>
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           {{ element.modifiedAt | safeDate : 'medium' }}
         </td>
       </ng-container>
 
-      <ng-container matColumnDef="actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef class="w-16"></th>
-        <td mat-cell *matCellDef="let element">
-          <safe-button
+      <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
+          <ui-button
             [isIcon]="true"
             icon="more_vert"
-            [matMenuTriggerFor]="menu"
+            [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
             [disabled]="!(element.canUpdate || element.canDelete)"
           >
-          </safe-button>
-          <mat-menu #menu="matMenu">
+          </ui-button>
+          <ui-menu #menu>
             <button
-              mat-menu-item
+              uiMenuItem
               (click)="onDelete(element, $event)"
               *ngIf="element.canDelete"
             >
-              <mat-icon>delete</mat-icon>
+              <ui-icon icon="delete" variant="danger"></ui-icon>
               {{ 'common.delete' | translate }}
             </button>
-          </mat-menu>
+          </ui-menu>
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
       <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumns"
+        cdk-row
+        *cdkRowDef="let row; columns: displayedColumns"
         class="cursor-pointer"
         [routerLink]="['/referencedata', row.id]"
       ></tr>
@@ -110,15 +128,13 @@
     >
     </safe-skeleton-table>
   </div>
-  <!-- Paginator under the table -->
-  <mat-paginator
-    [disabled]="loading"
-    [pageIndex]="pageInfo.pageIndex"
-    [pageSize]="pageInfo.pageSize"
-    [pageSizeOptions]="[10, 25, 50]"
-    [length]="pageInfo.length"
-    [ariaLabel]="'components.referenceData.paginator.ariaLabel' | translate"
-    (page)="onPage($event)"
-  >
-  </mat-paginator>
 </div>
+<ui-paginator
+  [disabled]="loading"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [totalItems]="pageInfo.length"
+  [ariaLabel]="'components.referenceData.paginator.ariaLabel' | translate"
+  (pageChange)="onPage($event)"
+>
+</ui-paginator>

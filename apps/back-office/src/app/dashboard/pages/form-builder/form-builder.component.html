@@ -20,18 +20,25 @@
       ></safe-access>
     </div>
     <div class="flex items-center" *ngIf="!formActive">
-      <mat-button-toggle-group
-        appearance="legacy"
-        [value]="form.status"
-        (change)="updateStatus($event)"
-      >
-        <mat-button-toggle
-          *ngFor="let status of statuses"
-          [value]="status.value"
-          [className]="'toggle-' + status.value"
-          >{{ status.key | translate }}</mat-button-toggle
+      <div uiFormFieldDirective [outline]="false" class="p-0">
+        <label>{{ 'common.status' | translate }}</label>
+        <ui-select-menu
+          [formControl]="statusControl"
+          [customTemplate]="{
+            template: statusTemplate,
+            context: { $implicit: statusControl.value }
+          }"
         >
-      </mat-button-toggle-group>
+          <ui-select-option
+            *ngFor="let status of statusChoices"
+            [value]="status"
+          >
+            <ng-container
+              *ngTemplateOutlet="statusTemplate; context: { $implicit: status }"
+            ></ng-container>
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
     </div>
   </div>
   <app-history
@@ -45,3 +52,18 @@
     (formChange)="formStructureChange($event)"
   ></safe-form-builder>
 </ng-container>
+
+<!-- Template to display status -->
+<ng-template #statusTemplate let-status>
+  <div uiChipList>
+    <ui-chip class="!rounded-lg" variant="success" *ngIf="status === 'active'">
+      {{ 'common.status_active' | translate | titlecase }}
+    </ui-chip>
+    <ui-chip class="!rounded-lg" variant="warning" *ngIf="status === 'pending'">
+      {{ 'common.status_pending' | translate | titlecase }}
+    </ui-chip>
+    <ui-chip class="!rounded-lg" variant="danger" *ngIf="status === 'archived'">
+      {{ 'common.status_archived' | translate | titlecase }}
+    </ui-chip>
+  </div>
+</ng-template>

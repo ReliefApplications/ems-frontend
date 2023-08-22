@@ -1,18 +1,20 @@
-<!-- Search bar -->
-<div class="flex justify-end">
-  <mat-form-field appearance="outline" class="mat-form-field-sm p-0">
-    <mat-icon matPrefix>search</mat-icon>
-    <mat-label>{{ 'common.placeholder.search' | translate }}</mat-label>
-    <input matInput [(ngModel)]="search" type="search" />
-    <safe-button
-      matSuffix
-      [isIcon]="true"
-      [icon]="'close'"
+<div class="flex justify-start">
+  <div uiFormFieldDirective [outline]="false">
+    <input
+      [(ngModel)]="search"
+      type="text"
+      [placeholder]="'common.placeholder.search' | translate"
+    />
+    <ui-icon icon="search" uiPrefix></ui-icon>
+    <ui-icon
+      uiSuffix
+      class="cursor-pointer"
+      icon="close"
       *ngIf="search"
       [ariaLabel]="'common.ariaLabel.search.clear' | translate"
       (click)="search = ''"
-    ></safe-button>
-  </mat-form-field>
+    ></ui-icon>
+  </div>
 </div>
 <safe-role-dashboards
   [role]="role"

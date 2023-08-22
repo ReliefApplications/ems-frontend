@@ -1,29 +1,3 @@
-::ng-deep .leaflet-control-layers-toggle.leaflet-layerstree-named-toggle {
-  margin: 2px 5px;
-  width: auto;
-  height: auto;
-  background-image: none;
-}
-
-::ng-deep .leaflet-top.leaflet-right {
-  height: 100%;
-  // width: 40%;
-  z-index: 1001;
-}
-
-::ng-deep .leaflet-control-layers-expanded {
-  height: 100%;
-  width: 100%;
-  margin: 0px !important;
-  border: none !important;
-  padding: 0px !important;
-}
-
-::ng-deep .layers-bookmarks-menu {
-  width: 100%;
-  margin-right: 0px !important;
-}
-
 ::ng-deep .leaflet-layerstree-header input {
   margin-left: 0px;
 }
@@ -55,14 +29,6 @@
   cursor: pointer;
 }
 
-::ng-deep .leaflet-control-layers-base {
-  padding: 8px;
-}
-
-::ng-deep .leaflet-control-layers-overlays {
-  padding: 8px;
-}
-
 ::ng-deep .leaflet-layerstree-header-label {
   display: flex !important;
   align-items: baseline;
@@ -85,4 +51,29 @@
   top: 45%;
   transform: translateY(-40%);
   padding-top: 10px;
+}
+
+::ng-deep .leaflet-control-layers-base {
+  padding: 0 !important;
+}
+
+::ng-deep .leaflet-container {
+  z-index: 0;
+}
+
+/**
+  Lowers the height of the zoom control so it has less space if another control is added on the same corner.
+  It also moves the border style from the div wrapper to the main element so it correctly displays.
+*/
+::ng-deep .leaflet-control-fullscreen {
+  height: 26px !important;
+  border: none !important;
+
+  a {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 4px !important;
+    border: 2px solid rgba(0, 0, 0, 0.2) !important;
+    background-clip: padding-box !important;
+  }
 }

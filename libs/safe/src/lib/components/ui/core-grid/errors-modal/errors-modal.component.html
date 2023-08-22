@@ -1,53 +1,57 @@
-<safe-modal>
-  <h1 mat-dialog-title>
-    {{
-      'components.widget.grid.validation.title'
-        | translate
-          : {
-              record: data.incrementalId
-            }
-    }}
-  </h1>
-  <div mat-dialog-content>
-    <p>{{ 'components.widget.grid.validation.subtitle' | translate }}</p>
-    <!-- Table container -->
-    <div class="overflow-x-hidden shadow-2lg">
-      <!-- Table scroll container -->
-      <div class="overflow-x-auto">
-        <table class="mb-6" mat-table [dataSource]="data.errors">
-          <ng-container matColumnDef="question">
-            <th mat-header-cell *matHeaderCellDef>Field</th>
-            <td mat-cell *matCellDef="let element">{{ element.question }}</td>
-          </ng-container>
-          <ng-container matColumnDef="errors">
-            <th mat-header-cell *matHeaderCellDef>Errors</th>
-            <td mat-cell *matCellDef="let element">
-              <ul>
-                <li *ngFor="let error of element.errors">
-                  {{ error }}
-                </li>
-              </ul>
-            </td>
-          </ng-container>
+<ui-dialog>
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{
+        'components.widget.grid.validation.title'
+          | translate
+            : {
+                record: data.incrementalId
+              }
+      }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <div class="flex flex-col gap-4">
+      <p>{{ 'components.widget.grid.validation.subtitle' | translate }}</p>
+      <!-- Table container -->
+      <div class="overflow-x-hidden shadow-2lg">
+        <!-- Table scroll container -->
+        <div class="overflow-x-auto">
+          <table cdk-table uiTableWrapper [dataSource]="data.errors">
+            <ng-container cdkColumnDef="question">
+              <th uiCellHeader *cdkHeaderCellDef scope="col">Field</th>
+              <td uiCell *cdkCellDef="let element">{{ element.question }}</td>
+            </ng-container>
+            <ng-container cdkColumnDef="errors">
+              <th uiCellHeader *cdkHeaderCellDef scope="col">Errors</th>
+              <td uiCell *cdkCellDef="let element">
+                <ul>
+                  <li *ngFor="let error of element.errors">
+                    {{ error }}
+                  </li>
+                </ul>
+              </td>
+            </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
-        </table>
+            <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+            <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
+          </table>
+        </div>
       </div>
+      <p>{{ 'components.widget.grid.validation.help' | translate }}</p>
     </div>
-    <p>{{ 'components.widget.grid.validation.help' | translate }}</p>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="true"
+      [uiDialogClose]="true"
       cdkFocusInitial
     >
       {{ 'common.update' | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

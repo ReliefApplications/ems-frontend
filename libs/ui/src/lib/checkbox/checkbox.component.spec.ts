@@ -3,8 +3,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CheckboxComponent } from './checkbox.component';
 
 describe('CheckboxComponent', () => {
-  let component: CheckboxComponent<any>;
-  let fixture: ComponentFixture<CheckboxComponent<any>>;
+  let component: CheckboxComponent;
+  let fixture: ComponentFixture<CheckboxComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -16,7 +16,7 @@ describe('CheckboxComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create an instance', () => {
     expect(component).toBeTruthy();
   });
 });

@@ -8,7 +8,6 @@ import {
   Step,
   SafeFormComponent,
   SafeApplicationService,
-  SafeSnackBarService,
   SafeWorkflowService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
@@ -28,6 +27,7 @@ import {
 } from './graphql/mutations';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Form page in application.
@@ -74,7 +74,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private translate: TranslateService
   ) {
     super();
@@ -111,7 +111,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           )
           .subscribe(({ data, loading }) => {
             this.form = data.form;
-            this.canEditName = this.step?.canUpdate || false;
+            this.canEditName = this.page?.canUpdate || false;
             this.applicationId =
               this.step?.workflow?.page?.application?.id || '';
             this.loading = loading;
@@ -137,7 +137,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           )
           .subscribe(({ data, loading }) => {
             this.form = data.form;
-            this.canEditName = this.step?.canUpdate || false;
+            this.canEditName = this.page?.canUpdate || false;
             this.applicationId = this.page?.application?.id || '';
             this.loading = loading;
           });
@@ -319,5 +319,22 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
         });
       }
     }
+  }
+
+  /**
+   * Toggle page visibility.
+   */
+  togglePageVisibility() {
+    // If form is page
+    const callback = () => {
+      this.page = { ...this.page, visible: !this.page?.visible };
+    };
+    this.applicationService.togglePageVisibility(
+      {
+        id: this.id,
+        visible: this.page?.visible,
+      },
+      callback
+    );
   }
 }

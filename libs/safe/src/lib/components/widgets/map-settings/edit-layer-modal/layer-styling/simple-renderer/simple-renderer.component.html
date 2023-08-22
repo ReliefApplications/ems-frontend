@@ -1,0 +1,101 @@
+<ui-spinner diameter="45" class="page-loader" *ngIf="loading"></ui-spinner>
+<ng-container
+  *ngTemplateOutlet="geometryType === 'Point' ? pointRenderer : polygonRenderer"
+>
+</ng-container>
+
+<!-- Point renderer -->
+<ng-template #pointRenderer>
+  <div *ngIf="!loading" [formGroup]="formGroup">
+    <div class="flex flex-col gap-y-2">
+      <!-- Symbol style -->
+      <div class="flex flex-col" *ngIf="showStyle">
+        <div uiFormFieldDirective>
+          <label class="mb-4">
+            {{
+              'components.widget.settings.map.edit.cluster.symbol' | translate
+            }}
+          </label>
+          <safe-icon-picker
+            formControlName="style"
+            [color]="formGroup.value.color"
+          ></safe-icon-picker>
+        </div>
+      </div>
+      <div class="flex flex-row justify-between gap-4">
+        <!-- Symbol color -->
+        <div class="flex flex-col">
+          <h4>
+            {{ 'components.widget.settings.map.edit.style.color' | translate }}
+          </h4>
+          <kendo-colorpicker formControlName="color"></kendo-colorpicker>
+        </div>
+        <!-- Symbol size -->
+        <div class="flex flex-1 flex-col" *ngIf="showSize">
+          <h4>
+            {{ 'components.widget.settings.map.edit.style.size' | translate }}
+          </h4>
+          <ui-slider formControlName="size" [minValue]="1" [maxValue]="100">
+          </ui-slider>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>
+
+<!-- Polygon renderer -->
+<ng-template #polygonRenderer>
+  <div *ngIf="!loading" [formGroup]="formGroup">
+    <div class="flex flex-col gap-y-2">
+      <div class="flex flex-col">
+        <h3>
+          {{
+            'components.widget.settings.map.geospatial.layersStyles.fill.title'
+              | translate
+          }}
+        </h3>
+        <div class="flex flex-row justify-between gap-4">
+          <!-- Fill color -->
+          <div class="flex flex-col">
+            <h4>
+              {{
+                'components.widget.settings.map.geospatial.layersStyles.fill.color'
+                  | translate
+              }}
+            </h4>
+            <kendo-colorpicker formControlName="color"></kendo-colorpicker>
+          </div>
+        </div>
+      </div>
+      <ui-divider class="my-4"></ui-divider>
+      <div class="flex flex-col" formGroupName="outline">
+        <h3>
+          {{
+            'components.widget.settings.map.geospatial.layersStyles.outline.title'
+              | translate
+          }}
+        </h3>
+        <div class="flex flex-row justify-between gap-4">
+          <!-- Outline color -->
+          <div class="flex flex-col">
+            <h4>
+              {{
+                'components.widget.settings.map.geospatial.layersStyles.outline.color'
+                  | translate
+              }}
+            </h4>
+            <kendo-colorpicker formControlName="color"></kendo-colorpicker>
+          </div>
+          <!-- Outline width -->
+          <div uiFormFieldDirective class="flex-1">
+            <label>{{
+              'components.widget.settings.map.geospatial.layersStyles.outline.width'
+                | translate
+            }}</label>
+            <input type="number" formControlName="width" min="0" max="20" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ng-template>

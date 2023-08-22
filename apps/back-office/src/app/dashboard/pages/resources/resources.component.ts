@@ -13,17 +13,18 @@ import {
 import {
   Resource,
   SafeConfirmService,
-  SafeSnackBarService,
+  SafeUnsubscribeComponent,
 } from '@oort-front/safe';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Router } from '@angular/router';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
-import { Sort } from '@angular/material/sort';
 import { TranslateService } from '@ngx-translate/core';
 import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
+import { Dialog } from '@angular/cdk/dialog';
+import { TableSort, UIPageChangeEvent } from '@oort-front/ui';
+import { SnackbarService } from '@oort-front/ui';
+import { takeUntil } from 'rxjs';
 
 /**
  * Default number of resources that will be shown at once.
@@ -38,18 +39,21 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './resources.component.html',
   styleUrls: ['./resources.component.scss'],
 })
-export class ResourcesComponent implements OnInit {
+export class ResourcesComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   // === DATA ===
   public loading = true;
   public filterLoading = false;
   private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
   displayedColumns: string[] = ['name', 'createdAt', 'recordsCount', 'actions'];
   public cachedResources: Resource[] = [];
-  public resources = new MatTableDataSource<Resource>([]);
+  public resources = new Array<Resource>();
 
   // === SORTING ===
   public updating = false;
-  private sort: Sort = { active: '', direction: '' };
+  private sort: TableSort = { active: '', sortDirection: '' };
 
   // === FILTERING ===
   public filter: any = {
@@ -76,13 +80,15 @@ export class ResourcesComponent implements OnInit {
    * @param router Used to change the app route.
    */
   constructor(
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private router: Router
-  ) {}
+  ) {
+    super();
+  }
 
   /** Load the resources. */
   ngOnInit(): void {
@@ -107,19 +113,19 @@ export class ResourcesComponent implements OnInit {
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
       ((e.pageIndex > e.previousPageIndex &&
         e.pageIndex * this.pageInfo.pageSize >= this.cachedResources.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedResources.length
+      e.totalItems > this.cachedResources.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
       let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is substracted from the new one
+      // If the fetch is for a new page size, the old page size is subtracted from the new one
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
@@ -127,7 +133,7 @@ export class ResourcesComponent implements OnInit {
       this.loading = true;
       this.fetchResources();
     } else {
-      this.resources.data = this.cachedResources.slice(
+      this.resources = this.cachedResources.slice(
         e.pageSize * this.pageInfo.pageIndex,
         e.pageSize * (this.pageInfo.pageIndex + 1)
       );
@@ -151,7 +157,7 @@ export class ResourcesComponent implements OnInit {
    *
    * @param event sort event
    */
-  onSort(event: Sort): void {
+  onSort(event: TableSort): void {
     this.sort = event;
     this.fetchResources(true);
   }
@@ -169,10 +175,11 @@ export class ResourcesComponent implements OnInit {
       afterCursor: refetch ? null : this.pageInfo.endCursor,
       filter: filter ?? this.filter,
       sortField:
-        (this.sort?.direction && this.sort.active) !== ''
-          ? this.sort?.direction && this.sort.active
+        (this.sort?.sortDirection && this.sort.active) !== ''
+          ? this.sort?.sortDirection && this.sort.active
           : 'name',
-      sortOrder: this.sort?.direction !== '' ? this.sort?.direction : 'asc',
+      sortOrder:
+        this.sort?.sortDirection !== '' ? this.sort?.sortDirection : 'asc',
     };
     const cachedValues: GetResourcesQueryResponse = getCachedValues(
       this.apollo.client,
@@ -216,10 +223,10 @@ export class ResourcesComponent implements OnInit {
         }
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
-      confirmColor: 'warn',
+      confirmVariant: 'danger',
     });
 
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<DeleteResourceMutationResponse>({
@@ -230,7 +237,7 @@ export class ResourcesComponent implements OnInit {
           })
           .subscribe(({ errors }) => {
             if (!errors) {
-              this.resources.data = this.resources.data.filter(
+              this.resources = this.resources.filter(
                 (x) => x.id !== resource.id
               );
               this.snackBar.openSnackBar(
@@ -264,7 +271,7 @@ export class ResourcesComponent implements OnInit {
       '../../../components/add-resource-modal/add-resource-modal.component'
     );
     const dialogRef = this.dialog.open(AddResourceModalComponent);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         const variablesData = { name: value.name };
         this.apollo
@@ -309,18 +316,19 @@ export class ResourcesComponent implements OnInit {
    * @param loading loading status
    */
   updateValues(data: GetResourcesQueryResponse, loading: boolean) {
+    const mappedValues = data.resources?.edges?.map((x) => x.node);
     this.cachedResources = updateQueryUniqueValues(
       this.cachedResources,
-      data.resources.edges.map((x) => x.node)
-    );
-    this.resources.data = this.cachedResources.slice(
-      this.pageInfo.pageSize * this.pageInfo.pageIndex,
-      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+      mappedValues
     );
     this.pageInfo.length = data.resources.totalCount;
     this.pageInfo.endCursor = data.resources.pageInfo.endCursor;
     this.loading = loading;
     this.updating = loading;
+    this.resources = this.cachedResources.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
     this.filterLoading = false;
   }
 }

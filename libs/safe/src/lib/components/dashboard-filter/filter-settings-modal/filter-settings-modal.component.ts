@@ -1,12 +1,9 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
 import { FilterPosition } from '../enums/dashboard-filters.enum';
-import { SafeModalModule } from '../../ui/modal/modal.module';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
+import { ButtonModule, DialogModule } from '@oort-front/ui';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 
 /**
  * Data for the settings modal
@@ -23,7 +20,7 @@ interface SettingsData {
   selector: 'safe-filter-settings-modal',
   templateUrl: './filter-settings-modal.component.html',
   styleUrls: ['./filter-settings-modal.component.scss'],
-  imports: [SafeModalModule, CommonModule, TranslateModule],
+  imports: [DialogModule, ButtonModule, CommonModule, TranslateModule],
 })
 export class FilterSettingsModalComponent implements OnInit {
   public positionList: FilterPosition[] = [];
@@ -36,8 +33,8 @@ export class FilterSettingsModalComponent implements OnInit {
    * @param data Data to use to configure the settings
    */
   constructor(
-    private dialogRef: MatDialogRef<FilterSettingsModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: SettingsData
+    private dialogRef: DialogRef<FilterSettingsModalComponent>,
+    @Inject(DIALOG_DATA) public data: SettingsData
   ) {}
 
   ngOnInit(): void {
@@ -51,6 +48,6 @@ export class FilterSettingsModalComponent implements OnInit {
    */
   setDefaultPosition(position: FilterPosition) {
     this.defaultPosition = position;
-    this.dialogRef.close(this.defaultPosition);
+    this.dialogRef.close(this.defaultPosition as any);
   }
 }

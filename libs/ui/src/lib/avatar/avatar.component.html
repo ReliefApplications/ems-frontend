@@ -1,23 +1,23 @@
 <span
   [ngClass]="{
-    'avatar-small': size === avatarSize.SMALL,
-    'avatar-medium': size === avatarSize.MEDIUM,
-    'avatar-large': size === avatarSize.LARGE,
-    'avatar-circle': shape === avatarShape.CIRCLE,
-    'avatar-rectangle': shape === avatarShape.RECTANGLE,
+    'avatar-small': size === 'small',
+    'avatar-medium': size === 'medium',
+    'avatar-large': size === 'large',
+    'avatar-circle': shape === 'circle',
+    'avatar-rectangle': shape === 'rectangle',
     'avatar-initials': initials !== '',
     'avatar-not-initials': initials === '',
-    'bg-white': variant !== avatarVariant.SECONDARY,
-    'bg-gray-500': variant === avatarVariant.SECONDARY,
-    'avatar-tertiary-border': variant === avatarVariant.TERTIARY
+    'bg-white': variant !== 'secondary',
+    'bg-gray-500': variant === 'secondary',
+    'avatar-tertiary-border': variant === 'tertiary'
   }"
   class="overflow-hidden ring-2 ring-transparent"
 >
   <ng-container *ngIf="image; else noIconTmpl">
     <img
       [ngClass]="{
-        'avatar-circle': shape === avatarShape.CIRCLE,
-        'avatar-rectangle': shape === avatarShape.RECTANGLE
+        'avatar-circle': shape === 'circle',
+        'avatar-rectangle': shape === 'rectangle'
       }"
       class="inline-block h-full w-full"
       src="{{ image }}"
@@ -28,9 +28,9 @@
     <ng-container *ngIf="initials !== ''">
       <span
         [ngClass]="{
-          'avatar-primary-text': variant === avatarVariant.PRIMARY,
-          'avatar-secondary-text': variant === avatarVariant.SECONDARY,
-          'avatar-tertiary-text': variant === avatarVariant.TERTIARY
+          'avatar-primary-text': variant === 'primary',
+          'avatar-secondary-text': variant === 'secondary',
+          'avatar-tertiary-text': variant === 'tertiary'
         }"
         class="text-base font-medium leading-none"
       >

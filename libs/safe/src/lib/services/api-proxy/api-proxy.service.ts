@@ -39,8 +39,8 @@ export class SafeApiProxyService {
   /**
    * Sends a ping request using the passed arguments
    *
-   * @param api Api configuration
-   * @returns ping request
+   * @param api Current API configuration
+   * @returns rest service post ping request
    */
   public buildPingRequest(api: ApiConfiguration): any {
     if (api.pingUrl) {

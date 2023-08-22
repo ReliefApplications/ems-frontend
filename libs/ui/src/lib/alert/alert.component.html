@@ -1,0 +1,23 @@
+<div class="rounded-md p-4" [ngClass]="resolveAlertClasses">
+  <div class="flex">
+    <!-- Icon -->
+    <div *ngIf="showIcon" class="flex-shrink-0">
+      <ui-icon [icon]="resolveIcon" [variant]="resolveButtonVariant"></ui-icon>
+    </div>
+    <!-- Content -->
+    <div class="ml-3">
+      <ng-content></ng-content>
+    </div>
+    <!-- Dismiss -->
+    <div *ngIf="closable" class="ml-auto pl-3">
+      <ui-button
+        class="-mx-3 -my-2"
+        [isIcon]="true"
+        icon="close"
+        [variant]="resolveButtonVariant"
+        category="primary"
+        (click)="onClose()"
+      ></ui-button>
+    </div>
+  </div>
+</div>

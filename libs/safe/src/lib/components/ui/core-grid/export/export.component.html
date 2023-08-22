@@ -1,76 +1,96 @@
-<safe-modal>
-  <mat-dialog-content class="safe-grid-export">
+<ui-dialog>
+  <ng-container ngProjectAs="content">
     <!-- RECORDS -->
     <label id="export-options-records">{{
       'components.widget.grid.export.dataset.title' | translate
     }}</label>
-    <mat-radio-group
+    <div
+      uiRadioGroupDirective="exportRecordsOptions"
       [(ngModel)]="export.records"
-      required
       aria-labelledby="export-options-records"
+      class="ml-2 flex flex-col gap-2"
     >
-      <mat-radio-button value="all">{{
-        'components.widget.grid.export.dataset.choice.all' | translate
-      }}</mat-radio-button>
-      <mat-radio-button value="selected">{{
-        'components.widget.grid.export.dataset.choice.selected' | translate
-      }}</mat-radio-button>
-    </mat-radio-group>
+      <ui-radio value="all">
+        <ng-container ngProjectAs="label">
+          {{ 'components.widget.grid.export.dataset.choice.all' | translate }}
+        </ng-container>
+      </ui-radio>
+      <ui-radio value="selected">
+        <ng-container ngProjectAs="label">
+          {{
+            'components.widget.grid.export.dataset.choice.selected' | translate
+          }}
+        </ng-container>
+      </ui-radio>
+    </div>
     <!-- COLUMNS -->
     <label id="export-options-columns">{{
       'components.widget.grid.export.columns.title' | translate
     }}</label>
-    <mat-radio-group
+    <div
+      uiRadioGroupDirective="exportColumnsOptions"
       [(ngModel)]="export.fields"
-      required
       aria-labelledby="export-options-columns"
+      class="ml-2 flex flex-col gap-2"
     >
-      <mat-radio-button value="all">{{
-        'components.widget.grid.export.columns.choice.all' | translate
-      }}</mat-radio-button>
-      <mat-radio-button value="visible">{{
-        'components.widget.grid.export.columns.choice.visible' | translate
-      }}</mat-radio-button>
-    </mat-radio-group>
+      <ui-radio value="all">
+        <ng-container ngProjectAs="label">
+          {{ 'components.widget.grid.export.columns.choice.all' | translate }}
+        </ng-container>
+      </ui-radio>
+      <ui-radio value="visible">
+        <ng-container ngProjectAs="label">
+          {{
+            'components.widget.grid.export.columns.choice.visible' | translate
+          }}
+        </ng-container>
+      </ui-radio>
+    </div>
     <!-- FORMAT -->
     <label id="export-options-format">{{
       'components.widget.grid.export.format.title' | translate
     }}</label>
-    <mat-radio-group
+    <div
+      uiRadioGroupDirective="exportFormatOptions"
       [(ngModel)]="export.format"
-      requires
       aria-labelledby="export-options-format"
+      class="ml-2 flex flex-col gap-2"
     >
-      <mat-radio-button value="csv">.csv</mat-radio-button>
-      <mat-radio-button value="xlsx">.xlsx</mat-radio-button>
-    </mat-radio-group>
+      <ui-radio value="csv">
+        <ng-container ngProjectAs="label"> .csv </ng-container>
+      </ui-radio>
+      <ui-radio value="xlsx">
+        <ng-container ngProjectAs="label"> .xlsx </ng-container>
+      </ui-radio>
+    </div>
     <!-- EMAIL -->
     <p class="mt-6 mb-3 mx-0">
-      <mat-slide-toggle [(ngModel)]="export.email"
-        >{{ 'components.widget.grid.export.email.title' | translate
-        }}<safe-icon
-          variant="grey"
-          [inline]="true"
-          [size]="18"
-          icon="info_outline"
-          [matTooltip]="
-            'components.widget.grid.export.email.tooltip' | translate
-          "
-        ></safe-icon
-      ></mat-slide-toggle>
+      <ui-toggle [(ngModel)]="export.email">
+        <ng-container ngProjectAs="label">
+          {{ 'components.widget.grid.export.email.title' | translate
+          }}<ui-icon
+            variant="grey"
+            [size]="18"
+            icon="info_outline"
+            [uiTooltip]="
+              'components.widget.grid.export.email.tooltip' | translate
+            "
+          ></ui-icon>
+        </ng-container>
+      </ui-toggle>
     </p>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="export"
+      [uiDialogClose]="export"
       cdkFocusInitial
     >
       {{ 'common.export' | translate }}
-    </safe-button>
-  </mat-dialog-actions>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

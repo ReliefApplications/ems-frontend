@@ -1,0 +1,61 @@
+<ng-container [formGroup]="formGroup">
+  <div class="flex flex-col">
+    <div uiFormFieldDirective>
+      <label>{{
+        'components.widget.settings.map.layers.popup.fieldsElements.title'
+          | translate
+      }}</label>
+      <safe-editor-control
+        formControlName="title"
+        [editorConfig]="editorConfig"
+      ></safe-editor-control>
+      <ui-icon
+        icon="info"
+        class="cursor-pointer"
+        variant="grey"
+        uiSuffix
+        [uiTooltip]="
+          'components.widget.settings.map.layers.popup.tooltip.text' | translate
+        "
+      ></ui-icon>
+    </div>
+    <div uiFormFieldDirective>
+      <label>{{
+        'components.widget.settings.map.layers.popup.fieldsElements.description'
+          | translate
+      }}</label>
+      <safe-editor-control
+        formControlName="description"
+        [editorConfig]="editorConfig"
+      ></safe-editor-control>
+      <ui-icon
+        icon="info"
+        class="cursor-pointer"
+        variant="grey"
+        uiSuffix
+        [uiTooltip]="
+          'components.widget.settings.map.layers.popup.tooltip.text' | translate
+        "
+      ></ui-icon>
+    </div>
+  </div>
+  <ui-divider></ui-divider>
+  <div class="flex flex-row flex-wrap gap-2">
+    <kendo-listbox
+      class="h-72 flex-1"
+      kendoListBoxDataBinding
+      [data]="availableFields"
+      [connectedWith]="selected"
+      [toolbar]="toolbarSettings"
+      (actionClick)="handleActionClick()"
+    >
+    </kendo-listbox>
+    <kendo-listbox
+      class="h-72 flex-1"
+      #selected
+      [data]="selectedFields"
+      [toolbar]="false"
+    >
+    </kendo-listbox>
+  </div>
+</ng-container>

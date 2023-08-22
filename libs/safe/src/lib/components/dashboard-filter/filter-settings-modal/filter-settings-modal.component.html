@@ -1,14 +1,21 @@
-<safe-modal [closable]="true">
-  <h3>{{ 'components.application.dashboard.settings.defaultPosition' | translate }}</h3>
-  <div class="flex flex-auto">
-    <ng-container *ngFor="let position of positionList">
-      <safe-button
-        matSuffix
-        [isIcon]="true"
-        icon="{{ position + '_panel_open' }}"
-        [fontSet]="'material-symbols-outlined'"
-        (click)="setDefaultPosition(position)"
-      ></safe-button>
-    </ng-container>
-  </div>
-</safe-modal>
+<ui-dialog [closable]="true">
+  <ng-container ngProjectAs="header">
+    <h3>
+      {{
+        'components.application.dashboard.settings.defaultPosition' | translate
+      }}
+    </h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <div class="flex flex-auto">
+      <ng-container *ngFor="let position of positionList">
+        <ui-button
+          [isIcon]="true"
+          icon="{{ position + '_panel_open' }}"
+          [isOutlined]="true"
+          (click)="setDefaultPosition(position)"
+        ></ui-button>
+      </ng-container>
+    </div>
+  </ng-container>
+</ui-dialog>

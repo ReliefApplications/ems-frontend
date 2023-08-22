@@ -1,0 +1,16 @@
+// === VARIANTS ===
+.checkbox-primary {
+  @apply text-primary-400 focus:ring-primary-600;
+}
+
+.checkbox-success {
+  @apply text-green-400 focus:ring-green-600;
+}
+
+.checkbox-danger {
+  @apply text-red-400 focus:ring-red-600;
+}
+
+.checkbox-grey {
+  @apply text-gray-400 focus:ring-gray-600;
+}

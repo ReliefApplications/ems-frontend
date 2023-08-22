@@ -13,10 +13,7 @@ import {
 } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
 import { SafeEditorService } from '../../../services/editor/editor.service';
-import {
-  getCalcKeys,
-  getDataKeys,
-} from '../../widgets/summary-card/parser/utils';
+import { getCalcKeys, getDataKeys } from '../../../utils/parser/utils';
 import { addNewField } from '../query-builder-forms';
 import { SafeQueryBuilderComponent } from '../query-builder.component';
 import { INLINE_EDITOR_CONFIG } from '../../../const/tinymce.const';
@@ -46,6 +43,9 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
   public editor: any = INLINE_EDITOR_CONFIG;
 
   @Input() showLimit = false;
+
+  /** Is the column width field displayed */
+  @Input() showColumnWidth = false;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is created.

@@ -8,18 +8,16 @@ import {
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Feature, Point } from 'geojson';
 import { BehaviorSubject, takeUntil } from 'rxjs';
-import { ButtonSize } from '../../../ui/button/button-size.enum';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule } from '../../button/button.module';
-import { SafeDividerModule } from '../../divider/divider.module';
+import { ButtonModule, DividerModule } from '@oort-front/ui';
 
 /** Component for a popup that has information on multiple points */
 @Component({
   selector: 'safe-map-popup',
   standalone: true,
-  imports: [CommonModule, TranslateModule, SafeButtonModule, SafeDividerModule],
+  imports: [CommonModule, TranslateModule, ButtonModule, DividerModule],
   templateUrl: './map-popup.component.html',
   styleUrls: ['./map-popup.component.scss'],
 })
@@ -37,7 +35,6 @@ export class SafeMapPopupComponent
   }>();
   public currentHtml: SafeHtml = '';
   public current = new BehaviorSubject<number>(0);
-  public buttonSize = ButtonSize;
 
   /** @returns current as an observable */
   get current$() {

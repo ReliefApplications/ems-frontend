@@ -1,20 +1,23 @@
-<mat-form-field appearance="outline">
-  <mat-label>{{ label || 'common.field.one' | translate }}</mat-label>
-  <mat-select [formControl]="fieldControl">
-    <mat-option *ngIf="nullable">{{
+<div uiFormFieldDirective class="flex-1 w-44">
+  <label>{{ label || 'common.field.one' | translate }}</label>
+  <ui-select-menu [formControl]="fieldControl">
+    <ui-select-option *ngIf="nullable">{{
       'common.input.none' | translate
-    }}</mat-option>
+    }}</ui-select-option>
     <ng-container *ngFor="let field of fields">
-      <mat-option *ngIf="field.type.kind === 'SCALAR'" [value]="field.name">{{
-        field.name
-      }}</mat-option>
-      <mat-optgroup *ngIf="field.type.kind !== 'SCALAR'" [label]="field.name">
-        <mat-option
+      <ui-select-option
+        *ngIf="field.type.kind === 'SCALAR'"
+        [value]="field.name"
+        >{{ field.name }}</ui-select-option
+      >
+      <ui-select-option [isGroup]="true" *ngIf="field.type.kind !== 'SCALAR'">
+        {{ field.name }}
+        <ui-select-option
           *ngFor="let subField of field.fields"
           [value]="field.name + '.' + subField.name"
           >{{ subField.name }}
-        </mat-option>
-      </mat-optgroup>
+        </ui-select-option>
+      </ui-select-option>
     </ng-container>
-  </mat-select>
-</mat-form-field>
+  </ui-select-menu>
+</div>

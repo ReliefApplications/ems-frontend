@@ -1,12 +1,9 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { MatSort } from '@angular/material/sort';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
+import { Component, OnInit } from '@angular/core';
+import { Dialog } from '@angular/cdk/dialog';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   ApiConfiguration,
   SafeConfirmService,
-  SafeSnackBarService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import {
@@ -15,7 +12,7 @@ import {
 } from './graphql/queries';
 import {
   AddApiConfigurationMutationResponse,
-  ADD_API_CONFIGURATIION,
+  ADD_API_CONFIGURATION,
   DeleteApiConfigurationMutationResponse,
   DELETE_API_CONFIGURATION,
 } from './graphql/mutations';
@@ -27,6 +24,8 @@ import {
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
+import { TableSort, UIPageChangeEvent } from '@oort-front/ui';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
@@ -41,17 +40,18 @@ const ITEMS_PER_PAGE = 10;
 })
 export class ApiConfigurationsComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements OnInit
 {
   // === DATA ===
   public loading = true;
   private apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
   displayedColumns = ['name', 'status', 'authType', 'actions'];
-  dataSource = new MatTableDataSource<ApiConfiguration>([]);
+  dataSource = new Array<ApiConfiguration>();
+  filteredDataSources = new Array<ApiConfiguration>();
   public cachedApiConfigurations: ApiConfiguration[] = [];
 
   // === SORTING ===
-  @ViewChild(MatSort) sort?: MatSort;
+  sort?: TableSort;
 
   // === FILTERS ===
   public showFilters = false;
@@ -69,7 +69,7 @@ export class ApiConfigurationsComponent
    * API configurations page component
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param confirmService Shared confirm service
    * @param router Angular router
@@ -77,11 +77,11 @@ export class ApiConfigurationsComponent
    */
   constructor(
     private apollo: Apollo,
-    public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    public dialog: Dialog,
+    private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
     private router: Router,
-    private translate: TranslateService
+    private translate: TranslateService // private uiTableWrapper: TableWrapperDirective
   ) {
     super();
   }
@@ -104,6 +104,11 @@ export class ApiConfigurationsComponent
       .subscribe((results) => {
         this.updateValues(results.data, results.loading);
       });
+    // Initializing sort to an empty one
+    this.sort = {
+      active: '',
+      sortDirection: '',
+    };
   }
 
   /**
@@ -111,7 +116,7 @@ export class ApiConfigurationsComponent
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
@@ -119,12 +124,12 @@ export class ApiConfigurationsComponent
         e.pageIndex * this.pageInfo.pageSize >=
           this.cachedApiConfigurations.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedApiConfigurations.length
+      e.totalItems > this.cachedApiConfigurations.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
       let neededSize = e.pageSize;
-      // If the fetch is for a new page size, the old page size is substracted from the new one
+      // If the fetch is for a new page size, the old page size is subtracted from the new one
       if (e.pageSize > this.pageInfo.pageSize) {
         neededSize -= this.pageInfo.pageSize;
       }
@@ -150,10 +155,11 @@ export class ApiConfigurationsComponent
           );
       }
     } else {
-      this.dataSource.data = this.cachedApiConfigurations.slice(
+      this.dataSource = this.cachedApiConfigurations.slice(
         e.pageSize * this.pageInfo.pageIndex,
         e.pageSize * (this.pageInfo.pageIndex + 1)
       );
+      this.filteredDataSources = this.dataSource;
     }
     this.pageInfo.pageSize = e.pageSize;
   }
@@ -162,13 +168,15 @@ export class ApiConfigurationsComponent
    * Frontend filtering.
    */
   private filterPredicate(): void {
-    this.dataSource.filterPredicate = (data: any) =>
-      (this.searchText.trim().length === 0 ||
-        (this.searchText.trim().length > 0 &&
-          data.name.toLowerCase().includes(this.searchText.trim()))) &&
-      (this.statusFilter.trim().length === 0 ||
-        (this.statusFilter.trim().length > 0 &&
-          data.status.toLowerCase().includes(this.statusFilter.trim())));
+    this.filteredDataSources = this.dataSource.filter(
+      (data: any) =>
+        (this.searchText.trim().length === 0 ||
+          (this.searchText.trim().length > 0 &&
+            data.name.toLowerCase().includes(this.searchText.trim()))) &&
+        (this.statusFilter.trim().length === 0 ||
+          (this.statusFilter.trim().length > 0 &&
+            data.status.toLowerCase().includes(this.statusFilter.trim())))
+    );
   }
 
   /**
@@ -179,13 +187,13 @@ export class ApiConfigurationsComponent
    */
   applyFilter(column: string, event: any): void {
     if (column === 'status') {
-      this.statusFilter = event.value ? event.value.trim().toLowerCase() : '';
+      this.statusFilter = event ?? '';
     } else {
       this.searchText = event
         ? event.target.value.trim().toLowerCase()
         : this.searchText;
     }
-    this.dataSource.filter = '##';
+    this.filterPredicate();
   }
 
   /**
@@ -206,11 +214,11 @@ export class ApiConfigurationsComponent
       './components/add-api-configuration/add-api-configuration.component'
     );
     const dialogRef = this.dialog.open(AddApiConfigurationComponent);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<AddApiConfigurationMutationResponse>({
-            mutation: ADD_API_CONFIGURATIION,
+            mutation: ADD_API_CONFIGURATION,
             variables: {
               name: value.name,
             },
@@ -272,9 +280,9 @@ export class ApiConfigurationsComponent
         }
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
-      confirmColor: 'warn',
+      confirmVariant: 'danger',
     });
-    dialogRef.afterClosed().subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<DeleteApiConfigurationMutationResponse>({
@@ -293,9 +301,10 @@ export class ApiConfigurationsComponent
                     ),
                   })
                 );
-                this.dataSource.data = this.dataSource.data.filter(
+                this.dataSource = this.dataSource.filter(
                   (x) => x.id !== element.id
                 );
+                this.filteredDataSources = this.dataSource;
               } else {
                 this.snackBar.openSnackBar(
                   this.translate.instant(
@@ -329,11 +338,13 @@ export class ApiConfigurationsComponent
     data: GetApiConfigurationsQueryResponse,
     loading: boolean
   ): void {
+    const mappedValues = data.apiConfigurations.edges.map((x) => x.node);
     this.cachedApiConfigurations = updateQueryUniqueValues(
       this.cachedApiConfigurations,
-      data.apiConfigurations.edges.map((x) => x.node)
+      mappedValues
     );
-    this.dataSource.data = this.cachedApiConfigurations.slice(
+    // then slice the array to correctly match the items in the current page
+    this.dataSource = this.cachedApiConfigurations.slice(
       this.pageInfo.pageSize * this.pageInfo.pageIndex,
       this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
     );
@@ -342,10 +353,57 @@ export class ApiConfigurationsComponent
     this.loading = loading;
     this.filterPredicate();
   }
+
   /**
-   * Sets the sort in the view.
+   * Handle sort change.
+   *
+   * @param event sort event
    */
-  ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort || null;
+  onSort(event: TableSort): void {
+    // We change the sort for the current value
+    this.sort = event;
+    this.fetchApiConfigurations(true);
+  }
+
+  /**
+   * Update api configurations query.
+   *
+   * @param refetch erase previous query results
+   */
+  private fetchApiConfigurations(refetch?: boolean): void {
+    const variables = {
+      first: this.pageInfo.pageSize,
+      afterCursor: refetch ? null : this.pageInfo.endCursor,
+      sortField: this.sort?.sortDirection && this.sort.active,
+      sortOrder: this.sort?.sortDirection,
+    };
+    const cachedValues: GetApiConfigurationsQueryResponse = getCachedValues(
+      this.apollo.client,
+      GET_API_CONFIGURATIONS,
+      variables
+    );
+    if (refetch) {
+      this.cachedApiConfigurations = [];
+      this.pageInfo.pageIndex = 0;
+    }
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
+    } else {
+      if (refetch) {
+        // Rebuild the query
+        this.apiConfigurationsQuery.refetch(variables);
+      } else {
+        // Fetch more records
+        this.apiConfigurationsQuery
+          .fetchMore({
+            variables,
+          })
+          .then(
+            (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
+              this.updateValues(results.data, results.loading);
+            }
+          );
+      }
+    }
   }
 }

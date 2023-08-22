@@ -1,79 +1,119 @@
 <div class="flex flex-col h-full">
-  <kendo-tilelayout-item-header *ngIf="header" class="widget-header">
+  <!-- Header -->
+  <kendo-tilelayout-item-header
+    *ngIf="header"
+    class="widget-header border-b h-[45px]"
+    [ngClass]="{
+      '!border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
+      '!border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
+    }"
+  >
     <span class="widget-title" [title]="settings.title">{{
       settings.title
-      }}</span>
+    }}</span>
+    <!-- Searchbar -->
+    <div
+      *ngIf="
+        settings.widgetDisplay?.searchable &&
+        !settings.card?.aggregation &&
+        displayMode === 'cards'
+      "
+      class="px-2 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 flex items-center m-1 w-[30%] max-w-[200px]"
+    >
+      <input
+        class="h-full bg-transparent w-full"
+        [placeholder]="'common.placeholder.search' | translate"
+        [formControl]="searchControl"
+      />
+    </div>
+
+    <!-- Sort selector -->
+    <ng-container *ngIf="sortFields.length > 0">
+      <ng-container *ngTemplateOutlet="sortTemplate"></ng-container>
+    </ng-container>
+
     <!-- Switch between grid and cards view -->
     <div class="flex">
       <!-- Data source button -->
-      <safe-button
+      <ui-button
         variant="primary"
         icon="open_in_new"
         (click)="openDataSource()"
-        *ngIf="settings.card?.showDataSourceLink || false">
+        *ngIf="settings.card?.showDataSourceLink || false"
+      >
         {{ 'components.widget.summaryCard.dataSource' | translate }}
-      </safe-button>
-      <safe-button
+      </ui-button>
+      <ui-button
         [isIcon]="true"
         icon="grid_view"
         [disabled]="displayMode === 'cards'"
         (click)="displayMode = 'cards'"
-        [matTooltip]="'components.widget.summaryCard.viewAsCards' | translate"></safe-button>
-      <safe-button
+        [uiTooltip]="'components.widget.summaryCard.viewAsCards' | translate"
+      ></ui-button>
+      <ui-button
         [isIcon]="true"
         icon="view_list"
         [disabled]="displayMode === 'grid'"
         (click)="displayMode = 'grid'"
-        [matTooltip]="'components.widget.summaryCard.viewAsGrid' | translate"></safe-button>
+        [uiTooltip]="'components.widget.summaryCard.viewAsGrid' | translate"
+      ></ui-button>
     </div>
-    <safe-button
+    <ui-button
       *ngIf="export && displayMode === 'cards'"
       [isIcon]="true"
       icon="get_app"
       class="text-neutral-700"
-      (click)="pdf.saveAs(exportName)"></safe-button>
+      (click)="pdf.saveAs(exportName)"
+    ></ui-button>
   </kendo-tilelayout-item-header>
   <!-- Cards display mode -->
   <ng-container *ngIf="displayMode === 'cards'">
-    <!-- Search -->
-    <div class="bg-zinc-50 p-2" *ngIf="!!settings.widgetDisplay?.searchable">
-      <input
-        [placeholder]="'common.placeholder.search' | translate"
-        kendoTextBox
-        [formControl]="searchControl"
-        class="!w-full" />
-    </div>
     <!-- Export -->
     <div class="w-full grow overflow-auto" #summaryCardGrid>
       <kendo-pdf-export #pdf paperSize="A4" margin="2cm">
         <div
           class="summary-card-container k-widget k-tile-layout k-grid-flow-col"
-          style.grid-template-columns="{{ 'repeat(' + colsNumber + ', 1fr)' }}">
-          <safe-summary-card-item
-            *ngFor="let card of cards; let i = index"
-            class="k-tilelayout-item k-card"
-            [style.order]="i"
-            style.grid-column-end="{{
-              'span ' +
-                (card.width && card.width > colsNumber
-                  ? colsNumber
-                  : card.width)
-            }}"
-            style.grid-row-end="{{ 'span ' + card.height }}"
-            [card]="card">
-          </safe-summary-card-item>
+          style.grid-template-columns="{{ 'repeat(' + colsNumber + ', 1fr)' }}"
+        >
+          <ng-container
+            *safeSkeleton="
+              loading;
+              repeat: colsNumber * 5;
+              height: '80px';
+              width: 80;
+              shape: 'rectangle'
+            "
+          >
+            <safe-summary-card-item
+              *ngFor="let card of cards; let i = index"
+              class="k-tilelayout-item k-card flex flex-col"
+              [style.order]="i"
+              style.grid-column-end="{{
+                'span ' + (2 > colsNumber ? colsNumber : 2)
+              }}"
+              style.grid-row-end="{{ 'span ' + 2 }}"
+              [card]="card"
+            >
+            </safe-summary-card-item>
+          </ng-container>
         </div>
       </kendo-pdf-export>
     </div>
+    <ui-spinner *ngIf="scrolling"></ui-spinner>
     <!-- Pagination -->
-    <kendo-datapager
-      [style.width.%]="100"
-      [pageSize]="pageInfo.first"
-      [pageSizeValues]="[10, 25, 50, 100]"
-      [skip]="pageInfo.skip"
-      [total]="pageInfo.totalCount"
-      (pageChange)="onPageChange($event)">
-    </kendo-datapager>
+    <ui-paginator
+      *ngIf="settings.widgetDisplay?.usePagination"
+      [disabled]="loading"
+      [pageIndex]="pageInfo.pageIndex"
+      [pageSize]="pageInfo.pageSize"
+      [hideFirstLastButtons]="false"
+      [pageSizeOptions]="[10, 25, 50, 100]"
+      [totalItems]="pageInfo.length"
+      [displayedPageNumbers]="5"
+      [ariaLabel]="'components.notifications.paginator.ariaLabel' | translate"
+      (pageChange)="onPage($event)"
+    >
+    </ui-paginator>
   </ng-container>
   <!-- Grid display mode -->
   <ng-container *ngIf="displayMode === 'grid'">
@@ -82,7 +122,24 @@
         class="flex-auto max-h-full w-full"
         [header]="false"
         [settings]="gridSettings"
-        [widget]="widget"></safe-grid-widget>
+        [widget]="widget"
+      ></safe-grid-widget>
     </div>
   </ng-container>
 </div>
+
+<!-- Selection of sort -->
+<ng-template #sortTemplate>
+  <ng-container *ngIf="sortFields.length > 1">
+    <div uiFormFieldDirective class="!m-0 w-44">
+      <ui-select-menu
+        (selectedOption)="onSort($event)"
+        [placeholder]="'models.widget.sorting.select' | translate"
+      >
+        <ui-select-option *ngFor="let sort of sortFields" [value]="sort">
+          {{ sort.label }}
+        </ui-select-option>
+      </ui-select-menu>
+    </div>
+  </ng-container>
+</ng-template>

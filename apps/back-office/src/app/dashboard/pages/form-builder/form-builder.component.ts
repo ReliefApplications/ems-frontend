@@ -12,17 +12,20 @@ import {
   GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
 } from './graphql/queries';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import {
   SafeAuthService,
-  SafeSnackBarService,
   Form,
   SafeConfirmService,
   SafeBreadcrumbService,
+  status,
 } from '@oort-front/safe';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
+import { FormControl } from '@angular/forms';
+import { isEqual } from 'lodash';
 
 /**
  * Form builder page
@@ -41,23 +44,8 @@ export class FormBuilderComponent implements OnInit {
   public activeVersion: any;
 
   // === ENUM OF FORM STATUSES ===
-  public statuses = [
-    {
-      value: 'active',
-      key: 'common.status_active',
-      color: 'primary',
-    },
-    {
-      value: 'pending',
-      key: 'common.status_pending',
-      color: 'accent',
-    },
-    {
-      value: 'archived',
-      key: 'common.status_archived',
-      color: 'warn',
-    },
-  ];
+  public statusControl = new FormControl<string | undefined>('');
+  public statusChoices = Object.values(status);
 
   // === FORM EDITION ===
   public canEditName = false;
@@ -72,7 +60,7 @@ export class FormBuilderComponent implements OnInit {
    * @param route Angular activated route
    * @param router Angular router
    * @param snackBar Shared snackbar service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param authService Shared authentication service
    * @param confirmService Shared confirm service
    * @param translate Angular translate service
@@ -82,8 +70,8 @@ export class FormBuilderComponent implements OnInit {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: SafeSnackBarService,
-    public dialog: MatDialog,
+    private snackBar: SnackbarService,
+    public dialog: Dialog,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
@@ -101,9 +89,9 @@ export class FormBuilderComponent implements OnInit {
         title: this.translate.instant('components.form.update.exit'),
         content: this.translate.instant('components.form.update.exitMessage'),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
+        confirmVariant: 'primary',
       });
-      return dialogRef.afterClosed().pipe(
+      return dialogRef.closed.pipe(
         map((value) => {
           if (value) {
             this.authService.canLogout.next(true);
@@ -119,6 +107,11 @@ export class FormBuilderComponent implements OnInit {
 
   ngOnInit(): void {
     this.formActive = false;
+    this.statusControl.valueChanges.subscribe((status) => {
+      if (status) {
+        this.updateStatus(status);
+      }
+    });
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.apollo
@@ -133,6 +126,9 @@ export class FormBuilderComponent implements OnInit {
             if (data.form) {
               this.loading = loading;
               this.form = data.form;
+              this.statusControl.setValue(this.form.status, {
+                emitEvent: false,
+              });
               this.breadcrumbService.setBreadcrumb(
                 '@form',
                 this.form.name as string
@@ -250,9 +246,9 @@ export class FormBuilderComponent implements OnInit {
   /**
    * Update the status of the form.
    *
-   * @param e new status
+   * @param status new status
    */
-  public async updateStatus(e: any): Promise<void> {
+  private async updateStatus(status: string): Promise<void> {
     const { SafeStatusModalComponent } = await import('@oort-front/safe');
     const statusModal = this.dialog.open(SafeStatusModalComponent, {
       disableClose: true,
@@ -266,7 +262,7 @@ export class FormBuilderComponent implements OnInit {
         mutation: EDIT_FORM_STATUS,
         variables: {
           id: this.id,
-          status: e.value,
+          status,
         },
       })
       .subscribe({
@@ -283,10 +279,13 @@ export class FormBuilderComponent implements OnInit {
           } else {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.statusUpdated', {
-                value: e.value,
+                value: status,
               })
             );
             this.form = { ...this.form, status: data?.editForm.status };
+            this.statusControl.setValue(data?.editForm.status, {
+              emitEvent: false,
+            });
             statusModal.close();
           }
         },
@@ -443,7 +442,10 @@ export class FormBuilderComponent implements OnInit {
    * @param event update event
    */
   formStructureChange(event: any): void {
-    this.hasChanges = event !== this.form?.structure;
+    this.hasChanges = !isEqual(
+      JSON.parse(event),
+      JSON.parse(this.form?.structure || '{}')
+    );
     localStorage.setItem(`form:${this.id}`, event);
     this.authService.canLogout.next(!this.hasChanges);
   }

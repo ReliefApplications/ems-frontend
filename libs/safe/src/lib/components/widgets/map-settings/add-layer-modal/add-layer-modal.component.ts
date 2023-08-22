@@ -1,12 +1,15 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '../../../ui/modal/modal.module';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 import { Apollo } from 'apollo-angular';
 import { GetLayersQueryResponse, GET_LAYERS } from './graphql/queries';
+import {
+  ButtonModule,
+  DialogModule,
+  FormWrapperModule,
+  GraphQLSelectModule,
+} from '@oort-front/ui';
 
 /**
  * Modal to select existing layer to add to map widget.
@@ -16,12 +19,13 @@ import { GetLayersQueryResponse, GET_LAYERS } from './graphql/queries';
   standalone: true,
   imports: [
     CommonModule,
-    SafeModalModule,
+    DialogModule,
     TranslateModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    SafeGraphQLSelectModule,
+    FormWrapperModule,
+    GraphQLSelectModule,
+    ButtonModule,
   ],
   templateUrl: './add-layer-modal.component.html',
   styleUrls: ['./add-layer-modal.component.scss'],

@@ -1,9 +1,5 @@
 import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
-import { SafeButtonModule } from '../../button/button.module';
-import { SafeIconModule } from '../../icon/icon.module';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import {
   FormGroup,
   FormsModule,
@@ -11,8 +7,14 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { SafeDividerModule } from '../../divider/divider.module';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import {
+  ButtonModule,
+  DividerModule,
+  IconModule,
+  RadioModule,
+  SelectMenuModule,
+} from '@oort-front/ui';
 
 /**
  * Map download component
@@ -23,11 +25,11 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
   templateUrl: './map-download.component.html',
   imports: [
     CommonModule,
-    SafeButtonModule,
-    SafeIconModule,
-    SafeDividerModule,
-    MatRadioModule,
-    MatSelectModule,
+    ButtonModule,
+    IconModule,
+    DividerModule,
+    RadioModule,
+    SelectMenuModule,
     FormsModule,
     TranslateModule,
     ReactiveFormsModule,

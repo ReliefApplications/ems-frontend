@@ -12,11 +12,8 @@ import {
 } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
-import { MAT_LEGACY_AUTOCOMPLETE_SCROLL_STRATEGY as MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/legacy-autocomplete';
-import { Overlay } from '@angular/cdk/overlay';
 import { Form } from '../../models/form.model';
 import { createFilterGroup } from './query-builder-forms';
-import { scrollFactory } from '../../utils/scroll-factory';
 import { LayoutPreviewData } from './tab-layout-preview/tab-layout-preview.component';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
@@ -29,13 +26,6 @@ import { takeUntil } from 'rxjs/operators';
   selector: 'safe-query-builder',
   templateUrl: './query-builder.component.html',
   styleUrls: ['./query-builder.component.scss'],
-  providers: [
-    {
-      provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-  ],
 })
 export class SafeQueryBuilderComponent
   extends SafeUnsubscribeComponent
@@ -47,6 +37,7 @@ export class SafeQueryBuilderComponent
 
   public allQueries: any[] = [];
   public filteredQueries: any[] = [];
+
   /**
    * Getter for the available scalar fields
    *

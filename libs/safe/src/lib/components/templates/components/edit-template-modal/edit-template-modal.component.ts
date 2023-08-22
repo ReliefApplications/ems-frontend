@@ -4,10 +4,7 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { SafeEditorService } from '../../../../services/editor/editor.service';
 import {
   EMAIL_EDITOR_CONFIG,
@@ -16,14 +13,17 @@ import {
 import get from 'lodash/get';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '../../../ui/modal/modal.module';
-import { EditorModule } from '@tinymce/tinymce-angular';
 import { SafeEditorControlComponent } from '../../../editor-control/editor-control.component';
 import { RawEditorSettings } from 'tinymce';
+import { EditorModule } from '@tinymce/tinymce-angular';
+import {
+  ButtonModule,
+  IconModule,
+  SelectMenuModule,
+  TooltipModule,
+} from '@oort-front/ui';
+import { DialogModule, FormWrapperModule } from '@oort-front/ui';
 
 /** Model for the data input */
 interface DialogData {
@@ -42,19 +42,18 @@ const SUBJECT_EDITOR_AUTOCOMPLETE_KEYS = ['{{now}}', '{{today}}'];
   standalone: true,
   imports: [
     CommonModule,
-    SafeModalModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatInputModule,
+    DialogModule,
+    FormWrapperModule,
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
     EditorModule,
     SafeEditorControlComponent,
+    ButtonModule,
+    SelectMenuModule,
+    IconModule,
+    TooltipModule,
   ],
-  // providers: [
-  //   { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
-  // ],
   selector: 'safe-edit-template',
   templateUrl: './edit-template-modal.component.html',
   styleUrls: ['./edit-template-modal.component.scss'],
@@ -73,14 +72,14 @@ export class EditTemplateModalComponent implements OnInit {
    * Component for editing a template
    *
    * @param formBuilder Angular form builder service
-   * @param dialogRef Material dialog ref of the component
+   * @param dialogRef Dialog ref of the component
    * @param data Data input of the modal
    * @param editorService Editor service used to get main URL and current language
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<EditTemplateModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    public dialogRef: DialogRef<EditTemplateModalComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData,
     private editorService: SafeEditorService
   ) {
     // Set the editor base url based on the environment file
@@ -104,11 +103,11 @@ export class EditTemplateModalComponent implements OnInit {
     });
     this.editorService.addCalcAndKeysAutoCompleter(
       this.bodyEditor,
-      BODY_EDITOR_AUTOCOMPLETE_KEYS
+      BODY_EDITOR_AUTOCOMPLETE_KEYS.map((key) => ({ value: key, text: key }))
     );
     this.editorService.addCalcAndKeysAutoCompleter(
       this.subjectEditor,
-      SUBJECT_EDITOR_AUTOCOMPLETE_KEYS
+      SUBJECT_EDITOR_AUTOCOMPLETE_KEYS.map((key) => ({ value: key, text: key }))
     );
   }
 }

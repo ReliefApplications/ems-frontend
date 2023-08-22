@@ -1,5 +1,4 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Layout } from '../../../models/layout.model';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
@@ -10,6 +9,7 @@ import { SafeAggregationService } from '../../../services/aggregation/aggregatio
 import { get } from 'lodash';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { Dialog } from '@angular/cdk/dialog';
 
 /**
  * Aggregation table component.
@@ -34,11 +34,11 @@ export class AggregationTableComponent
   /**
    * Aggregation table component.
    *
-   * @param dialog Material Dialog Service
+   * @param dialog Dialog Service
    * @param aggregationService Shared aggregation service
    */
   constructor(
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private aggregationService: SafeAggregationService
   ) {
     super();
@@ -115,7 +115,7 @@ export class AggregationTableComponent
         resource: this.resource,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         if (!this.allAggregations.find((x) => x.id === value.id)) {
           this.allAggregations.push(value);
@@ -143,7 +143,7 @@ export class AggregationTableComponent
         resource: this.resource,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.aggregationService
           .editAggregation(aggregation, value, this.resource?.id, this.form?.id)
