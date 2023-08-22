@@ -347,6 +347,24 @@ export class SafeFormHelpersService {
   };
 
   /**
+   * Registration of new custom variables for the survey.
+   * Custom variables can be used in the logic fields.
+   * This function is used to add the record id and the incremental id to the survey variables
+   *
+   * @param survey Survey instance
+   * @param record Record to add to the survey variables
+   * @param record.id Record id
+   * @param record.incrementalID Record incremental id
+   */
+  public addRecordIDVariable = (
+    survey: Survey.SurveyModel,
+    record: { id?: string; incrementalID?: string }
+  ) => {
+    survey.setVariable('record.id', record.id);
+    survey.setVariable('record.incrementalID', record?.incrementalID ?? '');
+  };
+
+  /**
    * Registers custom variables based on the workflow state
    * to be used in the survey.
    *
