@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { DuplicateApplicationModalComponent } from './duplicate-application.component';
+import { DuplicateApplicationModalComponent } from './duplicate-application-modal.component';
 
 describe('DuplicateApplicationModalComponent', () => {
   let component: DuplicateApplicationModalComponent;

@@ -139,6 +139,7 @@
 		"modifiedOn": "******",
 		"name": "******",
 		"next": "******",
+		"noOptions": "******",
 		"notifications": {
 			"accessDenied": "****** {{type}} ******",
 			"accessNotProvided": "****** {{type}} ****** {{error}}",
@@ -270,6 +271,7 @@
 		},
 		"save": "******",
 		"saveChanges": "******",
+		"search": "******",
 		"searchObject": "****** {{name}}",
 		"select": "******",
 		"semicolon": "******",
@@ -1115,6 +1117,7 @@
 					"history": "******"
 				},
 				"errors": {
+					"autoSaveFailed": "******",
 					"invalid": {
 						"backoffice": "******",
 						"frontoffice": "******"
@@ -1163,6 +1166,10 @@
 				"loading": {
 					"records": "******",
 					"settings": "******"
+				},
+				"map": {
+					"mapDetailsTitle": "******",
+					"mapDetailsTooltip": "******"
 				},
 				"openSettings": "******",
 				"tooltip": {
@@ -1581,6 +1588,7 @@
 					"static": "******"
 				}
 			},
+			"styling": "******",
 			"summaryCard": {
 				"dataSource": "******",
 				"errors": {
@@ -2015,7 +2023,8 @@
 				"form": {
 					"title": "******"
 				},
-				"selectType": "******"
+				"selectType": "******",
+				"startFromWidget": "******"
 			},
 			"empty": {
 				"add": "******",
