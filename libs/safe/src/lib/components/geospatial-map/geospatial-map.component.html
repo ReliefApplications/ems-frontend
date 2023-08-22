@@ -1,11 +1,12 @@
 <div class="flex flew-wrap gap-2 flex-col lg:flex-row lg:h-full">
   <div class="flex flex-col">
-    <safe-button
+    <ui-button
       *ngIf="userLocation"
       class="flex-1"
+      category="secondary"
       (click)="findUserLocation()">
       {{ 'components.widget.settings.map.userLocation' | translate }}
-    </safe-button>
+    </ui-button>
     <safe-geospatial-fields
       *ngIf="fields.length > 0"
       class="flex-1"

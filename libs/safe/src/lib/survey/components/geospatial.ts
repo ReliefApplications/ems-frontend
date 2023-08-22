@@ -82,7 +82,6 @@ export const init = (Survey: any, domService: DomService): void => {
       const listBoxEditor = {
         render: (editor: any, htmlElement: HTMLElement) => {
           const question = editor.object;
-          console.log(question);
           const listbox = domService.appendComponentToBody(
             GeofieldsListboxComponent,
             htmlElement

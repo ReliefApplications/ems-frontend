@@ -30,8 +30,7 @@ import { GeoProperties } from './geospatial-map.interface';
 import { get } from 'lodash';
 import { ArcgisService } from '../../services/map/arcgis.service';
 import { FormBuilder } from '@angular/forms';
-import { SafeButtonModule } from '../ui/button/button.module';
-
+import { ButtonModule } from '@oort-front/ui';
 /**
  * Default geocoding value
  */
@@ -61,7 +60,7 @@ const DEFAULT_GEOCODING: GeoProperties = {
     MapModule,
     GeospatialFieldsComponent,
     TranslateModule,
-    SafeButtonModule,
+    ButtonModule,
   ],
 })
 export class GeospatialMapComponent
@@ -406,8 +405,6 @@ export class GeospatialMapComponent
   /** Update the map and the form with the user's location */
   findUserLocation(): void {
     navigator.geolocation.getCurrentPosition((success) => {
-      console.log(success);
-
       const latlng = L.latLng([
         success.coords.latitude,
         success.coords.longitude,
