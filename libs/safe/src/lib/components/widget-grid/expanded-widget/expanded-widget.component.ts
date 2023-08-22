@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Inject, Output } from '@angular/core';
-import { MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA } from '@angular/material/legacy-dialog';
+import { DIALOG_DATA } from '@angular/cdk/dialog';
 
 /** Dialog data */
 interface DialogData {
@@ -21,5 +21,5 @@ export class SafeExpandedWidgetComponent {
    *
    * @param data The input data for the dialog
    */
-  constructor(@Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+  constructor(@Inject(DIALOG_DATA) public data: DialogData) {}
 }

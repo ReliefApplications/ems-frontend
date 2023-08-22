@@ -3,18 +3,20 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
 } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import * as SurveyCreator from 'survey-creator';
 import * as Survey from 'survey-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { snakeCase, get, uniqBy, difference } from 'lodash';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { Form } from '../../models/form.model';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
+import { SnackbarService } from '@oort-front/ui';
+import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 
 /**
  * Array containing the different types of questions.
@@ -85,7 +87,7 @@ const CORE_FIELD_CLASS = 'core-question';
   templateUrl: './form-builder.component.html',
   styleUrls: ['./form-builder.component.scss'],
 })
-export class SafeFormBuilderComponent implements OnInit, OnChanges {
+export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
   @Input() form!: Form;
   @Output() save: EventEmitter<any> = new EventEmitter();
   @Output() formChange: EventEmitter<any> = new EventEmitter();
@@ -94,20 +96,24 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
   surveyCreator!: SurveyCreator.SurveyCreator;
   public json: any;
 
+  private relatedNames!: string[];
+
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
-   * @param dialog This is the Angular Material Dialog service used to display dialog modals
+   * @param dialog This is the Angular Dialog service used to display dialog modals
    * @param snackBar This is the service that will be used to display the snackbar.
    * @param translate Angular translate service
    * @param referenceDataService Reference data service
+   * @param formHelpersService Shared form helper service.
    */
   constructor(
-    public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    public dialog: Dialog,
+    private snackBar: SnackbarService,
     private translate: TranslateService,
-    private referenceDataService: SafeReferenceDataService
+    private referenceDataService: SafeReferenceDataService,
+    private formHelpersService: SafeFormHelpersService
   ) {
     // translate the editor in the same language as the interface
     SurveyCreator.localization.currentLocale = this.translate.currentLang;
@@ -147,6 +153,10 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     }
   }
 
+  ngOnDestroy(): void {
+    this.surveyCreator.survey?.dispose();
+  }
+
   /**
    * Creates the form builder and sets up all the options.
    *
@@ -167,6 +177,12 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       'surveyCreatorContainer',
       creatorOptions
     );
+    (this.surveyCreator.onTestSurveyCreated as any).add(
+      (_: any, options: any) => {
+        const survey: Survey.SurveyModel = options.survey;
+        this.formHelpersService.addUserVariables(survey);
+      }
+    );
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.text = structure;
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
@@ -186,17 +202,19 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     );
 
     // Notify parent that form structure has changed
-    this.surveyCreator.onModified.add((survey: any) => {
+    (this.surveyCreator.onModified as any).add((survey: any) => {
       this.formChange.emit(survey.text);
     });
     this.surveyCreator.survey.onUpdateQuestionCssClasses.add(
       (survey: Survey.SurveyModel, options: any) => this.onSetCustomCss(options)
     );
-    this.surveyCreator.onTestSurveyCreated.add((sender: any, opt: any) => {
-      opt.survey.onUpdateQuestionCssClasses.add((_: any, opt2: any) =>
-        this.onSetCustomCss(opt2)
-      );
-    });
+    (this.surveyCreator.onTestSurveyCreated as any).add(
+      (sender: any, opt: any) => {
+        opt.survey.onUpdateQuestionCssClasses.add((_: any, opt2: any) =>
+          this.onSetCustomCss(opt2)
+        );
+      }
+    );
 
     // === CORE QUESTIONS FOR CHILD FORM ===
     // Skip if form is core
@@ -204,7 +222,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       const coreFields =
         this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || [];
       // Remove core fields adorners
-      this.surveyCreator.onElementAllowOperations.add(
+      (this.surveyCreator.onElementAllowOperations as any).add(
         (sender: any, opt: any) => {
           const obj = opt.obj;
           if (!obj || !obj.page) {
@@ -242,8 +260,8 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
       this.addCustomClassToCoreFields(coreFields);
     }
 
-    // Scroll to question when adde
-    this.surveyCreator.onQuestionAdded.add((sender: any, opt: any) => {
+    // Scroll to question when added
+    (this.surveyCreator.onQuestionAdded as any).add((sender: any, opt: any) => {
       const name = opt.question.name;
       setTimeout(() => {
         const el = document.querySelector('[data-name="' + name + '"]');
@@ -256,12 +274,85 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     this.surveyCreator.survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
     );
-    this.surveyCreator.onTestSurveyCreated.add((sender: any, opt: any) =>
-      opt.survey.onAfterRenderQuestion.add(
-        renderGlobalProperties(this.referenceDataService)
-      )
+    (this.surveyCreator.onTestSurveyCreated as any).add(
+      (sender: any, opt: any) =>
+        opt.survey.onAfterRenderQuestion.add(
+          renderGlobalProperties(this.referenceDataService)
+        )
     );
     // this.surveyCreator.survey.locale = this.translate.currentLang; // -> set the defaultLanguage property also
+
+    // add move up/down buttons
+    this.surveyCreator.onDefineElementMenuItems.add(
+      (sender: any, options: any) => {
+        const moveUpButton = {
+          name: 'move-up',
+          text: this.translate.instant('pages.formBuilder.move.up'),
+          onClick: (obj: any) => {
+            // get the page index of current question
+            const pageIndex = sender.survey.pages.findIndex(
+              (page: any) => page.questions.indexOf(obj) !== -1
+            );
+
+            // get the index of the current question in the page
+            const questionIndex =
+              sender.survey.pages[pageIndex].questions.indexOf(obj);
+
+            if (questionIndex === 0) return;
+
+            // remove the element from the current page
+            sender.survey.pages[pageIndex].removeElement(obj);
+
+            // add it back to the page at the previous index
+            sender.survey.pages[pageIndex].addElement(obj, questionIndex - 1);
+          },
+        };
+
+        const moveDownButton = {
+          name: 'move-down',
+          text: this.translate.instant('pages.formBuilder.move.down'),
+          onClick: (obj: any) => {
+            // get the page index of current question
+            const pageIndex = sender.survey.pages.findIndex(
+              (page: any) => page.questions.indexOf(obj) !== -1
+            );
+
+            // get the index of the current question in the page
+            const questionIndex =
+              sender.survey.pages[pageIndex].questions.indexOf(obj);
+
+            if (
+              questionIndex ===
+              sender.survey.pages[pageIndex].questions.length - 1
+            )
+              return;
+
+            // remove the element from the current page
+            sender.survey.pages[pageIndex].removeElement(obj);
+
+            // add it back to the page at the previous index
+            sender.survey.pages[pageIndex].addElement(obj, questionIndex + 1);
+          },
+        };
+
+        // Find the `delete` action's position.
+        let index = -1;
+        for (let i = 0; i < options.items.length; i++) {
+          if (options.items[i].name === 'delete') {
+            index = i;
+            break;
+          }
+        }
+        // Insert the new action before `delete` or as the last action if `delete` is not found
+        if (index > -1) {
+          options.items.splice(index, 0, moveDownButton);
+          options.items.splice(index, 0, moveUpButton);
+        } else {
+          options.items.push(moveUpButton);
+          options.items.push(moveDownButton);
+        }
+      }
+    );
   }
 
   /**
@@ -304,6 +395,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
    * Makes sure that value names are existent and snake case, to not cause backend problems.
    */
   private async validateValueNames(): Promise<void> {
+    this.relatedNames = [];
     const survey = new Survey.SurveyModel(this.surveyCreator.JSON);
     survey.pages.forEach((page: Survey.PageModel) => {
       page.questions.forEach((question: Survey.Question) =>
@@ -387,20 +479,26 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     }
     // if choices object exists, checks for duplicate values
     if (question.choices) {
-      const values = question.choices.map(
-        (choice: { value: string; text: string }) => choice.value || choice
-      );
-      const distinctValues = [...new Set(values)];
-
-      if (values.length > distinctValues.length) {
-        throw new Error(
-          this.translate.instant(
-            'pages.formBuilder.errors.choices.valueDuplicated',
-            {
-              question: question.valueName,
-            }
-          )
+      // If choices do not come from a reference data, we would make the duplication check as we want to save the choices in the form
+      if (!question.referenceData) {
+        const values = question.choices.map(
+          (choice: { value: string; text: string }) => choice.value || choice
         );
+        const distinctValues = [...new Set(values)];
+
+        if (values.length > distinctValues.length) {
+          throw new Error(
+            this.translate.instant(
+              'pages.formBuilder.errors.choices.valueDuplicated',
+              {
+                question: question.valueName,
+              }
+            )
+          );
+        }
+      } else {
+        // As we already have the reference data value to get the choices, we dont want to save them again with the form structure
+        question.choices = [];
       }
     }
     if (question.getType() === 'multipletext') {
@@ -438,6 +536,19 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges {
     if (['resource', 'resources'].includes(question.getType())) {
       if (question.relatedName) {
         question.relatedName = this.toSnakeCase(question.relatedName);
+        if (this.relatedNames.includes(question.relatedName)) {
+          throw new Error(
+            this.translate.instant(
+              'components.formBuilder.errors.duplicatedRelatedName',
+              {
+                question: question.name,
+                page: page.name,
+              }
+            )
+          );
+        } else {
+          this.relatedNames.push(question.relatedName);
+        }
       } else {
         throw new Error(
           this.translate.instant(

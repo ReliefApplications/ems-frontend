@@ -1,38 +1,36 @@
-<form
-  mat-dialog-content
-  [formGroup]="form"
-  class="flex flex-col gap-3 last:mb-0"
->
-  <mat-form-field appearance="outline">
-    <mat-label>{{ 'common.label' | translate }}</mat-label>
-    <input type="text" matInput formControlName="label" />
-  </mat-form-field>
-  <mat-form-field appearance="outline">
-    <mat-label>{{
-      'components.widget.settings.map.layers.point.color' | translate
-    }}</mat-label>
-    <h4></h4>
-    <input type="color" matInput formControlName="color" />
-  </mat-form-field>
-  <mat-form-field appearance="outline">
-    <mat-label>{{
-      'components.widget.settings.map.layers.point.size' | translate
-    }}</mat-label>
-    <input type="number" matInput formControlName="size" min="1" max="10" />
-  </mat-form-field>
-  <safe-filter
-    [form]="$any(form.controls.filter)"
-    [fields]="fields"
-  ></safe-filter>
-</form>
-<div mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>{{ 'common.close' | translate }}</button>
-  <button
-    mat-flat-button
-    color="primary"
-    [mat-dialog-close]="form.value"
-    [disabled]="form.invalid"
-  >
-    {{ 'common.update' | translate }}
-  </button>
-</div>
+<ui-dialog>
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="form" class="flex flex-col gap-3 last:mb-0">
+      <div uiFormFieldDirective>
+        <label>{{ 'common.label' | translate }}</label>
+        <input type="text" formControlName="label" />
+      </div>
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.widget.settings.map.layers.point.color' | translate
+        }}</label>
+        <input type="color" formControlName="color" />
+      </div>
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.widget.settings.map.layers.point.size' | translate
+        }}</label>
+        <input type="number" formControlName="size" min="1" max="10" />
+      </div>
+      <safe-filter
+        [form]="$any(form.controls.filter)"
+        [fields]="fields"
+      ></safe-filter>
+    </form>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>{{ 'common.close' | translate }}</ui-button>
+    <ui-button
+      variant="primary"
+      [disabled]="form.invalid"
+      [uiDialogClose]="form.value"
+    >
+      {{ 'common.update' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

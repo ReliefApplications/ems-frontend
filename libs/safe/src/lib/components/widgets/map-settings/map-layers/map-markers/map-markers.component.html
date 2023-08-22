@@ -1,122 +1,122 @@
-<safe-alert>
-  <safe-icon icon="info"></safe-icon>
+<ui-alert>
   {{ 'components.widget.settings.map.layers.point.info' | translate }}
-</safe-alert>
+</ui-alert>
 <div class="flex flex-col mt-0 mb-12" [formGroup]="form">
   <!-- Latitude and longitude -->
   <div class="flex gap-2">
-    <mat-form-field appearance="outline" class="w-full">
-      <mat-label>{{ 'models.widget.map.latitude' | translate }}</mat-label>
-      <mat-select formControlName="latitude">
-        <mat-option *ngFor="let field of numberFields" [value]="field">
-          {{ field }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-form-field appearance="outline" class="w-full">
-      <mat-label>{{ 'models.widget.map.longitude' | translate }}</mat-label>
-      <mat-select formControlName="longitude">
-        <mat-option *ngFor="let field of numberFields" [value]="field">
-          {{ field }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+    <div uiFormFieldDirective class="w-full">
+      <label>{{ 'models.widget.map.latitude' | translate }}</label>
+      <ui-select-menu formControlName="latitude">
+        <ui-select-option *ngFor="let field of numberFields" [value]="field">{{
+          field
+        }}</ui-select-option>
+      </ui-select-menu>
+    </div>
+    <div uiFormFieldDirective class="w-full">
+      <label>{{ 'models.widget.map.longitude' | translate }}</label>
+      <ui-select-menu formControlName="longitude">
+        <ui-select-option *ngFor="let field of numberFields" [value]="field">{{
+          field
+        }}</ui-select-option>
+      </ui-select-menu>
+    </div>
   </div>
   <!-- Quick layer -->
-  <mat-form-field appearance="outline" class="w-full">
-    <mat-label>{{
+  <div uiFormFieldDirective class="w-full">
+    <label>{{
       'components.widget.settings.map.layers.point.category' | translate
-    }}</mat-label>
-    <mat-select formControlName="category">
-      <mat-option [value]="">{{ 'common.input.none' | translate }}</mat-option>
-      <mat-option *ngFor="let field of selectedFields" [value]="field">
-        {{ field }}
-      </mat-option>
-    </mat-select>
-    <safe-icon
-      matSuffix
+    }}</label>
+    <ui-select-menu formControlName="category">
+      <ui-select-option [value]="">{{
+        'common.input.none' | translate
+      }}</ui-select-option>
+      <ui-select-option *ngFor="let field of selectedFields" [value]="field">{{
+        field
+      }}</ui-select-option>
+    </ui-select-menu>
+    <ui-icon
+      uiSuffix
       icon="info"
       class="cursor-pointer"
       variant="grey"
-      [matTooltip]="
+      [uiTooltip]="
         'components.widget.settings.map.tooltip.category' | translate
       "
-    ></safe-icon>
-  </mat-form-field>
+    ></ui-icon>
+  </div>
   <!-- Popup details selector -->
-  <mat-form-field appearance="outline" class="w-full">
-    <mat-label>
+  <div uiFormFieldDirective class="w-full">
+    <label>
       {{ 'components.widget.settings.map.popup.label' | translate }}
-    </mat-label>
-    <mat-select formControlName="popupFields" multiple>
-      <mat-option *ngFor="let field of selectedFields" [value]="field">
-        {{ field }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+    </label>
+    <ui-select-menu formControlName="popupFields" [multiselect]="true">
+      <ui-select-option *ngFor="let field of selectedFields" [value]="field">{{
+        field
+      }}</ui-select-option>
+    </ui-select-menu>
+  </div>
 </div>
 <!-- LIST of Marker rules -->
 <h2>
   {{ 'components.widget.settings.map.layers.point.rules' | translate }}
 </h2>
-<safe-alert>
-  <safe-icon icon="info"></safe-icon>
+<ui-alert>
   {{ 'components.widget.settings.map.layers.point.rulesInfo' | translate }}
-</safe-alert>
+</ui-alert>
 <!-- Table container -->
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table mat-table [dataSource]="rules.value">
-      <ng-container matColumnDef="color">
-        <th mat-header-cell *matHeaderCellDef>
+    <table cdk-table uiTableWrapper [dataSource]="rules.value">
+      <ng-container cdkColumnDef="color">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.preview' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element">
+        <td uiCell *cdkCellDef="let element">
           <span
             [style]="'background-color:' + element.color"
             class="color-indicator"
           ></span>
         </td>
       </ng-container>
-      <ng-container matColumnDef="label">
-        <th mat-header-cell *matHeaderCellDef>
+      <ng-container cdkColumnDef="label">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
           {{ 'common.label' | translate }}
         </th>
-        <td mat-cell *matCellDef="let element">{{ element.label }}</td>
+        <td uiCell *cdkCellDef="let element">{{ element.label }}</td>
       </ng-container>
-      <ng-container matColumnDef="actions" [stickyEnd]="true">
-        <th mat-header-cell *matHeaderCellDef class="w-16"></th>
-        <td mat-cell *matCellDef="let element; let i = index">
+      <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element; let i = index">
           <div>
-            <safe-button
+            <ui-button
               [isIcon]="true"
               icon="edit"
               category="primary"
               (click)="editRule(i)"
-            ></safe-button>
-            <safe-button
+            ></ui-button>
+            <ui-button
               [isIcon]="true"
               icon="delete"
               category="primary"
               variant="danger"
               (click)="removeRule(i)"
-            ></safe-button>
+            ></ui-button>
           </div>
         </td>
       </ng-container>
 
-      <tr mat-header-row *matHeaderRowDef="tableColumns"></tr>
-      <tr *matRowDef="let row; columns: tableColumns" mat-row></tr>
+      <tr cdk-header-row *cdkHeaderRowDef="tableColumns"></tr>
+      <tr *cdkRowDef="let row; columns: tableColumns" cdk-row></tr>
     </table>
   </div>
 </div>
-<safe-button
+<ui-button
   class="!w-auto"
   category="tertiary"
   variant="primary"
   (click)="addRule()"
   >{{
     'components.widget.settings.map.layers.point.addNew' | translate
-  }}</safe-button
+  }}</ui-button
 >

@@ -1,27 +1,29 @@
 <h1>
   {{ title }}
 </h1>
-<mat-tab-group>
-  <mat-tab [label]="'components.user.summary.title' | translate">
-    <ng-template matTabContent>
-      <safe-user-details
-        *ngIf="user"
-        [user]="user"
-        (edit)="onEditProfile($event)"
-        [loading]="loading"
-      ></safe-user-details>
-      <safe-spinner *ngIf="loading"></safe-spinner>
-    </ng-template>
-  </mat-tab>
-  <mat-tab [label]="'common.role.few' | translate">
-    <ng-template matTabContent>
-      <safe-user-roles
-        *ngIf="user"
-        [user]="user"
-        [application]="application"
-        (edit)="onEditRoles($event)"
-        [loading]="loading"
-      ></safe-user-roles>
-    </ng-template>
-  </mat-tab>
-</mat-tab-group>
+<ui-tabs>
+  <ui-tab>
+    <ng-container ngProjectAs="label">{{
+      'components.user.summary.title' | translate
+    }}</ng-container>
+    <safe-user-details
+      *ngIf="user"
+      [user]="user"
+      (edit)="onEditProfile($event)"
+      [loading]="loading"
+    ></safe-user-details>
+    <ui-spinner *ngIf="loading"></ui-spinner>
+  </ui-tab>
+  <ui-tab>
+    <ng-container ngProjectAs="label">{{
+      'common.role.few' | translate
+    }}</ng-container>
+    <safe-user-roles
+      *ngIf="user"
+      [user]="user"
+      [application]="application"
+      (edit)="onEditRoles($event)"
+      [loading]="loading"
+    ></safe-user-roles>
+  </ui-tab>
+</ui-tabs>

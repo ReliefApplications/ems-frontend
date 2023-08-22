@@ -4,11 +4,11 @@ import { Resource } from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { GET_RESOURCES, GetResourcesQueryResponse } from '../graphql/queries';
-import { MatLegacyDialog } from '@angular/material/legacy-dialog';
 import { get } from 'lodash';
 import { SafeGridLayoutService } from '../../../../../../../../libs/safe/src/lib/services/grid-layout/grid-layout.service';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
+import { Dialog } from '@angular/cdk/dialog';
 
 /** Default number of resources to be fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -38,12 +38,12 @@ export class RecordSelectionTabComponent
    * Component for the record selection in the editor widget settings
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param gridLayoutService Shared layout service
    */
   constructor(
     private apollo: Apollo,
-    private dialog: MatLegacyDialog,
+    private dialog: Dialog,
     private gridLayoutService: SafeGridLayoutService
   ) {
     super();
@@ -115,13 +115,13 @@ export class RecordSelectionTabComponent
         hasLayouts: get(this.selectedResource, 'layouts.totalCount', 0) > 0,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value) {
         if (typeof value === 'string') {
           this.form.get('layout')?.setValue(value);
         } else {
           this.layoutChange.emit(value);
-          this.form.get('layout')?.setValue(value.id);
+          this.form.get('layout')?.setValue((value as any).id);
         }
       }
     });
@@ -138,9 +138,10 @@ export class RecordSelectionTabComponent
       disableClose: true,
       data: {
         layout: this.selectedLayout,
+        queryName: this.selectedResource?.queryName,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value && this.selectedLayout) {
         this.gridLayoutService
           .editLayout(this.selectedLayout, value, this.selectedResource?.id)

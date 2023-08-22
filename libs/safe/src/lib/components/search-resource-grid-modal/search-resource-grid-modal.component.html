@@ -1,12 +1,14 @@
-<safe-modal [closable]="true">
-  <h2 mat-dialog-title *ngIf="selectable">
-    {{
-      'common.searchObject'
-        | translate : { name: ('common.record.few' | translate) }
-    }}
-  </h2>
-  <h2 *ngIf="!selectable">{{ 'common.record.few' | translate }}</h2>
-  <mat-dialog-content>
+<ui-dialog [closable]="true">
+  <ng-container ngProjectAs="header">
+    <h2 *ngIf="selectable">
+      {{
+        'common.searchObject'
+          | translate : { name: ('common.record.few' | translate) }
+      }}
+    </h2>
+    <h2 *ngIf="!selectable">{{ 'common.record.few' | translate }}</h2>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <safe-core-grid
       class="h-96"
       [settings]="gridSettings"
@@ -16,20 +18,19 @@
       [selectable]="selectable"
     >
     </safe-core-grid>
-  </mat-dialog-content>
-  <mat-dialog-actions align="end" *ngIf="selectable">
-    <safe-button mat-dialog-close (click)="closeModal(false)">
+  </ng-container>
+  <ng-container ngProjectAs="actions" *ngIf="selectable">
+    <ui-button uiDialogClose (click)="closeModal(false)">
       {{ 'common.cancel' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
-      matDialogClose
       cdkFocusInitial
       (click)="closeModal()"
       *ngIf="selectable"
     >
       {{ 'common.select' | translate }}
-    </safe-button>
-  </mat-dialog-actions>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

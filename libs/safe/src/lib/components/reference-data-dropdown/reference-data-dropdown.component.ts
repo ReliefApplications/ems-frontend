@@ -2,25 +2,20 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnDestroy,
   OnInit,
   Output,
-  ViewChild,
+  Renderer2,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { ReferenceData } from '../../models/reference-data.model';
 import { BehaviorSubject, Observable } from 'rxjs';
-import {
-  MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY,
-  MatLegacySelect as MatSelect,
-} from '@angular/material/legacy-select';
 import {
   GetReferenceDataByIdQueryResponse,
   GetReferenceDatasQueryResponse,
   GET_REFERENCE_DATAS,
   GET_SHORT_REFERENCE_DATA_BY_ID,
 } from './graphql/queries';
-import { Overlay } from '@angular/cdk/overlay';
-import { scrollFactory } from '../../utils/scroll-factory';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { updateQueryUniqueValues } from '../../utils/update-queries';
@@ -35,17 +30,10 @@ const ITEMS_PER_PAGE = 10;
   selector: 'safe-reference-data-dropdown',
   templateUrl: './reference-data-dropdown.component.html',
   styleUrls: ['./reference-data-dropdown.component.scss'],
-  providers: [
-    {
-      provide: MAT_SELECT_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-  ],
 })
 export class SafeReferenceDataDropdownComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   @Input() referenceData = '';
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
@@ -60,15 +48,15 @@ export class SafeReferenceDataDropdownComponent
     hasNextPage: true,
   };
   private loading = true;
-
-  @ViewChild('referenceDataSelect') referenceDataSelect?: MatSelect;
+  private scrollListener!: any;
 
   /**
    * Reference data dropdown component
    *
    * @param apollo Apollo service
+   * @param renderer Renderer2
    */
-  constructor(private apollo: Apollo) {
+  constructor(private apollo: Apollo, private renderer: Renderer2) {
     super();
   }
 
@@ -114,19 +102,23 @@ export class SafeReferenceDataDropdownComponent
    * @param e select event.
    */
   onSelect(e: any): void {
-    this.choice.emit(e.value);
+    this.choice.emit(e);
   }
 
   /**
    * Adds scroll listener to select.
    *
-   * @param e open select event.
    */
-  onOpenSelect(e: any): void {
-    if (e && this.referenceDataSelect) {
-      const panel = this.referenceDataSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) =>
-        this.loadOnScroll(event)
+  onOpenSelect(): void {
+    const panel = document.getElementById('optionList');
+    if (panel) {
+      if (this.scrollListener) {
+        this.scrollListener();
+      }
+      this.scrollListener = this.renderer.listen(
+        panel,
+        'scroll',
+        (event: any) => this.loadOnScroll(event)
       );
     }
   }
@@ -141,7 +133,7 @@ export class SafeReferenceDataDropdownComponent
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
       50
     ) {
-      if (!this.loading && this.pageInfo.hasNextPage) {
+      if (!this.loading && this.pageInfo?.hasNextPage) {
         this.loading = true;
         this.referenceDatasQuery
           .fetchMore({
@@ -173,5 +165,12 @@ export class SafeReferenceDataDropdownComponent
     }
     this.pageInfo = data.referenceDatas.pageInfo;
     this.loading = loading;
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.scrollListener) {
+      this.scrollListener();
+    }
   }
 }

@@ -1,90 +1,111 @@
 <form [formGroup]="formGroup" class="flex">
   <div class="flex flex-col w-full">
     <div class="flex justify-between">
-      <mat-slide-toggle formControlName="show">{{
-        'components.widget.settings.grid.buttons.enable' | translate
-      }}</mat-slide-toggle>
-      <safe-button
+      <ui-toggle formControlName="show">
+        <ng-container ngProjectAs="label">{{
+          'components.widget.settings.grid.buttons.enable' | translate
+        }}</ng-container>
+      </ui-toggle>
+      <ui-button
         icon="remove_circle_outline"
         variant="danger"
         (click)="emitDeleteButton()"
       >
         {{ 'common.delete' | translate }}
-      </safe-button>
+      </ui-button>
     </div>
     <ng-container *ngIf="formGroup.value.show">
       <!-- Name -->
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'common.name' | translate }}</mat-label>
-        <input matInput formControlName="name" type="string" />
-      </mat-form-field>
+      <div uiFormFieldDirective>
+        <label>{{ 'common.name' | translate }}</label>
+        <input formControlName="name" type="string" />
+      </div>
 
       <!-- Select all records of query -->
-      <mat-checkbox formControlName="selectAll">{{
-        'components.widget.settings.grid.buttons.callback.selectAllRecords'
-          | translate
-      }}</mat-checkbox>
+      <ui-checkbox formControlName="selectAll">
+        <ng-container ngProjectAs="label">{{
+          'components.widget.settings.grid.buttons.callback.selectAllRecords'
+            | translate
+        }}</ng-container>
+      </ui-checkbox>
 
       <!-- Select only visible records -->
-      <mat-checkbox formControlName="selectPage">{{
-        'components.widget.settings.grid.buttons.callback.selectAllRecordsActivePage'
-          | translate
-      }}</mat-checkbox>
+      <ui-checkbox formControlName="selectPage">
+        <ng-container ngProjectAs="label">{{
+          'components.widget.settings.grid.buttons.callback.selectAllRecordsActivePage'
+            | translate
+        }}</ng-container>
+      </ui-checkbox>
 
       <!-- Prefill form with selected records -->
       <ng-container *ngIf="relatedForms.length > 0">
-        <mat-checkbox formControlName="prefillForm">{{
-          'components.widget.settings.grid.buttons.callback.prefill' | translate
-        }}</mat-checkbox>
+        <ui-checkbox formControlName="prefillForm">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.prefill'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
         <div *ngIf="formGroup.value.prefillForm" class="sub-parameters">
-          <mat-form-field appearance="outline">
-            <mat-label>{{ 'models.form.template' | translate }}</mat-label>
-            <mat-select formControlName="prefillTargetForm">
-              <mat-option>--</mat-option>
-              <mat-option *ngFor="let form of relatedForms" [value]="form.id">
+          <div uiFormFieldDirective>
+            <label>{{ 'models.form.template' | translate }}</label>
+            <ui-select-menu formControlName="prefillTargetForm">
+              <ui-select-option>--</ui-select-option>
+              <ui-select-option
+                *ngFor="let form of relatedForms"
+                [value]="form.id"
+              >
                 {{ form.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+              </ui-select-option>
+            </ui-select-menu>
+          </div>
         </div>
       </ng-container>
 
       <!-- Workflow actions -->
       <ng-container *ngIf="!isDashboard">
         <!-- Go to next step -->
-        <mat-checkbox formControlName="goToNextStep">{{
-          'components.widget.settings.grid.buttons.callback.workflow.next'
-            | translate
-        }}</mat-checkbox>
+        <ui-checkbox formControlName="goToNextStep">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.workflow.next'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
         <!-- Close workflow -->
-        <mat-checkbox formControlName="closeWorkflow">{{
-          'components.widget.settings.grid.buttons.callback.workflow.close'
-            | translate
-        }}</mat-checkbox>
+        <ui-checkbox formControlName="closeWorkflow">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.workflow.close'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
         <!-- Confirm action -->
-        <mat-form-field
-          appearance="outline"
+        <div
+          uiFormFieldDirective
           class="sub-parameters"
           *ngIf="formGroup.value.closeWorkflow"
         >
-          <mat-label>{{
+          <label>{{
             'components.widget.settings.grid.buttons.callback.workflow.confirm'
               | translate
-          }}</mat-label>
-          <input matInput formControlName="confirmationText" type="string" />
-        </mat-form-field>
+          }}</label>
+          <input formControlName="confirmationText" type="string" />
+        </div>
       </ng-container>
 
       <!-- Auto save edited records -->
-      <mat-checkbox formControlName="autoSave">{{
-        'components.widget.settings.grid.buttons.callback.save' | translate
-      }}</mat-checkbox>
+      <ui-checkbox formControlName="autoSave">
+        <ng-container ngProjectAs="label">{{
+          'components.widget.settings.grid.buttons.callback.save' | translate
+        }}</ng-container>
+      </ui-checkbox>
 
       <!-- Auto edition of selected records -->
       <div class="flex flex-col">
-        <mat-checkbox formControlName="modifySelectedRows">{{
-          'components.widget.settings.grid.buttons.callback.modify' | translate
-        }}</mat-checkbox>
+        <ui-checkbox formControlName="modifySelectedRows">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.modify'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
         <div
           *ngIf="formGroup.value.modifySelectedRows"
           class="sub-parameters flex flex-col"
@@ -94,140 +115,122 @@
             *ngFor="let modification of modificationsArray.controls; index as i"
             class="update-row"
           >
-            <mat-form-field appearance="outline">
-              <mat-label>{{
+            <div uiFormFieldDirective>
+              <label>{{
                 'components.widget.settings.grid.buttons.callback.modifyField'
                   | translate
-              }}</mat-label>
-              <mat-select formControlName="field" [compareWith]="compareFields">
-                <mat-option>--</mat-option>
-                <mat-option
+              }}</label>
+              <ui-select-menu formControlName="field">
+                <ui-select-option>--</ui-select-option>
+                <ui-select-option
                   *ngFor="let field of scalarFields"
-                  [value]="field"
-                  >{{ field.name }}</mat-option
+                  [value]="field.name"
+                  >{{ field.name }}</ui-select-option
                 >
-              </mat-select>
-            </mat-form-field>
-            <mat-form-field
-              appearance="outline"
-              *ngIf="modification.value.field"
+              </ui-select-menu>
+              <ui-button
+                uiSuffix
+                [isIcon]="true"
+                icon="remove_circle_outline"
+                variant="danger"
+                (click)="onDeleteModification(i)"
+              >
+              </ui-button>
+            </div>
+
+            <ng-container
+              *ngIf="
+                modification.value.field &&
+                scalarField(modification.value.field)
+              "
             >
-              <mat-label>{{
-                'components.widget.settings.grid.buttons.callback.modifyValue'
-                  | translate
-              }}</mat-label>
               <ng-container
-                *ngIf="
-                  ['Int', 'Float'].includes(modification.value.field.type.name)
+                *ngTemplateOutlet="
+                  modificationTemplate;
+                  context: {
+                    formGroup: $any(modification),
+                    field: scalarField(modification.value.field)
+                  }
                 "
-              >
-                <input matInput formControlName="value" type="number" />
-              </ng-container>
-              <ng-container
-                *ngIf="modification.value.field.type.name === 'Boolean'"
-              >
-                <mat-select formControlName="value">
-                  <mat-option>--</mat-option>
-                  <mat-option [value]="true">{{
-                    'common.true' | translate
-                  }}</mat-option>
-                  <mat-option [value]="false">{{
-                    'common.false' | translate
-                  }}</mat-option>
-                </mat-select>
-              </ng-container>
-              <ng-container
-                *ngIf="
-                  !['Int', 'Float'].includes(
-                    modification.value.field.type.name
-                  ) && modification.value.field.type.name !== 'Boolean'
-                "
-              >
-                <input matInput formControlName="value" type="string" />
-              </ng-container>
-            </mat-form-field>
-            <safe-button
-              [isIcon]="true"
-              icon="remove_circle_outline"
-              variant="danger"
-              (click)="onDeleteModification(i)"
-            >
-            </safe-button>
+              ></ng-container>
+            </ng-container>
           </form>
-          <safe-button
+          <ui-button
             [isIcon]="true"
             icon="add_circle_outline"
             variant="primary"
             (click)="onAddModification()"
           >
-          </safe-button>
+          </ui-button>
         </div>
       </div>
 
       <!-- Attach record to another resource record -->
       <ng-container *ngIf="relatedForms.length > 0">
-        <mat-checkbox formControlName="attachToRecord">
-          {{
-            'components.widget.settings.grid.buttons.callback.attach'
-              | translate
-          }}
-          <safe-icon
-            icon="info_outline"
-            variant="grey"
-            [inline]="true"
-            [size]="18"
-            [matTooltip]="
-              'components.widget.settings.grid.buttons.tooltip.attach'
+        <ui-checkbox formControlName="attachToRecord">
+          <ng-container ngProjectAs="label">
+            {{
+              'components.widget.settings.grid.buttons.callback.attach'
                 | translate
-            "
-            matTooltipPosition="right"
-          ></safe-icon>
-        </mat-checkbox>
+            }}
+          </ng-container>
+          <ng-container ngProjectAs="icon">
+            <ui-icon
+              icon="info_outline"
+              variant="grey"
+              [size]="18"
+              [uiTooltip]="
+                'components.widget.settings.grid.buttons.tooltip.attach'
+                  | translate
+              "
+            ></ui-icon>
+          </ng-container>
+        </ui-checkbox>
       </ng-container>
       <div *ngIf="formGroup.value.attachToRecord" class="sub-parameters">
         <!-- Selection of target resource -->
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
-          <mat-select formControlName="targetResource">
-            <mat-option>--</mat-option>
-            <mat-option
+        <div uiFormFieldDirective>
+          <label>{{ 'common.resource.one' | translate }}</label>
+          <ui-select-menu formControlName="targetResource">
+            <ui-select-option>--</ui-select-option>
+            <ui-select-option
               *ngFor="let resource of relatedResources"
               [value]="resource.id"
             >
               {{ resource.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
         <!-- Selection of target template -->
-        <mat-form-field appearance="outline" *ngIf="targetResource">
-          <mat-label>{{ 'models.form.select' | translate }}</mat-label>
-          <mat-select formControlName="targetForm">
-            <mat-option>--</mat-option>
-            <mat-option
+        <div uiFormFieldDirective *ngIf="targetResource">
+          <label>{{ 'models.form.select' | translate }}</label>
+          <ui-select-menu formControlName="targetForm">
+            <ui-select-option>--</ui-select-option>
+            <ui-select-option
               *ngFor="let form of targetResource.forms"
               [value]="form.id"
             >
               {{ form.name }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
         <ng-container *ngIf="targetResource">
           <!-- Single field to display for quick selection -->
-          <mat-form-field appearance="outline">
-            <mat-label>{{
+          <div uiFormFieldDirective>
+            <label>{{
               'components.widget.settings.grid.buttons.callback.displayField'
                 | translate
-            }}</mat-label>
-            <mat-select formControlName="targetFormField">
-              <mat-option>--</mat-option>
-              <mat-option
+            }}</label>
+            <ui-select-menu formControlName="targetFormField">
+              <ui-select-option>--</ui-select-option>
+              <ui-select-option
                 *ngFor="let field of targetResource.fields"
                 [value]="field.name"
               >
                 {{ field.name }}
-              </mat-option>
-            </mat-select>
-          </mat-form-field>
+              </ui-select-option>
+            </ui-select-menu>
+          </div>
         </ng-container>
         <ng-container *ngIf="targetResource">
           <!-- Selection of fields to display for advanced selection -->
@@ -240,149 +243,166 @@
       </div>
 
       <!-- Send notification -->
-      <mat-checkbox formControlName="notify">
-        {{ 'components.channel.dropdown.select' | translate }}
-        <safe-icon
-          icon="info_outline"
-          variant="grey"
-          [size]="18"
-          [inline]="true"
-          [matTooltip]="
-            'components.widget.settings.grid.buttons.tooltip.notify' | translate
-          "
-          matTooltipPosition="right"
-        ></safe-icon>
-      </mat-checkbox>
+      <ui-checkbox formControlName="notify">
+        <ng-container ngProjectAs="label">
+          {{ 'components.channel.dropdown.select' | translate }}
+        </ng-container>
+        <ng-container ngProjectAs="icon">
+          <ui-icon
+            icon="info_outline"
+            variant="grey"
+            [size]="18"
+            [uiTooltip]="
+              'components.widget.settings.grid.buttons.tooltip.notify'
+                | translate
+            "
+          ></ui-icon>
+        </ng-container>
+      </ui-checkbox>
       <div *ngIf="formGroup.value.notify" class="sub-parameters">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.channel.one' | translate }}</mat-label>
-          <mat-select formControlName="notificationChannel">
-            <mat-option>--</mat-option>
-            <mat-option *ngFor="let channel of channels" [value]="channel.id">
+        <div uiFormFieldDirective>
+          <label>{{ 'common.channel.one' | translate }}</label>
+          <ui-select-menu formControlName="notificationChannel">
+            <ui-select-option>--</ui-select-option>
+            <ui-select-option
+              *ngFor="let channel of channels"
+              [value]="channel.id"
+            >
               {{ channel.title }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+        <div uiFormFieldDirective>
+          <label>{{
             'components.widget.settings.grid.buttons.callback.notify.message'
               | translate
-          }}</mat-label>
-          <input matInput formControlName="notificationMessage" type="string" />
-        </mat-form-field>
+          }}</label>
+          <input formControlName="notificationMessage" type="string" />
+        </div>
       </div>
 
       <!-- Publish on a channel -->
-      <mat-checkbox formControlName="publish">
-        {{ 'common.publish' | translate }}
-        <safe-icon
-          icon="info_outline"
-          variant="grey"
-          [size]="18"
-          [inline]="true"
-          [matTooltip]="
-            'components.widget.settings.grid.buttons.tooltip.publish'
-              | translate
-          "
-          matTooltipPosition="right"
-        ></safe-icon>
-      </mat-checkbox>
+      <ui-checkbox formControlName="publish">
+        <ng-container ngProjectAs="label">
+          {{ 'common.publish' | translate }}
+        </ng-container>
+        <ng-container ngProjectAs="icon">
+          <ui-icon
+            icon="info_outline"
+            variant="grey"
+            [size]="18"
+            [uiTooltip]="
+              'components.widget.settings.grid.buttons.tooltip.publish'
+                | translate
+            "
+          ></ui-icon>
+        </ng-container>
+      </ui-checkbox>
       <div *ngIf="formGroup.value.publish" class="sub-parameters">
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.channel.one' | translate }}</mat-label>
-          <mat-select formControlName="publicationChannel">
-            <mat-option>--</mat-option>
-            <mat-option *ngFor="let channel of channels" [value]="channel.id">
+        <div uiFormFieldDirective>
+          <label>{{ 'common.channel.one' | translate }}</label>
+          <ui-select-menu formControlName="publicationChannel">
+            <ui-select-option>--</ui-select-option>
+            <ui-select-option
+              *ngFor="let channel of channels"
+              [value]="channel.id"
+            >
               {{ channel.title }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
       </div>
 
       <!-- Send email -->
-      <mat-checkbox formControlName="sendMail">{{
-        'components.widget.settings.grid.buttons.callback.sendMail' | translate
-      }}</mat-checkbox>
+      <ui-checkbox formControlName="sendMail">
+        <ng-container ngProjectAs="label">{{
+          'components.widget.settings.grid.buttons.callback.sendMail'
+            | translate
+        }}</ng-container>
+      </ui-checkbox>
       <div *ngIf="formGroup.value.sendMail" class="sub-parameters">
         <!-- Distribution list -->
-        <mat-form-field appearance="outline">
-          <mat-label>{{
+        <div uiFormFieldDirective>
+          <label>{{
             'components.emailBuilder.distribution' | translate
-          }}</mat-label>
-          <mat-select formControlName="distributionList">
-            <mat-option
+          }}</label>
+          <ui-select-menu formControlName="distributionList">
+            <ui-select-option
               *ngFor="let list of distributionLists"
               [value]="list.id"
             >
               {{ list.name }}
-            </mat-option>
-          </mat-select>
-          <safe-icon
-            matSuffix
+            </ui-select-option>
+          </ui-select-menu>
+          <ui-icon
+            uiSuffix
             icon="info_outline"
             class="cursor-pointer"
             variant="grey"
-            matSuffix
-            [matTooltip]="
+            [uiTooltip]="
               'components.widget.settings.grid.buttons.tooltip.mail.selectDistributionList'
                 | translate
             "
-          ></safe-icon>
-          <safe-button
-            matSuffix
+          ></ui-icon>
+          <ui-button
+            uiSuffix
             [isIcon]="true"
             icon="add_circle_outline"
             variant="primary"
             (click)="$event.stopPropagation(); addDistributionList()"
-            [matTooltip]="'components.distributionLists.edit.new' | translate"
+            [uiTooltip]="'components.distributionLists.edit.new' | translate"
           >
-          </safe-button>
-        </mat-form-field>
+          </ui-button>
+        </div>
         <!-- Templates -->
-        <mat-form-field appearance="outline">
-          <mat-label>{{
-            'components.templates.available' | translate
-          }}</mat-label>
-          <mat-select class="select" formControlName="templates" multiple>
-            <mat-option
+        <div
+          [uiErrorMessage]="'components.templates.errors.empty' | translate"
+          [uiErrorMessageIf]="
+            formGroup.get('sendMail')?.value &&
+            !formGroup.get('templates')?.valid
+          "
+          uiFormFieldDirective
+        >
+          <label>{{ 'components.templates.available' | translate }}</label>
+          <ui-select-menu
+            class="select"
+            formControlName="templates"
+            [multiselect]="true"
+          >
+            <ui-select-option
               *ngFor="let template of mailTemplates"
               [value]="template.id"
             >
               {{ template.name }}
-            </mat-option>
-          </mat-select>
-          <safe-icon
-            matSuffix
+            </ui-select-option>
+          </ui-select-menu>
+          <ui-icon
             icon="info_outline"
             class="cursor-pointer"
             variant="grey"
-            matSuffix
-            [matTooltip]="
+            uiSuffix
+            [uiTooltip]="
               'components.widget.settings.grid.buttons.tooltip.mail.selectTemplates'
                 | translate
             "
-          ></safe-icon>
-          <safe-button
-            matSuffix
+          ></ui-icon>
+          <ui-button
+            uiSuffix
             [isIcon]="true"
             icon="add_circle_outline"
             variant="primary"
             (click)="$event.stopPropagation(); addEmailTemplate()"
-            [matTooltip]="'components.templates.edit.new' | translate"
+            [uiTooltip]="'components.templates.edit.new' | translate"
           >
-          </safe-button>
-          <mat-error
-            *ngIf="
-              formGroup.get('sendMail')?.value &&
-              !formGroup.get('templates')?.valid
-            "
-            >{{ 'components.templates.errors.empty' | translate }}</mat-error
-          >
-        </mat-form-field>
+          </ui-button>
+        </div>
         <!-- Export dataset -->
-        <mat-checkbox formControlName="export">{{
-          'components.widget.settings.grid.buttons.callback.export' | translate
-        }}</mat-checkbox>
+        <ui-checkbox formControlName="export">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.export'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
         <!-- Select fields to see in dataset -->
         <h2>{{ 'components.emailBuilder.fields' | translate }}</h2>
         <safe-tab-fields
@@ -395,3 +415,50 @@
     </ng-container>
   </div>
 </form>
+
+<!-- Template for auto modification -->
+<ng-template #modificationTemplate let-field="field" let-formGroup="formGroup">
+  <div [formGroup]="formGroup">
+    <!-- @todo: replace with ngSwitch and better manage all types -->
+    <ng-container *ngIf="['Int', 'Float'].includes(field.type.name)">
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.widget.settings.grid.buttons.callback.modifyValue'
+            | translate
+        }}</label>
+        <input formControlName="value" type="number" />
+      </div>
+    </ng-container>
+    <ng-container *ngIf="field.type.name === 'Boolean'">
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.widget.settings.grid.buttons.callback.modifyValue'
+            | translate
+        }}</label>
+        <ui-select-menu formControlName="value">
+          <ui-select-option>--</ui-select-option>
+          <ui-select-option [value]="true">{{
+            'common.true' | translate
+          }}</ui-select-option>
+          <ui-select-option [value]="false">{{
+            'common.false' | translate
+          }}</ui-select-option>
+        </ui-select-menu>
+      </div>
+    </ng-container>
+    <ng-container
+      *ngIf="
+        !['Int', 'Float'].includes(field.type.name) &&
+        field.type.name !== 'Boolean'
+      "
+    >
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.widget.settings.grid.buttons.callback.modifyValue'
+            | translate
+        }}</label>
+        <input formControlName="value" type="string" />
+      </div>
+    </ng-container>
+  </div>
+</ng-template>

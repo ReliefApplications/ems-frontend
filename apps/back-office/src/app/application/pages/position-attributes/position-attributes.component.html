@@ -1,4 +1,4 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<ui-spinner *ngIf="loading"></ui-spinner>
 <ng-container *ngIf="!loading">
   <div class="page-header">
     <h1 class="page-title">
@@ -9,25 +9,25 @@
   <div class="overflow-x-hidden shadow-2lg">
     <!-- Table scroll container -->
     <div class="overflow-x-auto">
-      <table mat-table [dataSource]="positionAttributes">
-        <ng-container matColumnDef="value">
-          <th mat-header-cell *matHeaderCellDef>
-            <span class="headerTitle" mat-sort-header>
+      <table cdk-table uiTableWrapper [dataSource]="positionAttributes">
+        <ng-container cdkColumnDef="value">
+          <th uiTableHeaderSort="value" uiCellHeader *cdkHeaderCellDef>
+            <span class="headerTitle">
               {{ 'common.name' | translate }}
             </span>
           </th>
-          <td mat-cell *matCellDef="let element">{{ element.value }}</td>
+          <td uiCell *cdkCellDef="let element">{{ element.value }}</td>
         </ng-container>
-        <ng-container matColumnDef="usersCount">
-          <th mat-header-cell *matHeaderCellDef>
-            <span class="headerTitle" mat-sort-header>
+        <ng-container cdkColumnDef="usersCount">
+          <th uiTableHeaderSort="usersCount" uiCellHeader *cdkHeaderCellDef>
+            <span class="headerTitle">
               {{ 'common.user.few' | translate }}
             </span>
           </th>
-          <td mat-cell *matCellDef="let element">{{ element.usersCount }}</td>
+          <td uiCell *cdkCellDef="let element">{{ element.usersCount }}</td>
         </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+        <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
       </table>
     </div>
   </div>

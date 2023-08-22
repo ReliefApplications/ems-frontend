@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
 import { Subject, takeUntil } from 'rxjs';
@@ -7,13 +7,13 @@ import { SafeUnsubscribeComponent } from '../../components/utils/unsubscribe/uns
 import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
 import { Role } from '../../models/user.model';
 import { SafeApplicationService } from '../../services/application/application.service';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { UserListComponent } from './components/user-list/user-list.component';
 import { AddUsersMutationResponse, ADD_USERS } from './graphql/mutations';
 import {
   GET_APPLICATION_STATUS,
   GetApplicationStatusQueryResponse,
 } from './graphql/queries';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Application users component.
@@ -35,18 +35,18 @@ export class SafeApplicationUsersComponent
   /**
    * Application users component.
    *
-   * @param dialog Material dialog
+   * @param dialog Dialog
    * @param applicationService Shared application service
    * @param apollo Apollo service
    * @param translate Translate service
    * @param snackBar Shared snackbar service
    */
   constructor(
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private applicationService: SafeApplicationService,
     private apollo: Apollo,
     private translate: TranslateService,
-    private snackBar: SafeSnackBarService
+    private snackBar: SnackbarService
   ) {
     super();
   }
@@ -85,7 +85,7 @@ export class SafeApplicationUsersComponent
         }),
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<AddUsersMutationResponse>({

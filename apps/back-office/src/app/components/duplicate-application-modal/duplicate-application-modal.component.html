@@ -1,32 +1,31 @@
-<safe-modal>
-  <h2 mat-dialog-title>
-    Duplicating <i>{{ currentApp.name }}</i>
-  </h2>
-  <div mat-dialog-content>
+<ui-dialog>
+  <ng-container ngProjectAs="header">
+    <h2>
+      Duplicating <i>{{ currentApp.name }}</i>
+    </h2>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="duplicateForm">
       <div class="flex flex-col">
-        <h3>
+        <h2>
           {{ 'components.application.duplicate.name.description' | translate }}
-        </h3>
-        <mat-form-field appearance="outline">
-          <mat-label>
+        </h2>
+        <div uiFormFieldDirective>
+          <label>
             {{ 'common.name' | translate }}
-          </mat-label>
+          </label>
           <input
-            matInput
             type="text"
             formControlName="name"
             [placeholder]="'common.placeholder.name' | translate"
           />
-        </mat-form-field>
+        </div>
       </div>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button (click)="onCancel()">{{
-      'common.close' | translate
-    }}</safe-button>
-    <safe-button
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onCancel()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       (click)="onSubmit()"
@@ -34,6 +33,6 @@
       [disabled]="!duplicateForm.valid"
     >
       {{ 'common.duplicate' | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

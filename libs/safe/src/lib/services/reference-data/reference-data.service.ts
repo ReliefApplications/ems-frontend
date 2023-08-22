@@ -104,8 +104,13 @@ export class SafeReferenceDataService {
       ((foreignIsMultiselect && filter.foreignValue.length) ||
         (!foreignIsMultiselect && !!filter.foreignValue))
     ) {
-      const { items: foreignItems, valueField: foreignValueField } =
-        (await localForage.getItem(filter.foreignReferenceData)) as CachedItems;
+      const cache = (await localForage.getItem(
+        filter.foreignReferenceData
+      )) as CachedItems;
+      if (!cache) {
+        return [];
+      }
+      const { items: foreignItems, valueField: foreignValueField } = cache;
       let selectedForeignValue: any | any[];
       // Retrieve foreign field items for multiselect or single select
       if (foreignIsMultiselect) {
@@ -117,7 +122,7 @@ export class SafeReferenceDataService {
         );
       } else {
         selectedForeignValue = foreignItems.find(
-          (item) => item[foreignValueField] === filter.foreignValue
+          (item) => get(item, foreignValueField) === filter.foreignValue
         )[filter.foreignField];
       }
       return items
@@ -245,7 +250,9 @@ export class SafeReferenceDataService {
           referenceData.apiConfiguration?.name +
           referenceData.query;
         const data = await this.apiProxy.promisedRequestWithHeaders(url);
-        items = referenceData.path ? get(data, referenceData.path) : data;
+        items = referenceData.path
+          ? jsonpath.query(data, referenceData.path)
+          : data;
         break;
       }
       case referenceDataType.static: {

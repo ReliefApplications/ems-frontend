@@ -1,15 +1,18 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { NotificationsComponent } from './notifications.component';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeButtonModule } from '../ui/button/button.module';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
-import { SafeDividerModule } from '../ui/divider/divider.module';
-import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyPaginatorModule as MatPaginatorModule } from '@angular/material/legacy-paginator';
-import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
+import {
+  MenuModule,
+  DividerModule,
+  ButtonModule,
+  TableModule,
+  ChipModule,
+  PaginatorModule,
+} from '@oort-front/ui';
+import { IconModule } from '@oort-front/ui';
+import { SafeEmptyModule } from '../ui/empty/empty.module';
 
 /**
  * Module for custom notifications table.
@@ -18,15 +21,16 @@ import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy
   declarations: [NotificationsComponent],
   imports: [
     CommonModule,
-    MatTableModule,
-    MatMenuModule,
+    MenuModule,
     TranslateModule,
-    SafeButtonModule,
     SafeSkeletonTableModule,
-    SafeDividerModule,
-    MatIconModule,
-    MatPaginatorModule,
-    MatChipsModule,
+    DividerModule,
+    IconModule,
+    SafeEmptyModule,
+    PaginatorModule,
+    ButtonModule,
+    TableModule,
+    ChipModule,
   ],
   exports: [NotificationsComponent],
 })

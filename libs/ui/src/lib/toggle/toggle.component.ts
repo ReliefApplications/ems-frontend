@@ -5,10 +5,9 @@ import {
   Provider,
   forwardRef,
 } from '@angular/core';
-import { ToggleType } from './enums/toggle-type.enum';
-import { ToggleLabel } from './interfaces/toggle-label.interface';
+import { ToggleType } from './types/toggle-type';
 import { ToggleIcon } from './interfaces/toggle-icon.interface';
-import { Variant } from '../shared/variant.enum';
+import { Variant } from '../types/variant';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 /** A provider for the ControlValueAccessor interface. */
@@ -28,13 +27,10 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   providers: [CONTROL_VALUE_ACCESSOR],
 })
 export class ToggleComponent implements ControlValueAccessor {
-  @Input() type: ToggleType = ToggleType.SIMPLE;
+  @Input() type: ToggleType = 'short';
   @Input() icon!: ToggleIcon;
-  @Input() label!: ToggleLabel;
-  @Input() variant: Variant = Variant.PRIMARY;
-
-  toggleTypes = ToggleType;
-  toggleVariant = Variant;
+  @Input() labelPosition: 'right' | 'left' = 'right';
+  @Input() variant: Variant = 'primary';
 
   value = false;
   disabled = false;
@@ -48,9 +44,13 @@ export class ToggleComponent implements ControlValueAccessor {
     const classes = [];
     // Disable state
     classes.push(this.disabled ? 'opacity-70' : '');
+    // Space from button to label depending on label position
+    classes.push(this.labelPosition === 'left' ? 'ml-3' : 'mr-3');
+    // Order of button depending on label position
+    classes.push(this.labelPosition === 'left' ? 'order-2' : 'order-1');
     // Variants
     classes.push('focus-' + this.variant);
-    if (this.type === this.toggleTypes.SIMPLE) {
+    if (this.type === 'simple') {
       classes.push('button-simple');
       if (!this.value) {
         classes.push('bg-gray-200');

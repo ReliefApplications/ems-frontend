@@ -5,9 +5,6 @@ import { debounceTime } from 'rxjs/operators';
 import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
 import { Resource } from '../../../models/resource.model';
-import { MAT_LEGACY_AUTOCOMPLETE_SCROLL_STRATEGY as MAT_AUTOCOMPLETE_SCROLL_STRATEGY } from '@angular/material/legacy-autocomplete';
-import { scrollFactory } from '../../config-display-grid-fields-modal/config-display-grid-fields-modal.component';
-import { Overlay } from '@angular/cdk/overlay';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 
@@ -19,13 +16,6 @@ import { takeUntil } from 'rxjs/operators';
   selector: 'safe-aggregation-builder',
   templateUrl: './aggregation-builder.component.html',
   styleUrls: ['./aggregation-builder.component.scss'],
-  providers: [
-    {
-      provide: MAT_AUTOCOMPLETE_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-  ],
 })
 export class SafeAggregationBuilderComponent
   extends SafeUnsubscribeComponent
@@ -138,7 +128,7 @@ export class SafeAggregationBuilderComponent
           !(
             field.name.includes('_id') &&
             (field.type.name === 'ID' ||
-              (field.type.kind === 'LIST' && field.type.ofType.name === 'ID'))
+              (field.type?.kind === 'LIST' && field.type.ofType.name === 'ID'))
           )
       );
     this.fields.next(fields);
@@ -154,14 +144,14 @@ export class SafeAggregationBuilderComponent
       const currentFields = this.fields.value;
       const selectedFields = fieldsNames.map((x: string) => {
         const field = { ...currentFields.find((y) => x === y.name) };
-        if (field.type.kind !== 'SCALAR') {
+        if (field.type?.kind !== 'SCALAR') {
           field.fields = this.queryBuilder
             .getFieldsFromType(
-              field.type.kind === 'OBJECT'
+              field.type?.kind === 'OBJECT'
                 ? field.type.name
                 : field.type.ofType.name
             )
-            .filter((y) => y.type.name !== 'ID' && y.type.kind === 'SCALAR');
+            .filter((y) => y.type.name !== 'ID' && y.type?.kind === 'SCALAR');
         }
         return field;
       });

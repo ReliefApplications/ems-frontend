@@ -130,6 +130,7 @@
 		"modifiedOn": "Modifié le ",
 		"name": "Nom",
 		"next": "Suivant",
+		"noOptions": "Aucun choix disponible",
 		"notifications": {
 			"accessDenied": "Vous n'avez pas la permission pour accéder à cet objet de type {{type}}.",
 			"accessNotProvided": "Pas d'accès fourni à cet objet de type {{type}}. {{error}}",
@@ -260,6 +261,7 @@
 		},
 		"save": "Sauvegarder",
 		"saveChanges": "Sauvegarder les changements",
+		"search": "Recherche",
 		"searchObject": "Rechercher {{name}}",
 		"select": "Sélectionner",
 		"send": "Envoyer",
@@ -401,6 +403,11 @@
 			"dashboard": {
 				"editFilter": "Modifier le filtre",
 				"empty": "Aucun contenu n'est disponible. Veuillez attendre que votre administrateur en crée.",
+				"filter": {
+					"empty": "Aucun filtre n'a été défini par les administrateurs",
+					"info": "Les filtres de tableau de bord peuvent être utilisés entre les pages pour filtrer leur contenu.",
+					"title": "Vous modifiez les filtres du tableau de bord"
+				},
 				"filterSettings": "Paramètres du filtre",
 				"settings": {
 					"defaultPosition": "Position par défaut du filtre"
@@ -626,6 +633,7 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"duplicatedRelatedName": "Nom lié en double pour la question {{question}} à la page {{page}}. Veuillez fournir un nom lié unique (au format snake_case) pour sauvegarder le formulaire.",
 				"missingGridField": "Champs disponible de table de données manquant pour la question {{question}} à la page {{page}}. Veuillez en sélectionner au moins un dans la propriété Custom Question pour sauvegarder le formulaire.",
 				"missingRelatedName": "Nom lié manquant pour la question {{question}} à la page {{page}}. Veuillez entrer un nom valide pour la valeur de la donnée (au format snake_case) pour sauvegarder le formulaire.",
 				"missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un modèle pour sauvegarder le formulaire."
@@ -649,6 +657,7 @@
 			}
 		},
 		"header": {
+			"goToApp": "Ouvrir l'application",
 			"goToPlatform": "Naviguer vers",
 			"logout": "Se déconnecter",
 			"sidenav": {
@@ -691,10 +700,10 @@
 			"readAll": "Tout marquer comme lu"
 		},
 		"paginator": {
-			"items": "@TODO",
-			"itemsPerPage": "@TODO",
-			"of": "@TODO",
-			"page": "@TODO"
+			"items": "élements",
+			"itemsPerPage": "éléments par page",
+			"of": "de",
+			"page": "Page"
 		},
 		"preferences": {
 			"dateFormat": "Format de date et heure",
@@ -913,6 +922,7 @@
 						"add": "Ajouter une règle d'attribution",
 						"delete": "Supprimer la règle",
 						"edit": "Mettre à jour la règle d'attribution",
+						"none": "Aucune règle d'attribution automatique",
 						"title": "Règle"
 					},
 					"title": "Attribution automatique"
@@ -1077,6 +1087,7 @@
 				},
 				"empty": "Aucun enregistrement détecté pour cette configuration de réseau",
 				"errors": {
+					"autoSaveFailed": "L'exécution de l'action a été stoppé à cause d'enregistrement(s) non valide(s). Veuillez les vérifier avant de lancer une autre action.",
 					"invalid": {
 						"backoffice": "Configuration de grille invalide",
 						"frontoffice": "Configuration de grille non valide, veuillez contacter votre administrateur"
@@ -1171,6 +1182,7 @@
 					},
 					"position": "Position",
 					"series": {
+						"fill": "Remplissage",
 						"interpolation": {
 							"step": "Étape d'interpolation",
 							"title": "Interpolation"
@@ -1373,7 +1385,9 @@
 								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
 							}
 						},
-						"preview": {},
+						"preview": {
+							"title": "Prévisualisation"
+						},
 						"textEditor": {
 							"alert": "Vous pouvez ajouter des variables ex: {{data.variable}} et faire des calculs ex: {{calc.round( value ; precision )}}",
 							"title": "Éditeur de texte"
@@ -1415,7 +1429,13 @@
 		}
 	},
 	"kendo": {
+		"combobox": {
+			"noDataText": "No available choice"
+		},
 		"datepicker": {
+			"dateLabel": "Sélectionner une date",
+			"endLabel": "Date de fin",
+			"startLabel": "Date de début",
 			"today": "Aujourd'hui",
 			"toggle": "Sélectionnez une date"
 		},
@@ -1563,6 +1583,21 @@
 			"stick": "Épingler",
 			"unlock": "Déverrouiller",
 			"unstick": "Désépingler"
+		},
+		"multiselect": {
+			"noDataText": "No available choice"
+		},
+		"pager": {
+			"firstPage": "Aller à la première page",
+			"items": "éléments",
+			"itemsPerPage": "éléments par page",
+			"label": "'Navigation de page, page {currentPage} sur {totalPages}'",
+			"lastPage": "Aller à la dernière page",
+			"nextPage": "Aller à la page suivante",
+			"of": "sur",
+			"page": "Page",
+			"pageNumberInputTitle": "Numéro de page",
+			"previousPage": "Aller à la page précédente"
 		},
 		"tilelayout": {
 			"component": {
@@ -1839,6 +1874,10 @@
 				},
 				"selectApplication": "Application manquante pour un élément de la page : {{page}}. Veuillez sélectionner au moins une application dans les propriétés de {{question}} pour sauvegarder le formulaire.",
 				"snakecase": "Le nom de valeur {{name}} de la page {{page}} est invalide. Veuillez configurer un nom valide (en format snake_case) pour sauvegarder le formulaire."
+			},
+			"move": {
+				"down": "Descendre la question",
+				"up": "Monter la question"
 			},
 			"questionsCategories": {
 				"core": "Bibliothèque de questions"

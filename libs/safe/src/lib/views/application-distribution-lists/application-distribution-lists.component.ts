@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { SafeUnsubscribeComponent } from '../../components/utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { Application } from '../../models/application.model';
@@ -19,7 +18,7 @@ export class SafeApplicationDistributionListsComponent
 {
   // === DATA ===
   public loading = true;
-  public templates = new MatTableDataSource<any>([]);
+  public templates = new Array<any>();
 
   /**
    * Page to view distribution lists within app.
@@ -35,10 +34,10 @@ export class SafeApplicationDistributionListsComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((application: Application | null) => {
         if (application) {
-          this.templates.data = application.templates || [];
+          this.templates = application.templates || [];
           this.loading = false;
         } else {
-          this.templates.data = [];
+          this.templates = [];
         }
       });
   }

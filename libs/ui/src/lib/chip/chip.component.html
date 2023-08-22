@@ -1,0 +1,19 @@
+<div
+  class="will-change-transform inline-flex items-center gap-x-1.5 px-2 py-1 text-xs font-medium justify-between rounded-[16px]"
+  [ngClass]="chipClasses"
+  (click)="onClick($event)"
+  [attr.value]="value"
+>
+  <!-- CONTENT -->
+  <ng-content></ng-content>
+
+  <!-- REMOVE BUTTON ICON -->
+  <ui-icon
+    *ngIf="removable && !disabled"
+    icon="close"
+    [variant]="variant"
+    [size]="12"
+    (click)="removed.emit()"
+    class="cursor-pointer"
+  ></ui-icon>
+</div>

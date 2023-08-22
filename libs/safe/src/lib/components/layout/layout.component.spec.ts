@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { environment } from 'projects/back-office/src/environments/environment';
 import {
   DateTimeProvider,
   OAuthLogger,
@@ -10,23 +9,32 @@ import {
 import { SafeLayoutComponent } from './layout.component';
 import { HttpClientModule } from '@angular/common/http';
 import {
-  MatLegacyDialogModule as MatDialogModule,
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import {
   TranslateModule,
   TranslateService,
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
 import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
 import { GET_NOTIFICATIONS } from './graphql/queries';
 import { NOTIFICATION_SUBSCRIPTION } from './graphql/subscriptions';
+import { AppAbility } from '../../services/auth/auth.service';
+import {
+  BreadcrumbsModule,
+  DividerModule,
+  TooltipModule,
+  ButtonModule,
+  SidenavContainerModule,
+  MenuModule,
+} from '@oort-front/ui';
+import { NO_ERRORS_SCHEMA } from '@angular/core';
 
 describe('SafeLayoutComponent', () => {
   let component: SafeLayoutComponent;
@@ -36,29 +44,42 @@ describe('SafeLayoutComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: 'environment', useValue: environment },
+        {
+          provide: 'environment',
+          useValue: {
+            theme: {},
+            availableLanguages: [],
+          },
+        },
         OAuthService,
         UrlHelperService,
         OAuthLogger,
         DateTimeProvider,
-        { provide: MatDialogRef, useValue: {} },
-        { provide: MAT_DIALOG_DATA, useValue: {} },
+        AppAbility,
+        { provide: DialogRef, useValue: {} },
+        { provide: DIALOG_DATA, useValue: {} },
         TranslateService,
       ],
       declarations: [SafeLayoutComponent],
       imports: [
         RouterTestingModule,
         HttpClientModule,
-        MatDialogModule,
+        DialogCdkModule,
+        DividerModule,
+        ButtonModule,
+        SidenavContainerModule,
+        BreadcrumbsModule,
+        TooltipModule,
+        MenuModule,
+        ApolloTestingModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
             useClass: TranslateFakeLoader,
           },
         }),
-        MatMenuModule,
-        ApolloTestingModule,
       ],
+      schemas: [NO_ERRORS_SCHEMA],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);

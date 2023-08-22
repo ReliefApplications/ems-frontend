@@ -1,6 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { DialogModule } from '@angular/cdk/dialog';
 import { ResourcesComponent } from './resources.component';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import {
+  TranslateFakeLoader,
+  TranslateLoader,
+  TranslateModule,
+  TranslateService,
+} from '@ngx-translate/core';
+import {
+  ButtonModule,
+  PaginatorModule,
+  IconModule
+} from '@oort-front/ui';
+import { SafeSkeletonTableModule } from '@oort-front/safe';
+import { FilterComponent } from './filter/filter.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 describe('ResourcesComponent', () => {
   let component: ResourcesComponent;
@@ -8,7 +23,24 @@ describe('ResourcesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ResourcesComponent],
+      declarations: [ResourcesComponent, FilterComponent],
+      imports: [
+        DialogModule,
+        ApolloTestingModule,
+        ButtonModule,
+        PaginatorModule,
+        SafeSkeletonTableModule,
+        IconModule,
+        FormsModule,
+        ReactiveFormsModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
+        }),
+      ],
+      providers: [TranslateService]
     }).compileComponents();
   });
 

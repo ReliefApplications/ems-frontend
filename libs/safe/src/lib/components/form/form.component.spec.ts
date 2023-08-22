@@ -1,12 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { environment } from 'projects/back-office/src/environments/environment';
 import {
-  MatLegacyDialogModule as MatDialogModule,
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import { SafeFormComponent } from './form.component';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { HttpClientModule } from '@angular/common/http';
 import {
   DateTimeProvider,
@@ -30,9 +29,9 @@ describe('SafeFormComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         { provide: 'environment', useValue: environment },
-        { provide: MatDialogRef, useValue: {} },
+        { provide: DialogRef, useValue: {} },
         {
-          provide: MAT_DIALOG_DATA,
+          provide: DIALOG_DATA,
           useValue: {
             access: { canSee: null, canUpdate: null, canDelete: null },
           },
@@ -45,8 +44,7 @@ describe('SafeFormComponent', () => {
       ],
       declarations: [SafeFormComponent],
       imports: [
-        MatDialogModule,
-        MatSnackBarModule,
+        DialogCdkModule,
         HttpClientModule,
         RouterTestingModule,
         TranslateModule.forRoot({

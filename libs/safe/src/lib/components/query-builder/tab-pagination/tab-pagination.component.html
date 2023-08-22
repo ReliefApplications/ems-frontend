@@ -1,18 +1,15 @@
 <form [formGroup]="form">
-  <mat-form-field appearance="outline">
-    <mat-label>{{
-      'components.queryBuilder.pagination.first' | translate
-    }}</mat-label>
-    <input matInput formControlName="first" type="number" />
-    <safe-icon
-      matSuffix
+  <div uiFormFieldDirective>
+    <label>{{ 'components.queryBuilder.pagination.first' | translate }}</label>
+    <input formControlName="first" type="number" />
+    <ui-icon
+      uiSuffix
       icon="info"
       class="cursor-pointer"
       variant="grey"
-      matSuffix
-      [matTooltip]="
+      [uiTooltip]="
         'components.queryBuilder.tooltip.pagination.first' | translate
       "
-    ></safe-icon>
-  </mat-form-field>
+    ></ui-icon>
+  </div>
 </form>

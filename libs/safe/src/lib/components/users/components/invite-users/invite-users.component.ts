@@ -1,9 +1,5 @@
 import { Component, Inject, Renderer2, ViewChild } from '@angular/core';
-import {
-  MatLegacyDialog as MatDialog,
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA, Dialog } from '@angular/cdk/dialog';
 import { GridComponent, GridDataResult } from '@progress/kendo-angular-grid';
 import { Role, User } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
@@ -13,10 +9,12 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 import { SafeDownloadService } from '../../../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UploadEvent } from '@progress/kendo-angular-upload';
+import { SnackbarService } from '@oort-front/ui';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 /** Model fot the input data */
 interface DialogData {
@@ -33,7 +31,7 @@ interface DialogData {
   templateUrl: './invite-users.component.html',
   styleUrls: ['./invite-users.component.scss'],
 })
-export class SafeInviteUsersComponent {
+export class SafeInviteUsersComponent extends SafeUnsubscribeComponent {
   public gridData: GridDataResult = { data: [], total: 0 };
   public formGroup: UntypedFormGroup = new UntypedFormGroup({});
   private editedRowIndex = 0;
@@ -57,21 +55,23 @@ export class SafeInviteUsersComponent {
    * @param downloadService The download service
    * @param snackBar The snack bar service
    * @param formBuilder The form builder service
-   * @param dialog The material dialog service
-   * @param dialogRef The reference to a material dialog
+   * @param dialog The Dialog service
+   * @param dialogRef The reference to a Dialog
    * @param translate The translation service
    * @param data The input data of the component
    */
   constructor(
     private renderer: Renderer2,
     private downloadService: SafeDownloadService,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private formBuilder: UntypedFormBuilder,
-    public dialog: MatDialog,
-    public dialogRef: MatDialogRef<SafeInviteUsersComponent>,
+    public dialog: Dialog,
+    public dialogRef: DialogRef<SafeInviteUsersComponent>,
     public translate: TranslateService,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
-  ) {}
+    @Inject(DIALOG_DATA) public data: DialogData
+  ) {
+    super();
+  }
 
   /**
    * Closes the modal.
@@ -100,7 +100,7 @@ export class SafeInviteUsersComponent {
       },
       autoFocus: false,
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.gridData.data.push(value);
       }
@@ -187,7 +187,7 @@ export class SafeInviteUsersComponent {
     if (this.editionActive) {
       this.closeEditor();
     }
-    this.dialogRef.close(this.gridData.data);
+    this.dialogRef.close(this.gridData.data as any);
   }
 
   /**

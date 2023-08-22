@@ -1,25 +1,24 @@
-<mat-form-field appearance="outline">
-  <mat-label>{{
-    'components.applications.dropdown.select' | translate
-  }}</mat-label>
-  <mat-select
+<div uiFormFieldDirective [outline]="false">
+  <label>{{ 'components.applications.dropdown.select' | translate }}</label>
+  <ui-select-menu
     #applicationSelect
     [(ngModel)]="value"
     name="applications"
-    (openedChange)="onOpenSelect($event)"
-    (selectionChange)="onSelect($event)"
-    multiple
+    (opened)="onOpenSelect()"
+    (selectedOption)="onSelect($event)"
+    [multiselect]="true"
   >
-    <mat-option
+    <ui-select-option
       *ngFor="let application of selectedApplications"
       [value]="application.id"
-      >{{ application.name }}
-    </mat-option>
-    <mat-option
+    >
+      {{ application.name }}
+    </ui-select-option>
+    <ui-select-option
       *ngFor="let application of applications$ | async"
       [value]="application.id"
     >
       {{ application.name }}
-    </mat-option>
-  </mat-select>
-</mat-form-field>
+    </ui-select-option>
+  </ui-select-menu>
+</div>

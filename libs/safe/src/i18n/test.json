@@ -130,6 +130,7 @@
 		"modifiedOn": "******",
 		"name": "******",
 		"next": "******",
+		"noOptions": "******",
 		"notifications": {
 			"accessDenied": "****** {{type}} ******",
 			"accessNotProvided": "****** {{type}} ****** {{error}}",
@@ -260,6 +261,7 @@
 		},
 		"save": "******",
 		"saveChanges": "******",
+		"search": "******",
 		"searchObject": "****** {{name}}",
 		"select": "******",
 		"send": "******",
@@ -401,6 +403,11 @@
 			"dashboard": {
 				"editFilter": "******",
 				"empty": "******",
+				"filter": {
+					"empty": "******",
+					"info": "******",
+					"title": "******"
+				},
 				"filterSettings": "******",
 				"settings": {
 					"defaultPosition": "******"
@@ -621,6 +628,7 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"duplicatedRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingGridField": "****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
@@ -644,6 +652,7 @@
 			}
 		},
 		"header": {
+			"goToApp": "******",
 			"goToPlatform": "******",
 			"logout": "******",
 			"sidenav": {
@@ -908,6 +917,7 @@
 						"add": "******",
 						"delete": "******",
 						"edit": "******",
+						"none": "******",
 						"title": "******"
 					},
 					"title": "******"
@@ -1070,6 +1080,7 @@
 					"history": "******"
 				},
 				"errors": {
+					"autoSaveFailed": "******",
 					"invalid": {
 						"backoffice": "******",
 						"frontoffice": "******"
@@ -1164,6 +1175,7 @@
 					},
 					"position": "******",
 					"series": {
+						"fill": "******",
 						"interpolation": {
 							"step": "******",
 							"title": "******"
@@ -1366,6 +1378,9 @@
 								"datasource": "******"
 							}
 						},
+						"preview": {
+							"title": "******"
+						},
 						"textEditor": {
 							"alert": "****** {{data.variable}} ****** {{calc.round( value ; precision )}}",
 							"title": "******"
@@ -1407,7 +1422,13 @@
 		}
 	},
 	"kendo": {
+		"combobox": {
+			"noDataText": "******"
+		},
 		"datepicker": {
+			"dateLabel": "******",
+			"endLabel": "******",
+			"startLabel": "******",
 			"today": "******",
 			"toggle": "******"
 		},
@@ -1555,6 +1576,21 @@
 			"stick": "******",
 			"unlock": "******",
 			"unstick": "******"
+		},
+		"multiselect": {
+			"noDataText": "******"
+		},
+		"pager": {
+			"firstPage": "******",
+			"items": "******",
+			"itemsPerPage": "******",
+			"label": "******",
+			"lastPage": "******",
+			"nextPage": "******",
+			"of": "******",
+			"page": "******",
+			"pageNumberInputTitle": "******",
+			"previousPage": "******"
 		},
 		"tilelayout": {
 			"component": {
@@ -1831,6 +1867,10 @@
 				},
 				"selectApplication": "****** {{page}} ****** {{question}} ******",
 				"snakecase": "****** {{name}} ****** {{page}} ******"
+			},
+			"move": {
+				"down": "******",
+				"up": "******"
 			},
 			"questionsCategories": {
 				"core": "******"

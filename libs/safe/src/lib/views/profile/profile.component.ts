@@ -4,18 +4,16 @@ import {
   UntypedFormBuilder,
   Validators,
 } from '@angular/forms';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo } from 'apollo-angular';
 import {
   EditUserProfileMutationResponse,
   EDIT_USER_PROFILE,
 } from './graphql/mutations';
-import { User } from '../../models/user.model';
 import { SafeAuthService } from '../../services/auth/auth.service';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../../components/utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Shared profile page.
@@ -30,8 +28,6 @@ export class SafeProfileComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  /** Table data */
-  dataSource = new MatTableDataSource<User>();
   /** Current user */
   public user: any;
   /** Form to edit the user */
@@ -56,7 +52,7 @@ export class SafeProfileComponent
    */
   constructor(
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private authService: SafeAuthService,
     private formBuilder: UntypedFormBuilder,
     public translate: TranslateService

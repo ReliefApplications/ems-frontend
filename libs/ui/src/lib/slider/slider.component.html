@@ -1,0 +1,52 @@
+<!-- Component wrapper -->
+<div
+  class="relative"
+  [ngClass]="{
+    'min-value': currentValue === minValue
+  }"
+  (mouseover)="showTicks()"
+  (mouseout)="hideTicks()"
+>
+  <!-- Bubble -->
+  <span
+    [ngStyle]="{ left: bubbleStyle }"
+    [ngClass]="{
+      block: bubbleToShow,
+      hidden: !bubbleToShow,
+      'bg-gray-400 opacity-80': currentValue === minValue,
+      'bg-primary-400': currentValue !== minValue
+    }"
+    class="transition-all duration-200 absolute px-2 -translate-x-2/4 -translate-y-3/4 text-white rounded-lg"
+    >{{ currentValue }}</span
+  >
+  <!-- Actual input range -->
+  <input
+    name="slider"
+    style="--value:{{ currentValue }}; --min:{{ minValue }}; --max:{{
+      maxValue
+    }}"
+    class="w-full h-1 bg-gray-300 focus:bg-gray-400 bg-gradient-to-r from-primary-400 to-primary-400"
+    type="range"
+    min="{{ minValue }}"
+    max="{{ maxValue }}"
+    value="{{ currentValue }}"
+    step="1"
+    (input)="onChangeFunction($event.target)"
+  />
+  <!-- Ticks placement + appearance -->
+  <div
+    [ngClass]="{
+      flex: ticksToShow,
+      hidden: !ticksToShow
+    }"
+    class="block absolute w-full z-10 pointer-events-none transition-all duration-200 justify-between -translate-y-full non_selectable"
+  >
+    <!-- Ticks definition -->
+    <div
+      *ngFor="let tick of range"
+      class="ticks pointer-events-none non_selectable z-20"
+    >
+      |
+    </div>
+  </div>
+</div>

@@ -130,6 +130,7 @@
 		"modifiedOn": "Modified On",
 		"name": "Name",
 		"next": "Next",
+		"noOptions": "No available choices",
 		"notifications": {
 			"accessDenied": "You don't have permission to see the {{type}}.",
 			"accessNotProvided": "No access provided to this {{type}}. {{error}}",
@@ -260,6 +261,7 @@
 		},
 		"save": "Save",
 		"saveChanges": "Save changes",
+		"search": "Search",
 		"searchObject": "Search {{name}}",
 		"select": "Select",
 		"send": "Send",
@@ -401,6 +403,11 @@
 			"dashboard": {
 				"editFilter": "Edit filter",
 				"empty": "No content available. Wait for your administrator to build some.",
+				"filter": {
+					"empty": "No filters have been defined by the administrators",
+					"info": "Dashboard filters can be used between pages to filter their content.",
+					"title": "Dashboard filters configuration"
+				},
 				"filterSettings": "Filter settings",
 				"settings": {
 					"defaultPosition": "Default position for the filter"
@@ -621,6 +628,7 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"duplicatedRelatedName": "Duplicated related name for question {{question}} on page {{page}}. Please provide a unique related name (snake case format) to save the form.",
 				"missingGridField": "Missing an available field grid for question {{question}} on page {{page}}. Please select a least one in Custom Question Properties to save the form.",
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
@@ -644,6 +652,7 @@
 			}
 		},
 		"header": {
+			"goToApp": "Go to application",
 			"goToPlatform": "Navigate to",
 			"logout": "Logout",
 			"sidenav": {
@@ -908,6 +917,7 @@
 						"add": "Create assignment rule",
 						"delete": "Delete rule",
 						"edit": "Edit assignment rule",
+						"none": "No assignment rule",
 						"title": "Rule"
 					},
 					"title": "Automatic assignment"
@@ -1070,6 +1080,7 @@
 					"history": "Show history"
 				},
 				"errors": {
+					"autoSaveFailed": "Action stopped due to some invalid records. Please review them before taking any other action.",
 					"invalid": {
 						"backoffice": "Invalid grid configuration",
 						"frontoffice": "Invalid grid configuration, please contact your admin"
@@ -1164,6 +1175,7 @@
 					},
 					"position": "Position",
 					"series": {
+						"fill": "Fill",
 						"interpolation": {
 							"step": "Step interpolation",
 							"title": "Interpolation"
@@ -1366,6 +1378,9 @@
 								"datasource": "Add a button in widget's header to view card's data source"
 							}
 						},
+						"preview": {
+							"title": "Preview"
+						},
 						"textEditor": {
 							"alert": "You can add variables e.g: {{data.variable}} and calculate e.g: {{calc.round( value ; precision )}}",
 							"title": "Text editor"
@@ -1407,7 +1422,13 @@
 		}
 	},
 	"kendo": {
+		"combobox": {
+			"noDataText": "No available choice"
+		},
 		"datepicker": {
+			"dateLabel": "Select a date",
+			"endLabel": "Select a end date",
+			"startLabel": "Select a start date",
 			"today": "Today",
 			"toggle": "Choose a date"
 		},
@@ -1555,6 +1576,21 @@
 			"stick": "Stick",
 			"unlock": "Unlock",
 			"unstick": "Unstick"
+		},
+		"multiselect": {
+			"noDataText": "No available choice"
+		},
+		"pager": {
+			"firstPage": "Go to the first page",
+			"items": "items",
+			"itemsPerPage": "items per page",
+			"label": "'Page navigation, page {currentPage} of {totalPages}'",
+			"lastPage": "Go to the last page",
+			"nextPage": "Go to the next page",
+			"of": "of",
+			"page": "Page",
+			"pageNumberInputTitle": "Page Number",
+			"previousPage": "Go to the previous page"
 		},
 		"tilelayout": {
 			"component": {
@@ -1831,6 +1867,10 @@
 				},
 				"selectApplication": "Missing value application for an element on page {{page}}. Please select at least one application in properties of {{question}} to save the form.",
 				"snakecase": "The value name {{name}} on page {{page}} is invalid. Please conform to snake_case."
+			},
+			"move": {
+				"down": "Move down",
+				"up": "Move up"
 			},
 			"questionsCategories": {
 				"core": "Question Library"

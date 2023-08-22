@@ -4,12 +4,13 @@
   <!-- Form actions -->
   <div class="mt-6 flex justify-center" *ngIf="completed && !form.uniqueRecord">
     <!-- New record -->
-    <safe-button
+    <ui-button
+      [isBlock]="true"
       class="flex-1 max-w-xs"
       variant="primary"
       category="secondary"
       (click)="clearForm()"
-      >{{ 'models.record.new' | translate }}</safe-button
+      >{{ 'models.record.new' | translate }}</ui-button
     >
   </div>
 </ng-container>

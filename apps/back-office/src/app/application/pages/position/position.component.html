@@ -1,60 +1,82 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
-<ng-container *ngIf="!loading">
-  <div class="mb-4 flex flex-row justify-end">
-    <safe-button
+<ng-container *ngIf="!loading; else loadingTmpl">
+  <ng-container *ngIf="positionCategories.length">
+    <div class="flex justify-end">
+      <ng-container *ngTemplateOutlet="newPosition"></ng-container>
+    </div>
+  </ng-container>
+  <ng-template #newPosition>
+    <ui-button
       icon="add"
       category="secondary"
       variant="primary"
       (click)="onAdd()"
     >
       {{ 'pages.application.positionAttributes.create' | translate }}
-    </safe-button>
-  </div>
-  <!-- Table container -->
-  <div class="overflow-x-hidden shadow-2lg">
-    <!-- Table scroll container -->
-    <div class="overflow-x-auto">
-      <table mat-table [dataSource]="positionCategories">
-        <ng-container matColumnDef="title">
-          <th mat-header-cell *matHeaderCellDef>
-            {{ 'common.title' | translate }}
-          </th>
-          <td mat-cell *matCellDef="let element" class="font-bold">
-            {{ element.title }}
-          </td>
-        </ng-container>
-
-        <ng-container matColumnDef="actions" [stickyEnd]="true">
-          <th mat-header-cell *matHeaderCellDef class="w-16"></th>
-          <td mat-cell *matCellDef="let element">
-            <safe-button
-              [isIcon]="true"
-              icon="more_vert"
-              [matMenuTriggerFor]="menu"
-              (click)="$event.stopPropagation()"
+    </ui-button>
+  </ng-template>
+  <ng-container *ngIf="positionCategories.length; else emptyTmpl">
+    <!-- Table container -->
+    <div class="mt-4 overflow-x-hidden shadow-2lg">
+      <!-- Table scroll container -->
+      <div class="overflow-x-auto">
+        <table cdk-table uiTableWrapper [dataSource]="positionCategories">
+          <ng-container cdkColumnDef="title">
+            <th uiCellHeader *cdkHeaderCellDef>
+              {{ 'common.title' | translate }}
+            </th>
+            <td
+              uiCell
+              *cdkCellDef="let element"
+              class="!text-gray-900 !font-medium"
             >
-            </safe-button>
-            <mat-menu #menu="matMenu">
-              <button mat-menu-item (click)="onEdit(element)">
-                <mat-icon>edit</mat-icon>
-                {{ 'common.edit' | translate }}
-              </button>
-              <button mat-menu-item color="warn" (click)="onDelete(element)">
-                <mat-icon>delete</mat-icon>
-                {{ 'common.delete' | translate }}
-              </button>
-            </mat-menu>
-          </td>
-        </ng-container>
+              {{ element.title }}
+            </td>
+          </ng-container>
 
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr
-          class="cursor-pointer"
-          mat-row
-          *matRowDef="let row; columns: displayedColumns"
-          [routerLink]="[row.id]"
-        ></tr>
-      </table>
+          <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+            <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>
+            <td uiCell *cdkCellDef="let element">
+              <ui-button
+                [isIcon]="true"
+                icon="more_vert"
+                [uiMenuTriggerFor]="menu"
+                (click)="$event.stopPropagation()"
+              >
+              </ui-button>
+              <ui-menu #menu>
+                <button uiMenuItem (click)="onEdit(element)">
+                  <ui-icon icon="edit" variant="grey"></ui-icon>
+                  {{ 'common.edit' | translate }}
+                </button>
+                <button uiMenuItem (click)="onDelete(element)">
+                  <ui-icon icon="delete" variant="danger"></ui-icon>
+                  {{ 'common.delete' | translate }}
+                </button>
+              </ui-menu>
+            </td>
+          </ng-container>
+
+          <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+          <tr
+            class="cursor-pointer"
+            cdk-row
+            *cdkRowDef="let row; columns: displayedColumns"
+            [routerLink]="[row.id]"
+          ></tr>
+        </table>
+      </div>
     </div>
-  </div>
+  </ng-container>
+  <ng-template #emptyTmpl>
+    <!-- Empty indicator -->
+    <safe-empty
+      [title]="'common.positionCategory.none' | translate"
+      [footerTemplate]="newPosition"
+    ></safe-empty>
+  </ng-template>
 </ng-container>
+<ng-template #loadingTmpl>
+  <!-- Loading indicator -->
+  <safe-skeleton-table [columns]="displayedColumns" [actions]="true">
+  </safe-skeleton-table>
+</ng-template>

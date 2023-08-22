@@ -1,4 +1,4 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<ui-spinner *ngIf="loading"></ui-spinner>
 <ng-container *ngIf="!loading && referenceData">
   <!-- Header -->
   <div class="page-header">
@@ -16,58 +16,51 @@
   <form [formGroup]="referenceForm" class="flex flex-col mb-8">
     <div class="flex gap-x-2">
       <!-- Name -->
-      <mat-form-field appearance="outline" class="flex-auto">
-        <mat-label>{{ 'common.name' | translate }}</mat-label>
+      <div uiFormFieldDirective class="flex-auto">
+        <label>{{ 'common.name' | translate }}</label>
         <input
-          matInput
           formControlName="name"
           type="text"
           [placeholder]="'common.placeholder.name' | translate"
         />
-      </mat-form-field>
+      </div>
       <!-- Type selection -->
-      <mat-form-field appearance="outline" class="1">
-        <mat-label>{{ 'pages.referenceData.type' | translate }}</mat-label>
-        <mat-select formControlName="type">
-          <mat-option
+      <div uiFormFieldDirective class="w-44">
+        <label>{{ 'common.type.one' | translate }}</label>
+        <ui-select-menu formControlName="type">
+          <ui-select-option
             *ngFor="let referenceTypeChoice of referenceTypeChoices"
             [value]="referenceTypeChoice"
-            >{{ referenceTypeChoice }}</mat-option
           >
-        </mat-select>
-      </mat-form-field>
+            {{ referenceTypeChoice }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
     </div>
     <!-- Specific to GraphQL and Rest type -->
     <div *ngIf="['rest', 'graphql'].includes(type)" class="flex flex-col">
       <div class="flex gap-x-2" [class.flex-col]="type === 'graphql'">
         <!-- API Configuration -->
-        <mat-form-field appearance="outline" class="flex-auto">
-          <mat-label>{{ 'common.apiConfiguration.one' | translate }}</mat-label>
-          <safe-graphql-select
+        <div uiFormFieldDirective class="flex-auto">
+          <label>{{ 'common.apiConfiguration.one' | translate }}</label>
+          <ui-graphql-select
             valueField="id"
             textField="name"
             [query]="apiConfigurationsQuery"
             formControlName="apiConfiguration"
             [selectedElements]="[selectedApiConfiguration]"
           >
-          </safe-graphql-select>
-        </mat-form-field>
+          </ui-graphql-select>
+        </div>
         <!-- QueryName -->
-        <mat-form-field
-          appearance="outline"
-          class="flex-1"
-          *ngIf="type !== 'graphql'"
-        >
-          <mat-label>{{
-            'pages.referenceData.queryName' | translate
-          }}</mat-label>
+        <div uiFormFieldDirective class="flex-1">
+          <label>{{ 'pages.referenceData.queryName' | translate }}</label>
           <input
-            matInput
             formControlName="query"
             type="text"
             [placeholder]="'common.placeholder.name' | translate"
           />
-        </mat-form-field>
+        </div>
         <!-- GraphQL Query -->
         <ngx-monaco-editor
           *ngIf="type === 'graphql' && queryControl"
@@ -107,7 +100,7 @@
           <div *ngIf="triedToGetFields && !loadingFields">
             {{ 'pages.referenceData.fields.noFields' | translate }}
           </div>
-          <safe-button
+          <ui-button
             *ngIf="!loadingFields"
             category="secondary"
             variant="primary"
@@ -115,77 +108,87 @@
             class="mx-auto my-1"
           >
             {{ 'pages.referenceData.fields.fetch' | translate }}
-          </safe-button>
-          <mat-spinner
-            diameter="45"
-            class="my-2"
-            *ngIf="loadingFields"
-          ></mat-spinner>
+          </ui-button>
+          <ui-spinner class="my-2" *ngIf="loadingFields"></ui-spinner>
         </ng-template>
       </kendo-grid>
     </div>
     <!-- CSV Input for static type -->
     <div *ngIf="type === 'static'" class="flex gap-2">
-      <mat-form-field appearance="outline" class="flex-auto">
-        <mat-label>{{ 'pages.referenceData.csv' | translate }}</mat-label>
-        <textarea
+      <div uiFormFieldDirective class="flex-auto">
+        <label>{{ 'pages.referenceData.csv' | translate }}</label>
+        <ui-textarea
           #csvData
-          matInput
           [placeholder]="'pages.referenceData.placeholder.csv' | translate"
           [value]="csvValue"
-        ></textarea>
-      </mat-form-field>
-      <safe-button
+        >
+        </ui-textarea>
+      </div>
+      <ui-button
         category="secondary"
         variant="primary"
         (click)="onValidateCSV()"
+        class="mt-8"
       >
         {{ 'pages.referenceData.validateCsv' | translate }}
-      </safe-button>
+      </ui-button>
     </div>
-    <mat-spinner
-      diameter="45"
-      class="page-loader"
-      *ngIf="csvLoading"
-    ></mat-spinner>
+    <ui-spinner *ngIf="csvLoading"></ui-spinner>
     <div class="flex gap-x-2">
       <!-- Path -->
-      <mat-form-field
+      <div
         class="flex-auto"
-        appearance="outline"
+        uiFormFieldDirective
         *ngIf="['rest', 'graphql'].includes(type)"
       >
-        <mat-label>{{ 'pages.referenceData.path' | translate }}</mat-label>
+        <label>{{ 'pages.referenceData.path' | translate }}</label>
         <input
-          matInput
           formControlName="path"
           type="text"
           [placeholder]="'common.placeholder.name' | translate"
         />
-        <safe-icon
+        <ui-icon
           icon="info_outline"
           class="cursor-pointer"
           variant="grey"
-          matSuffix
-          [matTooltip]="'pages.referenceData.tooltip.path' | translate"
-        ></safe-icon>
-      </mat-form-field>
+          uiSuffix
+          [uiTooltip]="'pages.referenceData.tooltip.path' | translate"
+        ></ui-icon>
+      </div>
       <!-- Value field to be displayed -->
-      <mat-form-field
+      <div
+        uiFormFieldDirective
         class="flex-1"
-        appearance="outline"
         *ngIf="!csvLoading && type && valueFields.length > 0"
       >
-        <mat-label>{{
-          'pages.referenceData.valueField' | translate
-        }}</mat-label>
-        <mat-select formControlName="valueField">
-          <mat-option *ngFor="let value of valueFields" [value]="value.name">{{
-            value.name
-          }}</mat-option>
-        </mat-select>
-      </mat-form-field>
+        <label>{{ 'pages.referenceData.valueField' | translate }}</label>
+        <ui-select-menu formControlName="valueField">
+          <ui-select-option
+            *ngFor="let value of valueFields"
+            [value]="value.name"
+            >{{ value.name }}</ui-select-option
+          >
+        </ui-select-menu>
+      </div>
     </div>
+    <!-- For graphql -->
+    <!-- <div uiFormFieldDirective *ngIf="type === 'graphql'">
+      <label>{{ 'pages.referenceData.graphQLFilter' | translate }} </label>
+      <input
+        formControlName="graphQLFilter"
+        type="text"
+        [placeholder]="
+          'pages.referenceData.placeholder.graphQLFilter' | translate
+        "
+      />
+      <ui-icon
+        icon="info_outline"
+        class="cursor-pointer"
+        variant="grey"
+        uiSuffix
+        [uiTooltip]="'pages.referenceData.tooltip.graphQLFilter' | translate"
+      ></ui-icon>
+    </div> -->
     <!-- Kendo grid to preview data on static type -->
     <div *ngIf="!csvLoading && csvValue && type === 'static'">
       <kendo-grid [data]="newData">
@@ -198,7 +201,7 @@
     </div>
   </form>
   <!-- Submit button -->
-  <safe-button
+  <ui-button
     class="!w-auto"
     category="secondary"
     variant="primary"
@@ -206,5 +209,5 @@
     [disabled]="referenceForm.invalid || !referenceForm.dirty"
   >
     {{ 'common.save' | translate }}
-  </safe-button>
+  </ui-button>
 </ng-container>

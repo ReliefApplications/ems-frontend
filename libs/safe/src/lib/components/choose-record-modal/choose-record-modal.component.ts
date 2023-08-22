@@ -1,32 +1,17 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
-import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
+import { Component, Inject, OnDestroy, OnInit } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { Apollo } from 'apollo-angular';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { BehaviorSubject, Observable } from 'rxjs';
-import { takeUntil } from 'rxjs/operators';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
-import { SafeResourceDropdownModule } from '../resource-dropdown/resource-dropdown.module';
-import { SafeApplicationDropdownModule } from '../application-dropdown/application-dropdown.module';
-import { SafeRecordDropdownModule } from '../record-dropdown/record-dropdown.module';
+import { GraphQLSelectModule } from '@oort-front/ui';
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '../ui/modal/modal.module';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { DialogModule, FormWrapperModule, ButtonModule } from '@oort-front/ui';
 
 /**
  * A constant that is used to set the number of items to be displayed on the page.
@@ -43,14 +28,6 @@ interface DialogData {
 }
 
 /**
- * Interface that describes the structure of the data for the records
- */
-interface IRecord {
-  value: string;
-  label: any;
-}
-
-/**
  * Component used for the modals that allow the users to chose records
  */
 @Component({
@@ -59,16 +36,12 @@ interface IRecord {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatDialogModule,
-    MatSelectModule,
-    MatButtonModule,
-    MatProgressSpinnerModule,
-    SafeResourceDropdownModule,
-    SafeApplicationDropdownModule,
-    SafeRecordDropdownModule,
     SafeCoreGridModule,
     TranslateModule,
-    SafeModalModule,
+    DialogModule,
+    ButtonModule,
+    FormWrapperModule,
+    GraphQLSelectModule,
   ],
   selector: 'safe-choose-record-modal',
   templateUrl: './choose-record-modal.component.html',
@@ -76,59 +49,50 @@ interface IRecord {
 })
 export class SafeChooseRecordModalComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   // === REACTIVE FORM ===
-  chooseRecordForm: UntypedFormGroup = new UntypedFormGroup({});
+  public chooseRecordForm = this.formBuilder.group({
+    record: ['', Validators.required],
+  });
 
   // === GRID SETTINGS ===
   public settings: GridSettings = {};
 
   // === DATA ===
-  private records = new BehaviorSubject<IRecord[]>([]);
-  public records$!: Observable<IRecord[]>;
-  private filter: any;
-  private dataQuery: any;
-  private pageInfo = {
-    endCursor: '',
-    hasNextPage: true,
-  };
-
-  @ViewChild('recordSelect') recordSelect?: MatSelect;
+  private filter: CompositeFilterDescriptor | undefined;
+  public dataQuery: any;
 
   // === LOAD DATA ===
-  public loading = true;
   public isSearchActivated = false;
-  public selectedRows: any[] = [];
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
-   * @param queryBuilder This is the service that will be used to build the
-   * query.
-   * @param formBuilder This is used to create the form that will be used
-   * to search for records.
-   * @param apollo This is the Apollo service that we will use to make our GraphQL
-   * queries.
+   * @param queryBuilder This is the service that will be used to build the query.
+   * @param formBuilder This is used to create the form that will be used to search for records.
+   * @param apollo This is the Apollo service that we will use to make our GraphQL queries.
    * @param dialogRef This is the dialog that will be opened
-   * @param data This is the data that is passed into the modal when it is
-   * opened.
+   * @param data This is the data that is passed into the modal when it is opened.
+   * @param document Document
    */
   constructor(
     private queryBuilder: QueryBuilderService,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private apollo: Apollo,
-    public dialogRef: MatDialogRef<SafeChooseRecordModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    public dialogRef: DialogRef<SafeChooseRecordModalComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData,
+    @Inject(DOCUMENT) public document: Document
   ) {
     super();
   }
 
   ngOnInit(): void {
     this.settings = { query: this.data.targetFormQuery };
-    this.filter = this.settings.query?.filter || {};
+    this.filter = this.settings.query?.filter || undefined;
     if (!this.settings.query?.name) return;
+
     const builtQuery = this.queryBuilder.buildQuery({
       ...this.settings,
       query: {
@@ -137,6 +101,7 @@ export class SafeChooseRecordModalComponent
       },
     });
     if (!builtQuery) return;
+
     this.dataQuery = this.apollo.watchQuery({
       query: builtQuery,
       variables: {
@@ -151,20 +116,7 @@ export class SafeChooseRecordModalComponent
         },
       },
     });
-    if (this.dataQuery) {
-      this.records$ = this.records.asObservable();
-      this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
-        next: ({ data, loading }: any) => {
-          this.updateValues(data, loading);
-        },
-        complete: () => (this.loading = false),
-      });
-    } else {
-      this.loading = false;
-    }
-    this.chooseRecordForm = this.formBuilder.group({
-      record: [null, Validators.required],
-    });
+
     this.settings = {
       query: this.data.targetFormQuery,
       actions: {
@@ -179,10 +131,25 @@ export class SafeChooseRecordModalComponent
   }
 
   /**
-   * Set the boolean isSearchActivated to true on search
+   * Changes the query according to search text
+   *
+   * @param search Search text from the graphql select
    */
-  onSearch(): void {
-    this.isSearchActivated = !this.isSearchActivated;
+  onSearchChange(search: string): void {
+    const variables = this.dataQuery.variables;
+    this.dataQuery.refetch({
+      ...variables,
+      filter: {
+        logic: 'and',
+        filters: [
+          {
+            field: this.data.targetFormField,
+            operator: 'contains',
+            value: search,
+          },
+        ],
+      },
+    });
   }
 
   /**
@@ -205,67 +172,5 @@ export class SafeChooseRecordModalComponent
    */
   onClose(): void {
     this.dialogRef.close();
-  }
-
-  /**
-   * Adds scroll listener to select.
-   *
-   * @param e open select event.
-   */
-  onOpenSelect(e: any): void {
-    if (e && this.recordSelect) {
-      const panel = this.recordSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) =>
-        this.loadOnScroll(event)
-      );
-    }
-  }
-
-  /**
-   * Fetches more resources on scroll.
-   *
-   * @param e scroll event.
-   */
-  private loadOnScroll(e: any): void {
-    if (
-      e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
-      50
-    ) {
-      if (!this.loading && this.pageInfo.hasNextPage) {
-        this.loading = true;
-        this.dataQuery
-          .fetchMore({
-            variables: {
-              first: ITEMS_PER_PAGE,
-              skip: this.records.getValue().length,
-              afterCursor: this.pageInfo.endCursor,
-            },
-          })
-          .then((results: any) =>
-            this.updateValues(results.data, results.loading)
-          );
-      }
-    }
-  }
-
-  /**
-   * Update record data value
-   *
-   * @param data query response data
-   * @param loading loading status
-   */
-  private updateValues(data: any, loading: boolean) {
-    for (const field in data) {
-      if (Object.prototype.hasOwnProperty.call(data, field)) {
-        const nodes =
-          data[field].edges.map((x: any) => ({
-            value: x.node.id,
-            label: x.node[this.data.targetFormField],
-          })) || [];
-        this.pageInfo = data[field].pageInfo;
-        this.records.next(nodes);
-      }
-    }
-    this.loading = loading;
   }
 }

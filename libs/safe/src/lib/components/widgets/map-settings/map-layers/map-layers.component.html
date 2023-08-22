@@ -1,40 +1,33 @@
 <!-- <p>map-layers works!</p> -->
 <div class="flex flex-col">
   <h2>{{ 'common.layers' | translate }}</h2>
-  <mat-tab-group mat-align-tabs="start" animationDuration="0ms">
-    <mat-tab
-      [label]="'components.widget.settings.map.layers.point.title' | translate"
-    >
-      <ng-template matTabContent>
-        <safe-map-markers
-          [form]="form"
-          [selectedFields]="selectedFields"
-          [formattedSelectedFields]="formattedSelectedFields"
-        ></safe-map-markers>
-      </ng-template>
-    </mat-tab>
-    <mat-tab
-      [label]="
+  <ui-tabs>
+    <ui-tab>
+      <ng-container ngProjectAs="label">{{
+        'components.widget.settings.map.layers.point.title' | translate
+      }}</ng-container>
+      <safe-map-markers
+        [form]="form"
+        [selectedFields]="selectedFields"
+        [formattedSelectedFields]="formattedSelectedFields"
+      ></safe-map-markers>
+    </ui-tab>
+    <ui-tab>
+      <ng-container ngProjectAs="label">{{
         'components.widget.settings.map.layers.clorophlet.title' | translate
-      "
-    >
-      <ng-template matTabContent>
-        <safe-map-clorophlets
-          [query]="form.get('query')"
-          [clorophlets]="clorophlets"
-          [selectedFields]="selectedFields"
-          [formattedSelectedFields]="formattedSelectedFields"
-        ></safe-map-clorophlets>
-      </ng-template>
-    </mat-tab>
-    <mat-tab
-      [label]="'components.widget.settings.map.layers.online.title' | translate"
-    >
-      <ng-template matTabContent>
-        <safe-map-online-layers
-          [layers]="onlineLayers"
-        ></safe-map-online-layers>
-      </ng-template>
-    </mat-tab>
-  </mat-tab-group>
+      }}</ng-container>
+      <safe-map-clorophlets
+        [query]="form.get('query')"
+        [clorophlets]="clorophlets"
+        [selectedFields]="selectedFields"
+        [formattedSelectedFields]="formattedSelectedFields"
+      ></safe-map-clorophlets>
+    </ui-tab>
+    <ui-tab>
+      <ng-container ngProjectAs="label">{{
+        'components.widget.settings.map.layers.online.title' | translate
+      }}</ng-container>
+      <safe-map-online-layers [layers]="onlineLayers"></safe-map-online-layers>
+    </ui-tab>
+  </ui-tabs>
 </div>

@@ -1,16 +1,11 @@
-import { Component, Inject, OnInit, ViewChild } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import {
   UntypedFormArray,
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-  MatLegacyDialog as MatDialog,
-} from '@angular/material/legacy-dialog';
-import { MatLegacySelect as MatSelect } from '@angular/material/legacy-select';
+import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import {
   ApiConfiguration,
   Application,
@@ -38,21 +33,25 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../../../utils/update-queries';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import {
-  SafeGraphQLSelectModule,
-  SafeModalModule,
   SafeReadableCronModule,
   CronExpressionControlModule,
 } from '@oort-front/safe';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
-import { MatExpansionModule } from '@angular/material/expansion';
-import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
+import {
+  TooltipModule,
+  ButtonModule,
+  ExpansionPanelModule,
+  SelectMenuModule,
+  FormWrapperModule,
+  TextareaModule,
+  ChipModule,
+  GraphQLSelectModule,
+  IconModule,
+} from '@oort-front/ui';
+import { DialogModule } from '@oort-front/ui';
 
 /** Items per page for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -68,16 +67,18 @@ const DEFAULT_FIELDS = ['createdBy'];
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    SafeModalModule,
-    SafeGraphQLSelectModule,
+    DialogModule,
+    GraphQLSelectModule,
     SafeReadableCronModule,
-    MatTooltipModule,
-    MatInputModule,
-    MatSelectModule,
-    MatFormFieldModule,
-    MatExpansionModule,
-    MatChipsModule,
+    TooltipModule,
+    ExpansionPanelModule,
     CronExpressionControlModule,
+    IconModule,
+    TextareaModule,
+    ButtonModule,
+    SelectMenuModule,
+    FormWrapperModule,
+    ChipModule,
   ],
   selector: 'app-edit-pull-job-modal',
   templateUrl: './edit-pull-job-modal.component.html',
@@ -92,7 +93,6 @@ export class EditPullJobModalComponent implements OnInit {
   public formsQuery!: QueryRef<GetFormsQueryResponse>;
 
   // === CHANNELS ===
-  @ViewChild('channelSelect') channelSelect?: MatSelect;
   private applicationsLoading = true;
   public applications = new BehaviorSubject<Application[]>([]);
   public applications$!: Observable<Application[]>;
@@ -139,19 +139,21 @@ export class EditPullJobModalComponent implements OnInit {
    * Pull job modal component
    *
    * @param formBuilder Angular form builder
-   * @param dialogRef Material dialog ref
+   * @param dialogRef Dialog ref
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
+   * @param document Document
    * @param data Modal injected data
    * @param data.channels list of available channels
    * @param data.pullJob pull job
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<EditPullJobModalComponent>,
+    public dialogRef: DialogRef<EditPullJobModalComponent>,
     private apollo: Apollo,
-    private dialog: MatDialog,
-    @Inject(MAT_DIALOG_DATA)
+    private dialog: Dialog,
+    @Inject(DOCUMENT) private document: Document,
+    @Inject(DIALOG_DATA)
     public data: {
       channels: Channel[];
       pullJob?: PullJob;
@@ -377,11 +379,9 @@ export class EditPullJobModalComponent implements OnInit {
    * Adds scroll listener to channels select.
    */
   onOpenApplicationSelect(): void {
-    if (this.channelSelect) {
-      const panel = this.channelSelect.panel.nativeElement;
-      if (panel) {
-        panel.onscroll = (event: any) => this.loadOnScrollApplication(event);
-      }
+    const panel = this.document.getElementById('optionList');
+    if (panel) {
+      panel.onscroll = (event: any) => this.loadOnScrollApplication(event);
     }
   }
 

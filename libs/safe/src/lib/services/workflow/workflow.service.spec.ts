@@ -1,16 +1,20 @@
 import { HttpClientModule } from '@angular/common/http';
 import { TestBed } from '@angular/core/testing';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
-import { RouterTestingModule } from '@angular/router/testing';
-import { environment } from 'projects/back-office/src/environments/environment';
 import {
   DateTimeProvider,
   OAuthLogger,
   OAuthService,
   UrlHelperService,
 } from 'angular-oauth2-oidc';
-
 import { SafeWorkflowService } from './workflow.service';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import {
+  TranslateFakeLoader,
+  TranslateLoader,
+  TranslateModule,
+  TranslateService,
+} from '@ngx-translate/core';
+import { AppAbility } from '../auth/auth.service';
 
 describe('SafeWorkflowService', () => {
   let service: SafeWorkflowService;
@@ -18,13 +22,24 @@ describe('SafeWorkflowService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       providers: [
-        { provide: 'environment', useValue: environment },
+        { provide: 'environment', useValue: {} },
         OAuthService,
         UrlHelperService,
         OAuthLogger,
         DateTimeProvider,
+        TranslateService,
+        AppAbility,
       ],
-      imports: [MatSnackBarModule, RouterTestingModule, HttpClientModule],
+      imports: [
+        HttpClientModule,
+        ApolloTestingModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
+        }),
+      ],
     });
     service = TestBed.inject(SafeWorkflowService);
   });

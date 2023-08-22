@@ -7,18 +7,15 @@ import {
 } from '@angular/core';
 import * as SurveyCreator from 'survey-creator';
 import * as Survey from 'survey-angular';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { SafeFormService } from '../../../services/form/form.service';
 import { CommonModule } from '@angular/common';
 import { SafeFormBuilderModule } from '../../form-builder/form-builder.module';
-import { SafeButtonModule } from '../../ui/button/button.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
-import { SafeModalModule } from '../../ui/modal/modal.module';
-
+import { TooltipModule } from '@oort-front/ui';
+import { DialogModule, AlertModule } from '@oort-front/ui';
+import { renderGlobalProperties } from '../../../survey/render-global-properties';
+import { SafeReferenceDataService } from '../../../services/reference-data/reference-data.service';
 /**
  * Data passed to initialize the filter builder
  */
@@ -57,6 +54,22 @@ const QUESTION_TYPES = [
  * Allowed properties for a core question in a child form.
  */
 const CORE_QUESTION_ALLOWED_PROPERTIES = [
+  'name',
+  'title',
+  'size',
+  'min',
+  'max',
+  'minValueExpression',
+  'maxValueExpression',
+  'minErrorText',
+  'maxErrorText',
+  'step',
+  'maxLength',
+  'placeholder',
+  'dateMin',
+  'dateMax',
+  'description',
+  'hideNumber',
   'width',
   'maxWidth',
   'minWidth',
@@ -73,6 +86,14 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'addTemplate',
   'Search resource table',
   'visible',
+  'choicesFromQuestion',
+  'choices',
+  'choicesFromQuestionMode',
+  'choicesOrder',
+  'choicesByUrl',
+  'hideIfChoicesEmpty',
+  'choicesVisibleIf',
+  'choicesEnableIf',
   'readOnly',
   'isRequired',
   'placeHolder',
@@ -85,6 +106,18 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'referenceDataFilterForeignField',
   'referenceDataFilterFilterCondition',
   'referenceDataFilterLocalField',
+  'showSelectAllItem',
+  'showNoneItem',
+  'showClearButton',
+  'bindings',
+  'choicesMin',
+  'choicesMax',
+  'allowClear',
+  'autoGrow',
+  'labelTrue',
+  'labelFalse',
+  'valueTrue',
+  'valueFalse',
 ];
 
 /**
@@ -98,10 +131,10 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   imports: [
     CommonModule,
     SafeFormBuilderModule,
-    SafeButtonModule,
     TranslateModule,
-    MatTooltipModule,
-    SafeModalModule,
+    TooltipModule,
+    DialogModule,
+    AlertModule,
   ],
 })
 export class FilterBuilderModalComponent
@@ -115,11 +148,13 @@ export class FilterBuilderModalComponent
    * @param formService Shared form service
    * @param dialogRef reference to the dialog component
    * @param data data passed to initialize the filter builder
+   * @param referenceDataService reference data service
    */
   constructor(
     private formService: SafeFormService,
-    private dialogRef: MatDialogRef<FilterBuilderModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    private dialogRef: DialogRef<FilterBuilderModalComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData,
+    private referenceDataService: SafeReferenceDataService
   ) {}
 
   ngOnInit(): void {
@@ -160,11 +195,24 @@ export class FilterBuilderModalComponent
       if (!obj || !obj.page) {
         return;
       }
+
       // If it is a core field
       if (!CORE_QUESTION_ALLOWED_PROPERTIES.includes(opt.property.name)) {
+        // console.log(opt.property.name);
         opt.canShow = false;
       }
     });
+
+    // add the rendering of custom properties
+    this.surveyCreator.survey.onAfterRenderQuestion.add(
+      renderGlobalProperties(this.referenceDataService)
+    );
+    (this.surveyCreator.onTestSurveyCreated as any).add(
+      (sender: any, opt: any) =>
+        opt.survey.onAfterRenderQuestion.add(
+          renderGlobalProperties(this.referenceDataService)
+        )
+    );
 
     // Set content
     const survey = new Survey.SurveyModel(this.data?.surveyStructure || {});
@@ -183,7 +231,7 @@ export class FilterBuilderModalComponent
    * Custom SurveyJS method, save the survey when edited.
    */
   saveMySurvey = () => {
-    this.dialogRef.close(this.surveyCreator.text);
+    this.dialogRef.close(this.surveyCreator.text as any);
   };
 
   ngOnDestroy(): void {

@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { SafeApplicationService } from '../../../../services/application/application.service';
 import { takeUntil } from 'rxjs';
@@ -15,6 +14,7 @@ import { SelectionModel } from '@angular/cdk/collections';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
 import { ActivatedRoute, Router } from '@angular/router';
+import { UIPageChangeEvent } from '@oort-front/ui';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -43,7 +43,7 @@ export class UserListComponent
     'actions',
   ];
 
-  public users: MatTableDataSource<User> = new MatTableDataSource<User>([]);
+  public users: Array<User> = new Array<User>();
   public cachedUsers: User[] = [];
   private usersQuery!: QueryRef<GetApplicationUsersQueryResponse>;
   @Input() roles: Role[] = [];
@@ -61,7 +61,7 @@ export class UserListComponent
 
   /** @returns empty state of the table */
   get empty(): boolean {
-    return !this.loading && this.users.data.length === 0;
+    return !this.loading && this.users.length === 0;
   }
 
   public selection = new SelectionModel<User>(true, []);
@@ -120,14 +120,14 @@ export class UserListComponent
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
       ((e.pageIndex > e.previousPageIndex &&
         e.pageIndex * this.pageInfo.pageSize >= this.cachedUsers.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedUsers.length
+      e.totalItems > this.cachedUsers.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
@@ -139,7 +139,7 @@ export class UserListComponent
       this.pageInfo.pageSize = first;
       this.fetchUsers();
     } else {
-      this.users.data = this.cachedUsers.slice(
+      this.users = this.cachedUsers.slice(
         e.pageSize * this.pageInfo.pageIndex,
         e.pageSize * (this.pageInfo.pageIndex + 1)
       );
@@ -180,7 +180,7 @@ export class UserListComponent
    */
   isAllSelected(): boolean {
     const numSelected = this.selection.selected.length;
-    const numRows = this.users.data.length;
+    const numRows = this.users.length;
     return numSelected === numRows;
   }
 
@@ -191,7 +191,7 @@ export class UserListComponent
     // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     this.isAllSelected()
       ? this.selection.clear()
-      : this.users.data.forEach((row) => this.selection.select(row));
+      : this.users.forEach((row) => this.selection.select(row));
   }
 
   /**
@@ -233,18 +233,20 @@ export class UserListComponent
         title,
         content,
         confirmText: this.translate.instant('components.confirmModal.delete'),
-        confirmColor: 'warn',
+        confirmVariant: 'danger',
       });
-      dialogRef.afterClosed().subscribe((value) => {
-        if (value) {
-          const ids = users.map((u) => u.id);
-          this.loading = true;
-          this.selection.clear();
-          this.applicationService.deleteUsersFromApplication(ids, () =>
-            this.fetchUsers(true)
-          );
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            const ids = users.map((u) => u.id);
+            this.loading = true;
+            this.selection.clear();
+            this.applicationService.deleteUsersFromApplication(ids, () =>
+              this.fetchUsers(true)
+            );
+          }
+        });
     }
   }
 
@@ -268,17 +270,15 @@ export class UserListComponent
     data: GetApplicationUsersQueryResponse,
     loading: boolean
   ) {
-    this.cachedUsers = updateQueryUniqueValues(
-      this.cachedUsers,
-      data.application.users.edges.map((x) => x.node)
-    );
+    const mappedValues = data.application.users.edges.map((x) => x.node);
+    this.cachedUsers = updateQueryUniqueValues(this.cachedUsers, mappedValues);
 
-    this.users.data = this.cachedUsers.slice(
+    this.pageInfo.length = data.application.users.totalCount;
+    this.pageInfo.endCursor = data.application.users.pageInfo.endCursor;
+    this.users = this.cachedUsers.slice(
       this.pageInfo.pageSize * this.pageInfo.pageIndex,
       this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
     );
-    this.pageInfo.length = data.application.users.totalCount;
-    this.pageInfo.endCursor = data.application.users.pageInfo.endCursor;
     this.loading = loading;
     this.updating = false;
   }

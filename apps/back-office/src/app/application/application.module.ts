@@ -5,7 +5,6 @@ import { ApplicationComponent } from './application.component';
 import {
   SafeLayoutModule,
   SafeApplicationToolbarModule,
-  SafeLeftSidenavModule,
   SafeNavbarModule,
 } from '@oort-front/safe';
 
@@ -19,7 +18,6 @@ import {
     ApplicationRoutingModule,
     SafeApplicationToolbarModule,
     SafeLayoutModule,
-    SafeLeftSidenavModule,
     SafeNavbarModule,
   ],
   exports: [ApplicationComponent],

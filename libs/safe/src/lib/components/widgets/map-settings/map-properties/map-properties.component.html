@@ -3,77 +3,87 @@
     <h2>
       {{ 'components.widget.settings.map.properties.title' | translate }}
     </h2>
-    <mat-form-field appearance="outline">
-      <mat-label>{{
+    <div uiFormFieldDirective>
+      <label>{{
         'components.widget.settings.map.properties.basemap' | translate
-      }}</mat-label>
-      <mat-select formControlName="basemap" placeholder="OSM">
-        <mat-option *ngFor="let map of basemaps" [value]="map">
-          {{ map }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
-    <mat-label>
+      }}</label>
+      <ui-select-menu formControlName="basemap" placeholder="OSM">
+        <ui-select-option *ngFor="let map of basemaps" [value]="map">{{
+          map
+        }}</ui-select-option>
+      </ui-select-menu>
+    </div>
+    <label>
       {{ 'components.widget.settings.map.properties.zoom' | translate }}
-      <safe-icon
+      <ui-icon
         icon="info_outline"
         class="cursor-pointer"
-        [matTooltip]="
+        [uiTooltip]="
           'components.widget.settings.map.properties.zoom' | translate
         "
-        [inline]="true"
         [size]="18"
         variant="grey"
-      ></safe-icon>
-    </mat-label>
-    <mat-slider
-      thumbLabel
-      tickInterval="1"
+      ></ui-icon>
+    </label>
+    <ui-slider
+      class="mb-2"
       formControlName="zoom"
-      [min]="2"
-      [max]="18"
-    ></mat-slider>
+      [minValue]="2"
+      [maxValue]="18"
+    ></ui-slider>
     <div class="flex flex-wrap gap-2">
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>
+      <div
+        [uiErrorMessage]="
+          'components.widget.settings.map.errors.latitude' | translate
+        "
+        [uiErrorMessageIf]="
+          form.controls.centerLat.errors && form.controls.centerLat.touched
+        "
+        uiFormFieldDirective
+        class="flex-1"
+      >
+        <label>
           {{ 'components.widget.settings.map.properties.latitude' | translate }}
-        </mat-label>
-        <input type="number" matInput formControlName="centerLat" />
-        <safe-icon
-          matSuffix
+        </label>
+        <input type="number" formControlName="centerLat" />
+        <ui-icon
+          uiSuffix
           icon="info"
           class="cursor-pointer"
           variant="grey"
-          [matTooltip]="
+          [uiTooltip]="
             'components.widget.settings.map.tooltip.default.latitude'
               | translate
           "
-        ></safe-icon>
-        <mat-error *ngIf="form.controls.centerLat.errors">
-          {{ 'components.widget.settings.map.errors.latitude' | translate }}
-        </mat-error>
-      </mat-form-field>
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>
+        ></ui-icon>
+      </div>
+      <div
+        [uiErrorMessage]="
+          'components.widget.settings.map.errors.longitude' | translate
+        "
+        [uiErrorMessageIf]="
+          form.controls.centerLong.errors && form.controls.centerLong.touched
+        "
+        uiFormFieldDirective
+        class="flex-1"
+      >
+        <label>
           {{
             'components.widget.settings.map.properties.longitude' | translate
           }}
-        </mat-label>
-        <input type="number" matInput formControlName="centerLong" />
-        <safe-icon
-          matSuffix
+        </label>
+        <input type="number" formControlName="centerLong" />
+        <ui-icon
+          uiSuffix
           icon="info"
           class="cursor-pointer"
           variant="grey"
-          [matTooltip]="
+          [uiTooltip]="
             'components.widget.settings.map.tooltip.default.longitude'
               | translate
           "
-        ></safe-icon>
-        <mat-error *ngIf="form.controls.centerLat.errors">
-          {{ 'components.widget.settings.map.errors.longitude' | translate }}
-        </mat-error>
-      </mat-form-field>
+        ></ui-icon>
+      </div>
     </div>
     <safe-map [header]="false" [settings]="mapSettings"></safe-map>
   </div>

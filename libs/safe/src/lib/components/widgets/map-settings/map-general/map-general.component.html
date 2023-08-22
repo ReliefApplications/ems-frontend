@@ -1,29 +1,28 @@
 <form [formGroup]="form">
   <div class="flex flex-col">
     <h2>{{ 'common.general' | translate }}</h2>
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'common.name' | translate }}</mat-label>
-      <input matInput formControlName="title" type="string" />
-    </mat-form-field>
+    <div uiFormFieldDirective>
+      <label>{{ 'common.name' | translate }}</label>
+      <input formControlName="title" type="string" />
+    </div>
     <!-- Resource selection -->
-    <mat-form-field appearance="outline" class="flex-1">
-      <mat-label>{{ 'common.resource.one' | translate }}</mat-label>
-      <safe-graphql-select
+    <div uiFormFieldDirective class="flex-1">
+      <label>{{ 'common.resource.one' | translate }}</label>
+      <ui-graphql-select
         valueField="id"
         textField="name"
         [query]="resourcesQuery"
         formControlName="resource"
         [selectedElements]="[resource]"
       >
-      </safe-graphql-select>
-    </mat-form-field>
+      </ui-graphql-select>
+    </div>
   </div>
   <div class="flex flex-col mt-8" *ngIf="resource">
     <h2>{{ 'components.widget.settings.map.dataset' | translate }}</h2>
-    <safe-alert class="mb-6">
-      <safe-icon icon="info"></safe-icon>
+    <ui-alert class="mb-6">
       {{ 'components.widget.settings.map.tooltip.dataset' | translate }}
-    </safe-alert>
+    </ui-alert>
     <safe-query-builder
       [form]="$any(form.controls.query)"
       [queryName]="resource.queryName"

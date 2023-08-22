@@ -1,8 +1,7 @@
 <!-- General info about field selection -->
-<safe-alert class="mb-4">
-  <safe-icon icon="info"></safe-icon>
+<ui-alert class="mb-4">
   {{ 'components.queryBuilder.hint.fields' | translate }}
-</safe-alert>
+</ui-alert>
 <!-- Field selection -->
 <div
   cdkDropListGroup
@@ -14,18 +13,16 @@
     <h2>{{ 'components.queryBuilder.fields.available' | translate }}</h2>
 
     <!-- Search through fields -->
-    <mat-form-field appearance="outline" class="!w-full">
-      <mat-label>{{
-        'components.queryBuilder.fields.search' | translate
-      }}</mat-label>
-      <input type="text" matInput [(ngModel)]="searchAvailable" />
-      <safe-button
-        matSuffix
+    <div uiFormFieldDirective class="!w-full">
+      <label>{{ 'components.queryBuilder.fields.search' | translate }}</label>
+      <input type="text" [(ngModel)]="searchAvailable" />
+      <ui-button
+        uiSuffix
         (click)="searchAvailable = ''"
         [isIcon]="true"
         [icon]="searchAvailable ? 'cancel' : 'search'"
-      ></safe-button>
-    </mat-form-field>
+      ></ui-button>
+    </div>
 
     <!-- List of fields -->
     <div class="overflow-auto max-h-[400px]">
@@ -60,18 +57,16 @@
     <h2>{{ 'components.queryBuilder.fields.selected' | translate }}</h2>
 
     <!-- Search through fields -->
-    <mat-form-field appearance="outline" class="!w-full">
-      <mat-label>{{
-        'components.queryBuilder.fields.search' | translate
-      }}</mat-label>
-      <input type="text" matInput [(ngModel)]="searchSelected" />
-      <safe-button
-        matSuffix
+    <div uiFormFieldDirective class="!w-full">
+      <label>{{ 'components.queryBuilder.fields.search' | translate }}</label>
+      <input type="text" [(ngModel)]="searchSelected" />
+      <ui-button
+        uiSuffix
         (click)="searchSelected = ''"
         [isIcon]="true"
         [icon]="searchSelected ? 'cancel' : 'search'"
-      ></safe-button>
-    </mat-form-field>
+      ></ui-button>
+    </div>
 
     <!-- List of fields -->
     <div class="overflow-auto max-h-[400px]">
@@ -94,25 +89,25 @@
             <!-- Field name and errors -->
             <div class="flex items-center">
               <span>{{ field.name }}</span>
-              <safe-button
+              <ui-button
                 [isIcon]="true"
                 icon="error"
-                class="text-red-600"
+                variant="danger"
                 (click)="onEdit(index)"
                 *ngIf="form.at(index)?.invalid && field.type"
               >
-              </safe-button>
-              <safe-button
+              </ui-button>
+              <ui-button
                 [isIcon]="true"
                 icon="close"
-                class="text-red-600"
+                variant="danger"
                 *ngIf="!field.type"
                 (click)="onDelete(index)"
-                [matTooltip]="
+                [uiTooltip]="
                   'components.queryBuilder.errors.field.invalid' | translate
                 "
               >
-              </safe-button>
+              </ui-button>
             </div>
             <!-- Field type -->
             <div *ngIf="field.type" class="flex items-center">
@@ -121,22 +116,20 @@
                 *ngIf="field.type.kind !== 'SCALAR'"
                 >{{ field.type.kind }}</span
               >
-              <safe-button [isIcon]="true" icon="edit" (click)="onEdit(index)">
-              </safe-button>
+              <ui-button [isIcon]="true" icon="edit" (click)="onEdit(index)">
+              </ui-button>
             </div>
           </div>
         </ng-container>
       </div>
-      <safe-icon
+      <ui-icon
         *ngIf="searchSelected"
         icon="info"
         class="floating-info cursor-pointer"
         variant="grey"
         [size]="32"
-        [matTooltip]="
-          'components.queryBuilder.hint.sortingDisabled' | translate
-        "
-      ></safe-icon>
+        [uiTooltip]="'components.queryBuilder.hint.sortingDisabled' | translate"
+      ></ui-icon>
     </div>
   </div>
 </div>
@@ -145,27 +138,22 @@
   <ng-container *ngIf="fieldForm.value.kind === 'SCALAR'">
     <form [formGroup]="fieldForm" class="p-4 rounded-lg border border-gray-300">
       <div class="flex gap-2">
-        <safe-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()">
-        </safe-button>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'models.form.field.name' | translate }}</mat-label>
-          <input
-            matInput
-            formControlName="name"
-            type="text"
-            [disabled]="true"
-          />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'models.form.field.label' | translate }}</mat-label>
-          <input matInput formControlName="label" type="text" />
-        </mat-form-field>
-        <mat-form-field appearance="outline">
-          <mat-label>
+        <ui-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()">
+        </ui-button>
+        <div uiFormFieldDirective>
+          <label>{{ 'models.form.field.name' | translate }}</label>
+          <input formControlName="name" type="text" [disabled]="true" />
+        </div>
+        <div uiFormFieldDirective>
+          <label>{{ 'models.form.field.label' | translate }}</label>
+          <input formControlName="label" type="text" />
+        </div>
+        <div uiFormFieldDirective>
+          <label>
             {{ 'components.queryBuilder.fields.column' | translate }}
-          </mat-label>
-          <input matInput formControlName="width" type="number" />
-        </mat-form-field>
+          </label>
+          <input formControlName="width" type="number" />
+        </div>
       </div>
       <h3 style="margin: 0">
         {{ 'components.queryBuilder.fields.format.title' | translate }}

@@ -23,7 +23,6 @@ import { FormWidgetModule } from './widgets/form-widget/form-widget.module';
 import { WorkflowWidgetComponent } from './widgets/workflow-widget/workflow-widget.component';
 import { WorkflowWidgetModule } from './widgets/workflow-widget/workflow-widget.module';
 import { environment } from '../environments/environment';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
 import { RouterModule } from '@angular/router';
 import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
 import {
@@ -87,7 +86,6 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     BrowserModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    MatSnackBarModule,
     RouterModule.forRoot([]),
     OAuthModule.forRoot(),
     TranslateModule.forRoot({

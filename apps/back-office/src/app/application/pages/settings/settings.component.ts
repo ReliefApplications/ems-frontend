@@ -9,21 +9,20 @@ import {
   Application,
   SafeApplicationService,
   SafeConfirmService,
-  SafeSnackBarService,
   SafeAuthService,
   SafeUnsubscribeComponent,
   SafeLayoutService,
 } from '@oort-front/safe';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import {
   DeleteApplicationMutationResponse,
   DELETE_APPLICATION,
 } from './graphql/mutations';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { CustomStyleComponent } from '../../../components/custom-style/custom-style.component';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Application settings page component.
@@ -37,7 +36,7 @@ export class SettingsComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  public applications = new MatTableDataSource<Application>([]);
+  public applications = new Array<Application>();
   public settingsForm?: UntypedFormGroup;
   public application?: Application;
   public user: any;
@@ -54,7 +53,7 @@ export class SettingsComponent
    * @param applicationService Shared application service
    * @param authService Shared authentication service
    * @param confirmService Shared confirm service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param translate Angular translate service
    * @param layoutService Shared layout service
    */
@@ -62,11 +61,11 @@ export class SettingsComponent
     private formBuilder: UntypedFormBuilder,
     private apollo: Apollo,
     private router: Router,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private applicationService: SafeApplicationService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private translate: TranslateService,
     private layoutService: SafeLayoutService
   ) {
@@ -144,52 +143,58 @@ export class SettingsComponent
           { name: this.application?.name }
         ),
         confirmText: this.translate.instant('components.confirmModal.delete'),
-        confirmColor: 'warn',
+        confirmVariant: 'danger',
       });
-      dialogRef.afterClosed().subscribe((value) => {
-        if (value) {
-          const id = this.application?.id;
-          this.apollo
-            .mutate<DeleteApplicationMutationResponse>({
-              mutation: DELETE_APPLICATION,
-              variables: {
-                id,
-              },
-            })
-            .subscribe({
-              next: ({ errors, data }) => {
-                if (errors) {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectNotDeleted',
-                      {
-                        value: this.translate.instant('common.application.one'),
-                        error: errors ? errors[0].message : '',
-                      }
-                    ),
-                    { error: true }
-                  );
-                } else {
-                  this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'common.notifications.objectDeleted',
-                      {
-                        value: this.translate.instant('common.application.one'),
-                      }
-                    )
-                  );
-                  this.applications.data = this.applications.data.filter(
-                    (x) => x.id !== data?.deleteApplication.id
-                  );
-                }
-              },
-              error: (err) => {
-                this.snackBar.openSnackBar(err.message, { error: true });
-              },
-            });
-          this.router.navigate(['/applications']);
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            const id = this.application?.id;
+            this.apollo
+              .mutate<DeleteApplicationMutationResponse>({
+                mutation: DELETE_APPLICATION,
+                variables: {
+                  id,
+                },
+              })
+              .subscribe({
+                next: ({ errors, data }) => {
+                  if (errors) {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'common.notifications.objectNotDeleted',
+                        {
+                          value: this.translate.instant(
+                            'common.application.one'
+                          ),
+                          error: errors ? errors[0].message : '',
+                        }
+                      ),
+                      { error: true }
+                    );
+                  } else {
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'common.notifications.objectDeleted',
+                        {
+                          value: this.translate.instant(
+                            'common.application.one'
+                          ),
+                        }
+                      )
+                    );
+                    this.applications = this.applications.filter(
+                      (x) => x.id !== data?.deleteApplication.id
+                    );
+                  }
+                },
+                error: (err) => {
+                  this.snackBar.openSnackBar(err.message, { error: true });
+                },
+              });
+            this.router.navigate(['/applications']);
+          }
+        });
     }
   }
 

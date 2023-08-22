@@ -7,7 +7,6 @@ import {
   Step,
   SafeFormComponent,
   SafeUnsubscribeComponent,
-  SafeSnackBarService,
 } from '@oort-front/safe';
 import {
   GetFormByIdQueryResponse,
@@ -20,6 +19,7 @@ import {
 import { Subscription } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Form page.
@@ -67,7 +67,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private translate: TranslateService
   ) {
     super();

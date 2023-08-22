@@ -1,8 +1,8 @@
 <ng-container *ngIf="!loading && form">
   <safe-form [form]="form" (save)="onComplete($event)"></safe-form>
   <ng-container *ngIf="completed && !form.uniqueRecord && !hideNewRecord">
-    <safe-button category="secondary" (click)="clearForm()">{{
+    <ui-button category="secondary" (click)="clearForm()">{{
       'models.record.new' | translate
-    }}</safe-button>
+    }}</ui-button>
   </ng-container>
 </ng-container>

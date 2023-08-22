@@ -1,3 +1,5 @@
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import {
   Component,
   ElementRef,
@@ -10,17 +12,8 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-  MatLegacyDialogRef as MatDialogRef,
-} from '@angular/material/legacy-dialog';
-import {
-  MatLegacyChipInputEvent as MatChipInputEvent,
-  MAT_LEGACY_CHIPS_DEFAULT_OPTIONS as MAT_CHIPS_DEFAULT_OPTIONS,
-} from '@angular/material/legacy-chips';
 import { EMAIL_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { SafeEditorService } from '../../services/editor/editor.service';
-import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 
 /** Interface of Email Preview Modal Data */
 interface DialogData {
@@ -38,16 +31,6 @@ const EMAIL_REGEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
 
 /**
- * Function that create a function which returns an object with the separator keys
- *
- * @returns A function which returns an object with the separator keys
- */
-export function codesFactory(): () => any {
-  const codes = () => ({ separatorKeyCodes: SEPARATOR_KEYS_CODE });
-  return codes;
-}
-
-/**
  * Preview Email component.
  * Modal in read-only mode.
  */
@@ -55,7 +38,6 @@ export function codesFactory(): () => any {
   selector: 'safe-email-preview',
   templateUrl: './email-preview.component.html',
   styleUrls: ['./email-preview.component.scss'],
-  providers: [{ provide: MAT_CHIPS_DEFAULT_OPTIONS, useFactory: codesFactory }],
 })
 export class SafeEmailPreviewComponent implements OnInit {
   /** mail is put in a form to use read-only inputs */ // we want to change that
@@ -66,11 +48,27 @@ export class SafeEmailPreviewComponent implements OnInit {
   /** tinymce editor */
   public editor: any = EMAIL_EDITOR_CONFIG;
 
-  @ViewChild('emailsInput') emailsInput?: ElementRef<HTMLInputElement>;
+  @ViewChild('emailsInput') emailsInput!: ElementRef<HTMLInputElement>;
 
   /** @returns list of emails */
   get emails(): string[] {
     return this.form.get('to')?.value || [];
+  }
+
+  /**
+   * Get error message of field
+   *
+   * @returns error message
+   */
+  get emailsError(): string {
+    const control = this.form.get('to');
+    if (control?.hasError('required')) {
+      return 'components.distributionLists.errors.emails.required';
+    }
+    if (control?.hasError('pattern')) {
+      return 'components.distributionLists.errors.emails.pattern';
+    }
+    return '';
   }
 
   /**
@@ -83,8 +81,8 @@ export class SafeEmailPreviewComponent implements OnInit {
    * @param editorService Editor service used to get main URL and current language
    */
   constructor(
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
-    public dialogRef: MatDialogRef<SafeEmailPreviewComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData,
+    public dialogRef: DialogRef<SafeEmailPreviewComponent>,
     private formBuilder: UntypedFormBuilder,
     private editorService: SafeEditorService
   ) {
@@ -109,33 +107,33 @@ export class SafeEmailPreviewComponent implements OnInit {
    *
    * @param event The event triggered when we exit the input
    */
-  addEmail(event: MatChipInputEvent | any): void {
+  addEmail(event: any): void {
+    const control = this.form.get('to');
     // use setTimeout to prevent add input value on focusout
     setTimeout(
       () => {
-        const input =
-          event.type === 'focusout'
-            ? this.emailsInput?.nativeElement
-            : event.input;
         const value =
           event.type === 'focusout'
-            ? this.emailsInput?.nativeElement.value
-            : event.value;
+            ? this.emailsInput.nativeElement.value
+            : event;
 
         // Add the mail
         const emails = [...this.emails];
         if ((value || '').trim()) {
           if (EMAIL_REGEX.test(value.trim())) {
             emails.push(value.trim());
-            this.form.get('to')?.setValue(emails);
-            this.form.get('to')?.updateValueAndValidity();
-            // Reset the input value
-            if (input) {
-              input.value = '';
+            control?.setValue(emails);
+            control?.updateValueAndValidity();
+            if (event.type === 'focusout') {
+              this.emailsInput.nativeElement.value = '';
             }
           } else {
-            this.form.get('to')?.setErrors({ pattern: true });
+            control?.setErrors({ pattern: true });
           }
+        } else {
+          // no value
+          control?.setErrors({ pattern: false });
+          control?.updateValueAndValidity();
         }
       },
       event.type === 'focusout' ? 500 : 0
@@ -155,21 +153,5 @@ export class SafeEmailPreviewComponent implements OnInit {
       this.form.get('to')?.setValue(emails);
       this.form.get('to')?.updateValueAndValidity();
     }
-  }
-
-  /**
-   * Get error message of field
-   *
-   * @returns error message
-   */
-  public errorMessage(): string {
-    const control = this.form.get('to');
-    if (control?.hasError('required')) {
-      return 'components.distributionLists.errors.emails.required';
-    }
-    if (control?.hasError('pattern')) {
-      return 'components.distributionLists.errors.emails.pattern';
-    }
-    return '';
   }
 }

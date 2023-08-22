@@ -10,7 +10,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
   ReferenceData,
-  SafeSnackBarService,
   referenceDataType,
   ApiConfiguration,
   SafeBreadcrumbService,
@@ -31,12 +30,12 @@ import {
   GET_REFERENCE_DATA,
 } from './graphql/queries';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
-import { MatLegacyChipInputEvent as MatChipInputEvent } from '@angular/material/legacy-chips';
 import { takeUntil } from 'rxjs/operators';
 import { firstValueFrom } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { inferTypeFromString } from './utils/inferTypeFromString';
 import { get } from 'lodash';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Default graphql query */
 const DEFAULT_QUERY = `query {\n  \n}`;
@@ -118,7 +117,7 @@ export class ReferenceDataComponent
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private router: Router,
     private formBuilder: UntypedFormBuilder,
     private translateService: TranslateService,
@@ -444,7 +443,7 @@ export class ReferenceDataComponent
    *
    * @param event input event.
    */
-  add(event: MatChipInputEvent | any): void {
+  add(event: string | any): void {
     // use setTimeout to prevent add input value on focusout
     setTimeout(
       () => {

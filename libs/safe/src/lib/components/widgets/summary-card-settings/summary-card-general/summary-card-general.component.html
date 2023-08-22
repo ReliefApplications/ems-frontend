@@ -1,160 +1,164 @@
-<ng-container *ngIf="tileForm">
-  <form [formGroup]="tileForm" class="flex flex-col gap-3">
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'common.title' | translate }}</mat-label>
-      <input matInput formControlName="title" type="string" />
-    </mat-form-field>
+<form [formGroup]="tileForm" class="flex flex-col gap-3">
+  <div uiFormFieldDirective>
+    <label>{{ 'common.title' | translate }}</label>
+    <input formControlName="title" type="string" />
+  </div>
 
-    <ng-container formGroupName="card">
-      <!-- RESOURCE SELECTION  -->
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'models.resource.select' | translate }}</mat-label>
-        <safe-graphql-select
-          valueField="id"
-          textField="name"
-          [query]="resourcesQuery"
-          formControlName="resource"
-          [selectedElements]="[selectedResource]"
-          (searchChange)="onResourceSearchChange($event)"
-          [filterable]="true"
-        ></safe-graphql-select>
-      </mat-form-field>
+  <ng-container formGroupName="card">
+    <!-- RESOURCE SELECTION  -->
+    <div uiFormFieldDirective>
+      <label>{{ 'models.resource.select' | translate }}</label>
+      <ui-graphql-select
+        valueField="id"
+        textField="name"
+        [query]="resourcesQuery"
+        formControlName="resource"
+        [selectedElements]="[selectedResource]"
+        (searchChange)="onResourceSearchChange($event)"
+        [filterable]="true"
+      ></ui-graphql-select>
+    </div>
 
-      <!-- SELECT AGGREGATION OR LAYOUT -->
-      <div
-        class="flex flex-col mt-8 gap-8"
-        *ngIf="tileForm.get('card.resource')?.value"
-      >
-        <div *ngIf="!selectedAggregation">
-          <h2>{{ 'common.layout.one' | translate }}</h2>
-        </div>
-        <ng-container *ngIf="!selectedLayout && !selectedAggregation">
-          <div class="flex justify-center mt-4">
-            <safe-button
-              class="max-w-xs grow"
-              category="tertiary"
-              variant="primary"
-              (click)="addLayout()"
-              >{{
-                'components.widget.settings.grid.layouts.add.title' | translate
-              }}</safe-button
-            >
-          </div>
-        </ng-container>
-        <safe-divider
-          *ngIf="!selectedAggregation && !selectedLayout"
-          [text]="'common.or' | translate"
-        ></safe-divider>
-        <div *ngIf="!selectedLayout">
-          <h2>{{ 'common.aggregation.one' | translate }}</h2>
-        </div>
-        <ng-container *ngIf="!selectedLayout && !selectedAggregation">
-          <div class="flex justify-center mt-4">
-            <safe-button
-              class="max-w-xs grow"
-              category="tertiary"
-              variant="primary"
-              (click)="addAggregation()"
-              >{{ 'components.aggregation.add.title' | translate }}</safe-button
-            >
-          </div>
-        </ng-container>
+    <!-- SELECT AGGREGATION OR LAYOUT -->
+    <div
+      class="flex flex-col mt-8 gap-8"
+      *ngIf="tileForm.get('card.resource')?.value"
+    >
+      <div *ngIf="!selectedAggregation">
+        <h2>{{ 'common.layout.one' | translate }}</h2>
       </div>
-
-      <!-- FROM LAYOUTS -->
-      <ng-container
-        *ngIf="selectedLayout && tileForm.get('card.resource')?.value"
-      >
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.layout.one' | translate }}</mat-label>
-          <mat-select [disabled]="true" [value]="selectedLayout.id">
-            <mat-option [value]="selectedLayout.id">{{
-              selectedLayout.name
-            }}</mat-option>
-          </mat-select>
-          <safe-button
-            matSuffix
+      <ng-container *ngIf="!selectedLayout && !selectedAggregation">
+        <div class="flex justify-center mt-4">
+          <ui-button
+            category="tertiary"
             variant="primary"
-            [isIcon]="true"
-            icon="edit"
-            (click)="editLayout()"
-          ></safe-button>
-          <safe-button
-            matSuffix
-            variant="danger"
-            [isIcon]="true"
-            icon="close"
-            (click)="
-              tileForm.get('card.layout')?.setValue(null);
-              layoutChange.emit(null)
-            "
-          ></safe-button>
-        </mat-form-field>
-        <h2>
-          {{
-            'components.widget.settings.summaryCard.card.dataSource.layoutStyles.title'
-              | translate
-          }}
-        </h2>
-        <mat-checkbox formControlName="useStyles">
+            (click)="addLayout()"
+            >{{
+              'components.widget.settings.grid.layouts.add.title' | translate
+            }}</ui-button
+          >
+        </div>
+      </ng-container>
+      <ui-divider
+        *ngIf="!selectedAggregation && !selectedLayout"
+        [text]="'common.or' | translate"
+      ></ui-divider>
+      <div *ngIf="!selectedLayout">
+        <h2>{{ 'common.aggregation.one' | translate }}</h2>
+      </div>
+      <ng-container *ngIf="!selectedLayout && !selectedAggregation">
+        <div class="flex justify-center mt-4">
+          <ui-button
+            category="tertiary"
+            variant="primary"
+            (click)="addAggregation()"
+            >{{ 'components.aggregation.add.title' | translate }}</ui-button
+          >
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- FROM LAYOUTS -->
+    <ng-container
+      *ngIf="selectedLayout && tileForm.get('card.resource')?.value"
+    >
+      <div uiFormFieldDirective>
+        <label>{{ 'common.layout.one' | translate }}</label>
+        <ui-select-menu [disabled]="true" [value]="selectedLayout.name">
+          <ui-select-option [value]="selectedLayout.name">{{
+            selectedLayout.name
+          }}</ui-select-option>
+        </ui-select-menu>
+        <ui-button
+          uiSuffix
+          variant="primary"
+          [isIcon]="true"
+          icon="edit"
+          (click)="editLayout()"
+        ></ui-button>
+        <ui-button
+          uiSuffix
+          variant="danger"
+          [isIcon]="true"
+          icon="close"
+          (click)="
+            tileForm.get('card.layout')?.setValue(null); layoutChange.emit(null)
+          "
+        ></ui-button>
+      </div>
+      <h2>
+        {{
+          'components.widget.settings.summaryCard.card.dataSource.layoutStyles.title'
+            | translate
+        }}
+      </h2>
+      <ui-checkbox formControlName="useStyles">
+        <ng-container ngProjectAs="label">
           {{
             'components.widget.settings.summaryCard.card.dataSource.layoutStyles.use'
               | translate
           }}
-        </mat-checkbox>
-        <div *ngIf="this.tileForm.value.card?.useStyles">
-          <p>
-            {{
-              'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.title'
-                | translate
-            }}
-          </p>
-          <mat-radio-group formControlName="wholeCardStyles">
-            <mat-radio-button [value]="false">
+        </ng-container>
+      </ui-checkbox>
+      <div *ngIf="this.tileForm.value.card?.useStyles">
+        <p>
+          {{
+            'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.title'
+              | translate
+          }}
+        </p>
+        <div
+          uiRadioGroupDirective="applyStyles"
+          formControlName="wholeCardStyles"
+        >
+          <ui-radio [value]="false">
+            <ng-container ngProjectAs="label">
               {{
                 'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option1'
                   | translate
               }}
-            </mat-radio-button>
-            <mat-radio-button [value]="true">
+            </ng-container>
+          </ui-radio>
+          <ui-radio [value]="true">
+            <ng-container ngProjectAs="label">
               {{
                 'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option2'
                   | translate
               }}
-            </mat-radio-button>
-          </mat-radio-group>
+            </ng-container>
+          </ui-radio>
         </div>
-      </ng-container>
-      <!-- FROM AGGREGATIONS -->
-      <ng-container
-        *ngIf="selectedAggregation && tileForm.get('card.resource')?.value"
-      >
-        <mat-form-field appearance="outline">
-          <mat-label>{{ 'common.aggregation.one' | translate }}</mat-label>
-          <mat-select [disabled]="true" [value]="selectedAggregation.id">
-            <mat-option [value]="selectedAggregation.id">{{
-              selectedAggregation.name
-            }}</mat-option>
-          </mat-select>
-          <safe-button
-            matSuffix
-            variant="primary"
-            [isIcon]="true"
-            icon="edit"
-            (click)="editAggregation()"
-          ></safe-button>
-          <safe-button
-            matSuffix
-            variant="danger"
-            [isIcon]="true"
-            icon="close"
-            (click)="
-              tileForm.get('card.aggregation')?.setValue(null);
-              aggregationChange.emit(null)
-            "
-          ></safe-button>
-        </mat-form-field>
-      </ng-container>
+      </div>
     </ng-container>
-  </form>
-</ng-container>
+    <!-- FROM AGGREGATIONS -->
+    <ng-container
+      *ngIf="selectedAggregation && tileForm.get('card.resource')?.value"
+    >
+      <div uiFormFieldDirective>
+        <label>{{ 'common.aggregation.one' | translate }}</label>
+        <ui-select-menu [disabled]="true" [value]="selectedAggregation.id">
+          <ui-select-option [value]="selectedAggregation.id">{{
+            selectedAggregation.name
+          }}</ui-select-option>
+        </ui-select-menu>
+        <ui-button
+          uiSuffix
+          variant="primary"
+          [isIcon]="true"
+          icon="edit"
+          (click)="editAggregation()"
+        ></ui-button>
+        <ui-button
+          uiSuffix
+          variant="danger"
+          [isIcon]="true"
+          icon="close"
+          (click)="
+            tileForm.get('card.aggregation')?.setValue(null);
+            aggregationChange.emit(null)
+          "
+        ></ui-button>
+      </div>
+    </ng-container>
+  </ng-container>
+</form>

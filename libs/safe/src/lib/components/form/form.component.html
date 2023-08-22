@@ -12,49 +12,44 @@
   ></safe-form-actions>
 </div>
 <!-- Form pages -->
-<mat-tab-group
+<ui-tabs
   class="mb-4"
-  animationDuration="0ms"
-  [selectedIndex]="selectedTabIndex"
+  [selectedIndex]="(selectedPageIndex$ | async)!"
   (selectedIndexChange)="onShowPage($event)"
 >
-  <mat-tab
-    *ngFor="let page of pages$ | async"
-    [label]="page.title ? page.title : page.name"
-  >
-    <ng-template mat-tab-label>
+  <ui-tab *ngFor="let page of survey.visiblePages ?? []">
+    <ng-container ngProjectAs="label">
       {{ page.title ? page.title : page.name }}
-      <safe-icon
+      <ui-icon
         *ngIf="page.containsErrors"
         icon="error"
         variant="danger"
-        [inline]="true"
         [size]="20"
-      ></safe-icon>
-    </ng-template>
-  </mat-tab>
-</mat-tab-group>
+      ></ui-icon>
+    </ng-container>
+  </ui-tab>
+</ui-tabs>
 <!-- Form -->
 <div #formContainer></div>
 <!-- Form actions -->
 <div *ngIf="surveyActive" class="flex justify-end gap-2 mt-4 flex-wrap">
-  <ng-container *ngIf="pages$ | async as pages">
-    <safe-button
+  <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
+    <ui-button
       *ngIf="pages.length > 1"
       [disabled]="survey.isFirstPage"
       variant="primary"
       (click)="survey.prevPage()"
-      >{{ 'common.previous' | translate }}</safe-button
+      >{{ 'common.previous' | translate }}</ui-button
     >
-    <safe-button
+    <ui-button
       *ngIf="pages.length > 1"
       [disabled]="survey.isLastPage"
       variant="primary"
       (click)="survey.nextPage()"
-      >{{ 'common.next' | translate }}</safe-button
+      >{{ 'common.next' | translate }}</ui-button
     >
   </ng-container>
-  <safe-button variant="primary" category="secondary" (click)="submit()">{{
+  <ui-button variant="primary" category="secondary" (click)="submit()">{{
     'common.save' | translate
-  }}</safe-button>
+  }}</ui-button>
 </div>
