@@ -71,9 +71,6 @@ const createSummaryCardForm = (def: any) => {
 
   const extendedForm = extendWidgetForm(form, settings?.widgetDisplay, {
     searchable: new FormControl(searchable),
-    sortable: new FormControl(
-      get<boolean>(settings, 'widgetDisplay.sortable', false)
-    ),
     usePagination: new FormControl(
       get<boolean>(settings, 'widgetDisplay.usePagination', false)
     ),
@@ -117,6 +114,8 @@ export class SafeSummaryCardSettingsComponent
   public fields: any[] = [];
   public activeTabIndex: number | undefined;
 
+  public sortable = new FormControl();
+
   /**
    * Summary Card Settings component.
    *
@@ -138,6 +137,16 @@ export class SafeSummaryCardSettingsComponent
   ngOnInit(): void {
     this.tileForm = createSummaryCardForm(this.tile);
     this.change.emit(this.tileForm);
+    this.sortable.setValue(this.tile.settings.sortFields.length != 0);
+    this.sortable?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (!value) {
+          // clear sort fields array
+          const sortFields = this.tileForm?.get('sortFields') as FormArray;
+          sortFields.clear();
+        }
+      });
 
     const resourceID = this.tileForm?.get('card.resource')?.value;
     if (resourceID) {

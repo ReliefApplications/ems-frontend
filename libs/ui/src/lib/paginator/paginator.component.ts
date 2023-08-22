@@ -17,6 +17,9 @@ export class PaginatorComponent {
   @Input() pageSizeOptions = [5, 10, 15];
   @Input() hideFirstLastButtons = true;
   @Input() ariaLabel = '';
+
+  // necessary to avoid bugs when filtering data outside the component
+  @Input() skip = 0;
   @Input() pageIndex = 0;
   @Input() displayedPageNumbers = 0;
   @Output() pageChange: EventEmitter<UIPageChangeEvent> = new EventEmitter();
@@ -33,6 +36,7 @@ export class PaginatorComponent {
     // Current page has to be calculated, logic provided from their forums: https://www.telerik.com/forums/get-current-page
     const currentPage = (event.skip + event.take) / event.take - 1;
     this.pageSize = event.take;
+    this.skip = event.skip;
     this.pageChange.emit({
       pageSize: this.pageSize,
       skip: event.skip,
