@@ -58,13 +58,26 @@ export class SafeFormBuilderService {
     Survey.settings.useCachingForChoicesRestful = false;
     Survey.settings.useCachingForChoicesRestfull = false;
     const survey = new Survey.Model(structure);
+
+    // Add custom variables
     this.formHelpersService.addUserVariables(survey);
+    this.formHelpersService.addWorkflowVariables(survey);
     if (record) {
       this.formHelpersService.addRecordIDVariable(survey, record);
     }
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
     );
+
+    // For each question, if validateOnValueChange is true, we will add a listener to the value change event
+    survey.getAllQuestions().forEach((question) => {
+      if (question.validateOnValueChange) {
+        question.registerFunctionOnPropertyValueChanged('value', () => {
+          question.validate();
+        });
+      }
+    });
+
     survey.onCompleting.add(() => {
       for (const page of survey.toJSON().pages) {
         if (!page.elements) continue;
