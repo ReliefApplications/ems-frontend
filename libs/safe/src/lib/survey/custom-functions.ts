@@ -35,7 +35,7 @@ const addCustomFunctions = (
 
   // Register custom functions from the functions folder
   functions.forEach((fn) => {
-    survey.FunctionFactory.Instance.register(fn.name, fn);
+    survey.FunctionFactory.Instance.register(fn.name, fn.fn);
   });
 };
 
