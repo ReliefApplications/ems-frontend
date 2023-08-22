@@ -96,15 +96,11 @@ export class SafeApplicationUsersComponent
               if (this.applicationService.status === 'active') {
                 if (data?.addUsers && data.addUsers.length > 1) {
                   this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'components.users.onInvite.plural'
-                    )
+                    this.translate.instant('components.users.onInvite.plural')
                   );
                 } else {
                   this.snackBar.openSnackBar(
-                    this.translate.instant(
-                      'components.users.onInvite.singular'
-                    )
+                    this.translate.instant('components.users.onInvite.singular')
                   );
                 }
                 this.userList?.fetchUsers(true);
