@@ -95,6 +95,12 @@ export class WorkflowComponent
       this.workflowService.loadWorkflow(this.id);
     });
 
+    this.workflowService.nextStep
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.goToNextStep();
+      });
+
     this.workflowService.workflow$
       .pipe(takeUntil(this.destroy$))
       .subscribe((workflow: Workflow | null) => {
