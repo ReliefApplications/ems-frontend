@@ -118,6 +118,13 @@ export class ArcgisService {
     return searchItems(filter);
   }
 
+  public searchItemById(id: string) {
+    return searchItems({
+      q: `id:${id}`,
+      authentication: this.session,
+    });
+  }
+
   /**
    * Load basemaps from the webmap
    *
