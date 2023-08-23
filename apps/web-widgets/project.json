@@ -87,6 +87,33 @@
         ]
       },
       "configurations": {
+        "azure-uat": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "1mb",
+              "maximumError": "2mb"
+            }
+          ],
+          "stylePreprocessorOptions": {
+            "includePaths": [
+              "libs/ui/src/style/themes/default",
+              "apps/web-widgets/src/app/styles"
+            ]
+          },
+          "fileReplacements": [
+            {
+              "replace": "apps/web-widgets/src/environments/environment.ts",
+              "with": "apps/web-widgets/src/environments/environment.azure.uat.ts"
+            }
+          ],
+          "outputHashing": "all"
+        },
         "oort-dev": {
           "budgets": [
             {

@@ -68,6 +68,7 @@ const initializeAuthAndTranslations =
     injector: Injector
   ): (() => Promise<any>) =>
   () => {
+    // todo: check if used or not
     oauth.configure(environment.authConfig);
     // Make sure that all translations are available before the app initializes
     return new Promise<any>((resolve: any) => {
