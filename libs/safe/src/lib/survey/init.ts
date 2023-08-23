@@ -24,6 +24,7 @@ import * as TooltipProperty from './global-properties/tooltip';
 import { initLocalization } from './localization';
 import { Dialog } from '@angular/cdk/dialog';
 import { NgZone } from '@angular/core';
+import { SafeDateTranslateService } from '../services/date-translate/date-translate.service';
 
 /**
  * Executes all init methods of custom SurveyJS.
@@ -38,6 +39,7 @@ import { NgZone } from '@angular/core';
  * @param referenceDataService Reference data service
  * @param containsCustomQuestions If survey contains custom questions or not
  * @param ngZone Angular Service to execute code inside Angular environment
+ * @param dateTranslate Shared date translation service
  */
 export const initCustomSurvey = (
   Survey: any,
@@ -49,7 +51,8 @@ export const initCustomSurvey = (
   environment: any,
   referenceDataService: SafeReferenceDataService,
   containsCustomQuestions: boolean,
-  ngZone: NgZone
+  ngZone: NgZone,
+  dateTranslate: SafeDateTranslateService
 ): void => {
   // If the survey created does not contain custom questions, we destroy previously set custom questions if so
   if (!containsCustomQuestions) {
@@ -58,7 +61,7 @@ export const initCustomSurvey = (
   }
 
   TagboxWidget.init(Survey, domService);
-  TextWidget.init(Survey, domService);
+  TextWidget.init(Survey, domService, dateTranslate);
   DropdownWidget.init(Survey, domService);
 
   if (containsCustomQuestions) {

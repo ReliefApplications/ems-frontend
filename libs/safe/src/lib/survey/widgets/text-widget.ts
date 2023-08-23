@@ -10,6 +10,7 @@ import { JsonMetadata, SurveyModel } from 'survey-angular';
 import { Question, QuestionText } from '../types';
 import { ButtonComponent } from '@oort-front/ui';
 import { IconComponent } from '@oort-front/ui';
+import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
 
 type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
 
@@ -18,8 +19,13 @@ type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
  *
  * @param Survey Survey library
  * @param domService Shared DOM service
+ * @param dateTranslate Shared date translation service
  */
-export const init = (Survey: any, domService: DomService): void => {
+export const init = (
+  Survey: any,
+  domService: DomService,
+  dateTranslate: SafeDateTranslateService
+): void => {
   const widget = {
     name: 'text-widget',
     widgetIsLoaded: (): boolean => true,
@@ -85,7 +91,8 @@ export const init = (Survey: any, domService: DomService): void => {
             pickerDiv = document.createElement('div');
             const pickerInstance = createPickerInstance(
               question.inputType as DateInputFormat,
-              pickerDiv
+              pickerDiv,
+              dateTranslate.currentLang
             );
             if (pickerInstance) {
               if (question[editor.property.name as keyof QuestionText]) {
@@ -138,7 +145,8 @@ export const init = (Survey: any, domService: DomService): void => {
           pickerDiv = document.createElement('div');
           const pickerInstance = createPickerInstance(
             question.inputType as DateInputFormat,
-            pickerDiv
+            pickerDiv,
+            dateTranslate.currentLang
           );
 
           if (pickerInstance) {
@@ -360,11 +368,13 @@ export const init = (Survey: any, domService: DomService): void => {
    *
    * @param inputType - The type of the input element.
    * @param element - The element that the directive is attached to.
+   * @param currentLang - Current date format language preference chosen.
    * @returns The picker instance, or null if the type is not allowed
    */
   const createPickerInstance = (
     inputType: DateInputFormat,
-    element: any
+    element: any,
+    currentLang: string
   ):
     | DatePickerComponent
     | DateTimePickerComponent
@@ -377,7 +387,8 @@ export const init = (Survey: any, domService: DomService): void => {
           element
         );
         const datePickerInstance: DatePickerComponent = datePicker.instance;
-        datePickerInstance.format = 'dd/MM/yyyy';
+        datePickerInstance.format =
+          currentLang === 'fr' ? 'dd/MM/yyyy' : 'MM/dd/yyyy';
         return datePickerInstance;
       case 'datetime':
       case 'datetime-local':
@@ -387,7 +398,8 @@ export const init = (Survey: any, domService: DomService): void => {
         );
         const dateTimePickerInstance: DateTimePickerComponent =
           dateTimePicker.instance;
-        dateTimePickerInstance.format = 'dd/MM/yyyy HH:mm';
+        dateTimePickerInstance.format =
+          currentLang === 'fr' ? 'dd/MM/yyyy HH:mm' : 'MM/dd/yyyy hh:mm a';
         return dateTimePickerInstance;
       case 'time':
         const timePicker = domService.appendComponentToBody(
@@ -395,7 +407,7 @@ export const init = (Survey: any, domService: DomService): void => {
           element
         );
         const timePickerInstance: TimePickerComponent = timePicker.instance;
-        timePickerInstance.format = 'HH:mm';
+        timePickerInstance.format = currentLang === 'fr' ? 'HH:mm' : 'hh:mm a';
         return timePickerInstance;
       default:
         return null;

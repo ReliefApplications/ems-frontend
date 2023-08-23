@@ -9,6 +9,7 @@ import { Apollo } from 'apollo-angular';
 import { UntypedFormBuilder } from '@angular/forms';
 import { SafeAuthService } from '../auth/auth.service';
 import { SafeReferenceDataService } from '../reference-data/reference-data.service';
+import { SafeDateTranslateService } from '../date-translate/date-translate.service';
 
 /**
  * Shared survey service.
@@ -31,6 +32,7 @@ export class SafeFormService {
    * @param authService Shared authentication service
    * @param referenceDataService Reference data service
    * @param ngZone Angular Service to execute code inside Angular environment
+   * @param dateTranslate Shared date translation service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -40,7 +42,8 @@ export class SafeFormService {
     public formBuilder: UntypedFormBuilder,
     public authService: SafeAuthService,
     public referenceDataService: SafeReferenceDataService,
-    public ngZone: NgZone
+    public ngZone: NgZone,
+    private dateTranslate: SafeDateTranslateService
   ) {
     this.environment = environment;
     this.setSurveyCreatorInstance();
@@ -68,7 +71,8 @@ export class SafeFormService {
       this.environment,
       this.referenceDataService,
       additionalQuestions.customQuestions,
-      this.ngZone
+      this.ngZone,
+      this.dateTranslate
     );
     // === CREATOR SETTINGS ===
     initCreatorSettings(SurveyKo);
@@ -83,7 +87,8 @@ export class SafeFormService {
       this.environment,
       this.referenceDataService,
       additionalQuestions.customQuestions,
-      this.ngZone
+      this.ngZone,
+      this.dateTranslate
     );
   }
 }
