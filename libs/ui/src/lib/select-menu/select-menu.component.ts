@@ -49,10 +49,14 @@ export class SelectMenuComponent
   /** Tells if some styles to the current ul element should be applied */
   @Input() isGraphQlSelect = false;
   /** Default selected value */
-  @Input() value?: string | string[];
+  @Input() value?: string | string[] | null;
   /** Any custom template provided for display */
   @Input()
   customTemplate!: { template: TemplateRef<any>; context: any };
+  /** Add extra classes that will apply to the wrapper element */
+  @Input() extraClasses?: string;
+  /** Default value to be displayed when no option is selected */
+  @Input() placeholder = '';
 
   // Emits when the list is opened
   @Output() opened = new EventEmitter<void>();
@@ -71,7 +75,7 @@ export class SelectMenuComponent
   /** True if the box is focused, false otherwise */
   public listBoxFocused = false;
   /** Text to be displayed in the trigger when some selections are made */
-  public displayTrigger = '';
+  public displayTrigger = this.placeholder;
 
   private destroy$ = new Subject<void>();
   private clickOutsideListener!: () => void;
@@ -244,7 +248,7 @@ export class SelectMenuComponent
             labelValues[0] + ' (+' + (labelValues.length - 1) + ' others)';
         }
       } else {
-        this.displayTrigger = '';
+        this.displayTrigger = this.placeholder;
       }
     }
   }

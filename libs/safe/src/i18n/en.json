@@ -1944,6 +1944,7 @@
 			"display": {
 				"border": "Show widget border",
 				"searchable": "Allow search",
+				"sortable": "Allow sorting",
 				"title": "Widget display"
 			},
 			"map": {
@@ -1954,6 +1955,16 @@
 			},
 			"scheduler": {
 				"defaultTitle": "Scheduler Widget"
+			},
+			"sorting": {
+				"add": "Add a field",
+				"delete": "Delete sort field",
+				"field": "Field",
+				"label": "Label",
+				"management": "Sort fields",
+				"order": "Order",
+				"select": "Select a sort field...",
+				"title": "Sorting"
 			},
 			"tooltip": {
 				"selector": {

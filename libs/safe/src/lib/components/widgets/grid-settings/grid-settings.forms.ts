@@ -1,5 +1,6 @@
 import {
   FormGroup,
+  FormArray,
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
@@ -153,8 +154,7 @@ export const createGridWidgetFormGroup = (
     {
       id,
       title: [get(configuration, 'title', ''), Validators.required],
-      resource: [get(configuration, 'resource', null)],
-      referenceData: [get(configuration, 'referenceData', null)],
+      resource: [get(configuration, 'resource', null), Validators.required],
       template: [get(configuration, 'template', null)],
       layouts: [get(configuration, 'layouts', []), Validators.required],
       aggregations: [
@@ -178,6 +178,7 @@ export const createGridWidgetFormGroup = (
             )
           : [createButtonFormGroup(null)]
       ),
+      sortFields: new FormArray([]),
       contextFilters: [
         get(configuration, 'contextFilters', DEFAULT_CONTEXT_FILTER),
       ],
