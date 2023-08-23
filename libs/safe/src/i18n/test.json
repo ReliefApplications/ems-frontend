@@ -264,6 +264,7 @@
 		"search": "******",
 		"searchObject": "****** {{name}}",
 		"select": "******",
+		"selectStatus": "******",
 		"send": "******",
 		"settings": "******",
 		"status": "******",
@@ -711,6 +712,7 @@
 				"title": "******"
 			},
 			"modal": {
+				"addMappingField": "******",
 				"errors": {
 					"schedule": "******"
 				},

@@ -264,6 +264,7 @@
 		"search": "Recherche",
 		"searchObject": "Rechercher {{name}}",
 		"select": "Sélectionner",
+		"selectStatus": "Sélectionner un statut",
 		"send": "Envoyer",
 		"settings": "Paramètres",
 		"status": "Statut",
@@ -716,6 +717,7 @@
 				"title": "Supprimer la tâche"
 			},
 			"modal": {
+				"addMappingField": "@TODO",
 				"errors": {
 					"schedule": "Entrez une expression cron valide"
 				},

@@ -58,7 +58,7 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     'right-0',
     'bottom-0',
     'truncate',
-    'text-neutral-500',
+    'text-neutral-400',
     'min-w-[30px]',
     'flex',
     'items-center',

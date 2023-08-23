@@ -215,11 +215,11 @@
                 </form>
                 <ui-button
                   *ngIf="filteredFields('').length > 0"
-                  [isIcon]="true"
                   icon="add_circle_outline"
                   variant="primary"
                   (click)="onAddElement()"
                 >
+                {{ 'components.pullJob.modal.addMappingField' | translate }}
                 </ui-button>
               </div>
             </ng-container>

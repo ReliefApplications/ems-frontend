@@ -264,6 +264,7 @@
 		"search": "Search",
 		"searchObject": "Search {{name}}",
 		"select": "Select",
+		"selectStatus": "Select a status",
 		"send": "Send",
 		"settings": "Settings",
 		"status": "Status",
@@ -711,6 +712,7 @@
 				"title": "Delete pull job"
 			},
 			"modal": {
+				"addMappingField": "add a mapping field",
 				"errors": {
 					"schedule": "Enter a valid cron expression"
 				},
