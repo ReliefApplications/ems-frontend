@@ -831,6 +831,6 @@ export class SafeGridComponent
    * Clear the grid search field
    */
   public clearSearch() {
-    this.search.setValue("");
+    this.search.setValue(`''`);
   }
 }
