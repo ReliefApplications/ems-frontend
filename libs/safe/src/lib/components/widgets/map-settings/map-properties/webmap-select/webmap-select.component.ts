@@ -24,6 +24,7 @@ import {
   SelectMenuModule,
   SpinnerModule,
 } from '@oort-front/ui';
+import { IItem } from '@esri/arcgis-rest-portal';
 
 /**
  *
@@ -86,6 +87,11 @@ export class WebmapSelectComponent
    */
   ngOnInit(): void {
     this.search();
+    this.arcgis.searchItemById(this.value).then((item) => {
+      if (item) {
+        this.items.next(item.results);
+      }
+    });
     // this way we can wait for 0.5s before sending an update
     this.searchControl.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged())
@@ -146,6 +152,7 @@ export class WebmapSelectComponent
    * @param text search text
    */
   private search(text?: string): void {
+    const results: IItem[][] = [];
     this.arcgis
       .searchItems({ start: this.start, text, id: this.ngControl.value })
       .then((search) => {
@@ -155,20 +162,22 @@ export class WebmapSelectComponent
           this.nextPage = false;
         }
         if (text) {
-          this.items.next(
-            this.items
-              .getValue()
-              .concat(
-                search.results.filter(
-                  (a) =>
-                    a.id != this.value ||
-                    a.title.toLowerCase().includes(text.toLowerCase())
-                )
-              )
+          results.push(
+            search.results.filter(
+              (a) =>
+                a.id != this.value ||
+                a.title.toLowerCase().includes(text.toLowerCase())
+            )
           );
         } else {
-          this.items.next(this.items.getValue().concat(search.results));
+          results.push(search.results);
         }
+        const items = this.items.getValue();
+        const newItems = items.concat(...results);
+        const uniqueItems = newItems.filter(
+          (item, index) => newItems.findIndex((i) => i.id === item.id) === index
+        );
+        this.items.next(uniqueItems);
         this.loading = false;
       });
   }
