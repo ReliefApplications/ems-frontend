@@ -41,14 +41,22 @@
     kendoGridToolbarTemplate
     position="top"
   >
-    <input
+    <kendo-textbox
+      class="w-full"
       *ngIf="searchable"
       [placeholder]="'common.placeholder.search' | translate"
-      kendoTextBox
       [formControl]="search"
-      class="!w-full"
-    />
-
+    >
+      <ng-template kendoTextBoxSuffixTemplate>
+        <ui-button
+          [isIcon]="true"
+          icon="close"
+          variant="danger"
+          (click)="clearSearch()"
+        >
+        </ui-button>
+      </ng-template>
+    </kendo-textbox>
     <!-- Column Chooser -->
     <kendo-button
       #anchor
