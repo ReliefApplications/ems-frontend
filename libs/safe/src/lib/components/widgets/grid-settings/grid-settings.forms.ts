@@ -1,4 +1,5 @@
 import {
+  FormArray,
   UntypedFormBuilder,
   UntypedFormGroup,
   Validators,
@@ -154,6 +155,7 @@ export const createGridWidgetFormGroup = (
           )
         : [createButtonFormGroup(null)]
     ),
+    sortFields: new FormArray([]),
     contextFilters: [
       get(configuration, 'contextFilters', DEFAULT_CONTEXT_FILTER),
     ],
