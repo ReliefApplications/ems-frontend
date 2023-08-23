@@ -42,7 +42,7 @@ import { SafeGridService } from '../../../../services/grid/grid.service';
 import { SafeDownloadService } from '../../../../services/download/download.service';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { GridLayout } from '../models/grid-layout.model';
-import { get, intersection } from 'lodash';
+import { get, intersection, isNil } from 'lodash';
 import { applyLayoutFormat } from '../../../../utils/parser/utils';
 import { SafeDashboardService } from '../../../../services/dashboard/dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -101,6 +101,7 @@ export class SafeGridComponent
   @Output() export = new EventEmitter();
 
   // === EDITION ===
+  /** If inlineEdition is allowed */
   @Input() editable = false;
   @Input() hasChanges = false;
   @Output() edit: EventEmitter<any> = new EventEmitter();
@@ -563,16 +564,7 @@ export class SafeGridComponent
       return;
     }
     // Closes current inline edition.
-    if (this.currentEditedItem) {
-      if (this.formGroup.dirty) {
-        this.action.emit({
-          action: 'edit',
-          item: this.currentEditedItem,
-          value: this.formGroup.value,
-        });
-      }
-      this.closeEditor();
-    }
+    this.closeEditor();
     // creates the form group.
     this.formGroup = this.gridService.createFormGroup(dataItem, this.fields);
     this.currentEditedItem = dataItem;
@@ -595,13 +587,6 @@ export class SafeGridComponent
         '#recordsGrid tbody *, #recordsGrid .k-grid-toolbar .k-button .k-animation-container'
       )
     ) {
-      if (this.formGroup.dirty) {
-        this.action.emit({
-          action: 'edit',
-          item: this.currentEditedItem,
-          value: this.formGroup.value,
-        });
-      }
       this.closeEditor();
     }
   }
@@ -609,7 +594,16 @@ export class SafeGridComponent
   /**
    * Closes the inline edition.
    */
-  private closeEditor(): void {
+  public closeEditor(): void {
+    if (this.currentEditedItem) {
+      if (this.formGroup.dirty) {
+        this.action.emit({
+          action: 'edit',
+          item: this.currentEditedItem,
+          value: this.formGroup.value,
+        });
+      }
+    }
     this.grid?.closeRow(this.currentEditedRow);
     this.grid?.cancelCell();
     this.currentEditedRow = 0;
@@ -623,13 +617,6 @@ export class SafeGridComponent
    */
   public onSave(): void {
     // Closes the editor, and saves the value locally
-    if (this.formGroup.dirty) {
-      this.action.emit({
-        action: 'edit',
-        item: this.currentEditedItem,
-        value: this.formGroup.value,
-      });
-    }
     this.closeEditor();
     this.action.emit({ action: 'save' });
   }
@@ -697,6 +684,7 @@ export class SafeGridComponent
    * @param field field name.
    */
   public async onExpandText(item: any, field: string): Promise<void> {
+    // Lazy load expended comment component
     const { SafeExpandedCommentComponent } = await import(
       '../expanded-comment/expanded-comment.component'
     );
@@ -704,17 +692,22 @@ export class SafeGridComponent
       data: {
         title: field,
         value: get(item, field),
+        // Disable edition if cannot update / cannot do inline edition / cannot update item / field is readonly
         readonly:
           !this.actions.update ||
+          !this.editable ||
           !item.canUpdate ||
           this.fields.find((val) => val.name === field).meta.readOnly,
       },
       autoFocus: false,
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-      if (res && res !== get(item, field)) {
-        const value = { field: res };
-        this.action.emit({ action: 'edit', item, value });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      // Only update if value is not null or undefined, and different from previous value
+      if (!isNil(value) && value !== get(item, field)) {
+        // Create update
+        const update = { [field]: value };
+        // Emit update so the grid can handle the event and update its content
+        this.action.emit({ action: 'edit', item, value: update });
       }
     });
   }

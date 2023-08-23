@@ -14,6 +14,7 @@ import { DialogRef } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
 import { cloneDeep } from 'lodash';
+import set from 'lodash/set';
 import { SafeAuthService } from '../auth/auth.service';
 
 /**
@@ -72,6 +73,7 @@ export class SafeFormHelpersService {
   setEmptyQuestions(survey: Survey.SurveyModel): void {
     // We get all the questions from the survey and check which ones contains values
     const questions = survey.getAllQuestions();
+    const data = { ...survey.data };
     for (const field in questions) {
       if (questions[field]) {
         const key = questions[field].getValueName();
@@ -79,15 +81,17 @@ export class SafeFormHelpersService {
         if (!survey.data[key]) {
           // And is not boolean(false by default, we want to save that), we nullify it
           if (questions[field].getType() !== 'boolean') {
-            survey.data[key] = null;
+            // survey.data[key] = null;
+            set(data, key, null);
           }
           // Or if is not visible or not actionable by the user, we don't want to save it, just delete the field from the data
           if (questions[field].readOnly || !questions[field].visible) {
-            delete survey.data[key];
+            delete data[key];
           }
         }
       }
     }
+    survey.data = data;
   }
 
   /**
@@ -327,6 +331,7 @@ export class SafeFormHelpersService {
     const user = this.authService.user.getValue();
 
     // set user variables
+    survey.setVariable('user.name', user?.name ?? '');
     survey.setVariable('user.firstName', user?.firstName ?? '');
     survey.setVariable('user.lastName', user?.lastName ?? '');
     survey.setVariable('user.email', user?.username ?? '');

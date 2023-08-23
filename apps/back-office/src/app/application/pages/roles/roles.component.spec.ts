@@ -1,6 +1,24 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { RolesComponent } from './roles.component';
+import { SafeRolesModule } from '@oort-front/safe';
+import {
+  TranslateFakeLoader,
+  TranslateLoader,
+  TranslateModule,
+  TranslateService,
+} from '@ngx-translate/core';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import {
+  OAuthService,
+  UrlHelperService,
+  OAuthLogger,
+  DateTimeProvider,
+} from 'angular-oauth2-oidc';
+import { AppAbility } from '@oort-front/safe';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { of } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { PureAbility } from '@casl/ability';
 
 describe('RolesComponent', () => {
   let component: RolesComponent;
@@ -9,6 +27,36 @@ describe('RolesComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [RolesComponent],
+      imports: [
+        SafeRolesModule,
+        HttpClientTestingModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
+        }),
+        ApolloTestingModule,
+      ],
+      providers: [
+        TranslateService,
+        OAuthService,
+        UrlHelperService,
+        OAuthLogger,
+        DateTimeProvider,
+        AppAbility,
+        PureAbility,
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({}),
+          },
+        },
+        {
+          provide: 'environment',
+          useValue: {},
+        },
+      ]
     }).compileComponents();
   });
 

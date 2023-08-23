@@ -226,7 +226,7 @@
               <ui-select-option>--</ui-select-option>
               <ui-select-option
                 *ngFor="let field of targetResource.fields"
-                [value]="field.id"
+                [value]="field.name"
               >
                 {{ field.name }}
               </ui-select-option>
