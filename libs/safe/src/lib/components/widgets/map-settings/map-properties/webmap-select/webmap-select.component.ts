@@ -152,7 +152,6 @@ export class WebmapSelectComponent
    * @param text search text
    */
   private search(text?: string): void {
-    const results: IItem[][] = [];
     this.arcgis
       .searchItems({ start: this.start, text, id: this.ngControl.value })
       .then((search) => {
@@ -162,23 +161,29 @@ export class WebmapSelectComponent
           this.nextPage = false;
         }
         if (text) {
-          results.push(
-            search.results.filter(
-              (a) =>
-                a.id != this.value ||
-                a.title.toLowerCase().includes(text.toLowerCase())
-            )
+          this.items.next(
+            this.items
+              .getValue()
+              .concat(
+                search.results.filter(
+                  (a) =>
+                    a.id != this.value ||
+                    a.title.toLowerCase().includes(text.toLowerCase())
+                )
+              )
           );
         } else {
-          results.push(search.results);
+          this.items.next(this.items.getValue().concat(search.results));
         }
         //Due to pagination we need to remove duplicates
-        const newItems = this.items.getValue().concat(...results);
         this.items.next(
-          newItems.filter(
-            (item, index) =>
-              newItems.findIndex((i) => i.id === item.id) === index
-          )
+          this.items
+            .getValue()
+            .filter(
+              (item, index) =>
+                this.items.getValue().findIndex((a) => a.id === item.id) ===
+                index
+            )
         );
         this.loading = false;
       });
