@@ -178,6 +178,10 @@ export const WIDGET_TYPES = [
     settings: {
       title: 'Text widget',
       text: 'Enter a content',
+      widgetDisplay: {
+        showBorder: true,
+        style: '',
+      },
     },
     defaultCols: 3,
     defaultRows: 3,
