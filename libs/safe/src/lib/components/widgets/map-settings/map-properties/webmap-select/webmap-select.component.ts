@@ -24,7 +24,6 @@ import {
   SelectMenuModule,
   SpinnerModule,
 } from '@oort-front/ui';
-import { IItem } from '@esri/arcgis-rest-portal';
 
 /**
  *

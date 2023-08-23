@@ -118,6 +118,12 @@ export class ArcgisService {
     return searchItems(filter);
   }
 
+  /**
+   * Search for web map in arcgis-rest-request by id
+   *
+   * @param id webmap id
+   * @returns searched items
+   */
   public searchItemById(id: string) {
     return searchItems({
       q: `id:${id}`,
