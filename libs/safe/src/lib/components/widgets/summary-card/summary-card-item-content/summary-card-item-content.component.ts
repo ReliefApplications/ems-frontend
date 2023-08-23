@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { DataTemplateService } from '../../../../services/data-template/data-template.service';
+import { SafeApplicationService } from '../../../../services/application/application.service';
 
 /**
  * Content component of Single Item of Summary Card.
@@ -32,38 +33,22 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
    * Content component of Single Item of Summary Card.
    *
    * @param dataTemplateService Shared data template service, used to render content from template
+   * @param applicationService Shared application service
    */
-  constructor(private dataTemplateService: DataTemplateService) {}
+  constructor(
+    private dataTemplateService: DataTemplateService,
+    private applicationService: SafeApplicationService
+  ) {}
 
   ngOnInit(): void {
-    this.formattedStyle = this.dataTemplateService.renderStyle(
-      this.wholeCardStyles,
-      this.fieldsValue,
-      this.styles
-    );
-    this.formattedHtml = this.dataTemplateService.renderHtml(
-      this.html,
-      this.fieldsValue,
-      this.fields,
-      this.styles
-    );
+    this.setContentAndStyle();
   }
 
   /**
    * Detects when the html or record inputs change.
    */
   ngOnChanges(): void {
-    this.formattedStyle = this.dataTemplateService.renderStyle(
-      this.wholeCardStyles,
-      this.fieldsValue,
-      this.styles
-    );
-    this.formattedHtml = this.dataTemplateService.renderHtml(
-      this.html,
-      this.fieldsValue,
-      this.fields,
-      this.styles
-    );
+    this.setContentAndStyle();
   }
 
   /**
@@ -73,5 +58,26 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
    */
   public onClick(event: any) {
     this.dataTemplateService.onClick(event, this.fieldsValue);
+  }
+
+  /**
+   * Sets content of the widget widget, querying associated record if any.
+   */
+  private setContentAndStyle(): void {
+    this.formattedStyle = this.dataTemplateService.renderStyle(
+      this.wholeCardStyles,
+      this.fieldsValue,
+      this.styles
+    );
+    this.formattedHtml = this.dataTemplateService.renderHtml(
+      this.html,
+      this.fieldsValue,
+      this.fields,
+      this.styles
+    );
+
+    if (!this.formattedStyle) {
+      this.formattedStyle = this.applicationService.rawCustomStyle;
+    }
   }
 }

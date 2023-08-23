@@ -14,6 +14,7 @@ import { DataTemplateService } from '../../../services/data-template/data-templa
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
+import { SafeApplicationService } from '../../../services/application/application.service';
 
 /**
  * Text widget component using KendoUI
@@ -46,6 +47,7 @@ export class SafeEditorComponent implements OnInit {
    * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
+   * @param applicationService Shared application service
    */
   constructor(
     private apollo: Apollo,
@@ -53,13 +55,17 @@ export class SafeEditorComponent implements OnInit {
     private dataTemplateService: DataTemplateService,
     private dialog: Dialog,
     private snackBar: SnackbarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private applicationService: SafeApplicationService
   ) {}
 
   /** Sanitizes the text. */
   ngOnInit(): void {
     this.setContentFromLayout();
-    this.formattedStyle = this.settings.widgetDisplay.style;
+    this.formattedStyle = this.settings.widgetDisplay?.style;
+    if (!this.formattedStyle) {
+      this.formattedStyle = this.applicationService.rawCustomStyle;
+    }
   }
 
   /**

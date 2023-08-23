@@ -22,6 +22,11 @@ export class HtmlWidgetContentComponent implements OnInit {
   @Input() html: SafeHtml = '';
   @Input() style?: string;
 
+  /**
+   * Constructor for safe-html-widget-content component
+   *
+   * @param elementRef Ref to the component's element
+   */
   constructor(private elementRef: ElementRef) {}
 
   ngOnInit(): void {
