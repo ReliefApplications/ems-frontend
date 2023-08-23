@@ -172,12 +172,14 @@ export class WebmapSelectComponent
         } else {
           results.push(search.results);
         }
-        const items = this.items.getValue();
-        const newItems = items.concat(...results);
-        const uniqueItems = newItems.filter(
-          (item, index) => newItems.findIndex((i) => i.id === item.id) === index
+        //Due to pagination we need to remove duplicates
+        const newItems = this.items.getValue().concat(...results);
+        this.items.next(
+          newItems.filter(
+            (item, index) =>
+              newItems.findIndex((i) => i.id === item.id) === index
+          )
         );
-        this.items.next(uniqueItems);
         this.loading = false;
       });
   }
