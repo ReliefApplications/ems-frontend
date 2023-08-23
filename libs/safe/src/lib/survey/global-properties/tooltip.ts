@@ -1,14 +1,14 @@
 import get from 'lodash/get';
-import { JsonMetadata } from 'survey-angular';
-import { Question } from '../types';
+import { SafeQuestion } from '../types';
+import { JsonMetadata, Serializer } from 'survey-core';
 
 /**
  * Add support for custom properties to the survey
  *
  * @param Survey Survey library
  */
-export const init = (Survey: any): void => {
-  const serializer: JsonMetadata = Survey.Serializer;
+export const init = (): void => {
+  const serializer: JsonMetadata = Serializer;
 
   // add tooltip property
   serializer.addProperty('question', {
@@ -24,7 +24,7 @@ export const init = (Survey: any): void => {
  * @param question The question object
  * @param el The html element of the question
  */
-export const render = (question: Question, el: HTMLElement): void => {
+export const render = (question: SafeQuestion, el: HTMLElement): void => {
   // Display the tooltip
   const header = el?.parentElement?.querySelector('.sv_q_title') as HTMLElement;
   if (header) {

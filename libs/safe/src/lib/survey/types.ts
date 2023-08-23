@@ -1,4 +1,11 @@
-import * as Survey from 'survey-angular';
+import {
+  QuestionTextModel,
+  Question,
+  QuestionCommentModel,
+  QuestionSelectBase,
+  QuestionCustomModel,
+  QuestionDropdownModel,
+} from 'survey-core';
 
 /** Custom global properties definition */
 export interface GlobalProperties {
@@ -8,26 +15,24 @@ export interface GlobalProperties {
 // REWRITING OF EXISTING QUESTION TYPES
 
 /** Type for general question */
-export interface Question extends Survey.Question, GlobalProperties {}
+export interface SafeQuestion extends Question, GlobalProperties {}
 
 /** Type for text question */
-export interface QuestionText
-  extends Survey.QuestionTextModel,
-    GlobalProperties {
+export interface QuestionText extends QuestionTextModel, GlobalProperties {
   dateMin?: Date;
   dateMax?: Date;
 }
 
 /** Type for comment question */
 export interface QuestionComment
-  extends Survey.QuestionCommentModel,
+  extends QuestionCommentModel,
     GlobalProperties {
   allowEdition?: boolean;
 }
 
 /** Type for all select-based questions */
-export interface QuestionSelectBase
-  extends Survey.QuestionSelectBase,
+export interface SafeQuestionSelectBase
+  extends QuestionSelectBase,
     GlobalProperties {
   referenceData?: string;
   referenceDataDisplayField?: string;
@@ -41,16 +46,14 @@ export interface QuestionSelectBase
 // TYPES FOR CUSTOM QUESTIONS
 
 /** Type for owner question */
-export interface QuestionOwner
-  extends Survey.QuestionCustomModel,
-    GlobalProperties {
+export interface QuestionOwner extends QuestionCustomModel, GlobalProperties {
   applications?: any;
   contentQuestion: QuestionSelectBase;
 }
 
 /** Type for resource question */
 export interface QuestionResource
-  extends Survey.QuestionCustomModel,
+  extends QuestionCustomModel,
     GlobalProperties {
   resource?: string;
   displayField: null | string;
@@ -61,7 +64,7 @@ export interface QuestionResource
   placeholder?: string;
   prefillWithCurrentRecord?: boolean;
   selectQuestion?: any;
-  contentQuestion: Survey.QuestionDropdownModel;
+  contentQuestion: QuestionDropdownModel;
   gridFieldsSettings?: any;
   filterCondition: string;
   filterBy: string;

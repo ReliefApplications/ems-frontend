@@ -1,5 +1,5 @@
 import { get, isNil, set } from 'lodash';
-import { Question } from 'survey-angular';
+import { SafeQuestion } from '../types';
 
 /** Default properties of the ChoicesRestful class */
 const DEFAULT_PROPERTIES = [
@@ -69,7 +69,7 @@ export const init = (Survey: any): void => {
     category: 'choicesByUrl',
     visibleIndex: 3,
     required: true,
-    onExecuteExpression: (obj: Question, res: string) => {
+    onExecuteExpression: (obj: SafeQuestion, res: string) => {
       if (!obj.choicesByUrl) {
         return;
       }

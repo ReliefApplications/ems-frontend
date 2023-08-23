@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import * as Survey from 'survey-angular';
+import { Model, SurveyModel } from 'survey-core';
 import { SafeReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Apollo } from 'apollo-angular';
@@ -52,10 +52,11 @@ export class SafeFormBuilderService {
     structure: string,
     fields: Metadata[] = [],
     record?: RecordModel
-  ): Survey.SurveyModel {
-    Survey.settings.useCachingForChoicesRestful = false;
-    Survey.settings.useCachingForChoicesRestfull = false;
-    const survey = new Survey.Model(structure);
+  ): SurveyModel {
+    const survey = new Model(structure);
+    // todo: check
+    survey.settings.useCachingForChoicesRestful = false;
+    survey.settings.useCachingForChoicesRestfull = false;
     this.formHelpersService.addUserVariables(survey);
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
@@ -140,7 +141,7 @@ export class SafeFormBuilderService {
    * @param temporaryFilesStorage Temporary files saved while executing the survey
    */
   public addEventsCallBacksToSurvey(
-    survey: Survey.SurveyModel,
+    survey: SurveyModel,
     selectedPageIndex: BehaviorSubject<number>,
     temporaryFilesStorage: Record<string, Array<File>>
   ) {
@@ -154,7 +155,7 @@ export class SafeFormBuilderService {
     survey.onUpdateQuestionCssClasses.add((_, options: any) =>
       this.onSetCustomCss(options)
     );
-    survey.onCurrentPageChanged.add((survey: Survey.SurveyModel) => {
+    survey.onCurrentPageChanged.add((survey: SurveyModel) => {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
       selectedPageIndex.next(survey.currentPageNo);
     });

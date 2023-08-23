@@ -4,7 +4,14 @@ import {
   GET_RESOURCE_BY_ID,
   GetResourceByIdQueryResponse,
 } from '../graphql/queries';
-import * as SurveyCreator from 'survey-creator';
+import {
+  ComponentCollection,
+  JsonMetadata,
+  Question,
+  Serializer,
+  SurveyModel,
+  SvgRegistry,
+} from 'survey-core';
 import { resourceConditions } from './resources';
 import { Dialog } from '@angular/cdk/dialog';
 import {
@@ -20,8 +27,7 @@ import {
   processNewCreatedRecords,
 } from './utils';
 import get from 'lodash/get';
-import { Question, QuestionResource } from '../types';
-import { JsonMetadata, SurveyModel } from 'survey-angular';
+import { SafeQuestion, QuestionResource } from '../types';
 import { Record } from '../../models/record.model';
 import { NgZone } from '@angular/core';
 
@@ -61,19 +67,19 @@ const addRecordToSurveyContext = (question: Question, recordID: string) => {
 /**
  * Inits the resource question component of for survey.
  *
- * @param Survey Survey library
  * @param domService Shared DOM service
  * @param apollo Apollo client
  * @param dialog Dialog
  * @param formBuilder Angular form service
+ * @param componentCollectionInstance ComponentCollection
  * @param ngZone Angular Service to execute code inside Angular environment
  */
 export const init = (
-  Survey: any,
   domService: DomService,
   apollo: Apollo,
   dialog: Dialog,
   formBuilder: UntypedFormBuilder,
+  componentCollectionInstance: ComponentCollection,
   ngZone: NgZone
 ): void => {
   const getResourceById = (data: { id: string }) =>
@@ -121,7 +127,7 @@ export const init = (
   // resourcesForms.filter(r => (r.id === id && r.coreForm && r.coreForm.uniqueRecord)).length > 0);
 
   // registers icon-resource in the SurveyJS library
-  Survey.SvgRegistry.registerIconFromSvg(
+  SvgRegistry.registerIconFromSvg(
     'resource',
     '<svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>'
   );
@@ -142,7 +148,7 @@ export const init = (
     resourceFieldsName: [] as any[],
     /** Initiate the resource question component */
     onInit(): void {
-      const serializer: JsonMetadata = Survey.Serializer;
+      const serializer: JsonMetadata = Serializer;
       serializer.addProperty('resource', {
         name: 'resource',
         category: 'Custom Questions',
@@ -164,10 +170,11 @@ export const init = (
         },
       };
 
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'resourceDropdown',
-        resourceEditor
-      );
+      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
+      //   'resourceDropdown',
+      //   resourceEditor
+      // );
+      serializer.addProperty('resourceDropdown', resourceEditor);
 
       serializer.addProperty('resource', {
         name: 'displayField',
@@ -259,10 +266,11 @@ export const init = (
         },
       };
 
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'resourceFields',
-        availableFieldsEditor
-      );
+      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
+      //   'resourceFields',
+      //   availableFieldsEditor
+      // );
+      serializer.addProperty('resourceFields', availableFieldsEditor);
 
       serializer.addProperty('resource', {
         name: 'test service',
@@ -345,7 +353,7 @@ export const init = (
             ];
             (obj.survey as SurveyModel)
               .getAllQuestions()
-              .forEach((question: Question) => {
+              .forEach((question: SafeQuestion) => {
                 if (question.id !== obj.id) {
                   questions.push(question.name);
                 }
@@ -434,11 +442,11 @@ export const init = (
           htmlElement.appendChild(text);
         },
       };
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'selectResourceText',
-        selectResourceText
-      );
-
+      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
+      //   'selectResourceText',
+      //   selectResourceText
+      // );
+      serializer.addProperty('selectResourceText', selectResourceText);
       serializer.addProperty('resource', {
         category: 'Filter by Questions',
         type: 'customFilter',
@@ -473,10 +481,11 @@ export const init = (
         },
       };
 
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'customFilter',
-        customFilterElements
-      );
+      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
+      //   'customFilter',
+      //   customFilterElements
+      // );
+      serializer.addProperty('customFilter', customFilterElements);
 
       serializer.addProperty('resource', {
         category: 'Filter by Questions',
@@ -489,19 +498,19 @@ export const init = (
         visibleIndex: 4,
       });
 
-      Survey.Serializer.addProperty('resource', {
+      serializer.addProperty('resource', {
         name: 'newCreatedRecords',
         category: 'Custom Questions',
         visible: false,
       });
 
-      Survey.Serializer.addProperty('resource', {
+      serializer.addProperty('resource', {
         name: 'afterRecordCreation',
         // type: 'expression',
         category: 'logic',
       });
 
-      Survey.Serializer.addProperty('resource', {
+      serializer.addProperty('resource', {
         name: 'afterRecordSelection',
         // type: 'expression',
         category: 'logic',
@@ -711,7 +720,7 @@ export const init = (
       return auxForm;
     },
   };
-  Survey.ComponentCollection.Instance.add(component);
+  componentCollectionInstance.add(component);
 
   const setAdvanceFilter = (value: string, question: string | any) => {
     const field = typeof question !== 'string' ? question.filterBy : question;

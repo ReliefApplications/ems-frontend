@@ -2,45 +2,44 @@ import { isArray, isEqual, isNil } from 'lodash';
 import { Record } from '../models/record.model';
 import { SafeAuthService } from '../services/auth/auth.service';
 import {
+  FunctionFactory,
   QuestionMatrixDropdownModel,
   QuestionMatrixDynamicModel,
   QuestionMatrixModel,
   SurveyModel,
-} from 'survey-angular';
+} from 'survey-core';
 
 /**
  * Registration of new custom functions for the survey.
  * Custom functions can be used in the logic fields.
  *
- * @param survey Survey instance
  * @param authService Shared auth service
  * @param record Current record
  */
 const addCustomFunctions = (
-  survey: any,
   authService: SafeAuthService,
   record?: Record | undefined
 ): void => {
-  survey.FunctionFactory.Instance.register('createdAt', () =>
+  FunctionFactory.Instance.register('createdAt', () =>
     record ? new Date(Number(record.createdAt) || '') : new Date()
   );
-  survey.FunctionFactory.Instance.register('modifiedAt', () =>
+  FunctionFactory.Instance.register('modifiedAt', () =>
     record ? new Date(Number(record.modifiedAt) || '') : new Date()
   );
-  survey.FunctionFactory.Instance.register('createdBy', () => {
+  FunctionFactory.Instance.register('createdBy', () => {
     if (record) {
       return record.createdBy?.name || '';
     } else {
       return authService.userValue?.name || '';
     }
   });
-  survey.FunctionFactory.Instance.register('id', () =>
+  FunctionFactory.Instance.register('id', () =>
     record ? record.id : 'unknown id'
   );
-  survey.FunctionFactory.Instance.register('weekday', (params: Date[]) =>
+  FunctionFactory.Instance.register('weekday', (params: Date[]) =>
     new Date(params[0]).getDay()
   );
-  survey.FunctionFactory.Instance.register('addDays', (params: any[]) => {
+  FunctionFactory.Instance.register('addDays', (params: any[]) => {
     const result = new Date(params[0]);
     result.setDate(result.getDate() + Number(params[1]));
     return result;
@@ -48,7 +47,7 @@ const addCustomFunctions = (
 
   // Custom function that given a name for a matrix question, a column name and a column value,
   // returns the list of rows that have that value in the column.
-  survey.FunctionFactory.Instance.register(
+  FunctionFactory.Instance.register(
     'listRowsWithColValue',
     function (this: { survey: SurveyModel }, params: any[]) {
       const [questionName, colName] = params;
@@ -89,7 +88,7 @@ const addCustomFunctions = (
   // Custom function that given a question name for a matrix,
   // and a list of rows names, returns a string with the values of the columns
   // for each row.
-  survey.FunctionFactory.Instance.register(
+  FunctionFactory.Instance.register(
     'listColsForRows',
     function (this: { survey: SurveyModel }, params: any[]) {
       const [questionName, rows] = params;
@@ -153,13 +152,13 @@ const addCustomFunctions = (
   );
 
   // Custom function to replace new lines with <br> tags.
-  survey.FunctionFactory.Instance.register('nl2br', (params: any[]) => {
+  FunctionFactory.Instance.register('nl2br', (params: any[]) => {
     if (!params[0]) return '';
     return params[0].replace(/\n/g, '<br>');
   });
 
   // Custom function that gets two arrays and returns the intersection of them.
-  survey.FunctionFactory.Instance.register('intersect', (params: any[]) => {
+  FunctionFactory.Instance.register('intersect', (params: any[]) => {
     if (!Array.isArray(params[0]) || !Array.isArray(params[1])) return [];
     return params[0].filter((value) =>
       params[1].find((v: any) => isEqual(v, value))
@@ -167,7 +166,7 @@ const addCustomFunctions = (
   });
 
   // Custom function to get row/col titles given a list of the row/col names.
-  survey.FunctionFactory.Instance.register(
+  FunctionFactory.Instance.register(
     'getMatrixTitles',
     function (this: { survey: SurveyModel }, params: any[]) {
       const [questionName, names, isRow] = params;
@@ -193,7 +192,7 @@ const addCustomFunctions = (
   );
 
   // Get length of an array
-  survey.FunctionFactory.Instance.register('length', (params: any[]) => {
+  FunctionFactory.Instance.register('length', (params: any[]) => {
     if (!Array.isArray(params[0])) return 0;
     return params[0].length;
   });

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as Survey from 'survey-angular';
+import { SurveyModel } from 'survey-core';
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../confirm/confirm.service';
@@ -69,7 +69,7 @@ export class SafeFormHelpersService {
    *
    * @param survey Current survey to set up empty questions
    */
-  setEmptyQuestions(survey: Survey.SurveyModel): void {
+  setEmptyQuestions(survey: SurveyModel): void {
     // We get all the questions from the survey and check which ones contains values
     const questions = survey.getAllQuestions();
     const data = { ...survey.data };
@@ -101,7 +101,7 @@ export class SafeFormHelpersService {
    * @param formId Form where to upload the files
    */
   async uploadFiles(
-    survey: Survey.SurveyModel,
+    survey: SurveyModel,
     temporaryFilesStorage: any,
     formId: string | undefined
   ): Promise<void> {
@@ -160,7 +160,7 @@ export class SafeFormHelpersService {
    * @param survey The form of the parent record
    * @returns A promise with all the requests to upload files
    */
-  uploadTemporaryRecords(survey: Survey.SurveyModel): Promise<any>[] {
+  uploadTemporaryRecords(survey: SurveyModel): Promise<any>[] {
     const promises: Promise<any>[] = [];
     const surveyData = survey.data;
     const questions = survey.getAllQuestions();
@@ -236,7 +236,7 @@ export class SafeFormHelpersService {
    *
    * @param survey Survey from which we need to clean cached records.
    */
-  cleanCachedRecords(survey: Survey.SurveyModel): void {
+  cleanCachedRecords(survey: SurveyModel): void {
     if (!survey) return;
     survey.getAllQuestions().forEach((question) => {
       if (question.value) {
@@ -257,7 +257,7 @@ export class SafeFormHelpersService {
    *
    * @param survey Survey to get questions from
    */
-  public async createCachedRecords(survey: Survey.SurveyModel): Promise<void> {
+  public async createCachedRecords(survey: SurveyModel): Promise<void> {
     const promises: Promise<any>[] = [];
     const questions = survey.getAllQuestions();
     const nestedRecordsToAdd: string[] = [];
@@ -326,7 +326,7 @@ export class SafeFormHelpersService {
    *
    * @param survey Survey instance
    */
-  public addUserVariables = (survey: Survey.SurveyModel) => {
+  public addUserVariables = (survey: SurveyModel) => {
     const user = this.authService.user.getValue();
 
     // set user variables

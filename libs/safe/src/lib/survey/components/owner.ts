@@ -1,5 +1,4 @@
 import { Apollo } from 'apollo-angular';
-import * as SurveyCreator from 'survey-creator';
 import { DomService } from '../../services/dom/dom.service';
 import { SafeApplicationDropdownComponent } from '../../components/application-dropdown/application-dropdown.component';
 import {
@@ -7,21 +6,22 @@ import {
   GET_ROLES_FROM_APPLICATIONS,
 } from '../graphql/queries';
 import { QuestionOwner } from '../types';
+import { ComponentCollection, Serializer, SvgRegistry } from 'survey-core';
 
 /**
  * Inits the owner component.
  *
- * @param Survey Survey library.
  * @param domService Dom service.
  * @param apollo Apollo client.
+ * @param componentCollectionInstance ComponentCollection
  */
 export const init = (
-  Survey: any,
   domService: DomService,
-  apollo: Apollo
+  apollo: Apollo,
+  componentCollectionInstance: ComponentCollection
 ): void => {
   // registers icon-owner in the SurveyJS library
-  Survey.SvgRegistry.registerIconFromSvg(
+  SvgRegistry.registerIconFromSvg(
     'owner',
     '<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="18px" viewBox="0 0 20 20" width="18px" fill="#000000"><g><rect fill="none" height="20" width="20" x="0"/></g><g><path d="M17.5,8.5h-6.75C10.11,6.48,8.24,5,6,5c-2.76,0-5,2.24-5,5s2.24,5,5,5c2.24,0,4.11-1.48,4.75-3.5h0.75L13,13l1.5-1.5L16,13 l3-3L17.5,8.5z M6,12.5c-1.38,0-2.5-1.12-2.5-2.5S4.62,7.5,6,7.5S8.5,8.62,8.5,10S7.38,12.5,6,12.5z"/></g></svg>'
   );
@@ -39,7 +39,7 @@ export const init = (
       choices: [] as any[],
     },
     onInit: (): void => {
-      Survey.Serializer.addProperty('owner', {
+      Serializer.addProperty('owner', {
         name: 'applications',
         category: 'Owner properties',
         type: 'applicationsDropdown',
@@ -61,10 +61,11 @@ export const init = (
         },
       };
 
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'applicationsDropdown',
-        applicationEditor
-      );
+      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
+      //   'applicationsDropdown',
+      //   applicationEditor
+      // );
+      Serializer.addProperty('applicationsDropdown', applicationEditor);
     },
     onLoaded: (question: QuestionOwner): void => {
       apollo
@@ -87,5 +88,6 @@ export const init = (
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     onAfterRender: (): void => {},
   };
-  Survey.ComponentCollection.Instance.add(component);
+
+  componentCollectionInstance.add(component);
 };

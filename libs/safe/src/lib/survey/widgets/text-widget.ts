@@ -4,28 +4,35 @@ import {
   DateTimePickerComponent,
   TimePickerComponent,
 } from '@progress/kendo-angular-dateinputs';
-import * as SurveyCreator from 'survey-creator';
 import { EmbeddedViewRef } from '@angular/core';
-import { JsonMetadata, SurveyModel } from 'survey-angular';
-import { Question, QuestionText } from '../types';
+import { SafeQuestion, QuestionText } from '../types';
 import { ButtonComponent } from '@oort-front/ui';
 import { IconComponent } from '@oort-front/ui';
+import {
+  CustomWidgetCollection,
+  JsonMetadata,
+  Serializer,
+  SurveyModel,
+} from 'survey-core';
 
 type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
 
 /**
  * Custom definition for overriding the text question. Allowed support for dates.
  *
- * @param Survey Survey library
  * @param domService Shared DOM service
+ * @param customWidgetCollectionInstance CustomWidgetCollection
  */
-export const init = (Survey: any, domService: DomService): void => {
+export const init = (
+  domService: DomService,
+  customWidgetCollectionInstance: CustomWidgetCollection
+): void => {
   const widget = {
     name: 'text-widget',
     widgetIsLoaded: (): boolean => true,
-    isFit: (question: Question): boolean => question.getType() === 'text',
+    isFit: (question: SafeQuestion): boolean => question.getType() === 'text',
     init: (): void => {
-      const serializer: JsonMetadata = Survey.Serializer;
+      const serializer: JsonMetadata = Serializer;
       // hide the min and max property for date, datetime and time types
       serializer.getProperty('text', 'min').visibleIf = (obj: QuestionText) =>
         ['number', 'month', 'week'].includes(obj.inputType || '');
@@ -114,10 +121,12 @@ export const init = (Survey: any, domService: DomService): void => {
           updatePickerInstance();
         },
       };
-      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'date',
-        dateEditor
-      );
+      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
+      //   'date',
+      //   dateEditor
+      // );
+
+      serializer.addProperty('date', dateEditor);
     },
     isDefaultRender: true,
     afterRender: (question: QuestionText, el: HTMLInputElement): void => {
@@ -402,8 +411,5 @@ export const init = (Survey: any, domService: DomService): void => {
     }
   };
 
-  Survey.CustomWidgetCollection.Instance.addCustomWidget(
-    widget,
-    'customwidget'
-  );
+  customWidgetCollectionInstance.addCustomWidget(widget, 'customwidget');
 };

@@ -1,7 +1,7 @@
 import { ComboBoxComponent } from '@progress/kendo-angular-dropdowns';
 import { DomService } from '../../services/dom/dom.service';
-import { Question } from '../types';
-import { QuestionDropdown } from 'survey-knockout';
+import { SafeQuestion } from '../types';
+import { CustomWidgetCollection, QuestionDropdownModel } from 'survey-core';
 import { isArray, isObject } from 'lodash';
 import { debounceTime, map, tap } from 'rxjs';
 import updateChoices from './utils/common-list-filters';
@@ -9,17 +9,28 @@ import updateChoices from './utils/common-list-filters';
 /**
  * Init dropdown widget
  *
- * @param Survey Survey instance
  * @param domService Shared dom service
+ * @param customWidgetCollectionInstance CustomWidgetCollection
  */
-export const init = (Survey: any, domService: DomService): void => {
+export const init = (
+  domService: DomService,
+  customWidgetCollectionInstance: CustomWidgetCollection
+): void => {
   let currentSearchValue = '';
   const widget = {
     name: 'dropdown-widget',
     widgetIsLoaded: (): boolean => true,
-    isFit: (question: Question): boolean => question.getType() === 'dropdown',
+    isFit: (question: SafeQuestion): boolean =>
+      question.getType() === 'dropdown',
     isDefaultRender: true,
-    afterRender: (question: QuestionDropdown, el: HTMLInputElement): void => {
+    afterRender: (
+      question: QuestionDropdownModel,
+      el: HTMLInputElement
+    ): void => {
+      const defaultDropdown = el.querySelector('sv-ng-dropdown-question');
+      if (defaultDropdown) {
+        el.removeChild(defaultDropdown);
+      }
       widget.willUnmount(question);
       // remove default render
       el.parentElement?.querySelector('.sv_select_wrapper')?.remove();
@@ -108,8 +119,5 @@ export const init = (Survey: any, domService: DomService): void => {
     return dropdownInstance;
   };
 
-  Survey.CustomWidgetCollection.Instance.addCustomWidget(
-    widget,
-    'customwidget'
-  );
+  customWidgetCollectionInstance.addCustomWidget(widget, 'customwidget');
 };

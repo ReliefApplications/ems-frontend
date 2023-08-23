@@ -4,6 +4,7 @@ import { SafeFormBuilderComponent } from './form-builder.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateInputModule } from '@progress/kendo-angular-dateinputs';
 import { DialogModule } from '@oort-front/ui';
+import { SurveyCreatorModule } from 'survey-creator-angular';
 
 /**
  * SafeFormBuilderModule is a class used to manage all the modules and components
@@ -11,7 +12,13 @@ import { DialogModule } from '@oort-front/ui';
  */
 @NgModule({
   declarations: [SafeFormBuilderComponent],
-  imports: [CommonModule, DialogModule, TranslateModule, DateInputModule],
+  imports: [
+    CommonModule,
+    DialogModule,
+    TranslateModule,
+    DateInputModule,
+    SurveyCreatorModule,
+  ],
   exports: [SafeFormBuilderComponent],
 })
 export class SafeFormBuilderModule {}

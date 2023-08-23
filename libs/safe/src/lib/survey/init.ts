@@ -28,7 +28,7 @@ import { NgZone } from '@angular/core';
 /**
  * Executes all init methods of custom SurveyJS.
  *
- * @param Survey surveyjs or surveyjsCreator library
+ * @param Survey Survey instance
  * @param domService Shared DOM service, used to inject components on the go
  * @param dialog dialog service
  * @param apollo apollo service
@@ -57,44 +57,52 @@ export const initCustomSurvey = (
     Survey.ComponentCollection.Instance.clear();
   }
 
-  TagboxWidget.init(Survey, domService);
-  TextWidget.init(Survey, domService);
-  DropdownWidget.init(Survey, domService);
+  TagboxWidget.init(domService, Survey.CustomWidgetCollection.Instance);
+  TextWidget.init(domService, Survey.CustomWidgetCollection.Instance);
+  DropdownWidget.init(domService, Survey.CustomWidgetCollection.Instance);
 
   if (containsCustomQuestions) {
-    CommentWidget.init(Survey);
+    CommentWidget.init(Survey.CustomWidgetCollection.Instance);
     // load components (same as widgets, but with less configuration options)
     ResourceComponent.init(
-      Survey,
       domService,
       apollo,
       dialog,
       formBuilder,
+      Survey.ComponentCollection.Instance,
       ngZone
     );
     ResourcesComponent.init(
-      Survey,
       domService,
       apollo,
       dialog,
       formBuilder,
+      Survey.ComponentCollection.Instance,
       ngZone
     );
-    OwnerComponent.init(Survey, domService, apollo);
-    UsersComponent.init(Survey, domService, apollo);
-    GeospatialComponent.init(Survey, domService);
+    OwnerComponent.init(
+      domService,
+      apollo,
+      Survey.ComponentCollection.Instance
+    );
+    UsersComponent.init(
+      domService,
+      apollo,
+      Survey.ComponentCollection.Instance
+    );
+    GeospatialComponent.init(domService, Survey.ComponentCollection.Instance);
   }
 
   // load global properties
-  ReferenceDataProperties.init(Survey, domService, referenceDataService);
-  TooltipProperty.init(Survey);
-  OtherProperties.init(Survey, environment);
+  ReferenceDataProperties.init(domService, referenceDataService);
+  TooltipProperty.init();
+  OtherProperties.init(environment);
 
   // enables POST requests for choicesByUrl
   ChoicesByUrlProperties.init(Survey);
 
   // set localization
-  initLocalization(Survey);
+  initLocalization();
   // load internal functions
-  addCustomFunctions(Survey, authService);
+  addCustomFunctions(authService);
 };

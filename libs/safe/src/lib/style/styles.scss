@@ -1,34 +1,41 @@
-@use "@angular/material" as mat;
-@import "variables.scss";
+@use '@angular/material' as mat;
+@import 'variables.scss';
 
 // Material ( to remove )
 @include mat.legacy-core();
 @include mat.core();
 
-@import "tailwindcss/base";
-@import "tailwindcss/components";
-@import "tailwindcss/utilities";
-@import "~@fortawesome/fontawesome-free/css/all.css";
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+@import '~@fortawesome/fontawesome-free/css/all.css';
 
-.sv_main,
-.svd_container {
+survey,
+survey-creator {
+  --font-size: 1em;
   --main-color: #{rgb($primary_500)};
   --main-hover-color: #{rgb($primary_600)};
-  --primary-color: #{rgb($primary_500)};
-  --secondary-color: #{rgb($primary_500)};
+  --primary: #{rgb($primary_500)};
+  --secondary: #{rgb($primary_500)};
   --progress-buttons-color: #{rgb($primary_500)};
+  --radio-checked-color: #{rgb($primary_500)};
   --header-background-color: transparent;
+  --answer-background-color: transparent;
   // --primary-text-color: #676a6c;
   // --secondary-text-color: #a7a7a7;
   // --inverted-text-color: #ffffff;
-  --primary-hover-color: #{rgb($primary_600)};
-  --selection-border-color: #{rgb($primary_500)};
+  --primary-hover: #{rgb($primary_600)};
+  --selection-border: #{rgb($primary_500)};
   // --primary-icon-color: #3d4d5d;
   // --primary-bg-color: #fff;
   // --secondary-bg-color: #f4f4f4;
   // --primary-border-color: #e7eaec;
   // --secondary-border-color: #ddd;
   // --error-color: #ed5565;
+}
+
+survey {
+  --sjs-base-unit: 0.66em;
 }
 
 $safe-palette: (
@@ -61,7 +68,7 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,,,,,,,,,,,,,,,,,,,,,,,,,,,
+      // A700: #ffffff,,,,,,,,,,,,,,,,,,,,,,,,,,,,
     ),
 );
 
@@ -75,8 +82,8 @@ $safe-palette-accent: (
     (
       main: white,
       lighter: rgba(black, 0.87),
-      darker: white
-    )
+      darker: white,
+    ),
 );
 
 $safe-palette-warn: (
@@ -92,8 +99,8 @@ $safe-palette-warn: (
     (
       main: white,
       lighter: rgba(black, 0.87),
-      darker: white
-    )
+      darker: white,
+    ),
 );
 
 $safe-primary: mat.define-palette($safe-palette);
@@ -106,9 +113,9 @@ $safe-theme: mat.define-light-theme(
     color: (
       primary: $safe-primary,
       accent: $safe-accent,
-      warn: $safe-warn
+      warn: $safe-warn,
     ),
-    density: 0
+    density: 0,
   )
 );
 
@@ -225,12 +232,12 @@ body {
 }
 
 // === KENDO THEME ===
-@import "theme.scss";
+@import 'theme.scss';
 
 // === TINYMCE ===
 .tox-editor-header *,
 .tox-tinymce-aux * {
-  font-family: Roboto, "Helvetica Neue", sans-serif !important;
+  font-family: Roboto, 'Helvetica Neue', sans-serif !important;
 }
 
 // === SCROLL BARS ===
@@ -257,10 +264,7 @@ body {
   max-height: 320px;
   overflow-y: auto;
   padding: 6px 8px;
-  font:
-    14px/16px Arial,
-    Helvetica,
-    sans-serif;
+  font: 14px/16px Arial, Helvetica, sans-serif;
   background: white;
   outline: solid rgba(0, 0, 0, 0.2) 2px;
   border-radius: 4px;

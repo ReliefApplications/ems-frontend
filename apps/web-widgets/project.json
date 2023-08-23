@@ -41,21 +41,18 @@
         "styles": [
           "apps/web-widgets/src/styles.scss",
           "libs/safe/src/lib/style/styles.scss",
-          "node_modules/survey-angular/survey.min.css",
-          "node_modules/survey-creator/survey-creator.min.css",
+          "node_modules/survey-core/defaultV2.min.css",
+          "node_modules/survey-creator-core/survey-creator-core.min.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css"
         ],
         "scripts": [
-          "node_modules/jquery/dist/jquery.js",
           "node_modules/tinymce/tinymce.js",
           "node_modules/tinymce/themes/silver/theme.js"
         ],
         "allowedCommonJsDependencies": [
           "minimatch",
           "hammerjs",
-          "survey-creator",
-          "survey-knockout",
           "subscriptions-transport-ws",
           "zen-observable",
           "lodash",
@@ -63,7 +60,9 @@
           "cron-parser",
           "cron-validator",
           "localforage",
-          "survey-angular",
+          "survey-core",
+          "survey-creator-core",
+          "survey-angular-ui",
           "fast-sha256"
         ]
       },

@@ -6,6 +6,7 @@ import { SafeFormComponent } from './form.component';
 import { SafeFormActionsModule } from '../form-actions/form-actions.module';
 import { SafeRecordSummaryModule } from '../record-summary/record-summary.module';
 import { ButtonModule } from '@oort-front/ui';
+import { SurveyModule } from 'survey-angular-ui';
 
 /**
  * SafeFormModule is a class used to manage all the modules and components
@@ -21,6 +22,7 @@ import { ButtonModule } from '@oort-front/ui';
     SafeFormActionsModule,
     TranslateModule,
     ButtonModule,
+    SurveyModule,
   ],
   exports: [SafeFormComponent],
 })

@@ -14,7 +14,7 @@ import {
 } from '@angular/core';
 import { FilterPosition } from './enums/dashboard-filters.enum';
 import { Dialog } from '@angular/cdk/dialog';
-import * as Survey from 'survey-angular';
+import { Model, SurveyModel } from 'survey-core';
 import { Apollo } from 'apollo-angular';
 import { SafeApplicationService } from '../../services/application/application.service';
 import { Application } from '../../models/application.model';
@@ -75,7 +75,7 @@ export class DashboardFilterComponent
   private resizeObserver!: ResizeObserver;
 
   // Survey
-  public survey: Survey.Model = new Survey.Model();
+  public survey: Model = new Model();
   public surveyStructure: any = {};
   @ViewChild('dashboardSurveyCreatorContainer')
   dashboardSurveyCreatorContainer!: ElementRef<HTMLElement>;
@@ -251,9 +251,10 @@ export class DashboardFilterComponent
 
   /** Render the survey using the saved structure */
   private initSurvey(): void {
-    Survey.StylesManager.applyTheme();
     const surveyStructure = this.surveyStructure;
-    this.survey = new Survey.Model(surveyStructure);
+
+    this.survey = new Model(surveyStructure);
+    this.survey.applyTheme({ isPanelless: true });
 
     if (this.value) {
       this.survey.data = this.value;
@@ -271,7 +272,6 @@ export class DashboardFilterComponent
     this.survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
     );
-    this.survey.render(this.dashboardSurveyCreatorContainer?.nativeElement);
     this.onValueChange();
   }
 
@@ -292,7 +292,7 @@ export class DashboardFilterComponent
    *
    * @param survey survey model
    */
-  public onAfterRenderSurvey(survey: Survey.SurveyModel) {
+  public onAfterRenderSurvey(survey: SurveyModel) {
     this.empty = survey.getAllQuestions().length === 0;
   }
 

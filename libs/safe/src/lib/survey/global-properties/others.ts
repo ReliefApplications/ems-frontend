@@ -1,20 +1,23 @@
 import {
   ChoicesRestful,
+  ChoicesRestfull,
   JsonMetadata,
   QuestionFileModel,
-} from 'survey-angular';
-import { Question } from '../types';
+  Serializer,
+  matrixDropdownColumnTypes,
+  settings,
+} from 'survey-core';
+import { SafeQuestion } from '../types';
 
 /**
  * Add support for custom properties to the survey
  *
- * @param Survey Survey library
  * @param environment Current environment
  */
-export const init = (Survey: any, environment: any): void => {
-  const serializer: JsonMetadata = Survey.Serializer;
+export const init = (environment: any): void => {
+  const serializer: JsonMetadata = Serializer;
   // change the prefix for comments
-  Survey.settings.commentPrefix = '_comment';
+  settings.commentPrefix = '_comment';
   // override default expression properties
   serializer.removeProperty('expression', 'readOnly');
   serializer.removeProperty('survey', 'focusFirstQuestionAutomatic');
@@ -27,18 +30,18 @@ export const init = (Survey: any, environment: any): void => {
     required: true,
   });
   // Pass token before the request to fetch choices by URL if it's targeting SAFE API
-  Survey.ChoicesRestful.onBeforeSendRequest = (
+  ChoicesRestfull.onBeforeSendRequest = (
     sender: ChoicesRestful,
-    options: { request: { headers: Headers } }
+    options: { request: XMLHttpRequest }
   ) => {
     if (sender.url.includes(environment.apiUrl)) {
       const token = localStorage.getItem('idtoken');
-      options.request.headers.append('Authorization', `Bearer ${token}`);
+      options.request.setRequestHeader('Authorization', `Bearer ${token}`);
     }
   };
 
   // Add file option for file columns on matrix questions
-  Survey.matrixDropdownColumnTypes.file = {
+  matrixDropdownColumnTypes.file = {
     properties: ['showPreview', 'imageHeight', 'imageWidth'],
     tabs: [
       { name: 'visibleIf', index: 12 },
@@ -53,7 +56,7 @@ export const init = (Survey: any, environment: any): void => {
     visibleIndex: 4,
     default: '',
     isLocalizable: true,
-    onExecuteExpression: (obj: Question, res: boolean) => {
+    onExecuteExpression: (obj: SafeQuestion, res: boolean) => {
       if (res) {
         obj.value = null;
       }
@@ -66,7 +69,7 @@ export const init = (Survey: any, environment: any): void => {
  *
  * @param question The question object
  */
-export const render = (question: Question): void => {
+export const render = (question: SafeQuestion): void => {
   // define the max size for files
   if (question.getType() === 'file') {
     (question as QuestionFileModel).maxSize = 7340032;

@@ -7,7 +7,13 @@
     "semantic-release": "semantic-release",
     "prepare": "husky install",
     "lint": "npx nx run-many --target=lint --projects=safe,front-office,back-office,ui --verbose",
-    "test": "npx nx run-many --target=test --projects=safe,front-office,back-office,ui --configuration=ci"
+    "test": "npx nx run-many --target=test --projects=safe,front-office,back-office,ui --configuration=ci",
+    "bundle:widgets": "set NODE_OPTIONS=--max_old_space_size=4096 && npx nx build web-widgets --configuration=oort-dev && node .scripts/build-widgets.js",
+    "widgets:local": "set NODE_OPTIONS=--max_old_space_size=4096 && npx nx run web-widgets:serve",
+    "back-office:local": "set NODE_OPTIONS=--max_old_space_size=4096 && npx nx serve back-office --configuration=oort-local",
+    "back-office:dev": "set NODE_OPTIONS=--max_old_space_size=4096 && npx nx serve back-office --configuration=oort-dev",
+    "back-office:azure": "set NODE_OPTIONS=--max_old_space_size=4096 && npx nx serve back-office --configuration=azure-dev",
+    "back-office:local-prod": "set NODE_OPTIONS=--max_old_space_size=4096 && npx nx build back-office --configuration=oort-local"
   },
   "private": true,
   "dependencies": {
@@ -100,9 +106,10 @@
     "proj4": "^2.9.0",
     "rxjs": "~7.8.0",
     "subscriptions-transport-ws": "^0.9.18",
-    "survey-angular": "1.9.98",
-    "survey-creator": "1.9.98",
-    "survey-knockout": "1.9.98",
+    "survey-angular-ui": "1.9.100",
+    "survey-core": "1.9.100",
+    "survey-creator-angular": "1.9.101",
+    "survey-creator-core": "1.9.101",
     "tinymce": "^5.10.7",
     "tslib": "^2.3.0",
     "uuid": "^8.3.1",

@@ -5,8 +5,9 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import * as SurveyCreator from 'survey-creator';
-import * as Survey from 'survey-angular';
+import { SurveyModel } from 'survey-core';
+import { SurveyCreatorModel } from 'survey-creator-core';
+import { SurveyCreatorModule } from 'survey-creator-angular';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { SafeFormService } from '../../../services/form/form.service';
 import { CommonModule } from '@angular/common';
@@ -137,12 +138,13 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
     TooltipModule,
     DialogModule,
     AlertModule,
+    SurveyCreatorModule,
   ],
 })
 export class FilterBuilderModalComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
-  surveyCreator!: SurveyCreator.SurveyCreator;
+  surveyCreator!: SurveyCreatorModel;
 
   /**
    * Dialog component to build the filter
@@ -179,14 +181,13 @@ export class FilterBuilderModalComponent
       showTranslationTab: false,
       questionTypes: QUESTION_TYPES,
     };
-    this.setCustomTheme();
-    this.surveyCreator = new SurveyCreator.SurveyCreator(
-      'dashboardSurveyCreatorContainer',
-      creatorOptions
-    );
+    this.surveyCreator = new SurveyCreatorModel(creatorOptions);
+
     // this.surveyCreator.text = '';
-    this.surveyCreator.showToolbox = 'right';
-    this.surveyCreator.showPropertyGrid = 'right';
+    this.surveyCreator.showToolbox = true;
+    this.surveyCreator.toolboxLocation = 'right';
+    this.surveyCreator.showPropertyGrid = true;
+    this.surveyCreator.sidebarLocation = 'right';
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.survey.showQuestionNumbers = 'off';
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
@@ -207,7 +208,7 @@ export class FilterBuilderModalComponent
 
     // add the rendering of custom properties
     this.surveyCreator.survey.onAfterRenderQuestion.add(
-      renderGlobalProperties(this.referenceDataService)
+      renderGlobalProperties(this.referenceDataService) as any
     );
     (this.surveyCreator.onTestSurveyCreated as any).add(
       (sender: any, opt: any) =>
@@ -217,16 +218,8 @@ export class FilterBuilderModalComponent
     );
 
     // Set content
-    const survey = new Survey.SurveyModel(this.data?.surveyStructure || {});
+    const survey = new SurveyModel(this.data?.surveyStructure || {});
     this.surveyCreator.JSON = survey.toJSON();
-  }
-
-  /**
-   * Set a theme for the form builder depending on the environment
-   */
-  setCustomTheme(): void {
-    Survey.StylesManager.applyTheme();
-    SurveyCreator.StylesManager.applyTheme('default');
   }
 
   /**
