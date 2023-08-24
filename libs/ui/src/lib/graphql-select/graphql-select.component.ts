@@ -45,7 +45,7 @@ export class GraphQLSelectComponent
   @Input() path = '';
   @Input() selectedElements: any[] = [];
   @Input() filterable = false;
-  @Input() defaultPlaceholder = '';
+  @Input() placeholder = '';
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;
   /** Query reference for getting the available contents */
@@ -63,21 +63,6 @@ export class GraphQLSelectComponent
     this.onChange(val);
     this.stateChanges.next();
     this.selectionChange.emit(val);
-  }
-  /**
-   * Gets the placeholder for the select
-   *
-   * @returns the placeholder
-   */
-  @Input() get placeholder() {
-    return this.ePlaceholder;
-  }
-  /**
-   * Sets the placeholder
-   */
-  set placeholder(plh) {
-    this.ePlaceholder = plh;
-    this.stateChanges.next();
   }
   /**
    * Indicates whether the field is required
@@ -133,7 +118,6 @@ export class GraphQLSelectComponent
     endCursor: '',
     hasNextPage: true,
   };
-  private ePlaceholder = '';
   private isRequired = false;
   private scrollListener!: any;
 

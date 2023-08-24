@@ -501,7 +501,8 @@
 			},
 			"dropdown": {
 				"select": "******"
-			}
+			},
+			"selectChannel": "******"
 		},
 		"confirmModal": {
 			"cancel": "******",
@@ -1618,7 +1619,8 @@
 	"models": {
 		"apiConfiguration": {
 			"authType": "******",
-			"new": "******"
+			"new": "******",
+			"selectAuthType": "******"
 		},
 		"application": {
 			"description": "******",
@@ -1662,7 +1664,9 @@
 				"origin": "******",
 				"refData": {
 					"element": "******"
-				}
+				},
+				"selectDisplayField": "******",
+				"selectOrigin": "******"
 			},
 			"deactivateFiltering": "******",
 			"share": "******"

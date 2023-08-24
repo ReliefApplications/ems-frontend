@@ -501,7 +501,8 @@
 			},
 			"dropdown": {
 				"select": "Notify on"
-			}
+			},
+			"selectChannel": "Select one channel"
 		},
 		"confirmModal": {
 			"cancel": "Cancel",
@@ -1618,7 +1619,8 @@
 	"models": {
 		"apiConfiguration": {
 			"authType": "Authentication type",
-			"new": "New API Configuration"
+			"new": "New API Configuration",
+			"selectAuthType": "Select one authentication type"
 		},
 		"application": {
 			"description": "Description",
@@ -1662,7 +1664,9 @@
 				"origin": "Context origin",
 				"refData": {
 					"element": "Element"
-				}
+				},
+				"selectDisplayField": "Select display field",
+				"selectOrigin": "Select context origin"
 			},
 			"deactivateFiltering": "Deactivate filtering",
 			"share": "Share Dashboard"
