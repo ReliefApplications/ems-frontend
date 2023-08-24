@@ -586,6 +586,7 @@
 				"template": {
 					"from": "Depuis le modèle",
 					"placeholder": "Choisir un modèle existant",
+					"selectResource": "Sélectionnez une ressource",
 					"title": "Depuis la ressource"
 				},
 				"tooltip": {

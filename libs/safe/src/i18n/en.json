@@ -581,6 +581,7 @@
 				"template": {
 					"from": "From template",
 					"placeholder": "Pick an existing template",
+					"selectResource": "Select a resource",
 					"title": "From resource"
 				},
 				"tooltip": {

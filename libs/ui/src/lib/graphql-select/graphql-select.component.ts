@@ -45,6 +45,7 @@ export class GraphQLSelectComponent
   @Input() path = '';
   @Input() selectedElements: any[] = [];
   @Input() filterable = false;
+  @Input() defaultPlaceholder = '';
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;
   /** Query reference for getting the available contents */
