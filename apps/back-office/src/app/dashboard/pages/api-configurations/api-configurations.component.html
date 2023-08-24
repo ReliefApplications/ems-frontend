@@ -39,6 +39,7 @@
         <ui-select-menu
           [ngModel]="statusFilter"
           (selectedOption)="applyFilter('status', $event)"
+          [placeholder]="'common.selectStatus' | translate"
         >
           <ui-select-option>-</ui-select-option>
           <ui-select-option value="active">
