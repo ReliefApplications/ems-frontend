@@ -486,10 +486,8 @@ export class Layer implements LayerModel {
       onEachFeature: (feature: Feature<any>, layer: L.Layer) => {
         // Add popup on click because we destroy popup component each time we remove it
         // In order to destroy all event subscriptions and avoid memory leak
-        const setPopupListener = (event: any) => {
-          console.log(event);
+        const setPopupListener = () => {
           const center = centroid(feature);
-          console.log(center);
           // bind this to the popup service
           this.popupService.setPopUp(
             [feature],
