@@ -826,11 +826,4 @@ export class SafeGridComponent
       return this.translate.instant('components.widget.grid.loading.records');
     return this.translate.instant('kendo.grid.noRecords');
   }
-
-  /**
-   * Clear the grid search field
-   */
-  public clearSearch() {
-    this.search.setValue('');
-  }
 }
