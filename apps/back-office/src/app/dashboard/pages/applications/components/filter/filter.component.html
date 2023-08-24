@@ -50,7 +50,7 @@
     <!-- Status filter -->
     <div uiFormFieldDirective [outline]="false" class="p-0 w-44">
       <label>{{ 'common.status' | translate }}</label>
-      <ui-select-menu 
+      <ui-select-menu
         formControlName="status"
         [placeholder]="'common.selectStatus' | translate"
       >
@@ -66,8 +66,10 @@
         </ui-select-option>
       </ui-select-menu>
     </div>
-    <ui-button variant="danger" (click)="clear()" class="max-sm:!w-auto">{{
-      'common.filter.clear' | translate
-    }}</ui-button>
+    <div class="mb-4 pt-[24px]">
+      <ui-button variant="danger" (click)="clear()" class="max-sm:!w-auto">{{
+        'common.filter.clear' | translate
+      }}</ui-button>
+    </div>
   </div>
 </div>

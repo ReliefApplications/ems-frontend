@@ -53,7 +53,7 @@
       <label>{{ 'common.status' | translate }}</label>
       <ui-select-menu
         formControlName="status"
-        [placeholder]="'common.selectStatus' | translate"  
+        [placeholder]="'common.selectStatus' | translate"
       >
         <ui-select-option value="active">
           {{ 'common.status_active' | translate }}
@@ -81,8 +81,10 @@
       </ui-select-menu>
     </div>
     <!-- Clear filters -->
-    <ui-button class="max-sm:!w-auto" variant="danger" (click)="clear()">{{
-      'common.filter.clear' | translate
-    }}</ui-button>
+    <div class="mb-4 pt-[24px]">
+      <ui-button class="max-sm:!w-auto" variant="danger" (click)="clear()">{{
+        'common.filter.clear' | translate
+      }}</ui-button>
+    </div>
   </div>
 </div>

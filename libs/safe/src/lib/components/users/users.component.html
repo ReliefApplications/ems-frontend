@@ -47,12 +47,14 @@
         </ui-select-menu>
       </div>
       <!-- Clear filters -->
-      <ui-button
-        class="max-sm:!w-auto"
-        variant="danger"
-        (click)="clearAllFilters()"
-        >{{ 'common.filter.clear' | translate }}</ui-button
-      >
+      <div class="mb-4 pt-[24px]">
+        <ui-button
+          class="max-sm:!w-auto"
+          variant="danger"
+          (click)="clearAllFilters()"
+          >{{ 'common.filter.clear' | translate }}</ui-button
+        >
+      </div>
     </div>
   </div>
   <!-- Actions -->
