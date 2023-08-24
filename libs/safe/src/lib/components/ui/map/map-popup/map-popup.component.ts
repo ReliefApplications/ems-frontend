@@ -6,12 +6,13 @@ import {
   Output,
 } from '@angular/core';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-import { Feature, Point } from 'geojson';
+import { Feature, Geometry } from 'geojson';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule, DividerModule } from '@oort-front/ui';
+import { LatLng } from 'leaflet';
 
 /** Component for a popup that has information on multiple points */
 @Component({
@@ -25,14 +26,13 @@ export class SafeMapPopupComponent
   extends SafeUnsubscribeComponent
   implements AfterContentInit
 {
-  @Input() points: Feature<Point>[] = [];
+  @Input() coordinates!: LatLng;
+  @Input() feature: Feature<Geometry>[] = [];
   @Input() template = '';
   @Input() currZoom = 13;
 
   @Output() closePopup: EventEmitter<void> = new EventEmitter<void>();
-  @Output() zoomTo: EventEmitter<{ coordinates: number[] }> = new EventEmitter<{
-    coordinates: number[];
-  }>();
+  @Output() zoomTo: EventEmitter<LatLng> = new EventEmitter<LatLng>();
   public currentHtml: SafeHtml = '';
   public current = new BehaviorSubject<number>(0);
 
@@ -64,8 +64,7 @@ export class SafeMapPopupComponent
 
   /** Updates the html for the current point */
   public setInnerHtml() {
-    const properties = this.points[this.currValue].properties;
-    const coordinates = this.points[this.currValue].geometry.coordinates;
+    const properties = this.feature[this.currValue].properties;
     const regex = /{{(.*?)}}/g;
     // if no properties, return the template replacing all matches with empty string
     // if there are properties, replace the matches with the corresponding property
@@ -76,12 +75,7 @@ export class SafeMapPopupComponent
           if (!key.includes('coordinates')) {
             value = properties[key];
           } else {
-            // Popup service sets the coordinates as coordinates${index}
-            // This regex extracts the ${index} to set the related value from coordinates
-            const coordinateIndex = Number(
-              key.match(/[^(?<=coordinates)]*$/gi)?.[0]
-            );
-            value = coordinates[coordinateIndex ?? 0];
+            value = this.coordinates;
           }
 
           return value ? value : '';
@@ -97,8 +91,6 @@ export class SafeMapPopupComponent
    * Emit event with current point coordinates
    */
   public zoomToCurrentFeature() {
-    this.zoomTo.emit({
-      coordinates: this.points[this.currValue].geometry.coordinates,
-    });
+    this.zoomTo.emit(this.coordinates);
   }
 }
