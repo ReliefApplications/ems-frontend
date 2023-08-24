@@ -85,10 +85,9 @@ export class ArcgisService {
    * @param options parameter
    * @param options.start parameter
    * @param options.text search string
-   * @param options.id current id
    * @returns searched items
    */
-  public searchItems(options: { start?: number; text?: string; id?: string }) {
+  public searchItems(options: { start?: number; text?: string }) {
     const query = new SearchQueryBuilder()
       .startGroup()
       .match('Web Map')
@@ -105,10 +104,6 @@ export class ArcgisService {
         .endGroup();
     }
     query.endGroup();
-    if (options.id) {
-      query.or();
-      query.startGroup().match(options.id).in('id').endGroup();
-    }
     const filter: ISearchOptions = {
       q: query,
       start: options.start,

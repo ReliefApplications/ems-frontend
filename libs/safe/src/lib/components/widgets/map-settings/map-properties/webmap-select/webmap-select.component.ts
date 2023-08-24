@@ -24,6 +24,7 @@ import {
   SelectMenuModule,
   SpinnerModule,
 } from '@oort-front/ui';
+import uniqBy from 'lodash/uniqBy';
 
 /**
  *
@@ -85,17 +86,23 @@ export class WebmapSelectComponent
    * Subscribe to settings changes to update map.
    */
   ngOnInit(): void {
+    if (this.value) {
+      this.arcgis.searchItemById(this.value).then((item) => {
+        if (item) {
+          // Add item at beginning of the list
+          this.items.next(
+            uniqBy([...item.results, ...this.items.getValue()], 'id')
+          );
+        }
+      });
+    }
     this.search();
-    this.arcgis.searchItemById(this.value).then((item) => {
-      if (item) {
-        this.items.next(item.results);
-      }
-    });
     // this way we can wait for 0.5s before sending an update
     this.searchControl.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value) => {
         this.start = 0;
+        this.nextPage = true;
         this.items.next([]);
         this.search(value);
       });
@@ -138,6 +145,7 @@ export class WebmapSelectComponent
    * @param value id of webmap
    */
   writeValue(value: any): void {
+    console.log(value);
     if (value) {
       this.value = JSON.parse(JSON.stringify(value));
     } else {
@@ -151,41 +159,47 @@ export class WebmapSelectComponent
    * @param text search text
    */
   private search(text?: string): void {
-    this.arcgis
-      .searchItems({ start: this.start, text, id: this.ngControl.value })
-      .then((search) => {
-        if (search.nextStart > this.start) {
-          this.start = search.nextStart;
-        } else {
-          this.nextPage = false;
-        }
-        if (text) {
-          this.items.next(
-            this.items
-              .getValue()
-              .concat(
-                search.results.filter(
-                  (a) =>
-                    a.id != this.value ||
-                    a.title.toLowerCase().includes(text.toLowerCase())
-                )
-              )
-          );
-        } else {
-          this.items.next(this.items.getValue().concat(search.results));
-        }
-        //Due to pagination we need to remove duplicates
-        this.items.next(
-          this.items
-            .getValue()
-            .filter(
-              (item, index) =>
-                this.items.getValue().findIndex((a) => a.id === item.id) ===
-                index
-            )
-        );
-        this.loading = false;
-      });
+    const queryOptions = {
+      start: this.start,
+      text,
+      ...(this.value && {
+        exclude: this.value,
+      }),
+    };
+    this.arcgis.searchItems(queryOptions).then((search) => {
+      if (search.nextStart > this.start) {
+        this.start = search.nextStart;
+      } else {
+        this.nextPage = false;
+      }
+      const items = this.items.getValue();
+      // if (text) {
+      //   this.items.next(
+      //     this.items
+      //       .getValue()
+      //       .concat(
+      //         search.results.filter(
+      //           (a) =>
+      //             a.id != this.value ||
+      //             a.title.toLowerCase().includes(text.toLowerCase())
+      //         )
+      //       )
+      //   );
+      // } else {
+      //   this.items.next(this.items.getValue().concat(search.results));
+      // }
+      // Due to pagination we need to remove duplicates
+      this.items.next(
+        uniqBy([...items, ...search.results], 'id')
+        // this.items
+        //   .getValue()
+        //   .filter(
+        //     (item, index) =>
+        //       this.items.getValue().findIndex((a) => a.id === item.id) === index
+        //   )
+      );
+      this.loading = false;
+    });
   }
 
   /**
