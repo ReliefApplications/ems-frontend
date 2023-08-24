@@ -1,3 +1,17 @@
+# [2.1.0-beta.3](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.0-beta.2...v2.1.0-beta.3) (2023-08-23)
+
+
+### Bug Fixes
+
+* incorrect loading from cache for reference data fields ([9041ff3](https://github.com/ReliefApplications/oort-frontend/commit/9041ff3831b840c83b83a39158261e8071ac0efa))
+* popup could not appear with polygons ([c6fa211](https://github.com/ReliefApplications/oort-frontend/commit/c6fa211a8192929e65c609116cb316894fb0d7d2))
+
+
+### Features
+
+* add possibility to setup sorting for grids & summary cards ([21648ec](https://github.com/ReliefApplications/oort-frontend/commit/21648ecb2e0d21e5b8fe944330a8d2c6afa32347))
+* allow draft edition of records in grids ([3cea89b](https://github.com/ReliefApplications/oort-frontend/commit/3cea89b26b0094741dedf9499f26410264ff98d6))
+
 # [2.1.0-beta.2](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.0-beta.1...v2.1.0-beta.2) (2023-08-17)
 
 

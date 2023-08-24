@@ -1,14 +1,14 @@
 <div class="w-60 safe-border-radius-inherit flex flex-col">
   <header class="w-full pl-2 safe-popup-header h-full flex items-center">
-    <p class="m-0" *ngIf="points.length > 1">
+    <p class="m-0" *ngIf="feature.length > 1">
       ({{
         'components.widget.settings.map.popup.of'
-          | translate : { total: points.length, current: currValue + 1 }
+          | translate : { total: feature.length, current: currValue + 1 }
       }})
     </p>
     <div class="flex ml-auto">
       <!-- Navigate between items -->
-      <ng-container *ngIf="points.length > 1">
+      <ng-container *ngIf="feature.length > 1">
         <ui-button
           [isIcon]="true"
           icon="arrow_left"
@@ -19,7 +19,7 @@
         <ui-button
           [isIcon]="true"
           icon="arrow_right"
-          [disabled]="currValue === points.length - 1"
+          [disabled]="currValue === feature.length - 1"
           (click)="current.next(currValue + 1)"
         >
         </ui-button>
