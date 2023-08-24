@@ -145,7 +145,6 @@ export class WebmapSelectComponent
    * @param value id of webmap
    */
   writeValue(value: any): void {
-    console.log(value);
     if (value) {
       this.value = JSON.parse(JSON.stringify(value));
     } else {
