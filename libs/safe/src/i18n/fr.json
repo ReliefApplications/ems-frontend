@@ -717,7 +717,7 @@
 				"title": "Supprimer la tâche"
 			},
 			"modal": {
-				"addMappingField": "@TODO",
+				"addMappingField": "ajouter un champ de correspondance",
 				"errors": {
 					"schedule": "Entrez une expression cron valide"
 				},
