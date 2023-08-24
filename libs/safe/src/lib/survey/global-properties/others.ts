@@ -37,7 +37,7 @@ export const init = (Survey: any, environment: any): void => {
     }
   };
 
-  // // Add file option for file columns on matrix questions
+  // Add file option for file columns on matrix questions
   Survey.matrixDropdownColumnTypes.file = {
     properties: ['showPreview', 'imageHeight', 'imageWidth'],
     tabs: [
@@ -45,6 +45,20 @@ export const init = (Survey: any, environment: any): void => {
       { name: 'enableIf', index: 20 },
     ],
   };
+
+  // Adds property that clears the value when condition is met
+  serializer.addProperty('question', {
+    name: 'clearIf:condition',
+    category: 'logic',
+    visibleIndex: 4,
+    default: '',
+    isLocalizable: true,
+    onExecuteExpression: (obj: Question, res: boolean) => {
+      if (res) {
+        obj.value = null;
+      }
+    },
+  });
 };
 
 /**

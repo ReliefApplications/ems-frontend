@@ -18,11 +18,7 @@ import {
 import { QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { get } from 'lodash';
-import {
-  NgControl,
-  ControlValueAccessor,
-  UntypedFormControl,
-} from '@angular/forms';
+import { NgControl, ControlValueAccessor, FormControl } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { takeUntil } from 'rxjs/operators';
@@ -119,7 +115,7 @@ export class GraphQLSelectComponent
   @Output() searchChange = new EventEmitter<string>();
 
   public stateChanges = new Subject<void>();
-  public searchControl = new UntypedFormControl('');
+  public searchControl = new FormControl('', { nonNullable: true });
   public controlType = 'ui-graphql-select';
   public elements = new BehaviorSubject<any[]>([]);
   public elements$!: Observable<any[]>;
@@ -192,7 +188,7 @@ export class GraphQLSelectComponent
     private renderer: Renderer2,
     @Inject(DOCUMENT) private document: Document
   ) {
-    if (this.ngControl != null) {
+    if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
   }
@@ -259,12 +255,14 @@ export class GraphQLSelectComponent
 
   ngOnInit(): void {
     this.elements$ = this.elements.asObservable();
-    this.query?.valueChanges
-      .pipe(takeUntil(this.destroy$), takeUntil(this.queryChange$))
-      .subscribe(({ data, loading }) => {
-        this.queryName = Object.keys(data)[0];
-        this.updateValues(data, loading);
-      });
+    if (this.query) {
+      this.query.valueChanges
+        .pipe(takeUntil(this.destroy$), takeUntil(this.queryChange$))
+        .subscribe(({ data, loading }) => {
+          this.queryName = Object.keys(data)[0];
+          this.updateValues(data, loading);
+        });
+    }
     this.ngControl?.valueChanges
       ?.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -407,7 +405,7 @@ export class GraphQLSelectComponent
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
       50
     ) {
-      if (!this.loading && this.pageInfo.hasNextPage) {
+      if (!this.loading && this.pageInfo?.hasNextPage) {
         // Check if original query is using skip or afterCursor
         const queryDefinition = this.query.options.query.definitions[0];
         const isSkip =

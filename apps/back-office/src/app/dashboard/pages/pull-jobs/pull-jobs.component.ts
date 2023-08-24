@@ -31,7 +31,7 @@ import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 const ITEMS_PER_PAGE = 10;
 
 /**
- * Shows all pull-jobs avilable.
+ * Shows all pull-jobs available.
  */
 @Component({
   selector: 'app-pull-jobs',
@@ -402,9 +402,12 @@ export class PullJobsComponent
       this.cachedPullJobs,
       mappedValues
     );
-    this.pullJobs = mappedValues;
     this.pageInfo.length = data.pullJobs.totalCount;
     this.pageInfo.endCursor = data.pullJobs.pageInfo.endCursor;
+    this.pullJobs = this.cachedPullJobs.slice(
+      ITEMS_PER_PAGE * this.pageInfo.pageIndex,
+      ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
+    );
     this.loading = loading;
   }
 }

@@ -1,6 +1,24 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { DashboardComponent } from './dashboard.component';
+import {
+  TranslateFakeLoader,
+  TranslateLoader,
+  TranslateModule,
+  TranslateService,
+} from '@ngx-translate/core';
+import { AppAbility } from '@oort-front/safe';
+import { SafeLayoutModule, SafeNavbarModule } from '@oort-front/safe';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import {
+  OAuthService,
+  UrlHelperService,
+  OAuthLogger,
+  DateTimeProvider,
+} from 'angular-oauth2-oidc';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { DialogModule } from '@angular/cdk/dialog';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -9,6 +27,40 @@ describe('DashboardComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [DashboardComponent],
+      imports: [
+        SafeLayoutModule,
+        SafeNavbarModule,
+        ApolloTestingModule,
+        HttpClientTestingModule,
+        DialogModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: TranslateFakeLoader,
+          },
+        }),
+      ],
+      providers: [
+        AppAbility,
+        TranslateService,
+        OAuthService,
+        UrlHelperService,
+        OAuthLogger,
+        DateTimeProvider,
+        {
+          provide: ActivatedRoute,
+          useValue: {
+            params: of({}),
+          },
+        },
+        {
+          provide: 'environment',
+          useValue: {
+            theme: {},
+            availableLanguages: []
+          },
+        },
+      ]
     }).compileComponents();
   });
 
