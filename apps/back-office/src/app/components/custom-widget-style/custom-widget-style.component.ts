@@ -44,6 +44,7 @@ export class CustomWidgetStyleComponent
 
   @Input() widgetComp: any;
   @Input() save!: (tile: any) => void;
+  @Input() previewStyle!: (tile: any) => void;
 
   /**
    * Creates an instance of CustomStyleComponent, form and updates.
@@ -68,17 +69,12 @@ export class CustomWidgetStyleComponent
     this.formControl.valueChanges
       .pipe(debounceTime(1000))
       .subscribe((value: any) => {
-        const scss = `#${this.widgetComp.domId} {
-        ${value}
-      }`;
+        const scss = `${value}`;
         this.restService
           .post('style/scss-to-css', { scss }, { responseType: 'text' })
           .subscribe((css) => {
-            this.widgetComp.widget.settings.widgetDisplay.style = value;
-            this.styleApplied.innerText = css;
-            document
-              .getElementsByTagName('head')[0]
-              .appendChild(this.styleApplied);
+            this.widgetComp.widget.settings.widgetDisplay.style = css;
+            this.previewStyle(this.widgetComp.widget);
             this.loading = false;
           });
       });

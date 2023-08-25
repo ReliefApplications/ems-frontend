@@ -469,9 +469,35 @@ export class DashboardComponent
       inputs: {
         widgetComp: e,
         save: (tile: any) => this.onEditTile(tile),
+        previewStyle: (widget: any) => this.previewStyle(widget),
       },
     });
     this.layoutService.closeRightSidenav = true;
+  }
+
+  /**
+   * Print the current widget from the dashboard.
+   *
+   * @param tile widget to print.
+   */
+  previewStyle(tile: any): void {
+    console.log('widget', tile);
+    //print the current widget from the dashboard
+    const widgetStyle = Array.from(document.querySelectorAll('style')).filter(
+      (style) => style.innerHTML.includes(tile.domId)
+    )[0];
+    if (widgetStyle) {
+      widgetStyle.innerHTML = tile.settings.widgetDisplay.style;
+    }
+    this.tiles = this.tiles.map((x) => {
+      if (x.id === tile.id) {
+        x.settings.widgetDisplay.style = tile.settings.widgetDisplay.style;
+      }
+      return x;
+    });
+    //refresh all tiles
+    this.tiles = [...this.tiles];
+    console.log('tiles', this.tiles);
   }
 
   /**
