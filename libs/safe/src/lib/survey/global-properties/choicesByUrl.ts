@@ -1,5 +1,19 @@
 import { get, isNil, set } from 'lodash';
-import { Question } from 'survey-angular';
+import {
+  ChoicesRestful,
+  QuestionSelectBase,
+  SurveyModel,
+} from 'survey-angular';
+
+type ExtendedChoicesRestful = ChoicesRestful & {
+  /** If the request should be a POST request */
+  usePost: boolean;
+  /** If the request is a GraphQL query */
+  isGraphQL: boolean;
+  /** Body of the request */
+  requestBody: string;
+  sendRequest: () => void;
+};
 
 /** Default properties of the ChoicesRestful class */
 const DEFAULT_PROPERTIES = [
@@ -65,22 +79,33 @@ class XmlParser {
  */
 export const init = (Survey: any): void => {
   Survey.Serializer.addProperty('selectBase', {
-    name: 'requestBody:expression',
+    name: 'detectionHelper:expression',
     category: 'choicesByUrl',
-    visibleIndex: 3,
-    required: true,
-    onExecuteExpression: (obj: Question, res: string) => {
-      if (!obj.choicesByUrl) {
-        return;
-      }
+    visible: false,
+    onExecuteExpression: (obj: QuestionSelectBase) => {
+      const choicesByUrl = obj.choicesByUrl as ExtendedChoicesRestful;
+
+      let body = obj.requestBody || '';
+      (obj.survey as SurveyModel).getAllQuestions().forEach((question) => {
+        if (body.includes(`{${question.name}}`)) {
+          const regex = new RegExp(`{${question.name}}`, 'g');
+          body = body.replace(regex, question.value);
+        }
+      });
       // Checks if Is GraphQL query or not
       if (obj.isGraphQL) {
-        obj.choicesByUrl.requestBody = JSON.stringify({ query: res });
+        choicesByUrl.requestBody = JSON.stringify({ query: body });
       } else {
-        obj.choicesByUrl.requestBody = res;
+        choicesByUrl.requestBody = body;
       }
-      obj.choicesByUrl.sendRequest();
+      choicesByUrl.sendRequest();
     },
+  });
+
+  Survey.Serializer.addProperty('selectBase', {
+    name: 'usePost:boolean',
+    displayName: 'Use POST',
+    category: 'choicesByUrl',
   });
 
   Survey.Serializer.addProperty('selectBase', {
@@ -90,9 +115,26 @@ export const init = (Survey: any): void => {
   });
 
   Survey.Serializer.addProperty('selectBase', {
-    name: 'usePost:boolean',
-    displayName: 'Use POST',
+    name: 'requestBody:text',
+    displayName: 'Body or query',
     category: 'choicesByUrl',
+    dependsOn: ['usePost', 'isGraphQL'],
+    visibleIf: (obj: QuestionSelectBase) => obj.usePost,
+    onSetValue: (obj: QuestionSelectBase, value: string) => {
+      // Updates the request body
+      obj.setPropertyValue('requestBody', value);
+
+      let newExp = '';
+
+      (obj.survey as SurveyModel).getAllQuestions().forEach((question) => {
+        if ((value || '').includes(`{${question.name}}`)) {
+          newExp += `{${question.name}} `;
+        }
+      });
+
+      // Updates the detection helper, adds all dependencies to it
+      obj.setPropertyValue('detectionHelper', newExp);
+    },
   });
 
   /**

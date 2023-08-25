@@ -21,6 +21,10 @@
         <input formControlName="name" type="string" />
       </div>
 
+      <ui-alert class="mb-4">
+        {{ 'components.widget.settings.grid.hint.executionOrder' | translate }}
+      </ui-alert>
+
       <!-- Select all records of query -->
       <ui-checkbox formControlName="selectAll">
         <ng-container ngProjectAs="label">{{
@@ -37,6 +41,93 @@
         }}</ng-container>
       </ui-checkbox>
 
+      <!-- Auto save edited records -->
+      <ui-checkbox formControlName="autoSave">
+        <ng-container ngProjectAs="label">{{
+          'components.widget.settings.grid.buttons.callback.save' | translate
+        }}</ng-container>
+      </ui-checkbox>
+
+      <!-- Attach record to another resource record -->
+      <ng-container *ngIf="relatedForms.length > 0">
+        <ui-checkbox formControlName="attachToRecord">
+          <ng-container ngProjectAs="label">
+            {{
+              'components.widget.settings.grid.buttons.callback.attach'
+                | translate
+            }}
+          </ng-container>
+          <ng-container ngProjectAs="icon">
+            <ui-icon
+              icon="info_outline"
+              variant="grey"
+              [size]="18"
+              [uiTooltip]="
+                'components.widget.settings.grid.buttons.tooltip.attach'
+                  | translate
+              "
+            ></ui-icon>
+          </ng-container>
+        </ui-checkbox>
+      </ng-container>
+      <div *ngIf="formGroup.value.attachToRecord" class="sub-parameters">
+        <ui-alert class="mb-4" variant="warning">
+          {{ 'components.widget.settings.grid.hint.attachToRecord' | translate }}
+        </ui-alert>
+        <!-- Selection of target resource -->
+        <div uiFormFieldDirective>
+          <label>{{ 'common.resource.one' | translate }}</label>
+          <ui-select-menu formControlName="targetResource">
+            <ui-select-option>--</ui-select-option>
+            <ui-select-option
+              *ngFor="let resource of relatedResources"
+              [value]="resource.id"
+            >
+              {{ resource.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+        <!-- Selection of target template -->
+        <div uiFormFieldDirective *ngIf="targetResource">
+          <label>{{ 'models.form.select' | translate }}</label>
+          <ui-select-menu formControlName="targetForm">
+            <ui-select-option>--</ui-select-option>
+            <ui-select-option
+              *ngFor="let form of targetResource.forms"
+              [value]="form.id"
+            >
+              {{ form.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+        <ng-container *ngIf="targetResource">
+          <!-- Single field to display for quick selection -->
+          <div uiFormFieldDirective>
+            <label>{{
+              'components.widget.settings.grid.buttons.callback.displayField'
+                | translate
+            }}</label>
+            <ui-select-menu formControlName="targetFormField">
+              <ui-select-option>--</ui-select-option>
+              <ui-select-option
+                *ngFor="let field of targetResource.fields"
+                [value]="field.name"
+              >
+                {{ field.name }}
+              </ui-select-option>
+            </ui-select-menu>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="targetResource">
+          <!-- Selection of fields to display for advanced selection -->
+          <safe-query-builder
+            [form]="$any(formGroup.controls.targetFormQuery)"
+            [canSelectDataSet]="false"
+          >
+          </safe-query-builder>
+        </ng-container>
+      </div>
+
       <!-- Prefill form with selected records -->
       <ng-container *ngIf="relatedForms.length > 0">
         <ui-checkbox formControlName="prefillForm">
@@ -46,6 +137,9 @@
           }}</ng-container>
         </ui-checkbox>
         <div *ngIf="formGroup.value.prefillForm" class="sub-parameters">
+          <ui-alert class="mb-4" variant="warning">
+            {{ 'components.widget.settings.grid.hint.prefillForm' | translate }}
+          </ui-alert>
           <div uiFormFieldDirective>
             <label>{{ 'models.form.template' | translate }}</label>
             <ui-select-menu formControlName="prefillTargetForm">
@@ -60,43 +154,6 @@
           </div>
         </div>
       </ng-container>
-
-      <!-- Workflow actions -->
-      <ng-container *ngIf="!isDashboard">
-        <!-- Go to next step -->
-        <ui-checkbox formControlName="goToNextStep">
-          <ng-container ngProjectAs="label">{{
-            'components.widget.settings.grid.buttons.callback.workflow.next'
-              | translate
-          }}</ng-container>
-        </ui-checkbox>
-        <!-- Close workflow -->
-        <ui-checkbox formControlName="closeWorkflow">
-          <ng-container ngProjectAs="label">{{
-            'components.widget.settings.grid.buttons.callback.workflow.close'
-              | translate
-          }}</ng-container>
-        </ui-checkbox>
-        <!-- Confirm action -->
-        <div
-          uiFormFieldDirective
-          class="sub-parameters"
-          *ngIf="formGroup.value.closeWorkflow"
-        >
-          <label>{{
-            'components.widget.settings.grid.buttons.callback.workflow.confirm'
-              | translate
-          }}</label>
-          <input formControlName="confirmationText" type="string" />
-        </div>
-      </ng-container>
-
-      <!-- Auto save edited records -->
-      <ui-checkbox formControlName="autoSave">
-        <ng-container ngProjectAs="label">{{
-          'components.widget.settings.grid.buttons.callback.save' | translate
-        }}</ng-container>
-      </ui-checkbox>
 
       <!-- Auto edition of selected records -->
       <div class="flex flex-col">
@@ -163,83 +220,6 @@
           >
           </ui-button>
         </div>
-      </div>
-
-      <!-- Attach record to another resource record -->
-      <ng-container *ngIf="relatedForms.length > 0">
-        <ui-checkbox formControlName="attachToRecord">
-          <ng-container ngProjectAs="label">
-            {{
-              'components.widget.settings.grid.buttons.callback.attach'
-                | translate
-            }}
-          </ng-container>
-          <ng-container ngProjectAs="icon">
-            <ui-icon
-              icon="info_outline"
-              variant="grey"
-              [size]="18"
-              [uiTooltip]="
-                'components.widget.settings.grid.buttons.tooltip.attach'
-                  | translate
-              "
-            ></ui-icon>
-          </ng-container>
-        </ui-checkbox>
-      </ng-container>
-      <div *ngIf="formGroup.value.attachToRecord" class="sub-parameters">
-        <!-- Selection of target resource -->
-        <div uiFormFieldDirective>
-          <label>{{ 'common.resource.one' | translate }}</label>
-          <ui-select-menu formControlName="targetResource">
-            <ui-select-option>--</ui-select-option>
-            <ui-select-option
-              *ngFor="let resource of relatedResources"
-              [value]="resource.id"
-            >
-              {{ resource.name }}
-            </ui-select-option>
-          </ui-select-menu>
-        </div>
-        <!-- Selection of target template -->
-        <div uiFormFieldDirective *ngIf="targetResource">
-          <label>{{ 'models.form.select' | translate }}</label>
-          <ui-select-menu formControlName="targetForm">
-            <ui-select-option>--</ui-select-option>
-            <ui-select-option
-              *ngFor="let form of targetResource.forms"
-              [value]="form.id"
-            >
-              {{ form.name }}
-            </ui-select-option>
-          </ui-select-menu>
-        </div>
-        <ng-container *ngIf="targetResource">
-          <!-- Single field to display for quick selection -->
-          <div uiFormFieldDirective>
-            <label>{{
-              'components.widget.settings.grid.buttons.callback.displayField'
-                | translate
-            }}</label>
-            <ui-select-menu formControlName="targetFormField">
-              <ui-select-option>--</ui-select-option>
-              <ui-select-option
-                *ngFor="let field of targetResource.fields"
-                [value]="field.name"
-              >
-                {{ field.name }}
-              </ui-select-option>
-            </ui-select-menu>
-          </div>
-        </ng-container>
-        <ng-container *ngIf="targetResource">
-          <!-- Selection of fields to display for advanced selection -->
-          <safe-query-builder
-            [form]="$any(formGroup.controls.targetFormQuery)"
-            [canSelectDataSet]="false"
-          >
-          </safe-query-builder>
-        </ng-container>
       </div>
 
       <!-- Send notification -->
@@ -412,6 +392,36 @@
           [showLimit]="true"
         ></safe-tab-fields>
       </div>
+
+      <!-- Workflow actions -->
+      <ng-container *ngIf="!isDashboard">
+        <!-- Go to next step -->
+        <ui-checkbox formControlName="goToNextStep">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.workflow.next'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
+        <!-- Close workflow -->
+        <ui-checkbox formControlName="closeWorkflow">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.workflow.close'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
+        <!-- Confirm action -->
+        <div
+          uiFormFieldDirective
+          class="sub-parameters"
+          *ngIf="formGroup.value.closeWorkflow"
+        >
+          <label>{{
+            'components.widget.settings.grid.buttons.callback.workflow.confirm'
+              | translate
+          }}</label>
+          <input formControlName="confirmationText" type="string" />
+        </div>
+      </ng-container>
     </ng-container>
   </div>
 </form>
