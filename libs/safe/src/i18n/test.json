@@ -501,7 +501,8 @@
 			},
 			"dropdown": {
 				"select": "******"
-			}
+			},
+			"selectChannel": "******"
 		},
 		"confirmModal": {
 			"cancel": "******",
@@ -581,6 +582,7 @@
 				"template": {
 					"from": "******",
 					"placeholder": "******",
+					"selectResource": "******",
 					"title": "******"
 				},
 				"tooltip": {
@@ -1617,7 +1619,8 @@
 	"models": {
 		"apiConfiguration": {
 			"authType": "******",
-			"new": "******"
+			"new": "******",
+			"selectAuthType": "******"
 		},
 		"application": {
 			"description": "******",
@@ -1661,7 +1664,9 @@
 				"origin": "******",
 				"refData": {
 					"element": "******"
-				}
+				},
+				"selectDisplayField": "******",
+				"selectOrigin": "******"
 			},
 			"deactivateFiltering": "******",
 			"share": "******"
