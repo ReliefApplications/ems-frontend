@@ -47,7 +47,6 @@ import { firstValueFrom, takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { map } from 'rxjs/operators';
 
 /** Component for the grid widget */
 @Component({
@@ -91,8 +90,6 @@ export class SafeGridWidgetComponent
     message?: string;
     error: boolean;
   } = { error: false };
-
-  private blockModifySelectedRows = false;
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
   @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
@@ -231,8 +228,6 @@ export class SafeGridWidgetComponent
    * @param options action options.
    */
   public async onQuickAction(options: any): Promise<void> {
-    this.blockModifySelectedRows = false;
-
     // Select all the records in the grid
     if (options.selectAll) {
       const query = this.queryBuilder.graphqlQuery(
@@ -252,7 +247,6 @@ export class SafeGridWidgetComponent
         this.grid.settings.query.name
       ].edges.map((x: any) => x.node.id);
     }
-
     // Select all the records in the active page
     if (options.selectPage) {
       this.grid.selectedRows = this.grid.gridData.data.map((x) => x.id);
@@ -275,276 +269,180 @@ export class SafeGridWidgetComponent
         return;
       }
     }
-
-    const promises: Promise<any>[] = [];
-
-    // Attaches the records to another one.
-    if (options.attachToRecord && this.grid.selectedRows.length > 0) {
-      //will block the other steps, unblocking if the opened modal was saved
-      this.blockModifySelectedRows = true;
-      await this.promisedAttachToRecord(
-        this.grid.selectedRows,
-        options,
-        promises
-      );
-    }
-
-    // Opens a form with selected records.
-    if (options.prefillForm && !this.blockModifySelectedRows) {
-      //will block the other steps, unblocking if the opened modal was saved
-      this.blockModifySelectedRows = true;
-      this.quickActionPrefillForm(options, promises);
-    }
-
     // Auto modify the selected rows
-    if (options.modifySelectedRows && !this.blockModifySelectedRows) {
+    if (options.modifySelectedRows) {
       await this.promisedRowsModifications(
         options.modifications,
         this.grid.selectedRows
       );
     }
 
+    // Attaches the records to another one.
+    if (options.attachToRecord && this.grid.selectedRows.length > 0) {
+      await this.promisedAttachToRecord(
+        this.grid.selectedRows,
+        options.targetForm,
+        options.targetFormField,
+        options.targetFormQuery
+      );
+    }
+    const promises: Promise<any>[] = [];
     // Notifies on a channel.
-    if (
-      options.notify &&
-      this.grid.selectedRows.length > 0 &&
-      !this.blockModifySelectedRows
-    ) {
-      this.quickActionNotify(options, promises);
-    }
-
-    // Publishes on a channel.
-    if (
-      options.publish &&
-      this.grid.selectedRows.length > 0 &&
-      !this.blockModifySelectedRows
-    ) {
-      this.quickActionPublish(options, promises);
-    }
-    if (promises.length > 0) {
-      await Promise.all(promises);
-    }
-
-    // Send email using backend mail service.
-    if (options.sendMail && !this.blockModifySelectedRows) {
-      this.quickActionSendMail(options);
-    }
-
-    // Workflow only: goes to next step, or closes the workflow.
-    if (
-      (options.goToNextStep || options.closeWorkflow) &&
-      !this.blockModifySelectedRows
-    ) {
-      this.quickActionWorkflow(options);
-    } else if (!this.blockModifySelectedRows) {
-      this.grid.reloadData();
-    }
-  }
-
-  /**
-   * Calls quickAction PrefillForm function
-   *
-   * @param options action options.
-   * @param promises array of promises
-   */
-  private async quickActionPrefillForm(options: any, promises: Promise<any>[]) {
-    const promisedRecords: Promise<any>[] = [];
-    // Fetches the record object for each selected record.
-    for (const record of this.grid.selectedItems) {
-      promisedRecords.push(
+    if (options.notify && this.grid.selectedRows.length > 0) {
+      promises.push(
         firstValueFrom(
-          this.apollo.query<GetRecordDetailsQueryResponse>({
-            query: GET_RECORD_DETAILS,
+          this.apollo.mutate<PublishNotificationMutationResponse>({
+            mutation: PUBLISH_NOTIFICATION,
             variables: {
-              id: record.id,
+              action: options.notificationMessage
+                ? options.notificationMessage
+                : 'Records update',
+              content: this.grid.selectedItems,
+              channel: options.notificationChannel,
             },
           })
         )
       );
     }
-    const records = (await Promise.all(promisedRecords)).map(
-      (x) => x.data.record
-    );
+    // Publishes on a channel.
+    if (options.publish && this.grid.selectedRows.length > 0) {
+      promises.push(
+        firstValueFrom(
+          this.apollo.mutate<PublishMutationResponse>({
+            mutation: PUBLISH,
+            variables: {
+              ids: this.grid.selectedRows,
+              channel: options.publicationChannel,
+            },
+          })
+        )
+      );
+    }
+    if (promises.length > 0) {
+      await Promise.all(promises);
+    }
+    // Send email using backend mail service.
+    if (options.sendMail) {
+      const templates =
+        this.applicationService.templates.filter((x) =>
+          options.templates?.includes(x.id)
+        ) || [];
+      if (templates.length === 0) {
+        // no template found, skip
+        this.snackBar.openSnackBar(
+          this.translate.instant(
+            'common.notifications.email.errors.noTemplate'
+          ),
+          { error: true }
+        );
+      } else {
+        // find recipients
+        const recipients =
+          this.applicationService.distributionLists.find(
+            (x) => x.id === options.distributionList
+          )?.emails || [];
 
-    // Opens a modal containing the prefilled form.
-    const { SafeFormModalComponent } = await import(
-      '../../form-modal/form-modal.component'
-    );
-    const dialogRef = this.dialog.open(SafeFormModalComponent, {
-      data: {
-        template: options.prefillTargetForm,
-        prefillRecords: records,
-        askForConfirm: false,
-      },
-      autoFocus: false,
-    });
+        // select template
+        const { EmailTemplateModalComponent } = await import(
+          '../../email-template-modal/email-template-modal.component'
+        );
+        const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
+          data: {
+            templates,
+          },
+        });
 
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        if (this.blockModifySelectedRows && options.modifySelectedRows) {
-          this.promisedRowsModifications(
-            options.modifications,
-            this.grid.selectedRows
+        const value = await firstValueFrom<any>(
+          dialogRef.closed.pipe(takeUntil(this.destroy$))
+        );
+        const template = value?.template;
+
+        if (template) {
+          this.emailService.previewMail(
+            recipients,
+            template.content.subject,
+            template.content.body,
+            {
+              logic: 'and',
+              filters: [
+                {
+                  operator: 'eq',
+                  field: 'ids',
+                  value: this.grid.selectedRows,
+                },
+              ],
+            },
+            {
+              name: this.grid.settings.query.name,
+              fields: options.bodyFields,
+            },
+            this.grid.sortField || undefined,
+            this.grid.sortOrder || undefined,
+            options.export
           );
-          //continuing the steps
-          if (options.notify && this.grid.selectedRows.length > 0) {
-            this.quickActionNotify(options, promises);
-          }
-
-          if (options.publish && this.grid.selectedRows.length > 0) {
-            this.quickActionPublish(options, promises);
-          }
-
-          if (promises.length > 0) {
-            Promise.all(promises);
-          }
-
-          if (options.sendMail) {
-            this.quickActionSendMail(options);
-          }
-
-          if (options.goToNextStep || options.closeWorkflow) {
-            this.quickActionWorkflow(options);
-          } else {
-            this.grid.reloadData();
-          }
         }
       }
-    });
-  }
+    }
 
-  /**
-   * Calls quickAction Notify function
-   *
-   * @param options action options.
-   * @param promises array of promises
-   */
-  private quickActionNotify(options: any, promises: Promise<any>[]) {
-    promises.push(
-      firstValueFrom(
-        this.apollo.mutate<PublishNotificationMutationResponse>({
-          mutation: PUBLISH_NOTIFICATION,
-          variables: {
-            action: options.notificationMessage
-              ? options.notificationMessage
-              : 'Records update',
-            content: this.grid.selectedItems,
-            channel: options.notificationChannel,
-          },
-        })
-      )
-    );
-  }
-
-  /**
-   * Calls quickAction Publish function
-   *
-   * @param options action options.
-   * @param promises array of promises
-   */
-  private quickActionPublish(options: any, promises: Promise<any>[]) {
-    promises.push(
-      firstValueFrom(
-        this.apollo.mutate<PublishMutationResponse>({
-          mutation: PUBLISH,
-          variables: {
-            ids: this.grid.selectedRows,
-            channel: options.publicationChannel,
-          },
-        })
-      )
-    );
-  }
-
-  /**
-   * Calls quickAction SendMail function
-   *
-   * @param options action options.
-   */
-  private async quickActionSendMail(options: any) {
-    const templates =
-      this.applicationService.templates.filter((x) =>
-        options.templates?.includes(x.id)
-      ) || [];
-    if (templates.length === 0) {
-      // no template found, skip
-      this.snackBar.openSnackBar(
-        this.translate.instant('common.notifications.email.errors.noTemplate'),
-        { error: true }
-      );
-    } else {
-      // find recipients
-      const recipients =
-        this.applicationService.distributionLists.find(
-          (x) => x.id === options.distributionList
-        )?.emails || [];
-
-      // select template
-      const { EmailTemplateModalComponent } = await import(
-        '../../email-template-modal/email-template-modal.component'
-      );
-      const dialogRef = this.dialog.open(EmailTemplateModalComponent, {
-        data: {
-          templates,
-        },
-      });
-
-      const value = await firstValueFrom<any>(
-        dialogRef.closed.pipe(takeUntil(this.destroy$))
-      );
-      const template = value?.template;
-
-      if (template) {
-        this.emailService.previewMail(
-          recipients,
-          template.content.subject,
-          template.content.body,
-          {
-            logic: 'and',
-            filters: [
-              {
-                operator: 'eq',
-                field: 'ids',
-                value: this.grid.selectedRows,
+    // Opens a form with selected records.
+    if (options.prefillForm) {
+      const promisedRecords: Promise<any>[] = [];
+      // Fetches the record object for each selected record.
+      for (const record of this.grid.selectedItems) {
+        promisedRecords.push(
+          firstValueFrom(
+            this.apollo.query<GetRecordDetailsQueryResponse>({
+              query: GET_RECORD_DETAILS,
+              variables: {
+                id: record.id,
               },
-            ],
-          },
-          {
-            name: this.grid.settings.query.name,
-            fields: options.bodyFields,
-          },
-          this.grid.sortField || undefined,
-          this.grid.sortOrder || undefined,
-          options.export
+            })
+          )
         );
       }
-    }
-  }
+      const records = (await Promise.all(promisedRecords)).map(
+        (x) => x.data.record
+      );
 
-  /**
-   * Calls quickAction Workflow function to verify if it has next step or should close workflow
-   *
-   * @param options action options.
-   */
-  private async quickActionWorkflow(options: any) {
-    if (options.goToNextStep) {
-      this.goToNextStep.emit(true);
-    } else {
-      const dialogRef = this.confirmService.openConfirmModal({
-        title: this.translate.instant(
-          'components.widget.settings.grid.buttons.callback.workflow.close'
-        ),
-        content: options.confirmationText,
-        confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmVariant: 'primary',
+      // Opens a modal containing the prefilled form.
+      const { SafeFormModalComponent } = await import(
+        '../../form-modal/form-modal.component'
+      );
+      this.dialog.open(SafeFormModalComponent, {
+        data: {
+          template: options.prefillTargetForm,
+          prefillRecords: records,
+          askForConfirm: false,
+        },
+        autoFocus: false,
       });
-      dialogRef.closed
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((confirm: any) => {
-          if (confirm) {
-            this.workflowService.closeWorkflow();
-          }
+    }
+
+    // Workflow only: goes to next step, or closes the workflow.
+    if (options.goToNextStep || options.closeWorkflow) {
+      if (options.goToNextStep) {
+        this.goToNextStep.emit(true);
+      } else {
+        const dialogRef = this.confirmService.openConfirmModal({
+          title: this.translate.instant(
+            'components.widget.settings.grid.buttons.callback.workflow.close'
+          ),
+          content: options.confirmationText,
+          confirmText: this.translate.instant(
+            'components.confirmModal.confirm'
+          ),
+          confirmVariant: 'primary',
         });
+        dialogRef.closed
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((confirm: any) => {
+            if (confirm) {
+              this.workflowService.closeWorkflow();
+            }
+          });
+      }
+    } else {
+      this.grid.reloadData();
     }
   }
 
@@ -568,16 +466,14 @@ export class SafeGridWidgetComponent
     }
     const data = cleanRecord(update);
     return firstValueFrom(
-      this.apollo
-        .mutate<EditRecordsMutationResponse>({
-          mutation: EDIT_RECORDS,
-          variables: {
-            ids,
-            data,
-            template: get(this.settings, 'template', null),
-          },
-        })
-        .pipe(map(() => this.grid.reloadData()))
+      this.apollo.mutate<EditRecordsMutationResponse>({
+        mutation: EDIT_RECORDS,
+        variables: {
+          ids,
+          data,
+          template: get(this.settings, 'template', null),
+        },
+      })
     );
   }
 
@@ -587,17 +483,16 @@ export class SafeGridWidgetComponent
    * The inputs comes from 'attach to record' button from grid component
    *
    * @param selectedRecords The list of selected records
-   * @param options The options
-   * @param promises array of promises
+   * @param targetForm Target template id
+   * @param targetFormField The form field
+   * @param targetFormQuery The form query
    */
   private async promisedAttachToRecord(
     selectedRecords: string[],
-    options: any,
-    promises: Promise<any>[]
+    targetForm: string,
+    targetFormField: string,
+    targetFormQuery: any
   ): Promise<void> {
-    const targetForm = options.targetForm;
-    const targetFormField = options.targetFormField;
-    const targetFormQuery = options.targetFormQuery;
     this.apollo
       .query<GetFormByIdQueryResponse>({
         query: GET_FORM_BY_ID,
@@ -682,75 +577,14 @@ export class SafeGridWidgetComponent
                           const { SafeFormModalComponent } = await import(
                             '../../form-modal/form-modal.component'
                           );
-                          const dialogRef = this.dialog.open(
-                            SafeFormModalComponent,
-                            {
-                              disableClose: true,
-                              data: {
-                                recordId: record.id,
-                                template: targetForm,
-                              },
-                              autoFocus: false,
-                            }
-                          );
-
-                          dialogRef.closed
-                            .pipe(takeUntil(this.destroy$))
-                            .subscribe((value: any) => {
-                              if (value) {
-                                if (
-                                  this.blockModifySelectedRows &&
-                                  options.modifySelectedRows
-                                ) {
-                                  this.promisedRowsModifications(
-                                    options.modifications,
-                                    selectedRecords
-                                  );
-                                  //if options.prefill will unblock only if the new opened modal be saved
-                                  if (!options.prefillForm) {
-                                    //continuing the steps
-                                    if (
-                                      options.notify &&
-                                      this.grid.selectedRows.length > 0
-                                    ) {
-                                      this.quickActionNotify(options, promises);
-                                    }
-
-                                    if (
-                                      options.publish &&
-                                      this.grid.selectedRows.length > 0
-                                    ) {
-                                      this.quickActionPublish(
-                                        options,
-                                        promises
-                                      );
-                                    }
-
-                                    if (promises.length > 0) {
-                                      Promise.all(promises);
-                                    }
-
-                                    if (options.sendMail) {
-                                      this.quickActionSendMail(options);
-                                    }
-
-                                    if (
-                                      options.goToNextStep ||
-                                      options.closeWorkflow
-                                    ) {
-                                      this.quickActionWorkflow(options);
-                                    } else {
-                                      this.grid.reloadData();
-                                    }
-                                  } else {
-                                    this.quickActionPrefillForm(
-                                      options,
-                                      promises
-                                    );
-                                  }
-                                }
-                              }
-                            });
+                          this.dialog.open(SafeFormModalComponent, {
+                            disableClose: true,
+                            data: {
+                              recordId: record.id,
+                              template: targetForm,
+                            },
+                            autoFocus: false,
+                          });
                         }
                       }
                     }
