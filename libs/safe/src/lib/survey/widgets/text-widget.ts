@@ -10,7 +10,12 @@ import { JsonMetadata, SurveyModel } from 'survey-angular';
 import { Question, QuestionText } from '../types';
 import { ButtonComponent } from '@oort-front/ui';
 import { IconComponent } from '@oort-front/ui';
-import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
+import {
+  AvailableLanguages,
+  DateFormat,
+  DateTimeFormat,
+  TimeFormat,
+} from './utils/date-time-formats';
 
 type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
 
@@ -19,13 +24,8 @@ type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
  *
  * @param Survey Survey library
  * @param domService Shared DOM service
- * @param dateTranslate Shared date translation service
  */
-export const init = (
-  Survey: any,
-  domService: DomService,
-  dateTranslate: SafeDateTranslateService
-): void => {
+export const init = (Survey: any, domService: DomService): void => {
   const widget = {
     name: 'text-widget',
     widgetIsLoaded: (): boolean => true,
@@ -91,8 +91,7 @@ export const init = (
             pickerDiv = document.createElement('div');
             const pickerInstance = createPickerInstance(
               question.inputType as DateInputFormat,
-              pickerDiv,
-              dateTranslate.currentLang
+              pickerDiv
             );
             if (pickerInstance) {
               if (question[editor.property.name as keyof QuestionText]) {
@@ -145,8 +144,7 @@ export const init = (
           pickerDiv = document.createElement('div');
           const pickerInstance = createPickerInstance(
             question.inputType as DateInputFormat,
-            pickerDiv,
-            dateTranslate.currentLang
+            pickerDiv
           );
 
           if (pickerInstance) {
@@ -368,18 +366,17 @@ export const init = (
    *
    * @param inputType - The type of the input element.
    * @param element - The element that the directive is attached to.
-   * @param currentLang - Current date format language preference chosen.
    * @returns The picker instance, or null if the type is not allowed
    */
   const createPickerInstance = (
     inputType: DateInputFormat,
-    element: any,
-    currentLang: string
+    element: any
   ):
     | DatePickerComponent
     | DateTimePickerComponent
     | TimePickerComponent
     | null => {
+    const currentFormatLang = localStorage.getItem('date-lang') ?? 'en';
     switch (inputType) {
       case 'date':
         const datePicker = domService.appendComponentToBody(
@@ -388,9 +385,10 @@ export const init = (
         );
         const datePickerInstance: DatePickerComponent = datePicker.instance;
         datePickerInstance.format =
-          currentLang === 'fr' ? 'dd/MM/yyyy' : 'MM/dd/yyyy';
+          DateFormat[currentFormatLang as AvailableLanguages];
         return datePickerInstance;
       case 'datetime':
+        return null;
       case 'datetime-local':
         const dateTimePicker = domService.appendComponentToBody(
           DateTimePickerComponent,
@@ -399,7 +397,7 @@ export const init = (
         const dateTimePickerInstance: DateTimePickerComponent =
           dateTimePicker.instance;
         dateTimePickerInstance.format =
-          currentLang === 'fr' ? 'dd/MM/yyyy HH:mm' : 'MM/dd/yyyy hh:mm a';
+          DateTimeFormat[currentFormatLang as AvailableLanguages];
         return dateTimePickerInstance;
       case 'time':
         const timePicker = domService.appendComponentToBody(
@@ -407,7 +405,8 @@ export const init = (
           element
         );
         const timePickerInstance: TimePickerComponent = timePicker.instance;
-        timePickerInstance.format = currentLang === 'fr' ? 'HH:mm' : 'hh:mm a';
+        timePickerInstance.format =
+          TimeFormat[currentFormatLang as AvailableLanguages];
         return timePickerInstance;
       default:
         return null;
