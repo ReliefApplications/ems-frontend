@@ -276,7 +276,18 @@ export class SafeFormModalComponent
   public submit(): void {
     this.saving = true;
     if (!this.survey?.hasErrors()) {
-      this.survey?.completeLastPage();
+      // Removes data that isn't in the structure, that might've come from prefilling data
+      if (this.survey) {
+        const data = this.survey.data;
+        Object.keys(data).forEach((filed) => {
+          if (!this.survey.getQuestionByName(filed)) {
+            delete data[filed];
+          }
+        });
+
+        this.survey.data = data;
+        this.survey.completeLastPage();
+      }
     } else {
       this.snackBar.openSnackBar(
         this.translate.instant('models.form.notifications.savingFailed'),

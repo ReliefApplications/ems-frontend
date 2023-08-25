@@ -12,6 +12,7 @@ import weekday from './weekday';
 import getField from './getField';
 import elementAt from './elementAt';
 import getWorkflowContext from './getWorkflowContext';
+import summarizeAids from './summarizeAids';
 
 /** Custom functions used  */
 export const functions = [
@@ -29,4 +30,5 @@ export const functions = [
   { fn: length, name: 'length' },
   { fn: intersect, name: 'intersect' },
   { fn: nextYear, name: 'nextYear' },
+  { fn: summarizeAids, name: 'summarizeAids' },
 ];
