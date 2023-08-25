@@ -1276,8 +1276,10 @@
 							"showDetails": "******",
 							"update": "******"
 						},
+						"attachToRecord": "******",
 						"buttons": "******",
-						"steps": "******"
+						"executionOrder": "******",
+						"prefillForm": "******"
 					},
 					"layouts": {
 						"add": {
