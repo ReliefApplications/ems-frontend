@@ -46,6 +46,9 @@ module.exports = {
         fadeIn: 'fadeIn 0.5s forwards',
         fadeOut: 'fadeOut 0.1s forwards',
       },
+      maxWidth: {
+        '30': '30vw',
+      }
     },
     fontFamily: {
       'system-ui': ['Roboto', 'Helvetica Neue', 'sans-serif'],
