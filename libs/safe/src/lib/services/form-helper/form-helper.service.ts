@@ -158,83 +158,6 @@ export class SafeFormHelpersService {
   }
 
   /**
-   * Return an array of promises to upload asynchronously records created on the go while creating a parent record
-   *
-   * @param survey The form of the parent record
-   * @returns A promise with all the requests to upload files
-   */
-  uploadTemporaryRecords(survey: Survey.SurveyModel): Promise<any>[] {
-    const promises: Promise<any>[] = [];
-    const surveyData = survey.data;
-    const questions = survey.getAllQuestions();
-    for (const question of questions) {
-      if (question && question.value) {
-        if (
-          question.getType() === 'resources' ||
-          question.getType() == 'resource'
-        ) {
-          //We save the records created from the resources question
-          for (const recordId of question.value) {
-            const promise = new Promise<void>((resolve, reject) => {
-              localForage
-                .getItem(recordId)
-                .then((data: any) => {
-                  if (data != null) {
-                    // We ensure to make it only if such a record is found
-                    const recordFromResource = JSON.parse(data);
-                    this.apollo
-                      .mutate<AddRecordMutationResponse>({
-                        mutation: ADD_RECORD,
-                        variables: {
-                          form: recordFromResource.template,
-                          data: recordFromResource.data,
-                        },
-                      })
-                      .subscribe({
-                        next: ({ data, errors }) => {
-                          if (errors) {
-                            this.snackBar.openSnackBar(
-                              `Error. ${errors[0].message}`,
-                              {
-                                error: true,
-                              }
-                            );
-                            reject(errors);
-                          } else {
-                            question.value[question.value.indexOf(recordId)] =
-                              question.value.includes(recordId)
-                                ? data?.addRecord.id
-                                : recordId; // If there is no error, we replace in the question the temporary id by the final one
-                            surveyData[question.name] = question.value; // We update the survey data to consider our changes
-                            resolve();
-                          }
-                        },
-                        error: (err) => {
-                          this.snackBar.openSnackBar(err.message, {
-                            error: true,
-                          });
-                          reject(err);
-                        },
-                      });
-                  } else {
-                    resolve(); //there is no data
-                  }
-                })
-                .catch((error: any) => {
-                  console.error(error); // Handle any errors that occur while getting the item
-                  reject(error);
-                });
-              localForage.removeItem(recordId); // We clear it from the local storage once we have retrieved it
-            });
-            promises.push(promise);
-          }
-        }
-      }
-    }
-    return promises;
-  }
-
-  /**
    * Clean cached records from passed survey.
    *
    * @param survey Survey from which we need to clean cached records.
@@ -270,10 +193,55 @@ export class SafeFormHelpersService {
       [key in string]: (arg0: string) => void;
     } = {};
 
+    const nestedQuestions: Survey.Question[] = [];
+    // Get questions nested in panels
+    survey
+      .getAllQuestions()
+      .filter((q) => q.getType() === 'paneldynamic')
+      .forEach((question) => {
+        const panel = question as Survey.QuestionPanelDynamicModel;
+        const embeddedResourcesQuestions: string[] = [];
+
+        // Filter questions of type resource or resources in the panel
+        panel.templateElements.forEach((element) => {
+          if (['resource', 'resources'].includes(element.getType())) {
+            embeddedResourcesQuestions.push(element.name);
+          }
+        });
+
+        // Extract each element from the panel
+        embeddedResourcesQuestions.forEach((name) => {
+          panel.value.forEach((_: any, index: number) => {
+            const question = panel.getQuestionFromArray(
+              name,
+              index
+            ) as Survey.Question;
+            nestedQuestions.push(question as Survey.Question);
+          });
+        });
+      });
+
+    const updateResourcesExpressions: ((arg1: string, arg2: string) => void)[] =
+      [];
     // Get all nested records to add
-    questions.forEach((question) => {
+    questions.concat(nestedQuestions).forEach((question) => {
       const type = question.getType();
       if (!['resource', 'resources'].includes(type)) return;
+
+      // If this question uses valueExpression, we should not upload the records
+      // in it, as they will be uploaded by the fields they get their values from
+      // Instead, we create a callback to update the ids of the new records
+      // if they happen to te part of the resources using valueExpression
+      if (question.valueExpression) {
+        updateResourcesExpressions.push((oldId, newId) => {
+          const value = question.value;
+          // value is a array of strings, replace occurrences of oldId with newId
+          if (Array.isArray(value)) {
+            question.value = value.map((x) => (x === oldId ? newId : x));
+          }
+        });
+        return;
+      }
       const uuidv4Pattern =
         /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
@@ -314,6 +282,9 @@ export class SafeFormHelpersService {
           const newId = res.data?.addRecord?.id;
           if (!newId) return;
           updateIds[localID](newId);
+          updateResourcesExpressions.forEach((update) =>
+            update(localID, newId)
+          );
           localForage.removeItem(localID);
           return;
         })

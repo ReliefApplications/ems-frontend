@@ -21,7 +21,7 @@ import {
   processNewCreatedRecords,
 } from './utils';
 import { QuestionResource } from '../types';
-import { SurveyModel } from 'survey-angular';
+import { Question, SurveyModel } from 'survey-angular';
 import { NgZone } from '@angular/core';
 
 /** Create the list of filter values for resources */
@@ -130,6 +130,15 @@ export const init = (
         type: 'resourcesDropdown',
         visibleIndex: 3,
         required: true,
+      });
+
+      Survey.Serializer.addProperty('resources', {
+        name: 'valueExpression:expression',
+        category: 'logic',
+        onExecuteExpression: (obj: Question, res: any[]) => {
+          obj.readOnly = true;
+          obj.value = res;
+        },
       });
 
       const resourceEditor = {
@@ -855,7 +864,7 @@ export const init = (
    * @returns The SafeCoreGridComponent, or null if the displayAsGrid property
    * of the question object is false
    */
-  const buildRecordsGrid = (question: any, el: any): any => {
+  const buildRecordsGrid = (question: Question, el: any): any => {
     let instance: SafeCoreGridComponent;
     if (question.displayAsGrid) {
       const grid = domService.appendComponentToBody(
@@ -864,11 +873,19 @@ export const init = (
       );
       instance = grid.instance;
       setGridInputs(instance, question);
-      question.survey?.onValueChanged.add((_: any, options: any) => {
-        if (options.name === question.name) {
-          setGridInputs(instance, question);
+      (question.survey as SurveyModel)?.onValueChanged.add(
+        (_: any, options: any) => {
+          // If question is inside a panel that is updated, also updates the grid
+          const isInPanel =
+            question.parentQuestion?.getType() === 'paneldynamic';
+          if (
+            options.name === question.name ||
+            (isInPanel && options.name === question.parentQuestion.name)
+          ) {
+            setGridInputs(instance, question);
+          }
         }
-      });
+      );
       return instance;
     }
     return null;
