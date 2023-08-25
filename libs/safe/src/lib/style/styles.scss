@@ -60,7 +60,7 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,,,,,,,,,
+      // A700: #ffffff,,,,,,,,,,,,
     ),
 );
 
@@ -158,6 +158,11 @@ body {
 }
 body {
   margin: 0;
+  overflow: hidden;
+}
+
+td {
+  text-overflow: ellipsis;
   overflow: hidden;
 }
 

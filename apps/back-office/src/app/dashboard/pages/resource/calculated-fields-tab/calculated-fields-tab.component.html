@@ -22,7 +22,9 @@
           <th uiCellHeader *cdkHeaderCellDef scope="col">
             {{ 'models.form.field.name' | translate }}
           </th>
-          <td uiCell *cdkCellDef="let element">{{ element.name }}</td>
+          <td uiCell *cdkCellDef="let element" [style.max-width]="'30vw'">
+            {{ element.name }}
+          </td>
         </ng-container>
 
         <ng-container cdkColumnDef="createdAt">
