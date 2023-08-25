@@ -28,6 +28,7 @@ import { DatePickerModule } from './date/date-picker/date-picker.module';
 import { DateRangeModule } from './date/date-range/date-range.module';
 import { GraphQLSelectModule } from './graphql-select/graphql-select.module';
 import { ErrorMessageModule } from './error-message/error-message.module';
+import { CronEditorModule } from './cron-editor/cron-editor.module';
 
 /**
  * UI Library Module
@@ -63,6 +64,9 @@ import { ErrorMessageModule } from './error-message/error-message.module';
     DateRangeModule,
     GraphQLSelectModule,
     ErrorMessageModule,
+    CronEditorModule
   ],
+  declarations: [],
+  imports: [],
 })
 export class UiModule {}

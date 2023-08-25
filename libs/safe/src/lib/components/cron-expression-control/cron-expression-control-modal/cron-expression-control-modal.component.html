@@ -5,11 +5,11 @@
       {{ control.value | safeReadableCron }}
     </ui-alert>
     <!-- Cron editor -->
-    <cron-editor
+    <ui-cron-editor
       [formControl]="control"
       [options]="cronOptions"
       class="grow"
-    ></cron-editor>
+    ></ui-cron-editor>
   </ng-container>
   <ng-container ngProjectAs="actions">
     <!-- Modal actions -->

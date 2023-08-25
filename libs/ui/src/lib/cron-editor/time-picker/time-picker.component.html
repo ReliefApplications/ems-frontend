@@ -1,0 +1,40 @@
+<ng-container [formGroup]="allForm">
+
+    <ng-container *ngIf="!hideHours">
+      <mat-form-field>
+        <mat-label>Hour(s)</mat-label>
+        <mat-select formControlName="hours">
+          <mat-option *ngFor="let hour of hours" [value]="hour">{{hour}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+  
+    <ng-container *ngIf="!hideMinutes">
+      <span *ngIf="!hideHours">:</span>
+      <mat-form-field>
+        <mat-label>Minute(s)</mat-label>
+        <mat-select formControlName="minutes">
+          <mat-option *ngFor="let minute of minutes" [value]="minute">{{minute}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+  
+    <ng-container *ngIf="!hideSeconds">
+      <span *ngIf="!hideMinutes">:</span>
+      <mat-form-field>
+        <mat-label>Second(s)</mat-label>
+        <mat-select formControlName="seconds">
+          <mat-option *ngFor="let second of seconds" [value]="second">{{second}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+  
+    <ng-container *ngIf="!use24HourTime">
+      <span></span>.
+      <mat-form-field>
+        <mat-select formControlName="hourType">
+          <mat-option *ngFor="let hourType of hourTypes" [value]="hourType">{{hourType}}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+  </ng-container>
