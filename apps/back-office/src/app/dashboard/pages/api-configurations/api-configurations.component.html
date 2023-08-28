@@ -34,7 +34,12 @@
       class="flex flex-wrap gap-x-2 sm:items-center flex-col sm:flex-row"
     >
       <!-- Status filter -->
-      <div uiFormFieldDirective [outline]="false" class="w-32">
+      <div
+        uiFormFieldDirective
+        [outline]="false"
+        class="w-44"
+        [defaultMargin]="false"
+      >
         <label>{{ 'common.status' | translate }}</label>
         <ui-select-menu
           [ngModel]="statusFilter"
@@ -54,14 +59,12 @@
         </ui-select-menu>
       </div>
       <!-- Clear filters -->
-      <div class="mb-4 pt-[24px]">
-        <ui-button
-          variant="danger"
-          (click)="clearAllFilters()"
-          class="max-sm:!w-auto"
-          >{{ 'common.filter.clear' | translate }}</ui-button
-        >
-      </div>
+      <ui-button
+        variant="danger"
+        (click)="clearAllFilters()"
+        class="max-sm:!w-auto"
+        >{{ 'common.filter.clear' | translate }}</ui-button
+      >
     </div>
   </div>
   <!-- Actions -->

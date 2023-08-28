@@ -502,7 +502,7 @@
 			"dropdown": {
 				"select": "Notify on"
 			},
-			"selectChannel": "Select one channel"
+			"selectChannel": "Select a channel"
 		},
 		"confirmModal": {
 			"cancel": "Cancel",
@@ -1623,7 +1623,7 @@
 		"apiConfiguration": {
 			"authType": "Authentication type",
 			"new": "New API Configuration",
-			"selectAuthType": "Select one authentication type"
+			"selectAuthType": "Select authentication type"
 		},
 		"application": {
 			"description": "Description",

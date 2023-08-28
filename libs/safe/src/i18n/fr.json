@@ -502,7 +502,7 @@
 			"dropdown": {
 				"select": "Notifier sur"
 			},
-			"selectChannel": "@TODO"
+			"selectChannel": "Sélectionnez un canal"
 		},
 		"confirmModal": {
 			"cancel": "Annuler",
@@ -1630,7 +1630,7 @@
 		"apiConfiguration": {
 			"authType": "Type d'authentification",
 			"new": "Nouvelle configuration d'API",
-			"selectAuthType": "@TODO"
+			"selectAuthType": "Sélectionnez le type d'authentification"
 		},
 		"application": {
 			"description": "Description",
@@ -1675,8 +1675,8 @@
 				"refData": {
 					"element": "Élément"
 				},
-				"selectDisplayField": "Select display field",
-				"selectOrigin": "@TODO"
+				"selectDisplayField": "Sélectionnez le champ d'affichage",
+				"selectOrigin": "Sélectionnez la source de données"
 			},
 			"deactivateFiltering": "Désactiver le filtre",
 			"share": "Partager le tableau de bord"
