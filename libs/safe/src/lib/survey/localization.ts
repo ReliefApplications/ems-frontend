@@ -29,7 +29,6 @@ const SURVEY_LOCALIZABLE_STRINGS = [
 /**
  * Add localizable strings to surveyjs
  *
- * @param Survey Survey library
  */
 export const initLocalization = () => {
   for (const item of SURVEY_LOCALIZABLE_STRINGS) {

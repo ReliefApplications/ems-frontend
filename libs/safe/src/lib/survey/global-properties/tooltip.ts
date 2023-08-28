@@ -5,7 +5,6 @@ import { JsonMetadata, Serializer } from 'survey-core';
 /**
  * Add support for custom properties to the survey
  *
- * @param Survey Survey library
  */
 export const init = (): void => {
   const serializer: JsonMetadata = Serializer;

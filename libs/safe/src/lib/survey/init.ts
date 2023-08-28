@@ -29,7 +29,6 @@ import { ComponentCollection, CustomWidgetCollection } from 'survey-core';
 /**
  * Executes all init methods of custom SurveyJS.
  *
- * @param Survey Survey instance
  * @param domService Shared DOM service, used to inject components on the go
  * @param dialog dialog service
  * @param apollo apollo service

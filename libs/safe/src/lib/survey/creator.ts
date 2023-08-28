@@ -4,7 +4,6 @@ import { SafeQuestion } from './types';
 /**
  * Edits general settings of the survey builder.
  *
- * @param Survey Survey library
  */
 export const initCreatorSettings = (): void => {
   const serializer: JsonMetadata = Serializer;

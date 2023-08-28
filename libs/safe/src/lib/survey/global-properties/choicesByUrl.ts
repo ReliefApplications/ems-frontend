@@ -62,7 +62,6 @@ class XmlParser {
 /**
  * Overwrite some ChoicesRestful methods to allow POST requests
  *
- * @param Survey Survey instance
  */
 export const init = (): void => {
   Serializer.addProperty('selectBase', {
