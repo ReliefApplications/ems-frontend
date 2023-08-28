@@ -47,7 +47,11 @@
         <ng-container cdkColumnDef="actions" [stickyEnd]="true">
           <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>
           <td uiCell *cdkCellDef="let element">
-            <ui-button [isIcon]="true" icon="more_vert" [uiMenuTriggerFor]="menu"></ui-button>
+            <ui-button
+              [isIcon]="true"
+              icon="more_vert"
+              [uiMenuTriggerFor]="menu"
+            ></ui-button>
             <ui-menu #menu>
               <button uiMenuItem (click)="onRestore(element)">
                 <ui-icon icon="restore_page" variant="grey"></ui-icon>
@@ -63,12 +67,7 @@
         </ng-container>
 
         <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-        <tr
-          cdk-row
-          *cdkRowDef="let row; columns: displayedColumns"
-          (click)="onSelectArchive(row)"
-          class="cursor-pointer"
-        ></tr>
+        <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
       </table>
     </div>
   </div>

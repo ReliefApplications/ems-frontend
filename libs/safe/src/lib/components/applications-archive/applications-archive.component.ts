@@ -19,7 +19,7 @@ export interface ArchivePage {
 }
 
 /**
- *
+ * This component is used to display application archives
  */
 @Component({
   selector: 'safe-applications-archive',
@@ -42,6 +42,21 @@ export class ApplicationsArchiveComponent
   ];
   public searchText = '';
   public dateFilter = '';
+
+  /**
+   * Applications archive constructor
+   *
+   * @param applicationService Shared application service
+   * @param translate Angular Translate service
+   * @param confirmService Shared confirmation service
+   */
+  constructor(
+    private applicationService: SafeApplicationService,
+    private translate: TranslateService,
+    private confirmService: SafeConfirmService
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     this.filterPredicate();
@@ -88,23 +103,6 @@ export class ApplicationsArchiveComponent
     this.searchText = '';
     this.dateFilter = '';
     this.applyFilter('', null);
-  }
-
-  /**
-   * Perform an action on selected archive applications table row
-   *
-   * @param archiveApp ArchiveApp
-   */
-  onSelectArchive(archiveApp: ArchivePage) {
-    console.log(archiveApp);
-  }
-
-  constructor(
-    private applicationService: SafeApplicationService,
-    private translate: TranslateService,
-    private confirmService: SafeConfirmService
-  ) {
-    super();
   }
 
   /**
