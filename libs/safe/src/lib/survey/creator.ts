@@ -1,4 +1,4 @@
-import { JsonMetadata } from 'survey-core';
+import { JsonMetadata, Serializer } from 'survey-core';
 import { SafeQuestion } from './types';
 
 /**
@@ -6,8 +6,8 @@ import { SafeQuestion } from './types';
  *
  * @param Survey Survey library
  */
-export const initCreatorSettings = (Survey: any): void => {
-  const serializer: JsonMetadata = Survey.Serializer;
+export const initCreatorSettings = (): void => {
+  const serializer: JsonMetadata = Serializer;
 
   serializer.findProperty('question', 'name').readOnly = true;
   serializer.findProperty('question', 'name').onGetValue = (

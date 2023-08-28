@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Model, SurveyModel } from 'survey-core';
+import { Model, SurveyModel, settings } from 'survey-core';
 import { SafeReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Apollo } from 'apollo-angular';
@@ -53,10 +53,9 @@ export class SafeFormBuilderService {
     fields: Metadata[] = [],
     record?: RecordModel
   ): SurveyModel {
+    settings.useCachingForChoicesRestful = false;
+    settings.useCachingForChoicesRestfull = false;
     const survey = new Model(structure);
-    // todo: check
-    survey.settings.useCachingForChoicesRestful = false;
-    survey.settings.useCachingForChoicesRestfull = false;
     this.formHelpersService.addUserVariables(survey);
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)

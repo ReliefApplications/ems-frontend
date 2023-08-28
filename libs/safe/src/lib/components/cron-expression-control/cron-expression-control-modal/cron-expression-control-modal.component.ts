@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { CronOptions } from 'ngx-cron-editor';
 import { CommonModule } from '@angular/common';
@@ -24,6 +24,7 @@ import { AlertModule, ButtonModule, DialogModule } from '@oort-front/ui';
   selector: 'safe-cron-expression-control-modal',
   templateUrl: './cron-expression-control-modal.component.html',
   styleUrls: ['./cron-expression-control-modal.component.scss'],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class CronExpressionControlModalComponent {
   public control!: FormControl;

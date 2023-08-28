@@ -186,7 +186,7 @@ export class FilterBuilderModalComponent
     // this.surveyCreator.text = '';
     this.surveyCreator.showToolbox = true;
     this.surveyCreator.toolboxLocation = 'right';
-    this.surveyCreator.showPropertyGrid = true;
+    this.surveyCreator.showSidebar = true;
     this.surveyCreator.sidebarLocation = 'right';
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.survey.showQuestionNumbers = 'off';

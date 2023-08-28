@@ -24,6 +24,7 @@ import * as TooltipProperty from './global-properties/tooltip';
 import { initLocalization } from './localization';
 import { Dialog } from '@angular/cdk/dialog';
 import { NgZone } from '@angular/core';
+import { ComponentCollection, CustomWidgetCollection } from 'survey-core';
 
 /**
  * Executes all init methods of custom SurveyJS.
@@ -40,7 +41,6 @@ import { NgZone } from '@angular/core';
  * @param ngZone Angular Service to execute code inside Angular environment
  */
 export const initCustomSurvey = (
-  Survey: any,
   domService: DomService,
   dialog: Dialog,
   apollo: Apollo,
@@ -53,23 +53,23 @@ export const initCustomSurvey = (
 ): void => {
   // If the survey created does not contain custom questions, we destroy previously set custom questions if so
   if (!containsCustomQuestions) {
-    Survey.CustomWidgetCollection.Instance.clear();
-    Survey.ComponentCollection.Instance.clear();
+    CustomWidgetCollection.Instance.clear();
+    ComponentCollection.Instance.clear();
   }
 
-  TagboxWidget.init(domService, Survey.CustomWidgetCollection.Instance);
-  TextWidget.init(domService, Survey.CustomWidgetCollection.Instance);
-  DropdownWidget.init(domService, Survey.CustomWidgetCollection.Instance);
+  TagboxWidget.init(domService, CustomWidgetCollection.Instance);
+  TextWidget.init(domService, CustomWidgetCollection.Instance);
+  DropdownWidget.init(domService, CustomWidgetCollection.Instance);
 
   if (containsCustomQuestions) {
-    CommentWidget.init(Survey.CustomWidgetCollection.Instance);
+    CommentWidget.init(CustomWidgetCollection.Instance);
     // load components (same as widgets, but with less configuration options)
     ResourceComponent.init(
       domService,
       apollo,
       dialog,
       formBuilder,
-      Survey.ComponentCollection.Instance,
+      ComponentCollection.Instance,
       ngZone
     );
     ResourcesComponent.init(
@@ -77,20 +77,12 @@ export const initCustomSurvey = (
       apollo,
       dialog,
       formBuilder,
-      Survey.ComponentCollection.Instance,
+      ComponentCollection.Instance,
       ngZone
     );
-    OwnerComponent.init(
-      domService,
-      apollo,
-      Survey.ComponentCollection.Instance
-    );
-    UsersComponent.init(
-      domService,
-      apollo,
-      Survey.ComponentCollection.Instance
-    );
-    GeospatialComponent.init(domService, Survey.ComponentCollection.Instance);
+    OwnerComponent.init(domService, apollo, ComponentCollection.Instance);
+    UsersComponent.init(domService, apollo, ComponentCollection.Instance);
+    GeospatialComponent.init(domService, ComponentCollection.Instance);
   }
 
   // load global properties
@@ -99,7 +91,7 @@ export const initCustomSurvey = (
   OtherProperties.init(environment);
 
   // enables POST requests for choicesByUrl
-  ChoicesByUrlProperties.init(Survey);
+  ChoicesByUrlProperties.init();
 
   // set localization
   initLocalization();

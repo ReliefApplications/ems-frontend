@@ -2,7 +2,6 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
-  ElementRef,
   HostListener,
   Input,
   NgZone,
@@ -10,7 +9,6 @@ import {
   OnDestroy,
   Optional,
   SimpleChanges,
-  ViewChild,
 } from '@angular/core';
 import { FilterPosition } from './enums/dashboard-filters.enum';
 import { Dialog } from '@angular/cdk/dialog';
@@ -77,8 +75,6 @@ export class DashboardFilterComponent
   // Survey
   public survey: Model = new Model();
   public surveyStructure: any = {};
-  @ViewChild('dashboardSurveyCreatorContainer')
-  dashboardSurveyCreatorContainer!: ElementRef<HTMLElement>;
   public quickFilters: QuickFilter[] = [];
 
   public applicationId?: string;

@@ -1,5 +1,6 @@
 import { get, isNil, set } from 'lodash';
 import { SafeQuestion } from '../types';
+import { ChoicesRestful, Serializer } from 'survey-core';
 
 /** Default properties of the ChoicesRestful class */
 const DEFAULT_PROPERTIES = [
@@ -63,8 +64,8 @@ class XmlParser {
  *
  * @param Survey Survey instance
  */
-export const init = (Survey: any): void => {
-  Survey.Serializer.addProperty('selectBase', {
+export const init = (): void => {
+  Serializer.addProperty('selectBase', {
     name: 'requestBody:expression',
     category: 'choicesByUrl',
     visibleIndex: 3,
@@ -83,13 +84,13 @@ export const init = (Survey: any): void => {
     },
   });
 
-  Survey.Serializer.addProperty('selectBase', {
+  Serializer.addProperty('selectBase', {
     name: 'isGraphQL:boolean',
     displayName: 'Is GraphQL query',
     category: 'choicesByUrl',
   });
 
-  Survey.Serializer.addProperty('selectBase', {
+  Serializer.addProperty('selectBase', {
     name: 'usePost:boolean',
     displayName: 'Use POST',
     category: 'choicesByUrl',
@@ -100,7 +101,7 @@ export const init = (Survey: any): void => {
    *
    * @param json Input json
    */
-  Survey.ChoicesRestful.prototype.setData = function (json: any) {
+  ChoicesRestful.prototype.setData = function (json: any) {
     this.clear();
 
     const properties = (this.getCustomPropertiesNames() ?? []).concat(
@@ -114,7 +115,7 @@ export const init = (Survey: any): void => {
   };
 
   /** @returns ChoicesRestful data, including new properties */
-  Survey.ChoicesRestful.prototype.getData = function () {
+  (ChoicesRestful.prototype as any).getData = function () {
     if (this.isEmpty) return null;
     const res = {} as any;
     const properties = (this.getCustomPropertiesNames() ?? []).concat(
@@ -129,7 +130,7 @@ export const init = (Survey: any): void => {
   };
 
   /** Overwrites clear method, to also clear requestBody and usePost */
-  Survey.ChoicesRestful.prototype.clear = function () {
+  (ChoicesRestful.prototype as any).clear = function () {
     this.requestBody = '';
     this.usePost = false;
 
@@ -153,7 +154,9 @@ export const init = (Survey: any): void => {
    * @param result Result fetched from API
    * @returns Result after path is applied
    */
-  Survey.ChoicesRestful.prototype.getResultAfterPath = function (result: any) {
+  (ChoicesRestful.prototype as any).getResultAfterPath = function (
+    result: any
+  ) {
     if (!result) return result;
     if (!this.processedPath) return result;
     const paths = this.getPathes();
@@ -165,7 +168,7 @@ export const init = (Survey: any): void => {
   };
 
   /** Overwrites sendRequest to be able to make POST requests */
-  Survey.ChoicesRestful.prototype.sendRequest = function () {
+  (ChoicesRestful.prototype as any).sendRequest = function () {
     this.error = null;
 
     const headers = new Headers();
@@ -176,7 +179,7 @@ export const init = (Survey: any): void => {
         : 'application/x-www-form-urlencoded'
     );
 
-    const options: RequestInit = {
+    const options: any = {
       headers,
     };
 
@@ -186,8 +189,8 @@ export const init = (Survey: any): void => {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
 
-    if (Survey.ChoicesRestful.onBeforeSendRequest) {
-      Survey.ChoicesRestful.onBeforeSendRequest(this, { request: options });
+    if (ChoicesRestful.onBeforeSendRequest) {
+      ChoicesRestful.onBeforeSendRequest(this, { request: options });
     }
     this.beforeSendRequest();
 
@@ -214,7 +217,7 @@ export const init = (Survey: any): void => {
    * @param response Response from API
    * @returns Parsed response
    */
-  Survey.ChoicesRestful.prototype.parseResponse = function (response: any) {
+  (ChoicesRestful.prototype as any).parseResponse = function (response: any) {
     let parsedResponse;
     if (
       !!response &&

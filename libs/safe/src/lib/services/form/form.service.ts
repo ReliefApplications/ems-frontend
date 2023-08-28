@@ -1,5 +1,4 @@
 import { Inject, Injectable, NgZone } from '@angular/core';
-import * as Survey from 'survey-core';
 import { initCreatorSettings } from '../../survey/creator';
 import { initCustomSurvey } from '../../survey/init';
 import { DomService } from '../dom/dom.service';
@@ -56,11 +55,7 @@ export class SafeFormService {
       customQuestions: true,
     }
   ) {
-    // === CREATOR SETTINGS ===
-    initCreatorSettings(Survey);
-    // === CUSTOM WIDGETS / COMPONENTS ===
     initCustomSurvey(
-      Survey,
       this.domService,
       this.dialog,
       this.apollo,
@@ -71,5 +66,7 @@ export class SafeFormService {
       additionalQuestions.customQuestions,
       this.ngZone
     );
+    // === CREATOR SETTINGS ===
+    initCreatorSettings();
   }
 }
