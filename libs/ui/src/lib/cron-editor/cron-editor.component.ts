@@ -4,7 +4,7 @@ import { Days, MonthWeeks, Months } from './enum/enums';
 import {ControlValueAccessor, FormBuilder, NG_VALUE_ACCESSOR, Validators} from '@angular/forms';
 import { ThemePalette } from '@angular/material/core';
 import {MatTab, MatTabChangeEvent} from '@angular/material/tabs';
-import {debounceTime, map, skip, Subscription, tap} from 'rxjs';
+import {debounceTime, Subscription} from 'rxjs';
 
 type CronType = 'minutely' | 'hourly' | 'daily' | 'weekly' | 'monthly' | 'yearly' | 'unknown';
 
@@ -20,7 +20,7 @@ const yearlyMonthWeekExp = /\d+ \d+ \d+ [\?\*] \d+ (MON|TUE|WED|THU|FRI|SAT|SUN)
 
 export const CRON_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => CronGenComponent),
+  useExisting: forwardRef(() => CronEditorComponent),
   multi: true,
 };
 
@@ -50,7 +50,7 @@ function* range(start: number, end: number) {
   styleUrls: ['./cron-editor.component.scss'],
   providers: [CRON_VALUE_ACCESSOR]
 })
-export class CronGenComponent implements OnInit, OnDestroy, ControlValueAccessor {
+export class CronEditorComponent implements OnInit, OnDestroy, ControlValueAccessor {
 
   public seconds = [...range(0, 59)];
   public minutes = [...range(0, 59)];
@@ -157,7 +157,7 @@ export class CronGenComponent implements OnInit, OnDestroy, ControlValueAccessor
    * the value of the form that goes into focus.
    * We cannot rely on the index of the tab, as the hide options could hide tabs and
    * then the index dynamically changes based on the hidden tab.*/
-  onTabChange(tabChangeEvent: MatTabChangeEvent) {
+  onTabChange(tabChangeEvent: any) {
     const currentTab = tabChangeEvent.tab;
     let x: CronType;
 
@@ -186,7 +186,6 @@ export class CronGenComponent implements OnInit, OnDestroy, ControlValueAccessor
       default:
         throw (new Error('Invalid tab selected'));
     }
-
     this.allForm.controls.cronType.setValue(x);
   }
 
@@ -308,7 +307,7 @@ export class CronGenComponent implements OnInit, OnDestroy, ControlValueAccessor
     return state.expression;
   }
 
-  public dayDisplay(day: any): string {
+  public dayDisplay(day: string): string {
     return Days[day];
   }
 
@@ -384,7 +383,9 @@ export class CronGenComponent implements OnInit, OnDestroy, ControlValueAccessor
     x = parseCronNumberToken(t[2])
     this.allForm.controls.hoursPer.setValue(x.inc);
     this.allForm.controls.hours.setValue(x.val);
-    this.allForm.controls.hoursType.setValue(this.getHourType(this.allForm.value.hours), {emitEvent: false});
+    if (this.allForm.value.hours) {
+      this.allForm.controls.hoursType.setValue(this.getHourType(this.allForm.value.hours), {emitEvent: false});
+    }
 
     // Day of Month
     x = parseCronNumberToken(t[3])
@@ -540,7 +541,6 @@ export class CronGenComponent implements OnInit, OnDestroy, ControlValueAccessor
 
 
   writeValue(obj: string | null): void {
-    // console.log('Write value ' + obj);
     if (obj === null) {
       return
     }

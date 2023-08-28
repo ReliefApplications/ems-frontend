@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { CronOptions } from 'ngx-cron-editor';
 import { CommonModule } from '@angular/common';
-// import { CronEditorModule } from 'ngx-cron-editor';
+import { CronOptions } from '../cronOptions';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeReadableCronModule } from '../../../pipes/readable-cron/readable-cron.module';
 import { AlertModule, ButtonModule, DialogModule, CronEditorModule } from '@oort-front/ui';
+
+
 /**
  * Cron expression form control modal
  */
@@ -37,13 +38,15 @@ export class CronExpressionControlModalComponent {
     hideMonthlyTab: false,
     hideYearlyTab: false,
     hideAdvancedTab: true,
+    hideSpecificWeekDayTab: false,
+    hideSpecificMonthWeekTab: false,
     // Time options
     use24HourTime: true,
     hideSeconds: false,
-    removeSeconds: false,
-    removeYears: false
     // standard or quartz
+    cronFlavor: 'standard',
   };
+
   /**
    *  Cron expression form control modal
    */

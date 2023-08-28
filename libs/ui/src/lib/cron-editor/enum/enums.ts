@@ -1,4 +1,12 @@
-export const Days = {
+type DaysOfWeek = {
+  [key: string]: string
+}
+
+type MonthOfWeeks = {
+  [key: string]: string
+}
+
+export const Days: DaysOfWeek = {
     'SUN': 'Sunday',
     'MON': 'Monday',
     'TUE': 'Tuesday',
@@ -8,7 +16,7 @@ export const Days = {
     'SAT': 'Saturday'
   };
   
-  export const MonthWeeks = {
+  export const MonthWeeks: MonthOfWeeks = {
     '#1': 'First',
     '#2': 'Second',
     '#3': 'Third',
