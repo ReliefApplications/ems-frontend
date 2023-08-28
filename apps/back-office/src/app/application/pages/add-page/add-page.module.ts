@@ -10,6 +10,7 @@ import {
   DividerModule,
   ButtonModule,
   GraphQLSelectModule,
+  FormWrapperModule,
 } from '@oort-front/ui';
 
 /**
@@ -28,6 +29,7 @@ import {
     AbilityModule,
     ButtonModule,
     GraphQLSelectModule,
+    FormWrapperModule,
   ],
 })
 export class AddPageModule {}
