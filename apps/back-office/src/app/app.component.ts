@@ -1,5 +1,9 @@
-import { Component, OnInit } from '@angular/core';
-import { SafeAuthService, SafeFormService } from '@oort-front/safe';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  SafeAuthService,
+  SafeFormService,
+  SafeWorkerService,
+} from '@oort-front/safe';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
 
@@ -11,18 +15,20 @@ import { environment } from '../environments/environment';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
   title = 'back-office';
 
   /**
    * Root component of back-office
    *
    * @param authService Shared authentication service
+   * @param workerService Service to handle web worker client
    * @param formService Shared form service
    * @param translate Angular translate service
    */
   constructor(
     private authService: SafeAuthService,
+    private workerService: SafeWorkerService,
     // We need to initialize the service there
     private formService: SafeFormService,
     private translate: TranslateService
@@ -36,5 +42,9 @@ export class AppComponent implements OnInit {
    */
   ngOnInit(): void {
     this.authService.initLoginSequence();
+  }
+
+  ngOnDestroy(): void {
+    this.workerService.destroyWorker();
   }
 }
