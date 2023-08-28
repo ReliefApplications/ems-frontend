@@ -57,9 +57,9 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
 
   /**
-   * Widget constructor
+   * Widget component.
    *
-   * @param restService SafeRestService
+   * @param restService Shared rest service
    */
   constructor(private restService: SafeRestService) {}
 

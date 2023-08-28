@@ -48,7 +48,7 @@ export class SafeMapLayersService {
    * Class constructor
    *
    * @param apollo Apollo client instance
-   * @param restService SafeRestService
+   * @param restService Shared rest service
    * @param queryBuilder Query builder service
    * @param aggregationBuilder Aggregation builder service
    * @param contextService Application context service
