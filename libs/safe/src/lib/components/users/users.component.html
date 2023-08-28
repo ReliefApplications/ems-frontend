@@ -159,7 +159,7 @@
             {{ 'common.role.few' | translate }}
           </span>
         </th>
-        <td uiCell *cdkCellDef="let element" [style.max-width]="'30vw'">
+        <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
           <span *ngFor="let role of element.roles"> {{ role.title }}</span>
         </td>
       </ng-container>
