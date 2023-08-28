@@ -410,6 +410,7 @@ export class DashboardComponent
    * @param e widget to save.
    */
   onEditTile(e: any): void {
+    console.log('onEditTile', e);
     // make sure that we save the default layout.
     const index = this.tiles.findIndex((v: any) => v.id === e.id);
     const options = this.tiles[index]?.settings?.defaultLayout
@@ -481,23 +482,8 @@ export class DashboardComponent
    * @param tile widget to print.
    */
   previewStyle(tile: any): void {
-    console.log('widget', tile);
-    //print the current widget from the dashboard
-    const widgetStyle = Array.from(document.querySelectorAll('style')).filter(
-      (style) => style.innerHTML.includes(tile.domId)
-    )[0];
-    if (widgetStyle) {
-      widgetStyle.innerHTML = tile.settings.widgetDisplay.style;
-    }
-    this.tiles = this.tiles.map((x) => {
-      if (x.id === tile.id) {
-        x.settings.widgetDisplay.style = tile.settings.widgetDisplay.style;
-      }
-      return x;
-    });
-    //refresh all tiles
-    this.tiles = [...this.tiles];
-    console.log('tiles', this.tiles);
+    // Update the tile with the matching ID
+    this.tiles = this.tiles.map((x) => (x.id === tile.id ? { ...tile } : x));
   }
 
   /**
