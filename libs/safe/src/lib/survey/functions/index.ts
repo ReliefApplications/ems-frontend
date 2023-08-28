@@ -6,7 +6,7 @@ import intersect from './intersect';
 import length from './length';
 import listColsForRows from './listColsForRows';
 import listRowsWithColValue from './listRowsWithColValue';
-import nextYear from './nextYear';
+import addTime from './addTime';
 import nl2br from './nl2br';
 import weekday from './weekday';
 import getField from './getField';
@@ -29,6 +29,6 @@ export const functions = [
   { fn: getMatrixTitles, name: 'getMatrixTitles' },
   { fn: length, name: 'length' },
   { fn: intersect, name: 'intersect' },
-  { fn: nextYear, name: 'nextYear' },
+  { fn: addTime, name: 'addTime' },
   { fn: summarizeAids, name: 'summarizeAids' },
 ];

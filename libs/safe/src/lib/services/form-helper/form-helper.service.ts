@@ -211,7 +211,7 @@ export class SafeFormHelpersService {
 
         // Extract each element from the panel
         embeddedResourcesQuestions.forEach((name) => {
-          panel.value.forEach((_: any, index: number) => {
+          (panel.value || []).forEach((_: any, index: number) => {
             const question = panel.getQuestionFromArray(
               name,
               index
