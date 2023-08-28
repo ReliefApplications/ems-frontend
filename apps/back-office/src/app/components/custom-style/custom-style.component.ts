@@ -100,19 +100,7 @@ export class CustomStyleComponent
   }
 
   ngOnInit(): void {
-    if (this.applicationService.rawCustomStyle) {
-      this.savedStyle = this.applicationService.customStyle?.innerText || '';
-      this.rawCustomStyle = this.applicationService.rawCustomStyle;
-      this.formControl.setValue(this.rawCustomStyle, { emitEvent: false });
-      this.formControl.markAsPristine();
-    } else {
-      const styleElement = document.createElement('style');
-      styleElement.innerText = '';
-      document.getElementsByTagName('head')[0].appendChild(styleElement);
-      this.applicationService.rawCustomStyle = this.rawCustomStyle;
-      this.applicationService.customStyle = styleElement;
-    }
-
+    // Get application id
     this.applicationService.application$
       .pipe(takeUntil(this.destroy$))
       .subscribe((application: Application | null) => {
