@@ -83,10 +83,11 @@ export const init = (Survey: any): void => {
     category: 'choicesByUrl',
     visible: false,
     onExecuteExpression: (obj: QuestionSelectBase) => {
+      console.log('execute !');
       const choicesByUrl = obj.choicesByUrl as ExtendedChoicesRestful;
 
       let body = obj.requestBody || '';
-      (obj.survey as SurveyModel).getAllQuestions().forEach((question) => {
+      (obj.survey as SurveyModel)?.getAllQuestions().forEach((question) => {
         if (body.includes(`{${question.name}}`)) {
           const regex = new RegExp(`{${question.name}}`, 'g');
           body = body.replace(regex, question.value);
@@ -121,19 +122,24 @@ export const init = (Survey: any): void => {
     dependsOn: ['usePost', 'isGraphQL'],
     visibleIf: (obj: QuestionSelectBase) => obj.usePost,
     onSetValue: (obj: QuestionSelectBase, value: string) => {
+      console.log(value);
+      console.log('set value');
       // Updates the request body
       obj.setPropertyValue('requestBody', value);
 
       let newExp = '';
 
-      (obj.survey as SurveyModel).getAllQuestions().forEach((question) => {
+      (obj.survey as SurveyModel)?.getAllQuestions().forEach((question) => {
         if ((value || '').includes(`{${question.name}}`)) {
           newExp += `{${question.name}} `;
         }
       });
 
+      console.log('changing');
+      console.log(newExp);
       // Updates the detection helper, adds all dependencies to it
       obj.setPropertyValue('detectionHelper', newExp);
+      console.log(obj as any);
     },
   });
 
@@ -213,7 +219,7 @@ export const init = (Survey: any): void => {
     const headers = new Headers();
     headers.append(
       'Content-Type',
-      this.requestBody
+      this.owner.requestBody
         ? 'application/json'
         : 'application/x-www-form-urlencoded'
     );
@@ -222,8 +228,9 @@ export const init = (Survey: any): void => {
       headers,
     };
 
-    Object.assign(options, { method: this.usePost ? 'POST' : 'GET' });
-    if (this.requestBody) Object.assign(options, { body: this.requestBody });
+    Object.assign(options, { method: this.owner.usePost ? 'POST' : 'GET' });
+    if (this.owner.requestBody)
+      Object.assign(options, { body: this.owner.requestBody });
 
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
