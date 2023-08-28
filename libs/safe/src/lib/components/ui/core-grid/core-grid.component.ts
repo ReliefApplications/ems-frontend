@@ -1237,6 +1237,8 @@ export class SafeCoreGridComponent
    * @param event Page change event.
    */
   public onPageChange(event: PageChangeEvent): void {
+    console.log("page change");
+    console.log(this.queryFilter);
     this.loading = true;
     this.skip = event.skip;
     this.pageSize = event.take;
