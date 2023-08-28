@@ -1287,7 +1287,10 @@
 							"showDetails": "L'utilisateur peut afficher les informations des enregistrements affichés",
 							"update": "L'utilisateur peut mettre à jour les enregistrements affichés"
 						},
-						"buttons": "Les boutons d'action rapides apparaîtront dans le widget et vous permettront de réaliser chacune des actions ci-dessous"
+						"attachToRecord": "Si les enregistrements sélectionnés ne sont joints à aucun enregistrement, l'action sera annulée",
+						"buttons": "Les boutons d'action rapides apparaîtront dans le widget et vous permettront de réaliser chacune des actions ci-dessous",
+						"executionOrder": "Les actions seront exécutées dans l'ordre affiché",
+						"prefillForm": "Si aucun enregistrement n'est créé à cette étape, l'action sera annulée"
 					},
 					"layouts": {
 						"add": {

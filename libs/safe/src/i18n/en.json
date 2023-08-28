@@ -1280,7 +1280,10 @@
 							"showDetails": "User can see full details of visible records",
 							"update": "If authorized, user can update visible records"
 						},
-						"buttons": "Quick action buttons will appear on the widget and allow you to complete any of the actions below"
+						"attachToRecord": "If the selected records are not attached to any records, the action will be canceled",
+						"buttons": "Quick action buttons will appear on the widget and allow you to complete any of the actions below",
+						"executionOrder": "Selected actions will be executed in the displayed order",
+						"prefillForm": "If no record is created at this point, the action will be canceled"
 					},
 					"layouts": {
 						"add": {
