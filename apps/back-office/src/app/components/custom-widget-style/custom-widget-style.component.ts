@@ -7,6 +7,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from '@oort-front/ui';
 import { SafeRestService } from '@oort-front/safe';
 import { debounceTime, takeUntil } from 'rxjs';
+import set from 'lodash/set';
+import get from 'lodash/get';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';
@@ -74,7 +76,7 @@ export class CustomWidgetStyleComponent
         this.restService
           .post('style/scss-to-css', { scss }, { responseType: 'text' })
           .subscribe((css) => {
-            this.widgetComp.widget.settings.widgetDisplay.style = value;
+            set(this.widgetComp, 'widget.settings.widgetDisplay.style', value);
             this.styleApplied.innerText = css;
             document
               .getElementsByTagName('head')[0]
@@ -92,7 +94,7 @@ export class CustomWidgetStyleComponent
     if (widgetStyle) this.styleApplied = widgetStyle;
     else this.styleApplied = document.createElement('style');
 
-    const style = this.widgetComp.widget.settings.widgetDisplay.style;
+    const style = get(this.widgetComp, 'widget.settings.widgetDisplay.style') || '';
     if (style) {
       this.formControl.setValue(style);
       this.initialStyle = style;

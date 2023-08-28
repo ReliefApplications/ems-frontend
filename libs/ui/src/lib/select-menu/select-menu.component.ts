@@ -169,7 +169,7 @@ export class SelectMenuComponent
    *
    * @param value value set from parent form control
    */
-  writeValue(value: string[]): void {
+  writeValue(value: string | string[] | null): void {
     if (value && value instanceof Array) {
       this.selectedValues = [...value];
     } else if (value) {
