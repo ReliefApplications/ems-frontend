@@ -12,7 +12,7 @@ import {
   FormWrapperModule,
   IconModule,
   ErrorMessageModule,
-  CronEditorModule
+  CronEditorModule,
 } from '@oort-front/ui';
 
 /** Cron expression control module. */

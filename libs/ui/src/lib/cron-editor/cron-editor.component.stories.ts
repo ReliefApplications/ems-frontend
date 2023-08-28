@@ -20,10 +20,13 @@ export default {
         RadioModule,
         CheckboxModule,
       ],
-    })
+    }),
   ],
 } as Meta<CronEditorComponent>;
 
+/**
+ * CronEditor story
+ */
 export const cronEditor: StoryObj<CronEditorComponent> = {
   args: {
     options: {
@@ -43,6 +46,6 @@ export const cronEditor: StoryObj<CronEditorComponent> = {
       hideSeconds: false,
       // standard or quartz
       cronFlavor: 'standard',
-    }
-  }
-}
+    },
+  },
+};

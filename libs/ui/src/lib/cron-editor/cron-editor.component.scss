@@ -6,19 +6,15 @@
     @apply w-5 inline-block;
 }
   
-.cron-editor-main .cron-editor-container .cron-editor-select,
-.cron-editor-main .cron-editor-container .cron-editor-input,
-.cron-editor-main .cron-editor-container .cron-editor-checkbox {
+.cron-editor-select,
+.cron-editor-input,
+.cron-editor-checkbox {
     @apply inline-block;
 }
 
 .cron-editor-main .cron-editor-container .well-time-wrapper {
     @apply pl-5;
 }
-
-.cron-editor-main .cron-editor-container {
-    @apply inline-block;
- }
 
 .nav-tabs li a {
     @apply cursor-pointer;

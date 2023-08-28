@@ -64,7 +64,7 @@ import { CronEditorModule } from './cron-editor/cron-editor.module';
     DateRangeModule,
     GraphQLSelectModule,
     ErrorMessageModule,
-    CronEditorModule
+    CronEditorModule,
   ],
   declarations: [],
   imports: [],

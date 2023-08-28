@@ -4,8 +4,12 @@ import { CommonModule } from '@angular/common';
 import { CronOptions } from '../cronOptions';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SafeReadableCronModule } from '../../../pipes/readable-cron/readable-cron.module';
-import { AlertModule, ButtonModule, DialogModule, CronEditorModule } from '@oort-front/ui';
-
+import {
+  AlertModule,
+  ButtonModule,
+  DialogModule,
+  CronEditorModule,
+} from '@oort-front/ui';
 
 /**
  * Cron expression form control modal

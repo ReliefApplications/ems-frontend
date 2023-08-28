@@ -9,6 +9,9 @@ import { TabsModule } from '../tabs/tabs.module';
 import { RadioModule } from '../radio/radio.module';
 import { CheckboxModule } from '../checkbox/checkbox.module';
 
+/**
+ * UI CronEditor Module
+ */
 @NgModule({
   declarations: [CronEditorComponent],
   imports: [
@@ -20,7 +23,7 @@ import { CheckboxModule } from '../checkbox/checkbox.module';
     FormWrapperModule,
     TabsModule,
     RadioModule,
-    CheckboxModule
+    CheckboxModule,
   ],
   exports: [CronEditorComponent, TimePickerModule],
 })
