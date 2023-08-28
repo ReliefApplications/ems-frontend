@@ -38,6 +38,7 @@ import { DashboardFilterModule } from './components/dashboard-filter/dashboard-f
 import { ButtonActionModule } from './components/button-action/button-action.module';
 import { GraphQLSelectModule } from '@oort-front/ui';
 import { SafeApplicationWidgetSettingsModule } from './components/widgets/application-widget-settings/application-widget-settings.module';
+import { SafeSortingSettingsModule } from './components/widgets/common/sorting-settings/sorting-settings.module';
 import { SafeWidgetChoiceModule } from './components/widget-choice/widget-choice.module';
 
 /** Main module for the safe project */
@@ -53,6 +54,7 @@ import { SafeWidgetChoiceModule } from './components/widget-choice/widget-choice
     SafeMapSettingsModule,
     SafeApplicationWidgetSettingsModule,
     SafeWidgetGridModule,
+    SafeSortingSettingsModule,
     SafeUsersModule,
     SafeRolesModule,
     SafeRecordHistoryModule,
