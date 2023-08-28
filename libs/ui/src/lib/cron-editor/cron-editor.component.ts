@@ -26,19 +26,29 @@ type CronType =
   | 'yearly'
   | 'unknown';
 
+/** minutes regex */
 const minutesExp = /\d+ 0\/\d+ \* 1\/1 \* [?*] \*/;
+/** hourly regex */
 const hourlyExp = /\d+ \d+ 0\/\d+ 1\/1 \* [?*] \*/;
+/** daily regex */
 const dailyExp = /\d+ \d+ \d+ 1\/\d+ \* [?*] \*/;
+/** dailyWeekday regex */
 const dailyWeekdayExp = /\d+ \d+ \d+ [?*] \* MON-FRI \*/;
+/** weekly regex */
 const weeklyExp =
   /\d+ \d+ \d+ [?*] \* (MON|TUE|WED|THU|FRI|SAT|SUN)(,(MON|TUE|WED|THU|FRI|SAT|SUN))* \*/;
+/** monthly regex */
 const monthlyExpo = /\d+ \d+ \d+ (\d+|L|LW|1W) 1\/\d+ [?*] \*/;
+/** MonthlyWeekday regex */
 const monthlyWeekdayExpo =
   /\d+ \d+ \d+ [?*] 1\/\d+ (MON|TUE|WED|THU|FRI|SAT|SUN)((#[1-5])|L) \*/;
+/** yearly regex */
 const yearlyExp = /\d+ \d+ \d+ (\d+|L|LW|1W) \d+ [?*] \*/;
+/** yearlyMonthWeek regex */
 const yearlyMonthWeekExp =
   /\d+ \d+ \d+ [?*] \d+ (MON|TUE|WED|THU|FRI|SAT|SUN)((#[1-5])|L) \*/;
 
+/** A provider for the ControlValueAccessor interface. */
 export const CRON_VALUE_ACCESSOR: any = {
   provide: NG_VALUE_ACCESSOR,
   useExisting: forwardRef(() => CronEditorComponent),
@@ -78,6 +88,9 @@ function* range(start: number, end: number) {
   }
 }
 
+/**
+ * UI CronEditor Component
+ */
 @Component({
   selector: 'ui-cron-editor',
   templateUrl: './cron-editor.component.html',
@@ -163,33 +176,47 @@ export class CronEditorComponent
   public onChange!: (value: any) => void;
   public onTouched!: () => void;
 
+  /** @returns is cron Flavor Quartz */
   get isCronFlavorQuartz() {
     return this.options.cronFlavor === 'quartz';
   }
 
+  /** @returns is cron Flavor Standard */
   get isCronFlavorStandard() {
     return this.options.cronFlavor === 'standard';
   }
 
+  /** @returns year default */
   get yearDefaultChar() {
     return this.options.cronFlavor === 'quartz' ? '*' : '';
   }
 
+  /** @returns weekday default */
   get weekDayDefaultChar() {
     return this.options.cronFlavor === 'quartz' ? '?' : '*';
   }
 
+  /** @returns monthday default */
   get monthDayDefaultChar() {
     return this.options.cronFlavor === 'quartz' ? '?' : '*';
   }
 
+  /**
+   * Ui CronEditor constructor
+   *
+   * @param fb FormBuilder
+   */
   constructor(private fb: FormBuilder) {}
 
-  /* Update the cron output to that of the selected tab.
+  /**
+   * Update the cron output to that of the selected tab.
    * The cron output value is updated whenever a form is updated. To make it change in response to tab selection, we simply reset
    * the value of the form that goes into focus.
    * We cannot rely on the index of the tab, as the hide options could hide tabs and
-   * then the index dynamically changes based on the hidden tab.*/
+   * then the index dynamically changes based on the hidden tab.
+   *
+   * @param tabChangeEvent tabChangeEvent
+   */
   onTabChange(tabChangeEvent: any) {
     const currentTab = tabChangeEvent.tab;
     let x: CronType;
@@ -236,6 +263,11 @@ export class CronEditorComponent
     this.formSub.unsubscribe();
   }
 
+  /**
+   * compute Cron
+   *
+   * @returns string cron
+   */
   private computeCron(): string {
     let cron: string;
     switch (this.allForm.value.cronType) {
@@ -266,6 +298,11 @@ export class CronEditorComponent
     return cron;
   }
 
+  /**
+   * compute MinutesCron
+   *
+   * @returns string minutesCron
+   */
   private computeMinutesCron(): string {
     const state = this.allForm.value;
 
@@ -275,6 +312,11 @@ export class CronEditorComponent
     } * 1/1 * ${this.weekDayDefaultChar} ${this.yearDefaultChar}`.trim();
   }
 
+  /**
+   * compute HourlyCron
+   *
+   * @returns string HourlyCron
+   */
   private computeHourlyCron(): string {
     const state = this.allForm.value;
     return `${this.isCronFlavorQuartz ? state.seconds : ''} ${
@@ -284,6 +326,11 @@ export class CronEditorComponent
     }`.trim();
   }
 
+  /**
+   * compute dailyCron
+   *
+   * @returns string dailyCron
+   */
   private computeDailyCron(): string {
     if (this.allForm.value.weekdaysOnly) {
       return this.computeEveryWeekdayCron();
@@ -291,6 +338,11 @@ export class CronEditorComponent
     return this.computeEveryDaysCron();
   }
 
+  /**
+   * compute EveryDaysCron
+   *
+   * @returns string EveryDayscron
+   */
   private computeEveryDaysCron(): string {
     const state: any = this.allForm.value;
     return `${this.isCronFlavorQuartz ? state.seconds : ''} ${
@@ -300,6 +352,11 @@ export class CronEditorComponent
     } ${this.yearDefaultChar}`.trim();
   }
 
+  /**
+   * compute everyWeekdayCron
+   *
+   * @returns string everyWeekdayCron
+   */
   private computeEveryWeekdayCron(): string {
     const state: any = this.allForm.value;
     return `${this.isCronFlavorQuartz ? state.seconds : ''} ${
@@ -309,6 +366,11 @@ export class CronEditorComponent
     } * MON-FRI ${this.yearDefaultChar}`.trim();
   }
 
+  /**
+   * compute weeklyCron
+   *
+   * @returns string weeklyCron
+   */
   private computeWeeklyCron(): string {
     const state: any = this.allForm.value;
     const days = this.selectOptions.days
@@ -324,6 +386,11 @@ export class CronEditorComponent
     } * ${days} ${this.yearDefaultChar}`.trim();
   }
 
+  /**
+   * compute monthlyCron
+   *
+   * @returns string monthlyCron
+   */
   private computeMonthlyCron(): string {
     const state: any = this.allForm.value;
     if (state.specificWeekDay) {
@@ -342,6 +409,11 @@ export class CronEditorComponent
     } ${this.weekDayDefaultChar} ${this.yearDefaultChar}`.trim();
   }
 
+  /**
+   * compute yearlyCron
+   *
+   * @returns string yearlyCron
+   */
   private computeYearlyCron(): string {
     const state: any = this.allForm.value;
     if (state.specificMonthWeek) {
@@ -360,23 +432,52 @@ export class CronEditorComponent
     } ${this.weekDayDefaultChar} ${this.yearDefaultChar}`.trim();
   }
 
+  /**
+   * compute AdvancedExpression
+   *
+   * @returns state expression
+   */
   private computeAdvancedExpression(): string {
     const state: any = this.allForm.value;
     return state.expression;
   }
 
+  /**
+   * Display day
+   *
+   * @param day day
+   * @returns Days
+   */
   public dayDisplay(day: string): string {
     return Days[day];
   }
 
+  /**
+   * Display monthWeek
+   *
+   * @param monthWeekNumber monthWeekNumber
+   * @returns MonthWeeks
+   */
   public monthWeekDisplay(monthWeekNumber: string): string {
     return MonthWeeks[monthWeekNumber];
   }
 
+  /**
+   * Display month
+   *
+   * @param month month
+   * @returns Month
+   */
   public monthDisplay(month: number): string {
     return Months[month];
   }
 
+  /**
+   * Display monthDay
+   *
+   * @param month month
+   * @returns monthDay
+   */
   public monthDayDisplay(month: string): string {
     if (month === 'L') {
       return 'Last Day';
@@ -389,14 +490,33 @@ export class CronEditorComponent
     }
   }
 
+  /**
+   * Get AmPm hour
+   *
+   * @param hour hour
+   * @returns hour
+   */
   private getAmPmHour(hour: number) {
     return this.options.use24HourTime ? hour : ((hour + 11) % 12) + 1;
   }
 
+  /**
+   * Get hour type
+   *
+   * @param hour hour
+   * @returns hour type
+   */
   private getHourType(hour: number) {
     return this.options.use24HourTime ? undefined : hour >= 12 ? 'PM' : 'AM';
   }
 
+  /**
+   * Convert hour to cron
+   *
+   * @param hour hour
+   * @param hourType hour type
+   * @returns hour
+   */
   private hourToCron(hour: number, hourType: string) {
     if (this.options.use24HourTime) {
       return hour;
@@ -411,6 +531,11 @@ export class CronEditorComponent
     }
   }
 
+  /**
+   * Handle model change
+   *
+   * @param cron cron
+   */
   private handleModelChange(cron: string) {
     if (!this.cronIsValid(cron)) {
       if (this.isCronFlavorQuartz) {
@@ -569,6 +694,12 @@ export class CronEditorComponent
     this.allForm.updateValueAndValidity({ onlySelf: true });
   }
 
+  /**
+   * Cron is valid
+   *
+   * @param cron cron
+   * @returns boolean
+   */
   private cronIsValid(cron: string): boolean {
     if (cron) {
       const cronParts = cron.split(' ');
@@ -582,6 +713,12 @@ export class CronEditorComponent
     return false;
   }
 
+  /**
+   * Get Ordinal Suffix
+   *
+   * @param value value
+   * @returns string
+   */
   private getOrdinalSuffix(value: string) {
     if (value.length > 1) {
       const secondToLastDigit = value.charAt(value.length - 2);
@@ -603,6 +740,11 @@ export class CronEditorComponent
     }
   }
 
+  /**
+   * Get Select Options
+   *
+   * @returns select options
+   */
   private getSelectOptions() {
     return {
       months: this.getRange(1, 12),
@@ -624,11 +766,23 @@ export class CronEditorComponent
     };
   }
 
+  /**
+   * Get Range
+   *
+   * @param start start value
+   * @param end end value
+   * @returns Days
+   */
   private getRange(start: number, end: number): number[] {
     const length = end - start + 1;
     return [...Array(length)].map((_, i) => i + start);
   }
 
+  /**
+   * Write value
+   *
+   * @param obj obj
+   */
   writeValue(obj: string | null): void {
     if (obj === null) {
       return;
@@ -636,18 +790,37 @@ export class CronEditorComponent
     this.handleModelChange(obj);
   }
 
+  /**
+   * RegisterOnChange
+   *
+   * @param fn fn
+   */
   registerOnChange(fn: any): void {
     this.onChange = fn;
   }
 
+  /**
+   * RegisterOnTouched
+   *
+   * @param fn fn
+   */
   registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
 
+  /**
+   * setDisabledState
+   *
+   * @param isDisabled boolean
+   */
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }
 
+  /**
+   * markAsTouched
+   *
+   */
   markAsTouched() {
     if (!this.touched) {
       this.onTouched();
