@@ -88,8 +88,9 @@ export class WebmapSelectComponent
     this.searchControl.valueChanges
       .pipe(debounceTime(500), distinctUntilChanged())
       .subscribe((value) => {
+        this.loading = true;
         this.start = 0;
-        this.items.next([]);
+        // this.items.next([]);
         this.search(value);
       });
   }
@@ -159,6 +160,7 @@ export class WebmapSelectComponent
       } else {
         this.nextPage = false;
       }
+      this.items.next([]);
       if (text) {
         this.items.next(
           this.items
