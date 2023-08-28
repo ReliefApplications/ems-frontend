@@ -28,10 +28,10 @@
   <!-- Advanced filters -->
   <div
     *ngIf="show"
-    class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row"
+    class="flex flex-wrap gap-2 sm:items-end flex-col sm:flex-row"
   >
     <!-- Date range filter -->
-    <div uiFormFieldDirective>
+    <div uiFormFieldDirective [defaultMargin]="false">
       <label>{{ 'common.input.dateRange' | translate }}</label>
       <div [formGroup]="form" [uiDateWrapper]="calendar">
         <input
@@ -48,7 +48,7 @@
       </div>
     </div>
     <!-- Status filter -->
-    <div uiFormFieldDirective [outline]="false" class="p-0 w-44">
+    <div uiFormFieldDirective [defaultMargin]="false" class="p-0 w-44">
       <label>{{ 'common.status' | translate }}</label>
       <ui-select-menu
         formControlName="status"
@@ -66,10 +66,8 @@
         </ui-select-option>
       </ui-select-menu>
     </div>
-    <div class="mb-4 pt-[24px]">
-      <ui-button variant="danger" (click)="clear()" class="max-sm:!w-auto">{{
-        'common.filter.clear' | translate
-      }}</ui-button>
-    </div>
+    <ui-button variant="danger" (click)="clear()" class="max-sm:!w-auto">{{
+      'common.filter.clear' | translate
+    }}</ui-button>
   </div>
 </div>

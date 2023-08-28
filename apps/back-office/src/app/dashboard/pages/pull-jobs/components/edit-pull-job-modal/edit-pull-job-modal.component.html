@@ -184,9 +184,13 @@
                 <form
                   [formGroup]="$any(element)"
                   *ngFor="let element of mappingArray.controls; index as i"
-                  class="flex gap-x-2 items-center"
+                  class="flex gap-x-2 items-end"
                 >
-                  <div uiFormFieldDirective [outline]="false" class="flex-1">
+                  <div
+                    uiFormFieldDirective
+                    [defaultMargin]="false"
+                    class="flex-1"
+                  >
                     <label>{{ 'common.field.one' | translate }}</label>
                     <ui-select-menu formControlName="name">
                       <ui-select-option
@@ -198,8 +202,9 @@
                     </ui-select-menu>
                   </div>
                   <div
-                    uiFormFieldDirective
                     *ngIf="element.value.name"
+                    uiFormFieldDirective
+                    [defaultMargin]="false"
                     class="flex-1"
                   >
                     <label>{{ 'common.value.one' | translate }}</label>
@@ -219,7 +224,7 @@
                   variant="primary"
                   (click)="onAddElement()"
                 >
-                {{ 'components.pullJob.modal.addMappingField' | translate }}
+                  {{ 'components.pullJob.modal.addMappingField' | translate }}
                 </ui-button>
               </div>
             </ng-container>
