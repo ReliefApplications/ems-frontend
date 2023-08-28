@@ -127,6 +127,13 @@
   }
 }
 
+// On hover geospatial form field on survey creator, the actions are displayed over the map, which are not legible
+// The background white would solve this
+::ng-deep survey-creator {
+  .svc-question__content-actions {
+    background-color: white !important;
+  }
+}
 ::ng-deep .sv_custom_header {
   display: none;
 }
