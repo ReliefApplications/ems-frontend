@@ -410,7 +410,6 @@ export class DashboardComponent
    * @param e widget to save.
    */
   onEditTile(e: any): void {
-    console.log('onEditTile', e);
     // make sure that we save the default layout.
     const index = this.tiles.findIndex((v: any) => v.id === e.id);
     const options = this.tiles[index]?.settings?.defaultLayout
@@ -477,9 +476,9 @@ export class DashboardComponent
   }
 
   /**
-   * Print the current widget from the dashboard.
+   * Preview the style of a widget.
    *
-   * @param tile widget to print.
+   * @param tile widget to preview.
    */
   previewStyle(tile: any): void {
     // Update the tile with the matching ID
