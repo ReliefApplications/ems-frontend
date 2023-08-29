@@ -2194,5 +2194,5 @@ export const MAT_ICON_LIST: string[] = [
   'zoom_in',
   'zoom_in_map',
   'zoom_out',
-  'zoom_out_map'
+  'zoom_out_map',
 ];

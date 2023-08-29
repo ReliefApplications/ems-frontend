@@ -50,6 +50,11 @@ Default.args = {
   size: 24,
 };
 
+/**
+ * placeholder
+ *
+ * @param searchValue placeholder
+ */
 const updateIconList = (searchValue: string) => {
   console.log(searchValue);
   iconList = MAT_ICON_LIST;
@@ -57,7 +62,7 @@ const updateIconList = (searchValue: string) => {
 
 let iconList: string[] = [];
 
-let searchTerm: string = '';
+// let searchTerm: string = '';
 
 /**
  * Template for all icons
@@ -79,7 +84,7 @@ const AllIconsTemplate: StoryFn<any> = () => {
       </div>`,
     props: {
       iconList,
-      searchTerm,
+      // searchTerm,
       updateIconList,
     },
     argTypes: {},
