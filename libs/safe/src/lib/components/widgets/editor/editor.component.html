@@ -9,7 +9,7 @@
   >
     <span class="widget-title" [title]="settings.title">{{
       settings.title
-      }}</span>
+    }}</span>
     <div class="flex">
       <!-- Data source button -->
       <ui-button
@@ -22,11 +22,12 @@
       </ui-button>
     </div>
   </kendo-tilelayout-item-header>
-  <div
-    class="flex-1 overflow-auto p-[14px]"
-    (click)="onClick($event)">
+  <div class="flex-1 overflow-auto p-[14px]" (click)="onClick($event)">
     <div class="w-full h-fit" (click)="onClick($event)">
-      <safe-html-widget-content [html]="formattedHtml" [style]="formattedStyle"></safe-html-widget-content>
+      <safe-html-widget-content
+        [html]="html"
+        [style]="style"
+      ></safe-html-widget-content>
     </div>
   </div>
 </div>

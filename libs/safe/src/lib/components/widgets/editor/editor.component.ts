@@ -33,10 +33,11 @@ export class SafeEditorComponent implements OnInit {
   private fields: any[] = [];
   private fieldsValue: any;
   private styles: any[] = [];
-  private wholeCardStyles = false;
 
-  public formattedHtml: SafeHtml = '';
-  public formattedStyle?: string;
+  /** formatted html */
+  public html: SafeHtml = '';
+  /** formatted style */
+  public style?: string;
 
   /**
    * Constructor for safe-editor component
@@ -62,10 +63,6 @@ export class SafeEditorComponent implements OnInit {
   /** Sanitizes the text. */
   ngOnInit(): void {
     this.setContentFromLayout();
-    this.formattedStyle = this.settings.widgetDisplay?.style;
-    if (!this.formattedStyle) {
-      this.formattedStyle = this.applicationService.rawCustomStyle;
-    }
   }
 
   /**
@@ -75,21 +72,25 @@ export class SafeEditorComponent implements OnInit {
     if (this.settings.record) {
       await this.getLayout();
       await this.getData();
-      this.formattedStyle = this.dataTemplateService.renderStyle(
-        this.settings.wholeCardStyles || false,
-        this.fieldsValue,
-        this.styles
-      );
-      this.formattedHtml = this.dataTemplateService.renderHtml(
+      this.style =
+        this.applicationService.rawCustomStyle +
+        this.settings.widgetDisplay?.style +
+        this.dataTemplateService.renderStyle(
+          this.settings.wholeCardStyles || false,
+          this.fieldsValue,
+          this.styles
+        );
+      this.html = this.dataTemplateService.renderHtml(
         this.settings.text,
         this.fieldsValue,
         this.fields,
         this.styles
       );
     } else {
-      this.formattedHtml = this.dataTemplateService.renderHtml(
-        this.settings.text
-      );
+      this.style =
+        this.applicationService.rawCustomStyle +
+        this.settings.widgetDisplay?.style;
+      this.html = this.dataTemplateService.renderHtml(this.settings.text);
     }
   }
 

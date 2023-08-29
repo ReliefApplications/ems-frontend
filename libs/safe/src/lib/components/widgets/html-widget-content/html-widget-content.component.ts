@@ -8,8 +8,7 @@ import {
 import { SafeHtml } from '@angular/platform-browser';
 
 /**
- * HTML Widget content component
- *
+ * HTML Widget content component.
  * Allows to render HTML with custom styles without interfering with the rest of the application.
  */
 @Component({
@@ -23,7 +22,8 @@ export class HtmlWidgetContentComponent implements OnInit {
   @Input() style?: string;
 
   /**
-   * Constructor for safe-html-widget-content component
+   * HTML Widget content component.
+   * Allows to render HTML with custom styles without interfering with the rest of the application.
    *
    * @param elementRef Ref to the component's element
    */

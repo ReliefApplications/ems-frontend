@@ -20,14 +20,17 @@ import { SafeApplicationService } from '../../../../services/application/applica
   encapsulation: ViewEncapsulation.None,
 })
 export class SummaryCardItemContentComponent implements OnInit, OnChanges {
-  @Input() html = '';
+  @Input() template = '';
   @Input() fields: any[] = [];
   @Input() fieldsValue: any;
-  @Input() styles: any[] = [];
+  @Input() styleRules: any[] = [];
   @Input() wholeCardStyles = false;
+  @Input() settings: any;
 
-  public formattedHtml: SafeHtml = '';
-  public formattedStyle?: string;
+  /** formatted html */
+  public html: SafeHtml = '';
+  /** formatted style */
+  public style?: string;
 
   /**
    * Content component of Single Item of Summary Card.
@@ -64,20 +67,19 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
    * Sets content of the widget widget, querying associated record if any.
    */
   private setContentAndStyle(): void {
-    this.formattedStyle = this.dataTemplateService.renderStyle(
-      this.wholeCardStyles,
-      this.fieldsValue,
-      this.styles
-    );
-    this.formattedHtml = this.dataTemplateService.renderHtml(
-      this.html,
+    this.style =
+      this.applicationService.rawCustomStyle +
+      this.settings.widgetDisplay?.style +
+      this.dataTemplateService.renderStyle(
+        this.wholeCardStyles,
+        this.fieldsValue,
+        this.styleRules
+      );
+    this.html = this.dataTemplateService.renderHtml(
+      this.template,
       this.fieldsValue,
       this.fields,
-      this.styles
+      this.styleRules
     );
-
-    if (!this.formattedStyle) {
-      this.formattedStyle = this.applicationService.rawCustomStyle;
-    }
   }
 }

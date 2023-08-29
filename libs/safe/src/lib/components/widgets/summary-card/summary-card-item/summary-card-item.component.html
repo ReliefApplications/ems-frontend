@@ -12,10 +12,11 @@
     card.wholeCardStyles !== null &&
     card.wholeCardStyles !== undefined
   "
-  [html]="card.html"
+  [settings]="settings"
+  [template]="card.html"
   [fields]="fields"
   [fieldsValue]="fieldsValue"
-  [styles]="card.useStyles ? styles : []"
+  [styleRules]="card.useStyles ? styleRules : []"
   [wholeCardStyles]="card.wholeCardStyles"
   class="flex-1 overflow-auto p-[14px]"
 >
