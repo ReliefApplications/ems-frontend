@@ -16,6 +16,7 @@ import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { SnackbarService } from '@oort-front/ui';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import {
+  Action,
   PageModel,
   SurveyModel,
   UpdateQuestionCssClassesEvent,
@@ -311,15 +312,30 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
           renderGlobalProperties(this.referenceDataService)
         )
     );
-    // this.surveyCreator.survey.locale = this.translate.currentLang; // -> set the defaultLanguage property also
-
     // add move up/down buttons
     this.surveyCreator.onDefineElementMenuItems.add(
       (sender: SurveyCreatorModel, options: any) => {
-        const moveUpButton = {
-          name: 'move-up',
-          text: this.translate.instant('pages.formBuilder.move.up'),
-          onClick: (obj: any) => {
+        console.log('options: ', options);
+      }
+    );
+    // this.surveyCreator.survey.locale = this.translate.currentLang; // -> set the defaultLanguage property also
+
+    // ¿No need? As the new surveyjs creator has a built in drag and drop feature to move questions between pages and within a page between questions
+    // this.addCustomActionsToQuestionItemBar();
+  }
+
+  /**
+   * Add custom actions to the question action items bar
+   */
+  private addCustomActionsToQuestionItemBar() {
+    // add move up/down buttons
+    this.surveyCreator.onDefineElementMenuItems.add(
+      (sender: SurveyCreatorModel, options: any) => {
+        const moveUpButton = new Action({
+          iconName: 'icon-arrow-up',
+          css: 'sv-action-bar-item--secondary sv-action-bar-item__icon',
+          title: this.translate.instant('pages.formBuilder.move.up'),
+          action: (obj: any) => {
             // get the page index of current question
             const pageIndex = sender.survey.pages.findIndex(
               (page: any) => page.questions.indexOf(obj) !== -1
@@ -337,12 +353,13 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
             // add it back to the page at the previous index
             sender.survey.pages[pageIndex].addElement(obj, questionIndex - 1);
           },
-        };
+        });
 
-        const moveDownButton = {
-          name: 'move-down',
-          text: this.translate.instant('pages.formBuilder.move.down'),
-          onClick: (obj: any) => {
+        const moveDownButton = new Action({
+          iconName: 'icon-arrow-down',
+          css: 'sv-action-bar-item--secondary sv-action-bar-item__icon',
+          title: this.translate.instant('pages.formBuilder.move.down'),
+          action: (obj: any) => {
             // get the page index of current question
             const pageIndex = sender.survey.pages.findIndex(
               (page: any) => page.questions.indexOf(obj) !== -1
@@ -364,7 +381,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
             // add it back to the page at the previous index
             sender.survey.pages[pageIndex].addElement(obj, questionIndex + 1);
           },
-        };
+        });
 
         // Find the `delete` action's position.
         let index = -1;
