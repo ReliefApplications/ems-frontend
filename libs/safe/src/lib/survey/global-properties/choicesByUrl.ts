@@ -83,14 +83,13 @@ export const init = (Survey: any): void => {
     category: 'choicesByUrl',
     visible: false,
     onExecuteExpression: (obj: QuestionSelectBase) => {
-      console.log('execute !');
       const choicesByUrl = obj.choicesByUrl as ExtendedChoicesRestful;
 
       let body = obj.requestBody || '';
       (obj.survey as SurveyModel)?.getAllQuestions().forEach((question) => {
         if (body.includes(`{${question.name}}`)) {
           const regex = new RegExp(`{${question.name}}`, 'g');
-          body = body.replace(regex, question.value);
+          body = body.replace(regex, question.value ?? `{${question.name}}`);
         }
       });
       // Checks if Is GraphQL query or not
@@ -122,8 +121,6 @@ export const init = (Survey: any): void => {
     dependsOn: ['usePost', 'isGraphQL'],
     visibleIf: (obj: QuestionSelectBase) => obj.usePost,
     onSetValue: (obj: QuestionSelectBase, value: string) => {
-      console.log(value);
-      console.log('set value');
       // Updates the request body
       obj.setPropertyValue('requestBody', value);
 
@@ -135,11 +132,8 @@ export const init = (Survey: any): void => {
         }
       });
 
-      console.log('changing');
-      console.log(newExp);
       // Updates the detection helper, adds all dependencies to it
       obj.setPropertyValue('detectionHelper', newExp);
-      console.log(obj as any);
     },
   });
 
@@ -216,6 +210,17 @@ export const init = (Survey: any): void => {
   Survey.ChoicesRestful.prototype.sendRequest = function () {
     this.error = null;
 
+    // Checks if the request body depends on other questions that have not been answered yet
+    // If so, no request is made as it would fail anyway
+    const questionTemplates =
+      (this.owner?.survey as SurveyModel)
+        ?.getAllQuestions()
+        ?.map((q) => `{${q.name}}`) || [];
+
+    if (questionTemplates?.some((q) => this.requestBody.includes(q))) {
+      return;
+    }
+
     const headers = new Headers();
     headers.append(
       'Content-Type',
@@ -229,8 +234,9 @@ export const init = (Survey: any): void => {
     };
 
     Object.assign(options, { method: this.owner.usePost ? 'POST' : 'GET' });
-    if (this.owner.requestBody)
-      Object.assign(options, { body: this.owner.requestBody });
+    if (this.requestBody) {
+      Object.assign(options, { body: this.requestBody });
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;
