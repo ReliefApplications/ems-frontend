@@ -126,13 +126,13 @@ const testClick = () => window.alert('Should not show if disabled!!');
  */
 const Template: StoryFn<StoryType> = (args: StoryType) => {
   return {
-    template: `<ui-button 
-    (click)="testClick()" 
+    template: `<ui-button
+    (click)="testClick()"
     [disabled]="${args.disabled}"
     [icon]="${args.icon}"
-    [isIcon]="${args.isIcon}" 
-    [size]="'${args.size}'" 
-    [variant]="'${args.variant}'" 
+    [isIcon]="${args.isIcon}"
+    [size]="'${args.size}'"
+    [variant]="'${args.variant}'"
     [category]="'${args.category}'">
     ${args.label}
     </ui-button>`,
@@ -161,80 +161,120 @@ Tertiary.args = {
   ...(tertiaryButton as any),
 };
 
-// const configurations = [
-//   {
-//     title: 'Default',
-//     items: categories.map((category) => ({
-//       variant: 'default',
-//       category: category,
-//       text: 'default',
-//     })),
-//   },
-//   {
-//     title: 'Primary',
-//     items: categories.map((category) => ({
-//       variant: 'primary',
-//       category: category,
-//       text: 'primary',
-//     })),
-//   },
-//   {
-//     title: 'Success',
-//     items: categories.map((category) => ({
-//       variant: 'success',
-//       category: category,
-//       text: 'success',
-//     })),
-//   },
-//   {
-//     title: 'Danger',
-//     items: categories.map((category) => ({
-//       variant: 'danger',
-//       category: category,
-//       text: 'danger',
-//     })),
-//   },
-//   {
-//     title: 'Grey',
-//     items: categories.map((category) => ({
-//       variant: 'grey',
-//       category: category,
-//       text: 'grey',
-//     })),
-//   },
-//   {
-//     title: 'Light',
-//     items: categories.map((category) => ({
-//       variant: 'light',
-//       category: category,
-//       text: 'light',
-//     })),
-//   },
-//   {
-//     title: 'Warning',
-//     items: categories.map((category) => ({
-//       variant: 'light',
-//       category: category,
-//       text: 'light',
-//     })),
-//   },
-// ];
+/**
+ * List of all available buttons
+ */
+const configurations = [
+  {
+    title: 'Default',
+    items: categories.map((category) => ({
+      variant: 'default',
+      category: category,
+      text: 'default',
+    })),
+  },
+  {
+    title: 'Primary',
+    items: categories.map((category) => ({
+      variant: 'primary',
+      category: category,
+      text: 'primary',
+    })),
+  },
+  {
+    title: 'Success',
+    items: categories.map((category) => ({
+      variant: 'success',
+      category: category,
+      text: 'success',
+    })),
+  },
+  {
+    title: 'Danger',
+    items: categories.map((category) => ({
+      variant: 'danger',
+      category: category,
+      text: 'danger',
+    })),
+  },
+  {
+    title: 'Grey',
+    items: categories.map((category) => ({
+      variant: 'grey',
+      category: category,
+      text: 'grey',
+    })),
+  },
+  {
+    title: 'Light',
+    items: categories.map((category) => ({
+      variant: 'light',
+      category: category,
+      text: 'light',
+    })),
+  },
+  {
+    title: 'Warning',
+    items: categories.map((category) => ({
+      variant: 'warning',
+      category: category,
+      text: 'warning',
+    })),
+  },
+  {
+    title: 'Disabled',
+    items: categories.map((category) => ({
+      variant: 'primary',
+      category: category,
+      text: 'disabled',
+      disabled: true,
+    })),
+  },
+];
 
-// export const All: StoryFn = () => {
-//   return {
-//     template: `
-//     <h1>Grouped by variant</h1>
-//     <div *ngFor="variant of configurations">
-//       <h2>{{variant.title}}</h2>
-//       <div class="flex gap-2">
-//         <ui-button *ngFor="let button of variant.items" [variant]="button.variant" [category]="button.category">
-//         {{button.text}}
-//         </ui-button>
-//       </div>
-//     </div>
-//   `,
-//     props: {
-//       configurations,
-//     },
-//   };
-// };
+/**
+ * Tertiary button
+ */
+const allButtons = {
+  size: 'medium',
+};
+
+/**
+ * Template button
+ *
+ * @param {StoryType} args args
+ * @returns StoryType
+ */
+const AllButtonsTemplate: StoryFn<StoryType> = (args: StoryType) => {
+  return {
+    template: `
+      <h1 class="text-lg mb-4">Grouped by variant</h1>
+      <div class="flex flex-wrap gap-4">
+        <div class="border rounded-lg" *ngFor="let variant of configurations">
+          <h2 class="w-full text-center border-b py-2">{{variant.title}}</h2>
+          <div class="flex gap-2 p-4">
+            <ui-button
+              *ngFor="let btn of variant.items"
+              [variant]="btn.variant"
+              [category]="btn.category"
+              [disabled]="btn.disabled"
+              [title]="btn.category"
+              [size]="'${args.size}'"
+            >
+              {{btn.text}}
+            </ui-button>
+          </div>
+        </div>
+      </div>
+    `,
+    props: {
+      configurations,
+    },
+  };
+};
+
+/** All buttons */
+export const All = AllButtonsTemplate.bind({});
+All.args = {
+  ...(allButtons as any),
+};
