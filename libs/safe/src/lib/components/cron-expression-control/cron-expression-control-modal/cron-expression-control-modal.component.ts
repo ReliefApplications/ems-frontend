@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { CronOptions } from '../cronOptions';
@@ -10,6 +10,14 @@ import {
   DialogModule,
   CronEditorModule,
 } from '@oort-front/ui';
+import { DIALOG_DATA } from '@angular/cdk/dialog';
+
+/**
+ * Dialog data interface
+ */
+interface DialogData {
+  value: string;
+}
 
 /**
  * Cron expression form control modal
@@ -31,7 +39,7 @@ import {
   styleUrls: ['./cron-expression-control-modal.component.scss'],
 })
 export class CronExpressionControlModalComponent {
-  public control!: FormControl;
+  public control: FormControl = new FormControl();
   public cronOptions: CronOptions = {
     defaultTime: '00:00:00',
     // Cron Tab Options
@@ -54,11 +62,14 @@ export class CronExpressionControlModalComponent {
   /**
    *  Cron expression form control modal
    */
-  constructor() {
+  constructor(@Inject(DIALOG_DATA) public data: DialogData) {
     // The cron editor we're using doesn't support two way binding,
     // meaning the UI will always be initialized in the 'Minutes' tab, with 'every 1 minute' selected
     // So it's useless to inject the value from the parent component
     // That way, it's better to always initialize the control with the default value
-    this.control = new FormControl('0/1 * 1/1 * *');
+    this.control.setValue(data);
+    if (!this.control.value) {
+      this.control = new FormControl('0/1 * 1/1 * *');
+    }
   }
 }

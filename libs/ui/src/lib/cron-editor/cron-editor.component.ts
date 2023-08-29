@@ -255,6 +255,10 @@ export class CronEditorComponent
       .subscribe(() => {
         this.markAsTouched();
         const cron = this.computeCron();
+        if (cron.includes("NaN")) {
+          this.allForm.get('cronType')?.setErrors({ invalidCronType: true });
+          this.allForm.get('cronType')?.markAsTouched();
+        }
         this.onChange(cron);
       });
   }

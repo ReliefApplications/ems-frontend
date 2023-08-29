@@ -92,6 +92,7 @@ export class CronExpressionControlComponent
       './cron-expression-control-modal/cron-expression-control-modal.component'
     );
     const dialogRef = this.dialog.open(CronExpressionControlModalComponent, {
+      data: this.value,
       autoFocus: false,
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {

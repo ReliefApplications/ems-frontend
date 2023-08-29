@@ -1,5 +1,5 @@
 <ng-container [formGroup]="allForm">
-
+  <div [ngClass]="{'inline-flex gap-x-2': !hideHours}">
     <ng-container *ngIf="!hideHours">
       <div uiFormFieldDirective>
         <label>Hour(s)</label>
@@ -10,7 +10,6 @@
     </ng-container>
   
     <ng-container *ngIf="!hideMinutes">
-      <span *ngIf="!hideHours">:</span>
       <div uiFormFieldDirective>
         <label>Minute(s)</label>
         <ui-select-menu formControlName="minutes">
@@ -20,7 +19,6 @@
     </ng-container>
   
     <ng-container *ngIf="!hideSeconds">
-      <span *ngIf="!hideMinutes">:</span>
       <div uiFormFieldDirective>
         <label>Second(s)</label>
         <ui-select-menu formControlName="seconds">
@@ -30,11 +28,11 @@
     </ng-container>
   
     <ng-container *ngIf="!use24HourTime">
-      <span></span>.
       <div uiFormFieldDirective>
         <ui-select-menu formControlName="hourType">
           <ui-select-option *ngFor="let hourType of hourTypes" [value]="hourType">{{hourType}}</ui-select-option>
         </ui-select-menu>
       </div>
     </ng-container>
-  </ng-container>
+  </div>
+</ng-container>
