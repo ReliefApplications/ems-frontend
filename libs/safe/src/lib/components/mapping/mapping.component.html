@@ -18,7 +18,9 @@
             {{ 'components.mapping.path' | translate }}
           </span>
         </th>
-        <td uiCell *cdkCellDef="let element">{{ element.path }}</td>
+        <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
+          {{ element.path }}
+        </td>
       </ng-container>
 
       <ng-container cdkColumnDef="value">
@@ -30,7 +32,7 @@
         <td uiCell *cdkCellDef="let element">{{ element.value }}</td>
       </ng-container>
 
-      <ng-container cdkColumnDef="text">
+      <ng-container cdkColumnDef="text" [style.max-width]="'30vw'">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
           <span class="headerTitle">
             {{ 'components.mapping.text' | translate }}

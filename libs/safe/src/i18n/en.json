@@ -264,6 +264,7 @@
 		"search": "Search",
 		"searchObject": "Search {{name}}",
 		"select": "Select",
+		"selectStatus": "Select a status",
 		"send": "Send",
 		"settings": "Settings",
 		"status": "Status",
@@ -500,7 +501,8 @@
 			},
 			"dropdown": {
 				"select": "Notify on"
-			}
+			},
+			"selectChannel": "Select a channel"
 		},
 		"confirmModal": {
 			"cancel": "Cancel",
@@ -580,6 +582,7 @@
 				"template": {
 					"from": "From template",
 					"placeholder": "Pick an existing template",
+					"selectResource": "Select a resource",
 					"title": "From resource"
 				},
 				"tooltip": {
@@ -711,6 +714,7 @@
 				"title": "Delete pull job"
 			},
 			"modal": {
+				"addMappingField": "add a mapping field",
 				"errors": {
 					"schedule": "Enter a valid cron expression"
 				},
@@ -1618,7 +1622,8 @@
 	"models": {
 		"apiConfiguration": {
 			"authType": "Authentication type",
-			"new": "New API Configuration"
+			"new": "New API Configuration",
+			"selectAuthType": "Select authentication type"
 		},
 		"application": {
 			"description": "Description",
@@ -1662,7 +1667,9 @@
 				"origin": "Context origin",
 				"refData": {
 					"element": "Element"
-				}
+				},
+				"selectDisplayField": "Select display field",
+				"selectOrigin": "Select context origin"
 			},
 			"deactivateFiltering": "Deactivate filtering",
 			"share": "Share Dashboard"

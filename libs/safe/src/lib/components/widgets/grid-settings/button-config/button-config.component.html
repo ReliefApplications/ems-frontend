@@ -172,7 +172,7 @@
             *ngFor="let modification of modificationsArray.controls; index as i"
             class="update-row"
           >
-            <div uiFormFieldDirective>
+            <div uiFormFieldDirective [defaultMargin]="false">
               <label>{{
                 'components.widget.settings.grid.buttons.callback.modifyField'
                   | translate
