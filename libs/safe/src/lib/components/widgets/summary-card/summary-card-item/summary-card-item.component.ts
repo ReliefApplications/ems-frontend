@@ -14,7 +14,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   @Input() card!: CardT;
   public fields: any[] = [];
   public fieldsValue: any = null;
-  public styles: any[] = [];
+  public styleRules: any[] = [];
 
   ngOnInit(): void {
     this.setContent();
@@ -46,7 +46,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   /** Sets layout style */
   private async getStyles(): Promise<void> {
     // this.layout = this.card.layout;
-    this.styles = get(this.card.layout, 'query.style', []);
+    this.styleRules = get(this.card.layout, 'query.style', []);
     // this.styles = get(this.card, 'meta.style', []);
   }
 
@@ -106,7 +106,7 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
    * Set content of the card item from aggregation data.
    */
   private setContentFromAggregation(): void {
-    this.styles = [];
+    this.styleRules = [];
     if (!this.fieldsValue) return;
     // @TODO: get the fields' types from the aggregation data
     this.fields = Object.keys(this.fieldsValue).map((key) => ({

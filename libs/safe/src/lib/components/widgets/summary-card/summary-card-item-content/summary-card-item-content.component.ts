@@ -19,14 +19,14 @@ import { DataTemplateService } from '../../../../services/data-template/data-tem
   encapsulation: ViewEncapsulation.None,
 })
 export class SummaryCardItemContentComponent implements OnInit, OnChanges {
-  @Input() html = '';
+  @Input() template = '';
   @Input() fields: any[] = [];
   @Input() fieldsValue: any;
-  @Input() styles: any[] = [];
+  @Input() styleRules: any[] = [];
   @Input() wholeCardStyles = false;
 
-  public formattedHtml: SafeHtml = '';
-  public formattedStyle?: string;
+  public html: SafeHtml = '';
+  public style?: string;
 
   /**
    * Content component of Single Item of Summary Card.
@@ -36,16 +36,16 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
   constructor(private dataTemplateService: DataTemplateService) {}
 
   ngOnInit(): void {
-    this.formattedStyle = this.dataTemplateService.renderStyle(
+    this.style = this.dataTemplateService.renderStyle(
       this.wholeCardStyles,
       this.fieldsValue,
-      this.styles
+      this.styleRules
     );
-    this.formattedHtml = this.dataTemplateService.renderHtml(
-      this.html,
+    this.html = this.dataTemplateService.renderHtml(
+      this.template,
       this.fieldsValue,
       this.fields,
-      this.styles
+      this.styleRules
     );
   }
 
@@ -53,16 +53,16 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
    * Detects when the html or record inputs change.
    */
   ngOnChanges(): void {
-    this.formattedStyle = this.dataTemplateService.renderStyle(
+    this.style = this.dataTemplateService.renderStyle(
       this.wholeCardStyles,
       this.fieldsValue,
-      this.styles
+      this.styleRules
     );
-    this.formattedHtml = this.dataTemplateService.renderHtml(
-      this.html,
+    this.html = this.dataTemplateService.renderHtml(
+      this.template,
       this.fieldsValue,
       this.fields,
-      this.styles
+      this.styleRules
     );
   }
 
