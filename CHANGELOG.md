@@ -1,3 +1,10 @@
+## [2.0.8](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.7...v2.0.8) (2023-08-25)
+
+
+### Bug Fixes
+
+* aplly search to add new form page/step graphql-select ([#1739](https://github.com/ReliefApplications/oort-frontend/issues/1739)) ([3653dcc](https://github.com/ReliefApplications/oort-frontend/commit/3653dcc3080e712cf4529e5d39bbb23794e15d2b))
+
 ## [2.0.7](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.6...v2.0.7) (2023-08-17)
 
 
