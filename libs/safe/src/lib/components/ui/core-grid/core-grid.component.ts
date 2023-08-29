@@ -1237,8 +1237,6 @@ export class SafeCoreGridComponent
    * @param event Page change event.
    */
   public onPageChange(event: PageChangeEvent): void {
-    console.log("page change");
-    console.log(this.queryFilter);
     this.loading = true;
     this.skip = event.skip;
     this.pageSize = event.take;
@@ -1272,6 +1270,13 @@ export class SafeCoreGridComponent
    * @param filter composite filter created by Kendo.
    */
   public onFilterChange(filter: CompositeFilterDescriptor): void {
+    //remove empty filters
+    for (let i = filter.filters.length - 1; i >= 0; i--) {
+      const f = filter.filters[i] as any;
+      if (f.value && f.value.length === 0) {
+        filter.filters.splice(i, 1);
+      }
+    }    
     this.filter = filter;
     this.saveLocalLayout();
     this.skip = 0;

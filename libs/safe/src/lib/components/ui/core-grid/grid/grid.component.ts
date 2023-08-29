@@ -361,7 +361,6 @@ export class SafeGridComponent
    * @param filter Filter event.
    */
   public onFilterChange(filter: CompositeFilterDescriptor): void {
-    console.log(filter);
     if (!this.loadingRecords) {
       this.filter = filter;
       this.filterChange.emit(filter);
