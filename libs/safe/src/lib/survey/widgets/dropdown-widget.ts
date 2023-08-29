@@ -36,6 +36,7 @@ export const init = (
       el.parentElement?.querySelector('.sv_select_wrapper')?.remove();
       let dropdownDiv: HTMLDivElement | null = null;
       dropdownDiv = document.createElement('div');
+      dropdownDiv.classList.add('flex', 'min-h-[50px]');
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const dropdownInstance = createDropdownInstance(dropdownDiv);
       if (!isObject(question.value) && !isArray(question.value)) {
