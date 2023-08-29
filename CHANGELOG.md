@@ -1,3 +1,11 @@
+## [2.0.9](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.8...v2.0.9) (2023-08-29)
+
+
+### Bug Fixes
+
+* Change detection on POST choices by url ([#1764](https://github.com/ReliefApplications/oort-frontend/issues/1764)) ([a6c740e](https://github.com/ReliefApplications/oort-frontend/commit/a6c740ef65ca8c736d1277f6ef256a42930928b1))
+* storybook not building ([7f17a8c](https://github.com/ReliefApplications/oort-frontend/commit/7f17a8c22cb148c8bb87901861ebc2a56d6bb09d))
+
 ## [2.0.8](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.7...v2.0.8) (2023-08-25)
 
 
