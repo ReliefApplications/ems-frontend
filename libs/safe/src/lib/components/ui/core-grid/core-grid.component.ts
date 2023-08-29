@@ -1276,7 +1276,7 @@ export class SafeCoreGridComponent
       if (f.value && f.value.length === 0) {
         filter.filters.splice(i, 1);
       }
-    }    
+    }
     this.filter = filter;
     this.saveLocalLayout();
     this.skip = 0;
