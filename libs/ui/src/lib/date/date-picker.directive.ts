@@ -45,6 +45,7 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     'px-2',
     'leading-[1.6]',
     'outline-none',
+    'text-sm',
   ] as const;
 
   private labelClasses = [
@@ -58,7 +59,7 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     'right-0',
     'bottom-0',
     'truncate',
-    'text-neutral-500',
+    'text-neutral-400',
     'min-w-[30px]',
     'flex',
     'items-center',
@@ -93,6 +94,7 @@ export class DatePickerDirective implements OnInit, OnDestroy {
     'items-center',
     'w-full',
     'py-0.5',
+    'text-sm',
   ] as const;
 
   /**

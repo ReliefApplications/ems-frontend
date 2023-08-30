@@ -8,10 +8,11 @@ import { ButtonComponent } from './button.component';
 import { ButtonModule } from './button.module';
 import { categories } from '../types/category';
 import { sizes } from '../types/size';
-import { buttonIconPositions } from './types/button-icon-position';
 import { variants } from '../types/variant';
+import { buttonIconPositions } from './types/button-icon-position';
 import { IconModule } from '../icon/icon.module';
 import { SpinnerModule } from '../spinner/spinner.module';
+import { CommonModule } from '@angular/common';
 
 type StoryType = ButtonComponent & { label?: string };
 
@@ -20,7 +21,7 @@ export default {
   component: ButtonComponent,
   decorators: [
     moduleMetadata({
-      imports: [ButtonModule, IconModule, SpinnerModule],
+      imports: [CommonModule, ButtonModule, IconModule, SpinnerModule],
     }),
     componentWrapperDecorator((story) => {
       story = story.replace(/></, '>Button label<');
@@ -159,3 +160,81 @@ export const Tertiary = Template.bind({});
 Tertiary.args = {
   ...(tertiaryButton as any),
 };
+
+// const configurations = [
+//   {
+//     title: 'Default',
+//     items: categories.map((category) => ({
+//       variant: 'default',
+//       category: category,
+//       text: 'default',
+//     })),
+//   },
+//   {
+//     title: 'Primary',
+//     items: categories.map((category) => ({
+//       variant: 'primary',
+//       category: category,
+//       text: 'primary',
+//     })),
+//   },
+//   {
+//     title: 'Success',
+//     items: categories.map((category) => ({
+//       variant: 'success',
+//       category: category,
+//       text: 'success',
+//     })),
+//   },
+//   {
+//     title: 'Danger',
+//     items: categories.map((category) => ({
+//       variant: 'danger',
+//       category: category,
+//       text: 'danger',
+//     })),
+//   },
+//   {
+//     title: 'Grey',
+//     items: categories.map((category) => ({
+//       variant: 'grey',
+//       category: category,
+//       text: 'grey',
+//     })),
+//   },
+//   {
+//     title: 'Light',
+//     items: categories.map((category) => ({
+//       variant: 'light',
+//       category: category,
+//       text: 'light',
+//     })),
+//   },
+//   {
+//     title: 'Warning',
+//     items: categories.map((category) => ({
+//       variant: 'light',
+//       category: category,
+//       text: 'light',
+//     })),
+//   },
+// ];
+
+// export const All: StoryFn = () => {
+//   return {
+//     template: `
+//     <h1>Grouped by variant</h1>
+//     <div *ngFor="variant of configurations">
+//       <h2>{{variant.title}}</h2>
+//       <div class="flex gap-2">
+//         <ui-button *ngFor="let button of variant.items" [variant]="button.variant" [category]="button.category">
+//         {{button.text}}
+//         </ui-button>
+//       </div>
+//     </div>
+//   `,
+//     props: {
+//       configurations,
+//     },
+//   };
+// };

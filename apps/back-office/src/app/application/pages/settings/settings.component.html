@@ -5,7 +5,10 @@
     <!-- Selection of status -->
     <div uiFormFieldDirective [outline]="false" class="p-0">
       <label>{{ 'common.status' | translate }}</label>
-      <ui-select-menu formControlName="status">
+      <ui-select-menu
+        formControlName="status"
+        [placeholder]="'common.selectStatus' | translate"
+      >
         <ui-select-option value="active">
           {{ 'common.status_active' | translate }}
         </ui-select-option>

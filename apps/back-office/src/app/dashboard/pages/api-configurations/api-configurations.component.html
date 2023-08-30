@@ -34,11 +34,17 @@
       class="flex flex-wrap gap-x-2 sm:items-center flex-col sm:flex-row"
     >
       <!-- Status filter -->
-      <div uiFormFieldDirective [outline]="false" class="w-32">
+      <div
+        uiFormFieldDirective
+        [outline]="false"
+        class="w-44"
+        [defaultMargin]="false"
+      >
         <label>{{ 'common.status' | translate }}</label>
         <ui-select-menu
           [ngModel]="statusFilter"
           (selectedOption)="applyFilter('status', $event)"
+          [placeholder]="'common.selectStatus' | translate"
         >
           <ui-select-option>-</ui-select-option>
           <ui-select-option value="active">
@@ -93,7 +99,7 @@
         <td
           uiCell
           *cdkCellDef="let element"
-          class="!text-gray-900 !font-medium"
+          class="!text-gray-900 !font-medium max-w-[30vw]"
         >
           {{ element.name }}
         </td>
