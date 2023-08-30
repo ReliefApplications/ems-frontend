@@ -1,4 +1,5 @@
-import { get, isNil, set } from 'lodash';
+import { isNil, set } from 'lodash';
+import jsonpath from 'jsonpath';
 import {
   ChoicesRestful,
   QuestionSelectBase,
@@ -200,7 +201,7 @@ export const init = (Survey: any): void => {
     if (!this.processedPath) return result;
     const paths = this.getPathes();
     for (let i = 0; i < paths.length; i++) {
-      result = get(result, paths[i]);
+      result = jsonpath.query(result, paths[i]);
       if (!result) return null;
     }
     return result;
@@ -217,7 +218,7 @@ export const init = (Survey: any): void => {
         ?.getAllQuestions()
         ?.map((q) => `{${q.name}}`) || [];
 
-    if (questionTemplates?.some((q) => this.requestBody.includes(q))) {
+    if (questionTemplates?.some((q) => this.requestBody?.includes(q))) {
       return;
     }
 
