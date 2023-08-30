@@ -119,7 +119,6 @@ export class SafeRecordModalComponent
 
   async ngAfterViewInit(): Promise<void> {
     this.canEdit = this.data.canUpdate;
-    this.survey.applyTheme({ isPanelless: true });
 
     const promises: Promise<
       GetFormByIdQueryResponse | GetRecordByIdQueryResponse | void

@@ -116,7 +116,6 @@ export class SafeFormComponent
       this.form.metadata,
       this.record
     );
-    this.survey.applyTheme({ isPanelless: true });
 
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(

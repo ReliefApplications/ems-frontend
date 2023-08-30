@@ -72,10 +72,22 @@
     min-width: unset;
   }
 }
-// todo: check
-// ::ng-deep .sv_main.sv_default_css .sv_body {
-//   width: inherit !important;
-// }
+
+::ng-deep .survey-title__tooltip {
+  background-color: var(--primary);
+  padding: 0 0.35rem;
+  border-radius: 100%;
+  color: white;
+  margin-left: 0.25rem;
+  font-size: 0.75rem !important;
+  font-weight: bold;
+}
+
+::ng-deep .sd-matrixdropdown.sd-table,
+::ng-deep .sd-table.sd-matrixdynamic {
+  padding: 0.5rem 0 1rem 0;
+}
+
 ::ng-deep survey {
   .sv-radio--allowhover:hover .sv-radio__svg {
     fill: var(--primary, rgba(64, 64, 64, 0.5)) !important;

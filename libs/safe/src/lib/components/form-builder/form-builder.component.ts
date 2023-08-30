@@ -202,6 +202,9 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
             '--sjs-base-unit': '.66em',
           },
         });
+        survey.onAfterRenderQuestion.add(
+          this.formHelpersService.addQuestionTooltips
+        );
         this.formHelpersService.addUserVariables(survey);
       }
     );
@@ -312,14 +315,9 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
           renderGlobalProperties(this.referenceDataService)
         )
     );
-    // add move up/down buttons
-    this.surveyCreator.onDefineElementMenuItems.add(
-      (sender: SurveyCreatorModel, options: any) => {
-        console.log('options: ', options);
-      }
-    );
     // this.surveyCreator.survey.locale = this.translate.currentLang; // -> set the defaultLanguage property also
 
+    // add move up/down buttons
     // ¿No need? As the new surveyjs creator has a built in drag and drop feature to move questions between pages and within a page between questions
     // this.addCustomActionsToQuestionItemBar();
   }

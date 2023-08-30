@@ -147,7 +147,6 @@ export class SafeFormModalComponent
 
   async ngOnInit(): Promise<void> {
     this.data = { ...DEFAULT_DIALOG_DATA, ...this.data };
-    this.survey.applyTheme({ isPanelless: true });
 
     this.isMultiEdition = Array.isArray(this.data.recordId);
     const promises: Promise<

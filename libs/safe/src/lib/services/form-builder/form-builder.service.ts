@@ -60,6 +60,11 @@ export class SafeFormBuilderService {
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
     );
+    //Add tooltips to questions if exist
+    survey.onAfterRenderQuestion.add(
+      this.formHelpersService.addQuestionTooltips
+    );
+
     survey.onCompleting.add(() => {
       for (const page of survey.toJSON().pages) {
         if (!page.elements) continue;
@@ -128,6 +133,7 @@ export class SafeFormBuilderService {
     survey.showNavigationButtons = 'none';
     survey.showProgressBar = 'off';
     survey.focusFirstQuestionAutomatic = false;
+    survey.applyTheme({ isPanelless: true });
     return survey;
   }
 

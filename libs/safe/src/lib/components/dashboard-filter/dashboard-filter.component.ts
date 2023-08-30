@@ -28,6 +28,7 @@ import { ContextService } from '../../services/context/context.service';
 import { SidenavContainerComponent, SnackbarService } from '@oort-front/ui';
 import { SafeReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
+import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
 
 /**
  * Interface for quick filters
@@ -88,6 +89,7 @@ export class DashboardFilterComponent
   /**
    * Class constructor
    *
+   * @param formBuilderService Form builder service
    * @param dialog The Dialog service
    * @param apollo Apollo client
    * @param applicationService Shared application service
@@ -100,6 +102,7 @@ export class DashboardFilterComponent
    * @param _host sidenav container host
    */
   constructor(
+    private formBuilderService: SafeFormBuilderService,
     private dialog: Dialog,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
@@ -249,8 +252,7 @@ export class DashboardFilterComponent
   private initSurvey(): void {
     const surveyStructure = this.surveyStructure;
 
-    this.survey = new Model(surveyStructure);
-    this.survey.applyTheme({ isPanelless: true });
+    this.survey = this.formBuilderService.createSurvey(surveyStructure);
 
     if (this.value) {
       this.survey.data = this.value;

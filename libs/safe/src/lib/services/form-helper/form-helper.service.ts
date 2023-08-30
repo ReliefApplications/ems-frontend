@@ -355,4 +355,26 @@ export class SafeFormHelpersService {
       delete storage[key];
     });
   }
+
+  /**
+   * Add tooltip to the survey question if exists
+   *
+   * @param _ Default value of afterRenderQuestion callback
+   * @param options current survey question options
+   */
+  public addQuestionTooltips(_: any, options: any): void {
+    //Return if there is no description to show in popup
+    if (!options.question.tooltip) {
+      return;
+    }
+    options.htmlElement
+      .querySelectorAll('.sv-string-viewer')
+      .forEach((el: any) => {
+        const tooltip = document.createElement('span');
+        tooltip.title = options.question.tooltip;
+        tooltip.innerHTML = '?';
+        tooltip.classList.add('survey-title__tooltip');
+        el.appendChild(tooltip);
+      });
+  }
 }
