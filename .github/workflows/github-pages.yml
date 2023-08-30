@@ -2,10 +2,6 @@ name: Github Pages
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        type: environment
-        required: true
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
