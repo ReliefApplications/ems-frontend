@@ -236,7 +236,7 @@ export const init = (
         required: true,
         visibleIf: (obj: null | QuestionResource) =>
           !!obj && !!obj.resource && !!obj.displayField,
-        type: 'testServiceDropdownType',
+        type: 'resourceTestService',
         visibleIndex: 3,
       });
 
@@ -272,7 +272,7 @@ export const init = (
       };
 
       SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'testServiceDropdownType',
+        'resourceTestService',
         testServiceEditor
       );
 

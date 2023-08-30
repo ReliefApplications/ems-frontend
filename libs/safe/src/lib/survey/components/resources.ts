@@ -269,7 +269,7 @@ export const init = (
             return true;
           }
         },
-        type: 'testServiceDropdownType',
+        type: 'resourcesTestService',
         visibleIndex: 3,
       });
 
@@ -304,7 +304,7 @@ export const init = (
       };
 
       SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-        'testServiceDropdownType',
+        'resourcesTestService',
         testServiceEditor
       );
 
