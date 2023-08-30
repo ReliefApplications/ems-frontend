@@ -361,7 +361,8 @@ export class SafeGridComponent
    * @param filter Filter event.
    */
   public onFilterChange(filter: CompositeFilterDescriptor): void {
-    this.cleanDateFiltersWithoutTimeZone(filter);
+    // format filter before sending
+    this.formatFilter(filter);
 
     if (!this.loadingRecords) {
       this.filter = filter;
@@ -370,16 +371,16 @@ export class SafeGridComponent
   }
 
   /**
-   * Adjusts date filters no matter timezone
+   * Format filter before sending.
+   * Adjust date filters to remove timezone.
    *
-   * @param filter Filter event.
+   * @param filter Filter value.
    */
-  //
-  public cleanDateFiltersWithoutTimeZone(filter: any) {
+  private formatFilter(filter: any) {
     filter.filters.forEach((filter: any) => {
       // if there are sub filters
       if (filter.filters) {
-        this.cleanDateFiltersWithoutTimeZone(filter);
+        this.formatFilter(filter);
       } else if (filter.value instanceof Date) {
         const currentDate = filter.value;
         const hoursToAdjustTimezone = Math.floor(
