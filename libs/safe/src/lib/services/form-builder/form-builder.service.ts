@@ -162,9 +162,15 @@ export class SafeFormBuilderService {
     selectedPageIndex: BehaviorSubject<number>,
     temporaryFilesStorage: Record<string, Array<File>>
   ) {
-    // Open survey on a specific page
-    if (survey.openFormOnPage) {
-      const page = survey.getPageByName(survey.openFormOnPage);
+    // Open survey on a specific page (openOnQuestionValuesPage has priority over openOnPage)
+    if (survey.openOnQuestionValuesPage) {
+      const question = survey.getQuestionByName(
+        survey.openOnQuestionValuesPage
+      );
+      const page = survey.getPageByName(question.value);
+      selectedPageIndex.next(page.visibleIndex);
+    } else if (survey.openOnPage) {
+      const page = survey.getPageByName(survey.openOnPage);
       selectedPageIndex.next(page.visibleIndex);
     }
     survey.onClearFiles.add((_, options: any) => this.onClearFiles(options));
