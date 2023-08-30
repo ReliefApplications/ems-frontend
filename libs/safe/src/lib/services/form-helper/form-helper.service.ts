@@ -14,6 +14,7 @@ import { DialogRef } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
 import set from 'lodash/set';
+import { SafeAuthService } from '../auth/auth.service';
 
 /**
  * Shared survey helper service.
@@ -29,12 +30,14 @@ export class SafeFormHelpersService {
    * @param snackBar This is the service that allows you to display a snackbar.
    * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service that allows us to translate the text in our application.
+   * @param authService Shared auth service
    */
   constructor(
     public apollo: Apollo,
     private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private authService: SafeAuthService
   ) {}
 
   /**
@@ -295,4 +298,28 @@ export class SafeFormHelpersService {
 
     await Promise.all(promises);
   }
+
+  /**
+   * Registration of new custom variables for the survey.
+   * Custom variables can be used in the logic fields.
+   *
+   * @param survey Survey instance
+   */
+  public addUserVariables = (survey: Survey.SurveyModel) => {
+    const user = this.authService.user.getValue();
+
+    // set user variables
+    survey.setVariable('user.name', user?.name ?? '');
+    survey.setVariable('user.firstName', user?.firstName ?? '');
+    survey.setVariable('user.lastName', user?.lastName ?? '');
+    survey.setVariable('user.email', user?.username ?? '');
+
+    // Allow us to do some cool stuff like
+    // {user.roles} contains '62e3e676c9bcb900656c95c9'
+    survey.setVariable('user.roles', user?.roles?.map((r) => r.id || '') ?? []);
+
+    // Allow us to select the current user
+    // as a default question for Users question type
+    survey.setVariable('user.id', user?.id || '');
+  };
 }

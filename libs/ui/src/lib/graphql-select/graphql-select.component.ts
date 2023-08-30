@@ -18,11 +18,7 @@ import {
 import { QueryRef } from 'apollo-angular';
 import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import { get } from 'lodash';
-import {
-  NgControl,
-  ControlValueAccessor,
-  UntypedFormControl,
-} from '@angular/forms';
+import { NgControl, ControlValueAccessor, FormControl } from '@angular/forms';
 import { coerceBooleanProperty } from '@angular/cdk/coercion';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { takeUntil } from 'rxjs/operators';
@@ -49,6 +45,7 @@ export class GraphQLSelectComponent
   @Input() path = '';
   @Input() selectedElements: any[] = [];
   @Input() filterable = false;
+  @Input() placeholder = '';
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;
   /** Query reference for getting the available contents */
@@ -66,21 +63,6 @@ export class GraphQLSelectComponent
     this.onChange(val);
     this.stateChanges.next();
     this.selectionChange.emit(val);
-  }
-  /**
-   * Gets the placeholder for the select
-   *
-   * @returns the placeholder
-   */
-  @Input() get placeholder() {
-    return this.ePlaceholder;
-  }
-  /**
-   * Sets the placeholder
-   */
-  set placeholder(plh) {
-    this.ePlaceholder = plh;
-    this.stateChanges.next();
   }
   /**
    * Indicates whether the field is required
@@ -119,7 +101,7 @@ export class GraphQLSelectComponent
   @Output() searchChange = new EventEmitter<string>();
 
   public stateChanges = new Subject<void>();
-  public searchControl = new UntypedFormControl('');
+  public searchControl = new FormControl('', { nonNullable: true });
   public controlType = 'ui-graphql-select';
   public elements = new BehaviorSubject<any[]>([]);
   public elements$!: Observable<any[]>;
@@ -136,7 +118,6 @@ export class GraphQLSelectComponent
     endCursor: '',
     hasNextPage: true,
   };
-  private ePlaceholder = '';
   private isRequired = false;
   private scrollListener!: any;
 
@@ -192,7 +173,7 @@ export class GraphQLSelectComponent
     private renderer: Renderer2,
     @Inject(DOCUMENT) private document: Document
   ) {
-    if (this.ngControl != null) {
+    if (this.ngControl) {
       this.ngControl.valueAccessor = this;
     }
   }
