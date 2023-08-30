@@ -4,6 +4,7 @@ import {
   QuestionFileModel,
 } from 'survey-angular';
 import { Question } from '../types';
+import * as Survey from 'survey-angular';
 
 /**
  * Add support for custom properties to the survey
@@ -66,6 +67,17 @@ export const init = (Survey: any, environment: any): void => {
     category: 'validation',
     visibleIndex: 4,
     default: false,
+  });
+  // Adds a property to the survey settings to open the form on a specific page, displaying a dropdown with all the page names
+  serializer.addProperty('survey', {
+    name: 'openFormOnPage',
+    category: 'pages',
+    choices: (survey: Survey.Model, choicesCallback: any) => {
+      const pages: string[] = survey.pages.map(
+        (page: Survey.PageModel) => page.name
+      );
+      choicesCallback(pages);
+    },
   });
 };
 

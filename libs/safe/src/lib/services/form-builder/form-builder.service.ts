@@ -162,6 +162,11 @@ export class SafeFormBuilderService {
     selectedPageIndex: BehaviorSubject<number>,
     temporaryFilesStorage: Record<string, Array<File>>
   ) {
+    // Open survey on a specific page
+    if (survey.openFormOnPage) {
+      const page = survey.getPageByName(survey.openFormOnPage);
+      selectedPageIndex.next(page.visibleIndex);
+    }
     survey.onClearFiles.add((_, options: any) => this.onClearFiles(options));
     survey.onUploadFiles.add((_, options: any) =>
       this.onUploadFiles(temporaryFilesStorage, options)
