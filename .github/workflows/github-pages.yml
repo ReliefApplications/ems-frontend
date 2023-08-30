@@ -1,9 +1,11 @@
 name: Github Pages
 
 on:
-  push:
-    branches:
-      - tailwind
+  workflow_dispatch:
+    inputs:
+      environment:
+        type: environment
+        required: true
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
