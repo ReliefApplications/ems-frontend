@@ -295,7 +295,7 @@ const AllButtonsTemplate: StoryFn<StoryType> = (args: StoryType) => {
 };
 
 /** All buttons */
-export const All = AllButtonsTemplate.bind({});
-All.args = {
+export const VariantsList = AllButtonsTemplate.bind({});
+VariantsList.args = {
   ...(allButtons as any),
 };
