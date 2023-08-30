@@ -44,6 +44,8 @@ export class SelectMenuComponent
 {
   // Tells if the select menu should allow multi selection
   @Input() multiselect = false;
+  // Default placeholder
+  @Input() placeholder = '';
   // Tells if the select menu should be disabled
   @Input() disabled = false;
   // Tells if some styles to the current ul element should be applied
