@@ -86,10 +86,10 @@ export const init = (Survey: any): void => {
       const choicesByUrl = obj.choicesByUrl as ExtendedChoicesRestful;
 
       let body = obj.requestBody || '';
-      (obj.survey as SurveyModel).getAllQuestions().forEach((question) => {
+      (obj.survey as SurveyModel)?.getAllQuestions().forEach((question) => {
         if (body.includes(`{${question.name}}`)) {
           const regex = new RegExp(`{${question.name}}`, 'g');
-          body = body.replace(regex, question.value);
+          body = body.replace(regex, question.value ?? `{${question.name}}`);
         }
       });
       // Checks if Is GraphQL query or not
@@ -126,7 +126,7 @@ export const init = (Survey: any): void => {
 
       let newExp = '';
 
-      (obj.survey as SurveyModel).getAllQuestions().forEach((question) => {
+      (obj.survey as SurveyModel)?.getAllQuestions().forEach((question) => {
         if ((value || '').includes(`{${question.name}}`)) {
           newExp += `{${question.name}} `;
         }
@@ -210,10 +210,21 @@ export const init = (Survey: any): void => {
   Survey.ChoicesRestful.prototype.sendRequest = function () {
     this.error = null;
 
+    // Checks if the request body depends on other questions that have not been answered yet
+    // If so, no request is made as it would fail anyway
+    const questionTemplates =
+      (this.owner?.survey as SurveyModel)
+        ?.getAllQuestions()
+        ?.map((q) => `{${q.name}}`) || [];
+
+    if (questionTemplates?.some((q) => this.requestBody.includes(q))) {
+      return;
+    }
+
     const headers = new Headers();
     headers.append(
       'Content-Type',
-      this.requestBody
+      this.owner.requestBody
         ? 'application/json'
         : 'application/x-www-form-urlencoded'
     );
@@ -222,8 +233,10 @@ export const init = (Survey: any): void => {
       headers,
     };
 
-    Object.assign(options, { method: this.usePost ? 'POST' : 'GET' });
-    if (this.requestBody) Object.assign(options, { body: this.requestBody });
+    Object.assign(options, { method: this.owner.usePost ? 'POST' : 'GET' });
+    if (this.requestBody) {
+      Object.assign(options, { body: this.requestBody });
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     const self = this;

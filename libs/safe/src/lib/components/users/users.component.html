@@ -30,11 +30,11 @@
     </div>
     <!-- Advanced filters -->
     <div
-      class="flex flex-wrap gap-2 sm:items-center flex-col sm:flex-row"
+      class="flex flex-wrap gap-2 sm:items-end flex-col sm:flex-row"
       *ngIf="showFilters"
     >
       <!-- Title filter -->
-      <div uiFormFieldDirective class="w-44">
+      <div uiFormFieldDirective class="w-44" [defaultMargin]="false">
         <label>{{ 'common.title' | translate }}</label>
         <ui-select-menu
           [ngModel]="roleFilter"
@@ -159,7 +159,7 @@
             {{ 'common.role.few' | translate }}
           </span>
         </th>
-        <td uiCell *cdkCellDef="let element">
+        <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
           <span *ngFor="let role of element.roles"> {{ role.title }}</span>
         </td>
       </ng-container>

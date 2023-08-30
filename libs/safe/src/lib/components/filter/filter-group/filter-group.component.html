@@ -1,7 +1,7 @@
 <form [formGroup]="form">
   <!-- HEADER -->
   <div class="filter-group-header">
-    <div uiFormFieldDirective [outline]="false" class="w-28">
+    <div uiFormFieldDirective [defaultMargin]="false" class="w-28">
       <label>{{ 'components.queryBuilder.filter.logic' | translate }}</label>
       <ui-select-menu formControlName="logic">
         <ui-select-option value="or">{{
