@@ -18,10 +18,11 @@ export default {
       defaultValue: 24,
       control: 'number',
     },
-    icon: {
-      defaultValue: 'search_outline',
-      control: { type: 'text' },
-    },
+    /** Disabled as the list of icons story doesn't use it */
+    // icon: {
+    //   defaultValue: 'search_outline',
+    //   control: { type: 'text' },
+    // },
   },
   decorators: [
     moduleMetadata({
@@ -51,45 +52,37 @@ Default.args = {
 };
 
 /**
- * placeholder
- *
- * @param searchValue placeholder
- */
-const updateIconList = (searchValue: string) => {
-  console.log(searchValue);
-  iconList = MAT_ICON_LIST;
-};
-
-let iconList: string[] = [];
-
-// let searchTerm: string = '';
-
-/**
  * Template for all icons
  *
+ * @param args Arguments for Icon Component
  * @returns StoryType
  */
-const AllIconsTemplate: StoryFn<any> = () => {
+const AllIconsTemplate: StoryFn<any> = (args: any) => {
   return {
     template: `
       <div class="h-screen pb-20">
         <h1 class="text-lg mb-4">List of all icons</h1>
-        <input type="text" placeholder="Search.." [(ngModel)]="searchTerm" (input)="updateIconList(searchTerm)">
         <div class="flex flex-wrap gap-4 overflow-auto max-h-full">
-          <div class="border rounded-lg flex items-center" *ngFor="let icon of iconList">
-              <ui-icon class="p-4 border-r" [icon]="icon"></ui-icon>
+          <div class="border rounded-lg flex items-center" *ngFor="let icon of MAT_ICON_LIST">
+              <ui-icon
+                class="p-4 border-r bg-gray-100 rounded-l-lg"
+                [icon]="icon"
+                variant="${args.variant}"
+                [size]="${args.size}"
+              ></ui-icon>
               <h2 class="w-full text-center px-4">{{icon}}</h2>
           </div>
         </div>
       </div>`,
     props: {
-      iconList,
-      // searchTerm,
-      updateIconList,
+      MAT_ICON_LIST,
     },
-    argTypes: {},
   };
 };
 
-/** All buttons */
-export const All = AllIconsTemplate.bind({});
+/** All icons */
+export const IconList = AllIconsTemplate.bind({});
+IconList.args = {
+  size: 24,
+  variant: 'default',
+};
