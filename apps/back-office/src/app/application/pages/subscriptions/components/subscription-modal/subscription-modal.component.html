@@ -88,7 +88,12 @@
         </div>
         <div uiFormFieldDirective>
           <label>{{ 'components.channel.dropdown.select' | translate }}</label>
-          <ui-select-menu formControlName="channel">
+          <ui-select-menu
+            formControlName="channel"
+            [placeholder]="
+              'components.channel.selectChannel' | translate
+            "
+          >
             <ui-select-option
               *ngFor="let channel of data.channels"
               [value]="channel.id"

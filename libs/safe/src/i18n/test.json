@@ -264,6 +264,7 @@
 		"search": "******",
 		"searchObject": "****** {{name}}",
 		"select": "******",
+		"selectStatus": "******",
 		"send": "******",
 		"settings": "******",
 		"status": "******",
@@ -500,7 +501,8 @@
 			},
 			"dropdown": {
 				"select": "******"
-			}
+			},
+			"selectChannel": "******"
 		},
 		"confirmModal": {
 			"cancel": "******",
@@ -580,6 +582,7 @@
 				"template": {
 					"from": "******",
 					"placeholder": "******",
+					"selectResource": "******",
 					"title": "******"
 				},
 				"tooltip": {
@@ -711,6 +714,7 @@
 				"title": "******"
 			},
 			"modal": {
+				"addMappingField": "******",
 				"errors": {
 					"schedule": "******"
 				},
@@ -1618,7 +1622,8 @@
 	"models": {
 		"apiConfiguration": {
 			"authType": "******",
-			"new": "******"
+			"new": "******",
+			"selectAuthType": "******"
 		},
 		"application": {
 			"description": "******",
@@ -1662,7 +1667,9 @@
 				"origin": "******",
 				"refData": {
 					"element": "******"
-				}
+				},
+				"selectDisplayField": "******",
+				"selectOrigin": "******"
 			},
 			"deactivateFiltering": "******",
 			"share": "******"

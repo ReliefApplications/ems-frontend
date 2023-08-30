@@ -44,14 +44,18 @@
     </div>
 
     <ng-container *ngIf="isField">
-      <div class="flex gap-2">
+      <div class="flex items-end gap-2">
         <ui-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()">
         </ui-button>
-        <div uiFormFieldDirective>
+        <div uiFormFieldDirective [defaultMargin]="false">
           <label>{{ 'models.form.field.name' | translate }}</label>
           <input formControlName="name" type="text" />
         </div>
-        <div uiFormFieldDirective *ngIf="form.get('label')">
+        <div
+          uiFormFieldDirective
+          [defaultMargin]="false"
+          *ngIf="form.get('label')"
+        >
           <label>{{ 'models.form.field.label' | translate }}</label>
           <input formControlName="label" type="text" />
         </div>
