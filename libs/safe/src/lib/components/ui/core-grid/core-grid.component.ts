@@ -1178,7 +1178,6 @@ export class SafeCoreGridComponent
     const currentLayout = this.layout;
     const body = {
       ids,
-      columns: e.fields,
       filter:
         e.records === 'selected'
           ? {
@@ -1201,10 +1200,13 @@ export class SafeCoreGridComponent
           .map((x: any) => ({
             name: x.field,
             title: x.title,
-            subFields: x.subFields.map((y: any) => ({
-              name: y.name,
-              title: y.title,
-            })),
+            // also filter subfields there
+            subFields: x.subFields
+              .filter((y: any) => !y.hidden)
+              .map((y: any) => ({
+                name: y.name,
+                title: y.title,
+              })),
           })),
       }),
       // we export ALL fields of the grid ( including hidden columns )
