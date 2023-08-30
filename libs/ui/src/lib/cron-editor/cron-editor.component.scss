@@ -1,42 +1,45 @@
 .cron-editor-tab-content {
-    @apply mt-6 rounded-lg;
+  @apply mt-6 rounded-lg;
 }
-  
+
 .cron-editor-main .cron-editor-container .cron-editor-radio {
-    @apply w-5 inline-block;
+  @apply w-5 inline-block;
 }
-  
+
 .cron-editor-select,
 .cron-editor-input,
 .cron-editor-checkbox {
-    @apply inline-block;
+  @apply inline-block;
 }
 
 .cron-editor-main .cron-editor-container .well-time-wrapper {
-    @apply pl-5;
+  @apply pl-5;
 }
 
 .nav-tabs li a {
-    @apply cursor-pointer;
+  @apply cursor-pointer;
 }
-  
+
 .cron-editor-daily {
-    @apply flex;
+  @apply flex;
 }
-  
+
 .cron-editor-dail-hours {
-    @apply self-center;
+  @apply self-center;
 }
-  
+
 .cron-editor-radio-group {
-    @apply flex-col my-6 inline-flex;
+  @apply flex-col my-6 inline-flex;
 }
-  
+
 .cron-editor-radio-button {
-    @apply m-1;
+  @apply m-1;
+
+  :not(label) {
+    font-weight: initial;
+  }
 }
-  
+
 .checkbox-margin {
-    @apply mx-4;
+  @apply mx-4;
 }
-  
