@@ -5,6 +5,8 @@ import {
   forwardRef,
   ViewChild,
   OnDestroy,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import { CronOptions, DefaultOptions } from './options/CronOptions';
 import { Days, MonthWeeks, Months } from './enum/enums';
@@ -110,6 +112,8 @@ export class CronEditorComponent
   @Input() public disabled = false;
   @Input() public options: CronOptions = new DefaultOptions();
 
+  @Output() cronValidEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
+
   public activeTab!: string;
   public selectOptions = this.getSelectOptions();
 
@@ -141,18 +145,18 @@ export class CronEditorComponent
     cronType: [<CronType>'unknown', Validators.required],
     seconds: [0],
 
-    minutes: [0],
-    minutesPer: [0],
+    minutes: [1],
+    minutesPer: [1],
 
     hours: [this.getAmPmHour(0)],
-    hoursPer: [0],
+    hoursPer: [1],
     hoursType: [this.getHourType(0)],
 
-    days: [0], // Days of Month
-    daysPer: [0],
+    days: [1], // Days of Month
+    daysPer: [1],
 
-    months: [0],
-    monthsInc: [0],
+    months: [1],
+    monthsInc: [1],
 
     day: ['1'], // Day of week '1' or 'MON;
     monthsWeek: ['#1'],
@@ -220,7 +224,6 @@ export class CronEditorComponent
   onTabChange(tabChangeEvent: any) {
     const currentTab = tabChangeEvent.tab;
     let x: CronType;
-
     switch (currentTab) {
       case this.minutesTab:
         x = 'minutely';
@@ -254,11 +257,10 @@ export class CronEditorComponent
       .pipe(debounceTime(50))
       .subscribe(() => {
         this.markAsTouched();
+        console.log(this.allForm.value);
         const cron = this.computeCron();
-        if (cron.includes('NaN')) {
-          this.allForm.get('cronType')?.setErrors({ invalidCronType: true });
-          this.allForm.get('cronType')?.markAsTouched();
-        }
+        //console.log("cron_valid = ", this.cronIsValid(cron));
+        this.cronValidEmitter.emit(this.cronIsValid(cron));
         this.onChange(cron);
       });
   }
@@ -570,6 +572,14 @@ export class CronEditorComponent
 
     // Minutes
     let x = parseCronNumberToken(t[1]);
+    console.log(x);
+    // if (Number.isNaN(x.val)) {
+    //   x.val = 1;
+    // }
+    // if (Number.isNaN(x.inc)) {
+    //   x.inc = 1;
+    // }
+    console.log(x);
     this.allForm.controls.minutesPer.setValue(x.inc, {
       emitEvent: false,
     });
@@ -577,6 +587,14 @@ export class CronEditorComponent
 
     // Hours
     x = parseCronNumberToken(t[2]);
+    console.log(x);
+    // if (Number.isNaN(x.val)) {
+    //   x.val = 1;
+    // }
+    // if (Number.isNaN(x.inc)) {
+    //   x.inc = 1;
+    // }
+    console.log(x);
     this.allForm.controls.hoursPer.setValue(x.inc);
     this.allForm.controls.hours.setValue(x.val);
     if (this.allForm.value.hours) {
@@ -590,6 +608,10 @@ export class CronEditorComponent
 
     // Day of Month
     x = parseCronNumberToken(t[3]);
+    // if (Number.isNaN(x.val)) {
+    //   x.val = 1;
+    //   x.inc = 1;
+    // }
     this.allForm.controls.days.setValue(x.val, { emitEvent: false });
     this.allForm.controls.daysPer.setValue(x.val),
       {
@@ -598,6 +620,10 @@ export class CronEditorComponent
 
     // Month
     x = parseCronNumberToken(t[4]);
+    // if (Number.isNaN(x.val)) {
+    //   x.val = 1;
+    //   x.inc = 1;
+    // }
     this.allForm.controls.months.setValue(x.val, {
       emitEvent: false,
     });
@@ -710,7 +736,8 @@ export class CronEditorComponent
       return (
         (this.isCronFlavorQuartz &&
           (cronParts.length === 6 || cronParts.length === 7)) ||
-        (this.isCronFlavorStandard && cronParts.length === 5)
+        (this.isCronFlavorStandard && cronParts.length === 5) &&
+        (!cron.includes("undefined"))
       );
     }
 
@@ -830,5 +857,13 @@ export class CronEditorComponent
       this.onTouched();
       this.touched = true;
     }
+  }
+
+  public monthRadioChange(val: boolean) {
+    this.allForm.get('specificWeekDay')?.setValue(val);
+  }
+
+  public yearlyRadioChange(val: any) {
+    this.allForm.get('specificMonthWeek')?.setValue(val);
   }
 }

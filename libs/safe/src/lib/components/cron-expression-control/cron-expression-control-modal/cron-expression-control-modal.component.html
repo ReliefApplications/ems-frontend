@@ -9,6 +9,7 @@
       [formControl]="control"
       [options]="cronOptions"
       class="grow"
+      (cronValidEmitter)="cronIsValid($event)"
     ></ui-cron-editor>
   </ng-container>
   <ng-container ngProjectAs="actions">
@@ -18,7 +19,7 @@
       category="secondary"
       variant="primary"
       [uiDialogClose]="control.value"
-      [disabled]="!control.valid"
+      [disabled]="!cronValid"
     >
       {{ 'common.save' | translate }}
     </ui-button>

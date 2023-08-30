@@ -40,6 +40,7 @@ interface DialogData {
 })
 export class CronExpressionControlModalComponent {
   public control: FormControl = new FormControl();
+  public cronValid!: boolean;
   public cronOptions: CronOptions = {
     defaultTime: '00:00:00',
     // Cron Tab Options
@@ -69,7 +70,12 @@ export class CronExpressionControlModalComponent {
     // That way, it's better to always initialize the control with the default value
     this.control.setValue(data);
     if (!this.control.value) {
-      this.control = new FormControl('0/1 * 1/1 * *');
+      // this.control = new FormControl('0/1 * 1/1 * *');
+      this.control = new FormControl();
     }
+  }
+
+  public cronIsValid(value: boolean) {
+    this.cronValid = value;
   }
 }
