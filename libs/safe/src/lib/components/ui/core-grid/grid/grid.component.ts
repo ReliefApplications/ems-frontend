@@ -9,6 +9,9 @@ import {
   Output,
   Renderer2,
   ViewChild,
+  ElementRef,
+  ViewChildren,
+  QueryList,
 } from '@angular/core';
 import {
   GridComponent,
@@ -16,6 +19,7 @@ import {
   PageChangeEvent,
   RowArgs,
   SelectionEvent,
+  ColumnComponent
 } from '@progress/kendo-angular-grid';
 import { Dialog } from '@angular/cdk/dialog';
 import {
@@ -95,6 +99,9 @@ export class SafeGridComponent
   @Input() blank = false;
   @Input() widget: any;
   @Input() canUpdate = false;
+
+  @ViewChild('recordsGrid', { read: ElementRef }) gridRef!: ElementRef;
+  @ViewChildren(ColumnComponent) columns!: QueryList<ColumnComponent>;
 
   // === EXPORT ===
   public exportSettings = EXPORT_SETTINGS;
@@ -248,8 +255,18 @@ export class SafeGridComponent
     this.setSelectedItems();
     // Wait for columns to be reordered before updating the layout
     this.grid?.columnReorder.subscribe(() =>
-      setTimeout(() => this.columnChange.emit(), 500)
+      setTimeout(() => {this.columnChange.emit();     console.log(this.grid?.columns);
+      }, 500)
     );
+
+    console.log(this.grid?.columns);
+    console.log(this.grid);
+    const gridElement = this.gridRef.nativeElement;
+    const width = gridElement.offsetWidth;
+    const height = gridElement.offsetHeight;
+
+    console.log('Host width:', width);
+    console.log('Host height:', height);
   }
 
   // === DATA ===
@@ -489,6 +506,8 @@ export class SafeGridComponent
    * Sets and emits new grid configuration after column resize event.
    */
   onColumnResize(): void {
+    this.getColumnWidths();
+    console.log("\n");
     this.columnChange.emit();
   }
 
@@ -496,6 +515,7 @@ export class SafeGridComponent
    * Sets and emits new grid configuration after column visibility event.
    */
   onColumnVisibilityChange(): void {
+    this.getColumnWidths();
     this.columnChange.emit();
   }
 
@@ -531,6 +551,36 @@ export class SafeGridComponent
         }),
         {}
       );
+  }
+
+  getColumnWidths() {
+    const gridElement = this.gridRef.nativeElement;
+    let gridTotalWidth = gridElement.offsetWidth;
+
+    const activedColumns: { [key: string]: number } = {};
+    let constantFields = 0;
+
+    this.columns.forEach(column => {
+      if (!column.hidden) {
+        if (column.field) {
+          this.data.data.forEach((data: any) => {
+            if(activedColumns[column.field] === undefined || activedColumns[column.field] < data[column.field].length) {
+              data[column.field] instanceof Date ? activedColumns[column.field] = 18 :
+                activedColumns[column.field] = data[column.field].length;
+            }
+          })
+        } else {
+          constantFields += column.width;
+        }
+      }
+    });
+    console.log(activedColumns);
+    console.log(gridTotalWidth - constantFields);
+
+    const avarageWidth = Math.floor(Object.values(activedColumns).reduce((acc, value) => acc + value, 0) / 
+      Object.keys(activedColumns).length);
+    
+    console.log(avarageWidth);
   }
 
   /** @returns Current grid layout. */
