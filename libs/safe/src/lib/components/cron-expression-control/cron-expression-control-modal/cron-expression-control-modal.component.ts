@@ -70,7 +70,6 @@ export class CronExpressionControlModalComponent {
     // That way, it's better to always initialize the control with the default value
     this.control.setValue(data);
     if (!this.control.value) {
-      // this.control = new FormControl('0/1 * 1/1 * *');
       this.control = new FormControl();
     }
   }

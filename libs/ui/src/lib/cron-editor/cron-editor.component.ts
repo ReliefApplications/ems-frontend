@@ -148,9 +148,9 @@ export class CronEditorComponent
     minutes: [1],
     minutesPer: [1],
 
-    hours: [this.getAmPmHour(0)],
+    hours: [this.getAmPmHour(1)],
     hoursPer: [1],
-    hoursType: [this.getHourType(0)],
+    hoursType: [this.getHourType(1)],
 
     days: [1], // Days of Month
     daysPer: [1],
@@ -158,7 +158,7 @@ export class CronEditorComponent
     months: [1],
     monthsInc: [1],
 
-    day: ['1'], // Day of week '1' or 'MON;
+    day: ['MON'], // Day of week '1' or 'MON;
     monthsWeek: ['#1'],
 
     weekdaysOnly: [false],
@@ -249,7 +249,9 @@ export class CronEditorComponent
       default:
         throw new Error('Invalid tab selected');
     }
-    this.allForm.controls.cronType.setValue(x);
+    if (x !== 'unknown') {
+      this.allForm.controls.cronType.setValue(x);
+    }
   }
 
   public async ngOnInit() {
@@ -257,9 +259,7 @@ export class CronEditorComponent
       .pipe(debounceTime(50))
       .subscribe(() => {
         this.markAsTouched();
-        console.log(this.allForm.value);
         const cron = this.computeCron();
-        //console.log("cron_valid = ", this.cronIsValid(cron));
         this.cronValidEmitter.emit(this.cronIsValid(cron));
         this.onChange(cron);
       });
@@ -572,14 +572,6 @@ export class CronEditorComponent
 
     // Minutes
     let x = parseCronNumberToken(t[1]);
-    console.log(x);
-    // if (Number.isNaN(x.val)) {
-    //   x.val = 1;
-    // }
-    // if (Number.isNaN(x.inc)) {
-    //   x.inc = 1;
-    // }
-    console.log(x);
     this.allForm.controls.minutesPer.setValue(x.inc, {
       emitEvent: false,
     });
@@ -587,14 +579,6 @@ export class CronEditorComponent
 
     // Hours
     x = parseCronNumberToken(t[2]);
-    console.log(x);
-    // if (Number.isNaN(x.val)) {
-    //   x.val = 1;
-    // }
-    // if (Number.isNaN(x.inc)) {
-    //   x.inc = 1;
-    // }
-    console.log(x);
     this.allForm.controls.hoursPer.setValue(x.inc);
     this.allForm.controls.hours.setValue(x.val);
     if (this.allForm.value.hours) {
@@ -608,10 +592,6 @@ export class CronEditorComponent
 
     // Day of Month
     x = parseCronNumberToken(t[3]);
-    // if (Number.isNaN(x.val)) {
-    //   x.val = 1;
-    //   x.inc = 1;
-    // }
     this.allForm.controls.days.setValue(x.val, { emitEvent: false });
     this.allForm.controls.daysPer.setValue(x.val),
       {
@@ -620,10 +600,6 @@ export class CronEditorComponent
 
     // Month
     x = parseCronNumberToken(t[4]);
-    // if (Number.isNaN(x.val)) {
-    //   x.val = 1;
-    //   x.inc = 1;
-    // }
     this.allForm.controls.months.setValue(x.val, {
       emitEvent: false,
     });
@@ -864,6 +840,7 @@ export class CronEditorComponent
   }
 
   public yearlyRadioChange(val: any) {
+    this.allForm.get('day')?.setValue('1');
     this.allForm.get('specificMonthWeek')?.setValue(val);
   }
 }
