@@ -1,3 +1,11 @@
+## [2.0.10](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.9...v2.0.10) (2023-08-31)
+
+
+### Bug Fixes
+
+* date filters in grid could filter out items based on timezone ([2f37b39](https://github.com/ReliefApplications/oort-frontend/commit/2f37b39cfcf41df304673680c128a118ee8856ab))
+* tagbox filter could produce empty grid when removing value in grid quick filter ([7f05dce](https://github.com/ReliefApplications/oort-frontend/commit/7f05dce3000134bba8ae9a755196ed95718f1c7e))
+
 ## [2.0.9](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.8...v2.0.9) (2023-08-29)
 
 
