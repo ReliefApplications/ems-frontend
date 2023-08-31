@@ -19,6 +19,7 @@ import {
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
+import { Widget } from '@oort-front/safe';
 
 /**
  * Dashboard component page, for application preview.
@@ -35,7 +36,7 @@ export class DashboardComponent
   // === DATA ===
   public id = '';
   public loading = true;
-  public tiles = [];
+  public tiles: Widget[] = [];
   public dashboard?: Dashboard;
 
   // === STEP CHANGE FOR WORKFLOW ===

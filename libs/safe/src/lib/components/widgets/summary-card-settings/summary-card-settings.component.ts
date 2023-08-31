@@ -13,7 +13,6 @@ import {
   FormArray,
   FormBuilder,
 } from '@angular/forms';
-
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Aggregation } from '../../../models/aggregation.model';
@@ -24,6 +23,11 @@ import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.co
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
 import { takeUntil } from 'rxjs';
+import {
+  CardSettings,
+  SummaryCardWidget,
+  SummaryCardWidgetSettings,
+} from '../../../models/widgets/summaryCardWidget.model';
 
 /**
  * Create a card form
@@ -31,13 +35,15 @@ import { takeUntil } from 'rxjs';
  * @param value card value, optional
  * @returns card as form group
  */
-const createCardForm = (value?: any) => {
+const createCardForm = (value: CardSettings | null) => {
   return new FormGroup({
     title: new FormControl<string>(get(value, 'title', 'New Card')),
-    resource: new FormControl<string>(get(value, 'resource', null)),
-    layout: new FormControl<string>(get(value, 'layout', null)),
-    aggregation: new FormControl<string>(get(value, 'aggregation', null)),
-    html: new FormControl<string>(get(value, 'html', null)),
+    resource: new FormControl<string | null>(get(value, 'resource', null)),
+    layout: new FormControl<string | null>(get(value, 'layout', null)),
+    aggregation: new FormControl<string | null>(
+      get(value, 'aggregation', null)
+    ),
+    html: new FormControl<string | null>(get(value, 'html', null)),
     showDataSourceLink: new FormControl<boolean>(
       get(value, 'showDataSourceLink', false)
     ),
@@ -54,12 +60,12 @@ const createCardForm = (value?: any) => {
  * @param def Widget definition
  * @returns Summary card widget form
  */
-const createSummaryCardForm = (def: any) => {
-  const settings = get(def, 'settings', {});
+const createSummaryCardForm = (def: SummaryCardWidget) => {
+  const settings = get(def, 'settings', {} as SummaryCardWidgetSettings);
 
   const form = new FormGroup({
-    id: new FormControl<number>(def.id),
-    title: new FormControl<string>(get(settings, 'title', '')),
+    id: new FormControl<string>(def.id),
+    title: new FormControl<string | null>(get(settings, 'title', '')),
     card: createCardForm(get(settings, 'card', null)),
     sortFields: new FormArray([]),
   });
@@ -67,16 +73,12 @@ const createSummaryCardForm = (def: any) => {
   const isUsingAggregation = !!get(settings, 'card.aggregation', null);
   const searchable = isUsingAggregation
     ? false
-    : get<boolean>(settings, 'widgetDisplay.searchable', false);
+    : settings.widgetDisplay?.searchable ?? false;
 
   const extendedForm = extendWidgetForm(form, settings?.widgetDisplay, {
     searchable: new FormControl(searchable),
-    sortable: new FormControl(
-      get<boolean>(settings, 'widgetDisplay.sortable', false)
-    ),
-    usePagination: new FormControl(
-      get<boolean>(settings, 'widgetDisplay.usePagination', false)
-    ),
+    sortable: new FormControl(settings.widgetDisplay?.sortable ?? false),
+    usePagination: new FormControl(settings.widgetDisplay?.sortable ?? false),
   });
 
   // disable searchable if aggregation is selected
@@ -103,7 +105,7 @@ export class SafeSummaryCardSettingsComponent
   public tileForm: SummaryCardFormT | undefined;
 
   // === WIDGET ===
-  @Input() tile: any;
+  @Input() tile!: SummaryCardWidget;
 
   // === EMIT THE CHANGES APPLIED ===
   // eslint-disable-next-line @angular-eslint/no-output-native

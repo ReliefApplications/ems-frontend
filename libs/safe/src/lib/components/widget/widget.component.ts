@@ -16,6 +16,7 @@ import { SafeSummaryCardComponent } from '../widgets/summary-card/summary-card.c
 import { v4 as uuidv4 } from 'uuid';
 import get from 'lodash/get';
 import { SafeRestService } from '../../services/rest/rest.service';
+import { Widget } from '../../models/widgets/widget.model';
 
 /** Component for the widgets */
 @Component({
@@ -24,7 +25,7 @@ import { SafeRestService } from '../../services/rest/rest.service';
   styleUrls: ['./widget.component.scss'],
 })
 export class SafeWidgetComponent implements OnInit, OnDestroy {
-  @Input() widget: any;
+  @Input() widget!: Widget;
   @Input() header = true;
   @Input() canUpdate = false;
 

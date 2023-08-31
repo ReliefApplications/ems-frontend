@@ -43,6 +43,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { ContextService } from '../../../services/context/context.service';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { SafeGridWidgetComponent } from '../grid/grid.component';
+import { SummaryCardWidget } from '../../../models/widgets/widget.model';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -62,7 +63,7 @@ export class SafeSummaryCardComponent
   extends SafeUnsubscribeComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
-  @Input() widget: any;
+  @Input() widget!: SummaryCardWidget;
   @Input() header = true;
   @Input() export = true;
   @Input() settings!: SummaryCardFormT['value'];

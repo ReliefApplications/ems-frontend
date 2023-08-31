@@ -53,6 +53,7 @@ import { firstValueFrom, Subject } from 'rxjs';
 import { searchFilters } from '../../../utils/filter/search-filters';
 import { SnackbarService } from '@oort-front/ui';
 import { ContextService } from '../../../services/context/context.service';
+import { GridWidget } from '../../../models/widgets/gridWidget.model';
 
 /**
  * Default file name when exporting grid data.
@@ -131,7 +132,7 @@ export class SafeCoreGridComponent
   private grid?: SafeGridComponent;
 
   // === DATA ===
-  @Input() widget: any;
+  @Input() widget!: GridWidget;
   @Input() canUpdate = false;
   public gridData: GridDataResult = { data: [], total: 0 };
   private totalCount = 0;

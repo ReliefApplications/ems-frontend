@@ -32,7 +32,7 @@ import { DistributionList } from '../../../models/distribution-list.model';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
-import { get } from 'lodash';
+import { GridWidget } from '../../../models/widgets/gridWidget.model';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -51,7 +51,7 @@ export class SafeGridSettingsComponent
   public filtersFormArray: any = null;
 
   // === WIDGET ===
-  @Input() tile: any;
+  @Input() tile!: GridWidget;
 
   // === EMIT THE CHANGES APPLIED ===
   // eslint-disable-next-line @angular-eslint/no-output-native
@@ -105,9 +105,7 @@ export class SafeGridSettingsComponent
       createGridWidgetFormGroup(this.tile.id, tileSettings),
       tileSettings?.widgetDisplay,
       {
-        sortable: new FormControl(
-          get<boolean>(tileSettings, 'widgetDisplay.sortable', false)
-        ),
+        sortable: new FormControl(tileSettings.widgetDisplay.sortable),
       }
     );
 

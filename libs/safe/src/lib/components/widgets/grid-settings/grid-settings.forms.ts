@@ -9,6 +9,7 @@ import {
   addNewField,
   createQueryForm,
 } from '../../query-builder/query-builder-forms';
+import { GridWidgetSettings } from '../../../models/widgets/gridWidget.model';
 
 /** Default action name */
 const DEFAULT_ACTION_NAME = 'Action';
@@ -129,7 +130,7 @@ export const createButtonFormGroup = (value: any): UntypedFormGroup => {
  */
 export const createGridWidgetFormGroup = (
   id: string,
-  configuration: any
+  configuration: GridWidgetSettings
 ): UntypedFormGroup => {
   const formGroup = fb.group({
     id,

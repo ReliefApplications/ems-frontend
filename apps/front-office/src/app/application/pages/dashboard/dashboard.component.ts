@@ -27,6 +27,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { map, takeUntil } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
+import { Widget } from '@oort-front/safe';
 
 /**
  * Dashboard page.
@@ -49,7 +50,7 @@ export class DashboardComponent
   /** Loading state of the loading */
   public loading = true;
   /** List of widgets */
-  public widgets = [];
+  public widgets: Widget[] = [];
   /** Current dashboard */
   public dashboard?: Dashboard;
 

@@ -12,6 +12,7 @@ import {
   CREATE_DASHBOARD_WITH_CONTEXT,
 } from './graphql/mutations';
 import get from 'lodash/get';
+import { Widget } from '../../models/widgets/widget.model';
 
 /**
  * Shared dashboard service. Handles dashboard events.
@@ -22,7 +23,7 @@ import get from 'lodash/get';
 })
 export class SafeDashboardService {
   /** List of available widgets */
-  public availableWidgets = WIDGET_TYPES;
+  public availableWidgets: Widget[] = WIDGET_TYPES;
   /** Current dashboard */
   private dashboard = new BehaviorSubject<Dashboard | null>(null);
   /** @returns Current dashboard as observable */
@@ -65,7 +66,7 @@ export class SafeDashboardService {
    * @param widget widget to get layout of.
    * @returns widget layout to apply.
    */
-  getWidgetLayout(widget: any): any {
+  getWidgetLayout(widget: Widget): any {
     try {
       const defaultLayout = JSON.parse(
         widget.settings.defaultLayout || JSON.stringify({})
@@ -162,7 +163,7 @@ export class SafeDashboardService {
    * @param tile tile to get settings of.
    * @returns Tile settings template.
    */
-  public findSettingsTemplate(tile: any): any {
+  public findSettingsTemplate(tile: Widget): any {
     const availableTile = this.availableWidgets.find(
       (x) => x.component === tile.component
     );

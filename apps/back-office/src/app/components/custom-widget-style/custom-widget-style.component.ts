@@ -2,7 +2,11 @@ import { Component, Output, EventEmitter, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
-import { SafeUnsubscribeComponent, SafeConfirmService } from '@oort-front/safe';
+import {
+  SafeUnsubscribeComponent,
+  SafeConfirmService,
+  Widget,
+} from '@oort-front/safe';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from '@oort-front/ui';
 import { SafeRestService } from '@oort-front/safe';
@@ -44,7 +48,7 @@ export class CustomWidgetStyleComponent
 
   private initialStyle = '';
 
-  @Input() widgetComp: any;
+  @Input() widgetComp!: { widget: Widget; domId: any };
   @Input() save!: (tile: any) => void;
 
   /**
@@ -94,7 +98,8 @@ export class CustomWidgetStyleComponent
     if (widgetStyle) this.styleApplied = widgetStyle;
     else this.styleApplied = document.createElement('style');
 
-    const style = get(this.widgetComp, 'widget.settings.widgetDisplay.style') || '';
+    const style =
+      get(this.widgetComp, 'widget.settings.widgetDisplay.style') || '';
     if (style) {
       this.formControl.setValue(style);
       this.initialStyle = style;

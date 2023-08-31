@@ -47,6 +47,7 @@ import { firstValueFrom, takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { GridWidget } from '../../../models/widgets/widget.model';
 
 /** Component for the grid widget */
 @Component({
@@ -64,7 +65,7 @@ export class SafeGridWidgetComponent
   private grid!: SafeCoreGridComponent;
 
   // === DATA ===
-  @Input() widget: any;
+  @Input() widget!: GridWidget;
 
   // === PERMISSIONS ===
   public canCreateRecords = false;

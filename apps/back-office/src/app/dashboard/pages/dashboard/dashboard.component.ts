@@ -52,6 +52,7 @@ import localForage from 'localforage';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { CustomWidgetStyleComponent } from '../../../components/custom-widget-style/custom-widget-style.component';
 import { ContextService } from '@oort-front/safe';
+import { Widget } from '@oort-front/safe';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -73,7 +74,7 @@ export class DashboardComponent
   public id = '';
   public applicationId?: string;
   public loading = true;
-  public tiles: any[] = [];
+  public tiles: Widget[] = [];
   public dashboard?: Dashboard;
   public showFilter!: boolean;
 
@@ -315,7 +316,7 @@ export class DashboardComponent
           this.generatedTiles =
             this.tiles.length === 0
               ? 0
-              : Math.max(...this.tiles.map((x) => x && x?.id)) + 1;
+              : Math.max(...this.tiles.map((x) => Number(x && x?.id))) + 1;
           this.applicationId = this.dashboard.page
             ? this.dashboard.page.application?.id
             : this.dashboard.step
@@ -468,7 +469,7 @@ export class DashboardComponent
       component: CustomWidgetStyleComponent,
       inputs: {
         widgetComp: e,
-        save: (tile: any) => this.onEditTile(tile),
+        save: (tile: Widget) => this.onEditTile(tile),
       },
     });
     this.layoutService.closeRightSidenav = true;

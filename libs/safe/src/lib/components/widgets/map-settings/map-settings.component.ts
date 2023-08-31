@@ -14,7 +14,6 @@ import { createMapWidgetFormGroup } from './map-forms';
 import { UntypedFormGroup } from '@angular/forms';
 import {
   DefaultMapControls,
-  MapConstructorSettings,
   MapEvent,
   MapEventType,
 } from '../../ui/map/interfaces/map.interface';
@@ -24,6 +23,10 @@ import { LayerModel } from '../../../models/layer.model';
 import { MapComponent } from '../../ui/map';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { SafeLayoutService } from '../../../services/layout/layout.service';
+import {
+  MapWidget,
+  MapWidgetSettings,
+} from '../../../models/widgets/mapWidget.model';
 
 /** Component for the map widget settings */
 @Component({
@@ -37,12 +40,12 @@ export class SafeMapSettingsComponent
 {
   public currentTab: 'parameters' | 'layers' | 'layer' | 'display' | null =
     'parameters';
-  public mapSettings!: MapConstructorSettings;
+  public mapSettings!: MapWidgetSettings;
   // === REACTIVE FORM ===
   tileForm!: UntypedFormGroup;
 
   // === WIDGET ===
-  @Input() tile: any;
+  @Input() tile!: MapWidget;
   public openedLayers: (LayerModel | undefined)[] = [];
 
   // === EMIT THE CHANGES APPLIED ===
@@ -82,7 +85,7 @@ export class SafeMapSettingsComponent
 
     this.change.emit(this.tileForm);
 
-    const defaultMapSettings: MapConstructorSettings = {
+    const defaultMapSettings: MapWidgetSettings = {
       basemap: this.tileForm.value.basemap,
       initialState: this.tileForm.get('initialState')?.value,
       controls: this.tileForm.value.controls,
@@ -142,13 +145,13 @@ export class SafeMapSettingsComponent
       .subscribe((value) =>
         this.updateMapSettings({
           initialState: value,
-        } as MapConstructorSettings)
+        } as MapWidgetSettings)
       );
     this.tileForm
       .get('basemap')
       ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((value) =>
-        this.updateMapSettings({ basemap: value } as MapConstructorSettings)
+        this.updateMapSettings({ basemap: value } as MapWidgetSettings)
       );
     this.tileForm
       .get('controls')
@@ -156,7 +159,7 @@ export class SafeMapSettingsComponent
       .subscribe((value) => {
         this.updateMapSettings({
           controls: value,
-        } as MapConstructorSettings);
+        } as MapWidgetSettings);
       });
     this.tileForm
       .get('arcGisWebMap')
@@ -164,7 +167,7 @@ export class SafeMapSettingsComponent
       .subscribe((value) =>
         this.updateMapSettings({
           arcGisWebMap: value,
-        } as MapConstructorSettings)
+        } as MapWidgetSettings)
       );
     this.tileForm
       .get('layers')
@@ -172,7 +175,7 @@ export class SafeMapSettingsComponent
       .subscribe((value) =>
         this.updateMapSettings({
           layers: value,
-        } as MapConstructorSettings)
+        } as MapWidgetSettings)
       );
   }
 
@@ -207,7 +210,7 @@ export class SafeMapSettingsComponent
    *
    * @param settings new settings
    */
-  private updateMapSettings(settings: MapConstructorSettings) {
+  private updateMapSettings(settings: MapWidgetSettings) {
     if (this.mapSettings) {
       this.mapSettings = {
         ...this.mapSettings,
