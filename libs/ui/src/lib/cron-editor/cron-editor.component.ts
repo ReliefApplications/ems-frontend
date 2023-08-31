@@ -112,7 +112,8 @@ export class CronEditorComponent
   @Input() public disabled = false;
   @Input() public options: CronOptions = new DefaultOptions();
 
-  @Output() cronValidEmitter: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() cronValidEmitter: EventEmitter<boolean> =
+    new EventEmitter<boolean>();
 
   public activeTab!: string;
   public selectOptions = this.getSelectOptions();
@@ -712,8 +713,9 @@ export class CronEditorComponent
       return (
         (this.isCronFlavorQuartz &&
           (cronParts.length === 6 || cronParts.length === 7)) ||
-        (this.isCronFlavorStandard && cronParts.length === 5) &&
-        (!cron.includes("undefined"))
+        (this.isCronFlavorStandard &&
+          cronParts.length === 5 &&
+          !cron.includes('undefined'))
       );
     }
 
@@ -835,10 +837,18 @@ export class CronEditorComponent
     }
   }
 
+  /**
+   * change the monthly radio
+   *
+   */
   public monthRadioChange(val: boolean) {
     this.allForm.get('specificWeekDay')?.setValue(val);
   }
 
+  /**
+   * change the yearly radio
+   *
+   */
   public yearlyRadioChange(val: any) {
     this.allForm.get('day')?.setValue('1');
     this.allForm.get('specificMonthWeek')?.setValue(val);
