@@ -300,6 +300,13 @@ export const init = (
         visibleIndex: 3,
       });
       serializer.addProperty('resource', {
+        name: 'alwaysCreateRecord:boolean',
+        category: 'Custom Questions',
+        dependsOn: ['resource', 'addRecord'],
+        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.addRecord,
+        visibleIndex: 3,
+      });
+      serializer.addProperty('resource', {
         name: 'addTemplate',
         category: 'Custom Questions',
         dependsOn: ['addRecord', 'resource'],
@@ -612,6 +619,7 @@ export const init = (
         this.filters = [];
         this.resourceFieldsName = [];
         question.addRecord = false;
+        question.alwaysCreateRecord = false;
         question.addTemplate = null;
         question.prefillWithCurrentRecord = false;
       }

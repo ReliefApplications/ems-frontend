@@ -55,6 +55,7 @@ interface DialogData {
   prefillRecords?: Record[];
   prefillData?: any;
   askForConfirm?: boolean;
+  alwaysCreateRecord?: boolean;
 }
 /**
  * Defines the default Dialog data
