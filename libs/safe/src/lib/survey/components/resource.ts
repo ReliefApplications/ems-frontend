@@ -7,14 +7,22 @@ import {
 import * as SurveyCreator from 'survey-creator';
 import { resourceConditions } from './resources';
 import { Dialog } from '@angular/cdk/dialog';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import {
+  FormControl,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+} from '@angular/forms';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
 import { DomService } from '../../services/dom/dom.service';
 import { buildSearchButton, buildAddButton } from './utils';
 import get from 'lodash/get';
 import { Question, QuestionResource } from '../types';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
+import { SafeTestServiceDropdownComponent } from '../../components/test-service-dropdown/test-service-dropdown.component';
 import { NgZone } from '@angular/core';
+
+/** Question's temporary records */
+export const temporaryRecordsForm = new FormControl([]);
 
 /**
  * Inits the resource question component of for survey.
@@ -228,19 +236,46 @@ export const init = (
         required: true,
         visibleIf: (obj: null | QuestionResource) =>
           !!obj && !!obj.resource && !!obj.displayField,
+        type: 'resourceTestService',
         visibleIndex: 3,
-        choices: (obj: QuestionResource, choicesCallback: any) => {
-          if (obj.resource) {
-            getResourceRecordsById({ id: obj.resource }).subscribe(
-              ({ data }) => {
-                const choices = mapQuestionChoices(data, obj);
-                choices.unshift({ value: null });
-                choicesCallback(choices);
-              }
-            );
-          }
-        },
       });
+
+      const testServiceEditor = {
+        render: (editor: any, htmlElement: HTMLElement) => {
+          const question = editor.object;
+          let dropdownDiv: HTMLDivElement | null = null;
+          const updateDropdownInstance = () => {
+            if (question.displayField) {
+              if (dropdownDiv) {
+                dropdownDiv.remove();
+              }
+              dropdownDiv = document.createElement('div');
+              const instance = createTestServiceInstance(dropdownDiv);
+              if (instance) {
+                instance.resource = question.resource;
+                instance.record = question['test service'];
+                instance.textField = question.displayField;
+                instance.choice.subscribe((res: any) => editor.onChanged(res));
+              }
+              htmlElement.appendChild(dropdownDiv);
+            }
+          };
+          question.registerFunctionOnPropertyValueChanged(
+            'displayField',
+            updateDropdownInstance,
+            // eslint-disable-next-line no-underscore-dangle
+            editor.property_.name // a unique key to distinguish multiple
+          );
+
+          updateDropdownInstance();
+        },
+      };
+
+      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
+        'resourceTestService',
+        testServiceEditor
+      );
+
       serializer.addProperty('resource', {
         name: 'addRecord:boolean',
         category: 'Custom Questions',
@@ -662,5 +697,22 @@ export const init = (
         }
       });
     }
+  };
+
+  /**
+   * Creates the SafeTestServiceDropdownComponent instance for the test service property
+   *
+   * @param htmlElement - The element that the directive is attached to.
+   * @returns The SafeTestServiceDropdownComponent instance
+   */
+  const createTestServiceInstance = (
+    htmlElement: any
+  ): SafeTestServiceDropdownComponent => {
+    const dropdown = domService.appendComponentToBody(
+      SafeTestServiceDropdownComponent,
+      htmlElement
+    );
+    const instance: SafeTestServiceDropdownComponent = dropdown.instance;
+    return instance;
   };
 };

@@ -242,7 +242,7 @@ export class GraphQLSelectComponent
     this.elements$ = this.elements.asObservable();
     if (this.query) {
       this.query.valueChanges
-        .pipe(takeUntil(this.destroy$), takeUntil(this.queryChange$))
+        .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))
         .subscribe(({ data, loading }) => {
           this.queryName = Object.keys(data)[0];
           this.updateValues(data, loading);
@@ -306,7 +306,7 @@ export class GraphQLSelectComponent
 
       // Subscribe to the new query
       this.query.valueChanges
-        .pipe(takeUntil(this.destroy$), takeUntil(this.queryChange$))
+        .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))
         .subscribe(({ data, loading }) => {
           this.queryName = Object.keys(data)[0];
           this.updateValues(data, loading);
