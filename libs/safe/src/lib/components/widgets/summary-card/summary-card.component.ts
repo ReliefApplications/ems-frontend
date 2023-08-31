@@ -43,7 +43,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { ContextService } from '../../../services/context/context.service';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { SafeGridWidgetComponent } from '../grid/grid.component';
-import { SummaryCardWidget } from '../../../models/widgets/widget.model';
+import { SummaryCardWidget } from '../../../models/widgets/summaryCardWidget.model';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;

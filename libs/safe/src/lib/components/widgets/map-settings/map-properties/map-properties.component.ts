@@ -9,9 +9,9 @@ import {
 } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { MapConstructorSettings } from '../../../ui/map/interfaces/map.interface';
 import { BASEMAPS } from '../../../ui/map/const/baseMaps';
 import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
+import { MapWidgetSettings } from '../../../../models/widgets/mapWidget.model';
 
 /**
  * Map Properties of Map widget.
@@ -26,7 +26,7 @@ export class MapPropertiesComponent
   implements AfterViewInit
 {
   @Input() form!: UntypedFormGroup;
-  @Input() mapSettings!: MapConstructorSettings;
+  @Input() mapSettings!: MapWidgetSettings;
   @Input() currentMapContainerRef!: BehaviorSubject<ViewContainerRef | null>;
 
   @ViewChild('mapContainer', { read: ViewContainerRef })

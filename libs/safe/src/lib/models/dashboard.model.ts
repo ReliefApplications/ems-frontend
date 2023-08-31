@@ -1,20 +1,20 @@
 import { Step } from './step.model';
 import { Page } from './page.model';
 import { Category, Variant } from '@oort-front/ui';
+import { Widget } from './widgets/widget.model';
 import {
   BarChartWidget,
   ColumnChartWidget,
   DonutChartWidget,
-  EditorWidget,
-  GridWidget,
   LineChartWidget,
-  MapWidget,
   PieChartWidget,
   PolarChartWidget,
   RadarChartWidget,
-  SummaryCardWidget,
-  Widget,
-} from './widgets/widget.model';
+} from './widgets/chartWidget.model';
+import { SummaryCardWidget } from './widgets/summaryCardWidget.model';
+import { MapWidget } from './widgets/mapWidget.model';
+import { GridWidget } from './widgets/gridWidget.model';
+import { EditorWidget } from './widgets/editorWidget.model';
 /** Model for IWidgetType object */
 export interface IWidgetType {
   id: string;

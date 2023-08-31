@@ -47,7 +47,7 @@ import { firstValueFrom, takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { GridWidget } from '../../../models/widgets/widget.model';
+import { GridWidget } from '../../../models/widgets/gridWidget.model';
 
 /** Component for the grid widget */
 @Component({

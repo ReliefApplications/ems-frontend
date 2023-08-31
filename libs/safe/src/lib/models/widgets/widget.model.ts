@@ -1,5 +1,3 @@
-import { Layout } from '../layout.model';
-
 /** Widget class */
 export class Widget {
   /**
@@ -33,7 +31,7 @@ export class Widget {
 /** Widget settings */
 export interface WidgetSettings {
   title?: string | null;
-  defaultLayout?: Layout;
+  defaultLayout?: any;
   widgetDisplay?: any;
   record?: string | null;
   layout?: string | null;

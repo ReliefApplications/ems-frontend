@@ -8,7 +8,6 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Feature, FeatureCollection } from 'geojson';
-import { MapConstructorSettings } from '../ui/map/interfaces/map.interface';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/public-api';
 // Leaflet
 import * as L from 'leaflet';
@@ -30,6 +29,7 @@ import { GeoProperties } from './geospatial-map.interface';
 import { get } from 'lodash';
 import { ArcgisService } from '../../services/map/arcgis.service';
 import { FormBuilder } from '@angular/forms';
+import { MapWidgetSettings } from '../../models/widgets/mapWidget.model';
 
 /**
  * Default geocoding value
@@ -68,7 +68,7 @@ export class GeospatialMapComponent
   public geoForm!: ReturnType<typeof this.buildGeoForm>;
 
   // === MAP ===
-  public mapSettings: MapConstructorSettings = {
+  public mapSettings: MapWidgetSettings = {
     initialState: {
       viewpoint: {
         center: {

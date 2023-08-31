@@ -46,7 +46,6 @@ export interface GridWidgetSettings extends WidgetSettings {
   fields?: [];
   toolbar?: boolean;
   canAdd?: boolean;
-  title?: string;
   resource?: any | null;
   template?: any | null;
   layouts?: Layout[];
