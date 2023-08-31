@@ -122,7 +122,7 @@ export class SafeArrayFilterComponent
   public onChange(value: any): void {
     this.applyFilter(
       isNil(value) || isEmpty(value)
-        ? this.removeFilter(this.valueField)
+        ? this.removeFilter(this.field)
         : this.updateFilter({
             field: this.field,
             operator: this.selectedOperator,
