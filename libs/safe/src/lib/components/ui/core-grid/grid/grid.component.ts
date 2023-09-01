@@ -255,18 +255,9 @@ export class SafeGridComponent
     this.setSelectedItems();
     // Wait for columns to be reordered before updating the layout
     this.grid?.columnReorder.subscribe(() =>
-      setTimeout(() => {this.columnChange.emit();     console.log(this.grid?.columns);
-      }, 500)
+      setTimeout(() => this.columnChange.emit(), 500)
     );
-
-    console.log(this.grid?.columns);
-    console.log(this.grid);
-    const gridElement = this.gridRef.nativeElement;
-    const width = gridElement.offsetWidth;
-    const height = gridElement.offsetHeight;
-
-    console.log('Host width:', width);
-    console.log('Host height:', height);
+    setTimeout(() => this.setAutomaticColumnWidths(), 1000);
   }
 
   // === DATA ===
@@ -514,8 +505,6 @@ export class SafeGridComponent
    * Sets and emits new grid configuration after column resize event.
    */
   onColumnResize(): void {
-    this.getColumnWidths();
-    console.log("\n");
     this.columnChange.emit();
   }
 
@@ -523,7 +512,7 @@ export class SafeGridComponent
    * Sets and emits new grid configuration after column visibility event.
    */
   onColumnVisibilityChange(): void {
-    this.getColumnWidths();
+    this.setAutomaticColumnWidths();
     this.columnChange.emit();
   }
 
@@ -561,7 +550,7 @@ export class SafeGridComponent
       );
   }
 
-  getColumnWidths() {
+  setAutomaticColumnWidths() {
     const gridElement = this.gridRef.nativeElement;
     let gridTotalWidth = gridElement.offsetWidth;
 
@@ -583,12 +572,74 @@ export class SafeGridComponent
       }
     });
     console.log(activedColumns);
-    console.log(gridTotalWidth - constantFields);
+    
+    const availableWidth = gridTotalWidth - constantFields;
+    console.log(availableWidth);
 
-    const avarageWidth = Math.floor(Object.values(activedColumns).reduce((acc, value) => acc + value, 0) / 
+    const avarageWidth = Math.floor(availableWidth/
       Object.keys(activedColumns).length);
     
     console.log(avarageWidth);
+
+    const widestColumn = Math.floor((avarageWidth * 2) / 10); //10 is the avarage of character size in pixel
+
+    //total after set the max width
+    let totalAfter = 0;
+    let entries = Object.entries(activedColumns);
+    for (const [key, value] of entries) {
+      if(value > widestColumn) {
+        activedColumns[key] = widestColumn;
+      }
+      totalAfter += activedColumns[key];
+    }
+
+    //calculate percentage
+    let total_percentage = 0;
+    entries = Object.entries(activedColumns);
+    for (const [key, value] of entries) {
+      activedColumns[key] = Math.floor((value / totalAfter) * 100);
+      total_percentage += value;
+    }
+
+    console.log(totalAfter);
+    console.log(activedColumns);
+
+    //adjust the percentages
+    const itemCount = Object.keys(activedColumns).length;
+    for(let i = 0; i < itemCount; i++) {
+      entries = Object.entries(activedColumns);
+      let min_percentage = {"value" : 10e10, "key": "any"};
+      let max_percentage = {"value": 0, "key": "any"};
+      for (const [key, value] of entries) {
+        if(activedColumns[key] < min_percentage.value) {
+          min_percentage.value = value;
+          min_percentage.key = key;
+        }
+      }
+      for (const [key, value] of entries) {
+        if(activedColumns[key] > max_percentage.value) {
+          max_percentage.value = value;
+          max_percentage.key = key;
+        }
+      }
+      if (min_percentage.value < (0.25 * max_percentage.value)) {
+        activedColumns[min_percentage.key] += 100 - total_percentage;
+        total_percentage = 100;
+        while (activedColumns[min_percentage.key] < (0.25 * max_percentage.value)) {
+          activedColumns[min_percentage.key] += 1;
+          activedColumns[max_percentage.key] -= 1;
+        } 
+      } else {
+        break;
+      }
+    }
+    
+    //resize the columns
+    this.columns.forEach(column => {
+      if (activedColumns[column.field]) {
+        column.width = Math.floor((activedColumns[column.field] * availableWidth) / 100);
+      }
+    });
   }
 
   /** @returns Current grid layout. */
