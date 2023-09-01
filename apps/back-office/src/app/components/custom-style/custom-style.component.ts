@@ -89,7 +89,6 @@ export class CustomStyleComponent
           .subscribe({
             next: (css) => {
               if (this.applicationService.customStyle) {
-                this.applicationService.customStyle.innerText = css;
                 this.applicationService.css.next(css);
               }
             },
@@ -144,7 +143,6 @@ export class CustomStyleComponent
 
             if (this.applicationService.customStyle) {
               this.applicationService.customStyleEdited = false;
-              this.applicationService.customStyle.innerText = this.savedStyle;
               this.applicationService.css.next(this.savedStyle);
             }
             this.cancel.emit(true);
@@ -221,7 +219,6 @@ export class CustomStyleComponent
       this.applicationService.customStyle
     ) {
       this.applicationService.customStyleEdited = false;
-      this.applicationService.customStyle.innerText = this.savedStyle;
       this.applicationService.css.next(this.savedStyle);
     }
   }
