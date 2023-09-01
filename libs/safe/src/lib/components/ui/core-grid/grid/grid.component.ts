@@ -559,11 +559,11 @@ export class SafeGridComponent
 
     const activedColumns: { [key: string]: number } = {};
     let constantFields = 0;
-    
+
     //verify what kind of field is and deal with this logic
     console.log(this.data);
     console.log(this.fields);
-    console.log("\n");
+    console.log('\n');
     this.columns.forEach((column) => {
       console.log(column);
       if (!column.hidden) {
@@ -577,12 +577,12 @@ export class SafeGridComponent
             ) {
               console.log(data[column.field]);
               if (data[column.field] instanceof Date) {
-                (activedColumns[column.field] = 18)
+                activedColumns[column.field] = 18;
               } else if (data[column.field] instanceof Array) {
                 console.log("aqui123");
                 activedColumns[column.field] = data[column.field][0];
               } else {
-                (activedColumns[column.field] = data[column.field].length);
+                activedColumns[column.field] = data[column.field].length;
               }
             }
           });
@@ -611,7 +611,7 @@ export class SafeGridComponent
       if (value > widestColumn) {
         activedColumns[key] = widestColumn;
       }
-      console.log("activedColum = ", activedColumns[key]);
+      console.log('activedColum = ', activedColumns[key]);
       if (activedColumns[key]) {
         totalAfter += activedColumns[key];
       }
