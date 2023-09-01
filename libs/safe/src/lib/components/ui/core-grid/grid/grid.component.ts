@@ -19,7 +19,7 @@ import {
   PageChangeEvent,
   RowArgs,
   SelectionEvent,
-  ColumnComponent
+  ColumnComponent,
 } from '@progress/kendo-angular-grid';
 import { Dialog } from '@angular/cdk/dialog';
 import {
@@ -542,35 +542,56 @@ export class SafeGridComponent
       );
   }
 
+  /**
+   * Set automatically the width of each column
+   */
   setAutomaticColumnWidths() {
     const gridElement = this.gridRef.nativeElement;
-    let gridTotalWidth = gridElement.offsetWidth;
+    const gridTotalWidth = gridElement.offsetWidth;
 
     const activedColumns: { [key: string]: number } = {};
     let constantFields = 0;
-
-    this.columns.forEach(column => {
+    
+    //verify what kind of field is and deal with this logic
+    console.log(this.data);
+    console.log(this.fields);
+    console.log("\n");
+    this.columns.forEach((column) => {
+      console.log(column);
       if (!column.hidden) {
+        console.log(column.field);
         if (column.field) {
           this.data.data.forEach((data: any) => {
-            if(activedColumns[column.field] === undefined || activedColumns[column.field] < data[column.field].length) {
-              data[column.field] instanceof Date ? activedColumns[column.field] = 18 :
-                activedColumns[column.field] = data[column.field].length;
+            console.log(data);
+            if (
+              activedColumns[column.field] === undefined ||
+              activedColumns[column.field] < data[column.field].length
+            ) {
+              console.log(data[column.field]);
+              if (data[column.field] instanceof Date) {
+                (activedColumns[column.field] = 18)
+              } else if (data[column.field] instanceof Array) {
+                console.log("aqui123");
+                activedColumns[column.field] = data[column.field][0];
+              } else {
+                (activedColumns[column.field] = data[column.field].length);
+              }
             }
-          })
+          });
         } else {
           constantFields += column.width;
         }
       }
     });
     console.log(activedColumns);
-    
+
     const availableWidth = gridTotalWidth - constantFields;
     console.log(availableWidth);
 
-    const avarageWidth = Math.floor(availableWidth/
-      Object.keys(activedColumns).length);
-    
+    const avarageWidth = Math.floor(
+      availableWidth / Object.keys(activedColumns).length
+    );
+
     console.log(avarageWidth);
 
     const widestColumn = Math.floor((avarageWidth * 2) / 10); //10 is the avarage of character size in pixel
@@ -579,10 +600,13 @@ export class SafeGridComponent
     let totalAfter = 0;
     let entries = Object.entries(activedColumns);
     for (const [key, value] of entries) {
-      if(value > widestColumn) {
+      if (value > widestColumn) {
         activedColumns[key] = widestColumn;
       }
-      totalAfter += activedColumns[key];
+      console.log("activedColum = ", activedColumns[key]);
+      if (activedColumns[key]) {
+        totalAfter += activedColumns[key];
+      }
     }
 
     //calculate percentage
@@ -598,38 +622,43 @@ export class SafeGridComponent
 
     //adjust the percentages
     const itemCount = Object.keys(activedColumns).length;
-    for(let i = 0; i < itemCount; i++) {
+    for (let i = 0; i < itemCount; i++) {
       entries = Object.entries(activedColumns);
-      let min_percentage = {"value" : 10e10, "key": "any"};
-      let max_percentage = {"value": 0, "key": "any"};
+      const min_percentage = { value: 10e10, key: 'any' };
+      const max_percentage = { value: 0, key: 'any' };
       for (const [key, value] of entries) {
-        if(activedColumns[key] < min_percentage.value) {
+        if (activedColumns[key] < min_percentage.value) {
           min_percentage.value = value;
           min_percentage.key = key;
         }
       }
       for (const [key, value] of entries) {
-        if(activedColumns[key] > max_percentage.value) {
+        if (activedColumns[key] > max_percentage.value) {
           max_percentage.value = value;
           max_percentage.key = key;
         }
       }
-      if (min_percentage.value < (0.25 * max_percentage.value)) {
+      if (min_percentage.value < 0.25 * max_percentage.value) {
         activedColumns[min_percentage.key] += 100 - total_percentage;
         total_percentage = 100;
-        while (activedColumns[min_percentage.key] < (0.25 * max_percentage.value)) {
+        while (
+          activedColumns[min_percentage.key] <
+          0.25 * max_percentage.value
+        ) {
           activedColumns[min_percentage.key] += 1;
           activedColumns[max_percentage.key] -= 1;
-        } 
+        }
       } else {
         break;
       }
     }
-    
+
     //resize the columns
-    this.columns.forEach(column => {
+    this.columns.forEach((column) => {
       if (activedColumns[column.field]) {
-        column.width = Math.floor((activedColumns[column.field] * availableWidth) / 100);
+        column.width = Math.floor(
+          (activedColumns[column.field] * availableWidth) / 100
+        );
       }
     });
   }
