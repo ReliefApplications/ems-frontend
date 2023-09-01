@@ -122,7 +122,7 @@ export const createCustomDivIcon = (
     className,
     iconSize: L.point(size, size),
     iconAnchor: L.point(size / 2, size / 2),
-    popupAnchor: [0, -size / 3],
+    popupAnchor: [0, -size / 2],
     html: htmlTemplate,
   });
   return divIcon;
