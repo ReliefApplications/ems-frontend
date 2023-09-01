@@ -2,7 +2,11 @@ import { Component, Output, EventEmitter, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
-import { SafeUnsubscribeComponent, SafeConfirmService } from '@oort-front/safe';
+import {
+  SafeUnsubscribeComponent,
+  SafeConfirmService,
+  SafeDashboardService,
+} from '@oort-front/safe';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from '@oort-front/ui';
 import { SafeRestService } from '@oort-front/safe';
@@ -53,11 +57,13 @@ export class CustomWidgetStyleComponent
    * @param restService Shared rest service
    * @param translate Angular translate service
    * @param confirmService Shared confirmation service
+   * @param dashboardService Shared dashboard service
    */
   constructor(
     private restService: SafeRestService,
     private translate: TranslateService,
-    private confirmService: SafeConfirmService
+    private confirmService: SafeConfirmService,
+    private dashboardService: SafeDashboardService
   ) {
     super();
 
@@ -77,6 +83,10 @@ export class CustomWidgetStyleComponent
           .post('style/scss-to-css', { scss }, { responseType: 'text' })
           .subscribe((css) => {
             set(this.widgetComp, 'widget.settings.widgetDisplay.style', value);
+            this.dashboardService.setWidgetStyle(
+              this.widgetComp?.widget?.id ?? -1,
+              css
+            );
             this.styleApplied.innerText = css;
             document
               .getElementsByTagName('head')[0]

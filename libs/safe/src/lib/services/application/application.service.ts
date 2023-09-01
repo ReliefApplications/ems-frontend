@@ -120,6 +120,12 @@ export class SafeApplicationService {
   public rawCustomStyle?: string;
   public customStyle?: HTMLStyleElement;
   public customStyleEdited = false;
+  public css = new BehaviorSubject<string>('');
+
+  /** @returns css as an observable */
+  public get css$(): Observable<string> {
+    return this.css.asObservable();
+  }
 
   /** @returns Path to download application users */
   get usersDownloadPath(): string {
@@ -188,6 +194,12 @@ export class SafeApplicationService {
     private layoutService: SafeLayoutService
   ) {
     this.environment = environment;
+
+    this.css$.subscribe((css) => {
+      if (this.customStyle) {
+        this.customStyle.innerHTML = css;
+      }
+    });
   }
 
   /**
@@ -1928,7 +1940,7 @@ export class SafeApplicationService {
           )
             .then((css) => {
               if (this.customStyle) {
-                this.customStyle.innerText = css;
+                this.css.next(css);
                 document
                   .getElementsByTagName('head')[0]
                   .appendChild(this.customStyle);
@@ -1936,7 +1948,7 @@ export class SafeApplicationService {
             })
             .catch(() => {
               if (this.customStyle) {
-                this.customStyle.innerText = styleFromFile;
+                this.css.next(styleFromFile);
               }
             });
 

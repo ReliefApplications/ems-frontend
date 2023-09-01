@@ -12,11 +12,12 @@
     card.wholeCardStyles !== null &&
     card.wholeCardStyles !== undefined
   "
-  [html]="card.html"
+  [template]="card.html"
   [fields]="fields"
   [fieldsValue]="fieldsValue"
-  [styles]="card.useStyles ? styles : []"
+  [styleRules]="card.useStyles ? styleRules : []"
   [wholeCardStyles]="card.wholeCardStyles"
+  [widgetID]="widgetID"
   class="flex-1 overflow-auto p-[14px]"
 >
 </safe-summary-card-item-content>

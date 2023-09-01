@@ -16,7 +16,7 @@ import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 
 /**
- * Text widget component using KendoUI
+ * Text widget component using KendoUI.
  */
 @Component({
   selector: 'safe-editor',
@@ -31,14 +31,15 @@ export class SafeEditorComponent implements OnInit {
   private layout: any;
   private fields: any[] = [];
   private fieldsValue: any;
-  private styles: any[] = [];
-  private wholeCardStyles = false;
+  private styleRules: any[] = [];
 
-  public formattedHtml: SafeHtml = '';
-  public formattedStyle?: string;
+  /** formatted html */
+  public html: SafeHtml = '';
+  /** formatted style */
+  public style?: string;
 
   /**
-   * Constructor for safe-editor component
+   * Text widget component using KendoUI.
    *
    * @param apollo Apollo instance
    * @param queryBuilder Query builder service
@@ -68,21 +69,19 @@ export class SafeEditorComponent implements OnInit {
     if (this.settings.record) {
       await this.getLayout();
       await this.getData();
-      this.formattedStyle = this.dataTemplateService.renderStyle(
+      this.style = this.dataTemplateService.renderStyle(
         this.settings.wholeCardStyles || false,
         this.fieldsValue,
-        this.styles
+        this.styleRules
       );
-      this.formattedHtml = this.dataTemplateService.renderHtml(
+      this.html = this.dataTemplateService.renderHtml(
         this.settings.text,
         this.fieldsValue,
         this.fields,
-        this.styles
+        this.styleRules
       );
     } else {
-      this.formattedHtml = this.dataTemplateService.renderHtml(
-        this.settings.text
-      );
+      this.html = this.dataTemplateService.renderHtml(this.settings.text);
     }
   }
 
@@ -101,7 +100,7 @@ export class SafeEditorComponent implements OnInit {
     if (get(apolloRes, 'data')) {
       this.layout = apolloRes.data.resource.layouts?.edges[0]?.node;
       if (this.settings.useStyles) {
-        this.styles = this.layout?.query.style;
+        this.styleRules = this.layout?.query.style;
       }
     }
   }
