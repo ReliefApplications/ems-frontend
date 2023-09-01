@@ -121,11 +121,10 @@ export const createCustomDivIcon = (
   const divIcon = L.divIcon({
     className,
     iconSize: L.point(size, size),
-    iconAnchor: L.point(size / 2, sizeForIconType),
-    popupAnchor: [size / 2, -36],
+    iconAnchor: L.point(size / 2, size / 2),
+    popupAnchor: [0, -size / 3],
     html: htmlTemplate,
   });
-
   return divIcon;
 };
 
