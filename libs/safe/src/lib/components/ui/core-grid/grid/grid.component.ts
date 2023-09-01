@@ -59,6 +59,9 @@ import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe
 const matches = (el: any, selector: any) =>
   (el.matches || el.msMatchesSelector).call(el, selector);
 
+/** Row actions. */
+export const rowActions = ['update', 'delete', 'history', 'convert'];
+
 /** Component for grid widgets */
 @Component({
   selector: 'safe-grid',
@@ -111,8 +114,6 @@ export class SafeGridComponent
   public gradientSettings = GRADIENT_SETTINGS;
   public editing = false;
 
-  private readonly rowActions = ['update', 'delete', 'history', 'convert'];
-
   // === ACTIONS ===
   @Input() actions = {
     add: false,
@@ -134,7 +135,7 @@ export class SafeGridComponent
         Object.keys(this.actions).filter((key: string) =>
           get(this.actions, key, false)
         ),
-        this.rowActions
+        rowActions
       ).length > 0
     );
   }

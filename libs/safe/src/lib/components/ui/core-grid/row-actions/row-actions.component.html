@@ -1,11 +1,19 @@
 <button
-  *ngIf="display"
+  *ngIf="display && actionLength > 1"
   kendoButton
   class="text-center"
   icon="more-vertical"
   [look]="'flat'"
   [uiMenuTriggerFor]="menu"
 ></button>
+<button
+  *ngIf="display && actionLength === 1"
+  kendoButton
+  class="text-center"
+  (click)="singleAction.hasPermission ?  action.emit({ action: singleAction.name, item: item }) : ''"
+>
+  {{ singleAction.translationKey | translate }}
+</button>
 <ui-menu #menu>
   <button
     *ngIf="actions.update && item.canUpdate"
