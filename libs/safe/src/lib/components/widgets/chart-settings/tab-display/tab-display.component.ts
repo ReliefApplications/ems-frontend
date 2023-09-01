@@ -17,6 +17,7 @@ import { LEGEND_POSITIONS, TITLE_POSITIONS } from '../constants';
 import { SafeChartComponent } from '../../chart/chart.component';
 import { createSerieForm } from '../chart-forms';
 import { isEqual, isNil, get } from 'lodash';
+import { ChartWidgetSettings } from '../../../../models/widgets/chartWidget.model';
 
 /**
  * Display tab of the chart settings modal.
@@ -32,7 +33,7 @@ export class TabDisplayComponent
 {
   @Input() formGroup!: UntypedFormGroup;
   @Input() type: any;
-  public chartSettings: any;
+  public chartSettings!: ChartWidgetSettings;
 
   public legendPositions = LEGEND_POSITIONS;
   public titlePositions = TITLE_POSITIONS;

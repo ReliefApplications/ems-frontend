@@ -6,18 +6,13 @@ import { parseFontOptions } from '../../../../utils/graphs/parseFontString';
 import drawUnderlinePlugin from '../../../../utils/graphs/plugins/underline.plugin';
 import DataLabelsPlugin from 'chartjs-plugin-datalabels';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
-import { ChartTitle } from '../interfaces';
 import { DEFAULT_PALETTE } from '../const/palette';
 import { getColor } from '../utils/color.util';
 import Color from 'color';
-
-/**
- * Interface containing the settings of the chart legend
- */
-interface ChartLegend {
-  visible: boolean;
-  position: 'top' | 'bottom' | 'left' | 'right';
-}
+import {
+  ChartTitle,
+  ChartLegend,
+} from '../../../../models/widgets/chartWidget.model';
 
 /**
  * Uses chart.js to render the data as a pie chart

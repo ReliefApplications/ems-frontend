@@ -27,13 +27,6 @@ export class SummaryCardWidget extends Widget {
  */
 export interface SummaryCardWidgetSettings extends WidgetSettings {
   card?: CardSettings;
-  widgetDisplay?: {
-    searchable?: boolean;
-    sortable?: boolean;
-    usePagination?: boolean;
-    showBorder?: boolean;
-    style?: string;
-  };
   contextFilters?: any;
 }
 

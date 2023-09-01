@@ -1,6 +1,4 @@
 import { SafeGridSettingsComponent } from '../../components/widgets/grid-settings/grid-settings.component';
-import { Aggregation } from '../aggregation.model';
-import { Layout } from '../layout.model';
 import { Widget, WidgetSettings } from './widget.model';
 
 /**
@@ -48,8 +46,8 @@ export interface GridWidgetSettings extends WidgetSettings {
   canAdd?: boolean;
   resource?: any | null;
   template?: any | null;
-  layouts?: Layout[];
-  aggregations?: Aggregation[];
+  layouts?: string[];
+  aggregations?: string[];
   actions?: {
     delete?: boolean;
     history?: boolean;

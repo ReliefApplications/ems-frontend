@@ -105,7 +105,7 @@ export class SafeGridSettingsComponent
       createGridWidgetFormGroup(this.tile.id, tileSettings),
       tileSettings?.widgetDisplay,
       {
-        sortable: new FormControl(tileSettings.widgetDisplay.sortable),
+        sortable: new FormControl(tileSettings.widgetDisplay?.sortable),
       }
     );
 

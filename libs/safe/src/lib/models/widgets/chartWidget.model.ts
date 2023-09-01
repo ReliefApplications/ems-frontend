@@ -133,7 +133,9 @@ export class RadarChartWidget extends ChartWidget {
  * Chart widget settings
  */
 export interface ChartWidgetSettings extends WidgetSettings {
-  chart: ChartSettings;
+  chart?: ChartSettings;
+  resource?: string | null;
+  contextFilters?: any;
 }
 
 /** Chart settings */
@@ -141,20 +143,8 @@ export interface ChartSettings {
   type: 'donut' | 'column' | 'radar' | 'bar' | 'line' | 'pie' | 'polar';
   aggregationId?: string;
   mapping?: any;
-  legend?: {
-    visible: boolean;
-    position: string;
-  };
-  title?: {
-    text: string | null;
-    position: string;
-    bold: boolean;
-    italic: boolean;
-    underline: boolean;
-    font: string;
-    size: number;
-    color: string | null;
-  };
+  legend?: ChartLegend;
+  title?: ChartTitle;
   palette?: {
     enabled: boolean;
     value: string[];
@@ -191,4 +181,22 @@ export interface ChartSettings {
     usePercentage: boolean;
   };
   series?: any[]; // Define a proper type for series
+}
+
+/**
+ * Interface containing the settings of the chart title
+ */
+export interface ChartTitle {
+  text: string;
+  position: 'top' | 'bottom';
+  font: string;
+  color: string;
+}
+
+/**
+ * Interface containing the settings of the chart legend
+ */
+export interface ChartLegend {
+  visible: boolean;
+  position: 'top' | 'bottom' | 'left' | 'right';
 }

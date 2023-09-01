@@ -230,7 +230,7 @@ export class SafeMapSettingsComponent
    * @param event leaflet map event
    */
   handleMapEvent(event: MapEvent) {
-    if (!this.tileForm) return;
+    if (!this.tileForm || !this.mapSettings.initialState) return;
     switch (event.type) {
       case MapEventType.MOVE_END:
         this.mapSettings.initialState.viewpoint.center.latitude =

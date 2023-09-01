@@ -72,7 +72,7 @@ export class MapPropertiesComponent
   onSetByMap(): void {
     this.form
       .get('initialState.viewpoint')
-      ?.setValue(this.mapSettings.initialState.viewpoint, {
+      ?.setValue(this.mapSettings.initialState?.viewpoint, {
         emitEvent: false,
       });
   }

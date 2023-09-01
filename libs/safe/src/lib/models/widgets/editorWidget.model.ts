@@ -36,5 +36,6 @@ export interface EditorWidgetSettings extends WidgetSettings {
   layout?: string | null;
   record?: string | null;
   useStyles?: boolean;
+  showDataSourceLink?: boolean;
   wholeCardStyles?: boolean;
 }

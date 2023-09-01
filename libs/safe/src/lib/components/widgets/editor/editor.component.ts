@@ -14,6 +14,7 @@ import { DataTemplateService } from '../../../services/data-template/data-templa
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
+import { EditorWidgetSettings } from '../../../models/widgets/editorWidget.model';
 
 /**
  * Text widget component using KendoUI
@@ -26,7 +27,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class SafeEditorComponent implements OnInit {
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
-  @Input() settings: any;
+  @Input() settings!: EditorWidgetSettings;
 
   private layout: any;
   private fields: any[] = [];
@@ -65,6 +66,9 @@ export class SafeEditorComponent implements OnInit {
    * Sets content of the text widget, querying associated record if any.
    */
   private async setContentFromLayout(): Promise<void> {
+    if (!this.settings.text) {
+      return;
+    }
     if (this.settings.record) {
       await this.getLayout();
       await this.getData();

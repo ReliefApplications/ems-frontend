@@ -226,7 +226,7 @@ export class MapComponent
         if (event.lang !== this.mapControlsService.lang) {
           this.mapControlsService.getMeasureControl(
             this.map,
-            this.extractSettings().controls.measure
+            this.extractSettings().controls?.measure
           );
           this.mapControlsService.getFullScreenControl(this.map);
         }
@@ -335,7 +335,7 @@ export class MapComponent
       controls,
     } = this.extractSettings();
 
-    if (initMap) {
+    if (initMap && initialState) {
       // Create leaflet map
       this.map = L.map(this.mapId, {
         zoomControl,
@@ -355,7 +355,7 @@ export class MapComponent
           initialState.viewpoint.center.latitude,
           initialState.viewpoint.center.longitude
         ),
-        initialState.viewpoint.zoom
+        initialState?.viewpoint.zoom
       );
 
       this.currentZoom = initialState.viewpoint.zoom;
@@ -374,7 +374,7 @@ export class MapComponent
       if (maxBounds) {
         this.map.setMaxBounds(maxBounds as L.LatLngBoundsExpression);
       }
-      if (this.map.getZoom() !== initialState.viewpoint.zoom) {
+      if (initialState && this.map.getZoom() !== initialState.viewpoint.zoom) {
         this.map.setZoom(initialState.viewpoint.zoom);
       }
       // Could ask the map to do some unwanted movements
@@ -396,7 +396,9 @@ export class MapComponent
       //   );
       // }
     }
-
+    if (!controls) {
+      return;
+    }
     // Close layers/bookmarks menu
     document.getElementById('layer-control-button-close')?.click();
 
@@ -988,7 +990,7 @@ export class MapComponent
       }
     });
 
-    if (controls.layer) {
+    if (controls && controls.layer) {
       // remove current layer controls
       this.layerControlButtons.remove();
       this.layerControlButtons = null;

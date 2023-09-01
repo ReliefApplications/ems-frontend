@@ -26,7 +26,7 @@ export class MapWidget extends Widget {
 
 /** Map widget settings */
 export interface MapWidgetSettings extends WidgetSettings {
-  initialState: MapInitialState;
+  initialState?: MapInitialState;
   maxBounds?: number[][];
   basemap?: string;
   zoomControl?: boolean;
@@ -36,7 +36,7 @@ export interface MapWidgetSettings extends WidgetSettings {
   layers?: string[];
   pm?: any;
   pmIgnore?: boolean;
-  controls: MapControls;
+  controls?: MapControls;
   arcGisWebMap?: string;
 }
 

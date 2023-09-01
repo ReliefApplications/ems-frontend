@@ -35,12 +35,12 @@ const createEditorForm = (value: EditorWidget) => {
     layout: new FormControl<string | null>(get(settings, 'layout', null)),
     record: new FormControl<string | null>(get(settings, 'record', null)),
     showDataSourceLink: new FormControl<boolean>(
-      get(value, 'showDataSourceLink', false)
+      get(settings, 'showDataSourceLink', false)
     ),
     // Style
-    useStyles: new FormControl<boolean>(get(value, 'settings.useStyles', true)),
+    useStyles: new FormControl<boolean>(get(settings, 'useStyles', true)),
     wholeCardStyles: new FormControl<boolean>(
-      get(value, 'settings.wholeCardStyles', false)
+      get(settings, 'wholeCardStyles', false)
     ),
   });
 

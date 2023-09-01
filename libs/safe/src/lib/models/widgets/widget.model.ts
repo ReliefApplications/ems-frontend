@@ -32,8 +32,12 @@ export class Widget {
 export interface WidgetSettings {
   title?: string | null;
   defaultLayout?: any;
-  widgetDisplay?: any;
-  record?: string | null;
-  layout?: string | null;
+  widgetDisplay?: {
+    searchable?: boolean;
+    sortable?: boolean;
+    usePagination?: boolean;
+    showBorder?: boolean;
+    style?: string;
+  };
   sortFields?: [];
 }

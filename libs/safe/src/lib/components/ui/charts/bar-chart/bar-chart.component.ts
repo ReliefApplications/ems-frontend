@@ -12,19 +12,14 @@ import drawUnderlinePlugin from '../../../../utils/graphs/plugins/underline.plug
 import DataLabelsPlugin from 'chartjs-plugin-datalabels';
 import { parseFontOptions } from '../../../../utils/graphs/parseFontString';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
-import { ChartTitle } from '../interfaces';
+import {
+  ChartTitle,
+  ChartLegend,
+} from '../../../../models/widgets/chartWidget.model';
 import { DEFAULT_PALETTE } from '../const/palette';
 import { getColor } from '../utils/color.util';
 import { isEqual, isNil } from 'lodash';
 import Color from 'color';
-
-/**
- * Interface of chart legend.
- */
-interface ChartLegend {
-  visible: boolean;
-  position: 'top' | 'bottom' | 'left' | 'right';
-}
 
 /**
  * Bar/Column chart component, based on chart.js component.

@@ -16,6 +16,7 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../../services/context/context.service';
+import { ChartWidgetSettings } from '../../../models/widgets/chartWidget.model';
 
 /**
  * Default file name for chart exports
@@ -48,7 +49,7 @@ export class SafeChartComponent
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
   @Input() export = true;
-  @Input() settings: any = null;
+  @Input() settings!: ChartWidgetSettings;
 
   /**
    * Get filename from the date and widget title
@@ -142,12 +143,12 @@ export class SafeChartComponent
     if (this.settings.resource) {
       this.aggregationService
         .getAggregations(this.settings.resource, {
-          ids: [get(this.settings, 'chart.aggregationId', null)],
+          ids: [get(this.settings, 'chart.aggregationId', '')],
           first: 1,
         })
         .then((res) => {
           const aggregation = res.edges[0]?.node || null;
-          if (aggregation) {
+          if (aggregation && this.settings.resource) {
             this.dataQuery = this.aggregationService.aggregationDataQuery(
               this.settings.resource,
               aggregation.id || '',
@@ -256,6 +257,7 @@ export class SafeChartComponent
             ':' +
             ('0' + today.getMinutes()).slice(-2);
           if (
+            this.settings.chart &&
             [
               'pie',
               'donut',
