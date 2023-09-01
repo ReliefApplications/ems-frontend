@@ -189,7 +189,7 @@ export class SafeRecordModalComponent
           this.form?.metadata
         ));
 
-    addCustomFunctions(Survey, this.authService, this.record);
+    addCustomFunctions(Survey, this.authService, this.record, this.apollo);
     this.survey.data = this.record.data;
 
     this.survey.mode = 'display';

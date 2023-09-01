@@ -251,7 +251,7 @@ export class SafeFormModalComponent
     });
 
     if (this.data.recordId && this.record) {
-      addCustomFunctions(Survey, this.authService, this.record);
+      addCustomFunctions(Survey, this.authService, this.record, this.apollo);
       this.survey.data = this.isMultiEdition ? null : this.record.data;
       this.survey.showCompletedPage = false;
       this.form?.fields?.forEach((field) => {
