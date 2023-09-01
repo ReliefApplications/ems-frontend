@@ -47,5 +47,9 @@
 
   .leaflet-popup-content {
     margin: 0;
+    p {
+      margin: 0;
+      margin-bottom: 0.5rem;
+    }
   }
 }
