@@ -13,7 +13,6 @@ import {
   FormArray,
   FormBuilder,
 } from '@angular/forms';
-
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Aggregation } from '../../../models/aggregation.model';
@@ -25,6 +24,8 @@ import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
 import { takeUntil } from 'rxjs';
 
+// todo: put in common
+/** Default context filter value. */
 const DEFAULT_CONTEXT_FILTER = `{
   "logic": "and",
   "filters": []
