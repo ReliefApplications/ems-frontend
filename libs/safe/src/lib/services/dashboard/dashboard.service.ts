@@ -30,6 +30,9 @@ export class SafeDashboardService {
     return this.dashboard.asObservable();
   }
 
+  /** We store the css of each widget loaded in the dashboard */
+  private loadedWidgetCSS: Record<number, BehaviorSubject<string>> = {};
+
   /**
    * Shared dashboard service. Handles dashboard events.
    * TODO: rename all tiles into widgets
@@ -41,6 +44,45 @@ export class SafeDashboardService {
     this.availableWidgets = WIDGET_TYPES.filter((widget) =>
       get(environment, 'availableWidgets', []).includes(widget.id)
     );
+
+    // Whenever the dashboard changes, we update the style elements of the widgets
+    this.dashboard$.subscribe((dashboard) => {
+      dashboard?.structure.forEach((widget: any) => {
+        const ID = widget.id;
+        const css = this.loadedWidgetCSS[ID];
+        if (css) {
+          css.next(get(widget, 'settings.widgetDisplay.style', ''));
+        } else {
+          this.loadedWidgetCSS[ID] = new BehaviorSubject<string>(
+            get(widget, 'settings.widgetDisplay.style', '')
+          );
+        }
+      });
+    });
+  }
+
+  /**
+   * Returns the style element of a widget.
+   *
+   * @param id ID of the widget
+   * @returns The style element of the widget
+   */
+  getWidgetStyleAsObserver(id: number) {
+    return this.loadedWidgetCSS[id]?.asObservable();
+  }
+
+  /**
+   * Sets the style element of a widget.
+   *
+   * @param id ID of the widget
+   * @param css CSS to apply to the widget
+   */
+  setWidgetStyle(id: number, css: string) {
+    if (this.loadedWidgetCSS[id]) {
+      this.loadedWidgetCSS[id].next(css);
+    } else {
+      this.loadedWidgetCSS[id] = new BehaviorSubject<string>(css);
+    }
   }
 
   /**

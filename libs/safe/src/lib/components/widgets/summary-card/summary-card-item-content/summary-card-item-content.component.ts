@@ -24,6 +24,7 @@ export class SummaryCardItemContentComponent implements OnInit, OnChanges {
   @Input() fieldsValue: any;
   @Input() styleRules: any[] = [];
   @Input() wholeCardStyles = false;
+  @Input() widgetID = -1;
 
   public html: SafeHtml = '';
   public style?: string;

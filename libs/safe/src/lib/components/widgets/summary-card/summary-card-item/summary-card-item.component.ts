@@ -12,6 +12,7 @@ import { CardT } from '../summary-card.component';
 })
 export class SummaryCardItemComponent implements OnInit, OnChanges {
   @Input() card!: CardT;
+  @Input() widgetID = -1;
   public fields: any[] = [];
   public fieldsValue: any = null;
   public styleRules: any[] = [];
