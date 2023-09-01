@@ -25,6 +25,11 @@ import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
 import { takeUntil } from 'rxjs';
 
+const DEFAULT_CONTEXT_FILTER = `{
+  "logic": "and",
+  "filters": []
+}`;
+
 /**
  * Create a card form
  *
@@ -62,6 +67,9 @@ const createSummaryCardForm = (def: any) => {
     title: new FormControl<string>(get(settings, 'title', '')),
     card: createCardForm(get(settings, 'card', null)),
     sortFields: new FormArray([]),
+    contextFilters: new FormControl(
+      get(def, 'contextFilters', DEFAULT_CONTEXT_FILTER)
+    ),
   });
 
   const isUsingAggregation = !!get(settings, 'card.aggregation', null);
