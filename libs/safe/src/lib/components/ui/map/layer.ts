@@ -728,7 +728,7 @@ export class Layer implements LayerModel {
                     .map((child: L.Marker) => child.feature);
                   this.popupService.setPopUp(
                     children,
-                    event,
+                    event.latlng,
                     this.popupInfo,
                     event.layer
                   );
