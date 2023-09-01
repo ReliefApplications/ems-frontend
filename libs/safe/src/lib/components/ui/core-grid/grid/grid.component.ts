@@ -607,7 +607,6 @@ export class SafeGridComponent
               if (data[column.field] instanceof Date) {
                 activedColumns[column.field] = 18;
               } else if (data[column.field] instanceof Array) {
-                console.log("aqui123");
                 activedColumns[column.field] = data[column.field][0];
               } else {
                 activedColumns[column.field] = data[column.field].length;
