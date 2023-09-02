@@ -5,6 +5,7 @@ import {
   SurveyModel,
 } from 'survey-angular';
 import { isArray, isNil } from 'lodash';
+import { GlobalOptions } from '../types';
 
 /**
  * Custom function that given a question name for a matrix,
@@ -74,4 +75,11 @@ function listColsForRows(this: { survey: SurveyModel }, params: any[]) {
     .join('\n');
 }
 
-export default listColsForRows;
+/**
+ *  Generator for the custom function listColsForRows.
+ *
+ * @param _ Global options
+ * @returns The custom function listColsForRows
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default (_: GlobalOptions) => listColsForRows;

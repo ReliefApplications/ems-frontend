@@ -1,3 +1,5 @@
+import { GlobalOptions } from '../types';
+
 /**
  * Add days to a date
  *
@@ -10,4 +12,11 @@ const addDays = (params: any[]) => {
   return result;
 };
 
-export default addDays;
+/**
+ *  Generator for the custom function addDays.
+ *
+ * @param _ Global options
+ * @returns The custom function addDays
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default (_: GlobalOptions) => addDays;

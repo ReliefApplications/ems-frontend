@@ -5,6 +5,7 @@ import {
   SurveyModel,
 } from 'survey-angular';
 import { isNil } from 'lodash';
+import { GlobalOptions } from '../types';
 
 /**
  * Custom function to get row/col titles given a list of the row/col names.
@@ -36,4 +37,11 @@ function getMatrixTitles(this: { survey: SurveyModel }, params: any[]) {
   });
 }
 
-export default getMatrixTitles;
+/**
+ *  Generator for the custom function getMatrixTitles.
+ *
+ * @param _ Global options
+ * @returns The custom function getMatrixTitles
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default (_: GlobalOptions) => getMatrixTitles;

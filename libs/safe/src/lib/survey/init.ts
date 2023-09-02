@@ -96,5 +96,10 @@ export const initCustomSurvey = (
   // set localization
   initLocalization(Survey);
   // load internal functions
-  addCustomFunctions(Survey, authService, undefined, apollo);
+  addCustomFunctions(Survey, {
+    authService,
+    apollo,
+    record: undefined,
+    form: undefined,
+  });
 };

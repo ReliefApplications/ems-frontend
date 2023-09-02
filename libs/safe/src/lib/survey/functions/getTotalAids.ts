@@ -1,4 +1,5 @@
 import { SurveyModel } from 'survey-angular';
+import { GlobalOptions } from '../types';
 
 /**
  * Registration of new custom functions for the survey.
@@ -25,4 +26,11 @@ function getTotalAids(this: { survey: SurveyModel }, params: any[]) {
   return months * aidFrequency;
 }
 
-export default getTotalAids;
+/**
+ *  Generator for the custom function getTotalAids.
+ *
+ * @param _ Global options
+ * @returns The custom function getTotalAids
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default (_: GlobalOptions) => getTotalAids;

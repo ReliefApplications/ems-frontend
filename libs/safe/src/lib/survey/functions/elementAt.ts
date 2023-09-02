@@ -1,3 +1,5 @@
+import { GlobalOptions } from '../types';
+
 /**
  * Returns the element at the specified index in the array.
  *
@@ -12,4 +14,11 @@ const elementAt = (params: any[]) => {
   return array[index] ?? null;
 };
 
-export default elementAt;
+/**
+ *  Generator for the custom function elementAt.
+ *
+ * @param _ Global options
+ * @returns The custom function elementAt
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default (_: GlobalOptions) => elementAt;

@@ -13,8 +13,9 @@ import getField from './getField';
 import elementAt from './elementAt';
 import getWorkflowContext from './getWorkflowContext';
 import summarizeAids from './summarizeAids';
+import searchEnterpriseName from './searchEnterpriseName';
 
-/** Custom functions used  */
+/** Generators for each custom function available  */
 export const functions = [
   { fn: getTotalAids, name: 'getTotalAids' },
   { fn: getWorkflowContext, name: 'getWorkflowContext' },
@@ -31,4 +32,9 @@ export const functions = [
   { fn: intersect, name: 'intersect' },
   { fn: addTime, name: 'addTime' },
   { fn: summarizeAids, name: 'summarizeAids' },
+];
+
+/** Generators for each async custom function available  */
+export const asyncFunctions = [
+  { fn: searchEnterpriseName, name: 'searchEnterpriseName' },
 ];

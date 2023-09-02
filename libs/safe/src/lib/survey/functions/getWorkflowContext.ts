@@ -1,5 +1,6 @@
 import { SurveyModel } from 'survey-angular';
 import { isNil } from 'lodash';
+import { GlobalOptions } from '../types';
 
 /**
  * Returns the specified workflow context variable
@@ -20,4 +21,11 @@ function getWorkflowContext(this: { survey: SurveyModel }, params: any[]) {
   return this.survey.getVariable(`workflow_${dashboardId}_${widgetId}`);
 }
 
-export default getWorkflowContext;
+/**
+ *  Generator for the custom function getWorkflowContext.
+ *
+ * @param _ Global options
+ * @returns The custom function getWorkflowContext
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default (_: GlobalOptions) => getWorkflowContext;
