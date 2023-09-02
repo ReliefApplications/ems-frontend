@@ -69,7 +69,7 @@ export default (options: GlobalOptions) => {
 
           this.survey.setVariable(
             'enterpriseSearchStatus',
-            'Searching matching names...'
+            'Searching for similar names...'
           );
           const response = await firstValueFrom(
             apollo.query<any>({
@@ -96,7 +96,7 @@ export default (options: GlobalOptions) => {
           if (names.length === 0) {
             this.survey.setVariable(
               'enterpriseSearchStatus',
-              'No matches found'
+              '✅ Name is unique'
             );
             return this.returnResult(null);
           }
