@@ -245,6 +245,7 @@ export class SafeGridComponent
       ...this.selectableSettings,
       mode: this.multiSelect ? 'multiple' : 'single',
     };
+
   }
 
   ngOnChanges(): void {
@@ -257,7 +258,7 @@ export class SafeGridComponent
     this.grid?.columnReorder.subscribe(() =>
       setTimeout(() => this.columnChange.emit(), 500)
     );
-    setTimeout(() => this.setAutomaticColumnWidths(), 1000);
+    setTimeout(() => this.setAutomaticColumnWidths(), 2000);
   }
 
   // === DATA ===
@@ -620,7 +621,8 @@ export class SafeGridComponent
     });
     console.log(activedColumns);
 
-    const availableWidth = gridTotalWidth - constantFields;
+    let availableWidth = gridTotalWidth - constantFields;
+    availableWidth *= 0.9;
     console.log(availableWidth);
 
     const avarageWidth = Math.floor(
@@ -644,49 +646,39 @@ export class SafeGridComponent
       }
     }
 
+    const arrayColumns = [];
+
     //calculate percentage
     let total_percentage = 0;
     entries = Object.entries(activedColumns);
     for (const [key, value] of entries) {
       activedColumns[key] = Math.floor((value / totalAfter) * 100);
-      total_percentage += value;
+      total_percentage += activedColumns[key];
+      arrayColumns.push({"key": key, "value": activedColumns[key]});
     }
-
-    console.log(totalAfter);
-    console.log(activedColumns);
 
     //adjust the percentages
-    const itemCount = Object.keys(activedColumns).length;
-    for (let i = 0; i < itemCount; i++) {
-      entries = Object.entries(activedColumns);
-      const min_percentage = { value: 10e10, key: 'any' };
-      const max_percentage = { value: 0, key: 'any' };
-      for (const [key, value] of entries) {
-        if (activedColumns[key] < min_percentage.value) {
-          min_percentage.value = value;
-          min_percentage.key = key;
-        }
-      }
-      for (const [key, value] of entries) {
-        if (activedColumns[key] > max_percentage.value) {
-          max_percentage.value = value;
-          max_percentage.key = key;
-        }
-      }
-      if (min_percentage.value < 0.25 * max_percentage.value) {
-        activedColumns[min_percentage.key] += 100 - total_percentage;
-        total_percentage = 100;
-        while (
-          activedColumns[min_percentage.key] <
-          0.25 * max_percentage.value
-        ) {
-          activedColumns[min_percentage.key] += 1;
-          activedColumns[max_percentage.key] -= 1;
-        }
+
+    //order the values
+    arrayColumns.sort((a, b) => a.value - b.value);
+    
+    const arraySize = arrayColumns.length - 1;
+    while (arrayColumns[0].value < 0.25 * arrayColumns[arraySize].value) {
+      if (total_percentage < 100) {
+        activedColumns[arrayColumns[0].key] += 1;
+        total_percentage += 1;
+        arrayColumns[0].value += 1;
       } else {
-        break;
+        activedColumns[arrayColumns[0].key] += 1;
+        activedColumns[arrayColumns[arraySize].key] -= 1;
+        arrayColumns[0].value += 1;
+        arrayColumns[arraySize].value -= 1;
       }
+      console.log(arrayColumns);
+      arrayColumns.sort((a, b) => a.value - b.value);
     }
+
+    console.log(activedColumns);
 
     //resize the columns
     this.columns.forEach((column) => {
