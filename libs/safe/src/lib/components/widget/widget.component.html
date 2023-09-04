@@ -51,3 +51,13 @@
   >
   </safe-summary-card>
 </ng-container>
+<!-- Tabs -->
+<ng-container *ngIf="widget.component === 'tabs'">
+  <safe-tabs
+    #widgetContent
+    class="flex-1 h-full w-full"
+    [header]="header"
+    [settings]="widget.settings"
+  >
+  </safe-tabs>
+</ng-container>
