@@ -72,6 +72,25 @@ export interface GetResourceByIdQueryResponse {
   resource: Resource;
 }
 
+// === GET PEOPLE ===
+
+/** Graphql request for getting people */
+export const GET_PEOPLE = gql`
+  query GetUsers($applications: [ID]) {
+    users(applications: $applications) {
+      id
+      username
+      name
+      oid
+    }
+  }
+`;
+
+/** Model for GetPeopleQueryResponse object */
+export interface GetPeopleQueryResponse {
+  users: User[];
+}
+
 // === GET USERS ===
 
 /** Graphql request for getting users (optionnally by a list of application ids) */
