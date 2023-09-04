@@ -5,6 +5,9 @@ import { BehaviorSubject } from 'rxjs';
 import { createTabFormGroup } from '../tabs-settings.form';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
+/**
+ * Main tab of tabs widget edition.
+ */
 @Component({
   selector: 'safe-tab-main',
   templateUrl: './tab-main.component.html',
@@ -27,6 +30,11 @@ export class TabMainComponent implements OnInit {
     this.recalculateUniqIdsForDragDrop();
   }
 
+  /**
+   * Add a new tab
+   *
+   * @param event mouse event
+   */
   onAddTab(event: MouseEvent): void {
     this.tabs.push(
       createTabFormGroup({
@@ -37,6 +45,11 @@ export class TabMainComponent implements OnInit {
     this.recalculateUniqIdsForDragDrop();
   }
 
+  /**
+   * Delete a tab
+   *
+   * @param index index of tab to delete
+   */
   onDeleteTab(index: number): void {
     this.tabs.removeAt(index);
     this.recalculateUniqIdsForDragDrop();
@@ -45,6 +58,11 @@ export class TabMainComponent implements OnInit {
     }
   }
 
+  /**
+   * Reorder tabs
+   *
+   * @param event drag & drop event
+   */
   onReorder(event: CdkDragDrop<string[]>): void {
     const previous = parseInt(
       event.previousContainer.id.replace(this.TAB_ID_NAME, ''),

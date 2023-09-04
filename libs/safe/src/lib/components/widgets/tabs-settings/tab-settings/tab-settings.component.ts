@@ -9,6 +9,9 @@ import {
 import { FormGroup } from '@angular/forms';
 import { CustomWidgetStyleModalComponent } from '../custom-widget-style-modal/custom-widget-style-modal.component';
 
+/**
+ * Edition of a single tab, in tabs widget
+ */
 @Component({
   selector: 'safe-tab-settings',
   templateUrl: './tab-settings.component.html',
@@ -20,12 +23,19 @@ export class TabSettingsComponent implements OnDestroy {
 
   private styleDialog?: DialogRef<any, any>;
 
+  /**
+   * Edition of a single tab, in tabs widget
+   *
+   * @param dialog CDK dialog service
+   */
   constructor(private dialog: Dialog) {}
 
+  /** @returns structure of the widget ( nested widgets ) */
   get structure() {
     return this.tabGroup.get('structure');
   }
 
+  /** @returns get newest widget id from existing ids */
   get newestId(): number {
     const widgets = this.structure?.value.slice() || [];
     return widgets.length === 0
@@ -33,6 +43,11 @@ export class TabSettingsComponent implements OnDestroy {
       : Math.max(...widgets.map((x: any) => x.id)) + 1;
   }
 
+  /**
+   * Move widget in the list
+   *
+   * @param e reorder event
+   */
   onMove(e: any): void {
     const widgets = this.structure?.value.slice() || [];
     [widgets[e.oldIndex], widgets[e.newIndex]] = [
@@ -42,6 +57,11 @@ export class TabSettingsComponent implements OnDestroy {
     this.structure?.setValue(widgets);
   }
 
+  /**
+   * Edit a widget
+   *
+   * @param e edition event
+   */
   onEdit(e: any) {
     const widgets = this.structure?.value.slice() || [];
     const index = widgets.findIndex((x: any) => x.ide === e.id);
@@ -83,11 +103,21 @@ export class TabSettingsComponent implements OnDestroy {
     }
   }
 
+  /**
+   * Delete a widget
+   *
+   * @param e deletion event
+   */
   onDelete(e: any) {
     const widgets = this.structure?.value.slice() || [];
     this.structure?.setValue(widgets.filter((x: any) => x.id !== e.id));
   }
 
+  /**
+   * Style a widget, opening custom widget style component
+   *
+   * @param e style event
+   */
   async onStyle(e: any) {
     if (this.styleDialog) {
       this.styleDialog.close();
@@ -103,6 +133,11 @@ export class TabSettingsComponent implements OnDestroy {
     });
   }
 
+  /**
+   * Add a new widget
+   *
+   * @param e event
+   */
   onAdd(e: any): void {
     const widget = JSON.parse(JSON.stringify(e));
     const widgets = this.structure?.value.slice() || [];

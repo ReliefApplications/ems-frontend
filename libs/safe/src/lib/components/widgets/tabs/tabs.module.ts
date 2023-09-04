@@ -5,6 +5,9 @@ import { TabsModule as UITabsModule } from '@oort-front/ui';
 import { TabModule } from './tab/tab.module';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 
+/**
+ * Tabs widget module.
+ */
 @NgModule({
   declarations: [TabsComponent],
   imports: [CommonModule, UITabsModule, TabModule, LayoutModule],

@@ -7,6 +7,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TabSettingsModule } from '../tab-settings/tab-settings.module';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 
+/**
+ * Main tab of tabs widget edition module.
+ */
 @NgModule({
   declarations: [TabMainComponent],
   imports: [

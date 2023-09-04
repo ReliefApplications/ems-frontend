@@ -1,5 +1,8 @@
 import { Component, Input } from '@angular/core';
 
+/**
+ * Tabs widget component.
+ */
 @Component({
   selector: 'safe-tabs',
   templateUrl: './tabs.component.html',
