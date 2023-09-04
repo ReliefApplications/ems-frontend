@@ -558,33 +558,46 @@ export class SafeGridComponent
     const gridElement = this.gridRef.nativeElement;
     const gridTotalWidth = gridElement.offsetWidth;
 
+    //stores the columns width percentage
     const activedColumns: { [key: string]: number } = {};
     let constantFields = 0;
 
     //verify what kind of field is and deal with this logic
-    console.log(this.data);
-    console.log(this.fields);
-    console.log('\n');
+    const typesFields: any = [];
+    this.fields.forEach((field: any) => {
+      typesFields.push({"field": field.name, "type": field.meta.type, "title": field.title});
+    })
+    console.log(typesFields);
+
     this.columns.forEach((column) => {
-      console.log(column);
       if (!column.hidden) {
-        console.log(column.field);
-        if (column.field) {
+        if (column.title && column.title != "Details") {
           this.data.data.forEach((data: any) => {
-            console.log(data);
-            if (
-              activedColumns[column.field] === undefined ||
-              activedColumns[column.field] < data[column.field].length
-            ) {
-              console.log(data[column.field]);
-              if (data[column.field] instanceof Date) {
-                activedColumns[column.field] = 18;
-              } else if (data[column.field] instanceof Array) {
-                activedColumns[column.field] = data[column.field][0];
-              } else {
-                activedColumns[column.field] = data[column.field].length;
+            typesFields.forEach((type: any) => {
+              if (
+                activedColumns[type.field] === undefined ||
+                (
+                  data[type.field] != null &&
+                  activedColumns[type.field] < data[type.field].length
+                )
+              ) {
+                if (type.type === 'datetime' || type.type === 'date') {
+                  activedColumns[type.field] = 18;
+                } else if (type.type === 'file') {
+                  activedColumns[type.field] = data[type.field][0].name.length;
+                } else if (type.type === 'numeric') {
+                  activedColumns[type.field] = data[type.field].toString().length;
+                } else if (type.type === "checkbox") {
+                  let checkboxLength = 0;
+                  data[type.field].forEach((obj: any) => {
+                    checkboxLength += obj.length;
+                  })
+                  activedColumns[type.field] = checkboxLength;
+                } else {
+                  activedColumns[type.field] = data[type.field].length;
+                }
               }
-            }
+            })
           });
         } else {
           constantFields += column.width;
@@ -593,16 +606,19 @@ export class SafeGridComponent
     });
     console.log(activedColumns);
 
-    let availableWidth = gridTotalWidth - constantFields;
-    availableWidth *= 0.9;
+    //calculates the available width
+    let availableWidth = (gridTotalWidth - constantFields) * 0.7;
+
     console.log(availableWidth);
 
+    //calculates the avarage width
     const avarageWidth = Math.floor(
       availableWidth / Object.keys(activedColumns).length
     );
-
+ 
     console.log(avarageWidth);
 
+    //calculates the widest column 
     const widestColumn = Math.floor((avarageWidth * 2) / 10); //10 is the avarage of character size in pixel
 
     //total after set the max width
@@ -612,7 +628,6 @@ export class SafeGridComponent
       if (value > widestColumn) {
         activedColumns[key] = widestColumn;
       }
-      console.log('activedColum = ', activedColumns[key]);
       if (activedColumns[key]) {
         totalAfter += activedColumns[key];
       }
@@ -634,19 +649,23 @@ export class SafeGridComponent
     //order the values
     arrayColumns.sort((a, b) => a.value - b.value);
     
+    console.log(arrayColumns);
+
     const arraySize = arrayColumns.length - 1;
+    //if the value of the smallest element is less than 0.25 * the biggest
     while (arrayColumns[0].value < 0.25 * arrayColumns[arraySize].value) {
+      //add the percentage available
       if (total_percentage < 100) {
         activedColumns[arrayColumns[0].key] += 1;
         total_percentage += 1;
         arrayColumns[0].value += 1;
       } else {
+        //remove percentage from the biggest and give to the smallest  
         activedColumns[arrayColumns[0].key] += 1;
         activedColumns[arrayColumns[arraySize].key] -= 1;
         arrayColumns[0].value += 1;
         arrayColumns[arraySize].value -= 1;
       }
-      console.log(arrayColumns);
       arrayColumns.sort((a, b) => a.value - b.value);
     }
 
@@ -654,11 +673,15 @@ export class SafeGridComponent
 
     //resize the columns
     this.columns.forEach((column) => {
-      if (activedColumns[column.field]) {
-        column.width = Math.floor(
-          (activedColumns[column.field] * availableWidth) / 100
-        );
-      }
+      typesFields.forEach((type: any) => {
+        if(column.title === type.title) {
+          if (activedColumns[type.field]) {
+            column.width = Math.floor(
+              (activedColumns[type.field] * availableWidth) / 100
+            );
+          }
+        }
+      })
     });
   }
 
