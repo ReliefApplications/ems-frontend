@@ -6,5 +6,8 @@ import { Component, Input } from '@angular/core';
   styleUrls: ['./tabs.component.scss'],
 })
 export class TabsComponent {
+  /** Should display header */
+  @Input() header = true;
+  /** Widget settings */
   @Input() settings: any;
 }
