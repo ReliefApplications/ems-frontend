@@ -1,4 +1,4 @@
-import { Component, Input, ViewChild } from '@angular/core';
+import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
 import { TabsComponent } from '@oort-front/ui';
 import { BehaviorSubject } from 'rxjs';
@@ -10,7 +10,7 @@ import { CdkDragDrop } from '@angular/cdk/drag-drop';
   templateUrl: './tab-main.component.html',
   styleUrls: ['./tab-main.component.scss'],
 })
-export class TabMainComponent {
+export class TabMainComponent implements OnInit {
   @Input() formGroup!: FormGroup;
 
   @ViewChild(TabsComponent, { static: false }) tabGroup!: TabsComponent;
@@ -21,6 +21,10 @@ export class TabMainComponent {
   /** @returns widget tabs as form array */
   get tabs(): FormArray {
     return this.formGroup.get('tabs') as FormArray;
+  }
+
+  ngOnInit(): void {
+    this.recalculateUniqIdsForDragDrop();
   }
 
   onAddTab(event: MouseEvent): void {

@@ -1,3 +1,4 @@
+import { Dialog } from '@angular/cdk/dialog';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
@@ -9,6 +10,8 @@ import { FormGroup } from '@angular/forms';
 export class TabSettingsComponent {
   @Input() tabGroup!: FormGroup;
   @Output() delete = new EventEmitter();
+
+  constructor(private dialog: Dialog) {}
 
   get structure() {
     return this.tabGroup.get('structure');
@@ -76,7 +79,7 @@ export class TabSettingsComponent {
     this.structure?.setValue(widgets.filter((x: any) => x.id !== e.id));
   }
 
-  onStyle(e: any) {
+  async onStyle(e: any) {
     console.log('style');
   }
 
