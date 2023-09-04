@@ -7,6 +7,7 @@ import { SafeEditorSettingsComponent } from '../components/widgets/editor-settin
 import { SafeSummaryCardSettingsComponent } from '../components/widgets/summary-card-settings/summary-card-settings.component';
 import { Category, Variant } from '@oort-front/ui';
 import { TabsSettingsComponent } from '../components/widgets/tabs-settings/tabs-settings.component';
+
 /** Model for IWidgetType object */
 export interface IWidgetType {
   id: string;
