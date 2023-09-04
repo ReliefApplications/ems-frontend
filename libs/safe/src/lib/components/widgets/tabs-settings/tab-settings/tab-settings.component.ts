@@ -1,15 +1,24 @@
-import { Dialog } from '@angular/cdk/dialog';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Dialog, DialogRef } from '@angular/cdk/dialog';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnDestroy,
+  Output,
+} from '@angular/core';
 import { FormGroup } from '@angular/forms';
+import { CustomWidgetStyleModalComponent } from '../custom-widget-style-modal/custom-widget-style-modal.component';
 
 @Component({
   selector: 'safe-tab-settings',
   templateUrl: './tab-settings.component.html',
   styleUrls: ['./tab-settings.component.scss'],
 })
-export class TabSettingsComponent {
+export class TabSettingsComponent implements OnDestroy {
   @Input() tabGroup!: FormGroup;
   @Output() delete = new EventEmitter();
+
+  private styleDialog?: DialogRef<any, any>;
 
   constructor(private dialog: Dialog) {}
 
@@ -80,7 +89,18 @@ export class TabSettingsComponent {
   }
 
   async onStyle(e: any) {
-    console.log('style');
+    if (this.styleDialog) {
+      this.styleDialog.close();
+    }
+    this.styleDialog = this.dialog.open(CustomWidgetStyleModalComponent, {
+      data: {
+        widgetComp: e,
+        save: (widget: any) => this.onEdit(widget),
+      },
+      hasBackdrop: false,
+      disableClose: true,
+      panelClass: ['h-full', 'ml-auto'],
+    });
   }
 
   onAdd(e: any): void {
@@ -93,5 +113,11 @@ export class TabSettingsComponent {
     //   const el = document.getElementById(`widget-${widget.id}`);
     //   el?.scrollIntoView({ behavior: 'smooth' });
     // });
+  }
+
+  ngOnDestroy() {
+    if (this.styleDialog) {
+      this.styleDialog.close();
+    }
   }
 }
