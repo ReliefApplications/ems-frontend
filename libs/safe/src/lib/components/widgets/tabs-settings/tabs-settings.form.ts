@@ -1,23 +1,38 @@
-import { FormBuilder, FormGroup } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import get from 'lodash/get';
 
+/** Form builder */
 const fb = new FormBuilder();
 
-export const createTabFormGroup = (value: any): FormGroup => {
+/**
+ * Create tab form group
+ *
+ * @param value initial value
+ * @returns tab form group
+ */
+export const createTabFormGroup = (value?: any): FormGroup => {
   const formGroup = fb.group({
-    structure: fb.control(value.structure),
+    label: fb.nonNullable.control<string>(value?.label, Validators.required),
+    structure: fb.control(value?.structure || []),
   });
   return formGroup;
 };
 
+/**
+ * Create tabs widget form group
+ *
+ * @param id widget id
+ * @param value initial value
+ * @returns tabs widget form group
+ */
 export const createTabsWidgetFormGroup = (
   id: string,
-  configuration: any
+  value: any
 ): FormGroup => {
   const formGroup = fb.group({
     id,
     tabs: fb.array(
-      (get(configuration, 'tabs') || []).map((x: any) => createTabFormGroup(x))
+      (get(value, 'tabs') || []).map((x: any) => createTabFormGroup(x))
     ),
   });
   return formGroup;

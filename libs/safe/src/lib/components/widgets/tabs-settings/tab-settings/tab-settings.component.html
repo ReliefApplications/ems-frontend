@@ -1,0 +1,16 @@
+<div [formGroup]="tabGroup">
+  <div uiFormFieldDirective>
+    <label>Label</label>
+    <input formControlName="label" type="text" placeholder="Type a label..." />
+  </div>
+</div>
+
+<safe-widget-grid
+  [widgets]="tabGroup.value.structure"
+  [canUpdate]="true"
+  (move)="onMove($event)"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
+  (style)="onStyle($event)"
+  (add)="onAdd($event)"
+></safe-widget-grid>

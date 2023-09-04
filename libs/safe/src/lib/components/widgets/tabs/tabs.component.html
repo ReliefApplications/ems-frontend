@@ -1,12 +1,8 @@
 <div class="h-full flex flex-col">
   <ui-tabs>
-    <ui-tab>
-      <ng-container ngProjectAs="label"> Tab 1 </ng-container>
-      <safe-tab></safe-tab>
-    </ui-tab>
-    <ui-tab>
-      <ng-container ngProjectAs="label"> Tab 2 </ng-container>
-      <safe-tab></safe-tab>
+    <ui-tab *ngFor="let tab of settings.tabs">
+      <ng-container ngProjectAs="label">{{tab.label}}</ng-container>
+      <safe-tab [structure]="tab.structure"></safe-tab>
     </ui-tab>
   </ui-tabs>
 </div>

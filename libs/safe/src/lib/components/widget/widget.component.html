@@ -53,5 +53,10 @@
 </ng-container>
 <!-- Tabs -->
 <ng-container *ngIf="widget.component === 'tabs'">
-  <safe-tabs #widgetContent class="flex-1 h-full w-full"> </safe-tabs>
+  <safe-tabs
+    #widgetContent
+    class="flex-1 h-full w-full"
+    [settings]="widget.settings"
+  >
+  </safe-tabs>
 </ng-container>

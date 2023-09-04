@@ -5,7 +5,15 @@
       <span>Tabs</span>
     </ng-container>
     <ng-template uiTabContent>
-      <div>Tabs definition</div>
+      <ui-button (click)="onAddTab()">Add a new tab</ui-button>
+      <ui-tabs class="grow">
+        <ui-tab *ngFor="let tab of tabs.controls">
+          <ng-container ngProjectAs="label">
+            <span>{{ tab.value.label }}</span>
+          </ng-container>
+          <safe-tab-settings [tabGroup]="$any(tab)"></safe-tab-settings>
+        </ui-tab>
+      </ui-tabs>
     </ng-template>
   </ui-tab>
   <ui-tab>
