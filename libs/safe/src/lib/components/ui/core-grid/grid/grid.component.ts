@@ -60,7 +60,13 @@ const matches = (el: any, selector: any) =>
   (el.matches || el.msMatchesSelector).call(el, selector);
 
 /** Row actions. */
-export const rowActions = ['update', 'delete', 'history', 'convert'];
+export const rowActions = [
+  'update',
+  'delete',
+  'history',
+  'convert',
+  'remove',
+] as const;
 
 /** Component for grid widgets */
 @Component({
@@ -86,6 +92,7 @@ export class SafeGridComponent
 
   // === DATA ===
   @Input() fields: any[] = [];
+  @Input() actionsWidth = 86;
   @Input() data: GridDataResult = { data: [], total: 0 };
   @Input() loadingRecords = false;
   @Input() loadingSettings = true;
@@ -129,14 +136,12 @@ export class SafeGridComponent
   @Output() action = new EventEmitter();
 
   /** @returns A boolean indicating if actions are enabled */
-  get hasEnabledActions(): boolean {
-    return (
-      intersection(
-        Object.keys(this.actions).filter((key: string) =>
-          get(this.actions, key, false)
-        ),
-        rowActions
-      ).length > 0
+  get enabledActions() {
+    return intersection(
+      Object.keys(this.actions).filter((key: string) =>
+        get(this.actions, key, false)
+      ),
+      rowActions
     );
   }
 
@@ -544,11 +549,13 @@ export class SafeGridComponent
 
   /** @returns Current grid layout. */
   get layout(): GridLayout {
+    console.log(this.grid?.columns);
     return {
       fields: this.visibleFields,
       sort: this.sort,
       filter: this.filter,
       showFilter: this.showFilter,
+      actionsColWidth: this.grid?.columns?.last.width ?? 86,
     };
   }
 
@@ -794,7 +801,7 @@ export class SafeGridComponent
   }
 
   /**
-   * Calls layout format from utils.ts to get the formated fields
+   * Calls layout format from utils.ts to get the formatted fields
    *
    * @param name Content of the field as a string
    * @param field Field data

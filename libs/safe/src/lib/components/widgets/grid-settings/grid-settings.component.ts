@@ -108,6 +108,13 @@ export class SafeGridSettingsComponent
         sortable: new FormControl(
           get<boolean>(tileSettings, 'widgetDisplay.sortable', false)
         ),
+        showSingleActionAsButton: new FormControl(
+          get<boolean>(
+            tileSettings,
+            'widgetDisplay.showSingleActionAsButton',
+            false
+          )
+        ),
       }
     );
 

@@ -1,5 +1,5 @@
 <button
-  *ngIf="display && actionLength > 1"
+  *ngIf="display && (availableActions.length > 1 || !singleActionAsButton)"
   kendoButton
   class="text-center"
   icon="more-vertical"
@@ -7,12 +7,14 @@
   [uiMenuTriggerFor]="menu"
 ></button>
 <button
-  *ngIf="display && actionLength === 1"
+  *ngIf="display && availableActions.length === 1 && singleActionAsButton"
+  id="single-action-button"
   kendoButton
   class="text-center"
-  (click)="singleAction.hasPermission ?  action.emit({ action: singleAction.name, item: item }) : ''"
+  (click)="action.emit({ action: availableActions[0].action, item })"
 >
-  {{ singleAction.translationKey | translate }}
+  {{ availableActions[0].translationKey | translate }}
+  <div id="single-action-title"></div>
 </button>
 <ui-menu #menu>
   <button

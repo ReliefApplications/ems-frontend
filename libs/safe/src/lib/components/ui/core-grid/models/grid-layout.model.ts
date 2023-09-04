@@ -11,4 +11,5 @@ export interface GridLayout {
   filter?: CompositeFilterDescriptor;
   sort?: SortDescriptor[];
   showFilter?: boolean;
+  actionsColWidth?: number;
 }

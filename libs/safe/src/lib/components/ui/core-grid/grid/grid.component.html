@@ -36,7 +36,7 @@
       editable ||
       filterable ||
       admin ||
-      hasEnabledActions
+      enabledActions.length > 0
     "
     kendoGridToolbarTemplate
     position="top"
@@ -972,10 +972,10 @@
     </kendo-grid-column>
     <!-- ROW ACTIONS -->
     <kendo-grid-column
-      *ngIf="hasEnabledActions"
+      *ngIf="enabledActions.length > 0"
       [columnMenu]="false"
-      [width]="86"
-      [resizable]="false"
+      [minResizableWidth]="86"
+      [width]="actionsWidth"
       [sticky]="true"
     >
       <ng-template
@@ -985,6 +985,9 @@
       >
         <safe-grid-row-actions
           [item]="dataItem"
+          [singleActionAsButton]="
+            !!widget?.settings?.widgetDisplay?.showSingleActionAsButton
+          "
           [actions]="actions"
           (action)="action.emit($event)"
         >
