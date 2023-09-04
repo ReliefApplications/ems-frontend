@@ -70,14 +70,18 @@ export const init = (
           },
         })
         .subscribe(({ data }) => {
-          if (data.users) {
-            const users: any = [];
-            for (const user of data.users) {
-              if (!users.some((el: any) => el.value === user.id)) {
-                users.push({ value: user.id, text: user.username });
+          if (data.people) {
+            const people: any = [];
+            for (const person of data.people) {
+              if (!people.some((el: any) => el.value === person.id)) {
+                people.push({
+                  value: person.id,
+                  text: person.username,
+                  email: person.email,
+                });
               }
             }
-            question.contentQuestion.choices = users;
+            question.contentQuestion.choices = people;
           }
         });
     },

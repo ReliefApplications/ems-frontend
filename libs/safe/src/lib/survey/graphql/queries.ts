@@ -1,5 +1,6 @@
 import { gql } from 'apollo-angular';
 import { Role, User } from '../../models/user.model';
+import { Person } from '../../models/people.model';
 import { Resource } from '../../models/resource.model';
 
 // === GET ROLES FROM APPLICATION ===
@@ -76,8 +77,8 @@ export interface GetResourceByIdQueryResponse {
 
 /** Graphql request for getting people */
 export const GET_PEOPLE = gql`
-  query GetUsers($applications: [ID]) {
-    users(applications: $applications) {
+  query GetPeople($applications: [ID]) {
+    people(applications: $applications) {
       id
       username
       name
@@ -88,7 +89,7 @@ export const GET_PEOPLE = gql`
 
 /** Model for GetPeopleQueryResponse object */
 export interface GetPeopleQueryResponse {
-  users: User[];
+  people: Person[];
 }
 
 // === GET USERS ===
