@@ -245,7 +245,6 @@ export class SafeGridComponent
       ...this.selectableSettings,
       mode: this.multiSelect ? 'multiple' : 'single',
     };
-
   }
 
   ngOnChanges(): void {
@@ -593,39 +592,42 @@ export class SafeGridComponent
     //verify what kind of field is and deal with this logic
     const typesFields: any = [];
     this.fields.forEach((field: any) => {
-      typesFields.push({"field": field.name, "type": field.meta.type, "title": field.title});
-    })
+      typesFields.push({
+        field: field.name,
+        type: field.meta.type,
+        title: field.title,
+      });
+    });
     console.log(typesFields);
 
     this.columns.forEach((column) => {
       if (!column.hidden) {
-        if (column.title && column.title != "Details") {
+        if (column.title && column.title != 'Details') {
           this.data.data.forEach((data: any) => {
             typesFields.forEach((type: any) => {
               if (
                 activedColumns[type.field] === undefined ||
-                (
-                  data[type.field] != null &&
-                  activedColumns[type.field] < data[type.field].length
-                )
+                (data[type.field] != null &&
+                  activedColumns[type.field] < data[type.field].length)
               ) {
                 if (type.type === 'datetime' || type.type === 'date') {
                   activedColumns[type.field] = 18;
                 } else if (type.type === 'file') {
                   activedColumns[type.field] = data[type.field][0].name.length;
                 } else if (type.type === 'numeric') {
-                  activedColumns[type.field] = data[type.field].toString().length;
-                } else if (type.type === "checkbox") {
+                  activedColumns[type.field] =
+                    data[type.field].toString().length;
+                } else if (type.type === 'checkbox') {
                   let checkboxLength = 0;
                   data[type.field].forEach((obj: any) => {
                     checkboxLength += obj.length;
-                  })
+                  });
                   activedColumns[type.field] = checkboxLength;
                 } else {
                   activedColumns[type.field] = data[type.field].length;
                 }
               }
-            })
+            });
           });
         } else {
           constantFields += column.width;
@@ -635,7 +637,7 @@ export class SafeGridComponent
     console.log(activedColumns);
 
     //calculates the available width
-    let availableWidth = (gridTotalWidth - constantFields) * 0.7;
+    const availableWidth = (gridTotalWidth - constantFields) * 0.7;
 
     console.log(availableWidth);
 
@@ -643,10 +645,10 @@ export class SafeGridComponent
     const avarageWidth = Math.floor(
       availableWidth / Object.keys(activedColumns).length
     );
- 
+
     console.log(avarageWidth);
 
-    //calculates the widest column 
+    //calculates the widest column
     const widestColumn = Math.floor((avarageWidth * 2) / 10); //10 is the avarage of character size in pixel
 
     //total after set the max width
@@ -669,14 +671,14 @@ export class SafeGridComponent
     for (const [key, value] of entries) {
       activedColumns[key] = Math.floor((value / totalAfter) * 100);
       total_percentage += activedColumns[key];
-      arrayColumns.push({"key": key, "value": activedColumns[key]});
+      arrayColumns.push({ key: key, value: activedColumns[key] });
     }
 
     //adjust the percentages
 
     //order the values
     arrayColumns.sort((a, b) => a.value - b.value);
-    
+
     console.log(arrayColumns);
 
     const arraySize = arrayColumns.length - 1;
@@ -688,7 +690,7 @@ export class SafeGridComponent
         total_percentage += 1;
         arrayColumns[0].value += 1;
       } else {
-        //remove percentage from the biggest and give to the smallest  
+        //remove percentage from the biggest and give to the smallest
         activedColumns[arrayColumns[0].key] += 1;
         activedColumns[arrayColumns[arraySize].key] -= 1;
         arrayColumns[0].value += 1;
@@ -702,14 +704,14 @@ export class SafeGridComponent
     //resize the columns
     this.columns.forEach((column) => {
       typesFields.forEach((type: any) => {
-        if(column.title === type.title) {
+        if (column.title === type.title) {
           if (activedColumns[type.field]) {
             column.width = Math.floor(
               (activedColumns[type.field] * availableWidth) / 100
             );
           }
         }
-      })
+      });
     });
   }
 
