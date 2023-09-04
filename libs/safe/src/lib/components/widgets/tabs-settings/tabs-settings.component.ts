@@ -6,12 +6,9 @@ import {
   OnInit,
   Output,
 } from '@angular/core';
-import { FormArray, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
-import {
-  createTabFormGroup,
-  createTabsWidgetFormGroup,
-} from './tabs-settings.form';
+import { createTabsWidgetFormGroup } from './tabs-settings.form';
 import get from 'lodash/get';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
@@ -38,11 +35,6 @@ export class TabsSettingsComponent
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
 
-  /** @returns widget tabs as form array */
-  get tabs(): FormArray {
-    return this.widgetForm.get('tabs') as FormArray;
-  }
-
   ngOnInit(): void {
     // Create form group, and extend it to get display settings ( such as borderless )
     this.widgetForm = extendWidgetForm(
@@ -61,13 +53,5 @@ export class TabsSettingsComponent
       .subscribe(() => {
         this.change.emit(this.widgetForm);
       });
-  }
-
-  onAddTab(): void {
-    this.tabs.push(
-      createTabFormGroup({
-        label: 'New tab',
-      })
-    );
   }
 }

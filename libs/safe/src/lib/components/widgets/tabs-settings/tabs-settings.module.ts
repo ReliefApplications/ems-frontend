@@ -1,16 +1,11 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TabsSettingsComponent } from './tabs-settings.component';
-import {
-  ButtonModule,
-  IconModule,
-  TabsModule,
-  TooltipModule,
-} from '@oort-front/ui';
+import { IconModule, TabsModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TabSettingsModule } from './tab-settings/tab-settings.module';
+import { TabMainModule } from './tab-main/tab-main.module';
 
 /**
  * Tabs widget settings module.
@@ -26,8 +21,7 @@ import { TabSettingsModule } from './tab-settings/tab-settings.module';
     FormsModule,
     ReactiveFormsModule,
     TabsModule,
-    ButtonModule,
-    TabSettingsModule,
+    TabMainModule,
   ],
   exports: [TabsSettingsComponent],
 })

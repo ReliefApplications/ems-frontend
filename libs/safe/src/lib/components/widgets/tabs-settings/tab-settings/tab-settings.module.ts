@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { TabSettingsComponent } from './tab-settings.component';
 import { SafeWidgetGridModule } from '../../../widget-grid/widget-grid.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormWrapperModule } from '@oort-front/ui';
+import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
 
 @NgModule({
   declarations: [TabSettingsComponent],
@@ -13,6 +13,7 @@ import { FormWrapperModule } from '@oort-front/ui';
     FormsModule,
     ReactiveFormsModule,
     FormWrapperModule,
+    ButtonModule,
   ],
   exports: [TabSettingsComponent],
 })

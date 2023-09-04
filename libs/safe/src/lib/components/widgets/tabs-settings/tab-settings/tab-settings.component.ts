@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
@@ -8,6 +8,7 @@ import { FormGroup } from '@angular/forms';
 })
 export class TabSettingsComponent {
   @Input() tabGroup!: FormGroup;
+  @Output() delete = new EventEmitter();
 
   get structure() {
     return this.tabGroup.get('structure');
@@ -17,7 +18,7 @@ export class TabSettingsComponent {
     const widgets = this.structure?.value.slice() || [];
     return widgets.length === 0
       ? 0
-      : Math.max(...(widgets.map((x: any) => x && x?.id) + 1));
+      : Math.max(...widgets.map((x: any) => x.id)) + 1;
   }
 
   onMove(e: any): void {
