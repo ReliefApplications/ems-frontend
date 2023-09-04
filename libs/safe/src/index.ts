@@ -99,7 +99,6 @@ export * from './lib/components/cron-expression-control/public-api';
 export * from './lib/components/dashboard-filter/public-api';
 export * from './lib/components/editor-control/editor-control.component';
 export * from './lib/components/button-action/public-api';
-export * from './lib/components/custom-widget-style/custom-widget-style.component';
 
 /** Grid Layouts */
 export * from './lib/components/grid-layout/edit-layout-modal/public-api';

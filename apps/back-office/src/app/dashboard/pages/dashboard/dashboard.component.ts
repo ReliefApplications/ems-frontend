@@ -50,7 +50,8 @@ import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ContextService, CustomWidgetStyleComponent } from '@oort-front/safe';
+import { CustomWidgetStyleComponent } from '../../../components/custom-widget-style/custom-widget-style.component';
+import { ContextService } from '@oort-front/safe';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
