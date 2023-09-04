@@ -67,8 +67,7 @@ const markerHtmlStyles = (
   width: 2em;
   height: 2em;
   display: block;
-  left: -0.5em;
-  top: -0.5em;
+  top: -50%;
   position: relative;
   border-radius: 2em 2em 0;
   transform: rotate(45deg);
