@@ -1,0 +1,24 @@
+<ui-tabs class="grow" [vertical]="true">
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="tab" [size]="24" uiTooltip="Tabs"> </ui-icon>
+      <span>Tabs</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <safe-tab-main [formGroup]="widgetForm"></safe-tab-main>
+    </ng-template>
+  </ui-tab>
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon
+        icon="settings_overscan"
+        [size]="24"
+        [uiTooltip]="'models.widget.display.title' | translate"
+      ></ui-icon>
+      <span>{{ 'models.widget.display.title' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <safe-display-settings [formGroup]="widgetForm"> </safe-display-settings>
+    </ng-template>
+  </ui-tab>
+</ui-tabs>
