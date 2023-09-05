@@ -24,7 +24,7 @@ import { Dialog } from '@angular/cdk/dialog';
  */
 const ITEMS_PER_PAGE = 10;
 /** Widget types that can be used as single widget page */
-const SINGLE_WIDGET_PAGE_TYPES = ['grid', 'map', 'summaryCard'];
+const SINGLE_WIDGET_PAGE_TYPES = ['grid', 'map', 'summaryCard', 'tabs'];
 
 /**
  * Add page component.

@@ -67,8 +67,7 @@ const markerHtmlStyles = (
   width: 2em;
   height: 2em;
   display: block;
-  left: -0.5em;
-  top: -0.5em;
+  top: -50%;
   position: relative;
   border-radius: 2em 2em 0;
   transform: rotate(45deg);
@@ -121,11 +120,10 @@ export const createCustomDivIcon = (
   const divIcon = L.divIcon({
     className,
     iconSize: L.point(size, size),
-    iconAnchor: L.point(size / 2, sizeForIconType),
-    popupAnchor: [size / 2, -36],
+    iconAnchor: L.point(size / 2, size / 2),
+    popupAnchor: [0, -size / 2],
     html: htmlTemplate,
   });
-
   return divIcon;
 };
 
