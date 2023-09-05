@@ -1,4 +1,5 @@
 import { isEqual } from 'lodash';
+import { GlobalOptions } from '../types';
 
 /**
  * Custom function that gets two arrays and returns the intersection of them.
@@ -13,4 +14,11 @@ const intersect = (params: any[]) => {
   );
 };
 
-export default intersect;
+/**
+ *  Generator for the custom function intersect.
+ *
+ * @param _ Global options
+ * @returns The custom function intersect
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default (_: GlobalOptions) => intersect;

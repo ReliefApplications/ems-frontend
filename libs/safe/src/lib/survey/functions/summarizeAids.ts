@@ -1,5 +1,6 @@
 import { flatten } from 'lodash';
 import { SurveyModel } from 'survey-angular';
+import { GlobalOptions } from '../types';
 
 /**
  * Registration of new custom functions for the survey.
@@ -21,4 +22,11 @@ function summarizeAids(this: { survey: SurveyModel }, params: any[]) {
   );
 }
 
-export default summarizeAids;
+/**
+ *  Generator for the custom function summarizeAids.
+ *
+ * @param _ Global options
+ * @returns The custom function summarizeAids
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default (_: GlobalOptions) => summarizeAids;

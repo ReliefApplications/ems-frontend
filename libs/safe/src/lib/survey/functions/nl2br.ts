@@ -1,3 +1,5 @@
+import { GlobalOptions } from '../types';
+
 /**
  * Replaces newlines with <br> tags of the given string.
  *
@@ -9,4 +11,11 @@ const nl2br = (params: any[]) => {
   return params[0].replace(/\n/g, '<br>');
 };
 
-export default nl2br;
+/**
+ *  Generator for the custom function nl2br.
+ *
+ * @param _ Global options
+ * @returns The custom function nl2br
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default (_: GlobalOptions) => nl2br;

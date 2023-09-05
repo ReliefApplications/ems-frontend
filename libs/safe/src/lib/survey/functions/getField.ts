@@ -1,3 +1,5 @@
+import { GlobalOptions } from '../types';
+
 /**
  * Get field from object
  *
@@ -15,4 +17,11 @@ const getField = (params: any[]) => {
   return object[field] ?? null;
 };
 
-export default getField;
+/**
+ *  Generator for the custom function getField.
+ *
+ * @param _ Global options
+ * @returns The custom function getField
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default (_: GlobalOptions) => getField;

@@ -5,6 +5,7 @@ import {
   SurveyModel,
 } from 'survey-angular';
 import { isEqual } from 'lodash';
+import { GlobalOptions } from '../types';
 
 /**
  * Custom function that given a name for a matrix question, a column name and a column value,
@@ -50,4 +51,11 @@ function listRowsWithColValue(this: { survey: SurveyModel }, params: any[]) {
   return rows.filter((row) => isEqual(matrix[row]?.[colName], colValue));
 }
 
-export default listRowsWithColValue;
+/**
+ *  Generator for the custom function listRowsWithColValue.
+ *
+ * @param _ Global options
+ * @returns The custom function listRowsWithColValue
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default (_: GlobalOptions) => listRowsWithColValue;

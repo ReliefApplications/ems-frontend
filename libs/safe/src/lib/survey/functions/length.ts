@@ -1,3 +1,5 @@
+import { GlobalOptions } from '../types';
+
 /**
  * Returns the length of an array.
  *
@@ -9,4 +11,11 @@ const length = (params: any[]) => {
   return params[0].length;
 };
 
-export default length;
+/**
+ *  Generator for the custom function length.
+ *
+ * @param _ Global options
+ * @returns The custom function length
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default (_: GlobalOptions) => length;

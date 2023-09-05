@@ -95,6 +95,7 @@ export const GET_SHORT_FORM_BY_ID = gql`
   query GetShortFormById($id: ID!) {
     form(id: $id) {
       id
+      queryName
       name
       core
       structure

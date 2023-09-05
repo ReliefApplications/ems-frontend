@@ -14,7 +14,7 @@ import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { Connection } from '../../utils/public-api';
 
 /** Interface for the variables of a query */
-interface QueryVariables {
+export interface QueryVariables {
   first?: number;
   skip?: number;
   filter?: any;

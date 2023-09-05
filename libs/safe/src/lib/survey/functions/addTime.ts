@@ -1,3 +1,5 @@
+import { GlobalOptions } from '../types';
+
 /**
  * Adds time to a certain date
  *
@@ -36,4 +38,11 @@ const addTime = (params: any[]) => {
   return date;
 };
 
-export default addTime;
+/**
+ *  Generator for the custom function addTime.
+ *
+ * @param _ Global options
+ * @returns The custom function addTime
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export default (_: GlobalOptions) => addTime;
