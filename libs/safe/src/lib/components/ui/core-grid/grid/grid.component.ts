@@ -570,7 +570,6 @@ export class SafeGridComponent
         title: field.title,
       });
     });
-    console.log(typesFields);
 
     this.columns.forEach((column) => {
       if (!column.hidden) {
@@ -582,21 +581,41 @@ export class SafeGridComponent
                 (data[type.field] != null &&
                   activedColumns[type.field] < data[type.field].length)
               ) {
-                if (type.type === 'datetime' || type.type === 'date') {
-                  activedColumns[type.field] = 18;
-                } else if (type.type === 'file') {
-                  activedColumns[type.field] = data[type.field][0].name.length;
-                } else if (type.type === 'numeric') {
-                  activedColumns[type.field] =
-                    data[type.field].toString().length;
-                } else if (type.type === 'checkbox') {
-                  let checkboxLength = 0;
-                  data[type.field].forEach((obj: any) => {
-                    checkboxLength += obj.length;
-                  });
-                  activedColumns[type.field] = checkboxLength;
-                } else {
-                  activedColumns[type.field] = data[type.field].length;
+                switch (type.type) {
+                  case 'time':
+                  case 'datetime-local':
+                  case 'datetime':
+                  case 'date': {
+                    activedColumns[type.field] = 18;
+                    break;
+                  }
+                  case 'file': {
+                    activedColumns[type.field] = data[type.field][0].name.length;
+                    break;
+                  }
+                  case 'numeric': {
+                    activedColumns[type.field] =
+                      data[type.field].toString().length;
+                    break;
+                  }
+                  case 'checkbox':
+                  case 'tagbox': {
+                    let checkboxLength = 0;
+                    data[type.field].forEach((obj: any) => {
+                      checkboxLength += obj.length;
+                    });
+                    activedColumns[type.field] = checkboxLength;
+                    break;
+                  }
+                  case 'boolean':
+                  case 'color': {
+                    //min size
+                    activedColumns[type.field] = 1;
+                    break;
+                  }
+                  default: {
+                    activedColumns[type.field] = data[type.field].length;
+                  }
                 }
               }
             });
@@ -606,19 +625,14 @@ export class SafeGridComponent
         }
       }
     });
-    console.log(activedColumns);
 
     //calculates the available width
     const availableWidth = (gridTotalWidth - constantFields) * 0.7;
-
-    console.log(availableWidth);
 
     //calculates the avarage width
     const avarageWidth = Math.floor(
       availableWidth / Object.keys(activedColumns).length
     );
-
-    console.log(avarageWidth);
 
     //calculates the widest column
     const widestColumn = Math.floor((avarageWidth * 2) / 10); //10 is the avarage of character size in pixel
@@ -651,8 +665,6 @@ export class SafeGridComponent
     //order the values
     arrayColumns.sort((a, b) => a.value - b.value);
 
-    console.log(arrayColumns);
-
     const arraySize = arrayColumns.length - 1;
     //if the value of the smallest element is less than 0.25 * the biggest
     while (arrayColumns[0].value < 0.25 * arrayColumns[arraySize].value) {
@@ -662,7 +674,7 @@ export class SafeGridComponent
         total_percentage += 1;
         arrayColumns[0].value += 1;
       } else {
-        //remove percentage from the biggest and give to the smallest
+        //remove percentage from the biggest and put in the smallest
         activedColumns[arrayColumns[0].key] += 1;
         activedColumns[arrayColumns[arraySize].key] -= 1;
         arrayColumns[0].value += 1;
@@ -670,8 +682,6 @@ export class SafeGridComponent
       }
       arrayColumns.sort((a, b) => a.value - b.value);
     }
-
-    console.log(activedColumns);
 
     //resize the columns
     this.columns.forEach((column) => {
