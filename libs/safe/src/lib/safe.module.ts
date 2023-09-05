@@ -39,6 +39,7 @@ import { ButtonActionModule } from './components/button-action/button-action.mod
 import { GraphQLSelectModule } from '@oort-front/ui';
 import { SafeSortingSettingsModule } from './components/widgets/common/sorting-settings/sorting-settings.module';
 import { SafeWidgetChoiceModule } from './components/widget-choice/widget-choice.module';
+import { TabsSettingsModule } from './components/widgets/tabs-settings/tabs-settings.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -71,6 +72,7 @@ import { SafeWidgetChoiceModule } from './components/widget-choice/widget-choice
     DashboardFilterModule,
     ButtonActionModule,
     SafeWidgetChoiceModule,
+    TabsSettingsModule,
     // === Pipes ===
     SafeDateModule,
     SafeReadableCronModule,

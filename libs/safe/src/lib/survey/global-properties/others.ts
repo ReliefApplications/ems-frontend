@@ -28,13 +28,22 @@ export const init = (Survey: any, environment: any): void => {
     required: true,
   });
   // Pass token before the request to fetch choices by URL if it's targeting SAFE API
+  // Survey.ChoicesRestful.onBeforeSendRequest = (
+  //   sender: ChoicesRestful,
+  //   options: { request: { headers: Headers } }
+  // ) => {
+  //   if (sender.url.includes(environment.apiUrl)) {
+  //     const token = localStorage.getItem('idtoken');
+  //     options.request.headers.append('Authorization', `Bearer ${token}`);
+  //   }
+  // };
   Survey.ChoicesRestful.onBeforeSendRequest = (
     sender: ChoicesRestful,
-    options: { request: { headers: Headers } }
+    options: { request: XMLHttpRequest }
   ) => {
     if (sender.url.includes(environment.apiUrl)) {
       const token = localStorage.getItem('idtoken');
-      options.request.headers.append('Authorization', `Bearer ${token}`);
+      options.request.setRequestHeader('Authorization', `Bearer ${token}`);
     }
   };
 

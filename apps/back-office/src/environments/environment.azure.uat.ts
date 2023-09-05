@@ -41,6 +41,7 @@ export const environment: Environment = {
     'grid',
     'text',
     'summaryCard',
+    'tabs',
   ],
   sentry: {
     environment: 'staging',
