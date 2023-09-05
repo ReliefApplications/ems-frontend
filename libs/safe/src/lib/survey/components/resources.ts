@@ -432,13 +432,7 @@ export const init = (
         name: 'alwaysCreateRecord:boolean',
         category: 'Custom Questions',
         dependsOn: ['resource', 'addRecord'],
-        visibleIf: (obj: any) => {
-          if (!obj.resource || !obj.addRecord) {
-            return false;
-          } else {
-            return true;
-          }
-        },
+        visibleIf: (obj: any) => !!obj.resource && !!obj.addRecord,
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resources', {
