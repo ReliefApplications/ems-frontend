@@ -12,6 +12,53 @@ import { SafeRestService } from '../rest/rest.service';
 import { BehaviorSubject } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
 import { SafeFormHelpersService } from '../form-helper/form-helper.service';
+import { difference } from 'lodash';
+
+/**
+ * Gets the payload for the update mutation
+ *
+ * @param op Input expression in the form of {key} = "value"
+ * @param survey Survey instance
+ * @returns Formatted payload for the update mutation
+ */
+const getUpdateData = (
+  op: string,
+  survey: Survey.SurveyModel
+): Record<string, any> | null => {
+  if (!op) return null;
+  // Op can either be a stringified JSON object or
+  // in the form of {key} = "value"
+  try {
+    // Replace used variables with their values
+    survey.getVariableNames().forEach((variable) => {
+      op = op.replace(
+        new RegExp(`{${variable}}`, 'g'),
+        JSON.stringify(survey.getVariable(variable))
+      );
+    });
+
+    // Replace question template with their values
+    survey.getAllQuestions().forEach((question) => {
+      op = op.replace(
+        new RegExp(`{${question.name}}`, 'g'),
+        JSON.stringify(question.value)
+      );
+    });
+
+    return JSON.parse(op);
+  } catch {
+    // Original way of parsing the expression.
+    // Matches {key} = "value" and returns the key and value
+    const regex = /{\s*(\b.*\b)\s*}\s*=\s*"(.*)"/g;
+    const operation = regex.exec(op); // divide string into groups for key : value mapping
+
+    return operation
+      ? {
+          [operation[1]]: operation[2],
+        }
+      : null;
+  }
+};
 
 /**
  * Shared form builder service.
@@ -78,43 +125,43 @@ export class SafeFormBuilderService {
       }
     });
 
+    // Handles logic for after record creation, selection and deselection on resource type questions
     survey.onCompleting.add(() => {
-      for (const page of survey.toJSON().pages) {
-        if (!page.elements) continue;
-        for (const element of page.elements) {
-          if (element.type === 'resources' || element.type === 'resource') {
-            // if its a single record, the value will be string
-            // so we account for that by putting it in an array
-            const valueIterator =
-              (element.type === 'resources'
-                ? survey.getValue(element.name)
-                : [survey.getValue(element.name)]) || [];
+      survey.getAllQuestions().forEach((question) => {
+        const isResource = question.getType() === 'resource';
+        const isResources = question.getType() === 'resources';
+        if ((!isResource && !isResources) || !question.value) {
+          return;
+        }
+        const initSelection = [get(record, `data.${question.name}`, [])].flat();
+        const wasSelected = (id: string) => initSelection.includes(id);
 
-            const regex = /{\s*(\b.*\b)\s*}\s*=\s*"(.*)"/g;
-            for (const item of valueIterator) {
-              let operation: any;
-              if (
-                element.newCreatedRecords &&
-                element.newCreatedRecords.includes(item) &&
-                element.afterRecordCreation
-              ) {
-                regex.lastIndex = 0; // ensure that regex restarts
-                operation = regex.exec(element.afterRecordCreation); // divide string into groups for key : value mapping
-              } else if (element.afterRecordSelection) {
-                regex.lastIndex = 0; // ensure that regex restarts
-                const isNewlySelected =
-                  element.type === 'resources'
-                    ? !get(record, `data.${element.name}`, []).includes(item)
-                    : !(get(record, `data.${element.name}`, null) === item);
-                // only updates those records that were not in the old value for the field
-                if (isNewlySelected)
-                  operation = regex.exec(element.afterRecordSelection); // divide string into groups for key : value mapping
-              }
-              this.updateRecord(item, operation);
-            }
+        const questionRecords = isResource ? [question.value] : question.value;
+        for (const recordID of questionRecords) {
+          if (
+            question.newCreatedRecords &&
+            question.newCreatedRecords.includes(recordID) &&
+            question.afterRecordCreation
+          ) {
+            // Newly created records
+            const data = getUpdateData(question.afterRecordCreation, survey);
+            data && this.updateRecord(recordID, data);
+          } else if (question.afterRecordSelection && !wasSelected(recordID)) {
+            // Newly selected records
+            const data = getUpdateData(question.afterRecordSelection, survey);
+            data && this.updateRecord(recordID, data);
           }
         }
-      }
+
+        // Now we get the records that were deselected
+        const deselectedRecords = difference(initSelection, questionRecords);
+        if (question.afterRecordDeselection) {
+          for (const recordID of deselectedRecords) {
+            const data = getUpdateData(question.afterRecordDeselection, survey);
+            data && this.updateRecord(recordID, data);
+          }
+        }
+      });
     });
     if (fields.length > 0) {
       for (const f of fields.filter((x) => !x.automated)) {
@@ -283,16 +330,16 @@ export class SafeFormBuilderService {
    * Updates the field with the specified information.
    *
    * @param id Id of the record to update
-   * @param operation Operation to execute
+   * @param data Data to update
    */
-  private updateRecord(id: string, operation: any): void {
-    if (id && operation) {
+  private updateRecord(id: string, data: any): void {
+    if (id && data) {
       this.apollo
         .mutate<EditRecordMutationResponse>({
           mutation: EDIT_RECORD,
           variables: {
             id,
-            data: { [operation[1]]: operation[2] },
+            data,
           },
         })
         .subscribe({

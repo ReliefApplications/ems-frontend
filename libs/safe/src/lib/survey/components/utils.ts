@@ -100,12 +100,7 @@ export const buildAddButton = (
             locale: question.resource.value,
             askForConfirm: false,
             ...(question.prefillWithCurrentRecord && {
-              prefillData: {
-                ...question.survey.data,
-                // Special question name, that will be prefilled with the current record id
-                // useful for linking new records to the current one when creating a new record from the resources question
-                owner_resource: question.survey.getVariable('record.id'),
-              },
+              prefillData: question.survey.data,
             }),
           },
           height: '98%',
