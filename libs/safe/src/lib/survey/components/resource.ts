@@ -497,13 +497,19 @@ export const init = (
 
       Survey.Serializer.addProperty('resource', {
         name: 'afterRecordCreation',
-        // type: 'expression',
+        type: 'text',
         category: 'logic',
       });
 
       Survey.Serializer.addProperty('resource', {
         name: 'afterRecordSelection',
-        // type: 'expression',
+        type: 'text',
+        category: 'logic',
+      });
+
+      Survey.Serializer.addProperty('resources', {
+        name: 'afterRecordDeselection',
+        type: 'text',
         category: 'logic',
       });
     },
