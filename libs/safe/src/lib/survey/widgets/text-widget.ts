@@ -10,6 +10,12 @@ import { JsonMetadata, SurveyModel } from 'survey-angular';
 import { Question, QuestionText } from '../types';
 import { ButtonComponent } from '@oort-front/ui';
 import { IconComponent } from '@oort-front/ui';
+import {
+  AvailableLanguages,
+  DateFormat,
+  DateTimeFormat,
+  TimeFormat,
+} from './utils/date-time-formats';
 
 type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
 
@@ -370,6 +376,7 @@ export const init = (Survey: any, domService: DomService): void => {
     | DateTimePickerComponent
     | TimePickerComponent
     | null => {
+    const currentFormatLang = localStorage.getItem('date-lang') ?? 'en';
     switch (inputType) {
       case 'date':
         const datePicker = domService.appendComponentToBody(
@@ -377,9 +384,11 @@ export const init = (Survey: any, domService: DomService): void => {
           element
         );
         const datePickerInstance: DatePickerComponent = datePicker.instance;
-        datePickerInstance.format = 'dd/MM/yyyy';
+        datePickerInstance.format =
+          DateFormat[currentFormatLang as AvailableLanguages];
         return datePickerInstance;
       case 'datetime':
+        return null;
       case 'datetime-local':
         const dateTimePicker = domService.appendComponentToBody(
           DateTimePickerComponent,
@@ -387,7 +396,8 @@ export const init = (Survey: any, domService: DomService): void => {
         );
         const dateTimePickerInstance: DateTimePickerComponent =
           dateTimePicker.instance;
-        dateTimePickerInstance.format = 'dd/MM/yyyy HH:mm';
+        dateTimePickerInstance.format =
+          DateTimeFormat[currentFormatLang as AvailableLanguages];
         return dateTimePickerInstance;
       case 'time':
         const timePicker = domService.appendComponentToBody(
@@ -395,7 +405,8 @@ export const init = (Survey: any, domService: DomService): void => {
           element
         );
         const timePickerInstance: TimePickerComponent = timePicker.instance;
-        timePickerInstance.format = 'HH:mm';
+        timePickerInstance.format =
+          TimeFormat[currentFormatLang as AvailableLanguages];
         return timePickerInstance;
       default:
         return null;
