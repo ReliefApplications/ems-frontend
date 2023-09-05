@@ -328,6 +328,20 @@
         }}</ng-container>
       </ui-checkbox>
       <div *ngIf="formGroup.value.sendMail" class="sub-parameters">
+
+        
+        <div uiFormFieldDirective>
+          <label>{{ 'components.emailBuilder.from.label' | translate }}</label>
+          <ui-select-menu formControlName="from">
+            <ui-select-option [value]="'distribution'">
+              {{ 'components.emailBuilder.from.distribution' | translate }}
+            </ui-select-option>
+            <ui-select-option [value]="'field'">
+              {{ 'components.emailBuilder.from.field' | translate }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+
         <!-- Distribution list -->
         <div uiFormFieldDirective>
           <label>{{
