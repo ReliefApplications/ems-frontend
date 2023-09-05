@@ -56,6 +56,7 @@ export const GET_PAGE_BY_ID = gql`
     page(id: $id) {
       id
       name
+      visible
       createdAt
       modifiedAt
       type
@@ -100,6 +101,7 @@ export const GET_SHORT_FORM_BY_ID = gql`
       structure
       fields
       status
+      queryName
       canCreateRecords
       uniqueRecord {
         id

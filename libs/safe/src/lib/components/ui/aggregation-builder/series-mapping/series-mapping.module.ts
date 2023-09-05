@@ -1,11 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeSeriesMappingComponent } from './series-mapping.component';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafePipelineModule } from '../pipeline/pipeline.module';
+import { SelectMenuModule } from '@oort-front/ui';
 
 /**
  * Series mapping for aggregation builder.
@@ -15,12 +14,11 @@ import { SafePipelineModule } from '../pipeline/pipeline.module';
   declarations: [SafeSeriesMappingComponent],
   imports: [
     CommonModule,
-    MatFormFieldModule,
-    MatSelectModule,
     ReactiveFormsModule,
     FormsModule,
     TranslateModule,
     SafePipelineModule,
+    SelectMenuModule,
   ],
   exports: [SafeSeriesMappingComponent],
 })

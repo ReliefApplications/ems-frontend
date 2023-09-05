@@ -10,24 +10,22 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  MatLegacyChipInputEvent as MatChipInputEvent,
-  MAT_LEGACY_CHIPS_DEFAULT_OPTIONS as MAT_CHIPS_DEFAULT_OPTIONS,
-} from '@angular/material/legacy-chips';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
+
 import get from 'lodash/get';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '../../../ui/modal/modal.module';
-import { MatLegacyChipsModule as MatChipsModule } from '@angular/material/legacy-chips';
+import {
+  ButtonModule,
+  ChipModule,
+  DialogModule,
+  ErrorMessageModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
+import { BehaviorSubject } from 'rxjs';
 
 /** Model for the data input */
 interface DialogData {
@@ -47,7 +45,9 @@ const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
  *
  * @returns A function which returns an object with the separator keys
  */
-export function codesFactory(): () => any {
+export function codesFactory(): () => {
+  separatorKeyCodes: number[];
+} {
   const codes = () => ({ separatorKeyCodes: SEPARATOR_KEYS_CODE });
   return codes;
 }
@@ -59,43 +59,60 @@ export function codesFactory(): () => any {
   standalone: true,
   imports: [
     CommonModule,
-    SafeModalModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatInputModule,
+    DialogModule,
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    MatChipsModule,
+    ButtonModule,
+    ChipModule,
+    FormWrapperModule,
+    ErrorMessageModule,
   ],
   selector: 'safe-edit-distribution-list-modal',
   templateUrl: './edit-distribution-list-modal.component.html',
   styleUrls: ['./edit-distribution-list-modal.component.scss'],
-  providers: [{ provide: MAT_CHIPS_DEFAULT_OPTIONS, useFactory: codesFactory }],
 })
 export class EditDistributionListModalComponent implements OnInit {
   // === REACTIVE FORM ===
   public form: UntypedFormGroup = new UntypedFormGroup({});
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
+  errorEmails = new BehaviorSubject<boolean>(false);
+  errorEmailMessages = new BehaviorSubject<string>('');
 
   /** @returns list of emails */
   get emails(): string[] {
     return this.form.get('emails')?.value || [];
   }
 
-  @ViewChild('emailsInput') emailsInput?: ElementRef<HTMLInputElement>;
+  /**
+   * Get error message of field
+   *
+   * @returns error message
+   */
+  get emailsError(): string {
+    const control = this.form.get('emails');
+    if (control?.hasError('required')) {
+      return 'components.distributionLists.errors.emails.required';
+    }
+    if (control?.hasError('pattern')) {
+      return 'components.distributionLists.errors.emails.pattern';
+    }
+    return '';
+  }
+
+  @ViewChild('emailsInput') emailsInput!: ElementRef<HTMLInputElement>;
 
   /**
    * Component for edition of distribution list
    *
    * @param formBuilder Angular form builder service
-   * @param dialogRef Material dialog ref of the component
+   * @param dialogRef Dialog ref of the component
    * @param data Data input of the modal
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<EditDistributionListModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData
+    public dialogRef: DialogRef<EditDistributionListModalComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData
   ) {}
 
   /** Build the form. */
@@ -111,33 +128,33 @@ export class EditDistributionListModalComponent implements OnInit {
    *
    * @param event The event triggered when we exit the input
    */
-  addEmail(event: MatChipInputEvent | any): void {
+  addEmail(event: string | any): void {
+    const control = this.form.get('emails');
     // use setTimeout to prevent add input value on focusout
     setTimeout(
       () => {
-        const input =
+        const value: string =
           event.type === 'focusout'
-            ? this.emailsInput?.nativeElement
-            : event.input;
-        const value =
-          event.type === 'focusout'
-            ? this.emailsInput?.nativeElement.value
-            : event.value;
+            ? this.emailsInput.nativeElement.value
+            : event;
 
         // Add the mail
         const emails = [...this.emails];
         if ((value || '').trim()) {
           if (EMAIL_REGEX.test(value.trim())) {
             emails.push(value.trim());
-            this.form.get('emails')?.setValue(emails);
-            this.form.get('emails')?.updateValueAndValidity();
-            // Reset the input value
-            if (input) {
-              input.value = '';
+            control?.setValue(emails);
+            control?.updateValueAndValidity();
+            if (event.type === 'focusout') {
+              this.emailsInput.nativeElement.value = '';
             }
           } else {
-            this.form.get('emails')?.setErrors({ pattern: true });
+            control?.setErrors({ pattern: true });
           }
+        } else {
+          // no value
+          control?.setErrors({ pattern: false });
+          control?.updateValueAndValidity();
         }
       },
       event.type === 'focusout' ? 500 : 0
@@ -150,43 +167,9 @@ export class EditDistributionListModalComponent implements OnInit {
    * @param email The email to remove
    */
   removeEmail(email: string): void {
-    const emails = [...this.emails];
-    const index = emails.indexOf(email);
-    if (index >= 0) {
-      emails.splice(index, 1);
-      this.form.get('emails')?.setValue(emails);
-      this.form.get('emails')?.updateValueAndValidity();
-    }
-  }
-
-  /**
-   * Get error message of field
-   *
-   * @param formControlName field name
-   * @returns error message
-   */
-  public errorMessage(formControlName: string): string {
-    switch (formControlName) {
-      case 'name': {
-        const control = this.form.get('name');
-        if (control?.hasError('required')) {
-          return 'components.distributionLists.errors.name.required';
-        }
-        return '';
-      }
-      case 'emails': {
-        const control = this.form.get('emails');
-        if (control?.hasError('required')) {
-          return 'components.distributionLists.errors.emails.required';
-        }
-        if (control?.hasError('pattern')) {
-          return 'components.distributionLists.errors.emails.pattern';
-        }
-        return '';
-      }
-      default: {
-        return '';
-      }
-    }
+    const emails = [...this.emails].filter(
+      (emailData) => emailData.toLowerCase() !== email.toLowerCase()
+    );
+    this.form.get('emails')?.setValue(emails);
   }
 }

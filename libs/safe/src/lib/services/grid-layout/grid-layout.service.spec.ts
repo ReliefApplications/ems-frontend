@@ -1,14 +1,14 @@
 import { TestBed } from '@angular/core/testing';
-import { MatLegacySnackBarModule as MatSnackBarModule } from '@angular/material/legacy-snack-bar';
-
 import { SafeGridLayoutService } from './grid-layout.service';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('SafeGridLayoutService', () => {
   let service: SafeGridLayoutService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [MatSnackBarModule],
+      imports: [ApolloTestingModule, HttpClientModule],
     });
     service = TestBed.inject(SafeGridLayoutService);
   });

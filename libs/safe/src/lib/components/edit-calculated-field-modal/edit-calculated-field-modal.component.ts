@@ -4,25 +4,27 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { FIELD_EDITOR_CONFIG } from '../../const/tinymce.const';
+import { INLINE_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { SafeEditorService } from '../../services/editor/editor.service';
 import { getCalcKeys, getDataKeys, getInfoKeys } from './utils/keys';
 import { CommonModule } from '@angular/common';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { SafeModalModule } from '../ui/modal/modal.module';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import { SafeEditorControlComponent } from '../editor-control/editor-control.component';
+import {
+  DialogModule,
+  ButtonModule,
+  TooltipModule,
+  FormWrapperModule,
+  IconModule,
+} from '@oort-front/ui';
+import { RawEditorSettings } from 'tinymce';
 /**
  * Interface describing the structure of the data displayed in the dialog
  */
 interface DialogData {
+  /** TODO: Add type to fields */
   calculatedField?: any;
   resourceFields: any[];
 }
@@ -36,14 +38,12 @@ interface DialogData {
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    SafeModalModule,
-    EditorModule,
-  ],
-  providers: [
-    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+    IconModule,
+    SafeEditorControlComponent,
+    FormWrapperModule,
+    DialogModule,
+    ButtonModule,
+    TooltipModule,
   ],
   selector: 'safe-edit-calculated-field-modal',
   templateUrl: './edit-calculated-field-modal.component.html',
@@ -56,7 +56,7 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
   public resourceFields: any[] = [];
 
   /** tinymce editor */
-  public editor: any = FIELD_EDITOR_CONFIG;
+  public editor: RawEditorSettings = INLINE_EDITOR_CONFIG;
 
   /**
    * Modal to edit Calculated field.
@@ -69,10 +69,10 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
    * @param translate Translate service
    */
   constructor(
-    public dialogRef: MatDialogRef<SafeEditCalculatedFieldModalComponent>,
+    public dialogRef: DialogRef<SafeEditCalculatedFieldModalComponent>,
     public formBuilder: UntypedFormBuilder,
     private editorService: SafeEditorService,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    @Inject(DIALOG_DATA) public data: DialogData,
     @Inject('environment') environment: any,
     private translate: TranslateService
   ) {
@@ -98,7 +98,10 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
       ...getInfoKeys(),
       ...getDataKeys(this.resourceFields),
     ];
-    this.editorService.addCalcAndKeysAutoCompleter(this.editor, keys);
+    this.editorService.addCalcAndKeysAutoCompleter(
+      this.editor,
+      keys.map((key) => ({ value: key, text: key }))
+    );
   }
 
   /**

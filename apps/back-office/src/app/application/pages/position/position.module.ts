@@ -3,16 +3,16 @@ import { CommonModule } from '@angular/common';
 import { PositionRoutingModule } from './position-routing.module';
 import { PositionComponent } from './position.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { SafeButtonModule, SafeModalModule } from '@oort-front/safe';
-import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
+import { SafeEmptyModule, SafeSkeletonTableModule } from '@oort-front/safe';
+import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
+import {
+  SpinnerModule,
+  MenuModule,
+  ButtonModule,
+  TableModule,
+  DialogModule,
+} from '@oort-front/ui';
 
 /**
  * Application position module.
@@ -24,17 +24,15 @@ import { TranslateModule } from '@ngx-translate/core';
     PositionRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatProgressSpinnerModule,
-    MatTableModule,
-    MatIconModule,
-    MatMenuModule,
-    SafeButtonModule,
-    MatButtonModule,
+    SpinnerModule,
+    IconModule,
+    MenuModule,
     TranslateModule,
-    SafeModalModule,
+    DialogModule,
+    SafeSkeletonTableModule,
+    SafeEmptyModule,
+    ButtonModule,
+    TableModule,
   ],
   exports: [PositionComponent],
 })

@@ -12,6 +12,7 @@ export const GET_WORKFLOW_BY_ID = gql`
       createdAt
       modifiedAt
       canUpdate
+      nextStepOnSave
       permissions {
         canSee {
           id
@@ -37,6 +38,7 @@ export const GET_WORKFLOW_BY_ID = gql`
       page {
         id
         name
+        visible
         canUpdate
         permissions {
           canSee {

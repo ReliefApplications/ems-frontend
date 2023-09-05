@@ -1,0 +1,48 @@
+<!-- Add new tab -->
+<div class="flex justify-end">
+  <ui-button (click)="onAddTab($event)" category="secondary" variant="primary"
+    >Add a new tab</ui-button
+  >
+</div>
+<!-- Available tabs -->
+<ui-tabs class="grow" [vertical]="false" *ngIf="tabs.length > 0">
+  <ui-tab *ngFor="let tab of tabs.controls; let i = index">
+    <ng-container ngProjectAs="label">
+      <div
+        (cdkDropListDropped)="onReorder($event)"
+        [cdkDropListConnectedTo]="(tabIds$ | async)!"
+        [id]="TAB_ID_NAME + i"
+        cdkDropListOrientation="horizontal"
+        cdkDropList
+      >
+        <div class="flex items-center" cdkDrag>
+          <!-- Drag placeholder-->
+          <div *cdkDragPlaceholder></div>
+          <!-- Drag indicator -->
+          <ui-icon
+            cdkDragHandle
+            class="draggable"
+            icon="drag_indicator"
+          ></ui-icon>
+          <!-- Button name -->
+          <span
+            class="max-w-[100px] overflow-hidden text-ellipsis whitespace-nowrap"
+          >
+            {{ tab.value.label }}
+          </span>
+          <!-- Error indicator -->
+          <ui-icon
+            *ngIf="tab.invalid"
+            icon="error_outline"
+            variant="danger"
+            [size]="18"
+          ></ui-icon>
+        </div>
+      </div>
+    </ng-container>
+    <safe-tab-settings
+      [tabGroup]="$any(tab)"
+      (delete)="onDeleteTab(i)"
+    ></safe-tab-settings>
+  </ui-tab>
+</ui-tabs>

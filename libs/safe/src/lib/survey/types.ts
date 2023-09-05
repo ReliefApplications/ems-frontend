@@ -1,4 +1,8 @@
+import { Apollo } from 'apollo-angular';
 import * as Survey from 'survey-angular';
+import { Record } from '../models/record.model';
+import { SafeAuthService } from '../services/auth/auth.service';
+import { Form } from '../models/form.model';
 
 /** Custom global properties definition */
 export interface GlobalProperties {
@@ -56,6 +60,7 @@ export interface QuestionResource
   displayField: null | string;
   relatedName?: string;
   addRecord?: boolean;
+  alwaysCreateRecord?: boolean;
   canSearch?: boolean;
   addTemplate?: any;
   placeholder?: string;
@@ -70,3 +75,10 @@ export interface QuestionResource
   displayAsGrid: boolean;
   remove?: boolean;
 }
+
+export type GlobalOptions = {
+  apollo: Apollo;
+  record: Record | undefined;
+  form: Form | undefined;
+  authService: SafeAuthService;
+};

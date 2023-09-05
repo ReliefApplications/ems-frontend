@@ -1,37 +1,56 @@
-import { NgModule } from '@angular/core';
-import { SafeSummaryCardSettingsComponent } from './summary-card-settings.component';
 import { CommonModule } from '@angular/common';
-import { TranslateModule } from '@ngx-translate/core';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
-import { SafeIconModule } from '../../ui/icon/icon.module';
-import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
-import { SummaryCardGeneralComponent } from './summary-card-general/summary-card-general.component';
-import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
-import { SafeDisplayTabModule } from './display-tab/display.module';
-import { MatLegacySlideToggleModule as MatSlideToggleModule } from '@angular/material/legacy-slide-toggle';
+import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
+import { TranslateModule } from '@ngx-translate/core';
+import {
+  ButtonModule,
+  FormWrapperModule,
+  DividerModule,
+  IconModule,
+  MenuModule,
+  RadioModule,
+  TooltipModule,
+  TabsModule,
+  ToggleModule,
+} from '@oort-front/ui';
+import { LayoutModule } from '@progress/kendo-angular-layout';
+import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
+import { SummaryCardItemModule } from '../summary-card/summary-card-item/summary-card-item.module';
 import { SafeSummaryCardModule } from '../summary-card/summary-card.module';
+import { SafeDisplayTabModule } from './display-tab/display.module';
+import { SummaryCardGeneralComponent } from './summary-card-general/summary-card-general.component';
+import { SafeSummaryCardSettingsComponent } from './summary-card-settings.component';
+import { SafeTextEditorTabModule } from './text-editor-tab/text-editor.module';
+import { SafeSortingSettingsModule } from '../common/sorting-settings/sorting-settings.module';
+import { ContextualFiltersSettingsComponent } from '../common/contextual-filters-settings/contextual-filters-settings.component';
 
 /** Summary Card Settings Module */
 @NgModule({
   declarations: [SafeSummaryCardSettingsComponent],
   imports: [
     CommonModule,
-    MatTooltipModule,
-    SafeIconModule,
-    MatTabsModule,
     TranslateModule,
     DisplaySettingsComponent,
     SummaryCardGeneralComponent,
     SafeTextEditorTabModule,
     SafeDisplayTabModule,
-    MatSlideToggleModule,
     FormsModule,
     ReactiveFormsModule,
-    MatRadioModule,
+    TranslateModule,
+    LayoutModule,
+    TooltipModule,
+    MenuModule,
+    IconModule,
+    DividerModule,
+    SummaryCardItemModule,
+    RadioModule,
+    ButtonModule,
+    FormWrapperModule,
     SafeSummaryCardModule,
+    TabsModule,
+    ToggleModule,
+    SafeSortingSettingsModule,
+    ContextualFiltersSettingsComponent,
   ],
   exports: [SafeSummaryCardSettingsComponent],
 })

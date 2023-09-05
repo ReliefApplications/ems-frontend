@@ -4,7 +4,7 @@
     <div
       *ngIf="canEdit"
       (click)="toggleControlState()"
-      class="hover:bg-neutral-200 rounded-lg py-1"
+      class="hover:bg-neutral-200 rounded-lg py-1 w-full"
     >
       <ng-container *ngTemplateOutlet="content"></ng-container>
     </div>
@@ -14,30 +14,29 @@
   </ng-container>
   <!-- Text edition -->
   <ng-container *ngIf="!formControl.disabled">
-    <mat-form-field appearance="outline">
-      <mat-label>{{ 'common.name' | translate }}</mat-label>
-      <input matInput [formControl]="formControl" type="string" />
+    <div uiFormFieldDirective>
+      <label>{{ 'common.name' | translate }}</label>
+      <input [formControl]="formControl" type="string" />
       <!-- Validate value -->
-      <safe-button
-        matSuffix
+      <ui-button
+        uiSuffix
         [isIcon]="true"
         icon="done"
         variant="primary"
         [disabled]="!formControl.valid"
         (click)="onChange.emit(formControl.value)"
       >
-      </safe-button>
+      </ui-button>
       <!-- Undo change -->
-      <safe-button
-        matSuffix
-        mat-icon-button
+      <ui-button
+        uiSuffix
         [isIcon]="true"
         icon="close"
         variant="danger"
         (click)="onChange.emit()"
       >
-      </safe-button>
-    </mat-form-field>
+      </ui-button>
+    </div>
   </ng-container>
 </div>
 

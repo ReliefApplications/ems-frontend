@@ -1,9 +1,10 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
-import { theme } from '../themes/oort/oort.prod';
+import { theme } from '../themes/lift/lift.prod';
 import { sharedEnvironment } from './environment.shared';
+import { Environment } from './environment.type';
 
 /**
- * Authentification configuration
+ * Authentication configuration
  */
 const authConfig: AuthConfig = {
   issuer: 'https://id-lift.oortcloud.tech/auth/realms/oort',
@@ -18,7 +19,7 @@ const authConfig: AuthConfig = {
 /**
  * Environment file for local development.
  */
-export const environment = {
+export const environment: Environment = {
   ...sharedEnvironment,
   production: true,
   apiUrl: 'https://lift.oortcloud.tech/api',
@@ -27,7 +28,6 @@ export const environment = {
   backOfficeUri: 'https://lift.oortcloud.tech/admin/',
   availableLanguages: ['en', 'fr'],
   authConfig,
-  esriApiKey: '',
   theme,
   availableWidgets: [
     'donut-chart',
@@ -38,5 +38,7 @@ export const environment = {
     'grid',
     'text',
     'map',
+    'summaryCard',
+    'tabs',
   ],
 };

@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as Survey from 'survey-angular';
-import { MatLegacyDialogRef } from '@angular/material/legacy-dialog';
 import { Apollo } from 'apollo-angular';
-import { SafeSnackBarService } from '../snackbar/snackbar.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../confirm/confirm.service';
 import { firstValueFrom } from 'rxjs';
@@ -12,7 +10,12 @@ import {
   AddRecordMutationResponse,
   ADD_RECORD,
 } from '../../components/form/graphql/mutations';
+import { DialogRef } from '@angular/cdk/dialog';
+import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
+import { cloneDeep, set } from 'lodash';
+import { SafeAuthService } from '../auth/auth.service';
+import { SafeWorkflowService } from '../workflow/workflow.service';
 
 /**
  * Shared survey helper service.
@@ -28,12 +31,16 @@ export class SafeFormHelpersService {
    * @param snackBar This is the service that allows you to display a snackbar.
    * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service that allows us to translate the text in our application.
+   * @param authService Shared auth service
+   * @param workflowService Shared workflow service
    */
   constructor(
     public apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private confirmService: SafeConfirmService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private authService: SafeAuthService,
+    private workflowService: SafeWorkflowService
   ) {}
 
   /**
@@ -42,7 +49,7 @@ export class SafeFormHelpersService {
    * @param version The version to recover
    * @returns dialogRef
    */
-  createRevertDialog(version: any): MatLegacyDialogRef<any> {
+  createRevertDialog(version: any): DialogRef<any> {
     // eslint-disable-next-line radix
     const date = new Date(parseInt(version.createdAt, 0));
     const formatDate = `${date.getDate()}/${
@@ -55,9 +62,9 @@ export class SafeFormHelpersService {
         { date: formatDate }
       ),
       confirmText: this.translate.instant('components.confirmModal.confirm'),
-      confirmColor: 'primary',
+      confirmVariant: 'primary',
     });
-    return dialogRef;
+    return dialogRef as any;
   }
 
   /**
@@ -68,6 +75,7 @@ export class SafeFormHelpersService {
   setEmptyQuestions(survey: Survey.SurveyModel): void {
     // We get all the questions from the survey and check which ones contains values
     const questions = survey.getAllQuestions();
+    const data = { ...survey.data };
     for (const field in questions) {
       if (questions[field]) {
         const key = questions[field].getValueName();
@@ -75,15 +83,17 @@ export class SafeFormHelpersService {
         if (!survey.data[key]) {
           // And is not boolean(false by default, we want to save that), we nullify it
           if (questions[field].getType() !== 'boolean') {
-            survey.data[key] = null;
+            // survey.data[key] = null;
+            set(data, key, null);
           }
           // Or if is not visible or not actionable by the user, we don't want to save it, just delete the field from the data
           if (questions[field].readOnly || !questions[field].visible) {
-            delete survey.data[key];
+            delete data[key];
           }
         }
       }
     }
+    survey.data = data;
   }
 
   /**
@@ -94,7 +104,7 @@ export class SafeFormHelpersService {
    * @param formId Form where to upload the files
    */
   async uploadFiles(
-    survey: any,
+    survey: Survey.SurveyModel,
     temporaryFilesStorage: any,
     formId: string | undefined
   ): Promise<void> {
@@ -119,88 +129,32 @@ export class SafeFormHelpersService {
           this.snackBar.openSnackBar(res.errors[0].message, { error: true });
           return;
         } else {
-          data[name][index].content = res.data?.uploadFile;
-        }
-      }
-    }
-    survey.data = data;
-  }
+          const uploadedFileID = res.data?.uploadFile;
+          const fileContent = data[name][index].content;
+          data[name][index].content = uploadedFileID;
 
-  /**
-   * Return an array of promises to upload asynchronously records created on the go while creating a parent record
-   *
-   * @param survey The form of the parent record
-   * @returns A promise with all the requests to upload files
-   */
-  uploadTemporaryRecords(survey: Survey.SurveyModel): Promise<any>[] {
-    const promises: Promise<any>[] = [];
-    const surveyData = survey.data;
-    const questions = survey.getAllQuestions();
-    for (const question of questions) {
-      if (question && question.value) {
-        if (
-          question.getType() === 'resources' ||
-          question.getType() == 'resource'
-        ) {
-          //We save the records created from the resources question
-          for (const recordId of question.value) {
-            const promise = new Promise<void>((resolve, reject) => {
-              localForage
-                .getItem(recordId)
-                .then((data: any) => {
-                  if (data != null) {
-                    // We ensure to make it only if such a record is found
-                    const recordFromResource = JSON.parse(data);
-                    this.apollo
-                      .mutate<AddRecordMutationResponse>({
-                        mutation: ADD_RECORD,
-                        variables: {
-                          form: recordFromResource.template,
-                          data: recordFromResource.data,
-                        },
-                      })
-                      .subscribe({
-                        next: ({ data, errors }) => {
-                          if (errors) {
-                            this.snackBar.openSnackBar(
-                              `Error. ${errors[0].message}`,
-                              {
-                                error: true,
-                              }
-                            );
-                            reject(errors);
-                          } else {
-                            question.value[question.value.indexOf(recordId)] =
-                              question.value.includes(recordId)
-                                ? data?.addRecord.id
-                                : recordId; // If there is no error, we replace in the question the temporary id by the final one
-                            surveyData[question.name] = question.value; // We update the survey data to consider our changes
-                            resolve();
-                          }
-                        },
-                        error: (err) => {
-                          this.snackBar.openSnackBar(err.message, {
-                            error: true,
-                          });
-                          reject(err);
-                        },
-                      });
-                  } else {
-                    resolve(); //there is no data
-                  }
-                })
-                .catch((error: any) => {
-                  console.error(error); // Handle any errors that occur while getting the item
-                  reject(error);
-                });
-              localForage.removeItem(recordId); // We clear it from the local storage once we have retrieved it
+          // Check if any other question is using the same file
+          survey.getAllQuestions().forEach((question) => {
+            const questionType = question.getType();
+            if (
+              questionType !== 'file' ||
+              // Only change files that are not in the temporary storage
+              // meaning their values came from the default values
+              !!temporaryFilesStorage[question.name]
+            )
+              return;
+
+            const files = data[question.name] ?? [];
+            files.forEach((file: any) => {
+              if (file && file.content === fileContent) {
+                file.content = uploadedFileID;
+              }
             });
-            promises.push(promise);
-          }
+          });
         }
       }
     }
-    return promises;
+    survey.data = cloneDeep(data);
   }
 
   /**
@@ -209,15 +163,210 @@ export class SafeFormHelpersService {
    * @param survey Survey from which we need to clean cached records.
    */
   cleanCachedRecords(survey: Survey.SurveyModel): void {
+    if (!survey) return;
     survey.getAllQuestions().forEach((question) => {
-      if (
-        question.value &&
-        ['resources', 'resource'].includes(question.getType())
-      ) {
-        question.value.forEach((recordId: any) =>
-          localForage.removeItem(recordId)
-        );
+      if (question.value) {
+        const type = question.getType();
+        if (type === 'resources') {
+          question.value.forEach((recordId: string) =>
+            localForage.removeItem(recordId)
+          );
+        } else if (type === 'resource') {
+          localForage.removeItem(question.value);
+        }
       }
+    });
+  }
+
+  /**
+   * Create cache records (from resource/s questions) of passed survey.
+   *
+   * @param survey Survey to get questions from
+   */
+  public async createCachedRecords(survey: Survey.SurveyModel): Promise<void> {
+    const promises: Promise<any>[] = [];
+    const questions = survey.getAllQuestions();
+    const nestedRecordsToAdd: string[] = [];
+
+    // Callbacks to update the ids of new records
+    const updateIds: {
+      [key in string]: (arg0: string) => void;
+    } = {};
+
+    const nestedQuestions: Survey.Question[] = [];
+    // Get questions nested in panels
+    survey
+      .getAllQuestions()
+      .filter((q) => q.getType() === 'paneldynamic')
+      .forEach((question) => {
+        const panel = question as Survey.QuestionPanelDynamicModel;
+        const embeddedResourcesQuestions: string[] = [];
+
+        // Filter questions of type resource or resources in the panel
+        panel.templateElements.forEach((element) => {
+          if (['resource', 'resources'].includes(element.getType())) {
+            embeddedResourcesQuestions.push(element.name);
+          }
+        });
+
+        // Extract each element from the panel
+        embeddedResourcesQuestions.forEach((name) => {
+          (panel.value || []).forEach((_: any, index: number) => {
+            const question = panel.getQuestionFromArray(
+              name,
+              index
+            ) as Survey.Question;
+            nestedQuestions.push(question as Survey.Question);
+          });
+        });
+      });
+
+    const updateResourcesExpressions: ((arg1: string, arg2: string) => void)[] =
+      [];
+    // Get all nested records to add
+    questions.concat(nestedQuestions).forEach((question) => {
+      const type = question.getType();
+      if (!['resource', 'resources'].includes(type)) return;
+
+      // If this question uses valueExpression, we should not upload the records
+      // in it, as they will be uploaded by the fields they get their values from
+      // Instead, we create a callback to update the ids of the new records
+      // if they happen to te part of the resources using valueExpression
+      if (question.valueExpression) {
+        updateResourcesExpressions.push((oldId, newId) => {
+          const value = question.value;
+          // value is a array of strings, replace occurrences of oldId with newId
+          if (Array.isArray(value)) {
+            question.value = value.map((x) => (x === oldId ? newId : x));
+          }
+        });
+        return;
+      }
+      const uuidv4Pattern =
+        /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+      const isResource = type === 'resource';
+
+      const toAdd = (isResource ? [question.value] : question.value).filter(
+        (x: string) => uuidv4Pattern.test(x)
+      );
+      nestedRecordsToAdd.push(...toAdd);
+
+      toAdd.forEach((id: string) => {
+        updateIds[id] = (newId: string) => {
+          question.value = isResource
+            ? newId
+            : question.value.map((x: string) => (x === id ? newId : x));
+        };
+      });
+    });
+
+    for (const localID of nestedRecordsToAdd) {
+      // load them from localForage and add them to the promises
+      const cache = await localForage.getItem(localID);
+      if (!cache) continue;
+
+      const { template, data } = JSON.parse(cache as string);
+
+      promises.push(
+        firstValueFrom(
+          this.apollo.mutate<AddRecordMutationResponse>({
+            mutation: ADD_RECORD,
+            variables: {
+              form: template,
+              data,
+            },
+          })
+        ).then((res) => {
+          // change the localID to the new recordId
+          const newId = res.data?.addRecord?.id;
+          if (!newId) return;
+          updateIds[localID](newId);
+          updateResourcesExpressions.forEach((update) =>
+            update(localID, newId)
+          );
+          localForage.removeItem(localID);
+          return;
+        })
+      );
+    }
+
+    await Promise.all(promises);
+  }
+
+  /**
+   * Registration of new custom variables for the survey.
+   * Custom variables can be used in the logic fields.
+   *
+   * @param survey Survey instance
+   */
+  public addUserVariables = (survey: Survey.SurveyModel) => {
+    const user = this.authService.user.getValue();
+
+    // set user variables
+    survey.setVariable('user.firstName', user?.firstName ?? '');
+    survey.setVariable('user.lastName', user?.lastName ?? '');
+    survey.setVariable('user.email', user?.username ?? '');
+
+    // Allow us to do some cool stuff like
+    // {user.roles} contains '62e3e676c9bcb900656c95c9'
+    survey.setVariable('user.roles', user?.roles?.map((r) => r.id || '') ?? []);
+
+    // Allow us to select the current user
+    // as a default question for Users question type
+    survey.setVariable('user.id', user?.id || '');
+  };
+
+  /**
+   * Registration of new custom variables for the survey.
+   * Custom variables can be used in the logic fields.
+   * This function is used to add the record id and the incremental id to the survey variables
+   *
+   * @param survey Survey instance
+   * @param record Record to add to the survey variables
+   * @param record.id Record id
+   * @param record.incrementalID Record incremental id
+   */
+  public addRecordIDVariable = (
+    survey: Survey.SurveyModel,
+    record: { id?: string; incrementalID?: string }
+  ) => {
+    survey.setVariable('record.id', record.id);
+    survey.setVariable('record.incrementalID', record?.incrementalID ?? '');
+  };
+
+  /**
+   * Registers custom variables based on the workflow state
+   * to be used in the survey.
+   *
+   * @param survey Survey instance
+   */
+  public addWorkflowVariables = (survey: Survey.SurveyModel) => {
+    firstValueFrom(this.workflowService.workflowContext$).then((context) => {
+      const dashboardIds = Object.keys(context || {});
+      dashboardIds.forEach((dashboardId) => {
+        const widgets = Object.keys(context[dashboardId] || {});
+        widgets.forEach((widgetId) => {
+          const selectedIds = context[dashboardId][widgetId];
+          survey.setVariable(
+            `workflow_${dashboardId}_${widgetId}`,
+            selectedIds
+          );
+        });
+      });
+    });
+  };
+
+  /**
+   * Clears the temporary files storage
+   *
+   * @param storage Storage to clear
+   */
+  public clearTemporaryFilesStorage(
+    storage: Record<string, Array<File>>
+  ): void {
+    Object.keys(storage).forEach((key) => {
+      delete storage[key];
     });
   }
 }

@@ -1,36 +1,102 @@
 import { Apollo } from 'apollo-angular';
 import {
+  GET_SHORT_RESOURCE_BY_ID,
   GET_RESOURCE_BY_ID,
   GetResourceByIdQueryResponse,
 } from '../graphql/queries';
 import * as SurveyCreator from 'survey-creator';
 import { resourceConditions } from './resources';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { Dialog } from '@angular/cdk/dialog';
+import {
+  FormControl,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+} from '@angular/forms';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
 import { DomService } from '../../services/dom/dom.service';
-import { buildSearchButton, buildAddButton } from './utils';
+import {
+  buildSearchButton,
+  buildAddButton,
+  processNewCreatedRecords,
+} from './utils';
 import get from 'lodash/get';
 import { Question, QuestionResource } from '../types';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
+import { Record } from '../../models/record.model';
+import { NgZone } from '@angular/core';
 
+/** Question's temporary records */
+export const temporaryRecordsForm = new FormControl([]);
+
+/** Cache for loaded records */
+const loadedRecords: Map<string, Record> = new Map();
+
+/**
+ * Adds the selected record to the survey context.
+ *
+ * @param question resource question
+ * @param recordID id of record to add context of
+ */
+const addRecordToSurveyContext = (question: Question, recordID: string) => {
+  const survey = question.survey as SurveyModel;
+  if (!recordID) {
+    // get survey variables
+    survey.getVariableNames().forEach((variable) => {
+      // remove variable if starts with question name
+      if (variable.startsWith(`${question.name}.`))
+        survey.setVariable(variable, null);
+    });
+    return;
+  }
+  // get record from cache
+  const record = loadedRecords.get(recordID);
+  if (!record) return;
+
+  const data = record?.data || {};
+  for (const field in data) {
+    // create survey expression in the format {[questionName].[fieldName]} = [value]
+    survey.setVariable(`${question.name}.${field}`, data[field]);
+  }
+};
 /**
  * Inits the resource question component of for survey.
  *
  * @param Survey Survey library
  * @param domService Shared DOM service
  * @param apollo Apollo client
- * @param dialog Material dom service
+ * @param dialog Dialog
  * @param formBuilder Angular form service
+ * @param ngZone Angular Service to execute code inside Angular environment
  */
 export const init = (
   Survey: any,
   domService: DomService,
   apollo: Apollo,
-  dialog: MatDialog,
-  formBuilder: UntypedFormBuilder
+  dialog: Dialog,
+  formBuilder: UntypedFormBuilder,
+  ngZone: NgZone
 ): void => {
-  const getResourceById = (data: {
+  const getResourceById = (data: { id: string }) =>
+    apollo.query<GetResourceByIdQueryResponse>({
+      query: GET_SHORT_RESOURCE_BY_ID,
+      variables: {
+        id: data.id,
+      },
+    });
+
+  const mapQuestionChoices = (data: any, question: any) => {
+    return (
+      data.resource.records?.edges?.map((x: any) => {
+        loadedRecords.set(x.node?.id || '', x.node);
+        return {
+          value: x.node?.id,
+          text: x.node?.data[question.displayField || 'id'],
+        };
+      }) || []
+    );
+  };
+
+  const getResourceRecordsById = (data: {
     id: string;
     filters?: { field: string; operator: string; value: string }[];
   }) =>
@@ -113,15 +179,15 @@ export const init = (
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource) {
             getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const serverRes = data.resource.fields;
-              const res = [];
-              res.push({ value: null });
-              for (const item of serverRes) {
-                if (item.type !== 'matrix') {
-                  res.push({ value: item.name });
-                }
-              }
-              choicesCallback(res);
+              const choices = (data.resource.fields || [])
+                .filter((item: any) => item.type !== 'matrix')
+                .map((item: any) => {
+                  return {
+                    value: item.name,
+                  };
+                });
+              choices.unshift({ value: null });
+              choicesCallback(choices);
             });
           }
         },
@@ -181,7 +247,7 @@ export const init = (
                       },
                     }
                   );
-                  dialogRef.afterClosed().subscribe((res: any) => {
+                  dialogRef.closed.subscribe((res: any) => {
                     if (res && res.value.fields) {
                       currentQuestion.gridFieldsSettings = res.getRawValue();
                     }
@@ -208,19 +274,13 @@ export const init = (
         visibleIndex: 3,
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource) {
-            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const serverRes =
-                data.resource.records?.edges?.map((x) => x.node) || [];
-              const res = [];
-              res.push({ value: null });
-              for (const item of serverRes) {
-                res.push({
-                  value: item?.id,
-                  text: item?.data[obj.displayField || 'id'],
-                });
+            getResourceRecordsById({ id: obj.resource }).subscribe(
+              ({ data }) => {
+                const choices = mapQuestionChoices(data, obj);
+                choices.unshift({ value: null });
+                choicesCallback(choices);
               }
-              choicesCallback(res);
-            });
+            );
           }
         },
       });
@@ -240,6 +300,13 @@ export const init = (
         visibleIndex: 3,
       });
       serializer.addProperty('resource', {
+        name: 'alwaysCreateRecord:boolean',
+        category: 'Custom Questions',
+        dependsOn: ['resource', 'addRecord'],
+        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.addRecord,
+        visibleIndex: 3,
+      });
+      serializer.addProperty('resource', {
         name: 'addTemplate',
         category: 'Custom Questions',
         dependsOn: ['addRecord', 'resource'],
@@ -248,13 +315,11 @@ export const init = (
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource && obj.addRecord) {
             getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const serverRes = data.resource.forms || [];
-              const res: any[] = [];
-              res.push({ value: null });
-              for (const item of serverRes) {
-                res.push({ value: item.id, text: item.name });
-              }
-              choicesCallback(res);
+              const choices = (data.resource.forms || []).map((item: any) => {
+                return { value: item.id, text: item.name };
+              });
+              choices.unshift({ value: null, text: '' });
+              choicesCallback(choices);
             });
           }
         },
@@ -315,12 +380,10 @@ export const init = (
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource) {
             getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const serverRes = data.resource.fields;
-              const res = [];
-              for (const item of serverRes) {
-                res.push({ value: item.name });
-              }
-              choicesCallback(res);
+              const choices = (data.resource.fields || []).map((item: any) => {
+                return { value: item.name };
+              });
+              choicesCallback(choices);
             });
           }
         },
@@ -441,13 +504,19 @@ export const init = (
 
       Survey.Serializer.addProperty('resource', {
         name: 'afterRecordCreation',
-        // type: 'expression',
+        type: 'text',
         category: 'logic',
       });
 
       Survey.Serializer.addProperty('resource', {
         name: 'afterRecordSelection',
-        // type: 'expression',
+        type: 'text',
+        category: 'logic',
+      });
+
+      Survey.Serializer.addProperty('resources', {
+        name: 'afterRecordDeselection',
+        type: 'text',
         category: 'logic',
       });
     },
@@ -464,16 +533,14 @@ export const init = (
         if (question.selectQuestion) {
           filters[0].operator = question.filterCondition;
           filters[0].field = question.filterBy;
-          if (question.selectQuestion) {
-            question.registerFunctionOnPropertyValueChanged(
-              'filterCondition',
-              () => {
-                filters.map((i: any) => {
-                  i.operator = question.filterCondition;
-                });
-              }
-            );
-          }
+          question.registerFunctionOnPropertyValueChanged(
+            'filterCondition',
+            () => {
+              filters.map((i: any) => {
+                i.operator = question.filterCondition;
+              });
+            }
+          );
         }
         if (!question.filterBy || question.filterBy.length < 1) {
           this.populateChoices(question);
@@ -530,6 +597,20 @@ export const init = (
             this.populateChoices(question);
           }
         }
+        if (question.addRecord && question.canSearch) {
+          // If search button exists, updates grid displayed records when new records are created with the add button
+          question.registerFunctionOnPropertyValueChanged(
+            'newCreatedRecords',
+            async () => {
+              const settings = await processNewCreatedRecords(
+                question,
+                false,
+                []
+              );
+              temporaryRecordsForm.setValue(settings.query.temporaryRecords);
+            }
+          );
+        }
       }
     },
     /**
@@ -544,28 +625,22 @@ export const init = (
         this.filters = [];
         this.resourceFieldsName = [];
         question.addRecord = false;
+        question.alwaysCreateRecord = false;
         question.addTemplate = null;
         question.prefillWithCurrentRecord = false;
       }
     },
     populateChoices: (question: QuestionResource): void => {
       if (question.resource) {
-        getResourceById({ id: question.resource, filters }).subscribe(
+        getResourceRecordsById({ id: question.resource, filters }).subscribe(
           ({ data }) => {
-            const serverRes =
-              data.resource.records?.edges?.map((x) => x.node) || [];
-            const res: any[] = [];
-            for (const item of serverRes) {
-              res.push({
-                value: item?.id,
-                text: item?.data[question.displayField || 'id'],
-              });
-            }
-            question.contentQuestion.choices = res;
+            const choices = mapQuestionChoices(data, question);
+            question.contentQuestion.choices = choices;
             if (!question.placeholder) {
               question.contentQuestion.optionsCaption =
                 'Select a record from ' + data.resource.name + '...';
             }
+            addRecordToSurveyContext(question, question.value);
           }
         );
       } else {
@@ -596,11 +671,12 @@ export const init = (
           question,
           question.gridFieldsSettings,
           false,
-          dialog
+          dialog,
+          temporaryRecordsForm
         );
         actionsButtons.appendChild(searchBtn);
 
-        const addBtn = buildAddButton(question, false, dialog);
+        const addBtn = buildAddButton(question, false, dialog, ngZone);
         actionsButtons.appendChild(addBtn);
 
         const parentElement = el.querySelector('.safe-qst-content');
@@ -625,7 +701,16 @@ export const init = (
         });
         question.registerFunctionOnPropertyValueChanged('addRecord', () => {
           addBtn.style.display =
-            question.addRecord && question.addTemplate ? '' : 'none';
+            question.addRecord && question.addTemplate && !question.isReadOnly
+              ? ''
+              : 'none';
+        });
+
+        const survey: SurveyModel = question.survey as SurveyModel;
+
+        // Listen to value changes
+        survey.onValueChanged.add((_, options) => {
+          addRecordToSurveyContext(options.question, options.value);
         });
       }
     },

@@ -4,8 +4,8 @@ import { createButtonFormGroup } from '../grid-settings.forms';
 import { Form } from '../../../../models/form.model';
 import { Channel } from '../../../../models/channel.model';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
-import { MatLegacyTabGroup as MatTabGroup } from '@angular/material/legacy-tabs';
 import { BehaviorSubject } from 'rxjs';
+import { TabsComponent } from '@oort-front/ui';
 
 /**
  * Buttons tab of grid widget configuration modal.
@@ -23,7 +23,7 @@ export class TabButtonsComponent implements OnInit {
   @Input() templates: any[] = [];
   @Input() distributionLists: any[] = [];
 
-  @ViewChild(MatTabGroup, { static: false }) tabGroup!: MatTabGroup;
+  @ViewChild(TabsComponent, { static: false }) tabGroup!: TabsComponent;
 
   TAB_ID_NAME = 'button-';
   tabIds$ = new BehaviorSubject<string[]>([]);
@@ -67,16 +67,6 @@ export class TabButtonsComponent implements OnInit {
   }
 
   /**
-   * Track containers by index
-   *
-   * @param index container index
-   * @returns index
-   */
-  trackByIndex(index: number): number {
-    return index;
-  }
-
-  /**
    * Handle reorder event
    *
    * @param event cdk drag and drop event.
@@ -97,16 +87,18 @@ export class TabButtonsComponent implements OnInit {
     this.buttons.removeAt(previous);
     this.buttons.insert(current, previousControl);
     const previousTabIndex = this.tabGroup.selectedIndex || 0;
+    let selectedIndex = 0;
     if (previous === previousTabIndex) {
-      this.tabGroup.selectedIndex = current;
+      selectedIndex = current;
     } else {
       if (previous > current && current <= previousTabIndex) {
-        this.tabGroup.selectedIndex = previousTabIndex + 1;
+        selectedIndex = previousTabIndex + 1;
       }
       if (previous < current && current >= previousTabIndex) {
-        this.tabGroup.selectedIndex = previousTabIndex - 1;
+        selectedIndex = previousTabIndex - 1;
       }
     }
+    this.tabGroup.tabs.get(selectedIndex)?.openTab.emit();
     this.recalculateUniqIdsForDragDrop();
   }
 

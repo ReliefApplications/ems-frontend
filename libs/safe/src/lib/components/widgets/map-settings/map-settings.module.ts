@@ -3,12 +3,17 @@ import { CommonModule } from '@angular/common';
 import { SafeMapSettingsComponent } from './map-settings.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeIconModule } from '../../ui/icon/icon.module';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
-import { MapGeneralModule } from './map-general/map-general.module';
 import { MapLayersModule } from './map-layers/map-layers.module';
 import { MapPropertiesModule } from './map-properties/map-properties.module';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
+import { MapModule } from '../../ui/map/map.module';
+import {
+  ButtonModule,
+  DividerModule,
+  IconModule,
+  SidenavContainerModule,
+  TabsModule,
+} from '@oort-front/ui';
+import { TooltipModule } from '@oort-front/ui';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 
 /** Module for map settings component */
@@ -18,13 +23,20 @@ import { DisplaySettingsComponent } from '../common/display-settings/display-set
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    SafeIconModule,
+    IconModule,
     TranslateModule,
-    MatTabsModule,
-    MapGeneralModule,
+    TabsModule,
     MapLayersModule,
     MapPropertiesModule,
-    MatTooltipModule,
+    TooltipModule,
+    MapModule,
+    ButtonModule,
+    DividerModule,
+    TabsModule,
+    SidenavContainerModule,
+    MapLayersModule,
+    MapPropertiesModule,
+    TooltipModule,
     DisplaySettingsComponent,
   ],
   exports: [SafeMapSettingsComponent],

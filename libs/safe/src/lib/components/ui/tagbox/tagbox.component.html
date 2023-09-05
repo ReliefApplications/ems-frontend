@@ -1,55 +1,53 @@
-<mat-form-field appearance="outline" class="flex-1">
-  <mat-label>{{ label }}</mat-label>
-  <!-- Chip list -->
-  <mat-chip-list #chipList>
-    <!-- Individual chip choice -->
-    <mat-chip
-      *ngFor="let choice of selectedChoices"
-      [selectable]="true"
-      [removable]="!choice.used"
-      [value]="choice"
-      (removed)="remove(choice)"
-    >
-      {{ choice[displayKey] }}
-      <safe-icon
-        *ngIf="!choice.used"
-        matChipRemove
-        icon="cancel"
-        [size]="18"
-      ></safe-icon>
-    </mat-chip>
+<div class="flex-1 pb-4">
+  <div class="flex">
+    <label class="block text-sm font-medium leading-6 text-gray-900">{{
+      label
+    }}</label>
+    <ui-icon
+      class="cursor-pointer ml-2"
+      icon="info"
+      variant="grey"
+      [uiTooltip]="
+        'components.aggregationBuilder.tooltip.selectedFields' | translate
+      "
+    ></ui-icon>
+  </div>
+  <ng-container *ngIf="showInput">
+    <!-- Chip list -->
+    <div uiChipList #chipList>
+      <!-- Individual chip choice -->
+      <ui-chip
+        *ngFor="let choice of selectedChoices"
+        [removable]="!choice.used"
+        [value]="choice"
+        (removed)="remove(choice)"
+      >
+        {{ choice[displayKey] }}
+      </ui-chip>
+    </div>
     <!-- Search text control -->
     <input
       type="text"
       [placeholder]="label"
       #textInput
-      matInput
-      [formControl]="inputFormControl"
-      [matAutocomplete]="auto"
-      [matChipInputFor]="chipList"
-      [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-      (matChipInputTokenEnd)="add($event)"
-      [disabled]="choicesEmpty"
-      *ngIf="showInput"
+      [formControl]="inputControl"
+      [uiAutocomplete]="auto"
+      [autocompleteDisplayKey]="'name'"
+      (optionSelected)="add($event)"
+      [uiChipListFor]="chipList"
+      [chipInputSeparatorKeyCodes]="separatorKeysCodes"
+      class="bg-transparent block overflow-hidden border-0 rounded-md w-full p-0 text-gray-900 placeholder:text-gray-400 sm:text-sm sm:leading-6 focus:ring-0 focus:ring-inset"
+      (chipTokenEnd)="add($event)"
     />
-  </mat-chip-list>
-  <!-- Filter choices -->
-  <mat-autocomplete
-    #auto="matAutocomplete"
-    (optionSelected)="selected($event)"
-    [displayWith]="displayName"
-  >
-    <mat-option *ngFor="let choice of filteredChoices | async" [value]="choice">
-      {{ choice[displayKey] }}
-    </mat-option>
-  </mat-autocomplete>
-  <safe-icon
-    matSuffix
-    class="cursor-pointer"
-    icon="info"
-    variant="grey"
-    [matTooltip]="
-      'components.aggregationBuilder.tooltip.selectedFields' | translate
-    "
-  ></safe-icon>
-</mat-form-field>
+    <!-- Filter choices -->
+    <ui-autocomplete #auto>
+      <ui-option
+        *ngFor="let choice of filteredChoices"
+        [value]="choice"
+        [label]="choice[displayKey]"
+      >
+        {{ choice[displayKey] }}
+      </ui-option>
+    </ui-autocomplete>
+  </ng-container>
+</div>

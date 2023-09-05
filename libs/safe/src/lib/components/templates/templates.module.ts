@@ -1,28 +1,32 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeTemplatesComponent } from './templates.component';
-import { MatIconModule } from '@angular/material/icon';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { MatLegacyTableModule as MatTableModule } from '@angular/material/legacy-table';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
-import { SafeButtonModule } from '../ui/button/button.module';
+import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
+import {
+  MenuModule,
+  DividerModule,
+  ButtonModule,
+  TableModule,
+  SpinnerModule,
+} from '@oort-front/ui';
+import { SafeEmptyModule } from '../ui/empty/empty.module';
 import { SafeSkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
-import { SafeDividerModule } from '../ui/divider/divider.module';
 
 /** Module for components related to templates */
 @NgModule({
   declarations: [SafeTemplatesComponent],
   imports: [
     CommonModule,
-    MatTableModule,
-    MatMenuModule,
-    MatProgressSpinnerModule,
+    SpinnerModule,
+    MenuModule,
     TranslateModule,
-    MatIconModule,
-    SafeButtonModule,
+    IconModule,
     SafeSkeletonTableModule,
-    SafeDividerModule,
+    DividerModule,
+    ButtonModule,
+    SafeEmptyModule,
+    TableModule,
   ],
   exports: [SafeTemplatesComponent],
 })

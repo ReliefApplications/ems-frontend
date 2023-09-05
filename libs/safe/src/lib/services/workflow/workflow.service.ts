@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
@@ -13,11 +13,23 @@ import {
   EDIT_STEP,
 } from './graphql/mutations';
 import { Workflow } from '../../models/workflow.model';
-import { SafeSnackBarService } from '../snackbar/snackbar.service';
 import { ContentType } from '../../models/page.model';
 import { Step } from '../../models/step.model';
 import { SafeApplicationService } from '../application/application.service';
 import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
+
+/**
+ * Defines the type for workflow context.
+ * Contains the ids of selected rows for each grid when the 'Next step' button is clicked.
+ */
+type WorkflowContext = {
+  // each key is a dashboard id
+  [key: string]: {
+    // each key is a widget id
+    [key: string]: string[];
+  };
+};
 
 /**
  * Workflow service. Handles modification of workflow ( step addition / step name update ) and some workflow actions.
@@ -33,6 +45,15 @@ export class SafeWorkflowService {
     return this.workflow.asObservable();
   }
 
+  public nextStep = new EventEmitter<void>();
+
+  /** Current workflow context */
+  private workflowContext = new BehaviorSubject<WorkflowContext>({});
+  /** @returns Current workflow context as observable */
+  get workflowContext$(): Observable<WorkflowContext> {
+    return this.workflowContext.asObservable();
+  }
+
   /**
    * Workflow service. Handles modification of workflow ( step addition / step name update ) and some workflow actions.
    *
@@ -44,7 +65,7 @@ export class SafeWorkflowService {
    */
   constructor(
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private router: Router,
     private applicationService: SafeApplicationService,
     private translate: TranslateService
@@ -184,5 +205,25 @@ export class SafeWorkflowService {
    */
   closeWorkflow(): void {
     this.applicationService.goToFirstPage();
+  }
+
+  /**
+   * Adds a context to the workflow context.
+   *
+   * @param dashboardId dashboard id
+   * @param widgetId widget id
+   * @param rows selected rows
+   */
+  public addToContext(
+    dashboardId: string,
+    widgetId: string,
+    rows: string[]
+  ): void {
+    const context = this.workflowContext.getValue();
+    if (!context[dashboardId]) {
+      context[dashboardId] = {};
+    }
+    context[dashboardId][widgetId] = rows;
+    this.workflowContext.next(context);
   }
 }

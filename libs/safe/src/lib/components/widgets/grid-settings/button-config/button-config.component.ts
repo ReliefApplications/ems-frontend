@@ -13,7 +13,7 @@ import { ContentType } from '../../../../models/page.model';
 import { SafeWorkflowService } from '../../../../services/workflow/workflow.service';
 import { Template, TemplateTypeEnum } from '../../../../models/template.model';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { createQueryForm } from '../../../query-builder/query-builder-forms';
 import { DistributionList } from '../../../../models/distribution-list.model';
 import { SafeApplicationService } from '../../../../services/application/application.service';
@@ -73,7 +73,7 @@ export class ButtonConfigComponent
    * @param router Angular Router service
    * @param workflowService Shared workflow service
    * @param queryBuilder Shared Query Builder service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param applicationService Shared application service
    */
   constructor(
@@ -81,7 +81,7 @@ export class ButtonConfigComponent
     private router: Router,
     private workflowService: SafeWorkflowService,
     private queryBuilder: QueryBuilderService,
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private applicationService: SafeApplicationService
   ) {
     super();
@@ -203,9 +203,6 @@ export class ButtonConfigComponent
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         if (value) {
-          this.formGroup
-            ?.get('distributionList')
-            ?.setValidators(Validators.required);
           this.formGroup?.get('templates')?.setValidators(Validators.required);
         } else {
           this.formGroup?.get('distributionList')?.clearValidators();
@@ -399,7 +396,7 @@ export class ButtonConfigComponent
       data: null,
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe((value: any) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.addDistributionList(
           {
@@ -422,7 +419,7 @@ export class ButtonConfigComponent
     const dialogRef = this.dialog.open(EditTemplateModalComponent, {
       disableClose: true,
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value)
         this.applicationService.addTemplate(
           {
@@ -449,5 +446,15 @@ export class ButtonConfigComponent
    */
   public emitDeleteButton(): void {
     this.deleteButton.emit(true);
+  }
+
+  /**
+   * Get scalar field from name
+   *
+   * @param fieldName field name
+   * @returns scalar field ( if exists )
+   */
+  public scalarField(fieldName: string): any {
+    return this.scalarFields.find((field: any) => field.name === fieldName);
   }
 }

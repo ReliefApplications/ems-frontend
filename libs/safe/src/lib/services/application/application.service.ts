@@ -1,13 +1,17 @@
 import { Apollo } from 'apollo-angular';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subscription,
+  firstValueFrom,
+} from 'rxjs';
 import { Role } from '../../models/user.model';
 import { Page, ContentType } from '../../models/page.model';
 import { Application } from '../../models/application.model';
 import { Channel } from '../../models/channel.model';
 import { HttpHeaders } from '@angular/common/http';
-import { SafeSnackBarService } from '../snackbar/snackbar.service';
 import {
   AddPageMutationResponse,
   ADD_PAGE,
@@ -87,6 +91,7 @@ import {
 } from '../application-notifications/graphql/mutations';
 import { SafeRestService } from '../rest/rest.service';
 import { SafeLayoutService } from '../layout/layout.service';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -96,7 +101,7 @@ import { SafeLayoutService } from '../layout/layout.service';
 })
 export class SafeApplicationService {
   /** Current application */
-  private application = new BehaviorSubject<Application | null>(null);
+  public application = new BehaviorSubject<Application | null>(null);
   /** @returns Current application as observable */
   get application$(): Observable<Application | null> {
     return this.application.asObservable();
@@ -112,6 +117,7 @@ export class SafeApplicationService {
   private environment: any;
 
   /** Application custom style */
+  public rawCustomStyle?: string;
   public customStyle?: HTMLStyleElement;
   public customStyleEdited = false;
 
@@ -173,7 +179,7 @@ export class SafeApplicationService {
   constructor(
     @Inject('environment') environment: any,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private authService: SafeAuthService,
     private router: Router,
     private translate: TranslateService,
@@ -191,6 +197,11 @@ export class SafeApplicationService {
    * @param asRole Role to use to preview
    */
   loadApplication(id: string, asRole?: string): void {
+    // First make sure we close the opened application, if any
+    if (this.application.getValue()) {
+      this.leaveApplication();
+    }
+    // Then, open the new application
     this.applicationSubscription = this.apollo
       .query<GetApplicationByIdQueryResponse>({
         query: GET_APPLICATION_BY_ID,
@@ -199,15 +210,14 @@ export class SafeApplicationService {
           asRole,
         },
       })
-      .subscribe(({ data }) => {
+      .subscribe(async ({ data }) => {
         // extend user abilities for application
         if (data.application)
           this.authService.extendAbilityForApplication(data.application);
+        await this.getCustomStyle(data.application);
         this.application.next(data.application);
         const application = this.application.getValue();
-        this.getCustomStyle();
-        this.customStyleEdited = false;
-        if (data.application.locked) {
+        if (data.application?.locked) {
           if (!application?.lockedByUser) {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.objectLocked', {
@@ -232,7 +242,9 @@ export class SafeApplicationService {
             duration: 0,
           }
         );
-        snackBar.onAction().subscribe(() => window.location.reload());
+        snackBar.instance.actionComplete.subscribe(() =>
+          window.location.reload()
+        );
       });
     this.lockSubscription = this.apollo
       .subscribe<ApplicationUnlockedSubscriptionResponse>({
@@ -246,8 +258,8 @@ export class SafeApplicationService {
           const application = this.application.getValue();
           const newApplication = {
             ...application,
-            locked: data?.applicationUnlocked.locked,
-            lockedByUser: data?.applicationUnlocked.lockedByUser,
+            locked: data?.applicationUnlocked?.locked,
+            lockedByUser: data?.applicationUnlocked?.lockedByUser,
           };
           this.application.next(newApplication);
         }
@@ -259,7 +271,8 @@ export class SafeApplicationService {
    */
   leaveApplication(): void {
     if (this.customStyle) {
-      document.getElementsByTagName('body')[0].removeChild(this.customStyle);
+      document.getElementsByTagName('head')[0].removeChild(this.customStyle);
+      this.rawCustomStyle = undefined;
       this.customStyle = undefined;
       this.layoutService.closeRightSidenav = true;
     }
@@ -299,7 +312,7 @@ export class SafeApplicationService {
           if (!data.toggleApplicationLock.lockedByUser) {
             const newApplication = {
               ...application,
-              locked: data?.toggleApplicationLock.locked,
+              locked: data?.toggleApplicationLock?.locked,
               lockedByUser: data?.toggleApplicationLock.lockedByUser,
             };
             this.application.next(newApplication);
@@ -619,11 +632,64 @@ export class SafeApplicationService {
   }
 
   /**
+   * Toggle page visibility
+   * It is about if a page can be seen or not in front-office, in the navbar. Thus, if a page is hidden, it is still accessible through url.
+   *
+   * @param page page to hide / show
+   * @param callback callback method
+   */
+  togglePageVisibility(page: Page, callback?: any): void {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      this.apollo
+        .mutate<EditPageMutationResponse>({
+          mutation: EDIT_PAGE,
+          variables: {
+            id: page.id,
+            visible: !page.visible,
+          },
+        })
+        .subscribe(({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.page.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.page.one'),
+                  value: '',
+                })
+              );
+              const newApplication = {
+                ...application,
+                pages: application.pages?.map((x) => {
+                  if (x.id === page.id) {
+                    x = { ...x, visible: !page.visible };
+                  }
+                  return x;
+                }),
+              };
+              this.application.next(newApplication);
+              if (callback) callback();
+            }
+          }
+        });
+    }
+  }
+
+  /**
    * Adds a new page to the opened application.
    *
    * @param page new page
+   * @param structure page structure ( only for new dashboard pages )
    */
-  addPage(page: any): void {
+  addPage(page: any, structure?: any): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo
@@ -633,6 +699,7 @@ export class SafeApplicationService {
             type: page.type,
             content: page.content,
             application: application.id,
+            structure,
           },
         })
         .subscribe(({ errors, data }) => {
@@ -643,6 +710,7 @@ export class SafeApplicationService {
                 value: data.addPage.name,
               })
             );
+
             const content = data.addPage.content;
             const newApplication = {
               ...application,
@@ -1831,28 +1899,53 @@ export class SafeApplicationService {
     }
   }
 
-  /** Check if open application has custom style to apply */
-  getCustomStyle(): void {
-    const application = this.application.getValue();
+  /**
+   * Load custom style from application
+   *
+   * @param application application to open
+   * @returns custom styling loading as promise
+   */
+  getCustomStyle(application: Application): Promise<void> {
     const path = `style/application/${application?.id}`;
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
     });
-    this.restService.get(path, { responseType: 'blob', headers }).subscribe({
-      next: async (res) => {
+    return firstValueFrom(
+      this.restService.get(path, { responseType: 'blob', headers })
+    )
+      .then(async (res) => {
         if (res.type === 'application/octet-stream') {
           const styleFromFile = await res.text();
+          const scss = styleFromFile as string;
           this.customStyle = document.createElement('style');
-          this.customStyle.innerText = styleFromFile;
-          document
-            .getElementsByTagName('body')[0]
-            .appendChild(this.customStyle);
+          await firstValueFrom(
+            this.restService.post(
+              'style/scss-to-css',
+              { scss },
+              { responseType: 'text' }
+            )
+          )
+            .then((css) => {
+              if (this.customStyle) {
+                this.customStyle.innerText = css;
+                document
+                  .getElementsByTagName('head')[0]
+                  .appendChild(this.customStyle);
+              }
+            })
+            .catch(() => {
+              if (this.customStyle) {
+                this.customStyle.innerText = styleFromFile;
+              }
+            });
+
+          this.rawCustomStyle = styleFromFile;
         }
-      },
-      error: (err) => {
+      })
+      .catch((err) => {
         this.snackBar.openSnackBar(err.message, { error: true });
-      },
-    });
+      })
+      .finally(() => (this.customStyleEdited = false));
   }
 }

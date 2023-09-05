@@ -1,32 +1,31 @@
 <form [formGroup]="form">
   <!-- HEADER -->
   <div class="filter-group-header">
-    <mat-form-field appearance="outline">
-      <mat-label>{{
-        'components.queryBuilder.filter.logic' | translate
-      }}</mat-label>
-      <mat-select formControlName="logic">
-        <mat-option value="or">{{
+    <div uiFormFieldDirective [outline]="false" class="w-28">
+      <label>{{ 'components.queryBuilder.filter.logic' | translate }}</label>
+      <ui-select-menu formControlName="logic">
+        <ui-select-option value="or">{{
           'components.queryBuilder.filter.or' | translate
-        }}</mat-option>
-        <mat-option value="and">{{
+        }}</ui-select-option>
+        <ui-select-option value="and">{{
           'components.queryBuilder.filter.and' | translate
-        }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-    <safe-button category="tertiary" (click)="addFilter()">
+        }}</ui-select-option>
+      </ui-select-menu>
+    </div>
+
+    <ui-button category="tertiary" (click)="addFilter()">
       {{ 'components.queryBuilder.filter.new' | translate }}
-    </safe-button>
-    <safe-button category="tertiary" (click)="addGroup()">
+    </ui-button>
+    <ui-button category="tertiary" (click)="addGroup()">
       {{ 'components.queryBuilder.filter.newGroup' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       [isIcon]="true"
       icon="delete"
       variant="danger"
       (click)="delete.emit()"
     >
-    </safe-button>
+    </ui-button>
   </div>
   <!-- FILTERS -->
   <div

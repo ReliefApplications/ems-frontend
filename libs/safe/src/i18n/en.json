@@ -30,6 +30,7 @@
 		},
 		"auto": "Auto",
 		"back": "Back",
+		"bookmarks": "Bookmarks",
 		"calculatedField": {
 			"few": "Calculated Fields",
 			"none": "No Calculated field",
@@ -49,6 +50,7 @@
 			"none": "No column",
 			"one": "Column"
 		},
+		"comma": "comma",
 		"create": "Create",
 		"createdOn": "Created on",
 		"customNotification": {
@@ -84,6 +86,7 @@
 		"errors": {
 			"objectDuplicated": "{{type}} {{value}} already exists."
 		},
+		"exitFullscreen": "Exit Fullscreen",
 		"export": "Export",
 		"exportObject": "Export {{name}}",
 		"false": "False",
@@ -130,6 +133,7 @@
 		"modifiedOn": "Modified On",
 		"name": "Name",
 		"next": "Next",
+		"noOptions": "No available choices",
 		"notifications": {
 			"accessDenied": "You don't have permission to see the {{type}}.",
 			"accessNotProvided": "No access provided to this {{type}}. {{error}}",
@@ -207,6 +211,7 @@
 			"of": "of"
 		},
 		"placeholder": {
+			"address": "Enter an address or place e.g. 1 York St",
 			"email": "Enter email",
 			"name": "Enter a name",
 			"search": "Search...",
@@ -260,9 +265,12 @@
 		},
 		"save": "Save",
 		"saveChanges": "Save changes",
+		"search": "Search",
 		"searchObject": "Search {{name}}",
 		"select": "Select",
+		"semicolon": "semicolon",
 		"send": "Send",
+		"separator": "Separator",
 		"settings": "Settings",
 		"status": "Status",
 		"status_active": "Active",
@@ -284,6 +292,11 @@
 			"one": "Notification template"
 		},
 		"title": "Title",
+		"tooltip": {
+			"editor": {
+				"insert": "Type '{' to inject expressions and variables"
+			}
+		},
 		"true": "True",
 		"type": {
 			"few": "Types",
@@ -303,6 +316,7 @@
 			"none": "No value",
 			"one": "Value"
 		},
+		"viewFullscreen": "View Fullscreen",
 		"viewObject": "View {{name}}",
 		"workflow": {
 			"few": "Workflows",
@@ -404,7 +418,7 @@
 				"filter": {
 					"empty": "No filters have been defined by the administrators",
 					"info": "Dashboard filters can be used between pages to filter their content.",
-					"title": "You are editing dashboard filters"
+					"title": "Dashboard filters configuration"
 				},
 				"filterSettings": "Filter settings",
 				"settings": {
@@ -423,6 +437,7 @@
 				"delete": {
 					"confirmationMessage": "Do you confirm the deletion of the page {{name}}?"
 				},
+				"hide": "Hide page in nav bar for end-users",
 				"notReordered": {
 					"plural": "The pages were not reordered. {{error}}",
 					"singular": "The page was not reordered. {{error}}"
@@ -430,7 +445,8 @@
 				"reordered": {
 					"plural": "The pages were successfully reordered.",
 					"singular": "The page was successfully reordered."
-				}
+				},
+				"show": "Make page visible in nav bar for end-users"
 			},
 			"positionAttribute": {
 				"delete": {
@@ -554,15 +570,6 @@
 			"subject": "Subject",
 			"withoutRecords": "Without records"
 		},
-		"emailPreview": {
-			"errors": {
-				"missingSubject": "Subject cannot be left empty."
-			},
-			"from": "From",
-			"subject": "Subject",
-			"title": "Email Preview",
-			"to": "To"
-		},
 		"form": {
 			"aggregation": {
 				"delete": {
@@ -626,11 +633,21 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"duplicatedRelatedName": "Duplicated related name for question {{question}} on page {{page}}. Please provide a unique related name (snake case format) to save the form.",
 				"missingGridField": "Missing an available field grid for question {{question}} on page {{page}}. Please select a least one in Custom Question Properties to save the form.",
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
 			},
 			"saveSurvey": "SavingSurvey"
+		},
+		"formMapProperties": {
+			"geofields": {
+				"editDialog": {
+					"editGeofield": "Edit Geo fields",
+					"label": "Label",
+					"value": "Value"
+				}
+			}
 		},
 		"forms": {
 			"isCore": "Is core",
@@ -649,6 +666,7 @@
 			}
 		},
 		"header": {
+			"goToApp": "Go to application",
 			"goToPlatform": "Navigate to",
 			"logout": "Logout",
 			"sidenav": {
@@ -676,6 +694,23 @@
 		"logout": {
 			"confirmationMessage": "There are unsaved changes on your form. Are you sure you want to logout?",
 			"title": "Exit without saving changes"
+		},
+		"map": {
+			"controls": {
+				"download": {
+					"layers": {
+						"all": "All layers",
+						"selected": "Selected Layers",
+						"visible": "Visible layers"
+					},
+					"output": "Select an output format",
+					"selectLayers": "Select layers",
+					"view": {
+						"all": "Map",
+						"current": "Current view"
+					}
+				}
+			}
 		},
 		"mapping": {
 			"field": "User field",
@@ -913,6 +948,7 @@
 						"add": "Create assignment rule",
 						"delete": "Delete rule",
 						"edit": "Edit assignment rule",
+						"none": "No assignment rule",
 						"title": "Rule"
 					},
 					"title": "Automatic assignment"
@@ -1074,6 +1110,7 @@
 					"history": "Show history"
 				},
 				"errors": {
+					"autoSaveFailed": "Action stopped due to some invalid records. Please review them before taking any other action.",
 					"invalid": {
 						"backoffice": "Invalid grid configuration",
 						"frontoffice": "Invalid grid configuration, please contact your admin"
@@ -1123,8 +1160,13 @@
 					"records": "Loading records...",
 					"settings": "Loading settings..."
 				},
+				"map": {
+					"mapDetailsTitle": "Query Map View",
+					"mapDetailsTooltip": "Centered by default on selected record"
+				},
 				"openSettings": "Open settings",
 				"tooltip": {
+					"displayMap": "Display map",
 					"saved": "Changes saved",
 					"unsaved": "Click on save button to upload changes",
 					"uploadFailed": "Record not saved. Click to see more details"
@@ -1168,6 +1210,7 @@
 					},
 					"position": "Position",
 					"series": {
+						"fill": "Fill",
 						"interpolation": {
 							"step": "Step interpolation",
 							"title": "Interpolation"
@@ -1241,7 +1284,8 @@
 							"workflow": {
 								"close": "Close workflow",
 								"confirm": "Confirmation message",
-								"next": "Go to next step"
+								"next": "Go to next step",
+								"previous": "Go to previous step"
 							}
 						},
 						"create": "Add a button",
@@ -1257,6 +1301,9 @@
 							"notify": "When enabled, you must provide a channel and a message. All selected rows will be sent as a single notification on the specified channel. The provided message is used to define the notification’s action",
 							"publish": "When enabled, you must provide a channel. All selected rows will be sent as a single publication on the specified channel. Everyone listening to this channel can receive the records"
 						}
+					},
+					"display": {
+						"showSingleActionAsButton": "Show single action as button"
 					},
 					"hint": {
 						"actions": {
@@ -1289,27 +1336,105 @@
 						"template": "Select a template for addition and edition of records"
 					}
 				},
+				"iconPicker": {
+					"default": "Default",
+					"placeholder": "Search an icon"
+				},
 				"map": {
 					"basemap": "Base map",
 					"category": "Map quick layers",
 					"dataset": "Data set selection",
+					"edit": {
+						"aggregation": "Aggregation",
+						"cluster": {
+							"cluster": "Cluster",
+							"clusterSettings": "Cluster settings",
+							"fields": "Cluster fields",
+							"high": "High",
+							"label": "Cluster label",
+							"low": "Low",
+							"max": "Max",
+							"min": "Min",
+							"overrideSymbol": "Override cluster symbol",
+							"popups": "Cluster pop-ups",
+							"radius": "Cluster radius",
+							"sizeRange": "Size range",
+							"symbol": "Symbol style"
+						},
+						"datasource": {
+							"origin": "Origin"
+						},
+						"fields": "Fields",
+						"filter": "Filter",
+						"groupLayers": "Group layers",
+						"labels": "Labels",
+						"layerDatasource": "Layer datasource",
+						"layerProperties": "Layer properties",
+						"layerStyling": "Layer styling",
+						"popup": "Pop-up",
+						"properties": {
+							"defaultVisibility": "Visible by default",
+							"from": "from zoom ",
+							"opacity": "Opacity",
+							"to": " to zoom",
+							"visibilityRange": "Visibility range",
+							"zoom": "Current zoom"
+						},
+						"reduction": {
+							"noReduction": "No reduction",
+							"reduction": "Reduction"
+						},
+						"style": {
+							"color": "Color",
+							"icon": "Icon",
+							"size": "Size",
+							"stylingType": "{{layerType}} styling"
+						},
+						"styling": {
+							"heatmapOptions": {
+								"blur": "Blur",
+								"gradient": "Gradient",
+								"minOpacity": "Minimum opacity",
+								"radius": "Radius"
+							}
+						}
+					},
 					"errors": {
 						"latitude": "Invalid latitude, please select a number between -90 and 90",
 						"longitude": "Invalid longitude, please select a number between -180 and 180"
 					},
-					"layers": {
-						"clorophlet": {
-							"add": "Add new clorophlet",
-							"division": {
-								"add": "Add new division",
-								"title": "Divisions"
+					"geospatial": {
+						"layersStyles": {
+							"fill": {
+								"color": "Fill color",
+								"opacity": "Fill opacity",
+								"title": "Fill"
 							},
-							"geoJSON": "geoJSON",
-							"geoJSONidentifier": "geoJSON Identifier",
-							"identifier": "Identifier",
-							"info": "Set up different clorophlets which will be displayed as layers in the map",
-							"title": "Clorophlets"
+							"marker": {
+								"color": "Marker color",
+								"opacity": "Marker opacity",
+								"title": "Marker"
+							},
+							"outline": {
+								"color": "Outline color",
+								"opacity": "Outline opacity",
+								"title": "Outline",
+								"width": "Outline width"
+							},
+							"title": "Layer styles"
+						}
+					},
+					"layers": {
+						"add": "Add new layer",
+						"chooseLayer": "Choose a layer",
+						"createGroup": "Create a new group layer",
+						"createLayer": "Create a new layer",
+						"dataSource": {
+							"geoField": "GeoField",
+							"latitude": "Latitude",
+							"longitude": "Longitude"
 						},
+						"edit": "Update layer {{name}}",
 						"online": {
 							"info": "Search for online layers in arcGIS online",
 							"select": "Search layers",
@@ -1325,27 +1450,83 @@
 							"rulesInfo": "Customize the size and colors of your markers",
 							"size": "Size",
 							"title": "Marker layers"
+						},
+						"popup": {
+							"addField": "Add field",
+							"description": "Description",
+							"fields": "Fields",
+							"fieldsElements": {
+								"description": "Description",
+								"title": "Title"
+							},
+							"popup": "Popup",
+							"popupElements": "Popup elements",
+							"text": "Text",
+							"title": "Title",
+							"tooltip": {
+								"text": "Type '{' to start using fields from the datasource"
+							}
+						},
+						"remove": "Remove layer",
+						"selectLayer": "Select existing layer",
+						"styling": {
+							"style": "Style"
+						},
+						"types": {
+							"cluster": "cluster",
+							"heatmap": "heatmap",
+							"point": "point",
+							"polygon": "polygon"
 						}
 					},
+					"legend": {
+						"high": "High",
+						"low": "Low",
+						"title": "Legend"
+					},
 					"popup": {
-						"label": "Fields displayed in the popup"
+						"label": "Fields displayed in the popup",
+						"location": "Location",
+						"of": "{{current}} of {{total}}",
+						"zoomTo": "Zoom to"
 					},
 					"properties": {
 						"basemap": "Base map",
+						"controls": {
+							"download": "Download",
+							"layer": "Layers",
+							"legend": "Legend",
+							"measure": "Measure",
+							"search": "Search",
+							"timedimension": "Time dimension",
+							"title": "Visible Map Controls"
+						},
 						"latitude": "Map center latitude",
 						"longitude": "Map center longitude",
+						"setByMap": "Set By Map",
 						"title": "Map Parameters",
+						"webmap": "WebMap",
 						"zoom": "Default zoom"
+					},
+					"renderer": {
+						"default": "Default",
+						"defaultLabel": "Default label",
+						"label": "Label",
+						"symbol": "Symbol",
+						"value": "Value"
 					},
 					"tooltip": {
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
 						"dataset": "Select data points below and drag them to 'selected fields' on the right. They will be displayed in the pop-up when clicking on a marker",
 						"default": {
-							"latitude": "Select a default latitude to center the map around",
-							"longitude": "Select a default longitude to center the map around",
+							"latitude": "Set the default latitude of the center of the map. You can use 'Set By Map' to use the latitude of the preview map.",
+							"longitude": "Set the default longitude of the center of the map. You can use 'Set By Map' to use the longitude of the preview map.",
 							"zoom": "Select a default zoom for the map display"
 						}
 					}
+				},
+				"style": {
+					"customStyling": "Custom Styling"
 				},
 				"summaryCard": {
 					"add": "Add new card",
@@ -1403,6 +1584,7 @@
 					"static": "Static"
 				}
 			},
+			"styling": "Edit styling",
 			"summaryCard": {
 				"dataSource": "Data Source",
 				"errors": {
@@ -1414,7 +1596,13 @@
 		}
 	},
 	"kendo": {
+		"combobox": {
+			"noDataText": "No available choice"
+		},
 		"datepicker": {
+			"dateLabel": "Select a date",
+			"endLabel": "Select a end date",
+			"startLabel": "Select a start date",
 			"today": "Today",
 			"toggle": "Choose a date"
 		},
@@ -1563,6 +1751,9 @@
 			"unlock": "Unlock",
 			"unstick": "Unstick"
 		},
+		"multiselect": {
+			"noDataText": "No available choice"
+		},
 		"pager": {
 			"firstPage": "Go to the first page",
 			"items": "items",
@@ -1627,6 +1818,17 @@
 		},
 		"dashboard": {
 			"activateFiltering": "Activate filtering",
+			"buttonActions": {
+				"add": "Add button action",
+				"category": "Button category",
+				"confirmDelete": "Are you sure you want to delete this button action?",
+				"edit": "Edit button action",
+				"href": "Button href",
+				"one": "Button action",
+				"openInNewTab": "Open in new tab",
+				"text": "Button text",
+				"variant": "Button variant"
+			},
 			"context": {
 				"datasource": {
 					"alert": "Select a datasource, in order to set one page per record of the datasource. You can also set a template, which would be loaded by default if no specific page is created for a record.",
@@ -1645,8 +1847,13 @@
 					"element": "Element"
 				}
 			},
+			"dashboardFilter": "Dashboard filter",
 			"deactivateFiltering": "Deactivate filtering",
-			"share": "Share Dashboard"
+			"share": "Share Dashboard",
+			"tooltip": {
+				"useDashboardFilterEditor": "Use dashboard filter editor",
+				"useDefaultEditor": "Use default editor"
+			}
 		},
 		"form": {
 			"core": "Core",
@@ -1740,6 +1947,7 @@
 			"display": {
 				"border": "Show widget border",
 				"searchable": "Allow search",
+				"sortable": "Allow sorting",
 				"title": "Widget display"
 			},
 			"map": {
@@ -1751,6 +1959,16 @@
 			"scheduler": {
 				"defaultTitle": "Scheduler Widget"
 			},
+			"sorting": {
+				"add": "Add a field",
+				"delete": "Delete sort field",
+				"field": "Field",
+				"label": "Label",
+				"management": "Sort fields",
+				"order": "Order",
+				"select": "Select a sort field...",
+				"title": "Sorting"
+			},
 			"tooltip": {
 				"selector": {
 					"collapse": "Hide widget selector",
@@ -1761,6 +1979,7 @@
 		"workflow": {
 			"notifications": {
 				"cannotGoToNextStep": "Cannot go to the next step.",
+				"cannotGoToPreviousStep": "Cannot go to the previous step.",
 				"goToStep": "Back to {{step}} step."
 			}
 		}
@@ -1811,7 +2030,8 @@
 				"form": {
 					"title": "Available forms"
 				},
-				"selectType": "Select which type of page you want to create"
+				"selectType": "Select which type of page you want to create",
+				"startFromWidget": "Start from a widget"
 			},
 			"empty": {
 				"add": "Add a Page",

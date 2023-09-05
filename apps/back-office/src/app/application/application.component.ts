@@ -24,19 +24,20 @@ export class ApplicationComponent
   extends SafeUnsubscribeComponent
   implements OnInit, OnDestroy
 {
-  // === HEADER TITLE ===
-
+  /** Application title */
   public title = '';
-
-  // === AVAILABLE ROUTES, DEPENDS ON USER ===
+  /** List of application pages */
   public navGroups: any[] = [];
+  /** List of settings pages */
   public adminNavItems: any[] = [];
-
-  // === APPLICATION ===
+  /** Current application */
   public application?: Application;
-
+  /** Use side menu or not */
   public sideMenu = false;
+  /** Is large device */
   public largeDevice: boolean;
+  /** Is loading */
+  public loading = true;
 
   /**
    * Main component of application view
@@ -60,12 +61,14 @@ export class ApplicationComponent
 
   ngOnInit(): void {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.loading = true;
       this.applicationService.loadApplication(params.id);
     });
     this.applicationService.application$
       .pipe(takeUntil(this.destroy$))
       .subscribe((application: Application | null) => {
         if (application) {
+          this.loading = false;
           this.title = application.name || '';
           const displayNavItems: any[] =
             application.pages
@@ -80,6 +83,7 @@ export class ApplicationComponent
                 icon: this.getNavIcon(x.type || ''),
                 class: null,
                 orderable: true,
+                visible: x.visible ?? true,
                 action: x.canDelete && {
                   icon: 'delete',
                   toolTip: this.translate.instant('common.deleteObject', {
@@ -167,11 +171,11 @@ export class ApplicationComponent
             }
           }
           this.application = application;
+          this.sideMenu = this.application?.sideMenu ?? false;
         } else {
           this.title = '';
           this.navGroups = [];
         }
-        this.sideMenu = this.application?.sideMenu ?? false;
       });
   }
 
@@ -217,9 +221,9 @@ export class ApplicationComponent
         { name: item.name }
       ),
       confirmText: this.translate.instant('components.confirmModal.delete'),
-      confirmColor: 'warn',
+      confirmVariant: 'danger',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.applicationService.deletePage(item.id);
       }
@@ -250,9 +254,9 @@ export class ApplicationComponent
           'components.widget.settings.close.confirmationMessage'
         ),
         confirmText: this.translate.instant('components.confirmModal.confirm'),
-        confirmColor: 'primary',
+        confirmVariant: 'primary',
       });
-      return dialogRef.afterClosed().pipe(
+      return dialogRef.closed.pipe(
         map((confirm) => {
           if (confirm) {
             return true;
@@ -264,6 +268,9 @@ export class ApplicationComponent
     return true;
   }
 
+  /**
+   * Remove application data such as styling when existing application edition.
+   */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     this.applicationService.leaveApplication();

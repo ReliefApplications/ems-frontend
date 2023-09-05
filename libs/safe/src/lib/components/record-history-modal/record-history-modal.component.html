@@ -1,8 +1,10 @@
-<safe-modal [padding]="false">
-  <safe-record-history
-    class="max-h-screen"
-    (cancel)="closeModal($event)"
-    [id]="data.id"
-    [revert]="data.revert"
-  ></safe-record-history>
-</safe-modal>
+<ui-dialog [padding]="false" class="p-0">
+  <ng-container ngProjectAs="content">
+    <safe-record-history
+      class="max-h-screen"
+      (cancel)="closeModal($event)"
+      [id]="data.id"
+      [revert]="data.revert"
+    ></safe-record-history>
+  </ng-container>
+</ui-dialog>

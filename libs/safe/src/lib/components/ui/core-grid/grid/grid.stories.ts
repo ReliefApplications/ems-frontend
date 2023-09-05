@@ -191,6 +191,9 @@ const DEFAULT_FIELDS = [
   },
 ];
 
+/**
+ * Default story.
+ */
 export const DEFAULT = {
   render: TEMPLATE,
   name: 'Default',
@@ -205,6 +208,9 @@ export const DEFAULT = {
   },
 };
 
+/**
+ * Empty story.
+ */
 export const EMPTY = {
   render: TEMPLATE,
   name: 'Empty',
@@ -218,6 +224,9 @@ export const EMPTY = {
   },
 };
 
+/**
+ * Error story.
+ */
 export const ERROR = {
   render: TEMPLATE,
   name: 'With error',
@@ -231,6 +240,9 @@ export const ERROR = {
   },
 };
 
+/**
+ * Loading story.
+ */
 export const LOADING = {
   render: TEMPLATE,
   name: 'Loading',
@@ -240,6 +252,9 @@ export const LOADING = {
   },
 };
 
+/**
+ * Fixed position story.
+ */
 export const FIXED = {
   render: TEMPLATE,
   name: 'Fixed size',
@@ -262,6 +277,9 @@ const MULTI_SELECT_DATA = [
   },
 ];
 
+/**
+ * With mutli select inputs.
+ */
 export const MULTI_SELECT_INPUTS = {
   render: TEMPLATE,
   name: 'With multi select inputs',
@@ -368,6 +386,9 @@ const COMPLEX_DATA = [
   },
 ];
 
+/**
+ * With complex inputs.
+ */
 export const COMPLEX_INPUTS = {
   render: TEMPLATE,
   name: 'With complex inputs',

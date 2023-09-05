@@ -1,19 +1,28 @@
 import { Apollo } from 'apollo-angular';
 import {
+  GET_SHORT_RESOURCE_BY_ID,
   GET_RESOURCE_BY_ID,
   GetResourceByIdQueryResponse,
 } from '../graphql/queries';
 import { BehaviorSubject } from 'rxjs';
 import * as SurveyCreator from 'survey-creator';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import {
+  FormControl,
+  UntypedFormBuilder,
+  UntypedFormGroup,
+} from '@angular/forms';
+import { Dialog } from '@angular/cdk/dialog';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
 import { SafeCoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
 import { DomService } from '../../services/dom/dom.service';
-import { buildSearchButton, buildAddButton } from './utils';
+import {
+  buildSearchButton,
+  buildAddButton,
+  processNewCreatedRecords,
+} from './utils';
 import { QuestionResource } from '../types';
-import { SurveyModel } from 'survey-angular';
-import localForage from 'localforage';
+import { Question, SurveyModel } from 'survey-angular';
+import { NgZone } from '@angular/core';
 
 /** Create the list of filter values for resources */
 export const resourcesFilterValues = new BehaviorSubject<
@@ -31,23 +40,47 @@ export const resourceConditions = [
   { value: '<=', text: 'less or equals' },
 ];
 
+/** Question temporary records */
+const temporaryRecordsForm = new FormControl([]);
+
 /**
  * Inits the resources question component for survey.
  *
  * @param Survey Survey library
  * @param domService Shared DOM service
  * @param apollo Apollo client
- * @param dialog Material dialog service
+ * @param dialog Dialog service
  * @param formBuilder Angular form service
+ * @param ngZone Angular Service to execute code inside Angular environment
  */
 export const init = (
   Survey: any,
   domService: DomService,
   apollo: Apollo,
-  dialog: MatDialog,
-  formBuilder: UntypedFormBuilder
+  dialog: Dialog,
+  formBuilder: UntypedFormBuilder,
+  ngZone: NgZone
 ): void => {
-  const getResourceById = (data: {
+  const getResourceById = (data: { id: string }) =>
+    apollo.query<GetResourceByIdQueryResponse>({
+      query: GET_SHORT_RESOURCE_BY_ID,
+      variables: {
+        id: data.id,
+      },
+    });
+
+  const mapQuestionChoices = (data: any, question: any) => {
+    return (
+      data.resource.records?.edges?.map((x: any) => {
+        return {
+          value: x.node?.id,
+          text: x.node?.data[question.displayField || 'id'],
+        };
+      }) || []
+    );
+  };
+
+  const getResourceRecordsById = (data: {
     id: string;
     filters?: { field: string; operator: string; value: string }[];
   }) =>
@@ -57,6 +90,7 @@ export const init = (
         id: data.id,
         filter: data.filters,
       },
+      fetchPolicy: 'no-cache',
     });
 
   // const hasUniqueRecord = ((id: string) => false);
@@ -98,6 +132,15 @@ export const init = (
         required: true,
       });
 
+      Survey.Serializer.addProperty('resources', {
+        name: 'valueExpression:expression',
+        category: 'logic',
+        onExecuteExpression: (obj: Question, res: any[]) => {
+          obj.readOnly = true;
+          obj.value = res;
+        },
+      });
+
       const resourceEditor = {
         render: (editor: any, htmlElement: any) => {
           const question = editor.object;
@@ -133,15 +176,13 @@ export const init = (
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
             getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const serverRes = data.resource.fields;
-              const res = [];
-              res.push({ value: null });
-              for (const item of serverRes) {
-                if (item.type !== 'matrix') {
-                  res.push({ value: item.name });
-                }
-              }
-              choicesCallback(res);
+              const choices = (data.resource.fields || [])
+                .filter((item: any) => item.type !== 'matrix')
+                .map((item: any) => {
+                  return { value: item.name };
+                });
+              choices.unshift({ value: null });
+              choicesCallback(choices);
             });
           }
         },
@@ -207,7 +248,7 @@ export const init = (
                       },
                     }
                   );
-                  dialogRef.afterClosed().subscribe((res: any) => {
+                  dialogRef.closed.subscribe((res: any) => {
                     if (res && res.value.fields) {
                       currentQuestion.gridFieldsSettings = res.getRawValue();
                     }
@@ -250,19 +291,13 @@ export const init = (
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
-            getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const serverRes =
-                data.resource.records?.edges?.map((x) => x.node) || [];
-              const res = [];
-              res.push({ value: null });
-              for (const item of serverRes) {
-                res.push({
-                  value: item?.id,
-                  text: item?.data[obj.displayField],
-                });
+            getResourceRecordsById({ id: obj.resource }).subscribe(
+              ({ data }) => {
+                const choices = mapQuestionChoices(data, obj);
+                choices.unshift({ value: null });
+                choicesCallback(choices);
               }
-              choicesCallback(res);
-            });
+            );
           }
         },
       });
@@ -394,6 +429,13 @@ export const init = (
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resources', {
+        name: 'alwaysCreateRecord:boolean',
+        category: 'Custom Questions',
+        dependsOn: ['resource', 'addRecord'],
+        visibleIf: (obj: any) => !!obj.resource && !!obj.addRecord,
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resources', {
         name: 'addTemplate',
         category: 'Custom Questions',
         dependsOn: ['addRecord', 'resource'],
@@ -413,13 +455,11 @@ export const init = (
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource && obj.addRecord) {
             getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const serverRes = data.resource.forms || [];
-              const res = [];
-              res.push({ value: null });
-              for (const item of serverRes) {
-                res.push({ value: item.id, text: item.name });
-              }
-              choicesCallback(res);
+              const choices = (data.resource.forms || []).map((item: any) => {
+                return { value: item.id, text: item.name };
+              });
+              choices.unshift({ value: null, text: '' });
+              choicesCallback(choices);
             });
           }
         },
@@ -494,12 +534,10 @@ export const init = (
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
             getResourceById({ id: obj.resource }).subscribe(({ data }) => {
-              const serverRes = data.resource.fields;
-              const res = [];
-              for (const item of serverRes) {
-                res.push({ value: item.name });
-              }
-              choicesCallback(res);
+              const choices = (data.resource.fields || []).map((item: any) => {
+                return { value: item.name };
+              });
+              choicesCallback(choices);
             });
           }
         },
@@ -579,13 +617,19 @@ export const init = (
 
       Survey.Serializer.addProperty('resources', {
         name: 'afterRecordCreation',
-        // type: 'expression',
+        type: 'text',
         category: 'logic',
       });
 
       Survey.Serializer.addProperty('resources', {
         name: 'afterRecordSelection',
-        // type: 'expression',
+        type: 'text',
+        category: 'logic',
+      });
+
+      Survey.Serializer.addProperty('resources', {
+        name: 'afterRecordDeselection',
+        type: 'text',
         category: 'logic',
       });
     },
@@ -614,37 +658,27 @@ export const init = (
           if (question.displayAsGrid) {
             resourcesFilterValues.next(filters);
           }
-          if (question.selectQuestion) {
-            question.registerFunctionOnPropertyValueChanged(
-              'filterCondition',
-              () => {
-                const resourcesFilters = resourcesFilterValues.getValue();
-                resourcesFilters[0].operator = question.filterCondition;
-                resourcesFilterValues.next(resourcesFilters);
-                resourcesFilters.map((i: any) => {
-                  i.operator = question.filterCondition;
-                });
-              }
-            );
+          question.registerFunctionOnPropertyValueChanged(
+            'filterCondition',
+            () => {
+              const resourcesFilters = resourcesFilterValues.getValue();
+              resourcesFilters[0].operator = question.filterCondition;
+              resourcesFilterValues.next(resourcesFilters);
+              resourcesFilters.map((i: any) => {
+                i.operator = question.filterCondition;
+              });
+            }
+          );
+          if (!question.filterBy || question.filterBy.length < 1) {
+            this.populateChoices(question);
           }
         }
         getResourceById({ id: question.resource }).subscribe(({ data }) => {
-          const serverRes =
-            data.resource.records?.edges?.map((x) => x.node) || [];
-          const res = [];
-          for (const item of serverRes) {
-            res.push({
-              value: item?.id,
-              text: item?.data[question.displayField],
-            });
-          }
-          question.contentQuestion.choices = res;
+          // const choices = mapQuestionChoices(data, question);
+          // question.contentQuestion.choices = choices;
           if (!question.placeholder) {
             question.contentQuestion.optionsCaption =
               'Select a record from ' + data.resource.name + '...';
-          }
-          if (!question.filterBy || question.filterBy.length < 1) {
-            this.populateChoices(question);
           }
         });
         if (question.selectQuestion) {
@@ -652,7 +686,7 @@ export const init = (
             setAdvanceFilter(question.staticValue, question);
             this.populateChoices(question);
           } else {
-            question.survey.onValueChanged.add((_: any, options: any) => {
+            question.survey?.onValueChanged.add((_: any, options: any) => {
               if (options.name === question.selectQuestion) {
                 if (!!options.value || options.question.customQuestion) {
                   setAdvanceFilter(options.value, question);
@@ -677,7 +711,7 @@ export const init = (
               if (typeof value === 'string' && value.match(/^{*.*}$/)) {
                 const quest = value.substr(1, value.length - 2);
                 objElement.value = '';
-                question.survey.onValueChanged.add((_: any, options: any) => {
+                question.survey?.onValueChanged.add((_: any, options: any) => {
                   if (options.question.name === quest) {
                     if (options.value) {
                       setAdvanceFilter(options.value, objElement.field);
@@ -700,7 +734,7 @@ export const init = (
     populateChoices: (question: any, field?: string): void => {
       if (question.displayAsGrid) {
         if (question.selectQuestion) {
-          const f = field ? field : question.filteryBy;
+          const f = field ? field : question.filterBy;
           const obj = filters.filter((i: any) => i.field === f);
           if (obj.length > 0) {
             resourcesFilterValues.next(obj);
@@ -709,18 +743,10 @@ export const init = (
           resourcesFilterValues.next(filters);
         }
       } else {
-        getResourceById({ id: question.resource, filters }).subscribe(
+        getResourceRecordsById({ id: question.resource, filters }).subscribe(
           ({ data }) => {
-            const serverRes =
-              data.resource.records?.edges?.map((x) => x.node) || [];
-            const res: any[] = [];
-            for (const item of serverRes) {
-              res.push({
-                value: item?.id,
-                text: item?.data[question.displayField],
-              });
-            }
-            question.contentQuestion.choices = res;
+            const choices = mapQuestionChoices(data, question);
+            question.contentQuestion.choices = choices;
           }
         );
       }
@@ -737,16 +763,21 @@ export const init = (
         filters = [];
         this.resourceFieldsName = [];
         question.addRecord = false;
+        question.alwaysCreateRecord = false;
         question.addTemplate = null;
         question.prefillWithCurrentRecord = false;
       }
     },
     onAfterRender: (question: QuestionResource, el: any): void => {
       // hide tagbox if grid view is enable
-      if (question.displayAsGrid) {
-        const element = el.getElementsByTagName('select')[0].parentElement;
-        element.style.display = 'none';
-      }
+      setTimeout(() => {
+        if (question.displayAsGrid) {
+          const element = el.parentElement?.querySelector('#tagbox');
+          if (element) {
+            element.style.display = 'none';
+          }
+        }
+      }, 500);
       // Display the add button | grid for resources question
       if (question.resource) {
         const parentElement = el.querySelector('.safe-qst-content');
@@ -769,11 +800,12 @@ export const init = (
               question,
               question.gridFieldsSettings,
               true,
-              dialog
+              dialog,
+              temporaryRecordsForm
             );
             actionsButtons.appendChild(searchBtn);
 
-            const addBtn = buildAddButton(question, true, dialog);
+            const addBtn = buildAddButton(question, true, dialog, ngZone);
             actionsButtons.appendChild(addBtn);
 
             parentElement.insertBefore(
@@ -802,7 +834,11 @@ export const init = (
             );
             question.registerFunctionOnPropertyValueChanged('addRecord', () => {
               addBtn.style.display =
-                question.addRecord && question.addTemplate ? '' : 'none';
+                question.addRecord &&
+                question.addTemplate &&
+                !question.isReadOnly
+                  ? ''
+                  : 'none';
             });
           }
         }
@@ -842,7 +878,7 @@ export const init = (
    * @returns The SafeCoreGridComponent, or null if the displayAsGrid property
    * of the question object is false
    */
-  const buildRecordsGrid = (question: any, el: any): any => {
+  const buildRecordsGrid = (question: Question, el: any): any => {
     let instance: SafeCoreGridComponent;
     if (question.displayAsGrid) {
       const grid = domService.appendComponentToBody(
@@ -851,11 +887,19 @@ export const init = (
       );
       instance = grid.instance;
       setGridInputs(instance, question);
-      question.survey.onValueChanged.add((_: any, options: any) => {
-        if (options.name === question.name) {
-          setGridInputs(instance, question);
+      (question.survey as SurveyModel)?.onValueChanged.add(
+        (_: any, options: any) => {
+          // If question is inside a panel that is updated, also updates the grid
+          const isInPanel =
+            question.parentQuestion?.getType() === 'paneldynamic';
+          if (
+            options.name === question.name ||
+            (isInPanel && options.name === question.parentQuestion.name)
+          ) {
+            setGridInputs(instance, question);
+          }
         }
-      });
+      );
       return instance;
     }
     return null;
@@ -872,53 +916,8 @@ export const init = (
     question: any
   ) => {
     instance.multiSelect = true;
-    const query = question.gridFieldsSettings || {};
-    const temporaryRecords: any[] = [];
     const promises: any[] = [];
-    question.newCreatedRecords?.forEach((recordId: string) => {
-      const promise = new Promise<void>((resolve, reject) => {
-        localForage
-          .getItem(recordId)
-          .then((data: any) => {
-            if (data != null) {
-              // We ensure to make it only if such a record is found
-              const parsedData = JSON.parse(data);
-              temporaryRecords.push({
-                id: recordId,
-                template: parsedData.template,
-                ...parsedData.data,
-                isTemporary: true,
-              });
-            }
-            resolve();
-          })
-          .catch((error: any) => {
-            console.error(error); // Handle any errors that occur while getting the item
-            reject(error);
-          });
-      });
-      promises.push(promise);
-    });
-    const uuidRegExpr =
-      /^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$/i;
-    const settings = {
-      query: {
-        ...query,
-        temporaryRecords: temporaryRecords,
-        filter: {
-          logic: 'and',
-          filters: [
-            {
-              field: 'ids',
-              operator: 'eq',
-              value:
-                question.value.filter((id: string) => !uuidRegExpr.test(id)) ||
-                [], //We exclude the temporary records by excluding id in UUID format
-            },
-          ],
-        },
-      },
-    };
+    const settings = await processNewCreatedRecords(question, true, promises);
     if (!question.readOnlyGrid) {
       Object.assign(settings, {
         actions: {
@@ -930,6 +929,10 @@ export const init = (
           remove: true,
         },
       });
+    }
+    // If search button exists, updates grid displayed records
+    if (question.canSearch) {
+      temporaryRecordsForm.setValue(settings.query.temporaryRecords);
     }
     instance.settings = settings;
     Promise.allSettled(promises).then(() => {

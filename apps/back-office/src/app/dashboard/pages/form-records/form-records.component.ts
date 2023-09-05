@@ -2,12 +2,8 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
-  GetFormByIdQueryResponse,
   GetFormRecordsQueryResponse,
-  GetRecordDetailsQueryResponse,
-  GET_FORM_BY_ID,
   GET_FORM_RECORDS,
-  GET_RECORD_DETAILS,
 } from './graphql/queries';
 import {
   EditRecordMutationResponse,
@@ -20,17 +16,17 @@ import {
 import {
   SafeLayoutService,
   SafeConfirmService,
-  SafeSnackBarService,
   SafeBreadcrumbService,
   SafeUnsubscribeComponent,
   SafeDownloadService,
   Record,
 } from '@oort-front/safe';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
 import { Metadata } from '@oort-front/safe';
+import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -70,8 +66,13 @@ export class FormRecordsComponent
     pageIndex: 0,
     pageSize: ITEMS_PER_PAGE,
     length: 0,
-    endCursor: '',
+    endCursor: null as string | null,
   };
+
+  /** @returns True if the layouts tab is empty */
+  get empty(): boolean {
+    return !this.loading && this.dataSource.length === 0;
+  }
 
   @ViewChild('xlsxFile') xlsxFile: any;
   public showUpload = false;
@@ -83,7 +84,7 @@ export class FormRecordsComponent
    * @param route Angular activated route
    * @param downloadService Shared download service
    * @param layoutService Shared layout service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param breadcrumbService Shared breadcrumb service
@@ -94,8 +95,8 @@ export class FormRecordsComponent
     private route: ActivatedRoute,
     private downloadService: SafeDownloadService,
     private layoutService: SafeLayoutService,
-    public dialog: MatDialog,
-    private snackBar: SafeSnackBarService,
+    public dialog: Dialog,
+    private snackBar: SnackbarService,
     private translate: TranslateService,
     private breadcrumbService: SafeBreadcrumbService,
     private confirmService: SafeConfirmService
@@ -130,7 +131,7 @@ export class FormRecordsComponent
 
     this.recordsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ data }) => {
+      .subscribe(({ errors, data, loading }) => {
         this.cachedRecords.push(
           ...data.form.records.edges.map((x: any) => x.node)
         );
@@ -141,29 +142,12 @@ export class FormRecordsComponent
         this.pageInfo.length = data.form.records.totalCount;
         this.pageInfo.endCursor = data.form.records.pageInfo.endCursor;
         this.loadingMore = false;
-      });
 
-    // get the form detail
-    this.apollo
-      .watchQuery<GetFormByIdQueryResponse>({
-        query: GET_FORM_BY_ID,
-        variables: {
-          id: this.id,
-          display: true,
-          showDeletedRecords: this.showDeletedRecords,
-        },
-      })
-      .valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe(({ errors, data, loading }) => {
-        if (data.form) {
-          this.form = data.form;
-          this.breadcrumbService.setBreadcrumb(
-            '@form',
-            this.form.name as string
-          );
-          this.setDisplayedColumns();
-          this.loading = loading;
-        }
+        this.form = data.form;
+        this.breadcrumbService.setBreadcrumb('@form', this.form.name as string);
+        this.setDisplayedColumns();
+        this.loading = loading;
+
         if (errors) {
           // TO-DO: Check why it's not working as intended.
           this.snackBar.openSnackBar(
@@ -182,11 +166,11 @@ export class FormRecordsComponent
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
     if (
       e.pageIndex > e.previousPageIndex &&
-      e.length > this.cachedRecords.length &&
+      e.totalItems > this.cachedRecords.length &&
       ITEMS_PER_PAGE * this.pageInfo.pageIndex >= this.cachedRecords.length
     ) {
       this.loadingMore = true;
@@ -241,13 +225,15 @@ export class FormRecordsComponent
           }
         ),
         confirmText: this.translate.instant('components.confirmModal.delete'),
-        confirmColor: 'warn',
+        confirmVariant: 'danger',
       });
-      dialogRef.afterClosed().subscribe((value) => {
-        if (value) {
-          this.deleteRecord(element.id);
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.deleteRecord(element.id);
+          }
+        });
     } else {
       this.deleteRecord(element.id);
     }
@@ -299,7 +285,7 @@ export class FormRecordsComponent
    * Open confirm modal to ask user for reversion of data
    *
    * @param record record to update
-   * @param version version to applu
+   * @param version version to apply
    */
   private confirmRevertDialog(record: any, version: any): void {
     // eslint-disable-next-line radix
@@ -314,9 +300,9 @@ export class FormRecordsComponent
         { date: formatDate }
       ),
       confirmText: this.translate.instant('components.confirmModal.confirm'),
-      confirmColor: 'primary',
+      confirmVariant: 'primary',
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<EditRecordMutationResponse>({
@@ -353,29 +339,20 @@ export class FormRecordsComponent
   /**
    * Open the history of the record on the right side of the screen.
    *
-   * @param id id of version
+   * @param record to get history from
    */
-  public onViewHistory(id: string): void {
-    this.apollo
-      .query<GetRecordDetailsQueryResponse>({
-        query: GET_RECORD_DETAILS,
-        variables: {
-          id,
+  public async onViewHistory(record: Record) {
+    if (!record.id) return;
+    this.historyId = record.id;
+    import('@oort-front/safe').then(({ SafeRecordHistoryComponent }) => {
+      this.layoutService.setRightSidenav({
+        component: SafeRecordHistoryComponent,
+        inputs: {
+          id: record.id,
+          revert: (version: any) => this.confirmRevertDialog(record, version),
         },
-      })
-      .subscribe(({ data }) => {
-        this.historyId = id;
-        import('@oort-front/safe').then(({ SafeRecordHistoryComponent }) => {
-          this.layoutService.setRightSidenav({
-            component: SafeRecordHistoryComponent,
-            inputs: {
-              id: data.record.id,
-              revert: (version: any) =>
-                this.confirmRevertDialog(data.record, version),
-            },
-          });
-        });
       });
+    });
   }
 
   /**

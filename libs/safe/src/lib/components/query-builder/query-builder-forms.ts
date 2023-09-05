@@ -167,6 +167,7 @@ export const createQueryForm = (
 export const createDisplayForm = (value: any): UntypedFormGroup =>
   formBuilder.group({
     showFilter: [value?.showFilter],
+    actionsColWidth: [value?.actionsColWidth || 86],
     sort: [value?.sort || []],
     fields: [value?.fields || null],
     filter: [value?.filter || null],

@@ -1,6 +1,7 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/default/default.dev';
 import { sharedEnvironment } from './environment.shared';
+import { Environment } from './environment.type';
 
 /** Authentication configuration of the module. */
 const authConfig: AuthConfig = {
@@ -16,7 +17,7 @@ const authConfig: AuthConfig = {
 };
 
 /** Environment configuration */
-export const environment = {
+export const environment: Environment = {
   ...sharedEnvironment,
   production: true,
   apiUrl: 'https://ems-safe-dev.who.int/api',
@@ -25,7 +26,10 @@ export const environment = {
   backOfficeUri: 'https://ems-safe-dev.who.int/backoffice/',
   availableLanguages: ['en'],
   authConfig,
-  esriApiKey:
-    'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg',
   theme,
+  sentry: {
+    environment: 'development',
+    dns: 'https://da63b46285f94315b2d6f8e9c69d7c8c@o4505563078918144.ingest.sentry.io/4505563106312192',
+    tracePropagationTargets: ['ems-safe-dev.who.int'],
+  },
 };

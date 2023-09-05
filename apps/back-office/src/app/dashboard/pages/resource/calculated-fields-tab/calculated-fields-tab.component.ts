@@ -1,13 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { Resource, SafeSnackBarService } from '@oort-front/safe';
+import { Resource, SafeUnsubscribeComponent } from '@oort-front/safe';
 import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
 import {
   Calculated_FIELD_UPDATE,
   CalculatedFieldUpdateMutationResponse,
 } from './graphql/mutations';
+import { Dialog } from '@angular/cdk/dialog';
+import { SnackbarService } from '@oort-front/ui';
+import { takeUntil } from 'rxjs';
 
 /**
  * Calculated fields tab of resource page
@@ -17,7 +19,10 @@ import {
   templateUrl: './calculated-fields-tab.component.html',
   styleUrls: ['./calculated-fields-tab.component.scss'],
 })
-export class CalculatedFieldsTabComponent implements OnInit {
+export class CalculatedFieldsTabComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   public resource!: Resource;
   public fields: any[] = [];
 
@@ -27,16 +32,18 @@ export class CalculatedFieldsTabComponent implements OnInit {
    * Layouts tab of resource page
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param translate Angular translate service
    * @param snackBar Shared snackbar service
    */
   constructor(
     private apollo: Apollo,
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private translate: TranslateService,
-    private snackBar: SafeSnackBarService
-  ) {}
+    private snackBar: SnackbarService
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
     const state = history.state;
@@ -61,7 +68,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
         ),
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<CalculatedFieldUpdateMutationResponse>({
@@ -123,7 +130,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
         ),
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (!value) {
         return;
       }
@@ -190,7 +197,7 @@ export class CalculatedFieldsTabComponent implements OnInit {
       },
     });
 
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<CalculatedFieldUpdateMutationResponse>({

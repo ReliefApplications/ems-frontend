@@ -5,12 +5,60 @@ import { SafeReferenceDataService } from '../reference-data/reference-data.servi
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
-import { Record } from '../../models/record.model';
+import { Record as RecordModel } from '../../models/record.model';
 import { EditRecordMutationResponse, EDIT_RECORD } from './graphql/mutations';
 import { Metadata } from '../../models/metadata.model';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeRestService } from '../rest/rest.service';
 import { BehaviorSubject } from 'rxjs';
+import { SnackbarService } from '@oort-front/ui';
+import { SafeFormHelpersService } from '../form-helper/form-helper.service';
+import { difference } from 'lodash';
+
+/**
+ * Gets the payload for the update mutation
+ *
+ * @param op Input expression in the form of {key} = "value"
+ * @param survey Survey instance
+ * @returns Formatted payload for the update mutation
+ */
+const getUpdateData = (
+  op: string,
+  survey: Survey.SurveyModel
+): Record<string, any> | null => {
+  if (!op) return null;
+  // Op can either be a stringified JSON object or
+  // in the form of {key} = "value"
+  try {
+    // Replace used variables with their values
+    survey.getVariableNames().forEach((variable) => {
+      op = op.replace(
+        new RegExp(`{${variable}}`, 'g'),
+        JSON.stringify(survey.getVariable(variable))
+      );
+    });
+
+    // Replace question template with their values
+    survey.getAllQuestions().forEach((question) => {
+      op = op.replace(
+        new RegExp(`{${question.name}}`, 'g'),
+        JSON.stringify(question.value)
+      );
+    });
+
+    return JSON.parse(op);
+  } catch {
+    // Original way of parsing the expression.
+    // Matches {key} = "value" and returns the key and value
+    const regex = /{\s*(\b.*\b)\s*}\s*=\s*"(.*)"/g;
+    const operation = regex.exec(op); // divide string into groups for key : value mapping
+
+    return operation
+      ? {
+          [operation[1]]: operation[2],
+        }
+      : null;
+  }
+};
 
 /**
  * Shared form builder service.
@@ -20,8 +68,8 @@ import { BehaviorSubject } from 'rxjs';
   providedIn: 'root',
 })
 export class SafeFormBuilderService {
-  public selectedPageIndex: BehaviorSubject<number> =
-    new BehaviorSubject<number>(0);
+  /** If updating record, saves recordId if necessary gets files from questions */
+  public recordId?: string;
   /**
    * Constructor of the service
    *
@@ -30,71 +78,90 @@ export class SafeFormBuilderService {
    * @param apollo Apollo service
    * @param snackBar Service used to show a snackbar.
    * @param restService This is the service that is used to make http requests.
+   * @param formHelpersService Shared form helper service.
    */
   constructor(
     private referenceDataService: SafeReferenceDataService,
     private translate: TranslateService,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
-    private restService: SafeRestService
+    private snackBar: SnackbarService,
+    private restService: SafeRestService,
+    private formHelpersService: SafeFormHelpersService
   ) {}
 
   /**
    * Creates new survey from the structure and add on complete expression to it.
    *
    * @param structure form structure
-   * @param pages Pages of the current survey
    * @param fields list of fields used to check if the fields should be hidden or disabled
    * @param record record that'll be edited, if any
    * @returns New survey
    */
   createSurvey(
     structure: string,
-    pages: BehaviorSubject<any[]>,
     fields: Metadata[] = [],
-    record?: Record
+    record?: RecordModel
   ): Survey.SurveyModel {
+    Survey.settings.useCachingForChoicesRestful = false;
+    Survey.settings.useCachingForChoicesRestfull = false;
     const survey = new Survey.Model(structure);
+
+    // Add custom variables
+    this.formHelpersService.addUserVariables(survey);
+    this.formHelpersService.addWorkflowVariables(survey);
+    if (record) {
+      this.formHelpersService.addRecordIDVariable(survey, record);
+    }
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
     );
-    survey.onCompleting.add(() => {
-      for (const page of survey.toJSON().pages) {
-        if (!page.elements) continue;
-        for (const element of page.elements) {
-          if (element.type === 'resources' || element.type === 'resource') {
-            // if its a single record, the value will be string
-            // so we account for that by putting it in an array
-            const valueIterator =
-              (element.type === 'resources'
-                ? survey.getValue(element.name)
-                : [survey.getValue(element.name)]) || [];
 
-            const regex = /{\s*(\b.*\b)\s*}\s*=\s*"(.*)"/g;
-            for (const item of valueIterator) {
-              let operation: any;
-              if (
-                element.newCreatedRecords &&
-                element.newCreatedRecords.includes(item) &&
-                element.afterRecordCreation
-              ) {
-                regex.lastIndex = 0; // ensure that regex restarts
-                operation = regex.exec(element.afterRecordCreation); // divide string into groups for key : value mapping
-              } else if (element.afterRecordSelection) {
-                regex.lastIndex = 0; // ensure that regex restarts
-                const isNewlySelected =
-                  element.type === 'resources'
-                    ? !get(record, `data.${element.name}`, []).includes(item)
-                    : !(get(record, `data.${element.name}`, null) === item);
-                // only updates those records that were not in the old value for the field
-                if (isNewlySelected)
-                  operation = regex.exec(element.afterRecordSelection); // divide string into groups for key : value mapping
-              }
-              this.updateRecord(item, operation);
-            }
+    // For each question, if validateOnValueChange is true, we will add a listener to the value change event
+    survey.getAllQuestions().forEach((question) => {
+      if (question.validateOnValueChange) {
+        question.registerFunctionOnPropertyValueChanged('value', () => {
+          question.validate();
+        });
+      }
+    });
+
+    // Handles logic for after record creation, selection and deselection on resource type questions
+    survey.onCompleting.add(() => {
+      survey.getAllQuestions().forEach((question) => {
+        const isResource = question.getType() === 'resource';
+        const isResources = question.getType() === 'resources';
+        if ((!isResource && !isResources) || !question.value) {
+          return;
+        }
+        const initSelection = [get(record, `data.${question.name}`, [])].flat();
+        const wasSelected = (id: string) => initSelection.includes(id);
+
+        const questionRecords = isResource ? [question.value] : question.value;
+        for (const recordID of questionRecords) {
+          if (
+            question.newCreatedRecords &&
+            question.newCreatedRecords.includes(recordID) &&
+            question.afterRecordCreation
+          ) {
+            // Newly created records
+            const data = getUpdateData(question.afterRecordCreation, survey);
+            data && this.updateRecord(recordID, data);
+          } else if (question.afterRecordSelection && !wasSelected(recordID)) {
+            // Newly selected records
+            const data = getUpdateData(question.afterRecordSelection, survey);
+            data && this.updateRecord(recordID, data);
           }
         }
-      }
+
+        // Now we get the records that were deselected
+        const deselectedRecords = difference(initSelection, questionRecords);
+        if (question.afterRecordDeselection) {
+          for (const recordID of deselectedRecords) {
+            const data = getUpdateData(question.afterRecordDeselection, survey);
+            data && this.updateRecord(recordID, data);
+          }
+        }
+      });
     });
     if (fields.length > 0) {
       for (const f of fields.filter((x) => !x.automated)) {
@@ -126,7 +193,6 @@ export class SafeFormBuilderService {
     survey.showNavigationButtons = 'none';
     survey.showProgressBar = 'off';
     survey.focusFirstQuestionAutomatic = false;
-    this.setPages(survey, pages);
     return survey;
   }
 
@@ -135,14 +201,25 @@ export class SafeFormBuilderService {
    * and temporary files storage
    *
    * @param survey Survey where to add the callbacks
-   * @param pages Pages of the current survey
+   * @param selectedPageIndex Current page of the survey
    * @param temporaryFilesStorage Temporary files saved while executing the survey
    */
   public addEventsCallBacksToSurvey(
     survey: Survey.SurveyModel,
-    pages: BehaviorSubject<any[]>,
-    temporaryFilesStorage: any
+    selectedPageIndex: BehaviorSubject<number>,
+    temporaryFilesStorage: Record<string, Array<File>>
   ) {
+    // Open survey on a specific page (openOnQuestionValuesPage has priority over openOnPage)
+    if (survey.openOnQuestionValuesPage) {
+      const question = survey.getQuestionByName(
+        survey.openOnQuestionValuesPage
+      );
+      const page = survey.getPageByName(question.value);
+      selectedPageIndex.next(page.visibleIndex);
+    } else if (survey.openOnPage) {
+      const page = survey.getPageByName(survey.openOnPage);
+      selectedPageIndex.next(page.visibleIndex);
+    }
     survey.onClearFiles.add((_, options: any) => this.onClearFiles(options));
     survey.onUploadFiles.add((_, options: any) =>
       this.onUploadFiles(temporaryFilesStorage, options)
@@ -153,37 +230,10 @@ export class SafeFormBuilderService {
     survey.onUpdateQuestionCssClasses.add((_, options: any) =>
       this.onSetCustomCss(options)
     );
-    survey.onPageVisibleChanged.add(() => {
-      this.setPages(survey, pages);
-    });
-    survey.onSettingQuestionErrors.add(() => {
-      this.setPages(survey, pages);
-    });
     survey.onCurrentPageChanged.add((survey: Survey.SurveyModel) => {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
-      this.selectedPageIndex.next(survey.currentPageNo);
+      selectedPageIndex.next(survey.currentPageNo);
     });
-  }
-
-  /**
-   * Set the pages of the survey
-   *
-   * @param survey Current survey
-   * @param pages Page number emitter
-   */
-  private setPages(
-    survey: Survey.SurveyModel,
-    pages: BehaviorSubject<any[]>
-  ): void {
-    const pageList = [];
-    if (survey) {
-      for (const page of survey.pages) {
-        if (page.isVisible) {
-          pageList.push(page);
-        }
-      }
-    }
-    pages.next(pageList);
   }
 
   /**
@@ -244,11 +294,17 @@ export class SafeFormBuilderService {
       options.content.indexOf('http') !== -1
     ) {
       options.callback('success', options.content);
-    } else {
+    } else if (this.recordId) {
+      /**
+       * Only gets here if: editing record (we need to download the file to be available)
+       * OR saving a new record with files (because when we edit the file.content after the uploadFile
+       * mutation the survey.onDownloadFile() event is triggered, but we don't need to download the file
+       *  in this case and the undefined this.recordId prevents this unnecessary call)
+       */
       const xhr = new XMLHttpRequest();
       xhr.open(
         'GET',
-        `${this.restService.apiUrl}/download/file/${options.content}`
+        `${this.restService.apiUrl}/download/file/${options.content}/${this.recordId}/${options.name}`
       );
       xhr.setRequestHeader(
         'Authorization',
@@ -285,16 +341,16 @@ export class SafeFormBuilderService {
    * Updates the field with the specified information.
    *
    * @param id Id of the record to update
-   * @param operation Operation to execute
+   * @param data Data to update
    */
-  private updateRecord(id: string, operation: any): void {
-    if (id && operation) {
+  private updateRecord(id: string, data: any): void {
+    if (id && data) {
       this.apollo
         .mutate<EditRecordMutationResponse>({
           mutation: EDIT_RECORD,
           variables: {
             id,
-            data: { [operation[1]]: operation[2] },
+            data,
           },
         })
         .subscribe({

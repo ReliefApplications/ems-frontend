@@ -4,6 +4,7 @@ import {
   QuestionFileModel,
 } from 'survey-angular';
 import { Question } from '../types';
+import * as Survey from 'survey-angular';
 
 /**
  * Add support for custom properties to the survey
@@ -13,7 +14,6 @@ import { Question } from '../types';
  */
 export const init = (Survey: any, environment: any): void => {
   const serializer: JsonMetadata = Survey.Serializer;
-
   // change the prefix for comments
   Survey.settings.commentPrefix = '_comment';
   // override default expression properties
@@ -28,7 +28,16 @@ export const init = (Survey: any, environment: any): void => {
     required: true,
   });
   // Pass token before the request to fetch choices by URL if it's targeting SAFE API
-  Survey.ChoicesRestfull.onBeforeSendRequest = (
+  // Survey.ChoicesRestful.onBeforeSendRequest = (
+  //   sender: ChoicesRestful,
+  //   options: { request: { headers: Headers } }
+  // ) => {
+  //   if (sender.url.includes(environment.apiUrl)) {
+  //     const token = localStorage.getItem('idtoken');
+  //     options.request.headers.append('Authorization', `Bearer ${token}`);
+  //   }
+  // };
+  Survey.ChoicesRestful.onBeforeSendRequest = (
     sender: ChoicesRestful,
     options: { request: XMLHttpRequest }
   ) => {
@@ -38,7 +47,7 @@ export const init = (Survey: any, environment: any): void => {
     }
   };
 
-  // // Add file option for file columns on matrix questions
+  // Add file option for file columns on matrix questions
   Survey.matrixDropdownColumnTypes.file = {
     properties: ['showPreview', 'imageHeight', 'imageWidth'],
     tabs: [
@@ -46,6 +55,54 @@ export const init = (Survey: any, environment: any): void => {
       { name: 'enableIf', index: 20 },
     ],
   };
+
+  // Adds property that clears the value when condition is met
+  serializer.addProperty('question', {
+    name: 'clearIf:condition',
+    category: 'logic',
+    visibleIndex: 4,
+    default: '',
+    isLocalizable: true,
+    onExecuteExpression: (obj: Question, res: boolean) => {
+      if (res) {
+        obj.value = null;
+      }
+    },
+  });
+
+  // Adds a property that makes it so the question is validated on every value change
+  serializer.addProperty('question', {
+    name: 'validateOnValueChange:boolean',
+    category: 'validation',
+    visibleIndex: 4,
+    default: false,
+  });
+  // Adds a property to the survey settings to open the form on a specific page using the question value
+  // of the selected question (the value must be a page name)
+  serializer.addProperty('survey', {
+    name: 'openOnQuestionValuesPage',
+    category: 'pages',
+    choices: (survey: Survey.Model, choicesCallback: any) => {
+      let questions: string[] = [''];
+      survey.pages.forEach((page: Survey.PageModel) => {
+        questions = questions.concat(
+          page.questions.map((question: Survey.Question) => question.name)
+        );
+      });
+      choicesCallback(questions);
+    },
+  });
+  // Adds a property to the survey settings to open the form on a specific page, displaying a dropdown with all the page names
+  serializer.addProperty('survey', {
+    name: 'openOnPage',
+    category: 'pages',
+    choices: (survey: Survey.Model, choicesCallback: any) => {
+      const pages: string[] = [''].concat(
+        survey.pages.map((page: Survey.PageModel) => page.name)
+      );
+      choicesCallback(pages);
+    },
+  });
 };
 
 /**

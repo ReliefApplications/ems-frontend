@@ -1,11 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { MatLegacyTableDataSource as MatTableDataSource } from '@angular/material/legacy-table';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Role, User } from '../../../models/user.model';
 import { GetRoleQueryResponse, GET_ROLE_USERS } from './graphql/queries';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { updateQueryUniqueValues } from '../../../utils/update-queries';
+import { UIPageChangeEvent } from '@oort-front/ui';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -29,7 +29,7 @@ export class RoleUsersComponent
 
   public displayedColumns = ['name', 'username'];
 
-  public users = new MatTableDataSource<User>([]);
+  public users = new Array<User>();
   public cachedUsers: User[] = [];
   private usersQuery!: QueryRef<GetRoleQueryResponse>;
 
@@ -42,7 +42,7 @@ export class RoleUsersComponent
 
   /** @returns empty state of the table */
   get empty(): boolean {
-    return !this.loading && this.users.data.length === 0;
+    return !this.loading && this.users.length === 0;
   }
 
   /**
@@ -60,7 +60,7 @@ export class RoleUsersComponent
       variables: {
         id: this.role.id,
         first: DEFAULT_PAGE_SIZE,
-        automated: true,
+        automated: this.autoAssigned,
       },
     });
     this.usersQuery.valueChanges
@@ -75,26 +75,26 @@ export class RoleUsersComponent
    *
    * @param e page event.
    */
-  onPage(e: any): void {
+  onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
     // Checks if with new page/size more data needs to be fetched
     if (
       ((e.pageIndex > e.previousPageIndex &&
         e.pageIndex * this.pageInfo.pageSize >= this.cachedUsers.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
-      e.length > this.cachedUsers.length
+      e.totalItems > this.cachedUsers.length
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
       let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is substracted from the new one
+      // If the fetch is for a new page size, the old page size is subtracted from the new one
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
       this.pageInfo.pageSize = first;
       this.fetchUsers();
     } else {
-      this.users.data = this.cachedUsers.slice(
+      this.users = this.cachedUsers.slice(
         e.pageSize * this.pageInfo.pageIndex,
         e.pageSize * (this.pageInfo.pageIndex + 1)
       );
@@ -124,16 +124,14 @@ export class RoleUsersComponent
    * @param loading loading status
    */
   private updateValues(data: GetRoleQueryResponse, loading: boolean) {
-    this.cachedUsers = updateQueryUniqueValues(
-      this.cachedUsers,
-      data.role.users?.edges.map((x) => x.node) ?? []
-    );
-    this.users.data = this.cachedUsers.slice(
+    const mappedValues = data.role.users?.edges.map((x) => x.node) ?? [];
+    this.cachedUsers = updateQueryUniqueValues(this.cachedUsers, mappedValues);
+    this.pageInfo.length = data.role.users.totalCount;
+    this.pageInfo.endCursor = data.role.users.pageInfo.endCursor;
+    this.users = this.cachedUsers.slice(
       this.pageInfo.pageSize * this.pageInfo.pageIndex,
       this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
     );
-    this.pageInfo.length = data.role.users.totalCount;
-    this.pageInfo.endCursor = data.role.users.pageInfo.endCursor;
     this.loading = loading;
     this.updating = false;
   }

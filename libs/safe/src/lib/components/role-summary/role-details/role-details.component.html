@@ -1,43 +1,44 @@
 <form [formGroup]="form">
   <div class="flex flex-col">
-    <mat-form-field appearance="outline">
-      <mat-label>
+    <div uiFormFieldDirective>
+      <label>
         {{ 'models.role.title' | translate }}
-      </mat-label>
-      <input matInput formControlName="title" type="text" />
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>
+      </label>
+      <input formControlName="title" type="text" />
+    </div>
+    <div uiFormFieldDirective>
+      <label>
         {{ 'models.role.description' | translate }}
-      </mat-label>
-      <textarea
-        matInput
-        formControlName="description"
-        [cdkTextareaAutosize]="true"
-        [cdkAutosizeMinRows]="5"
-      ></textarea>
-    </mat-form-field>
-    <mat-form-field appearance="outline">
-      <mat-label>{{
-        'components.role.update.permissions' | translate
-      }}</mat-label>
-      <mat-select formControlName="permissions" multiple>
-        <mat-option
+      </label>
+      <ui-textarea formControlName="description" [minRows]="5"> </ui-textarea>
+    </div>
+    <div uiFormFieldDirective>
+      <label>{{ 'components.role.update.permissions' | translate }}</label>
+      <ui-select-menu [multiselect]="true" formControlName="permissions">
+        <ui-select-option
           *ngFor="let permission of permissions"
           [value]="permission.id"
         >
           {{ permission.type }}
-        </mat-option>
-      </mat-select>
-    </mat-form-field>
+        </ui-select-option>
+      </ui-select-menu>
+      <ui-button
+        uiSuffix
+        variant="danger"
+        [isIcon]="true"
+        icon="delete"
+        class="mr-1 pl-0"
+        (click)="this.form.get('permissions')?.reset([])"
+      ></ui-button>
+    </div>
   </div>
-  <safe-button
+  <ui-button
     variant="primary"
     category="secondary"
     type="submit"
     [disabled]="!form.valid"
     (click)="onUpdate()"
-    >{{ 'common.saveChanges' | translate }}</safe-button
+    >{{ 'common.saveChanges' | translate }}</ui-button
   >
 </form>
 
@@ -124,28 +125,28 @@
 <!-- Summary of users with role assigned -->
 <div>
   <h2>{{ 'common.user.few' | translate }}</h2>
-  <mat-tab-group>
+  <ui-tabs>
     <!-- Manual assignment -->
-    <mat-tab>
-      <ng-template mat-tab-label>{{
+    <ui-tab>
+      <ng-container ngProjectAs="label">{{
         'components.role.summary.users.manual' | translate
-      }}</ng-template>
-      <ng-template matTabContent>
+      }}</ng-container>
+      <ng-template uiTabContent>
         <safe-role-users [role]="role" *ngIf="role"></safe-role-users>
       </ng-template>
-    </mat-tab>
+    </ui-tab>
     <!-- Automated assignment -->
-    <mat-tab>
-      <ng-template mat-tab-label>{{
+    <ui-tab>
+      <ng-container ngProjectAs="label">{{
         'components.role.summary.users.auto' | translate
-      }}</ng-template>
-      <ng-template matTabContent>
+      }}</ng-container>
+      <ng-template uiTabContent>
         <safe-role-users
           [autoAssigned]="true"
           [role]="role"
           *ngIf="role"
         ></safe-role-users>
       </ng-template>
-    </mat-tab>
-  </mat-tab-group>
+    </ui-tab>
+  </ui-tabs>
 </div>

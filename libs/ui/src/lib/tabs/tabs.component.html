@@ -1,0 +1,23 @@
+<!-- Wrapper of the component, allows to display content 
+     not in the body while not interfering with the list of tabs -->
+<div
+  class="overflow-x-hidden"
+  [ngClass]="{ flex: vertical }"
+  id="tab-group-wrapper"
+>
+  <!-- List of tabs -->
+  <div
+    id="tabs"
+    class="justify-start flex"
+    [ngClass]="resolveTabPositionClasses"
+  >
+    <ng-content></ng-content>
+  </div>
+  <!-- The directive will display the content here -->
+  <div
+    class="flex-1"
+    [@tabContentDisplay]="triggerAnimation ? 'initial' : 'loadContent'"
+  >
+    <ng-template uiTabBodyHost [openedTab]="openedTab"></ng-template>
+  </div>
+</div>

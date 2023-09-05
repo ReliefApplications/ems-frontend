@@ -1,8 +1,10 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { SafeDashboardService } from '../../../services/dashboard/dashboard.service';
 import { SafeConfirmService } from '../../../services/confirm/confirm.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Dialog } from '@angular/cdk/dialog';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Button on top left of each widget, if user can see it, with menu of possible
@@ -13,7 +15,7 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './floating-options.component.html',
   styleUrls: ['./floating-options.component.scss'],
 })
-export class SafeFloatingOptionsComponent implements OnInit {
+export class SafeFloatingOptionsComponent extends SafeUnsubscribeComponent {
   // === WIDGET ===
   @Input() widget: any;
 
@@ -21,57 +23,33 @@ export class SafeFloatingOptionsComponent implements OnInit {
   @Output() edit: EventEmitter<any> = new EventEmitter();
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() expand: EventEmitter<any> = new EventEmitter();
-
-  // === AVAILABLE ACTIONS ===
-  public items: any[] = [];
+  @Output() style: EventEmitter<any> = new EventEmitter();
 
   /**
    * Button on top left of each widget, if user can see it, with menu of possible
    * actions for that widget.
    *
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param dashboardService Dashboard service
    * @param confirmService Confirm service
    * @param translate Translation service
    */
   constructor(
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private dashboardService: SafeDashboardService,
     private confirmService: SafeConfirmService,
     private translate: TranslateService
-  ) {}
-
-  /**
-   * Sets the list of available actions.
-   */
-  ngOnInit(): void {
-    this.items = [
-      {
-        name: 'Settings',
-        text: this.translate.instant('common.settings'),
-        icon: 'insert_chart',
-        disabled: !this.widget || !this.widget.settings,
-      },
-      {
-        name: 'Expand',
-        text: this.translate.instant('components.widget.expand'),
-        icon: 'open_in_full',
-      },
-      {
-        name: 'Delete',
-        text: this.translate.instant('common.delete'),
-        icon: 'delete',
-      },
-    ];
+  ) {
+    super();
   }
 
   /**
    * Opens a modal, or emit an event depending on the action clicked.
    *
-   * @param item action
+   * @param action action
    */
-  async onClick(item: any): Promise<void> {
-    if (item.name === 'Settings') {
+  async onClick(action: any): Promise<void> {
+    if (action === 'Settings') {
       const { SafeTileDataComponent } = await import(
         './menu/tile-data/tile-data.component'
       );
@@ -82,29 +60,34 @@ export class SafeFloatingOptionsComponent implements OnInit {
           template: this.dashboardService.findSettingsTemplate(this.widget),
         },
       });
-      dialogRef.afterClosed().subscribe((res) => {
+      dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
         if (res) {
           this.edit.emit({ type: 'data', id: this.widget.id, options: res });
         }
       });
     }
-    if (item.name === 'Expand') {
+    if (action === 'Expand') {
       this.expand.emit({ id: this.widget.id });
     }
-    if (item.name === 'Delete') {
+    if (action === 'Style') {
+      this.style.emit({ widget: this.widget });
+    }
+    if (action === 'Delete') {
       const dialogRef = this.confirmService.openConfirmModal({
         title: this.translate.instant('models.widget.delete.title'),
         content: this.translate.instant(
           'models.widget.delete.confirmationMessage'
         ),
         confirmText: this.translate.instant('components.confirmModal.delete'),
-        confirmColor: 'warn',
+        confirmVariant: 'danger',
       });
-      dialogRef.afterClosed().subscribe((value) => {
-        if (value) {
-          this.delete.emit({ id: this.widget.id });
-        }
-      });
+      dialogRef.closed
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: any) => {
+          if (value) {
+            this.delete.emit({ id: this.widget.id });
+          }
+        });
     }
   }
 }

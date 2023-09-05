@@ -6,10 +6,10 @@ import {
 import { environment } from 'projects/back-office/src/environments/environment';
 import { SafePreferencesModalComponent } from './preferences-modal.component';
 import {
-  MatLegacyDialogModule as MatDialogModule,
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+  DialogModule as DialogCdkModule,
+  DialogRef,
+  DIALOG_DATA,
+} from '@angular/cdk/dialog';
 import { UntypedFormBuilder } from '@angular/forms';
 import {
   TranslateModule,
@@ -29,9 +29,9 @@ describe('SafePreferencesModalComponent', () => {
         UntypedFormBuilder,
         TranslateService,
         { provide: 'environment', useValue: environment },
-        { provide: MatDialogRef, useValue: {} },
+        { provide: DialogRef, useValue: {} },
         {
-          provide: MAT_DIALOG_DATA,
+          provide: DIALOG_DATA,
           useValue: {
             access: { canSee: null, canUpdate: null, canDelete: null },
           },
@@ -40,7 +40,7 @@ describe('SafePreferencesModalComponent', () => {
       declarations: [SafePreferencesModalComponent],
       imports: [
         ApolloTestingModule,
-        MatDialogModule,
+        DialogCdkModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

@@ -4,21 +4,26 @@ import {
   UntypedFormGroup,
   Validators,
 } from '@angular/forms';
-import {
-  MatLegacyDialogRef as MatDialogRef,
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-} from '@angular/material/legacy-dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { SafeEditorService } from '../../../../services/editor/editor.service';
-import { EMAIL_EDITOR_CONFIG } from '../../../../const/tinymce.const';
+import {
+  EMAIL_EDITOR_CONFIG,
+  INLINE_EDITOR_CONFIG,
+} from '../../../../const/tinymce.const';
 import get from 'lodash/get';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeModalModule } from '../../../ui/modal/modal.module';
-import { EditorModule, TINYMCE_SCRIPT_SRC } from '@tinymce/tinymce-angular';
+import { SafeEditorControlComponent } from '../../../editor-control/editor-control.component';
+import { RawEditorSettings } from 'tinymce';
+import { EditorModule } from '@tinymce/tinymce-angular';
+import {
+  ButtonModule,
+  IconModule,
+  SelectMenuModule,
+  TooltipModule,
+} from '@oort-front/ui';
+import { DialogModule, FormWrapperModule } from '@oort-front/ui';
 
 /** Model for the data input */
 interface DialogData {
@@ -27,22 +32,27 @@ interface DialogData {
   content?: any;
 }
 
+/** Available body editor keys for autocompletion */
+const BODY_EDITOR_AUTOCOMPLETE_KEYS = ['{{now}}', '{{today}}', '{{dataset}}'];
+/** Available subject editor keys for autocompletion */
+const SUBJECT_EDITOR_AUTOCOMPLETE_KEYS = ['{{now}}', '{{today}}'];
+
 /** Component for editing a template */
 @Component({
   standalone: true,
   imports: [
     CommonModule,
-    SafeModalModule,
-    MatFormFieldModule,
-    MatSelectModule,
-    MatInputModule,
+    DialogModule,
+    FormWrapperModule,
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
     EditorModule,
-  ],
-  providers: [
-    { provide: TINYMCE_SCRIPT_SRC, useValue: 'tinymce/tinymce.min.js' },
+    SafeEditorControlComponent,
+    ButtonModule,
+    SelectMenuModule,
+    IconModule,
+    TooltipModule,
   ],
   selector: 'safe-edit-template',
   templateUrl: './edit-template-modal.component.html',
@@ -52,27 +62,34 @@ export class EditTemplateModalComponent implements OnInit {
   // === REACTIVE FORM ===
   form: UntypedFormGroup = new UntypedFormGroup({});
 
-  /** tinymce editor */
-  public editor: any = EMAIL_EDITOR_CONFIG;
+  /** tinymce body editor */
+  public bodyEditor: RawEditorSettings = EMAIL_EDITOR_CONFIG;
+
+  /** tinymce subject editor */
+  public subjectEditor: RawEditorSettings = INLINE_EDITOR_CONFIG;
 
   /**
    * Component for editing a template
    *
    * @param formBuilder Angular form builder service
-   * @param dialogRef Material dialog ref of the component
+   * @param dialogRef Dialog ref of the component
    * @param data Data input of the modal
    * @param editorService Editor service used to get main URL and current language
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
-    public dialogRef: MatDialogRef<EditTemplateModalComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: DialogData,
+    public dialogRef: DialogRef<EditTemplateModalComponent>,
+    @Inject(DIALOG_DATA) public data: DialogData,
     private editorService: SafeEditorService
   ) {
     // Set the editor base url based on the environment file
-    this.editor.base_url = editorService.url;
+    this.bodyEditor.base_url = editorService.url;
     // Set the editor language
-    this.editor.language = editorService.language;
+    this.bodyEditor.language = editorService.language;
+    // Set the editor base url based on the environment file
+    this.subjectEditor.base_url = editorService.url;
+    // Set the editor language
+    this.subjectEditor.language = editorService.language;
   }
 
   /** Build the form. */
@@ -84,5 +101,13 @@ export class EditTemplateModalComponent implements OnInit {
       subject: [get(this.data, 'content.subject', null), Validators.required],
       body: [get(this.data, 'content.body', ''), Validators.required],
     });
+    this.editorService.addCalcAndKeysAutoCompleter(
+      this.bodyEditor,
+      BODY_EDITOR_AUTOCOMPLETE_KEYS.map((key) => ({ value: key, text: key }))
+    );
+    this.editorService.addCalcAndKeysAutoCompleter(
+      this.subjectEditor,
+      SUBJECT_EDITOR_AUTOCOMPLETE_KEYS.map((key) => ({ value: key, text: key }))
+    );
   }
 }

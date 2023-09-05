@@ -10,7 +10,7 @@ import {
   Output,
   ViewChild,
 } from '@angular/core';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
 import * as Survey from 'survey-angular';
 import {
   AddRecordMutationResponse,
@@ -19,10 +19,9 @@ import {
   EDIT_RECORD,
 } from './graphql/mutations';
 import { Form } from '../../models/form.model';
-import { Record } from '../../models/record.model';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
-import { BehaviorSubject, Observable, takeUntil } from 'rxjs';
-import addCustomFunctions from '../../utils/custom-functions';
+import { Record as RecordModel } from '../../models/record.model';
+import { BehaviorSubject, takeUntil } from 'rxjs';
+import addCustomFunctions from '../../survey/custom-functions';
 import { SafeAuthService } from '../../services/auth/auth.service';
 import { SafeLayoutService } from '../../services/layout/layout.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
@@ -30,6 +29,8 @@ import { SafeRecordHistoryComponent } from '../record-history/record-history.com
 import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
+import { SnackbarService } from '@oort-front/ui';
+import { cloneDeep } from 'lodash';
 
 /**
  * This component is used to display forms
@@ -44,7 +45,7 @@ export class SafeFormComponent
   implements OnInit, OnDestroy, AfterViewInit
 {
   @Input() form!: Form;
-  @Input() record?: Record;
+  @Input() record?: RecordModel;
   @Output() save: EventEmitter<{
     completed: boolean;
     hideNewRecord?: boolean;
@@ -53,9 +54,7 @@ export class SafeFormComponent
   // === SURVEYJS ===
   public survey!: Survey.SurveyModel;
   public surveyActive = true;
-  public selectedTabIndex = 0;
-  private pages = new BehaviorSubject<any[]>([]);
-  private temporaryFilesStorage: any = {};
+  public temporaryFilesStorage: Record<string, Array<File>> = {};
 
   @ViewChild('formContainer') formContainer!: ElementRef;
 
@@ -67,20 +66,17 @@ export class SafeFormComponent
   public storageDate?: Date;
   public isFromCacheData = false;
 
-  /**
-   * Getter for the pages of the form
-   *
-   * @returns the pages as an Observable
-   */
-  public get pages$(): Observable<any[]> {
-    return this.pages.asObservable();
-  }
+  /** Selected page index */
+  public selectedPageIndex: BehaviorSubject<number> =
+    new BehaviorSubject<number>(0);
+  /** Selected page index as observable */
+  public selectedPageIndex$ = this.selectedPageIndex.asObservable();
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
-   * @param dialog This is the Angular Material Dialog service.
+   * @param dialog This is the Angular Dialog service.
    * @param apollo This is the Apollo client that is used to make GraphQL requests.
    * @param snackBar This is the service that allows you to show a snackbar message to the user.
    * @param authService This is the service that handles authentication.
@@ -90,9 +86,9 @@ export class SafeFormComponent
    * @param translate This is the service used to translate text
    */
   constructor(
-    public dialog: MatDialog,
+    public dialog: Dialog,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private authService: SafeAuthService,
     private layoutService: SafeLayoutService,
     private formBuilderService: SafeFormBuilderService,
@@ -103,10 +99,14 @@ export class SafeFormComponent
   }
 
   ngOnInit(): void {
-    this.setFormListeners();
-
     Survey.StylesManager.applyTheme();
-    addCustomFunctions(Survey, this.authService, this.record);
+    addCustomFunctions(Survey, {
+      record: this.record,
+      authService: this.authService,
+      apollo: this.apollo,
+      form: this.form,
+    });
+    this.formBuilderService.recordId = this.record?.id;
 
     const structure = JSON.parse(this.form.structure || '{}');
     if (structure && !structure.completedHtml) {
@@ -117,14 +117,13 @@ export class SafeFormComponent
 
     this.survey = this.formBuilderService.createSurvey(
       JSON.stringify(structure),
-      this.pages,
       this.form.metadata,
       this.record
     );
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
-      this.pages,
+      this.selectedPageIndex,
       this.temporaryFilesStorage
     );
 
@@ -135,14 +134,11 @@ export class SafeFormComponent
     this.survey.onValueChanged.add(this.valueChange.bind(this));
     this.survey.onComplete.add(this.onComplete);
 
-    // Unset readOnly fields if it's the record creation
-    if (!this.record) {
-      this.form.fields?.forEach((field) => {
-        if (field.readOnly) {
-          this.survey.getQuestionByName(field.name).readOnly = false;
-        }
-      });
-    }
+    // Set readOnly fields
+    this.form.fields?.forEach((field) => {
+      if (field.readOnly && this.survey.getQuestionByName(field.name))
+        this.survey.getQuestionByName(field.name).readOnly = true;
+    });
     // Fetch cached data from local storage
     this.storageId = `record:${this.record ? 'update' : ''}:${this.form.id}`;
     const storedData = localStorage.getItem(this.storageId);
@@ -189,16 +185,6 @@ export class SafeFormComponent
     // }
   }
 
-  /**
-   * Set needed listeners for the component
-   */
-  private setFormListeners() {
-    this.formBuilderService.selectedPageIndex
-      .asObservable()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((pageIndex: number) => (this.selectedTabIndex = pageIndex));
-  }
-
   ngAfterViewInit(): void {
     this.survey?.render(this.formContainer.nativeElement);
     // this.translate.onLangChange.subscribe(() => {
@@ -224,7 +210,9 @@ export class SafeFormComponent
    */
   public reset(): void {
     this.survey.clear();
-    this.temporaryFilesStorage = {};
+    this.formHelpersService.clearTemporaryFilesStorage(
+      this.temporaryFilesStorage
+    );
     this.survey.showCompletedPage = false;
     this.save.emit({ completed: false });
     this.survey.render();
@@ -235,9 +223,19 @@ export class SafeFormComponent
    * Handles the value change event when the user completes the survey
    */
   public valueChange(): void {
+    // Cache the survey data, but remove the files from it
+    // to avoid hitting the local storage limit
+    const data = cloneDeep(this.survey.data);
+    Object.keys(data).forEach((key) => {
+      const question = this.survey.getQuestionByName(key);
+      if (question && question.getType() === 'file') {
+        delete data[key];
+      }
+    });
+
     localStorage.setItem(
       this.storageId,
-      JSON.stringify({ data: this.survey.data, date: new Date() })
+      JSON.stringify({ data, date: new Date() })
     );
   }
 
@@ -261,18 +259,18 @@ export class SafeFormComponent
   public onComplete = async () => {
     let mutation: any;
     this.surveyActive = false;
-    const promises: Promise<any>[] =
-      this.formHelpersService.uploadTemporaryRecords(this.survey);
-    promises.push(
-      this.formHelpersService.uploadFiles(
-        this.survey,
-        this.temporaryFilesStorage,
-        this.form?.id
-      )
+    // const promises: Promise<any>[] =
+    //   this.formHelpersService.uploadTemporaryRecords(this.survey);
+
+    await this.formHelpersService.uploadFiles(
+      this.survey,
+      this.temporaryFilesStorage,
+      this.form?.id
     );
     this.formHelpersService.setEmptyQuestions(this.survey);
     // We wait for the resources questions to update their ids
-    await Promise.allSettled(promises);
+    // await Promise.allSettled(promises);
+    await this.formHelpersService.createCachedRecords(this.survey);
     // this.survey.data = surveyData;
     // If is an already saved record, edit it
     if (this.record || this.form.uniqueRecord) {
@@ -335,10 +333,6 @@ export class SafeFormComponent
     if (this.survey) {
       this.survey.currentPageNo = i;
     }
-    // if (this.survey.compareTo) {
-    //   this.survey.currentPageNo = i;
-    // }
-    this.selectedTabIndex = i;
   }
 
   /**
@@ -352,7 +346,9 @@ export class SafeFormComponent
     } else {
       this.survey.clear();
     }
-    this.temporaryFilesStorage = {};
+    this.formHelpersService.clearTemporaryFilesStorage(
+      this.temporaryFilesStorage
+    );
     localStorage.removeItem(this.storageId);
     this.formHelpersService.cleanCachedRecords(this.survey);
     this.isFromCacheData = false;
@@ -384,7 +380,7 @@ export class SafeFormComponent
    */
   private confirmRevertDialog(record: any, version: any) {
     const dialogRef = this.formHelpersService.createRevertDialog(version);
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
           .mutate<EditRecordMutationResponse>({
@@ -422,6 +418,6 @@ export class SafeFormComponent
     super.ngOnDestroy();
     localStorage.removeItem(this.storageId);
     this.formHelpersService.cleanCachedRecords(this.survey);
-    this.formBuilderService.selectedPageIndex.next(0);
+    this.survey?.dispose();
   }
 }

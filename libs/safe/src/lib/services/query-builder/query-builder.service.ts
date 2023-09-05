@@ -11,9 +11,10 @@ import { UntypedFormBuilder } from '@angular/forms';
 import { ApolloQueryResult } from '@apollo/client';
 import get from 'lodash/get';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
+import { Connection } from '../../utils/public-api';
 
 /** Interface for the variables of a query */
-interface QueryVariables {
+export interface QueryVariables {
   first?: number;
   skip?: number;
   filter?: any;
@@ -25,13 +26,7 @@ interface QueryVariables {
 
 /** Interface for a query response */
 export interface QueryResponse {
-  [key: string]: {
-    totalCount: number;
-    edges: {
-      node: any;
-      meta: any;
-    }[];
-  };
+  [key: string]: Connection<any>;
 }
 
 /** Field interface definition */
@@ -77,7 +72,7 @@ interface Query {
 /** List of fields part of the schema but not selectable */
 const NON_SELECTABLE_FIELDS = ['canUpdate', 'canDelete'];
 /** List of fields part of the schema but not selectable */
-const SELECTABLE_ID_FIELDS = ['id', 'incrementalId', 'form'];
+const SELECTABLE_ID_FIELDS = ['id', 'incrementalId', 'form', 'lastUpdateForm'];
 /** List of user fields */
 const USER_FIELDS = ['id', 'name', 'username'];
 /** ReferenceData identifier convention */
@@ -373,6 +368,10 @@ export class QueryBuilderService {
           meta
         }
         totalCount
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
       }
     }
   `;

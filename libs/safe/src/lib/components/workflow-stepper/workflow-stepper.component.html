@@ -1,4 +1,4 @@
-<safe-divider class="m-0"></safe-divider>
+<ui-divider class="m-0"></ui-divider>
 <div class="safe-steps" *ngIf="loading">
   <kendo-skeleton
     shape="rectangle"
@@ -19,8 +19,7 @@
   <safe-step
     *ngFor="let step of steps; let index = index"
     [step]="step"
-    [matTooltip]="step.name!"
-    matTooltipShowDelay="1000"
+    [uiTooltip]="step.name!"
     [canUpdate]="canUpdate"
     [active]="index === activeStep"
     (click)="onStep(index)"
@@ -32,4 +31,4 @@
   ></safe-step>
   <safe-add-step *ngIf="canUpdate" (click)="add.emit()"></safe-add-step>
 </div>
-<safe-divider class="m-0"></safe-divider>
+<ui-divider class="m-0"></ui-divider>

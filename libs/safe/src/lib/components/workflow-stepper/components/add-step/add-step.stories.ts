@@ -27,6 +27,9 @@ const TEMPLATE: StoryFn<SafeAddStepComponent> = (args) => ({
   },
 });
 
+/**
+ * Default story.
+ */
 export const DEFAULT = {
   render: TEMPLATE,
   name: 'Default',

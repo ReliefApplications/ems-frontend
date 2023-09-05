@@ -72,7 +72,7 @@
     }
   }
 
-  safe-button {
+  ui-button {
     visibility: hidden;
     opacity: 0;
     transition: visibility 0s linear 300ms, opacity 300ms;
@@ -82,7 +82,7 @@
   }
 
   &:hover {
-    safe-button {
+    ui-button {
       visibility: visible;
       opacity: 1;
     }

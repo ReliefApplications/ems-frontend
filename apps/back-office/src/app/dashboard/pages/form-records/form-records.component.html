@@ -1,171 +1,176 @@
-<!-- Header -->
-<div class="flex mb-6 justify-between gap-4">
-  <!-- Title -->
-  <h1 class="!m-0">
-    {{
-      (showDeletedRecords
-        ? 'components.records.archived'
-        : 'components.records.active'
-      ) | translate
-    }}
-  </h1>
-  <!-- Actions -->
-  <div *ngIf="!loading" class="flex gap-2 items-center flex-wrap justify-end">
-    <safe-button
-      *ngIf="form.canUpdate && !showDeletedRecords"
-      icon="search_off"
-      category="primary"
-      variant="danger"
-      (click)="onSwitchView($event)"
-    >
-      {{ 'components.records.showArchived' | translate }}
-    </safe-button>
-    <safe-button
-      *ngIf="form.canUpdate && showDeletedRecords"
-      icon="restore_page"
-      category="primary"
-      variant="success"
-      (click)="onSwitchView($event)"
-    >
-      {{ 'components.records.showActive' | translate }}
-    </safe-button>
-    <safe-button
-      icon="file_download"
-      category="secondary"
-      variant="primary"
-      [matMenuTriggerFor]="menu"
-    >
+<ng-container *ngIf="!loading; else loadingTmpl">
+  <!-- Header -->
+  <div class="flex mb-6 justify-between gap-4">
+    <!-- Title -->
+    <h1 class="!m-0">
       {{
-        'common.downloadObject'
-          | translate : { name: 'common.record.few' | translate }
+        (showDeletedRecords
+          ? 'components.records.archived'
+          : 'components.records.active'
+        ) | translate
       }}
-    </safe-button>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="onDownload('csv')">.csv</button>
-      <button mat-menu-item (click)="onDownload('xlsx')">.xlsx</button>
-    </mat-menu>
-    <safe-button
-      icon="file_upload"
-      category="secondary"
-      variant="primary"
-      [matTooltip]="'components.records.upload.hint' | translate"
-      (click)="showUpload = !showUpload"
-      cdkOverlayOrigin
-      #uploadTrigger="cdkOverlayOrigin"
-    >
-      {{
-        'common.uploadObject'
-          | translate : { name: 'common.record.few' | translate }
-      }}
-    </safe-button>
-    <ng-template
-      cdkConnectedOverlay
-      [cdkConnectedOverlayOrigin]="uploadTrigger"
-      [cdkConnectedOverlayOpen]="showUpload"
-    >
-      <app-upload-menu
-        (close)="showUpload = false"
-        (upload)="onFileChange($event)"
-        (download)="onDownloadTemplate()"
-      ></app-upload-menu>
-    </ng-template>
-  </div>
-</div>
-<!-- Table container -->
-<div class="overflow-x-hidden shadow-2lg">
-  <!-- Table scroll container -->
-  <div class="overflow-x-auto">
-    <!-- Records table -->
-    <table *ngIf="!loading" mat-table [dataSource]="dataSource">
-      <ng-container
-        *ngFor="let column of displayedColumns"
-        [matColumnDef]="column"
-        [stickyEnd]="column === '_actions'"
+    </h1>
+    <!-- Actions -->
+    <div class="flex gap-2 items-center flex-wrap justify-end">
+      <ui-button
+        *ngIf="form.canUpdate && !showDeletedRecords"
+        icon="search_off"
+        category="primary"
+        variant="danger"
+        (click)="onSwitchView($event)"
       >
-        <ng-container *ngIf="!defaultColumns.includes(column)">
-          <th mat-header-cell *matHeaderCellDef>
-            <div>{{ column }}</div>
-          </th>
-          <td mat-cell *matCellDef="let element">
-            <div>{{ element.data[column] }}</div>
-          </td>
-        </ng-container>
-        <ng-container *ngIf="column === '_incrementalId'">
-          <th mat-header-cell *matHeaderCellDef>
-            <div>ID</div>
-          </th>
-          <td mat-cell *matCellDef="let element">
-            <div>{{ element.incrementalId }}</div>
-          </td>
-        </ng-container>
-        <ng-container *ngIf="column === '_actions'">
-          <th mat-header-cell *matHeaderCellDef></th>
-          <td mat-cell *matCellDef="let element">
-            <safe-button
-              [isIcon]="true"
-              icon="more_vert"
-              [matMenuTriggerFor]="menu"
-              (click)="$event.stopPropagation()"
-            >
-            </safe-button>
-            <mat-menu #menu="matMenu">
-              <button
-                mat-menu-item
-                color="warn"
-                (click)="onViewHistory(element.id)"
-              >
-                <mat-icon>library_books</mat-icon>
-                {{ 'common.history' | translate }}
-              </button>
-              <safe-divider class="m-0"></safe-divider>
-              <button
-                *ngIf="!showDeletedRecords"
-                mat-menu-item
-                (click)="onDeleteRecord(element, $event)"
-              >
-                <mat-icon>delete</mat-icon>
-                {{ 'common.delete' | translate }}
-              </button>
-              <button
-                *ngIf="showDeletedRecords"
-                mat-menu-item
-                (click)="onDeleteRecord(element, $event)"
-              >
-                <mat-icon>delete_forever</mat-icon>
-                {{ 'components.record.delete.permanently' | translate }}
-              </button>
-              <button
-                *ngIf="showDeletedRecords"
-                mat-menu-item
-                (click)="onRestoreRecord(element.id, $event)"
-              >
-                <mat-icon>unarchive</mat-icon>
-                {{ 'models.record.restore' | translate }}
-              </button>
-            </mat-menu>
-          </td>
-        </ng-container>
-      </ng-container>
-      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr
-        mat-row
-        *matRowDef="let row; columns: displayedColumns"
-        [routerLink]="['./update', row.id]"
-      ></tr>
-    </table>
-    <safe-skeleton-table
-      *ngIf="loading"
-      [columns]="displayedColumns"
-      [actions]="true"
-    >
-    </safe-skeleton-table>
+        {{ 'components.records.showArchived' | translate }}
+      </ui-button>
+      <ui-button
+        *ngIf="form.canUpdate && showDeletedRecords"
+        icon="restore_page"
+        category="primary"
+        variant="success"
+        (click)="onSwitchView($event)"
+      >
+        {{ 'components.records.showActive' | translate }}
+      </ui-button>
+      <ui-button
+        icon="file_download"
+        category="secondary"
+        variant="primary"
+        [uiMenuTriggerFor]="menu"
+      >
+        {{
+          'common.downloadObject'
+            | translate : { name: 'common.record.few' | translate }
+        }}
+      </ui-button>
+      <ui-menu #menu>
+        <button uiMenuItem (click)="onDownload('csv')">.csv</button>
+        <button uiMenuItem (click)="onDownload('xlsx')">.xlsx</button>
+      </ui-menu>
+      <ui-button
+        icon="file_upload"
+        category="secondary"
+        variant="primary"
+        [uiTooltip]="'components.records.upload.hint' | translate"
+        (click)="showUpload = !showUpload"
+        cdkOverlayOrigin
+        #uploadTrigger="cdkOverlayOrigin"
+      >
+        {{
+          'common.uploadObject'
+            | translate : { name: 'common.record.few' | translate }
+        }}
+      </ui-button>
+      <ng-template
+        cdkConnectedOverlay
+        [cdkConnectedOverlayOrigin]="uploadTrigger"
+        [cdkConnectedOverlayOpen]="showUpload"
+      >
+        <app-upload-menu
+          (close)="showUpload = false"
+          (upload)="onFileChange($event)"
+          (download)="onDownloadTemplate()"
+        ></app-upload-menu>
+      </ng-template>
+    </div>
   </div>
-  <mat-paginator
-    [disabled]="loadingMore"
-    [pageSize]="pageInfo.pageSize"
-    [length]="pageInfo.length"
-    [ariaLabel]="'components.records.paginator.ariaLabel' | translate"
-    (page)="onPage($event)"
-  >
-  </mat-paginator>
-</div>
+  <ng-container *ngIf="!empty; else emptyTmpl">
+    <!-- Table container -->
+    <div class="overflow-x-hidden shadow-2lg">
+      <!-- Table scroll container -->
+      <div class="overflow-x-auto">
+        <!-- Records table -->
+        <table cdk-table uiTableWrapper [dataSource]="dataSource">
+          <ng-container
+            *ngFor="let column of displayedColumns"
+            [cdkColumnDef]="column"
+            [stickyEnd]="column === '_actions'"
+          >
+            <ng-container *ngIf="!defaultColumns.includes(column)">
+              <th uiCellHeader *cdkHeaderCellDef>
+                <div>{{ column }}</div>
+              </th>
+              <td uiCell *cdkCellDef="let element">
+                <div>{{ element.data[column] }}</div>
+              </td>
+            </ng-container>
+            <ng-container *ngIf="column === '_incrementalId'">
+              <th uiCellHeader *cdkHeaderCellDef>
+                <div>ID</div>
+              </th>
+              <td uiCell *cdkCellDef="let element">
+                <div>{{ element.incrementalId }}</div>
+              </td>
+            </ng-container>
+            <ng-container *ngIf="column === '_actions'">
+              <th uiCellHeader *cdkHeaderCellDef></th>
+              <td uiCell *cdkCellDef="let element">
+                <ui-button
+                  [isIcon]="true"
+                  icon="more_vert"
+                  [uiMenuTriggerFor]="menu"
+                  (click)="$event.stopPropagation()"
+                >
+                </ui-button>
+                <ui-menu #menu>
+                  <button
+                    uiMenuItem
+                    color="warn"
+                    (click)="onViewHistory(element)"
+                  >
+                    <ui-icon icon="library_books" variant="grey"></ui-icon>
+                    {{ 'common.history' | translate }}
+                  </button>
+                  <ui-divider class="py-1"></ui-divider>
+                  <button
+                    *ngIf="!showDeletedRecords"
+                    uiMenuItem
+                    (click)="onDeleteRecord(element, $event)"
+                  >
+                    <ui-icon icon="delete" variant="danger"></ui-icon>
+                    {{ 'common.delete' | translate }}
+                  </button>
+                  <button
+                    *ngIf="showDeletedRecords"
+                    uiMenuItem
+                    (click)="onDeleteRecord(element, $event)"
+                  >
+                    <ui-icon icon="delete_forever" variant="danger"></ui-icon>
+                    {{ 'components.record.delete.permanently' | translate }}
+                  </button>
+                  <button
+                    *ngIf="showDeletedRecords"
+                    uiMenuItem
+                    (click)="onRestoreRecord(element.id, $event)"
+                  >
+                    <ui-icon icon="unarchive" variant="success"></ui-icon>
+                    {{ 'models.record.restore' | translate }}
+                  </button>
+                </ui-menu>
+              </td>
+            </ng-container>
+          </ng-container>
+          <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+          <tr
+            cdk-row
+            *cdkRowDef="let row; columns: displayedColumns"
+            [routerLink]="['./update', row.id]"
+          ></tr>
+        </table>
+      </div>
+    </div>
+    <ui-paginator
+      [disabled]="loadingMore"
+      [pageSize]="pageInfo.pageSize"
+      [totalItems]="pageInfo.length"
+      [ariaLabel]="'components.records.paginator.ariaLabel' | translate"
+      (pageChange)="onPage($event)"
+    >
+    </ui-paginator>
+  </ng-container>
+  <ng-template #emptyTmpl>
+    <safe-empty [title]="'kendo.grid.noRecords' | translate"></safe-empty>
+  </ng-template>
+</ng-container>
+<ng-template #loadingTmpl>
+  <safe-skeleton-table [columns]="displayedColumns" [actions]="true">
+  </safe-skeleton-table>
+</ng-template>

@@ -1,18 +1,20 @@
-<safe-modal>
-  <h1 mat-dialog-title>
-    {{ 'components.share.modal.title' | translate }}
-  </h1>
-  <div mat-dialog-content>
+<ui-dialog>
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{ 'components.share.modal.title' | translate }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <div class="share-url">{{ data.url }}</div>
-  </div>
-  <div mat-dialog-actions align="center">
-    <safe-button
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button
       category="secondary"
       variant="primary"
       cdkFocusInitial
       (click)="onCopy()"
     >
       {{ 'components.share.modal.copy' | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

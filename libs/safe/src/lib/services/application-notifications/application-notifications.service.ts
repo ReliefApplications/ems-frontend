@@ -3,7 +3,6 @@ import { Apollo } from 'apollo-angular';
 import { Application } from '../../models/application.model';
 import { CustomNotification } from '../../models/custom-notification.model';
 import { SafeApplicationService } from '../application/application.service';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import {
   AddCustomNotificationMutationResponse,
   ADD_CUSTOM_NOTIFICATION,
@@ -13,6 +12,7 @@ import {
   UPDATE_CUSTOM_NOTIFICATION,
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
 /**
  * Shared service to manage application's notifications.
  */
@@ -33,7 +33,7 @@ export class SafeApplicationNotificationsService {
   constructor(
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private translate: TranslateService
   ) {
     this.applicationService.application$.subscribe(

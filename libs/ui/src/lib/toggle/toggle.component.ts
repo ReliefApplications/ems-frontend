@@ -5,10 +5,9 @@ import {
   Provider,
   forwardRef,
 } from '@angular/core';
-import { ToggleType } from './enums/toggle-type.enum';
-import { ToggleLabel } from './interfaces/toggle-label.interface';
+import { ToggleType } from './types/toggle-type';
 import { ToggleIcon } from './interfaces/toggle-icon.interface';
-import { Variant } from '../shared/variant.enum';
+import { Variant } from '../types/variant';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 /** A provider for the ControlValueAccessor interface. */
@@ -28,13 +27,10 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   providers: [CONTROL_VALUE_ACCESSOR],
 })
 export class ToggleComponent implements ControlValueAccessor {
-  @Input() type: ToggleType = ToggleType.SIMPLE;
+  @Input() type: ToggleType = 'short';
   @Input() icon!: ToggleIcon;
-  @Input() label!: ToggleLabel;
-  @Input() variant: Variant = Variant.PRIMARY;
-
-  toggleTypes = ToggleType;
-  toggleVariant = Variant;
+  @Input() labelPosition: 'right' | 'left' = 'right';
+  @Input() variant: Variant = 'primary';
 
   value = false;
   disabled = false;
@@ -45,12 +41,16 @@ export class ToggleComponent implements ControlValueAccessor {
 
   /** @returns general toggle classes and variant */
   get toggleClasses(): string[] {
-    const classes = [];
+    const classes: string[] = [];
     // Disable state
     classes.push(this.disabled ? 'opacity-70' : '');
+    // Space from button to label depending on label position
+    classes.push(this.labelPosition === 'left' ? 'ml-3' : 'mr-3');
+    // Order of button depending on label position
+    classes.push(this.labelPosition === 'left' ? 'order-2' : 'order-1');
     // Variants
     classes.push('focus-' + this.variant);
-    if (this.type === this.toggleTypes.SIMPLE) {
+    if (this.type === 'simple') {
       classes.push('button-simple');
       if (!this.value) {
         classes.push('bg-gray-200');
@@ -65,7 +65,7 @@ export class ToggleComponent implements ControlValueAccessor {
 
   /** @returns shot toggle classes and variant */
   get shortToggleClasses(): string[] {
-    const classes = [];
+    const classes: string[] = [];
     if (!this.value) {
       classes.push('bg-gray-200');
     } else {
@@ -101,8 +101,10 @@ export class ToggleComponent implements ControlValueAccessor {
    *
    * @param fn callback function
    */
-  public registerOnChange(fn: any): void {
-    this.onChange = fn;
+  public registerOnChange(fn: (value: boolean) => void): void {
+    if (!this.onChange) {
+      this.onChange = fn;
+    }
   }
 
   /**
@@ -110,8 +112,10 @@ export class ToggleComponent implements ControlValueAccessor {
    *
    * @param fn callback function
    */
-  public registerOnTouched(fn: any): void {
-    this.onTouch = fn;
+  public registerOnTouched(fn: () => void): void {
+    if (!this.onTouch) {
+      this.onTouch = fn;
+    }
   }
 
   /**

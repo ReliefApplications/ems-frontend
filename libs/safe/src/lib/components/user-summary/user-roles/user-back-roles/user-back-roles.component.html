@@ -1,13 +1,13 @@
 <div class="flex flex-col">
   <h2>{{ 'components.user.summary.roles.backoffice' | translate }}</h2>
-  <mat-form-field appearance="outline">
-    <mat-label>
-      {{ 'components.user.summary.roles.selectedRoles' | translate }}</mat-label
+  <div uiFormFieldDirective>
+    <label>
+      {{ 'components.user.summary.roles.selectedRoles' | translate }}</label
     >
-    <mat-select [formControl]="selectedRoles" multiple>
-      <mat-option *ngFor="let role of roles" [value]="role.id">
+    <ui-select-menu [formControl]="selectedRoles" [multiselect]="true">
+      <ui-select-option *ngFor="let role of roles" [value]="role.id">
         {{ role.title }}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
+      </ui-select-option>
+    </ui-select-menu>
+  </div>
 </div>

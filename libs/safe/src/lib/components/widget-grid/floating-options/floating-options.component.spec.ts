@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
-import { MatLegacyDialogModule as MatDialogModule } from '@angular/material/legacy-dialog';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
+import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
+import { MenuModule } from '@oort-front/ui';
 import {
   TranslateModule,
   TranslateService,
@@ -19,14 +19,14 @@ describe('SafeFloatingOptionsComponent', () => {
       providers: [TranslateService],
       declarations: [SafeFloatingOptionsComponent],
       imports: [
-        MatDialogModule,
+        DialogCdkModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
             useClass: TranslateFakeLoader,
           },
         }),
-        MatMenuModule,
+        MenuModule,
       ],
     }).compileComponents();
   }));

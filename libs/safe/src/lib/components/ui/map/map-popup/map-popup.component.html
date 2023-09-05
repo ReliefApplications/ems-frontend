@@ -1,0 +1,53 @@
+<div class="w-60 safe-border-radius-inherit flex flex-col">
+  <header class="w-full pl-2 safe-popup-header h-full flex items-center">
+    <span class="" *ngIf="feature.length > 1">
+      ({{
+        'components.widget.settings.map.popup.of'
+          | translate : { total: feature.length, current: currValue + 1 }
+      }})
+    </span>
+    <div class="flex ml-auto">
+      <!-- Navigate between items -->
+      <ng-container *ngIf="feature.length > 1">
+        <ui-button
+          size="small"
+          [isIcon]="true"
+          icon="arrow_left"
+          [disabled]="currValue === 0"
+          variant="light"
+          (click)="current.next(currValue - 1)"
+        >
+        </ui-button>
+        <ui-button
+          size="small"
+          [isIcon]="true"
+          icon="arrow_right"
+          [disabled]="currValue === feature.length - 1"
+          variant="light"
+          (click)="current.next(currValue + 1)"
+        >
+        </ui-button>
+      </ng-container>
+      <!-- Close popup -->
+      <ui-button
+        size="small"
+        [isIcon]="true"
+        icon="close"
+        variant="light"
+        (click)="closePopup.emit()"
+      >
+      </ui-button>
+    </div>
+  </header>
+  <div class="max-h-60 overflow-y-auto">
+    <div [innerHTML]="currentHtml"></div>
+  </div>
+  <div class="pl-2 my-1 flex">
+    <span
+      (click)="zoomToCurrentFeature()"
+      class="underline inline text-base text-primary-500 cursor-pointer"
+    >
+      {{ 'components.widget.settings.map.popup.zoomTo' | translate }}
+    </span>
+  </div>
+</div>

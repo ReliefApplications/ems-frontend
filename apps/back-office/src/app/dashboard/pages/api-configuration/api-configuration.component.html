@@ -1,4 +1,4 @@
-<mat-spinner diameter="45" class="page-loader" *ngIf="loading"></mat-spinner>
+<ui-spinner *ngIf="loading"></ui-spinner>
 <ng-container *ngIf="!loading && apiConfiguration">
   <div class="page-header">
     <h1 class="page-title">
@@ -16,55 +16,58 @@
     <div class="flex justify-between mt-8">
       <h2>{{ 'common.general' | translate }}</h2>
       <!-- Status -->
-      <mat-form-field appearance="outline" class="p-0">
-        <mat-label>{{ 'common.status' | translate }}</mat-label>
-        <mat-select formControlName="status">
-          <mat-select-trigger>
-            <ng-container
-              *ngTemplateOutlet="
-                statusTemplate;
-                context: { $implicit: apiForm.value.status }
-              "
-            ></ng-container>
-          </mat-select-trigger>
-          <mat-option *ngFor="let status of statusChoices" [value]="status">
+      <div uiFormFieldDirective [outline]="false" class="p-0">
+        <label>{{ 'common.status' | translate }}</label>
+        <ui-select-menu
+          formControlName="status"
+          [customTemplate]="{
+            template: statusTemplate,
+            context: { $implicit: apiForm.value.status }
+          }"
+        >
+          <ui-select-option
+            *ngFor="let status of statusChoices"
+            [value]="status"
+          >
             <ng-container
               *ngTemplateOutlet="statusTemplate; context: { $implicit: status }"
             ></ng-container>
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
     </div>
     <div class="flex flex-col last:mb-0">
       <div class="flex gap-x-2 flex-wrap">
         <!-- Name -->
-        <mat-form-field appearance="outline" class="flex-auto">
-          <mat-label>
+        <div
+          [uiErrorMessage]="
+            'components.apiConfiguration.create.errors.name' | translate
+          "
+          [uiErrorMessageIf]="name?.errors && name?.touched"
+          uiFormFieldDirective
+          class="flex-auto"
+        >
+          <label>
             {{ 'common.name' | translate }}
-          </mat-label>
+          </label>
           <input
-            matInput
             formControlName="name"
             type="text"
             [placeholder]="'common.placeholder.name' | translate"
           />
-          <mat-error *ngIf="name?.errors">
-            {{ 'components.apiConfiguration.create.errors.name' | translate }}
-          </mat-error>
-        </mat-form-field>
+        </div>
         <!-- Authentication type -->
-        <mat-form-field appearance="outline" class="flex-1">
-          <mat-label>
-            {{ 'models.apiConfiguration.authType' | translate }}
-          </mat-label>
-          <mat-select formControlName="authType">
-            <mat-option
+
+        <div uiFormFieldDirective [outline]="false" class="flex-1">
+          <label>{{ 'models.apiConfiguration.authType' | translate }}</label>
+          <ui-select-menu formControlName="authType">
+            <ui-select-option
               *ngFor="let authTypeChoice of authTypeChoices"
               [value]="authTypeChoice"
-              >{{ authTypeChoice }}</mat-option
+              >{{ authTypeChoice }}</ui-select-option
             >
-          </mat-select>
-        </mat-form-field>
+          </ui-select-menu>
+        </div>
       </div>
     </div>
 
@@ -74,7 +77,7 @@
         {{ 'pages.apiConfiguration.host' | translate }}
       </h2>
       <!-- Send ping request -->
-      <safe-button
+      <ui-button
         icon="online_prediction"
         category="secondary"
         variant="primary"
@@ -82,37 +85,35 @@
         [disabled]="!apiForm.value.pingUrl || !apiForm.value.endpoint"
       >
         {{ 'pages.apiConfiguration.ping' | translate }}
-      </safe-button>
+      </ui-button>
     </div>
     <div class="flex gap-x-2">
       <!-- Endpoint -->
-      <mat-form-field appearance="outline" class="flex-auto">
-        <mat-label>
+      <div uiFormFieldDirective class="flex-auto">
+        <label>
           {{ 'pages.apiConfiguration.baseUrl' | translate }}
-        </mat-label>
+        </label>
         <input
-          matInput
           formControlName="endpoint"
           type="text"
           [placeholder]="
             'pages.apiConfiguration.placeholder.baseUrl' | translate
           "
         />
-      </mat-form-field>
+      </div>
       <!-- Path to ping -->
-      <mat-form-field appearance="outline" class="flex-1">
-        <mat-label>
+      <div uiFormFieldDirective class="flex-1">
+        <label>
           {{ 'pages.apiConfiguration.pingUrl' | translate }}
-        </mat-label>
+        </label>
         <input
-          matInput
           formControlName="pingUrl"
           type="text"
           [placeholder]="
             'pages.apiConfiguration.placeholder.pingUrl' | translate
           "
         />
-      </mat-form-field>
+      </div>
     </div>
 
     <!-- Authentication settings -->
@@ -126,12 +127,11 @@
       >
         <div formGroupName="settings" class="flex flex-col">
           <!-- Token url -->
-          <mat-form-field appearance="outline">
-            <mat-label>
+          <div uiFormFieldDirective>
+            <label>
               {{ 'pages.apiConfiguration.tokenUrl' | translate }}
-            </mat-label>
+            </label>
             <input
-              matInput
               formControlName="authTargetUrl"
               type="text"
               [placeholder]="
@@ -139,14 +139,13 @@
               "
               onfocus="this.value=''"
             />
-          </mat-form-field>
+          </div>
           <!-- Client id -->
-          <mat-form-field appearance="outline">
-            <mat-label>
+          <div uiFormFieldDirective>
+            <label>
               {{ 'pages.apiConfiguration.clientId' | translate }}
-            </mat-label>
+            </label>
             <input
-              matInput
               formControlName="apiClientID"
               type="text"
               [placeholder]="
@@ -154,14 +153,13 @@
               "
               onfocus="this.value=''"
             />
-          </mat-form-field>
+          </div>
           <!-- Client secret -->
-          <mat-form-field appearance="outline">
-            <mat-label>
+          <div uiFormFieldDirective>
+            <label>
               {{ 'pages.apiConfiguration.secret' | translate }}
-            </mat-label>
+            </label>
             <input
-              matInput
               formControlName="safeSecret"
               type="text"
               [placeholder]="
@@ -169,14 +167,13 @@
               "
               onfocus="this.value=''"
             />
-          </mat-form-field>
+          </div>
           <!-- Token scope -->
-          <mat-form-field appearance="outline">
-            <mat-label>
+          <div uiFormFieldDirective>
+            <label>
               {{ 'pages.apiConfiguration.scope' | translate }}
-            </mat-label>
+            </label>
             <input
-              matInput
               formControlName="scope"
               type="text"
               [placeholder]="
@@ -184,19 +181,18 @@
               "
               onfocus="this.value=''"
             />
-          </mat-form-field>
+          </div>
         </div>
       </ng-container>
       <!-- User to service connection -->
       <ng-container *ngIf="apiForm.value.authType === authType.userToService">
         <div formGroupName="settings" class="flex flex-col">
           <!-- Token -->
-          <mat-form-field appearance="outline">
-            <mat-label>
+          <div uiFormFieldDirective>
+            <label>
               {{ 'pages.apiConfiguration.token' | translate }}
-            </mat-label>
+            </label>
             <input
-              matInput
               formControlName="token"
               type="text"
               [placeholder]="
@@ -204,7 +200,7 @@
               "
               onfocus="this.value=''"
             />
-          </mat-form-field>
+          </div>
         </div>
       </ng-container>
     </ng-container>
@@ -215,58 +211,43 @@
     </h2>
     <div class="flex flex-col">
       <!-- GraphQL endpoint -->
-      <mat-form-field appearance="outline">
-        <mat-label>
+      <div uiFormFieldDirective>
+        <label>
           {{ 'pages.apiConfiguration.graphQL.endpoint' | translate }}
-        </mat-label>
+        </label>
         <input
-          matInput
           formControlName="graphQLEndpoint"
           type="text"
           [placeholder]="
             'pages.apiConfiguration.placeholder.graphQLEndpoint' | translate
           "
         />
-      </mat-form-field>
+      </div>
     </div>
 
     <!-- Save button -->
-    <safe-button
+    <ui-button
       category="secondary"
       variant="primary"
       (click)="onSave()"
       [disabled]="apiForm.invalid || !apiForm.dirty"
     >
       {{ 'common.save' | translate }}
-    </safe-button>
+    </ui-button>
   </form>
 </ng-container>
 
 <!-- Template to display status -->
 <ng-template #statusTemplate let-status>
-  <mat-chip-list>
-    <mat-chip
-      class="success-chip !rounded-lg"
-      disabled
-      *ngIf="status === 'active'"
-    >
+  <div uiChipList>
+    <ui-chip class="!rounded-lg" variant="success" *ngIf="status === 'active'">
       {{ 'common.status_active' | translate | titlecase }}
-    </mat-chip>
-    <mat-chip
-      class="accent-chip !rounded-lg"
-      disabled
-      color="accent"
-      *ngIf="status === 'pending'"
-    >
+    </ui-chip>
+    <ui-chip class="!rounded-lg" variant="warning" *ngIf="status === 'pending'">
       {{ 'common.status_pending' | translate | titlecase }}
-    </mat-chip>
-    <mat-chip
-      class="warn-chip !rounded-lg"
-      disabled
-      color="warn"
-      *ngIf="status === 'archived'"
-    >
+    </ui-chip>
+    <ui-chip class="!rounded-lg" variant="danger" *ngIf="status === 'archived'">
       {{ 'common.status_archived' | translate | titlecase }}
-    </mat-chip>
-  </mat-chip-list>
+    </ui-chip>
+  </div>
 </ng-template>

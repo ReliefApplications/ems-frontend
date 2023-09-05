@@ -2,10 +2,7 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { cronValidator } from '../../../../utils/validators/cron.validator';
 import { CustomNotification } from '../../../../models/custom-notification.model';
-import {
-  MAT_LEGACY_DIALOG_DATA as MAT_DIALOG_DATA,
-  MatLegacyDialog as MatDialog,
-} from '@angular/material/legacy-dialog';
+import { Dialog, DIALOG_DATA } from '@angular/cdk/dialog';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   GetResourceByIdQueryResponse,
@@ -23,17 +20,21 @@ import { DistributionList } from '../../../../models/distribution-list.model';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
 import { CommonModule } from '@angular/common';
-import { SafeModalModule } from '../../../ui/modal/modal.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
-import { MatLegacySelectModule as MatSelectModule } from '@angular/material/legacy-select';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
 import { SafeReadableCronModule } from '../../../../pipes/readable-cron/readable-cron.module';
-import { SafeDividerModule } from '../../../ui/divider/divider.module';
-import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
-import { MatLegacyRadioModule as MatRadioModule } from '@angular/material/legacy-radio';
 import { CronExpressionControlModule } from '../../../cron-expression-control/cron-expression-control.module';
+import {
+  DividerModule,
+  TooltipModule,
+  RadioModule,
+  ButtonModule,
+  SelectMenuModule,
+  FormWrapperModule,
+  DialogModule,
+  GraphQLSelectModule,
+  IconModule,
+  ErrorMessageModule,
+} from '@oort-front/ui';
 
 /**
  * Dialog data interface
@@ -52,18 +53,21 @@ const ITEMS_PER_PAGE = 10;
   standalone: true,
   imports: [
     CommonModule,
-    SafeModalModule,
+    DialogModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatTooltipModule,
+    FormWrapperModule,
+    TooltipModule,
     SafeReadableCronModule,
-    SafeDividerModule,
-    SafeGraphQLSelectModule,
-    MatRadioModule,
+    DividerModule,
+    GraphQLSelectModule,
     CronExpressionControlModule,
+    IconModule,
+    RadioModule,
+    ButtonModule,
+    SelectMenuModule,
+    FormWrapperModule,
+    ErrorMessageModule,
   ],
   selector: 'safe-edit-notification-modal',
   templateUrl: './edit-notification-modal.component.html',
@@ -102,16 +106,16 @@ export class EditNotificationModalComponent
    * @param fb Angular form builder
    * @param data Modal injected data
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param gridLayoutService Shared dataset layout service
    * @param applicationService Shared application service
    */
   constructor(
     private fb: FormBuilder,
-    @Inject(MAT_DIALOG_DATA)
+    @Inject(DIALOG_DATA)
     public data: DialogData,
     private apollo: Apollo,
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private gridLayoutService: SafeGridLayoutService,
     private applicationService: SafeApplicationService
   ) {
@@ -230,19 +234,16 @@ export class EditNotificationModalComponent
         hasLayouts: get(this.resource, 'layouts.totalCount', 0) > 0,
       },
     });
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value) {
-          if (typeof value === 'string') {
-            this.formGroup.get('layout')?.setValue(value);
-          } else {
-            this.formGroup.get('layout')?.setValue(value.id);
-          }
-          this.getResource(this.resource?.id as string);
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        if (typeof value === 'string') {
+          this.formGroup.get('layout')?.setValue(value);
+        } else {
+          this.formGroup.get('layout')?.setValue(value.id);
         }
-      });
+        this.getResource(this.resource?.id as string);
+      }
+    });
   }
 
   /**
@@ -256,20 +257,18 @@ export class EditNotificationModalComponent
       disableClose: true,
       data: {
         layout: this.layout,
+        queryName: this.resource?.queryName,
       },
     });
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value && this.layout) {
-          this.gridLayoutService
-            .editLayout(this.layout, value, this.resource?.id)
-            .subscribe((res: any) => {
-              this.layout = res.data?.editLayout;
-            });
-        }
-      });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value && this.layout) {
+        this.gridLayoutService
+          .editLayout(this.layout, value, this.resource?.id)
+          .subscribe((res: any) => {
+            this.layout = res.data?.editLayout;
+          });
+      }
+    });
   }
 
   /** Unset layout. */
@@ -286,24 +285,21 @@ export class EditNotificationModalComponent
     const dialogRef = this.dialog.open(EditTemplateModalComponent, {
       disableClose: true,
     });
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (value)
-          this.applicationService.addTemplate(
-            {
-              name: value.name,
-              type: TemplateTypeEnum.EMAIL,
-              content: {
-                subject: value.subject,
-                body: value.body,
-              },
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value)
+        this.applicationService.addTemplate(
+          {
+            name: value.name,
+            type: TemplateTypeEnum.EMAIL,
+            content: {
+              subject: value.subject,
+              body: value.body,
             },
-            (template: Template) => {
-              this.formGroup.get('template')?.setValue(template.id || null);
-            }
-          );
-      });
+          },
+          (template: Template) => {
+            this.formGroup.get('template')?.setValue(template.id || null);
+          }
+        );
+    });
   }
 }

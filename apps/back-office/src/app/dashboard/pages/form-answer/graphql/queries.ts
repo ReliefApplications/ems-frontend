@@ -12,6 +12,7 @@ export const GET_SHORT_FORM_BY_ID = gql`
       structure
       fields
       status
+      queryName
       canCreateRecords
       uniqueRecord {
         id

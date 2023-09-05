@@ -15,7 +15,6 @@ beta | ![GitHub package.json version (branch)](https://img.shields.io/github/pac
 
 This front-end was made using [Angular](https://angular.io/). It uses multiple external packages, but the relevant ones are:
 
-*   [Material Angular](https://material.angular.io/), for the UI
 *   [KendoUI Angular](https://www.telerik.com/kendo-angular-ui), for the widgets of the dashboards
 *   [SurveyJS](https://surveyjs.io/), for the form builder
 *   [Apollo Angular](https://www.apollographql.com/docs/angular/), as a GraphQL client, to interact with the back-end
@@ -47,7 +46,7 @@ Library changes should automatically be detected when serving the other projects
 If you want to deploy on Azure, build back-office and front-office:
 ```
 npx nx run back-office:build:azure-dev
-npx nx run back-office:build:azure-dev
+npx nx run front-office:build:azure-dev
 ```
 
 For prod, replace `azure-dev` with `azure-prod`.

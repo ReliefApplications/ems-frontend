@@ -1,22 +1,27 @@
-<safe-modal size="medium" [closable]="true">
-  <div mat-dialog-content class="!flex flex-col">
+<ui-dialog size="medium" [closable]="true">
+  <!-- Title of the field -->
+  <ng-container ngProjectAs="header">
     <h1>{{ data.title }}</h1>
-    <mat-form-field appearance="outline" class="flex-1">
-      <textarea matInput [formControl]="formControl" rows="15"></textarea>
-    </mat-form-field>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>
+  </ng-container>
+  <!-- Edition of the field ( if available ), else, display of the value -->
+  <ng-container ngProjectAs="content">
+    <div uiFormFieldDirective class="flex-1">
+      <ui-textarea [formControl]="formControl" [minRows]="15" [maxRows]="15">
+      </ui-textarea>
+    </div>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose]="null">
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="formControl.value"
+      [uiDialogClose]="formControl.value"
       cdkFocusInitial
       *ngIf="!data.readonly"
     >
       {{ 'common.save' | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

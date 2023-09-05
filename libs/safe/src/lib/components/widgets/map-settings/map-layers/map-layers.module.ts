@@ -2,11 +2,18 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MapLayersComponent } from './map-layers.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyTabsModule as MatTabsModule } from '@angular/material/legacy-tabs';
+import {
+  ButtonModule,
+  DividerModule,
+  IconModule,
+  MenuModule,
+  TableModule,
+  TabsModule,
+} from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { MapMarkersModule } from './map-markers/map-markers.module';
-import { MapClorophletsModule } from './map-clorophlets/map-clorophlets.module';
-import { MapOnlineLayersModule } from './map-online-layers/map-online-layers.module';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { SafeEmptyModule } from '../../../ui/empty/empty.module';
+import { SafeSkeletonTableModule } from '../../../skeleton/skeleton-table/skeleton-table.module';
 
 /**
  * Map Widget layers configuration module.
@@ -18,10 +25,15 @@ import { MapOnlineLayersModule } from './map-online-layers/map-online-layers.mod
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    MatTabsModule,
-    MapMarkersModule,
-    MapClorophletsModule,
-    MapOnlineLayersModule,
+    ButtonModule,
+    TableModule,
+    MenuModule,
+    IconModule,
+    DividerModule,
+    DragDropModule,
+    TabsModule,
+    SafeEmptyModule,
+    SafeSkeletonTableModule,
   ],
   exports: [MapLayersComponent],
 })

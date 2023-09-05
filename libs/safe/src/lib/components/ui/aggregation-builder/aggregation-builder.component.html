@@ -1,11 +1,11 @@
-<safe-spinner *ngIf="loading"></safe-spinner>
+<ui-spinner [size]="'medium'" *ngIf="loading"></ui-spinner>
 <ng-container *ngIf="!loading">
   <div class="flex">
     <!-- Selection of fields -->
     <safe-tagbox
       class="flex flex-1"
       [choices$]="fields$"
-      [formControl]="$any(aggregationForm.get('sourceFields'))"
+      [control]="$any(aggregationForm.get('sourceFields'))"
       [label]="'components.aggregationBuilder.sourceFields' | translate"
     ></safe-tagbox>
   </div>

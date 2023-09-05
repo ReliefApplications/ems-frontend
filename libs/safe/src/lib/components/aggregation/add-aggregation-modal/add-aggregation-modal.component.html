@@ -1,45 +1,45 @@
-<safe-modal size="medium">
-  <h1 mat-dialog-title>
-    {{ 'components.aggregation.add.title' | translate }}
-  </h1>
-  <div mat-dialog-content>
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{ 'components.aggregation.add.title' | translate }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <div class="flex gap-4 flex-col" *ngIf="!nextStep">
       <!-- Load from existing Aggregation -->
-      <safe-button
+      <ui-button
         class="!w-auto"
         variant="primary"
         category="secondary"
         (click)="nextStep = true"
         [disabled]="!hasAggregations"
-        >{{ 'components.aggregation.add.choice.load' | translate }}</safe-button
+        [isBlock]="true"
+        >{{ 'components.aggregation.add.choice.load' | translate }}</ui-button
       >
       <!-- Add a new aggregation -->
-      <safe-button
+      <ui-button
         class="!w-auto"
         variant="primary"
         category="tertiary"
+        [isBlock]="true"
         (click)="onCreate()"
-        >{{
-          'components.aggregation.add.choice.create' | translate
-        }}</safe-button
+        >{{ 'components.aggregation.add.choice.create' | translate }}</ui-button
       >
     </div>
     <div *ngIf="nextStep">
       <div class="flex items-center gap-4 mb-3">
-        <safe-button
+        <ui-button
           [isIcon]="true"
           icon="arrow_back"
           (click)="nextStep = false"
-        ></safe-button>
+        ></ui-button>
         <div>
           {{ 'components.aggregation.add.choice.load' | translate }}
         </div>
       </div>
-      <mat-form-field appearance="outline" class="w-full">
-        <mat-label>{{
-          'components.aggregation.add.select' | translate
-        }}</mat-label>
-        <safe-graphql-select
+      <div uiFormFieldDirective class="w-full">
+        <label>{{ 'components.aggregation.add.select' | translate }}</label>
+        <ui-graphql-select
           *ngIf="queryRef"
           valueField="id"
           textField="name"
@@ -48,11 +48,11 @@
           [query]="queryRef"
           [formControl]="selectedAggregationControl"
         >
-        </safe-graphql-select>
-      </mat-form-field>
+        </ui-graphql-select>
+      </div>
     </div>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button mat-dialog-close>{{ 'common.close' | translate }}</safe-button>
-  </div>
-</safe-modal>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>{{ 'common.close' | translate }}</ui-button>
+  </ng-container>
+</ui-dialog>

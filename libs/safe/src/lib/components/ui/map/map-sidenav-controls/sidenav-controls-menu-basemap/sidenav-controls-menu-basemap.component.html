@@ -1,0 +1,21 @@
+<div class="flex items-center" [style.marginLeft.px]="level * 20">
+  <ui-button (click)="toggleExpansion()" *ngIf="basemap.children">{{
+    expanded ? '-' : '+'
+  }}</ui-button
+  ><ui-radio
+    class="h-fit w-fit"
+    (change)="updateBasemap()"
+    [checked]="checked"
+    *ngIf="basemap.layer"
+  ></ui-radio>
+  {{ basemap.label }}
+</div>
+
+<ng-container *ngIf="expanded">
+  <safe-sidenav-controls-menu-basemap
+    *ngFor="let child of basemap.children"
+    [basemap]="child"
+    [level]="level + 1"
+    [mapComponent]="mapComponent"
+  ></safe-sidenav-controls-menu-basemap>
+</ng-container>

@@ -5,10 +5,9 @@ import { FormComponent } from './form.component';
 import {
   SafeFormModule,
   SafeAccessModule,
-  SafeButtonModule,
   SafeEditableTextModule,
 } from '@oort-front/safe';
-import { MatLegacyProgressSpinnerModule as MatProgressSpinnerModule } from '@angular/material/legacy-progress-spinner';
+import { ButtonModule, SpinnerModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -21,10 +20,11 @@ import { TranslateModule } from '@ngx-translate/core';
     FormRoutingModule,
     SafeFormModule,
     SafeAccessModule,
-    MatProgressSpinnerModule,
-    SafeButtonModule,
+    SpinnerModule,
     TranslateModule,
     SafeEditableTextModule,
+    ButtonModule,
+    TooltipModule,
   ],
   exports: [FormComponent],
 })

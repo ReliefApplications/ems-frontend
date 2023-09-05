@@ -1,16 +1,13 @@
-import { BlockScrollStrategy, Overlay } from '@angular/cdk/overlay';
 import {
   Component,
   EventEmitter,
+  Inject,
   Input,
+  OnDestroy,
   OnInit,
   Output,
-  ViewChild,
+  Renderer2,
 } from '@angular/core';
-import {
-  MAT_LEGACY_SELECT_SCROLL_STRATEGY as MAT_SELECT_SCROLL_STRATEGY,
-  MatLegacySelect as MatSelect,
-} from '@angular/material/legacy-select';
 import { QueryRef, Apollo } from 'apollo-angular';
 import {
   GetRecordByIdQueryResponse,
@@ -24,20 +21,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { updateQueryUniqueValues } from '../../utils/update-queries';
+import { DOCUMENT } from '@angular/common';
 
 /** A constant that is used to set the number of items to be displayed on the page. */
 const ITEMS_PER_PAGE = 25;
-
-/**
- * Scroll Factory for material select, provided by the component.
- *
- * @param overlay material overlay
- * @returns Strategy to prevent scrolling if user sees overlay.
- */
-export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
-  const block = () => overlay.scrollStrategies.block();
-  return block;
-}
 
 /**
  * A component to display a dropdown to select a record
@@ -46,17 +33,10 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
   selector: 'safe-record-dropdown',
   templateUrl: './record-dropdown.component.html',
   styleUrls: ['./record-dropdown.component.scss'],
-  providers: [
-    {
-      provide: MAT_SELECT_SCROLL_STRATEGY,
-      useFactory: scrollFactory,
-      deps: [Overlay],
-    },
-  ],
 })
 export class SafeRecordDropdownComponent
   extends SafeUnsubscribeComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   @Input() record = '';
   @Input() resourceId = '';
@@ -77,8 +57,7 @@ export class SafeRecordDropdownComponent
     hasNextPage: true,
   };
   private loading = true;
-
-  @ViewChild('recordSelect') recordSelect?: MatSelect;
+  private scrollListener!: any;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -86,8 +65,15 @@ export class SafeRecordDropdownComponent
    *
    * @param apollo This is the Apollo service use to generate GraphQL queries
    * @param translate This is the service that we will use to translate the text in the platform
+   * @param renderer Renderer2
+   * @param document Document
    */
-  constructor(private apollo: Apollo, private translate: TranslateService) {
+  constructor(
+    private apollo: Apollo,
+    private translate: TranslateService,
+    private renderer: Renderer2,
+    @Inject(DOCUMENT) private document: Document
+  ) {
     super();
   }
 
@@ -136,19 +122,22 @@ export class SafeRecordDropdownComponent
    * @param e select event.
    */
   onSelect(e: any): void {
-    this.choice.emit(e.value);
+    this.choice.emit(e);
   }
 
   /**
    * Adds scroll listener to select.
-   *
-   * @param e open select event.
    */
-  onOpenSelect(e: any): void {
-    if (e && this.recordSelect) {
-      const panel = this.recordSelect.panel.nativeElement;
-      panel.addEventListener('scroll', (event: any) =>
-        this.loadOnScroll(event)
+  onOpenSelect(): void {
+    const panel = this.document.getElementById('optionList');
+    if (panel) {
+      if (this.scrollListener) {
+        this.scrollListener();
+      }
+      this.scrollListener = this.renderer.listen(
+        panel,
+        'scroll',
+        (event: any) => this.loadOnScroll(event)
       );
     }
   }
@@ -163,7 +152,7 @@ export class SafeRecordDropdownComponent
       e.target.scrollHeight - (e.target.clientHeight + e.target.scrollTop) <
       50
     ) {
-      if (!this.loading && this.pageInfo.hasNextPage && this.resourceId) {
+      if (!this.loading && this.pageInfo?.hasNextPage && this.resourceId) {
         this.loading = true;
         this.recordsQuery
           .fetchMore({
@@ -194,5 +183,12 @@ export class SafeRecordDropdownComponent
     this.records.next(this.cachedRecords);
     this.pageInfo = data.resource.records.pageInfo;
     this.loading = loading;
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.scrollListener) {
+      this.scrollListener();
+    }
   }
 }

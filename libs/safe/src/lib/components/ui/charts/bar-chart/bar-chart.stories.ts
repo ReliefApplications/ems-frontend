@@ -43,6 +43,9 @@ const TEMPLATE: StoryFn<SafeBarChartComponent> = (args) => ({
   },
 });
 
+/**
+ * Default story.
+ */
 export const DEFAULT = {
   render: TEMPLATE,
   name: 'Default',
@@ -124,6 +127,9 @@ export const DEFAULT = {
   },
 };
 
+/**
+ * Column story.
+ */
 export const COLUMN = {
   render: TEMPLATE,
   name: 'Vertical',

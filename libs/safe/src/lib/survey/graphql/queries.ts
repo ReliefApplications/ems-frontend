@@ -20,7 +20,6 @@ export interface GetRolesFromApplicationsQueryResponse {
 }
 
 // === GET RESOURCE BY ID ===
-
 /** Graphql request for getting data of a resource by its id */
 export const GET_RESOURCE_BY_ID = gql`
   query GetResourceById($id: ID!, $filter: JSON, $display: Boolean) {
@@ -42,6 +41,17 @@ export const GET_RESOURCE_BY_ID = gql`
           endCursor
         }
       }
+    }
+  }
+`;
+
+/** Get short resource graphql query definition */
+export const GET_SHORT_RESOURCE_BY_ID = gql`
+  query GetShortResourceById($id: ID!) {
+    resource(id: $id) {
+      id
+      name
+      createdAt
       fields
       forms {
         id
@@ -53,26 +63,6 @@ export const GET_RESOURCE_BY_ID = gql`
         canUpdate
         canDelete
       }
-      coreForm {
-        uniqueRecord {
-          id
-        }
-      }
-      permissions {
-        canSee {
-          id
-          title
-        }
-        canUpdate {
-          id
-          title
-        }
-        canDelete {
-          id
-          title
-        }
-      }
-      canUpdate
     }
   }
 `;
@@ -84,7 +74,7 @@ export interface GetResourceByIdQueryResponse {
 
 // === GET USERS ===
 
-/** Graphql request for getting users (optionnally by a list of application ids) */
+/** Graphql request for getting users (optionally by a list of application ids) */
 export const GET_USERS = gql`
   query GetUsers($applications: [ID]) {
     users(applications: $applications) {
@@ -92,6 +82,9 @@ export const GET_USERS = gql`
       username
       name
       oid
+      roles {
+        id
+      }
     }
   }
 `;

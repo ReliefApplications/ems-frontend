@@ -1,6 +1,8 @@
 import { Component, Optional, Self } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
+import { Dialog } from '@angular/cdk/dialog';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Cron expression form control
@@ -11,7 +13,10 @@ import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
   styleUrls: ['./cron-expression-control.component.scss'],
   // providers: [CONTROL_VALUE_ACCESSOR],
 })
-export class CronExpressionControlComponent implements ControlValueAccessor {
+export class CronExpressionControlComponent
+  extends SafeUnsubscribeComponent
+  implements ControlValueAccessor
+{
   // /** @returns the value */
   // get value(): string | undefined | null {
   //   return this.ngControl.value;
@@ -22,21 +27,24 @@ export class CronExpressionControlComponent implements ControlValueAccessor {
   //   this.ngControl.control?.setValue(value);
   // }
   public value: string | undefined | null;
-
-  private onTouched!: any;
-  private onChanged!: any;
   public disabled = false;
+
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  private onTouched = () => {};
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
+  private onChanged = (_: any) => {};
 
   /**
    *  Cron expression form control
    *
    * @param ngControl Angular form control base class
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    */
   constructor(
     @Optional() @Self() public ngControl: NgControl,
-    private dialog: MatDialog
+    private dialog: Dialog
   ) {
+    super();
     if (this.ngControl != null) {
       this.ngControl.valueAccessor = this;
     }
@@ -56,7 +64,7 @@ export class CronExpressionControlComponent implements ControlValueAccessor {
    *
    * @param fn callback
    */
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (_: any) => void): void {
     this.onChanged = fn;
   }
 
@@ -65,7 +73,7 @@ export class CronExpressionControlComponent implements ControlValueAccessor {
    *
    * @param fn callback
    */
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
@@ -85,11 +93,8 @@ export class CronExpressionControlComponent implements ControlValueAccessor {
     );
     const dialogRef = this.dialog.open(CronExpressionControlModalComponent, {
       autoFocus: false,
-      data: {
-        value: this.value,
-      },
     });
-    dialogRef.afterClosed().subscribe((value: string | undefined | null) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.writeValue(value);
         this.onChanged(value);

@@ -1,7 +1,7 @@
 <!-- Check the separator style and adapt accordingly -->
 <ng-template #separatorTmpl>
   <ng-container [ngSwitch]="separator">
-    <ng-container *ngSwitchCase="BreadcrumbsSeparators.CHEVRON">
+    <ng-container *ngSwitchCase="'chevron'">
       <svg
         class="h-5 w-5 flex-shrink-0 text-gray-400"
         viewBox="-5 0 60 60"
@@ -11,7 +11,7 @@
         <path d="M.293 0l22 22-22 22h1.414l22-22-22-22H.293z" />
       </svg>
     </ng-container>
-    <ng-container *ngSwitchCase="BreadcrumbsSeparators.SLASH">
+    <ng-container *ngSwitchCase="'slash'">
       <svg
         class="h-5 w-5 flex-shrink-0 text-gray-300"
         fill="currentColor"
@@ -25,33 +25,59 @@
 </ng-template>
 <nav
   [ngClass]="{
-    'border-b border-gray-200 bg-white': display === BreadcrumbsTypes.FULL
+    'border-b border-gray-200 bg-white': display === 'full'
   }"
   class="flex"
   aria-label="Breadcrumb"
 >
   <ol
+    #breadcrumbList
+    class="mb-2"
     role="list"
     [ngClass]="{
-      'ui-breadcrumbs__simple': display === BreadcrumbsTypes.SIMPLE,
-      'ui-breadcrumbs__contained': display === BreadcrumbsTypes.CONTAINED,
-      'ui-breadcrumbs__full': display === BreadcrumbsTypes.FULL
+      'ui-breadcrumbs__simple': display === 'simple',
+      'ui-breadcrumbs__contained': display === 'contained',
+      'ui-breadcrumbs__full': display === 'full'
     }"
   >
     <!-- For each breadcrumb in the breadcrumbs list -->
-    <li *ngFor="let breadcrumb of breadcrumbs; let f = first" class="flex">
-      <div *ngIf="!f">
+    <li
+      *ngFor="let breadcrumb of breadcrumbs; let first = first; let last = last"
+      (mouseenter)="breadcrumb.showLabel = true"
+      (mouseleave)="breadcrumb.showLabel = false"
+      class="flex pr-4"
+    >
+      <div *ngIf="!first">
         <ng-container *ngTemplateOutlet="separatorTmpl"></ng-container>
       </div>
       <!-- Breadcrumb link -->
-      <div class="flex items-center">
+      <div [ngClass]="{ 'ml-4': !first }" class="flex items-center">
         <a
           *ngIf="breadcrumb.key || breadcrumb.text"
-          href="{{ breadcrumb.uri }}"
-          class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700"
+          [routerLink]="[breadcrumb.uri]"
+          class="text-sm font-medium text-gray-500 hover:text-gray-700"
         >
-          <span>{{ breadcrumb.key ? breadcrumb.key : breadcrumb.text }}</span>
+          <span
+            class="whitespace-nowrap"
+            *ngIf="
+              !isBreadcrumbOffLimits ||
+                (isBreadcrumbOffLimits &&
+                  (first || last || breadcrumb.showLabel));
+              else dotTmpl
+            "
+            >{{
+              breadcrumb.key ? (breadcrumb.key | translate) : breadcrumb.text
+            }}</span
+          >
+          <ng-template #dotTmpl>
+            <span class="text-sm font-medium text-gray-500">...</span>
+          </ng-template>
         </a>
+        <!-- Loading indicator if text not set -->
+        <kendo-skeleton
+          *ngIf="!breadcrumb.key && !breadcrumb.text"
+          width="3em"
+        ></kendo-skeleton>
       </div>
     </li>
   </ol>

@@ -7,3 +7,10 @@ table {
     max-width: 240px;
   }
 }
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 16px;
+}

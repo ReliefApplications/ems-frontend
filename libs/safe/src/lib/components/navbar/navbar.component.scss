@@ -1,17 +1,3 @@
-.mat-drawer-side {
-  position: relative;
-}
-
-.mat-drawer-end {
-  order: 2;
-}
-
-.mat-list-base {
-  display: flex;
-  padding: 0px;
-  max-height: 64px !important;
-}
-
 .nav-items-list {
   overflow-y: hidden;
   display: flex;
@@ -60,12 +46,47 @@
   }
 }
 
+.show-icons {
+  & > li {
+    @apply min-h-[54px] flex justify-between items-center cursor-pointer flex-row text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md;
+    & > a {
+      @apply flex flex-1 overflow-clip flex-row gap-x-3 text-sm leading-6 items-center font-semibold px-2 py-3;
+    }
+  }
+  .hide-icons {
+    display: none;
+  }
+  &:hover {
+    .hide-icons {
+      display: block;
+    }
+  }
+}
+
 .nav-item-handle {
   cursor: move;
 }
 
-.sidenav-header {
-  justify-content: space-between;
-  margin-top: 0px !important;
-  height: 56px !important;
+.app-sidenav-add-page {
+  // Subtracts topbar, sub-topbar, header and add-page height
+  max-height: calc(100vh - 64px - 60px - 48px - 84px);
+  overflow: auto;
+}
+
+.app-sidenav-phone-add-page {
+  // Subtracts header and add-page height
+  max-height: calc(100vh - 48px - 84px);
+  overflow: auto;
+}
+
+.app-sidenav {
+  // Subtracts topbar, sub-topbar, header height
+  max-height: calc(100vh - 64px - 60px - 48px);
+  overflow: hidden;
+}
+
+.app-sidenav-phone {
+  // Subtracts header height
+  max-height: calc(100vh - 48px);
+  overflow: auto;
 }

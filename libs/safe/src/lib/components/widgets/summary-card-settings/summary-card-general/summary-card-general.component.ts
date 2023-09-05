@@ -8,38 +8,32 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatLegacyFormFieldModule as MatFormFieldModule } from '@angular/material/legacy-form-field';
-import { MatLegacyInputModule as MatInputModule } from '@angular/material/legacy-input';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
-import { SafeButtonModule } from '../../../ui/button/button.module';
-import { MatLegacyTooltipModule as MatTooltipModule } from '@angular/material/legacy-tooltip';
-import {
-  MatLegacyRadioModule,
-  MatLegacyRadioModule as MatRadioModule,
-} from '@angular/material/legacy-radio';
-import { SafeIconModule } from '../../../ui/icon/icon.module';
-import { MatIconModule } from '@angular/material/icon';
-import { MatDividerModule } from '@angular/material/divider';
 import { SummaryCardItemModule } from '../../summary-card/summary-card-item/summary-card-item.module';
-import { MatLegacyMenuModule as MatMenuModule } from '@angular/material/legacy-menu';
-import { MatLegacyButtonModule as MatButtonModule } from '@angular/material/legacy-button';
 import { SummaryCardFormT } from '../summary-card-settings.component';
-import { MatLegacyDialog as MatDialog } from '@angular/material/legacy-dialog';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { GET_RESOURCES, GetResourcesQueryResponse } from '../graphql/queries';
-import { SafeGraphQLSelectModule } from '../../../graphql-select/graphql-select.module';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { Resource } from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
 import { get } from 'lodash';
-import { SafeDividerModule } from '../../../ui/divider/divider.module';
 import { SafeGridLayoutService } from '../../../../services/grid-layout/grid-layout.service';
 import { SafeAggregationService } from '../../../../services/aggregation/aggregation.service';
-import { MatLegacySelectModule } from '@angular/material/legacy-select';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
-import { MatLegacyCheckboxModule } from '@angular/material/legacy-checkbox';
+import {
+  ButtonModule,
+  CheckboxModule,
+  DividerModule,
+  FormWrapperModule,
+  GraphQLSelectModule,
+  IconModule,
+  RadioModule,
+  SelectMenuModule,
+  SelectOptionModule,
+} from '@oort-front/ui';
+import { Dialog } from '@angular/cdk/dialog';
 
 /** Default number of resources to be fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -54,24 +48,18 @@ const MAX_COL_SPAN = 8;
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
     TranslateModule,
     LayoutModule,
-    SafeButtonModule,
-    MatTooltipModule,
-    MatRadioModule,
-    SafeIconModule,
-    MatMenuModule,
-    MatIconModule,
-    MatDividerModule,
-    MatButtonModule,
+    ButtonModule,
+    IconModule,
     SummaryCardItemModule,
-    SafeGraphQLSelectModule,
-    SafeDividerModule,
-    MatLegacySelectModule,
-    MatLegacyRadioModule,
-    MatLegacyCheckboxModule,
+    GraphQLSelectModule,
+    DividerModule,
+    FormWrapperModule,
+    SelectMenuModule,
+    SelectOptionModule,
+    RadioModule,
+    CheckboxModule,
   ],
   templateUrl: './summary-card-general.component.html',
   styleUrls: ['./summary-card-general.component.scss'],
@@ -115,7 +103,7 @@ export class SummaryCardGeneralComponent
    * @param aggregationService Shared aggregation service
    */
   constructor(
-    private dialog: MatDialog,
+    private dialog: Dialog,
     private apollo: Apollo,
     private layoutService: SafeGridLayoutService,
     private aggregationService: SafeAggregationService
@@ -184,12 +172,12 @@ export class SummaryCardGeneralComponent
         hasLayouts: get(this.selectedResource, 'layouts.totalCount', 0) > 0,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value) {
         if (typeof value === 'string') {
           this.tileForm.get('card.layout')?.setValue(value);
         } else {
-          this.tileForm.get('card.layout')?.setValue(value.id);
+          this.tileForm.get('card.layout')?.setValue((value as any).id);
           this.layoutChange.emit(value);
         }
       }
@@ -207,9 +195,10 @@ export class SummaryCardGeneralComponent
       disableClose: true,
       data: {
         layout: this.selectedLayout,
+        queryName: this.selectedResource?.queryName,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value && this.selectedLayout) {
         this.layoutService
           .editLayout(this.selectedLayout, value, this.selectedResource?.id)
@@ -234,12 +223,12 @@ export class SummaryCardGeneralComponent
         resource: this.selectedResource,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value) {
         if (typeof value === 'string') {
           this.tileForm.get('card.aggregation')?.setValue(value);
         } else {
-          this.tileForm.get('card.aggregation')?.setValue(value.id);
+          this.tileForm.get('card.aggregation')?.setValue((value as any).id);
           this.aggregationChange.emit(value);
         }
       }
@@ -260,7 +249,7 @@ export class SummaryCardGeneralComponent
         aggregation: this.selectedAggregation,
       },
     });
-    dialogRef.afterClosed().subscribe((value) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value && this.selectedAggregation) {
         this.aggregationService
           .editAggregation(

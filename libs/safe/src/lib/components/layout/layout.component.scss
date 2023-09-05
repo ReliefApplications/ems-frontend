@@ -4,67 +4,26 @@
   flex-direction: column;
 }
 
-.sidenav {
-  width: 240px;
-}
-
 .sidenav-container {
   flex: 1;
   display: flex;
   position: unset;
+  overflow-y: auto;
 }
 
-.sidenav-content {
-  position: unset;
-  min-height: calc(100% - 64px);
-  height: unset;
-  padding: 32px 24px;
-  margin: 0 !important;
-  flex: 1;
-  z-index: 2;
-}
-
-.mat-drawer-side {
-  position: relative;
-}
-
-.mat-drawer-end {
-  order: 2;
-}
-
-.account-container {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  align-content: center;
-  font-size: 12px;
-  margin-left: auto;
-
-  .account-property {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: normal;
-    @media only screen and (max-width: 600px) {
-      display: none;
-    }
-  }
-}
-
-.notification-menu {
-  display: flex;
-  align-items: flex-end;
-  flex-direction: column;
-  a {
-    display: inline-flex;
-    padding-right: 8px;
-    cursor: pointer;
-    mat-icon {
-      padding-left: 10px;
-    }
+.account-property {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: normal;
+  @media only screen and (max-width: 600px) {
+    display: none;
   }
 }
 
 kendo-badge-container {
   z-index: 1000;
+  position: absolute !important;
+  top: 30%;
+  right: 20%;
 }

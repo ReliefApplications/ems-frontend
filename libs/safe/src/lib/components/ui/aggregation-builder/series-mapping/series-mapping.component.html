@@ -1,7 +1,10 @@
-<safe-field-dropdown
-  *ngFor="let controlName of controlNames"
-  [label]="'components.aggregationBuilder.mapping.' + controlName | translate"
-  [fieldControl]="$any($any(formGroup).controls[controlName])"
-  [fields]="fieldsByControl[controlName]"
-  [nullable]="true"
-></safe-field-dropdown>
+<div class="flex-1 flex flex-wrap gap-x-2">
+  <safe-field-dropdown
+    *ngFor="let controlName of controlNames"
+    class="flex-1"
+    [label]="'components.aggregationBuilder.mapping.' + controlName | translate"
+    [fieldControl]="$any($any(formGroup).controls[controlName])"
+    [fields]="fieldsByControl[controlName]"
+    [nullable]="true"
+  ></safe-field-dropdown>
+</div>

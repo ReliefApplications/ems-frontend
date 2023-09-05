@@ -88,6 +88,9 @@ const TEMPLATE: StoryFn<SafeGroupStageComponent> = () => ({
   },
 });
 
+/**
+ * Default story.
+ */
 export const DEFAULT = {
   render: TEMPLATE,
   name: 'Default',

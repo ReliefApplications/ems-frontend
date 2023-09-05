@@ -9,8 +9,8 @@ import {
   EDIT_USER_ROLES,
 } from './graphql/mutations';
 import { GetUserQueryResponse, GET_USER } from './graphql/queries';
-import { SafeSnackBarService } from '../../services/snackbar/snackbar.service';
 import { SafeBreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
+import { SnackbarService } from '@oort-front/ui';
 
 /**
  * User Summary shared component.
@@ -48,7 +48,7 @@ export class SafeUserSummaryComponent implements OnInit {
    */
   constructor(
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService,
+    private snackBar: SnackbarService,
     private breadcrumbService: SafeBreadcrumbService
   ) {}
 

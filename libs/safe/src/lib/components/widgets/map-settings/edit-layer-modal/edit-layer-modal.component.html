@@ -1,0 +1,288 @@
+<ui-dialog size="fullscreen">
+  <ng-container ngProjectAs="header">
+    <h1>Layer Edition</h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <ui-tabs
+      class="grow"
+      [vertical]="true"
+      (selectedIndexChange)="selectedIndexChange()"
+    >
+      <!-- Layer parameters -->
+      <ui-tab>
+        <ng-container ngProjectAs="label">
+          <ui-icon
+            icon="map"
+            [size]="24"
+            [uiTooltip]="
+              'components.widget.settings.map.edit.layerProperties' | translate
+            "
+          ></ui-icon>
+          <span>
+            {{
+              'components.widget.settings.map.edit.layerProperties' | translate
+            }}</span
+          >
+        </ng-container>
+        <ng-template uiTabContent>
+          <safe-layer-properties
+            [form]="form"
+            [currentZoom]="currentZoom"
+            [destroyTab$]="destroyTab$"
+            [currentMapContainerRef]="data.currentMapContainerRef"
+          ></safe-layer-properties>
+        </ng-template>
+      </ui-tab>
+      <!-- Layer datasource -->
+      <ui-tab *ngIf="form.get('datasource')">
+        <ng-container ngProjectAs="label">
+          <ui-icon
+            icon="dataset"
+            [size]="24"
+            [uiTooltip]="
+              'components.widget.settings.map.edit.layerDatasource' | translate
+            "
+          ></ui-icon>
+          <span>
+            {{
+              'components.widget.settings.map.edit.layerDatasource' | translate
+            }}</span
+          >
+        </ng-container>
+        <ng-template uiTabContent>
+          <safe-layer-datasource
+            [formGroup]="$any(form.get('datasource'))"
+            [resourceQuery]="resource"
+            [fields$]="fields$"
+            (fields)="fields.next($event)"
+            [destroyTab$]="destroyTab$"
+            [currentMapContainerRef]="data.currentMapContainerRef"
+          ></safe-layer-datasource>
+        </ng-template>
+      </ui-tab>
+      <!-- Sublayers -->
+      <ui-tab *ngIf="form.get('sublayers')">
+        <ng-container ngProjectAs="label">
+          <ui-icon
+            icon="layers"
+            [size]="24"
+            [uiTooltip]="
+              'components.widget.settings.map.edit.groupLayers' | translate
+            "
+          ></ui-icon>
+          <span>
+            {{
+              'components.widget.settings.map.edit.groupLayers' | translate
+            }}</span
+          >
+        </ng-container>
+        <ng-template uiTabContent>
+          <safe-map-layers
+            [control]="$any(form.get('sublayers'))"
+            [mapComponent]="data.mapComponent"
+            [destroyTab$]="destroyTab$"
+            [currentMapContainerRef]="data.currentMapContainerRef"
+          ></safe-map-layers>
+        </ng-template>
+      </ui-tab>
+      <!-- Layer styling -->
+      <ui-tab
+        *ngIf="form.get('layerDefinition.drawingInfo')"
+        [disabled]="!isDatasourceValid"
+      >
+        <ng-container ngProjectAs="label">
+          <ui-icon
+            icon="palette"
+            [size]="24"
+            [uiTooltip]="
+              'components.widget.settings.map.edit.layerStyling' | translate
+            "
+          ></ui-icon>
+          <span>
+            {{
+              'components.widget.settings.map.edit.layerStyling' | translate
+            }}</span
+          >
+        </ng-container>
+        <ng-template uiTabContent>
+          <safe-layer-styling
+            [formGroup]="$any(form.get('layerDefinition.drawingInfo'))"
+            [geometryType]="form.get('datasource.type')?.value"
+            [fields$]="fields$"
+            [destroyTab$]="destroyTab$"
+            [currentMapContainerRef]="data.currentMapContainerRef"
+          ></safe-layer-styling>
+        </ng-template>
+      </ui-tab>
+      <!-- Layer filters -->
+      <!-- <ui-tab>
+        <ng-container ngProjectAs="label">
+          <ui-icon
+            icon="format_color_text"
+            [size]="24"
+            [uiTooltip]="
+              'components.widget.settings.map.edit.layerProperties' | translate
+            "
+          ></ui-icon>
+          <span>
+            {{
+              'components.widget.settings.map.edit.layerProperties' | translate
+            }}</span
+          >
+        </ng-container>
+        <ng-template uiTabContent>
+          <safe-layer-filter></safe-layer-filter>
+        </ng-template>
+      </ui-tab> -->
+      <!-- Layer cluster -->
+      <!-- <ui-tab>
+        <ng-container ngProjectAs="label">
+          <ui-icon
+            icon="format_color_text"
+            [size]="24"
+            [uiTooltip]="
+              'components.widget.settings.map.edit.layerProperties' | translate
+            "
+          ></ui-icon>
+          <span>
+            {{
+              'components.widget.settings.map.edit.layerProperties' | translate
+            }}</span
+          >
+        </ng-container>
+        <ng-template uiTabContent>
+          <safe-layer-cluster></safe-layer-cluster>
+        </ng-template>
+      </ui-tab> -->
+      <!-- Layer aggregation -->
+      <!-- Previously : layerDefinition.drawingInfo.renderer.type -->
+      <ui-tab
+        *ngIf="
+          form.get('type')?.value !== 'GroupLayer' &&
+          form.get('layerDefinition.drawingInfo.renderer.type')?.value !==
+            'heatmap' &&
+          form.get('datasource.type')?.value !== 'Polygon'
+        "
+        [disabled]="!isDatasourceValid"
+      >
+        <ng-container ngProjectAs="label">
+          <ui-icon
+            icon="category"
+            [size]="24"
+            [uiTooltip]="
+              'components.widget.settings.map.edit.aggregation' | translate
+            "
+          ></ui-icon>
+          <span>
+            {{
+              'components.widget.settings.map.edit.aggregation' | translate
+            }}</span
+          >
+        </ng-container>
+        <ng-template uiTabContent>
+          <safe-layer-aggregation
+            [formGroup]="$any(form.get('layerDefinition.featureReduction'))"
+            [destroyTab$]="destroyTab$"
+            [currentMapContainerRef]="data.currentMapContainerRef"
+          ></safe-layer-aggregation>
+        </ng-template>
+      </ui-tab>
+      <!-- Layer popup -->
+      <ui-tab *ngIf="form.get('popupInfo')" [disabled]="!isDatasourceValid">
+        <ng-container ngProjectAs="label">
+          <ui-icon
+            icon="message"
+            [size]="24"
+            [uiTooltip]="
+              'components.widget.settings.map.edit.popup' | translate
+            "
+          ></ui-icon>
+          <span>
+            {{ 'components.widget.settings.map.edit.popup' | translate }}</span
+          >
+        </ng-container>
+        <ng-template uiTabContent>
+          <safe-layer-popup
+            [formGroup]="$any(form.get('popupInfo'))"
+            [fields$]="fields$"
+            [destroyTab$]="destroyTab$"
+            [currentMapContainerRef]="data.currentMapContainerRef"
+          ></safe-layer-popup>
+        </ng-template>
+      </ui-tab>
+      <!-- Layer fields -->
+      <ui-tab *ngIf="form.get('datasource')" [disabled]="!isDatasourceValid">
+        <ng-container ngProjectAs="label">
+          <ui-icon
+            icon="text_fields"
+            [size]="24"
+            [uiTooltip]="
+              'components.widget.settings.map.edit.fields' | translate
+            "
+          ></ui-icon>
+          <span>
+            {{ 'components.widget.settings.map.edit.fields' | translate }}</span
+          >
+        </ng-container>
+        <ng-template uiTabContent>
+          <safe-layer-fields
+            [fields$]="fields$"
+            [destroyTab$]="destroyTab$"
+            [currentMapContainerRef]="data.currentMapContainerRef"
+            (updatedField)="updateFormField($event, false)"
+          ></safe-layer-fields>
+        </ng-template>
+      </ui-tab>
+      <!-- Context filter settings -->
+      <ui-tab *ngIf="form.get('datasource')" [disabled]="!isDatasourceValid">
+        <ng-container ngProjectAs="label">
+          <ui-icon icon="filter_list" [size]="24"></ui-icon>
+          <span>{{ 'models.dashboard.dashboardFilter' | translate }}</span>
+        </ng-container>
+        <ng-template uiTabContent>
+          <safe-contextual-filters-settings
+            [form]="form"
+          ></safe-contextual-filters-settings>
+        </ng-template>
+      </ui-tab>
+      <!-- Layer labels -->
+      <!-- <ui-tab>
+        <ng-container ngProjectAs="label">
+          <ui-icon
+            icon="format_color_text"
+            [size]="24"
+            [uiTooltip]="
+              'components.widget.settings.map.edit.layerProperties' | translate
+            "
+          ></ui-icon>
+          <span>
+            {{
+              'components.widget.settings.map.edit.layerProperties' | translate
+            }}</span
+          >
+        </ng-container>
+        <ng-template uiTabContent>
+          <safe-layer-labels></safe-layer-labels>
+        </ng-template>
+      </ui-tab> -->
+    </ui-tabs>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onCancel()">
+      {{ 'common.cancel' | translate }}
+    </ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      (click)="onSubmit()"
+      cdkFocusInitial
+      [disabled]="!form || !form.valid"
+    >
+      {{ (!data.layer ? 'common.create' : 'common.update') | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>
+
+<div class="hidden">
+  <ng-template #mapContainer></ng-template>
+</div>

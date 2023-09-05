@@ -1,6 +1,8 @@
-<safe-modal size="medium">
-  <h1 mat-dialog-title>{{ 'components.users.invite.confirm' | translate }}</h1>
-  <div mat-dialog-content>
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h1>{{ 'components.users.invite.confirm' | translate }}</h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <div class="mb-6">
       {{ 'components.users.invite.description' | translate }}
     </div>
@@ -15,13 +17,9 @@
         [multiple]="false"
       >
       </kendo-upload>
-      <safe-button
-        (click)="onDownload()"
-        variant="primary"
-        icon="file_download"
-      >
+      <ui-button (click)="onDownload()" variant="primary" icon="file_download">
         {{ 'common.downloadTemplate' | translate }}
-      </safe-button>
+      </ui-button>
     </div>
     <kendo-grid
       [data]="gridData"
@@ -78,14 +76,15 @@
             </ng-template>
             <ng-template kendoGridEditTemplate>
               <ng-container *ngIf="positionAttributes">
-                <textarea
-                  rows="2"
+                <ui-textarea
                   [formControl]="
                     $any(positionAttributes.at(index).get('value'))
                   "
+                  [minRows]="2"
+                  [maxRows]="2"
                   kendoGridFocusable
-                  class="k-textbox"
-                ></textarea>
+                >
+                </ui-textarea>
               </ng-container>
             </ng-template>
           </kendo-grid-column>
@@ -96,19 +95,19 @@
           <button
             kendoButton
             class="text-center"
-            [icon]="'delete'"
+            icon="delete"
             [look]="'flat'"
             (click)="onRemove(idx)"
           ></button>
         </ng-template>
       </kendo-grid-column>
     </kendo-grid>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button (click)="onClose()">
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onClose()">
       {{ 'common.close' | translate }}
-    </safe-button>
-    <safe-button
+    </ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
       (click)="onSubmit()"
@@ -116,6 +115,6 @@
       [disabled]="gridData.data.length === 0"
     >
       {{ 'common.save' | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

@@ -1,33 +1,35 @@
-<safe-modal size="small">
-  <h1 mat-dialog-title>{{ 'models.apiConfiguration.new' | translate }}</h1>
-  <div mat-dialog-content>
+<ui-dialog size="small">
+  <ng-container ngProjectAs="header">
+    <h1>{{ 'models.apiConfiguration.new' | translate }}</h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
     <form [formGroup]="apiForm" class="flex flex-col">
-      <mat-form-field appearance="outline">
-        <mat-label>{{ 'common.name' | translate }}</mat-label>
+      <div
+        [uiErrorMessage]="
+          'components.apiConfiguration.create.errors.name' | translate
+        "
+        [uiErrorMessageIf]="name?.errors && name?.touched"
+        uiFormFieldDirective
+      >
+        <label>{{ 'common.name' | translate }}</label>
         <input
-          matInput
           formControlName="name"
           type="text"
           [placeholder]="'common.placeholder.name' | translate"
         />
-        <mat-error *ngIf="name?.errors">
-          {{ 'components.apiConfiguration.create.errors.name' | translate }}
-        </mat-error>
-      </mat-form-field>
+      </div>
     </form>
-  </div>
-  <div mat-dialog-actions align="end">
-    <safe-button (click)="onClose()">{{
-      'common.close' | translate
-    }}</safe-button>
-    <safe-button
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
       category="secondary"
       variant="primary"
-      [mat-dialog-close]="apiForm.value"
+      [uiDialogClose]="apiForm.value"
       cdkFocusInitial
       [disabled]="!apiForm.valid"
     >
       {{ 'common.create' | translate }}
-    </safe-button>
-  </div>
-</safe-modal>
+    </ui-button>
+  </ng-container>
+</ui-dialog>

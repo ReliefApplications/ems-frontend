@@ -1,67 +1,19 @@
-import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
-import { UntypedFormBuilder } from '@angular/forms';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
-import {
-  ApolloTestingModule,
-  ApolloTestingController,
-} from 'apollo-angular/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { SafeMapComponent } from './map.component';
+import { SafeMapWidgetComponent } from './map.component';
 
-describe('SafeMapComponent', () => {
-  let component: SafeMapComponent;
-  let fixture: ComponentFixture<SafeMapComponent>;
-  let controller: ApolloTestingController;
+describe('SafeMapWidgetComponent', () => {
+  let component: SafeMapWidgetComponent;
+  let fixture: ComponentFixture<SafeMapWidgetComponent>;
 
-  beforeEach(waitForAsync(() => {
-    TestBed.configureTestingModule({
-      providers: [UntypedFormBuilder, TranslateService],
-      declarations: [SafeMapComponent],
-      imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
-        ApolloTestingModule,
-      ],
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      declarations: [SafeMapWidgetComponent],
     }).compileComponents();
 
-    controller = TestBed.inject(ApolloTestingController);
-  }));
-
-  beforeEach(() => {
-    fixture = TestBed.createComponent(SafeMapComponent);
+    fixture = TestBed.createComponent(SafeMapWidgetComponent);
     component = fixture.componentInstance;
-    component.settings = {
-      centerLong: 0,
-      centerLat: 0,
-    };
     fixture.detectChanges();
-
-    const op = controller.expectOne('GetQueryTypes');
-
-    op.flush({
-      data: {
-        __schema: {
-          types: [],
-          queryType: {
-            fields: [],
-          },
-        },
-      },
-    });
-  });
-
-  afterEach(() => {
-    controller.verify();
-    fixture.destroy();
   });
 
   it('should create', () => {

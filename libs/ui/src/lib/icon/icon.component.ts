@@ -1,6 +1,6 @@
 import { Component, Input } from '@angular/core';
-import { Variant } from '../shared/variant.enum';
-import { Category } from '../shared/category.enum';
+import { Variant } from '../types/variant';
+import { Category } from '../types/category';
 
 /**
  * UI Icon Component
@@ -12,13 +12,10 @@ import { Category } from '../shared/category.enum';
 })
 export class IconComponent {
   @Input() icon = '';
-  @Input() inline = false;
-  @Input() category: Category = Category.PRIMARY;
-  @Input() variant: Variant = Variant.DEFAULT;
+  @Input() category: Category = 'primary';
+  @Input() variant: Variant = 'default';
   @Input() size = 24;
-
-  iconVariant = Variant;
-  iconCategory = Category;
+  @Input() isOutlined = false;
 
   /**
    * Formats the size input adding a 'px' suffix
@@ -27,5 +24,30 @@ export class IconComponent {
    */
   get fontSize(): string {
     return this.size + 'px';
+  }
+
+  /**
+   * Resolve icon class by given category and variant
+   *
+   * @returns Returns a string array with the current variant and category class
+   */
+  get iconVariantAndCategory(): string[] {
+    const classes = [];
+    classes.push(
+      this.category === 'secondary' || this.variant === 'light'
+        ? 'icon-light'
+        : this.variant === 'primary'
+        ? 'icon-primary'
+        : this.variant === 'success'
+        ? 'icon-success'
+        : this.variant === 'grey'
+        ? 'icon-grey'
+        : this.variant === 'danger'
+        ? 'icon-danger'
+        : this.variant === 'warning'
+        ? 'icon-warning'
+        : ''
+    );
+    return classes;
   }
 }

@@ -30,6 +30,7 @@
 		},
 		"auto": "Automatique",
 		"back": "Retour",
+		"bookmarks": "Marque-pages",
 		"calculatedField": {
 			"few": "Champs dérivés",
 			"none": "Aucun champ dérivé",
@@ -49,6 +50,7 @@
 			"none": "Aucune colonne",
 			"one": "Colonne"
 		},
+		"comma": "virgule",
 		"create": "Créer",
 		"createdOn": "Date de création",
 		"customNotification": {
@@ -84,6 +86,7 @@
 		"errors": {
 			"objectDuplicated": "{{type}} {{value}} existe déjà."
 		},
+		"exitFullscreen": "Quitter le mode plein écran",
 		"export": "Exporter",
 		"exportObject": "Exporter {{name}}",
 		"false": "Faux",
@@ -130,6 +133,7 @@
 		"modifiedOn": "Modifié le ",
 		"name": "Nom",
 		"next": "Suivant",
+		"noOptions": "Aucun choix disponible",
 		"notifications": {
 			"accessDenied": "Vous n'avez pas la permission pour accéder à cet objet de type {{type}}.",
 			"accessNotProvided": "Pas d'accès fourni à cet objet de type {{type}}. {{error}}",
@@ -207,6 +211,7 @@
 			"of": "de"
 		},
 		"placeholder": {
+			"address": "Entrez une adresse exemple : 1 rue de la paix, Paris",
 			"email": "Entrez un email",
 			"name": "Entrez un nom",
 			"search": "Rechercher...",
@@ -260,9 +265,12 @@
 		},
 		"save": "Sauvegarder",
 		"saveChanges": "Sauvegarder les changements",
+		"search": "Recherche",
 		"searchObject": "Rechercher {{name}}",
 		"select": "Sélectionner",
+		"semicolon": "point-virgule",
 		"send": "Envoyer",
+		"separator": "Séparateur",
 		"settings": "Paramètres",
 		"status": "Statut",
 		"status_active": "Actif",
@@ -284,6 +292,11 @@
 			"one": "Modèle de notification"
 		},
 		"title": "Titre",
+		"tooltip": {
+			"editor": {
+				"insert": "Tapez '{' pour utiliser des expressions et des variables"
+			}
+		},
 		"true": "Vrai",
 		"type": {
 			"few": "Types",
@@ -303,6 +316,7 @@
 			"none": "Aucune valeur",
 			"one": "Valeur"
 		},
+		"viewFullscreen": "Ouvrir le mode plein écran",
 		"viewObject": "Voir {{name}}",
 		"workflow": {
 			"few": "Workflows",
@@ -423,6 +437,7 @@
 				"delete": {
 					"confirmationMessage": "Voulez-vous vraiment supprimer la page {{name}}?"
 				},
+				"hide": "Cacher la page dans la barre latérale de navigation",
 				"notReordered": {
 					"plural": "Les pages n'ont pas été réorganisées. {{error}}",
 					"singular": "La page n'a pas été réorganisée. {{error}}"
@@ -430,7 +445,8 @@
 				"reordered": {
 					"plural": "Les pages ont été réorganisées avec succès.",
 					"singular": "La page a été réorganisée avec succès."
-				}
+				},
+				"show": "Afficher la page dans la barre latérale de navigation"
 			},
 			"positionAttribute": {
 				"delete": {
@@ -631,11 +647,21 @@
 		},
 		"formBuilder": {
 			"errors": {
+				"duplicatedRelatedName": "Nom lié en double pour la question {{question}} à la page {{page}}. Veuillez fournir un nom lié unique (au format snake_case) pour sauvegarder le formulaire.",
 				"missingGridField": "Champs disponible de table de données manquant pour la question {{question}} à la page {{page}}. Veuillez en sélectionner au moins un dans la propriété Custom Question pour sauvegarder le formulaire.",
 				"missingRelatedName": "Nom lié manquant pour la question {{question}} à la page {{page}}. Veuillez entrer un nom valide pour la valeur de la donnée (au format snake_case) pour sauvegarder le formulaire.",
 				"missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un modèle pour sauvegarder le formulaire."
 			},
 			"saveSurvey": "Sauvegarde du questionnaire"
+		},
+		"formMapProperties": {
+			"geofields": {
+				"editDialog": {
+					"editGeofield": "Éditer les champs",
+					"label": "Label",
+					"value": "Valeur"
+				}
+			}
 		},
 		"forms": {
 			"isCore": "Est un formulaire source",
@@ -654,6 +680,7 @@
 			}
 		},
 		"header": {
+			"goToApp": "Ouvrir l'application",
 			"goToPlatform": "Naviguer vers",
 			"logout": "Se déconnecter",
 			"sidenav": {
@@ -682,6 +709,23 @@
 			"confirmationMessage": "Le formulaire contient des éléments non sauvegardés. Voulez-vous vous vraiment déconnecter ?",
 			"title": "Quitter la plateforme sans sauvegarder"
 		},
+		"map": {
+			"controls": {
+				"download": {
+					"layers": {
+						"all": "Toutes les couches",
+						"selected": "Couches sélectionnées",
+						"visible": "Couches visibles"
+					},
+					"output": "Format d'export",
+					"selectLayers": "Sélectionnez les couches",
+					"view": {
+						"all": "Toute la carte",
+						"current": "Vue actuelle"
+					}
+				}
+			}
+		},
 		"mapping": {
 			"field": "Champ de l'utilisateur",
 			"path": "Chemin",
@@ -696,10 +740,10 @@
 			"readAll": "Tout marquer comme lu"
 		},
 		"paginator": {
-			"items": "@TODO",
-			"itemsPerPage": "@TODO",
-			"of": "@TODO",
-			"page": "@TODO"
+			"items": "élements",
+			"itemsPerPage": "éléments par page",
+			"of": "de",
+			"page": "Page"
 		},
 		"preferences": {
 			"dateFormat": "Format de date et heure",
@@ -918,6 +962,7 @@
 						"add": "Ajouter une règle d'attribution",
 						"delete": "Supprimer la règle",
 						"edit": "Mettre à jour la règle d'attribution",
+						"none": "Aucune règle d'attribution automatique",
 						"title": "Règle"
 					},
 					"title": "Attribution automatique"
@@ -1081,6 +1126,7 @@
 				},
 				"empty": "Aucun enregistrement détecté pour cette configuration de réseau",
 				"errors": {
+					"autoSaveFailed": "L'exécution de l'action a été stoppé à cause d'enregistrement(s) non valide(s). Veuillez les vérifier avant de lancer une autre action.",
 					"invalid": {
 						"backoffice": "Configuration de grille invalide",
 						"frontoffice": "Configuration de grille non valide, veuillez contacter votre administrateur"
@@ -1130,8 +1176,13 @@
 					"records": "Chargement des enregistrements...",
 					"settings": "Chargement des paramètres..."
 				},
+				"map": {
+					"mapDetailsTitle": "Cartographie des données",
+					"mapDetailsTooltip": "Centré par defaut sur l'enregistrement sélectionné"
+				},
 				"openSettings": "Ouvrir les paramètres",
 				"tooltip": {
+					"displayMap": "Afficher la carte",
 					"saved": "Changements sauvegardés",
 					"unsaved": "Cliquez sur sauvegarder pour enregistrer les changements",
 					"uploadFailed": "L'enregistrement a échoué. Cliquez pour obtenir plus de détails"
@@ -1175,6 +1226,7 @@
 					},
 					"position": "Position",
 					"series": {
+						"fill": "Remplissage",
 						"interpolation": {
 							"step": "Étape d'interpolation",
 							"title": "Interpolation"
@@ -1248,7 +1300,8 @@
 							"workflow": {
 								"close": "Fermer le workflow",
 								"confirm": "Message de confirmation",
-								"next": "Aller à l'étape suivante"
+								"next": "Aller à l'étape suivante",
+								"previous": "Aller à l'étape précédente"
 							}
 						},
 						"create": "Ajouter un bouton",
@@ -1264,6 +1317,9 @@
 							"notify": "Si activé, vous devez fournir un canal de diffusion et un message.Toutes les lignes sélectionnées seront envoyées en tant que notification unique sur le canal spécifié. Le message fourni est utilisé pour définir l'action de la notification.",
 							"publish": "Si activé, vous devez fournir un canal de diffusion. Toutes les lignes sélectionnées seront envoyées en tant que notification unique sur le canal spécifié. Quiconque écoutant sur ce canal pourra recevoir ces enregistrements."
 						}
+					},
+					"display": {
+						"showSingleActionAsButton": "Afficher une seule action sous forme de bouton"
 					},
 					"hint": {
 						"actions": {
@@ -1296,27 +1352,105 @@
 						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements"
 					}
 				},
+				"iconPicker": {
+					"default": "Standard",
+					"placeholder": "Chezchez un symbole"
+				},
 				"map": {
 					"basemap": "Fond de carte",
 					"category": "Catégories rapides",
 					"dataset": "Sélection du jeu de données",
+					"edit": {
+						"aggregation": "Agrégation",
+						"cluster": {
+							"cluster": "Cluster",
+							"clusterSettings": "Paramètres de groupes",
+							"fields": "Champs de groupes",
+							"high": "Haut",
+							"label": "Libellé du groupes",
+							"low": "Faible",
+							"max": "Max",
+							"min": "Min",
+							"overrideSymbol": "Remplacer le symbole de groupes",
+							"popups": "Groupes pop-ups",
+							"radius": "Rayon de groupes",
+							"sizeRange": "Gamme de taille",
+							"symbol": "Style de symboles"
+						},
+						"datasource": {
+							"origin": "Origine"
+						},
+						"fields": "Champs",
+						"filter": "Filtre",
+						"groupLayers": "Regrouper les calques",
+						"labels": "Étiquettes",
+						"layerDatasource": "Source de données de la couche",
+						"layerProperties": "Propriétés",
+						"layerStyling": "Styles",
+						"popup": "Popup",
+						"properties": {
+							"defaultVisibility": "Visible par défaut",
+							"from": "de zoom ",
+							"opacity": "Opacité",
+							"to": " à zoom",
+							"visibilityRange": "Plage de visibilité",
+							"zoom": "Zoom"
+						},
+						"reduction": {
+							"noReduction": "Pas de réduction",
+							"reduction": "Réduction"
+						},
+						"style": {
+							"color": "Couleur",
+							"icon": "Symbole",
+							"size": "Taille",
+							"stylingType": "Style de {{layerType}}"
+						},
+						"styling": {
+							"heatmapOptions": {
+								"blur": "Flou",
+								"gradient": "Gradient",
+								"minOpacity": "Opacité minimum",
+								"radius": "Rayon"
+							}
+						}
+					},
 					"errors": {
 						"latitude": "Latitude incorrecte, merci de sélectionner un nombre entre -90 et 90",
 						"longitude": "Longitude incorrecte, merci de sélectionner un nombre entre -180 et 180"
 					},
-					"layers": {
-						"clorophlet": {
-							"add": "Ajouter un clorophlet",
-							"division": {
-								"add": "Ajouter une division",
-								"title": "Divisions"
+					"geospatial": {
+						"layersStyles": {
+							"fill": {
+								"color": "Couleur du remplissage",
+								"opacity": "Opacité du remplissage",
+								"title": "Remplissage"
 							},
-							"geoJSON": "geoJSON",
-							"geoJSONidentifier": "geoJSON Identifiant",
-							"identifier": "Identifiant",
-							"info": "Configurer des clorophlets en tant que couches pour la carte",
-							"title": "Clorophlets"
+							"marker": {
+								"color": "Couleur du marqueur",
+								"opacity": "Opacité du marqueur",
+								"title": "Marqueur"
+							},
+							"outline": {
+								"color": "Couleur du contour",
+								"opacity": "Opacité du contour",
+								"title": "Contour",
+								"width": "Largeur du contour"
+							},
+							"title": "Styles de calque"
+						}
+					},
+					"layers": {
+						"add": "Ajouter un nouveau calque",
+						"chooseLayer": "Choisir un calque existant",
+						"createGroup": "Créer un nouveau groupe de couches",
+						"createLayer": "Créer un nouveau calque",
+						"dataSource": {
+							"geoField": "GeoField",
+							"latitude": "Latitude",
+							"longitude": "Longitude"
 						},
+						"edit": "Mettre à jour le calque {{name}}",
 						"online": {
 							"info": "Charger des couches depuis arcGIS online",
 							"select": "Chercher des couches",
@@ -1332,27 +1466,83 @@
 							"rulesInfo": "Configurer la taille et la couleur des marqueurs",
 							"size": "Taille",
 							"title": "Marqueurs"
+						},
+						"popup": {
+							"addField": "Ajouter un champ",
+							"description": "Description",
+							"fields": "Champs",
+							"fieldsElements": {
+								"description": "Description",
+								"title": "Titre"
+							},
+							"popup": "Popup",
+							"popupElements": "Éléments de popup",
+							"text": "Texte",
+							"title": "Titre",
+							"tooltip": {
+								"text": "Tapez '{' pour utiliser les champs de la source de données"
+							}
+						},
+						"remove": "Supprimer le calque",
+						"selectLayer": "Sélectionner un calque",
+						"styling": {
+							"style": "Style"
+						},
+						"types": {
+							"cluster": "Groupes",
+							"heatmap": "Carte de chaleur",
+							"point": "Point",
+							"polygon": "Polygone"
 						}
 					},
+					"legend": {
+						"high": "Haut",
+						"low": "Faible",
+						"title": "Légende"
+					},
 					"popup": {
-						"label": "Champs affichés dans le popup"
+						"label": "Champs affichés dans le popup",
+						"location": "Emplacement",
+						"of": "{{current}} sur {{total}}",
+						"zoomTo": "Zoomer sur"
 					},
 					"properties": {
 						"basemap": "Fond de carte",
+						"controls": {
+							"download": "Télécharger",
+							"layer": "Couches",
+							"legend": "Légende",
+							"measure": "Mesure",
+							"search": "Recherche",
+							"timedimension": "Dimension temporelle",
+							"title": "Contrôles de la carte"
+						},
 						"latitude": "Latitude du centre de la carte",
 						"longitude": "Longitude du centre de la carte",
+						"setByMap": "Utiliser la vue actuelle",
 						"title": "Affichage par défaut",
+						"webmap": "WebMap",
 						"zoom": "Zoom par défaut"
+					},
+					"renderer": {
+						"default": "Défaut",
+						"defaultLabel": "Libellé par défaut",
+						"label": "Libellé",
+						"symbol": "Symbole",
+						"value": "Valeur"
 					},
 					"tooltip": {
 						"category": "Sélectionnez un champ pour séparer vos enregistrements en différentes catégories",
 						"dataset": "Sélectionnez des champs ci-dessous et déplacez-les vers 'champs sélectionnés' sur la droite. Ils seront présents dans le pop-up affiché en cliquant sur les marqueurs",
 						"default": {
-							"latitude": "Sélectionnez une latitude par défaut autour de laquelle vous souhaitez centrer la carte",
-							"longitude": "Sélectionnez une longitude par défaut autour de laquelle vous souhaitez centrer la carte",
+							"latitude": "Définissez la latitude par défaut du centre de la carte. 'Utiliser la vue actuelle' sauvegardera la latitude de la carte d'aperçu.",
+							"longitude": "Définissez la longitude par défaut du centre de la carte. 'Utiliser la vue actuelle' sauvegardera la longitude de la carte d'aperçu.",
 							"zoom": "Sélectionnez un zoom par défaut"
 						}
 					}
+				},
+				"style": {
+					"customStyling": "Style personnalisé"
 				},
 				"summaryCard": {
 					"add": "Ajouter un carte",
@@ -1410,6 +1600,7 @@
 					"static": "Statique"
 				}
 			},
+			"styling": "Modifier le style",
 			"summaryCard": {
 				"dataSource": "Source",
 				"errors": {
@@ -1421,7 +1612,13 @@
 		}
 	},
 	"kendo": {
+		"combobox": {
+			"noDataText": "No available choice"
+		},
 		"datepicker": {
+			"dateLabel": "Sélectionnez une date",
+			"endLabel": "Date de fin",
+			"startLabel": "Date de début",
 			"today": "Aujourd'hui",
 			"toggle": "Sélectionnez une date"
 		},
@@ -1570,6 +1767,9 @@
 			"unlock": "Déverrouiller",
 			"unstick": "Désépingler"
 		},
+		"multiselect": {
+			"noDataText": "No available choice"
+		},
 		"pager": {
 			"firstPage": "Aller à la première page",
 			"items": "éléments",
@@ -1614,7 +1814,7 @@
 			"menu": "Menu latéral",
 			"new": "Nouvelle application",
 			"notifications": {
-				"notPublished": "Candidature non publiée.",
+				"notPublished": "L'application n'a pas pu être publiée.",
 				"published": "L'application {{value}} a été publiée.",
 				"updated": "Application modifiée."
 			},
@@ -1634,6 +1834,17 @@
 		},
 		"dashboard": {
 			"activateFiltering": "Activer le filtre",
+			"buttonActions": {
+				"add": "Ajouter une action de bouton",
+				"category": "Catégorie de bouton",
+				"confirmDelete": "Voulez-vous vraiment supprimer cette action de bouton ?",
+				"edit": "Modifier l'action du bouton",
+				"href": "Bouton href",
+				"one": "Action du bouton",
+				"openInNewTab": "Ouvrir dans un nouvel onglet",
+				"text": "Texte du bouton",
+				"variant": "Variante de bouton"
+			},
 			"context": {
 				"datasource": {
 					"alert": "Sélectionnez une source de données, afin de définir une page par enregistrement de la source de données. Vous pouvez également définir un modèle qui sera chargé par défaut si aucune page spécifique n'est créée pour un enregistrement.",
@@ -1652,8 +1863,13 @@
 					"element": "Élément"
 				}
 			},
+			"dashboardFilter": "Filtre de tableaux de bord",
 			"deactivateFiltering": "Désactiver le filtre",
-			"share": "Partager le tableau de bord"
+			"share": "Partager le tableau de bord",
+			"tooltip": {
+				"useDashboardFilterEditor": "Utiliser l'éditeur de tableaux de bord",
+				"useDefaultEditor": "Utiliser l'éditeur par défaut"
+			}
 		},
 		"form": {
 			"core": "Source",
@@ -1747,6 +1963,7 @@
 			"display": {
 				"border": "Afficher la bordure du widget",
 				"searchable": "Autoriser la recherche",
+				"sortable": "Autoriser le tri",
 				"title": "Affichage des widgets"
 			},
 			"map": {
@@ -1758,6 +1975,16 @@
 			"scheduler": {
 				"defaultTitle": "Widget Calendrier"
 			},
+			"sorting": {
+				"add": "Ajouter un champ",
+				"delete": "Supprimer le champ de tri",
+				"field": "Champ",
+				"label": "Étiquette",
+				"management": "Gestion des champs de tri",
+				"order": "Ordre",
+				"select": "Sélectionnez un champ de tri...",
+				"title": "Tri"
+			},
 			"tooltip": {
 				"selector": {
 					"collapse": "Fermer la sélection de widget",
@@ -1768,6 +1995,7 @@
 		"workflow": {
 			"notifications": {
 				"cannotGoToNextStep": "Impossible de passer à l'étape suivante",
+				"cannotGoToPreviousStep": "Impossible de passer à l'étape précédente",
 				"goToStep": "De retour à l'étape {{step}}."
 			}
 		}
@@ -1818,7 +2046,8 @@
 				"form": {
 					"title": "Formulaires disponibles"
 				},
-				"selectType": "Sélectionnez le type de page que vous voulez créer"
+				"selectType": "Sélectionnez le type de page que vous voulez créer",
+				"startFromWidget": "@TODO"
 			},
 			"empty": {
 				"add": "Ajouter une page",

@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { get } from 'lodash';
+import { get, isNil } from 'lodash';
 import { Role, User } from '../../../../models/user.model';
 import { Application } from '../../../../models/application.model';
 import {
@@ -10,9 +10,9 @@ import {
   GET_APPLICATIONS,
   GET_ROLES,
 } from '../../graphql/queries';
-import { SafeSnackBarService } from '../../../../services/snackbar/snackbar.service';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { SnackbarService } from '@oort-front/ui';
 
 /** Roles tab for the user summary */
 @Component({
@@ -53,7 +53,7 @@ export class UserAppRolesComponent
   constructor(
     private fb: UntypedFormBuilder,
     private apollo: Apollo,
-    private snackBar: SafeSnackBarService
+    private snackBar: SnackbarService
   ) {
     super();
   }
@@ -80,7 +80,7 @@ export class UserAppRolesComponent
     this.selectedApplication.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        this.selectedRoles.setValue([], { emitEvent: false });
+        this.selectedRoles.setValue([], { emitEvent: isNil(value) });
         this.roles = [];
         if (value) {
           this.getApplicationRoles(value);
