@@ -618,7 +618,8 @@ export class SafeGridComponent
                     break;
                   }
                   case 'file': {
-                    activedColumns[type.field] = data[type.field][0].name.length;
+                    activedColumns[type.field] =
+                      data[type.field][0].name.length;
                     break;
                   }
                   case 'numeric': {
