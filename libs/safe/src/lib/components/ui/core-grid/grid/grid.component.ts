@@ -549,7 +549,6 @@ export class SafeGridComponent
 
   /** @returns Current grid layout. */
   get layout(): GridLayout {
-    console.log(this.grid?.columns);
     return {
       fields: this.visibleFields,
       sort: this.sort,
