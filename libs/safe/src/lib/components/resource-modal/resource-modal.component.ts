@@ -53,38 +53,43 @@ export class SafeResourceModalComponent extends SafeFormModalComponent {
    * @param survey current survey
    */
   public override async onUpdate(survey: any): Promise<void> {
-    if (this.data.recordId) {
-      await this.formHelpersService.uploadFiles(
-        survey,
-        this.temporaryFilesStorage,
-        this.form?.id
-      );
-      if (this.isMultiEdition) {
-        this.updateMultipleData(this.data.recordId, survey);
-      } else {
-        this.updateData(this.data.recordId, survey);
-      }
+    // If question propriety alwaysCreateRecord set to true, don't use override method and create new record
+    if (this.data.alwaysCreateRecord) {
+      super.onUpdate(survey);
     } else {
-      await this.formHelpersService.uploadFiles(
-        survey,
-        this.temporaryFilesStorage,
-        this.form?.id
-      );
-      const temporaryId = uuidv4();
-      await localForage.setItem(
-        temporaryId.toString(),
-        JSON.stringify({ data: survey.data, template: this.data.template })
-      ); //We save the question temporarily before applying the mutation.
-      this.ngZone.run(() => {
-        this.dialogRef.close({
-          template: this.data.template,
-          data: {
-            id: temporaryId,
-            data: survey.data,
-          },
-        } as any);
-      });
+      if (this.data.recordId) {
+        await this.formHelpersService.uploadFiles(
+          survey,
+          this.temporaryFilesStorage,
+          this.form?.id
+        );
+        if (this.isMultiEdition) {
+          this.updateMultipleData(this.data.recordId, survey);
+        } else {
+          this.updateData(this.data.recordId, survey);
+        }
+      } else {
+        await this.formHelpersService.uploadFiles(
+          survey,
+          this.temporaryFilesStorage,
+          this.form?.id
+        );
+        const temporaryId = uuidv4();
+        await localForage.setItem(
+          temporaryId.toString(),
+          JSON.stringify({ data: survey.data, template: this.data.template })
+        ); //We save the question temporarily before applying the mutation.
+        this.ngZone.run(() => {
+          this.dialogRef.close({
+            template: this.data.template,
+            data: {
+              id: temporaryId,
+              data: survey.data,
+            },
+          } as any);
+        });
+      }
+      survey.showCompletedPage = true;
     }
-    survey.showCompletedPage = true;
   }
 }

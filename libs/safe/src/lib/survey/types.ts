@@ -60,6 +60,7 @@ export interface QuestionResource
   displayField: null | string;
   relatedName?: string;
   addRecord?: boolean;
+  alwaysCreateRecord?: boolean;
   canSearch?: boolean;
   addTemplate?: any;
   placeholder?: string;

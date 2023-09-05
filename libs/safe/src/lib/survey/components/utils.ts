@@ -97,6 +97,7 @@ export const buildAddButton = (
           disableClose: true,
           data: {
             template: question.addTemplate,
+            alwaysCreateRecord: question.alwaysCreateRecord,
             locale: question.resource.value,
             askForConfirm: false,
             ...(question.prefillWithCurrentRecord && {

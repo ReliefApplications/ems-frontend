@@ -429,6 +429,13 @@ export const init = (
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resources', {
+        name: 'alwaysCreateRecord:boolean',
+        category: 'Custom Questions',
+        dependsOn: ['resource', 'addRecord'],
+        visibleIf: (obj: any) => !!obj.resource && !!obj.addRecord,
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resources', {
         name: 'addTemplate',
         category: 'Custom Questions',
         dependsOn: ['addRecord', 'resource'],
@@ -756,6 +763,7 @@ export const init = (
         filters = [];
         this.resourceFieldsName = [];
         question.addRecord = false;
+        question.alwaysCreateRecord = false;
         question.addTemplate = null;
         question.prefillWithCurrentRecord = false;
       }
