@@ -30,7 +30,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import { SnackbarService } from '@oort-front/ui';
-import { cloneDeep, isNil } from 'lodash';
+import { cloneDeep } from 'lodash';
 
 /**
  * This component is used to display forms
@@ -134,14 +134,11 @@ export class SafeFormComponent
     this.survey.onValueChanged.add(this.valueChange.bind(this));
     this.survey.onComplete.add(this.onComplete);
 
-    // Unset readOnly fields if it's the record creation
-    // It's a requirement to let all fields been editable during addition of records
-    if (!isNil(this.record)) {
-      this.form.fields?.forEach((field) => {
-        if (field.readOnly && this.survey.getQuestionByName(field.name))
-          this.survey.getQuestionByName(field.name).readOnly = true;
-      });
-    }
+    // Set readOnly fields
+    this.form.fields?.forEach((field) => {
+      if (field.readOnly && this.survey.getQuestionByName(field.name))
+        this.survey.getQuestionByName(field.name).readOnly = true;
+    });
     // Fetch cached data from local storage
     this.storageId = `record:${this.record ? 'update' : ''}:${this.form.id}`;
     const storedData = localStorage.getItem(this.storageId);
