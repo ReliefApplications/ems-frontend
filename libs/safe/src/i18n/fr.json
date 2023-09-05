@@ -1318,6 +1318,9 @@
 							"publish": "Si activé, vous devez fournir un canal de diffusion. Toutes les lignes sélectionnées seront envoyées en tant que notification unique sur le canal spécifié. Quiconque écoutant sur ce canal pourra recevoir ces enregistrements."
 						}
 					},
+					"display": {
+						"showSingleActionAsButton": "Afficher une seule action sous forme de bouton"
+					},
 					"hint": {
 						"actions": {
 							"add": "L'utilisateur peut ajouter de nouveaux enregistrements avec le modèle choisi, s'il en a la permission",
