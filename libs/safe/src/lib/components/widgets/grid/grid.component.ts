@@ -347,7 +347,6 @@ export class SafeGridWidgetComponent
       await Promise.all(promises);
     }
     // Send email using backend mail service.
-    console.log('options', options);
     if (options.sendMail) {
       const templates =
         this.applicationService.templates.filter((x) =>
