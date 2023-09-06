@@ -53,6 +53,8 @@ export class DashboardComponent
   /** Current dashboard */
   public dashboard?: Dashboard;
 
+  public displayDashboardName = false;
+
   @ViewChild(SafeWidgetGridComponent)
   widgetGridComponent!: SafeWidgetGridComponent;
   public showFilter?: boolean;
@@ -103,6 +105,15 @@ export class DashboardComponent
    */
   ngOnInit(): void {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.route.queryParams
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((queryParams) => {
+          if (queryParams.id) {
+            this.displayDashboardName = true;
+          } else {
+            this.displayDashboardName = false;
+          }
+        });
       // Reset scroll when changing page
       const pageContainer = document.getElementById('appPageContainer');
       if (pageContainer) pageContainer.scrollTop = 0;
