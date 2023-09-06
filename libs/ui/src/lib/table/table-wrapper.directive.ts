@@ -9,10 +9,13 @@ import {
   Output,
   QueryList,
   Renderer2,
+  ViewContainerRef,
+  TemplateRef
 } from '@angular/core';
 import { TableSort } from './interfaces/table-column.interface';
 import { TableHeaderSortDirective } from './table-header-sort.directive';
 import { Observable, Subject, filter, merge, startWith, takeUntil } from 'rxjs';
+import { CdkTable } from '@angular/cdk/table';
 
 /**
  * UI Table wrapper directive
@@ -45,12 +48,15 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
    * @param el Directive host element
    * @param renderer Renderer2
    */
-  constructor(private el: ElementRef, private renderer: Renderer2) {}
+  constructor(private el: ElementRef, private renderer: Renderer2, private vcRef: ViewContainerRef, private templateRef: TemplateRef<any>) {}
 
   ngOnInit(): void {
     if (!(this.el.nativeElement instanceof HTMLTableElement)) {
       throw new Error('Directive could only be applied to an HTMLTableElement');
     }
+
+    console.log(this.el.nativeElement.innerHTML);
+    this.vcRef.createEmbeddedView(this.templateRef, { $implict: true });
     for (const cl of this.tableClasses) {
       this.renderer.addClass(this.el.nativeElement, cl);
     }
