@@ -2,11 +2,6 @@ import { Component, Output, EventEmitter, OnInit, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
-import {
-  SafeUnsubscribeComponent,
-  SafeConfirmService,
-  Widget,
-} from '@oort-front/safe';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ButtonModule } from '@oort-front/ui';
 import { debounceTime, takeUntil } from 'rxjs';
@@ -15,6 +10,7 @@ import get from 'lodash/get';
 import { SafeRestService } from '../../services/rest/rest.service';
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { Widget } from '../../models/widgets/widget.model';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';

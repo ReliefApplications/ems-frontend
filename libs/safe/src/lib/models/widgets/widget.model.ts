@@ -23,7 +23,13 @@ export class Widget {
     public defaultCols: number,
     public defaultRows: number,
     public minRow: number,
-    public component: 'chart' | 'grid' | 'editor' | 'map' | 'summaryCard',
+    public component:
+      | 'chart'
+      | 'grid'
+      | 'editor'
+      | 'map'
+      | 'summaryCard'
+      | 'tabs',
     public settingsTemplate: any
   ) {}
 }
