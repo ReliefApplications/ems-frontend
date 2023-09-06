@@ -52,7 +52,7 @@ export class DashboardComponent
   public widgets = [];
   /** Current dashboard */
   public dashboard?: Dashboard;
-
+  /** displays dashboard name */
   public displayDashboardName = false;
 
   @ViewChild(SafeWidgetGridComponent)
