@@ -329,7 +329,7 @@
       </ui-checkbox>
       <div *ngIf="formGroup.value.sendMail" class="sub-parameters">
         <div uiFormFieldDirective>
-          <label>{{ 'components.emailBuilder.from.label' | translate }}</label>
+          <label>{{ 'components.emailBuilder.from.title' | translate }}</label>
           <ui-select-menu formControlName="from">
             <!-- <ui-select-menu formControlName="from"> -->
             <ui-select-option [value]="'distribution'">
@@ -342,7 +342,7 @@
         </div>
 
         <div uiFormFieldDirective *ngIf="formGroup.get('from')?.value === 'field'">
-          <label>{{ 'components.emailBuilder.from.label' | translate }}</label>
+          <label>{{ 'components.emailBuilder.from.field' | translate }}</label>
           <ui-select-menu formControlName="field">
             <ui-select-option *ngFor="let field of fields" [value]="field.name">
               {{ field.name }}
