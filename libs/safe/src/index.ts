@@ -114,3 +114,9 @@ export * from './lib/pipes/cron-parser/public-api';
 
 // === UTILS ===
 export * from './lib/utils/public-api';
+
+// === GRAPHQL FEATURES === //
+
+export * from './lib/graphql/queries/public-api';
+// export * from './lib/graphql/mutations/public-api';
+// export * from './lib/graphql/subscriptions/public-api';

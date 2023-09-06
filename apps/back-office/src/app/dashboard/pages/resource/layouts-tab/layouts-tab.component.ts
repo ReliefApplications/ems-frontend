@@ -6,6 +6,8 @@ import {
   SafeConfirmService,
   Resource,
   SafeUnsubscribeComponent,
+  ResourceQueryResponse,
+  GET_RESOURCE_LAYOUTS_FULL,
 } from '@oort-front/safe';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
@@ -13,10 +15,6 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../../utils/update-queries';
-import {
-  GetResourceByIdQueryResponse,
-  GET_RESOURCE_LAYOUTS,
-} from './graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
 import { UIPageChangeEvent } from '@oort-front/ui';
@@ -40,7 +38,7 @@ export class LayoutsTabComponent
   public displayedColumnsLayouts: string[] = ['name', 'createdAt', '_actions'];
 
   // ==== PAGINATION ====
-  private layoutsQuery!: QueryRef<GetResourceByIdQueryResponse>;
+  private layoutsQuery!: QueryRef<ResourceQueryResponse>;
   private cachedLayouts: Layout[] = [];
   public pageInfo = {
     pageIndex: 0,
@@ -77,8 +75,8 @@ export class LayoutsTabComponent
     const state = history.state;
     this.resource = get(state, 'resource', null);
 
-    this.layoutsQuery = this.apollo.watchQuery<GetResourceByIdQueryResponse>({
-      query: GET_RESOURCE_LAYOUTS,
+    this.layoutsQuery = this.apollo.watchQuery<ResourceQueryResponse>({
+      query: GET_RESOURCE_LAYOUTS_FULL,
       variables: {
         id: this.resource?.id,
         first: this.pageInfo.pageSize,
@@ -134,9 +132,9 @@ export class LayoutsTabComponent
       first: this.pageInfo.pageSize,
       afterCursor: this.pageInfo.endCursor,
     };
-    const cachedValues: GetResourceByIdQueryResponse = getCachedValues(
+    const cachedValues: ResourceQueryResponse = getCachedValues(
       this.apollo.client,
-      GET_RESOURCE_LAYOUTS,
+      GET_RESOURCE_LAYOUTS_FULL,
       variables
     );
     if (cachedValues) {
@@ -246,7 +244,7 @@ export class LayoutsTabComponent
    * @param data query response data
    * @param loading loading status
    */
-  private updateValues(data: GetResourceByIdQueryResponse, loading: boolean) {
+  private updateValues(data: ResourceQueryResponse, loading: boolean) {
     if (data.resource) {
       const mappedValues =
         data.resource.layouts?.edges.map((x) => x.node) ?? [];

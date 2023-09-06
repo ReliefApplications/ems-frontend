@@ -30,3 +30,8 @@ export interface Resource {
   metadata?: Metadata[];
   canCreateRecords?: boolean;
 }
+
+/** Model for resource query response object */
+export interface ResourceQueryResponse {
+  resource: Resource;
+}

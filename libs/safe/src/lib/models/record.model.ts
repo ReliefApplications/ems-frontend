@@ -25,3 +25,8 @@ export interface Record {
   canDelete?: boolean;
   validationErrors?: { question: string; errors: string[] }[];
 }
+
+/** Model for record query response object */
+export interface RecordQueryResponse {
+  record: Record;
+}

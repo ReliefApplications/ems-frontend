@@ -20,10 +20,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeGridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
-import {
-  GetResourceMetadataQueryResponse,
-  GET_RESOURCE_METADATA,
-} from './graphql/queries';
+import { GET_RESOURCE_METADATA } from './graphql/queries';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { SummaryCardFormT } from '../summary-card-settings/summary-card-settings.component';
 import { Record } from '../../../models/record.model';
@@ -40,6 +37,7 @@ import { FormControl } from '@angular/forms';
 import { clone, isNaN } from 'lodash';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
+import { ResourceQueryResponse } from '../../../models/resource.model';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -329,7 +327,7 @@ export class SafeSummaryCardComponent
   private async createDynamicQueryFromLayout(card: any) {
     // gets metadata
     const metaRes = await firstValueFrom(
-      this.apollo.query<GetResourceMetadataQueryResponse>({
+      this.apollo.query<ResourceQueryResponse>({
         query: GET_RESOURCE_METADATA,
         variables: {
           id: card.resource,
