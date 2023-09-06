@@ -138,6 +138,7 @@ export const init = (Survey: any, domService: DomService): void => {
     tagboxInstance.disabled = true;
     tagboxInstance.textField = 'text';
     tagboxInstance.valueField = 'value';
+    tagboxInstance.popupSettings = { appendTo: 'component' };
     return tagboxInstance;
   };
   // ⚠ danger ⚠

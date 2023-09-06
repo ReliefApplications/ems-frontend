@@ -105,6 +105,7 @@ export const init = (Survey: any, domService: DomService): void => {
     dropdownInstance.disabled = true;
     dropdownInstance.textField = 'text';
     dropdownInstance.valueField = 'value';
+    dropdownInstance.popupSettings = { appendTo: 'component' };
     return dropdownInstance;
   };
 
