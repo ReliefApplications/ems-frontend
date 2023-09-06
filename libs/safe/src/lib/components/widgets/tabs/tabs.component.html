@@ -7,10 +7,11 @@
   <ui-tabs
     class="h-full overflow-hidden"
     *ngIf="settings.tabs && settings.tabs.length > 0; else empty"
+    (openedTab)="selectedTab = $event.index"
   >
-    <ui-tab *ngFor="let tab of settings.tabs">
+    <ui-tab *ngFor="let tab of settings.tabs; let i = index">
       <ng-container ngProjectAs="label">{{ tab.label }}</ng-container>
-      <safe-tab [structure]="tab.structure"></safe-tab>
+      <safe-tab [structure]="tab.structure" [inView]="selectedTab === i"></safe-tab>
     </ui-tab>
   </ui-tabs>
   <ng-template #empty>

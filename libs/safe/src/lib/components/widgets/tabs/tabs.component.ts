@@ -24,6 +24,8 @@ export class TabsComponent extends SafeUnsubscribeComponent {
   /** Widget edit event */
   @Output() edit: EventEmitter<any> = new EventEmitter();
 
+  public selectedTab = 0;
+
   /**
    * Tabs widget component.
    *

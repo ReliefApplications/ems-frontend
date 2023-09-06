@@ -5,7 +5,7 @@
   >
 </div>
 <!-- Available tabs -->
-<ui-tabs class="grow" [vertical]="false" *ngIf="tabs.length > 0">
+<ui-tabs class="grow" [vertical]="false" *ngIf="tabs.length > 0" (openedTab)="selectedTab = $event.index">
   <ui-tab *ngFor="let tab of tabs.controls; let i = index">
     <ng-container ngProjectAs="label">
       <div
@@ -42,6 +42,7 @@
     </ng-container>
     <safe-tab-settings
       [tabGroup]="$any(tab)"
+      [isSelected]="selectedTab === i"
       (delete)="onDeleteTab(i)"
     ></safe-tab-settings>
   </ui-tab>

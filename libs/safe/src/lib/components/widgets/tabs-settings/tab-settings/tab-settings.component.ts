@@ -3,6 +3,7 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnDestroy,
   Output,
 } from '@angular/core';
@@ -17,11 +18,15 @@ import { CustomWidgetStyleModalComponent } from '../custom-widget-style-modal/cu
   templateUrl: './tab-settings.component.html',
   styleUrls: ['./tab-settings.component.scss'],
 })
-export class TabSettingsComponent implements OnDestroy {
+export class TabSettingsComponent implements OnChanges, OnDestroy {
   @Input() tabGroup!: FormGroup;
+  @Input() isSelected!: boolean;
   @Output() delete = new EventEmitter();
 
   private styleDialog?: DialogRef<any, any>;
+
+  public isLoaded = false;
+  public loading = true;
 
   /**
    * Edition of a single tab, in tabs widget
@@ -41,6 +46,16 @@ export class TabSettingsComponent implements OnDestroy {
     return widgets.length === 0
       ? 0
       : Math.max(...widgets.map((x: any) => x.id)) + 1;
+  }
+
+  ngOnChanges(): void {
+    if (this.isSelected && !this.isLoaded) {
+      this.isLoaded = true;
+      // Temporary solution for map loading issue, we delay the rendering of widgets 2ms
+      setTimeout(() => {
+        this.loading = false;
+      }, 200);
+    }
   }
 
   /**

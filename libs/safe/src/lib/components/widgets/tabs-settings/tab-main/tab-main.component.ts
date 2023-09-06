@@ -21,6 +21,8 @@ export class TabMainComponent implements OnInit {
   TAB_ID_NAME = 'tab-';
   tabIds$ = new BehaviorSubject<string[]>([]);
 
+  selectedTab = 0;
+
   /** @returns widget tabs as form array */
   get tabs(): FormArray {
     return this.formGroup.get('tabs') as FormArray;
@@ -53,8 +55,9 @@ export class TabMainComponent implements OnInit {
   onDeleteTab(index: number): void {
     this.tabs.removeAt(index);
     this.recalculateUniqIdsForDragDrop();
-    if (this.tabs.length > 0) {
-      this.tabGroup.selectedIndex = 0;
+    if (index > 0) {
+      // this.tabGroup.selectedIndex = 0;
+      document.getElementById(this.TAB_ID_NAME + (index - 1))?.click();
     }
   }
 
