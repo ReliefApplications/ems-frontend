@@ -29,6 +29,13 @@ import {
   SummaryCardWidgetSettings,
 } from '../../../models/widgets/summaryCardWidget.model';
 
+// todo: put in common
+/** Default context filter value. */
+const DEFAULT_CONTEXT_FILTER = `{
+  "logic": "and",
+  "filters": []
+}`;
+
 /**
  * Create a card form
  *
@@ -68,6 +75,9 @@ const createSummaryCardForm = (def: SummaryCardWidget) => {
     title: new FormControl<string | null>(get(settings, 'title', '')),
     card: createCardForm(get(settings, 'card', null)),
     sortFields: new FormArray([]),
+    contextFilters: new FormControl(
+      get(def, 'contextFilters', DEFAULT_CONTEXT_FILTER)
+    ),
   });
 
   const isUsingAggregation = !!get(settings, 'card.aggregation', null);

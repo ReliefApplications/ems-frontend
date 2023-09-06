@@ -1,0 +1,23 @@
+<!-- Remove tab -->
+<div class="flex justify-end">
+  <ui-button (click)="delete.emit()" variant="danger" category="tertiary"
+    >Delete tab</ui-button
+  >
+</div>
+<!-- Tab label edition -->
+<div [formGroup]="tabGroup">
+  <div uiFormFieldDirective>
+    <label>Label</label>
+    <input formControlName="label" type="text" placeholder="Type a label..." />
+  </div>
+</div>
+<!-- tab structure edition -->
+<safe-widget-grid
+  [widgets]="tabGroup.value.structure"
+  [canUpdate]="true"
+  (move)="onMove($event)"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
+  (style)="onStyle($event)"
+  (add)="onAdd($event)"
+></safe-widget-grid>

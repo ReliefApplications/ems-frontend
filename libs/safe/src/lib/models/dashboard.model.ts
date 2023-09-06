@@ -15,6 +15,8 @@ import { SummaryCardWidget } from './widgets/summaryCardWidget.model';
 import { MapWidget } from './widgets/mapWidget.model';
 import { GridWidget } from './widgets/gridWidget.model';
 import { EditorWidget } from './widgets/editorWidget.model';
+import { TabsWidget } from './widgets/tabWidget.model';
+
 /** Model for IWidgetType object */
 export interface IWidgetType {
   id: string;
@@ -36,6 +38,7 @@ export const WIDGET_TYPES: Widget[] = [
   new MapWidget(),
   new EditorWidget(),
   new SummaryCardWidget(),
+  new TabsWidget(),
 ];
 
 /** Model for Dashboard object. */
