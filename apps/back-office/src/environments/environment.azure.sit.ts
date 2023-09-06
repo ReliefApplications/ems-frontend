@@ -1,7 +1,7 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
-import { theme } from '../themes/default/default.uat';
 import { sharedEnvironment } from './environment.shared';
 import { Environment } from './environment.type';
+import { theme } from '../themes/default/default.sit';
 
 /**
  * Authentification configuration
