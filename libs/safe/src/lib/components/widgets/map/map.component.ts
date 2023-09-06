@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { MapWidgetSettings } from '../../../models/widgets/mapWidget.model';
 
 /** Component for the map widget */
 @Component({
@@ -8,5 +9,5 @@ import { Component, Input } from '@angular/core';
 })
 export class SafeMapWidgetComponent {
   @Input() header = true;
-  @Input() settings: any;
+  @Input() settings!: MapWidgetSettings;
 }

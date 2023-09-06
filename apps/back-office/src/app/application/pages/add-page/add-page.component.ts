@@ -18,6 +18,7 @@ import { GET_FORMS, GetFormsQueryResponse } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
+import { Widget } from '@oort-front/safe';
 
 /**
  * Number of items per page.
@@ -95,12 +96,13 @@ export class AddPageComponent
     });
 
     // Set the available widgets that can directly be added as single widget dashboard
-    this.availableWidgets = this.availableWidgets.filter((widget: any) => {
+    this.availableWidgets = this.availableWidgets.filter((widget: Widget) => {
       for (const wid of SINGLE_WIDGET_PAGE_TYPES) {
         if (widget.id.includes(wid)) {
           return widget;
         }
       }
+      return;
     });
   }
 

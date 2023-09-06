@@ -8,10 +8,11 @@ import {
 } from '@angular/core';
 import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { DOCUMENT } from '@angular/common';
+import { Widget } from '../../../models/widgets/widget.model';
 
 /** Dialog data */
 interface DialogData {
-  widget: any;
+  widget: Widget;
 }
 
 /** Component for expanded widgets */

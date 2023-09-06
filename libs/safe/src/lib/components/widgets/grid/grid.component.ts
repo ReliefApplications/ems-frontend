@@ -47,6 +47,10 @@ import { firstValueFrom, takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import {
+  GridWidget,
+  GridWidgetSettings,
+} from '../../../models/widgets/gridWidget.model';
 
 /** Component for the grid widget */
 @Component({
@@ -64,7 +68,7 @@ export class SafeGridWidgetComponent
   private grid!: SafeCoreGridComponent;
 
   // === DATA ===
-  @Input() widget: any;
+  @Input() widget!: GridWidget;
 
   // === PERMISSIONS ===
   public canCreateRecords = false;
@@ -85,7 +89,7 @@ export class SafeGridWidgetComponent
 
   // === SETTINGS ===
   @Input() header = true;
-  @Input() settings: any = null;
+  @Input() settings!: GridWidgetSettings;
   @Input() id = '';
   @Input() canUpdate = false;
   public gridSettings: any = null;
@@ -154,8 +158,8 @@ export class SafeGridWidgetComponent
     this.gridSettings = { ...this.settings };
     delete this.gridSettings.query;
     if (this.settings.resource) {
-      const layouts = get(this.settings, 'layouts', []);
-      const aggregations = get(this.settings, 'aggregations', []);
+      const layouts = get(this.settings, 'layouts', [] as string[]);
+      const aggregations = get(this.settings, 'aggregations', [] as string[]);
 
       // Get user permission on resource
       this.apollo
@@ -184,7 +188,10 @@ export class SafeGridWidgetComponent
           .then((res) => {
             this.layouts = res.edges
               .map((edge) => edge.node)
-              .sort((a, b) => layouts.indexOf(a.id) - layouts.indexOf(b.id));
+              .sort(
+                (a, b) =>
+                  layouts.indexOf(a.id ?? '') - layouts.indexOf(b.id ?? '')
+              );
             this.layout = this.layouts[0] || null;
             if (!this.layout) {
               this.status = {
@@ -216,7 +223,8 @@ export class SafeGridWidgetComponent
               .map((edge) => edge.node)
               .sort(
                 (a, b) =>
-                  aggregations.indexOf(a.id) - aggregations.indexOf(b.id)
+                  aggregations.indexOf(a.id ?? '') -
+                  aggregations.indexOf(b.id ?? '')
               );
             if (!this.aggregation) {
               this.status = {

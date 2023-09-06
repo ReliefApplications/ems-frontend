@@ -5,11 +5,7 @@ import {
   Validators,
 } from '@angular/forms';
 import get from 'lodash/get';
-import {
-  MapControls,
-  DefaultMapControls,
-  MapConstructorSettings,
-} from '../../ui/map/interfaces/map.interface';
+import { DefaultMapControls } from '../../ui/map/interfaces/map.interface';
 import {
   Fields,
   LayerModel,
@@ -24,6 +20,10 @@ import {
 } from '../../ui/map/interfaces/layer-settings.type';
 import { set } from 'lodash';
 import { DEFAULT_MARKER_ICON_OPTIONS } from '../../ui/map/utils/create-div-icon';
+import {
+  MapWidgetSettings,
+  MapControls,
+} from '../../../models/widgets/mapWidget.model';
 
 type Nullable<T> = { [P in keyof T]: T[P] | null };
 
@@ -31,7 +31,7 @@ type Nullable<T> = { [P in keyof T]: T[P] | null };
 const fb = new FormBuilder();
 
 /** Default map value */
-const DEFAULT_MAP: Nullable<MapConstructorSettings> = {
+const DEFAULT_MAP: Nullable<MapWidgetSettings> = {
   title: null,
   basemap: null,
   initialState: {
@@ -482,7 +482,10 @@ export const createMapControlsForm = (value?: MapControls): FormGroup =>
  * @param value map settings ( optional )
  * @returns map form
  */
-export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup => {
+export const createMapWidgetFormGroup = (
+  id: any,
+  value?: MapWidgetSettings
+): FormGroup => {
   const formGroup = fb.group({
     id,
     title: [get(value, 'title', DEFAULT_MAP.title)],
@@ -519,9 +522,9 @@ export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup => {
     basemap: [get(value, 'basemap', DEFAULT_MAP.basemap)],
     // popupFields: [get(value, 'popupFields', DEFAULT_MAP.popupFields)],
     // onlineLayers: [get(value, 'onlineLayers', DEFAULT_MAP.onlineLayers)],
-    layers: [get(value, 'layers', [])] as string[],
+    layers: [get(value, 'layers', '')] as string[],
     controls: createMapControlsForm(
-      get(value, 'controls', DEFAULT_MAP.controls)
+      value?.controls ?? DEFAULT_MAP.controls ?? undefined
     ),
     arcGisWebMap: [get(value, 'arcGisWebMap', DEFAULT_MAP.arcGisWebMap)],
   });

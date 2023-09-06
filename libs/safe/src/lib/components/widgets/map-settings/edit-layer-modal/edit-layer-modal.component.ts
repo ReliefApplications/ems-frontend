@@ -171,16 +171,18 @@ export class EditLayerModalComponent
     if (this.data.mapComponent) {
       const encapsulatedSettings =
         this.data.mapComponent.mapSettingsWithoutLayers;
-      // Reset all map layers to keep basemaps or arcGISmaps on loading map editor
-      this.data.mapComponent.setupMapLayers(
-        {
-          layers: [],
-          arcGisWebMap: encapsulatedSettings.settings.arcGisWebMap,
-          basemap: encapsulatedSettings.settings.basemap,
-          controls: encapsulatedSettings.settings.controls,
-        },
-        true
-      );
+      if (encapsulatedSettings.settings.controls) {
+        // Reset all map layers to keep basemaps or arcGISmaps on loading map editor
+        this.data.mapComponent.setupMapLayers(
+          {
+            layers: [],
+            arcGisWebMap: encapsulatedSettings.settings.arcGisWebMap,
+            basemap: encapsulatedSettings.settings.basemap,
+            controls: encapsulatedSettings.settings.controls,
+          },
+          true
+        );
+      }
       // Reset the current map view in order to only see the layer on edition
       this.data.mapComponent.mapSettings = {
         ...encapsulatedSettings.settings,

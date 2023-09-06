@@ -16,6 +16,7 @@ import { Apollo } from 'apollo-angular';
 import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
 import { get } from 'lodash';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
+import { EditorWidget } from '../../../models/widgets/editorWidget.model';
 
 /**
  * Creates the form for the editor widget settings.
@@ -23,22 +24,23 @@ import { DataTemplateService } from '../../../services/data-template/data-templa
  * @param value editor widget
  * @returns the editor widget form group
  */
-const createEditorForm = (value: any) => {
+const createEditorForm = (value: EditorWidget) => {
+  const settings = value.settings;
   const form = new FormGroup({
     id: new FormControl<string>(value.id),
-    title: new FormControl<string>(get(value, 'settings.title', '')),
-    text: new FormControl<string>(get(value, 'settings.text', '')),
+    title: new FormControl<string | null>(get(settings, 'title', '')),
+    text: new FormControl<string | null>(get(settings, 'text', '')),
     // for record selection
-    resource: new FormControl<string>(get(value, 'settings.resource', null)),
-    layout: new FormControl<string>(get(value, 'settings.layout', null)),
-    record: new FormControl<string>(get(value, 'settings.record', null)),
+    resource: new FormControl<string | null>(get(settings, 'resource', null)),
+    layout: new FormControl<string | null>(get(settings, 'layout', null)),
+    record: new FormControl<string | null>(get(settings, 'record', null)),
     showDataSourceLink: new FormControl<boolean>(
-      get(value, 'showDataSourceLink', false)
+      get(settings, 'showDataSourceLink', false)
     ),
     // Style
-    useStyles: new FormControl<boolean>(get(value, 'settings.useStyles', true)),
+    useStyles: new FormControl<boolean>(get(settings, 'useStyles', true)),
     wholeCardStyles: new FormControl<boolean>(
-      get(value, 'settings.wholeCardStyles', false)
+      get(settings, 'wholeCardStyles', false)
     ),
   });
 
@@ -60,7 +62,7 @@ export class SafeEditorSettingsComponent implements OnInit, AfterViewInit {
   tileForm!: EditorFormType;
 
   // === WIDGET ===
-  @Input() tile: any;
+  @Input() tile!: EditorWidget;
 
   // === EMIT THE CHANGES APPLIED ===
   // eslint-disable-next-line @angular-eslint/no-output-native

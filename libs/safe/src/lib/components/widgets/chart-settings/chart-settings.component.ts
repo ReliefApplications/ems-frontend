@@ -3,6 +3,10 @@ import { UntypedFormGroup } from '@angular/forms';
 import { createChartWidgetForm } from './chart-forms';
 import { CHART_TYPES } from './constants';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
+import {
+  ChartWidget,
+  ChartWidgetSettings,
+} from '../../../models/widgets/chartWidget.model';
 
 /**
  * Chart settings component
@@ -18,7 +22,7 @@ export class SafeChartSettingsComponent implements OnInit {
   public formGroup!: UntypedFormGroup;
 
   // === WIDGET ===
-  @Input() tile: any;
+  @Input() tile!: ChartWidget;
 
   // === EMIT THE CHANGES APPLIED ===
   // eslint-disable-next-line @angular-eslint/no-output-native
@@ -43,7 +47,10 @@ export class SafeChartSettingsComponent implements OnInit {
   /** Build the settings form, using the widget saved parameters. */
   ngOnInit(): void {
     this.formGroup = extendWidgetForm(
-      createChartWidgetForm(this.tile.id, this.tile.settings),
+      createChartWidgetForm(
+        this.tile.id,
+        this.tile.settings as ChartWidgetSettings
+      ),
       this.tile.settings?.widgetDisplay
     );
     this.type = this.types.find((x) => x.name === this.chartForm.value.type);

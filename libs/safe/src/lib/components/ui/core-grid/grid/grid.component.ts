@@ -48,6 +48,7 @@ import { SafeDashboardService } from '../../../../services/dashboard/dashboard.s
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { GridWidget } from '../../../../models/widgets/gridWidget.model';
 
 /**
  * Test if an element match a css selector
@@ -93,7 +94,7 @@ export class SafeGridComponent
     error: false,
   };
   @Input() blank = false;
-  @Input() widget: any;
+  @Input() widget!: GridWidget;
   @Input() canUpdate = false;
 
   // === EXPORT ===

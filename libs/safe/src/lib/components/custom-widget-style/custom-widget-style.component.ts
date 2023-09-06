@@ -10,6 +10,7 @@ import get from 'lodash/get';
 import { SafeRestService } from '../../services/rest/rest.service';
 import { SafeConfirmService } from '../../services/confirm/confirm.service';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { Widget } from '../../models/widgets/widget.model';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';
@@ -45,7 +46,7 @@ export class CustomWidgetStyleComponent
 
   private initialStyle = '';
 
-  @Input() widgetComp: any;
+  @Input() widgetComp!: { widget: Widget; domId: any };
   @Input() save!: (tile: any) => void;
 
   /**

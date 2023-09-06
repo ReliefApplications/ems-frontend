@@ -2,6 +2,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import get from 'lodash/get';
 import { createMappingForm } from '../../ui/aggregation-builder/aggregation-builder-forms';
 import { DEFAULT_PALETTE } from '../../ui/charts/const/palette';
+import { ChartWidgetSettings } from '../../../models/widgets/chartWidget.model';
 
 /** Creating a new instance of the FormBuilder class. */
 const fb = new FormBuilder();
@@ -322,7 +323,7 @@ const DEFAULT_CONTEXT_FILTER = `{
  * @param value chart widget settings
  * @returns chart widget form group
  */
-export const createChartWidgetForm = (id: any, value: any) =>
+export const createChartWidgetForm = (id: any, value: ChartWidgetSettings) =>
   fb.group({
     id,
     title: [get(value, 'title', ''), Validators.required],

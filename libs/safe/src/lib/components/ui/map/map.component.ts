@@ -26,11 +26,9 @@ import {
   LayerActionOnMap,
 } from './interfaces/map-layers.interface';
 import {
-  MapConstructorSettings,
   MapEvent,
   MapEventType,
   DefaultMapControls,
-  MapControls,
 } from './interfaces/map.interface';
 import { BASEMAP_LAYERS } from './const/baseMaps';
 // import { timeDimensionGeoJSON } from './test/timedimension-test';
@@ -56,6 +54,10 @@ import { debounceTime, takeUntil } from 'rxjs';
 import { SafeMapPopupService } from './map-popup/map-popup.service';
 import { Platform } from '@angular/cdk/platform';
 import { ContextService } from '../../../services/context/context.service';
+import {
+  MapControls,
+  MapWidgetSettings,
+} from '../../../models/widgets/mapWidget.model';
 
 /** Component for the map widget */
 @Component({
@@ -90,7 +92,7 @@ export class MapComponent
   /**
    * Update map settings and redraw it with those
    */
-  @Input() set mapSettings(settings: MapConstructorSettings) {
+  @Input() set mapSettings(settings: MapWidgetSettings) {
     if (settings) {
       this.mapSettingsValue = settings;
       if (this.map) {
@@ -99,7 +101,7 @@ export class MapComponent
     }
   }
 
-  private mapSettingsValue: MapConstructorSettings = {
+  private mapSettingsValue: MapWidgetSettings = {
     initialState: {
       viewpoint: {
         center: {
@@ -115,9 +117,9 @@ export class MapComponent
   /**
    * Get current map settings without the layers
    *
-   * @returns <MapConstructorSettings,'layers'>
+   * @returns <MapWidgetSettings,'layers'>
    */
-  get mapSettingsWithoutLayers() {
+  get mapSettingsWithoutLayers(): { settings: MapWidgetSettings } {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { layers, ...rest } = this.mapSettingsValue;
     return { settings: rest };
@@ -224,7 +226,7 @@ export class MapComponent
         if (event.lang !== this.mapControlsService.lang) {
           this.mapControlsService.getMeasureControl(
             this.map,
-            this.extractSettings().controls.measure
+            this.extractSettings().controls?.measure
           );
           this.mapControlsService.getFullScreenControl(this.map);
         }
@@ -275,7 +277,7 @@ export class MapComponent
    *
    * @returns cleaned settings
    */
-  private extractSettings(): MapConstructorSettings {
+  private extractSettings(): MapWidgetSettings {
     const mapSettings = omitBy(this.mapSettingsValue, isNil);
     // Settings initialization
     const initialState = get(mapSettings, 'initialState', {
@@ -333,7 +335,7 @@ export class MapComponent
       controls,
     } = this.extractSettings();
 
-    if (initMap) {
+    if (initMap && initialState) {
       // Create leaflet map
       this.map = L.map(this.mapId, {
         zoomControl,
@@ -353,7 +355,7 @@ export class MapComponent
           initialState.viewpoint.center.latitude,
           initialState.viewpoint.center.longitude
         ),
-        initialState.viewpoint.zoom
+        initialState?.viewpoint.zoom
       );
 
       this.currentZoom = initialState.viewpoint.zoom;
@@ -372,7 +374,7 @@ export class MapComponent
       if (maxBounds) {
         this.map.setMaxBounds(maxBounds as L.LatLngBoundsExpression);
       }
-      if (this.map.getZoom() !== initialState.viewpoint.zoom) {
+      if (initialState && this.map.getZoom() !== initialState.viewpoint.zoom) {
         this.map.setZoom(initialState.viewpoint.zoom);
       }
       // Could ask the map to do some unwanted movements
@@ -394,7 +396,9 @@ export class MapComponent
       //   );
       // }
     }
-
+    if (!controls) {
+      return;
+    }
     // Close layers/bookmarks menu
     document.getElementById('layer-control-button-close')?.click();
 
@@ -986,7 +990,7 @@ export class MapComponent
       }
     });
 
-    if (controls.layer) {
+    if (controls && controls.layer) {
       // remove current layer controls
       this.layerControlButtons.remove();
       this.layerControlButtons = null;

@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { Widget } from '../../../models/widgets/widget.model';
 
 /**
  * Button on top left of each widget, if user can see it, with menu of possible
@@ -17,7 +18,7 @@ import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.co
 })
 export class SafeFloatingOptionsComponent extends SafeUnsubscribeComponent {
   // === WIDGET ===
-  @Input() widget: any;
+  @Input() widget!: Widget;
 
   // === EMIT ACTION SELECTED ===
   @Output() edit: EventEmitter<any> = new EventEmitter();

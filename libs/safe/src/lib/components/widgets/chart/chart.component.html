@@ -23,9 +23,9 @@
   <div class="group flex-1 overflow-hidden">
     <safe-line-chart
       #chartWrapper
-      *ngIf="settings.chart.type === 'line'"
-      [title]="settings.chart.title"
-      [legend]="settings.chart.legend"
+      *ngIf="settings.chart?.type === 'line'"
+      [title]="settings.chart?.title"
+      [legend]="settings.chart?.legend"
       [series]="series"
       [options]="options"
     ></safe-line-chart>
@@ -33,9 +33,9 @@
       #chartWrapper
       chartType="pie"
       class="widget-content"
-      *ngIf="settings.chart.type === 'pie'"
-      [title]="settings.chart.title"
-      [legend]="settings.chart.legend"
+      *ngIf="settings.chart?.type === 'pie'"
+      [title]="settings.chart?.title"
+      [legend]="settings.chart?.legend"
       [series]="series"
       [options]="options"
     ></safe-pie-donut-chart>
@@ -43,9 +43,9 @@
       #chartWrapper
       chartType="polarArea"
       class="widget-content"
-      *ngIf="settings.chart.type === 'polar'"
-      [title]="settings.chart.title"
-      [legend]="settings.chart.legend"
+      *ngIf="settings.chart?.type === 'polar'"
+      [title]="settings.chart?.title"
+      [legend]="settings.chart?.legend"
       [series]="series"
       [options]="options"
     ></safe-pie-donut-chart>
@@ -53,9 +53,9 @@
       #chartWrapper
       chartType="doughnut"
       class="widget-content"
-      *ngIf="settings.chart.type === 'donut'"
-      [title]="settings.chart.title"
-      [legend]="settings.chart.legend"
+      *ngIf="settings.chart?.type === 'donut'"
+      [title]="settings.chart?.title"
+      [legend]="settings.chart?.legend"
       [series]="series"
       [options]="options"
     ></safe-pie-donut-chart>
@@ -63,9 +63,9 @@
       #chartWrapper
       chartType="radar"
       class="widget-content"
-      *ngIf="settings.chart.type === 'radar'"
-      [title]="settings.chart.title"
-      [legend]="settings.chart.legend"
+      *ngIf="settings.chart?.type === 'radar'"
+      [title]="settings.chart?.title"
+      [legend]="settings.chart?.legend"
       [series]="series"
       [options]="options"
     ></safe-pie-donut-chart>
@@ -73,9 +73,9 @@
       #chartWrapper
       orientation="vertical"
       class="widget-content"
-      *ngIf="settings.chart.type === 'column'"
-      [title]="settings.chart.title"
-      [legend]="settings.chart.legend"
+      *ngIf="settings.chart?.type === 'column'"
+      [title]="settings.chart?.title"
+      [legend]="settings.chart?.legend"
       [series]="series"
       [options]="options"
     ></safe-bar-chart>
@@ -83,9 +83,9 @@
       #chartWrapper
       orientation="horizontal"
       class="widget-content"
-      *ngIf="settings.chart.type === 'bar'"
-      [title]="settings.chart.title"
-      [legend]="settings.chart.legend"
+      *ngIf="settings.chart?.type === 'bar'"
+      [title]="settings.chart?.title"
+      [legend]="settings.chart?.legend"
       [series]="series"
       [options]="options"
     ></safe-bar-chart>
@@ -105,6 +105,6 @@
 <div *ngIf="hasError" class="chart-error">
   <ui-icon variant="danger" icon="error_outline"></ui-icon>
   <p color="danger">
-    {{ 'components.widget.chart.errors.aggregation.invalid' | translate }}
+    {{ 'components.widget.chart?.errors.aggregation.invalid' | translate }}
   </p>
 </div>
