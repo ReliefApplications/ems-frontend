@@ -1,5 +1,8 @@
 import { Component, Input, OnInit } from '@angular/core';
 
+/**
+ * UI Skeleton table component
+ */
 @Component({
   selector: 'ui-skeleton-table',
   templateUrl: './skeleton-table.component.html',

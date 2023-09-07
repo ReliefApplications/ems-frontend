@@ -14,7 +14,7 @@ import {
   SimpleChanges,
   ViewContainerRef,
   createComponent,
-  EnvironmentInjector
+  EnvironmentInjector,
 } from '@angular/core';
 import { TableSort } from './interfaces/table-column.interface';
 import { TableHeaderSortDirective } from './table-header-sort.directive';
@@ -27,7 +27,9 @@ import { SkeletonTableComponent } from './skeleton-table/skeleton-table.componen
 @Directive({
   selector: '[uiTableWrapper]',
 })
-export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy, OnChanges {
+export class TableWrapperDirective
+  implements OnInit, AfterViewInit, OnDestroy, OnChanges
+{
   @Output() sortChange = new EventEmitter<TableSort>();
 
   @Input() loading = false;
@@ -58,12 +60,14 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy, 
    *
    * @param el Directive host element
    * @param renderer Renderer2
+   * @param viewContainerRef ViewContainerRef
+   * @param injector Environment Injector
    */
   constructor(
     private el: ElementRef,
     private renderer: Renderer2,
     private viewContainerRef: ViewContainerRef,
-    private injector: EnvironmentInjector,
+    private injector: EnvironmentInjector
   ) {}
 
   ngOnInit(): void {
