@@ -14,6 +14,7 @@ import elementAt from './elementAt';
 import getWorkflowContext from './getWorkflowContext';
 import summarizeAids from './summarizeAids';
 import searchEnterpriseName from './searchEnterpriseName';
+import push from './push';
 
 /** Generators for each custom function available  */
 export const functions = [
@@ -32,6 +33,7 @@ export const functions = [
   { fn: intersect, name: 'intersect' },
   { fn: addTime, name: 'addTime' },
   { fn: summarizeAids, name: 'summarizeAids' },
+  { fn: push, name: 'push' },
 ];
 
 /** Generators for each async custom function available  */
