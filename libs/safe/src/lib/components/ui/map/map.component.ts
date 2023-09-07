@@ -2,13 +2,13 @@
 /// <reference path="../../../../typings/leaflet/index.d.ts" />
 import {
   Component,
-  AfterViewInit,
   Input,
   Inject,
   Output,
   EventEmitter,
   OnDestroy,
   Injector,
+  AfterViewChecked,
 } from '@angular/core';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 // Leaflet plugins
@@ -66,7 +66,7 @@ import { ContextService } from '../../../services/context/context.service';
 })
 export class MapComponent
   extends SafeUnsubscribeComponent
-  implements AfterViewInit, OnDestroy
+  implements AfterViewChecked, OnDestroy
 {
   /** Add or delete layer setter */
   @Input() set addOrDeleteLayer(layerAction: LayerActionOnMap | null) {
@@ -87,6 +87,8 @@ export class MapComponent
   private basemap: any;
   private currentBasemapKey!: string;
   private esriApiKey!: string;
+
+  public loading = true;
   /**
    * Update map settings and redraw it with those
    */
@@ -231,11 +233,19 @@ export class MapComponent
       });
   }
 
+  // Uses ngAfterViewChecked instead of ngAfterViewChecked because the view was not fully rendered
+  ngAfterViewChecked() {
+    if (!this.loading) return;
+    // checks if the component is loaded correctly
+    if (!document.getElementById(this.mapId)) return;
+    this.loading = false;
+    this.initComponent();
+  }
+
   /** Once template is ready, build the map. */
-  ngAfterViewInit(): void {
+  initComponent(): void {
     // Creates the map and adds all the controls we use.
     this.drawMap();
-
     this.setUpMapListeners();
 
     setTimeout(() => {

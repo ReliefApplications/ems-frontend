@@ -14,7 +14,6 @@
 <!-- tab structure edition -->
 <safe-widget-grid
   *ngIf="isLoaded"
-  [loading]="loading"
   [widgets]="tabGroup.value.structure"
   [canUpdate]="true"
   (move)="onMove($event)"

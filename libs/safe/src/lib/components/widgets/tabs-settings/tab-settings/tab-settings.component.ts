@@ -26,7 +26,6 @@ export class TabSettingsComponent implements OnChanges, OnDestroy {
   private styleDialog?: DialogRef<any, any>;
 
   public isLoaded = false;
-  public loading = true;
 
   /**
    * Edition of a single tab, in tabs widget
@@ -51,10 +50,6 @@ export class TabSettingsComponent implements OnChanges, OnDestroy {
   ngOnChanges(): void {
     if (this.isSelected && !this.isLoaded) {
       this.isLoaded = true;
-      // Temporary solution for map loading issue, we delay the rendering of widgets 2ms
-      setTimeout(() => {
-        this.loading = false;
-      }, 200);
     }
   }
 

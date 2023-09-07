@@ -44,11 +44,6 @@ export class TabComponent implements AfterViewInit, OnChanges {
   private loadTab(): void {
     this.isLoaded = true;
     this.componentRef = this.content.createComponent(SafeWidgetGridComponent);
-    this.componentRef.setInput('loading', true);
     this.componentRef.setInput('widgets', this.structure);
-    // Temporary solution for map loading issue, we delay the rendering of widgets 2ms
-    setTimeout(() => {
-      this.componentRef.setInput('loading', false);
-    }, 200);
   }
 }
