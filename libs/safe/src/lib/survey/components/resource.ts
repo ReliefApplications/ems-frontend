@@ -90,7 +90,7 @@ export const init = (
         loadedRecords.set(x.node?.id || '', x.node);
         return {
           value: x.node?.id,
-          text: x.node?.data[question.displayField || 'id'],
+          text: `${x.node?.data[question.displayField || 'id']}`,
         };
       }) || []
     );
