@@ -514,7 +514,7 @@ export const init = (
         category: 'logic',
       });
 
-      Survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resource', {
         name: 'afterRecordDeselection',
         type: 'text',
         category: 'logic',
