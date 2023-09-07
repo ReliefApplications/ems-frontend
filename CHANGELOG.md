@@ -1,3 +1,17 @@
+# [2.1.0](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.10...v2.1.0) (2023-09-07)
+
+
+### Bug Fixes
+
+* items per page would not correctly work on some page change  ([#1801](https://github.com/ReliefApplications/oort-frontend/issues/1801)) ([063391d](https://github.com/ReliefApplications/oort-frontend/commit/063391d6613bb1797bb00330a831c49bb3484b2d)), closes [bugfix/AB#74313](https://github.com/bugfix/AB/issues/74313)
+* last option in grid tagbox filter remains active when removing options one by one ([#1777](https://github.com/ReliefApplications/oort-frontend/issues/1777)) ([f266e52](https://github.com/ReliefApplications/oort-frontend/commit/f266e522d688c841c53b46c1c730b0e5f3941d5c))
+* only get visible fields when exporting grid data [#35940](https://github.com/ReliefApplications/oort-frontend/issues/35940) ([#1807](https://github.com/ReliefApplications/oort-frontend/issues/1807)) ([2d76aa8](https://github.com/ReliefApplications/oort-frontend/commit/2d76aa8eb4aaea48b0b0a95e935f34fcbd807c01))
+
+
+### Features
+
+* remove hidden class from date picker clear button on first load if picker contains any value, as the valueChange event only triggers from the calendar UI, not on setting a value into the date picker refactor: use the writeValue default built in method of kendo date picker in order to avoid any strange misbehavior on setting value ([#1799](https://github.com/ReliefApplications/oort-frontend/issues/1799)) ([aad4fca](https://github.com/ReliefApplications/oort-frontend/commit/aad4fcaf0414ebede98cccf0c687c90ab8c7b5ff))
+
 ## [2.0.10](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.9...v2.0.10) (2023-08-31)
 
 
