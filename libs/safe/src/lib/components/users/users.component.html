@@ -103,10 +103,18 @@
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <table
-      *ngIf="!loading"
+      [loading]="loading"
       cdk-table
       uiTableWrapper
       [dataSource]="filteredUsers"
+      [columns]="[
+        'common.name',
+        'models.user.username',
+        'common.id',
+        'common.role.one'
+      ]"
+      [actions]="true"
+      [checkbox]="true"
     >
       <!-- Checkbox Column -->
       <ng-container cdkColumnDef="select">
@@ -200,18 +208,5 @@
         class="cursor-pointer"
       ></tr>
     </table>
-    <!-- Loading indicator -->
-    <safe-skeleton-table
-      *ngIf="loading"
-      [columns]="[
-        'common.name',
-        'models.user.username',
-        'common.id',
-        'common.role.one'
-      ]"
-      [actions]="true"
-      [checkbox]="true"
-    >
-    </safe-skeleton-table>
   </div>
 </div>

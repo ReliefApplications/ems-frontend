@@ -10,11 +10,12 @@
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <table
-      *ngIf="!loading"
+      [loading]="loading"
       cdk-table
       uiTableWrapper
       [dataSource]="resources"
       multiTemplateDataRows
+      [columns]="['common.name']"
     >
       <!-- Resource Name -->
       <ng-container cdkColumnDef="name">
@@ -114,12 +115,6 @@
       <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
       <tr cdk-row *cdkRowDef="let row; columns: ['expandedDetail']"></tr>
     </table>
-    <safe-skeleton-table
-      class="my-4 mx-0 w-full"
-      *ngIf="loading"
-      [columns]="['common.name']"
-    >
-    </safe-skeleton-table>
   </div>
 </div>
 <ui-paginator

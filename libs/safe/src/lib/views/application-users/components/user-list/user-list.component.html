@@ -1,159 +1,157 @@
 <!-- Actions when selected items -->
-<ng-container *ngIf="!loading; else loadingTmpl">
-  <div
-    *ngIf="selection.selected.length > 0"
-    class="flex gap-2 items-center mb-2 justify-end"
+<div
+  *ngIf="selection.selected.length > 0"
+  class="flex gap-2 items-center mb-2 justify-end"
+>
+  <ui-button
+    icon="delete"
+    category="secondary"
+    variant="danger"
+    (click)="onDelete(selection.selected)"
   >
-    <ui-button
-      icon="delete"
-      category="secondary"
-      variant="danger"
-      (click)="onDelete(selection.selected)"
-    >
-      {{
-        'common.deleteObject'
-          | translate : { name: 'common.user.few' | translate }
-      }}
-    </ui-button>
-  </div>
-  <ng-container *ngIf="!empty; else emptyTmpl">
-    <!-- Table container -->
-    <div class="overflow-x-hidden shadow-2lg">
-      <!-- Table scroll container -->
-      <div class="overflow-x-auto">
-        <table cdk-table uiTableWrapper [dataSource]="users">
-          <!-- Checkbox Column -->
-          <ng-container *ngIf="!autoAssigned" cdkColumnDef="select">
-            <th uiCellHeader *cdkHeaderCellDef scope="col">
-              <ui-checkbox
-                (change)="$event ? masterToggle() : null"
-                [checked]="selection.hasValue() && isAllSelected()"
-                [indeterminate]="selection.hasValue() && !isAllSelected()"
-                [ariaLabel]="checkboxLabel()"
-              >
-              </ui-checkbox>
-            </th>
-            <td uiCell *cdkCellDef="let row">
-              <ui-checkbox
-                (click)="$event.stopPropagation()"
-                (change)="$event ? selection.toggle(row) : null"
-                [checked]="selection.isSelected(row)"
-                [ariaLabel]="checkboxLabel(row)"
-              >
-              </ui-checkbox>
-            </td>
-          </ng-container>
-          <ng-container cdkColumnDef="username">
-            <th uiCellHeader *cdkHeaderCellDef scope="col">
-              <span class="headerTitle">
-                {{ 'models.user.username' | translate }}
-              </span>
-            </th>
-            <td uiCell *cdkCellDef="let element">{{ element.username }}</td>
-          </ng-container>
-
-          <ng-container cdkColumnDef="name">
-            <th uiCellHeader *cdkHeaderCellDef scope="col">
-              <span class="headerTitle">
-                {{ 'common.name' | translate }}
-              </span>
-            </th>
-            <td
-              uiCell
-              *cdkCellDef="let element"
-              class="!text-gray-900 !font-medium"
+    {{
+      'common.deleteObject'
+        | translate : { name: 'common.user.few' | translate }
+    }}
+  </ui-button>
+</div>
+<ng-container *ngIf="!empty; else emptyTmpl">
+  <!-- Table container -->
+  <div class="overflow-x-hidden shadow-2lg">
+    <!-- Table scroll container -->
+    <div class="overflow-x-auto">
+      <table
+        cdk-table
+        uiTableWrapper
+        [dataSource]="users"
+        [columns]="[
+          'common.name',
+          'models.user.username',
+          'common.id',
+          'common.role.one'
+        ]"
+        [actions]="true"
+        [checkbox]="true"
+        [loading]="loading"
+      >
+        <!-- Checkbox Column -->
+        <ng-container *ngIf="!autoAssigned" cdkColumnDef="select">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            <ui-checkbox
+              (change)="$event ? masterToggle() : null"
+              [checked]="selection.hasValue() && isAllSelected()"
+              [indeterminate]="selection.hasValue() && !isAllSelected()"
+              [ariaLabel]="checkboxLabel()"
             >
-              {{ element.name }}
-            </td>
-          </ng-container>
+            </ui-checkbox>
+          </th>
+          <td uiCell *cdkCellDef="let row">
+            <ui-checkbox
+              (click)="$event.stopPropagation()"
+              (change)="$event ? selection.toggle(row) : null"
+              [checked]="selection.isSelected(row)"
+              [ariaLabel]="checkboxLabel(row)"
+            >
+            </ui-checkbox>
+          </td>
+        </ng-container>
+        <ng-container cdkColumnDef="username">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            <span class="headerTitle">
+              {{ 'models.user.username' | translate }}
+            </span>
+          </th>
+          <td uiCell *cdkCellDef="let element">{{ element.username }}</td>
+        </ng-container>
 
-          <ng-container cdkColumnDef="roles">
-            <th uiCellHeader *cdkHeaderCellDef scope="col">
-              <span class="headerTitle">
-                {{ 'common.role.few' | translate }}
-              </span>
-            </th>
-            <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
-              <span *ngFor="let role of element.roles"> {{ role.title }}</span>
-            </td>
-          </ng-container>
+        <ng-container cdkColumnDef="name">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            <span class="headerTitle">
+              {{ 'common.name' | translate }}
+            </span>
+          </th>
+          <td
+            uiCell
+            *cdkCellDef="let element"
+            class="!text-gray-900 !font-medium"
+          >
+            {{ element.name }}
+          </td>
+        </ng-container>
 
-          <ng-container cdkColumnDef="attributes">
-            <th uiCellHeader *cdkHeaderCellDef scope="col">
-              <span class="headerTitle">
-                {{ 'common.positionAttribute.few' | translate }}
-              </span>
-            </th>
-            <td uiCell *cdkCellDef="let element">
-              <span *ngFor="let attribute of element.positionAttributes">
-                {{ attribute.value }},
-              </span>
-            </td>
-          </ng-container>
+        <ng-container cdkColumnDef="roles">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            <span class="headerTitle">
+              {{ 'common.role.few' | translate }}
+            </span>
+          </th>
+          <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
+            <span *ngFor="let role of element.roles"> {{ role.title }}</span>
+          </td>
+        </ng-container>
 
-          <ng-container cdkColumnDef="oid">
-            <th uiCellHeader *cdkHeaderCellDef scope="col">
-              <span class="headerTitle">
-                {{ 'common.id' | translate }}
-              </span>
-            </th>
-            <td uiCell *cdkCellDef="let element">{{ element.oid }}</td>
-          </ng-container>
+        <ng-container cdkColumnDef="attributes">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            <span class="headerTitle">
+              {{ 'common.positionAttribute.few' | translate }}
+            </span>
+          </th>
+          <td uiCell *cdkCellDef="let element">
+            <span *ngFor="let attribute of element.positionAttributes">
+              {{ attribute.value }},
+            </span>
+          </td>
+        </ng-container>
 
-          <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-            <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
-            <td uiCell *cdkCellDef="let element">
-              <ui-button
-                [isIcon]="true"
-                icon="more_vert"
-                [uiMenuTriggerFor]="menu"
-                (click)="$event.stopPropagation()"
-              >
-              </ui-button>
-              <ui-menu #menu>
-                <button uiMenuItem (click)="onDelete([element])">
-                  <ui-icon icon="delete" variant="danger"></ui-icon>
-                  {{ 'common.delete' | translate }}
-                </button>
-              </ui-menu>
-            </td>
-          </ng-container>
+        <ng-container cdkColumnDef="oid">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            <span class="headerTitle">
+              {{ 'common.id' | translate }}
+            </span>
+          </th>
+          <td uiCell *cdkCellDef="let element">{{ element.oid }}</td>
+        </ng-container>
 
-          <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-          <tr
-            cdk-row
-            *cdkRowDef="let row; columns: displayedColumns"
-            (click)="onClick(row)"
-            class="cursor-pointer"
-          ></tr>
-        </table>
-      </div>
+        <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+          <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+          <td uiCell *cdkCellDef="let element">
+            <ui-button
+              [isIcon]="true"
+              icon="more_vert"
+              [uiMenuTriggerFor]="menu"
+              (click)="$event.stopPropagation()"
+            >
+            </ui-button>
+            <ui-menu #menu>
+              <button uiMenuItem (click)="onDelete([element])">
+                <ui-icon icon="delete" variant="danger"></ui-icon>
+                {{ 'common.delete' | translate }}
+              </button>
+            </ui-menu>
+          </td>
+        </ng-container>
+
+        <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+        <tr
+          cdk-row
+          *cdkRowDef="let row; columns: displayedColumns"
+          (click)="onClick(row)"
+          class="cursor-pointer"
+        ></tr>
+      </table>
     </div>
-    <ui-paginator
-      [disabled]="loading || updating"
-      [pageIndex]="pageInfo.pageIndex"
-      [pageSize]="pageInfo.pageSize"
-      [pageSizeOptions]="[10, 25, 50]"
-      [totalItems]="pageInfo.length"
-      (pageChange)="onPage($event)"
-    >
-    </ui-paginator>
-  </ng-container>
-  <ng-template #emptyTmpl>
-    <safe-empty [title]="'components.application.users.empty' | translate">
-    </safe-empty>
-  </ng-template>
-</ng-container>
-<ng-template #loadingTmpl>
-  <safe-skeleton-table
-    [columns]="[
-      'common.name',
-      'models.user.username',
-      'common.id',
-      'common.role.one'
-    ]"
-    [actions]="true"
-    [checkbox]="true"
+  </div>
+  <ui-paginator
+    [disabled]="loading || updating"
+    [pageIndex]="pageInfo.pageIndex"
+    [pageSize]="pageInfo.pageSize"
+    [pageSizeOptions]="[10, 25, 50]"
+    [totalItems]="pageInfo.length"
+    (pageChange)="onPage($event)"
   >
-  </safe-skeleton-table>
+  </ui-paginator>
+</ng-container>
+<ng-template #emptyTmpl>
+  <safe-empty [title]="'components.application.users.empty' | translate">
+  </safe-empty>
 </ng-template>

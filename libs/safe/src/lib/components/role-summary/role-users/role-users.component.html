@@ -1,52 +1,52 @@
-<ng-container *ngIf="!loading; else loadingTmpl">
-  <ng-container *ngIf="!empty; else emptyTmpl">
-    <!-- Table container -->
-    <div class="overflow-x-hidden shadow-2lg">
-      <!-- Table scroll container -->
-      <div class="overflow-x-auto">
-        <table cdk-table uiTableWrapper [dataSource]="users">
-          <ng-container cdkColumnDef="name">
-            <th uiCellHeader *cdkHeaderCellDef scope="col">
-              <span class="headerTitle">
-                {{ 'common.name' | translate }}
-              </span>
-            </th>
-            <td uiCell *cdkCellDef="let element" class="text-gray-900">
-              {{ element.name }}
-            </td>
-          </ng-container>
+<ng-container *ngIf="!empty; else emptyTmpl">
+  <!-- Table container -->
+  <div class="overflow-x-hidden shadow-2lg">
+    <!-- Table scroll container -->
+    <div class="overflow-x-auto">
+      <table
+        cdk-table
+        uiTableWrapper
+        [dataSource]="users"
+        [columns]="['common.name', 'models.user.username']"
+        [loading]="loading"
+      >
+        <ng-container cdkColumnDef="name">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            <span class="headerTitle">
+              {{ 'common.name' | translate }}
+            </span>
+          </th>
+          <td uiCell *cdkCellDef="let element" class="text-gray-900">
+            {{ element.name }}
+          </td>
+        </ng-container>
 
-          <ng-container cdkColumnDef="username">
-            <th uiCellHeader *cdkHeaderCellDef scope="col">
-              <span>
-                {{ 'models.user.username' | translate }}
-              </span>
-            </th>
-            <td uiCell *cdkCellDef="let element">{{ element.username }}</td>
-          </ng-container>
+        <ng-container cdkColumnDef="username">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            <span>
+              {{ 'models.user.username' | translate }}
+            </span>
+          </th>
+          <td uiCell *cdkCellDef="let element">{{ element.username }}</td>
+        </ng-container>
 
-          <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-          <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
-        </table>
-      </div>
+        <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+        <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
+      </table>
     </div>
-    <ui-paginator
-      [disabled]="loading || updating"
-      [pageIndex]="pageInfo.pageIndex"
-      [pageSize]="pageInfo.pageSize"
-      [pageSizeOptions]="[10, 25, 50]"
-      [totalItems]="pageInfo.length"
-      [ariaLabel]="'components.users.paginator.ariaLabel' | translate"
-      (pageChange)="onPage($event)"
-    >
-    </ui-paginator>
-  </ng-container>
-  <ng-template #emptyTmpl>
-    <safe-empty [title]="'components.role.summary.users.empty' | translate">
-    </safe-empty>
-  </ng-template>
+  </div>
+  <ui-paginator
+    [disabled]="loading || updating"
+    [pageIndex]="pageInfo.pageIndex"
+    [pageSize]="pageInfo.pageSize"
+    [pageSizeOptions]="[10, 25, 50]"
+    [totalItems]="pageInfo.length"
+    [ariaLabel]="'components.users.paginator.ariaLabel' | translate"
+    (pageChange)="onPage($event)"
+  >
+  </ui-paginator>
 </ng-container>
-<ng-template #loadingTmpl>
-  <safe-skeleton-table [columns]="['common.name', 'models.user.username']">
-  </safe-skeleton-table>
+<ng-template #emptyTmpl>
+  <safe-empty [title]="'components.role.summary.users.empty' | translate">
+  </safe-empty>
 </ng-template>

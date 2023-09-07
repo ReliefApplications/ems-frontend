@@ -14,7 +14,19 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table *ngIf="!loading" cdk-table uiTableWrapper [dataSource]="pullJobs">
+    <table 
+      [loading]="loading"
+      cdk-table
+      uiTableWrapper
+      [dataSource]="pullJobs"
+      [columns]="[
+        'common.name',
+        'common.status',
+        'common.apiConfiguration.one',
+        'components.record.convert.select'
+      ]"
+      [actions]="true"
+    >
       <ng-container cdkColumnDef="name">
         <th uiCellHeader *cdkHeaderCellDef>
           {{ 'common.name' | translate }}
@@ -107,18 +119,6 @@
       <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
       <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
     </table>
-    <!-- Skeleton table when loading -->
-    <safe-skeleton-table
-      *ngIf="loading"
-      [columns]="[
-        'common.name',
-        'common.status',
-        'common.apiConfiguration.one',
-        'components.record.convert.select'
-      ]"
-      [actions]="true"
-    >
-    </safe-skeleton-table>
   </div>
 </div>
 <ui-paginator

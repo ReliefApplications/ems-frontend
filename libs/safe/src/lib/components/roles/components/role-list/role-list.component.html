@@ -1,112 +1,110 @@
-<ng-container *ngIf="!loading; else loadingTmpl">
-  <ng-container *ngIf="roles?.length">
-    <div class="flex gap-8 justify-between flex-col sm:flex-row">
-      <!-- Search text filter -->
-      <div uiFormFieldDirective>
-        <ui-icon icon="search" uiPrefix></ui-icon>
-        <input
-          [ngModel]="searchText"
-          (keyup)="applyFilter('', $event)"
-          type="text"
-          [placeholder]="'common.placeholder.search' | translate"
-        />
-      </div>
-      <div class="flex">
-        <ng-container *ngTemplateOutlet="newRole"></ng-container>
-      </div>
+<ng-container *ngIf="roles?.length">
+  <div class="flex gap-8 justify-between flex-col sm:flex-row">
+    <!-- Search text filter -->
+    <div uiFormFieldDirective>
+      <ui-icon icon="search" uiPrefix></ui-icon>
+      <input
+        [ngModel]="searchText"
+        (keyup)="applyFilter('', $event)"
+        type="text"
+        [placeholder]="'common.placeholder.search' | translate"
+      />
     </div>
-  </ng-container>
-  <!-- Actions -->
-  <ng-template #newRole>
-    <ui-button
-      *ngIf="'create' | able : 'Role'"
-      icon="add"
-      category="secondary"
-      variant="primary"
-      (click)="onAdd()"
-    >
-      {{ 'models.role.create' | translate }}
-    </ui-button>
-  </ng-template>
-  <ng-container *ngIf="roles?.length; else emptyTmpl">
-    <!-- Table container -->
-    <div class="mt-4 overflow-x-hidden shadow-2lg">
-      <!-- Table scroll container -->
-      <div class="overflow-x-auto">
-        <table cdk-table uiTableWrapper [dataSource]="filteredRoles">
-          <ng-container cdkColumnDef="title">
-            <th uiCellHeader *cdkHeaderCellDef scope="col">
-              <span class="headerTitle">
-                {{ 'common.title' | translate }}
-              </span>
-            </th>
-            <td
-              uiCell
-              *cdkCellDef="let element"
-              class="!text-gray-900 !font-medium max-w-[30vw]"
-            >
-              {{ element.title }}
-            </td>
-          </ng-container>
-
-          <ng-container cdkColumnDef="usersCount">
-            <th uiCellHeader *cdkHeaderCellDef scope="col">
-              <span class="headerTitle">
-                {{ 'common.user.few' | translate }}
-              </span>
-            </th>
-            <td uiCell *cdkCellDef="let element">
-              {{ element.users?.totalCount }}
-            </td>
-          </ng-container>
-
-          <ng-container cdkColumnDef="actions" [stickyEnd]="true">
-            <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
-            <td uiCell *cdkCellDef="let element">
-              <ui-button
-                [isIcon]="true"
-                icon="more_vert"
-                [uiMenuTriggerFor]="menu"
-                (click)="$event.stopPropagation()"
-              >
-              </ui-button>
-              <ui-menu #menu>
-                <!-- <button uiMenuItem (click)="onOpen(element)">
-              <ui-icon icon="edit"></ui-icon>
-              {{ 'common.edit' | translate }}
-            </button>
-            <ui-divider class="m-0"></ui-divider> -->
-                <button uiMenuItem (click)="onDelete(element)">
-                  <ui-icon icon="delete" variant="danger"></ui-icon>
-                  {{ 'common.delete' | translate }}
-                </button>
-              </ui-menu>
-            </td>
-          </ng-container>
-
-          <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-          <tr
-            cdk-row
-            *cdkRowDef="let row; columns: displayedColumns"
-            (click)="onOpen(row)"
-            class="cursor-pointer"
-          ></tr>
-        </table>
-      </div>
+    <div class="flex">
+      <ng-container *ngTemplateOutlet="newRole"></ng-container>
     </div>
-  </ng-container>
-  <ng-template #emptyTmpl>
-    <!-- Empty indicator -->
-    <safe-empty
-      [title]="'common.role.none' | translate"
-      [footerTemplate]="newRole"
-    ></safe-empty>
-  </ng-template>
+  </div>
 </ng-container>
-<ng-template #loadingTmpl>
-  <safe-skeleton-table
-    [columns]="['common.title', 'common.user.few']"
-    [actions]="true"
+<!-- Actions -->
+<ng-template #newRole>
+  <ui-button
+    *ngIf="'create' | able : 'Role'"
+    icon="add"
+    category="secondary"
+    variant="primary"
+    (click)="onAdd()"
   >
-  </safe-skeleton-table>
+    {{ 'models.role.create' | translate }}
+  </ui-button>
+</ng-template>
+<ng-container *ngIf="roles?.length; else emptyTmpl">
+  <!-- Table container -->
+  <div class="mt-4 overflow-x-hidden shadow-2lg">
+    <!-- Table scroll container -->
+    <div class="overflow-x-auto">
+      <table
+        [loading]="loading"
+        cdk-table
+        uiTableWrapper
+        [dataSource]="filteredRoles"
+        [columns]="['common.title', 'common.user.few']"
+        [actions]="true"
+      >
+        <ng-container cdkColumnDef="title">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            <span class="headerTitle">
+              {{ 'common.title' | translate }}
+            </span>
+          </th>
+          <td
+            uiCell
+            *cdkCellDef="let element"
+            class="!text-gray-900 !font-medium max-w-[30vw]"
+          >
+            {{ element.title }}
+          </td>
+        </ng-container>
+
+        <ng-container cdkColumnDef="usersCount">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            <span class="headerTitle">
+              {{ 'common.user.few' | translate }}
+            </span>
+          </th>
+          <td uiCell *cdkCellDef="let element">
+            {{ element.users?.totalCount }}
+          </td>
+        </ng-container>
+
+        <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+          <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+          <td uiCell *cdkCellDef="let element">
+            <ui-button
+              [isIcon]="true"
+              icon="more_vert"
+              [uiMenuTriggerFor]="menu"
+              (click)="$event.stopPropagation()"
+            >
+            </ui-button>
+            <ui-menu #menu>
+              <!-- <button uiMenuItem (click)="onOpen(element)">
+            <ui-icon icon="edit"></ui-icon>
+            {{ 'common.edit' | translate }}
+          </button>
+          <ui-divider class="m-0"></ui-divider> -->
+              <button uiMenuItem (click)="onDelete(element)">
+                <ui-icon icon="delete" variant="danger"></ui-icon>
+                {{ 'common.delete' | translate }}
+              </button>
+            </ui-menu>
+          </td>
+        </ng-container>
+
+        <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+        <tr
+          cdk-row
+          *cdkRowDef="let row; columns: displayedColumns"
+          (click)="onOpen(row)"
+          class="cursor-pointer"
+        ></tr>
+      </table>
+    </div>
+  </div>
+</ng-container>
+<ng-template #emptyTmpl>
+  <!-- Empty indicator -->
+  <safe-empty
+    [title]="'common.role.none' | translate"
+    [footerTemplate]="newRole"
+  ></safe-empty>
 </ng-template>
