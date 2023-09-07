@@ -1,4 +1,4 @@
-<div uiFormFieldDirective *ngIf="!useExpression">
+<div uiFormFieldDirective [defaultMargin]="false" *ngIf="!useExpression">
   <label>{{ 'common.value.one' | translate }}</label>
   <div [uiDateWrapper]="calendar">
     <input
@@ -9,7 +9,7 @@
     <ui-date-picker #calendar> </ui-date-picker>
   </div>
 </div>
-<div uiFormFieldDirective *ngIf="useExpression">
+<div uiFormFieldDirective [defaultMargin]="false" *ngIf="useExpression">
   <label>{{ 'common.value.one' | translate }}</label>
   <input
     uiTooltip="YYYY/MM/DD"
