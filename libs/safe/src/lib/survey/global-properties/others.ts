@@ -78,12 +78,12 @@ export const init = (Survey: any, environment: any): void => {
     default: false,
   });
 
-  // Adds a check box to the martrices sections
+  // Adds a dropdowm to the martrices sections
   serializer.addProperty('matrix', {
-    name: 'showHeader:boolean',
+    name: 'test:dropdown',
     category: 'rows',
-    visibleIndex: 4,
-    default: false,
+    choices: ['test1', 'test2'],
+    
   });
 
   // Adds a property to the survey settings to open the form on a specific page using the question value
