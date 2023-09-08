@@ -30,26 +30,19 @@ export class MapSidenavControlsComponent {
 
   /** Opens the layers menu */
   openLayersMenu() {
-    this.openSidenavMenu(true, false);
-  }
-
-  /** Opens the bookmarks menu */
-  openBookmarksMenu() {
-    this.openSidenavMenu(false, true);
+    this.openSidenavMenu(true);
   }
 
   /**
    * Opens the sidenav menu
    *
    * @param layersMenuExpanded true if we start with the layers expanded
-   * @param bookmarksMenuExpanded true if we start with the bookmarks expanded
    */
-  openSidenavMenu(layersMenuExpanded: boolean, bookmarksMenuExpanded: boolean) {
+  openSidenavMenu(layersMenuExpanded: boolean) {
     this.layoutService.setRightSidenav({
       component: SidenavControlsMenuComponent,
       inputs: {
         layersMenuExpanded: layersMenuExpanded,
-        bookmarksMenuExpanded: bookmarksMenuExpanded,
         layersTree: this.layersTree,
         basemaps: this.basemaps,
         mapComponent: this.mapComponent,
