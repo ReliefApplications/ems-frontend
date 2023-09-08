@@ -2,6 +2,9 @@ import {
   ChoicesRestful,
   JsonMetadata,
   QuestionFileModel,
+  SurveyModel,
+  Serializer,
+  ItemValue,
 } from 'survey-angular';
 import { Question } from '../types';
 import * as Survey from 'survey-angular';
@@ -78,13 +81,37 @@ export const init = (Survey: any, environment: any): void => {
     default: false,
   });
 
-  // Adds a dropdowm to the martrices sections
+  // Adds a dropdowm to the martrices sections with all the questions in the form
   serializer.addProperty('matrix', {
     name: 'test:dropdown',
     category: 'rows',
-    choices: ['test1', 'test2'],
-    
+    choices: (form: Survey.Model, choicesCallback: any) => {
+      const forma = form?.survey as SurveyModel;
+      const questions = forma.getAllQuestions();
+      const questionNames = questions.map((question: Question) => {
+        return question.name;
+      });
+      choicesCallback(questionNames);
+    },
   });
+
+  // // Add a button to the matrix dropdowns to copy the rows into in the selected question
+  // serializer.addProperty('matrix', {
+  //   name: 'copyRowsTo:button',
+  //   category: 'rows',
+  //   onClick: (matrix: Survey.MatrixDropdownModel) => {
+  //     const selectedQuestion = matrix.test;
+  //     const rows = matrix.rows;
+  //     const newRows = rows.map((row: ItemValue) => {
+  //       return {
+  //         value: row.value,
+  //         text: row.text,
+  //       };
+  //     });
+  //     selectedQuestion.choices = newRows;
+  //   },
+  // });
+
 
   // Adds a property to the survey settings to open the form on a specific page using the question value
   // of the selected question (the value must be a page name)
