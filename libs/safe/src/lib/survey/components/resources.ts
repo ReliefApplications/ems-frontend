@@ -74,7 +74,7 @@ export const init = (
       data.resource.records?.edges?.map((x: any) => {
         return {
           value: x.node?.id,
-          text: x.node?.data[question.displayField || 'id'],
+          text: `${x.node?.data[question.displayField || 'id']}`,
         };
       }) || []
     );

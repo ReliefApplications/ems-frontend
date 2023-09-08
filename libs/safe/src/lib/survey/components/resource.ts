@@ -90,7 +90,7 @@ export const init = (
         loadedRecords.set(x.node?.id || '', x.node);
         return {
           value: x.node?.id,
-          text: x.node?.data[question.displayField || 'id'],
+          text: `${x.node?.data[question.displayField || 'id']}`,
         };
       }) || []
     );
@@ -514,7 +514,7 @@ export const init = (
         category: 'logic',
       });
 
-      Survey.Serializer.addProperty('resources', {
+      Survey.Serializer.addProperty('resource', {
         name: 'afterRecordDeselection',
         type: 'text',
         category: 'logic',
