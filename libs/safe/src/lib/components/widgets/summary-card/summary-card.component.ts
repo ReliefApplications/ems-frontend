@@ -396,6 +396,7 @@ export class SafeSummaryCardComponent
 
           if (builtQuery) {
             this.filters = layoutQuery.filter;
+            console.log(this.filters);
             this.dataQuery = this.apollo.watchQuery<any>({
               query: builtQuery,
               variables: {

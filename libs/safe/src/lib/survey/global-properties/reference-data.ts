@@ -244,11 +244,26 @@ export const render = (
             filter
           )
           .then((choices) => {
+            console.log(choices);
+            choices.forEach((c: any) => {
+              if (c[0] === '{' && c[c.length - 1] === '}') {
+                
+              }
+              console.log(new ItemValue(c));
+            })
             question.choices = [];
             // this is to avoid that the choices appear on the 'choices' tab
             question.setPropertyValue(
               'visibleChoices',
-              choices.map((choice) => new ItemValue(choice))
+              choices.map((choice :any) => {
+                if (
+                  choice.value[0] === '{' &&
+                  choice.value[choice.value.length - 1] === '}'
+                ) {
+                    choice.value = JSON.parse(choice.value);
+                  }
+                return new ItemValue(choice);
+              })
             );
           });
       } else {

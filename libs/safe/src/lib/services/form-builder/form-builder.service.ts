@@ -56,6 +56,7 @@ export class SafeFormBuilderService {
     Survey.settings.useCachingForChoicesRestful = false;
     Survey.settings.useCachingForChoicesRestfull = false;
     const survey = new Survey.Model(structure);
+    console.log(survey);
     this.formHelpersService.addUserVariables(survey);
     survey.onAfterRenderQuestion.add(
       renderGlobalProperties(this.referenceDataService)
