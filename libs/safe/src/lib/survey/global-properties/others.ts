@@ -81,37 +81,23 @@ export const init = (Survey: any, environment: any): void => {
     default: false,
   });
 
-  // Adds a dropdowm to the martrices sections with all the questions in the form
+  // Adds a dropdowm to the matrices sections with all the questions in the form
   serializer.addProperty('matrix', {
-    name: 'test:dropdown',
+    name: 'copyToOthers:dropdown',
     category: 'rows',
-    choices: (form: Survey.Model, choicesCallback: any) => {
-      const forma = form?.survey as SurveyModel;
-      const questions = forma.getAllQuestions();
-      const questionNames = questions.map((question: Question) => {
-        return question.name;
-      });
-      choicesCallback(questionNames);
+    choices: (preForm: Survey.Model, choicesCallback: any) => {
+      const form = preForm?.survey as SurveyModel;
+      //return like this ['page1.question1', 'page1.question2', 'page2.question1', 'page2.question2']
+      const questions = form.pages
+        .map((page: Survey.PageModel) => {
+          return page.questions.map((question: Survey.Question) => {
+            return `${page.name} > ${question.name}`;
+          });
+        })
+        .flat();
+      choicesCallback(questions);
     },
   });
-
-  // // Add a button to the matrix dropdowns to copy the rows into in the selected question
-  // serializer.addProperty('matrix', {
-  //   name: 'copyRowsTo:button',
-  //   category: 'rows',
-  //   onClick: (matrix: Survey.MatrixDropdownModel) => {
-  //     const selectedQuestion = matrix.test;
-  //     const rows = matrix.rows;
-  //     const newRows = rows.map((row: ItemValue) => {
-  //       return {
-  //         value: row.value,
-  //         text: row.text,
-  //       };
-  //     });
-  //     selectedQuestion.choices = newRows;
-  //   },
-  // });
-
 
   // Adds a property to the survey settings to open the form on a specific page using the question value
   // of the selected question (the value must be a page name)
