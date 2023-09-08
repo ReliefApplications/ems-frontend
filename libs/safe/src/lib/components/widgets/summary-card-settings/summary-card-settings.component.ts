@@ -69,7 +69,7 @@ const createSummaryCardForm = (def: any) => {
     card: createCardForm(get(settings, 'card', null)),
     sortFields: new FormArray([]),
     contextFilters: new FormControl(
-      get(def, 'contextFilters', DEFAULT_CONTEXT_FILTER)
+      get(settings, 'contextFilters', DEFAULT_CONTEXT_FILTER)
     ),
   });
 
