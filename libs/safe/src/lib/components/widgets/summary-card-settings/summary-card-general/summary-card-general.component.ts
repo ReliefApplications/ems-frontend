@@ -13,9 +13,12 @@ import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SummaryCardItemModule } from '../../summary-card/summary-card-item/summary-card-item.module';
 import { SummaryCardFormT } from '../summary-card-settings.component';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { GET_RESOURCES, GetResourcesQueryResponse } from '../graphql/queries';
 import { Aggregation } from '../../../../models/aggregation.model';
-import { Resource } from '../../../../models/resource.model';
+import {
+  Resource,
+  ResourcesQueryResponse,
+} from '../../../../models/resource.model';
+import { GET_RESOURCES_WITH_LAYOUT_COUNT } from '../../../../../graphql/queries/resource-queries';
 import { Layout } from '../../../../models/layout.model';
 import { get } from 'lodash';
 import { SafeGridLayoutService } from '../../../../services/grid-layout/grid-layout.service';
@@ -82,7 +85,7 @@ export class SummaryCardGeneralComponent
   colsNumber = MAX_COL_SPAN;
 
   // === DATA ===
-  public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
 
   /**
    * Changes display when windows size changes.
@@ -114,8 +117,8 @@ export class SummaryCardGeneralComponent
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);
 
-    this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
-      query: GET_RESOURCES,
+    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
+      query: GET_RESOURCES_WITH_LAYOUT_COUNT,
       variables: {
         first: ITEMS_PER_PAGE,
         sortField: 'name',
@@ -162,10 +165,12 @@ export class SummaryCardGeneralComponent
 
   /** Opens modal for layout selection/creation */
   public async addLayout() {
+    if (!this.selectedResource) {
+      return;
+    }
     const { AddLayoutModalComponent } = await import(
       '../../../grid-layout/add-layout-modal/add-layout-modal.component'
     );
-    if (!this.selectedResource) return;
     const dialogRef = this.dialog.open(AddLayoutModalComponent, {
       data: {
         resource: this.selectedResource,

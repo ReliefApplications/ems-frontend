@@ -69,13 +69,7 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
   constructor(private apollo: Apollo, private snackBar: SnackbarService) {}
 
   ngOnInit(): void {
-    this.accessiblePages = this.filteredPages
-      .filter((x) =>
-        get(x, 'permissions.canSee', [])
-          .map((y: any) => y.id)
-          .includes(this.role.id)
-      )
-      .map((x) => x.id as string);
+    this.accessiblePages = this.getAccessibleElementIds(this.filteredPages);
   }
 
   ngOnChanges(): void {
@@ -88,7 +82,19 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
       (x) =>
         x.name?.toLowerCase().includes(this.search) || this.filteredSteps.length
     );
-    this.accessiblePages = this.filteredPages
+    this.accessiblePages = this.getAccessibleElementIds(this.filteredPages);
+  }
+
+  /**
+   *Returns the page ids that can be access by the current role
+   *
+   * @param filteredElements Elements to check if can be access by the current role
+   * @returns ids of the elements that can be access by the current role
+   */
+  private getAccessibleElementIds(
+    filteredElements: Array<Page | Step>
+  ): string[] {
+    return filteredElements
       .filter((x) =>
         get(x, 'permissions.canSee', [])
           .map((y: any) => y.id)
@@ -123,13 +129,9 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
               this.filteredSteps = this.steps.filter((x) =>
                 x.name?.toLowerCase().includes(this.search)
               );
-              this.accessibleSteps = this.filteredSteps
-                .filter((x) =>
-                  get(x, 'permissions.canSee', [])
-                    .map((y: any) => y.id)
-                    .includes(this.role.id)
-                )
-                .map((x) => x.id as string);
+              this.accessibleSteps = this.getAccessibleElementIds(
+                this.filteredSteps
+              );
             }
           },
           error: (err) => {
@@ -170,13 +172,7 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
             this.filteredSteps = this.steps.filter((x) =>
               x.name?.toLowerCase().includes(this.search)
             );
-            this.accessibleSteps = this.steps
-              .filter((x) =>
-                get(x, 'permissions.canSee', [])
-                  .map((y: any) => y.id)
-                  .includes(this.role.id)
-              )
-              .map((x) => x.id as string);
+            this.accessibleSteps = this.getAccessibleElementIds(this.steps);
           }
           this.loading = loading;
         },

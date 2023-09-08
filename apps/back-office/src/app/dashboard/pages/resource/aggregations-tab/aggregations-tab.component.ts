@@ -19,7 +19,7 @@ import {
   GET_RESOURCE_AGGREGATIONS,
 } from './graphql/queries';
 import { takeUntil } from 'rxjs';
-import { UIPageChangeEvent } from '@oort-front/ui';
+import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 
 /**
  * Aggregations tab of resource page
@@ -102,31 +102,16 @@ export class AggregationsTabComponent
    * @param e page event.
    */
   onPage(e: UIPageChangeEvent): void {
-    this.pageInfo.pageIndex = e.pageIndex;
-    // Checks if with new page/size more data needs to be fetched
-    if (
-      ((e.pageIndex > e.previousPageIndex &&
-        e.pageIndex * this.pageInfo.pageSize >=
-          this.cachedAggregations.length) ||
-        e.pageSize > this.pageInfo.pageSize) &&
-      e.totalItems > this.cachedAggregations.length
-    ) {
-      // Sets the new fetch quantity of data needed as the page size
-      // If the fetch is for a new page the page size is used
-      let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is subtracted from the new one
-      if (e.pageSize > this.pageInfo.pageSize) {
-        first -= this.pageInfo.pageSize;
-      }
-      this.pageInfo.pageSize = first;
-      this.fetchAggregations();
+    const cachedData = handleTablePageEvent(
+      e,
+      this.pageInfo,
+      this.cachedAggregations
+    );
+    if (cachedData) {
+      this.aggregations = cachedData;
     } else {
-      this.aggregations = this.cachedAggregations.slice(
-        e.pageSize * this.pageInfo.pageIndex,
-        e.pageSize * (this.pageInfo.pageIndex + 1)
-      );
+      this.fetchAggregations();
     }
-    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**

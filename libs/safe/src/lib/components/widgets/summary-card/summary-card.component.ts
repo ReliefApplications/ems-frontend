@@ -335,49 +335,41 @@ export class SafeSummaryCardComponent
       })
     );
 
-    this.gridLayoutService
-      .getLayouts(card.resource, { ids: [card.layout], first: 1 })
-      .then((res) => {
-        const layouts = res.edges.map((edge) => edge.node);
-        if (layouts.length > 0) {
-          this.layout = layouts[0];
-          const layoutQuery = this.layout.query;
-          const builtQuery = this.queryBuilder.buildQuery({
-            query: layoutQuery,
-          });
-          const layoutFields = layoutQuery.fields;
-          this.fields = get(metaRes, 'data.resource.metadata', []).map(
-            (f: any) => {
-              const layoutField = layoutFields.find(
-                (lf: any) => lf.name === f.name
-              );
-              if (layoutField) {
-                return { ...layoutField, ...f };
-              }
-              return f;
-            }
-          );
-
-          if (builtQuery) {
-            this.filters = layoutQuery.filter;
-            this.dataQuery = this.apollo.watchQuery<any>({
-              query: builtQuery,
-              variables: {
-                first: DEFAULT_PAGE_SIZE,
-                filter: this.filters,
-                sortField: get(layoutQuery, 'sort.field', null),
-                sortOrder: get(layoutQuery, 'sort.order', ''),
-                styles: layoutQuery.style || null,
-              },
-              fetchPolicy: 'network-only',
-              nextFetchPolicy: 'cache-first',
-            });
-            this.dataQuery.valueChanges
-              .pipe(takeUntil(this.destroy$))
-              .subscribe(this.updateCards.bind(this));
-          }
-        }
+    const layouts = await this.getLayouts(card);
+    if (layouts.length > 0) {
+      this.layout = layouts[0];
+      const layoutQuery = this.layout.query;
+      const builtQuery = this.queryBuilder.buildQuery({
+        query: layoutQuery,
       });
+      const layoutFields = layoutQuery.fields;
+      this.fields = get(metaRes, 'data.resource.metadata', []).map((f: any) => {
+        const layoutField = layoutFields.find((lf: any) => lf.name === f.name);
+        if (layoutField) {
+          return { ...layoutField, ...f };
+        }
+        return f;
+      });
+
+      if (builtQuery) {
+        this.filters = layoutQuery.filter;
+        this.dataQuery = this.apollo.watchQuery<any>({
+          query: builtQuery,
+          variables: {
+            first: DEFAULT_PAGE_SIZE,
+            filter: this.filters,
+            sortField: get(layoutQuery, 'sort.field', null),
+            sortOrder: get(layoutQuery, 'sort.order', ''),
+            styles: layoutQuery.style || null,
+          },
+          fetchPolicy: 'network-only',
+          nextFetchPolicy: 'cache-first',
+        });
+        this.dataQuery.valueChanges
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(this.updateCards.bind(this));
+      }
+    }
   }
 
   /**
@@ -385,35 +377,46 @@ export class SafeSummaryCardComponent
    */
   private async setupGridSettings() {
     const card = this.settings.card;
-    if (!card || !card.resource || !card.layout) return;
+    if (!card || !card.resource || !card.layout) {
+      return;
+    }
 
-    this.gridLayoutService
-      .getLayouts(card.resource, { ids: [card.layout], first: 1 })
-      .then((res) => {
-        const layouts = res.edges.map((edge) => edge.node);
-        if (layouts.length > 0) {
-          const layout = layouts[0] || null;
-          this.gridSettings = {
-            ...{ template: get(this.settings, 'template', null) }, //TO MODIFY
-            ...{ resource: card.resource },
-            ...{ layouts: layout.id },
-            ...{
-              actions: {
-                //default actions, might need to modify later
-                addRecord: false,
-                convert: true,
-                delete: true,
-                export: true,
-                history: true,
-                inlineEdition: true,
-                showDetails: true,
-                update: true,
-              },
-            },
-          };
-        }
-      });
-    return;
+    const layouts = await this.getLayouts(card);
+    if (layouts.length > 0) {
+      const layout = layouts[0] || null;
+      this.gridSettings = {
+        ...{ template: get(this.settings, 'template', null) }, //TO MODIFY
+        ...{ resource: card.resource },
+        ...{ layouts: layout.id },
+        ...{
+          actions: {
+            //default actions, might need to modify later
+            addRecord: false,
+            convert: true,
+            delete: true,
+            export: true,
+            history: true,
+            inlineEdition: true,
+            showDetails: true,
+            update: true,
+          },
+        },
+      };
+    }
+  }
+
+  /**
+   * Get layouts from the given card
+   *
+   * @param card from where to get layouts
+   * @returns related layout nodes from the given card
+   */
+  private async getLayouts(card: any) {
+    const layouts = await this.gridLayoutService.getLayouts(card.resource, {
+      ids: [card.layout],
+      first: 1,
+    });
+    return layouts.edges.map((edge) => edge.node);
   }
 
   /**

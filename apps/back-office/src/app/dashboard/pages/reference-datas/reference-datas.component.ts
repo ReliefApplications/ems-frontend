@@ -24,7 +24,11 @@ import {
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
 import { Dialog } from '@angular/cdk/dialog';
-import { TableSort, UIPageChangeEvent } from '@oort-front/ui';
+import {
+  TableSort,
+  UIPageChangeEvent,
+  handleTablePageEvent,
+} from '@oort-front/ui';
 import { ApolloQueryResult } from '@apollo/client';
 import { SnackbarService } from '@oort-front/ui';
 
@@ -125,46 +129,16 @@ export class ReferenceDatasComponent
    * @param e page event.
    */
   onPage(e: UIPageChangeEvent): void {
-    this.pageInfo.pageIndex = e.pageIndex;
-    // Checks if with new page/size more data needs to be fetched
-    if (
-      ((e.pageIndex > e.previousPageIndex &&
-        e.pageIndex * this.pageInfo.pageSize >=
-          this.cachedReferenceDatas.length) ||
-        e.pageSize > this.pageInfo.pageSize) &&
-      e.totalItems > this.cachedReferenceDatas.length
-    ) {
-      // Sets the new fetch quantity of data needed as the page size
-      // If the fetch is for a new page the page size is used
-      let neededSize = e.pageSize;
-      // If the fetch is for a new page size, the old page size is substracted from the new one
-      if (e.pageSize > this.pageInfo.pageSize) {
-        neededSize -= this.pageInfo.pageSize;
-      }
-      this.loading = true;
-      const variables = {
-        first: neededSize,
-        afterCursor: this.pageInfo.endCursor,
-      };
-      const cachedValues: GetReferenceDatasQueryResponse = getCachedValues(
-        this.apollo.client,
-        GET_REFERENCE_DATAS,
-        variables
-      );
-      if (cachedValues) {
-        this.updateValues(cachedValues, false);
-      } else {
-        this.referenceDatasQuery
-          .fetchMore({ variables })
-          .then((results) => this.updateValues(results.data, results.loading));
-      }
+    const cachedData = handleTablePageEvent(
+      e,
+      this.pageInfo,
+      this.cachedReferenceDatas
+    );
+    if (cachedData) {
+      this.dataSource = cachedData;
     } else {
-      this.dataSource = this.cachedReferenceDatas.slice(
-        e.pageSize * this.pageInfo.pageIndex,
-        e.pageSize * (this.pageInfo.pageIndex + 1)
-      );
+      this.fetchReferenceDatas();
     }
-    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**
@@ -341,6 +315,7 @@ export class ReferenceDatasComponent
    * @param refetch erase previous query results
    */
   private fetchReferenceDatas(refetch?: boolean): void {
+    this.loading = true;
     const variables = {
       first: this.pageInfo.pageSize,
       afterCursor: refetch ? null : this.pageInfo.endCursor,

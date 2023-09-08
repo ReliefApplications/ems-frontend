@@ -64,6 +64,13 @@ export class SafeAddUserComponent
   }
 
   ngOnInit(): void {
+    const getUsersByEmail = this.form.controls.email.valueChanges.pipe(
+      startWith(''),
+      map((value) => (typeof value === 'string' ? value : '')),
+      map((x) => this.filterUsers(x)),
+      takeUntil(this.destroy$)
+    );
+
     this.form = this.formBuilder.group({
       email: ['', Validators.minLength(1)],
       role: ['', Validators.required],
@@ -78,11 +85,8 @@ export class SafeAddUserComponent
         ),
       }),
     });
-    this.filteredUsers = this.form.controls.email.valueChanges.pipe(
-      startWith(''),
-      map((value) => (typeof value === 'string' ? value : '')),
-      map((x) => this.filterUsers(x))
-    );
+
+    this.filteredUsers = getUsersByEmail;
 
     this.apollo
       .query<GetUsersQueryResponse>({
@@ -94,11 +98,7 @@ export class SafeAddUserComponent
         this.users = data.users.filter(
           (x) => !flatInvitedUsers.includes(x.username)
         );
-        this.filteredUsers = this.form.controls.email.valueChanges.pipe(
-          startWith(''),
-          map((value) => (typeof value === 'string' ? value : '')),
-          map((x) => this.filterUsers(x))
-        );
+        this.filteredUsers = getUsersByEmail;
       });
   }
 

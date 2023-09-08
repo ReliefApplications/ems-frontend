@@ -12,6 +12,7 @@ import {
   getWithExpiry,
   setWithExpiry,
 } from '../../utils/cache-with-expiry';
+import { flatDeep } from '../../utils/array-filter';
 
 /** List of disabled fields */
 const DISABLED_FIELDS = [
@@ -22,17 +23,6 @@ const DISABLED_FIELDS = [
   'form',
   'lastUpdateForm',
 ];
-/**
- * Transforms a list with nested lists into a flat list
- *
- * @param arr The list to flat
- * @returns The flated list
- */
-const flatDeep = (arr: any[]): any[] =>
-  arr.reduce(
-    (acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val) : val),
-    []
-  );
 
 /**
  * Shared grid service for the dashboards.

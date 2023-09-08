@@ -10,6 +10,7 @@ import {
 } from '../../../services/query-builder/query-builder.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { flatDeep } from '../../../utils/array-filter';
 
 // Declares L to be able to use Leaflet from CDN
 // Leaflet
@@ -159,19 +160,6 @@ export class SafeMapComponent
   }
 
   /**
-   * Flatten an array
-   *
-   * @param {any[]} arr - any[] - the array to be flattened
-   * @returns the array with all the nested arrays flattened.
-   */
-  private flatDeep(arr: any[]): any[] {
-    return arr.reduce(
-      (acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val),
-      []
-    );
-  }
-
-  /**
    * Get list of query fields from settings
    *
    * @param fields list of fields
@@ -182,7 +170,7 @@ export class SafeMapComponent
     fields: any[],
     prefix?: string
   ): { name: string; label: string }[] {
-    return this.flatDeep(
+    return flatDeep(
       fields
         .filter((x) => x.kind !== 'LIST')
         .map((f) => {

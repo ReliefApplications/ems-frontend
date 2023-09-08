@@ -1,11 +1,8 @@
 import { gql } from 'apollo-angular';
-import { Channel } from '../../../../models/channel.model';
-import { Form } from '../../../../models/form.model';
-import { Resource } from '../../../../models/resource.model';
 
 // === GET CHANNELS ===
 
-/** Graphql request for getting channels (optionnally by an application id) */
+/** Graphql request for getting channels (optionally by an application id) */
 export const GET_CHANNELS = gql`
   query getChannels($application: ID) {
     channels(application: $application) {
@@ -18,11 +15,6 @@ export const GET_CHANNELS = gql`
     }
   }
 `;
-
-/** Model for GetChannelsQueryResponse object */
-export interface GetChannelsQueryResponse {
-  channels: Channel[];
-}
 
 // === GET META FIELDS OF A GRID ===
 
@@ -118,16 +110,6 @@ export const GET_GRID_RESOURCE_META = gql`
     }
   }
 `;
-
-/** Model for GetFormByIdQueryResponse object */
-export interface GetFormByIdQueryResponse {
-  form: Form;
-}
-
-/** Model for GetResourceByIdQueryResponse object */
-export interface GetResourceByIdQueryResponse {
-  resource: Resource;
-}
 
 // === GET QUERY TYPES ===
 
@@ -248,53 +230,3 @@ export const GET_QUERY_TYPES = gql`
     }
   }
 `;
-
-// === GET RESOURCES ===
-/** Graphql query for getting multiple resources with a cursor */
-export const GET_RESOURCES = gql`
-  query GetResources(
-    $first: Int
-    $afterCursor: ID
-    $sortField: String
-    $filter: JSON
-  ) {
-    resources(
-      first: $first
-      afterCursor: $afterCursor
-      sortField: $sortField
-      filter: $filter
-    ) {
-      edges {
-        node {
-          id
-          name
-          forms {
-            id
-            name
-          }
-        }
-        cursor
-      }
-      totalCount
-      pageInfo {
-        hasNextPage
-        endCursor
-      }
-    }
-  }
-`;
-
-/** Model for GetResourcesQueryResponse object */
-export interface GetResourcesQueryResponse {
-  resources: {
-    edges: {
-      node: Resource;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-    totalCount: number;
-  };
-}

@@ -24,7 +24,11 @@ import {
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
-import { TableSort, UIPageChangeEvent } from '@oort-front/ui';
+import {
+  TableSort,
+  UIPageChangeEvent,
+  handleTablePageEvent,
+} from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
 
 /** Default items per page for pagination. */
@@ -117,51 +121,17 @@ export class ApiConfigurationsComponent
    * @param e page event.
    */
   onPage(e: UIPageChangeEvent): void {
-    this.pageInfo.pageIndex = e.pageIndex;
-    // Checks if with new page/size more data needs to be fetched
-    if (
-      ((e.pageIndex > e.previousPageIndex &&
-        e.pageIndex * this.pageInfo.pageSize >=
-          this.cachedApiConfigurations.length) ||
-        e.pageSize > this.pageInfo.pageSize) &&
-      e.totalItems > this.cachedApiConfigurations.length
-    ) {
-      // Sets the new fetch quantity of data needed as the page size
-      // If the fetch is for a new page the page size is used
-      let neededSize = e.pageSize;
-      // If the fetch is for a new page size, the old page size is subtracted from the new one
-      if (e.pageSize > this.pageInfo.pageSize) {
-        neededSize -= this.pageInfo.pageSize;
-      }
-      this.loading = true;
-      const variables = {
-        first: neededSize,
-        afterCursor: this.pageInfo.endCursor,
-      };
-      const cachedValues: GetApiConfigurationsQueryResponse = getCachedValues(
-        this.apollo.client,
-        GET_API_CONFIGURATIONS,
-        variables
-      );
-      if (cachedValues) {
-        this.updateValues(cachedValues, false);
-      } else {
-        this.apiConfigurationsQuery
-          .fetchMore({ variables })
-          .then(
-            (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
-              this.updateValues(results.data, results.loading);
-            }
-          );
-      }
-    } else {
-      this.dataSource = this.cachedApiConfigurations.slice(
-        e.pageSize * this.pageInfo.pageIndex,
-        e.pageSize * (this.pageInfo.pageIndex + 1)
-      );
+    const cachedData = handleTablePageEvent(
+      e,
+      this.pageInfo,
+      this.cachedApiConfigurations
+    );
+    if (cachedData) {
+      this.dataSource = cachedData;
       this.filteredDataSources = this.dataSource;
+    } else {
+      this.fetchApiConfigurations();
     }
-    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**
@@ -371,6 +341,7 @@ export class ApiConfigurationsComponent
    * @param refetch erase previous query results
    */
   private fetchApiConfigurations(refetch?: boolean): void {
+    this.loading = true;
     const variables = {
       first: this.pageInfo.pageSize,
       afterCursor: refetch ? null : this.pageInfo.endCursor,

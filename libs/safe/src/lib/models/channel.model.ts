@@ -17,3 +17,8 @@ export interface ChannelDisplay extends Channel {
     roles: Role[];
   }[];
 }
+
+/** Model for GetChannelsQueryResponse object */
+export interface ChannelsQueryResponse {
+  channels: Channel[];
+}

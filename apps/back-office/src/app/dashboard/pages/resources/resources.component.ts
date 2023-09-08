@@ -22,7 +22,11 @@ import {
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
 import { Dialog } from '@angular/cdk/dialog';
-import { TableSort, UIPageChangeEvent } from '@oort-front/ui';
+import {
+  TableSort,
+  UIPageChangeEvent,
+  handleTablePageEvent,
+} from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
 
@@ -114,31 +118,16 @@ export class ResourcesComponent
    * @param e page event.
    */
   onPage(e: UIPageChangeEvent): void {
-    this.pageInfo.pageIndex = e.pageIndex;
-    // Checks if with new page/size more data needs to be fetched
-    if (
-      ((e.pageIndex > e.previousPageIndex &&
-        e.pageIndex * this.pageInfo.pageSize >= this.cachedResources.length) ||
-        e.pageSize > this.pageInfo.pageSize) &&
-      e.totalItems > this.cachedResources.length
-    ) {
-      // Sets the new fetch quantity of data needed as the page size
-      // If the fetch is for a new page the page size is used
-      let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is subtracted from the new one
-      if (e.pageSize > this.pageInfo.pageSize) {
-        first -= this.pageInfo.pageSize;
-      }
-      this.pageInfo.pageSize = first;
-      this.loading = true;
-      this.fetchResources();
+    const cachedData = handleTablePageEvent(
+      e,
+      this.pageInfo,
+      this.cachedResources
+    );
+    if (cachedData) {
+      this.resources = cachedData;
     } else {
-      this.resources = this.cachedResources.slice(
-        e.pageSize * this.pageInfo.pageIndex,
-        e.pageSize * (this.pageInfo.pageIndex + 1)
-      );
+      this.fetchResources();
     }
-    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**
