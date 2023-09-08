@@ -3,8 +3,6 @@ import {
   JsonMetadata,
   QuestionFileModel,
   SurveyModel,
-  Serializer,
-  ItemValue,
 } from 'survey-angular';
 import { Question } from '../types';
 import * as Survey from 'survey-angular';
@@ -87,14 +85,17 @@ export const init = (Survey: any, environment: any): void => {
     category: 'rows',
     choices: (preForm: Survey.Model, choicesCallback: any) => {
       const form = preForm?.survey as SurveyModel;
-      //return like this ['page1.question1', 'page1.question2', 'page2.question1', 'page2.question2']
+      //return the page and question if type is matrix
       const questions = form.pages
         .map((page: Survey.PageModel) => {
-          return page.questions.map((question: Survey.Question) => {
-            return `${page.name} > ${question.name}`;
-          });
+          return page.questions.filter(
+            (question: Survey.Question) => question.getType() === 'matrix'
+          );
         })
-        .flat();
+        .flat()
+        .map((question: Survey.Question) => {
+          return `${question.page.name} > ${question.name}`;
+        });
       choicesCallback(questions);
     },
   });
