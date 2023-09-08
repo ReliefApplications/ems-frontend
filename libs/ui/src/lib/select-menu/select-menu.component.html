@@ -17,7 +17,12 @@
   </ng-container>
   <div class="default flex-1">
     <ng-container *ngIf="!customTemplate">
-      <span class="block truncate text-sm">{{ displayTrigger }}</span>
+      <ng-container *ngIf="!displayTrigger">
+        <span class="block truncate text-sm text-neutral-400">{{ placeholder }}</span>
+      </ng-container>
+      <ng-container *ngIf="displayTrigger || !placeholder">
+        <span class="block truncate text-sm">{{ displayTrigger }}</span>
+      </ng-container>
     </ng-container>
   </div>
 

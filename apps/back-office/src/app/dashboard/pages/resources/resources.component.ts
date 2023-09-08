@@ -130,7 +130,6 @@ export class ResourcesComponent
         first -= this.pageInfo.pageSize;
       }
       this.pageInfo.pageSize = first;
-      this.loading = true;
       this.fetchResources();
     } else {
       this.resources = this.cachedResources.slice(

@@ -14,6 +14,7 @@ import {
   IconModule,
   TabsModule,
   SelectMenuModule,
+  AlertModule,
 } from '@oort-front/ui';
 
 /**
@@ -39,6 +40,7 @@ import {
     IconModule,
     SelectMenuModule,
     TabsModule,
+    AlertModule,
   ],
   exports: [ButtonConfigComponent],
 })

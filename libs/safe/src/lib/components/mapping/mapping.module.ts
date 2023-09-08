@@ -2,13 +2,14 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeMappingComponent } from './mapping.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { IconModule } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MenuModule,
   ButtonModule,
   TableModule,
   DialogModule,
+  DividerModule,
+  IconModule,
 } from '@oort-front/ui';
 
 /**
@@ -26,6 +27,7 @@ import {
     DialogModule,
     ButtonModule,
     TableModule,
+    DividerModule,
   ],
   exports: [SafeMappingComponent],
 })

@@ -4,6 +4,7 @@ import {
   BaseFilterCellComponent,
   FilterService,
 } from '@progress/kendo-angular-grid';
+import { isEmpty, isNil } from 'lodash';
 
 /**
  * Safe-array-filter component
@@ -32,6 +33,7 @@ export class SafeArrayFilterComponent
   /** @returns empty default item */
   public get defaultItem(): any {
     return {
+      // todo: translate
       [this.textField]: 'Select item...',
       [this.valueField]: null,
     };
@@ -112,14 +114,15 @@ export class SafeArrayFilterComponent
   }
 
   /**
-   * Updates the filter on item selection
+   * Update the filter on item selection.
+   * Remove filter if no option selected.
    *
    * @param value new filter value
    */
   public onChange(value: any): void {
     this.applyFilter(
-      value === null
-        ? this.removeFilter(this.valueField)
+      isNil(value) || isEmpty(value)
+        ? this.removeFilter(this.field)
         : this.updateFilter({
             field: this.field,
             operator: this.selectedOperator,

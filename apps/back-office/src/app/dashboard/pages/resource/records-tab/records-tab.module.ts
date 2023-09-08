@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RecordsTabRoutingModule } from './records-tab-routing.module';
 import { RecordsTabComponent } from './records-tab.component';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { IconModule } from '@oort-front/ui';
+import { DividerModule, IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeSkeletonTableModule, SafeEmptyModule } from '@oort-front/safe';
 import { UploadMenuModule } from '../../../../components/upload-menu/upload-menu.module';
@@ -34,6 +34,7 @@ import {
     SafeEmptyModule,
     ButtonModule,
     TableModule,
+    DividerModule,
   ],
 })
 export class RecordsTabModule {}

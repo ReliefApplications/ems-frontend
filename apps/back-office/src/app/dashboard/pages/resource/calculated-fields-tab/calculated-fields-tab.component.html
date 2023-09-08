@@ -22,7 +22,9 @@
           <th uiCellHeader *cdkHeaderCellDef scope="col">
             {{ 'models.form.field.name' | translate }}
           </th>
-          <td uiCell *cdkCellDef="let element">{{ element.name }}</td>
+          <td uiCell *cdkCellDef="let element" class="max-w-[30vw]">
+            {{ element.name }}
+          </td>
         </ng-container>
 
         <ng-container cdkColumnDef="createdAt">
@@ -50,6 +52,7 @@
                 <ui-icon icon="edit" variant="grey"></ui-icon>
                 {{ 'common.edit' | translate }}
               </button>
+              <ui-divider class="py-1"></ui-divider>
               <button uiMenuItem (click)="onDeleteCalculatedField(element)">
                 <ui-icon icon="delete" variant="danger"></ui-icon>
                 {{ 'common.delete' | translate }}
