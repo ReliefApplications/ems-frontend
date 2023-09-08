@@ -7,11 +7,20 @@
     margin: 0;
   }
 
+  div:has(> #tabs) {
+    display: flex;
+    flex-direction: column;
+  }
+
   /** Override tab list to make it sticky so content is scrollable **/
   #tabs {
     position: sticky;
     top: 0;
     z-index: 1;
     background-color: white;
+  }
+
+  #tabs + div {
+    overflow-y: scroll;
   }
 }
