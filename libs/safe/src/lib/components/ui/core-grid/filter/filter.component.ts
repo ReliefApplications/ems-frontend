@@ -7,14 +7,14 @@ import {
 import { isEmpty, isNil } from 'lodash';
 
 /**
- * Safe-array-filter component
+ * Safe-grid-filter component
  */
 @Component({
-  selector: 'safe-array-filter',
-  templateUrl: './array-filter.component.html',
-  styleUrls: ['./array-filter.component.scss'],
+  selector: 'safe-grid-filter',
+  templateUrl: './filter.component.html',
+  styleUrls: ['./filter.component.scss'],
 })
-export class SafeArrayFilterComponent
+export class SafeGridFilterComponent
   extends BaseFilterCellComponent
   implements OnInit
 {
@@ -29,6 +29,7 @@ export class SafeArrayFilterComponent
   @Input() public data: any[] = [];
   @Input() public textField = '';
   @Input() public valueField = '';
+  @Input() isNotArray = false;
 
   /** @returns empty default item */
   public get defaultItem(): any {
@@ -40,36 +41,53 @@ export class SafeArrayFilterComponent
   }
 
   public choices: any[] = [];
-  public op: any[] = [
+  public op: any[] = [];
+
+  private operatorsTranslations: { [key: string]: any } = {
+    eq: () => this.translate.instant('kendo.grid.filterEqOperator'),
+    neq: () => this.translate.instant('kendo.grid.filterNotEqOperator'),
+    contains: () => this.translate.instant('kendo.grid.filterContainsOperator'),
+    doesnotcontain: () =>
+      this.translate.instant('kendo.grid.filterNotContainsOperator'),
+    isempty: () => this.translate.instant('kendo.grid.filterIsEmptyOperator'),
+    isnotempty: () =>
+      this.translate.instant('kendo.grid.filterIsNotEmptyOperator'),
+  } as const;
+
+  mainOperators: any[] = [
     {
-      text: this.translate.instant('kendo.grid.filterEqOperator'),
+      text: '',
       value: 'eq',
     },
     {
-      text: this.translate.instant('kendo.grid.filterNotEqOperator'),
+      text: '',
       value: 'neq',
     },
+  ];
+
+  arrayOperators = [
     {
-      text: this.translate.instant('kendo.grid.filterContainsOperator'),
+      text: '',
       value: 'contains',
     },
     {
-      text: this.translate.instant('kendo.grid.filterNotContainsOperator'),
+      text: '',
       value: 'doesnotcontain',
     },
     {
-      text: this.translate.instant('kendo.grid.filterIsEmptyOperator'),
+      text: '',
       value: 'isempty',
     },
     {
-      text: this.translate.instant('kendo.grid.filterIsNotEmptyOperator'),
+      text: '',
       value: 'isnotempty',
     },
-  ];
-  public selectedOperator = 'contains';
+  ] as const;
+
+  public selectedOperator!: string;
 
   /**
-   * Contructor for safe-array-filter
+   * Constructor for safe-grid-filter
    *
    * @param filterService Filter service
    * @param translate Angular translate service
@@ -82,34 +100,25 @@ export class SafeArrayFilterComponent
   }
 
   ngOnInit(): void {
-    this.choices = this.data.slice();
+    this.selectedOperator = this.isNotArray ? 'eq' : 'contains';
+    this.setOperators();
+    this.choices = (this.data || []).slice();
     this.translate.onLangChange.subscribe(() => {
-      this.op = [
-        {
-          text: this.translate.instant('kendo.grid.filterEqOperator'),
-          value: 'eq',
-        },
-        {
-          text: this.translate.instant('kendo.grid.filterNotEqOperator'),
-          value: 'neq',
-        },
-        {
-          text: this.translate.instant('kendo.grid.filterContainsOperator'),
-          value: 'contains',
-        },
-        {
-          text: this.translate.instant('kendo.grid.filterNotContainsOperator'),
-          value: 'doesnotcontain',
-        },
-        {
-          text: this.translate.instant('kendo.grid.filterIsEmptyOperator'),
-          value: 'isempty',
-        },
-        {
-          text: this.translate.instant('kendo.grid.filterIsNotEmptyOperator'),
-          value: 'isnotempty',
-        },
-      ];
+      this.setOperators();
+    });
+  }
+
+  /**
+   * Set current operators given the filter type and updates the text translations for each of them
+   */
+  private setOperators() {
+    if (!this.isNotArray) {
+      this.op = [...this.mainOperators, ...this.arrayOperators];
+    } else {
+      this.op = [...this.mainOperators];
+    }
+    this.op.forEach((operator) => {
+      operator.text = this.operatorsTranslations[operator.value]();
     });
   }
 
@@ -158,7 +167,7 @@ export class SafeArrayFilterComponent
    * Clears any set filters
    */
   public onClear() {
-    this.selectedOperator = 'contains';
+    this.selectedOperator = this.isNotArray ? 'eq' : 'contains';
     this.filter = {
       filters: this.filter.filters.filter(
         (filter: any) => filter.field !== this.field

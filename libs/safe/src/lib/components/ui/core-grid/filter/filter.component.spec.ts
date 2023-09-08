@@ -1,21 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { FilterService } from '@progress/kendo-angular-grid';
 
-import { SafeDropdownFilterComponent } from './dropdown-filter.component';
+import { SafeGridFilterComponent } from './filter.component';
 
-describe('SafeDropdownFilterComponent', () => {
-  let component: SafeDropdownFilterComponent;
-  let fixture: ComponentFixture<SafeDropdownFilterComponent>;
+describe('SafeGridFilterComponent', () => {
+  let component: SafeGridFilterComponent;
+  let fixture: ComponentFixture<SafeGridFilterComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [FilterService],
-      declarations: [SafeDropdownFilterComponent],
+      declarations: [SafeGridFilterComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SafeDropdownFilterComponent);
+    fixture = TestBed.createComponent(SafeGridFilterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

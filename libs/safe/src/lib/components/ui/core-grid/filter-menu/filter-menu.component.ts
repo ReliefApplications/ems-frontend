@@ -6,25 +6,35 @@ import {
 } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { FilterService } from '@progress/kendo-angular-grid';
+import { takeUntil } from 'rxjs';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/public-api';
 
 /**
- * Array Filter menu, used by grid, when filtering by multi choices question.
+ * Grid filter menu, used by grid when filtering by multi choices question or by dropdown filter menu
  */
 @Component({
-  selector: 'safe-array-filter-menu',
-  templateUrl: './array-filter-menu.component.html',
-  styleUrls: ['./array-filter-menu.component.scss'],
+  selector: 'safe-grid-filter-menu',
+  templateUrl: './filter-menu.component.html',
+  styleUrls: ['./filter-menu.component.scss'],
 })
-export class SafeArrayFilterMenuComponent implements OnInit {
+export class SafeGridFilterMenuComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit
+{
   @Input() public field = '';
   @Input() public filter: any;
   @Input() public data: any[] = [];
-  public choices1: any[] = [];
-  public choices2: any[] = [];
   @Input() public textField = '';
   @Input() public valueField = '';
   @Input() public filterService?: FilterService;
+  @Input() isNotArray = false;
+
+  public choices1: any[] = [];
+  public choices2: any[] = [];
   public form?: UntypedFormGroup;
+
+  private defaultValue!: string | Array<any>;
+  private defaultOperator!: string;
 
   /** @returns default item choice */
   public get defaultItem(): any {
@@ -48,7 +58,7 @@ export class SafeArrayFilterMenuComponent implements OnInit {
       text: this.translate.instant('kendo.grid.filterAndLogic'),
       value: 'and',
     },
-  ];
+  ] as const;
 
   public operators = [
     {
@@ -59,6 +69,9 @@ export class SafeArrayFilterMenuComponent implements OnInit {
       text: this.translate.instant('kendo.grid.filterNotEqOperator'),
       value: 'neq',
     },
+  ];
+
+  arrayOperators = [
     {
       text: this.translate.instant('kendo.grid.filterContainsOperator'),
       value: 'contains',
@@ -75,10 +88,10 @@ export class SafeArrayFilterMenuComponent implements OnInit {
       text: this.translate.instant('kendo.grid.filterIsNotEmptyOperator'),
       value: 'isnotempty',
     },
-  ];
+  ] as const;
 
   /**
-   * Array Filter menu, used by grid, when filtering by multi choices question.
+   * Filter grid menu, used by grid, when filtering by multi choices question or by dropdown filter menu
    *
    * @param fb Angular form builder
    * @param translate Angular translate service
@@ -86,9 +99,16 @@ export class SafeArrayFilterMenuComponent implements OnInit {
   constructor(
     private fb: UntypedFormBuilder,
     private translate: TranslateService
-  ) {}
+  ) {
+    super();
+  }
 
   ngOnInit(): void {
+    this.defaultValue = this.isNotArray ? '' : [];
+    this.defaultOperator = this.isNotArray ? 'eq' : 'contains';
+    if (!this.isNotArray) {
+      this.operators = [...this.operators, ...this.arrayOperators];
+    }
     this.choices1 = (this.data || []).slice();
     this.choices2 = (this.data || []).slice();
     this.form = this.fb.group({
@@ -98,23 +118,27 @@ export class SafeArrayFilterMenuComponent implements OnInit {
           field: this.field,
           operator: this.filter.filters[0]
             ? this.filter.filters[0].operator
-            : 'contains',
+            : this.defaultOperator,
           value: this.fb.control(
-            this.filter.filters[0] ? this.filter.filters[0].value : []
+            this.filter.filters[0]
+              ? this.filter.filters[0].value
+              : this.defaultValue
           ),
         }),
         this.fb.group({
           field: this.field,
           operator: this.filter.filters[1]
             ? this.filter.filters[1].operator
-            : 'contains',
+            : this.defaultOperator,
           value: this.fb.control(
-            this.filter.filters[1] ? this.filter.filters[1].value : []
+            this.filter.filters[1]
+              ? this.filter.filters[1].value
+              : this.defaultValue
           ),
         }),
       ]),
     });
-    this.form.valueChanges.subscribe((value) => {
+    this.form.valueChanges.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       this.filterService?.filter(value);
     });
   }

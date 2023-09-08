@@ -1,21 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
 
-import { SafeArrayFilterMenuComponent } from './array-filter-menu.component';
+import { SafeGridFilterMenuComponent } from './filter-menu.component';
 
-describe('SafeArrayFilterMenuComponent', () => {
-  let component: SafeArrayFilterMenuComponent;
-  let fixture: ComponentFixture<SafeArrayFilterMenuComponent>;
+describe('SafeGridFilterMenuComponent', () => {
+  let component: SafeGridFilterMenuComponent;
+  let fixture: ComponentFixture<SafeGridFilterMenuComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [UntypedFormBuilder],
-      declarations: [SafeArrayFilterMenuComponent],
+      declarations: [SafeGridFilterMenuComponent],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(SafeArrayFilterMenuComponent);
+    fixture = TestBed.createComponent(SafeGridFilterMenuComponent);
     component = fixture.componentInstance;
     component.filter = {
       logic: null,

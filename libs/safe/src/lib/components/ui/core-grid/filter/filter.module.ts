@@ -1,16 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { SafeArrayFilterComponent } from './array-filter.component';
+import { SafeGridFilterComponent } from './filter.component';
 import { GridModule } from '@progress/kendo-angular-grid';
 import { DropDownsModule } from '@progress/kendo-angular-dropdowns';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 
 /**
- * Array filter component module.
+ *  Filter component module.
  */
 @NgModule({
-  declarations: [SafeArrayFilterComponent],
+  declarations: [SafeGridFilterComponent],
   imports: [CommonModule, GridModule, DropDownsModule, ButtonsModule],
-  exports: [SafeArrayFilterComponent],
+  exports: [SafeGridFilterComponent],
 })
-export class SafeArrayFilterModule {}
+export class SafeGridFilterModule {}
