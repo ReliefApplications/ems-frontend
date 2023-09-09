@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LayoutsTabRoutingModule } from './layouts-tab-routing.module';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { IconModule } from '@oort-front/ui';
+import { DividerModule, IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SafeDateModule,
@@ -35,6 +35,7 @@ import {
     SafeEmptyModule,
     ButtonModule,
     TableModule,
+    DividerModule,
   ],
 })
 export class LayoutsTabModule {}

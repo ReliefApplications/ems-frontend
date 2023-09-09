@@ -5,8 +5,18 @@ import { Form } from '@oort-front/safe';
 
 /** Graphql request for getting forms */
 export const GET_FORMS = gql`
-  query GetFormNames($first: Int, $afterCursor: ID, $sortField: String) {
-    forms(first: $first, afterCursor: $afterCursor, sortField: $sortField) {
+  query GetFormNames(
+    $first: Int
+    $afterCursor: ID
+    $sortField: String
+    $filter: JSON
+  ) {
+    forms(
+      first: $first
+      afterCursor: $afterCursor
+      sortField: $sortField
+      filter: $filter
+    ) {
       edges {
         node {
           id

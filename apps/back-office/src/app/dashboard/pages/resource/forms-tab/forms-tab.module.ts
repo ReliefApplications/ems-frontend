@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsTabRoutingModule } from './forms-tab-routing.module';
 import { FormsTabComponent } from './forms-tab.component';
-import { IconModule } from '@oort-front/ui';
+import { DividerModule, IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SafeDateModule, SafeSkeletonTableModule } from '@oort-front/safe';
 import {
@@ -28,6 +28,7 @@ import {
     ButtonModule,
     TableModule,
     ChipModule,
+    DividerModule,
   ],
 })
 export class FormsTabModule {}
