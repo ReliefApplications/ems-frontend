@@ -268,6 +268,7 @@
 		"search": "Recherche",
 		"searchObject": "Rechercher {{name}}",
 		"select": "Sélectionner",
+		"selectStatus": "Sélectionner un statut",
 		"semicolon": "point-virgule",
 		"send": "Envoyer",
 		"separator": "Séparateur",
@@ -514,7 +515,8 @@
 			},
 			"dropdown": {
 				"select": "Notifier sur"
-			}
+			},
+			"selectChannel": "Sélectionnez un canal"
 		},
 		"confirmModal": {
 			"cancel": "Annuler",
@@ -599,6 +601,7 @@
 				"template": {
 					"from": "Depuis le modèle",
 					"placeholder": "Choisir un modèle existant",
+					"selectResource": "Sélectionnez une ressource",
 					"title": "Depuis la ressource"
 				},
 				"tooltip": {
@@ -756,6 +759,7 @@
 				"title": "Supprimer la tâche"
 			},
 			"modal": {
+				"addMappingField": "ajouter un champ de correspondance",
 				"errors": {
 					"schedule": "Entrez une expression cron valide"
 				},
@@ -1329,7 +1333,10 @@
 							"showDetails": "L'utilisateur peut afficher les informations des enregistrements affichés",
 							"update": "L'utilisateur peut mettre à jour les enregistrements affichés"
 						},
-						"buttons": "Les boutons d'action rapides apparaîtront dans le widget et vous permettront de réaliser chacune des actions ci-dessous"
+						"attachToRecord": "Si les enregistrements sélectionnés ne sont joints à aucun enregistrement, l'action sera annulée",
+						"buttons": "Les boutons d'action rapides apparaîtront dans le widget et vous permettront de réaliser chacune des actions ci-dessous",
+						"executionOrder": "Les actions seront exécutées dans l'ordre affiché",
+						"prefillForm": "Si aucun enregistrement n'est créé à cette étape, l'action sera annulée"
 					},
 					"layouts": {
 						"add": {
@@ -1803,7 +1810,8 @@
 	"models": {
 		"apiConfiguration": {
 			"authType": "Type d'authentification",
-			"new": "Nouvelle configuration d'API"
+			"new": "Nouvelle configuration d'API",
+			"selectAuthType": "Sélectionnez le type d'authentification"
 		},
 		"application": {
 			"description": "Description",
@@ -1858,7 +1866,9 @@
 				"origin": "Origine du contexte",
 				"refData": {
 					"element": "Élément"
-				}
+				},
+				"selectDisplayField": "Sélectionnez le champ d'affichage",
+				"selectOrigin": "Sélectionnez la source de données"
 			},
 			"dashboardFilter": "Filtre de tableaux de bord",
 			"deactivateFiltering": "Désactiver le filtre",

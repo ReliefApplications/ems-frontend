@@ -1264,10 +1264,12 @@ export class SafeCoreGridComponent
           .map((x: any) => ({
             name: x.field,
             title: x.title,
-            subFields: x.subFields.map((y: any) => ({
-              name: y.name,
-              title: y.title,
-            })),
+            subFields: x.subFields
+              .filter((y: any) => !y.hidden)
+              .map((y: any) => ({
+                name: y.name,
+                title: y.title,
+              })),
           })),
       }),
       // we export ALL fields of the grid ( including hidden columns )

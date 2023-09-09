@@ -50,7 +50,7 @@ export const updateQueryUniqueValues = <T>(
   currentDataContent: T[],
   uniqueComparatorProperty: string = 'id'
 ): T[] => {
-  if (!currentDataContent) {
+  if (!currentDataContent || !currentDataContent?.length) {
     return previousDataContent;
   }
   let response: T[] = [];
