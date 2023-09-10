@@ -710,7 +710,9 @@ export const init = (
 
         // Listen to value changes
         survey.onValueChanged.add((_, options) => {
-          addRecordToSurveyContext(options.question, options.value);
+          if (question.name === options.name) {
+            addRecordToSurveyContext(options.question, options.value);
+          }
         });
       }
     },
