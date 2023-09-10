@@ -325,14 +325,14 @@ export class SafeFormHelpersService {
    * @param survey Survey instance
    * @param record Record to add to the survey variables
    * @param record.id Record id
-   * @param record.incrementalID Record incremental id
+   * @param record.incrementalId Record incremental id
    */
   public addRecordIDVariable = (
     survey: Survey.SurveyModel,
-    record: { id?: string; incrementalID?: string }
+    record: { id?: string; incrementalId?: string }
   ) => {
     survey.setVariable('record.id', record.id);
-    survey.setVariable('record.incrementalID', record?.incrementalID ?? '');
+    survey.setVariable('record.incrementalID', record?.incrementalId ?? '');
   };
 
   /**

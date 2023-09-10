@@ -857,4 +857,28 @@ export class SafeGridComponent
       field,
     });
   }
+
+  /**
+   * Handle specific URLs
+   * Initially this is being used to add the token to the URL for downloading LIFT reports
+   *
+   * @param url URL to open
+   * @param event Click event
+   */
+  public onOpenURL(url: string, event: MouseEvent) {
+    const LIFT_REPORT_URL =
+      'https://lift-functions.azurewebsites.net/api/report/';
+    const token = localStorage.getItem('idtoken');
+    if (url?.startsWith(LIFT_REPORT_URL)) {
+      event.preventDefault();
+      this.downloadService.getFile(
+        url,
+        'pdf',
+        `Report-${url.split('/').pop()}.pdf`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+    }
+  }
 }
