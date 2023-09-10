@@ -871,10 +871,14 @@ export class SafeGridComponent
     const token = localStorage.getItem('idtoken');
     if (url?.startsWith(LIFT_REPORT_URL)) {
       event.preventDefault();
+      const urlList = url.split('/');
+      // We remove the incrementalID from the URL
+      // It should not be sent to the API, it's used only for the file name
+      const incrementalID = urlList.pop();
       this.downloadService.getFile(
-        url,
+        urlList.join('/'),
         'pdf',
-        `Report-${url.split('/').pop()}.pdf`,
+        `Report-${incrementalID}.pdf`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
