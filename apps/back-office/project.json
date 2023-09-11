@@ -154,6 +154,32 @@
             "includePaths": ["libs/safe/src/lib/style/themes/default"]
           }
         },
+        "azure-sit": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.azure.sit.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ],
+          "baseHref": "/backoffice/",
+          "deployUrl": "/backoffice/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+          }
+        },
         "azure-dev": {
           "fileReplacements": [
             {
@@ -421,6 +447,11 @@
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
+      "options": {
+        "headers": {
+          "Content-Security-Policy-Report-Only": "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; media-src 'self'; form-action 'self'; block-all-mixed-content; base-uri 'self'"
+        }
+      },
       "configurations": {
         "oort-prod": {
           "browserTarget": "back-office:build:oort-prod"

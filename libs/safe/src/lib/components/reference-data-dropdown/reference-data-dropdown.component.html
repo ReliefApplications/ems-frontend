@@ -1,22 +1,10 @@
 <div uiFormFieldDirective class="flex-1">
-  <ui-select-menu
-    #referenceDataSelect
-    [(ngModel)]="referenceData"
-    name="referenceData"
-    (opened)="onOpenSelect()"
-    (selectedOption)="onSelect($event)"
+  <ui-graphql-select
+    [formControl]="control"
+    valueField="id"
+    textField="name"
+    [selectedElements]="[selectedReferenceData]"
+    [query]="referenceDatasQuery"
   >
-    <ui-select-option>{{ 'common.input.none' | translate }}</ui-select-option>
-    <ui-select-option
-      *ngIf="selectedReferenceData"
-      [value]="selectedReferenceData.id"
-      >{{ selectedReferenceData.name }}</ui-select-option
-    >
-    <ui-select-option
-      *ngFor="let referenceData of referenceDatas$ | async"
-      [value]="referenceData.id"
-    >
-      {{ referenceData.name }}
-    </ui-select-option>
-  </ui-select-menu>
+  </ui-graphql-select>
 </div>

@@ -35,14 +35,12 @@ export class SafeMapPopupService {
    *
    * @param featurePoints Feature points to group in the popup
    * @param coordinates Coordinates
-   * @param coordinates.lat Coordinates latitude
-   * @param coordinates.lng Coordinates longitude
    * @param popupInfo Popup info
    * @param layerToBind Layer where to bind the popup, if not a default one would be created
    */
   public setPopUp(
     featurePoints: Feature<any>[],
-    coordinates: { lat: number; lng: number },
+    coordinates: L.LatLng,
     popupInfo: PopupInfo,
     layerToBind?: L.Layer
   ) {
@@ -98,7 +96,7 @@ export class SafeMapPopupService {
    */
   private setPopupComponentAndContent(
     featurePoints: Feature<any>[],
-    coordinates: { lat: number; lng: number },
+    coordinates: L.LatLng,
     popupInfo: PopupInfo
   ): { instance: ComponentRef<SafeMapPopupComponent>; popup: L.Popup } {
     // create div element to render the SafeMapPopupComponent content
@@ -106,6 +104,7 @@ export class SafeMapPopupService {
     div.setAttribute('class', 'safe-border-radius-inherit');
 
     const popupComponent = this.initializeSafeMapPopupComponent(
+      coordinates,
       featurePoints,
       div,
       popupInfo
@@ -139,24 +138,23 @@ export class SafeMapPopupService {
     // listen to popup zoom to event
     popupComponent.instance.zoomTo
       .pipe(takeUntil(popupComponent.instance.destroy$))
-      .subscribe((event: { coordinates: number[] }) => {
+      .subscribe((event: L.LatLng) => {
         popup.remove();
-        this.map.setView(
-          L.latLng(event.coordinates[1], event.coordinates[0]),
-          10
-        );
+        this.map.setView(L.latLng(event), 10);
       });
   }
 
   /**
    * Initialize content and returns an instance of SafeMapPopupComponent
    *
+   * @param coordinates coordinates of the point to open popup from ( center of feature or point )
    * @param featurePoints featurePoints
    * @param containerElement containerElement
    * @param popupInfo Popup info
    * @returns SafeMapPopupComponent instance
    */
   public initializeSafeMapPopupComponent(
+    coordinates: L.LatLng,
     featurePoints: any[],
     containerElement: HTMLElement,
     popupInfo: PopupInfo
@@ -168,15 +166,17 @@ export class SafeMapPopupService {
     );
     const instance: SafeMapPopupComponent = popupComponent.instance;
 
-    // set the points
-    instance.points = featurePoints;
+    // set the component inputs
+    instance.feature = featurePoints;
+    instance.coordinates = coordinates;
 
+    // Bind zoom
     instance.currZoom = this.map.getZoom();
     this.map.on('zoomend', (zoom) => {
       instance.currZoom = zoom.target.getZoom();
     });
 
-    //Use the first feature point as model to generate the popup template for the rest of features
+    // Use the first feature point as model to generate the popup template for the rest of features
     instance.template = this.generatePopupContentTemplate(
       featurePoints[0],
       popupInfo
@@ -197,18 +197,18 @@ export class SafeMapPopupService {
   ): string {
     const title = (title: string, popupTitle?: boolean) =>
       popupTitle
-        ? `<h3 class="break-all !m-0 font-bold text-xl">${title}</h3>`
-        : `<h3 class="break-all !m-0 font-medium">${title}</h3>`;
+        ? `<h3 class="break-words !m-0 font-bold text-xl">${title}</h3>`
+        : `<h3 class="break-words !m-0 font-medium">${title}</h3>`;
     const description = (description: string, popupTitle?: boolean) =>
       popupTitle
-        ? `<p class="break-all !m-0 text-gray-600 font-light text-sm">${description}</p>`
-        : `<p class="break-all !m-0 mb-2 text-gray-600 font-light">${description}</p>`;
+        ? `<p class="break-words !m-0 text-gray-600 font-light text-sm">${description}</p>`
+        : `<p class="break-words !m-0 mb-2 text-gray-600 font-light">${description}</p>`;
 
     // Templates use for the property name and the property value to be displayed
     const propertyNameTemplate = (propertyName: string) =>
-      `<p class="break-all !m-0 capitalize text-gray-400">${propertyName}</p>`;
+      `<p class="break-words !m-0 capitalize text-gray-400">${propertyName}</p>`;
     const propertyValueTemplate = (property: any) =>
-      `<p class="!m-0 break-all">{{${property}}}</p>`;
+      `<p class="!m-0 break-words">{{${property}}}</p>`;
     // Template for the image
     const imageTemplate = (img: string) =>
       `<img src="{{${img}}}" class="flex-1" />`;

@@ -13,7 +13,6 @@ import {
   FormArray,
   FormBuilder,
 } from '@angular/forms';
-
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Aggregation } from '../../../models/aggregation.model';
@@ -24,6 +23,13 @@ import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.co
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
 import { takeUntil } from 'rxjs';
+
+// todo: put in common
+/** Default context filter value. */
+const DEFAULT_CONTEXT_FILTER = `{
+  "logic": "and",
+  "filters": []
+}`;
 
 /**
  * Create a card form
@@ -62,6 +68,9 @@ const createSummaryCardForm = (def: any) => {
     title: new FormControl<string>(get(settings, 'title', '')),
     card: createCardForm(get(settings, 'card', null)),
     sortFields: new FormArray([]),
+    contextFilters: new FormControl(
+      get(settings, 'contextFilters', DEFAULT_CONTEXT_FILTER)
+    ),
   });
 
   const isUsingAggregation = !!get(settings, 'card.aggregation', null);

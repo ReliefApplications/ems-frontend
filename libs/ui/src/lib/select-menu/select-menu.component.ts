@@ -44,7 +44,7 @@ export class SelectMenuComponent
 {
   /** Tells if the select menu should allow multi selection */
   @Input() multiselect = false;
-  /** Tells if the select menu should be disabled */
+  // Tells if the select menu should be disabled
   @Input() disabled = false;
   /** Tells if some styles to the current ul element should be applied */
   @Input() isGraphQlSelect = false;
@@ -169,7 +169,7 @@ export class SelectMenuComponent
    *
    * @param value value set from parent form control
    */
-  writeValue(value: string[]): void {
+  writeValue(value: string | string[] | null): void {
     if (value && value instanceof Array) {
       this.selectedValues = [...value];
     } else if (value) {

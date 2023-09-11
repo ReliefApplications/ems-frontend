@@ -33,7 +33,10 @@
         "configDir": "libs/ui/.storybook",
         "browserTarget": "ui:build-storybook",
         "compodoc": false,
-        "styles": ["libs/ui/src/style/styles.scss"],
+        "styles": [
+          "libs/ui/src/style/styles.scss",
+          "libs/ui/src/style/storybook.scss"
+        ],
         "stylePreprocessorOptions": {
           "includePaths": ["libs/ui/src/style/themes/default"]
         }
@@ -52,7 +55,10 @@
         "configDir": "libs/ui/.storybook",
         "browserTarget": "ui:build-storybook",
         "compodoc": false,
-        "styles": ["libs/ui/src/style/styles.scss"],
+        "styles": [
+          "libs/ui/src/style/styles.scss",
+          "libs/ui/src/style/storybook.scss"
+        ],
         "stylePreprocessorOptions": {
           "includePaths": ["libs/ui/src/style/themes/default"]
         }

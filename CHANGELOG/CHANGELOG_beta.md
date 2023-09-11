@@ -1,3 +1,39 @@
+# [2.1.0-beta.4](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.0-beta.3...v2.1.0-beta.4) (2023-09-05)
+
+
+### Bug Fixes
+
+* basemap would sometimes won't appear on search ([12f1d02](https://github.com/ReliefApplications/oort-frontend/commit/12f1d025c28450129892d4688aae9f3c36cce7f8))
+* custom style would sometimes fail when editing new widgets ([f6aebf5](https://github.com/ReliefApplications/oort-frontend/commit/f6aebf56976e814f2cff7a93d3d9b9bb5abf6cf0))
+* filtering not working in summary cards ([aaa4be1](https://github.com/ReliefApplications/oort-frontend/commit/aaa4be13ac76087124264a8e22c469bfbec365f8))
+* form popups not appearing in fullscreen ([#1791](https://github.com/ReliefApplications/oort-frontend/issues/1791)) ([ab04aab](https://github.com/ReliefApplications/oort-frontend/commit/ab04aab0bd0c079df607fd85abb07d68f503d736))
+* some popups could not appear due to incorrect geojson or event ([2e41dde](https://github.com/ReliefApplications/oort-frontend/commit/2e41ddedb566af604d9458f3fc2095aa89837583))
+
+
+### Features
+
+* Tabs widget ([#1793](https://github.com/ReliefApplications/oort-frontend/issues/1793)) ([16d793c](https://github.com/ReliefApplications/oort-frontend/commit/16d793cf964205275411e53b50be2f0a728f9c3d))
+* Tabs widget ([#1795](https://github.com/ReliefApplications/oort-frontend/issues/1795)) ([cb31387](https://github.com/ReliefApplications/oort-frontend/commit/cb31387022216dfe1a7dd2d96fe00167483fdc1b))
+
+
+### Reverts
+
+* Revert "feat: Tabs widget (#1793)" (#1794) ([64c2a1b](https://github.com/ReliefApplications/oort-frontend/commit/64c2a1b2e29a12f68e9512d3e382b0b721a04516)), closes [#1793](https://github.com/ReliefApplications/oort-frontend/issues/1793) [#1794](https://github.com/ReliefApplications/oort-frontend/issues/1794)
+
+# [2.1.0-beta.3](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.0-beta.2...v2.1.0-beta.3) (2023-08-23)
+
+
+### Bug Fixes
+
+* incorrect loading from cache for reference data fields ([9041ff3](https://github.com/ReliefApplications/oort-frontend/commit/9041ff3831b840c83b83a39158261e8071ac0efa))
+* popup could not appear with polygons ([c6fa211](https://github.com/ReliefApplications/oort-frontend/commit/c6fa211a8192929e65c609116cb316894fb0d7d2))
+
+
+### Features
+
+* add possibility to setup sorting for grids & summary cards ([21648ec](https://github.com/ReliefApplications/oort-frontend/commit/21648ecb2e0d21e5b8fe944330a8d2c6afa32347))
+* allow draft edition of records in grids ([3cea89b](https://github.com/ReliefApplications/oort-frontend/commit/3cea89b26b0094741dedf9499f26410264ff98d6))
+
 # [2.1.0-beta.2](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.0-beta.1...v2.1.0-beta.2) (2023-08-17)
 
 

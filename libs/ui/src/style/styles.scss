@@ -4,6 +4,9 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+// === KENDO THEME ===
+@import 'theme.scss';
+
 .sv_main,
 .svd_container {
   --main-color: #{rgb($primary_500)};
@@ -36,27 +39,18 @@ $ui-palette: (
   700: rgb($primary_700),
   800: rgb($primary_800),
   900: rgb($primary_900),
-  // A100: $primary_A100,
-  // A200: $primary_A200,
-  // A400: $primary_A400,
-  // A700: $primary_A700,
-  contrast:
-    (
-      50: #000000,
-      100: #000000,
-      200: #000000,
-      300: #000000,
-      400: #ffffff,
-      500: #ffffff,
-      600: #ffffff,
-      700: #ffffff,
-      800: #ffffff,
-      900: #ffffff,
-      // A100: #000000,
-      // A200: #000000,
-      // A400: #ffffff,
-      // A700: #ffffff,
-    ),
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+  ),
 );
 
 $ui-palette-accent: (
@@ -182,9 +176,6 @@ body {
   width: 100%;
   height: 100%;
 }
-
-// === KENDO THEME ===
-@import 'theme.scss';
 
 // === TINYMCE ===
 .tox-editor-header *,

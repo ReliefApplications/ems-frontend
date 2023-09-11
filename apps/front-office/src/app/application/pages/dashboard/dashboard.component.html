@@ -11,7 +11,7 @@
       shape: 'rectangle'
     "
   >
-    <ng-container *ngIf="dashboard">
+    <ng-container *ngIf="dashboard && buttonActions.length > 0">
       <div class="flex flex-wrap items-center justify-end mb-6 gap-4">
         <div class="flex items-center gap-1">
           <!-- Button actions -->
@@ -20,7 +20,7 @@
             [dashboard]="dashboard"
           ></safe-button-action>
           <!-- Fullscreen -->
-          <ui-button
+          <!-- <ui-button
             variant="grey"
             [isIcon]="true"
             icon="{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}"
@@ -30,7 +30,7 @@
                 | translate
             "
           >
-          </ui-button>
+          </ui-button> -->
         </div>
       </div>
     </ng-container>

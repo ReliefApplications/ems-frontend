@@ -187,7 +187,9 @@ export const init = (
       );
       const instance: SafeReferenceDataDropdownComponent = dropdown.instance;
       instance.referenceData = question.referenceData || '';
-      instance.choice.subscribe((res) => editor.onChanged(res));
+      instance.control.valueChanges.subscribe((value) =>
+        editor.onChanged(value)
+      );
     },
   };
   SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(

@@ -11,17 +11,6 @@
     >
       {{ 'common.layers' | translate }}
     </button>
-    <button
-      class="rounded-t-md px-4 py-2"
-      [ngClass]="{
-        'bg-primary-900 text-white font-bold': bookmarksMenuExpanded,
-        'bg-slate-200': !bookmarksMenuExpanded
-      }"
-      (click)="openBookmarksMenu()"
-      [disabled]="true"
-    >
-      {{ 'common.bookmarks' | translate }}
-    </button>
     <ui-button
       [isIcon]="true"
       icon="close"
