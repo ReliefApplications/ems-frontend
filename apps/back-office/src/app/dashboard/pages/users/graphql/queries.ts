@@ -28,24 +28,44 @@ export interface GetRolesQueryResponse {
 // === GET USERS ===
 /** Graphql query for getting users */
 export const GET_USERS = gql`
-  {
-    users {
-      id
-      username
-      name
-      roles {
-        id
-        title
-        application {
+  query GetUsers($first: Int, $afterCursor: ID) {
+    users(first: $first, afterCursor: $afterCursor) {
+      edges {
+        node {
           id
+          username
+          name
+          roles {
+            id
+            title
+            application {
+              id
+            }
+          }
+          oid
         }
       }
-      oid
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
 `;
 
 /** Model for GetUsersQueryResponse object */
 export interface GetUsersQueryResponse {
-  users: User[];
+  users: {
+    edges: {
+      node: User;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    };
+    totalCount: number;
+  };
+  // users: User[];
 }

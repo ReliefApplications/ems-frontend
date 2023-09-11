@@ -1,1 +1,10 @@
 <safe-users [loading]="loading" [users]="users" [roles]="roles"></safe-users>
+<ui-paginator
+  [disabled]="loading"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [totalItems]="pageInfo.length"
+  ariaLabel="teste"
+  (pageChange)="onPage($event)"
+>
+</ui-paginator>
