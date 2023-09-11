@@ -19,7 +19,6 @@ export const PAGER_SETTINGS: PagerSettings = {
   info: true,
   pageSizes: [10, 25, 50, 100],
   previousNext: true,
-  responsive: true,
 };
 
 /** Settings for selection */

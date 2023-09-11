@@ -67,38 +67,53 @@ export class DashboardComponent
   extends SafeUnsubscribeComponent
   implements OnInit, OnDestroy
 {
-  public isFullScreen = false;
-  // === DATA ===
-  public id = '';
-  public applicationId?: string;
-  public loading = true;
-  public tiles: any[] = [];
-  public dashboard?: Dashboard;
-  public showFilter!: boolean;
-
-  // === GRID ===
-  private generatedTiles = 0;
-
-  // === DASHBOARD NAME EDITION ===
-  public canUpdate = false;
-  public formActive = false;
-
-  // === STEP CHANGE FOR WORKFLOW ===
+  /** Change step event ( in workflow ) */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
-
-  // === DUP APP SELECTION ===
-  public showAppMenu = false;
-  public applications: Application[] = [];
-
+  /** Widget grid reference */
   @ViewChild(SafeWidgetGridComponent)
   widgetGridComponent!: SafeWidgetGridComponent;
-
-  // === CONTEXT ===
+  /** Is dashboard in fullscreen mode */
+  public isFullScreen = false;
+  /** Dashboard id */
+  public id = '';
+  /** Application id */
+  public applicationId?: string;
+  /** Is dashboard loading */
+  public loading = true;
+  /** List of widgets */
+  public widgets: any[] = [];
+  /** Current dashboard */
+  public dashboard?: Dashboard;
+  /** Show dashboard filter */
+  public showFilter!: boolean;
+  /** User can update dashboard */
+  public canUpdate = false;
+  /** Dashboard name edition is active */
+  public formActive = false;
+  /** Show application menu */
+  public showAppMenu = false;
+  /** List of available applications */
+  public applications: Application[] = [];
+  /** Contextual reference data elements  */
   public refDataElements: any[] = [];
+  /** Contextual records query */
   public recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
+  /** Contextual template id */
   public contextId = new FormControl<string | number | null>(null);
+  /** Field of contextual reference data */
   public refDataValueField = '';
+  /** Contextual record */
   public contextRecord: Record | null = null;
+  /** Configured dashboard quick actions */
+  public buttonActions: ButtonActionT[] = [];
+
+  /** @returns get newest widget id from existing ids */
+  get newestId(): number {
+    const widgets = this.widgets?.slice() || [];
+    return widgets.length === 0
+      ? 0
+      : Math.max(...widgets.map((x: any) => x.id)) + 1;
+  }
 
   /** @returns type of context element */
   get contextType() {
@@ -109,10 +124,6 @@ export class DashboardComponent
     }
   }
 
-  // === BUTTON ACTIONS ===
-  public buttonActions: ButtonActionT[] = [];
-
-  // === ROUTE ===
   /** @returns is dashboard a step or a page */
   get isStep(): boolean {
     return this.router.url.includes('/workflow/');
@@ -136,7 +147,6 @@ export class DashboardComponent
    * @param refDataService Shared reference data service
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
-   * @param translate Translate service
    * @param layoutService Shared layout service
    */
   constructor(
@@ -155,7 +165,6 @@ export class DashboardComponent
     private refDataService: SafeReferenceDataService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
-    private translate: TranslateService,
     private layoutService: SafeLayoutService
   ) {
     super();
@@ -308,13 +317,9 @@ export class DashboardComponent
               : this.dashboard?.step?.canUpdate) || false;
 
           this.dashboardService.openDashboard(this.dashboard);
-          this.tiles = this.dashboard.structure
+          this.widgets = this.dashboard.structure
             ? [...this.dashboard.structure.filter((x: any) => x !== null)]
             : [];
-          this.generatedTiles =
-            this.tiles.length === 0
-              ? 0
-              : Math.max(...this.tiles.map((x) => x && x?.id)) + 1;
           this.applicationId = this.dashboard.page
             ? this.dashboard.page.application?.id
             : this.dashboard.step
@@ -391,14 +396,13 @@ export class DashboardComponent
    * @param e add event
    */
   onAdd(e: any): void {
-    const tile = JSON.parse(JSON.stringify(e));
-    tile.id = this.generatedTiles;
-    this.generatedTiles += 1;
-    this.tiles = [...this.tiles, tile];
+    const widget = JSON.parse(JSON.stringify(e));
+    widget.id = this.newestId;
+    this.widgets = [...this.widgets, widget];
     this.autoSaveChanges();
     // scroll to the element once it is created
     setTimeout(() => {
-      const el = document.getElementById(`widget-${tile.id}`);
+      const el = document.getElementById(`widget-${widget.id}`);
       el?.scrollIntoView({ behavior: 'smooth' });
     });
   }
@@ -410,17 +414,17 @@ export class DashboardComponent
    */
   onEditTile(e: any): void {
     // make sure that we save the default layout.
-    const index = this.tiles.findIndex((v: any) => v.id === e.id);
-    const options = this.tiles[index]?.settings?.defaultLayout
+    const index = this.widgets.findIndex((v: any) => v.id === e.id);
+    const options = this.widgets[index]?.settings?.defaultLayout
       ? {
           ...e.options,
-          defaultLayout: this.tiles[index].settings.defaultLayout,
+          defaultLayout: this.widgets[index].settings.defaultLayout,
         }
       : e.options;
     if (options) {
       switch (e.type) {
         case 'display': {
-          this.tiles = this.tiles.map((x) => {
+          this.widgets = this.widgets.map((x) => {
             if (x.id === e.id) {
               x.defaultCols = options.cols;
               x.defaultRows = options.rows;
@@ -431,7 +435,7 @@ export class DashboardComponent
           break;
         }
         case 'data': {
-          this.tiles = this.tiles.map((x) => {
+          this.widgets = this.widgets.map((x) => {
             if (x.id === e.id) {
               x = { ...x, settings: options };
             }
@@ -453,7 +457,7 @@ export class DashboardComponent
    * @param e delete event
    */
   onDeleteTile(e: any): void {
-    this.tiles = this.tiles.filter((x) => x.id !== e.id);
+    this.widgets = this.widgets.filter((x) => x.id !== e.id);
     this.autoSaveChanges();
   }
 
@@ -480,10 +484,10 @@ export class DashboardComponent
    */
   onMove(e: any): void {
     // Duplicates array, some times the arrays is write protected
-    this.tiles = this.tiles.slice();
-    [this.tiles[e.oldIndex], this.tiles[e.newIndex]] = [
-      this.tiles[e.newIndex],
-      this.tiles[e.oldIndex],
+    this.widgets = this.widgets.slice();
+    [this.widgets[e.oldIndex], this.widgets[e.newIndex]] = [
+      this.widgets[e.newIndex],
+      this.widgets[e.oldIndex],
     ];
     this.autoSaveChanges();
   }
@@ -495,7 +499,7 @@ export class DashboardComponent
         mutation: EDIT_DASHBOARD,
         variables: {
           id: this.id,
-          structure: this.tiles,
+          structure: this.widgets,
         },
       })
       .subscribe({
@@ -523,7 +527,7 @@ export class DashboardComponent
             );
             this.dashboardService.openDashboard({
               ...this.dashboard,
-              structure: this.tiles,
+              structure: this.widgets,
             });
           }
         },
