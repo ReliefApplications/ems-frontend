@@ -100,13 +100,6 @@
               'models.widget.display.searchable' | translate
             }}</ng-container>
           </ui-toggle>
-          <ui-toggle
-            [formControl]="$any(tileForm.get('widgetDisplay.sortable'))"
-          >
-            <ng-container ngProjectAs="label">{{
-              'models.widget.display.sortable' | translate
-            }}</ng-container>
-          </ui-toggle>
           <div>
             <p class="font-medium mt-0 mb-0.5">
               {{
@@ -141,22 +134,20 @@
       </ng-template>
     </ui-tab>
 
-    <ui-tab *ngIf="tileForm?.get('widgetDisplay.sortable')?.value">
-      <ng-container ngProjectAs="label">
-        <ui-icon
-          icon="filter_alt"
-          [size]="24"
-          [uiTooltip]="'models.widget.sorting.title' | translate"
-        ></ui-icon>
-        <span>{{ 'models.widget.sorting.title' | translate }}</span>
-      </ng-container>
-      <ng-template uiTabContent>
-        <safe-sorting-settings
-          [fields]="selectedResource?.metadata"
-          [formArray]="$any(tileForm.get('sortFields'))"
-          [formGroup]="tileForm"
-        ></safe-sorting-settings>
-      </ng-template>
-    </ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon
+        icon="filter_alt"
+        [size]="24"
+        [uiTooltip]="'models.widget.sorting.title' | translate"
+      ></ui-icon>
+      <span>{{ 'models.widget.sorting.title' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <safe-sorting-settings
+        [fields]="selectedResource?.metadata"
+        [formArray]="$any(tileForm.get('sortFields'))"
+        [formGroup]="tileForm"
+      ></safe-sorting-settings>
+    </ng-template>
   </ui-tabs>
 </ng-container>

@@ -80,9 +80,6 @@ const createSummaryCardForm = (def: any) => {
 
   const extendedForm = extendWidgetForm(form, settings?.widgetDisplay, {
     searchable: new FormControl(searchable),
-    sortable: new FormControl(
-      get<boolean>(settings, 'widgetDisplay.sortable', false)
-    ),
     usePagination: new FormControl(
       get<boolean>(settings, 'widgetDisplay.usePagination', false)
     ),
@@ -108,18 +105,18 @@ export class SafeSummaryCardSettingsComponent
   extends SafeUnsubscribeComponent
   implements OnInit, AfterViewInit
 {
-  // === REACTIVE FORM ===
-  public tileForm: SummaryCardFormT | undefined;
-
-  // === WIDGET ===
+  /** Widget */
   @Input() tile: any;
-
-  // === EMIT THE CHANGES APPLIED ===
+  /** Emit changes applied to the settings */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
-
+  /** Form */
+  public tileForm: SummaryCardFormT | undefined;
+  /** Current resource */
   public selectedResource: Resource | null = null;
+  /** Current layout */
   public selectedLayout: Layout | null = null;
+  /** Current aggregation */
   public selectedAggregation: Aggregation | null = null;
   public customAggregation: any;
 
