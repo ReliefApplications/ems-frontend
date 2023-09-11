@@ -175,6 +175,8 @@ export class SafeGridComponent
   @Input() searchable = true;
   public search = new UntypedFormControl('');
   @Output() searchChange = new EventEmitter();
+  private changedDateFilters: any[] = [];
+  private fieldsFiltered: any[] = [];
 
   // === PAGINATION ===
   @Input() pageSize = 10;
@@ -361,8 +363,13 @@ export class SafeGridComponent
    * @param filter Filter event.
    */
   public onFilterChange(filter: CompositeFilterDescriptor): void {
+    this.fieldsFiltered = [];
     // format filter before sending
     this.formatFilter(filter);
+    //filter changedDateFilters based if it was in fieldsFiltered or not
+    this.changedDateFilters = this.changedDateFilters.filter((field: any) => 
+      this.fieldsFiltered.includes(field)
+    );
 
     if (!this.loadingRecords) {
       this.filter = filter;
@@ -381,24 +388,30 @@ export class SafeGridComponent
       // if there are sub filters
       if (filter.filters) {
         this.formatFilter(filter);
-      } else if (filter.value instanceof Date) {
-        const currentDate = filter.value;
-        const hoursToAdjustTimezone = Math.floor(
-          (currentDate as Date).getTimezoneOffset() / 60
-        );
-        const minutesToAdjustTimezone =
-          (currentDate as Date).getTimezoneOffset() % 60;
-
-        const dateObj = new Date(currentDate);
-        dateObj.setHours(dateObj.getHours() - hoursToAdjustTimezone);
-        dateObj.setMinutes(dateObj.getMinutes() - minutesToAdjustTimezone);
-        // Convert the modified date back to the original format
-        const modifiedDateString = dateObj
-          .toISOString()
-          .replace('T00:00:00.000Z', '');
-        const modifiedDate = new Date(modifiedDateString);
-
-        filter.value = modifiedDate;
+      } else {
+        this.fieldsFiltered.push(filter.field);
+        if (filter.value instanceof Date) {
+          if (!this.changedDateFilters.includes(filter.field)) {
+            this.changedDateFilters.push(filter.field);
+            const currentDate = filter.value;
+            const hoursToAdjustTimezone = Math.floor(
+              (currentDate as Date).getTimezoneOffset() / 60
+            );
+            const minutesToAdjustTimezone =
+              (currentDate as Date).getTimezoneOffset() % 60;
+  
+            const dateObj = new Date(currentDate);
+            dateObj.setHours(dateObj.getHours() - hoursToAdjustTimezone);
+            dateObj.setMinutes(dateObj.getMinutes() - minutesToAdjustTimezone);
+            // Convert the modified date back to the original format
+  
+            const modifiedDateString = dateObj
+              .toISOString()
+              .replace('T00:00:00.000Z', '');
+            const modifiedDate = new Date(modifiedDateString);
+            filter.value = modifiedDate;
+          }
+        }
       }
     });
   }
