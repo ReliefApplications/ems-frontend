@@ -119,9 +119,9 @@
   </ng-container>
   <!-- Grid display mode -->
   <ng-container *ngIf="displayMode === 'grid'">
-    <div class="w-full h-full">
+    <div class="min-h-0 flex-1">
       <safe-grid-widget
-        class="flex-auto max-h-full w-full"
+        class="flex-1 h-full w-full"
         [header]="false"
         [settings]="gridSettings"
         [widget]="widget"
@@ -132,17 +132,15 @@
 
 <!-- Selection of sort -->
 <ng-template #sortTemplate>
-  <ng-container *ngIf="sortFields.length > 0">
-    <div uiFormFieldDirective class="!m-0 w-44">
-      <ui-select-menu
-        [formControl]="sortControl"
-        (selectedOption)="onSort($event)"
-        [placeholder]="'models.widget.sorting.select' | translate"
-      >
-        <ui-select-option *ngFor="let sort of sortFields" [value]="sort">
-          {{ sort.label }}
-        </ui-select-option>
-      </ui-select-menu>
-    </div>
-  </ng-container>
+  <div uiFormFieldDirective class="!m-0 w-44">
+    <ui-select-menu
+      [formControl]="sortControl"
+      (selectedOption)="onSort($event)"
+      [placeholder]="'models.widget.sorting.select' | translate"
+    >
+      <ui-select-option *ngFor="let sort of sortFields" [value]="sort">
+        {{ sort.label }}
+      </ui-select-option>
+    </ui-select-menu>
+  </div>
 </ng-template>

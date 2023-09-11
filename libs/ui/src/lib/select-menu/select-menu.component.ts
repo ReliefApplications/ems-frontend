@@ -248,7 +248,7 @@ export class SelectMenuComponent
             labelValues[0] + ' (+' + (labelValues.length - 1) + ' others)';
         }
       } else {
-        this.displayTrigger = this.placeholder;
+        this.displayTrigger = '';
       }
     }
   }

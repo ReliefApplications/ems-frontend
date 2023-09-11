@@ -105,25 +105,23 @@ export class SafeSummaryCardSettingsComponent
   extends SafeUnsubscribeComponent
   implements OnInit, AfterViewInit
 {
-  // === REACTIVE FORM ===
-  public tileForm: SummaryCardFormT | undefined;
-
-  // === WIDGET ===
+  /** Widget */
   @Input() tile: any;
-
-  // === EMIT THE CHANGES APPLIED ===
+  /** Emit changes applied to the settings */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
-
+  /** Form */
+  public tileForm: SummaryCardFormT | undefined;
+  /** Current resource */
   public selectedResource: Resource | null = null;
+  /** Current layout */
   public selectedLayout: Layout | null = null;
+  /** Current aggregation */
   public selectedAggregation: Aggregation | null = null;
   public customAggregation: any;
 
   public fields: any[] = [];
   public activeTabIndex: number | undefined;
-
-  public sortable = new FormControl();
 
   /**
    * Summary Card Settings component.
@@ -146,16 +144,6 @@ export class SafeSummaryCardSettingsComponent
   ngOnInit(): void {
     this.tileForm = createSummaryCardForm(this.tile);
     this.change.emit(this.tileForm);
-    this.sortable.setValue(this.tile.settings.sortFields.length != 0);
-    this.sortable?.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
-        if (!value) {
-          // clear sort fields array
-          const sortFields = this.tileForm?.get('sortFields') as FormArray;
-          sortFields.clear();
-        }
-      });
 
     const resourceID = this.tileForm?.get('card.resource')?.value;
     if (resourceID) {
