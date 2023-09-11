@@ -331,7 +331,6 @@
         <div uiFormFieldDirective>
           <label>{{ 'components.emailBuilder.from.title' | translate }}</label>
           <ui-select-menu formControlName="from">
-            <!-- <ui-select-menu formControlName="from"> -->
             <ui-select-option [value]="'distribution'">
               {{ 'components.emailBuilder.from.distribution' | translate }}
             </ui-select-option>
@@ -341,6 +340,7 @@
           </ui-select-menu>
         </div>
 
+        <!-- Data field -->
         <div uiFormFieldDirective *ngIf="formGroup.get('from')?.value === 'field'">
           <label>{{ 'components.emailBuilder.from.field' | translate }}</label>
           <ui-select-menu formControlName="field">
