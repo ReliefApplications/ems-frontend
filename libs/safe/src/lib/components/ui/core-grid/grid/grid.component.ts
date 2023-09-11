@@ -367,7 +367,7 @@ export class SafeGridComponent
     // format filter before sending
     this.formatFilter(filter);
     //filter changedDateFilters based if it was in fieldsFiltered or not
-    this.changedDateFilters = this.changedDateFilters.filter((field: any) => 
+    this.changedDateFilters = this.changedDateFilters.filter((field: any) =>
       this.fieldsFiltered.includes(field)
     );
 
@@ -399,12 +399,10 @@ export class SafeGridComponent
             );
             const minutesToAdjustTimezone =
               (currentDate as Date).getTimezoneOffset() % 60;
-  
             const dateObj = new Date(currentDate);
             dateObj.setHours(dateObj.getHours() - hoursToAdjustTimezone);
             dateObj.setMinutes(dateObj.getMinutes() - minutesToAdjustTimezone);
             // Convert the modified date back to the original format
-  
             const modifiedDateString = dateObj
               .toISOString()
               .replace('T00:00:00.000Z', '');
