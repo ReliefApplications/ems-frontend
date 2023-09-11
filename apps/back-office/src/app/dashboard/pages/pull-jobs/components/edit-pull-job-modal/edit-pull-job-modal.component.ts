@@ -1,10 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, UntypedFormArray, Validators } from '@angular/forms';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import {
   ApiConfiguration,
@@ -94,7 +89,38 @@ const DEFAULT_FIELDS = ['createdBy'];
 })
 export class EditPullJobModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
+  public formGroup = this.formBuilder.group({
+    name: [get(this.data, 'pullJob.name', ''), Validators.required],
+    status: [get(this.data, 'pullJob.status', ''), Validators.required],
+    apiConfiguration: [
+      get(this.data, 'pullJob.apiConfiguration.id', ''),
+      Validators.required,
+    ],
+    url: [get(this.data, 'pullJob.url', '')],
+    path: [get(this.data, 'pullJob.path', '')],
+    schedule: [
+      get(this.data, 'pullJob.schedule', ''),
+      [Validators.required, cronValidator()],
+    ],
+    convertTo: [get(this.data, 'pullJob.convertTo.id', '')],
+    channel: [get(this.data, 'pullJob.channel.id', '')],
+    mapping: this.formBuilder.array(
+      this.data.pullJob && this.data.pullJob.mapping
+        ? Object.keys(this.data.pullJob.mapping).map((x: any) =>
+            this.formBuilder.group({
+              name: [x, Validators.required],
+              value: [this.data.pullJob?.mapping[x], Validators.required],
+            })
+          )
+        : []
+    ),
+    rawMapping: [
+      this.data.pullJob && this.data.pullJob.mapping
+        ? JSON.stringify(this.data.pullJob?.mapping, null, 2)
+        : '',
+    ],
+    uniqueIdentifiers: [get(this.data, 'pullJob.uniqueIdentifiers', [])],
+  });
   isHardcoded = true;
 
   // === FORMS ===
@@ -162,7 +188,7 @@ export class EditPullJobModalComponent implements OnInit {
    * @param data.pullJob pull job
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     public dialogRef: DialogRef<EditPullJobModalComponent>,
     private apollo: Apollo,
     @Inject(DOCUMENT) private document: Document,
@@ -174,38 +200,6 @@ export class EditPullJobModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.formGroup = this.formBuilder.group({
-      name: [get(this.data, 'pullJob.name', ''), Validators.required],
-      status: [get(this.data, 'pullJob.status', ''), Validators.required],
-      apiConfiguration: [
-        get(this.data, 'pullJob.apiConfiguration.id', ''),
-        Validators.required,
-      ],
-      url: [get(this.data, 'pullJob.url', '')],
-      path: [get(this.data, 'pullJob.path', '')],
-      schedule: [
-        get(this.data, 'pullJob.schedule', ''),
-        [Validators.required, cronValidator()],
-      ],
-      convertTo: [get(this.data, 'pullJob.convertTo.id', '')],
-      channel: [get(this.data, 'pullJob.channel.id', '')],
-      mapping: this.formBuilder.array(
-        this.data.pullJob && this.data.pullJob.mapping
-          ? Object.keys(this.data.pullJob.mapping).map((x: any) =>
-              this.formBuilder.group({
-                name: [x, Validators.required],
-                value: [this.data.pullJob?.mapping[x], Validators.required],
-              })
-            )
-          : []
-      ),
-      rawMapping: [
-        this.data.pullJob && this.data.pullJob.mapping
-          ? JSON.stringify(this.data.pullJob?.mapping, null, 2)
-          : '',
-      ],
-      uniqueIdentifiers: [get(this.data, 'pullJob.uniqueIdentifiers', [])],
-    });
     this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
       query: GET_FORM_NAMES,
       variables: {
@@ -262,7 +256,7 @@ export class EditPullJobModalComponent implements OnInit {
     );
     this.formGroup
       .get('apiConfiguration')
-      ?.valueChanges.subscribe((apiConfiguration: string) => {
+      ?.valueChanges.subscribe((apiConfiguration: string | null) => {
         if (apiConfiguration) {
           const api = this.apiConfigurations.find(
             (x) => x.id === apiConfiguration
@@ -330,7 +324,7 @@ export class EditPullJobModalComponent implements OnInit {
     return this.fields.filter(
       (field) =>
         field.name === name ||
-        !this.formGroup.value.mapping.some((x: any) => x.name === field.name)
+        !this.formGroup.value.mapping?.some((x: any) => x.name === field.name)
     );
   }
 

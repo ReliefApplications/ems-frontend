@@ -1,9 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { Component } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { DialogRef } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
 import { ChannelsRoutingModule } from '../../channels-routing.module';
@@ -42,9 +38,11 @@ import {
   templateUrl: './add-channel-modal.component.html',
   styleUrls: ['./add-channel-modal.component.scss'],
 })
-export class AddChannelModalComponent implements OnInit {
-  // === REACTIVE FORM ===
-  channelForm: UntypedFormGroup = new UntypedFormGroup({});
+export class AddChannelModalComponent {
+  /** Channel form group */
+  public channelForm = this.formBuilder.group({
+    title: ['', Validators.required],
+  });
 
   /**
    * Add channel component
@@ -53,15 +51,9 @@ export class AddChannelModalComponent implements OnInit {
    * @param dialogRef Dialog ref
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     public dialogRef: DialogRef<AddChannelModalComponent>
   ) {}
-
-  ngOnInit(): void {
-    this.channelForm = this.formBuilder.group({
-      title: ['', Validators.required],
-    });
-  }
 
   /** Close the modal without sending any data. */
   onClose(): void {

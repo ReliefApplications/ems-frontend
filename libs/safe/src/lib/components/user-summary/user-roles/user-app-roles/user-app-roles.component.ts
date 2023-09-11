@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { get, isNil } from 'lodash';
 import { Role, User } from '../../../../models/user.model';
@@ -27,7 +27,7 @@ export class UserAppRolesComponent
   public roles: Role[] = [];
   @Input() user!: User;
   @Input() application?: Application;
-  selectedRoles!: UntypedFormControl;
+  selectedRoles!: ReturnType<typeof this.createRolesControl>;
   @Output() edit = new EventEmitter();
 
   /** loading setter */
@@ -39,7 +39,7 @@ export class UserAppRolesComponent
     }
   }
 
-  selectedApplication!: UntypedFormControl;
+  selectedApplication!: ReturnType<typeof this.createApplicationControl>;
   public applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
   private readonly PAGE_SIZE = 10;
 
@@ -51,7 +51,7 @@ export class UserAppRolesComponent
    * @param snackBar Shared snackbar service
    */
   constructor(
-    private fb: UntypedFormBuilder,
+    private fb: FormBuilder,
     private apollo: Apollo,
     private snackBar: SnackbarService
   ) {
@@ -59,9 +59,7 @@ export class UserAppRolesComponent
   }
 
   ngOnInit(): void {
-    this.selectedRoles = this.fb.control(
-      get(this.user, 'roles', []).filter((x: Role) => !x.application)
-    );
+    this.selectedRoles = this.createRolesControl();
     this.selectedRoles.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -73,10 +71,7 @@ export class UserAppRolesComponent
         }
       });
 
-    this.selectedApplication = this.fb.control({
-      value: get(this.application, 'id', ''),
-      disabled: !!this.application,
-    });
+    this.selectedApplication = this.createApplicationControl();
     this.selectedApplication.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -105,6 +100,31 @@ export class UserAppRolesComponent
           this.snackBar.openSnackBar(err.message, { error: true });
         },
       });
+  }
+
+  /**
+   * Create roles form control
+   *
+   * @returns form control
+   */
+  private createRolesControl() {
+    return this.fb.control(
+      get(this.user, 'roles', [])
+        .filter((x: Role) => !x.application)
+        .map((x) => x.id)
+    );
+  }
+
+  /**
+   * Create application form control
+   *
+   * @returns form control
+   */
+  private createApplicationControl() {
+    return this.fb.control({
+      value: get(this.application, 'id', ''),
+      disabled: !!this.application,
+    });
   }
 
   /**

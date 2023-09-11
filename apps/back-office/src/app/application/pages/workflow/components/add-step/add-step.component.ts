@@ -1,10 +1,6 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import {
   ContentType,
   CONTENT_TYPES,
@@ -38,7 +34,10 @@ export class AddStepComponent
   public formsQuery!: QueryRef<GetFormsQueryResponse>;
 
   // === REACTIVE FORM ===
-  public stepForm: UntypedFormGroup = new UntypedFormGroup({});
+  public stepForm = this.formBuilder.group({
+    type: ['', Validators.required],
+    content: [''],
+  });
   public stage = 1;
 
   /**
@@ -53,7 +52,7 @@ export class AddStepComponent
    */
   constructor(
     private route: ActivatedRoute,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private apollo: Apollo,
@@ -63,10 +62,6 @@ export class AddStepComponent
   }
 
   ngOnInit(): void {
-    this.stepForm = this.formBuilder.group({
-      type: ['', Validators.required],
-      content: [''],
-    });
     this.stepForm.get('type')?.valueChanges.subscribe((type) => {
       const contentControl = this.stepForm.controls.content;
       if (type === ContentType.form) {
@@ -170,7 +165,7 @@ export class AddStepComponent
             next: ({ data }) => {
               if (data) {
                 const { id } = data.addForm;
-                this.stepForm.controls.content.setValue(id);
+                this.stepForm.controls.content.setValue(id as string);
                 this.onSubmit();
               }
             },

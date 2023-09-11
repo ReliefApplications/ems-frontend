@@ -38,7 +38,8 @@ export class AggregationBuilderService {
       if (
         formattedField.kind !== 'SCALAR' &&
         field.fields &&
-        field.fields.length
+        field.fields.length &&
+        'fields' in formattedField
       ) {
         formattedField.fields = this.formatFields(field.fields);
       }

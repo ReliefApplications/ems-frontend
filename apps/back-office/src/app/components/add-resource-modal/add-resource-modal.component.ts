@@ -1,9 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {
-  UntypedFormGroup,
-  UntypedFormBuilder,
-  Validators,
-} from '@angular/forms';
+import { Component } from '@angular/core';
+import { Validators, FormBuilder } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -30,8 +26,10 @@ import { FormWrapperModule } from '@oort-front/ui';
   templateUrl: './add-resource-modal.component.html',
   styleUrls: ['./add-resource-modal.component.scss'],
 })
-export class AddResourceModalComponent implements OnInit {
-  public addForm: UntypedFormGroup = new UntypedFormGroup({});
+export class AddResourceModalComponent {
+  public addForm = this.formBuilder.group({
+    name: ['', Validators.required],
+  });
 
   /**
    * Modal to add a new resource.
@@ -40,18 +38,9 @@ export class AddResourceModalComponent implements OnInit {
    * @param dialogRef Dialog reference
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     public dialogRef: DialogRef<AddResourceModalComponent>
   ) {}
-
-  /**
-   * Loads the resources and build the form.
-   */
-  ngOnInit(): void {
-    this.addForm = this.formBuilder.group({
-      name: ['', Validators.required],
-    });
-  }
 
   /**
    * Closes the modal without sending any data.

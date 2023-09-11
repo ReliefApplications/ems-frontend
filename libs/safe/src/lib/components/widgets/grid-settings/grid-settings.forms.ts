@@ -1,9 +1,4 @@
-import {
-  FormArray,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormArray, FormBuilder, Validators } from '@angular/forms';
 import get from 'lodash/get';
 import {
   addNewField,
@@ -20,7 +15,7 @@ const DEFAULT_CONTEXT_FILTER = `{
 }`;
 
 /** Creating a new instance of the FormBuilder class. */
-const fb = new UntypedFormBuilder();
+const fb = new FormBuilder();
 
 /**
  * Floating button form factory.
@@ -28,7 +23,7 @@ const fb = new UntypedFormBuilder();
  * @param value default value ( if any )
  * @returns new form group for the floating button.
  */
-export const createButtonFormGroup = (value: any): UntypedFormGroup => {
+export const createButtonFormGroup = (value: any) => {
   const formGroup = fb.group({
     show: [value && value.show ? value.show : false, Validators.required],
     name: [
@@ -127,10 +122,7 @@ export const createButtonFormGroup = (value: any): UntypedFormGroup => {
  * @param configuration previous configuration
  * @returns form group
  */
-export const createGridWidgetFormGroup = (
-  id: string,
-  configuration: any
-): UntypedFormGroup => {
+export const createGridWidgetFormGroup = (id: string, configuration: any) => {
   const formGroup = fb.group({
     id,
     title: [get(configuration, 'title', ''), Validators.required],

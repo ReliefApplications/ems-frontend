@@ -1,9 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { DatePipe } from '@angular/common';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
@@ -49,7 +45,7 @@ interface PreferencesDialogData {
 })
 export class SafePreferencesModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  public preferencesForm: UntypedFormGroup = new UntypedFormGroup({});
+  public preferencesForm!: ReturnType<typeof this.createPreferencesForm>;
 
   // === DATA ===
   languages: { name: string; value: string }[] = [];
@@ -67,7 +63,7 @@ export class SafePreferencesModalComponent implements OnInit {
    */
   constructor(
     @Inject(DIALOG_DATA) public data: PreferencesDialogData,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private translate: TranslateService,
     private dateTranslate: SafeDateTranslateService
   ) {
@@ -91,18 +87,26 @@ export class SafePreferencesModalComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.getLocalizedLangNames();
-    this.preferencesForm = this.formBuilder.group({
-      // initializes select field with current language
-      language: [this.currLang, Validators.required],
-      // initializes select field with current date language format
-      dateFormat: [this.currDateFormat, Validators.required],
-    });
+    this.preferencesForm = this.createPreferencesForm();
     this.preferencesForm
       .get('language')
       ?.valueChanges.subscribe((lang: any) => {
         this.translate.use(lang);
       });
+  }
+
+  /**
+   * Create preferences form
+   *
+   * @returns Form group
+   */
+  private createPreferencesForm() {
+    return this.formBuilder.group({
+      // initializes select field with current language
+      language: [this.currLang, Validators.required],
+      // initializes select field with current date language format
+      dateFormat: [this.currDateFormat, Validators.required],
+    });
   }
 
   /**

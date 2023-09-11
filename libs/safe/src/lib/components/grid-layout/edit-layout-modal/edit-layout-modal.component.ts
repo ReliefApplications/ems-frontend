@@ -1,9 +1,5 @@
-import { AfterViewInit, Component, Inject, Input, OnInit } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { AfterViewInit, Component, Inject, Input } from '@angular/core';
+import { FormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import { Layout } from '../../../models/layout.model';
 import {
   createDisplayForm,
@@ -45,9 +41,13 @@ interface DialogData {
   templateUrl: './edit-layout-modal.component.html',
   styleUrls: ['./edit-layout-modal.component.scss'],
 })
-export class SafeEditLayoutModalComponent implements OnInit, AfterViewInit {
+export class SafeEditLayoutModalComponent implements AfterViewInit {
   @Input() layout: any;
-  public form!: UntypedFormGroup;
+  public form = this.formBuilder.group({
+    name: [this.data.layout?.name, Validators.required],
+    query: createQueryForm(this.data.layout?.query),
+    display: createDisplayForm(this.data.layout?.display),
+  });
   public templates: any[] = [];
   public layoutPreviewData!: { form: UntypedFormGroup; defaultLayout: any };
 
@@ -59,18 +59,10 @@ export class SafeEditLayoutModalComponent implements OnInit, AfterViewInit {
    * @param data This is the data that is passed to the modal when it is opened.
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     public dialogRef: DialogRef<SafeEditLayoutModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData
   ) {}
-
-  ngOnInit(): void {
-    this.form = this.formBuilder.group({
-      name: [this.data.layout?.name, Validators.required],
-      query: createQueryForm(this.data.layout?.query),
-      display: createDisplayForm(this.data.layout?.display),
-    });
-  }
 
   ngAfterViewInit(): void {
     this.layoutPreviewData = {

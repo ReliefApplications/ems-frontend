@@ -1,9 +1,5 @@
 import { Component, ElementRef, Input, OnInit } from '@angular/core';
-import {
-  UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-} from '@angular/forms';
+import { FormBuilder, UntypedFormArray } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import {
   FilterService,
@@ -50,7 +46,7 @@ export class SafeDateFilterMenuComponent
   @Input() public valueField = '';
   @Input() public filterService?: FilterService;
 
-  public form?: UntypedFormGroup;
+  public form!: ReturnType<typeof this.createFormGroup>;
   public firstDateMode = 'date';
   public secondDateMode = 'date';
 
@@ -84,7 +80,7 @@ export class SafeDateFilterMenuComponent
    * @param popupService kendo popup service
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     public translate: TranslateService,
     private element: ElementRef,
     private popupService: SinglePopupService
@@ -115,7 +111,19 @@ export class SafeDateFilterMenuComponent
   }
 
   ngOnInit(): void {
-    this.form = this.formBuilder.group({
+    this.form = this.createFormGroup();
+    this.form.valueChanges.subscribe((value) => {
+      this.filterService?.filter(value as any);
+    });
+  }
+
+  /**
+   * Create form group
+   *
+   * @returns form group
+   */
+  createFormGroup() {
+    return this.formBuilder.group({
       logic: this.filter.logic,
       filters: this.formBuilder.array([
         this.formBuilder.group({
@@ -137,9 +145,6 @@ export class SafeDateFilterMenuComponent
           ),
         }),
       ]),
-    });
-    this.form.valueChanges.subscribe((value) => {
-      this.filterService?.filter(value);
     });
   }
 }

@@ -53,7 +53,6 @@
     "@progress/kendo-angular-pdf-export": "11",
     "@progress/kendo-angular-popup": "11",
     "@progress/kendo-angular-progressbar": "11",
-    "@progress/kendo-angular-scheduler": "11",
     "@progress/kendo-angular-toolbar": "11",
     "@progress/kendo-angular-treeview": "11",
     "@progress/kendo-angular-upload": "11",

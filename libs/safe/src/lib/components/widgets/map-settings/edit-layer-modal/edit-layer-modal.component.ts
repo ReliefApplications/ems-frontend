@@ -56,7 +56,7 @@ import {
 import { MapLayersModule } from '../map-layers/map-layers.module';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { ContextualFiltersSettingsComponent } from '../../common/contextual-filters-settings/contextual-filters-settings.component';
-import { FormArray, UntypedFormBuilder } from '@angular/forms';
+import { FormArray, FormBuilder } from '@angular/forms';
 
 /**
  * Interface of dialog input
@@ -151,7 +151,7 @@ export class EditLayerModalComponent
     private mapLayersService: SafeMapLayersService,
     private apollo: Apollo,
     public dialogRef: DialogRef<LayerFormData>,
-    private formBuilder: UntypedFormBuilder
+    private formBuilder: FormBuilder
   ) {
     super();
   }

@@ -1,10 +1,6 @@
 import { Apollo } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import {
   GetRecordDetailsQueryResponse,
@@ -61,7 +57,10 @@ export class SafeConvertModalComponent
   implements OnInit
 {
   // === REACTIVE FORM ===
-  convertForm: UntypedFormGroup = new UntypedFormGroup({});
+  convertForm = this.formBuilder.group({
+    targetForm: new FormControl<Form | null>(null, Validators.required),
+    copyRecord: [true, Validators.required],
+  });
 
   // === DATA ===
   public form?: Form;
@@ -81,7 +80,7 @@ export class SafeConvertModalComponent
    * @param data This is the data that is passed into the modal when it is opened.
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     private apollo: Apollo,
     public dialogRef: DialogRef<SafeConvertModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData
@@ -106,14 +105,10 @@ export class SafeConvertModalComponent
           this.form?.resource?.forms?.filter((x) => x.id !== this.form?.id) ||
           [];
       });
-    this.convertForm = this.formBuilder.group({
-      targetForm: [null, Validators.required],
-      copyRecord: [true, Validators.required],
-    });
     this.convertForm
       .get('targetForm')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((targetForm: Form) => {
+      .subscribe((targetForm: Form | null) => {
         if (targetForm) {
           this.ignoredFields =
             this.form?.fields?.filter(

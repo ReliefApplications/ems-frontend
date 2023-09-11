@@ -1,9 +1,5 @@
-import { Component, OnInit, Inject } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { Component, Inject } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { Channel } from '@oort-front/safe';
 import { CommonModule } from '@angular/common';
 import { ChannelsRoutingModule } from '../../channels-routing.module';
@@ -41,9 +37,11 @@ import {
   templateUrl: './edit-channel-modal.component.html',
   styleUrls: ['./edit-channel-modal.component.scss'],
 })
-export class EditChannelModalComponent implements OnInit {
-  // === REACTIVE FORM ===
-  roleForm: UntypedFormGroup = new UntypedFormGroup({});
+export class EditChannelModalComponent {
+  /** Current form */
+  public formGroup = this.formBuilder.group({
+    title: [this.data.channel.title, Validators.required],
+  });
 
   /**
    * Edit channel component
@@ -54,20 +52,13 @@ export class EditChannelModalComponent implements OnInit {
    * @param data.channel channel to edit
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     public dialogRef: DialogRef<EditChannelModalComponent>,
     @Inject(DIALOG_DATA)
     public data: {
       channel: Channel;
     }
   ) {}
-
-  /** Load data and build the form. */
-  ngOnInit(): void {
-    this.roleForm = this.formBuilder.group({
-      title: [this.data.channel.title, Validators.required],
-    });
-  }
 
   /** Close the modal without sending any data. */
   onClose(): void {

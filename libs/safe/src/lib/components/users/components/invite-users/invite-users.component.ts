@@ -1,14 +1,9 @@
-import { Component, Inject, Renderer2, ViewChild } from '@angular/core';
+import { Component, Inject, ViewChild } from '@angular/core';
 import { DialogRef, DIALOG_DATA, Dialog } from '@angular/cdk/dialog';
 import { GridComponent, GridDataResult } from '@progress/kendo-angular-grid';
 import { Role, User } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
-import {
-  UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, UntypedFormArray, Validators } from '@angular/forms';
 import { SafeDownloadService } from '../../../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UploadEvent } from '@progress/kendo-angular-upload';
@@ -33,7 +28,7 @@ interface DialogData {
 })
 export class SafeInviteUsersComponent extends SafeUnsubscribeComponent {
   public gridData: GridDataResult = { data: [], total: 0 };
-  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
+  public formGroup!: ReturnType<typeof this.createFormGroup>;
   private editedRowIndex = 0;
   private editionActive = false;
 
@@ -51,7 +46,6 @@ export class SafeInviteUsersComponent extends SafeUnsubscribeComponent {
   /**
    * Constructor of the component
    *
-   * @param renderer Custom render factory client
    * @param downloadService The download service
    * @param snackBar The snack bar service
    * @param formBuilder The form builder service
@@ -61,10 +55,9 @@ export class SafeInviteUsersComponent extends SafeUnsubscribeComponent {
    * @param data The input data of the component
    */
   constructor(
-    private renderer: Renderer2,
     private downloadService: SafeDownloadService,
     private snackBar: SnackbarService,
-    private formBuilder: UntypedFormBuilder,
+    private formBuilder: FormBuilder,
     public dialog: Dialog,
     public dialogRef: DialogRef<SafeInviteUsersComponent>,
     public translate: TranslateService,
@@ -216,8 +209,8 @@ export class SafeInviteUsersComponent extends SafeUnsubscribeComponent {
    * @param dataItem Row data.
    * @returns Form group created from row data.
    */
-  public createFormGroup(dataItem: any): UntypedFormGroup {
-    const formGroup: any = {
+  public createFormGroup(dataItem: any) {
+    return this.formBuilder.group({
       email: [dataItem.email, Validators.required],
       role: [dataItem.role, Validators.required],
       ...(this.data.positionAttributeCategories && {
@@ -230,8 +223,7 @@ export class SafeInviteUsersComponent extends SafeUnsubscribeComponent {
           )
         ),
       }),
-    };
-    return this.formBuilder.group(formGroup);
+    });
   }
 
   /**
@@ -243,7 +235,7 @@ export class SafeInviteUsersComponent extends SafeUnsubscribeComponent {
     this.gridData.data.splice(this.editedRowIndex, 1, this.formGroup.value);
     this.editedRowIndex = 0;
     this.editionActive = false;
-    this.formGroup = new UntypedFormGroup({});
+    this.formGroup.reset();
   }
 
   /**
