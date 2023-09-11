@@ -66,7 +66,7 @@ const addRecordToSurveyContext = (question: Question, recordID: string) => {
  * @param domService Shared DOM service
  * @param apollo Apollo client
  * @param dialog Dialog
- * @param formBuilder Angular form service
+ * @param fb Angular form service
  * @param ngZone Angular Service to execute code inside Angular environment
  */
 export const init = (
@@ -74,7 +74,7 @@ export const init = (
   domService: DomService,
   apollo: Apollo,
   dialog: Dialog,
-  formBuilder: UntypedFormBuilder,
+  fb: UntypedFormBuilder,
   ngZone: NgZone
 ): void => {
   const getResourceById = (data: { id: string }) =>
@@ -734,7 +734,7 @@ export const init = (
       if (!gridSettingsRaw.fields) {
         return null;
       }
-      const auxForm = formBuilder.group(gridSettingsRaw);
+      const auxForm = fb.group(gridSettingsRaw);
       auxForm.controls.fields.setValue(gridSettingsRaw.fields);
       return auxForm;
     },

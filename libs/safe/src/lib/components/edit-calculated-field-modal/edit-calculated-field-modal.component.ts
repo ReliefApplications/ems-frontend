@@ -45,7 +45,7 @@ interface DialogData {
   styleUrls: ['./edit-calculated-field-modal.component.scss'],
 })
 export class SafeEditCalculatedFieldModalComponent implements OnInit {
-  public form = this.formBuilder.group({
+  public form = this.fb.group({
     name: [
       this.data.calculatedField?.name,
       [Validators.required, Validators.pattern(/^[a-z]+[a-z0-9_]+$/)],
@@ -64,13 +64,13 @@ export class SafeEditCalculatedFieldModalComponent implements OnInit {
    * Modal to edit Calculated field.
    *
    * @param dialogRef This is the reference of the dialog that will be opened.
-   * @param formBuilder This is the service used to build forms.
+   * @param fb This is the service used to build forms.
    * @param editorService Editor service used to get main URL and current language
    * @param data This is the data that is passed to the modal when it is opened.
    */
   constructor(
     public dialogRef: DialogRef,
-    public formBuilder: FormBuilder,
+    public fb: FormBuilder,
     private editorService: SafeEditorService,
     @Inject(DIALOG_DATA) public data: DialogData
   ) {

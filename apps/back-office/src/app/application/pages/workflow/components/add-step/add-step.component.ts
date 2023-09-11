@@ -34,7 +34,7 @@ export class AddStepComponent
   public formsQuery!: QueryRef<GetFormsQueryResponse>;
 
   // === REACTIVE FORM ===
-  public stepForm = this.formBuilder.group({
+  public stepForm = this.fb.group({
     type: ['', Validators.required],
     content: [''],
   });
@@ -44,7 +44,7 @@ export class AddStepComponent
    * Add step page component
    *
    * @param route Angular activated route
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param apollo Apollo service
@@ -52,7 +52,7 @@ export class AddStepComponent
    */
   constructor(
     private route: ActivatedRoute,
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private apollo: Apollo,

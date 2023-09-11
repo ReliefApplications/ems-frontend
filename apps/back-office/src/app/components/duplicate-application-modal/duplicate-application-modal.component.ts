@@ -38,7 +38,7 @@ import {
 })
 export class DuplicateApplicationModalComponent {
   public currentApp: Application;
-  public duplicateForm = this.formBuilder.group({
+  public duplicateForm = this.fb.group({
     name: ['', Validators.required],
   });
 
@@ -46,7 +46,7 @@ export class DuplicateApplicationModalComponent {
    * Duplicate application component.
    *
    * @param snackBar Shared snackbar service
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param apollo Apollo service
    * @param dialogRef Dialog ref
    * @param translateService Angular translate service
@@ -54,7 +54,7 @@ export class DuplicateApplicationModalComponent {
    */
   constructor(
     private snackBar: SnackbarService,
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     private apollo: Apollo,
     public dialogRef: DialogRef<DuplicateApplicationModalComponent>,
     private translateService: TranslateService,

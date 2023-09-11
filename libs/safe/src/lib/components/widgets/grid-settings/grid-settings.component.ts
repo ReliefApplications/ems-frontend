@@ -87,13 +87,13 @@ export class SafeGridSettingsComponent
    * @param apollo The apollo client
    * @param applicationService The application service
    * @param queryBuilder The query builder service
-   * @param formBuilder FormBuilder instance
+   * @param fb FormBuilder instance
    */
   constructor(
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
     private queryBuilder: QueryBuilderService,
-    private formBuilder: FormBuilder
+    private fb: FormBuilder
   ) {
     super();
   }
@@ -246,7 +246,7 @@ export class SafeGridSettingsComponent
    */
   initSortFields(): void {
     this.tile.settings.sortFields?.forEach((item: any) => {
-      const row = this.formBuilder.group({
+      const row = this.fb.group({
         field: [item.field, Validators.required],
         order: [item.order, Validators.required],
         label: [item.label, Validators.required],

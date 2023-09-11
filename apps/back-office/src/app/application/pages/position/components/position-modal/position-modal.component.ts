@@ -36,14 +36,14 @@ import {
 })
 export class PositionModalComponent {
   // === REACTIVE FORM ===
-  positionForm = this.formBuilder.group({
+  positionForm = this.fb.group({
     title: [this.data.title, Validators.required],
   });
 
   /**
    * Add new application position component
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param dialogRef Dialog ref
    * @param data Injected modal data
    * @param data.add is it an addition
@@ -51,7 +51,7 @@ export class PositionModalComponent {
    * @param data.title title of the position
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<PositionModalComponent>,
     @Inject(DIALOG_DATA)
     public data: {

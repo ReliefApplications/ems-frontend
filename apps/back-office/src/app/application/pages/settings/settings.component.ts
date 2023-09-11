@@ -41,7 +41,7 @@ export class SettingsComponent
   /**
    * Application settings page component.
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param apollo Apollo service
    * @param router Angular router
    * @param snackBar Shared snackbar service
@@ -52,7 +52,7 @@ export class SettingsComponent
    * @param layoutService Shared layout service
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     private apollo: Apollo,
     private router: Router,
     private snackBar: SnackbarService,
@@ -85,7 +85,7 @@ export class SettingsComponent
    * @returns form group
    */
   private createSettingsForm(application: Application) {
-    return this.formBuilder.group({
+    return this.fb.group({
       id: [{ value: application.id, disabled: true }],
       name: [application.name, Validators.required],
       sideMenu: [application.sideMenu],

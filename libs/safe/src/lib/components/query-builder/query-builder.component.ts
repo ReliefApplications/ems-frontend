@@ -67,11 +67,11 @@ export class SafeQueryBuilderComponent
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
-   * @param formBuilder This is the Angular FormBuilder service.
+   * @param fb This is the Angular FormBuilder service.
    * @param queryBuilder This is the service that will be used to build the query.
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     private queryBuilder: QueryBuilderService
   ) {
     super();
@@ -132,11 +132,11 @@ export class SafeQueryBuilderComponent
               this.form?.setControl('filter', createFilterGroup(null));
               this.form?.setControl(
                 'fields',
-                this.formBuilder.array([], Validators.required)
+                this.fb.array([], Validators.required)
               );
               this.form?.setControl(
                 'sort',
-                this.formBuilder.group({
+                this.fb.group({
                   field: [''],
                   order: ['asc'],
                 })
@@ -144,10 +144,10 @@ export class SafeQueryBuilderComponent
             } else {
               this.availableFields = [];
               this.form?.setControl('filter', createFilterGroup(null));
-              this.form?.setControl('fields', this.formBuilder.array([]));
+              this.form?.setControl('fields', this.fb.array([]));
               this.form?.setControl(
                 'sort',
-                this.formBuilder.group({
+                this.fb.group({
                   field: [''],
                   order: ['asc'],
                 })

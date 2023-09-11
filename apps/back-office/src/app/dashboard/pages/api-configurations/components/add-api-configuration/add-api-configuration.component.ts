@@ -13,7 +13,7 @@ import { apiValidator } from '../../../../../utils/nameValidation';
 })
 export class AddApiConfigurationComponent {
   // === REACTIVE FORM ===
-  apiForm = this.formBuilder.group({
+  apiForm = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(apiValidator)]],
   });
 
@@ -25,11 +25,11 @@ export class AddApiConfigurationComponent {
   /**
    * Add API configuration component
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param dialogRef Dialog ref
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<AddApiConfigurationComponent>
   ) {}
 

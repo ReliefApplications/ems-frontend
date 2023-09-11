@@ -13,7 +13,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 export class FilterComponent implements OnInit {
   @Input() loading = false;
   @Output() filter = new EventEmitter<any>();
-  public form = this.formBuilder.group({
+  public form = this.fb.group({
     name: [''],
     startDate: [null],
     endDate: [null],
@@ -24,9 +24,9 @@ export class FilterComponent implements OnInit {
   /**
    * FilterComponent contructor.
    *
-   * @param formBuilder Used to create reactive forms.
+   * @param fb Used to create reactive forms.
    */
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.form.valueChanges

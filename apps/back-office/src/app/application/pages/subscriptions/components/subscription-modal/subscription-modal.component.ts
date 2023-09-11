@@ -76,7 +76,7 @@ export class SubscriptionModalComponent
   implements OnInit
 {
   // === REACTIVE FORM ===
-  subscriptionForm = this.formBuilder.group({
+  subscriptionForm = this.fb.group({
     routingKey: [
       this.data.subscription ? this.data.subscription.routingKey : '',
       Validators.required,
@@ -132,7 +132,7 @@ export class SubscriptionModalComponent
   /**
    * Subscription modal component
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param dialogRef Dialog ref
    * @param apollo Apollo service
    * @param data Injected dialog data
@@ -141,7 +141,7 @@ export class SubscriptionModalComponent
    * @param document Document
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<SubscriptionModalComponent>,
     private apollo: Apollo,
     @Inject(DIALOG_DATA)

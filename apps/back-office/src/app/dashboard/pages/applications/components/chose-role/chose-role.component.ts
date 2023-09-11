@@ -19,7 +19,7 @@ export class ChoseRoleComponent implements OnInit {
   public loading = true;
 
   // === REACTIVE FORM ===
-  roleForm = this.formBuilder.group({
+  roleForm = this.fb.group({
     role: [null, Validators.required],
   });
 
@@ -29,14 +29,14 @@ export class ChoseRoleComponent implements OnInit {
   /**
    * Chose role component, to preview application with selected role.
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param dialogRef Dialog ref
    * @param apollo Angular service
    * @param data Injected modal data
    * @param data.application application id
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<ChoseRoleComponent>,
     private apollo: Apollo,
     @Inject(DIALOG_DATA)

@@ -44,14 +44,14 @@ export class SafeProfileComponent
    * @param apollo Apollo client
    * @param snackBar Shared snackbar service
    * @param authService Shared authentication service
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param translate Translation service
    */
   constructor(
     private apollo: Apollo,
     private snackBar: SnackbarService,
     private authService: SafeAuthService,
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     public translate: TranslateService
   ) {
     super();
@@ -162,7 +162,7 @@ export class SafeProfileComponent
    * @returns form group
    */
   createUserForm(user: User) {
-    return this.formBuilder.group({
+    return this.fb.group({
       firstName: [user.firstName, Validators.required],
       lastName: [user.lastName, Validators.required],
       username: [{ value: user.username, disabled: true }],

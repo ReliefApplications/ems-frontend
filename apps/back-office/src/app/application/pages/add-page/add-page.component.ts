@@ -39,7 +39,7 @@ export class AddPageComponent
   /** Forms query */
   public formsQuery!: QueryRef<GetFormsQueryResponse>;
   /** New page form */
-  public pageForm = this.formBuilder.group({
+  public pageForm = this.fb.group({
     type: ['', Validators.required],
     content: [''],
     newForm: [false],
@@ -50,7 +50,7 @@ export class AddPageComponent
   /**
    * Add page component
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param apollo Apollo service
    * @param applicationService Shared application service
    * @param dialog Dialog service
@@ -58,7 +58,7 @@ export class AddPageComponent
    * @param translate Angular translate service
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
     public dialog: Dialog,

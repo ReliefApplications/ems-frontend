@@ -11,7 +11,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   styleUrls: ['./filter.component.scss'],
 })
 export class FilterComponent implements OnInit {
-  public form = this.formBuilder.group({
+  public form = this.fb.group({
     name: [''],
     startDate: [null],
     endDate: [null],
@@ -26,9 +26,9 @@ export class FilterComponent implements OnInit {
   /**
    * Filter component of applications page.
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    */
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
     this.form.valueChanges

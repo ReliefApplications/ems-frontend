@@ -31,7 +31,7 @@ const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
 })
 export class SafeEmailPreviewComponent {
   /** mail is put in a form to use read-only inputs */ // we want to change that
-  public form = this.formBuilder.group({
+  public form = this.fb.group({
     from: [{ value: this.data.from, disabled: true }],
     to: [{ value: this.data.to, disabled: false }, Validators.required],
     subject: [this.data.subject, Validators.required],
@@ -73,13 +73,13 @@ export class SafeEmailPreviewComponent {
    *
    * @param data injected dialog data
    * @param dialogRef Dialog reference
-   * @param formBuilder Angular Form Builder
+   * @param fb Angular Form Builder
    * @param editorService Editor service used to get main URL and current language
    */
   constructor(
     @Inject(DIALOG_DATA) public data: DialogData,
     public dialogRef: DialogRef<SafeEmailPreviewComponent>,
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     private editorService: SafeEditorService
   ) {
     // Set the editor base url based on the environment file

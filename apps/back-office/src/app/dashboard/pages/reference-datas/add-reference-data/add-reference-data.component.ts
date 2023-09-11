@@ -12,7 +12,7 @@ import { DialogRef } from '@angular/cdk/dialog';
 })
 export class AddReferenceDataComponent {
   // === REACTIVE FORM ===
-  referenceForm = this.formBuilder.group({
+  referenceForm = this.fb.group({
     name: ['', Validators.required],
   });
 
@@ -24,11 +24,11 @@ export class AddReferenceDataComponent {
   /**
    * New Refence Data modal.
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param dialogRef Dialog ref.
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<AddReferenceDataComponent>
   ) {}
 

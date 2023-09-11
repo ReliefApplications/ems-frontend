@@ -62,7 +62,7 @@ export function codesFactory(): () => {
 })
 export class EditDistributionListModalComponent {
   // === REACTIVE FORM ===
-  public form = this.formBuilder.group({
+  public form = this.fb.group({
     name: [get(this.data, 'name', null), Validators.required],
     emails: [get(this.data, 'emails', []), Validators.required],
   });
@@ -96,12 +96,12 @@ export class EditDistributionListModalComponent {
   /**
    * Component for edition of distribution list
    *
-   * @param formBuilder Angular form builder service
+   * @param fb Angular form builder service
    * @param dialogRef Dialog ref of the component
    * @param data Data input of the modal
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<EditDistributionListModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData
   ) {}

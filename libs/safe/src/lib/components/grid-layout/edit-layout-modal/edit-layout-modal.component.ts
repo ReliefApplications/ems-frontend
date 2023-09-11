@@ -43,7 +43,7 @@ interface DialogData {
 })
 export class SafeEditLayoutModalComponent implements AfterViewInit {
   @Input() layout: any;
-  public form = this.formBuilder.group({
+  public form = this.fb.group({
     name: [this.data.layout?.name, Validators.required],
     query: createQueryForm(this.data.layout?.query),
     display: createDisplayForm(this.data.layout?.display),
@@ -54,12 +54,12 @@ export class SafeEditLayoutModalComponent implements AfterViewInit {
   /**
    * The constructor function is a special function that is called when a new instance of the class is created
    *
-   * @param formBuilder This is the service used to build forms.
+   * @param fb This is the service used to build forms.
    * @param dialogRef This is the reference of the dialog that will be opened.
    * @param data This is the data that is passed to the modal when it is opened.
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<SafeEditLayoutModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData
   ) {}

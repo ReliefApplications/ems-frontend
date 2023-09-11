@@ -27,18 +27,18 @@ import { FormWrapperModule } from '@oort-front/ui';
   styleUrls: ['./add-resource-modal.component.scss'],
 })
 export class AddResourceModalComponent {
-  public addForm = this.formBuilder.group({
+  public addForm = this.fb.group({
     name: ['', Validators.required],
   });
 
   /**
    * Modal to add a new resource.
    *
-   * @param formBuilder Angular Form builder service
+   * @param fb Angular Form builder service
    * @param dialogRef Dialog reference
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<AddResourceModalComponent>
   ) {}
 

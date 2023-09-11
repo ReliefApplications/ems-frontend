@@ -56,7 +56,7 @@ const SUBJECT_EDITOR_AUTOCOMPLETE_KEYS = ['{{now}}', '{{today}}'];
 })
 export class EditTemplateModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  form = this.formBuilder.group({
+  form = this.fb.group({
     name: [get(this.data, 'name', null), Validators.required],
     type: [get(this.data, 'type', 'email'), Validators.required],
     subject: [get(this.data, 'content.subject', null), Validators.required],
@@ -72,13 +72,13 @@ export class EditTemplateModalComponent implements OnInit {
   /**
    * Component for editing a template
    *
-   * @param formBuilder Angular form builder service
+   * @param fb Angular form builder service
    * @param dialogRef Dialog ref of the component
    * @param data Data input of the modal
    * @param editorService Editor service used to get main URL and current language
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<EditTemplateModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData,
     private editorService: SafeEditorService

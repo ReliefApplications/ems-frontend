@@ -65,14 +65,14 @@ export class ButtonConfigComponent
   /**
    * Configuration component for grid widget button.
    *
-   * @param formBuilder Form builder
+   * @param fb Form builder
    * @param router Angular Router service
    * @param workflowService Shared workflow service
    * @param dialog Dialog service
    * @param applicationService Shared application service
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     private router: Router,
     private workflowService: SafeWorkflowService,
     public dialog: Dialog,
@@ -353,7 +353,7 @@ export class ButtonConfigComponent
    */
   onAddModification(): void {
     this.modificationsArray.push(
-      this.formBuilder.group({
+      this.fb.group({
         field: ['', Validators.required],
         value: ['', Validators.required],
       })

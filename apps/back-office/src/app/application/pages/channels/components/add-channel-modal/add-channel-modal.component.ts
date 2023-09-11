@@ -40,18 +40,18 @@ import {
 })
 export class AddChannelModalComponent {
   /** Channel form group */
-  public channelForm = this.formBuilder.group({
+  public channelForm = this.fb.group({
     title: ['', Validators.required],
   });
 
   /**
    * Add channel component
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param dialogRef Dialog ref
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<AddChannelModalComponent>
   ) {}
 

@@ -57,7 +57,7 @@ export class SafeConvertModalComponent
   implements OnInit
 {
   // === REACTIVE FORM ===
-  convertForm = this.formBuilder.group({
+  convertForm = this.fb.group({
     targetForm: new FormControl<Form | null>(null, Validators.required),
     copyRecord: [true, Validators.required],
   });
@@ -74,13 +74,13 @@ export class SafeConvertModalComponent
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
-   * @param formBuilder This is used to create a form.
+   * @param fb This is used to create a form.
    * @param apollo This is the Apollo service that we'll use to make the GraphQL mutation.
    * @param dialogRef This is the reference of the dialog that will be opened
    * @param data This is the data that is passed into the modal when it is opened.
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     private apollo: Apollo,
     public dialogRef: DialogRef<SafeConvertModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData

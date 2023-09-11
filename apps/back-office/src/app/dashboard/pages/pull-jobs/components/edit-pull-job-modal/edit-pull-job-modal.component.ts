@@ -89,7 +89,7 @@ const DEFAULT_FIELDS = ['createdBy'];
 })
 export class EditPullJobModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  public formGroup = this.formBuilder.group({
+  public formGroup = this.fb.group({
     name: [get(this.data, 'pullJob.name', ''), Validators.required],
     status: [get(this.data, 'pullJob.status', ''), Validators.required],
     apiConfiguration: [
@@ -104,10 +104,10 @@ export class EditPullJobModalComponent implements OnInit {
     ],
     convertTo: [get(this.data, 'pullJob.convertTo.id', '')],
     channel: [get(this.data, 'pullJob.channel.id', '')],
-    mapping: this.formBuilder.array(
+    mapping: this.fb.array(
       this.data.pullJob && this.data.pullJob.mapping
         ? Object.keys(this.data.pullJob.mapping).map((x: any) =>
-            this.formBuilder.group({
+            this.fb.group({
               name: [x, Validators.required],
               value: [this.data.pullJob?.mapping[x], Validators.required],
             })
@@ -179,7 +179,7 @@ export class EditPullJobModalComponent implements OnInit {
   /**
    * Pull job modal component
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param dialogRef Dialog ref
    * @param apollo Apollo service
    * @param document Document
@@ -188,7 +188,7 @@ export class EditPullJobModalComponent implements OnInit {
    * @param data.pullJob pull job
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<EditPullJobModalComponent>,
     private apollo: Apollo,
     @Inject(DOCUMENT) private document: Document,
@@ -276,9 +276,9 @@ export class EditPullJobModalComponent implements OnInit {
         const mapping = JSON.parse(value || '{}');
         this.formGroup.setControl(
           'mapping',
-          this.formBuilder.array(
+          this.fb.array(
             Object.keys(mapping).map((x: any) =>
-              this.formBuilder.group({
+              this.fb.group({
                 name: [x, Validators.required],
                 value: [mapping[x], Validators.required],
               })
@@ -342,7 +342,7 @@ export class EditPullJobModalComponent implements OnInit {
    */
   onAddElement(): void {
     this.mappingArray.push(
-      this.formBuilder.group({
+      this.fb.group({
         name: ['', Validators.required],
         value: ['', Validators.required],
       })

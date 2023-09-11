@@ -57,13 +57,13 @@ export class SafePreferencesModalComponent implements OnInit {
    * Preferences Modal constructor
    *
    * @param data Data that will be passed to the modal
-   * @param formBuilder This is the service that will be used to build forms.
+   * @param fb This is the service that will be used to build forms.
    * @param translate This is the Angular service that translates text
    * @param dateTranslate Shared service for Date Translation
    */
   constructor(
     @Inject(DIALOG_DATA) public data: PreferencesDialogData,
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     private translate: TranslateService,
     private dateTranslate: SafeDateTranslateService
   ) {
@@ -101,7 +101,7 @@ export class SafePreferencesModalComponent implements OnInit {
    * @returns Form group
    */
   private createPreferencesForm() {
-    return this.formBuilder.group({
+    return this.fb.group({
       // initializes select field with current language
       language: [this.currLang, Validators.required],
       // initializes select field with current date language format

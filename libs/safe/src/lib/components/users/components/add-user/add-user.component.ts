@@ -28,13 +28,13 @@ export class SafeAddUserComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  form = this.formBuilder.group({
+  form = this.fb.group({
     email: ['', Validators.minLength(1)],
     role: ['', Validators.required],
     ...(this.data.positionAttributeCategories && {
-      positionAttributes: this.formBuilder.array(
+      positionAttributes: this.fb.array(
         this.data.positionAttributeCategories.map((x) =>
-          this.formBuilder.group({
+          this.fb.group({
             value: [''],
             category: [x.id, Validators.required],
           })
@@ -55,14 +55,14 @@ export class SafeAddUserComponent
   /**
    * Constructor for the component
    *
-   * @param formBuilder The form builder service
+   * @param fb The form builder service
    * @param dialogRef The Dialog reference service
    * @param data The input data
    * @param apollo The apollo client
    * @param translate The translation service
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<SafeAddUserComponent>,
     @Inject(DIALOG_DATA) public data: DialogData,
     private apollo: Apollo,

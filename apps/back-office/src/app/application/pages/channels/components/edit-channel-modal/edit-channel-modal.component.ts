@@ -39,20 +39,20 @@ import {
 })
 export class EditChannelModalComponent {
   /** Current form */
-  public formGroup = this.formBuilder.group({
+  public formGroup = this.fb.group({
     title: [this.data.channel.title, Validators.required],
   });
 
   /**
    * Edit channel component
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param dialogRef Dialog ref
    * @param data Injected dialog data
    * @param data.channel channel to edit
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<EditChannelModalComponent>,
     @Inject(DIALOG_DATA)
     public data: {

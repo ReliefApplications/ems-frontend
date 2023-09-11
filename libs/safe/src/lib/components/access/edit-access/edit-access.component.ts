@@ -32,7 +32,7 @@ export class SafeEditAccessComponent
   public roles: Role[] = [];
 
   // === REACTIVE FORM ===
-  accessForm = this.formBuilder.group({
+  accessForm = this.fb.group({
     canSee: [
       this.data.access.canSee
         ? this.data.access.canSee.map((x: any) => x.id)
@@ -53,14 +53,14 @@ export class SafeEditAccessComponent
   /**
    * The constructor function is used to create a new instance of the SafeEditAccessComponent class
    *
-   * @param formBuilder This is used to create the form.
+   * @param fb This is used to create the form.
    * @param apollo This is the Apollo service that we'll use to make our GraphQL
    * queries.
    * @param dialogRef This is the dialog that will be opened
    * @param {DialogData} data This is the data that is passed to the dialog when it is opened.
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     private apollo: Apollo,
     public dialogRef: DialogRef<SafeEditAccessComponent>,
     @Inject(DIALOG_DATA) public data: DialogData

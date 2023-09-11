@@ -48,7 +48,7 @@ export class SafeInviteUsersComponent extends SafeUnsubscribeComponent {
    *
    * @param downloadService The download service
    * @param snackBar The snack bar service
-   * @param formBuilder The form builder service
+   * @param fb The form builder service
    * @param dialog The Dialog service
    * @param dialogRef The reference to a Dialog
    * @param translate The translation service
@@ -57,7 +57,7 @@ export class SafeInviteUsersComponent extends SafeUnsubscribeComponent {
   constructor(
     private downloadService: SafeDownloadService,
     private snackBar: SnackbarService,
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     public dialog: Dialog,
     public dialogRef: DialogRef<SafeInviteUsersComponent>,
     public translate: TranslateService,
@@ -210,13 +210,13 @@ export class SafeInviteUsersComponent extends SafeUnsubscribeComponent {
    * @returns Form group created from row data.
    */
   public createFormGroup(dataItem: any) {
-    return this.formBuilder.group({
+    return this.fb.group({
       email: [dataItem.email, Validators.required],
       role: [dataItem.role, Validators.required],
       ...(this.data.positionAttributeCategories && {
-        positionAttributes: this.formBuilder.array(
+        positionAttributes: this.fb.array(
           this.data.positionAttributeCategories.map((x, index) =>
-            this.formBuilder.group({
+            this.fb.group({
               value: [dataItem.positionAttributes[index].value || ''],
               category: [x.id, Validators.required],
             })
