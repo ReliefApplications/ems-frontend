@@ -219,11 +219,17 @@ export class SafeWorkflowService {
     widgetId: string,
     rows: string[]
   ): void {
-    const context = this.workflowContext.getValue();
-    if (!context[dashboardId]) {
-      context[dashboardId] = {};
-    }
-    context[dashboardId][widgetId] = rows;
+    // If necessary to send full workflow context
+    // const context = this.workflowContext.getValue();
+    // if (!context[dashboardId]) {
+    //   context[dashboardId] = {};
+    // }
+    // context[dashboardId][widgetId] = rows;
+    const context = {
+      [dashboardId]: {
+        [widgetId]: rows,
+      },
+    };
     this.workflowContext.next(context);
   }
 }
