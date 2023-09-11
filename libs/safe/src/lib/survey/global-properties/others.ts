@@ -2,7 +2,6 @@ import {
   ChoicesRestful,
   JsonMetadata,
   QuestionFileModel,
-  SurveyModel,
 } from 'survey-angular';
 import { Question } from '../types';
 import * as Survey from 'survey-angular';
@@ -77,27 +76,6 @@ export const init = (Survey: any, environment: any): void => {
     category: 'validation',
     visibleIndex: 4,
     default: false,
-  });
-
-  // Adds a dropdowm to the matrices sections with all the questions in the form
-  serializer.addProperty('matrix', {
-    name: 'copyToOthers:dropdown',
-    category: 'rows',
-    choices: (preForm: Survey.Model, choicesCallback: any) => {
-      const form = preForm?.survey as SurveyModel;
-      //return the page and question if type is matrix
-      const questions = form.pages
-        .map((page: Survey.PageModel) => {
-          return page.questions.filter(
-            (question: Survey.Question) => question.getType() === 'matrix'
-          );
-        })
-        .flat()
-        .map((question: Survey.Question) => {
-          return `${question.page.name} > ${question.name}`;
-        });
-      choicesCallback(questions);
-    },
   });
 
   // Adds a property to the survey settings to open the form on a specific page using the question value
