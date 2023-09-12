@@ -12,7 +12,7 @@ import { apiValidator } from '../../../../../utils/nameValidation';
   styleUrls: ['./add-api-configuration.component.scss'],
 })
 export class AddApiConfigurationComponent {
-  // === REACTIVE FORM ===
+  /** Api reactive form group */
   apiForm = this.fb.group({
     name: ['', [Validators.required, Validators.pattern(apiValidator)]],
   });

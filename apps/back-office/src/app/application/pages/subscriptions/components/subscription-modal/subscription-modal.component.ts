@@ -75,7 +75,7 @@ export class SubscriptionModalComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  // === REACTIVE FORM ===
+  /** Subscription reactive form group */
   subscriptionForm = this.fb.group({
     routingKey: [
       this.data.subscription ? this.data.subscription.routingKey : '',
@@ -96,34 +96,34 @@ export class SubscriptionModalComponent
         : '',
     ],
   });
-
-  // === DATA ===
+  /** GraphQL forms query */
   public formsQuery!: QueryRef<GetFormsQueryResponse>;
-
-  // === DATA ===
+  /** Available applications */
   private applications = new BehaviorSubject<Application[]>([]);
+  /** Filtered applications as observable */
   public filteredApplications$!: Observable<Application[]>;
+  /** Applications as observable */
   public applications$!: Observable<Application[]>;
+  /** GraphQL applications query */
   private applicationsQuery!: QueryRef<GetRoutingKeysQueryResponse>;
+  /** Cached applications */
   private cachedApplications: Application[] = [];
+  /** Applications query pagination info */
   private applicationsPageInfo = {
     endCursor: '',
     hasNextPage: true,
   };
+  /** Loading indicator for applications */
   private applicationsLoading = true;
 
   /** @returns subscription routing key */
   get routingKey(): string | null | undefined {
     return this.subscriptionForm.value.routingKey;
   }
-
-  /**
-   * Set subscription key
-   */
+  /** Set subscription key */
   set routingKey(value: string | null | undefined) {
     this.subscriptionForm.controls.routingKey.setValue(value);
   }
-
   /** @returns default convert to form */
   get defaultForm(): Form | null {
     return get(this.data, 'subscription.convertTo', null);

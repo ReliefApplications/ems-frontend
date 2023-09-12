@@ -14,16 +14,15 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
   styleUrls: ['./chose-role.component.scss'],
 })
 export class ChoseRoleComponent implements OnInit {
-  // === DATA ===
+  /** Available roles */
   public roles: Role[] = [];
+  /** Loading indicator */
   public loading = true;
-
-  // === REACTIVE FORM ===
-  roleForm = this.fb.group({
+  /** Role reactive form group */
+  public roleForm = this.fb.group({
     role: [null, Validators.required],
   });
-
-  // === ROLES QUERY ===
+  /** GraphQL roles query */
   public rolesQuery!: QueryRef<GetRolesQueryResponse>;
 
   /**

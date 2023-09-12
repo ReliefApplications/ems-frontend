@@ -35,7 +35,7 @@ import {
   styleUrls: ['./position-modal.component.scss'],
 })
 export class PositionModalComponent {
-  // === REACTIVE FORM ===
+  /** Position reactive form group */
   positionForm = this.fb.group({
     title: [this.data.title, Validators.required],
   });

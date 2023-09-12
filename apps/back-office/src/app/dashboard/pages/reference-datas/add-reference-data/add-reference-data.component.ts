@@ -3,7 +3,7 @@ import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { DialogRef } from '@angular/cdk/dialog';
 
 /**
- * New Refence Data modal.
+ * New Reference Data modal.
  */
 @Component({
   selector: 'app-add-reference-data',
@@ -11,7 +11,7 @@ import { DialogRef } from '@angular/cdk/dialog';
   styleUrls: ['./add-reference-data.component.scss'],
 })
 export class AddReferenceDataComponent {
-  // === REACTIVE FORM ===
+  /** Reference data reactive form group */
   referenceForm = this.fb.group({
     name: ['', Validators.required],
   });
@@ -22,7 +22,7 @@ export class AddReferenceDataComponent {
   }
 
   /**
-   * New Refence Data modal.
+   * New Reference Data modal.
    *
    * @param fb Angular form builder
    * @param dialogRef Dialog ref.
