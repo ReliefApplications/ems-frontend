@@ -91,7 +91,7 @@ export class PullJobsComponent
       query: GET_PULL_JOBS,
       variables: {
         first: ITEMS_PER_PAGE,
-        afterCursor: this.pageInfo.endCursor,
+        afterCursor: null,
       },
     });
 
@@ -109,36 +109,70 @@ export class PullJobsComponent
    */
   onPage(e: UIPageChangeEvent): void {
     this.pageInfo.pageIndex = e.pageIndex;
+    // Checks if with new page/size more data needs to be fetched
     if (
       ((e.pageIndex > e.previousPageIndex &&
-        e.pageIndex * this.pageInfo.pageSize >= this.cachedPullJobs.length) ||
+        e.pageIndex * this.pageInfo.pageSize >=
+          this.cachedPullJobs.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
       e.totalItems > this.cachedPullJobs.length
     ) {
-      this.loading = true;
-      const variables = {
-        first: ITEMS_PER_PAGE,
-        afterCursor: this.pageInfo.endCursor,
-      };
-      const cachedValues: GetPullJobsQueryResponse = getCachedValues(
-        this.apollo.client,
-        GET_PULL_JOBS,
-        variables
-      );
-      if (cachedValues) {
-        this.updateValues(cachedValues, false);
-      } else {
-        this.pullJobsQuery
-          .fetchMore({ variables })
-          .then((results: ApolloQueryResult<GetPullJobsQueryResponse>) => {
-            this.updateValues(results.data, results.loading);
-          });
+      // Sets the new fetch quantity of data needed as the page size
+      // If the fetch is for a new page the page size is used
+      let first = e.pageSize;
+      // If the fetch is for a new page size, the old page size is substracted from the new one
+      if (e.pageSize > this.pageInfo.pageSize) {
+        first -= this.pageInfo.pageSize;
       }
+      this.pageInfo.pageSize = first;
+      this.fetchPulljobs();
     } else {
       this.pullJobs = this.cachedPullJobs.slice(
-        ITEMS_PER_PAGE * this.pageInfo.pageIndex,
-        ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
+        e.pageSize * this.pageInfo.pageIndex,
+        e.pageSize * (this.pageInfo.pageIndex + 1)
       );
+    }
+    this.pageInfo.pageSize = e.pageSize;
+  }
+
+  /**
+   * Update users query.
+   *
+   * @param refetch erase previous query results
+   */
+  private fetchPulljobs(refetch?: boolean): void {
+    this.loading = true;
+    const variables = {
+      first: this.pageInfo.pageSize,
+      afterCursor: refetch ? null : this.pageInfo.endCursor,
+    };
+    const cachedValues: GetPullJobsQueryResponse = getCachedValues(
+      this.apollo.client,
+      GET_PULL_JOBS,
+      variables
+    );
+    if (refetch) {
+      this.cachedPullJobs = [];
+      this.pageInfo.pageIndex = 0;
+    }
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
+    } else {
+      if (refetch) {
+        // Rebuild the query
+        this.pullJobsQuery.refetch(variables);
+      } else {
+        // Fetch more records
+        this.pullJobsQuery
+          .fetchMore({
+            variables,
+          })
+          .then(
+            (results: ApolloQueryResult<GetPullJobsQueryResponse>) => {
+              this.updateValues(results.data, results.loading);
+            }
+          );
+      }
     }
   }
 
@@ -405,8 +439,8 @@ export class PullJobsComponent
     this.pageInfo.length = data.pullJobs.totalCount;
     this.pageInfo.endCursor = data.pullJobs.pageInfo.endCursor;
     this.pullJobs = this.cachedPullJobs.slice(
-      ITEMS_PER_PAGE * this.pageInfo.pageIndex,
-      ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
     );
     this.loading = loading;
   }

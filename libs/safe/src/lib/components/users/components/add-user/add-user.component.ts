@@ -91,9 +91,19 @@ export class SafeAddUserComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe(({ data }) => {
         const flatInvitedUsers = this.data.users.map((x) => x.username);
-        this.users = data.users.filter(
-          (x) => !flatInvitedUsers.includes(x.username)
+        const dataFiltered = data.users.edges.filter(
+          (x) => !flatInvitedUsers.includes(x.node.username)
         );
+        let user: User;
+        this.users = dataFiltered.map((d: any) => {
+          user = {
+            id: d.node.id,
+            username: d.node.username,
+            name: d.node.name,
+            oid: d.node.oid
+          }
+          return user;
+        });
         this.filteredUsers = this.form.controls.email.valueChanges.pipe(
           startWith(''),
           map((value) => (typeof value === 'string' ? value : '')),

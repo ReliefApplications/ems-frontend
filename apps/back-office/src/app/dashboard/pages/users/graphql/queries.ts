@@ -67,5 +67,4 @@ export interface GetUsersQueryResponse {
     };
     totalCount: number;
   };
-  // users: User[];
 }

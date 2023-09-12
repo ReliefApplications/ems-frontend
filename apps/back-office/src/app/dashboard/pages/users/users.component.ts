@@ -8,6 +8,12 @@ import {
 } from './graphql/queries';
 import { Role, User } from '@oort-front/safe';
 import { UIPageChangeEvent } from '@oort-front/ui';
+import {
+  getCachedValues,
+  updateQueryUniqueValues,
+} from '../../../utils/update-queries';
+import { ApolloQueryResult } from '@apollo/client';
+import { TranslateService } from '@ngx-translate/core';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
@@ -43,31 +49,30 @@ export class UsersComponent implements OnInit {
    *
    * @param apollo Used to load the users.
    */
-  constructor(private apollo: Apollo) {}
+  constructor(private apollo: Apollo, private translate: TranslateService) {}
 
   /** Load the users */
   ngOnInit(): void {
-    this.apollo
+    this.usersQuery = this.apollo
       .watchQuery<GetUsersQueryResponse>({
         query: GET_USERS,
         variables: {
           first: ITEMS_PER_PAGE,
-          afterCursor: this.pageInfo.endCursor,
+          afterCursor: null,
         },
-      })
-      .valueChanges.subscribe((resUsers) => {
-        this.loading = true;
-        console.log(resUsers.data.users);
-        this.users = [];
-        this.apollo
-          .watchQuery<GetRolesQueryResponse>({
-            query: GET_ROLES,
-          })
-          .valueChanges.subscribe(({ data, loading }) => {
-            this.roles = data.roles;
-            this.loading = loading;
-          });
       });
+    this.usersQuery.valueChanges.subscribe((resUsers) => {
+      this.loading = true;
+      this.updateValues(resUsers.data, resUsers.loading);
+      this.apollo
+        .watchQuery<GetRolesQueryResponse>({
+          query: GET_ROLES,
+        })
+        .valueChanges.subscribe(({ data, loading }) => {
+          this.roles = data.roles;
+          this.loading = loading;
+        });
+    });
   }
 
   /**
@@ -76,31 +81,93 @@ export class UsersComponent implements OnInit {
    * @param e page event.
    */
   onPage(e: UIPageChangeEvent): void {
-    // this.pageInfo.pageIndex = e.pageIndex;
-    // // Checks if with new page/size more data needs to be fetched
-    // if (
-    //   ((e.pageIndex > e.previousPageIndex &&
-    //     e.pageIndex * this.pageInfo.pageSize >=
-    //       this.cachedApiConfigurations.length) ||
-    //     e.pageSize > this.pageInfo.pageSize) &&
-    //   e.totalItems > this.cachedApiConfigurations.length
-    // ) {
-    //   // Sets the new fetch quantity of data needed as the page size
-    //   // If the fetch is for a new page the page size is used
-    //   let first = e.pageSize;
-    //   // If the fetch is for a new page size, the old page size is subtracted from the new one
-    //   if (e.pageSize > this.pageInfo.pageSize) {
-    //     first -= this.pageInfo.pageSize;
-    //   }
-    //   this.pageInfo.pageSize = first;
-    //   this.fetchApiConfigurations();
-    // } else {
-    //   this.dataSource = this.cachedApiConfigurations.slice(
-    //     e.pageSize * this.pageInfo.pageIndex,
-    //     e.pageSize * (this.pageInfo.pageIndex + 1)
-    //   );
-    //   this.filteredDataSources = this.dataSource;
-    // }
-    // this.pageInfo.pageSize = e.pageSize;
+    this.pageInfo.pageIndex = e.pageIndex;
+    // Checks if with new page/size more data needs to be fetched
+    if (
+      ((e.pageIndex > e.previousPageIndex &&
+        e.pageIndex * this.pageInfo.pageSize >=
+          this.cachedUsers.length) ||
+        e.pageSize > this.pageInfo.pageSize) &&
+      e.totalItems > this.cachedUsers.length
+    ) {
+      // Sets the new fetch quantity of data needed as the page size
+      // If the fetch is for a new page the page size is used
+      let first = e.pageSize;
+      // If the fetch is for a new page size, the old page size is substracted from the new one
+      if (e.pageSize > this.pageInfo.pageSize) {
+        first -= this.pageInfo.pageSize;
+      }
+      this.pageInfo.pageSize = first;
+      this.fetchUsers();
+    } else {
+      this.users = this.cachedUsers.slice(
+        e.pageSize * this.pageInfo.pageIndex,
+        e.pageSize * (this.pageInfo.pageIndex + 1)
+      );
+    }
+    this.pageInfo.pageSize = e.pageSize;
   }
+
+  /**
+   * Update users query.
+   *
+   * @param refetch erase previous query results
+   */
+  private fetchUsers(refetch?: boolean): void {
+    this.loading = true;
+    const variables = {
+      first: this.pageInfo.pageSize,
+      afterCursor: refetch ? null : this.pageInfo.endCursor,
+    };
+    const cachedValues: GetUsersQueryResponse = getCachedValues(
+      this.apollo.client,
+      GET_USERS,
+      variables
+    );
+    if (refetch) {
+      this.cachedUsers = [];
+      this.pageInfo.pageIndex = 0;
+    }
+    if (cachedValues) {
+      this.updateValues(cachedValues, false);
+    } else {
+      if (refetch) {
+        // Rebuild the query
+        this.usersQuery.refetch(variables);
+      } else {
+        // Fetch more records
+        this.usersQuery
+          .fetchMore({
+            variables,
+          })
+          .then(
+            (results: ApolloQueryResult<GetUsersQueryResponse>) => {
+              this.updateValues(results.data, results.loading);
+            }
+          );
+      }
+    }
+  }
+
+  /**
+   * Updates local list with given data
+   *
+   * @param data New values to update forms
+   * @param loading Loading state
+   */
+  private updateValues(data: GetUsersQueryResponse, loading: boolean): void {
+    const mappedValues = data.users.edges.map((x) => x.node);
+    this.cachedUsers = updateQueryUniqueValues(
+      this.cachedUsers,
+      mappedValues
+    );
+    this.pageInfo.length = data.users.totalCount;
+    this.pageInfo.endCursor = data.users.pageInfo.endCursor;
+    this.users = this.cachedUsers.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
+    this.loading = loading;
+  }
+
 }

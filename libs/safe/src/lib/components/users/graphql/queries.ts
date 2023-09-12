@@ -5,17 +5,36 @@ import { User } from '../../../models/user.model';
 
 /** Model for GetUsersQueryResponse object */
 export interface GetUsersQueryResponse {
-  users: User[];
+  users: {
+    edges: {
+      node: User;
+      cursor: string;
+    }[];
+    pageInfo: {
+      endCursor: string;
+      hasNextPage: boolean;
+    };
+    totalCount: number;
+  };
 }
 
 /** Graphql request for getting users (optionnally by a list of application ids) */
 export const GET_USERS = gql`
   query GetUsers($applications: [ID]) {
     users(applications: $applications) {
-      id
-      username
-      name
-      oid
+      edges {
+        node {
+          id
+          username
+          name
+          oid
+        }
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
     }
   }
 `;
