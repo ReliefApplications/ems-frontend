@@ -9,7 +9,13 @@ import { TranslateModule } from '@ngx-translate/core';
 /** Users page module */
 @NgModule({
   declarations: [UsersComponent],
-  imports: [CommonModule, UsersRoutingModule, SafeUsersModule, PaginatorModule, TranslateModule],
+  imports: [
+    CommonModule,
+    UsersRoutingModule,
+    SafeUsersModule,
+    PaginatorModule,
+    TranslateModule,
+  ],
   exports: [UsersComponent],
 })
 export class UsersModule {}

@@ -48,19 +48,19 @@ export class UsersComponent implements OnInit {
    * UsersComponent constructor.
    *
    * @param apollo Used to load the users.
+   * @param translate Translate service
    */
   constructor(private apollo: Apollo, private translate: TranslateService) {}
 
   /** Load the users */
   ngOnInit(): void {
-    this.usersQuery = this.apollo
-      .watchQuery<GetUsersQueryResponse>({
-        query: GET_USERS,
-        variables: {
-          first: ITEMS_PER_PAGE,
-          afterCursor: null,
-        },
-      });
+    this.usersQuery = this.apollo.watchQuery<GetUsersQueryResponse>({
+      query: GET_USERS,
+      variables: {
+        first: ITEMS_PER_PAGE,
+        afterCursor: null,
+      },
+    });
     this.usersQuery.valueChanges.subscribe((resUsers) => {
       this.loading = true;
       this.updateValues(resUsers.data, resUsers.loading);
@@ -85,8 +85,7 @@ export class UsersComponent implements OnInit {
     // Checks if with new page/size more data needs to be fetched
     if (
       ((e.pageIndex > e.previousPageIndex &&
-        e.pageIndex * this.pageInfo.pageSize >=
-          this.cachedUsers.length) ||
+        e.pageIndex * this.pageInfo.pageSize >= this.cachedUsers.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
       e.totalItems > this.cachedUsers.length
     ) {
@@ -140,11 +139,9 @@ export class UsersComponent implements OnInit {
           .fetchMore({
             variables,
           })
-          .then(
-            (results: ApolloQueryResult<GetUsersQueryResponse>) => {
-              this.updateValues(results.data, results.loading);
-            }
-          );
+          .then((results: ApolloQueryResult<GetUsersQueryResponse>) => {
+            this.updateValues(results.data, results.loading);
+          });
       }
     }
   }
@@ -157,10 +154,7 @@ export class UsersComponent implements OnInit {
    */
   private updateValues(data: GetUsersQueryResponse, loading: boolean): void {
     const mappedValues = data.users.edges.map((x) => x.node);
-    this.cachedUsers = updateQueryUniqueValues(
-      this.cachedUsers,
-      mappedValues
-    );
+    this.cachedUsers = updateQueryUniqueValues(this.cachedUsers, mappedValues);
     this.pageInfo.length = data.users.totalCount;
     this.pageInfo.endCursor = data.users.pageInfo.endCursor;
     this.users = this.cachedUsers.slice(
@@ -169,5 +163,4 @@ export class UsersComponent implements OnInit {
     );
     this.loading = loading;
   }
-
 }

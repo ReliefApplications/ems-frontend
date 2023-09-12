@@ -100,8 +100,8 @@ export class SafeAddUserComponent
             id: d.node.id,
             username: d.node.username,
             name: d.node.name,
-            oid: d.node.oid
-          }
+            oid: d.node.oid,
+          };
           return user;
         });
         this.filteredUsers = this.form.controls.email.valueChanges.pipe(

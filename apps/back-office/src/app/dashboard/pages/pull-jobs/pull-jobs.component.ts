@@ -112,8 +112,7 @@ export class PullJobsComponent
     // Checks if with new page/size more data needs to be fetched
     if (
       ((e.pageIndex > e.previousPageIndex &&
-        e.pageIndex * this.pageInfo.pageSize >=
-          this.cachedPullJobs.length) ||
+        e.pageIndex * this.pageInfo.pageSize >= this.cachedPullJobs.length) ||
         e.pageSize > this.pageInfo.pageSize) &&
       e.totalItems > this.cachedPullJobs.length
     ) {
@@ -167,11 +166,9 @@ export class PullJobsComponent
           .fetchMore({
             variables,
           })
-          .then(
-            (results: ApolloQueryResult<GetPullJobsQueryResponse>) => {
-              this.updateValues(results.data, results.loading);
-            }
-          );
+          .then((results: ApolloQueryResult<GetPullJobsQueryResponse>) => {
+            this.updateValues(results.data, results.loading);
+          });
       }
     }
   }
