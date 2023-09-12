@@ -1,15 +1,11 @@
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import get from 'lodash/get';
 import { QueryField } from '../../services/query-builder/query-builder.service';
 import { prettifyLabel } from '../../utils/prettify';
 import { FILTER_OPERATORS } from '../filter/filter.const';
 
 /** Creating a new instance of the FormBuilder class. */
-const formBuilder = new UntypedFormBuilder();
+const formBuilder = new FormBuilder();
 
 /**
  * Builds a filter form
@@ -17,7 +13,7 @@ const formBuilder = new UntypedFormBuilder();
  * @param filter Initial filter
  * @returns Filter form
  */
-export const createFilterGroup = (filter: any): UntypedFormGroup => {
+export const createFilterGroup = (filter: any) => {
   if (filter?.filters) {
     const filters = filter.filters.map((x: any) => createFilterGroup(x));
     return formBuilder.group({
@@ -51,10 +47,7 @@ export const createFilterGroup = (filter: any): UntypedFormGroup => {
  * @param newField Is the field new ?
  * @returns Field form
  */
-export const addNewField = (
-  field: any,
-  newField?: boolean
-): UntypedFormGroup => {
+export const addNewField = (field: any, newField?: boolean) => {
   switch (newField ? field.type.kind : field.kind) {
     case 'LIST': {
       return formBuilder.group({
@@ -136,10 +129,7 @@ export const createDefaultField = (name: string): QueryField => ({
  * @param validators Enables or not the validators of the form
  * @returns Query form
  */
-export const createQueryForm = (
-  value: any,
-  validators = true
-): UntypedFormGroup =>
+export const createQueryForm = (value: any, validators = true) =>
   formBuilder.group({
     name: [get(value, 'name', ''), validators ? Validators.required : null],
     template: [get(value, 'template', ''), null],
@@ -164,7 +154,7 @@ export const createQueryForm = (
  * @param value Initial value.
  * @returns Display form.
  */
-export const createDisplayForm = (value: any): UntypedFormGroup =>
+export const createDisplayForm = (value: any) =>
   formBuilder.group({
     showFilter: [value?.showFilter],
     sort: [value?.sort || []],
@@ -178,7 +168,7 @@ export const createDisplayForm = (value: any): UntypedFormGroup =>
  * @param value Initial value.
  * @returns Style form.
  */
-export const createStyleForm = (value: any): UntypedFormGroup =>
+export const createStyleForm = (value: any) =>
   formBuilder.group({
     name: [value?.name || 'New rule', Validators.required],
     background: formBuilder.group({

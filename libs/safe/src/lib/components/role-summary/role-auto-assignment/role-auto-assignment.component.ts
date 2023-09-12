@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormArray } from '@angular/forms';
+import { UntypedFormArray, FormBuilder } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { Apollo } from 'apollo-angular';
@@ -54,7 +54,7 @@ export class RoleAutoAssignmentComponent
    * @param restService Safe REST service
    */
   constructor(
-    private fb: UntypedFormBuilder,
+    private fb: FormBuilder,
     private apollo: Apollo,
     private dialog: Dialog,
     private translate: TranslateService,

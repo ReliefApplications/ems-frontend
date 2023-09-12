@@ -1963,9 +1963,6 @@
 				"longitude": "Longitude",
 				"zoom": "Zoom"
 			},
-			"scheduler": {
-				"defaultTitle": "Scheduler Widget"
-			},
 			"sorting": {
 				"add": "Add a field",
 				"delete": "Delete sort field",

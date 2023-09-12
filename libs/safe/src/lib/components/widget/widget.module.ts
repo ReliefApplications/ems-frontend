@@ -4,7 +4,6 @@ import { SafeWidgetComponent } from './widget.component';
 import { SafeChartModule } from '../widgets/chart/chart.module';
 import { SafeEditorModule } from '../widgets/editor/editor.module';
 import { SafeGridWidgetModule } from '../widgets/grid/grid.module';
-// import { SafeSchedulerModule } from '../widgets/scheduler/scheduler.module';
 import { SafeSummaryCardModule } from '../widgets/summary-card/summary-card.module';
 import { SafeMapWidgetModule } from '../widgets/map/map.module';
 import { TabsModule } from '../widgets/tabs/tabs.module';
@@ -23,7 +22,6 @@ import 'hammerjs';
     SafeEditorModule,
     SafeGridWidgetModule,
     SafeMapWidgetModule,
-    // SafeSchedulerModule,
     SafeSummaryCardModule,
     TabsModule,
   ],

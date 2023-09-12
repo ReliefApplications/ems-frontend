@@ -418,11 +418,6 @@
     },
     "serve": {
       "executor": "@angular-devkit/build-angular:dev-server",
-      "options": {
-        "headers": {
-          "Content-Security-Policy-Report-Only": "default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; media-src 'self'; form-action 'self'; block-all-mixed-content; base-uri 'self'"
-        }
-      },
       "configurations": {
         "oort-prod": {
           "browserTarget": "front-office:build:oort-prod"

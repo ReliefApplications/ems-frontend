@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import {
+  FormBuilder,
+  FormGroup,
   UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormGroup,
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -12,7 +12,6 @@ import { Resource } from '../../../../models/resource.model';
 import { ContentType } from '../../../../models/page.model';
 import { SafeWorkflowService } from '../../../../services/workflow/workflow.service';
 import { Template, TemplateTypeEnum } from '../../../../models/template.model';
-import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
 import { Dialog } from '@angular/cdk/dialog';
 import { createQueryForm } from '../../../query-builder/query-builder-forms';
 import { DistributionList } from '../../../../models/distribution-list.model';
@@ -35,7 +34,7 @@ export class ButtonConfigComponent
   implements OnInit
 {
   @Output() deleteButton: EventEmitter<boolean> = new EventEmitter();
-  @Input() formGroup!: UntypedFormGroup;
+  @Input() formGroup!: FormGroup;
   @Input() fields: any[] = [];
   @Input() channels: Channel[] = [];
   @Input() relatedForms: Form[] = [];
@@ -66,18 +65,16 @@ export class ButtonConfigComponent
   /**
    * Configuration component for grid widget button.
    *
-   * @param formBuilder Form builder
+   * @param fb Form builder
    * @param router Angular Router service
    * @param workflowService Shared workflow service
-   * @param queryBuilder Shared Query Builder service
    * @param dialog Dialog service
    * @param applicationService Shared application service
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     private router: Router,
     private workflowService: SafeWorkflowService,
-    private queryBuilder: QueryBuilderService,
     public dialog: Dialog,
     private applicationService: SafeApplicationService
   ) {
@@ -356,7 +353,7 @@ export class ButtonConfigComponent
    */
   onAddModification(): void {
     this.modificationsArray.push(
-      this.formBuilder.group({
+      this.fb.group({
         field: ['', Validators.required],
         value: ['', Validators.required],
       })

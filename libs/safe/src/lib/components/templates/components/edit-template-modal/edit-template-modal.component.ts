@@ -1,9 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { SafeEditorService } from '../../../../services/editor/editor.service';
 import {
@@ -60,7 +56,12 @@ const SUBJECT_EDITOR_AUTOCOMPLETE_KEYS = ['{{now}}', '{{today}}'];
 })
 export class EditTemplateModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  form: UntypedFormGroup = new UntypedFormGroup({});
+  form = this.fb.group({
+    name: [get(this.data, 'name', null), Validators.required],
+    type: [get(this.data, 'type', 'email'), Validators.required],
+    subject: [get(this.data, 'content.subject', null), Validators.required],
+    body: [get(this.data, 'content.body', ''), Validators.required],
+  });
 
   /** tinymce body editor */
   public bodyEditor: RawEditorSettings = EMAIL_EDITOR_CONFIG;
@@ -71,13 +72,13 @@ export class EditTemplateModalComponent implements OnInit {
   /**
    * Component for editing a template
    *
-   * @param formBuilder Angular form builder service
+   * @param fb Angular form builder service
    * @param dialogRef Dialog ref of the component
    * @param data Data input of the modal
    * @param editorService Editor service used to get main URL and current language
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<EditTemplateModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData,
     private editorService: SafeEditorService
@@ -94,13 +95,6 @@ export class EditTemplateModalComponent implements OnInit {
 
   /** Build the form. */
   ngOnInit(): void {
-    // In the future, change this according to the type of template
-    this.form = this.formBuilder.group({
-      name: [get(this.data, 'name', null), Validators.required],
-      type: [get(this.data, 'type', 'email'), Validators.required],
-      subject: [get(this.data, 'content.subject', null), Validators.required],
-      body: [get(this.data, 'content.body', ''), Validators.required],
-    });
     this.editorService.addCalcAndKeysAutoCompleter(
       this.bodyEditor,
       BODY_EDITOR_AUTOCOMPLETE_KEYS.map((key) => ({ value: key, text: key }))

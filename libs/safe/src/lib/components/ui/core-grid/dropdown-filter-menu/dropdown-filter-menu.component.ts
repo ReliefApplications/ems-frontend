@@ -1,9 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import {
-  UntypedFormGroup,
-  UntypedFormArray,
-  UntypedFormBuilder,
-} from '@angular/forms';
+import { UntypedFormArray, FormBuilder } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { FilterService } from '@progress/kendo-angular-grid';
 
@@ -22,7 +18,7 @@ export class SafeDropdownFilterMenuComponent implements OnInit {
   @Input() public textField = '';
   @Input() public valueField = '';
   @Input() public filterService?: FilterService;
-  public form?: UntypedFormGroup;
+  public form!: ReturnType<typeof this.createFormGroup>;
 
   /** @returns The default item */
   public get defaultItem(): any {
@@ -65,39 +61,45 @@ export class SafeDropdownFilterMenuComponent implements OnInit {
    * @param fb The form builder
    * @param translate The translation service
    */
-  constructor(
-    private fb: UntypedFormBuilder,
-    private translate: TranslateService
-  ) {}
+  constructor(private fb: FormBuilder, private translate: TranslateService) {}
 
   ngOnInit(): void {
     this.choices1 = (this.data || []).slice();
     this.choices2 = (this.data || []).slice();
-    this.form = this.fb.group({
-      logic: this.filter.logic,
+    this.form = this.createFormGroup();
+    this.form.valueChanges.subscribe((value) => {
+      this.filterService?.filter(value as any);
+    });
+  }
+
+  /**
+   * Create form group
+   *
+   * @returns form group
+   */
+  private createFormGroup() {
+    return this.fb.group({
+      logic: this.fb.nonNullable.control<string>(this.filter.logic),
       filters: this.fb.array([
         this.fb.group({
           field: this.field,
-          operator: this.filter.filters[0]
-            ? this.filter.filters[0].operator
-            : 'eq',
+          operator: this.fb.nonNullable.control<string>(
+            this.filter.filters[0] ? this.filter.filters[0].operator : 'eq'
+          ),
           value: this.fb.control(
             this.filter.filters[0] ? this.filter.filters[0].value : ''
           ),
         }),
         this.fb.group({
           field: this.field,
-          operator: this.filter.filters[1]
-            ? this.filter.filters[1].operator
-            : 'eq',
+          operator: this.fb.nonNullable.control<string>(
+            this.filter.filters[1] ? this.filter.filters[1].operator : 'eq'
+          ),
           value: this.fb.control(
             this.filter.filters[1] ? this.filter.filters[1].value : ''
           ),
         }),
       ]),
-    });
-    this.form.valueChanges.subscribe((value) => {
-      this.filterService?.filter(value);
     });
   }
 

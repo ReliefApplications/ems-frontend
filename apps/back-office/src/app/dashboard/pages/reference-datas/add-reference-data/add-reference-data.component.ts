@@ -1,10 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {
-  AbstractControl,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { Component } from '@angular/core';
+import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { DialogRef } from '@angular/cdk/dialog';
 
 /**
@@ -15,9 +10,11 @@ import { DialogRef } from '@angular/cdk/dialog';
   templateUrl: './add-reference-data.component.html',
   styleUrls: ['./add-reference-data.component.scss'],
 })
-export class AddReferenceDataComponent implements OnInit {
+export class AddReferenceDataComponent {
   // === REACTIVE FORM ===
-  referenceForm: UntypedFormGroup = new UntypedFormGroup({});
+  referenceForm = this.fb.group({
+    name: ['', Validators.required],
+  });
 
   /** @returns name of reference data */
   get name(): AbstractControl | null {
@@ -27,22 +24,13 @@ export class AddReferenceDataComponent implements OnInit {
   /**
    * New Refence Data modal.
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param dialogRef Dialog ref.
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<AddReferenceDataComponent>
   ) {}
-
-  /**
-   * Build the form.
-   */
-  ngOnInit(): void {
-    this.referenceForm = this.formBuilder.group({
-      name: ['', Validators.required],
-    });
-  }
 
   /**
    * Close the modal without sending data.

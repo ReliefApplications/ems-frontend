@@ -1,9 +1,5 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import {
-  UntypedFormGroup,
-  UntypedFormBuilder,
-  Validators,
-} from '@angular/forms';
+import { Component, Inject } from '@angular/core';
+import { Validators, FormBuilder } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 
 /**
@@ -14,23 +10,25 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
   templateUrl: './add-role.component.html',
   styleUrls: ['./add-role.component.scss'],
 })
-export class SafeAddRoleComponent implements OnInit {
+export class SafeAddRoleComponent {
   title: string;
 
   // === REACTIVE FORM ===
-  roleForm: UntypedFormGroup = new UntypedFormGroup({});
+  roleForm = this.fb.group({
+    title: ['', Validators.required],
+  });
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
-   * @param formBuilder This is the service used to build forms
+   * @param fb This is the service used to build forms
    * @param dialogRef This is the reference of the dialog modal that will be opened
    * @param data Injected dialog data
    * @param data.title Title of the dialog modal
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<SafeAddRoleComponent>,
     @Inject(DIALOG_DATA)
     public data: {
@@ -38,15 +36,6 @@ export class SafeAddRoleComponent implements OnInit {
     }
   ) {
     this.title = data.title;
-  }
-
-  /**
-   * Build the form.
-   */
-  ngOnInit(): void {
-    this.roleForm = this.formBuilder.group({
-      title: ['', Validators.required],
-    });
   }
 
   /**

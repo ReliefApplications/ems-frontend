@@ -1979,9 +1979,6 @@
 				"longitude": "Longitude",
 				"zoom": "Zoom"
 			},
-			"scheduler": {
-				"defaultTitle": "Widget Calendrier"
-			},
 			"sorting": {
 				"add": "Ajouter un champ",
 				"delete": "Supprimer le champ de tri",

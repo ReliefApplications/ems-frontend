@@ -128,12 +128,12 @@ export class SafeSummaryCardSettingsComponent
    *
    * @param apollo Apollo service
    * @param aggregationService Shared aggregation service
-   * @param formBuilder FormBuilder instance
+   * @param fb FormBuilder instance
    */
   constructor(
     private apollo: Apollo,
     private aggregationService: SafeAggregationService,
-    private formBuilder: FormBuilder
+    private fb: FormBuilder
   ) {
     super();
   }
@@ -173,7 +173,7 @@ export class SafeSummaryCardSettingsComponent
    */
   initSortFields(): void {
     this.tile.settings.sortFields?.forEach((item: any) => {
-      const row = this.formBuilder.group({
+      const row = this.fb.group({
         field: [item.field, Validators.required],
         order: [item.order, Validators.required],
         label: [item.label, Validators.required],
