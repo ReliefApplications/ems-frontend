@@ -14,7 +14,7 @@
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
-    <table 
+    <table
       [loading]="loading"
       cdk-table
       uiTableWrapper
@@ -22,8 +22,7 @@
       [columns]="[
         'common.name',
         'common.status',
-        'common.apiConfiguration.one',
-        'components.record.convert.select'
+        'models.pullJob.nextIteration',
       ]"
       [actions]="true"
     >
