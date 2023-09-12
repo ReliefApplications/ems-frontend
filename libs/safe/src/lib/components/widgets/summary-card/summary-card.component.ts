@@ -93,12 +93,42 @@ export class SafeSummaryCardComponent
     logic: 'and',
     filters: [],
   };
+  /** @returns Get query filter */
+  get queryFilter(): CompositeFilterDescriptor {
+    let filter: CompositeFilterDescriptor | undefined;
+    if (this.searchControl.value) {
+      const skippedFields = ['id', 'incrementalId'];
+      filter = {
+        logic: 'and',
+        filters: [
+          { logic: 'and', filters: [this.layout?.query.filter] },
+          {
+            logic: 'or',
+            filters: searchFilters(
+              this.searchControl.value,
+              this.fields,
+              skippedFields
+            ),
+          },
+        ],
+      };
+    } else {
+      filter = {
+        logic: 'and',
+        filters: [this.layout?.query.filter],
+      };
+    }
+    return {
+      logic: 'and',
+      filters: [
+        filter,
+        this.contextService.injectDashboardFilterValues(this.contextFilters),
+      ],
+    };
+  }
 
   public searchControl = new FormControl('');
   public scrolling = false;
-
-  private filters: any = null;
-
   private resizeObserver!: ResizeObserver;
 
   // used to reset sort options when changing display mode
@@ -279,25 +309,11 @@ export class SafeSummaryCardComponent
       this.pageInfo.length = this.sortedCachedCards.length;
     } else {
       this.loading = true;
-      this.filters = {
-        logic: 'and',
-        filters: [
-          {
-            logic: 'and',
-            filters: [this.layout?.query.filter],
-          },
-          {
-            logic: 'or',
-            filters: searchFilters(search, this.fields, skippedFields),
-          },
-        ],
-      };
-
       this.dataQuery
         ?.refetch({
           skip: 0,
           first: this.pageInfo.pageSize,
-          filter: this.filters,
+          filter: this.queryFilter,
           sortField: this.sortOptions.field,
           sortOrder: this.sortOptions.order,
         })
@@ -404,23 +420,8 @@ export class SafeSummaryCardComponent
           this.widget.settings.sortFields?.forEach((sortField: any) => {
             this.sortFields.push(sortField);
           });
-          if (
-            this.contextFilters.filters.length > 0 &&
-            layoutQuery.filter.filters.length > 0
-          ) {
-            layoutQuery.filter = {
-              logic: 'and',
-              filters: [
-                layoutQuery.filter,
-                this.contextService.injectDashboardFilterValues(
-                  this.contextFilters
-                ),
-              ],
-            };
-          }
 
           if (builtQuery) {
-            this.filters = layoutQuery.filter;
             this.sortOptions = {
               field: get(this.layout?.query, 'sort.field', null),
               order: get(this.layout?.query, 'sort.order', ''),
@@ -429,7 +430,7 @@ export class SafeSummaryCardComponent
               query: builtQuery,
               variables: {
                 first: DEFAULT_PAGE_SIZE,
-                filter: this.filters,
+                filter: this.queryFilter,
                 sortField: this.sortOptions.field,
                 sortOrder: this.sortOptions.order,
                 styles: layoutQuery.style || null,
@@ -541,7 +542,7 @@ export class SafeSummaryCardComponent
         .refetch({
           first: this.pageInfo.pageSize,
           skip: event.skip,
-          filters: this.filters,
+          filters: this.queryFilter,
           sortField: this.sortOptions.field,
           sortOrder: this.sortOptions.order,
           styles: layoutQuery?.style || null,
@@ -599,7 +600,7 @@ export class SafeSummaryCardComponent
       this.dataQuery
         .refetch({
           first: this.pageInfo.pageSize,
-          filter: this.filters,
+          filter: this.queryFilter,
           sortField: this.sortOptions.field,
           sortOrder: this.sortOptions.order,
         })

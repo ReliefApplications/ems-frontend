@@ -18,7 +18,7 @@ export const searchFilters = (
   }[] = [];
 
   fields.forEach((field) => {
-    if (skippedFields.includes(field.name)) return;
+    if (!field || skippedFields.includes(field.name)) return;
 
     // string
     if (

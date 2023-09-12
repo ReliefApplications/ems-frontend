@@ -369,6 +369,7 @@ export class DashboardFilterComponent
       return acc;
     }, {});
   }
+
   /**
    * Updates the filter in the context service with the latest survey data
    * when a value changes.
