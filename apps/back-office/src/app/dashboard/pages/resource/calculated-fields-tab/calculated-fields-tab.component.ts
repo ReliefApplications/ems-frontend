@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Resource, SafeUnsubscribeComponent } from '@oort-front/safe';
+import {
+  EditResourceMutationResponse,
+  Resource,
+  SafeUnsubscribeComponent,
+} from '@oort-front/safe';
 import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
-import {
-  Calculated_FIELD_UPDATE,
-  CalculatedFieldUpdateMutationResponse,
-} from './graphql/mutations';
+import { Calculated_FIELD_UPDATE } from './graphql/mutations';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
@@ -75,7 +76,7 @@ export class CalculatedFieldsTabComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
-          .mutate<CalculatedFieldUpdateMutationResponse>({
+          .mutate<EditResourceMutationResponse>({
             mutation: Calculated_FIELD_UPDATE,
             variables: {
               resourceId: this.resource.id,
@@ -139,7 +140,7 @@ export class CalculatedFieldsTabComponent
         return;
       }
       this.apollo
-        .mutate<CalculatedFieldUpdateMutationResponse>({
+        .mutate<EditResourceMutationResponse>({
           mutation: Calculated_FIELD_UPDATE,
           variables: {
             resourceId: this.resource.id,
@@ -204,7 +205,7 @@ export class CalculatedFieldsTabComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
-          .mutate<CalculatedFieldUpdateMutationResponse>({
+          .mutate<EditResourceMutationResponse>({
             mutation: Calculated_FIELD_UPDATE,
             variables: {
               resourceId: this.resource.id,

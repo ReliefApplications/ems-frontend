@@ -17,15 +17,10 @@ import { Role } from '../../../../models/user.model';
 import { Page } from '../../../../models/page.model';
 import { get } from 'lodash';
 import { Apollo } from 'apollo-angular';
-import {
-  GetWorkflowStepsQueryResponse,
-  GET_WORKFLOW_STEPS,
-} from '../../graphql/queries';
-import { Step } from '../../../../models/step.model';
-import {
-  EditStepAccessMutationResponse,
-  EDIT_STEP_ACCESS,
-} from '../../graphql/mutations';
+import { GET_WORKFLOW_STEPS } from '../../graphql/queries';
+import { EditStepMutationResponse, Step } from '../../../../models/step.model';
+import { WorkflowQueryResponse } from '../../../../models/workflow.model';
+import { EDIT_STEP_ACCESS } from '../../graphql/mutations';
 import { SnackbarService } from '@oort-front/ui';
 
 /** Component for the workflows section of the roles features */
@@ -116,7 +111,7 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
     } else {
       this.openedWorkflowId = page.id as string;
       this.apollo
-        .query<GetWorkflowStepsQueryResponse>({
+        .query<WorkflowQueryResponse>({
           query: GET_WORKFLOW_STEPS,
           variables: {
             id: page.content,
@@ -151,7 +146,7 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
     const hasAccess = this.accessibleSteps.includes(step.id as string);
 
     this.apollo
-      .mutate<EditStepAccessMutationResponse>({
+      .mutate<EditStepMutationResponse>({
         mutation: EDIT_STEP_ACCESS,
         variables: {
           id: step.id,

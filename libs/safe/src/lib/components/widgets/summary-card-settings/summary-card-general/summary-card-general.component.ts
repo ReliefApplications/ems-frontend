@@ -18,7 +18,6 @@ import {
   Resource,
   ResourcesQueryResponse,
 } from '../../../../models/resource.model';
-import { GET_RESOURCES_WITH_LAYOUT_COUNT } from '../../../../../graphql/queries/resource-queries';
 import { Layout } from '../../../../models/layout.model';
 import { get } from 'lodash';
 import { SafeGridLayoutService } from '../../../../services/grid-layout/grid-layout.service';
@@ -37,6 +36,7 @@ import {
   SelectOptionModule,
 } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
+import { GET_RESOURCES } from '../graphql/queries';
 
 /** Default number of resources to be fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -118,7 +118,7 @@ export class SummaryCardGeneralComponent
     this.colsNumber = this.setColsNumber(window.innerWidth);
 
     this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
-      query: GET_RESOURCES_WITH_LAYOUT_COUNT,
+      query: GET_RESOURCES,
       variables: {
         first: ITEMS_PER_PAGE,
         sortField: 'name',

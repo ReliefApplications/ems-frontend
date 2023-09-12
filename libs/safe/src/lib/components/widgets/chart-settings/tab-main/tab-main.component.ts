@@ -1,15 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Resource } from '../../../../models/resource.model';
+import {
+  Resource,
+  ResourceQueryResponse,
+  ResourcesQueryResponse,
+} from '../../../../models/resource.model';
+import { GET_RESOURCE, GET_RESOURCES } from '../graphql/queries';
 import { Subject } from 'rxjs';
 import { CHART_TYPES } from '../constants';
-import {
-  GetResourceByIdQueryResponse,
-  GetResourcesQueryResponse,
-  GET_RESOURCE,
-  GET_RESOURCES,
-} from '../graphql/queries';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { AggregationBuilderService } from '../../../../services/aggregation-builder/aggregation-builder.service';
 import { QueryBuilderService } from '../../../../services/query-builder/query-builder.service';
@@ -37,7 +36,7 @@ export class TabMainComponent
   @Input() formGroup!: UntypedFormGroup;
   @Input() type: any;
   public types = CHART_TYPES;
-  public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
   public resource?: Resource;
   public aggregation?: Aggregation;
   public availableSeriesFields: any[] = [];
@@ -93,7 +92,7 @@ export class TabMainComponent
     if (this.formGroup.value.resource) {
       this.getResource(this.formGroup.value.resource);
     }
-    this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
+    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
       query: GET_RESOURCES,
       variables: {
         first: ITEMS_PER_PAGE,
@@ -110,7 +109,7 @@ export class TabMainComponent
   private getResource(id: string): void {
     const aggregationId = this.formGroup.get('chart.aggregationId')?.value;
     this.apollo
-      .query<GetResourceByIdQueryResponse>({
+      .query<ResourceQueryResponse>({
         query: GET_RESOURCE,
         variables: {
           id,

@@ -26,7 +26,47 @@ export interface Record {
   validationErrors?: { question: string; errors: string[] }[];
 }
 
-/** Model for record query response object */
+/** Model for record graphql query response */
 export interface RecordQueryResponse {
   record: Record;
+}
+
+/** Model for add record graphql mutation response */
+export interface AddRecordMutationResponse {
+  addRecord: Record;
+}
+
+/** Model for edit record graphql mutation response */
+export interface EditRecordMutationResponse {
+  editRecord: Record;
+}
+
+/** Model for delete record graphql mutation response */
+export interface DeleteRecordMutationResponse {
+  deleteRecord: Record;
+}
+
+/** Model for record id and data graphql query response */
+export interface RecordIdAndDataQueryResponse {
+  record: Pick<Record, 'id' | 'data'>;
+}
+
+/** Model for restore record graphql mutation response */
+export interface RestoreRecordMutationResponse {
+  restoreRecord: Record;
+}
+
+/** Model for convert record graphql mutation response */
+export interface ConvertRecordMutationResponse {
+  convertRecord: Record;
+}
+
+/** Model for edit records graphql mutation response */
+export interface EditRecordsMutationResponse {
+  editRecords: Record[];
+}
+
+/** Model for edit records graphql mutation response */
+export interface DeleteRecordsMutationResponse {
+  deleteRecords: number;
 }

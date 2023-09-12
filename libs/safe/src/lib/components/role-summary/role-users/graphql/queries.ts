@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { User } from '../../../../models/user.model';
 
 /** Get role users query definition */
 export const GET_ROLE_USERS = gql`
@@ -28,20 +27,3 @@ export const GET_ROLE_USERS = gql`
     }
   }
 `;
-
-/** Get role query response interface */
-export interface GetRoleQueryResponse {
-  role: {
-    users: {
-      edges: {
-        node: User;
-        cursor: string;
-      }[];
-      pageInfo: {
-        endCursor: string;
-        hasNextPage: boolean;
-      };
-      totalCount: number;
-    };
-  };
-}

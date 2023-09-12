@@ -7,6 +7,7 @@ import {
   SafeConfirmService,
   Resource,
   SafeUnsubscribeComponent,
+  ResourceQueryResponse,
 } from '@oort-front/safe';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
@@ -14,10 +15,7 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../../utils/update-queries';
-import {
-  GetResourceByIdQueryResponse,
-  GET_RESOURCE_AGGREGATIONS,
-} from './graphql/queries';
+import { GET_RESOURCE_AGGREGATIONS } from './graphql/queries';
 import { takeUntil } from 'rxjs';
 import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 
@@ -44,7 +42,7 @@ export class AggregationsTabComponent
   ];
 
   // ==== PAGINATION ====
-  private aggregationsQuery!: QueryRef<GetResourceByIdQueryResponse>;
+  private aggregationsQuery!: QueryRef<ResourceQueryResponse>;
   private cachedAggregations: Aggregation[] = [];
   public pageInfo = {
     pageIndex: 0,
@@ -81,15 +79,14 @@ export class AggregationsTabComponent
     const state = history.state;
     this.resource = get(state, 'resource', null);
 
-    this.aggregationsQuery =
-      this.apollo.watchQuery<GetResourceByIdQueryResponse>({
-        query: GET_RESOURCE_AGGREGATIONS,
-        variables: {
-          first: this.pageInfo.pageSize,
-          id: this.resource?.id,
-          afterCursor: this.pageInfo.endCursor,
-        },
-      });
+    this.aggregationsQuery = this.apollo.watchQuery<ResourceQueryResponse>({
+      query: GET_RESOURCE_AGGREGATIONS,
+      variables: {
+        first: this.pageInfo.pageSize,
+        id: this.resource?.id,
+        afterCursor: this.pageInfo.endCursor,
+      },
+    });
 
     this.aggregationsQuery.valueChanges.subscribe(({ data, loading }) => {
       this.updateValues(data, loading);
@@ -125,7 +122,7 @@ export class AggregationsTabComponent
       first: this.pageInfo.pageSize,
       afterCursor: this.pageInfo.endCursor,
     };
-    const cachedValues: GetResourceByIdQueryResponse = getCachedValues(
+    const cachedValues: ResourceQueryResponse = getCachedValues(
       this.apollo.client,
       GET_RESOURCE_AGGREGATIONS,
       variables
@@ -241,7 +238,7 @@ export class AggregationsTabComponent
    * @param data query response data
    * @param loading loading status
    */
-  private updateValues(data: GetResourceByIdQueryResponse, loading: boolean) {
+  private updateValues(data: ResourceQueryResponse, loading: boolean) {
     if (data.resource) {
       const mappedValues =
         data.resource.aggregations?.edges.map((x) => x.node) ?? [];

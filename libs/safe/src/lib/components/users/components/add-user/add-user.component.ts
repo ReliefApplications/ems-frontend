@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { Role, User } from '../../../../models/user.model';
+import { Role, User, UsersQueryResponse } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
 import {
   UntypedFormArray,
@@ -10,7 +10,7 @@ import {
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { map, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { GET_USERS, GetUsersQueryResponse } from '../../graphql/queries';
+import { GET_USERS } from '../../graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -89,7 +89,7 @@ export class SafeAddUserComponent
     this.filteredUsers = getUsersByEmail;
 
     this.apollo
-      .query<GetUsersQueryResponse>({
+      .query<UsersQueryResponse>({
         query: GET_USERS,
       })
       .pipe(takeUntil(this.destroy$))

@@ -7,11 +7,11 @@ import {
   SafeApplicationService,
   SafeUnsubscribeComponent,
   SafeConfirmService,
+  UploadApplicationStyleMutationResponse,
 } from '@oort-front/safe';
 import { firstValueFrom } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
-import { UploadApplicationStyleMutationResponse } from './graphql/mutations';
 import { UPLOAD_APPLICATION_STYLE } from './graphql/mutations';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ButtonModule, SnackbarService } from '@oort-front/ui';

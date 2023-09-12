@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Application } from '../../../models/application.model';
 
 // === GET APPLICATION BY ID ===
 /** Graphql request for getting application data by its id */
@@ -116,8 +115,3 @@ export const GET_APPLICATION_BY_ID = gql`
     }
   }
 `;
-
-/** Model for GetApplicationByIdQueryResponse object */
-export interface GetApplicationByIdQueryResponse {
-  application: Application;
-}

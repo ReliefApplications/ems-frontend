@@ -45,7 +45,7 @@ export * from './lib/models/channel.model';
 export * from './lib/models/subscription.model';
 export * from './lib/models/position-attribute-category.model';
 export * from './lib/models/position-attribute.model';
-export * from './lib/models/apiConfiguration.model';
+export * from './lib/models/api-configuration.model';
 export * from './lib/models/pullJob.model';
 export * from './lib/models/layout.model';
 export * from './lib/models/aggregation.model';
@@ -114,9 +114,3 @@ export * from './lib/pipes/cron-parser/public-api';
 
 // === UTILS ===
 export * from './lib/utils/public-api';
-
-// === GRAPHQL FEATURES === //
-
-export * from './lib/graphql/queries/public-api';
-// export * from './lib/graphql/mutations/public-api';
-// export * from './lib/graphql/subscriptions/public-api';

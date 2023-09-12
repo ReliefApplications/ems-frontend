@@ -1,9 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Application } from '../../../models/application.model';
-import { Resource } from '../../../models/resource.model';
-import { Channel } from '../../../models/channel.model';
-import { Group, Permission, Role } from '../../../models/user.model';
-import { Workflow } from '../../../models/workflow.model';
 import { RESOURCE_FIELDS, SHORT_RESOURCE_FIELDS } from './fragments';
 
 /** Get role by id GraphQL query */
@@ -29,11 +24,6 @@ export const GET_ROLE = gql`
   }
 `;
 
-/** Interface of Get role query */
-export interface GetRoleQueryResponse {
-  role: Role;
-}
-
 /** Graphql request for getting permissions */
 export const GET_PERMISSIONS = gql`
   query GetPermissions($application: Boolean) {
@@ -44,11 +34,6 @@ export const GET_PERMISSIONS = gql`
     }
   }
 `;
-
-/** Model for GetPermissionsQueryResponse object */
-export interface GetPermissionsQueryResponse {
-  permissions: Permission[];
-}
 
 /** Graphql request for getting channels (optionnally by an application id) */
 export const GET_CHANNELS = gql`
@@ -63,11 +48,6 @@ export const GET_CHANNELS = gql`
     }
   }
 `;
-
-/** Model for GetChannelsQueryResponse object */
-export interface GetChannelsQueryResponse {
-  channels: Channel[];
-}
 
 /** Graphql request for getting the features of an application by its id */
 export const GET_APPLICATION_FEATURES = gql`
@@ -89,11 +69,6 @@ export const GET_APPLICATION_FEATURES = gql`
   }
 `;
 
-/** Model for the response of the getApplicationFeatures query */
-export interface GetApplicationFeaturesQueryResponse {
-  application: Application;
-}
-
 /** Graphql request for getting the steps of a workflow by its id */
 export const GET_WORKFLOW_STEPS = gql`
   query getWorkflowSteps($id: ID!) {
@@ -113,11 +88,6 @@ export const GET_WORKFLOW_STEPS = gql`
     }
   }
 `;
-
-/** Model for the response of the getWorkflowSteps query */
-export interface GetWorkflowStepsQueryResponse {
-  workflow: Workflow;
-}
 
 /** Graphql query for getting resources with a filter and more data */
 export const GET_RESOURCES = gql`
@@ -152,21 +122,6 @@ export const GET_RESOURCES = gql`
   ${SHORT_RESOURCE_FIELDS}
 `;
 
-/** Interface of Get Resources Query response */
-export interface GetResourcesQueryResponse {
-  resources: {
-    edges: {
-      node: Resource;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-    totalCount: number;
-  };
-}
-
 /** GraphQL query to get a single resource */
 export const GET_RESOURCE = gql`
   query GetResources($id: ID!, $role: ID!) {
@@ -181,11 +136,6 @@ export const GET_RESOURCE = gql`
   ${RESOURCE_FIELDS}
 `;
 
-/** Interface of Get Resource Query response */
-export interface GetResourceQueryResponse {
-  resource: Resource;
-}
-
 /** Graphql request for getting groups */
 export const GET_GROUPS = gql`
   query GetGroups {
@@ -195,8 +145,3 @@ export const GET_GROUPS = gql`
     }
   }
 `;
-
-/** Model for GetGroupsQueryResponse object */
-export interface GetGroupsQueryResponse {
-  groups: Group[];
-}

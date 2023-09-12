@@ -2,18 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
+  AddApiConfigurationMutationResponse,
   ApiConfiguration,
+  ApiConfigurationsQueryResponse,
+  DeleteApiConfigurationMutationResponse,
   SafeConfirmService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
+import { GET_API_CONFIGURATIONS } from './graphql/queries';
 import {
-  GetApiConfigurationsQueryResponse,
-  GET_API_CONFIGURATIONS,
-} from './graphql/queries';
-import {
-  AddApiConfigurationMutationResponse,
   ADD_API_CONFIGURATION,
-  DeleteApiConfigurationMutationResponse,
   DELETE_API_CONFIGURATION,
 } from './graphql/mutations';
 import { Router } from '@angular/router';
@@ -48,7 +46,7 @@ export class ApiConfigurationsComponent
 {
   // === DATA ===
   public loading = true;
-  private apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
+  private apiConfigurationsQuery!: QueryRef<ApiConfigurationsQueryResponse>;
   displayedColumns = ['name', 'status', 'authType', 'actions'];
   dataSource = new Array<ApiConfiguration>();
   filteredDataSources = new Array<ApiConfiguration>();
@@ -95,7 +93,7 @@ export class ApiConfigurationsComponent
    */
   ngOnInit(): void {
     this.apiConfigurationsQuery =
-      this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
+      this.apollo.watchQuery<ApiConfigurationsQueryResponse>({
         query: GET_API_CONFIGURATIONS,
         variables: {
           first: ITEMS_PER_PAGE,
@@ -305,7 +303,7 @@ export class ApiConfigurationsComponent
    * @param loading Loading state
    */
   private updateValues(
-    data: GetApiConfigurationsQueryResponse,
+    data: ApiConfigurationsQueryResponse,
     loading: boolean
   ): void {
     const mappedValues = data.apiConfigurations.edges.map((x) => x.node);
@@ -348,7 +346,7 @@ export class ApiConfigurationsComponent
       sortField: this.sort?.sortDirection && this.sort.active,
       sortOrder: this.sort?.sortDirection,
     };
-    const cachedValues: GetApiConfigurationsQueryResponse = getCachedValues(
+    const cachedValues: ApiConfigurationsQueryResponse = getCachedValues(
       this.apollo.client,
       GET_API_CONFIGURATIONS,
       variables
@@ -370,7 +368,7 @@ export class ApiConfigurationsComponent
             variables,
           })
           .then(
-            (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
+            (results: ApolloQueryResult<ApiConfigurationsQueryResponse>) => {
               this.updateValues(results.data, results.loading);
             }
           );

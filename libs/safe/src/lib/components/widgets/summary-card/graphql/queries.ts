@@ -1,6 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Record } from '../../../../models/record.model';
-import { Resource } from '../../../../models/resource.model';
 
 // === GET RECORD BY ID ===
 /** Graphql request for getting a record by its id */
@@ -26,11 +24,6 @@ export const GET_RECORD_BY_ID = gql`
     }
   }
 `;
-
-/** Model for GetRecordByIdQueryResponse object */
-export interface GetRecordByIdQueryResponse {
-  record: Record;
-}
 
 /** Graphql request for getting resource metadata */
 export const GET_RESOURCE_METADATA = gql`
@@ -67,8 +60,3 @@ export const GET_LAYOUT = gql`
     }
   }
 `;
-
-/** Model for GetLayoutQueryResponse object */
-export interface GetLayoutQueryResponse {
-  resource: Resource;
-}

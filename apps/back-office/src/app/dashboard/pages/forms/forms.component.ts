@@ -7,14 +7,12 @@ import {
   SafeConfirmService,
   Form,
   SafeUnsubscribeComponent,
-} from '@oort-front/safe';
-import { GET_SHORT_FORMS, GetFormsQueryResponse } from './graphql/queries';
-import {
+  FormsQueryResponse,
   DeleteFormMutationResponse,
-  DELETE_FORM,
   AddFormMutationResponse,
-  ADD_FORM,
-} from './graphql/mutations';
+} from '@oort-front/safe';
+import { GET_SHORT_FORMS } from './graphql/queries';
+import { DELETE_FORM, ADD_FORM } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import {
   getCachedValues,
@@ -42,7 +40,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public updating = false;
-  private formsQuery!: QueryRef<GetFormsQueryResponse>;
+  private formsQuery!: QueryRef<FormsQueryResponse>;
   public displayedColumns = [
     'name',
     'createdAt',
@@ -98,7 +96,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
    * Creates the form query, and subscribes to the query changes.
    */
   ngOnInit(): void {
-    this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
+    this.formsQuery = this.apollo.watchQuery<FormsQueryResponse>({
       query: GET_SHORT_FORMS,
       variables: {
         first: DEFAULT_PAGE_SIZE,
@@ -165,7 +163,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
       sortOrder: this.sort?.sortDirection,
     };
 
-    const cachedValues: GetFormsQueryResponse = getCachedValues(
+    const cachedValues: FormsQueryResponse = getCachedValues(
       this.apollo.client,
       GET_SHORT_FORMS,
       variables
@@ -184,7 +182,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
           .fetchMore({
             variables,
           })
-          .then((results: ApolloQueryResult<GetFormsQueryResponse>) => {
+          .then((results: ApolloQueryResult<FormsQueryResponse>) => {
             this.updateValues(results.data, results.loading);
           });
       }
@@ -313,7 +311,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
    * @param data New values to update forms
    * @param loading Loading state
    */
-  private updateValues(data: GetFormsQueryResponse, loading: boolean): void {
+  private updateValues(data: FormsQueryResponse, loading: boolean): void {
     const mappedValues = data.forms?.edges?.map((x) => x.node);
     this.cachedForms = updateQueryUniqueValues(this.cachedForms, mappedValues);
     this.pageInfo.length = data.forms.totalCount;

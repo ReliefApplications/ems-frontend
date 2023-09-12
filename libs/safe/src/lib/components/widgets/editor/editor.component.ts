@@ -5,7 +5,6 @@ import { firstValueFrom } from 'rxjs';
 import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
-  GetLayoutQueryResponse,
 } from '../summary-card/graphql/queries';
 import { clone, get } from 'lodash';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
@@ -89,7 +88,7 @@ export class SafeEditorComponent implements OnInit {
   /** Sets layout */
   private async getLayout(): Promise<void> {
     const apolloRes = await firstValueFrom(
-      this.apollo.query<GetLayoutQueryResponse>({
+      this.apollo.query<ResourceQueryResponse>({
         query: GET_LAYOUT,
         variables: {
           id: this.settings.layout,

@@ -18,7 +18,22 @@ export interface ChannelDisplay extends Channel {
   }[];
 }
 
-/** Model for GetChannelsQueryResponse object */
+/** Model for add channel mutation response */
+export interface AddChannelMutationResponse {
+  addChannel: Channel;
+}
+
+/** Model for edit channel mutation response */
+export interface EditChannelMutationResponse {
+  editChannel: Channel;
+}
+
+/** Model for delete channel mutation response */
+export interface DeleteChannelMutationResponse {
+  deleteChannel: Channel;
+}
+
+/** Model for channels query response */
 export interface ChannelsQueryResponse {
   channels: Channel[];
 }

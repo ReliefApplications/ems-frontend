@@ -3,20 +3,18 @@ import { Component, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
 import {
+  AddApplicationMutationResponse,
   Application,
+  ApplicationsApplicationNodesQueryResponse,
+  DeleteApplicationMutationResponse,
+  EditApplicationMutationResponse,
   SafeConfirmService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
+import { GET_APPLICATIONS } from './graphql/queries';
 import {
-  GetApplicationsQueryResponse,
-  GET_APPLICATIONS,
-} from './graphql/queries';
-import {
-  DeleteApplicationMutationResponse,
   DELETE_APPLICATION,
-  AddApplicationMutationResponse,
   ADD_APPLICATION,
-  EditApplicationMutationResponse,
   EDIT_APPLICATION,
 } from './graphql/mutations';
 import { PreviewService } from '../../../services/preview.service';
@@ -50,7 +48,7 @@ export class ApplicationsComponent
   // === DATA ===
   public loading = true;
   public updating = false;
-  private applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
+  private applicationsQuery!: QueryRef<ApplicationsApplicationNodesQueryResponse>;
   public applications = new Array<Application>();
   public cachedApplications: Application[] = [];
   public displayedColumns = [
@@ -102,7 +100,7 @@ export class ApplicationsComponent
    */
   ngOnInit(): void {
     this.applicationsQuery =
-      this.apollo.watchQuery<GetApplicationsQueryResponse>({
+      this.apollo.watchQuery<ApplicationsApplicationNodesQueryResponse>({
         query: GET_APPLICATIONS,
         variables: {
           first: DEFAULT_PAGE_SIZE,
@@ -113,7 +111,7 @@ export class ApplicationsComponent
         },
       });
     this.apollo
-      .query<GetApplicationsQueryResponse>({
+      .query<ApplicationsApplicationNodesQueryResponse>({
         query: GET_APPLICATIONS,
         fetchPolicy: 'no-cache',
         variables: {
@@ -128,9 +126,13 @@ export class ApplicationsComponent
       });
     this.applicationsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((results: ApolloQueryResult<GetApplicationsQueryResponse>) => {
-        this.updateValues(results.data, results.loading);
-      });
+      .subscribe(
+        (
+          results: ApolloQueryResult<ApplicationsApplicationNodesQueryResponse>
+        ) => {
+          this.updateValues(results.data, results.loading);
+        }
+      );
   }
 
   /**
@@ -185,11 +187,8 @@ export class ApplicationsComponent
       sortField: this.sort?.sortDirection && this.sort.active,
       sortOrder: this.sort?.sortDirection,
     };
-    const cachedValues: GetApplicationsQueryResponse = getCachedValues(
-      this.apollo.client,
-      GET_APPLICATIONS,
-      variables
-    );
+    const cachedValues: ApplicationsApplicationNodesQueryResponse =
+      getCachedValues(this.apollo.client, GET_APPLICATIONS, variables);
     if (refetch) {
       this.cachedApplications = [];
       this.pageInfo.pageIndex = 0;
@@ -206,9 +205,13 @@ export class ApplicationsComponent
           .fetchMore({
             variables,
           })
-          .then((results: ApolloQueryResult<GetApplicationsQueryResponse>) => {
-            this.updateValues(results.data, results.loading);
-          });
+          .then(
+            (
+              results: ApolloQueryResult<ApplicationsApplicationNodesQueryResponse>
+            ) => {
+              this.updateValues(results.data, results.loading);
+            }
+          );
       }
     }
   }
@@ -429,7 +432,7 @@ export class ApplicationsComponent
    * @param loading Loading state
    */
   private updateValues(
-    data: GetApplicationsQueryResponse,
+    data: ApplicationsApplicationNodesQueryResponse,
     loading: boolean
   ): void {
     const mappedValues = data.applications.edges.map((x) => x.node);

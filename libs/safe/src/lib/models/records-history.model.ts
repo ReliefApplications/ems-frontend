@@ -20,3 +20,8 @@ export type RecordHistory = {
   changes: Change[];
   version?: Version;
 }[];
+
+/** Get record history query response interface */
+export interface RecordHistoryResponse {
+  recordHistory: RecordHistory;
+}

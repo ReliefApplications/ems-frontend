@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Record } from '../../../models/record.model';
 
 // === EDIT RECORD ===
 
@@ -36,11 +35,6 @@ export const EDIT_RECORD = gql`
   }
 `;
 
-/** Model for EditRecordMutationResponse object */
-export interface EditRecordMutationResponse {
-  editRecord: Record;
-}
-
 // === ADD RECORD ===
 
 /** Graphql request for adding a new record to a form */
@@ -68,11 +62,6 @@ export const ADD_RECORD = gql`
   }
 `;
 
-/** Model for AddRecordMutationResponse object */
-export interface AddRecordMutationResponse {
-  addRecord: Record;
-}
-
 // === UPLOAD FILE ===
 
 /** Graphql request for uploading a file to a form */
@@ -81,11 +70,6 @@ export const UPLOAD_FILE = gql`
     uploadFile(file: $file, form: $form)
   }
 `;
-
-/** Model for UploadFileMutationResponse object */
-export interface UploadFileMutationResponse {
-  uploadFile: string;
-}
 
 // === EDIT RECORDS ===
 
@@ -105,8 +89,3 @@ export const EDIT_RECORDS = gql`
     }
   }
 `;
-
-/** Model for EditRecordsMutationResponse object */
-export interface EditRecordsMutationResponse {
-  editRecords: Record[];
-}

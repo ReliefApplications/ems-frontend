@@ -230,3 +230,38 @@ export const GET_QUERY_TYPES = gql`
     }
   }
 `;
+
+// === GET RESOURCES ===
+/** Graphql query for getting multiple resources with a cursor */
+export const GET_RESOURCES = gql`
+  query GetResources(
+    $first: Int
+    $afterCursor: ID
+    $sortField: String
+    $filter: JSON
+  ) {
+    resources(
+      first: $first
+      afterCursor: $afterCursor
+      sortField: $sortField
+      filter: $filter
+    ) {
+      edges {
+        node {
+          id
+          name
+          forms {
+            id
+            name
+          }
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;

@@ -6,11 +6,9 @@ import {
   Step,
   Workflow,
   SafeUnsubscribeComponent,
+  WorkflowQueryResponse,
 } from '@oort-front/safe';
-import {
-  GetWorkflowByIdQueryResponse,
-  GET_WORKFLOW_BY_ID,
-} from './graphql/queries';
+import { GET_WORKFLOW_BY_ID } from './graphql/queries';
 import { PreviewService } from '../../../services/preview.service';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
@@ -76,7 +74,7 @@ export class WorkflowComponent
       this.loading = true;
       this.id = params.id;
       this.apollo
-        .watchQuery<GetWorkflowByIdQueryResponse>({
+        .watchQuery<WorkflowQueryResponse>({
           query: GET_WORKFLOW_BY_ID,
           variables: {
             id: this.id,

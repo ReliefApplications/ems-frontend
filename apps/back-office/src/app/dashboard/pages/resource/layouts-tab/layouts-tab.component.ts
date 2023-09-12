@@ -7,7 +7,6 @@ import {
   Resource,
   SafeUnsubscribeComponent,
   ResourceQueryResponse,
-  GET_RESOURCE_LAYOUTS_FULL,
 } from '@oort-front/safe';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
@@ -18,6 +17,7 @@ import {
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
 import { UIPageChangeEvent } from '@oort-front/ui';
+import { GET_RESOURCE_LAYOUTS } from './graphql/queries';
 
 /**
  * Layouts tab of resource page
@@ -76,7 +76,7 @@ export class LayoutsTabComponent
     this.resource = get(state, 'resource', null);
 
     this.layoutsQuery = this.apollo.watchQuery<ResourceQueryResponse>({
-      query: GET_RESOURCE_LAYOUTS_FULL,
+      query: GET_RESOURCE_LAYOUTS,
       variables: {
         id: this.resource?.id,
         first: this.pageInfo.pageSize,
@@ -134,7 +134,7 @@ export class LayoutsTabComponent
     };
     const cachedValues: ResourceQueryResponse = getCachedValues(
       this.apollo.client,
-      GET_RESOURCE_LAYOUTS_FULL,
+      GET_RESOURCE_LAYOUTS,
       variables
     );
     if (cachedValues) {

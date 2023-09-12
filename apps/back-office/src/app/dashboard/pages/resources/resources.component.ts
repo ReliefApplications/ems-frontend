@@ -1,17 +1,12 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
+import { DELETE_RESOURCE, ADD_FORM } from './graphql/mutations';
+import { GET_RESOURCES_EXTENDED } from './graphql/queries';
 import {
-  DeleteResourceMutationResponse,
-  DELETE_RESOURCE,
   AddFormMutationResponse,
-  ADD_FORM,
-} from './graphql/mutations';
-import {
-  GetResourcesQueryResponse,
-  GET_RESOURCES_EXTENDED,
-} from './graphql/queries';
-import {
+  DeleteResourceMutationResponse,
   Resource,
+  ResourcesQueryResponse,
   SafeConfirmService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
@@ -50,7 +45,7 @@ export class ResourcesComponent
   // === DATA ===
   public loading = true;
   public filterLoading = false;
-  private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+  private resourcesQuery!: QueryRef<ResourcesQueryResponse>;
   displayedColumns: string[] = ['name', 'createdAt', 'recordsCount', 'actions'];
   public cachedResources: Resource[] = [];
   public resources = new Array<Resource>();
@@ -96,7 +91,7 @@ export class ResourcesComponent
 
   /** Load the resources. */
   ngOnInit(): void {
-    this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
+    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
       query: GET_RESOURCES_EXTENDED,
       variables: {
         first: DEFAULT_PAGE_SIZE,
@@ -170,7 +165,7 @@ export class ResourcesComponent
       sortOrder:
         this.sort?.sortDirection !== '' ? this.sort?.sortDirection : 'asc',
     };
-    const cachedValues: GetResourcesQueryResponse = getCachedValues(
+    const cachedValues: ResourcesQueryResponse = getCachedValues(
       this.apollo.client,
       GET_RESOURCES_EXTENDED,
       variables
@@ -304,7 +299,7 @@ export class ResourcesComponent
    * @param data query response data
    * @param loading loading status
    */
-  updateValues(data: GetResourcesQueryResponse, loading: boolean) {
+  updateValues(data: ResourcesQueryResponse, loading: boolean) {
     const mappedValues = data.resources?.edges?.map((x) => x.node);
     this.cachedResources = updateQueryUniqueValues(
       this.cachedResources,

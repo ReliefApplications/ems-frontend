@@ -7,6 +7,9 @@ import {
   Resource,
   SafeDownloadService,
   SafeUnsubscribeComponent,
+  ResourceRecordsNodesQueryResponse,
+  DeleteRecordMutationResponse,
+  RestoreRecordMutationResponse,
 } from '@oort-front/safe';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
@@ -14,16 +17,8 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../../utils/update-queries';
-import {
-  DeleteRecordMutationResponse,
-  DELETE_RECORD,
-  RestoreRecordMutationResponse,
-  RESTORE_RECORD,
-} from '../graphql/mutations';
-import {
-  GetResourceRecordsQueryResponse,
-  GET_RESOURCE_RECORDS,
-} from './graphql/queries';
+import { DELETE_RECORD, RESTORE_RECORD } from '../graphql/mutations';
+import { GET_RESOURCE_RECORDS } from './graphql/queries';
 import {
   SnackbarService,
   UIPageChangeEvent,
@@ -51,7 +46,7 @@ export class RecordsTabComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  private recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
+  private recordsQuery!: QueryRef<ResourceRecordsNodesQueryResponse>;
   public dataSource = new Array<Record>();
   private cachedRecords: Record[] = [];
   public resource!: Resource;
@@ -96,8 +91,8 @@ export class RecordsTabComponent
     const state = history.state;
     this.resource = get(state, 'resource', null);
     this.setDisplayedColumns(false);
-    this.recordsQuery = this.apollo.watchQuery<GetResourceRecordsQueryResponse>(
-      {
+    this.recordsQuery =
+      this.apollo.watchQuery<ResourceRecordsNodesQueryResponse>({
         query: GET_RESOURCE_RECORDS,
         variables: {
           id: this.resource?.id,
@@ -106,8 +101,7 @@ export class RecordsTabComponent
           display: false,
           showDeletedRecords: this.showDeletedRecords,
         },
-      }
-    );
+      });
     this.recordsQuery.valueChanges.subscribe(({ data, loading }) => {
       this.updateValues(data, loading);
     });
@@ -372,7 +366,7 @@ export class RecordsTabComponent
       display: false,
       showDeletedRecords: this.showDeletedRecords,
     };
-    const cachedValues: GetResourceRecordsQueryResponse = getCachedValues(
+    const cachedValues: ResourceRecordsNodesQueryResponse = getCachedValues(
       this.apollo.client,
       GET_RESOURCE_RECORDS,
       variables
@@ -403,7 +397,7 @@ export class RecordsTabComponent
    * @param loading loading status
    */
   private updateValues(
-    data: GetResourceRecordsQueryResponse,
+    data: ResourceRecordsNodesQueryResponse,
     loading: boolean
   ) {
     const mappedValues = data.resource.records.edges.map((x) => x.node);

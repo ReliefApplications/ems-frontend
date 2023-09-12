@@ -1,21 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
+  AddReferenceDataMutationResponse,
+  DeleteReferenceDataMutationResponse,
   ReferenceData,
+  ReferenceDatasQueryResponse,
   SafeAuthService,
   SafeConfirmService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
-import {
-  GetReferenceDatasQueryResponse,
-  GET_REFERENCE_DATAS,
-} from './graphql/queries';
-import {
-  AddReferenceDataMutationResponse,
-  ADD_REFERENCE_DATA,
-  DeleteReferenceDataMutationResponse,
-  DELETE_REFERENCE_DATA,
-} from './graphql/mutations';
+import { GET_REFERENCE_DATAS } from './graphql/queries';
+import { ADD_REFERENCE_DATA, DELETE_REFERENCE_DATA } from './graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
@@ -49,7 +44,7 @@ export class ReferenceDatasComponent
 {
   // === DATA ===
   public loading = true;
-  private referenceDatasQuery!: QueryRef<GetReferenceDatasQueryResponse>;
+  private referenceDatasQuery!: QueryRef<ReferenceDatasQueryResponse>;
   displayedColumns = [
     'name',
     'type',
@@ -103,7 +98,7 @@ export class ReferenceDatasComponent
    */
   ngOnInit(): void {
     this.referenceDatasQuery =
-      this.apollo.watchQuery<GetReferenceDatasQueryResponse>({
+      this.apollo.watchQuery<ReferenceDatasQueryResponse>({
         query: GET_REFERENCE_DATAS,
         variables: {
           first: ITEMS_PER_PAGE,
@@ -158,7 +153,7 @@ export class ReferenceDatasComponent
           filter: this.filter,
         },
       })
-      .then((results: ApolloQueryResult<GetReferenceDatasQueryResponse>) => {
+      .then((results: ApolloQueryResult<ReferenceDatasQueryResponse>) => {
         this.updateValues(results.data, false);
       });
   }
@@ -293,7 +288,7 @@ export class ReferenceDatasComponent
    * @param data query response data
    * @param loading loading status
    */
-  private updateValues(data: GetReferenceDatasQueryResponse, loading: boolean) {
+  private updateValues(data: ReferenceDatasQueryResponse, loading: boolean) {
     const mappedValues = data.referenceDatas.edges.map((x) => x.node);
     this.cachedReferenceDatas = updateQueryUniqueValues(
       this.cachedReferenceDatas,
@@ -322,7 +317,7 @@ export class ReferenceDatasComponent
       sortField: this.sort?.sortDirection && this.sort.active,
       sortOrder: this.sort?.sortDirection,
     };
-    const cachedValues: GetReferenceDatasQueryResponse = getCachedValues(
+    const cachedValues: ReferenceDatasQueryResponse = getCachedValues(
       this.apollo.client,
       GET_REFERENCE_DATAS,
       variables
@@ -343,11 +338,9 @@ export class ReferenceDatasComponent
           .fetchMore({
             variables,
           })
-          .then(
-            (results: ApolloQueryResult<GetReferenceDatasQueryResponse>) => {
-              this.updateValues(results.data, results.loading);
-            }
-          );
+          .then((results: ApolloQueryResult<ReferenceDatasQueryResponse>) => {
+            this.updateValues(results.data, results.loading);
+          });
       }
     }
   }

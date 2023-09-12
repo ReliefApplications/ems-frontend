@@ -9,22 +9,20 @@ import {
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
+  ApiConfiguration,
   ReferenceData,
   referenceDataType,
-  ApiConfiguration,
   SafeBreadcrumbService,
   SafeUnsubscribeComponent,
   SafeReferenceDataService,
+  ApiConfigurationsQueryResponse,
+  ReferenceDataQueryResponse,
+  ApiConfigurationQueryResponse,
+  EditReferenceDataMutationResponse,
 } from '@oort-front/safe';
 import { Apollo, QueryRef } from 'apollo-angular';
+import { EDIT_REFERENCE_DATA } from './graphql/mutations';
 import {
-  EditReferenceDataMutationResponse,
-  EDIT_REFERENCE_DATA,
-} from './graphql/mutations';
-import {
-  GetApiConfigurationQueryResponse,
-  GetApiConfigurationsQueryResponse,
-  GetReferenceDataQueryResponse,
   GET_API_CONFIGURATION,
   GET_API_CONFIGURATIONS_NAMES,
   GET_REFERENCE_DATA,
@@ -66,7 +64,7 @@ export class ReferenceDataComponent
   public referenceTypeChoices = Object.values(referenceDataType);
 
   public selectedApiConfiguration?: ApiConfiguration;
-  public apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
+  public apiConfigurationsQuery!: QueryRef<ApiConfigurationsQueryResponse>;
 
   public valueFields: NonNullable<ReferenceData['fields']> = [];
   public triedToGetFields = false;
@@ -201,7 +199,7 @@ export class ReferenceDataComponent
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id) {
       this.apollo
-        .watchQuery<GetReferenceDataQueryResponse>({
+        .watchQuery<ReferenceDataQueryResponse>({
           query: GET_REFERENCE_DATA,
           variables: {
             id: this.id,
@@ -272,7 +270,7 @@ export class ReferenceDataComponent
       this.referenceForm.get('fields')?.setValidators(Validators.required);
       if (this.referenceForm.value.apiConfiguration) {
         this.apollo
-          .query<GetApiConfigurationQueryResponse>({
+          .query<ApiConfigurationQueryResponse>({
             query: GET_API_CONFIGURATION,
             variables: {
               id: this.referenceForm.value.apiConfiguration,
@@ -286,7 +284,7 @@ export class ReferenceDataComponent
       }
 
       this.apiConfigurationsQuery =
-        this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
+        this.apollo.watchQuery<ApiConfigurationsQueryResponse>({
           query: GET_API_CONFIGURATIONS_NAMES,
           variables: {
             first: ITEMS_PER_PAGE,
@@ -568,7 +566,7 @@ export class ReferenceDataComponent
     }
     // get the api configuration
     this.loadingFields = true;
-    const query$ = this.apollo.query<GetApiConfigurationQueryResponse>({
+    const query$ = this.apollo.query<ApiConfigurationQueryResponse>({
       query: GET_API_CONFIGURATION,
       variables: {
         id: apiConfID,

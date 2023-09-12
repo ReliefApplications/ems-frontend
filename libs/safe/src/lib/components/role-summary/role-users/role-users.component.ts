@@ -1,7 +1,11 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Role, User } from '../../../models/user.model';
-import { GetRoleQueryResponse, GET_ROLE_USERS } from './graphql/queries';
+import {
+  Role,
+  RoleUsersNodesQueryResponse,
+  User,
+} from '../../../models/user.model';
+import { GET_ROLE_USERS } from './graphql/queries';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { updateQueryUniqueValues } from '../../../utils/update-queries';
@@ -31,7 +35,7 @@ export class RoleUsersComponent
 
   public users = new Array<User>();
   public cachedUsers: User[] = [];
-  private usersQuery!: QueryRef<GetRoleQueryResponse>;
+  private usersQuery!: QueryRef<RoleUsersNodesQueryResponse>;
 
   public pageInfo = {
     pageIndex: 0,
@@ -55,7 +59,7 @@ export class RoleUsersComponent
   }
 
   ngOnInit(): void {
-    this.usersQuery = this.apollo.watchQuery<GetRoleQueryResponse>({
+    this.usersQuery = this.apollo.watchQuery<RoleUsersNodesQueryResponse>({
       query: GET_ROLE_USERS,
       variables: {
         id: this.role.id,
@@ -105,7 +109,7 @@ export class RoleUsersComponent
    * @param data query response data
    * @param loading loading status
    */
-  private updateValues(data: GetRoleQueryResponse, loading: boolean) {
+  private updateValues(data: RoleUsersNodesQueryResponse, loading: boolean) {
     const mappedValues = data.role.users?.edges.map((x) => x.node) ?? [];
     this.cachedUsers = updateQueryUniqueValues(this.cachedUsers, mappedValues);
     this.pageInfo.length = data.role.users.totalCount;

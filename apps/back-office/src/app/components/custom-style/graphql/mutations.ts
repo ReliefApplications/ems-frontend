@@ -6,8 +6,3 @@ export const UPLOAD_APPLICATION_STYLE = gql`
     uploadApplicationStyle(file: $file, application: $application)
   }
 `;
-
-/** Model for UploadFileMutationResponse object */
-export interface UploadApplicationStyleMutationResponse {
-  uploadApplicationStyle: string;
-}

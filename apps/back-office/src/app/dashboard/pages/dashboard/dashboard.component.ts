@@ -22,19 +22,15 @@ import {
   SafeConfirmService,
   SafeReferenceDataService,
   Record,
-} from '@oort-front/safe';
-import {
+  ResourceRecordsNodesQueryResponse,
+  DashboardQueryResponse,
   EditDashboardMutationResponse,
-  EDIT_DASHBOARD,
-  EditPageMutationResponse,
-  EDIT_PAGE,
   EditStepMutationResponse,
-  EDIT_STEP,
-} from './graphql/mutations';
+  EditPageMutationResponse,
+  RecordQueryResponse,
+} from '@oort-front/safe';
+import { EDIT_DASHBOARD, EDIT_PAGE, EDIT_STEP } from './graphql/mutations';
 import {
-  GetDashboardByIdQueryResponse,
-  GetRecordByIdQueryResponse,
-  GetResourceRecordsQueryResponse,
   GET_DASHBOARD_BY_ID,
   GET_RECORD_BY_ID,
   GET_RESOURCE_RECORDS,
@@ -92,7 +88,7 @@ export class DashboardComponent
 
   // === CONTEXT ===
   public refDataElements: any[] = [];
-  public recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
+  public recordsQuery!: QueryRef<ResourceRecordsNodesQueryResponse>;
   public contextId = new FormControl<string | number | null>(null);
   public refDataValueField = '';
   public contextRecord: Record | null = null;
@@ -143,7 +139,7 @@ export class DashboardComponent
       this.loading = true;
       this.id = params.id;
       this.apollo
-        .query<GetDashboardByIdQueryResponse>({
+        .query<DashboardQueryResponse>({
           query: GET_DASHBOARD_BY_ID,
           variables: {
             id: this.id,
@@ -659,7 +655,7 @@ export class DashboardComponent
 
     if ('resource' in context) {
       this.recordsQuery =
-        this.apollo.watchQuery<GetResourceRecordsQueryResponse>({
+        this.apollo.watchQuery<ResourceRecordsNodesQueryResponse>({
           query: GET_RESOURCE_RECORDS,
           variables: {
             first: ITEMS_PER_PAGE,
@@ -736,7 +732,7 @@ export class DashboardComponent
 
       // Get record by id
       firstValueFrom(
-        this.apollo.query<GetRecordByIdQueryResponse>({
+        this.apollo.query<RecordQueryResponse>({
           query: GET_RECORD_BY_ID,
           variables: {
             id: dContext.record,

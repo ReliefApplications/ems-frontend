@@ -5,11 +5,12 @@ import {
   Validators,
 } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
-import { Permission, Role } from '../../../models/user.model';
 import {
-  GetPermissionsQueryResponse,
-  GET_PERMISSIONS,
-} from '../graphql/queries';
+  Permission,
+  PermissionsQueryResponse,
+  Role,
+} from '../../../models/user.model';
+import { GET_PERMISSIONS } from '../graphql/queries';
 import { get } from 'lodash';
 import { SafeRestService } from '../../../services/rest/rest.service';
 
@@ -74,7 +75,7 @@ export class RoleDetailsComponent implements OnInit {
       permissions: [get(this.role, 'permissions', []).map((x) => x.id)],
     });
     this.apollo
-      .query<GetPermissionsQueryResponse>({
+      .query<PermissionsQueryResponse>({
         query: GET_PERMISSIONS,
         variables: {
           application: this.role.application !== null,
