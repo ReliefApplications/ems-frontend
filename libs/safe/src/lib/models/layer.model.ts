@@ -92,8 +92,9 @@ export interface PopupElementFields {
 export interface Fields {
   label: string;
   name: string;
+  text: string;
   type: string;
-  [key: string]: string;
+  fields?: Fields[];
 }
 
 /** Possible types of Popup element */

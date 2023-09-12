@@ -168,11 +168,21 @@
               | translate
           }}</label>
           <ui-select-menu formControlName="geoField">
-            <ui-select-option
-              *ngFor="let field of fields$ | async"
-              [value]="field.name"
-              >{{ field.name }}</ui-select-option
-            >
+            <ng-container *ngFor="let field of fields$ | async">
+              <ui-select-option *ngIf="!field.fields" [value]="field.name">
+                {{ field.text || field.name }}
+              </ui-select-option>
+
+              <ui-select-option *ngIf="field.fields" [isGroup]="true">
+                {{ field.text || field.name }}
+                <ui-select-option
+                  *ngFor="let subField of field.fields"
+                  [value]="field.name + '.' + subField.name"
+                >
+                  {{ subField.text || subField.name }}
+                </ui-select-option>
+              </ui-select-option>
+            </ng-container>
           </ui-select-menu>
           <ui-button
             *ngIf="formGroup.get('geoField')?.value"
@@ -202,11 +212,21 @@
                 | translate
             }}</label>
             <ui-select-menu formControlName="latitudeField">
-              <ui-select-option
-                *ngFor="let field of fields$ | async"
-                [value]="field.name"
-                >{{ field.name }}</ui-select-option
-              >
+              <ng-container *ngFor="let field of fields$ | async">
+                <ui-select-option *ngIf="!field.fields" [value]="field.name">
+                  {{ field.text || field.name }}
+                </ui-select-option>
+
+                <ui-select-option *ngIf="field.fields" [isGroup]="true">
+                  {{ field.text || field.name }}
+                  <ui-select-option
+                    *ngFor="let subField of field.fields"
+                    [value]="field.name + '.' + subField.name"
+                  >
+                    {{ subField.text || subField.name }}
+                  </ui-select-option>
+                </ui-select-option>
+              </ng-container>
             </ui-select-menu>
             <ui-button
               *ngIf="formGroup.get('latitudeField')?.value"
@@ -227,11 +247,21 @@
                 | translate
             }}</label>
             <ui-select-menu formControlName="longitudeField">
-              <ui-select-option
-                *ngFor="let field of fields$ | async"
-                [value]="field.name"
-                >{{ field.name }}</ui-select-option
-              >
+              <ng-container *ngFor="let field of fields$ | async">
+                <ui-select-option *ngIf="!field.fields" [value]="field.name">
+                  {{ field.text || field.name }}
+                </ui-select-option>
+
+                <ui-select-option *ngIf="field.fields" [isGroup]="true">
+                  {{ field.text || field.name }}
+                  <ui-select-option
+                    *ngFor="let subField of field.fields"
+                    [value]="field.name + '.' + subField.name"
+                  >
+                    {{ subField.text || subField.name }}
+                  </ui-select-option>
+                </ui-select-option>
+              </ng-container>
             </ui-select-menu>
             <ui-button
               *ngIf="formGroup.get('longitudeField')?.value"
