@@ -1847,6 +1847,11 @@
 					"element": "You are editing the view for selected element.",
 					"template": "You are editing template of the page. It will be loaded by default if no specific view is created for a record."
 				},
+				"notifications": {
+					"creatingTemplate": "Creating new template",
+					"loadDefault": "Displaying default template",
+					"templateCreated": "New template created"
+				},
 				"origin": "Context origin",
 				"refData": {
 					"element": "Element"
