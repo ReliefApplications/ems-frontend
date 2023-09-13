@@ -13,7 +13,8 @@ import {
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
-import { TranslateService } from '@ngx-translate/core';
+import { SafeUnsubscribeComponent } from '@oort-front/safe';
+import { takeUntil } from 'rxjs/operators';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
@@ -28,7 +29,7 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
 })
-export class UsersComponent implements OnInit {
+export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public users = new Array<User>();
@@ -50,7 +51,9 @@ export class UsersComponent implements OnInit {
    * @param apollo Used to load the users.
    * @param translate Translate service
    */
-  constructor(private apollo: Apollo, private translate: TranslateService) {}
+  constructor(private apollo: Apollo) {
+    super();
+  }
 
   /** Load the users */
   ngOnInit(): void {
@@ -61,18 +64,22 @@ export class UsersComponent implements OnInit {
         afterCursor: null,
       },
     });
-    this.usersQuery.valueChanges.subscribe((resUsers) => {
-      this.loading = true;
-      this.updateValues(resUsers.data, resUsers.loading);
-      this.apollo
-        .watchQuery<GetRolesQueryResponse>({
-          query: GET_ROLES,
-        })
-        .valueChanges.subscribe(({ data, loading }) => {
-          this.roles = data.roles;
-          this.loading = loading;
-        });
-    });
+    this.usersQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((resUsers) => {
+        this.loading = true;
+        this.updateValues(resUsers.data, resUsers.loading);
+        this.apollo
+          .watchQuery<GetRolesQueryResponse>({
+            query: GET_ROLES,
+          })
+          .valueChanges
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(({ data, loading }) => {
+            this.roles = data.roles;
+            this.loading = loading;
+          });
+      });
   }
 
   /**
