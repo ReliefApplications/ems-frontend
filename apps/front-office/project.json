@@ -46,6 +46,8 @@
           },
           "apps/front-office/src/styles.scss",
           "libs/safe/src/lib/style/styles.scss",
+          "libs/styles/src/lib/tailwind/tailwind.scss",
+          "libs/styles/src/lib/shared/shared.scss",
           "node_modules/survey-angular/survey.min.css",
           "node_modules/survey-creator/survey-creator.min.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
@@ -95,7 +97,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
         "azure-uat": {
@@ -119,7 +121,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
         "azure-dev": {
@@ -143,7 +145,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
         "oort-prod": {
@@ -167,7 +169,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-dev": {
@@ -191,7 +193,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-tailwind": {
@@ -215,7 +217,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
         "oort-guyane": {
@@ -239,7 +241,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-alimentaide": {
@@ -263,7 +265,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-demo": {
@@ -287,7 +289,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-lift": {
@@ -311,7 +313,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-expertisefr": {
@@ -335,7 +337,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/expertisefr"]
+            "includePaths": ["libs/styles/src/lib/themes/expertisefr"]
           }
         },
         "oort-local": {
@@ -352,7 +354,7 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "development": {
@@ -363,7 +365,7 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         }
       },
