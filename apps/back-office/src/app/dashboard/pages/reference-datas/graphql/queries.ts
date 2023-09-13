@@ -5,7 +5,13 @@ import { ReferenceData } from '@oort-front/safe';
 /** Get list of ref data gql query definition */
 export const GET_REFERENCE_DATAS = gql`
   query GetReferenceDatas($first: Int, $afterCursor: ID, $filter: JSON) {
-    referenceDatas(first: $first, afterCursor: $afterCursor, filter: $filter) {
+    referenceDatas(
+      first: $first
+      afterCursor: $afterCursor
+      filter: $filter
+      sortField: "name"
+      sortOrder: "asc"
+    ) {
       edges {
         node {
           id
