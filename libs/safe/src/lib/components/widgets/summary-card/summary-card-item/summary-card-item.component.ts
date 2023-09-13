@@ -1,6 +1,10 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { get } from 'lodash';
 import { CardT } from '../summary-card.component';
+import { Dialog } from '@angular/cdk/dialog';
+import { takeUntil } from 'rxjs/operators';
+import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { SummaryCardFormT } from '../../summary-card-settings/summary-card-settings.component';
 
 /**
  * Single Item component of Summary card widget.
@@ -10,11 +14,21 @@ import { CardT } from '../summary-card.component';
   templateUrl: './summary-card-item.component.html',
   styleUrls: ['./summary-card-item.component.scss'],
 })
-export class SummaryCardItemComponent implements OnInit, OnChanges {
+export class SummaryCardItemComponent extends SafeUnsubscribeComponent implements OnInit, OnChanges {
   @Input() card!: CardT;
+  @Input() settings: SummaryCardFormT | any = {};
   public fields: any[] = [];
   public fieldsValue: any = null;
   public styles: any[] = [];
+
+  /**
+   * Summary card item component
+   *
+   * @param dialog Dialog
+   */
+  constructor(public dialog: Dialog) {
+    super();
+  }
 
   ngOnInit(): void {
     this.setContent();
@@ -27,7 +41,8 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   /** Sets the content of the card */
   private async setContent() {
     this.fields = this.card.metadata || [];
-    if (!this.card.resource) return;
+    if (!this.card.resource) return;  
+    ' '
     if (this.card.aggregation) {
       this.fieldsValue = this.card.cardAggregationData;
       this.setContentFromAggregation();
@@ -113,5 +128,42 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
       name: key,
       editor: 'text',
     }));
+  }
+
+  /**
+   * Opens the form corresponding to selected summary card in order to update it
+   *
+   */
+  public async updateSummaryCard(): Promise<void> {
+    const { SafeFormModalComponent } = await import(
+      '../../../../components/form-modal/form-modal.component'
+    );
+    const dialogRef = this.dialog.open(SafeFormModalComponent, {
+      disableClose: true,
+      data: {
+        recordId: this.card.record?.id,
+        template: this.settings.template || null,
+      },
+      autoFocus: false,
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      if (value) {
+        //save new modifiedAt
+        const modifiedAt = value.data['modifiedAt'];
+        const date = new Date(parseInt(modifiedAt));
+        const isoDateString = date.toISOString();
+
+        const keys = Object.keys(value.data.data);
+        const cardRecord = {...this.card.record} as any;
+        const valueData = {...value.data.data} as any;
+        //save new fields modified
+        for (const key of keys) {
+          cardRecord[key] = valueData[key];
+        }
+        cardRecord['modifiedAt'] = isoDateString;
+        this.card.record = cardRecord;
+        this.setContent();
+      }
+    });
   }
 }

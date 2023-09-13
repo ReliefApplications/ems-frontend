@@ -20,3 +20,13 @@
   class="flex-1 overflow-auto p-[14px]"
 >
 </safe-summary-card-item-content>
+<!-- Edit -->
+<div class="absolute bottom-0 right-0 p-4">
+  <ui-button
+    *ngIf="card.record?.canUpdate"
+    [isIcon]="true"
+    icon="edit"
+    (click)="updateSummaryCard()"
+  >
+  </ui-button>
+</div>
