@@ -14,7 +14,10 @@ import { SummaryCardFormT } from '../../summary-card-settings/summary-card-setti
   templateUrl: './summary-card-item.component.html',
   styleUrls: ['./summary-card-item.component.scss'],
 })
-export class SummaryCardItemComponent extends SafeUnsubscribeComponent implements OnInit, OnChanges {
+export class SummaryCardItemComponent
+  extends SafeUnsubscribeComponent
+  implements OnInit, OnChanges
+{
   @Input() card!: CardT;
   @Input() settings: SummaryCardFormT | any = {};
   public fields: any[] = [];
@@ -41,8 +44,7 @@ export class SummaryCardItemComponent extends SafeUnsubscribeComponent implement
   /** Sets the content of the card */
   private async setContent() {
     this.fields = this.card.metadata || [];
-    if (!this.card.resource) return;  
-    ' '
+    if (!this.card.resource) return;
     if (this.card.aggregation) {
       this.fieldsValue = this.card.cardAggregationData;
       this.setContentFromAggregation();
@@ -154,8 +156,8 @@ export class SummaryCardItemComponent extends SafeUnsubscribeComponent implement
         const isoDateString = date.toISOString();
 
         const keys = Object.keys(value.data.data);
-        const cardRecord = {...this.card.record} as any;
-        const valueData = {...value.data.data} as any;
+        const cardRecord = { ...this.card.record } as any;
+        const valueData = { ...value.data.data } as any;
         //save new fields modified
         for (const key of keys) {
           cardRecord[key] = valueData[key];
