@@ -13,7 +13,11 @@ import { ChoseRoleComponent } from './components/chose-role/chose-role.component
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
-import { DialogModule, GraphQLSelectModule, TooltipModule } from '@oort-front/ui';
+import {
+  DialogModule,
+  GraphQLSelectModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import {
   ButtonModule,
   MenuModule,

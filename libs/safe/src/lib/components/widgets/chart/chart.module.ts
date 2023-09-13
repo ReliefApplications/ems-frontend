@@ -6,7 +6,12 @@ import { SafeLineChartModule } from '../../ui/charts/line-chart/line-chart.modul
 import { SafeBarChartModule } from '../../ui/charts/bar-chart/bar-chart.module';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { TranslateModule } from '@ngx-translate/core';
-import { ButtonModule, IconModule, SpinnerModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  IconModule,
+  SpinnerModule,
+  TooltipModule,
+} from '@oort-front/ui';
 
 /**
  * Module for the chart component
@@ -23,6 +28,7 @@ import { ButtonModule, IconModule, SpinnerModule } from '@oort-front/ui';
     IconModule,
     TranslateModule,
     ButtonModule,
+    TooltipModule,
   ],
   exports: [SafeChartComponent],
 })

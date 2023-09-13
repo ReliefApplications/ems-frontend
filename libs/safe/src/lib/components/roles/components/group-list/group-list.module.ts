@@ -9,6 +9,7 @@ import {
   ButtonModule,
   TableModule,
   FormWrapperModule,
+  TooltipModule,
 } from '@oort-front/ui';
 
 /**
@@ -26,6 +27,7 @@ import {
     MenuModule,
     TableModule,
     ButtonModule,
+    TooltipModule,
   ],
   exports: [SafeGroupListComponent],
 })

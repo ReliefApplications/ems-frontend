@@ -10,6 +10,7 @@ import {
   TextareaModule,
   FormWrapperModule,
   SelectMenuModule,
+  TooltipModule,
 } from '@oort-front/ui';
 
 /**
@@ -29,6 +30,7 @@ import {
     ButtonModule,
     FormWrapperModule,
     SelectMenuModule,
+    TooltipModule,
   ],
   exports: [RoleDetailsComponent],
 })

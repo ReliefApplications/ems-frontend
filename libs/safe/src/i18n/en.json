@@ -51,6 +51,7 @@
 			"one": "Column"
 		},
 		"comma": "comma",
+		"copy": "Copy",
 		"create": "Create",
 		"createdOn": "Created on",
 		"customNotification": {
@@ -727,7 +728,8 @@
 			"paginator": {
 				"ariaLabel": "Select page of notifications"
 			},
-			"readAll": "Mark all as read"
+			"readAll": "Mark all as read",
+			"title": "Notifications"
 		},
 		"paginator": {
 			"items": "items",
@@ -1896,6 +1898,7 @@
 		"page": {
 			"add": "Add a Page",
 			"tooltip": {
+				"drag": "Drag and drop to reorder",
 				"duplicate": "Select the application you want to put the copy in"
 			}
 		},

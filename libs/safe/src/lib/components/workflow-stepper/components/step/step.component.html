@@ -15,6 +15,7 @@
           | translate : { name: 'common.step.one' | translate }
       "
       (click)="onDelete($event)"
+      [uiTooltip]="'common.delete' | translate"
     >
     </ui-button>
     <!-- Duplicate action ( disabled ) -->
@@ -24,6 +25,7 @@
       category="primary"
       variant="primary"
       [disabled]="true"
+      [uiTooltip]="'common.copy' | translate"
     >
     </ui-button>
   </div>

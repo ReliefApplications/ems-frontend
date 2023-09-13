@@ -17,7 +17,7 @@ import { SafeAggregationBuilderModule } from '../../../ui/aggregation-builder/ag
 import { SafeGridModule } from '../../../ui/core-grid/grid/grid.module';
 import { SafeChartModule } from '../../chart/chart.module';
 import { SafeSeriesMappingModule } from '../../../ui/aggregation-builder/series-mapping/series-mapping.module';
-import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
+import { ButtonModule, FormWrapperModule, TooltipModule } from '@oort-front/ui';
 
 /**
  * Main tab of chart settings modal.
@@ -43,6 +43,7 @@ import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
     SafeSeriesMappingModule,
     ButtonModule,
     SelectMenuModule,
+    TooltipModule,
   ],
   exports: [TabMainComponent],
 })

@@ -65,6 +65,7 @@
       icon="get_app"
       class="text-neutral-700"
       (click)="pdf.saveAs(exportName)"
+      [uiTooltip]="'common.export' | translate"
     ></ui-button>
   </kendo-tilelayout-item-header>
   <!-- Cards display mode -->

@@ -62,6 +62,7 @@
     icon="account_circle"
     [uiMenuTriggerFor]="accountMenu"
     variant="light"
+    [uiTooltip]="'common.options' | translate"
   >
   </ui-button>
   <span class="relative">
@@ -72,6 +73,7 @@
       [disabled]="notifications.length === 0"
       icon="notifications"
       [isIcon]="true"
+      [uiTooltip]="'components.notifications.title' | translate"
     >
     </ui-button>
     <kendo-badge-container>

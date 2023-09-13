@@ -11,14 +11,20 @@ import { BehaviorSubject, takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
-import { ButtonModule, DividerModule } from '@oort-front/ui';
+import { ButtonModule, DividerModule, TooltipModule } from '@oort-front/ui';
 import { LatLng } from 'leaflet';
 
 /** Component for a popup that has information on multiple points */
 @Component({
   selector: 'safe-map-popup',
   standalone: true,
-  imports: [CommonModule, TranslateModule, ButtonModule, DividerModule],
+  imports: [
+    CommonModule,
+    TranslateModule,
+    ButtonModule,
+    DividerModule,
+    TooltipModule,
+  ],
   templateUrl: './map-popup.component.html',
   styleUrls: ['./map-popup.component.scss'],
 })

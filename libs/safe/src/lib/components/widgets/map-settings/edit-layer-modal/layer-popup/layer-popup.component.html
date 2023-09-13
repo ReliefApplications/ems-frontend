@@ -71,6 +71,7 @@
                   cdkDragHandle
                   [isIcon]="true"
                   icon="drag_indicator"
+                  [uiTooltip]="'models.page.tooltip.drag' | translate"
                 ></ui-button>
               </div>
               <div>
@@ -86,6 +87,7 @@
                 icon="delete"
                 variant="danger"
                 (click)="onRemoveElement(index)"
+                [uiTooltip]="'common.delete' | translate"
               ></ui-button>
             </div>
           </ng-container>

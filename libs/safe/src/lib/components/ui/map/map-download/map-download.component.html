@@ -77,8 +77,13 @@
         [isIcon]="true"
         icon="close"
         (click)="toggleVisibility()"
+        [uiTooltip]="'common.delete' | translate"
       ></ui-button>
-      <ui-button [isIcon]="true" icon="download"></ui-button>
+      <ui-button
+        [isIcon]="true"
+        icon="download"
+        [uiTooltip]="'common.downloadObject' | translate : { name: 'components.map.controls.download.view.all' | translate }"
+      ></ui-button>
     </div>
   </div>
 </div>

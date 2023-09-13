@@ -21,6 +21,7 @@
         (click)="searchAvailable = ''"
         [isIcon]="true"
         [icon]="searchAvailable ? 'cancel' : 'search'"
+        [uiTooltip]="'common.' + (searchAvailable ? 'cancel' : 'search') | translate"
       ></ui-button>
     </div>
 
@@ -65,6 +66,7 @@
         (click)="searchSelected = ''"
         [isIcon]="true"
         [icon]="searchSelected ? 'cancel' : 'search'"
+        [uiTooltip]="'common.' + (searchAvailable ? 'cancel' : 'search') | translate"
       ></ui-button>
     </div>
 
@@ -95,6 +97,7 @@
                 variant="danger"
                 (click)="onEdit(index)"
                 *ngIf="form.at(index)?.invalid && field.type"
+                [uiTooltip]="'common.edit' | translate"
               >
               </ui-button>
               <ui-button

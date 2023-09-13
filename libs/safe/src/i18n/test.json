@@ -51,6 +51,7 @@
 			"one": "******"
 		},
 		"comma": "******",
+		"copy": "******",
 		"create": "******",
 		"createdOn": "******",
 		"customNotification": {
@@ -727,7 +728,8 @@
 			"paginator": {
 				"ariaLabel": "******"
 			},
-			"readAll": "******"
+			"readAll": "******",
+			"title": "******"
 		},
 		"paginator": {
 			"items": "******",
@@ -1896,6 +1898,7 @@
 		"page": {
 			"add": "******",
 			"tooltip": {
+				"drag": "******",
 				"duplicate": "******"
 			}
 		},

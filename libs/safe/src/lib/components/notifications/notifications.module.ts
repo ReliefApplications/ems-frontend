@@ -10,6 +10,7 @@ import {
   TableModule,
   ChipModule,
   PaginatorModule,
+  TooltipModule,
 } from '@oort-front/ui';
 import { IconModule } from '@oort-front/ui';
 import { SafeEmptyModule } from '../ui/empty/empty.module';
@@ -31,6 +32,7 @@ import { SafeEmptyModule } from '../ui/empty/empty.module';
     ButtonModule,
     TableModule,
     ChipModule,
+    TooltipModule,
   ],
   exports: [NotificationsComponent],
 })

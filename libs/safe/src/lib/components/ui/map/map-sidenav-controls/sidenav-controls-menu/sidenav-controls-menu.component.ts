@@ -6,6 +6,7 @@ import {
   DividerModule,
   CheckboxModule,
   RadioModule,
+  TooltipModule,
 } from '@oort-front/ui';
 import { MapComponent } from '../../map.component';
 import * as L from 'leaflet';
@@ -29,6 +30,7 @@ import { SidenavControlsMenuBasemapComponent } from '../sidenav-controls-menu-ba
     RadioModule,
     SidenavControlsMenuItemComponent,
     SidenavControlsMenuBasemapComponent,
+    TooltipModule,
   ],
 })
 export class SidenavControlsMenuComponent implements OnInit {

@@ -11,6 +11,7 @@ import {
   ButtonModule,
   TableModule,
   PaginatorModule,
+  TooltipModule,
 } from '@oort-front/ui';
 
 /**
@@ -29,6 +30,7 @@ import {
     CheckboxModule,
     ButtonModule,
     TableModule,
+    TooltipModule,
   ],
   exports: [UserListComponent],
 })

@@ -29,6 +29,7 @@
         icon="delete"
         class="mr-1 pl-0"
         (click)="this.form.get('permissions')?.reset([])"
+        [uiTooltip]="'common.delete' | translate"
       ></ui-button>
     </div>
   </div>

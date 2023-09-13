@@ -16,6 +16,7 @@
           [disabled]="currValue === 0"
           variant="light"
           (click)="current.next(currValue - 1)"
+          [uiTooltip]="'common.back' | translate"
         >
         </ui-button>
         <ui-button
@@ -25,6 +26,7 @@
           [disabled]="currValue === feature.length - 1"
           variant="light"
           (click)="current.next(currValue + 1)"
+          [uiTooltip]="'common.next' | translate"
         >
         </ui-button>
       </ng-container>
@@ -35,6 +37,7 @@
         icon="close"
         variant="light"
         (click)="closePopup.emit()"
+        [uiTooltip]="'common.close' | translate"
       >
       </ui-button>
     </div>

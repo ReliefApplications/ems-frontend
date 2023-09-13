@@ -32,6 +32,7 @@ import {
   RadioModule,
   SelectMenuModule,
   SelectOptionModule,
+  TooltipModule,
 } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 
@@ -60,6 +61,7 @@ const MAX_COL_SPAN = 8;
     SelectOptionModule,
     RadioModule,
     CheckboxModule,
+    TooltipModule,
   ],
   templateUrl: './summary-card-general.component.html',
   styleUrls: ['./summary-card-general.component.scss'],
