@@ -1847,6 +1847,11 @@
 					"element": "******",
 					"template": "******"
 				},
+				"notifications": {
+					"creatingTemplate": "******",
+					"loadDefault": "******",
+					"templateCreated": "******"
+				},
 				"origin": "******",
 				"refData": {
 					"element": "******"
