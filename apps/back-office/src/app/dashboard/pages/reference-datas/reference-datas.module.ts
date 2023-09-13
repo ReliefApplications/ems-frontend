@@ -17,6 +17,7 @@ import {
   IconModule,
   TableModule,
   PaginatorModule,
+  TooltipModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 import { FilterComponent } from './components/filter/filter.component';
@@ -46,6 +47,7 @@ import { FilterComponent } from './components/filter/filter.component';
     ButtonModule,
     FormWrapperModule,
     TableModule,
+    TooltipModule,
   ],
   exports: [ReferenceDatasComponent],
 })

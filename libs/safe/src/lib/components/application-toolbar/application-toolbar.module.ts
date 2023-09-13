@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SafeApplicationToolbarComponent } from './application-toolbar.component';
 import { TranslateModule } from '@ngx-translate/core';
-import { IconModule } from '@oort-front/ui';
+import { IconModule, TooltipModule } from '@oort-front/ui';
 import { RouterModule } from '@angular/router';
 import { SafeAccessModule } from '../access/access.module';
 import { MenuModule, ButtonModule } from '@oort-front/ui';
@@ -20,6 +20,7 @@ import { MenuModule, ButtonModule } from '@oort-front/ui';
     IconModule,
     RouterModule,
     ButtonModule,
+    TooltipModule,
   ],
   exports: [SafeApplicationToolbarComponent],
 })

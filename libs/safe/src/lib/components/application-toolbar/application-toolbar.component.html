@@ -11,6 +11,7 @@
       icon="tune"
       variant="grey"
       [uiMenuTriggerFor]="settingsMenu"
+      [uiTooltip]="'common.settings' | translate"
     ></ui-button>
     <!-- Access -->
     <safe-access
@@ -27,6 +28,7 @@
       icon="lock"
       [variant]="lockedByUser ? 'primary' : 'danger'"
       (click)="onUnlock()"
+      [uiTooltip]="'components.application.unlock.title' | translate"
     >
     </ui-button>
     <ui-button variant="danger" (click)="onClose()">{{

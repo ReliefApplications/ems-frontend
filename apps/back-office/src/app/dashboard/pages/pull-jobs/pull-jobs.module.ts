@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PullJobsRoutingModule } from './pull-jobs-routing.module';
 import { PullJobsComponent } from './pull-jobs.component';
-import { IconModule } from '@oort-front/ui';
+import { IconModule, TooltipModule } from '@oort-front/ui';
 import {
   SafeSkeletonTableModule,
   SafeCronParserModule,
@@ -35,6 +35,7 @@ import {
     ButtonModule,
     TableModule,
     ChipModule,
+    TooltipModule,
   ],
 })
 export class PullJobsModule {}

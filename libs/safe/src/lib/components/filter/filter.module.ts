@@ -10,7 +10,7 @@ import {
   SelectMenuModule,
   FormWrapperModule,
   DateModule,
-  // TooltipModule,
+  TooltipModule,
 } from '@oort-front/ui';
 
 /**
@@ -25,7 +25,7 @@ import {
     ReactiveFormsModule,
     ButtonModule,
     SelectMenuModule,
-    // TooltipModule,
+    TooltipModule,
     DateModule,
     FormWrapperModule,
   ],

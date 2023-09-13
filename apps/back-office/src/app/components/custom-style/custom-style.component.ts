@@ -21,7 +21,12 @@ import { Apollo } from 'apollo-angular';
 import { UploadApplicationStyleMutationResponse } from './graphql/mutations';
 import { UPLOAD_APPLICATION_STYLE } from './graphql/mutations';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ButtonModule, SnackbarService, SpinnerModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  SnackbarService,
+  SpinnerModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 /** Default css style example to initialize the form and editor */
@@ -39,6 +44,7 @@ const DEFAULT_STYLE = '';
     TranslateModule,
     ButtonModule,
     SpinnerModule,
+    TooltipModule,
   ],
   templateUrl: './custom-style.component.html',
   styleUrls: ['./custom-style.component.scss'],

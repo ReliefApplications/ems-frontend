@@ -15,6 +15,7 @@ import {
   IconModule,
   PaginatorModule,
   DateModule,
+  TooltipModule,
 } from '@oort-front/ui';
 
 /**
@@ -38,6 +39,7 @@ import {
     FormWrapperModule,
     TableModule,
     DateModule,
+    TooltipModule,
   ],
   exports: [ResourcesComponent],
 })

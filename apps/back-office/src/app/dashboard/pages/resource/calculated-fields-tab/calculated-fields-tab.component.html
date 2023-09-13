@@ -45,6 +45,7 @@
               [uiMenuTriggerFor]="resMenu"
               (click)="$event.stopPropagation()"
               [disabled]="!resource.canUpdate"
+              [uiTooltip]="'common.options' | translate"
             >
             </ui-button>
             <ui-menu #resMenu>
