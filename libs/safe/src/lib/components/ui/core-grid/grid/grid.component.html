@@ -216,9 +216,26 @@
               class="translate textbox-container"
               [style]="getStyle(dataItem, field.name)"
             >
-              <div #refSpan class="textbox">
+              
+            
+              <!-- <div
+                *ngIf="isEllipsisActive(refSpan)"
+                #refSpan
+                class="textbox"
+                uiTooltip="teste"
+              >
+                {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
+              </div> -->
+              <div
+                *ngIf="!isEllipsisActive(refSpan)"
+                #refSpan
+                class="textbox"
+              >
                 {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
               </div>
+              
+              
+              
               <button
                 kendoButton
                 *ngIf="isEllipsisActive(refSpan)"
