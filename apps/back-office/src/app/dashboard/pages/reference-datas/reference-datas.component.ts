@@ -129,7 +129,7 @@ export class ReferenceDatasComponent
       this.pageInfo,
       this.cachedReferenceDatas
     );
-    if (cachedData) {
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
       this.dataSource = cachedData;
     } else {
       this.fetchReferenceDatas();

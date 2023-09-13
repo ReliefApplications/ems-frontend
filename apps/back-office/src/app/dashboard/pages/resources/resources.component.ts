@@ -118,7 +118,7 @@ export class ResourcesComponent
       this.pageInfo,
       this.cachedResources
     );
-    if (cachedData) {
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
       this.resources = cachedData;
     } else {
       this.fetchResources();

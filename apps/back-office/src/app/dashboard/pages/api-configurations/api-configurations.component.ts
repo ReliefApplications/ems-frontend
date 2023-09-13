@@ -124,7 +124,7 @@ export class ApiConfigurationsComponent
       this.pageInfo,
       this.cachedApiConfigurations
     );
-    if (cachedData) {
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
       this.dataSource = cachedData;
       this.filteredDataSources = this.dataSource;
     } else {
