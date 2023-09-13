@@ -1,5 +1,5 @@
 <form [formGroup]="form" class="flex flex-row gap-4">
-  <div uiFormFieldDirective class="w-44">
+  <div uiFormFieldDirective [defaultMargin]="false" class="w-44">
     <label>{{ 'components.aggregationBuilder.operator' | translate }}</label>
     <ui-select-menu formControlName="operator">
       <ui-select-option

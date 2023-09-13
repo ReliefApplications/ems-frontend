@@ -1,4 +1,4 @@
-<div class="form-group" [formGroup]="form">
+<div [formGroup]="form">
   <div class="w-full flex flex-col">
     <!-- RESOURCE SELECTION  -->
     <div uiFormFieldDirective fxFlex>
@@ -100,13 +100,13 @@
   <div class="flex flex-col mt-2" *ngIf="selectedLayout">
     <h2>{{ 'models.record.select' | translate }}</h2>
     <safe-core-grid
+      class="h-96"
       [settings]="selectedLayout"
       [multiSelect]="false"
       [selectable]="true"
       [showExport]="false"
       [selectedRows]="selectedRecordID ? [selectedRecordID] : []"
       (selectionChange)="onSelectionChange($event)"
-      style="height: 600px"
     >
     </safe-core-grid>
   </div>

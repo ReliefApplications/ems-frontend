@@ -32,7 +32,7 @@ import { NgZone } from '@angular/core';
  * @param domService Shared DOM service, used to inject components on the go
  * @param dialog dialog service
  * @param apollo apollo service
- * @param formBuilder form builder service
+ * @param fb form builder service
  * @param authService custom auth service
  * @param environment injected environment
  * @param referenceDataService Reference data service
@@ -44,7 +44,7 @@ export const initCustomSurvey = (
   domService: DomService,
   dialog: Dialog,
   apollo: Apollo,
-  formBuilder: UntypedFormBuilder,
+  fb: UntypedFormBuilder,
   authService: SafeAuthService,
   environment: any,
   referenceDataService: SafeReferenceDataService,
@@ -64,22 +64,8 @@ export const initCustomSurvey = (
   if (containsCustomQuestions) {
     CommentWidget.init(Survey);
     // load components (same as widgets, but with less configuration options)
-    ResourceComponent.init(
-      Survey,
-      domService,
-      apollo,
-      dialog,
-      formBuilder,
-      ngZone
-    );
-    ResourcesComponent.init(
-      Survey,
-      domService,
-      apollo,
-      dialog,
-      formBuilder,
-      ngZone
-    );
+    ResourceComponent.init(Survey, domService, apollo, dialog, fb, ngZone);
+    ResourcesComponent.init(Survey, domService, apollo, dialog, fb, ngZone);
     OwnerComponent.init(Survey, domService, apollo);
     UsersComponent.init(Survey, domService, apollo);
     GeospatialComponent.init(Survey, domService);

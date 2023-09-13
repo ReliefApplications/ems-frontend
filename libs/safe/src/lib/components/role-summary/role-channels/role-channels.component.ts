@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Application } from '../../../models/application.model';
@@ -26,7 +26,7 @@ export class RoleChannelsComponent
 
   public channels: Channel[] = [];
   public applications: any[] = [];
-  public form!: UntypedFormGroup;
+  public form!: ReturnType<typeof this.createFormGroup>;
   @Output() edit = new EventEmitter();
 
   /** Setter for the loading state */
@@ -45,14 +45,12 @@ export class RoleChannelsComponent
    * @param fb Angular form builder
    * @param apollo Apollo client
    */
-  constructor(private fb: UntypedFormBuilder, private apollo: Apollo) {
+  constructor(private fb: FormBuilder, private apollo: Apollo) {
     super();
   }
 
   ngOnInit(): void {
-    this.form = this.fb.group({
-      channels: [get(this.role, 'channels', []).map((x) => x.id)],
-    });
+    this.form = this.createFormGroup(this.role);
     this.apollo
       .query<GetChannelsQueryResponse>({
         query: GET_CHANNELS,
@@ -76,6 +74,18 @@ export class RoleChannelsComponent
           }, []),
         }));
       });
+  }
+
+  /**
+   * Create form group
+   *
+   * @param role Current role
+   * @returns form group
+   */
+  private createFormGroup(role: Role) {
+    return this.fb.group({
+      channels: [get(role, 'channels', []).map((x) => x.id)],
+    });
   }
 
   /**

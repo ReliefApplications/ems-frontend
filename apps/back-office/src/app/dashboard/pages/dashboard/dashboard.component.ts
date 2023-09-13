@@ -56,7 +56,8 @@ import { ContextService, CustomWidgetStyleComponent } from '@oort-front/safe';
 const ITEMS_PER_PAGE = 10;
 
 /**
- * Dashboard page.
+ * Back-office Dashboard page.
+ * Edition of the dashboard ( if user has permission ).
  */
 @Component({
   selector: 'app-dashboard',
@@ -67,38 +68,53 @@ export class DashboardComponent
   extends SafeUnsubscribeComponent
   implements OnInit, OnDestroy
 {
-  public isFullScreen = false;
-  // === DATA ===
-  public id = '';
-  public applicationId?: string;
-  public loading = true;
-  public tiles: any[] = [];
-  public dashboard?: Dashboard;
-  public showFilter!: boolean;
-
-  // === GRID ===
-  private generatedTiles = 0;
-
-  // === DASHBOARD NAME EDITION ===
-  public canUpdate = false;
-  public formActive = false;
-
-  // === STEP CHANGE FOR WORKFLOW ===
+  /** Change step event ( in workflow ) */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
-
-  // === DUP APP SELECTION ===
-  public showAppMenu = false;
-  public applications: Application[] = [];
-
+  /** Widget grid reference */
   @ViewChild(SafeWidgetGridComponent)
   widgetGridComponent!: SafeWidgetGridComponent;
-
-  // === CONTEXT ===
+  /** Is dashboard in fullscreen mode */
+  public isFullScreen = false;
+  /** Dashboard id */
+  public id = '';
+  /** Application id */
+  public applicationId?: string;
+  /** Is dashboard loading */
+  public loading = true;
+  /** List of widgets */
+  public widgets: any[] = [];
+  /** Current dashboard */
+  public dashboard?: Dashboard;
+  /** Show dashboard filter */
+  public showFilter!: boolean;
+  /** User can update dashboard */
+  public canUpdate = false;
+  /** Dashboard name edition is active */
+  public formActive = false;
+  /** Show application menu */
+  public showAppMenu = false;
+  /** List of available applications */
+  public applications: Application[] = [];
+  /** Contextual reference data elements  */
   public refDataElements: any[] = [];
+  /** Contextual records query */
   public recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
+  /** Contextual template id */
   public contextId = new FormControl<string | number | null>(null);
+  /** Field of contextual reference data */
   public refDataValueField = '';
+  /** Contextual record */
   public contextRecord: Record | null = null;
+  /** Configured dashboard quick actions */
+  public buttonActions: ButtonActionT[] = [];
+
+  /** @returns get newest widget id from existing ids */
+  get newestId(): number {
+    const widgets = this.widgets?.slice() || [];
+    return widgets.length === 0
+      ? 0
+      : Math.max(...widgets.map((x: any) => x.id)) + 1;
+  }
 
   /** @returns type of context element */
   get contextType() {
@@ -109,17 +125,14 @@ export class DashboardComponent
     }
   }
 
-  // === BUTTON ACTIONS ===
-  public buttonActions: ButtonActionT[] = [];
-
-  // === ROUTE ===
   /** @returns is dashboard a step or a page */
   get isStep(): boolean {
     return this.router.url.includes('/workflow/');
   }
 
   /**
-   * Dashboard page
+   * Back-office Dashboard page.
+   * Edition of the dashboard ( if user has permission ).
    *
    * @param applicationService Shared application service
    * @param workflowService Shared workflow service
@@ -129,14 +142,13 @@ export class DashboardComponent
    * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param dashboardService Shared dashboard service
-   * @param translateService Angular translate service
+   * @param translate Angular translate service
    * @param authService Shared authentication service
    * @param confirmService Shared confirm service
    * @param contextService Dashboard context service
    * @param refDataService Shared reference data service
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
-   * @param translate Translate service
    * @param layoutService Shared layout service
    */
   constructor(
@@ -148,14 +160,13 @@ export class DashboardComponent
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private dashboardService: SafeDashboardService,
-    private translateService: TranslateService,
+    private translate: TranslateService,
     private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     private contextService: ContextService,
     private refDataService: SafeReferenceDataService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
-    private translate: TranslateService,
     private layoutService: SafeLayoutService
   ) {
     super();
@@ -165,9 +176,8 @@ export class DashboardComponent
     this.contextId.valueChanges
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe((value) => {
-        if (value) {
-          this.handleContextChange(value);
-        }
+        // Load template, or go back to default one
+        this.handleContextChange(value);
       });
     this.route.params
       .pipe(debounceTime(500), takeUntil(this.destroy$))
@@ -178,94 +188,79 @@ export class DashboardComponent
         const pageContainer = document.getElementById('appPageContainer');
         if (pageContainer) pageContainer.scrollTop = 0;
         // Doing this to be able to use custom styles on specific dashboards
-        // if the route has an record or element query, it means we are on a contextual dashboard
+        // if the route has a record or element query, it means we are on a contextual dashboard
         // therefore, we need to find the contextual dashboard id in the parent dashboard
         this.route.queryParams
           .pipe(takeUntil(this.destroy$))
-          .subscribe((queryParams) => {
+          .subscribe(async (queryParams) => {
             // If we don't find the view element in the queryParams, then we are not using contextual view
             const viewId = queryParams.id;
             // if there is an id, we need to find the contextual dashboard id and load it
             if (viewId) {
               if (!this.dashboard) {
                 const dashboardId = this.getParentDashboardId();
-                firstValueFrom(
-                  this.apollo.query<GetDashboardByIdQueryResponse>({
+                this.apollo
+                  .query<GetDashboardByIdQueryResponse>({
                     query: GET_DASHBOARD_BY_ID,
                     variables: {
                       id: dashboardId,
                     },
                   })
-                ).then((res) => {
-                  this.dashboard = res.data.dashboard;
-                  const dashboardsWithContext =
-                    this.dashboard?.page?.contentWithContext;
-                  const type = this.contextType;
-                  // find the contextual dashboard id in the list of dashboards from the parent dashboard
-                  // it's the one where the element or record id matches the one in the query params
-                  const dashboardWithContext = dashboardsWithContext?.find(
-                    (d) => {
-                      if (type === 'element') {
-                        return (
-                          'element' in d && d.element.toString() === viewId
-                        );
-                      } else if (type === 'record') {
-                        return 'record' in d && d.record.toString() === viewId;
-                      }
-                      return false;
-                    }
-                  );
-                  // if we found the contextual dashboard, load it
-                  if (dashboardWithContext) {
-                    this.initDashboardWithId(dashboardWithContext.content);
-                  }
-                });
-              } else {
-                // load the main dashboard
-                // Find the id of the contextual dashboard and load it
-                const dashboardsWithContext =
-                  this.dashboard?.page?.contentWithContext;
-                const type = this.contextType;
-                // find the contextual dashboard id in the list of dashboards from the parent dashboard
-                // it's the one where the element or record id matches the one in the query params
-                const dashboardWithContext = dashboardsWithContext?.find(
-                  (d) => {
-                    if (type === 'element') {
-                      return 'element' in d && d.element.toString() === viewId;
-                    } else if (type === 'record') {
-                      return 'record' in d && d.record.toString() === viewId;
-                    }
-                    return false;
-                  }
-                );
-                if (dashboardWithContext) {
-                  // if we found the contextual dashboard, load it
-                  this.initDashboardWithId(dashboardWithContext.content);
-                } else {
-                  // if we didn't find the contextual dashboard, create it
-                  if (!this.dashboard?.page?.id) {
-                    this.initDashboardWithId(params.id);
-                    return;
-                  }
-                  if (type) {
-                    this.dashboardService
-                      .createDashboardWithContext(
-                        this.dashboard?.page?.id, // parent dashboard page id
-                        type, // type of context
-                        viewId // id of the context
-                      )
-                      .then((res) => {
-                        if (!res.data?.addDashboardWithContext?.id) return;
-                        // load the contextual dashboard
-                        this.initDashboardWithId(
-                          res.data.addDashboardWithContext.id
-                        );
-                      });
-                  } else {
-                    this.initDashboardWithId(params.id);
-                    return;
-                  }
+                  .pipe(takeUntil(this.destroy$))
+                  .subscribe(({ data }) => {
+                    this.dashboard = data.dashboard;
+                  });
+              }
+
+              // load the main dashboard
+              // Find the id of the contextual dashboard and load it
+              const dashboardsWithContext =
+                this.dashboard?.page?.contentWithContext;
+              const type = this.contextType;
+              // find the contextual dashboard id in the list of dashboards from the parent dashboard
+              // it's the one where the element or record id matches the one in the query params
+              const dashboardWithContext = dashboardsWithContext?.find((d) => {
+                if (type === 'element') {
+                  return 'element' in d && d.element.toString() === viewId;
+                } else if (type === 'record') {
+                  return 'record' in d && d.record.toString() === viewId;
                 }
+                return false;
+              });
+
+              if (dashboardWithContext) {
+                // if we found the contextual dashboard, load it
+                this.initDashboardWithId(dashboardWithContext.content);
+              } else {
+                // If not found, create it
+                // First we check if we have the necessary data to create it, if not, we load the main dashboard
+                if (!this.dashboard?.page?.id || !type) {
+                  this.initDashboardWithId(params.id);
+                  return;
+                }
+
+                this.loading = true;
+                this.snackBar.openSnackBar(
+                  this.translate.instant(
+                    'models.dashboard.context.notifications.creatingTemplate'
+                  )
+                );
+                this.dashboardService
+                  .createDashboardWithContext(
+                    this.dashboard?.page?.id, // parent dashboard page id
+                    type, // type of context
+                    viewId // id of the context
+                  )
+                  .then(({ data }) => {
+                    if (!data?.addDashboardWithContext?.id) return;
+                    this.snackBar.openSnackBar(
+                      this.translate.instant(
+                        'models.dashboard.context.notifications.templateCreated'
+                      )
+                    );
+                    // load the contextual dashboard
+                    this.initDashboardWithId(data.addDashboardWithContext.id);
+                  });
               }
             } else {
               // if there is no id, we are not on a contextual dashboard, we simply load the dashboard
@@ -297,9 +292,9 @@ export class DashboardComponent
         },
       })
     )
-      .then((res) => {
-        if (res.data.dashboard) {
-          this.dashboard = res.data.dashboard;
+      .then(({ data }) => {
+        if (data.dashboard) {
+          this.dashboard = data.dashboard;
           this.initContext();
           this.updateContextOptions();
           this.canUpdate =
@@ -308,33 +303,26 @@ export class DashboardComponent
               : this.dashboard?.step?.canUpdate) || false;
 
           this.dashboardService.openDashboard(this.dashboard);
-          this.tiles = this.dashboard.structure
+          this.widgets = this.dashboard.structure
             ? [...this.dashboard.structure.filter((x: any) => x !== null)]
             : [];
-          this.generatedTiles =
-            this.tiles.length === 0
-              ? 0
-              : Math.max(...this.tiles.map((x) => x && x?.id)) + 1;
           this.applicationId = this.dashboard.page
             ? this.dashboard.page.application?.id
             : this.dashboard.step
             ? this.dashboard.step.workflow?.page?.application?.id
             : '';
           this.buttonActions = this.dashboard.buttons || [];
-          this.loading = res.loading;
+          this.loading = false;
           this.showFilter = this.dashboard.showFilter ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
         } else {
           this.snackBar.openSnackBar(
-            this.translateService.instant(
-              'common.notifications.accessNotProvided',
-              {
-                type: this.translateService
-                  .instant('common.dashboard.one')
-                  .toLowerCase(),
-                error: '',
-              }
-            ),
+            this.translate.instant('common.notifications.accessNotProvided', {
+              type: this.translate
+                .instant('common.dashboard.one')
+                .toLowerCase(),
+              error: '',
+            }),
             { error: true }
           );
           this.router.navigate(['/applications']);
@@ -364,13 +352,9 @@ export class DashboardComponent
   canDeactivate(): Observable<boolean> | boolean {
     if (this.widgetGridComponent && !this.widgetGridComponent?.canDeactivate) {
       const dialogRef = this.confirmService.openConfirmModal({
-        title: this.translateService.instant('pages.dashboard.update.exit'),
-        content: this.translateService.instant(
-          'pages.dashboard.update.exitMessage'
-        ),
-        confirmText: this.translateService.instant(
-          'components.confirmModal.confirm'
-        ),
+        title: this.translate.instant('pages.dashboard.update.exit'),
+        content: this.translate.instant('pages.dashboard.update.exitMessage'),
+        confirmText: this.translate.instant('components.confirmModal.confirm'),
         confirmVariant: 'primary',
       });
       return dialogRef.closed.pipe(takeUntil(this.destroy$)).pipe(
@@ -391,14 +375,13 @@ export class DashboardComponent
    * @param e add event
    */
   onAdd(e: any): void {
-    const tile = JSON.parse(JSON.stringify(e));
-    tile.id = this.generatedTiles;
-    this.generatedTiles += 1;
-    this.tiles = [...this.tiles, tile];
+    const widget = JSON.parse(JSON.stringify(e));
+    widget.id = this.newestId;
+    this.widgets = [...this.widgets, widget];
     this.autoSaveChanges();
     // scroll to the element once it is created
     setTimeout(() => {
-      const el = document.getElementById(`widget-${tile.id}`);
+      const el = document.getElementById(`widget-${widget.id}`);
       el?.scrollIntoView({ behavior: 'smooth' });
     });
   }
@@ -410,17 +393,17 @@ export class DashboardComponent
    */
   onEditTile(e: any): void {
     // make sure that we save the default layout.
-    const index = this.tiles.findIndex((v: any) => v.id === e.id);
-    const options = this.tiles[index]?.settings?.defaultLayout
+    const index = this.widgets.findIndex((v: any) => v.id === e.id);
+    const options = this.widgets[index]?.settings?.defaultLayout
       ? {
           ...e.options,
-          defaultLayout: this.tiles[index].settings.defaultLayout,
+          defaultLayout: this.widgets[index].settings.defaultLayout,
         }
       : e.options;
     if (options) {
       switch (e.type) {
         case 'display': {
-          this.tiles = this.tiles.map((x) => {
+          this.widgets = this.widgets.map((x) => {
             if (x.id === e.id) {
               x.defaultCols = options.cols;
               x.defaultRows = options.rows;
@@ -431,7 +414,7 @@ export class DashboardComponent
           break;
         }
         case 'data': {
-          this.tiles = this.tiles.map((x) => {
+          this.widgets = this.widgets.map((x) => {
             if (x.id === e.id) {
               x = { ...x, settings: options };
             }
@@ -453,7 +436,7 @@ export class DashboardComponent
    * @param e delete event
    */
   onDeleteTile(e: any): void {
-    this.tiles = this.tiles.filter((x) => x.id !== e.id);
+    this.widgets = this.widgets.filter((x) => x.id !== e.id);
     this.autoSaveChanges();
   }
 
@@ -480,10 +463,10 @@ export class DashboardComponent
    */
   onMove(e: any): void {
     // Duplicates array, some times the arrays is write protected
-    this.tiles = this.tiles.slice();
-    [this.tiles[e.oldIndex], this.tiles[e.newIndex]] = [
-      this.tiles[e.newIndex],
-      this.tiles[e.oldIndex],
+    this.widgets = this.widgets.slice();
+    [this.widgets[e.oldIndex], this.widgets[e.newIndex]] = [
+      this.widgets[e.newIndex],
+      this.widgets[e.oldIndex],
     ];
     this.autoSaveChanges();
   }
@@ -495,35 +478,29 @@ export class DashboardComponent
         mutation: EDIT_DASHBOARD,
         variables: {
           id: this.id,
-          structure: this.tiles,
+          structure: this.widgets,
         },
       })
       .subscribe({
         next: ({ errors }) => {
           if (errors) {
             this.snackBar.openSnackBar(
-              this.translateService.instant(
-                'common.notifications.objectNotUpdated',
-                {
-                  type: this.translateService.instant('common.dashboard.one'),
-                  error: errors ? errors[0].message : '',
-                }
-              ),
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.dashboard.one'),
+                error: errors ? errors[0].message : '',
+              }),
               { error: true }
             );
           } else {
             this.snackBar.openSnackBar(
-              this.translateService.instant(
-                'common.notifications.objectUpdated',
-                {
-                  type: this.translateService.instant('common.dashboard.one'),
-                  value: '',
-                }
-              )
+              this.translate.instant('common.notifications.objectUpdated', {
+                type: this.translate.instant('common.dashboard.one'),
+                value: '',
+              })
             );
             this.dashboardService.openDashboard({
               ...this.dashboard,
-              structure: this.tiles,
+              structure: this.widgets,
             });
           }
         },
@@ -550,10 +527,10 @@ export class DashboardComponent
           next: ({ errors, data }) => {
             if (errors) {
               this.snackBar.openSnackBar(
-                this.translateService.instant(
+                this.translate.instant(
                   'common.notifications.objectNotUpdated',
                   {
-                    type: this.translateService.instant('common.step.one'),
+                    type: this.translate.instant('common.step.one'),
                     error: errors ? errors[0].message : '',
                   }
                 ),
@@ -561,13 +538,10 @@ export class DashboardComponent
               );
             } else {
               this.snackBar.openSnackBar(
-                this.translateService.instant(
-                  'common.notifications.objectUpdated',
-                  {
-                    type: this.translateService.instant('common.step.one'),
-                    value: '',
-                  }
-                )
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.step.one'),
+                  value: '',
+                })
               );
               this.dashboard = {
                 ...this.dashboard,
@@ -592,10 +566,10 @@ export class DashboardComponent
           next: ({ errors, data }) => {
             if (errors) {
               this.snackBar.openSnackBar(
-                this.translateService.instant(
+                this.translate.instant(
                   'common.notifications.objectNotUpdated',
                   {
-                    type: this.translateService.instant('common.step.one'),
+                    type: this.translate.instant('common.step.one'),
                     error: errors ? errors[0].message : '',
                   }
                 ),
@@ -603,13 +577,10 @@ export class DashboardComponent
               );
             } else {
               this.snackBar.openSnackBar(
-                this.translateService.instant(
-                  'common.notifications.objectUpdated',
-                  {
-                    type: this.translateService.instant('common.step.one'),
-                    value: '',
-                  }
-                )
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.step.one'),
+                  value: '',
+                })
               );
               this.dashboard = {
                 ...this.dashboard,
@@ -646,22 +617,28 @@ export class DashboardComponent
       const callback = () => {
         this.dashboard = { ...this.dashboard, name: dashboardName };
       };
-      if (this.isStep) {
-        this.workflowService.updateStepName(
-          {
-            id: this.dashboard?.step?.id,
-            name: dashboardName,
-          },
-          callback
-        );
+      if (this.contextId.value) {
+        // Seeing a template
+        this.dashboardService.editName(dashboardName, callback);
       } else {
-        this.applicationService.updatePageName(
-          {
-            id: this.dashboard?.page?.id,
-            name: dashboardName,
-          },
-          callback
-        );
+        // Not part of contextual page
+        if (this.isStep) {
+          this.workflowService.updateStepName(
+            {
+              id: this.dashboard?.step?.id,
+              name: dashboardName,
+            },
+            callback
+          );
+        } else {
+          this.applicationService.updatePageName(
+            {
+              id: this.dashboard?.page?.id,
+              name: dashboardName,
+            },
+            callback
+          );
+        }
       }
     }
   }
@@ -684,10 +661,10 @@ export class DashboardComponent
           next: ({ data, errors }) => {
             if (errors) {
               this.snackBar.openSnackBar(
-                this.translateService.instant(
+                this.translate.instant(
                   'common.notifications.objectNotUpdated',
                   {
-                    type: this.translateService.instant('common.dashboard.one'),
+                    type: this.translate.instant('common.dashboard.one'),
                     error: errors ? errors[0].message : '',
                   }
                 ),
@@ -695,13 +672,10 @@ export class DashboardComponent
               );
             } else {
               this.snackBar.openSnackBar(
-                this.translateService.instant(
-                  'common.notifications.objectUpdated',
-                  {
-                    type: this.translateService.instant('common.dashboard.one'),
-                    value: '',
-                  }
-                )
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.dashboard.one'),
+                  value: '',
+                })
               );
               this.dashboardService.openDashboard({
                 ...this.dashboard,
@@ -858,52 +832,38 @@ export class DashboardComponent
   }
 
   /**
-   * Handle dashboard context change.
+   * Handle dashboard context change by simply updating the url.
    *
    * @param value id of the element or record
    */
-  private async handleContextChange(value: string | number) {
+  private async handleContextChange(value: string | number | undefined | null) {
     if (
       !this.dashboard?.id ||
       !this.dashboard?.page?.id ||
-      !this.dashboard.page.context
+      !this.dashboard.page.context ||
+      !this.contextType
     )
       return;
 
     const parentDashboardId = this.getParentDashboardId();
 
-    // Check if there is a dashboard with the same context
-    const dashboardsWithContext = this.dashboard?.page?.contentWithContext;
-    const type = this.contextType;
-    if (type) {
-      const dashboardWithContext = dashboardsWithContext?.find((d) => {
-        if (type === 'element') {
-          return 'element' in d && d.element.toString() === value;
-        } else if (type === 'record') {
-          return 'record' in d && d.record.toString() === value;
-        }
-        return false;
-      });
-
+    if (value) {
       const urlArr = this.router.url.split('/');
-
-      if (dashboardWithContext) {
-        urlArr[urlArr.length - 1] = `${parentDashboardId}?id=${value}`;
-        this.router.navigateByUrl(urlArr.join('/'));
-      } else {
-        const { data } = await this.dashboardService.createDashboardWithContext(
-          this.dashboard?.page?.id,
-          type,
-          value
-        );
-        if (!data?.addDashboardWithContext?.id) return;
-        urlArr[urlArr.length - 1] = `${parentDashboardId}?id=${value}`;
-        this.router.navigateByUrl(urlArr.join('/'));
-      }
+      urlArr[urlArr.length - 1] = `${parentDashboardId}?id=${value}`;
+      this.router.navigateByUrl(urlArr.join('/'));
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'models.dashboard.context.notifications.loadDefault'
+        )
+      );
+      const urlArr = this.router.url.split('/');
+      urlArr[urlArr.length - 1] = parentDashboardId;
+      this.router.navigateByUrl(urlArr.join('/'));
     }
   }
 
-  /** Initializes the dashboard context;  */
+  /** Initializes the dashboard context */
   private initContext() {
     if (!this.dashboard?.page?.context || !this.dashboard?.id) return;
     // Checks if the dashboard has context attached to it
@@ -928,8 +888,10 @@ export class DashboardComponent
           },
         })
         .pipe(takeUntil(this.destroy$))
-        .subscribe((data: any) => {
-          this.contextRecord = data.record;
+        .subscribe((res) => {
+          if (res?.data) {
+            this.contextRecord = res.data.record;
+          }
         });
     }
   }

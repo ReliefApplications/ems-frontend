@@ -1,5 +1,4 @@
 import { Injectable } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { prettifyLabel } from '../../utils/prettify';
 import get from 'lodash/get';
 import { SafeApiProxyService } from '../api-proxy/api-proxy.service';
@@ -12,6 +11,7 @@ import {
   getWithExpiry,
   setWithExpiry,
 } from '../../utils/cache-with-expiry';
+import { FormBuilder } from '@angular/forms';
 
 /** List of disabled fields */
 const DISABLED_FIELDS = [
@@ -46,12 +46,12 @@ export class SafeGridService {
    * Shared grid service for the dashboards.
    * Exposes the available tiles, and find the settings from a widget.
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param apiProxyService Shared API proxy service
    * @param translate Translate service
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     private apiProxyService: SafeApiProxyService,
     private translate: TranslateService
   ) {}
@@ -389,7 +389,7 @@ export class SafeGridService {
    * @param fields List of grid fields.
    * @returns Form group of the item.
    */
-  public createFormGroup(dataItem: any, fields: any[]): UntypedFormGroup {
+  public createFormGroup(dataItem: any, fields: any[]) {
     const formGroup: any = {};
     fields
       .filter((x) => !x.disabled)
@@ -407,7 +407,7 @@ export class SafeGridService {
                 dataItem[field.name] ? dataItem[field.name][item.name] : null,
               ];
             }
-            formGroup[field.name] = this.formBuilder.group(fieldGroup);
+            formGroup[field.name] = this.fb.group(fieldGroup);
           }
           if (field.meta.type === 'matrix') {
             const fieldGroup: any = {};
@@ -416,7 +416,7 @@ export class SafeGridService {
                 dataItem[field.name] ? dataItem[field.name][row.name] : null,
               ];
             }
-            formGroup[field.name] = this.formBuilder.group(fieldGroup);
+            formGroup[field.name] = this.fb.group(fieldGroup);
           }
           if (field.meta.type === 'matrixdropdown') {
             const fieldGroup: any = {};
@@ -428,9 +428,9 @@ export class SafeGridService {
                 const columnValue = rowValue ? rowValue[column.name] : null;
                 rowGroup[column.name] = [columnValue];
               }
-              fieldGroup[row.name] = this.formBuilder.group(rowGroup);
+              fieldGroup[row.name] = this.fb.group(rowGroup);
             }
-            formGroup[field.name] = this.formBuilder.group(fieldGroup);
+            formGroup[field.name] = this.fb.group(fieldGroup);
           }
           if (field.meta.type === 'matrixdynamic') {
             const fieldArray: any = [];
@@ -445,12 +445,12 @@ export class SafeGridService {
                   rowGroup[column.name] = columnValue;
                 }
               }
-              fieldArray.push(this.formBuilder.group(rowGroup));
+              fieldArray.push(this.fb.group(rowGroup));
             }
-            formGroup[field.name] = this.formBuilder.array(fieldArray);
+            formGroup[field.name] = this.fb.array(fieldArray);
           }
         }
       });
-    return this.formBuilder.group(formGroup);
+    return this.fb.group(formGroup);
   }
 }

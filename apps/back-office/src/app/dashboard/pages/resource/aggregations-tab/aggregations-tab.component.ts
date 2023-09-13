@@ -86,7 +86,7 @@ export class AggregationsTabComponent
         query: GET_RESOURCE_AGGREGATIONS,
         variables: {
           first: this.pageInfo.pageSize,
-          id: this.resource.id,
+          id: this.resource?.id,
           afterCursor: this.pageInfo.endCursor,
         },
       });

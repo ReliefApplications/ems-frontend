@@ -2,7 +2,7 @@ import { TestBed } from '@angular/core/testing';
 
 import { Router } from '@angular/router';
 // import { RouterTestingModule } from '@angular/router/testing';
-import { MockedRouter } from './mock-class.test';
+import { MockedRouter } from '../__mocks__/mock-class.test';
 import { CanDeactivateGuard } from './can-deactivate.guard';
 
 describe('CanDeactivateGuard', () => {

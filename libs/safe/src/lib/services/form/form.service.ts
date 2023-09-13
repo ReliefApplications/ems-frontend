@@ -27,7 +27,7 @@ export class SafeFormService {
    * @param domService Shared DOM service
    * @param dialog Dialog service
    * @param apollo Apollo client
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param authService Shared authentication service
    * @param referenceDataService Reference data service
    * @param ngZone Angular Service to execute code inside Angular environment
@@ -37,7 +37,7 @@ export class SafeFormService {
     public domService: DomService,
     public dialog: Dialog,
     public apollo: Apollo,
-    public formBuilder: UntypedFormBuilder,
+    public fb: UntypedFormBuilder,
     public authService: SafeAuthService,
     public referenceDataService: SafeReferenceDataService,
     public ngZone: NgZone
@@ -63,7 +63,7 @@ export class SafeFormService {
       this.domService,
       this.dialog,
       this.apollo,
-      this.formBuilder,
+      this.fb,
       this.authService,
       this.environment,
       this.referenceDataService,
@@ -78,7 +78,7 @@ export class SafeFormService {
       this.domService,
       this.dialog,
       this.apollo,
-      this.formBuilder,
+      this.fb,
       this.authService,
       this.environment,
       this.referenceDataService,

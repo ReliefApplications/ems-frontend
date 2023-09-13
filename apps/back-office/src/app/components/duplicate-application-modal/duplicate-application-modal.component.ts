@@ -1,10 +1,6 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnInit, Inject } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { Component, Inject } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import {
   DuplicateApplicationMutationResponse,
   DUPLICATE_APPLICATION,
@@ -40,15 +36,17 @@ import {
   templateUrl: './duplicate-application-modal.component.html',
   styleUrls: ['./duplicate-application-modal.component.scss'],
 })
-export class DuplicateApplicationModalComponent implements OnInit {
+export class DuplicateApplicationModalComponent {
   public currentApp: Application;
-  public duplicateForm: UntypedFormGroup = new UntypedFormGroup({});
+  public duplicateForm = this.fb.group({
+    name: ['', Validators.required],
+  });
 
   /**
    * Duplicate application component.
    *
    * @param snackBar Shared snackbar service
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param apollo Apollo service
    * @param dialogRef Dialog ref
    * @param translateService Angular translate service
@@ -56,19 +54,13 @@ export class DuplicateApplicationModalComponent implements OnInit {
    */
   constructor(
     private snackBar: SnackbarService,
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     private apollo: Apollo,
     public dialogRef: DialogRef<DuplicateApplicationModalComponent>,
     private translateService: TranslateService,
     @Inject(DIALOG_DATA) public data: any
   ) {
     this.currentApp = data;
-  }
-
-  ngOnInit(): void {
-    this.duplicateForm = this.formBuilder.group({
-      name: ['', Validators.required],
-    });
   }
 
   /**

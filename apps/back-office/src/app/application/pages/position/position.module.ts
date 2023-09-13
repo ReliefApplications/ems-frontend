@@ -12,6 +12,7 @@ import {
   ButtonModule,
   TableModule,
   DialogModule,
+  DividerModule,
 } from '@oort-front/ui';
 
 /**
@@ -33,6 +34,7 @@ import {
     SafeEmptyModule,
     ButtonModule,
     TableModule,
+    DividerModule,
   ],
   exports: [PositionComponent],
 })

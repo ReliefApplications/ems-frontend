@@ -31,6 +31,7 @@ export interface QuestionSelectBase
     GlobalProperties {
   referenceData?: string;
   referenceDataDisplayField?: string;
+  isPrimitiveValue?: boolean;
   referenceDataFilterFilterFromQuestion?: string;
   referenceDataFilterForeignField?: string;
   referenceDataFilterFilterCondition?: string;

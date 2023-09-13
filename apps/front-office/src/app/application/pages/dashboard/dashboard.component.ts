@@ -52,8 +52,8 @@ export class DashboardComponent
   public widgets = [];
   /** Current dashboard */
   public dashboard?: Dashboard;
-  /** displays dashboard name */
-  public displayDashboardName = false;
+  /** Show name ( contextual pages ) */
+  public showName = false;
 
   @ViewChild(SafeWidgetGridComponent)
   widgetGridComponent!: SafeWidgetGridComponent;
@@ -109,9 +109,9 @@ export class DashboardComponent
         .pipe(takeUntil(this.destroy$))
         .subscribe((queryParams) => {
           if (queryParams.id) {
-            this.displayDashboardName = true;
+            this.showName = true;
           } else {
-            this.displayDashboardName = false;
+            this.showName = false;
           }
         });
       // Reset scroll when changing page

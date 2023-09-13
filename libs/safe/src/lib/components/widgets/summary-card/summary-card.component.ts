@@ -77,6 +77,7 @@ export class SafeSummaryCardComponent
     pageIndex: 0,
     pageSize: DEFAULT_PAGE_SIZE,
     length: 0,
+    skip: 0,
   };
   public loading = true;
 
@@ -92,13 +93,47 @@ export class SafeSummaryCardComponent
     logic: 'and',
     filters: [],
   };
+  /** @returns Get query filter */
+  get queryFilter(): CompositeFilterDescriptor {
+    let filter: CompositeFilterDescriptor | undefined;
+    if (this.searchControl.value) {
+      const skippedFields = ['id', 'incrementalId'];
+      filter = {
+        logic: 'and',
+        filters: [
+          { logic: 'and', filters: [this.layout?.query.filter] },
+          {
+            logic: 'or',
+            filters: searchFilters(
+              this.searchControl.value,
+              this.fields,
+              skippedFields
+            ),
+          },
+        ],
+      };
+    } else {
+      filter = {
+        logic: 'and',
+        filters: [this.layout?.query.filter],
+      };
+    }
+    return {
+      logic: 'and',
+      filters: [
+        filter,
+        this.contextService.injectDashboardFilterValues(this.contextFilters),
+      ],
+    };
+  }
 
   public searchControl = new FormControl('');
   public scrolling = false;
-
-  private filters: any = null;
-
   private resizeObserver!: ResizeObserver;
+
+  // used to reset sort options when changing display mode
+  public sortControl = new FormControl(null);
+  private sortOptions = { field: null, order: '' };
 
   @ViewChild('summaryCardGrid') summaryCardGrid!: ElementRef<HTMLDivElement>;
   @ViewChild('pdf') pdf!: any;
@@ -199,6 +234,19 @@ export class SafeSummaryCardComponent
   }
 
   /**
+   * Changes the display mode and reset the sort.
+   *
+   * @param value display mode.
+   */
+  changeDisplayMode(value: 'cards' | 'grid') {
+    if (this.displayMode != value) {
+      this.sortControl.setValue(null);
+      this.onSort(null);
+      this.displayMode = value;
+    }
+  }
+
+  /**
    * Changes the number of displayed columns.
    *
    * @param width width of the screen.
@@ -240,6 +288,7 @@ export class SafeSummaryCardComponent
     const needRefetch = !this.settings.card?.aggregation;
     const skippedFields = ['id', 'incrementalId'];
     this.pageInfo.pageIndex = 0;
+    this.pageInfo.skip = 0;
 
     if (!needRefetch) {
       this.sortedCachedCards = this.cachedCards.filter((card: any) => {
@@ -260,25 +309,13 @@ export class SafeSummaryCardComponent
       this.pageInfo.length = this.sortedCachedCards.length;
     } else {
       this.loading = true;
-      this.filters = {
-        logic: 'and',
-        filters: [
-          {
-            logic: 'and',
-            filters: [this.layout?.query.filter],
-          },
-          {
-            logic: 'or',
-            filters: searchFilters(search, this.fields, skippedFields),
-          },
-        ],
-      };
-
       this.dataQuery
         ?.refetch({
           skip: 0,
           first: this.pageInfo.pageSize,
-          filter: this.filters,
+          filter: this.queryFilter,
+          sortField: this.sortOptions.field,
+          sortOrder: this.sortOptions.order,
         })
         .then(this.updateCards.bind(this));
     }
@@ -322,11 +359,13 @@ export class SafeSummaryCardComponent
     } else {
       this.cards = newCards;
 
-      this.summaryCardGrid.nativeElement.scroll({
-        top: 0,
-        left: 0,
-        behavior: 'smooth',
-      });
+      if (this.displayMode == 'cards') {
+        this.summaryCardGrid.nativeElement.scroll({
+          top: 0,
+          left: 0,
+          behavior: 'smooth',
+        });
+      }
     }
     this.pageInfo.length = get(
       res.data[layoutQueryName ?? 'recordsAggregation'],
@@ -382,27 +421,18 @@ export class SafeSummaryCardComponent
             this.sortFields.push(sortField);
           });
 
-          if (this.contextFilters && layoutQuery.filter) {
-            layoutQuery.filter = {
-              logic: 'and',
-              filters: [
-                layoutQuery.filter,
-                this.contextService.injectDashboardFilterValues(
-                  this.contextFilters
-                ),
-              ],
-            };
-          }
-
           if (builtQuery) {
-            this.filters = layoutQuery.filter;
+            this.sortOptions = {
+              field: get(this.layout?.query, 'sort.field', null),
+              order: get(this.layout?.query, 'sort.order', ''),
+            };
             this.dataQuery = this.apollo.watchQuery<any>({
               query: builtQuery,
               variables: {
                 first: DEFAULT_PAGE_SIZE,
-                filter: this.filters,
-                sortField: get(layoutQuery, 'sort.field', null),
-                sortOrder: get(layoutQuery, 'sort.order', ''),
+                filter: this.queryFilter,
+                sortField: this.sortOptions.field,
+                sortOrder: this.sortOptions.order,
                 styles: layoutQuery.style || null,
               },
               fetchPolicy: 'network-only',
@@ -503,6 +533,7 @@ export class SafeSummaryCardComponent
    */
   public onPage(event: UIPageChangeEvent): void {
     this.pageInfo.pageSize = event.pageSize;
+    this.pageInfo.skip = event.skip;
 
     if (this.dataQuery) {
       this.loading = true;
@@ -511,9 +542,9 @@ export class SafeSummaryCardComponent
         .refetch({
           first: this.pageInfo.pageSize,
           skip: event.skip,
-          filters: this.filters,
-          sortField: get(layoutQuery, 'sort.field', null),
-          sortOrder: get(layoutQuery, 'sort.order', ''),
+          filters: this.queryFilter,
+          sortField: this.sortOptions.field,
+          sortOrder: this.sortOptions.order,
           styles: layoutQuery?.style || null,
         })
         .then(this.updateCards.bind(this));
@@ -554,6 +585,14 @@ export class SafeSummaryCardComponent
    * @param e Selected sort option.
    */
   public onSort(e: any) {
+    if (e) {
+      this.sortOptions = { field: e.field, order: e.order };
+    } else {
+      this.sortOptions = {
+        field: get(this.layout?.query, 'sort.field', null),
+        order: get(this.layout?.query, 'sort.order', ''),
+      };
+    }
     if (this.gridComponent) {
       this.gridComponent.onSort(e);
     } else {
@@ -561,9 +600,9 @@ export class SafeSummaryCardComponent
       this.dataQuery
         .refetch({
           first: this.pageInfo.pageSize,
-          filter: this.layout?.query.filter,
-          sortField: e.field || undefined,
-          sortOrder: e.order,
+          filter: this.queryFilter,
+          sortField: this.sortOptions.field,
+          sortOrder: this.sortOptions.order,
         })
         .then(() => (this.loading = false));
     }

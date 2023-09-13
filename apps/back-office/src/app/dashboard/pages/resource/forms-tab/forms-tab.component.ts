@@ -67,7 +67,7 @@ export class FormsTabComponent
       .query<GetResourceByIdQueryResponse>({
         query: GET_RESOURCE_FORMS,
         variables: {
-          id: this.resource.id,
+          id: this.resource?.id,
         },
       })
       .subscribe(({ data }) => {
