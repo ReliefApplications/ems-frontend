@@ -1,1 +1,1 @@
-export * from './chart.title';
+export * from './chart';

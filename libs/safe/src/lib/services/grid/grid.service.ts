@@ -119,8 +119,8 @@ export class SafeGridService {
               title,
               type: f.type,
               format: this.getFieldFormat(f.type),
-              editor: this.getFieldEditor(f.type),
-              filter: prefix ? '' : this.getFieldFilter(f.type),
+              editor: this.getFieldFilterOrEditor(f.type),
+              filter: prefix ? '' : this.getFieldFilterOrEditor(f.type),
               meta: metaData,
               disabled: true,
               hidden: hidden || cachedField?.hidden || false,
@@ -144,8 +144,10 @@ export class SafeGridService {
               type: f.type,
               layoutFormat: f.format,
               format: this.getFieldFormat(f.type),
-              editor: this.getFieldEditor(f.type),
-              filter: !options.filter ? '' : this.getFieldFilter(f.type),
+              editor: this.getFieldFilterOrEditor(f.type),
+              filter: !options.filter
+                ? ''
+                : this.getFieldFilterOrEditor(f.type),
               meta: metaData ? metaData : { type: 'text' },
               disabled:
                 disabled ||
@@ -163,41 +165,6 @@ export class SafeGridService {
     )
       .filter((f) => f.canSee)
       .sort((a, b) => a.order - b.order);
-  }
-
-  /**
-   * Gets editor of a field from its type.
-   *
-   * @param type Field type.
-   * @returns name of the editor.
-   */
-  private getFieldEditor(type: any): string {
-    switch (type) {
-      case 'Int': {
-        return 'numeric';
-      }
-      case 'Float': {
-        return 'numeric';
-      }
-      case 'Boolean': {
-        return 'boolean';
-      }
-      case 'Date': {
-        return 'date';
-      }
-      case 'DateTime': {
-        return 'datetime';
-      }
-      case 'Time': {
-        return 'time';
-      }
-      case 'JSON': {
-        return '';
-      }
-      default: {
-        return 'text';
-      }
-    }
   }
 
   /**
@@ -220,12 +187,12 @@ export class SafeGridService {
   }
 
   /**
-   * Gets filter type of a field from its type.
+   * Gets filter type of a field from its type or gets editor of a field from its type.
    *
    * @param type Type of the field.
    * @returns Name of the field filter.
    */
-  private getFieldFilter(type: any): string {
+  private getFieldFilterOrEditor(type: any): string {
     switch (type) {
       case 'Int': {
         return 'numeric';

@@ -6,8 +6,6 @@ import { SafeConfirmService } from '../confirm/confirm.service';
 import { firstValueFrom } from 'rxjs';
 import {
   UPLOAD_FILE,
-  UploadFileMutationResponse,
-  AddRecordMutationResponse,
   ADD_RECORD,
 } from '../../components/form/graphql/mutations';
 import { DialogRef } from '@angular/cdk/dialog';
@@ -15,6 +13,8 @@ import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
 import set from 'lodash/set';
 import { SafeAuthService } from '../auth/auth.service';
+import { UploadFileMutationResponse } from '../../models/file-handler.model';
+import { AddRecordMutationResponse } from '../../models/record.model';
 
 /**
  * Shared survey helper service.

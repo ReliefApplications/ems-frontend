@@ -7,3 +7,11 @@ export interface ChartTitle {
   font: string;
   color: string;
 }
+
+/**
+ * Interface containing the settings of the chart legend
+ */
+export interface ChartLegend {
+  visible: boolean;
+  position: 'top' | 'bottom' | 'left' | 'right';
+}

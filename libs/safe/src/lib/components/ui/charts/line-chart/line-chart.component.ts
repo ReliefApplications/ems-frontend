@@ -13,19 +13,11 @@ import DataLabelsPlugin from 'chartjs-plugin-datalabels';
 import drawUnderlinePlugin from '../../../../utils/graphs/plugins/underline.plugin';
 import { parseFontOptions } from '../../../../utils/graphs/parseFontString';
 import whiteBackgroundPlugin from '../../../../utils/graphs/plugins/background.plugin';
-import { ChartTitle } from '../interfaces';
+import { ChartLegend, ChartTitle } from '../interfaces';
 import { DEFAULT_PALETTE } from '../const/palette';
 import { getColor } from '../utils/color.util';
 import { isEqual, isNil } from 'lodash';
 import Color from 'color';
-
-/**
- * Interface containing the settings of the chart legend
- */
-interface ChartLegend {
-  visible: boolean;
-  position: 'top' | 'bottom' | 'left' | 'right';
-}
 
 /** Interpolation modes */
 type Interpolation = 'linear' | 'cubic' | 'step';

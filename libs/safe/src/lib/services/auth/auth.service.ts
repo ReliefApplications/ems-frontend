@@ -1,7 +1,11 @@
 import { Apollo } from 'apollo-angular';
 import { Injectable, Inject } from '@angular/core';
-import { Permission, User } from '../../models/user.model';
-import { GetProfileQueryResponse, GET_PROFILE } from './graphql/queries';
+import {
+  Permission,
+  ProfileQueryResponse,
+  User,
+} from '../../models/user.model';
+import { GET_PROFILE } from './graphql/queries';
 import {
   BehaviorSubject,
   combineLatest,
@@ -267,8 +271,8 @@ export class SafeAuthService {
    *
    * @returns Apollo query of profile
    */
-  getProfile(): Observable<ApolloQueryResult<GetProfileQueryResponse>> {
-    return this.apollo.query<GetProfileQueryResponse>({
+  getProfile(): Observable<ApolloQueryResult<ProfileQueryResponse>> {
+    return this.apollo.query<ProfileQueryResponse>({
       query: GET_PROFILE,
       fetchPolicy: 'network-only',
       errorPolicy: 'all',

@@ -31,23 +31,19 @@ export class SafeDownloadService {
   ) {}
 
   /**
-   * Downloads file from the server
+   * Set up needed headers and response information for the file download action
    *
-   * @param path download path to append to base url
-   * @param type type of the file
-   * @param fileName name of the file
-   * @param options (optional) request options
+   * @param translationKey Translation key for the file download snackbar message
+   * @returns snackbar reference and header for the file download request
    */
-  getFile(path: string, type: string, fileName: string, options?: any): void {
+  private triggerFileDownloadMessage(translationKey: string) {
     // Opens a loader in a snackbar
     const snackBarRef = this.snackBar.openComponentSnackBar(
       SafeSnackbarSpinnerComponent,
       {
         duration: 0,
         data: {
-          message: this.translate.instant(
-            'common.notifications.file.download.processing'
-          ),
+          message: this.translate.instant(translationKey),
           loading: true,
         },
       }
@@ -56,6 +52,22 @@ export class SafeDownloadService {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
     });
+
+    return { snackBarRef, headers };
+  }
+  /**
+   * Downloads file from the server
+   *
+   * @param path download path to append to base url
+   * @param type type of the file
+   * @param fileName name of the file
+   * @param options (optional) request options
+   */
+  getFile(path: string, type: string, fileName: string, options?: any): void {
+    const { snackBarRef, headers } = this.triggerFileDownloadMessage(
+      'common.notifications.file.download.processing'
+    );
+
     this.restService
       .get(path, { ...options, responseType: 'blob', headers })
       .subscribe({
@@ -93,23 +105,10 @@ export class SafeDownloadService {
     fileName: string,
     body?: any
   ): void {
-    // Opens a loader in a snackbar
-    const snackBarRef = this.snackBar.openComponentSnackBar(
-      SafeSnackbarSpinnerComponent,
-      {
-        duration: 0,
-        data: {
-          message: this.translate.instant(
-            'common.notifications.file.download.processing'
-          ),
-          loading: true,
-        },
-      }
+    const { snackBarRef, headers } = this.triggerFileDownloadMessage(
+      'common.notifications.file.download.processing'
     );
-    const headers = new HttpHeaders({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      'Content-Type': 'application/json',
-    });
+
     this.restService
       .post(path, body, { responseType: 'blob', headers })
       .subscribe({
@@ -162,23 +161,10 @@ export class SafeDownloadService {
       ? `download/application/${application.id}/users?${queryString}`
       : `download/users?${queryString}`;
 
-    // Opens a loader in a snackbar
-    const snackBarRef = this.snackBar.openComponentSnackBar(
-      SafeSnackbarSpinnerComponent,
-      {
-        duration: 0,
-        data: {
-          message: this.translate.instant(
-            'common.notifications.file.download.processing'
-          ),
-          loading: true,
-        },
-      }
+    const { snackBarRef, headers } = this.triggerFileDownloadMessage(
+      'common.notifications.file.download.processing'
     );
-    const headers = new HttpHeaders({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      'Content-Type': 'application/json',
-    });
+
     this.restService
       .post(path, { users }, { responseType: 'blob', headers })
       .subscribe(
@@ -225,22 +211,10 @@ export class SafeDownloadService {
    * @returns http upload request
    */
   uploadFile(path: string, file: any): Observable<any> {
-    const snackBarRef = this.snackBar.openComponentSnackBar(
-      SafeSnackbarSpinnerComponent,
-      {
-        duration: 0,
-        data: {
-          message: this.translate.instant(
-            'common.notifications.file.upload.processing'
-          ),
-          loading: true,
-        },
-      }
+    const { snackBarRef, headers } = this.triggerFileDownloadMessage(
+      'common.notifications.file.upload.processing'
     );
-    const headers = new HttpHeaders({
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      Accept: 'application/json',
-    });
+
     const formData = new FormData();
     formData.append('excelFile', file, file.name);
     return this.restService.post(path, formData, { headers }).pipe(

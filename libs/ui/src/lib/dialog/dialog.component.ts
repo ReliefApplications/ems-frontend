@@ -28,35 +28,17 @@ export class DialogComponent implements OnChanges, OnInit {
   constructor(public dialogRef: DialogRef) {}
 
   ngOnInit(): void {
-    switch (this.size) {
-      case 'fullscreen': {
-        this.dialogRef.addPanelClass('fullscreen-dialog');
-        break;
-      }
-      case 'small': {
-        this.dialogRef.updateSize('300px');
-        break;
-      }
-      case 'medium': {
-        this.dialogRef.updateSize('700px');
-        break;
-      }
-      case 'big': {
-        this.dialogRef.updateSize('100vw', '98%');
-        break;
-      }
-      default: {
-        this.dialogRef.removePanelClass('fullscreen-dialog');
-        break;
-      }
-    }
-
-    if (!this.padding) {
-      this.dialogRef.addPanelClass('no-padding-dialog');
-    }
+    this.setDialogType();
   }
 
   ngOnChanges(): void {
+    this.setDialogType();
+  }
+
+  /**
+   * Set dialog type by the given size
+   */
+  private setDialogType() {
     switch (this.size) {
       case 'fullscreen': {
         this.dialogRef.addPanelClass('fullscreen-dialog');

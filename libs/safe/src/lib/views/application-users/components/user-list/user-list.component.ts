@@ -3,11 +3,12 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { SafeApplicationService } from '../../../../services/application/application.service';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../../components/utils/unsubscribe/unsubscribe.component';
-import { Role, User } from '../../../../models/user.model';
 import {
-  GetApplicationUsersQueryResponse,
-  GET_APPLICATION_USERS,
-} from '../../graphql/queries';
+  ApplicationUsersQueryResponse,
+  Role,
+  User,
+} from '../../../../models/user.model';
+import { GET_APPLICATION_USERS } from '../../graphql/queries';
 import { updateQueryUniqueValues } from '../../../../utils/update-queries';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -45,7 +46,7 @@ export class UserListComponent
 
   public users: Array<User> = new Array<User>();
   public cachedUsers: User[] = [];
-  private usersQuery!: QueryRef<GetApplicationUsersQueryResponse>;
+  private usersQuery!: QueryRef<ApplicationUsersQueryResponse>;
   @Input() roles: Role[] = [];
   @Input() positionAttributeCategories: PositionAttributeCategory[] = [];
 
@@ -98,7 +99,7 @@ export class UserListComponent
       .subscribe((application) => {
         if (application) {
           this.usersQuery =
-            this.apollo.watchQuery<GetApplicationUsersQueryResponse>({
+            this.apollo.watchQuery<ApplicationUsersQueryResponse>({
               query: GET_APPLICATION_USERS,
               variables: {
                 id: application.id,
@@ -248,10 +249,7 @@ export class UserListComponent
    * @param data query response data
    * @param loading loading status
    */
-  private updateValues(
-    data: GetApplicationUsersQueryResponse,
-    loading: boolean
-  ) {
+  private updateValues(data: ApplicationUsersQueryResponse, loading: boolean) {
     const mappedValues = data.application.users.edges.map((x) => x.node);
     this.cachedUsers = updateQueryUniqueValues(this.cachedUsers, mappedValues);
 
