@@ -112,6 +112,7 @@ export class DashboardComponent
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
+        this.loading = true;
         // Reset scroll when changing page
         const pageContainer = document.getElementById('appPageContainer');
         if (pageContainer) pageContainer.scrollTop = 0;
@@ -123,7 +124,7 @@ export class DashboardComponent
           if (queryId) {
             // Try to load template
             this.showName = true;
-            this.initDashboardWithId(id).then(() => {
+            this.loadDashboard(id).then(() => {
               const templates = this.dashboard?.page?.contentWithContext;
               const type = this.contextType;
               // Find template from parent's templates, based on query params id
@@ -131,18 +132,20 @@ export class DashboardComponent
                 // If templates use reference data
                 if (type === 'element')
                   return (
-                    'element' in d && d.element.toString().trim() === queryId
+                    'element' in d &&
+                    d.element.toString().trim() === queryId.trim()
                   );
                 // If templates use resource
                 else if (type === 'record')
                   return (
-                    'record' in d && d.record.toString().trim() === queryId
+                    'record' in d &&
+                    d.record.toString().trim() === queryId.trim()
                   );
                 return false;
               });
               if (template) {
                 // Load template, it will erase current dashboard
-                this.initDashboardWithId(template.content).then(
+                this.loadDashboard(template.content).then(
                   () => (this.loading = false)
                 );
               } else {
@@ -154,7 +157,7 @@ export class DashboardComponent
           } else {
             // Don't use template, and directly load the dashboard from router's params
             this.showName = false;
-            this.initDashboardWithId(id).then(() => (this.loading = false));
+            this.loadDashboard(id).then(() => (this.loading = false));
           }
         }
       });
@@ -199,7 +202,7 @@ export class DashboardComponent
    * @param id Dashboard id
    * @returns Promise
    */
-  private async initDashboardWithId(id: string) {
+  private async loadDashboard(id: string) {
     if (this.dashboard?.id === id) return; // don't init the dashboard if the id is the same
     const rootElement = this.elementRef.nativeElement;
     // Doing this to be able to use custom styles on specific dashboards
