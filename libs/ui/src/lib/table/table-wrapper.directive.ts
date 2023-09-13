@@ -35,7 +35,13 @@ export class TableWrapperDirective implements OnInit, AfterViewInit, OnDestroy {
     'bg-gray-50',
   ];
   private tableClasses = ['min-w-full', 'divide-y', 'divide-gray-300'];
-  private tbodyClasses = ['divide-y', 'divide-gray-200', 'bg-white'];
+  private tbodyClasses = [
+    'divide-y',
+    'divide-gray-200',
+    'bg-white',
+    'even:[&>tr]:bg-primary-50',
+    'odd:[&>tr]:bg-white',
+  ];
 
   private tableWrapperElement!: HTMLDivElement;
   private destroy$ = new Subject<void>();
