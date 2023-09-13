@@ -49,7 +49,6 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
    * UsersComponent constructor.
    *
    * @param apollo Used to load the users.
-   * @param translate Translate service
    */
   constructor(private apollo: Apollo) {
     super();
@@ -73,8 +72,7 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
           .watchQuery<GetRolesQueryResponse>({
             query: GET_ROLES,
           })
-          .valueChanges
-          .pipe(takeUntil(this.destroy$))
+          .valueChanges.pipe(takeUntil(this.destroy$))
           .subscribe(({ data, loading }) => {
             this.roles = data.roles;
             this.loading = loading;
