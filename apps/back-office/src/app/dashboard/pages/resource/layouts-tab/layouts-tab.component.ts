@@ -16,7 +16,7 @@ import {
 } from '../../../../utils/update-queries';
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
-import { UIPageChangeEvent } from '@oort-front/ui';
+import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 import { GET_RESOURCE_LAYOUTS } from './graphql/queries';
 
 /**
@@ -95,30 +95,16 @@ export class LayoutsTabComponent
    * @param e page event.
    */
   onPage(e: UIPageChangeEvent): void {
-    this.pageInfo.pageIndex = e.pageIndex;
-    // Checks if with new page/size more data needs to be fetched
-    if (
-      ((e.pageIndex > e.previousPageIndex &&
-        e.pageIndex * this.pageInfo.pageSize >= this.cachedLayouts.length) ||
-        e.pageSize > this.pageInfo.pageSize) &&
-      e.totalItems > this.cachedLayouts.length
-    ) {
-      // Sets the new fetch quantity of data needed as the page size
-      // If the fetch is for a new page the page size is used
-      let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is subtracted from the new one
-      if (e.pageSize > this.pageInfo.pageSize) {
-        first -= this.pageInfo.pageSize;
-      }
-      this.pageInfo.pageSize = first;
-      this.fetchLayouts();
+    const cachedData = handleTablePageEvent(
+      e,
+      this.pageInfo,
+      this.cachedLayouts
+    );
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
+      this.layouts = cachedData;
     } else {
-      this.layouts = this.cachedLayouts.slice(
-        e.pageSize * this.pageInfo.pageIndex,
-        e.pageSize * (this.pageInfo.pageIndex + 1)
-      );
+      this.fetchLayouts();
     }
-    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**

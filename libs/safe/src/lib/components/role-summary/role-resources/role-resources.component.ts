@@ -165,7 +165,7 @@ export class RoleResourcesComponent
       this.pageInfo,
       this.cachedResources
     );
-    if (cachedData) {
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
       this.resources = this.resources = this.setTableElements(cachedData);
     } else {
       this.fetchResources();

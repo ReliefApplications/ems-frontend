@@ -104,7 +104,7 @@ export class AggregationsTabComponent
       this.pageInfo,
       this.cachedAggregations
     );
-    if (cachedData) {
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
       this.aggregations = cachedData;
     } else {
       this.fetchAggregations();

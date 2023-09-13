@@ -345,7 +345,7 @@ export class RecordsTabComponent
       this.pageInfo,
       this.cachedRecords
     );
-    if (cachedData) {
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
       this.dataSource = cachedData;
     } else {
       this.fetchRecords();

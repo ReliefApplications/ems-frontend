@@ -123,7 +123,7 @@ export class UserListComponent
    */
   onPage(e: UIPageChangeEvent): void {
     const cachedData = handleTablePageEvent(e, this.pageInfo, this.cachedUsers);
-    if (cachedData) {
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
       this.users = cachedData;
     } else {
       this.fetchUsers();

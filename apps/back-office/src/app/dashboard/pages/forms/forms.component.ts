@@ -121,7 +121,7 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
    */
   onPage(e: UIPageChangeEvent): void {
     const cachedData = handleTablePageEvent(e, this.pageInfo, this.cachedForms);
-    if (cachedData) {
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
       this.forms = cachedData;
     } else {
       this.fetchForms();

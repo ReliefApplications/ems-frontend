@@ -146,7 +146,7 @@ export class ApplicationsComponent
       this.pageInfo,
       this.cachedApplications
     );
-    if (cachedData) {
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
       this.applications = cachedData;
     } else {
       this.fetchApplications();
