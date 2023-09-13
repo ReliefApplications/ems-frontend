@@ -151,6 +151,10 @@ body {
 body {
   margin: 0;
   overflow: hidden;
+
+  scrollbar-width: auto;
+  scrollbar-gutter: stable;
+  scrollbar-color: #d4d4d9 white;
 }
 
 // Widgets

@@ -145,6 +145,10 @@ body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
   overflow: hidden;
+
+  scrollbar-width: auto;
+  scrollbar-gutter: stable;
+  scrollbar-color: #d4d4d9 white;
 }
 
 .widget-header {
