@@ -125,7 +125,10 @@ export class FilterRowComponent
         type?.operators?.includes(x.value)
       );
       if (init) {
-        this.form.get('operator')?.setValue(type?.defaultOperator);
+        /** If type undefined, use as default 'eq' operator and not undefined. */
+        this.form
+          .get('operator')
+          ?.setValue(type?.defaultOperator ?? FILTER_OPERATORS[0].value);
       } else {
         this.form.get('operator')?.setValue(this.form.value.operator);
       }
