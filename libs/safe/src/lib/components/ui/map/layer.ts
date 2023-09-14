@@ -182,6 +182,9 @@ export class Layer implements LayerModel {
   private zoomListener!: L.LeafletEventHandlerFn;
   private listeners: any[] = [];
 
+  // Group layer
+  public parentLayer!: any;
+
   /** @returns the children of the current layer */
   public async getChildren() {
     await firstValueFrom(this.sublayersLoaded.pipe(filter((v) => v)));
@@ -251,6 +254,7 @@ export class Layer implements LayerModel {
     this.type = get<LayerType>(options, 'type', 'FeatureLayer');
     this.opacity = get(options, 'opacity', 1);
     this.visibility = get(options, 'visibility', true);
+    this.layerDefinition = get(options, 'layerDefinition');
 
     if (options.type !== 'GroupLayer') {
       this.sublayersLoaded.next(true);
@@ -261,7 +265,6 @@ export class Layer implements LayerModel {
       this.filter = get(options, 'filter', DEFAULT_LAYER_FILTER);
       // this.styling = options.styling || [];
       // this.label = options.labels || null;
-      this.layerDefinition = get(options, 'layerDefinition');
       this.popupInfo = get(options, 'popupInfo');
       this.setFields();
     } else if (options.sublayers) {
@@ -524,6 +527,7 @@ export class Layer implements LayerModel {
           child.opacity = child.opacity * this.opacity;
           child.visibility = this.visibility && child.visibility;
           child.layer = await child.getLayer();
+          child.parentLayer = this.layerDefinition;
         }
         const layers = sublayers
           .map((child) => child.layer)
@@ -802,8 +806,7 @@ export class Layer implements LayerModel {
     } else {
       // Classic visibility check based on zoom
       const currZoom = map.getZoom();
-      const maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
-      const minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
+      const [minZoom, maxZoom] = this.getMinMaxZoom(map);
       if (currZoom > maxZoom || currZoom < minZoom) {
         map.removeLayer(layer);
       } else {
@@ -824,6 +827,30 @@ export class Layer implements LayerModel {
   }
 
   /**
+   * Get minimum and maximum zoom based on layer and group layer
+   *
+   * @param map Leaflet map
+   * @returns minimum and maximum zoom
+   */
+  public getMinMaxZoom(map: L.Map) {
+    let minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
+    let maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
+
+    if (this.parentLayer) {
+      const parentMaxZoom = this.parentLayer.maxZoom || map.getMaxZoom();
+      const parentMinZoom = this.parentLayer.minZoom || map.getMinZoom();
+
+      if (parentMaxZoom < maxZoom) {
+        maxZoom = parentMaxZoom;
+      }
+      if (parentMinZoom > minZoom) {
+        minZoom = parentMinZoom;
+      }
+    }
+    return [minZoom, maxZoom];
+  }
+
+  /**
    * Subscribe to zoom events
    *
    * @param map Leaflet map
@@ -832,8 +859,7 @@ export class Layer implements LayerModel {
    */
   public onZoom(map: L.Map, zoom: L.LeafletEvent, layer: L.Layer) {
     const currZoom = zoom.target.getZoom();
-    const maxZoom = this.layerDefinition?.maxZoom || map.getMaxZoom();
-    const minZoom = this.layerDefinition?.minZoom || map.getMinZoom();
+    const [minZoom, maxZoom] = this.getMinMaxZoom(map);
 
     if (isNil((layer as any).shouldDisplay)) {
       if (currZoom > maxZoom || currZoom < minZoom) {
