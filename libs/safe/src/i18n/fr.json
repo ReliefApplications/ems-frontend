@@ -77,7 +77,7 @@
 		"downloadTemplate": "Télécharger le modèle",
 		"duplicate": "Dupliquer",
 		"edit": "Modifier",
-		"editObject": "Modifier {{name}}",
+		"editObject": "Modifier le {{name}}",
 		"email": {
 			"few": "Emails",
 			"none": "Pas d'email",
