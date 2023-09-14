@@ -8,6 +8,7 @@ on:
       - next-major
       - beta
       - alpha
+  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -24,6 +25,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Check branch
+        run: |
+          VALID_BRANCHES=("main" "next" "next-major" "beta" "alpha")
+          BRANCH_NAME=$(basename ${{ github.ref }})
+
+          if [[ ! " ${VALID_BRANCHES[@]} " =~ " ${BRANCH_NAME} " ]]; then
+            echo "Invalid branch name: $BRANCH_NAME"
+            echo "Valid branch names are: ${VALID_BRANCHES[@]}"
+            exit 1
+          fi
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
