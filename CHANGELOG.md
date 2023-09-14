@@ -1,3 +1,12 @@
+## [2.1.1](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.0...v2.1.1) (2023-09-14)
+
+
+### Bug Fixes
+
+* aggregation filters only appling after saving twice ([#1829](https://github.com/ReliefApplications/oort-frontend/issues/1829)) ([5a788cb](https://github.com/ReliefApplications/oort-frontend/commit/5a788cbd9585437232783fb2764866a4583c8237))
+* remove format filter method in grid, that could cause some date issues ([bce889a](https://github.com/ReliefApplications/oort-frontend/commit/bce889aae3b862c08fbdfd7aa84562ef8290678e))
+* use flex-end and default margin false to the date field in the tab-filter component in order to align the element to the rest of the y axis ([#1809](https://github.com/ReliefApplications/oort-frontend/issues/1809)) ([bd171c7](https://github.com/ReliefApplications/oort-frontend/commit/bd171c792a24d4b93528db1e443734b7ac3a3707))
+
 # [2.1.0](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.10...v2.1.0) (2023-09-07)
 
 
