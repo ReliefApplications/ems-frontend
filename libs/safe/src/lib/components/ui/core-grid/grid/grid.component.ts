@@ -674,11 +674,6 @@ export class SafeGridComponent
    * @returns True if overflows.
    */
   isEllipsisActive(e: any): boolean {
-    console.log(e);
-    if (e.offsetWidth < e.scrollWidth) {
-      console.log(e);
-      this.renderer.setAttribute(e, 'uiTooltip', 'abc');
-    }
     return e.offsetWidth < e.scrollWidth;
   }
 

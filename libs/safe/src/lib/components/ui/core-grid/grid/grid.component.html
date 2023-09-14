@@ -216,29 +216,17 @@
               class="translate textbox-container"
               [style]="getStyle(dataItem, field.name)"
             >
-              
-            
-              <!-- <div
-                *ngIf="isEllipsisActive(refSpan)"
-                #refSpan
-                class="textbox"
-                uiTooltip="teste"
-              >
-                {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
-              </div> -->
               <div
-                *ngIf="!isEllipsisActive(refSpan)"
-                #refSpan
-                class="textbox"
+                #refSpan2
+                class="truncate"
+                [uiTooltip]="(applyFieldFormat(getPropertyValue(dataItem, field), field) ?? '')"
+                [tooltipDisabled]="!isEllipsisActive(refSpan2)"
               >
                 {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
               </div>
-              
-              
-              
               <button
                 kendoButton
-                *ngIf="isEllipsisActive(refSpan)"
+                *ngIf="isEllipsisActive(refSpan2)"
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
@@ -296,46 +284,24 @@
             #refSpan
             kendoGridCellTemplate
             let-dataItem="dataItem"
-            *ngIf="['url', 'tel', 'email'].includes(field.meta.type)"
+            *ngIf="['url'].includes(field.meta.type)"
           >
             <div
               class="textbox-container"
               [style]="getStyle(dataItem, field.name)"
             >
               <a
-                *ngIf="field.meta.type === 'url'"
-                class="url-container textbox"
+                class="url-container truncate"
                 href="{{ getUrl(getPropertyValue(dataItem, field)) }}"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <div #refSpan>
-                  {{
-                    applyFieldFormat(getPropertyValue(dataItem, field), field)
-                  }}
-                </div>
-              </a>
-              <a
-                *ngIf="field.meta.type === 'email'"
-                class="url-container textbox"
-                href="mailto:{{ getPropertyValue(dataItem, field) }}"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <div #refSpan>
-                  {{
-                    applyFieldFormat(getPropertyValue(dataItem, field), field)
-                  }}
-                </div>
-              </a>
-              <a
-                *ngIf="field.meta.type === 'tel'"
-                class="url-container textbox"
-                href="tel:{{ getPropertyValue(dataItem, field) }}"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <div #refSpan>
+                <div
+                  #refSpan2
+                  class="truncate"
+                  [uiTooltip]="(applyFieldFormat(getPropertyValue(dataItem, field), field) ?? '')"
+                  [tooltipDisabled]="!isEllipsisActive(refSpan2)"
+                >
                   {{
                     applyFieldFormat(getPropertyValue(dataItem, field), field)
                   }}
@@ -343,7 +309,81 @@
               </a>
               <button
                 kendoButton
-                *ngIf="isEllipsisActive(refSpan)"
+                *ngIf="isEllipsisActive(refSpan2)"
+                icon="hyperlink-open-sm"
+                (click)="onExpandText(dataItem, field.name)"
+                [look]="'flat'"
+                [uiTooltip]="'common.openFullScreen' | translate"
+              ></button>
+            </div>
+          </ng-template>
+          <ng-template
+            #refSpan
+            kendoGridCellTemplate
+            let-dataItem="dataItem"
+            *ngIf="['email'].includes(field.meta.type)"
+          >
+            <div
+              class="textbox-container"
+              [style]="getStyle(dataItem, field.name)"
+            >
+              <a
+                class="url-container truncate"
+                href="mailto:{{ getPropertyValue(dataItem, field) }}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <div
+                  #refSpan2
+                  class="truncate"
+                  [uiTooltip]="(applyFieldFormat(getPropertyValue(dataItem, field), field) ?? '')"
+                  [tooltipDisabled]="!isEllipsisActive(refSpan2)"
+                >
+                  {{
+                    applyFieldFormat(getPropertyValue(dataItem, field), field)
+                  }}
+                </div>
+              </a>
+              <button
+                kendoButton
+                *ngIf="isEllipsisActive(refSpan2)"
+                icon="hyperlink-open-sm"
+                (click)="onExpandText(dataItem, field.name)"
+                [look]="'flat'"
+                [uiTooltip]="'common.openFullScreen' | translate"
+              ></button>
+            </div>
+          </ng-template>
+          <ng-template
+            #refSpan
+            kendoGridCellTemplate
+            let-dataItem="dataItem"
+            *ngIf="['tel'].includes(field.meta.type)"
+          >
+            <div
+              class="textbox-container"
+              [style]="getStyle(dataItem, field.name)"
+            >
+              <a
+                class="url-container truncate"
+                href="tel:{{ getPropertyValue(dataItem, field) }}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <div
+                  #refSpan2
+                  class="truncate"
+                  [uiTooltip]="(applyFieldFormat(getPropertyValue(dataItem, field), field) ?? '')"
+                  [tooltipDisabled]="!isEllipsisActive(refSpan2)"
+                >
+                  {{
+                    applyFieldFormat(getPropertyValue(dataItem, field), field)
+                  }}
+                </div>
+              </a>
+              <button
+                kendoButton
+                *ngIf="isEllipsisActive(refSpan2)"
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
@@ -380,12 +420,17 @@
               class="translate textbox-container"
               [style]="getStyle(dataItem, field.name)"
             >
-              <div #refSpan class="textbox">
+              <div 
+                #refSpan2
+                class="truncate"
+                [uiTooltip]="(applyFieldFormat(getPropertyValue(dataItem, field), field) ?? '')"
+                [tooltipDisabled]="!isEllipsisActive(refSpan2)"
+              >
                 {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
               </div>
               <button
                 kendoButton
-                *ngIf="isEllipsisActive(refSpan)"
+                *ngIf="isEllipsisActive(refSpan2)"
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
