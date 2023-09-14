@@ -27,7 +27,7 @@ export class SummaryCardItemComponent
   /**
    * Summary card item component
    *
-   * @param dialog Dialog
+   * @param dialog Dialog service
    */
   constructor(public dialog: Dialog) {
     super();
@@ -134,7 +134,6 @@ export class SummaryCardItemComponent
 
   /**
    * Opens the form corresponding to selected summary card in order to update it
-   *
    */
   public async updateSummaryCard(): Promise<void> {
     const { SafeFormModalComponent } = await import(
@@ -150,7 +149,7 @@ export class SummaryCardItemComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        //save new modifiedAt
+        /** Save new modifiedAt */
         const modifiedAt = value.data['modifiedAt'];
         const date = new Date(parseInt(modifiedAt));
         const isoDateString = date.toISOString();
@@ -158,7 +157,7 @@ export class SummaryCardItemComponent
         const keys = Object.keys(value.data.data);
         const cardRecord = { ...this.card.record } as any;
         const valueData = { ...value.data.data } as any;
-        //save new fields modified
+        /** Save new fields modified */
         for (const key of keys) {
           cardRecord[key] = valueData[key];
         }
