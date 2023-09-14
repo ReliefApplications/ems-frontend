@@ -33,10 +33,12 @@
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <table
-      *ngIf="!loading"
+      [loading]="loading"
       cdk-table
       uiTableWrapper
       [dataSource]="filteredGroups"
+      [columns]="['common.title', 'common.user.few']"
+      [actions]="true"
     >
       <ng-container cdkColumnDef="title">
         <th uiCellHeader *cdkHeaderCellDef scope="col">
@@ -89,12 +91,5 @@
       <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
       <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
     </table>
-    <!-- Loading indicator -->
-    <safe-skeleton-table
-      *ngIf="loading"
-      [columns]="['common.title', 'common.user.few']"
-      [actions]="true"
-    >
-    </safe-skeleton-table>
   </div>
 </div>

@@ -17,11 +17,21 @@
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <table
-      *ngIf="!loading"
+      [loading]="loading"
       cdk-table
       uiTableWrapper
       (sortChange)="onSort($event)"
       [dataSource]="forms"
+      [columns]="[
+        'common.name',
+        'common.createdOn',
+        'common.status',
+        'common.history',
+        'common.record.few',
+        'components.forms.isCore',
+        'components.forms.parent'
+      ]"
+      [actions]="true"
     >
       <ng-container cdkColumnDef="name">
         <th uiCellHeader uiTableHeaderSort="name" *cdkHeaderCellDef scope="col">
@@ -196,21 +206,6 @@
         "
       ></tr>
     </table>
-    <!-- Loading indicator -->
-    <safe-skeleton-table
-      *ngIf="loading"
-      [columns]="[
-        'common.name',
-        'common.createdOn',
-        'common.status',
-        'common.history',
-        'common.record.few',
-        'components.forms.isCore',
-        'components.forms.parent'
-      ]"
-      [actions]="true"
-    >
-    </safe-skeleton-table>
   </div>
 </div>
 <!-- Pagination -->

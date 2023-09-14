@@ -27,11 +27,18 @@
     <!-- Table scroll container -->
     <div class="overflow-x-auto">
       <table
-        *ngIf="!loading"
+        [loading]="loading"
         cdk-table
         uiTableWrapper
         [dataSource]="applications"
         (sortChange)="onSort($event)"
+        [columns]="[
+          'common.name',
+          'common.createdOn',
+          'common.status',
+          'common.user.few'
+        ]"
+        [actions]="true"
       >
         <ng-container cdkColumnDef="name">
           <th uiTableHeaderSort="name" uiCellHeader *cdkHeaderCellDef>
@@ -146,18 +153,6 @@
           [routerLink]="['/applications', row.id]"
         ></tr>
       </table>
-      <!-- Loading indicator -->
-      <safe-skeleton-table
-        *ngIf="loading"
-        [columns]="[
-          'common.name',
-          'common.createdOn',
-          'common.status',
-          'common.user.few'
-        ]"
-        [actions]="true"
-      >
-      </safe-skeleton-table>
     </div>
   </div>
   <!-- Pagination -->

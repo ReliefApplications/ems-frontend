@@ -84,9 +84,15 @@
   <!-- Table scroll container -->
   <div class="overflow-x-auto">
     <table
-      *ngIf="!loading"
       cdk-table
       uiTableWrapper
+      [loading]="loading"
+      [columns]="[
+        'common.name',
+        'common.status',
+        'models.apiConfiguration.authType'
+      ]"
+      [actions]="true"
       (sortChange)="onSort($event)"
       [dataSource]="filteredDataSources"
     >
@@ -179,16 +185,6 @@
         [routerLink]="['/settings/apiconfigurations', row.id]"
       ></tr>
     </table>
-    <safe-skeleton-table
-      *ngIf="loading"
-      [columns]="[
-        'common.name',
-        'common.status',
-        'models.apiConfiguration.authType'
-      ]"
-      [actions]="true"
-    >
-    </safe-skeleton-table>
   </div>
 </div>
 <ui-paginator
