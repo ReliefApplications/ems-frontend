@@ -99,6 +99,9 @@ export * from './lib/components/dashboard-filter/public-api';
 export * from './lib/components/editor-control/editor-control.component';
 export * from './lib/components/button-action/public-api';
 
+// === CUSTOM COMPONENTS FOR SURVEY CREATOR PROPERTY GRID === //
+export * from './lib/components/resource-dropdown/resource-dropdown.component';
+
 /** Grid Layouts */
 export * from './lib/components/grid-layout/edit-layout-modal/public-api';
 

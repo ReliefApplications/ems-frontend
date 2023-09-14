@@ -11,7 +11,7 @@ import {
   UntypedFormGroup,
 } from '@angular/forms';
 import { Dialog } from '@angular/cdk/dialog';
-import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
+// import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
 import { SafeCoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
 import { DomService } from '../../services/dom/dom.service';
 import {
@@ -20,7 +20,7 @@ import {
   processNewCreatedRecords,
 } from './utils';
 import { QuestionResource } from '../types';
-import { NgZone } from '@angular/core';
+import { Injector, NgZone } from '@angular/core';
 import {
   ComponentCollection,
   JsonObject,
@@ -60,13 +60,19 @@ const temporaryRecordsForm = new FormControl([]);
  * @param ngZone Angular Service to execute code inside Angular environment
  */
 export const init = (
-  domService: DomService,
-  apollo: Apollo,
-  dialog: Dialog,
-  formBuilder: UntypedFormBuilder,
+  // domService: DomService,
+  // apollo: Apollo,
+  // dialog: Dialog,
+  // formBuilder: UntypedFormBuilder,
+  injector: Injector,
   componentCollectionInstance: ComponentCollection,
   ngZone: NgZone
 ): void => {
+  const domService = injector.get(DomService);
+  const apollo = injector.get(Apollo);
+  const dialog = injector.get(Dialog);
+  const formBuilder = injector.get(UntypedFormBuilder);
+
   const getResourceById = (data: { id: string }) =>
     apollo.query<GetResourceByIdQueryResponse>({
       query: GET_SHORT_RESOURCE_BY_ID,
@@ -137,27 +143,6 @@ export const init = (
         visibleIndex: 3,
         required: true,
       });
-
-      const resourceEditor = {
-        render: (editor: any, htmlElement: any) => {
-          const question = editor.object;
-          const dropdown = domService.appendComponentToBody(
-            SafeResourceDropdownComponent,
-            htmlElement
-          );
-          const instance: SafeResourceDropdownComponent = dropdown.instance;
-          instance.resource = question.resource;
-          instance.choice.subscribe((res) => editor.onChanged(res));
-          // instance.
-        },
-      };
-
-      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-      //   'resourcesDropdown',
-      //   resourceEditor
-      // );
-
-      Serializer.addProperty('resourcesDropdown', resourceEditor);
 
       Serializer.addProperty('resources', {
         name: 'displayField',

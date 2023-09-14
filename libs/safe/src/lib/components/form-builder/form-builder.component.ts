@@ -79,6 +79,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'enableIf',
   'visibleIf',
   'tooltip',
+  'resource-dropdown',
 ];
 
 /**
@@ -300,7 +301,6 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
         setTimeout(() => {
           const el = document.querySelector('[data-name="' + name + '"]');
           el?.scrollIntoView({ behavior: 'smooth' });
-          // this.surveyCreator.showQuestionEditor(options.question);
         });
       }
     );

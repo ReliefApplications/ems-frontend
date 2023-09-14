@@ -3,7 +3,6 @@
 /// <reference path="../../typings/extract-files/index.d.ts" />
 
 import { Apollo } from 'apollo-angular';
-import { UntypedFormBuilder } from '@angular/forms';
 import { DomService } from '../services/dom/dom.service';
 import { SafeAuthService } from '../services/auth/auth.service';
 import { SafeReferenceDataService } from '../services/reference-data/reference-data.service';
@@ -22,34 +21,36 @@ import * as ChoicesByUrlProperties from './global-properties/choicesByUrl';
 import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';
 import { initLocalization } from './localization';
-import { Dialog } from '@angular/cdk/dialog';
-import { NgZone } from '@angular/core';
+import { Injector, NgZone } from '@angular/core';
 import { ComponentCollection, CustomWidgetCollection } from 'survey-core';
+import { AngularComponentFactory } from 'survey-angular-ui';
+import { UntypedFormBuilder } from '@angular/forms';
+import {
+  CustomPropertyGridComponentTypes,
+  CustomPropertyGridEditors,
+} from './components/utils/custom-components.enum';
 
 /**
  * Executes all init methods of custom SurveyJS.
  *
- * @param domService Shared DOM service, used to inject components on the go
- * @param dialog dialog service
- * @param apollo apollo service
- * @param formBuilder form builder service
- * @param authService custom auth service
+ * @param formBuilder Angular form builder instance
  * @param environment injected environment
- * @param referenceDataService Reference data service
+ * @param injector Parent instance angular injector containing all needed services and directives
  * @param containsCustomQuestions If survey contains custom questions or not
  * @param ngZone Angular Service to execute code inside Angular environment
  */
 export const initCustomSurvey = (
-  domService: DomService,
-  dialog: Dialog,
-  apollo: Apollo,
   formBuilder: UntypedFormBuilder,
-  authService: SafeAuthService,
   environment: any,
-  referenceDataService: SafeReferenceDataService,
+  injector: Injector,
   containsCustomQuestions: boolean,
   ngZone: NgZone
 ): void => {
+  const domService = injector.get(DomService);
+  const apollo = injector.get(Apollo);
+  const authService = injector.get(SafeAuthService);
+  const referenceDataService = injector.get(SafeReferenceDataService);
+
   // If the survey created does not contain custom questions, we destroy previously set custom questions if so
   if (!containsCustomQuestions) {
     CustomWidgetCollection.Instance.clear();
@@ -61,24 +62,29 @@ export const initCustomSurvey = (
   DropdownWidget.init(domService, CustomWidgetCollection.Instance);
 
   if (containsCustomQuestions) {
+    // Register all custom property grid component types
+    const registeredTypes = AngularComponentFactory.Instance.getAllTypes();
+    Object.keys(CustomPropertyGridComponentTypes).forEach((propertyKey) => {
+      const propertyType =
+        CustomPropertyGridComponentTypes[
+          propertyKey as keyof typeof CustomPropertyGridComponentTypes
+        ];
+      if (!registeredTypes.includes(propertyType)) {
+        AngularComponentFactory.Instance.registerComponent(
+          `${propertyType}-question`,
+          CustomPropertyGridEditors[propertyType]
+        );
+      }
+    });
     CommentWidget.init(CustomWidgetCollection.Instance);
     // load components (same as widgets, but with less configuration options)
     ResourceComponent.init(
-      domService,
-      apollo,
-      dialog,
       formBuilder,
+      injector,
       ComponentCollection.Instance,
       ngZone
     );
-    ResourcesComponent.init(
-      domService,
-      apollo,
-      dialog,
-      formBuilder,
-      ComponentCollection.Instance,
-      ngZone
-    );
+    ResourcesComponent.init(injector, ComponentCollection.Instance, ngZone);
     OwnerComponent.init(domService, apollo, ComponentCollection.Instance);
     UsersComponent.init(domService, apollo, ComponentCollection.Instance);
     GeospatialComponent.init(domService, ComponentCollection.Instance);

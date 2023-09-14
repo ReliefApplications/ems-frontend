@@ -1,4 +1,9 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnInit,
+  ViewContainerRef,
+} from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Resource } from '../../models/resource.model';
@@ -8,8 +13,10 @@ import {
   GET_RESOURCES,
   GET_SHORT_RESOURCE_BY_ID,
 } from './graphql/queries';
-import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { QuestionAngular } from 'survey-angular-ui';
+import { QuestionResourceDropdownModel } from './resource-dropdown.model';
+import { Subject } from 'rxjs';
 
 /** A constant that is used to determine how many items should be on one page. */
 const ITEMS_PER_PAGE = 10;
@@ -23,32 +30,40 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./resource-dropdown.component.scss'],
 })
 export class SafeResourceDropdownComponent
-  extends SafeUnsubscribeComponent
+  extends QuestionAngular<QuestionResourceDropdownModel>
   implements OnInit
 {
-  @Input() resource = '';
+  resource = '';
   public selectedResource?: Resource;
-  @Output() choice: EventEmitter<string> = new EventEmitter<string>();
+  private choice = '';
   public resourceControl!: UntypedFormControl;
 
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
-
+  private destroy$: Subject<void> = new Subject<void>();
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created
    *
+   * @param {ChangeDetectorRef} changeDetectorRef - Angular - This is angular change detector ref of the component instance needed for the survey AngularQuestion class
+   * @param {ViewContainerRef} viewContainerRef - Angular - This is angular view container ref of the component instance needed for the survey AngularQuestion class
    * @param {Apollo} apollo - Apollo - This is the Apollo service that is used to create GraphQL queries.
    */
-  constructor(private apollo: Apollo) {
-    super();
+  constructor(
+    changeDetectorRef: ChangeDetectorRef,
+    viewContainerRef: ViewContainerRef,
+    private apollo: Apollo
+  ) {
+    super(changeDetectorRef, viewContainerRef);
   }
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
     this.resourceControl = new UntypedFormControl(this.resource);
     this.resourceControl.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        this.choice.emit(value);
+        // this.choice = value;
+        this.model.value = value;
       });
     if (this.resource) {
       this.apollo
@@ -79,7 +94,8 @@ export class SafeResourceDropdownComponent
    * @param e select event.
    */
   onSelect(e?: any): void {
-    this.choice.emit(e);
+    this.model.value = e;
+    // this.choice = e;
   }
 
   /**

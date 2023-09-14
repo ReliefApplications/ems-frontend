@@ -1,4 +1,4 @@
-import { Inject, Injectable, NgZone } from '@angular/core';
+import { Inject, Injectable, Injector, NgZone } from '@angular/core';
 import { initCreatorSettings } from '../../survey/creator';
 import { initCustomSurvey } from '../../survey/init';
 import { DomService } from '../dom/dom.service';
@@ -29,6 +29,7 @@ export class SafeFormService {
    * @param authService Shared authentication service
    * @param referenceDataService Reference data service
    * @param ngZone Angular Service to execute code inside Angular environment
+   * @param injector Angular injector from where to fetch the needed services
    */
   constructor(
     @Inject('environment') environment: any,
@@ -38,7 +39,8 @@ export class SafeFormService {
     public formBuilder: UntypedFormBuilder,
     public authService: SafeAuthService,
     public referenceDataService: SafeReferenceDataService,
-    public ngZone: NgZone
+    public ngZone: NgZone,
+    private injector: Injector
   ) {
     this.environment = environment;
     this.setSurveyCreatorInstance();
@@ -56,13 +58,9 @@ export class SafeFormService {
     }
   ) {
     initCustomSurvey(
-      this.domService,
-      this.dialog,
-      this.apollo,
       this.formBuilder,
-      this.authService,
       this.environment,
-      this.referenceDataService,
+      this.injector,
       additionalQuestions.customQuestions,
       this.ngZone
     );

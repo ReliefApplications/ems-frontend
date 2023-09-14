@@ -19,8 +19,6 @@ import {
   UntypedFormBuilder,
   UntypedFormGroup,
 } from '@angular/forms';
-import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
-import { DomService } from '../../services/dom/dom.service';
 import {
   buildSearchButton,
   buildAddButton,
@@ -29,7 +27,17 @@ import {
 import get from 'lodash/get';
 import { SafeQuestion, QuestionResource } from '../types';
 import { Record } from '../../models/record.model';
-import { NgZone } from '@angular/core';
+import { Injector, NgZone } from '@angular/core';
+// import { isArray, isObject } from 'lodash';
+// import {
+//   IPropertyEditorSetup,
+//   PropertyGridEditor,
+//   PropertyGridEditorCollection,
+//   SurveyCreatorModel,
+//   SurveyQuestionEditorDefinition,
+// } from 'survey-creator-core';
+import { registerCustomPropertyEditor } from './utils/custom-component-register';
+import { CustomPropertyGridComponentTypes } from './utils/custom-components.enum';
 
 /** Question's temporary records */
 export const temporaryRecordsForm = new FormControl([]);
@@ -64,24 +72,42 @@ const addRecordToSurveyContext = (question: Question, recordID: string) => {
     survey.setVariable(`${question.name}.${field}`, data[field]);
   }
 };
+
+/**
+ * Register all custom properties using custom components for the resource question type
+ */
+function registerResourceCustomPropertyEditors() {
+  registerCustomPropertyEditor(
+    CustomPropertyGridComponentTypes.resourceDropdown
+  );
+  registerCustomPropertyEditor(
+    CustomPropertyGridComponentTypes.resourceAvailableFields
+  );
+  registerCustomPropertyEditor(
+    CustomPropertyGridComponentTypes.selectResourceText
+  );
+  registerCustomPropertyEditor(CustomPropertyGridComponentTypes.customFilters);
+}
+
 /**
  * Inits the resource question component of for survey.
  *
- * @param domService Shared DOM service
- * @param apollo Apollo client
- * @param dialog Dialog
- * @param formBuilder Angular form service
- * @param componentCollectionInstance ComponentCollection
+ * @param formBuilder Angular form builder instance
+ * @param injector Parent instance angular injector containing all needed services and directives
+ * @param componentCollectionInstance Survey component collection instance
  * @param ngZone Angular Service to execute code inside Angular environment
  */
 export const init = (
-  domService: DomService,
-  apollo: Apollo,
-  dialog: Dialog,
   formBuilder: UntypedFormBuilder,
+  injector: Injector,
   componentCollectionInstance: ComponentCollection,
   ngZone: NgZone
 ): void => {
+  const apollo = injector.get(Apollo);
+  const dialog = injector.get(Dialog);
+
+  registerResourceCustomPropertyEditors();
+
   const getResourceById = (data: { id: string }) =>
     apollo.query<GetResourceByIdQueryResponse>({
       query: GET_SHORT_RESOURCE_BY_ID,
@@ -152,29 +178,10 @@ export const init = (
       serializer.addProperty('resource', {
         name: 'resource',
         category: 'Custom Questions',
-        type: 'resourceDropdown',
+        type: 'resource-dropdown',
         visibleIndex: 3,
         required: true,
       });
-
-      const resourceEditor = {
-        render: (editor: any, htmlElement: HTMLElement) => {
-          const question = editor.object;
-          const dropdown = domService.appendComponentToBody(
-            SafeResourceDropdownComponent,
-            htmlElement
-          );
-          const instance: SafeResourceDropdownComponent = dropdown.instance;
-          instance.resource = question.resource;
-          instance.choice.subscribe((res) => editor.onChanged(res));
-        },
-      };
-
-      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-      //   'resourceDropdown',
-      //   resourceEditor
-      // );
-      serializer.addProperty('resourceDropdown', resourceEditor);
 
       serializer.addProperty('resource', {
         name: 'displayField',
@@ -213,7 +220,7 @@ export const init = (
       // Build set available grid fields button
       serializer.addProperty('resource', {
         name: 'Search resource table',
-        type: 'resourceFields',
+        type: 'resource-available-fields',
         isRequired: true,
         category: 'Custom Questions',
         dependsOn: ['resource'],
@@ -221,56 +228,56 @@ export const init = (
         visibleIndex: 5,
       });
 
-      const availableFieldsEditor = {
-        render: (editor: any, htmlElement: HTMLElement) => {
-          const btn = document.createElement('button');
-          btn.innerText = 'Available grid fields';
-          btn.style.width = '100%';
-          btn.style.border = 'none';
-          btn.style.padding = '10px';
-          htmlElement.appendChild(btn);
-          btn.onclick = () => {
-            const currentQuestion = editor.object;
-            getResourceById({ id: currentQuestion.resource }).subscribe(
-              async ({ data }) => {
-                if (data.resource && data.resource.name) {
-                  const nameTrimmed = data.resource.name
-                    .replace(/\s/g, '')
-                    .toLowerCase();
-                  const { ConfigDisplayGridFieldsModalComponent } =
-                    await import(
-                      '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component'
-                    );
-                  const dialogRef = dialog.open(
-                    ConfigDisplayGridFieldsModalComponent,
-                    {
-                      data: {
-                        form: !currentQuestion.gridFieldsSettings
-                          ? null
-                          : this.convertFromRawToFormGroup(
-                              currentQuestion.gridFieldsSettings
-                            ),
-                        resourceName: nameTrimmed,
-                      },
-                    }
-                  );
-                  dialogRef.closed.subscribe((res: any) => {
-                    if (res && res.value.fields) {
-                      currentQuestion.gridFieldsSettings = res.getRawValue();
-                    }
-                  });
-                }
-              }
-            );
-          };
-        },
-      };
+      // const availableFieldsEditor = {
+      //   render: (editor: any, htmlElement: HTMLElement) => {
+      //     const btn = document.createElement('button');
+      //     btn.innerText = 'Available grid fields';
+      //     btn.style.width = '100%';
+      //     btn.style.border = 'none';
+      //     btn.style.padding = '10px';
+      //     htmlElement.appendChild(btn);
+      //     btn.onclick = () => {
+      //       const currentQuestion = editor.object;
+      //       getResourceById({ id: currentQuestion.resource }).subscribe(
+      //         async ({ data }) => {
+      //           if (data.resource && data.resource.name) {
+      //             const nameTrimmed = data.resource.name
+      //               .replace(/\s/g, '')
+      //               .toLowerCase();
+      //             const { ConfigDisplayGridFieldsModalComponent } =
+      //               await import(
+      //                 '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component'
+      //               );
+      //             const dialogRef = dialog.open(
+      //               ConfigDisplayGridFieldsModalComponent,
+      //               {
+      //                 data: {
+      //                   form: !currentQuestion.gridFieldsSettings
+      //                     ? null
+      //                     : convertFromRawToFormGroup(
+      //                         currentQuestion.gridFieldsSettings
+      //                       ),
+      //                   resourceName: nameTrimmed,
+      //                 },
+      //               }
+      //             );
+      //             dialogRef.closed.subscribe((res: any) => {
+      //               if (res && res.value.fields) {
+      //                 currentQuestion.gridFieldsSettings = res.getRawValue();
+      //               }
+      //             });
+      //           }
+      //         }
+      //       );
+      //     };
+      //   },
+      // };
 
       // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
       //   'resourceFields',
       //   availableFieldsEditor
       // );
-      serializer.addProperty('resourceFields', availableFieldsEditor);
+      // serializer.addProperty('resourceFields', availableFieldsEditor);
 
       serializer.addProperty('resource', {
         name: 'test service',
@@ -307,6 +314,69 @@ export const init = (
         visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.resource,
         visibleIndex: 3,
       });
+
+      // Build set available grid fields button
+      serializer.addProperty('resource', {
+        name: 'Search resource table',
+        type: 'resourceFields',
+        isRequired: true,
+        category: 'Custom Questions',
+        dependsOn: ['resource'],
+        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.resource,
+        visibleIndex: 5,
+      });
+
+      // const availableFieldsEditor = {
+      //   render: (editor: any, htmlElement: HTMLElement) => {
+      //     const btn = document.createElement('button');
+      //     btn.innerText = 'Available grid fields';
+      //     btn.style.width = '100%';
+      //     btn.style.border = 'none';
+      //     btn.style.padding = '10px';
+      //     htmlElement.appendChild(btn);
+      //     btn.onclick = () => {
+      //       const currentQuestion = editor.object;
+      //       getResourceById({ id: currentQuestion.resource }).subscribe(
+      //         async ({ data }) => {
+      //           if (data.resource && data.resource.name) {
+      //             const nameTrimmed = data.resource.name
+      //               .replace(/\s/g, '')
+      //               .toLowerCase();
+      //             const { ConfigDisplayGridFieldsModalComponent } =
+      //               await import(
+      //                 '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component'
+      //               );
+      //             const dialogRef = dialog.open(
+      //               ConfigDisplayGridFieldsModalComponent,
+      //               {
+      //                 data: {
+      //                   form: !currentQuestion.gridFieldsSettings
+      //                     ? null
+      //                     : convertFromRawToFormGroup(
+      //                         currentQuestion.gridFieldsSettings
+      //                       ),
+      //                   resourceName: nameTrimmed,
+      //                 },
+      //               }
+      //             );
+      //             dialogRef.closed.subscribe((res: any) => {
+      //               if (res && res.value.fields) {
+      //                 currentQuestion.gridFieldsSettings = res.getRawValue();
+      //               }
+      //             });
+      //           }
+      //         }
+      //       );
+      //     };
+      //   },
+      // };
+
+      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
+      //   'resourceFields',
+      //   availableFieldsEditor
+      // );
+      // serializer.addProperty('resourceFields', availableFieldsEditor);
+
       serializer.addProperty('resource', {
         name: 'addTemplate',
         category: 'Custom Questions',
@@ -413,8 +483,8 @@ export const init = (
       });
       serializer.addProperty('resource', {
         category: 'Filter by Questions',
-        type: 'selectResourceText',
-        name: 'selectResourceText',
+        name: 'selectResourceText:boolean',
+        type: 'select-resource-text',
         displayName: 'Select a resource',
         dependsOn: ['resource', 'displayField'],
         visibleIf: (obj: null | QuestionResource) =>
@@ -434,22 +504,23 @@ export const init = (
         },
       });
 
-      const selectResourceText = {
-        render: (editor: any, htmlElement: HTMLElement): void => {
-          const text = document.createElement('div');
-          text.innerHTML =
-            'First you have to select a resource before set filters';
-          htmlElement.appendChild(text);
-        },
-      };
+      // const selectResourceText = {
+      //   render: (editor: any, htmlElement: HTMLElement): void => {
+      //     const text = document.createElement('div');
+      //     text.innerHTML =
+      //       'First you have to select a resource before set filters';
+      //     htmlElement.appendChild(text);
+      //   },
+      // };
       // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
       //   'selectResourceText',
       //   selectResourceText
       // );
-      serializer.addProperty('selectResourceText', selectResourceText);
+      // serializer.addProperty('selectResourceText', selectResourceText);
+
       serializer.addProperty('resource', {
         category: 'Filter by Questions',
-        type: 'customFilter',
+        type: 'custom-filters',
         name: 'customFilterEl',
         displayName: 'Custom Filter',
         dependsOn: ['resource', 'selectQuestion'],
@@ -458,34 +529,34 @@ export const init = (
         visibleIndex: 3,
       });
 
-      const customFilterElements = {
-        render: (editor: any, htmlElement: HTMLElement): void => {
-          const text = document.createElement('div');
-          text.innerHTML =
-            'You can use curly brackets to get access to the question values.' +
-            '<br><b>field</b>: select the field to be filter by.' +
-            '<br><b>operator</b>: contains, =, !=, >, <, >=, <=' +
-            '<br><b>value:</b> {question1} or static value' +
-            '<br><b>Example:</b>' +
-            '<br>[{' +
-            '<br>"field": "name",' +
-            '<br>"operator":"contains",' +
-            '<br>"value": "Laura"' +
-            '<br>},' +
-            '<br>{' +
-            '<br>"field":"age",' +
-            '<br>"operator": ">",' +
-            '<br>"value": "{question1}"' +
-            '<br>}]';
-          htmlElement.appendChild(text);
-        },
-      };
+      // const customFilterElements = {
+      //   render: (editor: any, htmlElement: HTMLElement): void => {
+      //     const text = document.createElement('div');
+      //     text.innerHTML =
+      //       'You can use curly brackets to get access to the question values.' +
+      //       '<br><b>field</b>: select the field to be filter by.' +
+      //       '<br><b>operator</b>: contains, =, !=, >, <, >=, <=' +
+      //       '<br><b>value:</b> {question1} or static value' +
+      //       '<br><b>Example:</b>' +
+      //       '<br>[{' +
+      //       '<br>"field": "name",' +
+      //       '<br>"operator":"contains",' +
+      //       '<br>"value": "Laura"' +
+      //       '<br>},' +
+      //       '<br>{' +
+      //       '<br>"field":"age",' +
+      //       '<br>"operator": ">",' +
+      //       '<br>"value": "{question1}"' +
+      //       '<br>}]';
+      //     htmlElement.appendChild(text);
+      //   },
+      // };
 
       // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
       //   'customFilter',
       //   customFilterElements
       // );
-      serializer.addProperty('customFilter', customFilterElements);
+      // serializer.addProperty('customFilter', customFilterElements);
 
       serializer.addProperty('resource', {
         category: 'Filter by Questions',

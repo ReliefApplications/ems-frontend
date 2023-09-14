@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { SafeAuthService, SafeFormService } from '@oort-front/safe';
+import {
+  SafeAuthService,
+  SafeFormService,
+  SafeResourceDropdownComponent,
+} from '@oort-front/safe';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
 
@@ -12,6 +16,7 @@ import { environment } from '../environments/environment';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
+  static declaration = [SafeResourceDropdownComponent];
   title = 'back-office';
 
   /**

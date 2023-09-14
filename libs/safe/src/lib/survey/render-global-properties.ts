@@ -2,7 +2,6 @@ import { SafeReferenceDataService } from '../services/reference-data/reference-d
 import { AfterRenderQuestionEvent, SurveyModel } from 'survey-core';
 import * as OthersProperties from './global-properties/others';
 import * as ReferenceDataProperties from './global-properties/reference-data';
-import * as TooltipProperty from './global-properties/tooltip';
 
 /**
  * Render custom properties which are applied to every questions, or to
@@ -15,6 +14,5 @@ export const renderGlobalProperties =
   (referenceDataService: SafeReferenceDataService) =>
   (survey: SurveyModel, options: AfterRenderQuestionEvent) => {
     OthersProperties.render(options.question);
-    TooltipProperty.render(options.question, options.htmlElement);
     ReferenceDataProperties.render(options.question, referenceDataService);
   };

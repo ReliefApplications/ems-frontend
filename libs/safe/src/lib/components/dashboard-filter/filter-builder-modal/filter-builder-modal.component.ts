@@ -17,6 +17,7 @@ import { TooltipModule } from '@oort-front/ui';
 import { DialogModule, AlertModule } from '@oort-front/ui';
 import { renderGlobalProperties } from '../../../survey/render-global-properties';
 import { SafeReferenceDataService } from '../../../services/reference-data/reference-data.service';
+
 /**
  * Data passed to initialize the filter builder
  */
@@ -121,6 +122,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'valueFalse',
   'valueName',
   'inputType',
+  'resource-dropdown',
 ];
 
 /**
