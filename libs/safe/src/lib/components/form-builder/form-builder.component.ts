@@ -209,7 +209,6 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
         this.formHelpersService.addUserVariables(survey);
       }
     );
-
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.text = structure;
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;

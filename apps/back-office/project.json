@@ -55,10 +55,6 @@
           }
         ],
         "styles": [
-          {
-            "input": "node_modules/@progress/kendo-theme-default/dist/all.css",
-            "inject": true
-          },
           "apps/back-office/src/styles.scss",
           "libs/safe/src/lib/style/styles.scss",
           "node_modules/survey-core/defaultV2.min.css",
@@ -134,6 +130,32 @@
             {
               "replace": "apps/back-office/src/environments/environment.ts",
               "with": "apps/back-office/src/environments/environment.azure.uat.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ],
+          "baseHref": "/backoffice/",
+          "deployUrl": "/backoffice/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+          }
+        },
+        "azure-sit": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.azure.sit.ts"
             }
           ],
           "budgets": [

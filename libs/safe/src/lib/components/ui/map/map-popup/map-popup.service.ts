@@ -197,18 +197,18 @@ export class SafeMapPopupService {
   ): string {
     const title = (title: string, popupTitle?: boolean) =>
       popupTitle
-        ? `<h3 class="break-all !m-0 font-bold text-xl">${title}</h3>`
-        : `<h3 class="break-all !m-0 font-medium">${title}</h3>`;
+        ? `<h3 class="break-words !m-0 font-bold text-xl">${title}</h3>`
+        : `<h3 class="break-words !m-0 font-medium">${title}</h3>`;
     const description = (description: string, popupTitle?: boolean) =>
       popupTitle
-        ? `<p class="break-all !m-0 text-gray-600 font-light text-sm">${description}</p>`
-        : `<p class="break-all !m-0 mb-2 text-gray-600 font-light">${description}</p>`;
+        ? `<p class="break-words !m-0 text-gray-600 font-light text-sm">${description}</p>`
+        : `<p class="break-words !m-0 mb-2 text-gray-600 font-light">${description}</p>`;
 
     // Templates use for the property name and the property value to be displayed
     const propertyNameTemplate = (propertyName: string) =>
-      `<p class="break-all !m-0 capitalize text-gray-400">${propertyName}</p>`;
+      `<p class="break-words !m-0 capitalize text-gray-400">${propertyName}</p>`;
     const propertyValueTemplate = (property: any) =>
-      `<p class="!m-0 break-all">{{${property}}}</p>`;
+      `<p class="!m-0 break-words">{{${property}}}</p>`;
     // Template for the image
     const imageTemplate = (img: string) =>
       `<img src="{{${img}}}" class="flex-1" />`;

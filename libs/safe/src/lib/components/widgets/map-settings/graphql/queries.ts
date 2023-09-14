@@ -121,7 +121,12 @@ export interface GetResourcesQueryResponse {
 /** Get list of ref data gql query definition */
 export const GET_REFERENCE_DATAS = gql`
   query GetReferenceDatas($first: Int, $afterCursor: ID) {
-    referenceDatas(first: $first, afterCursor: $afterCursor) {
+    referenceDatas(
+      first: $first
+      afterCursor: $afterCursor
+      sortField: "name"
+      sortOrder: "asc"
+    ) {
       edges {
         node {
           id

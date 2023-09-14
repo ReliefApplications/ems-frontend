@@ -26,9 +26,9 @@ export class ApplicationComponent
 {
   /** Application title */
   public title = '';
-  /** List of application pages */
+  /** Navigation groups */
   public navGroups: any[] = [];
-  /** List of settings pages */
+  /** Admin pages */
   public adminNavItems: any[] = [];
   /** Current application */
   public application?: Application;
@@ -36,7 +36,7 @@ export class ApplicationComponent
   public sideMenu = false;
   /** Is large device */
   public largeDevice: boolean;
-  /** Is loading */
+  /** Loading indicator */
   public loading = true;
 
   /**

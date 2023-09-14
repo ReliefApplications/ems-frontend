@@ -1,6 +1,7 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
+import { Component, Inject } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
+import isNil from 'lodash/isNil';
 
 /** Data for the dialog inputs */
 interface DialogData {
@@ -15,26 +16,20 @@ interface DialogData {
   templateUrl: './expanded-comment.component.html',
   styleUrls: ['./expanded-comment.component.scss'],
 })
-export class SafeExpandedCommentComponent implements OnInit {
-  public formControl!: UntypedFormControl;
+export class SafeExpandedCommentComponent {
+  public formControl = new FormControl({
+    value: this.data.value,
+    disabled: isNil(this.data.readonly) ? true : this.data.readonly,
+  });
 
   /**
    * Constructor of this component
    *
    * @param dialogRef The reference to the opened dialog
    * @param data The data inputs for the dialog
-   * @param fb Angular form builder
    */
   constructor(
     public dialogRef: DialogRef<SafeExpandedCommentComponent>,
-    @Inject(DIALOG_DATA) public data: DialogData,
-    private fb: UntypedFormBuilder
+    @Inject(DIALOG_DATA) public data: DialogData
   ) {}
-
-  ngOnInit(): void {
-    this.formControl = this.fb.control({
-      value: this.data.value,
-      disabled: this.data.readonly,
-    });
-  }
 }

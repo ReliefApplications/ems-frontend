@@ -1,10 +1,6 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import {
   ContentType,
   CONTENT_TYPES,
@@ -19,12 +15,10 @@ import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 
-/**
- * Number of items per page.
- */
+/** Number of items per page */
 const ITEMS_PER_PAGE = 10;
 /** Widget types that can be used as single widget page */
-const SINGLE_WIDGET_PAGE_TYPES = ['grid', 'map', 'summaryCard'];
+const SINGLE_WIDGET_PAGE_TYPES = ['grid', 'map', 'summaryCard', 'tabs'];
 
 /**
  * Add page component.
@@ -38,19 +32,25 @@ export class AddPageComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  // === DATA ===
+  /** Available content types */
   public contentTypes = CONTENT_TYPES;
+  /** Available widgets for addition */
   public availableWidgets: any[] = WIDGET_TYPES;
+  /** Forms query */
   public formsQuery!: QueryRef<GetFormsQueryResponse>;
-
-  // === REACTIVE FORM ===
-  public pageForm: UntypedFormGroup = new UntypedFormGroup({});
+  /** New page form */
+  public pageForm = this.fb.group({
+    type: ['', Validators.required],
+    content: [''],
+    newForm: [false],
+  });
+  /** Current step in stepper */
   public step = 1;
 
   /**
    * Add page component
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param apollo Apollo service
    * @param applicationService Shared application service
    * @param dialog Dialog service
@@ -58,7 +58,7 @@ export class AddPageComponent
    * @param translate Angular translate service
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     private apollo: Apollo,
     private applicationService: SafeApplicationService,
     public dialog: Dialog,
@@ -69,11 +69,6 @@ export class AddPageComponent
   }
 
   ngOnInit(): void {
-    this.pageForm = this.formBuilder.group({
-      type: ['', Validators.required],
-      content: [''],
-      newForm: [false],
-    });
     this.pageForm.get('type')?.valueChanges.subscribe((type) => {
       const contentControl = this.pageForm.controls.content;
       if (type === ContentType.form) {

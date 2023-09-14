@@ -8,6 +8,7 @@ import {
   FilterDescriptor,
 } from '@progress/kendo-data-query';
 import { cloneDeep } from '@apollo/client/utilities';
+import { isNil, isEmpty, get } from 'lodash';
 
 /**
  * Application context service
@@ -112,23 +113,24 @@ export class ContextService {
     if ('field' in filter && filter.field) {
       // If it's a filter descriptor, replace value
       const filterName = filter.value?.match(regex)?.[0];
-      if (filterName && availableFilterFields[filterName]) {
-        filter.value = availableFilterFields[filterName];
+      if (filterName) {
+        filter.value = get(availableFilterFields, filterName);
       }
     } else if ('filters' in filter && filter.filters) {
       // If it's a composite filter, replace values in filters
       filter.filters = filter.filters
         .map((f) => this.injectDashboardFilterValues(f))
         .filter((f) => {
-          // Filter out fields that are not in the available filter fields
+          // Filter out fields that are not in the available filter field
           // Meaning, their values are still using the {{filter.}} syntax
-          if ('value' in f && f.value) {
-            const filterName = f.value?.match(regex)?.[0];
-            return !(filterName && !availableFilterFields[filterName]);
+          if ('value' in f) {
+            return !isNil(f.value) && !isEmpty(f.value);
+            // const filterName = f.value?.match(regex)?.[0];
+            // return !(filterName && !availableFilterFields[filterName]);
           } else return true;
+          // return true;
         });
     }
-
     return filter;
   }
 }

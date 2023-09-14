@@ -62,7 +62,7 @@ $ui-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,,
+      // A700: #ffffff,,,
     ),
 );
 
@@ -158,6 +158,10 @@ body {
   margin: 0;
   font-family: Roboto, 'Helvetica Neue', sans-serif;
   overflow: hidden;
+
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  scrollbar-color: #d4d4d9 white;
 }
 
 .widget-header {
@@ -189,9 +193,6 @@ body {
   width: 100%;
   height: 100%;
 }
-
-// === KENDO THEME ===
-@import 'theme.scss';
 
 // === TINYMCE ===
 .tox-editor-header *,

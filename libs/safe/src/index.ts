@@ -98,6 +98,7 @@ export * from './lib/components/cron-expression-control/public-api';
 export * from './lib/components/dashboard-filter/public-api';
 export * from './lib/components/editor-control/editor-control.component';
 export * from './lib/components/button-action/public-api';
+export * from './lib/components/custom-widget-style/custom-widget-style.component';
 
 // === CUSTOM COMPONENTS FOR SURVEY CREATOR PROPERTY GRID === //
 export * from './lib/components/resource-dropdown/resource-dropdown.component';

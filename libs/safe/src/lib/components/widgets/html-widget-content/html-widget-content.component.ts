@@ -1,4 +1,4 @@
-import { Component, Input, ViewEncapsulation } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 
 /**
@@ -10,7 +10,8 @@ import { SafeHtml } from '@angular/platform-browser';
   selector: 'safe-html-widget-content',
   templateUrl: './html-widget-content.component.html',
   styleUrls: ['./html-widget-content.component.scss'],
-  encapsulation: ViewEncapsulation.ShadowDom,
+  // todo: enable
+  // encapsulation: ViewEncapsulation.ShadowDom,
 })
 export class HtmlWidgetContentComponent {
   @Input() html: SafeHtml = '';

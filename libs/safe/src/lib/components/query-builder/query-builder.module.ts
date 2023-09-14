@@ -8,7 +8,6 @@ import { SafeTabFilterComponent } from './tab-filter/tab-filter.component';
 import { SafeTabStyleComponent } from './tab-style/tab-style.component';
 import { SafeTabLayoutPreviewComponent } from './tab-layout-preview/tab-layout-preview.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { LabelModule } from '@progress/kendo-angular-label';
@@ -34,6 +33,8 @@ import {
   AutocompleteModule,
   TabsModule,
   DateModule,
+  DividerModule,
+  IconModule,
 } from '@oort-front/ui';
 
 /**
@@ -81,6 +82,7 @@ import {
     AlertModule,
     FormWrapperModule,
     SelectMenuModule,
+    DividerModule,
   ],
   exports: [
     SafeQueryBuilderComponent,

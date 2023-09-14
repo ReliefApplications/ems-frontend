@@ -21,13 +21,16 @@ import {
   styleUrls: ['./form-answer.component.scss'],
 })
 export class FormAnswerComponent implements OnInit {
+  /** Reference to shared form component */
   @ViewChild(SafeFormComponent)
   private formComponent?: SafeFormComponent;
-
-  // === DATA ===
+  /** Loading indicator */
   public loading = true;
+  /** Current form id */
   public id = '';
+  /** Current form */
   public form?: Form;
+  /** Is form completed */
   public completed = false;
 
   /**

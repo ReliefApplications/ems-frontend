@@ -104,6 +104,7 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'tooltip',
   'referenceData',
   'referenceDataDisplayField',
+  'isPrimitiveValue',
   'referenceDataFilterFilterFromQuestion',
   'referenceDataFilterForeignField',
   'referenceDataFilterFilterCondition',

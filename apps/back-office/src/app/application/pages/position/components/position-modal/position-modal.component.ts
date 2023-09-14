@@ -1,9 +1,5 @@
-import { Component, Inject, OnInit } from '@angular/core';
-import {
-  UntypedFormGroup,
-  UntypedFormBuilder,
-  Validators,
-} from '@angular/forms';
+import { Component, Inject } from '@angular/core';
+import { Validators, FormBuilder } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IconModule } from '@oort-front/ui';
@@ -38,14 +34,16 @@ import {
   templateUrl: './position-modal.component.html',
   styleUrls: ['./position-modal.component.scss'],
 })
-export class PositionModalComponent implements OnInit {
-  // === REACTIVE FORM ===
-  positionForm: UntypedFormGroup = new UntypedFormGroup({});
+export class PositionModalComponent {
+  /** Position reactive form group */
+  positionForm = this.fb.group({
+    title: [this.data.title, Validators.required],
+  });
 
   /**
    * Add new application position component
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param dialogRef Dialog ref
    * @param data Injected modal data
    * @param data.add is it an addition
@@ -53,7 +51,7 @@ export class PositionModalComponent implements OnInit {
    * @param data.title title of the position
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<PositionModalComponent>,
     @Inject(DIALOG_DATA)
     public data: {
@@ -62,16 +60,6 @@ export class PositionModalComponent implements OnInit {
       title: string;
     }
   ) {}
-
-  /** Build the form. */
-  ngOnInit(): void {
-    this.positionForm = this.formBuilder.group({
-      title: ['', Validators.required],
-    });
-    if (this.data.edit) {
-      this.positionForm.controls.title.setValue(this.data.title);
-    }
-  }
 
   /** Close the modal without sending data. */
   onClose(): void {

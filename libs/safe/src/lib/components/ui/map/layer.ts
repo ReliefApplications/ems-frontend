@@ -686,6 +686,9 @@ export class Layer implements LayerModel {
                   symbol
                 );
                 const clusterGroup = L.markerClusterGroup({
+                  chunkedLoading: true, // Load markers in chunks
+                  chunkInterval: 250, // Time interval (in ms) during which addLayers works before pausing to let the rest of the page process
+                  chunkDelay: 50, // Time delay (in ms) between consecutive periods of processing for addLayers
                   maxClusterRadius: get(
                     this.layerDefinition,
                     'featureReduction.clusterRadius',
@@ -728,7 +731,7 @@ export class Layer implements LayerModel {
                     .map((child: L.Marker) => child.feature);
                   this.popupService.setPopUp(
                     children,
-                    event,
+                    event.latlng,
                     this.popupInfo,
                     event.layer
                   );

@@ -36,6 +36,7 @@ export interface SafeQuestionSelectBase
     GlobalProperties {
   referenceData?: string;
   referenceDataDisplayField?: string;
+  isPrimitiveValue?: boolean;
   referenceDataFilterFilterFromQuestion?: string;
   referenceDataFilterForeignField?: string;
   referenceDataFilterFilterCondition?: string;

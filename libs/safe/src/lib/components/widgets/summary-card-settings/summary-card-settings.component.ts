@@ -13,7 +13,6 @@ import {
   FormArray,
   FormBuilder,
 } from '@angular/forms';
-
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Aggregation } from '../../../models/aggregation.model';
@@ -24,6 +23,13 @@ import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.co
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
 import { takeUntil } from 'rxjs';
+
+// todo: put in common
+/** Default context filter value. */
+const DEFAULT_CONTEXT_FILTER = `{
+  "logic": "and",
+  "filters": []
+}`;
 
 /**
  * Create a card form
@@ -62,6 +68,9 @@ const createSummaryCardForm = (def: any) => {
     title: new FormControl<string>(get(settings, 'title', '')),
     card: createCardForm(get(settings, 'card', null)),
     sortFields: new FormArray([]),
+    contextFilters: new FormControl(
+      get(settings, 'contextFilters', DEFAULT_CONTEXT_FILTER)
+    ),
   });
 
   const isUsingAggregation = !!get(settings, 'card.aggregation', null);
@@ -71,9 +80,6 @@ const createSummaryCardForm = (def: any) => {
 
   const extendedForm = extendWidgetForm(form, settings?.widgetDisplay, {
     searchable: new FormControl(searchable),
-    sortable: new FormControl(
-      get<boolean>(settings, 'widgetDisplay.sortable', false)
-    ),
     usePagination: new FormControl(
       get<boolean>(settings, 'widgetDisplay.usePagination', false)
     ),
@@ -99,18 +105,18 @@ export class SafeSummaryCardSettingsComponent
   extends SafeUnsubscribeComponent
   implements OnInit, AfterViewInit
 {
-  // === REACTIVE FORM ===
-  public tileForm: SummaryCardFormT | undefined;
-
-  // === WIDGET ===
+  /** Widget */
   @Input() tile: any;
-
-  // === EMIT THE CHANGES APPLIED ===
+  /** Emit changes applied to the settings */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() change: EventEmitter<any> = new EventEmitter();
-
+  /** Form */
+  public tileForm: SummaryCardFormT | undefined;
+  /** Current resource */
   public selectedResource: Resource | null = null;
+  /** Current layout */
   public selectedLayout: Layout | null = null;
+  /** Current aggregation */
   public selectedAggregation: Aggregation | null = null;
   public customAggregation: any;
 
@@ -122,12 +128,12 @@ export class SafeSummaryCardSettingsComponent
    *
    * @param apollo Apollo service
    * @param aggregationService Shared aggregation service
-   * @param formBuilder FormBuilder instance
+   * @param fb FormBuilder instance
    */
   constructor(
     private apollo: Apollo,
     private aggregationService: SafeAggregationService,
-    private formBuilder: FormBuilder
+    private fb: FormBuilder
   ) {
     super();
   }
@@ -167,7 +173,7 @@ export class SafeSummaryCardSettingsComponent
    */
   initSortFields(): void {
     this.tile.settings.sortFields?.forEach((item: any) => {
-      const row = this.formBuilder.group({
+      const row = this.fb.group({
         field: [item.field, Validators.required],
         order: [item.order, Validators.required],
         label: [item.label, Validators.required],

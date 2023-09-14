@@ -351,12 +351,44 @@ export class DashboardFilterComponent
   }
 
   /**
+   * Get survey values whether are primitives or not,
+   * if there are not primitives, we have to map them one level from the value property in order to make the filters in the context service work
+   *
+   * @returns mapped survey filter values
+   */
+  private getSurveyValues() {
+    return Object.keys(this.survey.data).reduce((acc, currentKey) => {
+      acc = {
+        ...acc,
+        [currentKey]:
+          this.survey.data[currentKey as any].value ??
+          this.survey.data[currentKey as any],
+      };
+      return acc;
+    }, {});
+  }
+
+  /**
    * Updates the filter in the context service with the latest survey data
    * when a value changes.
    */
   private onValueChange() {
-    const surveyData = this.survey.data;
+    const surveyData = this.getSurveyValues();
+    // Get the plain data of the form in order to handle it easier
     const displayValues = this.survey.getPlainData();
+    /* Get the isPrimitiveValue property of the questions involved in the filter 
+    with the question name as key to set the correct label in the dashboard selection
+    */
+    const isValuePrimitiveKeys = this.survey
+      .getAllQuestions()
+      .reduce(function (acc, question) {
+        acc = {
+          ...acc,
+          [question.name]: question.isPrimitiveValue,
+        };
+        return acc;
+      }, {});
+
     this.contextService.filter.next(surveyData);
     this.ngZone.run(() => {
       this.quickFilters = displayValues
@@ -370,7 +402,13 @@ export class DashboardFilterComponent
             };
           } else {
             mappedQuestion = {
-              label: question.displayValue,
+              // If the value used is not primitive, use the text label to display selection in the filter
+              label: !isValuePrimitiveKeys[
+                question.name as keyof typeof isValuePrimitiveKeys
+              ]
+                ? question.displayValue.text
+                : // else for primitive values, the selected display value
+                  question.displayValue,
             };
           }
           return mappedQuestion;

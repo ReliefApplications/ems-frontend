@@ -65,6 +65,18 @@ export const init = (
     });
 
     serializer.addProperty(type, {
+      displayName: 'Is primitive value',
+      name: 'isPrimitiveValue',
+      type: 'boolean',
+      category: 'Choices from Reference data',
+      dependsOn: 'referenceData',
+      visibleIf: (obj: null | QuestionSelectBase): boolean =>
+        Boolean(obj?.referenceData),
+      visibleIndex: 3,
+      default: true,
+    });
+
+    serializer.addProperty(type, {
       displayName: 'Filter from question',
       name: 'referenceDataFilterFilterFromQuestion',
       type: 'dropdown',
@@ -185,7 +197,9 @@ export const init = (
       );
       const instance: SafeReferenceDataDropdownComponent = dropdown.instance;
       instance.referenceData = question.referenceData || '';
-      instance.choice.subscribe((res) => editor.onChanged(res));
+      instance.control.valueChanges.subscribe((value) =>
+        editor.onChanged(value)
+      );
     },
   };
   // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
@@ -238,6 +252,7 @@ export const render = (
           .getChoices(
             question.referenceData,
             question.referenceDataDisplayField,
+            question.isPrimitiveValue,
             filter
           )
           .then((choices) => {
@@ -278,6 +293,10 @@ export const render = (
           question.referenceDataFilterLocalField = undefined;
         }
       }
+    );
+    question.registerFunctionOnPropertyValueChanged(
+      'isPrimitiveValue',
+      updateChoices
     );
     question.registerFunctionOnPropertyValueChanged(
       'referenceDataDisplayField',

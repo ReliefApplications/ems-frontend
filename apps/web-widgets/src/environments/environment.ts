@@ -1,5 +1,6 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
 import { theme } from '../themes/default';
+import { sharedEnvironment } from './environment.shared';
 
 /** Authentication configuration */
 const authConfig: AuthConfig = {
@@ -16,6 +17,7 @@ const authConfig: AuthConfig = {
  * Environment file for local development.
  */
 export const environment = {
+  ...sharedEnvironment,
   production: false,
   apiUrl: 'https://oort-dev.oortcloud.tech/api',
   subscriptionApiUrl: 'wss://oort-dev.oortcloud.tech/api',

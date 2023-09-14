@@ -1,9 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import {
-  UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-} from '@angular/forms';
+import { FormBuilder, UntypedFormArray } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { FilterService } from '@progress/kendo-angular-grid';
 
@@ -24,7 +20,7 @@ export class SafeArrayFilterMenuComponent implements OnInit {
   @Input() public textField = '';
   @Input() public valueField = '';
   @Input() public filterService?: FilterService;
-  public form?: UntypedFormGroup;
+  public form!: ReturnType<typeof this.createFormGroup>;
 
   /** @returns default item choice */
   public get defaultItem(): any {
@@ -83,15 +79,24 @@ export class SafeArrayFilterMenuComponent implements OnInit {
    * @param fb Angular form builder
    * @param translate Angular translate service
    */
-  constructor(
-    private fb: UntypedFormBuilder,
-    private translate: TranslateService
-  ) {}
+  constructor(private fb: FormBuilder, private translate: TranslateService) {}
 
   ngOnInit(): void {
     this.choices1 = (this.data || []).slice();
     this.choices2 = (this.data || []).slice();
-    this.form = this.fb.group({
+    this.form = this.createFormGroup();
+    this.form.valueChanges.subscribe((value) => {
+      this.filterService?.filter(value as any);
+    });
+  }
+
+  /**
+   * Create form group
+   *
+   * @returns form group
+   */
+  private createFormGroup() {
+    return this.fb.group({
       logic: this.filter.logic,
       filters: this.fb.array([
         this.fb.group({
@@ -113,9 +118,6 @@ export class SafeArrayFilterMenuComponent implements OnInit {
           ),
         }),
       ]),
-    });
-    this.form.valueChanges.subscribe((value) => {
-      this.filterService?.filter(value);
     });
   }
 

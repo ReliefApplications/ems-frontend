@@ -1,9 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { Permission, Role } from '../../../models/user.model';
 import {
@@ -25,7 +21,7 @@ import { SafeRestService } from '../../../services/rest/rest.service';
 export class RoleDetailsComponent implements OnInit {
   @Input() role!: Role;
   public permissions: Permission[] = [];
-  public form!: UntypedFormGroup;
+  public form!: ReturnType<typeof this.createRoleForm>;
   @Output() edit = new EventEmitter();
 
   public roleStats = {
@@ -62,17 +58,13 @@ export class RoleDetailsComponent implements OnInit {
    * @param restService Shared rest service
    */
   constructor(
-    private fb: UntypedFormBuilder,
+    private fb: FormBuilder,
     private apollo: Apollo,
     private restService: SafeRestService
   ) {}
 
   ngOnInit(): void {
-    this.form = this.fb.group({
-      title: [this.role.title, Validators.required],
-      description: [this.role.description],
-      permissions: [get(this.role, 'permissions', []).map((x) => x.id)],
-    });
+    this.form = this.createRoleForm(this.role);
     this.apollo
       .query<GetPermissionsQueryResponse>({
         query: GET_PERMISSIONS,
@@ -86,6 +78,20 @@ export class RoleDetailsComponent implements OnInit {
     const url = `/roles/${this.role.id}/summary`;
     this.restService.get(url).subscribe((res: any) => {
       this.roleStats = res;
+    });
+  }
+
+  /**
+   * Create role form
+   *
+   * @param role Current role
+   * @returns form group
+   */
+  createRoleForm(role: Role) {
+    return this.fb.group({
+      title: [role.title, Validators.required],
+      description: [role.description],
+      permissions: [get(role, 'permissions', []).map((x) => x.id)],
     });
   }
 

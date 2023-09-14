@@ -38,14 +38,18 @@ export const init = (
       dropdownDiv = document.createElement('div');
       dropdownDiv.classList.add('flex', 'min-h-[50px]');
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const dropdownInstance = createDropdownInstance(dropdownDiv);
+      const dropdownInstance = createDropdownInstance(dropdownDiv, question);
       if (!isObject(question.value) && !isArray(question.value)) {
         dropdownInstance.value = question.value;
       }
       dropdownInstance.placeholder = question.placeholder;
       dropdownInstance.readonly = question.isReadOnly;
       dropdownInstance.registerOnChange((value: any) => {
-        if (!isObject(value) && !isArray(value)) {
+        if (question.isPrimitiveValue) {
+          if (!isObject(value) && !isArray(value)) {
+            question.value = value;
+          }
+        } else {
           question.value = value;
         }
       });
@@ -100,9 +104,13 @@ export const init = (
    * Create dropdown instance
    *
    * @param element html element
+   * @param question surveyjs question for the element
    * @returns combobox component
    */
-  const createDropdownInstance = (element: any): ComboBoxComponent => {
+  const createDropdownInstance = (
+    element: any,
+    question: QuestionDropdown
+  ): ComboBoxComponent => {
     const dropdown = domService.appendComponentToBody(
       ComboBoxComponent,
       element
@@ -111,12 +119,13 @@ export const init = (
     dropdownInstance.virtual = {
       itemHeight: 28,
     };
-    dropdownInstance.valuePrimitive = true;
+    dropdownInstance.valuePrimitive = Boolean(question.isPrimitiveValue);
     dropdownInstance.filterable = true;
     dropdownInstance.loading = true;
     dropdownInstance.disabled = true;
     dropdownInstance.textField = 'text';
     dropdownInstance.valueField = 'value';
+    dropdownInstance.popupSettings = { appendTo: 'component' };
     return dropdownInstance;
   };
 

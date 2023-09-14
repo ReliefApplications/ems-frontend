@@ -30,7 +30,16 @@ export const init = (environment: any): void => {
     required: true,
   });
   // Pass token before the request to fetch choices by URL if it's targeting SAFE API
-  ChoicesRestfull.onBeforeSendRequest = (
+  // Survey.ChoicesRestful.onBeforeSendRequest = (
+  //   sender: ChoicesRestful,
+  //   options: { request: { headers: Headers } }
+  // ) => {
+  //   if (sender.url.includes(environment.apiUrl)) {
+  //     const token = localStorage.getItem('idtoken');
+  //     options.request.headers.append('Authorization', `Bearer ${token}`);
+  //   }
+  // };
+  ChoicesRestful.onBeforeSendRequest = (
     sender: ChoicesRestful,
     options: { request: XMLHttpRequest }
   ) => {
