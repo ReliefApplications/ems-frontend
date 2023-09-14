@@ -81,13 +81,13 @@ function registerResourceCustomPropertyEditors() {
   registerCustomPropertyEditor(
     CustomPropertyGridComponentTypes.resourceDropdown
   );
-  registerCustomPropertyEditor(
-    CustomPropertyGridComponentTypes.resourceAvailableFields
-  );
-  registerCustomPropertyEditor(
-    CustomPropertyGridComponentTypes.selectResourceText
-  );
-  registerCustomPropertyEditor(CustomPropertyGridComponentTypes.customFilters);
+  // registerCustomPropertyEditor(
+  //   CustomPropertyGridComponentTypes.resourceAvailableFields
+  // );
+  // registerCustomPropertyEditor(
+  //   CustomPropertyGridComponentTypes.selectResourceText
+  // );
+  // registerCustomPropertyEditor(CustomPropertyGridComponentTypes.customFilters);
 }
 
 /**

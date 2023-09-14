@@ -35,7 +35,7 @@ export const registerCustomPropertyEditor = (
       };
     },
   };
-  if (ElementFactory.Instance.getAllTypes().includes(componentType)) {
+  if (!ElementFactory.Instance.getAllTypes().includes(componentType)) {
     ElementFactory.Instance.registerElement(componentType, (name) => {
       return new CustomPropertyGridEditors[componentType](name);
     });

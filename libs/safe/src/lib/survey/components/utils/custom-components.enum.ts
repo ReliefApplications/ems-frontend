@@ -6,9 +6,9 @@ import { QuestionResourceDropdownModel } from '../../../components/resource-drop
  */
 export enum CustomPropertyGridComponentTypes {
   resourceDropdown = 'resource-dropdown',
-  resourceAvailableFields = 'resource-available-fields',
-  selectResourceText = 'select-resource-text',
-  customFilters = 'custom-filters',
+  //   resourceAvailableFields = 'resource-available-fields',
+  //   selectResourceText = 'select-resource-text',
+  //   customFilters = 'custom-filters',
 }
 
 /**
@@ -20,10 +20,10 @@ export const CustomPropertyGridEditors: Record<
 > = {
   [CustomPropertyGridComponentTypes.resourceDropdown]:
     QuestionResourceDropdownModel,
-  [CustomPropertyGridComponentTypes.resourceAvailableFields]:
-    QuestionResourceDropdownModel,
-  [CustomPropertyGridComponentTypes.selectResourceText]:
-    QuestionResourceDropdownModel,
-  [CustomPropertyGridComponentTypes.customFilters]:
-    QuestionResourceDropdownModel,
+  //   [CustomPropertyGridComponentTypes.resourceAvailableFields]:
+  //     QuestionResourceDropdownModel,
+  //   [CustomPropertyGridComponentTypes.selectResourceText]:
+  //     QuestionResourceDropdownModel,
+  //   [CustomPropertyGridComponentTypes.customFilters]:
+  //     QuestionResourceDropdownModel,
 };
