@@ -5,14 +5,8 @@ import {
   GetResourceByIdQueryResponse,
 } from '../graphql/queries';
 import { BehaviorSubject } from 'rxjs';
-import {
-  FormControl,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-} from '@angular/forms';
+import { FormControl, UntypedFormGroup } from '@angular/forms';
 import { Dialog } from '@angular/cdk/dialog';
-// import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
-// import { SafeTestServiceDropdownComponent } from '../../components/test-service-dropdown/test-service-dropdown.component';
 import { SafeCoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
 import { DomService } from '../../services/dom/dom.service';
 import {
@@ -29,7 +23,8 @@ import {
   SurveyModel,
   SvgRegistry,
 } from 'survey-core';
-// import { SurveyModel } from 'survey-angular';
+import { registerCustomPropertyEditor } from './utils/custom-component-register';
+import { CustomPropertyGridComponentTypes } from './utils/custom-components.enum';
 
 /** Create the list of filter values for resources */
 export const resourcesFilterValues = new BehaviorSubject<
@@ -65,7 +60,6 @@ export const init = (
   const domService = injector.get(DomService);
   const apollo = injector.get(Apollo);
   const dialog = injector.get(Dialog);
-  const formBuilder = injector.get(UntypedFormBuilder);
 
   const getResourceById = (data: { id: string }) =>
     apollo.query<GetResourceByIdQueryResponse>({
@@ -185,7 +179,7 @@ export const init = (
       // Build set available grid fields button
       JsonObject.metaData.addProperty('resources', {
         name: 'Search resource table',
-        type: 'resourcesFields',
+        type: CustomPropertyGridComponentTypes.resourceAvailableFields,
         isRequired: true,
         category: 'Custom Questions',
         dependsOn: 'resource',
@@ -193,70 +187,13 @@ export const init = (
         visibleIndex: 5,
       });
 
-      const availableFieldsEditor = {
-        render: (editor: any, htmlElement: any) => {
-          const btn = document.createElement('button');
-          btn.innerText = 'Available grid fields';
-          btn.style.width = '100%';
-          btn.style.border = 'none';
-          btn.style.padding = '10px';
-          htmlElement.appendChild(btn);
-          btn.onclick = () => {
-            const currentQuestion = editor.object;
-            getResourceById({ id: currentQuestion.resource }).subscribe(
-              async ({ data }) => {
-                if (data.resource && data.resource.name) {
-                  const nameTrimmed = data.resource.name
-                    .replace(/\s/g, '')
-                    .toLowerCase();
-                  const { ConfigDisplayGridFieldsModalComponent } =
-                    await import(
-                      '../../components/config-display-grid-fields-modal/config-display-grid-fields-modal.component'
-                    );
-                  const dialogRef = dialog.open(
-                    ConfigDisplayGridFieldsModalComponent,
-                    {
-                      data: {
-                        form: !currentQuestion.gridFieldsSettings
-                          ? null
-                          : convertFromRawToFormGroup(
-                              currentQuestion.gridFieldsSettings
-                            ),
-                        resourceName: nameTrimmed,
-                      },
-                    }
-                  );
-                  dialogRef.closed.subscribe((res: any) => {
-                    if (res && res.value.fields) {
-                      currentQuestion.gridFieldsSettings = res.getRawValue();
-                    }
-                  });
-                }
-              }
-            );
-          };
-
-          const convertFromRawToFormGroup = (
-            gridSettingsRaw: any
-          ): UntypedFormGroup | null => {
-            if (!gridSettingsRaw.fields) {
-              return null;
-            }
-            const auxForm = formBuilder.group(gridSettingsRaw);
-            auxForm.controls.fields.setValue(gridSettingsRaw.fields);
-            return auxForm;
-          };
-        },
-      };
-
-      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-      //   'resourcesFields',
-      //   availableFieldsEditor
-      // );
-      Serializer.addProperty('resourcesFields', availableFieldsEditor);
+      registerCustomPropertyEditor(
+        CustomPropertyGridComponentTypes.resourceAvailableFields
+      );
 
       Serializer.addProperty('resources', {
         name: 'test service',
+        type: CustomPropertyGridComponentTypes.resourceTestService,
         category: 'Custom Questions',
         dependsOn: ['resource', 'displayField'],
         required: true,
@@ -267,44 +204,12 @@ export const init = (
             return true;
           }
         },
-        type: 'resourcesTestService',
         visibleIndex: 3,
       });
 
-      // const testServiceEditor = {
-      //   render: (editor: any, htmlElement: HTMLElement) => {
-      //     const question = editor.object;
-      //     let dropdownDiv: HTMLDivElement | null = null;
-      //     const updateDropdownInstance = () => {
-      //       if (question.displayField) {
-      //         if (dropdownDiv) {
-      //           dropdownDiv.remove();
-      //         }
-      //         dropdownDiv = document.createElement('div');
-      //         const instance = createTestServiceInstance(dropdownDiv);
-      //         if (instance) {
-      //           instance.resource = question.resource;
-      //           instance.record = question['test service'];
-      //           instance.textField = question.displayField;
-      //           instance.choice.subscribe((res: any) => editor.onChanged(res));
-      //         }
-      //         htmlElement.appendChild(dropdownDiv);
-      //       }
-      //     };
-      //     question.registerFunctionOnPropertyValueChanged(
-      //       'displayField',
-      //       updateDropdownInstance,
-      //       // eslint-disable-next-line no-underscore-dangle
-      //       editor.property_.name // a unique key to distinguish multiple
-      //     );
-      //     updateDropdownInstance();
-      //   },
-      // };
-
-      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-      //   'resourcesTestService',
-      //   testServiceEditor
-      // );
+      registerCustomPropertyEditor(
+        CustomPropertyGridComponentTypes.resourceTestService
+      );
 
       Serializer.addProperty('resources', {
         name: 'displayAsGrid:boolean',
@@ -566,7 +471,7 @@ export const init = (
       });
       Serializer.addProperty('resources', {
         category: 'Filter by Questions',
-        type: 'selectResourceText',
+        type: CustomPropertyGridComponentTypes.resourceSelectText,
         name: 'selectResourceText',
         displayName: 'Select a resource',
         dependsOn: ['resource', 'displayField'],
@@ -574,19 +479,9 @@ export const init = (
         visibleIndex: 3,
       });
 
-      const selectResourceText = {
-        render: (editor: any, htmlElement: any): void => {
-          const text = document.createElement('div');
-          text.innerHTML =
-            'First you have to select a resource and select display field before set filters';
-          htmlElement.appendChild(text);
-        },
-      };
-      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-      //   'selectResourceText',
-      //   selectResourceText
-      // );
-      Serializer.addProperty('selectResourceText', selectResourceText);
+      registerCustomPropertyEditor(
+        CustomPropertyGridComponentTypes.resourceSelectText
+      );
 
       Serializer.addProperty('resources', {
         category: 'Filter by Questions',
@@ -923,21 +818,4 @@ export const init = (
       instance.configureGrid();
     });
   };
-
-  /**
-   * Creates the SafeTestServiceDropdownComponent instance for the test service property
-   *
-   * @param htmlElement - The element that the directive is attached to.
-   * @returns The SafeTestServiceDropdownComponent instance
-   */
-  // const createTestServiceInstance = (
-  //   htmlElement: any
-  // ): SafeTestServiceDropdownComponent => {
-  //   const dropdown = domService.appendComponentToBody(
-  //     SafeTestServiceDropdownComponent,
-  //     htmlElement
-  //   );
-  //   const instance: SafeTestServiceDropdownComponent = dropdown.instance;
-  //   return instance;
-  // };
 };

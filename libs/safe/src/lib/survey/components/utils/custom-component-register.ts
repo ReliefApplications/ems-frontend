@@ -1,4 +1,4 @@
-import { ElementFactory, Serializer } from 'survey-core';
+import { Serializer } from 'survey-core';
 import { PropertyGridEditorCollection } from 'survey-creator-core';
 import {
   CustomPropertyGridComponentTypes,
@@ -27,7 +27,7 @@ export const registerCustomPropertyEditor = (
     /**
      * Returns json for serialized registered custom property if the fit condition is satisfied
      *
-     * @returns The related serialzied json type for the registered custom property
+     * @returns The related serialized json type for the registered custom property
      */
     getJSON: function () {
       return {
@@ -35,20 +35,17 @@ export const registerCustomPropertyEditor = (
       };
     },
   };
-  if (!ElementFactory.Instance.getAllTypes().includes(componentType)) {
-    ElementFactory.Instance.registerElement(componentType, (name) => {
-      return new CustomPropertyGridEditors[componentType](name);
-    });
-  }
+
   if (!Serializer.findClass(componentType)) {
     Serializer.addClass(
       componentType,
       [],
       function () {
-        return new CustomPropertyGridEditors[componentType]('');
+        return new CustomPropertyGridEditors[componentType].model('');
       },
       'question'
     );
   }
+
   PropertyGridEditorCollection.register(propertyJson);
 };

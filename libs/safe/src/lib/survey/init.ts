@@ -22,7 +22,11 @@ import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';
 import { initLocalization } from './localization';
 import { Injector, NgZone } from '@angular/core';
-import { ComponentCollection, CustomWidgetCollection } from 'survey-core';
+import {
+  ComponentCollection,
+  CustomWidgetCollection,
+  ElementFactory,
+} from 'survey-core';
 import { AngularComponentFactory } from 'survey-angular-ui';
 import {
   CustomPropertyGridComponentTypes,
@@ -61,16 +65,24 @@ export const initCustomSurvey = (
   if (containsCustomQuestions) {
     // Register all custom property grid component types
     const registeredTypes = AngularComponentFactory.Instance.getAllTypes();
+    const registeredElements = ElementFactory.Instance.getAllTypes();
     Object.keys(CustomPropertyGridComponentTypes).forEach((propertyKey) => {
       const propertyType =
         CustomPropertyGridComponentTypes[
           propertyKey as keyof typeof CustomPropertyGridComponentTypes
         ];
+      // Register the component in the Angular factory(the class with the @Component decorator)
       if (!registeredTypes.includes(propertyType)) {
         AngularComponentFactory.Instance.registerComponent(
           `${propertyType}-question`,
-          CustomPropertyGridEditors[propertyType]
+          CustomPropertyGridEditors[propertyType].component
         );
+      }
+      // Register the related question model in the element factory
+      if (!registeredElements.includes(propertyType)) {
+        ElementFactory.Instance.registerElement(propertyType, (name) => {
+          return new CustomPropertyGridEditors[propertyType].model(name);
+        });
       }
     });
     CommentWidget.init(CustomWidgetCollection.Instance);

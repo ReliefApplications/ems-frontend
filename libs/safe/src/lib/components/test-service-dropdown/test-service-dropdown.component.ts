@@ -1,8 +1,13 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewContainerRef,
+} from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { UntypedFormControl } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
-import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import {
   GET_RECORD_BY_ID,
   GET_RESOURCE_RECORDS,
@@ -13,6 +18,9 @@ import { Record } from '../../models/record.model';
 import { CommonModule } from '@angular/common';
 import { GraphQLSelectModule, FormWrapperModule } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { QuestionAngular } from 'survey-angular-ui';
+import { QuestionTestServiceDropdownModel } from './resource-dropdown.model';
+import { Subject } from 'rxjs';
 
 /** A constant that is used to determine how many items should be on one page. */
 const ITEMS_PER_PAGE = 10;
@@ -34,18 +42,18 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./test-service-dropdown.component.scss'],
 })
 export class SafeTestServiceDropdownComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
+  extends QuestionAngular<QuestionTestServiceDropdownModel>
+  implements OnInit, OnDestroy
 {
-  @Input() resource = '';
-  @Input() record = '';
-  @Input() textField = '';
-  @Output() choice: EventEmitter<string> = new EventEmitter<string>();
+  resource = '';
+  record = '';
+  textField = '';
 
   public selectedRecord?: Record;
-  // public selectedRecord?: any;
   public recordsControl!: UntypedFormControl;
   public recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
+
+  private destroy$: Subject<void> = new Subject<void>();
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -53,16 +61,36 @@ export class SafeTestServiceDropdownComponent
    *
    * @param {Apollo} apollo - Apollo - This is the Apollo service that is used to create GraphQL queries.
    */
-  constructor(private apollo: Apollo) {
-    super();
+  constructor(
+    changeDetectorRef: ChangeDetectorRef,
+    viewContainerRef: ViewContainerRef,
+    private apollo: Apollo
+  ) {
+    super(changeDetectorRef, viewContainerRef);
   }
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    this.model.obj.registerFunctionOnPropertyValueChanged(
+      'resource',
+      (value: string) => {
+        this.resource = value;
+        this.record = this.model.obj['test service'];
+      }
+    );
+    this.model.obj.registerFunctionOnPropertyValueChanged(
+      'displayField',
+      (value: string) => {
+        this.textField = value;
+        this.record = this.model.obj['test service'];
+      }
+    );
+
+    super.ngOnInit();
     this.recordsControl = new UntypedFormControl(this.record);
     this.recordsControl.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        this.choice.emit(value);
+        this.model.value = value;
       });
     if (this.record) {
       this.apollo
@@ -97,6 +125,14 @@ export class SafeTestServiceDropdownComponent
    * @param e select event.
    */
   onSelect(e?: any): void {
-    this.choice.emit(e);
+    this.model.value = e;
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.destroy$.next();
+    this.destroy$.complete();
+    this.model.obj.unRegisterFunctionOnPropertyValueChanged('resource');
+    this.model.obj.unRegisterFunctionOnPropertyValueChanged('displayField');
   }
 }

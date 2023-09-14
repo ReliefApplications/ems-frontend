@@ -35,7 +35,6 @@ export class SafeResourceDropdownComponent
 {
   resource = '';
   public selectedResource?: Resource;
-  private choice = '';
   public resourceControl!: UntypedFormControl;
 
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
@@ -62,7 +61,6 @@ export class SafeResourceDropdownComponent
     this.resourceControl.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        // this.choice = value;
         this.model.value = value;
       });
     if (this.resource) {
@@ -95,7 +93,6 @@ export class SafeResourceDropdownComponent
    */
   onSelect(e?: any): void {
     this.model.value = e;
-    // this.choice = e;
   }
 
   /**
