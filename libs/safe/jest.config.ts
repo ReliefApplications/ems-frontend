@@ -2,7 +2,8 @@
 export default {
   displayName: 'safe',
   preset: '../../jest.preset.js',
-  setupFiles: [`../../jest-shim.ts`],
+  // jest-canvas-mock is for chart.js tests
+  setupFiles: [`../../jest-shim.ts`, 'jest-canvas-mock'],
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   globals: {
     'ts-jest': {

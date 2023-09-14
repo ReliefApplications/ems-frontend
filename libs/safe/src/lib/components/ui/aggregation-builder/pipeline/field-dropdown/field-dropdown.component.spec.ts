@@ -1,11 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { SafeFieldDropdownComponent } from './field-dropdown.component';
+import { SelectMenuModule } from '@oort-front/ui';
+import {
+  FormsModule,
+  ReactiveFormsModule,
+  UntypedFormControl,
+} from '@angular/forms';
 
 describe('SafeFieldDropdownComponent', () => {
   let component: SafeFieldDropdownComponent;
@@ -13,15 +14,12 @@ describe('SafeFieldDropdownComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [TranslateService],
       declarations: [SafeFieldDropdownComponent],
       imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
+        SelectMenuModule,
+        FormsModule,
+        ReactiveFormsModule,
       ],
     }).compileComponents();
   });
@@ -29,6 +27,7 @@ describe('SafeFieldDropdownComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeFieldDropdownComponent);
     component = fixture.componentInstance;
+    component.fieldControl = new UntypedFormControl();
     fixture.detectChanges();
   });
 

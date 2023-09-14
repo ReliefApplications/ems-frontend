@@ -6,12 +6,7 @@ import {
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
 import { SafeEditCalculatedFieldModalComponent } from './edit-calculated-field-modal.component';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SafeEditCalculatedFieldModalComponent', () => {
   let component: SafeEditCalculatedFieldModalComponent;
@@ -21,24 +16,23 @@ describe('SafeEditCalculatedFieldModalComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         UntypedFormBuilder,
-        TranslateService,
-        { provide: DialogRef, useValue: {} },
+        {
+          provide: 'environment',
+          useValue: { frontOfficeUri: 'http://a.com' },
+        },
+        { provide: DialogRef, useValue: { updateSize: jest.fn() } },
         {
           provide: DIALOG_DATA,
           useValue: {
             access: { canSee: null, canUpdate: null, canDelete: null },
+            resourceFields: [],
           },
         },
       ],
-      declarations: [SafeEditCalculatedFieldModalComponent],
       imports: [
+        SafeEditCalculatedFieldModalComponent,
         DialogCdkModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
       ],
     }).compileComponents();
   });

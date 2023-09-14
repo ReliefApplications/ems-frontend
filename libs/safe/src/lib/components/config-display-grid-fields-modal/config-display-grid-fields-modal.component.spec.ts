@@ -2,12 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { ConfigDisplayGridFieldsModalComponent } from './config-display-grid-fields-modal.component';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import {
   ApolloTestingModule,
@@ -24,19 +19,13 @@ describe('ConfigDisplayGridFieldsModalComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         UntypedFormBuilder,
-        { provide: DialogRef, useValue: {} },
+        { provide: DialogRef, useValue: { removePanelClass: jest.fn() } },
         { provide: DIALOG_DATA, useValue: { types: [] } },
-        TranslateService,
         QueryBuilderService,
       ],
-      declarations: [ConfigDisplayGridFieldsModalComponent],
       imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        ConfigDisplayGridFieldsModalComponent,
+        TranslateModule.forRoot(),
         ApolloTestingModule,
       ],
     }).compileComponents();
@@ -56,6 +45,8 @@ describe('ConfigDisplayGridFieldsModalComponent', () => {
         __schema: {
           types: [],
           queryType: {
+            name: '',
+            kind: '',
             fields: [],
           },
         },

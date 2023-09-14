@@ -4,22 +4,21 @@ import {
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
-import { environment } from 'projects/back-office/src/environments/environment';
 import { SafeRecordHistoryComponent } from './record-history.component';
-import {
-  DateTimeProvider,
-  OAuthLogger,
-  OAuthService,
-  UrlHelperService,
-} from 'angular-oauth2-oidc';
+
 import { HttpClientModule } from '@angular/common/http';
+import { TranslateModule } from '@ngx-translate/core';
 import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
-import { MenuModule } from '@oort-front/ui';
+  ButtonModule,
+  DateModule,
+  ExpansionPanelModule,
+  MenuModule,
+  SelectMenuModule,
+} from '@oort-front/ui';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { IndicatorsModule } from '@progress/kendo-angular-indicators';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('SafeRecordHistoryComponent', () => {
   let component: SafeRecordHistoryComponent;
@@ -35,23 +34,22 @@ describe('SafeRecordHistoryComponent', () => {
             access: { canSee: null, canUpdate: null, canDelete: null },
           },
         },
-        { provide: 'environment', useValue: environment },
-        OAuthService,
-        UrlHelperService,
-        OAuthLogger,
-        DateTimeProvider,
-        TranslateService,
+        { provide: 'environment', useValue: {} },
       ],
       declarations: [SafeRecordHistoryComponent],
       imports: [
         DialogCdkModule,
         HttpClientModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        ButtonModule,
+        SelectMenuModule,
+        ApolloTestingModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        ExpansionPanelModule,
+        IndicatorsModule,
+        DateModule,
+        ReactiveFormsModule,
+        TranslateModule.forRoot(),
         MenuModule,
       ],
     }).compileComponents();

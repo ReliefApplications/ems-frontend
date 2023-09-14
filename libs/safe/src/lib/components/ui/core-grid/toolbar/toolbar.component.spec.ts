@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SafeGridToolbarComponent } from './toolbar.component';
 
 describe('SafeGridToolbarComponent', () => {

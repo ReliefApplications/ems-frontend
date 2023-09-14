@@ -1,16 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  DialogModule as DialogCdkModule,
-  DialogRef,
-  DIALOG_DATA,
-} from '@angular/cdk/dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { SafeExpandedCommentComponent } from './expanded-comment.component';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { ButtonModule, DialogModule, TextareaModule } from '@oort-front/ui';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 describe('SafeExpandedCommentComponent', () => {
   let component: SafeExpandedCommentComponent;
@@ -19,19 +12,17 @@ describe('SafeExpandedCommentComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: DialogRef, useValue: {} },
+        { provide: DialogRef, useValue: { updateSize: jest.fn() } },
         { provide: DIALOG_DATA, useValue: {} },
-        TranslateService,
       ],
       declarations: [SafeExpandedCommentComponent],
       imports: [
-        DialogCdkModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        DialogModule,
+        TranslateModule.forRoot(),
+        TextareaModule,
+        ButtonModule,
+        FormsModule,
+        ReactiveFormsModule,
       ],
     }).compileComponents();
   });

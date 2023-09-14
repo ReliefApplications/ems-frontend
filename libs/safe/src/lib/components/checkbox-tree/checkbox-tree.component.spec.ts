@@ -1,10 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BehaviorSubject } from 'rxjs';
-
 import {
   SafeCheckboxTreeComponent,
   TreeItemNode,
 } from './checkbox-tree.component';
+import { CdkTreeModule } from '@angular/cdk/tree';
 
 describe('SafeCheckboxTreeComponent', () => {
   let component: SafeCheckboxTreeComponent;
@@ -13,6 +13,7 @@ describe('SafeCheckboxTreeComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SafeCheckboxTreeComponent],
+      imports: [CdkTreeModule],
     }).compileComponents();
   });
 
@@ -22,8 +23,7 @@ describe('SafeCheckboxTreeComponent', () => {
     component.checklist = {
       data: [],
       dataChange: new BehaviorSubject<TreeItemNode[]>([]),
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      initialize: () => {},
+      initialize: jest.fn(),
       buildFileTree: () => {
         const rst: TreeItemNode[] = [];
         return rst;

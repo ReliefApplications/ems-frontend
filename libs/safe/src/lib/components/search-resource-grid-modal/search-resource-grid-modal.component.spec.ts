@@ -5,12 +5,11 @@ import {
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
 import { SafeResourceGridModalComponent } from './search-resource-grid-modal.component';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { HttpClientModule } from '@angular/common/http';
+import { OAuthModule } from 'angular-oauth2-oidc';
+import { AppAbility } from '../../services/auth/auth.service';
 
 describe('ResourceTableModalComponent', () => {
   let component: SafeResourceGridModalComponent;
@@ -19,22 +18,21 @@ describe('ResourceTableModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: DialogRef, useValue: {} },
+        { provide: DialogRef, useValue: { removePanelClass: jest.fn() } },
         {
           provide: DIALOG_DATA,
-          useValue: { gridSettings: { sort: { field: [] } } },
+          useValue: { gridSettings: { sort: { field: [] }, fields: [] } },
         },
-        TranslateService,
+        { provide: 'environment', useValue: {} },
+        AppAbility,
       ],
-      declarations: [SafeResourceGridModalComponent],
       imports: [
+        OAuthModule.forRoot(),
+        SafeResourceGridModalComponent,
         DialogCdkModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
+        ApolloTestingModule,
+        HttpClientModule,
       ],
     }).compileComponents();
   });

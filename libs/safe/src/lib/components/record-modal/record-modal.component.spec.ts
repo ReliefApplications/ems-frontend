@@ -7,23 +7,13 @@ import {
 } from '@angular/cdk/dialog';
 import { SafeRecordModalComponent } from './record-modal.component';
 import {
-  DateTimeProvider,
-  OAuthLogger,
-  OAuthService,
-  UrlHelperService,
-} from 'angular-oauth2-oidc';
-import { environment } from 'projects/back-office/src/environments/environment';
-import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
 import { GET_RECORD_BY_ID } from './graphql/queries';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { AppAbility } from '../../services/auth/auth.service';
+import { OAuthModule } from 'angular-oauth2-oidc';
 
 describe('SafeRecordModalComponent', () => {
   let component: SafeRecordModalComponent;
@@ -33,26 +23,18 @@ describe('SafeRecordModalComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: DialogRef, useValue: {} },
+        { provide: DialogRef, useValue: { updateSize: jest.fn() } },
         { provide: DIALOG_DATA, useValue: {} },
-        { provide: 'environment', useValue: environment },
-        OAuthService,
-        UrlHelperService,
-        OAuthLogger,
-        DateTimeProvider,
-        TranslateService,
+        { provide: 'environment', useValue: {} },
+        AppAbility,
       ],
-      declarations: [SafeRecordModalComponent],
       imports: [
+        OAuthModule.forRoot(),
         DialogCdkModule,
         HttpClientModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
         ApolloTestingModule,
+        SafeRecordModalComponent,
       ],
     }).compileComponents();
 
@@ -67,7 +49,34 @@ describe('SafeRecordModalComponent', () => {
     const op = controller.expectOne(GET_RECORD_BY_ID);
 
     op.flush({
-      data: {},
+      data: {
+        record: {
+          id: '',
+          data: '',
+          createdAt: '',
+          modifiedAt: '',
+          createdBy: {
+            name: '',
+          },
+          modifiedBy: {
+            name: '',
+          },
+          form: {
+            id: '',
+            structure: '',
+            permissions: {
+              recordsUnicity: '',
+            },
+            fields: [],
+            metadata: {
+              name: '',
+              automated: '',
+              canSee: '',
+              canUpdate: '',
+            },
+          },
+        },
+      },
     });
   });
 

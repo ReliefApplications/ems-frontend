@@ -4,27 +4,22 @@ import {
   DialogRef,
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
-import { environment } from 'projects/back-office/src/environments/environment';
 import { SafeRolesComponent } from './roles.component';
-import {
-  DateTimeProvider,
-  OAuthLogger,
-  OAuthService,
-  UrlHelperService,
-} from 'angular-oauth2-oidc';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterTestingModule } from '@angular/router/testing';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
 import { GET_ROLES } from './graphql/queries';
+import { AbilityModule } from '@casl/angular';
+import { TabsModule } from '@oort-front/ui';
+import { SafeRoleListModule } from './components/role-list/role-list.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { AppAbility } from '../../services/auth/auth.service';
+import { OAuthModule } from 'angular-oauth2-oidc';
+import { PureAbility } from '@casl/ability';
 
 describe('SafeRolesComponent', () => {
   let component: SafeRolesComponent;
@@ -36,24 +31,21 @@ describe('SafeRolesComponent', () => {
       providers: [
         { provide: DialogRef, useValue: {} },
         { provide: DIALOG_DATA, useValue: {} },
-        { provide: 'environment', useValue: environment },
-        OAuthService,
-        UrlHelperService,
-        OAuthLogger,
-        DateTimeProvider,
-        TranslateService,
+        { provide: 'environment', useValue: {} },
+        AppAbility,
+        PureAbility,
       ],
       declarations: [SafeRolesComponent],
       imports: [
+        OAuthModule.forRoot(),
         DialogCdkModule,
         HttpClientModule,
         RouterTestingModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        BrowserAnimationsModule,
+        TabsModule,
+        SafeRoleListModule,
+        AbilityModule,
+        TranslateModule.forRoot(),
         ApolloTestingModule,
       ],
     }).compileComponents();
@@ -69,7 +61,15 @@ describe('SafeRolesComponent', () => {
     const op = controller.expectOne(GET_ROLES);
 
     op.flush({
-      data: {},
+      data: {
+        roles: {
+          id: '',
+          title: '',
+          users: {
+            totalCount: '',
+          },
+        },
+      },
     });
   });
 

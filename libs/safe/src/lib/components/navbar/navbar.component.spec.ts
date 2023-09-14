@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SafeNavbarComponent } from './navbar.component';
 
 describe('SafeNavbarComponent', () => {
@@ -8,6 +7,7 @@ describe('SafeNavbarComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [{ provide: 'environment', useValue: {} }],
       declarations: [SafeNavbarComponent],
     }).compileComponents();
 

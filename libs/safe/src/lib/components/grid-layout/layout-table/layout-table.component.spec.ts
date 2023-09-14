@@ -1,13 +1,10 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
-
+import { TranslateModule } from '@ngx-translate/core';
 import { LayoutTableComponent } from './layout-table.component';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { HttpClientModule } from '@angular/common/http';
+import { ButtonModule } from '@oort-front/ui';
 
 describe('LayoutTableComponent', () => {
   let component: LayoutTableComponent;
@@ -15,16 +12,13 @@ describe('LayoutTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [TranslateService],
       declarations: [LayoutTableComponent],
       imports: [
         DialogCdkModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
+        ApolloTestingModule,
+        HttpClientModule,
+        ButtonModule,
       ],
     }).compileComponents();
   });

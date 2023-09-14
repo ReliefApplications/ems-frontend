@@ -1,6 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MenuModule } from '@oort-front/ui';
-
 import { SafeGridRowActionsComponent } from './row-actions.component';
 
 describe('SafeGridRowActionsComponent', () => {

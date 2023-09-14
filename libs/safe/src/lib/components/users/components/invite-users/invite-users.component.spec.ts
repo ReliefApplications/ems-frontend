@@ -1,20 +1,12 @@
 import { HttpClientModule } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
-import {
-  DialogModule as DialogCdkModule,
-  DialogRef,
-  DIALOG_DATA,
-} from '@angular/cdk/dialog';
-import { environment } from 'projects/back-office/src/environments/environment';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
-
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 import { SafeInviteUsersComponent } from './invite-users.component';
+import { GridModule } from '@progress/kendo-angular-grid';
+import { ButtonModule, DialogModule } from '@oort-front/ui';
+import { UploadsModule } from '@progress/kendo-angular-upload';
 
 describe('SafeInviteUsersComponent', () => {
   let component: SafeInviteUsersComponent;
@@ -23,27 +15,27 @@ describe('SafeInviteUsersComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: 'environment', useValue: environment },
+        { provide: 'environment', useValue: {} },
         UntypedFormBuilder,
-        { provide: DialogRef, useValue: {} },
+        {
+          provide: DialogRef,
+          useValue: { updateSize: jest.fn() },
+        },
         {
           provide: DIALOG_DATA,
           useValue: {
             access: { canSee: null, canUpdate: null, canDelete: null },
           },
         },
-        TranslateService,
       ],
       declarations: [SafeInviteUsersComponent],
       imports: [
+        UploadsModule,
+        ButtonModule,
         HttpClientModule,
-        DialogCdkModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        DialogModule,
+        TranslateModule.forRoot(),
+        GridModule,
       ],
     }).compileComponents();
   });

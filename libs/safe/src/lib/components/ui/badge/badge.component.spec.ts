@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SafeBadgeComponent } from './badge.component';
 
 describe('SafeBadgeComponent', () => {

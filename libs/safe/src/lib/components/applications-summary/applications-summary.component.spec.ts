@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SafeApplicationsSummaryComponent } from './applications-summary.component';
+import { SafeSkeletonModule } from '../../directives/skeleton/skeleton.module';
 
 describe('SafeApplicationsSummaryComponent', () => {
   let component: SafeApplicationsSummaryComponent;
@@ -9,6 +9,7 @@ describe('SafeApplicationsSummaryComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SafeApplicationsSummaryComponent],
+      imports: [SafeSkeletonModule],
     }).compileComponents();
   });
 

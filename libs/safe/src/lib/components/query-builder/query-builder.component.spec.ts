@@ -33,8 +33,8 @@ describe('SafeQueryBuilderComponent', () => {
       data: {
         __schema: {
           types: [],
+          queryType: { name: '', kind: '', fields: [] },
         },
-        fields: [],
       },
     });
   });

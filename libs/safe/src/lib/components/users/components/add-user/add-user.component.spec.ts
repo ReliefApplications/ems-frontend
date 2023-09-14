@@ -1,22 +1,22 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { UntypedFormBuilder } from '@angular/forms';
 import {
-  DialogModule as DialogCdkModule,
-  DialogRef,
-  DIALOG_DATA,
-} from '@angular/cdk/dialog';
+  FormsModule,
+  ReactiveFormsModule,
+  UntypedFormBuilder,
+} from '@angular/forms';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { SafeAddUserComponent } from './add-user.component';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import { AutocompleteModule } from '@oort-front/ui';
+import {
+  AutocompleteModule,
+  ButtonModule,
+  DialogModule,
+  SelectMenuModule,
+} from '@oort-front/ui';
 
 describe('SafeAddUserComponent', () => {
   let component: SafeAddUserComponent;
@@ -27,21 +27,19 @@ describe('SafeAddUserComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         UntypedFormBuilder,
-        { provide: DialogRef, useValue: {} },
+        { provide: DialogRef, useValue: { updateSize: jest.fn() } },
         { provide: DIALOG_DATA, useValue: { users: [] } },
-        TranslateService,
       ],
       declarations: [SafeAddUserComponent],
       imports: [
-        DialogCdkModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        DialogModule,
+        ButtonModule,
+        SelectMenuModule,
+        TranslateModule.forRoot(),
         AutocompleteModule,
         ApolloTestingModule,
+        FormsModule,
+        ReactiveFormsModule,
       ],
     }).compileComponents();
 

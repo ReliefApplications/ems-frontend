@@ -1,17 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { UntypedFormBuilder } from '@angular/forms';
 import {
-  DialogModule as DialogCdkModule,
-  DialogRef,
-  DIALOG_DATA,
-} from '@angular/cdk/dialog';
+  FormsModule,
+  ReactiveFormsModule,
+  UntypedFormBuilder,
+} from '@angular/forms';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { SafeAddRoleComponent } from './add-role.component';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { ButtonModule, DialogModule } from '@oort-front/ui';
 
 describe('SafeAddRoleComponent', () => {
   let component: SafeAddRoleComponent;
@@ -21,19 +17,16 @@ describe('SafeAddRoleComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         UntypedFormBuilder,
-        { provide: DialogRef, useValue: {} },
+        { provide: DialogRef, useValue: { updateSize: jest.fn() } },
         { provide: DIALOG_DATA, useValue: {} },
-        TranslateService,
       ],
       declarations: [SafeAddRoleComponent],
       imports: [
-        DialogCdkModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        DialogModule,
+        ButtonModule,
+        FormsModule,
+        ReactiveFormsModule,
+        TranslateModule.forRoot(),
       ],
     }).compileComponents();
   });

@@ -8,22 +8,11 @@ import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-import { environment } from 'projects/back-office/src/environments/environment';
 import { SafeTabFilterComponent } from './tab-filter.component';
-import {
-  DateTimeProvider,
-  OAuthLogger,
-  OAuthService,
-  UrlHelperService,
-} from 'angular-oauth2-oidc';
 import { HttpClientModule } from '@angular/common/http';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import { GET_QUERY_TYPES } from '../graphql/queries';
+import { SafeFilterModule } from '../../filter/filter.module';
 
 describe('SafeTabFilterComponent', () => {
   let component: SafeTabFilterComponent;
@@ -32,25 +21,13 @@ describe('SafeTabFilterComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [
-        UntypedFormBuilder,
-        { provide: 'environment', useValue: environment },
-        OAuthService,
-        UrlHelperService,
-        OAuthLogger,
-        DateTimeProvider,
-        TranslateService,
-      ],
+      providers: [UntypedFormBuilder, { provide: 'environment', useValue: {} }],
       declarations: [SafeTabFilterComponent],
       imports: [
         ApolloTestingModule,
         HttpClientModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        SafeFilterModule,
+        TranslateModule.forRoot(),
       ],
     }).compileComponents();
 
@@ -62,6 +39,7 @@ describe('SafeTabFilterComponent', () => {
     component = fixture.componentInstance;
     component.form = new UntypedFormGroup({
       filters: new UntypedFormControl([]),
+      logic: new UntypedFormControl(),
     });
     fixture.detectChanges();
 
@@ -71,8 +49,8 @@ describe('SafeTabFilterComponent', () => {
       data: {
         __schema: {
           types: [],
+          queryType: { name: '', kind: '', fields: [] },
         },
-        fields: [],
       },
     });
   });

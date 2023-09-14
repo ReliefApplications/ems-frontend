@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SafeEmptyComponent } from './empty.component';
+import { IconModule } from '@oort-front/ui';
 
 describe('SafeEmptyComponent', () => {
   let component: SafeEmptyComponent;
@@ -9,6 +9,7 @@ describe('SafeEmptyComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       declarations: [SafeEmptyComponent],
+      imports: [IconModule],
     }).compileComponents();
   });
 

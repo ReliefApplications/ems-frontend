@@ -1,36 +1,31 @@
 import { waitForAsync, ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormBuilder } from '@angular/forms';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   ApolloTestingModule,
   ApolloTestingController,
 } from 'apollo-angular/testing';
-
 import { SafeMapComponent } from './map.component';
+import 'leaflet';
+import 'L.esri';
 
 describe('SafeMapComponent', () => {
   let component: SafeMapComponent;
   let fixture: ComponentFixture<SafeMapComponent>;
   let controller: ApolloTestingController;
+  jest.mock('L.esri', () => ({
+    ...jest.requireActual('L.esri'),
+    Vector: { vectorBasemapLayer: jest.fn() },
+  }));
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-      providers: [UntypedFormBuilder, TranslateService],
-      declarations: [SafeMapComponent],
-      imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
-        ApolloTestingModule,
+      providers: [
+        UntypedFormBuilder,
+        { provide: 'environment', useValue: {} }, //TODOTEST: find a way to include leaflet, this does not work
       ],
+      declarations: [SafeMapComponent],
+      imports: [TranslateModule.forRoot(), ApolloTestingModule],
     }).compileComponents();
 
     controller = TestBed.inject(ApolloTestingController);

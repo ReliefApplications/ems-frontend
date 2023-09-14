@@ -1,12 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
-
+import { TranslateModule } from '@ngx-translate/core';
 import { SafeAddStepComponent } from './add-step.component';
+import { IconModule } from '@oort-front/ui';
 
 describe('SafeAddStepComponent', () => {
   let component: SafeAddStepComponent;
@@ -14,16 +9,8 @@ describe('SafeAddStepComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      providers: [TranslateService],
       declarations: [SafeAddStepComponent],
-      imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
-      ],
+      imports: [IconModule, TranslateModule.forRoot()],
     }).compileComponents();
   });
 

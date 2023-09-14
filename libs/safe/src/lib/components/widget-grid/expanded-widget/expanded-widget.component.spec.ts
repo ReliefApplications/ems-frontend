@@ -1,11 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  DialogModule as DialogCdkModule,
-  DialogRef,
-  DIALOG_DATA,
-} from '@angular/cdk/dialog';
-
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { SafeExpandedWidgetComponent } from './expanded-widget.component';
+import { DialogModule } from '@oort-front/ui';
+import { SafeWidgetModule } from '../../widget/widget.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SafeExpandedWidgetComponent', () => {
   let component: SafeExpandedWidgetComponent;
@@ -14,16 +12,17 @@ describe('SafeExpandedWidgetComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: DialogRef, useValue: {} },
+        { provide: DialogRef, useValue: { addPanelClass: jest.fn() } },
         {
           provide: DIALOG_DATA,
           useValue: {
             access: { canSee: null, canUpdate: null, canDelete: null },
+            widget: {},
           },
         },
       ],
       declarations: [SafeExpandedWidgetComponent],
-      imports: [DialogCdkModule],
+      imports: [DialogModule, SafeWidgetModule, TranslateModule.forRoot()],
     }).compileComponents();
   });
 

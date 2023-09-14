@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { CronExpressionControlModalComponent } from './cron-expression-control-modal.component';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { TranslateModule } from '@ngx-translate/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 describe('CronExpressionControlModalComponent', () => {
   let component: CronExpressionControlModalComponent;
@@ -8,7 +10,15 @@ describe('CronExpressionControlModalComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CronExpressionControlModalComponent],
+      providers: [
+        { provide: DIALOG_DATA, useValue: {} },
+        { provide: DialogRef, useValue: { updateSize: jest.fn() } },
+      ],
+      imports: [
+        CronExpressionControlModalComponent,
+        TranslateModule.forRoot(),
+        BrowserAnimationsModule,
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(CronExpressionControlModalComponent);

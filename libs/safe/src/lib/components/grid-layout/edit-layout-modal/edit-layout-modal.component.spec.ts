@@ -6,12 +6,9 @@ import {
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
 import { SafeEditLayoutModalComponent } from './edit-layout-modal.component';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('SafeEditLayoutModalComponent', () => {
   let component: SafeEditLayoutModalComponent;
@@ -21,8 +18,7 @@ describe('SafeEditLayoutModalComponent', () => {
     await TestBed.configureTestingModule({
       providers: [
         UntypedFormBuilder,
-        TranslateService,
-        { provide: DialogRef, useValue: {} },
+        { provide: DialogRef, useValue: { addPanelClass: jest.fn() } },
         {
           provide: DIALOG_DATA,
           useValue: {
@@ -30,15 +26,12 @@ describe('SafeEditLayoutModalComponent', () => {
           },
         },
       ],
-      declarations: [SafeEditLayoutModalComponent],
       imports: [
+        SafeEditLayoutModalComponent,
         DialogCdkModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
+        ApolloTestingModule,
+        HttpClientModule,
       ],
     }).compileComponents();
   });

@@ -1,16 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  DialogModule as DialogCdkModule,
-  DialogRef,
-  DIALOG_DATA,
-} from '@angular/cdk/dialog';
+import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { SafeErrorsModalComponent } from './errors-modal.component';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
+import { DialogModule } from '@oort-front/ui';
 
 describe('SafeExpandedCommentComponent', () => {
   let component: SafeErrorsModalComponent;
@@ -19,19 +11,13 @@ describe('SafeExpandedCommentComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: DialogRef, useValue: {} },
+        { provide: DialogRef, useValue: { removePanelClass: jest.fn() } },
         { provide: DIALOG_DATA, useValue: {} },
-        TranslateService,
       ],
-      declarations: [SafeErrorsModalComponent],
       imports: [
-        DialogCdkModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        DialogModule,
+        TranslateModule.forRoot(),
+        SafeErrorsModalComponent,
       ],
     }).compileComponents();
   });

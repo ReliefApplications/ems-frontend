@@ -3,6 +3,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import {
   DateTimeProvider,
   OAuthLogger,
+  OAuthModule,
   OAuthService,
   UrlHelperService,
 } from 'angular-oauth2-oidc';
@@ -15,7 +16,6 @@ import {
 } from '@angular/cdk/dialog';
 import {
   TranslateModule,
-  TranslateService,
   TranslateFakeLoader,
   TranslateLoader,
 } from '@ngx-translate/core';
@@ -35,6 +35,7 @@ import {
   MenuModule,
 } from '@oort-front/ui';
 import { NO_ERRORS_SCHEMA } from '@angular/core';
+import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 
 describe('SafeLayoutComponent', () => {
   let component: SafeLayoutComponent;
@@ -58,12 +59,17 @@ describe('SafeLayoutComponent', () => {
         AppAbility,
         { provide: DialogRef, useValue: {} },
         { provide: DIALOG_DATA, useValue: {} },
-        TranslateService,
       ],
       declarations: [SafeLayoutComponent],
       imports: [
+        OAuthModule.forRoot(),
         RouterTestingModule,
         HttpClientModule,
+        IndicatorsModule,
+        DividerModule,
+        ButtonModule,
+        TooltipModule,
+        SidenavContainerModule,
         DialogCdkModule,
         DividerModule,
         ButtonModule,
@@ -93,13 +99,40 @@ describe('SafeLayoutComponent', () => {
     const op1 = controller.expectOne(GET_NOTIFICATIONS);
 
     op1.flush({
-      data: {},
+      data: {
+        notifications: {
+          edges: [],
+          totalCount: '',
+          pageInfo: {
+            hasNextPage: '',
+            endCursor: '',
+          },
+        },
+      },
     });
 
     const op2 = controller.expectOne(NOTIFICATION_SUBSCRIPTION);
 
     op2.flush({
-      data: {},
+      data: {
+        notification: {
+          id: '',
+          action: '',
+          content: '',
+          createdAt: '',
+          channel: {
+            id: '',
+            title: '',
+            application: {
+              id: '',
+            },
+          },
+          seenBy: {
+            id: '',
+            name: '',
+          },
+        },
+      },
     });
   });
 

@@ -1,5 +1,4 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SafeRecordSummaryComponent } from './record-summary.component';
 
 describe('SafeRecordSummaryComponent', () => {

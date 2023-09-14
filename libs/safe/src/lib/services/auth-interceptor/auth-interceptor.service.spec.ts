@@ -2,28 +2,16 @@ import { TestBed } from '@angular/core/testing';
 import { SafeAuthInterceptorService } from './auth-interceptor.service';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { HttpClientModule } from '@angular/common/http';
-import {
-  DateTimeProvider,
-  OAuthLogger,
-  OAuthService,
-  UrlHelperService,
-} from 'angular-oauth2-oidc';
 import { AppAbility } from '../auth/auth.service';
+import { OAuthModule } from 'angular-oauth2-oidc';
 
 describe('AuthInterceptorService', () => {
   let service: SafeAuthInterceptorService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [
-        { provide: 'environment', useValue: {} },
-        OAuthService,
-        UrlHelperService,
-        OAuthLogger,
-        DateTimeProvider,
-        AppAbility,
-      ],
-      imports: [ApolloTestingModule, HttpClientModule],
+      providers: [{ provide: 'environment', useValue: {} }, AppAbility],
+      imports: [ApolloTestingModule, HttpClientModule, OAuthModule.forRoot()],
     });
     service = TestBed.inject(SafeAuthInterceptorService);
   });

@@ -5,12 +5,16 @@ import {
   DIALOG_DATA,
 } from '@angular/cdk/dialog';
 import { SafeExportComponent } from './export.component';
+import { TranslateModule } from '@ngx-translate/core';
 import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
+  RadioModule,
+  TooltipModule,
+  ToggleModule,
+  ButtonModule,
+  IconModule,
+  DialogModule,
+} from '@oort-front/ui';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 describe('SafeExportComponent', () => {
   let component: SafeExportComponent;
@@ -19,22 +23,24 @@ describe('SafeExportComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       providers: [
-        { provide: DialogRef, useValue: {} },
+        { provide: DialogRef, useValue: { removePanelClass: jest.fn() } },
         {
           provide: DIALOG_DATA,
           useValue: { export: { records: '', fields: '', format: '' } },
         },
-        TranslateService,
       ],
       declarations: [SafeExportComponent],
       imports: [
         DialogCdkModule,
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
+        TranslateModule.forRoot(),
+        TooltipModule,
+        ToggleModule,
+        RadioModule,
+        ButtonModule,
+        IconModule,
+        DialogModule,
+        FormsModule,
+        ReactiveFormsModule,
       ],
     }).compileComponents();
   });
@@ -42,7 +48,7 @@ describe('SafeExportComponent', () => {
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeExportComponent);
     component = fixture.componentInstance;
-    component.export = { records: '', fields: '', format: '' };
+    component.export = { records: '', fields: '', format: '', email: false };
     fixture.detectChanges();
   });
 

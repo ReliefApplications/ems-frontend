@@ -1,6 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SafeApplicationTemplatesComponent } from './application-templates.component';
+import { ApolloTestingModule } from 'apollo-angular/testing';
+import { HttpClientModule } from '@angular/common/http';
+import { TranslateModule } from '@ngx-translate/core';
+import { AppAbility } from '../../services/auth/auth.service';
+import { SpinnerModule } from '@oort-front/ui';
+import { OAuthModule } from 'angular-oauth2-oidc';
 
 describe('SafeApplicationTemplatesComponent', () => {
   let component: SafeApplicationTemplatesComponent;
@@ -8,7 +13,15 @@ describe('SafeApplicationTemplatesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
+      providers: [{ provide: 'environment', useValue: {} }, AppAbility],
       declarations: [SafeApplicationTemplatesComponent],
+      imports: [
+        OAuthModule.forRoot(),
+        ApolloTestingModule,
+        HttpClientModule,
+        SpinnerModule,
+        TranslateModule.forRoot(),
+      ],
     }).compileComponents();
   });
 
