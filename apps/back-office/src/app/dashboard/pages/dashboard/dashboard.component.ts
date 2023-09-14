@@ -649,6 +649,36 @@ export class DashboardComponent
       });
   }
 
+  /** Remove dashboard context */
+  public onRemoveContext(): void {
+    const dialogRef = this.confirmService.openConfirmModal({
+      title: this.translateService.instant(
+        'models.dashboard.context.datasource.remove'
+      ),
+      content: this.translateService.instant(
+        'models.dashboard.context.datasource.confirm'
+      ),
+      confirmText: this.translateService.instant(
+        'components.confirmModal.confirm'
+      ),
+      confirmVariant: 'primary',
+    });
+    dialogRef.closed
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(async (confirm: any) => {
+        if (confirm) {
+          await this.dashboardService.removeContext();
+          this.dashboard =
+            (await firstValueFrom(this.dashboardService.dashboard$)) ??
+            undefined;
+          // Remove page context id from url and navigate to the dashboard without context
+          const urlArr = this.router.url.split('/');
+          urlArr[urlArr.length - 1] = this.dashboard?.page?.content ?? '';
+          this.router.navigateByUrl(urlArr.join('/'));
+        }
+      });
+  }
+
   /**
    * Update the context options.
    * Loads elements from reference data or records from resource.

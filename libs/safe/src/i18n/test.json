@@ -1654,7 +1654,9 @@
 			"context": {
 				"datasource": {
 					"alert": "******",
+					"confirm": "******",
 					"info": "******",
+					"remove": "******",
 					"set": "******",
 					"title": "******",
 					"update": "******"
