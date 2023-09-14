@@ -24,7 +24,6 @@ import { initLocalization } from './localization';
 import { Injector, NgZone } from '@angular/core';
 import { ComponentCollection, CustomWidgetCollection } from 'survey-core';
 import { AngularComponentFactory } from 'survey-angular-ui';
-import { UntypedFormBuilder } from '@angular/forms';
 import {
   CustomPropertyGridComponentTypes,
   CustomPropertyGridEditors,
@@ -33,14 +32,12 @@ import {
 /**
  * Executes all init methods of custom SurveyJS.
  *
- * @param formBuilder Angular form builder instance
  * @param environment injected environment
  * @param injector Parent instance angular injector containing all needed services and directives
  * @param containsCustomQuestions If survey contains custom questions or not
  * @param ngZone Angular Service to execute code inside Angular environment
  */
 export const initCustomSurvey = (
-  formBuilder: UntypedFormBuilder,
   environment: any,
   injector: Injector,
   containsCustomQuestions: boolean,
@@ -78,12 +75,7 @@ export const initCustomSurvey = (
     });
     CommentWidget.init(CustomWidgetCollection.Instance);
     // load components (same as widgets, but with less configuration options)
-    ResourceComponent.init(
-      formBuilder,
-      injector,
-      ComponentCollection.Instance,
-      ngZone
-    );
+    ResourceComponent.init(injector, ComponentCollection.Instance, ngZone);
     ResourcesComponent.init(injector, ComponentCollection.Instance, ngZone);
     OwnerComponent.init(domService, apollo, ComponentCollection.Instance);
     UsersComponent.init(domService, apollo, ComponentCollection.Instance);

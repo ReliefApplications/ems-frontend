@@ -70,7 +70,7 @@ export const init = (
       type: 'boolean',
       category: 'Choices from Reference data',
       dependsOn: 'referenceData',
-      visibleIf: (obj: null | QuestionSelectBase): boolean =>
+      visibleIf: (obj: null | SafeQuestionSelectBase): boolean =>
         Boolean(obj?.referenceData),
       visibleIndex: 3,
       default: true,

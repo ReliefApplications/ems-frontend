@@ -109,7 +109,7 @@ export const init = (
    */
   const createDropdownInstance = (
     element: any,
-    question: QuestionDropdown
+    question: QuestionDropdownModel
   ): ComboBoxComponent => {
     const dropdown = domService.appendComponentToBody(
       ComboBoxComponent,

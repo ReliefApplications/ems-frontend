@@ -93,19 +93,18 @@ function registerResourceCustomPropertyEditors() {
 /**
  * Inits the resource question component of for survey.
  *
- * @param formBuilder Angular form builder instance
  * @param injector Parent instance angular injector containing all needed services and directives
  * @param componentCollectionInstance Survey component collection instance
  * @param ngZone Angular Service to execute code inside Angular environment
  */
 export const init = (
-  formBuilder: UntypedFormBuilder,
   injector: Injector,
   componentCollectionInstance: ComponentCollection,
   ngZone: NgZone
 ): void => {
   const apollo = injector.get(Apollo);
   const dialog = injector.get(Dialog);
+  const formBuilder = injector.get(UntypedFormBuilder);
 
   registerResourceCustomPropertyEditors();
 

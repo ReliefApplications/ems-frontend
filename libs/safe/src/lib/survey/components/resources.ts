@@ -12,7 +12,7 @@ import {
 } from '@angular/forms';
 import { Dialog } from '@angular/cdk/dialog';
 // import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
-import { SafeTestServiceDropdownComponent } from '../../components/test-service-dropdown/test-service-dropdown.component';
+// import { SafeTestServiceDropdownComponent } from '../../components/test-service-dropdown/test-service-dropdown.component';
 import { SafeCoreGridComponent } from '../../components/ui/core-grid/core-grid.component';
 import { DomService } from '../../services/dom/dom.service';
 import {
@@ -53,18 +53,11 @@ const temporaryRecordsForm = new FormControl([]);
 /**
  * Inits the resources question component for survey.
  *
- * @param domService Shared DOM service
- * @param apollo Apollo client
- * @param dialog Dialog service
- * @param formBuilder Angular form service
+ * @param injector Parent instance angular injector containing all needed services and directives
  * @param componentCollectionInstance ComponentCollection
  * @param ngZone Angular Service to execute code inside Angular environment
  */
 export const init = (
-  // domService: DomService,
-  // apollo: Apollo,
-  // dialog: Dialog,
-  // formBuilder: UntypedFormBuilder,
   injector: Injector,
   componentCollectionInstance: ComponentCollection,
   ngZone: NgZone
@@ -937,14 +930,14 @@ export const init = (
    * @param htmlElement - The element that the directive is attached to.
    * @returns The SafeTestServiceDropdownComponent instance
    */
-  const createTestServiceInstance = (
-    htmlElement: any
-  ): SafeTestServiceDropdownComponent => {
-    const dropdown = domService.appendComponentToBody(
-      SafeTestServiceDropdownComponent,
-      htmlElement
-    );
-    const instance: SafeTestServiceDropdownComponent = dropdown.instance;
-    return instance;
-  };
+  // const createTestServiceInstance = (
+  //   htmlElement: any
+  // ): SafeTestServiceDropdownComponent => {
+  //   const dropdown = domService.appendComponentToBody(
+  //     SafeTestServiceDropdownComponent,
+  //     htmlElement
+  //   );
+  //   const instance: SafeTestServiceDropdownComponent = dropdown.instance;
+  //   return instance;
+  // };
 };

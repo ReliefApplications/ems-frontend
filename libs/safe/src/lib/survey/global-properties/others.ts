@@ -1,6 +1,5 @@
 import {
   ChoicesRestful,
-  ChoicesRestfull,
   JsonMetadata,
   QuestionFileModel,
   Serializer,

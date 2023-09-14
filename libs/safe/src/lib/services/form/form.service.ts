@@ -58,7 +58,6 @@ export class SafeFormService {
     }
   ) {
     initCustomSurvey(
-      this.formBuilder,
       this.environment,
       this.injector,
       additionalQuestions.customQuestions,
