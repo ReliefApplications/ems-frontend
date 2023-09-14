@@ -272,7 +272,26 @@ export class Layer implements LayerModel {
             this.injector
           )
         : [];
-
+      for (const sublayer of this._sublayers) {
+        if (
+          sublayer &&
+          sublayer.layerDefinition &&
+          sublayer.layerDefinition.maxZoom &&
+          sublayer.layerDefinition.minZoom &&
+          options.layerDefinition
+        ) {
+          if (
+            sublayer.layerDefinition.maxZoom > options.layerDefinition.maxZoom
+          ) {
+            sublayer.layerDefinition.maxZoom = options.layerDefinition.maxZoom;
+          }
+          if (
+            sublayer.layerDefinition.minZoom < options.layerDefinition.minZoom
+          ) {
+            sublayer.layerDefinition.minZoom = options.layerDefinition.minZoom;
+          }
+        }
+      }
       this.sublayersLoaded.next(true);
     }
   }
