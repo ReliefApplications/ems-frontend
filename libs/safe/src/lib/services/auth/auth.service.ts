@@ -140,7 +140,7 @@ export class SafeAuthService {
       .subscribe((e: any) => {
         const redirectPath = localStorage.getItem('redirectPath');
         if (redirectPath) {
-          this.router.events.subscribe(event => {
+          this.router.events.subscribe((event) => {
             if (event instanceof NavigationEnd) {
               // Current URL has finished loading, navigate to the desired URL
               this.router.navigateByUrl(redirectPath);
