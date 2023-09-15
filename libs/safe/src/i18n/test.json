@@ -567,6 +567,11 @@
 			"default": "******",
 			"distribution": "******",
 			"fields": "******",
+			"from": {
+				"distribution": "******",
+				"field": "******",
+				"title": "******"
+			},
 			"subject": "******",
 			"withoutRecords": "******"
 		},
