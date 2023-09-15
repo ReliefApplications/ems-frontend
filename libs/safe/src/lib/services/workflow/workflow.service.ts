@@ -19,17 +19,12 @@ import { SafeApplicationService } from '../application/application.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 
-/**
- * Defines the type for workflow context.
- * Contains the ids of selected rows for each grid when the 'Next step' button is clicked.
- */
+/** Defines the type for workflow context. */
 type WorkflowContext = {
-  // each key is a dashboard id
-  [key: string]: {
-    // each key is a widget id
-    [key: string]: string[];
-  };
-};
+  dashboard: string;
+  widget: string;
+  rows: string[];
+} | null;
 
 /**
  * Workflow service. Handles modification of workflow ( step addition / step name update ) and some workflow actions.
@@ -48,7 +43,7 @@ export class SafeWorkflowService {
   public nextStep = new EventEmitter<void>();
 
   /** Current workflow context */
-  private workflowContext = new BehaviorSubject<WorkflowContext>({});
+  private workflowContext = new BehaviorSubject<WorkflowContext>(null);
   /** @returns Current workflow context as observable */
   get workflowContext$(): Observable<WorkflowContext> {
     return this.workflowContext.asObservable();
@@ -214,22 +209,15 @@ export class SafeWorkflowService {
    * @param widgetId widget id
    * @param rows selected rows
    */
-  public addToContext(
+  public setContext(
     dashboardId: string,
     widgetId: string,
     rows: string[]
   ): void {
-    // If necessary to send full workflow context
-    // const context = this.workflowContext.getValue();
-    // if (!context[dashboardId]) {
-    //   context[dashboardId] = {};
-    // }
-    // context[dashboardId][widgetId] = rows;
-    const context = {
-      [dashboardId]: {
-        [widgetId]: rows,
-      },
-    };
-    this.workflowContext.next(context);
+    this.workflowContext.next({
+      dashboard: dashboardId,
+      widget: widgetId,
+      rows,
+    });
   }
 }
