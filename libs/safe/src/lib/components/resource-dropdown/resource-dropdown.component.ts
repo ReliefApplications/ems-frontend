@@ -33,7 +33,6 @@ export class SafeResourceDropdownComponent
   extends QuestionAngular<QuestionResourceDropdownModel>
   implements OnInit
 {
-  resource = '';
   public selectedResource?: Resource;
   public resourceControl!: UntypedFormControl;
 
@@ -57,18 +56,19 @@ export class SafeResourceDropdownComponent
 
   override ngOnInit(): void {
     super.ngOnInit();
-    this.resourceControl = new UntypedFormControl(this.resource);
+    this.resourceControl = new UntypedFormControl(this.model.value ?? '');
     this.resourceControl.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.model.value = value;
+        this.model.obj.gridFieldsSettings = null;
       });
-    if (this.resource) {
+    if (this.model.value) {
       this.apollo
         .query<GetResourceByIdQueryResponse>({
           query: GET_SHORT_RESOURCE_BY_ID,
           variables: {
-            id: this.resource,
+            id: this.model.value,
           },
         })
         .subscribe(({ data }) => {
@@ -84,15 +84,6 @@ export class SafeResourceDropdownComponent
         sortField: 'name',
       },
     });
-  }
-
-  /**
-   * Emits the selected resource id.
-   *
-   * @param e select event.
-   */
-  onSelect(e?: any): void {
-    this.model.value = e;
   }
 
   /**

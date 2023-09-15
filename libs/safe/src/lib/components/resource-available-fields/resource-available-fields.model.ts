@@ -1,7 +1,15 @@
 import { Question } from 'survey-core';
-import { CustomPropertyGridComponentTypes } from '../../survey/components/utils/custom-components.enum';
+import { CustomPropertyGridComponentTypes } from '../../survey/components/property-grid-components/components.enum';
 
+/**
+ * Extended resource available fields question class for survey creators property grid editor
+ */
 export class QuestionResourceAvailableFieldsModel extends Question {
+  /**
+   * Return the registered question type in the survey serializer
+   *
+   * @returns {CustomPropertyGridComponentTypes} question type
+   */
   override getType() {
     return CustomPropertyGridComponentTypes.resourceAvailableFields;
   }

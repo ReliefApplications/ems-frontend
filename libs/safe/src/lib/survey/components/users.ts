@@ -1,8 +1,8 @@
 import { Apollo } from 'apollo-angular';
 import { ComponentCollection, Serializer, SvgRegistry } from 'survey-core';
-import { DomService } from '../../services/dom/dom.service';
-import { SafeApplicationDropdownComponent } from '../../components/application-dropdown/application-dropdown.component';
 import { GetUsersQueryResponse, GET_USERS } from '../graphql/queries';
+import { registerCustomPropertyEditor } from './property-grid-components/component-register';
+import { CustomPropertyGridComponentTypes } from './property-grid-components/components.enum';
 
 /**
  * Inits the users component.
@@ -12,7 +12,6 @@ import { GetUsersQueryResponse, GET_USERS } from '../graphql/queries';
  * @param componentCollectionInstance ComponentCollection
  */
 export const init = (
-  domService: DomService,
   apollo: Apollo,
   componentCollectionInstance: ComponentCollection
 ): void => {
@@ -37,30 +36,15 @@ export const init = (
       Serializer.addProperty('users', {
         name: 'applications',
         category: 'Users properties',
-        type: 'applicationsDropdown',
+        type: CustomPropertyGridComponentTypes.applicationsDropdown,
         isDynamicChoices: true,
         visibleIndex: 3,
         required: true,
       });
 
-      const applicationEditor = {
-        render: (editor: any, htmlElement: any) => {
-          const question = editor.object;
-          const dropdown = domService.appendComponentToBody(
-            SafeApplicationDropdownComponent,
-            htmlElement
-          );
-          const instance: SafeApplicationDropdownComponent = dropdown.instance;
-          instance.value = question.applications;
-          instance.choice.subscribe((res) => editor.onChanged(res));
-        },
-      };
-
-      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-      //   'applicationsDropdown',
-      //   applicationEditor
-      // );
-      Serializer.addProperty('applicationsDropdown', applicationEditor);
+      registerCustomPropertyEditor(
+        CustomPropertyGridComponentTypes.applicationsDropdown
+      );
     },
     onLoaded: (question: any): void => {
       apollo

@@ -31,7 +31,7 @@ import { AngularComponentFactory } from 'survey-angular-ui';
 import {
   CustomPropertyGridComponentTypes,
   CustomPropertyGridEditors,
-} from './components/utils/custom-components.enum';
+} from './components/property-grid-components/components.enum';
 
 /**
  * Executes all init methods of custom SurveyJS.
@@ -89,13 +89,13 @@ export const initCustomSurvey = (
     // load components (same as widgets, but with less configuration options)
     ResourceComponent.init(injector, ComponentCollection.Instance, ngZone);
     ResourcesComponent.init(injector, ComponentCollection.Instance, ngZone);
-    OwnerComponent.init(domService, apollo, ComponentCollection.Instance);
-    UsersComponent.init(domService, apollo, ComponentCollection.Instance);
+    OwnerComponent.init(apollo, ComponentCollection.Instance);
+    UsersComponent.init(apollo, ComponentCollection.Instance);
     GeospatialComponent.init(domService, ComponentCollection.Instance);
   }
 
   // load global properties
-  ReferenceDataProperties.init(domService, referenceDataService);
+  ReferenceDataProperties.init(referenceDataService);
   TooltipProperty.init();
   OtherProperties.init(environment);
 

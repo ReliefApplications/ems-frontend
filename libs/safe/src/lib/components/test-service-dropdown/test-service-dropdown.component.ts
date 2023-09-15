@@ -19,7 +19,7 @@ import { CommonModule } from '@angular/common';
 import { GraphQLSelectModule, FormWrapperModule } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { QuestionAngular } from 'survey-angular-ui';
-import { QuestionTestServiceDropdownModel } from './resource-dropdown.model';
+import { QuestionTestServiceDropdownModel } from './test-service-dropdown.model';
 import { Subject } from 'rxjs';
 
 /** A constant that is used to determine how many items should be on one page. */
@@ -46,7 +46,6 @@ export class SafeTestServiceDropdownComponent
   implements OnInit, OnDestroy
 {
   resource = '';
-  record = '';
   textField = '';
 
   public selectedRecord?: Record;
@@ -72,34 +71,45 @@ export class SafeTestServiceDropdownComponent
   }
 
   override ngOnInit(): void {
+    this.resource = this.model.obj.resource;
+    this.textField = this.model.obj.displayField;
     this.model.obj.registerFunctionOnPropertyValueChanged(
       'resource',
       (value: string) => {
         this.resource = value;
-        this.record = this.model.obj['test service'];
+        this.model.value = null;
+        this.model.obj.gridFieldsSettings = null;
       }
     );
     this.model.obj.registerFunctionOnPropertyValueChanged(
       'displayField',
       (value: string) => {
         this.textField = value;
-        this.record = this.model.obj['test service'];
+        this.model.value = null;
+        this.recordsQuery =
+          this.apollo.watchQuery<GetResourceRecordsQueryResponse>({
+            query: GET_RESOURCE_RECORDS,
+            variables: {
+              id: this.resource,
+              first: ITEMS_PER_PAGE,
+            },
+          });
       }
     );
 
     super.ngOnInit();
-    this.recordsControl = new UntypedFormControl(this.record);
+    this.recordsControl = new UntypedFormControl(this.model.value);
     this.recordsControl.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.model.value = value;
       });
-    if (this.record) {
+    if (this.model.value) {
       this.apollo
         .query<GetRecordByIdQueryResponse>({
           query: GET_RECORD_BY_ID,
           variables: {
-            id: this.record,
+            id: this.model.value,
           },
         })
         .pipe(takeUntil(this.destroy$))
@@ -119,15 +129,6 @@ export class SafeTestServiceDropdownComponent
           },
         });
     }
-  }
-
-  /**
-   * Emits the selected resource id.
-   *
-   * @param e select event.
-   */
-  onSelect(e?: any): void {
-    this.model.value = e;
   }
 
   override ngOnDestroy(): void {

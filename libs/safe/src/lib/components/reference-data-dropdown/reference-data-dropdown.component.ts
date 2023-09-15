@@ -1,10 +1,9 @@
 import {
+  ChangeDetectorRef,
   Component,
-  EventEmitter,
-  Input,
   OnDestroy,
   OnInit,
-  Output,
+  ViewContainerRef,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { ReferenceData } from '../../models/reference-data.model';
@@ -14,9 +13,11 @@ import {
   GET_REFERENCE_DATAS,
   GET_SHORT_REFERENCE_DATA_BY_ID,
 } from './graphql/queries';
-import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { FormControl } from '@angular/forms';
+import { QuestionAngular } from 'survey-angular-ui';
+import { QuestionReferenceDataDropdownModel } from './reference-data-dropdown.model';
+import { Subject } from 'rxjs';
 
 /** Pagination */
 const ITEMS_PER_PAGE = 10;
@@ -30,39 +31,51 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./reference-data-dropdown.component.scss'],
 })
 export class SafeReferenceDataDropdownComponent
-  extends SafeUnsubscribeComponent
+  extends QuestionAngular<QuestionReferenceDataDropdownModel>
   implements OnInit, OnDestroy
 {
   public control = new FormControl<string | null>(null);
-  @Input() referenceData = '';
-  // eslint-disable-next-line @angular-eslint/no-output-native
-  @Output() change: EventEmitter<string> = new EventEmitter<string>();
-
   public selectedReferenceData: ReferenceData | null = null;
   public referenceDatasQuery!: QueryRef<GetReferenceDatasQueryResponse>;
+  private destroy$: Subject<void> = new Subject<void>();
 
   /**
-   * Reference data dropdown component
+   * The constructor function is a special function that is called when a new instance of the class is
+   * created
    *
-   * @param apollo Apollo service
+   * @param {ChangeDetectorRef} changeDetectorRef - Angular - This is angular change detector ref of the component instance needed for the survey AngularQuestion class
+   * @param {ViewContainerRef} viewContainerRef - Angular - This is angular view container ref of the component instance needed for the survey AngularQuestion class
+   * @param {Apollo} apollo - Apollo - This is the Apollo service that we'll use to make our GraphQL queries.
    */
-  constructor(private apollo: Apollo) {
-    super();
+  constructor(
+    changeDetectorRef: ChangeDetectorRef,
+    viewContainerRef: ViewContainerRef,
+    private apollo: Apollo
+  ) {
+    super(changeDetectorRef, viewContainerRef);
   }
 
-  ngOnInit(): void {
-    if (this.referenceData) {
+  override ngOnInit(): void {
+    super.ngOnInit();
+    this.control.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
+      next: (value: string | null) => {
+        this.model.value = value;
+      },
+    });
+    if (this.model.obj.referenceData) {
       this.apollo
         .query<GetReferenceDataByIdQueryResponse>({
           query: GET_SHORT_REFERENCE_DATA_BY_ID,
           variables: {
-            id: this.referenceData,
+            id: this.model.obj.referenceData,
           },
         })
         .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }) => {
           this.selectedReferenceData = data.referenceData;
-          this.control.setValue(this.referenceData, { emitEvent: false });
+          this.control.setValue(this.model.obj.referenceData, {
+            emitEvent: false,
+          });
         });
     }
 
@@ -73,5 +86,11 @@ export class SafeReferenceDataDropdownComponent
           first: ITEMS_PER_PAGE,
         },
       });
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

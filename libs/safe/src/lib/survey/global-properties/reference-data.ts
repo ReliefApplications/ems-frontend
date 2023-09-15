@@ -6,9 +6,9 @@ import {
   SurveyModel,
   surveyLocalization,
 } from 'survey-core';
-import { DomService } from '../../services/dom/dom.service';
 import { SafeReferenceDataService } from '../../services/reference-data/reference-data.service';
-import { SafeReferenceDataDropdownComponent } from '../../components/reference-data-dropdown/reference-data-dropdown.component';
+import { CustomPropertyGridComponentTypes } from '../components/property-grid-components/components.enum';
+import { registerCustomPropertyEditor } from '../components/property-grid-components/component-register';
 
 /**
  * Check if a question is of select type
@@ -25,10 +25,7 @@ const isSelectQuestion = (question: SafeQuestion): boolean =>
  * @param domService Dom service.
  * @param referenceDataService Reference data service
  */
-export const init = (
-  domService: DomService,
-  referenceDataService: SafeReferenceDataService
-): void => {
+export const init = (referenceDataService: SafeReferenceDataService): void => {
   // declare the serializer
   const serializer: JsonMetadata = Serializer;
 
@@ -37,9 +34,13 @@ export const init = (
     serializer.addProperty(type, {
       name: 'referenceData',
       category: 'Choices from Reference data',
-      type: 'referenceDataDropdown',
+      type: CustomPropertyGridComponentTypes.referenceDataDropdown,
       visibleIndex: 1,
     });
+
+    registerCustomPropertyEditor(
+      CustomPropertyGridComponentTypes.referenceDataDropdown
+    );
 
     serializer.addProperty(type, {
       displayName: 'Display field',
@@ -186,27 +187,6 @@ export const init = (
       },
     });
   }
-
-  // custom editor for the reference data dropdown
-  const referenceDataEditor = {
-    render: (editor: any, htmlElement: HTMLElement) => {
-      const question = editor.object as SafeQuestionSelectBase;
-      const dropdown = domService.appendComponentToBody(
-        SafeReferenceDataDropdownComponent,
-        htmlElement
-      );
-      const instance: SafeReferenceDataDropdownComponent = dropdown.instance;
-      instance.referenceData = question.referenceData || '';
-      instance.control.valueChanges.subscribe((value) =>
-        editor.onChanged(value)
-      );
-    },
-  };
-  // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-  //   'referenceDataDropdown',
-  //   referenceDataEditor
-  // );
-  Serializer.addProperty('referenceDataDropdown', referenceDataEditor);
 };
 
 /**

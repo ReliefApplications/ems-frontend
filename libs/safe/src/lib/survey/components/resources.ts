@@ -23,8 +23,8 @@ import {
   SurveyModel,
   SvgRegistry,
 } from 'survey-core';
-import { registerCustomPropertyEditor } from './utils/custom-component-register';
-import { CustomPropertyGridComponentTypes } from './utils/custom-components.enum';
+import { registerCustomPropertyEditor } from './property-grid-components/component-register';
+import { CustomPropertyGridComponentTypes } from './property-grid-components/components.enum';
 
 /** Create the list of filter values for resources */
 export const resourcesFilterValues = new BehaviorSubject<

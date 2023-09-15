@@ -1,10 +1,10 @@
 import {
+  ChangeDetectorRef,
   Component,
-  EventEmitter,
-  Input,
   OnChanges,
+  OnDestroy,
   OnInit,
-  Output,
+  ViewContainerRef,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -15,9 +15,11 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GeoProperties } from '../../components/geospatial-map/geospatial-map.interface';
 import { Dialog } from '@angular/cdk/dialog';
 import { GeoField } from './geofield.type';
-import { takeUntil } from 'rxjs';
-import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { Subject, takeUntil } from 'rxjs';
 import { IconModule } from '@oort-front/ui';
+import { QuestionAngular } from 'survey-angular-ui';
+import { QuestionGeospatialListboxModel } from './geofields-listbox.model';
+import { getGeoFields } from '../../survey/components/utils/get-geospatial-fields';
 
 /** All available fields */
 export const ALL_FIELDS: { value: keyof GeoProperties; label: string }[] = [
@@ -47,10 +49,10 @@ export const ALL_FIELDS: { value: keyof GeoProperties; label: string }[] = [
   styleUrls: ['./geofields-listbox.component.scss'],
 })
 export class GeofieldsListboxComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit, OnChanges
+  extends QuestionAngular<QuestionGeospatialListboxModel>
+  implements OnInit, OnChanges, OnDestroy
 {
-  @Input() selectedFields: { value: keyof GeoProperties; label: string }[] = [];
+  selectedFields: { value: keyof GeoProperties; label: string }[] = [];
   public availableFields = ALL_FIELDS;
   public toolbarSettings: ListBoxToolbarConfig = {
     position: 'right',
@@ -63,18 +65,27 @@ export class GeofieldsListboxComponent
       'transferAllTo',
     ],
   };
-  @Output() selectionChange = new EventEmitter();
+
+  private destroy$: Subject<void> = new Subject<void>();
 
   /**
    * Component for the selection of the interest fields from geospatial question
    *
-   * @param dialog Dialog service
+   * @param {ChangeDetectorRef} changeDetectorRef - Angular - This is angular change detector ref of the component instance needed for the survey AngularQuestion class
+   * @param {ViewContainerRef} viewContainerRef - Angular - This is angular view container ref of the component instance needed for the survey AngularQuestion class
+   * @param {Dialog} dialog - Angular CDK - This is the Dialog service that is used to handle cdk dialogs
    */
-  constructor(public dialog: Dialog) {
-    super();
+  constructor(
+    changeDetectorRef: ChangeDetectorRef,
+    viewContainerRef: ViewContainerRef,
+    public dialog: Dialog
+  ) {
+    super(changeDetectorRef, viewContainerRef);
   }
 
-  ngOnInit(): void {
+  override ngOnInit(): void {
+    super.ngOnInit();
+    this.selectedFields = getGeoFields(this.model.obj);
     this.availableFields = ALL_FIELDS.filter(
       (x) => !this.selectedFields.some((obj) => obj.value === x.value)
     );
@@ -88,7 +99,7 @@ export class GeofieldsListboxComponent
 
   /** Emits select fields on action click */
   handleActionClick(): void {
-    this.selectionChange.emit(this.selectedFields);
+    this.model.obj.geoFields = this.selectedFields ?? [];
   }
 
   /**
@@ -126,5 +137,11 @@ export class GeofieldsListboxComponent
         this.handleActionClick();
       }
     });
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

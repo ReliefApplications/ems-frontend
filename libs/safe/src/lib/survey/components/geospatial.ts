@@ -7,31 +7,9 @@ import {
 import { SafeQuestion } from '../types';
 import { GeospatialMapComponent } from '../../components/geospatial-map/geospatial-map.component';
 import { DomService } from '../../services/dom/dom.service';
-import {
-  ALL_FIELDS,
-  GeofieldsListboxComponent,
-} from '../../components/geofields-listbox/geofields-listbox.component';
-
-/**
- * Extract geofields from question ( to match with latest version of the available ones )
- *
- * @param question Geospatial question
- * @returns clean list of selected geofields
- */
-const getGeoFields = (question: any) => {
-  const rawSelectedFields: any[] = (question.geoFields || []).map(
-    (field: any) =>
-      typeof field === 'string'
-        ? {
-            value: field,
-            label: ALL_FIELDS.find((x) => x.value === field)?.label || field,
-          }
-        : field
-  );
-  return rawSelectedFields.filter((x) =>
-    (ALL_FIELDS.map((field) => field.value) as string[]).includes(x.value)
-  );
-};
+import { CustomPropertyGridComponentTypes } from './property-grid-components/components.enum';
+import { registerCustomPropertyEditor } from './property-grid-components/component-register';
+import { getGeoFields } from './utils/get-geospatial-fields';
 
 /**
  * Inits the geospatial component.
@@ -73,31 +51,15 @@ export const init = (
       serializer.addProperty('geospatial', {
         name: 'geoFields',
         category: 'Map Properties',
-        type: 'listBox',
+        type: CustomPropertyGridComponentTypes.geospatialListbox,
         visibleIndex: 2,
         // dependsOn: ['geometry'],
         // visibleIf: (obj: null | any) => !!obj && obj.geometry === 'POINT',
       });
       // Tagbox
-      const listBoxEditor = {
-        render: (editor: any, htmlElement: HTMLElement) => {
-          const question = editor.object;
-          const listbox = domService.appendComponentToBody(
-            GeofieldsListboxComponent,
-            htmlElement
-          );
-          const instance: GeofieldsListboxComponent = listbox.instance;
-          instance.selectedFields = getGeoFields(question);
-          instance.selectionChange.subscribe((fields) => {
-            question.geoFields = fields || [];
-          });
-        },
-      };
-      // SurveyPropertyEditorFactory.registerCustomEditor(
-      //   'listBox',
-      //   listBoxEditor
-      // );
-      serializer.addProperty('listBox', listBoxEditor);
+      registerCustomPropertyEditor(
+        CustomPropertyGridComponentTypes.geospatialListbox
+      );
     },
     onAfterRender: (question: SafeQuestion, el: HTMLElement): void => {
       // hides the input element

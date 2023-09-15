@@ -1,24 +1,24 @@
 import {
+  ChangeDetectorRef,
   Component,
-  EventEmitter,
   Inject,
-  Input,
   OnDestroy,
   OnInit,
-  Output,
   Renderer2,
+  ViewContainerRef,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Application } from '../../models/application.model';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, Subject } from 'rxjs';
 import {
   GetApplicationsQueryResponse,
   GET_APPLICATIONS,
 } from './graphql/queries';
-import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { updateQueryUniqueValues } from '../../utils/update-queries';
 import { DOCUMENT } from '@angular/common';
+import { QuestionAngular } from 'survey-angular-ui';
+import { QuestionOwnerApplicationsDropdownModel } from './application-dropdown.model';
 
 /**
  * A constant that is used to set the number of items to be displayed on the page.
@@ -34,15 +34,12 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./application-dropdown.component.scss'],
 })
 export class SafeApplicationDropdownComponent
-  extends SafeUnsubscribeComponent
+  extends QuestionAngular<QuestionOwnerApplicationsDropdownModel>
   implements OnInit, OnDestroy
 {
-  @Input() value = [];
-  @Output() choice: EventEmitter<string> = new EventEmitter<string>();
-
   public selectedApplications: Application[] = [];
-  private applications = new BehaviorSubject<Application[]>([]);
   public applications$!: Observable<Application[]>;
+  private applications = new BehaviorSubject<Application[]>([]);
   private cachedApplications: Application[] = [];
   private applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
   private scrollListener!: any;
@@ -51,33 +48,47 @@ export class SafeApplicationDropdownComponent
     hasNextPage: true,
   };
   private loading = true;
+  private destroy$: Subject<void> = new Subject<void>();
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
    * created
    *
-   * @param apollo This is the Apollo service that we'll use to make our GraphQL
-   * queries.
-   * @param document Document
-   * @param renderer Renderer2
+   * @param {Document} document Current document object of the client
+   * @param {ChangeDetectorRef} changeDetectorRef - Angular - This is angular change detector ref of the component instance needed for the survey AngularQuestion class
+   * @param {ViewContainerRef} viewContainerRef - Angular - This is angular view container ref of the component instance needed for the survey AngularQuestion class
+   * @param {Renderer2} renderer - Angular - Renderer2 utilities
+   * @param {Apollo} apollo - Apollo - This is the Apollo service that we'll use to make our GraphQL queries.
    */
   constructor(
-    private apollo: Apollo,
     @Inject(DOCUMENT) private document: Document,
-    private renderer: Renderer2
+    changeDetectorRef: ChangeDetectorRef,
+    viewContainerRef: ViewContainerRef,
+    private renderer: Renderer2,
+    private apollo: Apollo
   ) {
-    super();
+    super(changeDetectorRef, viewContainerRef);
   }
 
-  ngOnInit(): void {
-    if (Array.isArray(this.value) && this.value.length > 0) {
+  override ngOnInit(): void {
+    super.ngOnInit();
+    if (
+      Array.isArray(this.model.obj.applications) &&
+      this.model.obj.applications.length > 0
+    ) {
       this.apollo
         .query<GetApplicationsQueryResponse>({
           query: GET_APPLICATIONS,
           variables: {
             filter: {
               logic: 'and',
-              filters: [{ field: 'ids', operator: 'in', value: this.value }],
+              filters: [
+                {
+                  field: 'ids',
+                  operator: 'in',
+                  value: this.model.obj.applications,
+                },
+              ],
               // ids: this.value
             },
           },
@@ -106,15 +117,6 @@ export class SafeApplicationDropdownComponent
       .subscribe(({ data, loading }) => {
         this.updateValues(data, loading);
       });
-  }
-
-  /**
-   * Emits the selected resource id.
-   *
-   * @param e select event.
-   */
-  onSelect(e: any): void {
-    this.choice.emit(e);
   }
 
   /**
@@ -183,6 +185,8 @@ export class SafeApplicationDropdownComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    this.destroy$.next();
+    this.destroy$.complete();
     if (this.scrollListener) {
       this.scrollListener();
     }

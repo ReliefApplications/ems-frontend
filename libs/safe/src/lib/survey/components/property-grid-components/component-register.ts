@@ -3,7 +3,7 @@ import { PropertyGridEditorCollection } from 'survey-creator-core';
 import {
   CustomPropertyGridComponentTypes,
   CustomPropertyGridEditors,
-} from './custom-components.enum';
+} from './components.enum';
 
 /**
  * Register custom element and custom property for the survey of the given custom type

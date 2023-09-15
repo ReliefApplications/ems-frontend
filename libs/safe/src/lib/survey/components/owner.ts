@@ -1,12 +1,12 @@
 import { Apollo } from 'apollo-angular';
-import { DomService } from '../../services/dom/dom.service';
-import { SafeApplicationDropdownComponent } from '../../components/application-dropdown/application-dropdown.component';
 import {
   GetRolesFromApplicationsQueryResponse,
   GET_ROLES_FROM_APPLICATIONS,
 } from '../graphql/queries';
 import { QuestionOwner } from '../types';
 import { ComponentCollection, Serializer, SvgRegistry } from 'survey-core';
+import { CustomPropertyGridComponentTypes } from './property-grid-components/components.enum';
+import { registerCustomPropertyEditor } from './property-grid-components/component-register';
 
 /**
  * Inits the owner component.
@@ -16,7 +16,6 @@ import { ComponentCollection, Serializer, SvgRegistry } from 'survey-core';
  * @param componentCollectionInstance ComponentCollection
  */
 export const init = (
-  domService: DomService,
   apollo: Apollo,
   componentCollectionInstance: ComponentCollection
 ): void => {
@@ -42,30 +41,15 @@ export const init = (
       Serializer.addProperty('owner', {
         name: 'applications',
         category: 'Owner properties',
-        type: 'applicationsDropdown',
+        type: CustomPropertyGridComponentTypes.applicationsDropdown,
         isDynamicChoices: true,
         visibleIndex: 3,
         required: true,
       });
 
-      const applicationEditor = {
-        render: (editor: any, htmlElement: HTMLElement) => {
-          const question = editor.object;
-          const dropdown = domService.appendComponentToBody(
-            SafeApplicationDropdownComponent,
-            htmlElement
-          );
-          const instance: SafeApplicationDropdownComponent = dropdown.instance;
-          instance.value = question.applications;
-          instance.choice.subscribe((res) => editor.onChanged(res));
-        },
-      };
-
-      // SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
-      //   'applicationsDropdown',
-      //   applicationEditor
-      // );
-      Serializer.addProperty('applicationsDropdown', applicationEditor);
+      registerCustomPropertyEditor(
+        CustomPropertyGridComponentTypes.applicationsDropdown
+      );
     },
     onLoaded: (question: QuestionOwner): void => {
       apollo

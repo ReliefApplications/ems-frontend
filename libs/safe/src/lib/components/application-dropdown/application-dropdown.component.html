@@ -2,10 +2,9 @@
   <label>{{ 'components.applications.dropdown.select' | translate }}</label>
   <ui-select-menu
     #applicationSelect
-    [(ngModel)]="value"
+    [(ngModel)]="model.value"
     name="applications"
     (opened)="onOpenSelect()"
-    (selectedOption)="onSelect($event)"
     [multiselect]="true"
   >
     <ui-select-option
