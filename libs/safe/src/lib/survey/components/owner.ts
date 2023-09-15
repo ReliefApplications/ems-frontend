@@ -5,8 +5,8 @@ import {
 } from '../graphql/queries';
 import { QuestionOwner } from '../types';
 import { ComponentCollection, Serializer, SvgRegistry } from 'survey-core';
-import { CustomPropertyGridComponentTypes } from './property-grid-components/components.enum';
-import { registerCustomPropertyEditor } from './property-grid-components/component-register';
+import { CustomPropertyGridComponentTypes } from './utils/components.enum';
+import { registerCustomPropertyEditor } from './utils/component-register';
 
 /**
  * Inits the owner component.

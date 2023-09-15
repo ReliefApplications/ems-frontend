@@ -7,8 +7,8 @@ import {
 import { SafeQuestion } from '../types';
 import { GeospatialMapComponent } from '../../components/geospatial-map/geospatial-map.component';
 import { DomService } from '../../services/dom/dom.service';
-import { CustomPropertyGridComponentTypes } from './property-grid-components/components.enum';
-import { registerCustomPropertyEditor } from './property-grid-components/component-register';
+import { CustomPropertyGridComponentTypes } from './utils/components.enum';
+import { registerCustomPropertyEditor } from './utils/component-register';
 import { getGeoFields } from './utils/get-geospatial-fields';
 
 /**

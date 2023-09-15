@@ -1,5 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { SafeAuthService, SafeFormService } from '@oort-front/safe';
+import {
+  GeofieldsListboxComponent,
+  SafeApplicationDropdownComponent,
+  SafeReferenceDataDropdownComponent,
+  SafeResourceAvailableFieldsComponent,
+  SafeResourceCustomFiltersComponent,
+  SafeResourceDropdownComponent,
+  SafeResourceSelectTextComponent,
+  SafeTestServiceDropdownComponent,
+  SafeAuthService,
+  SafeFormService,
+} from '@oort-front/safe';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
 
@@ -12,6 +23,17 @@ import { environment } from '../environments/environment';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
+  // Static component declaration of survey custom components for the property grid editor in order to avoid removal on tree shake for production build
+  static declaration = [
+    SafeApplicationDropdownComponent,
+    GeofieldsListboxComponent,
+    SafeReferenceDataDropdownComponent,
+    SafeResourceAvailableFieldsComponent,
+    SafeResourceCustomFiltersComponent,
+    SafeResourceDropdownComponent,
+    SafeResourceSelectTextComponent,
+    SafeTestServiceDropdownComponent,
+  ];
   title = 'front-office';
 
   /**

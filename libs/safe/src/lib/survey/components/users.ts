@@ -1,8 +1,8 @@
 import { Apollo } from 'apollo-angular';
 import { ComponentCollection, Serializer, SvgRegistry } from 'survey-core';
 import { GetUsersQueryResponse, GET_USERS } from '../graphql/queries';
-import { registerCustomPropertyEditor } from './property-grid-components/component-register';
-import { CustomPropertyGridComponentTypes } from './property-grid-components/components.enum';
+import { registerCustomPropertyEditor } from './utils/component-register';
+import { CustomPropertyGridComponentTypes } from './utils/components.enum';
 
 /**
  * Inits the users component.

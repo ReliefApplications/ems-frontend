@@ -1,4 +1,4 @@
-import { ALL_FIELDS } from '../../../components/geofields-listbox/geofields-listbox.component';
+import { ALL_FIELDS } from '../geofields-listbox/geofields-listbox.component';
 
 /**
  * Extract geofields from question ( to match with latest version of the available ones )

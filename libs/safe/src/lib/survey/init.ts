@@ -31,7 +31,7 @@ import { AngularComponentFactory } from 'survey-angular-ui';
 import {
   CustomPropertyGridComponentTypes,
   CustomPropertyGridEditors,
-} from './components/property-grid-components/components.enum';
+} from './components/utils/components.enum';
 
 /**
  * Executes all init methods of custom SurveyJS.

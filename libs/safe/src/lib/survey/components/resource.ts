@@ -24,8 +24,8 @@ import get from 'lodash/get';
 import { SafeQuestion, QuestionResource } from '../types';
 import { Record } from '../../models/record.model';
 import { Injector, NgZone } from '@angular/core';
-import { registerCustomPropertyEditor } from './property-grid-components/component-register';
-import { CustomPropertyGridComponentTypes } from './property-grid-components/components.enum';
+import { registerCustomPropertyEditor } from './utils/component-register';
+import { CustomPropertyGridComponentTypes } from './utils/components.enum';
 
 /** Question's temporary records */
 export const temporaryRecordsForm = new FormControl([]);

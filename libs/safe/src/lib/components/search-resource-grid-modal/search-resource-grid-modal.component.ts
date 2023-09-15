@@ -3,13 +3,13 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { GridSettings } from '../ui/core-grid/models/grid-settings.model';
 import { CommonModule } from '@angular/common';
 import { SpinnerModule } from '@oort-front/ui';
-import { SafeResourceDropdownModule } from '../resource-dropdown/resource-dropdown.module';
-import { SafeApplicationDropdownModule } from '../application-dropdown/application-dropdown.module';
 import { SafeRecordDropdownModule } from '../record-dropdown/record-dropdown.module';
 import { SafeCoreGridModule } from '../ui/core-grid/core-grid.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
+import { SafeResourceDropdownModule } from '../../survey/components/resource-dropdown/public-api';
+import { SafeApplicationDropdownModule } from '../../survey/components/application-dropdown/public-api';
 
 /**
  * Dialog data interface of the component

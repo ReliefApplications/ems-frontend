@@ -7,8 +7,8 @@ import {
   surveyLocalization,
 } from 'survey-core';
 import { SafeReferenceDataService } from '../../services/reference-data/reference-data.service';
-import { CustomPropertyGridComponentTypes } from '../components/property-grid-components/components.enum';
-import { registerCustomPropertyEditor } from '../components/property-grid-components/component-register';
+import { CustomPropertyGridComponentTypes } from '../components/utils/components.enum';
+import { registerCustomPropertyEditor } from '../components/utils/component-register';
 
 /**
  * Check if a question is of select type

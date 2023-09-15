@@ -1,8 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import {
+  GeofieldsListboxComponent,
+  SafeApplicationDropdownComponent,
   SafeAuthService,
   SafeFormService,
+  SafeReferenceDataDropdownComponent,
+  SafeResourceAvailableFieldsComponent,
+  SafeResourceCustomFiltersComponent,
   SafeResourceDropdownComponent,
+  SafeResourceSelectTextComponent,
+  SafeTestServiceDropdownComponent,
 } from '@oort-front/safe';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
@@ -16,7 +23,17 @@ import { environment } from '../environments/environment';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  static declaration = [SafeResourceDropdownComponent];
+  // Static component declaration of survey custom components for the property grid editor in order to avoid removal on tree shake for production build
+  static declaration = [
+    SafeApplicationDropdownComponent,
+    GeofieldsListboxComponent,
+    SafeReferenceDataDropdownComponent,
+    SafeResourceAvailableFieldsComponent,
+    SafeResourceCustomFiltersComponent,
+    SafeResourceDropdownComponent,
+    SafeResourceSelectTextComponent,
+    SafeTestServiceDropdownComponent,
+  ];
   title = 'back-office';
 
   /**
