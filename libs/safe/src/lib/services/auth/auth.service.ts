@@ -11,7 +11,7 @@ import {
 import { ApolloQueryResult } from '@apollo/client';
 import { OAuthService } from 'angular-oauth2-oidc';
 import { filter, map } from 'rxjs/operators';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import {
   Ability,
   AbilityBuilder,
@@ -140,7 +140,12 @@ export class SafeAuthService {
       .subscribe((e: any) => {
         const redirectPath = localStorage.getItem('redirectPath');
         if (redirectPath) {
-          this.router.navigateByUrl(redirectPath);
+          this.router.events.subscribe(event => {
+            if (event instanceof NavigationEnd) {
+              // Current URL has finished loading, navigate to the desired URL
+              this.router.navigateByUrl(redirectPath);
+            }
+          });
         } else {
           // Fallback to the location origin with a new url state with clean params
           // Chrome does not delete state and session state params once the oauth is successful
