@@ -108,7 +108,7 @@ export class SafeFormBuilderService {
 
     // Add custom variables
     this.formHelpersService.addUserVariables(survey);
-    this.formHelpersService.addWorkflowVariables(survey);
+    this.formHelpersService.setWorkflowContextVariable(survey);
     if (record) {
       this.formHelpersService.addRecordIDVariable(survey, record);
     }
@@ -216,10 +216,14 @@ export class SafeFormBuilderService {
           survey.openOnQuestionValuesPage
         );
         const page = survey.getPageByName(question.value);
-        selectedPageIndex.next(page.visibleIndex);
+        if (page) {
+          selectedPageIndex.next(page.visibleIndex);
+        }
       } else if (survey.openOnPage) {
         const page = survey.getPageByName(survey.openOnPage);
-        selectedPageIndex.next(page.visibleIndex);
+        if (page) {
+          selectedPageIndex.next(page.visibleIndex);
+        }
       }
     });
     survey.onClearFiles.add((_, options: any) => this.onClearFiles(options));

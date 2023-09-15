@@ -454,7 +454,7 @@ export class SafeGridWidgetComponent
           this.dashboardService.dashboard$
         );
         if (!dashboard?.id) return;
-        this.workflowService.addToContext(
+        this.workflowService.setContext(
           dashboard.id,
           this.settings.id,
           this.grid.selectedRows
