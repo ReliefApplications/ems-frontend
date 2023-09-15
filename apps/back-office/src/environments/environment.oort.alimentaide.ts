@@ -1,5 +1,5 @@
 import { AuthConfig } from 'angular-oauth2-oidc';
-import { theme } from '../themes/oort/oort.prod';
+import { theme } from '../themes/alimentaide/alimentaide.prod';
 import { sharedEnvironment } from './environment.shared';
 import { Environment } from './environment.type';
 
