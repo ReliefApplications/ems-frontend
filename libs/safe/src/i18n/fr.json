@@ -655,6 +655,12 @@
 				"missingRelatedName": "Nom lié manquant pour la question {{question}} à la page {{page}}. Veuillez entrer un nom valide pour la valeur de la donnée (au format snake_case) pour sauvegarder le formulaire.",
 				"missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un modèle pour sauvegarder le formulaire."
 			},
+			"propertyGrid": {
+				"resource": {
+					"availableGridFields": "Champs de grille disponibles",
+					"resourceSelectText": "Vous devez d’abord sélectionner une ressource avant de définir des filtres"
+				}
+			},
 			"saveSurvey": "Sauvegarde du questionnaire"
 		},
 		"formMapProperties": {

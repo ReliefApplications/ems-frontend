@@ -59,6 +59,8 @@ export class SafeTestServiceDropdownComponent
    * The constructor function is a special function that is called when a new instance of the class is
    * created
    *
+   * @param {ChangeDetectorRef} changeDetectorRef - Angular - This is angular change detector ref of the component instance needed for the survey AngularQuestion class
+   * @param {ViewContainerRef} viewContainerRef - Angular - This is angular view container ref of the component instance needed for the survey AngularQuestion class
    * @param {Apollo} apollo - Apollo - This is the Apollo service that is used to create GraphQL queries.
    */
   constructor(

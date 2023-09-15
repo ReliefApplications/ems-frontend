@@ -641,6 +641,12 @@
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
 			},
+			"propertyGrid": {
+				"resource": {
+					"availableGridFields": "******",
+					"resourceSelectText": "******"
+				}
+			},
 			"saveSurvey": "******"
 		},
 		"formMapProperties": {
