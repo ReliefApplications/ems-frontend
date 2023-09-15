@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, ViewContainerRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { QuestionAngular } from 'survey-angular-ui';
-import { QuestionResourceCustomFiltersModel } from './resource-select-text.model';
+import { QuestionResourceCustomFiltersModel } from './resource-custom-filters.model';
 import { IconModule } from '@oort-front/ui';
 
 /**

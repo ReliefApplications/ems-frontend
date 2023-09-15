@@ -1,27 +1,48 @@
 import { Type } from '@angular/core';
-import { QuestionResourceDropdownModel } from '../resource-dropdown/resource-dropdown.model';
-import { SafeResourceDropdownComponent } from '../resource-dropdown/resource-dropdown.component';
-import { SafeResourceAvailableFieldsComponent } from '../resource-available-fields/resource-available-fields.component';
-import { QuestionResourceAvailableFieldsModel } from '../resource-available-fields/resource-available-fields.model';
-import { SafeTestServiceDropdownComponent } from '../test-service-dropdown/test-service-dropdown.component';
-import { QuestionTestServiceDropdownModel } from '../test-service-dropdown/test-service-dropdown.model';
-import { SafeResourceSelectTextComponent } from '../resource-select-text/resource-select-text.component';
-import { QuestionResourceSelectTextModel } from '../resource-select-text/resource-select-text.model';
-import { SafeResourceCustomFiltersComponent } from '../resource-custom-filters/resource-custom-filters.component';
-import { QuestionResourceCustomFiltersModel } from '../resource-custom-filters/resource-select-text.model';
-import { GeofieldsListboxComponent } from '../geofields-listbox/geofields-listbox.component';
-import { QuestionGeospatialListboxModel } from '../geofields-listbox/geofields-listbox.model';
-import { SafeApplicationDropdownComponent } from '../application-dropdown/application-dropdown.component';
-import { QuestionOwnerApplicationsDropdownModel } from '../application-dropdown/application-dropdown.model';
-import { SafeReferenceDataDropdownComponent } from '../reference-data-dropdown/reference-data-dropdown.component';
-import { QuestionReferenceDataDropdownModel } from '../reference-data-dropdown/reference-data-dropdown.model';
+import {
+  QuestionResourceDropdownModel,
+  SafeResourceDropdownComponent,
+} from '../resource-dropdown/public-api';
+import {
+  SafeResourceAvailableFieldsComponent,
+  QuestionResourceAvailableFieldsModel,
+} from '../resource-available-fields/public-api';
+import {
+  SafeTestServiceDropdownComponent,
+  QuestionTestServiceDropdownModel,
+} from '../test-service-dropdown/public-api';
+import {
+  SafeResourceSelectTextComponent,
+  QuestionResourceSelectTextModel,
+} from '../resource-select-text/public-api';
+import {
+  SafeResourceCustomFiltersComponent,
+  QuestionResourceCustomFiltersModel,
+} from '../resource-custom-filters/public-api';
+import {
+  GeofieldsListboxComponent,
+  QuestionGeospatialListboxModel,
+} from '../geofields-listbox/public-api';
+import {
+  SafeApplicationDropdownComponent,
+  QuestionOwnerApplicationsDropdownModel,
+} from '../application-dropdown/public-api';
+import {
+  SafeReferenceDataDropdownComponent,
+  QuestionReferenceDataDropdownModel,
+} from '../reference-data-dropdown/public-api';
+import {
+  QuestionDateTypeDisplayerModel,
+  SafeDateTypeDisplayerComponent,
+} from '../date-type-displayer/public-api';
 
 /**
  * Custom component types for the survey creator property grid editor
  */
 export enum CustomPropertyGridComponentTypes {
-  geospatialListbox = 'geospatial-listbox',
   applicationsDropdown = 'applications-dropdown',
+  dateTypeDisplayer = 'date-type-displayer',
+  geospatialListbox = 'geospatial-listbox',
   referenceDataDropdown = 'reference-data-dropdown',
   resourceAvailableFields = 'resource-available-fields',
   resourceCustomFilters = 'resource-custom-filters',
@@ -37,13 +58,17 @@ export const CustomPropertyGridEditors: Record<
   CustomPropertyGridComponentTypes,
   { component: Type<any>; model: Type<any> }
 > = {
-  [CustomPropertyGridComponentTypes.geospatialListbox]: {
-    component: GeofieldsListboxComponent,
-    model: QuestionGeospatialListboxModel,
-  },
   [CustomPropertyGridComponentTypes.applicationsDropdown]: {
     component: SafeApplicationDropdownComponent,
     model: QuestionOwnerApplicationsDropdownModel,
+  },
+  [CustomPropertyGridComponentTypes.dateTypeDisplayer]: {
+    component: SafeDateTypeDisplayerComponent,
+    model: QuestionDateTypeDisplayerModel,
+  },
+  [CustomPropertyGridComponentTypes.geospatialListbox]: {
+    component: GeofieldsListboxComponent,
+    model: QuestionGeospatialListboxModel,
   },
   [CustomPropertyGridComponentTypes.referenceDataDropdown]: {
     component: SafeReferenceDataDropdownComponent,
