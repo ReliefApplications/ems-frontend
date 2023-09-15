@@ -217,16 +217,16 @@
               [style]="getStyle(dataItem, field.name)"
             >
               <div
-                #refSpan2
+                #refSpanTruncate
                 class="truncate"
                 [uiTooltip]="(applyFieldFormat(getPropertyValue(dataItem, field), field) ?? '')"
-                [tooltipDisabled]="!isEllipsisActive(refSpan2)"
+                [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
               >
                 {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
               </div>
               <button
                 kendoButton
-                *ngIf="isEllipsisActive(refSpan2)"
+                *ngIf="isEllipsisActive(refSpanTruncate)"
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
@@ -297,10 +297,10 @@
                 rel="noopener noreferrer"
               >
                 <div
-                  #refSpan2
+                  #refSpanTruncate
                   class="truncate"
                   [uiTooltip]="(applyFieldFormat(getPropertyValue(dataItem, field), field) ?? '')"
-                  [tooltipDisabled]="!isEllipsisActive(refSpan2)"
+                  [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
                 >
                   {{
                     applyFieldFormat(getPropertyValue(dataItem, field), field)
@@ -309,7 +309,7 @@
               </a>
               <button
                 kendoButton
-                *ngIf="isEllipsisActive(refSpan2)"
+                *ngIf="isEllipsisActive(refSpanTruncate)"
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
@@ -334,10 +334,10 @@
                 rel="noopener noreferrer"
               >
                 <div
-                  #refSpan2
+                  #refSpanTruncate
                   class="truncate"
                   [uiTooltip]="(applyFieldFormat(getPropertyValue(dataItem, field), field) ?? '')"
-                  [tooltipDisabled]="!isEllipsisActive(refSpan2)"
+                  [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
                 >
                   {{
                     applyFieldFormat(getPropertyValue(dataItem, field), field)
@@ -346,7 +346,7 @@
               </a>
               <button
                 kendoButton
-                *ngIf="isEllipsisActive(refSpan2)"
+                *ngIf="isEllipsisActive(refSpanTruncate)"
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
@@ -371,10 +371,10 @@
                 rel="noopener noreferrer"
               >
                 <div
-                  #refSpan2
+                  #refSpanTruncate
                   class="truncate"
                   [uiTooltip]="(applyFieldFormat(getPropertyValue(dataItem, field), field) ?? '')"
-                  [tooltipDisabled]="!isEllipsisActive(refSpan2)"
+                  [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
                 >
                   {{
                     applyFieldFormat(getPropertyValue(dataItem, field), field)
@@ -383,7 +383,7 @@
               </a>
               <button
                 kendoButton
-                *ngIf="isEllipsisActive(refSpan2)"
+                *ngIf="isEllipsisActive(refSpanTruncate)"
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
@@ -421,16 +421,16 @@
               [style]="getStyle(dataItem, field.name)"
             >
               <div 
-                #refSpan2
+                #refSpanTruncate
                 class="truncate"
                 [uiTooltip]="(applyFieldFormat(getPropertyValue(dataItem, field), field) ?? '')"
-                [tooltipDisabled]="!isEllipsisActive(refSpan2)"
+                [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
               >
                 {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
               </div>
               <button
                 kendoButton
-                *ngIf="isEllipsisActive(refSpan2)"
+                *ngIf="isEllipsisActive(refSpanTruncate)"
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
