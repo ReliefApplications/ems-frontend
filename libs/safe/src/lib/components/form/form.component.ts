@@ -164,11 +164,15 @@ export class SafeFormComponent
         //verify if have defaultValueExpression
         if (question.defaultValueExpression) {
           //get the defaultExpression in the right format
-          const questionDefaultExpression = question.defaultValueExpression.replace('{', '').replace('}', '');
+          const questionDefaultExpression = question.defaultValueExpression
+            .replace('{', '')
+            .replace('}', '');
           //verify if the defaultExpression is setted in variables
           if (this.survey.getVariable(questionDefaultExpression)) {
             //update the question value with the variable
-            question.updateValueFromSurvey(this.survey.getVariable(questionDefaultExpression));
+            question.updateValueFromSurvey(
+              this.survey.getVariable(questionDefaultExpression)
+            );
           }
         }
       });
@@ -232,11 +236,15 @@ export class SafeFormComponent
       //verify if have defaultValueExpression
       if (question.defaultValueExpression) {
         //get the defaultExpression in the right format
-        const questionDefaultExpression = question.defaultValueExpression.replace('{', '').replace('}', '');
+        const questionDefaultExpression = question.defaultValueExpression
+          .replace('{', '')
+          .replace('}', '');
         //verify if the defaultExpression is setted in variables
         if (this.survey.getVariable(questionDefaultExpression)) {
           //update the question value with the variable
-          question.updateValueFromSurvey(this.survey.getVariable(questionDefaultExpression));
+          question.updateValueFromSurvey(
+            this.survey.getVariable(questionDefaultExpression)
+          );
         }
       }
     });
