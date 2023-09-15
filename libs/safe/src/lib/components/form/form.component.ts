@@ -157,6 +157,21 @@ export class SafeFormComponent
 
     if (cachedData) {
       this.survey.data = cachedData;
+      this.formHelpersService.addUserVariables(this.survey);
+      const surveyQuestion = this.survey.getAllQuestions();
+      //get all questions
+      surveyQuestion.forEach((question: any) => {
+        //verify if have defaultValueExpression
+        if (question.defaultValueExpression) {
+          //get the defaultExpression in the right format
+          const questionDefaultExpression = question.defaultValueExpression.replace('{', '').replace('}', '');
+          //verify if the defaultExpression is setted in variables
+          if (this.survey.getVariable(questionDefaultExpression)) {
+            //update the question value with the variable
+            question.updateValueFromSurvey(this.survey.getVariable(questionDefaultExpression));
+          }
+        }
+      });
     } else if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
       this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
@@ -210,6 +225,21 @@ export class SafeFormComponent
    */
   public reset(): void {
     this.survey.clear();
+    this.formHelpersService.addUserVariables(this.survey);
+    const surveyQuestion = this.survey.getAllQuestions();
+    //get all questions
+    surveyQuestion.forEach((question: any) => {
+      //verify if have defaultValueExpression
+      if (question.defaultValueExpression) {
+        //get the defaultExpression in the right format
+        const questionDefaultExpression = question.defaultValueExpression.replace('{', '').replace('}', '');
+        //verify if the defaultExpression is setted in variables
+        if (this.survey.getVariable(questionDefaultExpression)) {
+          //update the question value with the variable
+          question.updateValueFromSurvey(this.survey.getVariable(questionDefaultExpression));
+        }
+      }
+    });
     this.temporaryFilesStorage = {};
     this.survey.showCompletedPage = false;
     this.save.emit({ completed: false });
