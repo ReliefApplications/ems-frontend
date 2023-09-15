@@ -7,7 +7,6 @@ import { CustomPropertyGridComponentTypes } from './property-grid-components/com
 /**
  * Inits the users component.
  *
- * @param domService Dom service.
  * @param apollo Apollo client.
  * @param componentCollectionInstance ComponentCollection
  */

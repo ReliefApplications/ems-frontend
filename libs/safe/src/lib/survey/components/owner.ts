@@ -11,7 +11,6 @@ import { registerCustomPropertyEditor } from './property-grid-components/compone
 /**
  * Inits the owner component.
  *
- * @param domService Dom service.
  * @param apollo Apollo client.
  * @param componentCollectionInstance ComponentCollection
  */

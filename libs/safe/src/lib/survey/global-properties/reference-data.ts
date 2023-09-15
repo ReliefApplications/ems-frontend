@@ -22,7 +22,6 @@ const isSelectQuestion = (question: SafeQuestion): boolean =>
 /**
  * Add support for custom properties to the survey
  *
- * @param domService Dom service.
  * @param referenceDataService Reference data service
  */
 export const init = (referenceDataService: SafeReferenceDataService): void => {
