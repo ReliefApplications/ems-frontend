@@ -1,4 +1,4 @@
-<ui-dialog>
+<ui-dialog [size]="'big'">
   <ng-container ngProjectAs="header">
     <h2>
       {{
@@ -9,24 +9,26 @@
   </ng-container>
   <ng-container ngProjectAs="content">
     <div class="flex flex-col">
-      <safe-query-builder
-        *ngIf="!loading && form.value.name"
-        [form]="$any(form)"
-        [canSelectDataSet]="false"
-      ></safe-query-builder>
+      <ng-container *ngIf="!loading; else loadingTmpl">
+        <safe-query-builder
+          *ngIf="form.value.name"
+          [form]="$any(form)"
+          [canSelectDataSet]="false"
+        ></safe-query-builder>
+      </ng-container>
+      <ng-template #loadingTmpl>
+        <ui-spinner [size]="'large'"></ui-spinner>
+      </ng-template>
     </div>
   </ng-container>
-  <ng-container ngProjectAs="actions">
-    <ui-button uiDialogClose *ngIf="!loading">{{
-      'common.cancel' | translate
-    }}</ui-button>
+  <ng-container *ngIf="!loading" ngProjectAs="actions">
+    <ui-button uiDialogClose>{{ 'common.cancel' | translate }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"
       [uiDialogClose]="form"
       cdkFocusInitial
       [disabled]="!form.valid"
-      *ngIf="!loading"
     >
       {{ 'common.save' | translate }}
     </ui-button>
