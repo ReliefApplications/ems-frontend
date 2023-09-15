@@ -1122,6 +1122,7 @@
 			"grid": {
 				"actions": {
 					"detail": "Ouvrir le détail",
+					"downloadReport": "Télécharger",
 					"history": "Voir l'historique"
 				},
 				"empty": "Aucun enregistrement détecté pour cette configuration de réseau",

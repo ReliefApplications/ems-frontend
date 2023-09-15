@@ -1107,6 +1107,7 @@
 			"grid": {
 				"actions": {
 					"detail": "******",
+					"downloadReport": "******",
 					"history": "******"
 				},
 				"errors": {
