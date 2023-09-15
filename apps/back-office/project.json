@@ -99,7 +99,6 @@
             }
           ],
           "baseHref": "/backoffice/",
-          "deployUrl": "/backoffice/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/default"]
@@ -125,7 +124,6 @@
             }
           ],
           "baseHref": "/backoffice/",
-          "deployUrl": "/backoffice/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/default"]
@@ -151,7 +149,6 @@
             }
           ],
           "baseHref": "/backoffice/",
-          "deployUrl": "/backoffice/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/default"]
@@ -177,7 +174,6 @@
             }
           ],
           "baseHref": "/backoffice/",
-          "deployUrl": "/backoffice/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/default"]
@@ -203,7 +199,6 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/oort"]
@@ -229,7 +224,6 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/oort"]
@@ -255,7 +249,6 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/Default"]
@@ -281,7 +274,6 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/oort"]
@@ -307,7 +299,6 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/oort"]
@@ -333,7 +324,6 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/oort"]
@@ -359,7 +349,6 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/oort"]
@@ -385,7 +374,6 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/expertisefr"]
