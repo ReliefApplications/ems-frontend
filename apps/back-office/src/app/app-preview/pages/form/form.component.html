@@ -1,5 +1,5 @@
 <ng-container *ngIf="!loading && form">
-  <safe-form [form]="form" (save)="onComplete($event)"></safe-form>
+  <shared-form [form]="form" (save)="onComplete($event)"></shared-form>
   <ng-container *ngIf="completed && !form.uniqueRecord && !hideNewRecord">
     <ui-button category="secondary" (click)="clearForm()">{{
       'models.record.new' | translate

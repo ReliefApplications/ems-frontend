@@ -10,7 +10,7 @@ import {
   status,
   authType,
   cronValidator,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   GetApiConfigurationsQueryResponse,
@@ -38,9 +38,9 @@ import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import {
-  SafeReadableCronModule,
+  ReadableCronModule,
   CronExpressionControlModule,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import {
   TooltipModule,
   ButtonModule,
@@ -71,7 +71,7 @@ const DEFAULT_FIELDS = ['createdBy'];
     TranslateModule,
     DialogModule,
     GraphQLSelectModule,
-    SafeReadableCronModule,
+    ReadableCronModule,
     TooltipModule,
     ExpansionPanelModule,
     CronExpressionControlModule,

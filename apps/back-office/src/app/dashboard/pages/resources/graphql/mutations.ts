@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Resource, Form } from '@oort-front/safe';
+import { Resource, Form } from '@oort-front/shared';
 
 // === ADD FORM ===
 /** Add form gql mutation definition */

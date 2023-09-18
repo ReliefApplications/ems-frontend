@@ -5,10 +5,10 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { DividerModule, IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import {
-  SafeDateModule,
-  SafeSkeletonTableModule,
-  SafeEmptyModule,
-} from '@oort-front/safe';
+  DateModule,
+  SkeletonTableModule,
+  EmptyModule,
+} from '@oort-front/shared';
 import { LayoutsTabComponent } from './layouts-tab.component';
 import {
   MenuModule,
@@ -29,10 +29,10 @@ import {
     MenuModule,
     TranslateModule,
     OverlayModule,
-    SafeDateModule,
-    SafeSkeletonTableModule,
+    DateModule,
+    SkeletonTableModule,
     PaginatorModule,
-    SafeEmptyModule,
+    EmptyModule,
     ButtonModule,
     TableModule,
     DividerModule,

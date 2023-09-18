@@ -12,19 +12,19 @@ import {
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import {
   Dashboard,
-  SafeApplicationService,
-  SafeWorkflowService,
-  SafeDashboardService,
-  SafeAuthService,
+  ApplicationService,
+  WorkflowService,
+  DashboardService,
+  AuthService,
   Application,
-  SafeUnsubscribeComponent,
-  SafeWidgetGridComponent,
-  SafeConfirmService,
-  SafeReferenceDataService,
+  UnsubscribeComponent,
+  WidgetGridComponent,
+  ConfirmService,
+  ReferenceDataService,
   Record,
   ButtonActionT,
-  SafeLayoutService,
-} from '@oort-front/safe';
+  LayoutService,
+} from '@oort-front/shared';
 import {
   EditDashboardMutationResponse,
   EDIT_DASHBOARD,
@@ -56,7 +56,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ContextService, CustomWidgetStyleComponent } from '@oort-front/safe';
+import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -71,14 +71,14 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
   /** Change step event ( in workflow ) */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
   /** Widget grid reference */
-  @ViewChild(SafeWidgetGridComponent)
-  widgetGridComponent!: SafeWidgetGridComponent;
+  @ViewChild(WidgetGridComponent)
+  widgetGridComponent!: WidgetGridComponent;
   /** Is dashboard in fullscreen mode */
   public isFullScreen = false;
   /** Dashboard id */
@@ -158,22 +158,22 @@ export class DashboardComponent
    * @param layoutService Shared layout service
    */
   constructor(
-    private applicationService: SafeApplicationService,
-    private workflowService: SafeWorkflowService,
+    private applicationService: ApplicationService,
+    private workflowService: WorkflowService,
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private dashboardService: SafeDashboardService,
+    private dashboardService: DashboardService,
     private translate: TranslateService,
-    private authService: SafeAuthService,
-    private confirmService: SafeConfirmService,
+    private authService: AuthService,
+    private confirmService: ConfirmService,
     private contextService: ContextService,
-    private refDataService: SafeReferenceDataService,
+    private refDataService: ReferenceDataService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
-    private layoutService: SafeLayoutService
+    private layoutService: LayoutService
   ) {
     super();
   }

@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { RoleSummaryComponent } from './role-summary.component';
-import { SafeRoleSummaryModule } from '@oort-front/safe';
+import { RoleSummaryModule } from '@oort-front/shared';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import {
   TranslateFakeLoader,
@@ -21,7 +21,7 @@ describe('RoleSummaryComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [RoleSummaryComponent],
       imports: [
-        SafeRoleSummaryModule,
+        RoleSummaryModule,
         ApolloTestingModule,
         RoleSummaryRoutingModule,
         BrowserAnimationsModule,

@@ -1,0 +1,4 @@
+<ui-spinner *ngIf="loading"></ui-spinner>
+<ng-container *ngIf="!loading">
+  <shared-templates [applicationService]="applicationService"> </shared-templates>
+</ng-container>

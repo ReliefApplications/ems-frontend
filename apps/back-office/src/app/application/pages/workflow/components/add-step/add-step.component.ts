@@ -4,9 +4,9 @@ import { FormBuilder, Validators } from '@angular/forms';
 import {
   ContentType,
   CONTENT_TYPES,
-  SafeUnsubscribeComponent,
-  SafeWorkflowService,
-} from '@oort-front/safe';
+  UnsubscribeComponent,
+  WorkflowService,
+} from '@oort-front/shared';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs';
 import { AddFormMutationResponse, ADD_FORM } from '../../graphql/mutations';
@@ -26,7 +26,7 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./add-step.component.scss'],
 })
 export class AddStepComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   // === DATA ===
@@ -56,7 +56,7 @@ export class AddStepComponent
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private apollo: Apollo,
-    private workflowService: SafeWorkflowService
+    private workflowService: WorkflowService
   ) {
     super();
   }

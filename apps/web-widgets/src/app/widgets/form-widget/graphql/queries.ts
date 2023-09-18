@@ -1,5 +1,5 @@
 import gql from 'graphql-tag';
-import { Form } from '@oort-front/safe';
+import { Form } from '@oort-front/shared';
 
 // === GET FORM BY ID ===
 /** Get form query */

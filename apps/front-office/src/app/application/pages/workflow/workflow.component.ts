@@ -5,8 +5,8 @@ import {
   ContentType,
   Step,
   Workflow,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import {
   GetWorkflowByIdQueryResponse,
   GET_WORKFLOW_BY_ID,
@@ -24,7 +24,7 @@ import { SnackbarService } from '@oort-front/ui';
   styleUrls: ['./workflow.component.scss'],
 })
 export class WorkflowComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   /** Loading state of the page */

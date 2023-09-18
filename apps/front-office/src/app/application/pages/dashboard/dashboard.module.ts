@@ -6,9 +6,9 @@ import {
   ButtonActionModule,
   DashboardFilterModule,
   FullScreenModule,
-  SafeSkeletonModule,
-  SafeWidgetGridModule,
-} from '@oort-front/safe';
+  SkeletonModule,
+  WidgetGridModule,
+} from '@oort-front/shared';
 import { ButtonModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -21,9 +21,9 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     DashboardRoutingModule,
-    SafeWidgetGridModule,
+    WidgetGridModule,
     FullScreenModule,
-    SafeSkeletonModule,
+    SkeletonModule,
     ButtonModule,
     DashboardFilterModule,
     TooltipModule,

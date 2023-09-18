@@ -1,6 +1,6 @@
 <!-- Skeleton when loading -->
 <ng-container
-  *safeSkeleton="
+  *sharedSkeleton="
     loading;
     repeat: 1;
     height: '32px';
@@ -12,7 +12,7 @@
     <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
       <!-- Editable Title -->
       <div class="flex items-center gap-1">
-        <safe-editable-text
+        <shared-editable-text
           [text]="workflow.name"
           [canEdit]="canEditName"
           (onChange)="saveName($event)"
@@ -21,7 +21,7 @@
           <h1 class="!m-0 overflow-hidden text-ellipsis">
             {{ workflow.name }}
           </h1>
-        </safe-editable-text>
+        </shared-editable-text>
         <ui-button
           [isIcon]="true"
           variant="grey"
@@ -40,13 +40,13 @@
 
       <!-- buttons right to title -->
       <div class="flex items-center gap-1" *ngIf="!formActive">
-        <safe-access
+        <shared-access
           [access]="workflow.permissions"
           [application]="workflow.page?.application?.id"
           [objectTypeName]="'common.page.one' | translate"
           (save)="saveAccess($event)"
           *ngIf="workflow.page?.canUpdate || false"
-        ></safe-access>
+        ></shared-access>
         <ui-button
           variant="grey"
           [isIcon]="true"
@@ -74,20 +74,20 @@
           [cdkConnectedOverlayOrigin]="appMenuTrigger"
           [cdkConnectedOverlayOpen]="showAppMenu"
         >
-          <safe-search-menu
+          <shared-search-menu
             [headerTemplate]="searchMenuHeaderTemplate"
             [currentApplicationId]="applicationId"
             [applications]="applications"
             (close)="showAppMenu = false"
             (open)="onDuplicate($event)"
-          ></safe-search-menu>
+          ></shared-search-menu>
         </ng-template>
       </div>
     </div>
   </ng-container>
 </ng-container>
 <!-- STEPS -->
-<safe-workflow-stepper
+<shared-workflow-stepper
   class="-mx-6 my-4 block"
   [loading]="loading"
   [steps]="steps"
@@ -98,5 +98,5 @@
   (reorderSteps)="onReorderSteps($event)"
   [activeStep]="activeStep"
 >
-</safe-workflow-stepper>
+</shared-workflow-stepper>
 <router-outlet (activate)="onActivate($event)"></router-outlet>

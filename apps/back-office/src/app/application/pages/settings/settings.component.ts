@@ -3,11 +3,11 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import {
   Application,
-  SafeApplicationService,
-  SafeConfirmService,
-  SafeUnsubscribeComponent,
-  SafeLayoutService,
-} from '@oort-front/safe';
+  ApplicationService,
+  ConfirmService,
+  UnsubscribeComponent,
+  LayoutService,
+} from '@oort-front/shared';
 import { Dialog } from '@angular/cdk/dialog';
 import {
   DeleteApplicationMutationResponse,
@@ -28,7 +28,7 @@ import { SnackbarService } from '@oort-front/ui';
   styleUrls: ['./settings.component.scss'],
 })
 export class SettingsComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   public applications = new Array<Application>();
@@ -56,11 +56,11 @@ export class SettingsComponent
     private apollo: Apollo,
     private router: Router,
     private snackBar: SnackbarService,
-    private applicationService: SafeApplicationService,
-    private confirmService: SafeConfirmService,
+    private applicationService: ApplicationService,
+    private confirmService: ConfirmService,
     public dialog: Dialog,
     private translate: TranslateService,
-    private layoutService: SafeLayoutService
+    private layoutService: LayoutService
   ) {
     super();
   }

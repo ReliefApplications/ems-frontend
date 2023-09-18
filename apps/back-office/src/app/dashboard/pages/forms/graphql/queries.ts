@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Form } from '@oort-front/safe';
+import { Form } from '@oort-front/shared';
 
 /** Graphql query for getting forms with minimum details */
 export const GET_SHORT_FORMS = gql`

@@ -70,14 +70,14 @@
   </ng-container>
   <ng-template #emptyTmpl>
     <!-- Empty indicator -->
-    <safe-empty
+    <shared-empty
       [title]="'common.positionCategory.none' | translate"
       [footerTemplate]="newPosition"
-    ></safe-empty>
+    ></shared-empty>
   </ng-template>
 </ng-container>
 <ng-template #loadingTmpl>
   <!-- Loading indicator -->
-  <safe-skeleton-table [columns]="displayedColumns" [actions]="true">
-  </safe-skeleton-table>
+  <shared-skeleton-table [columns]="displayedColumns" [actions]="true">
+  </shared-skeleton-table>
 </ng-template>

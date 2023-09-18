@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RoleSummaryComponent } from './role-summary.component';
-import { SafeRoleSummaryModule } from '@oort-front/safe';
+import { RoleSummaryModule } from '@oort-front/shared';
 import { RoleSummaryRoutingModule } from './role-summary-routing.module';
 
 /**
@@ -9,7 +9,7 @@ import { RoleSummaryRoutingModule } from './role-summary-routing.module';
  */
 @NgModule({
   declarations: [RoleSummaryComponent],
-  imports: [CommonModule, SafeRoleSummaryModule, RoleSummaryRoutingModule],
+  imports: [CommonModule, RoleSummaryModule, RoleSummaryRoutingModule],
   exports: [RoleSummaryComponent],
 })
 export class RoleSummaryModule {}

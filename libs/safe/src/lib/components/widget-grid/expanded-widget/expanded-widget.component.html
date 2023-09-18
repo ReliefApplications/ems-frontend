@@ -1,9 +1,0 @@
-<ui-dialog [closable]="true" size="fullscreen">
-  <ng-container ngProjectAs="content">
-    <safe-widget
-      [widget]="data.widget"
-      [header]="false"
-      (changeStep)="changeStep.emit($event)"
-    ></safe-widget>
-  </ng-container>
-</ui-dialog>

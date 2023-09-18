@@ -5,9 +5,9 @@ import {
   ContentType,
   CONTENT_TYPES,
   WIDGET_TYPES,
-  SafeApplicationService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  ApplicationService,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import { takeUntil } from 'rxjs';
 import { AddFormMutationResponse, ADD_FORM } from './graphql/mutations';
 import { GET_FORMS, GetFormsQueryResponse } from './graphql/queries';
@@ -29,7 +29,7 @@ const SINGLE_WIDGET_PAGE_TYPES = ['grid', 'map', 'summaryCard', 'tabs'];
   styleUrls: ['./add-page.component.scss'],
 })
 export class AddPageComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   /** Available content types */
@@ -60,7 +60,7 @@ export class AddPageComponent
   constructor(
     private fb: FormBuilder,
     private apollo: Apollo,
-    private applicationService: SafeApplicationService,
+    private applicationService: ApplicationService,
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private translate: TranslateService

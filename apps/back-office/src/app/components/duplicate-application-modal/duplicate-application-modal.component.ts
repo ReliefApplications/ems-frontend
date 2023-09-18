@@ -5,7 +5,7 @@ import {
   DuplicateApplicationMutationResponse,
   DUPLICATE_APPLICATION,
 } from './graphql/mutations';
-import { Application } from '@oort-front/safe';
+import { Application } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';

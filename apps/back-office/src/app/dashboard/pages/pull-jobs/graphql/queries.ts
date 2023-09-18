@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { PullJob, Application, Form, ApiConfiguration } from '@oort-front/safe';
+import { PullJob, Application, Form, ApiConfiguration } from '@oort-front/shared';
 
 // === GET PULL JOBS ===
 

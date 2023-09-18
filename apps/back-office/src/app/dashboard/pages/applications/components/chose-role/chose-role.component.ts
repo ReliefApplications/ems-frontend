@@ -2,7 +2,7 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
-import { Role } from '@oort-front/safe';
+import { Role } from '@oort-front/shared';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 
 /**

@@ -5,11 +5,11 @@ import { TranslateService } from '@ngx-translate/core';
 import {
   ApiConfiguration,
   authType,
-  SafeApiProxyService,
+  ApiProxyService,
   status,
-  SafeBreadcrumbService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  BreadcrumbService,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
 import { takeUntil } from 'rxjs/operators';
 import { apiValidator } from '../../../utils/nameValidation';
@@ -32,7 +32,7 @@ import { SnackbarService } from '@oort-front/ui';
   styleUrls: ['./api-configuration.component.scss'],
 })
 export class ApiConfigurationComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   // === DATA ===
@@ -70,9 +70,9 @@ export class ApiConfigurationComponent
     private snackBar: SnackbarService,
     private router: Router,
     private fb: FormBuilder,
-    private apiProxy: SafeApiProxyService,
+    private apiProxy: ApiProxyService,
     private translate: TranslateService,
-    private breadcrumbService: SafeBreadcrumbService
+    private breadcrumbService: BreadcrumbService
   ) {
     super();
   }

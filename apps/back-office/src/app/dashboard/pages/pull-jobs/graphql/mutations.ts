@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { PullJob } from '@oort-front/safe';
+import { PullJob } from '@oort-front/shared';
 
 // === EDIT PULL JOB ===
 /** Edit pull job gql mutation definition */

@@ -7,7 +7,7 @@ import {
   GET_FORM_STRUCTURE,
   GET_RECORD_BY_ID,
 } from './graphql/queries';
-import { Record, Form, SafeBreadcrumbService } from '@oort-front/safe';
+import { Record, Form, BreadcrumbService } from '@oort-front/shared';
 
 /**
  * Update record view.
@@ -37,7 +37,7 @@ export class UpdateRecordComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private breadcrumbService: SafeBreadcrumbService
+    private breadcrumbService: BreadcrumbService
   ) {}
 
   ngOnInit(): void {

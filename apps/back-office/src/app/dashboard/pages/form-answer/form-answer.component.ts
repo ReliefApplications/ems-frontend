@@ -4,9 +4,9 @@ import { ActivatedRoute } from '@angular/router';
 
 import {
   Form,
-  SafeBreadcrumbService,
-  SafeFormComponent,
-} from '@oort-front/safe';
+  BreadcrumbService,
+  FormComponent,
+} from '@oort-front/shared';
 import {
   GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
@@ -22,8 +22,8 @@ import {
 })
 export class FormAnswerComponent implements OnInit {
   /** Reference to shared form component */
-  @ViewChild(SafeFormComponent)
-  private formComponent?: SafeFormComponent;
+  @ViewChild(FormComponent)
+  private formComponent?: FormComponent;
   /** Loading indicator */
   public loading = true;
   /** Current form id */
@@ -43,7 +43,7 @@ export class FormAnswerComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private breadcrumbService: SafeBreadcrumbService
+    private breadcrumbService: BreadcrumbService
   ) {}
 
   ngOnInit(): void {

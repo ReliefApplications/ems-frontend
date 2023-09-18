@@ -10,7 +10,7 @@ import {
   ViewContainerRef,
   ViewEncapsulation,
 } from '@angular/core';
-import { SafeLayoutService } from '@oort-front/safe/widgets';
+import { LayoutService } from '@oort-front/shared/widgets';
 import { AppOverlayContainer } from '../../utils/overlay-container';
 import { SnackbarService } from '@oort-front/ui';
 import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
@@ -41,7 +41,7 @@ export class FormWidgetComponent implements AfterViewInit {
    * @param injector Injector
    */
   constructor(
-    private layoutService: SafeLayoutService,
+    private layoutService: LayoutService,
     private overlayContainer: OverlayContainer,
     private snackBarService: SnackbarService,
     el: ElementRef,

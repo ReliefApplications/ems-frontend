@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DashboardComponent } from './dashboard.component';
 import { DashboardRoutingModule } from './dashboard-routing.module';
-import { SafeLayoutModule, SafeNavbarModule } from '@oort-front/safe';
+import { LayoutModule, NavbarModule } from '@oort-front/shared';
 
 /**
  * Main BO dashboard module.
@@ -11,9 +11,9 @@ import { SafeLayoutModule, SafeNavbarModule } from '@oort-front/safe';
   declarations: [DashboardComponent],
   imports: [
     CommonModule,
-    SafeLayoutModule,
+    LayoutModule,
     DashboardRoutingModule,
-    SafeNavbarModule,
+    NavbarModule,
   ],
 })
 export class DashboardModule {}

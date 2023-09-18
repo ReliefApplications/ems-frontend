@@ -4,10 +4,10 @@ import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
   ContentType,
-  SafeApplicationService,
-  SafeConfirmService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  ApplicationService,
+  ConfirmService,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import get from 'lodash/get';
 import { takeUntil, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -21,7 +21,7 @@ import { Observable } from 'rxjs';
   styleUrls: ['./application.component.scss'],
 })
 export class ApplicationComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
   /** Application title */
@@ -49,11 +49,11 @@ export class ApplicationComponent
    * @param confirmService Shared confirmation service
    */
   constructor(
-    private applicationService: SafeApplicationService,
+    private applicationService: ApplicationService,
     public route: ActivatedRoute,
     private router: Router,
     private translate: TranslateService,
-    private confirmService: SafeConfirmService
+    private confirmService: ConfirmService
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
