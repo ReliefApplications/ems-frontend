@@ -5,11 +5,7 @@ import {
   OnChanges,
   Output,
 } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { QueryBuilderService } from '../../services/query-builder/query-builder.service';
 import { Form } from '../../models/form.model';
@@ -50,7 +46,7 @@ export class SafeQueryBuilderComponent
     // return this.availableFields.filter((x) => x.type.kind === 'SCALAR');
   }
 
-  @Input() form?: UntypedFormGroup;
+  @Input() form?: FormGroup;
   @Input() canExpand = true;
   @Input() canSelectDataSet = true;
   @Input() templates: Form[] = [];
@@ -71,11 +67,11 @@ export class SafeQueryBuilderComponent
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
-   * @param formBuilder This is the Angular FormBuilder service.
+   * @param fb This is the Angular FormBuilder service.
    * @param queryBuilder This is the service that will be used to build the query.
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     private queryBuilder: QueryBuilderService
   ) {
     super();
@@ -136,11 +132,11 @@ export class SafeQueryBuilderComponent
               this.form?.setControl('filter', createFilterGroup(null));
               this.form?.setControl(
                 'fields',
-                this.formBuilder.array([], Validators.required)
+                this.fb.array([], Validators.required)
               );
               this.form?.setControl(
                 'sort',
-                this.formBuilder.group({
+                this.fb.group({
                   field: [''],
                   order: ['asc'],
                 })
@@ -148,10 +144,10 @@ export class SafeQueryBuilderComponent
             } else {
               this.availableFields = [];
               this.form?.setControl('filter', createFilterGroup(null));
-              this.form?.setControl('fields', this.formBuilder.array([]));
+              this.form?.setControl('fields', this.fb.array([]));
               this.form?.setControl(
                 'sort',
-                this.formBuilder.group({
+                this.fb.group({
                   field: [''],
                   order: ['asc'],
                 })
@@ -175,7 +171,7 @@ export class SafeQueryBuilderComponent
    *
    * @param newForm new form value.
    */
-  setForm(newForm: UntypedFormGroup): void {
+  setForm(newForm: FormGroup): void {
     this.form = newForm;
     this.buildSettings();
   }

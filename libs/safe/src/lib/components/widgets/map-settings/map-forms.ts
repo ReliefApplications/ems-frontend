@@ -148,6 +148,15 @@ const createLayerDataSourceForm = (value?: any): FormGroup => {
           get(value, 'longitudeField'),
       },
     ],
+    adminField: [
+      {
+        value: get(value, 'adminField', null),
+        disabled:
+          !canSeeFields ||
+          get(value, 'latitudeField') ||
+          get(value, 'longitudeField'),
+      },
+    ],
     latitudeField: [
       {
         value: get(value, 'latitudeField', null),
@@ -173,19 +182,23 @@ const createLayerDataSourceForm = (value?: any): FormGroup => {
     if (canSeeFields) {
       if (value.geoField || value.type === 'Polygon') {
         formGroup.get('geoField')?.enable({ emitEvent: false });
+        formGroup.get('adminField')?.enable({ emitEvent: false });
         formGroup.get('latitudeField')?.disable({ emitEvent: false });
         formGroup.get('longitudeField')?.disable({ emitEvent: false });
       } else {
         if (value.latitudeField || value.longitudeField) {
           formGroup.get('geoField')?.disable({ emitEvent: false });
+          formGroup.get('adminField')?.disable({ emitEvent: false });
         } else {
           formGroup.get('geoField')?.enable({ emitEvent: false });
+          formGroup.get('adminField')?.enable({ emitEvent: false });
           formGroup.get('latitudeField')?.enable({ emitEvent: false });
           formGroup.get('longitudeField')?.enable({ emitEvent: false });
         }
       }
     } else {
       formGroup.get('geoField')?.disable({ emitEvent: false });
+      formGroup.get('adminField')?.disable({ emitEvent: false });
       formGroup.get('latitudeField')?.disable({ emitEvent: false });
       formGroup.get('longitudeField')?.disable({ emitEvent: false });
     }

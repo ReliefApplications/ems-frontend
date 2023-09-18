@@ -68,6 +68,7 @@ export class SafeReferenceDataService {
    *
    * @param referenceDataID ReferenceData ID.
    * @param displayField Field used for display in the question.
+   * @param storePrimitiveValue Whether to store the whole item or only the primitive value given the displayField
    * @param filter The filter object
    * @param filter.foreignReferenceData The reference data name of the foreign question
    * @param filter.foreignField The field name for the foreign question
@@ -79,6 +80,7 @@ export class SafeReferenceDataService {
   public async getChoices(
     referenceDataID: string,
     displayField: string,
+    storePrimitiveValue: boolean = true,
     filter?: {
       foreignReferenceData: string;
       foreignField: string;
@@ -134,13 +136,13 @@ export class SafeReferenceDataService {
           )
         )
         .map((item) => ({
-          value: item[valueField],
+          value: storePrimitiveValue ? item[valueField] : item,
           text: item[displayField],
         }));
     }
     // if we don't have to filter
     return items.map((item) => ({
-      value: item[valueField],
+      value: storePrimitiveValue ? item[valueField] : item,
       text: item[displayField],
     }));
   }

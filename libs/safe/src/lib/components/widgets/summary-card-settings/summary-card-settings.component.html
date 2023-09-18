@@ -100,13 +100,6 @@
               'models.widget.display.searchable' | translate
             }}</ng-container>
           </ui-toggle>
-          <ui-toggle
-            [formControl]="$any(tileForm.get('widgetDisplay.sortable'))"
-          >
-            <ng-container ngProjectAs="label">{{
-              'models.widget.display.sortable' | translate
-            }}</ng-container>
-          </ui-toggle>
           <div>
             <p class="font-medium mt-0 mb-0.5">
               {{
@@ -140,8 +133,7 @@
         </safe-display-settings>
       </ng-template>
     </ui-tab>
-
-    <ui-tab *ngIf="tileForm?.get('widgetDisplay.sortable')?.value">
+    <ui-tab>
       <ng-container ngProjectAs="label">
         <ui-icon
           icon="filter_alt"

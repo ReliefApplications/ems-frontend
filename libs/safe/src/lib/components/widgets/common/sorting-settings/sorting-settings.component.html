@@ -1,13 +1,15 @@
-<h2>{{ 'models.widget.sorting.management' | translate }}</h2>
+<div class="flex justify-between">
+  <h2>{{ 'models.widget.sorting.management' | translate }}</h2>
 
-<ui-button
-  class="mb-6"
-  category="secondary"
-  variant="primary"
-  (click)="addRow()"
->
-  {{ 'models.widget.sorting.add' | translate }}
-</ui-button>
+  <ui-button
+    class="mb-6"
+    category="secondary"
+    variant="primary"
+    (click)="addRow()"
+  >
+    {{ 'models.widget.sorting.add' | translate }}
+  </ui-button>
+</div>
 
 <form [formGroup]="formGroup">
   <table

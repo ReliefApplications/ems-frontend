@@ -5,7 +5,7 @@
 
   <div
     uiFormFieldDirective
-    [outline]="false"
+    [defaultMargin]="false"
     *ngIf="operators.length > 0"
     class="w-60"
   >
@@ -51,7 +51,7 @@
 
   <!-- DEFAULT FIELD TEMPLATE -->
   <ng-template #fieldSelect>
-    <div uiFormFieldDirective [outline]="false" class="w-60">
+    <div uiFormFieldDirective [defaultMargin]="false" class="w-60">
       <label>{{ 'common.field.one' | translate }}</label>
       <ui-select-menu formControlName="field">
         <ng-container *ngFor="let field of fields">
@@ -79,7 +79,7 @@
 
   <!-- TEXT EDITOR -->
   <ng-template #textEditor>
-    <div uiFormFieldDirective>
+    <div uiFormFieldDirective [defaultMargin]="false">
       <label>{{ 'common.value.one' | translate }}</label>
       <input formControlName="value" type="string" />
     </div>
@@ -87,7 +87,7 @@
 
   <!-- BOOLEAN EDITOR -->
   <ng-template #booleanEditor>
-    <div uiFormFieldDirective [outline]="false" class="w-28">
+    <div uiFormFieldDirective [defaultMargin]="false" class="w-28">
       <label>{{ 'common.value.one' | translate }}</label>
       <ui-select-menu formControlName="value">
         <ui-select-option [value]="true">
@@ -105,7 +105,7 @@
 
   <!-- NUMERIC EDITOR -->
   <ng-template #numericEditor>
-    <div uiFormFieldDirective>
+    <div uiFormFieldDirective [defaultMargin]="false">
       <label>{{ 'common.value.one' | translate }}</label>
       <input formControlName="value" type="number" />
     </div>
@@ -113,7 +113,7 @@
 
   <!-- SELECT EDITOR -->
   <ng-template #selectEditor>
-    <div uiFormFieldDirective [outline]="false" class="w-60">
+    <div uiFormFieldDirective [defaultMargin]="false" class="w-60">
       <label>{{ 'common.value.one' | translate }}</label>
       <ui-select-menu *ngIf="!field.multiSelect" formControlName="value">
         <ui-select-option>{{
@@ -146,7 +146,7 @@
 
   <!-- DATE EDITOR -->
   <ng-template #dateEditor>
-    <div uiFormFieldDirective>
+    <div uiFormFieldDirective [defaultMargin]="false">
       <label>{{ 'common.value.one' | translate }}</label>
       <div [uiDateWrapper]="calendar">
         <input

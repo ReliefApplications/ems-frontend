@@ -56,7 +56,7 @@ import {
 import { MapLayersModule } from '../map-layers/map-layers.module';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { ContextualFiltersSettingsComponent } from '../../common/contextual-filters-settings/contextual-filters-settings.component';
-import { FormArray, UntypedFormBuilder } from '@angular/forms';
+import { FormArray, FormBuilder } from '@angular/forms';
 
 /**
  * Interface of dialog input
@@ -142,7 +142,7 @@ export class EditLayerModalComponent
    * @param mapLayersService Shared map layer Service.
    * @param apollo Apollo service
    * @param dialogRef Dialog ref
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    */
   constructor(
     @Inject(DIALOG_DATA) public data: DialogData,
@@ -151,7 +151,7 @@ export class EditLayerModalComponent
     private mapLayersService: SafeMapLayersService,
     private apollo: Apollo,
     public dialogRef: DialogRef<LayerFormData>,
-    private formBuilder: UntypedFormBuilder
+    private fb: FormBuilder
   ) {
     super();
   }
@@ -344,6 +344,7 @@ export class EditLayerModalComponent
           this.updateMapLayer({ delete: true });
           if (
             prev.datasource?.geoField !== next.datasource?.geoField ||
+            prev.datasource?.adminField !== next.datasource?.adminField ||
             prev.datasource?.latitudeField !== next.datasource?.latitudeField ||
             prev.datasource?.longitudeField !== next.datasource?.longitudeField
           ) {
@@ -529,7 +530,7 @@ export class EditLayerModalComponent
         (fieldControl as FormArray)?.get('name')?.value === field.name
     );
     if (!control) {
-      const newControl = this.formBuilder.group({
+      const newControl = this.fb.group({
         label: get(field, 'label', ''),
         name: get(field, 'name', ''),
         type: get(field, 'type', ''),

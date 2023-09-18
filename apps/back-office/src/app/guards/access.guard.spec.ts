@@ -16,7 +16,7 @@ import {
   MockedSafeAuthService,
   MockedSnackbarService,
   MockedTranslateService,
-} from './mock-class.test';
+} from '../__mocks__/mock-class.test';
 
 describe('AccessGuard', () => {
   let guard: AccessGuard;

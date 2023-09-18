@@ -8,7 +8,7 @@ import {
   FilterDescriptor,
 } from '@progress/kendo-data-query';
 import { cloneDeep } from '@apollo/client/utilities';
-import { isNil, isEmpty } from 'lodash';
+import { isNil, isEmpty, get } from 'lodash';
 
 /**
  * Application context service
@@ -111,13 +111,11 @@ export class ContextService {
     const availableFilterFields = this.filter.getValue();
 
     if ('field' in filter && filter.field) {
-      // If it's a filter descriptor, replace value
-      const filterName = filter.value?.match(regex)?.[0];
-      if (filterName) {
-        if (availableFilterFields[filterName]) {
-          filter.value = availableFilterFields[filterName];
-        } else {
-          filter.value = undefined;
+      // If it's a filter descriptor, replace value ( if string )
+      if (filter.value && typeof filter.value === 'string') {
+        const filterName = filter.value?.match(regex)?.[0];
+        if (filterName) {
+          filter.value = get(availableFilterFields, filterName);
         }
       }
     } else if ('filters' in filter && filter.filters) {

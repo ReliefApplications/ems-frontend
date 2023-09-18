@@ -150,6 +150,14 @@ npx nx run ui:build-storybook
 
 Pushing the code on the repo should automatically deploy storybook on a public environment.
 
+## Web components
+
+To test web components, you can:
+- go to this repo: https://github.com/ReliefApplications/app-builder-widgets-poc
+- Switch to the branch: https://github.com/ReliefApplications/app-builder-widgets-poc/tree/fix/68747_add_forms_and_missing_styles_file
+- execute: `npm i && npm run start`
+You should find under the form widget dropdown some form types in order to test the form web component.
+
 <!-- ## Build the web components
 
 We first need to generate the elements, using this command:

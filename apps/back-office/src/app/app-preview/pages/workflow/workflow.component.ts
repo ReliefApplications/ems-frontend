@@ -28,18 +28,17 @@ export class WorkflowComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  // === DATA ===
+  /** Loading indicator */
   public loading = true;
-
-  // === WORKFLOW ===
+  /** Current workflow id */
   public id = '';
+  /** Current workflow */
   public workflow?: Workflow;
+  /** Workflow steps */
   public steps: Step[] = [];
-
-  // === ACTIVE STEP ===
+  /** Current step index */
   public activeStep = 0;
-
-  // === PREVIEWED ROLE ===
+  /** Role used for preview */
   public role = '';
 
   /**

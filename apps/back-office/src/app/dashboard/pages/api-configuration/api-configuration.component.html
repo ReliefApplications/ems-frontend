@@ -60,7 +60,10 @@
 
         <div uiFormFieldDirective [outline]="false" class="flex-1">
           <label>{{ 'models.apiConfiguration.authType' | translate }}</label>
-          <ui-select-menu formControlName="authType">
+          <ui-select-menu
+            formControlName="authType"
+            [placeholder]="'models.apiConfiguration.selectAuthType' | translate"
+          >
             <ui-select-option
               *ngFor="let authTypeChoice of authTypeChoices"
               [value]="authTypeChoice"

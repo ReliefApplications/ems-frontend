@@ -1,10 +1,6 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import {
   Application,
   Channel,
@@ -79,36 +75,55 @@ export class SubscriptionModalComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  // === REACTIVE FORM ===
-  subscriptionForm!: UntypedFormGroup;
-
-  // === DATA ===
+  /** Subscription reactive form group */
+  subscriptionForm = this.fb.group({
+    routingKey: [
+      this.data.subscription ? this.data.subscription.routingKey : '',
+      Validators.required,
+    ],
+    title: [
+      this.data.subscription ? this.data.subscription.title : '',
+      Validators.required,
+    ],
+    convertTo: [
+      this.data.subscription && this.data.subscription.convertTo
+        ? this.data.subscription.convertTo.id
+        : '',
+    ],
+    channel: [
+      this.data.subscription && this.data.subscription.channel
+        ? this.data.subscription.channel.id
+        : '',
+    ],
+  });
+  /** GraphQL forms query */
   public formsQuery!: QueryRef<GetFormsQueryResponse>;
-
-  // === DATA ===
+  /** Available applications */
   private applications = new BehaviorSubject<Application[]>([]);
+  /** Filtered applications as observable */
   public filteredApplications$!: Observable<Application[]>;
+  /** Applications as observable */
   public applications$!: Observable<Application[]>;
+  /** GraphQL applications query */
   private applicationsQuery!: QueryRef<GetRoutingKeysQueryResponse>;
+  /** Cached applications */
   private cachedApplications: Application[] = [];
+  /** Applications query pagination info */
   private applicationsPageInfo = {
     endCursor: '',
     hasNextPage: true,
   };
+  /** Loading indicator for applications */
   private applicationsLoading = true;
 
   /** @returns subscription routing key */
-  get routingKey(): string {
+  get routingKey(): string | null | undefined {
     return this.subscriptionForm.value.routingKey;
   }
-
-  /**
-   * Set subscription key
-   */
-  set routingKey(value: string) {
+  /** Set subscription key */
+  set routingKey(value: string | null | undefined) {
     this.subscriptionForm.controls.routingKey.setValue(value);
   }
-
   /** @returns default convert to form */
   get defaultForm(): Form | null {
     return get(this.data, 'subscription.convertTo', null);
@@ -117,7 +132,7 @@ export class SubscriptionModalComponent
   /**
    * Subscription modal component
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param dialogRef Dialog ref
    * @param apollo Apollo service
    * @param data Injected dialog data
@@ -126,7 +141,7 @@ export class SubscriptionModalComponent
    * @param document Document
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<SubscriptionModalComponent>,
     private apollo: Apollo,
     @Inject(DIALOG_DATA)
@@ -140,27 +155,6 @@ export class SubscriptionModalComponent
   }
 
   ngOnInit(): void {
-    this.subscriptionForm = this.formBuilder.group({
-      routingKey: [
-        this.data.subscription ? this.data.subscription.routingKey : '',
-        Validators.required,
-      ],
-      title: [
-        this.data.subscription ? this.data.subscription.title : '',
-        Validators.required,
-      ],
-      convertTo: [
-        this.data.subscription && this.data.subscription.convertTo
-          ? this.data.subscription.convertTo.id
-          : '',
-      ],
-      channel: [
-        this.data.subscription && this.data.subscription.channel
-          ? this.data.subscription.channel.id
-          : '',
-      ],
-    });
-
     // Get applications and set pagination logic
     this.applicationsQuery =
       this.apollo.watchQuery<GetRoutingKeysQueryResponse>({
@@ -193,14 +187,18 @@ export class SubscriptionModalComponent
    * @param value value to search with
    * @returns filtered list of applications.
    */
-  private filter(value: string): Application[] {
-    const filterValue = value.toLowerCase();
-    const applications = this.applications.getValue();
-    return applications
-      ? applications.filter(
-          (x) => x.name?.toLowerCase().indexOf(filterValue) === 0
-        )
-      : applications;
+  private filter(value: string | null | undefined): Application[] {
+    if (value) {
+      const filterValue = value.toLowerCase();
+      const applications = this.applications.getValue();
+      return applications
+        ? applications.filter(
+            (x) => x.name?.toLowerCase().indexOf(filterValue) === 0
+          )
+        : applications;
+    } else {
+      return this.applications.getValue();
+    }
   }
 
   /** Close the modal without sending any data. */
@@ -293,7 +291,6 @@ export class SubscriptionModalComponent
     this.applications$ =
       this.subscriptionForm.controls.routingKey.valueChanges.pipe(
         startWith(''),
-        map((value) => (typeof value === 'string' ? value : value.name)),
         map((x) => this.filter(x))
       );
   }

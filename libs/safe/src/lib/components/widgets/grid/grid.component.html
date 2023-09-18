@@ -1,4 +1,4 @@
-<div class="h-full">
+<div class="h-full flex flex-col">
   <!-- CLASSIC VIEW -->
   <kendo-tilelayout-item-header
     *ngIf="header"
@@ -45,6 +45,7 @@
 <!-- Core Grid ( data query / layout )-->
 <ng-template #coreGridTemplate>
   <safe-core-grid
+    class="min-h-0 flex-1"
     [defaultLayout]="layout?.display || {}"
     [settings]="gridSettings"
     [admin]="isAdmin"
@@ -69,7 +70,10 @@
 
 <!-- Quick action buttons -->
 <ng-template #floatingButtonsTemplate>
-  <div class="flex overflow-hidden flex-1 max-w-fit">
+  <div
+    class="flex overflow-hidden flex-1 max-w-fit"
+    *ngIf="settings.floatingButtons?.length > 0"
+  >
     <ng-container *ngFor="let floatingButton of settings.floatingButtons">
       <ui-button
         variant="primary"
@@ -85,18 +89,16 @@
 
 <!-- Selection of sort -->
 <ng-template #sortTemplate>
-  <ng-container *ngIf="sortFields.length > 1">
-    <div uiFormFieldDirective class="!m-0 w-44">
-      <ui-select-menu
-        (selectedOption)="onSort($event)"
-        [placeholder]="'models.widget.sorting.select' | translate"
-      >
-        <ui-select-option *ngFor="let sort of sortFields" [value]="sort">
-          {{ sort.label }}
-        </ui-select-option>
-      </ui-select-menu>
-    </div>
-  </ng-container>
+  <div uiFormFieldDirective class="!m-0 w-44">
+    <ui-select-menu
+      (selectedOption)="onSort($event)"
+      [placeholder]="'models.widget.sorting.select' | translate"
+    >
+      <ui-select-option *ngFor="let sort of sortFields" [value]="sort">
+        {{ sort.label }}
+      </ui-select-option>
+    </ui-select-menu>
+  </div>
 </ng-template>
 
 <!-- Selection of layouts -->

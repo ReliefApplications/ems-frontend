@@ -13,6 +13,7 @@ import {
   DividerModule,
   ButtonModule,
   GraphQLSelectModule,
+  FormWrapperModule,
 } from '@oort-front/ui';
 
 /**
@@ -32,6 +33,7 @@ import {
     ButtonModule,
     SafeWidgetChoiceModule,
     GraphQLSelectModule,
+    FormWrapperModule,
   ],
 })
 export class AddPageModule {}

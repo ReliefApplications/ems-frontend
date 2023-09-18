@@ -33,7 +33,6 @@ import { SidenavControlsMenuBasemapComponent } from '../sidenav-controls-menu-ba
 })
 export class SidenavControlsMenuComponent implements OnInit {
   @Input() layersMenuExpanded = false;
-  @Input() bookmarksMenuExpanded = false;
   @Input() layersTree!: L.Control.Layers.TreeObject[];
   @Input() basemaps!: L.Control.Layers.TreeObject[];
   @Input() mapComponent!: MapComponent;
@@ -48,13 +47,6 @@ export class SidenavControlsMenuComponent implements OnInit {
   /** Opens the layers menu */
   openLayersMenu() {
     this.layersMenuExpanded = true;
-    this.bookmarksMenuExpanded = false;
-  }
-
-  /** Opens the bookmarks menu */
-  openBookmarksMenu() {
-    this.bookmarksMenuExpanded = true;
-    this.layersMenuExpanded = false;
   }
 
   /**
