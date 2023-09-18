@@ -36,7 +36,7 @@ export const functions = [
   { fn: addTime, name: 'addTime' },
   { fn: summarizeAids, name: 'summarizeAids' },
   { fn: push, name: 'push' },
-  { fn: getNumberOfMembers, name: 'getNumberOfMembers'}
+  { fn: getNumberOfMembers, name: 'getNumberOfMembers' },
 ];
 
 /** Generators for each async custom function available  */
