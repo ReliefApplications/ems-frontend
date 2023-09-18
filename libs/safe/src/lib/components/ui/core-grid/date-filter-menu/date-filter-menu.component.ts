@@ -1,4 +1,4 @@
-import { Component, ElementRef, Input, OnInit } from '@angular/core';
+import { Component, ElementRef, Input, OnInit, Inject } from '@angular/core';
 import { FormBuilder, UntypedFormArray } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -10,6 +10,7 @@ import { PopupSettings } from '@progress/kendo-angular-dateinputs';
 import { takeUntil } from 'rxjs';
 import { FIELD_TYPES, FILTER_OPERATORS } from '../../../filter/filter.const';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Required in order to prevent the kendo datepicker to close the menu on click.
@@ -83,7 +84,8 @@ export class SafeDateFilterMenuComponent
     private fb: FormBuilder,
     public translate: TranslateService,
     private element: ElementRef,
-    private popupService: SinglePopupService
+    private popupService: SinglePopupService,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
     const type = FIELD_TYPES.find((x) => x.editor === 'datetime');
@@ -97,9 +99,9 @@ export class SafeDateFilterMenuComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((e: PopupCloseEvent) => {
         if (
-          document.activeElement &&
+          this.document.activeElement &&
           closest(
-            document.activeElement as HTMLElement,
+            this.document.activeElement as HTMLElement,
             (node) =>
               node === this.element.nativeElement ||
               String(node.className).indexOf('date-range-filter') >= 0

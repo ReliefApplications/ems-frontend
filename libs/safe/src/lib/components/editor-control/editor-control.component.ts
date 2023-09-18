@@ -10,6 +10,7 @@ import {
   Self,
   ViewChild,
   forwardRef,
+  Inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ControlValueAccessor, FormsModule, NgControl } from '@angular/forms';
@@ -23,6 +24,7 @@ import {
 import { SafeEditorService } from '../../services/editor/editor.service';
 import { RawEditorSettings } from 'tinymce';
 import { FormControlComponent } from '@oort-front/ui';
+import { DOCUMENT } from '@angular/common';
 
 /** Component for using TinyMCE editor with formControl */
 @Component({
@@ -174,7 +176,8 @@ export class SafeEditorControlComponent
   constructor(
     private editorService: SafeEditorService,
     private elementRef: ElementRef<HTMLElement>,
-    @Optional() @Self() public ngControl: NgControl
+    @Optional() @Self() public ngControl: NgControl,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
     if (this.ngControl != null) {
@@ -200,7 +203,7 @@ export class SafeEditorControlComponent
     });
     this.editor.onKeyDown.pipe(takeUntil(this.destroy$)).subscribe((e) => {
       if (e.event.code === 'ArrowDown' || e.event.code === 'ArrowUp') {
-        const collectionGroup = document.querySelector(
+        const collectionGroup = this.document.querySelector(
           '.tox-collection__group'
         );
         // If autocomplete list in the DOM, trigger scrolling events

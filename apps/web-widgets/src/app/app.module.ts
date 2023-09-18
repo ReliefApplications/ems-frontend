@@ -114,7 +114,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
  * @returns custom Overlay container.
  */
 const provideOverlay = (_platform: Platform): AppOverlayContainer =>
-  new AppOverlayContainer(_platform);
+  new AppOverlayContainer(_platform, document);
 
 /**
  * Web Widget project root module.

@@ -389,7 +389,7 @@ export class DashboardComponent
     this.autoSaveChanges();
     // scroll to the element once it is created
     setTimeout(() => {
-      const el = document.getElementById(`widget-${widget.id}`);
+      const el = this.document.getElementById(`widget-${widget.id}`);
       el?.scrollIntoView({ behavior: 'smooth' });
     });
   }

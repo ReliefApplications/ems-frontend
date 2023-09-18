@@ -48,6 +48,7 @@ import { SafeDashboardService } from '../../../../services/dashboard/dashboard.s
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Test if an element match a css selector
@@ -219,7 +220,8 @@ export class SafeGridComponent
     private downloadService: SafeDownloadService,
     private dashboardService: SafeDashboardService,
     private translate: TranslateService,
-    private snackBar: SnackbarService
+    private snackBar: SnackbarService,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
     this.environment = environment.module || 'frontoffice';
@@ -645,7 +647,7 @@ export class SafeGridComponent
    */
   public onDownload(file: any): void {
     if (file.content.startsWith('data')) {
-      const downloadLink = document.createElement('a');
+      const downloadLink = this.document.createElement('a');
       downloadLink.href = file.content;
       downloadLink.download = file.name;
       downloadLink.click();
