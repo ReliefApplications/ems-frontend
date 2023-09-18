@@ -178,7 +178,6 @@ export class SafeWidgetGridComponent
    * @param e new widget.
    */
   async onAdd(e: any): Promise<void> {
-    this.add.emit(e);
     if (e) {
       const tile = JSON.parse(JSON.stringify(e));
       if (tile) {
@@ -197,11 +196,14 @@ export class SafeWidgetGridComponent
           .pipe(takeUntil(this.destroy$))
           .subscribe((res: any) => {
             if (res) {
-              this.edit.emit({
-                type: 'data',
-                id: this.widgets[this.widgets.length - 1].id,
-                options: res,
-              });
+              this.add.emit(e);
+              setTimeout(() => {
+                this.edit.emit({
+                  type: 'data',
+                  id: this.widgets[this.widgets.length - 1].id,
+                  options: res,
+                });
+              }, 500);
             }
           });
       }
