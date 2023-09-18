@@ -79,7 +79,6 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'enableIf',
   'visibleIf',
   'tooltip',
-  'resource-dropdown',
 ];
 
 /**

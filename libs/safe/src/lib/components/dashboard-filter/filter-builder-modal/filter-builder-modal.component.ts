@@ -123,7 +123,6 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   'valueFalse',
   'valueName',
   'inputType',
-  'resource-dropdown',
 ];
 
 /**
