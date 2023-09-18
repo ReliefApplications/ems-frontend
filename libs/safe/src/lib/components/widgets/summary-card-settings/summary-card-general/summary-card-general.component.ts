@@ -5,6 +5,7 @@ import {
   Input,
   OnInit,
   Output,
+  ViewChild,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -27,6 +28,7 @@ import {
   CheckboxModule,
   DividerModule,
   FormWrapperModule,
+  GraphQLSelectComponent,
   GraphQLSelectModule,
   IconModule,
   RadioModule,
@@ -78,11 +80,15 @@ export class SummaryCardGeneralComponent
   @Output() layoutChange = new EventEmitter<Layout | null>();
   @Output() aggregationChange = new EventEmitter<Aggregation | null>();
 
-  // === GRID ===
+  /** Number of columns */
   colsNumber = MAX_COL_SPAN;
 
-  // === DATA ===
+  /** Resource query used in graphql-select */
   public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+
+  /** Reference to resource graphql-select */
+  @ViewChild(GraphQLSelectComponent)
+  private resourceSelect?: GraphQLSelectComponent;
 
   /**
    * Changes display when windows size changes.
@@ -127,14 +133,15 @@ export class SummaryCardGeneralComponent
       .get('card.resource')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((resource) => {
-        if (!resource) this.resourceChange.emit(null);
-        else
+        if (!resource) {
+          this.resourceChange.emit(null);
+        } else {
           this.resourceChange.emit(
-            this.resourcesQuery
-              .getCurrentResult()
-              .data.resources.edges.find((r) => r.node.id === resource)?.node ||
-              null
+            this.resourceSelect?.elements
+              .getValue()
+              .find((r) => r.id === resource) || null
           );
+        }
       });
   }
 
