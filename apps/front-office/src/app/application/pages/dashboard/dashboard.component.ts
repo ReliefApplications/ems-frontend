@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  Inject,
   OnDestroy,
   OnInit,
   Output,
@@ -27,6 +28,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { filter, map, startWith, takeUntil } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Dashboard page.
@@ -84,6 +86,7 @@ export class DashboardComponent
    * @param confirmService Shared confirm service
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
+   * @param document Document
    */
   constructor(
     private apollo: Apollo,
@@ -95,7 +98,8 @@ export class DashboardComponent
     private translate: TranslateService,
     private confirmService: SafeConfirmService,
     private renderer: Renderer2,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
   }
@@ -114,8 +118,10 @@ export class DashboardComponent
       .subscribe(() => {
         this.loading = true;
         // Reset scroll when changing page
-        const pageContainer = document.getElementById('appPageContainer');
-        if (pageContainer) pageContainer.scrollTop = 0;
+        const pageContainer = this.document.getElementById('appPageContainer');
+        if (pageContainer) {
+          pageContainer.scrollTop = 0;
+        }
         /** Extract main dashboard id */
         const id = this.route.snapshot.paramMap.get('id');
         /** Extract query id to load template */

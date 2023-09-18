@@ -47,6 +47,27 @@ import { Dialog } from '@angular/cdk/dialog';
 /** Default items per resources query, for pagination */
 const ITEMS_PER_PAGE = 10;
 
+/** Available admin fields ( only admin 0 now ) */
+const ADMIN_FIELDS = [
+  {
+    name: 'admin0',
+    fields: [
+      {
+        name: 'Alpha-3 code',
+        value: 'admin0.iso3code',
+      },
+      {
+        name: 'Alpha-2 code',
+        value: 'admin0.iso2code',
+      },
+      {
+        name: 'ID',
+        value: 'admin0.id',
+      },
+    ],
+  },
+];
+
 /** Component for the layer datasource selection tab */
 @Component({
   selector: 'safe-layer-datasource',
@@ -85,6 +106,8 @@ export class LayerDatasourceComponent
   @ViewChild('mapContainer', { read: ViewContainerRef })
   mapContainerRef!: ViewContainerRef;
   @Input() destroyTab$!: Subject<boolean>;
+
+  public adminFields = ADMIN_FIELDS;
 
   /**
    * Component for the layer datasource selection tab
@@ -183,6 +206,7 @@ export class LayerDatasourceComponent
         this.formGroup.get('layout')?.setValue(null, { emitEvent: false });
         this.formGroup.get('aggregation')?.setValue(null, { emitEvent: false });
         this.formGroup.get('geoField')?.setValue(null, { emitEvent: false });
+        this.formGroup.get('adminField')?.setValue(null, { emitEvent: false });
         this.formGroup
           .get('latitudeField')
           ?.setValue(null, { emitEvent: false });

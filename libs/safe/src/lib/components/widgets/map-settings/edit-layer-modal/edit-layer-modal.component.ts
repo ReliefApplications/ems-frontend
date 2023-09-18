@@ -344,6 +344,7 @@ export class EditLayerModalComponent
           this.updateMapLayer({ delete: true });
           if (
             prev.datasource?.geoField !== next.datasource?.geoField ||
+            prev.datasource?.adminField !== next.datasource?.adminField ||
             prev.datasource?.latitudeField !== next.datasource?.latitudeField ||
             prev.datasource?.longitudeField !== next.datasource?.longitudeField
           ) {

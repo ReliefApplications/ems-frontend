@@ -922,7 +922,11 @@ export class Layer implements LayerModel {
                 info.label
               );
             }
-            if (defaultSymbol) {
+            if (
+              defaultSymbol &&
+              get(this.layerDefinition, 'drawingInfo.renderer.defaultLabel')
+                ?.length
+            ) {
               html += this.getGeoJSONFeatureLegend(
                 geometryType,
                 defaultSymbol,

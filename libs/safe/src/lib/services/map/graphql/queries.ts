@@ -17,6 +17,7 @@ export const GET_LAYER_BY_ID = gql`
         layout
         aggregation
         geoField
+        adminField
         latitudeField
         longitudeField
         type
