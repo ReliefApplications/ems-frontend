@@ -135,7 +135,7 @@
 			"accessDenied": "You don't have permission to see the {{type}}.",
 			"accessNotProvided": "No access provided to this {{type}}. {{error}}",
 			"alreadyExists": "The {{type}} {{value}} already exists on this application.",
-			"copiedToClipboard": "Copied!",
+			"copiedToClipboard": "Dashboard link copied!",
 			"dataNotRecovered": "Failure on data recovery",
 			"dataRecovered": "The data has been recovered",
 			"email": {

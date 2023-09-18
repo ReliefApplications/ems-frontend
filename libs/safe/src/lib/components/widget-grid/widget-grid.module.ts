@@ -10,7 +10,12 @@ import { SafeWidgetChoiceModule } from '../widget-choice/widget-choice.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
-import { DialogModule, IconModule, SelectMenuModule } from '@oort-front/ui';
+import {
+  DialogModule,
+  IconModule,
+  SelectMenuModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
 
 /** Module for the widget-related components */
@@ -22,6 +27,7 @@ import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
     SafeExpandedWidgetComponent,
   ],
   imports: [
+    TooltipModule,
     CommonModule,
     SafeWidgetModule,
     FormsModule,

@@ -1,7 +1,33 @@
+<div class="items-center gap-1 hidden md:flex">
+  <ui-button
+    [isIcon]="true"
+    icon="insert_chart"
+    [uiTooltip]="'common.settings' | translate"
+    (click)="onClick('Settings')"
+    [disabled]="!this.widget || !this.widget.settings"
+    variant="grey"
+  ></ui-button>
+  <ui-button
+    [isIcon]="true"
+    icon="open_in_full"
+    [uiTooltip]="'components.widget.expand' | translate"
+    (click)="onClick('Expand')"
+    variant="grey"
+  ></ui-button>
+  <ui-button
+    [isIcon]="true"
+    icon="delete"
+    [uiTooltip]="'common.delete' | translate"
+    (click)="onClick('Delete')"
+    variant="danger"
+  ></ui-button>
+</div>
+
 <ui-button
   [isIcon]="true"
   icon="more_vert"
   [uiMenuTriggerFor]="menu"
+  class="md:hidden"
   variant="grey"
 >
 </ui-button>

@@ -39,19 +39,18 @@ $ui-palette: (
   700: rgb($primary_700),
   800: rgb($primary_800),
   900: rgb($primary_900),
-  contrast:
-    (
-      50: #000000,
-      100: #000000,
-      200: #000000,
-      300: #000000,
-      400: #ffffff,
-      500: #ffffff,
-      600: #ffffff,
-      700: #ffffff,
-      800: #ffffff,
-      900: #ffffff,
-    ),
+  contrast: (
+    50: #000000,
+    100: #000000,
+    200: #000000,
+    300: #000000,
+    400: #ffffff,
+    500: #ffffff,
+    600: #ffffff,
+    700: #ffffff,
+    800: #ffffff,
+    900: #ffffff,
+  ),
 );
 
 $ui-palette-accent: (
@@ -168,6 +167,12 @@ body {
     text-overflow: ellipsis;
     flex: 1;
     margin: unset;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .widget-header {
+    padding-right: 131px !important;
   }
 }
 
