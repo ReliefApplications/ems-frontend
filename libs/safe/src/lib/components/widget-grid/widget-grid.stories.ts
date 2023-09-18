@@ -69,7 +69,7 @@ const defaultWidgets = [
 ];
 
 /**
- * Default story
+ * Default story.
  */
 export const DEFAULT = {
   render: TEMPLATE,
@@ -82,7 +82,7 @@ export const DEFAULT = {
 };
 
 /**
- * Empty story
+ * Empty story.
  */
 export const EMPTY = {
   render: TEMPLATE,

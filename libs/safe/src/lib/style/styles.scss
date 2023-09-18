@@ -59,7 +59,7 @@ $safe-palette: (
       // A100: #000000,
       // A200: #000000,
       // A400: #ffffff,
-      // A700: #ffffff,,,,,,,,,,,,,,,,,,
+      // A700: #ffffff,,,,,,,,,,,,,,,,,,,
     ),
 );
 
@@ -140,15 +140,17 @@ $safe-theme: mat.define-light-theme(
   padding: 0 40px !important;
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
+  gap: 10px;
   @apply bg-white #{!important};
 
   .widget-title {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
-    flex: 1;
     margin: unset;
+    margin-right: auto;
+    max-width: fit-content;
+    flex: 2;
   }
 
   .hide-border & {

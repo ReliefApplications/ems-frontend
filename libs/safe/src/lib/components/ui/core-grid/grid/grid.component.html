@@ -227,7 +227,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
-                [uiTooltip]="'common.openFullScreen' | translate"
+                [uiTooltip]="'common.viewFullscreen' | translate"
               ></button>
             </div>
           </ng-template>
@@ -332,7 +332,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
-                [uiTooltip]="'common.openFullScreen' | translate"
+                [uiTooltip]="'common.viewFullscreen' | translate"
               ></button>
             </div>
           </ng-template>
@@ -374,7 +374,7 @@
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
-                [uiTooltip]="'common.openFullScreen' | translate"
+                [uiTooltip]="'common.viewFullscreen' | translate"
               ></button>
             </div>
           </ng-template>
@@ -593,6 +593,37 @@
           </kendo-grid-column>
         </ng-container>
       </ng-container>
+      <!-- Geospatial -->
+      <kendo-grid-column
+        *ngIf="field.type === 'JSON' && field.meta.type === 'geospatial'"
+        [field]="field.name"
+        [filterable]="true"
+        [title]="field.title"
+        [editor]="field.editor"
+        [editable]="!field.disabled"
+        [width]="field.width"
+        [hidden]="field.hidden"
+        [minResizableWidth]="50"
+        class="no-padding"
+      >
+        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+          <div
+            class="textbox-container"
+            [style]="getStyle(dataItem, field.name)"
+          >
+            <a
+              class="url-container textbox cursor-pointer"
+              rel="noopener noreferrer"
+              (click)="onOpenMapModal(dataItem, field)"
+              [uiTooltip]="
+                'components.widget.grid.tooltip.displayMap' | translate
+              "
+            >
+              {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
+            </a>
+          </div>
+        </ng-template>
+      </kendo-grid-column>
       <!-- MULTI SELECT QUESTION TYPES ( checkbox / tagbox / owner / users ) -->
       <kendo-grid-column
         *ngIf="
@@ -700,7 +731,8 @@
         *ngIf="
           field.type === 'JSON' &&
           !multiSelectTypes.includes(field.meta.type) &&
-          field.meta.type !== 'file'
+          field.meta.type !== 'file' &&
+          field.meta.type !== 'geospatial'
         "
       >
         <ng-container

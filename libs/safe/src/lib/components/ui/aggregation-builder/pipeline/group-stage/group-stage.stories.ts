@@ -35,7 +35,7 @@ const TEMPLATE: StoryFn<SafeGroupStageComponent> = () => ({
 });
 
 /**
- * Default story
+ * Default story.
  */
 export const DEFAULT = {
   render: TEMPLATE,

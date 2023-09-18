@@ -12,11 +12,11 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { UntypedFormArray, UntypedFormGroup } from '@angular/forms';
-import { FIELD_EDITOR_CONFIG } from '../../../const/tinymce.const';
 import { SafeEditorService } from '../../../services/editor/editor.service';
 import { getCalcKeys, getDataKeys } from '../../../utils/parser/utils';
 import { addNewField } from '../query-builder-forms';
 import { SafeQueryBuilderComponent } from '../query-builder.component';
+import { INLINE_EDITOR_CONFIG } from '../../../const/tinymce.const';
 
 /**
  * Component used for the selection of fields to display the fields in tabs
@@ -40,9 +40,12 @@ export class SafeTabFieldsComponent implements OnInit, OnChanges {
   public searchSelected = '';
 
   /** tinymce editor */
-  public editor: any = FIELD_EDITOR_CONFIG;
+  public editor: any = INLINE_EDITOR_CONFIG;
 
   @Input() showLimit = false;
+
+  /** Is the column width field displayed */
+  @Input() showColumnWidth = false;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is created.

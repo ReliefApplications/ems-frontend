@@ -285,6 +285,14 @@ export class SafeGridComponent
         return meta.choices.find((x: any) => x.value === value)?.text || value;
       }
     } else {
+      if (meta.type === 'geospatial') {
+        return [
+          get(value, 'properties.address'),
+          get(value, 'properties.countryName'),
+        ]
+          .filter((x) => x)
+          .join(', ');
+      }
       return value;
     }
   }
@@ -825,5 +833,19 @@ export class SafeGridComponent
     if (this.loadingRecords)
       return this.translate.instant('components.widget.grid.loading.records');
     return this.translate.instant('kendo.grid.noRecords');
+  }
+
+  /**
+   * Open map around clicked item
+   *
+   * @param dataItem Clicked item
+   * @param field geometry field
+   */
+  public onOpenMapModal(dataItem: any, field: any) {
+    this.action.emit({
+      action: 'map',
+      item: dataItem,
+      field,
+    });
   }
 }

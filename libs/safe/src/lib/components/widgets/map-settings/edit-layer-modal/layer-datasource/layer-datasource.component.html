@@ -1,0 +1,269 @@
+<div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
+  <!-- Datasource form -->
+  <form [formGroup]="formGroup" class="flex-1">
+    <div class="flex flex-col gap-3 w-full">
+      <!-- Origin -->
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.widget.settings.map.edit.datasource.origin' | translate
+        }}</label>
+        <ui-select-menu [formControl]="origin">
+          <ui-select-option value="resource">{{
+            'common.resource.one' | translate
+          }}</ui-select-option>
+          <ui-select-option value="refData">{{
+            'common.referenceData.one' | translate
+          }}</ui-select-option>
+        </ui-select-menu>
+      </div>
+
+      <!-- Resource selection -->
+      <div
+        uiFormFieldDirective
+        class="flex-1"
+        *ngIf="origin.value === 'resource'"
+      >
+        <label>{{ 'common.resource.one' | translate }}</label>
+        <ui-graphql-select
+          valueField="id"
+          textField="name"
+          [query]="resourcesQuery"
+          formControlName="resource"
+          [selectedElements]="[resource]"
+          (searchChange)="onResourceSearchChange($event)"
+          [filterable]="true"
+        >
+        </ui-graphql-select>
+        <!-- Remove value -->
+        <ui-button
+          uiSuffix
+          (click)="clearFormField('resource', $event)"
+          [isIcon]="true"
+          icon="close"
+          variant="danger"
+        ></ui-button>
+      </div>
+
+      <!-- Aggregation or layout selection -->
+      <div
+        class="flex flex-col gap-8"
+        *ngIf="resource && !layout && !aggregation"
+      >
+        <h2>{{ 'common.layout.one' | translate }}</h2>
+        <div class="flex justify-center mt-4">
+          <ui-button
+            category="tertiary"
+            variant="primary"
+            (click)="selectLayout()"
+            >{{
+              'components.widget.settings.grid.layouts.select' | translate
+            }}</ui-button
+          >
+        </div>
+        <ui-divider
+          *ngIf="!layout && !aggregation"
+          [text]="'common.or' | translate"
+        ></ui-divider>
+        <h2>{{ 'common.aggregation.one' | translate }}</h2>
+        <div class="flex justify-center mt-4">
+          <ui-button
+            category="tertiary"
+            variant="primary"
+            (click)="selectAggregation()"
+            >{{ 'components.aggregation.add.select' | translate }}</ui-button
+          >
+        </div>
+      </div>
+
+      <!-- Selected layout -->
+      <div uiFormFieldDirective *ngIf="layout">
+        <label>{{ 'common.layout.one' | translate }}</label>
+        <ui-select-menu [disabled]="true" [value]="layout.name">
+          <ui-select-option [value]="layout.name">{{
+            layout.name
+          }}</ui-select-option>
+        </ui-select-menu>
+        <ui-button
+          uiSuffix
+          variant="primary"
+          [isIcon]="true"
+          icon="edit"
+          (click)="editLayout()"
+        ></ui-button>
+        <ui-button
+          uiSuffix
+          variant="danger"
+          [isIcon]="true"
+          icon="close"
+          (click)="
+            formGroup.get('datasource.layout')?.setValue(null);
+            layout = null;
+            this.fields.next([])
+          "
+        ></ui-button>
+      </div>
+
+      <!-- Selected aggregation -->
+      <div uiFormFieldDirective *ngIf="aggregation">
+        <label>{{ 'common.aggregation.one' | translate }}</label>
+        <ui-select-menu [disabled]="true" [value]="aggregation.name">
+          <ui-select-option [value]="aggregation.name">{{
+            aggregation.name
+          }}</ui-select-option>
+        </ui-select-menu>
+        <ui-button
+          uiSuffix
+          variant="primary"
+          [isIcon]="true"
+          icon="edit"
+          (click)="editAggregation()"
+        ></ui-button>
+        <ui-button
+          uiSuffix
+          variant="danger"
+          [isIcon]="true"
+          icon="close"
+          (click)="
+            formGroup.get('datasource.aggregation')?.setValue(null);
+            aggregation = null;
+            this.fields.next([])
+          "
+        ></ui-button>
+      </div>
+
+      <!-- Reference data selection  -->
+      <div
+        uiFormFieldDirective
+        class="flex-1"
+        *ngIf="origin.value === 'refData'"
+      >
+        <label>{{ 'common.referenceData.one' | translate }}</label>
+        <ui-graphql-select
+          valueField="id"
+          textField="name"
+          [query]="refDatasQuery"
+          formControlName="refData"
+          [selectedElements]="[refData]"
+        >
+        </ui-graphql-select>
+        <!-- Remove value -->
+        <ui-button
+          uiSuffix
+          (click)="clearFormField('refData', $event)"
+          [isIcon]="true"
+          icon="close"
+          variant="danger"
+        ></ui-button>
+      </div>
+
+      <!-- Fields selection -->
+      <ng-container
+        *ngIf="
+          formGroup.get('geoField')?.enabled && (fields$ | async)?.length! > 0
+        "
+      >
+        <div uiFormFieldDirective>
+          <label>{{
+            'components.widget.settings.map.layers.dataSource.geoField'
+              | translate
+          }}</label>
+          <ui-select-menu formControlName="geoField">
+            <ui-select-option
+              *ngFor="let field of fields$ | async"
+              [value]="field.name"
+              >{{ field.name }}</ui-select-option
+            >
+          </ui-select-menu>
+          <ui-button
+            *ngIf="formGroup.get('geoField')?.value"
+            uiSuffix
+            [isIcon]="true"
+            icon="close"
+            variant="danger"
+            (click)="
+              formGroup.get('geoField')?.setValue(null);
+              $event.stopPropagation()
+            "
+          ></ui-button>
+        </div>
+      </ng-container>
+
+      <ng-container
+        *ngIf="
+          formGroup.get('latitudeField')?.enabled &&
+          (fields$ | async)?.length! > 0
+        "
+      >
+        <div class="flex flex-row justify-between gap-2 flex-wrap">
+          <!-- Latitude Field -->
+          <div uiFormFieldDirective class="flex-1">
+            <label>{{
+              'components.widget.settings.map.layers.dataSource.latitude'
+                | translate
+            }}</label>
+            <ui-select-menu formControlName="latitudeField">
+              <ui-select-option
+                *ngFor="let field of fields$ | async"
+                [value]="field.name"
+                >{{ field.name }}</ui-select-option
+              >
+            </ui-select-menu>
+            <ui-button
+              *ngIf="formGroup.get('latitudeField')?.value"
+              uiSuffix
+              [isIcon]="true"
+              icon="close"
+              variant="danger"
+              (click)="
+                formGroup.get('latitudeField')?.setValue(null);
+                $event.stopPropagation()
+              "
+            ></ui-button>
+          </div>
+          <!-- Longitude Field -->
+          <div uiFormFieldDirective class="flex-1">
+            <label>{{
+              'components.widget.settings.map.layers.dataSource.longitude'
+                | translate
+            }}</label>
+            <ui-select-menu formControlName="longitudeField">
+              <ui-select-option
+                *ngFor="let field of fields$ | async"
+                [value]="field.name"
+                >{{ field.name }}</ui-select-option
+              >
+            </ui-select-menu>
+            <ui-button
+              *ngIf="formGroup.get('longitudeField')?.value"
+              uiSuffix
+              [isIcon]="true"
+              icon="close"
+              variant="danger"
+              (click)="
+                formGroup.get('longitudeField')?.setValue(null);
+                $event.stopPropagation()
+              "
+            ></ui-button>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Layer type -->
+      <div uiFormFieldDirective>
+        <label>{{ 'common.type.one' | translate }}</label>
+        <ui-select-menu formControlName="type">
+          <ui-select-option value="Point">{{
+            'components.widget.settings.map.layers.types.point' | translate
+          }}</ui-select-option>
+          <ui-select-option value="Polygon">{{
+            'components.widget.settings.map.layers.types.polygon' | translate
+          }}</ui-select-option>
+        </ui-select-menu>
+      </div>
+    </div>
+  </form>
+  <!-- Map -->
+  <div class="lg:flex-1 max-lg:min-w-full h-80 lg:h-[400px] flex-shrink-0">
+    <ng-template #mapContainer></ng-template>
+  </div>
+</div>

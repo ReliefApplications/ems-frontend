@@ -174,7 +174,7 @@ export class SafeReferenceDataService {
           referenceDataType.graphql
         );
         // Cache items
-        if (isCached) {
+        if (!isCached) {
           const { items: cache } = (await localForage.getItem(
             cacheKey
           )) as CachedItems;

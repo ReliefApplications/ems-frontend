@@ -1,90 +1,152 @@
-<form [formGroup]="form" class="overflow-hidden">
-  <div class="flex flex-col last:mb-0">
-    <h2>
-      {{ 'components.widget.settings.map.properties.title' | translate }}
-    </h2>
-    <div uiFormFieldDirective>
-      <label>{{
-        'components.widget.settings.map.properties.basemap' | translate
-      }}</label>
-      <ui-select-menu formControlName="basemap" placeholder="OSM">
-        <ui-select-option *ngFor="let map of basemaps" [value]="map">{{
-          map
-        }}</ui-select-option>
-      </ui-select-menu>
-    </div>
-    <label>
-      {{ 'components.widget.settings.map.properties.zoom' | translate }}
-      <ui-icon
-        icon="info_outline"
-        class="cursor-pointer"
-        [uiTooltip]="
-          'components.widget.settings.map.properties.zoom' | translate
-        "
-        [size]="18"
-        variant="grey"
-      ></ui-icon>
-    </label>
-    <ui-slider
-      class="mb-2"
-      formControlName="zoom"
-      [minValue]="2"
-      [maxValue]="18"
-    ></ui-slider>
-    <div class="flex flex-wrap gap-2">
-      <div
-        [uiErrorMessage]="
-          'components.widget.settings.map.errors.latitude' | translate
-        "
-        [uiErrorMessageIf]="
-          form.controls.centerLat.errors && form.controls.centerLat.touched
-        "
-        uiFormFieldDirective
-        class="flex-1"
-      >
-        <label>
-          {{ 'components.widget.settings.map.properties.latitude' | translate }}
-        </label>
-        <input type="number" formControlName="centerLat" />
-        <ui-icon
-          uiSuffix
-          icon="info"
-          class="cursor-pointer"
-          variant="grey"
-          [uiTooltip]="
-            'components.widget.settings.map.tooltip.default.latitude'
-              | translate
-          "
-        ></ui-icon>
+<div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
+  <form [formGroup]="form" class="h-full flex-1">
+    <div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
+      <!-- Map properties -->
+      <div class="flex flex-col flex-1">
+        <h2>
+          {{ 'components.widget.settings.map.properties.title' | translate }}
+        </h2>
+        <div class="flex flex-col gap-4">
+          <!-- Widget ( map ) name -->
+          <div uiFormFieldDirective>
+            <label>{{ 'common.name' | translate }}</label>
+            <input formControlName="title" type="string" />
+          </div>
+          <ui-divider></ui-divider>
+          <!-- Basemap -->
+          <div uiFormFieldDirective>
+            <label>{{
+              'components.widget.settings.map.properties.basemap' | translate
+            }}</label>
+            <ui-select-menu formControlName="basemap" placeholder="OSM">
+              <ui-select-option *ngFor="let map of baseMaps" [value]="map">
+                {{ map }}
+              </ui-select-option>
+            </ui-select-menu>
+            <!-- Remove value -->
+            <ui-button
+              uiSuffix
+              (click)="clearFormField('basemap', $event)"
+              [isIcon]="true"
+              icon="close"
+              variant="danger"
+            ></ui-button>
+          </div>
+          <ui-divider></ui-divider>
+          <!-- Webmap selection -->
+          <safe-webmap-select
+            formControlName="arcGisWebMap"
+          ></safe-webmap-select>
+          <ui-divider></ui-divider>
+          <!-- Default view -->
+          <div class="w-full" formGroupName="initialState">
+            <div class="flex flex-col flex-1" formGroupName="viewpoint">
+              <!-- Default zoom -->
+              <label>
+                {{
+                  'components.widget.settings.map.properties.zoom' | translate
+                }}
+                <ui-icon
+                  icon="info_outline"
+                  class="cursor-pointer"
+                  [uiTooltip]="
+                    'components.widget.settings.map.properties.zoom' | translate
+                  "
+                  [size]="18"
+                  variant="grey"
+                ></ui-icon>
+              </label>
+              <ui-slider
+                formControlName="zoom"
+                [minValue]="2"
+                [maxValue]="18"
+              ></ui-slider>
+              <div formGroupName="center" class="flex flex-wrap gap-2 mt-2">
+                <!-- Default latitude -->
+                <div
+                  [uiErrorMessage]="
+                    'components.widget.settings.map.errors.latitude' | translate
+                  "
+                  [uiErrorMessageIf]="
+                    form.get('initialState.viewpoint.center.latitude')!.errors
+                  "
+                  uiFormFieldDirective
+                  class="flex-1"
+                >
+                  <label>
+                    {{
+                      'components.widget.settings.map.properties.latitude'
+                        | translate
+                    }}
+                  </label>
+                  <input type="number" formControlName="latitude" />
+                  <ui-icon
+                    uiSuffix
+                    icon="info"
+                    class="cursor-pointer"
+                    variant="grey"
+                    [uiTooltip]="
+                      'components.widget.settings.map.tooltip.default.latitude'
+                        | translate
+                    "
+                  ></ui-icon>
+                </div>
+                <!-- Default longitude -->
+                <div
+                  [uiErrorMessage]="
+                    'components.widget.settings.map.errors.longitude'
+                      | translate
+                  "
+                  [uiErrorMessageIf]="
+                    form.get('initialState.viewpoint.center.longitude')!.errors
+                  "
+                  uiFormFieldDirective
+                  class="flex-1"
+                >
+                  <label>
+                    {{
+                      'components.widget.settings.map.properties.longitude'
+                        | translate
+                    }}
+                  </label>
+                  <input type="number" formControlName="longitude" />
+                  <ui-icon
+                    uiSuffix
+                    icon="info"
+                    class="cursor-pointer"
+                    variant="grey"
+                    [uiTooltip]="
+                      'components.widget.settings.map.tooltip.default.longitude'
+                        | translate
+                    "
+                  ></ui-icon>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Use map to set properties -->
+          <ui-button
+            class="self-end flex-1"
+            (click)="onSetByMap()"
+            category="secondary"
+            variant="primary"
+          >
+            {{
+              'components.widget.settings.map.properties.setByMap' | translate
+            }}
+          </ui-button>
+          <ui-divider></ui-divider>
+          <!-- Map controls -->
+          <safe-map-controls
+            formGroupName="controls"
+            [form]="controlsFormGroup"
+          ></safe-map-controls>
+        </div>
       </div>
-      <div
-        [uiErrorMessage]="
-          'components.widget.settings.map.errors.longitude' | translate
-        "
-        [uiErrorMessageIf]="
-          form.controls.centerLong.errors && form.controls.centerLong.touched
-        "
-        uiFormFieldDirective
-        class="flex-1"
-      >
-        <label>
-          {{
-            'components.widget.settings.map.properties.longitude' | translate
-          }}
-        </label>
-        <input type="number" formControlName="centerLong" />
-        <ui-icon
-          uiSuffix
-          icon="info"
-          class="cursor-pointer"
-          variant="grey"
-          [uiTooltip]="
-            'components.widget.settings.map.tooltip.default.longitude'
-              | translate
-          "
-        ></ui-icon>
-      </div>
     </div>
-    <safe-map [header]="false" [settings]="mapSettings"></safe-map>
+  </form>
+  <!-- Map -->
+  <div class="lg:flex-1 max-lg:min-w-full h-80 lg:h-[400px] flex-shrink-0">
+    <ng-template #mapContainer></ng-template>
   </div>
-</form>
+</div>

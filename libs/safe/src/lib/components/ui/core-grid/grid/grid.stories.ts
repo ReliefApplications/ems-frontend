@@ -192,7 +192,7 @@ const DEFAULT_FIELDS = [
 ];
 
 /**
- * Default story
+ * Default story.
  */
 export const DEFAULT = {
   render: TEMPLATE,
@@ -209,7 +209,7 @@ export const DEFAULT = {
 };
 
 /**
- * Empty story
+ * Empty story.
  */
 export const EMPTY = {
   render: TEMPLATE,
@@ -225,7 +225,7 @@ export const EMPTY = {
 };
 
 /**
- * Error story
+ * Error story.
  */
 export const ERROR = {
   render: TEMPLATE,
@@ -241,7 +241,7 @@ export const ERROR = {
 };
 
 /**
- * Loading story
+ * Loading story.
  */
 export const LOADING = {
   render: TEMPLATE,
@@ -253,7 +253,7 @@ export const LOADING = {
 };
 
 /**
- * Fixed position story
+ * Fixed position story.
  */
 export const FIXED = {
   render: TEMPLATE,
@@ -278,7 +278,7 @@ const MULTI_SELECT_DATA = [
 ];
 
 /**
- * With multi select inputs story
+ * With mutli select inputs.
  */
 export const MULTI_SELECT_INPUTS = {
   render: TEMPLATE,
@@ -387,7 +387,7 @@ const COMPLEX_DATA = [
 ];
 
 /**
- * With complex inputs story
+ * With complex inputs.
  */
 export const COMPLEX_INPUTS = {
   render: TEMPLATE,

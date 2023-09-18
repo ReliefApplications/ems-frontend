@@ -44,7 +44,7 @@ const TEMPLATE: StoryFn<SafeLineChartComponent> = (args) => ({
 });
 
 /**
- * Default story
+ * Default story.
  */
 export const DEFAULT = {
   render: TEMPLATE,

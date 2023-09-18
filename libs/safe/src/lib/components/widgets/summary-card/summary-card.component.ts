@@ -2,7 +2,6 @@ import {
   AfterViewInit,
   Component,
   ElementRef,
-  HostListener,
   Input,
   OnDestroy,
   OnInit,
@@ -35,8 +34,11 @@ export type CardT = NonNullable<SummaryCardFormT['value']['card']> &
 import { Layout } from '../../../models/layout.model';
 import { FormControl } from '@angular/forms';
 import { clone, isNaN } from 'lodash';
+import { searchFilters } from '../../../utils/filter/search-filters';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
+import { ContextService } from '../../../services/context/context.service';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 
 /** Maximum width of the widget in column units */
@@ -72,6 +74,7 @@ export class SafeSummaryCardComponent
     pageIndex: 0,
     pageSize: DEFAULT_PAGE_SIZE,
     length: 0,
+    skip: 0,
   };
   public loading = true;
 
@@ -82,11 +85,17 @@ export class SafeSummaryCardComponent
 
   private layout: Layout | null = null;
   private fields: any[] = [];
+  private contextFilters: CompositeFilterDescriptor = {
+    logic: 'and',
+    filters: [],
+  };
 
   public searchControl = new FormControl('');
   public scrolling = false;
 
   private filters: any = null;
+
+  private resizeObserver!: ResizeObserver;
 
   @ViewChild('summaryCardGrid') summaryCardGrid!: ElementRef<HTMLDivElement>;
   @ViewChild('pdf') pdf!: any;
@@ -108,16 +117,6 @@ export class SafeSummaryCardComponent
   }
 
   /**
-   * Changes display when windows size changes.
-   *
-   * @param event window resize event
-   */
-  @HostListener('window:resize', ['$event'])
-  onWindowResize(event: any): void {
-    this.colsNumber = this.setColsNumber(event.target.innerWidth);
-  }
-
-  /**
    * Constructor for summary card component
    *
    * @param apollo Apollo service
@@ -127,6 +126,8 @@ export class SafeSummaryCardComponent
    * @param queryBuilder Query builder service
    * @param gridLayoutService Shared grid layout service
    * @param aggregationService Aggregation service
+   * @param contextService ContextService
+   * @param elementRef Element Ref
    */
   constructor(
     private apollo: Apollo,
@@ -135,25 +136,52 @@ export class SafeSummaryCardComponent
     private translate: TranslateService,
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: SafeGridLayoutService,
-    private aggregationService: SafeAggregationService
+    private aggregationService: SafeAggregationService,
+    private contextService: ContextService,
+    private elementRef: ElementRef
   ) {
     super();
   }
 
   ngOnInit(): void {
+    // TODO: Replace once we have a proper UI
+    this.contextFilters = this.widget.settings.contextFilters
+      ? JSON.parse(this.widget.settings.contextFilters)
+      : this.contextFilters;
+
     this.setupDynamicCards();
-
-    this.colsNumber = this.setColsNumber(window.innerWidth);
     this.setupGridSettings();
-
     this.searchControl.valueChanges
       .pipe(debounceTime(2000), distinctUntilChanged())
       .subscribe((value) => {
         this.handleSearch(value || '');
       });
+
+    this.contextService.filter$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.setupDynamicCards();
+      });
+
+    this.contextService.isFilterEnabled$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.setupDynamicCards();
+      });
   }
 
   ngAfterViewInit(): void {
+    if (this.elementRef.nativeElement.parentElement) {
+      this.colsNumber = this.setColsNumber(
+        this.elementRef.nativeElement.parentElement.clientWidth
+      );
+      this.resizeObserver = new ResizeObserver(() => {
+        this.colsNumber = this.setColsNumber(
+          this.elementRef.nativeElement.parentElement.clientWidth
+        );
+      });
+      this.resizeObserver.observe(this.elementRef.nativeElement.parentElement);
+    }
     if (!this.settings.widgetDisplay?.usePagination) {
       this.summaryCardGrid.nativeElement.addEventListener(
         'scroll',
@@ -190,10 +218,15 @@ export class SafeSummaryCardComponent
   private async setupDynamicCards() {
     // only one dynamic card is allowed per widget
     const card = this.settings.card;
-    if (!card) return;
+    if (!card) {
+      return;
+    }
 
-    if (card.aggregation) this.getCardsFromAggregation(card);
-    else if (card.layout) this.createDynamicQueryFromLayout(card);
+    if (card.aggregation) {
+      this.getCardsFromAggregation(card);
+    } else if (card.layout) {
+      this.createDynamicQueryFromLayout(card);
+    }
   }
 
   /**
@@ -206,6 +239,7 @@ export class SafeSummaryCardComponent
     const needRefetch = !this.settings.card?.aggregation;
     const skippedFields = ['id', 'incrementalId'];
     this.pageInfo.pageIndex = 0;
+    this.pageInfo.skip = 0;
 
     if (!needRefetch) {
       this.sortedCachedCards = this.cachedCards.filter((card: any) => {
@@ -226,34 +260,18 @@ export class SafeSummaryCardComponent
       this.pageInfo.length = this.sortedCachedCards.length;
     } else {
       this.loading = true;
-      const filters: {
-        field: string;
-        operator: string;
-        value: string | number;
-      }[] = [];
-      this.fields.forEach((field) => {
-        if (skippedFields.includes(field.name)) return;
-        if (field?.type === 'text')
-          filters.push({
-            field: field.name,
-            operator: 'contains',
-            value: search,
-          });
-        if (field?.type === 'numeric' && !isNaN(parseFloat(search)))
-          filters.push({
-            field: field.name,
-            operator: 'eq',
-            value: parseFloat(search),
-          });
-      });
-      const searchFilter = {
-        logic: 'or',
-        filters,
-      };
-
       this.filters = {
         logic: 'and',
-        filters: [searchFilter, this.layout?.query.filter],
+        filters: [
+          {
+            logic: 'and',
+            filters: [this.layout?.query.filter],
+          },
+          {
+            logic: 'or',
+            filters: searchFilters(search, this.fields, skippedFields),
+          },
+        ],
       };
 
       this.dataQuery
@@ -335,41 +353,61 @@ export class SafeSummaryCardComponent
       })
     );
 
-    const layouts = await this.getLayouts(card);
-    if (layouts.length > 0) {
-      this.layout = layouts[0];
-      const layoutQuery = this.layout.query;
-      const builtQuery = this.queryBuilder.buildQuery({
-        query: layoutQuery,
-      });
-      const layoutFields = layoutQuery.fields;
-      this.fields = get(metaRes, 'data.resource.metadata', []).map((f: any) => {
-        const layoutField = layoutFields.find((lf: any) => lf.name === f.name);
-        if (layoutField) {
-          return { ...layoutField, ...f };
-        }
-        return f;
-      });
+    this.gridLayoutService
+      .getLayouts(card.resource, { ids: [card.layout], first: 1 })
+      .then((res) => {
+        const layouts = res.edges.map((edge) => edge.node);
+        if (layouts.length > 0) {
+          this.layout = layouts[0];
+          const layoutQuery = this.layout.query;
+          const builtQuery = this.queryBuilder.buildQuery({
+            query: layoutQuery,
+          });
+          const layoutFields = layoutQuery.fields;
+          this.fields = get(metaRes, 'data.resource.metadata', []).map(
+            (f: any) => {
+              const layoutField = layoutFields.find(
+                (lf: any) => lf.name === f.name
+              );
+              if (layoutField) {
+                return { ...layoutField, ...f };
+              }
+              return f;
+            }
+          );
 
-      if (builtQuery) {
-        this.filters = layoutQuery.filter;
-        this.dataQuery = this.apollo.watchQuery<any>({
-          query: builtQuery,
-          variables: {
-            first: DEFAULT_PAGE_SIZE,
-            filter: this.filters,
-            sortField: get(layoutQuery, 'sort.field', null),
-            sortOrder: get(layoutQuery, 'sort.order', ''),
-            styles: layoutQuery.style || null,
-          },
-          fetchPolicy: 'network-only',
-          nextFetchPolicy: 'cache-first',
-        });
-        this.dataQuery.valueChanges
-          .pipe(takeUntil(this.destroy$))
-          .subscribe(this.updateCards.bind(this));
-      }
-    }
+          if (this.contextFilters && layoutQuery.filter) {
+            layoutQuery.filter = {
+              logic: 'and',
+              filters: [
+                layoutQuery.filter,
+                this.contextService.injectDashboardFilterValues(
+                  this.contextFilters
+                ),
+              ],
+            };
+          }
+
+          if (builtQuery) {
+            this.filters = layoutQuery.filter;
+            this.dataQuery = this.apollo.watchQuery<any>({
+              query: builtQuery,
+              variables: {
+                first: DEFAULT_PAGE_SIZE,
+                filter: this.filters,
+                sortField: get(layoutQuery, 'sort.field', null),
+                sortOrder: get(layoutQuery, 'sort.order', ''),
+                styles: layoutQuery.style || null,
+              },
+              fetchPolicy: 'network-only',
+              nextFetchPolicy: 'cache-first',
+            });
+            this.dataQuery.valueChanges
+              .pipe(takeUntil(this.destroy$))
+              .subscribe(this.updateCards.bind(this));
+          }
+        }
+      });
   }
 
   /**
@@ -377,46 +415,32 @@ export class SafeSummaryCardComponent
    */
   private async setupGridSettings() {
     const card = this.settings.card;
-    if (!card || !card.resource || !card.layout) {
-      return;
-    }
+    if (!card || !card.resource || (!card.layout && !card.aggregation)) return;
 
-    const layouts = await this.getLayouts(card);
-    if (layouts.length > 0) {
-      const layout = layouts[0] || null;
-      this.gridSettings = {
-        ...{ template: get(this.settings, 'template', null) }, //TO MODIFY
-        ...{ resource: card.resource },
-        ...{ layouts: layout.id },
-        ...{
-          actions: {
-            //default actions, might need to modify later
-            addRecord: false,
-            convert: true,
-            delete: true,
-            export: true,
-            history: true,
-            inlineEdition: true,
-            showDetails: true,
-            update: true,
-          },
-        },
-      };
-    }
-  }
+    const settings = {
+      template: get(this.settings, 'template', null), //TO MODIFY
+      resource: card.resource,
+      actions: {
+        //default actions, might need to modify later
+        addRecord: false,
+        convert: true,
+        delete: true,
+        export: true,
+        history: true,
+        inlineEdition: true,
+        showDetails: true,
+        update: true,
+      },
+    };
 
-  /**
-   * Get layouts from the given card
-   *
-   * @param card from where to get layouts
-   * @returns related layout nodes from the given card
-   */
-  private async getLayouts(card: any) {
-    const layouts = await this.gridLayoutService.getLayouts(card.resource, {
-      ids: [card.layout],
-      first: 1,
-    });
-    return layouts.edges.map((edge) => edge.node);
+    Object.assign(
+      settings,
+      card.aggregation
+        ? { aggregations: card.aggregation }
+        : { layouts: card.layout }
+    );
+
+    this.gridSettings = settings;
   }
 
   /**
@@ -429,11 +453,13 @@ export class SafeSummaryCardComponent
   ) {
     if (!card.aggregation || !card.resource) return;
     this.loading = true;
+
     this.dataQuery = this.aggregationService.aggregationDataWatchQuery(
       card.resource,
       card.aggregation,
       DEFAULT_PAGE_SIZE,
-      0
+      0,
+      this.contextService.injectDashboardFilterValues(this.contextFilters)
     );
 
     this.dataQuery.valueChanges
@@ -471,6 +497,7 @@ export class SafeSummaryCardComponent
    */
   public onPage(event: UIPageChangeEvent): void {
     this.pageInfo.pageSize = event.pageSize;
+    this.pageInfo.skip = event.skip;
 
     if (this.dataQuery) {
       this.loading = true;
@@ -513,5 +540,6 @@ export class SafeSummaryCardComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    this.resizeObserver.disconnect();
   }
 }

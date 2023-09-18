@@ -31,14 +31,14 @@
           : widget.defaultCols
       "
       [rowSpan]="!canUpdate && widgets.length === 1 ? 4 : widget.defaultRows"
-      class="rounded-lg border focus-within:ring-2 focus-within:ring-indigo-500 focus-within:ring-offset-2"
+      class="!rounded-lg !border focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2"
       [ngClass]="{
-        'shadow-sm border-gray-300':
+        '!shadow-sm !border-gray-300':
           widget.settings.widgetDisplay?.showBorder ?? true,
-        'border-transparent': !(
+        '!border-transparent': !(
           widget.settings.widgetDisplay?.showBorder ?? true
         ),
-        'hover:border-gray-400 hover:shadow-sm': isBackOffice
+        'hover:!border-gray-400 hover:!shadow-sm': isBackOffice
       }"
     >
       <!-- Settings -->
@@ -49,11 +49,12 @@
         (edit)="onEditWidget($event)"
         (delete)="onDeleteWidget($event)"
         (expand)="onExpandWidget($event)"
+        (style)="onStyleWidget($event)"
       >
       </safe-floating-options>
       <safe-widget
         [widget]="widget"
-        (goToNextStep)="goToNextStep.emit($event)"
+        (changeStep)="changeStep.emit($event)"
         [id]="'widget-' + widget.id"
         (edit)="onEditWidget($event)"
         [canUpdate]="canUpdate"

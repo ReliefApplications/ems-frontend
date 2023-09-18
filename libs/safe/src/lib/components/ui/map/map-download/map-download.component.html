@@ -1,0 +1,84 @@
+<div class="border-2 border-opacity-20 border-black rounded-md bg-white">
+  <!-- Small control ( not showing download ) -->
+  <button class="bg-none p2" (click)="toggleVisibility()" *ngIf="!expanded">
+    <ui-icon icon="download"></ui-icon>
+  </button>
+  <!-- Expanded control ( showing download ) -->
+  <div class="flex flex-col" *ngIf="expanded" [formGroup]="formGroup">
+    <!-- Selection of view -->
+    <div class="p-1">
+      <div
+        formControlName="view"
+        uiRadioGroupDirective="viewOptions"
+        class="flex flex-col gap-1"
+      >
+        <ui-radio *ngFor="let view of viewOptions" [value]="view.value">
+          <ng-container ngProjectAs="label">
+            {{ view.label }}
+          </ng-container>
+        </ui-radio>
+      </div>
+    </div>
+    <ui-divider class="m-0"></ui-divider>
+    <!-- Selection of layers to export -->
+    <div class="p-1 flex flex-col gap-1">
+      <div
+        formControlName="layers"
+        uiRadioGroupDirective="layerOptions"
+        class="flex flex-col gap-1"
+      >
+        <ui-radio
+          class="radio-button"
+          *ngFor="let layer of layersOptions"
+          [value]="layer.value"
+        >
+          <ng-container ngProjectAs="label">
+            {{ layer.label }}
+          </ng-container>
+        </ui-radio>
+      </div>
+      <ng-container *ngIf="formGroup.value.layers === 'selected'">
+        <div uiFormFieldDirective class="p-0">
+          <label>{{
+            'components.map.controls.download.selectLayers' | translate
+          }}</label>
+          <ui-select-menu formControlName="selectedLayers" [multiselect]="true">
+            <ui-select-option
+              *ngFor="let layer of layers"
+              [value]="layer.label"
+            >
+              {{ layer.label }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+      </ng-container>
+    </div>
+    <ui-divider class="m-0"></ui-divider>
+    <!-- Export format -->
+    <div class="p-1">
+      <div uiFormFieldDirective class="p-0">
+        <label>{{
+          'components.map.controls.download.output' | translate
+        }}</label>
+        <ui-select-menu formControlName="output">
+          <ui-select-option
+            *ngFor="let output of outputOptions"
+            [value]="output"
+          >
+            {{ output }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+    </div>
+    <ui-divider class="m-0"></ui-divider>
+    <!-- Actions -->
+    <div class="flex gap-1 justify-end">
+      <ui-button
+        [isIcon]="true"
+        icon="close"
+        (click)="toggleVisibility()"
+      ></ui-button>
+      <ui-button [isIcon]="true" icon="download"></ui-button>
+    </div>
+  </div>
+</div>

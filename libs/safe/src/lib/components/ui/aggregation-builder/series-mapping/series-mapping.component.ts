@@ -40,8 +40,7 @@ export class SafeSeriesMappingComponent
   }
 
   /**
-   * Gets the control names from the inputs.
-   * Sets the available fields.
+   * Set control listeners on form controls
    */
   private setControlListeners(): void {
     this.controlNames = Object.keys(

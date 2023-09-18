@@ -40,7 +40,7 @@ const TEMPLATE: StoryFn<SafeRecordSummaryComponent> = (args) => ({
 });
 
 /**
- * Default story
+ * Default story.
  */
 export const DEFAULT = {
   render: TEMPLATE,
@@ -62,7 +62,7 @@ export const DEFAULT = {
 };
 
 /**
- * With cache story
+ * Cache only story.
  */
 export const CACHE_ONLY = {
   render: TEMPLATE,
@@ -74,7 +74,7 @@ export const CACHE_ONLY = {
 };
 
 /**
- * Without cache story
+ * Without cache story.
  */
 export const WITHOUT_CACHE = {
   render: TEMPLATE,

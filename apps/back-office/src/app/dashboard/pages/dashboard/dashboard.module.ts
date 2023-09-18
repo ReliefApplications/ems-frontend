@@ -11,6 +11,7 @@ import {
   SafeEditableTextModule,
   FullScreenModule,
   DashboardFilterModule,
+  ButtonActionModule,
 } from '@oort-front/safe';
 import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
@@ -28,6 +29,7 @@ import {
   DialogModule,
   GraphQLSelectModule,
 } from '@oort-front/ui';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 /**
  * Dashboard page module.
@@ -59,6 +61,8 @@ import {
     FormWrapperModule,
     GraphQLSelectModule,
     AlertModule,
+    DragDropModule,
+    ButtonActionModule,
   ],
   exports: [DashboardComponent],
 })

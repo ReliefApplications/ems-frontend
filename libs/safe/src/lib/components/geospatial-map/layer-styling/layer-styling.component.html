@@ -1,0 +1,127 @@
+<div class="flex flex-col w-full h-96 p-1.5">
+  <span class="flex justify-between items-center mb-3 h-10">
+    <h2 class="m-0">
+      {{
+        'components.widget.settings.map.geospatial.layersStyles.title'
+          | translate
+      }}
+    </h2>
+    <div
+      class="hover:cursor-pointer hover:bg-gray-200 rounded-full p-2"
+      (click)="close.emit()"
+    >
+      <ui-icon class="text-gray-600">close</ui-icon>
+    </div>
+  </span>
+  <form [formGroup]="styleForm">
+    <ng-container *ngIf="selectedLayerType === 'Polygon'">
+      <ui-divider
+        [text]="
+          'components.widget.settings.map.geospatial.layersStyles.fill.title'
+            | translate
+        "
+        class="mt-0"
+      ></ui-divider>
+      <!-- Fill color -->
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.widget.settings.map.geospatial.layersStyles.fill.color'
+            | translate
+        }}</label>
+        <input type="color" formControlName="fillColor" />
+      </div>
+
+      <!-- Fill opacity -->
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.widget.settings.map.geospatial.layersStyles.fill.opacity'
+            | translate
+        }}</label>
+        <input
+          type="number"
+          step=".1"
+          min="0"
+          max="1"
+          formControlName="fillOpacity"
+        />
+      </div>
+    </ng-container>
+    <ng-container
+      *ngIf="
+        selectedLayerType === 'Polygon' || selectedLayerType === 'LineString'
+      "
+    >
+      <ui-divider
+        [text]="
+          'components.widget.settings.map.geospatial.layersStyles.outline.title'
+            | translate
+        "
+        [ngClass]="{ 'mt-0': selectedLayerType === 'LineString' }"
+      ></ui-divider>
+      <!-- Outline color -->
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.widget.settings.map.geospatial.layersStyles.outline.color'
+            | translate
+        }}</label>
+        <input type="color" formControlName="color" />
+      </div>
+
+      <!-- Outline opacity -->
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.widget.settings.map.geospatial.layersStyles.outline.opacity'
+            | translate
+        }}</label>
+        <input
+          type="number"
+          step=".1"
+          min="0"
+          max="1"
+          formControlName="opacity"
+        />
+      </div>
+
+      <!-- Outline width -->
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.widget.settings.map.geospatial.layersStyles.outline.width'
+            | translate
+        }}</label>
+        <input type="number" min="0" formControlName="weight" />
+      </div>
+    </ng-container>
+    <ng-container *ngIf="selectedLayerType === 'Point'">
+      <ui-divider
+        [text]="
+          'components.widget.settings.map.geospatial.layersStyles.marker.title'
+            | translate
+        "
+        class="mt-0"
+      ></ui-divider>
+      <!-- Marker color -->
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.widget.settings.map.geospatial.layersStyles.marker.color'
+            | translate
+        }}</label>
+        <input type="color" formControlName="color" />
+      </div>
+
+      <!-- Marker opacity -->
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.widget.settings.map.geospatial.layersStyles.marker.opacity'
+            | translate
+        }}</label>
+        <input
+          type="number"
+          step=".1"
+          min="0"
+          max="1"
+          formControlName="opacity"
+        />
+      </div>
+    </ng-container>
+  </form>
+</div>

@@ -29,6 +29,12 @@
   .k-timepicker,
   .k-datetimepicker {
     width: 100%;
+
+    .k-dateinput {
+      .k-input-inner {
+        height: 100% !important;
+      }
+    }
   }
 }
 
@@ -38,6 +44,12 @@
   .k-timepicker,
   .k-datetimepicker {
     width: 100%;
+
+    .k-dateinput {
+      .k-input-inner {
+        height: 100% !important;
+      }
+    }
   }
 }
 

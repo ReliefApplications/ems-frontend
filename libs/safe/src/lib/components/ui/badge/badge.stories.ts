@@ -53,7 +53,7 @@ const TEMPLATE_WITH_TEXT: StoryFn<SafeBadgeComponent> = (args) => ({
 });
 
 /**
- * Default story
+ * Default story.
  */
 export const DEFAULT = {
   render: TEMPLATE_WITH_TEXT,
@@ -66,7 +66,7 @@ export const DEFAULT = {
 };
 
 /**
- * With icon story
+ * With icon story.
  */
 export const ICON = {
   render: TEMPLATE_WITH_TEXT,

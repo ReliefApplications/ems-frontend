@@ -1,33 +1,124 @@
-<!-- <p>map-layers works!</p> -->
-<div class="flex flex-col">
-  <h2>{{ 'common.layers' | translate }}</h2>
-  <ui-tabs>
-    <ui-tab>
-      <ng-container ngProjectAs="label">{{
-        'components.widget.settings.map.layers.point.title' | translate
-      }}</ng-container>
-      <safe-map-markers
-        [form]="form"
-        [selectedFields]="selectedFields"
-        [formattedSelectedFields]="formattedSelectedFields"
-      ></safe-map-markers>
-    </ui-tab>
-    <ui-tab>
-      <ng-container ngProjectAs="label">{{
-        'components.widget.settings.map.layers.clorophlet.title' | translate
-      }}</ng-container>
-      <safe-map-clorophlets
-        [query]="form.get('query')"
-        [clorophlets]="clorophlets"
-        [selectedFields]="selectedFields"
-        [formattedSelectedFields]="formattedSelectedFields"
-      ></safe-map-clorophlets>
-    </ui-tab>
-    <ui-tab>
-      <ng-container ngProjectAs="label">{{
-        'components.widget.settings.map.layers.online.title' | translate
-      }}</ng-container>
-      <safe-map-online-layers [layers]="onlineLayers"></safe-map-online-layers>
-    </ui-tab>
-  </ui-tabs>
+<div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
+  <!-- List of layers -->
+  <div class="flex-1 flex flex-col">
+    <div class="flex justify-between">
+      <h2>{{ 'common.layers' | translate }}</h2>
+      <ng-container *ngIf="mapLayers.length && !loading">
+        <div class="flex justify-end">
+          <ng-container *ngTemplateOutlet="newLayer"></ng-container>
+        </div>
+      </ng-container>
+    </div>
+    <ng-container *ngIf="!loading; else loadingTmpl">
+      <ng-container *ngIf="mapLayers.length; else emptyTmpl">
+        <!-- Table container -->
+        <div class="overflow-x-hidden mt-4 shadow-2lg">
+          <!-- Table scroll container -->
+          <div class="overflow-x-auto">
+            <!-- List of layers -->
+            <table
+              #layerTable
+              cdk-table
+              uiTableWrapper
+              [dataSource]="mapLayers"
+              cdkDropList
+              class="shadow-md"
+              (cdkDropListDropped)="onListDrop($event)"
+            >
+              <ng-container cdkColumnDef="name">
+                <th uiCellHeader *cdkHeaderCellDef>
+                  {{ 'common.name' | translate }}
+                </th>
+                <td uiCell *cdkCellDef="let layer" class="font-bold">
+                  <span class="flex items-center gap-1">
+                    <ui-icon icon="drag_indicator" class="hover:cursor-move">
+                    </ui-icon>
+                    {{ layer.name }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+                <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>
+                <td uiCell *cdkCellDef="let layer; let i = index">
+                  <ui-button
+                    [isIcon]="true"
+                    icon="more_vert"
+                    [uiMenuTriggerFor]="menu"
+                    (click)="$event.stopPropagation()"
+                  >
+                  </ui-button>
+                  <ui-menu #menu>
+                    <button uiMenuItem (click)="onEditLayer(layer.id)">
+                      <ui-icon icon="edit" variant="grey"></ui-icon>
+                      {{ 'common.edit' | translate }}
+                    </button>
+                    <ui-divider class="m-0"></ui-divider>
+                    <button uiMenuItem (click)="onDeleteLayer(i)">
+                      <ui-icon icon="delete" variant="danger"></ui-icon>
+                      {{ 'common.delete' | translate }}
+                    </button>
+                  </ui-menu>
+                </td>
+              </ng-container>
+
+              <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+              <tr
+                *cdkRowDef="let row; columns: displayedColumns"
+                cdk-row
+                cdkDrag
+              ></tr>
+            </table>
+          </div>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+  <!-- Map -->
+  <div class="lg:flex-1 max-lg:min-w-full h-80 lg:h-[400px] flex-shrink-0">
+    <ng-template #mapContainer></ng-template>
+  </div>
 </div>
+
+<!-- Add button -->
+<ng-template #newLayer>
+  <ui-button
+    [uiMenuTriggerFor]="layerMenu"
+    category="secondary"
+    variant="primary"
+  >
+    {{ 'components.widget.settings.map.layers.add' | translate }}
+  </ui-button>
+</ng-template>
+
+<ng-template #mapContainer></ng-template>
+
+<!-- Contextual menu for layer addition -->
+<ui-menu #layerMenu>
+  <button uiMenuItem (click)="onAddLayer()">
+    <span>{{
+      'components.widget.settings.map.layers.createLayer' | translate
+    }}</span>
+  </button>
+  <button uiMenuItem (click)="onAddLayer('GroupLayer')">
+    <span>{{
+      'components.widget.settings.map.layers.createGroup' | translate
+    }}</span>
+  </button>
+  <button uiMenuItem (click)="onSelectLayer()">
+    <span>{{
+      'components.widget.settings.map.layers.selectLayer' | translate
+    }}</span>
+  </button>
+</ui-menu>
+
+<ng-template #loadingTmpl>
+  <!-- Loading indicator -->
+  <safe-skeleton-table [columns]="['common.name']" [actions]="true">
+  </safe-skeleton-table>
+</ng-template>
+
+<ng-template #emptyTmpl>
+  <!-- Empty indicator -->
+  <safe-empty title="No layer" [footerTemplate]="newLayer"></safe-empty>
+</ng-template>

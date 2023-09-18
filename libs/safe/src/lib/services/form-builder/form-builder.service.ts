@@ -1,17 +1,20 @@
 import { Injectable } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import * as Survey from 'survey-angular';
-import { SafeReferenceDataService } from '../reference-data/reference-data.service';
-import { renderGlobalProperties } from '../../survey/render-global-properties';
+import { SnackbarService } from '@oort-front/ui';
 import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
-import { EditRecordMutationResponse, Record } from '../../models/record.model';
-import { EDIT_RECORD } from './graphql/mutations';
-import { Metadata } from '../../models/metadata.model';
-import { SafeRestService } from '../rest/rest.service';
 import { BehaviorSubject } from 'rxjs';
-import { SnackbarService } from '@oort-front/ui';
+import * as Survey from 'survey-angular';
+import { Metadata } from '../../models/metadata.model';
+import {
+  EditRecordMutationResponse,
+  Record as RecordModel,
+} from '../../models/record.model';
+import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { SafeFormHelpersService } from '../form-helper/form-helper.service';
+import { SafeReferenceDataService } from '../reference-data/reference-data.service';
+import { SafeRestService } from '../rest/rest.service';
+import { EDIT_RECORD } from './graphql/mutations';
 
 /**
  * Shared form builder service.
@@ -51,7 +54,7 @@ export class SafeFormBuilderService {
   createSurvey(
     structure: string,
     fields: Metadata[] = [],
-    record?: Record
+    record?: RecordModel
   ): Survey.SurveyModel {
     Survey.settings.useCachingForChoicesRestful = false;
     Survey.settings.useCachingForChoicesRestfull = false;
@@ -142,7 +145,7 @@ export class SafeFormBuilderService {
   public addEventsCallBacksToSurvey(
     survey: Survey.SurveyModel,
     selectedPageIndex: BehaviorSubject<number>,
-    temporaryFilesStorage: any
+    temporaryFilesStorage: Record<string, Array<File>>
   ) {
     survey.onClearFiles.add((_, options: any) => this.onClearFiles(options));
     survey.onUploadFiles.add((_, options: any) =>

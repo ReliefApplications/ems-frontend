@@ -1,0 +1,21 @@
+<div class="flex flex-col w-full">
+  <div class="flex flex-col flex-1 gap-2" [formGroup]="geoForm">
+    <ng-container *ngFor="let field of fields">
+      <ng-container *ngIf="field.value !== 'coordinates'">
+        <kendo-label [text]="field.label">
+          <kendo-textbox [formControlName]="field.value"> </kendo-textbox>
+        </kendo-label>
+      </ng-container>
+      <ng-container *ngIf="field.value === 'coordinates'">
+        <div class="flex gap-2" formGroupName="coordinates">
+          <kendo-label text="Latitude">
+            <kendo-numerictextbox formControlName="lat"> </kendo-numerictextbox>
+          </kendo-label>
+          <kendo-label text="Longitude">
+            <kendo-numerictextbox formControlName="lng"> </kendo-numerictextbox>
+          </kendo-label>
+        </div>
+      </ng-container>
+    </ng-container>
+  </div>
+</div>

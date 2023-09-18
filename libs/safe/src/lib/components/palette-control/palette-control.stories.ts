@@ -54,7 +54,7 @@ const COLORS = [
 ];
 
 /**
- * Default story
+ * Default story.
  */
 export const DEFAULT = {
   render: TEMPLATE,
@@ -66,7 +66,7 @@ export const DEFAULT = {
 };
 
 /**
- * Disabled story
+ * Disabled status story.
  */
 export const DISABLED = {
   render: TEMPLATE,

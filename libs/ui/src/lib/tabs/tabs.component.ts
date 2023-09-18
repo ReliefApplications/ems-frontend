@@ -1,5 +1,5 @@
 import {
-  AfterContentInit,
+  AfterViewInit,
   ChangeDetectorRef,
   Component,
   ContentChildren,
@@ -46,7 +46,7 @@ import { TabBodyHostDirective } from './directives/tab-body-host.directive';
     ]),
   ],
 })
-export class TabsComponent implements AfterContentInit, OnDestroy, OnChanges {
+export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
   @ContentChildren(TabComponent, { descendants: true })
   tabs!: QueryList<TabComponent>;
 
@@ -100,7 +100,7 @@ export class TabsComponent implements AfterContentInit, OnDestroy, OnChanges {
     return classes;
   }
 
-  ngAfterContentInit() {
+  ngAfterViewInit() {
     // This ensures that the subscription logic is executed for both existing and new tab elements
     this.tabs.changes
       .pipe(startWith(this.tabs), takeUntil(this.destroy$))
@@ -166,7 +166,7 @@ export class TabsComponent implements AfterContentInit, OnDestroy, OnChanges {
       tab.vertical = this.vertical;
       tab.index = index;
       tab.openTab
-        .pipe(takeUntil(this.destroy$), takeUntil(this.reorder$))
+        .pipe(takeUntil(this.reorder$), takeUntil(this.destroy$))
         .subscribe(() => {
           this.showContent(tab);
           this.selectedIndex = index;

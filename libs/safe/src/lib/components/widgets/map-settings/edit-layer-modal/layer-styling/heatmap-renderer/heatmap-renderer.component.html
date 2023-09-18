@@ -1,0 +1,96 @@
+<div [formGroup]="formGroup">
+  <!-- Gradient -->
+  <div uiFormFieldDirective>
+    <label>{{
+      'components.widget.settings.map.edit.styling.heatmapOptions.gradient'
+        | translate
+    }}</label>
+    <safe-gradient-picker formControlName="gradient"></safe-gradient-picker>
+  </div>
+  <!-- Radius -->
+  <div class="flex flex-col">
+    <h3>
+      {{
+        'components.widget.settings.map.edit.styling.heatmapOptions.radius'
+          | translate
+      }}
+    </h3>
+    <ui-slider
+      formControlName="radius"
+      class="grow"
+      [minValue]="10"
+      [maxValue]="30"
+    >
+    </ui-slider>
+  </div>
+  <!-- Blur -->
+  <div class="flex flex-col">
+    <h3>
+      {{
+        'components.widget.settings.map.edit.styling.heatmapOptions.blur'
+          | translate
+      }}
+    </h3>
+    <ui-slider
+      formControlName="blur"
+      class="grow"
+      [minValue]="10"
+      [maxValue]="20"
+    >
+    </ui-slider>
+  </div>
+  <div class="flex flex-col">
+    <h3>
+      {{
+        'components.widget.settings.map.edit.styling.heatmapOptions.minOpacity'
+          | translate
+      }}
+    </h3>
+    <ui-slider
+      formControlName="minOpacity"
+      class="grow"
+      [minValue]="0"
+      [maxValue]="1"
+      [step]="0.1"
+    >
+    </ui-slider>
+  </div>
+</div>
+<!-- 
+<div
+  class="form-group"
+  style="display: flex; flex-direction: column; width: 200px"
+>
+  <label>Min Opacity</label>
+  <mat-slider
+    [min]="0"
+    [max]="1"
+    [step]="0.1"
+    value="heatmapForm.controls.minOpacity"
+  >
+    <input matInput formControlName="minOpacity" matSliderThumb />
+  </mat-slider>
+</div>
+<div
+  class="form-group"
+  style="display: flex; flex-direction: column; width: 200px"
+>
+  <label>Max Point Intensity</label>
+  <mat-slider
+    [min]="0"
+    [max]="1"
+    [step]="0.1"
+    value="heatmapForm.controls.maxPointIntensity"
+  >
+    <input matInput formControlName="maxPointIntensity" matSliderThumb />
+  </mat-slider>
+</div>
+<div
+  class="form-group"
+  style="display: flex; flex-direction: column; width: 200px"
+>
+  <label>Max Zoom</label>
+  <mat-slider [min]="1" [max]="10" value="heatmapForm.controls.maxZoom">
+    <input matInput formControlName="maxZoom" matSliderThumb />
+  </mat-slider>
+</div> -->

@@ -12,6 +12,7 @@ import * as ResourceComponent from './components/resource';
 import * as ResourcesComponent from './components/resources';
 import * as OwnerComponent from './components/owner';
 import * as UsersComponent from './components/users';
+import * as GeospatialComponent from './components/geospatial';
 import * as TextWidget from './widgets/text-widget';
 import * as CommentWidget from './widgets/comment-widget';
 import * as DropdownWidget from './widgets/dropdown-widget';
@@ -81,6 +82,7 @@ export const initCustomSurvey = (
     );
     OwnerComponent.init(Survey, domService, apollo);
     UsersComponent.init(Survey, domService, apollo);
+    GeospatialComponent.init(Survey, domService);
   }
 
   // load global properties

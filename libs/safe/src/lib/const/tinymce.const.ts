@@ -42,19 +42,28 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
       tooltip: 'Avatar',
       onAction: () => {
         editor.windowManager.open({
-          title: 'Avatars', //TODO: Translate
+          title: 'Avatars',
           body: {
             type: 'panel',
             items: [
               {
                 type: 'input',
                 name: 'avatarsSource',
-                label: 'Source', //TODO: Translate
+                label: 'Source',
               },
               {
                 type: 'input',
                 name: 'avatarsMaxItems',
-                label: 'Max items', //TODO: Translate
+                label: 'Max items',
+              },
+              {
+                type: 'listbox',
+                name: 'shape',
+                label: 'Shape',
+                items: [
+                  { text: 'Circle', value: 'circle' },
+                  { text: 'Square', value: 'square' },
+                ],
               },
               {
                 type: 'bar',
@@ -62,12 +71,12 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
                   {
                     type: 'input',
                     name: 'avatarsWidth',
-                    label: 'Width', //TODO: Translate
+                    label: 'Width',
                   },
                   {
                     type: 'input',
                     name: 'avatarsHeight',
-                    label: 'Height', //TODO: Translate
+                    label: 'Height',
                   },
                 ],
               },
@@ -76,8 +85,9 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
           initialData: {
             avatarsSource: '',
             avatarsMaxItems: '3',
-            avatarsWidth: '24',
-            avatarsHeight: '24',
+            shape: 'circle',
+            avatarsWidth: '48',
+            avatarsHeight: '48',
           },
           onChange: (api) => {
             // validate the data types
@@ -96,17 +106,17 @@ export const WIDGET_EDITOR_CONFIG: RawEditorSettings = {
           },
           onSubmit: (api) => {
             const data = api.getData();
-            const html = `{{avatars.${data.avatarsSource} ${data.avatarsWidth} ${data.avatarsHeight} ${data.avatarsMaxItems}}}`;
+            const html = `{{avatars.${data.avatarsSource} ${data.shape} ${data.avatarsWidth} ${data.avatarsHeight} ${data.avatarsMaxItems}}}`;
             editor.insertContent(html);
             api.close();
           },
           buttons: [
             {
-              text: 'Close', //TODO: Translate
+              text: 'Close',
               type: 'cancel',
             },
             {
-              text: 'Insert', //TODO: Translate
+              text: 'Insert',
               type: 'submit',
               name: 'submit',
               primary: true,
@@ -162,4 +172,41 @@ export const FIELD_EDITOR_CONFIG: RawEditorSettings = {
     'shortcuts', // the default shortcuts tab
     'keyboardnav', // the default keyboard navigation tab
   ],
+};
+
+/** Popup Editor tinymce configuration. */
+export const POPUP_EDITOR_CONFIG: RawEditorSettings = {
+  suffix: '.min',
+  plugins:
+    'preview paste importcss searchreplace autolink code visualblocks visualchars fullscreen image link media table charmap hr nonbreaking insertdatetime advlist lists wordcount imagetools textpattern help charmap quickbars emoticons',
+  // imagetools_cors_hosts: ['picsum.photos'],
+  menubar: 'edit view insert format tools table help',
+  toolbar:
+    'undo redo | bold italic underline strikethrough | fontselect fontsizeselect formatselect | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | charmap emoticons | fullscreen  preview save | insertfile image media link',
+  toolbar_sticky: true,
+  image_advtab: true,
+  importcss_append: true,
+  height: 600,
+  image_caption: true,
+  quickbars_insert_toolbar: 'image quicktable',
+  quickbars_selection_toolbar:
+    'bold italic | quicklink h2 h3 blockquote quicktable',
+  toolbar_mode: 'sliding',
+  contextmenu: 'link image imagetools table',
+  content_style: 'body { font-family: Roboto, "Helvetica Neue", sans-serif; }',
+  file_browser_callback: false, // removes possibility to upload files
+  help_tabs: [
+    'shortcuts', // the default shortcuts tab
+    'keyboardnav', // the default keyboard navigation tab
+  ],
+};
+
+/** Inline Editor tinymce configuration. */
+export const INLINE_EDITOR_CONFIG: RawEditorSettings = {
+  menubar: false,
+  inline: true,
+  toolbar: '',
+  plugins: '',
+  height: 50,
+  content_style: 'p { margin: 0 !important; }',
 };

@@ -95,7 +95,7 @@ export class SafeGridWidgetComponent
   } = { error: false };
 
   // === EMIT STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+  @Output() changeStep: EventEmitter<number> = new EventEmitter();
 
   // === EMIT EVENT ===
   @Output() edit: EventEmitter<any> = new EventEmitter();
@@ -438,10 +438,50 @@ export class SafeGridWidgetComponent
       }
     }
 
-    // Workflow only: goes to next step, or closes the workflow.
-    if (options.goToNextStep || options.closeWorkflow) {
+    // Opens a form with selected records.
+    if (options.prefillForm) {
+      const promisedRecords: Promise<any>[] = [];
+      // Fetches the record object for each selected record.
+      for (const record of this.grid.selectedItems) {
+        promisedRecords.push(
+          firstValueFrom(
+            this.apollo.query<RecordQueryResponse>({
+              query: GET_RECORD_DETAILS,
+              variables: {
+                id: record.id,
+              },
+            })
+          )
+        );
+      }
+      const records = (await Promise.all(promisedRecords)).map(
+        (x) => x.data.record
+      );
+
+      // Opens a modal containing the prefilled form.
+      const { SafeFormModalComponent } = await import(
+        '../../form-modal/form-modal.component'
+      );
+      this.dialog.open(SafeFormModalComponent, {
+        data: {
+          template: options.prefillTargetForm,
+          prefillRecords: records,
+          askForConfirm: false,
+        },
+        autoFocus: false,
+      });
+    }
+
+    // Workflow only: goes to next step, goes to the previous step, or closes the workflow.
+    if (
+      options.goToNextStep ||
+      options.goToPreviousStep ||
+      options.closeWorkflow
+    ) {
       if (options.goToNextStep) {
-        this.goToNextStep.emit(true);
+        this.changeStep.emit(1);
+      } else if (options.goToPreviousStep) {
+        this.changeStep.emit(-1);
       } else {
         const dialogRef = this.confirmService.openConfirmModal({
           title: this.translate.instant(

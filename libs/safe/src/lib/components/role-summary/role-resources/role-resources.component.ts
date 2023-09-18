@@ -429,6 +429,18 @@ export class RoleResourcesComponent
   }
 
   /**
+   * Custom TrackByFunction to compute the identity of items in an iterable, so when
+   * updating fields the scroll don't get back to the beginning of the table.
+   *
+   * @param index index of the item in the table
+   * @param item item table
+   * @returns unique value for all unique inputs
+   */
+  public getUniqueIdentifier(index: number, item: any): any {
+    return item.resource.id;
+  }
+
+  /**
    * Gets the correspondent icon for a given permission
    *
    * @param resource A resource

@@ -55,9 +55,10 @@ export class SafeWidgetGridComponent
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() edit: EventEmitter<any> = new EventEmitter();
   @Output() add: EventEmitter<any> = new EventEmitter();
+  @Output() style: EventEmitter<any> = new EventEmitter();
 
   // === STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+  @Output() changeStep: EventEmitter<number> = new EventEmitter();
 
   @ViewChildren(SafeWidgetComponent)
   widgetComponents!: QueryList<SafeWidgetComponent>;
@@ -149,6 +150,21 @@ export class SafeWidgetGridComponent
   }
 
   /**
+   * Emits style event.
+   *
+   * @param e widget to style.
+   */
+  onStyleWidget(e: any): void {
+    const widgetComp = this.widgetComponents.find(
+      (v) => v.widget.id == e.widget.id
+    );
+    this.style.emit({
+      domId: widgetComp?.id,
+      widget: e.widget,
+    });
+  }
+
+  /**
    * Expands widget in a full size screen popup.
    *
    * @param e widget to open.
@@ -164,10 +180,10 @@ export class SafeWidgetGridComponent
       },
       autoFocus: false,
     });
-    dialogRef.componentInstance?.goToNextStep
+    dialogRef.componentInstance?.changeStep
       .pipe(takeUntil(this.destroy$))
       .subscribe((event: any) => {
-        this.goToNextStep.emit(event);
+        this.changeStep.emit(event);
         dialogRef.close();
       });
   }

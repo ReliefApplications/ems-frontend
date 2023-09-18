@@ -116,6 +116,13 @@
                 icon="drag_indicator"
               >
               </ui-button>
+              <ui-icon
+                variant="grey"
+                [size]="18"
+                *ngIf="!item.visible"
+                icon="visibility_off"
+                class="flex"
+              ></ui-icon>
             </div>
           </li>
           <!-- Preview when dragging element -->

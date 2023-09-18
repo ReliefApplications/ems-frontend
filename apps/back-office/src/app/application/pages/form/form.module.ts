@@ -7,9 +7,8 @@ import {
   SafeAccessModule,
   SafeEditableTextModule,
 } from '@oort-front/safe';
-import { SpinnerModule } from '@oort-front/ui';
+import { ButtonModule, SpinnerModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { ButtonModule } from '@oort-front/ui';
 
 /**
  * Application form page module.
@@ -25,6 +24,7 @@ import { ButtonModule } from '@oort-front/ui';
     TranslateModule,
     SafeEditableTextModule,
     ButtonModule,
+    TooltipModule,
   ],
   exports: [FormComponent],
 })

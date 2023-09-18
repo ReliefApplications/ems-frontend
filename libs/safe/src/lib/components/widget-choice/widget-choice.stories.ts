@@ -39,7 +39,7 @@ const TEMPLATE: StoryFn<SafeWidgetChoiceComponent> = (args) => ({
 });
 
 /**
- * Default story
+ * Default story.
  */
 export const DEFAULT = {
   render: TEMPLATE,
@@ -52,7 +52,7 @@ export const DEFAULT = {
 };
 
 /**
- * Floating story
+ * Floating story.
  */
 export const FLOATING = {
   render: TEMPLATE,

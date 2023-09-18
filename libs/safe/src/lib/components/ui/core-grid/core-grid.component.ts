@@ -42,8 +42,7 @@ import {
 } from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
 import { GridSettings } from './models/grid-settings.model';
-import isEqual from 'lodash/isEqual';
-import get from 'lodash/get';
+import { get, isEqual } from 'lodash';
 import { SafeGridService } from '../../../services/grid/grid.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeDatePipe } from '../../../pipes/date/date.pipe';
@@ -51,10 +50,12 @@ import { SafeGridComponent } from './grid/grid.component';
 import { SafeDateTranslateService } from '../../../services/date-translate/date-translate.service';
 import { SafeApplicationService } from '../../../services/application/application.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 import { firstValueFrom, Subject } from 'rxjs';
+import { searchFilters } from '../../../utils/filter/search-filters';
 import { SnackbarService } from '@oort-front/ui';
 import { FormQueryResponse } from '../../../models/form.model';
+import { ContextService } from '../../../services/context/context.service';
 
 /**
  * Default file name when exporting grid data.
@@ -190,6 +191,10 @@ export class SafeCoreGridComponent
 
   // === FILTERING ===
   public filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
+  private contextFilter: CompositeFilterDescriptor = {
+    logic: 'and',
+    filters: [],
+  };
   public showFilter = false;
   public search = '';
 
@@ -199,25 +204,36 @@ export class SafeCoreGridComponent
     if (this.settings?.query?.filter) {
       gridFilters.push(this.settings?.query?.filter);
     }
+    let filter: CompositeFilterDescriptor | undefined;
     if (this.search) {
-      const textFields = this.fields.filter(
-        (x) => x.meta && x.meta.type === 'text'
-      );
-      const searchFilters = textFields.map((x) => ({
-        field: x.name,
-        operator: 'contains',
-        value: this.search,
-      }));
-      return {
+      const skippedFields = ['id', 'incrementalId'];
+      filter = {
         logic: 'and',
         filters: [
           { logic: 'and', filters: gridFilters },
-          { logic: 'or', filters: searchFilters },
+          {
+            logic: 'or',
+            filters: searchFilters(
+              this.search,
+              this.fields.map((field) => field.meta),
+              skippedFields
+            ),
+          },
         ],
       };
     } else {
-      return { logic: 'and', filters: gridFilters };
+      filter = {
+        logic: 'and',
+        filters: gridFilters,
+      };
     }
+    return {
+      logic: 'and',
+      filters: [
+        filter,
+        this.contextService.injectDashboardFilterValues(this.contextFilter),
+      ],
+    };
   }
 
   // === LAYOUT CHANGES ===
@@ -279,6 +295,7 @@ export class SafeCoreGridComponent
    * @param translate Angular translate service
    * @param dateTranslate Shared date translate service
    * @param applicationService Shared application service
+   * @param contextService Shared context service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -293,11 +310,18 @@ export class SafeCoreGridComponent
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private dateTranslate: SafeDateTranslateService,
-    private applicationService: SafeApplicationService
+    private applicationService: SafeApplicationService,
+    private contextService: ContextService
   ) {
     super();
     this.isAdmin =
       this.authService.userIsAdmin && environment.module === 'backoffice';
+
+    contextService.filter$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        if (this.dataQuery) this.reloadData();
+      });
   }
 
   /**
@@ -317,6 +341,11 @@ export class SafeCoreGridComponent
    * Configure the grid
    */
   public configureGrid(): void {
+    // set context filter
+    this.contextFilter = this.settings.contextFilters
+      ? JSON.parse(this.settings.contextFilters)
+      : this.contextFilter;
+
     // define row actions
     this.actions = {
       add:
@@ -661,7 +690,7 @@ export class SafeCoreGridComponent
               console.error(error);
             }
           }
-          if (this.settings.query.temporaryRecords) {
+          if (this.settings.query.temporaryRecords?.length) {
             //Handles temporary records for resources creation in forms
             this.getTemporaryRecords();
           }
@@ -842,6 +871,26 @@ export class SafeCoreGridComponent
       }
       case 'resetLayout': {
         this.resetDefaultLayout();
+        break;
+      }
+      case 'map': {
+        import('./map-modal/map-modal.component').then(
+          ({ MapModalComponent }) => {
+            this.dialog.open(MapModalComponent, {
+              data: {
+                item: event.item,
+                datasource: {
+                  type: 'Point',
+                  resource: this.settings.resource,
+                  // todo(change)
+                  layout: this.settings.id,
+                  geoField: event.field.name,
+                },
+              },
+            });
+          }
+        );
+
         break;
       }
       default: {

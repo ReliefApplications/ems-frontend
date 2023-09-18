@@ -138,30 +138,47 @@
   <ng-container *ngIf="fieldForm.value.kind === 'SCALAR'">
     <form [formGroup]="fieldForm" class="p-4 rounded-lg border border-gray-300">
       <div class="flex gap-2">
-        <ui-button [isIcon]="true" icon="arrow_back" (click)="onCloseField()">
-        </ui-button>
+        <!-- Go back to list of fields -->
+        <ui-button
+          [isIcon]="true"
+          icon="arrow_back"
+          (click)="onCloseField()"
+        ></ui-button>
+        <!-- Field name (static) -->
         <div uiFormFieldDirective>
           <label>{{ 'models.form.field.name' | translate }}</label>
           <input formControlName="name" type="text" [disabled]="true" />
         </div>
+        <!-- Field label -->
         <div uiFormFieldDirective>
           <label>{{ 'models.form.field.label' | translate }}</label>
           <input formControlName="label" type="text" />
         </div>
-        <div uiFormFieldDirective>
+        <div *ngIf="showColumnWidth" uiFormFieldDirective>
           <label>
             {{ 'components.queryBuilder.fields.column' | translate }}
           </label>
           <input formControlName="width" type="number" />
         </div>
       </div>
-      <h3 style="margin: 0">
-        {{ 'components.queryBuilder.fields.format.title' | translate }}
-      </h3>
-      <div class="info-text" style="margin-bottom: 10px">
-        {{ 'components.queryBuilder.fields.format.info' | translate }}
+      <!-- Display format -->
+      <div uiFormFieldDirective class="w-full">
+        <label>{{
+          'components.queryBuilder.fields.format.title' | translate
+        }}</label>
+        <!-- @todo: check -->
+        <safe-editor-control
+          formControlName="format"
+          [editorConfig]="editor"
+        ></safe-editor-control>
+        <ui-icon
+          icon="info"
+          class="cursor-pointer"
+          variant="grey"
+          uiSuffix
+          [uiTooltip]="'components.queryBuilder.fields.format.info' | translate"
+        ></ui-icon>
       </div>
-      <editor [init]="editor" formControlName="format"></editor>
     </form>
   </ng-container>
   <ng-container

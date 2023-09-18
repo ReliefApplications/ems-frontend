@@ -20,6 +20,7 @@ import { firstValueFrom, Observable } from 'rxjs';
 import { ApolloQueryResult } from '@apollo/client';
 import { Connection } from '../../utils/graphql/connection.type';
 import { ResourceQueryResponse } from '../../models/resource.model';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
 /** Fallback AggregationConnection */
 const FALLBACK_AGGREGATIONS: Connection<Aggregation> = {
@@ -81,12 +82,14 @@ export class SafeAggregationService {
    * @param resource Resource Id
    * @param aggregation Aggregation definition
    * @param mapping aggregation mapping ( category, field, series )
+   * @param contextFilters context filters, if any
    * @returns Aggregation query
    */
   aggregationDataQuery(
     resource: string,
     aggregation: string,
-    mapping?: any
+    mapping?: any,
+    contextFilters?: CompositeFilterDescriptor
   ): Observable<ApolloQueryResult<AggregationDataQueryResponse>> {
     return this.apollo.query<AggregationDataQueryResponse>({
       query: GET_AGGREGATION_DATA,
@@ -94,6 +97,7 @@ export class SafeAggregationService {
         resource,
         aggregation,
         mapping,
+        contextFilters,
       },
     });
   }
@@ -105,13 +109,15 @@ export class SafeAggregationService {
    * @param aggregation Aggregation definition
    * @param first size of the page
    * @param skip index of the page
+   * @param contextFilters context filters, if any
    * @returns Aggregation query
    */
   aggregationDataWatchQuery(
     resource: string,
     aggregation: string,
     first: number,
-    skip: number
+    skip: number,
+    contextFilters?: CompositeFilterDescriptor
   ): QueryRef<AggregationDataQueryResponse> {
     return this.apollo.watchQuery<AggregationDataQueryResponse>({
       query: GET_AGGREGATION_DATA,
@@ -120,6 +126,7 @@ export class SafeAggregationService {
         aggregation,
         first,
         skip,
+        contextFilters,
       },
     });
   }

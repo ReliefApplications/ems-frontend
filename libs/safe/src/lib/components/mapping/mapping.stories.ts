@@ -66,7 +66,7 @@ const TEMPLATE: StoryFn<SafeMappingComponent> = () => ({
 });
 
 /**
- * Default story
+ * Default story.
  */
 export const DEFAULT = {
   render: TEMPLATE,
@@ -88,7 +88,7 @@ const TEMPLATE_EMPTY: StoryFn<SafeMappingComponent> = () => ({
 });
 
 /**
- * Empty story
+ * Empty story.
  */
 export const EMPTY = {
   render: TEMPLATE_EMPTY,

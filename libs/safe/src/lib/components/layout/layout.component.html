@@ -6,7 +6,7 @@
 >
   <div class="flex-shrink-0 flex flex-wrap min-w-0">
     <ui-button
-      *ngIf="!largeDevice"
+      *ngIf="nav && (sideMenu || !largeDevice)"
       [isIcon]="true"
       variant="light"
       [size]="'large'"
@@ -74,10 +74,11 @@
       [isIcon]="true"
     >
     </ui-button>
-    <kendo-badge-container class="absolute right-0 top-0">
+    <kendo-badge-container>
       <kendo-badge
         shape="dot"
         themeColor="error"
+        size="small"
         class="absolute -translate-x-1/4 translate-y-full scale-50"
         *ngIf="notifications.length > 0"
       ></kendo-badge>
@@ -196,6 +197,7 @@
     class="h-full"
     position="end"
     [opened]="showSidenav"
+    [keepFullscreen]="true"
     #rightNav="uiSidenavDirective"
   >
     <ng-template #rightSidenav></ng-template>

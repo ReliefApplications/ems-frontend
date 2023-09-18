@@ -32,9 +32,12 @@ import { SafeUnsubscribeModule } from './components/utils/unsubscribe/unsubscrib
 import { SafeViewsModule } from './views/views.module';
 import { SafeEditableTextModule } from './components/editable-text/editable-text.module';
 import { CronExpressionControlModule } from './components/cron-expression-control/cron-expression-control.module';
+import { MapModule } from './components/ui/map';
 import { FullScreenModule } from './directives/fullscreen/fullscreen.module';
 import { DashboardFilterModule } from './components/dashboard-filter/dashboard-filter.module';
+import { ButtonActionModule } from './components/button-action/button-action.module';
 import { GraphQLSelectModule } from '@oort-front/ui';
+import { SafeWidgetChoiceModule } from './components/widget-choice/widget-choice.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -62,7 +65,10 @@ import { GraphQLSelectModule } from '@oort-front/ui';
     SafeUserSummaryModule,
     SafeEditableTextModule,
     CronExpressionControlModule,
+    MapModule,
     DashboardFilterModule,
+    ButtonActionModule,
+    SafeWidgetChoiceModule,
     // === Pipes ===
     SafeDateModule,
     SafeReadableCronModule,

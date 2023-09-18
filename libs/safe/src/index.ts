@@ -22,6 +22,10 @@ export * from './lib/services/aggregation/aggregation.service';
 export * from './lib/services/auth-interceptor/auth-interceptor.service';
 export * from './lib/services/confirm/confirm.service';
 export * from './lib/services/paginator-translate'; // todo: update
+export * from './lib/services/context/context.service';
+export * from './lib/services/data-template/data-template.service';
+export * from './lib/services/editor/editor.service';
+export * from './lib/services/rest/rest.service';
 
 // === DIRECTIVES ===
 export * from './lib/directives/skeleton/public-api';
@@ -93,6 +97,8 @@ export * from './lib/components/utils/unsubscribe/public-api';
 export * from './lib/components/editable-text/public-api';
 export * from './lib/components/cron-expression-control/public-api';
 export * from './lib/components/dashboard-filter/public-api';
+export * from './lib/components/editor-control/editor-control.component';
+export * from './lib/components/button-action/public-api';
 
 /** Grid Layouts */
 export * from './lib/components/grid-layout/edit-layout-modal/public-api';
@@ -106,6 +112,7 @@ export * from './lib/views/public-api';
 
 // === MODULE ===
 export * from './lib/safe.module';
+export * from './lib/components/widget-choice/widget-choice.module';
 
 // === PIPES ===
 export * from './lib/pipes/date/public-api';
@@ -114,3 +121,6 @@ export * from './lib/pipes/cron-parser/public-api';
 
 // === UTILS ===
 export * from './lib/utils/public-api';
+
+// === CONST ===
+export * from './lib/const/tinymce.const';

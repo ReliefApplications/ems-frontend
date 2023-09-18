@@ -1,22 +1,15 @@
-import { Apollo } from 'apollo-angular';
+import { HttpHeaders } from '@angular/common/http';
 import { Inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { SnackbarService } from '@oort-front/ui';
+import { Apollo } from 'apollo-angular';
 import {
-  AddRoleMutationResponse,
-  DeleteRoleMutationResponse,
-  DeleteUsersFromApplicationMutationResponse,
-  EditRoleMutationResponse,
-  Role,
-} from '../../models/user.model';
-import {
-  Page,
-  ContentType,
-  DeletePageMutationResponse,
-  EditPageMutationResponse,
-  AddPageMutationResponse,
-  DuplicatePageMutationResponse,
-} from '../../models/page.model';
+  BehaviorSubject,
+  Observable,
+  Subscription,
+  firstValueFrom,
+} from 'rxjs';
 import {
   Application,
   ApplicationEditedSubscriptionResponse,
@@ -31,67 +24,27 @@ import {
   DeleteChannelMutationResponse,
   EditChannelMutationResponse,
 } from '../../models/channel.model';
-import { HttpHeaders } from '@angular/common/http';
-import {
-  ADD_PAGE,
-  ADD_ROLE,
-  DELETE_PAGE,
-  DELETE_ROLE,
-  EDIT_APPLICATION,
-  EDIT_ROLE,
-  ADD_CHANNEL,
-  DELETE_CHANNEL,
-  ADD_SUBSCRIPTION,
-  EDIT_SUBSCRIPTION,
-  DELETE_SUBSCRIPTION,
-  ADD_POSITION_ATTRIBUTE_CATEGORY,
-  DELETE_USERS_FROM_APPLICATION,
-  DELETE_POSITION_ATTRIBUTE_CATEGORY,
-  EDIT_POSITION_ATTRIBUTE_CATEGORY,
-  EDIT_CHANNEL,
-  TOGGLE_APPLICATION_LOCK,
-  DUPLICATE_PAGE,
-  ADD_TEMPLATE,
-  UPDATE_TEMPLATE,
-  DELETE_TEMPLATE,
-  UPDATE_DISTRIBUTION_LIST,
-  ADD_DISTRIBUTION_LIST,
-  DELETE_DISTRIBUTION_LIST,
-  EDIT_PAGE,
-  ADD_CUSTOM_NOTIFICATION,
-  DELETE_CUSTOM_NOTIFICATION,
-} from './graphql/mutations';
-import { GET_APPLICATION_BY_ID } from './graphql/queries';
-import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
-import {
-  APPLICATION_EDITED_SUBSCRIPTION,
-  APPLICATION_UNLOCKED_SUBSCRIPTION,
-} from './graphql/subscriptions';
-import { SafeAuthService } from '../auth/auth.service';
-import { TranslateService } from '@ngx-translate/core';
-import {
-  AddTemplateMutationResponse,
-  DeleteTemplateMutationResponse,
-  Template,
-  UpdateTemplateMutationResponse,
-} from '../../models/template.model';
-import {
-  AddDistributionListMutationResponse,
-  DeleteDistributionListMutationResponse,
-  DistributionList,
-  UpdateDistributionListMutationResponse,
-} from '../../models/distribution-list.model';
-import { SafeDownloadService } from '../download/download.service';
 import {
   AddCustomNotificationMutationResponse,
   CustomNotification,
   DeleteCustomNotificationMutationResponse,
   UpdateCustomNotificationMutationResponse,
 } from '../../models/custom-notification.model';
-import { UPDATE_CUSTOM_NOTIFICATION } from '../application-notifications/graphql/mutations';
-import { SafeRestService } from '../rest/rest.service';
-import { SafeLayoutService } from '../layout/layout.service';
-import { SnackbarService } from '@oort-front/ui';
+import {
+  AddDistributionListMutationResponse,
+  DeleteDistributionListMutationResponse,
+  DistributionList,
+  UpdateDistributionListMutationResponse,
+} from '../../models/distribution-list.model';
+import {
+  AddPageMutationResponse,
+  ContentType,
+  DeletePageMutationResponse,
+  DuplicatePageMutationResponse,
+  EditPageMutationResponse,
+  Page,
+} from '../../models/page.model';
+import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
 import {
   AddPositionAttributeCategoryMutationResponse,
   DeletePositionAttributeCategoryMutationResponse,
@@ -102,6 +55,58 @@ import {
   DeleteSubscriptionMutationResponse,
   EditSubscriptionMutationResponse,
 } from '../../models/subscription.model';
+import {
+  AddTemplateMutationResponse,
+  DeleteTemplateMutationResponse,
+  Template,
+  UpdateTemplateMutationResponse,
+} from '../../models/template.model';
+import {
+  AddRoleMutationResponse,
+  DeleteRoleMutationResponse,
+  DeleteUsersFromApplicationMutationResponse,
+  EditRoleMutationResponse,
+  Role,
+} from '../../models/user.model';
+import { UPDATE_CUSTOM_NOTIFICATION } from '../application-notifications/graphql/mutations';
+import { SafeAuthService } from '../auth/auth.service';
+import { SafeDownloadService } from '../download/download.service';
+import { SafeLayoutService } from '../layout/layout.service';
+import { SafeRestService } from '../rest/rest.service';
+import {
+  ADD_CHANNEL,
+  ADD_CUSTOM_NOTIFICATION,
+  ADD_DISTRIBUTION_LIST,
+  ADD_PAGE,
+  ADD_POSITION_ATTRIBUTE_CATEGORY,
+  ADD_ROLE,
+  ADD_SUBSCRIPTION,
+  ADD_TEMPLATE,
+  DELETE_CHANNEL,
+  DELETE_CUSTOM_NOTIFICATION,
+  DELETE_DISTRIBUTION_LIST,
+  DELETE_PAGE,
+  DELETE_POSITION_ATTRIBUTE_CATEGORY,
+  DELETE_ROLE,
+  DELETE_SUBSCRIPTION,
+  DELETE_TEMPLATE,
+  DELETE_USERS_FROM_APPLICATION,
+  DUPLICATE_PAGE,
+  EDIT_APPLICATION,
+  EDIT_CHANNEL,
+  EDIT_PAGE,
+  EDIT_POSITION_ATTRIBUTE_CATEGORY,
+  EDIT_ROLE,
+  EDIT_SUBSCRIPTION,
+  TOGGLE_APPLICATION_LOCK,
+  UPDATE_DISTRIBUTION_LIST,
+  UPDATE_TEMPLATE,
+} from './graphql/mutations';
+import { GET_APPLICATION_BY_ID } from './graphql/queries';
+import {
+  APPLICATION_EDITED_SUBSCRIPTION,
+  APPLICATION_UNLOCKED_SUBSCRIPTION,
+} from './graphql/subscriptions';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -127,6 +132,7 @@ export class SafeApplicationService {
   private environment: any;
 
   /** Application custom style */
+  public rawCustomStyle?: string;
   public customStyle?: HTMLStyleElement;
   public customStyleEdited = false;
 
@@ -206,6 +212,11 @@ export class SafeApplicationService {
    * @param asRole Role to use to preview
    */
   loadApplication(id: string, asRole?: string): void {
+    // First make sure we close the opened application, if any
+    if (this.application.getValue()) {
+      this.leaveApplication();
+    }
+    // Then, open the new application
     this.applicationSubscription = this.apollo
       .query<ApplicationQueryResponse>({
         query: GET_APPLICATION_BY_ID,
@@ -214,14 +225,13 @@ export class SafeApplicationService {
           asRole,
         },
       })
-      .subscribe(({ data }) => {
+      .subscribe(async ({ data }) => {
         // extend user abilities for application
         if (data.application)
           this.authService.extendAbilityForApplication(data.application);
+        await this.getCustomStyle(data.application);
         this.application.next(data.application);
         const application = this.application.getValue();
-        this.getCustomStyle();
-        this.customStyleEdited = false;
         if (data.application?.locked) {
           if (!application?.lockedByUser) {
             this.snackBar.openSnackBar(
@@ -276,7 +286,8 @@ export class SafeApplicationService {
    */
   leaveApplication(): void {
     if (this.customStyle) {
-      document.getElementsByTagName('body')[0].removeChild(this.customStyle);
+      document.getElementsByTagName('head')[0].removeChild(this.customStyle);
+      this.rawCustomStyle = undefined;
       this.customStyle = undefined;
       this.layoutService.closeRightSidenav = true;
     }
@@ -636,11 +647,64 @@ export class SafeApplicationService {
   }
 
   /**
+   * Toggle page visibility
+   * It is about if a page can be seen or not in front-office, in the navbar. Thus, if a page is hidden, it is still accessible through url.
+   *
+   * @param page page to hide / show
+   * @param callback callback method
+   */
+  togglePageVisibility(page: Page, callback?: any): void {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      this.apollo
+        .mutate<EditPageMutationResponse>({
+          mutation: EDIT_PAGE,
+          variables: {
+            id: page.id,
+            visible: !page.visible,
+          },
+        })
+        .subscribe(({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.page.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.page.one'),
+                  value: '',
+                })
+              );
+              const newApplication = {
+                ...application,
+                pages: application.pages?.map((x) => {
+                  if (x.id === page.id) {
+                    x = { ...x, visible: !page.visible };
+                  }
+                  return x;
+                }),
+              };
+              this.application.next(newApplication);
+              if (callback) callback();
+            }
+          }
+        });
+    }
+  }
+
+  /**
    * Adds a new page to the opened application.
    *
    * @param page new page
+   * @param structure page structure ( only for new dashboard pages )
    */
-  addPage(page: any): void {
+  addPage(page: any, structure?: any): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo
@@ -650,6 +714,7 @@ export class SafeApplicationService {
             type: page.type,
             content: page.content,
             application: application.id,
+            structure,
           },
         })
         .subscribe(({ errors, data }) => {
@@ -660,6 +725,7 @@ export class SafeApplicationService {
                 value: data.addPage.name,
               })
             );
+
             const content = data.addPage.content;
             const newApplication = {
               ...application,
@@ -1848,28 +1914,53 @@ export class SafeApplicationService {
     }
   }
 
-  /** Check if open application has custom style to apply */
-  getCustomStyle(): void {
-    const application = this.application.getValue();
+  /**
+   * Load custom style from application
+   *
+   * @param application application to open
+   * @returns custom styling loading as promise
+   */
+  getCustomStyle(application: Application): Promise<void> {
     const path = `style/application/${application?.id}`;
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
     });
-    this.restService.get(path, { responseType: 'blob', headers }).subscribe({
-      next: async (res) => {
+    return firstValueFrom(
+      this.restService.get(path, { responseType: 'blob', headers })
+    )
+      .then(async (res) => {
         if (res.type === 'application/octet-stream') {
           const styleFromFile = await res.text();
+          const scss = styleFromFile as string;
           this.customStyle = document.createElement('style');
-          this.customStyle.innerText = styleFromFile;
-          document
-            .getElementsByTagName('body')[0]
-            .appendChild(this.customStyle);
+          await firstValueFrom(
+            this.restService.post(
+              'style/scss-to-css',
+              { scss },
+              { responseType: 'text' }
+            )
+          )
+            .then((css) => {
+              if (this.customStyle) {
+                this.customStyle.innerText = css;
+                document
+                  .getElementsByTagName('head')[0]
+                  .appendChild(this.customStyle);
+              }
+            })
+            .catch(() => {
+              if (this.customStyle) {
+                this.customStyle.innerText = styleFromFile;
+              }
+            });
+
+          this.rawCustomStyle = styleFromFile;
         }
-      },
-      error: (err) => {
+      })
+      .catch((err) => {
         this.snackBar.openSnackBar(err.message, { error: true });
-      },
-    });
+      })
+      .finally(() => (this.customStyleEdited = false));
   }
 }

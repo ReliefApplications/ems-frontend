@@ -60,7 +60,7 @@ const TEMPLATE: StoryFn<SafeMappingModalComponent> = () => ({
 });
 
 /**
- * Default story
+ * Default story.
  */
 export const DEFAULT = {
   render: TEMPLATE,

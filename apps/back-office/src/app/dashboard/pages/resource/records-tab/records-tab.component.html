@@ -78,7 +78,7 @@
             <ng-container *ngIf="!recordsDefaultColumns.includes(column)">
               <th uiCellHeader *cdkHeaderCellDef scope="col">{{ column }}</th>
               <td uiCell *cdkCellDef="let element">
-                <div>{{ element.data[column] }}</div>
+                <div>{{ formatValue(element.data[column]) }}</div>
               </td>
             </ng-container>
             <ng-container *ngIf="column === '_incrementalId'">

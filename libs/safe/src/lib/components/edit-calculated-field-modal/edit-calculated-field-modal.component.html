@@ -12,6 +12,7 @@
   <ng-container ngProjectAs="content">
     <form [formGroup]="form">
       <div class="flex flex-col">
+        <!-- @todo: check -->
         <div uiFormFieldDirective>
           <label>{{
             'components.aggregationBuilder.fieldName' | translate
@@ -25,10 +26,22 @@
             [uiTooltip]="'components.calculatedFields.hint.name' | translate"
           ></ui-icon>
         </div>
-        <h2>
-          {{ 'components.calculatedFields.expression' | translate }}
-        </h2>
-        <editor [init]="editor" formControlName="expression"></editor>
+        <div uiFormFieldDirective>
+          <label>{{
+            'components.calculatedFields.expression' | translate
+          }}</label>
+          <safe-editor-control
+            formControlName="expression"
+            [editorConfig]="editor"
+          ></safe-editor-control>
+          <ui-icon
+            icon="info"
+            class="cursor-pointer"
+            variant="grey"
+            uiSuffix
+            [uiTooltip]="'common.tooltip.editor.insert' | translate"
+          ></ui-icon>
+        </div>
       </div>
     </form>
   </ng-container>

@@ -227,6 +227,10 @@ export class SafeFormModalComponent
       addCustomFunctions(Survey, this.authService, this.record);
       this.survey.data = this.isMultiEdition ? null : this.record.data;
       this.survey.showCompletedPage = false;
+      this.form?.fields?.forEach((field) => {
+        if (field.readOnly && this.survey.getQuestionByName(field.name))
+          this.survey.getQuestionByName(field.name).readOnly = true;
+      });
     }
     this.survey.onComplete.add(this.onComplete);
     if (this.storedMergedData) {

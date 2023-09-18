@@ -36,6 +36,7 @@ export const GET_WORKFLOW_BY_ID = gql`
       page {
         id
         name
+        visible
         canUpdate
         permissions {
           canSee {

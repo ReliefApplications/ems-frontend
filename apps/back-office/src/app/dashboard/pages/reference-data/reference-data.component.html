@@ -114,7 +114,7 @@
       </kendo-grid>
     </div>
     <!-- CSV Input for static type -->
-    <div *ngIf="type === 'static'" class="flex gap-2">
+    <div *ngIf="type === 'static'" class="flex flex-col gap-2">
       <div uiFormFieldDirective class="flex-auto">
         <label>{{ 'pages.referenceData.csv' | translate }}</label>
         <ui-textarea
@@ -124,14 +124,26 @@
         >
         </ui-textarea>
       </div>
-      <ui-button
-        category="secondary"
-        variant="primary"
-        (click)="onValidateCSV()"
-        class="mt-8"
-      >
-        {{ 'pages.referenceData.validateCsv' | translate }}
-      </ui-button>
+      <div class="flex gap-2 items-center">
+        <div uiFormFieldDirective class="flex-1">
+          <label>{{ 'common.separator' | translate }}</label>
+          <ui-select-menu [formControl]="separator">
+            <ui-select-option value=",">{{
+              'common.comma' | translate
+            }}</ui-select-option>
+            <ui-select-option value=";">{{
+              'common.semicolon' | translate
+            }}</ui-select-option>
+          </ui-select-menu>
+        </div>
+        <ui-button
+          category="secondary"
+          variant="primary"
+          (click)="onValidateCSV()"
+        >
+          {{ 'pages.referenceData.validateCsv' | translate }}
+        </ui-button>
+      </div>
     </div>
     <ui-spinner *ngIf="csvLoading"></ui-spinner>
     <div class="flex gap-x-2">

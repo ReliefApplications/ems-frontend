@@ -40,6 +40,16 @@
           },
           {
             "glob": "**/*",
+            "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
+            "output": "/assets/webfonts/"
+          },
+          {
+            "glob": "**/*",
+            "input": "node_modules/leaflet/dist/images/",
+            "output": "/"
+          },
+          {
+            "glob": "**/*",
             "input": "node_modules/monaco-editor",
             "output": "/assets/monaco/"
           }
@@ -55,8 +65,14 @@
           "libs/styles/src/lib/shared/shared.scss",
           "node_modules/survey-angular/survey.min.css",
           "node_modules/survey-creator/survey-creator.min.css",
+          "node_modules/leaflet/dist/leaflet.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
-          "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css"
+          "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+          "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
+          "node_modules/leaflet-measure/dist/leaflet-measure.css",
+          "node_modules/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css",
+          "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css",
+          "node_modules/leaflet-timedimension/dist/leaflet.timedimension.control.min.css"
         ],
         "scripts": [
           "node_modules/jquery/dist/jquery.js",
@@ -77,6 +93,13 @@
           "localforage",
           "survey-angular",
           "fast-sha256",
+          "leaflet",
+          "esri-leaflet-geocoder",
+          "esri-leaflet-vector",
+          "leaflet.markercluster",
+          "color",
+          "esri-leaflet-heatmap",
+          "esri-leaflet-renderers",
           "jsonpath"
         ]
       },
@@ -364,7 +387,7 @@
           "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/styles/src/lib/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/lift"]
           }
         },
         "oort-expertisefr": {

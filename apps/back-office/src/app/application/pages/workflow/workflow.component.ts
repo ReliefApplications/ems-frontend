@@ -351,10 +351,12 @@ export class WorkflowComponent
    * @param elementRef Element ref of workflow component
    */
   onActivate(elementRef: any): void {
-    if (elementRef.goToNextStep) {
-      elementRef.goToNextStep.subscribe((event: any) => {
-        if (event) {
+    if (elementRef.changeStep) {
+      elementRef.changeStep.subscribe((event: number) => {
+        if (event > 0) {
           this.goToNextStep();
+        } else {
+          this.goToPreviousStep();
         }
       });
     }
@@ -429,6 +431,29 @@ export class WorkflowComponent
   }
 
   /**
+   * Navigates to the previous step if possible and change selected step / index consequently
+   */
+  private goToPreviousStep(): void {
+    if (this.activeStep > 0) {
+      this.onOpenStep(this.activeStep - 1);
+    } else if (this.activeStep === 0) {
+      this.onOpenStep(this.steps.length - 1);
+      this.snackBar.openSnackBar(
+        this.translate.instant('models.workflow.notifications.goToStep', {
+          step: this.steps[this.steps.length - 1].name,
+        })
+      );
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'models.workflow.notifications.cannotGoToPreviousStep'
+        ),
+        { error: true }
+      );
+    }
+  }
+
+  /**
    * Open selected step
    *
    * @param index index of selected step
@@ -449,5 +474,27 @@ export class WorkflowComponent
     } else {
       this.router.navigate(['./'], { relativeTo: this.route });
     }
+  }
+
+  /**
+   * Toggle page visibility.
+   */
+  togglePageVisibility() {
+    const callback = () => {
+      this.workflow = {
+        ...this.workflow,
+        page: {
+          ...this.workflow?.page,
+          visible: !this.workflow?.page?.visible,
+        },
+      };
+    };
+    this.applicationService.togglePageVisibility(
+      {
+        id: this.workflow?.page?.id,
+        visible: this.workflow?.page?.visible,
+      },
+      callback
+    );
   }
 }

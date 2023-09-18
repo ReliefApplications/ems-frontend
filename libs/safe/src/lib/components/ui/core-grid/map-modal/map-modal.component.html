@@ -1,0 +1,20 @@
+<ui-dialog [closable]="true" size="medium">
+  <ng-container ngProjectAs="header">
+    <h2 class="flex flex-row gap-2">
+      {{ 'components.widget.grid.map.mapDetailsTitle' | translate }}
+      <ui-icon
+        [size]="18"
+        icon="info_outline"
+        variant="grey"
+        [uiTooltip]="'components.widget.grid.map.mapDetailsTooltip' | translate"
+      >
+      </ui-icon>
+    </h2>
+  </ng-container>
+
+  <ng-container ngProjectAs="content">
+    <div class="h-[600px] w-full">
+      <safe-map class="w-full h-full"></safe-map>
+    </div>
+  </ng-container>
+</ui-dialog>

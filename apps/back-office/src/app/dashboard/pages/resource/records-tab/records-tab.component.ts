@@ -353,6 +353,30 @@ export class RecordsTabComponent
   }
 
   /**
+   * Formats the passed value to be readable
+   *
+   * @param value Value to format
+   * @returns Formatted value
+   */
+  formatValue(value: any): string {
+    // Geo spatial field
+    if (
+      value &&
+      typeof value === 'object' &&
+      value.type === 'Feature' &&
+      value.geometry
+    ) {
+      return [
+        get(value, 'properties.address'),
+        get(value, 'properties.countryName'),
+      ]
+        .filter((x) => x)
+        .join(', ');
+    }
+    return value;
+  }
+
+  /**
    * Fetch records, using GraphQL
    *
    * @param refetch rebuild query

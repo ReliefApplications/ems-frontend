@@ -159,7 +159,7 @@ const TEMPLATE: StoryFn<SafePipelineComponent> = () => ({
 });
 
 /**
- * Default story
+ * Default story.
  */
 export const DEFAULT = {
   render: TEMPLATE,

@@ -20,6 +20,7 @@ import { FormControlName, Validators, FormControlStatus } from '@angular/forms';
 import { ChipListDirective } from '../chip/chip-list.directive';
 import { DateWrapperDirective } from '../date/date-wrapper.directive';
 import { AutocompleteComponent } from '../autocomplete/autocomplete.component';
+import { FormControlComponent } from './form-control/form-control.component';
 
 /**
  * UI Form Wrapper Directive
@@ -56,6 +57,8 @@ export class FormWrapperDirective
   private chipListElement!: ElementRef;
   @ContentChild(DateWrapperDirective, { read: ElementRef })
   private dateWrapperElement!: ElementRef;
+  @ContentChild(FormControlComponent, { read: ElementRef })
+  private formControlElement!: ElementRef;
 
   @ContentChild(FormControlName) control!: FormControlName;
 
@@ -114,7 +117,7 @@ export class FormWrapperDirective
     'bg-gray-50',
   ] as const;
 
-  private beyondLabelGeneral = ['relative', 'py-1.5', 'px-2'] as const;
+  private beyondLabelGeneral = ['relative', 'flex', 'py-1.5', 'px-2'] as const;
   private beyondLabelNoChipList = ['flex', 'items-center', 'w-full'] as const;
   private beyondLabelNoOutline = [
     'focus-within:ring-2',
@@ -323,8 +326,17 @@ export class FormWrapperDirective
       );
       this.renderer.removeClass(this.beyondLabelContainer, 'flex');
     } else {
-      for (const cl of this.beyondLabelNoChipList) {
-        this.renderer.addClass(this.beyondLabelContainer, cl);
+      if (this.formControlElement) {
+        this.renderer.insertBefore(
+          this.beyondLabelContainer,
+          this.formControlElement.nativeElement,
+          this.currentInputElement
+        );
+        // this.renderer.removeClass(this.beyondLabelContainer, 'flex');
+      } else {
+        for (const cl of this.beyondLabelNoChipList) {
+          this.renderer.addClass(this.beyondLabelContainer, cl);
+        }
       }
     }
 

@@ -3,21 +3,13 @@
     *ngIf="header"
     class="widget-header border-b"
     [ngClass]="{
-      'border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
-      'border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
+      '!border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
+      '!border-b-gray-300': settings.widgetDisplay?.showBorder ?? true
     }"
   >
     <span class="widget-title" [title]="settings ? settings.title : ''">{{
       settings.title
     }}</span>
   </kendo-tilelayout-item-header>
-  <div [id]="mapId" class="group flex-1">
-    <!-- Widget last query time -->
-    <div
-      class="invisible group-hover:visible absolute bottom-0 px-1 z-[1000] text-gray-300 text-xs"
-      *ngIf="lastUpdate && lastUpdate.length > 0"
-    >
-      Last update: {{ lastUpdate }}
-    </div>
-  </div>
+  <safe-map class="flex-1" [mapSettings]="settings" />
 </div>

@@ -1,20 +1,21 @@
-import { Injectable } from '@angular/core';
-import * as Survey from 'survey-angular';
-import { Apollo } from 'apollo-angular';
-import { TranslateService } from '@ngx-translate/core';
-import { SafeConfirmService } from '../confirm/confirm.service';
-import { firstValueFrom } from 'rxjs';
-import {
-  UPLOAD_FILE,
-  ADD_RECORD,
-} from '../../components/form/graphql/mutations';
 import { DialogRef } from '@angular/cdk/dialog';
+import { Injectable } from '@angular/core';
+import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
+import { Apollo } from 'apollo-angular';
 import localForage from 'localforage';
+import { cloneDeep } from 'lodash';
 import set from 'lodash/set';
-import { SafeAuthService } from '../auth/auth.service';
+import { firstValueFrom } from 'rxjs';
+import * as Survey from 'survey-angular';
+import {
+  ADD_RECORD,
+  UPLOAD_FILE,
+} from '../../components/form/graphql/mutations';
 import { UploadFileMutationResponse } from '../../models/file-handler.model';
 import { AddRecordMutationResponse } from '../../models/record.model';
+import { SafeAuthService } from '../auth/auth.service';
+import { SafeConfirmService } from '../confirm/confirm.service';
 
 /**
  * Shared survey helper service.
@@ -101,7 +102,7 @@ export class SafeFormHelpersService {
    * @param formId Form where to upload the files
    */
   async uploadFiles(
-    survey: any,
+    survey: Survey.SurveyModel,
     temporaryFilesStorage: any,
     formId: string | undefined
   ): Promise<void> {
@@ -126,11 +127,32 @@ export class SafeFormHelpersService {
           this.snackBar.openSnackBar(res.errors[0].message, { error: true });
           return;
         } else {
-          data[name][index].content = res.data?.uploadFile;
+          const uploadedFileID = res.data?.uploadFile;
+          const fileContent = data[name][index].content;
+          data[name][index].content = uploadedFileID;
+
+          // Check if any other question is using the same file
+          survey.getAllQuestions().forEach((question) => {
+            const questionType = question.getType();
+            if (
+              questionType !== 'file' ||
+              // Only change files that are not in the temporary storage
+              // meaning their values came from the default values
+              !!temporaryFilesStorage[question.name]
+            )
+              return;
+
+            const files = data[question.name] ?? [];
+            files.forEach((file: any) => {
+              if (file && file.content === fileContent) {
+                file.content = uploadedFileID;
+              }
+            });
+          });
         }
       }
     }
-    survey.data = data;
+    survey.data = cloneDeep(data);
   }
 
   /**
@@ -309,7 +331,6 @@ export class SafeFormHelpersService {
     const user = this.authService.user.getValue();
 
     // set user variables
-    survey.setVariable('user.name', user?.name ?? '');
     survey.setVariable('user.firstName', user?.firstName ?? '');
     survey.setVariable('user.lastName', user?.lastName ?? '');
     survey.setVariable('user.email', user?.username ?? '');
@@ -322,4 +343,17 @@ export class SafeFormHelpersService {
     // as a default question for Users question type
     survey.setVariable('user.id', user?.id || '');
   };
+
+  /**
+   * Clears the temporary files storage
+   *
+   * @param storage Storage to clear
+   */
+  public clearTemporaryFilesStorage(
+    storage: Record<string, Array<File>>
+  ): void {
+    Object.keys(storage).forEach((key) => {
+      delete storage[key];
+    });
+  }
 }

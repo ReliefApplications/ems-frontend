@@ -29,7 +29,7 @@ const TEMPLATE: StoryFn<SafeApplicationSummaryComponent> = (args) => ({
 });
 
 /**
- * Default story
+ * Default story.
  */
 export const DEFAULT = {
   render: TEMPLATE,

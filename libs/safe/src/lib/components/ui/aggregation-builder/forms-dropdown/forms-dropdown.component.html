@@ -1,0 +1,34 @@
+<div uiFormFieldDirective>
+  <label *ngIf="!label">{{
+    'components.aggregationBuilder.dataset.select' | translate
+  }}</label>
+  <label *ngIf="label">{{ label }}</label>
+  <input
+    type="text"
+    [placeholder]="'common.placeholder.search' | translate"
+    [formControl]="sourceFormControl"
+    [uiAutocomplete]="auto"
+    autocompleteDisplayKey="name"
+    (opened)="onOpen()"
+    (closed)="onClose()"
+  />
+  <ui-autocomplete #auto>
+    <ui-option
+      *ngFor="let form of filteredForms"
+      [value]="form.id"
+      [label]="form.name"
+    >
+      <span class="flex-auto text-ellipsis whitespace-nowrap overflow-hidden">{{ form.name }}</span>
+      <ng-container ngProjectAs="icon">
+        <ui-icon
+          *ngIf="form.core"
+          icon="storage"
+          variant="primary"
+          [size]="20"
+        ></ui-icon>
+      </ng-container>
+    </ui-option>
+  </ui-autocomplete>
+
+  <ui-spinner [size]="'medium'" *ngIf="loadingMore" uiSuffix></ui-spinner>
+</div>

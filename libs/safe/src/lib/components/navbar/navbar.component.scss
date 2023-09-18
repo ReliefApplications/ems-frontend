@@ -52,17 +52,14 @@
     & > a {
       @apply flex flex-1 overflow-clip flex-row gap-x-3 text-sm leading-6 items-center font-semibold px-2 py-3;
     }
-    .hide-icons {
-      display: none;
-    }
-    &:hover {
-      .hide-icons {
-        display: flex;
-      }
-    }
   }
-  p {
-    width: calc(100% - 32px);
+  .hide-icons {
+    display: none;
+  }
+  &:hover {
+    .hide-icons {
+      display: block;
+    }
   }
 }
 
@@ -85,7 +82,7 @@
 .app-sidenav {
   // Subtracts topbar, sub-topbar, header height
   max-height: calc(100vh - 64px - 60px - 48px);
-  overflow: auto;
+  overflow: hidden;
 }
 
 .app-sidenav-phone {

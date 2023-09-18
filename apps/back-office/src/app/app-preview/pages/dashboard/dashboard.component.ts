@@ -37,7 +37,7 @@ export class DashboardComponent
   public dashboard?: Dashboard;
 
   // === STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+  @Output() changeStep: EventEmitter<number> = new EventEmitter();
 
   /**
    * Dashboard component page for application preview.

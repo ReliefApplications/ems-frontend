@@ -1,0 +1,79 @@
+::ng-deep .leaflet-layerstree-header input {
+  margin-left: 0px;
+}
+
+::ng-deep .leaflet-layerstree-header-pointer {
+  cursor: pointer;
+}
+
+::ng-deep .leaflet-layerstree-header label {
+  display: inline-block;
+  cursor: pointer;
+}
+
+::ng-deep .leaflet-layerstree-children {
+  &:not(.leaflet-layerstree-children-nopad) {
+    padding-left: 20px;
+  }
+}
+
+::ng-deep .leaflet-layerstree-hide {
+  display: none;
+}
+
+::ng-deep .leaflet-layerstree-nevershow {
+  display: none;
+}
+
+::ng-deep .leaflet-layerstree-expand-collapse {
+  cursor: pointer;
+}
+
+::ng-deep .leaflet-layerstree-header-label {
+  display: flex !important;
+  align-items: baseline;
+  gap: 4px;
+}
+
+::ng-deep .leaflet-layerstree-header {
+  &:not(.leaflet-layerstree-nevershow) {
+    display: flex;
+  }
+  align-items: baseline;
+  gap: 4px;
+}
+
+::ng-deep .leaflet-verticalcenter {
+  position: absolute;
+  width: 100px !important;
+  z-index: 1000;
+  pointer-events: none;
+  top: 45%;
+  transform: translateY(-40%);
+  padding-top: 10px;
+}
+
+::ng-deep .leaflet-control-layers-base {
+  padding: 0 !important;
+}
+
+::ng-deep .leaflet-container {
+  z-index: 0;
+}
+
+/**
+  Lowers the height of the zoom control so it has less space if another control is added on the same corner.
+  It also moves the border style from the div wrapper to the main element so it correctly displays.
+*/
+::ng-deep .leaflet-control-fullscreen {
+  height: 26px !important;
+  border: none !important;
+
+  a {
+    width: 34px !important;
+    height: 34px !important;
+    border-radius: 4px !important;
+    border: 2px solid rgba(0, 0, 0, 0.2) !important;
+    background-clip: padding-box !important;
+  }
+}

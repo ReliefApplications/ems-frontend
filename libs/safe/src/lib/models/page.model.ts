@@ -76,6 +76,7 @@ export interface Page {
   canUpdate?: boolean;
   canDelete?: boolean;
   context?: PageContextT;
+  visible?: boolean;
   contentWithContext?: ((
     | {
         // The element string is the value for the value field of the refData

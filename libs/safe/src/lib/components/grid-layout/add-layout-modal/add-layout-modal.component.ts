@@ -13,6 +13,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import {
   DialogModule,
+  FormWrapperModule,
   GraphQLSelectComponent,
   GraphQLSelectModule,
 } from '@oort-front/ui';
@@ -44,6 +45,7 @@ interface DialogData {
     FormsModule,
     ReactiveFormsModule,
     ButtonModule,
+    FormWrapperModule,
   ],
   selector: 'safe-add-layout-modal',
   templateUrl: './add-layout-modal.component.html',

@@ -17,7 +17,6 @@ import { Form } from '../../models/form.model';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { SnackbarService } from '@oort-front/ui';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
-
 /**
  * Array containing the different types of questions.
  * Commented types are not yet implemented.
@@ -165,7 +164,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
   private setFormBuilder(structure: string) {
     const creatorOptions = {
       showEmbededSurveyTab: false,
-      showJSONEditorTab: false,
+      showJSONEditorTab: true,
       generateValidJSON: true,
       showTranslationTab: true,
       questionTypes: QUESTION_TYPES,

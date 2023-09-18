@@ -5,6 +5,7 @@ import { SafeGridSettingsComponent } from '../components/widgets/grid-settings/g
 import { SafeMapSettingsComponent } from '../components/widgets/map-settings/map-settings.component';
 import { SafeEditorSettingsComponent } from '../components/widgets/editor-settings/editor-settings.component';
 import { SafeSummaryCardSettingsComponent } from '../components/widgets/summary-card-settings/summary-card-settings.component';
+import { Category, Variant } from '@oort-front/ui';
 /** Model for IWidgetType object */
 export interface IWidgetType {
   id: string;
@@ -212,6 +213,13 @@ export interface Dashboard {
   page?: Page;
   step?: Step;
   showFilter?: boolean;
+  buttons?: {
+    text: string;
+    href: string;
+    variant: Variant;
+    category: Category;
+    openInNewTab: boolean;
+  }[];
 }
 
 /** Model for dashboard graphql query response */

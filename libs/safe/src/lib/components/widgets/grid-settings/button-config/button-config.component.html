@@ -41,6 +41,67 @@
         }}</ng-container>
       </ui-checkbox>
 
+      <!-- Prefill form with selected records -->
+      <ng-container *ngIf="relatedForms.length > 0">
+        <ui-checkbox formControlName="prefillForm">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.prefill'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
+        <div *ngIf="formGroup.value.prefillForm" class="sub-parameters">
+          <div uiFormFieldDirective>
+            <label>{{ 'models.form.template' | translate }}</label>
+            <ui-select-menu formControlName="prefillTargetForm">
+              <ui-select-option>--</ui-select-option>
+              <ui-select-option
+                *ngFor="let form of relatedForms"
+                [value]="form.id"
+              >
+                {{ form.name }}
+              </ui-select-option>
+            </ui-select-menu>
+          </div>
+        </div>
+      </ng-container>
+
+      <!-- Workflow actions -->
+      <ng-container *ngIf="!isDashboard">
+        <!-- Go to next step -->
+        <ui-checkbox formControlName="goToNextStep">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.workflow.next'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
+        <!-- Go to previous step -->
+        <ui-checkbox formControlName="goToPreviousStep">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.workflow.previous'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
+        <!-- Close workflow -->
+        <ui-checkbox formControlName="closeWorkflow">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.workflow.close'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
+        <!-- Confirm action -->
+        <div
+          uiFormFieldDirective
+          class="sub-parameters"
+          *ngIf="formGroup.value.closeWorkflow"
+        >
+          <label>{{
+            'components.widget.settings.grid.buttons.callback.workflow.confirm'
+              | translate
+          }}</label>
+          <input formControlName="confirmationText" type="string" />
+        </div>
+      </ng-container>
+
       <!-- Auto save edited records -->
       <ui-checkbox formControlName="autoSave">
         <ng-container ngProjectAs="label">{{
@@ -72,7 +133,9 @@
       </ng-container>
       <div *ngIf="formGroup.value.attachToRecord" class="sub-parameters">
         <ui-alert class="mb-4" variant="warning">
-          {{ 'components.widget.settings.grid.hint.attachToRecord' | translate }}
+          {{
+            'components.widget.settings.grid.hint.attachToRecord' | translate
+          }}
         </ui-alert>
         <!-- Selection of target resource -->
         <div uiFormFieldDirective>
@@ -390,6 +453,7 @@
           [form]="$any(formGroup.controls.bodyFields)"
           [fields]="fields"
           [showLimit]="true"
+          [showColumnWidth]="true"
         ></safe-tab-fields>
       </div>
 

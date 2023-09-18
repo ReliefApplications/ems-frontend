@@ -13,17 +13,52 @@ import {
 } from '@angular/forms';
 import { SafeResourceDropdownComponent } from '../../components/resource-dropdown/resource-dropdown.component';
 import { DomService } from '../../services/dom/dom.service';
-import { buildSearchButton, buildAddButton } from './utils';
+import {
+  buildSearchButton,
+  buildAddButton,
+  processNewCreatedRecords,
+} from './utils';
 import get from 'lodash/get';
 import { Question, QuestionResource } from '../types';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
 import { SafeTestServiceDropdownComponent } from '../../components/test-service-dropdown/test-service-dropdown.component';
+import { Record } from '../../models/record.model';
 import { NgZone } from '@angular/core';
 import { ResourceQueryResponse } from '../../models/resource.model';
 
 /** Question's temporary records */
 export const temporaryRecordsForm = new FormControl([]);
 
+/** Cache for loaded records */
+const loadedRecords: Map<string, Record> = new Map();
+
+/**
+ * Adds the selected record to the survey context.
+ *
+ * @param question resource question
+ * @param recordID id of record to add context of
+ */
+const addRecordToSurveyContext = (question: Question, recordID: string) => {
+  const survey = question.survey as SurveyModel;
+  if (!recordID) {
+    // get survey variables
+    survey.getVariableNames().forEach((variable) => {
+      // remove variable if starts with question name
+      if (variable.startsWith(`${question.name}.`))
+        survey.setVariable(variable, null);
+    });
+    return;
+  }
+  // get record from cache
+  const record = loadedRecords.get(recordID);
+  if (!record) return;
+
+  const data = record?.data || {};
+  for (const field in data) {
+    // create survey expression in the format {[questionName].[fieldName]} = [value]
+    survey.setVariable(`${question.name}.${field}`, data[field]);
+  }
+};
 /**
  * Inits the resource question component of for survey.
  *
@@ -53,6 +88,7 @@ export const init = (
   const mapQuestionChoices = (data: any, question: any) => {
     return (
       data.resource.records?.edges?.map((x: any) => {
+        loadedRecords.set(x.node?.id || '', x.node);
         return {
           value: x.node?.id,
           text: x.node?.data[question.displayField || 'id'],
@@ -589,6 +625,20 @@ export const init = (
             this.populateChoices(question);
           }
         }
+        if (question.addRecord && question.canSearch) {
+          // If search button exists, updates grid displayed records when new records are created with the add button
+          question.registerFunctionOnPropertyValueChanged(
+            'newCreatedRecords',
+            async () => {
+              const settings = await processNewCreatedRecords(
+                question,
+                false,
+                []
+              );
+              temporaryRecordsForm.setValue(settings.query.temporaryRecords);
+            }
+          );
+        }
       }
     },
     /**
@@ -617,6 +667,7 @@ export const init = (
               question.contentQuestion.optionsCaption =
                 'Select a record from ' + data.resource.name + '...';
             }
+            addRecordToSurveyContext(question, question.value);
           }
         );
       } else {
@@ -647,7 +698,8 @@ export const init = (
           question,
           question.gridFieldsSettings,
           false,
-          dialog
+          dialog,
+          temporaryRecordsForm
         );
         actionsButtons.appendChild(searchBtn);
 
@@ -679,6 +731,13 @@ export const init = (
             question.addRecord && question.addTemplate && !question.isReadOnly
               ? ''
               : 'none';
+        });
+
+        const survey: SurveyModel = question.survey as SurveyModel;
+
+        // Listen to value changes
+        survey.onValueChanged.add((_, options) => {
+          addRecordToSurveyContext(options.question, options.value);
         });
       }
     },

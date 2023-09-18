@@ -4,6 +4,7 @@ import {
   Component,
   ContentChildren,
   ElementRef,
+  HostListener,
   OnDestroy,
   QueryList,
   Renderer2,
@@ -43,6 +44,19 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   }
 
   /**
+   * Set the drawer height and width on resize
+   */
+  @HostListener('window:resize', ['$event'])
+  onResize() {
+    this.uiSidenavDirective.forEach((sidenavDirective, index) => {
+      this.setRightSidenavHeight(
+        this.sidenav.get(index).nativeElement,
+        sidenavDirective
+      );
+    });
+  }
+
+  /**
    * UI Sidenav constructor
    *
    * @param renderer Renderer2
@@ -76,6 +90,10 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
       this.showSidenav[index] = sidenavDirective.opened;
       this.mode[index] = sidenavDirective.mode;
       this.position[index] = sidenavDirective.position;
+      this.setRightSidenavHeight(
+        this.sidenav.get(index).nativeElement,
+        sidenavDirective
+      );
       this.cdr.detectChanges();
       this.renderer.appendChild(
         this.sidenav.get(index).nativeElement.querySelector('div'),
@@ -95,6 +113,26 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
       this.setTransitionForContent();
     }, 0);
   }
+
+  /**
+   * recalculates right sidenav height
+   *
+   * @param sidenavElement right sidenav element to recalculate the size of
+   * @param sidenavDirective sidenavDirective to check if the sidenav is at the right side
+   */
+  setRightSidenavHeight(
+    sidenavElement: any,
+    sidenavDirective: SidenavDirective
+  ) {
+    if (sidenavDirective.position === 'end') {
+      this.renderer.removeClass(sidenavElement, 'h-full');
+      this.renderer.setStyle(
+        sidenavElement,
+        'height',
+        `${this.el.nativeElement.clientHeight}px`
+      );
+    }
+  }
   /**
    * Resolve sidenav classes by given properties
    *
@@ -106,7 +144,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
     if (this.position[index] === 'start') {
       classes.push("data-[sidenav-show='false']:-translate-x-full");
       classes.push("data-[sidenav-show='false']:w-0");
-      classes.push('z-[999]');
+      classes.push('z-[1002]');
       classes.push('w-60');
       classes.push('border-r');
       classes.push('border-gray-200');
