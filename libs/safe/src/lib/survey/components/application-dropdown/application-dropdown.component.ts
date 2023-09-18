@@ -181,6 +181,7 @@ export class SafeApplicationDropdownComponent
     }
     this.pageInfo = data.applications.pageInfo;
     this.loading = loading;
+    this.detectChangesUI();
   }
 
   override ngOnDestroy(): void {
@@ -190,5 +191,12 @@ export class SafeApplicationDropdownComponent
     if (this.scrollListener) {
       this.scrollListener();
     }
+  }
+
+  /**
+   * Trigger change detection manually for survey property grid editor questions
+   */
+  detectChangesUI(): void {
+    this.changeDetectorRef.detectChanges();
   }
 }

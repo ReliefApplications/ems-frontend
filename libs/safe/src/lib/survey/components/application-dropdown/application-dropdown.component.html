@@ -5,6 +5,7 @@
     [(ngModel)]="model.value"
     name="applications"
     (opened)="onOpenSelect()"
+    (ngModelChange)="detectChangesUI()"
     [multiselect]="true"
   >
     <ui-select-option

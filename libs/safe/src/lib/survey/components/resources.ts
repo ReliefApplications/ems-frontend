@@ -127,11 +127,14 @@ export const init = (
       Serializer.addProperty('resources', {
         name: 'resource',
         category: 'Custom Questions',
-        type: 'resourcesDropdown',
+        type: CustomPropertyGridComponentTypes.resourceDropdown,
         visibleIndex: 3,
         required: true,
       });
 
+      registerCustomPropertyEditor(
+        CustomPropertyGridComponentTypes.resourceDropdown
+      );
       Serializer.addProperty('resources', {
         name: 'displayField',
         category: 'Custom Questions',

@@ -3,6 +3,7 @@
     path="records"
     valueField="id"
     textField="data.{{ textField }}"
+    [isSurveyQuestion]="true"
     [query]="recordsQuery"
     [formControl]="recordsControl"
     [selectedElements]="[selectedRecord]"

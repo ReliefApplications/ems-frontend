@@ -1,9 +1,9 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
   HostBinding,
-  Inject,
   Input,
   OnChanges,
   OnDestroy,
@@ -24,7 +24,6 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { takeUntil } from 'rxjs/operators';
 import { SelectMenuComponent } from '../select-menu/select-menu.component';
 import { updateQueryUniqueValues } from './utils/update-queries';
-import { DOCUMENT } from '@angular/common';
 
 /** A constant that is used to determine how many items should be added on scroll. */
 const ITEMS_PER_RELOAD = 10;
@@ -43,6 +42,7 @@ export class GraphQLSelectComponent
   @Input() valueField = '';
   @Input() textField = '';
   @Input() path = '';
+  @Input() isSurveyQuestion = false;
   /** Add type to selectedElements */
   @Input() selectedElements: any[] = [];
   @Input() filterable = false;
@@ -165,14 +165,14 @@ export class GraphQLSelectComponent
    *
    * @param ngControl form control shared service,
    * @param elementRef shared element ref service
-   * @param renderer Renderer2
-   * @param document document
+   * @param renderer - Angular - Renderer2
+   * @param changeDetectorRef - Angular - ChangeDetectorRef
    */
   constructor(
     @Optional() @Self() public ngControl: NgControl,
     public elementRef: ElementRef<HTMLElement>,
     private renderer: Renderer2,
-    @Inject(DOCUMENT) private document: Document
+    private changeDetectorRef: ChangeDetectorRef
   ) {
     if (this.ngControl) {
       this.ngControl.valueAccessor = this;
@@ -414,6 +414,10 @@ export class GraphQLSelectComponent
             this.updateValues(results.data, results.loading);
           });
       }
+      // If it's used as a survey question, then change detector have to be manually triggered
+      if (this.isSurveyQuestion) {
+        this.changeDetectorRef.detectChanges();
+      }
     }
   }
 
@@ -424,6 +428,10 @@ export class GraphQLSelectComponent
    */
   public onSelectionChange(event: any) {
     this.value = event.value;
+    // If it's used as a survey question, then change detector have to be manually triggered
+    if (this.isSurveyQuestion) {
+      this.changeDetectorRef.detectChanges();
+    }
   }
 
   /** Triggers on close of select */
@@ -473,6 +481,10 @@ export class GraphQLSelectComponent
     this.queryElements = this.cachedElements;
     this.pageInfo = get(data, path).pageInfo;
     this.loading = loading;
+    // If it's used as a survey question, then change detector have to be manually triggered
+    if (this.isSurveyQuestion) {
+      this.changeDetectorRef.detectChanges();
+    }
   }
 
   /**
