@@ -36,6 +36,7 @@ export * from './lib/date/date.module';
 export * from './lib/graphql-select/graphql-select.module';
 export * from './lib/graphql-select/graphql-select.component';
 export * from './lib/error-message/error-message.module';
+export * from './lib/fixed-wrapper/fixed-wrapper.module';
 
 // === SERVICES === //
 export * from './lib/snackbar/snackbar.service';

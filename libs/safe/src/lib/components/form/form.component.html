@@ -32,7 +32,7 @@
 <!-- Form -->
 <div #formContainer></div>
 <!-- Floating div for form buttons actions -->
-<div class="fixed bottom-0 right-0 p-2 bg-white border-t border-gray-200 w-full h-14 z-50">
+<ui-fixed-wrapper>
   <div *ngIf="surveyActive" class="flex justify-end gap-2 flex-wrap">
     <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
       <ui-button
@@ -54,5 +54,6 @@
       'common.save' | translate
     }}</ui-button>
   </div>
-</div>
+</ui-fixed-wrapper>
+
 

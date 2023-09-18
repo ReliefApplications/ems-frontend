@@ -23,14 +23,6 @@
       <input formControlName="username" type="text" />
     </div>
   </div>
-  <ui-button
-    category="secondary"
-    variant="primary"
-    (click)="onSubmit()"
-    [disabled]="userForm.invalid || !userForm.dirty"
-  >
-    {{ 'common.saveChanges' | translate }}
-  </ui-button>
   <!-- Table container -->
   <div class="overflow-x-hidden shadow-2lg mt-6">
     <!-- Table scroll container -->
@@ -100,4 +92,17 @@
       </table>
     </div>
   </div>
+  <!-- Floating div for actions buttons -->
+  <ui-fixed-wrapper>
+    <!-- Save button -->
+    <ui-button
+      class="bottom-0 right-0 mr-2 px-4 py-2 fixed"
+      category="secondary"
+      variant="primary"
+      (click)="onSubmit()"
+      [disabled]="userForm.invalid || !userForm.dirty"
+    >
+      {{ 'common.saveChanges' | translate }}
+    </ui-button>
+  </ui-fixed-wrapper>
 </form>

@@ -3,7 +3,11 @@ import { CommonModule } from '@angular/common';
 import { RoleChannelsComponent } from './role-channels.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { ButtonModule, SelectMenuModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  SelectMenuModule,
+  FixedWrapperModule,
+} from '@oort-front/ui';
 
 /**
  * Channels tab of Role Summary.
@@ -17,6 +21,7 @@ import { ButtonModule, SelectMenuModule } from '@oort-front/ui';
     ReactiveFormsModule,
     ButtonModule,
     SelectMenuModule,
+    FixedWrapperModule,
   ],
   exports: [RoleChannelsComponent],
 })

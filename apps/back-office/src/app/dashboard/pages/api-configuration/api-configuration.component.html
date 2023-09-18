@@ -228,15 +228,19 @@
       </div>
     </div>
 
-    <!-- Save button -->
-    <ui-button
-      category="secondary"
-      variant="primary"
-      (click)="onSave()"
-      [disabled]="apiForm.invalid || !apiForm.dirty"
-    >
-      {{ 'common.save' | translate }}
-    </ui-button>
+    <!-- Floating div for actions buttons -->
+    <ui-fixed-wrapper>
+      <!-- Save button -->
+      <ui-button
+        class="bottom-0 right-0 mr-2 px-4 py-2 fixed"
+        category="secondary"
+        variant="primary"
+        (click)="onSave()"
+        [disabled]="apiForm.invalid || !apiForm.dirty"
+      >
+        {{ 'common.save' | translate }}
+      </ui-button>
+    </ui-fixed-wrapper>
   </form>
 </ng-container>
 

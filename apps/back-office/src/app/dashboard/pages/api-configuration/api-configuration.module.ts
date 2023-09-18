@@ -11,6 +11,7 @@ import {
   SelectMenuModule,
   FormWrapperModule,
   ErrorMessageModule,
+  FixedWrapperModule,
 } from '@oort-front/ui';
 
 /**
@@ -31,6 +32,7 @@ import {
     FormWrapperModule,
     ErrorMessageModule,
     ChipModule,
+    FixedWrapperModule,
   ],
 })
 export class ApiConfigurationModule {}
