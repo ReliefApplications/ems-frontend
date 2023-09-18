@@ -1,14 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BehaviorSubject } from 'rxjs';
 
-import {
-  CheckboxTreeComponent,
-  TreeItemNode,
-} from './checkbox-tree.component';
+import { CheckboxTreeComponent, TreeItemNode } from './checkbox-tree.component';
 
 describe('CheckboxTreeComponent', () => {
   let component: CheckboxTreeComponent;
-  let fixture: ComponentFixture<sharedCheckboxTreeComponent>;
+  let fixture: ComponentFixture<CheckboxTreeComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

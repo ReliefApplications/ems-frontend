@@ -18,10 +18,7 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './role-users.component.html',
   styleUrls: ['./role-users.component.scss'],
 })
-export class RoleUsersComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class RoleUsersComponent extends UnsubscribeComponent implements OnInit {
   @Input() role!: Role;
   @Input() autoAssigned = false;
   public loading = true;

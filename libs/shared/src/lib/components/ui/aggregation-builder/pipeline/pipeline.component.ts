@@ -17,10 +17,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './pipeline.component.html',
   styleUrls: ['./pipeline.component.scss'],
 })
-export class PipelineComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   public stageType = PipelineStage;
   public stageList: string[] = Object.values(PipelineStage);
 

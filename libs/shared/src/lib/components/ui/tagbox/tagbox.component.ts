@@ -13,10 +13,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
   templateUrl: './tagbox.component.html',
   styleUrls: ['./tagbox.component.scss'],
 })
-export class TagboxComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class TagboxComponent extends UnsubscribeComponent implements OnInit {
   // === CHOICES ===
   @Input() public choices$!: Observable<any[]>;
   @Input() public displayKey = 'name';

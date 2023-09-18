@@ -36,7 +36,8 @@ export default {
  * @returns the template
  */
 const TEMPLATE: Story<IconPickerComponent> = (args) => ({
-  template: '<shared-icon-picker [formControl]="formControl"></shared-icon-picker>',
+  template:
+    '<shared-icon-picker [formControl]="formControl"></shared-icon-picker>',
   props: {
     ...args,
     formControl: new FormControl(''),

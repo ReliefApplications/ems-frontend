@@ -13,10 +13,7 @@ import { Dialog } from '@angular/cdk/dialog';
   templateUrl: './mapping.component.html',
   styleUrls: ['./mapping.component.scss'],
 })
-export class MappingComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class MappingComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   @Input() mappingForm!: UntypedFormArray;
   // === TABLE ===

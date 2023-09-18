@@ -21,10 +21,7 @@ import { User } from '../../models/user.model';
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss'],
 })
-export class ProfileComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class ProfileComponent extends UnsubscribeComponent implements OnInit {
   /** Current user */
   public user: any;
   /** Form to edit the user */

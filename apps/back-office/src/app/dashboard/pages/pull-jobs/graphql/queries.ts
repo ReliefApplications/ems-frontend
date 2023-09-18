@@ -1,5 +1,10 @@
 import { gql } from 'apollo-angular';
-import { PullJob, Application, Form, ApiConfiguration } from '@oort-front/shared';
+import {
+  PullJob,
+  Application,
+  Form,
+  ApiConfiguration,
+} from '@oort-front/shared';
 
 // === GET PULL JOBS ===
 

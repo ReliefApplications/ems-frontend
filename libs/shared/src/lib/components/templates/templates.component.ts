@@ -15,10 +15,7 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './templates.component.html',
   styleUrls: ['./templates.component.scss'],
 })
-export class TemplatesComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class TemplatesComponent extends UnsubscribeComponent implements OnInit {
   // === INPUT DATA ===
   public templates: Array<any> = new Array<any>();
   @Input() applicationService!: ApplicationService;

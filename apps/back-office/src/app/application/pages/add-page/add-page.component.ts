@@ -28,10 +28,7 @@ const SINGLE_WIDGET_PAGE_TYPES = ['grid', 'map', 'summaryCard', 'tabs'];
   templateUrl: './add-page.component.html',
   styleUrls: ['./add-page.component.scss'],
 })
-export class AddPageComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class AddPageComponent extends UnsubscribeComponent implements OnInit {
   /** Available content types */
   public contentTypes = CONTENT_TYPES;
   /** Available widgets for addition */

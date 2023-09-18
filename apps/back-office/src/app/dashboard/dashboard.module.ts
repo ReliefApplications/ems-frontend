@@ -9,11 +9,6 @@ import { LayoutModule, NavbarModule } from '@oort-front/shared';
  */
 @NgModule({
   declarations: [DashboardComponent],
-  imports: [
-    CommonModule,
-    LayoutModule,
-    DashboardRoutingModule,
-    NavbarModule,
-  ],
+  imports: [CommonModule, LayoutModule, DashboardRoutingModule, NavbarModule],
 })
 export class DashboardModule {}

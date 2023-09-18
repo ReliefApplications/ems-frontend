@@ -27,10 +27,7 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
 })
-export class SettingsComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class SettingsComponent extends UnsubscribeComponent implements OnInit {
   public applications = new Array<Application>();
   public settingsForm!: ReturnType<typeof this.createSettingsForm>;
   public application?: Application;

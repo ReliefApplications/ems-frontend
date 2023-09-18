@@ -23,10 +23,7 @@ import { takeUntil } from 'rxjs';
   templateUrl: './forms-tab.component.html',
   styleUrls: ['./forms-tab.component.scss'],
 })
-export class FormsTabComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class FormsTabComponent extends UnsubscribeComponent implements OnInit {
   private resource!: Resource;
   public forms: Form[] = [];
   public loading = true;

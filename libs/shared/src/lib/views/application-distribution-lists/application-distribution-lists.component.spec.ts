@@ -4,7 +4,7 @@ import { ApplicationDistributionListsComponent } from './application-distributio
 
 describe('ApplicationDistributionListsComponent', () => {
   let component: ApplicationDistributionListsComponent;
-  let fixture: ComponentFixture<sharedApplicationDistributionListsComponent>;
+  let fixture: ComponentFixture<ApplicationDistributionListsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -13,9 +13,7 @@ describe('ApplicationDistributionListsComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(
-      ApplicationDistributionListsComponent
-    );
+    fixture = TestBed.createComponent(ApplicationDistributionListsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

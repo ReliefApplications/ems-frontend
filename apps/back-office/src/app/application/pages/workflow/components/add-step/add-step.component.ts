@@ -25,10 +25,7 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './add-step.component.html',
   styleUrls: ['./add-step.component.scss'],
 })
-export class AddStepComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class AddStepComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   public contentTypes = CONTENT_TYPES.filter((x) => x.value !== 'workflow');
   public formsQuery!: QueryRef<GetFormsQueryResponse>;

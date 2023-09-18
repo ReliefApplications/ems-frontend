@@ -2,11 +2,7 @@ import { Apollo } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import {
-  Form,
-  BreadcrumbService,
-  FormComponent,
-} from '@oort-front/shared';
+import { Form, BreadcrumbService, FormComponent } from '@oort-front/shared';
 import {
   GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,

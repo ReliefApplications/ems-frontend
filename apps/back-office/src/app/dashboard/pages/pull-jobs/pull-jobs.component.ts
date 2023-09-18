@@ -38,10 +38,7 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './pull-jobs.component.html',
   styleUrls: ['./pull-jobs.component.scss'],
 })
-export class PullJobsComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class PullJobsComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   public loading = true;
   private pullJobsQuery!: QueryRef<GetPullJobsQueryResponse>;

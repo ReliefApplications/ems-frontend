@@ -906,10 +906,7 @@ export const init = (
    * @param instance grid instance.
    * @param question survey question.
    */
-  const setGridInputs = async (
-    instance: CoreGridComponent,
-    question: any
-  ) => {
+  const setGridInputs = async (instance: CoreGridComponent, question: any) => {
     instance.multiSelect = true;
     const promises: any[] = [];
     const settings = await processNewCreatedRecords(question, true, promises);

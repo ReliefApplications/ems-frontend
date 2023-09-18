@@ -18,10 +18,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './position.component.html',
   styleUrls: ['./position.component.scss'],
 })
-export class PositionComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class PositionComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public positionCategories: any[] = [];

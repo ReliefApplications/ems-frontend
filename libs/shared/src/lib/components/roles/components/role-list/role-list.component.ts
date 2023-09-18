@@ -27,10 +27,7 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './role-list.component.html',
   styleUrls: ['./role-list.component.scss'],
 })
-export class RoleListComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class RoleListComponent extends UnsubscribeComponent implements OnInit {
   // === INPUT DATA ===
   @Input() inApplication = false;
 
@@ -132,9 +129,7 @@ export class RoleListComponent
    * Adds a role
    */
   async onAdd(): Promise<void> {
-    const { AddRoleComponent } = await import(
-      '../add-role/add-role.component'
-    );
+    const { AddRoleComponent } = await import('../add-role/add-role.component');
     const dialogRef = this.dialog.open(AddRoleComponent, {
       data: { title: 'components.role.add.title' },
     });

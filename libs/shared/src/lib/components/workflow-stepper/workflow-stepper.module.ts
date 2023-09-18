@@ -16,11 +16,7 @@ import {
  * Module for workflow stepper component
  */
 @NgModule({
-  declarations: [
-    WorkflowStepperComponent,
-    AddStepComponent,
-    StepComponent,
-  ],
+  declarations: [WorkflowStepperComponent, AddStepComponent, StepComponent],
   imports: [
     CommonModule,
     DividerModule,
@@ -31,10 +27,6 @@ import {
     IndicatorsModule,
     ButtonModule,
   ],
-  exports: [
-    WorkflowStepperComponent,
-    AddStepComponent,
-    StepComponent,
-  ],
+  exports: [WorkflowStepperComponent, AddStepComponent, StepComponent],
 })
 export class WorkflowStepperModule {}

@@ -16,10 +16,7 @@ import { takeUntil } from 'rxjs';
   templateUrl: './redirect.component.html',
   styleUrls: ['./redirect.component.scss'],
 })
-export class RedirectComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class RedirectComponent extends UnsubscribeComponent implements OnInit {
   /** List of accessible applications */
   applications: Application[] = [];
   /** @returns True if applications is empty */

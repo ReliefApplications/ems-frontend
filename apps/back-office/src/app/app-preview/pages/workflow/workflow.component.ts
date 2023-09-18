@@ -24,10 +24,7 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss'],
 })
-export class WorkflowComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   /** Loading indicator */
   public loading = true;
   /** Current workflow id */

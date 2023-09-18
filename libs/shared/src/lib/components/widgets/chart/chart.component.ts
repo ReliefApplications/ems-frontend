@@ -30,10 +30,7 @@ const DEFAULT_FILE_NAME = 'chart';
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss'],
 })
-export class ChartComponent
-  extends UnsubscribeComponent
-  implements OnChanges
-{
+export class ChartComponent extends UnsubscribeComponent implements OnChanges {
   // === DATA ===
   public loading = true;
   public options: any = null;

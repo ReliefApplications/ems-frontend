@@ -11,11 +11,7 @@ import {
 } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import {
-  EmptyModule,
-  LayoutModule,
-  NavbarModule,
-} from '@oort-front/shared';
+import { EmptyModule, LayoutModule, NavbarModule } from '@oort-front/shared';
 import { DialogModule } from '@angular/cdk/dialog';
 import { MenuModule } from '@oort-front/ui';
 import { ApplicationComponent } from './application.component';

@@ -30,10 +30,7 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './tab-main.component.html',
   styleUrls: ['./tab-main.component.scss'],
 })
-export class TabMainComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class TabMainComponent extends UnsubscribeComponent implements OnInit {
   @Input() formGroup!: UntypedFormGroup;
   @Input() type: any;
   public types = CHART_TYPES;

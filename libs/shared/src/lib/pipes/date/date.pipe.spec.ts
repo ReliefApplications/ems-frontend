@@ -1,6 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
-import { DatePipe as AngularDatePipe } from './date.pipe';
+import { DatePipe } from './date.pipe';
 import {
   TranslateFakeLoader,
   TranslateLoader,
@@ -9,7 +9,7 @@ import {
 } from '@ngx-translate/core';
 
 describe('DatePipe', () => {
-  let pipe: DatePipe as AngularDatePipe;
+  let pipe: DatePipe;
   let translate: DateTranslateService;
 
   beforeEach(() => {
@@ -25,7 +25,7 @@ describe('DatePipe', () => {
       ],
     });
     translate = TestBed.inject(DateTranslateService);
-    pipe = new DatePipe as AngularDatePipe(translate);
+    pipe = new DatePipe(translate);
   });
 
   it('create an instance', () => {

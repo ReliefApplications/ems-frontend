@@ -39,10 +39,7 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './resources.component.html',
   styleUrls: ['./resources.component.scss'],
 })
-export class ResourcesComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public filterLoading = false;

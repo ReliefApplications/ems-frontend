@@ -27,10 +27,7 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './group-list.component.html',
   styleUrls: ['./group-list.component.scss'],
 })
-export class GroupListComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class GroupListComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public loadingFetch = false;
@@ -130,9 +127,7 @@ export class GroupListComponent
    * Adds a role
    */
   async onAdd(): Promise<void> {
-    const { AddRoleComponent } = await import(
-      '../add-role/add-role.component'
-    );
+    const { AddRoleComponent } = await import('../add-role/add-role.component');
     const dialogRef = this.dialog.open(AddRoleComponent, {
       data: { title: 'components.group.add.title' },
     });

@@ -20,10 +20,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './channels.component.html',
   styleUrls: ['./channels.component.scss'],
 })
-export class ChannelsComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class ChannelsComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   private channels: Channel[] = [];
   public channelsData: ChannelDisplay[] = [];

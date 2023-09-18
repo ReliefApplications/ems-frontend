@@ -27,10 +27,7 @@ const DEFAULT_PAGE_SIZE = 10;
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.scss'],
 })
-export class UserListComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class UserListComponent extends UnsubscribeComponent implements OnInit {
   @Input() autoAssigned = false;
 
   public displayedColumns = [

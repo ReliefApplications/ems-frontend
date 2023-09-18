@@ -76,8 +76,9 @@ const fb = new UntypedFormBuilder();
  *
  * @returns story template
  */
-const TEMPLATE: StoryFn<sharedGroupStageComponent> = () => ({
-  template: '<shared-group-stage [form]=form [fields]=fields></shared-group-stage>',
+const TEMPLATE: StoryFn<GroupStageComponent> = () => ({
+  template:
+    '<shared-group-stage [form]=form [fields]=fields></shared-group-stage>',
   props: {
     // Need to pass formGroup there otherwise we get an error: https://github.com/storybookjs/storybook/discussions/15602
     form: fb.group({
