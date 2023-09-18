@@ -1684,7 +1684,7 @@
 		"form": {
 			"core": "Source",
 			"create": "Créer un formulaire",
-			"edit": "le formulaire",
+			"edit": "Modifier le formulaire",
 			"field": {
 				"label": "Étiquette",
 				"name": "Nom du champ",
