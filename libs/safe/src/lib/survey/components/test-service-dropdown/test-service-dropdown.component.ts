@@ -71,6 +71,7 @@ export class SafeTestServiceDropdownComponent
   }
 
   override ngOnInit(): void {
+    super.ngOnInit();
     this.resource = this.model.obj.resource;
     this.textField = this.model.obj.displayField;
     this.model.obj.registerFunctionOnPropertyValueChanged(
@@ -96,8 +97,6 @@ export class SafeTestServiceDropdownComponent
           });
       }
     );
-
-    super.ngOnInit();
     this.recordsControl = new UntypedFormControl(this.model.value);
     this.recordsControl.valueChanges
       .pipe(takeUntil(this.destroy$))
@@ -112,7 +111,6 @@ export class SafeTestServiceDropdownComponent
             id: this.model.value,
           },
         })
-        .pipe(takeUntil(this.destroy$))
         .subscribe(({ data }) => {
           if (data) {
             this.selectedRecord = data.record;

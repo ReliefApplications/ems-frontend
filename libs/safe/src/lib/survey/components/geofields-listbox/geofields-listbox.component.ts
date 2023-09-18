@@ -85,7 +85,7 @@ export class GeofieldsListboxComponent
 
   override ngOnInit(): void {
     super.ngOnInit();
-    this.selectedFields = getGeoFields(this.model.obj);
+    this.selectedFields = getGeoFields({ geoFields: this.model.value });
     this.availableFields = ALL_FIELDS.filter(
       (x) => !this.selectedFields.some((obj) => obj.value === x.value)
     );
@@ -99,7 +99,7 @@ export class GeofieldsListboxComponent
 
   /** Emits select fields on action click */
   handleActionClick(): void {
-    this.model.obj.geoFields = this.selectedFields ?? [];
+    this.model.value = this.selectedFields ?? [];
     this.changeDetectorRef.detectChanges();
   }
 
