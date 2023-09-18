@@ -108,7 +108,7 @@ export class SafeFormBuilderService {
 
     // Add custom variables
     this.formHelpersService.addUserVariables(survey);
-    this.formHelpersService.addWorkflowVariables(survey);
+    this.formHelpersService.setWorkflowContextVariable(survey);
     if (record) {
       this.formHelpersService.addRecordIDVariable(survey, record);
     }
@@ -209,17 +209,23 @@ export class SafeFormBuilderService {
     selectedPageIndex: BehaviorSubject<number>,
     temporaryFilesStorage: Record<string, Array<File>>
   ) {
-    // Open survey on a specific page (openOnQuestionValuesPage has priority over openOnPage)
-    if (survey.openOnQuestionValuesPage) {
-      const question = survey.getQuestionByName(
-        survey.openOnQuestionValuesPage
-      );
-      const page = survey.getPageByName(question.value);
-      selectedPageIndex.next(page.visibleIndex);
-    } else if (survey.openOnPage) {
-      const page = survey.getPageByName(survey.openOnPage);
-      selectedPageIndex.next(page.visibleIndex);
-    }
+    survey.onAfterRenderSurvey.add(() => {
+      // Open survey on a specific page (openOnQuestionValuesPage has priority over openOnPage)
+      if (survey.openOnQuestionValuesPage) {
+        const question = survey.getQuestionByName(
+          survey.openOnQuestionValuesPage
+        );
+        const page = survey.getPageByName(question.value);
+        if (page) {
+          selectedPageIndex.next(page.visibleIndex);
+        }
+      } else if (survey.openOnPage) {
+        const page = survey.getPageByName(survey.openOnPage);
+        if (page) {
+          selectedPageIndex.next(page.visibleIndex);
+        }
+      }
+    });
     survey.onClearFiles.add((_, options: any) => this.onClearFiles(options));
     survey.onUploadFiles.add((_, options: any) =>
       this.onUploadFiles(temporaryFilesStorage, options)
