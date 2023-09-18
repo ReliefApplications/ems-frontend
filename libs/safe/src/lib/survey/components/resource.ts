@@ -146,13 +146,13 @@ export const init = (
       serializer.addProperty('resource', {
         name: 'resource',
         category: 'Custom Questions',
-        type: CustomPropertyGridComponentTypes.resourceDropdown,
+        type: CustomPropertyGridComponentTypes.resourcesDropdown,
         visibleIndex: 3,
         required: true,
       });
 
       registerCustomPropertyEditor(
-        CustomPropertyGridComponentTypes.resourceDropdown
+        CustomPropertyGridComponentTypes.resourcesDropdown
       );
 
       serializer.addProperty('resource', {
@@ -192,7 +192,7 @@ export const init = (
       // Build set available grid fields button
       serializer.addProperty('resource', {
         name: 'Search resource table',
-        type: CustomPropertyGridComponentTypes.resourceAvailableFields,
+        type: CustomPropertyGridComponentTypes.resourcesAvailableFields,
         isRequired: true,
         category: 'Custom Questions',
         dependsOn: ['resource'],
@@ -201,7 +201,7 @@ export const init = (
       });
 
       registerCustomPropertyEditor(
-        CustomPropertyGridComponentTypes.resourceAvailableFields
+        CustomPropertyGridComponentTypes.resourcesAvailableFields
       );
 
       serializer.addProperty('resource', {
@@ -238,7 +238,7 @@ export const init = (
       // Build set available grid fields button
       serializer.addProperty('resource', {
         name: 'Search resource table',
-        type: CustomPropertyGridComponentTypes.resourceAvailableFields,
+        type: CustomPropertyGridComponentTypes.resourcesAvailableFields,
         isRequired: true,
         category: 'Custom Questions',
         dependsOn: ['resource'],

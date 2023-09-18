@@ -2,7 +2,7 @@ import { Question } from 'survey-core';
 import { CustomPropertyGridComponentTypes } from '../utils/components.enum';
 
 /**
- * Extended resource available fields question class for survey creators property grid editor
+ * Extended resources available fields question class for survey creators property grid editor
  */
 export class QuestionResourceAvailableFieldsModel extends Question {
   /**
@@ -11,6 +11,6 @@ export class QuestionResourceAvailableFieldsModel extends Question {
    * @returns {CustomPropertyGridComponentTypes} question type
    */
   override getType() {
-    return CustomPropertyGridComponentTypes.resourceAvailableFields;
+    return CustomPropertyGridComponentTypes.resourcesAvailableFields;
   }
 }

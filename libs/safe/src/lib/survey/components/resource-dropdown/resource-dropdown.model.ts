@@ -2,7 +2,7 @@ import { Question } from 'survey-core';
 import { CustomPropertyGridComponentTypes } from '../utils/components.enum';
 
 /**
- * Extended resource dropdown question class for survey creators property grid editor
+ * Extended resources dropdown question class for survey creators property grid editor
  */
 export class QuestionResourceDropdownModel extends Question {
   /**
@@ -11,6 +11,6 @@ export class QuestionResourceDropdownModel extends Question {
    * @returns {CustomPropertyGridComponentTypes} question type
    */
   override getType() {
-    return CustomPropertyGridComponentTypes.resourceDropdown;
+    return CustomPropertyGridComponentTypes.resourcesDropdown;
   }
 }

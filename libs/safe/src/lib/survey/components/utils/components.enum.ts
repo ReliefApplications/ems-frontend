@@ -40,15 +40,15 @@ import {
  * Custom component types for the survey creator property grid editor
  */
 export enum CustomPropertyGridComponentTypes {
-  applicationsDropdown = 'applications-dropdown',
-  dateTypeDisplayer = 'date-type-displayer',
-  geospatialListbox = 'geospatial-listbox',
+  applicationsDropdown = 'applicationsDropdown',
+  dateTypeDisplayer = 'date',
+  geospatialListbox = 'listBox',
   referenceDataDropdown = 'reference-data-dropdown',
-  resourceAvailableFields = 'resource-available-fields',
-  resourceCustomFilters = 'resource-custom-filters',
-  resourceDropdown = 'resource-dropdown',
-  resourceSelectText = 'resource-select-text',
-  resourceTestService = 'resource-test-service',
+  resourcesAvailableFields = 'resourcesFields',
+  resourceCustomFilters = 'customFilter',
+  resourcesDropdown = 'resourcesDropdown',
+  resourceSelectText = 'selectResourceText',
+  resourceTestService = 'resourceTestService',
 }
 
 /**
@@ -74,11 +74,11 @@ export const CustomPropertyGridEditors: Record<
     component: SafeReferenceDataDropdownComponent,
     model: QuestionReferenceDataDropdownModel,
   },
-  [CustomPropertyGridComponentTypes.resourceDropdown]: {
+  [CustomPropertyGridComponentTypes.resourcesDropdown]: {
     model: QuestionResourceDropdownModel,
     component: SafeResourceDropdownComponent,
   },
-  [CustomPropertyGridComponentTypes.resourceAvailableFields]: {
+  [CustomPropertyGridComponentTypes.resourcesAvailableFields]: {
     component: SafeResourceAvailableFieldsComponent,
     model: QuestionResourceAvailableFieldsModel,
   },
