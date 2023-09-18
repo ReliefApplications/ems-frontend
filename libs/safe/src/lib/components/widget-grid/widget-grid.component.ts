@@ -193,11 +193,17 @@ export class SafeWidgetGridComponent
             template: this.dashboardService.findSettingsTemplate(tile),
           },
         });
-        dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
-          if (res) {
-            this.edit.emit({ type: 'data', id: this.widgets[this.widgets.length - 1].id, options: res });
-          }
-        });
+        dialogRef.closed
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((res: any) => {
+            if (res) {
+              this.edit.emit({
+                type: 'data',
+                id: this.widgets[this.widgets.length - 1].id,
+                options: res,
+              });
+            }
+          });
       }
     }
   }
