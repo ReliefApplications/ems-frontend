@@ -114,11 +114,4 @@ export class SafeAddUserComponent
       (x) => x.username?.toLowerCase().indexOf(filterValue) === 0
     );
   }
-
-  /**
-   * Close the dialog
-   */
-  onClose(): void {
-    this.dialogRef.close();
-  }
 }

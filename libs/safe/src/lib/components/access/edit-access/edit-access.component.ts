@@ -85,11 +85,4 @@ export class SafeEditAccessComponent
       ],
     });
   }
-
-  /**
-   * Closes the modal without sending any data.
-   */
-  onClose(): void {
-    this.dialogRef.close();
-  }
 }

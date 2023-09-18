@@ -43,11 +43,4 @@ export class AddReferenceDataComponent implements OnInit {
       name: ['', Validators.required],
     });
   }
-
-  /**
-   * Close the modal without sending data.
-   */
-  onClose(): void {
-    this.dialogRef.close();
-  }
 }

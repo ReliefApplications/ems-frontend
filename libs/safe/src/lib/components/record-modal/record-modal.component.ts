@@ -271,13 +271,6 @@ export class SafeRecordModalComponent
   }
 
   /**
-   * Closes the modal without sending any data.
-   */
-  onClose(): void {
-    this.dialogRef.close();
-  }
-
-  /**
    * Opens the history of the record in a modal.
    */
   public async onShowHistory(): Promise<void> {

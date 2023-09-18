@@ -62,9 +62,4 @@ export class AddChannelModalComponent implements OnInit {
       title: ['', Validators.required],
     });
   }
-
-  /** Close the modal without sending any data. */
-  onClose(): void {
-    this.dialogRef.close();
-  }
 }
