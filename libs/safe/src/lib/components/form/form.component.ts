@@ -229,7 +229,7 @@ export class SafeFormComponent
         }
       }
     });
-  } 
+  }
 
   /**
    * Reset the survey to empty
