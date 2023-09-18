@@ -1,10 +1,10 @@
 import { GlobalOptions } from '../types';
 
 /**
- * Returns the number of members of an array.
+ * Returns the total number of members in family
  *
  * @param params params passed to the function
- * @returns The length of the array.
+ * @returns The total of family members.
  */
 const getNumberOfMembers = (params: any[]) => {
   if (!Array.isArray(params[0])) return 0;
@@ -25,10 +25,10 @@ const getNumberOfMembers = (params: any[]) => {
 };
 
 /**
- *  Generator for the custom function length.
+ *  Generator for the custom function total.
  *
  * @param _ Global options
- * @returns The custom function length
+ * @returns The custom function total
  */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export default (_: GlobalOptions) => getNumberOfMembers;
