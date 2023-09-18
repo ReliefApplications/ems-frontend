@@ -23,6 +23,7 @@ import {
   SafeWidgetGridComponent,
   SafeConfirmService,
   ButtonActionT,
+  ContextService,
 } from '@oort-front/safe';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map, startWith, takeUntil } from 'rxjs/operators';
@@ -87,6 +88,7 @@ export class DashboardComponent
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
    * @param document Document
+   * @param contextService Dashboard context service
    */
   constructor(
     private apollo: Apollo,
@@ -99,7 +101,8 @@ export class DashboardComponent
     private confirmService: SafeConfirmService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private contextService: ContextService
   ) {
     super();
   }
@@ -231,7 +234,8 @@ export class DashboardComponent
             ? data.dashboard.structure
             : [];
           this.buttonActions = this.dashboard.buttons || [];
-          this.showFilter = this.dashboard.showFilter;
+          this.showFilter = this.dashboard.showFilter ?? false;
+          this.contextService.isFilterEnabled.next(this.showFilter);
         } else {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.accessNotProvided', {
