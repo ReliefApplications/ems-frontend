@@ -100,6 +100,7 @@ export class GeofieldsListboxComponent
   /** Emits select fields on action click */
   handleActionClick(): void {
     this.model.obj.geoFields = this.selectedFields ?? [];
+    this.changeDetectorRef.detectChanges();
   }
 
   /**
