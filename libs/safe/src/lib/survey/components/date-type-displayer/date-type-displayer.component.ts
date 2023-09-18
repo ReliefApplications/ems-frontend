@@ -44,7 +44,7 @@ export class SafeDateTypeDisplayerComponent
    * @param {ViewContainerRef} viewContainerRef - Angular - This is angular view container ref of the component instance needed for the survey AngularQuestion class
    * @param {ViewContainerRef} domService - AppBuilder - Dom servie to handle any DOM element update
    * @param {Renderer2} renderer - Angular - This is renderer instance that handles any DOM update safely
-   * @param {ElementRe} el - Angular - Current class instance linked element ref template
+   * @param {ElementRef} el - Angular - Current class instance linked element ref template
    */
   constructor(
     @Inject(DOCUMENT) private document: Document,
