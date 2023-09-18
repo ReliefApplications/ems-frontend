@@ -177,8 +177,29 @@ export class SafeWidgetGridComponent
    *
    * @param e new widget.
    */
-  onAdd(e: any): void {
+  async onAdd(e: any): Promise<void> {
     this.add.emit(e);
+    if (e) {
+      const tile = JSON.parse(JSON.stringify(e));
+      if (tile) {
+        //open settings automatically
+        const { SafeTileDataComponent } = await import(
+          './floating-options/menu/tile-data/tile-data.component'
+        );
+        const dialogRef = this.dialog.open(SafeTileDataComponent, {
+          disableClose: true,
+          data: {
+            tile: tile,
+            template: this.dashboardService.findSettingsTemplate(tile),
+          },
+        });
+        dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+          if (res) {
+            this.edit.emit({ type: 'data', id: this.widgets[this.widgets.length - 1].id, options: res });
+          }
+        });
+      }
+    }
   }
 
   /**
