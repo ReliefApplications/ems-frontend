@@ -463,7 +463,7 @@ export class Layer implements LayerModel {
               null
             );
             const uniqueValueSymbol =
-              uniqueValueInfos.find((x) => x.value === fieldValue)?.symbol ||
+              uniqueValueInfos.find((x) => x.value == fieldValue)?.symbol ||
               uniqueValueDefaultSymbol;
             return {
               fillColor: uniqueValueSymbol.color,
