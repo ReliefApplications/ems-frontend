@@ -24,10 +24,7 @@ interface DialogData {
   templateUrl: './add-user.component.html',
   styleUrls: ['./add-user.component.scss'],
 })
-export class AddUserComponent
-  extends UnsubscribeComponent
-  implements OnInit
-{
+export class AddUserComponent extends UnsubscribeComponent implements OnInit {
   form = this.fb.group({
     email: ['', Validators.minLength(1)],
     role: ['', Validators.required],

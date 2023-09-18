@@ -78,9 +78,7 @@ export class InviteUsersComponent extends UnsubscribeComponent {
    */
   async onAdd(): Promise<void> {
     const invitedUsers = this.gridData.data.map((x) => x.email);
-    const { AddUserComponent } = await import(
-      '../add-user/add-user.component'
-    );
+    const { AddUserComponent } = await import('../add-user/add-user.component');
     const dialogRef = this.dialog.open(AddUserComponent, {
       data: {
         roles: this.data.roles,
