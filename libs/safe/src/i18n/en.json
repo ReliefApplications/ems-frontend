@@ -1677,6 +1677,7 @@
 		"form": {
 			"core": "Core",
 			"create": "Create a Form",
+			"edit": "Edit form",
 			"field": {
 				"label": "Label",
 				"name": "Field name",

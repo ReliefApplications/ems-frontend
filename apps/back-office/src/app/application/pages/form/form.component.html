@@ -35,10 +35,7 @@
         (click)="editForm()"
         *ngIf="form.canUpdate"
       >
-        {{
-          'common.editObject'
-            | translate : { name: 'common.form.one' | translate }
-        }}
+       {{'models.form.edit' | translate}}
       </ui-button>
     </div>
   </div>
