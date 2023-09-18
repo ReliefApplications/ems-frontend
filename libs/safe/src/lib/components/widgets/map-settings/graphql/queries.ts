@@ -1,7 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Resource } from '../../../../models/resource.model';
-import { ReferenceData } from '../../../../models/reference-data.model';
-import { Connection } from '../../../../utils/graphql/connection.type';
 
 // === GET RESOURCE ===
 // todo: use @include decorators to avoid query of layouts / aggregations in the future

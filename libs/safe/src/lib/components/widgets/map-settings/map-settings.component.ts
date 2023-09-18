@@ -24,7 +24,6 @@ import { LayerModel } from '../../../models/layer.model';
 import { MapComponent } from '../../ui/map';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { SafeLayoutService } from '../../../services/layout/layout.service';
-import { flatDeep } from '../../../utils/array-filter';
 
 /** Component for the map widget settings */
 @Component({
@@ -227,23 +226,6 @@ export class SafeMapSettingsComponent
    *
    * @param event leaflet map event
    */
-  private getFields(fields: any[], prefix?: string): (string | undefined)[] {
-    return flatDeep(
-      fields
-        .filter((x) => x.kind !== 'LIST')
-        .map((f) => {
-          switch (f.kind) {
-            case 'OBJECT': {
-              return this.getFields(f.fields, f.name);
-            }
-            default: {
-              return prefix ? `${prefix}.${f.name}` : f.name;
-            }
-          }
-        })
-    );
-  }
-
   handleMapEvent(event: MapEvent) {
     if (!this.tileForm) return;
     switch (event.type) {
