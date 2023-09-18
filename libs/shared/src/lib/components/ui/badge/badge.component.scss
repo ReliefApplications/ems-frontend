@@ -4,42 +4,42 @@ div {
   border-radius: 100em;
 }
 
-.safe-badge-small {
+.shared-badge-small {
   padding: 0 0.5em;
   line-height: 1.5em;
   height: 1.5em;
 }
 
-.safe-badge-medium {
+.shared-badge-medium {
   padding: 0 0.75em;
   line-height: 2em;
   height: 2em;
 }
 
-.safe-badge-default {
+.shared-badge-default {
   background-color: #f1f1f1;
   font-weight: lighter;
 }
 
-.safe-badge-primary {
+.shared-badge-primary {
   background-color: rgba(0, 141, 201, 0.1);
   color: rgb(0, 141, 201);
 }
 
-.safe-badge-danger {
+.shared-badge-danger {
   background-color: rgba(241, 67, 67, 0.19);
   color: rgb(241, 67, 67);
 }
-.safe-badge-success {
+.shared-badge-success {
   background-color: rgba(149, 221, 101, 0.2);
   color: rgb(149, 221, 101);
 }
-.safe-badge-warning {
+.shared-badge-warning {
   background-color: rgba(244, 174, 82, 0.2);
   color: rgb(244, 174, 82);
 }
 
-.safe-badge-icon {
+.shared-badge-icon {
   width: 2em;
   @apply bg-white;
   line-height: initial;

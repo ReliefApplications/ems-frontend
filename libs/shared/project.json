@@ -1,9 +1,9 @@
 {
-  "name": "safe",
+  "name": "shared",
   "$schema": "../node_modules/nx/schemas/project-schema.json",
   "projectType": "library",
   "sourceRoot": "libs/shared/src",
-  "prefix": "safe",
+  "prefix": "shared",
   "targets": {
     "test": {
       "executor": "@nrwl/jest:jest",
@@ -31,7 +31,7 @@
       "options": {
         "port": 4400,
         "configDir": "libs/shared/.storybook",
-        "browserTarget": "safe:build-storybook",
+        "browserTarget": "shared:build-storybook",
         "compodoc": false,
         "styles": ["libs/shared/src/lib/style/styles.scss"],
         "stylePreprocessorOptions": {
@@ -48,9 +48,9 @@
       "executor": "@storybook/angular:build-storybook",
       "outputs": ["{options.outputDir}"],
       "options": {
-        "outputDir": "dist/storybook/safe",
+        "outputDir": "dist/storybook/shared",
         "configDir": "libs/shared/.storybook",
-        "browserTarget": "safe:build-storybook",
+        "browserTarget": "shared:build-storybook",
         "compodoc": false,
         "styles": ["libs/shared/src/lib/style/styles.scss"],
         "stylePreprocessorOptions": {

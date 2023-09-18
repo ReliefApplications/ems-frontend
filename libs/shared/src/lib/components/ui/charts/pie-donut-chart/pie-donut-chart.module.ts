@@ -4,7 +4,7 @@ import { PieDonutChartComponent } from './pie-donut-chart.component';
 import { NgChartsModule } from 'ng2-charts';
 
 /**
- * Module declaration for safe-pie-donut-chart component
+ * Module declaration for shared-pie-donut-chart component
  */
 @NgModule({
   declarations: [PieDonutChartComponent],

@@ -31,7 +31,7 @@
   // --error-color: #ed5565;
 }
 
-$safe-palette: (
+$shared-palette: (
   50: rgb($primary_50),
   100: rgb($primary_100),
   200: rgb($primary_200),
@@ -56,7 +56,7 @@ $safe-palette: (
   ),
 );
 
-$safe-palette-accent: (
+$shared-palette-accent: (
   main: rgb($secondary_50),
   lighter: rgb($secondary_100),
   darker: rgb($secondary_150),
@@ -70,7 +70,7 @@ $safe-palette-accent: (
     ),
 );
 
-$safe-palette-warn: (
+$shared-palette-warn: (
   main: #d34444,
   // 500
   lighter: #ff766f,
@@ -87,17 +87,17 @@ $safe-palette-warn: (
     ),
 );
 
-$safe-primary: mat.define-palette($safe-palette);
-$safe-accent: mat.define-palette($safe-palette-accent, main, lighter, darker);
-$safe-warn: mat.define-palette($safe-palette-warn, main, lighter, darker);
-// $safe-theme: mat.define-light-theme($safe-primary, $safe-accent, $safe-warn);
+$shared-primary: mat.define-palette($shared-palette);
+$shared-accent: mat.define-palette($shared-palette-accent, main, lighter, darker);
+$shared-warn: mat.define-palette($shared-palette-warn, main, lighter, darker);
+// $shared-theme: mat.define-light-theme($shared-primary, $shared-accent, $shared-warn);
 
-$safe-theme: mat.define-light-theme(
+$shared-theme: mat.define-light-theme(
   (
     color: (
-      primary: $safe-primary,
-      accent: $safe-accent,
-      warn: $safe-warn,
+      primary: $shared-primary,
+      accent: $shared-accent,
+      warn: $shared-warn,
     ),
     density: 0,
   )
@@ -140,9 +140,9 @@ $safe-theme: mat.define-light-theme(
 }
 
 // === ADDITIONAL MATERIAL STYLING ===
-@include mat.all-component-themes($safe-theme);
-@include mat.all-legacy-component-themes($safe-theme);
-@include checkbox($safe-theme);
+@include mat.all-component-themes($shared-theme);
+@include mat.all-legacy-component-themes($shared-theme);
+@include checkbox($shared-theme);
 
 html,
 body {
@@ -216,7 +216,7 @@ body {
 
 // === SURVEY BUILDER ===
 .core-question {
-  color: mat.get-color-from-palette($safe-warn) !important;
+  color: mat.get-color-from-palette($shared-warn) !important;
 }
 
 // === KENDO THEME ===

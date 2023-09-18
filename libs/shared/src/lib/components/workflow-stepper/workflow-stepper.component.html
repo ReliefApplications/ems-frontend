@@ -1,5 +1,5 @@
 <ui-divider class="m-0"></ui-divider>
-<div class="safe-steps" *ngIf="loading">
+<div class="shared-steps" *ngIf="loading">
   <kendo-skeleton
     shape="rectangle"
     animation="pulse"
@@ -10,7 +10,7 @@
   ></kendo-skeleton>
 </div>
 <div
-  class="safe-steps"
+  class="shared-steps"
   *ngIf="!loading"
   cdkDropList
   cdkDropListOrientation="horizontal"

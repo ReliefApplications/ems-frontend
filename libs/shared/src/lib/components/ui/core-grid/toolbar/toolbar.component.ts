@@ -8,7 +8,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 })
 
 /**
- * Custom toolbar that we use in the safe-grid component to interact with the admin features
+ * Custom toolbar that we use in the shared-grid component to interact with the admin features
  */
 export class GridToolbarComponent {
   // === DATA ===

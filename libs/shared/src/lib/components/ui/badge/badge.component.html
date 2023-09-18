@@ -1,13 +1,13 @@
 <div
-  [class.safe-badge-small]="size === 'small'"
-  [class.safe-badge-medium]="size === 'medium'"
-  [class.safe-badge-default]="variant === 'default'"
-  [class.safe-badge-primary]="variant === 'primary'"
-  [class.safe-badge-success]="variant === 'success'"
-  [class.safe-badge-danger]="variant === 'danger'"
-  [class.safe-badge-warning]="variant === 'warning'"
+  [class.shared-badge-small]="size === 'small'"
+  [class.shared-badge-medium]="size === 'medium'"
+  [class.shared-badge-default]="variant === 'default'"
+  [class.shared-badge-primary]="variant === 'primary'"
+  [class.shared-badge-success]="variant === 'success'"
+  [class.shared-badge-danger]="variant === 'danger'"
+  [class.shared-badge-warning]="variant === 'warning'"
 >
-  <div *ngIf="icon" class="safe-badge-icon">
+  <div *ngIf="icon" class="shared-badge-icon">
     <ui-icon [icon]="icon" [size]="15"></ui-icon>
   </div>
   <ng-content></ng-content>

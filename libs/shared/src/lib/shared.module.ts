@@ -41,7 +41,7 @@ import { SortingSettingsModule } from './components/widgets/common/sorting-setti
 import { WidgetChoiceModule } from './components/widget-choice/widget-choice.module';
 import { TabsSettingsModule } from './components/widgets/tabs-settings/tabs-settings.module';
 
-/** Main module for the safe project */
+/** Main module for the shared project */
 @NgModule({
   exports: [
     LayoutModule,

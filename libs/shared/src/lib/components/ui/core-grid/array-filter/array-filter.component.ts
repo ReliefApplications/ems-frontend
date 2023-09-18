@@ -69,7 +69,7 @@ export class ArrayFilterComponent
   public selectedOperator = 'contains';
 
   /**
-   * Contructor for safe-array-filter
+   * Contructor for shared-array-filter
    *
    * @param filterService Filter service
    * @param translate Angular translate service

@@ -68,7 +68,7 @@ export class EditorControlComponent
 
   public stateChanges = new Subject<void>();
   @HostBinding()
-  id = `safe-editor-control-${EditorControlComponent.nextId++}`;
+  id = `shared-editor-control-${EditorControlComponent.nextId++}`;
 
   /**
    * Gets the placeholder for the select
@@ -158,7 +158,7 @@ export class EditorControlComponent
     return (this.ngControl.invalid && this.touched) || false;
   }
 
-  public controlType = 'safe-editor-control';
+  public controlType = 'shared-editor-control';
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;
@@ -236,7 +236,7 @@ export class EditorControlComponent
    */
   setDescribedByIds(ids: string[]) {
     const controlElement = this.elementRef.nativeElement.querySelector(
-      '.safe-editor-control'
+      '.shared-editor-control'
     );
     if (!controlElement) {
       return;

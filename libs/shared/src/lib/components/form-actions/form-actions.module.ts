@@ -4,7 +4,7 @@ import { FormActionsComponent } from './form-actions.component';
 import { DropDownListModule } from '@progress/kendo-angular-dropdowns';
 
 /**
- * Module for the safeFormActions component
+ * Module for the sharedFormActions component
  */
 @NgModule({
   declarations: [FormActionsComponent],

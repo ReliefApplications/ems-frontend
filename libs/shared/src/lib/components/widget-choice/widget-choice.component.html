@@ -3,9 +3,9 @@
 ></ng-container>
 
 <ng-template #listTemplate>
-  <div class="safe-widget-choice">
+  <div class="shared-widget-choice">
     <div
-      class="safe-widget-type"
+      class="shared-widget-type"
       *ngFor="let type of widgetTypes"
       (click)="onSelect(type)"
       [ngStyle]="hovered === type.id ? { 'border-color': type.color } : null"
@@ -27,10 +27,10 @@
 </ng-template>
 
 <ng-template #barTemplate>
-  <div class="safe-floating-widget-choice shadow-lg" cdkDrag>
-    <div class="safe-widget-type-list">
+  <div class="shared-floating-widget-choice shadow-lg" cdkDrag>
+    <div class="shared-widget-type-list">
       <div
-        class="safe-widget-type"
+        class="shared-widget-type"
         *ngFor="let type of widgetTypes"
         (click)="onSelect(type)"
         [uiTooltip]="type.name"
@@ -41,7 +41,7 @@
         <div
           *ngIf="hovered === type.id"
           [style.background]="type.color"
-          class="safe-widget-hovered"
+          class="shared-widget-hovered"
         ></div>
       </div>
     </div>

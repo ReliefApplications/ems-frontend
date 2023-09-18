@@ -62,7 +62,7 @@ export class IconPickerComponent
 
   public stateChanges = new Subject<void>();
   @HostBinding()
-  id = `safe-icon-picker-${IconPickerComponent.nextId++}`;
+  id = `shared-icon-picker-${IconPickerComponent.nextId++}`;
 
   /**
    * Gets the placeholder for the select
@@ -152,7 +152,7 @@ export class IconPickerComponent
     // return this.selected.invalid && this.touched;
   }
 
-  public controlType = 'safe-icon-picker';
+  public controlType = 'shared-icon-picker';
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;
@@ -203,8 +203,9 @@ export class IconPickerComponent
    * @param ids id array
    */
   setDescribedByIds(ids: string[]) {
-    const controlElement =
-      this.elementRef.nativeElement.querySelector('.safe-icon-picker');
+    const controlElement = this.elementRef.nativeElement.querySelector(
+      '.shared-icon-picker'
+    );
     if (!controlElement) return;
     controlElement.setAttribute('aria-describedby', ids.join(' '));
   }

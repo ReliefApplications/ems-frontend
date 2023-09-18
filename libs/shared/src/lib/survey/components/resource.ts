@@ -693,7 +693,7 @@ export const init = (
         const addBtn = buildAddButton(question, false, dialog, ngZone);
         actionsButtons.appendChild(addBtn);
 
-        const parentElement = el.querySelector('.safe-qst-content');
+        const parentElement = el.querySelector('.shared-qst-content');
         if (parentElement) {
           parentElement.insertBefore(actionsButtons, parentElement.firstChild);
         }

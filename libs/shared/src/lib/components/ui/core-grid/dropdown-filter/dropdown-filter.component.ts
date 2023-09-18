@@ -51,7 +51,7 @@ export class DropdownFilterComponent
   public selectedOperator = 'eq';
 
   /**
-   * Contructor for safe-dropdown-filter
+   * Contructor for shared-dropdown-filter
    *
    * @param filterService The filter service
    * @param translate The translation service

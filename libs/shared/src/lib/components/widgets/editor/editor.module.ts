@@ -7,7 +7,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { HtmlWidgetContentModule } from '../html-widget-content/html-widget-content.module';
 
 /**
- * Module for the safeEditor component
+ * Module for the sharedEditor component
  */
 @NgModule({
   declarations: [EditorComponent],

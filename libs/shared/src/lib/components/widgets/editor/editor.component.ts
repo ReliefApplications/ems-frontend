@@ -38,7 +38,7 @@ export class EditorComponent implements OnInit {
   public formattedStyle?: string;
 
   /**
-   * Constructor for safe-editor component
+   * Constructor for shared-editor component
    *
    * @param apollo Apollo instance
    * @param queryBuilder Query builder service

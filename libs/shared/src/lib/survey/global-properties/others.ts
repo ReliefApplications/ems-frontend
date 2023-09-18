@@ -26,7 +26,7 @@ export const init = (Survey: any, environment: any): void => {
     category: 'general',
     required: true,
   });
-  // Pass token before the request to fetch choices by URL if it's targeting SAFE API
+  // Pass token before the request to fetch choices by URL if it's targeting SHARED API
   // Survey.ChoicesRestful.onBeforeSendRequest = (
   //   sender: ChoicesRestful,
   //   options: { request: { headers: Headers } }

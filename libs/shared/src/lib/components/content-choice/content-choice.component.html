@@ -1,6 +1,6 @@
-<div class="safe-content-choice">
+<div class="shared-content-choice">
   <div
-    class="safe-content-type shadow-2lg"
+    class="shared-content-type shadow-2lg"
     *ngFor="let type of contentTypes"
     (click)="onSelect(type.value)"
     [style.background]="type.color"
@@ -10,7 +10,7 @@
     <div
       *ngIf="type.value === selected"
       [style.background]="type.focusColor"
-      class="safe-type-selected"
+      class="shared-type-selected"
     ></div>
   </div>
 </div>

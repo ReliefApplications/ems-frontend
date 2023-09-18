@@ -121,12 +121,12 @@ export class GridWidgetComponent
    * @param dialog Dialogs service
    * @param snackBar Shared snack bar service
    * @param workflowService Shared workflow service
-   * @param safeAuthService Shared authentication service
+   * @param authService Shared authentication service
    * @param emailService Shared email service
    * @param queryBuilder Shared query builder service
    * @param gridLayoutService Shared grid layout service
    * @param confirmService Shared confirm service
-   * @param applicationService The safe application service
+   * @param applicationService The shared application service
    * @param translate Angular translate service
    * @param aggregationService Shared aggregation service
    */
@@ -136,7 +136,7 @@ export class GridWidgetComponent
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private workflowService: WorkflowService,
-    private safeAuthService: AuthService,
+    private authService: AuthService,
     private emailService: EmailService,
     private queryBuilder: QueryBuilderService,
     private gridLayoutService: GridLayoutService,
@@ -147,7 +147,7 @@ export class GridWidgetComponent
   ) {
     super();
     this.isAdmin =
-      this.safeAuthService.userIsAdmin && environment.module === 'backoffice';
+      this.authService.userIsAdmin && environment.module === 'backoffice';
   }
 
   ngOnInit() {

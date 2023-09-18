@@ -1,18 +1,18 @@
 @import '../../../../style/map.scss';
 
 :host ::ng-deep {
-  @extend .safe-border-radius-inherit !optional;
+  @extend .shared-border-radius-inherit !optional;
   overflow: hidden;
 }
 
-::ng-deep .safe-popup-content {
+::ng-deep .shared-popup-content {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   column-gap: 3px;
   row-gap: 6px;
 }
 
-.safe-popup-header {
+.shared-popup-header {
   background: #008dc9;
   color: white;
   border-top-left-radius: inherit;

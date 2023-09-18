@@ -27,7 +27,7 @@ import { CoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { EditorModule } from '../editor/editor.module';
 
 /**
- * Module for the safeEditorSetting component
+ * Module for the EditorSetting component
  */
 @NgModule({
   declarations: [EditorSettingsComponent, RecordSelectionTabComponent],

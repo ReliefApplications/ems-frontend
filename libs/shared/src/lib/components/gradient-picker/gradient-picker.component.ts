@@ -55,7 +55,7 @@ export class GradientPickerComponent
 
   public stateChanges = new Subject<void>();
   @HostBinding()
-  id = `safe-gradient-picker-${GradientPickerComponent.nextId++}`;
+  id = `shared-gradient-picker-${GradientPickerComponent.nextId++}`;
 
   /**
    * Gets the placeholder for the select
@@ -145,7 +145,7 @@ export class GradientPickerComponent
     // return this.selected.invalid && this.touched;
   }
 
-  public controlType = 'safe-gradient-picker';
+  public controlType = 'shared-gradient-picker';
 
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;
@@ -178,7 +178,7 @@ export class GradientPickerComponent
    */
   setDescribedByIds(ids: string[]) {
     const controlElement = this.elementRef.nativeElement.querySelector(
-      '.safe-gradient-picker'
+      '.shared-gradient-picker'
     );
     if (!controlElement) return;
     controlElement.setAttribute('aria-describedby', ids.join(' '));

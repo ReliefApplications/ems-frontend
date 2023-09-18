@@ -4,7 +4,7 @@ import { LineChartComponent } from './line-chart.component';
 import { NgChartsModule } from 'ng2-charts';
 
 /**
- * Module declaration for safe-line-chart component
+ * Module declaration for shared-line-chart component
  */
 @NgModule({
   declarations: [LineChartComponent],

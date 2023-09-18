@@ -11,7 +11,7 @@ import {
 } from '@oort-front/ui';
 
 /**
- * Module declaration for safe-tagbox component
+ * Module declaration for shared-tagbox component
  */
 @NgModule({
   declarations: [TagboxComponent],

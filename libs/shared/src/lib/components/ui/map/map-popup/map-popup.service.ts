@@ -101,7 +101,7 @@ export class MapPopupService {
   ): { instance: ComponentRef<MapPopupComponent>; popup: L.Popup } {
     // create div element to render the MapPopupComponent content
     const div = document.createElement('div');
-    div.setAttribute('class', 'safe-border-radius-inherit');
+    div.setAttribute('class', 'shared-border-radius-inherit');
 
     const popupComponent = this.initializeMapPopupComponent(
       coordinates,
@@ -213,7 +213,8 @@ export class MapPopupService {
     const imageTemplate = (img: string) =>
       `<img src="{{${img}}}" class="flex-1" />`;
 
-    const containerStartTemplate = '<div class="safe-popup-content px-2 my-4">';
+    const containerStartTemplate =
+      '<div class="shared-popup-content px-2 my-4">';
     const containerEndTemplate = '</div>';
 
     let template =

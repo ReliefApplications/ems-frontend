@@ -1,11 +1,11 @@
-.safe-content-choice {
+.shared-content-choice {
   display: flex;
   flex-direction: row;
   justify-content: space-evenly;
   flex-wrap: wrap;
   gap: 32px;
 
-  .safe-content-type {
+  .shared-content-type {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -15,7 +15,7 @@
     cursor: pointer;
     border-radius: 8px;
 
-    .safe-type-selected {
+    .shared-type-selected {
       height: 4px;
       width: 100%;
       position: absolute;
