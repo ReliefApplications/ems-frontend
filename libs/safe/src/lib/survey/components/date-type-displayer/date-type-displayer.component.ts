@@ -17,10 +17,13 @@ import {
   DateInputFormat,
   createPickerInstance,
   getDateDisplay,
-  setDateValue,
 } from '../utils/create-picker-instance';
 import { v4 as uuidv4 } from 'uuid';
 
+/**
+ * Component for the selection of the interest fields from date type question
+ *
+ */
 @Component({
   selector: 'safe-date-type-displayer',
   standalone: true,
@@ -33,6 +36,16 @@ export class SafeDateTypeDisplayerComponent
 {
   private instanceId = `survey-creator-date-picker${uuidv4()}`;
 
+  /**
+   * Component for the selection of the interest fields from date type question
+   *
+   * @param {Document} document Current document object
+   * @param {ChangeDetectorRef} changeDetectorRef - Angular - This is angular change detector ref of the component instance needed for the survey AngularQuestion class
+   * @param {ViewContainerRef} viewContainerRef - Angular - This is angular view container ref of the component instance needed for the survey AngularQuestion class
+   * @param {ViewContainerRef} domService - AppBuilder - Dom servie to handle any DOM element update
+   * @param {Renderer2} renderer - Angular - This is renderer instance that handles any DOM update safely
+   * @param {ElementRe} el - Angular - Current class instance linked element ref template
+   */
   constructor(
     @Inject(DOCUMENT) private document: Document,
     changeDetectorRef: ChangeDetectorRef,
@@ -47,7 +60,7 @@ export class SafeDateTypeDisplayerComponent
   override ngOnInit(): void {
     super.ngOnInit();
 
-    this.model.obj.registerFunctionOnPropertyValueChanged(
+    this.model.registerFunctionOnPropertyValueChanged(
       'inputType',
       this.updatePickerInstance.bind(this),
       // eslint-disable-next-line no-underscore-dangle
@@ -71,7 +84,7 @@ export class SafeDateTypeDisplayerComponent
     pickerDiv = this.renderer.createElement('div');
     this.renderer.setAttribute(pickerDiv, 'id', this.instanceId);
     const pickerInstance = createPickerInstance(
-      this.model.obj.inputType as DateInputFormat,
+      this.model.inputType as DateInputFormat,
       pickerDiv,
       this.domService
     );
@@ -79,14 +92,14 @@ export class SafeDateTypeDisplayerComponent
       if (this.model.obj[this.model.obj.name as keyof QuestionText]) {
         pickerInstance.value = getDateDisplay(
           this.model.obj[this.model.name as keyof QuestionText],
-          this.model.obj.inputType
+          this.model.inputType
         );
       }
       pickerInstance.registerOnChange((value: Date | null) => {
         if (value) {
-          this.model.onChanged(setDateValue(value, this.model.obj.inputType));
+          this.model.value = value;
         } else {
-          this.model.onChanged(null);
+          this.model.value = null;
         }
       });
     }
@@ -95,6 +108,6 @@ export class SafeDateTypeDisplayerComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
-    this.model.obj.unRegisterFunctionOnPropertyValueChanged('inputType');
+    this.model.unRegisterFunctionOnPropertyValueChanged('inputType');
   }
 }
