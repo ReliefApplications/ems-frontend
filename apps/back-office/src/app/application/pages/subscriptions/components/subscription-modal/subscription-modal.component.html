@@ -3,8 +3,7 @@
     <h1>
       {{
         data.subscription
-          ? ('common.editObject'
-            | translate : { name: 'common.subscription.one' | translate })
+          ? ('models.subscription.edit' | translate)
           : ('models.subscription.new' | translate)
       }}
     </h1>
@@ -90,9 +89,7 @@
           <label>{{ 'components.channel.dropdown.select' | translate }}</label>
           <ui-select-menu
             formControlName="channel"
-            [placeholder]="
-              'components.channel.selectChannel' | translate
-            "
+            [placeholder]="'components.channel.selectChannel' | translate"
           >
             <ui-select-option
               *ngFor="let channel of data.channels"

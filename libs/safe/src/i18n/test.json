@@ -41,7 +41,10 @@
 			"none": "******",
 			"one": "******"
 		},
-		"child": "******",
+		"child": {
+			"edit": "******",
+			"one": "******"
+		},
 		"clear": "******",
 		"close": "******",
 		"column": {
@@ -75,7 +78,6 @@
 		"downloadTemplate": "******",
 		"duplicate": "******",
 		"edit": "******",
-		"editObject": "****** {{name}}",
 		"email": {
 			"few": "******",
 			"none": "******",
@@ -1642,6 +1644,7 @@
 		},
 		"channel": {
 			"create": "******",
+			"edit": "******",
 			"new": "******"
 		},
 		"customNotification": {
@@ -1707,9 +1710,11 @@
 			}
 		},
 		"positionAttribute": {
+			"edit": "******",
 			"new": "******"
 		},
 		"pullJob": {
+			"edit": "******",
 			"new": "******",
 			"nextIteration": "******",
 			"path": "******",
@@ -1718,6 +1723,7 @@
 		},
 		"record": {
 			"convert": "******",
+			"edit": "******",
 			"new": "******",
 			"notifications": {
 				"conversionIncomplete": "******",
@@ -1744,6 +1750,7 @@
 			"new": "******"
 		},
 		"subscription": {
+			"edit": "******",
 			"new": "******"
 		},
 		"user": {
