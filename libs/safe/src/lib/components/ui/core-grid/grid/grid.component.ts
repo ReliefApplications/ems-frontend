@@ -14,6 +14,7 @@ import {
   QueryList,
   OnDestroy,
   SimpleChanges,
+  HostListener,
 } from '@angular/core';
 import {
   GridComponent,
@@ -204,11 +205,18 @@ export class SafeGridComponent
 
   // === ADMIN ===
   @Input() admin = false;
-  private columnsOrder: any[] = [];
   @Output() columnChange = new EventEmitter();
 
   // === SNACKBAR ===
   private snackBarRef!: any;
+
+  /**
+   * Listen to window resize event in order to trigger the column automatic width update
+   */
+  @HostListener('window:resize', ['$event'])
+  onWindowResize() {
+    this.setAutomaticColumnWidths();
+  }
 
   /**
    * Constructor of the grid component
@@ -587,7 +595,7 @@ export class SafeGridComponent
     });
     // Get all the columns with a title or that are not hidden from the grid
     const availableColumns = this.columns.filter(
-      (column) => !column.hidden && !!column.title
+      (column) => !column.hidden && !!column.title && column.title !== 'Details'
     );
     // Get average column width given the active columns and the grid's actual width
     const averagePixelsPerColumn = gridTotalWidth / availableColumns.length;
@@ -595,9 +603,9 @@ export class SafeGridComponent
     const maxPixelsPerColumn = averagePixelsPerColumn * 2;
     // Min size of the column is the average / 2
     const minPixelsPerColumn = averagePixelsPerColumn / 2;
-    const pixelWidthPerCharacter = parseInt(
-      window.getComputedStyle(document.body).fontSize
-    );
+    // Most of font sizes follow a 3:5 aspect ratio
+    const pixelWidthPerCharacter =
+      parseInt(window.getComputedStyle(document.body).fontSize) * 0.6;
 
     // Get each column content with the max length
     // or the column title if no content is added in the current data
@@ -609,26 +617,34 @@ export class SafeGridComponent
             activeColumns[type.field] < data[type.field].length) ||
           (type.title && activeColumns[type.field] < type.title.length)
         ) {
+          let defaultLengthValue = type.title.length;
           switch (type.type) {
             case 'time':
             case 'datetime-local':
             case 'datetime':
             case 'date': {
-              activeColumns[type.field] = (
-                this.safeDatePipe.transform(data[type.field]) || type.title
+              const contentDefaultValue = (
+                this.safeDatePipe.transform(data[type.field]) || ''
               ).length;
+              if (contentDefaultValue > defaultLengthValue) {
+                defaultLengthValue = contentDefaultValue;
+              }
+              activeColumns[type.field] = defaultLengthValue;
               break;
             }
             case 'file': {
-              activeColumns[type.field] = (
-                data[type.field][0]?.name || type.title
-              ).length;
+              if (data[type.field][0]?.name?.length > defaultLengthValue) {
+                defaultLengthValue = data[type.field][0]?.name.length;
+              }
+              activeColumns[type.field] = defaultLengthValue;
               break;
             }
             case 'numeric': {
-              activeColumns[type.field] = (
-                data[type.field]?.toString() || type.title
-              ).length;
+              const contentDefaultValue = data[type.field]?.toString()?.length;
+              if (contentDefaultValue > defaultLengthValue) {
+                defaultLengthValue = contentDefaultValue;
+              }
+              activeColumns[type.field] = defaultLengthValue;
               break;
             }
             case 'checkbox':
@@ -637,7 +653,10 @@ export class SafeGridComponent
               (data[type.field] || []).forEach((obj: any) => {
                 checkboxLength += obj.length;
               });
-              activeColumns[type.field] = checkboxLength || type.title;
+              if (checkboxLength > defaultLengthValue) {
+                defaultLengthValue = checkboxLength;
+              }
+              activeColumns[type.field] = defaultLengthValue;
               break;
             }
             case 'boolean':
@@ -647,9 +666,11 @@ export class SafeGridComponent
               break;
             }
             default: {
-              activeColumns[type.field] = (
-                data[type.field] || type.title
-              ).length;
+              const contentDefaultValue = (data[type.field] || '').length;
+              if (contentDefaultValue > defaultLengthValue) {
+                defaultLengthValue = contentDefaultValue;
+              }
+              activeColumns[type.field] = defaultLengthValue;
             }
           }
         }
@@ -666,8 +687,8 @@ export class SafeGridComponent
       minPixelsPerColumn / pixelWidthPerCharacter
     );
 
-    //total after set the max width
-    let totalAfter = 0;
+    //total character count after set the max width
+    let totalCharacterCountColumns = 0;
     let entries = Object.entries(activeColumns);
     for (const [key, value] of entries) {
       if (value > maxCharacterToDisplay) {
@@ -676,28 +697,37 @@ export class SafeGridComponent
         activeColumns[key] = minCharacterToDisplay;
       }
       if (activeColumns[key]) {
-        totalAfter += activeColumns[key];
+        totalCharacterCountColumns += activeColumns[key];
       }
     }
 
-    const arrayColumns = [];
-
-    //calculate percentage
-    let total_percentage = 0;
     entries = Object.entries(activeColumns);
+    const min_percentage = Math.floor(
+      (minCharacterToDisplay / totalCharacterCountColumns) * 100
+    );
+    let total_percentage = 0;
+    const arrayColumns = [];
     for (const [key, value] of entries) {
-      activeColumns[key] = Math.floor((value / totalAfter) * 100);
+      activeColumns[key] = Math.floor(
+        (value / totalCharacterCountColumns) * 100
+      );
       total_percentage += activeColumns[key];
       arrayColumns.push({ key: key, value: activeColumns[key] });
     }
 
-    //adjust the percentages
-    //order the values
+    // === adjust the percentages of each column === //
+
+    //order the values from thinner to wider column element
     arrayColumns.sort((a, b) => a.value - b.value);
 
-    const arraySize = arrayColumns.length - 1;
-    //if the value of the smallest element is less than 0.25 * the biggest
-    while (arrayColumns[0].value < 0.25 * arrayColumns[arraySize].value) {
+    const widestColumnIndex = arrayColumns.length - 1;
+    // if the value of the smallest element is 4x times smaller than the widest one
+    // or the total percentage did not reach 100% after all conversions
+    // we adjust the overall percentages set for columns
+    while (
+      arrayColumns[0].value < 0.25 * arrayColumns[widestColumnIndex].value ||
+      total_percentage < 100
+    ) {
       //add the percentage available
       if (total_percentage < 100) {
         activeColumns[arrayColumns[0].key] += 1;
@@ -706,22 +736,28 @@ export class SafeGridComponent
       } else {
         //remove percentage from the biggest and put in the smallest
         activeColumns[arrayColumns[0].key] += 1;
-        activeColumns[arrayColumns[arraySize].key] -= 1;
+        activeColumns[arrayColumns[widestColumnIndex].key] -= 1;
         arrayColumns[0].value += 1;
-        arrayColumns[arraySize].value -= 1;
+        arrayColumns[widestColumnIndex].value -= 1;
       }
       arrayColumns.sort((a, b) => a.value - b.value);
     }
 
     //resize the columns
     this.columns.forEach((column) => {
-      typesFields.forEach((type: any) => {
-        if (column.title === type.title && activeColumns[type.field]) {
-          column.width = Math.floor(
-            (activeColumns[type.field] * gridTotalWidth) / 100
-          );
+      const columnFieldType = typesFields.find(
+        (type: any) => column.title === type.title && activeColumns[type.field]
+      );
+      if (columnFieldType) {
+        column.width = Math.floor(
+          (activeColumns[columnFieldType.field] * gridTotalWidth) / 100
+        );
+      } else {
+        // If contains a title, we set the min_percentage
+        if (column.title) {
+          column.width = Math.floor((min_percentage * gridTotalWidth) / 100);
         }
-      });
+      }
     });
   }
 
