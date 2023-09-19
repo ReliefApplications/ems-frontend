@@ -9,8 +9,13 @@ import updateChoices from './utils/common-list-filters';
  *
  * @param Survey Survey instance
  * @param domService Shared dom service
+ * @param document Document
  */
-export const init = (Survey: any, domService: DomService, document: Document): void => {
+export const init = (
+  Survey: any,
+  domService: DomService,
+  document: Document
+): void => {
   const iconId = 'icon-tagbox';
 
   // registers icon-resources in the SurveyJS library

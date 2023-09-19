@@ -66,8 +66,24 @@ export const initCustomSurvey = (
   if (containsCustomQuestions) {
     CommentWidget.init(Survey, document);
     // load components (same as widgets, but with less configuration options)
-    ResourceComponent.init(Survey, domService, apollo, dialog, fb, ngZone, document);
-    ResourcesComponent.init(Survey, domService, apollo, dialog, fb, ngZone, document);
+    ResourceComponent.init(
+      Survey,
+      domService,
+      apollo,
+      dialog,
+      fb,
+      ngZone,
+      document
+    );
+    ResourcesComponent.init(
+      Survey,
+      domService,
+      apollo,
+      dialog,
+      fb,
+      ngZone,
+      document
+    );
     OwnerComponent.init(Survey, domService, apollo);
     UsersComponent.init(Survey, domService, apollo);
     GeospatialComponent.init(Survey, domService);

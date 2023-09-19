@@ -621,6 +621,7 @@ type Shape = 'circle' | 'square';
  * @param width Width of the avatars
  * @param height Height of the avatars
  * @param maxItems Maximum number of avatars to show
+ * @param document Document
  * @returns The html element
  */
 const createAvatarGroup = (

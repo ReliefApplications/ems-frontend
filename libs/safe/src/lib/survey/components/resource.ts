@@ -68,6 +68,7 @@ const addRecordToSurveyContext = (question: Question, recordID: string) => {
  * @param dialog Dialog
  * @param fb Angular form service
  * @param ngZone Angular Service to execute code inside Angular environment
+ * @param document Document
  */
 export const init = (
   Survey: any,
@@ -692,7 +693,13 @@ export const init = (
         );
         actionsButtons.appendChild(searchBtn);
 
-        const addBtn = buildAddButton(question, false, dialog, ngZone, document);
+        const addBtn = buildAddButton(
+          question,
+          false,
+          dialog,
+          ngZone,
+          document
+        );
         actionsButtons.appendChild(addBtn);
 
         const parentElement = el.querySelector('.safe-qst-content');

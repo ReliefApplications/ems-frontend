@@ -12,6 +12,7 @@ import localForage from 'localforage';
  * @param multiselect Indicate if we need multiselect
  * @param dialog The Dialog service
  * @param temporaryRecords The form used to save and keep the temporary records updated
+ * @param document Document
  * @returns The button DOM element
  */
 export const buildSearchButton = (
@@ -75,6 +76,7 @@ export const buildSearchButton = (
  * @param multiselect Indicate if we need multiselect
  * @param dialog The Dialog service
  * @param ngZone Angular Service to execute code inside Angular environment
+ * @param document Document
  * @returns The button DOM element
  */
 export const buildAddButton = (
