@@ -5,6 +5,7 @@ import {
   OnChanges,
   SimpleChanges,
   ViewChild,
+  Inject,
 } from '@angular/core';
 import { SafeLineChartComponent } from '../../ui/charts/line-chart/line-chart.component';
 import { SafePieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donut-chart.component';
@@ -16,6 +17,7 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../../services/context/context.service';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Default file name for chart exports
@@ -80,12 +82,14 @@ export class SafeChartComponent
    * @param translate Angular translate service
    * @param contextService Shared context service
    * @param cdr Angular change detector
+   * @param document document
    */
   constructor(
     private aggregationService: SafeAggregationService,
     private translate: TranslateService,
     private contextService: ContextService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
 
@@ -185,7 +189,7 @@ export class SafeChartComponent
     // .then((dataURI: string) => {
     //   saveAs(dataURI, this.fileName);
     // });
-    const downloadLink = document.createElement('a');
+    const downloadLink = this.document.createElement('a');
     downloadLink.href = this.chartWrapper?.chart?.toBase64Image() as string;
     downloadLink.download = this.fileName;
     downloadLink.click();

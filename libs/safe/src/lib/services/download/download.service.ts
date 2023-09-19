@@ -1,5 +1,5 @@
 import { HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
@@ -7,6 +7,7 @@ import { SafeSnackbarSpinnerComponent } from '../../components/snackbar-spinner/
 import { SafeRestService } from '../rest/rest.service';
 import { Application } from '../../models/application.model';
 import { SnackbarService } from '@oort-front/ui';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Shared download service. Handles export and upload events.
@@ -23,11 +24,13 @@ export class SafeDownloadService {
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
    * @param restService Shared rest service
+   * @param document document
    */
   constructor(
     private snackBar: SnackbarService,
     private translate: TranslateService,
-    private restService: SafeRestService
+    private restService: SafeRestService,
+    @Inject(DOCUMENT) private document: Document
   ) {}
 
   /**
@@ -209,10 +212,10 @@ export class SafeDownloadService {
    * @param blob File blob
    */
   private saveFile(fileName: string, blob: Blob): void {
-    const link = document.createElement('a');
+    const link = this.document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = fileName;
-    document.body.append(link);
+    this.document.body.append(link);
     link.click();
     setTimeout(() => link.remove(), 0);
   }

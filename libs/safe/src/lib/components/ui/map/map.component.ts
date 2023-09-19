@@ -56,6 +56,7 @@ import { debounceTime, takeUntil } from 'rxjs';
 import { SafeMapPopupService } from './map-popup/map-popup.service';
 import { Platform } from '@angular/cdk/platform';
 import { ContextService } from '../../../services/context/context.service';
+import { DOCUMENT } from '@angular/common';
 
 /** Component for the map widget */
 @Component({
@@ -163,6 +164,7 @@ export class MapComponent
    * @param contextService The context service
    * @param platform Platform
    * @param injector Injector containing all needed providers
+   * @param document document
    */
   constructor(
     @Inject('environment') environment: any,
@@ -173,7 +175,8 @@ export class MapComponent
     public mapPopupService: SafeMapPopupService,
     private contextService: ContextService,
     private platform: Platform,
-    public injector: Injector
+    public injector: Injector,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
     this.esriApiKey = environment.esriApiKey;
@@ -396,7 +399,7 @@ export class MapComponent
     }
 
     // Close layers/bookmarks menu
-    document.getElementById('layer-control-button-close')?.click();
+    this.document.getElementById('layer-control-button-close')?.click();
 
     this.setupMapLayers({ layers, controls, arcGisWebMap, basemap });
     this.setMapControls(controls, initMap);
@@ -942,7 +945,7 @@ export class MapComponent
 
   /** Set the new layers based on the filter value */
   private async filterLayers() {
-    document.getElementById('layer-control-button-close')?.click();
+    this.document.getElementById('layer-control-button-close')?.click();
     const filters = this.contextService.filter.getValue();
     if (isEqual(filters, this.appliedDashboardFilters)) {
       return;

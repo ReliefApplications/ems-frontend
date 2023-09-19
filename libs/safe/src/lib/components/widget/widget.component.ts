@@ -7,6 +7,7 @@ import {
   HostBinding,
   OnInit,
   OnDestroy,
+  Inject,
 } from '@angular/core';
 import { SafeChartComponent } from '../widgets/chart/chart.component';
 import { SafeEditorComponent } from '../widgets/editor/editor.component';
@@ -16,6 +17,7 @@ import { SafeSummaryCardComponent } from '../widgets/summary-card/summary-card.c
 import { v4 as uuidv4 } from 'uuid';
 import get from 'lodash/get';
 import { SafeRestService } from '../../services/rest/rest.service';
+import { DOCUMENT } from '@angular/common';
 
 /** Component for the widgets */
 @Component({
@@ -60,8 +62,9 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
    * Widget component
    *
    * @param restService Shared rest service
+   * @param document document
    */
-  constructor(private restService: SafeRestService) {}
+  constructor(private restService: SafeRestService, @Inject(DOCUMENT) private document: Document) {}
 
   ngOnInit(): void {
     // Get style from widget definition
@@ -75,9 +78,9 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
         .post('style/scss-to-css', { scss }, { responseType: 'text' })
         .subscribe((css) => {
           // Add to head of document
-          const head = document.getElementsByTagName('head')[0];
-          this.customStyle = document.createElement('style');
-          this.customStyle.appendChild(document.createTextNode(css));
+          const head = this.document.getElementsByTagName('head')[0];
+          this.customStyle = this.document.createElement('style');
+          this.customStyle.appendChild(this.document.createTextNode(css));
           head.appendChild(this.customStyle);
         });
     }
@@ -86,7 +89,7 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     // Remove style from head if exists, to avoid too many styles to be active at same time
     if (this.customStyle) {
-      document.getElementsByTagName('head')[0].removeChild(this.customStyle);
+      this.document.getElementsByTagName('head')[0].removeChild(this.customStyle);
     }
   }
 }
