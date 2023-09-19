@@ -19,7 +19,8 @@ export const buildSearchButton = (
   fieldsSettingsForm: any,
   multiselect: boolean,
   dialog: Dialog,
-  temporaryRecords: UntypedFormControl
+  temporaryRecords: UntypedFormControl,
+  document: Document
 ): any => {
   const searchButton = document.createElement('button');
   searchButton.innerText = surveyLocalization.getString(
@@ -80,7 +81,8 @@ export const buildAddButton = (
   question: any,
   multiselect: boolean,
   dialog: Dialog,
-  ngZone: NgZone
+  ngZone: NgZone,
+  document: Document
 ): any => {
   const addButton = document.createElement('button');
   addButton.innerText = surveyLocalization.getString(

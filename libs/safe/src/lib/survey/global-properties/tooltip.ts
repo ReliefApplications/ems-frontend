@@ -24,7 +24,7 @@ export const init = (Survey: any): void => {
  * @param question The question object
  * @param el The html element of the question
  */
-export const render = (question: Question, el: HTMLElement): void => {
+export const render = (question: Question, el: HTMLElement, document: Document): void => {
   // Display the tooltip
   const header = el?.parentElement?.querySelector('.sv_q_title') as HTMLElement;
   if (header) {

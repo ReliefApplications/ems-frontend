@@ -6,7 +6,7 @@ import { Question, QuestionComment } from '../types';
  *
  * @param Survey Survey library
  */
-export const init = (Survey: any): void => {
+export const init = (Survey: any, document: Document): void => {
   const widget = {
     name: 'comment-widget',
     widgetIsLoaded: (): boolean => true,

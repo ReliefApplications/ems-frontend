@@ -12,7 +12,7 @@ import updateChoices from './utils/common-list-filters';
  * @param Survey Survey instance
  * @param domService Shared dom service
  */
-export const init = (Survey: any, domService: DomService): void => {
+export const init = (Survey: any, domService: DomService, document: Document): void => {
   let currentSearchValue = '';
   const widget = {
     name: 'dropdown-widget',

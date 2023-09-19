@@ -186,7 +186,8 @@ const replaceRecordFields = (
               match?.groups?.shape as Shape,
               Number(match?.groups?.width),
               Number(match?.groups?.height),
-              Number(match?.groups?.maxItems)
+              Number(match?.groups?.maxItems),
+              document
             );
             formattedHtml = formattedHtml.replace(
               match[0],
@@ -627,7 +628,8 @@ const createAvatarGroup = (
   shape: Shape | undefined,
   width: number | undefined,
   height: number | undefined,
-  maxItems: number | undefined
+  maxItems: number | undefined,
+  document: Document
 ): HTMLElement => {
   const avatarGroup = document.createElement('avatar-group');
   const innerDiv = document.createElement('div');

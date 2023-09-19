@@ -75,7 +75,8 @@ export const init = (
   apollo: Apollo,
   dialog: Dialog,
   fb: UntypedFormBuilder,
-  ngZone: NgZone
+  ngZone: NgZone,
+  document: Document
 ): void => {
   const getResourceById = (data: { id: string }) =>
     apollo.query<GetResourceByIdQueryResponse>({
@@ -686,11 +687,12 @@ export const init = (
           question.gridFieldsSettings,
           false,
           dialog,
-          temporaryRecordsForm
+          temporaryRecordsForm,
+          document
         );
         actionsButtons.appendChild(searchBtn);
 
-        const addBtn = buildAddButton(question, false, dialog, ngZone);
+        const addBtn = buildAddButton(question, false, dialog, ngZone, document);
         actionsButtons.appendChild(addBtn);
 
         const parentElement = el.querySelector('.safe-qst-content');
