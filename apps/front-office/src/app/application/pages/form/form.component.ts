@@ -5,7 +5,7 @@ import {
   Form,
   Page,
   Step,
-  FormComponent,
+  FormComponent as SharedFormComponent,
   UnsubscribeComponent,
 } from '@oort-front/shared';
 import {
@@ -31,8 +31,8 @@ import { SnackbarService } from '@oort-front/ui';
 })
 export class FormComponent extends UnsubscribeComponent implements OnInit {
   /** View reference of Shared form component */
-  @ViewChild(FormComponent)
-  private formComponent?: FormComponent;
+  @ViewChild(SharedFormComponent)
+  private formComponent?: SharedFormComponent;
   /** Loading state of the page */
   public loading = true;
   /** Current form id */
