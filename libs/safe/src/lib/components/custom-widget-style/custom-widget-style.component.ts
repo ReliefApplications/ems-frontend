@@ -100,9 +100,8 @@ export class CustomWidgetStyleComponent
   ngOnInit(): void {
     // Avoids style duplication for the same element
     const widgetStyle = Array.from(
-      this.document.querySelectorAll('style')).filter(
-        (style) => style.innerHTML.includes(this.widgetComp.domId)
-      )[0];
+      this.document.querySelectorAll('style')
+    ).filter((style) => style.innerHTML.includes(this.widgetComp.domId))[0];
     if (widgetStyle) this.styleApplied = widgetStyle;
     else this.styleApplied = this.document.createElement('style');
 
