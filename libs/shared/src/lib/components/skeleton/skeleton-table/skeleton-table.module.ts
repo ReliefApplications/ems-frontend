@@ -11,6 +11,7 @@ import {
   ButtonModule,
   TableModule,
   PaginatorModule,
+  TooltipModule,
 } from '@oort-front/ui';
 
 /** Skeleton table module */
@@ -27,6 +28,7 @@ import {
     CheckboxModule,
     ButtonModule,
     TableModule,
+    TooltipModule,
   ],
   exports: [SkeletonTableComponent],
 })

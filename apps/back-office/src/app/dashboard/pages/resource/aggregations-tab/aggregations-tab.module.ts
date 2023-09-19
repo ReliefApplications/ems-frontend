@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { AggregationsTabRoutingModule } from './aggregations-tab-routing.module';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { DividerModule, IconModule } from '@oort-front/ui';
+import { DividerModule, IconModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   AggregationBuilderModule,
@@ -38,6 +38,7 @@ import {
     ButtonModule,
     TableModule,
     DividerModule,
+    TooltipModule,
   ],
 })
 export class AggregationsTabModule {}

@@ -48,6 +48,11 @@
             "
             (click)="toggleWorkflow(element)"
             [disabled]="loading"
+            [uiTooltip]="'common.' +  openedWorkflowId === element.id
+              ? 'close'
+              : 'edit'
+              | translate
+            "
           >
           </ui-button>
         </div>

@@ -17,7 +17,7 @@ import { AggregationBuilderModule } from '../../../ui/aggregation-builder/aggreg
 import { GridModule } from '../../../ui/core-grid/grid/grid.module';
 import { ChartModule } from '../../chart/chart.module';
 import { SeriesMappingModule } from '../../../ui/aggregation-builder/series-mapping/series-mapping.module';
-import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
+import { ButtonModule, FormWrapperModule, TooltipModule } from '@oort-front/ui';
 
 /**
  * Main tab of chart settings modal.
@@ -43,6 +43,7 @@ import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
     SeriesMappingModule,
     ButtonModule,
     SelectMenuModule,
+    TooltipModule,
   ],
   exports: [TabMainComponent],
 })

@@ -57,6 +57,7 @@
           [isIcon]="true"
           icon="edit"
           (click)="editAggregation()"
+          [uiTooltip]="'common.edit' | translate"
         ></ui-button>
         <ui-button
           uiSuffix
@@ -64,6 +65,7 @@
           [isIcon]="true"
           icon="close"
           (click)="formGroup.get('chart.aggregationId')?.setValue(null)"
+          [uiTooltip]="'common.delete' | translate"
         ></ui-button>
       </div>
       <!-- Series Mapping -->

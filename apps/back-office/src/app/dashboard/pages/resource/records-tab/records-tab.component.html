@@ -95,6 +95,7 @@
                   icon="more_vert"
                   [uiMenuTriggerFor]="recMenu"
                   (click)="$event.stopPropagation()"
+                  [uiTooltip]="'common.options' | translate"
                 >
                 </ui-button>
                 <ui-menu #recMenu>

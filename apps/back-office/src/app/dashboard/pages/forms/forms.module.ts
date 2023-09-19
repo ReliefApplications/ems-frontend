@@ -25,6 +25,7 @@ import {
   ChipModule,
   DateModule,
   PaginatorModule,
+  TooltipModule,
 } from '@oort-front/ui';
 
 /** Forms page module */
@@ -50,6 +51,7 @@ import {
     TableModule,
     ChipModule,
     DateModule,
+    TooltipModule,
   ],
   exports: [FormsComponent],
 })

@@ -13,6 +13,7 @@ import {
   SpinnerModule,
   FormWrapperModule,
   SelectMenuModule,
+  TooltipModule,
 } from '@oort-front/ui';
 import { AbilityModule } from '@casl/angular';
 import { EmptyModule } from '../../../ui/empty/empty.module';
@@ -39,6 +40,7 @@ import { EmptyModule } from '../../../ui/empty/empty.module';
     FormWrapperModule,
     EmptyModule,
     SelectMenuModule,
+    TooltipModule,
   ],
   exports: [RoleListComponent],
 })

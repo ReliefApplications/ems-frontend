@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SubscriptionsComponent } from './subscriptions.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { IconModule } from '@oort-front/ui';
+import { IconModule, TooltipModule } from '@oort-front/ui';
 import { SubscriptionsRoutingModule } from './subscriptions-routing.module';
 import { SkeletonTableModule, EmptyModule } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
@@ -36,6 +36,7 @@ import {
     DialogModule,
     ButtonModule,
     TableModule,
+    TooltipModule,
   ],
 })
 export class SubscriptionsModule {}

@@ -14,6 +14,7 @@ import {
   IconModule,
   RadioModule,
   SelectMenuModule,
+  TooltipModule,
 } from '@oort-front/ui';
 
 /**
@@ -33,6 +34,7 @@ import {
     FormsModule,
     TranslateModule,
     ReactiveFormsModule,
+    TooltipModule,
   ],
   styleUrls: ['./map-download.component.scss'],
 })

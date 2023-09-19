@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DistributionListsComponent } from './distribution-lists.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { IconModule, TooltipModule } from '@oort-front/ui';
 import { SkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
-import { IconModule } from '@oort-front/ui';
 import {
   MenuModule,
   DividerModule,
@@ -27,6 +27,7 @@ import { EmptyModule } from '../ui/empty/empty.module';
     ButtonModule,
     EmptyModule,
     TableModule,
+    TooltipModule,
   ],
   exports: [DistributionListsComponent],
 })

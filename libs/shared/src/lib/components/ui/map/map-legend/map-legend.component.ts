@@ -3,7 +3,7 @@ import { Component, Input } from '@angular/core';
 import { LegendDefinition } from '../interfaces/layer-legend.type';
 import { IconDisplayModule } from '../../../../pipes/icon-display/icon-display.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { ButtonModule, IconModule } from '@oort-front/ui';
+import { ButtonModule, IconModule, TooltipModule } from '@oort-front/ui';
 
 /**
  * Map legend component
@@ -17,6 +17,7 @@ import { ButtonModule, IconModule } from '@oort-front/ui';
     ButtonModule,
     IconDisplayModule,
     TranslateModule,
+    TooltipModule,
   ],
   templateUrl: './map-legend.component.html',
   styleUrls: ['./map-legend.component.scss'],

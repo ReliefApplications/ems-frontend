@@ -17,6 +17,7 @@ import {
   FormWrapperModule,
   GraphQLSelectComponent,
   GraphQLSelectModule,
+  TooltipModule,
 } from '@oort-front/ui';
 import { ButtonModule } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
@@ -45,6 +46,7 @@ interface DialogData {
     ReactiveFormsModule,
     ButtonModule,
     FormWrapperModule,
+    TooltipModule,
   ],
   selector: 'shared-add-aggregation-modal',
   templateUrl: './add-aggregation-modal.component.html',

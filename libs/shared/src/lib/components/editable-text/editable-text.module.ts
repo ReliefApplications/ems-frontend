@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { EditableTextComponent } from './editable-text.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
+import { ButtonModule, FormWrapperModule, TooltipModule } from '@oort-front/ui';
 
 /**
  * Module of editable text
@@ -17,6 +17,7 @@ import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
     FormWrapperModule,
     TranslateModule,
     ButtonModule,
+    TooltipModule,
   ],
   exports: [EditableTextComponent],
 })

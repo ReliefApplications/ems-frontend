@@ -40,6 +40,7 @@
         [isIcon]="true"
         icon="edit"
         (click)="editLayout()"
+        [uiTooltip]="'common.edit' | translate"
       ></ui-button>
       <ui-button
         uiSuffix
@@ -47,6 +48,7 @@
         [isIcon]="true"
         icon="close"
         (click)="deselectLayout()"
+        [uiTooltip]="'common.delete' | translate"
       ></ui-button>
     </div>
 

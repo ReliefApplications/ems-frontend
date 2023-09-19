@@ -71,6 +71,7 @@
                 [isIcon]="true"
                 icon="edit"
                 (click)="editLayout()"
+                [uiTooltip]="'common.edit' | translate"
               ></ui-button>
               <ui-button
                 uiSuffix
@@ -78,6 +79,7 @@
                 [isIcon]="true"
                 icon="close"
                 (click)="removeLayout()"
+                [uiTooltip]="'common.delete' | translate"
               ></ui-button>
             </div>
           </ng-container>

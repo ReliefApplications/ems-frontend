@@ -51,6 +51,7 @@
 			"one": "******"
 		},
 		"comma": "******",
+		"copy": "******",
 		"create": "******",
 		"createdOn": "******",
 		"customNotification": {
@@ -198,6 +199,7 @@
 			"unlocked": "{{name}} ******"
 		},
 		"openFullScreen": "******",
+		"options": "******",
 		"or": "******",
 		"page": {
 			"few": "******",
@@ -726,7 +728,8 @@
 			"paginator": {
 				"ariaLabel": "******"
 			},
-			"readAll": "******"
+			"readAll": "******",
+			"title": "******"
 		},
 		"paginator": {
 			"items": "******",
@@ -1895,6 +1898,7 @@
 		"page": {
 			"add": "******",
 			"tooltip": {
+				"drag": "******",
 				"duplicate": "******"
 			}
 		},

@@ -8,6 +8,7 @@ import {
   SelectMenuModule,
   DateModule as UiDateModule,
   FormWrapperModule,
+  TooltipModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { DateModule } from '../../pipes/date/date.module';
@@ -34,6 +35,7 @@ import { ReactiveFormsModule } from '@angular/forms';
     SelectMenuModule,
     ReactiveFormsModule,
     FormWrapperModule,
+    TooltipModule,
   ],
   exports: [RecordHistoryComponent],
 })

@@ -22,6 +22,7 @@
     [isIcon]="true"
     icon="close"
     variant="danger"
+    [uiTooltip]="'common.delete' | translate"
   ></ui-button>
 </div>
 
@@ -45,6 +46,7 @@
       [isIcon]="true"
       icon="close"
       (click)="searchControl.setValue('')"
+      [uiTooltip]="'common.close' | translate"
     ></ui-button>
   </div>
 </ng-template>

@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ButtonModule } from '@oort-front/ui';
+import { ButtonModule, TooltipModule } from '@oort-front/ui';
 import { debounceTime, takeUntil } from 'rxjs';
 import set from 'lodash/set';
 import get from 'lodash/get';
@@ -25,6 +25,7 @@ const DEFAULT_STYLE = '';
     MonacoEditorModule,
     TranslateModule,
     ButtonModule,
+    TooltipModule,
   ],
   templateUrl: './custom-widget-style.component.html',
   styleUrls: ['./custom-widget-style.component.scss'],

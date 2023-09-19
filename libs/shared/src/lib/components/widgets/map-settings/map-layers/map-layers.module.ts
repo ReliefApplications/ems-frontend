@@ -9,6 +9,7 @@ import {
   MenuModule,
   TableModule,
   TabsModule,
+  TooltipModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -34,6 +35,7 @@ import { SkeletonTableModule } from '../../../skeleton/skeleton-table/skeleton-t
     TabsModule,
     EmptyModule,
     SkeletonTableModule,
+    TooltipModule,
   ],
   exports: [MapLayersComponent],
 })

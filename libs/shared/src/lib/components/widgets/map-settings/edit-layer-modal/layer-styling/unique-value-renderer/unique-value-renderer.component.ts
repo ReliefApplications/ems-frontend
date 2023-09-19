@@ -12,6 +12,7 @@ import {
   FormWrapperModule,
   IconModule,
   SelectMenuModule,
+  TooltipModule,
 } from '@oort-front/ui';
 import { GeometryType } from '../../../../../ui/map/interfaces/layer-settings.type';
 import { TranslateModule } from '@ngx-translate/core';
@@ -33,6 +34,7 @@ import { TranslateModule } from '@ngx-translate/core';
     DragDropModule,
     IconModule,
     TranslateModule,
+    TooltipModule,
   ],
   templateUrl: './unique-value-renderer.component.html',
   styleUrls: ['./unique-value-renderer.component.scss'],

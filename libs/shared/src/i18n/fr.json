@@ -51,6 +51,7 @@
 			"one": "Colonne"
 		},
 		"comma": "virgule",
+		"copy": "Copier",
 		"create": "Créer",
 		"createdOn": "Date de création",
 		"customNotification": {
@@ -198,6 +199,7 @@
 			"unlocked": "L'édition de l'objet {{name}} a été débloquée par un autre utilisateur."
 		},
 		"openFullScreen": "Ouvrir en plein écran",
+		"options": "Options",
 		"or": "Ou",
 		"page": {
 			"few": "Pages",
@@ -740,7 +742,8 @@
 			"paginator": {
 				"ariaLabel": "Sélectionnez la page de notifications"
 			},
-			"readAll": "Tout marquer comme lu"
+			"readAll": "Tout marquer comme lu",
+			"title": "Notifications"
 		},
 		"paginator": {
 			"items": "élements",
@@ -1911,6 +1914,7 @@
 		"page": {
 			"add": "Ajouter une page",
 			"tooltip": {
+				"drag": "Glissez-déposez pour réorganiser",
 				"duplicate": "Sélectionner l'application où copier la page"
 			}
 		},

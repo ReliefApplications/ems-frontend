@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ApplicationsSummaryComponent } from './applications-summary.component';
 import { AddApplicationComponent } from './components/add-application/add-application.component';
 import { ApplicationSummaryComponent } from './components/application-summary/application-summary.component';
-import { IconModule } from '@oort-front/ui';
+import { IconModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { SkeletonModule } from '../../directives/skeleton/skeleton.module';
 import { DateModule } from '../../pipes/date/date.module';
@@ -28,6 +28,7 @@ import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
     DateModule,
     DividerModule,
     ButtonModule,
+    TooltipModule,
   ],
   exports: [
     ApplicationsSummaryComponent,

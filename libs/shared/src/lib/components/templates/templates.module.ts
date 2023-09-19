@@ -9,6 +9,7 @@ import {
   ButtonModule,
   TableModule,
   SpinnerModule,
+  TooltipModule,
 } from '@oort-front/ui';
 import { EmptyModule } from '../ui/empty/empty.module';
 import { SkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
@@ -27,6 +28,7 @@ import { SkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.m
     ButtonModule,
     EmptyModule,
     TableModule,
+    TooltipModule,
   ],
   exports: [TemplatesComponent],
 })

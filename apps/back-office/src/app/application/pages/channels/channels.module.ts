@@ -9,6 +9,7 @@ import {
   DividerModule,
   ButtonModule,
   TableModule,
+  TooltipModule,
 } from '@oort-front/ui';
 import { EmptyModule, SkeletonTableModule } from '@oort-front/shared';
 import { IconModule } from '@oort-front/ui';
@@ -31,6 +32,7 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule,
     ButtonModule,
     TableModule,
+    TooltipModule,
     EmptyModule,
     SkeletonTableModule,
   ],

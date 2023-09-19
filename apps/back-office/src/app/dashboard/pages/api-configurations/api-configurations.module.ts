@@ -7,8 +7,8 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { AddApiConfigurationComponent } from './components/add-api-configuration/add-api-configuration.component';
+import { IconModule, TooltipModule } from '@oort-front/ui';
 import { SkeletonTableModule } from '@oort-front/shared';
-import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
 import {
@@ -49,6 +49,7 @@ import {
     FormWrapperModule,
     ErrorMessageModule,
     TableModule,
+    TooltipModule,
   ],
   exports: [ApiConfigurationsComponent],
 })

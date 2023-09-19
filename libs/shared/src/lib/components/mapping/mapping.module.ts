@@ -10,6 +10,7 @@ import {
   DialogModule,
   DividerModule,
   IconModule,
+  TooltipModule,
 } from '@oort-front/ui';
 
 /**
@@ -28,6 +29,7 @@ import {
     ButtonModule,
     TableModule,
     DividerModule,
+    TooltipModule,
   ],
   exports: [MappingComponent],
 })

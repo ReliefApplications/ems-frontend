@@ -11,6 +11,7 @@ import {
   SpinnerModule,
   FormWrapperModule,
   SelectMenuModule,
+  TooltipModule,
 } from '@oort-front/ui';
 import { InviteUsersModule } from './components/invite-users/invite-users.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -34,6 +35,7 @@ import { SkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.m
     ButtonModule,
     TableModule,
     SelectMenuModule,
+    TooltipModule,
   ],
   exports: [UsersComponent],
 })

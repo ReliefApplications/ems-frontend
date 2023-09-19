@@ -11,7 +11,12 @@ import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { DialogModule, IconModule, SelectMenuModule } from '@oort-front/ui';
-import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
+import {
+  MenuModule,
+  DividerModule,
+  ButtonModule,
+  TooltipModule,
+} from '@oort-front/ui';
 
 /** Module for the widget-related components */
 @NgModule({
@@ -36,6 +41,7 @@ import { MenuModule, DividerModule, ButtonModule } from '@oort-front/ui';
     ButtonModule,
     IconModule,
     SelectMenuModule,
+    TooltipModule,
   ],
   exports: [WidgetGridComponent, TileDataComponent],
 })

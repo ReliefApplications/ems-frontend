@@ -87,6 +87,7 @@
             [uiMenuTriggerFor]="resMenu"
             (click)="$event.stopPropagation()"
             [disabled]="!(element.canUpdate || element.canDelete)"
+            [uiTooltip]="'common.options' | translate"
           >
           </ui-button>
           <ui-menu #resMenu>

@@ -23,6 +23,7 @@ import {
   FormWrapperModule,
   SelectMenuModule,
   SpinnerModule,
+  TooltipModule,
 } from '@oort-front/ui';
 import uniqBy from 'lodash/uniqBy';
 
@@ -40,6 +41,7 @@ import uniqBy from 'lodash/uniqBy';
     FormsModule,
     ReactiveFormsModule,
     SpinnerModule,
+    TooltipModule,
   ],
   selector: 'shared-webmap-select',
   templateUrl: './webmap-select.component.html',

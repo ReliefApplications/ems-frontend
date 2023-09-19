@@ -12,6 +12,7 @@ import {
   SelectMenuModule,
   GraphQLSelectModule,
   DividerModule,
+  TooltipModule,
 } from '@oort-front/ui';
 
 /** Module for the LayerDatasourceComponent */
@@ -32,6 +33,7 @@ import {
     TableModule,
     ButtonModule,
     AlertModule,
+    TooltipModule,
   ],
   exports: [LayerDatasourceComponent],
 })

@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { PositionRoutingModule } from './position-routing.module';
 import { PositionComponent } from './position.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { IconModule, TooltipModule } from '@oort-front/ui';
 import { EmptyModule, SkeletonTableModule } from '@oort-front/shared';
-import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SpinnerModule,
@@ -35,6 +35,7 @@ import {
     ButtonModule,
     TableModule,
     DividerModule,
+    TooltipModule,
   ],
   exports: [PositionComponent],
 })
