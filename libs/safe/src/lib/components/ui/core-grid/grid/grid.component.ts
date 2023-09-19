@@ -12,6 +12,8 @@ import {
   ElementRef,
   ViewChildren,
   QueryList,
+  OnDestroy,
+  SimpleChanges,
 } from '@angular/core';
 import {
   GridComponent,
@@ -52,6 +54,7 @@ import { SafeDashboardService } from '../../../../services/dashboard/dashboard.s
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { SafeDatePipe } from '../../../../pipes/date/date.pipe';
 
 /**
  * Test if an element match a css selector
@@ -71,6 +74,7 @@ const matches = (el: any, selector: any) =>
   providers: [
     PopupService,
     ResizeBatchService,
+    SafeDatePipe,
     // CalendarDOMService,
     // MonthViewService,
     // WeekNamesService,
@@ -78,7 +82,7 @@ const matches = (el: any, selector: any) =>
 })
 export class SafeGridComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, AfterViewInit, OnChanges
+  implements OnInit, AfterViewInit, OnChanges, OnDestroy
 {
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
@@ -100,7 +104,7 @@ export class SafeGridComponent
   @Input() widget: any;
   @Input() canUpdate = false;
 
-  @ViewChild('recordsGrid', { read: ElementRef }) gridRef!: ElementRef;
+  @ViewChild(GridComponent, { read: ElementRef }) gridRef!: ElementRef;
   @ViewChildren(ColumnComponent) columns!: QueryList<ColumnComponent>;
 
   // === EXPORT ===
@@ -117,7 +121,7 @@ export class SafeGridComponent
   private currentEditedItem: any;
   public gradientSettings = GRADIENT_SETTINGS;
   public editing = false;
-
+  private closeEditorListener!: any;
   private readonly rowActions = ['update', 'delete', 'history', 'convert'];
 
   // === ACTIONS ===
@@ -210,6 +214,7 @@ export class SafeGridComponent
    * Constructor of the grid component
    *
    * @param environment Current environment
+   * @param safeDatePipe Date pipe used to format data seen in the UI
    * @param dialog The Dialog service
    * @param gridService The grid service
    * @param renderer The renderer library
@@ -220,6 +225,7 @@ export class SafeGridComponent
    */
   constructor(
     @Inject('environment') environment: any,
+    @Inject(SafeDatePipe) private safeDatePipe: SafeDatePipe,
     private dialog: Dialog,
     private gridService: SafeGridService,
     private renderer: Renderer2,
@@ -234,10 +240,21 @@ export class SafeGridComponent
 
   ngOnInit(): void {
     this.setSelectedItems();
-    this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
+    if (this.closeEditorListener) {
+      this.closeEditorListener();
+    }
+    this.closeEditorListener = this.renderer.listen(
+      'document',
+      'click',
+      this.onDocumentClick.bind(this)
+    );
     // this way we can wait for 2s before sending an update
     this.search.valueChanges
-      .pipe(debounceTime(2000), distinctUntilChanged())
+      .pipe(
+        debounceTime(2000),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
       .subscribe((value) => {
         this.searchChange.emit(value);
       });
@@ -247,8 +264,16 @@ export class SafeGridComponent
     };
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     this.statusMessage = this.getStatusMessage();
+    if (
+      changes['loadingRecords']?.previousValue &&
+      !changes['loadingRecords']?.currentValue
+    ) {
+      setTimeout(() => {
+        this.setAutomaticColumnWidths();
+      }, 0);
+    }
   }
 
   ngAfterViewInit(): void {
@@ -257,7 +282,6 @@ export class SafeGridComponent
     this.grid?.columnReorder.subscribe(() =>
       setTimeout(() => this.columnChange.emit(), 500)
     );
-    setTimeout(() => this.setAutomaticColumnWidths(), 2000);
   }
 
   // === DATA ===
@@ -504,8 +528,8 @@ export class SafeGridComponent
    * Sets and emits new grid configuration after column visibility event.
    */
   onColumnVisibilityChange(): void {
-    this.setAutomaticColumnWidths();
     this.columnChange.emit();
+    this.setAutomaticColumnWidths();
   }
 
   /** @returns Visible columns of the grid. */
@@ -550,8 +574,7 @@ export class SafeGridComponent
     const gridTotalWidth = gridElement.offsetWidth;
 
     //stores the columns width percentage
-    const activedColumns: { [key: string]: number } = {};
-    let constantFields = 0;
+    const activeColumns: { [key: string]: number } = {};
 
     //verify what kind of field is and deal with this logic
     const typesFields: any = [];
@@ -562,83 +585,98 @@ export class SafeGridComponent
         title: field.title,
       });
     });
-
-    this.columns.forEach((column) => {
-      if (!column.hidden) {
-        if (column.title && column.title != 'Details') {
-          this.data.data.forEach((data: any) => {
-            typesFields.forEach((type: any) => {
-              if (
-                activedColumns[type.field] === undefined ||
-                (data[type.field] != null &&
-                  activedColumns[type.field] < data[type.field].length)
-              ) {
-                switch (type.type) {
-                  case 'time':
-                  case 'datetime-local':
-                  case 'datetime':
-                  case 'date': {
-                    activedColumns[type.field] = 18;
-                    break;
-                  }
-                  case 'file': {
-                    activedColumns[type.field] =
-                      data[type.field][0].name.length;
-                    break;
-                  }
-                  case 'numeric': {
-                    activedColumns[type.field] =
-                      data[type.field].toString().length;
-                    break;
-                  }
-                  case 'checkbox':
-                  case 'tagbox': {
-                    let checkboxLength = 0;
-                    data[type.field].forEach((obj: any) => {
-                      checkboxLength += obj.length;
-                    });
-                    activedColumns[type.field] = checkboxLength;
-                    break;
-                  }
-                  case 'boolean':
-                  case 'color': {
-                    //min size
-                    activedColumns[type.field] = 1;
-                    break;
-                  }
-                  default: {
-                    activedColumns[type.field] = data[type.field].length;
-                  }
-                }
-              }
-            });
-          });
-        } else {
-          constantFields += column.width;
-        }
-      }
-    });
-
-    //calculates the available width
-    const availableWidth = (gridTotalWidth - constantFields) * 0.7;
-
-    //calculates the avarage width
-    const avarageWidth = Math.floor(
-      availableWidth / Object.keys(activedColumns).length
+    // Get all the columns with a title or that are not hidden from the grid
+    const availableColumns = this.columns.filter(
+      (column) => !column.hidden && !!column.title
+    );
+    // Get average column width given the active columns and the grid's actual width
+    const averagePixelsPerColumn = gridTotalWidth / availableColumns.length;
+    // Max size of the column is the average * 2
+    const maxPixelsPerColumn = averagePixelsPerColumn * 2;
+    // Min size of the column is the average / 2
+    const minPixelsPerColumn = averagePixelsPerColumn / 2;
+    const pixelWidthPerCharacter = parseInt(
+      window.getComputedStyle(document.body).fontSize
     );
 
-    //calculates the widest column
-    const widestColumn = Math.floor((avarageWidth * 2) / 10); //10 is the avarage of character size in pixel
+    // Get each column content with the max length
+    // or the column title if no content is added in the current data
+    typesFields.forEach((type: any) => {
+      this.data.data.forEach((data: any) => {
+        if (
+          activeColumns[type.field] === undefined ||
+          (data[type.field] &&
+            activeColumns[type.field] < data[type.field].length) ||
+          (type.title && activeColumns[type.field] < type.title.length)
+        ) {
+          switch (type.type) {
+            case 'time':
+            case 'datetime-local':
+            case 'datetime':
+            case 'date': {
+              activeColumns[type.field] = (
+                this.safeDatePipe.transform(data[type.field]) || type.title
+              ).length;
+              break;
+            }
+            case 'file': {
+              activeColumns[type.field] = (
+                data[type.field][0]?.name || type.title
+              ).length;
+              break;
+            }
+            case 'numeric': {
+              activeColumns[type.field] = (
+                data[type.field]?.toString() || type.title
+              ).length;
+              break;
+            }
+            case 'checkbox':
+            case 'tagbox': {
+              let checkboxLength = 0;
+              (data[type.field] || []).forEach((obj: any) => {
+                checkboxLength += obj.length;
+              });
+              activeColumns[type.field] = checkboxLength || type.title;
+              break;
+            }
+            case 'boolean':
+            case 'color': {
+              //min size
+              activeColumns[type.field] = type.title;
+              break;
+            }
+            default: {
+              activeColumns[type.field] = (
+                data[type.field] || type.title
+              ).length;
+            }
+          }
+        }
+      });
+    });
+
+    //calculates the widest column in character number
+    const maxCharacterToDisplay = Math.floor(
+      maxPixelsPerColumn / pixelWidthPerCharacter
+    );
+
+    //calculates the smallest column in character number
+    const minCharacterToDisplay = Math.floor(
+      minPixelsPerColumn / pixelWidthPerCharacter
+    );
 
     //total after set the max width
     let totalAfter = 0;
-    let entries = Object.entries(activedColumns);
+    let entries = Object.entries(activeColumns);
     for (const [key, value] of entries) {
-      if (value > widestColumn) {
-        activedColumns[key] = widestColumn;
+      if (value > maxCharacterToDisplay) {
+        activeColumns[key] = maxCharacterToDisplay;
+      } else if (value < minCharacterToDisplay) {
+        activeColumns[key] = minCharacterToDisplay;
       }
-      if (activedColumns[key]) {
-        totalAfter += activedColumns[key];
+      if (activeColumns[key]) {
+        totalAfter += activeColumns[key];
       }
     }
 
@@ -646,15 +684,14 @@ export class SafeGridComponent
 
     //calculate percentage
     let total_percentage = 0;
-    entries = Object.entries(activedColumns);
+    entries = Object.entries(activeColumns);
     for (const [key, value] of entries) {
-      activedColumns[key] = Math.floor((value / totalAfter) * 100);
-      total_percentage += activedColumns[key];
-      arrayColumns.push({ key: key, value: activedColumns[key] });
+      activeColumns[key] = Math.floor((value / totalAfter) * 100);
+      total_percentage += activeColumns[key];
+      arrayColumns.push({ key: key, value: activeColumns[key] });
     }
 
     //adjust the percentages
-
     //order the values
     arrayColumns.sort((a, b) => a.value - b.value);
 
@@ -663,13 +700,13 @@ export class SafeGridComponent
     while (arrayColumns[0].value < 0.25 * arrayColumns[arraySize].value) {
       //add the percentage available
       if (total_percentage < 100) {
-        activedColumns[arrayColumns[0].key] += 1;
+        activeColumns[arrayColumns[0].key] += 1;
         total_percentage += 1;
         arrayColumns[0].value += 1;
       } else {
         //remove percentage from the biggest and put in the smallest
-        activedColumns[arrayColumns[0].key] += 1;
-        activedColumns[arrayColumns[arraySize].key] -= 1;
+        activeColumns[arrayColumns[0].key] += 1;
+        activeColumns[arrayColumns[arraySize].key] -= 1;
         arrayColumns[0].value += 1;
         arrayColumns[arraySize].value -= 1;
       }
@@ -679,12 +716,10 @@ export class SafeGridComponent
     //resize the columns
     this.columns.forEach((column) => {
       typesFields.forEach((type: any) => {
-        if (column.title === type.title) {
-          if (activedColumns[type.field]) {
-            column.width = Math.floor(
-              (activedColumns[type.field] * availableWidth) / 100
-            );
-          }
+        if (column.title === type.title && activeColumns[type.field]) {
+          column.width = Math.floor(
+            (activeColumns[type.field] * gridTotalWidth) / 100
+          );
         }
       });
     });
@@ -982,5 +1017,12 @@ export class SafeGridComponent
     if (this.loadingRecords)
       return this.translate.instant('components.widget.grid.loading.records');
     return this.translate.instant('kendo.grid.noRecords');
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.closeEditorListener) {
+      this.closeEditorListener();
+    }
   }
 }
