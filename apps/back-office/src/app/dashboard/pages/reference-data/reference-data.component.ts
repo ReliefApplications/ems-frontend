@@ -11,10 +11,10 @@ import {
   ReferenceData,
   referenceDataType,
   ApiConfiguration,
-  SafeBreadcrumbService,
-  SafeUnsubscribeComponent,
-  SafeReferenceDataService,
-} from '@oort-front/safe';
+  BreadcrumbService,
+  UnsubscribeComponent,
+  ReferenceDataService,
+} from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   EditReferenceDataMutationResponse,
@@ -52,7 +52,7 @@ const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
   styleUrls: ['./reference-data.component.scss'],
 })
 export class ReferenceDataComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   // === DATA ===
@@ -119,8 +119,8 @@ export class ReferenceDataComponent
     private snackBar: SnackbarService,
     private router: Router,
     private translateService: TranslateService,
-    private breadcrumbService: SafeBreadcrumbService,
-    private refDataService: SafeReferenceDataService
+    private breadcrumbService: BreadcrumbService,
+    private refDataService: ReferenceDataService
   ) {
     super();
   }

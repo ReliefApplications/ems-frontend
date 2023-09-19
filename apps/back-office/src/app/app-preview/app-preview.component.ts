@@ -6,9 +6,9 @@ import {
   AppAbility,
   Application,
   ContentType,
-  SafeApplicationService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  ApplicationService,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
 import { PreviewService } from '../services/preview.service';
@@ -63,7 +63,7 @@ const getAbilityForAppPreview = (app: Application, role: string) => {
   styleUrls: ['./app-preview.component.scss'],
 })
 export class AppPreviewComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
   /**
@@ -101,7 +101,7 @@ export class AppPreviewComponent
    */
   constructor(
     private route: ActivatedRoute,
-    private applicationService: SafeApplicationService,
+    private applicationService: ApplicationService,
     private previewService: PreviewService,
     private router: Router,
     private translate: TranslateService

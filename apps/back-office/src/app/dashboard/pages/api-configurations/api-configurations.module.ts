@@ -7,8 +7,8 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { AddApiConfigurationComponent } from './components/add-api-configuration/add-api-configuration.component';
-import { SafeSkeletonTableModule } from '@oort-front/safe';
 import { IconModule, TooltipModule } from '@oort-front/ui';
+import { SkeletonTableModule } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
 import {
@@ -42,7 +42,7 @@ import {
     IconModule,
     PaginatorModule,
     TranslateModule,
-    SafeSkeletonTableModule,
+    SkeletonTableModule,
     AbilityModule,
     ButtonModule,
     SelectMenuModule,

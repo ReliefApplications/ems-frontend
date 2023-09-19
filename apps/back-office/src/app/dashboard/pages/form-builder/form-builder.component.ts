@@ -14,12 +14,12 @@ import {
 } from './graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
 import {
-  SafeAuthService,
+  AuthService,
   Form,
-  SafeConfirmService,
-  SafeBreadcrumbService,
+  ConfirmService,
+  BreadcrumbService,
   status,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
@@ -72,10 +72,10 @@ export class FormBuilderComponent implements OnInit {
     private router: Router,
     private snackBar: SnackbarService,
     public dialog: Dialog,
-    private authService: SafeAuthService,
-    private confirmService: SafeConfirmService,
+    private authService: AuthService,
+    private confirmService: ConfirmService,
     private translate: TranslateService,
-    private breadcrumbService: SafeBreadcrumbService
+    private breadcrumbService: BreadcrumbService
   ) {}
 
   /**
@@ -197,8 +197,8 @@ export class FormBuilderComponent implements OnInit {
     if (!this.form?.id) {
       alert('not valid');
     } else {
-      const { SafeStatusModalComponent } = await import('@oort-front/safe');
-      const statusModal = this.dialog.open(SafeStatusModalComponent, {
+      const { StatusModalComponent } = await import('@oort-front/shared');
+      const statusModal = this.dialog.open(StatusModalComponent, {
         disableClose: true,
         data: {
           title: this.translate.instant('components.formBuilder.saveSurvey'),
@@ -249,8 +249,8 @@ export class FormBuilderComponent implements OnInit {
    * @param status new status
    */
   private async updateStatus(status: string): Promise<void> {
-    const { SafeStatusModalComponent } = await import('@oort-front/safe');
-    const statusModal = this.dialog.open(SafeStatusModalComponent, {
+    const { StatusModalComponent } = await import('@oort-front/shared');
+    const statusModal = this.dialog.open(StatusModalComponent, {
       disableClose: true,
       data: {
         title: 'Saving survey',
@@ -342,8 +342,8 @@ export class FormBuilderComponent implements OnInit {
    */
   public async saveName(formName: string): Promise<void> {
     if (formName && formName !== this.form?.name) {
-      const { SafeStatusModalComponent } = await import('@oort-front/safe');
-      const statusModal = this.dialog.open(SafeStatusModalComponent, {
+      const { StatusModalComponent } = await import('@oort-front/shared');
+      const statusModal = this.dialog.open(StatusModalComponent, {
         disableClose: true,
         data: {
           title: 'Saving survey',
@@ -392,8 +392,8 @@ export class FormBuilderComponent implements OnInit {
    * @param e new permissions
    */
   async saveAccess(e: any): Promise<void> {
-    const { SafeStatusModalComponent } = await import('@oort-front/safe');
-    const statusModal = this.dialog.open(SafeStatusModalComponent, {
+    const { StatusModalComponent } = await import('@oort-front/shared');
+    const statusModal = this.dialog.open(StatusModalComponent, {
       disableClose: true,
       data: {
         title: 'Saving survey',

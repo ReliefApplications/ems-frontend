@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Record, Form } from '@oort-front/safe';
+import { Record, Form } from '@oort-front/shared';
 
 // === GET RECORD DETAILS ===
 

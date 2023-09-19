@@ -1,6 +1,6 @@
 import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { SafeFormComponent, Form } from '@oort-front/safe/widgets';
+import { FormComponent, Form } from '@oort-front/shared/widgets';
 import {
   GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
@@ -15,8 +15,8 @@ import {
 export class FormComponent implements OnInit, OnChanges {
   @Input() id = '620236aa030f3a5e5db78319';
 
-  @ViewChild(SafeFormComponent)
-  private formComponent?: SafeFormComponent;
+  @ViewChild(FormComponent)
+  private formComponent?: FormComponent;
 
   // === DATA ===
   public loading = true;

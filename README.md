@@ -37,7 +37,7 @@ The project is seperated into three sub-projects:
 - web-widgets, an application to genereate the web components
 
 One library exists:
-- safe, a library for common ui / capacity, shared with other projects
+- shared, a library for common ui / capacity, shared with other projects
 
 Library changes should automatically be detected when serving the other projects.
 

@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { ApiConfiguration } from '@oort-front/safe';
+import { ApiConfiguration } from '@oort-front/shared';
 
 // === DELETE API CONFIGURATION ===
 /** Delete api config gql mutation definition */

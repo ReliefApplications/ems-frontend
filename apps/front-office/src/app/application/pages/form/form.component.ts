@@ -5,9 +5,9 @@ import {
   Form,
   Page,
   Step,
-  SafeFormComponent,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  FormComponent as SharedFormComponent,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import {
   GetFormByIdQueryResponse,
   GetPageByIdQueryResponse,
@@ -29,10 +29,10 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
+export class FormComponent extends UnsubscribeComponent implements OnInit {
   /** View reference of Shared form component */
-  @ViewChild(SafeFormComponent)
-  private formComponent?: SafeFormComponent;
+  @ViewChild(SharedFormComponent)
+  private formComponent?: SharedFormComponent;
   /** Loading state of the page */
   public loading = true;
   /** Current form id */

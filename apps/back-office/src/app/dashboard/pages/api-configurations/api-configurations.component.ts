@@ -3,9 +3,9 @@ import { Dialog } from '@angular/cdk/dialog';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   ApiConfiguration,
-  SafeConfirmService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  ConfirmService,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import {
   GetApiConfigurationsQueryResponse,
   GET_API_CONFIGURATIONS,
@@ -39,7 +39,7 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./api-configurations.component.scss'],
 })
 export class ApiConfigurationsComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   // === DATA ===
@@ -79,7 +79,7 @@ export class ApiConfigurationsComponent
     private apollo: Apollo,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private confirmService: SafeConfirmService,
+    private confirmService: ConfirmService,
     private router: Router,
     private translate: TranslateService // private uiTableWrapper: TableWrapperDirective
   ) {

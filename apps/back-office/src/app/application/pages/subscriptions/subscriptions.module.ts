@@ -4,7 +4,7 @@ import { SubscriptionsComponent } from './subscriptions.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IconModule, TooltipModule } from '@oort-front/ui';
 import { SubscriptionsRoutingModule } from './subscriptions-routing.module';
-import { SafeSkeletonTableModule, SafeEmptyModule } from '@oort-front/safe';
+import { SkeletonTableModule, EmptyModule } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import { DialogModule, GraphQLSelectModule } from '@oort-front/ui';
 import {
@@ -24,8 +24,8 @@ import {
     CommonModule,
     SubscriptionsRoutingModule,
     FormsModule,
-    SafeSkeletonTableModule,
-    SafeEmptyModule,
+    SkeletonTableModule,
+    EmptyModule,
     ReactiveFormsModule,
     IconModule,
     SpinnerModule,

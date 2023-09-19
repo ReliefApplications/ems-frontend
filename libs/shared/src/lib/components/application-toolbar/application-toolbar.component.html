@@ -1,0 +1,59 @@
+<div class="flex flex-row py-0 px-4 items-center justify-between h-14 border-b">
+  <div class="flex items-center gap-2 overflow-hidden">
+    <!-- Title -->
+    <h2 class="!m-0 overflow-hidden text-ellipsis whitespace-nowrap">
+      {{ title }}
+    </h2>
+    <!-- Settings -->
+    <ui-button
+      *ngIf="settings.length > 0"
+      [isIcon]="true"
+      icon="tune"
+      variant="grey"
+      [uiMenuTriggerFor]="settingsMenu"
+      [uiTooltip]="'common.settings' | translate"
+    ></ui-button>
+    <!-- Access -->
+    <shared-access
+      *ngIf="title && canUpdate"
+      [access]="application?.permissions"
+      [objectTypeName]="'common.application.one' | translate"
+      (save)="saveAccess($event)"
+    ></shared-access>
+  </div>
+  <div class="flex flex-row gap-2 items-center" *ngIf="showActions">
+    <ui-button
+      *ngIf="application?.canUpdate && locked"
+      [isIcon]="true"
+      icon="lock"
+      [variant]="lockedByUser ? 'primary' : 'danger'"
+      (click)="onUnlock()"
+      [uiTooltip]="'components.application.unlock.title' | translate"
+    >
+    </ui-button>
+    <ui-button variant="danger" (click)="onClose()">{{
+      'common.close' | translate
+    }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="success"
+      (click)="onPublish()"
+      [disabled]="!canPublish || this.application?.status === 'active'"
+      >{{ 'common.publish' | translate }}</ui-button
+    >
+  </div>
+</div>
+
+<!-- Admin pages -->
+<ui-menu #settingsMenu>
+  <a
+    uiMenuItem
+    *ngFor="let setting of settings"
+    [routerLink]="setting.path"
+    routerLinkActive="text-primary-600 bg-gray-50"
+    class="text-sm font-semibold leading-6"
+  >
+    <ui-icon variant="grey" [icon]="setting.icon"> </ui-icon>
+    {{ setting.name }}
+  </a>
+</ui-menu>

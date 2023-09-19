@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  Inject,
   OnDestroy,
   OnInit,
   Output,
@@ -10,23 +11,25 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import {
   GetDashboardByIdQueryResponse,
   GET_DASHBOARD_BY_ID,
 } from './graphql/queries';
 import {
   Dashboard,
-  SafeDashboardService,
-  SafeUnsubscribeComponent,
-  SafeWidgetGridComponent,
-  SafeConfirmService,
+  DashboardService,
+  UnsubscribeComponent,
+  WidgetGridComponent,
+  ConfirmService,
   ButtonActionT,
-} from '@oort-front/safe';
+  ContextService,
+} from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
-import { map, takeUntil } from 'rxjs/operators';
+import { filter, map, startWith, takeUntil } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Dashboard page.
@@ -37,7 +40,7 @@ import { SnackbarService } from '@oort-front/ui';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
   public isFullScreen = false;
@@ -55,8 +58,8 @@ export class DashboardComponent
   /** Show name ( contextual pages ) */
   public showName = false;
 
-  @ViewChild(SafeWidgetGridComponent)
-  widgetGridComponent!: SafeWidgetGridComponent;
+  @ViewChild(WidgetGridComponent)
+  widgetGridComponent!: WidgetGridComponent;
   public showFilter?: boolean;
 
   // === BUTTON ACTIONS ===
@@ -84,6 +87,8 @@ export class DashboardComponent
    * @param confirmService Shared confirm service
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
+   * @param document Document
+   * @param contextService Dashboard context service
    */
   constructor(
     private apollo: Apollo,
@@ -91,11 +96,13 @@ export class DashboardComponent
     private router: Router,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private dashboardService: SafeDashboardService,
+    private dashboardService: DashboardService,
     private translate: TranslateService,
-    private confirmService: SafeConfirmService,
+    private confirmService: ConfirmService,
     private renderer: Renderer2,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    @Inject(DOCUMENT) private document: Document,
+    private contextService: ContextService
   ) {
     super();
   }
@@ -104,49 +111,65 @@ export class DashboardComponent
    * Subscribes to the route to load the dashboard accordingly.
    */
   ngOnInit(): void {
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      this.route.queryParams
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((queryParams) => {
-          if (queryParams.id) {
+    /** Listen to router events navigation end, to get last version of params & queryParams. */
+    this.router.events
+      .pipe(
+        filter((event) => event instanceof NavigationEnd),
+        startWith(this.router), // initialize
+        takeUntil(this.destroy$)
+      )
+      .subscribe(() => {
+        this.loading = true;
+        // Reset scroll when changing page
+        const pageContainer = this.document.getElementById('appPageContainer');
+        if (pageContainer) {
+          pageContainer.scrollTop = 0;
+        }
+        /** Extract main dashboard id */
+        const id = this.route.snapshot.paramMap.get('id');
+        /** Extract query id to load template */
+        const queryId = this.route.snapshot.queryParamMap.get('id');
+        if (id) {
+          if (queryId) {
+            // Try to load template
             this.showName = true;
-          } else {
-            this.showName = false;
-          }
-        });
-      // Reset scroll when changing page
-      const pageContainer = document.getElementById('appPageContainer');
-      if (pageContainer) pageContainer.scrollTop = 0;
-      this.route.queryParams
-        .pipe(takeUntil(this.destroy$))
-        .subscribe((queryParams) => {
-          const viewId = queryParams.id;
-          if (viewId) {
-            this.initDashboardWithId(params.id).then(() => {
-              // Find the id of the contextual dashboard and load it
-              const dashboardsWithContext =
-                this.dashboard?.page?.contentWithContext;
+            this.loadDashboard(id).then(() => {
+              const templates = this.dashboard?.page?.contentWithContext;
               const type = this.contextType;
-              // find the contextual dashboard id in the list of dashboards from the parent dashboard
-              // it's the one where the element or record id matches the one in the query params
-              const dashboardWithContext = dashboardsWithContext?.find((d) => {
+              // Find template from parent's templates, based on query params id
+              const template = templates?.find((d) => {
+                // If templates use reference data
                 if (type === 'element')
-                  return 'element' in d && d.element === viewId;
+                  return (
+                    'element' in d &&
+                    d.element.toString().trim() === queryId.trim()
+                  );
+                // If templates use resource
                 else if (type === 'record')
-                  return 'record' in d && d.record === viewId;
+                  return (
+                    'record' in d &&
+                    d.record.toString().trim() === queryId.trim()
+                  );
                 return false;
               });
-              if (dashboardWithContext) {
-                this.initDashboardWithId(dashboardWithContext.content);
+              if (template) {
+                // Load template, it will erase current dashboard
+                this.loadDashboard(template.content).then(
+                  () => (this.loading = false)
+                );
               } else {
+                // Will use current template
+                this.loading = false;
                 return;
               }
             });
           } else {
-            this.initDashboardWithId(params.id);
+            // Don't use template, and directly load the dashboard from router's params
+            this.showName = false;
+            this.loadDashboard(id).then(() => (this.loading = false));
           }
-        });
-    });
+        }
+      });
   }
 
   /**
@@ -188,7 +211,7 @@ export class DashboardComponent
    * @param id Dashboard id
    * @returns Promise
    */
-  private async initDashboardWithId(id: string) {
+  private async loadDashboard(id: string) {
     if (this.dashboard?.id === id) return; // don't init the dashboard if the id is the same
     const rootElement = this.elementRef.nativeElement;
     // Doing this to be able to use custom styles on specific dashboards
@@ -203,7 +226,7 @@ export class DashboardComponent
         },
       })
     )
-      .then(({ data, loading }) => {
+      .then(({ data }) => {
         if (data.dashboard) {
           this.dashboard = data.dashboard;
           this.dashboardService.openDashboard(this.dashboard);
@@ -211,8 +234,8 @@ export class DashboardComponent
             ? data.dashboard.structure
             : [];
           this.buttonActions = this.dashboard.buttons || [];
-          this.loading = loading;
-          this.showFilter = this.dashboard.showFilter;
+          this.showFilter = this.dashboard.showFilter ?? false;
+          this.contextService.isFilterEnabled.next(this.showFilter);
         } else {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.accessNotProvided', {

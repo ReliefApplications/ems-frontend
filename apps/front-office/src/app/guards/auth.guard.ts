@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, UrlTree } from '@angular/router';
-import { SafeAuthService } from '@oort-front/safe';
+import { AuthService } from '@oort-front/shared';
 import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
@@ -17,7 +17,7 @@ export class AuthGuard implements CanActivate {
    * @param authService Shared authentication service
    * @param router Angular router service
    */
-  constructor(private authService: SafeAuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   /**
    * Check that user can see the page.

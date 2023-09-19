@@ -12,7 +12,7 @@
 }
 
 // === QUESTION CONTENT ===
-::ng-deep .safe-qst-content {
+::ng-deep .shared-qst-content {
   display: flex;
   flex-direction: column;
 
@@ -51,7 +51,7 @@
   display: block !important;
 }
 
-::ng-deep .sv_main safe-core-grid {
+::ng-deep .sv_main shared-core-grid {
   height: 410px;
 
   .sv_row div {

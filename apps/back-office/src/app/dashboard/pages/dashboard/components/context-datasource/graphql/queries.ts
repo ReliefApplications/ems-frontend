@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Resource, ReferenceData, Connection } from '@oort-front/safe';
+import { Resource, ReferenceData, Connection } from '@oort-front/shared';
 
 /** GraphQL query definition to get single resource */
 export const GET_RESOURCE = gql`

@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Application, Role } from '@oort-front/safe';
+import { Application, Role } from '@oort-front/shared';
 
 // === GET APPLICATIONS ===
 /** Graphql query for getting multiple applications with a cursor */

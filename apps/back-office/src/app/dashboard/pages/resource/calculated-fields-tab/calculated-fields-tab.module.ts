@@ -4,7 +4,7 @@ import { CalculatedFieldsTabRoutingModule } from './calculated-fields-tab-routin
 import { OverlayModule } from '@angular/cdk/overlay';
 import { DividerModule, IconModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeEmptyModule } from '@oort-front/safe';
+import { EmptyModule } from '@oort-front/shared';
 import { CalculatedFieldsTabComponent } from './calculated-fields-tab.component';
 import { MenuModule, ButtonModule, TableModule } from '@oort-front/ui';
 
@@ -20,7 +20,7 @@ import { MenuModule, ButtonModule, TableModule } from '@oort-front/ui';
     MenuModule,
     TranslateModule,
     OverlayModule,
-    SafeEmptyModule,
+    EmptyModule,
     ButtonModule,
     TableModule,
     DividerModule,

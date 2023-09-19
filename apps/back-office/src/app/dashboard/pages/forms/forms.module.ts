@@ -2,7 +2,10 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsRoutingModule } from './forms-routing.module';
 import { FormsComponent } from './forms.component';
-import { SafeSkeletonTableModule, SafeDateModule } from '@oort-front/safe';
+import {
+  SkeletonTableModule,
+  DateModule as SharedDateModule,
+} from '@oort-front/shared';
 import {
   FormsModule as AngularFormsModule,
   ReactiveFormsModule,
@@ -38,8 +41,8 @@ import {
     DividerModule,
     PaginatorModule,
     TranslateModule,
-    SafeSkeletonTableModule,
-    SafeDateModule,
+    SkeletonTableModule,
+    SharedDateModule,
     AbilityModule,
     ButtonModule,
     FormWrapperModule,

@@ -10,11 +10,11 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import {
   Application,
-  SafeApplicationService,
-  SafeUnsubscribeComponent,
-  SafeConfirmService,
-  SafeRestService,
-} from '@oort-front/safe';
+  ApplicationService,
+  UnsubscribeComponent,
+  ConfirmService,
+  RestService,
+} from '@oort-front/shared';
 import { firstValueFrom } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
@@ -50,7 +50,7 @@ const DEFAULT_STYLE = '';
   styleUrls: ['./custom-style.component.scss'],
 })
 export class CustomStyleComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
   public formControl = new FormControl(DEFAULT_STYLE);
@@ -77,12 +77,12 @@ export class CustomStyleComponent
    * @param restService Shared rest service
    */
   constructor(
-    private applicationService: SafeApplicationService,
+    private applicationService: ApplicationService,
     private snackBar: SnackbarService,
     private apollo: Apollo,
     private translate: TranslateService,
-    private confirmService: SafeConfirmService,
-    private restService: SafeRestService
+    private confirmService: ConfirmService,
+    private restService: RestService
   ) {
     super();
     // Updates the style when the value changes

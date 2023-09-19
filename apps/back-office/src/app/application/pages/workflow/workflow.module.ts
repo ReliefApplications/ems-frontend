@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import { WorkflowRoutingModule } from './workflow-routing.module';
 import { WorkflowComponent } from './workflow.component';
 import {
-  SafeAccessModule,
-  SafeWorkflowStepperModule,
-  SafeSkeletonModule,
-  SafeEditableTextModule,
-} from '@oort-front/safe';
+  AccessModule,
+  WorkflowStepperModule,
+  SkeletonModule,
+  EditableTextModule,
+} from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { SafeSearchMenuModule } from '@oort-front/safe';
+import { SearchMenuModule } from '@oort-front/shared';
 import { IconModule, TooltipModule } from '@oort-front/ui';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import {
@@ -28,17 +28,17 @@ import {
   imports: [
     CommonModule,
     WorkflowRoutingModule,
-    SafeAccessModule,
+    AccessModule,
     SpinnerModule,
-    SafeWorkflowStepperModule,
+    WorkflowStepperModule,
     TranslateModule,
     OverlayModule,
-    SafeSearchMenuModule,
+    SearchMenuModule,
     IconModule,
     MenuModule,
     IndicatorsModule,
-    SafeSkeletonModule,
-    SafeEditableTextModule,
+    SkeletonModule,
+    EditableTextModule,
     ButtonModule,
     AlertModule,
     TooltipModule,

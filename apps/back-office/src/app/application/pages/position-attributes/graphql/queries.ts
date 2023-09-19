@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { PositionAttribute } from '@oort-front/safe';
+import { PositionAttribute } from '@oort-front/shared';
 
 // === GET POSITION ATTRIBUTES FORM CATEGORY ===
 

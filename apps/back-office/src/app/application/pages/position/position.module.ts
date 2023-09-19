@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { PositionRoutingModule } from './position-routing.module';
 import { PositionComponent } from './position.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SafeEmptyModule, SafeSkeletonTableModule } from '@oort-front/safe';
 import { IconModule, TooltipModule } from '@oort-front/ui';
+import { EmptyModule, SkeletonTableModule } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   SpinnerModule,
@@ -30,8 +30,8 @@ import {
     MenuModule,
     TranslateModule,
     DialogModule,
-    SafeSkeletonTableModule,
-    SafeEmptyModule,
+    SkeletonTableModule,
+    EmptyModule,
     ButtonModule,
     TableModule,
     DividerModule,

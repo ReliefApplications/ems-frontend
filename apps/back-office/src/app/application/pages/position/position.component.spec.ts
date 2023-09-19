@@ -15,8 +15,8 @@ import {
   DateTimeProvider,
 } from 'angular-oauth2-oidc';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { AppAbility } from '@oort-front/safe';
-import { SafeEmptyModule } from '@oort-front/safe';
+import { AppAbility } from '@oort-front/shared';
+import { EmptyModule } from '@oort-front/shared';
 import { ButtonModule } from '@oort-front/ui';
 
 describe('PositionComponent', () => {
@@ -30,7 +30,7 @@ describe('PositionComponent', () => {
         DialogModule,
         ApolloTestingModule,
         HttpClientTestingModule,
-        SafeEmptyModule,
+        EmptyModule,
         ButtonModule,
         TranslateModule.forRoot({
           loader: {

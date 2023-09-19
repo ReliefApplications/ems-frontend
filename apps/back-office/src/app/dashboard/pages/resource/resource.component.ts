@@ -1,7 +1,7 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SafeBreadcrumbService } from '@oort-front/safe';
+import { BreadcrumbService } from '@oort-front/shared';
 import {
   EditResourceMutationResponse,
   EDIT_RESOURCE,
@@ -54,7 +54,7 @@ export class ResourceComponent implements OnInit {
     private router: Router,
     private snackBar: SnackbarService,
     private translate: TranslateService,
-    private breadcrumbService: SafeBreadcrumbService
+    private breadcrumbService: BreadcrumbService
   ) {}
 
   /** Load data from the id of the resource passed as a parameter. */

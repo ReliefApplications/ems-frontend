@@ -6,8 +6,8 @@ import {
   Channel,
   Form,
   Subscription,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
   GetRoutingKeysQueryResponse,
@@ -72,7 +72,7 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./subscription-modal.component.scss'],
 })
 export class SubscriptionModalComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   /** Subscription reactive form group */

@@ -4,10 +4,10 @@ import { PullJobsRoutingModule } from './pull-jobs-routing.module';
 import { PullJobsComponent } from './pull-jobs.component';
 import { IconModule, TooltipModule } from '@oort-front/ui';
 import {
-  SafeSkeletonTableModule,
-  SafeCronParserModule,
-  SafeDateModule,
-} from '@oort-front/safe';
+  SkeletonTableModule,
+  CronParserModule,
+  DateModule,
+} from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import {
   DividerModule,
@@ -29,9 +29,9 @@ import {
     DividerModule,
     PaginatorModule,
     TranslateModule,
-    SafeSkeletonTableModule,
-    SafeCronParserModule,
-    SafeDateModule,
+    SkeletonTableModule,
+    CronParserModule,
+    DateModule,
     ButtonModule,
     TableModule,
     ChipModule,

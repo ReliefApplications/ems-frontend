@@ -179,12 +179,12 @@
   </ng-container>
   <ng-template #emptyTmpl>
     <!-- Empty indicator -->
-    <safe-empty
+    <shared-empty
       [title]="'components.resource.empty.records' | translate"
-    ></safe-empty>
+    ></shared-empty>
   </ng-template>
 </ng-container>
 <ng-template #loadingTmpl>
-  <safe-skeleton-table [columns]="displayedColumnsRecords" [actions]="true">
-  </safe-skeleton-table>
+  <shared-skeleton-table [columns]="displayedColumnsRecords" [actions]="true">
+  </shared-skeleton-table>
 </ng-template>

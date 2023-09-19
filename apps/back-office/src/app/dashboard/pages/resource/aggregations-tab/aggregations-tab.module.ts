@@ -5,11 +5,11 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { DividerModule, IconModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import {
-  SafeAggregationBuilderModule,
-  SafeDateModule,
-  SafeSkeletonTableModule,
-  SafeEmptyModule,
-} from '@oort-front/safe';
+  AggregationBuilderModule,
+  DateModule,
+  SkeletonTableModule,
+  EmptyModule,
+} from '@oort-front/shared';
 import { AggregationsTabComponent } from './aggregations-tab.component';
 import {
   MenuModule,
@@ -29,12 +29,12 @@ import {
     IconModule,
     MenuModule,
     TranslateModule,
-    SafeAggregationBuilderModule,
+    AggregationBuilderModule,
     OverlayModule,
-    SafeDateModule,
-    SafeSkeletonTableModule,
+    DateModule,
+    SkeletonTableModule,
     PaginatorModule,
-    SafeEmptyModule,
+    EmptyModule,
     ButtonModule,
     TableModule,
     DividerModule,
