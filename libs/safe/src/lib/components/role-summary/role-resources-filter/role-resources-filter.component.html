@@ -23,8 +23,8 @@
     </ui-button>
   </div>
   <!-- Filters when on "show" mode -->
-  <div class="flex flex-wrap gap-2 items-center" *ngIf="show">
-    <div uiFormFieldDirective>
+  <div class="flex flex-wrap gap-2 items-end" *ngIf="show">
+    <div uiFormFieldDirective [defaultMargin]="false">
       <label>{{ 'common.input.dateRange' | translate }}</label>
       <div [uiDateWrapper]="calendar">
         <input

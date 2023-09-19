@@ -5,7 +5,12 @@ import { ReferenceData } from '../../../models/reference-data.model';
 /** GraphQL query to get list of reference data */
 export const GET_REFERENCE_DATAS = gql`
   query GetReferenceDatas($first: Int, $afterCursor: ID) {
-    referenceDatas(first: $first, afterCursor: $afterCursor) {
+    referenceDatas(
+      first: $first
+      afterCursor: $afterCursor
+      sortField: "name"
+      sortOrder: "asc"
+    ) {
       edges {
         node {
           id

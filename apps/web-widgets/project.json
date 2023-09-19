@@ -3,7 +3,7 @@
   "$schema": "../node_modules/nx/schemas/project-schema.json",
   "projectType": "application",
   "sourceRoot": "apps/web-widgets/src",
-  "prefix": "oort-front",
+  "prefix": "app",
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:browser",
@@ -12,10 +12,11 @@
         "outputPath": "dist/apps/web-widgets",
         "index": "apps/web-widgets/src/index.html",
         "main": "apps/web-widgets/src/main.ts",
-        "polyfills": ["apps/web-widget/src/polyfills.ts"],
+        "polyfills": ["apps/web-widgets/src/polyfills.ts"],
         "tsConfig": "apps/web-widgets/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
+          "apps/web-widgets/src/favicon.ico",
           {
             "glob": "**/*",
             "input": "libs/safe/src/i18n/",
@@ -26,7 +27,6 @@
             "input": "assets/",
             "output": "/assets/"
           },
-          "apps/web-widgets/src/favicon.ico",
           {
             "glob": "**/*",
             "input": "node_modules/tinymce",
@@ -36,11 +36,22 @@
             "glob": "**/*",
             "input": "libs/safe/src/i18n/tinymce/",
             "output": "/tinymce/langs"
+          },
+          {
+            "glob": "**/*",
+            "input": "node_modules/leaflet/dist/images/",
+            "output": "/assets/"
+          },
+          {
+            "glob": "**/*",
+            "input": "node_modules/@fortawesome/fontawesome-free/webfonts",
+            "output": "/assets/webfonts/"
           }
         ],
         "styles": [
           "apps/web-widgets/src/styles.scss",
           "libs/safe/src/lib/style/styles.scss",
+          "libs/safe/src/lib/style/widgets.scss",
           "node_modules/survey-angular/survey.min.css",
           "node_modules/survey-creator/survey-creator.min.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
@@ -64,10 +75,41 @@
           "cron-validator",
           "localforage",
           "survey-angular",
-          "fast-sha256"
+          "fast-sha256",
+          "leaflet",
+          "esri-leaflet-vector",
+          "leaflet.markercluster",
+          "jsonpath"
         ]
       },
       "configurations": {
+        "azure-uat": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "1mb",
+              "maximumError": "2mb"
+            }
+          ],
+          "stylePreprocessorOptions": {
+            "includePaths": [
+              "libs/ui/src/style/themes/default",
+              "apps/web-widgets/src/app/styles"
+            ]
+          },
+          "fileReplacements": [
+            {
+              "replace": "apps/web-widgets/src/environments/environment.ts",
+              "with": "apps/web-widgets/src/environments/environment.azure.uat.ts"
+            }
+          ],
+          "outputHashing": "all"
+        },
         "oort-dev": {
           "budgets": [
             {
@@ -82,7 +124,10 @@
             }
           ],
           "stylePreprocessorOptions": {
-            "includePaths": ["apps/safe/src/lib/style/themes/default"]
+            "includePaths": [
+              "libs/ui/src/style/themes/default",
+              "apps/web-widgets/src/app/styles"
+            ]
           },
           "fileReplacements": [
             {
@@ -100,7 +145,10 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": ["apps/safe/src/lib/style/themes/default"]
+            "includePaths": [
+              "libs/ui/src/style/themes/default",
+              "apps/web-widgets/src/app/styles"
+            ]
           }
         }
       },

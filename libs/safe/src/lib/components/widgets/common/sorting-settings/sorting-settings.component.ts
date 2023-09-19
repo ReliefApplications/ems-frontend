@@ -32,9 +32,9 @@ export class SafeSortingSettingsComponent implements OnInit {
   /**
    * Constructor for sorting-settings component
    *
-   * @param formBuilder FormBuilder instance
+   * @param fb FormBuilder instance
    */
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit() {
     this.data = new BehaviorSubject<AbstractControl[]>(this.formArray.controls);
@@ -45,7 +45,7 @@ export class SafeSortingSettingsComponent implements OnInit {
    *
    */
   addRow(): void {
-    const row = this.formBuilder.group({
+    const row = this.fb.group({
       field: [this.fields[0]?.name ?? '', Validators.required],
       order: [this.orderList[0].value, Validators.required],
       label: ['', Validators.required],

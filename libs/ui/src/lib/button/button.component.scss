@@ -160,7 +160,10 @@
   }
 }
 
-button.ui-button:disabled,
-button.ui-button-icon:disabled {
+button.ui-button:disabled {
   @apply text-neutral-400 bg-neutral-500 bg-opacity-20;
+}
+
+button.ui-button-icon:disabled {
+  @apply text-neutral-400 bg-opacity-20;
 }

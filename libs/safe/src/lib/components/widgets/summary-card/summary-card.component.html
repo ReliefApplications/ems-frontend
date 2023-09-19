@@ -20,10 +20,11 @@
       "
       class="px-2 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 flex items-center m-1 w-[30%] max-w-[200px]"
     >
-      <input
-        class="h-full bg-transparent w-full"
+      <kendo-textbox
+        class="!border-0 !shadow-none"
         [placeholder]="'common.placeholder.search' | translate"
         [formControl]="searchControl"
+        [clearButton]="true"
       />
     </div>
 
@@ -47,14 +48,14 @@
         [isIcon]="true"
         icon="grid_view"
         [disabled]="displayMode === 'cards'"
-        (click)="displayMode = 'cards'"
+        (click)="changeDisplayMode('cards')"
         [uiTooltip]="'components.widget.summaryCard.viewAsCards' | translate"
       ></ui-button>
       <ui-button
         [isIcon]="true"
         icon="view_list"
         [disabled]="displayMode === 'grid'"
-        (click)="displayMode = 'grid'"
+        (click)="changeDisplayMode('grid')"
         [uiTooltip]="'components.widget.summaryCard.viewAsGrid' | translate"
       ></ui-button>
     </div>
@@ -105,6 +106,7 @@
       *ngIf="settings.widgetDisplay?.usePagination"
       [disabled]="loading"
       [pageIndex]="pageInfo.pageIndex"
+      [skip]="pageInfo.skip"
       [pageSize]="pageInfo.pageSize"
       [hideFirstLastButtons]="false"
       [pageSizeOptions]="[10, 25, 50, 100]"
@@ -117,9 +119,9 @@
   </ng-container>
   <!-- Grid display mode -->
   <ng-container *ngIf="displayMode === 'grid'">
-    <div class="w-full h-full">
+    <div class="min-h-0 flex-1">
       <safe-grid-widget
-        class="flex-auto max-h-full w-full"
+        class="flex-1 h-full w-full"
         [header]="false"
         [settings]="gridSettings"
         [widget]="widget"
@@ -130,16 +132,15 @@
 
 <!-- Selection of sort -->
 <ng-template #sortTemplate>
-  <ng-container *ngIf="sortFields.length > 1">
-    <div uiFormFieldDirective class="!m-0 w-44">
-      <ui-select-menu
-        (selectedOption)="onSort($event)"
-        [placeholder]="'models.widget.sorting.select' | translate"
-      >
-        <ui-select-option *ngFor="let sort of sortFields" [value]="sort">
-          {{ sort.label }}
-        </ui-select-option>
-      </ui-select-menu>
-    </div>
-  </ng-container>
+  <div uiFormFieldDirective class="!m-0 w-44">
+    <ui-select-menu
+      [formControl]="sortControl"
+      (selectedOption)="onSort($event)"
+      [placeholder]="'models.widget.sorting.select' | translate"
+    >
+      <ui-select-option *ngFor="let sort of sortFields" [value]="sort">
+        {{ sort.label }}
+      </ui-select-option>
+    </ui-select-menu>
+  </div>
 </ng-template>

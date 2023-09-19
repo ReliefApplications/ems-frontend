@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
+import { FormBuilder } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Group, User } from '../../../../models/user.model';
@@ -15,7 +15,7 @@ import { SnackbarService } from '@oort-front/ui';
 export class UserGroupsComponent implements OnInit {
   public groups: Group[] = [];
   @Input() user!: User;
-  selectedGroups!: UntypedFormControl;
+  selectedGroups!: ReturnType<typeof this.createFormControl>;
   @Output() edit = new EventEmitter();
   @Input() canEdit = false;
 
@@ -37,16 +37,13 @@ export class UserGroupsComponent implements OnInit {
    * @param snackBar Shared snackbar service
    */
   constructor(
-    private fb: UntypedFormBuilder,
+    private fb: FormBuilder,
     private apollo: Apollo,
     private snackBar: SnackbarService
   ) {}
 
   ngOnInit(): void {
-    this.selectedGroups = this.fb.control({
-      value: get(this.user, 'groups', []).map((x) => x.id),
-      disabled: !this.canEdit,
-    });
+    this.selectedGroups = this.createFormControl();
     this.selectedGroups.valueChanges.subscribe((value) => {
       this.edit.emit({ groups: value });
     });
@@ -67,5 +64,17 @@ export class UserGroupsComponent implements OnInit {
           this.snackBar.openSnackBar(err.message, { error: true });
         },
       });
+  }
+
+  /**
+   * Create form control
+   *
+   * @returns form control
+   */
+  private createFormControl() {
+    return this.fb.control({
+      value: get(this.user, 'groups', []).map((x) => x.id),
+      disabled: !this.canEdit,
+    });
   }
 }

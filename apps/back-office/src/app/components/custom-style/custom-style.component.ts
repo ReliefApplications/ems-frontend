@@ -88,7 +88,6 @@ export class CustomStyleComponent
           .post('style/scss-to-css', { scss }, { responseType: 'text' })
           .subscribe({
             next: (css) => {
-              console.log(this.applicationService.customStyle);
               if (this.applicationService.customStyle) {
                 this.applicationService.customStyle.innerText = css;
               }

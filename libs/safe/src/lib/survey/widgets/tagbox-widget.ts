@@ -66,7 +66,7 @@ export const init = (Survey: any, domService: DomService): void => {
       tagboxDiv = document.createElement('div');
       tagboxDiv.id = 'tagbox';
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const tagboxInstance = createTagboxInstance(tagboxDiv);
+      const tagboxInstance = createTagboxInstance(tagboxDiv, question);
       tagboxInstance.value = question.value;
       tagboxInstance.placeholder = question.placeholder;
       tagboxInstance.readonly = question.isReadOnly;
@@ -121,9 +121,13 @@ export const init = (Survey: any, domService: DomService): void => {
    * Create the tagbox instance
    *
    * @param element html element
+   * @param question surveyjs question for the element
    * @returns multi select component
    */
-  const createTagboxInstance = (element: any): MultiSelectComponent => {
+  const createTagboxInstance = (
+    element: any,
+    question: any
+  ): MultiSelectComponent => {
     const tagbox = domService.appendComponentToBody(
       MultiSelectComponent,
       element
@@ -132,12 +136,13 @@ export const init = (Survey: any, domService: DomService): void => {
     tagboxInstance.virtual = {
       itemHeight: 28,
     };
-    tagboxInstance.valuePrimitive = true;
+    tagboxInstance.valuePrimitive = Boolean(question.isPrimitiveValue);
     tagboxInstance.filterable = true;
     tagboxInstance.loading = true;
     tagboxInstance.disabled = true;
     tagboxInstance.textField = 'text';
     tagboxInstance.valueField = 'value';
+    tagboxInstance.popupSettings = { appendTo: 'component' };
     return tagboxInstance;
   };
   // ⚠ danger ⚠

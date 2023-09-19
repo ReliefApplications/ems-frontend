@@ -1,15 +1,10 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import {
   Application,
   SafeApplicationService,
   SafeConfirmService,
-  SafeAuthService,
   SafeUnsubscribeComponent,
   SafeLayoutService,
 } from '@oort-front/safe';
@@ -37,7 +32,7 @@ export class SettingsComponent
   implements OnInit
 {
   public applications = new Array<Application>();
-  public settingsForm?: UntypedFormGroup;
+  public settingsForm!: ReturnType<typeof this.createSettingsForm>;
   public application?: Application;
   public user: any;
   public locked: boolean | undefined = undefined;
@@ -46,24 +41,22 @@ export class SettingsComponent
   /**
    * Application settings page component.
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param apollo Apollo service
    * @param router Angular router
    * @param snackBar Shared snackbar service
    * @param applicationService Shared application service
-   * @param authService Shared authentication service
    * @param confirmService Shared confirm service
    * @param dialog Dialog service
    * @param translate Angular translate service
    * @param layoutService Shared layout service
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     private apollo: Apollo,
     private router: Router,
     private snackBar: SnackbarService,
     private applicationService: SafeApplicationService,
-    private authService: SafeAuthService,
     private confirmService: SafeConfirmService,
     public dialog: Dialog,
     private translate: TranslateService,
@@ -78,17 +71,27 @@ export class SettingsComponent
       .subscribe((application: Application | null) => {
         if (application) {
           this.application = application;
-          this.settingsForm = this.formBuilder.group({
-            id: [{ value: application.id, disabled: true }],
-            name: [application.name, Validators.required],
-            sideMenu: [application.sideMenu],
-            description: [application.description],
-            status: [application.status],
-          });
+          this.settingsForm = this.createSettingsForm(application);
           this.locked = this.application?.locked;
           this.lockedByUser = this.application?.lockedByUser;
         }
       });
+  }
+
+  /**
+   * Create Settings form
+   *
+   * @param application Current application
+   * @returns form group
+   */
+  private createSettingsForm(application: Application) {
+    return this.fb.group({
+      id: [{ value: application.id, disabled: true }],
+      name: [application.name, Validators.required],
+      sideMenu: [application.sideMenu],
+      description: [application.description],
+      status: [application.status],
+    });
   }
 
   /**

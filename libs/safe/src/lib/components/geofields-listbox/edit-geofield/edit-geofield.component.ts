@@ -33,13 +33,13 @@ export class EditGeofieldComponent implements OnInit {
   /**
    * edit GeoField component
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param dialogRef Material dialog ref
    * @param data Injected dialog data
    * @param data.geofield geofield to edit
    */
   constructor(
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<EditGeofieldComponent>,
     @Inject(DIALOG_DATA)
     public data: {
@@ -49,7 +49,7 @@ export class EditGeofieldComponent implements OnInit {
 
   /** Build the form. */
   ngOnInit(): void {
-    this.geoFieldForm = this.formBuilder.group({
+    this.geoFieldForm = this.fb.group({
       label: [this.data.geofield.label, Validators.required],
     });
   }

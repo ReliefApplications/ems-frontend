@@ -176,7 +176,7 @@ export class SafeLineChartComponent implements OnChanges {
             display: get(this.options, 'grid.x.display', true),
           },
           ticks: {
-            autoSkip: false,
+            autoSkip: true,
             maxRotation: 90,
             minRotation: 0,
           },

@@ -1,9 +1,14 @@
 <form
   [formGroup]="$any(fieldForm)"
-  class="flex flex-row gap-4"
+  class="flex flex-row items-end gap-4"
   *ngFor="let fieldForm of form.controls; let index = index"
 >
-  <div uiFormFieldDirective *ngIf="displayName" class="w-44">
+  <div
+    uiFormFieldDirective
+    [defaultMargin]="false"
+    *ngIf="displayName"
+    class="w-44"
+  >
     <label>{{ 'common.name' | translate }}</label>
     <input formControlName="name" [placeholder]="'common.name' | translate" />
   </div>
@@ -13,13 +18,17 @@
     [operators]="$any(operators)"
   ></safe-expressions>
   <ui-button
-    class="mt-2.5 mr-2.5 mb-0 ml-0"
     [isIcon]="true"
     icon="delete"
     variant="danger"
     (click)="deleteField(index)"
   ></ui-button>
 </form>
-<ui-button icon="add" category="tertiary" (click)="addField()">
+<ui-button
+  class="mt-4 w-max"
+  icon="add"
+  category="tertiary"
+  (click)="addField()"
+>
   {{ 'components.aggregationBuilder.addField' | translate }}
 </ui-button>

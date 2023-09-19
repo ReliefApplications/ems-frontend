@@ -1,17 +1,7 @@
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { COMMA, ENTER, SPACE, TAB } from '@angular/cdk/keycodes';
-import {
-  Component,
-  ElementRef,
-  Inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { Component, ElementRef, Inject, ViewChild } from '@angular/core';
+import { FormBuilder, Validators } from '@angular/forms';
 import { EMAIL_EDITOR_CONFIG } from '../../const/tinymce.const';
 import { SafeEditorService } from '../../services/editor/editor.service';
 
@@ -39,9 +29,15 @@ const SEPARATOR_KEYS_CODE = [ENTER, COMMA, TAB, SPACE];
   templateUrl: './email-preview.component.html',
   styleUrls: ['./email-preview.component.scss'],
 })
-export class SafeEmailPreviewComponent implements OnInit {
+export class SafeEmailPreviewComponent {
   /** mail is put in a form to use read-only inputs */ // we want to change that
-  public form!: UntypedFormGroup;
+  public form = this.fb.group({
+    from: [{ value: this.data.from, disabled: true }],
+    to: [{ value: this.data.to, disabled: false }, Validators.required],
+    subject: [this.data.subject, Validators.required],
+    html: this.data.html,
+    files: [[]],
+  });
 
   readonly separatorKeysCodes: number[] = SEPARATOR_KEYS_CODE;
 
@@ -77,13 +73,13 @@ export class SafeEmailPreviewComponent implements OnInit {
    *
    * @param data injected dialog data
    * @param dialogRef Dialog reference
-   * @param formBuilder Angular Form Builder
+   * @param fb Angular Form Builder
    * @param editorService Editor service used to get main URL and current language
    */
   constructor(
     @Inject(DIALOG_DATA) public data: DialogData,
     public dialogRef: DialogRef<SafeEmailPreviewComponent>,
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     private editorService: SafeEditorService
   ) {
     // Set the editor base url based on the environment file
@@ -92,16 +88,6 @@ export class SafeEmailPreviewComponent implements OnInit {
     this.editor.language = editorService.language;
   }
 
-  /** Create the form from the dialog data, putting all fields as read-only */
-  ngOnInit(): void {
-    this.form = this.formBuilder.group({
-      from: [{ value: this.data.from, disabled: true }],
-      to: [{ value: this.data.to, disabled: false }, Validators.required],
-      subject: [this.data.subject, Validators.required],
-      html: this.data.html,
-      files: [[]],
-    });
-  }
   /**
    * Add the inputs emails to the distribution list
    *

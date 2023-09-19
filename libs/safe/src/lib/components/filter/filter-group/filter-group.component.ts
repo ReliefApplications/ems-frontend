@@ -1,9 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import {
-  UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, UntypedFormArray } from '@angular/forms';
 
 /**
  * Composite filter group.
@@ -14,7 +10,7 @@ import {
   styleUrls: ['./filter-group.component.scss'],
 })
 export class FilterGroupComponent {
-  @Input() form!: UntypedFormGroup;
+  @Input() form!: FormGroup;
   @Input() fields: any[] = [];
   @Output() delete = new EventEmitter();
 
@@ -32,7 +28,7 @@ export class FilterGroupComponent {
    *
    * @param fb Angular form builder
    */
-  constructor(private fb: UntypedFormBuilder) {}
+  constructor(private fb: FormBuilder) {}
 
   /**
    * Remove filter at index

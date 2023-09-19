@@ -31,14 +31,17 @@ export const SimpleChevron: StoryObj<BreadcrumbsComponent> = {
       {
         text: 'item 0',
         uri: '#',
+        showLabel: true,
       },
       {
         text: 'item 1',
         uri: '#',
+        showLabel: true,
       },
       {
         text: 'item 2',
         uri: '#',
+        showLabel: true,
       },
     ],
     separator: 'chevron',
@@ -53,14 +56,17 @@ export const SimpleSlash: StoryObj<BreadcrumbsComponent> = {
       {
         text: 'item 0',
         uri: '#',
+        showLabel: true,
       },
       {
         text: 'item 1',
         uri: '#',
+        showLabel: true,
       },
       {
         text: 'item 2',
         uri: '#',
+        showLabel: true,
       },
     ],
     separator: 'slash',
@@ -75,14 +81,17 @@ export const Contained: StoryObj<BreadcrumbsComponent> = {
       {
         text: 'item 0',
         uri: '#',
+        showLabel: true,
       },
       {
         text: 'item 1',
         uri: '#',
+        showLabel: true,
       },
       {
         text: 'item 2',
         uri: '#',
+        showLabel: true,
       },
     ],
     separator: 'chevron',
@@ -97,14 +106,17 @@ export const Full: StoryObj<BreadcrumbsComponent> = {
       {
         text: 'item 0',
         uri: '#',
+        showLabel: true,
       },
       {
         text: 'item 1',
         uri: '#',
+        showLabel: true,
       },
       {
         text: 'item 2',
         uri: '#',
+        showLabel: true,
       },
     ],
     separator: 'chevron',

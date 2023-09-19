@@ -47,10 +47,10 @@
           <td
             uiCell
             *cdkCellDef="let element"
-            class="!text-gray-900 !font-medium"
+            class="!text-gray-900 !font-medium max-w-[30vw]"
           >
-            {{ element.name
-            }}<span *ngIf="user.favoriteApp === element.id">
+            {{ element.name }}
+            <span *ngIf="user.favoriteApp === element.id">
               <ui-icon icon="star" inline="true" variant="primary"></ui-icon>
             </span>
           </td>

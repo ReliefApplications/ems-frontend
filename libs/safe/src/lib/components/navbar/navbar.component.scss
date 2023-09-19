@@ -50,7 +50,7 @@
   & > li {
     @apply min-h-[54px] flex justify-between items-center cursor-pointer flex-row text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md;
     & > a {
-      @apply flex flex-1 overflow-clip flex-row gap-x-3 text-sm leading-6 items-center font-semibold px-2 py-3;
+      @apply flex flex-1 overflow-hidden flex-row gap-x-3 text-sm leading-6 items-center font-semibold px-2 py-3;
     }
   }
   .hide-icons {

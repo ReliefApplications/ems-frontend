@@ -463,7 +463,7 @@ export class Layer implements LayerModel {
               null
             );
             const uniqueValueSymbol =
-              uniqueValueInfos.find((x) => x.value === fieldValue)?.symbol ||
+              uniqueValueInfos.find((x) => x.value == fieldValue)?.symbol ||
               uniqueValueDefaultSymbol;
             return {
               fillColor: uniqueValueSymbol.color,
@@ -488,14 +488,13 @@ export class Layer implements LayerModel {
         // In order to destroy all event subscriptions and avoid memory leak
         const setPopupListener = () => {
           const center = centroid(feature);
-          const coordinates = {
-            lat: center.geometry.coordinates[1],
-            lng: center.geometry.coordinates[0],
-          };
           // bind this to the popup service
           this.popupService.setPopUp(
             [feature],
-            coordinates,
+            L.latLng({
+              lat: center.geometry.coordinates[1],
+              lng: center.geometry.coordinates[0],
+            }),
             this.popupInfo,
             layer
           );
@@ -620,10 +619,6 @@ export class Layer implements LayerModel {
               ) {
                 const zoom = map.getZoom();
                 const radius = 1000 / zoom;
-                const coordinates = {
-                  lat: event.latlng.lat,
-                  lng: event.latlng.lng,
-                };
                 // checks if the point is within the calculate radius
                 const matchedPoints = data.features.filter((feature) => {
                   if (
@@ -647,7 +642,7 @@ export class Layer implements LayerModel {
 
                 this.popupService.setPopUp(
                   matchedPoints,
-                  coordinates,
+                  event,
                   this.popupInfo
                 );
               }
@@ -691,6 +686,9 @@ export class Layer implements LayerModel {
                   symbol
                 );
                 const clusterGroup = L.markerClusterGroup({
+                  chunkedLoading: true, // Load markers in chunks
+                  chunkInterval: 250, // Time interval (in ms) during which addLayers works before pausing to let the rest of the page process
+                  chunkDelay: 50, // Time delay (in ms) between consecutive periods of processing for addLayers
                   maxClusterRadius: get(
                     this.layerDefinition,
                     'featureReduction.clusterRadius',
@@ -728,16 +726,12 @@ export class Layer implements LayerModel {
 
                 // Set popup for all the cluster markers
                 clusterGroup.on('clusterclick', (event: any) => {
-                  const coordinates = {
-                    lat: event.latlng.lat,
-                    lng: event.latlng.lng,
-                  };
                   const children = event.layer
                     .getAllChildMarkers()
                     .map((child: L.Marker) => child.feature);
                   this.popupService.setPopUp(
                     children,
-                    coordinates,
+                    event.latlng,
                     this.popupInfo,
                     event.layer
                   );
@@ -928,7 +922,11 @@ export class Layer implements LayerModel {
                 info.label
               );
             }
-            if (defaultSymbol) {
+            if (
+              defaultSymbol &&
+              get(this.layerDefinition, 'drawingInfo.renderer.defaultLabel')
+                ?.length
+            ) {
               html += this.getGeoJSONFeatureLegend(
                 geometryType,
                 defaultSymbol,

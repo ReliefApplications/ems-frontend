@@ -23,6 +23,7 @@ import get from 'lodash/get';
 import { Question, QuestionResource } from '../types';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
 import { Record } from '../../models/record.model';
+import { SafeTestServiceDropdownComponent } from '../../components/test-service-dropdown/test-service-dropdown.component';
 import { NgZone } from '@angular/core';
 
 /** Question's temporary records */
@@ -65,7 +66,7 @@ const addRecordToSurveyContext = (question: Question, recordID: string) => {
  * @param domService Shared DOM service
  * @param apollo Apollo client
  * @param dialog Dialog
- * @param formBuilder Angular form service
+ * @param fb Angular form service
  * @param ngZone Angular Service to execute code inside Angular environment
  */
 export const init = (
@@ -73,7 +74,7 @@ export const init = (
   domService: DomService,
   apollo: Apollo,
   dialog: Dialog,
-  formBuilder: UntypedFormBuilder,
+  fb: UntypedFormBuilder,
   ngZone: NgZone
 ): void => {
   const getResourceById = (data: { id: string }) =>
@@ -271,19 +272,46 @@ export const init = (
         required: true,
         visibleIf: (obj: null | QuestionResource) =>
           !!obj && !!obj.resource && !!obj.displayField,
+        type: 'resourceTestService',
         visibleIndex: 3,
-        choices: (obj: QuestionResource, choicesCallback: any) => {
-          if (obj.resource) {
-            getResourceRecordsById({ id: obj.resource }).subscribe(
-              ({ data }) => {
-                const choices = mapQuestionChoices(data, obj);
-                choices.unshift({ value: null });
-                choicesCallback(choices);
-              }
-            );
-          }
-        },
       });
+
+      const testServiceEditor = {
+        render: (editor: any, htmlElement: HTMLElement) => {
+          const question = editor.object;
+          let dropdownDiv: HTMLDivElement | null = null;
+          const updateDropdownInstance = () => {
+            if (question.displayField) {
+              if (dropdownDiv) {
+                dropdownDiv.remove();
+              }
+              dropdownDiv = document.createElement('div');
+              const instance = createTestServiceInstance(dropdownDiv);
+              if (instance) {
+                instance.resource = question.resource;
+                instance.record = question['test service'];
+                instance.textField = question.displayField;
+                instance.choice.subscribe((res: any) => editor.onChanged(res));
+              }
+              htmlElement.appendChild(dropdownDiv);
+            }
+          };
+          question.registerFunctionOnPropertyValueChanged(
+            'displayField',
+            updateDropdownInstance,
+            // eslint-disable-next-line no-underscore-dangle
+            editor.property_.name // a unique key to distinguish multiple
+          );
+
+          updateDropdownInstance();
+        },
+      };
+
+      SurveyCreator.SurveyPropertyEditorFactory.registerCustomEditor(
+        'resourceTestService',
+        testServiceEditor
+      );
+
       serializer.addProperty('resource', {
         name: 'addRecord:boolean',
         category: 'Custom Questions',
@@ -706,7 +734,7 @@ export const init = (
       if (!gridSettingsRaw.fields) {
         return null;
       }
-      const auxForm = formBuilder.group(gridSettingsRaw);
+      const auxForm = fb.group(gridSettingsRaw);
       auxForm.controls.fields.setValue(gridSettingsRaw.fields);
       return auxForm;
     },
@@ -728,5 +756,22 @@ export const init = (
         }
       });
     }
+  };
+
+  /**
+   * Creates the SafeTestServiceDropdownComponent instance for the test service property
+   *
+   * @param htmlElement - The element that the directive is attached to.
+   * @returns The SafeTestServiceDropdownComponent instance
+   */
+  const createTestServiceInstance = (
+    htmlElement: any
+  ): SafeTestServiceDropdownComponent => {
+    const dropdown = domService.appendComponentToBody(
+      SafeTestServiceDropdownComponent,
+      htmlElement
+    );
+    const instance: SafeTestServiceDropdownComponent = dropdown.instance;
+    return instance;
   };
 };
