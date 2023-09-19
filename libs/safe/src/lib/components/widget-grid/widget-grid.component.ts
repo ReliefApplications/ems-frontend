@@ -173,7 +173,8 @@ export class SafeWidgetGridComponent
   }
 
   /**
-   * Emits addition event.
+   * Open settings component for widget edition.
+   * Emits addition event if edition should be saved.
    *
    * @param e new widget.
    */
@@ -181,7 +182,7 @@ export class SafeWidgetGridComponent
     if (e) {
       const tile = JSON.parse(JSON.stringify(e));
       if (tile) {
-        //open settings automatically
+        /** Open settings dialog component from the widget.  */
         const { SafeTileDataComponent } = await import(
           './floating-options/menu/tile-data/tile-data.component'
         );
@@ -194,16 +195,13 @@ export class SafeWidgetGridComponent
         });
         dialogRef.closed
           .pipe(takeUntil(this.destroy$))
-          .subscribe((res: any) => {
-            if (res) {
-              this.add.emit(e);
-              setTimeout(() => {
-                this.edit.emit({
-                  type: 'data',
-                  id: this.widgets[this.widgets.length - 1].id,
-                  options: res,
-                });
-              }, 500);
+          .subscribe((value: any) => {
+            // Should save the value, and so, add the widget to the grid
+            if (value) {
+              this.add.emit({
+                ...tile,
+                settings: value,
+              });
             }
           });
       }
