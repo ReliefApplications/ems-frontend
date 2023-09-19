@@ -62,9 +62,7 @@
           <label>{{ 'models.apiConfiguration.authType' | translate }}</label>
           <ui-select-menu
             formControlName="authType"
-            [placeholder]="
-              'models.apiConfiguration.selectAuthType' | translate
-            "
+            [placeholder]="'models.apiConfiguration.selectAuthType' | translate"
           >
             <ui-select-option
               *ngFor="let authTypeChoice of authTypeChoices"
