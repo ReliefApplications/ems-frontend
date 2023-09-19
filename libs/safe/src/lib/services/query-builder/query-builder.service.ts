@@ -390,6 +390,10 @@ export class QueryBuilderService {
   ): Observable<ApolloQueryResult<any>> | null {
     if (query && query.fields.length > 0) {
       const metaFields = this.buildMetaFields(query.fields);
+      // check if has any valid value in metaFields
+      if (metaFields.every((x: string) => !x)) {
+        return null;
+      }
       const metaQuery = gql`
         query GetCustomMetaQuery {
           _${query.name}Meta {
@@ -530,5 +534,33 @@ export class QueryBuilderService {
       }
     }
     return [];
+  }
+
+  /**
+   * gets the right fields to be displayed in group
+   *
+   * @param type type to get fields from
+   * @param previousTypes param to avoid circular dependencies and infinite loading
+   * @returns field deconfined
+   */
+  public deconfineFields(type: any, previousTypes: Set<any>): any {
+    return this.getFieldsFromType(type.name ?? type.ofType.name)
+      .filter(
+        (field) =>
+          field.type.name !== 'ID' &&
+          (field.type.kind === 'SCALAR' ||
+            field.type.kind === 'LIST' ||
+            field.type.kind === 'OBJECT') &&
+          !previousTypes.has(field.type.name ?? field.type.ofType.name) //prevents infinite loops
+      )
+      .map((field: any) => {
+        if (field.type.kind === 'LIST' || field.type.kind === 'OBJECT') {
+          field.fields = this.deconfineFields(
+            field.type,
+            previousTypes?.add(field.type.name ?? field.type.ofType.name)
+          );
+        }
+        return field;
+      });
   }
 }

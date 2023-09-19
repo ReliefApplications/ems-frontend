@@ -23,7 +23,7 @@
   let-expansionSubTree="expansionSubTree"
 >
   <ui-select-option
-    [value]="parentName ? parentName + '.' + data.name : data.name"
+    [value]="parentName ? parentName + separator + data.name : data.name"
     *ngIf="data.type.kind === 'SCALAR'"
     #field
     >{{ data.name }}</ui-select-option
@@ -35,7 +35,7 @@
     <button
       (click)="
         toggleNodeExpansion(
-          parentName ? parentName + '.' + data.name : data.name
+          parentName ? parentName + separator + data.name : data.name
         )
       "
       class="min-h-[32px] flex items-center w-full text-left overflow-hidden cursor-pointer text-blue-400"
@@ -46,18 +46,7 @@
 
       <!-- icon at right of the button -->
       <span class="pointer-events-none flex items-center">
-        <svg
-          class="h-5 w-5 text-gray-400"
-          viewBox="0 0 20 20"
-          fill="currentColor"
-          aria-hidden="true"
-        >
-          <path
-            fill-rule="evenodd"
-            d="M10 3a.75.75 0 01.55.24l3.25 3.5a.75.75 0 11-1.1 1.02L10 4.852 7.3 7.76a.75.75 0 01-1.1-1.02l3.25-3.5A.75.75 0 0110 3zm-3.76 9.2a.75.75 0 011.06.04l2.7 2.908 2.7-2.908a.75.75 0 111.1 1.02l-3.25 3.5a.75.75 0 01-1.1 0l-3.25-3.5a.75.75 0 01.04-1.06z"
-            clip-rule="evenodd"
-          />
-        </svg>
+        <ui-icon icon="unfold_more"> </ui-icon>
       </span>
     </button>
     <div
@@ -70,7 +59,9 @@
         [ngTemplateOutlet]="fieldNode"
         [ngTemplateOutletContext]="{
           $implicit: subField,
-          parentName: parentName ? parentName + '.' + data.name : data.name,
+          parentName: parentName
+            ? parentName + separator + data.name
+            : data.name,
           expansionSubTree: expansionSubTree
             ? expansionSubTree[subField.name]
             : ''

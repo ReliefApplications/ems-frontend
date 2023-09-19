@@ -128,35 +128,6 @@ export class TabMainComponent
   }
 
   /**
-   * gets the right fields to be displayed in group
-   *
-   * @param type type to get fields from
-   * @param previousTypes param to avoid circular dependencies and infinite loading
-   * @returns field deconfined
-   */
-  private deconfineFields(type: any, previousTypes: Set<any>): any {
-    return this.queryBuilder
-      .getFieldsFromType(type.name ?? type.ofType.name)
-      .filter(
-        (field) =>
-          field.type.name !== 'ID' &&
-          (field.type.kind === 'SCALAR' ||
-            field.type.kind === 'LIST' ||
-            field.type.kind === 'OBJECT') &&
-          !previousTypes.has(field.type.name ?? field.type.ofType.name) //prevents infinite loops
-      )
-      .map((field: any) => {
-        if (field.type.kind === 'LIST' || field.type.kind === 'OBJECT') {
-          field.fields = this.deconfineFields(
-            field.type,
-            previousTypes?.add(field.type.name ?? field.type.ofType.name)
-          );
-        }
-        return field;
-      });
-  }
-
-  /**
    * Set available series fields, from resource fields and aggregation definition.
    */
   private setAvailableSeriesFields(): void {
@@ -177,7 +148,7 @@ export class TabMainComponent
           if (!field) return null;
           if (field.type.kind !== 'SCALAR') {
             Object.assign(field, {
-              fields: this.deconfineFields(
+              fields: this.queryBuilder.deconfineFields(
                 field.type,
                 new Set().add(this.resource?.name).add(field.type.ofType.name)
               ),

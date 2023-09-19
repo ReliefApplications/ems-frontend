@@ -16,6 +16,9 @@ interface ExpansionTree {
   [key: string]: ExpansionTree | boolean | undefined;
 }
 
+/** Separator used between field names */
+const NESTED_FIELD_NAME_SEPARATOR = '.' as const;
+
 /**
  * Fields dropdown component.
  */
@@ -34,9 +37,15 @@ export class SafeFieldDropdownComponent implements AfterViewInit, OnChanges {
   private currentValueUnnested = false;
   public expansionTree: ExpansionTree = {};
 
+  /** Separator for nested field names */
+  public separator = NESTED_FIELD_NAME_SEPARATOR;
+
   ngAfterViewInit(): void {
     this.selectMenu.forceOptionList(this.fieldComponents);
-    if (!this.fieldControl.value || !this.fieldControl.value.includes('.')) {
+    if (
+      !this.fieldControl.value ||
+      !this.fieldControl.value.includes(this.separator)
+    ) {
       this.currentValueUnnested = true; //unnesting needs to be done only if there is a value to be unnested at first
     }
   }
@@ -48,7 +57,9 @@ export class SafeFieldDropdownComponent implements AfterViewInit, OnChanges {
       this.unnestCurrentValue(); //we unnest as soon as our fields are loaded
     }
     if (changes.fieldControl?.currentValue.value) {
-      this.currentValueUnnested = !this.fieldControl.value.includes('.'); //forces the new field to be unnested
+      this.currentValueUnnested = !this.fieldControl.value.includes(
+        this.separator
+      ); //forces the new field to be unnested
       if (this.fields) {
         this.unnestCurrentValue();
       }
@@ -81,10 +92,10 @@ export class SafeFieldDropdownComponent implements AfterViewInit, OnChanges {
   /** Unnests the value that is displayed inside of the select menu */
   unnestCurrentValue() {
     if (!this.currentValueUnnested) {
-      const array: string[] = this.fieldControl.value.split('.');
+      const array: string[] = this.fieldControl.value.split(this.separator);
       for (let i = 1; i < array.length; i++) {
         this.currentValueUnnested = this.toggleNodeExpansion(
-          array.slice(0, i).join('.'),
+          array.slice(0, i).join(this.separator),
           true
         );
       }
