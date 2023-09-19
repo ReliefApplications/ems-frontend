@@ -894,6 +894,7 @@
                       </ng-container>
                       <ng-container
                         *ngIf="
+                          !column.cellType ||
                           ['dropdown', 'radiogroup'].includes(column.cellType)
                         "
                       >
