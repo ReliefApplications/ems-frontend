@@ -870,6 +870,28 @@
                         >
                         </kendo-dropdownlist>
                       </ng-container>
+                      <ng-container *ngIf="column.type === 'boolean'">
+                        <input
+                          type="checkbox"
+                          kendoCheckBox
+                          [formControl]="
+                            formGroup.get([field.name, row.name, column.name])
+                          "
+                        />
+                      </ng-container>
+                      <ng-container
+                        *ngIf="multiSelectTypes.includes(column.type)"
+                      >
+                        <kendo-multiselect
+                          [data]="field.meta.choices"
+                          textField="text"
+                          [valueField]="'value'"
+                          [valuePrimitive]="true"
+                          [formControl]="formGroup.get([field.name, row.name, column.name])"
+                          [autoClose]="false"
+                        >
+                        </kendo-multiselect>
+                      </ng-container>
                     </li>
                   </ng-container>
                   <!-- EDITION ( matrixdynamic ) -->
