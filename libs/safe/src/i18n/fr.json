@@ -135,7 +135,7 @@
 			"accessDenied": "Vous n'avez pas la permission pour accéder à cet objet de type {{type}}.",
 			"accessNotProvided": "Pas d'accès fourni à cet objet de type {{type}}. {{error}}",
 			"alreadyExists": "Cet objet {{type}} {{value}} existe déjà dans cette application.",
-			"copiedToClipboard": "Copié !",
+			"copiedToClipboard": "Lien du tableau de bord copié !",
 			"dataNotRecovered": "Échec de la récupération des données",
 			"dataRecovered": "Les données ont été récupérées !",
 			"email": {
