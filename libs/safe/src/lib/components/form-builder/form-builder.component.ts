@@ -109,6 +109,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
    * @param translate Angular translate service
    * @param referenceDataService Reference data service
    * @param formHelpersService Shared form helper service.
+   * @param document document
    */
   constructor(
     public dialog: Dialog,

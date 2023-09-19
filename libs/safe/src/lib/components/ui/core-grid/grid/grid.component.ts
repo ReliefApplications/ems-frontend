@@ -211,6 +211,7 @@ export class SafeGridComponent
    * @param dashboardService Dashboard service
    * @param translate The translate service
    * @param snackBar The snackbar service
+   * @param document document
    */
   constructor(
     @Inject('environment') environment: any,

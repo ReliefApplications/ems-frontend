@@ -229,8 +229,13 @@ export class Layer implements LayerModel {
    *
    * @param options Layer options
    * @param injector Injector containing all needed providers for layer class
+   * @param document document
    */
-  constructor(options: any, private injector: Injector, @Inject(DOCUMENT) private document: Document) {
+  constructor(
+    options: any,
+    private injector: Injector,
+    @Inject(DOCUMENT) private document: Document
+  ) {
     if (options) {
       this.popupService = injector.get(SafeMapPopupService);
       this.layerService = injector.get(SafeMapLayersService);

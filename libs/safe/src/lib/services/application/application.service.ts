@@ -274,7 +274,9 @@ export class SafeApplicationService {
    */
   leaveApplication(): void {
     if (this.customStyle) {
-      this.document.getElementsByTagName('head')[0].removeChild(this.customStyle);
+      this.document
+        .getElementsByTagName('head')[0]
+        .removeChild(this.customStyle);
       this.rawCustomStyle = undefined;
       this.customStyle = undefined;
       this.layoutService.closeRightSidenav = true;

@@ -71,6 +71,7 @@ export class CustomStyleComponent
    * @param translate Angular translate service
    * @param confirmService Shared confirmation service
    * @param restService Shared rest service
+   * @param document document
    */
   constructor(
     private applicationService: SafeApplicationService,

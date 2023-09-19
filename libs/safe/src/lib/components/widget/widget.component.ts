@@ -64,7 +64,10 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
    * @param restService Shared rest service
    * @param document document
    */
-  constructor(private restService: SafeRestService, @Inject(DOCUMENT) private document: Document) {}
+  constructor(
+    private restService: SafeRestService,
+    @Inject(DOCUMENT) private document: Document
+  ) {}
 
   ngOnInit(): void {
     // Get style from widget definition
@@ -89,7 +92,9 @@ export class SafeWidgetComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     // Remove style from head if exists, to avoid too many styles to be active at same time
     if (this.customStyle) {
-      this.document.getElementsByTagName('head')[0].removeChild(this.customStyle);
+      this.document
+        .getElementsByTagName('head')[0]
+        .removeChild(this.customStyle);
     }
   }
 }

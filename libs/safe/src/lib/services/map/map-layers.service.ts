@@ -293,7 +293,11 @@ export class SafeMapLayersService {
             }),
             map(
               (layer: { layer: LayerModel; geojson: any }) =>
-                new Layer({ ...layer.layer, geojson: layer.geojson }, injector, this.document)
+                new Layer(
+                  { ...layer.layer, geojson: layer.geojson },
+                  injector,
+                  this.document
+                )
             )
           )
         )

@@ -79,6 +79,7 @@ export class SafeDateFilterMenuComponent
    * @param translate The translation service
    * @param element element ref
    * @param popupService kendo popup service
+   * @param document document
    */
   constructor(
     private fb: FormBuilder,

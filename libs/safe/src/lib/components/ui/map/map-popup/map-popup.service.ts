@@ -30,7 +30,10 @@ export class SafeMapPopupService {
    * @param domService DomService
    * @param document document
    */
-  constructor(private domService: DomService, @Inject(DOCUMENT) private document: Document) {}
+  constructor(
+    private domService: DomService,
+    @Inject(DOCUMENT) private document: Document
+  ) {}
 
   /**
    * Set popup content for the given map and feature points

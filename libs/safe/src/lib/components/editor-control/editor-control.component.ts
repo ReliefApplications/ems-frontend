@@ -172,6 +172,7 @@ export class SafeEditorControlComponent
    * @param editorService editor service
    * @param elementRef shared element ref service
    * @param ngControl form control shared service
+   * @param document document
    */
   constructor(
     private editorService: SafeEditorService,

@@ -1,4 +1,11 @@
-import { Component, Output, EventEmitter, OnInit, Input, Inject } from '@angular/core';
+import {
+  Component,
+  Output,
+  EventEmitter,
+  OnInit,
+  Input,
+  Inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
@@ -55,6 +62,7 @@ export class CustomWidgetStyleComponent
    * @param restService Shared rest service
    * @param translate Angular translate service
    * @param confirmService Shared confirmation service
+   * @param document document
    */
   constructor(
     private restService: SafeRestService,
@@ -91,9 +99,10 @@ export class CustomWidgetStyleComponent
 
   ngOnInit(): void {
     // Avoids style duplication for the same element
-    const widgetStyle = Array.from(this.document.querySelectorAll('style')).filter(
-      (style) => style.innerHTML.includes(this.widgetComp.domId)
-    )[0];
+    const widgetStyle = Array.from(
+      this.document.querySelectorAll('style')).filter(
+        (style) => style.innerHTML.includes(this.widgetComp.domId)
+      )[0];
     if (widgetStyle) this.styleApplied = widgetStyle;
     else this.styleApplied = this.document.createElement('style');
 

@@ -22,10 +22,13 @@ class LegendControl extends L.Control {
   /**
    * Custom leaflet legend control
    *
-   * @param options legend control options
    * @param document document
+   * @param options legend control options
    */
-  constructor(@Inject(DOCUMENT) private document: Document, options?: LegendControlOptions) {
+  constructor(
+    @Inject(DOCUMENT) private document: Document,
+    options?: LegendControlOptions
+  ) {
     super(options);
     // this.layers = options?.layers;
   }

@@ -128,7 +128,8 @@ export class SafeEditorService {
       this.editorScrollListener();
     }
     setTimeout(() => {
-      const autoCompleterContainer = this.document.querySelector('.tox-tinymce-aux');
+      const autoCompleterContainer =
+        this.document.querySelector('.tox-tinymce-aux');
       if (!autoCompleterContainer) return;
       this.editorScrollListener = this.renderer.listen(
         autoCompleterContainer,
