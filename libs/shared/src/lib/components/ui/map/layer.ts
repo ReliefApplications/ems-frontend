@@ -463,7 +463,7 @@ export class Layer implements LayerModel {
               null
             );
             const uniqueValueSymbol =
-              uniqueValueInfos.find((x) => x.value === fieldValue)?.symbol ||
+              uniqueValueInfos.find((x) => x.value == fieldValue)?.symbol ||
               uniqueValueDefaultSymbol;
             return {
               fillColor: uniqueValueSymbol.color,
@@ -922,7 +922,11 @@ export class Layer implements LayerModel {
                 info.label
               );
             }
-            if (defaultSymbol) {
+            if (
+              defaultSymbol &&
+              get(this.layerDefinition, 'drawingInfo.renderer.defaultLabel')
+                ?.length
+            ) {
               html += this.getGeoJSONFeatureLegend(
                 geometryType,
                 defaultSymbol,

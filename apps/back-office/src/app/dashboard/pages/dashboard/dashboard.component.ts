@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  Inject,
   OnDestroy,
   OnInit,
   Output,
@@ -57,6 +58,7 @@ import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
+import { DOCUMENT } from '@angular/common';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -156,6 +158,7 @@ export class DashboardComponent
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
    * @param layoutService Shared layout service
+   * @param document Document
    */
   constructor(
     private applicationService: ApplicationService,
@@ -173,7 +176,8 @@ export class DashboardComponent
     private refDataService: ReferenceDataService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
-    private layoutService: LayoutService
+    private layoutService: LayoutService,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
   }
@@ -193,13 +197,17 @@ export class DashboardComponent
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
+        console.log('aaaaah');
         this.loading = true;
         // Reset context
         this.contextRecord = null;
         this.contextId.reset(undefined, { emitEvent: false });
         // Reset scroll when changing page
-        const pageContainer = document.getElementById('appPageContainer');
-        if (pageContainer) pageContainer.scrollTop = 0;
+        const pageContainer = this.document.getElementById('appPageContainer');
+        if (pageContainer) {
+          pageContainer.scrollTop = 0;
+        }
+
         /** Extract main dashboard id */
         const id = this.route.snapshot.paramMap.get('id');
         /** Extract query id to load template */

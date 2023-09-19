@@ -223,14 +223,16 @@ export class MapLayersService {
           });
         }
         return field;
-        // this.fields.next(field);
       })
       // @TODO To be improved - Get only the JSON type fields for this case
-      .filter((x: any) => x !== null && x.type.name === 'JSON');
-    return this.aggregationBuilder.fieldsAfter(
-      selectedFields,
-      aggregation?.pipeline
-    );
+      .filter((x: any) => x !== null);
+    return this.aggregationBuilder
+      .fieldsAfter(selectedFields, aggregation?.pipeline)
+      .map((field) => ({
+        name: field.name,
+        label: field.name,
+        type: field.type.name,
+      }));
   }
 
   // @TODO Copied method from tab-main.component, this one should be refactored in the needed places

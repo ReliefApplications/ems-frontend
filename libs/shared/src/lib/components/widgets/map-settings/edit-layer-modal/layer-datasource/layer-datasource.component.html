@@ -162,29 +162,59 @@
           formGroup.get('geoField')?.enabled && (fields$ | async)?.length! > 0
         "
       >
-        <div uiFormFieldDirective>
-          <label>{{
-            'components.widget.settings.map.layers.dataSource.geoField'
-              | translate
-          }}</label>
-          <ui-select-menu formControlName="geoField">
-            <ui-select-option
-              *ngFor="let field of fields$ | async"
-              [value]="field.name"
-              >{{ field.name }}</ui-select-option
-            >
-          </ui-select-menu>
-          <ui-button
-            *ngIf="formGroup.get('geoField')?.value"
-            uiSuffix
-            [isIcon]="true"
-            icon="close"
-            variant="danger"
-            (click)="
-              formGroup.get('geoField')?.setValue(null);
-              $event.stopPropagation()
-            "
-          ></ui-button>
+        <!-- Geo field -->
+        <div class="flex flex-row justify-between gap-2 flex-wrap">
+          <div uiFormFieldDirective class="flex-1">
+            <label>{{
+              'components.widget.settings.map.layers.dataSource.geoField'
+                | translate
+            }}</label>
+            <ui-select-menu formControlName="geoField">
+              <ui-select-option
+                *ngFor="let field of fields$ | async"
+                [value]="field.name"
+                >{{ field.name }}</ui-select-option
+              >
+            </ui-select-menu>
+            <ui-button
+              *ngIf="formGroup.get('geoField')?.value"
+              uiSuffix
+              [isIcon]="true"
+              icon="close"
+              variant="danger"
+              (click)="
+                formGroup.get('geoField')?.setValue(null);
+                $event.stopPropagation()
+              "
+            ></ui-button>
+          </div>
+          <div uiFormFieldDirective class="flex-1">
+            <label>Admin Field</label>
+            <ui-select-menu formControlName="adminField">
+              <ui-select-option
+                *ngFor="let field of adminFields"
+                [isGroup]="true"
+                >{{ field.name }}
+                <ui-select-option
+                  *ngFor="let subField of field.fields"
+                  [value]="subField.value"
+                >
+                  {{ subField.name }}
+                </ui-select-option>
+              </ui-select-option>
+            </ui-select-menu>
+            <ui-button
+              *ngIf="formGroup.get('adminField')?.value"
+              uiSuffix
+              [isIcon]="true"
+              icon="close"
+              variant="danger"
+              (click)="
+                formGroup.get('adminField')?.setValue(null);
+                $event.stopPropagation()
+              "
+            ></ui-button>
+          </div>
         </div>
       </ng-container>
 
@@ -194,6 +224,7 @@
           (fields$ | async)?.length! > 0
         "
       >
+        <!-- Latitude & Longitude fields -->
         <div class="flex flex-row justify-between gap-2 flex-wrap">
           <!-- Latitude Field -->
           <div uiFormFieldDirective class="flex-1">

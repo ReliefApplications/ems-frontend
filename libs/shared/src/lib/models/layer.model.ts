@@ -129,6 +129,7 @@ export interface LayerDatasource {
   layout?: string;
   aggregation?: string;
   geoField?: string;
+  adminField?: string;
   latitudeField?: string;
   longitudeField?: string;
   type?: LayerDatasourceType;
