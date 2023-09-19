@@ -1,0 +1,94 @@
+<cdk-accordion cdkDropList (cdkDropListDropped)="drop($event)">
+  <ui-expansion-panel
+    cdkDrag
+    *ngFor="let stageForm of pipelineForm.controls; let index = index"
+    [index]="index"
+    class="bg-white"
+  >
+    <ng-container ngProjectAs="title">
+      {{
+        'components.aggregationBuilder.stages.' + stageForm.value.type
+          | translate
+      }}
+      <ui-icon
+        icon="info_outline"
+        variant="grey"
+        [size]="18"
+        [uiTooltip]="
+          'components.aggregationBuilder.tooltip.' + stageForm.value.type
+            | translate
+        "
+      ></ui-icon>
+    </ng-container>
+    <ng-container [ngSwitch]="stageForm.value.type">
+      <ng-container *ngSwitchCase="stageType.FILTER">
+        <shared-filter
+          [form]="$any(stageForm).controls.form"
+          [fields]="fieldsPerStage[index]"
+        ></shared-filter>
+      </ng-container>
+      <ng-container *ngSwitchCase="stageType.SORT">
+        <shared-sort-stage
+          [form]="$any(stageForm).controls.form"
+          [fields]="fieldsPerStage[index]"
+        ></shared-sort-stage>
+      </ng-container>
+      <ng-container *ngSwitchCase="stageType.GROUP">
+        <shared-group-stage
+          [form]="$any(stageForm).controls.form"
+          [fields]="fieldsPerStage[index]"
+        ></shared-group-stage>
+      </ng-container>
+      <ng-container *ngSwitchCase="stageType.ADD_FIELDS">
+        <shared-add-field-stage
+          [form]="$any(stageForm).controls.form"
+          [fields]="fieldsPerStage[index]"
+        ></shared-add-field-stage>
+      </ng-container>
+      <ng-container *ngSwitchCase="stageType.UNWIND">
+        <shared-field-dropdown
+          [fieldControl]="$any(stageForm).controls.form.controls.field"
+          [fields]="fieldsPerStage[index]"
+        ></shared-field-dropdown>
+      </ng-container>
+      <ng-container *ngSwitchCase="stageType.CUSTOM">
+        <div uiFormFieldDirective>
+          <label>{{ 'common.input.rawJson' | translate }}</label>
+          <ui-textarea
+            [formControl]="$any(stageForm).controls.form.controls.raw"
+            [minRows]="4"
+            [maxRows]="20"
+          >
+          </ui-textarea>
+        </div>
+      </ng-container>
+    </ng-container>
+    <div class="panel-actions">
+      <ui-button
+        [isIcon]="true"
+        icon="delete"
+        variant="danger"
+        (click)="deleteStage(index)"
+      ></ui-button>
+    </div>
+  </ui-expansion-panel>
+</cdk-accordion>
+<div class="flex justify-center">
+  <ui-button
+    icon="add"
+    category="primary"
+    [uiMenuTriggerFor]="menu"
+    (click)="$event.stopPropagation()"
+  >
+    {{ 'components.aggregationBuilder.addStage' | translate }}
+  </ui-button>
+  <ui-menu #menu>
+    <button
+      *ngFor="let stage of stageList"
+      uiMenuItem
+      (click)="addStage(stage)"
+    >
+      {{ 'components.aggregationBuilder.stages.' + stage | translate }}
+    </button>
+  </ui-menu>
+</div>

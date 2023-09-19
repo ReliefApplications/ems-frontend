@@ -1,0 +1,37 @@
+<div
+  class="shared-step"
+  [style.background-color]="active ? type?.color : ''"
+  [ngClass]="{ active: active }"
+>
+  <div class="step-actions" *ngIf="canUpdate">
+    <!-- Delete action -->
+    <ui-button
+      [isIcon]="true"
+      icon="delete_outline"
+      category="primary"
+      variant="danger"
+      [uiTooltip]="
+        'common.deleteObject'
+          | translate : { name: 'common.step.one' | translate }
+      "
+      (click)="onDelete($event)"
+    >
+    </ui-button>
+    <!-- Duplicate action ( disabled ) -->
+    <ui-button
+      [isIcon]="true"
+      icon="content_copy"
+      category="primary"
+      variant="primary"
+      [disabled]="true"
+    >
+    </ui-button>
+  </div>
+  <img class="h-9 mt-5" [src]="type?.img" />
+  <span>{{ step.name | titlecase }}</span>
+  <div
+    *ngIf="active"
+    [style.background]="type?.focusColor"
+    class="w-full h-1 absolute bottom-0"
+  ></div>
+</div>

@@ -1,4 +1,4 @@
-import { Resource } from '@oort-front/safe';
+import { Resource } from '@oort-front/shared';
 import { gql } from 'apollo-angular';
 
 /** Mutation for adding a Calculated fields */

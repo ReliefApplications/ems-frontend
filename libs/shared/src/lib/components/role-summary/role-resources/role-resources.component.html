@@ -1,0 +1,135 @@
+<!-- Filtering -->
+<shared-role-resources-filter
+  class="block mb-8"
+  (filter)="onFilter($event)"
+  [loading]="filterLoading"
+></shared-role-resources-filter>
+<!-- Resource Table -->
+<!-- Table container -->
+<div class="overflow-x-hidden shadow-2lg">
+  <!-- Table scroll container -->
+  <div class="overflow-x-auto">
+    <table
+      *ngIf="!loading"
+      cdk-table
+      uiTableWrapper
+      [dataSource]="resources"
+      [trackBy]="getUniqueIdentifier"
+      multiTemplateDataRows
+    >
+      <!-- Resource Name -->
+      <ng-container cdkColumnDef="name">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          {{ 'common.name' | translate }}
+        </th>
+        <td
+          uiCell
+          *cdkCellDef="let element"
+          class="!text-gray-900 !font-medium"
+        >
+          {{ element.resource.name }}
+        </td>
+      </ng-container>
+      <!-- Resource Actions & Permissions -->
+      <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
+        <td uiCell *cdkCellDef="let element">
+          <div class="flex">
+            <!-- Permissions -->
+            <ng-container *ngFor="let permission of element.permissions">
+              <ui-button
+                [isIcon]="true"
+                [isOutlined]="permission.isOutlined"
+                [icon]="permission.icon"
+                [variant]="permission.variant"
+                (click)="editResourceAccess(element.resource, permission.name)"
+                [disabled]="loading || updating"
+                [uiTooltip]="
+                  permission.tooltip
+                    | translate : { resource: element.resource.name }
+                "
+              >
+              </ui-button>
+            </ng-container>
+            <!-- Open Resource -->
+            <ui-button
+              [isIcon]="true"
+              [icon]="
+                element.resource.id === openedResource?.id
+                  ? 'keyboard_arrow_up'
+                  : 'keyboard_arrow_down'
+              "
+              (click)="toggleResource(element.resource)"
+              [disabled]="loading || updating"
+            >
+            </ui-button>
+          </div>
+        </td>
+      </ng-container>
+      <ng-container cdkColumnDef="expandedDetail">
+        <td
+          uiCell
+          *cdkCellDef="let element"
+          [attr.colspan]="displayedColumns.length"
+          [ngClass]="element.resource.id === openedResource?.id ? '' : 'hidden'"
+        >
+          <div
+            class="expanded-form"
+            [@detailExpand]="
+              element.resource.id === openedResource?.id
+                ? 'expanded'
+                : 'collapsed'
+            "
+          >
+            <ng-container
+              *ngIf="
+                openedResource && element.resource.id === openedResource?.id
+              "
+            >
+              <shared-resource-access-filters
+                *ngIf="openedResource"
+                [disabled]="loading || updating"
+                [role]="role.id!"
+                [resource]="openedResource"
+                (update)="editResourceAccessFilter(element.resource, $event)"
+              >
+              </shared-resource-access-filters>
+              <shared-resource-fields
+                *ngIf="openedResource"
+                [disabled]="loading || updating"
+                [role]="role"
+                [resource]="openedResource"
+                (onToggle)="
+                  onEditFieldAccess(
+                    $event.resource,
+                    $event.field,
+                    $event.permission
+                  )
+                "
+              ></shared-resource-fields>
+            </ng-container>
+          </div>
+        </td>
+      </ng-container>
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+      <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
+      <tr cdk-row *cdkRowDef="let row; columns: ['expandedDetail']"></tr>
+    </table>
+    <shared-skeleton-table
+      class="my-4 mx-0 w-full"
+      *ngIf="loading"
+      [columns]="['common.name']"
+    >
+    </shared-skeleton-table>
+  </div>
+</div>
+<ui-paginator
+  [disabled]="loading || updating"
+  [pageIndex]="pageInfo.pageIndex"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [totalItems]="pageInfo.length"
+  [ariaLabel]="'components.resource.paginator.ariaLabel' | translate"
+  (pageChange)="onPage($event)"
+>
+</ui-paginator>

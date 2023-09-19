@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Form, Workflow, Step, Page } from '@oort-front/safe';
+import { Form, Workflow, Step, Page } from '@oort-front/shared';
 
 /**
  * Form query.

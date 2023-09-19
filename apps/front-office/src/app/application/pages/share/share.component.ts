@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
-import { Dashboard, SafeUnsubscribeComponent } from '@oort-front/safe';
+import { Dashboard, UnsubscribeComponent } from '@oort-front/shared';
 import {
   GetShareDashboardByIdQueryResponse,
   GET_SHARE_DASHBOARD_BY_ID,
@@ -18,7 +18,7 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './share.component.html',
   styleUrls: ['./share.component.scss'],
 })
-export class ShareComponent extends SafeUnsubscribeComponent implements OnInit {
+export class ShareComponent extends UnsubscribeComponent implements OnInit {
   /**
    * Share URL access component.
    *

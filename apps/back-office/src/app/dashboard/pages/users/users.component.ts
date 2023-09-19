@@ -6,7 +6,7 @@ import {
   GetRolesQueryResponse,
   GET_ROLES,
 } from './graphql/queries';
-import { Role, User } from '@oort-front/safe';
+import { Role, User } from '@oort-front/shared';
 
 /**
  * Component which will show all the user in the app.

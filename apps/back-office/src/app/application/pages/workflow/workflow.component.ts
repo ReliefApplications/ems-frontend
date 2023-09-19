@@ -5,14 +5,14 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   Workflow,
   Step,
-  SafeConfirmService,
+  ConfirmService,
   ContentType,
-  SafeApplicationService,
-  SafeWorkflowService,
-  SafeAuthService,
+  ApplicationService,
+  WorkflowService,
+  AuthService,
   Application,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import {
   EditPageMutationResponse,
   EDIT_PAGE,
@@ -33,10 +33,7 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss'],
 })
-export class WorkflowComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
+export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   public loading = true;
 
@@ -74,14 +71,14 @@ export class WorkflowComponent
    */
   constructor(
     private apollo: Apollo,
-    private workflowService: SafeWorkflowService,
-    private applicationService: SafeApplicationService,
+    private workflowService: WorkflowService,
+    private applicationService: ApplicationService,
     private route: ActivatedRoute,
     private router: Router,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private authService: SafeAuthService,
-    private confirmService: SafeConfirmService,
+    private authService: AuthService,
+    private confirmService: ConfirmService,
     private translate: TranslateService
   ) {
     super();

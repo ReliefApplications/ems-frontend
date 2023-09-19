@@ -2,11 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Layout,
-  SafeGridLayoutService,
-  SafeConfirmService,
+  GridLayoutService,
+  ConfirmService,
   Resource,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import {
@@ -30,7 +30,7 @@ import { UIPageChangeEvent } from '@oort-front/ui';
   styleUrls: ['./layouts-tab.component.scss'],
 })
 export class LayoutsTabComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   public resource!: Resource;
@@ -66,8 +66,8 @@ export class LayoutsTabComponent
   constructor(
     private apollo: Apollo,
     private dialog: Dialog,
-    private gridLayoutService: SafeGridLayoutService,
-    private confirmService: SafeConfirmService,
+    private gridLayoutService: GridLayoutService,
+    private confirmService: ConfirmService,
     private translate: TranslateService
   ) {
     super();
@@ -154,8 +154,8 @@ export class LayoutsTabComponent
    * Adds a new layout for the resource.
    */
   async onAddLayout(): Promise<void> {
-    const { SafeEditLayoutModalComponent } = await import('@oort-front/safe');
-    const dialogRef = this.dialog.open(SafeEditLayoutModalComponent, {
+    const { EditLayoutModalComponent } = await import('@oort-front/shared');
+    const dialogRef = this.dialog.open(EditLayoutModalComponent, {
       disableClose: true,
       data: {
         queryName: this.resource.queryName,
@@ -180,8 +180,8 @@ export class LayoutsTabComponent
    * @param layout Layout to edit
    */
   async onEditLayout(layout: Layout): Promise<void> {
-    const { SafeEditLayoutModalComponent } = await import('@oort-front/safe');
-    const dialogRef = this.dialog.open(SafeEditLayoutModalComponent, {
+    const { EditLayoutModalComponent } = await import('@oort-front/shared');
+    const dialogRef = this.dialog.open(EditLayoutModalComponent, {
       disableClose: true,
       data: {
         layout,

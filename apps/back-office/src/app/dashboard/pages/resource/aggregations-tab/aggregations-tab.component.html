@@ -40,7 +40,7 @@
               {{ 'common.createdOn' | translate }}
             </th>
             <td uiCell *cdkCellDef="let element">
-              {{ element.createdAt | safeDate }}
+              {{ element.createdAt | sharedDate }}
             </td>
           </ng-container>
 
@@ -93,16 +93,16 @@
   </ng-container>
   <ng-template #emptyTmpl>
     <!-- Empty indicator -->
-    <safe-empty
+    <shared-empty
       [title]="'components.resource.empty.aggregations' | translate"
       [footerTemplate]="newAggregation"
-    ></safe-empty>
+    ></shared-empty>
   </ng-template>
 </ng-container>
 <ng-template #loadingTmpl>
-  <safe-skeleton-table
+  <shared-skeleton-table
     [columns]="['common.name', 'common.createdOn']"
     [actions]="true"
   >
-  </safe-skeleton-table>
+  </shared-skeleton-table>
 </ng-template>

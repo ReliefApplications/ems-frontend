@@ -1,0 +1,189 @@
+<!-- General info about field selection -->
+<ui-alert class="mb-4">
+  {{ 'components.queryBuilder.hint.fields' | translate }}
+</ui-alert>
+<!-- Field selection -->
+<div
+  cdkDropListGroup
+  class="flex overflow-auto mb-10 gap-6"
+  [ngClass]="{ hidden: fieldForm }"
+>
+  <!-- Available fields -->
+  <div class="flex-1 min-w-[400px]" *ngIf="!fieldForm">
+    <h2>{{ 'components.queryBuilder.fields.available' | translate }}</h2>
+
+    <!-- Search through fields -->
+    <div uiFormFieldDirective class="!w-full">
+      <label>{{ 'components.queryBuilder.fields.search' | translate }}</label>
+      <input type="text" [(ngModel)]="searchAvailable" />
+      <ui-button
+        uiSuffix
+        (click)="searchAvailable = ''"
+        [isIcon]="true"
+        [icon]="searchAvailable ? 'cancel' : 'search'"
+      ></ui-button>
+    </div>
+
+    <!-- List of fields -->
+    <div class="overflow-auto max-h-[400px]">
+      <div
+        cdkDropList
+        [cdkDropListData]="availableFields"
+        class="field-list"
+        cdkDropListSortingDisabled
+        (cdkDropListDropped)="drop($event)"
+      >
+        <ng-container *ngFor="let field of availableFields">
+          <div
+            class="field-box"
+            cdkDrag
+            *ngIf="
+              searchAvailable.length < 1 ||
+              field.name.toLowerCase().includes(searchAvailable.toLowerCase())
+            "
+          >
+            {{ field.name }}
+            <span class="text-gray-500" *ngIf="field.type.kind !== 'SCALAR'">
+              {{ field.type.kind }}
+            </span>
+          </div>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+
+  <!-- Selected fields -->
+  <div class="flex-1 min-w-[400px]" *ngIf="!fieldForm">
+    <h2>{{ 'components.queryBuilder.fields.selected' | translate }}</h2>
+
+    <!-- Search through fields -->
+    <div uiFormFieldDirective class="!w-full">
+      <label>{{ 'components.queryBuilder.fields.search' | translate }}</label>
+      <input type="text" [(ngModel)]="searchSelected" />
+      <ui-button
+        uiSuffix
+        (click)="searchSelected = ''"
+        [isIcon]="true"
+        [icon]="searchSelected ? 'cancel' : 'search'"
+      ></ui-button>
+    </div>
+
+    <!-- List of fields -->
+    <div class="overflow-auto max-h-[400px]">
+      <div
+        cdkDropList
+        [cdkDropListData]="selectedFields"
+        [cdkDropListSortingDisabled]="searchSelected.length > 0"
+        class="field-list"
+        (cdkDropListDropped)="drop($event)"
+      >
+        <ng-container *ngFor="let field of selectedFields; let index = index">
+          <div
+            class="field-box"
+            *ngIf="
+              searchSelected.length < 1 ||
+              field.name.toLowerCase().includes(searchSelected.toLowerCase())
+            "
+            cdkDrag
+          >
+            <!-- Field name and errors -->
+            <div class="flex items-center">
+              <span>{{ field.name }}</span>
+              <ui-button
+                [isIcon]="true"
+                icon="error"
+                variant="danger"
+                (click)="onEdit(index)"
+                *ngIf="form.at(index)?.invalid && field.type"
+              >
+              </ui-button>
+              <ui-button
+                [isIcon]="true"
+                icon="close"
+                variant="danger"
+                *ngIf="!field.type"
+                (click)="onDelete(index)"
+                [uiTooltip]="
+                  'components.queryBuilder.errors.field.invalid' | translate
+                "
+              >
+              </ui-button>
+            </div>
+            <!-- Field type -->
+            <div *ngIf="field.type" class="flex items-center">
+              <span
+                class="text-gray-500"
+                *ngIf="field.type.kind !== 'SCALAR'"
+                >{{ field.type.kind }}</span
+              >
+              <ui-button [isIcon]="true" icon="edit" (click)="onEdit(index)">
+              </ui-button>
+            </div>
+          </div>
+        </ng-container>
+      </div>
+      <ui-icon
+        *ngIf="searchSelected"
+        icon="info"
+        class="floating-info cursor-pointer"
+        variant="grey"
+        [size]="32"
+        [uiTooltip]="'components.queryBuilder.hint.sortingDisabled' | translate"
+      ></ui-icon>
+    </div>
+  </div>
+</div>
+<!-- Edited field -->
+<div class="flex-1" *ngIf="fieldForm">
+  <ng-container *ngIf="fieldForm.value.kind === 'SCALAR'">
+    <form [formGroup]="fieldForm" class="p-4 rounded-lg border border-gray-300">
+      <div class="flex gap-2">
+        <!-- Go back to list of fields -->
+        <ui-button
+          [isIcon]="true"
+          icon="arrow_back"
+          (click)="onCloseField()"
+        ></ui-button>
+        <!-- Field name (static) -->
+        <div uiFormFieldDirective>
+          <label>{{ 'models.form.field.name' | translate }}</label>
+          <input formControlName="name" type="text" [disabled]="true" />
+        </div>
+        <!-- Field label -->
+        <div uiFormFieldDirective>
+          <label>{{ 'models.form.field.label' | translate }}</label>
+          <input formControlName="label" type="text" />
+        </div>
+        <div *ngIf="showColumnWidth" uiFormFieldDirective>
+          <label>
+            {{ 'components.queryBuilder.fields.column' | translate }}
+          </label>
+          <input formControlName="width" type="number" />
+        </div>
+      </div>
+      <!-- Display format -->
+      <div uiFormFieldDirective class="w-full">
+        <label>{{
+          'components.queryBuilder.fields.format.title' | translate
+        }}</label>
+        <!-- @todo: check -->
+        <shared-editor-control
+          formControlName="format"
+          [editorConfig]="editor"
+        ></shared-editor-control>
+        <ui-icon
+          icon="info"
+          class="cursor-pointer"
+          variant="grey"
+          uiSuffix
+          [uiTooltip]="'components.queryBuilder.fields.format.info' | translate"
+        ></ui-icon>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container
+    *ngIf="fieldForm.value.kind !== 'SCALAR'"
+    [ngTemplateOutlet]="childTemplate"
+  ></ng-container>
+</div>
+<ng-template #childTemplate></ng-template>

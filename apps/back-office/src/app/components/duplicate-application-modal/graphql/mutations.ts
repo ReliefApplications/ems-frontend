@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Application } from '@oort-front/safe';
+import { Application } from '@oort-front/shared';
 
 // === DUPLICATE APPLICATION ===
 /** Duplicate application gql mutation definition */

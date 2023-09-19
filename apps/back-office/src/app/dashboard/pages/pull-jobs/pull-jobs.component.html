@@ -70,7 +70,7 @@
           {{ 'models.pullJob.nextIteration' | translate }}
         </th>
         <td uiCell *cdkCellDef="let element">
-          {{ element.schedule | safeCronParser | safeDate : 'short' }}
+          {{ element.schedule | sharedCronParser | sharedDate : 'short' }}
         </td>
       </ng-container>
       <!-- <ng-container cdkColumnDef="convertTo">
@@ -108,7 +108,7 @@
       <tr *cdkRowDef="let row; columns: displayedColumns" cdk-row></tr>
     </table>
     <!-- Skeleton table when loading -->
-    <safe-skeleton-table
+    <shared-skeleton-table
       *ngIf="loading"
       [columns]="[
         'common.name',
@@ -118,7 +118,7 @@
       ]"
       [actions]="true"
     >
-    </safe-skeleton-table>
+    </shared-skeleton-table>
   </div>
 </div>
 <ui-paginator

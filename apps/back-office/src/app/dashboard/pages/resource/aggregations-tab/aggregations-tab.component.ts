@@ -3,11 +3,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { Dialog } from '@angular/cdk/dialog';
 import {
   Aggregation,
-  SafeAggregationService,
-  SafeConfirmService,
+  AggregationService,
+  ConfirmService,
   Resource,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import {
@@ -30,7 +30,7 @@ import { UIPageChangeEvent } from '@oort-front/ui';
   styleUrls: ['./aggregations-tab.component.scss'],
 })
 export class AggregationsTabComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   public resource!: Resource;
@@ -70,8 +70,8 @@ export class AggregationsTabComponent
   constructor(
     private apollo: Apollo,
     private dialog: Dialog,
-    private aggregationService: SafeAggregationService,
-    private confirmService: SafeConfirmService,
+    private aggregationService: AggregationService,
+    private confirmService: ConfirmService,
     private translate: TranslateService
   ) {
     super();
@@ -160,10 +160,10 @@ export class AggregationsTabComponent
    * Adds a new aggregation for the resource.
    */
   async onAddAggregation(): Promise<void> {
-    const { SafeEditAggregationModalComponent } = await import(
-      '@oort-front/safe'
+    const { EditAggregationModalComponent } = await import(
+      '@oort-front/shared'
     );
-    const dialogRef = this.dialog.open(SafeEditAggregationModalComponent, {
+    const dialogRef = this.dialog.open(EditAggregationModalComponent, {
       disableClose: true,
       data: {
         resource: this.resource,
@@ -188,10 +188,10 @@ export class AggregationsTabComponent
    * @param aggregation Aggregation to edit
    */
   async onEditAggregation(aggregation: Aggregation): Promise<void> {
-    const { SafeEditAggregationModalComponent } = await import(
-      '@oort-front/safe'
+    const { EditAggregationModalComponent } = await import(
+      '@oort-front/shared'
     );
-    const dialogRef = this.dialog.open(SafeEditAggregationModalComponent, {
+    const dialogRef = this.dialog.open(EditAggregationModalComponent, {
       disableClose: true,
       data: {
         resource: this.resource,

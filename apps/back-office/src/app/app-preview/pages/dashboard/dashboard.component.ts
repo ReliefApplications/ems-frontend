@@ -13,9 +13,9 @@ import {
 } from './graphql/queries';
 import {
   Dashboard,
-  SafeDashboardService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  DashboardService,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
@@ -29,7 +29,7 @@ import { SnackbarService } from '@oort-front/ui';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
   // === DATA ===
@@ -56,7 +56,7 @@ export class DashboardComponent
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: SnackbarService,
-    private dashboardService: SafeDashboardService,
+    private dashboardService: DashboardService,
     private translate: TranslateService
   ) {
     super();

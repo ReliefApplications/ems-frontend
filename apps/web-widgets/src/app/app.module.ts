@@ -25,9 +25,9 @@ import { MessageService } from '@progress/kendo-angular-l10n';
 import {
   AppAbility,
   KendoTranslationService,
-  SafeAuthInterceptorService,
-  SafeFormService,
-} from '@oort-front/safe';
+  AuthInterceptorService,
+  FormService,
+} from '@oort-front/shared';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
 import { Platform } from '@angular/cdk/platform';
@@ -164,7 +164,7 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     },
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: SafeAuthInterceptorService,
+      useClass: AuthInterceptorService,
       multi: true,
     },
     {
@@ -192,10 +192,10 @@ export class AppModule implements DoBootstrap {
    * Main project root module
    *
    * @param injector Angular injector
-   * @param formService SafeFormService
+   * @param formService FormService
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  constructor(private injector: Injector, formService: SafeFormService) {}
+  constructor(private injector: Injector, formService: FormService) {}
 
   /**
    * Bootstrap the project.

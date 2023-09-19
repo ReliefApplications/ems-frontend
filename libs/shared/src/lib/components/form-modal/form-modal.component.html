@@ -1,0 +1,73 @@
+<ui-dialog size="big" [closable]="true">
+  <ng-container ngProjectAs="header">
+    <ng-container *ngIf="!loading">
+      <div class="flex flex-wrap justify-between items-center gap-4 mb-4">
+        <shared-record-summary
+          *ngIf="record"
+          [record]="record"
+          (showHistory)="onShowHistory()"
+        ></shared-record-summary>
+        <shared-form-actions *ngIf="survey" [survey]="survey"></shared-form-actions>
+      </div>
+      <ui-tabs
+        [selectedIndex]="(selectedPageIndex$ | async)!"
+        (selectedIndexChange)="onShowPage($event)"
+      >
+        <ui-tab *ngFor="let page of survey?.visiblePages ?? []">
+          <ng-container ngProjectAs="label">
+            {{ page.title ? page.title : page.name }}
+            <ui-icon
+              *ngIf="page.containsErrors"
+              icon="error"
+              variant="danger"
+              [size]="20"
+            ></ui-icon>
+          </ng-container>
+        </ui-tab>
+      </ui-tabs>
+    </ng-container>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <div class="grow max-h-full" #formContainer>
+      <div *ngIf="loading" class="h-full flex">
+        <ui-spinner class="m-auto block"></ui-spinner>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onClose()" variant="danger">{{
+      'common.cancel' | translate
+    }}</ui-button>
+    <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
+      <ui-button
+        category="secondary"
+        variant="primary"
+        *ngIf="pages.length > 1"
+        (click)="survey && survey.prevPage()"
+        cdkFocusInitial
+        [disabled]="!survey || survey.isFirstPage"
+      >
+        {{ 'common.previous' | translate }}
+      </ui-button>
+      <ui-button
+        category="secondary"
+        variant="primary"
+        *ngIf="pages.length > 1"
+        (click)="survey && survey.nextPage()"
+        cdkFocusInitial
+        [disabled]="!survey || survey.isLastPage"
+      >
+        {{ 'common.next' | translate }}
+      </ui-button>
+    </ng-container>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [disabled]="saving"
+      (click)="submit()"
+      cdkFocusInitial
+    >
+      {{ 'components.record.modal.update' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

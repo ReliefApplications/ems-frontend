@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 
 import { AccessGuard } from './access.guard';
-import { SafeAuthService } from '@oort-front/safe';
+import { AuthService } from '@oort-front/shared';
 import { SnackbarService } from '@oort-front/ui';
 import { Router } from '@angular/router';
 import {
@@ -13,7 +13,7 @@ import {
 // import { RouterTestingModule } from '@angular/router/testing';
 import {
   MockedRouter,
-  MockedSafeAuthService,
+  MockedAuthService,
   MockedSnackbarService,
   MockedTranslateService,
 } from '../__mocks__/mock-class.test';
@@ -21,7 +21,7 @@ import {
 describe('AccessGuard', () => {
   let guard: AccessGuard;
   let router!: Router;
-  let authService!: SafeAuthService;
+  let authService!: AuthService;
   let snackbarService!: SnackbarService;
   let translateService!: TranslateService;
 
@@ -34,13 +34,13 @@ describe('AccessGuard', () => {
       //   ]),
       // ],
       providers: [
-        { provide: SafeAuthService, useClass: MockedSafeAuthService },
+        { provide: AuthService, useClass: MockedAuthService },
         { provide: SnackbarService, useClass: MockedSnackbarService },
         { provide: Router, useClass: MockedRouter },
         { provide: TranslateService, useClass: MockedTranslateService },
       ],
     });
-    authService = TestBed.inject(SafeAuthService);
+    authService = TestBed.inject(AuthService);
     snackbarService = TestBed.inject(SnackbarService);
     translateService = TestBed.inject(TranslateService);
     router = TestBed.inject(Router);

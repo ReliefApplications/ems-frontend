@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Step, Page } from '@oort-front/safe';
+import { Step, Page } from '@oort-front/shared';
 
 // === EDIT PAGE ===
 /** Edit page gql mutation definition */

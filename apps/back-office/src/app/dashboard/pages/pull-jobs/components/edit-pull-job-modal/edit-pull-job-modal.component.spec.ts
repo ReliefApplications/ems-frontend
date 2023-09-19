@@ -21,9 +21,9 @@ import {
   DialogModule
 } from '@oort-front/ui';
 import {
-  SafeReadableCronModule,
+  ReadableCronModule,
   CronExpressionControlModule,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -46,7 +46,7 @@ describe('EditPullJobModalComponent', () => {
         EditPullJobModalComponent,
         ApolloTestingModule,
         DialogModule,
-        SafeReadableCronModule,
+        ReadableCronModule,
         CronExpressionControlModule,
         FormsModule,
         ReactiveFormsModule,

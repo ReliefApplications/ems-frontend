@@ -179,7 +179,7 @@
         [routerLink]="['/settings/apiconfigurations', row.id]"
       ></tr>
     </table>
-    <safe-skeleton-table
+    <shared-skeleton-table
       *ngIf="loading"
       [columns]="[
         'common.name',
@@ -188,7 +188,7 @@
       ]"
       [actions]="true"
     >
-    </safe-skeleton-table>
+    </shared-skeleton-table>
   </div>
 </div>
 <ui-paginator
