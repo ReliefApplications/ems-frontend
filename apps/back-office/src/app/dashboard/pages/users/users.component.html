@@ -1,4 +1,4 @@
-<safe-users [loading]="loading" [users]="users" [roles]="roles"></safe-users>
+<safe-users [loading]="loading" [users]="users" [roles]="roles" (changeUsers)="changePageLength($event)"></safe-users>
 <ui-paginator
   [disabled]="loading"
   [pageSize]="pageInfo.pageSize"

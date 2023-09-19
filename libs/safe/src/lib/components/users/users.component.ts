@@ -5,6 +5,8 @@ import {
   OnChanges,
   OnInit,
   SimpleChanges,
+  Output,
+  EventEmitter,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { User, Role } from '../../models/user.model';
@@ -40,6 +42,8 @@ export class SafeUsersComponent
   @Input() users: Array<User> = new Array<User>();
   @Input() roles: Role[] = [];
   @Input() loading = true;
+
+  @Output() changeUsers = new EventEmitter();
 
   // === DISPLAYED COLUMNS ===
   public displayedColumns = [
@@ -145,6 +149,7 @@ export class SafeUsersComponent
           .subscribe({
             next: ({ errors, data }) => {
               if (!errors) {
+                this.changeUsers.emit(data?.addUsers.length);
                 if (data?.addUsers.length) {
                   this.snackBar.openSnackBar(
                     this.translate.instant('components.users.onInvite.plural')
@@ -260,6 +265,7 @@ export class SafeUsersComponent
               } else {
                 this.loading = false;
                 if (data?.deleteUsers) {
+                  this.changeUsers.emit(-data.deleteUsers);
                   if (data.deleteUsers > 1) {
                     this.snackBar.openSnackBar(
                       this.translate.instant('components.users.onDelete.plural')

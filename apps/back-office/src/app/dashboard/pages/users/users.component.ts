@@ -168,4 +168,13 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
     );
     this.loading = loading;
   }
+
+  /**
+   * Change page lenght on invite or delete users
+   *
+   * @param e lenght of users added.
+   */
+  public changePageLength(e: any) {
+    this.pageInfo.length += parseInt(e);
+  }
 }
