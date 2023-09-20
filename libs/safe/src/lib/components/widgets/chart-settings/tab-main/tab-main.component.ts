@@ -150,7 +150,7 @@ export class TabMainComponent
             Object.assign(field, {
               fields: this.queryBuilder.deconfineFields(
                 field.type,
-                new Set().add(this.resource?.name).add(field.type.ofType.name)
+                new Set().add(this.resource?.name).add(field.type.ofType?.name)
               ),
             });
           }

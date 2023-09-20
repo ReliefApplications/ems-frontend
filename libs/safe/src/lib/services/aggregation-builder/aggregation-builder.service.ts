@@ -63,28 +63,20 @@ export class AggregationBuilderService {
           for (const rule of stage.form.groupBy) {
             if (rule.field) {
               let groupByField = this.findField(rule.field, fields);
-              if (groupByField) {
-                // Change field type because of automatic unwind
-                const newField = Object.assign({}, groupByField);
-                newField.type = { ...groupByField.type };
-                if (rule.field.includes('.')) {
-                  const fieldArray = rule.field.split('.');
-                  const sub = fieldArray.pop();
-                  newField.type.kind = 'OBJECT';
-                  newField.fields = newField.fields.map((x: any) =>
-                    x.name === sub
-                      ? {
-                          ...x,
-                          type: { ...x.type, kind: 'SCALAR', name: 'String' },
-                        }
-                      : x
-                  );
-                } else {
-                  newField.type.kind = 'SCALAR';
-                  newField.type.name = 'String';
-                }
-                groupByField = newField;
+              if (!groupByField) {
+                continue;
               }
+              const newField = Object.assign({}, groupByField);
+              newField.type = { ...groupByField.type };
+              if (rule.field.includes('.')) {
+                newField.name = rule.field.split('.').pop();
+              }
+              // Change field type because of automatic unwind
+              newField.type.kind = 'SCALAR';
+              newField.type.name = 'String';
+              newField.type.fields = [];
+              groupByField = newField;
+
               newFields.push(groupByField);
             }
           }
