@@ -1,17 +1,12 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
+import { DELETE_RESOURCE, ADD_FORM } from './graphql/mutations';
+import { GET_RESOURCES_EXTENDED } from './graphql/queries';
 import {
-  DeleteResourceMutationResponse,
-  DELETE_RESOURCE,
   AddFormMutationResponse,
-  ADD_FORM,
-} from './graphql/mutations';
-import {
-  GetResourcesQueryResponse,
-  GET_RESOURCES_EXTENDED,
-} from './graphql/queries';
-import {
+  DeleteResourceMutationResponse,
   Resource,
+  ResourcesQueryResponse,
   SafeConfirmService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
@@ -22,7 +17,11 @@ import {
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
 import { Dialog } from '@angular/cdk/dialog';
-import { TableSort, UIPageChangeEvent } from '@oort-front/ui';
+import {
+  TableSort,
+  UIPageChangeEvent,
+  handleTablePageEvent,
+} from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
 
@@ -46,7 +45,7 @@ export class ResourcesComponent
   // === DATA ===
   public loading = true;
   public filterLoading = false;
-  private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+  private resourcesQuery!: QueryRef<ResourcesQueryResponse>;
   displayedColumns: string[] = ['name', 'createdAt', 'recordsCount', 'actions'];
   public cachedResources: Resource[] = [];
   public resources = new Array<Resource>();
@@ -92,7 +91,7 @@ export class ResourcesComponent
 
   /** Load the resources. */
   ngOnInit(): void {
-    this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
+    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
       query: GET_RESOURCES_EXTENDED,
       variables: {
         first: DEFAULT_PAGE_SIZE,
@@ -114,30 +113,16 @@ export class ResourcesComponent
    * @param e page event.
    */
   onPage(e: UIPageChangeEvent): void {
-    this.pageInfo.pageIndex = e.pageIndex;
-    // Checks if with new page/size more data needs to be fetched
-    if (
-      ((e.pageIndex > e.previousPageIndex &&
-        e.pageIndex * this.pageInfo.pageSize >= this.cachedResources.length) ||
-        e.pageSize > this.pageInfo.pageSize) &&
-      e.totalItems > this.cachedResources.length
-    ) {
-      // Sets the new fetch quantity of data needed as the page size
-      // If the fetch is for a new page the page size is used
-      let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is subtracted from the new one
-      if (e.pageSize > this.pageInfo.pageSize) {
-        first -= this.pageInfo.pageSize;
-      }
-      this.pageInfo.pageSize = first;
-      this.fetchResources();
+    const cachedData = handleTablePageEvent(
+      e,
+      this.pageInfo,
+      this.cachedResources
+    );
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
+      this.resources = cachedData;
     } else {
-      this.resources = this.cachedResources.slice(
-        e.pageSize * this.pageInfo.pageIndex,
-        e.pageSize * (this.pageInfo.pageIndex + 1)
-      );
+      this.fetchResources();
     }
-    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**
@@ -180,7 +165,7 @@ export class ResourcesComponent
       sortOrder:
         this.sort?.sortDirection !== '' ? this.sort?.sortDirection : 'asc',
     };
-    const cachedValues: GetResourcesQueryResponse = getCachedValues(
+    const cachedValues: ResourcesQueryResponse = getCachedValues(
       this.apollo.client,
       GET_RESOURCES_EXTENDED,
       variables
@@ -314,7 +299,7 @@ export class ResourcesComponent
    * @param data query response data
    * @param loading loading status
    */
-  updateValues(data: GetResourcesQueryResponse, loading: boolean) {
+  updateValues(data: ResourcesQueryResponse, loading: boolean) {
     const mappedValues = data.resources?.edges?.map((x) => x.node);
     this.cachedResources = updateQueryUniqueValues(
       this.cachedResources,

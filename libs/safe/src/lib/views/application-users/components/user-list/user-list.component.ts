@@ -3,18 +3,19 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { SafeApplicationService } from '../../../../services/application/application.service';
 import { takeUntil } from 'rxjs';
 import { SafeUnsubscribeComponent } from '../../../../components/utils/unsubscribe/unsubscribe.component';
-import { Role, User } from '../../../../models/user.model';
 import {
-  GetApplicationUsersQueryResponse,
-  GET_APPLICATION_USERS,
-} from '../../graphql/queries';
+  ApplicationUsersQueryResponse,
+  Role,
+  User,
+} from '../../../../models/user.model';
+import { GET_APPLICATION_USERS } from '../../graphql/queries';
 import { updateQueryUniqueValues } from '../../../../utils/update-queries';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
 import { SelectionModel } from '@angular/cdk/collections';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { UIPageChangeEvent } from '@oort-front/ui';
+import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -45,7 +46,7 @@ export class UserListComponent
 
   public users: Array<User> = new Array<User>();
   public cachedUsers: User[] = [];
-  private usersQuery!: QueryRef<GetApplicationUsersQueryResponse>;
+  private usersQuery!: QueryRef<ApplicationUsersQueryResponse>;
   @Input() roles: Role[] = [];
   @Input() positionAttributeCategories: PositionAttributeCategory[] = [];
 
@@ -98,7 +99,7 @@ export class UserListComponent
       .subscribe((application) => {
         if (application) {
           this.usersQuery =
-            this.apollo.watchQuery<GetApplicationUsersQueryResponse>({
+            this.apollo.watchQuery<ApplicationUsersQueryResponse>({
               query: GET_APPLICATION_USERS,
               variables: {
                 id: application.id,
@@ -121,30 +122,12 @@ export class UserListComponent
    * @param e page event.
    */
   onPage(e: UIPageChangeEvent): void {
-    this.pageInfo.pageIndex = e.pageIndex;
-    // Checks if with new page/size more data needs to be fetched
-    if (
-      ((e.pageIndex > e.previousPageIndex &&
-        e.pageIndex * this.pageInfo.pageSize >= this.cachedUsers.length) ||
-        e.pageSize > this.pageInfo.pageSize) &&
-      e.totalItems > this.cachedUsers.length
-    ) {
-      // Sets the new fetch quantity of data needed as the page size
-      // If the fetch is for a new page the page size is used
-      let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is subtracted from the new one
-      if (e.pageSize > this.pageInfo.pageSize) {
-        first -= this.pageInfo.pageSize;
-      }
-      this.pageInfo.pageSize = first;
-      this.fetchUsers();
+    const cachedData = handleTablePageEvent(e, this.pageInfo, this.cachedUsers);
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
+      this.users = cachedData;
     } else {
-      this.users = this.cachedUsers.slice(
-        e.pageSize * this.pageInfo.pageIndex,
-        e.pageSize * (this.pageInfo.pageIndex + 1)
-      );
+      this.fetchUsers();
     }
-    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**
@@ -266,10 +249,7 @@ export class UserListComponent
    * @param data query response data
    * @param loading loading status
    */
-  private updateValues(
-    data: GetApplicationUsersQueryResponse,
-    loading: boolean
-  ) {
+  private updateValues(data: ApplicationUsersQueryResponse, loading: boolean) {
     const mappedValues = data.application.users.edges.map((x) => x.node);
     this.cachedUsers = updateQueryUniqueValues(this.cachedUsers, mappedValues);
 

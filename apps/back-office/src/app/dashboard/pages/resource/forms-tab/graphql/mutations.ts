@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Form } from '@oort-front/safe';
 
 /** Delete form gql mutation definition */
 export const DELETE_FORM = gql`
@@ -9,8 +8,3 @@ export const DELETE_FORM = gql`
     }
   }
 `;
-
-/** Delete form gql mutation response interface */
-export interface DeleteFormMutationResponse {
-  deleteForm: Form;
-}

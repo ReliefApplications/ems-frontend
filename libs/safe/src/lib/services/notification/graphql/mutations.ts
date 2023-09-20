@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Notification } from '../../../models/notification.model';
 
 // === SEE NOTIFICATION ===
 
@@ -26,11 +25,6 @@ export const SEE_NOTIFICATION = gql`
   }
 `;
 
-/** Model for SeeNotificationMutationResponse object */
-export interface SeeNotificationMutationResponse {
-  seeNotification: Notification;
-}
-
 // === SEE ALL NOTIFICATION ===
 
 /** Graphql request for marking multiple notifications as seen */
@@ -39,8 +33,3 @@ export const SEE_NOTIFICATIONS = gql`
     seeNotifications(ids: $ids)
   }
 `;
-
-/** Model for SeeNotificationsMutationResponse object */
-export interface SeeNotificationsMutationResponse {
-  seeNotifications: boolean;
-}

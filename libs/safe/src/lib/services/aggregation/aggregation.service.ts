@@ -1,23 +1,25 @@
 import { Injectable } from '@angular/core';
 import {
-  AddAggregationMutationResponse,
   ADD_AGGREGATION,
-  deleteAggregationMutationResponse,
   DELETE_AGGREGATION,
-  EditAggregationMutationResponse,
   EDIT_AGGREGATION,
 } from './graphql/mutations';
 import {
-  GetAggregationDataQueryResponse,
-  GetResourceByIdQueryResponse,
   GET_AGGREGATION_DATA,
   GET_RESOURCE_AGGREGATIONS,
 } from './graphql/queries';
-import { Aggregation } from '../../models/aggregation.model';
+import {
+  AddAggregationMutationResponse,
+  Aggregation,
+  AggregationDataQueryResponse,
+  DeleteAggregationMutationResponse,
+  EditAggregationMutationResponse,
+} from '../../models/aggregation.model';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { firstValueFrom, Observable } from 'rxjs';
 import { ApolloQueryResult } from '@apollo/client';
 import { Connection } from '../../utils/graphql/connection.type';
+import { ResourceQueryResponse } from '../../models/resource.model';
 
 /** Fallback AggregationConnection */
 const FALLBACK_AGGREGATIONS: Connection<Aggregation> = {
@@ -56,7 +58,7 @@ export class SafeAggregationService {
     options: { ids?: string[]; first?: number }
   ): Promise<Connection<Aggregation>> {
     return await firstValueFrom(
-      this.apollo.query<GetResourceByIdQueryResponse>({
+      this.apollo.query<ResourceQueryResponse>({
         query: GET_RESOURCE_AGGREGATIONS,
         variables: {
           resource: resourceId,
@@ -85,8 +87,8 @@ export class SafeAggregationService {
     resource: string,
     aggregation: string,
     mapping?: any
-  ): Observable<ApolloQueryResult<GetAggregationDataQueryResponse>> {
-    return this.apollo.query<GetAggregationDataQueryResponse>({
+  ): Observable<ApolloQueryResult<AggregationDataQueryResponse>> {
+    return this.apollo.query<AggregationDataQueryResponse>({
       query: GET_AGGREGATION_DATA,
       variables: {
         resource,
@@ -110,8 +112,8 @@ export class SafeAggregationService {
     aggregation: string,
     first: number,
     skip: number
-  ): QueryRef<GetAggregationDataQueryResponse> {
-    return this.apollo.watchQuery<GetAggregationDataQueryResponse>({
+  ): QueryRef<AggregationDataQueryResponse> {
+    return this.apollo.watchQuery<AggregationDataQueryResponse>({
       query: GET_AGGREGATION_DATA,
       variables: {
         resource,
@@ -180,7 +182,7 @@ export class SafeAggregationService {
     resource?: string,
     form?: string
   ) {
-    return this.apollo.mutate<deleteAggregationMutationResponse>({
+    return this.apollo.mutate<DeleteAggregationMutationResponse>({
       mutation: DELETE_AGGREGATION,
       variables: {
         resource,

@@ -12,15 +12,11 @@ import {
   SafeAuthService,
   Application,
   SafeUnsubscribeComponent,
-} from '@oort-front/safe';
-import {
   EditPageMutationResponse,
-  EDIT_PAGE,
   DeleteStepMutationResponse,
-  DELETE_STEP,
   EditWorkflowMutationResponse,
-  EDIT_WORKFLOW,
-} from './graphql/mutations';
+} from '@oort-front/safe';
+import { EDIT_PAGE, DELETE_STEP, EDIT_WORKFLOW } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';

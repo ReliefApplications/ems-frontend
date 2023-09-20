@@ -2,16 +2,16 @@ import { Apollo } from 'apollo-angular';
 import { Component, OnInit, Input } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { Application } from '../../../../models/application.model';
-import { Role } from '../../../../models/user.model';
-import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
-import { SafeApplicationService } from '../../../../services/application/application.service';
 import {
   AddRoleMutationResponse,
-  ADD_ROLE,
   DeleteRoleMutationResponse,
-  DELETE_ROLE,
-} from '../../graphql/mutations';
-import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
+  Role,
+  RolesQueryResponse,
+} from '../../../../models/user.model';
+import { SafeConfirmService } from '../../../../services/confirm/confirm.service';
+import { SafeApplicationService } from '../../../../services/application/application.service';
+import { ADD_ROLE, DELETE_ROLE } from '../../graphql/mutations';
+import { GET_ROLES } from '../../graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -117,7 +117,7 @@ export class SafeRoleListComponent
    */
   private getRoles(): void {
     this.apollo
-      .query<GetRolesQueryResponse>({
+      .query<RolesQueryResponse>({
         query: GET_ROLES,
       })
       .pipe(takeUntil(this.destroy$))

@@ -12,14 +12,13 @@ import {
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import * as Survey from 'survey-angular';
+import { ADD_RECORD, EDIT_RECORD } from './graphql/mutations';
+import { Form } from '../../models/form.model';
 import {
   AddRecordMutationResponse,
-  ADD_RECORD,
   EditRecordMutationResponse,
-  EDIT_RECORD,
-} from './graphql/mutations';
-import { Form } from '../../models/form.model';
-import { Record } from '../../models/record.model';
+  Record,
+} from '../../models/record.model';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeAuthService } from '../../services/auth/auth.service';

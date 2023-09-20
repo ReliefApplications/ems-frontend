@@ -65,3 +65,6 @@ export * from './lib/snackbar/snackbar.token';
 
 // === MODULE === //
 export * from './lib/ui.module';
+
+// === HELPER METHODS === //
+export * from './lib/table/handle-pagination-event';

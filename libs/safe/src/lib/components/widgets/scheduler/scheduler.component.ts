@@ -1,13 +1,12 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit, Input } from '@angular/core';
 import { SchedulerEvent } from '@progress/kendo-angular-scheduler';
-
 import {
-  GetResourceByIdQueryResponse,
-  GET_RESOURCE_BY_ID,
-  GetFormByIdQueryResponse,
   GET_FORM_BY_ID,
-} from './graphql/queries';
+  GET_RESOURCE_BY_ID,
+} from '../../../../graphql/queries/public-api';
+import { ResourceQueryResponse } from '../../../models/resource.model';
+import { FormQueryResponse } from '../../../models/form.model';
 
 /** Component for scheduler widget */
 @Component({
@@ -50,7 +49,7 @@ export class SafeSchedulerComponent implements OnInit {
   private getRecords(): void {
     if (!this.settings.from || this.settings.from === 'resource') {
       this.apollo
-        .watchQuery<GetResourceByIdQueryResponse>({
+        .watchQuery<ResourceQueryResponse>({
           query: GET_RESOURCE_BY_ID,
           variables: {
             id: this.settings.source,
@@ -85,7 +84,7 @@ export class SafeSchedulerComponent implements OnInit {
         });
     } else {
       this.apollo
-        .watchQuery<GetFormByIdQueryResponse>({
+        .watchQuery<FormQueryResponse>({
           query: GET_FORM_BY_ID,
           variables: {
             id: this.settings.source,

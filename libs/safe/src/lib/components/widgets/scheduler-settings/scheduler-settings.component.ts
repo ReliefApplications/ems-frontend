@@ -5,13 +5,12 @@ import {
   UntypedFormBuilder,
   Validators,
 } from '@angular/forms';
-
 import {
-  GetResourceByIdQueryResponse,
   GET_RESOURCE_BY_ID,
-  GetFormByIdQueryResponse,
   GET_FORM_BY_ID,
-} from './graphql/queries';
+} from '../../../../graphql/queries/public-api';
+import { ResourceQueryResponse } from '../../../models/resource.model';
+import { FormQueryResponse } from '../../../models/form.model';
 
 /** A component for the scheduler settings */
 @Component({
@@ -144,7 +143,7 @@ export class SafeSchedulerSettingsComponent implements OnInit {
   getSource(event: any): void {
     if (this.tileForm.controls.from.value === 'resource') {
       this.apollo
-        .query<GetResourceByIdQueryResponse>({
+        .query<ResourceQueryResponse>({
           query: GET_RESOURCE_BY_ID,
           variables: {
             id: event,
@@ -156,7 +155,7 @@ export class SafeSchedulerSettingsComponent implements OnInit {
         });
     } else {
       this.apollo
-        .query<GetFormByIdQueryResponse>({
+        .query<FormQueryResponse>({
           query: GET_FORM_BY_ID,
           variables: {
             id: event,

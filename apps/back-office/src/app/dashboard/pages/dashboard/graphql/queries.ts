@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Connection, Dashboard, Record } from '@oort-front/safe';
 
 // === GET DASHBOARD BY ID ===
 /** Graphql query for getting a dashboard by its id */
@@ -54,11 +53,6 @@ export const GET_DASHBOARD_BY_ID = gql`
   }
 `;
 
-/** Model for GetDashboardByIdQueryResponse object */
-export interface GetDashboardByIdQueryResponse {
-  dashboard: Dashboard;
-}
-
 /** Graphql query for getting records of a resource */
 export const GET_RESOURCE_RECORDS = gql`
   query GetResourceRecords(
@@ -87,13 +81,6 @@ export const GET_RESOURCE_RECORDS = gql`
   }
 `;
 
-/** Model for GetResourceRecordsQueryResponse object */
-export interface GetResourceRecordsQueryResponse {
-  resource: {
-    records: Connection<Record>;
-  };
-}
-
 /** Graphql request for getting a record by its id */
 export const GET_RECORD_BY_ID = gql`
   query GetRecordById($id: ID!) {
@@ -103,8 +90,3 @@ export const GET_RECORD_BY_ID = gql`
     }
   }
 `;
-
-/** Model for GetRecordByIdQueryResponse object */
-export interface GetRecordByIdQueryResponse {
-  record: Pick<Record, 'id' | 'data'>;
-}

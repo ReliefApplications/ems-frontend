@@ -7,11 +7,11 @@ import {
   Step,
   SafeFormComponent,
   SafeUnsubscribeComponent,
+  StepQueryResponse,
+  FormQueryResponse,
+  PageQueryResponse,
 } from '@oort-front/safe';
 import {
-  GetFormByIdQueryResponse,
-  GetPageByIdQueryResponse,
-  GetStepByIdQueryResponse,
   GET_FORM_BY_ID,
   GET_PAGE_BY_ID,
   GET_STEP_BY_ID,
@@ -87,7 +87,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
       }
       if (this.isStep) {
         this.querySubscription = this.apollo
-          .query<GetStepByIdQueryResponse>({
+          .query<StepQueryResponse>({
             query: GET_STEP_BY_ID,
             variables: {
               id: this.id,
@@ -96,7 +96,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           .pipe(
             switchMap((res) => {
               this.step = res.data.step;
-              return this.apollo.query<GetFormByIdQueryResponse>({
+              return this.apollo.query<FormQueryResponse>({
                 query: GET_FORM_BY_ID,
                 variables: {
                   id: this.step.content,
@@ -132,7 +132,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           });
       } else {
         this.querySubscription = this.apollo
-          .query<GetPageByIdQueryResponse>({
+          .query<PageQueryResponse>({
             query: GET_PAGE_BY_ID,
             variables: {
               id: this.id,
@@ -141,7 +141,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           .pipe(
             switchMap((res) => {
               this.page = res.data.page;
-              return this.apollo.query<GetFormByIdQueryResponse>({
+              return this.apollo.query<FormQueryResponse>({
                 query: GET_FORM_BY_ID,
                 variables: {
                   id: this.page.content,

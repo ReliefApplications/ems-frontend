@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Aggregation } from '../../../models/aggregation.model';
 
 /** Graphql request for adding a new aggregation with a given type */
 export const ADD_AGGREGATION = gql`
@@ -13,11 +12,6 @@ export const ADD_AGGREGATION = gql`
     }
   }
 `;
-
-/** Model for AddAggregationMutationResponse object */
-export interface AddAggregationMutationResponse {
-  addAggregation: Aggregation;
-}
 
 /** GraphQL request for editing a layout by its id */
 export const EDIT_AGGREGATION = gql`
@@ -36,11 +30,6 @@ export const EDIT_AGGREGATION = gql`
   }
 `;
 
-/** Model for EditAggregationMutationResponse object */
-export interface EditAggregationMutationResponse {
-  editAggregation: Aggregation;
-}
-
 /** Graphql request for deleting a aggregation by its id */
 export const DELETE_AGGREGATION = gql`
   mutation deleteAggregation($resource: ID, $id: ID!) {
@@ -53,8 +42,3 @@ export const DELETE_AGGREGATION = gql`
     }
   }
 `;
-
-/** Model for deleteAggregationMutationResponse object */
-export interface deleteAggregationMutationResponse {
-  deleteAggregation: Aggregation;
-}
