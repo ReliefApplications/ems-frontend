@@ -11,7 +11,6 @@ import {
   SafeConfirmService,
   SafeAuthService,
   SafeUnsubscribeComponent,
-  SafeLayoutService,
 } from '@oort-front/safe';
 import { Dialog } from '@angular/cdk/dialog';
 import {
@@ -22,7 +21,7 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { CustomStyleComponent } from '../../../components/custom-style/custom-style.component';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
 
 /**
  * Application settings page component.
@@ -55,7 +54,7 @@ export class SettingsComponent
    * @param confirmService Shared confirm service
    * @param dialog Dialog service
    * @param translate Angular translate service
-   * @param layoutService Shared layout service
+   * @param layoutService UI layout service
    */
   constructor(
     private formBuilder: UntypedFormBuilder,
@@ -67,7 +66,7 @@ export class SettingsComponent
     private confirmService: SafeConfirmService,
     public dialog: Dialog,
     private translate: TranslateService,
-    private layoutService: SafeLayoutService
+    private layoutService: UILayoutService
   ) {
     super();
   }

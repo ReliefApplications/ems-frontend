@@ -5,7 +5,7 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import { SafeLayoutService } from '@oort-front/safe';
+import { UILayoutService } from '../sidenav/layout/layout.service';
 
 /**
  * Fixed wrapper for bottoms floating div.
@@ -22,17 +22,15 @@ export class FixedWrapperComponent implements AfterViewInit, OnDestroy {
   /**
    * Fixed wrapper for bottoms floating div.
    *
-   * @param safeLayoutService Layout service that handles view injection of the fixed wrapper component
+   * @param layoutService Layout service that handles view injection of the fixed wrapper component
    */
-  constructor(private safeLayoutService: SafeLayoutService) {}
+  constructor(private layoutService: UILayoutService) {}
 
   ngAfterViewInit(): void {
-    this.safeLayoutService.setFixedWrapperActions(
-      this.fixedWrapperActions ?? null
-    );
+    this.layoutService.setFixedWrapperActions(this.fixedWrapperActions ?? null);
   }
 
   ngOnDestroy(): void {
-    this.safeLayoutService.setFixedWrapperActions(null);
+    this.layoutService.setFixedWrapperActions(null);
   }
 }

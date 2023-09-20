@@ -22,7 +22,6 @@ import {
 import { Apollo, QueryRef } from 'apollo-angular';
 import { SafeAuthService } from '../../../services/auth/auth.service';
 import { SafeDownloadService } from '../../../services/download/download.service';
-import { SafeLayoutService } from '../../../services/layout/layout.service';
 import {
   QueryBuilderService,
   QueryResponse,
@@ -51,7 +50,7 @@ import { SafeApplicationService } from '../../../services/application/applicatio
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { firstValueFrom, Subject } from 'rxjs';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
 
 /**
  * Default file name when exporting grid data.
@@ -267,7 +266,7 @@ export class SafeCoreGridComponent
    * @param apollo Apollo service
    * @param dialog Dialog
    * @param queryBuilder Shared query builder
-   * @param layoutService Shared layout service
+   * @param layoutService UI layout service
    * @param snackBar Shared snackbar service
    * @param downloadService Shared download service
    * @param authService Shared authentication service
@@ -282,7 +281,7 @@ export class SafeCoreGridComponent
     private apollo: Apollo,
     public dialog: Dialog,
     private queryBuilder: QueryBuilderService,
-    private layoutService: SafeLayoutService,
+    private layoutService: UILayoutService,
     private snackBar: SnackbarService,
     private downloadService: SafeDownloadService,
     private authService: SafeAuthService,

@@ -13,7 +13,6 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { Account, SafeAuthService } from '../../services/auth/auth.service';
-import { SafeLayoutService } from '../../services/layout/layout.service';
 import { User } from '../../models/user.model';
 import { Application } from '../../models/application.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -25,7 +24,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { Breadcrumb } from '@oort-front/ui';
+import { Breadcrumb, UILayoutService } from '@oort-front/ui';
 import { SafeBreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
 
 /**
@@ -147,7 +146,7 @@ export class SafeLayoutComponent
    * @param router The Angular Router service
    * @param authService This is the service that handles authentication
    * @param notificationService This is the service that handles the notifications.
-   * @param layoutService Shared layout service
+   * @param layoutService UI layout service
    * @param confirmService This is the service that is used to display a confirm window.
    * @param dialog This is the dialog service provided by Angular CDK
    * @param translate This is the Angular service that translates text
@@ -159,7 +158,7 @@ export class SafeLayoutComponent
     private router: Router,
     private authService: SafeAuthService,
     private notificationService: SafeNotificationService,
-    private layoutService: SafeLayoutService,
+    private layoutService: UILayoutService,
     private confirmService: SafeConfirmService,
     public dialog: Dialog,
     private translate: TranslateService,

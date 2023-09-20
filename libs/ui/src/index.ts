@@ -40,6 +40,7 @@ export * from './lib/fixed-wrapper/fixed-wrapper.module';
 
 // === SERVICES === //
 export * from './lib/snackbar/snackbar.service';
+export * from './lib/sidenav/layout/layout.service';
 
 // === TYPES === //
 export * from './lib/types/variant';

@@ -23,13 +23,12 @@ import { Record } from '../../models/record.model';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeAuthService } from '../../services/auth/auth.service';
-import { SafeLayoutService } from '../../services/layout/layout.service';
 import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
 import { SafeRecordHistoryComponent } from '../record-history/record-history.component';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
 
 /**
  * This component is used to display forms
@@ -83,7 +82,7 @@ export class SafeFormComponent
    * @param apollo This is the Apollo client that is used to make GraphQL requests.
    * @param snackBar This is the service that allows you to show a snackbar message to the user.
    * @param authService This is the service that handles authentication.
-   * @param layoutService Shared layout service
+   * @param layoutService UI layout service
    * @param formBuilderService This is the service that will be used to build forms.
    * @param formHelpersService This is the service that will handle forms.
    * @param translate This is the service used to translate text
@@ -93,7 +92,7 @@ export class SafeFormComponent
     private apollo: Apollo,
     private snackBar: SnackbarService,
     private authService: SafeAuthService,
-    private layoutService: SafeLayoutService,
+    private layoutService: UILayoutService,
     private formBuilderService: SafeFormBuilderService,
     private formHelpersService: SafeFormHelpersService,
     private translate: TranslateService

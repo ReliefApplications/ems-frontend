@@ -17,7 +17,7 @@ import { SidenavDirective } from './sidenav.directive';
 import { Subject, takeUntil } from 'rxjs';
 import { SidenavPositionTypes, SidenavTypes } from './types/sidenavs';
 import { filter } from 'rxjs/operators';
-import { SafeLayoutService } from '@oort-front/safe';
+import { UILayoutService } from './layout/layout.service';
 
 /**
  * UI Sidenav component
@@ -63,7 +63,7 @@ export class SidenavContainerComponent
     private cdr: ChangeDetectorRef,
     public el: ElementRef,
     private router: Router,
-    private layoutService: SafeLayoutService
+    private layoutService: UILayoutService
   ) {}
 
   ngOnInit(): void {

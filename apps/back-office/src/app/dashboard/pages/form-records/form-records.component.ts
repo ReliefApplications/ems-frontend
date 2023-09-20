@@ -18,7 +18,6 @@ import {
   RESTORE_RECORD,
 } from './graphql/mutations';
 import {
-  SafeLayoutService,
   SafeConfirmService,
   SafeBreadcrumbService,
   SafeUnsubscribeComponent,
@@ -30,7 +29,11 @@ import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
 import { Metadata } from '@oort-front/safe';
-import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
+import {
+  SnackbarService,
+  UIPageChangeEvent,
+  UILayoutService,
+} from '@oort-front/ui';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -87,7 +90,7 @@ export class FormRecordsComponent
    * @param apollo Apollo service
    * @param route Angular activated route
    * @param downloadService Shared download service
-   * @param layoutService Shared layout service
+   * @param layoutService UI layout service
    * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
@@ -98,7 +101,7 @@ export class FormRecordsComponent
     private apollo: Apollo,
     private route: ActivatedRoute,
     private downloadService: SafeDownloadService,
-    private layoutService: SafeLayoutService,
+    private layoutService: UILayoutService,
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private translate: TranslateService,

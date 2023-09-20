@@ -9,7 +9,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class SafeLayoutService {
+export class UILayoutService {
   /** Close right sidenav opened when navigating */
   public closeRightSidenav = true;
   /** Current right sidenav */

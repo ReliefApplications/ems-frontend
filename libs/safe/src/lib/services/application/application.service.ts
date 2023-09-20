@@ -85,8 +85,7 @@ import {
   UPDATE_CUSTOM_NOTIFICATION,
 } from '../application-notifications/graphql/mutations';
 import { SafeRestService } from '../rest/rest.service';
-import { SafeLayoutService } from '../layout/layout.service';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -168,7 +167,7 @@ export class SafeApplicationService {
    * @param translate Angular translate service
    * @param restService Shared rest service.
    * @param downloadService Shared download service
-   * @param layoutService Shared layout service
+   * @param layoutService UI layout service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -179,7 +178,7 @@ export class SafeApplicationService {
     private translate: TranslateService,
     private restService: SafeRestService,
     private downloadService: SafeDownloadService,
-    private layoutService: SafeLayoutService
+    private layoutService: UILayoutService
   ) {
     this.environment = environment;
   }
