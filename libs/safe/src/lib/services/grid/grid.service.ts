@@ -439,7 +439,7 @@ export class SafeGridService {
               const rowGroup: any = {};
               for (const column of field.meta.columns) {
                 const columnValue = rowValue ? rowValue[column.name] : null;
-                if (MULTISELECT_TYPES.includes(column.cellType)) {
+                if (MULTISELECT_TYPES.includes(column.type)) {
                   rowGroup[column.name] = [columnValue];
                 } else {
                   rowGroup[column.name] = columnValue;

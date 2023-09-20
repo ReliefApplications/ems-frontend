@@ -857,7 +857,7 @@
                         </ui-textarea>
                       </ng-container>
                       <ng-container
-                        *ngIf="['dropdown', 'radiogroup'].includes(column.type)"
+                        *ngIf="['default', 'dropdown', 'radiogroup'].includes(column.type)"
                       >
                         <kendo-dropdownlist
                           [data]="field.meta.choices"
@@ -887,7 +887,9 @@
                           textField="text"
                           [valueField]="'value'"
                           [valuePrimitive]="true"
-                          [formControl]="formGroup.get([field.name, row.name, column.name])"
+                          [formControl]="
+                            formGroup.get([field.name, row.name, column.name])
+                          "
                           [autoClose]="false"
                         >
                         </kendo-multiselect>
@@ -903,7 +905,7 @@
                       "
                       [formGroup]="group"
                     >
-                      <ng-container *ngIf="column.cellType === 'text'">
+                      <ng-container *ngIf="column.type === 'text'">
                         <ui-textarea
                           [formControlName]="column.name"
                           [name]="field.name + i"
@@ -916,8 +918,7 @@
                       </ng-container>
                       <ng-container
                         *ngIf="
-                          !column.cellType ||
-                          ['dropdown', 'radiogroup'].includes(column.cellType)
+                          ['default, 'dropdown', 'radiogroup'].includes(column.type)
                         "
                       >
                         <kendo-dropdownlist
@@ -929,7 +930,7 @@
                         >
                         </kendo-dropdownlist>
                       </ng-container>
-                      <ng-container *ngIf="column.cellType === 'boolean'">
+                      <ng-container *ngIf="column.type === 'boolean'">
                         <input
                           type="checkbox"
                           kendoCheckBox
@@ -937,7 +938,7 @@
                         />
                       </ng-container>
                       <ng-container
-                        *ngIf="multiSelectTypes.includes(column.cellType)"
+                        *ngIf="multiSelectTypes.includes(column.type)"
                       >
                         <kendo-multiselect
                           [data]="field.meta.choices"
