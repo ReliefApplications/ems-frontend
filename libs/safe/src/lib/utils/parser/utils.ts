@@ -313,27 +313,27 @@ const replaceRecordFields = (
           case 'matrixdropdown':
           case 'matrixdynamic':
             convertedValue = '<table><tr><th></th>';
-            const rows = Object.keys(value);
-            const cols = Array.from(
-              Object.keys(value).reduce((acc: any, row) => {
-                Object.keys(value[row]).forEach((col) => acc.add(col));
-                return acc;
-              }, new Set())
-            ) as string[]; //Get all available columns from rows
+            console.log(field);
+            const rows =
+              field.rows ??
+              Object.keys(value).map((row) => {
+                return { label: row, name: row };
+              });
+            const cols = field.columns;
             // Create header row with column names
             for (const col of cols) {
-              convertedValue += `<th>${col}</th>`;
+              convertedValue += `<th class="px-1">${col.label}</th>`;
             }
 
             convertedValue += '</tr>';
 
             // Create table rows with row names and data values
             for (const row of rows) {
-              convertedValue += `<tr><th>${row}</th>`;
+              convertedValue += `<tr><th>${row.label}</th>`;
 
               for (const col of cols) {
-                convertedValue += `<td class="text-right">${
-                  value[row][col] ? value[row][col] : ''
+                convertedValue += `<td class="text-right px-1">${
+                  value[row.name][col.name] ?? ''
                 }</td>`;
               }
 
@@ -344,8 +344,8 @@ const replaceRecordFields = (
             break;
           case 'matrix':
             convertedValue = `<span style='${style}'>`;
-            for (const row of Object.keys(value)) {
-              convertedValue += `${row}: ${value[row]} `;
+            for (const row of field.rows) {
+              convertedValue += `${row.name}: ${value[row.label]} `;
             }
             convertedValue += '</span>';
             break;

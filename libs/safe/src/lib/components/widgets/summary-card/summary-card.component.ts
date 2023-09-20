@@ -43,6 +43,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { ContextService } from '../../../services/context/context.service';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { SafeGridWidgetComponent } from '../grid/grid.component';
+import { SafeGridService } from '../../../services/grid/grid.service';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -85,9 +86,11 @@ export class SafeSummaryCardComponent
   private cachedCards: CardT[] = [];
   private sortedCachedCards: CardT[] = [];
   private dataQuery!: QueryRef<any>;
+  private metaQuery: any;
 
   private layout: Layout | null = null;
   private fields: any[] = [];
+  private metaFields: any[] = [];
   public sortFields: any[] = [];
   private contextFilters: CompositeFilterDescriptor = {
     logic: 'and',
@@ -169,6 +172,7 @@ export class SafeSummaryCardComponent
    * @param aggregationService Aggregation service
    * @param contextService ContextService
    * @param elementRef Element Ref
+   * @param gridService grid service
    */
   constructor(
     private apollo: Apollo,
@@ -179,7 +183,8 @@ export class SafeSummaryCardComponent
     private gridLayoutService: SafeGridLayoutService,
     private aggregationService: SafeAggregationService,
     private contextService: ContextService,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private gridService: SafeGridService
   ) {
     super();
   }
@@ -442,12 +447,48 @@ export class SafeSummaryCardComponent
               .pipe(takeUntil(this.destroy$))
               .subscribe(this.updateCards.bind(this));
           }
+          // Build meta query to add information to fields
+          this.metaQuery = this.queryBuilder.buildMetaQuery(this.layout.query);
+          if (this.metaQuery) {
+            this.loading = true;
+            this.metaQuery.pipe(takeUntil(this.destroy$)).subscribe({
+              next: async ({ data }: any) => {
+                for (const field in data) {
+                  if (Object.prototype.hasOwnProperty.call(data, field)) {
+                    this.metaFields = Object.assign({}, data[field]);
+                    try {
+                      await this.gridService.populateMetaFields(
+                        this.metaFields
+                      );
+                      this.fields = this.fields.map((field) => {
+                        //add shape for columns and matrices
+                        const metaData = this.metaFields[field.name];
+                        if (metaData && (metaData.columns || metaData.rows)) {
+                          return {
+                            ...field,
+                            columns: metaData.columns,
+                            rows: metaData.rows,
+                          };
+                        }
+                        return field;
+                      });
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }
+                }
+              },
+              error: () => {
+                this.loading = false;
+              },
+            });
+          }
         }
       });
   }
 
   /**
-   * mdr
+   * Sets up the basic setting for the summary card
    */
   private async setupGridSettings() {
     const card = this.settings.card;
