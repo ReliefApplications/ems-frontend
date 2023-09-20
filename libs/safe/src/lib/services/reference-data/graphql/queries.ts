@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { ReferenceData } from '../../../models/reference-data.model';
 
 // === GET REFERENCE DATAS ===
 /** Get reference data by id query */
@@ -23,8 +22,3 @@ export const GET_REFERENCE_DATA_BY_ID = gql`
     }
   }
 `;
-
-/** Get reference data query response interface */
-export interface GetReferenceDataByIdQueryResponse {
-  referenceData: ReferenceData;
-}

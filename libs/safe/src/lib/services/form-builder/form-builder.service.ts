@@ -5,8 +5,8 @@ import { SafeReferenceDataService } from '../reference-data/reference-data.servi
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
-import { Record } from '../../models/record.model';
-import { EditRecordMutationResponse, EDIT_RECORD } from './graphql/mutations';
+import { EditRecordMutationResponse, Record } from '../../models/record.model';
+import { EDIT_RECORD } from './graphql/mutations';
 import { Metadata } from '../../models/metadata.model';
 import { SafeRestService } from '../rest/rest.service';
 import { BehaviorSubject } from 'rxjs';

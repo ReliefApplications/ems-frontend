@@ -12,12 +12,10 @@ import {
   SafeAuthService,
   SafeUnsubscribeComponent,
   SafeLayoutService,
+  DeleteApplicationMutationResponse,
 } from '@oort-front/safe';
 import { Dialog } from '@angular/cdk/dialog';
-import {
-  DeleteApplicationMutationResponse,
-  DELETE_APPLICATION,
-} from './graphql/mutations';
+import { DELETE_APPLICATION } from './graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';

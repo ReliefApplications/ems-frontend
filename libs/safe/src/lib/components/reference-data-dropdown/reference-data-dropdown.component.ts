@@ -8,11 +8,13 @@ import {
   Renderer2,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { ReferenceData } from '../../models/reference-data.model';
+import {
+  ReferenceData,
+  ReferenceDataQueryResponse,
+  ReferenceDatasQueryResponse,
+} from '../../models/reference-data.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import {
-  GetReferenceDataByIdQueryResponse,
-  GetReferenceDatasQueryResponse,
   GET_REFERENCE_DATAS,
   GET_SHORT_REFERENCE_DATA_BY_ID,
 } from './graphql/queries';
@@ -42,7 +44,7 @@ export class SafeReferenceDataDropdownComponent
   private referenceDatas = new BehaviorSubject<ReferenceData[]>([]);
   public referenceDatas$!: Observable<ReferenceData[]>;
   private cachedReferenceDatas: ReferenceData[] = [];
-  private referenceDatasQuery!: QueryRef<GetReferenceDatasQueryResponse>;
+  private referenceDatasQuery!: QueryRef<ReferenceDatasQueryResponse>;
   private pageInfo = {
     endCursor: '',
     hasNextPage: true,
@@ -63,7 +65,7 @@ export class SafeReferenceDataDropdownComponent
   ngOnInit(): void {
     if (this.referenceData) {
       this.apollo
-        .query<GetReferenceDataByIdQueryResponse>({
+        .query<ReferenceDataQueryResponse>({
           query: GET_SHORT_REFERENCE_DATA_BY_ID,
           variables: {
             id: this.referenceData,
@@ -81,7 +83,7 @@ export class SafeReferenceDataDropdownComponent
     }
 
     this.referenceDatasQuery =
-      this.apollo.watchQuery<GetReferenceDatasQueryResponse>({
+      this.apollo.watchQuery<ReferenceDatasQueryResponse>({
         query: GET_REFERENCE_DATAS,
         variables: {
           first: ITEMS_PER_PAGE,
@@ -153,7 +155,7 @@ export class SafeReferenceDataDropdownComponent
    * @param data query response data
    * @param loading loading status
    */
-  private updateValues(data: GetReferenceDatasQueryResponse, loading: boolean) {
+  private updateValues(data: ReferenceDatasQueryResponse, loading: boolean) {
     const referenceDatas = data.referenceDatas.edges.map((x) => x.node);
     this.cachedReferenceDatas = updateQueryUniqueValues(
       this.cachedReferenceDatas,

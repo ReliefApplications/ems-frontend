@@ -1,14 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { Application } from '../../models/application.model';
-import { User } from '../../models/user.model';
 import {
+  EditUserMutationResponse,
   EditUserProfileMutationResponse,
-  EditUserRolesMutationResponse,
-  EDIT_USER_PROFILE,
-  EDIT_USER_ROLES,
-} from './graphql/mutations';
-import { GetUserQueryResponse, GET_USER } from './graphql/queries';
+  User,
+  UserQueryResponse,
+} from '../../models/user.model';
+import { EDIT_USER_PROFILE, EDIT_USER_ROLES } from './graphql/mutations';
+import { GET_USER } from './graphql/queries';
 import { SafeBreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
 import { SnackbarService } from '@oort-front/ui';
 
@@ -54,7 +54,7 @@ export class SafeUserSummaryComponent implements OnInit {
 
   ngOnInit(): void {
     this.apollo
-      .query<GetUserQueryResponse>({
+      .query<UserQueryResponse>({
         query: GET_USER,
         variables: {
           id: this.id,
@@ -120,7 +120,7 @@ export class SafeUserSummaryComponent implements OnInit {
   }): void {
     this.loading = true;
     this.apollo
-      .mutate<EditUserRolesMutationResponse>({
+      .mutate<EditUserMutationResponse>({
         mutation: EDIT_USER_ROLES,
         variables: {
           id: this.id,

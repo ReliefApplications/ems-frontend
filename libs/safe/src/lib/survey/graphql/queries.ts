@@ -1,6 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Role, User } from '../../models/user.model';
-import { Resource } from '../../models/resource.model';
 
 // === GET ROLES FROM APPLICATION ===
 
@@ -13,11 +11,6 @@ export const GET_ROLES_FROM_APPLICATIONS = gql`
     }
   }
 `;
-
-/** Model for GetRolesFromApplicationsQueryResponse object */
-export interface GetRolesFromApplicationsQueryResponse {
-  rolesFromApplications: Role[];
-}
 
 // === GET RESOURCE BY ID ===
 /** Graphql request for getting data of a resource by its id */
@@ -67,11 +60,6 @@ export const GET_SHORT_RESOURCE_BY_ID = gql`
   }
 `;
 
-/** Model for GetResourceByIdQueryResponse object */
-export interface GetResourceByIdQueryResponse {
-  resource: Resource;
-}
-
 // === GET USERS ===
 
 /** Graphql request for getting users (optionnally by a list of application ids) */
@@ -85,8 +73,3 @@ export const GET_USERS = gql`
     }
   }
 `;
-
-/** Model for GetUsersQueryResponse object */
-export interface GetUsersQueryResponse {
-  users: User[];
-}

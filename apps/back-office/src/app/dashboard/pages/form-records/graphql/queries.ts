@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Record, Form } from '@oort-front/safe';
 
 // === GET RECORD DETAILS ===
 
@@ -31,11 +30,6 @@ export const GET_RECORD_DETAILS = gql`
     }
   }
 `;
-
-/** Model for GetRecordDetailsQueryResponse object */
-export interface GetRecordDetailsQueryResponse {
-  record: Record;
-}
 
 /** Graphql query for getting the records of a form */
 export const GET_FORM_RECORDS = gql`
@@ -77,23 +71,6 @@ export const GET_FORM_RECORDS = gql`
   }
 `;
 
-/** Model for GetFormRecordsQueryResponse */
-export interface GetFormRecordsQueryResponse {
-  form: {
-    records: {
-      edges: {
-        node: Record;
-        cursor: string;
-      }[];
-      pageInfo: {
-        endCursor: string;
-        hasNextPage: boolean;
-      };
-      totalCount: number;
-    };
-  };
-}
-
 /** Graphql query for getting a form by its id */
 export const GET_FORM_BY_ID = gql`
   query GetFormById($id: ID!) {
@@ -117,8 +94,3 @@ export const GET_FORM_BY_ID = gql`
     }
   }
 `;
-
-/** Model for getFormByIdQueryResponse object */
-export interface GetFormByIdQueryResponse {
-  form: Form;
-}

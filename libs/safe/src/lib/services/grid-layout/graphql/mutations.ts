@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Layout } from '../../../models/layout.model';
 
 // === ADD LAYOUT ===
 
@@ -15,11 +14,6 @@ export const ADD_LAYOUT = gql`
     }
   }
 `;
-
-/** Model for AddLayoutMutationResponse object */
-export interface AddLayoutMutationResponse {
-  addLayout: Layout;
-}
 
 // === EDIT LAYOUT ===
 
@@ -41,11 +35,6 @@ export const EDIT_LAYOUT = gql`
   }
 `;
 
-/** Model for EditLayoutMutationResponse object */
-export interface EditLayoutMutationResponse {
-  editLayout: Layout;
-}
-
 // === DELETE LAYOUT ===
 
 /** Graphql request for deleting a layout by its id */
@@ -58,8 +47,3 @@ export const DELETE_LAYOUT = gql`
     }
   }
 `;
-
-/** Model for deleteLayoutMutationResponse object */
-export interface deleteLayoutMutationResponse {
-  deleteLayout: Layout;
-}

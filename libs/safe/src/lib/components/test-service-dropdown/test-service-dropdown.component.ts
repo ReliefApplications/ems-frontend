@@ -3,16 +3,12 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { UntypedFormControl } from '@angular/forms';
 import { takeUntil } from 'rxjs/operators';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import {
-  GET_RECORD_BY_ID,
-  GET_RESOURCE_RECORDS,
-  GetResourceRecordsQueryResponse,
-  GetRecordByIdQueryResponse,
-} from './graphql/queries';
-import { Record } from '../../models/record.model';
+import { GET_RECORD_BY_ID, GET_RESOURCE_RECORDS } from './graphql/queries';
+import { Record, RecordQueryResponse } from '../../models/record.model';
 import { CommonModule } from '@angular/common';
 import { GraphQLSelectModule, FormWrapperModule } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ResourceRecordsNodesQueryResponse } from '../../models/resource.model';
 
 /** A constant that is used to determine how many items should be on one page. */
 const ITEMS_PER_PAGE = 10;
@@ -45,7 +41,7 @@ export class SafeTestServiceDropdownComponent
   public selectedRecord?: Record;
   // public selectedRecord?: any;
   public recordsControl!: UntypedFormControl;
-  public recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
+  public recordsQuery!: QueryRef<ResourceRecordsNodesQueryResponse>;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -66,7 +62,7 @@ export class SafeTestServiceDropdownComponent
       });
     if (this.record) {
       this.apollo
-        .query<GetRecordByIdQueryResponse>({
+        .query<RecordQueryResponse>({
           query: GET_RECORD_BY_ID,
           variables: {
             id: this.record,
@@ -81,7 +77,7 @@ export class SafeTestServiceDropdownComponent
     }
     if (this.resource) {
       this.recordsQuery =
-        this.apollo.watchQuery<GetResourceRecordsQueryResponse>({
+        this.apollo.watchQuery<ResourceRecordsNodesQueryResponse>({
           query: GET_RESOURCE_RECORDS,
           variables: {
             id: this.resource,

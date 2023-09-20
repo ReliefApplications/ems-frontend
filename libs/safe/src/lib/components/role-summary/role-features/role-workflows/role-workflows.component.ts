@@ -17,15 +17,10 @@ import { Role } from '../../../../models/user.model';
 import { Page } from '../../../../models/page.model';
 import { get } from 'lodash';
 import { Apollo } from 'apollo-angular';
-import {
-  GetWorkflowStepsQueryResponse,
-  GET_WORKFLOW_STEPS,
-} from '../../graphql/queries';
-import { Step } from '../../../../models/step.model';
-import {
-  EditStepAccessMutationResponse,
-  EDIT_STEP_ACCESS,
-} from '../../graphql/mutations';
+import { GET_WORKFLOW_STEPS } from '../../graphql/queries';
+import { EditStepMutationResponse, Step } from '../../../../models/step.model';
+import { WorkflowQueryResponse } from '../../../../models/workflow.model';
+import { EDIT_STEP_ACCESS } from '../../graphql/mutations';
 import { SnackbarService } from '@oort-front/ui';
 
 /** Component for the workflows section of the roles features */
@@ -69,13 +64,7 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
   constructor(private apollo: Apollo, private snackBar: SnackbarService) {}
 
   ngOnInit(): void {
-    this.accessiblePages = this.filteredPages
-      .filter((x) =>
-        get(x, 'permissions.canSee', [])
-          .map((y: any) => y.id)
-          .includes(this.role.id)
-      )
-      .map((x) => x.id as string);
+    this.accessiblePages = this.getAccessibleElementIds(this.filteredPages);
   }
 
   ngOnChanges(): void {
@@ -88,7 +77,19 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
       (x) =>
         x.name?.toLowerCase().includes(this.search) || this.filteredSteps.length
     );
-    this.accessiblePages = this.filteredPages
+    this.accessiblePages = this.getAccessibleElementIds(this.filteredPages);
+  }
+
+  /**
+   *Returns the page ids that can be access by the current role
+   *
+   * @param filteredElements Elements to check if can be access by the current role
+   * @returns ids of the elements that can be access by the current role
+   */
+  private getAccessibleElementIds(
+    filteredElements: Array<Page | Step>
+  ): string[] {
+    return filteredElements
       .filter((x) =>
         get(x, 'permissions.canSee', [])
           .map((y: any) => y.id)
@@ -110,7 +111,7 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
     } else {
       this.openedWorkflowId = page.id as string;
       this.apollo
-        .query<GetWorkflowStepsQueryResponse>({
+        .query<WorkflowQueryResponse>({
           query: GET_WORKFLOW_STEPS,
           variables: {
             id: page.content,
@@ -123,13 +124,9 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
               this.filteredSteps = this.steps.filter((x) =>
                 x.name?.toLowerCase().includes(this.search)
               );
-              this.accessibleSteps = this.filteredSteps
-                .filter((x) =>
-                  get(x, 'permissions.canSee', [])
-                    .map((y: any) => y.id)
-                    .includes(this.role.id)
-                )
-                .map((x) => x.id as string);
+              this.accessibleSteps = this.getAccessibleElementIds(
+                this.filteredSteps
+              );
             }
           },
           error: (err) => {
@@ -149,7 +146,7 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
     const hasAccess = this.accessibleSteps.includes(step.id as string);
 
     this.apollo
-      .mutate<EditStepAccessMutationResponse>({
+      .mutate<EditStepMutationResponse>({
         mutation: EDIT_STEP_ACCESS,
         variables: {
           id: step.id,
@@ -170,13 +167,7 @@ export class RoleWorkflowsComponent implements OnInit, OnChanges {
             this.filteredSteps = this.steps.filter((x) =>
               x.name?.toLowerCase().includes(this.search)
             );
-            this.accessibleSteps = this.steps
-              .filter((x) =>
-                get(x, 'permissions.canSee', [])
-                  .map((y: any) => y.id)
-                  .includes(this.role.id)
-              )
-              .map((x) => x.id as string);
+            this.accessibleSteps = this.getAccessibleElementIds(this.steps);
           }
           this.loading = loading;
         },

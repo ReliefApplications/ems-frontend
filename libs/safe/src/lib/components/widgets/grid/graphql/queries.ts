@@ -1,7 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Record } from '../../../../models/record.model';
-import { Form } from '../../../../models/form.model';
-import { Resource } from '../../../../models/resource.model';
 
 // === GET RECORD BY ID ===
 /** Graphql request for getting a record by its id */
@@ -28,11 +25,6 @@ export const GET_RECORD_BY_ID = gql`
     }
   }
 `;
-
-/** Model for GetRecordByIdQueryResponse object */
-export interface GetRecordByIdQueryResponse {
-  record: Record;
-}
 
 // === GET RECORD DETAILS ===
 /** Graphql request for getting record details by its id */
@@ -76,11 +68,6 @@ export const GET_RECORD_DETAILS = gql`
     }
   }
 `;
-
-/** Model for GetRecordDetailsQueryResponse object */
-export interface GetRecordDetailsQueryResponse {
-  record: Record;
-}
 
 // === GET QUERY TYPES ===
 /** Graphql request for getting query types */
@@ -213,11 +200,6 @@ export const GET_FORM_BY_ID = gql`
   }
 `;
 
-/** Interface for getFormByIdQueryResponse object */
-export interface GetFormByIdQueryResponse {
-  form: Form;
-}
-
 /** Graphql request for getting the user permissions on a resource */
 export const GET_USER_ROLES_PERMISSIONS = gql`
   query GetUserRolesPermissions($resource: ID!) {
@@ -226,8 +208,3 @@ export const GET_USER_ROLES_PERMISSIONS = gql`
     }
   }
 `;
-
-/** Model for GetUserRolePermissionsQueryResponse object */
-export interface GetUserRolesPermissionsQueryResponse {
-  resource: Resource;
-}

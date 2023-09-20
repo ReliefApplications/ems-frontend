@@ -6,16 +6,18 @@ import { Apollo } from 'apollo-angular';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Version } from '../../models/form.model';
-import { Record } from '../../models/record.model';
-import { Change, RecordHistory } from '../../models/recordsHistory';
+import { Record, RecordQueryResponse } from '../../models/record.model';
+import {
+  Change,
+  RecordHistory,
+  RecordHistoryResponse,
+} from '../../models/records-history.model';
 import { SafeDateTranslateService } from '../../services/date-translate/date-translate.service';
 import { SafeDownloadService } from '../../services/download/download.service';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import {
   GET_RECORD_BY_ID_FOR_HISTORY,
   GET_RECORD_HISTORY_BY_ID,
-  GetRecordByIdQueryResponse,
-  GetRecordHistoryByIdResponse,
 } from './graphql/queries';
 import { FormControl, FormGroup } from '@angular/forms';
 
@@ -108,7 +110,7 @@ export class SafeRecordHistoryComponent
     // Set subscription to load records
     this.refresh$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.apollo
-        .query<GetRecordByIdQueryResponse>({
+        .query<RecordQueryResponse>({
           query: GET_RECORD_BY_ID_FOR_HISTORY,
           variables: {
             id: this.id,
@@ -120,7 +122,7 @@ export class SafeRecordHistoryComponent
         });
 
       this.apollo
-        .query<GetRecordHistoryByIdResponse>({
+        .query<RecordHistoryResponse>({
           query: GET_RECORD_HISTORY_BY_ID,
           variables: {
             id: this.id,

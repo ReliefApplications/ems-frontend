@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Resource } from '../../../../models/resource.model';
 
 // === FETCH AGGREGATIONS ===
 
@@ -26,8 +25,3 @@ export const GET_RESOURCE_AGGREGATIONS = gql`
     }
   }
 `;
-
-/** Model for GetResourceAggregationsResponse object */
-export interface GetResourceAggregationsResponse {
-  resource: Resource;
-}

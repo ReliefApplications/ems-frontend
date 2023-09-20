@@ -177,7 +177,8 @@
               let-column="column"
               let-filterService="filterService"
             >
-              <safe-dropdown-filter-menu
+              <safe-grid-filter-menu
+                [isNotArray]="true"
                 [filter]="filter"
                 [filterService]="filterService"
                 [data]="field.meta.choices"
@@ -185,21 +186,22 @@
                 textField="text"
                 valueField="value"
               >
-              </safe-dropdown-filter-menu>
+              </safe-grid-filter-menu>
             </ng-template>
             <ng-template
               kendoGridFilterCellTemplate
               let-filter
               let-dataItem="dataItem"
             >
-              <safe-dropdown-filter
+              <safe-grid-filter
+                [isNotArray]="true"
                 [filter]="filter"
                 [data]="field.meta.choices"
                 [field]="field.name"
                 textField="text"
                 valueField="value"
               >
-              </safe-dropdown-filter>
+              </safe-grid-filter>
             </ng-template>
           </ng-container>
         </ng-container>
@@ -674,7 +676,7 @@
               let-column="column"
               let-filterService="filterService"
             >
-              <safe-array-filter-menu
+              <safe-grid-filter-menu
                 [filter]="filter"
                 [filterService]="filterService"
                 [data]="subField.meta.choices || []"
@@ -682,21 +684,21 @@
                 textField="text"
                 valueField="value"
               >
-              </safe-array-filter-menu>
+              </safe-grid-filter-menu>
             </ng-template>
             <ng-template
               kendoGridFilterCellTemplate
               let-filter
               let-dataItem="dataItem"
             >
-              <safe-array-filter
+              <safe-grid-filter
                 [filter]="filter"
                 [data]="subField.meta.choices || []"
                 [field]="subField.name"
                 textField="text"
                 valueField="value"
               >
-              </safe-array-filter>
+              </safe-grid-filter>
             </ng-template>
             <ng-template kendoGridCellTemplate let-dataItem="dataItem">
               <div
@@ -735,7 +737,7 @@
           let-column="column"
           let-filterService="filterService"
         >
-          <safe-array-filter-menu
+          <safe-grid-filter-menu
             [filter]="filter"
             [filterService]="filterService"
             [data]="field.meta.choices || []"
@@ -743,21 +745,21 @@
             textField="text"
             valueField="value"
           >
-          </safe-array-filter-menu>
+          </safe-grid-filter-menu>
         </ng-template>
         <ng-template
           kendoGridFilterCellTemplate
           let-filter
           let-dataItem="dataItem"
         >
-          <safe-array-filter
+          <safe-grid-filter
             [filter]="filter"
             [data]="field.meta.choices || []"
             [field]="field.name"
             textField="text"
             valueField="value"
           >
-          </safe-array-filter>
+          </safe-grid-filter>
         </ng-template>
         <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem">
           <div

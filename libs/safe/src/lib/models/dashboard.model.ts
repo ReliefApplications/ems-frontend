@@ -213,3 +213,33 @@ export interface Dashboard {
   step?: Step;
   showFilter?: boolean;
 }
+
+/** Model for dashboard graphql query response */
+export interface DashboardQueryResponse {
+  dashboard: Dashboard;
+}
+
+/** Model for add dashboard graphql mutation response */
+export interface AddDashboardMutationResponse {
+  addDashboard: Dashboard;
+}
+
+/** Model for edit dashboard graphql mutation response */
+export interface EditDashboardMutationResponse {
+  editDashboard: Dashboard;
+}
+
+/** Model for delete dashboard graphql mutation response */
+export interface DeleteDashboardMutationResponse {
+  deleteDashboard: Dashboard;
+}
+
+/** Model for dashboards graphql query response */
+export interface DashboardsQueryResponse {
+  dashboards: Dashboard[];
+}
+
+/** Model for create dashboard with context mutation response */
+export interface CreateDashboardWithContextMutationResponse {
+  addDashboardWithContext: Pick<Dashboard, 'id' | 'structure' | 'page'>;
+}

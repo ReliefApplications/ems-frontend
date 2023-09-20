@@ -1,6 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Resource } from '../../../models/resource.model';
-import { Record } from '../../../models/record.model';
 
 // === GET RECORDS FROM RESOURCE ===
 
@@ -32,10 +30,6 @@ export const GET_RESOURCE_RECORDS = gql`
     }
   }
 `;
-/** Modelf for GetResouceRecordsQueryResponse object */
-export interface GetResourceRecordsQueryResponse {
-  resource: Resource;
-}
 
 // === GET RECORD BY ID ===
 
@@ -48,8 +42,3 @@ export const GET_RECORD_BY_ID = gql`
     }
   }
 `;
-
-/** Model for GetRecordByIdQueryResponse object */
-export interface GetRecordByIdQueryResponse {
-  record: Record;
-}
