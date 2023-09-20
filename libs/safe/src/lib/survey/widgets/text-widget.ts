@@ -177,12 +177,10 @@ export const init = (Survey: any, domService: DomService): void => {
               }
             });
             if (question.value) {
-              pickerInstance.writeValue(
-                getDateDisplay(question.value, question.inputType)
+              pickerInstance.value = getDateDisplay(
+                question.value,
+                question.inputType
               );
-              //The register on change event only triggers from the calendar UI selection, therefor we have to manually show the clear button in first load
-              // https://www.telerik.com/kendo-angular-ui/components/dateinputs/api/DatePickerComponent/#toc-valuechange
-              button.classList.remove('hidden');
             }
             if (question.min) {
               pickerInstance.min = getDateDisplay(
