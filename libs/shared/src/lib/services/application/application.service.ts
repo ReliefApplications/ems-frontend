@@ -92,6 +92,7 @@ import {
 import { RestService } from '../rest/rest.service';
 import { LayoutService } from '../layout/layout.service';
 import { SnackbarService } from '@oort-front/ui';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Shared application service. Handles events of opened application.
@@ -175,6 +176,7 @@ export class ApplicationService {
    * @param restService Shared rest service.
    * @param downloadService Shared download service
    * @param layoutService Shared layout service
+   * @param document document
    */
   constructor(
     @Inject('environment') environment: any,
@@ -185,7 +187,8 @@ export class ApplicationService {
     private translate: TranslateService,
     private restService: RestService,
     private downloadService: DownloadService,
-    private layoutService: LayoutService
+    private layoutService: LayoutService,
+    @Inject(DOCUMENT) private document: Document
   ) {
     this.environment = environment;
   }
@@ -271,7 +274,9 @@ export class ApplicationService {
    */
   leaveApplication(): void {
     if (this.customStyle) {
-      document.getElementsByTagName('head')[0].removeChild(this.customStyle);
+      this.document
+        .getElementsByTagName('head')[0]
+        .removeChild(this.customStyle);
       this.rawCustomStyle = undefined;
       this.customStyle = undefined;
       this.layoutService.closeRightSidenav = true;
@@ -1918,7 +1923,7 @@ export class ApplicationService {
         if (res.type === 'application/octet-stream') {
           const styleFromFile = await res.text();
           const scss = styleFromFile as string;
-          this.customStyle = document.createElement('style');
+          this.customStyle = this.document.createElement('style');
           await firstValueFrom(
             this.restService.post(
               'style/scss-to-css',
@@ -1929,7 +1934,7 @@ export class ApplicationService {
             .then((css) => {
               if (this.customStyle) {
                 this.customStyle.innerText = css;
-                document
+                this.document
                   .getElementsByTagName('head')[0]
                   .appendChild(this.customStyle);
               }

@@ -1,4 +1,4 @@
-import { Injectable, Injector } from '@angular/core';
+import { Injectable, Injector, Inject } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import {
   catchError,
@@ -36,6 +36,7 @@ import {
 import { HttpParams } from '@angular/common/http';
 import { omitBy, isNil, get } from 'lodash';
 import { ContextService } from '../context/context.service';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Shared map layer service
@@ -52,13 +53,15 @@ export class MapLayersService {
    * @param queryBuilder Query builder service
    * @param aggregationBuilder Aggregation builder service
    * @param contextService Application context service
+   * @param document document
    */
   constructor(
     private apollo: Apollo,
     private restService: RestService,
     private queryBuilder: QueryBuilderService,
     private aggregationBuilder: AggregationBuilderService,
-    private contextService: ContextService
+    private contextService: ContextService,
+    @Inject(DOCUMENT) private document: Document
   ) {}
   /**
    * Save a new layer in the DB
@@ -290,7 +293,11 @@ export class MapLayersService {
             }),
             map(
               (layer: { layer: LayerModel; geojson: any }) =>
-                new Layer({ ...layer.layer, geojson: layer.geojson }, injector)
+                new Layer(
+                  { ...layer.layer, geojson: layer.geojson },
+                  injector,
+                  this.document
+                )
             )
           )
         )
@@ -324,10 +331,11 @@ export class MapLayersService {
           ...res.layer,
           geojson: res.geojson,
         },
-        injector
+        injector,
+        this.document
       );
     } else {
-      return new Layer(layer, injector);
+      return new Layer(layer, injector, this.document);
     }
   }
 

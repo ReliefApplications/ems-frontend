@@ -1,5 +1,7 @@
 import * as L from 'leaflet';
 import { get, set } from 'lodash';
+import { DOCUMENT } from '@angular/common';
+import { Inject } from '@angular/core';
 
 /** Interface for legend control options */
 interface LegendControlOptions extends L.ControlOptions {
@@ -20,9 +22,13 @@ class LegendControl extends L.Control {
   /**
    * Custom leaflet legend control
    *
+   * @param document document
    * @param options legend control options
    */
-  constructor(options?: LegendControlOptions) {
+  constructor(
+    @Inject(DOCUMENT) private document: Document,
+    options?: LegendControlOptions
+  ) {
     super(options);
     // this.layers = options?.layers;
   }
@@ -58,13 +64,13 @@ class LegendControl extends L.Control {
   /** @returns inner html of container */
   get innerHtml() {
     if (this.layers) {
-      const legend = document.createElement('div');
+      const legend = this.document.createElement('div');
       legend.className = 'flex flex-col gap-2';
 
       for (const layer in this.layers) {
         const legendTxt = get(this.layers, layer);
         if (legendTxt) {
-          const div = document.createElement('div');
+          const div = this.document.createElement('div');
           div.style.maxWidth = '150px';
           div.innerHTML = legendTxt;
           legend.appendChild(div);
@@ -125,5 +131,5 @@ class LegendControl extends L.Control {
  * @returns legend control
  */
 export const legendControl = (options?: LegendControlOptions) => {
-  return new LegendControl(options);
+  return new LegendControl(document, options);
 };

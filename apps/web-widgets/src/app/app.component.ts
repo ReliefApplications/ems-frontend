@@ -1,7 +1,8 @@
-import { Component, OnInit, Injector } from '@angular/core';
+import { Component, OnInit, Injector, Inject } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { NgElement, WithProperties } from '@angular/elements';
 import { FormWidgetComponent } from './widgets/form-widget/form-widget.component';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Root component of Web Widgets project.
@@ -14,7 +15,7 @@ import { FormWidgetComponent } from './widgets/form-widget/form-widget.component
 export class AppComponent implements OnInit {
   title = 'web-widgets';
 
-  constructor(injector: Injector) {
+  constructor(injector: Injector, @Inject(DOCUMENT) private document: Document) {
     const form = createCustomElement(FormWidgetComponent, {
       injector: injector,
     });
@@ -22,8 +23,8 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const formWidget = document.createElement('form-widget') as NgElement &
+    const formWidget = this.document.createElement('form-widget') as NgElement &
       WithProperties<{ id: string }>;
-    document.getElementById('bodyPlaceholder')?.appendChild(formWidget);
+    this.document.getElementById('bodyPlaceholder')?.appendChild(formWidget);
   }
 }

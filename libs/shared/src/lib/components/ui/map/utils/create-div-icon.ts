@@ -27,9 +27,13 @@ const MAX_CLUSTER_SIZE = 100;
  * Generates an HTML element for an icon
  *
  * @param properties Properties of an icon
+ * @param document Document
  * @returns The HTML element for the icon
  */
-const createFontAwesomeIcon = (properties: MarkerIconOptions) => {
+const createFontAwesomeIcon = (
+  properties: MarkerIconOptions,
+  document: Document
+) => {
   const { icon, size, color, opacity } = properties;
 
   // create a span element to set color, opacity and size
@@ -103,7 +107,10 @@ export const createCustomDivIcon = (
   let sizeForIconType = size;
   // fa-icons use the createFontAwesomeIcon
   if (iconProperties.icon !== 'leaflet_default') {
-    const htmlIcon = createFontAwesomeIcon({ size, color, icon, opacity });
+    const htmlIcon = createFontAwesomeIcon(
+      { size, color, icon, opacity },
+      document
+    );
     if (htmlTemplate) {
       // add relative position for any label that is going to be added inside the icon span element
       htmlIcon.style.position = 'relative';

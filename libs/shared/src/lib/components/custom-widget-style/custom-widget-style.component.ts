@@ -1,4 +1,11 @@
-import { Component, Output, EventEmitter, OnInit, Input } from '@angular/core';
+import {
+  Component,
+  Output,
+  EventEmitter,
+  OnInit,
+  Input,
+  Inject,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
@@ -10,6 +17,7 @@ import get from 'lodash/get';
 import { RestService } from '../../services/rest/rest.service';
 import { ConfirmService } from '../../services/confirm/confirm.service';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { DOCUMENT } from '@angular/common';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';
@@ -55,11 +63,13 @@ export class CustomWidgetStyleComponent
    * @param restService Shared rest service
    * @param translate Angular translate service
    * @param confirmService Shared confirmation service
+   * @param document document
    */
   constructor(
     private restService: RestService,
     private translate: TranslateService,
-    private confirmService: ConfirmService
+    private confirmService: ConfirmService,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
 
@@ -80,7 +90,7 @@ export class CustomWidgetStyleComponent
           .subscribe((css) => {
             set(this.widgetComp, 'widget.settings.widgetDisplay.style', value);
             this.styleApplied.innerText = css;
-            document
+            this.document
               .getElementsByTagName('head')[0]
               .appendChild(this.styleApplied);
             this.loading = false;
@@ -90,11 +100,11 @@ export class CustomWidgetStyleComponent
 
   ngOnInit(): void {
     // Avoids style duplication for the same element
-    const widgetStyle = Array.from(document.querySelectorAll('style')).filter(
-      (style) => style.innerHTML.includes(this.widgetComp.domId)
-    )[0];
+    const widgetStyle = Array.from(
+      this.document.querySelectorAll('style')
+    ).filter((style) => style.innerHTML.includes(this.widgetComp.domId))[0];
     if (widgetStyle) this.styleApplied = widgetStyle;
-    else this.styleApplied = document.createElement('style');
+    else this.styleApplied = this.document.createElement('style');
 
     const style =
       get(this.widgetComp, 'widget.settings.widgetDisplay.style') || '';

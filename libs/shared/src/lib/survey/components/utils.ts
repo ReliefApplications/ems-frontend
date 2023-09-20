@@ -12,6 +12,7 @@ import localForage from 'localforage';
  * @param multiselect Indicate if we need multiselect
  * @param dialog The Dialog service
  * @param temporaryRecords The form used to save and keep the temporary records updated
+ * @param document Document
  * @returns The button DOM element
  */
 export const buildSearchButton = (
@@ -19,7 +20,8 @@ export const buildSearchButton = (
   fieldsSettingsForm: any,
   multiselect: boolean,
   dialog: Dialog,
-  temporaryRecords: UntypedFormControl
+  temporaryRecords: UntypedFormControl,
+  document: Document
 ): any => {
   const searchButton = document.createElement('button');
   searchButton.innerText = surveyLocalization.getString(
@@ -74,13 +76,15 @@ export const buildSearchButton = (
  * @param multiselect Indicate if we need multiselect
  * @param dialog The Dialog service
  * @param ngZone Angular Service to execute code inside Angular environment
+ * @param document Document
  * @returns The button DOM element
  */
 export const buildAddButton = (
   question: any,
   multiselect: boolean,
   dialog: Dialog,
-  ngZone: NgZone
+  ngZone: NgZone,
+  document: Document
 ): any => {
   const addButton = document.createElement('button');
   addButton.innerText = surveyLocalization.getString(

@@ -28,7 +28,8 @@ import { GradientPipe } from '../../../pipes/gradient/gradient.pipe';
 import { MapLayersService } from '../../../services/map/map-layers.service';
 import { BehaviorSubject, filter, firstValueFrom } from 'rxjs';
 import centroid from '@turf/centroid';
-import { Injector, Renderer2 } from '@angular/core';
+import { Injector, Renderer2, Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 
 type FieldTypes = 'string' | 'number' | 'boolean' | 'date' | 'any';
 
@@ -228,8 +229,13 @@ export class Layer implements LayerModel {
    *
    * @param options Layer options
    * @param injector Injector containing all needed providers for layer class
+   * @param document document
    */
-  constructor(options: any, private injector: Injector) {
+  constructor(
+    options: any,
+    private injector: Injector,
+    @Inject(DOCUMENT) private document: Document
+  ) {
     if (options) {
       this.popupService = injector.get(MapPopupService);
       this.layerService = injector.get(MapLayersService);
@@ -696,7 +702,7 @@ export class Layer implements LayerModel {
                   ),
                   zoomToBoundsOnClick: false,
                   iconCreateFunction: (cluster) => {
-                    const htmlTemplate = document.createElement('label');
+                    const htmlTemplate = this.document.createElement('label');
                     htmlTemplate.textContent = cluster
                       .getChildCount()
                       .toString();
@@ -891,15 +897,15 @@ export class Layer implements LayerModel {
               DEFAULT_HEATMAP.gradient
             );
             const gradientPipe = new GradientPipe();
-            const container = document.createElement('div');
+            const container = this.document.createElement('div');
             container.className = 'flex gap-1';
-            const linearGradient = document.createElement('div');
+            const linearGradient = this.document.createElement('div');
             linearGradient.className = 'w-4 h-16';
             linearGradient.style.background = gradientPipe.transform(
               gradient,
               180
             );
-            const legend = document.createElement('div');
+            const legend = this.document.createElement('div');
             legend.className = 'flex flex-col justify-between';
             legend.innerHTML = '<span>Min</span><span>Max</span>';
             container.innerHTML = linearGradient.outerHTML + legend.outerHTML;

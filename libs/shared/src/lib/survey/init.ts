@@ -38,6 +38,7 @@ import { NgZone } from '@angular/core';
  * @param referenceDataService Reference data service
  * @param containsCustomQuestions If survey contains custom questions or not
  * @param ngZone Angular Service to execute code inside Angular environment
+ * @param document Document
  */
 export const initCustomSurvey = (
   Survey: any,
@@ -49,7 +50,8 @@ export const initCustomSurvey = (
   environment: any,
   referenceDataService: ReferenceDataService,
   containsCustomQuestions: boolean,
-  ngZone: NgZone
+  ngZone: NgZone,
+  document: Document
 ): void => {
   // If the survey created does not contain custom questions, we destroy previously set custom questions if so
   if (!containsCustomQuestions) {
@@ -57,15 +59,31 @@ export const initCustomSurvey = (
     Survey.ComponentCollection.Instance.clear();
   }
 
-  TagboxWidget.init(Survey, domService);
-  TextWidget.init(Survey, domService);
-  DropdownWidget.init(Survey, domService);
+  TagboxWidget.init(Survey, domService, document);
+  TextWidget.init(Survey, domService, document);
+  DropdownWidget.init(Survey, domService, document);
 
   if (containsCustomQuestions) {
-    CommentWidget.init(Survey);
+    CommentWidget.init(Survey, document);
     // load components (same as widgets, but with less configuration options)
-    ResourceComponent.init(Survey, domService, apollo, dialog, fb, ngZone);
-    ResourcesComponent.init(Survey, domService, apollo, dialog, fb, ngZone);
+    ResourceComponent.init(
+      Survey,
+      domService,
+      apollo,
+      dialog,
+      fb,
+      ngZone,
+      document
+    );
+    ResourcesComponent.init(
+      Survey,
+      domService,
+      apollo,
+      dialog,
+      fb,
+      ngZone,
+      document
+    );
     OwnerComponent.init(Survey, domService, apollo);
     UsersComponent.init(Survey, domService, apollo);
     GeospatialComponent.init(Survey, domService);

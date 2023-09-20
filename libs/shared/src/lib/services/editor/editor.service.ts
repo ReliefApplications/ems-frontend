@@ -2,6 +2,7 @@ import { Inject, Injectable, Renderer2, RendererFactory2 } from '@angular/core';
 import { EDITOR_LANGUAGE_PAIRS } from '../../const/tinymce.const';
 import { TranslateService } from '@ngx-translate/core';
 import { Editor, RawEditorSettings } from 'tinymce';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Shared editor service
@@ -62,11 +63,13 @@ export class EditorService {
    * @param environment Environment file used to get main url of the page
    * @param translate Angular Translate Service
    * @param _renderer RendererFactory2
+   * @param document document
    */
   constructor(
     @Inject('environment') environment: any,
     private translate: TranslateService,
-    _renderer: RendererFactory2
+    _renderer: RendererFactory2,
+    @Inject(DOCUMENT) private document: Document
   ) {
     this.renderer = _renderer.createRenderer(null, null);
     this.environment = environment;
@@ -125,7 +128,8 @@ export class EditorService {
       this.editorScrollListener();
     }
     setTimeout(() => {
-      const autoCompleterContainer = document.querySelector('.tox-tinymce-aux');
+      const autoCompleterContainer =
+        this.document.querySelector('.tox-tinymce-aux');
       if (!autoCompleterContainer) return;
       this.editorScrollListener = this.renderer.listen(
         autoCompleterContainer,

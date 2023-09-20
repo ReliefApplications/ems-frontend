@@ -48,6 +48,7 @@ import { DashboardService } from '../../../../services/dashboard/dashboard.servi
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Test if an element match a css selector
@@ -210,6 +211,7 @@ export class GridComponent
    * @param dashboardService Dashboard service
    * @param translate The translate service
    * @param snackBar The snackbar service
+   * @param document document
    */
   constructor(
     @Inject('environment') environment: any,
@@ -219,7 +221,8 @@ export class GridComponent
     private downloadService: DownloadService,
     private dashboardService: DashboardService,
     private translate: TranslateService,
-    private snackBar: SnackbarService
+    private snackBar: SnackbarService,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
     this.environment = environment.module || 'frontoffice';
@@ -645,7 +648,7 @@ export class GridComponent
    */
   public onDownload(file: any): void {
     if (file.content.startsWith('data')) {
-      const downloadLink = document.createElement('a');
+      const downloadLink = this.document.createElement('a');
       downloadLink.href = file.content;
       downloadLink.download = file.name;
       downloadLink.click();

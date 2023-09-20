@@ -5,8 +5,9 @@ import { Question, QuestionComment } from '../types';
  * Custom definition for overriding the comment question. Add edit functionality.
  *
  * @param Survey Survey library
+ * @param document Document
  */
-export const init = (Survey: any): void => {
+export const init = (Survey: any, document: Document): void => {
   const widget = {
     name: 'comment-widget',
     widgetIsLoaded: (): boolean => true,

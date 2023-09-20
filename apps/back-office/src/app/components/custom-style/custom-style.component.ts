@@ -4,6 +4,7 @@ import {
   EventEmitter,
   OnInit,
   OnDestroy,
+  Inject,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -28,6 +29,7 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { DOCUMENT } from '@angular/common';
 
 /** Default css style example to initialize the form and editor */
 const DEFAULT_STYLE = '';
@@ -75,6 +77,7 @@ export class CustomStyleComponent
    * @param translate Angular translate service
    * @param confirmService Shared confirmation service
    * @param restService Shared rest service
+   * @param document document
    */
   constructor(
     private applicationService: ApplicationService,
@@ -82,7 +85,8 @@ export class CustomStyleComponent
     private apollo: Apollo,
     private translate: TranslateService,
     private confirmService: ConfirmService,
-    private restService: RestService
+    private restService: RestService,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
     // Updates the style when the value changes
@@ -111,9 +115,9 @@ export class CustomStyleComponent
       this.formControl.setValue(this.rawCustomStyle, { emitEvent: false });
       this.formControl.markAsPristine();
     } else {
-      const styleElement = document.createElement('style');
+      const styleElement = this.document.createElement('style');
       styleElement.innerText = '';
-      document.getElementsByTagName('head')[0].appendChild(styleElement);
+      this.document.getElementsByTagName('head')[0].appendChild(styleElement);
       this.applicationService.rawCustomStyle = this.rawCustomStyle;
       this.applicationService.customStyle = styleElement;
     }

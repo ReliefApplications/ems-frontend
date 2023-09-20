@@ -1,4 +1,4 @@
-import { Injectable, ComponentRef } from '@angular/core';
+import { Injectable, ComponentRef, Inject } from '@angular/core';
 import { Feature } from 'geojson';
 
 /// <reference path="../../../../typings/leaflet/index.d.ts" />
@@ -7,6 +7,7 @@ import { takeUntil } from 'rxjs';
 import { DomService } from '../../../../services/dom/dom.service';
 import { MapPopupComponent } from './map-popup.component';
 import { PopupInfo } from '../../../../models/layer.model';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Shared map control service.
@@ -27,8 +28,12 @@ export class MapPopupService {
    * Injects DomService and TranslateService instances to the service
    *
    * @param domService DomService
+   * @param document document
    */
-  constructor(private domService: DomService) {}
+  constructor(
+    private domService: DomService,
+    @Inject(DOCUMENT) private document: Document
+  ) {}
 
   /**
    * Set popup content for the given map and feature points
@@ -100,8 +105,8 @@ export class MapPopupService {
     popupInfo: PopupInfo
   ): { instance: ComponentRef<MapPopupComponent>; popup: L.Popup } {
     // create div element to render the MapPopupComponent content
-    const div = document.createElement('div');
-    div.setAttribute('class', 'shared-border-radius-inherit');
+    const div = this.document.createElement('div');
+    div.setAttribute('class', 'safe-border-radius-inherit');
 
     const popupComponent = this.initializeMapPopupComponent(
       coordinates,

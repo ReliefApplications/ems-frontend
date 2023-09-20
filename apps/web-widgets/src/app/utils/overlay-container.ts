@@ -1,6 +1,7 @@
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { Platform } from '@angular/cdk/platform';
-import { Injectable } from '@angular/core';
+import { Injectable, Inject } from '@angular/core';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Custom Overlay container, to avoid creating modals / snackbar as child of body directly.
@@ -12,7 +13,7 @@ export class AppOverlayContainer extends OverlayContainer {
    *
    * @param _platform Angular platform
    */
-  constructor(_platform: Platform) {
+  constructor(_platform: Platform, @Inject(DOCUMENT) private document: Document) {
     super(document, _platform);
   }
 
@@ -22,10 +23,10 @@ export class AppOverlayContainer extends OverlayContainer {
    * @param widgetName current active widget
    */
   public updateContainer(widgetName: string): void {
-    const container: HTMLDivElement = document.createElement('div');
+    const container: HTMLDivElement = this.document.createElement('div');
     container.classList.add('app-overlay-container');
 
-    const element = document
+    const element = this.document
       .querySelector(widgetName)
       ?.shadowRoot?.querySelector('#angular-app-root');
     if (element) {

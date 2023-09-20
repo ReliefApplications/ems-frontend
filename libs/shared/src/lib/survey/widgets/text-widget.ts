@@ -18,8 +18,13 @@ type DateInputFormat = 'date' | 'datetime' | 'datetime-local' | 'time';
  *
  * @param Survey Survey library
  * @param domService Shared DOM service
+ * @param document Document
  */
-export const init = (Survey: any, domService: DomService): void => {
+export const init = (
+  Survey: any,
+  domService: DomService,
+  document: Document
+): void => {
   const widget = {
     name: 'text-widget',
     widgetIsLoaded: (): boolean => true,

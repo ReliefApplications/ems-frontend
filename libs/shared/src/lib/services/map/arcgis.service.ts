@@ -20,6 +20,7 @@ import * as Vector from 'esri-leaflet-vector';
 import * as Geocoding from 'esri-leaflet-geocoder';
 import * as L from 'leaflet';
 import { GradientPipe } from '../../pipes/gradient/gradient.pipe';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Define the ArcGIS projected coordinate system (102100 is the WKID for Web Mercator)
@@ -44,10 +45,12 @@ export class ArcgisService {
    *
    * @param environment injected environment configuration
    * @param http Http client
+   * @param document document
    */
   constructor(
     @Inject('environment') environment: any,
-    private http: HttpClient
+    private http: HttpClient,
+    @Inject(DOCUMENT) private document: Document
   ) {
     this.esriApiKey = environment.esriApiKey;
     this.session = new ApiKeyManager({ key: environment.esriApiKey });
@@ -411,15 +414,15 @@ export class ArcgisService {
                         map
                       );
                       // Create legend element
-                      const container = document.createElement('div');
+                      const container = this.document.createElement('div');
                       container.className = 'flex gap-1';
-                      const linearGradient = document.createElement('div');
+                      const linearGradient = this.document.createElement('div');
                       linearGradient.className = 'w-4 h-16';
                       linearGradient.style.background = gradientPipe.transform(
                         gradientForPipe,
                         180
                       );
-                      const legend = document.createElement('div');
+                      const legend = this.document.createElement('div');
                       legend.className = 'flex flex-col justify-between';
                       legend.innerHTML = '<span>Min</span><span>Max</span>';
                       container.innerHTML =

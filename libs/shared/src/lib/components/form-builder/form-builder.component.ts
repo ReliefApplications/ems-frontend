@@ -6,6 +6,7 @@ import {
   OnDestroy,
   OnInit,
   Output,
+  Inject,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import * as SurveyCreator from 'survey-creator';
@@ -17,6 +18,7 @@ import { Form } from '../../models/form.model';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { SnackbarService } from '@oort-front/ui';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Array containing the different types of questions.
@@ -107,13 +109,15 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
    * @param translate Angular translate service
    * @param referenceDataService Reference data service
    * @param formHelpersService Shared form helper service.
+   * @param document document
    */
   constructor(
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private referenceDataService: ReferenceDataService,
-    private formHelpersService: FormHelpersService
+    private formHelpersService: FormHelpersService,
+    @Inject(DOCUMENT) private document: Document
   ) {
     // translate the editor in the same language as the interface
     SurveyCreator.localization.currentLocale = this.translate.currentLang;
@@ -278,7 +282,7 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
       (sender: any, options: any) => {
         const name = options.question.name;
         setTimeout(() => {
-          const el = document.querySelector('[data-name="' + name + '"]');
+          const el = this.document.querySelector('[data-name="' + name + '"]');
           el?.scrollIntoView({ behavior: 'smooth' });
           this.surveyCreator.showQuestionEditor(options.question);
         });
