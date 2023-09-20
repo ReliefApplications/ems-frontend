@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Record } from '@oort-front/safe';
+import { Record } from '@oort-front/shared';
 
 /** Graphql query for getting records of a resource */
 export const GET_RESOURCE_RECORDS = gql`

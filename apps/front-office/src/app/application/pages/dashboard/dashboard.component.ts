@@ -18,13 +18,13 @@ import {
 } from './graphql/queries';
 import {
   Dashboard,
-  SafeDashboardService,
-  SafeUnsubscribeComponent,
-  SafeWidgetGridComponent,
-  SafeConfirmService,
+  DashboardService,
+  UnsubscribeComponent,
+  WidgetGridComponent,
+  ConfirmService,
   ButtonActionT,
   ContextService,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map, startWith, takeUntil } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
@@ -40,7 +40,7 @@ import { DOCUMENT } from '@angular/common';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
   public isFullScreen = false;
@@ -58,8 +58,8 @@ export class DashboardComponent
   /** Show name ( contextual pages ) */
   public showName = false;
 
-  @ViewChild(SafeWidgetGridComponent)
-  widgetGridComponent!: SafeWidgetGridComponent;
+  @ViewChild(WidgetGridComponent)
+  widgetGridComponent!: WidgetGridComponent;
   public showFilter?: boolean;
 
   // === BUTTON ACTIONS ===
@@ -96,9 +96,9 @@ export class DashboardComponent
     private router: Router,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private dashboardService: SafeDashboardService,
+    private dashboardService: DashboardService,
     private translate: TranslateService,
-    private confirmService: SafeConfirmService,
+    private confirmService: ConfirmService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
     @Inject(DOCUMENT) private document: Document,

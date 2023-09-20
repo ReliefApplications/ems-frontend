@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { ReferenceData } from '@oort-front/safe';
+import { ReferenceData } from '@oort-front/shared';
 
 // === EDIT REFERENCE DATA ===
 /** Edit ref data gql mutation definition */

@@ -6,11 +6,11 @@ import {
   Form,
   Page,
   Step,
-  SafeFormComponent,
-  SafeApplicationService,
-  SafeWorkflowService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  FormComponent as SharedFormComponent,
+  ApplicationService,
+  WorkflowService,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import {
   GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
@@ -37,9 +37,9 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
-  @ViewChild(SafeFormComponent)
-  private formComponent?: SafeFormComponent;
+export class FormComponent extends UnsubscribeComponent implements OnInit {
+  @ViewChild(SharedFormComponent)
+  private formComponent?: SharedFormComponent;
 
   /** Loading indicator */
   public loading = true;
@@ -78,8 +78,8 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
    * @param translate Angular translate service
    */
   constructor(
-    private applicationService: SafeApplicationService,
-    private workflowService: SafeWorkflowService,
+    private applicationService: ApplicationService,
+    private workflowService: WorkflowService,
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,

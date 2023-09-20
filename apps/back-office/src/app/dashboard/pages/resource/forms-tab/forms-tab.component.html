@@ -21,7 +21,7 @@
           {{ 'common.createdOn' | translate }}
         </th>
         <td uiCell *cdkCellDef="let element">
-          {{ element.createdAt | safeDate }}
+          {{ element.createdAt | sharedDate }}
         </td>
       </ng-container>
 
@@ -87,6 +87,7 @@
             [uiMenuTriggerFor]="resMenu"
             (click)="$event.stopPropagation()"
             [disabled]="!(element.canUpdate || element.canDelete)"
+            [uiTooltip]="'common.options' | translate"
           >
           </ui-button>
           <ui-menu #resMenu>
@@ -126,7 +127,7 @@
       ></tr>
     </table>
     <!-- Skeleton table when loading -->
-    <safe-skeleton-table
+    <shared-skeleton-table
       *ngIf="loading"
       [columns]="[
         'common.name',
@@ -137,6 +138,6 @@
       ]"
       [actions]="true"
     >
-    </safe-skeleton-table>
+    </shared-skeleton-table>
   </div>
 </div>

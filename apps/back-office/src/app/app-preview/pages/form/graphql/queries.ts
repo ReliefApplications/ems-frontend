@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Step, Page, Form } from '@oort-front/safe';
+import { Step, Page, Form } from '@oort-front/shared';
 
 // === GET STEP BY ID ===
 

@@ -18,18 +18,18 @@ import {
   RESTORE_RECORD,
 } from './graphql/mutations';
 import {
-  SafeLayoutService,
-  SafeConfirmService,
-  SafeBreadcrumbService,
-  SafeUnsubscribeComponent,
-  SafeDownloadService,
+  LayoutService,
+  ConfirmService,
+  BreadcrumbService,
+  UnsubscribeComponent,
+  DownloadService,
   Record,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
-import { Metadata } from '@oort-front/safe';
+import { Metadata } from '@oort-front/shared';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 
 /** Default items per query, for pagination */
@@ -47,7 +47,7 @@ const DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
   styleUrls: ['./form-records.component.scss'],
 })
 export class FormRecordsComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   // === DATA ===
@@ -97,13 +97,13 @@ export class FormRecordsComponent
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private downloadService: SafeDownloadService,
-    private layoutService: SafeLayoutService,
+    private downloadService: DownloadService,
+    private layoutService: LayoutService,
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private translate: TranslateService,
-    private breadcrumbService: SafeBreadcrumbService,
-    private confirmService: SafeConfirmService
+    private breadcrumbService: BreadcrumbService,
+    private confirmService: ConfirmService
   ) {
     super();
   }
@@ -372,9 +372,9 @@ export class FormRecordsComponent
       })
       .subscribe(({ data }) => {
         this.historyId = id;
-        import('@oort-front/safe').then(({ SafeRecordHistoryComponent }) => {
+        import('@oort-front/shared').then(({ RecordHistoryComponent }) => {
           this.layoutService.setRightSidenav({
-            component: SafeRecordHistoryComponent,
+            component: RecordHistoryComponent,
             inputs: {
               id: data.record.id,
               revert: (version: any) =>

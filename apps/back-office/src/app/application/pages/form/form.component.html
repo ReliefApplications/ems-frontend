@@ -5,7 +5,7 @@
     <div class="flex items-center overflow-hidden">
       <!-- Page name and name edition -->
       <div class="flex items-center gap-1">
-        <safe-editable-text
+        <shared-editable-text
           [text]="page ? page.name || '' : step ? step.name || '' : ''"
           [canEdit]="canEditName"
           (onChange)="saveName($event)"
@@ -14,7 +14,7 @@
           <h1 class="!m-0 overflow-hidden text-ellipsis">
             {{ page ? page.name || '' : step ? step.name || '' : '' }}
           </h1>
-        </safe-editable-text>
+        </shared-editable-text>
         <ui-button
           *ngIf="page && !isStep"
           [isIcon]="true"
@@ -32,7 +32,7 @@
         </ui-button>
       </div>
       <!-- Page access -->
-      <safe-access
+      <shared-access
         [access]="page ? page.permissions : step ? step.permissions : null"
         [application]="applicationId"
         [objectTypeName]="'common.page.one' | translate"
@@ -40,7 +40,7 @@
         *ngIf="
           !formActive && (page ? page.canUpdate : step ? step.canUpdate : false)
         "
-      ></safe-access>
+      ></shared-access>
     </div>
     <!-- Page actions -->
     <div class="flex items-center" *ngIf="!formActive">
@@ -60,7 +60,7 @@
     </div>
   </div>
   <!-- Form -->
-  <safe-form [form]="form" (save)="onComplete($event)"></safe-form>
+  <shared-form [form]="form" (save)="onComplete($event)"></shared-form>
   <!-- Form actions -->
   <div
     class="mt-6 flex justify-center"

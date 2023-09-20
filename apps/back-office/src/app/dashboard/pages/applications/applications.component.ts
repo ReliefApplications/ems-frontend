@@ -4,9 +4,9 @@ import { Dialog } from '@angular/cdk/dialog';
 import { Router } from '@angular/router';
 import {
   Application,
-  SafeConfirmService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  ConfirmService,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import {
   GetApplicationsQueryResponse,
   GET_APPLICATIONS,
@@ -40,7 +40,7 @@ const DEFAULT_PAGE_SIZE = 10;
   styleUrls: ['./applications.component.scss'],
 })
 export class ApplicationsComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   // === DATA ===
@@ -87,7 +87,7 @@ export class ApplicationsComponent
     private router: Router,
     private snackBar: SnackbarService,
     private previewService: PreviewService,
-    private confirmService: SafeConfirmService,
+    private confirmService: ConfirmService,
     private translate: TranslateService
   ) {
     super();

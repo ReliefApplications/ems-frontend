@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Dashboard } from '@oort-front/safe';
+import { Dashboard } from '@oort-front/shared';
 
 // === ADD DASHBOARD ===
 /** Add dashboard gql mutation definition */

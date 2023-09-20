@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Form } from '@oort-front/safe';
+import { Form } from '@oort-front/shared';
 
 /** Delete form gql mutation definition */
 export const DELETE_FORM = gql`

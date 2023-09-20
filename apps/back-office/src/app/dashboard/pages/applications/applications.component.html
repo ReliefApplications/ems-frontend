@@ -8,7 +8,7 @@
 
   <!-- NEW APPLICATIONS -->
   <h2>{{ 'pages.applications.recent' | translate }}</h2>
-  <safe-applications-summary
+  <shared-applications-summary
     class="block mb-14"
     [loading]="loading"
     [canCreate]="'create' | able : 'Application'"
@@ -18,7 +18,7 @@
     (delete)="onDelete($event)"
     (preview)="onPreview($event)"
     (clone)="onClone($event)"
-  ></safe-applications-summary>
+  ></shared-applications-summary>
 
   <!-- APPLICATIONS TABLE -->
   <h2>{{ 'pages.applications.all' | translate }}</h2>
@@ -51,7 +51,7 @@
             {{ 'common.createdOn' | translate }}
           </th>
           <td uiCell *cdkCellDef="let element">
-            {{ element.createdAt | safeDate }}
+            {{ element.createdAt | sharedDate }}
           </td>
         </ng-container>
 
@@ -105,6 +105,7 @@
               icon="more_vert"
               [uiMenuTriggerFor]="menu"
               (click)="$event.stopPropagation()"
+              [uiTooltip]="'common.options' | translate"
             >
             </ui-button>
             <ui-menu #menu>
@@ -112,13 +113,13 @@
                 <ui-icon icon="preview" variant="grey"></ui-icon>
                 {{ 'common.preview' | translate }}
               </button>
-              <safe-access
+              <shared-access
                 [menuItem]="true"
                 [access]="element.permissions"
                 [objectTypeName]="'common.application.one' | translate"
                 (save)="saveAccess($event, element)"
                 *ngIf="element.canUpdate"
-              ></safe-access>
+              ></shared-access>
               <button
                 uiMenuItem
                 (click)="onClone(element)"
@@ -147,7 +148,7 @@
         ></tr>
       </table>
       <!-- Loading indicator -->
-      <safe-skeleton-table
+      <shared-skeleton-table
         *ngIf="loading"
         [columns]="[
           'common.name',
@@ -157,7 +158,7 @@
         ]"
         [actions]="true"
       >
-      </safe-skeleton-table>
+      </shared-skeleton-table>
     </div>
   </div>
   <!-- Pagination -->

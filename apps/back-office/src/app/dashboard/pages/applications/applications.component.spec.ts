@@ -24,11 +24,11 @@ import {
   DateModule,
 } from '@oort-front/ui';
 import {
-  SafeAccessModule,
-  SafeApplicationsSummaryModule,
-  SafeSkeletonTableModule,
-  SafeDateModule,
-} from '@oort-front/safe';
+  AccessModule,
+  ApplicationsSummaryModule,
+  SkeletonTableModule,
+  DateModule,
+} from '@oort-front/shared';
 import { FilterComponent } from './components/filter/filter.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -54,10 +54,10 @@ describe('ApplicationsComponent', () => {
         ChipModule,
         PaginatorModule,
         DateModule,
-        SafeAccessModule,
-        SafeApplicationsSummaryModule,
-        SafeSkeletonTableModule,
-        SafeDateModule,
+        AccessModule,
+        ApplicationsSummaryModule,
+        SkeletonTableModule,
+        DateModule,
         FormsModule,
         ReactiveFormsModule,
         TranslateModule.forRoot({

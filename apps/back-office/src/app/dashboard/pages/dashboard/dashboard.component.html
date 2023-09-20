@@ -1,9 +1,9 @@
 <!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
 <div [ngClass]="{ 'p-8 h-full bg-white overflow-auto': isFullScreen }">
   <ng-container
-    safeFullScreen
+    sharedFullScreen
     [(isFullScreenMode)]="isFullScreen"
-    *safeSkeleton="
+    *sharedSkeleton="
       loading;
       repeat: 1;
       height: '32px';
@@ -16,7 +16,7 @@
       <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
         <!-- Dashboard title -->
         <div class="flex items-center gap-1">
-          <safe-editable-text
+          <shared-editable-text
             [text]="dashboard.name"
             [canEdit]="canUpdate"
             (onChange)="saveName($event)"
@@ -25,7 +25,7 @@
             <h1 class="!m-0 overflow-hidden text-ellipsis">
               {{ dashboard.name }}
             </h1>
-          </safe-editable-text>
+          </shared-editable-text>
           <ui-button
             *ngIf="!isStep"
             [isIcon]="true"
@@ -49,11 +49,11 @@
           (cdkDropListDropped)="onButtonActionDrop($event)"
         >
           <!-- Button actions -->
-          <safe-button-action
+          <shared-button-action
             [buttonActions]="buttonActions"
             [dashboard]="dashboard"
             [canUpdate]="canUpdate"
-          ></safe-button-action>
+          ></shared-button-action>
 
           <!-- Fullscreen -->
           <ui-button
@@ -68,7 +68,7 @@
           >
           </ui-button>
           <!-- Access -->
-          <safe-access
+          <shared-access
             [access]="dashboard.permissions"
             [application]="applicationId"
             [objectTypeName]="'common.page.one' | translate"
@@ -81,7 +81,7 @@
                 : false
             "
           >
-          </safe-access>
+          </shared-access>
           <!-- Context -->
           <ui-button
             variant="grey"
@@ -104,6 +104,7 @@
             [uiMenuTriggerFor]="menu"
             cdkOverlayOrigin
             #appMenuTrigger="cdkOverlayOrigin"
+            [uiTooltip]="'common.options' | translate"
           >
           </ui-button>
           <ui-menu #menu>
@@ -140,13 +141,13 @@
             [cdkConnectedOverlayOrigin]="appMenuTrigger"
             [cdkConnectedOverlayOpen]="showAppMenu"
           >
-            <safe-search-menu
+            <shared-search-menu
               [headerTemplate]="searchMenuHeaderTemplate"
               [currentApplicationId]="applicationId"
               [applications]="applications"
               (close)="showAppMenu = false"
               (open)="onDuplicate($event)"
-            ></safe-search-menu>
+            ></shared-search-menu>
           </ng-template>
         </div>
       </div>
@@ -206,7 +207,7 @@
     </ng-container>
   </ng-container>
   <!-- Widgets -->
-  <safe-widget-grid
+  <shared-widget-grid
     [loading]="loading"
     [widgets]="widgets"
     [canUpdate]="dashboard?.canUpdate || false"
@@ -216,15 +217,15 @@
     (style)="onStyleTile($event)"
     (changeStep)="changeStep.emit($event)"
     (add)="onAdd($event)"
-  ></safe-widget-grid>
-  <safe-dashboard-filter
+  ></shared-widget-grid>
+  <shared-dashboard-filter
     *ngIf="showFilter && isFullScreen"
     [editable]="true"
     [isFullScreen]="isFullScreen"
-  ></safe-dashboard-filter>
+  ></shared-dashboard-filter>
 </div>
-<safe-dashboard-filter
+<shared-dashboard-filter
   *ngIf="showFilter && !isFullScreen"
   [editable]="true"
   [isFullScreen]="isFullScreen"
-></safe-dashboard-filter>
+></shared-dashboard-filter>

@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Workflow } from '@oort-front/safe';
+import { Workflow } from '@oort-front/shared';
 
 /** Graphql query for getting a workflow by its id */
 export const GET_WORKFLOW_BY_ID = gql`

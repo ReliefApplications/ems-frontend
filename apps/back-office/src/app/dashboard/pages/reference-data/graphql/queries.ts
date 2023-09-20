@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { ReferenceData, ApiConfiguration } from '@oort-front/safe';
+import { ReferenceData, ApiConfiguration } from '@oort-front/shared';
 
 // === GET REFERENCE DATA ===
 /** Get ref data gql query definition */

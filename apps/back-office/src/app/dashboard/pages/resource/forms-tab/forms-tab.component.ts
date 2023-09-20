@@ -3,9 +3,9 @@ import { Apollo } from 'apollo-angular';
 import {
   Form,
   Resource,
-  SafeConfirmService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  ConfirmService,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { DeleteFormMutationResponse, DELETE_FORM } from './graphql/mutations';
 import get from 'lodash/get';
@@ -23,10 +23,7 @@ import { takeUntil } from 'rxjs';
   templateUrl: './forms-tab.component.html',
   styleUrls: ['./forms-tab.component.scss'],
 })
-export class FormsTabComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
+export class FormsTabComponent extends UnsubscribeComponent implements OnInit {
   private resource!: Resource;
   public forms: Form[] = [];
   public loading = true;
@@ -52,7 +49,7 @@ export class FormsTabComponent
   constructor(
     private apollo: Apollo,
     private snackBar: SnackbarService,
-    private confirmService: SafeConfirmService,
+    private confirmService: ConfirmService,
     private translate: TranslateService,
     private dialog: Dialog
   ) {

@@ -11,18 +11,23 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 import {
   Application,
-  SafeApplicationService,
-  SafeUnsubscribeComponent,
-  SafeConfirmService,
-  SafeRestService,
-} from '@oort-front/safe';
+  ApplicationService,
+  UnsubscribeComponent,
+  ConfirmService,
+  RestService,
+} from '@oort-front/shared';
 import { firstValueFrom } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
 import { UploadApplicationStyleMutationResponse } from './graphql/mutations';
 import { UPLOAD_APPLICATION_STYLE } from './graphql/mutations';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { ButtonModule, SnackbarService, SpinnerModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  SnackbarService,
+  SpinnerModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { DOCUMENT } from '@angular/common';
 
@@ -41,12 +46,13 @@ const DEFAULT_STYLE = '';
     TranslateModule,
     ButtonModule,
     SpinnerModule,
+    TooltipModule,
   ],
   templateUrl: './custom-style.component.html',
   styleUrls: ['./custom-style.component.scss'],
 })
 export class CustomStyleComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
   public formControl = new FormControl(DEFAULT_STYLE);
@@ -74,12 +80,12 @@ export class CustomStyleComponent
    * @param document document
    */
   constructor(
-    private applicationService: SafeApplicationService,
+    private applicationService: ApplicationService,
     private snackBar: SnackbarService,
     private apollo: Apollo,
     private translate: TranslateService,
-    private confirmService: SafeConfirmService,
-    private restService: SafeRestService,
+    private confirmService: ConfirmService,
+    private restService: RestService,
     @Inject(DOCUMENT) private document: Document
   ) {
     super();

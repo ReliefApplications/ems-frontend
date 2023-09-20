@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PositionAttribute, SafeBreadcrumbService } from '@oort-front/safe';
+import { PositionAttribute, BreadcrumbService } from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
 import {
   GetPositionAttributesFromCategoryQueryResponse,
@@ -36,7 +36,7 @@ export class PositionAttributesComponent implements OnInit {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private breadcrumbService: SafeBreadcrumbService
+    private breadcrumbService: BreadcrumbService
   ) {}
 
   ngOnInit(): void {

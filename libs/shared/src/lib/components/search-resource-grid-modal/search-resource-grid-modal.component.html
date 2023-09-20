@@ -1,0 +1,36 @@
+<ui-dialog [closable]="true">
+  <ng-container ngProjectAs="header">
+    <h2 *ngIf="selectable">
+      {{
+        'common.searchObject'
+          | translate : { name: ('common.record.few' | translate) }
+      }}
+    </h2>
+    <h2 *ngIf="!selectable">{{ 'common.record.few' | translate }}</h2>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <shared-core-grid
+      class="h-96"
+      [settings]="gridSettings"
+      [multiSelect]="multiSelect"
+      [selectedRows]="selectedRows"
+      (selectionChange)="onSelectionChange($event)"
+      [selectable]="selectable"
+    >
+    </shared-core-grid>
+  </ng-container>
+  <ng-container ngProjectAs="actions" *ngIf="selectable">
+    <ui-button uiDialogClose (click)="closeModal(false)">
+      {{ 'common.cancel' | translate }}
+    </ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      cdkFocusInitial
+      (click)="closeModal()"
+      *ngIf="selectable"
+    >
+      {{ 'common.select' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

@@ -4,9 +4,9 @@ import { FormBuilder, Validators } from '@angular/forms';
 import {
   ContentType,
   CONTENT_TYPES,
-  SafeUnsubscribeComponent,
-  SafeWorkflowService,
-} from '@oort-front/safe';
+  UnsubscribeComponent,
+  WorkflowService,
+} from '@oort-front/shared';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs';
 import { AddFormMutationResponse, ADD_FORM } from '../../graphql/mutations';
@@ -25,10 +25,7 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './add-step.component.html',
   styleUrls: ['./add-step.component.scss'],
 })
-export class AddStepComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
+export class AddStepComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   public contentTypes = CONTENT_TYPES.filter((x) => x.value !== 'workflow');
   public formsQuery!: QueryRef<GetFormsQueryResponse>;
@@ -56,7 +53,7 @@ export class AddStepComponent
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private apollo: Apollo,
-    private workflowService: SafeWorkflowService
+    private workflowService: WorkflowService
   ) {
     super();
   }

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import { UsersComponent } from './users.component';
-import { SafeUsersModule } from '@oort-front/safe';
+import { UsersModule } from '@oort-front/shared';
 import {
   TranslateFakeLoader,
   TranslateLoader,
@@ -21,7 +21,7 @@ describe('UsersComponent', () => {
       declarations: [UsersComponent],
       imports: [
         ApolloTestingModule,
-        SafeUsersModule,
+        UsersModule,
         HttpClientModule,
         TranslateModule.forRoot({
           loader: {

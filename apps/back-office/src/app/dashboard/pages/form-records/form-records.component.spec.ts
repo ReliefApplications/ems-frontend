@@ -11,10 +11,10 @@ import {
 import { HttpClientModule } from '@angular/common/http';
 import { DialogModule } from '@angular/cdk/dialog';
 import {
-  SafeRecordHistoryModule,
-  SafeSkeletonTableModule,
-  SafeEmptyModule,
-} from '@oort-front/safe';
+  RecordHistoryModule,
+  SkeletonTableModule,
+  EmptyModule,
+} from '@oort-front/shared';
 
 describe('FormRecordsComponent', () => {
   let component: FormRecordsComponent;
@@ -27,9 +27,9 @@ describe('FormRecordsComponent', () => {
         ApolloTestingModule,
         HttpClientModule,
         DialogModule,
-        SafeRecordHistoryModule,
-        SafeSkeletonTableModule,
-        SafeEmptyModule,
+        RecordHistoryModule,
+        SkeletonTableModule,
+        EmptyModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
