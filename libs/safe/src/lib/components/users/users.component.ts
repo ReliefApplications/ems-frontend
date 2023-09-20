@@ -44,6 +44,7 @@ export class SafeUsersComponent
   @Input() loading = true;
 
   @Output() changeUsers = new EventEmitter();
+  @Output() changeFilter = new EventEmitter();
 
   // === DISPLAYED COLUMNS ===
   public displayedColumns = [
@@ -88,12 +89,16 @@ export class SafeUsersComponent
   }
 
   ngOnInit(): void {
-    this.filterPredicate();
+    // this.filterPredicate();
+    // this.filteredUsers = this.users;
+    // console.log(this.users);
+    // console.log(this.filteredUsers);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.users) {
-      this.filterPredicate();
+      // this.filterPredicate();
+      this.filteredUsers = this.users;
     }
   }
 
@@ -101,6 +106,7 @@ export class SafeUsersComponent
    * Filter current user list by search and role
    */
   private filterPredicate() {
+    console.log("aqui123");
     this.filteredUsers = this.users.filter(
       (data: any) =>
         (this.searchText.trim().length === 0 ||
@@ -314,12 +320,14 @@ export class SafeUsersComponent
   applyFilter(column: string, event: any): void {
     if (column === 'role') {
       this.roleFilter = event?.trim() ?? '';
+      this.changeFilter.emit({"column": column, "event": this.roleFilter});
     } else {
       this.searchText = event
         ? event.target.value.trim().toLowerCase()
         : this.searchText;
+      this.changeFilter.emit({"column": column, "event": this.searchText});
     }
-    this.filterPredicate();
+    //this.filterPredicate();
   }
 
   /**

@@ -45,6 +45,12 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
     endCursor: '',
   };
 
+  // === FILTERING ===
+  public filter: any = {
+    filters: [],
+    logic: 'and',
+  };
+
   /**
    * UsersComponent constructor.
    *
@@ -61,6 +67,7 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
       variables: {
         first: ITEMS_PER_PAGE,
         afterCursor: null,
+        filter: this.filter,
       },
     });
     this.usersQuery.valueChanges
@@ -119,9 +126,21 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
    */
   private fetchUsers(refetch?: boolean): void {
     this.loading = true;
+    console.log("aqui123");
+    // const teste = {
+    //   "logic": "and",
+    //   "filters": [
+    //       {
+    //           "field": "firstName",
+    //           "operator": "contains",
+    //           "value": "renzo"
+    //       }
+    //   ]
+    // }
     const variables = {
       first: this.pageInfo.pageSize,
       afterCursor: refetch ? null : this.pageInfo.endCursor,
+      filter: this.filter
     };
     const cachedValues: GetUsersQueryResponse = getCachedValues(
       this.apollo.client,
@@ -176,5 +195,39 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
    */
   public changePageLength(e: any) {
     this.pageInfo.length += parseInt(e);
+  }
+
+  public onFilterChange(e: any) {
+    
+    if (e.column === 'role') {
+      let foundRole = false;
+      this.filter.filters.forEach((f:any) => {
+        if (f.field === 'roles') {
+          f.value = e.event;
+          foundRole = true;
+        }
+      });
+      if (!foundRole) {
+        this.filter.filters.push({ field: 'roles', operator: 'in', value: e.event });
+      }
+    
+    } else {
+      if (e.event === '') {
+        this.filter.filters = this.filter.filters.filter((filter: any) => filter.field !== 'name');
+      } else {
+        let foundName = false;
+        this.filter.filters.forEach((f:any) => {
+          if (f.field === 'name') {
+            f.value = e.event;
+            foundName = true;
+          }
+        });
+        if (!foundName) {
+          this.filter.filters.push({ field: 'name', operator: 'contains', value: e.event });
+        }
+      }
+    }
+    console.log(this.filter);
+    this.fetchUsers(true);
   }
 }
