@@ -48,6 +48,7 @@ import { isEqual } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
+import { Clipboard } from '@angular/cdk/clipboard';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -114,6 +115,8 @@ export class DashboardComponent
    * @param refDataService Shared reference data service
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
+   * @param translate Shared translate service
+   * @param clipboard Angular clipboard service
    */
   constructor(
     private applicationService: SafeApplicationService,
@@ -129,7 +132,9 @@ export class DashboardComponent
     private confirmService: SafeConfirmService,
     private refDataService: SafeReferenceDataService,
     private renderer: Renderer2,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private translate: TranslateService,
+    private clipboard: Clipboard
   ) {
     super();
   }
@@ -564,15 +569,10 @@ export class DashboardComponent
   /** Display the ShareUrl modal with the route to access the dashboard. */
   public async onShare(): Promise<void> {
     const url = `${window.origin}/share/${this.dashboard?.id}`;
-    const { ShareUrlComponent } = await import(
-      './components/share-url/share-url.component'
+    this.clipboard.copy(url);
+    this.snackBar.openSnackBar(
+      this.translate.instant('common.notifications.copiedToClipboard')
     );
-    const dialogRef = this.dialog.open(ShareUrlComponent, {
-      data: {
-        url,
-      },
-    });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe();
   }
 
   /**
