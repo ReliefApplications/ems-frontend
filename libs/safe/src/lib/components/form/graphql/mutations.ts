@@ -61,12 +61,3 @@ export const EDIT_RECORD = gql`
     }
   }
 `;
-
-// === UPLOAD FILE ===
-
-/** Graphql request for uploading a file to a form */
-export const UPLOAD_FILE = gql`
-  mutation uploadFile($file: Upload!, $form: ID!) {
-    uploadFile(file: $file, form: $form)
-  }
-`;

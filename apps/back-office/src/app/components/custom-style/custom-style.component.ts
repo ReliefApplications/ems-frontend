@@ -7,12 +7,11 @@ import {
   SafeApplicationService,
   SafeUnsubscribeComponent,
   SafeConfirmService,
-  UploadApplicationStyleMutationResponse,
+  SafeDownloadService,
+  BlobType,
 } from '@oort-front/safe';
-import { firstValueFrom } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
-import { UPLOAD_APPLICATION_STYLE } from './graphql/mutations';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ButtonModule, SnackbarService } from '@oort-front/ui';
 
@@ -58,13 +57,15 @@ export class CustomStyleComponent
    * @param apollo Apollo service
    * @param translate Angular translate service
    * @param confirmService Shared confirmation service
+   * @param downloadService Shared download service
    */
   constructor(
     private applicationService: SafeApplicationService,
     private snackBar: SnackbarService,
     private apollo: Apollo,
     private translate: TranslateService,
-    private confirmService: SafeConfirmService
+    private confirmService: SafeConfirmService,
+    private downloadService: SafeDownloadService
   ) {
     super();
     this.styleApplied = document.createElement('style');
@@ -124,6 +125,10 @@ export class CustomStyleComponent
 
   /** Save application custom css styling */
   async onSave(): Promise<void> {
+    if (!this.applicationId) {
+      throw new Error('No application id');
+    }
+
     const file = new File(
       [this.formControl.value as string],
       'customStyle.scss',
@@ -132,32 +137,21 @@ export class CustomStyleComponent
       }
     );
 
-    const res = await firstValueFrom(
-      this.apollo.mutate<UploadApplicationStyleMutationResponse>({
-        mutation: UPLOAD_APPLICATION_STYLE,
-        variables: {
-          file,
-          application: this.applicationId,
-        },
-        context: {
-          useMultipart: true,
-        },
+    await this.downloadService.uploadBlob(
+      file,
+      BlobType.APPLICATION_STYLE,
+      this.applicationId
+    );
+
+    this.snackBar.openSnackBar(
+      this.translate.instant('common.notifications.objectUpdated', {
+        value: this.translate.instant('components.application.customStyling'),
+        type: '',
       })
     );
-    if (res.errors) {
-      this.snackBar.openSnackBar(res.errors[0].message, { error: true });
-      return;
-    } else {
-      this.snackBar.openSnackBar(
-        this.translate.instant('common.notifications.objectUpdated', {
-          value: this.translate.instant('components.application.customStyling'),
-          type: '',
-        })
-      );
-      this.formControl.markAsPristine();
-      this.applicationService.customStyleEdited = false;
-      this.applicationService.customStyle = this.styleApplied;
-    }
+    this.formControl.markAsPristine();
+    this.applicationService.customStyleEdited = false;
+    this.applicationService.customStyle = this.styleApplied;
   }
 
   /**

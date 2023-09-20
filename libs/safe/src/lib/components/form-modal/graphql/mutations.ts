@@ -1,7 +1,6 @@
 import { gql } from 'apollo-angular';
 
 // === EDIT RECORD ===
-
 /** Graphql request for editing a record by its id */
 export const EDIT_RECORD = gql`
   mutation editRecord(
@@ -36,7 +35,6 @@ export const EDIT_RECORD = gql`
 `;
 
 // === ADD RECORD ===
-
 /** Graphql request for adding a new record to a form */
 export const ADD_RECORD = gql`
   mutation addRecord($form: ID!, $data: JSON!, $display: Boolean) {
@@ -62,17 +60,7 @@ export const ADD_RECORD = gql`
   }
 `;
 
-// === UPLOAD FILE ===
-
-/** Graphql request for uploading a file to a form */
-export const UPLOAD_FILE = gql`
-  mutation uploadFile($file: Upload!, $form: ID!) {
-    uploadFile(file: $file, form: $form)
-  }
-`;
-
 // === EDIT RECORDS ===
-
 /** Graphql request for editing multiple records by their ids */
 export const EDIT_RECORDS = gql`
   mutation editRecords(
