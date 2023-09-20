@@ -857,7 +857,11 @@
                         </ui-textarea>
                       </ng-container>
                       <ng-container
-                        *ngIf="['default', 'dropdown', 'radiogroup'].includes(column.type)"
+                        *ngIf="
+                          ['default', 'dropdown', 'radiogroup'].includes(
+                            column.type
+                          )
+                        "
                       >
                         <kendo-dropdownlist
                           [data]="field.meta.choices"
@@ -918,7 +922,9 @@
                       </ng-container>
                       <ng-container
                         *ngIf="
-                          ['default, 'dropdown', 'radiogroup'].includes(column.type)
+                          ['default', 'dropdown', 'radiogroup'].includes(
+                            column.type
+                          )
                         "
                       >
                         <kendo-dropdownlist
