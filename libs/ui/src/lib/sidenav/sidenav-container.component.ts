@@ -5,7 +5,6 @@ import {
   ContentChildren,
   ElementRef,
   OnDestroy,
-  OnInit,
   QueryList,
   Renderer2,
   ViewChild,
@@ -27,9 +26,7 @@ import { UILayoutService } from './layout/layout.service';
   templateUrl: './sidenav-container.component.html',
   styleUrls: ['./sidenav-container.component.scss'],
 })
-export class SidenavContainerComponent
-  implements OnInit, AfterViewInit, OnDestroy
-{
+export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   @ContentChildren(SidenavDirective) uiSidenavDirective!: SidenavDirective[];
   @ViewChild('contentContainer') contentContainer!: ElementRef;
   @ViewChildren('sidenav') sidenav!: QueryList<any>;
@@ -43,6 +40,7 @@ export class SidenavContainerComponent
   public visible: boolean[] = [];
   private destroy$ = new Subject<void>();
   animationClasses = ['transition-all', 'duration-500', 'ease-in-out'] as const;
+  fixedWrapperActionExist = false;
 
   /** @returns height of element */
   get height() {
@@ -66,21 +64,20 @@ export class SidenavContainerComponent
     private layoutService: UILayoutService
   ) {}
 
-  ngOnInit(): void {
+  ngAfterViewInit() {
     this.layoutService.fixedWrapperActions$
       .pipe(takeUntil(this.destroy$))
       .subscribe((view) => {
         if (view && this.fixedWrapperActions) {
+          this.fixedWrapperActionExist = true;
           this.fixedWrapperActions.createEmbeddedView(view);
         } else {
           if (this.fixedWrapperActions) {
+            this.fixedWrapperActionExist = false;
             this.fixedWrapperActions.clear();
           }
         }
       });
-  }
-
-  ngAfterViewInit() {
     // Listen to router events to auto scroll to top of the view
     this.router.events
       .pipe(

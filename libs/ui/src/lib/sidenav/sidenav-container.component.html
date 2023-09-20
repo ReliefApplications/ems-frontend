@@ -1,9 +1,6 @@
 <!-- Never set as relative, while we use kendo tile layouts for widget grid
   todo(2.1.x): check if h-full should be removed -->
-<div
-  [ngClass]="{ flex: mode[0] === 'side' }"
-  class="w-full h-full overflow-y-auto"
->
+<div class="w-full flex h-full overflow-y-auto">
   <!-- SIDENAV CONTENT -->
   <ng-container *ngFor="let sidenav of uiSidenavDirective; let i = index">
     <div
@@ -25,7 +22,11 @@
       }"
       class="block w-full overflow-y-auto min-h-full transition-visibility duration-500 transition-all ease-in-out absolute inset-0 pointer-events-none z-[998]"
     ></div>
-    <div class="py-[32px] overflow-y-auto h-full px-[24px]" #contentWrapper>
+    <div
+      [ngClass]="{ 'pb-[64px]': fixedWrapperActionExist }"
+      class="py-[32px] overflow-y-auto h-full px-[24px]"
+      #contentWrapper
+    >
       <ng-content select="content"></ng-content>
     </div>
     <ng-template #fixedWrapperActions></ng-template>
