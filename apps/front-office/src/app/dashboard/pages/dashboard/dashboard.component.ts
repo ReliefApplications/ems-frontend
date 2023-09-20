@@ -11,16 +11,14 @@ import {
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  GetDashboardByIdQueryResponse,
-  GET_DASHBOARD_BY_ID,
-} from './graphql/queries';
+import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 import {
   Dashboard,
   SafeDashboardService,
   SafeUnsubscribeComponent,
   SafeWidgetGridComponent,
   SafeConfirmService,
+  DashboardQueryResponse,
 } from '@oort-front/safe';
 import { TranslateService } from '@ngx-translate/core';
 import { map, takeUntil } from 'rxjs/operators';
@@ -96,7 +94,7 @@ export class DashboardComponent
       this.id = params.id;
       this.loading = true;
       this.apollo
-        .watchQuery<GetDashboardByIdQueryResponse>({
+        .watchQuery<DashboardQueryResponse>({
           query: GET_DASHBOARD_BY_ID,
           variables: {
             id: this.id,

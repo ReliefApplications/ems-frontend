@@ -71,7 +71,7 @@ export const GET_APPLICATION_FEATURES = gql`
 
 /** Graphql request for getting the steps of a workflow by its id */
 export const GET_WORKFLOW_STEPS = gql`
-  query getWorkflowSteps($id: ID!) {
+  query GetWorkflowSteps($id: ID!) {
     workflow(id: $id) {
       id
       steps {
