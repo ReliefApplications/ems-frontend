@@ -6,24 +6,28 @@
     <ng-container ngProjectAs="label">{{
       'components.user.summary.title' | translate
     }}</ng-container>
-    <safe-user-details
-      *ngIf="user"
-      [user]="user"
-      (edit)="onEditProfile($event)"
-      [loading]="loading"
-    ></safe-user-details>
-    <ui-spinner *ngIf="loading"></ui-spinner>
+    <ng-template uiTabContent>
+      <safe-user-details
+        *ngIf="user"
+        [user]="user"
+        (edit)="onEditProfile($event)"
+        [loading]="loading"
+      ></safe-user-details>
+      <ui-spinner *ngIf="loading"></ui-spinner>
+    </ng-template>
   </ui-tab>
   <ui-tab>
     <ng-container ngProjectAs="label">{{
       'common.role.few' | translate
     }}</ng-container>
-    <safe-user-roles
-      *ngIf="user"
-      [user]="user"
-      [application]="application"
-      (edit)="onEditRoles($event)"
-      [loading]="loading"
-    ></safe-user-roles>
+    <ng-template uiTabContent>
+      <safe-user-roles
+        *ngIf="user"
+        [user]="user"
+        [application]="application"
+        (edit)="onEditRoles($event)"
+        [loading]="loading"
+      ></safe-user-roles>
+    </ng-template>
   </ui-tab>
 </ui-tabs>

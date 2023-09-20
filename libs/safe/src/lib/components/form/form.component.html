@@ -32,28 +32,28 @@
 <!-- Form -->
 <div #formContainer></div>
 <!-- Floating div for form buttons actions -->
-<ui-fixed-wrapper>
-  <div *ngIf="surveyActive" class="flex justify-end gap-2 flex-wrap">
-    <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
-      <ui-button
-        *ngIf="pages.length > 1"
-        [disabled]="survey.isFirstPage"
-        variant="primary"
-        (click)="survey.prevPage()"
-        >{{ 'common.previous' | translate }}</ui-button
-      >
-      <ui-button
-        *ngIf="pages.length > 1"
-        [disabled]="survey.isLastPage"
-        variant="primary"
-        (click)="survey.nextPage()"
-        >{{ 'common.next' | translate }}</ui-button
-      >
-    </ng-container>
-    <ui-button variant="primary" category="secondary" (click)="submit()">{{
-      'common.save' | translate
-    }}</ui-button>
-  </div>
-</ui-fixed-wrapper>
-
-
+<ng-container *ngIf="surveyActive">
+  <ui-fixed-wrapper>
+    <div class="flex justify-end gap-2 flex-wrap">
+      <ng-container *ngIf="survey?.visiblePages ?? [] as pages">
+        <ui-button
+          *ngIf="pages.length > 1"
+          [disabled]="survey.isFirstPage"
+          variant="primary"
+          (click)="survey.prevPage()"
+          >{{ 'common.previous' | translate }}</ui-button
+        >
+        <ui-button
+          *ngIf="pages.length > 1"
+          [disabled]="survey.isLastPage"
+          variant="primary"
+          (click)="survey.nextPage()"
+          >{{ 'common.next' | translate }}</ui-button
+        >
+      </ng-container>
+      <ui-button variant="primary" category="secondary" (click)="submit()">{{
+        'common.save' | translate
+      }}</ui-button>
+    </div>
+  </ui-fixed-wrapper>
+</ng-container>

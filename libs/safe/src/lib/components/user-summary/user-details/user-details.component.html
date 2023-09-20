@@ -48,16 +48,16 @@
   </div>
 </form>
 <!-- Floating div for actions buttons -->
-<ui-fixed-wrapper *ngIf="'update' | able : 'User'">
-  <!-- Save button -->
-  <ui-button
-    class="bottom-0 right-0 mr-2 px-4 py-2 fixed"
-    *ngIf="'update' | able : 'User'"
-    variant="primary"
-    category="secondary"
-    type="submit"
-    [disabled]="!form.valid"
-    (click)="onUpdate()"
-  >{{ 'common.saveChanges' | translate }}
-  </ui-button>
-</ui-fixed-wrapper>
+<ng-container *ngIf="'update' | able : 'User'">
+  <ui-fixed-wrapper>
+    <!-- Save button -->
+    <ui-button
+      variant="primary"
+      category="secondary"
+      type="submit"
+      [disabled]="!form.valid"
+      (click)="onUpdate()"
+      >{{ 'common.saveChanges' | translate }}
+    </ui-button>
+  </ui-fixed-wrapper>
+</ng-container>

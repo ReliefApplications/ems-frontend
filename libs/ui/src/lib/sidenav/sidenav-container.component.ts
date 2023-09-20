@@ -5,16 +5,19 @@ import {
   ContentChildren,
   ElementRef,
   OnDestroy,
+  OnInit,
   QueryList,
   Renderer2,
   ViewChild,
   ViewChildren,
+  ViewContainerRef,
 } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { SidenavDirective } from './sidenav.directive';
 import { Subject, takeUntil } from 'rxjs';
 import { SidenavPositionTypes, SidenavTypes } from './types/sidenavs';
 import { filter } from 'rxjs/operators';
+import { SafeLayoutService } from '@oort-front/safe';
 
 /**
  * UI Sidenav component
@@ -24,11 +27,15 @@ import { filter } from 'rxjs/operators';
   templateUrl: './sidenav-container.component.html',
   styleUrls: ['./sidenav-container.component.scss'],
 })
-export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
+export class SidenavContainerComponent
+  implements OnInit, AfterViewInit, OnDestroy
+{
   @ContentChildren(SidenavDirective) uiSidenavDirective!: SidenavDirective[];
   @ViewChild('contentContainer') contentContainer!: ElementRef;
   @ViewChildren('sidenav') sidenav!: QueryList<any>;
   @ViewChild('contentWrapper') contentWrapper!: ElementRef;
+  @ViewChild('fixedWrapperActions', { read: ViewContainerRef })
+  fixedWrapperActions?: ViewContainerRef;
 
   public showSidenav: boolean[] = [];
   public mode: SidenavTypes[] = [];
@@ -49,13 +56,29 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
    * @param cdr ChangeDetectorRef
    * @param el elementRef
    * @param router Angular router
+   * @param layoutService Layout service that handles view injection of the fixed wrapper actions if exists
    */
   constructor(
     private renderer: Renderer2,
     private cdr: ChangeDetectorRef,
     public el: ElementRef,
-    private router: Router
+    private router: Router,
+    private layoutService: SafeLayoutService
   ) {}
+
+  ngOnInit(): void {
+    this.layoutService.fixedWrapperActions$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((view) => {
+        if (view && this.fixedWrapperActions) {
+          this.fixedWrapperActions.createEmbeddedView(view);
+        } else {
+          if (this.fixedWrapperActions) {
+            this.fixedWrapperActions.clear();
+          }
+        }
+      });
+  }
 
   ngAfterViewInit() {
     // Listen to router events to auto scroll to top of the view

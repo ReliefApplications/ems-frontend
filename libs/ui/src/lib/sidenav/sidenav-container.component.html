@@ -17,7 +17,7 @@
     </div>
   </ng-container>
   <!-- CONTENT -->
-  <div class="flex-1 overflow-y-auto" #contentContainer>
+  <div class="flex-1 overflow-clip" #contentContainer>
     <div
       [ngClass]="{
         'visible bg-black opacity-50': showSidenav[0] && mode[0] === 'over',
@@ -28,5 +28,6 @@
     <div class="py-[32px] overflow-y-auto h-full px-[24px]" #contentWrapper>
       <ng-content select="content"></ng-content>
     </div>
+    <ng-template #fixedWrapperActions></ng-template>
   </div>
 </div>
