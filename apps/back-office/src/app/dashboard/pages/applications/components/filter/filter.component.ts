@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import {
   UntypedFormBuilder,
   UntypedFormControl,
@@ -21,6 +29,9 @@ export class FilterComponent implements OnInit {
 
   @Output() filter = new EventEmitter<any>();
   @Input() loading = false;
+
+  @ViewChild('advancedFilter')
+  advancedFilterTemplate!: TemplateRef<any>;
 
   /**
    * Filter component of applications page.

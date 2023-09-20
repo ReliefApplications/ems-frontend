@@ -1,6 +1,6 @@
-<div [formGroup]="form" class="flex flex-col gap-x-4">
+<div [formGroup]="form" class="inline-flex">
   <!-- Default filter -->
-  <div class="flex flex-wrap gap-2 flex-col sm:flex-row">
+  <div class="inline-flex gap-2">
     <!-- Search text filter -->
     <div uiFormFieldDirective>
       <ui-icon icon="search" uiPrefix></ui-icon>
@@ -25,49 +25,49 @@
       }}
     </ui-button>
   </div>
-  <!-- Advanced filters -->
-  <div
-    *ngIf="show"
-    class="flex flex-wrap gap-2 sm:items-end flex-col sm:flex-row"
-  >
-    <!-- Date range filter -->
-    <div uiFormFieldDirective [defaultMargin]="false">
-      <label>{{ 'common.input.dateRange' | translate }}</label>
-      <div [formGroup]="form" [uiDateWrapper]="calendar">
-        <input
-          [uiDatePicker]
-          formControlName="startDate"
-          [label]="'kendo.datepicker.startLabel' | translate"
-        />
-        <input
-          [uiDatePicker]
-          formControlName="endDate"
-          [label]="'kendo.datepicker.endLabel' | translate"
-        />
-        <ui-date-range #calendar> </ui-date-range>
+  <ng-template #advancedFilter>
+    <!-- Advanced filters -->
+    <div *ngIf="show" class="inline-flex gap-2 self-end">
+      <!-- Date range filter -->
+      <div uiFormFieldDirective [defaultMargin]="false">
+        <div [formGroup]="form" [uiDateWrapper]="calendar">
+          <input
+            [uiDatePicker]
+            formControlName="startDate"
+            [label]="'kendo.datepicker.startLabel' | translate"
+          />
+          <input
+            [uiDatePicker]
+            formControlName="endDate"
+            [label]="'kendo.datepicker.endLabel' | translate"
+          />
+          <ui-date-range #calendar> </ui-date-range>
+        </div>
       </div>
-    </div>
-    <!-- Status filter -->
-    <div uiFormFieldDirective [defaultMargin]="false" class="p-0 w-44">
-      <label>{{ 'common.status' | translate }}</label>
-      <ui-select-menu
-        formControlName="status"
-        [placeholder]="'common.selectStatus' | translate"
+      <!-- Status filter -->
+      <div uiFormFieldDirective [defaultMargin]="false" class="p-0 w-44">
+        <ui-select-menu
+          formControlName="status"
+          [placeholder]="'common.selectStatus' | translate"
+        >
+          <ui-select-option>-</ui-select-option>
+          <ui-select-option value="active">
+            {{ 'common.status_active' | translate }}
+          </ui-select-option>
+          <ui-select-option value="pending">
+            {{ 'common.status_pending' | translate }}
+          </ui-select-option>
+          <ui-select-option value="archived">
+            {{ 'common.status_archived' | translate }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+      <ui-button
+        variant="danger"
+        (click)="clear()"
+        class="max-sm:!w-auto mr-2"
+        >{{ 'common.filter.clear' | translate }}</ui-button
       >
-        <ui-select-option>-</ui-select-option>
-        <ui-select-option value="active">
-          {{ 'common.status_active' | translate }}
-        </ui-select-option>
-        <ui-select-option value="pending">
-          {{ 'common.status_pending' | translate }}
-        </ui-select-option>
-        <ui-select-option value="archived">
-          {{ 'common.status_archived' | translate }}
-        </ui-select-option>
-      </ui-select-menu>
     </div>
-    <ui-button variant="danger" (click)="clear()" class="max-sm:!w-auto">{{
-      'common.filter.clear' | translate
-    }}</ui-button>
-  </div>
+  </ng-template>
 </div>
