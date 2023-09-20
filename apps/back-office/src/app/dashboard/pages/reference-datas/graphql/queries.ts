@@ -1,11 +1,17 @@
 import { gql } from 'apollo-angular';
-import { ReferenceData } from '@oort-front/safe';
+import { ReferenceData } from '@oort-front/shared';
 
 // === GET REFERENCE DATAS ===
 /** Get list of ref data gql query definition */
 export const GET_REFERENCE_DATAS = gql`
   query GetReferenceDatas($first: Int, $afterCursor: ID, $filter: JSON) {
-    referenceDatas(first: $first, afterCursor: $afterCursor, filter: $filter) {
+    referenceDatas(
+      first: $first
+      afterCursor: $afterCursor
+      filter: $filter
+      sortField: "name"
+      sortOrder: "asc"
+    ) {
       edges {
         node {
           id

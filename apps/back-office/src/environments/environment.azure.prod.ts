@@ -41,5 +41,6 @@ export const environment: Environment = {
     'grid',
     'text',
     'summaryCard',
+    'tabs',
   ],
 };

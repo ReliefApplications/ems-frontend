@@ -1,0 +1,20 @@
+<h1>{{ 'common.role.few' | translate }}</h1>
+<!-- Not in application -->
+<ui-tabs *ngIf="!inApplication">
+  <ui-tab>
+    <ng-container ngProjectAs="label">{{
+      (inApplication ? 'common.application.few' : 'common.platform.backOffice')
+        | translate
+    }}</ng-container>
+    <shared-role-list [inApplication]="inApplication"></shared-role-list>
+  </ui-tab>
+  <ui-tab *ngIf="!inApplication && ('read' | able : 'Group')">
+    <ng-container ngProjectAs="label">{{
+      'common.group.few' | translate
+    }}</ng-container>
+    <shared-group-list></shared-group-list>
+  </ui-tab>
+</ui-tabs>
+<!-- In Application -->
+<shared-role-list *ngIf="inApplication" [inApplication]="inApplication">
+</shared-role-list>

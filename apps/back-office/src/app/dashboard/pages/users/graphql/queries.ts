@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Role, User } from '@oort-front/safe';
+import { Role, User } from '@oort-front/shared';
 
 // === GET ROLES ===
 /** Graphql query for getting roles (of an application or all) */

@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Resource } from '@oort-front/safe';
+import { Resource } from '@oort-front/shared';
 
 /** Graphql query for getting resources with a filter and more data */
 export const GET_RESOURCES_EXTENDED = gql`

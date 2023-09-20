@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Resource } from '@oort-front/safe';
+import { Resource } from '@oort-front/shared';
 
 // === GET RESOURCE BY ID ===
 

@@ -6,9 +6,9 @@ import {
   Form,
   Page,
   Step,
-  SafeFormComponent,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  FormComponent as SharedFormComponent,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import {
   GetFormByIdQueryResponse,
   GetPageByIdQueryResponse,
@@ -27,9 +27,9 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
-  @ViewChild(SafeFormComponent)
-  private formComponent?: SafeFormComponent;
+export class FormComponent extends UnsubscribeComponent implements OnInit {
+  @ViewChild(SharedFormComponent)
+  private formComponent?: SharedFormComponent;
 
   // === DATA ===
   public loading = true;

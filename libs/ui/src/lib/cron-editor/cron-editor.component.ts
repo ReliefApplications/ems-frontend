@@ -257,7 +257,7 @@ export class CronEditorComponent
 
   public async ngOnInit() {
     this.formSub = this.allForm.valueChanges
-      .pipe(debounceTime(50))
+      .pipe(debounceTime(1000))
       .subscribe(() => {
         this.markAsTouched();
         const cron = this.computeCron();

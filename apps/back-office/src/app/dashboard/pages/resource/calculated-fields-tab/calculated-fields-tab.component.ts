@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Resource, SafeUnsubscribeComponent } from '@oort-front/safe';
+import { Resource, UnsubscribeComponent } from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
 import {
@@ -20,7 +20,7 @@ import { takeUntil } from 'rxjs';
   styleUrls: ['./calculated-fields-tab.component.scss'],
 })
 export class CalculatedFieldsTabComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   public resource!: Resource;
@@ -49,17 +49,21 @@ export class CalculatedFieldsTabComponent
     const state = history.state;
     this.resource = get(state, 'resource', null);
 
-    this.fields = this.resource.fields.filter((f: any) => f.isCalculated);
+    if (this.resource && this.resource.fields) {
+      this.fields = this.resource.fields.filter((f: any) => f.isCalculated);
+    } else {
+      this.fields = [];
+    }
   }
 
   /**
    * Adds a new Calculated field for the resource.
    */
   async onAddCalculatedField(): Promise<void> {
-    const { SafeEditCalculatedFieldModalComponent } = await import(
-      '@oort-front/safe'
+    const { EditCalculatedFieldModalComponent } = await import(
+      '@oort-front/shared'
     );
-    const dialogRef = this.dialog.open(SafeEditCalculatedFieldModalComponent, {
+    const dialogRef = this.dialog.open(EditCalculatedFieldModalComponent, {
       disableClose: true,
       data: {
         calculatedField: null,
@@ -118,10 +122,10 @@ export class CalculatedFieldsTabComponent
    * @param field Calculated field to edit
    */
   async onEditCalculatedField(field: any): Promise<void> {
-    const { SafeEditCalculatedFieldModalComponent } = await import(
-      '@oort-front/safe'
+    const { EditCalculatedFieldModalComponent } = await import(
+      '@oort-front/shared'
     );
-    const dialogRef = this.dialog.open(SafeEditCalculatedFieldModalComponent, {
+    const dialogRef = this.dialog.open(EditCalculatedFieldModalComponent, {
       disableClose: true,
       data: {
         calculatedField: field,
@@ -180,8 +184,8 @@ export class CalculatedFieldsTabComponent
    * @param field Calculated field to delete
    */
   async onDeleteCalculatedField(field: any): Promise<void> {
-    const { SafeConfirmModalComponent } = await import('@oort-front/safe');
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+    const { ConfirmModalComponent } = await import('@oort-front/shared');
+    const dialogRef = this.dialog.open(ConfirmModalComponent, {
       data: {
         title: this.translate.instant('common.deleteObject', {
           name: this.translate.instant('common.calculatedField.one'),

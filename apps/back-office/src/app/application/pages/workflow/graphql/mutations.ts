@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Workflow, Step, Page, Form } from '@oort-front/safe';
+import { Workflow, Step, Page, Form } from '@oort-front/shared';
 
 // === EDIT WORKFLOW ===
 /** Edit workflow gql mutation definition */

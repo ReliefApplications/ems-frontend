@@ -5,8 +5,8 @@ import {
   ContentType,
   Step,
   Workflow,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import {
   GetWorkflowByIdQueryResponse,
   GET_WORKFLOW_BY_ID,
@@ -24,22 +24,18 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss'],
 })
-export class WorkflowComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
-  // === DATA ===
+export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
+  /** Loading indicator */
   public loading = true;
-
-  // === WORKFLOW ===
+  /** Current workflow id */
   public id = '';
+  /** Current workflow */
   public workflow?: Workflow;
+  /** Workflow steps */
   public steps: Step[] = [];
-
-  // === ACTIVE STEP ===
+  /** Current step index */
   public activeStep = 0;
-
-  // === PREVIEWED ROLE ===
+  /** Role used for preview */
   public role = '';
 
   /**

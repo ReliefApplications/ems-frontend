@@ -3,11 +3,11 @@ import { TranslateService } from '@ngx-translate/core';
 import {
   Record,
   Form,
-  SafeConfirmService,
+  ConfirmService,
   Resource,
-  SafeDownloadService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  DownloadService,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import {
@@ -44,7 +44,7 @@ const RECORDS_DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
   styleUrls: ['./records-tab.component.scss'],
 })
 export class RecordsTabComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   private recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
@@ -82,8 +82,8 @@ export class RecordsTabComponent
     private apollo: Apollo,
     private translate: TranslateService,
     private snackBar: SnackbarService,
-    private confirmService: SafeConfirmService,
-    private downloadService: SafeDownloadService
+    private confirmService: ConfirmService,
+    private downloadService: DownloadService
   ) {
     super();
   }
@@ -96,7 +96,7 @@ export class RecordsTabComponent
       {
         query: GET_RESOURCE_RECORDS,
         variables: {
-          id: this.resource.id,
+          id: this.resource?.id,
           first: ITEMS_PER_PAGE,
           afterCursor: null,
           display: false,
@@ -240,15 +240,17 @@ export class RecordsTabComponent
    */
   private setDisplayedColumns(core: boolean): void {
     let columns = [];
-    if (core) {
-      for (const field of this.resource.fields.filter(
-        (x: any) => x.isRequired === true
-      )) {
-        columns.push(field.name);
-      }
-    } else {
-      for (const field of this.resource.fields) {
-        columns.push(field.name);
+    if (this.resource?.fields) {
+      if (core) {
+        for (const field of this.resource.fields.filter(
+          (x: any) => x.isRequired === true
+        )) {
+          columns.push(field.name);
+        }
+      } else {
+        for (const field of this.resource.fields) {
+          columns.push(field.name);
+        }
       }
     }
     const metadata = get(this.resource, 'metadata', []);

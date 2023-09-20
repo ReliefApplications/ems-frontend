@@ -1,0 +1,105 @@
+<ng-container *ngIf="tileForm">
+  <ui-tabs class="grow" [vertical]="true">
+    <!-- Main Parameters -->
+    <ui-tab>
+      <ng-container ngProjectAs="label">
+        <ui-icon
+          icon="format_color_text"
+          [size]="24"
+          [uiTooltip]="'components.widget.settings.editor.title' | translate"
+        ></ui-icon>
+        <span>{{ 'components.widget.settings.editor.title' | translate }}</span>
+      </ng-container>
+      <ng-template uiTabContent>
+        <form [formGroup]="tileForm">
+          <div class="flex flex-col">
+            <div uiFormFieldDirective>
+              <label>{{ 'common.title' | translate }}</label>
+              <input formControlName="title" type="string" />
+            </div>
+          </div>
+          <editor [init]="editor" formControlName="text"></editor>
+        </form>
+      </ng-template>
+    </ui-tab>
+    <!-- Preview -->
+    <ui-tab *ngIf="tileForm.value">
+      <ng-container ngProjectAs="label">
+        <ui-icon icon="preview" [size]="24"></ui-icon>
+        <span>{{
+          'components.widget.settings.summaryCard.card.preview.title'
+            | translate
+        }}</span>
+      </ng-container>
+      <ng-template uiTabContent>
+        <shared-editor
+          #widgetContent
+          class="flex-1 h-full w-full"
+          [settings]="tile.settings"
+        >
+        </shared-editor>
+      </ng-template>
+    </ui-tab>
+    <!-- Resource and record selection  -->
+    <ui-tab>
+      <ng-container ngProjectAs="label">
+        <ui-icon
+          icon="settings"
+          [size]="24"
+          [uiTooltip]="
+            'components.widget.settings.editor.recordSelection' | translate
+          "
+        ></ui-icon>
+        <span>{{
+          'components.widget.settings.editor.recordSelection' | translate
+        }}</span>
+      </ng-container>
+      <ng-template uiTabContent>
+        <shared-record-selection-tab
+          *ngIf="tileForm"
+          [form]="tileForm"
+          [selectedResource]="selectedResource"
+          [selectedLayout]="selectedLayout"
+          (resourceChange)="selectedResource = $event; updateFields()"
+          (layoutChange)="selectedLayout = $event; updateFields()"
+        ></shared-record-selection-tab>
+      </ng-template>
+    </ui-tab>
+    <!-- Widget display options -->
+    <ui-tab>
+      <ng-container ngProjectAs="label">
+        <ui-icon
+          icon="settings_overscan"
+          [size]="24"
+          [uiTooltip]="'models.widget.display.title' | translate"
+        ></ui-icon>
+        <span>{{ 'models.widget.display.title' | translate }}</span>
+      </ng-container>
+      <ng-template uiTabContent>
+        <div class="flex flex-col">
+          <shared-display-settings [formGroup]="tileForm"></shared-display-settings>
+          <ui-divider class="my-2"></ui-divider>
+          <div [formGroup]="tileForm">
+            <ui-toggle formControlName="showDataSourceLink">
+              <ng-container ngProjectAs="label">
+                {{
+                  'components.widget.settings.summaryCard.card.display.dataSource'
+                    | translate
+                }}
+                <ui-icon
+                  icon="info_outline"
+                  variant="grey"
+                  [size]="18"
+                  [uiTooltip]="
+                    'components.widget.settings.summaryCard.card.display.tooltip.datasource'
+                      | translate
+                  "
+                ></ui-icon>
+              </ng-container>
+            </ui-toggle>
+          </div>
+        </div>
+      </ng-template>
+    </ui-tab>
+  </ui-tabs>
+</ng-container>

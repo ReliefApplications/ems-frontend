@@ -11,7 +11,7 @@ import {
   TranslateService,
 } from '@ngx-translate/core';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { SafeSkeletonModule } from '@oort-front/safe';
+import { SkeletonModule } from '@oort-front/shared';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -25,7 +25,7 @@ describe('DashboardComponent', () => {
         OAuthModule.forRoot(),
         DialogCdkModule,
         ApolloTestingModule,
-        SafeSkeletonModule,
+        SkeletonModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

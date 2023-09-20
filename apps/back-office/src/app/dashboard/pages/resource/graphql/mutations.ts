@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Record, Resource } from '@oort-front/safe';
+import { Record, Resource } from '@oort-front/shared';
 
 // === RESTORE RECORD ===
 /** Restore record gql mutation definition */

@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Application } from '@oort-front/safe';
+import { Application } from '@oort-front/shared';
 
 // === DELETE APPLICATION ===
 /** Delete application gql mutation definition */

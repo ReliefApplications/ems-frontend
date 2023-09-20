@@ -1,0 +1,2161 @@
+{
+	"common": {
+		"access": "Accès",
+		"accessDenied": "Accès refusé",
+		"add": "Ajouter",
+		"aggregation": {
+			"few": "Agrégations",
+			"none": "Aucune agrégation",
+			"one": "Agrégation"
+		},
+		"apiConfiguration": {
+			"few": "Configurations d'API",
+			"none": "Aucune configuration d'API",
+			"one": "Configuration d'API"
+		},
+		"application": {
+			"few": "Applications",
+			"none": "Aucune application",
+			"one": "Application"
+		},
+		"ariaLabel": {
+			"search": {
+				"clear": "Supprimer la recherche"
+			}
+		},
+		"attribute": {
+			"few": "Attributs",
+			"none": "Aucun attribut",
+			"one": "Attribut"
+		},
+		"auto": "Automatique",
+		"back": "Retour",
+		"bookmarks": "Marque-pages",
+		"calculatedField": {
+			"few": "Champs dérivés",
+			"none": "Aucun champ dérivé",
+			"one": "Champ dérivé"
+		},
+		"cancel": "Annuler",
+		"channel": {
+			"few": "Canaux de diffusion",
+			"none": "Aucun canal de diffusion",
+			"one": "Canal de diffusion"
+		},
+		"child": "Enfant",
+		"clear": "Annuler",
+		"close": "Fermer",
+		"column": {
+			"few": "Colonnes",
+			"none": "Aucune colonne",
+			"one": "Colonne"
+		},
+		"comma": "virgule",
+		"copy": "Copier",
+		"create": "Créer",
+		"createdOn": "Date de création",
+		"customNotification": {
+			"few": "Notifications",
+			"none": "Aucune notification",
+			"one": "Notification"
+		},
+		"dashboard": {
+			"few": "Tableaux de bord",
+			"none": "Aucun tableau de bord",
+			"one": "Tableau de bord"
+		},
+		"delete": "Supprimer",
+		"deleteObject": "Supprimer {{name}}",
+		"deleted": "Supprimé",
+		"dismiss": "Fermer",
+		"display": "Afficher",
+		"distributionList": {
+			"few": "Listes de distribution",
+			"none": "Aucune liste de distribution",
+			"one": "Liste de distribution"
+		},
+		"downloadObject": "Télécharger {{name}}",
+		"downloadTemplate": "Télécharger le modèle",
+		"duplicate": "Dupliquer",
+		"edit": "Modifier",
+		"editObject": "Modifier {{name}}",
+		"email": {
+			"few": "Emails",
+			"none": "Pas d'email",
+			"one": "Email"
+		},
+		"errors": {
+			"objectDuplicated": "{{type}} {{value}} existe déjà."
+		},
+		"exitFullscreen": "Quitter le mode plein écran",
+		"export": "Exporter",
+		"exportObject": "Exporter {{name}}",
+		"false": "Faux",
+		"field": {
+			"few": "Champs",
+			"none": "Aucun champ",
+			"one": "Champ"
+		},
+		"filter": {
+			"apply": "Appliquer",
+			"clear": "Supprimer le filtre",
+			"empty": "Aucun résultat",
+			"few": "Filtres",
+			"hide": "Cacher le filtre",
+			"none": "Pas de filtre",
+			"one": "Filtre",
+			"show": "Afficher le filtre"
+		},
+		"form": {
+			"few": "Formulaires",
+			"none": "Aucun formulaire",
+			"one": "Formulaire"
+		},
+		"general": "Général",
+		"group": {
+			"few": "Groupes",
+			"none": "Pas de groupes",
+			"one": "Groupe"
+		},
+		"history": "Historique",
+		"id": "Id",
+		"input": {
+			"dateRange": "Intervalle de dates",
+			"none": "-- Aucun --",
+			"rawJson": "JSON brut"
+		},
+		"label": "Etiquette",
+		"layers": "Couches",
+		"layout": {
+			"few": "Mises en page",
+			"none": "Aucune mise en page",
+			"one": "Mise en page"
+		},
+		"modifiedOn": "Modifié le ",
+		"name": "Nom",
+		"next": "Suivant",
+		"noOptions": "Aucun choix disponible",
+		"notifications": {
+			"accessDenied": "Vous n'avez pas la permission pour accéder à cet objet de type {{type}}.",
+			"accessNotProvided": "Pas d'accès fourni à cet objet de type {{type}}. {{error}}",
+			"alreadyExists": "Cet objet {{type}} {{value}} existe déjà dans cette application.",
+			"copiedToClipboard": "Copié !",
+			"dataNotRecovered": "Échec de la récupération des données",
+			"dataRecovered": "Les données ont été récupérées !",
+			"email": {
+				"error": "Un problème est survenu lors de l'envoi de l'e-mail",
+				"errors": {
+					"noDistributionList": "Un problème est survenu lors de l'envoi de l'e-mail: aucune liste de distribution détectée",
+					"noTemplate": "Un problème est survenu lors de l'envoi de l'e-mail: aucun template détecté"
+				},
+				"processing": "Envoi en cours...",
+				"ready": "E-mail prêt",
+				"sent": "E-mail envoyé"
+			},
+			"fetchingGroups": "Fetching groups from service...",
+			"file": {
+				"download": {
+					"error": "Un problème est survenu lors du téléchargement",
+					"ongoing": "Votre téléchargement est en cours. Vous recevrez bientôt un e-mail contenant votre fichier.",
+					"processing": "Téléchargement du fichier en cours...",
+					"ready": "Votre fichier est prêt"
+				},
+				"upload": {
+					"error": "Un problème est survenu lors de l'import",
+					"processing": "Fichier en cours d'importation...",
+					"ready": "Fichier importé"
+				}
+			},
+			"formatInvalid": "Veuillez importer un fichier de format .{{format}}.",
+			"groups": {
+				"error": "Une erreur s'est produite lors de la tentative d'obtenir des groupes du service",
+				"processing": "Récupération des groupes à partir du service...",
+				"ready": "Groupes récupérés"
+			},
+			"history": {
+				"error": "Un problème est survenu lors de la génération de l'historique. {{error}}"
+			},
+			"loadedFromCache": "Objet de type {{type}} chargé depuis le cache.",
+			"noOpened": "Aucun objet {{value}} n'a été ouvert.",
+			"objectCreated": "{{value}} {{type}} créé avec succès.",
+			"objectDeleted": "{{value}} supprimé avec succès.",
+			"objectDuplicated": "{{type}} {{value}} dupliqué avec succès.",
+			"objectInvited": "{{name}} a été invité.",
+			"objectLocked": "L'édition de {{name}} a été bloquée par un autre utilisateur.",
+			"objectNotCreated": "L'objet de type {{type}} n'a pas pu être créé. {{error}}",
+			"objectNotDeleted": "L'objet {{value}} n'a pas pu être supprimé. {{error}}",
+			"objectNotDuplicated": "L'objet de type {{type}} n'a pas pu être dupliqué. {{error}}",
+			"objectNotFound": "{{name}} n'a pas été trouvé.",
+			"objectNotInvited": "L'invitation vers {{name}} a échoué.",
+			"objectNotReordered": "{{type}} non réorganisé. {{error}}",
+			"objectNotRestored": "{{type}} non restauré. {{error}}",
+			"objectNotUpdated": "L'objet de type {{type}} n'a pas pu être modifié. {{error}}",
+			"objectReordered": "L'objet de type {{type}} a été réorganisé.",
+			"objectRestored": "{{type}} restauré.",
+			"objectUpdated": "{{value}} {{type}} a été modifié.",
+			"platformAccessNotGranted": "Vous n'avez pas d'accès valide à cette plateforme.",
+			"readAll": "Tout marqué comme lu",
+			"statusUpdated": "Statut mis à jour par {{value}}.",
+			"unlocked": "L'édition de l'objet {{name}} a été débloquée par un autre utilisateur."
+		},
+		"openFullScreen": "Ouvrir en plein écran",
+		"options": "Options",
+		"or": "Ou",
+		"page": {
+			"few": "Pages",
+			"none": "Aucune page",
+			"one": "Page"
+		},
+		"pagination": {
+			"empty": "Aucun résultat",
+			"itemsPerPage": "Éléments par page",
+			"loadMore": "Charger plus",
+			"of": "de"
+		},
+		"placeholder": {
+			"address": "Entrez une adresse exemple : 1 rue de la paix, Paris",
+			"email": "Entrez un email",
+			"name": "Entrez un nom",
+			"search": "Rechercher...",
+			"title": "Entrez un titre"
+		},
+		"platform": {
+			"backOffice": "Back-Office"
+		},
+		"positionAttribute": {
+			"few": "Attributs de position",
+			"none": "Aucun attribut de position",
+			"one": "Attribut de position"
+		},
+		"positionCategory": {
+			"few": "Catégories de position",
+			"none": "Aucune catégorie de position",
+			"one": "Catégories de position"
+		},
+		"preview": "Prévisualisation",
+		"previous": "Précédent",
+		"publish": "Publier",
+		"pullJob": {
+			"few": "Tâches planifiées",
+			"none": "Aucune tâche planifiée",
+			"one": "Tâche planifiée"
+		},
+		"record": {
+			"few": "Enregistrements",
+			"none": "Pas d'enregistrement",
+			"one": "Enregistrement"
+		},
+		"referenceData": {
+			"few": "Références de données",
+			"none": "Aucune référence de données",
+			"one": "Référence de données"
+		},
+		"resource": {
+			"few": "Ressources",
+			"none": "Aucune ressource",
+			"one": "Ressource"
+		},
+		"role": {
+			"few": "Rôles",
+			"none": "Aucun rôle",
+			"one": "Rôle"
+		},
+		"row": {
+			"few": "Rangées",
+			"none": "Aucune rangée",
+			"one": "Rangée"
+		},
+		"save": "Sauvegarder",
+		"saveChanges": "Sauvegarder les changements",
+		"search": "Recherche",
+		"searchObject": "Rechercher {{name}}",
+		"select": "Sélectionner",
+		"selectStatus": "Sélectionner un statut",
+		"semicolon": "point-virgule",
+		"send": "Envoyer",
+		"separator": "Séparateur",
+		"settings": "Paramètres",
+		"status": "Statut",
+		"status_active": "Actif",
+		"status_archived": "Archivé",
+		"status_pending": "Inactif",
+		"step": {
+			"few": "Etape",
+			"none": "Aucune étape",
+			"one": "Etape"
+		},
+		"subscription": {
+			"few": "Abonnements",
+			"none": "Aucun abonnement",
+			"one": "Abonnement"
+		},
+		"template": {
+			"few": "Modèles de notification",
+			"none": "Aucun modèle",
+			"one": "Modèle de notification"
+		},
+		"title": "Titre",
+		"tooltip": {
+			"editor": {
+				"insert": "Tapez '{' pour utiliser des expressions et des variables"
+			}
+		},
+		"true": "Vrai",
+		"type": {
+			"few": "Types",
+			"none": "Aucun type",
+			"one": "Type"
+		},
+		"update": "Mettre à jour",
+		"updateObject": "Mettre à jour {{name}}",
+		"uploadObject": "Importer {{name}}",
+		"user": {
+			"few": "Utilisateurs",
+			"none": "Aucun utilisateur",
+			"one": "Utilisateur"
+		},
+		"value": {
+			"few": "Valeurs",
+			"none": "Aucune valeur",
+			"one": "Valeur"
+		},
+		"viewFullscreen": "Ouvrir le mode plein écran",
+		"viewObject": "Voir {{name}}",
+		"workflow": {
+			"few": "Workflows",
+			"none": "Aucun workflow",
+			"one": "Workflow"
+		}
+	},
+	"components": {
+		"access": {
+			"canDelete": "Peut supprimer",
+			"canSee": "Peut voir",
+			"canUpdate": "Peut modifier",
+			"description": "Modifier les permissions de {{name}}",
+			"title": "Accès"
+		},
+		"aggregation": {
+			"add": {
+				"choice": {
+					"create": "Créer une nouvelle agrégation",
+					"load": "Charger une agrégation"
+				},
+				"select": "Sélectionner une agrégation",
+				"title": "Ajouter une agrégation"
+			},
+			"edit": {
+				"title": "Paramètres d'agrégation"
+			}
+		},
+		"aggregationBuilder": {
+			"accumulators": "Accumulateurs",
+			"addField": "Ajouter un champ",
+			"addRule": "Ajouter une règle",
+			"addStage": "Ajouter une étape",
+			"dataset": {
+				"select": "Sélectionner la source de données"
+			},
+			"fieldName": "Nom du champ",
+			"groupBy": "Regrouper par",
+			"groupingRules": "Grouper par",
+			"mapping": {
+				"category": "Catégorie",
+				"field": "Valeur",
+				"series": "Séries"
+			},
+			"operator": "Opérateur",
+			"operators": {
+				"add": "Ajouter",
+				"avg": "Moyenne",
+				"count": "Compte",
+				"day": "Jour",
+				"first": "Premier",
+				"last": "Dernier",
+				"max": "Maximum",
+				"min": "Minimum",
+				"month": "Mois",
+				"multiply": "Multiplier",
+				"sum": "Somme",
+				"week": "Semaine",
+				"year": "Année"
+			},
+			"sourceFields": "Sélectionner les champs",
+			"stages": {
+				"addFields": "Ajouter des champs",
+				"custom": "Personnaliser",
+				"filter": "Filtrer",
+				"group": "Grouper",
+				"sort": "Trier",
+				"unwind": "Dissocier"
+			},
+			"tooltip": {
+				"addFields": "Ajouter de nouveaux champs au document.",
+				"custom": "Définit une fonction ou une expression d'agrégation personnalisée en JavaScript.",
+				"filter": "Retourne un tableau contenant uniquement les éléments qui vérifient la condition.",
+				"group": "Regroupe les documents mis en entrée par l'expression 'id' qui a été spécifiée et qui sort un document pour chaque regroupement.",
+				"selectedFields": "Seuls les champs non utilisés peuvent être supprimés.",
+				"sort": "Trie tous les documents mis en entrée et les retourne vers la pipeline dans l'ordre.",
+				"unwind": "Déconstruit un tableau depuis les documents d'entrée et ressort un document pour chaque élément."
+			}
+		},
+		"apiConfiguration": {
+			"create": {
+				"errors": {
+					"name": "Nom invalide: utilisez seulement des lettres, des chiffres et des tirets bas."
+				}
+			},
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer la configuration d'API {{name}} ?",
+				"title": "Supprimer la configuration d'API"
+			},
+			"paginator": {
+				"ariaLabel": "Sélectionnez la page de configurations d'API"
+			}
+		},
+		"application": {
+			"customStyling": "Style personnalisé",
+			"dashboard": {
+				"editFilter": "Modifier le filtre",
+				"empty": "Aucun contenu n'est disponible. Veuillez attendre que votre administrateur en crée.",
+				"filter": {
+					"empty": "Aucun filtre n'a été défini par les administrateurs",
+					"info": "Les filtres de tableau de bord peuvent être utilisés entre les pages pour filtrer leur contenu.",
+					"title": "Vous modifiez les filtres du tableau de bord"
+				},
+				"filterSettings": "Paramètres du filtre",
+				"settings": {
+					"defaultPosition": "Position par défaut du filtre"
+				}
+			},
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer cette application ?"
+			},
+			"duplicate": {
+				"name": {
+					"description": "Veuillez entrer une description pour cette application."
+				}
+			},
+			"pages": {
+				"delete": {
+					"confirmationMessage": "Voulez-vous vraiment supprimer la page {{name}}?"
+				},
+				"hide": "Cacher la page dans la barre latérale de navigation",
+				"notReordered": {
+					"plural": "Les pages n'ont pas été réorganisées. {{error}}",
+					"singular": "La page n'a pas été réorganisée. {{error}}"
+				},
+				"reordered": {
+					"plural": "Les pages ont été réorganisées avec succès.",
+					"singular": "La page a été réorganisée avec succès."
+				},
+				"show": "Afficher la page dans la barre latérale de navigation"
+			},
+			"positionAttribute": {
+				"delete": {
+					"confirmationMessage": "Voulez-vous vraiment supprimer l'attribut de position {{name}} ?",
+					"title": "Supprimer l'attribut de position"
+				}
+			},
+			"publish": {
+				"confirmationMessage": "Confirmer la publication de l'application {{name}} ?",
+				"title": "Publier l'application"
+			},
+			"subscription": {
+				"modal": {
+					"hint": {
+						"listenTo": "Clé de routage de l'agent de messages"
+					},
+					"listenTo": "Écouter",
+					"placeholder": {
+						"listenTo": "Sélectionner une clé de routage"
+					},
+					"routingKey": {
+						"clear": {
+							"ariaLabel": "Supprimer la clé de routage"
+						}
+					}
+				}
+			},
+			"unlock": {
+				"confirmationMessage": "Voulez-vous déverrouiller l'édition de {{name}} ?",
+				"title": "Déverrouiller l'édition"
+			},
+			"update": {
+				"placeholder": {
+					"description": "Veuillez entrer une description pour l'application."
+				}
+			},
+			"users": {
+				"auto": "Attribution automatique",
+				"empty": "Aucun utilisateur détecté",
+				"manual": "Attribution manuelle"
+			}
+		},
+		"applications": {
+			"dropdown": {
+				"select": "Depuis les applications"
+			},
+			"paginator": {
+				"ariaLabel": "Sélectionnez la page d'applications"
+			}
+		},
+		"calculatedFields": {
+			"add": "Créer un nouveau champ dérivé",
+			"delete": {
+				"confirmationMessage": "Confirmez-vous la suppression du champ dérivé {{name}} ?"
+			},
+			"edit": "Modifier le champ dérivé",
+			"expression": "Expression",
+			"hint": {
+				"name": "Entrez un nom composé uniquement delettres, dechiffres et de tirets bas. Ce nom ne doit pas dupliquer le nom d'un autre champ de la resource éditée."
+			}
+		},
+		"channel": {
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer le canal {{name}} ?"
+			},
+			"dropdown": {
+				"select": "Notifier sur"
+			},
+			"selectChannel": "Sélectionnez un canal"
+		},
+		"confirmModal": {
+			"cancel": "Annuler",
+			"confirm": "Confirmer",
+			"delete": "Supprimer",
+			"title": "Confirmer"
+		},
+		"customNotifications": {
+			"edit": {
+				"dataset": "Jeu de données",
+				"email": "Notification par email",
+				"new": "Nouvelle notification",
+				"recipients": {
+					"distributionList": "Utiliser une liste de distribution",
+					"email": "Utiliser une adresse email unique",
+					"title": "Destinataires",
+					"userField": "Grouper par utilisateurs détectés dans les enregistrements"
+				},
+				"update": "Éditer la notification"
+			},
+			"errors": {
+				"email": "Veuillez entrer une adresse email valide",
+				"schedule": "Veuillez entrer une expression cron valide"
+			},
+			"hint": {
+				"schedule": "Indiquez une fréquence d'envoi"
+			}
+		},
+		"distributionLists": {
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer la liste de distribution: '{{name}}'?"
+			},
+			"edit": {
+				"name": "Nom de la liste de distribution",
+				"new": "Nouvelle liste de distribution",
+				"update": "Éditer la liste de distribution"
+			},
+			"errors": {
+				"emails": {
+					"pattern": "Veuillez uniquement fournir des emails valides",
+					"required": "Veuillez fournir un ou plusieurs emails"
+				},
+				"name": {
+					"required": "Veuillez fournir un nom"
+				}
+			}
+		},
+		"emailBuilder": {
+			"body": "Corps du texte",
+			"default": "Défaut",
+			"distribution": "Liste de distribution",
+			"fields": "Sélectionner les champs à écrire dans le corps du texte",
+			"subject": "Objet",
+			"withoutRecords": "Sans enregistrements"
+		},
+		"emailPreview": {
+			"errors": {
+				"missingSubject": "L'objet du mail ne peut être vide."
+			},
+			"from": "De",
+			"subject": "Objet",
+			"title": "Prévisualisation de mail",
+			"to": "À"
+		},
+		"floating": {
+			"menuButton": {
+				"ariaLabel": "***"
+			}
+		},
+		"form": {
+			"aggregation": {
+				"delete": {
+					"confirmationMessage": "Confirmez-vous la suppression de l'agrégation {{name}}?"
+				}
+			},
+			"create": {
+				"choice": {
+					"inherit": "Copier un modèle de ressources existant",
+					"resource": "Créer une nouvelle ressource",
+					"template": "Commencer depuis un modèle existant"
+				},
+				"template": {
+					"from": "Depuis le modèle",
+					"placeholder": "Choisir un modèle existant",
+					"selectResource": "Sélectionnez une ressource",
+					"title": "Depuis la ressource"
+				},
+				"tooltip": {
+					"inherit": "Crée un formulaire hérité en utilisant comme modèle la ressource liée à un formulaire source.",
+					"resource": "Crée un formulaire source permettant la création de formulaire hérités liés à celui-ci. Crée aussi une nouvelle ressource liée.",
+					"template": "Si aucun modèle n'est sélectionné, la structure principale sera chargée"
+				}
+			},
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer le formulaire {{name}} ?"
+			},
+			"deleteRow": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer {{quantity}} {{rowText}}?"
+			},
+			"display": {
+				"submissionMessage": "Le formulaire a été sauvegardé."
+			},
+			"layout": {
+				"delete": {
+					"confirmationMessage": "Voulez-vous vraiment supprimer la mise en page {{name}} ?"
+				},
+				"errors": {
+					"invalid": "Le formulaire est invalide"
+				},
+				"update": {
+					"preview": {
+						"description": "Réorganise, trie, filtre et cache des colonnes pour changer l'affichage par défaut de la mise en page"
+					}
+				}
+			},
+			"summary": {
+				"cache": {
+					"clear": "Vider le cache",
+					"load": "Charger depuis le cache {{date}}"
+				},
+				"createdBy": "Créé par {{user}} le {{date}}",
+				"modifiedBy": "Modifié pour la dernière fois par {{user}} le {{date}}"
+			},
+			"update": {
+				"exit": "Quitter sans sauvegarder les changements",
+				"exitMessage": "Il y a des changements non sauvegardés dans votre formulaire, voulez-vous vraiment quitter cette page ?"
+			},
+			"updateRow": {
+				"confirmationMessage": "Souhaitez-vous mettre à jour {{quantity}} {{rowText}}?"
+			}
+		},
+		"formBuilder": {
+			"errors": {
+				"duplicatedRelatedName": "Nom lié en double pour la question {{question}} à la page {{page}}. Veuillez fournir un nom lié unique (au format snake_case) pour sauvegarder le formulaire.",
+				"missingGridField": "Champs disponible de table de données manquant pour la question {{question}} à la page {{page}}. Veuillez en sélectionner au moins un dans la propriété Custom Question pour sauvegarder le formulaire.",
+				"missingRelatedName": "Nom lié manquant pour la question {{question}} à la page {{page}}. Veuillez entrer un nom valide pour la valeur de la donnée (au format snake_case) pour sauvegarder le formulaire.",
+				"missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un modèle pour sauvegarder le formulaire."
+			},
+			"saveSurvey": "Sauvegarde du questionnaire"
+		},
+		"formMapProperties": {
+			"geofields": {
+				"editDialog": {
+					"editGeofield": "Éditer les champs",
+					"label": "Label",
+					"value": "Valeur"
+				}
+			}
+		},
+		"forms": {
+			"isCore": "Est un formulaire source",
+			"paginator": {
+				"ariaLabel": "Sélectionnez la page de formulaires"
+			},
+			"parent": "Formulaire parent"
+		},
+		"group": {
+			"add": {
+				"title": "Ajouter un nouveau groupe"
+			},
+			"delete": {
+				"confirmationMessage": "Confirmez-vous la suppression du groupe {{name}}?",
+				"title": "Supprimer le groupe"
+			}
+		},
+		"header": {
+			"goToApp": "Ouvrir l'application",
+			"goToPlatform": "Naviguer vers",
+			"logout": "Se déconnecter",
+			"sidenav": {
+				"collapse": "Cacher la barre latérale",
+				"show": "Afficher la barre latérale"
+			}
+		},
+		"history": {
+			"changes": {
+				"add": "Ajout",
+				"from": "de",
+				"modify": "Modification",
+				"remove": "Suppression",
+				"to": "à",
+				"withValue": "avec valeur"
+			},
+			"download": "Télécharger l'historique",
+			"empty": "Aucune activité détectée",
+			"field": {
+				"all": "Tous les champs",
+				"select": "Sélectionner un champ"
+			},
+			"preview": "Prévisualiser et revenir"
+		},
+		"logout": {
+			"confirmationMessage": "Le formulaire contient des éléments non sauvegardés. Voulez-vous vous vraiment déconnecter ?",
+			"title": "Quitter la plateforme sans sauvegarder"
+		},
+		"map": {
+			"controls": {
+				"download": {
+					"layers": {
+						"all": "Toutes les couches",
+						"selected": "Couches sélectionnées",
+						"visible": "Couches visibles"
+					},
+					"output": "Format d'export",
+					"selectLayers": "Sélectionnez les couches",
+					"view": {
+						"all": "Toute la carte",
+						"current": "Vue actuelle"
+					}
+				}
+			}
+		},
+		"mapping": {
+			"field": "Champ de l'utilisateur",
+			"path": "Chemin",
+			"text": "Texte",
+			"title": "Table de correspondances",
+			"value": "Valeur"
+		},
+		"notifications": {
+			"paginator": {
+				"ariaLabel": "Sélectionnez la page de notifications"
+			},
+			"readAll": "Tout marquer comme lu",
+			"title": "Notifications"
+		},
+		"paginator": {
+			"items": "élements",
+			"itemsPerPage": "éléments par page",
+			"of": "de",
+			"page": "Page"
+		},
+		"preferences": {
+			"dateFormat": "Format de date et heure",
+			"language": "Langage",
+			"title": "Préférences"
+		},
+		"pullJob": {
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer la tâche {{name}} ?",
+				"title": "Supprimer la tâche"
+			},
+			"modal": {
+				"addMappingField": "ajouter un champ de correspondance",
+				"errors": {
+					"schedule": "Entrez une expression cron valide"
+				},
+				"hint": {
+					"path": "Entrer le chemin pour extraire la donnée de la réponse",
+					"schedule": "Entrez une expression CRON pour planifier la tâche",
+					"url": "Entrez l'URL après l'hôte pour atteindre la donnée spécifique"
+				},
+				"identifier": "Identificateurs uniques",
+				"mapping": "Correspondance",
+				"placeholder": {
+					"path": "Entrez le chemin d'accès...",
+					"schedule": "Entrez l'horaire planifié...",
+					"url": "Entrer l'URL..."
+				},
+				"switch": "Changer de mode"
+			},
+			"paginator": {
+				"ariaLabel": "Sélectionez la page de tâches programmées"
+			}
+		},
+		"queryBuilder": {
+			"dataset": {
+				"select": "Sélectionner un jeu de données"
+			},
+			"errors": {
+				"field": {
+					"invalid": "Champ invalide. Veuillez cliquer pour le retirer."
+				}
+			},
+			"fields": {
+				"available": "Champs disponibles",
+				"column": "Largeur de la colonne (px)",
+				"format": {
+					"info": "Laissez vide pour utiliser le mode classique",
+					"title": "Mode d'affichage"
+				},
+				"search": "Rechercher des champs...",
+				"selected": "Champs sélectionnés",
+				"title": "Champs"
+			},
+			"filter": {
+				"and": "Et",
+				"logic": "Logique de filtre",
+				"new": "Ajouter un nouveau filtre",
+				"newGroup": "Ajouter un nouveau groupe de filtres",
+				"operator": "Opérateur",
+				"or": "Ou",
+				"title": "Filtre"
+			},
+			"hint": {
+				"fields": "Sélectionnez des champs ci-dessous et déplacez-les vers les 'champs sélectionnés' sur la droite",
+				"sortingDisabled": "Le tri est désactivé quand la recherche est active.",
+				"style": "Les règles de style font ressortir les enregistrements contenant des informations importantes. Quand un enregistrement vérifie plusieurs règles, la première est utilisée."
+			},
+			"pagination": {
+				"first": "Limite",
+				"title": "Pagination"
+			},
+			"sort": {
+				"ascending": "Croissant",
+				"descending": "Décroissant",
+				"field": "Filtrer le champ",
+				"limit": "limite",
+				"limitTitle": "Tri et limite",
+				"order": "Ordre de tri",
+				"title": "Tri"
+			},
+			"style": {
+				"and": "Et",
+				"edit": {
+					"appliesTo": "Appliquer le style à",
+					"background": {
+						"color": "Couleur de fond"
+					},
+					"criteria": "Critère",
+					"fields": "Champ",
+					"name": "Nom de la règle",
+					"selectedColumns": "Seulement les colonnes sélectionnées.",
+					"text": {
+						"color": "Couleur du texte",
+						"style": "Style du texte"
+					},
+					"wholeRow": "Ligne entière"
+				},
+				"logic": "Filtre de style",
+				"new": "Ajouter une règle de style",
+				"operator": "Opérateur",
+				"or": "Ou",
+				"title": "Style"
+			},
+			"tooltip": {
+				"filter": {
+					"date": {
+						"useExpression": "Utiliser une expression",
+						"usePicker": "Choisir une date"
+					}
+				},
+				"pagination": {
+					"first": "Limite le nombre d'éléments renvoyés"
+				}
+			}
+		},
+		"record": {
+			"attach": {
+				"confirm": "Attacher",
+				"selectTarget": "Sélectionner la cible {{name}}"
+			},
+			"convert": {
+				"choice": {
+					"copy": "Copier l'enregistrement source",
+					"overwrite": "Écraser l'enregistrement source"
+				},
+				"result": {
+					"force": "Les champs suivants seront ignorés :",
+					"smooth": "Conversion OK"
+				},
+				"select": "Convertir en"
+			},
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer l'enregistrement {{name}} ?",
+				"permanently": "Supprimer de manière permanente"
+			},
+			"dropdown": {
+				"select": "Sélectionner un enregistrement"
+			},
+			"history": {
+				"revert": "Revenir à l'enregistrement précédent",
+				"version": {
+					"current": "Version actuelle",
+					"old": "Ancienne version"
+				}
+			},
+			"modal": {
+				"update": "Sauvegarder et fermer"
+			},
+			"recovery": {
+				"confirmationMessage": "Souhaitez-vous appliquer les données du {{date}} à l'enregistrement ?",
+				"title": "Récupération de données"
+			}
+		},
+		"records": {
+			"active": "Enregistrements actifs",
+			"archived": "Enregistrements archivés",
+			"paginator": {
+				"ariaLabel": "Sélectionnez la page d'enregistrements"
+			},
+			"showActive": "Voir les enregistrements actifs",
+			"showArchived": "Voir les enregistrements archivés",
+			"upload": {
+				"hint": "Le fichier doit contenir uniquement un enregistrement par ligne. La ligne d'en-tête contient les noms des champs de données."
+			}
+		},
+		"referenceData": {
+			"create": {
+				"title": "Nouvelle référence de données"
+			},
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer la référence de données {{name}} ?",
+				"title": "Supprimer la référence de données"
+			},
+			"dropdown": {
+				"select": "Depuis la référence de données"
+			},
+			"fields": {
+				"ariaLabel": "Indiquez les champs de la référence de données"
+			},
+			"paginator": {
+				"ariaLabel": "Sélectionnez la page de références de données"
+			}
+		},
+		"resource": {
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer la ressource {{name}} ?"
+			},
+			"dropdown": {
+				"select": "Depuis la ressource"
+			},
+			"empty": {
+				"aggregations": "Aucune agrégation détectée",
+				"calculatedFields": "Aucun champ dérivé détecté",
+				"layouts": "Aucune mise en page détectée",
+				"records": "Aucun enregistrement détecté"
+			},
+			"paginator": {
+				"ariaLabel": "Sélectionnez la page de ressources"
+			}
+		},
+		"role": {
+			"add": {
+				"title": "Ajouter un nouveau rôle"
+			},
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer le rôle {{name}} ?",
+				"title": "Supprimer le rôle"
+			},
+			"impersonate": {
+				"title": "Choix du rôle à simuler"
+			},
+			"summary": {
+				"addFilter": "Ajouter un filtre",
+				"autoAssignment": {
+					"rule": {
+						"add": "Ajouter une règle d'attribution",
+						"delete": "Supprimer la règle",
+						"edit": "Mettre à jour la règle d'attribution",
+						"none": "Aucune règle d'attribution automatique",
+						"title": "Règle"
+					},
+					"title": "Attribution automatique"
+				},
+				"details": {
+					"access": {
+						"channels": "Canaux accessibles",
+						"fullAccess": "Accès complet à {{accessible}} / {{total}}",
+						"limitedAccess": "Accès limité à {{accessible}} / {{total}}",
+						"noAccess": "Pas d'accès à {{accessible}} / {{total}}",
+						"pages": "Pages accessibles",
+						"resources": "Ressources accessibles",
+						"title": "Accès"
+					}
+				},
+				"editFilters": "Modifier les filtres",
+				"features": "Fonctionnalités",
+				"newFilter": "Nouveau filtre",
+				"noFeatures": "Aucune fonctionnalité détectée",
+				"noFilters": "Aucun filtre d'accès détecté",
+				"noForms": "Aucun formulaire détecté",
+				"noSteps": "Aucune étape détectée",
+				"removeFilter": "Supprimer le filtre",
+				"title": "Résumé",
+				"users": {
+					"auto": "Attribution automatique",
+					"empty": "Aucun utilisateur détecté",
+					"manual": "Attribution manuelle"
+				}
+			},
+			"tooltip": {
+				"allowFieldAccessibility": "Autoriser ce rôle à voir le champ {{field}}",
+				"allowFieldUpdate": "Autoriser ce rôle à mettre à jour le champ {{field}}",
+				"disallowFieldAccessibility": "Interdire ce rôle pour voir le champ {{field}}",
+				"disallowFieldUpdate": "Interdire ce rôle pour mettre à jour le champ {{field}}",
+				"grantAddRecordsPermission": "Permet de créer de nouveaux enregistrements",
+				"grantDeleteRecordsPermission": "Permet de supprimer tous les enregistrements",
+				"grantFilterDeleteRecordsPermission": "Permet de supprimer les enregistremetns satisfaisant le filtre",
+				"grantFilterReadRecordsPermission": "Permet de voir les enregistrements satisfaisant le filtre",
+				"grantFilterUpdateRecordsPermission": "Permet de mettre à jour les enregistrements satisfaisant le filtre",
+				"grantReadRecordsPermission": "Permet de voir tous les enregistrements",
+				"grantUpdateRecordsPermission": "Permet de mettre à jour tous les enregistrements",
+				"hideFeature": "Masquer {{page}} pour ce rôle",
+				"limitedDeleteRecordsPermission": "Permet de supprimer les enregistrements satisfaisant les filtres",
+				"limitedReadRecordsPermission": "Permet de voir les enregistrements satisfaisant les filtres",
+				"limitedUpdateRecordsPermission": "Permet de mettre à jour les enregistrements satisfaisant les filtres",
+				"notGrantAddRecordsPermission": "Ne donne pas la permission d'ajouter de nouveaux enregistrements",
+				"notGrantDeleteRecordsPermission": "Ne donne pas la permission de supprimer les enregistrements",
+				"notGrantFilterDeleteRecordsPermission": "Ne donne pas la permission de supprimer les enregistrements satisfaisant le filtre",
+				"notGrantFilterReadRecordsPermission": "Ne donne pas la permission de voir les enregistrements satisfaisant le filtre",
+				"notGrantFilterUpdateRecordsPermission": "Ne donne pas la permission de mettre à jour les enregistrements satisfaisant le filtre",
+				"notGrantReadRecordsPermission": "Ne donne pas la permission de voir les enregistrements",
+				"notGrantUpdateRecordsPermission": "Ne donne pas la permission de mettre à jour les enregistrements",
+				"showFeature": "Afficher {{page}} pour ce rôle"
+			},
+			"update": {
+				"permissions": "Permissions",
+				"title": "Modifier les permissions des rôles et les canaux de diffusion"
+			}
+		},
+		"share": {
+			"modal": {
+				"copy": "Copier dans le presse-papiers",
+				"title": "Partager l'url du dashboard"
+			}
+		},
+		"templates": {
+			"available": "Modèles d'email disponibles",
+			"delete": {
+				"confirmationMessage": "Voulez-vous supprimer le modèle '{{name}}'?",
+				"titleMessage": "Supprimer le modèle"
+			},
+			"edit": {
+				"body": "Corps du texte",
+				"name": "Nom du modèle de notification",
+				"new": "Nouveau modèle de notification",
+				"subject": "Sujet",
+				"update": "Éditer le modèle de notification"
+			},
+			"errors": {
+				"empty": "Veuillez sélectionner au moins un modèle"
+			},
+			"select": {
+				"email": "Sélectionnez un modèle d'e-mail"
+			},
+			"type": {
+				"email": "E-mail",
+				"title": "Type de modèle"
+			}
+		},
+		"user": {
+			"delete": {
+				"confirmationMessage": "Voulez-vous vraiment supprimer l'utilisateur {{name}} ?",
+				"title": "Supprimer l'utilisateur"
+			},
+			"invite": {
+				"confirm": "Inviter",
+				"role": {
+					"description": "Sélectionner le rôle à assigner"
+				}
+			},
+			"summary": {
+				"country": "Pays",
+				"firstName": "Prénom",
+				"lastName": "Nom",
+				"locationType": "Type de localisation",
+				"region": "Région",
+				"roles": {
+					"application": "Rôles d'application",
+					"backoffice": "Rôles de back-office",
+					"selectedApplication": "Application sélectionnée",
+					"selectedGroups": "Groupes sélectionnés",
+					"selectedRoles": "Rôles sélectionnés"
+				},
+				"title": "Résumé"
+			},
+			"update": {
+				"title": "Modifier l'utilisateur"
+			}
+		},
+		"users": {
+			"invite": {
+				"add": "Ajouter un nouvel utilisateur",
+				"confirm": "Inviter des utilisateurs",
+				"description": "Sélectionner des utilisateurs existants, inviter de nouveaux utilisateurs ou en importer depuis un fichier Excel"
+			},
+			"onDelete": {
+				"plural": "Les utilisateurs ont été correctement supprimés.",
+				"singular": "L'utilisateur a été correctement supprimé."
+			},
+			"onInvite": {
+				"plural": "Les utilisateurs ont été invités.",
+				"singular": "L'utilisateur a été invité."
+			},
+			"onNotDelete": {
+				"plural": "Les utilisateurs n'ont pas été supprimés. {{error}}",
+				"singular": "L'utilisateur a été supprimé. {{error}}"
+			},
+			"onNotInvite": {
+				"plural": "Les utilisateurs n'ont pas été invités. {{error}}",
+				"singular": "L'utilisateur n'a pas été invité. {{error}}"
+			},
+			"paginator": {
+				"ariaLabel": "Sélectionnez la page d'utilisateurs"
+			}
+		},
+		"widget": {
+			"chart": {
+				"errors": {
+					"aggregation": {
+						"invalid": "Agrégation invalide"
+					}
+				},
+				"other": "Autre"
+			},
+			"expand": "Étendre",
+			"grid": {
+				"actions": {
+					"detail": "Ouvrir le détail",
+					"history": "Voir l'historique"
+				},
+				"empty": "Aucun enregistrement détecté pour cette configuration de réseau",
+				"errors": {
+					"autoSaveFailed": "L'exécution de l'action a été stoppé à cause d'enregistrement(s) non valide(s). Veuillez les vérifier avant de lancer une autre action.",
+					"invalid": {
+						"backoffice": "Configuration de grille invalide",
+						"frontoffice": "Configuration de grille non valide, veuillez contacter votre administrateur"
+					},
+					"metaQueryBuildFailed": "Erreur lors de la création des métadonnées",
+					"metaQueryFetchFailed": "Erreur lors de la récupération des métadonnées: {{error}}",
+					"missingDataset": "Sélectionner un jeu de données dans les jeux de données",
+					"queryBuildFailed": "Erreur lors de la création de la requête",
+					"queryFetchFailed": "Erreur lors de la récupération des données : {{error}}",
+					"validationFailed": "Les enregistrements suivants n'ont pas pu être sauvegardés car invalides :\n{{errors}}\nMerci de les modifier en utilisant le bouton \"Mettre à jour \" pour plus de détails."
+				},
+				"export": {
+					"columns": {
+						"choice": {
+							"all": "Toutes les colonnes disponibles",
+							"visible": "Toutes les colonnes visibles"
+						},
+						"title": "Sélectionner les colonnes à exporter"
+					},
+					"dataset": {
+						"choice": {
+							"all": "Tous les enregistrements visibles",
+							"selected": "Seulement les enregistrements visibles"
+						},
+						"title": "Sélectionner les enregistrements à exporter"
+					},
+					"email": {
+						"title": "M'envoyer le fichier par e-mail",
+						"tooltip": "Si sélectionné, vous recevrez le fichier par e-mail, au lieu d'attendre son téléchargement ici."
+					},
+					"format": {
+						"title": "Sélectionner le format d'export"
+					}
+				},
+				"filter": {
+					"toggle": "Activer la visibilité du filtre"
+				},
+				"item": {
+					"few": "{{count}} éléments",
+					"none": "Aucun élément",
+					"one": "{{count}} élément"
+				},
+				"layout": {
+					"reset": "Réinitialiser la mise en page par défaut"
+				},
+				"loading": {
+					"records": "Chargement des enregistrements...",
+					"settings": "Chargement des paramètres..."
+				},
+				"map": {
+					"mapDetailsTitle": "Cartographie des données",
+					"mapDetailsTooltip": "Centré par defaut sur l'enregistrement sélectionné"
+				},
+				"openSettings": "Ouvrir les paramètres",
+				"tooltip": {
+					"displayMap": "Afficher la carte",
+					"saved": "Changements sauvegardés",
+					"unsaved": "Cliquez sur sauvegarder pour enregistrer les changements",
+					"uploadFailed": "L'enregistrement a échoué. Cliquez pour obtenir plus de détails"
+				},
+				"validation": {
+					"help": "Veuillez modifier l'enregistrement à l'aide du bouton \"Mettre à jour\".",
+					"questionTitle": "Erreurs sur le champ {{question}}:",
+					"subtitle": "Ces erreurs furent détectées durant l'enregistrement :",
+					"title": "L'enregistrement du document {{record}} a échoué"
+				}
+			},
+			"settings": {
+				"chart": {
+					"auto": "auto",
+					"axes": "Axes",
+					"categories": "Catégories",
+					"color": "Couleur",
+					"grid": {
+						"title": "Grille",
+						"x": {
+							"display": "Afficher les lignes horizontales"
+						},
+						"y": {
+							"display": "Afficher les lignes verticales"
+						}
+					},
+					"hideLegend": "Masquer la légende",
+					"labels": {
+						"percentage": "Pourcentage",
+						"showCategory": "Afficher la catégorie",
+						"showValue": "Afficher la valeur",
+						"title": "Labels",
+						"valueType": "Type de valeur"
+					},
+					"legend": "Légende",
+					"orientation": "Orientation",
+					"other": "Autre",
+					"palette": {
+						"enable": "Configurer la palette",
+						"title": "Palette de couleurs"
+					},
+					"position": "Position",
+					"series": {
+						"fill": "Remplissage",
+						"interpolation": {
+							"step": "Étape d'interpolation",
+							"title": "Interpolation"
+						},
+						"showSeries": "Afficher la serie",
+						"stack": {
+							"enable": "Empiler les séries",
+							"usePercentage": "Utiliser des pourcentages"
+						},
+						"title": "Séries"
+					},
+					"size": "Taille",
+					"style": "Style",
+					"text": "Texte",
+					"title": {
+						"color": "Couleur",
+						"format": "Format"
+					},
+					"tooltip": {
+						"palette": "Les couleurs de la palette sont appliquées par défaut aux éléments du graphqiue, mais peuvent être manuellement changées pour chaque série et catégorie."
+					},
+					"type": "Graphique",
+					"xAxis": "Axe X",
+					"yAxis": "Axe Y"
+				},
+				"close": {
+					"confirmationMessage": "Vos changements vont être perdus si vous fermez la fenêtre d'édition. Voulez-vous continuer ?"
+				},
+				"editor": {
+					"recordSelection": "Sélection d'enregistrement",
+					"title": "Éditeur"
+				},
+				"grid": {
+					"actions": {
+						"add": "Ajouter de nouveaux enregistrements",
+						"convert": "Convertir des enregistrements",
+						"delete": "Supprimer les enregistrements",
+						"export": "Exporter les enregistrements",
+						"inline": "Modifier par ligne",
+						"remove": "Retirer",
+						"show": "Voir l'historique",
+						"showDetails": "Afficher les détails des enregistrements",
+						"title": "Actions activées",
+						"update": "Modifier les enregistrements"
+					},
+					"aggregations": {
+						"add": {
+							"choice": {
+								"create": "Créer une nouvelle agrégation"
+							}
+						},
+						"title": "Aggrégations"
+					},
+					"buttons": {
+						"callback": {
+							"attach": "Attacher à l'enregistrement",
+							"displayField": "Afficher le champ",
+							"export": "Exporter le jeu de données sélectionné",
+							"modify": "Modifier automatiquement les lignes sélectionnées",
+							"modifyField": "Champ à modifier",
+							"modifyValue": "Value to attribute",
+							"notify": {
+								"message": "Message de notification"
+							},
+							"prefill": "Préremplir le formulaire avec les données sélectionnées",
+							"save": "Sauvegarder automatiquement",
+							"selectAllRecords": "Sélectionner tous les enregistrements",
+							"selectAllRecordsActivePage": "Sélectionner tous les enregistrements sur la page active",
+							"selectDisplay": "Sélectionner les champs affichés",
+							"sendMail": "Envoyer le mail",
+							"workflow": {
+								"close": "Fermer le workflow",
+								"confirm": "Message de confirmation",
+								"next": "Aller à l'étape suivante",
+								"previous": "Aller à l'étape précédente"
+							}
+						},
+						"create": "Ajouter un bouton",
+						"defaultName": "Bouton d'action",
+						"enable": "Activer",
+						"title": "Bouton d'action rapide",
+						"tooltip": {
+							"attach": "Si activé, vous devez fournir un formulaire et un champ dans ce formulaire. Toutes les lignes sélectionnées seront attachées à un enregistrement de ce formulaire. L'utilisateur pourra choisir cet enregistrement grâce au champ donné.",
+							"mail": {
+								"selectDistributionList": "Sélectionnez la liste de distribution qui fournira les destinataires de l'email",
+								"selectTemplates": "Sélectionnez les modèles d'email que les utilisateurs pourront choisir en utilisant l'action"
+							},
+							"notify": "Si activé, vous devez fournir un canal de diffusion et un message.Toutes les lignes sélectionnées seront envoyées en tant que notification unique sur le canal spécifié. Le message fourni est utilisé pour définir l'action de la notification.",
+							"publish": "Si activé, vous devez fournir un canal de diffusion. Toutes les lignes sélectionnées seront envoyées en tant que notification unique sur le canal spécifié. Quiconque écoutant sur ce canal pourra recevoir ces enregistrements."
+						}
+					},
+					"hint": {
+						"actions": {
+							"add": "L'utilisateur peut ajouter de nouveaux enregistrements avec le modèle choisi, s'il en a la permission",
+							"convert": "L'utilisateur peut convertir les enregistrements avec les autres modèles de la ressource sélectionnée, s'il en a la permission",
+							"delete": "L'utilisateur peut supprimer les enregistrements affichés, s'il en a la permission",
+							"export": "L'utilisateur peut exporter les enregistrements affichés",
+							"inline": "L'utilisateur peut éditer dans la grille les enregistrements affichés, s'il en a la permission",
+							"show": "L'utilisateur peut afficher l'historique complet des enregistrements affichés",
+							"showDetails": "L'utilisateur peut afficher les informations des enregistrements affichés",
+							"update": "L'utilisateur peut mettre à jour les enregistrements affichés"
+						},
+						"attachToRecord": "Si les enregistrements sélectionnés ne sont joints à aucun enregistrement, l'action sera annulée",
+						"buttons": "Les boutons d'action rapides apparaîtront dans le widget et vous permettront de réaliser chacune des actions ci-dessous",
+						"executionOrder": "Les actions seront exécutées dans l'ordre affiché",
+						"prefillForm": "Si aucun enregistrement n'est créé à cette étape, l'action sera annulée"
+					},
+					"layouts": {
+						"add": {
+							"choice": {
+								"create": "Créer une nouvelle mise en page",
+								"load": "Charger une mise en page existante"
+							},
+							"title": "Ajouter une nouvelle mise en page"
+						},
+						"edit": {
+							"title": "Configuration de la mise en page"
+						},
+						"select": "Sélectionner une mise en page",
+						"title": "Mise en page de la grille"
+					},
+					"tooltip": {
+						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements"
+					}
+				},
+				"iconPicker": {
+					"default": "Standard",
+					"placeholder": "Chezchez un symbole"
+				},
+				"map": {
+					"basemap": "Fond de carte",
+					"category": "Catégories rapides",
+					"dataset": "Sélection du jeu de données",
+					"edit": {
+						"aggregation": "Agrégation",
+						"cluster": {
+							"cluster": "Cluster",
+							"clusterSettings": "Paramètres de groupes",
+							"fields": "Champs de groupes",
+							"high": "Haut",
+							"label": "Libellé du groupes",
+							"low": "Faible",
+							"max": "Max",
+							"min": "Min",
+							"overrideSymbol": "Remplacer le symbole de groupes",
+							"popups": "Groupes pop-ups",
+							"radius": "Rayon de groupes",
+							"sizeRange": "Gamme de taille",
+							"symbol": "Style de symboles"
+						},
+						"datasource": {
+							"origin": "Origine"
+						},
+						"fields": "Champs",
+						"filter": "Filtre",
+						"groupLayers": "Regrouper les calques",
+						"labels": "Étiquettes",
+						"layerDatasource": "Source de données de la couche",
+						"layerProperties": "Propriétés",
+						"layerStyling": "Styles",
+						"popup": "Popup",
+						"properties": {
+							"defaultVisibility": "Visible par défaut",
+							"from": "de zoom ",
+							"opacity": "Opacité",
+							"to": " à zoom",
+							"visibilityRange": "Plage de visibilité",
+							"zoom": "Zoom"
+						},
+						"reduction": {
+							"noReduction": "Pas de réduction",
+							"reduction": "Réduction"
+						},
+						"style": {
+							"color": "Couleur",
+							"icon": "Symbole",
+							"size": "Taille",
+							"stylingType": "Style de {{layerType}}"
+						},
+						"styling": {
+							"heatmapOptions": {
+								"blur": "Flou",
+								"gradient": "Gradient",
+								"minOpacity": "Opacité minimum",
+								"radius": "Rayon"
+							}
+						}
+					},
+					"errors": {
+						"latitude": "Latitude incorrecte, merci de sélectionner un nombre entre -90 et 90",
+						"longitude": "Longitude incorrecte, merci de sélectionner un nombre entre -180 et 180"
+					},
+					"geospatial": {
+						"layersStyles": {
+							"fill": {
+								"color": "Couleur du remplissage",
+								"opacity": "Opacité du remplissage",
+								"title": "Remplissage"
+							},
+							"marker": {
+								"color": "Couleur du marqueur",
+								"opacity": "Opacité du marqueur",
+								"title": "Marqueur"
+							},
+							"outline": {
+								"color": "Couleur du contour",
+								"opacity": "Opacité du contour",
+								"title": "Contour",
+								"width": "Largeur du contour"
+							},
+							"title": "Styles de calque"
+						}
+					},
+					"layers": {
+						"add": "Ajouter un nouveau calque",
+						"chooseLayer": "Choisir un calque existant",
+						"createGroup": "Créer un nouveau groupe de couches",
+						"createLayer": "Créer un nouveau calque",
+						"dataSource": {
+							"geoField": "GeoField",
+							"latitude": "Latitude",
+							"longitude": "Longitude"
+						},
+						"edit": "Mettre à jour le calque {{name}}",
+						"online": {
+							"info": "Charger des couches depuis arcGIS online",
+							"select": "Chercher des couches",
+							"selected": "Couches sélectionnées",
+							"title": "Couches en ligne"
+						},
+						"point": {
+							"addNew": "Ajouter une nouvelle règle",
+							"category": "Couches rapides",
+							"color": "Couleur",
+							"info": "Afficher des marqueurs sur la carte pour chaque enregistrement, en indiquant les champs de géolocation de la source de données",
+							"rules": "Règles de marquarge",
+							"rulesInfo": "Configurer la taille et la couleur des marqueurs",
+							"size": "Taille",
+							"title": "Marqueurs"
+						},
+						"popup": {
+							"addField": "Ajouter un champ",
+							"description": "Description",
+							"fields": "Champs",
+							"fieldsElements": {
+								"description": "Description",
+								"title": "Titre"
+							},
+							"popup": "Popup",
+							"popupElements": "Éléments de popup",
+							"text": "Texte",
+							"title": "Titre",
+							"tooltip": {
+								"text": "Tapez '{' pour utiliser les champs de la source de données"
+							}
+						},
+						"remove": "Supprimer le calque",
+						"selectLayer": "Sélectionner un calque",
+						"styling": {
+							"style": "Style"
+						},
+						"types": {
+							"cluster": "Groupes",
+							"heatmap": "Carte de chaleur",
+							"point": "Point",
+							"polygon": "Polygone"
+						}
+					},
+					"legend": {
+						"high": "Haut",
+						"low": "Faible",
+						"title": "Légende"
+					},
+					"popup": {
+						"label": "Champs affichés dans le popup",
+						"location": "Emplacement",
+						"of": "{{current}} sur {{total}}",
+						"zoomTo": "Zoomer sur"
+					},
+					"properties": {
+						"basemap": "Fond de carte",
+						"controls": {
+							"download": "Télécharger",
+							"layer": "Couches",
+							"legend": "Légende",
+							"measure": "Mesure",
+							"search": "Recherche",
+							"timedimension": "Dimension temporelle",
+							"title": "Contrôles de la carte"
+						},
+						"latitude": "Latitude du centre de la carte",
+						"longitude": "Longitude du centre de la carte",
+						"setByMap": "Utiliser la vue actuelle",
+						"title": "Affichage par défaut",
+						"webmap": "WebMap",
+						"zoom": "Zoom par défaut"
+					},
+					"renderer": {
+						"default": "Défaut",
+						"defaultLabel": "Libellé par défaut",
+						"label": "Libellé",
+						"symbol": "Symbole",
+						"value": "Valeur"
+					},
+					"tooltip": {
+						"category": "Sélectionnez un champ pour séparer vos enregistrements en différentes catégories",
+						"dataset": "Sélectionnez des champs ci-dessous et déplacez-les vers 'champs sélectionnés' sur la droite. Ils seront présents dans le pop-up affiché en cliquant sur les marqueurs",
+						"default": {
+							"latitude": "Définissez la latitude par défaut du centre de la carte. 'Utiliser la vue actuelle' sauvegardera la latitude de la carte d'aperçu.",
+							"longitude": "Définissez la longitude par défaut du centre de la carte. 'Utiliser la vue actuelle' sauvegardera la longitude de la carte d'aperçu.",
+							"zoom": "Sélectionnez un zoom par défaut"
+						}
+					}
+				},
+				"style": {
+					"customStyling": "Style personnalisé"
+				},
+				"summaryCard": {
+					"add": "Ajouter un carte",
+					"card": {
+						"dataSource": {
+							"layoutStyles": {
+								"title": "Styles de mise en page",
+								"use": "Utiliser les styles de mise en page",
+								"wholeRow": {
+									"option1": "Appliquer à tous les champs",
+									"option2": "Appliquer sur toute la carte",
+									"title": "Styles de lignes entières :"
+								}
+							},
+							"title": "Source de données"
+						},
+						"display": {
+							"dataSource": "Afficher le lien vers la source de données",
+							"header": "Titre",
+							"title": "Affichage",
+							"tooltip": {
+								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
+							}
+						},
+						"preview": {
+							"title": "Prévisualisation"
+						},
+						"textEditor": {
+							"alert": "Vous pouvez ajouter des variables ex: {{data.variable}} et faire des calculs ex: {{calc.round( value ; precision )}}",
+							"title": "Éditeur de texte"
+						},
+						"title": "Paramètres de carte",
+						"valueSelector": {
+							"title": "Selection de valeur"
+						}
+					},
+					"create": {
+						"choice": {
+							"blank": "Créer une nouvelle carte",
+							"template": "Utiliser un modèle"
+						}
+					},
+					"dynamic": "Dynamique",
+					"hint": {
+						"dynamic": "Les cartes dynamiques adaptent leur affichage en fonction du nombre d'éléments dans la source de données. Vous devez définir une unique carte qui sera répétée pour chaque élément."
+					},
+					"loadMore": {
+						"infiniteScroll": "Utiliser le défilement infini",
+						"pagination": "Utiliser la pagination",
+						"title": "Déclencheur pour charger plus de données"
+					},
+					"options": {
+						"ariaLabel": "***"
+					},
+					"static": "Statique"
+				}
+			},
+			"styling": "Modifier le style",
+			"summaryCard": {
+				"dataSource": "Source",
+				"errors": {
+					"invalidSource": "La source de données est invalide : veuillez modifier les paramètres."
+				},
+				"viewAsCards": "Afficher en cartes",
+				"viewAsGrid": "Afficher en grille"
+			}
+		}
+	},
+	"kendo": {
+		"combobox": {
+			"noDataText": "No available choice"
+		},
+		"datepicker": {
+			"dateLabel": "Sélectionnez une date",
+			"endLabel": "Date de fin",
+			"startLabel": "Date de début",
+			"today": "Aujourd'hui",
+			"toggle": "Sélectionnez une date"
+		},
+		"datetimepicker": {
+			"accept": "Accepter",
+			"acceptLabel": "Accepter",
+			"cancel": "Annuler",
+			"cancelLabel": "Annuler",
+			"dateTab": "Date",
+			"dateTabLabel": "Date",
+			"now": "Maintenant",
+			"timeTab": "Heure",
+			"timeTabLabel": "Heure",
+			"today": "Aujourd'hui",
+			"toggle": "Sélectionnez une date et une heure"
+		},
+		"editor": {
+			"addColumnAfter": "Nouvelle colonne à droite",
+			"addColumnBefore": "Nouvelle colonne à gauche",
+			"addRowAfter": "Nouvelle ligne en bas",
+			"addRowBefore": "Nouvelle ligne en haut",
+			"alignCenter": "Centrer",
+			"alignJustify": "Justifier",
+			"alignLeft": "Aligner à gauche",
+			"alignRight": "Aligner à droite",
+			"backColor": "Couleur de fond",
+			"bold": "Gras",
+			"cleanFormatting": "Supprimer le format",
+			"createLink": "Nouveau lien",
+			"deleteColumn": "Supprimer la colonne",
+			"deleteRow": "Supprimer la ligne",
+			"deleteTable": "Supprimer la table",
+			"dialogApply": "Appliquer",
+			"dialogCancel": "Annuler",
+			"dialogInsert": "Insérer",
+			"dialogUpdate": "Modifier",
+			"fileText": "Texte",
+			"fileTitle": "Titre",
+			"fileWebAddress": "Adresse Web",
+			"fontFamily": "Sélectionnez une police de caractère",
+			"fontSize": "Sélectionnez la taille de police",
+			"foreColor": "Couleur",
+			"format": "Format",
+			"imageAltText": "Texte alternatif",
+			"imageHeight": "Hauteur (px)",
+			"imageWebAddress": "Adresse Web",
+			"imageWidth": "Largeur (px)",
+			"indent": "Augmenter le retrait",
+			"insertFile": "Nouveau fichier",
+			"insertImage": "Nouvelle image",
+			"insertOrderedList": "Nouvelle liste ordonnée",
+			"insertTable": "Nouvelle table",
+			"insertUnorderedList": "Nouvelle liste non-ordonnée",
+			"italic": "Italique",
+			"linkOpenInNewWindow": "Ouvrir dans une nouvelle fenêtre",
+			"linkText": "Texte",
+			"linkTitle": "Titre",
+			"linkWebAddress": "Adresse Web",
+			"outdent": "Diminuer le retrait",
+			"print": "Imprimer",
+			"redo": "Répéter",
+			"selectAll": "Tout sélectionner",
+			"strikethrough": "Barrer",
+			"subscript": "Indice",
+			"superscript": "Exposant",
+			"underline": "Souligner",
+			"undo": "Annuler",
+			"unlink": "Supprimer le lien",
+			"unselectAll": "Tout déselectionner",
+			"viewSource": "Voir la source"
+		},
+		"fileselect": {
+			"dropFilesHere": "Déposez les fichiers ici pour les sélectionner",
+			"select": "Choisir des fichiers..."
+		},
+		"grid": {
+			"columnMenu": "'Menu de la colonne {columnName}'",
+			"columns": "Colonnes",
+			"columnsApply": "Appliquer",
+			"columnsReset": "Réinitialiser",
+			"detailCollapse": "Réduire",
+			"detailExpand": "Étendre",
+			"filter": "Filtrer",
+			"filterAfterOperator": "Est après",
+			"filterAfterOrEqualOperator": "Est après ou égal à",
+			"filterAndLogic": "Et",
+			"filterBeforeOperator": "Est avant",
+			"filterBeforeOrEqualOperator": "Est avant ou égal à",
+			"filterBooleanAll": "(Tous)",
+			"filterClearButton": "Effacer",
+			"filterContainsOperator": "Contient",
+			"filterDateToday": "Aujourd'hui",
+			"filterDateToggle": "Afficher/masquer le calendrier",
+			"filterEndsWithOperator": "Termine par",
+			"filterEqOperator": "Est égal à",
+			"filterFilterButton": "Filtrer",
+			"filterGtOperator": "Est plus grand que",
+			"filterGteOperator": "Est plus grand que ou égal à",
+			"filterInputLabel": "'Filtrer {columnName}'",
+			"filterIsEmptyOperator": "Est vide",
+			"filterIsFalse": "est faux",
+			"filterIsInOperator": "Est dans",
+			"filterIsNotEmptyOperator": "Est non-vide",
+			"filterIsNotInOperator": "N'est pas dans",
+			"filterIsNotNullOperator": "Est non-nul",
+			"filterIsNullOperator": "Est nul",
+			"filterIsTrue": "est vrai",
+			"filterLtOperator": "Est plus petit que",
+			"filterLteOperator": "Est plus petit que ou égal à",
+			"filterMenuLogicDropDownLabel": "'Logique de filtre sur {columnName}'",
+			"filterMenuOperatorsDropDownLabel": "'Opérateurs de filtre sur {columnName}'",
+			"filterMenuTitle": "'Menu de filtre sur {columnName}'",
+			"filterNotContainsOperator": "Ne contient pas",
+			"filterNotEqOperator": "Est différent de",
+			"filterNumericDecrement": "Décrémenter la valeur",
+			"filterNumericIncrement": "Incrémenter la valeur",
+			"filterOrLogic": "Ou",
+			"filterStartsWithOperator": "Commence par",
+			"gridLabel": "Table de données",
+			"groupCollapse": "Réduire le groupe",
+			"groupExpand": "Étendre le groupe",
+			"groupPanelEmpty": "Faites glisser un en-tête de colonne et déposez-le ici pour grouper par cette colonne",
+			"loading": "Chargement",
+			"lock": "Verrouiller",
+			"noRecords": "Aucun enregistrement disponible",
+			"pagerFirstPage": "Aller à la première page",
+			"pagerItems": "éléments",
+			"pagerItemsPerPage": "éléments par page",
+			"pagerLabel": "'Navigation de page, page {currentPage} sur {totalPages}'",
+			"pagerLastPage": "Aller à la dernière page",
+			"pagerNextPage": "Aller à la page suivante",
+			"pagerOf": "sur",
+			"pagerPage": "Page",
+			"pagerPageNumberInputTitle": "Numéro de page",
+			"pagerPreviousPage": "Aller à la page précédente",
+			"selectAllCheckboxLabel": "Tout sélectionner",
+			"selectionCheckboxLabel": "Sélectionner la ligne",
+			"setColumnPosition": "Définir la position de la colonne",
+			"sortAscending": "Trier par ordre croissant",
+			"sortDescending": "Trier par ordre décroissant",
+			"sortable": "Triable",
+			"sortedAscending": "Trié par ordre croissant",
+			"sortedDefault": "Non trié",
+			"sortedDescending": "Trié par ordre décroissant",
+			"stick": "Épingler",
+			"unlock": "Déverrouiller",
+			"unstick": "Désépingler"
+		},
+		"multiselect": {
+			"noDataText": "No available choice"
+		},
+		"pager": {
+			"firstPage": "Aller à la première page",
+			"items": "éléments",
+			"itemsPerPage": "éléments par page",
+			"label": "'Navigation de page, page {currentPage} sur {totalPages}'",
+			"lastPage": "Aller à la dernière page",
+			"nextPage": "Aller à la page suivante",
+			"of": "sur",
+			"page": "Page",
+			"pageNumberInputTitle": "Numéro de page",
+			"previousPage": "Aller à la page précédente"
+		},
+		"tilelayout": {
+			"component": {
+				"items": "articles",
+				"itemsPerPage": "Articles par page",
+				"of": "de",
+				"page": "Page"
+			}
+		},
+		"timepicker": {
+			"accept": "Accepter",
+			"acceptLabel": "Accepter",
+			"cancel": "Annuler",
+			"cancelLabel": "Annuler",
+			"now": "Maintenant",
+			"toggle": "Sélectionner une heure"
+		},
+		"upload": {
+			"dropFilesHere": "Déposez les fichiers ici pour les importer",
+			"select": "Sélectionner les fichiers..."
+		}
+	},
+	"models": {
+		"apiConfiguration": {
+			"authType": "Type d'authentification",
+			"new": "Nouvelle configuration d'API",
+			"selectAuthType": "Sélectionnez le type d'authentification"
+		},
+		"application": {
+			"description": "Description",
+			"id": "ID de l'application",
+			"menu": "Menu latéral",
+			"new": "Nouvelle application",
+			"notifications": {
+				"notPublished": "L'application n'a pas pu être publiée.",
+				"published": "L'application {{value}} a été publiée.",
+				"updated": "Application modifiée."
+			},
+			"setAsFavorite": "Ajouter aux favoris",
+			"subscription": {
+				"create": "Créer un abonnement"
+			}
+		},
+		"channel": {
+			"create": "Créer un canal de diffusion",
+			"new": "Nouveau canal de diffusion"
+		},
+		"customNotification": {
+			"lastExecution": "Dernière exécution",
+			"schedule": "Fréquence",
+			"type": "Type"
+		},
+		"dashboard": {
+			"activateFiltering": "Activer le filtre",
+			"buttonActions": {
+				"add": "Ajouter une action de bouton",
+				"category": "Catégorie de bouton",
+				"confirmDelete": "Voulez-vous vraiment supprimer cette action de bouton ?",
+				"edit": "Modifier l'action du bouton",
+				"href": "Bouton href",
+				"one": "Action du bouton",
+				"openInNewTab": "Ouvrir dans un nouvel onglet",
+				"text": "Texte du bouton",
+				"variant": "Variante de bouton"
+			},
+			"context": {
+				"datasource": {
+					"alert": "Sélectionnez une source de données, afin de définir une page par enregistrement de la source de données. Vous pouvez également définir un modèle qui sera chargé par défaut si aucune page spécifique n'est créée pour un enregistrement.",
+					"info": "Indiquez le champ à utiliser lors de la sélection des enregistrements.",
+					"set": "Définir la source de données contextuelle",
+					"title": "Source de données contextuelle",
+					"update": "Mettre à jour la source de données contextuelle"
+				},
+				"displayField": "Champ d'affichage",
+				"edition": {
+					"element": "Vous éditez la page qui sera affichée pour l'élément sélectionné.",
+					"template": "Vous éditez le modèle de base de la page. Il sera utilisé par défaut si aucune vue n'a été créée pour l'élément à charger."
+				},
+				"notifications": {
+					"creatingTemplate": "Création d'une nouvelle vue",
+					"loadDefault": "Affichage de la vue générique",
+					"templateCreated": "Nouvelle vue créée"
+				},
+				"origin": "Origine du contexte",
+				"refData": {
+					"element": "Élément"
+				},
+				"selectDisplayField": "Sélectionnez le champ d'affichage",
+				"selectOrigin": "Sélectionnez la source de données"
+			},
+			"dashboardFilter": "Filtre de tableaux de bord",
+			"deactivateFiltering": "Désactiver le filtre",
+			"share": "Partager le tableau de bord",
+			"tooltip": {
+				"useDashboardFilterEditor": "Utiliser l'éditeur de tableaux de bord",
+				"useDefaultEditor": "Utiliser l'éditeur par défaut"
+			}
+		},
+		"form": {
+			"core": "Source",
+			"create": "Créer un formulaire",
+			"field": {
+				"label": "Étiquette",
+				"name": "Nom du champ",
+				"usedIn": "Utilisé par"
+			},
+			"new": "Nouveau formulaire",
+			"notifications": {
+				"savingFailed": "Échec de l'enregistrement, certains champs nécessitent votre attention."
+			},
+			"select": "Sélectionner un formulaire",
+			"template": "Modèle"
+		},
+		"group": {
+			"create": "Créer un groupe",
+			"description": "Description",
+			"fetch": "Récupérer les groupes du service",
+			"title": "Titre"
+		},
+		"mapping": {
+			"add": "Ajouter un rang à la table de correspondances",
+			"edit": "Modifier un rang de la table de correspondances"
+		},
+		"page": {
+			"add": "Ajouter une page",
+			"tooltip": {
+				"drag": "Glissez-déposez pour réorganiser",
+				"duplicate": "Sélectionner l'application où copier la page"
+			}
+		},
+		"positionAttribute": {
+			"new": "Nouvel attribut de position"
+		},
+		"pullJob": {
+			"new": "Nouvelle tâche planifiée",
+			"nextIteration": "Prochaine exécution",
+			"path": "Chemin",
+			"schedule": "Horaire planifié",
+			"url": "Url"
+		},
+		"record": {
+			"convert": "Convertir",
+			"new": "Nouvel enregistrement",
+			"notifications": {
+				"conversionIncomplete": "Il n'y a pas de correspondance entre le(s) enregistrement(s) sélectionné(s) et certains champs de ce formulaire.",
+				"rowsAdded": "{{length}} ligne(s) ont été ajoutées à {{field}} dans l'enregistrement {{value}}.",
+				"rowsNotAdded": "Erreur lors de l'ajout de ligne(s).",
+				"uploadSuccessful": "Enregistrements importés avec succès"
+			},
+			"restore": "Restaurer",
+			"select": "Sélectionnez un enregistrement"
+		},
+		"referenceData": {
+			"add": "Ajouter une référence de données"
+		},
+		"resource": {
+			"create": "Créer une ressource",
+			"select": "Sélectionnez une ressource"
+		},
+		"role": {
+			"create": "Créer un rôle",
+			"description": "Description",
+			"title": "Titre"
+		},
+		"step": {
+			"new": "Nouvelle étape"
+		},
+		"subscription": {
+			"new": "Nouvel abonnement"
+		},
+		"user": {
+			"firstName": "Prénom",
+			"lastName": "Nom",
+			"notifications": {
+				"rolesUpdated": "Les rôles de {{username}} ont été modifiés.",
+				"userImportFail": "L'importation d'utilisateurs a échoué."
+			},
+			"username": "Nom d'utilisateur"
+		},
+		"widget": {
+			"add": "Ajouter un widget",
+			"chart": {
+				"defaultTitle": "Widget Graphique"
+			},
+			"delete": {
+				"confirmationMessage": "Souhaitez-vous supprimer le widget ?",
+				"title": "Supprimer le widget"
+			},
+			"display": {
+				"border": "Afficher la bordure du widget",
+				"searchable": "Autoriser la recherche",
+				"sortable": "Autoriser le tri",
+				"title": "Affichage des widgets"
+			},
+			"map": {
+				"defaultTitle": "Widget Carte",
+				"latitude": "Latitude",
+				"longitude": "Longitude",
+				"zoom": "Zoom"
+			},
+			"sorting": {
+				"add": "Ajouter un champ",
+				"delete": "Supprimer le champ de tri",
+				"field": "Champ",
+				"label": "Étiquette",
+				"management": "Gestion des champs de tri",
+				"order": "Ordre",
+				"select": "Sélectionnez un champ de tri...",
+				"title": "Tri"
+			},
+			"tooltip": {
+				"selector": {
+					"collapse": "Fermer la sélection de widget",
+					"expand": "Afficher la sélection de widget"
+				}
+			}
+		},
+		"workflow": {
+			"notifications": {
+				"cannotGoToNextStep": "Impossible de passer à l'étape suivante",
+				"cannotGoToPreviousStep": "Impossible de passer à l'étape précédente",
+				"goToStep": "De retour à l'étape {{step}}."
+			}
+		}
+	},
+	"pages": {
+		"administration": {
+			"title": "Administration"
+		},
+		"apiConfiguration": {
+			"authentication": "Paramètres d'authentification",
+			"baseUrl": "Point d'arrivée principal",
+			"clientId": "ID Client",
+			"graphQL": {
+				"endpoint": "Point d'accès GraphQL",
+				"title": "Paramètres de GraphQL"
+			},
+			"host": "Paramètres de l'hôte",
+			"notifications": {
+				"authTokenFetched": "Jeton d'authentification récupéré, faîtes un autre ping pour obtenir la vraie réponse.",
+				"pingFailed": "La requête ping a échoué.",
+				"pingReceived": "La requête ping a reçu une réponse positive."
+			},
+			"ping": "Essayer avec ces paramètres",
+			"pingUrl": "Extension ping",
+			"placeholder": {
+				"baseUrl": "URL de base pour l'API",
+				"clientId": "Entrez l'ID Client",
+				"graphQLEndpoint": "Extension GraphQL",
+				"pingUrl": "Entrez l'URL de l'extension ping",
+				"scope": "Entrer le scope",
+				"secret": "Entrer le client secret",
+				"token": "Entrez le jeton d'accès pour l'authentification",
+				"tokenUrl": "Entrez l'URL du jeton d'accès"
+			},
+			"scope": "Scope",
+			"secret": "Client Secret",
+			"token": "Jeton d'accès",
+			"tokenUrl": "URL du jeton d'accès"
+		},
+		"apiConfigurations": {
+			"create": "Créer une configuration d'API"
+		},
+		"appBuilder": {
+			"title": "Création de site"
+		},
+		"application": {
+			"addPage": {
+				"form": {
+					"title": "Formulaires disponibles"
+				},
+				"selectType": "Sélectionnez le type de page que vous voulez créer",
+				"startFromWidget": "Commencer avec un widget"
+			},
+			"empty": {
+				"add": "Ajouter une page",
+				"create": "Cliquez sur créer pour terminer le processus",
+				"customize": "Personnalisez chacune des pages créées"
+			},
+			"positionAttributes": {
+				"create": "Créer une catégorie de position",
+				"title": "Attributs"
+			},
+			"settings": {
+				"actions": "Actions"
+			}
+		},
+		"applications": {
+			"all": "Toutes les applications",
+			"goTo": "Aller vers la liste d'applications",
+			"recent": "Applications récentes",
+			"title": "Mes applications"
+		},
+		"dashboard": {
+			"update": {
+				"exit": "Quitter sans sauvegarder les changements",
+				"exitMessage": "Il y a des changements non sauvegardés dans la page, voulez-vous vraiment quitter cette page ?"
+			}
+		},
+		"formBuilder": {
+			"errors": {
+				"choices": {
+					"valueDuplicated": "Veuillez configurer des valeurs uniques pour les choix de la question : {{question}}"
+				},
+				"dataFieldDuplicated": "Doublon de nom de valeur : {{name}}. Indiquez un nom de valeur distinct pour chaque question.",
+				"missingName": "Nom manquant pour un élément de la page : {{page}}. Veuillez configurer un nom valide (en format snake_case) pour sauvegarder le formulaire.",
+				"multipletext": {
+					"missingName": "Veuillez configurer un nom ou titre pour chaque champ de text de la question : {{question}}"
+				},
+				"selectApplication": "Application manquante pour un élément de la page : {{page}}. Veuillez sélectionner au moins une application dans les propriétés de {{question}} pour sauvegarder le formulaire.",
+				"snakecase": "Le nom de valeur {{name}} de la page {{page}} est invalide. Veuillez configurer un nom valide (en format snake_case) pour sauvegarder le formulaire."
+			},
+			"move": {
+				"down": "Descendre la question",
+				"up": "Monter la question"
+			},
+			"questionsCategories": {
+				"core": "Bibliothèque de questions"
+			},
+			"title": "Paramètres avancés"
+		},
+		"forms": {
+			"title": "Formulaires disponibles"
+		},
+		"profile": {
+			"notifications": {
+				"notUpdated": "Erreur lors de l'enregistrement des préférences.",
+				"updated": "Préférences sauvegardées."
+			},
+			"title": "Votre profil"
+		},
+		"pullJobs": {
+			"create": "Créer une tâche planifiée"
+		},
+		"referenceData": {
+			"csv": "Fichier CSV d'entrée",
+			"fields": {
+				"fetch": "Récupérer les champs",
+				"missingConfig": "Impossible de récupérer les champs. Configuration manquante : {{config}}",
+				"noFields": "Aucun champ trouvé",
+				"title": "Champ"
+			},
+			"graphQLFilter": "Paramètres de la requête GraphQL",
+			"path": "Chemin",
+			"placeholder": {
+				"csv": "Insérer le CSV ici",
+				"graphQLFilter": "Entrez un filtre graphQL qui sera utilisé une fois les choix cachés"
+			},
+			"queryName": "Nom de la requête",
+			"tooltip": {
+				"graphQLFilter": "Vous pouvez utiliser {{lastUpdate}} pour obtenir dynamiquement la dernière date de récupération au format SQL.",
+				"path": "Utilise la syntaxe JSONPath pour extraire les éléments de la réponse JSON. Exemples: $.data[*].name, $.data..countries, $.data.countries.*"
+			},
+			"type": "Type",
+			"validateCsv": "Valider le CSV",
+			"valueField": "Champ de valeur"
+		},
+		"workflow": {
+			"addStep": {
+				"selectType": "Sélectionner quel type d'étape vous voulez créer."
+			},
+			"deleteStep": {
+				"confirmationMessage": "Souhaitez-vous supprimer définitivement l'étape {{step}} ?"
+			},
+			"empty": {
+				"add": "Ajoutez des étapes",
+				"customize": "Personnalisez chacune des étapes créées."
+			}
+		}
+	}
+}

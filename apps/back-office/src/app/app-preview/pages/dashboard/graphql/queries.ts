@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Dashboard } from '@oort-front/safe';
+import { Dashboard } from '@oort-front/shared';
 
 // === GET DASHBOARD BY ID ===
 /** Graphql query for getting a dashboard by its id */
