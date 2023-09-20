@@ -157,7 +157,7 @@ export class SafeFormComponent
 
     if (cachedData) {
       this.survey.data = cachedData;
-      this.setUserVariables();
+      // this.setUserVariables();
     } else if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
       this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
@@ -207,40 +207,19 @@ export class SafeFormComponent
   }
 
   /**
-   * Set user variables
-   */
-  private setUserVariables(): void {
-    this.formHelpersService.addUserVariables(this.survey);
-    const surveyQuestion = this.survey.getAllQuestions();
-    //get all questions
-    surveyQuestion.forEach((question: any) => {
-      //verify if have defaultValueExpression
-      if (question.defaultValueExpression) {
-        //get the defaultExpression in the right format
-        const questionDefaultExpression = question.defaultValueExpression
-          .replace('{', '')
-          .replace('}', '');
-        //verify if the defaultExpression is setted in variables
-        if (this.survey.getVariable(questionDefaultExpression)) {
-          //update the question value with the variable
-          question.updateValueFromSurvey(
-            this.survey.getVariable(questionDefaultExpression)
-          );
-        }
-      }
-    });
-  }
-
-  /**
    * Reset the survey to empty
    */
   public reset(): void {
     this.survey.clear();
-    this.setUserVariables();
+    /** Reset custom variables */
+    this.formHelpersService.addUserVariables(this.survey);
+    /** Force reload of the survey so default value are being applied */
+    this.survey.fromJSON(this.survey.toJSON());
     this.temporaryFilesStorage = {};
     this.survey.showCompletedPage = false;
     this.save.emit({ completed: false });
     this.survey.render();
+    console.log(this.survey);
     setTimeout(() => (this.surveyActive = true), 100);
   }
 
