@@ -4,8 +4,7 @@
     <h1>
       {{
         data.pullJob
-          ? ('common.editObject'
-            | translate : { name: 'common.pullJob.one' | translate })
+          ? ('models.pullJob.edit' | translate)
           : ('models.pullJob.new' | translate)
       }}
     </h1>
@@ -17,7 +16,7 @@
       <div class="flex flex-col pb-1">
         <div class="flex gap-x-2 flex-wrap">
           <!-- Title -->
-          <div uiFormFieldDirective class="flex-auto">
+          <div uiFormFieldDirective class="flex-1 max-w-[50%]">
             <label>{{ 'common.name' | translate }}</label>
             <input
               type="text"
@@ -27,7 +26,7 @@
           </div>
           <!-- Status -->
 
-          <div uiFormFieldDirective [outline]="false" class="flex-1">
+          <div uiFormFieldDirective class="flex-1 max-w-[50%]">
             <label>{{ 'common.status' | translate }}</label>
             <ui-select-menu
               formControlName="status"
@@ -70,7 +69,7 @@
         </div>
         <div class="flex gap-x-2 flex-wrap" *ngIf="!isHardcoded">
           <!-- Url to pull -->
-          <div uiFormFieldDirective class="flex-1">
+          <div uiFormFieldDirective class="flex-1 max-w-[50%]">
             <label>{{ 'models.pullJob.url' | translate }}</label>
             <input
               type="text"
@@ -88,7 +87,7 @@
             ></ui-icon>
           </div>
           <!-- Path to pull -->
-          <div uiFormFieldDirective class="flex-1">
+          <div uiFormFieldDirective class="flex-1 max-w-[50%]">
             <label>{{ 'models.pullJob.path' | translate }}</label>
             <input
               type="text"
@@ -108,7 +107,7 @@
         </div>
         <div class="flex gap-x-2 flex-wrap">
           <!-- Resource to use for conversion -->
-          <div uiFormFieldDirective class="flex-auto">
+          <div uiFormFieldDirective class="flex-1 max-w-[50%]">
             <label>{{ 'components.record.convert.select' | translate }}</label>
             <ui-graphql-select
               valueField="id"
@@ -123,7 +122,7 @@
           </div>
           <!-- Channel to notify on -->
 
-          <div uiFormFieldDirective [outline]="false" class="flex-1">
+          <div uiFormFieldDirective class="flex-1 max-w-[50%]">
             <label>{{
               'components.channel.dropdown.select' | translate
             }}</label>
@@ -184,9 +183,13 @@
                 <form
                   [formGroup]="$any(element)"
                   *ngFor="let element of mappingArray.controls; index as i"
-                  class="flex gap-x-2 items-center"
+                  class="flex gap-x-2 items-end"
                 >
-                  <div uiFormFieldDirective [outline]="false" class="flex-1">
+                  <div
+                    uiFormFieldDirective
+                    [defaultMargin]="false"
+                    class="flex-1"
+                  >
                     <label>{{ 'common.field.one' | translate }}</label>
                     <ui-select-menu formControlName="name">
                       <ui-select-option
@@ -198,8 +201,9 @@
                     </ui-select-menu>
                   </div>
                   <div
-                    uiFormFieldDirective
                     *ngIf="element.value.name"
+                    uiFormFieldDirective
+                    [defaultMargin]="false"
                     class="flex-1"
                   >
                     <label>{{ 'common.value.one' | translate }}</label>
@@ -215,11 +219,11 @@
                 </form>
                 <ui-button
                   *ngIf="filteredFields('').length > 0"
-                  [isIcon]="true"
                   icon="add_circle_outline"
                   variant="primary"
                   (click)="onAddElement()"
                 >
+                  {{ 'components.pullJob.modal.addMappingField' | translate }}
                 </ui-button>
               </div>
             </ng-container>

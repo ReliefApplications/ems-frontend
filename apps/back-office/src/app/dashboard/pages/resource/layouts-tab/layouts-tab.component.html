@@ -25,7 +25,7 @@
             <td
               uiCell
               *cdkCellDef="let element"
-              class="!text-gray-900 !font-medium"
+              class="!text-gray-900 !font-medium max-w-[30vw]"
             >
               {{ element.name }}
             </td>
@@ -56,6 +56,7 @@
                   <ui-icon icon="edit" variant="grey"></ui-icon>
                   {{ 'common.edit' | translate }}
                 </button>
+                <ui-divider class="py-1"></ui-divider>
                 <button uiMenuItem (click)="onDeleteLayout(element)">
                   <ui-icon icon="delete" variant="danger"></ui-icon>
                   {{ 'common.delete' | translate }}

@@ -41,7 +41,10 @@
 			"none": "******",
 			"one": "******"
 		},
-		"child": "******",
+		"child": {
+			"edit": "******",
+			"one": "******"
+		},
 		"clear": "******",
 		"close": "******",
 		"column": {
@@ -75,7 +78,6 @@
 		"downloadTemplate": "******",
 		"duplicate": "******",
 		"edit": "******",
-		"editObject": "****** {{name}}",
 		"email": {
 			"few": "******",
 			"none": "******",
@@ -130,6 +132,7 @@
 		"modifiedOn": "******",
 		"name": "******",
 		"next": "******",
+		"noOptions": "******",
 		"notifications": {
 			"accessDenied": "****** {{type}} ******",
 			"accessNotProvided": "****** {{type}} ****** {{error}}",
@@ -260,8 +263,10 @@
 		},
 		"save": "******",
 		"saveChanges": "******",
+		"search": "******",
 		"searchObject": "****** {{name}}",
 		"select": "******",
+		"selectStatus": "******",
 		"send": "******",
 		"settings": "******",
 		"status": "******",
@@ -498,7 +503,8 @@
 			},
 			"dropdown": {
 				"select": "******"
-			}
+			},
+			"selectChannel": "******"
 		},
 		"confirmModal": {
 			"cancel": "******",
@@ -578,6 +584,7 @@
 				"template": {
 					"from": "******",
 					"placeholder": "******",
+					"selectResource": "******",
 					"title": "******"
 				},
 				"tooltip": {
@@ -709,6 +716,7 @@
 				"title": "******"
 			},
 			"modal": {
+				"addMappingField": "******",
 				"errors": {
 					"schedule": "******"
 				},
@@ -1077,6 +1085,7 @@
 					"history": "******"
 				},
 				"errors": {
+					"autoSaveFailed": "******",
 					"invalid": {
 						"backoffice": "******",
 						"frontoffice": "******"
@@ -1273,7 +1282,10 @@
 							"showDetails": "******",
 							"update": "******"
 						},
-						"buttons": "******"
+						"attachToRecord": "******",
+						"buttons": "******",
+						"executionOrder": "******",
+						"prefillForm": "******"
 					},
 					"layouts": {
 						"add": {
@@ -1612,7 +1624,8 @@
 	"models": {
 		"apiConfiguration": {
 			"authType": "******",
-			"new": "******"
+			"new": "******",
+			"selectAuthType": "******"
 		},
 		"application": {
 			"description": "******",
@@ -1631,6 +1644,7 @@
 		},
 		"channel": {
 			"create": "******",
+			"edit": "******",
 			"new": "******"
 		},
 		"customNotification": {
@@ -1656,7 +1670,9 @@
 				"origin": "******",
 				"refData": {
 					"element": "******"
-				}
+				},
+				"selectDisplayField": "******",
+				"selectOrigin": "******"
 			},
 			"deactivateFiltering": "******",
 			"share": "******"
@@ -1664,6 +1680,7 @@
 		"form": {
 			"core": "******",
 			"create": "******",
+			"edit": "******",
 			"field": {
 				"label": "******",
 				"name": "******",
@@ -1693,9 +1710,11 @@
 			}
 		},
 		"positionAttribute": {
+			"edit": "******",
 			"new": "******"
 		},
 		"pullJob": {
+			"edit": "******",
 			"new": "******",
 			"nextIteration": "******",
 			"path": "******",
@@ -1704,6 +1723,7 @@
 		},
 		"record": {
 			"convert": "******",
+			"edit": "******",
 			"new": "******",
 			"notifications": {
 				"conversionIncomplete": "******",
@@ -1730,6 +1750,7 @@
 			"new": "******"
 		},
 		"subscription": {
+			"edit": "******",
 			"new": "******"
 		},
 		"user": {

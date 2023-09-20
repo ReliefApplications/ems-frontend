@@ -1,12 +1,17 @@
-<!-- Never set as relative, while we use kendo tile layouts for widget grid -->
-<div [ngClass]="{ flex: mode[0] === 'side' }" class="w-screen overflow-y-auto">
+<!-- Never set as relative, while we use kendo tile layouts for widget grid
+  todo(2.1.x): check if h-full should be removed -->
+<div
+  [ngClass]="{ flex: mode[0] === 'side' }"
+  class="w-full h-full overflow-y-auto"
+>
   <!-- SIDENAV CONTENT -->
   <ng-container *ngFor="let sidenav of uiSidenavDirective; let i = index">
     <div
       #sidenav
-      class="will-change-transform h-full overflow-y-auto bg-white translate-x-0"
+      class="will-change-transform overflow-y-auto bg-white translate-x-0"
       [attr.data-sidenav-show]="showSidenav[i]"
       [ngClass]="resolveSidenavClasses(i)"
+      [style.height]="height"
     >
       <div class="flex flex-col h-full"></div>
     </div>

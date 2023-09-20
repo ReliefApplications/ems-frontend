@@ -12,7 +12,7 @@ import {
 } from './graphql/queries';
 import {
   AddApiConfigurationMutationResponse,
-  ADD_API_CONFIGURATIION,
+  ADD_API_CONFIGURATION,
   DeleteApiConfigurationMutationResponse,
   DELETE_API_CONFIGURATION,
 } from './graphql/mutations';
@@ -128,32 +128,13 @@ export class ApiConfigurationsComponent
     ) {
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
-      let neededSize = e.pageSize;
-      // If the fetch is for a new page size, the old page size is substracted from the new one
+      let first = e.pageSize;
+      // If the fetch is for a new page size, the old page size is subtracted from the new one
       if (e.pageSize > this.pageInfo.pageSize) {
-        neededSize -= this.pageInfo.pageSize;
+        first -= this.pageInfo.pageSize;
       }
-      this.loading = true;
-      const variables = {
-        first: neededSize,
-        afterCursor: this.pageInfo.endCursor,
-      };
-      const cachedValues: GetApiConfigurationsQueryResponse = getCachedValues(
-        this.apollo.client,
-        GET_API_CONFIGURATIONS,
-        variables
-      );
-      if (cachedValues) {
-        this.updateValues(cachedValues, false);
-      } else {
-        this.apiConfigurationsQuery
-          .fetchMore({ variables })
-          .then(
-            (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
-              this.updateValues(results.data, results.loading);
-            }
-          );
-      }
+      this.pageInfo.pageSize = first;
+      this.fetchApiConfigurations();
     } else {
       this.dataSource = this.cachedApiConfigurations.slice(
         e.pageSize * this.pageInfo.pageIndex,
@@ -218,7 +199,7 @@ export class ApiConfigurationsComponent
       if (value) {
         this.apollo
           .mutate<AddApiConfigurationMutationResponse>({
-            mutation: ADD_API_CONFIGURATIION,
+            mutation: ADD_API_CONFIGURATION,
             variables: {
               name: value.name,
             },
@@ -343,7 +324,11 @@ export class ApiConfigurationsComponent
       this.cachedApiConfigurations,
       mappedValues
     );
-    this.dataSource = mappedValues;
+    // then slice the array to correctly match the items in the current page
+    this.dataSource = this.cachedApiConfigurations.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
     this.pageInfo.length = data.apiConfigurations.totalCount;
     this.pageInfo.endCursor = data.apiConfigurations.pageInfo.endCursor;
     this.loading = loading;
@@ -367,6 +352,7 @@ export class ApiConfigurationsComponent
    * @param refetch erase previous query results
    */
   private fetchApiConfigurations(refetch?: boolean): void {
+    this.loading = true;
     const variables = {
       first: this.pageInfo.pageSize,
       afterCursor: refetch ? null : this.pageInfo.endCursor,

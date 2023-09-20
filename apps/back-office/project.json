@@ -99,7 +99,6 @@
             }
           ],
           "baseHref": "/backoffice/",
-          "deployUrl": "/backoffice/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/default"]
@@ -125,7 +124,31 @@
             }
           ],
           "baseHref": "/backoffice/",
-          "deployUrl": "/backoffice/",
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+          }
+        },
+        "azure-sit": {
+          "fileReplacements": [
+            {
+              "replace": "apps/back-office/src/environments/environment.ts",
+              "with": "apps/back-office/src/environments/environment.azure.sit.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ],
+          "baseHref": "/backoffice/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/default"]
@@ -151,7 +174,6 @@
             }
           ],
           "baseHref": "/backoffice/",
-          "deployUrl": "/backoffice/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/default"]
@@ -177,7 +199,6 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/oort"]
@@ -203,7 +224,6 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/oort"]
@@ -229,7 +249,6 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/Default"]
@@ -255,7 +274,6 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/oort"]
@@ -281,7 +299,6 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/oort"]
@@ -307,7 +324,6 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/oort"]
@@ -333,7 +349,6 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/oort"]
@@ -359,7 +374,6 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
             "includePaths": ["libs/safe/src/lib/style/themes/expertisefr"]

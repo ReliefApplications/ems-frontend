@@ -6,6 +6,7 @@
   [isGraphQlSelect]="true"
   (focusin)="onFocusIn()"
   (focusout)="onFocusOut($event)"
+  [placeholder]="placeholder"
 >
   <!-- Search -->
   <ng-container *ngIf="filterable">
@@ -29,6 +30,7 @@
       [formControl]="searchControl"
       [placeholder]="'common.placeholder.search' | translate"
       type="text"
+      #searchInput
     />
     <ui-spinner
       [size]="'medium'"

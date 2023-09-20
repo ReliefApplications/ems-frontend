@@ -3,13 +3,15 @@ import { CommonModule } from '@angular/common';
 import { AddStepRoutingModule } from './add-step-routing.module';
 import { AddStepComponent } from './add-step.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import {
-  SafeContentChoiceModule,
-  SafeFormsDropdownModule,
-} from '@oort-front/safe';
+import { SafeContentChoiceModule } from '@oort-front/safe';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
-import { DividerModule, ButtonModule } from '@oort-front/ui';
+import {
+  DividerModule,
+  ButtonModule,
+  GraphQLSelectModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
 
 /**
  * Add step module
@@ -23,10 +25,11 @@ import { DividerModule, ButtonModule } from '@oort-front/ui';
     AddStepRoutingModule,
     SafeContentChoiceModule,
     TranslateModule,
-    SafeFormsDropdownModule,
     DividerModule,
     AbilityModule,
     ButtonModule,
+    GraphQLSelectModule,
+    FormWrapperModule,
   ],
 })
 export class AddStepModule {}

@@ -14,7 +14,6 @@ export class PaginatorComponent {
   @Input() disabled = false;
   @Input() totalItems = 0;
   @Input() pageSize = 10;
-  @Input() skip = 0;
   @Input() pageSizeOptions = [5, 10, 15];
   @Input() hideFirstLastButtons = true;
   @Input() ariaLabel = '';
@@ -33,11 +32,10 @@ export class PaginatorComponent {
   onPageChange(event: PageChangeEvent): void {
     // Current page has to be calculated, logic provided from their forums: https://www.telerik.com/forums/get-current-page
     const currentPage = (event.skip + event.take) / event.take - 1;
-    this.skip = event.skip;
     this.pageSize = event.take;
     this.pageChange.emit({
       pageSize: this.pageSize,
-      skip: this.skip,
+      skip: event.skip,
       totalItems: this.totalItems,
       pageIndex: currentPage,
       previousPageIndex: this.pageIndex,

@@ -125,12 +125,11 @@ export class ResourcesComponent
       // Sets the new fetch quantity of data needed as the page size
       // If the fetch is for a new page the page size is used
       let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is substracted from the new one
+      // If the fetch is for a new page size, the old page size is subtracted from the new one
       if (e.pageSize > this.pageInfo.pageSize) {
         first -= this.pageInfo.pageSize;
       }
       this.pageInfo.pageSize = first;
-      this.loading = true;
       this.fetchResources();
     } else {
       this.resources = this.cachedResources.slice(
@@ -316,16 +315,19 @@ export class ResourcesComponent
    * @param loading loading status
    */
   updateValues(data: GetResourcesQueryResponse, loading: boolean) {
-    const mappedValues = data.resources.edges.map((x) => x.node);
+    const mappedValues = data.resources?.edges?.map((x) => x.node);
     this.cachedResources = updateQueryUniqueValues(
       this.cachedResources,
       mappedValues
     );
-    this.resources = mappedValues;
     this.pageInfo.length = data.resources.totalCount;
     this.pageInfo.endCursor = data.resources.pageInfo.endCursor;
     this.loading = loading;
     this.updating = loading;
+    this.resources = this.cachedResources.slice(
+      this.pageInfo.pageSize * this.pageInfo.pageIndex,
+      this.pageInfo.pageSize * (this.pageInfo.pageIndex + 1)
+    );
     this.filterLoading = false;
   }
 }

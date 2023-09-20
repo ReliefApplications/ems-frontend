@@ -1,13 +1,17 @@
 <ui-dialog size="medium" [closable]="true">
-  <ng-container ngProjectAs="content">
+  <!-- Title of the field -->
+  <ng-container ngProjectAs="header">
     <h1>{{ data.title }}</h1>
+  </ng-container>
+  <!-- Edition of the field ( if available ), else, display of the value -->
+  <ng-container ngProjectAs="content">
     <div uiFormFieldDirective class="flex-1">
       <ui-textarea [formControl]="formControl" [minRows]="15" [maxRows]="15">
       </ui-textarea>
     </div>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button uiDialogClose>
+    <ui-button [uiDialogClose]="null">
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button

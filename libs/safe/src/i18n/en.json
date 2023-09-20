@@ -41,7 +41,10 @@
 			"none": "No channel",
 			"one": "Channel"
 		},
-		"child": "Child",
+		"child": {
+			"edit": "Edit child",
+			"one": "Child"
+		},
 		"clear": "Clear",
 		"close": "Close",
 		"column": {
@@ -75,7 +78,6 @@
 		"downloadTemplate": "Get template",
 		"duplicate": "Duplicate",
 		"edit": "Edit",
-		"editObject": "Edit {{name}}",
 		"email": {
 			"few": "Emails",
 			"none": "No email",
@@ -130,6 +132,7 @@
 		"modifiedOn": "Modified On",
 		"name": "Name",
 		"next": "Next",
+		"noOptions": "No available choices",
 		"notifications": {
 			"accessDenied": "You don't have permission to see the {{type}}.",
 			"accessNotProvided": "No access provided to this {{type}}. {{error}}",
@@ -260,8 +263,10 @@
 		},
 		"save": "Save",
 		"saveChanges": "Save changes",
+		"search": "Search",
 		"searchObject": "Search {{name}}",
 		"select": "Select",
+		"selectStatus": "Select a status",
 		"send": "Send",
 		"settings": "Settings",
 		"status": "Status",
@@ -498,7 +503,8 @@
 			},
 			"dropdown": {
 				"select": "Notify on"
-			}
+			},
+			"selectChannel": "Select a channel"
 		},
 		"confirmModal": {
 			"cancel": "Cancel",
@@ -578,6 +584,7 @@
 				"template": {
 					"from": "From template",
 					"placeholder": "Pick an existing template",
+					"selectResource": "Select a resource",
 					"title": "From resource"
 				},
 				"tooltip": {
@@ -709,6 +716,7 @@
 				"title": "Delete pull job"
 			},
 			"modal": {
+				"addMappingField": "add a mapping field",
 				"errors": {
 					"schedule": "Enter a valid cron expression"
 				},
@@ -1077,6 +1085,7 @@
 					"history": "Show history"
 				},
 				"errors": {
+					"autoSaveFailed": "Action stopped due to some invalid records. Please review them before taking any other action.",
 					"invalid": {
 						"backoffice": "Invalid grid configuration",
 						"frontoffice": "Invalid grid configuration, please contact your admin"
@@ -1273,7 +1282,10 @@
 							"showDetails": "User can see full details of visible records",
 							"update": "If authorized, user can update visible records"
 						},
-						"buttons": "Quick action buttons will appear on the widget and allow you to complete any of the actions below"
+						"attachToRecord": "If the selected records are not attached to any records, the action will be canceled",
+						"buttons": "Quick action buttons will appear on the widget and allow you to complete any of the actions below",
+						"executionOrder": "Selected actions will be executed in the displayed order",
+						"prefillForm": "If no record is created at this point, the action will be canceled"
 					},
 					"layouts": {
 						"add": {
@@ -1612,7 +1624,8 @@
 	"models": {
 		"apiConfiguration": {
 			"authType": "Authentication type",
-			"new": "New API Configuration"
+			"new": "New API Configuration",
+			"selectAuthType": "Select authentication type"
 		},
 		"application": {
 			"description": "Description",
@@ -1631,6 +1644,7 @@
 		},
 		"channel": {
 			"create": "Create a channel",
+			"edit": "Edit channel",
 			"new": "New channel"
 		},
 		"customNotification": {
@@ -1656,7 +1670,9 @@
 				"origin": "Context origin",
 				"refData": {
 					"element": "Element"
-				}
+				},
+				"selectDisplayField": "Select display field",
+				"selectOrigin": "Select context origin"
 			},
 			"deactivateFiltering": "Deactivate filtering",
 			"share": "Share Dashboard"
@@ -1664,6 +1680,7 @@
 		"form": {
 			"core": "Core",
 			"create": "Create a Form",
+			"edit": "Edit form",
 			"field": {
 				"label": "Label",
 				"name": "Field name",
@@ -1693,9 +1710,11 @@
 			}
 		},
 		"positionAttribute": {
+			"edit": "Edit position attribute",
 			"new": "New position attribute"
 		},
 		"pullJob": {
+			"edit": "Edit pull job",
 			"new": "New pull job",
 			"nextIteration": "Next iteration",
 			"path": "Path",
@@ -1704,6 +1723,7 @@
 		},
 		"record": {
 			"convert": "Convert",
+			"edit": "Edit record",
 			"new": "New record",
 			"notifications": {
 				"conversionIncomplete": "Selected record(s) do not match with some fields from this form.",
@@ -1730,6 +1750,7 @@
 			"new": "New step"
 		},
 		"subscription": {
+			"edit": "Edit subscription",
 			"new": "New subscription"
 		},
 		"user": {

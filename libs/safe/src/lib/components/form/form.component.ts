@@ -114,14 +114,12 @@ export class SafeFormComponent
 
     this.survey = this.formBuilderService.createSurvey(
       JSON.stringify(structure),
-      this.pages,
       this.form.metadata,
       this.record
     );
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
-      this.pages,
       this.selectedPageIndex,
       this.temporaryFilesStorage
     );
@@ -159,6 +157,7 @@ export class SafeFormComponent
 
     if (cachedData) {
       this.survey.data = cachedData;
+      // this.setUserVariables();
     } else if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
       this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
@@ -212,10 +211,15 @@ export class SafeFormComponent
    */
   public reset(): void {
     this.survey.clear();
+    /** Reset custom variables */
+    this.formHelpersService.addUserVariables(this.survey);
+    /** Force reload of the survey so default value are being applied */
+    this.survey.fromJSON(this.survey.toJSON());
     this.temporaryFilesStorage = {};
     this.survey.showCompletedPage = false;
     this.save.emit({ completed: false });
     this.survey.render();
+    console.log(this.survey);
     setTimeout(() => (this.surveyActive = true), 100);
   }
 
@@ -406,6 +410,6 @@ export class SafeFormComponent
     super.ngOnDestroy();
     localStorage.removeItem(this.storageId);
     this.formHelpersService.cleanCachedRecords(this.survey);
-    this.survey.dispose();
+    this.survey?.dispose();
   }
 }

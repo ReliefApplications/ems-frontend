@@ -13,19 +13,20 @@
     <ng-container *ngSwitchCase="2">
       <div class="flex flex-col w-80">
         <!-- Existing form -->
-        <safe-forms-dropdown
-          class="self-center"
-          [forms$]="forms$"
-          [label]="'models.form.select' | translate"
-          [sourceControl]="stepForm.controls.content"
-          [loadingMore]="loadingMore"
-          (filter)="onFilterDataSource($event)"
-          (scrolled)="onScrollDataSource($event)"
-        ></safe-forms-dropdown>
-        <ui-divider [text]="'or'"></ui-divider>
+        <div uiFormFieldDirective>
+          <ui-graphql-select
+            formControlName="content"
+            valueField="id"
+            textField="name"
+            [query]="formsQuery"
+            (searchChange)="onSearchChange($event)"
+            [filterable]="true"
+          ></ui-graphql-select>
+        </div>
+        <ui-divider [text]="'or'" class="my-4"></ui-divider>
         <!-- New form -->
         <ui-button
-          class="mt-4 self-center"
+          class="self-center"
           icon="add"
           category="secondary"
           variant="primary"

@@ -41,7 +41,10 @@
 			"none": "Aucun canal de diffusion",
 			"one": "Canal de diffusion"
 		},
-		"child": "Enfant",
+		"child": {
+			"edit": "Modifier l'enfant",
+			"one": "Enfant"
+		},
 		"clear": "Annuler",
 		"close": "Fermer",
 		"column": {
@@ -75,7 +78,6 @@
 		"downloadTemplate": "Télécharger le modèle",
 		"duplicate": "Dupliquer",
 		"edit": "Modifier",
-		"editObject": "Modifier {{name}}",
 		"email": {
 			"few": "Emails",
 			"none": "Pas d'email",
@@ -130,6 +132,7 @@
 		"modifiedOn": "Modifié le ",
 		"name": "Nom",
 		"next": "Suivant",
+		"noOptions": "Aucun choix disponible",
 		"notifications": {
 			"accessDenied": "Vous n'avez pas la permission pour accéder à cet objet de type {{type}}.",
 			"accessNotProvided": "Pas d'accès fourni à cet objet de type {{type}}. {{error}}",
@@ -260,8 +263,10 @@
 		},
 		"save": "Sauvegarder",
 		"saveChanges": "Sauvegarder les changements",
+		"search": "Recherche",
 		"searchObject": "Rechercher {{name}}",
 		"select": "Sélectionner",
+		"selectStatus": "Sélectionner un statut",
 		"send": "Envoyer",
 		"settings": "Paramètres",
 		"status": "Statut",
@@ -498,7 +503,8 @@
 			},
 			"dropdown": {
 				"select": "Notifier sur"
-			}
+			},
+			"selectChannel": "Sélectionnez un canal"
 		},
 		"confirmModal": {
 			"cancel": "Annuler",
@@ -583,6 +589,7 @@
 				"template": {
 					"from": "Depuis le modèle",
 					"placeholder": "Choisir un modèle existant",
+					"selectResource": "Sélectionnez une ressource",
 					"title": "Depuis la ressource"
 				},
 				"tooltip": {
@@ -714,6 +721,7 @@
 				"title": "Supprimer la tâche"
 			},
 			"modal": {
+				"addMappingField": "ajouter un champ de correspondance",
 				"errors": {
 					"schedule": "Entrez une expression cron valide"
 				},
@@ -1084,6 +1092,7 @@
 				},
 				"empty": "Aucun enregistrement détecté pour cette configuration de réseau",
 				"errors": {
+					"autoSaveFailed": "L'exécution de l'action a été stoppé à cause d'enregistrement(s) non valide(s). Veuillez les vérifier avant de lancer une autre action.",
 					"invalid": {
 						"backoffice": "Configuration de grille invalide",
 						"frontoffice": "Configuration de grille non valide, veuillez contacter votre administrateur"
@@ -1280,7 +1289,10 @@
 							"showDetails": "L'utilisateur peut afficher les informations des enregistrements affichés",
 							"update": "L'utilisateur peut mettre à jour les enregistrements affichés"
 						},
-						"buttons": "Les boutons d'action rapides apparaîtront dans le widget et vous permettront de réaliser chacune des actions ci-dessous"
+						"attachToRecord": "Si les enregistrements sélectionnés ne sont joints à aucun enregistrement, l'action sera annulée",
+						"buttons": "Les boutons d'action rapides apparaîtront dans le widget et vous permettront de réaliser chacune des actions ci-dessous",
+						"executionOrder": "Les actions seront exécutées dans l'ordre affiché",
+						"prefillForm": "Si aucun enregistrement n'est créé à cette étape, l'action sera annulée"
 					},
 					"layouts": {
 						"add": {
@@ -1619,7 +1631,8 @@
 	"models": {
 		"apiConfiguration": {
 			"authType": "Type d'authentification",
-			"new": "Nouvelle configuration d'API"
+			"new": "Nouvelle configuration d'API",
+			"selectAuthType": "Sélectionnez le type d'authentification"
 		},
 		"application": {
 			"description": "Description",
@@ -1638,6 +1651,7 @@
 		},
 		"channel": {
 			"create": "Créer un canal de diffusion",
+			"edit": "Modifier le canal",
 			"new": "Nouveau canal de diffusion"
 		},
 		"customNotification": {
@@ -1663,7 +1677,9 @@
 				"origin": "Origine du contexte",
 				"refData": {
 					"element": "Élément"
-				}
+				},
+				"selectDisplayField": "Sélectionnez le champ d'affichage",
+				"selectOrigin": "Sélectionnez la source de données"
 			},
 			"deactivateFiltering": "Désactiver le filtre",
 			"share": "Partager le tableau de bord"
@@ -1671,6 +1687,7 @@
 		"form": {
 			"core": "Source",
 			"create": "Créer un formulaire",
+			"edit": "Modifier le formulaire",
 			"field": {
 				"label": "Étiquette",
 				"name": "Nom du champ",
@@ -1700,9 +1717,11 @@
 			}
 		},
 		"positionAttribute": {
+			"edit": "Modifier l'attribut de position",
 			"new": "Nouvel attribut de position"
 		},
 		"pullJob": {
+			"edit": "Modifier une tâche planifiée",
 			"new": "Nouvelle tâche planifiée",
 			"nextIteration": "Prochaine exécution",
 			"path": "Chemin",
@@ -1711,6 +1730,7 @@
 		},
 		"record": {
 			"convert": "Convertir",
+			"edit": "Modifier l'enregistrement",
 			"new": "Nouvel enregistrement",
 			"notifications": {
 				"conversionIncomplete": "Il n'y a pas de correspondance entre le(s) enregistrement(s) sélectionné(s) et certains champs de ce formulaire.",
@@ -1737,6 +1757,7 @@
 			"new": "Nouvelle étape"
 		},
 		"subscription": {
+			"edit": "Modifier l'abonnement",
 			"new": "Nouvel abonnement"
 		},
 		"user": {

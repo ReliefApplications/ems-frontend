@@ -1,0 +1,43 @@
+/* All the styling that would be applied for the web component within the shadow root */
+
+/* All the styling used for the leaflet maps and controls */
+@use 'node_modules/survey-angular/survey.min.css';
+@use 'node_modules/survey-creator/survey-creator.min.css';
+@use 'node_modules/leaflet/dist/leaflet.css' as leaflet;
+@use 'node_modules/leaflet.markercluster/dist/MarkerCluster.css' as marker;
+@use 'node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css' as
+  markerDefault;
+
+/* All the needed fonts for the web component */
+@import 'libs/ui/src/style/widgets.scss';
+@import 'libs/ui/src/style/survey.scss';
+@import 'libs/ui/src/style/styles.scss';
+@import 'libs/ui/src/style/theme.scss';
+
+/* Definition of the scss properties in the shadow root host element, won't affect any other element outside shadow-root */
+@import 'variables.scss';
+@layer base {
+  :host {
+    --primary-50: #{$primary_50};
+    --primary-100: #{$primary_100};
+    --primary-200: #{$primary_200};
+    --primary-300: #{$primary_300};
+    --primary-400: #{$primary_400};
+    --primary-500: #{$primary_500};
+    --primary-600: #{$primary_600};
+    --primary-700: #{$primary_700};
+    --primary-800: #{$primary_800};
+    --primary-900: #{$primary_900};
+    --secondary-50: #{$secondary_50};
+    --secondary-100: #{$secondary_100};
+    --secondary-150: #{$secondary_150};
+    --secondary-200: #{$secondary_200};
+  }
+}
+
+:host {
+  height: 100%;
+  margin: 0;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  overflow: hidden;
+}

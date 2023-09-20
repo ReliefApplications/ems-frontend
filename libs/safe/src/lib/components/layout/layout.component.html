@@ -1,7 +1,7 @@
 <!-- Header -->
 <nav
   id="app-header"
-  class="flex p-4 items-center md:justify-between text-white bg-primary-600"
+  class="flex p-4 items-center md:justify-between text-white"
   [ngClass]="theme.headerClass"
 >
   <div class="flex-shrink-0 flex flex-wrap min-w-0">
@@ -131,12 +131,17 @@
       {{ environment.version }}
     </div>
   </ui-menu>
+  <!-- Notification menu -->
   <ui-menu #notificationMenu>
-    <div class="notification-menu">
-      <a (click)="onMarkAllNotificationsAsRead()">
-        {{ 'components.notifications.readAll' | translate }}
-        <ui-icon icon="check_circle_outline"></ui-icon>
-      </a>
+    <!-- Remove visible notifications -->
+    <ui-button
+      (click)="onMarkAllNotificationsAsRead()"
+      class="self-end"
+      icon="check_circle_outline"
+      >{{ 'components.notifications.readAll' | translate }}</ui-button
+    >
+    <!-- List of notifications -->
+    <div class="flex flex-col overflow-y-auto max-h-[50vh]">
       <button
         uiMenuItem
         (click)="onNotificationClick(notification)"
@@ -145,11 +150,12 @@
         {{ notification.action }} - {{ notification.createdAt | safeDate }}
       </button>
     </div>
+    <!-- Load more notifications -->
     <ui-button
       *ngIf="hasMoreNotifications"
       category="primary"
       variant="primary"
-      class="!w-auto"
+      [isBlock]="true"
       [disabled]="loadingNotifications"
       [loading]="loadingNotifications"
       (click)="onLoadMoreNotifications($event)"
