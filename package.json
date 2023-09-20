@@ -95,7 +95,6 @@
     "localforage": "^1.10.0",
     "monaco-editor": "^0.34.1",
     "ng2-charts": "^4.1.1",
-    "ngx-cron-editor": "0.7.8",
     "ngx-monaco-editor-v2": "^15.0.1",
     "proj4": "^2.9.0",
     "rxjs": "~7.8.0",

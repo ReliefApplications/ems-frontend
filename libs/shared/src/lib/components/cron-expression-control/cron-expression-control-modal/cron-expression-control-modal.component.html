@@ -1,15 +1,15 @@
 <ui-dialog size="big">
   <ng-container ngProjectAs="content" class="flex flex-col">
     <!-- Show readable value of the schedule -->
-    <ui-alert *ngIf="control.valid" variant="primary" class="mb-6">
+    <ui-alert *ngIf="control.valid" variant="primary" class="mb-6 block">
       {{ control.value | sharedReadableCron }}
     </ui-alert>
     <!-- Cron editor -->
-    <cron-editor
+    <ui-cron-editor
       [formControl]="control"
-      [options]="cronOptions"
       class="grow"
-    ></cron-editor>
+      (cronValidEmitter)="cronIsValid($event)"
+    ></ui-cron-editor>
   </ng-container>
   <ng-container ngProjectAs="actions">
     <!-- Modal actions -->
@@ -18,7 +18,7 @@
       category="secondary"
       variant="primary"
       [uiDialogClose]="control.value"
-      [disabled]="!control.valid"
+      [disabled]="!cronValid"
     >
       {{ 'common.save' | translate }}
     </ui-button>

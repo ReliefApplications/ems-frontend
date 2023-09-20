@@ -1,11 +1,23 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { CronOptions } from 'ngx-cron-editor';
 import { CommonModule } from '@angular/common';
-import { CronEditorModule } from 'ngx-cron-editor';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  AlertModule,
+  ButtonModule,
+  DialogModule,
+  CronEditorModule,
+} from '@oort-front/ui';
+import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { ReadableCronModule } from '../../../pipes/readable-cron/readable-cron.module';
-import { AlertModule, ButtonModule, DialogModule } from '@oort-front/ui';
+
+/**
+ * Dialog data interface
+ */
+interface DialogData {
+  value: string;
+}
+
 /**
  * Cron expression form control modal
  */
@@ -26,33 +38,31 @@ import { AlertModule, ButtonModule, DialogModule } from '@oort-front/ui';
   styleUrls: ['./cron-expression-control-modal.component.scss'],
 })
 export class CronExpressionControlModalComponent {
-  public control!: FormControl;
-  public cronOptions: CronOptions = {
-    defaultTime: '00:00:00',
-    // Cron Tab Options
-    hideMinutesTab: false,
-    hideHourlyTab: false,
-    hideDailyTab: false,
-    hideWeeklyTab: false,
-    hideMonthlyTab: false,
-    hideYearlyTab: false,
-    hideAdvancedTab: true,
-    hideSpecificWeekDayTab: false,
-    hideSpecificMonthWeekTab: false,
-    // Time options
-    use24HourTime: true,
-    hideSeconds: false,
-    // standard or quartz
-    cronFlavor: 'standard',
-  };
+  public control: FormControl = new FormControl();
+  public cronValid!: boolean;
+
   /**
-   *  Cron expression form control modal
+   * Cron expression form control modal
+   *
+   * @param data dialog data
    */
-  constructor() {
+  constructor(@Inject(DIALOG_DATA) public data: DialogData) {
     // The cron editor we're using doesn't support two way binding,
     // meaning the UI will always be initialized in the 'Minutes' tab, with 'every 1 minute' selected
     // So it's useless to inject the value from the parent component
     // That way, it's better to always initialize the control with the default value
-    this.control = new FormControl('0/1 * 1/1 * *');
+    this.control.setValue(data);
+    if (!this.control.value) {
+      this.control = new FormControl();
+    }
+  }
+
+  /**
+   * Is current cron valud
+   *
+   * @param value is valid boolean
+   */
+  public cronIsValid(value: boolean) {
+    this.cronValid = value;
   }
 }

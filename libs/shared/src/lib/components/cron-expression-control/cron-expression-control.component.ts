@@ -11,7 +11,6 @@ import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component
   selector: 'shared-cron-expression-control',
   templateUrl: './cron-expression-control.component.html',
   styleUrls: ['./cron-expression-control.component.scss'],
-  // providers: [CONTROL_VALUE_ACCESSOR],
 })
 export class CronExpressionControlComponent
   extends UnsubscribeComponent
@@ -92,6 +91,7 @@ export class CronExpressionControlComponent
       './cron-expression-control-modal/cron-expression-control-modal.component'
     );
     const dialogRef = this.dialog.open(CronExpressionControlModalComponent, {
+      data: this.value,
       autoFocus: false,
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {

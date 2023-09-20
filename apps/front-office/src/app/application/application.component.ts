@@ -1,5 +1,5 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { subject } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -12,7 +12,7 @@ import {
   AppAbility,
 } from '@oort-front/shared';
 import get from 'lodash/get';
-import { filter, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Front-office Application component.
@@ -67,14 +67,6 @@ export class ApplicationComponent
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
-    this.router.events
-      .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(() => {
-        console.log('end');
-      });
   }
 
   /**
