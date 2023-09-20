@@ -66,11 +66,6 @@ export interface ApplicationsApplicationNodesQueryResponse {
   applications: GraphqlNodesResponse<Application>;
 }
 
-/** Model for upload file graphql mutation response */
-export interface UploadApplicationStyleMutationResponse {
-  uploadApplicationStyle: string;
-}
-
 /** Duplicate application graphql mutation response */
 export interface DuplicateApplicationMutationResponse {
   duplicateApplication: Application;
