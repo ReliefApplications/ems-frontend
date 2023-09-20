@@ -197,7 +197,6 @@ export class DashboardComponent
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        console.log('aaaaah');
         this.loading = true;
         // Reset context
         this.contextRecord = null;

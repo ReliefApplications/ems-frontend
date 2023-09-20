@@ -2,22 +2,21 @@ import {
   Component,
   Input,
   OnInit,
-  forwardRef,
-  ViewChild,
   OnDestroy,
   Output,
   EventEmitter,
+  Optional,
+  Self,
 } from '@angular/core';
-import { CronOptions, DefaultOptions } from './options/CronOptions';
+import { CronOptions, DefaultCronOptions } from './options/cron.options';
 import { Days, MonthWeeks, Months } from './enum/enums';
 import {
   ControlValueAccessor,
   FormBuilder,
-  NG_VALUE_ACCESSOR,
+  NgControl,
   Validators,
 } from '@angular/forms';
-import { ThemePalette } from '@angular/material/core';
-import { debounceTime, Subscription } from 'rxjs';
+import { debounceTime, Subject, takeUntil } from 'rxjs';
 
 type CronType =
   | 'minutely'
@@ -49,13 +48,6 @@ const yearlyExp = /\d+ \d+ \d+ (\d+|L|LW|1W) \d+ [?*] \*/;
 /** yearlyMonthWeek regex */
 const yearlyMonthWeekExp =
   /\d+ \d+ \d+ [?*] \d+ (MON|TUE|WED|THU|FRI|SAT|SUN)((#[1-5])|L) \*/;
-
-/** A provider for the ControlValueAccessor interface. */
-export const CRON_VALUE_ACCESSOR: any = {
-  provide: NG_VALUE_ACCESSOR,
-  useExisting: forwardRef(() => CronEditorComponent),
-  multi: true,
-};
 
 /** Interface declaration CronToken */
 interface CronToken {
@@ -97,49 +89,24 @@ function* range(start: number, end: number) {
   selector: 'ui-cron-editor',
   templateUrl: './cron-editor.component.html',
   styleUrls: ['./cron-editor.component.scss'],
-  providers: [CRON_VALUE_ACCESSOR],
 })
 export class CronEditorComponent
   implements OnInit, OnDestroy, ControlValueAccessor
 {
+  destroy$: Subject<boolean> = new Subject<boolean>();
   public seconds = [...range(0, 59)];
   public minutes = [...range(0, 59)];
   public hours = [...range(0, 23)];
 
-  @Input() public backgroundColor: ThemePalette;
-  @Input() public color: ThemePalette;
-
   @Input() public disabled = false;
-  @Input() public options: CronOptions = new DefaultOptions();
+  @Input() public options: CronOptions = DefaultCronOptions;
 
   @Output() cronValidEmitter: EventEmitter<boolean> =
     new EventEmitter<boolean>();
 
+  public value: string | undefined | null;
   public activeTab!: string;
   public selectOptions = this.getSelectOptions();
-
-  @ViewChild('minutesTab')
-  minutesTab!: any;
-
-  @ViewChild('hourlyTab')
-  hourlyTab!: any;
-
-  @ViewChild('dailyTab')
-  dailyTab!: any;
-
-  @ViewChild('weeklyTab')
-  weeklyTab!: any;
-
-  @ViewChild('monthlyTab')
-  monthlyTab!: any;
-
-  @ViewChild('yearlyTab')
-  yearlyTab!: any;
-
-  @ViewChild('advancedTab')
-  advancedTab!: any;
-
-  formSub!: Subscription;
 
   touched = false;
   allForm = this.fb.group({
@@ -210,54 +177,23 @@ export class CronEditorComponent
    * Ui CronEditor constructor
    *
    * @param fb FormBuilder
+   * @param ngControl Current control
    */
-  constructor(private fb: FormBuilder) {}
-
-  /**
-   * Update the cron output to that of the selected tab.
-   * The cron output value is updated whenever a form is updated. To make it change in response to tab selection, we simply reset
-   * the value of the form that goes into focus.
-   * We cannot rely on the index of the tab, as the hide options could hide tabs and
-   * then the index dynamically changes based on the hidden tab.
-   *
-   * @param tabChangeEvent tabChangeEvent
-   */
-  onTabChange(tabChangeEvent: any) {
-    const currentTab = tabChangeEvent.tab;
-    let x: CronType;
-    switch (currentTab) {
-      case this.minutesTab:
-        x = 'minutely';
-        break;
-      case this.hourlyTab:
-        x = 'hourly';
-        break;
-      case this.dailyTab:
-        x = 'daily';
-        break;
-      case this.weeklyTab:
-        x = 'weekly';
-        break;
-      case this.monthlyTab:
-        x = 'monthly';
-        break;
-      case this.yearlyTab:
-        x = 'yearly';
-        break;
-      case this.advancedTab:
-        x = 'unknown';
-        break;
-      default:
-        throw new Error('Invalid tab selected');
-    }
-    if (x !== 'unknown') {
-      this.allForm.controls.cronType.setValue(x);
+  constructor(
+    private fb: FormBuilder,
+    @Optional() @Self() public ngControl: NgControl
+  ) {
+    if (this.ngControl != null) {
+      this.ngControl.valueAccessor = this;
+      if (this.ngControl.value) {
+        this.handleModelChange(this.ngControl.value);
+      }
     }
   }
 
   public async ngOnInit() {
-    this.formSub = this.allForm.valueChanges
-      .pipe(debounceTime(1000))
+    this.allForm.valueChanges
+      .pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe(() => {
         this.markAsTouched();
         const cron = this.computeCron();
@@ -266,8 +202,12 @@ export class CronEditorComponent
       });
   }
 
+  /**
+   * Emit Destroy event, and unsubscribe to destroy
+   */
   ngOnDestroy() {
-    this.formSub.unsubscribe();
+    this.destroy$.next(true);
+    this.destroy$.unsubscribe();
   }
 
   /**
@@ -546,12 +486,10 @@ export class CronEditorComponent
   private handleModelChange(cron: string) {
     if (!this.cronIsValid(cron)) {
       if (this.isCronFlavorQuartz) {
-        throw new Error(
-          'Invalid cron expression, there must be 6 or 7 segments'
-        );
+        console.error('Invalid cron expression, there must be 6 or 7 segments');
       }
       if (this.isCronFlavorStandard) {
-        throw new Error('Invalid cron expression, there must be 5 segments');
+        console.error('Invalid cron expression, there must be 5 segments');
       }
     }
 
@@ -838,16 +776,18 @@ export class CronEditorComponent
   }
 
   /**
-   * change the monthly radio
+   * Change the monthly radio
    *
+   * @param val is specific week day
    */
   public monthRadioChange(val: boolean) {
     this.allForm.get('specificWeekDay')?.setValue(val);
   }
 
   /**
-   * change the yearly radio
+   * Change the yearly radio
    *
+   *  @param val is specific month week
    */
   public yearlyRadioChange(val: any) {
     this.allForm.get('day')?.setValue('1');

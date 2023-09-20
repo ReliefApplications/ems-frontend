@@ -1,6 +1,6 @@
 <!-- todo: translate all texts -->
 <section>
-  <ui-tabs (selectedIndexChange)="onTabChange($event)">
+  <ui-tabs>
     <!-- Minute -->
     <ui-tab [formGroup]="allForm" *ngIf="!options.hideMinutesTab" #minutesTab>
       <ng-container ngProjectAs="label">
@@ -208,7 +208,6 @@
               <ui-radio
                 name="monthly-radio"
                 [value]="false"
-                [ngClass]="options.formRadioClass"
                 (click)="monthRadioChange(false)"
               >
                 <!-- Specific day -->
@@ -260,7 +259,6 @@
                       <ui-select-menu
                         class="months-small"
                         formControlName="monthsInc"
-                        [ngClass]="options.formSelectClass"
                       >
                         <ui-select-option
                           *ngFor="let month of selectOptions.months"
@@ -277,7 +275,6 @@
               <ui-radio
                 name="monthly-radio2"
                 [value]="true"
-                [ngClass]="options.formRadioClass"
                 (click)="monthRadioChange(true)"
               >
                 <!-- Specific Week day -->
@@ -289,7 +286,6 @@
                       <ui-select-menu
                         class="day-order-in-month"
                         formControlName="monthsWeek"
-                        [ngClass]="options.formSelectClass"
                       >
                         <ui-select-option
                           *ngFor="let monthWeek of selectOptions.monthWeeks"
@@ -302,11 +298,7 @@
 
                     <div uiFormFieldDirective class="w-36">
                       <label>Day</label>
-                      <ui-select-menu
-                        class="week-days"
-                        formControlName="day"
-                        [ngClass]="options.formSelectClass"
-                      >
+                      <ui-select-menu class="week-days" formControlName="day">
                         <ui-select-option
                           *ngFor="let day of selectOptions.days"
                           [value]="day"
@@ -370,7 +362,6 @@
               <ui-radio
                 name="yearly-radio"
                 [value]="false"
-                [ngClass]="options.formRadioClass"
                 (click)="yearlyRadioChange(false)"
               >
                 <ng-container ngProjectAs="label">
@@ -431,7 +422,6 @@
               <ui-radio
                 name="yearly-radio"
                 value="specificMonthWeek"
-                [ngClass]="options.formRadioClass"
                 (click)="yearlyRadioChange('specificMonthWeek')"
               >
                 <ng-container ngProjectAs="label">

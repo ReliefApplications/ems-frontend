@@ -42,7 +42,9 @@ export class CronExpressionControlModalComponent {
   public cronValid!: boolean;
 
   /**
-   *  Cron expression form control modal
+   * Cron expression form control modal
+   *
+   * @param data dialog data
    */
   constructor(@Inject(DIALOG_DATA) public data: DialogData) {
     // The cron editor we're using doesn't support two way binding,
@@ -55,6 +57,11 @@ export class CronExpressionControlModalComponent {
     }
   }
 
+  /**
+   * Is current cron valud
+   *
+   * @param value is valid boolean
+   */
   public cronIsValid(value: boolean) {
     this.cronValid = value;
   }
