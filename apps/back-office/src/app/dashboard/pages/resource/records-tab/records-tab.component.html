@@ -113,7 +113,10 @@
                     [uiMenuTriggerFor]="templates"
                   >
                     <ui-icon icon="edit_note" variant="grey"></ui-icon>
-                    {{ 'common.child.edit' | translate }}
+                    {{
+                      'common.editObject'
+                        | translate : { name: 'common.child' | translate }
+                    }}
                   </button>
                   <ui-divider class="py-1"></ui-divider>
                   <button

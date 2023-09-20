@@ -14,9 +14,9 @@ import { map } from 'rxjs/operators';
 })
 export class AccessGuard implements CanActivate {
   /**
-   * Constructor of the access guard
+   * Constructor of the accessguard
    *
-   * @param authService The authentication service
+   * @param authService The authentification service
    * @param snackBar The snack bar service
    * @param router The router client
    * @param translate Angular translate service

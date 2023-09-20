@@ -4,7 +4,8 @@
       {{
         data.add
           ? ('models.positionAttribute.new' | translate)
-          : ('models.positionAttribute.edit' | translate)
+          : ('common.editObject'
+            | translate : { name: 'common.positionAttribute.one' | translate })
       }}
     </h1>
   </ng-container>

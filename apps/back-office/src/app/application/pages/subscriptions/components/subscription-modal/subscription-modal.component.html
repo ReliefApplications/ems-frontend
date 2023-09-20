@@ -3,7 +3,8 @@
     <h1>
       {{
         data.subscription
-          ? ('models.subscription.edit' | translate)
+          ? ('common.editObject'
+            | translate : { name: 'common.subscription.one' | translate })
           : ('models.subscription.new' | translate)
       }}
     </h1>

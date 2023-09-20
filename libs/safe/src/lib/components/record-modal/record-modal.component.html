@@ -99,7 +99,10 @@
         *ngIf="canEdit"
         (click)="onEdit()"
       >
-        {{ 'models.record.edit' | translate }}
+        {{
+          'common.editObject'
+            | translate : { name: 'common.record.one' | translate }
+        }}
       </ui-button>
     </ng-container>
   </ng-container>

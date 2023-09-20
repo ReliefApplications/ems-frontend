@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, UrlTree } from '@angular/router';
 import { SafeAuthService } from '@oort-front/safe';
-import { Observable, firstValueFrom } from 'rxjs';
+import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 
 /**
@@ -34,11 +34,7 @@ export class AuthGuard implements CanActivate {
         if (x) {
           return true;
         } else {
-          firstValueFrom(this.authService.isDoneLoading$).then((loaded) => {
-            if (loaded) {
-              this.router.navigate(['/auth']);
-            }
-          });
+          this.router.navigate(['/auth/login']);
           return false;
         }
       })

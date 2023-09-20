@@ -4,7 +4,8 @@
     <h1>
       {{
         data.pullJob
-          ? ('models.pullJob.edit' | translate)
+          ? ('common.editObject'
+            | translate : { name: 'common.pullJob.one' | translate })
           : ('models.pullJob.new' | translate)
       }}
     </h1>
