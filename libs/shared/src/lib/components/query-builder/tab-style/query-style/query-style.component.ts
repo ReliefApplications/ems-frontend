@@ -4,10 +4,11 @@ import {
   Field,
   QueryBuilderService,
 } from '../../../../services/query-builder/query-builder.service';
-import {
-  ChecklistDatabase,
-  TreeItemFlatNode,
-} from '../../../checkbox-tree/checkbox-tree.component';
+import { ListBoxToolbarConfig } from '@progress/kendo-angular-listbox';
+// import {
+//   ChecklistDatabase,
+//   TreeItemFlatNode,
+// } from '../../../checkbox-tree/checkbox-tree.component';
 
 /**
  * Query style component.
@@ -20,15 +21,36 @@ import {
 })
 export class QueryStyleComponent implements OnInit {
   @Input() query: any;
-  public selectedFields: any[] = [];
+  // public selectedFields: any[] = [];
   @Input() form!: UntypedFormGroup;
   public wholeRow!: UntypedFormControl;
 
   public filterFields: Field[] = [];
 
+  public availableFields: string[] = [
+    'Germany',
+    'France',
+    'Austria',
+    'Belgium',
+    'Denmark',
+    'Netherlands',
+  ];
+  public selectedFields: string[] = [];
+  public toolbarSettings: ListBoxToolbarConfig = {
+    position: 'right',
+    tools: [
+      'moveUp',
+      'moveDown',
+      'transferFrom',
+      'transferTo',
+      'transferAllFrom',
+      'transferAllTo',
+    ],
+  };
+
   @Output() closeEdition = new EventEmitter<any>();
 
-  checklist!: ChecklistDatabase;
+  // checklist!: ChecklistDatabase;
 
   /**
    * Constructor for the query style component
@@ -38,9 +60,9 @@ export class QueryStyleComponent implements OnInit {
   constructor(private queryBuilder: QueryBuilderService) {}
 
   ngOnInit(): void {
-    this.checklist = new ChecklistDatabase(
-      this.getChecklist(this.query.fields)
-    );
+    // this.checklist = new ChecklistDatabase(
+    //   this.getChecklist(this.query.fields)
+    // );
     const fields = this.form.get('fields')?.value || [];
     if (fields.length > 0) {
       this.wholeRow = new UntypedFormControl(false);
@@ -91,7 +113,7 @@ export class QueryStyleComponent implements OnInit {
    *
    * @param items list of selected tree items.
    */
-  onChange(items: TreeItemFlatNode[]) {
-    this.form.get('fields')?.setValue(items.map((x) => x.path));
-  }
+  // onChange(items: TreeItemFlatNode[]) {
+  //   this.form.get('fields')?.setValue(items.map((x) => x.path));
+  // }
 }

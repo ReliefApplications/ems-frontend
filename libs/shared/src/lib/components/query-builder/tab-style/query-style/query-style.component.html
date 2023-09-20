@@ -103,12 +103,17 @@
         <span class="field-name">{{
           'components.queryBuilder.style.edit.fields' | translate
         }}</span>
-        <shared-checkbox-tree
-          class="grow"
-          [checklist]="checklist"
-          (valueChange)="onChange($event)"
-          [value]="this.form.get('fields')?.value || []"
-        ></shared-checkbox-tree>
+        <div class="w-full">
+          <kendo-listbox
+            kendoListBoxDataBinding
+            [data]="availableFields"
+            [connectedWith]="selected"
+            [toolbar]="toolbarSettings"
+          >
+          </kendo-listbox>
+          <kendo-listbox #selected [data]="selectedFields" [toolbar]="false">
+          </kendo-listbox>
+        </div>
       </div>
     </form>
   </ng-container>
