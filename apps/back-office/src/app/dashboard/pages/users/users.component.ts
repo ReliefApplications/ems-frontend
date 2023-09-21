@@ -212,7 +212,7 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
    * @param e event
    */
   public onFilterChange(e: any) {
-    //if the filter is for role
+    // if the filter is for role
     if (e.column === 'role') {
       if (e.event === '' || e.event === null) {
         this.filter.filters = this.filter.filters.filter(
@@ -220,14 +220,14 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
         );
       } else {
         let foundRole = false;
-        //update filter if it exists
+        // update filter if it exists
         this.filter.filters.forEach((f: any) => {
           if (f.field === 'roles') {
             f.value = e.event;
             foundRole = true;
           }
         });
-        //if doesn't exists we create a new one
+        // if doesn't exists we create a new one
         if (!foundRole) {
           this.filter.filters.push({
             field: 'roles',
@@ -237,21 +237,21 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
         }
       }
     } else if (e.column === 'search') {
-      //if the filter is for name
+      // if the filter is for name
       if (e.event === '' || e.event === null) {
         this.filter.filters = this.filter.filters.filter(
           (filter: any) => filter.field !== 'name'
         );
       } else {
         let foundName = false;
-        //update filter if it exists
+        // update filter if it exists
         this.filter.filters.forEach((f: any) => {
           if (f.field === 'name') {
             f.value = e.event;
             foundName = true;
           }
         });
-        //if doesn't exists we create a new one
+        // if doesn't exists we create a new one
         if (!foundName) {
           this.filter.filters.push({
             field: 'name',
@@ -261,7 +261,7 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
         }
       }
     } else {
-      //clear filters
+      // clear filters
       this.filter.filters = [];
     }
     this.fetchUsers(true);
