@@ -6,7 +6,7 @@ import {
   FormsModule as AngularFormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { SafeDateModule, SafeSkeletonTableModule } from '@oort-front/safe';
+import { DateModule, SkeletonTableModule } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import { AddReferenceDataComponent } from './add-reference-data/add-reference-data.component';
 import { AbilityModule } from '@casl/angular';
@@ -17,6 +17,7 @@ import {
   IconModule,
   TableModule,
   PaginatorModule,
+  TooltipModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 import { FilterComponent } from './components/filter/filter.component';
@@ -39,13 +40,14 @@ import { FilterComponent } from './components/filter/filter.component';
     IconModule,
     PaginatorModule,
     TranslateModule,
-    SafeSkeletonTableModule,
-    SafeDateModule,
+    SkeletonTableModule,
+    DateModule,
     DialogModule,
     AbilityModule,
     ButtonModule,
     FormWrapperModule,
     TableModule,
+    TooltipModule,
   ],
   exports: [ReferenceDatasComponent],
 })

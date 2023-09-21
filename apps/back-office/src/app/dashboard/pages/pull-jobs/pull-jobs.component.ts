@@ -1,19 +1,20 @@
 import { Component, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import {
-  Channel,
-  PullJob,
-  SafeConfirmService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
-import { Apollo, QueryRef } from 'apollo-angular';
-import { GetPullJobsQueryResponse, GET_PULL_JOBS } from './graphql/queries';
-import {
   AddPullJobMutationResponse,
-  ADD_PULL_JOB,
+  Channel,
   DeletePullJobMutationResponse,
-  DELETE_PULL_JOB,
   EditPullJobMutationResponse,
+  PullJob,
+  ConfirmService,
+  UnsubscribeComponent,
+  PullJobsNodesQueryResponse
+} from '@oort-front/shared';
+import { Apollo, QueryRef } from 'apollo-angular';
+import { GET_PULL_JOBS } from './graphql/queries';
+import {
+  ADD_PULL_JOB,
+  DELETE_PULL_JOB,
   EDIT_PULL_JOB,
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
@@ -38,13 +39,10 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './pull-jobs.component.html',
   styleUrls: ['./pull-jobs.component.scss'],
 })
-export class PullJobsComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
+export class PullJobsComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   public loading = true;
-  private pullJobsQuery!: QueryRef<GetPullJobsQueryResponse>;
+  private pullJobsQuery!: QueryRef<PullJobsNodesQueryResponse>;
   public pullJobs = new Array<PullJob>();
   public cachedPullJobs: PullJob[] = [];
 
@@ -80,14 +78,14 @@ export class PullJobsComponent
     public dialog: Dialog,
     private apollo: Apollo,
     private snackBar: SnackbarService,
-    private confirmService: SafeConfirmService,
+    private confirmService: ConfirmService,
     private translate: TranslateService
   ) {
     super();
   }
 
   ngOnInit(): void {
-    this.pullJobsQuery = this.apollo.watchQuery<GetPullJobsQueryResponse>({
+    this.pullJobsQuery = this.apollo.watchQuery<PullJobsNodesQueryResponse>({
       query: GET_PULL_JOBS,
       variables: {
         first: ITEMS_PER_PAGE,
@@ -120,7 +118,7 @@ export class PullJobsComponent
         first: ITEMS_PER_PAGE,
         afterCursor: this.pageInfo.endCursor,
       };
-      const cachedValues: GetPullJobsQueryResponse = getCachedValues(
+      const cachedValues: PullJobsNodesQueryResponse = getCachedValues(
         this.apollo.client,
         GET_PULL_JOBS,
         variables
@@ -130,7 +128,7 @@ export class PullJobsComponent
       } else {
         this.pullJobsQuery
           .fetchMore({ variables })
-          .then((results: ApolloQueryResult<GetPullJobsQueryResponse>) => {
+          .then((results: ApolloQueryResult<PullJobsNodesQueryResponse>) => {
             this.updateValues(results.data, results.loading);
           });
       }
@@ -396,7 +394,10 @@ export class PullJobsComponent
    * @param data New values to update forms
    * @param loading Loading state
    */
-  private updateValues(data: GetPullJobsQueryResponse, loading: boolean): void {
+  private updateValues(
+    data: PullJobsNodesQueryResponse,
+    loading: boolean
+  ): void {
     const mappedValues = data.pullJobs.edges.map((x) => x.node);
     this.cachedPullJobs = updateQueryUniqueValues(
       this.cachedPullJobs,

@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Workflow, Step, Page, Form } from '@oort-front/safe';
 
 // === EDIT WORKFLOW ===
 /** Edit workflow gql mutation definition */
@@ -12,11 +11,6 @@ export const EDIT_WORKFLOW = gql`
   }
 `;
 
-/** Edit workflow gql mutation response interface */
-export interface EditWorkflowMutationResponse {
-  editWorkflow: Workflow;
-}
-
 // === DELETE STEP ===
 /** Delete step gql mutation definition */
 export const DELETE_STEP = gql`
@@ -27,11 +21,6 @@ export const DELETE_STEP = gql`
     }
   }
 `;
-
-/** Delete step gql mutation response interface */
-export interface DeleteStepMutationResponse {
-  deleteStep: Step;
-}
 
 // === EDIT PAGE ===
 /** Edit page gql mutation definition */
@@ -69,11 +58,6 @@ export const EDIT_PAGE = gql`
   }
 `;
 
-/** Edit page gql mutation response interface */
-export interface EditPageMutationResponse {
-  editPage: Page;
-}
-
 // === ADD FORM ===
 /** Add form gql mutation definition */
 export const ADD_FORM = gql`
@@ -89,8 +73,3 @@ export const ADD_FORM = gql`
     }
   }
 `;
-
-/** Add form gql mutation response interface */
-export interface AddFormMutationResponse {
-  addForm: Form;
-}

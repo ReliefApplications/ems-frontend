@@ -1,9 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormControl,
-  UntypedFormGroup,
-} from '@angular/forms';
+import { FormBuilder, UntypedFormControl } from '@angular/forms';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 /**
@@ -15,7 +11,12 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   styleUrls: ['./filter.component.scss'],
 })
 export class FilterComponent implements OnInit {
-  public form!: UntypedFormGroup;
+  public form = this.fb.group({
+    name: [''],
+    startDate: [null],
+    endDate: [null],
+    status: [''],
+  });
   public search = new UntypedFormControl('');
   public show = false;
 
@@ -25,17 +26,11 @@ export class FilterComponent implements OnInit {
   /**
    * Filter component of applications page.
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    */
-  constructor(private formBuilder: UntypedFormBuilder) {}
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
-    this.form = this.formBuilder.group({
-      name: [''],
-      startDate: [null],
-      endDate: [null],
-      status: [''],
-    });
     this.form.valueChanges
       .pipe(debounceTime(1000), distinctUntilChanged())
       .subscribe((value) => {
@@ -95,6 +90,10 @@ export class FilterComponent implements OnInit {
    * Clears date range.
    */
   clearDateFilter(): void {
-    this.form.setValue({ ...this.form.value, startDate: null, endDate: null });
+    this.form.setValue({
+      ...this.form.getRawValue(),
+      startDate: null,
+      endDate: null,
+    });
   }
 }

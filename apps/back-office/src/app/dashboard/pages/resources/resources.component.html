@@ -35,7 +35,7 @@
         <td
           uiCell
           *cdkCellDef="let element"
-          class="!text-gray-900 !font-medium"
+          class="!text-gray-900 !font-medium max-w-[30vw]"
         >
           {{ element.name }}
         </td>
@@ -53,7 +53,7 @@
           </span>
         </th>
         <td uiCell *cdkCellDef="let element">
-          {{ element.createdAt | safeDate }}
+          {{ element.createdAt | sharedDate }}
         </td>
       </ng-container>
 
@@ -75,6 +75,7 @@
             [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
             [disabled]="!element.canDelete"
+            [uiTooltip]="'common.options' | translate"
           >
           </ui-button>
           <ui-menu #menu>
@@ -95,12 +96,12 @@
       ></tr>
     </table>
     <!-- Loading indicator -->
-    <safe-skeleton-table
+    <shared-skeleton-table
       *ngIf="loading"
       [columns]="['common.name', 'common.createdOn', 'common.record.few']"
       [actions]="true"
     >
-    </safe-skeleton-table>
+    </shared-skeleton-table>
   </div>
 </div>
 <!-- Pagination -->

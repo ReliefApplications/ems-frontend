@@ -14,7 +14,7 @@
           {{ 'common.createdOn' | translate }}
         </th>
         <td uiCell *cdkCellDef="let element">
-          {{ element.createdAt | safeDate }}
+          {{ element.createdAt | sharedDate }}
         </td>
       </ng-container>
       <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>

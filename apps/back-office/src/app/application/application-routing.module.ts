@@ -15,7 +15,7 @@ const routes: Routes = [
         path: '',
         loadChildren: () =>
           import('./pages/home/home.module').then((m) => m.HomeModule),
-        // canActivate: [SafePermissionGuard]
+        // canActivate: [PermissionGuard]
       },
       {
         path: 'add-page',
@@ -23,7 +23,7 @@ const routes: Routes = [
           import('./pages/add-page/add-page.module').then(
             (m) => m.AddPageModule
           ),
-        // canActivate: [SafePermissionGuard]
+        // canActivate: [PermissionGuard]
       },
       {
         path: 'settings',
@@ -44,7 +44,7 @@ const routes: Routes = [
                   import('./pages/roles/roles.module').then(
                     (m) => m.RolesModule
                   ),
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
               {
                 path: ':id',
@@ -57,7 +57,7 @@ const routes: Routes = [
                     alias: '@role',
                   },
                 },
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
             ],
             data: {
@@ -72,10 +72,10 @@ const routes: Routes = [
               {
                 path: '',
                 loadChildren: () =>
-                  import('@oort-front/safe').then(
-                    (m) => m.SafeApplicationUsersViewModule
+                  import('@oort-front/shared').then(
+                    (m) => m.ApplicationUsersViewModule
                   ),
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
               {
                 path: ':id',
@@ -88,7 +88,7 @@ const routes: Routes = [
                     alias: '@user',
                   },
                 },
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
             ],
             data: {
@@ -106,7 +106,7 @@ const routes: Routes = [
                   import('./pages/position/position.module').then(
                     (m) => m.PositionModule
                   ),
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
               {
                 path: ':id',
@@ -119,7 +119,7 @@ const routes: Routes = [
                     alias: '@attribute',
                   },
                 },
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
             ],
             data: {
@@ -134,7 +134,7 @@ const routes: Routes = [
               import('./pages/channels/channels.module').then(
                 (m) => m.ChannelsModule
               ),
-            // canActivate: [SafePermissionGuard]
+            // canActivate: [PermissionGuard]
           },
           {
             path: 'subscriptions',
@@ -142,31 +142,31 @@ const routes: Routes = [
               import('./pages/subscriptions/subscriptions.module').then(
                 (m) => m.SubscriptionsModule
               ),
-            // canActivate: [SafePermissionGuard]
+            // canActivate: [PermissionGuard]
           },
           {
             path: 'templates',
             loadChildren: () =>
-              import('@oort-front/safe').then(
-                (m) => m.SafeApplicationTemplatesViewModule
+              import('@oort-front/shared').then(
+                (m) => m.ApplicationTemplatesViewModule
               ),
-            // canActivate: [SafePermissionGuard]
+            // canActivate: [PermissionGuard]
           },
           {
             path: 'distribution-lists',
             loadChildren: () =>
-              import('@oort-front/safe').then(
-                (m) => m.SafeApplicationDistributionListsViewModule
+              import('@oort-front/shared').then(
+                (m) => m.ApplicationDistributionListsViewModule
               ),
-            // canActivate: [SafePermissionGuard]
+            // canActivate: [PermissionGuard]
           },
           {
             path: 'notifications',
             loadChildren: () =>
-              import('@oort-front/safe').then(
-                (m) => m.SafeApplicationNotificationsViewModule
+              import('@oort-front/shared').then(
+                (m) => m.ApplicationNotificationsViewModule
               ),
-            // canActivate: [SafePermissionGuard]
+            // canActivate: [PermissionGuard]
           },
           {
             path: 'archive',
@@ -189,7 +189,7 @@ const routes: Routes = [
           import('../dashboard/pages/dashboard/dashboard.module').then(
             (m) => m.DashboardModule
           ),
-        // canActivate: [SafePermissionGuard]
+        // canActivate: [PermissionGuard]
       },
       {
         path: 'workflow/:id',
@@ -197,7 +197,7 @@ const routes: Routes = [
           import('./pages/workflow/workflow.module').then(
             (m) => m.WorkflowModule
           ),
-        // canActivate: [SafePermissionGuard]
+        // canActivate: [PermissionGuard]
       },
       {
         path: 'form/:id',
@@ -206,7 +206,7 @@ const routes: Routes = [
             path: '',
             loadChildren: () =>
               import('./pages/form/form.module').then((m) => m.FormModule),
-            // canActivate: [SafePermissionGuard]
+            // canActivate: [PermissionGuard]
           },
           {
             path: 'builder/:id',
@@ -214,7 +214,7 @@ const routes: Routes = [
               import(
                 '../dashboard/pages/form-builder/form-builder.module'
               ).then((m) => m.FormBuilderModule),
-            // canActivate: [SafePermissionGuard]
+            // canActivate: [PermissionGuard]
           },
         ],
       },

@@ -38,6 +38,7 @@ export * from './lib/date/date.module';
 export * from './lib/graphql-select/graphql-select.module';
 export * from './lib/graphql-select/graphql-select.component';
 export * from './lib/error-message/error-message.module';
+export * from './lib/cron-editor/cron-editor.module';
 
 // === SERVICES === //
 export * from './lib/snackbar/snackbar.service';
@@ -65,3 +66,6 @@ export * from './lib/snackbar/snackbar.token';
 
 // === MODULE === //
 export * from './lib/ui.module';
+
+// === HELPER METHODS === //
+export * from './lib/table/handle-pagination-event';

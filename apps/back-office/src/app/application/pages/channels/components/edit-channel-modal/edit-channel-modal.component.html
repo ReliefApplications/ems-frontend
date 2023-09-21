@@ -1,14 +1,11 @@
 <ui-dialog size="small">
   <ng-container ngProjectAs="header">
     <h1>
-      {{
-        'common.editObject'
-          | translate : { name: 'common.channel.one' | translate }
-      }}
+      {{ 'models.channel.edit' | translate }}
     </h1>
   </ng-container>
   <ng-container ngProjectAs="content">
-    <form [formGroup]="roleForm" class="flex flex-col">
+    <form [formGroup]="formGroup" class="flex flex-col">
       <div uiFormFieldDirective>
         <label>{{ 'common.title' | translate }}</label>
         <input
@@ -25,9 +22,9 @@
     <ui-button
       category="secondary"
       variant="primary"
-      [uiDialogClose]="roleForm.value"
+      [uiDialogClose]="formGroup.value"
       cdkFocusInitial
-      [disabled]="!roleForm.valid"
+      [disabled]="!formGroup.valid"
     >
       {{ 'common.update' | translate }}
     </ui-button>
