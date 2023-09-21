@@ -31,6 +31,7 @@ import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.compo
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import { SnackbarService } from '@oort-front/ui';
 import { cloneDeep } from 'lodash';
+import { Panel } from 'survey-knockout';
 
 /**
  * This component is used to display forms
@@ -187,23 +188,32 @@ export class SafeFormComponent
 
   ngAfterViewInit(): void {
     this.survey?.render(this.formContainer.nativeElement);
-    // this.translate.onLangChange.subscribe(() => {
-    //   const currentLang = this.usedLocales.find(
-    //     (lang) => lang.value === this.translate.currentLang
-    //   );
-    //   if (currentLang && currentLang.text !== this.survey.locale) {
-    //     this.setLanguage(currentLang.text);
-    //     this.surveyLanguage = (LANGUAGES as any)[currentLang.value];
-    //   } else if (
-    //     !currentLang &&
-    //     this.survey.locale !== this.translate.currentLang
-    //   ) {
-    //     this.survey.locale = this.translate.currentLang;
-    //     this.surveyLanguage = (LANGUAGES as any).en;
-    //     this.survey.render();
-    //   }
-    // });
+    this.survey.getAllQuestions().forEach((question) => {
+      if (
+        question.getType() == 'paneldynamic' &&
+        question.getPropertyValue('defaultIndex') == -1
+      ) {
+        question.currentIndex = question.visiblePanelCount - 1; // When the view renders, set all the indexes of dynamic panel questions in the survey to the last panel.
+      }
+    });
   }
+
+  // this.translate.onLangChange.subscribe(() => {
+  //   const currentLang = this.usedLocales.find(
+  //     (lang) => lang.value === this.translate.currentLang
+  //   );
+  //   if (currentLang && currentLang.text !== this.survey.locale) {
+  //     this.setLanguage(currentLang.text);
+  //     this.surveyLanguage = (LANGUAGES as any)[currentLang.value];
+  //   } else if (
+  //     !currentLang &&
+  //     this.survey.locale !== this.translate.currentLang
+  //   ) {
+  //     this.survey.locale = this.translate.currentLang;
+  //     this.surveyLanguage = (LANGUAGES as any).en;
+  //     this.survey.render();
+  //   }
+  // });
 
   /**
    * Reset the survey to empty

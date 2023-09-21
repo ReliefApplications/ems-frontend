@@ -34,6 +34,17 @@ export const init = (
   // declare the serializer
   const serializer: JsonMetadata = Survey.Serializer;
 
+  for (const type of ['paneldynamic']) {
+    serializer.addProperty(type, {
+      name: 'defaultIndex: number',
+      displayName: 'Default index for entries',
+      category: 'general',
+      default: 1,
+      choices: [-1, 1],
+      type: 'dropdown',
+    });
+  }
+
   for (const type of ['tagbox', 'dropdown']) {
     // add properties
     serializer.addProperty(type, {
