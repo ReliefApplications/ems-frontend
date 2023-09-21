@@ -7,19 +7,20 @@ import { GlobalOptions } from '../types';
  * @returns The total of family members.
  */
 const getNumberOfMembers = (params: any[]) => {
-  if (!Array.isArray(params[0])) return 0;
+  const obj = params[0];
+  if (typeof obj !== 'object') return 0;
   else {
     let total = 0;
-    params[0].forEach((key) => {
-      Object.values(key).forEach((memberCount) => {
-        if (typeof memberCount === 'object' && memberCount !== null) {
-          total += Object.values(memberCount).reduce(
-            (acc, count) => acc + count,
-            0
-          );
-        }
-      });
+    Object.values(obj).forEach((row) => {
+      if (typeof row === 'object' && row !== null) {
+        Object.values(row).forEach((col) => {
+          if (typeof col === 'number') {
+            total += col;
+          }
+        });
+      }
     });
+
     return total;
   }
 };
