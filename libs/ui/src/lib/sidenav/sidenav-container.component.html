@@ -1,9 +1,6 @@
 <!-- Never set as relative, while we use kendo tile layouts for widget grid
   todo(2.1.x): check if h-full should be removed -->
-<div
-  [ngClass]="{ flex: mode[0] === 'side' }"
-  class="w-full h-full overflow-y-auto"
->
+<div class="w-full flex h-full overflow-y-auto">
   <!-- SIDENAV CONTENT -->
   <ng-container *ngFor="let sidenav of uiSidenavDirective; let i = index">
     <!-- ngStyle prevent the left sidenav to have a fixed height -->

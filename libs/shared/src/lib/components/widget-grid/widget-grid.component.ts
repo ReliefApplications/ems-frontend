@@ -1,5 +1,7 @@
 import {
+  AfterViewInit,
   Component,
+  ElementRef,
   EventEmitter,
   HostListener,
   Inject,
@@ -7,18 +9,25 @@ import {
   OnInit,
   Output,
   QueryList,
+  Renderer2,
+  ViewChild,
   ViewChildren,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { WIDGET_TYPES } from '../../models/dashboard.model';
-import {
-  TileLayoutReorderEvent,
-  TileLayoutResizeEvent,
-} from '@progress/kendo-angular-layout';
 import { DashboardService } from '../../services/dashboard/dashboard.service';
 import { WidgetComponent } from '../widget/widget.component';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import {
+  CompactType,
+  DisplayGrid,
+  GridType,
+  GridsterComponent,
+  GridsterConfig,
+  GridsterItem,
+  GridsterItemComponentInterface,
+} from 'angular-gridster2';
 
 /** Maximum height of the widget in row units */
 const MAX_ROW_SPAN = 4;
@@ -36,19 +45,45 @@ const MAX_COL_SPAN = 8;
 })
 export class WidgetGridComponent
   extends UnsubscribeComponent
-  implements OnInit
+  implements OnInit, AfterViewInit
 {
   public availableWidgets: any[] = WIDGET_TYPES;
 
   @Input() loading = false;
   /** Skeletons for loading */
-  public skeletons: { colSpan: number; rowSpan: number }[] = [];
+  public skeletons: GridsterItem[] = [];
 
-  @Input() widgets: any[] = [];
-  @Input() canUpdate = false;
+  /** Widgets array, custom setter so we can update the layout */
+  private _widgets: any[] = [];
+  /** Set widgets array and updates layout with it */
+  @Input()
+  set widgets(widgets: any[]) {
+    this._widgets = widgets;
+    this.setGridOptions();
+    this.updateLayout(widgets);
+  }
+  /** @returns widgets array */
+  get widgets() {
+    return this._widgets;
+  }
+
+  /** Property to know if current user can update grid tile */
+  private _canUpdate = false;
+  /** Set canUpdate property and also updates permission to change grid tile*/
+  @Input()
+  set canUpdate(canUpdate: boolean) {
+    this._canUpdate = canUpdate;
+    this.setGridOptions();
+  }
+  /** @returns if current user can update current grid tile */
+  get canUpdate() {
+    return this._canUpdate;
+  }
 
   // === GRID ===
   colsNumber = MAX_COL_SPAN;
+  options!: GridsterConfig;
+  dashboard!: Array<GridsterItem>;
 
   // === EVENT EMITTER ===
   @Output() move: EventEmitter<any> = new EventEmitter();
@@ -62,6 +97,9 @@ export class WidgetGridComponent
 
   @ViewChildren(WidgetComponent)
   widgetComponents!: QueryList<WidgetComponent>;
+
+  @ViewChild(GridsterComponent, { read: ElementRef })
+  gridsterComponent!: ElementRef;
 
   /**
    * Indicate if the widget grid can be deactivated or not.
@@ -83,6 +121,8 @@ export class WidgetGridComponent
   onWindowResize(event: any): void {
     this.colsNumber = this.setColsNumber(event.target.innerWidth);
     this.skeletons = this.getSkeletons();
+    this.setGridOptions();
+    // this.updateLayout(this.widgets);
   }
 
   /**
@@ -95,7 +135,9 @@ export class WidgetGridComponent
   constructor(
     @Inject('environment') environment: any,
     public dialog: Dialog,
-    private dashboardService: DashboardService
+    private dashboardService: DashboardService,
+    private el: ElementRef,
+    private renderer: Renderer2
   ) {
     super();
     if (environment.module === 'backoffice') {
@@ -107,6 +149,17 @@ export class WidgetGridComponent
     this.colsNumber = this.setColsNumber(window.innerWidth);
     this.skeletons = this.getSkeletons();
     this.availableWidgets = this.dashboardService.availableWidgets;
+  }
+
+  ngAfterViewInit(): void {
+    // We need to add the parent width manually on first load with a timeout in order to set correct width after the sidenav container calculations
+    setTimeout(() => {
+      this.renderer.setStyle(
+        this.gridsterComponent.nativeElement,
+        'width',
+        `${this.el.nativeElement.offsetWidth}px`
+      );
+    }, 0);
   }
 
   /**
@@ -129,6 +182,49 @@ export class WidgetGridComponent
       return 6;
     }
     return MAX_COL_SPAN;
+  }
+
+  /**
+   * Set grid options and update any permissions for current grid items
+   */
+  setGridOptions() {
+    this.options = {
+      ...(!this.loading && {
+        itemChangeCallback: (
+          item: GridsterItem,
+          itemComponent: GridsterItemComponentInterface
+        ) => this.onEditTile(item, itemComponent),
+      }),
+      gridType: GridType.ScrollVertical,
+      compactType: CompactType.None,
+      displayGrid: DisplayGrid.Always,
+      margin: 10,
+      maxCols: this.colsNumber,
+      maxItemRows: MAX_ROW_SPAN,
+      draggable: {
+        enabled: this.canUpdate,
+      },
+      resizable: {
+        enabled: this.canUpdate,
+      },
+      // pushItems: false,
+      swap: true,
+      swapWhileDragging: true,
+      // disablePushOnDrag: false,
+      // disablePushOnResize: false,
+      // pushDirections: { north: true, east: true, south: true, west: true },
+      // pushResizeItems: true,
+      // disableWindowResize: false,
+      // disableScrollHorizontal: true,
+      // disableWarnings: false,
+      // scrollToNewItems: true,
+      setGridSize: true,
+    };
+
+    this.dashboard?.map((gridItem) => {
+      gridItem.resizeEnabled = this.canUpdate;
+      gridItem.dragEnabled = this.canUpdate;
+    });
   }
 
   /**
@@ -202,45 +298,43 @@ export class WidgetGridComponent
    *
    * @param e reorder event.
    */
-  public onReorder(e: TileLayoutReorderEvent): void {
+  public onReorder(e: any): void {
     this.move.emit(e);
   }
 
   /**
-   * Handles resize widget event.
+   * Emits an action when a tile is edited (Size and position)
    *
-   * @param e resize event.
+   * @param {GridsterItem} item Current grid item
+   * @param {GridsterItemComponentInterface} itemComponent Current grid item
    */
-  public onResize(e: TileLayoutResizeEvent) {
-    const widgetDefinition = this.availableWidgets.find(
-      (x) => x.component === this.widgets[e.item.order].component
-    );
-    if (e.newRowSpan < widgetDefinition.minRow) {
-      e.newRowSpan = widgetDefinition.minRow;
-    }
-    if (e.newRowSpan > MAX_ROW_SPAN) {
-      e.newRowSpan = MAX_ROW_SPAN;
-    }
-    if (e.newColSpan > MAX_COL_SPAN) {
-      e.newColSpan = MAX_COL_SPAN;
-    }
-    this.edit.emit({
-      type: 'display',
-      id: this.widgets[e.item.order].id,
-      options: {
-        id: this.widgets[e.item.order].id,
-        cols: e.newColSpan,
-        rows: e.newRowSpan,
-      },
-    });
+  onEditTile(
+    item: GridsterItem,
+    itemComponent: GridsterItemComponentInterface
+  ): void {
+    console.log(item);
+    console.log(itemComponent);
+    console.log(this.widgets);
+    // this.edit.emit({
+    //   type: 'display',
+    //   id: this.widgets[item.layerIndex as number].id,
+    //   options: {
+    //     id: this.widgets[item.layerIndex as number].id,
+    //     cols: item.cols,
+    //     rows: item.rows,
+    //     // We need to add these two properties
+    //     // x: item.x,
+    //     // y: item.y,
+    //   },
+    // });
   }
 
   /**
-   * Generates a list of skeletongs, for loading.
+   * Generates a list of skeletons, for loading.
    *
    * @returns List of skeletons.
    */
-  private getSkeletons(): { colSpan: number; rowSpan: number }[] {
+  private getSkeletons(): GridsterItem[] {
     const skeletons = [];
     let remainingColsNumber = this.colsNumber;
     for (let i = 0; i < 10; i++) {
@@ -250,10 +344,80 @@ export class WidgetGridComponent
         remainingColsNumber = this.colsNumber;
       }
       skeletons.push({
-        colSpan,
-        rowSpan: Math.floor(Math.random() * MAX_ROW_SPAN) + 1,
+        defaultCols: colSpan,
+        defaultRows: Math.floor(Math.random() * MAX_ROW_SPAN) + 1,
       });
     }
-    return skeletons;
+    const yAxis = 0;
+    const xAxis = 0;
+    return skeletons.map((skeleton, index) => {
+      const { x, y } =
+        index === 0
+          ? { x: 0, y: 0 }
+          : this.setXYAxisValues(yAxis, xAxis, skeleton);
+      return {
+        cols: skeleton.defaultCols,
+        rows: skeleton.defaultRows,
+        resizeEnabled: false,
+        dragEnabled: false,
+        x,
+        y,
+      };
+    });
+  }
+
+  /**
+   * Set the given widget in the grid using given source coordinates
+   *
+   * @param {number} yAxis y axis point from where start
+   * @param {number} xAxis x axis point from where start
+   * @param widget widget to set in the grid
+   * @returns new coordinates from where to set the given widget in the grid
+   */
+  setXYAxisValues(
+    yAxis: number,
+    xAxis: number,
+    widget: any
+  ): { x: number; y: number } {
+    // Update with the last values of the grid item pointer
+    yAxis += widget.defaultCols;
+    if (yAxis > this.colsNumber) {
+      xAxis += widget.defaultRows;
+    }
+
+    if (yAxis + widget.defaultCols > this.colsNumber) {
+      yAxis = 0;
+      xAxis += widget.defaultRows;
+    }
+    return { x: xAxis, y: yAxis };
+  }
+
+  /**
+   * Updates layout based on the passed widget array.
+   *
+   * @param widgets Array with the list of present widgets on the dashboard
+   */
+  private updateLayout(widgets: any[]) {
+    const yAxis = 0;
+    const xAxis = 0;
+    this.dashboard = widgets.map((widget, index) => {
+      const { x, y } =
+        index === 0
+          ? { x: 0, y: 0 }
+          : this.setXYAxisValues(yAxis, xAxis, widget);
+      const gridItem = {
+        cols: widget.defaultCols,
+        rows: widget.defaultRows,
+        minItemRows: widget.minRow,
+        y,
+        x,
+        resizeEnabled: this.canUpdate,
+        dragEnabled: this.canUpdate,
+      };
+      if (this.options?.api?.getFirstPossiblePosition) {
+        console.log(this.options?.api?.getFirstPossiblePosition(gridItem));
+      }
+      return gridItem;
+    });
   }
 }

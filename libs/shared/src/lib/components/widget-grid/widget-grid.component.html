@@ -1,100 +1,73 @@
-<div *ngIf="!loading">
-  <!-- NEW WIDGETS -->
-  <div
-    class="widget-choice-wrapper"
-    *ngIf="canUpdate"
-    [ngClass]="{ 'floating-widget-choice-wrapper': widgets.length > 0 }"
+<!-- NEW WIDGETS -->
+<div
+  class="widget-choice-wrapper"
+  *ngIf="canUpdate"
+  [ngClass]="{ 'floating-widget-choice-wrapper': widgets.length > 0 }"
+>
+  <h2 *ngIf="widgets.length === 0">{{ 'models.widget.add' | translate }}</h2>
+  <shared-widget-choice
+    [floating]="widgets.length > 0"
+    [widgetTypes]="availableWidgets"
+    (add)="onAdd($event)"
   >
-    <h2 *ngIf="widgets.length === 0">{{ 'models.widget.add' | translate }}</h2>
-    <shared-widget-choice
-      [floating]="widgets.length > 0"
-      [widgetTypes]="availableWidgets"
-      (add)="onAdd($event)"
-    >
-    </shared-widget-choice>
-  </div>
-  <!-- GRID OF WIDGETS -->
-  <kendo-tilelayout
-    [columns]="colsNumber"
-    [rowHeight]="200"
-    [resizable]="canUpdate"
-    [reorderable]="canUpdate"
-    (reorder)="onReorder($event)"
-    (resize)="onResize($event)"
-    class="-m-4"
-  >
-    <kendo-tilelayout-item
-      *ngFor="let widget of widgets; let i = index"
-      [colSpan]="
-        widget.defaultCols > colsNumber || (!canUpdate && widgets.length === 1)
-          ? colsNumber
-          : widget.defaultCols
-      "
-      [rowSpan]="!canUpdate && widgets.length === 1 ? 4 : widget.defaultRows"
-      class="!rounded-lg !border focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2"
-      [ngClass]="{
-        '!shadow-sm !border-gray-300':
-          widget.settings.widgetDisplay?.showBorder ?? true,
-        '!border-transparent': !(
-          widget.settings.widgetDisplay?.showBorder ?? true
-        ),
-        'hover:!border-gray-400 hover:!shadow-sm': isBackOffice
-      }"
-    >
-      <!-- Settings -->
-      <shared-floating-options
-        *ngIf="canUpdate"
-        class="absolute top-0 right-0 z-[1100]"
-        [widget]="widget"
-        (edit)="onEditWidget($event)"
-        (delete)="onDeleteWidget($event)"
-        (expand)="onExpandWidget($event)"
-        (style)="onStyleWidget($event)"
-      >
-      </shared-floating-options>
-      <shared-widget
-        [widget]="widget"
-        (changeStep)="changeStep.emit($event)"
-        [id]="'widget-' + widget.id"
-        (edit)="onEditWidget($event)"
-        [canUpdate]="canUpdate"
-      ></shared-widget>
+  </shared-widget-choice>
+</div>
+<!-- GRID OF WIDGETS -->
+<gridster [options]="options">
+  <ng-container *ngIf="loading; else widgetGridTmpl">
+    <gridster-item [item]="skeleton" *ngFor="let skeleton of skeletons">
+      <div class="gridster-item-content h-full">
+        <kendo-skeleton
+          shape="rectangle"
+          animation="pulse"
+          [width]="'100%'"
+          [height]="'100%'"
+        ></kendo-skeleton>
+      </div>
+    </gridster-item>
+  </ng-container>
+  <ng-template #widgetGridTmpl>
+    <gridster-item [item]="item" *ngFor="let item of dashboard; let i = index">
+      <div class="gridster-item-content h-full">
+        <!-- Settings -->
+        <shared-floating-options
+          *ngIf="canUpdate"
+          class="absolute top-0 right-0 z-[1100]"
+          [widget]="widgets[i]"
+          (edit)="onEditWidget($event)"
+          (delete)="onDeleteWidget($event)"
+          (expand)="onExpandWidget($event)"
+        >
+        </shared-floating-options>
+        <shared-widget
+          [widget]="widgets[i]"
+          (changeStep)="changeStep.emit($event)"
+          [id]="'widget-' + widgets[i].id"
+          (edit)="onEditWidget($event)"
+          [canUpdate]="canUpdate"
+          class="bg-white"
+        ></shared-widget>
+        <!-- Expand button -->
+        <ui-button
+          *ngIf="!canUpdate"
+          [isIcon]="true"
+          icon="open_in_full"
+          variant="grey"
+          class="absolute top-0 right-0 z-[1100]"
+          (click)="onExpandWidget(widgets[i])"
+        >
+        </ui-button>
+      </div>
       <!-- Move widget -->
-      <ui-icon
-        *ngIf="canUpdate"
-        icon="drag_indicator"
-        class="absolute cursor-grab top-2 left-2 z-[1100] pointer-events-none"
-        variant="grey"
-      >
-      </ui-icon>
-      <!-- Expand button -->
-      <ui-button
-        *ngIf="!canUpdate"
-        [isIcon]="true"
-        icon="open_in_full"
-        variant="grey"
-        class="absolute top-0 right-0 z-[1100]"
-        (click)="onExpandWidget(widget)"
-        [uiTooltip]="'common.openFullScreen' | translate"
-      >
-      </ui-button>
-    </kendo-tilelayout-item>
-  </kendo-tilelayout>
-</div>
-<!-- LOADING INDICATOR -->
-<div *ngIf="loading" class="mt-6">
-  <kendo-tilelayout [rowHeight]="200" [columns]="colsNumber" class="-m-4">
-    <kendo-tilelayout-item
-      *ngFor="let skeleton of skeletons"
-      [colSpan]="skeleton.colSpan"
-      [rowSpan]="skeleton.rowSpan"
-    >
-      <kendo-skeleton
-        shape="rectangle"
-        animation="pulse"
-        [width]="'100%'"
-        [height]="'100%'"
-      ></kendo-skeleton>
-    </kendo-tilelayout-item>
-  </kendo-tilelayout>
-</div>
+      <div class="cursor-grab absolute top-2 left-2 z-[1100]">
+        <ui-icon
+          *ngIf="canUpdate"
+          icon="drag_indicator"
+          class="pointer-events-none"
+          variant="grey"
+        >
+        </ui-icon>
+      </div>
+    </gridster-item>
+  </ng-template>
+</gridster>

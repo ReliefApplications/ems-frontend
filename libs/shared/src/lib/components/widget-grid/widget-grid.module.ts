@@ -17,6 +17,7 @@ import {
   ButtonModule,
   TooltipModule,
 } from '@oort-front/ui';
+import { GridsterComponent, GridsterItemComponent } from 'angular-gridster2';
 
 /** Module for the widget-related components */
 @NgModule({
@@ -42,6 +43,8 @@ import {
     IconModule,
     SelectMenuModule,
     TooltipModule,
+    GridsterComponent,
+    GridsterItemComponent,
   ],
   exports: [WidgetGridComponent, TileDataComponent],
 })
