@@ -1,6 +1,10 @@
-import { JsonMetadata, QuestionFileModel, SurveyModel } from 'survey-angular';
+import {
+  JsonMetadata,
+  QuestionFileModel,
+  SurveyModel,
+  PageModel,
+} from 'survey-angular';
 import { Question } from '../types';
-import * as Survey from 'survey-angular';
 import * as SurveyCreator from 'survey-creator';
 import { DomService } from '../../services/dom/dom.service';
 import { MultiSelectComponent } from '@progress/kendo-angular-dropdowns';
@@ -15,23 +19,22 @@ export const init = (Survey: any, domService: DomService): void => {
   const serializer: JsonMetadata = Survey.Serializer;
   // Adds a dropdown to the matrix section with all the questions in the form
   serializer.addProperty('matrix', {
-    name: 'copyToOthers',
+    name: 'copyToOthers:dropdown',
     category: 'rows',
-    type: 'copyToOthers',
-    choices: async (preForm: Survey.Model, choicesCallback: any) => {
+    choices: (preForm: SurveyModel, choicesCallback: any) => {
       if (preForm && preForm.survey) {
         const form = preForm.survey as SurveyModel;
         const questions = form.pages
-          .map((page: Survey.PageModel) => {
+          .map((page: PageModel) => {
             return page.questions.filter(
-              (question: Survey.Question) => question.getType() === 'matrix'
+              (question: Question) => question.getType() === 'matrix'
             );
           })
           .flat()
-          .map((question: Survey.Question) => {
+          .map((question: Question) => {
             return `${question.page.name} > ${question.name}`;
           });
-        await choicesCallback(questions);
+        choicesCallback(questions);
       }
     },
   });

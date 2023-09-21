@@ -61,6 +61,7 @@ export const initCustomSurvey = (
   TagboxWidget.init(Survey, domService);
   TextWidget.init(Survey, domService);
   DropdownWidget.init(Survey, domService);
+  Matrices.init(Survey, domService);
 
   if (containsCustomQuestions) {
     CommentWidget.init(Survey);
@@ -90,7 +91,6 @@ export const initCustomSurvey = (
   ReferenceDataProperties.init(Survey, domService, referenceDataService);
   TooltipProperty.init(Survey);
   OtherProperties.init(Survey, environment);
-  Matrices.init(Survey, domService);
 
   // enables POST requests for choicesByUrl
   // todo: enable
