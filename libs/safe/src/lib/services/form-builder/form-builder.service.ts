@@ -225,6 +225,16 @@ export class SafeFormBuilderService {
           selectedPageIndex.next(page.visibleIndex);
         }
       }
+
+      // Set all the indexes of configured dynamic panel questions in the survey to the last panel.
+      survey.getAllQuestions().forEach((question) => {
+        if (
+          question.getType() == 'paneldynamic' &&
+          question.getPropertyValue('startOnLastElement')
+        ) {
+          question.currentIndex = question.visiblePanelCount - 1;
+        }
+      });
     });
     survey.onClearFiles.add((_, options: any) => this.onClearFiles(options));
     survey.onUploadFiles.add((_, options: any) =>

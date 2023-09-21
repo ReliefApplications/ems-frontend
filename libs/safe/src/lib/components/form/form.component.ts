@@ -187,14 +187,6 @@ export class SafeFormComponent
 
   ngAfterViewInit(): void {
     this.survey?.render(this.formContainer.nativeElement);
-    this.survey.getAllQuestions().forEach((question) => {
-      if (
-        question.getType() == 'paneldynamic' &&
-        question.getPropertyValue('defaultIndex') == -1
-      ) {
-        question.currentIndex = question.visiblePanelCount - 1; // When the view renders, set all the indexes of dynamic panel questions in the survey to the last panel.
-      }
-    });
   }
 
   // this.translate.onLangChange.subscribe(() => {

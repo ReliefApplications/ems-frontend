@@ -27,6 +27,13 @@ export const init = (Survey: any, environment: any): void => {
     category: 'general',
     required: true,
   });
+
+  // Add property to the dynamic panel to start on the last element
+  serializer.addProperty('paneldynamic', {
+    name: 'startOnLastElement:boolean',
+    category: 'general',
+    default: false,
+  });
   // Pass token before the request to fetch choices by URL if it's targeting SAFE API
   // Survey.ChoicesRestful.onBeforeSendRequest = (
   //   sender: ChoicesRestful,
