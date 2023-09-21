@@ -4,6 +4,7 @@ import {
   ElementRef,
   Injector,
   NgModule,
+  LOCALE_ID,
 } from '@angular/core';
 import { createCustomElement } from '@angular/elements';
 import { BrowserModule } from '@angular/platform-browser';
@@ -30,6 +31,9 @@ import {
   TranslateModule,
   TranslateService,
 } from '@ngx-translate/core';
+// Imports to translate datepickers
+import '@progress/kendo-angular-intl/locales/en/all';
+import '@progress/kendo-angular-intl/locales/fr/all';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MessageService } from '@progress/kendo-angular-l10n';
 import {
@@ -103,6 +107,10 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     GraphQLModule,
   ],
   providers: [
+    {
+      provide: LOCALE_ID,
+      useValue: localStorage.getItem('lang'),
+    },
     {
       provide: 'environment',
       useValue: environment,
