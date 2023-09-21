@@ -7,27 +7,6 @@
 /* === Tailwindcss === */
 // Allow to use @apply in not visible by default elements
 @layer components {
-  // === CDK ===
-  // Drag & Drop
-  .cdk-drag-preview {
-    z-index: 1100 !important;
-    @apply box-border rounded shadow-xl flex items-center justify-between bg-white;
-  }
-
-  .cdk-drag-animating {
-    @apply transition-transform;
-  }
-
-  .cdk-drag-placeholder {
-    @apply opacity-0;
-  }
-
-  .cdk-drop-list-dragging {
-    .cdk-drag:not(.cdk-drag-placeholder) {
-      @apply transition-transform;
-    }
-  }
-
   // === Measure plugin ===
   // todo(gis): move somewhere else
   .leaflet-measure-resultpopup a.deletemarkup,
@@ -37,20 +16,6 @@
   .leaflet-control-measure a.start {
     @apply text-primary-500;
     background-image: none !important;
-  }
-
-  // todo(beta): useless?
-  .custom-marker {
-    span {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-  }
-
-  // === Form builder ===
-  .core-question {
-    @apply text-red-400;
   }
 }
 

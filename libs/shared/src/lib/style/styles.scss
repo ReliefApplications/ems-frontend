@@ -32,6 +32,11 @@ ui-checkbox {
   }
 }
 
+// === Form builder ===
+.core-question {
+  @apply text-red-400;
+}
+
 // .multiline-tooltip {
 //   white-space: pre-line;
 // }
@@ -118,5 +123,13 @@ ui-checkbox {
 
   .legend-division-hide {
     opacity: 0.4;
+  }
+}
+// todo(beta): useless?
+.custom-marker {
+  span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
