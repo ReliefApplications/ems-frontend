@@ -21,31 +21,16 @@ import { ListBoxToolbarConfig } from '@progress/kendo-angular-listbox';
 })
 export class QueryStyleComponent implements OnInit {
   @Input() query: any;
-  // public selectedFields: any[] = [];
   @Input() form!: UntypedFormGroup;
   public wholeRow!: UntypedFormControl;
 
   public filterFields: Field[] = [];
 
-  public availableFields: string[] = [
-    'Germany',
-    'France',
-    'Austria',
-    'Belgium',
-    'Denmark',
-    'Netherlands',
-  ];
+  public availableFields: string[] = [];
   public selectedFields: string[] = [];
   public toolbarSettings: ListBoxToolbarConfig = {
     position: 'right',
-    tools: [
-      'moveUp',
-      'moveDown',
-      'transferFrom',
-      'transferTo',
-      'transferAllFrom',
-      'transferAllTo',
-    ],
+    tools: ['transferFrom', 'transferTo', 'transferAllFrom', 'transferAllTo'],
   };
 
   @Output() closeEdition = new EventEmitter<any>();
@@ -78,6 +63,13 @@ export class QueryStyleComponent implements OnInit {
     this.queryBuilder.getFilterFields(this.query).then((f) => {
       this.filterFields = f;
     });
+    this.selectedFields = [...fields];
+    //available fields are all fields that are not selected
+    this.availableFields = [
+      ...this.query.fields
+        .map((x: any) => x.name)
+        .filter((x: any) => !this.selectedFields.includes(x)),
+    ];
   }
 
   /**
