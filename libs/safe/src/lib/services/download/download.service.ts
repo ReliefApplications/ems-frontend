@@ -55,9 +55,14 @@ export class SafeDownloadService {
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       'Content-Type': 'application/json',
+      ...options?.headers,
     });
     this.restService
-      .get(path, { ...options, responseType: 'blob', headers })
+      .get(path, {
+        ...options,
+        responseType: 'blob',
+        headers,
+      })
       .subscribe({
         next: (res) => {
           const blob = new Blob([res], { type });

@@ -416,7 +416,11 @@ export class SafeGridWidgetComponent
         const recipients =
           this.applicationService.distributionLists.find(
             (x) => x.id === options.distributionList
-          )?.emails || [];
+          )?.emails ||
+          this.grid.selectedItems
+            .map((x: any) => get(x, options.field, null))
+            .filter((x: any) => x)
+            .filter((x: any, i: any, a: any) => a.indexOf(x) === i);
 
         // select template
         const { EmailTemplateModalComponent } = await import(
@@ -505,7 +509,7 @@ export class SafeGridWidgetComponent
           this.dashboardService.dashboard$
         );
         if (!dashboard?.id) return;
-        this.workflowService.addToContext(
+        this.workflowService.setContext(
           dashboard.id,
           this.settings.id,
           this.grid.selectedRows

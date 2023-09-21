@@ -291,6 +291,7 @@
                 href="{{ getUrl(getPropertyValue(dataItem, field)) }}"
                 target="_blank"
                 rel="noopener noreferrer"
+                (click)="onOpenURL(getPropertyValue(dataItem, field), $event)"
               >
                 <div #refSpan>
                   {{

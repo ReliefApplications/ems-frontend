@@ -326,14 +326,14 @@ export class SafeFormHelpersService {
    * @param survey Survey instance
    * @param record Record to add to the survey variables
    * @param record.id Record id
-   * @param record.incrementalID Record incremental id
+   * @param record.incrementalId Record incremental id
    */
   public addRecordIDVariable = (
     survey: Survey.SurveyModel,
-    record: { id?: string; incrementalID?: string }
+    record: { id?: string; incrementalId?: string }
   ) => {
     survey.setVariable('record.id', record.id);
-    survey.setVariable('record.incrementalID', record?.incrementalID ?? '');
+    survey.setVariable('record.incrementalID', record?.incrementalId ?? '');
   };
 
   /**
@@ -342,19 +342,11 @@ export class SafeFormHelpersService {
    *
    * @param survey Survey instance
    */
-  public addWorkflowVariables = (survey: Survey.SurveyModel) => {
+  public setWorkflowContextVariable = (survey: Survey.SurveyModel) => {
     firstValueFrom(this.workflowService.workflowContext$).then((context) => {
-      const dashboardIds = Object.keys(context || {});
-      dashboardIds.forEach((dashboardId) => {
-        const widgets = Object.keys(context[dashboardId] || {});
-        widgets.forEach((widgetId) => {
-          const selectedIds = context[dashboardId][widgetId];
-          survey.setVariable(
-            `workflow_${dashboardId}_${widgetId}`,
-            selectedIds
-          );
-        });
-      });
+      if (!context) return;
+      const { dashboard, widget, rows } = context;
+      survey.setVariable(`workflow_${dashboard}_${widget}`, rows);
     });
   };
 

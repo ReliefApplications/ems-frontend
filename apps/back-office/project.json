@@ -333,7 +333,7 @@
           "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/safe/src/lib/style/themes/alimentaide"]
           }
         },
         "oort-demo": {

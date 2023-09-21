@@ -569,6 +569,11 @@
 			"default": "******",
 			"distribution": "******",
 			"fields": "******",
+			"from": {
+				"distribution": "******",
+				"field": "******",
+				"title": "******"
+			},
 			"subject": "******",
 			"withoutRecords": "******"
 		},
@@ -1111,6 +1116,7 @@
 			"grid": {
 				"actions": {
 					"detail": "******",
+					"downloadReport": "******",
 					"history": "******"
 				},
 				"errors": {

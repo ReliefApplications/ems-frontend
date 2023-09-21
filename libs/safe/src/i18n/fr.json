@@ -569,6 +569,11 @@
 			"default": "Défaut",
 			"distribution": "Liste de distribution",
 			"fields": "Sélectionner les champs à écrire dans le corps du texte",
+			"from": {
+				"distribution": "Liste de distribution",
+				"field": "Champ de données",
+				"title": "De"
+			},
 			"subject": "Objet",
 			"withoutRecords": "Sans enregistrements"
 		},
@@ -1126,6 +1131,7 @@
 			"grid": {
 				"actions": {
 					"detail": "Ouvrir le détail",
+					"downloadReport": "Télécharger",
 					"history": "Voir l'historique"
 				},
 				"empty": "Aucun enregistrement détecté pour cette configuration de réseau",

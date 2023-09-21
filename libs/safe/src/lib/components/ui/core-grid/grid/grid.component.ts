@@ -49,6 +49,9 @@ import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
+/** LIFT case report api URL */
+const LIFT_REPORT_URL = 'https://lift-functions.azurewebsites.net/api/report/';
+
 /**
  * Test if an element match a css selector
  *
@@ -843,6 +846,10 @@ export class SafeGridComponent
    * @returns Formatted field content as a string
    */
   public applyFieldFormat(name: string | null, field: any): string | null {
+    // TODO: Find better solution
+    if (typeof name === 'string' && name.startsWith(LIFT_REPORT_URL)) {
+      return 'Download';
+    }
     return applyLayoutFormat(name, field);
   }
 
@@ -892,5 +899,32 @@ export class SafeGridComponent
       item: dataItem,
       field,
     });
+  }
+
+  /**
+   * TODO: Find a better way to handle this
+   * Handle specific URLs
+   * Initially this is being used to add the token to the URL for downloading LIFT reports
+   *
+   * @param url URL to open
+   * @param event Click event
+   */
+  public onOpenURL(url: string, event: MouseEvent) {
+    const token = localStorage.getItem('idtoken');
+    if (url?.startsWith(LIFT_REPORT_URL)) {
+      event.preventDefault();
+      const urlList = url.split('/');
+      // We remove the incrementalID from the URL
+      // It should not be sent to the API, it's used only for the file name
+      const incrementalID = urlList.pop();
+      this.downloadService.getFile(
+        urlList.join('/'),
+        'pdf',
+        `Report-${incrementalID}.pdf`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+    }
   }
 }

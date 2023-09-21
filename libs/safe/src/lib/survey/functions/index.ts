@@ -15,6 +15,7 @@ import getWorkflowContext from './getWorkflowContext';
 import summarizeAids from './summarizeAids';
 import searchEnterpriseName from './searchEnterpriseName';
 import push from './push';
+import getComplaintsByType from './getComplaintsByType';
 
 /** Generators for each custom function available  */
 export const functions = [
@@ -39,4 +40,5 @@ export const functions = [
 /** Generators for each async custom function available  */
 export const asyncFunctions = [
   { fn: searchEnterpriseName, name: 'searchEnterpriseName' },
+  { fn: getComplaintsByType, name: 'getComplaintsByType' },
 ];
