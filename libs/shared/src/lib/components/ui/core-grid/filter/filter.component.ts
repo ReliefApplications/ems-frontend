@@ -7,7 +7,7 @@ import {
 import { isEmpty, isNil } from 'lodash';
 
 /**
- * Safe-grid-filter component
+ * Shared-grid-filter component
  */
 @Component({
   selector: 'shared-grid-filter',
@@ -87,7 +87,7 @@ export class GridFilterComponent
   public selectedOperator!: string;
 
   /**
-   * Constructor for safe-grid-filter
+   * Constructor for shared-grid-filter
    *
    * @param filterService Filter service
    * @param translate Angular translate service

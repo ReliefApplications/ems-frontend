@@ -106,7 +106,7 @@ export class MapPopupService {
   ): { instance: ComponentRef<MapPopupComponent>; popup: L.Popup } {
     // create div element to render the MapPopupComponent content
     const div = this.document.createElement('div');
-    div.setAttribute('class', 'safe-border-radius-inherit');
+    div.setAttribute('class', 'shared-border-radius-inherit');
 
     const popupComponent = this.initializeMapPopupComponent(
       coordinates,
