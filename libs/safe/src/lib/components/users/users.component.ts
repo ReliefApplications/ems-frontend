@@ -89,42 +89,12 @@ export class SafeUsersComponent
   }
 
   ngOnInit(): void {
-    // this.filterPredicate();
-    // this.filteredUsers = this.users;
-    // console.log(this.users);
-    // console.log(this.filteredUsers);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.users) {
-      // this.filterPredicate();
       this.filteredUsers = this.users;
     }
-  }
-
-  /**
-   * Filter current user list by search and role
-   */
-  private filterPredicate() {
-    console.log("aqui123");
-    this.filteredUsers = this.users.filter(
-      (data: any) =>
-        (this.searchText.trim().length === 0 ||
-          (this.searchText.trim().length > 0 &&
-            !!data.name &&
-            data.name.toLowerCase().includes(this.searchText.trim())) ||
-          (!!data.username &&
-            data.username.toLowerCase().includes(this.searchText.trim()))) &&
-        (this.roleFilter.trim().toLowerCase().length === 0 ||
-          (this.roleFilter.trim().toLowerCase().length > 0 &&
-            !!data.roles &&
-            data.roles.length > 0 &&
-            data.roles.filter((r: any) =>
-              r.title
-                .toLowerCase()
-                .includes(this.roleFilter.trim().toLowerCase())
-            ).length > 0))
-    );
   }
 
   /**
@@ -155,7 +125,7 @@ export class SafeUsersComponent
           .subscribe({
             next: ({ errors, data }) => {
               if (!errors) {
-                this.changeUsers.emit(data?.addUsers.length);
+                this.changeUsers.emit({op: 'add', data: data?.addUsers});
                 if (data?.addUsers.length) {
                   this.snackBar.openSnackBar(
                     this.translate.instant('components.users.onInvite.plural')
@@ -169,7 +139,6 @@ export class SafeUsersComponent
                   [...(data?.addUsers || []), ...this.users],
                   'username'
                 );
-                this.filterPredicate();
               } else {
                 if (value.length > 1) {
                   this.snackBar.openSnackBar(
@@ -271,7 +240,7 @@ export class SafeUsersComponent
               } else {
                 this.loading = false;
                 if (data?.deleteUsers) {
-                  this.changeUsers.emit(-data.deleteUsers);
+                  this.changeUsers.emit({op: 'delete', data: ids});
                   if (data.deleteUsers > 1) {
                     this.snackBar.openSnackBar(
                       this.translate.instant('components.users.onDelete.plural')
@@ -321,13 +290,14 @@ export class SafeUsersComponent
     if (column === 'role') {
       this.roleFilter = event?.trim() ?? '';
       this.changeFilter.emit({"column": column, "event": this.roleFilter});
-    } else {
+    } else if (column === 'search') {
       this.searchText = event
         ? event.target.value.trim().toLowerCase()
         : this.searchText;
       this.changeFilter.emit({"column": column, "event": this.searchText});
+    } else {
+      this.changeFilter.emit({"column": ''});
     }
-    //this.filterPredicate();
   }
 
   /**

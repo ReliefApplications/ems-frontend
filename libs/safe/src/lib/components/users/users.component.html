@@ -8,7 +8,7 @@
         <ui-icon icon="search" uiPrefix></ui-icon>
         <input
           [ngModel]="searchText"
-          (keyup)="applyFilter('', $event)"
+          (keyup)="applyFilter('search', $event)"
           [placeholder]="'common.placeholder.search' | translate"
           type="text"
         />
@@ -41,7 +41,7 @@
           (selectedOption)="applyFilter('role', $event)"
         >
           <ui-select-option>-</ui-select-option>
-          <ui-select-option [value]="role.title" *ngFor="let role of roles">
+          <ui-select-option [value]="role.id" *ngFor="let role of roles">
             {{ role.title }}
           </ui-select-option>
         </ui-select-menu>

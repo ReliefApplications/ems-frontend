@@ -14,7 +14,7 @@ import {
 } from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
 import { SafeUnsubscribeComponent } from '@oort-front/safe';
-import { takeUntil } from 'rxjs/operators';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
@@ -71,7 +71,7 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
       },
     });
     this.usersQuery.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      .pipe(debounceTime(2000), takeUntil(this.destroy$))
       .subscribe((resUsers) => {
         this.loading = true;
         this.updateValues(resUsers.data, resUsers.loading);
@@ -126,17 +126,6 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
    */
   private fetchUsers(refetch?: boolean): void {
     this.loading = true;
-    console.log("aqui123");
-    // const teste = {
-    //   "logic": "and",
-    //   "filters": [
-    //       {
-    //           "field": "firstName",
-    //           "operator": "contains",
-    //           "value": "renzo"
-    //       }
-    //   ]
-    // }
     const variables = {
       first: this.pageInfo.pageSize,
       afterCursor: refetch ? null : this.pageInfo.endCursor,
@@ -189,45 +178,82 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
   }
 
   /**
-   * Change page lenght on invite or delete users
+   * Change page length on invite or delete users
    *
    * @param e lenght of users added.
    */
   public changePageLength(e: any) {
-    this.pageInfo.length += parseInt(e);
+    if (e.op === 'add') {
+      if (this.cachedUsers.length === this.pageInfo.length) {
+        e.data.forEach((usr: any ) => {
+          this.cachedUsers = this.cachedUsers.concat([usr]);
+        })
+        this.users = this.cachedUsers.slice(
+          ITEMS_PER_PAGE * this.pageInfo.pageIndex,
+          ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
+        );
+      }
+      this.pageInfo.length += e.data.length;
+    } else {
+      e.data.forEach((id: any) => {
+        this.cachedUsers = this.cachedUsers.filter(
+          (x) => x.id !== id
+        );
+      })
+      this.pageInfo.length -= e.data.length;
+      this.users = this.cachedUsers.slice(
+        ITEMS_PER_PAGE * this.pageInfo.pageIndex,
+        ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
+      );
+    }
   }
 
+  /**
+   * Change filter when filter change
+   *
+   * @param e event
+   */
   public onFilterChange(e: any) {
-    
+    //if the filter is for role
     if (e.column === 'role') {
-      let foundRole = false;
-      this.filter.filters.forEach((f:any) => {
-        if (f.field === 'roles') {
-          f.value = e.event;
-          foundRole = true;
+      if (e.event === '' || e.event === null) {
+        this.filter.filters = this.filter.filters.filter((filter: any) => filter.field !== 'roles');
+      } else {
+        let foundRole = false;
+        //update filter if it exists
+        this.filter.filters.forEach((f:any) => {
+          if (f.field === 'roles') {
+            f.value = e.event;
+            foundRole = true;
+          }
+        });
+        //if doesn't exists we create a new one
+        if (!foundRole) {
+          this.filter.filters.push({ field: 'roles', operator: 'eq', value: e.event });
         }
-      });
-      if (!foundRole) {
-        this.filter.filters.push({ field: 'roles', operator: 'in', value: e.event });
       }
-    
-    } else {
-      if (e.event === '') {
+    } else if (e.column === 'search'){
+      //if the filter is for name
+      if (e.event === '' || e.event === null) {
         this.filter.filters = this.filter.filters.filter((filter: any) => filter.field !== 'name');
       } else {
         let foundName = false;
+        //update filter if it exists
         this.filter.filters.forEach((f:any) => {
           if (f.field === 'name') {
             f.value = e.event;
             foundName = true;
           }
         });
+        //if doesn't exists we create a new one
         if (!foundName) {
           this.filter.filters.push({ field: 'name', operator: 'contains', value: e.event });
         }
       }
+    //clear filters
+    } else {
+      this.filter.filters = [];
     }
-    console.log(this.filter);
     this.fetchUsers(true);
   }
 }
