@@ -532,7 +532,7 @@ export class EditLayerModalComponent
       const newControl = this.formBuilder.group({
         label: get(field, 'label', ''),
         name: get(field, 'name', ''),
-        type: get(field, 'type', ''),
+        type: get(field, 'type.name', ''),
       });
       fieldsInfo.push(newControl);
     } else {
