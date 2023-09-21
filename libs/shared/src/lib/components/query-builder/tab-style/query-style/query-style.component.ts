@@ -5,10 +5,6 @@ import {
   QueryBuilderService,
 } from '../../../../services/query-builder/query-builder.service';
 import { ListBoxToolbarConfig } from '@progress/kendo-angular-listbox';
-// import {
-//   ChecklistDatabase,
-//   TreeItemFlatNode,
-// } from '../../../checkbox-tree/checkbox-tree.component';
 
 /**
  * Query style component.
@@ -44,8 +40,6 @@ export class QueryStyleComponent implements OnInit {
 
   @Output() closeEdition = new EventEmitter<any>();
 
-  // checklist!: ChecklistDatabase;
-
   /**
    * Constructor for the query style component
    *
@@ -54,9 +48,6 @@ export class QueryStyleComponent implements OnInit {
   constructor(private queryBuilder: QueryBuilderService) {}
 
   ngOnInit(): void {
-    // this.checklist = new ChecklistDatabase(
-    //   this.getChecklist(this.query.fields)
-    // );
     const fields = this.form.get('fields')?.value || [];
     if (fields.length > 0) {
       this.wholeRow = new UntypedFormControl(false);
@@ -83,22 +74,6 @@ export class QueryStyleComponent implements OnInit {
   }
 
   /**
-   * Builds the checklist from list of fields.
-   *
-   * @param fields List of fields
-   * @returns Checklist database as object.
-   */
-  private getChecklist(fields: any[]): any {
-    return fields.reduce((o, field) => {
-      if (field.fields) {
-        return { ...o, [field.name]: this.getChecklist(field.fields) };
-      } else {
-        return { ...o, [field.name]: null };
-      }
-    }, {});
-  }
-
-  /**
    * Toggles boolean controls.
    *
    * @param controlName name of form control.
@@ -109,13 +84,4 @@ export class QueryStyleComponent implements OnInit {
       control.setValue(!control.value);
     }
   }
-
-  /**
-   * Updates fields value.
-   *
-   * @param items list of selected tree items.
-   */
-  // onChange(items: TreeItemFlatNode[]) {
-  //   this.form.get('fields')?.setValue(items.map((x) => x.path));
-  // }
 }
