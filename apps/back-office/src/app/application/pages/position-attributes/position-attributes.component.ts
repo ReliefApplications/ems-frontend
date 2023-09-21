@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PositionAttribute, PositionAttributesQueryResponse, BreadcrumbService } from '@oort-front/shared';
+import {
+  PositionAttribute,
+  PositionAttributesQueryResponse,
+  BreadcrumbService,
+} from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
 import { GET_POSITION_ATTRIBUTES_FROM_CATEGORY } from './graphql/queries';
 

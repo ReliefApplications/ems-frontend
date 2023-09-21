@@ -9,6 +9,14 @@
   &:only-child {
     width: 100%;
   }
+  
+  kendo-listbox {
+    height: 270px;
+    width: 45%;
+  }
+  kendo-listbox:nth-of-type(1) {
+    margin-right: 8px;
+  }
 }
 
 .style-form {

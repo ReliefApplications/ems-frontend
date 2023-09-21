@@ -1,9 +1,5 @@
-@use '@angular/material' as mat;
 @import 'variables.scss';
-
-// Material ( to remove )
-@include mat.legacy-core();
-@include mat.core();
+@import '@angular/cdk/overlay-prebuilt.css';
 
 // === KENDO THEME ===
 @import 'theme.scss';
@@ -29,100 +25,16 @@
   // --error-color: #ed5565;
 }
 
-$shared-palette: (
-  50: rgb($primary_50),
-  100: rgb($primary_100),
-  200: rgb($primary_200),
-  300: rgb($primary_300),
-  400: rgb($primary_400),
-  500: rgb($primary_500),
-  600: rgb($primary_600),
-  700: rgb($primary_700),
-  800: rgb($primary_800),
-  900: rgb($primary_900),
-  contrast: (
-    50: #000000,
-    100: #000000,
-    200: #000000,
-    300: #000000,
-    400: #ffffff,
-    500: #ffffff,
-    600: #ffffff,
-    700: #ffffff,
-    800: #ffffff,
-    900: #ffffff,
-  ),
-);
-
-$shared-palette-accent: (
-  main: rgb($secondary_50),
-  lighter: rgb($secondary_100),
-  darker: rgb($secondary_150),
-  200: rgb($secondary_200),
-  // For slide toggle,
-  contrast:
-    (
-      main: white,
-      lighter: rgba(black, 0.87),
-      darker: white,
-    ),
-);
-
-$shared-palette-warn: (
-  main: #d34444,
-  // 500
-  lighter: #ff766f,
-  darker: #9b001d,
-  50: #fae9e9,
-  200: #e9a2a2,
-  // 200
-  // For slide toggle,
-  contrast:
-    (
-      main: white,
-      lighter: rgba(black, 0.87),
-      darker: white,
-    ),
-);
-
-$shared-primary: mat.define-palette($shared-palette);
-$shared-accent: mat.define-palette(
-  $shared-palette-accent,
-  main,
-  lighter,
-  darker
-);
-$shared-warn: mat.define-palette($shared-palette-warn, main, lighter, darker);
-// $shared-theme: mat.define-light-theme($shared-primary, $shared-accent, $shared-warn);
-
-$shared-theme: mat.define-light-theme(
-  (
-    color: (
-      primary: $shared-primary,
-      accent: $shared-accent,
-      warn: $shared-warn,
-    ),
-    density: 0,
-  )
-);
-
-// === CHECKBOX ===
-@mixin checkbox($theme) {
-  ui-checkbox {
-    ui-icon {
-      vertical-align: text-bottom;
-    }
+// Checkbox
+ui-checkbox {
+  ui-icon {
+    vertical-align: text-bottom;
   }
 }
 
 // .multiline-tooltip {
 //   white-space: pre-line;
 // }
-
-// === ADDITIONAL MATERIAL STYLING ===
-@include mat.all-component-themes($shared-theme);
-@include mat.all-legacy-component-themes($shared-theme);
-@include checkbox($shared-theme);
 
 // Widgets
 .widget-header {
@@ -150,11 +62,6 @@ $shared-theme: mat.define-light-theme(
   .hide-border & {
     border-bottom: none !important;
   }
-}
-
-// === SURVEY BUILDER ===
-.core-question {
-  color: mat.get-color-from-palette($shared-warn) !important;
 }
 
 // === TINYMCE ===
