@@ -152,3 +152,28 @@ export interface LayerModel {
   updatedAt: Date;
   contextFilters?: string;
 }
+
+/** Model for AddLayerMutationResponse object */
+export interface AddLayerMutationResponse {
+  addLayer: LayerModel;
+}
+
+/** Model for DeleteLayerMutationResponse object */
+export interface DeleteLayerMutationResponse {
+  deleteLayer: LayerModel;
+}
+
+/** Edit layer gql mutation response interface */
+export interface EditLayerMutationResponse {
+  editLayer: LayerModel;
+}
+
+/** Model for GetLayerQueryResponse object */
+export interface LayerQueryResponse {
+  layer: LayerModel;
+}
+
+/** Model for GetLayersQueryResponse object */
+export interface LayersQueryResponse {
+  layers: LayerModel[];
+}
