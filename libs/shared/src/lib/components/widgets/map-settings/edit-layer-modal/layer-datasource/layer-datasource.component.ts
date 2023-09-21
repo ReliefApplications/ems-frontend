@@ -117,7 +117,7 @@ export class LayerDatasourceComponent
    * Component for the layer datasource selection tab
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param gridLayoutService Shared layout service
    * @param aggregationService Shared aggregation service
    * @param mapLayersService Shared map layer Service.

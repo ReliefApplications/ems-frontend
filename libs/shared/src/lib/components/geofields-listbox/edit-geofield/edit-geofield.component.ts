@@ -34,7 +34,7 @@ export class EditGeofieldComponent implements OnInit {
    * edit GeoField component
    *
    * @param fb Angular form builder
-   * @param dialogRef Material dialog ref
+   * @param dialogRef CDK dialog ref
    * @param data Injected dialog data
    * @param data.geofield geofield to edit
    */

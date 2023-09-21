@@ -35,7 +35,7 @@ import {
   DividerModule,
   IconModule,
 } from '@oort-front/ui';
-import { ListBoxModule } from '@progress/kendo-angular-listbox';
+import { TreeViewModule } from '@progress/kendo-angular-treeview';
 
 /**
  * QueryBuilderModule is a class used to manage all the modules and components
@@ -82,7 +82,7 @@ import { ListBoxModule } from '@progress/kendo-angular-listbox';
     FormWrapperModule,
     SelectMenuModule,
     DividerModule,
-    ListBoxModule,
+    TreeViewModule,
   ],
   exports: [
     QueryBuilderComponent,

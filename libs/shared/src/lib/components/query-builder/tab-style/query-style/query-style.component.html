@@ -103,16 +103,17 @@
         <span class="field-name">{{
           'components.queryBuilder.style.edit.fields' | translate
         }}</span>
-        <div class="w-full">
-          <kendo-listbox
-            kendoListBoxDataBinding
-            [data]="availableFields"
-            [connectedWith]="selected"
-            [toolbar]="toolbarSettings"
-          >
-          </kendo-listbox>
-          <kendo-listbox #selected [data]="selectedFields" [toolbar]="false">
-          </kendo-listbox>
+        <div class="flex">
+          <kendo-treeview
+            [nodes]="fieldNodes"
+            textField="name"
+            childrenField="fields"
+            kendoTreeViewHierarchyBinding
+            kendoTreeViewExpandable
+            kendoTreeViewCheckable
+            (checkedChange)="handleChecking()"
+            [(checkedKeys)]="checkedKeys"
+          ></kendo-treeview>
         </div>
       </div>
     </form>

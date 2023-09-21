@@ -4,7 +4,7 @@ import {
   Field,
   QueryBuilderService,
 } from '../../../../services/query-builder/query-builder.service';
-import { ListBoxToolbarConfig } from '@progress/kendo-angular-listbox';
+import { flattenDeep } from 'lodash';
 
 /**
  * Query style component.
@@ -31,29 +31,9 @@ export class QueryStyleComponent implements OnInit {
   /** The list of filter fields available for the query. */
   public filterFields: Field[] = [];
 
-  /** The list of available fields for the query. */
-  public availableFields: string[] = [];
+  public checkedKeys: any[] = [];
 
-  /** The list of selected fields for the query. */
-  public _selectedFields: string[] = [];
-
-  /** The configuration for the list box toolbar. */
-  public toolbarSettings: ListBoxToolbarConfig = {
-    position: 'right',
-    tools: ['transferFrom', 'transferTo', 'transferAllFrom', 'transferAllTo'],
-  };
-
-  /** @returns the list of selected fields for the query. */
-  public get selectedFields(): string[] {
-    this.form.get('fields')?.setValue(this._selectedFields);
-    return this._selectedFields;
-  }
-
-  /** Sets the list of selected fields for the query. */
-  public set selectedFields(value: string[]) {
-    this.form.get('fields')?.setValue(this._selectedFields);
-    this._selectedFields = value;
-  }
+  public fieldNodes: any[] = [];
 
   /** Event emitter for closing the edition of the query style. */
   @Output() closeEdition = new EventEmitter<any>();
@@ -69,9 +49,23 @@ export class QueryStyleComponent implements OnInit {
    * Initializes the component.
    */
   ngOnInit(): void {
+    this.fieldNodes = this.setFieldNodes();
+
     const fields = this.form.get('fields')?.value || [];
+
     if (fields.length > 0) {
       this.wholeRow = new UntypedFormControl(false);
+      /** Update checked keys from nodes & selected fields */
+      const flatNodes = this.flatNodes();
+      const selectedFields = this.form.get('fields')?.value || [];
+      const checkedKeys = [];
+      for (const field of selectedFields) {
+        const node = flatNodes.find((node) => node.path === field);
+        if (node) {
+          checkedKeys.push(node.id);
+        }
+      }
+      this.checkedKeys = checkedKeys;
     } else {
       this.wholeRow = new UntypedFormControl(true);
     }
@@ -84,14 +78,33 @@ export class QueryStyleComponent implements OnInit {
     this.queryBuilder.getFilterFields(this.query).then((f) => {
       this.filterFields = f;
     });
+  }
 
-    this._selectedFields = [...fields];
+  /**
+   * Set field nodes from query definition
+   *
+   * @returns list of field nodes ( used by tree view )
+   */
+  private setFieldNodes() {
+    const getNode = (field: any, index: number, parent?: any) => {
+      const id = parent ? `${parent.id}_${index}` : `${index}`;
+      const path = parent ? `${parent.name}.${field.name}` : field.name;
+      return {
+        id,
+        name: field.name,
+        ...(field.fields && {
+          fields: field.fields.map((subField: any, index: number) =>
+            getNode(subField, index, { id, name: field.name })
+          ),
+        }),
+        path,
+      };
+    };
 
-    this.availableFields = [
-      ...this.query.fields
-        .map((x: any) => x.name)
-        .filter((x: any) => !this._selectedFields.includes(x)),
-    ];
+    const nodes = (this.query.fields || []).map((field: any, index: number) =>
+      getNode(field, index)
+    );
+    return nodes;
   }
 
   /**
@@ -104,5 +117,51 @@ export class QueryStyleComponent implements OnInit {
     if (control) {
       control.setValue(!control.value);
     }
+  }
+
+  /**
+   * Handle checking from tree view, updating the form group value
+   */
+  handleChecking(): void {
+    const flatNodes = this.flatNodes();
+    const selectedFields = [];
+    for (const key of this.checkedKeys) {
+      const node = flatNodes.find((node) => key === node.id);
+      if (node) {
+        if (node.fields) {
+          for (const subNode of node.fields) {
+            selectedFields.push(subNode.path);
+          }
+        } else {
+          selectedFields.push(node.path);
+        }
+      }
+    }
+    this.form.get('fields')?.setValue(selectedFields);
+  }
+
+  /**
+   * Create a flat array from the nodes
+   * Each node lists its children nodes ( if any )
+   *
+   * @returns flat array of nodes
+   */
+  flatNodes() {
+    const flatNode = (node: any) => {
+      if (node.fields) {
+        return flattenDeep([
+          {
+            ...node,
+            fields: flattenDeep(
+              node.fields.map((subNode: any) => flatNode(subNode))
+            ),
+          },
+          node.fields.map((subNode: any) => flatNode(subNode)),
+        ]);
+      } else {
+        return [node];
+      }
+    };
+    return flattenDeep(this.fieldNodes.map((node) => flatNode(node)));
   }
 }
