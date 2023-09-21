@@ -129,7 +129,7 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
     const variables = {
       first: this.pageInfo.pageSize,
       afterCursor: refetch ? null : this.pageInfo.endCursor,
-      filter: this.filter
+      filter: this.filter,
     };
     const cachedValues: GetUsersQueryResponse = getCachedValues(
       this.apollo.client,
@@ -185,9 +185,9 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
   public changePageLength(e: any) {
     if (e.op === 'add') {
       if (this.cachedUsers.length === this.pageInfo.length) {
-        e.data.forEach((usr: any ) => {
+        e.data.forEach((usr: any) => {
           this.cachedUsers = this.cachedUsers.concat([usr]);
-        })
+        });
         this.users = this.cachedUsers.slice(
           ITEMS_PER_PAGE * this.pageInfo.pageIndex,
           ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
@@ -196,10 +196,8 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
       this.pageInfo.length += e.data.length;
     } else {
       e.data.forEach((id: any) => {
-        this.cachedUsers = this.cachedUsers.filter(
-          (x) => x.id !== id
-        );
-      })
+        this.cachedUsers = this.cachedUsers.filter((x) => x.id !== id);
+      });
       this.pageInfo.length -= e.data.length;
       this.users = this.cachedUsers.slice(
         ITEMS_PER_PAGE * this.pageInfo.pageIndex,
@@ -217,11 +215,13 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
     //if the filter is for role
     if (e.column === 'role') {
       if (e.event === '' || e.event === null) {
-        this.filter.filters = this.filter.filters.filter((filter: any) => filter.field !== 'roles');
+        this.filter.filters = this.filter.filters.filter(
+          (filter: any) => filter.field !== 'roles'
+        );
       } else {
         let foundRole = false;
         //update filter if it exists
-        this.filter.filters.forEach((f:any) => {
+        this.filter.filters.forEach((f: any) => {
           if (f.field === 'roles') {
             f.value = e.event;
             foundRole = true;
@@ -229,17 +229,23 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
         });
         //if doesn't exists we create a new one
         if (!foundRole) {
-          this.filter.filters.push({ field: 'roles', operator: 'eq', value: e.event });
+          this.filter.filters.push({
+            field: 'roles',
+            operator: 'eq',
+            value: e.event,
+          });
         }
       }
-    } else if (e.column === 'search'){
+    } else if (e.column === 'search') {
       //if the filter is for name
       if (e.event === '' || e.event === null) {
-        this.filter.filters = this.filter.filters.filter((filter: any) => filter.field !== 'name');
+        this.filter.filters = this.filter.filters.filter(
+          (filter: any) => filter.field !== 'name'
+        );
       } else {
         let foundName = false;
         //update filter if it exists
-        this.filter.filters.forEach((f:any) => {
+        this.filter.filters.forEach((f: any) => {
           if (f.field === 'name') {
             f.value = e.event;
             foundName = true;
@@ -247,11 +253,15 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
         });
         //if doesn't exists we create a new one
         if (!foundName) {
-          this.filter.filters.push({ field: 'name', operator: 'contains', value: e.event });
+          this.filter.filters.push({
+            field: 'name',
+            operator: 'contains',
+            value: e.event,
+          });
         }
       }
-    //clear filters
     } else {
+      //clear filters
       this.filter.filters = [];
     }
     this.fetchUsers(true);

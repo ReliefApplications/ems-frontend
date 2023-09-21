@@ -3,7 +3,6 @@ import {
   Component,
   Input,
   OnChanges,
-  OnInit,
   SimpleChanges,
   Output,
   EventEmitter,
@@ -36,7 +35,7 @@ import uniqBy from 'lodash/uniqBy';
 })
 export class SafeUsersComponent
   extends SafeUnsubscribeComponent
-  implements OnInit, OnChanges
+  implements OnChanges
 {
   // === INPUT DATA ===
   @Input() users: Array<User> = new Array<User>();
@@ -88,9 +87,6 @@ export class SafeUsersComponent
     super();
   }
 
-  ngOnInit(): void {
-  }
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes.users) {
       this.filteredUsers = this.users;
@@ -125,7 +121,7 @@ export class SafeUsersComponent
           .subscribe({
             next: ({ errors, data }) => {
               if (!errors) {
-                this.changeUsers.emit({op: 'add', data: data?.addUsers});
+                this.changeUsers.emit({ op: 'add', data: data?.addUsers });
                 if (data?.addUsers.length) {
                   this.snackBar.openSnackBar(
                     this.translate.instant('components.users.onInvite.plural')
@@ -240,7 +236,7 @@ export class SafeUsersComponent
               } else {
                 this.loading = false;
                 if (data?.deleteUsers) {
-                  this.changeUsers.emit({op: 'delete', data: ids});
+                  this.changeUsers.emit({ op: 'delete', data: ids });
                   if (data.deleteUsers > 1) {
                     this.snackBar.openSnackBar(
                       this.translate.instant('components.users.onDelete.plural')
@@ -289,14 +285,14 @@ export class SafeUsersComponent
   applyFilter(column: string, event: any): void {
     if (column === 'role') {
       this.roleFilter = event?.trim() ?? '';
-      this.changeFilter.emit({"column": column, "event": this.roleFilter});
+      this.changeFilter.emit({ column: column, event: this.roleFilter });
     } else if (column === 'search') {
       this.searchText = event
         ? event.target.value.trim().toLowerCase()
         : this.searchText;
-      this.changeFilter.emit({"column": column, "event": this.searchText});
+      this.changeFilter.emit({ column: column, event: this.searchText });
     } else {
-      this.changeFilter.emit({"column": ''});
+      this.changeFilter.emit({ column: '' });
     }
   }
 
