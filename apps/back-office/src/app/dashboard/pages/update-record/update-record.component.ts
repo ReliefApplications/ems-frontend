@@ -2,13 +2,14 @@ import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 
+import { GET_FORM_STRUCTURE, GET_RECORD_BY_ID } from './graphql/queries';
 import {
-  GetFormByIdQueryResponse,
-  GetRecordByIdQueryResponse,
-  GET_FORM_STRUCTURE,
-  GET_RECORD_BY_ID,
-} from './graphql/queries';
-import { Record, Form, SafeBreadcrumbService } from '@oort-front/safe';
+  Record,
+  Form,
+  SafeBreadcrumbService,
+  FormQueryResponse,
+  RecordQueryResponse,
+} from '@oort-front/safe';
 
 /**
  * Component which will be used at record update.
@@ -45,7 +46,7 @@ export class UpdateRecordComponent implements OnInit {
     const template = history.state?.template;
     if (template) {
       this.apollo
-        .watchQuery<GetFormByIdQueryResponse>({
+        .watchQuery<FormQueryResponse>({
           query: GET_FORM_STRUCTURE,
           variables: {
             id: template,
@@ -62,7 +63,7 @@ export class UpdateRecordComponent implements OnInit {
     }
     if (this.id !== null) {
       this.apollo
-        .watchQuery<GetRecordByIdQueryResponse>({
+        .watchQuery<RecordQueryResponse>({
           query: GET_RECORD_BY_ID,
           variables: {
             id: this.id,

@@ -22,19 +22,15 @@ import {
   SafeConfirmService,
   SafeReferenceDataService,
   Record,
-} from '@oort-front/safe';
-import {
+  ResourceRecordsNodesQueryResponse,
+  DashboardQueryResponse,
   EditDashboardMutationResponse,
-  EDIT_DASHBOARD,
-  EditPageMutationResponse,
-  EDIT_PAGE,
   EditStepMutationResponse,
-  EDIT_STEP,
-} from './graphql/mutations';
+  EditPageMutationResponse,
+  RecordQueryResponse,
+} from '@oort-front/safe';
+import { EDIT_DASHBOARD, EDIT_PAGE, EDIT_STEP } from './graphql/mutations';
 import {
-  GetDashboardByIdQueryResponse,
-  GetRecordByIdQueryResponse,
-  GetResourceRecordsQueryResponse,
   GET_DASHBOARD_BY_ID,
   GET_RECORD_BY_ID,
   GET_RESOURCE_RECORDS,
@@ -48,6 +44,7 @@ import { isEqual } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
+import { Clipboard } from '@angular/cdk/clipboard';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -92,7 +89,7 @@ export class DashboardComponent
 
   // === CONTEXT ===
   public refDataElements: any[] = [];
-  public recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
+  public recordsQuery!: QueryRef<ResourceRecordsNodesQueryResponse>;
   public contextId = new FormControl<string | number | null>(null);
   public refDataValueField = '';
   public contextRecord: Record | null = null;
@@ -114,6 +111,8 @@ export class DashboardComponent
    * @param refDataService Shared reference data service
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
+   * @param translate Shared translate service
+   * @param clipboard Angular clipboard service
    */
   constructor(
     private applicationService: SafeApplicationService,
@@ -129,7 +128,9 @@ export class DashboardComponent
     private confirmService: SafeConfirmService,
     private refDataService: SafeReferenceDataService,
     private renderer: Renderer2,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private translate: TranslateService,
+    private clipboard: Clipboard
   ) {
     super();
   }
@@ -143,7 +144,7 @@ export class DashboardComponent
       this.loading = true;
       this.id = params.id;
       this.apollo
-        .query<GetDashboardByIdQueryResponse>({
+        .query<DashboardQueryResponse>({
           query: GET_DASHBOARD_BY_ID,
           variables: {
             id: this.id,
@@ -564,15 +565,10 @@ export class DashboardComponent
   /** Display the ShareUrl modal with the route to access the dashboard. */
   public async onShare(): Promise<void> {
     const url = `${window.origin}/share/${this.dashboard?.id}`;
-    const { ShareUrlComponent } = await import(
-      './components/share-url/share-url.component'
+    this.clipboard.copy(url);
+    this.snackBar.openSnackBar(
+      this.translate.instant('common.notifications.copiedToClipboard')
     );
-    const dialogRef = this.dialog.open(ShareUrlComponent, {
-      data: {
-        url,
-      },
-    });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe();
   }
 
   /**
@@ -659,7 +655,7 @@ export class DashboardComponent
 
     if ('resource' in context) {
       this.recordsQuery =
-        this.apollo.watchQuery<GetResourceRecordsQueryResponse>({
+        this.apollo.watchQuery<ResourceRecordsNodesQueryResponse>({
           query: GET_RESOURCE_RECORDS,
           variables: {
             first: ITEMS_PER_PAGE,
@@ -736,7 +732,7 @@ export class DashboardComponent
 
       // Get record by id
       firstValueFrom(
-        this.apollo.query<GetRecordByIdQueryResponse>({
+        this.apollo.query<RecordQueryResponse>({
           query: GET_RECORD_BY_ID,
           variables: {
             id: dContext.record,

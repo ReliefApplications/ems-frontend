@@ -5,6 +5,7 @@ import { QueryBuilderService } from '../../../services/query-builder/query-build
 import { debounceTime } from 'rxjs/operators';
 import { cloneDeep } from 'lodash';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
+import { flatDeep } from '../../../utils/array-filter';
 
 /**
  * Filters an array of fields to only include fields that match the given paths.
@@ -161,19 +162,6 @@ export class SafeMapSettingsComponent implements OnInit {
   }
 
   /**
-   * Flatten an array
-   *
-   * @param {any[]} arr - any[] - the array to be flattened
-   * @returns the array with all the nested arrays flattened.
-   */
-  private flatDeep(arr: any[]): any[] {
-    return arr.reduce(
-      (acc, val) => acc.concat(Array.isArray(val) ? this.flatDeep(val) : val),
-      []
-    );
-  }
-
-  /**
    * Take an array of fields, and return an array of strings that represent
    * the fields
    *
@@ -185,7 +173,7 @@ export class SafeMapSettingsComponent implements OnInit {
    * @returns An array of strings.
    */
   private getFields(fields: any[], prefix?: string): (string | undefined)[] {
-    return this.flatDeep(
+    return flatDeep(
       fields
         .filter((x) => x.kind !== 'LIST')
         .map((f) => {

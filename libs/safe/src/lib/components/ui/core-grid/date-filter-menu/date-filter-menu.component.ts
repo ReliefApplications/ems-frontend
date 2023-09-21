@@ -142,4 +142,19 @@ export class SafeDateFilterMenuComponent
       this.filterService?.filter(value);
     });
   }
+
+  /**
+   * Switch the date mode input for the filter for the given date mode type: first or second
+   *
+   * @param dateMode Which date mode should be updated, first or second
+   */
+  setDateModeType(dateMode: 'first' | 'second') {
+    if (dateMode === 'first') {
+      this.firstDateMode =
+        this.firstDateMode === 'expression' ? 'date' : 'expression';
+    } else {
+      this.secondDateMode =
+        this.secondDateMode === 'expression' ? 'date' : 'expression';
+    }
+  }
 }

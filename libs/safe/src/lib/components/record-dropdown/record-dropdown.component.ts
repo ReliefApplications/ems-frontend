@@ -9,19 +9,15 @@ import {
   Renderer2,
 } from '@angular/core';
 import { QueryRef, Apollo } from 'apollo-angular';
-import {
-  GetRecordByIdQueryResponse,
-  GetResourceRecordsQueryResponse,
-  GET_RECORD_BY_ID,
-  GET_RESOURCE_RECORDS,
-} from './graphql/queries';
+import { GET_RECORD_BY_ID, GET_RESOURCE_RECORDS } from './graphql/queries';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Record } from '../../models/record.model';
+import { Record, RecordQueryResponse } from '../../models/record.model';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { updateQueryUniqueValues } from '../../utils/update-queries';
 import { DOCUMENT } from '@angular/common';
+import { ResourceRecordsNodesQueryResponse } from '../../models/resource.model';
 
 /** A constant that is used to set the number of items to be displayed on the page. */
 const ITEMS_PER_PAGE = 25;
@@ -51,7 +47,7 @@ export class SafeRecordDropdownComponent
   private records = new BehaviorSubject<Record[]>([]);
   public records$!: Observable<Record[]>;
   private cachedRecords: Record[] = [];
-  private recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
+  private recordsQuery!: QueryRef<ResourceRecordsNodesQueryResponse>;
   private pageInfo = {
     endCursor: '',
     hasNextPage: true,
@@ -80,7 +76,7 @@ export class SafeRecordDropdownComponent
   ngOnInit(): void {
     if (this.record) {
       this.apollo
-        .query<GetRecordByIdQueryResponse>({
+        .query<RecordQueryResponse>({
           query: GET_RECORD_BY_ID,
           variables: {
             id: this.record,
@@ -96,7 +92,7 @@ export class SafeRecordDropdownComponent
 
     if (this.resourceId) {
       this.recordsQuery =
-        this.apollo.watchQuery<GetResourceRecordsQueryResponse>({
+        this.apollo.watchQuery<ResourceRecordsNodesQueryResponse>({
           query: GET_RESOURCE_RECORDS,
           variables: {
             id: this.resourceId,
@@ -173,7 +169,7 @@ export class SafeRecordDropdownComponent
    * @param loading loading status
    */
   private updateValues(
-    data: GetResourceRecordsQueryResponse,
+    data: ResourceRecordsNodesQueryResponse,
     loading: boolean
   ) {
     this.cachedRecords = updateQueryUniqueValues(

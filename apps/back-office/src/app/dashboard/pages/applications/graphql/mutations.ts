@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Application } from '@oort-front/safe';
 
 // === EDIT APPLICATION ===
 /** Edit application gql mutation definition */
@@ -57,11 +56,6 @@ export const EDIT_APPLICATION = gql`
   }
 `;
 
-/** Edit application gql mutation response interface */
-export interface EditApplicationMutationResponse {
-  editApplication: Application;
-}
-
 // === ADD APPLICATION ===
 /** Add application gql mutation definition */
 export const ADD_APPLICATION = gql`
@@ -81,11 +75,6 @@ export const ADD_APPLICATION = gql`
   }
 `;
 
-/** Add application gql mutation response interface */
-export interface AddApplicationMutationResponse {
-  addApplication: Application;
-}
-
 // === DELETE APPLICATION ===
 /** Delete application gql mutation definition */
 export const DELETE_APPLICATION = gql`
@@ -96,8 +85,3 @@ export const DELETE_APPLICATION = gql`
     }
   }
 `;
-
-/** Delete application gql mutation response interface */
-export interface DeleteApplicationMutationResponse {
-  deleteApplication: Application;
-}

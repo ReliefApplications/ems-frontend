@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { CustomNotification } from '../../../models/custom-notification.model';
 
 /**
  * Get Custom notifications of current application.
@@ -38,20 +37,3 @@ export const GET_CUSTOM_NOTIFICATIONS = gql`
     }
   }
 `;
-
-/** Interface of GET_CUSTOM_NOTIFICATIONS query response */
-export interface GetCustomNotificationsQueryResponse {
-  application: {
-    customNotifications: {
-      edges: {
-        node: CustomNotification;
-        cursor: string;
-      }[];
-      pageInfo: {
-        endCursor: string;
-        hasNextPage: boolean;
-      };
-      totalCount: number;
-    };
-  };
-}

@@ -15,11 +15,9 @@ import { GridModule } from '@progress/kendo-angular-grid';
 import { InputsModule } from '@progress/kendo-angular-inputs';
 import { PopupModule } from '@progress/kendo-angular-popup';
 import { SafeDateModule } from '../../../../pipes/date/date.module';
-import { SafeArrayFilterMenuModule } from '../array-filter-menu/array-filter-menu.module';
-import { SafeArrayFilterModule } from '../array-filter/array-filter.module';
+import { SafeGridFilterMenuModule } from '../filter-menu/filter-menu.module';
+import { SafeGridFilterModule } from '../filter/filter.module';
 import { SafeDateFilterMenuModule } from '../date-filter-menu/date-filter-menu.module';
-import { SafeDropdownFilterMenuModule } from '../dropdown-filter-menu/dropdown-filter-menu.module';
-import { SafeDropdownFilterModule } from '../dropdown-filter/dropdown-filter.module';
 import { SafeExpandedCommentModule } from '../expanded-comment/expanded-comment.module';
 import { SafeExportModule } from '../export/export.module';
 import { SafeGridColumnChooserModule } from '../grid-column-chooser/grid-column-chooser.module';
@@ -47,10 +45,8 @@ import { SafeGridComponent } from './grid.component';
     // === UTILS ===
     SafeExpandedCommentModule,
     // === FILTER ===
-    SafeArrayFilterModule,
-    SafeArrayFilterMenuModule,
-    SafeDropdownFilterModule,
-    SafeDropdownFilterMenuModule,
+    SafeGridFilterMenuModule,
+    SafeGridFilterModule,
     SafeDateFilterMenuModule,
     SafeGridColumnChooserModule,
     // === ROW ===

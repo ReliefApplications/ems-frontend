@@ -1,5 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { Role, User } from '../../../../models/user.model';
+import { Role, User, UsersQueryResponse } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
 import {
   UntypedFormArray,
@@ -10,7 +10,7 @@ import {
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { map, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { GET_USERS, GetUsersQueryResponse } from '../../graphql/queries';
+import { GET_USERS } from '../../graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -64,6 +64,13 @@ export class SafeAddUserComponent
   }
 
   ngOnInit(): void {
+    const getUsersByEmail = this.form.controls.email.valueChanges.pipe(
+      startWith(''),
+      map((value) => (typeof value === 'string' ? value : '')),
+      map((x) => this.filterUsers(x)),
+      takeUntil(this.destroy$)
+    );
+
     this.form = this.formBuilder.group({
       email: ['', Validators.minLength(1)],
       role: ['', Validators.required],
@@ -78,14 +85,11 @@ export class SafeAddUserComponent
         ),
       }),
     });
-    this.filteredUsers = this.form.controls.email.valueChanges.pipe(
-      startWith(''),
-      map((value) => (typeof value === 'string' ? value : '')),
-      map((x) => this.filterUsers(x))
-    );
+
+    this.filteredUsers = getUsersByEmail;
 
     this.apollo
-      .query<GetUsersQueryResponse>({
+      .query<UsersQueryResponse>({
         query: GET_USERS,
       })
       .pipe(takeUntil(this.destroy$))
@@ -94,11 +98,7 @@ export class SafeAddUserComponent
         this.users = data.users.filter(
           (x) => !flatInvitedUsers.includes(x.username)
         );
-        this.filteredUsers = this.form.controls.email.valueChanges.pipe(
-          startWith(''),
-          map((value) => (typeof value === 'string' ? value : '')),
-          map((x) => this.filterUsers(x))
-        );
+        this.filteredUsers = getUsersByEmail;
       });
   }
 

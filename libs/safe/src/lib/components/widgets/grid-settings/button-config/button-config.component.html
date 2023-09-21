@@ -72,7 +72,9 @@
       </ng-container>
       <div *ngIf="formGroup.value.attachToRecord" class="sub-parameters">
         <ui-alert class="mb-4" variant="warning">
-          {{ 'components.widget.settings.grid.hint.attachToRecord' | translate }}
+          {{
+            'components.widget.settings.grid.hint.attachToRecord' | translate
+          }}
         </ui-alert>
         <!-- Selection of target resource -->
         <div uiFormFieldDirective>

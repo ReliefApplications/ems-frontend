@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Record } from '../../../../models/record.model';
 
 // === CONVERT RECORD ===
 
@@ -14,10 +13,6 @@ export const CONVERT_RECORD = gql`
   }
 `;
 
-/** Model for ConvertRecordMutationResponse object */
-export interface ConvertRecordMutationResponse {
-  convertRecord: Record;
-}
 // === DELETE RECORD ===
 
 /** Graphl request for deleting multiple records by their ids */
@@ -26,11 +21,6 @@ export const DELETE_RECORDS = gql`
     deleteRecords(ids: $ids)
   }
 `;
-
-/** Model for DeleteRecordsMutationResponse object */
-export interface DeleteRecordsMutationResponse {
-  deleteRecords: number;
-}
 
 // === EDIT RECORD ===
 
@@ -66,8 +56,3 @@ export const EDIT_RECORD = gql`
     }
   }
 `;
-
-/** Model for EditRecordMutationResponse object */
-export interface EditRecordMutationResponse {
-  editRecord: Record;
-}

@@ -1,30 +1,12 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
 import { SafeFieldDropdownComponent } from './field-dropdown.component';
+import { setupSpecConfig } from '../shared-config/spec/config';
 
 describe('SafeFieldDropdownComponent', () => {
   let component: SafeFieldDropdownComponent;
   let fixture: ComponentFixture<SafeFieldDropdownComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      providers: [TranslateService],
-      declarations: [SafeFieldDropdownComponent],
-      imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
-      ],
-    }).compileComponents();
-  });
+  beforeEach(async () => setupSpecConfig(SafeFieldDropdownComponent));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeFieldDropdownComponent);

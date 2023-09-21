@@ -2,7 +2,7 @@ import { HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { SafeRestService } from '../rest/rest.service';
-import { ApiConfiguration } from '../../models/apiConfiguration.model';
+import { ApiConfiguration } from '../../models/api-configuration.model';
 
 /**
  * Shared API Proxy service.

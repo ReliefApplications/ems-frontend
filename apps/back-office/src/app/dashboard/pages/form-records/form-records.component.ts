@@ -2,19 +2,13 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
-  GetFormByIdQueryResponse,
-  GetFormRecordsQueryResponse,
-  GetRecordDetailsQueryResponse,
   GET_FORM_BY_ID,
   GET_FORM_RECORDS,
   GET_RECORD_DETAILS,
 } from './graphql/queries';
 import {
-  EditRecordMutationResponse,
   EDIT_RECORD,
-  DeleteRecordMutationResponse,
   DELETE_RECORD,
-  RestoreRecordMutationResponse,
   RESTORE_RECORD,
 } from './graphql/mutations';
 import {
@@ -24,6 +18,12 @@ import {
   SafeUnsubscribeComponent,
   SafeDownloadService,
   Record,
+  FormRecordsQueryResponse,
+  FormQueryResponse,
+  DeleteRecordMutationResponse,
+  EditRecordMutationResponse,
+  RecordQueryResponse,
+  RestoreRecordMutationResponse,
 } from '@oort-front/safe';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
@@ -53,7 +53,7 @@ export class FormRecordsComponent
   // === DATA ===
   public loading = true;
   public loadingMore = false;
-  private recordsQuery!: QueryRef<GetFormRecordsQueryResponse>;
+  private recordsQuery!: QueryRef<FormRecordsQueryResponse>;
   public id = '';
   public form: any;
   displayedColumns: string[] = [];
@@ -123,7 +123,7 @@ export class FormRecordsComponent
     this.loading = true;
 
     // get the records linked to the form
-    this.recordsQuery = this.apollo.watchQuery<GetFormRecordsQueryResponse>({
+    this.recordsQuery = this.apollo.watchQuery<FormRecordsQueryResponse>({
       query: GET_FORM_RECORDS,
       variables: {
         id: this.id,
@@ -150,7 +150,7 @@ export class FormRecordsComponent
 
     // get the form detail
     this.apollo
-      .watchQuery<GetFormByIdQueryResponse>({
+      .watchQuery<FormQueryResponse>({
         query: GET_FORM_BY_ID,
         variables: {
           id: this.id,
@@ -364,7 +364,7 @@ export class FormRecordsComponent
    */
   public onViewHistory(id: string): void {
     this.apollo
-      .query<GetRecordDetailsQueryResponse>({
+      .query<RecordQueryResponse>({
         query: GET_RECORD_DETAILS,
         variables: {
           id,
