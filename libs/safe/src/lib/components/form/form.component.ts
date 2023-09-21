@@ -187,24 +187,23 @@ export class SafeFormComponent
 
   ngAfterViewInit(): void {
     this.survey?.render(this.formContainer.nativeElement);
+    // this.translate.onLangChange.subscribe(() => {
+    //   const currentLang = this.usedLocales.find(
+    //     (lang) => lang.value === this.translate.currentLang
+    //   );
+    //   if (currentLang && currentLang.text !== this.survey.locale) {
+    //     this.setLanguage(currentLang.text);
+    //     this.surveyLanguage = (LANGUAGES as any)[currentLang.value];
+    //   } else if (
+    //     !currentLang &&
+    //     this.survey.locale !== this.translate.currentLang
+    //   ) {
+    //     this.survey.locale = this.translate.currentLang;
+    //     this.surveyLanguage = (LANGUAGES as any).en;
+    //     this.survey.render();
+    //   }
+    // });
   }
-
-  // this.translate.onLangChange.subscribe(() => {
-  //   const currentLang = this.usedLocales.find(
-  //     (lang) => lang.value === this.translate.currentLang
-  //   );
-  //   if (currentLang && currentLang.text !== this.survey.locale) {
-  //     this.setLanguage(currentLang.text);
-  //     this.surveyLanguage = (LANGUAGES as any)[currentLang.value];
-  //   } else if (
-  //     !currentLang &&
-  //     this.survey.locale !== this.translate.currentLang
-  //   ) {
-  //     this.survey.locale = this.translate.currentLang;
-  //     this.surveyLanguage = (LANGUAGES as any).en;
-  //     this.survey.render();
-  //   }
-  // });
 
   /**
    * Reset the survey to empty
