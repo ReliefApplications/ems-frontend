@@ -72,5 +72,5 @@ jobs:
           repository-name: ReliefApplications/ReliefApplications.github.io
           branch: master
           folder: storybook
-          target-folder: oort/frontend/${{ steps.branch-name.outputs.current_branch }}/storybook
+          target-folder: oort/frontend/storybook/${{ steps.branch-name.outputs.current_branch }}
           clean: true

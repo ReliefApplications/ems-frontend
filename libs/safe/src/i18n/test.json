@@ -268,6 +268,7 @@
 		"search": "******",
 		"searchObject": "****** {{name}}",
 		"select": "******",
+		"selectStatus": "******",
 		"semicolon": "******",
 		"send": "******",
 		"separator": "******",
@@ -514,7 +515,8 @@
 			},
 			"dropdown": {
 				"select": "******"
-			}
+			},
+			"selectChannel": "******"
 		},
 		"confirmModal": {
 			"cancel": "******",
@@ -590,6 +592,7 @@
 				"template": {
 					"from": "******",
 					"placeholder": "******",
+					"selectResource": "******",
 					"title": "******"
 				},
 				"tooltip": {
@@ -747,6 +750,7 @@
 				"title": "******"
 			},
 			"modal": {
+				"addMappingField": "******",
 				"errors": {
 					"schedule": "******"
 				},
@@ -1322,7 +1326,10 @@
 							"showDetails": "******",
 							"update": "******"
 						},
-						"buttons": "******"
+						"attachToRecord": "******",
+						"buttons": "******",
+						"executionOrder": "******",
+						"prefillForm": "******"
 					},
 					"layouts": {
 						"add": {
@@ -1796,7 +1803,8 @@
 	"models": {
 		"apiConfiguration": {
 			"authType": "******",
-			"new": "******"
+			"new": "******",
+			"selectAuthType": "******"
 		},
 		"application": {
 			"description": "******",
@@ -1851,7 +1859,9 @@
 				"origin": "******",
 				"refData": {
 					"element": "******"
-				}
+				},
+				"selectDisplayField": "******",
+				"selectOrigin": "******"
 			},
 			"dashboardFilter": "******",
 			"deactivateFiltering": "******",

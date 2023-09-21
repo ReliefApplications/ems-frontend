@@ -17,6 +17,7 @@ import { Form } from '../../models/form.model';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { SnackbarService } from '@oort-front/ui';
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
+
 /**
  * Array containing the different types of questions.
  * Commented types are not yet implemented.
@@ -187,14 +188,12 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
       'surveyCreatorContainer',
       creatorOptions
     );
-
     (this.surveyCreator.onTestSurveyCreated as any).add(
       (_: any, options: any) => {
         const survey: Survey.SurveyModel = options.survey;
         this.formHelpersService.addUserVariables(survey);
       }
     );
-
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.text = structure;
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;

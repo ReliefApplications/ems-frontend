@@ -304,6 +304,7 @@ export class SafeFormHelpersService {
     const user = this.authService.user.getValue();
 
     // set user variables
+    survey.setVariable('user.name', user?.name ?? '');
     survey.setVariable('user.firstName', user?.firstName ?? '');
     survey.setVariable('user.lastName', user?.lastName ?? '');
     survey.setVariable('user.email', user?.username ?? '');

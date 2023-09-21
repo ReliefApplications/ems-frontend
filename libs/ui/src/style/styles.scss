@@ -4,6 +4,9 @@
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 
+// === KENDO THEME ===
+@import 'theme.scss';
+
 .sv_main,
 .svd_container {
   --main-color: #{rgb($primary_500)};
@@ -182,9 +185,6 @@ body {
   width: 100%;
   height: 100%;
 }
-
-// === KENDO THEME ===
-@import 'theme.scss';
 
 // === TINYMCE ===
 .tox-editor-header *,

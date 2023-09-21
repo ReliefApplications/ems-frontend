@@ -1,6 +1,6 @@
 .filter-group-header {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   gap: 8px;
 
   ::ng-deep .mat-form-field-wrapper {
