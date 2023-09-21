@@ -23,6 +23,7 @@ export class AppComponent implements OnInit {
    */
   constructor(
     private authService: SafeAuthService,
+    // We need to initialize the service there
     private formService: SafeFormService,
     private translate: TranslateService
   ) {
