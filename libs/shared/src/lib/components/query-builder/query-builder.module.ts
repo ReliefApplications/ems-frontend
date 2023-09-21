@@ -14,7 +14,6 @@ import { LabelModule } from '@progress/kendo-angular-label';
 import { QueryStyleListComponent } from './tab-style/query-style-list/query-style-list.component';
 import { QueryStyleComponent } from './tab-style/query-style/query-style.component';
 import { QueryStylePreviewComponent } from './tab-style/query-style-preview/query-style-preview.component';
-import { CheckboxTreeModule } from '../checkbox-tree/checkbox-tree.module';
 import { CoreGridModule } from '../ui/core-grid/core-grid.module';
 import { SliderModule } from '@oort-front/ui';
 import { TabPaginationComponent } from './tab-pagination/tab-pagination.component';
@@ -36,6 +35,7 @@ import {
   DividerModule,
   IconModule,
 } from '@oort-front/ui';
+import { TreeViewModule } from '@progress/kendo-angular-treeview';
 
 /**
  * QueryBuilderModule is a class used to manage all the modules and components
@@ -69,7 +69,6 @@ import {
     TranslateModule,
     InputsModule,
     LabelModule,
-    CheckboxTreeModule,
     CoreGridModule,
     SliderModule,
     FilterModule,
@@ -83,6 +82,7 @@ import {
     FormWrapperModule,
     SelectMenuModule,
     DividerModule,
+    TreeViewModule,
   ],
   exports: [
     QueryBuilderComponent,
