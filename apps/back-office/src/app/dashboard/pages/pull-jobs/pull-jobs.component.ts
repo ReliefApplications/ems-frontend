@@ -8,7 +8,7 @@ import {
   PullJob,
   ConfirmService,
   UnsubscribeComponent,
-  PullJobsNodesQueryResponse
+  PullJobsNodesQueryResponse,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { GET_PULL_JOBS } from './graphql/queries';
