@@ -6,11 +6,9 @@ import {
   Step,
   Workflow,
   UnsubscribeComponent,
-  WorkflowQueryResponse
+  WorkflowQueryResponse,
 } from '@oort-front/shared';
-import {
-  GET_WORKFLOW_BY_ID,
-} from './graphql/queries';
+import { GET_WORKFLOW_BY_ID } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';

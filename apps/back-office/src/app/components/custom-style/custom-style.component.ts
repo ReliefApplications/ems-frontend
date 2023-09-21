@@ -18,7 +18,6 @@ import {
   BlobType,
   DownloadService,
 } from '@oort-front/shared';
-import { firstValueFrom } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';

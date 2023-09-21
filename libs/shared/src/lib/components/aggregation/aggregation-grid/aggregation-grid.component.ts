@@ -9,7 +9,7 @@ import { AggregationBuilderService } from '../../../services/aggregation-builder
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { PAGER_SETTINGS } from './aggregation-grid.constants';
 import { GET_RESOURCE } from './graphql/queries';
-import { debounceTime, takeUntil, Subscription } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import {
   QueryBuilderService,
