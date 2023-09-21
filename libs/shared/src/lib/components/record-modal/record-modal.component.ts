@@ -8,18 +8,17 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import { Form } from '../../models/form.model';
-import { Record } from '../../models/record.model';
-import * as Survey from 'survey-angular';
+import { Form, FormQueryResponse } from '../../models/form.model';
 import {
-  GetRecordByIdQueryResponse,
-  GET_RECORD_BY_ID,
-  GetFormByIdQueryResponse,
-  GET_FORM_STRUCTURE,
-} from './graphql/queries';
+  EditRecordMutationResponse,
+  Record,
+  RecordQueryResponse,
+} from '../../models/record.model';
+import * as Survey from 'survey-angular';
+import { GET_RECORD_BY_ID, GET_FORM_STRUCTURE } from './graphql/queries';
 import addCustomFunctions from '../../utils/custom-functions';
 import { AuthService } from '../../services/auth/auth.service';
-import { EDIT_RECORD, EditRecordMutationResponse } from './graphql/mutations';
+import { EDIT_RECORD } from './graphql/mutations';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { BehaviorSubject, firstValueFrom, takeUntil } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
@@ -131,14 +130,13 @@ export class RecordModalComponent
     this.canEdit = this.data.canUpdate;
     Survey.StylesManager.applyTheme();
 
-    const promises: Promise<
-      GetFormByIdQueryResponse | GetRecordByIdQueryResponse | void
-    >[] = [];
+    const promises: Promise<FormQueryResponse | RecordQueryResponse | void>[] =
+      [];
     // Fetch structure from template if needed
     if (this.data.template) {
       promises.push(
         firstValueFrom(
-          this.apollo.query<GetFormByIdQueryResponse>({
+          this.apollo.query<FormQueryResponse>({
             query: GET_FORM_STRUCTURE,
             variables: {
               id: this.data.template,
@@ -158,7 +156,7 @@ export class RecordModalComponent
     else {
       promises.push(
         firstValueFrom(
-          this.apollo.query<GetRecordByIdQueryResponse>({
+          this.apollo.query<RecordQueryResponse>({
             query: GET_RECORD_BY_ID,
             variables: {
               id: this.data.recordId,

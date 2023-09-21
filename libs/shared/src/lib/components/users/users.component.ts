@@ -7,13 +7,13 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import { User, Role } from '../../models/user.model';
 import {
-  DELETE_USERS,
-  DeleteUsersMutationResponse,
+  User,
+  Role,
   AddUsersMutationResponse,
-  ADD_USERS,
-} from './graphql/mutations';
+  DeleteUsersMutationResponse,
+} from '../../models/user.model';
+import { DELETE_USERS, ADD_USERS } from './graphql/mutations';
 import { ConfirmService } from '../../services/confirm/confirm.service';
 import { SelectionModel } from '@angular/cdk/collections';
 import { DownloadService } from '../../services/download/download.service';

@@ -7,14 +7,12 @@ import {
   ConfirmService,
   Form,
   UnsubscribeComponent,
-} from '@oort-front/shared';
-import { GET_SHORT_FORMS, GetFormsQueryResponse } from './graphql/queries';
-import {
+  FormsQueryResponse,
   DeleteFormMutationResponse,
-  DELETE_FORM,
   AddFormMutationResponse,
-  ADD_FORM,
-} from './graphql/mutations';
+} from '@oort-front/shared';
+import { GET_SHORT_FORMS } from './graphql/queries';
+import { DELETE_FORM, ADD_FORM } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import {
   getCachedValues,
@@ -22,7 +20,11 @@ import {
 } from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
 import { takeUntil } from 'rxjs';
-import { TableSort, UIPageChangeEvent } from '@oort-front/ui';
+import {
+  TableSort,
+  UIPageChangeEvent,
+  handleTablePageEvent,
+} from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
 
 /** Default number of items for pagination */
@@ -38,7 +40,7 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   public loading = true;
   public updating = false;
-  private formsQuery!: QueryRef<GetFormsQueryResponse>;
+  private formsQuery!: QueryRef<FormsQueryResponse>;
   public displayedColumns = [
     'name',
     'createdAt',
@@ -94,7 +96,7 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
    * Creates the form query, and subscribes to the query changes.
    */
   ngOnInit(): void {
-    this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
+    this.formsQuery = this.apollo.watchQuery<FormsQueryResponse>({
       query: GET_SHORT_FORMS,
       variables: {
         first: DEFAULT_PAGE_SIZE,
@@ -118,30 +120,12 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
    * @param e page event.
    */
   onPage(e: UIPageChangeEvent): void {
-    this.pageInfo.pageIndex = e.pageIndex;
-    // Checks if with new page/size more data needs to be fetched
-    if (
-      ((e.pageIndex > e.previousPageIndex &&
-        e.pageIndex * this.pageInfo.pageSize >= this.cachedForms.length) ||
-        e.pageSize > this.pageInfo.pageSize) &&
-      e.totalItems > this.cachedForms.length
-    ) {
-      // Sets the new fetch quantity of data needed as the page size
-      // If the fetch is for a new page the page size is used
-      let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is subtracted from the new one
-      if (e.pageSize > this.pageInfo.pageSize) {
-        first -= this.pageInfo.pageSize;
-      }
-      this.pageInfo.pageSize = first;
-      this.fetchForms();
+    const cachedData = handleTablePageEvent(e, this.pageInfo, this.cachedForms);
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
+      this.forms = cachedData;
     } else {
-      this.forms = this.cachedForms.slice(
-        e.pageSize * this.pageInfo.pageIndex,
-        e.pageSize * (this.pageInfo.pageIndex + 1)
-      );
+      this.fetchForms();
     }
-    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**
@@ -179,7 +163,7 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
       sortOrder: this.sort?.sortDirection,
     };
 
-    const cachedValues: GetFormsQueryResponse = getCachedValues(
+    const cachedValues: FormsQueryResponse = getCachedValues(
       this.apollo.client,
       GET_SHORT_FORMS,
       variables
@@ -198,7 +182,7 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
           .fetchMore({
             variables,
           })
-          .then((results: ApolloQueryResult<GetFormsQueryResponse>) => {
+          .then((results: ApolloQueryResult<FormsQueryResponse>) => {
             this.updateValues(results.data, results.loading);
           });
       }
@@ -327,7 +311,7 @@ export class FormsComponent extends UnsubscribeComponent implements OnInit {
    * @param data New values to update forms
    * @param loading Loading state
    */
-  private updateValues(data: GetFormsQueryResponse, loading: boolean): void {
+  private updateValues(data: FormsQueryResponse, loading: boolean): void {
     const mappedValues = data.forms?.edges?.map((x) => x.node);
     this.cachedForms = updateQueryUniqueValues(this.cachedForms, mappedValues);
     this.pageInfo.length = data.forms.totalCount;

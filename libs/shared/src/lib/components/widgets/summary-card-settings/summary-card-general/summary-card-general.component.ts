@@ -13,9 +13,11 @@ import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SummaryCardItemModule } from '../../summary-card/summary-card-item/summary-card-item.module';
 import { SummaryCardFormT } from '../summary-card-settings.component';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { GET_RESOURCES, GetResourcesQueryResponse } from '../graphql/queries';
 import { Aggregation } from '../../../../models/aggregation.model';
-import { Resource } from '../../../../models/resource.model';
+import {
+  Resource,
+  ResourcesQueryResponse,
+} from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
 import { get } from 'lodash';
 import { GridLayoutService } from '../../../../services/grid-layout/grid-layout.service';
@@ -35,6 +37,7 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
+import { GET_RESOURCES } from '../graphql/queries';
 
 /** Default number of resources to be fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -84,7 +87,7 @@ export class SummaryCardGeneralComponent
   colsNumber = MAX_COL_SPAN;
 
   // === DATA ===
-  public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
 
   /**
    * Changes display when windows size changes.
@@ -116,7 +119,7 @@ export class SummaryCardGeneralComponent
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);
 
-    this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
+    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
       query: GET_RESOURCES,
       variables: {
         first: ITEMS_PER_PAGE,
@@ -164,10 +167,12 @@ export class SummaryCardGeneralComponent
 
   /** Opens modal for layout selection/creation */
   public async addLayout() {
+    if (!this.selectedResource) {
+      return;
+    }
     const { AddLayoutModalComponent } = await import(
       '../../../grid-layout/add-layout-modal/add-layout-modal.component'
     );
-    if (!this.selectedResource) return;
     const dialogRef = this.dialog.open(AddLayoutModalComponent, {
       data: {
         resource: this.selectedResource,

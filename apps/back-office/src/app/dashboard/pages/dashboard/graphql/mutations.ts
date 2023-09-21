@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Step, Page, Dashboard } from '@oort-front/shared';
 
 // === EDIT STEP ===
 /** Edit step gql mutation definition */
@@ -41,11 +40,6 @@ export const EDIT_STEP = gql`
   }
 `;
 
-/** Edit step gql mutation response interface */
-export interface EditStepMutationResponse {
-  editStep: Step;
-}
-
 // === EDIT PAGE ===
 /** Edit page gql mutation definition */
 export const EDIT_PAGE = gql`
@@ -81,12 +75,6 @@ export const EDIT_PAGE = gql`
     }
   }
 `;
-
-/** Edit page gql mutation response interface */
-export interface EditPageMutationResponse {
-  editPage: Page;
-}
-
 // === EDIT DASHBOARD ===
 /** Edit dashboard gql mutation definition */
 export const EDIT_DASHBOARD = gql`
@@ -133,8 +121,3 @@ export const EDIT_DASHBOARD = gql`
     }
   }
 `;
-
-/** Edit dashboard gql mutation response interface */
-export interface EditDashboardMutationResponse {
-  editDashboard: Dashboard;
-}

@@ -47,14 +47,7 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
     { index: -1, permission: 'canSee' };
 
   ngOnInit() {
-    this.fields = sortBy(
-      this.resource.fields.map((field: any) => ({
-        name: field.name,
-        canSee: !!field.permissions?.canSee?.includes(this.role.id),
-        canUpdate: !!field.permissions?.canUpdate?.includes(this.role.id),
-      })),
-      'name'
-    );
+    this.fields = sortBy(this.resource.fields.map(this.hasFieldAccess), 'name');
     this.filterId.valueChanges.subscribe((value) => {
       this.filterByTemplate(value);
     });
@@ -72,6 +65,12 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
     }
   }
 
+  private hasFieldAccess = (field: any) => ({
+    name: field.name,
+    canSee: !!field.permissions?.canSee?.includes(this.role.id),
+    canUpdate: !!field.permissions?.canUpdate?.includes(this.role.id),
+  });
+
   /**
    * Filter list of fields by template id
    *
@@ -86,20 +85,12 @@ export class ResourceFieldsComponent implements OnInit, OnChanges {
               ?.find((x) => x.name === field.name)
               ?.usedIn?.find((formId) => isEqual(formId, id))
           )
-          .map((field: any) => ({
-            name: field.name,
-            canSee: !!field.permissions?.canSee?.includes(this.role.id),
-            canUpdate: !!field.permissions?.canUpdate?.includes(this.role.id),
-          })),
+          .map(this.hasFieldAccess),
         'name'
       );
     } else {
       this.fields = sortBy(
-        this.resource.fields.map((field: any) => ({
-          name: field.name,
-          canSee: !!field.permissions?.canSee?.includes(this.role.id),
-          canUpdate: !!field.permissions?.canUpdate?.includes(this.role.id),
-        })),
+        this.resource.fields.map(this.hasFieldAccess),
         'name'
       );
     }

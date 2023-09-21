@@ -89,3 +89,33 @@ export interface Page {
     content: string;
   })[];
 }
+
+/** Model for page graphql query response */
+export interface PageQueryResponse {
+  page: Page;
+}
+
+/** Model for add page graphql mutation response */
+export interface AddPageMutationResponse {
+  addPage: Page;
+}
+
+/** Model for duplicate page graphql mutation response */
+export interface DuplicatePageMutationResponse {
+  duplicatePage: Page;
+}
+
+/** Model for edit page graphql mutation response */
+export interface EditPageMutationResponse {
+  editPage: Page;
+}
+
+/** Model for delete page graphql mutation response */
+export interface DeletePageMutationResponse {
+  deletePage: Page;
+}
+
+/** Model for edit page context mutation response object */
+export interface EditPageContextMutationResponse {
+  editPageContext: Pick<Page, 'context' | 'id' | 'contentWithContext'>;
+}

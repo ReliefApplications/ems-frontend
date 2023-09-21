@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Form, Workflow, Step, Page } from '@oort-front/shared';
 
 /**
  * Form query.
@@ -22,16 +21,6 @@ export const GET_FORM_BY_ID = gql`
     }
   }
 `;
-
-/**
- * Interface of form query response.
- */
-export interface GetFormByIdQueryResponse {
-  /** Loading state of the query */
-
-  /** Application form */
-  form: Form;
-}
 
 /**
  * Workflow query.
@@ -74,16 +63,6 @@ export const GET_WORKFLOW_BY_ID = gql`
 `;
 
 /**
- * Interface of workflow query response.
- */
-export interface GetWorkflowByIdQueryResponse {
-  /** Loading state of the query */
-
-  /** Application workflow */
-  workflow: Workflow;
-}
-
-/**
  * Workflow step query.
  */
 export const GET_STEP_BY_ID = gql`
@@ -98,16 +77,6 @@ export const GET_STEP_BY_ID = gql`
     }
   }
 `;
-
-/**
- * Interface of workflow step query response.
- */
-export interface GetStepByIdQueryResponse {
-  /** Loading state of the query */
-
-  /** Application step */
-  step: Step;
-}
 
 /**
  * Application page query.
@@ -125,13 +94,3 @@ export const GET_PAGE_BY_ID = gql`
     }
   }
 `;
-
-/**
- * Interface of application page query.
- */
-export interface GetPageByIdQueryResponse {
-  /** Loading state of the query */
-
-  /** Application page */
-  page: Page;
-}

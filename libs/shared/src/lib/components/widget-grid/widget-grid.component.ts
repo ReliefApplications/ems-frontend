@@ -189,12 +189,39 @@ export class WidgetGridComponent
   }
 
   /**
-   * Emits addition event.
+   * Open settings component for widget edition.
+   * Emits addition event if edition should be saved.
    *
    * @param e new widget.
    */
-  onAdd(e: any): void {
-    this.add.emit(e);
+  async onAdd(e: any): Promise<void> {
+    if (e) {
+      const tile = JSON.parse(JSON.stringify(e));
+      if (tile) {
+        /** Open settings dialog component from the widget.  */
+        const { TileDataComponent } = await import(
+          './floating-options/menu/tile-data/tile-data.component'
+        );
+        const dialogRef = this.dialog.open(TileDataComponent, {
+          disableClose: true,
+          data: {
+            tile: tile,
+            template: this.dashboardService.findSettingsTemplate(tile),
+          },
+        });
+        dialogRef.closed
+          .pipe(takeUntil(this.destroy$))
+          .subscribe((value: any) => {
+            // Should save the value, and so, add the widget to the grid
+            if (value) {
+              this.add.emit({
+                ...tile,
+                settings: value,
+              });
+            }
+          });
+      }
+    }
   }
 
   /**

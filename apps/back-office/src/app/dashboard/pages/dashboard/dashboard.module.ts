@@ -13,7 +13,6 @@ import {
   DashboardFilterModule,
   ButtonActionModule,
 } from '@oort-front/shared';
-import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
@@ -35,7 +34,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
  * Dashboard page module.
  */
 @NgModule({
-  declarations: [DashboardComponent, ShareUrlComponent],
+  declarations: [DashboardComponent],
   imports: [
     CommonModule,
     DashboardRoutingModule,

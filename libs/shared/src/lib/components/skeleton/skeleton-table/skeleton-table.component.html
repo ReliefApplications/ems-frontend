@@ -29,7 +29,12 @@
   <ng-container cdkColumnDef="actions" *ngIf="actions" [stickyEnd]="true">
     <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
     <td uiCell *cdkCellDef="let element">
-      <ui-button [isIcon]="true" icon="more_vert" [uiTooltip]="'common.options' | translate"> </ui-button>
+      <ui-button
+        [isIcon]="true"
+        icon="more_vert"
+        [uiTooltip]="'common.options' | translate"
+      >
+      </ui-button>
     </td>
   </ng-container>
 

@@ -29,20 +29,24 @@ export class RoleFormsComponent implements OnInit, OnChanges {
   public filteredPages = this.pages;
 
   ngOnInit(): void {
-    this.accessiblePages = this.filteredPages
-      .filter((x) =>
-        get(x, 'permissions.canSee', [])
-          .map((y: any) => y.id)
-          .includes(this.role.id)
-      )
-      .map((x) => x.id as string);
+    this.accessiblePages = this.getAccessibleElementIds(this.filteredPages);
   }
 
   ngOnChanges(): void {
     this.filteredPages = this.pages.filter((x) =>
       x.name?.toLowerCase().includes(this.search)
     );
-    this.accessiblePages = this.filteredPages
+    this.accessiblePages = this.getAccessibleElementIds(this.filteredPages);
+  }
+
+  /**
+   *Returns the page ids that can be access by the current role
+   *
+   * @param filteredElements Elements to check if can be access by the current role
+   * @returns ids of the elements that can be access by the current role
+   */
+  private getAccessibleElementIds(filteredElements: Array<Page>): string[] {
+    return filteredElements
       .filter((x) =>
         get(x, 'permissions.canSee', [])
           .map((y: any) => y.id)

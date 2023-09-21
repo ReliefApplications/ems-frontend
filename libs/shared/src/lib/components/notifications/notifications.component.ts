@@ -4,15 +4,15 @@ import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Subscription, takeUntil } from 'rxjs';
-import { Application } from '../../models/application.model';
+import {
+  Application,
+  ApplicationCustomNotificationsNodesQueryResponse,
+} from '../../models/application.model';
 import { CustomNotification } from '../../models/custom-notification.model';
 import { ApplicationService } from '../../services/application/application.service';
 import { ConfirmService } from '../../services/confirm/confirm.service';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import {
-  GET_CUSTOM_NOTIFICATIONS,
-  GetCustomNotificationsQueryResponse,
-} from './graphql/queries';
+import { GET_CUSTOM_NOTIFICATIONS } from './graphql/queries';
 
 /** Default number of items per request for pagination */
 const DEFAULT_PAGE_SIZE = 10;
@@ -33,7 +33,7 @@ export class NotificationsComponent
   public notifications: Array<CustomNotification> =
     new Array<CustomNotification>();
   private cachedNotifications: CustomNotification[] = [];
-  private notificationsQuery!: QueryRef<GetCustomNotificationsQueryResponse>;
+  private notificationsQuery!: QueryRef<ApplicationCustomNotificationsNodesQueryResponse>;
   private applicationSubscription?: Subscription;
 
   // === DISPLAYED COLUMNS ===
@@ -75,13 +75,15 @@ export class NotificationsComponent
         (application: Application | null) => {
           if (application) {
             this.notificationsQuery =
-              this.apollo.watchQuery<GetCustomNotificationsQueryResponse>({
-                query: GET_CUSTOM_NOTIFICATIONS,
-                variables: {
-                  first: DEFAULT_PAGE_SIZE,
-                  application: application.id,
-                },
-              });
+              this.apollo.watchQuery<ApplicationCustomNotificationsNodesQueryResponse>(
+                {
+                  query: GET_CUSTOM_NOTIFICATIONS,
+                  variables: {
+                    first: DEFAULT_PAGE_SIZE,
+                    application: application.id,
+                  },
+                }
+              );
             this.notificationsQuery.valueChanges.subscribe((res) => {
               this.cachedNotifications =
                 res.data.application.customNotifications.edges.map(

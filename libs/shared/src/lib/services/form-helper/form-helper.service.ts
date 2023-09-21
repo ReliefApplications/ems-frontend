@@ -4,17 +4,14 @@ import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmService } from '../confirm/confirm.service';
 import { firstValueFrom } from 'rxjs';
-import {
-  UPLOAD_FILE,
-  UploadFileMutationResponse,
-  AddRecordMutationResponse,
-  ADD_RECORD,
-} from '../../components/form/graphql/mutations';
+import { ADD_RECORD } from '../../components/form/graphql/mutations';
 import { DialogRef } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
 import { cloneDeep, set } from 'lodash';
 import { AuthService } from '../auth/auth.service';
+import { BlobType, DownloadService } from '../download/download.service';
+import { AddRecordMutationResponse } from '../../models/record.model';
 
 /**
  * Shared survey helper service.
@@ -31,13 +28,15 @@ export class FormHelpersService {
    * @param confirmService This is the service that will be used to display confirm window.
    * @param translate This is the service that allows us to translate the text in our application.
    * @param authService Shared auth service
+   * @param downloadService Shared download service
    */
   constructor(
     public apollo: Apollo,
     private snackBar: SnackbarService,
     private confirmService: ConfirmService,
     private translate: TranslateService,
-    private authService: AuthService
+    private authService: AuthService,
+    private downloadService: DownloadService
   ) {}
 
   /**
@@ -105,30 +104,23 @@ export class FormHelpersService {
     temporaryFilesStorage: any,
     formId: string | undefined
   ): Promise<void> {
+    if (!formId) {
+      throw new Error('Form id is not defined');
+    }
+
     const data = survey.data;
     const questionsToUpload = Object.keys(temporaryFilesStorage);
     for (const name of questionsToUpload) {
       const files = temporaryFilesStorage[name];
       for (const [index, file] of files.entries()) {
-        const res = await firstValueFrom(
-          this.apollo.mutate<UploadFileMutationResponse>({
-            mutation: UPLOAD_FILE,
-            variables: {
-              file,
-              form: formId,
-            },
-            context: {
-              useMultipart: true,
-            },
-          })
+        const path = await this.downloadService.uploadBlob(
+          file,
+          BlobType.RECORD_FILE,
+          formId
         );
-        if (res.errors) {
-          this.snackBar.openSnackBar(res.errors[0].message, { error: true });
-          return;
-        } else {
-          const uploadedFileID = res.data?.uploadFile;
+        if (path) {
           const fileContent = data[name][index].content;
-          data[name][index].content = uploadedFileID;
+          data[name][index].content = path;
 
           // Check if any other question is using the same file
           survey.getAllQuestions().forEach((question) => {
@@ -144,7 +136,7 @@ export class FormHelpersService {
             const files = data[question.name] ?? [];
             files.forEach((file: any) => {
               if (file && file.content === fileContent) {
-                file.content = uploadedFileID;
+                file.content = path;
               }
             });
           });

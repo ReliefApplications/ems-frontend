@@ -1,21 +1,16 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { SEE_NOTIFICATION, SEE_NOTIFICATIONS } from './graphql/mutations';
+import { GET_NOTIFICATIONS } from './graphql/queries';
+import { NOTIFICATION_SUBSCRIPTION } from './graphql/subscriptions';
 import {
-  SeeNotificationMutationResponse,
-  SEE_NOTIFICATION,
-  SeeNotificationsMutationResponse,
-  SEE_NOTIFICATIONS,
-} from './graphql/mutations';
-import {
-  GetNotificationsQueryResponse,
-  GET_NOTIFICATIONS,
-} from './graphql/queries';
-import {
+  Notification,
   NotificationSubscriptionResponse,
-  NOTIFICATION_SUBSCRIPTION,
-} from './graphql/subscriptions';
-import { Notification } from '../../models/notification.model';
+  NotificationsQueryResponse,
+  SeeNotificationMutationResponse,
+  SeeNotificationsMutationResponse,
+} from '../../models/notification.model';
 import { updateQueryUniqueValues } from '../../utils/update-queries';
 
 /** Pagination: number of items per query */
@@ -37,7 +32,7 @@ export class NotificationService {
   }
 
   /** Notifications query */
-  public notificationsQuery!: QueryRef<GetNotificationsQueryResponse>;
+  public notificationsQuery!: QueryRef<NotificationsQueryResponse>;
 
   /** Is there more notifications to load */
   private hasNextPage = new BehaviorSubject<boolean>(true);
@@ -69,7 +64,7 @@ export class NotificationService {
   public init(): void {
     if (this.firstLoad) {
       this.notificationsQuery =
-        this.apollo.watchQuery<GetNotificationsQueryResponse>({
+        this.apollo.watchQuery<NotificationsQueryResponse>({
           query: GET_NOTIFICATIONS,
           variables: {
             first: ITEMS_PER_PAGE,
@@ -161,7 +156,7 @@ export class NotificationService {
    *
    * @param data query response data
    */
-  private updateValues(data: GetNotificationsQueryResponse) {
+  private updateValues(data: NotificationsQueryResponse) {
     this.cachedNotifications = updateQueryUniqueValues(
       this.cachedNotifications,
       data.notifications.edges.map((x) => x.node)

@@ -5,8 +5,11 @@ import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
-import { Record as RecordModel } from '../../models/record.model';
-import { EditRecordMutationResponse, EDIT_RECORD } from './graphql/mutations';
+import { EDIT_RECORD } from './graphql/mutations';
+import {
+  EditRecordMutationResponse,
+  Record as RecordModel,
+} from '../../models/record.model';
 import { Metadata } from '../../models/metadata.model';
 import { RestService } from '../rest/rest.service';
 import { BehaviorSubject } from 'rxjs';

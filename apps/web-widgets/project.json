@@ -50,8 +50,8 @@
         ],
         "styles": [
           "apps/web-widgets/src/styles.scss",
-          "libs/shared/src/lib/style/styles.scss",
-          "libs/shared/src/lib/style/widgets.scss",
+          "libs/styles/src/lib/tailwind/tailwind.scss",
+          "libs/styles/src/lib/shared/shared.scss",
           "node_modules/survey-angular/survey.min.css",
           "node_modules/survey-creator/survey-creator.min.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
@@ -79,7 +79,8 @@
           "leaflet",
           "esri-leaflet-vector",
           "leaflet.markercluster",
-          "jsonpath"
+          "jsonpath",
+          "color"
         ]
       },
       "configurations": {
@@ -98,7 +99,7 @@
           ],
           "stylePreprocessorOptions": {
             "includePaths": [
-              "libs/ui/src/style/themes/default",
+              "libs/styles/src/lib/themes/default",
               "apps/web-widgets/src/app/styles"
             ]
           },
@@ -125,7 +126,7 @@
           ],
           "stylePreprocessorOptions": {
             "includePaths": [
-              "libs/ui/src/style/themes/default",
+              "libs/styles/src/lib/themes/default",
               "apps/web-widgets/src/app/styles"
             ]
           },
@@ -146,7 +147,7 @@
           "namedChunks": true,
           "stylePreprocessorOptions": {
             "includePaths": [
-              "libs/ui/src/style/themes/default",
+              "libs/styles/src/lib/themes/default",
               "apps/web-widgets/src/app/styles"
             ]
           }

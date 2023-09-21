@@ -82,7 +82,13 @@
       <ui-button
         [isIcon]="true"
         icon="download"
-        [uiTooltip]="'common.downloadObject' | translate : { name: 'components.map.controls.download.view.all' | translate }"
+        [uiTooltip]="
+          'common.downloadObject'
+            | translate
+              : {
+                  name: 'components.map.controls.download.view.all' | translate
+                }
+        "
       ></ui-button>
     </div>
   </div>

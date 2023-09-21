@@ -1,21 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
+  AddReferenceDataMutationResponse,
+  DeleteReferenceDataMutationResponse,
   ReferenceData,
   AuthService,
   ConfirmService,
   UnsubscribeComponent,
+  ReferenceDatasQueryResponse,
 } from '@oort-front/shared';
-import {
-  GetReferenceDatasQueryResponse,
-  GET_REFERENCE_DATAS,
-} from './graphql/queries';
-import {
-  AddReferenceDataMutationResponse,
-  ADD_REFERENCE_DATA,
-  DeleteReferenceDataMutationResponse,
-  DELETE_REFERENCE_DATA,
-} from './graphql/mutations';
+import { GET_REFERENCE_DATAS } from './graphql/queries';
+import { ADD_REFERENCE_DATA, DELETE_REFERENCE_DATA } from './graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
@@ -24,7 +19,11 @@ import {
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
 import { Dialog } from '@angular/cdk/dialog';
-import { TableSort, UIPageChangeEvent } from '@oort-front/ui';
+import {
+  TableSort,
+  UIPageChangeEvent,
+  handleTablePageEvent,
+} from '@oort-front/ui';
 import { ApolloQueryResult } from '@apollo/client';
 import { SnackbarService } from '@oort-front/ui';
 
@@ -45,7 +44,7 @@ export class ReferenceDatasComponent
 {
   // === DATA ===
   public loading = true;
-  private referenceDatasQuery!: QueryRef<GetReferenceDatasQueryResponse>;
+  private referenceDatasQuery!: QueryRef<ReferenceDatasQueryResponse>;
   displayedColumns = [
     'name',
     'type',
@@ -99,7 +98,7 @@ export class ReferenceDatasComponent
    */
   ngOnInit(): void {
     this.referenceDatasQuery =
-      this.apollo.watchQuery<GetReferenceDatasQueryResponse>({
+      this.apollo.watchQuery<ReferenceDatasQueryResponse>({
         query: GET_REFERENCE_DATAS,
         variables: {
           first: ITEMS_PER_PAGE,
@@ -125,31 +124,16 @@ export class ReferenceDatasComponent
    * @param e page event.
    */
   onPage(e: UIPageChangeEvent): void {
-    this.pageInfo.pageIndex = e.pageIndex;
-    // Checks if with new page/size more data needs to be fetched
-    if (
-      ((e.pageIndex > e.previousPageIndex &&
-        e.pageIndex * this.pageInfo.pageSize >=
-          this.cachedReferenceDatas.length) ||
-        e.pageSize > this.pageInfo.pageSize) &&
-      e.totalItems > this.cachedReferenceDatas.length
-    ) {
-      // Sets the new fetch quantity of data needed as the page size
-      // If the fetch is for a new page the page size is used
-      let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is substracted from the new one
-      if (e.pageSize > this.pageInfo.pageSize) {
-        first -= this.pageInfo.pageSize;
-      }
-      this.pageInfo.pageSize = first;
-      this.fetchReferenceDatas();
+    const cachedData = handleTablePageEvent(
+      e,
+      this.pageInfo,
+      this.cachedReferenceDatas
+    );
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
+      this.dataSource = cachedData;
     } else {
-      this.dataSource = this.cachedReferenceDatas.slice(
-        e.pageSize * this.pageInfo.pageIndex,
-        e.pageSize * (this.pageInfo.pageIndex + 1)
-      );
+      this.fetchReferenceDatas();
     }
-    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**
@@ -169,7 +153,7 @@ export class ReferenceDatasComponent
           filter: this.filter,
         },
       })
-      .then((results: ApolloQueryResult<GetReferenceDatasQueryResponse>) => {
+      .then((results: ApolloQueryResult<ReferenceDatasQueryResponse>) => {
         this.updateValues(results.data, false);
       });
   }
@@ -304,7 +288,7 @@ export class ReferenceDatasComponent
    * @param data query response data
    * @param loading loading status
    */
-  private updateValues(data: GetReferenceDatasQueryResponse, loading: boolean) {
+  private updateValues(data: ReferenceDatasQueryResponse, loading: boolean) {
     const mappedValues = data.referenceDatas.edges.map((x) => x.node);
     this.cachedReferenceDatas = updateQueryUniqueValues(
       this.cachedReferenceDatas,
@@ -333,7 +317,7 @@ export class ReferenceDatasComponent
       sortField: this.sort?.sortDirection && this.sort.active,
       sortOrder: this.sort?.sortDirection,
     };
-    const cachedValues: GetReferenceDatasQueryResponse = getCachedValues(
+    const cachedValues: ReferenceDatasQueryResponse = getCachedValues(
       this.apollo.client,
       GET_REFERENCE_DATAS,
       variables
@@ -354,11 +338,9 @@ export class ReferenceDatasComponent
           .fetchMore({
             variables,
           })
-          .then(
-            (results: ApolloQueryResult<GetReferenceDatasQueryResponse>) => {
-              this.updateValues(results.data, results.loading);
-            }
-          );
+          .then((results: ApolloQueryResult<ReferenceDatasQueryResponse>) => {
+            this.updateValues(results.data, results.loading);
+          });
       }
     }
   }

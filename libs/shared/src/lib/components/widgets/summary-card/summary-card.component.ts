@@ -19,10 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { GridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
-import {
-  GetResourceMetadataQueryResponse,
-  GET_RESOURCE_METADATA,
-} from './graphql/queries';
+import { GET_RESOURCE_METADATA } from './graphql/queries';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { SummaryCardFormT } from '../summary-card-settings/summary-card-settings.component';
 import { Record } from '../../../models/record.model';
@@ -40,9 +37,10 @@ import { clone, isNaN } from 'lodash';
 import { searchFilters } from '../../../utils/filter/search-filters';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
+import { ResourceQueryResponse } from '../../../models/resource.model';
 import { ContextService } from '../../../services/context/context.service';
-import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { GridWidgetComponent } from '../grid/grid.component';
+import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -384,7 +382,7 @@ export class SummaryCardComponent
   private async createDynamicQueryFromLayout(card: any) {
     // gets metadata
     const metaRes = await firstValueFrom(
-      this.apollo.query<GetResourceMetadataQueryResponse>({
+      this.apollo.query<ResourceQueryResponse>({
         query: GET_RESOURCE_METADATA,
         variables: {
           id: card.resource,
@@ -447,9 +445,9 @@ export class SummaryCardComponent
   }
 
   /**
-   * mdr
+   * Setup grid view settings from card definition
    */
-  private async setupGridSettings() {
+  private async setupGridSettings(): Promise<void> {
     const card = this.settings.card;
     if (!card || !card.resource || (!card.layout && !card.aggregation)) return;
 

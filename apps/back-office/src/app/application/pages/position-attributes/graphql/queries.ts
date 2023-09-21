@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { PositionAttribute } from '@oort-front/shared';
 
 // === GET POSITION ATTRIBUTES FORM CATEGORY ===
 
@@ -15,8 +14,3 @@ export const GET_POSITION_ATTRIBUTES_FROM_CATEGORY = gql`
     }
   }
 `;
-
-/** Model for GetPositionAttributesFromCategoryQueryResponse object */
-export interface GetPositionAttributesFromCategoryQueryResponse {
-  positionAttributes: PositionAttribute[];
-}

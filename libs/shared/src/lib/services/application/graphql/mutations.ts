@@ -1,14 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Page } from '../../../models/page.model';
-import { Role } from '../../../models/user.model';
-import { User } from '../../../models/user.model';
-import { Channel } from '../../../models/channel.model';
-import { Subscription } from '../../../models/subscription.model';
-import { PositionAttributeCategory } from '../../../models/position-attribute-category.model';
-import { Application } from '../../../models/application.model';
-import { Template } from '../../../models/template.model';
-import { DistributionList } from '../../../models/distribution-list.model';
-import { CustomNotification } from '../../../models/custom-notification.model';
 
 // === ADD PAGE ===
 /** Graphql request for adding a new page of a given type to an application */
@@ -37,11 +27,6 @@ export const ADD_PAGE = gql`
   }
 `;
 
-/** Model for AddPageMutationResponse object */
-export interface AddPageMutationResponse {
-  addPage: Page;
-}
-
 // === DUPLICATE PAGES ===
 
 /** Duplicate page mutation, used by Application service. */
@@ -60,11 +45,6 @@ export const DUPLICATE_PAGE = gql`
   }
 `;
 
-/** Interface of duplicate page mutation. */
-export interface duplicatePageMutationResponse {
-  duplicatePage: Page;
-}
-
 // === DELETE PAGE ===
 
 /** Graphql request for deleting a page by its id */
@@ -75,11 +55,6 @@ export const DELETE_PAGE = gql`
     }
   }
 `;
-
-/** Model for DeletePageMutationResponse object */
-export interface DeletePageMutationResponse {
-  deletePage: Page;
-}
 
 // === EDIT PAGE ===
 /** Edit page gql mutation definition */
@@ -117,11 +92,6 @@ export const EDIT_PAGE = gql`
   }
 `;
 
-/** Edit page gql mutation response interface */
-export interface EditPageMutationResponse {
-  editPage: Page;
-}
-
 // === ADD ROLE ===
 
 /** Graphql request for adding a new role to an application */
@@ -138,11 +108,6 @@ export const ADD_ROLE = gql`
     }
   }
 `;
-
-/** Model for AddRoleMutationResponse object */
-export interface AddRoleMutationResponse {
-  addRole: Role;
-}
 
 // === EDIT ROLE ===
 
@@ -179,11 +144,6 @@ export const EDIT_ROLE = gql`
   }
 `;
 
-/** Model for EditRoleMutationResponse object */
-export interface EditRoleMutationResponse {
-  editRole: Role;
-}
-
 // === DELETE ROLE ===
 
 /** Graphql request for deleting a role by its id */
@@ -194,11 +154,6 @@ export const DELETE_ROLE = gql`
     }
   }
 `;
-
-/** Model for DeleteRoleMutationResponse object */
-export interface DeleteRoleMutationResponse {
-  deleteRole: Role;
-}
 
 /** Graphql request for adding a role to a user */
 export const ADD_ROLE_TO_USERS = gql`
@@ -224,11 +179,6 @@ export const ADD_ROLE_TO_USERS = gql`
   }
 `;
 
-/** Model for AddRoleToUsersMutationResponse object */
-export interface AddRoleToUsersMutationResponse {
-  addRoleToUsers: User[];
-}
-
 // === DELETE USER FROM APPLICATION ===
 
 /** Graphql request for removing multiple users from an application  */
@@ -246,11 +196,6 @@ export const DELETE_USERS_FROM_APPLICATION = gql`
     }
   }
 `;
-
-/** Model for DeleteUsersFromApplicationMutationResponse object */
-export interface DeleteUsersFromApplicationMutationResponse {
-  deleteUsersFromApplication: User[];
-}
 
 // === ADD CHANNEL ===
 
@@ -273,11 +218,6 @@ export const ADD_CHANNEL = gql`
   }
 `;
 
-/** Model for AddChannelMutationResponse object */
-export interface AddChannelMutationResponse {
-  addChannel: Channel;
-}
-
 // === EDIT CHANNEL ===
 
 /** Graphql request for editing a channel by its id */
@@ -290,11 +230,6 @@ export const EDIT_CHANNEL = gql`
   }
 `;
 
-/** Model for EditChannelMutationResponse object */
-export interface EditChannelMutationResponse {
-  editChannel: Channel;
-}
-
 // === DELETE CHANNEL ===
 
 /** Graphql request for deleting a channel */
@@ -306,11 +241,6 @@ export const DELETE_CHANNEL = gql`
     }
   }
 `;
-
-/** Model for DeleteChannelMutationResponse object */
-export interface DeleteChannelMutationResponse {
-  deleteChannel: Channel;
-}
 
 // === ADD SUBSCRIPTION ===
 
@@ -343,11 +273,6 @@ export const ADD_SUBSCRIPTION = gql`
     }
   }
 `;
-
-/** Model for AddSubscriptionMutationResponse object */
-export interface AddSubscriptionMutationResponse {
-  addSubscription: Subscription;
-}
 
 // === EDIT SUBSCRIPTION ===
 
@@ -383,11 +308,6 @@ export const EDIT_SUBSCRIPTION = gql`
   }
 `;
 
-/** Model for EditSubscriptionMutationResponse object */
-export interface EditSubscriptionMutationResponse {
-  editSubscription: Subscription;
-}
-
 // === DELETE SUBSCRIPTION ===
 
 /** Grahql request for deleting a subscription from an application */
@@ -398,11 +318,6 @@ export const DELETE_SUBSCRIPTION = gql`
     }
   }
 `;
-
-/** Model for DeleteSubscriptionMutationResponse object */
-export interface DeleteSubscriptionMutationResponse {
-  deleteSubscription: Subscription;
-}
 
 // === ADD POSITION ===
 
@@ -415,11 +330,6 @@ export const ADD_POSITION_ATTRIBUTE_CATEGORY = gql`
     }
   }
 `;
-
-/** Model for AddPositionAttributeCategoryMutationResponse object */
-export interface AddPositionAttributeCategoryMutationResponse {
-  addPositionAttributeCategory: PositionAttributeCategory;
-}
 
 // === EDIT POSITION ===
 
@@ -441,11 +351,6 @@ export const EDIT_POSITION_ATTRIBUTE_CATEGORY = gql`
   }
 `;
 
-/** Model for EditPositionAttributeCategoryMutationResponse object */
-export interface EditPositionAttributeCategoryMutationResponse {
-  editPositionAttributeCategory: PositionAttributeCategory;
-}
-
 // === DELETE POSITION ===
 
 /** Graphql request for deleting a position attribute category from an application */
@@ -456,11 +361,6 @@ export const DELETE_POSITION_ATTRIBUTE_CATEGORY = gql`
     }
   }
 `;
-
-/** Model for DeletePositionAttributeCategoryMutationResponse object */
-export interface DeletePositionAttributeCategoryMutationResponse {
-  deletePositionAttributeCategory: PositionAttributeCategory;
-}
 
 // === EDIT APPLICATION ===
 
@@ -525,11 +425,6 @@ export const EDIT_APPLICATION = gql`
   }
 `;
 
-/** Model for EditApplicationMutationResponse object */
-export interface EditApplicationMutationResponse {
-  editApplication: Application;
-}
-
 // === TOGGLE APPLICATION LOCK ===
 
 /** Graphql request for toggling the application lock state */
@@ -542,11 +437,6 @@ export const TOGGLE_APPLICATION_LOCK = gql`
     }
   }
 `;
-
-/** Model for ToggleApplicationLockMutationResponse object */
-export interface ToggleApplicationLockMutationResponse {
-  toggleApplicationLock: Application;
-}
 
 // TEMPLATE OPERATIONS
 
@@ -561,11 +451,6 @@ export const ADD_TEMPLATE = gql`
     }
   }
 `;
-
-/** Model for AddTemplateMutationResponse object */
-export interface AddTemplateMutationResponse {
-  addTemplate: Template;
-}
 
 /** Graphql request for editing a template of an application */
 export const UPDATE_TEMPLATE = gql`
@@ -583,11 +468,6 @@ export const UPDATE_TEMPLATE = gql`
   }
 `;
 
-/** Model for UpdateTemplateMutationResponse object */
-export interface UpdateTemplateMutationResponse {
-  editTemplate: Template;
-}
-
 /** Graphql request for deleting a template of an application */
 export const DELETE_TEMPLATE = gql`
   mutation deleteTemplate($application: ID!, $id: ID!) {
@@ -599,11 +479,6 @@ export const DELETE_TEMPLATE = gql`
     }
   }
 `;
-
-/** Model for DeleteTemplateMutationResponse object */
-export interface DeleteTemplateMutationResponse {
-  deleteTemplate: Template;
-}
 
 /** Graphql request for editing a distribution list of an application */
 export const UPDATE_DISTRIBUTION_LIST = gql`
@@ -624,11 +499,6 @@ export const UPDATE_DISTRIBUTION_LIST = gql`
   }
 `;
 
-/** Model for UpdateDistributionListMutationResponse object */
-export interface UpdateDistributionListMutationResponse {
-  editDistributionList: DistributionList;
-}
-
 /** Graphql request for adding a template of an application */
 export const ADD_DISTRIBUTION_LIST = gql`
   mutation addDistributionList(
@@ -646,10 +516,6 @@ export const ADD_DISTRIBUTION_LIST = gql`
   }
 `;
 
-/** Model for AddDistributionListMutationResponse object */
-export interface AddDistributionListMutationResponse {
-  addDistributionList: DistributionList;
-}
 /** Graphql request for adding a template of an application */
 export const DELETE_DISTRIBUTION_LIST = gql`
   mutation deleteDistributionList($application: ID!, $id: ID!) {
@@ -660,11 +526,6 @@ export const DELETE_DISTRIBUTION_LIST = gql`
     }
   }
 `;
-
-/** Model for AddDistributionListMutationResponse object */
-export interface DeleteDistributionListMutationResponse {
-  deleteDistributionList: DistributionList;
-}
 
 /**
  * Add custom notification mutation definition.
@@ -686,11 +547,6 @@ export const ADD_CUSTOM_NOTIFICATION = gql`
   }
 `;
 
-/** Interface of ADD_CUSTOM_NOTIFICATION mutation response */
-export interface AddCustomNotificationMutationResponse {
-  addCustomNotification: CustomNotification;
-}
-
 /**
  * Delete custom notification mutation definition.
  */
@@ -701,8 +557,3 @@ export const DELETE_CUSTOM_NOTIFICATION = gql`
     }
   }
 `;
-
-/** Interface of DELETE_CUSTOM_NOTIFICATION mutation response */
-export interface DeleteCustomNotificationMutationResponse {
-  deleteCustomNotification: CustomNotification;
-}

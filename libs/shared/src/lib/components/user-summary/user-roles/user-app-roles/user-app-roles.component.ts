@@ -2,14 +2,12 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { get, isNil } from 'lodash';
-import { Role, User } from '../../../../models/user.model';
-import { Application } from '../../../../models/application.model';
+import { Role, RolesQueryResponse, User } from '../../../../models/user.model';
 import {
-  GetApplicationsQueryResponse,
-  GetRolesQueryResponse,
-  GET_APPLICATIONS,
-  GET_ROLES,
-} from '../../graphql/queries';
+  Application,
+  ApplicationsApplicationNodesQueryResponse,
+} from '../../../../models/application.model';
+import { GET_APPLICATIONS, GET_ROLES } from '../../graphql/queries';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
@@ -40,7 +38,7 @@ export class UserAppRolesComponent
   }
 
   selectedApplication!: ReturnType<typeof this.createApplicationControl>;
-  public applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
+  public applicationsQuery!: QueryRef<ApplicationsApplicationNodesQueryResponse>;
   private readonly PAGE_SIZE = 10;
 
   /**
@@ -86,7 +84,7 @@ export class UserAppRolesComponent
     }
 
     this.applicationsQuery =
-      this.apollo.watchQuery<GetApplicationsQueryResponse>({
+      this.apollo.watchQuery<ApplicationsApplicationNodesQueryResponse>({
         query: GET_APPLICATIONS,
         variables: {
           first: this.PAGE_SIZE,
@@ -135,7 +133,7 @@ export class UserAppRolesComponent
   private getApplicationRoles(application: string): void {
     this.loading = true;
     this.apollo
-      .query<GetRolesQueryResponse>({
+      .query<RolesQueryResponse>({
         query: GET_ROLES,
         variables: {
           application,

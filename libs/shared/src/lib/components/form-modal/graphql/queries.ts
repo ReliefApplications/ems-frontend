@@ -1,6 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Form } from '../../../models/form.model';
-import { Record } from '../../../models/record.model';
 
 // === GET FORM BY ID ===
 
@@ -27,11 +25,6 @@ export const GET_FORM_BY_ID = gql`
     }
   }
 `;
-
-/** Model for GetFormByIdQueryResponse object */
-export interface GetFormByIdQueryResponse {
-  form: Form;
-}
 
 // === GET RECORD BY ID ===
 
@@ -66,8 +59,3 @@ export const GET_RECORD_BY_ID = gql`
     }
   }
 `;
-
-/** Model for GetRecordByIdQueryResponse object */
-export interface GetRecordByIdQueryResponse {
-  record: Record;
-}

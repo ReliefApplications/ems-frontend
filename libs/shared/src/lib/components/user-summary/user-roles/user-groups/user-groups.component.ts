@@ -2,8 +2,12 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
-import { Group, User } from '../../../../models/user.model';
-import { GET_GROUPS, GetGroupsQueryResponse } from '../../graphql/queries';
+import {
+  Group,
+  GroupsQueryResponse,
+  User,
+} from '../../../../models/user.model';
+import { GET_GROUPS } from '../../graphql/queries';
 import { SnackbarService } from '@oort-front/ui';
 
 /** Back-office groups section the user summary */
@@ -50,7 +54,7 @@ export class UserGroupsComponent implements OnInit {
 
     this.loading = true;
     this.apollo
-      .query<GetGroupsQueryResponse>({
+      .query<GroupsQueryResponse>({
         query: GET_GROUPS,
       })
       .subscribe({

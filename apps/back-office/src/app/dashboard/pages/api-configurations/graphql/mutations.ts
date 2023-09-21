@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { ApiConfiguration } from '@oort-front/shared';
 
 // === DELETE API CONFIGURATION ===
 /** Delete api config gql mutation definition */
@@ -10,11 +9,6 @@ export const DELETE_API_CONFIGURATION = gql`
     }
   }
 `;
-
-/** Delete api config gql mutation response interface */
-export interface DeleteApiConfigurationMutationResponse {
-  deleteApiConfiguration: ApiConfiguration;
-}
 
 // === ADD API CONFIGURATION ===
 /** Add api config gql mutation definition */
@@ -49,8 +43,3 @@ export const ADD_API_CONFIGURATION = gql`
     }
   }
 `;
-
-/** Add api config gql mutation response interface */
-export interface AddApiConfigurationMutationResponse {
-  addApiConfiguration: ApiConfiguration;
-}

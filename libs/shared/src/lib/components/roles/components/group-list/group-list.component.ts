@@ -2,22 +2,21 @@ import { Component, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
-import {
-  AddGroupMutationResponse,
-  ADD_GROUP,
-  DeleteGroupMutationResponse,
-  DELETE_GROUP,
-  FetchGroupsMutationResponse,
-  FETCH_GROUPS,
-} from '../../graphql/mutations';
-import { GetGroupsQueryResponse, GET_GROUPS } from '../../graphql/queries';
+import { ADD_GROUP, DELETE_GROUP, FETCH_GROUPS } from '../../graphql/mutations';
+import { GET_GROUPS } from '../../graphql/queries';
 import { ConfirmService } from '../../../../services/confirm/confirm.service';
-import { SnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';
 import get from 'lodash/get';
 import { RestService } from '../../../../services/rest/rest.service';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
+import {
+  AddGroupMutationResponse,
+  DeleteGroupMutationResponse,
+  FetchGroupsMutationResponse,
+  GroupsQueryResponse,
+} from '../../../../models/user.model';
+import { SnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';
 
 /**
  * This component is used to display the groups tab in the platform
@@ -98,7 +97,7 @@ export class GroupListComponent extends UnsubscribeComponent implements OnInit {
    */
   private getGroups(): void {
     this.apollo
-      .query<GetGroupsQueryResponse>({
+      .query<GroupsQueryResponse>({
         query: GET_GROUPS,
       })
       .pipe(takeUntil(this.destroy$))

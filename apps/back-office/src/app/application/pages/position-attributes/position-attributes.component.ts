@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { PositionAttribute, BreadcrumbService } from '@oort-front/shared';
+import { PositionAttribute, PositionAttributesQueryResponse, BreadcrumbService } from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
-import {
-  GetPositionAttributesFromCategoryQueryResponse,
-  GET_POSITION_ATTRIBUTES_FROM_CATEGORY,
-} from './graphql/queries';
+import { GET_POSITION_ATTRIBUTES_FROM_CATEGORY } from './graphql/queries';
 
 /**
  * Position attributes component.
@@ -43,7 +40,7 @@ export class PositionAttributesComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id') || '';
     this.backPath = this.router.url.replace(`/${this.id}`, '');
     this.apollo
-      .query<GetPositionAttributesFromCategoryQueryResponse>({
+      .query<PositionAttributesQueryResponse>({
         query: GET_POSITION_ATTRIBUTES_FROM_CATEGORY,
         variables: {
           id: this.id,

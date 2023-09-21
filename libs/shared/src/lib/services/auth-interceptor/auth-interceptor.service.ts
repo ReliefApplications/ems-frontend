@@ -41,11 +41,15 @@ export class AuthInterceptorService implements HttpInterceptor {
     next: HttpHandler
   ): Observable<HttpEvent<any>> {
     const token = this.authService.getAuthToken();
-
     if (request.url.startsWith(this.restService.apiUrl) && token) {
       // If we have a token, we set it to the header
       request = request.clone({
-        setHeaders: { Authorization: `Bearer ${token}` },
+        setHeaders: {
+          Authorization: `Bearer ${token}`,
+          ...(request.url.includes('/graphql')
+            ? { Accept: 'application/json; charset=utf-8' }
+            : {}),
+        },
       });
     }
     return next.handle(request).pipe(

@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { CustomNotification } from '../../../models/custom-notification.model';
 
 /** Graphql request for adding a notification to an application */
 export const ADD_CUSTOM_NOTIFICATION = gql`
@@ -15,11 +14,6 @@ export const ADD_CUSTOM_NOTIFICATION = gql`
     }
   }
 `;
-
-/** Interface for ADD_CUSTOM_NOTIFICATION mutation response */
-export interface AddCustomNotificationMutationResponse {
-  addCustomNotification: CustomNotification;
-}
 
 /** Graphql request for editing a notification of an application */
 export const UPDATE_CUSTOM_NOTIFICATION = gql`
@@ -41,11 +35,6 @@ export const UPDATE_CUSTOM_NOTIFICATION = gql`
   }
 `;
 
-/** Interface for UPDATE_CUSTOM_NOTIFICATION mutation response */
-export interface UpdateCustomNotificationMutationResponse {
-  editCustomNotification: CustomNotification;
-}
-
 /** Graphql request for deleting a notification of an application */
 export const DELETE_CUSTOM_NOTIFICATION = gql`
   mutation deleteCustomNotification($application: ID!, $id: ID!) {
@@ -57,8 +46,3 @@ export const DELETE_CUSTOM_NOTIFICATION = gql`
     }
   }
 `;
-
-/** Interface for DELETE_CUSTOM_NOTIFICATION mutation response */
-export interface DeleteCustomNotificationMutationResponse {
-  deleteCustomNotification: CustomNotification;
-}

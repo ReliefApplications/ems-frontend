@@ -18,11 +18,12 @@ export class AppComponent implements OnInit {
    * Main component of Front-office.
    *
    * @param authService Shared authentication service
-   * @param formService Shared form service. We need to initialize the service there.
+   * @param formService Shared form service
    * @param translate Angular translate service
    */
   constructor(
     private authService: AuthService,
+    // We need to initialize the service there
     private formService: FormService,
     private translate: TranslateService
   ) {

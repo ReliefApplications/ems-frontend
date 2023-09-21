@@ -1,15 +1,13 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BreadcrumbService } from '@oort-front/shared';
 import {
   EditResourceMutationResponse,
-  EDIT_RESOURCE,
-} from './graphql/mutations';
-import {
-  GetResourceByIdQueryResponse,
-  GET_RESOURCE_BY_ID,
-} from './graphql/queries';
+  ResourceQueryResponse,
+  BreadcrumbService,
+} from '@oort-front/shared';
+import { EDIT_RESOURCE } from './graphql/mutations';
+import { GET_RESOURCE_BY_ID } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 
@@ -77,7 +75,7 @@ export class ResourceComponent implements OnInit {
 
     // get the resource and the form linked
     this.apollo
-      .query<GetResourceByIdQueryResponse>({
+      .query<ResourceQueryResponse>({
         query: GET_RESOURCE_BY_ID,
         variables: {
           id: this.id,

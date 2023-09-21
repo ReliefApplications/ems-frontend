@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Record, Resource } from '@oort-front/shared';
 
 // === RESTORE RECORD ===
 /** Restore record gql mutation definition */
@@ -10,11 +9,6 @@ export const RESTORE_RECORD = gql`
     }
   }
 `;
-
-/** Restore record gql mutation response interface */
-export interface RestoreRecordMutationResponse {
-  restoreRecord: Record;
-}
 
 // === EDIT RESOURCE ===
 /** Edit resource gql mutation definition */
@@ -54,11 +48,6 @@ export const EDIT_RESOURCE = gql`
   }
 `;
 
-/** Edit resource gql mutation response interface */
-export interface EditResourceMutationResponse {
-  editResource: Resource;
-}
-
 // === DELETE RECORD ===
 /** Delete record gql mutation definition */
 export const DELETE_RECORD = gql`
@@ -68,8 +57,3 @@ export const DELETE_RECORD = gql`
     }
   }
 `;
-
-/** Delete record gql mutation response interface */
-export interface DeleteRecordMutationResponse {
-  deleteRecord: Record;
-}

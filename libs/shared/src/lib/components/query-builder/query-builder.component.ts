@@ -123,35 +123,34 @@ export class QueryBuilderComponent
           );
         }
       });
+      const setFormBuilderControls = (
+        fieldControlRequired: boolean = false
+      ) => {
+        this.form?.setControl('filter', createFilterGroup(null));
+        this.form?.setControl(
+          'fields',
+          fieldControlRequired
+            ? this.fb.array([], Validators.required)
+            : this.fb.array([])
+        );
+        this.form?.setControl(
+          'sort',
+          this.fb.group({
+            field: [''],
+            order: ['asc'],
+          })
+        );
+      };
       this.form?.controls.name.valueChanges
         .pipe(takeUntil(this.destroy$))
         .subscribe((value) => {
           if (value !== this.form?.value.name) {
             if (this.allQueries.find((x) => x === value)) {
               this.availableFields = this.queryBuilder.getFields(value);
-              this.form?.setControl('filter', createFilterGroup(null));
-              this.form?.setControl(
-                'fields',
-                this.fb.array([], Validators.required)
-              );
-              this.form?.setControl(
-                'sort',
-                this.fb.group({
-                  field: [''],
-                  order: ['asc'],
-                })
-              );
+              setFormBuilderControls(true);
             } else {
               this.availableFields = [];
-              this.form?.setControl('filter', createFilterGroup(null));
-              this.form?.setControl('fields', this.fb.array([]));
-              this.form?.setControl(
-                'sort',
-                this.fb.group({
-                  field: [''],
-                  order: ['asc'],
-                })
-              );
+              setFormBuilderControls();
             }
             this.filteredQueries = this.filterQueries(value);
           }

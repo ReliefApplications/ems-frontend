@@ -25,19 +25,15 @@ import {
   Record,
   ButtonActionT,
   LayoutService,
-} from '@oort-front/shared';
-import {
+  ResourceRecordsNodesQueryResponse,
+  DashboardQueryResponse,
   EditDashboardMutationResponse,
-  EDIT_DASHBOARD,
-  EditPageMutationResponse,
-  EDIT_PAGE,
   EditStepMutationResponse,
-  EDIT_STEP,
-} from './graphql/mutations';
+  EditPageMutationResponse,
+  RecordQueryResponse,
+} from '@oort-front/shared';
+import { EDIT_DASHBOARD, EDIT_PAGE, EDIT_STEP } from './graphql/mutations';
 import {
-  GetDashboardByIdQueryResponse,
-  GetRecordByIdQueryResponse,
-  GetResourceRecordsQueryResponse,
   GET_DASHBOARD_BY_ID,
   GET_RECORD_BY_ID,
   GET_RESOURCE_RECORDS,
@@ -59,6 +55,7 @@ import localForage from 'localforage';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
 import { DOCUMENT } from '@angular/common';
+import { Clipboard } from '@angular/cdk/clipboard';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -106,7 +103,7 @@ export class DashboardComponent
   /** Contextual reference data elements  */
   public refDataElements: any[] = [];
   /** Contextual records query */
-  public recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
+  public recordsQuery!: QueryRef<ResourceRecordsNodesQueryResponse>;
   /** Contextual template id */
   public contextId = new FormControl<string | number | null>(null);
   /** Field of contextual reference data */
@@ -159,6 +156,8 @@ export class DashboardComponent
    * @param elementRef Angular element ref
    * @param layoutService Shared layout service
    * @param document Document
+   * @param translate Shared translate service
+   * @param clipboard Angular clipboard service
    */
   constructor(
     private applicationService: ApplicationService,
@@ -177,7 +176,8 @@ export class DashboardComponent
     private renderer: Renderer2,
     private elementRef: ElementRef,
     private layoutService: LayoutService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private clipboard: Clipboard
   ) {
     super();
   }
@@ -293,7 +293,7 @@ export class DashboardComponent
     this.loading = true;
     this.id = id;
     return firstValueFrom(
-      this.apollo.query<GetDashboardByIdQueryResponse>({
+      this.apollo.query<DashboardQueryResponse>({
         query: GET_DASHBOARD_BY_ID,
         variables: {
           id: this.id,
@@ -701,15 +701,10 @@ export class DashboardComponent
   /** Display the ShareUrl modal with the route to access the dashboard. */
   public async onShare(): Promise<void> {
     const url = `${window.origin}/share/${this.dashboard?.id}`;
-    const { ShareUrlComponent } = await import(
-      './components/share-url/share-url.component'
+    this.clipboard.copy(url);
+    this.snackBar.openSnackBar(
+      this.translate.instant('common.notifications.copiedToClipboard')
     );
-    const dialogRef = this.dialog.open(ShareUrlComponent, {
-      data: {
-        url,
-      },
-    });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe();
   }
 
   /**
@@ -809,7 +804,7 @@ export class DashboardComponent
 
     if ('resource' in context) {
       this.recordsQuery =
-        this.apollo.watchQuery<GetResourceRecordsQueryResponse>({
+        this.apollo.watchQuery<ResourceRecordsNodesQueryResponse>({
           query: GET_RESOURCE_RECORDS,
           variables: {
             first: ITEMS_PER_PAGE,
@@ -880,7 +875,7 @@ export class DashboardComponent
     } else if ('record' in dContext) {
       // Get record by id
       this.apollo
-        .query<GetRecordByIdQueryResponse>({
+        .query<RecordQueryResponse>({
           query: GET_RECORD_BY_ID,
           variables: {
             id: dContext.record,

@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Notification } from '../../../models/notification.model';
 
 /** Graphql request for listening to notifications */
 export const NOTIFICATION_SUBSCRIPTION = gql`
@@ -23,8 +22,3 @@ export const NOTIFICATION_SUBSCRIPTION = gql`
     }
   }
 `;
-
-/** Model for NotificationSubscriptionResponse object */
-export interface NotificationSubscriptionResponse {
-  notification: Notification;
-}

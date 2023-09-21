@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Role, User } from '@oort-front/shared';
 
 // === GET ROLES ===
 /** Graphql query for getting roles (of an application or all) */
@@ -20,11 +19,6 @@ export const GET_ROLES = gql`
   }
 `;
 
-/** Model for GetRolesQueryResponse object */
-export interface GetRolesQueryResponse {
-  roles: Role[];
-}
-
 // === GET USERS ===
 /** Graphql query for getting users */
 export const GET_USERS = gql`
@@ -44,8 +38,3 @@ export const GET_USERS = gql`
     }
   }
 `;
-
-/** Model for GetUsersQueryResponse object */
-export interface GetUsersQueryResponse {
-  users: User[];
-}
