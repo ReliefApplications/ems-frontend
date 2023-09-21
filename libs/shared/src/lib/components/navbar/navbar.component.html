@@ -56,19 +56,13 @@
     cdkDropList
     [cdkDropListOrientation]="vertical ? 'vertical' : 'horizontal'"
     (cdkDropListDropped)="drop($event, group)"
-    [class]="
-      !vertical
-        ? 'nav-items-list'
-        : appLayout
-        ? canAddPage
-          ? largeDevice
-            ? 'app-sidenav-add-page'
-            : 'app-sidenav-phone-add-page'
-          : largeDevice
-          ? 'app-sidenav'
-          : 'app-sidenav-phone'
-        : ''
-    "
+    [ngClass]="{
+      'nav-items-list': !vertical,
+      'app-sidenav-add-page': vertical && appLayout && canAddPage && largeDevice,
+      'app-sidenav-phone-add-page': vertical && appLayout && canAddPage && !largeDevice,
+      'app-sidenav-page': vertical && appLayout && !canAddPage && largeDevice,
+      'app-sidenav-phone': vertical && appLayout && !canAddPage && !largeDevice,
+    }"
   >
     <!-- Classes determine nav-list height for application layout -->
     <ul [ngClass]="{ 'pr-6': vertical, flex: !vertical }">

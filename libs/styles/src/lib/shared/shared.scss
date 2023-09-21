@@ -51,6 +51,27 @@ body {
   }
 }
 
+// === CDK ===
+// Drag & Drop
+.cdk-drag-preview {
+  z-index: 1100 !important;
+  @apply box-border rounded shadow-xl flex items-center justify-between bg-white;
+}
+
+.cdk-drag-animating {
+  @apply transition-transform;
+}
+
+.cdk-drag-placeholder {
+  @apply opacity-0;
+}
+
+.cdk-drop-list-dragging {
+  .cdk-drag:not(.cdk-drag-placeholder) {
+    @apply transition-transform;
+  }
+}
+
 // === SCROLL BARS ===
 ::-webkit-scrollbar {
   width: 10px;

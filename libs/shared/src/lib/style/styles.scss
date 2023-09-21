@@ -213,3 +213,11 @@ $shared-theme: mat.define-light-theme(
     opacity: 0.4;
   }
 }
+// todo(beta): useless?
+.custom-marker {
+  span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
