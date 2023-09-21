@@ -31,7 +31,6 @@ import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.compo
 import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
 import { SnackbarService } from '@oort-front/ui';
 import { cloneDeep } from 'lodash';
-import { Panel } from 'survey-knockout';
 
 /**
  * This component is used to display forms
