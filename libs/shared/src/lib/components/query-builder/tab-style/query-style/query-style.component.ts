@@ -17,112 +17,56 @@ import { ListBoxToolbarConfig } from '@progress/kendo-angular-listbox';
 })
 /**
  * QueryStyleComponent is a component that allows the user to customize the style of a query.
- *
- * @class
  */
 export class QueryStyleComponent implements OnInit {
-  /**
-   * The query object to be styled.
-   *
-   * @type {any}
-   * @public
-   */
+  /** The query object to be styled. */
   @Input() query: any;
 
-  /**
-   * The form group used to manage the form controls.
-   *
-   * @type {UntypedFormGroup}
-   * @public
-   */
+  /** The form group used to manage the form controls. */
   @Input() form!: UntypedFormGroup;
 
-  /**
-   * The form control used to manage the whole row toggle.
-   *
-   * @type {UntypedFormControl}
-   * @public
-   */
+  /** The form control used to manage the whole row toggle. */
   public wholeRow!: UntypedFormControl;
 
-  /**
-   * The list of filter fields available for the query.
-   *
-   * @type {Field[]}
-   * @public
-   */
+  /** The list of filter fields available for the query. */
   public filterFields: Field[] = [];
 
-  /**
-   * The list of available fields for the query.
-   *
-   * @type {string[]}
-   * @public
-   */
+  /** The list of available fields for the query. */
   public availableFields: string[] = [];
 
-  /**
-   * The list of selected fields for the query.
-   *
-   * @type {string[]}
-   * @private
-   */
+  /** The list of selected fields for the query. */
   public _selectedFields: string[] = [];
 
-  /**
-   * The configuration for the list box toolbar.
-   *
-   * @type {ListBoxToolbarConfig}
-   * @public
-   */
+  /** The configuration for the list box toolbar. */
   public toolbarSettings: ListBoxToolbarConfig = {
     position: 'right',
     tools: ['transferFrom', 'transferTo', 'transferAllFrom', 'transferAllTo'],
   };
 
-  /**
-   * Gets the list of selected fields for the query.
-   *
-   * @type {string[]}
-   * @public
-   */
+  /** @returns the list of selected fields for the query. */
   public get selectedFields(): string[] {
     this.form.get('fields')?.setValue(this._selectedFields);
     return this._selectedFields;
   }
 
-  /**
-   * Sets the list of selected fields for the query.
-   *
-   * @type {string[]}
-   * @public
-   */
+  /** Sets the list of selected fields for the query. */
   public set selectedFields(value: string[]) {
     this.form.get('fields')?.setValue(this._selectedFields);
     this._selectedFields = value;
   }
 
-  /**
-   * Event emitter for closing the edition of the query style.
-   *
-   * @type {EventEmitter<any>}
-   * @public
-   */
+  /** Event emitter for closing the edition of the query style. */
   @Output() closeEdition = new EventEmitter<any>();
 
   /**
    * Constructor for the query style component.
    *
-   * @constructor
-   * @param {QueryBuilderService} queryBuilder - The service used to build the query.
+   * @param queryBuilder - The service used to build the query.
    */
   constructor(private queryBuilder: QueryBuilderService) {}
 
   /**
    * Initializes the component.
-   *
-   * @public
-   * @returns {void}
    */
   ngOnInit(): void {
     const fields = this.form.get('fields')?.value || [];
@@ -153,9 +97,7 @@ export class QueryStyleComponent implements OnInit {
   /**
    * Toggles boolean controls.
    *
-   * @public
-   * @param {string} controlName - The name of the form control.
-   * @returns {void}
+   * @param controlName - The name of the form control.
    */
   onToggle(controlName: string): void {
     const control = this.form.get(controlName);
