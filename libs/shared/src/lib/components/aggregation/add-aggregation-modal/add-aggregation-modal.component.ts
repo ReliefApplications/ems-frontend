@@ -1,12 +1,12 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { Form } from '../../../models/form.model';
-import { Resource } from '../../../models/resource.model';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import {
-  GetResourceAggregationsResponse,
-  GET_RESOURCE_AGGREGATIONS,
-} from './graphql/queries';
+  Resource,
+  ResourceQueryResponse,
+} from '../../../models/resource.model';
+import { GET_RESOURCE_AGGREGATIONS } from './graphql/queries';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { UntypedFormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -61,7 +61,7 @@ export class AddAggregationModalComponent
   public hasAggregations = false;
   public nextStep = false;
 
-  public queryRef!: QueryRef<GetResourceAggregationsResponse>;
+  public queryRef!: QueryRef<ResourceQueryResponse>;
 
   public selectedAggregationControl = new UntypedFormControl('');
 
@@ -93,7 +93,7 @@ export class AddAggregationModalComponent
   }
 
   ngOnInit(): void {
-    this.queryRef = this.apollo.watchQuery<GetResourceAggregationsResponse>({
+    this.queryRef = this.apollo.watchQuery<ResourceQueryResponse>({
       query: GET_RESOURCE_AGGREGATIONS,
       variables: {
         resource: this.resource?.id,

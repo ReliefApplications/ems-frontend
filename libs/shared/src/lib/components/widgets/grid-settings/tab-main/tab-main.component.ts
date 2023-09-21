@@ -2,8 +2,11 @@ import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Form } from '../../../../models/form.model';
-import { Resource } from '../../../../models/resource.model';
-import { GetResourcesQueryResponse, GET_RESOURCES } from '../graphql/queries';
+import {
+  Resource,
+  ResourcesQueryResponse,
+} from '../../../../models/resource.model';
+import { GET_RESOURCES } from '../graphql/queries';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -23,7 +26,7 @@ export class TabMainComponent implements OnInit {
   @Input() queries: any[] = [];
   @Input() templates: Form[] = [];
 
-  public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
 
   /**
    * Main tab of widget grid configuration modal
@@ -33,7 +36,7 @@ export class TabMainComponent implements OnInit {
   constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
-    this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
+    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
       query: GET_RESOURCES,
       variables: {
         first: ITEMS_PER_PAGE,

@@ -5,10 +5,10 @@ import { Apollo } from 'apollo-angular';
 import { Subject, takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../components/utils/unsubscribe/unsubscribe.component';
 import { PositionAttributeCategory } from '../../models/position-attribute-category.model';
-import { Role } from '../../models/user.model';
+import { AddUsersMutationResponse, Role } from '../../models/user.model';
 import { ApplicationService } from '../../services/application/application.service';
 import { UserListComponent } from './components/user-list/user-list.component';
-import { AddUsersMutationResponse, ADD_USERS } from './graphql/mutations';
+import { ADD_USERS } from './graphql/mutations';
 import { SnackbarService } from '@oort-front/ui';
 
 /**

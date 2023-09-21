@@ -2,7 +2,6 @@ import { Apollo } from 'apollo-angular';
 import {
   GET_SHORT_RESOURCE_BY_ID,
   GET_RESOURCE_BY_ID,
-  GetResourceByIdQueryResponse,
 } from '../graphql/queries';
 import { BehaviorSubject } from 'rxjs';
 import * as SurveyCreator from 'survey-creator';
@@ -24,6 +23,7 @@ import {
 import { QuestionResource } from '../types';
 import { SurveyModel } from 'survey-angular';
 import { NgZone } from '@angular/core';
+import { ResourceQueryResponse } from '../../models/resource.model';
 
 /** Create the list of filter values for resources */
 export const resourcesFilterValues = new BehaviorSubject<
@@ -65,7 +65,7 @@ export const init = (
   document: Document
 ): void => {
   const getResourceById = (data: { id: string }) =>
-    apollo.query<GetResourceByIdQueryResponse>({
+    apollo.query<ResourceQueryResponse>({
       query: GET_SHORT_RESOURCE_BY_ID,
       variables: {
         id: data.id,
@@ -87,7 +87,7 @@ export const init = (
     id: string;
     filters?: { field: string; operator: string; value: string }[];
   }) =>
-    apollo.query<GetResourceByIdQueryResponse>({
+    apollo.query<ResourceQueryResponse>({
       query: GET_RESOURCE_BY_ID,
       variables: {
         id: data.id,
@@ -112,6 +112,23 @@ export const init = (
     'resources',
     '<svg xmlns="http://www.w3.org/2000/svg" enable-background="new 0 0 20 20" height="18px" viewBox="0 0 20 20" width="18px" fill="#000000"><g><rect fill="none" height="20" width="20" x="0"/></g><g><g><path d="M2.5,5H1v10.5C1,16.33,1.67,17,2.5,17h13.18v-1.5H2.5V5z"/><path d="M16.5,4H11L9,2H5.5C4.67,2,4,2.67,4,3.5v9C4,13.33,4.67,14,5.5,14h11c0.83,0,1.5-0.67,1.5-1.5v-7C18,4.67,17.33,4,16.5,4z M16.5,12.5h-11v-9h2.88l2,2h6.12V12.5z"/></g></g></svg>'
   );
+
+  // Field visibility conditions callbacks
+  const visibleIfResource = (obj: any) => {
+    if (!obj || !obj.resource) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  const visibleIfResourceAndDisplayField = (obj: any) => {
+    if (!obj || !obj.resource || !obj.displayField) {
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   const component = {
     name: 'resources',
@@ -158,13 +175,7 @@ export const init = (
         category: 'Custom Questions',
         dependsOn: 'resource',
         required: true,
-        visibleIf: (obj: any) => {
-          if (!obj || !obj.resource) {
-            return false;
-          } else {
-            return true;
-          }
-        },
+        visibleIf: visibleIfResource,
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj.resource) {
@@ -187,13 +198,7 @@ export const init = (
         dependsOn: 'resource',
         required: true,
         description: 'unique name for this resource question',
-        visibleIf: (obj: any) => {
-          if (!obj || !obj.resource) {
-            return false;
-          } else {
-            return true;
-          }
-        },
+        visibleIf: visibleIfResource,
         visibleIndex: 4,
       });
 
@@ -204,7 +209,7 @@ export const init = (
         isRequired: true,
         category: 'Custom Questions',
         dependsOn: 'resource',
-        visibleIf: (obj: any) => !!obj && !!obj.resource,
+        visibleIf: visibleIfResource,
         visibleIndex: 5,
       });
 
@@ -274,13 +279,7 @@ export const init = (
         category: 'Custom Questions',
         dependsOn: ['resource', 'displayField'],
         required: true,
-        visibleIf: (obj: any) => {
-          if (!obj || !obj.resource || !obj.displayField) {
-            return false;
-          } else {
-            return true;
-          }
-        },
+        visibleIf: visibleIfResourceAndDisplayField,
         type: 'resourcesTestService',
         visibleIndex: 3,
       });
@@ -324,13 +323,7 @@ export const init = (
         name: 'displayAsGrid:boolean',
         category: 'Custom Questions',
         dependsOn: 'resource',
-        visibleIf: (obj: any) => {
-          if (!obj || !obj.resource) {
-            return false;
-          } else {
-            return true;
-          }
-        },
+        visibleIf: visibleIfResource,
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resources', {
@@ -338,14 +331,7 @@ export const init = (
         displayName: 'Add new records',
         category: 'Custom Questions',
         dependsOn: 'resource',
-        visibleIf: (obj: any) => {
-          if (!obj || !obj.resource) {
-            return false;
-          } else {
-            return true;
-            // return !hasUniqueRecord(obj.resource);
-          }
-        },
+        visibleIf: visibleIfResource,
         visibleIndex: 2,
       });
       Survey.Serializer.addProperty('resources', {
@@ -353,13 +339,7 @@ export const init = (
         displayName: 'Delete records',
         category: 'Custom Questions',
         dependsOn: 'resource',
-        visibleIf: (obj: any) => {
-          if (!obj || !obj.resource) {
-            return false;
-          } else {
-            return true;
-          }
-        },
+        visibleIf: visibleIfResource,
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resources', {
@@ -367,13 +347,7 @@ export const init = (
         displayName: 'Show history',
         category: 'Custom Questions',
         dependsOn: 'resource',
-        visibleIf: (obj: any) => {
-          if (!obj || !obj.resource) {
-            return false;
-          } else {
-            return true;
-          }
-        },
+        visibleIf: visibleIfResource,
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resources', {
@@ -381,13 +355,7 @@ export const init = (
         displayName: 'Convert records',
         category: 'Custom Questions',
         dependsOn: 'resource',
-        visibleIf: (obj: any) => {
-          if (!obj || !obj.resource) {
-            return false;
-          } else {
-            return true;
-          }
-        },
+        visibleIf: visibleIfResource,
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resources', {
@@ -395,13 +363,7 @@ export const init = (
         dislayName: 'Update records',
         category: 'Custom Questions',
         dependsOn: 'resource',
-        visibleIf: (obj: any) => {
-          if (!obj || !obj.resource) {
-            return false;
-          } else {
-            return true;
-          }
-        },
+        visibleIf: visibleIfResource,
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resources', {
@@ -409,13 +371,7 @@ export const init = (
         displayName: 'Inline edition',
         category: 'Custom Questions',
         dependsOn: 'resource',
-        visibleIf: (obj: any) => {
-          if (!obj || !obj.resource) {
-            return false;
-          } else {
-            return true;
-          }
-        },
+        visibleIf: visibleIfResource,
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resources', {
@@ -423,13 +379,7 @@ export const init = (
         displayName: 'Export records',
         category: 'Custom Questions',
         dependsOn: 'resource',
-        visibleIf: (obj: any) => {
-          if (!obj || !obj.resource) {
-            return false;
-          } else {
-            return true;
-          }
-        },
+        visibleIf: visibleIfResource,
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resources', {
@@ -437,14 +387,7 @@ export const init = (
         category: 'Custom Questions',
         dependsOn: 'resource',
         default: true,
-        visibleIf: (obj: any) => {
-          if (!obj || !obj.resource) {
-            return false;
-          } else {
-            return true;
-            // return !hasUniqueRecord(obj.resource);
-          }
-        },
+        visibleIf: visibleIfResource,
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resources', {
@@ -494,13 +437,7 @@ export const init = (
         category: 'Filter by Questions',
         dependsOn: ['resource', 'displayField'],
         required: true,
-        visibleIf: (obj: any) => {
-          if (!obj || !obj.resource || !obj.displayField) {
-            return false;
-          } else {
-            return true;
-          }
-        },
+        visibleIf: visibleIfResourceAndDisplayField,
         visibleIndex: 3,
         choices: (obj: any, choicesCallback: any) => {
           if (obj && obj.resource) {

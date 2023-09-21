@@ -48,7 +48,7 @@ export * from './lib/models/channel.model';
 export * from './lib/models/subscription.model';
 export * from './lib/models/position-attribute-category.model';
 export * from './lib/models/position-attribute.model';
-export * from './lib/models/apiConfiguration.model';
+export * from './lib/models/api-configuration.model';
 export * from './lib/models/pullJob.model';
 export * from './lib/models/layout.model';
 export * from './lib/models/aggregation.model';

@@ -9,24 +9,18 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
-import {
-  GetFormByIdQueryResponse,
-  GetRecordByIdQueryResponse,
-  GET_RECORD_BY_ID,
-  GET_FORM_BY_ID,
-} from './graphql/queries';
-import { Form } from '../../models/form.model';
-import { Record } from '../../models/record.model';
-import * as Survey from 'survey-angular';
-import {
-  EditRecordMutationResponse,
-  EDIT_RECORD,
-  AddRecordMutationResponse,
-  ADD_RECORD,
-  EDIT_RECORDS,
-  EditRecordsMutationResponse,
-} from './graphql/mutations';
+import { GET_RECORD_BY_ID, GET_FORM_BY_ID } from './graphql/queries';
+import { Form, FormQueryResponse } from '../../models/form.model';
 import { ConfirmService } from '../../services/confirm/confirm.service';
+import {
+  AddRecordMutationResponse,
+  EditRecordMutationResponse,
+  EditRecordsMutationResponse,
+  Record,
+  RecordQueryResponse,
+} from '../../models/record.model';
+import * as Survey from 'survey-angular';
+import { EDIT_RECORD, ADD_RECORD, EDIT_RECORDS } from './graphql/mutations';
 import addCustomFunctions from '../../utils/custom-functions';
 import { AuthService } from '../../services/auth/auth.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
@@ -148,16 +142,15 @@ export class FormModalComponent
     Survey.StylesManager.applyTheme();
 
     this.isMultiEdition = Array.isArray(this.data.recordId);
-    const promises: Promise<
-      GetFormByIdQueryResponse | GetRecordByIdQueryResponse | void
-    >[] = [];
+    const promises: Promise<FormQueryResponse | RecordQueryResponse | void>[] =
+      [];
     if (this.data.recordId) {
       const id = this.isMultiEdition
         ? this.data.recordId[0]
         : this.data.recordId;
       promises.push(
         firstValueFrom(
-          this.apollo.query<GetRecordByIdQueryResponse>({
+          this.apollo.query<RecordQueryResponse>({
             query: GET_RECORD_BY_ID,
             variables: {
               id,
@@ -177,7 +170,7 @@ export class FormModalComponent
     if (!this.data.recordId || this.data.template) {
       promises.push(
         firstValueFrom(
-          this.apollo.query<GetFormByIdQueryResponse>({
+          this.apollo.query<FormQueryResponse>({
             query: GET_FORM_BY_ID,
             variables: {
               id: this.data.template,
@@ -391,28 +384,7 @@ export class FormModalComponent
       })
       .subscribe({
         next: ({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.record.one'),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-          } else {
-            if (data) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.record.one'),
-                  value: '',
-                })
-              );
-              this.dialogRef.close({
-                template: this.form?.id,
-                data: data.editRecord,
-              } as any);
-            }
-          }
+          this.handleRecordMutationResponse({ data, errors }, 'editRecord');
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
@@ -439,33 +411,53 @@ export class FormModalComponent
       })
       .subscribe({
         next: ({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.record.few'),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-          } else {
-            if (data) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.record.few'),
-                  value: '',
-                })
-              );
-              this.dialogRef.close({
-                template: this.form?.id,
-                data: data.editRecords,
-              } as any);
-            }
-          }
+          this.handleRecordMutationResponse({ data, errors }, 'editRecords');
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
         },
       });
+  }
+
+  /**
+   * Handle mutation type for the given response type, single or multiple records
+   *
+   * @param response Graphql mutation response
+   * @param response.data response data
+   * @param response.errors response errors
+   * @param responseType response type
+   */
+  private handleRecordMutationResponse(
+    response: { data: any; errors: any },
+    responseType: 'editRecords' | 'editRecord'
+  ) {
+    const { data, errors } = response;
+    const type =
+      responseType === 'editRecords'
+        ? this.translate.instant('common.record.few')
+        : this.translate.instant('common.record.one');
+    if (errors) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectNotUpdated', {
+          type,
+          error: errors ? errors[0].message : '',
+        }),
+        { error: true }
+      );
+    } else {
+      if (data) {
+        this.snackBar.openSnackBar(
+          this.translate.instant('common.notifications.objectUpdated', {
+            type,
+            value: '',
+          })
+        );
+        this.dialogRef.close({
+          template: this.form?.id,
+          data: data[responseType],
+        } as any);
+      }
+    }
   }
 
   /**

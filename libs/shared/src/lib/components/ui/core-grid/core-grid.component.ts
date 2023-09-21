@@ -29,15 +29,16 @@ import {
 } from '../../../services/query-builder/query-builder.service';
 import { RecordHistoryComponent } from '../../record-history/record-history.component';
 import {
-  ConvertRecordMutationResponse,
   CONVERT_RECORD,
   DELETE_RECORDS,
-  EditRecordMutationResponse,
   EDIT_RECORD,
 } from './graphql/mutations';
-import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from './graphql/queries';
-import { ConfirmService } from '../../../services/confirm/confirm.service';
-import { Record } from '../../../models/record.model';
+import { GET_FORM_BY_ID } from './graphql/queries';
+import {
+  ConvertRecordMutationResponse,
+  EditRecordMutationResponse,
+  Record,
+} from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
 import { GridSettings } from './models/grid-settings.model';
 import { get, isEqual } from 'lodash';
@@ -52,6 +53,8 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 import { firstValueFrom, Subject } from 'rxjs';
 import { searchFilters } from '../../../utils/filter/search-filters';
 import { SnackbarService } from '@oort-front/ui';
+import { FormQueryResponse } from '../../../models/form.model';
+import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
 
 /**
@@ -460,7 +463,7 @@ export class CoreGridComponent
   private async loadTemplate(): Promise<void> {
     if (this.settings.template)
       this.apollo
-        .query<GetFormByIdQueryResponse>({
+        .query<FormQueryResponse>({
           query: GET_FORM_BY_ID,
           variables: {
             id: this.settings.template,

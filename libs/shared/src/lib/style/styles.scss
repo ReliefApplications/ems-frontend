@@ -5,10 +5,8 @@
 @include mat.legacy-core();
 @include mat.core();
 
-@import 'tailwindcss/base';
-@import 'tailwindcss/components';
-@import 'tailwindcss/utilities';
-@import '~@fortawesome/fontawesome-free/css/all.css';
+// === KENDO THEME ===
+@import 'theme.scss';
 
 .sv_main,
 .svd_container {
@@ -112,50 +110,14 @@ $shared-theme: mat.define-light-theme(
   }
 }
 
-.multiline-tooltip {
-  white-space: pre-line;
-}
-
-// todo: check if can be removed
-*:focus,
-*:active:focus,
-*.active:focus {
-  outline: none !important;
-  outline-style: none !important;
-}
-
-// todo: put in a component?
-.page-header {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  margin-bottom: 20px;
-
-  .page-title {
-    overflow: hidden;
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    margin: 0;
-  }
-}
+// .multiline-tooltip {
+//   white-space: pre-line;
+// }
 
 // === ADDITIONAL MATERIAL STYLING ===
 @include mat.all-component-themes($shared-theme);
 @include mat.all-legacy-component-themes($shared-theme);
 @include checkbox($shared-theme);
-
-html,
-body {
-  height: 100%;
-}
-body {
-  margin: 0;
-  overflow: hidden;
-
-  scrollbar-width: thin;
-  scrollbar-gutter: stable;
-  scrollbar-color: #d4d4d9 white;
-}
 
 // Widgets
 .widget-header {
@@ -169,48 +131,19 @@ body {
   padding: 0 40px !important;
   display: flex;
   flex-direction: row;
-  gap: 10px;
-  @apply bg-white #{!important};
+  justify-content: space-between;
+  @apply bg-white border-b border-b-gray-300 #{!important};
 
   .widget-title {
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    flex: 1;
     margin: unset;
-    margin-right: auto;
-    max-width: fit-content;
-    flex: 2;
   }
 
   .hide-border & {
     border-bottom: none !important;
-  }
-}
-
-// === DIALOGS ===
-.cdk-dialog-container {
-  @media (max-width: 640px) {
-    padding: 24px !important;
-  }
-}
-
-.fullscreen-dialog {
-  max-width: unset !important;
-  width: 100%;
-  height: 100%;
-  .cdk-dialog-container {
-    @media (max-width: 640px) {
-      padding: unset !important;
-    }
-  }
-  ui-dialog {
-    max-height: 100vh !important;
-  }
-}
-
-.no-padding-dialog {
-  .cdk-dialog-container {
-    padding: unset;
   }
 }
 
@@ -219,35 +152,14 @@ body {
   color: mat.get-color-from-palette($shared-warn) !important;
 }
 
-// === KENDO THEME ===
-@import 'theme.scss';
-
 // === TINYMCE ===
 .tox-editor-header *,
 .tox-tinymce-aux * {
   font-family: Roboto, 'Helvetica Neue', sans-serif !important;
 }
 
-// === SCROLL BARS ===
-::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-
-/* === Track === */
-::-webkit-scrollbar-track {
-  background: none;
-}
-
-/* === Handle === */
-::-webkit-scrollbar-thumb {
-  -webkit-border-radius: 10px;
-  border-radius: 10px;
-  background: #d4d4d9;
-  border: solid 2px white;
-}
-
 // === LEAFLET ===
+// todo(beta): move
 .map-legend-container {
   max-height: 320px;
   overflow-y: auto;
@@ -294,113 +206,5 @@ body {
 
   .legend-division-hide {
     opacity: 0.4;
-  }
-}
-
-// === OVERLAY ===
-.cdk-overlay-container {
-  z-index: 1003;
-}
-
-// Drag & Drop
-.cdk-drag-preview {
-  z-index: 1100 !important;
-  @apply box-border rounded shadow-xl flex items-center justify-between bg-white;
-}
-
-.cdk-drag-animating {
-  @apply transition-transform;
-}
-
-// .cdk-drag-placeholder {
-//   @apply opacity-0;
-// }
-
-.cdk-drop-list-dragging {
-  .cdk-drag:not(.cdk-drag-placeholder) {
-    @apply transition-transform;
-  }
-}
-
-/* === Tailwindcss === */
-// Allow to use @apply in not visible by default elements
-@layer components {
-  // === Measure plugin ===
-  // todo(gis): move somewhere else
-  .leaflet-measure-resultpopup a.deletemarkup,
-  .leaflet-measure-resultpopup a.zoomto,
-  .leaflet-control-measure a.cancel,
-  .leaflet-control-measure a.finish,
-  .leaflet-control-measure a.start {
-    @apply text-primary-500;
-    background-image: none !important;
-  }
-}
-
-// Define new colors
-@layer base {
-  body {
-    font-family: system-ui;
-  }
-  h1 {
-    @apply text-2xl font-normal mb-4;
-  }
-  h2 {
-    @apply text-xl font-medium mb-4;
-  }
-  h3 {
-    @apply text-base font-medium mb-4;
-  }
-  h4 {
-    @apply text-sm font-medium mb-4;
-  }
-  h5 {
-    @apply text-xs font-medium mb-3;
-  }
-  // Revert all default changes of base layer in this custom class
-  // https://tailwindcss.com/docs/preflight
-  .no-tailwindcss-base,
-  .no-tailwindcss-base *,
-  .no-tailwindcss-base > * {
-    font-size: revert;
-    font-weight: revert;
-    margin: revert;
-    display: revert;
-    vertical-align: revert;
-    max-width: revert;
-    height: revert;
-    border-width: revert;
-    border-style: revert;
-    border-color: revert;
-    border-style: revert;
-    outline: revert;
-    list-style: revert;
-    padding: revert;
-    color: revert;
-    text-decoration: revert;
-  }
-  :root {
-    --primary-50: #{$primary_50};
-    --primary-100: #{$primary_100};
-    --primary-200: #{$primary_200};
-    --primary-300: #{$primary_300};
-    --primary-400: #{$primary_400};
-    --primary-500: #{$primary_500};
-    --primary-600: #{$primary_600};
-    --primary-700: #{$primary_700};
-    --primary-800: #{$primary_800};
-    --primary-900: #{$primary_900};
-    --secondary-50: #{$secondary_50};
-    --secondary-100: #{$secondary_100};
-    --secondary-150: #{$secondary_150};
-    --secondary-200: #{$secondary_200};
-  }
-}
-
-.custom-marker {
-  span {
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
 }

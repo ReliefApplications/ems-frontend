@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Role } from '../../../../models/user.model';
 
 // === GET ROLES ===
 
@@ -24,8 +23,3 @@ export const GET_ROLES = gql`
     }
   }
 `;
-
-/** Model for GetRolesQueryResponse object */
-export interface GetRolesQueryResponse {
-  roles: Role[];
-}

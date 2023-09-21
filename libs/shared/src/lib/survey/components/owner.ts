@@ -2,11 +2,9 @@ import { Apollo } from 'apollo-angular';
 import * as SurveyCreator from 'survey-creator';
 import { DomService } from '../../services/dom/dom.service';
 import { ApplicationDropdownComponent } from '../../components/application-dropdown/application-dropdown.component';
-import {
-  GetRolesFromApplicationsQueryResponse,
-  GET_ROLES_FROM_APPLICATIONS,
-} from '../graphql/queries';
+import { GET_ROLES_FROM_APPLICATIONS } from '../graphql/queries';
 import { QuestionOwner } from '../types';
+import { RolesFromApplicationsQueryResponse } from '../../models/user.model';
 
 /**
  * Inits the owner component.
@@ -68,7 +66,7 @@ export const init = (
     },
     onLoaded: (question: QuestionOwner): void => {
       apollo
-        .query<GetRolesFromApplicationsQueryResponse>({
+        .query<RolesFromApplicationsQueryResponse>({
           query: GET_ROLES_FROM_APPLICATIONS,
           variables: {
             applications: question.applications,

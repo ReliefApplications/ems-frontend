@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Application } from '../../../models/application.model';
 
 // === GET APPLICATIONS ===
 
@@ -34,18 +33,3 @@ export const GET_APPLICATIONS = gql`
     }
   }
 `;
-
-/** Model for GetApplicationsQueryResponse object */
-export interface GetApplicationsQueryResponse {
-  applications: {
-    edges: {
-      node: Application;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-    totalCount: number;
-  };
-}

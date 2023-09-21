@@ -9,13 +9,13 @@ import {
   Renderer2,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Application } from '../../models/application.model';
-import { BehaviorSubject, Observable } from 'rxjs';
-import {
-  GetApplicationsQueryResponse,
-  GET_APPLICATIONS,
-} from './graphql/queries';
+import { GET_APPLICATIONS } from './graphql/queries';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import {
+  Application,
+  ApplicationsApplicationNodesQueryResponse,
+} from '../../models/application.model';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { updateQueryUniqueValues } from '../../utils/update-queries';
 import { DOCUMENT } from '@angular/common';
@@ -44,7 +44,7 @@ export class ApplicationDropdownComponent
   private applications = new BehaviorSubject<Application[]>([]);
   public applications$!: Observable<Application[]>;
   private cachedApplications: Application[] = [];
-  private applicationsQuery!: QueryRef<GetApplicationsQueryResponse>;
+  private applicationsQuery!: QueryRef<ApplicationsApplicationNodesQueryResponse>;
   private scrollListener!: any;
   private pageInfo = {
     endCursor: '',
@@ -72,7 +72,7 @@ export class ApplicationDropdownComponent
   ngOnInit(): void {
     if (Array.isArray(this.value) && this.value.length > 0) {
       this.apollo
-        .query<GetApplicationsQueryResponse>({
+        .query<ApplicationsApplicationNodesQueryResponse>({
           query: GET_APPLICATIONS,
           variables: {
             filter: {
@@ -91,7 +91,7 @@ export class ApplicationDropdownComponent
     }
 
     this.applicationsQuery =
-      this.apollo.watchQuery<GetApplicationsQueryResponse>({
+      this.apollo.watchQuery<ApplicationsApplicationNodesQueryResponse>({
         query: GET_APPLICATIONS,
         variables: {
           first: ITEMS_PER_PAGE,
@@ -165,7 +165,10 @@ export class ApplicationDropdownComponent
    * @param data query response data
    * @param loading loading status
    */
-  private updateValues(data: GetApplicationsQueryResponse, loading: boolean) {
+  private updateValues(
+    data: ApplicationsApplicationNodesQueryResponse,
+    loading: boolean
+  ) {
     this.cachedApplications = updateQueryUniqueValues(
       this.cachedApplications,
       data.applications.edges.map((x) => x.node)

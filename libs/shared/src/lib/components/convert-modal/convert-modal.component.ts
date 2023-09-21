@@ -2,10 +2,7 @@ import { Apollo } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import {
-  GetRecordDetailsQueryResponse,
-  GET_RECORD_DETAILS,
-} from './graphql/queries';
+import { GET_RECORD_DETAILS } from './graphql/queries';
 import { Form } from '../../models/form.model';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
@@ -21,6 +18,7 @@ import {
   FormWrapperModule,
   DialogModule,
 } from '@oort-front/ui';
+import { RecordQueryResponse } from '../../models/record.model';
 
 /**
  * An interface to define the structure of the data displayed in the modal
@@ -90,7 +88,7 @@ export class ConvertModalComponent
 
   ngOnInit(): void {
     this.apollo
-      .query<GetRecordDetailsQueryResponse>({
+      .query<RecordQueryResponse>({
         query: GET_RECORD_DETAILS,
         variables: {
           id: this.data.record,

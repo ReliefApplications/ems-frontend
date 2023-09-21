@@ -12,16 +12,16 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import {
   PageContextT,
   ReferenceData,
+  ReferenceDataQueryResponse,
+  ReferenceDatasQueryResponse,
   Resource,
   UnsubscribeComponent,
+  ResourceQueryResponse,
+  ResourcesQueryResponse,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
-  GetReferenceDataQueryResponse,
-  GetReferenceDatasQueryResponse,
-  GetResourceQueryResponse,
-  GetResourcesQueryResponse,
   GET_REFERENCE_DATA,
   GET_REFERENCE_DATAS,
   GET_RESOURCE,
@@ -99,8 +99,8 @@ export class ContextDatasourceComponent
   public displayField: string | null = null;
 
   // Queries
-  public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
-  public refDatasQuery!: QueryRef<GetReferenceDatasQueryResponse>;
+  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
+  public refDatasQuery!: QueryRef<ReferenceDatasQueryResponse>;
 
   @ViewChild(GraphQLSelectComponent)
   resourceSelect?: GraphQLSelectComponent;
@@ -172,7 +172,7 @@ export class ContextDatasourceComponent
 
   /** Initializes queries and fetches initial data */
   private initQueries(): void {
-    this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
+    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
       query: GET_RESOURCES,
       variables: {
         first: ITEMS_PER_PAGE,
@@ -180,20 +180,18 @@ export class ContextDatasourceComponent
       },
     });
 
-    this.refDatasQuery = this.apollo.watchQuery<GetReferenceDatasQueryResponse>(
-      {
-        query: GET_REFERENCE_DATAS,
-        variables: {
-          first: ITEMS_PER_PAGE,
-        },
-      }
-    );
+    this.refDatasQuery = this.apollo.watchQuery<ReferenceDatasQueryResponse>({
+      query: GET_REFERENCE_DATAS,
+      variables: {
+        first: ITEMS_PER_PAGE,
+      },
+    });
 
     // If the form has a resource, fetch it
     const resourceID = this.form.get('resource')?.value;
     if (resourceID) {
       this.apollo
-        .query<GetResourceQueryResponse>({
+        .query<ResourceQueryResponse>({
           query: GET_RESOURCE,
           variables: {
             id: resourceID,
@@ -209,7 +207,7 @@ export class ContextDatasourceComponent
     const refDataID = this.form.get('refData')?.value;
     if (refDataID) {
       this.apollo
-        .query<GetReferenceDataQueryResponse>({
+        .query<ReferenceDataQueryResponse>({
           query: GET_REFERENCE_DATA,
           variables: {
             id: refDataID,

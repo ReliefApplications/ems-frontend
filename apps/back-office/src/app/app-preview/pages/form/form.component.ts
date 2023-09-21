@@ -8,11 +8,11 @@ import {
   Step,
   FormComponent as SharedFormComponent,
   UnsubscribeComponent,
+  StepQueryResponse,
+  FormQueryResponse,
+  PageQueryResponse,
 } from '@oort-front/shared';
 import {
-  GetFormByIdQueryResponse,
-  GetPageByIdQueryResponse,
-  GetStepByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
   GET_PAGE_BY_ID,
   GET_STEP_BY_ID,
@@ -70,7 +70,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
       this.isStep = this.router.url.includes('/workflow/');
       if (this.isStep) {
         this.apollo
-          .query<GetStepByIdQueryResponse>({
+          .query<StepQueryResponse>({
             query: GET_STEP_BY_ID,
             variables: {
               id: this.id,
@@ -79,7 +79,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           .subscribe((res) => {
             this.step = res.data.step;
             this.apollo
-              .query<GetFormByIdQueryResponse>({
+              .query<FormQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
                 variables: {
                   id: this.step.content,
@@ -92,7 +92,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           });
       } else {
         this.apollo
-          .query<GetPageByIdQueryResponse>({
+          .query<PageQueryResponse>({
             query: GET_PAGE_BY_ID,
             variables: {
               id: this.id,
@@ -101,7 +101,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           .subscribe((res) => {
             this.page = res.data.page;
             this.apollo
-              .query<GetFormByIdQueryResponse>({
+              .query<FormQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
                 variables: {
                   id: this.page.content,

@@ -1,16 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
-import {
-  EditUserProfileMutationResponse,
-  EDIT_USER_PROFILE,
-} from './graphql/mutations';
+import { EDIT_USER_PROFILE } from './graphql/mutations';
 import { AuthService } from '../../services/auth/auth.service';
 import { TranslateService } from '@ngx-translate/core';
 import { UnsubscribeComponent } from '../../components/utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
-import { User } from '../../models/user.model';
+import { EditUserProfileMutationResponse, User } from '../../models/user.model';
 
 /**
  * Shared profile page.
@@ -71,10 +68,6 @@ export class ProfileComponent extends UnsubscribeComponent implements OnInit {
    * Submits new profile.
    */
   onSubmit(): void {
-    const roles: any[] = [];
-    this.user?.roles?.forEach((e: any) => {
-      roles.push(e.id);
-    });
     this.apollo
       .mutate<EditUserProfileMutationResponse>({
         mutation: EDIT_USER_PROFILE,
@@ -87,19 +80,7 @@ export class ProfileComponent extends UnsubscribeComponent implements OnInit {
       })
       .subscribe({
         next: ({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('pages.profile.notifications.notUpdated'),
-              { error: true }
-            );
-          } else {
-            if (data) {
-              this.snackBar.openSnackBar(
-                this.translate.instant('pages.profile.notifications.updated')
-              );
-              this.user.name = data.editUserProfile.name;
-            }
-          }
+          this.handleUserProfileMutationResponse({ data, errors }, 'name');
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
@@ -114,10 +95,6 @@ export class ProfileComponent extends UnsubscribeComponent implements OnInit {
    */
   onSelectFavorite(application: any): void {
     if (application) {
-      const roles: any[] = [];
-      this.user?.roles?.forEach((e: any) => {
-        roles.push(e.id);
-      });
       this.apollo
         .mutate<EditUserProfileMutationResponse>({
           mutation: EDIT_USER_PROFILE,
@@ -129,21 +106,10 @@ export class ProfileComponent extends UnsubscribeComponent implements OnInit {
         })
         .subscribe({
           next: ({ errors, data }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'pages.profile.notifications.notUpdated'
-                ),
-                { error: true }
-              );
-            } else {
-              if (data) {
-                this.snackBar.openSnackBar(
-                  this.translate.instant('pages.profile.notifications.updated')
-                );
-                this.user.favoriteApp = data.editUserProfile.favoriteApp;
-              }
-            }
+            this.handleUserProfileMutationResponse(
+              { data, errors },
+              'favoriteApp'
+            );
           },
           error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
@@ -164,5 +130,33 @@ export class ProfileComponent extends UnsubscribeComponent implements OnInit {
       lastName: [user.lastName, Validators.required],
       username: [{ value: user.username, disabled: true }],
     });
+  }
+
+  /**
+   * Handle user profile mutation response for the given property
+   *
+   * @param response user profile mutation response
+   * @param response.data response data
+   * @param response.errors response errors
+   * @param profileProperty type of property to update from profile
+   */
+  private handleUserProfileMutationResponse(
+    response: { data: any; errors: any },
+    profileProperty: 'name' | 'favoriteApp'
+  ) {
+    const { errors, data } = response;
+    if (errors) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('pages.profile.notifications.notUpdated'),
+        { error: true }
+      );
+    } else {
+      if (data) {
+        this.snackBar.openSnackBar(
+          this.translate.instant('pages.profile.notifications.updated')
+        );
+        this.user[profileProperty] = data.editUserProfile[profileProperty];
+      }
+    }
   }
 }

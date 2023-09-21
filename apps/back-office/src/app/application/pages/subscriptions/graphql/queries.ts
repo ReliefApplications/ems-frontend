@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Form, Application } from '@oort-front/shared';
 
 // === GET FORMS ===
 
@@ -33,21 +32,6 @@ export const GET_FORM_NAMES = gql`
   }
 `;
 
-/** Model for GetFormsQueryResposne object */
-export interface GetFormsQueryResponse {
-  forms: {
-    edges: {
-      node: Form;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-    totalCount: number;
-  };
-}
-
 // === GET ROUTING KEYS ===
 
 /** Graphql query for getting routing keys with a cursor */
@@ -74,18 +58,3 @@ export const GET_ROUTING_KEYS = gql`
     }
   }
 `;
-
-/** Model for GetRoutingKeysQueryResponse object */
-export interface GetRoutingKeysQueryResponse {
-  applications: {
-    edges: {
-      node: Application;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-    totalCount: number;
-  };
-}

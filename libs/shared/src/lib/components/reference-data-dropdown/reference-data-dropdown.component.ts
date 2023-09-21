@@ -7,10 +7,12 @@ import {
   Output,
 } from '@angular/core';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { ReferenceData } from '../../models/reference-data.model';
 import {
-  GetReferenceDataByIdQueryResponse,
-  GetReferenceDatasQueryResponse,
+  ReferenceData,
+  ReferenceDataQueryResponse,
+  ReferenceDatasQueryResponse,
+} from '../../models/reference-data.model';
+import {
   GET_REFERENCE_DATAS,
   GET_SHORT_REFERENCE_DATA_BY_ID,
 } from './graphql/queries';
@@ -39,7 +41,7 @@ export class ReferenceDataDropdownComponent
   @Output() change: EventEmitter<string> = new EventEmitter<string>();
 
   public selectedReferenceData: ReferenceData | null = null;
-  public referenceDatasQuery!: QueryRef<GetReferenceDatasQueryResponse>;
+  public referenceDatasQuery!: QueryRef<ReferenceDatasQueryResponse>;
 
   /**
    * Reference data dropdown component
@@ -53,7 +55,7 @@ export class ReferenceDataDropdownComponent
   ngOnInit(): void {
     if (this.referenceData) {
       this.apollo
-        .query<GetReferenceDataByIdQueryResponse>({
+        .query<ReferenceDataQueryResponse>({
           query: GET_SHORT_REFERENCE_DATA_BY_ID,
           variables: {
             id: this.referenceData,
@@ -67,7 +69,7 @@ export class ReferenceDataDropdownComponent
     }
 
     this.referenceDatasQuery =
-      this.apollo.watchQuery<GetReferenceDatasQueryResponse>({
+      this.apollo.watchQuery<ReferenceDatasQueryResponse>({
         query: GET_REFERENCE_DATAS,
         variables: {
           first: ITEMS_PER_PAGE,

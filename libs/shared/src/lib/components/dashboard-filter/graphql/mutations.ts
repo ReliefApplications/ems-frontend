@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Application } from '../../../models/application.model';
 
 /** Graphql request for editing an application by its id */
 export const EDIT_APPLICATION_FILTER = gql`
@@ -33,8 +32,3 @@ export const EDIT_APPLICATION_FILTER_POSITION = gql`
     }
   }
 `;
-
-/** Edit application gql mutation response interface */
-export interface EditApplicationMutationResponse {
-  editApplication: Application;
-}

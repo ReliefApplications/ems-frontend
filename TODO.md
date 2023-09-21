@@ -2,10 +2,6 @@
 
 List there all actions to do ( eg: update to perform on some components when releasing them on different branch ).
 
-## Migration 1.3 -> 1.4
-[ ] - check that toPromise are replaced by firstValueFrom ( due to rxjs update )
-[ ] - check that new tailwind palette is correctly applied
-
-## TODO
-- storybook
-- 
+## Done in 2.x.x
+[ ] - Remove query / mutation interfaces in GraphQL files, and keep them in model files
+[ ] - Update of Apollo

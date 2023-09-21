@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { ReferenceData } from '@oort-front/shared';
 
 // === EDIT REFERENCE DATA ===
 /** Edit ref data gql mutation definition */
@@ -62,8 +61,3 @@ export const EDIT_REFERENCE_DATA = gql`
     }
   }
 `;
-
-/** Edit ref data gql mutation response interface */
-export interface EditReferenceDataMutationResponse {
-  editReferenceData: ReferenceData;
-}

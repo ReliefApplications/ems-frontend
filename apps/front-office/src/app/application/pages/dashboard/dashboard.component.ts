@@ -12,10 +12,7 @@ import {
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import {
-  GetDashboardByIdQueryResponse,
-  GET_DASHBOARD_BY_ID,
-} from './graphql/queries';
+import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 import {
   Dashboard,
   DashboardService,
@@ -24,6 +21,7 @@ import {
   ConfirmService,
   ButtonActionT,
   ContextService,
+  DashboardQueryResponse,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map, startWith, takeUntil } from 'rxjs/operators';
@@ -219,7 +217,7 @@ export class DashboardComponent
     this.loading = true;
     this.id = id;
     return firstValueFrom(
-      this.apollo.query<GetDashboardByIdQueryResponse>({
+      this.apollo.query<DashboardQueryResponse>({
         query: GET_DASHBOARD_BY_ID,
         variables: {
           id: this.id,

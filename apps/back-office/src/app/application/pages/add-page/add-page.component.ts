@@ -7,10 +7,12 @@ import {
   WIDGET_TYPES,
   ApplicationService,
   UnsubscribeComponent,
+  FormsQueryResponse,
+  AddFormMutationResponse,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs';
-import { AddFormMutationResponse, ADD_FORM } from './graphql/mutations';
-import { GET_FORMS, GetFormsQueryResponse } from './graphql/queries';
+import { ADD_FORM } from './graphql/mutations';
+import { GET_FORMS } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
@@ -34,7 +36,7 @@ export class AddPageComponent extends UnsubscribeComponent implements OnInit {
   /** Available widgets for addition */
   public availableWidgets: any[] = WIDGET_TYPES;
   /** Forms query */
-  public formsQuery!: QueryRef<GetFormsQueryResponse>;
+  public formsQuery!: QueryRef<FormsQueryResponse>;
   /** New page form */
   public pageForm = this.fb.group({
     type: ['', Validators.required],
@@ -69,7 +71,7 @@ export class AddPageComponent extends UnsubscribeComponent implements OnInit {
     this.pageForm.get('type')?.valueChanges.subscribe((type) => {
       const contentControl = this.pageForm.controls.content;
       if (type === ContentType.form) {
-        this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
+        this.formsQuery = this.apollo.watchQuery<FormsQueryResponse>({
           query: GET_FORMS,
           variables: {
             first: ITEMS_PER_PAGE,

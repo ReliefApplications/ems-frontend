@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { User } from '../../../models/user.model';
 import { USER_FIELDS } from './fragments';
 
 /** Edit User profile mutation */
@@ -11,11 +10,6 @@ export const EDIT_USER_PROFILE = gql`
   }
   ${USER_FIELDS}
 `;
-
-/** Interface of Edit User Profile mutation */
-export interface EditUserProfileMutationResponse {
-  editUserProfile: User;
-}
 
 /** Edit User roles Mutation */
 export const EDIT_USER_ROLES = gql`
@@ -31,8 +25,3 @@ export const EDIT_USER_ROLES = gql`
   }
   ${USER_FIELDS}
 `;
-
-/** Interface of Edit User Roles mutation */
-export interface EditUserRolesMutationResponse {
-  editUser: User;
-}

@@ -15,12 +15,12 @@ import {
   UnsubscribeComponent,
   ConfirmService,
   RestService,
+  BlobType,
+  DownloadService,
 } from '@oort-front/shared';
 import { firstValueFrom } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Apollo } from 'apollo-angular';
-import { UploadApplicationStyleMutationResponse } from './graphql/mutations';
-import { UPLOAD_APPLICATION_STYLE } from './graphql/mutations';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import {
   ButtonModule,
@@ -78,6 +78,7 @@ export class CustomStyleComponent
    * @param confirmService Shared confirmation service
    * @param restService Shared rest service
    * @param document document
+   * @param downloadService Shared download service
    */
   constructor(
     private applicationService: ApplicationService,
@@ -86,7 +87,8 @@ export class CustomStyleComponent
     private translate: TranslateService,
     private confirmService: ConfirmService,
     private restService: RestService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private downloadService: DownloadService
   ) {
     super();
     // Updates the style when the value changes
@@ -163,7 +165,11 @@ export class CustomStyleComponent
 
   /** Save application custom css styling */
   async onSave(): Promise<void> {
+    // todo(beta): check
     this.loading = true;
+    if (!this.applicationId) {
+      throw new Error('No application id');
+    }
 
     const file = new File(
       [this.formControl.value as string],
@@ -173,22 +179,20 @@ export class CustomStyleComponent
       }
     );
 
-    const res = await firstValueFrom(
-      this.apollo.mutate<UploadApplicationStyleMutationResponse>({
-        mutation: UPLOAD_APPLICATION_STYLE,
-        variables: {
-          file,
-          application: this.applicationId,
-        },
-        context: {
-          useMultipart: true,
-        },
+    const path = await this.downloadService.uploadBlob(
+      file,
+      BlobType.APPLICATION_STYLE,
+      this.applicationId
+    );
+
+    this.snackBar.openSnackBar(
+      this.translate.instant('common.notifications.objectUpdated', {
+        value: this.translate.instant('components.application.customStyling'),
+        type: '',
       })
     );
-    if (res.errors) {
-      this.snackBar.openSnackBar(res.errors[0].message, { error: true });
-      return;
-    } else {
+    // todo(beta): check
+    if (path) {
       this.snackBar.openSnackBar(
         this.translate.instant('common.notifications.objectUpdated', {
           value: this.translate.instant('components.application.customStyling'),

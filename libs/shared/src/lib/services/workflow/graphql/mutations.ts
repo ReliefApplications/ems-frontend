@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Step } from '../../../models/step.model';
 
 // === ADD STEP ===
 
@@ -15,11 +14,6 @@ export const ADD_STEP = gql`
     }
   }
 `;
-
-/** Model for AddStepMutationResponse object */
-export interface AddStepMutationResponse {
-  addStep: Step;
-}
 
 // === EDIT STEP ===
 /** Edit step gql mutation definition */
@@ -60,8 +54,3 @@ export const EDIT_STEP = gql`
     }
   }
 `;
-
-/** Edit step gql mutation response interface */
-export interface EditStepMutationResponse {
-  editStep: Step;
-}

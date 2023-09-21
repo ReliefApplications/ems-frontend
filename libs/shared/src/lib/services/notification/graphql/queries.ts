@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Notification } from '../../../models/notification.model';
 
 // === GET NOTIFICATIONS ===
 /** Graphql request for getting notifications */
@@ -34,18 +33,3 @@ export const GET_NOTIFICATIONS = gql`
     }
   }
 `;
-
-/** Model for GetNotificationsQueryResponse object */
-export interface GetNotificationsQueryResponse {
-  notifications: {
-    edges: {
-      node: Notification;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-    totalCount: number;
-  };
-}

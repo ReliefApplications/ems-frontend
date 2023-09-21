@@ -1,16 +1,15 @@
 import { Apollo, gql } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
-import {
-  GetQueryMetaDataQueryResponse,
-  GetQueryTypes,
-  GET_QUERY_META_DATA,
-  GET_QUERY_TYPES,
-} from './graphql/queries';
+import { GET_QUERY_META_DATA, GET_QUERY_TYPES } from './graphql/queries';
 import { ApolloQueryResult } from '@apollo/client';
 import get from 'lodash/get';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { Connection } from '../../utils/public-api';
+import {
+  QueryMetaDataQueryResponse,
+  QueryTypes,
+} from '../../models/metadata.model';
 
 /** Interface for the variables of a query */
 interface QueryVariables {
@@ -109,7 +108,7 @@ export class QueryBuilderService {
    */
   constructor(private apollo: Apollo) {
     this.apollo
-      .query<GetQueryTypes>({
+      .query<QueryTypes>({
         query: GET_QUERY_TYPES,
       })
       .subscribe(({ data }) => {
@@ -284,18 +283,7 @@ export class QueryBuilderService {
           case 'SCALAR': {
             return x.name + '\n';
           }
-          case 'LIST': {
-            const subFields = get(x, 'fields', []) || get(x, 'type.fields', []);
-            if (subFields.length > 0) {
-              return (
-                `${x.name} {
-              ${this.buildMetaFields(subFields)}
-            }` + '\n'
-              );
-            } else {
-              return '';
-            }
-          }
+          case 'LIST':
           case 'OBJECT': {
             const subFields = get(x, 'fields', []) || get(x, 'type.fields', []);
             if (subFields.length > 0) {
@@ -437,7 +425,7 @@ export class QueryBuilderService {
    * @returns metadata query
    */
   public getQueryMetaData(id: string) {
-    return this.apollo.query<GetQueryMetaDataQueryResponse>({
+    return this.apollo.query<QueryMetaDataQueryResponse>({
       query: GET_QUERY_META_DATA,
       variables: {
         id,

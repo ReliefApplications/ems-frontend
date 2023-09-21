@@ -9,10 +9,12 @@
   markerDefault;
 
 /* All the needed fonts for the web component */
-@import 'libs/ui/src/style/widgets.scss';
-@import 'libs/ui/src/style/survey.scss';
-@import 'libs/ui/src/style/styles.scss';
-@import 'libs/ui/src/style/theme.scss';
+@import 'libs/styles/src/lib/tailwind/tailwind.scss';
+@import 'libs/styles/src/lib/shared/shared.scss';
+@import 'libs/safe/src/lib/style/styles.scss';
+@import 'libs/safe/src/lib/style/widgets.scss';
+@import 'libs/safe/src/lib/style/survey.scss';
+@import 'libs/safe/src/lib/style/theme.scss';
 
 /* Definition of the scss properties in the shadow root host element, won't affect any other element outside shadow-root */
 @import 'variables.scss';

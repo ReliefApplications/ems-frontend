@@ -1,6 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Resource } from '../../../../models/resource.model';
-import { Record } from '../../../../models/record.model';
 
 /** Graphql query for getting multiple resources with a cursor */
 export const GET_RESOURCES = gql`
@@ -47,21 +45,6 @@ export const GET_RESOURCES = gql`
   }
 `;
 
-/** Model for GetResourcesQueryResponse object */
-export interface GetResourcesQueryResponse {
-  resources: {
-    edges: {
-      node: Resource;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-    totalCount: number;
-  };
-}
-
 /** Graphql request for getting resource  */
 export const GET_RESOURCE = gql`
   query GetResource($id: ID!, $layout: [ID]) {
@@ -89,11 +72,6 @@ export const GET_RESOURCE = gql`
   }
 `;
 
-/** Model for GetResourceByIdQueryResponse object */
-export interface GetResourceByIdQueryResponse {
-  resource: Resource;
-}
-
 // === GET RECORD BY ID ===
 /** Graphql request for getting a record by its id */
 export const GET_RECORD_BY_ID = gql`
@@ -113,8 +91,3 @@ export const GET_RECORD_BY_ID = gql`
     }
   }
 `;
-
-/** Model for GetRecordByIdQueryResponse object */
-export interface GetRecordByIdQueryResponse {
-  record: Record;
-}

@@ -7,12 +7,10 @@ import {
   Output,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import {
-  GetDashboardByIdQueryResponse,
-  GET_DASHBOARD_BY_ID,
-} from './graphql/queries';
+import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 import {
   Dashboard,
+  DashboardQueryResponse,
   DashboardService,
   UnsubscribeComponent,
 } from '@oort-front/shared';
@@ -70,7 +68,7 @@ export class DashboardComponent
       this.loading = true;
       this.id = params.id;
       this.apollo
-        .query<GetDashboardByIdQueryResponse>({
+        .query<DashboardQueryResponse>({
           query: GET_DASHBOARD_BY_ID,
           variables: {
             id: this.id,

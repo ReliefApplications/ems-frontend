@@ -5,8 +5,6 @@ import { firstValueFrom } from 'rxjs';
 import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
-  GetLayoutQueryResponse,
-  GetResourceMetadataQueryResponse,
 } from '../summary-card/graphql/queries';
 import { clone, get } from 'lodash';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
@@ -14,6 +12,7 @@ import { DataTemplateService } from '../../../services/data-template/data-templa
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
+import { ResourceQueryResponse } from '../../../models/resource.model';
 
 /**
  * Text widget component using KendoUI
@@ -89,7 +88,7 @@ export class EditorComponent implements OnInit {
   /** Sets layout */
   private async getLayout(): Promise<void> {
     const apolloRes = await firstValueFrom(
-      this.apollo.query<GetLayoutQueryResponse>({
+      this.apollo.query<ResourceQueryResponse>({
         query: GET_LAYOUT,
         variables: {
           id: this.settings.layout,
@@ -111,7 +110,7 @@ export class EditorComponent implements OnInit {
    */
   private async getData() {
     const metaRes = await firstValueFrom(
-      this.apollo.query<GetResourceMetadataQueryResponse>({
+      this.apollo.query<ResourceQueryResponse>({
         query: GET_RESOURCE_METADATA,
         variables: {
           id: this.settings.resource,

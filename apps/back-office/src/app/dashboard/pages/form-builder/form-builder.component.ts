@@ -2,16 +2,12 @@ import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
-  EditFormMutationResponse,
   EDIT_FORM_NAME,
   EDIT_FORM_PERMISSIONS,
   EDIT_FORM_STATUS,
   EDIT_FORM_STRUCTURE,
 } from './graphql/mutations';
-import {
-  GetFormByIdQueryResponse,
-  GET_SHORT_FORM_BY_ID,
-} from './graphql/queries';
+import { GET_SHORT_FORM_BY_ID } from './graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
 import {
   AuthService,
@@ -19,6 +15,8 @@ import {
   ConfirmService,
   BreadcrumbService,
   status,
+  FormQueryResponse,
+  EditFormMutationResponse,
 } from '@oort-front/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -115,7 +113,7 @@ export class FormBuilderComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.apollo
-        .watchQuery<GetFormByIdQueryResponse>({
+        .watchQuery<FormQueryResponse>({
           query: GET_SHORT_FORM_BY_ID,
           variables: {
             id: this.id,
@@ -302,7 +300,7 @@ export class FormBuilderComponent implements OnInit {
    */
   setTemplate(id: string): void {
     this.apollo
-      .watchQuery<GetFormByIdQueryResponse>({
+      .watchQuery<FormQueryResponse>({
         query: GET_SHORT_FORM_BY_ID,
         variables: {
           id,

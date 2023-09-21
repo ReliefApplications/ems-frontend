@@ -304,54 +304,44 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
     // add move up/down buttons
     this.surveyCreator.onDefineElementMenuItems.add(
       (sender: SurveyCreator.SurveyCreator, options: any) => {
+        const clickHandler = (obj: any, movement: 'up' | 'down') => {
+          // get the page index of current question
+          const pageIndex = sender.survey.pages.findIndex(
+            (page: any) => page.questions.indexOf(obj) !== -1
+          );
+
+          // get the index of the current question in the page
+          const questionIndex =
+            sender.survey.pages[pageIndex].questions.indexOf(obj);
+
+          if (
+            (movement === 'down' &&
+              questionIndex ===
+                sender.survey.pages[pageIndex].questions.length - 1) ||
+            (movement === 'up' && questionIndex === 0)
+          ) {
+            return;
+          }
+
+          // remove the element from the current page
+          sender.survey.pages[pageIndex].removeElement(obj);
+
+          // add it back to the page at the previous index
+          const newIndex =
+            movement === 'up' ? questionIndex - 1 : questionIndex + 1;
+          sender.survey.pages[pageIndex].addElement(obj, newIndex);
+        };
+
         const moveUpButton = {
           name: 'move-up',
           text: this.translate.instant('pages.formBuilder.move.up'),
-          onClick: (obj: any) => {
-            // get the page index of current question
-            const pageIndex = sender.survey.pages.findIndex(
-              (page: any) => page.questions.indexOf(obj) !== -1
-            );
-
-            // get the index of the current question in the page
-            const questionIndex =
-              sender.survey.pages[pageIndex].questions.indexOf(obj);
-
-            if (questionIndex === 0) return;
-
-            // remove the element from the current page
-            sender.survey.pages[pageIndex].removeElement(obj);
-
-            // add it back to the page at the previous index
-            sender.survey.pages[pageIndex].addElement(obj, questionIndex - 1);
-          },
+          onClick: (obj: any) => clickHandler(obj, 'up'),
         };
 
         const moveDownButton = {
           name: 'move-down',
           text: this.translate.instant('pages.formBuilder.move.down'),
-          onClick: (obj: any) => {
-            // get the page index of current question
-            const pageIndex = sender.survey.pages.findIndex(
-              (page: any) => page.questions.indexOf(obj) !== -1
-            );
-
-            // get the index of the current question in the page
-            const questionIndex =
-              sender.survey.pages[pageIndex].questions.indexOf(obj);
-
-            if (
-              questionIndex ===
-              sender.survey.pages[pageIndex].questions.length - 1
-            )
-              return;
-
-            // remove the element from the current page
-            sender.survey.pages[pageIndex].removeElement(obj);
-
-            // add it back to the page at the previous index
-            sender.survey.pages[pageIndex].addElement(obj, questionIndex + 1);
-          },
+          onClick: (obj: any) => clickHandler(obj, 'down'),
         };
 
         // Find the `delete` action's position.

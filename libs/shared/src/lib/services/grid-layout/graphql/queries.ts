@@ -1,6 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Resource } from '../../../models/resource.model';
-import { Form } from '../../../models/form.model';
 
 // === GET RELATED FORMS FROM RESOURCE ===
 /** Graphql request for getting resource meta date for a grid */
@@ -44,12 +42,6 @@ export const GET_GRID_RESOURCE_META = gql`
   }
 `;
 
-// === GET RESOURCE BY ID ===
-/** Model for GetResourceByIdQueryResponse object */
-export interface GetResourceByIdQueryResponse {
-  resource: Resource;
-}
-
 // === GET FORM BY ID ===
 /** Graphql request for getting the meta fields of a grid by form id */
 export const GET_GRID_FORM_META = gql`
@@ -77,8 +69,3 @@ export const GET_GRID_FORM_META = gql`
     }
   }
 `;
-
-/** Model for GetFormByIdQueryResponse object */
-export interface GetFormByIdQueryResponse {
-  form: Form;
-}

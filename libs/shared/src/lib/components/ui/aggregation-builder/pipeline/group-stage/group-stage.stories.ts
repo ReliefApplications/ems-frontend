@@ -1,70 +1,16 @@
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
+import { Meta, StoryFn } from '@storybook/angular';
 import { GroupStageComponent } from './group-stage.component';
-import { PipelineModule } from '../pipeline.module';
-import { StorybookTranslateModule } from '../../../../storybook-translate/storybook-translate-module';
+import { UntypedFormBuilder, Validators } from '@angular/forms';
 import {
-  UntypedFormBuilder,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
+  SHARED_PIPELINE_STORIES_CONFIG,
+  DEFAULT_FIELDS,
+} from '../shared/stories-config';
 
 export default {
   component: GroupStageComponent,
-  decorators: [
-    moduleMetadata({
-      imports: [
-        PipelineModule,
-        BrowserAnimationsModule,
-        StorybookTranslateModule,
-        ReactiveFormsModule,
-      ],
-      providers: [
-        {
-          provide: 'environment',
-          useValue: {},
-        },
-      ],
-    }),
-  ],
+  ...SHARED_PIPELINE_STORIES_CONFIG,
   title: 'UI/Aggregation builder/Stages/Group',
-  args: {
-    currentForms: [],
-    filteredForms: [],
-  },
 } as Meta;
-
-/**
- * List of fields for testing.
- */
-const DEFAULT_FIELDS = [
-  {
-    name: 'date',
-    args: [],
-    type: {
-      name: 'Date',
-      kind: 'SCALAR',
-      ofType: null,
-    },
-  },
-  {
-    name: 'description',
-    args: [],
-    type: {
-      name: 'String',
-      kind: 'SCALAR',
-      ofType: null,
-    },
-  },
-  {
-    name: 'status',
-    type: {
-      name: 'String',
-      kind: 'SCALAR',
-      ofType: null,
-    },
-  },
-];
 
 /**
  * Form builder reference.

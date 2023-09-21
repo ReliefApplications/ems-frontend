@@ -1,14 +1,17 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { EditorFormType } from '../editor-settings.component';
-import { Resource } from '../../../../models/resource.model';
+import {
+  Resource,
+  ResourcesQueryResponse,
+} from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { GET_RESOURCES, GetResourcesQueryResponse } from '../graphql/queries';
 import { get } from 'lodash';
 import { GridLayoutService } from '../../../../../../../../libs/shared/src/lib/services/grid-layout/grid-layout.service';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
+import { GET_RESOURCES } from '../graphql/queries';
 
 /** Default number of resources to be fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -32,7 +35,7 @@ export class RecordSelectionTabComponent
 
   public selectedRecordID: string | null = null;
 
-  public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
 
   /**
    * Component for the record selection in the editor widget settings
@@ -51,7 +54,7 @@ export class RecordSelectionTabComponent
 
   ngOnInit(): void {
     this.selectedRecordID = this.form.get('record')?.value || null;
-    this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
+    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
       query: GET_RESOURCES,
       variables: {
         first: ITEMS_PER_PAGE,
@@ -105,7 +108,9 @@ export class RecordSelectionTabComponent
 
   /** Opens modal for layout selection/creation */
   public async addLayout() {
-    if (!this.selectedResource) return;
+    if (!this.selectedResource) {
+      return;
+    }
     const { AddLayoutModalComponent } = await import(
       '../../../grid-layout/add-layout-modal/add-layout-modal.component'
     );
@@ -120,8 +125,8 @@ export class RecordSelectionTabComponent
         if (typeof value === 'string') {
           this.form.get('layout')?.setValue(value);
         } else {
-          this.layoutChange.emit(value);
           this.form.get('layout')?.setValue((value as any).id);
+          this.layoutChange.emit(value);
         }
       }
     });

@@ -1,7 +1,14 @@
 <!-- By default, vertical navigation -->
-<ng-container *ngIf="vertical; else horizontalMenu">
-  <section class="pt-2 flex flex-col gap-y-7">
-    <ng-container *ngFor="let group of navGroups; let i = index" class="h-full">
+<section
+  [ngClass]="{
+    'border-b': !vertical,
+    'pt-2 flex-col gap-y-7': vertical
+  }"
+  class="flex"
+>
+  <ng-container *ngFor="let group of navGroups; let i = index" class="h-full">
+    <!-- Vertical navigation -->
+    <ng-container *ngIf="vertical; else horizontalMenu">
       <div class="pl-6">
         <div
           class="overflow-clip flex flex-row justify-between items-center text-xs font-semibold pt-2 leading-6 text-gray-400"
@@ -20,204 +27,128 @@
             class="overflow-visible"
           ></ui-button>
         </div>
-        <div
-          cdkDropList
-          (cdkDropListDropped)="drop($event, group)"
-          [class]="
-            appLayout
-              ? canAddPage
-                ? largeDevice
-                  ? 'app-sidenav-add-page'
-                  : 'app-sidenav-phone-add-page'
-                : largeDevice
-                ? 'app-sidenav'
-                : 'app-sidenav-phone'
-              : ''
-          "
-        >
-          <!-- Classes determine nav-list height for application layout -->
-          <ul class="pr-6">
-            <ng-container *ngFor="let item of group.navItems">
-              <div
-                cdkDrag
-                [cdkDragDisabled]="!item.orderable"
-                class="show-icons"
-                *ngIf="canAddPage || item.visible || !appLayout"
-              >
-                <li
-                  [routerLink]="item.path"
-                  routerLinkActive="!text-primary-600 bg-gray-50"
-                >
-                  <a
-                    class="group"
-                    [routerLink]="item.path"
-                    (click)="largeDevice ? null : nav.toggle()"
-                  >
-                    <ui-icon variant="grey" [icon]="item.icon"> </ui-icon>
-                    <p class="truncate m-0" [uiTooltip]="item.name">
-                      {{ item.name }}
-                    </p>
-                  </a>
-                  <div
-                    class="flex flex-row items-center"
-                    *ngIf="item.action || item.orderable"
-                  >
-                    <ui-button
-                      class="hide-icons"
-                      [isIcon]="true"
-                      *ngIf="item.action"
-                      size="small"
-                      (click)="onClick(item.action.callback, $event)"
-                      [icon]="item.action.icon"
-                      [uiTooltip]="item.action.toolTip"
-                    >
-                    </ui-button>
-                    <ui-button
-                      class="hide-icons"
-                      [isIcon]="true"
-                      size="small"
-                      cdkDragHandle
-                      *ngIf="item.orderable"
-                      icon="drag_indicator"
-                      [uiTooltip]="'models.page.tooltip.drag' | translate"
-                    >
-                    </ui-button>
-                    <ui-icon
-                      variant="grey"
-                      [size]="18"
-                      *ngIf="!item.visible"
-                      icon="visibility_off"
-                    >
-                    </ui-icon>
-                  </div>
-                </li>
-                <!-- Preview when dragging element -->
-                <li
-                  *cdkDragPreview
-                  class="flex items-center flex-row text-gray-700 bg-white rounded-md px-2 py-3 shadow-2lg"
-                >
-                  <a
-                    class="group flex flex-row gap-x-3 text-sm leading-6 items-center font-semibold"
-                  >
-                    <ui-icon variant="grey" [icon]="item.icon"></ui-icon>
-                    <div class="pl-2">{{ item.name }}</div>
-                  </a>
-                </li>
-              </div>
-            </ng-container>
-          </ul>
-        </div>
+        <ng-container
+          *ngTemplateOutlet="navListTmpl; context: { $implicit: group }"
+        ></ng-container>
       </div>
       <ng-container *ngIf="appLayout && canAddPage">
         <div class="flex flex-col items-center w-full absolute bottom-0">
           <ui-divider class="m-0"></ui-divider>
-          <ui-button
-            class="my-4"
-            icon="add"
-            category="secondary"
-            variant="primary"
-            routerLink="./add-page"
-            (click)="largeDevice ? null : nav.toggle()"
-          >
-            {{ 'models.page.add' | translate }}
-          </ui-button>
+          <ng-container *ngTemplateOutlet="addPageButton"></ng-container>
         </div>
       </ng-container>
     </ng-container>
-  </section>
-</ng-container>
-<!-- Horizontal navigation -->
-<ng-template #horizontalMenu>
-  <section class="flex border-b">
-    <ng-container *ngFor="let group of navGroups; let i = index" class="h-full">
-      <div
-        cdkDropList
-        cdkDropListOrientation="horizontal"
-        (cdkDropListDropped)="drop($event, group)"
-        class="nav-items-list"
-      >
-        <!-- Classes determine nav-list height for application layout -->
-        <!-- loop on items of each nav groups -->
-        <!-- Classes determine nav-list height for application layout -->
-        <ul class="flex">
-          <ng-container *ngFor="let item of group.navItems">
-            <div
-              cdkDrag
-              [cdkDragDisabled]="!item.orderable"
-              class="show-icons w-full max-w-[200px]"
-              *ngIf="canAddPage || item.visible || !appLayout"
+    <!-- Horizontal navigation -->
+    <ng-template #horizontalMenu>
+      <ng-container
+        *ngTemplateOutlet="navListTmpl; context: { $implicit: group }"
+      ></ng-container>
+      <ng-container *ngIf="appLayout && canAddPage">
+        <ng-container *ngTemplateOutlet="addPageButton"></ng-container>
+      </ng-container>
+    </ng-template>
+  </ng-container>
+</section>
+
+<!-- Shared templates for vertical and horizontal view -->
+<ng-template #navListTmpl let-group>
+  <div
+    cdkDropList
+    [cdkDropListOrientation]="vertical ? 'vertical' : 'horizontal'"
+    (cdkDropListDropped)="drop($event, group)"
+    [class]="
+      !vertical
+        ? 'nav-items-list'
+        : appLayout
+        ? canAddPage
+          ? largeDevice
+            ? 'app-sidenav-add-page'
+            : 'app-sidenav-phone-add-page'
+          : largeDevice
+          ? 'app-sidenav'
+          : 'app-sidenav-phone'
+        : ''
+    "
+  >
+    <!-- Classes determine nav-list height for application layout -->
+    <ul [ngClass]="{ 'pr-6': vertical, flex: !vertical }">
+      <ng-container *ngFor="let item of group.navItems">
+        <div
+          cdkDrag
+          [cdkDragDisabled]="!item.orderable"
+          [ngClass]="{ 'w-full max-w-[200px]': !vertical }"
+          class="show-icons"
+        >
+          <li routerLinkActive="text-primary-600 bg-gray-50">
+            <a
+              class="group"
+              (click)="largeDevice ? null : nav.toggle()"
+              [routerLink]="item.path"
             >
-              <li routerLinkActive="!text-primary-600 bg-gray-50">
-                <a
-                  class="group"
-                  (click)="largeDevice ? null : nav.toggle()"
-                  [routerLink]="item.path"
-                >
-                  <ui-icon variant="grey" [icon]="item.icon"> </ui-icon>
-                  <p class="truncate m-0" [uiTooltip]="item.name">
-                    {{ item.name }}
-                  </p>
-                </a>
-                <div
-                  class="flex flex-row items-center"
-                  *ngIf="item.action || item.orderable"
-                >
-                  <ui-button
-                    variant="danger"
-                    class="hide-icons hover:text-primary-600"
-                    [isIcon]="true"
-                    *ngIf="item.action"
-                    size="small"
-                    (click)="onClick(item.action.callback, $event)"
-                    [icon]="item.action.icon"
-                    [uiTooltip]="item.action.toolTip"
-                  >
-                  </ui-button>
-                  <ui-button
-                    variant="grey"
-                    class="hover:text-primary-600"
-                    [isIcon]="true"
-                    size="small"
-                    cdkDragHandle
-                    *ngIf="item.orderable"
-                    icon="drag_indicator"
-                    [uiTooltip]="'models.page.tooltip.drag' | translate"
-                  >
-                  </ui-button>
-                  <ui-icon
-                    variant="grey"
-                    [size]="18"
-                    *ngIf="!item.visible"
-                    icon="visibility_off"
-                    class="flex"
-                  ></ui-icon>
-                </div>
-              </li>
-              <!-- Preview when dragging element -->
-              <li
-                *cdkDragPreview
-                class="flex items-center flex-row text-gray-700 bg-white rounded-md px-2 py-3 shadow-2lg"
+              <ui-icon variant="grey" [icon]="item.icon"> </ui-icon>
+              <p class="truncate m-0" [uiTooltip]="item.name">
+                {{ item.name }}
+              </p>
+            </a>
+            <div
+              class="flex flex-row items-center"
+              *ngIf="item.action || item.orderable"
+            >
+              <ui-button
+                [variant]="!vertical ? 'danger' : 'default'"
+                class="hide-icons hover:text-primary-600"
+                [isIcon]="true"
+                *ngIf="item.action"
+                size="small"
+                (click)="onClick(item.action.callback, $event)"
+                [icon]="item.action.icon"
+                [uiTooltip]="item.action.toolTip"
               >
-                <a
-                  class="group flex flex-row gap-x-3 text-sm leading-6 items-center font-semibold"
-                >
-                  <ui-icon variant="grey" [icon]="item.icon"></ui-icon>
-                  <div class="pl-2">{{ item.name }}</div>
-                </a>
-              </li>
+              </ui-button>
+              <ui-button
+                [variant]="!vertical ? 'grey' : 'default'"
+                [ngClass]="{ 'hide-icons': vertical }"
+                class="hover:text-primary-600"
+                [isIcon]="true"
+                size="small"
+                cdkDragHandle
+                *ngIf="item.orderable"
+                icon="drag_indicator"
+                [uiTooltip]="'models.page.tooltip.drag' | translate"
+              >
+              </ui-button>
             </div>
-          </ng-container>
-        </ul>
-      </div>
-      <ui-button
-        *ngIf="appLayout && canAddPage"
-        [isIcon]="true"
-        class="self-center"
-        icon="add"
-        variant="primary"
-        [uiTooltip]="'models.page.add' | translate"
-        routerLink="./add-page"
-      ></ui-button>
-    </ng-container>
-  </section>
+          </li>
+          <!-- Preview when dragging element -->
+          <li
+            *cdkDragPreview
+            class="flex items-center flex-row text-gray-700 bg-white rounded-md px-2 py-3 shadow-2lg"
+          >
+            <a
+              class="group flex flex-row gap-x-3 text-sm leading-6 items-center font-semibold"
+            >
+              <ui-icon variant="grey" [icon]="item.icon"></ui-icon>
+              <div class="pl-2">{{ item.name }}</div>
+            </a>
+          </li>
+        </div>
+      </ng-container>
+    </ul>
+  </div>
+</ng-template>
+<ng-template #addPageButton>
+  <ui-button
+    [uiTooltip]="!vertical ? ('models.page.add' | translate) : ''"
+    [isIcon]="!vertical ? true : false"
+    [ngClass]="{ 'my-4': vertical, 'self-center': !vertical }"
+    icon="add"
+    [category]="vertical ? 'secondary' : 'primary'"
+    variant="primary"
+    routerLink="./add-page"
+    (click)="!vertical ? null : largeDevice ? null : nav.toggle()"
+  >
+    <span *ngIf="vertical">
+      {{ 'models.page.add' | translate }}
+    </span>
+  </ui-button>
 </ng-template>

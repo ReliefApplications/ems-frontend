@@ -17,13 +17,15 @@ import { Dialog } from '@angular/cdk/dialog';
 import * as Survey from 'survey-angular';
 import { Apollo } from 'apollo-angular';
 import { ApplicationService } from '../../services/application/application.service';
-import { Application } from '../../models/application.model';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import {
+  Application,
+  EditApplicationMutationResponse,
+} from '../../models/application.model';
 import { takeUntil } from 'rxjs/operators';
 import {
   EDIT_APPLICATION_FILTER,
   EDIT_APPLICATION_FILTER_POSITION,
-  EditApplicationMutationResponse,
 } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../services/context/context.service';
@@ -229,24 +231,45 @@ export class DashboardFilterComponent
         },
       })
       .subscribe(({ errors, data }) => {
-        if (errors) {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectNotUpdated', {
-              type: this.translate.instant('common.filter.one'),
-              error: errors ? errors[0].message : '',
-            }),
-            { error: true }
-          );
-        } else {
-          this.contextService.filterStructure.next(this.surveyStructure);
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectUpdated', {
-              type: this.translate.instant('common.filter.one').toLowerCase(),
-              value: data?.editApplication.name ?? '',
-            })
-          );
-        }
+        this.handleFilterMutationResponse({ data, errors });
       });
+  }
+
+  /**
+   * Handle filter update mutation response depending of mutation type, for filter structure or position
+   *
+   * @param response Graphql mutation response
+   * @param response.data response data
+   * @param response.errors response errors
+   * @param defaultPosition filter position
+   */
+  private handleFilterMutationResponse(
+    response: { data: any; errors: any },
+    defaultPosition?: FilterPosition
+  ) {
+    const { data, errors } = response;
+    if (errors) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectNotUpdated', {
+          type: this.translate.instant('common.filter.one'),
+          error: errors ? errors[0].message : '',
+        }),
+        { error: true }
+      );
+    } else {
+      if (defaultPosition) {
+        this.position = defaultPosition;
+        this.contextService.filterPosition.next(defaultPosition);
+      } else {
+        this.contextService.filterStructure.next(this.surveyStructure);
+      }
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectUpdated', {
+          type: this.translate.instant('common.filter.one').toLowerCase(),
+          value: data?.editApplication.name ?? '',
+        })
+      );
+    }
   }
 
   /** Render the survey using the saved structure */
@@ -331,24 +354,7 @@ export class DashboardFilterComponent
         },
       })
       .subscribe(({ errors, data }) => {
-        if (errors) {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectNotUpdated', {
-              type: this.translate.instant('common.filter.one'),
-              error: errors ? errors[0].message : '',
-            }),
-            { error: true }
-          );
-        } else {
-          this.position = defaultPosition;
-          this.contextService.filterPosition.next(defaultPosition);
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.objectUpdated', {
-              type: this.translate.instant('common.filter.one').toLowerCase(),
-              value: data?.editApplication.name ?? '',
-            })
-          );
-        }
+        this.handleFilterMutationResponse({ data, errors }, defaultPosition);
       });
   }
 

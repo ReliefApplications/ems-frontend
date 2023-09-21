@@ -10,7 +10,7 @@ import { ExpressionsComponent } from './expressions.component';
 
 describe('ExpressionsComponent', () => {
   let component: ExpressionsComponent;
-  let fixture: ComponentFixture<sharedExpressionsComponent>;
+  let fixture: ComponentFixture<ExpressionsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
