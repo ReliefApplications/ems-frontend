@@ -65,6 +65,7 @@ export const CONTENT_TYPES: IContentType[] = [
 export interface Page {
   id?: string;
   name?: string;
+  icon?: string;
   createdAt?: Date;
   modifiedAt?: Date;
   type?: ContentType;

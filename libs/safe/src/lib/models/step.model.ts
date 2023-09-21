@@ -5,6 +5,7 @@ import { ContentType } from './page.model';
 export interface Step {
   id?: string;
   name?: string;
+  icon?: string;
   createdAt?: Date;
   modifiedAt?: Date;
   type?: ContentType;
