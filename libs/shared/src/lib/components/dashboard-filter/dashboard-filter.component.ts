@@ -32,6 +32,8 @@ import { ContextService } from '../../services/context/context.service';
 import { SidenavContainerComponent, SnackbarService } from '@oort-front/ui';
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
+import { DatePipe } from '../../pipes/date/date.pipe';
+import { DateTranslateService } from '../../services/date-translate/date-translate.service';
 
 /**
  * Interface for quick filters
@@ -103,6 +105,7 @@ export class DashboardFilterComponent
    * @param ngZone Triggers html changes
    * @param referenceDataService Reference data service
    * @param changeDetectorRef Change detector reference
+   * @param dateTranslate Service used for date formatting
    * @param _host sidenav container host
    */
   constructor(
@@ -115,6 +118,7 @@ export class DashboardFilterComponent
     private ngZone: NgZone,
     private referenceDataService: ReferenceDataService,
     private changeDetectorRef: ChangeDetectorRef,
+    private dateTranslate: DateTranslateService,
     @Optional() private _host: SidenavContainerComponent
   ) {
     super();
@@ -340,6 +344,37 @@ export class DashboardFilterComponent
   }
 
   /**
+   * Checks if value is a date to format it with the date pipe.
+   *
+   * @param questionName the name of the question that the value is being checked
+   * @param value value to check if is a date
+   * @returns If value is a date or not, and if it's the formatted value (questionName: formatted)
+   */
+  public isDate(
+    questionName: string,
+    value: any
+  ): { isDate: boolean; formattedValue?: string } {
+    const checkDate = (str: any) => {
+      if (str === null || str === undefined) {
+        return false; // Handle null or undefined input
+      }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const [y, M, d, h, m, s] = str.split(/[- : T Z]/);
+      return y && M <= 12 && d <= 31 ? true : false;
+    };
+    if (checkDate(value)) {
+      const date = new Date(value);
+      const formatted = new DatePipe(this.dateTranslate).transform(
+        date,
+        'short'
+      );
+      return { isDate: true, formattedValue: `${questionName}: ${formatted}` };
+    } else {
+      return { isDate: false };
+    }
+  }
+
+  /**
    *  Saves the filter settings
    *
    * @param defaultPosition default position for the filter to be registered
@@ -392,7 +427,7 @@ export class DashboardFilterComponent
       .reduce(function (acc, question) {
         acc = {
           ...acc,
-          [question.name]: question.isPrimitiveValue,
+          [question.name]: question.isPrimitiveValue ?? true,
         };
         return acc;
       }, {});
@@ -409,15 +444,35 @@ export class DashboardFilterComponent
               tooltip: question.displayValue,
             };
           } else {
-            mappedQuestion = {
-              // If the value used is not primitive, use the text label to display selection in the filter
-              label: !isValuePrimitiveKeys[
+            // To check if the value used is primitive
+            const isPrimitive =
+              isValuePrimitiveKeys[
                 question.name as keyof typeof isValuePrimitiveKeys
-              ]
-                ? question.displayValue.text
-                : // else for primitive values, the selected display value
-                  question.displayValue,
-            };
+              ];
+            // If the value used is not primitive, use the text label to display selection in the filter
+            if (!isPrimitive) {
+              // Check if value is a date to format it with the date pipe
+              const checkValue = this.isDate(
+                question.name as string,
+                question.displayValue.text
+              );
+              mappedQuestion = {
+                label: checkValue.isDate
+                  ? checkValue.formattedValue
+                  : question.displayValue.text,
+              };
+            } else {
+              // else for primitive values, the selected display value
+              const checkValue = this.isDate(
+                question.name as string,
+                question.displayValue
+              );
+              mappedQuestion = {
+                label: checkValue.isDate
+                  ? checkValue.formattedValue
+                  : question.displayValue,
+              };
+            }
           }
           return mappedQuestion;
         });
