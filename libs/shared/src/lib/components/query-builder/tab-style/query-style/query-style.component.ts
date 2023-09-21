@@ -27,11 +27,20 @@ export class QueryStyleComponent implements OnInit {
   public filterFields: Field[] = [];
 
   public availableFields: string[] = [];
-  public selectedFields: string[] = [];
+  public _selectedFields: string[] = [];
   public toolbarSettings: ListBoxToolbarConfig = {
     position: 'right',
     tools: ['transferFrom', 'transferTo', 'transferAllFrom', 'transferAllTo'],
   };
+
+  public get selectedFields(): string[] {
+    this.form.get('fields')?.setValue(this._selectedFields);
+    return this._selectedFields;
+  }
+  public set selectedFields(value: string[]) {
+    this.form.get('fields')?.setValue(this._selectedFields);
+    this._selectedFields = value;
+  }
 
   @Output() closeEdition = new EventEmitter<any>();
 
@@ -63,12 +72,13 @@ export class QueryStyleComponent implements OnInit {
     this.queryBuilder.getFilterFields(this.query).then((f) => {
       this.filterFields = f;
     });
-    this.selectedFields = [...fields];
-    //available fields are all fields that are not selected
+
+    this._selectedFields = [...fields];
+
     this.availableFields = [
       ...this.query.fields
         .map((x: any) => x.name)
-        .filter((x: any) => !this.selectedFields.includes(x)),
+        .filter((x: any) => !this._selectedFields.includes(x)),
     ];
   }
 
