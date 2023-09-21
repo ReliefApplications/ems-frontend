@@ -86,7 +86,12 @@ $shared-palette-warn: (
 );
 
 $shared-primary: mat.define-palette($shared-palette);
-$shared-accent: mat.define-palette($shared-palette-accent, main, lighter, darker);
+$shared-accent: mat.define-palette(
+  $shared-palette-accent,
+  main,
+  lighter,
+  darker
+);
 $shared-warn: mat.define-palette($shared-palette-warn, main, lighter, darker);
 // $shared-theme: mat.define-light-theme($shared-primary, $shared-accent, $shared-warn);
 

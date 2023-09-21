@@ -61,10 +61,11 @@
               "
               (click)="toggleResource(element.resource)"
               [disabled]="loading || updating"
-              [uiTooltip]="'common.' +  (element.resource.id === openedResource?.id
-                ? 'close'
-                : 'edit')
-                | translate
+              [uiTooltip]="
+                'common.' +
+                  (element.resource.id === openedResource?.id
+                    ? 'close'
+                    : 'edit') | translate
               "
             >
             </ui-button>
