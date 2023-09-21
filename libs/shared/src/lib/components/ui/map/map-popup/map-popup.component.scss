@@ -1,7 +1,6 @@
 @import '../../../../style/map.scss';
 
 :host ::ng-deep {
-  @extend .shared-border-radius-inherit !optional;
   overflow: hidden;
 }
 
