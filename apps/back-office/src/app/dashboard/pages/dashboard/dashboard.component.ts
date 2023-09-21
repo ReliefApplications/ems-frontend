@@ -755,6 +755,42 @@ export class DashboardComponent
       });
   }
 
+  /**
+   * Open modal to edit the icon
+   */
+  async onChangeIcon() {
+    const { IconModalComponent } = await import(
+      '../../../../../../../libs/safe/src/lib/components/icon-modal/icon-modal.component'
+    );
+    const dialogRef = this.dialog.open(IconModalComponent);
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((icon) => {
+      if (!icon) return;
+      if (this.isStep) {
+        this.apollo
+          .mutate<EditStepMutationResponse>({
+            mutation: EDIT_STEP,
+            variables: {
+              id: this.dashboard?.step?.id,
+              icon: icon,
+            },
+          })
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(console.log, console.error);
+      } else {
+        this.apollo
+          .mutate<EditPageMutationResponse>({
+            mutation: EDIT_PAGE,
+            variables: {
+              id: this.dashboard?.page?.id,
+              icon: icon,
+            },
+          })
+          .pipe(takeUntil(this.destroy$))
+          .subscribe(console.log, console.error);
+      }
+    });
+  }
+
   /** Opens modal for context dataset selection */
   public async selectContextDatasource() {
     const currContext =

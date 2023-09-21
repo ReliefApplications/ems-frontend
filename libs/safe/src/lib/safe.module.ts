@@ -40,6 +40,7 @@ import { GraphQLSelectModule } from '@oort-front/ui';
 import { SafeSortingSettingsModule } from './components/widgets/common/sorting-settings/sorting-settings.module';
 import { SafeWidgetChoiceModule } from './components/widget-choice/widget-choice.module';
 import { TabsSettingsModule } from './components/widgets/tabs-settings/tabs-settings.module';
+import { IconModalModule } from './components/icon-modal/icon-modal.module';
 
 /** Main module for the safe project */
 @NgModule({
@@ -73,6 +74,7 @@ import { TabsSettingsModule } from './components/widgets/tabs-settings/tabs-sett
     ButtonActionModule,
     SafeWidgetChoiceModule,
     TabsSettingsModule,
+    IconModalModule,
     // === Pipes ===
     SafeDateModule,
     SafeReadableCronModule,

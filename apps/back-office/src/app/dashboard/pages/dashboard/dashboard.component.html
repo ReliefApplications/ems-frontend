@@ -9,8 +9,7 @@
       height: '32px';
       width: '120px';
       shape: 'rectangle'
-    "
-  >
+    ">
     <!-- Dashboard options -->
     <ng-container *ngIf="dashboard">
       <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
@@ -20,8 +19,7 @@
             [text]="dashboard.name"
             [canEdit]="canUpdate"
             (onChange)="saveName($event)"
-            (formActiveEvent)="formActive = $event"
-          >
+            (formActiveEvent)="formActive = $event">
             <h1 class="!m-0 overflow-hidden text-ellipsis">
               {{ dashboard.name }}
             </h1>
@@ -38,22 +36,29 @@
                 ? 'components.application.pages.hide'
                 : 'components.application.pages.show'
               ) | translate
-            "
-          >
+            ">
+          </ui-button>
+          <ui-button
+            [isIcon]="true"
+            variant="grey"
+            category="primary"
+            icon="settings"
+            (click)="onChangeIcon()"
+            [uiTooltip]="
+            'models.dashboard.changeIcon' | translate
+          ">
           </ui-button>
         </div>
         <div
           class="flex items-center gap-1"
           *ngIf="!formActive"
           cdkDropList
-          (cdkDropListDropped)="onButtonActionDrop($event)"
-        >
+          (cdkDropListDropped)="onButtonActionDrop($event)">
           <!-- Button actions -->
           <safe-button-action
             [buttonActions]="buttonActions"
             [dashboard]="dashboard"
-            [canUpdate]="canUpdate"
-          ></safe-button-action>
+            [canUpdate]="canUpdate"></safe-button-action>
 
           <!-- Fullscreen -->
           <ui-button
@@ -64,8 +69,7 @@
             [uiTooltip]="
               (isFullScreen ? 'common.exitFullscreen' : 'common.openFullScreen')
                 | translate
-            "
-          >
+            ">
           </ui-button>
           <!-- Access -->
           <safe-access
@@ -79,8 +83,7 @@
                 : dashboard.step
                 ? dashboard.step.canUpdate
                 : false
-            "
-          >
+            ">
           </safe-access>
           <!-- Context -->
           <ui-button
@@ -93,8 +96,7 @@
                 ? 'models.dashboard.context.datasource.update'
                 : 'models.dashboard.context.datasource.set'
               ) | translate
-            "
-          >
+            ">
           </ui-button>
           <!-- More options -->
           <ui-button
@@ -103,17 +105,16 @@
             icon="more_vert"
             [uiMenuTriggerFor]="menu"
             cdkOverlayOrigin
-            #appMenuTrigger="cdkOverlayOrigin"
-          >
+            #appMenuTrigger="cdkOverlayOrigin">
           </ui-button>
           <ui-menu #menu>
             <button uiMenuItem (click)="toggleFiltering()">
               <ui-icon icon="tune" variant="grey"></ui-icon>
               {{
-                (showFilter
-                  ? 'models.dashboard.deactivateFiltering'
-                  : 'models.dashboard.activateFiltering'
-                ) | translate
+              (showFilter
+              ? 'models.dashboard.deactivateFiltering'
+              : 'models.dashboard.activateFiltering'
+              ) | translate
               }}
             </button>
             <button uiMenuItem (click)="onAppSelection()">
@@ -138,25 +139,23 @@
           <ng-template
             cdkConnectedOverlay
             [cdkConnectedOverlayOrigin]="appMenuTrigger"
-            [cdkConnectedOverlayOpen]="showAppMenu"
-          >
+            [cdkConnectedOverlayOpen]="showAppMenu">
             <safe-search-menu
               [headerTemplate]="searchMenuHeaderTemplate"
               [currentApplicationId]="applicationId"
               [applications]="applications"
               (close)="showAppMenu = false"
-              (open)="onDuplicate($event)"
-            ></safe-search-menu>
+              (open)="onDuplicate($event)"></safe-search-menu>
           </ng-template>
         </div>
       </div>
       <ng-container *ngIf="dashboard.page?.context">
         <ui-alert *ngIf="!contextRecord" class="mb-4">{{
           'models.dashboard.context.edition.template' | translate
-        }}</ui-alert>
+          }}</ui-alert>
         <ui-alert *ngIf="contextRecord" class="mb-4">{{
           'models.dashboard.context.edition.element' | translate
-        }}</ui-alert>
+          }}</ui-alert>
       </ng-container>
       <span>
         <!-- Selection of record, to see dashboard per record -->
@@ -167,8 +166,7 @@
             dashboard.page.context &&
             $any(dashboard.page.context).resource &&
             recordsQuery
-          "
-        >
+          ">
           <label>{{ 'common.record.one' | translate }}</label>
           <ui-graphql-select
             [query]="recordsQuery"
@@ -176,8 +174,7 @@
             path="records"
             valueField="id"
             textField="data.{{ dashboard.page.context.displayField }}"
-            [selectedElements]="contextRecord ? [contextRecord] : []"
-          >
+            [selectedElements]="contextRecord ? [contextRecord] : []">
           </ui-graphql-select>
         </div>
         <!-- Selection of element from reference data -->
@@ -188,16 +185,14 @@
             dashboard.page &&
             dashboard.page.context &&
             $any(dashboard.page.context).refData
-          "
-        >
+          ">
           <label>{{
             'models.dashboard.context.refData.element' | translate
-          }}</label>
+            }}</label>
           <ui-select-menu [formControl]="contextId">
             <ui-select-option
               *ngFor="let element of refDataElements"
-              [value]="element[refDataValueField]"
-            >
+              [value]="element[refDataValueField]">
               {{ element[dashboard.page.context.displayField] }}
             </ui-select-option>
           </ui-select-menu>
@@ -215,16 +210,13 @@
     (delete)="onDeleteTile($event)"
     (style)="onStyleTile($event)"
     (changeStep)="changeStep.emit($event)"
-    (add)="onAdd($event)"
-  ></safe-widget-grid>
+    (add)="onAdd($event)"></safe-widget-grid>
   <safe-dashboard-filter
     *ngIf="showFilter && isFullScreen"
     [editable]="true"
-    [isFullScreen]="isFullScreen"
-  ></safe-dashboard-filter>
+    [isFullScreen]="isFullScreen"></safe-dashboard-filter>
 </div>
 <safe-dashboard-filter
   *ngIf="showFilter && !isFullScreen"
   [editable]="true"
-  [isFullScreen]="isFullScreen"
-></safe-dashboard-filter>
+  [isFullScreen]="isFullScreen"></safe-dashboard-filter>
