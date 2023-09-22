@@ -70,7 +70,7 @@
       </ui-icon>
       <!-- Expand button -->
       <ui-button
-        *ngIf="!canUpdate"
+        *ngIf="!canUpdate && !(widget.component === 'map')"
         [isIcon]="true"
         icon="open_in_full"
         variant="grey"
