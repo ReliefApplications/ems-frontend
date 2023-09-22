@@ -101,12 +101,7 @@ export class GridSettingsComponent
     const tileSettings = this.tile.settings;
     this.formGroup = extendWidgetForm(
       createGridWidgetFormGroup(this.tile.id, tileSettings),
-      tileSettings?.widgetDisplay,
-      {
-        sortable: new FormControl(
-          get<boolean>(tileSettings, 'widgetDisplay.sortable', false)
-        ),
-      }
+      tileSettings?.widgetDisplay
     );
 
     this.change.emit(this.formGroup);

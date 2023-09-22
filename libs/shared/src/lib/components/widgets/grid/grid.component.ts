@@ -671,16 +671,6 @@ export class GridWidgetComponent
       ...this.layout,
       ...{ template: get(this.settings, 'template', null) },
     };
-
-    // select sort fields that match the current layout
-    this.sortFields = [];
-    const layoutFieldsName = this.layout.query.fields.map((a: any) => a.name);
-
-    this.widget.settings.sortFields?.forEach((sortField: any) => {
-      if (layoutFieldsName.includes(sortField.field)) {
-        this.sortFields.push(sortField);
-      }
-    });
   }
 
   /**

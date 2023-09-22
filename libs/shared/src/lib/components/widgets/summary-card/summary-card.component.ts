@@ -540,6 +540,12 @@ export class SummaryCardComponent
     this.dataQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(this.updateCards.bind(this));
+
+    // Set sort fields
+    this.sortFields = [];
+    this.widget.settings.sortFields?.forEach((sortField: any) => {
+      this.sortFields.push(sortField);
+    });
   }
 
   /**
