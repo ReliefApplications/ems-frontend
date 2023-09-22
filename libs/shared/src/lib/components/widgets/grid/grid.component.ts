@@ -50,6 +50,7 @@ import {
   PublishNotificationMutationResponse,
 } from '../../../models/notification.model';
 import { FormQueryResponse } from '../../../models/form.model';
+import { AggregationGridComponent } from '../../aggregation/aggregation-grid/aggregation-grid.component';
 
 /** Component for the grid widget */
 @Component({
@@ -115,6 +116,8 @@ export class GridWidgetComponent
   }
 
   @ViewChild(CoreGridComponent) coreGridComponent?: CoreGridComponent;
+  @ViewChild(AggregationGridComponent)
+  aggregationGridComponent?: AggregationGridComponent;
 
   /**
    * Heavy constructor for the grid widget component
@@ -227,6 +230,11 @@ export class GridWidgetComponent
               };
             }
             this.aggregation = this.aggregations[0] || null;
+
+            // Build list of available sort fields
+            this.widget.settings.sortFields?.forEach((sortField: any) => {
+              this.sortFields.push(sortField);
+            });
           });
         return;
       }
@@ -239,12 +247,22 @@ export class GridWidgetComponent
    * @param e sort event
    */
   public onSort(e: any): void {
-    this.coreGridComponent?.onSortChange([
-      {
-        field: e ? e.field : '',
-        dir: e ? e.order : 'asc',
-      },
-    ]);
+    if (this.coreGridComponent) {
+      this.coreGridComponent.onSortChange([
+        {
+          field: e ? e.field : '',
+          dir: e ? e.order : 'asc',
+        },
+      ]);
+    }
+    if (this.aggregationGridComponent) {
+      this.aggregationGridComponent.onSortChange([
+        {
+          field: e ? e.field : '',
+          dir: e ? e.order : 'asc',
+        },
+      ]);
+    }
   }
 
   /**

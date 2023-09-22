@@ -20,6 +20,7 @@ import { createDefaultField } from '../../query-builder/query-builder-forms';
 import { ContextService } from '../../../services/context/context.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ResourceQueryResponse } from '../../../models/resource.model';
+import { SortDescriptor } from '@progress/kendo-data-query';
 
 /**
  * Shared aggregation grid component.
@@ -43,6 +44,7 @@ export class AggregationGridComponent
   } = {
     error: false,
   };
+  public sort: SortDescriptor[] = [];
   public pageSize = 10;
   public skip = 0;
   private dataQuery!: QueryRef<AggregationDataQueryResponse>;
@@ -59,6 +61,16 @@ export class AggregationGridComponent
       columnChooser: false,
       filter: !this.showFilter,
     };
+  }
+
+  /** @returns current field used for sorting */
+  get sortField(): string | null {
+    return this.sort.length > 0 && this.sort[0].dir ? this.sort[0].field : null;
+  }
+
+  /** @returns current sorting order */
+  get sortOrder(): string {
+    return this.sort.length > 0 && this.sort[0].dir ? this.sort[0].dir : '';
   }
 
   /**
@@ -273,7 +285,17 @@ export class AggregationGridComponent
       });
   }
 
-  // === PAGINATION ===
+  /**
+   * Detects sort events and update the items loaded.
+   *
+   * @param sort Sort event.
+   */
+  public onSortChange(sort: SortDescriptor[]): void {
+    this.sort = sort;
+    this.skip = 0;
+    this.onPageChange({ skip: this.skip, take: this.pageSize });
+  }
+
   /**
    * Detects pagination events and update the items loaded.
    *
@@ -289,6 +311,8 @@ export class AggregationGridComponent
         variables: {
           first: this.pageSize,
           skip: this.skip,
+          sortField: this.sortField || undefined,
+          sortOrder: this.sortOrder,
         },
       })
       .then((results) => this.updateValues(results.data, results.loading));

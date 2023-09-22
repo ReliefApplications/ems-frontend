@@ -12,7 +12,6 @@ import {
   UntypedFormArray,
   Validators,
   FormBuilder,
-  FormControl,
   FormArray,
 } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
@@ -30,7 +29,7 @@ import { DistributionList } from '../../../models/distribution-list.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
-import { get } from 'lodash';
+import { AggregationService } from '../../../services/aggregation/aggregation.service';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -86,12 +85,14 @@ export class GridSettingsComponent
    * @param applicationService The application service
    * @param queryBuilder The query builder service
    * @param fb FormBuilder instance
+   * @param aggregationService Shared aggregation service
    */
   constructor(
     private apollo: Apollo,
     private applicationService: ApplicationService,
     private queryBuilder: QueryBuilderService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private aggregationService: AggregationService
   ) {
     super();
   }
@@ -159,6 +160,9 @@ export class GridSettingsComponent
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
         this.updateValueAndValidityByType(value, 'aggregations');
+        if (value.length > 0) {
+          this.onAggregationChange(value[0]);
+        }
       });
     // If some aggregations are selected, remove validators on layouts field
     if (this.formGroup.get('aggregations')?.value.length > 0) {
@@ -295,9 +299,15 @@ export class GridSettingsComponent
             this.resource = data.resource;
             this.relatedForms = data.resource.relatedForms || [];
             this.templates = data.resource.forms || [];
-            this.fields = this.queryBuilder.getFields(
-              this.resource.queryName as string
-            );
+            if (this.formGroup.get('aggregations')?.value.length > 0) {
+              this.onAggregationChange(
+                this.formGroup.get('aggregations')?.value[0]
+              );
+            } else {
+              this.fields = this.queryBuilder.getFields(
+                this.resource.queryName as string
+              );
+            }
           } else {
             this.relatedForms = [];
             this.templates = [];
@@ -314,22 +324,34 @@ export class GridSettingsComponent
   }
 
   /**
-   * Filters the queries using text value.
-   *
-   * @param value search value
-   * @returns filtered list of queries.
-   */
-  private filterQueries(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.allQueries.filter((x) => x.toLowerCase().includes(filterValue));
-  }
-
-  /**
    *  Handles the a tab change event
    *
    * @param event Event triggered on tab switch
    */
   handleTabChange(event: number): void {
     this.selectedTab = event;
+  }
+
+  /**
+   * Handle aggregation change
+   * Update available fields
+   *
+   * @param aggregationId new aggregation id
+   */
+  private onAggregationChange(aggregationId: string): void {
+    if (this.resource?.id && aggregationId) {
+      this.aggregationService
+        .aggregationDataQuery(this.resource.id, aggregationId || '')
+        .subscribe(({ data }) => {
+          if (data.recordsAggregation) {
+            this.fields = data.recordsAggregation.items[0]
+              ? Object.keys(data.recordsAggregation.items[0]).map((f) => ({
+                  name: f,
+                  editor: 'text',
+                }))
+              : [];
+          }
+        });
+    }
   }
 }
