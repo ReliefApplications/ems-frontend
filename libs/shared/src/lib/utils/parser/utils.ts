@@ -277,14 +277,15 @@ const replaceRecordFields = (
             } items</span>`;
             break;
           case 'matrixdropdown':
-          case 'matrixdynamic':
+          case 'matrixdynamic': {
             convertedValue = '<table><tr><th></th>';
             const rows =
               field.rows ??
-              Object.keys(value).map((row) => {
+              (Object.keys(value).map((row) => {
                 return { label: row, name: row };
-              });
-            const columns = field.columns;
+              }) ||
+                []);
+            const columns = field.columns || [];
             // Create header row with column names
             for (const col of columns) {
               convertedValue += `<th class="px-1">${col.label}</th>`;
@@ -307,13 +308,16 @@ const replaceRecordFields = (
 
             convertedValue += '</table>';
             break;
-          case 'matrix':
+          }
+          case 'matrix': {
             convertedValue = `<span style='${style}'>`;
-            for (const row of field.rows) {
+            const rows = field.rows || [];
+            for (const row of rows) {
               convertedValue += `${row.label}: ${value[row.name]} `;
             }
             convertedValue += '</span>';
             break;
+          }
           default:
             convertedValue = style
               ? `<span style='${style}'>${applyLayoutFormat(
