@@ -157,50 +157,6 @@
         </div>
       </ng-container>
 
-      <!-- Workflow actions -->
-      <ng-container *ngIf="!isDashboard">
-        <!-- Go to next step -->
-        <ui-checkbox formControlName="goToNextStep">
-          <ng-container ngProjectAs="label">{{
-            'components.widget.settings.grid.buttons.callback.workflow.next'
-              | translate
-          }}</ng-container>
-        </ui-checkbox>
-        <!-- Go to previous step -->
-        <ui-checkbox formControlName="goToPreviousStep">
-          <ng-container ngProjectAs="label">{{
-            'components.widget.settings.grid.buttons.callback.workflow.previous'
-              | translate
-          }}</ng-container>
-        </ui-checkbox>
-        <!-- Close workflow -->
-        <ui-checkbox formControlName="closeWorkflow">
-          <ng-container ngProjectAs="label">{{
-            'components.widget.settings.grid.buttons.callback.workflow.close'
-              | translate
-          }}</ng-container>
-        </ui-checkbox>
-        <!-- Confirm action -->
-        <div
-          uiFormFieldDirective
-          class="sub-parameters"
-          *ngIf="formGroup.value.closeWorkflow"
-        >
-          <label>{{
-            'components.widget.settings.grid.buttons.callback.workflow.confirm'
-              | translate
-          }}</label>
-          <input formControlName="confirmationText" type="string" />
-        </div>
-      </ng-container>
-
-      <!-- Auto save edited records -->
-      <ui-checkbox formControlName="autoSave">
-        <ng-container ngProjectAs="label">{{
-          'components.widget.settings.grid.buttons.callback.save' | translate
-        }}</ng-container>
-      </ui-checkbox>
-
       <!-- Auto edition of selected records -->
       <div class="flex flex-col">
         <ui-checkbox formControlName="modifySelectedRows">
@@ -360,7 +316,10 @@
         </div>
 
         <!-- Data field -->
-        <div uiFormFieldDirective *ngIf="formGroup.get('from')?.value === 'field'">
+        <div
+          uiFormFieldDirective
+          *ngIf="formGroup.get('from')?.value === 'field'"
+        >
           <label>{{ 'components.emailBuilder.from.field' | translate }}</label>
           <ui-select-menu formControlName="field">
             <ui-select-option *ngFor="let field of fields" [value]="field.name">
@@ -368,12 +327,8 @@
             </ui-select-option>
           </ui-select-menu>
         </div>
-
         <!-- Distribution list -->
-        <div
-          uiFormFieldDirective
-          *ngIf="formGroup.get('from')?.value === 'distribution'"
-        >
+        <div uiFormFieldDirective>
           <label>{{
             'components.emailBuilder.distribution' | translate
           }}</label>
@@ -461,7 +416,6 @@
           [form]="$any(formGroup.controls.bodyFields)"
           [fields]="fields"
           [showLimit]="true"
-          [showColumnWidth]="true"
         ></safe-tab-fields>
       </div>
 
@@ -471,6 +425,13 @@
         <ui-checkbox formControlName="goToNextStep">
           <ng-container ngProjectAs="label">{{
             'components.widget.settings.grid.buttons.callback.workflow.next'
+              | translate
+          }}</ng-container>
+        </ui-checkbox>
+        <!-- Go to previous step -->
+        <ui-checkbox formControlName="goToPreviousStep">
+          <ng-container ngProjectAs="label">{{
+            'components.widget.settings.grid.buttons.callback.workflow.previous'
               | translate
           }}</ng-container>
         </ui-checkbox>

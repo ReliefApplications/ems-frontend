@@ -42,7 +42,10 @@
 			"none": "Aucun canal de diffusion",
 			"one": "Canal de diffusion"
 		},
-		"child": "Enfant",
+		"child": {
+			"edit": "Modifier l'enfant",
+			"one": "Enfant"
+		},
 		"clear": "Annuler",
 		"close": "Fermer",
 		"column": {
@@ -77,7 +80,6 @@
 		"downloadTemplate": "Télécharger le modèle",
 		"duplicate": "Dupliquer",
 		"edit": "Modifier",
-		"editObject": "Modifier {{name}}",
 		"email": {
 			"few": "Emails",
 			"none": "Pas d'email",
@@ -1839,6 +1841,7 @@
 		},
 		"channel": {
 			"create": "Créer un canal de diffusion",
+			"edit": "Modifier le canal",
 			"new": "Nouveau canal de diffusion"
 		},
 		"customNotification": {
@@ -1890,6 +1893,7 @@
 		"form": {
 			"core": "Source",
 			"create": "Créer un formulaire",
+			"edit": "Modifier le formulaire",
 			"field": {
 				"label": "Étiquette",
 				"name": "Nom du champ",
@@ -1919,9 +1923,11 @@
 			}
 		},
 		"positionAttribute": {
+			"edit": "Modifier l'attribut de position",
 			"new": "Nouvel attribut de position"
 		},
 		"pullJob": {
+			"edit": "Modifier une tâche planifiée",
 			"new": "Nouvelle tâche planifiée",
 			"nextIteration": "Prochaine exécution",
 			"path": "Chemin",
@@ -1930,6 +1936,7 @@
 		},
 		"record": {
 			"convert": "Convertir",
+			"edit": "Modifier l'enregistrement",
 			"new": "Nouvel enregistrement",
 			"notifications": {
 				"conversionIncomplete": "Il n'y a pas de correspondance entre le(s) enregistrement(s) sélectionné(s) et certains champs de ce formulaire.",
@@ -1956,6 +1963,7 @@
 			"new": "Nouvelle étape"
 		},
 		"subscription": {
+			"edit": "Modifier l'abonnement",
 			"new": "Nouvel abonnement"
 		},
 		"user": {

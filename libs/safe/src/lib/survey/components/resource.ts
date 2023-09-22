@@ -40,6 +40,9 @@ const loadedRecords: Map<string, Record> = new Map();
  */
 const addRecordToSurveyContext = (question: Question, recordID: string) => {
   const survey = question.survey as SurveyModel;
+  if (!survey) {
+    return;
+  }
   if (!recordID) {
     // get survey variables
     survey.getVariableNames().forEach((variable) => {

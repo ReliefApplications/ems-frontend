@@ -8,7 +8,7 @@ import { GlobalOptions } from '../types';
  */
 const getNumberOfMembers = (params: any[]) => {
   const obj = params[0];
-  if (typeof obj !== 'object') return 0;
+  if (!obj || typeof obj !== 'object') return 0;
   else {
     let total = 0;
     Object.values(obj).forEach((row) => {

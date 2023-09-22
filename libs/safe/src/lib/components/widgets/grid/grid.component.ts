@@ -354,7 +354,6 @@ export class SafeGridWidgetComponent
         return;
       }
     }
-    console.log('there');
     // Auto modify the selected rows
     if (options.modifySelectedRows) {
       await this.promisedRowsModifications(
@@ -462,40 +461,6 @@ export class SafeGridWidgetComponent
           );
         }
       }
-    }
-
-    // Opens a form with selected records.
-    if (options.prefillForm) {
-      const promisedRecords: Promise<any>[] = [];
-      // Fetches the record object for each selected record.
-      for (const record of this.grid.selectedItems) {
-        promisedRecords.push(
-          firstValueFrom(
-            this.apollo.query<GetRecordDetailsQueryResponse>({
-              query: GET_RECORD_DETAILS,
-              variables: {
-                id: record.id,
-              },
-            })
-          )
-        );
-      }
-      const records = (await Promise.all(promisedRecords)).map(
-        (x) => x.data.record
-      );
-
-      // Opens a modal containing the prefilled form.
-      const { SafeFormModalComponent } = await import(
-        '../../form-modal/form-modal.component'
-      );
-      this.dialog.open(SafeFormModalComponent, {
-        data: {
-          template: options.prefillTargetForm,
-          prefillRecords: records,
-          askForConfirm: false,
-        },
-        autoFocus: false,
-      });
     }
 
     // Workflow only: goes to next step, goes to the previous step, or closes the workflow.
