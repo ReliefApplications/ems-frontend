@@ -3,7 +3,7 @@ import { CanActivate, UrlTree, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeAuthService } from '@oort-front/safe';
 import { SnackbarService } from '@oort-front/ui';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
 
 /**
@@ -52,14 +52,17 @@ export class AccessGuard implements CanActivate {
               { error: true }
             );
             this.authService.logout();
-            this.router.navigate(['/auth']);
             return false;
           }
         } else {
           if (this.authService.account) {
             this.authService.logout();
           } else {
-            this.router.navigate(['/auth']);
+            firstValueFrom(this.authService.isDoneLoading$).then((loaded) => {
+              if (loaded) {
+                this.router.navigate(['/auth']);
+              }
+            });
           }
           return false;
         }
