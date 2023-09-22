@@ -20,6 +20,7 @@ import {
   IconModule,
 } from '@oort-front/ui';
 import { DIALOG_DATA } from '@angular/cdk/dialog';
+import { CldrIntlService, IntlService } from '@progress/kendo-angular-intl';
 
 /** Preferences Dialog Data */
 interface PreferencesDialogData {
@@ -64,12 +65,14 @@ export class SafePreferencesModalComponent implements OnInit {
    * @param formBuilder This is the service that will be used to build forms.
    * @param translate This is the Angular service that translates text
    * @param dateTranslate Shared service for Date Translation
+   * @param kendoIntl Kendo internationalization service
    */
   constructor(
     @Inject(DIALOG_DATA) public data: PreferencesDialogData,
     private formBuilder: UntypedFormBuilder,
     private translate: TranslateService,
-    private dateTranslate: SafeDateTranslateService
+    private dateTranslate: SafeDateTranslateService,
+    private kendoIntl: IntlService
   ) {
     // find the current language
     this.currLang = this.translate.currentLang || this.translate.defaultLang;
@@ -102,6 +105,7 @@ export class SafePreferencesModalComponent implements OnInit {
       .get('language')
       ?.valueChanges.subscribe((lang: any) => {
         this.translate.use(lang);
+        (this.kendoIntl as CldrIntlService).localeId = lang;
       });
   }
 

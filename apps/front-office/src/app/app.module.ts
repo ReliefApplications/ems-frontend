@@ -1,5 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, APP_INITIALIZER, ErrorHandler } from '@angular/core';
+import {
+  NgModule,
+  APP_INITIALIZER,
+  ErrorHandler,
+  LOCALE_ID,
+} from '@angular/core';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -69,6 +74,10 @@ import {
 import { Router } from '@angular/router';
 import * as Sentry from '@sentry/angular-ivy';
 
+// Imports to translate datepickers
+import '@progress/kendo-angular-intl/locales/en/all';
+import '@progress/kendo-angular-intl/locales/fr/all';
+
 /**
  * Initialize authentication in the platform.
  * Configuration in environment file.
@@ -117,6 +126,10 @@ export const httpTranslateLoader = (http: HttpClient) =>
     DateInputsModule,
   ],
   providers: [
+    {
+      provide: LOCALE_ID,
+      useValue: localStorage.getItem('lang'),
+    },
     {
       provide: 'environment',
       useValue: environment,
