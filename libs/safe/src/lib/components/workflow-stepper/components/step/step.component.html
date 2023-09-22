@@ -24,11 +24,10 @@
       [disabled]="true">
     </ui-button>
   </div>
-  <!--help me write an ng-if-->
   <ng-container *ngIf="!!step.icon">
     <ui-icon
-      [icon]="step.icon"
-      [size]="24"></ui-icon>
+      class="flex"
+      [icon]="step.icon"></ui-icon>
   </ng-container>
   <ng-container *ngIf="!step.icon">
     <img class="h-9 mt-5" [src]="type?.img" />
