@@ -493,7 +493,10 @@ export class SummaryCardComponent
       card.aggregation,
       DEFAULT_PAGE_SIZE,
       0,
-      this.contextService.injectDashboardFilterValues(this.contextFilters)
+      this.contextService.injectDashboardFilterValues(this.contextFilters),
+      this.widget.settings.at
+        ? this.contextService.atArgumentValue(this.widget.settings.at)
+        : undefined
     );
 
     this.dataQuery.valueChanges

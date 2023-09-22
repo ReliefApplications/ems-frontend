@@ -124,9 +124,7 @@ export class AggregationGridComponent
             JSON.parse(this.contextFilters)
           )
         : undefined,
-      this.contextService.isFilterEnabled.getValue() && this.at
-        ? this.contextService.atArgumentValue(this.at)
-        : undefined
+      this.at ? this.contextService.atArgumentValue(this.at) : undefined
     );
     this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
       next: ({ data, loading }) => {

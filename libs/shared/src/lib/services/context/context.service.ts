@@ -152,8 +152,11 @@ export class ContextService {
    * @returns 'at' value
    */
   public atArgumentValue(atField: string): string {
-    const regex = /(?<={{filter\.)(.*?)(?=}})/gim;
-    const atFilterName = atField.match(regex)?.[0] ?? '';
-    return get(this.availableFilterFieldsValue, atFilterName);
+    if (this.isFilterEnabled.getValue()) {
+      const regex = /(?<={{filter\.)(.*?)(?=}})/gim;
+      const atFilterName = atField.match(regex)?.[0] ?? '';
+      return get(this.availableFilterFieldsValue, atFilterName);
+    }
+    return '';
   }
 }
