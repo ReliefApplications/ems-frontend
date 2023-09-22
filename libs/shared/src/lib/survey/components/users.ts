@@ -2,7 +2,8 @@ import { Apollo } from 'apollo-angular';
 import * as SurveyCreator from 'survey-creator';
 import { DomService } from '../../services/dom/dom.service';
 import { ApplicationDropdownComponent } from '../../components/application-dropdown/application-dropdown.component';
-import { GetUsersQueryResponse, GET_USERS } from '../graphql/queries';
+import { GET_USERS } from '../graphql/queries';
+import { UsersQueryResponse } from '../../models/user.model';
 
 /**
  * Inits the users component.
@@ -63,7 +64,7 @@ export const init = (
     },
     onLoaded: (question: any): void => {
       apollo
-        .query<GetUsersQueryResponse>({
+        .query<UsersQueryResponse>({
           query: GET_USERS,
           variables: {
             applications: question.applications,

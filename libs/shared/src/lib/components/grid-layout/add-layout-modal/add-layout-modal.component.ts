@@ -1,14 +1,11 @@
 import { Component, Inject, OnInit, ViewChild } from '@angular/core';
 import { GridLayoutService } from '../../../services/grid-layout/grid-layout.service';
-import { Form } from '../../../models/form.model';
-import { Resource } from '../../../models/resource.model';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { Form, FormQueryResponse } from '../../../models/form.model';
 import {
-  GetResourceLayoutsResponse,
-  GET_RESOURCE_LAYOUTS,
-  GetFormLayoutsResponse,
-  GET_FORM_LAYOUTS,
-} from './graphql/queries';
+  Resource,
+  ResourceQueryResponse,
+} from '../../../models/resource.model';
+import { Apollo, QueryRef } from 'apollo-angular';
 import { UntypedFormControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
@@ -24,6 +21,7 @@ import {
 import { ButtonModule } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { GET_RESOURCE_LAYOUTS, GET_FORM_LAYOUTS } from './graphql/queries';
 
 /**
  * Data needed for the dialog, should contain a layouts array, a form and a resource
@@ -64,8 +62,8 @@ export class AddLayoutModalComponent
   public hasLayouts = false;
   public nextStep = false;
   public queryRef!:
-    | QueryRef<GetResourceLayoutsResponse>
-    | QueryRef<GetFormLayoutsResponse>
+    | QueryRef<ResourceQueryResponse>
+    | QueryRef<FormQueryResponse>
     | null;
   public selectedLayoutControl = new UntypedFormControl('');
 
@@ -97,14 +95,14 @@ export class AddLayoutModalComponent
 
   ngOnInit() {
     if (this.resource)
-      this.queryRef = this.apollo.watchQuery<GetResourceLayoutsResponse>({
+      this.queryRef = this.apollo.watchQuery<ResourceQueryResponse>({
         query: GET_RESOURCE_LAYOUTS,
         variables: {
           resource: this.resource?.id,
         },
       });
     else if (this.form)
-      this.queryRef = this.apollo.watchQuery<GetFormLayoutsResponse>({
+      this.queryRef = this.apollo.watchQuery<FormQueryResponse>({
         query: GET_FORM_LAYOUTS,
         variables: {
           form: this.form?.id,

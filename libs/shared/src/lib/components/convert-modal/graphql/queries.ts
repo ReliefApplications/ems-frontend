@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Record } from '../../../models/record.model';
 
 // === GET RECORD DETAILS ===
 
@@ -44,8 +43,3 @@ export const GET_RECORD_DETAILS = gql`
     }
   }
 `;
-
-/** Model for GetRecordDetailsQueryResponse object */
-export interface GetRecordDetailsQueryResponse {
-  record: Record;
-}

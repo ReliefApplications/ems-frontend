@@ -9,7 +9,7 @@ import { FieldDropdownComponent } from './field-dropdown.component';
 
 describe('FieldDropdownComponent', () => {
   let component: FieldDropdownComponent;
-  let fixture: ComponentFixture<sharedFieldDropdownComponent>;
+  let fixture: ComponentFixture<FieldDropdownComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

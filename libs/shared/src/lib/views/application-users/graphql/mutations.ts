@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { User } from '../../../models/user.model';
 
 /** Graphql request for adding users to an application */
 export const ADD_USERS = gql`
@@ -23,8 +22,3 @@ export const ADD_USERS = gql`
     }
   }
 `;
-
-/** Model for AddUsersMutationResponse object */
-export interface AddUsersMutationResponse {
-  addUsers: User[];
-}

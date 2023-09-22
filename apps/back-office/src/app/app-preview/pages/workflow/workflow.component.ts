@@ -6,15 +6,13 @@ import {
   Step,
   Workflow,
   UnsubscribeComponent,
+  WorkflowQueryResponse,
 } from '@oort-front/shared';
-import {
-  GetWorkflowByIdQueryResponse,
-  GET_WORKFLOW_BY_ID,
-} from './graphql/queries';
-import { PreviewService } from '../../../services/preview.service';
+import { GET_WORKFLOW_BY_ID } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
+import { PreviewService } from '../../../services/preview.service';
 
 /**
  * Workflow page component for application preview.
@@ -72,7 +70,7 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
       this.loading = true;
       this.id = params.id;
       this.apollo
-        .watchQuery<GetWorkflowByIdQueryResponse>({
+        .watchQuery<WorkflowQueryResponse>({
           query: GET_WORKFLOW_BY_ID,
           variables: {
             id: this.id,

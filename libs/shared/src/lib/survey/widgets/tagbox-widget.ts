@@ -3,6 +3,7 @@ import { DomService } from '../../services/dom/dom.service';
 import { Question } from '../types';
 import { debounceTime, map, tap } from 'rxjs';
 import updateChoices from './utils/common-list-filters';
+import { QuestionTagbox } from 'survey-knockout';
 
 /**
  * Init tagbox question
@@ -65,7 +66,14 @@ export const init = (
     },
     isDefaultRender: false,
     htmlTemplate: '<div></div>',
-    afterRender: (question: any, el: HTMLElement): void => {
+    afterRender: (question: QuestionTagbox, el: HTMLElement): void => {
+      const parentQuestion = question.parentQuestion;
+      if (
+        (parentQuestion && parentQuestion.getType() === 'matrixdynamic') ||
+        parentQuestion.getType() === 'matrixdropdown'
+      ) {
+        question.choices = parentQuestion.choices;
+      }
       widget.willUnmount(question);
       let tagboxDiv: HTMLDivElement | null = null;
       tagboxDiv = document.createElement('div');
@@ -131,7 +139,7 @@ export const init = (
    */
   const createTagboxInstance = (
     element: any,
-    question: any
+    question: QuestionTagbox
   ): MultiSelectComponent => {
     const tagbox = domService.appendComponentToBody(
       MultiSelectComponent,

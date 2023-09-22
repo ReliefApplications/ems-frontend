@@ -16,3 +16,13 @@ export interface Workflow {
   canUpdate?: boolean;
   canDelete?: boolean;
 }
+
+/** Model for workflow query response */
+export interface WorkflowQueryResponse {
+  workflow: Workflow;
+}
+
+/** Model for workflow graphql mutation response */
+export interface EditWorkflowMutationResponse {
+  editWorkflow: Workflow;
+}

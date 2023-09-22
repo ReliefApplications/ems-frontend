@@ -19,10 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { GridLayoutService } from '../../../services/grid-layout/grid-layout.service';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
-import {
-  GetResourceMetadataQueryResponse,
-  GET_RESOURCE_METADATA,
-} from './graphql/queries';
+import { GET_RESOURCE_METADATA } from './graphql/queries';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { SummaryCardFormT } from '../summary-card-settings/summary-card-settings.component';
 import { Record } from '../../../models/record.model';
@@ -40,9 +37,11 @@ import { clone, isNaN } from 'lodash';
 import { searchFilters } from '../../../utils/filter/search-filters';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
+import { ResourceQueryResponse } from '../../../models/resource.model';
 import { ContextService } from '../../../services/context/context.service';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { GridWidgetComponent } from '../grid/grid.component';
+import { GridService } from '../../../services/grid/grid.service';
 
 /** Maximum width of the widget in column units */
 const MAX_COL_SPAN = 8;
@@ -85,9 +84,11 @@ export class SummaryCardComponent
   private cachedCards: CardT[] = [];
   private sortedCachedCards: CardT[] = [];
   private dataQuery!: QueryRef<any>;
+  private metaQuery: any;
 
   private layout: Layout | null = null;
   private fields: any[] = [];
+  private metaFields: any[] = [];
   public sortFields: any[] = [];
   private contextFilters: CompositeFilterDescriptor = {
     logic: 'and',
@@ -169,6 +170,7 @@ export class SummaryCardComponent
    * @param aggregationService Aggregation service
    * @param contextService ContextService
    * @param elementRef Element Ref
+   * @param gridService grid service
    */
   constructor(
     private apollo: Apollo,
@@ -179,7 +181,8 @@ export class SummaryCardComponent
     private gridLayoutService: GridLayoutService,
     private aggregationService: AggregationService,
     private contextService: ContextService,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private gridService: GridService
   ) {
     super();
   }
@@ -384,7 +387,7 @@ export class SummaryCardComponent
   private async createDynamicQueryFromLayout(card: any) {
     // gets metadata
     const metaRes = await firstValueFrom(
-      this.apollo.query<GetResourceMetadataQueryResponse>({
+      this.apollo.query<ResourceQueryResponse>({
         query: GET_RESOURCE_METADATA,
         variables: {
           id: card.resource,
@@ -442,14 +445,50 @@ export class SummaryCardComponent
               .pipe(takeUntil(this.destroy$))
               .subscribe(this.updateCards.bind(this));
           }
+          // Build meta query to add information to fields
+          this.metaQuery = this.queryBuilder.buildMetaQuery(this.layout.query);
+          if (this.metaQuery) {
+            this.loading = true;
+            this.metaQuery.pipe(takeUntil(this.destroy$)).subscribe({
+              next: async ({ data }: any) => {
+                for (const field in data) {
+                  if (Object.prototype.hasOwnProperty.call(data, field)) {
+                    this.metaFields = Object.assign({}, data[field]);
+                    try {
+                      await this.gridService.populateMetaFields(
+                        this.metaFields
+                      );
+                      this.fields = this.fields.map((field) => {
+                        //add shape for columns and matrices
+                        const metaData = this.metaFields[field.name];
+                        if (metaData && (metaData.columns || metaData.rows)) {
+                          return {
+                            ...field,
+                            columns: metaData.columns,
+                            rows: metaData.rows,
+                          };
+                        }
+                        return field;
+                      });
+                    } catch (err) {
+                      console.error(err);
+                    }
+                  }
+                }
+              },
+              error: () => {
+                this.loading = false;
+              },
+            });
+          }
         }
       });
   }
 
   /**
-   * mdr
+   * Set up grid view settings from card definition
    */
-  private async setupGridSettings() {
+  private async setupGridSettings(): Promise<void> {
     const card = this.settings.card;
     if (!card || !card.resource || (!card.layout && !card.aggregation)) return;
 
@@ -501,6 +540,12 @@ export class SummaryCardComponent
     this.dataQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe(this.updateCards.bind(this));
+
+    // Set sort fields
+    this.sortFields = [];
+    this.widget.settings.sortFields?.forEach((sortField: any) => {
+      this.sortFields.push(sortField);
+    });
   }
 
   /**

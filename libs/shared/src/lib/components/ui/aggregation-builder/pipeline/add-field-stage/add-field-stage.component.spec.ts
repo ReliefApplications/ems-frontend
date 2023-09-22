@@ -10,7 +10,7 @@ import { AddFieldStageComponent } from './add-field-stage.component';
 
 describe('AddFieldStageComponent', () => {
   let component: AddFieldStageComponent;
-  let fixture: ComponentFixture<sharedAddFieldStageComponent>;
+  let fixture: ComponentFixture<AddFieldStageComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

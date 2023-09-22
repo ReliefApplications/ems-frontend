@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { Apollo } from 'apollo-angular';
-import { Dashboard, UnsubscribeComponent } from '@oort-front/shared';
 import {
-  GetShareDashboardByIdQueryResponse,
-  GET_SHARE_DASHBOARD_BY_ID,
-} from './graphql/queries';
+  Dashboard,
+  DashboardQueryResponse,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
+import { GET_SHARE_DASHBOARD_BY_ID } from './graphql/queries';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 
@@ -46,7 +47,7 @@ export class ShareComponent extends UnsubscribeComponent implements OnInit {
       .pipe(takeUntil(this.destroy$))
       .subscribe((params: any) => {
         this.apollo
-          .query<GetShareDashboardByIdQueryResponse>({
+          .query<DashboardQueryResponse>({
             query: GET_SHARE_DASHBOARD_BY_ID,
             variables: {
               id: params.id,

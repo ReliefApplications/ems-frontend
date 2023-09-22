@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Resource } from '@oort-front/shared';
 
 /** Graphql query for getting resources with a filter and more data */
 export const GET_RESOURCES_EXTENDED = gql`
@@ -35,18 +34,3 @@ export const GET_RESOURCES_EXTENDED = gql`
     }
   }
 `;
-
-/** Model for GetResourcesQueryResponse object */
-export interface GetResourcesQueryResponse {
-  resources: {
-    edges: {
-      node: Resource;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-    totalCount: number;
-  };
-}

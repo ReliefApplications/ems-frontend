@@ -26,7 +26,7 @@ export class TabSettingsComponent implements OnDestroy {
   /**
    * Edition of a single tab, in tabs widget
    *
-   * @param dialog CDK dialog service
+   * @param dialog Dialog service
    */
   constructor(private dialog: Dialog) {}
 

@@ -1,10 +1,11 @@
 import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { FormComponent, Form } from '@oort-front/shared/widgets';
 import {
-  GetFormByIdQueryResponse,
-  GET_SHORT_FORM_BY_ID,
-} from '../graphql/queries';
+  FormComponent as SharedFormComponent,
+  Form,
+  FormQueryResponse,
+} from '@oort-front/shared/widgets';
+import { GET_SHORT_FORM_BY_ID } from '../graphql/queries';
 
 /** Form component */
 @Component({
@@ -15,8 +16,8 @@ import {
 export class FormComponent implements OnInit, OnChanges {
   @Input() id = '620236aa030f3a5e5db78319';
 
-  @ViewChild(FormComponent)
-  private formComponent?: FormComponent;
+  @ViewChild(SharedFormComponent)
+  private formComponent?: SharedFormComponent;
 
   // === DATA ===
   public loading = true;
@@ -33,7 +34,7 @@ export class FormComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.apollo
-      .query<GetFormByIdQueryResponse>({
+      .query<FormQueryResponse>({
         query: GET_SHORT_FORM_BY_ID,
         variables: {
           id: this.id,
@@ -49,7 +50,7 @@ export class FormComponent implements OnInit, OnChanges {
 
   ngOnChanges(): void {
     this.apollo
-      .query<GetFormByIdQueryResponse>({
+      .query<FormQueryResponse>({
         query: GET_SHORT_FORM_BY_ID,
         variables: {
           id: this.id,

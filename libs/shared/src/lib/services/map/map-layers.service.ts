@@ -12,27 +12,23 @@ import {
 } from 'rxjs';
 import { LayerFormData } from '../../components/ui/map/interfaces/layer-settings.type';
 import { Layer, EMPTY_FEATURE_COLLECTION } from '../../components/ui/map/layer';
-import { LayerDatasource, LayerModel } from '../../models/layer.model';
+import {
+  AddLayerMutationResponse,
+  DeleteLayerMutationResponse,
+  EditLayerMutationResponse,
+  LayerDatasource,
+  LayerModel,
+  LayerQueryResponse,
+  LayersQueryResponse,
+} from '../../models/layer.model';
 import { Resource } from '../../models/resource.model';
 import { RestService } from '../rest/rest.service';
 import { QueryBuilderService } from '../query-builder/query-builder.service';
 import { AggregationBuilderService } from '../aggregation-builder/aggregation-builder.service';
 import { Aggregation } from '../../models/aggregation.model';
 import { Layout } from '../../models/layout.model';
-import {
-  AddLayerMutationResponse,
-  ADD_LAYER,
-  EditLayerMutationResponse,
-  EDIT_LAYER,
-  DeleteLayerMutationResponse,
-  DELETE_LAYER,
-} from './graphql/mutations';
-import {
-  GetLayerByIdQueryResponse,
-  GetLayersQueryResponse,
-  GET_LAYERS,
-  GET_LAYER_BY_ID,
-} from './graphql/queries';
+import { ADD_LAYER, EDIT_LAYER, DELETE_LAYER } from './graphql/mutations';
+import { GET_LAYERS, GET_LAYER_BY_ID } from './graphql/queries';
 import { HttpParams } from '@angular/common/http';
 import { omitBy, isNil, get } from 'lodash';
 import { ContextService } from '../context/context.service';
@@ -147,7 +143,7 @@ export class MapLayersService {
    */
   public getLayerById(layerId: string): Observable<LayerModel> {
     return this.apollo
-      .query<GetLayerByIdQueryResponse>({
+      .query<LayerQueryResponse>({
         query: GET_LAYER_BY_ID,
         variables: {
           id: layerId,
@@ -171,7 +167,7 @@ export class MapLayersService {
    */
   public getLayers(): Observable<LayerModel[]> {
     return this.apollo
-      .query<GetLayersQueryResponse>({
+      .query<LayersQueryResponse>({
         query: GET_LAYERS,
         variables: {},
       })

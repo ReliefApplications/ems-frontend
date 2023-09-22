@@ -5,8 +5,6 @@ import { firstValueFrom } from 'rxjs';
 import {
   GET_LAYOUT,
   GET_RESOURCE_METADATA,
-  GetLayoutQueryResponse,
-  GetResourceMetadataQueryResponse,
 } from '../summary-card/graphql/queries';
 import { clone, get } from 'lodash';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
@@ -14,6 +12,8 @@ import { DataTemplateService } from '../../../services/data-template/data-templa
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
+import { ResourceQueryResponse } from '../../../models/resource.model';
+import { GridService } from '../../../services/grid/grid.service';
 
 /**
  * Text widget component using KendoUI
@@ -46,6 +46,7 @@ export class EditorComponent implements OnInit {
    * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
+   * @param gridService Shared grid service
    */
   constructor(
     private apollo: Apollo,
@@ -53,7 +54,8 @@ export class EditorComponent implements OnInit {
     private dataTemplateService: DataTemplateService,
     private dialog: Dialog,
     private snackBar: SnackbarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private gridService: GridService
   ) {}
 
   /** Sanitizes the text. */
@@ -89,7 +91,7 @@ export class EditorComponent implements OnInit {
   /** Sets layout */
   private async getLayout(): Promise<void> {
     const apolloRes = await firstValueFrom(
-      this.apollo.query<GetLayoutQueryResponse>({
+      this.apollo.query<ResourceQueryResponse>({
         query: GET_LAYOUT,
         variables: {
           id: this.settings.layout,
@@ -111,7 +113,7 @@ export class EditorComponent implements OnInit {
    */
   private async getData() {
     const metaRes = await firstValueFrom(
-      this.apollo.query<GetResourceMetadataQueryResponse>({
+      this.apollo.query<ResourceQueryResponse>({
         query: GET_RESOURCE_METADATA,
         variables: {
           id: this.settings.resource,
@@ -154,6 +156,32 @@ export class EditorComponent implements OnInit {
       );
       const record: any = get(res.data, `${queryName}.edges[0].node`, null);
       this.fieldsValue = { ...record };
+      const metaQuery = this.queryBuilder.buildMetaQuery(this.layout.query);
+      if (metaQuery) {
+        const metaData = await firstValueFrom(metaQuery);
+        for (const field in metaData.data) {
+          if (Object.prototype.hasOwnProperty.call(metaData.data, field)) {
+            const metaFields = Object.assign({}, metaData.data[field]);
+            try {
+              await this.gridService.populateMetaFields(metaFields);
+              this.fields = this.fields.map((field) => {
+                //add shape for columns and matrices
+                const metaData = metaFields[field.name];
+                if (metaData && (metaData.columns || metaData.rows)) {
+                  return {
+                    ...field,
+                    columns: metaData.columns,
+                    rows: metaData.rows,
+                  };
+                }
+                return field;
+              });
+            } catch (err) {
+              console.error(err);
+            }
+          }
+        }
+      }
     }
   }
 

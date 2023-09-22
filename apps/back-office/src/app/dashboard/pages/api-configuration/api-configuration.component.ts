@@ -9,18 +9,14 @@ import {
   status,
   BreadcrumbService,
   UnsubscribeComponent,
+  ApiConfigurationQueryResponse,
+  EditApiConfigurationMutationResponse,
 } from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
 import { takeUntil } from 'rxjs/operators';
 import { apiValidator } from '../../../utils/nameValidation';
-import {
-  EditApiConfigurationMutationResponse,
-  EDIT_API_CONFIGURATION,
-} from './graphql/mutations';
-import {
-  GetApiConfigurationQueryResponse,
-  GET_API_CONFIGURATION,
-} from './graphql/queries';
+import { EDIT_API_CONFIGURATION } from './graphql/mutations';
+import { GET_API_CONFIGURATION } from './graphql/queries';
 import { SnackbarService } from '@oort-front/ui';
 
 /**
@@ -81,7 +77,7 @@ export class ApiConfigurationComponent
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id) {
       this.apollo
-        .watchQuery<GetApiConfigurationQueryResponse>({
+        .watchQuery<ApiConfigurationQueryResponse>({
           query: GET_API_CONFIGURATION,
           variables: {
             id: this.id,

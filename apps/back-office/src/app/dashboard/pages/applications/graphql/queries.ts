@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Application, Role } from '@oort-front/shared';
 
 // === GET APPLICATIONS ===
 /** Graphql query for getting multiple applications with a cursor */
@@ -57,21 +56,6 @@ export const GET_APPLICATIONS = gql`
   }
 `;
 
-/** Model for GetApplicationsQueryResponse object */
-export interface GetApplicationsQueryResponse {
-  applications: {
-    edges: {
-      node: Application;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-    totalCount: number;
-  };
-}
-
 // === GET ROLES ===
 /** Graphql query for getting roles (of an application or all) */
 export const GET_ROLES = gql`
@@ -90,8 +74,3 @@ export const GET_ROLES = gql`
     }
   }
 `;
-
-/** Model for GetRolesQueryResponse object */
-export interface GetRolesQueryResponse {
-  roles: Role[];
-}

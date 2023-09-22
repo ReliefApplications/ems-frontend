@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { AddStepComponent } from './add-step.component';
 import {
   TranslateModule,
   TranslateService,
@@ -6,11 +7,9 @@ import {
   TranslateLoader,
 } from '@ngx-translate/core';
 
-import { AddStepComponent } from './add-step.component';
-
 describe('AddStepComponent', () => {
   let component: AddStepComponent;
-  let fixture: ComponentFixture<sharedAddStepComponent>;
+  let fixture: ComponentFixture<AddStepComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

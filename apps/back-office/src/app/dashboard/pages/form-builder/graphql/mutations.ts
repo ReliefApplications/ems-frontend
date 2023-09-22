@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Form } from '@oort-front/shared';
 
 // === EDIT FORM ===
 /** Edit form structure gql mutation definition */
@@ -108,8 +107,3 @@ export const EDIT_FORM_NAME = gql`
     }
   }
 `;
-
-/** Edit form gql mutation response interface */
-export interface EditFormMutationResponse {
-  editForm: Form;
-}

@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Form } from '../../../../models/form.model';
 
 // === GET FORMS ===
 
@@ -26,21 +25,6 @@ export const GET_FORMS = gql`
     }
   }
 `;
-
-/** Model for GetFormsQueryResponse object */
-export interface GetFormsQueryResponse {
-  forms: {
-    edges: {
-      node: Form;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-    totalCount: number;
-  };
-}
 
 // === GET QUERY TYPES ===
 

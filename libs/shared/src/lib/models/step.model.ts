@@ -16,3 +16,23 @@ export interface Step {
   canUpdate?: boolean;
   canDelete?: boolean;
 }
+
+/** Model for step graphql query response */
+export interface StepQueryResponse {
+  step: Step;
+}
+
+/** Model for add step graphql mutation edit response */
+export interface AddStepMutationResponse {
+  addStep: Step;
+}
+
+/** Model for edit step graphql mutation edit response */
+export interface EditStepMutationResponse {
+  editStep: Step;
+}
+
+/** Model for delete step graphql mutation delete response */
+export interface DeleteStepMutationResponse {
+  deleteStep: Step;
+}

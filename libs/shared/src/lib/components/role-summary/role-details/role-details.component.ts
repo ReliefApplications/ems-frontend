@@ -1,11 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
-import { Permission, Role } from '../../../models/user.model';
 import {
-  GetPermissionsQueryResponse,
-  GET_PERMISSIONS,
-} from '../graphql/queries';
+  Permission,
+  PermissionsQueryResponse,
+  Role,
+} from '../../../models/user.model';
+import { GET_PERMISSIONS } from '../graphql/queries';
 import { get } from 'lodash';
 import { RestService } from '../../../services/rest/rest.service';
 
@@ -66,7 +67,7 @@ export class RoleDetailsComponent implements OnInit {
   ngOnInit(): void {
     this.form = this.createRoleForm(this.role);
     this.apollo
-      .query<GetPermissionsQueryResponse>({
+      .query<PermissionsQueryResponse>({
         query: GET_PERMISSIONS,
         variables: {
           application: this.role.application !== null,

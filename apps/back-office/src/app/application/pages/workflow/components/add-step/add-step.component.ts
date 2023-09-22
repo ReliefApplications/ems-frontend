@@ -6,11 +6,13 @@ import {
   CONTENT_TYPES,
   UnsubscribeComponent,
   WorkflowService,
+  FormsQueryResponse,
+  AddFormMutationResponse,
 } from '@oort-front/shared';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs';
-import { AddFormMutationResponse, ADD_FORM } from '../../graphql/mutations';
-import { GET_FORMS, GetFormsQueryResponse } from '../../graphql/queries';
+import { ADD_FORM } from '../../graphql/mutations';
+import { GET_FORMS } from '../../graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 
@@ -28,7 +30,7 @@ const ITEMS_PER_PAGE = 10;
 export class AddStepComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   public contentTypes = CONTENT_TYPES.filter((x) => x.value !== 'workflow');
-  public formsQuery!: QueryRef<GetFormsQueryResponse>;
+  public formsQuery!: QueryRef<FormsQueryResponse>;
 
   // === REACTIVE FORM ===
   public stepForm = this.fb.group({
@@ -62,7 +64,7 @@ export class AddStepComponent extends UnsubscribeComponent implements OnInit {
     this.stepForm.get('type')?.valueChanges.subscribe((type) => {
       const contentControl = this.stepForm.controls.content;
       if (type === ContentType.form) {
-        this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
+        this.formsQuery = this.apollo.watchQuery<FormsQueryResponse>({
           query: GET_FORMS,
           variables: {
             first: ITEMS_PER_PAGE,

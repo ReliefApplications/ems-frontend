@@ -1,22 +1,14 @@
 import { Apollo } from 'apollo-angular';
 import {
   EDIT_RECORD,
-  EditRecordMutationResponse,
   EDIT_RECORDS,
-  EditRecordsMutationResponse,
   PUBLISH,
   PUBLISH_NOTIFICATION,
-  PublishMutationResponse,
-  PublishNotificationMutationResponse,
 } from './graphql/mutations';
 import {
-  GetRecordDetailsQueryResponse,
   GET_RECORD_DETAILS,
-  GetRecordByIdQueryResponse,
   GET_RECORD_BY_ID,
-  GetFormByIdQueryResponse,
   GET_FORM_BY_ID,
-  GetUserRolesPermissionsQueryResponse,
   GET_USER_ROLES_PERMISSIONS,
 } from './graphql/queries';
 import {
@@ -47,6 +39,18 @@ import { firstValueFrom, takeUntil } from 'rxjs';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { RoleUsersNodesQueryResponse } from '../../../models/user.model';
+import {
+  EditRecordMutationResponse,
+  EditRecordsMutationResponse,
+  RecordQueryResponse,
+} from '../../../models/record.model';
+import {
+  PublishMutationResponse,
+  PublishNotificationMutationResponse,
+} from '../../../models/notification.model';
+import { FormQueryResponse } from '../../../models/form.model';
+import { AggregationGridComponent } from '../../aggregation/aggregation-grid/aggregation-grid.component';
 
 /** Component for the grid widget */
 @Component({
@@ -112,6 +116,8 @@ export class GridWidgetComponent
   }
 
   @ViewChild(CoreGridComponent) coreGridComponent?: CoreGridComponent;
+  @ViewChild(AggregationGridComponent)
+  aggregationGridComponent?: AggregationGridComponent;
 
   /**
    * Heavy constructor for the grid widget component
@@ -159,7 +165,7 @@ export class GridWidgetComponent
 
       // Get user permission on resource
       this.apollo
-        .query<GetUserRolesPermissionsQueryResponse>({
+        .query<RoleUsersNodesQueryResponse>({
           query: GET_USER_ROLES_PERMISSIONS,
           variables: {
             resource: this.settings.resource,
@@ -224,6 +230,11 @@ export class GridWidgetComponent
               };
             }
             this.aggregation = this.aggregations[0] || null;
+
+            // Build list of available sort fields
+            this.widget.settings.sortFields?.forEach((sortField: any) => {
+              this.sortFields.push(sortField);
+            });
           });
         return;
       }
@@ -236,12 +247,22 @@ export class GridWidgetComponent
    * @param e sort event
    */
   public onSort(e: any): void {
-    this.coreGridComponent?.onSortChange([
-      {
-        field: e ? e.field : '',
-        dir: e ? e.order : 'asc',
-      },
-    ]);
+    if (this.coreGridComponent) {
+      this.coreGridComponent.onSortChange([
+        {
+          field: e ? e.field : '',
+          dir: e ? e.order : 'asc',
+        },
+      ]);
+    }
+    if (this.aggregationGridComponent) {
+      this.aggregationGridComponent.onSortChange([
+        {
+          field: e ? e.field : '',
+          dir: e ? e.order : 'asc',
+        },
+      ]);
+    }
   }
 
   /**
@@ -312,7 +333,7 @@ export class GridWidgetComponent
         for (const record of this.grid.selectedItems) {
           promisedRecords.push(
             firstValueFrom(
-              this.apollo.query<GetRecordDetailsQueryResponse>({
+              this.apollo.query<RecordQueryResponse>({
                 query: GET_RECORD_DETAILS,
                 variables: {
                   id: record.id,
@@ -539,7 +560,7 @@ export class GridWidgetComponent
   ): Promise<boolean> {
     return new Promise((resolve) => {
       this.apollo
-        .query<GetFormByIdQueryResponse>({
+        .query<FormQueryResponse>({
           query: GET_FORM_BY_ID,
           variables: {
             id: targetForm,
@@ -564,7 +585,7 @@ export class GridWidgetComponent
             );
             if (value && value.record) {
               this.apollo
-                .query<GetRecordByIdQueryResponse>({
+                .query<RecordQueryResponse>({
                   query: GET_RECORD_BY_ID,
                   variables: {
                     id: value.record,
@@ -668,16 +689,6 @@ export class GridWidgetComponent
       ...this.layout,
       ...{ template: get(this.settings, 'template', null) },
     };
-
-    // select sort fields that match the current layout
-    this.sortFields = [];
-    const layoutFieldsName = this.layout.query.fields.map((a: any) => a.name);
-
-    this.widget.settings.sortFields?.forEach((sortField: any) => {
-      if (layoutFieldsName.includes(sortField.field)) {
-        this.sortFields.push(sortField);
-      }
-    });
   }
 
   /**

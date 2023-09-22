@@ -7,7 +7,10 @@
           [record]="record"
           (showHistory)="onShowHistory()"
         ></shared-record-summary>
-        <shared-form-actions *ngIf="survey" [survey]="survey"></shared-form-actions>
+        <shared-form-actions
+          *ngIf="survey"
+          [survey]="survey"
+        ></shared-form-actions>
       </div>
       <ui-tabs
         [selectedIndex]="(selectedPageIndex$ | async)!"

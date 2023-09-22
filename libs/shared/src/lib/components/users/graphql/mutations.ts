@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { User } from '../../../models/user.model';
 
 // === ADD USER ===
 
@@ -26,11 +25,6 @@ export const ADD_USERS = gql`
   }
 `;
 
-/** Model for AddUsersMutationResponse object */
-export interface AddUsersMutationResponse {
-  addUsers: User[];
-}
-
 // === DELETE USER ===
 
 /** Graphql request for deleting multiple users by their ids */
@@ -39,11 +33,6 @@ export const DELETE_USERS = gql`
     deleteUsers(ids: $ids)
   }
 `;
-
-/** Model for DeleteUsersMutationResponse object */
-export interface DeleteUsersMutationResponse {
-  deleteUsers: number;
-}
 
 // === EDIT USER ===
 
@@ -82,8 +71,3 @@ export const EDIT_USER = gql`
     }
   }
 `;
-
-/** Model for EditUserMutationResponse object */
-export interface EditUserMutationResponse {
-  editUser: User;
-}

@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { User } from '../../../models/user.model';
 
 /** Application users query */
 export const GET_APPLICATION_USERS = gql`
@@ -36,20 +35,3 @@ export const GET_APPLICATION_USERS = gql`
     }
   }
 `;
-
-/** Interface of application users query response */
-export interface GetApplicationUsersQueryResponse {
-  application: {
-    users: {
-      edges: {
-        node: User;
-        cursor: string;
-      }[];
-      pageInfo: {
-        endCursor: string;
-        hasNextPage: boolean;
-      };
-      totalCount: number;
-    };
-  };
-}

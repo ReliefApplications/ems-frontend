@@ -1,12 +1,13 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
-import { Form, BreadcrumbService, FormComponent } from '@oort-front/shared';
 import {
-  GetFormByIdQueryResponse,
-  GET_SHORT_FORM_BY_ID,
-} from './graphql/queries';
+  Form,
+  FormQueryResponse,
+  BreadcrumbService,
+  FormComponent,
+} from '@oort-front/shared';
+import { GET_SHORT_FORM_BY_ID } from './graphql/queries';
 
 /**
  * Form answer page component.
@@ -46,7 +47,7 @@ export class FormAnswerComponent implements OnInit {
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.apollo
-        .watchQuery<GetFormByIdQueryResponse>({
+        .watchQuery<FormQueryResponse>({
           query: GET_SHORT_FORM_BY_ID,
           variables: {
             id: this.id,

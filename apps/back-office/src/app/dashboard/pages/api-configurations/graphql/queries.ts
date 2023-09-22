@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { ApiConfiguration } from '@oort-front/shared';
 
 // === GET API CONFIGURATIONS ===
 
@@ -44,18 +43,3 @@ export const GET_API_CONFIGURATIONS = gql`
     }
   }
 `;
-
-/** Model for GetApiConfigurationQueryResponse object */
-export interface GetApiConfigurationsQueryResponse {
-  apiConfigurations: {
-    edges: {
-      node: ApiConfiguration;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-    totalCount: number;
-  };
-}

@@ -2,6 +2,7 @@ import { get, isArray, isNil } from 'lodash';
 import calcFunctions from './calcFunctions';
 import { Page } from '../../models/page.model';
 import { REFERENCE_DATA_END } from '../../services/query-builder/query-builder.service';
+import { ICON_EXTENSIONS } from '../../components/ui/core-grid/grid/grid.constants';
 
 /** Prefix for data keys */
 const DATA_PREFIX = '{{data.';
@@ -13,42 +14,6 @@ const AVATAR_PREFIX = '{{avatars.';
 const ALLOWED_IMAGE_EXTENSIONS = ['.jpg', '.png', '.jpeg', '.gif', '.bmp'];
 /** Suffix for all keys */
 const PLACEHOLDER_SUFFIX = '}}';
-
-/**
- * Mapping of file types / kendo icons.
- */
-const ICON_EXTENSIONS: any = {
-  bmp: 'k-i-file-programming',
-  csv: 'k-i-file-csv',
-  doc: 'k-i-file-word',
-  docm: 'k-i-file-word',
-  docx: 'k-i-file-word',
-  eml: 'k-i-file',
-  epub: 'k-i-file',
-  gif: 'k-i-file-video',
-  gz: 'k-i-file-zip',
-  htm: 'k-i-file-programming',
-  html: 'k-i-file-programming',
-  jpg: 'k-i-file-image',
-  jpeg: 'k-i-file-image',
-  msg: 'k-i-file',
-  odp: 'k-i-file-presentation',
-  odt: 'k-i-file-txt',
-  ods: 'k-i-file-data',
-  pdf: 'k-i-file-pdf',
-  png: 'k-i-file-image',
-  ppt: 'k-i-file-ppt',
-  pptx: 'k-i-file-ppt',
-  pptm: 'k-i-file-ppt',
-  rtf: 'k-i-file-txt',
-  txt: 'k-i-file-txt',
-  xls: 'k-i-file-excel',
-  xlsx: 'k-i-file-excel',
-  xps: 'k-i-file',
-  zip: 'k-i-file-zip',
-  xlsm: 'k-i-file-excel',
-  xml: 'k-i-file-excel',
-};
 
 /**
  * Parse the html body of a summary card with the content of a record,
@@ -311,6 +276,48 @@ const replaceRecordFields = (
               value ? value.length : 0
             } items</span>`;
             break;
+          case 'matrixdropdown':
+          case 'matrixdynamic': {
+            convertedValue = '<table><tr><th></th>';
+            const rows =
+              field.rows ??
+              (Object.keys(value).map((row) => {
+                return { label: row, name: row };
+              }) ||
+                []);
+            const columns = field.columns || [];
+            // Create header row with column names
+            for (const col of columns) {
+              convertedValue += `<th class="px-1">${col.label}</th>`;
+            }
+
+            convertedValue += '</tr>';
+
+            // Create table rows with row names and data values
+            for (const row of rows) {
+              convertedValue += `<tr><th>${row.label}</th>`;
+
+              for (const col of columns) {
+                convertedValue += `<td class="text-right px-1">${
+                  value[row.name]?.[col.name] ?? ''
+                }</td>`;
+              }
+
+              convertedValue += '</tr>';
+            }
+
+            convertedValue += '</table>';
+            break;
+          }
+          case 'matrix': {
+            convertedValue = `<span style='${style}'>`;
+            const rows = field.rows || [];
+            for (const row of rows) {
+              convertedValue += `${row.label}: ${value[row.name]} `;
+            }
+            convertedValue += '</span>';
+            break;
+          }
           default:
             convertedValue = style
               ? `<span style='${style}'>${applyLayoutFormat(

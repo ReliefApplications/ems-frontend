@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Dashboard } from '@oort-front/shared';
 
 /**
  * Dashboard query.
@@ -43,13 +42,3 @@ export const GET_DASHBOARD_BY_ID = gql`
     }
   }
 `;
-
-/**
- * Interface of dashboard query response.
- */
-export interface GetDashboardByIdQueryResponse {
-  /** Loading state of the query */
-
-  /** Application dashboard */
-  dashboard: Dashboard;
-}

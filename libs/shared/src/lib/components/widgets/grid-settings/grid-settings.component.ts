@@ -12,27 +12,24 @@ import {
   UntypedFormArray,
   Validators,
   FormBuilder,
-  FormControl,
   FormArray,
 } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
-import {
-  GetChannelsQueryResponse,
-  GET_CHANNELS,
-  GET_GRID_RESOURCE_META,
-  GetResourceByIdQueryResponse,
-} from './graphql/queries';
+import { GET_CHANNELS, GET_GRID_RESOURCE_META } from './graphql/queries';
 import { Application } from '../../../models/application.model';
-import { Channel } from '../../../models/channel.model';
+import { Channel, ChannelsQueryResponse } from '../../../models/channel.model';
 import { ApplicationService } from '../../../services/application/application.service';
 import { Form } from '../../../models/form.model';
-import { Resource } from '../../../models/resource.model';
+import {
+  Resource,
+  ResourceQueryResponse,
+} from '../../../models/resource.model';
 import { createGridWidgetFormGroup } from './grid-settings.forms';
 import { DistributionList } from '../../../models/distribution-list.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
-import { get } from 'lodash';
+import { AggregationService } from '../../../services/aggregation/aggregation.service';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -88,12 +85,14 @@ export class GridSettingsComponent
    * @param applicationService The application service
    * @param queryBuilder The query builder service
    * @param fb FormBuilder instance
+   * @param aggregationService Shared aggregation service
    */
   constructor(
     private apollo: Apollo,
     private applicationService: ApplicationService,
     private queryBuilder: QueryBuilderService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private aggregationService: AggregationService
   ) {
     super();
   }
@@ -103,12 +102,7 @@ export class GridSettingsComponent
     const tileSettings = this.tile.settings;
     this.formGroup = extendWidgetForm(
       createGridWidgetFormGroup(this.tile.id, tileSettings),
-      tileSettings?.widgetDisplay,
-      {
-        sortable: new FormControl(
-          get<boolean>(tileSettings, 'widgetDisplay.sortable', false)
-        ),
-      }
+      tileSettings?.widgetDisplay
     );
 
     this.change.emit(this.formGroup);
@@ -165,34 +159,10 @@ export class GridSettingsComponent
       .get('aggregations')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        if (value) {
-          // Some aggregations are selected
-          if (value.length > 0) {
-            // Remove validators on layouts fields
-            this.formGroup.controls.layouts.clearValidators();
-          } else {
-            // No aggregation selected
-            if (this.formGroup.controls.layouts.value.length > 0) {
-              // Remove validators on aggregations field if layouts are selected
-              this.formGroup.controls.aggregations.clearValidators();
-            } else {
-              // Else, reset all validators
-              this.formGroup.controls.aggregations.setValidators([
-                Validators.required,
-              ]);
-              this.formGroup.controls.layouts.setValidators([
-                Validators.required,
-              ]);
-            }
-          }
+        this.updateValueAndValidityByType(value, 'aggregations');
+        if (value.length > 0) {
+          this.onAggregationChange(value[0]);
         }
-        // Update fields without sending update events to prevent infinite loops
-        this.formGroup.controls.aggregations.updateValueAndValidity({
-          emitEvent: false,
-        });
-        this.formGroup.controls.layouts.updateValueAndValidity({
-          emitEvent: false,
-        });
       });
     // If some aggregations are selected, remove validators on layouts field
     if (this.formGroup.get('aggregations')?.value.length > 0) {
@@ -204,34 +174,7 @@ export class GridSettingsComponent
       .get('layouts')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        if (value) {
-          // Some layouts are selected
-          if (value.length > 0) {
-            // Remove validators on aggregations field
-            this.formGroup.controls.aggregations.clearValidators();
-          } else {
-            // No layout selected
-            if (this.formGroup.controls.aggregations.value.length > 0) {
-              // Remove validators on layouts field if aggregations are selected
-              this.formGroup.controls.layouts.clearValidators();
-            } else {
-              // Else, reset all validators
-              this.formGroup.controls.layouts.setValidators([
-                Validators.required,
-              ]);
-              this.formGroup.controls.aggregations.setValidators([
-                Validators.required,
-              ]);
-            }
-          }
-        }
-        // Update fields without sending update events to prevent infinite loops
-        this.formGroup.controls.aggregations.updateValueAndValidity({
-          emitEvent: false,
-        });
-        this.formGroup.controls.layouts.updateValueAndValidity({
-          emitEvent: false,
-        });
+        this.updateValueAndValidityByType(value, 'layouts');
       });
     // If some layouts are selected, remove validators on aggregations field
     if (this.formGroup.get('layouts')?.value.length > 0) {
@@ -255,6 +198,45 @@ export class GridSettingsComponent
     });
   }
 
+  /**
+   * Update form group related to layouts and aggregations values and validity
+   *
+   * @param value of the given form control
+   * @param type form control key regarding to the type: layouts | aggregations
+   */
+  private updateValueAndValidityByType(
+    value: any,
+    type: 'aggregations' | 'layouts'
+  ) {
+    const otherType = type === 'aggregations' ? 'layouts' : 'aggregations';
+    if (value) {
+      // Some type are selected
+      if (value.length > 0) {
+        // Remove validators on other type fields fields
+        this.formGroup.controls[otherType].clearValidators();
+      } else {
+        // No type selected
+        if (this.formGroup.controls[otherType].value.length > 0) {
+          // Remove validators on type field if other type are selected
+          this.formGroup.controls[type].clearValidators();
+        } else {
+          // Else, reset all validators
+          this.formGroup.controls[type].setValidators([Validators.required]);
+          this.formGroup.controls[otherType].setValidators([
+            Validators.required,
+          ]);
+        }
+      }
+    }
+    // Update fields without sending update events to prevent infinite loops
+    this.formGroup.controls[type].updateValueAndValidity({
+      emitEvent: false,
+    });
+    this.formGroup.controls[otherType].updateValueAndValidity({
+      emitEvent: false,
+    });
+  }
+
   ngAfterViewInit(): void {
     if (this.formGroup) {
       this.formGroup.valueChanges
@@ -268,7 +250,7 @@ export class GridSettingsComponent
         .subscribe((application: Application | null) => {
           if (application) {
             this.apollo
-              .query<GetChannelsQueryResponse>({
+              .query<ChannelsQueryResponse>({
                 query: GET_CHANNELS,
                 variables: {
                   application: application.id,
@@ -280,7 +262,7 @@ export class GridSettingsComponent
               });
           } else {
             this.apollo
-              .query<GetChannelsQueryResponse>({
+              .query<ChannelsQueryResponse>({
                 query: GET_CHANNELS,
               })
               .pipe(takeUntil(this.destroy$))
@@ -302,7 +284,7 @@ export class GridSettingsComponent
       const aggregationIds: string[] | undefined =
         this.formGroup?.get('aggregations')?.value;
       this.apollo
-        .query<GetResourceByIdQueryResponse>({
+        .query<ResourceQueryResponse>({
           query: GET_GRID_RESOURCE_META,
           variables: {
             resource: this.formGroup.get('resource')?.value,
@@ -317,9 +299,15 @@ export class GridSettingsComponent
             this.resource = data.resource;
             this.relatedForms = data.resource.relatedForms || [];
             this.templates = data.resource.forms || [];
-            this.fields = this.queryBuilder.getFields(
-              this.resource.queryName as string
-            );
+            if (this.formGroup.get('aggregations')?.value.length > 0) {
+              this.onAggregationChange(
+                this.formGroup.get('aggregations')?.value[0]
+              );
+            } else {
+              this.fields = this.queryBuilder.getFields(
+                this.resource.queryName as string
+              );
+            }
           } else {
             this.relatedForms = [];
             this.templates = [];
@@ -336,22 +324,34 @@ export class GridSettingsComponent
   }
 
   /**
-   * Filters the queries using text value.
-   *
-   * @param value search value
-   * @returns filtered list of queries.
-   */
-  private filterQueries(value: string): string[] {
-    const filterValue = value.toLowerCase();
-    return this.allQueries.filter((x) => x.toLowerCase().includes(filterValue));
-  }
-
-  /**
    *  Handles the a tab change event
    *
    * @param event Event triggered on tab switch
    */
   handleTabChange(event: number): void {
     this.selectedTab = event;
+  }
+
+  /**
+   * Handle aggregation change
+   * Update available fields
+   *
+   * @param aggregationId new aggregation id
+   */
+  private onAggregationChange(aggregationId: string): void {
+    if (this.resource?.id && aggregationId) {
+      this.aggregationService
+        .aggregationDataQuery(this.resource.id, aggregationId || '')
+        .subscribe(({ data }) => {
+          if (data.recordsAggregation) {
+            this.fields = data.recordsAggregation.items[0]
+              ? Object.keys(data.recordsAggregation.items[0]).map((f) => ({
+                  name: f,
+                  editor: 'text',
+                }))
+              : [];
+          }
+        });
+    }
   }
 }

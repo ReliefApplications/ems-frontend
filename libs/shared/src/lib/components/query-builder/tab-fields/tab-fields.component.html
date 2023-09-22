@@ -21,7 +21,9 @@
         (click)="searchAvailable = ''"
         [isIcon]="true"
         [icon]="searchAvailable ? 'cancel' : 'search'"
-        [uiTooltip]="'common.' + (searchAvailable ? 'cancel' : 'search') | translate"
+        [uiTooltip]="
+          'common.' + (searchAvailable ? 'cancel' : 'search') | translate
+        "
       ></ui-button>
     </div>
 
@@ -66,7 +68,9 @@
         (click)="searchSelected = ''"
         [isIcon]="true"
         [icon]="searchSelected ? 'cancel' : 'search'"
-        [uiTooltip]="'common.' + (searchAvailable ? 'cancel' : 'search') | translate"
+        [uiTooltip]="
+          'common.' + (searchAvailable ? 'cancel' : 'search') | translate
+        "
       ></ui-button>
     </div>
 

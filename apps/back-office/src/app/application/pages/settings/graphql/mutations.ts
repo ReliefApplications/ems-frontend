@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Application } from '@oort-front/shared';
 
 // === DELETE APPLICATION ===
 /** Delete application gql mutation definition */
@@ -11,8 +10,3 @@ export const DELETE_APPLICATION = gql`
     }
   }
 `;
-
-/** Delete application gql mutation response interface */
-export interface DeleteApplicationMutationResponse {
-  deleteApplication: Application;
-}

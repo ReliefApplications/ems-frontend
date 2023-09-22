@@ -1,12 +1,7 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormBuilder } from '@angular/forms';
-import {
-  GetResourcesQueryResponse,
-  GET_RESOURCES,
-  GetResourceByIdQueryResponse,
-  GET_RESOURCE_BY_ID,
-} from './graphql/queries';
+import { GET_RESOURCES, GET_RESOURCE_BY_ID } from './graphql/queries';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -23,6 +18,10 @@ import {
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 import { DialogRef } from '@angular/cdk/dialog';
+import {
+  ResourceQueryResponse,
+  ResourcesQueryResponse,
+} from '@oort-front/shared';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -64,7 +63,7 @@ export class AddFormModalComponent implements OnInit {
   });
 
   // === DATA ===
-  public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
 
   public templates: any[] = [];
 
@@ -124,7 +123,7 @@ export class AddFormModalComponent implements OnInit {
         });
       });
 
-    this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
+    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
       query: GET_RESOURCES,
       variables: {
         first: ITEMS_PER_PAGE,
@@ -163,7 +162,7 @@ export class AddFormModalComponent implements OnInit {
    */
   getResource(id: string): void {
     this.apollo
-      .query<GetResourceByIdQueryResponse>({
+      .query<ResourceQueryResponse>({
         query: GET_RESOURCE_BY_ID,
         variables: {
           id,

@@ -1,12 +1,14 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { GridDataResult, PageChangeEvent } from '@progress/kendo-angular-grid';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { GetAggregationDataQueryResponse } from '../../../services/aggregation/graphql/queries';
-import { Aggregation } from '../../../models/aggregation.model';
+import {
+  Aggregation,
+  AggregationDataQueryResponse,
+} from '../../../models/aggregation.model';
 import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { PAGER_SETTINGS } from './aggregation-grid.constants';
-import { GetResourceByIdQueryResponse, GET_RESOURCE } from './graphql/queries';
+import { GET_RESOURCE } from './graphql/queries';
 import { debounceTime, takeUntil } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -17,6 +19,8 @@ import { GridService } from '../../../services/grid/grid.service';
 import { createDefaultField } from '../../query-builder/query-builder-forms';
 import { ContextService } from '../../../services/context/context.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { ResourceQueryResponse } from '../../../models/resource.model';
+import { SortDescriptor } from '@progress/kendo-data-query';
 
 /**
  * Shared aggregation grid component.
@@ -40,9 +44,10 @@ export class AggregationGridComponent
   } = {
     error: false,
   };
+  public sort: SortDescriptor[] = [];
   public pageSize = 10;
   public skip = 0;
-  private dataQuery!: QueryRef<GetAggregationDataQueryResponse>;
+  private dataQuery!: QueryRef<AggregationDataQueryResponse>;
   public pagerSettings = PAGER_SETTINGS;
   public showFilter = false;
 
@@ -56,6 +61,16 @@ export class AggregationGridComponent
       columnChooser: false,
       filter: !this.showFilter,
     };
+  }
+
+  /** @returns current field used for sorting */
+  get sortField(): string | null {
+    return this.sort.length > 0 && this.sort[0].dir ? this.sort[0].field : null;
+  }
+
+  /** @returns current sorting order */
+  get sortOrder(): string {
+    return this.sort.length > 0 && this.sort[0].dir ? this.sort[0].dir : '';
   }
 
   /**
@@ -124,21 +139,31 @@ export class AggregationGridComponent
         this.updateValues(data, loading);
       },
       error: (err: any) => {
-        this.status = {
-          error: true,
-          message: this.translate.instant(
-            'components.widget.grid.errors.queryFetchFailed',
-            {
-              error:
-                err.networkError?.error?.errors
-                  ?.map((x: any) => x.message)
-                  .join(', ') || err,
-            }
-          ),
-        };
         this.loading = false;
+        this.setErrorStatus(
+          err,
+          'components.widget.grid.errors.queryFetchFailed'
+        );
       },
     });
+  }
+
+  /**
+   * Set error status given error and translation key for the error message
+   *
+   * @param err error type
+   * @param translationKey translation key used to build the error message
+   */
+  private setErrorStatus(err: any, translationKey: string) {
+    this.status = {
+      error: true,
+      message: this.translate.instant(translationKey, {
+        error:
+          err.networkError?.error?.errors
+            ?.map((x: any) => x.message)
+            .join(', ') || err,
+      }),
+    };
   }
 
   /**
@@ -147,7 +172,7 @@ export class AggregationGridComponent
   private getAggregationFields(): void {
     this.loadingSettings = true;
     this.apollo
-      .query<GetResourceByIdQueryResponse>({
+      .query<ResourceQueryResponse>({
         query: GET_RESOURCE,
         variables: {
           id: this.resourceId,
@@ -234,18 +259,10 @@ export class AggregationGridComponent
               },
               error: (err: any) => {
                 this.loadingSettings = false;
-                this.status = {
-                  error: true,
-                  message: this.translate.instant(
-                    'components.widget.grid.errors.metaQueryFetchFailed',
-                    {
-                      error:
-                        err.networkError?.error?.errors
-                          ?.map((x: any) => x.message)
-                          .join(', ') || err,
-                    }
-                  ),
-                };
+                this.setErrorStatus(
+                  err,
+                  'components.widget.grid.errors.metaQueryFetchFailed'
+                );
               },
             });
           } else {
@@ -260,23 +277,25 @@ export class AggregationGridComponent
         },
         error: (err: any) => {
           this.loadingSettings = false;
-          this.status = {
-            error: true,
-            message: this.translate.instant(
-              'components.widget.grid.errors.metaQueryFetchFailed',
-              {
-                error:
-                  err.networkError?.error?.errors
-                    ?.map((x: any) => x.message)
-                    .join(', ') || err,
-              }
-            ),
-          };
+          this.setErrorStatus(
+            err,
+            'components.widget.grid.errors.metaQueryFetchFailed'
+          );
         },
       });
   }
 
-  // === PAGINATION ===
+  /**
+   * Detects sort events and update the items loaded.
+   *
+   * @param sort Sort event.
+   */
+  public onSortChange(sort: SortDescriptor[]): void {
+    this.sort = sort;
+    this.skip = 0;
+    this.onPageChange({ skip: this.skip, take: this.pageSize });
+  }
+
   /**
    * Detects pagination events and update the items loaded.
    *
@@ -292,6 +311,8 @@ export class AggregationGridComponent
         variables: {
           first: this.pageSize,
           skip: this.skip,
+          sortField: this.sortField || undefined,
+          sortOrder: this.sortOrder,
         },
       })
       .then((results) => this.updateValues(results.data, results.loading));
@@ -303,10 +324,7 @@ export class AggregationGridComponent
    * @param data query response data
    * @param loading loading status
    */
-  private updateValues(
-    data: GetAggregationDataQueryResponse,
-    loading: boolean
-  ) {
+  private updateValues(data: AggregationDataQueryResponse, loading: boolean) {
     this.gridData = {
       data: data.recordsAggregation.items,
       total: data.recordsAggregation.totalCount,

@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { LayerModel } from '../../../models/layer.model';
 
 // === ADD Layer ===
 /** Graphql request for adding a new layer */
@@ -11,11 +10,6 @@ export const ADD_LAYER = gql`
     }
   }
 `;
-
-/** Model for AddLayerMutationResponse object */
-export interface AddLayerMutationResponse {
-  addLayer: LayerModel;
-}
 
 // === DELETE LAYER ===
 
@@ -29,11 +23,6 @@ export const DELETE_LAYER = gql`
   }
 `;
 
-/** Model for DeleteLayerMutationResponse object */
-export interface DeleteLayerMutationResponse {
-  deleteLayer: LayerModel;
-}
-
 // === EDIT LAYER ===
 /** Edit layer gql mutation definition */
 export const EDIT_LAYER = gql`
@@ -44,8 +33,3 @@ export const EDIT_LAYER = gql`
     }
   }
 `;
-
-/** Edit layer gql mutation response interface */
-export interface EditLayerMutationResponse {
-  editLayer: LayerModel;
-}

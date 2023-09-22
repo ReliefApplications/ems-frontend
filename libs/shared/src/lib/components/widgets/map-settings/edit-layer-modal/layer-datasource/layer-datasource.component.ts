@@ -17,16 +17,20 @@ import {
   Subject,
   distinctUntilChanged,
 } from 'rxjs';
-import { Resource } from '../../../../../models/resource.model';
-import { ReferenceData } from '../../../../../models/reference-data.model';
+import {
+  Resource,
+  ResourceQueryResponse,
+  ResourcesQueryResponse,
+} from '../../../../../models/resource.model';
+import {
+  ReferenceData,
+  ReferenceDataQueryResponse,
+  ReferenceDatasQueryResponse,
+} from '../../../../../models/reference-data.model';
 import { Aggregation } from '../../../../../models/aggregation.model';
 import { Layout } from '../../../../../models/layout.model';
 import { UnsubscribeComponent } from '../../../../utils/unsubscribe/unsubscribe.component';
 import {
-  GetResourcesQueryResponse,
-  GetResourceQueryResponse,
-  GetReferenceDatasQueryResponse,
-  GetReferenceDataQueryResponse,
   GET_RESOURCES,
   GET_REFERENCE_DATAS,
   GET_REFERENCE_DATA,
@@ -79,17 +83,17 @@ export class LayerDatasourceComponent
   implements OnInit, AfterViewInit
 {
   @Input() formGroup!: FormGroup;
-  @Input() resourceQuery!: BehaviorSubject<GetResourceQueryResponse | null>;
+  @Input() resourceQuery!: BehaviorSubject<ResourceQueryResponse | null>;
   public origin!: FormControl<string | null>;
 
   // Resource
-  public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
   public resource: Resource | null = null;
   @ViewChild(GraphQLSelectComponent)
   resourceSelect?: GraphQLSelectComponent;
 
   // Reference data
-  public refDatasQuery!: QueryRef<GetReferenceDatasQueryResponse>;
+  public refDatasQuery!: QueryRef<ReferenceDatasQueryResponse>;
   public refData: ReferenceData | null = null;
   @ViewChild(GraphQLSelectComponent)
   refDataSelect?: GraphQLSelectComponent;
@@ -113,7 +117,7 @@ export class LayerDatasourceComponent
    * Component for the layer datasource selection tab
    *
    * @param apollo Apollo service
-   * @param dialog Material dialog service
+   * @param dialog Dialog service
    * @param gridLayoutService Shared layout service
    * @param aggregationService Shared aggregation service
    * @param mapLayersService Shared map layer Service.
@@ -141,7 +145,7 @@ export class LayerDatasourceComponent
         this.origin = new FormControl();
       }
     }
-    this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
+    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
       query: GET_RESOURCES,
       variables: {
         first: ITEMS_PER_PAGE,
@@ -149,19 +153,17 @@ export class LayerDatasourceComponent
       },
     });
 
-    this.refDatasQuery = this.apollo.watchQuery<GetReferenceDatasQueryResponse>(
-      {
-        query: GET_REFERENCE_DATAS,
-        variables: {
-          first: ITEMS_PER_PAGE,
-        },
-      }
-    );
+    this.refDatasQuery = this.apollo.watchQuery<ReferenceDatasQueryResponse>({
+      query: GET_REFERENCE_DATAS,
+      variables: {
+        first: ITEMS_PER_PAGE,
+      },
+    });
 
     // If the form has a resource, get info from
     const resourceID = this.formGroup.value.resource;
     if (resourceID) {
-      this.resourceQuery.subscribe((data: GetResourceQueryResponse | null) => {
+      this.resourceQuery.subscribe((data: ResourceQueryResponse | null) => {
         const layoutID = this.formGroup.value.layout;
         const aggregationID = this.formGroup.value.aggregation;
         if (data) {
@@ -221,7 +223,7 @@ export class LayerDatasourceComponent
     const refDataID = this.formGroup.get('refData')?.value;
     if (refDataID) {
       this.apollo
-        .query<GetReferenceDataQueryResponse>({
+        .query<ReferenceDataQueryResponse>({
           query: GET_REFERENCE_DATA,
           variables: {
             id: refDataID,

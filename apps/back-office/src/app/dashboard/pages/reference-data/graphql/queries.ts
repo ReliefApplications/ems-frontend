@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { ReferenceData, ApiConfiguration } from '@oort-front/shared';
 
 // === GET REFERENCE DATA ===
 /** Get ref data gql query definition */
@@ -40,11 +39,6 @@ export const GET_REFERENCE_DATA = gql`
   }
 `;
 
-/** Get ref data gql query response interface */
-export interface GetReferenceDataQueryResponse {
-  referenceData: ReferenceData;
-}
-
 /** Get API configuration gl query */
 export const GET_API_CONFIGURATION = gql`
   query GetApiConfiguration($id: ID!) {
@@ -55,11 +49,6 @@ export const GET_API_CONFIGURATION = gql`
     }
   }
 `;
-
-/** Interface of API configuration gl query response */
-export interface GetApiConfigurationQueryResponse {
-  apiConfiguration: ApiConfiguration;
-}
 
 // === GET API CONFGIURATIONS NAME ===
 /** API configuration names query */
@@ -81,18 +70,3 @@ export const GET_API_CONFIGURATIONS_NAMES = gql`
     }
   }
 `;
-
-/** Model for GetApiConfigurationQueryResponse object */
-export interface GetApiConfigurationsQueryResponse {
-  apiConfigurations: {
-    edges: {
-      node: ApiConfiguration;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-    totalCount: number;
-  };
-}

@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { User } from '../../../models/user.model';
 
 // === GET PROFILE ===
 /** Graphql request for getting profile of the current user */
@@ -39,8 +38,3 @@ export const GET_PROFILE = gql`
     }
   }
 `;
-
-/** Model for GetProfileQueryResponse object */
-export interface GetProfileQueryResponse {
-  me: User;
-}

@@ -1,13 +1,12 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
-import { Resource } from '../../models/resource.model';
 import {
-  GetResourceByIdQueryResponse,
-  GetResourcesQueryResponse,
-  GET_RESOURCES,
-  GET_SHORT_RESOURCE_BY_ID,
-} from './graphql/queries';
+  Resource,
+  ResourceQueryResponse,
+  ResourcesQueryResponse,
+} from '../../models/resource.model';
+import { GET_RESOURCES, GET_SHORT_RESOURCE_BY_ID } from './graphql/queries';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 
@@ -31,7 +30,7 @@ export class ResourceDropdownComponent
   @Output() choice: EventEmitter<string> = new EventEmitter<string>();
   public resourceControl!: UntypedFormControl;
 
-  public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
 
   /**
    * The constructor function is a special function that is called when a new instance of the class is
@@ -52,7 +51,7 @@ export class ResourceDropdownComponent
       });
     if (this.resource) {
       this.apollo
-        .query<GetResourceByIdQueryResponse>({
+        .query<ResourceQueryResponse>({
           query: GET_SHORT_RESOURCE_BY_ID,
           variables: {
             id: this.resource,
@@ -64,7 +63,7 @@ export class ResourceDropdownComponent
           }
         });
     }
-    this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
+    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
       query: GET_RESOURCES,
       variables: {
         first: ITEMS_PER_PAGE,

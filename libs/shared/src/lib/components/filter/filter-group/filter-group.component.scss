@@ -2,10 +2,6 @@
   display: flex;
   align-items: flex-end;
   gap: 8px;
-
-  ::ng-deep .mat-form-field-wrapper {
-    padding-bottom: 0;
-  }
 }
 
 .filter-group-filters {

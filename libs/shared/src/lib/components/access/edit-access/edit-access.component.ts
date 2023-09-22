@@ -1,9 +1,9 @@
 import { Apollo } from 'apollo-angular';
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { GetRolesQueryResponse, GET_ROLES } from './graphql/queries';
-import { Role } from '../../../models/user.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { GET_ROLES } from './graphql/queries';
+import { Role, RolesQueryResponse } from '../../../models/user.model';
 import { takeUntil } from 'rxjs/operators';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 
@@ -73,7 +73,7 @@ export class EditAccessComponent
    */
   ngOnInit(): void {
     this.apollo
-      .query<GetRolesQueryResponse>({
+      .query<RolesQueryResponse>({
         query: GET_ROLES,
         variables: {
           application: this.data.application,

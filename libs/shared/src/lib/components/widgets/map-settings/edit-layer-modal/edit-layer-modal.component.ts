@@ -33,7 +33,7 @@ import * as L from 'leaflet';
 import { MapLayersService } from '../../../../services/map/map-layers.service';
 import { Layer } from '../../../ui/map/layer';
 import { Apollo } from 'apollo-angular';
-import { GetResourceQueryResponse, GET_RESOURCE } from '../graphql/queries';
+import { GET_RESOURCE } from '../graphql/queries';
 import { get, isEqual } from 'lodash';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { LayerPropertiesModule } from './layer-properties/layer-properties.module';
@@ -57,6 +57,7 @@ import { MapLayersModule } from '../map-layers/map-layers.module';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { ContextualFiltersSettingsComponent } from '../../common/contextual-filters-settings/contextual-filters-settings.component';
 import { FormArray, FormBuilder } from '@angular/forms';
+import { ResourceQueryResponse } from '../../../../models/resource.model';
 
 /**
  * Interface of dialog input
@@ -107,8 +108,8 @@ export class EditLayerModalComponent
   mapContainerRef!: ViewContainerRef;
   destroyTab$: Subject<boolean> = new Subject<boolean>();
 
-  public resource: BehaviorSubject<GetResourceQueryResponse | null> =
-    new BehaviorSubject<GetResourceQueryResponse | null>(null);
+  public resource: BehaviorSubject<ResourceQueryResponse | null> =
+    new BehaviorSubject<ResourceQueryResponse | null>(null);
   public fields = new BehaviorSubject<Fields[]>([]);
   public fields$ = this.fields.asObservable();
 
@@ -450,7 +451,7 @@ export class EditLayerModalComponent
       const layoutID = this.form.get('datasource')?.value?.layout;
       const aggregationID = this.form.get('datasource')?.value?.aggregation;
       this.apollo
-        .query<GetResourceQueryResponse>({
+        .query<ResourceQueryResponse>({
           query: GET_RESOURCE,
           variables: {
             id: resourceID,
