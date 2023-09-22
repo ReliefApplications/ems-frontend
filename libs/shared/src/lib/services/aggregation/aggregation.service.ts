@@ -83,13 +83,15 @@ export class AggregationService {
    * @param aggregation Aggregation definition
    * @param mapping aggregation mapping ( category, field, series )
    * @param contextFilters context filters, if any
+   * @param at 'at' argument value, if any
    * @returns Aggregation query
    */
   aggregationDataQuery(
     resource: string,
     aggregation: string,
     mapping?: any,
-    contextFilters?: CompositeFilterDescriptor
+    contextFilters?: CompositeFilterDescriptor,
+    at?: string
   ): Observable<ApolloQueryResult<AggregationDataQueryResponse>> {
     return this.apollo.query<AggregationDataQueryResponse>({
       query: GET_AGGREGATION_DATA,
@@ -98,6 +100,7 @@ export class AggregationService {
         aggregation,
         mapping,
         contextFilters,
+        at,
       },
     });
   }
@@ -110,6 +113,7 @@ export class AggregationService {
    * @param first size of the page
    * @param skip index of the page
    * @param contextFilters context filters, if any
+   * @param at 'at' argument value, if any
    * @returns Aggregation query
    */
   aggregationDataWatchQuery(
@@ -117,7 +121,8 @@ export class AggregationService {
     aggregation: string,
     first: number,
     skip: number,
-    contextFilters?: CompositeFilterDescriptor
+    contextFilters?: CompositeFilterDescriptor,
+    at?: string
   ): QueryRef<AggregationDataQueryResponse> {
     return this.apollo.watchQuery<AggregationDataQueryResponse>({
       query: GET_AGGREGATION_DATA,
@@ -127,6 +132,7 @@ export class AggregationService {
         first,
         skip,
         contextFilters,
+        at,
       },
     });
   }

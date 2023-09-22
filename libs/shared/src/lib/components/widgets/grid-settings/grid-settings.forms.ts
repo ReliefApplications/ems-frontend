@@ -151,6 +151,7 @@ export const createGridWidgetFormGroup = (id: string, configuration: any) => {
     contextFilters: [
       get(configuration, 'contextFilters', DEFAULT_CONTEXT_FILTER),
     ],
+    at: get(configuration, 'at', ''),
   });
   return formGroup;
 };

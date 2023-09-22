@@ -24,9 +24,13 @@ export class ContextService {
     value: string;
   }[] = [];
 
+  /** To update/keep the current filter */
   public filter = new BehaviorSubject<Record<string, any>>({});
+  /** To update/keep the current filter structure  */
   public filterStructure = new BehaviorSubject<any>(null);
+  /** To update/keep the current filter position  */
   public filterPosition = new BehaviorSubject<any>(null);
+  /** The current application id */
   private currentApplicationId?: string | null = null;
 
   /** @returns filter value as observable */
@@ -49,11 +53,17 @@ export class ContextService {
     return this.currentApplicationId + ':filterPosition';
   }
 
+  /** Used to update the state of whether the filter is enabled */
   public isFilterEnabled = new BehaviorSubject<boolean>(false);
 
   /** @returns  isFilterEnable value as observable */
   get isFilterEnabled$() {
     return this.isFilterEnabled.asObservable();
+  }
+
+  /** @returns current question values from the filter */
+  get availableFilterFieldsValue(): Record<string, any> {
+    return this.filter.getValue();
   }
 
   /**
@@ -108,14 +118,13 @@ export class ContextService {
     }
 
     const regex = /(?<={{filter\.)(.*?)(?=}})/gim;
-    const availableFilterFields = this.filter.getValue();
 
     if ('field' in filter && filter.field) {
       // If it's a filter descriptor, replace value ( if string )
       if (filter.value && typeof filter.value === 'string') {
         const filterName = filter.value?.match(regex)?.[0];
         if (filterName) {
-          filter.value = get(availableFilterFields, filterName);
+          filter.value = get(this.availableFilterFieldsValue, filterName);
         }
       }
     } else if ('filters' in filter && filter.filters) {
@@ -134,5 +143,17 @@ export class ContextService {
         });
     }
     return filter;
+  }
+
+  /**
+   * Get the 'at' argument value from the filter field selected
+   *
+   * @param atField filter field that should be used as 'at' param
+   * @returns 'at' value
+   */
+  public atArgumentValue(atField: string): string {
+    const regex = /(?<={{filter\.)(.*?)(?=}})/gim;
+    const atFilterName = atField.match(regex)?.[0] ?? '';
+    return get(this.availableFilterFieldsValue, atFilterName);
   }
 }

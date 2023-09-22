@@ -37,6 +37,7 @@ export const GET_AGGREGATION_DATA = gql`
     $first: Int
     $skip: Int
     $contextFilters: JSON
+    $at: String
   ) {
     recordsAggregation(
       resource: $resource
@@ -45,6 +46,7 @@ export const GET_AGGREGATION_DATA = gql`
       first: $first
       skip: $skip
       contextFilters: $contextFilters
+      at: $at
     )
   }
 `;

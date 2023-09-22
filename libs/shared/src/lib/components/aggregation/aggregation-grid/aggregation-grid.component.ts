@@ -51,7 +51,10 @@ export class AggregationGridComponent
 
   @Input() resourceId!: string;
   @Input() aggregation!: Aggregation;
+  /** Context filters to be used with dashboard filters */
   @Input() contextFilters: string | undefined;
+  /** Version at to be used with dashboard filters */
+  @Input() at: string | undefined;
 
   /** @returns The column menu */
   get columnMenu(): { columnChooser: boolean; filter: boolean } {
@@ -120,6 +123,9 @@ export class AggregationGridComponent
         ? this.contextService.injectDashboardFilterValues(
             JSON.parse(this.contextFilters)
           )
+        : undefined,
+      this.contextService.isFilterEnabled.getValue() && this.at
+        ? this.contextService.atArgumentValue(this.at)
         : undefined
     );
     this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({

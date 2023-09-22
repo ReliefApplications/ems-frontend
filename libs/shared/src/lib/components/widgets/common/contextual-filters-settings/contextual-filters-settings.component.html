@@ -1,6 +1,18 @@
-<ngx-monaco-editor
-  class="!h-full min-h-[500px]"
-  (onInit)="initEditor($event)"
-  [options]="editorOptions"
-  [formControl]="$any(form.get('contextFilters'))"
-></ngx-monaco-editor>
+<div class="grid gap-x-2">
+  <!-- Dashboard filter -->
+  <h2>{{ 'models.dashboard.dashboardFilter' | translate }}</h2>
+  <div class="grow overflow-y-auto overflow-x-hidden w-full">
+    <ngx-monaco-editor
+      class="!h-full min-h-[450px]"
+      (onInit)="initEditor($event)"
+      [options]="editorOptions"
+      [formControl]="$any(form.get('contextFilters'))"
+    ></ngx-monaco-editor>
+  </div>
+
+  <!-- Historical date (version at) -->
+  <h2 class="mt-2">{{ 'models.dashboard.historicalDate' | translate }}</h2>
+  <div uiFormFieldDirective>
+    <input [formControl]="$any(form.get('at'))" type="string" />
+  </div>
+</div>
