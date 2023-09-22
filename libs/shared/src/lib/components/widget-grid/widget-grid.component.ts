@@ -107,6 +107,7 @@ export class WidgetGridComponent
     this.colsNumber = this.setColsNumber(window.innerWidth);
     this.skeletons = this.getSkeletons();
     this.availableWidgets = this.dashboardService.availableWidgets;
+    console.log(this.widgets);
   }
 
   /**

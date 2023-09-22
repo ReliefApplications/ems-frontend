@@ -13,7 +13,17 @@
     >
     </shared-widget-choice>
   </div>
+
   <!-- GRID OF WIDGETS -->
+  
+  <ng-container *ngIf="widgets">
+    <div class="inline-flex mb-2 space-x-1">
+      <ui-icon icon="edit_calendar">
+      </ui-icon>
+      <p>Test</p>
+    </div>
+  </ng-container>
+
   <kendo-tilelayout
     [columns]="colsNumber"
     [rowHeight]="200"
@@ -23,6 +33,7 @@
     (resize)="onResize($event)"
     class="-m-4"
   >
+    <h1>CCC</h1>
     <kendo-tilelayout-item
       *ngFor="let widget of widgets; let i = index"
       [colSpan]="
@@ -53,6 +64,7 @@
         (style)="onStyleWidget($event)"
       >
       </shared-floating-options>
+      <h1>AAAB</h1>
       <shared-widget
         [widget]="widget"
         (changeStep)="changeStep.emit($event)"
