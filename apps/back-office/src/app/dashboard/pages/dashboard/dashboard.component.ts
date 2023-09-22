@@ -763,7 +763,8 @@ export class DashboardComponent
       '../../../../../../../libs/safe/src/lib/components/icon-modal/icon-modal.component'
     );
     const dialogRef = this.dialog.open(IconModalComponent);
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((icon) => {
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((res: any) => {
+      const icon = res.icon;
       if (!icon) return;
       if (this.isStep) {
         this.apollo
@@ -771,7 +772,7 @@ export class DashboardComponent
             mutation: EDIT_STEP,
             variables: {
               id: this.dashboard?.step?.id,
-              icon: icon,
+              icon,
             },
           })
           .pipe(takeUntil(this.destroy$))
@@ -782,7 +783,7 @@ export class DashboardComponent
             mutation: EDIT_PAGE,
             variables: {
               id: this.dashboard?.page?.id,
-              icon: icon,
+              icon,
             },
           })
           .pipe(takeUntil(this.destroy$))

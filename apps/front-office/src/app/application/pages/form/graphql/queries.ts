@@ -47,6 +47,7 @@ export const GET_STEP_BY_ID = gql`
     step(id: $id) {
       id
       name
+      icon
       createdAt
       modifiedAt
       content
@@ -73,6 +74,7 @@ export const GET_PAGE_BY_ID = gql`
     page(id: $id) {
       id
       name
+      icon
       createdAt
       modifiedAt
       type

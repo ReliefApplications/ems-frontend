@@ -1,8 +1,7 @@
 <div
   class="safe-step"
   [style.background-color]="active ? type?.color : ''"
-  [ngClass]="{ active: active }"
->
+  [ngClass]="{ active: active }">
   <div class="step-actions" *ngIf="canUpdate">
     <!-- Delete action -->
     <ui-button
@@ -14,8 +13,7 @@
         'common.deleteObject'
           | translate : { name: 'common.step.one' | translate }
       "
-      (click)="onDelete($event)"
-    >
+      (click)="onDelete($event)">
     </ui-button>
     <!-- Duplicate action ( disabled ) -->
     <ui-button
@@ -23,15 +21,22 @@
       icon="content_copy"
       category="primary"
       variant="primary"
-      [disabled]="true"
-    >
+      [disabled]="true">
     </ui-button>
   </div>
-  <img class="h-9 mt-5" [src]="type?.img" />
+  <!--help me write an ng-if-->
+  <ng-container *ngIf="!!step.icon">
+    <ui-icon
+      [icon]="step.icon"
+      [size]="24"></ui-icon>
+  </ng-container>
+  <ng-container *ngIf="!step.icon">
+    <img class="h-9 mt-5" [src]="type?.img" />
+  </ng-container>
+
   <span>{{ step.name | titlecase }}</span>
   <div
     *ngIf="active"
     [style.background]="type?.focusColor"
-    class="w-full h-1 absolute bottom-0"
-  ></div>
+    class="w-full h-1 absolute bottom-0"></div>
 </div>

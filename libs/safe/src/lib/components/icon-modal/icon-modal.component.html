@@ -1,13 +1,13 @@
 <ui-dialog size="medium">
     <ng-container ngProjectAs="header">
-        <h1>{{ 'components.widget.icon-modal.title' | translate }}</h1>
+        <h1>{{ 'components.widget.iconModal.title' | translate }}</h1>
     </ng-container>
     <ng-container ngProjectAs="content">
         <div [formGroup]="iconForm" class="flex flex-col">
             <div uiFormFieldDirective>
                 <label class="mb-4">
                     {{
-                    'components.widget.icon-modal.icons' |
+                    'components.widget.iconModal.icons' |
                     translate
                     }}
                 </label>
@@ -24,7 +24,7 @@
             [uiDialogClose]="iconForm.value"
             cdkFocusInitial
             [disabled]="!iconForm.valid">
-            {{ 'components.widget.icon-modal.validate' | translate }}
+            {{ 'components.widget.iconModal.validate' | translate }}
         </ui-button>
     </ng-container>
 </ui-dialog>
