@@ -398,6 +398,13 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
    * Custom SurveyJS method, save the form when edited.
    */
   saveMySurvey = () => {
+    this.surveyCreator.survey
+      .getAllQuestions()
+      .forEach((question: Survey.Question) => {
+        if (question.filterBy) {
+          question.customFilter = null; // Empties the customFilter if a non-custom filter is selected
+        }
+      });
     this.validateValueNames()
       .then((canCreate: boolean) => {
         if (canCreate) {
