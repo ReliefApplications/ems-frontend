@@ -136,7 +136,6 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
       GET_USERS,
       variables
     );
-    console.log("cachedValues = ", cachedValues);
     if (refetch) {
       this.cachedUsers = [];
       this.pageInfo.pageIndex = 0;
@@ -206,7 +205,10 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
       );
     }
     // clear(evict) users query in cache
-    this.apollo.client.cache.evict({ id: "ROOT_QUERY", fieldName: "users" });
+    this.apollo.client.cache.evict({
+      id: 'ROOT_QUERY',
+      fieldName: 'users',
+    });
   }
 
   /**
@@ -240,7 +242,7 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
           });
         }
       }
-    // if the filter is for name
+      // if the filter is for name
     } else if (e.column === 'search') {
       // if the filter is empty it's removed
       if (e.event === '' || e.event === null) {

@@ -240,7 +240,10 @@ export class ResourcesComponent
                 (x) => x.id !== resource.id
               );
               // clear(evict) resources query in cache
-              this.apollo.client.cache.evict({ id: "ROOT_QUERY", fieldName: "resources" });
+              this.apollo.client.cache.evict({
+                id: 'ROOT_QUERY',
+                fieldName: 'resources',
+              });
               this.snackBar.openSnackBar(
                 this.translate.instant('common.notifications.objectDeleted', {
                   value: this.translate.instant('common.resource.one'),
@@ -299,7 +302,10 @@ export class ResourcesComponent
                 if (data) {
                   const { id } = data.addForm;
                   // clear(evict) resources query in cache
-                  this.apollo.client.cache.evict({ id: "ROOT_QUERY", fieldName: "resources" });
+                  this.apollo.client.cache.evict({
+                    id: 'ROOT_QUERY',
+                    fieldName: 'resources',
+                  });
                   this.router.navigate(['/forms/builder', id]);
                 }
               }
