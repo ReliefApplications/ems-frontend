@@ -156,7 +156,6 @@ export class DashboardComponent
    * @param elementRef Angular element ref
    * @param layoutService Shared layout service
    * @param document Document
-   * @param translate Shared translate service
    * @param clipboard Angular clipboard service
    */
   constructor(
