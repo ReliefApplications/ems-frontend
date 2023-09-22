@@ -188,7 +188,7 @@ export class SafeCoreGridComponent
 
   // === FILTERING ===
   public filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
-  private contextFilter: CompositeFilterDescriptor = {
+  private contextFilters: CompositeFilterDescriptor = {
     logic: 'and',
     filters: [],
   };
@@ -228,7 +228,7 @@ export class SafeCoreGridComponent
       logic: 'and',
       filters: [
         filter,
-        this.contextService.injectDashboardFilterValues(this.contextFilter),
+        this.contextService.injectDashboardFilterValues(this.contextFilters),
       ],
     };
   }
@@ -339,9 +339,9 @@ export class SafeCoreGridComponent
    */
   public configureGrid(): void {
     // set context filter
-    this.contextFilter = this.settings.contextFilters
+    this.contextFilters = this.settings.contextFilters
       ? JSON.parse(this.settings.contextFilters)
-      : this.contextFilter;
+      : this.contextFilters;
 
     // define row actions
     this.actions = {

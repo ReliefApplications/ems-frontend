@@ -1,9 +1,5 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -40,7 +36,9 @@ interface DialogData {
 })
 export class EmailTemplateModalComponent implements OnInit {
   public templates: any[] = [];
-  public form!: UntypedFormGroup;
+  public form = this.fb.group({
+    template: [null, Validators.required],
+  });
 
   /**
    * Component for choosing an email template to send an email with
@@ -54,7 +52,7 @@ export class EmailTemplateModalComponent implements OnInit {
     public dialogRef: DialogRef<EmailTemplateModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData,
     public translate: TranslateService,
-    public fb: UntypedFormBuilder
+    public fb: FormBuilder
   ) {
     this.templates = data.templates;
   }
@@ -62,9 +60,5 @@ export class EmailTemplateModalComponent implements OnInit {
   ngOnInit(): void {
     if (this.templates.length === 1)
       this.dialogRef.close({ template: this.templates[0] } as any);
-
-    this.form = this.fb.group({
-      template: [null, Validators.required],
-    });
   }
 }

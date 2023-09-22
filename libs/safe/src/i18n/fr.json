@@ -1875,6 +1875,11 @@
 					"element": "Vous éditez la page qui sera affichée pour l'élément sélectionné.",
 					"template": "Vous éditez le modèle de base de la page. Il sera utilisé par défaut si aucune vue n'a été créée pour l'élément à charger."
 				},
+				"notifications": {
+					"creatingTemplate": "Création d'une nouvelle vue",
+					"loadDefault": "Affichage de la vue générique",
+					"templateCreated": "Nouvelle vue créée"
+				},
 				"origin": "Origine du contexte",
 				"refData": {
 					"element": "Élément"
@@ -1995,9 +2000,6 @@
 				"latitude": "Latitude",
 				"longitude": "Longitude",
 				"zoom": "Zoom"
-			},
-			"scheduler": {
-				"defaultTitle": "Widget Calendrier"
 			},
 			"sorting": {
 				"add": "Ajouter un champ",

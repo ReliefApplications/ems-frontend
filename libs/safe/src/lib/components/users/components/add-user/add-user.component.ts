@@ -1,12 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { Role, User } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
-import {
-  UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, UntypedFormArray, Validators } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { map, startWith } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -33,7 +28,20 @@ export class SafeAddUserComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  form: UntypedFormGroup = new UntypedFormGroup({});
+  form = this.fb.group({
+    email: ['', Validators.minLength(1)],
+    role: ['', Validators.required],
+    ...(this.data.positionAttributeCategories && {
+      positionAttributes: this.fb.array(
+        this.data.positionAttributeCategories.map((x) =>
+          this.fb.group({
+            value: [''],
+            category: [x.id, Validators.required],
+          })
+        )
+      ),
+    }),
+  });
   public filteredUsers?: Observable<User[]>;
   private users: User[] = [];
 
@@ -47,14 +55,14 @@ export class SafeAddUserComponent
   /**
    * Constructor for the component
    *
-   * @param formBuilder The form builder service
+   * @param fb The form builder service
    * @param dialogRef The Dialog reference service
    * @param data The input data
    * @param apollo The apollo client
    * @param translate The translation service
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<SafeAddUserComponent>,
     @Inject(DIALOG_DATA) public data: DialogData,
     private apollo: Apollo,
@@ -64,20 +72,6 @@ export class SafeAddUserComponent
   }
 
   ngOnInit(): void {
-    this.form = this.formBuilder.group({
-      email: ['', Validators.minLength(1)],
-      role: ['', Validators.required],
-      ...(this.data.positionAttributeCategories && {
-        positionAttributes: this.formBuilder.array(
-          this.data.positionAttributeCategories.map((x) =>
-            this.formBuilder.group({
-              value: [''],
-              category: [x.id, Validators.required],
-            })
-          )
-        ),
-      }),
-    });
     this.filteredUsers = this.form.controls.email.valueChanges.pipe(
       startWith(''),
       map((value) => (typeof value === 'string' ? value : '')),

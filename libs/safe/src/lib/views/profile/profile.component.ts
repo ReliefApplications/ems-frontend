@@ -1,9 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  UntypedFormGroup,
-  UntypedFormBuilder,
-  Validators,
-} from '@angular/forms';
+import { Validators, FormBuilder } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import {
   EditUserProfileMutationResponse,
@@ -14,6 +10,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../../components/utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
+import { User } from '../../models/user.model';
 
 /**
  * Shared profile page.
@@ -31,7 +28,7 @@ export class SafeProfileComponent
   /** Current user */
   public user: any;
   /** Form to edit the user */
-  public userForm?: UntypedFormGroup;
+  public userForm!: ReturnType<typeof this.createUserForm>;
   /** Displayed columns of table */
   public displayedColumnsApps = [
     'name',
@@ -47,14 +44,14 @@ export class SafeProfileComponent
    * @param apollo Apollo client
    * @param snackBar Shared snackbar service
    * @param authService Shared authentication service
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param translate Translation service
    */
   constructor(
     private apollo: Apollo,
     private snackBar: SnackbarService,
     private authService: SafeAuthService,
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     public translate: TranslateService
   ) {
     super();
@@ -68,11 +65,7 @@ export class SafeProfileComponent
     this.authService.user$.pipe(takeUntil(this.destroy$)).subscribe((user) => {
       if (user) {
         this.user = { ...user };
-        this.userForm = this.formBuilder.group({
-          firstName: [user.firstName, Validators.required],
-          lastName: [user.lastName, Validators.required],
-          username: [{ value: user.username, disabled: true }],
-        });
+        this.userForm = this.createUserForm(user);
       }
     });
   }
@@ -160,5 +153,19 @@ export class SafeProfileComponent
           },
         });
     }
+  }
+
+  /**
+   * Create user form group
+   *
+   * @param user Current user
+   * @returns form group
+   */
+  createUserForm(user: User) {
+    return this.fb.group({
+      firstName: [user.firstName, Validators.required],
+      lastName: [user.lastName, Validators.required],
+      username: [{ value: user.username, disabled: true }],
+    });
   }
 }

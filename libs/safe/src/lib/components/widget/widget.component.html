@@ -58,6 +58,9 @@
     class="flex-1 h-full w-full"
     [header]="header"
     [settings]="widget.settings"
+    (edit)="edit.emit($event)"
+    [canUpdate]="canUpdate"
+    [widget]="widget"
   >
   </safe-tabs>
 </ng-container>

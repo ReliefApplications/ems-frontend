@@ -12,8 +12,8 @@ import { Resource } from '../../../../models/resource.model';
 import { Access, Permission } from '../permissions.types';
 import { createFilterGroup } from '../../../query-builder/query-builder-forms';
 import {
+  FormBuilder,
   UntypedFormArray,
-  UntypedFormBuilder,
   UntypedFormGroup,
 } from '@angular/forms';
 import { SafeRestService } from '../../../../services/rest/rest.service';
@@ -102,7 +102,7 @@ export class SafeRoleResourceFiltersComponent implements OnInit {
    */
   constructor(
     public translate: TranslateService,
-    private fb: UntypedFormBuilder,
+    private fb: FormBuilder,
     private restService: SafeRestService
   ) {}
 

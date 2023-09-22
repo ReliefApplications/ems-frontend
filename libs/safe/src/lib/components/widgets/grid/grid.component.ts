@@ -241,8 +241,8 @@ export class SafeGridWidgetComponent
   public onSort(e: any): void {
     this.coreGridComponent?.onSortChange([
       {
-        field: e.field,
-        dir: e.order,
+        field: e ? e.field : '',
+        dir: e ? e.order : 'asc',
       },
     ]);
   }

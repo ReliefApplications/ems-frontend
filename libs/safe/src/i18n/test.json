@@ -1859,6 +1859,11 @@
 					"element": "******",
 					"template": "******"
 				},
+				"notifications": {
+					"creatingTemplate": "******",
+					"loadDefault": "******",
+					"templateCreated": "******"
+				},
 				"origin": "******",
 				"refData": {
 					"element": "******"
@@ -1979,9 +1984,6 @@
 				"latitude": "******",
 				"longitude": "******",
 				"zoom": "******"
-			},
-			"scheduler": {
-				"defaultTitle": "******"
 			},
 			"sorting": {
 				"add": "******",

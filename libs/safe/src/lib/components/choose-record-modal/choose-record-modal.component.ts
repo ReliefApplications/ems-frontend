@@ -52,7 +52,7 @@ export class SafeChooseRecordModalComponent
   implements OnInit, OnDestroy
 {
   // === REACTIVE FORM ===
-  public chooseRecordForm = this.formBuilder.group({
+  public chooseRecordForm = this.fb.group({
     record: ['', Validators.required],
   });
 
@@ -71,7 +71,7 @@ export class SafeChooseRecordModalComponent
    * created.
    *
    * @param queryBuilder This is the service that will be used to build the query.
-   * @param formBuilder This is used to create the form that will be used to search for records.
+   * @param fb This is used to create the form that will be used to search for records.
    * @param apollo This is the Apollo service that we will use to make our GraphQL queries.
    * @param dialogRef This is the dialog that will be opened
    * @param data This is the data that is passed into the modal when it is opened.
@@ -79,7 +79,7 @@ export class SafeChooseRecordModalComponent
    */
   constructor(
     private queryBuilder: QueryBuilderService,
-    private formBuilder: FormBuilder,
+    private fb: FormBuilder,
     private apollo: Apollo,
     public dialogRef: DialogRef<SafeChooseRecordModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData,

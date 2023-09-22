@@ -1,9 +1,5 @@
 import { Component, ElementRef, Input, OnInit } from '@angular/core';
-import {
-  UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-} from '@angular/forms';
+import { FormBuilder, UntypedFormArray } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 import {
   FilterService,
@@ -50,7 +46,7 @@ export class SafeDateFilterMenuComponent
   @Input() public valueField = '';
   @Input() public filterService?: FilterService;
 
-  public form?: UntypedFormGroup;
+  public form!: ReturnType<typeof this.createFormGroup>;
   public firstDateMode = 'date';
   public secondDateMode = 'date';
 
@@ -78,13 +74,13 @@ export class SafeDateFilterMenuComponent
   /**
    * Constructor for date filter component
    *
-   * @param formBuilder This is the service used to build forms.
+   * @param fb This is the service used to build forms.
    * @param translate The translation service
    * @param element element ref
    * @param popupService kendo popup service
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     public translate: TranslateService,
     private element: ElementRef,
     private popupService: SinglePopupService
@@ -115,31 +111,40 @@ export class SafeDateFilterMenuComponent
   }
 
   ngOnInit(): void {
-    this.form = this.formBuilder.group({
+    this.form = this.createFormGroup();
+    this.form.valueChanges.subscribe((value) => {
+      this.filterService?.filter(value as any);
+    });
+  }
+
+  /**
+   * Create form group
+   *
+   * @returns form group
+   */
+  createFormGroup() {
+    return this.fb.group({
       logic: this.filter.logic,
-      filters: this.formBuilder.array([
-        this.formBuilder.group({
+      filters: this.fb.array([
+        this.fb.group({
           field: this.field,
           operator: this.filter.filters[0]
             ? this.filter.filters[0].operator
             : 'eq',
-          value: this.formBuilder.control(
+          value: this.fb.control(
             this.filter.filters[0] ? this.filter.filters[0].value : ''
           ),
         }),
-        this.formBuilder.group({
+        this.fb.group({
           field: this.field,
           operator: this.filter.filters[1]
             ? this.filter.filters[1].operator
             : 'eq',
-          value: this.formBuilder.control(
+          value: this.fb.control(
             this.filter.filters[1] ? this.filter.filters[1].value : ''
           ),
         }),
       ]),
-    });
-    this.form.valueChanges.subscribe((value) => {
-      this.filterService?.filter(value);
     });
   }
 }
