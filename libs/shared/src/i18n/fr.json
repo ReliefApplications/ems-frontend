@@ -1881,8 +1881,10 @@
 				"selectDisplayField": "Sélectionnez le champ d'affichage",
 				"selectOrigin": "Sélectionnez la source de données"
 			},
+			"contextFilter": "Filtre de contexte",
 			"dashboardFilter": "Filtre de tableaux de bord",
 			"deactivateFiltering": "Désactiver le filtre",
+			"historicalDate": "Date historique",
 			"share": "Partager le tableau de bord",
 			"tooltip": {
 				"useDashboardFilterEditor": "Utiliser l'éditeur de tableaux de bord",

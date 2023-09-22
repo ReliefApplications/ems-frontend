@@ -1865,8 +1865,10 @@
 				"selectDisplayField": "Select display field",
 				"selectOrigin": "Select context origin"
 			},
+			"contextFilter": "Context filter",
 			"dashboardFilter": "Dashboard filter",
 			"deactivateFiltering": "Deactivate filtering",
+			"historicalDate": "Historical Date",
 			"share": "Share Dashboard",
 			"tooltip": {
 				"useDashboardFilterEditor": "Use dashboard filter editor",

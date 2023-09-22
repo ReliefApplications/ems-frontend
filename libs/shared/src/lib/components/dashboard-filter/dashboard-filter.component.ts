@@ -350,23 +350,34 @@ export class DashboardFilterComponent
    * @param value value to check if is a date
    * @returns If value is a date or not, and if it's the formatted value (questionName: formatted)
    */
-  public isDate(
+  private isDate(
     questionName: string,
     value: any
   ): { isDate: boolean; formattedValue?: string } {
     const checkDate = (str: any) => {
-      if (str === null || str === undefined) {
-        return false; // Handle null or undefined input
+      if (typeof str === 'string') {
+        // Checks the date or datetime in the input string
+        // (datetimes are formatted as date)
+        const datePart = str.match(
+          /\d{4}-\d{2}-\d{2}(?:T\d{2}:\d{2}:\d{2}\.\d{3}Z)?/
+        );
+        if (!datePart) {
+          return false; // Invalid format
+        }
+        // Check if date is valid
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const [y, M, d, h, m, s] = str.split(/[- : T Z]/);
+        return y && parseFloat(M) <= 12 && parseFloat(d) <= 31 ? true : false;
+      } else {
+        // Don't check objects (time questions included)
+        return false;
       }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const [y, M, d, h, m, s] = str.split(/[- : T Z]/);
-      return y && M <= 12 && d <= 31 ? true : false;
     };
     if (checkDate(value)) {
       const date = new Date(value);
       const formatted = new DatePipe(this.dateTranslate).transform(
         date,
-        'short'
+        'shortDate'
       );
       return { isDate: true, formattedValue: `${questionName}: ${formatted}` };
     } else {
@@ -427,6 +438,8 @@ export class DashboardFilterComponent
       .reduce(function (acc, question) {
         acc = {
           ...acc,
+          // isPrimitiveValue property is just for the tagbox/dropdown/checkbox/radio questions
+          // So if undefined, we can just skip it if for the other type of fields
           [question.name]: question.isPrimitiveValue ?? true,
         };
         return acc;

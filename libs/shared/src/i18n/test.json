@@ -1865,8 +1865,10 @@
 				"selectDisplayField": "******",
 				"selectOrigin": "******"
 			},
+			"contextFilter": "******",
 			"dashboardFilter": "******",
 			"deactivateFiltering": "******",
+			"historicalDate": "******",
 			"share": "******",
 			"tooltip": {
 				"useDashboardFilterEditor": "******",
