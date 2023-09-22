@@ -136,6 +136,7 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
       GET_USERS,
       variables
     );
+    console.log("cachedValues = ", cachedValues);
     if (refetch) {
       this.cachedUsers = [];
       this.pageInfo.pageIndex = 0;
@@ -204,6 +205,8 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
         ITEMS_PER_PAGE * (this.pageInfo.pageIndex + 1)
       );
     }
+    // clear(evict) users query in cache
+    this.apollo.client.cache.evict({ id: "ROOT_QUERY", fieldName: "users" });
   }
 
   /**
@@ -214,6 +217,7 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
   public onFilterChange(e: any) {
     // if the filter is for role
     if (e.column === 'role') {
+      // if the filter is empty it's removed
       if (e.event === '' || e.event === null) {
         this.filter.filters = this.filter.filters.filter(
           (filter: any) => filter.field !== 'roles'
@@ -227,7 +231,7 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
             foundRole = true;
           }
         });
-        // if doesn't exists we create a new one
+        // if doesn't exists it's created a new one
         if (!foundRole) {
           this.filter.filters.push({
             field: 'roles',
@@ -236,8 +240,9 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
           });
         }
       }
+    // if the filter is for name
     } else if (e.column === 'search') {
-      // if the filter is for name
+      // if the filter is empty it's removed
       if (e.event === '' || e.event === null) {
         this.filter.filters = this.filter.filters.filter(
           (filter: any) => filter.field !== 'name'

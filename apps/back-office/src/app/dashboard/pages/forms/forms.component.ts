@@ -248,6 +248,8 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
                   (x) =>
                     x.id !== form.id && form.id !== x.resource?.coreForm?.id
                 );
+                // clear(evict) forms query in cache
+                this.apollo.client.cache.evict({ id: "ROOT_QUERY", fieldName: "forms" });
               } else {
                 this.snackBar.openSnackBar(
                   this.translate.instant(
@@ -309,6 +311,8 @@ export class FormsComponent extends SafeUnsubscribeComponent implements OnInit {
               } else {
                 if (data) {
                   const { id } = data.addForm;
+                  // clear(evict) forms query in cache
+                  this.apollo.client.cache.evict({ id: "ROOT_QUERY", fieldName: "forms" });
                   this.router.navigate(['/forms/' + id + '/builder']);
                 }
               }
