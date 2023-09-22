@@ -46,6 +46,7 @@
         *ngIf="canUpdate"
         class="absolute top-0 right-0 z-[1100]"
         [widget]="widget"
+        [canExpand]="!(widget.component === 'map')"
         (edit)="onEditWidget($event)"
         (delete)="onDeleteWidget($event)"
         (expand)="onExpandWidget($event)"
