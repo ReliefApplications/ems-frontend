@@ -27,7 +27,7 @@ export class TabsComponent extends UnsubscribeComponent {
   /**
    * Tabs widget component.
    *
-   * @param dialog CDK Dialog service
+   * @param dialog Dialog service
    * @param dashboardService Shared dashboard service
    */
   constructor(

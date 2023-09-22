@@ -276,6 +276,48 @@ const replaceRecordFields = (
               value ? value.length : 0
             } items</span>`;
             break;
+          case 'matrixdropdown':
+          case 'matrixdynamic': {
+            convertedValue = '<table><tr><th></th>';
+            const rows =
+              field.rows ??
+              (Object.keys(value).map((row) => {
+                return { label: row, name: row };
+              }) ||
+                []);
+            const columns = field.columns || [];
+            // Create header row with column names
+            for (const col of columns) {
+              convertedValue += `<th class="px-1">${col.label}</th>`;
+            }
+
+            convertedValue += '</tr>';
+
+            // Create table rows with row names and data values
+            for (const row of rows) {
+              convertedValue += `<tr><th>${row.label}</th>`;
+
+              for (const col of columns) {
+                convertedValue += `<td class="text-right px-1">${
+                  value[row.name]?.[col.name] ?? ''
+                }</td>`;
+              }
+
+              convertedValue += '</tr>';
+            }
+
+            convertedValue += '</table>';
+            break;
+          }
+          case 'matrix': {
+            convertedValue = `<span style='${style}'>`;
+            const rows = field.rows || [];
+            for (const row of rows) {
+              convertedValue += `${row.label}: ${value[row.name]} `;
+            }
+            convertedValue += '</span>';
+            break;
+          }
           default:
             convertedValue = style
               ? `<span style='${style}'>${applyLayoutFormat(

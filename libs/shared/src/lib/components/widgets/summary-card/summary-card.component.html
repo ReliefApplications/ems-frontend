@@ -11,36 +11,39 @@
     <span class="widget-title" [title]="settings.title">{{
       settings.title
     }}</span>
-    <!-- Searchbar -->
-    <div
-      *ngIf="
-        settings.widgetDisplay?.searchable &&
-        !settings.card?.aggregation &&
-        displayMode === 'cards'
-      "
-      class="px-2 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 flex items-center m-1 w-[30%] max-w-[200px]"
-    >
-      <kendo-textbox
-        class="!border-0 !shadow-none"
-        [placeholder]="'common.placeholder.search' | translate"
-        [formControl]="searchControl"
-        [clearButton]="true"
-      />
-    </div>
-
-    <!-- Sort selector -->
-    <ng-container *ngIf="sortFields.length > 0">
-      <ng-container *ngTemplateOutlet="sortTemplate"></ng-container>
-    </ng-container>
-
     <!-- Switch between grid and cards view -->
     <div class="flex">
+      <!-- Searchbar -->
+      <div
+        *ngIf="
+          settings.widgetDisplay?.searchable &&
+          !settings.card?.aggregation &&
+          displayMode === 'cards'
+        "
+        class="px-2 shadow-sm rounded-md border-0 ring-1 ring-inset ring-gray-300 flex items-center m-1 w-[30%] max-w-[200px]"
+      >
+        <kendo-textbox
+          class="!border-0 !shadow-none"
+          [placeholder]="'common.placeholder.search' | translate"
+          [formControl]="searchControl"
+          [clearButton]="true"
+        />
+      </div>
+
+      <!-- Sort selector -->
+      <ng-container *ngIf="sortFields.length > 0">
+        <ng-container *ngTemplateOutlet="sortTemplate"></ng-container>
+      </ng-container>
       <!-- Data source button -->
       <ui-button
+        class="!flex self-center"
         variant="primary"
         icon="open_in_new"
         (click)="openDataSource()"
-        *ngIf="settings.card?.showDataSourceLink || false"
+        *ngIf="
+          (settings.card?.showDataSourceLink && displayMode === 'cards') ||
+          false
+        "
       >
         {{ 'components.widget.summaryCard.dataSource' | translate }}
       </ui-button>
@@ -133,7 +136,7 @@
 
 <!-- Selection of sort -->
 <ng-template #sortTemplate>
-  <div uiFormFieldDirective class="!m-0 w-44">
+  <div uiFormFieldDirective class="!m-0 w-44 self-center">
     <ui-select-menu
       [formControl]="sortControl"
       (selectedOption)="onSort($event)"

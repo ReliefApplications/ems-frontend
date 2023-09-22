@@ -23,7 +23,7 @@
     </ng-template>
   </ui-tab>
   <!-- AVAILABLE ACTIONS -->
-  <ui-tab [disabled]="formGroup && formGroup.value.aggregations.length > 0">
+  <ui-tab *ngIf="formGroup && !(formGroup.value.aggregations.length > 0)">
     <ng-container ngProjectAs="label">
       <ui-icon
         icon="toggle_on"
@@ -41,7 +41,7 @@
     </ng-template>
   </ui-tab>
   <!-- BUTTONS -->
-  <ui-tab [disabled]="formGroup && formGroup.value.aggregations.length > 0">
+  <ui-tab *ngIf="formGroup && !(formGroup.value.aggregations.length > 0)">
     <ng-container ngProjectAs="label">
       <ui-icon
         icon="bolt"
@@ -89,20 +89,11 @@
     </ng-container>
     <ng-template uiTabContent>
       <shared-display-settings [formGroup]="formGroup">
-        <!-- Specific settings for grid -->
-        <ui-toggle
-          *ngIf="formGroup.get('widgetDisplay.sortable')"
-          [formControl]="$any(formGroup.get('widgetDisplay.sortable'))"
-        >
-          <ng-container ngProjectAs="label">
-            {{ 'models.widget.display.sortable' | translate }}
-          </ng-container>
-        </ui-toggle>
       </shared-display-settings>
     </ng-template>
   </ui-tab>
   <!-- Widget filters options -->
-  <ui-tab *ngIf="formGroup?.get('widgetDisplay.sortable')?.value">
+  <ui-tab>
     <ng-container ngProjectAs="label">
       <ui-icon
         icon="filter_alt"

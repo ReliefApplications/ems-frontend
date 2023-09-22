@@ -50,6 +50,7 @@
       {{ 'components.widget.settings.grid.aggregations.title' | translate }}
     </h2>
     <shared-aggregation-table
+      [canAdd]="formGroup.get('aggregations')?.value.length === 0"
       [resource]="resource"
       [selectedAggregations]="$any(formGroup).get('aggregations')"
     ></shared-aggregation-table>

@@ -1,3 +1,5 @@
+@import '~@fortawesome/fontawesome-free/css/all.css';
+
 *:focus,
 *:active:focus,
 *.active:focus {
@@ -48,6 +50,27 @@ body {
 .no-padding-dialog {
   .cdk-dialog-container {
     padding: unset;
+  }
+}
+
+// === CDK ===
+// Drag & Drop
+.cdk-drag-preview {
+  z-index: 1100 !important;
+  @apply box-border rounded shadow-xl flex items-center justify-between bg-white;
+}
+
+.cdk-drag-animating {
+  @apply transition-transform;
+}
+
+.cdk-drag-placeholder {
+  @apply opacity-0;
+}
+
+.cdk-drop-list-dragging {
+  .cdk-drag:not(.cdk-drag-placeholder) {
+    @apply transition-transform;
   }
 }
 
