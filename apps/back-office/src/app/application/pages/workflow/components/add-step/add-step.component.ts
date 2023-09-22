@@ -4,13 +4,15 @@ import { FormBuilder, Validators } from '@angular/forms';
 import {
   ContentType,
   CONTENT_TYPES,
-  SafeUnsubscribeComponent,
-  SafeWorkflowService,
-} from '@oort-front/safe';
+  UnsubscribeComponent,
+  WorkflowService,
+  FormsQueryResponse,
+  AddFormMutationResponse,
+} from '@oort-front/shared';
 import { ActivatedRoute } from '@angular/router';
 import { takeUntil } from 'rxjs';
-import { AddFormMutationResponse, ADD_FORM } from '../../graphql/mutations';
-import { GET_FORMS, GetFormsQueryResponse } from '../../graphql/queries';
+import { ADD_FORM } from '../../graphql/mutations';
+import { GET_FORMS } from '../../graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 
@@ -25,13 +27,10 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './add-step.component.html',
   styleUrls: ['./add-step.component.scss'],
 })
-export class AddStepComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
+export class AddStepComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   public contentTypes = CONTENT_TYPES.filter((x) => x.value !== 'workflow');
-  public formsQuery!: QueryRef<GetFormsQueryResponse>;
+  public formsQuery!: QueryRef<FormsQueryResponse>;
 
   // === REACTIVE FORM ===
   public stepForm = this.fb.group({
@@ -56,7 +55,7 @@ export class AddStepComponent
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private apollo: Apollo,
-    private workflowService: SafeWorkflowService
+    private workflowService: WorkflowService
   ) {
     super();
   }
@@ -65,7 +64,7 @@ export class AddStepComponent
     this.stepForm.get('type')?.valueChanges.subscribe((type) => {
       const contentControl = this.stepForm.controls.content;
       if (type === ContentType.form) {
-        this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
+        this.formsQuery = this.apollo.watchQuery<FormsQueryResponse>({
           query: GET_FORMS,
           variables: {
             first: ITEMS_PER_PAGE,

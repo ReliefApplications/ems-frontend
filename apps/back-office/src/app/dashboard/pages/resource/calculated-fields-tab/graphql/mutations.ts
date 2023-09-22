@@ -1,4 +1,3 @@
-import { Resource } from '@oort-front/safe';
 import { gql } from 'apollo-angular';
 
 /** Mutation for adding a Calculated fields */
@@ -10,8 +9,3 @@ export const Calculated_FIELD_UPDATE = gql`
     }
   }
 `;
-
-/** Interface for the response of the Calculated fields update mutation */
-export interface CalculatedFieldUpdateMutationResponse {
-  editResource: Resource;
-}

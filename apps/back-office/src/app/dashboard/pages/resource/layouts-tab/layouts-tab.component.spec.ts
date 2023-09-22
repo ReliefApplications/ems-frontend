@@ -8,7 +8,7 @@ import {
   TranslateModule,
   TranslateService,
 } from '@ngx-translate/core';
-import { SafeSkeletonTableModule } from '@oort-front/safe';
+import { SkeletonTableModule } from '@oort-front/shared';
 
 describe('LayoutsTabComponent', () => {
   let component: LayoutsTabComponent;
@@ -20,7 +20,7 @@ describe('LayoutsTabComponent', () => {
       imports: [
         ApolloTestingModule,
         DialogModule,
-        SafeSkeletonTableModule,
+        SkeletonTableModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

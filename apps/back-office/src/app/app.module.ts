@@ -25,9 +25,9 @@ import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
 import { MessageService } from '@progress/kendo-angular-l10n';
 import {
   KendoTranslationService,
-  SafeAuthInterceptorService,
+  AuthInterceptorService,
   AppAbility,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import localeEn from '@angular/common/locales/en';
@@ -134,7 +134,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
     // },
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: SafeAuthInterceptorService,
+      useClass: AuthInterceptorService,
       multi: true,
     },
     {

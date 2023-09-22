@@ -11,11 +11,7 @@ import {
 } from '@ngx-translate/core';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import {
-  SafeEmptyModule,
-  SafeLayoutModule,
-  SafeNavbarModule,
-} from '@oort-front/safe';
+import { EmptyModule, LayoutModule, NavbarModule } from '@oort-front/shared';
 import { DialogModule } from '@angular/cdk/dialog';
 import { MenuModule } from '@oort-front/ui';
 import { ApplicationComponent } from './application.component';
@@ -30,10 +26,10 @@ describe('ApplicationComponent', () => {
         HttpClientTestingModule,
         OAuthModule.forRoot(),
         DialogModule,
-        SafeLayoutModule,
+        LayoutModule,
         MenuModule,
-        SafeNavbarModule,
-        SafeEmptyModule,
+        NavbarModule,
+        EmptyModule,
         ApolloTestingModule,
         TranslateModule.forRoot({
           loader: {

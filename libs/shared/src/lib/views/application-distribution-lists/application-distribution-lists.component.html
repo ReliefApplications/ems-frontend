@@ -1,0 +1,5 @@
+<ui-spinner *ngIf="loading"></ui-spinner>
+<ng-container *ngIf="!loading">
+  <shared-distribution-lists [applicationService]="applicationService">
+  </shared-distribution-lists>
+</ng-container>

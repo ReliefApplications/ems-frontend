@@ -17,8 +17,8 @@ import {
   DateTimeProvider,
 } from 'angular-oauth2-oidc';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { AppAbility } from '@oort-front/safe';
-import { SafeContentChoiceModule } from '@oort-front/safe';
+import { AppAbility } from '@oort-front/shared';
+import { ContentChoiceModule } from '@oort-front/shared';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 describe('AddStepComponent', () => {
@@ -32,7 +32,7 @@ describe('AddStepComponent', () => {
         DialogModule,
         ApolloTestingModule,
         HttpClientTestingModule,
-        SafeContentChoiceModule,
+        ContentChoiceModule,
         FormsModule,
         ReactiveFormsModule,
         TranslateModule.forRoot({

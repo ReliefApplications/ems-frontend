@@ -18,7 +18,7 @@
         "assets": [
           {
             "glob": "**/*",
-            "input": "libs/safe/src/i18n/",
+            "input": "libs/shared/src/i18n/",
             "output": "/assets/i18n/"
           },
           {
@@ -35,7 +35,7 @@
           },
           {
             "glob": "**/*",
-            "input": "libs/safe/src/i18n/tinymce/",
+            "input": "libs/shared/src/i18n/tinymce/",
             "output": "/tinymce/langs"
           },
           {
@@ -56,7 +56,9 @@
         ],
         "styles": [
           "apps/back-office/src/styles.scss",
-          "libs/safe/src/lib/style/styles.scss",
+          "libs/shared/src/lib/style/styles.scss",
+          "libs/styles/src/lib/tailwind/tailwind.scss",
+          "libs/styles/src/lib/shared/shared.scss",
           "node_modules/survey-angular/survey.min.css",
           "node_modules/survey-creator/survey-creator.min.css",
           "node_modules/leaflet/dist/leaflet.css",
@@ -118,10 +120,9 @@
             }
           ],
           "baseHref": "/backoffice/",
-          "deployUrl": "/backoffice/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
         "azure-uat": {
@@ -144,10 +145,9 @@
             }
           ],
           "baseHref": "/backoffice/",
-          "deployUrl": "/backoffice/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
         "azure-sit": {
@@ -170,10 +170,9 @@
             }
           ],
           "baseHref": "/backoffice/",
-          "deployUrl": "/backoffice/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/shared/src/lib/style/themes/default"]
           }
         },
         "azure-dev": {
@@ -196,10 +195,9 @@
             }
           ],
           "baseHref": "/backoffice/",
-          "deployUrl": "/backoffice/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
         "oort-prod": {
@@ -222,10 +220,9 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-dev": {
@@ -248,10 +245,9 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-tailwind": {
@@ -274,10 +270,9 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/Default"]
+            "includePaths": ["libs/styles/src/lib/themes/Default"]
           }
         },
         "oort-guyane": {
@@ -300,10 +295,9 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-alimentaide": {
@@ -326,10 +320,9 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-demo": {
@@ -352,10 +345,9 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-lift": {
@@ -378,10 +370,9 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/lift"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-expertisefr": {
@@ -404,10 +395,9 @@
             }
           ],
           "baseHref": "/admin/",
-          "deployUrl": "/admin/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/expertisefr"]
+            "includePaths": ["libs/styles/src/lib/themes/expertisefr"]
           }
         },
         "oort-local": {
@@ -424,7 +414,7 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "development": {
@@ -435,7 +425,7 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         }
       },

@@ -3,16 +3,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import {
   Application,
-  SafeApplicationService,
-  SafeConfirmService,
-  SafeUnsubscribeComponent,
-  SafeLayoutService,
-} from '@oort-front/safe';
-import { Dialog } from '@angular/cdk/dialog';
-import {
+  ApplicationService,
+  ConfirmService,
+  UnsubscribeComponent,
+  LayoutService,
   DeleteApplicationMutationResponse,
-  DELETE_APPLICATION,
-} from './graphql/mutations';
+} from '@oort-front/shared';
+import { Dialog } from '@angular/cdk/dialog';
+import { DELETE_APPLICATION } from './graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
@@ -27,10 +25,7 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss'],
 })
-export class SettingsComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
+export class SettingsComponent extends UnsubscribeComponent implements OnInit {
   public applications = new Array<Application>();
   public settingsForm!: ReturnType<typeof this.createSettingsForm>;
   public application?: Application;
@@ -56,11 +51,11 @@ export class SettingsComponent
     private apollo: Apollo,
     private router: Router,
     private snackBar: SnackbarService,
-    private applicationService: SafeApplicationService,
-    private confirmService: SafeConfirmService,
+    private applicationService: ApplicationService,
+    private confirmService: ConfirmService,
     public dialog: Dialog,
     private translate: TranslateService,
-    private layoutService: SafeLayoutService
+    private layoutService: LayoutService
   ) {
     super();
   }
