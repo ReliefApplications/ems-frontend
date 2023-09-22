@@ -44,7 +44,7 @@
           (changeStep)="changeStep.emit($event)"
           [id]="'widget-' + widgets[i].id"
           (edit)="onEditWidget($event)"
-          [canUpdate]="canUpdate"
+          [canUpdate]="canUpdate ?? false"
           class="bg-white"
         ></shared-widget>
         <!-- Expand button -->

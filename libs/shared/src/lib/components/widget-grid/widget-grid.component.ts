@@ -6,10 +6,12 @@ import {
   HostListener,
   Inject,
   Input,
+  OnChanges,
   OnInit,
   Output,
   QueryList,
   Renderer2,
+  SimpleChanges,
   ViewChild,
   ViewChildren,
 } from '@angular/core';
@@ -26,8 +28,8 @@ import {
   GridsterComponent,
   GridsterConfig,
   GridsterItem,
-  GridsterItemComponentInterface,
 } from 'angular-gridster2';
+import { differenceWith, isEqual } from 'lodash';
 
 /** Maximum height of the widget in row units */
 const MAX_ROW_SPAN = 4;
@@ -45,7 +47,7 @@ const MAX_COL_SPAN = 8;
 })
 export class WidgetGridComponent
   extends UnsubscribeComponent
-  implements OnInit, AfterViewInit
+  implements OnInit, AfterViewInit, OnChanges
 {
   public availableWidgets: any[] = WIDGET_TYPES;
 
@@ -58,27 +60,24 @@ export class WidgetGridComponent
   /** Set widgets array and updates layout with it */
   @Input()
   set widgets(widgets: any[]) {
-    this._widgets = widgets;
-    this.setGridOptions();
-    this.updateLayout(widgets);
+    if (
+      (!this.widgets || this.widgets.length === 0) &&
+      widgets instanceof Array
+    ) {
+      this.setLayout(widgets);
+    } else {
+      if (this.widgets.length !== widgets.length) {
+        this.updateLayout(widgets);
+      }
+    }
   }
   /** @returns widgets array */
   get widgets() {
     return this._widgets;
   }
 
-  /** Property to know if current user can update grid tile */
-  private _canUpdate = false;
   /** Set canUpdate property and also updates permission to change grid tile*/
-  @Input()
-  set canUpdate(canUpdate: boolean) {
-    this._canUpdate = canUpdate;
-    this.setGridOptions();
-  }
-  /** @returns if current user can update current grid tile */
-  get canUpdate() {
-    return this._canUpdate;
-  }
+  @Input() canUpdate: boolean | undefined = false;
 
   // === GRID ===
   colsNumber = MAX_COL_SPAN;
@@ -86,7 +85,6 @@ export class WidgetGridComponent
   dashboard!: Array<GridsterItem>;
 
   // === EVENT EMITTER ===
-  @Output() move: EventEmitter<any> = new EventEmitter();
   @Output() delete: EventEmitter<any> = new EventEmitter();
   @Output() edit: EventEmitter<any> = new EventEmitter();
   @Output() add: EventEmitter<any> = new EventEmitter();
@@ -122,7 +120,6 @@ export class WidgetGridComponent
     this.colsNumber = this.setColsNumber(event.target.innerWidth);
     this.skeletons = this.getSkeletons();
     this.setGridOptions();
-    // this.updateLayout(this.widgets);
   }
 
   /**
@@ -131,6 +128,8 @@ export class WidgetGridComponent
    * @param environment This is the environment in which we are running the application
    * @param dialog The Dialog service
    * @param dashboardService Shared dashboard service
+   * @param el widget grid component ElementRef
+   * @param renderer Angular renderer2 service for dom changes
    */
   constructor(
     @Inject('environment') environment: any,
@@ -149,6 +148,7 @@ export class WidgetGridComponent
     this.colsNumber = this.setColsNumber(window.innerWidth);
     this.skeletons = this.getSkeletons();
     this.availableWidgets = this.dashboardService.availableWidgets;
+    this.setGridOptions();
   }
 
   ngAfterViewInit(): void {
@@ -160,6 +160,20 @@ export class WidgetGridComponent
         `${this.el.nativeElement.offsetWidth}px`
       );
     }, 0);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    // Whenever the canUpdate changes and is set to true, then we should update grid options to listen to item changes
+    if (
+      changes['canUpdate'] &&
+      Boolean(changes['canUpdate'].previousValue) !==
+        Boolean(changes['canUpdate'].currentValue) &&
+      Boolean(changes['canUpdate'].currentValue)
+    ) {
+      setTimeout(() => {
+        this.setGridOptions(true);
+      }, 0);
+    }
   }
 
   /**
@@ -186,18 +200,17 @@ export class WidgetGridComponent
 
   /**
    * Set grid options and update any permissions for current grid items
+   *
+   * @param isDashboardSet Property to add item change callback handler once the dashboard is ready and editable
    */
-  setGridOptions() {
+  setGridOptions(isDashboardSet = false) {
     this.options = {
-      ...(!this.loading && {
-        itemChangeCallback: (
-          item: GridsterItem,
-          itemComponent: GridsterItemComponentInterface
-        ) => this.onEditTile(item, itemComponent),
+      ...(isDashboardSet && {
+        itemChangeCallback: (item: GridsterItem) => this.onEditTile(item),
       }),
       gridType: GridType.ScrollVertical,
       compactType: CompactType.None,
-      displayGrid: DisplayGrid.Always,
+      displayGrid: DisplayGrid.OnDragAndResize,
       margin: 10,
       maxCols: this.colsNumber,
       maxItemRows: MAX_ROW_SPAN,
@@ -207,17 +220,14 @@ export class WidgetGridComponent
       resizable: {
         enabled: this.canUpdate,
       },
-      // pushItems: false,
+      pushItems: true,
       swap: true,
-      swapWhileDragging: true,
-      // disablePushOnDrag: false,
-      // disablePushOnResize: false,
-      // pushDirections: { north: true, east: true, south: true, west: true },
-      // pushResizeItems: true,
-      // disableWindowResize: false,
-      // disableScrollHorizontal: true,
-      // disableWarnings: false,
-      // scrollToNewItems: true,
+      swapWhileDragging: false,
+      disablePushOnDrag: true,
+      disablePushOnResize: false,
+      pushDirections: { north: true, east: true, south: true, west: true },
+      disableScrollHorizontal: true,
+      scrollToNewItems: true,
       setGridSize: true,
     };
 
@@ -294,39 +304,25 @@ export class WidgetGridComponent
   }
 
   /**
-   * Emits reorder event.
-   *
-   * @param e reorder event.
-   */
-  public onReorder(e: any): void {
-    this.move.emit(e);
-  }
-
-  /**
    * Emits an action when a tile is edited (Size and position)
    *
    * @param {GridsterItem} item Current grid item
-   * @param {GridsterItemComponentInterface} itemComponent Current grid item
    */
-  onEditTile(
-    item: GridsterItem,
-    itemComponent: GridsterItemComponentInterface
-  ): void {
-    console.log(item);
-    console.log(itemComponent);
-    console.log(this.widgets);
-    // this.edit.emit({
-    //   type: 'display',
-    //   id: this.widgets[item.layerIndex as number].id,
-    //   options: {
-    //     id: this.widgets[item.layerIndex as number].id,
-    //     cols: item.cols,
-    //     rows: item.rows,
-    //     // We need to add these two properties
-    //     // x: item.x,
-    //     // y: item.y,
-    //   },
-    // });
+  onEditTile(item: GridsterItem): void {
+    if (item) {
+      this.edit.emit({
+        type: 'display',
+        id: item.id,
+        options: {
+          id: item.id,
+          cols: item.cols,
+          rows: item.rows,
+          // We need to add these two properties por item positioning
+          x: item.x,
+          y: item.y,
+        },
+      });
+    }
   }
 
   /**
@@ -397,7 +393,8 @@ export class WidgetGridComponent
    *
    * @param widgets Array with the list of present widgets on the dashboard
    */
-  private updateLayout(widgets: any[]) {
+  private setLayout(widgets: any[]) {
+    this._widgets = widgets;
     const yAxis = 0;
     const xAxis = 0;
     this.dashboard = widgets.map((widget, index) => {
@@ -406,18 +403,50 @@ export class WidgetGridComponent
           ? { x: 0, y: 0 }
           : this.setXYAxisValues(yAxis, xAxis, widget);
       const gridItem = {
+        id: widget.id,
         cols: widget.defaultCols,
         rows: widget.defaultRows,
         minItemRows: widget.minRow,
-        y,
-        x,
+        y: widget.y ?? y,
+        x: widget.x ?? x,
         resizeEnabled: this.canUpdate,
         dragEnabled: this.canUpdate,
       };
-      if (this.options?.api?.getFirstPossiblePosition) {
-        console.log(this.options?.api?.getFirstPossiblePosition(gridItem));
-      }
       return gridItem;
     });
+  }
+
+  /**
+   * Updates current grid layout
+   * If we set a new value to the dashboard property(assign new object) the child items we'll re render again executing all lifecycle hook methods
+   * that's why we use push and slice methods, to keep same reference to the dashboard property and avoid not necessary request and function triggers
+   *
+   * @param widgets current widgets array
+   */
+  updateLayout(widgets: any[]) {
+    const widgetDiff = differenceWith(this.widgets, widgets, isEqual);
+    // If there is no difference between previous and current widgets
+    // it means that we added a new one
+    if (widgetDiff.length === 0) {
+      this.dashboard.push({
+        id: widgets[widgets.length - 1].id,
+        cols: widgets[widgets.length - 1].defaultCols,
+        rows: widgets[widgets.length - 1].defaultRows,
+        minItemRows: widgets[widgets.length - 1].minRow,
+        y: this.dashboard[this.dashboard.length - 1].y,
+        x: this.dashboard[this.dashboard.length - 1].x,
+        resizeEnabled: this.canUpdate,
+        dragEnabled: this.canUpdate,
+      });
+      // Else we delete the one that the diff has returned
+    } else {
+      const deletedItemIndex = this.dashboard.findIndex(
+        (gridItem) => gridItem.id === widgetDiff[0].id
+      );
+      if (deletedItemIndex !== -1) {
+        this.dashboard.splice(deletedItemIndex, 1);
+      }
+    }
+    this._widgets = widgets;
   }
 }

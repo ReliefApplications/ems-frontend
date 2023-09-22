@@ -210,8 +210,7 @@
   <shared-widget-grid
     [loading]="loading"
     [widgets]="widgets"
-    [canUpdate]="dashboard?.canUpdate || false"
-    (move)="onMove($event)"
+    [canUpdate]="dashboard?.canUpdate"
     (edit)="onEditTile($event)"
     (delete)="onDeleteTile($event)"
     (style)="onStyleTile($event)"
