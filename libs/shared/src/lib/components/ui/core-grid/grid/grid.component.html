@@ -929,11 +929,7 @@
                     <li *ngFor="let row of field.meta.rows">
                       <ng-container
                         *ngIf="
-                          ['text', 'dropdown', 'radiogroup'].includes(
-                            column.type
-                          ) &&
-                          dataItem[field.name] &&
-                          dataItem[field.name][row.name]
+                          dataItem[field.name] && dataItem[field.name][row.name]
                         "
                       >
                         {{ dataItem[field.name][row.name][column.name] }}
@@ -999,7 +995,11 @@
                         </ui-textarea>
                       </ng-container>
                       <ng-container
-                        *ngIf="['dropdown', 'radiogroup'].includes(column.type)"
+                        *ngIf="
+                          ['default', 'dropdown', 'radiogroup'].includes(
+                            column.type
+                          )
+                        "
                       >
                         <kendo-dropdownlist
                           [data]="field.meta.choices"
@@ -1012,6 +1012,30 @@
                         >
                         </kendo-dropdownlist>
                       </ng-container>
+                      <ng-container *ngIf="column.type === 'boolean'">
+                        <input
+                          type="checkbox"
+                          kendoCheckBox
+                          [formControl]="
+                            formGroup.get([field.name, row.name, column.name])
+                          "
+                        />
+                      </ng-container>
+                      <ng-container
+                        *ngIf="multiSelectTypes.includes(column.type)"
+                      >
+                        <kendo-multiselect
+                          [data]="field.meta.choices"
+                          textField="text"
+                          [valueField]="'value'"
+                          [valuePrimitive]="true"
+                          [formControl]="
+                            formGroup.get([field.name, row.name, column.name])
+                          "
+                          [autoClose]="false"
+                        >
+                        </kendo-multiselect>
+                      </ng-container>
                     </li>
                   </ng-container>
                   <!-- EDITION ( matrixdynamic ) -->
@@ -1023,7 +1047,7 @@
                       "
                       [formGroup]="group"
                     >
-                      <ng-container *ngIf="column.cellType === 'text'">
+                      <ng-container *ngIf="column.type === 'text'">
                         <ui-textarea
                           [formControlName]="column.name"
                           [name]="field.name + i"
@@ -1036,7 +1060,9 @@
                       </ng-container>
                       <ng-container
                         *ngIf="
-                          ['dropdown', 'radiogroup'].includes(column.cellType)
+                          ['default', 'dropdown', 'radiogroup'].includes(
+                            column.type
+                          )
                         "
                       >
                         <kendo-dropdownlist
@@ -1048,7 +1074,7 @@
                         >
                         </kendo-dropdownlist>
                       </ng-container>
-                      <ng-container *ngIf="column.cellType === 'boolean'">
+                      <ng-container *ngIf="column.type === 'boolean'">
                         <input
                           type="checkbox"
                           kendoCheckBox
@@ -1056,7 +1082,7 @@
                         />
                       </ng-container>
                       <ng-container
-                        *ngIf="multiSelectTypes.includes(column.cellType)"
+                        *ngIf="multiSelectTypes.includes(column.type)"
                       >
                         <kendo-multiselect
                           [data]="field.meta.choices"
