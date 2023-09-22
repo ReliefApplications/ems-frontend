@@ -4,9 +4,9 @@ import {
   Application,
   ArchivePage,
   Page,
-  SafeApplicationService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  ApplicationService,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
@@ -25,13 +25,10 @@ import {
   templateUrl: './archive.component.html',
   styleUrls: ['./archive.component.scss'],
 })
-export class ArchiveComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
+export class ArchiveComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   public loading = true;
-  public itemList: ArchivePage[] = [];
+  public archivedPagesList: ArchivePage[] = [];
 
   // === PREVIEWED ROLE ===
   public role = '';
@@ -47,7 +44,7 @@ export class ArchiveComponent
    */
   constructor(
     private apollo: Apollo,
-    private applicationService: SafeApplicationService,
+    private applicationService: ApplicationService,
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private previewService: PreviewService
@@ -85,7 +82,7 @@ export class ArchiveComponent
         next: ({ data }) => {
           // console.log(data);
           if (data) {
-            this.itemList =
+            this.archivedPagesList =
               data.application.pages
                 ?.filter((page) => page.id && page.name && page.modifiedAt)
                 .map((page) => {

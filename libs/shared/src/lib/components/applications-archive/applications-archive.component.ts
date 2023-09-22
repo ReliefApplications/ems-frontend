@@ -22,7 +22,7 @@ export interface ArchivePage {
  * This component is used to display application archives
  */
 @Component({
-  selector: 'safe-applications-archive',
+  selector: 'shared-applications-archive',
   templateUrl: './applications-archive.component.html',
   styleUrls: ['./applications-archive.component.scss'],
 })
@@ -31,7 +31,7 @@ export class ApplicationsArchiveComponent
   implements OnInit
 {
   loading = false;
-  @Input() itemList: ArchivePage[] = [];
+  @Input() archivedPagesList: ArchivePage[] = [];
   public filteredArchiveList: Array<ArchivePage> = new Array<ArchivePage>();
   public displayedColumns = ['name', 'deleteDate', 'actions'];
 
@@ -66,7 +66,7 @@ export class ApplicationsArchiveComponent
    * Filter roles and users.
    */
   private filterPredicate(): void {
-    this.filteredArchiveList = this.itemList.filter(
+    this.filteredArchiveList = this.archivedPagesList.filter(
       (data: ArchivePage) =>
         (this.searchText.trim().length === 0 ||
           (this.searchText.trim().length > 0 &&
@@ -125,7 +125,11 @@ export class ApplicationsArchiveComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        this.applicationService.deletePage(page.id);
+        this.archivedPagesList = this.archivedPagesList.filter(
+          (p) => p.id !== page.id
+        ); //remove the deleted page from the archive
+        this.filterPredicate();
+        this.applicationService.deletePage(page.id, true);
       }
     });
   }

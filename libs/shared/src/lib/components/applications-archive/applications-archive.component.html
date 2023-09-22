@@ -1,4 +1,4 @@
-<ng-container *ngIf="itemList?.length">
+<ng-container *ngIf="archivedPagesList?.length">
   <div class="flex justify-start flex-col sm:flex-row">
     <!-- Search text filter -->
     <div uiFormFieldDirective>
@@ -12,7 +12,7 @@
     </div>
   </div>
 </ng-container>
-<ng-container *ngIf="itemList?.length; else emptyTmpl">
+<ng-container *ngIf="archivedPagesList?.length; else emptyTmpl">
   <!-- Table container -->
   <div class="mt-4 overflow-x-hidden shadow-2lg">
     <!-- Table scroll container -->
@@ -40,7 +40,7 @@
             </span>
           </th>
           <td uiCell *cdkCellDef="let element">
-            {{ element.deleteDate | safeDate }}
+            {{ element.deleteDate | sharedDate }}
           </td>
         </ng-container>
 
@@ -74,5 +74,5 @@
 </ng-container>
 <ng-template #emptyTmpl>
   <!-- Empty indicator -->
-  <safe-empty [title]="'common.archive.none' | translate"></safe-empty>
+  <shared-empty [title]="'common.archive.none' | translate"></shared-empty>
 </ng-template>

@@ -3,9 +3,9 @@ import { CommonModule } from '@angular/common';
 import { ArchiveComponent } from './archive.component';
 import { ArchiveRoutingModule } from './archive-routing.module';
 import {
-  SafeApplicationsArchiveModule,
-  SafeSkeletonTableModule,
-} from '@oort-front/safe';
+  ApplicationsArchiveModule,
+  SkeletonTableModule,
+} from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -16,8 +16,8 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     ArchiveRoutingModule,
-    SafeApplicationsArchiveModule,
-    SafeSkeletonTableModule,
+    ApplicationsArchiveModule,
+    SkeletonTableModule,
     TranslateModule,
   ],
   exports: [ArchiveComponent],

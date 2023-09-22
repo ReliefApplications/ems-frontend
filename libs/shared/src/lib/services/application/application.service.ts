@@ -18,6 +18,7 @@ import {
   Page,
   ContentType,
   DeletePageMutationResponse,
+  RestorePageMutationResponse,
   EditPageMutationResponse,
   AddPageMutationResponse,
   DuplicatePageMutationResponse,
@@ -65,7 +66,6 @@ import {
   EDIT_PAGE,
   ADD_CUSTOM_NOTIFICATION,
   DELETE_CUSTOM_NOTIFICATION,
-  RestorePageMutationResponse,
   RESTORE_PAGE,
 } from './graphql/mutations';
 import { GET_APPLICATION_BY_ID } from './graphql/queries';
@@ -498,8 +498,9 @@ export class ApplicationService {
    * Deletes a page and the associated content.
    *
    * @param id id of the page
+   * @param stayOnPage true if you do not want to be redirected
    */
-  deletePage(id: string): void {
+  deletePage(id: string, stayOnPage = false): void {
     const application = this.application.getValue();
     if (application && this.isUnlocked) {
       this.apollo
@@ -523,7 +524,9 @@ export class ApplicationService {
                 pages: app.pages?.filter((x) => x.id !== data?.deletePage.id),
               };
               this.application.next(newApplication);
-              this.router.navigate([`./applications/${app.id}`]);
+              if (!stayOnPage) {
+                this.router.navigate([`./applications/${app.id}`]);
+              }
             }
           } else {
             this.snackBar.openSnackBar(

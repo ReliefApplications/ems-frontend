@@ -16,7 +16,7 @@ import { FormsModule } from '@angular/forms';
 import { ButtonModule, MenuModule } from '@oort-front/ui';
 
 /**
- * Safe Applications Archive module
+ * Shared Applications Archive module
  */
 @NgModule({
   declarations: [ApplicationsArchiveComponent],

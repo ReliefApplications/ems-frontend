@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CanDeactivateGuard } from '../guards/can-deactivate.guard';
 import { ApplicationComponent } from './application.component';
-import { SafePermissionGuard } from '@oort-front/safe';
+import { PermissionGuard } from '@oort-front/shared';
 
 /** Routes of application module */
 const routes: Routes = [
@@ -174,7 +174,7 @@ const routes: Routes = [
               import('./pages/archive/archive.module').then(
                 (m) => m.ArchiveModule
               ),
-            canActivate: [SafePermissionGuard],
+            canActivate: [PermissionGuard],
             data: {
               breadcrumb: {
                 key: 'common.archive.few',

@@ -1,5 +1,5 @@
 import { gql } from 'apollo-angular';
-import { Page } from '@oort-front/safe';
+import { Page } from '@oort-front/shared';
 
 // === GET APPLICATION BY ID ===
 /** Graphql request for getting application data by its id */
