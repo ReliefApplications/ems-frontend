@@ -1340,6 +1340,11 @@
 						"template": "Select a template for addition and edition of records"
 					}
 				},
+				"iconModal": {
+					"icons": "Choose icon",
+					"title": "Update page icon",
+					"validate": "Update"
+				},
 				"iconPicker": {
 					"default": "Default",
 					"placeholder": "Search an icon"

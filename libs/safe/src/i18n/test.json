@@ -1340,6 +1340,11 @@
 						"template": "******"
 					}
 				},
+				"iconModal": {
+					"icons": "******",
+					"title": "******",
+					"validate": "******"
+				},
 				"iconPicker": {
 					"default": "******",
 					"placeholder": "******"

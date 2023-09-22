@@ -1356,6 +1356,11 @@
 						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements"
 					}
 				},
+				"iconModal": {
+					"icons": "Choisissez un icon",
+					"title": "Modifier l'icone",
+					"validate": "Modifier"
+				},
 				"iconPicker": {
 					"default": "Standard",
 					"placeholder": "Chezchez un symbole"
