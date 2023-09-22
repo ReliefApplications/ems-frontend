@@ -1,4 +1,4 @@
-<kendo-tilelayout-item-header
+<div
   *ngIf="header"
   class="widget-header border-b"
   [ngClass]="{
@@ -9,7 +9,7 @@
   <span class="widget-title" [title]="settings.title">{{
     settings.title
   }}</span>
-</kendo-tilelayout-item-header>
+</div>
 <ng-container *ngIf="!hasError && (series$ | async) as series">
   <ui-button
     *ngIf="export"

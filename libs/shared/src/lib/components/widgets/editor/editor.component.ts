@@ -1,4 +1,10 @@
-import { Component, OnInit, Input } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  OnChanges,
+  SimpleChanges,
+} from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
 import { firstValueFrom } from 'rxjs';
@@ -23,7 +29,7 @@ import { GridService } from '../../../services/grid/grid.service';
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
 })
-export class EditorComponent implements OnInit {
+export class EditorComponent implements OnInit, OnChanges {
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
   @Input() settings: any;
@@ -57,6 +63,12 @@ export class EditorComponent implements OnInit {
     private translate: TranslateService,
     private gridService: GridService
   ) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['settings']) {
+      this.setContentFromLayout();
+    }
+  }
 
   /** Sanitizes the text. */
   ngOnInit(): void {

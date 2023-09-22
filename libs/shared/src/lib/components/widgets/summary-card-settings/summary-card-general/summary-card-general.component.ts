@@ -9,7 +9,6 @@ import {
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { LayoutModule } from '@progress/kendo-angular-layout';
 import { SummaryCardItemModule } from '../../summary-card/summary-card-item/summary-card-item.module';
 import { SummaryCardFormT } from '../summary-card-settings.component';
 import { Apollo, QueryRef } from 'apollo-angular';
@@ -53,7 +52,6 @@ const MAX_COL_SPAN = 8;
     FormsModule,
     ReactiveFormsModule,
     TranslateModule,
-    LayoutModule,
     ButtonModule,
     IconModule,
     SummaryCardItemModule,

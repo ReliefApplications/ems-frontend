@@ -1,5 +1,5 @@
 <div class="h-full flex flex-col">
-  <kendo-tilelayout-item-header
+  <div
     *ngIf="header"
     class="widget-header border-b"
     [ngClass]="{
@@ -21,7 +21,7 @@
         {{ 'components.widget.summaryCard.dataSource' | translate }}
       </ui-button>
     </div>
-  </kendo-tilelayout-item-header>
+  </div>
   <div class="flex-1 overflow-auto p-[14px]" (click)="onClick($event)">
     <div class="w-full h-fit" (click)="onClick($event)">
       <shared-html-widget-content
