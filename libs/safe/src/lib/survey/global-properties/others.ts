@@ -5,8 +5,6 @@ import {
 } from 'survey-angular';
 import { Question } from '../types';
 import * as Survey from 'survey-angular';
-import { surveyStrings } from 'entries/angular';
-import { SurveyCreator } from 'survey-creator';
 
 /**
  * Add support for custom properties to the survey
