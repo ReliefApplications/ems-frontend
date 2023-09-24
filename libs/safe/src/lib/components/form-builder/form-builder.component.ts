@@ -398,7 +398,7 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
    * Custom SurveyJS method, save the form when edited.
    */
   saveMySurvey = () => {
-    function removeKeyFromJSON(obj: Object, keyToRemove: any) {
+    function removeKeyFromJSON(obj: object, keyToRemove: any) {
       if (Array.isArray(obj)) {
         for (let i = 0; i < obj.length; i++) {
           removeKeyFromJSON(obj[i], keyToRemove);
@@ -406,9 +406,9 @@ export class SafeFormBuilderComponent implements OnInit, OnChanges, OnDestroy {
       } else if (typeof obj === 'object' && obj !== null) {
         for (const prop in obj) {
           if (prop === keyToRemove) {
-            delete obj[prop as keyof Object];
+            delete obj[prop as keyof object];
           } else {
-            removeKeyFromJSON(obj[prop as keyof Object], keyToRemove);
+            removeKeyFromJSON(obj[prop as keyof object], keyToRemove);
           }
         }
       }
