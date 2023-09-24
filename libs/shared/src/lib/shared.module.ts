@@ -40,6 +40,7 @@ import { GraphQLSelectModule } from '@oort-front/ui';
 import { SortingSettingsModule } from './components/widgets/common/sorting-settings/sorting-settings.module';
 import { WidgetChoiceModule } from './components/widget-choice/widget-choice.module';
 import { TabsSettingsModule } from './components/widgets/tabs-settings/tabs-settings.module';
+import { ApplicationsArchiveModule } from './components/applications-archive/applications-archive.module';
 
 /** Main module for the shared project */
 @NgModule({
@@ -64,6 +65,7 @@ import { TabsSettingsModule } from './components/widgets/tabs-settings/tabs-sett
     AggregationBuilderModule,
     TagboxModule,
     SnackbarSpinnerModule,
+    ApplicationsArchiveModule,
     SkeletonTableModule,
     UserSummaryModule,
     EditableTextModule,

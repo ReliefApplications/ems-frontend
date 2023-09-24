@@ -18,6 +18,25 @@
 			"none": "No application",
 			"one": "Application"
 		},
+		"archive": {
+			"delete": "Delete",
+			"few": "Archive",
+			"modal": {
+				"delete": {
+					"action": "Delete",
+					"confirmationMessage": "Do you want to delete archived page: {{name}}?",
+					"title": "Delete?"
+				},
+				"one": "page",
+				"restore": {
+					"action": "Restore",
+					"confirmationMessage": "Do you want to restore the archived page: {{name}}?",
+					"title": "Restore?"
+				}
+			},
+			"none": "No archived items",
+			"restore": "Restore"
+		},
 		"ariaLabel": {
 			"search": {
 				"clear": "Clear search"
@@ -416,6 +435,10 @@
 			}
 		},
 		"application": {
+			"archive": {
+				"autoDeletedAt": "Automatically removed on",
+				"name": "Name"
+			},
 			"customStyling": "Custom Styling",
 			"dashboard": {
 				"editFilter": "Edit filter",

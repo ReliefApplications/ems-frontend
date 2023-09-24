@@ -18,6 +18,25 @@
 			"none": "******",
 			"one": "******"
 		},
+		"archive": {
+			"delete": "******",
+			"few": "******",
+			"modal": {
+				"delete": {
+					"action": "******",
+					"confirmationMessage": "****** {{name}} ******",
+					"title": "******"
+				},
+				"one": "******",
+				"restore": {
+					"action": "******",
+					"confirmationMessage": "****** {{name}} ******",
+					"title": "******"
+				}
+			},
+			"none": "******",
+			"restore": "******"
+		},
 		"ariaLabel": {
 			"search": {
 				"clear": "******"
@@ -416,6 +435,10 @@
 			}
 		},
 		"application": {
+			"archive": {
+				"autoDeletedAt": "******",
+				"name": "******"
+			},
 			"customStyling": "******",
 			"dashboard": {
 				"editFilter": "******",
