@@ -5,6 +5,8 @@ import {
 } from 'survey-angular';
 import { Question } from '../types';
 import * as Survey from 'survey-angular';
+import { surveyStrings } from 'entries/angular';
+import { SurveyCreator } from 'survey-creator';
 
 /**
  * Add support for custom properties to the survey
@@ -102,6 +104,14 @@ export const init = (Survey: any, environment: any): void => {
       );
       choicesCallback(pages);
     },
+  });
+  // Adds a property to the survey settings to delete or not unticket translations in the translations tab from the JSON Object
+  serializer.addProperty('survey', {
+    name: 'deleteUnusedTranslations',
+    category: 'general',
+    type: 'dropdown',
+    choices: ['Yes', 'No'],
+    default: 'No',
   });
 };
 
