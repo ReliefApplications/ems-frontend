@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-
 import { TranslateService } from '@ngx-translate/core';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import {
@@ -15,7 +14,7 @@ import { takeUntil } from 'rxjs';
 export interface ArchivePage {
   id: string;
   name: string;
-  deleteDate: Date;
+  autoDeletedAt: Date;
 }
 
 /**
@@ -31,14 +30,14 @@ export class ApplicationsArchiveComponent
   implements OnInit
 {
   loading = false;
-  @Input() archivedPagesList: ArchivePage[] = [];
-  public filteredArchiveList: Array<ArchivePage> = new Array<ArchivePage>();
-  public displayedColumns = ['name', 'deleteDate', 'actions'];
+  @Input() pages: ArchivePage[] = [];
+  public visiblePages: Array<ArchivePage> = new Array<ArchivePage>();
+  public displayedColumns = ['name', 'autoDeletedAt', 'actions'];
 
   // === FILTERS ===
   public filters = [
     { id: 'name', value: '' },
-    { id: 'deleteDate', value: '' },
+    { id: 'autoDeletedAt', value: '' },
   ];
   public searchText = '';
   public dateFilter = '';
@@ -66,14 +65,14 @@ export class ApplicationsArchiveComponent
    * Filter roles and users.
    */
   private filterPredicate(): void {
-    this.filteredArchiveList = this.archivedPagesList.filter(
+    this.visiblePages = this.pages.filter(
       (data: ArchivePage) =>
         (this.searchText.trim().length === 0 ||
           (this.searchText.trim().length > 0 &&
             data.name.toLowerCase().includes(this.searchText.trim()))) &&
         (this.dateFilter.trim().length === 0 ||
           (this.dateFilter.trim().length > 0 &&
-            data.deleteDate.toString().includes(this.dateFilter.trim())))
+            data.autoDeletedAt.toString().includes(this.dateFilter.trim())))
     );
   }
 
@@ -84,7 +83,7 @@ export class ApplicationsArchiveComponent
    * @param event The event
    */
   applyFilter(column: string, event: any): void {
-    if (column === 'deleteDate') {
+    if (column === 'autoDeletedAt') {
       this.dateFilter = event.target
         ? event.target.value.trim().toLowerCase()
         : '';
@@ -125,9 +124,7 @@ export class ApplicationsArchiveComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        this.archivedPagesList = this.archivedPagesList.filter(
-          (p) => p.id !== page.id
-        ); //remove the deleted page from the archive
+        this.pages = this.pages.filter((p) => p.id !== page.id); //remove the deleted page from the archive
         this.filterPredicate();
         this.applicationService.deletePage(page.id, true);
       }

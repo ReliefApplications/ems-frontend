@@ -436,8 +436,8 @@
 		},
 		"application": {
 			"archive": {
-				"deleteDate": "@TODO",
-				"name": "@TODO"
+				"autoDeletedAt": "Date de suppression automatique",
+				"name": "Nom"
 			},
 			"customStyling": "Style personnalisé",
 			"dashboard": {

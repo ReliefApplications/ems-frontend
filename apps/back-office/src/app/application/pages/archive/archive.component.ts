@@ -6,16 +6,14 @@ import {
   Page,
   ApplicationService,
   UnsubscribeComponent,
+  ApplicationQueryResponse,
 } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map, switchMap, takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import { combineLatest, of } from 'rxjs';
 import { PreviewService } from '../../../services/preview.service';
-import {
-  GET_APPLICATION_ARCHIVED_PAGES,
-  GetApplicationByIdQueryResponse,
-} from './graphql/queries';
+import { GET_APPLICATION_ARCHIVED_PAGES } from './graphql/queries';
 
 /**
  * Archive page component for application preview.
@@ -28,7 +26,7 @@ import {
 export class ArchiveComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   public loading = true;
-  public archivedPagesList: ArchivePage[] = [];
+  public pages: ArchivePage[] = [];
 
   // === PREVIEWED ROLE ===
   public role = '';
@@ -64,12 +62,11 @@ export class ArchiveComponent extends UnsubscribeComponent implements OnInit {
       .pipe(
         switchMap(([id, asRole]) => {
           if (id !== null) {
-            return this.apollo.query<GetApplicationByIdQueryResponse>({
+            return this.apollo.query<ApplicationQueryResponse>({
               query: GET_APPLICATION_ARCHIVED_PAGES,
               variables: {
                 id,
                 asRole,
-                filter: 'archived',
               },
             });
           } else {
@@ -82,16 +79,14 @@ export class ArchiveComponent extends UnsubscribeComponent implements OnInit {
         next: ({ data }) => {
           // console.log(data);
           if (data) {
-            this.archivedPagesList =
-              data.application.pages
-                ?.filter((page) => page.id && page.name && page.modifiedAt)
-                .map((page) => {
-                  return {
-                    id: page.id,
-                    name: page.name,
-                    deleteDate: page.modifiedAt,
-                  } as ArchivePage;
-                }) ?? [];
+            this.pages =
+              (data.application.pages || []).map((page) => {
+                return {
+                  id: page.id,
+                  name: page.name,
+                  autoDeletedAt: page.autoDeletedAt,
+                } as ArchivePage;
+              }) ?? [];
           } else {
             this.snackBar.openSnackBar(
               this.translate.instant('common.notifications.accessNotProvided', {

@@ -15,7 +15,6 @@ export interface Workflow {
   canSee?: boolean;
   canUpdate?: boolean;
   canDelete?: boolean;
-  status?: 'active' | 'archived';
 }
 
 /** Model for workflow query response */

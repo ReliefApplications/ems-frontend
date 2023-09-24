@@ -234,7 +234,6 @@ export interface Dashboard {
     category: Category;
     openInNewTab: boolean;
   }[];
-  status?: 'active' | 'archived';
 }
 
 /** Model for dashboard graphql query response */

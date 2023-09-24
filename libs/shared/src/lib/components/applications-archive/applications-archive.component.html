@@ -1,4 +1,4 @@
-<ng-container *ngIf="archivedPagesList?.length">
+<ng-container *ngIf="pages?.length">
   <div class="flex justify-start flex-col sm:flex-row">
     <!-- Search text filter -->
     <div uiFormFieldDirective>
@@ -12,12 +12,12 @@
     </div>
   </div>
 </ng-container>
-<ng-container *ngIf="archivedPagesList?.length; else emptyTmpl">
+<ng-container *ngIf="pages?.length; else emptyTmpl">
   <!-- Table container -->
   <div class="mt-4 overflow-x-hidden shadow-2lg">
     <!-- Table scroll container -->
     <div class="overflow-x-auto">
-      <table cdk-table uiTableWrapper [dataSource]="filteredArchiveList">
+      <table cdk-table uiTableWrapper [dataSource]="visiblePages">
         <ng-container cdkColumnDef="name">
           <th uiCellHeader *cdkHeaderCellDef scope="col">
             <span class="headerTitle">
@@ -33,14 +33,14 @@
           </td>
         </ng-container>
 
-        <ng-container cdkColumnDef="deleteDate">
+        <ng-container cdkColumnDef="autoDeletedAt">
           <th uiCellHeader *cdkHeaderCellDef scope="col">
             <span class="headerTitle">
-              {{ 'components.application.archive.deleteDate' | translate }}
+              {{ 'components.application.archive.autoDeletedAt' | translate }}
             </span>
           </th>
           <td uiCell *cdkCellDef="let element">
-            {{ element.deleteDate | sharedDate }}
+            {{ element.autoDeletedAt | sharedDate }}
           </td>
         </ng-container>
 

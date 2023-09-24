@@ -436,7 +436,7 @@
 		},
 		"application": {
 			"archive": {
-				"deleteDate": "Deletion date",
+				"autoDeletedAt": "Automatically removed on",
 				"name": "Name"
 			},
 			"customStyling": "Custom Styling",

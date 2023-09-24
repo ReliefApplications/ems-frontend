@@ -88,7 +88,7 @@ export interface Page {
   ) & {
     content: string;
   })[];
-  status?: 'active' | 'archived';
+  autoDeletedAt?: Date;
 }
 
 /** Model for page graphql query response */

@@ -145,7 +145,7 @@ export class ApplicationComponent
               },
             ];
           }
-          if (application.canSee) {
+          if (application.canUpdate) {
             this.adminNavItems.push({
               name: this.translate.instant('common.archive.few'),
               path: './settings/archive',
