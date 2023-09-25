@@ -12,7 +12,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import * as SurveyCreator from 'survey-creator';
 import * as Survey from 'survey-angular';
 import { TranslateService } from '@ngx-translate/core';
-import { snakeCase, get, uniqBy, difference } from 'lodash';
+import { get, uniqBy, difference } from 'lodash';
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { Form } from '../../models/form.model';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
@@ -104,8 +104,8 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
    * The constructor function is a special function that is called when a new instance of the class is
    * created.
    *
-   * @param dialog This is the Angular Dialog service used to display dialog modals
-   * @param snackBar This is the service that will be used to display the snackbar.
+   * @param dialog Angular Dialog service used to display dialog modals
+   * @param snackBar Service that will be used to display the snackbar.
    * @param translate Angular translate service
    * @param referenceDataService Reference data service
    * @param formHelpersService Shared form helper service.
@@ -448,30 +448,6 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   /**
-   * Convert a string to snake_case. Overrides the snakeCase function of lodash
-   * by first checking if the text is not already in snake case
-   *
-   * @param text The text to convert
-   * @returns The text in snake_case
-   */
-  private toSnakeCase(text: string): string {
-    if (this.isSnakeCase(text)) {
-      return text;
-    }
-    return snakeCase(text);
-  }
-
-  /**
-   * Checks if a string is already in snake case
-   *
-   * @param text The text to check
-   * @returns True if the text is in snake case, false otherwise
-   */
-  private isSnakeCase(text: string): any {
-    return text.match(/^[a-z]+[a-z0-9_]+$/);
-  }
-
-  /**
    * Recursively set the question names of the form and depending on
    * the question type, check additional required fields.
    *
@@ -483,38 +459,14 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
     question: Survey.Question,
     page: Survey.PageModel
   ): boolean {
-    // create the valueName of the element in snake case
-    if (!question.valueName) {
-      if (question.title) {
-        question.valueName = this.toSnakeCase(question.title);
-      } else if (question.name) {
-        question.valueName = this.toSnakeCase(question.name);
-      } else {
-        this.snackBar.openSnackBar(
-          this.translate.instant('pages.formBuilder.errors.missingName', {
-            page: page.name,
-          }),
-          {
-            error: true,
-            duration: 15000,
-          }
-        );
-        return false;
-      }
-    } else {
-      if (!this.isSnakeCase(question.valueName)) {
-        this.snackBar.openSnackBar(
-          this.translate.instant('pages.formBuilder.errors.snakecase', {
-            name: question.valueName,
-            page: page.name,
-          }),
-          {
-            error: true,
-            duration: 15000,
-          }
-        );
-        return false;
-      }
+    // Create the valueName of the element in snake case.
+    const valueNameChecked = this.formHelpersService.setValueName(
+      question,
+      page
+    );
+    if (!valueNameChecked) {
+      // If valueName missing or exists but with wrong format, return false: question invalid.
+      return false;
     }
     // if choices object exists, checks for duplicate values
     if (question.choices) {
@@ -565,7 +517,7 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
           validQuestion = false;
           return false;
         }
-        item.name = this.toSnakeCase(item.name);
+        item.name = this.formHelpersService.toSnakeCase(item.name);
         return true;
       });
       if (!validQuestion) {
@@ -574,24 +526,32 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
     }
     if (question.getType() === 'matrix') {
       question.columns.forEach(
-        (x: any) => (x.value = this.toSnakeCase(x.value || x.text || x))
+        (x: any) =>
+          (x.value = this.formHelpersService.toSnakeCase(
+            x.value || x.text || x
+          ))
       );
       question.rows.forEach(
-        (x: any) => (x.value = this.toSnakeCase(x.value || x.text || x))
+        (x: any) =>
+          (x.value = this.formHelpersService.toSnakeCase(
+            x.value || x.text || x
+          ))
       );
     }
     if (question.getType() === 'matrixdropdown') {
       question.columns.forEach((x: any) => {
-        x.name = this.toSnakeCase(x.name || x.title || x);
+        x.name = this.formHelpersService.toSnakeCase(x.name || x.title || x);
         x.title = x.title || x.name || x;
       });
       question.rows.forEach((x: any) => {
-        x.value = this.toSnakeCase(x.value || x.text || x);
+        x.value = this.formHelpersService.toSnakeCase(x.value || x.text || x);
       });
     }
     if (['resource', 'resources'].includes(question.getType())) {
       if (question.relatedName) {
-        question.relatedName = this.toSnakeCase(question.relatedName);
+        question.relatedName = this.formHelpersService.toSnakeCase(
+          question.relatedName
+        );
         if (this.relatedNames.includes(question.relatedName)) {
           this.snackBar.openSnackBar(
             this.translate.instant(

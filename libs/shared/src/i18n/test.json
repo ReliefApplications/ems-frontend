@@ -1888,10 +1888,14 @@
 				"selectDisplayField": "******",
 				"selectOrigin": "******"
 			},
+			"contextFilter": "******",
 			"dashboardFilter": "******",
 			"deactivateFiltering": "******",
+			"historicalDate": "******",
 			"share": "******",
 			"tooltip": {
+				"dashboardFilter": "******",
+				"historicalDate": "****** {{filter.<name>}} ******",
 				"useDashboardFilterEditor": "******",
 				"useDefaultEditor": "******"
 			}

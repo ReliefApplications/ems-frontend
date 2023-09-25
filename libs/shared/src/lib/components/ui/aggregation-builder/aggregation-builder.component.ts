@@ -145,13 +145,12 @@ export class AggregationBuilderComponent
       const selectedFields = fieldsNames.map((x: string) => {
         const field = { ...currentFields.find((y) => x === y.name) };
         if (field.type?.kind !== 'SCALAR') {
-          field.fields = this.queryBuilder
-            .getFieldsFromType(
-              field.type?.kind === 'OBJECT'
-                ? field.type.name
-                : field.type.ofType.name
-            )
-            .filter((y) => y.type.name !== 'ID' && y.type?.kind === 'SCALAR');
+          field.fields = this.queryBuilder.deconfineFields(
+            field.type,
+            new Set()
+              .add(this.resource.name)
+              .add(field.type.name ?? field.type.ofType.name)
+          );
         }
         return field;
       });

@@ -1888,10 +1888,14 @@
 				"selectDisplayField": "Select display field",
 				"selectOrigin": "Select context origin"
 			},
+			"contextFilter": "Context filter",
 			"dashboardFilter": "Dashboard filter",
 			"deactivateFiltering": "Deactivate filtering",
+			"historicalDate": "Get dataset at",
 			"share": "Share Dashboard",
 			"tooltip": {
+				"dashboardFilter": "You can use fields from the dashboard filter as well as static values to filter the dataset.",
+				"historicalDate": "You can use a field from the dashboard filter to query dataset at a specific date.\nIndicate which field to use, by using this syntax: {{filter.<name>}}.",
 				"useDashboardFilterEditor": "Use dashboard filter editor",
 				"useDefaultEditor": "Use default editor"
 			}

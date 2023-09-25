@@ -102,6 +102,7 @@ export const createLayerForm = (value?: LayerModel) => {
     contextFilters: new FormControl(
       get(value, 'contextFilters', DEFAULT_CONTEXT_FILTER)
     ),
+    at: new FormControl(get(value, 'at', null)),
   });
   if (type !== 'GroupLayer') {
     formGroup.get('datasource.type')?.valueChanges.subscribe((geometryType) => {

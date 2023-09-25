@@ -53,7 +53,10 @@ export class AggregationGridComponent
 
   @Input() resourceId!: string;
   @Input() aggregation!: Aggregation;
+  /** Context filters to be used with dashboard filters */
   @Input() contextFilters: string | undefined;
+  /** Version at to be used with dashboard filters */
+  @Input() at: string | undefined;
 
   /** @returns The column menu */
   get columnMenu(): { columnChooser: boolean; filter: boolean } {
@@ -132,7 +135,8 @@ export class AggregationGridComponent
         ? this.contextService.injectDashboardFilterValues(
             JSON.parse(this.contextFilters)
           )
-        : undefined
+        : undefined,
+      this.at ? this.contextService.atArgumentValue(this.at) : undefined
     );
     this.dataQuery.valueChanges.pipe(takeUntil(this.destroy$)).subscribe({
       next: ({ data, loading }) => {
@@ -267,12 +271,13 @@ export class AggregationGridComponent
             });
           } else {
             this.loadingSettings = false;
-            this.status = {
-              error: !this.loadingSettings,
-              message: this.translate.instant(
-                'components.widget.grid.errors.metaQueryBuildFailed'
-              ),
-            };
+            // todo(infinite): check
+            // this.status = {
+            //   error: !this.loadingSettings,
+            //   message: this.translate.instant(
+            //     'components.widget.grid.errors.metaQueryBuildFailed'
+            //   ),
+            // };
           }
         },
         error: (err: any) => {
