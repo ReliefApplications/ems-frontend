@@ -1,6 +1,6 @@
 <div class="h-full flex flex-col">
   <!-- CLASSIC VIEW -->
-  <kendo-tilelayout-item-header
+  <div
     *ngIf="header"
     class="widget-header border-b"
     [ngClass]="{
@@ -24,7 +24,7 @@
     <ng-container *ngIf="aggregations.length > 0">
       <ng-container *ngTemplateOutlet="aggregationsTemplate"></ng-container>
     </ng-container>
-  </kendo-tilelayout-item-header>
+  </div>
   <!-- Core grid display -->
   <ng-container *ngIf="aggregations.length === 0">
     <!-- FULL WINDOW VIEW -->

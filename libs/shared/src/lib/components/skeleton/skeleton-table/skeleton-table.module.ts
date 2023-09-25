@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { SkeletonTableComponent } from './skeleton-table.component';
 import { AccessModule } from '../../access/access.module';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
-import { LayoutModule } from '@progress/kendo-angular-layout';
 import { ButtonsModule } from '@progress/kendo-angular-buttons';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -22,7 +21,6 @@ import {
     AccessModule,
     PaginatorModule,
     IndicatorsModule,
-    LayoutModule,
     ButtonsModule,
     TranslateModule,
     CheckboxModule,

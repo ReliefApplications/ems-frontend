@@ -1,9 +1,5 @@
 <div class="h-full flex flex-col">
-  <kendo-tilelayout-item-header
-    *ngIf="header"
-    class="!absolute h-[40px] !z-[2]"
-  >
-  </kendo-tilelayout-item-header>
+  <div *ngIf="header" class="!absolute h-[40px] !z-[2]"></div>
   <ui-tabs
     class="h-full overflow-hidden"
     *ngIf="settings.tabs && settings.tabs.length > 0; else empty"

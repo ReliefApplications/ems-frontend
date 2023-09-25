@@ -15,11 +15,12 @@
   pointer-events: none;
 }
 
-kendo-tilelayout {
-  grid-auto-flow: row;
-  background-color: unset;
-
-  kendo-tilelayout-item {
-    overflow: hidden;
+// Styling for the grid layout
+::ng-deep gridster {
+  background: none !important;
+  .gridster-row,
+  .gridster-column {
+    // Using a variable for the color makes the grid go real slow
+    border-color: rgb(184, 185, 185) !important;
   }
 }

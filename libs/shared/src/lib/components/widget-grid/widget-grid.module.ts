@@ -8,7 +8,6 @@ import { TileDataComponent } from './floating-options/menu/tile-data/tile-data.c
 import { ExpandedWidgetComponent } from './expanded-widget/expanded-widget.component';
 import { WidgetChoiceModule } from '../widget-choice/widget-choice.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { LayoutModule } from '@progress/kendo-angular-layout';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { DialogModule, IconModule, SelectMenuModule } from '@oort-front/ui';
 import {
@@ -36,7 +35,6 @@ import { GridsterComponent, GridsterItemComponent } from 'angular-gridster2';
     DividerModule,
     TranslateModule,
     WidgetChoiceModule,
-    LayoutModule,
     IndicatorsModule,
     DialogModule,
     ButtonModule,

@@ -18,6 +18,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 export class FloatingOptionsComponent extends UnsubscribeComponent {
   // === WIDGET ===
   @Input() widget: any;
+  @Input() canExpand = true;
 
   // === EMIT ACTION SELECTED ===
   @Output() edit: EventEmitter<any> = new EventEmitter();
