@@ -330,13 +330,15 @@ export class ResourcesComponent
         if (!errors) {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectDuplicated', {
-              value: this.translate.instant('common.resource.one'),
+              value: resource.name,
+              type: this.translate.instant('common.resource.one'),
             })
           );
         } else {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotDuplicated', {
-              value: this.translate.instant('common.resource.one'),
+              value: `"${resource.name}"` ,
+              type: this.translate.instant('common.resource.one'),
               error: errors[0].message,
             }),
             { error: true }
