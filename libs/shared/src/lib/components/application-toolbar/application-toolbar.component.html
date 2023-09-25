@@ -32,10 +32,11 @@
     >
     </ui-button>
     <ui-button
+      *ngIf="application"
       category="secondary"
       variant="success"
       (click)="onPublish()"
-      [disabled]="!canPublish || this.application?.status === 'active'"
+      [disabled]="!canPublish || this.application.status === 'active'"
       >{{ 'common.publish' | translate }}</ui-button
     >
   </div>
