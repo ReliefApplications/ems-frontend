@@ -1,9 +1,6 @@
 @import 'variables.scss';
 @import '@angular/cdk/overlay-prebuilt.css';
 
-// === KENDO THEME ===
-@import 'theme.scss';
-
 .sv_main,
 .svd_container {
   --main-color: #{rgb($primary_500)};
