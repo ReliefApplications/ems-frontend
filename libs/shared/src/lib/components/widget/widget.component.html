@@ -1,66 +1,74 @@
-<!-- CHART -->
-<ng-container *ngIf="widget.component === 'chart'">
-  <shared-chart
-    #widgetContent
-    class="flex-1 h-full w-full"
-    [header]="header"
-    [settings]="widget.settings"
-  ></shared-chart>
-</ng-container>
-<!-- GRID -->
-<ng-container *ngIf="widget.component === 'grid'">
-  <shared-grid-widget
-    #widgetContent
-    class="flex-1 h-full w-full"
-    [header]="header"
-    [settings]="widget.settings"
-    (changeStep)="changeStep.emit($event)"
-    (edit)="edit.emit($event)"
-    [widget]="widget"
-    [canUpdate]="canUpdate"
-  ></shared-grid-widget>
-</ng-container>
-<!-- MAP -->
-<ng-container *ngIf="widget.component === 'map'">
-  <shared-map-widget
-    #widgetContent
-    class="flex-1 h-full w-full"
-    [header]="header"
-    [settings]="widget.settings"
-  ></shared-map-widget>
-</ng-container>
-<!-- TEXT EDITOR -->
-<ng-container *ngIf="widget.component === 'editor'">
-  <shared-editor
-    #widgetContent
-    class="flex-1 h-full w-full"
-    [header]="header"
-    [settings]="widget.settings"
-  >
-  </shared-editor>
-</ng-container>
-<!-- SUMMARY CARD -->
-<ng-container *ngIf="widget.component === 'summaryCard'">
-  <shared-summary-card
-    #widgetContent
-    class="flex-1 h-full w-full"
-    [header]="header"
-    [settings]="widget.settings"
-    (edit)="edit.emit($event)"
-    [widget]="widget"
-  >
-  </shared-summary-card>
-</ng-container>
-<!-- Tabs -->
-<ng-container *ngIf="widget.component === 'tabs'">
-  <shared-tabs
-    #widgetContent
-    class="flex-1 h-full w-full"
-    [header]="header"
-    [settings]="widget.settings"
-    (edit)="edit.emit($event)"
-    [canUpdate]="canUpdate"
-    [widget]="widget"
-  >
-  </shared-tabs>
-</ng-container>
+<div
+  class="h-full w-full flex border"
+  [ngClass]="{
+    'border-gray-300': widget.settings.widgetDisplay?.showBorder,
+    'border-transparent': !widget.settings.widgetDisplay?.showBorder
+  }"
+>
+  <!-- CHART -->
+  <ng-container *ngIf="widget.component === 'chart'">
+    <shared-chart
+      #widgetContent
+      class="flex-1 h-full w-full"
+      [header]="header"
+      [settings]="widget.settings"
+    ></shared-chart>
+  </ng-container>
+  <!-- GRID -->
+  <ng-container *ngIf="widget.component === 'grid'">
+    <shared-grid-widget
+      #widgetContent
+      class="flex-1 h-full w-full"
+      [header]="header"
+      [settings]="widget.settings"
+      (changeStep)="changeStep.emit($event)"
+      (edit)="edit.emit($event)"
+      [widget]="widget"
+      [canUpdate]="canUpdate"
+    ></shared-grid-widget>
+  </ng-container>
+  <!-- MAP -->
+  <ng-container *ngIf="widget.component === 'map'">
+    <shared-map-widget
+      #widgetContent
+      class="flex-1 h-full w-full"
+      [header]="header"
+      [settings]="widget.settings"
+    ></shared-map-widget>
+  </ng-container>
+  <!-- TEXT EDITOR -->
+  <ng-container *ngIf="widget.component === 'editor'">
+    <shared-editor
+      #widgetContent
+      class="flex-1 h-full w-full"
+      [header]="header"
+      [settings]="widget.settings"
+    >
+    </shared-editor>
+  </ng-container>
+  <!-- SUMMARY CARD -->
+  <ng-container *ngIf="widget.component === 'summaryCard'">
+    <shared-summary-card
+      #widgetContent
+      class="flex-1 h-full w-full"
+      [header]="header"
+      [settings]="widget.settings"
+      (edit)="edit.emit($event)"
+      [widget]="widget"
+    >
+    </shared-summary-card>
+  </ng-container>
+  <!-- Tabs -->
+  <ng-container *ngIf="widget.component === 'tabs'">
+    <shared-tabs
+      #widgetContent
+      class="flex-1 h-full w-full"
+      [header]="header"
+      [settings]="widget.settings"
+      (edit)="edit.emit($event)"
+      [canUpdate]="canUpdate"
+      [widget]="widget"
+    >
+    </shared-tabs>
+  </ng-container>
+</div>

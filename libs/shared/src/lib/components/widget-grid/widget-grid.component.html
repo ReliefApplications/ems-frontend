@@ -28,17 +28,14 @@
       </gridster-item>
     </ng-container>
     <ng-template #widgetGridTmpl>
-      <gridster-item
-        [item]="item"
-        *ngFor="let item of dashboard; let i = index"
-      >
+      <gridster-item [item]="widget" *ngFor="let widget of widgets">
         <div class="gridster-item-content h-full">
           <!-- Settings -->
           <shared-floating-options
             *ngIf="canUpdate"
             class="absolute top-0 right-0 z-[1100]"
-            [widget]="widgets[i]"
-            [canExpand]="!(widgets[i].component === 'map')"
+            [widget]="widget"
+            [canExpand]="!(widget.component === 'map')"
             (edit)="onEditWidget($event)"
             (delete)="onDeleteWidget($event)"
             (expand)="onExpandWidget($event)"
@@ -46,20 +43,20 @@
           >
           </shared-floating-options>
           <shared-widget
-            [widget]="widgets[i]"
+            [widget]="widget"
             (changeStep)="changeStep.emit($event)"
-            [id]="'widget-' + widgets[i].id"
+            [id]="'widget-' + widget.id"
             (edit)="onEditWidget($event)"
             [canUpdate]="canUpdate ?? false"
           ></shared-widget>
           <!-- Expand button -->
           <ui-button
-            *ngIf="!canUpdate && !(widgets[i].component === 'map')"
+            *ngIf="!canUpdate && !(widget.component === 'map')"
             [isIcon]="true"
             icon="open_in_full"
             variant="grey"
             class="absolute top-0 right-0 z-[1100]"
-            (click)="onExpandWidget(widgets[i])"
+            (click)="onExpandWidget(widget)"
             [uiTooltip]="'common.openFullScreen' | translate"
           >
           </ui-button>

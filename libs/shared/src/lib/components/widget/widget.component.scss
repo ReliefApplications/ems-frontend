@@ -1,5 +1,7 @@
 :host {
-  display: flex;
+  :hover {
+    @apply border-gray-400;
+  }
   height: 100%;
   width: 100%;
 }

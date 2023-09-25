@@ -29,7 +29,6 @@ import {
   GridsterConfig,
   GridsterItem,
 } from 'angular-gridster2';
-import { differenceWith, isEqual } from 'lodash';
 
 /** Maximum height of the widget in row units */
 const MAX_ROW_SPAN = 4;
@@ -64,7 +63,8 @@ export class WidgetGridComponent
   // === GRID ===
   colsNumber = MAX_COL_SPAN;
   options!: GridsterConfig;
-  dashboard!: Array<GridsterItem>;
+  gridWidthTimeoutListener!: NodeJS.Timeout;
+  gridOptionsTimeoutListener!: NodeJS.Timeout;
 
   // === EVENT EMITTER ===
   @Output() delete: EventEmitter<any> = new EventEmitter();
@@ -136,7 +136,7 @@ export class WidgetGridComponent
   ngAfterViewInit(): void {
     // We need to add the parent width manually on first load with a timeout in order to set correct width after the sidenav container calculations
     if (this.gridsterComponent) {
-      setTimeout(() => {
+      this.gridWidthTimeoutListener = setTimeout(() => {
         this.renderer.setStyle(
           this.gridsterComponent.nativeElement,
           'width',
@@ -148,13 +148,17 @@ export class WidgetGridComponent
 
   ngOnChanges(changes: SimpleChanges): void {
     // Whenever the canUpdate changes and is set to true, then we should update grid options to listen to item changes
+    if (this.gridOptionsTimeoutListener) {
+      clearTimeout(this.gridOptionsTimeoutListener);
+    }
+
     if (
       changes['canUpdate'] &&
       Boolean(changes['canUpdate'].previousValue) !==
         Boolean(changes['canUpdate'].currentValue) &&
       Boolean(changes['canUpdate'].currentValue)
     ) {
-      setTimeout(() => {
+      this.gridOptionsTimeoutListener = setTimeout(() => {
         this.setGridOptions(true);
       }, 0);
     }
@@ -168,17 +172,6 @@ export class WidgetGridComponent
         // If there is something to display, set layout
         if (changes['widgets'].currentValue.length) {
           this.setLayout();
-        }
-      } else {
-        // Update current layout
-        if (
-          changes['widgets'].previousValue.length !==
-          changes['widgets'].currentValue.length
-        ) {
-          this.updateLayout(
-            changes['widgets'].previousValue,
-            changes['widgets'].currentValue
-          );
         }
       }
     }
@@ -241,7 +234,7 @@ export class WidgetGridComponent
       setGridSize: true,
     };
 
-    this.dashboard?.map((gridItem) => {
+    this.widgets.map((gridItem) => {
       gridItem.resizeEnabled = this.canUpdate;
       gridItem.dragEnabled = this.canUpdate;
     });
@@ -333,6 +326,15 @@ export class WidgetGridComponent
               this.add.emit({
                 ...tile,
                 settings: value,
+                ...{
+                  cols: tile.defaultCols,
+                  rows: tile.defaultRows,
+                  minItemRows: tile.minRow,
+                  y: this.widgets[this.widgets.length - 1].y,
+                  x: this.widgets[this.widgets.length - 1].x,
+                  resizeEnabled: this.canUpdate,
+                  dragEnabled: this.canUpdate,
+                },
               });
             }
           });
@@ -431,13 +433,13 @@ export class WidgetGridComponent
   private setLayout() {
     const yAxis = 0;
     const xAxis = 0;
-    this.dashboard = this.widgets.map((widget, index) => {
+    this.widgets.map((widget, index) => {
       const { x, y } =
         index === 0
           ? { x: 0, y: 0 }
           : this.setXYAxisValues(yAxis, xAxis, widget);
       const gridItem = {
-        id: widget.id,
+        ...widget,
         cols: widget.defaultCols,
         rows: widget.defaultRows,
         minItemRows: widget.minRow,
@@ -450,37 +452,13 @@ export class WidgetGridComponent
     });
   }
 
-  /**
-   * Updates current grid layout
-   * If we set a new value to the dashboard property(assign new object) the child items we'll re render again executing all lifecycle hook methods
-   * that's why we use push and slice methods, to keep same reference to the dashboard property and avoid not necessary request and function triggers
-   *
-   * @param previousWidgets previous widgets array
-   * @param currentWidgets current widgets array
-   */
-  updateLayout(previousWidgets: any[], currentWidgets: any[]) {
-    const widgetDiff = differenceWith(previousWidgets, currentWidgets, isEqual);
-    // If there is no difference between previous and current currentWidgets
-    // it means that we added a new one
-    if (widgetDiff.length === 0) {
-      this.dashboard.push({
-        id: currentWidgets[currentWidgets.length - 1].id,
-        cols: currentWidgets[currentWidgets.length - 1].defaultCols,
-        rows: currentWidgets[currentWidgets.length - 1].defaultRows,
-        minItemRows: currentWidgets[currentWidgets.length - 1].minRow,
-        y: this.dashboard[this.dashboard.length - 1].y,
-        x: this.dashboard[this.dashboard.length - 1].x,
-        resizeEnabled: this.canUpdate,
-        dragEnabled: this.canUpdate,
-      });
-      // Else we delete the one that the diff has returned
-    } else {
-      const deletedItemIndex = this.dashboard.findIndex(
-        (gridItem) => gridItem.id === widgetDiff[0].id
-      );
-      if (deletedItemIndex !== -1) {
-        this.dashboard.splice(deletedItemIndex, 1);
-      }
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.gridWidthTimeoutListener) {
+      clearTimeout(this.gridWidthTimeoutListener);
+    }
+    if (this.gridOptionsTimeoutListener) {
+      clearTimeout(this.gridOptionsTimeoutListener);
     }
   }
 }
