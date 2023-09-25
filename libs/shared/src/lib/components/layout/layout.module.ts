@@ -43,7 +43,7 @@ import { ApplicationToolbarModule } from '../application-toolbar/application-too
     BreadcrumbsModule,
     ButtonModule,
     IconModule,
-    ApplicationToolbarModule
+    ApplicationToolbarModule,
   ],
   exports: [LayoutComponent],
 })
