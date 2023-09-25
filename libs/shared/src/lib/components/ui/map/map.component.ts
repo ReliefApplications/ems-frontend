@@ -31,6 +31,7 @@ import {
   MapEventType,
   DefaultMapControls,
   MapControls,
+  MapLastModification,
 } from './interfaces/map.interface';
 import { BASEMAP_LAYERS } from './const/baseMaps';
 // import { timeDimensionGeoJSON } from './test/timedimension-test';
@@ -101,6 +102,7 @@ export class MapComponent
   }
 
   private mapSettingsValue: MapConstructorSettings = {
+    modifiedAt: { time: undefined, display: true, position: 'bottomright' },
     initialState: {
       viewpoint: {
         center: {
@@ -138,6 +140,7 @@ export class MapComponent
   // Search
   public searchControl?: L.Control;
   @Output() search = new EventEmitter();
+  private modifiedAt: MapLastModification | undefined;
 
   // === QUERY UPDATE INFO ===
   public lastUpdate = '';
@@ -302,8 +305,10 @@ export class MapComponent
     const controls = get(mapSettings, 'controls', DefaultMapControls);
     const arcGisWebMap = get(mapSettings, 'arcGisWebMap', undefined);
     const layers = get(mapSettings, 'layers', []);
+    const modifiedAt = get(mapSettings, 'modifiedAt', {});
 
     return {
+      modifiedAt,
       initialState,
       maxBounds,
       basemap,
@@ -324,6 +329,7 @@ export class MapComponent
    */
   private drawMap(initMap: boolean = true): void {
     const {
+      modifiedAt,
       initialState,
       maxBounds,
       basemap,
@@ -401,6 +407,7 @@ export class MapComponent
     // Close layers/bookmarks menu
     this.document.getElementById('layer-control-button-close')?.click();
 
+    this.modifiedAt = modifiedAt;
     this.setupMapLayers({ layers, controls, arcGisWebMap, basemap });
     this.setMapControls(controls, initMap);
   }
@@ -546,6 +553,13 @@ export class MapComponent
     this.mapControlsService.getLegendControl(this.map, controls.legend ?? true);
     // If initializing map: add fixed controls
     if (initMap) {
+      if (this.modifiedAt?.display) {
+        // Add last modified time
+        this.mapControlsService.getLastUpdatedControl(
+          this.map,
+          this.modifiedAt
+        );
+      }
       // Add leaflet fullscreen control
       this.mapControlsService.getFullScreenControl(this.map);
     }

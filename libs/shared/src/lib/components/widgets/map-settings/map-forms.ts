@@ -33,6 +33,7 @@ const fb = new FormBuilder();
 /** Default map value */
 const DEFAULT_MAP: Nullable<MapConstructorSettings> = {
   title: null,
+  modifiedAt: null,
   basemap: null,
   initialState: {
     viewpoint: {
@@ -499,6 +500,12 @@ export const createMapWidgetFormGroup = (id: any, value?: any): FormGroup => {
   const formGroup = fb.group({
     id,
     title: [get(value, 'title', DEFAULT_MAP.title)],
+    modifiedAt: fb.group({
+      time: [get(value, 'modifiedAt.time', new Date())],
+      display: [get(value, 'modifiedAt.display', true)],
+      position: [get(value, 'modifiedAt.position', 'bottomright')],
+    }),
+
     initialState: fb.group({
       viewpoint: fb.group({
         zoom: [

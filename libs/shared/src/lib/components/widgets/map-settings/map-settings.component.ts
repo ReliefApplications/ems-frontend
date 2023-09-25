@@ -83,6 +83,7 @@ export class MapSettingsComponent
     this.change.emit(this.tileForm);
 
     const defaultMapSettings: MapConstructorSettings = {
+      modifiedAt: this.tileForm.get('modifiedAt')?.value,
       basemap: this.tileForm.value.basemap,
       initialState: this.tileForm.get('initialState')?.value,
       controls: this.tileForm.value.controls,
@@ -188,6 +189,7 @@ export class MapSettingsComponent
       (this.currentTab !== 'layer' && tab === 'layer')
     ) {
       this.mapSettings = {
+        modifiedAt: this.tileForm?.get('modifiedAt')?.value,
         basemap: this.tileForm?.value.basemap,
         initialState: this.tileForm?.get('initialState')?.value,
         controls:

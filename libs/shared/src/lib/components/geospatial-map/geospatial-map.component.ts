@@ -69,6 +69,7 @@ export class GeospatialMapComponent
 
   // === MAP ===
   public mapSettings: MapConstructorSettings = {
+    modifiedAt: { time: undefined, display: false, position: 'bottomleft' },
     initialState: {
       viewpoint: {
         center: {

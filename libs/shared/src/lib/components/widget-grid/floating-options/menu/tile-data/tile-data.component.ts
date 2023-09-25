@@ -70,6 +70,7 @@ export class TileDataComponent
    * Closes the modal sending tile form value.
    */
   onSubmit(): void {
+    this.tileForm?.get('modifiedAt.time')?.patchValue(new Date()); //we set the date of the last modification for the map
     this.dialogRef.close(this.tileForm?.getRawValue());
   }
 

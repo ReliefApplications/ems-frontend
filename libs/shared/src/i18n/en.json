@@ -739,6 +739,12 @@
 						"all": "Map",
 						"current": "Current view"
 					}
+				},
+				"positions": {
+					"bottomleft": "Bottom left",
+					"bottomright": "Bottom right",
+					"topleft": "Top left",
+					"topright": "Top right"
 				}
 			}
 		},
@@ -1376,6 +1382,7 @@
 					"basemap": "Base map",
 					"category": "Map quick layers",
 					"dataset": "Data set selection",
+					"displayLastUpdate": "Display last update time",
 					"edit": {
 						"aggregation": "Aggregation",
 						"cluster": {
@@ -1999,6 +2006,7 @@
 			},
 			"map": {
 				"defaultTitle": "Map Widget",
+				"display": "Map display",
 				"latitude": "Latitude",
 				"longitude": "Longitude",
 				"zoom": "Zoom"

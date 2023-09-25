@@ -21,7 +21,10 @@ import { AVAILABLE_MEASURE_LANGUAGES } from '../../components/ui/map/const/langu
 import { MapSidenavControlsComponent } from '../../components/ui/map/map-sidenav-controls/map-sidenav-controls.component';
 import { legendControl } from '../../components/ui/map/controls/legend.control';
 import { MapZoomComponent } from '../../components/ui/map/map-zoom/map-zoom.component';
-import { MapEvent } from '../../components/ui/map/interfaces/map.interface';
+import {
+  MapEvent,
+  MapLastModification,
+} from '../../components/ui/map/interfaces/map.interface';
 import { MapComponent } from '../../components/ui/map';
 
 /**
@@ -475,6 +478,35 @@ export class MapControlsService {
       corners[vSide + hSide] = L.DomUtil.create('div', className, container);
     }
     createCorner('verticalcenter', 'right');
+  }
+
+  /**
+   * Adds the legend for the last time the map was updated
+   *
+   * @param map Leaflet map
+   * @param modifiedAt last time the settings were closed
+   * @param modifiedAt.time last time update
+   * @param modifiedAt.display should the control be displayed
+   * @param modifiedAt.position position of the control
+   * @returns last updated control
+   */
+  public getLastUpdatedControl(map: any, modifiedAt: MapLastModification) {
+    const customLastUpdatedControl = new L.Control(<any>{
+      position: modifiedAt?.position,
+    });
+    customLastUpdatedControl.onAdd = () => {
+      const div = L.DomUtil.create('div', 'leaflet-control leaflet-bar');
+      div.innerHTML = modifiedAt.time
+        ? `<div id="last-updated-map" class="bg-white px-4 py-2 rounded-md">Last updated on ${new Date(
+            modifiedAt.time
+          ).toLocaleDateString()} at ${new Date(
+            modifiedAt.time
+          ).toLocaleTimeString()}</div>`
+        : 'Last modified time could not be loaded';
+      return div;
+    };
+    map.addControl(customLastUpdatedControl);
+    return customLastUpdatedControl;
   }
 
   // /**

@@ -739,6 +739,12 @@
 						"all": "******",
 						"current": "******"
 					}
+				},
+				"positions": {
+					"bottomleft": "******",
+					"bottomright": "******",
+					"topleft": "******",
+					"topright": "******"
 				}
 			}
 		},
@@ -1376,6 +1382,7 @@
 					"basemap": "******",
 					"category": "******",
 					"dataset": "******",
+					"displayLastUpdate": "******",
 					"edit": {
 						"aggregation": "******",
 						"cluster": {
@@ -1999,6 +2006,7 @@
 			},
 			"map": {
 				"defaultTitle": "******",
+				"display": "******",
 				"latitude": "******",
 				"longitude": "******",
 				"zoom": "******"

@@ -753,6 +753,12 @@
 						"all": "Toute la carte",
 						"current": "Vue actuelle"
 					}
+				},
+				"positions": {
+					"bottomleft": "Bas gauche",
+					"bottomright": "Bas droite",
+					"topleft": "Haut gauche",
+					"topright": "Haut droite"
 				}
 			}
 		},
@@ -1392,6 +1398,7 @@
 					"basemap": "Fond de carte",
 					"category": "Catégories rapides",
 					"dataset": "Sélection du jeu de données",
+					"displayLastUpdate": "Afficher la dernière date de modification",
 					"edit": {
 						"aggregation": "Agrégation",
 						"cluster": {
@@ -2015,6 +2022,7 @@
 			},
 			"map": {
 				"defaultTitle": "Widget Carte",
+				"display": "Affichage de la carte",
 				"latitude": "Latitude",
 				"longitude": "Longitude",
 				"zoom": "Zoom"

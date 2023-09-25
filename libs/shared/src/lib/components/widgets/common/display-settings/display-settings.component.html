@@ -10,5 +10,38 @@
     </ui-toggle>
   </ng-container>
   <!-- Other specific options for each widget type -->
+  <!-- === MAP === -->
+  <ng-container *ngIf="widgetType === 'map'" formGroupName="modifiedAt">
+    <ui-divider></ui-divider>
+    <h2>{{ 'models.widget.map.display' | translate }}</h2>
+    <ui-toggle formControlName="display">
+      <ng-container ngProjectAs="label">{{
+        'components.widget.settings.map.displayLastUpdate' | translate
+      }}</ng-container>
+    </ui-toggle>
+    <ng-container *ngIf="formGroup.get('modifiedAt.display')?.value"
+      ><div uiFormFieldDirective>
+        <label>{{
+          'components.widget.settings.chart.position' | translate
+        }}</label>
+        <ui-select-menu class="w-10" formControlName="position">
+          <ui-select-option value="topleft">
+            {{ 'components.map.controls.positions.topleft' | translate }}
+          </ui-select-option>
+          <ui-select-option value="topright">
+            {{ 'components.map.controls.positions.topright' | translate }}
+          </ui-select-option>
+          <ui-select-option value="bottomleft">
+            {{
+              'components.map.controls.positions.bottomleft' | translate
+            }}</ui-select-option
+          >
+          <ui-select-option value="bottomright">
+            {{ 'components.map.controls.positions.bottomright' | translate }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div></ng-container
+    >
+  </ng-container>
   <ng-content></ng-content>
 </form>

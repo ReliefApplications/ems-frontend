@@ -3,6 +3,7 @@
  */
 export interface MapConstructorSettings {
   title?: string;
+  modifiedAt: MapLastModification;
   initialState: {
     viewpoint: {
       center: {
@@ -40,6 +41,13 @@ export enum MapEventType {
 export interface MapEvent {
   type: MapEventType;
   content: any;
+}
+
+/** Interface for the map last update */
+export interface MapLastModification {
+  time: Date | undefined;
+  display: boolean;
+  position: 'topleft' | 'topright' | 'bottomright' | 'bottomleft';
 }
 
 /** Map controls interface */
