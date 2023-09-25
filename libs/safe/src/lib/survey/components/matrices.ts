@@ -26,7 +26,6 @@ export const init = (Survey: any, domService: DomService): void => {
 
   const copyToOthers = {
     render: (editor: any, htmlElement: HTMLElement) => {
-      // algum jeito de pegar os choices do serializer
       const data = getMatrix(
         editor.object,
         editor.object.selectedElementInDesign
