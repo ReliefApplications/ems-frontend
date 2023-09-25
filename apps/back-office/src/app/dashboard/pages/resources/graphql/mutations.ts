@@ -36,3 +36,18 @@ export const DELETE_RESOURCE = gql`
 export interface DeleteResourceMutationResponse {
   deletedResource: Resource;
 }
+
+// == DUPLICATE RESOURCE ==
+/** Duplicate resource gql mutation definition */
+export const DUPLICATE_RESOURCE = gql`
+  mutation duplicateResource($id: ID!) {
+    duplicateResource(id: $id) {
+      id
+    }
+  }
+`;
+
+/** Duplicate resource gql mutation response interface */
+export interface DuplicateResourceMutationResponse {
+  duplicatedResource: Resource;
+}
