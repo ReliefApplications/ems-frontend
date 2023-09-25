@@ -18,6 +18,7 @@ import {
   ButtonModule,
   SidenavContainerModule,
 } from '@oort-front/ui';
+import { ApplicationToolbarModule } from '../application-toolbar/application-toolbar.module';
 
 /**
  * LayoutModule is a class used to manage all the modules and components
@@ -42,6 +43,7 @@ import {
     BreadcrumbsModule,
     ButtonModule,
     IconModule,
+    ApplicationToolbarModule
   ],
   exports: [LayoutComponent],
 })

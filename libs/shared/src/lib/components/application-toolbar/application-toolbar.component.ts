@@ -1,5 +1,4 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { Application } from '../../models/application.model';
@@ -38,7 +37,6 @@ export class ApplicationToolbarComponent
    * Toolbar component visible when editing application
    *
    * @param applicationService Shared application service
-   * @param router Angular router
    * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param confirmService Shared confirm service
@@ -46,7 +44,6 @@ export class ApplicationToolbarComponent
    */
   constructor(
     private applicationService: ApplicationService,
-    private router: Router,
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private confirmService: ConfirmService,
@@ -67,13 +64,6 @@ export class ApplicationToolbarComponent
             ? this.application.pages.length > 0
             : false;
       });
-  }
-
-  /**
-   * Closes the application, go back to the back-office dashboard.
-   */
-  onClose(): void {
-    this.router.navigate(['/applications']);
   }
 
   /**

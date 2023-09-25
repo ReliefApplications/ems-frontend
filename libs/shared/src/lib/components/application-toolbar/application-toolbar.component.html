@@ -1,4 +1,4 @@
-<div class="flex flex-row py-0 px-4 items-center justify-between h-14 border-b">
+<div class="flex flex-row py-0 px-4 items-center justify-between h-14 gap-x-2">
   <div class="flex items-center gap-2 overflow-hidden">
     <!-- Title -->
     <h2 class="!m-0 overflow-hidden text-ellipsis whitespace-nowrap">
@@ -9,7 +9,7 @@
       *ngIf="settings.length > 0"
       [isIcon]="true"
       icon="tune"
-      variant="grey"
+      variant="light"
       [uiMenuTriggerFor]="settingsMenu"
       [uiTooltip]="'common.settings' | translate"
     ></ui-button>
@@ -31,9 +31,6 @@
       [uiTooltip]="'components.application.unlock.title' | translate"
     >
     </ui-button>
-    <ui-button variant="danger" (click)="onClose()">{{
-      'common.close' | translate
-    }}</ui-button>
     <ui-button
       category="secondary"
       variant="success"
@@ -43,7 +40,6 @@
     >
   </div>
 </div>
-
 <!-- Admin pages -->
 <ui-menu #settingsMenu>
   <a

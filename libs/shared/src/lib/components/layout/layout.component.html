@@ -34,16 +34,13 @@
   <div class="min-w-0 overflow-hidden flex items-center">
     <div id="app-logo"></div>
     <ng-container *ngIf="!header">
-      <h1
-        class="text-xl mb-0 whitespace-nowrap text-clip font-medium"
-        *ngIf="!route"
+      <shared-app-application-toolbar
+        [title]="title"
+        [settings]="settings"
+        [canUpdate]="canUpdate"
+        [showActions]="true"
       >
-        {{ theme.prefix }}
-        {{ 'common.platform.backOffice' | translate }}
-      </h1>
-      <h1 class="text-base mb-0 whitespace-nowrap text-clip" *ngIf="route">
-        {{ 'common.back' | translate }}
-      </h1>
+      </shared-app-application-toolbar>
     </ng-container>
     <ng-container *ngIf="header">
       <ng-container *ngTemplateOutlet="header"></ng-container>
@@ -167,10 +164,6 @@
     </ui-button>
   </ui-menu>
 </nav>
-<!-- Sub-header -->
-<ng-container *ngIf="toolbar">
-  <ng-container *ngTemplateOutlet="toolbar"></ng-container>
-</ng-container>
 <!-- Vertical navigation -->
 <ng-container *ngIf="!sideMenu && largeDevice">
   <ng-container *ngIf="leftSidenav">

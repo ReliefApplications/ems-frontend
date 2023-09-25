@@ -6,19 +6,14 @@
 <!-- Application wrapper -->
 <shared-layout
   *ngIf="!loading"
-  [toolbar]="toolbar"
   [route]="route"
   [leftSidenav]="pages"
   [sideMenu]="sideMenu"
+  [title]="title"
+  [settings]="adminNavItems"
+  [canUpdate]="application?.canUpdate!"
+  [showActions]="true"
 ></shared-layout>
-<ng-template #toolbar>
-  <shared-app-application-toolbar
-    [title]="title"
-    [settings]="adminNavItems"
-    [canUpdate]="application?.canUpdate!"
-    [showActions]="true"
-  ></shared-app-application-toolbar>
-</ng-template>
 <!--Need the nav variable, don't remove let-nav, used in layout-->
 <ng-template #pages let-nav>
   <shared-navbar

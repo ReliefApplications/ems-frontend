@@ -43,13 +43,17 @@ export class LayoutComponent
   // === HEADER TITLE ===
   @Input() title = '';
 
+  @Input() settings: any[] = [];
+
+  @Input() canUpdate = false;
+
+  @Input() showActions = false;
+
   @Input() applications: Application[] = [];
 
   @Input() route?: ActivatedRoute;
 
   @Input() header?: TemplateRef<any>;
-
-  @Input() toolbar?: TemplateRef<any>;
 
   @Input() leftSidenav?: TemplateRef<any>;
 
