@@ -234,8 +234,8 @@ export class GridService {
      *
      * @param url URL to target.
      * @param fieldName Field name to update meta.
-     * @param meta Meta to expand. Coressponding to fieldName.
-     * @returns A promise to execute everyhting.
+     * @param meta Meta to expand. Corresponding to fieldName.
+     * @returns A promise to execute everything.
      */
     const fetchChoicesAndSetMeta = (
       url: string,

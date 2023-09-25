@@ -165,6 +165,41 @@ export class SelectMenuComponent
   }
 
   /**
+   * Force the options list when they cannot be successfully loaded through contentchildren
+   *
+   * @param optionList the optionList we want to
+   */
+  forceOptionList(optionList: QueryList<SelectOptionComponent>) {
+    this.optionList = optionList;
+    this.optionList?.changes
+      .pipe(startWith(this.optionList), takeUntil(this.destroy$))
+      .subscribe({
+        next: (options: QueryList<SelectOptionComponent>) => {
+          if (this.value) {
+            this.selectedValues.push(
+              this.value instanceof Array ? [...this.value] : this.value
+            );
+          }
+          options.forEach((option) => {
+            option.optionClick.pipe(takeUntil(this.destroy$)).subscribe({
+              next: (isSelected: boolean) => {
+                this.updateSelectedValues(option, isSelected);
+                this.onChangeFunction();
+              },
+            });
+            // Initialize any selected values
+            if (this.selectedValues.includes(option.value)) {
+              option.selected = true;
+            } else {
+              option.selected = false;
+            }
+            this.setDisplayTriggerText();
+          });
+        },
+      });
+  }
+
+  /**
    * Write new value
    *
    * @param value value set from parent form control

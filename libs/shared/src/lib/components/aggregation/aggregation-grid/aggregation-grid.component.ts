@@ -271,12 +271,13 @@ export class AggregationGridComponent
             });
           } else {
             this.loadingSettings = false;
-            this.status = {
-              error: !this.loadingSettings,
-              message: this.translate.instant(
-                'components.widget.grid.errors.metaQueryBuildFailed'
-              ),
-            };
+            // todo(infinite): check
+            // this.status = {
+            //   error: !this.loadingSettings,
+            //   message: this.translate.instant(
+            //     'components.widget.grid.errors.metaQueryBuildFailed'
+            //   ),
+            // };
           }
         },
         error: (err: any) => {
