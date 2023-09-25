@@ -324,6 +324,11 @@ export class WidgetGridComponent
           .subscribe((value: any) => {
             // Should save the value, and so, add the widget to the grid
             if (value) {
+              const { x, y } = this.widgets[this.widgets.length - 1] ?? {
+                x: 0,
+                y: 0,
+              };
+
               this.add.emit({
                 ...tile,
                 settings: value,
@@ -331,8 +336,8 @@ export class WidgetGridComponent
                   cols: tile.defaultCols,
                   rows: tile.defaultRows,
                   minItemRows: tile.minRow,
-                  y: this.widgets[this.widgets.length - 1].y,
-                  x: this.widgets[this.widgets.length - 1].x,
+                  y,
+                  x,
                   resizeEnabled: this.canUpdate,
                   dragEnabled: this.canUpdate,
                 },
