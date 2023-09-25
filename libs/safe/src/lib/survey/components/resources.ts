@@ -757,7 +757,7 @@ export const init = (
      * @param question The current question
      * @param propertyName The name of the property
      */
-    onPropertyChanged(question: any, propertyName: string): void {
+    onPropertyChanged(question: QuestionResource, propertyName: string): void {
       if (propertyName === 'selectQuestion') {
         question.customFilter = '';
       }

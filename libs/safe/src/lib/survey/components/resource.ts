@@ -24,7 +24,6 @@ import { Question, QuestionResource } from '../types';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
 import { Record } from '../../models/record.model';
 import { NgZone } from '@angular/core';
-import { property } from 'jsonobject';
 
 /** Question's temporary records */
 export const temporaryRecordsForm = new FormControl([]);
