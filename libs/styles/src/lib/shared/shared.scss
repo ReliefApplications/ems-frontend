@@ -1,0 +1,70 @@
+*:focus,
+*:active:focus,
+*.active:focus {
+  outline: none !important;
+  outline-style: none !important;
+}
+
+// === FORMS ===
+.auth-form {
+  padding: 32px 24px;
+  border: 1px solid darkgray;
+  border-radius: 4px;
+  margin: 32px;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+}
+
+// === DIALOGS ===
+.cdk-dialog-container {
+  @media (max-width: 640px) {
+    padding: 24px !important;
+  }
+}
+
+.fullscreen-dialog {
+  max-width: unset !important;
+  width: 100%;
+  height: 100%;
+  .cdk-dialog-container {
+    @media (max-width: 640px) {
+      padding: unset !important;
+    }
+  }
+  ui-dialog {
+    max-height: 100vh !important;
+  }
+}
+
+.no-padding-dialog {
+  .cdk-dialog-container {
+    padding: unset;
+  }
+}
+
+// === SCROLL BARS ===
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* === Track === */
+::-webkit-scrollbar-track {
+  background: none;
+}
+
+/* === Handle === */
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: #d4d4d9;
+  border: solid 2px white;
+}

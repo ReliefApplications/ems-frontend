@@ -78,11 +78,15 @@ export class SafeAddUserComponent
         ),
       }),
     });
-    this.filteredUsers = this.form.controls.email.valueChanges.pipe(
+
+    const getUsersByEmail = this.form.controls.email.valueChanges.pipe(
       startWith(''),
       map((value) => (typeof value === 'string' ? value : '')),
-      map((x) => this.filterUsers(x))
+      map((x) => this.filterUsers(x)),
+      takeUntil(this.destroy$)
     );
+
+    this.filteredUsers = getUsersByEmail;
 
     this.apollo
       .query<GetUsersQueryResponse>({
@@ -104,11 +108,7 @@ export class SafeAddUserComponent
           };
           return user;
         });
-        this.filteredUsers = this.form.controls.email.valueChanges.pipe(
-          startWith(''),
-          map((value) => (typeof value === 'string' ? value : '')),
-          map((x) => this.filterUsers(x))
-        );
+        this.filteredUsers = getUsersByEmail;
       });
   }
 

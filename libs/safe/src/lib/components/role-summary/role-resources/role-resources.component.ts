@@ -8,25 +8,27 @@ import {
   transition,
   trigger,
 } from '@angular/animations';
-import { Resource } from '../../../models/resource.model';
+import {
+  EditResourceMutationResponse,
+  Resource,
+  ResourceQueryResponse,
+  ResourcesQueryResponse,
+} from '../../../models/resource.model';
 import { Role } from '../../../models/user.model';
+import { GET_RESOURCE, GET_RESOURCES } from '../graphql/queries';
 import {
-  GetResourceQueryResponse,
-  GetResourcesQueryResponse,
-  GET_RESOURCE,
-  GET_RESOURCES,
-} from '../graphql/queries';
-import {
-  EditResourceAccessMutationResponse,
   EDIT_RESOURCE_FIELD_PERMISSION,
   EDIT_RESOURCE_ACCESS,
-  EditResourceFieldPermissionMutationResponse,
 } from '../graphql/mutations';
 import { Permission } from './permissions.types';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { updateQueryUniqueValues } from '../../../utils/update-queries';
-import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
+import {
+  SnackbarService,
+  UIPageChangeEvent,
+  handleTablePageEvent,
+} from '@oort-front/ui';
 
 /** Default page size  */
 const DEFAULT_PAGE_SIZE = 10;
@@ -67,7 +69,7 @@ export class RoleResourcesComponent
   @Input() role!: Role; // Opened role
 
   // === TABLE ELEMENTS ===
-  private resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+  private resourcesQuery!: QueryRef<ResourcesQueryResponse>;
   public displayedColumns: string[] = ['name', 'actions'];
   public resources = new Array<TableResourceElement>();
   public cachedResources: Resource[] = [];
@@ -101,7 +103,7 @@ export class RoleResourcesComponent
 
   /** Load the resources. */
   ngOnInit(): void {
-    this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
+    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
       query: GET_RESOURCES,
       variables: {
         first: DEFAULT_PAGE_SIZE,
@@ -158,32 +160,16 @@ export class RoleResourcesComponent
    * @param e page event.
    */
   onPage(e: UIPageChangeEvent): void {
-    this.pageInfo.pageIndex = e.pageIndex;
-    // Checks if with new page/size more data needs to be fetched
-    if (
-      ((e.pageIndex > e.previousPageIndex &&
-        e.pageIndex * this.pageInfo.pageSize >= this.cachedResources.length) ||
-        e.pageSize > this.pageInfo.pageSize) &&
-      e.totalItems > this.cachedResources.length
-    ) {
-      // Sets the new fetch quantity of data needed as the page size
-      // If the fetch is for a new page the page size is used
-      let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is subtracted from the new one
-      if (e.pageSize > this.pageInfo.pageSize) {
-        first -= this.pageInfo.pageSize;
-      }
-      this.pageInfo.pageSize = first;
-      this.fetchResources();
+    const cachedData = handleTablePageEvent(
+      e,
+      this.pageInfo,
+      this.cachedResources
+    );
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
+      this.resources = this.resources = this.setTableElements(cachedData);
     } else {
-      this.resources = this.setTableElements(
-        this.cachedResources.slice(
-          e.pageSize * this.pageInfo.pageIndex,
-          e.pageSize * (this.pageInfo.pageIndex + 1)
-        )
-      );
+      this.fetchResources();
     }
-    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**
@@ -226,7 +212,7 @@ export class RoleResourcesComponent
     } else {
       this.updating = true;
       this.apollo
-        .query<GetResourceQueryResponse>({
+        .query<ResourceQueryResponse>({
           query: GET_RESOURCE,
           variables: {
             id: resource.id,
@@ -292,7 +278,7 @@ export class RoleResourcesComponent
     }
 
     this.apollo
-      .mutate<EditResourceAccessMutationResponse>({
+      .mutate<EditResourceMutationResponse>({
         mutation: EDIT_RESOURCE_ACCESS,
         variables: {
           id: resource.id,
@@ -305,28 +291,7 @@ export class RoleResourcesComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ errors, data }) => {
-          if (data?.editResource) {
-            const index = this.resources.findIndex(
-              (x) => x.resource.id === resource.id
-            );
-            const tableElements = [...this.resources];
-            tableElements[index] = this.setTableElement(
-              isEqual(resource.id, this.openedResource?.id)
-                ? { ...this.openedResource, ...data?.editResource }
-                : data?.editResource
-            );
-            this.resources = tableElements;
-            const cachedIndex = this.cachedResources.findIndex(
-              (x) => x.id === resource.id
-            );
-            this.cachedResources[cachedIndex] = tableElements[index].resource;
-            if (isEqual(resource.id, this.openedResource?.id)) {
-              this.openedResource = tableElements[index].resource;
-            }
-          }
-          if (errors) {
-            this.snackBar.openSnackBar(errors[0].message, { error: true });
-          }
+          this.handleResourceMutationResponse(resource, { data, errors }, true);
           this.updating = false;
         },
         error: (err) => {
@@ -345,7 +310,7 @@ export class RoleResourcesComponent
   editResourceAccessFilter(resource: Resource, update: any): void {
     this.updating = true;
     this.apollo
-      .mutate<EditResourceAccessMutationResponse>({
+      .mutate<EditResourceMutationResponse>({
         mutation: EDIT_RESOURCE_ACCESS,
         variables: {
           id: resource.id,
@@ -356,24 +321,7 @@ export class RoleResourcesComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ errors, data }) => {
-          if (data?.editResource) {
-            const index = this.resources.findIndex(
-              (x) => x.resource.id === resource.id
-            );
-            const tableElements = [...this.resources];
-            tableElements[index] = this.setTableElement(
-              isEqual(resource.id, this.openedResource?.id)
-                ? { ...this.openedResource, ...data?.editResource }
-                : data?.editResource
-            );
-            this.resources = tableElements;
-            if (isEqual(resource.id, this.openedResource?.id)) {
-              this.openedResource = tableElements[index].resource;
-            }
-          }
-          if (errors) {
-            this.snackBar.openSnackBar(errors[0].message, { error: true });
-          }
+          this.handleResourceMutationResponse(resource, { data, errors });
           this.updating = false;
         },
         error: (err) => {
@@ -381,6 +329,47 @@ export class RoleResourcesComponent
           this.updating = false;
         },
       });
+  }
+
+  /**
+   * Handle snackbar and resource table element update for any given graphql mutation in resource
+   *
+   * @param resource given resource
+   * @param response mutation response
+   * @param response.data data from mutation response
+   * @param response.errors errors from mutation response
+   * @param updateCachedResources boolean to trigger if cached resources array should be updated or not, default value false
+   */
+  private handleResourceMutationResponse(
+    resource: any,
+    response: { data: any; errors: any },
+    updateCachedResources = false
+  ) {
+    const { data, errors } = response;
+    if (data?.editResource) {
+      const index = this.resources.findIndex(
+        (x) => x.resource.id === resource.id
+      );
+      const tableElements = [...this.resources];
+      tableElements[index] = this.setTableElement(
+        isEqual(resource.id, this.openedResource?.id)
+          ? { ...this.openedResource, ...data?.editResource }
+          : data?.editResource
+      );
+      this.resources = tableElements;
+      if (updateCachedResources) {
+        const cachedIndex = this.cachedResources.findIndex(
+          (x) => x.id === resource.id
+        );
+        this.cachedResources[cachedIndex] = tableElements[index].resource;
+      }
+      if (isEqual(resource.id, this.openedResource?.id)) {
+        this.openedResource = tableElements[index].resource;
+      }
+    }
+    if (errors) {
+      this.snackBar.openSnackBar(errors[0].message, { error: true });
+    }
   }
 
   /**
@@ -416,7 +405,7 @@ export class RoleResourcesComponent
       });
 
     this.apollo
-      .mutate<EditResourceFieldPermissionMutationResponse>({
+      .mutate<EditResourceMutationResponse>({
         mutation: EDIT_RESOURCE_FIELD_PERMISSION,
         variables: {
           id: resource.id,
@@ -429,24 +418,7 @@ export class RoleResourcesComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ errors, data }) => {
-          if (data?.editResource) {
-            const index = this.resources.findIndex(
-              (x) => x.resource.id === resource.id
-            );
-            const tableElements = [...this.resources];
-            tableElements[index] = this.setTableElement(
-              isEqual(resource.id, this.openedResource?.id)
-                ? { ...this.openedResource, ...data?.editResource }
-                : data?.editResource
-            );
-            this.resources = tableElements;
-            if (isEqual(resource.id, this.openedResource?.id)) {
-              this.openedResource = tableElements[index].resource;
-            }
-          }
-          if (errors) {
-            this.snackBar.openSnackBar(errors[0].message, { error: true });
-          }
+          this.handleResourceMutationResponse(resource, { data, errors });
           this.updating = false;
         },
         error: (err) => {
@@ -640,7 +612,7 @@ export class RoleResourcesComponent
    * @param data query response data
    * @param loading loading status
    */
-  private updateValues(data: GetResourcesQueryResponse, loading: boolean) {
+  private updateValues(data: ResourcesQueryResponse, loading: boolean) {
     const mappedValues = data.resources?.edges?.map((x) => x.node);
     this.cachedResources = updateQueryUniqueValues(
       this.cachedResources,

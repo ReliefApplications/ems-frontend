@@ -1,31 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
-import {
-  TranslateModule,
-  TranslateService,
-  TranslateFakeLoader,
-  TranslateLoader,
-} from '@ngx-translate/core';
 import { SafeExpressionsComponent } from './expressions.component';
+import { setupSpecConfig } from '../shared-config/spec/config';
 
 describe('SafeExpressionsComponent', () => {
   let component: SafeExpressionsComponent;
   let fixture: ComponentFixture<SafeExpressionsComponent>;
 
-  beforeEach(async () => {
-    await TestBed.configureTestingModule({
-      providers: [TranslateService],
-      declarations: [SafeExpressionsComponent],
-      imports: [
-        TranslateModule.forRoot({
-          loader: {
-            provide: TranslateLoader,
-            useClass: TranslateFakeLoader,
-          },
-        }),
-      ],
-    }).compileComponents();
-  });
+  beforeEach(async () => setupSpecConfig(SafeExpressionsComponent));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SafeExpressionsComponent);

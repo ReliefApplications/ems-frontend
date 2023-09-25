@@ -29,15 +29,17 @@ import {
 } from '../../../services/query-builder/query-builder.service';
 import { SafeRecordHistoryComponent } from '../../record-history/record-history.component';
 import {
-  ConvertRecordMutationResponse,
   CONVERT_RECORD,
   DELETE_RECORDS,
-  EditRecordMutationResponse,
   EDIT_RECORD,
 } from './graphql/mutations';
-import { GetFormByIdQueryResponse, GET_FORM_BY_ID } from './graphql/queries';
+import { GET_FORM_BY_ID } from './graphql/queries';
 import { SafeConfirmService } from '../../../services/confirm/confirm.service';
-import { Record } from '../../../models/record.model';
+import {
+  ConvertRecordMutationResponse,
+  EditRecordMutationResponse,
+  Record,
+} from '../../../models/record.model';
 import { GridLayout } from './models/grid-layout.model';
 import { GridSettings } from './models/grid-settings.model';
 import isEqual from 'lodash/isEqual';
@@ -52,6 +54,7 @@ import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.co
 import { takeUntil } from 'rxjs/operators';
 import { firstValueFrom, Subject } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
+import { FormQueryResponse } from '../../../models/form.model';
 
 /**
  * Default file name when exporting grid data.
@@ -431,7 +434,7 @@ export class SafeCoreGridComponent
   private async loadTemplate(): Promise<void> {
     if (this.settings.template)
       this.apollo
-        .query<GetFormByIdQueryResponse>({
+        .query<FormQueryResponse>({
           query: GET_FORM_BY_ID,
           variables: {
             id: this.settings.template,

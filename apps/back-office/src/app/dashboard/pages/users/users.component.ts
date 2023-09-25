@@ -1,12 +1,11 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
+import { GET_USERS, GET_ROLES, GetUsersQueryResponse } from './graphql/queries';
 import {
-  GetUsersQueryResponse,
-  GET_USERS,
-  GetRolesQueryResponse,
-  GET_ROLES,
-} from './graphql/queries';
-import { Role, User } from '@oort-front/safe';
+  Role,
+  RolesQueryResponse,
+  User,
+} from '@oort-front/safe';
 import { UIPageChangeEvent } from '@oort-front/ui';
 import {
   getCachedValues,
@@ -76,7 +75,7 @@ export class UsersComponent extends SafeUnsubscribeComponent implements OnInit {
         this.loading = true;
         this.updateValues(resUsers.data, resUsers.loading);
         this.apollo
-          .watchQuery<GetRolesQueryResponse>({
+          .watchQuery<RolesQueryResponse>({
             query: GET_ROLES,
           })
           .valueChanges.pipe(takeUntil(this.destroy$))

@@ -1,13 +1,12 @@
 import { Component, Input, OnInit, ViewChild } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 import { Apollo, QueryRef } from 'apollo-angular';
+import { GET_RESOURCE, GET_RESOURCES } from '../graphql/queries';
 import {
-  GetResourceQueryResponse,
-  GetResourcesQueryResponse,
-  GET_RESOURCE,
-  GET_RESOURCES,
-} from '../graphql/queries';
-import { Resource } from '../../../../models/resource.model';
+  Resource,
+  ResourceQueryResponse,
+  ResourcesQueryResponse,
+} from '../../../../models/resource.model';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { GraphQLSelectComponent } from '@oort-front/ui';
@@ -31,7 +30,7 @@ export class MapGeneralComponent
 {
   @Input() form!: UntypedFormGroup;
   // === RESOURCE SELECTION ===
-  public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
   public resource?: Resource;
 
   /** Reference to graphql select for layout */
@@ -51,7 +50,7 @@ export class MapGeneralComponent
   }
 
   ngOnInit(): void {
-    this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
+    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
       query: GET_RESOURCES,
       variables: {
         first: ITEMS_PER_PAGE,
@@ -78,7 +77,7 @@ export class MapGeneralComponent
    */
   private getResource(id: string): void {
     this.apollo
-      .query<GetResourceQueryResponse>({
+      .query<ResourceQueryResponse>({
         query: GET_RESOURCE,
         variables: {
           id,

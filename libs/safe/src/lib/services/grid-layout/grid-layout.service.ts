@@ -1,22 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Apollo } from 'apollo-angular';
+import { ADD_LAYOUT, DELETE_LAYOUT, EDIT_LAYOUT } from './graphql/mutations';
+import { GET_GRID_RESOURCE_META, GET_GRID_FORM_META } from './graphql/queries';
 import {
   AddLayoutMutationResponse,
-  ADD_LAYOUT,
-  deleteLayoutMutationResponse,
-  DELETE_LAYOUT,
+  DeleteLayoutMutationResponse,
   EditLayoutMutationResponse,
-  EDIT_LAYOUT,
-} from './graphql/mutations';
-import {
-  GetResourceByIdQueryResponse,
-  GET_GRID_RESOURCE_META,
-  GetFormByIdQueryResponse,
-  GET_GRID_FORM_META,
-} from './graphql/queries';
-import { Layout } from '../../models/layout.model';
+  Layout,
+} from '../../models/layout.model';
 import { firstValueFrom } from 'rxjs';
 import { Connection } from '../../utils/graphql/connection.type';
+import { ResourceQueryResponse } from '../../models/resource.model';
+import { FormQueryResponse } from '../../models/form.model';
 
 /** Fallback LayoutConnection */
 const FALLBACK_LAYOUTS: Connection<Layout> = {
@@ -57,7 +52,7 @@ export class SafeGridLayoutService {
     options: { ids?: string[]; first?: number }
   ): Promise<Connection<Layout>> {
     return await firstValueFrom(
-      this.apollo.query<GetResourceByIdQueryResponse>({
+      this.apollo.query<ResourceQueryResponse>({
         query: GET_GRID_RESOURCE_META,
         variables: {
           resource: source,
@@ -68,7 +63,7 @@ export class SafeGridLayoutService {
     ).then(async ({ errors, data }) => {
       if (errors) {
         return await firstValueFrom(
-          this.apollo.query<GetFormByIdQueryResponse>({
+          this.apollo.query<FormQueryResponse>({
             query: GET_GRID_FORM_META,
             variables: {
               id: source,
@@ -143,7 +138,7 @@ export class SafeGridLayoutService {
    * @returns Mutation observable
    */
   public deleteLayout(layout: Layout, resource?: string, form?: string) {
-    return this.apollo.mutate<deleteLayoutMutationResponse>({
+    return this.apollo.mutate<DeleteLayoutMutationResponse>({
       mutation: DELETE_LAYOUT,
       variables: {
         resource,

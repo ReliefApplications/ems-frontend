@@ -2,7 +2,6 @@ import { Apollo } from 'apollo-angular';
 import {
   GET_SHORT_RESOURCE_BY_ID,
   GET_RESOURCE_BY_ID,
-  GetResourceByIdQueryResponse,
 } from '../graphql/queries';
 import * as SurveyCreator from 'survey-creator';
 import { resourceConditions } from './resources';
@@ -20,6 +19,7 @@ import { Question, QuestionResource } from '../types';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
 import { SafeTestServiceDropdownComponent } from '../../components/test-service-dropdown/test-service-dropdown.component';
 import { NgZone } from '@angular/core';
+import { ResourceQueryResponse } from '../../models/resource.model';
 
 /** Question's temporary records */
 export const temporaryRecordsForm = new FormControl([]);
@@ -43,7 +43,7 @@ export const init = (
   ngZone: NgZone
 ): void => {
   const getResourceById = (data: { id: string }) =>
-    apollo.query<GetResourceByIdQueryResponse>({
+    apollo.query<ResourceQueryResponse>({
       query: GET_SHORT_RESOURCE_BY_ID,
       variables: {
         id: data.id,
@@ -65,7 +65,7 @@ export const init = (
     id: string;
     filters?: { field: string; operator: string; value: string }[];
   }) =>
-    apollo.query<GetResourceByIdQueryResponse>({
+    apollo.query<ResourceQueryResponse>({
       query: GET_RESOURCE_BY_ID,
       variables: {
         id: data.id,
@@ -90,6 +90,22 @@ export const init = (
     'resource',
     '<svg xmlns="http://www.w3.org/2000/svg" height="18px" viewBox="0 0 24 24" width="18px" fill="#000000"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M9.17 6l2 2H20v10H4V6h5.17M10 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2h-8l-2-2z"/></svg>'
   );
+
+  const visibleIfResource = (obj: QuestionResource) => {
+    if (!obj || !obj.resource) {
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  const visibleIfResourceAndDisplayField = (obj: QuestionResource) => {
+    if (!obj || !obj.resource || !obj.displayField) {
+      return false;
+    } else {
+      return true;
+    }
+  };
 
   const component = {
     name: 'resource',
@@ -139,7 +155,7 @@ export const init = (
         category: 'Custom Questions',
         dependsOn: 'resource',
         required: true,
-        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.resource,
+        visibleIf: visibleIfResource,
         visibleIndex: 3,
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj.resource) {
@@ -164,7 +180,7 @@ export const init = (
         dependsOn: 'resource',
         required: true,
         description: 'unique name for this resource question',
-        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.resource,
+        visibleIf: visibleIfResource,
         visibleIndex: 4,
       });
 
@@ -175,7 +191,7 @@ export const init = (
         isRequired: true,
         category: 'Custom Questions',
         dependsOn: ['resource'],
-        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.resource,
+        visibleIf: visibleIfResource,
         visibleIndex: 5,
       });
 
@@ -234,8 +250,7 @@ export const init = (
         category: 'Custom Questions',
         dependsOn: ['resource', 'displayField'],
         required: true,
-        visibleIf: (obj: null | QuestionResource) =>
-          !!obj && !!obj.resource && !!obj.displayField,
+        visibleIf: visibleIfResourceAndDisplayField,
         type: 'resourceTestService',
         visibleIndex: 3,
       });
@@ -280,7 +295,7 @@ export const init = (
         name: 'addRecord:boolean',
         category: 'Custom Questions',
         dependsOn: ['resource'],
-        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.resource,
+        visibleIf: visibleIfResource,
         visibleIndex: 2,
       });
       serializer.addProperty('resource', {
@@ -288,7 +303,7 @@ export const init = (
         category: 'Custom Questions',
         dependsOn: ['resource'],
         default: true,
-        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.resource,
+        visibleIf: visibleIfResource,
         visibleIndex: 3,
       });
       serializer.addProperty('resource', {
@@ -326,8 +341,7 @@ export const init = (
         category: 'Filter by Questions',
         dependsOn: ['resource', 'displayField'],
         required: true,
-        visibleIf: (obj: null | QuestionResource) =>
-          !!obj && !!obj.resource && !!obj.displayField,
+        visibleIf: visibleIfResourceAndDisplayField,
         visibleIndex: 3,
         choices: (obj: QuestionResource, choicesCallback: any) => {
           if (obj && obj.resource) {
@@ -401,8 +415,7 @@ export const init = (
         name: 'selectResourceText',
         displayName: 'Select a resource',
         dependsOn: ['resource', 'displayField'],
-        visibleIf: (obj: null | QuestionResource) =>
-          obj && (!obj.resource || !obj.displayField),
+        visibleIf: visibleIfResourceAndDisplayField,
         visibleIndex: 3,
       });
       serializer.addProperty('resource', {

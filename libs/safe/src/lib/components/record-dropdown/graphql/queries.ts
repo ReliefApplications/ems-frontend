@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Record } from '../../../models/record.model';
 
 // === GET RECORD BY ID ===
 
@@ -27,11 +26,6 @@ export const GET_RECORD_BY_ID = gql`
     }
   }
 `;
-
-/** Model for GetRecordByIdQueryResponse object */
-export interface GetRecordByIdQueryResponse {
-  record: Record;
-}
 
 // === GET RECORDS FROM RESOURCE ===
 
@@ -71,19 +65,3 @@ export const GET_RESOURCE_RECORDS = gql`
     }
   }
 `;
-/** Modelf for GetResouceRecordsQueryResponse object */
-export interface GetResourceRecordsQueryResponse {
-  resource: {
-    records: {
-      edges: {
-        node: Record;
-        cursor: string;
-      }[];
-      pageInfo: {
-        endCursor: string;
-        hasNextPage: boolean;
-      };
-      totalCount: number;
-    };
-  };
-}

@@ -2,19 +2,15 @@ import { Apollo } from 'apollo-angular';
 import { Injectable } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
-import {
-  GetWorkflowByIdQueryResponse,
-  GET_WORKFLOW_BY_ID,
-} from './graphql/queries';
+import { GET_WORKFLOW_BY_ID } from './graphql/queries';
+import { ADD_STEP, EDIT_STEP } from './graphql/mutations';
+import { Workflow, WorkflowQueryResponse } from '../../models/workflow.model';
+import { ContentType } from '../../models/page.model';
 import {
   AddStepMutationResponse,
-  ADD_STEP,
   EditStepMutationResponse,
-  EDIT_STEP,
-} from './graphql/mutations';
-import { Workflow } from '../../models/workflow.model';
-import { ContentType } from '../../models/page.model';
-import { Step } from '../../models/step.model';
+  Step,
+} from '../../models/step.model';
 import { SafeApplicationService } from '../application/application.service';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
@@ -58,7 +54,7 @@ export class SafeWorkflowService {
   loadWorkflow(id: any): void {
     this.workflow.next(null);
     this.apollo
-      .query<GetWorkflowByIdQueryResponse>({
+      .query<WorkflowQueryResponse>({
         query: GET_WORKFLOW_BY_ID,
         variables: {
           id,

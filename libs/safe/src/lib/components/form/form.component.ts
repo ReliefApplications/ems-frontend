@@ -12,14 +12,13 @@ import {
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import * as Survey from 'survey-angular';
+import { ADD_RECORD, EDIT_RECORD } from './graphql/mutations';
+import { Form } from '../../models/form.model';
 import {
   AddRecordMutationResponse,
-  ADD_RECORD,
   EditRecordMutationResponse,
-  EDIT_RECORD,
-} from './graphql/mutations';
-import { Form } from '../../models/form.model';
-import { Record } from '../../models/record.model';
+  Record,
+} from '../../models/record.model';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import addCustomFunctions from '../../utils/custom-functions';
 import { SafeAuthService } from '../../services/auth/auth.service';
@@ -157,6 +156,7 @@ export class SafeFormComponent
 
     if (cachedData) {
       this.survey.data = cachedData;
+      // this.setUserVariables();
     } else if (this.form.uniqueRecord && this.form.uniqueRecord.data) {
       this.survey.data = this.form.uniqueRecord.data;
       this.modifiedAt = this.form.uniqueRecord.modifiedAt || null;
@@ -210,10 +210,15 @@ export class SafeFormComponent
    */
   public reset(): void {
     this.survey.clear();
+    /** Reset custom variables */
+    this.formHelpersService.addUserVariables(this.survey);
+    /** Force reload of the survey so default value are being applied */
+    this.survey.fromJSON(this.survey.toJSON());
     this.temporaryFilesStorage = {};
     this.survey.showCompletedPage = false;
     this.save.emit({ completed: false });
     this.survey.render();
+    console.log(this.survey);
     setTimeout(() => (this.surveyActive = true), 100);
   }
 

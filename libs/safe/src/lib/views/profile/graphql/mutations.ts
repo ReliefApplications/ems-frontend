@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { User } from '../../../models/user.model';
 
 // === EDIT USER PROFILE ===
 
@@ -24,8 +23,3 @@ export const EDIT_USER_PROFILE = gql`
     }
   }
 `;
-
-/** Model for EditUserProfileMutationResponse object */
-export interface EditUserProfileMutationResponse {
-  editUserProfile: User;
-}

@@ -1,3 +1,6 @@
+import { Form } from './form.model';
+import { Resource } from './resource.model';
+
 /**
  * Model for field metadata object
  */
@@ -14,4 +17,17 @@ export interface Metadata {
   options?: { text: string; value: any }[];
   fields?: Metadata[];
   usedIn?: string[];
+}
+
+// TODO: check type of __schema
+/** Model for query types  */
+export interface QueryTypes {
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  __schema: any;
+}
+
+/** Model for query metadata query response */
+export interface QueryMetaDataQueryResponse {
+  form: Form;
+  resource: Resource;
 }
