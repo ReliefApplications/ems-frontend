@@ -337,7 +337,7 @@ export class ResourcesComponent
         } else {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.objectNotDuplicated', {
-              value: `"${resource.name}"` ,
+              value: `"${resource.name}"`,
               type: this.translate.instant('common.resource.one'),
               error: errors[0].message,
             }),
