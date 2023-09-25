@@ -24,6 +24,18 @@ export const init = (Survey: any, domService: DomService): void => {
     type: 'copyToOthers',
   });
 
+  serializer.addProperty('matrixdynamic', {
+    name: 'copyToOthers',
+    category: 'rows',
+    type: 'copyToOthers',
+  });
+
+  serializer.addProperty('matrixdropdown', {
+    name: 'copyToOthers',
+    category: 'rows',
+    type: 'copyToOthers',
+  });
+
   const copyToOthers = {
     render: (editor: any, htmlElement: HTMLElement) => {
       const data = getMatrix(
@@ -75,7 +87,8 @@ function getMatrix(preForm: SurveyModel, selectedMatrix: Question): string[] {
       .map((page: PageModel) => {
         return page.questions.filter(
           (question: Question) =>
-            question.getType() === 'matrix' && question !== selectedMatrix
+            question.getType() === selectedMatrix.getType() &&
+            question !== selectedMatrix
         );
       })
       .flat()
@@ -109,7 +122,7 @@ function updateListMatrix(
   survey.pages.forEach((page: PageModel) => {
     page.questions.forEach((question) => {
       if (
-        question.getType() === 'matrix' &&
+        question.getType() === selectedMatrix.getType() &&
         selectedMatrices.includes(`${page.name} > ${question.name}`)
       ) {
         question.rows = selectedMatrix.rows;
