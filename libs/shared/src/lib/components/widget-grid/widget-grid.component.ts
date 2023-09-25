@@ -7,6 +7,7 @@ import {
   Inject,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   QueryList,
@@ -46,7 +47,7 @@ const MAX_COL_SPAN = 8;
 })
 export class WidgetGridComponent
   extends UnsubscribeComponent
-  implements OnInit, AfterViewInit, OnChanges
+  implements OnInit, AfterViewInit, OnChanges, OnDestroy
 {
   public availableWidgets: any[] = WIDGET_TYPES;
 
