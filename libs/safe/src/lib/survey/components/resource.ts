@@ -24,6 +24,7 @@ import { Question, QuestionResource } from '../types';
 import { JsonMetadata, SurveyModel } from 'survey-angular';
 import { Record } from '../../models/record.model';
 import { NgZone } from '@angular/core';
+import { property } from 'jsonobject';
 
 /** Question's temporary records */
 export const temporaryRecordsForm = new FormControl([]);
@@ -620,6 +621,9 @@ export const init = (
      * @param propertyName The name of the property
      */
     onPropertyChanged(question: QuestionResource, propertyName: string): void {
+      if (propertyName === 'selectQuestion') {
+        question.customFilter = '';
+      }
       if (propertyName === 'resource') {
         question.displayField = null;
         this.filters = [];
