@@ -37,7 +37,9 @@ export const GET_AGGREGATION_DATA = gql`
     $first: Int
     $skip: Int
     $contextFilters: JSON
-    $at: String
+    $at: Date
+    $sortOrder: String
+    $sortField: String
   ) {
     recordsAggregation(
       resource: $resource
@@ -47,6 +49,8 @@ export const GET_AGGREGATION_DATA = gql`
       skip: $skip
       contextFilters: $contextFilters
       at: $at
+      sortOrder: $sortOrder
+      sortField: $sortField
     )
   }
 `;

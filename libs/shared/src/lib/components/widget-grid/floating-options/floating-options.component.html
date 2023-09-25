@@ -19,7 +19,7 @@
     <ui-icon icon="palette" variant="grey"></ui-icon>
     <span>{{ 'components.widget.styling' | translate }}</span>
   </button>
-  <button uiMenuItem (click)="onClick('Expand')">
+  <button uiMenuItem (click)="onClick('Expand')" *ngIf="canExpand">
     <ui-icon icon="open_in_full" variant="grey"></ui-icon>
     <span>{{ 'components.widget.expand' | translate }}</span>
   </button>

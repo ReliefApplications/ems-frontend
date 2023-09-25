@@ -23,6 +23,8 @@ export class AggregationTableComponent
   extends UnsubscribeComponent
   implements OnInit, OnChanges
 {
+  /** Can select new aggregations or not */
+  @Input() canAdd = true;
   @Input() resource: Resource | null = null;
   @Input() form: Form | null = null;
   @Input() selectedAggregations: UntypedFormControl | null = null;

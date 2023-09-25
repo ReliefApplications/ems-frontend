@@ -726,11 +726,13 @@ export const init = (
         if (parentElement) {
           const instance: CoreGridComponent =
             buildRecordsGrid(question, parentElement.firstChild) || undefined;
-          instance.removeRowIds.subscribe((ids) => {
-            question.value = question.value.filter(
-              (id: string) => !ids.includes(id)
-            );
-          });
+          if (instance) {
+            instance.removeRowIds.subscribe((ids) => {
+              question.value = question.value.filter(
+                (id: string) => !ids.includes(id)
+              );
+            });
+          }
           if ((question.survey as SurveyModel).mode !== 'display') {
             el.parentElement.querySelector('#actionsButtons')?.remove();
             const actionsButtons = document.createElement('div');
