@@ -1,11 +1,7 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
 import { GET_USERS, GET_ROLES, GetUsersQueryResponse } from './graphql/queries';
-import {
-  Role,
-  RolesQueryResponse,
-  User,
-} from '@oort-front/safe';
+import { Role, RolesQueryResponse, User } from '@oort-front/safe';
 import { UIPageChangeEvent } from '@oort-front/ui';
 import {
   getCachedValues,
