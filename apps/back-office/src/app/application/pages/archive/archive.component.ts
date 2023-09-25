@@ -77,7 +77,6 @@ export class ArchiveComponent extends UnsubscribeComponent implements OnInit {
       )
       .subscribe({
         next: ({ data }) => {
-          // console.log(data);
           if (data) {
             this.pages =
               (data.application.pages || []).map((page) => {

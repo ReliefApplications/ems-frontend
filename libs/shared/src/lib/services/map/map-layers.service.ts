@@ -347,11 +347,17 @@ export class MapLayersService {
           JSON.parse(layer.contextFilters)
         )
       : {};
+    const at = layer.at
+      ? this.contextService.atArgumentValue(layer.at)
+      : undefined;
     const params = new HttpParams({
       fromObject: omitBy(
         {
           ...layer.datasource,
           contextFilters: JSON.stringify(contextFilters),
+          ...(at && {
+            at: at.toString(),
+          }),
         },
         isNil
       ),

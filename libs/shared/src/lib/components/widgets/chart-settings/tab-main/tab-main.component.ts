@@ -144,15 +144,10 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
           if (!field) return null;
           if (field.type.kind !== 'SCALAR') {
             Object.assign(field, {
-              fields: this.queryBuilder
-                .getFieldsFromType(
-                  field.type.kind === 'OBJECT'
-                    ? field.type.name
-                    : field.type.ofType.name
-                )
-                .filter(
-                  (y) => y.type.name !== 'ID' && y.type.kind === 'SCALAR'
-                ),
+              fields: this.queryBuilder.deconfineFields(
+                field.type,
+                new Set().add(this.resource?.name).add(field.type.ofType?.name)
+              ),
             });
           }
           return field;

@@ -8,7 +8,7 @@ import { ADD_RECORD } from '../../components/form/graphql/mutations';
 import { DialogRef } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
-import { cloneDeep, set } from 'lodash';
+import { snakeCase, cloneDeep, set } from 'lodash';
 import { AuthService } from '../auth/auth.service';
 import { BlobType, DownloadService } from '../download/download.service';
 import { AddRecordMutationResponse } from '../../models/record.model';
@@ -347,5 +347,76 @@ export class FormHelpersService {
     Object.keys(storage).forEach((key) => {
       delete storage[key];
     });
+  }
+
+  /**
+   * Convert a string to snake_case. Overrides the snakeCase function of lodash
+   * by first checking if the text is not already in snake case
+   *
+   * @param text The text to convert
+   * @returns The text in snake_case
+   */
+  public toSnakeCase(text: string): string {
+    if (this.isSnakeCase(text)) {
+      return text;
+    }
+    return snakeCase(text);
+  }
+
+  /**
+   * Create the valueName of the question in snake case. If valueName exists but with
+   * wrong format (not in snake_case), raise an error and return false.
+   *
+   * @param question The question of the form whose valueName we need to set
+   * @param page The page of the form
+   * @returns if valueName is set and in the correct format (snake_case)
+   */
+  public setValueName(
+    question: Survey.Question,
+    page: Survey.PageModel
+  ): boolean {
+    if (!question.valueName) {
+      if (question.title) {
+        question.valueName = this.toSnakeCase(question.title);
+      } else if (question.name) {
+        question.valueName = this.toSnakeCase(question.name);
+      } else {
+        this.snackBar.openSnackBar(
+          this.translate.instant('pages.formBuilder.errors.missingName', {
+            page: page.name,
+          }),
+          {
+            error: true,
+            duration: 15000,
+          }
+        );
+        return false;
+      }
+    } else {
+      if (!this.isSnakeCase(question.valueName)) {
+        this.snackBar.openSnackBar(
+          this.translate.instant('pages.formBuilder.errors.snakecase', {
+            name: question.valueName,
+            page: page.name,
+          }),
+          {
+            error: true,
+            duration: 15000,
+          }
+        );
+        return false;
+      }
+    }
+    return true;
+  }
+
+  /**
+   * Checks if a string is already in snake case
+   *
+   * @param text The text to check
+   * @returns True if the text is in snake case, false otherwise
+   */
+  private isSnakeCase(text: string): any {
+    return text.match(/^[a-z]+[a-z0-9_]+$/);
   }
 }
