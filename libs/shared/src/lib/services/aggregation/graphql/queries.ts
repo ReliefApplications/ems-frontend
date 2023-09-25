@@ -37,6 +37,7 @@ export const GET_AGGREGATION_DATA = gql`
     $first: Int
     $skip: Int
     $contextFilters: JSON
+    $at: Date
     $sortOrder: String
     $sortField: String
   ) {
@@ -47,6 +48,7 @@ export const GET_AGGREGATION_DATA = gql`
       first: $first
       skip: $skip
       contextFilters: $contextFilters
+      at: $at
       sortOrder: $sortOrder
       sortField: $sortField
     )
