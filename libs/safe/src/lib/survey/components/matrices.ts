@@ -19,45 +19,38 @@ export const init = (Survey: any, domService: DomService): void => {
   const serializer: JsonMetadata = Survey.Serializer;
   // Adds a dropdown to the matrix section with all the questions in the form
   serializer.addProperty('matrix', {
-    name: 'copyToOthers:dropdown',
+    name: 'copyToOthers',
     category: 'rows',
-    choices: (preForm: SurveyModel, choicesCallback: any) => {
-      if (preForm && preForm.survey) {
-        const form = preForm.survey as SurveyModel;
-        const questions = form.pages
-          .map((page: PageModel) => {
-            return page.questions.filter(
-              (question: Question) => question.getType() === 'matrix'
-            );
-          })
-          .flat()
-          .map((question: Question) => {
-            return `${question.page.name} > ${question.name}`;
-          });
-        choicesCallback(questions);
-      }
-    },
+    type: 'copyToOthers',
   });
+
   const copyToOthers = {
-    render: async (editor: any, htmlElement: HTMLElement) => {
-      // Aqui estamos chamando a função choices e usando o retorno para preencher o vetor data
-      const data = await serializer.getProperty('matrix', 'copyToOthers')
-        .choices;
+    render: (editor: any, htmlElement: HTMLElement) => {
+      // algum jeito de pegar os choices do serializer
+      const data = getMatrix(
+        editor.object,
+        editor.object.selectedElementInDesign
+      );
       const tagbox = domService.appendComponentToBody(
         MultiSelectComponent,
         htmlElement
       );
       const instance: MultiSelectComponent = tagbox.instance;
-      instance.data = data;
       instance.value = editor.value;
+      instance.data = data;
       instance.valueChange.subscribe((res) => editor.onChanged(res));
       const btn = document.createElement('input');
       btn.type = 'button';
       btn.value = 'Copy';
       btn.className = 'svd-items-control-footer btn sv-btn btn-primary';
       htmlElement.appendChild(btn);
+
       btn.onclick = () => {
-        console.log(instance.value);
+        updateListMatrix(
+          editor.object.selectedElementInDesign as Question,
+          instance,
+          editor.object
+        );
       };
     },
   };
@@ -68,6 +61,63 @@ export const init = (Survey: any, domService: DomService): void => {
   );
 };
 
+/**
+ *  Get all the matrix questions in the form
+ *
+ * @param preForm  The form
+ * @param selectedMatrix  The matrix selected
+ * @returns An array of all the matrix questions in the form
+ */
+function getMatrix(preForm: SurveyModel, selectedMatrix: Question): string[] {
+  let questions: string[] = [];
+  if (preForm && preForm.survey) {
+    const form = preForm.survey as SurveyModel;
+    questions = form.pages
+      .map((page: PageModel) => {
+        return page.questions.filter(
+          (question: Question) =>
+            question.getType() === 'matrix' && question !== selectedMatrix
+        );
+      })
+      .flat()
+      .map((question: Question) => {
+        return `${question.page.name} > ${question.name}`;
+      });
+  }
+  return questions;
+}
+
+/**
+ *  Update the rows of the selected matrix
+ *
+ * @param selectedMatrix  The matrix selected
+ * @param instance  The instance of the multiselect
+ * @param editor  The editor
+ */
+function updateListMatrix(
+  selectedMatrix: Question,
+  instance: MultiSelectComponent,
+  editor: SurveyModel
+) {
+  const selectedMatrices = instance.value;
+
+  if (!selectedMatrices || selectedMatrices.length === 0) {
+    return;
+  }
+
+  const survey = editor.survey as SurveyModel;
+
+  survey.pages.forEach((page: PageModel) => {
+    page.questions.forEach((question) => {
+      if (
+        question.getType() === 'matrix' &&
+        selectedMatrices.includes(`${page.name} > ${question.name}`)
+      ) {
+        question.rows = selectedMatrix.rows;
+      }
+    });
+  });
+}
 /**
  * Render the other global properties
  *
