@@ -312,10 +312,12 @@ export class ResourcesComponent
   }
 
   /**
-  * Displays the duplicate modal.
-  * Duplicates a resource on closed if result.
-  * @param resource Resource to duplicate.
-  */
+   * Displays the duplicate modal.
+   *
+   * Duplicates a resource on closed if result.
+   *
+   * @param resource Resource to duplicate.
+   */
   onDuplicate(resource: Resource): void {
     this.apollo
       .mutate<DuplicateResourceMutationResponse>({
@@ -333,13 +335,10 @@ export class ResourcesComponent
           );
         } else {
           this.snackBar.openSnackBar(
-            this.translate.instant(
-              'common.notifications.objectNotDuplicated',
-              {
-                value: this.translate.instant('common.resource.one'),
-                error: errors[0].message,
-              }
-            ),
+            this.translate.instant('common.notifications.objectNotDuplicated', {
+              value: this.translate.instant('common.resource.one'),
+              error: errors[0].message,
+            }),
             { error: true }
           );
         }
