@@ -1,0 +1,78 @@
+<ng-container *ngIf="pages?.length">
+  <div class="flex justify-start flex-col sm:flex-row">
+    <!-- Search text filter -->
+    <div uiFormFieldDirective>
+      <ui-icon icon="search" uiPrefix></ui-icon>
+      <input
+        [ngModel]="searchText"
+        (keyup)="applyFilter('', $event)"
+        type="text"
+        [placeholder]="'common.placeholder.search' | translate"
+      />
+    </div>
+  </div>
+</ng-container>
+<ng-container *ngIf="pages?.length; else emptyTmpl">
+  <!-- Table container -->
+  <div class="mt-4 overflow-x-hidden shadow-2lg">
+    <!-- Table scroll container -->
+    <div class="overflow-x-auto">
+      <table cdk-table uiTableWrapper [dataSource]="visiblePages">
+        <ng-container cdkColumnDef="name">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            <span class="headerTitle">
+              {{ 'components.application.archive.name' | translate }}
+            </span>
+          </th>
+          <td
+            uiCell
+            *cdkCellDef="let element"
+            class="!text-gray-900 !font-medium"
+          >
+            {{ element.name }}
+          </td>
+        </ng-container>
+
+        <ng-container cdkColumnDef="autoDeletedAt">
+          <th uiCellHeader *cdkHeaderCellDef scope="col">
+            <span class="headerTitle">
+              {{ 'components.application.archive.autoDeletedAt' | translate }}
+            </span>
+          </th>
+          <td uiCell *cdkCellDef="let element">
+            {{ element.autoDeletedAt | sharedDate }}
+          </td>
+        </ng-container>
+
+        <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+          <th uiCellHeader *cdkHeaderCellDef class="w-16"></th>
+          <td uiCell *cdkCellDef="let element">
+            <ui-button
+              [isIcon]="true"
+              icon="more_vert"
+              [uiMenuTriggerFor]="menu"
+            ></ui-button>
+            <ui-menu #menu>
+              <button uiMenuItem (click)="onRestore(element)">
+                <ui-icon icon="restore_page" variant="grey"></ui-icon>
+                {{ 'common.archive.restore' | translate }}
+              </button>
+              <ui-divider></ui-divider>
+              <button uiMenuItem (click)="onDelete(element)">
+                <ui-icon icon="delete" variant="danger"></ui-icon>
+                {{ 'common.archive.delete' | translate }}
+              </button>
+            </ui-menu>
+          </td>
+        </ng-container>
+
+        <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+        <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
+      </table>
+    </div>
+  </div>
+</ng-container>
+<ng-template #emptyTmpl>
+  <!-- Empty indicator -->
+  <shared-empty [title]="'common.archive.none' | translate"></shared-empty>
+</ng-template>

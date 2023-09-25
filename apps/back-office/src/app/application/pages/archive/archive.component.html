@@ -1,0 +1,13 @@
+<h1>{{ 'common.archive.few' | translate }}</h1>
+<ng-container *ngIf="!loading; else loadingTmpl">
+  <shared-applications-archive [pages]="pages"></shared-applications-archive>
+</ng-container>
+<ng-template #loadingTmpl>
+  <shared-skeleton-table
+    [columns]="[
+      'components.application.archive.name',
+      'components.application.archive.autoDeletedAt'
+    ]"
+  >
+  </shared-skeleton-table>
+</ng-template>

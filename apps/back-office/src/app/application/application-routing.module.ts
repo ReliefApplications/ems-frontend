@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CanDeactivateGuard } from '../guards/can-deactivate.guard';
 import { ApplicationComponent } from './application.component';
+import { PermissionGuard } from '@oort-front/shared';
 
 /** Routes of application module */
 const routes: Routes = [
@@ -166,6 +167,19 @@ const routes: Routes = [
                 (m) => m.ApplicationNotificationsViewModule
               ),
             // canActivate: [PermissionGuard]
+          },
+          {
+            path: 'archive',
+            loadChildren: () =>
+              import('./pages/archive/archive.module').then(
+                (m) => m.ArchiveModule
+              ),
+            canActivate: [PermissionGuard],
+            data: {
+              breadcrumb: {
+                key: 'common.archive.few',
+              },
+            },
           },
         ],
       },
