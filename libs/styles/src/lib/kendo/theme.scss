@@ -29,6 +29,11 @@ $kendo-series-d: #28b4c8;
 $kendo-series-e: #2d73f5;
 $kendo-series-f: #aa46be;
 
+/**
+This file is for importing theme from Kendo components.
+We don't need all the components in the project so we don't need to import all the components themes.
+If you need to add a new component, you should uncomment there the related import.
+*/
 // kendo-angular-buttons
 @import '@progress/kendo-theme-default/scss/button/_index.scss';
 // @import "@progress/kendo-theme-default/scss/chip/_index.scss";

@@ -50,8 +50,8 @@
         ],
         "styles": [
           "apps/web-widgets/src/styles.scss",
-          "libs/styles/src/lib/kendo/theme.scss",          
           "libs/styles/src/lib/tailwind/tailwind.scss",
+          "libs/styles/src/lib/kendo/theme.scss",
           "libs/styles/src/lib/shared/shared.scss",
           "node_modules/survey-angular/survey.min.css",
           "node_modules/survey-creator/survey-creator.min.css",
