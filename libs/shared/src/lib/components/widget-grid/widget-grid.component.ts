@@ -55,10 +55,10 @@ export class WidgetGridComponent
   /** Skeletons for loading */
   public skeletons: GridsterItem[] = [];
 
-  /** Set widgets array and updates layout with it */
+  /** Widgets array in the layout */
   @Input() widgets: any[] = [];
 
-  /** Set canUpdate property and also updates permission to change grid tile*/
+  /** canUpdate property to trigger changes in the widgets grid layout */
   @Input() canUpdate: boolean | undefined = false;
 
   // === GRID ===

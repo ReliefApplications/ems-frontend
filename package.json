@@ -8,7 +8,7 @@
     "prepare": "husky install",
     "lint": "npx nx run-many --target=lint --projects=shared,front-office,back-office,ui --verbose",
     "test": "npx nx run-many --target=test --projects=shared,front-office,back-office,ui --configuration=ci",
-    "bundle:widgets": "set NODE_OPTIONS=--max_old_space_size=4096 && npx nx build web-widgets --configuration=oort-dev && node .scripts/build-widgets.js"
+    "bundle:widgets": "npx nx build web-widgets --configuration=azure-uat  && node .scripts/build-widgets.js"
   },
   "private": true,
   "dependencies": {
