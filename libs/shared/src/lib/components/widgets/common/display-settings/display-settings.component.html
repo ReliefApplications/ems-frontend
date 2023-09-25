@@ -19,8 +19,8 @@
         'components.widget.settings.map.displayLastUpdate' | translate
       }}</ng-container>
     </ui-toggle>
-    <ng-container *ngIf="formGroup.get('modifiedAt.display')?.value"
-      ><div uiFormFieldDirective>
+    <ng-container *ngIf="formGroup.get('modifiedAt.display')?.value">
+      <div uiFormFieldDirective>
         <label>{{
           'components.widget.settings.chart.position' | translate
         }}</label>
@@ -32,16 +32,14 @@
             {{ 'components.map.controls.positions.topright' | translate }}
           </ui-select-option>
           <ui-select-option value="bottomleft">
-            {{
-              'components.map.controls.positions.bottomleft' | translate
-            }}</ui-select-option
-          >
+            {{ 'components.map.controls.positions.bottomleft' | translate }}
+          </ui-select-option>
           <ui-select-option value="bottomright">
             {{ 'components.map.controls.positions.bottomright' | translate }}
           </ui-select-option>
         </ui-select-menu>
-      </div></ng-container
-    >
+      </div>
+    </ng-container>
   </ng-container>
   <ng-content></ng-content>
 </form>

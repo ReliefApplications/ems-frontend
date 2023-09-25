@@ -27,6 +27,8 @@ import {
   styleUrls: ['./display-settings.component.scss'],
 })
 export class DisplaySettingsComponent {
+  /** Settings form */
   @Input() formGroup!: FormGroup;
+  /** Widget type used to display settings that are specific to the type */
   @Input() widgetType: 'map' | undefined;
 }
