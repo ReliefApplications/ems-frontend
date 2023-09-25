@@ -151,12 +151,14 @@ export class ContextService {
    * @param atField filter field that should be used as 'at' param
    * @returns 'at' value
    */
-  public atArgumentValue(atField: string): string {
+  public atArgumentValue(atField: string): Date | undefined {
     if (this.isFilterEnabled.getValue()) {
       const regex = /(?<={{filter\.)(.*?)(?=}})/gim;
       const atFilterName = atField.match(regex)?.[0] ?? '';
-      return get(this.availableFilterFieldsValue, atFilterName);
+      if (get(this.availableFilterFieldsValue, atFilterName)) {
+        return new Date(get(this.availableFilterFieldsValue, atFilterName));
+      }
     }
-    return '';
+    return undefined;
   }
 }

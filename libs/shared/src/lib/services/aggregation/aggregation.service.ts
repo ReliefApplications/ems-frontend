@@ -91,7 +91,7 @@ export class AggregationService {
     aggregation: string,
     mapping?: any,
     contextFilters?: CompositeFilterDescriptor,
-    at?: string
+    at?: Date
   ): Observable<ApolloQueryResult<AggregationDataQueryResponse>> {
     return this.apollo.query<AggregationDataQueryResponse>({
       query: GET_AGGREGATION_DATA,
@@ -122,7 +122,7 @@ export class AggregationService {
     first: number,
     skip: number,
     contextFilters?: CompositeFilterDescriptor,
-    at?: string
+    at?: Date
   ): QueryRef<AggregationDataQueryResponse> {
     return this.apollo.watchQuery<AggregationDataQueryResponse>({
       query: GET_AGGREGATION_DATA,

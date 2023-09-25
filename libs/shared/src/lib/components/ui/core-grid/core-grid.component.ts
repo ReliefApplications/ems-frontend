@@ -393,6 +393,9 @@ export class CoreGridComponent
             sortField: this.sortField || undefined,
             sortOrder: this.sortOrder,
             styles: this.style,
+            at: this.settings.at
+              ? this.contextService.atArgumentValue(this.settings.at)
+              : undefined,
           },
           fetchPolicy: 'no-cache',
           nextFetchPolicy: 'cache-first',
@@ -1318,6 +1321,9 @@ export class CoreGridComponent
         sortField: this.sortField || undefined,
         sortOrder: this.sortOrder,
         styles: this.style,
+        ...(this.settings.at && {
+          at: this.contextService.atArgumentValue(this.settings.at),
+        }),
       })
       .then(() => (this.loading = false));
   }

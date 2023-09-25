@@ -1894,6 +1894,8 @@
 			"historicalDate": "******",
 			"share": "******",
 			"tooltip": {
+				"dashboardFilter": "******",
+				"historicalDate": "****** {{filter.<name>}} ******",
 				"useDashboardFilterEditor": "******",
 				"useDefaultEditor": "******"
 			}

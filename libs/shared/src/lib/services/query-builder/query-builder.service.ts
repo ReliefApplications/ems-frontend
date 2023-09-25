@@ -20,6 +20,7 @@ interface QueryVariables {
   sortOrder?: string;
   display?: boolean;
   styles?: any;
+  at?: Date;
 }
 
 /** Interface for a query response */
@@ -337,15 +338,16 @@ export class QueryBuilderService {
    */
   public graphqlQuery(name: string, fields: string[] | string) {
     return gql<QueryResponse, QueryVariables>`
-    query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $display: Boolean, $styles: JSON) {
+    query GetCustomQuery($first: Int, $skip: Int, $filter: JSON, $sortField: String, $sortOrder: String, $display: Boolean, $styles: JSON, $at: Date) {
       ${name}(
-      first: $first,
-      skip: $skip,
-      sortField: $sortField,
-      sortOrder: $sortOrder,
-      filter: $filter,
+      first: $first
+      skip: $skip
+      sortField: $sortField
+      sortOrder: $sortOrder
+      filter: $filter
       display: $display
       styles: $styles
+      at: $at
       ) {
         edges {
           node {

@@ -1904,12 +1904,14 @@
 				"selectDisplayField": "Sélectionnez le champ d'affichage",
 				"selectOrigin": "Sélectionnez la source de données"
 			},
-			"contextFilter": "Filtre de contexte",
-			"dashboardFilter": "Filtre de tableaux de bord",
+			"contextFilter": "Filtre contextuel",
+			"dashboardFilter": "Filtre du tableau de bord",
 			"deactivateFiltering": "Désactiver le filtre",
-			"historicalDate": "Date historique",
+			"historicalDate": "Récupérer les données historiques",
 			"share": "Partager le tableau de bord",
 			"tooltip": {
+				"dashboardFilter": "Vous pouvez utiliser les champs du filtre du tableau de bord, ou utiliser des valeurs statiques.",
+				"historicalDate": "Vous pouvez récupérer les données à une date spécifique en utilisant un champ du filtre du tableau de board.\nVeuillez alors utiliser cette syntaxe : {{filter.<nom>}}.",
 				"useDashboardFilterEditor": "Utiliser l'éditeur de tableaux de bord",
 				"useDefaultEditor": "Utiliser l'éditeur par défaut"
 			}
