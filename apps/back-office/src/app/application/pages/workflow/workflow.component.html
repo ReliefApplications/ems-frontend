@@ -9,19 +9,22 @@
   "
 >
   <ng-container *ngIf="workflow">
-    <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
+    <div class="flex flex-wrap items-center justify-between gap-4 -mt-4">
       <!-- Editable Title -->
       <div class="flex items-center gap-1">
         <shared-editable-text
           [text]="workflow.name"
+          [uiTooltip]="workflow.name ?? ''"
           [canEdit]="canEditName"
           (onChange)="saveName($event)"
           (formActiveEvent)="formActive = $event"
+          class="whitespace-nowrap max-w-[200px] overflow-hidden font-bold"
         >
           <h1 class="!m-0 overflow-hidden text-ellipsis">
             {{ workflow.name }}
           </h1>
         </shared-editable-text>
+        <!-- Visibility button icon -->
         <ui-button
           [isIcon]="true"
           variant="grey"
@@ -38,8 +41,9 @@
         </ui-button>
       </div>
 
-      <!-- buttons right to title -->
+      <!-- Action buttons at right end -->
       <div class="flex items-center gap-1" *ngIf="!formActive">
+        <!-- Page permissions button icon -->
         <shared-access
           [access]="workflow.permissions"
           [application]="workflow.page?.application?.id"
@@ -47,6 +51,7 @@
           (save)="saveAccess($event)"
           *ngIf="workflow.page?.canUpdate || false"
         ></shared-access>
+        <!-- Options button icon -->
         <ui-button
           variant="grey"
           [isIcon]="true"
@@ -64,12 +69,13 @@
           </button>
         </ui-menu>
 
+        <!-- "Duplicate to" menu title -->
         <ng-template #searchMenuHeaderTemplate>
           <ui-alert>
             {{ 'models.page.tooltip.duplicate' | translate }}
           </ui-alert>
         </ng-template>
-
+        <!-- "Duplicate to" menu -->
         <ng-template
           cdkConnectedOverlay
           [cdkConnectedOverlayOrigin]="appMenuTrigger"
