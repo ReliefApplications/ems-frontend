@@ -202,7 +202,7 @@ export class LineChartComponent implements OnChanges {
           font: fontOptions,
         },
       },
-      devicePixelRatio: 2
+      devicePixelRatio: 2,
     } as ChartOptions;
 
     // adds underline plugin if needed
