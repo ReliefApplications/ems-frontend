@@ -167,6 +167,7 @@ export class ArcgisService {
                   token: this.esriApiKey,
                   opacity,
                   pane,
+                  detectRetina: true,
                 });
                 vectorTileLayer.label = layer.title;
                 baseMapLayers.push(vectorTileLayer);
@@ -175,6 +176,7 @@ export class ArcgisService {
                   token: this.esriApiKey,
                   opacity,
                   pane,
+                  detectRetina: true,
                 });
                 vectorTileLayer.label = layer.title;
                 baseMapLayers.push(vectorTileLayer);

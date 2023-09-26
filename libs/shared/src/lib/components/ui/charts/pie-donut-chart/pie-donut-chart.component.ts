@@ -152,6 +152,7 @@ export class PieDonutChartComponent implements OnChanges {
           font: fontOptions,
         },
       },
+      devicePixelRatio: 2
     };
 
     // adds underline plugin if needed
