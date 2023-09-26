@@ -1,7 +1,7 @@
-<div class="flex flex-row py-0 px-4 items-center justify-between h-14 gap-x-2">
-  <div class="flex items-center gap-2 overflow-hidden">
+<div class="flex flex-row items-center justify-between gap-x-2">
+  <div class="flex items-center gap-2">
     <!-- Title -->
-    <h2 class="!m-0 overflow-hidden text-ellipsis whitespace-nowrap">
+    <h2 class="!m-0 truncate">
       {{ title }}
     </h2>
     <!-- Settings -->
@@ -9,7 +9,7 @@
       *ngIf="settings.length > 0"
       [isIcon]="true"
       icon="tune"
-      variant="light"
+      variant="grey"
       [uiMenuTriggerFor]="settingsMenu"
       [uiTooltip]="'common.settings' | translate"
     ></ui-button>

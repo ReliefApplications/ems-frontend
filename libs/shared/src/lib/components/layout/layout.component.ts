@@ -43,10 +43,13 @@ export class LayoutComponent
   // === HEADER TITLE ===
   @Input() title = '';
 
+  // application toolbar settings
   @Input() settings: any[] = [];
 
+  // application toolbar canUpdate boolean
   @Input() canUpdate = false;
 
+  // application toolbar showActions boolean
   @Input() showActions = false;
 
   @Input() applications: Application[] = [];
