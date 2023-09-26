@@ -137,13 +137,6 @@ export const GET_GRID_REFERENCE_DATA_META = gql`
   }
 `;
 
-/** Model for GetReferenceDataByIdQueryResponse object */
-export interface GetReferenceDataByIdQueryResponse {
-  referenceData: ReferenceData;
-}
-
-// === GET QUERY TYPES ===
-
 /** Graphql request for getting query types */
 export const GET_QUERY_TYPES = gql`
   query GetQueryTypes {

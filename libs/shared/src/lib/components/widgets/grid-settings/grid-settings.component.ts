@@ -418,7 +418,7 @@ export class GridSettingsComponent
   private onAggregationChange(aggregationId: string): void {
     if (this.resource?.id && aggregationId) {
       this.aggregationService
-        .aggregationDataQuery(this.resource.id, aggregationId || '')
+        .aggregationDataQuery(this.resource.id, '', aggregationId || '')
         .subscribe(({ data }) => {
           if (data.recordsAggregation) {
             this.fields = data.recordsAggregation.items[0]

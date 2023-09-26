@@ -1,4 +1,4 @@
-import { FormArray, FormBuilder, Validators } from '@angular/forms';
+import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import get from 'lodash/get';
 import {
   addNewField,

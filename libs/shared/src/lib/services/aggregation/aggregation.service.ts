@@ -5,7 +5,6 @@ import {
   EDIT_AGGREGATION,
 } from './graphql/mutations';
 import {
-  GET_AGGREGATION_DATA,
   GET_RESOURCE_AGGREGATIONS,
   GET_REFERENCE_DATA_AGGREGATION_DATA,
   GET_REFERENCE_DATA_AGGREGATIONS,
@@ -172,7 +171,7 @@ export class AggregationService {
             first,
             skip,
             contextFilters,
-            at
+            at,
           },
         })
       : this.apollo.watchQuery<AggregationDataQueryResponse>({

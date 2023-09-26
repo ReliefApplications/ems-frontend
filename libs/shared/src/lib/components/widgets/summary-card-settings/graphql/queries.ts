@@ -175,8 +175,3 @@ export const GET_REFERENCE_DATA = gql`
     }
   }
 `;
-
-/** Get ref data gql query response interface */
-export interface GetReferenceDataByIdQueryResponse {
-  referenceData: ReferenceData;
-}
