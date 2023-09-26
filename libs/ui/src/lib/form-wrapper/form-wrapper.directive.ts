@@ -86,7 +86,7 @@ export class FormWrapperDirective
     'p-0',
     'text-gray-900',
     'placeholder:text-gray-400',
-    'sm:text-sm',
+    'text-sm',
     'sm:leading-6',
     'focus:ring-0',
     'focus:ring-inset',
@@ -103,7 +103,7 @@ export class FormWrapperDirective
     'text-gray-900',
     'placeholder:text-gray-400',
     'focus:ring-0',
-    'sm:text-sm',
+    'text-sm',
     'sm:leading-6',
   ] as const;
 
