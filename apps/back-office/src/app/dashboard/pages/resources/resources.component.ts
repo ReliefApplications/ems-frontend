@@ -312,9 +312,7 @@ export class ResourcesComponent
   }
 
   /**
-   * Displays the duplicate modal.
-   *
-   * Duplicates a resource on closed if result.
+   * Duplicates a resource.
    *
    * @param resource Resource to duplicate.
    */
