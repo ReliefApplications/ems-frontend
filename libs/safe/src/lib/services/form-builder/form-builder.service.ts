@@ -108,6 +108,7 @@ export class SafeFormBuilderService {
 
     // Add custom variables
     this.formHelpersService.addUserVariables(survey);
+    this.formHelpersService.addApplicationVariables(survey);
     this.formHelpersService.setWorkflowContextVariable(survey);
     if (record) {
       this.formHelpersService.addRecordIDVariable(survey, record);

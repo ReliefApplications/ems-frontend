@@ -16,6 +16,7 @@ import localForage from 'localforage';
 import { cloneDeep, set } from 'lodash';
 import { SafeAuthService } from '../auth/auth.service';
 import { SafeWorkflowService } from '../workflow/workflow.service';
+import { SafeApplicationService } from '../application/application.service';
 
 /**
  * Shared survey helper service.
@@ -40,7 +41,8 @@ export class SafeFormHelpersService {
     private confirmService: SafeConfirmService,
     private translate: TranslateService,
     private authService: SafeAuthService,
-    private workflowService: SafeWorkflowService
+    private workflowService: SafeWorkflowService,
+    private applicationService: SafeApplicationService
   ) {}
 
   /**
@@ -315,6 +317,22 @@ export class SafeFormHelpersService {
     // Allow us to select the current user
     // as a default question for Users question type
     survey.setVariable('user.id', user?.id || '');
+  };
+
+  /**
+   * Registration of new custom variables for the survey.
+   * Custom variables can be used in the logic fields.
+   * This function is used to add the application id, name and description to the survey variables
+   * @param survey Survey instance
+   */
+  public addApplicationVariables = (survey: Survey.SurveyModel) => {
+    const application = this.applicationService.application.getValue();
+    survey.setVariable('application.id', application?.id ?? null);
+    survey.setVariable('application.name', application?.name ?? null);
+    survey.setVariable(
+      'application.description',
+      application?.description ?? null
+    );
   };
 
   /**
