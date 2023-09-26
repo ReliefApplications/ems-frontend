@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, Inject, Optional } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
-import { DialogRef } from '@angular/cdk/dialog';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { CommonModule } from '@angular/common';
 import { ChannelsRoutingModule } from '../../channels-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -14,6 +14,7 @@ import {
   TableModule,
   FormWrapperModule,
 } from '@oort-front/ui';
+import { Channel } from '@oort-front/shared';
 
 /**
  * Add channel component, act as modal.
@@ -34,14 +35,14 @@ import {
     ButtonModule,
     TableModule,
   ],
-  selector: 'app-add-channel-modal',
-  templateUrl: './add-channel-modal.component.html',
-  styleUrls: ['./add-channel-modal.component.scss'],
+  selector: 'app-channel-modal',
+  templateUrl: './channel-modal.component.html',
+  styleUrls: ['./channel-modal.component.scss'],
 })
-export class AddChannelModalComponent {
+export class ChannelModalComponent {
   /** Channel form group */
   public channelForm = this.fb.group({
-    title: ['', Validators.required],
+    title: [this.data?.channel.title ?? '', Validators.required],
   });
 
   /**
@@ -49,10 +50,17 @@ export class AddChannelModalComponent {
    *
    * @param fb Angular form builder
    * @param dialogRef Dialog ref
+   * @param data Injected dialog data
+   * @param data.channel channel to edit
    */
   constructor(
     private fb: FormBuilder,
-    public dialogRef: DialogRef<AddChannelModalComponent>
+    public dialogRef: DialogRef<ChannelModalComponent>,
+    @Optional()
+    @Inject(DIALOG_DATA)
+    public data: {
+      channel: Channel;
+    }
   ) {}
 
   /** Close the modal without sending any data. */

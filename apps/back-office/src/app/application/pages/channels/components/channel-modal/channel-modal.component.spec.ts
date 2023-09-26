@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import { EditChannelModalComponent } from './edit-channel-modal.component';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { ChannelModalComponent } from './channel-modal.component';
 import {
   TranslateFakeLoader,
   TranslateLoader,
@@ -8,14 +8,14 @@ import {
   TranslateService,
 } from '@ngx-translate/core';
 
-describe('EditChannelModalComponent', () => {
-  let component: EditChannelModalComponent;
-  let fixture: ComponentFixture<EditChannelModalComponent>;
+describe('ChannelModalComponent', () => {
+  let component: ChannelModalComponent;
+  let fixture: ComponentFixture<ChannelModalComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [
-        EditChannelModalComponent,
+        ChannelModalComponent,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
@@ -34,15 +34,15 @@ describe('EditChannelModalComponent', () => {
         {
           provide: DIALOG_DATA,
           useValue: {
-            channel: {}
-          }
+            channel: {},
+          },
         },
-      ]
+      ],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(EditChannelModalComponent);
+    fixture = TestBed.createComponent(ChannelModalComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

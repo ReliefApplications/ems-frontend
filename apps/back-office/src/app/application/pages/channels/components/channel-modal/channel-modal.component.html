@@ -1,11 +1,11 @@
 <ui-dialog size="small">
   <ng-container ngProjectAs="header">
     <h1>
-      {{ 'models.channel.edit' | translate }}
+      {{ (data ? 'models.channel.edit' : 'models.channel.new') | translate }}
     </h1>
   </ng-container>
   <ng-container ngProjectAs="content">
-    <form [formGroup]="formGroup" class="flex flex-col">
+    <form [formGroup]="channelForm" class="flex flex-col">
       <div uiFormFieldDirective>
         <label>{{ 'common.title' | translate }}</label>
         <input
@@ -18,15 +18,14 @@
   </ng-container>
   <ng-container ngProjectAs="actions">
     <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
-
     <ui-button
       category="secondary"
       variant="primary"
-      [uiDialogClose]="formGroup.value"
+      [uiDialogClose]="channelForm.value"
       cdkFocusInitial
-      [disabled]="!formGroup.valid"
+      [disabled]="!channelForm.valid"
     >
-      {{ 'common.update' | translate }}
+      {{ (data ? 'common.update' : 'common.create') | translate }}
     </ui-button>
   </ng-container>
 </ui-dialog>
