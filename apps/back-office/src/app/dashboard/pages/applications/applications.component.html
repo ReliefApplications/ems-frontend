@@ -16,11 +16,11 @@
   <!-- APPLICATIONS TABLE -->
   <h2>{{ 'pages.applications.all' | translate }}</h2>
   <!-- FILTERING -->
-  <app-filter
+  <app-applications-filter
     (filter)="onFilter($event)"
     [loading]="updating"
     class="block mb-8"
-  ></app-filter>
+  ></app-applications-filter>
   <!-- Table container -->
   <div class="overflow-x-hidden shadow-2lg">
     <!-- Table scroll container -->

@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { FilterComponent } from './filter.component';
+import { ListFilterComponent } from './list-filter.component';
 import {
   TranslateFakeLoader,
   TranslateLoader,
@@ -9,13 +9,13 @@ import {
 import { IconModule } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
-describe('FilterComponent', () => {
-  let component: FilterComponent;
-  let fixture: ComponentFixture<FilterComponent>;
+describe('ListFilterComponent', () => {
+  let component: ListFilterComponent;
+  let fixture: ComponentFixture<ListFilterComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [FilterComponent],
+      declarations: [ListFilterComponent],
       imports: [
         IconModule,
         FormsModule,
@@ -27,12 +27,12 @@ describe('FilterComponent', () => {
           },
         }),
       ],
-      providers: [TranslateService]
+      providers: [TranslateService],
     }).compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(FilterComponent);
+    fixture = TestBed.createComponent(ListFilterComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

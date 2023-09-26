@@ -5,6 +5,7 @@ import { FormsComponent } from './forms.component';
 import {
   SkeletonTableModule,
   DateModule as SharedDateModule,
+  ListFilterComponent,
 } from '@oort-front/shared';
 import {
   FormsModule as AngularFormsModule,
@@ -52,6 +53,7 @@ import {
     ChipModule,
     DateModule,
     TooltipModule,
+    ListFilterComponent,
   ],
   exports: [FormsComponent],
 })

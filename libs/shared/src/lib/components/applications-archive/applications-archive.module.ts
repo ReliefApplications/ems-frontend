@@ -14,6 +14,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 
 import { ButtonModule, MenuModule } from '@oort-front/ui';
+import { ListFilterComponent } from '../list-filter/list-filter.component';
 
 /**
  * Shared Applications Archive module
@@ -33,6 +34,7 @@ import { ButtonModule, MenuModule } from '@oort-front/ui';
     DateModule,
     TranslateModule,
     DividerModule,
+    ListFilterComponent,
   ],
   exports: [ApplicationsArchiveComponent],
 })

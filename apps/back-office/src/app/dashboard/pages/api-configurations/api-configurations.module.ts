@@ -8,7 +8,7 @@ import {
 } from '@angular/forms';
 import { AddApiConfigurationComponent } from './components/add-api-configuration/add-api-configuration.component';
 import { IconModule, TooltipModule } from '@oort-front/ui';
-import { SkeletonTableModule } from '@oort-front/shared';
+import { ListFilterComponent, SkeletonTableModule } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
 import {
@@ -50,6 +50,7 @@ import {
     ErrorMessageModule,
     TableModule,
     TooltipModule,
+    ListFilterComponent,
   ],
   exports: [ApiConfigurationsComponent],
 })

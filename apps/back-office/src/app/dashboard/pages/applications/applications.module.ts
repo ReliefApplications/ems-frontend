@@ -8,6 +8,7 @@ import {
   ApplicationsSummaryModule,
   SkeletonTableModule,
   DateModule as SharedDateModule,
+  ListFilterComponent,
 } from '@oort-front/shared';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { FilterComponent } from './components/filter/filter.component';
@@ -62,6 +63,7 @@ import {
     DateModule,
     ChipModule,
     TooltipModule,
+    ListFilterComponent,
   ],
   exports: [ApplicationsComponent],
 })

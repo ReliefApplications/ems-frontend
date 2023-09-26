@@ -1,24 +1,30 @@
+import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
-import { UnsubscribeComponent } from '@oort-front/shared';
-import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { ListFilterComponent, UnsubscribeComponent } from '@oort-front/shared';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs';
 
 /**
- * Filter used by the resources component
+ * Filter used by the reference data component
  */
 @Component({
-  selector: 'app-resources-filter',
-  templateUrl: './filter.component.html',
-  styleUrls: ['./filter.component.scss'],
+  selector: 'app-reference-data-filter',
+  standalone: true,
+  imports: [CommonModule, ReactiveFormsModule, ListFilterComponent],
+  template: `
+    <form [formGroup]="form">
+      <shared-list-filter
+        [hasSiblingFilters]="false"
+        [loading]="loading"
+      ></shared-list-filter>
+    </form>
+  `,
 })
 export class FilterComponent extends UnsubscribeComponent implements OnInit {
   @Input() loading = false;
   @Output() filter = new EventEmitter<any>();
-  public form = this.fb.group({
-    startDate: [null],
-    endDate: [null],
-  });
-  public show = false;
+
+  public form = this.fb.group({});
 
   /**
    * FilterComponent constructor.
@@ -36,7 +42,7 @@ export class FilterComponent extends UnsubscribeComponent implements OnInit {
         distinctUntilChanged(),
         takeUntil(this.destroy$)
       )
-      .subscribe((value) => {
+      .subscribe((value: any) => {
         this.emitFilter(value);
       });
   }
@@ -44,29 +50,15 @@ export class FilterComponent extends UnsubscribeComponent implements OnInit {
   /**
    * Emits the filter value, so the main component can get it.
    *
-   * @param value Value to be emitted.
+   * @param value filter value
    */
   private emitFilter(value: any): void {
     const filters: any[] = [];
-    if (value.search) {
+    if (value?.search) {
       filters.push({
         field: 'name',
         operator: 'contains',
         value: value.search,
-      });
-    }
-    if (value.startDate) {
-      filters.push({
-        field: 'createdAt',
-        operator: 'gte',
-        value: value.startDate,
-      });
-    }
-    if (value.endDate) {
-      filters.push({
-        field: 'createdAt',
-        operator: 'lte',
-        value: value.endDate,
       });
     }
     const filter = {
@@ -81,16 +73,5 @@ export class FilterComponent extends UnsubscribeComponent implements OnInit {
    */
   clear(): void {
     this.form.reset();
-  }
-
-  /**
-   * Clears date range.
-   */
-  clearDateFilter(): void {
-    this.form.setValue({
-      ...this.form.getRawValue(),
-      startDate: null,
-      endDate: null,
-    });
   }
 }
