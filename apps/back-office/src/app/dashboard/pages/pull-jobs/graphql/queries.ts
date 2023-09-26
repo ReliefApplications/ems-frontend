@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { PullJob, Application, Form, ApiConfiguration } from '@oort-front/safe';
 
 // === GET PULL JOBS ===
 
@@ -42,21 +41,6 @@ export const GET_PULL_JOBS = gql`
   }
 `;
 
-/** Model for GetPullJobsQueryResponse object */
-export interface GetPullJobsQueryResponse {
-  pullJobs: {
-    edges: {
-      node: PullJob;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-    totalCount: number;
-  };
-}
-
 // === GET ROUTING KEYS ===
 
 /** Graphql query for getting routing keys with a cursor */
@@ -83,21 +67,6 @@ export const GET_ROUTING_KEYS = gql`
     }
   }
 `;
-
-/** Model for GetRoutingKeysQueryResponse object */
-export interface GetRoutingKeysQueryResponse {
-  applications: {
-    edges: {
-      node: Application;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-    totalCount: number;
-  };
-}
 
 // === GET FORMS ===
 /** Graphql query for getting form names */
@@ -129,21 +98,6 @@ export const GET_FORM_NAMES = gql`
     }
   }
 `;
-
-/** Model for GetFormsQueryResposne object */
-export interface GetFormsQueryResponse {
-  forms: {
-    edges: {
-      node: Form;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-    totalCount: number;
-  };
-}
 
 // === GET FORM BY ID ===
 /** Graphql query for getting a form with minimum details by id */
@@ -180,11 +134,6 @@ export const GET_SHORT_FORM_BY_ID = gql`
     }
   }
 `;
-
-/** Model for getFormByIdQueryResponse object */
-export interface GetFormByIdQueryResponse {
-  form: Form;
-}
 
 // === GET API CONFIGURATIONS ===
 
@@ -229,18 +178,3 @@ export const GET_API_CONFIGURATIONS = gql`
     }
   }
 `;
-
-/** Model for GetApiConfigurationQueryResponse object */
-export interface GetApiConfigurationsQueryResponse {
-  apiConfigurations: {
-    edges: {
-      node: ApiConfiguration;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-    totalCount: number;
-  };
-}

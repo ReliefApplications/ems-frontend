@@ -1,0 +1,11 @@
+<div uiFormFieldDirective class="grow">
+  <ui-graphql-select
+    path="records"
+    valueField="id"
+    textField="data.{{ textField }}"
+    [query]="recordsQuery"
+    [formControl]="recordsControl"
+    [selectedElements]="[selectedRecord]"
+  >
+  </ui-graphql-select>
+</div>

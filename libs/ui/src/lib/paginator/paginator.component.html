@@ -10,7 +10,7 @@
     [attr.aria-controls]="paginatorId"
     [style.width.%]="100"
     [pageSize]="pageSize"
-    [skip]="pageIndex * pageSize"
+    [skip]="skip"
     [total]="totalItems"
     (pageChange)="onPageChange($event)"
   >

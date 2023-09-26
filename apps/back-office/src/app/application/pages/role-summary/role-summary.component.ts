@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
   Application,
-  SafeApplicationService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  ApplicationService,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import { takeUntil } from 'rxjs/operators';
 
 /**
@@ -16,7 +16,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./role-summary.component.scss'],
 })
 export class RoleSummaryComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   public id = '';
@@ -30,7 +30,7 @@ export class RoleSummaryComponent
    */
   constructor(
     private route: ActivatedRoute,
-    public applicationService: SafeApplicationService
+    public applicationService: ApplicationService
   ) {
     super();
   }

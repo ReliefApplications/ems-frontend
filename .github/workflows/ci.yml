@@ -11,7 +11,7 @@ on:
           - front-office
           - back-office
           - ui
-          - safe
+          - shared
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}

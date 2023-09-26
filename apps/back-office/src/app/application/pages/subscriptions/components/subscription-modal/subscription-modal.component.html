@@ -3,8 +3,7 @@
     <h1>
       {{
         data.subscription
-          ? ('common.editObject'
-            | translate : { name: 'common.subscription.one' | translate })
+          ? ('models.subscription.edit' | translate)
           : ('models.subscription.new' | translate)
       }}
     </h1>
@@ -77,6 +76,7 @@
         <div uiFormFieldDirective>
           <label>{{ 'components.record.convert.select' | translate }}</label>
           <ui-graphql-select
+            formControlName="convertTo"
             valueField="id"
             textField="name"
             [query]="formsQuery"
@@ -87,7 +87,10 @@
         </div>
         <div uiFormFieldDirective>
           <label>{{ 'components.channel.dropdown.select' | translate }}</label>
-          <ui-select-menu formControlName="channel">
+          <ui-select-menu
+            formControlName="channel"
+            [placeholder]="'components.channel.selectChannel' | translate"
+          >
             <ui-select-option
               *ngFor="let channel of data.channels"
               [value]="channel.id"
