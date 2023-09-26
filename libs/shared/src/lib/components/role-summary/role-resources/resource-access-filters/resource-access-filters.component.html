@@ -1,0 +1,108 @@
+<!-- Header -->
+<h2>{{ 'common.filter.few' | translate }}</h2>
+<!-- Content -->
+<div *ngIf="filters.length === 0" class="flex flex-col p-4 items-center">
+  <ui-icon icon="folder_open"></ui-icon>
+  <h3>{{ 'components.role.summary.noFilters' | translate }}</h3>
+</div>
+<!-- Table container -->
+<div class="overflow-x-hidden shadow-2lg">
+  <!-- Table scroll container -->
+  <div class="overflow-x-auto">
+    <table
+      cdk-table
+      uiTableWrapper
+      [dataSource]="filters"
+      *ngIf="filters.length > 0"
+      multiTemplateDataRows
+    >
+      <ng-container cdkColumnDef="filter">
+        <th uiCellHeader *cdkHeaderCellDef scope="col">
+          {{ 'components.queryBuilder.filter.title' | translate }}
+        </th>
+        <td uiCell *cdkCellDef="let element">
+          {{ getAccessString(element.access) }}
+        </td>
+      </ng-container>
+      <ng-container cdkColumnDef="actions" [stickyEnd]="true">
+        <th uiCellHeader *cdkHeaderCellDef scope="col" class="text-end w-16">
+          <ui-button
+            [disabled]="disabled"
+            variant="primary"
+            category="tertiary"
+            (click)="save()"
+            >{{ 'common.save' | translate }}</ui-button
+          >
+        </th>
+        <td uiCell *cdkCellDef="let element; let i = dataIndex">
+          <div class="flex">
+            <ng-container *ngFor="let permission of element.permissions">
+              <ui-button
+                [disabled]="disabled"
+                *ngIf="permission.name !== 'canCreateRecords'"
+                [isIcon]="true"
+                [icon]="permission.icon"
+                [variant]="permission.variant"
+                [uiTooltip]="permission.tooltip | translate"
+                (click)="
+                  $event.stopPropagation();
+                  toggleFilterAccess(i, permission.name)
+                "
+              >
+              </ui-button>
+            </ng-container>
+          </div>
+        </td>
+      </ng-container>
+      <ng-container cdkColumnDef="expandedDetail">
+        <td
+          uiCell
+          *cdkCellDef="let element; let i = dataIndex"
+          [attr.colspan]="displayedColumns.length"
+          [ngClass]="i === openedFilterIndex ? '' : 'hidden'"
+        >
+          <div
+            class="expanded-filter"
+            [@detailExpand]="i === openedFilterIndex ? 'expanded' : 'collapsed'"
+          >
+            <shared-filter
+              *ngIf="i === openedFilterIndex"
+              [form]="openedFilterFormGroup!"
+              [fields]="filterFields"
+            >
+            </shared-filter>
+            <ui-button
+              *ngIf="i === openedFilterIndex"
+              [disabled]="disabled"
+              variant="danger"
+              category="secondary"
+              icon="delete"
+              (click)="deleteFilter(i)"
+              class="w-fit"
+            >
+              {{ 'components.role.summary.removeFilter' | translate }}
+            </ui-button>
+          </div>
+        </td>
+      </ng-container>
+
+      <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
+      <tr
+        *cdkRowDef="let row; columns: displayedColumns; let i = dataIndex"
+        cdk-row
+        (click)="toggleFilterEdition(i)"
+        class="cursor-pointer"
+      ></tr>
+      <tr cdk-row *cdkRowDef="let row; columns: ['expandedDetail']"></tr>
+    </table>
+  </div>
+</div>
+<ui-button
+  [disabled]="disabled"
+  variant="primary"
+  category="secondary"
+  (click)="addFilter()"
+  class="self-center"
+>
+  {{ 'components.role.summary.addFilter' | translate }}
+</ui-button>

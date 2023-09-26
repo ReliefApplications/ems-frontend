@@ -44,7 +44,7 @@ export class SelectMenuComponent
 {
   /** Tells if the select menu should allow multi selection */
   @Input() multiselect = false;
-  /** Tells if the select menu should be disabled */
+  // Tells if the select menu should be disabled
   @Input() disabled = false;
   /** Tells if some styles to the current ul element should be applied */
   @Input() isGraphQlSelect = false;
@@ -165,11 +165,46 @@ export class SelectMenuComponent
   }
 
   /**
+   * Force the options list when they cannot be successfully loaded through contentchildren
+   *
+   * @param optionList the optionList we want to
+   */
+  forceOptionList(optionList: QueryList<SelectOptionComponent>) {
+    this.optionList = optionList;
+    this.optionList?.changes
+      .pipe(startWith(this.optionList), takeUntil(this.destroy$))
+      .subscribe({
+        next: (options: QueryList<SelectOptionComponent>) => {
+          if (this.value) {
+            this.selectedValues.push(
+              this.value instanceof Array ? [...this.value] : this.value
+            );
+          }
+          options.forEach((option) => {
+            option.optionClick.pipe(takeUntil(this.destroy$)).subscribe({
+              next: (isSelected: boolean) => {
+                this.updateSelectedValues(option, isSelected);
+                this.onChangeFunction();
+              },
+            });
+            // Initialize any selected values
+            if (this.selectedValues.includes(option.value)) {
+              option.selected = true;
+            } else {
+              option.selected = false;
+            }
+            this.setDisplayTriggerText();
+          });
+        },
+      });
+  }
+
+  /**
    * Write new value
    *
    * @param value value set from parent form control
    */
-  writeValue(value: string[]): void {
+  writeValue(value: string | string[] | null): void {
     if (value && value instanceof Array) {
       this.selectedValues = [...value];
     } else if (value) {
@@ -248,7 +283,7 @@ export class SelectMenuComponent
             labelValues[0] + ' (+' + (labelValues.length - 1) + ' others)';
         }
       } else {
-        this.displayTrigger = this.placeholder;
+        this.displayTrigger = '';
       }
     }
   }

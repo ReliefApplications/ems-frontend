@@ -1,0 +1,47 @@
+<div [formGroup]="form" class="flex flex-col gap-4">
+  <div class="flex flex-wrap gap-2">
+    <div uiFormFieldDirective>
+      <ui-icon icon="search" uiPrefix></ui-icon>
+      <input
+        placeholder="{{ 'common.placeholder.search' | translate }}"
+        [formControl]="search"
+        type="text"
+      />
+      <ui-spinner [size]="'small'" *ngIf="loading" uiSuffix></ui-spinner>
+    </div>
+    <ui-button
+      icon="filter_list"
+      category="tertiary"
+      variant="primary"
+      (click)="show = !show"
+    >
+      {{
+        show
+          ? ('common.filter.hide' | translate)
+          : ('common.filter.show' | translate)
+      }}
+    </ui-button>
+  </div>
+  <!-- Filters when on "show" mode -->
+  <div class="flex flex-wrap gap-2 items-end" *ngIf="show">
+    <div uiFormFieldDirective [defaultMargin]="false">
+      <label>{{ 'common.input.dateRange' | translate }}</label>
+      <div [uiDateWrapper]="calendar">
+        <input
+          [uiDatePicker]
+          formControlName="startDate"
+          [label]="'kendo.datepicker.startLabel' | translate"
+        />
+        <input
+          [uiDatePicker]
+          formControlName="endDate"
+          [label]="'kendo.datepicker.endLabel' | translate"
+        />
+        <ui-date-range #calendar> </ui-date-range>
+      </div>
+    </div>
+    <ui-button variant="danger" (click)="clear()">
+      {{ 'common.filter.clear' | translate }}
+    </ui-button>
+  </div>
+</div>

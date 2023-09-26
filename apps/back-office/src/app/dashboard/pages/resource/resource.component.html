@@ -4,13 +4,13 @@
     <h1 class="page-title">
       {{ resource.name }}
     </h1>
-    <safe-access
+    <shared-access
       [access]="resource.permissions"
       [objectTypeName]="'common.resource.one' | translate"
       (save)="saveAccess($event)"
       *ngIf="resource.canUpdate"
     >
-    </safe-access>
+    </shared-access>
   </div>
   <ui-tabs [selectedIndex]="selectedTab">
     <ui-tab

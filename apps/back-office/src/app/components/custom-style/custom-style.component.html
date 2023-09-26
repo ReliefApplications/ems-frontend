@@ -13,9 +13,15 @@
           icon="check"
           (click)="onSave()"
           [disabled]="!applicationId || formControl.pristine"
+          [uiTooltip]="'common.save' | translate"
         >
         </ui-button>
-        <ui-button [isIcon]="true" icon="close" (click)="onClose()">
+        <ui-button
+          [isIcon]="true"
+          icon="close"
+          (click)="onClose()"
+          [uiTooltip]="'common.cancel' | translate"
+        >
         </ui-button>
       </div>
     </div>

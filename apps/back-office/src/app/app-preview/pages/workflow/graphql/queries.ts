@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Workflow } from '@oort-front/safe';
 
 // === GET WORKFLOW BY ID ===
 
@@ -57,8 +56,3 @@ export const GET_WORKFLOW_BY_ID = gql`
     }
   }
 `;
-
-/** Model for GetWorkflowByIdQueryResponse object */
-export interface GetWorkflowByIdQueryResponse {
-  workflow: Workflow;
-}

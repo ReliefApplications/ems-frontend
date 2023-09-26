@@ -1,9 +1,0 @@
-:host {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-
-  ::ng-deep .mat-form-field-wrapper {
-    padding-bottom: 0;
-  }
-}

@@ -59,6 +59,9 @@
               formControlName="resource"
               (searchChange)="onResourceSearchChange($event)"
               [filterable]="true"
+              [placeholder]="
+                'components.form.create.template.selectResource' | translate
+              "
             >
             </ui-graphql-select>
           </div>

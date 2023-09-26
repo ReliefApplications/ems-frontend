@@ -1,0 +1,25 @@
+<div class="flex flex-row gap-4 overflow-x-auto">
+  <shared-add-application
+    *ngIf="!loading && canCreate"
+    (click)="add.emit()"
+  ></shared-add-application>
+  <ng-container
+    *sharedSkeleton="
+      loading;
+      repeat: 5;
+      height: '192px';
+      width: 192;
+      shape: 'rectangle'
+    "
+  >
+    <shared-application-summary
+      *ngFor="let application of applications; let index = index"
+      [application]="application"
+      (click)="openApplication.emit(application.id)"
+      (delete)="delete.emit(application)"
+      (preview)="preview.emit(application)"
+      (clone)="clone.emit(application)"
+      (editAccess)="editAccess.emit(application)"
+    ></shared-application-summary>
+  </ng-container>
+</div>
