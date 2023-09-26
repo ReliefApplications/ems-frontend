@@ -11,7 +11,6 @@ import {
 import get from 'lodash/get';
 import { takeUntil, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import path from 'path';
 
 /**
  * Main component of Application view.
