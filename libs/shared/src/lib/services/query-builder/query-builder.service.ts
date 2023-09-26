@@ -312,9 +312,13 @@ export class QueryBuilderService {
    *
    * @param settings Widget settings.
    * @param settings.query Query definition.
+   * @param single Should take a single record
    * @returns GraphQL query.
    */
-  public buildQuery(settings: { query: Query; [key: string]: any }) {
+  public buildQuery(
+    settings: { query: Query; [key: string]: any },
+    single = false
+  ) {
     const builtQuery = settings.query;
     if (
       builtQuery?.name &&
@@ -324,10 +328,34 @@ export class QueryBuilderService {
       const fields = ['canUpdate\ncanDelete\n'].concat(
         this.buildFields(builtQuery.fields)
       );
-      return this.graphqlQuery(builtQuery.name, fields);
+      if (single) {
+        return this.singleGraphQLQuery(builtQuery.name, fields);
+      } else {
+        return this.graphqlQuery(builtQuery.name, fields);
+      }
     } else {
       return null;
     }
+  }
+
+  /**
+   * Builds a graphQL query to get a single record from name and fields strings.
+   *
+   * @param name name of the query.
+   * @param fields fields to fetch.
+   * @returns GraphQL query.
+   */
+  public singleGraphQLQuery(name: string, fields: string[] | string) {
+    return gql<QueryResponse, QueryVariables>`
+    query GetSingleRecord($id: ID! $data: JSON) {
+      ${name}(
+      id: $id
+      data: $data
+      ) {
+        ${fields}
+      }
+    }
+  `;
   }
 
   /**
