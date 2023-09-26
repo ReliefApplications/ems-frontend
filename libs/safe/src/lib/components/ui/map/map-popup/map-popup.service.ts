@@ -208,7 +208,7 @@ export class SafeMapPopupService {
     const propertyNameTemplate = (propertyName: string) =>
       `<p class="break-words !m-0 capitalize text-gray-400">${propertyName}</p>`;
     const propertyValueTemplate = (property: any) =>
-      `<p class="!m-0 break-words">{{${property}}}</p>`;
+      `<p class="!m-0 break-words whitespace-nowrap overflow-hidden text-ellipsis">{{${property}}}</p>`;
     // Template for the image
     const imageTemplate = (img: string) =>
       `<img src="{{${img}}}" class="flex-1" />`;
