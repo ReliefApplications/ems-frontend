@@ -33,7 +33,7 @@ import {
   DELETE_RECORDS,
   EDIT_RECORD,
 } from './graphql/mutations';
-import { GET_FORM_BY_ID } from './graphql/queries';
+import { GET_RESOURCE_QUERY_NAME } from './graphql/queries';
 import {
   ConvertRecordMutationResponse,
   EditRecordMutationResponse,
@@ -53,9 +53,9 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 import { firstValueFrom, Subject } from 'rxjs';
 import { searchFilters } from '../../../utils/filter/search-filters';
 import { SnackbarService } from '@oort-front/ui';
-import { FormQueryResponse } from '../../../models/form.model';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
+import { ResourceQueryResponse } from '../../../models/resource.model';
 
 /**
  * Default file name when exporting grid data.
@@ -161,7 +161,6 @@ export class CoreGridComponent
   } = {
     error: false,
   };
-  private templateStructure = '';
   // Refresh content of the history
   private refresh$: Subject<boolean> = new Subject<boolean>();
 
@@ -456,32 +455,10 @@ export class CoreGridComponent
           ),
         };
       }
-      this.loadTemplate();
     }
   }
 
-  /**
-   * Get template structure, for inline edition validation.
-   */
-  private async loadTemplate(): Promise<void> {
-    if (this.settings.template)
-      this.apollo
-        .query<FormQueryResponse>({
-          query: GET_FORM_BY_ID,
-          variables: {
-            id: this.settings.template,
-          },
-        })
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(({ data }) => {
-          if (data.form.structure) {
-            this.templateStructure = data.form.structure;
-          }
-        });
-  }
-
   // === GRID FIELDS ===
-
   /**
    * Converts fields with date type into javascript dates.
    *
@@ -517,6 +494,7 @@ export class CoreGridComponent
    * @param value Updated value of the item.
    */
   private update(item: any, value: any): void {
+    console.log(this.updatedItems);
     let updatedItem = this.updatedItems.find((x) => x.id === item.id);
     if (updatedItem) {
       updatedItem = { ...updatedItem, ...value };
@@ -536,15 +514,65 @@ export class CoreGridComponent
           draft: true,
         },
       })
-      .subscribe((res) => {
-        Object.assign(
-          this.items.find((x) => x.id === item.id),
-          res.data?.editRecord.data
-        );
-        item.saved = false;
-        const index = this.updatedItems.findIndex((x) => x.id === item.id);
-        this.updatedItems.splice(index, 1, item);
-        this.loadItems();
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data }) => {
+        if (data?.editRecord.data) {
+          const editedData = data.editRecord.data;
+          this.apollo
+            .query<ResourceQueryResponse>({
+              query: GET_RESOURCE_QUERY_NAME,
+              variables: {
+                id: this.settings.resource,
+              },
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(({ data }) => {
+              const queryName = data.resource.singleQueryName;
+              if (queryName) {
+                const query = this.queryBuilder.buildQuery(
+                  {
+                    query: {
+                      ...this.settings.query,
+                      name: queryName,
+                    },
+                  },
+                  true
+                );
+                if (query) {
+                  this.apollo
+                    .query<any>({
+                      query,
+                      variables: {
+                        id: item.id,
+                        data: editedData,
+                      },
+                    })
+                    .pipe(takeUntil(this.destroy$))
+                    .subscribe(({ data }) => {
+                      const dataItem = this.gridData.data.find(
+                        (x) => x.id === item.id
+                      );
+                      console.log(dataItem);
+                      console.log(get(data, queryName));
+                      // Update data item element
+                      Object.assign(dataItem, get(data, queryName));
+                      console.log(dataItem);
+                      // Update data item raw value ( used by inline edition )
+                      dataItem._meta.raw = editedData;
+                      item.saved = false;
+                      const index = this.updatedItems.findIndex(
+                        (x) => x.id === item.id
+                      );
+                      this.updatedItems.splice(index, 1, {
+                        id: item.id,
+                        ...editedData,
+                      });
+                      this.loadItems();
+                    });
+                }
+              }
+            });
+        }
       });
   }
 
@@ -676,17 +704,21 @@ export class CoreGridComponent
           this.status = {
             error: false,
           };
+          console.log('there');
           for (const field in data) {
             try {
               if (Object.prototype.hasOwnProperty.call(data, field)) {
+                console.log('ici');
                 const nodes =
                   data[field]?.edges.map((x: any) => ({
                     ...x.node,
                     _meta: {
                       style: x.meta.style,
+                      raw: x.meta.raw,
                     },
                   })) || [];
                 this.totalCount = data[field] ? data[field].totalCount : 0;
+                console.log('cloning');
                 this.items = cloneData(nodes);
                 this.convertDateFields(this.items);
                 this.originalItems = cloneData(this.items);
@@ -764,6 +796,8 @@ export class CoreGridComponent
     // TODO = check what to do there
     this.onPageChange({ skip: 0, take: this.pageSize });
     this.selectedRows = [];
+    console.log(this.updatedItems);
+    console.log(this.items);
     // this.updatedItems = [];
     this.refresh$.next(true);
   }
