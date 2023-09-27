@@ -35,6 +35,7 @@ export const GET_DASHBOARD_BY_ID = gql`
       }
       step {
         id
+        icon
         workflow {
           id
           page {

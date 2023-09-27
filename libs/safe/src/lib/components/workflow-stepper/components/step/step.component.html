@@ -26,7 +26,8 @@
   </div>
   <ng-container *ngIf="!!step.icon">
     <ui-icon
-      class="flex"
+      class="flex align-middle justify-center h-9 mt-7"
+      [isFontAwesome]="true"
       [icon]="step.icon"></ui-icon>
   </ng-container>
   <ng-container *ngIf="!step.icon">

@@ -16,6 +16,7 @@ export class IconComponent {
   @Input() variant: Variant = 'default';
   @Input() size = 24;
   @Input() isOutlined = false;
+  @Input() isFontAwesome = false;
 
   /**
    * Formats the size input adding a 'px' suffix

@@ -4,8 +4,7 @@
     <ng-container *ngFor="let group of navGroups; let i = index" class="h-full">
       <div class="pl-6">
         <div
-          class="overflow-clip flex flex-row justify-between items-center text-xs font-semibold pt-2 leading-6 text-gray-400"
-        >
+          class="overflow-clip flex flex-row justify-between items-center text-xs font-semibold pt-2 leading-6 text-gray-400">
           <div class="truncate">
             {{ group.name }}
           </div>
@@ -17,8 +16,7 @@
             [uiTooltip]="'models.page.add' | translate"
             routerLink="./add-page"
             (click)="largeDevice ? null : nav.toggle()"
-            class="overflow-visible"
-          ></ui-button>
+            class="overflow-visible"></ui-button>
         </div>
         <div
           cdkDropList
@@ -33,8 +31,7 @@
                 ? 'app-sidenav'
                 : 'app-sidenav-phone'
               : ''
-          "
-        >
+          ">
           <!-- Classes determine nav-list height for application layout -->
           <ul class="pr-6">
             <ng-container *ngFor="let item of group.navItems">
@@ -42,26 +39,23 @@
                 cdkDrag
                 [cdkDragDisabled]="!item.orderable"
                 class="show-icons"
-                *ngIf="canAddPage || item.visible || !appLayout"
-              >
+                *ngIf="canAddPage || item.visible || !appLayout">
                 <li
                   [routerLink]="item.path"
-                  routerLinkActive="!text-primary-600 bg-gray-50"
-                >
+                  routerLinkActive="!text-primary-600 bg-gray-50">
                   <a
                     class="group"
                     [routerLink]="item.path"
-                    (click)="largeDevice ? null : nav.toggle()"
-                  >
-                    <ui-icon variant="grey" [icon]="item.icon"> </ui-icon>
+                    (click)="largeDevice ? null : nav.toggle()">
+                    <ui-icon variant="grey" [icon]="item.icon"
+                      [isFontAwesome]="item.hasFontAwesomeIcon"></ui-icon>
                     <p class="truncate m-0" [uiTooltip]="item.name">
                       {{ item.name }}
                     </p>
                   </a>
                   <div
                     class="flex flex-row items-center"
-                    *ngIf="item.action || item.orderable"
-                  >
+                    *ngIf="item.action || item.orderable">
                     <ui-button
                       class="hide-icons"
                       [isIcon]="true"
@@ -69,8 +63,7 @@
                       size="small"
                       (click)="onClick(item.action.callback, $event)"
                       [icon]="item.action.icon"
-                      [uiTooltip]="item.action.toolTip"
-                    >
+                      [uiTooltip]="item.action.toolTip">
                     </ui-button>
                     <ui-button
                       class="hide-icons"
@@ -78,26 +71,22 @@
                       size="small"
                       cdkDragHandle
                       *ngIf="item.orderable"
-                      icon="drag_indicator"
-                    >
+                      icon="drag_indicator">
                     </ui-button>
                     <ui-icon
                       variant="grey"
                       [size]="18"
                       *ngIf="!item.visible"
-                      icon="visibility_off"
-                    >
+                      icon="visibility_off">
                     </ui-icon>
                   </div>
                 </li>
                 <!-- Preview when dragging element -->
                 <li
                   *cdkDragPreview
-                  class="flex items-center flex-row text-gray-700 bg-white rounded-md px-2 py-3 shadow-2lg"
-                >
+                  class="flex items-center flex-row text-gray-700 bg-white rounded-md px-2 py-3 shadow-2lg">
                   <a
-                    class="group flex flex-row gap-x-3 text-sm leading-6 items-center font-semibold"
-                  >
+                    class="group flex flex-row gap-x-3 text-sm leading-6 items-center font-semibold">
                     <ui-icon variant="grey" [icon]="item.icon"></ui-icon>
                     <div class="pl-2">{{ item.name }}</div>
                   </a>
@@ -116,8 +105,7 @@
             category="secondary"
             variant="primary"
             routerLink="./add-page"
-            (click)="largeDevice ? null : nav.toggle()"
-          >
+            (click)="largeDevice ? null : nav.toggle()">
             {{ 'models.page.add' | translate }}
           </ui-button>
         </div>
@@ -133,8 +121,7 @@
         cdkDropList
         cdkDropListOrientation="horizontal"
         (cdkDropListDropped)="drop($event, group)"
-        class="nav-items-list"
-      >
+        class="nav-items-list">
         <!-- Classes determine nav-list height for application layout -->
         <!-- loop on items of each nav groups -->
         <!-- Classes determine nav-list height for application layout -->
@@ -144,14 +131,12 @@
               cdkDrag
               [cdkDragDisabled]="!item.orderable"
               class="show-icons w-full max-w-[200px]"
-              *ngIf="canAddPage || item.visible || !appLayout"
-            >
+              *ngIf="canAddPage || item.visible || !appLayout">
               <li routerLinkActive="!text-primary-600 bg-gray-50">
                 <a
                   class="group"
                   (click)="largeDevice ? null : nav.toggle()"
-                  [routerLink]="item.path"
-                >
+                  [routerLink]="item.path">
                   <ui-icon variant="grey" [icon]="item.icon"> </ui-icon>
                   <p class="truncate m-0" [uiTooltip]="item.name">
                     {{ item.name }}
@@ -159,8 +144,7 @@
                 </a>
                 <div
                   class="flex flex-row items-center"
-                  *ngIf="item.action || item.orderable"
-                >
+                  *ngIf="item.action || item.orderable">
                   <ui-button
                     variant="danger"
                     class="hide-icons hover:text-primary-600"
@@ -169,8 +153,7 @@
                     size="small"
                     (click)="onClick(item.action.callback, $event)"
                     [icon]="item.action.icon"
-                    [uiTooltip]="item.action.toolTip"
-                  >
+                    [uiTooltip]="item.action.toolTip">
                   </ui-button>
                   <ui-button
                     variant="grey"
@@ -179,26 +162,22 @@
                     size="small"
                     cdkDragHandle
                     *ngIf="item.orderable"
-                    icon="drag_indicator"
-                  >
+                    icon="drag_indicator">
                   </ui-button>
                   <ui-icon
                     variant="grey"
                     [size]="18"
                     *ngIf="!item.visible"
                     icon="visibility_off"
-                    class="flex"
-                  ></ui-icon>
+                    class="flex"></ui-icon>
                 </div>
               </li>
               <!-- Preview when dragging element -->
               <li
                 *cdkDragPreview
-                class="flex items-center flex-row text-gray-700 bg-white rounded-md px-2 py-3 shadow-2lg"
-              >
+                class="flex items-center flex-row text-gray-700 bg-white rounded-md px-2 py-3 shadow-2lg">
                 <a
-                  class="group flex flex-row gap-x-3 text-sm leading-6 items-center font-semibold"
-                >
+                  class="group flex flex-row gap-x-3 text-sm leading-6 items-center font-semibold">
                   <ui-icon variant="grey" [icon]="item.icon"></ui-icon>
                   <div class="pl-2">{{ item.name }}</div>
                 </a>
@@ -214,8 +193,7 @@
         icon="add"
         variant="primary"
         [uiTooltip]="'models.page.add' | translate"
-        routerLink="./add-page"
-      ></ui-button>
+        routerLink="./add-page"></ui-button>
     </ng-container>
   </section>
 </ng-template>

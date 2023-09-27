@@ -186,6 +186,7 @@ export class ApplicationComponent
                 ? `./${x.type}/${x.id}`
                 : `./${x.type}/${x.content}`,
             icon: x.icon || this.getNavIcon(x.type || ''),
+            hasFontAwesomeIcon: !!x.icon,
             visible: x.visible,
           })),
       },

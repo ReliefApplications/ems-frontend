@@ -102,6 +102,7 @@ export const GET_WORKFLOW_STEPS = gql`
       steps {
         id
         name
+        icon
         type
         content
         permissions {
