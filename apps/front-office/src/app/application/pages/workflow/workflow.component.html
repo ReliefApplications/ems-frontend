@@ -1,10 +1,13 @@
 <!-- STEPS -->
-<shared-workflow-stepper
-  [loading]="loading"
-  [steps]="steps"
-  (openStep)="onOpenStep($event)"
-  [activeStep]="activeStep"
-  class="my-4 -mx-6 block"
->
-</shared-workflow-stepper>
+<div class="mb-4">
+  <shared-workflow-stepper
+    [loading]="loading"
+    [steps]="steps"
+    (openStep)="onOpenStep($event)"
+    [activeStep]="activeStep"
+    class="overflow-x-auto"
+  >
+  </shared-workflow-stepper>
+  <ui-divider></ui-divider>
+</div>
 <router-outlet (activate)="onActivate($event)"></router-outlet>

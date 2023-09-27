@@ -1,55 +1,29 @@
-.shared-step {
-  position: relative;
-  width: 100px;
-  height: 100px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  cursor: pointer;
-  border-radius: 8px;
-  box-sizing: border-box;
 
-  &:not(.active) {
-    border: 1px solid #2f383e33;
-    img {
-      filter: grayscale(1);
+.step {
+  & > span {
+    @apply min-h-[54px] flex justify-between items-center cursor-pointer flex-row hover:bg-gray-50 hover:text-primary-600 hover:rounded-md hover:border-none;
+    & > a {
+      @apply flex flex-1 overflow-hidden flex-row gap-x-3 text-sm leading-6 items-center font-semibold px-2 py-3;
     }
   }
-
-  span {
-    font-weight: 500;
-    margin-bottom: 8px;
-    margin-top: auto;
-    color: #6e7478;
-    font-size: 12px;
-    text-align: center;
-    width: 100%;
-    box-sizing: border-box;
-    padding: 0 8px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-height: 30px;
-    white-space: nowrap;
+  .hide-icons {
+    display: none;
   }
-
-  .step-actions {
-    background: rgba(255, 255, 255, 0.5);
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    z-index: 1;
-  }
-
-  &:not(:hover) {
-    .step-actions {
-      display: none;
+  &:hover {
+    .hide-icons {
+      display: block;
     }
+  }
+}
+
+.step-inactive {
+  & > span {
+    @apply text-gray-700;
+  }
+}
+
+.step-active {
+  & > span {
+    @apply border-b-2 border-transparent text-primary-400 border-primary-300 focus:ring-primary-600;
   }
 }

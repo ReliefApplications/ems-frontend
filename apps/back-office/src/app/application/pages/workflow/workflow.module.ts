@@ -18,6 +18,7 @@ import {
   ButtonModule,
   MenuModule,
   SpinnerModule,
+  DividerModule,
 } from '@oort-front/ui';
 
 /**
@@ -42,6 +43,7 @@ import {
     ButtonModule,
     AlertModule,
     TooltipModule,
+    DividerModule,
   ],
   exports: [WorkflowComponent],
 })

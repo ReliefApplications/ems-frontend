@@ -1,8 +1,16 @@
 <div
-  class="w-24 h-24 flex flex-col justify-between items-center cursor-pointer rounded-lg bg-primary-50"
+  class="
+    w-full min-h-[54px] cursor-pointer hover:text-primary-600
+    flex flex-1 gap-x-3 text-sm leading-6 items-center font-semibold
+    text-gray-700 hover:bg-gray-50 rounded-md px-2 py-3 whitespace-nowrap
+  "
 >
-  <ui-icon class="mt-8" icon="add" variant="primary"></ui-icon>
-  <span class="text-primary-500 font-medium mb-2">{{
-    'models.step.new' | translate
-  }}</span>
+  <ui-icon
+    [size]="18"
+    icon="add"
+    variant="grey"
+  ></ui-icon>
+  <span>
+    {{ 'models.step.new' | translate }}
+  </span>
 </div>

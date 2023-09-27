@@ -4,14 +4,16 @@
     loading;
     repeat: 1;
     height: '32px';
-    width: '120px';
+    width: '200px';
     shape: 'rectangle'
   "
+  class="mb-4"
 >
-  <ng-container *ngIf="workflow">
-    <div class="flex flex-wrap items-center justify-between gap-4 -mt-4">
-      <!-- Editable Title -->
-      <div class="flex items-center gap-1">
+  <div *ngIf="workflow" class="mb-4">
+    <div class="flex items-center justify-between gap-4 -mt-4">
+      <!-- Title and visibility icon -->
+      <div class="flex items-center gap-1 overflow-x-auto">
+        <!-- Editable Title -->
         <shared-editable-text
           [text]="workflow.name"
           [uiTooltip]="workflow.name ?? ''"
@@ -39,8 +41,11 @@
           "
         >
         </ui-button>
+        <!-- Steps container: for bigger screens, default view -->
+        <ng-container *ngIf="largeDevice">
+          <ng-container *ngTemplateOutlet="stepsTmpl"></ng-container>
+        </ng-container>
       </div>
-
       <!-- Action buttons at right end -->
       <div class="flex items-center gap-1" *ngIf="!formActive">
         <!-- Page permissions button icon -->
@@ -91,19 +96,28 @@
         </ng-template>
       </div>
     </div>
-  </ng-container>
+    <!-- Steps container: displayed on smaller screens -->
+    <ng-container *ngIf="!largeDevice">
+      <ng-container *ngTemplateOutlet="stepsTmpl"></ng-container>
+    </ng-container>
+    <ui-divider></ui-divider>
+  </div>
 </ng-container>
+
 <!-- STEPS -->
-<shared-workflow-stepper
-  class="-mx-6 my-4 block"
-  [loading]="loading"
-  [steps]="steps"
-  [canUpdate]="canUpdate"
-  (add)="onAddStep()"
-  (openStep)="onOpenStep($event)"
-  (delete)="onDeleteStep($event)"
-  (reorderSteps)="onReorderSteps($event)"
-  [activeStep]="activeStep"
->
-</shared-workflow-stepper>
+<ng-template #stepsTmpl>
+  <shared-workflow-stepper
+    class="overflow-x-auto"
+    [loading]="loading"
+    [steps]="steps"
+    [canUpdate]="canUpdate"
+    (add)="onAddStep()"
+    (openStep)="onOpenStep($event)"
+    (delete)="onDeleteStep($event)"
+    (reorderSteps)="onReorderSteps($event)"
+    [activeStep]="activeStep"
+  >
+  </shared-workflow-stepper>
+</ng-template>
+
 <router-outlet (activate)="onActivate($event)"></router-outlet>

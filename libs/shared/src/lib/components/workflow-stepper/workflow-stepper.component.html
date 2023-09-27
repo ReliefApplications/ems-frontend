@@ -1,25 +1,23 @@
-<ui-divider class="m-0"></ui-divider>
-<div class="shared-steps" *ngIf="loading">
+<div *ngIf="loading">
   <kendo-skeleton
     shape="rectangle"
     animation="pulse"
     width="100px"
-    height="100px"
+    height="32px"
     class="rounded-lg"
     *ngFor="let number of [0, 1, 2]"
   ></kendo-skeleton>
 </div>
 <div
-  class="shared-steps"
   *ngIf="!loading"
   cdkDropList
   cdkDropListOrientation="horizontal"
   (cdkDropListDropped)="dropStep($event)"
+  class="overflow-y-hidden flex m-0 h-auto"
 >
   <shared-step
     *ngFor="let step of steps; let index = index"
     [step]="step"
-    [uiTooltip]="step.name!"
     [canUpdate]="canUpdate"
     [active]="index === activeStep"
     (click)="onStep(index)"
@@ -31,4 +29,3 @@
   ></shared-step>
   <shared-add-step *ngIf="canUpdate" (click)="add.emit()"></shared-add-step>
 </div>
-<ui-divider class="m-0"></ui-divider>

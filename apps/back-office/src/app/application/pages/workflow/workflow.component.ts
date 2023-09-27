@@ -1,5 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import { Component, OnInit } from '@angular/core';
+import { Component, HostListener, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { ActivatedRoute, Router } from '@angular/router';
 import {
@@ -30,26 +30,24 @@ import { SnackbarService } from '@oort-front/ui';
   styleUrls: ['./workflow.component.scss'],
 })
 export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
-  // === DATA ===
+  /** DATA */
   public loading = true;
-
-  // === WORKFLOW ===
+  /** WORKFLOW */
   public id = '';
   public applicationId?: string;
   public workflow?: Workflow;
   public steps: Step[] = [];
-
-  // === WORKFLOW EDITION ===
+  /** WORKFLOW EDITION */
   public canEditName = false;
   public formActive = false;
   public canUpdate = false;
-
-  // === ACTIVE STEP ===
+  /** ACTIVE STEP */
   public activeStep = 0;
-
-  // === DUP APP SELECTION ===
+  /** DUP APP SELECTION */
   public showAppMenu = false;
   public applications: Application[] = [];
+  /** Display heard and steps format */
+  public largeDevice: boolean;
 
   /**
    * Application workflow page component
@@ -78,6 +76,7 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
     private translate: TranslateService
   ) {
     super();
+    this.largeDevice = window.innerWidth > 500;
   }
 
   ngOnInit(): void {
@@ -153,6 +152,16 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
           this.steps = [];
         }
       });
+  }
+
+  /**
+   * Change the display depending on windows size.
+   *
+   * @param event Event that implies a change in window size
+   */
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any): void {
+    this.largeDevice = event.target.innerWidth > 500;
   }
 
   /**

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { WorkflowRoutingModule } from './workflow-routing.module';
 import { WorkflowComponent } from './workflow.component';
-import { SpinnerModule } from '@oort-front/ui';
+import { SpinnerModule, DividerModule } from '@oort-front/ui';
 import { WorkflowStepperModule } from '@oort-front/shared';
 
 /**
@@ -15,6 +15,7 @@ import { WorkflowStepperModule } from '@oort-front/shared';
     WorkflowRoutingModule,
     SpinnerModule,
     WorkflowStepperModule,
+    DividerModule,
   ],
   exports: [WorkflowComponent],
 })
