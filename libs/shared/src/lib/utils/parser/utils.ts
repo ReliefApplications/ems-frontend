@@ -271,6 +271,7 @@ const replaceRecordFields = (
             break;
           case 'owner':
           case 'users':
+          case 'people':
           case 'resources':
             convertedValue = `<span style='${style}'>${
               value ? value.length : 0
