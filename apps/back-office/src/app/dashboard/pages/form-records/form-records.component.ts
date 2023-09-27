@@ -2,10 +2,9 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
-  GetFormByIdQueryResponse,
-  GetRecordDetailsQueryResponse,
   GET_FORM_BY_ID,
   GET_FORM_RECORDS,
+  GET_RECORD_DETAILS,
 } from './graphql/queries';
 import {
   EDIT_RECORD,
@@ -136,7 +135,7 @@ export class FormRecordsComponent
 
     this.recordsQuery.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe(({ errors, data, loading }) => {
+      .subscribe(({ data }) => {
         this.cachedRecords.push(
           ...data.form.records.edges.map((x: any) => x.node)
         );
@@ -361,7 +360,7 @@ export class FormRecordsComponent
   /**
    * Open the history of the record on the right side of the screen.
    *
-   * @param record to get history from
+   * @param id to get history from
    */
   public onViewHistory(id: string): void {
     this.apollo

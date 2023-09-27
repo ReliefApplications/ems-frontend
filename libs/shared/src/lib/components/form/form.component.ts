@@ -20,7 +20,6 @@ import {
   Record as RecordModel,
 } from '../../models/record.model';
 import { BehaviorSubject, takeUntil } from 'rxjs';
-import addCustomFunctions from '../../utils/custom-functions';
 import { AuthService } from '../../services/auth/auth.service';
 import { LayoutService } from '../../services/layout/layout.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
@@ -29,7 +28,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { SnackbarService } from '@oort-front/ui';
-import { cloneDeep, isNil } from 'lodash';
+import { cloneDeep } from 'lodash';
+import addCustomFunctions from '../../survey/custom-functions';
 
 /**
  * This component is used to display forms

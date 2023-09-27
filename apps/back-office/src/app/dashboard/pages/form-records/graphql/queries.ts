@@ -95,3 +95,27 @@ export interface GetFormRecordsQueryResponse {
     >
   >;
 }
+
+/** Graphql query for getting a form by its id */
+export const GET_FORM_BY_ID = gql`
+  query GetFormById($id: ID!) {
+    form(id: $id) {
+      id
+      name
+      createdAt
+      structure
+      metadata {
+        name
+        canSee
+      }
+      fields
+      status
+      versions {
+        id
+        createdAt
+        data
+      }
+      canUpdate
+    }
+  }
+`;

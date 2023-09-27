@@ -309,7 +309,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/styles/src/lib/themes/oort"]
+            "includePaths": ["libs/shared/src/lib/style/themes/alimentaide"]
           }
         },
         "oort-demo": {
@@ -357,7 +357,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/styles/src/lib/themes/oort"]
+            "includePaths": ["libs/shared/src/lib/style/themes/lift"]
           }
         },
         "oort-expertisefr": {
@@ -381,7 +381,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/styles/src/lib/themes/expertisefr"]
+            "includePaths": ["libs/shared/src/lib/style/themes/expertisefr"]
           }
         },
         "oort-local": {
