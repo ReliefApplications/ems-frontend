@@ -56,6 +56,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
+import { GraphQLError } from 'graphql';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -112,6 +113,8 @@ export class DashboardComponent
   public contextRecord: Record | null = null;
   /** Configured dashboard quick actions */
   public buttonActions: ButtonActionT[] = [];
+
+  private timeoutListener!: NodeJS.Timeout;
 
   /** @returns get newest widget id from existing ids */
   get newestId(): number {
@@ -284,7 +287,10 @@ export class DashboardComponent
    * @returns Promise
    */
   private async loadDashboard(id: string) {
-    if (this.dashboard?.id === id) return; // don't init the dashboard if the id is the same
+    // don't init the dashboard if the id is the same
+    if (this.dashboard?.id === id) {
+      return;
+    }
 
     const rootElement = this.elementRef.nativeElement;
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
@@ -345,6 +351,9 @@ export class DashboardComponent
    */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
     localForage.removeItem(this.applicationId + 'contextualFilterPosition'); //remove temporary contextual filter data
     localForage.removeItem(this.applicationId + 'contextualFilter');
     this.dashboardService.closeDashboard();
@@ -385,8 +394,11 @@ export class DashboardComponent
     widget.id = this.newestId;
     this.widgets = [...this.widgets, widget];
     this.autoSaveChanges();
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
     // scroll to the element once it is created
-    setTimeout(() => {
+    this.timeoutListener = setTimeout(() => {
       const el = this.document.getElementById(`widget-${widget.id}`);
       el?.scrollIntoView({ behavior: 'smooth' });
     });
@@ -489,31 +501,44 @@ export class DashboardComponent
       })
       .subscribe({
         next: ({ errors }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.dashboard.one'),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectUpdated', {
-                type: this.translate.instant('common.dashboard.one'),
-                value: '',
-              })
-            );
-            this.dashboardService.openDashboard({
-              ...this.dashboard,
-              structure: this.widgets,
-            });
-          }
+          this.handleDashboardMutationResponse(errors);
         },
         complete: () => (this.loading = false),
       });
   }
 
+  /**
+   * Handle dashboard mutations response
+   *
+   * @param errors errors from mutation response
+   * @param data from mutation response if any
+   */
+  private handleDashboardMutationResponse(
+    errors: readonly GraphQLError[] | undefined,
+    data?: EditDashboardMutationResponse | null
+  ) {
+    if (errors) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectNotUpdated', {
+          type: this.translate.instant('common.dashboard.one'),
+          error: errors ? errors[0].message : '',
+        }),
+        { error: true }
+      );
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectUpdated', {
+          type: this.translate.instant('common.dashboard.one'),
+          value: '',
+        })
+      );
+      this.dashboardService.openDashboard({
+        ...this.dashboard,
+        ...(!data && { structure: this.widgets }),
+        ...(data && { showFilter: data?.editDashboard.showFilter }),
+      });
+    }
+  }
   /**
    * Edit the permissions layer.
    *
@@ -531,29 +556,7 @@ export class DashboardComponent
         })
         .subscribe({
           next: ({ errors, data }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotUpdated',
-                  {
-                    type: this.translate.instant('common.step.one'),
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.step.one'),
-                  value: '',
-                })
-              );
-              this.dashboard = {
-                ...this.dashboard,
-                permissions: data?.editStep.permissions,
-              };
-            }
+            this.handleAccessMutationResponse(data, errors, 'editStep');
           },
           error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
@@ -570,34 +573,46 @@ export class DashboardComponent
         })
         .subscribe({
           next: ({ errors, data }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotUpdated',
-                  {
-                    type: this.translate.instant('common.step.one'),
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.step.one'),
-                  value: '',
-                })
-              );
-              this.dashboard = {
-                ...this.dashboard,
-                permissions: data?.editPage.permissions,
-              };
-            }
+            this.handleAccessMutationResponse(data, errors, 'editPage');
           },
           error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
           },
         });
+    }
+  }
+
+  /**
+   * Handle access mutations response
+   *
+   * @param data retrieved from the access mutation response
+   * @param errors errors from the access mutation response if any
+   * @param dataKey key used to get permission from the given data
+   */
+  private handleAccessMutationResponse<T>(
+    data: T | null | undefined,
+    errors: readonly GraphQLError[] | undefined,
+    dataKey: keyof T
+  ) {
+    if (errors) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectNotUpdated', {
+          type: this.translate.instant('common.step.one'),
+          error: errors ? errors[0].message : '',
+        }),
+        { error: true }
+      );
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectUpdated', {
+          type: this.translate.instant('common.step.one'),
+          value: '',
+        })
+      );
+      this.dashboard = {
+        ...this.dashboard,
+        permissions: (data?.[dataKey] as any).permissions,
+      };
     }
   }
 
@@ -665,29 +680,7 @@ export class DashboardComponent
         })
         .subscribe({
           next: ({ data, errors }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotUpdated',
-                  {
-                    type: this.translate.instant('common.dashboard.one'),
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.dashboard.one'),
-                  value: '',
-                })
-              );
-              this.dashboardService.openDashboard({
-                ...this.dashboard,
-                showFilter: data?.editDashboard.showFilter,
-              });
-            }
+            this.handleDashboardMutationResponse(errors, data);
           },
           complete: () => {
             this.loading = false;
