@@ -42,6 +42,7 @@ import { WidgetChoiceModule } from './components/widget-choice/widget-choice.mod
 import { TabsSettingsModule } from './components/widgets/tabs-settings/tabs-settings.module';
 import { ApplicationsArchiveModule } from './components/applications-archive/applications-archive.module';
 import { ListFilterComponent } from './components/list-filter/list-filter.component';
+import { StatusOptionsComponent } from './components/status-options/status-options.component';
 
 /** Main module for the shared project */
 @NgModule({
@@ -77,6 +78,7 @@ import { ListFilterComponent } from './components/list-filter/list-filter.compon
     ButtonActionModule,
     WidgetChoiceModule,
     TabsSettingsModule,
+    StatusOptionsComponent,
     // === Pipes ===
     DateModule,
     ReadableCronModule,
@@ -95,6 +97,6 @@ import { ListFilterComponent } from './components/list-filter/list-filter.compon
     ViewsModule,
   ],
   declarations: [],
-  imports: [ListFilterComponent],
+  imports: [ListFilterComponent, StatusOptionsComponent],
 })
 export class Module {}

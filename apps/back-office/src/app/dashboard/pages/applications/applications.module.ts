@@ -9,6 +9,7 @@ import {
   SkeletonTableModule,
   DateModule as SharedDateModule,
   ListFilterComponent,
+  StatusOptionsComponent,
 } from '@oort-front/shared';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { FilterComponent } from './components/filter/filter.component';
@@ -28,7 +29,6 @@ import {
   IconModule,
   SelectMenuModule,
   TableModule,
-  ChipModule,
   PaginatorModule,
   DateModule,
 } from '@oort-front/ui';
@@ -61,7 +61,7 @@ import {
     SelectMenuModule,
     TableModule,
     DateModule,
-    ChipModule,
+    StatusOptionsComponent,
     TooltipModule,
     ListFilterComponent,
   ],

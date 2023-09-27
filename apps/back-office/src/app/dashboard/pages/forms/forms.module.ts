@@ -6,6 +6,7 @@ import {
   SkeletonTableModule,
   DateModule as SharedDateModule,
   ListFilterComponent,
+  StatusOptionsComponent,
 } from '@oort-front/shared';
 import {
   FormsModule as AngularFormsModule,
@@ -50,6 +51,7 @@ import {
     IconModule,
     SelectMenuModule,
     TableModule,
+    StatusOptionsComponent,
     ChipModule,
     DateModule,
     TooltipModule,
