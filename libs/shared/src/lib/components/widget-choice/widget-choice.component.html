@@ -1,0 +1,73 @@
+<ng-container
+  *ngIf="floating; then floatingTemplate; else listTemplate"
+></ng-container>
+
+<ng-template #listTemplate>
+  <div class="shared-widget-choice">
+    <div
+      class="shared-widget-type"
+      *ngFor="let type of widgetTypes"
+      (click)="onSelect(type)"
+      [ngStyle]="hovered === type.id ? { 'border-color': type.color } : null"
+      (mouseover)="hovered = type.id"
+      (mouseout)="hovered = ''"
+    >
+      <img [src]="type.icon" />
+      <span class="text-xl text-gray-500 mb-4">{{
+        type.name | titlecase
+      }}</span>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #floatingTemplate>
+  <ng-container
+    *ngIf="collapsed; then collapsedTemplate; else barTemplate"
+  ></ng-container>
+</ng-template>
+
+<ng-template #barTemplate>
+  <div class="shared-floating-widget-choice shadow-lg" cdkDrag>
+    <div class="shared-widget-type-list">
+      <div
+        class="shared-widget-type"
+        *ngFor="let type of widgetTypes"
+        (click)="onSelect(type)"
+        [uiTooltip]="type.name"
+        (mouseover)="hovered = type.id"
+        (mouseout)="hovered = ''"
+      >
+        <img [src]="type.icon" />
+        <div
+          *ngIf="hovered === type.id"
+          [style.background]="type.color"
+          class="shared-widget-hovered"
+        ></div>
+      </div>
+    </div>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      icon="close"
+      [isIcon]="true"
+      (click)="collapsed = true"
+      [uiTooltip]="'models.widget.tooltip.selector.collapse' | translate"
+    ></ui-button>
+  </div>
+</ng-template>
+
+<ng-template #collapsedTemplate>
+  <div
+    class="rounded-full ml-auto mr-6 shadow-lg bg-white pointer-events-auto"
+    cdkDrag
+  >
+    <ui-button
+      category="tertiary"
+      variant="primary"
+      icon="widgets"
+      [isIcon]="true"
+      (click)="collapsed = false"
+      [uiTooltip]="'models.widget.tooltip.selector.expand' | translate"
+    ></ui-button>
+  </div>
+</ng-template>

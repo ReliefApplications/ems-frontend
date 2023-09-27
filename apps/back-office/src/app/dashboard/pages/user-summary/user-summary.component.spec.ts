@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { UserSummaryComponent } from './user-summary.component';
-import { SafeUserSummaryModule } from '@oort-front/safe';
+import { UserSummaryModule } from '@oort-front/shared';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import {
   TranslateFakeLoader,
@@ -20,7 +20,7 @@ describe('UserSummaryComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [UserSummaryComponent],
       imports: [
-        SafeUserSummaryModule,
+        UserSummaryModule,
         ApolloTestingModule,
         BrowserAnimationsModule,
         TranslateModule.forRoot({

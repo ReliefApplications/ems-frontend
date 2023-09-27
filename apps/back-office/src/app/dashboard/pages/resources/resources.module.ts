@@ -3,7 +3,10 @@ import { CommonModule } from '@angular/common';
 import { ResourcesRoutingModule } from './resources-routing.module';
 import { ResourcesComponent } from './resources.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SafeSkeletonTableModule, SafeDateModule } from '@oort-front/safe';
+import {
+  SkeletonTableModule,
+  DateModule as SharedDateModule,
+} from '@oort-front/shared';
 import { FilterComponent } from './filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -15,6 +18,7 @@ import {
   IconModule,
   PaginatorModule,
   DateModule,
+  TooltipModule,
 } from '@oort-front/ui';
 
 /**
@@ -32,12 +36,13 @@ import {
     PaginatorModule,
     ReactiveFormsModule,
     TranslateModule,
-    SafeSkeletonTableModule,
-    SafeDateModule,
+    SkeletonTableModule,
+    SharedDateModule,
     ButtonModule,
     FormWrapperModule,
     TableModule,
     DateModule,
+    TooltipModule,
   ],
   exports: [ResourcesComponent],
 })

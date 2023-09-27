@@ -2,30 +2,35 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {
-  GetFormRecordsQueryResponse,
+  GetFormByIdQueryResponse,
+  GetRecordDetailsQueryResponse,
+  GET_FORM_BY_ID,
   GET_FORM_RECORDS,
 } from './graphql/queries';
 import {
-  EditRecordMutationResponse,
   EDIT_RECORD,
-  DeleteRecordMutationResponse,
   DELETE_RECORD,
-  RestoreRecordMutationResponse,
   RESTORE_RECORD,
 } from './graphql/mutations';
 import {
-  SafeLayoutService,
-  SafeConfirmService,
-  SafeBreadcrumbService,
-  SafeUnsubscribeComponent,
-  SafeDownloadService,
+  LayoutService,
+  ConfirmService,
+  BreadcrumbService,
+  UnsubscribeComponent,
+  DownloadService,
   Record,
-} from '@oort-front/safe';
+  FormRecordsQueryResponse,
+  FormQueryResponse,
+  DeleteRecordMutationResponse,
+  EditRecordMutationResponse,
+  RecordQueryResponse,
+  RestoreRecordMutationResponse,
+} from '@oort-front/shared';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
-import { Metadata } from '@oort-front/safe';
+import { Metadata } from '@oort-front/shared';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
 
 /** Default items per query, for pagination */
@@ -43,13 +48,13 @@ const DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
   styleUrls: ['./form-records.component.scss'],
 })
 export class FormRecordsComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   // === DATA ===
   public loading = true;
   public loadingMore = false;
-  private recordsQuery!: QueryRef<GetFormRecordsQueryResponse>;
+  private recordsQuery!: QueryRef<FormRecordsQueryResponse>;
   public id = '';
   public form: any;
   displayedColumns: string[] = [];
@@ -93,13 +98,13 @@ export class FormRecordsComponent
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private downloadService: SafeDownloadService,
-    private layoutService: SafeLayoutService,
+    private downloadService: DownloadService,
+    private layoutService: LayoutService,
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private translate: TranslateService,
-    private breadcrumbService: SafeBreadcrumbService,
-    private confirmService: SafeConfirmService
+    private breadcrumbService: BreadcrumbService,
+    private confirmService: ConfirmService
   ) {
     super();
   }
@@ -119,7 +124,7 @@ export class FormRecordsComponent
     this.loading = true;
 
     // get the records linked to the form
-    this.recordsQuery = this.apollo.watchQuery<GetFormRecordsQueryResponse>({
+    this.recordsQuery = this.apollo.watchQuery<FormRecordsQueryResponse>({
       query: GET_FORM_RECORDS,
       variables: {
         id: this.id,
@@ -142,12 +147,29 @@ export class FormRecordsComponent
         this.pageInfo.length = data.form.records.totalCount;
         this.pageInfo.endCursor = data.form.records.pageInfo.endCursor;
         this.loadingMore = false;
+      });
 
-        this.form = data.form;
-        this.breadcrumbService.setBreadcrumb('@form', this.form.name as string);
-        this.setDisplayedColumns();
-        this.loading = loading;
-
+    // get the form detail
+    this.apollo
+      .watchQuery<FormQueryResponse>({
+        query: GET_FORM_BY_ID,
+        variables: {
+          id: this.id,
+          display: true,
+          showDeletedRecords: this.showDeletedRecords,
+        },
+      })
+      .valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(({ errors, data, loading }) => {
+        if (data.form) {
+          this.form = data.form;
+          this.breadcrumbService.setBreadcrumb(
+            '@form',
+            this.form.name as string
+          );
+          this.setDisplayedColumns();
+          this.loading = loading;
+        }
         if (errors) {
           // TO-DO: Check why it's not working as intended.
           this.snackBar.openSnackBar(
@@ -341,18 +363,27 @@ export class FormRecordsComponent
    *
    * @param record to get history from
    */
-  public async onViewHistory(record: Record) {
-    if (!record.id) return;
-    this.historyId = record.id;
-    import('@oort-front/safe').then(({ SafeRecordHistoryComponent }) => {
-      this.layoutService.setRightSidenav({
-        component: SafeRecordHistoryComponent,
-        inputs: {
-          id: record.id,
-          revert: (version: any) => this.confirmRevertDialog(record, version),
+  public onViewHistory(id: string): void {
+    this.apollo
+      .query<RecordQueryResponse>({
+        query: GET_RECORD_DETAILS,
+        variables: {
+          id,
         },
+      })
+      .subscribe(({ data }) => {
+        this.historyId = id;
+        import('@oort-front/shared').then(({ RecordHistoryComponent }) => {
+          this.layoutService.setRightSidenav({
+            component: RecordHistoryComponent,
+            inputs: {
+              id: data.record.id,
+              revert: (version: any) =>
+                this.confirmRevertDialog(data.record, version),
+            },
+          });
+        });
       });
-    });
   }
 
   /**

@@ -50,10 +50,10 @@
           </div>
         </div>
         <!-- Schedule -->
-        <safe-cron-expression-control
+        <shared-cron-expression-control
           class="flex"
           formControlName="schedule"
-        ></safe-cron-expression-control>
+        ></shared-cron-expression-control>
         <!-- API to use -->
         <div uiFormFieldDirective class="flex-1">
           <label>{{ 'common.apiConfiguration.one' | translate }}</label>
@@ -221,6 +221,7 @@
                     icon="remove_circle_outline"
                     variant="danger"
                     (click)="onDeleteElement(i)"
+                    [uiTooltip]="'common.delete' | translate"
                   >
                   </ui-button>
                 </form>

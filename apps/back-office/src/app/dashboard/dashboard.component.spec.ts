@@ -6,8 +6,8 @@ import {
   TranslateModule,
   TranslateService,
 } from '@ngx-translate/core';
-import { AppAbility } from '@oort-front/safe';
-import { SafeLayoutModule, SafeNavbarModule } from '@oort-front/safe';
+import { AppAbility } from '@oort-front/shared';
+import { LayoutModule, NavbarModule } from '@oort-front/shared';
 import { ApolloTestingModule } from 'apollo-angular/testing';
 import {
   OAuthService,
@@ -28,8 +28,8 @@ describe('DashboardComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [DashboardComponent],
       imports: [
-        SafeLayoutModule,
-        SafeNavbarModule,
+        LayoutModule,
+        NavbarModule,
         ApolloTestingModule,
         HttpClientTestingModule,
         DialogModule,

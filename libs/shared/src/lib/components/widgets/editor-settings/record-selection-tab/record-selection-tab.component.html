@@ -1,0 +1,115 @@
+<div [formGroup]="form">
+  <div class="w-full flex flex-col">
+    <!-- RESOURCE SELECTION  -->
+    <div uiFormFieldDirective fxFlex>
+      <label>{{ 'models.resource.select' | translate }}</label>
+      <ui-graphql-select
+        valueField="id"
+        textField="name"
+        [query]="resourcesQuery"
+        formControlName="resource"
+        [selectedElements]="[selectedResource]"
+        (searchChange)="onResourceSearchChange($event)"
+        [filterable]="true"
+      ></ui-graphql-select>
+    </div>
+
+    <div uiFormFieldDirective *ngIf="!selectedLayout">
+      <label>{{
+        'components.widget.settings.grid.layouts.select' | translate
+      }}</label>
+      <ui-select-menu
+        [disabled]="!selectedResource"
+        (click)="$event.preventDefault(); addLayout()"
+      >
+      </ui-select-menu>
+    </div>
+
+    <div uiFormFieldDirective *ngIf="selectedLayout">
+      <label>{{
+        'components.widget.settings.grid.layouts.select' | translate
+      }}</label>
+      <ui-select-menu [disabled]="true" [value]="selectedLayout.id">
+        <ui-select-option [value]="selectedLayout.id">{{
+          selectedLayout.name
+        }}</ui-select-option>
+      </ui-select-menu>
+      <ui-button
+        uiSuffix
+        variant="primary"
+        [isIcon]="true"
+        icon="edit"
+        (click)="editLayout()"
+        [uiTooltip]="'common.edit' | translate"
+      ></ui-button>
+      <ui-button
+        uiSuffix
+        variant="danger"
+        [isIcon]="true"
+        icon="close"
+        (click)="deselectLayout()"
+        [uiTooltip]="'common.delete' | translate"
+      ></ui-button>
+    </div>
+
+    <ng-container *ngIf="selectedLayout && selectedRecordID">
+      <h2>
+        {{
+          'components.widget.settings.summaryCard.card.dataSource.layoutStyles.title'
+            | translate
+        }}
+      </h2>
+      <ui-checkbox formControlName="useStyles">
+        <ng-container ngProjectAs="label">
+          {{
+            'components.widget.settings.summaryCard.card.dataSource.layoutStyles.use'
+              | translate
+          }}
+        </ng-container>
+      </ui-checkbox>
+      <div *ngIf="this.form.value.useStyles">
+        <p>
+          {{
+            'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.title'
+              | translate
+          }}
+        </p>
+        <div
+          uiRadioGroupDirective="applyStyles"
+          formControlName="wholeCardStyles"
+        >
+          <ui-radio [value]="false">
+            <ng-container ngProjectAs="label">
+              {{
+                'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option1'
+                  | translate
+              }}
+            </ng-container>
+          </ui-radio>
+          <ui-radio [value]="true">
+            <ng-container ngProjectAs="label">
+              {{
+                'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option2'
+                  | translate
+              }}
+            </ng-container>
+          </ui-radio>
+        </div>
+      </div>
+    </ng-container>
+  </div>
+
+  <div class="flex flex-col mt-2" *ngIf="selectedLayout">
+    <h2>{{ 'models.record.select' | translate }}</h2>
+    <shared-core-grid
+      class="h-96"
+      [settings]="selectedLayout"
+      [multiSelect]="false"
+      [selectable]="true"
+      [showExport]="false"
+      [selectedRows]="selectedRecordID ? [selectedRecordID] : []"
+      (selectionChange)="onSelectionChange($event)"
+    >
+    </shared-core-grid>
+  </div>
+</div>

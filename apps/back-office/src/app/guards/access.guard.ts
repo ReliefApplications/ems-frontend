@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, UrlTree, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { SafeAuthService } from '@oort-front/safe';
+import { AuthService } from '@oort-front/shared';
 import { SnackbarService } from '@oort-front/ui';
 import { Observable, firstValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
@@ -22,7 +22,7 @@ export class AccessGuard implements CanActivate {
    * @param translate Angular translate service
    */
   constructor(
-    private authService: SafeAuthService,
+    private authService: AuthService,
     private snackBar: SnackbarService,
     private router: Router,
     private translate: TranslateService

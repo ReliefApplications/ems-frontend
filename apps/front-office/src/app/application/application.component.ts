@@ -1,18 +1,18 @@
 import { Component, HostListener, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { subject } from '@casl/ability';
 import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
   User,
-  SafeAuthService,
-  SafeApplicationService,
+  AuthService,
+  ApplicationService,
   ContentType,
-  SafeUnsubscribeComponent,
+  UnsubscribeComponent,
   AppAbility,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import get from 'lodash/get';
-import { filter, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 
 /**
  * Front-office Application component.
@@ -23,7 +23,7 @@ import { filter, takeUntil } from 'rxjs/operators';
   styleUrls: ['./application.component.scss'],
 })
 export class ApplicationComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
   /** Application title */
@@ -58,8 +58,8 @@ export class ApplicationComponent
    * @param ability user ability
    */
   constructor(
-    private authService: SafeAuthService,
-    private applicationService: SafeApplicationService,
+    private authService: AuthService,
+    private applicationService: ApplicationService,
     public route: ActivatedRoute,
     private router: Router,
     private translate: TranslateService,
@@ -67,14 +67,6 @@ export class ApplicationComponent
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
-    this.router.events
-      .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        takeUntil(this.destroy$)
-      )
-      .subscribe(() => {
-        console.log('end');
-      });
   }
 
   /**

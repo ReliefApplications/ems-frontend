@@ -1,6 +1,6 @@
 const fs = require('fs');
 /** Translation files are stored there */
-const I18N_FOLDER_PATH = 'libs/safe/src/i18n/';
+const I18N_FOLDER_PATH = 'libs/shared/src/i18n/';
 
 const DEFAULT_LANGUAGE = 'en';
 const TEST_LANGUAGE = 'test';

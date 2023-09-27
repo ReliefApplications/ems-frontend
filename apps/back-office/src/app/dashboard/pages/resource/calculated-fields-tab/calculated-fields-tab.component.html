@@ -45,6 +45,7 @@
               [uiMenuTriggerFor]="resMenu"
               (click)="$event.stopPropagation()"
               [disabled]="!resource.canUpdate"
+              [uiTooltip]="'common.options' | translate"
             >
             </ui-button>
             <ui-menu #resMenu>
@@ -68,8 +69,8 @@
   </div>
 </ng-container>
 <ng-template #emptyTmpl>
-  <safe-empty
+  <shared-empty
     [title]="'components.resource.empty.calculatedFields' | translate"
     [footerTemplate]="newField"
-  ></safe-empty>
+  ></shared-empty>
 </ng-template>

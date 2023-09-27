@@ -37,7 +37,7 @@ The project is seperated into three sub-projects:
 - web-widgets, an application to genereate the web components
 
 One library exists:
-- safe, a library for common ui / capacity, shared with other projects
+- shared, a library for common ui / capacity, shared with other projects
 
 Library changes should automatically be detected when serving the other projects.
 
@@ -123,10 +123,10 @@ Run `npx prettier --write "**/*.{scss,html}"` to execute prettier and update all
 
 ## Analyze bundle
 
-Start by building apps adding `--stats-json` flag. For example:
+Start by building apps adding `--statsJson` flag. For example:
 
 ```
-npx nx run back-office:build -- --stats-json
+npx nx run back-office:build --statsJson
 ```
 
 Then, run `webpack-bundle-analyzer` command to see the tree of your bundles:

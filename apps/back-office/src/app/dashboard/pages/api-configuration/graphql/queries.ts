@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { ApiConfiguration } from '@oort-front/safe';
 
 // === GET API CONFIGURATION ===
 
@@ -35,8 +34,3 @@ export const GET_API_CONFIGURATION = gql`
     }
   }
 `;
-
-/** Modelf for GetApiConfigurationQueryResponse object */
-export interface GetApiConfigurationQueryResponse {
-  apiConfiguration: ApiConfiguration;
-}

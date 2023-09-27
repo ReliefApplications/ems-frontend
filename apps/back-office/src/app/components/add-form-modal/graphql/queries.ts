@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Resource } from '@oort-front/safe';
 
 // === GET RESOURCE BY ID ===
 
@@ -21,11 +20,6 @@ export const GET_RESOURCE_BY_ID = gql`
     }
   }
 `;
-
-/** Model for GetResourceByIdQueryResponse object */
-export interface GetResourceByIdQueryResponse {
-  resource: Resource;
-}
 
 // === GET RESOURCES ===
 /** Graphql query for getting multiple resources with a cursor */
@@ -61,18 +55,3 @@ export const GET_RESOURCES = gql`
     }
   }
 `;
-
-/** Model for GetResourcesQueryResponse object */
-export interface GetResourcesQueryResponse {
-  resources: {
-    edges: {
-      node: Resource;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-    totalCount: number;
-  };
-}

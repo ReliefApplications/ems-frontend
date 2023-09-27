@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { ApplicationRoutingModule } from './application-routing.module';
 import { ApplicationComponent } from './application.component';
 import {
-  SafeLayoutModule,
-  SafeApplicationToolbarModule,
-  SafeNavbarModule,
-} from '@oort-front/safe';
+  LayoutModule,
+  ApplicationToolbarModule,
+  NavbarModule,
+} from '@oort-front/shared';
 import { SpinnerModule } from '@oort-front/ui';
 
 /**
@@ -17,9 +17,9 @@ import { SpinnerModule } from '@oort-front/ui';
   imports: [
     CommonModule,
     ApplicationRoutingModule,
-    SafeApplicationToolbarModule,
-    SafeLayoutModule,
-    SafeNavbarModule,
+    ApplicationToolbarModule,
+    LayoutModule,
+    NavbarModule,
     SpinnerModule,
   ],
   exports: [ApplicationComponent],
