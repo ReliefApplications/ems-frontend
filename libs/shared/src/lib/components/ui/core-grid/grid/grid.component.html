@@ -1183,6 +1183,25 @@
         ></button>
       </ng-template>
     </kendo-grid-column>
+     <!-- ROW RECORD DASHBOARD -->
+     <kendo-grid-column
+     *ngIf="actions.showRecordDashboard"
+     [columnMenu]="false"
+     [width]="54"
+     [resizable]="true"
+     title="Record Dashboard"
+   >
+     <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+       <button
+         class="text-center"
+         kendoButton
+         icon="hyperlink-open-sm"
+         [look]="'flat'"
+         (click)="action.emit({ action: 'recordDashboard', item: dataItem, pageId: actions.pageId })"
+         [uiTooltip]="'components.widget.grid.actions.recordDashboard' | translate"
+       ></button>
+     </ng-template>
+   </kendo-grid-column>
     <!-- ROW ACTIONS -->
     <kendo-grid-column
       *ngIf="hasEnabledActions"

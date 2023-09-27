@@ -56,6 +56,8 @@ import { SnackbarService } from '@oort-front/ui';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
 import { ResourceQueryResponse } from '../../../models/resource.model';
+import { Router } from '@angular/router';
+import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common'
 
 /**
  * Default file name when exporting grid data.
@@ -77,6 +79,7 @@ const cloneData = (data: any[]) => data.map((item) => Object.assign({}, item));
 @Component({
   selector: 'shared-core-grid',
   templateUrl: './core-grid.component.html',
+  providers: [Location, {provide: LocationStrategy, useClass: PathLocationStrategy}],
   styleUrls: ['./core-grid.component.scss'],
 })
 export class CoreGridComponent
@@ -116,6 +119,8 @@ export class CoreGridComponent
 
   // === FEATURES INPUTS ===
   @Input() showDetails = true;
+  @Input() showRecordDashboard = false;
+  @Input() pageId = '';
   @Input() showExport = true;
   @Input() admin = false;
   @Input() canCreateRecords = false;
@@ -272,6 +277,8 @@ export class CoreGridComponent
     convert: false,
     export: this.showExport,
     showDetails: true,
+    showRecordDashboard: false,
+    pageId: '',
     remove: false,
   };
 
@@ -295,6 +302,8 @@ export class CoreGridComponent
    * @param dateTranslate Shared date translate service
    * @param applicationService Shared application service
    * @param contextService Shared context service
+   * @param router Angular Router
+   * @param location Angular location service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -310,7 +319,9 @@ export class CoreGridComponent
     private translate: TranslateService,
     private dateTranslate: DateTranslateService,
     private applicationService: ApplicationService,
-    private contextService: ContextService
+    private contextService: ContextService,
+    private router: Router,
+    private location: Location
   ) {
     super();
     this.isAdmin =
@@ -334,6 +345,10 @@ export class CoreGridComponent
         this.configureGrid();
       }
     }
+
+    this.location.subscribe((test:any) => {
+      console.log(test);
+    })
   }
 
   /**
@@ -356,6 +371,8 @@ export class CoreGridComponent
       convert: get(this.settings, 'actions.convert', false),
       export: get(this.settings, 'actions.export', false),
       showDetails: get(this.settings, 'actions.showDetails', true),
+      showRecordDashboard: get(this.settings, 'actions.showRecordDashboard', false),
+      pageId: get(this.settings, 'actions.pageId', ''),
       remove: get(this.settings, 'actions.remove', false),
     };
     this.editable = this.settings.actions?.inlineEdition;
@@ -845,6 +862,7 @@ export class CoreGridComponent
     items?: any[];
     value?: any;
     field?: any;
+    pageId?: string;
   }): void {
     switch (event.action) {
       case 'add': {
@@ -876,6 +894,20 @@ export class CoreGridComponent
       case 'details': {
         if (event.items) {
           this.onShowDetails(event.items, event.field);
+        }
+        break;
+      }
+      case 'recordDashboard': {
+        if (event.item) {
+          let applicationId = '';
+          this.applicationService.application$.forEach((app: any) => {
+            applicationId = app.id;
+          });
+          const recordId = event.item.id;
+          const pageId = event.pageId;
+          const fullUrl = `//applications/${applicationId}/dashboard/${pageId}?id=${recordId}`;
+          this.router.navigateByUrl(fullUrl);
+          this.location.go(fullUrl, undefined, {test: "testing"});
         }
         break;
       }

@@ -123,6 +123,8 @@ export class GridComponent
     convert: false,
     export: false,
     showDetails: false,
+    showRecordDashboard: false,
+    pageId: '',
     remove: false,
   };
   @Input() hasDetails = true;

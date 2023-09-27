@@ -1139,7 +1139,8 @@
 			"grid": {
 				"actions": {
 					"detail": "Open detail",
-					"history": "Show history"
+					"history": "Show history",
+					"recordDashboard": "Open record dashboard"
 				},
 				"errors": {
 					"autoSaveFailed": "Action stopped due to some invalid records. Please review them before taking any other action.",
@@ -1282,9 +1283,14 @@
 						"delete": "Delete records",
 						"export": "Export records",
 						"inline": "Inline edition",
+						"pageId": {
+							"label": "Page source id",
+							"placeholder": "Enter page id"
+						},
 						"remove": "Remove",
 						"show": "Show history",
 						"showDetails": "Show record details",
+						"showRecordDashboard": "Show record dashboard view",
 						"title": "Enabled actions",
 						"update": "Update records"
 					},
@@ -1343,6 +1349,7 @@
 							"inline": "If authorized, user can edit records in the grid",
 							"show": "User can see full history of visible records",
 							"showDetails": "User can see full details of visible records",
+							"showRecordDashboard": "User can go to record dashboard",
 							"update": "If authorized, user can update visible records"
 						},
 						"attachToRecord": "If the selected records are not attached to any records, the action will be canceled",

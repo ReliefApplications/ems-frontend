@@ -17,6 +17,16 @@
           ></ui-icon>
         </ng-container>
       </ui-toggle>
+      <div uiFormFieldDirective *ngIf="show" class="w-80">
+        <label>
+          {{ 'components.widget.settings.grid.actions.pageId.label' | translate }}
+        </label>
+        <input
+          formControlName="pageId"
+          [placeholder]="'components.widget.settings.grid.actions.pageId.placeholder' | translate"
+          type="string"
+        />
+      </div>
     </div>
   </div>
 </form>

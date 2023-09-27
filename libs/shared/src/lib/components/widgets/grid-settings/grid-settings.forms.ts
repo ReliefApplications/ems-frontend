@@ -139,6 +139,8 @@ export const createGridWidgetFormGroup = (id: string, configuration: any) => {
       addRecord: [get(configuration, 'actions.addRecord', false)],
       export: [get(configuration, 'actions.export', true)],
       showDetails: [get(configuration, 'actions.showDetails', true)],
+      showRecordDashboard: [get(configuration, 'actions.showRecordDashboard', false)],
+      pageId: [get(configuration, 'actions.pageId', '')]
     }),
     floatingButtons: fb.array(
       configuration.floatingButtons && configuration.floatingButtons.length

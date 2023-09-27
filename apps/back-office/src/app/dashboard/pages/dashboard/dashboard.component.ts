@@ -56,6 +56,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
+import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common'
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -66,6 +67,7 @@ const ITEMS_PER_PAGE = 10;
  */
 @Component({
   selector: 'app-dashboard',
+  providers: [Location, {provide: LocationStrategy, useClass: PathLocationStrategy}],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss'],
 })
@@ -157,6 +159,7 @@ export class DashboardComponent
    * @param layoutService Shared layout service
    * @param document Document
    * @param clipboard Angular clipboard service
+   * @param location Angular location service
    */
   constructor(
     private applicationService: ApplicationService,
@@ -176,7 +179,8 @@ export class DashboardComponent
     private elementRef: ElementRef,
     private layoutService: LayoutService,
     @Inject(DOCUMENT) private document: Document,
-    private clipboard: Clipboard
+    private clipboard: Clipboard,
+    private location: Location
   ) {
     super();
   }
@@ -275,6 +279,13 @@ export class DashboardComponent
           }
         }
       });
+    
+    console.log(this.location.getState());
+    this.location.subscribe((test:any) => {
+      this.location.go(test, undefined, {testando:10});
+      console.log(this.location.getState());
+      console.log(test);
+    })
   }
 
   /**

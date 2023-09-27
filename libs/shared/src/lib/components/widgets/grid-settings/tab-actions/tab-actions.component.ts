@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
 
 /**
@@ -9,8 +9,10 @@ import { UntypedFormGroup } from '@angular/forms';
   templateUrl: './tab-actions.component.html',
   styleUrls: ['./tab-actions.component.scss'],
 })
-export class TabActionsComponent {
+export class TabActionsComponent implements OnInit{
   @Input() formGroup!: UntypedFormGroup;
+
+  public show: boolean = false;
 
   public actions = [
     {
@@ -53,5 +55,17 @@ export class TabActionsComponent {
       text: 'components.widget.settings.grid.actions.showDetails',
       tooltip: 'components.widget.settings.grid.hint.actions.showDetails',
     },
+    {
+      name: 'showRecordDashboard',
+      text: 'components.widget.settings.grid.actions.showRecordDashboard',
+      tooltip: 'components.widget.settings.grid.hint.actions.showRecordDashboard',
+    },
   ];
+
+  ngOnInit(): void {
+    this.show = this.formGroup.controls.actions.get('showRecordDashboard')?.value;
+    this.formGroup.controls.actions.get('showRecordDashboard')?.valueChanges.subscribe((val: boolean) => {
+      this.show = val;
+    })
+  }
 }

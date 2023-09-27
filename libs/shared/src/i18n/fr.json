@@ -1154,7 +1154,8 @@
 			"grid": {
 				"actions": {
 					"detail": "Ouvrir le détail",
-					"history": "Voir l'historique"
+					"history": "Voir l'historique",
+					"recordDashboard": "@TODO"
 				},
 				"empty": "Aucun enregistrement détecté pour cette configuration de réseau",
 				"errors": {
@@ -1298,9 +1299,14 @@
 						"delete": "Supprimer les enregistrements",
 						"export": "Exporter les enregistrements",
 						"inline": "Modifier par ligne",
+						"pageId": {
+							"label": "@TODO",
+							"placeholder": "@TODO"
+						},
 						"remove": "Retirer",
 						"show": "Voir l'historique",
 						"showDetails": "Afficher les détails des enregistrements",
+						"showRecordDashboard": "@TODO",
 						"title": "Actions activées",
 						"update": "Modifier les enregistrements"
 					},
@@ -1359,6 +1365,7 @@
 							"inline": "L'utilisateur peut éditer dans la grille les enregistrements affichés, s'il en a la permission",
 							"show": "L'utilisateur peut afficher l'historique complet des enregistrements affichés",
 							"showDetails": "L'utilisateur peut afficher les informations des enregistrements affichés",
+							"showRecordDashboard": "@TODO",
 							"update": "L'utilisateur peut mettre à jour les enregistrements affichés"
 						},
 						"attachToRecord": "Si les enregistrements sélectionnés ne sont joints à aucun enregistrement, l'action sera annulée",
