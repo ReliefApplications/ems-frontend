@@ -34,6 +34,7 @@ export class SafeFormHelpersService {
    * @param translate This is the service that allows us to translate the text in our application.
    * @param authService Shared auth service
    * @param workflowService Shared workflow service
+   * @param applicationService Shared application service
    */
   constructor(
     public apollo: Apollo,
@@ -323,6 +324,7 @@ export class SafeFormHelpersService {
    * Registration of new custom variables for the survey.
    * Custom variables can be used in the logic fields.
    * This function is used to add the application id, name and description to the survey variables
+   *
    * @param survey Survey instance
    */
   public addApplicationVariables = (survey: Survey.SurveyModel) => {
