@@ -5,18 +5,42 @@
   </div>
 
   <ng-container formGroupName="card">
-    <!-- RESOURCE SELECTION  -->
-    <div uiFormFieldDirective>
-      <label>{{ 'models.resource.select' | translate }}</label>
-      <ui-graphql-select
-        valueField="id"
-        textField="name"
-        [query]="resourcesQuery"
-        formControlName="resource"
-        [selectedElements]="[selectedResource]"
-        (searchChange)="onResourceSearchChange($event)"
-        [filterable]="true"
-      ></ui-graphql-select>
+    <div class="flex gap-2 flex-wrap">
+      <!-- RESOURCE SELECTION  -->
+      <div uiFormFieldDirective class="flex-1">
+        <label>{{ 'models.resource.select' | translate }}</label>
+        <ui-graphql-select
+          valueField="id"
+          textField="name"
+          [query]="resourcesQuery"
+          formControlName="resource"
+          [selectedElements]="[selectedResource]"
+          (searchChange)="onResourceSearchChange($event)"
+          [filterable]="true"
+        ></ui-graphql-select>
+      </div>
+
+      <!-- TEMPLATE SELECTION -->
+      <div uiFormFieldDirective class="flex-1">
+        <label>{{ 'models.form.template' | translate }}</label>
+        <ui-select-menu formControlName="template">
+          <ui-select-option>-</ui-select-option>
+          <ui-select-option
+            *ngFor="let template of templates"
+            [value]="template.id"
+          >
+            {{ template.name }}
+          </ui-select-option>
+        </ui-select-menu>
+        <ui-icon
+          uiSuffix
+          icon="info_outline"
+          variant="grey"
+          [uiTooltip]="
+            'components.widget.settings.grid.tooltip.template' | translate
+          "
+        ></ui-icon>
+      </div>
     </div>
 
     <!-- SELECT AGGREGATION OR LAYOUT -->

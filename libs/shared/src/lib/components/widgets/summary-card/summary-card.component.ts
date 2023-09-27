@@ -511,19 +511,9 @@ export class SummaryCardComponent
     if (!card || !card.resource || (!card.layout && !card.aggregation)) return;
 
     const settings = {
-      template: get(this.settings, 'template', null), //TO MODIFY
+      template: card.template,
       resource: card.resource,
-      actions: {
-        //default actions, might need to modify later
-        addRecord: false,
-        convert: true,
-        delete: true,
-        export: true,
-        history: true,
-        inlineEdition: true,
-        showDetails: true,
-        update: true,
-      },
+      actions: get(this.settings, 'actions', null),
     };
 
     Object.assign(
