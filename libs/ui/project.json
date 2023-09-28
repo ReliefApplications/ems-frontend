@@ -58,7 +58,7 @@
         "outputDir": "dist/storybook/ui",
         "configDir": "libs/ui/.storybook",
         "browserTarget": "ui:build-storybook",
-        "compodoc": true,
+        "compodoc": false,
         "styles": [
           "libs/ui/src/style/styles.scss",
           "libs/ui/src/style/storybook.scss",
