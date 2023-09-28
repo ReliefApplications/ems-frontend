@@ -6,7 +6,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SelectOptionModule } from './components/select-option.module';
 
 export default {
-  title: 'Select Menu',
+  title: 'Components/Select Menu',
   component: SelectMenuComponent,
   // Defines the controls
   argTypes: {

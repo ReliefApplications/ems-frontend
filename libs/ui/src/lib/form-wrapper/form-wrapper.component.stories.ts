@@ -9,7 +9,7 @@ import { ButtonModule } from '../button/button.module';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 export default {
-  title: 'Form Wrapper',
+  title: 'Components/Form Wrapper',
   decorators: [
     moduleMetadata({
       imports: [

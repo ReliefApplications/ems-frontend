@@ -7,9 +7,9 @@ import {
   FormBuilderModule as SharedFormBuilderModule,
   DateModule,
   EditableTextModule,
+  StatusOptionsComponent,
 } from '@oort-front/shared';
 import {
-  ChipModule,
   FormWrapperModule,
   SelectMenuModule,
   SpinnerModule,
@@ -34,7 +34,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     DateModule,
     EditableTextModule,
     TableModule,
-    ChipModule,
+    StatusOptionsComponent,
     SelectMenuModule,
     FormWrapperModule,
     FormsModule,

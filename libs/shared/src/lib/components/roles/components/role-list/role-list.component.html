@@ -2,15 +2,9 @@
   <ng-container *ngIf="roles?.length">
     <div class="flex gap-8 justify-between flex-col sm:flex-row">
       <!-- Search text filter -->
-      <div uiFormFieldDirective>
-        <ui-icon icon="search" uiPrefix></ui-icon>
-        <input
-          [ngModel]="searchText"
-          (keyup)="applyFilter('', $event)"
-          type="text"
-          [placeholder]="'common.placeholder.search' | translate"
-        />
-      </div>
+      <form [formGroup]="form">
+        <shared-list-filter [loading]="loading"></shared-list-filter>
+      </form>
       <div class="flex">
         <ng-container *ngTemplateOutlet="newRole"></ng-container>
       </div>

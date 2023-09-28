@@ -25,6 +25,13 @@ export class FormComponent implements OnInit, OnChanges {
   public completed = false;
   public hideNewRecord = false;
 
+  private getFormQuery = this.apollo.query<FormQueryResponse>({
+    query: GET_SHORT_FORM_BY_ID,
+    variables: {
+      id: this.id,
+    },
+  });
+
   /**
    * Form component
    *
@@ -33,35 +40,23 @@ export class FormComponent implements OnInit, OnChanges {
   constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
-    this.apollo
-      .query<FormQueryResponse>({
-        query: GET_SHORT_FORM_BY_ID,
-        variables: {
-          id: this.id,
-        },
-      })
-      .subscribe(({ data, loading }) => {
-        if (data) {
-          this.form = data.form;
-          this.loading = loading;
-        }
-      });
+    this.getFormById();
   }
 
   ngOnChanges(): void {
-    this.apollo
-      .query<FormQueryResponse>({
-        query: GET_SHORT_FORM_BY_ID,
-        variables: {
-          id: this.id,
-        },
-      })
-      .subscribe(({ data, loading }) => {
-        if (data) {
-          this.form = data.form;
-          this.loading = loading;
-        }
-      });
+    this.getFormById();
+  }
+
+  /**
+   * Trigger get form query action
+   */
+  private getFormById() {
+    this.getFormQuery.subscribe(({ data, loading }) => {
+      if (data) {
+        this.form = data.form;
+        this.loading = loading;
+      }
+    });
   }
 
   /**

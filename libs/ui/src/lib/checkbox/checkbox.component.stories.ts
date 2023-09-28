@@ -6,7 +6,7 @@ import { variants } from '../types/variant';
 import { IconModule } from '../icon/icon.module';
 
 export default {
-  title: 'Checkbox',
+  title: 'Components/Checkbox',
   component: CheckboxComponent,
   argTypes: {
     variant: {

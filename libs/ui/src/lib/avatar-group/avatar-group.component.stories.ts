@@ -53,7 +53,7 @@ const avatars: MockedAvatar[] = [
 ];
 
 export default {
-  title: 'Avatar Group',
+  title: 'Components/Avatar Group',
   component: AvatarGroupComponent,
   argTypes: {
     shape: {

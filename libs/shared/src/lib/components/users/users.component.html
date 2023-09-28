@@ -1,33 +1,14 @@
 <div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row items-start">
   <!-- Filters -->
   <div class="flex flex-col gap-x-4">
-    <!-- Default filter -->
-    <div class="flex flex-wrap gap-2 flex-col sm:flex-row">
-      <!-- Search text filter -->
-      <div uiFormFieldDirective>
-        <ui-icon icon="search" uiPrefix></ui-icon>
-        <input
-          [ngModel]="searchText"
-          (keyup)="applyFilter('', $event)"
-          [placeholder]="'common.placeholder.search' | translate"
-          type="text"
-        />
-      </div>
-      <!-- Toggle advanced filters -->
-      <ui-button
-        class="max-sm:!w-auto"
-        icon="filter_list"
-        category="tertiary"
-        variant="primary"
-        (click)="showFilters = !showFilters"
-      >
-        {{
-          showFilters
-            ? ('common.filter.hide' | translate)
-            : ('common.filter.show' | translate)
-        }}
-      </ui-button>
-    </div>
+    <form [formGroup]="form">
+      <!-- Default filter -->
+      <shared-list-filter
+        [hasSiblingFilters]="true"
+        [loading]="loading"
+        (showFilters)="showFilters = $event"
+      ></shared-list-filter>
+    </form>
     <!-- Advanced filters -->
     <div
       class="flex flex-wrap gap-2 sm:items-end flex-col sm:flex-row"

@@ -6,7 +6,7 @@ import { ButtonModule } from '../button/button.module';
 import { MenuModule } from './menu.module';
 
 export default {
-  title: 'Menu',
+  title: 'Components/Menu',
   component: MenuComponent,
   decorators: [
     moduleMetadata({
