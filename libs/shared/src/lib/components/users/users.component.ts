@@ -20,9 +20,10 @@ import { DownloadService } from '../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SnackbarService } from '@oort-front/ui';
-import { takeUntil } from 'rxjs';
+import { distinctUntilChanged, takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import uniqBy from 'lodash/uniqBy';
+import { FormBuilder } from '@angular/forms';
 
 /**
  * A component to display the list of users
@@ -52,7 +53,8 @@ export class UsersComponent
   ];
 
   // === FILTERS ===
-  public searchText = '';
+  private searchText = '';
+  public form = this.fb.group({});
   public roleFilter = '';
   public showFilters = false;
   public filteredUsers = new Array<User>();
@@ -69,6 +71,7 @@ export class UsersComponent
    * @param translate The translation service
    * @param router Angular router
    * @param activatedRoute Angular active route
+   * @param fb Angular form builder
    */
   constructor(
     private apollo: Apollo,
@@ -78,12 +81,19 @@ export class UsersComponent
     private confirmService: ConfirmService,
     private translate: TranslateService,
     private router: Router,
-    private activatedRoute: ActivatedRoute
+    private activatedRoute: ActivatedRoute,
+    private fb: FormBuilder
   ) {
     super();
   }
 
   ngOnInit(): void {
+    this.form.valueChanges
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe((value: any) => {
+        this.searchText = (value?.search ?? '').trim().toLowerCase();
+        this.applyFilter('', this.searchText);
+      });
     this.filterPredicate();
   }
 
@@ -308,10 +318,6 @@ export class UsersComponent
   applyFilter(column: string, event: any): void {
     if (column === 'role') {
       this.roleFilter = event?.trim() ?? '';
-    } else {
-      this.searchText = event
-        ? event.target.value.trim().toLowerCase()
-        : this.searchText;
     }
     this.filterPredicate();
   }
@@ -320,9 +326,8 @@ export class UsersComponent
    * Clear all the filters
    */
   clearAllFilters(): void {
-    this.searchText = '';
     this.roleFilter = '';
-    this.applyFilter('', null);
+    this.form.reset();
   }
 
   /**

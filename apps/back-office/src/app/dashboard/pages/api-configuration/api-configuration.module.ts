@@ -2,8 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiConfigurationRoutingModule } from './api-configuration-routing.module';
 import { ApiConfigurationComponent } from './api-configuration.component';
-import { AccessModule } from '@oort-front/shared';
-import { ChipModule, SpinnerModule } from '@oort-front/ui';
+import { AccessModule, StatusOptionsComponent } from '@oort-front/shared';
+import { SpinnerModule } from '@oort-front/ui';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -30,7 +30,7 @@ import {
     SelectMenuModule,
     FormWrapperModule,
     ErrorMessageModule,
-    ChipModule,
+    StatusOptionsComponent,
   ],
 })
 export class ApiConfigurationModule {}

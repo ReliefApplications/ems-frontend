@@ -14,6 +14,7 @@ import {
   ApiConfigurationsQueryResponse,
   FormQueryResponse,
   FormsQueryResponse,
+  StatusOptionsComponent,
 } from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -48,7 +49,6 @@ import {
   SelectMenuModule,
   FormWrapperModule,
   TextareaModule,
-  ChipModule,
   GraphQLSelectModule,
   IconModule,
 } from '@oort-front/ui';
@@ -80,7 +80,7 @@ const DEFAULT_FIELDS = ['createdBy'];
     ButtonModule,
     SelectMenuModule,
     FormWrapperModule,
-    ChipModule,
+    StatusOptionsComponent,
     MonacoEditorModule,
   ],
   selector: 'app-edit-pull-job-modal',
@@ -353,6 +353,14 @@ export class EditPullJobModalComponent implements OnInit {
    * Toggles the edit mode and update form values accordingly.
    */
   toggleRawJSON(): void {
+    this.synchronizeFormValueData();
+    this.openRawJSON = !this.openRawJSON;
+  }
+
+  /**
+   * Synchronize mapping of the form value to the raw mapping if user don't want to open raw JSON
+   */
+  private synchronizeFormValueData() {
     if (!this.openRawJSON) {
       const mapping = this.formGroup
         .get('mapping')
@@ -364,7 +372,6 @@ export class EditPullJobModalComponent implements OnInit {
         .get('rawMapping')
         ?.setValue(JSON.stringify(mapping, null, 2));
     }
-    this.openRawJSON = !this.openRawJSON;
   }
 
   /**
@@ -373,17 +380,7 @@ export class EditPullJobModalComponent implements OnInit {
    * @returns Return form value.
    */
   returnFormValue(): any {
-    if (!this.openRawJSON) {
-      const mapping = this.formGroup
-        .get('mapping')
-        ?.value.reduce(
-          (o: any, field: any) => ({ ...o, [field.name]: field.value }),
-          {}
-        );
-      this.formGroup
-        .get('rawMapping')
-        ?.setValue(JSON.stringify(mapping, null, 2));
-    }
+    this.synchronizeFormValueData();
     return this.formGroup.value;
   }
 
