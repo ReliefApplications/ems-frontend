@@ -1,12 +1,12 @@
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormArray, FormGroup } from '@angular/forms';
-import { INLINE_EDITOR_CONFIG } from 'libs/shared/src/lib/const/tinymce.const';
+import { INLINE_EDITOR_CONFIG } from '../../../../../const/tinymce.const';
 import {
   PopupElement,
   PopupElementType,
-} from 'libs/shared/src/lib/models/layer.model';
-import { EditorService } from 'libs/shared/src/lib/services/editor/editor.service';
+} from '../../../../../models/layer.model';
+import { EditorService } from '../../../../../services/editor/editor.service';
 import { createPopupElementForm } from '../../map-forms';
 
 /** Layer cluster settings */
