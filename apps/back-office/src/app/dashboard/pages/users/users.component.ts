@@ -1,12 +1,12 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
+import { GET_USERS, GET_ROLES } from './graphql/queries';
 import {
-  GetUsersQueryResponse,
-  GET_USERS,
-  GetRolesQueryResponse,
-  GET_ROLES,
-} from './graphql/queries';
-import { Role, User } from '@oort-front/safe';
+  Role,
+  RolesQueryResponse,
+  User,
+  UsersQueryResponse,
+} from '@oort-front/shared';
 
 /**
  * Component which will show all the user in the app.
@@ -35,14 +35,14 @@ export class UsersComponent implements OnInit {
   /** Load the users */
   ngOnInit(): void {
     this.apollo
-      .watchQuery<GetUsersQueryResponse>({
+      .watchQuery<UsersQueryResponse>({
         query: GET_USERS,
       })
       .valueChanges.subscribe((resUsers) => {
         this.loading = true;
         this.users = resUsers.data.users;
         this.apollo
-          .watchQuery<GetRolesQueryResponse>({
+          .watchQuery<RolesQueryResponse>({
             query: GET_ROLES,
           })
           .valueChanges.subscribe(({ data, loading }) => {

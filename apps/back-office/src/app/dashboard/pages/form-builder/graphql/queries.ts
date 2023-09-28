@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Form } from '@oort-front/safe';
 
 // === GET FORM BY ID ===
 /** Graphql query for getting a form with minimum details by id */
@@ -40,8 +39,3 @@ export const GET_SHORT_FORM_BY_ID = gql`
     }
   }
 `;
-
-/** Model for getFormByIdQueryResponse object */
-export interface GetFormByIdQueryResponse {
-  form: Form;
-}

@@ -8,10 +8,12 @@ import {
 } from '@apollo/client/core';
 import { HttpLink } from 'apollo-angular/http';
 import { setContext } from '@apollo/client/link/context';
-import { WebSocketLink } from '@apollo/client/link/ws';
 import { getMainDefinition } from '@apollo/client/utilities';
 import { environment } from '../environments/environment';
-import { extractFiles } from 'extract-files';
+import extractFiles from 'extract-files/extractFiles.mjs';
+import isExtractableFile from 'extract-files/isExtractableFile.mjs';
+import { GraphQLWsLink } from '@apollo/client/link/subscriptions';
+import { createClient } from 'graphql-ws';
 
 /**
  * Configuration of the Apollo client.
@@ -41,27 +43,19 @@ export const createApollo = (httpLink: HttpLink): ApolloClientOptions<any> => {
 
   const http = httpLink.create({
     uri: `${environment.apiUrl}/graphql`,
-    extractFiles,
+    extractFiles: (body) => extractFiles(body, isExtractableFile),
   });
 
-  const ws = new WebSocketLink({
-    uri: `${environment.subscriptionApiUrl}/graphql`,
-    options: {
-      reconnect: true,
+  const ws = new GraphQLWsLink(
+    createClient({
+      url: `${environment.subscriptionApiUrl}/graphql`,
       connectionParams: {
         authToken: localStorage.getItem('idtoken'),
       },
-      connectionCallback: () => {
-        // if (localStorage.getItem('loaded') === 'true') {
-        //   // location.reload();
-        //   localStorage.setItem('loaded', 'false');
-        // }
-        // localStorage.setItem('loaded', 'true');
-      },
-    },
-  });
+    })
+  );
 
-  /** Definition for apollo link query definitino */
+  /** Definition for apollo link query definition */
   interface Definition {
     kind: string;
     operation?: string;

@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Resource, Form } from '@oort-front/safe';
 
 // === ADD FORM ===
 /** Add form gql mutation definition */
@@ -17,11 +16,6 @@ export const ADD_FORM = gql`
   }
 `;
 
-/** Add form gql mutation response interface */
-export interface AddFormMutationResponse {
-  addForm: Form;
-}
-
 // == DELETE RESOURCE ==
 /** Delete resource gql mutation definition */
 export const DELETE_RESOURCE = gql`
@@ -31,8 +25,3 @@ export const DELETE_RESOURCE = gql`
     }
   }
 `;
-
-/** Delete resource gql mutation response interface */
-export interface DeleteResourceMutationResponse {
-  deletedResource: Resource;
-}

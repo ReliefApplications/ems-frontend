@@ -1,0 +1,9 @@
+<ui-dialog>
+  <ng-container ngProjectAs="content">
+    <shared-custom-widget-style
+      [widgetComp]="data.widgetComp"
+      [save]="data.save"
+      (cancel)="onCancel()"
+    ></shared-custom-widget-style>
+  </ng-container>
+</ui-dialog>

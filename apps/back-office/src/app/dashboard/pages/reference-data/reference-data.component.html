@@ -5,12 +5,12 @@
     <h1 class="page-title">
       {{ referenceData.name }}
     </h1>
-    <safe-access
+    <shared-access
       [access]="referenceData.permissions"
       [objectTypeName]="'common.referenceData.one' | translate"
       (save)="saveAccess($event)"
       *ngIf="referenceData?.canUpdate"
-    ></safe-access>
+    ></shared-access>
   </div>
   <!-- Form -->
   <form [formGroup]="referenceForm" class="flex flex-col mb-8">
