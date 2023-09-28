@@ -666,6 +666,9 @@ export const init = (
      * @param propertyName The name of the property
      */
     onPropertyChanged(question: QuestionResource, propertyName: string): void {
+      if (propertyName === 'selectQuestion') {
+        question.customFilter = '';
+      }
       if (propertyName === 'resource') {
         question.displayField = null;
         this.filters = [];
