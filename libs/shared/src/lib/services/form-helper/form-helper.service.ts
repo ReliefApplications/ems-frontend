@@ -13,6 +13,7 @@ import { AuthService } from '../auth/auth.service';
 import { BlobType, DownloadService } from '../download/download.service';
 import { AddRecordMutationResponse } from '../../models/record.model';
 import { WorkflowService } from '../workflow/workflow.service';
+import { ApplicationService } from '../application/application.service';
 
 /**
  * Shared survey helper service.
@@ -31,6 +32,7 @@ export class FormHelpersService {
    * @param authService Shared auth service
    * @param downloadService Shared download service
    * @param workflowService Shared workflow service
+   * @param applicationService Shared application service
    */
   constructor(
     public apollo: Apollo,
@@ -39,7 +41,8 @@ export class FormHelpersService {
     private translate: TranslateService,
     private authService: AuthService,
     private downloadService: DownloadService,
-    private workflowService: WorkflowService
+    private workflowService: WorkflowService,
+    private applicationService: ApplicationService
   ) {}
 
   /**
@@ -386,6 +389,23 @@ export class FormHelpersService {
     // Allow us to select the current user
     // as a default question for Users question type
     survey.setVariable('user.id', user?.id || '');
+  };
+
+  /**
+   * Registration of new custom variables for the survey.
+   * Custom variables can be used in the logic fields.
+   * This function is used to add the application id, name and description to the survey variables
+   *
+   * @param survey Survey instance
+   */
+  public addApplicationVariables = (survey: Survey.SurveyModel) => {
+    const application = this.applicationService.application.getValue();
+    survey.setVariable('application.id', application?.id ?? null);
+    survey.setVariable('application.name', application?.name ?? null);
+    survey.setVariable(
+      'application.description',
+      application?.description ?? null
+    );
   };
 
   /**
