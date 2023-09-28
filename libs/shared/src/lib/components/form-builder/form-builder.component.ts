@@ -236,7 +236,7 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
     );
 
     // Notify parent that form structure has changed
-    (this.surveyCreator.onModified as any).add((survey: any) => {
+    this.surveyCreator.onModified.add((survey: any) => {
       this.formChange.emit(survey.text);
     });
 
@@ -258,12 +258,13 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
       const coreFields =
         this.form.fields?.filter((x) => x.isCore).map((x) => x.name) || [];
       // Remove core fields adorners
-      (this.surveyCreator.onElementAllowOperations as any).add(
+      this.surveyCreator.onElementAllowOperations.add(
         (sender: any, options: any) => {
           const obj = options.obj;
           if (!obj || !obj.page) {
             return;
           }
+          console.log(options);
           // If it is a core field
           if (coreFields.includes(obj.valueName)) {
             // Disable deleting, editing, changing type and changing if required or not
@@ -297,15 +298,13 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     // Scroll to question when added
-    (this.surveyCreator.onQuestionAdded as any).add(
-      (sender: any, options: any) => {
-        const name = options.question.name;
-        setTimeout(() => {
-          const el = this.document.querySelector('[data-name="' + name + '"]');
-          el?.scrollIntoView({ behavior: 'smooth' });
-        });
-      }
-    );
+    this.surveyCreator.onQuestionAdded.add((sender: any, options: any) => {
+      const name = options.question.name;
+      setTimeout(() => {
+        const el = this.document.querySelector('[data-name="' + name + '"]');
+        el?.scrollIntoView({ behavior: 'smooth' });
+      });
+    });
 
     // add the rendering of custom properties
     this.surveyCreator.survey.onAfterRenderQuestion.add(

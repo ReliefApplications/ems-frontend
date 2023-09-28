@@ -49,14 +49,14 @@ export class ResourceAvailableFieldsComponent
    *
    * @param {ChangeDetectorRef} changeDetectorRef - Angular - This is angular change detector ref of the component instance needed for the survey AngularQuestion class
    * @param {ViewContainerRef} viewContainerRef - Angular - This is angular view container ref of the component instance needed for the survey AngularQuestion class
-   * @param {UntypedFormBuilder} formBuilder - Angular - Form builder utilities
+   * @param {UntypedFormBuilder} fb - Angular - Form builder utilities
    * @param {Dialog} dialog - Angular CDK - This is the Dialog service that is used to handle cdk dialogs
    * @param {Apollo} apollo - Apollo - This is the Apollo service that we'll use to make our GraphQL queries.
    */
   constructor(
     changeDetectorRef: ChangeDetectorRef,
     viewContainerRef: ViewContainerRef,
-    private formBuilder: UntypedFormBuilder,
+    private fb: UntypedFormBuilder,
     private dialog: Dialog,
     private apollo: Apollo
   ) {
@@ -116,7 +116,7 @@ export class ResourceAvailableFieldsComponent
     if (!gridSettingsRaw.fields) {
       return null;
     }
-    const auxForm = this.formBuilder.group(gridSettingsRaw);
+    const auxForm = this.fb.group(gridSettingsRaw);
     auxForm.controls.fields.setValue(gridSettingsRaw.fields);
     return auxForm;
   }

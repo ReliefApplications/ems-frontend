@@ -4,7 +4,6 @@ import { initCustomSurvey } from '../../survey/init';
 import { DomService } from '../dom/dom.service';
 import { Dialog } from '@angular/cdk/dialog';
 import { Apollo } from 'apollo-angular';
-import { UntypedFormBuilder } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { DOCUMENT } from '@angular/common';
@@ -26,22 +25,17 @@ export class FormService {
    * @param domService Shared DOM service
    * @param dialog Dialog service
    * @param apollo Apollo client
-   * @param formBuilder Angular form builder
    * @param authService Shared authentication service
    * @param referenceDataService Reference data service
    * @param ngZone Angular Service to execute code inside Angular environment
-<<<<<<< HEAD:libs/safe/src/lib/services/form/form.service.ts
    * @param injector Angular injector from where to fetch the needed services
-=======
    * @param document Document
->>>>>>> beta:libs/shared/src/lib/services/form/form.service.ts
    */
   constructor(
     @Inject('environment') environment: any,
     public domService: DomService,
     public dialog: Dialog,
     public apollo: Apollo,
-    public formBuilder: UntypedFormBuilder,
     public authService: AuthService,
     public referenceDataService: ReferenceDataService,
     public ngZone: NgZone,
