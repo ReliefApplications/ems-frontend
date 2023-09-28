@@ -1,5 +1,5 @@
-<safe-layout [title]="title" [leftSidenav]="leftSidenav"></safe-layout>
+<shared-layout [title]="title" [leftSidenav]="leftSidenav"></shared-layout>
 <!--Need the nav variable, don't remove let-nav, used in layout-->
 <ng-template #leftSidenav let-nav>
-  <safe-navbar [nav]="nav" [navGroups]="navGroups"></safe-navbar>
+  <shared-navbar [nav]="nav" [navGroups]="navGroups"></shared-navbar>
 </ng-template>

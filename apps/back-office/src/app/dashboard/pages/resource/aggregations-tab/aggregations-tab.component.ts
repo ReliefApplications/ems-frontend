@@ -3,23 +3,21 @@ import { TranslateService } from '@ngx-translate/core';
 import { Dialog } from '@angular/cdk/dialog';
 import {
   Aggregation,
-  SafeAggregationService,
-  SafeConfirmService,
+  AggregationService,
+  ConfirmService,
   Resource,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  UnsubscribeComponent,
+  ResourceQueryResponse,
+} from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../../utils/update-queries';
-import {
-  GetResourceByIdQueryResponse,
-  GET_RESOURCE_AGGREGATIONS,
-} from './graphql/queries';
+import { GET_RESOURCE_AGGREGATIONS } from './graphql/queries';
 import { takeUntil } from 'rxjs';
-import { UIPageChangeEvent } from '@oort-front/ui';
+import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
 
 /**
  * Aggregations tab of resource page
@@ -30,7 +28,7 @@ import { UIPageChangeEvent } from '@oort-front/ui';
   styleUrls: ['./aggregations-tab.component.scss'],
 })
 export class AggregationsTabComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   public resource!: Resource;
@@ -44,7 +42,7 @@ export class AggregationsTabComponent
   ];
 
   // ==== PAGINATION ====
-  private aggregationsQuery!: QueryRef<GetResourceByIdQueryResponse>;
+  private aggregationsQuery!: QueryRef<ResourceQueryResponse>;
   private cachedAggregations: Aggregation[] = [];
   public pageInfo = {
     pageIndex: 0,
@@ -70,8 +68,8 @@ export class AggregationsTabComponent
   constructor(
     private apollo: Apollo,
     private dialog: Dialog,
-    private aggregationService: SafeAggregationService,
-    private confirmService: SafeConfirmService,
+    private aggregationService: AggregationService,
+    private confirmService: ConfirmService,
     private translate: TranslateService
   ) {
     super();
@@ -81,15 +79,14 @@ export class AggregationsTabComponent
     const state = history.state;
     this.resource = get(state, 'resource', null);
 
-    this.aggregationsQuery =
-      this.apollo.watchQuery<GetResourceByIdQueryResponse>({
-        query: GET_RESOURCE_AGGREGATIONS,
-        variables: {
-          first: this.pageInfo.pageSize,
-          id: this.resource.id,
-          afterCursor: this.pageInfo.endCursor,
-        },
-      });
+    this.aggregationsQuery = this.apollo.watchQuery<ResourceQueryResponse>({
+      query: GET_RESOURCE_AGGREGATIONS,
+      variables: {
+        first: this.pageInfo.pageSize,
+        id: this.resource?.id,
+        afterCursor: this.pageInfo.endCursor,
+      },
+    });
 
     this.aggregationsQuery.valueChanges.subscribe(({ data, loading }) => {
       this.updateValues(data, loading);
@@ -102,31 +99,16 @@ export class AggregationsTabComponent
    * @param e page event.
    */
   onPage(e: UIPageChangeEvent): void {
-    this.pageInfo.pageIndex = e.pageIndex;
-    // Checks if with new page/size more data needs to be fetched
-    if (
-      ((e.pageIndex > e.previousPageIndex &&
-        e.pageIndex * this.pageInfo.pageSize >=
-          this.cachedAggregations.length) ||
-        e.pageSize > this.pageInfo.pageSize) &&
-      e.totalItems > this.cachedAggregations.length
-    ) {
-      // Sets the new fetch quantity of data needed as the page size
-      // If the fetch is for a new page the page size is used
-      let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is subtracted from the new one
-      if (e.pageSize > this.pageInfo.pageSize) {
-        first -= this.pageInfo.pageSize;
-      }
-      this.pageInfo.pageSize = first;
-      this.fetchAggregations();
+    const cachedData = handleTablePageEvent(
+      e,
+      this.pageInfo,
+      this.cachedAggregations
+    );
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
+      this.aggregations = cachedData;
     } else {
-      this.aggregations = this.cachedAggregations.slice(
-        e.pageSize * this.pageInfo.pageIndex,
-        e.pageSize * (this.pageInfo.pageIndex + 1)
-      );
+      this.fetchAggregations();
     }
-    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**
@@ -140,7 +122,7 @@ export class AggregationsTabComponent
       first: this.pageInfo.pageSize,
       afterCursor: this.pageInfo.endCursor,
     };
-    const cachedValues: GetResourceByIdQueryResponse = getCachedValues(
+    const cachedValues: ResourceQueryResponse = getCachedValues(
       this.apollo.client,
       GET_RESOURCE_AGGREGATIONS,
       variables
@@ -160,10 +142,10 @@ export class AggregationsTabComponent
    * Adds a new aggregation for the resource.
    */
   async onAddAggregation(): Promise<void> {
-    const { SafeEditAggregationModalComponent } = await import(
-      '@oort-front/safe'
+    const { EditAggregationModalComponent } = await import(
+      '@oort-front/shared'
     );
-    const dialogRef = this.dialog.open(SafeEditAggregationModalComponent, {
+    const dialogRef = this.dialog.open(EditAggregationModalComponent, {
       disableClose: true,
       data: {
         resource: this.resource,
@@ -188,10 +170,10 @@ export class AggregationsTabComponent
    * @param aggregation Aggregation to edit
    */
   async onEditAggregation(aggregation: Aggregation): Promise<void> {
-    const { SafeEditAggregationModalComponent } = await import(
-      '@oort-front/safe'
+    const { EditAggregationModalComponent } = await import(
+      '@oort-front/shared'
     );
-    const dialogRef = this.dialog.open(SafeEditAggregationModalComponent, {
+    const dialogRef = this.dialog.open(EditAggregationModalComponent, {
       disableClose: true,
       data: {
         resource: this.resource,
@@ -256,7 +238,7 @@ export class AggregationsTabComponent
    * @param data query response data
    * @param loading loading status
    */
-  private updateValues(data: GetResourceByIdQueryResponse, loading: boolean) {
+  private updateValues(data: ResourceQueryResponse, loading: boolean) {
     if (data.resource) {
       const mappedValues =
         data.resource.aggregations?.edges.map((x) => x.node) ?? [];

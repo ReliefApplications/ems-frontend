@@ -1,10 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import {
-  AbstractControl,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { Component } from '@angular/core';
+import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { DialogRef } from '@angular/cdk/dialog';
 import { apiValidator } from '../../../../../utils/nameValidation';
 
@@ -16,9 +11,11 @@ import { apiValidator } from '../../../../../utils/nameValidation';
   templateUrl: './add-api-configuration.component.html',
   styleUrls: ['./add-api-configuration.component.scss'],
 })
-export class AddApiConfigurationComponent implements OnInit {
-  // === REACTIVE FORM ===
-  apiForm: UntypedFormGroup = new UntypedFormGroup({});
+export class AddApiConfigurationComponent {
+  /** Api reactive form group */
+  apiForm = this.fb.group({
+    name: ['', [Validators.required, Validators.pattern(apiValidator)]],
+  });
 
   /** @returns name for the API configuration */
   get name(): AbstractControl | null {
@@ -28,20 +25,13 @@ export class AddApiConfigurationComponent implements OnInit {
   /**
    * Add API configuration component
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param dialogRef Dialog ref
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<AddApiConfigurationComponent>
   ) {}
-
-  /** Build the form. */
-  ngOnInit(): void {
-    this.apiForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.pattern(apiValidator)]],
-    });
-  }
 
   /** Close the modal without sending data. */
   onClose(): void {

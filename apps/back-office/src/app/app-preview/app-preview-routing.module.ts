@@ -39,7 +39,7 @@ const routes: Routes = [
                   import('./pages/roles/roles.module').then(
                     (m) => m.RolesModule
                   ),
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
               {
                 path: ':id',
@@ -52,7 +52,7 @@ const routes: Routes = [
                     alias: '@role',
                   },
                 },
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
             ],
             data: {
@@ -67,10 +67,10 @@ const routes: Routes = [
               {
                 path: '',
                 loadChildren: () =>
-                  import('@oort-front/safe').then(
-                    (m) => m.SafeApplicationUsersViewModule
+                  import('@oort-front/shared').then(
+                    (m) => m.ApplicationUsersViewModule
                   ),
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
               {
                 path: ':id',
@@ -83,7 +83,7 @@ const routes: Routes = [
                     alias: '@user',
                   },
                 },
-                // canActivate: [SafePermissionGuard]
+                // canActivate: [PermissionGuard]
               },
             ],
             data: {
@@ -95,25 +95,25 @@ const routes: Routes = [
           {
             path: 'templates',
             loadChildren: () =>
-              import('@oort-front/safe').then(
-                (m) => m.SafeApplicationTemplatesViewModule
+              import('@oort-front/shared').then(
+                (m) => m.ApplicationTemplatesViewModule
               ),
           },
           {
             path: 'distribution-lists',
             loadChildren: () =>
-              import('@oort-front/safe').then(
-                (m) => m.SafeApplicationDistributionListsViewModule
+              import('@oort-front/shared').then(
+                (m) => m.ApplicationDistributionListsViewModule
               ),
-            // canActivate: [SafePermissionGuard]
+            // canActivate: [PermissionGuard]
           },
           {
             path: 'notifications',
             loadChildren: () =>
-              import('@oort-front/safe').then(
-                (m) => m.SafeApplicationNotificationsViewModule
+              import('@oort-front/shared').then(
+                (m) => m.ApplicationNotificationsViewModule
               ),
-            // canActivate: [SafePermissionGuard]
+            // canActivate: [PermissionGuard]
           },
         ],
       },

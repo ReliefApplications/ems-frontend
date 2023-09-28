@@ -53,7 +53,7 @@ const routes: Routes = [
           import('./layouts-tab/layouts-tab.module').then(
             (m) => m.LayoutsTabModule
           ),
-        // canActivate: [SafePermissionGuard]
+        // canActivate: [PermissionGuard]
         data: {
           breadcrumb: {
             key: 'common.layout.few',
@@ -66,7 +66,7 @@ const routes: Routes = [
           import('./aggregations-tab/aggregations-tab.module').then(
             (m) => m.AggregationsTabModule
           ),
-        // canActivate: [SafePermissionGuard]
+        // canActivate: [PermissionGuard]
         data: {
           breadcrumb: {
             key: 'common.aggregation.few',

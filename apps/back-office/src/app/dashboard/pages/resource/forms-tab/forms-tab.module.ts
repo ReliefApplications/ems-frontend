@@ -2,9 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsTabRoutingModule } from './forms-tab-routing.module';
 import { FormsTabComponent } from './forms-tab.component';
-import { IconModule } from '@oort-front/ui';
+import { DividerModule, IconModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeDateModule, SafeSkeletonTableModule } from '@oort-front/safe';
+import { DateModule, SkeletonTableModule } from '@oort-front/shared';
 import {
   MenuModule,
   ButtonModule,
@@ -23,11 +23,13 @@ import {
     IconModule,
     MenuModule,
     TranslateModule,
-    SafeDateModule,
-    SafeSkeletonTableModule,
+    DateModule,
+    SkeletonTableModule,
     ButtonModule,
     TableModule,
     ChipModule,
+    DividerModule,
+    TooltipModule,
   ],
 })
 export class FormsTabModule {}

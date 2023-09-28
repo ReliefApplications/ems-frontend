@@ -1,0 +1,10 @@
+<div class="flex-1 flex flex-wrap gap-x-2">
+  <shared-field-dropdown
+    *ngFor="let controlName of controlNames"
+    class="flex-1"
+    [label]="'components.aggregationBuilder.mapping.' + controlName | translate"
+    [fieldControl]="$any($any(formGroup).controls[controlName])"
+    [fields]="fieldsByControl[controlName]"
+    [nullable]="true"
+  ></shared-field-dropdown>
+</div>

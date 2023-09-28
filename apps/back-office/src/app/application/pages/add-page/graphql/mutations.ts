@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Form } from '@oort-front/safe';
 
 // === ADD FORM ===
 /** Add form gql mutation */
@@ -16,8 +15,3 @@ export const ADD_FORM = gql`
     }
   }
 `;
-
-/** Add form gql mutation response interface */
-export interface AddFormMutationResponse {
-  addForm: Form;
-}
