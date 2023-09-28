@@ -423,7 +423,6 @@ export class CoreGridComponent
                 }
                 const fields = this.settings?.query?.fields || [];
                 const defaultLayoutFields = this.defaultLayout.fields || {};
-
                 this.fields = this.gridService.getFields(
                   fields,
                   this.metaFields,
