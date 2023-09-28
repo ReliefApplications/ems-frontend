@@ -11,7 +11,6 @@ import {
   DividerModule,
   MenuModule,
   ButtonModule,
-  TableModule,
   FormWrapperModule,
 } from '@oort-front/ui';
 import { Channel } from '@oort-front/shared';
@@ -34,7 +33,6 @@ import { Channel } from '@oort-front/shared';
     DividerModule,
     DialogModule,
     ButtonModule,
-    TableModule,
   ],
   selector: 'app-channel-modal',
   templateUrl: './channel-modal.component.html',
