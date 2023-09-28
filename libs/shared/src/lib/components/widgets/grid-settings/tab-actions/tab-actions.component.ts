@@ -1,8 +1,8 @@
 import { Component, Input, OnInit, Inject } from '@angular/core';
 import { UntypedFormGroup } from '@angular/forms';
-import { ApplicationService } from 'libs/shared/src/lib/services/application/application.service';
-import { Application } from 'libs/shared/src/lib/models/application.model';
-import { ContentType, Page } from 'libs/shared/src/lib/models/page.model';
+import { ApplicationService } from '../../../../services/application/application.service';
+import { Application } from '../../../../models/application.model';
+import { ContentType, Page } from '../../../../models/page.model';
 
 /**
  * Actions tab of grid widget configuration modal.
@@ -12,10 +12,11 @@ import { ContentType, Page } from 'libs/shared/src/lib/models/page.model';
   templateUrl: './tab-actions.component.html',
   styleUrls: ['./tab-actions.component.scss'],
 })
-export class TabActionsComponent implements OnInit{
+export class TabActionsComponent implements OnInit {
   @Input() formGroup!: UntypedFormGroup;
 
-  public show: boolean = false;
+  // show select page id and checkbox for record id
+  public show = false;
 
   public pages: any[] = [];
 
@@ -66,25 +67,36 @@ export class TabActionsComponent implements OnInit{
     {
       name: 'showRecordDashboard',
       text: 'components.widget.settings.grid.actions.showRecordDashboard',
-      tooltip: 'components.widget.settings.grid.hint.actions.showRecordDashboard',
+      tooltip:
+        'components.widget.settings.grid.hint.actions.showRecordDashboard',
     },
   ];
 
+  /**
+   * Constructor of the grid component
+   *
+   * @param applicationService Application service,
+   * @param environment environment
+   */
   constructor(
     public applicationService: ApplicationService,
     @Inject('environment') environment: any
-  ){
+  ) {
     this.environment = environment;
   }
 
   ngOnInit(): void {
-    this.show = this.formGroup.controls.actions.get('showRecordDashboard')?.value;
+    this.show = this.formGroup.controls.actions.get(
+      'showRecordDashboard'
+    )?.value;
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
     this.pages = this.getPages(application);
-    this.formGroup.controls.actions.get('showRecordDashboard')?.valueChanges.subscribe((val: boolean) => {
-      this.show = val;
-    })
+    this.formGroup.controls.actions
+      .get('showRecordDashboard')
+      ?.valueChanges.subscribe((val: boolean) => {
+        this.show = val;
+      });
   }
 
   /**

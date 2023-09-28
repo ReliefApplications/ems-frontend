@@ -86,7 +86,9 @@ const createSummaryCardForm = (def: any) => {
       addRecord: [get(settings, 'actions.addRecord', false)],
       export: [get(settings, 'actions.export', true)],
       showDetails: [get(settings, 'actions.showDetails', true)],
-      showRecordDashboard: [get(settings, 'actions.showRecordDashboard', false)],
+      showRecordDashboard: [
+        get(settings, 'actions.showRecordDashboard', false),
+      ],
       pageIdUrl: [get(settings, 'actions.pageIdUrl', '')],
       useRecordId: [get(settings, 'actions.useRecordId', false)],
     }),

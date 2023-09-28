@@ -176,7 +176,7 @@ export class DashboardComponent
     private elementRef: ElementRef,
     private layoutService: LayoutService,
     @Inject(DOCUMENT) private document: Document,
-    private clipboard: Clipboard,
+    private clipboard: Clipboard
   ) {
     super();
   }

@@ -9,7 +9,7 @@ import {
   ToggleModule,
   TooltipModule,
   SelectMenuModule,
-  CheckboxModule
+  CheckboxModule,
 } from '@oort-front/ui';
 
 /**

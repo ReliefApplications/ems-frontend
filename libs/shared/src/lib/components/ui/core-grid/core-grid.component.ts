@@ -57,7 +57,11 @@ import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
-import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common'
+import {
+  Location,
+  LocationStrategy,
+  PathLocationStrategy,
+} from '@angular/common';
 
 /**
  * Default file name when exporting grid data.
@@ -79,7 +83,10 @@ const cloneData = (data: any[]) => data.map((item) => Object.assign({}, item));
 @Component({
   selector: 'shared-core-grid',
   templateUrl: './core-grid.component.html',
-  providers: [Location, {provide: LocationStrategy, useClass: PathLocationStrategy}],
+  providers: [
+    Location,
+    { provide: LocationStrategy, useClass: PathLocationStrategy },
+  ],
   styleUrls: ['./core-grid.component.scss'],
 })
 export class CoreGridComponent
@@ -369,7 +376,11 @@ export class CoreGridComponent
       convert: get(this.settings, 'actions.convert', false),
       export: get(this.settings, 'actions.export', false),
       showDetails: get(this.settings, 'actions.showDetails', true),
-      showRecordDashboard: get(this.settings, 'actions.showRecordDashboard', false),
+      showRecordDashboard: get(
+        this.settings,
+        'actions.showRecordDashboard',
+        false
+      ),
       useRecordId: get(this.settings, 'actions.useRecordId', false),
       pageIdUrl: get(this.settings, 'actions.pageIdUrl', ''),
       remove: get(this.settings, 'actions.remove', false),
@@ -854,6 +865,8 @@ export class CoreGridComponent
    * @param event.items list of items to perform the action on
    * @param event.value value to apply to item, if any
    * @param event.field field to use in action, optional
+   * @param event.pageIdUrl url of page id
+   * @param event.useRecordId boolean to use record id
    */
   public onAction(event: {
     action: string;
@@ -905,15 +918,15 @@ export class CoreGridComponent
             const recordId = event.item.id;
             fullUrl = `${pageIdUrl}?id=${recordId}`;
           }
-          fullUrl = 'applications' + fullUrl.substring(fullUrl.indexOf('applications') + 'applications'.length);
-          this.location.replaceState(
-            this.location.path(),
-            undefined,
-            {
-              skip: this.skip,
-              take: this.pageSize
-            }
-          );
+          fullUrl =
+            'applications' +
+            fullUrl.substring(
+              fullUrl.indexOf('applications') + 'applications'.length
+            );
+          this.location.replaceState(this.location.path(), undefined, {
+            skip: this.skip,
+            take: this.pageSize,
+          });
           this.router.navigateByUrl(fullUrl);
         }
         break;

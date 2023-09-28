@@ -139,7 +139,9 @@ export const createGridWidgetFormGroup = (id: string, configuration: any) => {
       addRecord: [get(configuration, 'actions.addRecord', false)],
       export: [get(configuration, 'actions.export', true)],
       showDetails: [get(configuration, 'actions.showDetails', true)],
-      showRecordDashboard: [get(configuration, 'actions.showRecordDashboard', false)],
+      showRecordDashboard: [
+        get(configuration, 'actions.showRecordDashboard', false),
+      ],
       pageIdUrl: [get(configuration, 'actions.pageIdUrl', '')],
       useRecordId: [get(configuration, 'actions.useRecordId', false)],
     }),

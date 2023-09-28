@@ -49,7 +49,11 @@ import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { DOCUMENT } from '@angular/common';
-import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common'
+import {
+  Location,
+  LocationStrategy,
+  PathLocationStrategy,
+} from '@angular/common';
 
 /**
  * Test if an element match a css selector
@@ -69,6 +73,8 @@ const matches = (el: any, selector: any) =>
   providers: [
     PopupService,
     ResizeBatchService,
+    Location,
+    { provide: LocationStrategy, useClass: PathLocationStrategy },
     // CalendarDOMService,
     // MonthViewService,
     // WeekNamesService,
@@ -251,14 +257,12 @@ export class GridComponent
     if (state.skip && state.take) {
       const page: PageChangeEvent = {
         skip: state.skip,
-        take: state.take
-      }
+        take: state.take,
+      };
       // clear the state
-      this.location.replaceState(
-        this.location.path(),
-        undefined,
-        { navigationId: state.navigationId }
-      );
+      this.location.replaceState(this.location.path(), undefined, {
+        navigationId: state.navigationId,
+      });
       setTimeout(() => {
         // paginate to the right page
         this.onPageChange(page);
