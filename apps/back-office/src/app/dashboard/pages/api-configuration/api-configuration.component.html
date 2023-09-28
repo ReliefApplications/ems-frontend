@@ -4,12 +4,12 @@
     <h1 class="page-title">
       {{ apiConfiguration.name }}
     </h1>
-    <safe-access
+    <shared-access
       [access]="apiConfiguration.permissions"
       [objectTypeName]="'common.apiConfiguration.one' | translate"
       (save)="saveAccess($event)"
       *ngIf="apiConfiguration?.canUpdate"
-    ></safe-access>
+    ></shared-access>
   </div>
   <form [formGroup]="apiForm" *ngIf="apiForm">
     <!-- General settings -->
@@ -60,7 +60,10 @@
 
         <div uiFormFieldDirective [outline]="false" class="flex-1">
           <label>{{ 'models.apiConfiguration.authType' | translate }}</label>
-          <ui-select-menu formControlName="authType">
+          <ui-select-menu
+            formControlName="authType"
+            [placeholder]="'models.apiConfiguration.selectAuthType' | translate"
+          >
             <ui-select-option
               *ngFor="let authTypeChoice of authTypeChoices"
               [value]="authTypeChoice"

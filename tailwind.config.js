@@ -3,7 +3,7 @@
 module.exports = {
   content: [
     './apps/**/src/**/*.{html,ts}',
-    './libs/safe/**/*.{html,ts,js,mjs}',
+    './libs/shared/**/*.{html,ts,js,mjs}',
     './libs/ui/**/*.{html,ts,js,mjs}',
   ],
   theme: {
@@ -44,7 +44,7 @@ module.exports = {
       animation: {
         fadeIn: 'fadeIn 0.5s forwards',
         fadeOut: 'fadeOut 0.1s forwards',
-      },
+      }
     },
     fontFamily: {
       'system-ui': ['Roboto', 'Helvetica Neue', 'sans-serif'],

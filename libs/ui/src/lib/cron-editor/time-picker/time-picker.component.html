@@ -1,0 +1,55 @@
+<ng-container [formGroup]="allForm">
+  <div [ngClass]="{ 'flex gap-3 items-center': !hideHours }">
+    <ng-container *ngIf="!hideHours">
+      <div uiFormFieldDirective>
+        <label>Hour(s)</label>
+        <ui-select-menu formControlName="hours">
+          <ui-select-option *ngFor="let hour of hours" [value]="hour">
+            {{ hour }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+    </ng-container>
+
+    <span *ngIf="!hideHours && !hideMinutes">:</span>
+
+    <ng-container *ngIf="!hideMinutes">
+      <div uiFormFieldDirective>
+        <label>Minute(s)</label>
+        <ui-select-menu formControlName="minutes">
+          <ui-select-option *ngFor="let minute of minutes" [value]="minute">
+            {{ minute }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+    </ng-container>
+
+    <span *ngIf="!hideMinutes && !hideSeconds">:</span>
+
+    <ng-container *ngIf="!hideSeconds">
+      <div uiFormFieldDirective>
+        <label>Second(s)</label>
+        <ui-select-menu formControlName="seconds">
+          <ui-select-option *ngFor="let second of seconds" [value]="second">
+            {{ second }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+    </ng-container>
+
+    <span *ngIf="!hideSeconds && !use24HourTime">.</span>
+
+    <ng-container *ngIf="!use24HourTime">
+      <div uiFormFieldDirective>
+        <ui-select-menu formControlName="hourType">
+          <ui-select-option
+            *ngFor="let hourType of hourTypes"
+            [value]="hourType"
+          >
+            {{ hourType }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+    </ng-container>
+  </div>
+</ng-container>

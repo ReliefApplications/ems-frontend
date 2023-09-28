@@ -95,6 +95,7 @@
                   icon="more_vert"
                   [uiMenuTriggerFor]="recMenu"
                   (click)="$event.stopPropagation()"
+                  [uiTooltip]="'common.options' | translate"
                 >
                 </ui-button>
                 <ui-menu #recMenu>
@@ -113,11 +114,9 @@
                     [uiMenuTriggerFor]="templates"
                   >
                     <ui-icon icon="edit_note" variant="grey"></ui-icon>
-                    {{
-                      'common.editObject'
-                        | translate : { name: 'common.child' | translate }
-                    }}
+                    {{ 'common.child.edit' | translate }}
                   </button>
+                  <ui-divider class="py-1"></ui-divider>
                   <button
                     *ngIf="!showDeletedRecords"
                     uiMenuItem
@@ -177,12 +176,12 @@
   </ng-container>
   <ng-template #emptyTmpl>
     <!-- Empty indicator -->
-    <safe-empty
+    <shared-empty
       [title]="'components.resource.empty.records' | translate"
-    ></safe-empty>
+    ></shared-empty>
   </ng-template>
 </ng-container>
 <ng-template #loadingTmpl>
-  <safe-skeleton-table [columns]="displayedColumnsRecords" [actions]="true">
-  </safe-skeleton-table>
+  <shared-skeleton-table [columns]="displayedColumnsRecords" [actions]="true">
+  </shared-skeleton-table>
 </ng-template>

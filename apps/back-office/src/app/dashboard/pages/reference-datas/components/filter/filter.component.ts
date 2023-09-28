@@ -20,12 +20,12 @@ export class FilterComponent implements OnInit {
   /**
    * FilterComponent constructor
    *
-   * @param formBuilder Used to create reactive forms
+   * @param fb Used to create reactive forms
    */
-  constructor(private formBuilder: FormBuilder) {}
+  constructor(private fb: FormBuilder) {}
 
   ngOnInit(): void {
-    this.form = this.formBuilder.group({
+    this.form = this.fb.group({
       name: [''],
     });
     this.search.valueChanges

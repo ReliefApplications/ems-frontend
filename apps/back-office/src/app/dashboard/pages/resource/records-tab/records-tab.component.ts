@@ -3,28 +3,27 @@ import { TranslateService } from '@ngx-translate/core';
 import {
   Record,
   Form,
-  SafeConfirmService,
+  ConfirmService,
   Resource,
-  SafeDownloadService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  DownloadService,
+  UnsubscribeComponent,
+  ResourceRecordsNodesQueryResponse,
+  DeleteRecordMutationResponse,
+  RestoreRecordMutationResponse,
+} from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
 import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../../utils/update-queries';
+import { DELETE_RECORD, RESTORE_RECORD } from '../graphql/mutations';
+import { GET_RESOURCE_RECORDS } from './graphql/queries';
 import {
-  DeleteRecordMutationResponse,
-  DELETE_RECORD,
-  RestoreRecordMutationResponse,
-  RESTORE_RECORD,
-} from '../graphql/mutations';
-import {
-  GetResourceRecordsQueryResponse,
-  GET_RESOURCE_RECORDS,
-} from './graphql/queries';
-import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
+  SnackbarService,
+  UIPageChangeEvent,
+  handleTablePageEvent,
+} from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
 
 /** Quantity of resource that will be loaded at once. */
@@ -44,10 +43,10 @@ const RECORDS_DEFAULT_COLUMNS = ['_incrementalId', '_actions'];
   styleUrls: ['./records-tab.component.scss'],
 })
 export class RecordsTabComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
-  private recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
+  private recordsQuery!: QueryRef<ResourceRecordsNodesQueryResponse>;
   public dataSource = new Array<Record>();
   private cachedRecords: Record[] = [];
   public resource!: Resource;
@@ -82,8 +81,8 @@ export class RecordsTabComponent
     private apollo: Apollo,
     private translate: TranslateService,
     private snackBar: SnackbarService,
-    private confirmService: SafeConfirmService,
-    private downloadService: SafeDownloadService
+    private confirmService: ConfirmService,
+    private downloadService: DownloadService
   ) {
     super();
   }
@@ -92,18 +91,17 @@ export class RecordsTabComponent
     const state = history.state;
     this.resource = get(state, 'resource', null);
     this.setDisplayedColumns(false);
-    this.recordsQuery = this.apollo.watchQuery<GetResourceRecordsQueryResponse>(
-      {
+    this.recordsQuery =
+      this.apollo.watchQuery<ResourceRecordsNodesQueryResponse>({
         query: GET_RESOURCE_RECORDS,
         variables: {
-          id: this.resource.id,
+          id: this.resource?.id,
           first: ITEMS_PER_PAGE,
           afterCursor: null,
           display: false,
           showDeletedRecords: this.showDeletedRecords,
         },
-      }
-    );
+      });
     this.recordsQuery.valueChanges.subscribe(({ data, loading }) => {
       this.updateValues(data, loading);
     });
@@ -240,15 +238,17 @@ export class RecordsTabComponent
    */
   private setDisplayedColumns(core: boolean): void {
     let columns = [];
-    if (core) {
-      for (const field of this.resource.fields.filter(
-        (x: any) => x.isRequired === true
-      )) {
-        columns.push(field.name);
-      }
-    } else {
-      for (const field of this.resource.fields) {
-        columns.push(field.name);
+    if (this.resource?.fields) {
+      if (core) {
+        for (const field of this.resource.fields.filter(
+          (x: any) => x.isRequired === true
+        )) {
+          columns.push(field.name);
+        }
+      } else {
+        for (const field of this.resource.fields) {
+          columns.push(field.name);
+        }
       }
     }
     const metadata = get(this.resource, 'metadata', []);
@@ -340,30 +340,16 @@ export class RecordsTabComponent
    * @param e page event.
    */
   onPage(e: UIPageChangeEvent): void {
-    this.pageInfo.pageIndex = e.pageIndex;
-    // Checks if with new page/size more data needs to be fetched
-    if (
-      ((e.pageIndex > e.previousPageIndex &&
-        e.pageIndex * this.pageInfo.pageSize >= this.cachedRecords.length) ||
-        e.pageSize > this.pageInfo.pageSize) &&
-      e.totalItems > this.cachedRecords.length
-    ) {
-      // Sets the new fetch quantity of data needed as the page size
-      // If the fetch is for a new page the page size is used
-      let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is subtracted from the new one
-      if (e.pageSize > this.pageInfo.pageSize) {
-        first -= this.pageInfo.pageSize;
-      }
-      this.pageInfo.pageSize = first;
-      this.fetchRecords();
+    const cachedData = handleTablePageEvent(
+      e,
+      this.pageInfo,
+      this.cachedRecords
+    );
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
+      this.dataSource = cachedData;
     } else {
-      this.dataSource = this.cachedRecords.slice(
-        e.pageSize * this.pageInfo.pageIndex,
-        e.pageSize * (this.pageInfo.pageIndex + 1)
-      );
+      this.fetchRecords();
     }
-    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**
@@ -404,7 +390,7 @@ export class RecordsTabComponent
       display: false,
       showDeletedRecords: this.showDeletedRecords,
     };
-    const cachedValues: GetResourceRecordsQueryResponse = getCachedValues(
+    const cachedValues: ResourceRecordsNodesQueryResponse = getCachedValues(
       this.apollo.client,
       GET_RESOURCE_RECORDS,
       variables
@@ -435,7 +421,7 @@ export class RecordsTabComponent
    * @param loading loading status
    */
   private updateValues(
-    data: GetResourceRecordsQueryResponse,
+    data: ResourceRecordsNodesQueryResponse,
     loading: boolean
   ) {
     const mappedValues = data.resource.records.edges.map((x) => x.node);
