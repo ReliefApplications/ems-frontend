@@ -4,7 +4,7 @@ import { TabsModule } from './tabs.module';
 import { TabsComponent } from './tabs.component';
 
 export default {
-  title: 'Tabs',
+  title: 'Components/Tabs',
   component: TabsComponent,
   decorators: [
     moduleMetadata({

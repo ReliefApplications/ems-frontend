@@ -134,7 +134,7 @@ class EditDialogComponent {
 }
 
 export default {
-  title: 'Dialog',
+  title: 'Components/Dialog',
   component: LaunchDialogComponent,
   decorators: [
     moduleMetadata({

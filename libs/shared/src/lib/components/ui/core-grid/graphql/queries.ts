@@ -1,5 +1,14 @@
 import { gql } from 'apollo-angular';
 
+/** Get resource by id to get its query name */
+export const GET_RESOURCE_QUERY_NAME = gql`
+  query GetResourceById($id: ID!) {
+    resource(id: $id) {
+      singleQueryName
+    }
+  }
+`;
+
 // === GET FORM BY ID ===
 
 /** Graphql request for getting form data by its id */

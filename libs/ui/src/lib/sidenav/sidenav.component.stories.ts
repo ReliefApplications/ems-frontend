@@ -4,7 +4,7 @@ import { SidenavContainerModule } from './sidenav-container.module';
 import { ButtonModule } from '../button/button.module';
 
 export default {
-  title: 'Sidenav',
+  title: 'Components/Sidenav',
   component: SidenavContainerComponent,
   argTypes: {
     showSidenav: {

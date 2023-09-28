@@ -8,6 +8,7 @@ import {
   CronParserModule,
   DateModule,
   StatusOptionsComponent,
+  EmptyModule,
 } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -35,6 +36,7 @@ import {
     ButtonModule,
     TableModule,
     StatusOptionsComponent,
+    EmptyModule,
     TooltipModule,
   ],
 })

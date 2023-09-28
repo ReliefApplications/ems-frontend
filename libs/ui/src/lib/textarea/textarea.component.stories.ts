@@ -5,7 +5,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { FocusableDirective } from '@progress/kendo-angular-grid';
 
 export default {
-  title: 'Textarea',
+  title: 'Components/Textarea',
   component: TextareaComponent,
   argTypes: {
     value: {

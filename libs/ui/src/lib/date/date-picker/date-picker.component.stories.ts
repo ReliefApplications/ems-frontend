@@ -5,7 +5,7 @@ import { StorybookTranslateModule } from '../../../storybook-translate.module';
 import { DateModule } from '../date.module';
 
 export default {
-  title: 'Date Picker',
+  title: 'Components/Date Picker',
   component: DatePickerComponent,
   decorators: [
     moduleMetadata({

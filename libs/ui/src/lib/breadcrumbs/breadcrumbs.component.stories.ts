@@ -5,7 +5,7 @@ import { breadcrumbSeparators } from './types/breadcrumb-separator';
 import { BreadcrumbsModule } from './breadcrumbs.module';
 
 export default {
-  title: 'Breadcrumbs',
+  title: 'Components/Breadcrumbs',
   component: BreadcrumbsComponent,
   argTypes: {
     separator: {

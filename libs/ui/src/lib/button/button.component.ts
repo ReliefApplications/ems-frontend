@@ -6,7 +6,10 @@ import { Subject } from 'rxjs';
 import { Size } from '../types/size';
 
 /**
- * UI Button Component
+ * UI Button Component.
+ * Encapsulate a html button.
+ * Button can have various shapes / colors / sizes.
+ * It can be only icon, or have one as prefix / suffix of its text.
  */
 @Component({
   selector: 'ui-button',
@@ -14,21 +17,31 @@ import { Size } from '../types/size';
   styleUrls: ['./button.component.scss'],
 })
 export class ButtonComponent {
+  /** Button Icon */
   @Input() icon = '';
+  /** Icon position, either before or after text */
   @Input() iconPosition: ButtonIconPosition = 'prefix';
+  /** Button category, define shape */
   @Input() category: Category = 'primary';
+  /** Button size */
   @Input() size: Size = 'medium';
+  /** Button variant, define color */
   @Input() variant: Variant = 'default';
+  /** Is button only icon */
   @Input() isIcon = false;
+  /** Should button appear as block */
   @HostBinding('class.flex')
   @Input()
   isBlock = false;
+  /** Loading indicator */
   @Input() loading = false;
+  /** Disable interaction */
   @HostBinding('class.disabled')
   @Input()
   disabled = false;
+  /** Is button outlined */
   @Input() isOutlined = false;
-
+  /** Emit click event */
   public emittedEventSubject: Subject<string> = new Subject();
 
   /**

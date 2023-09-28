@@ -69,8 +69,9 @@ export const init = (
     afterRender: (question: QuestionTagbox, el: HTMLElement): void => {
       const parentQuestion = question.parentQuestion;
       if (
-        (parentQuestion && parentQuestion.getType() === 'matrixdynamic') ||
-        parentQuestion.getType() === 'matrixdropdown'
+        parentQuestion &&
+        (parentQuestion.getType() === 'matrixdynamic' ||
+          parentQuestion.getType() === 'matrixdropdown')
       ) {
         question.choices = parentQuestion.choices;
       }
