@@ -25,3 +25,13 @@ export const DELETE_RESOURCE = gql`
     }
   }
 `;
+
+// == DUPLICATE RESOURCE ==
+/** Duplicate resource gql mutation definition */
+export const DUPLICATE_RESOURCE = gql`
+  mutation duplicateResource($id: ID!) {
+    duplicateResource(id: $id) {
+      id
+    }
+  }
+`;

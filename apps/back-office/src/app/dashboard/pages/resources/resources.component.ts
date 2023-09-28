@@ -1,7 +1,5 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { DELETE_RESOURCE, ADD_FORM } from './graphql/mutations';
-import { GET_RESOURCES_EXTENDED } from './graphql/queries';
 import {
   AddFormMutationResponse,
   DeleteResourceMutationResponse,
@@ -9,6 +7,7 @@ import {
   ConfirmService,
   UnsubscribeComponent,
   ResourcesQueryResponse,
+  DuplicateResourceMutationResponse,
 } from '@oort-front/shared';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
@@ -24,6 +23,12 @@ import {
 } from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
+import { GET_RESOURCES_EXTENDED } from './graphql/queries';
+import {
+  ADD_FORM,
+  DELETE_RESOURCE,
+  DUPLICATE_RESOURCE,
+} from './graphql/mutations';
 
 /**
  * Default number of resources that will be shown at once.
@@ -288,6 +293,40 @@ export class ResourcesComponent extends UnsubscribeComponent implements OnInit {
           });
       }
     });
+  }
+
+  /**
+   * Duplicates a resource.
+   *
+   * @param resource Resource to duplicate.
+   */
+  onDuplicate(resource: Resource): void {
+    this.apollo
+      .mutate<DuplicateResourceMutationResponse>({
+        mutation: DUPLICATE_RESOURCE,
+        variables: {
+          id: resource.id,
+        },
+      })
+      .subscribe(({ errors }) => {
+        if (!errors) {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectDuplicated', {
+              value: resource.name,
+              type: this.translate.instant('common.resource.one'),
+            })
+          );
+        } else {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.objectNotDuplicated', {
+              value: `"${resource.name}"`,
+              type: this.translate.instant('common.resource.one'),
+              error: errors[0].message,
+            }),
+            { error: true }
+          );
+        }
+      });
   }
 
   /**

@@ -69,3 +69,8 @@ export interface ResourceRecordsConnectionsQueryResponse {
     records: Connection<Record>;
   };
 }
+
+/** Model for duplicate resource mutation response object */
+export interface DuplicateResourceMutationResponse {
+  duplicatedResource: Resource;
+}
