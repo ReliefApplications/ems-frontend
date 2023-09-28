@@ -1197,7 +1197,12 @@
          kendoButton
          icon="hyperlink-open-sm"
          [look]="'flat'"
-         (click)="action.emit({ action: 'recordDashboard', item: dataItem, pageId: actions.pageId })"
+         (click)="action.emit({
+            action: 'recordDashboard',
+            item: dataItem, 
+            pageIdUrl: actions.pageIdUrl,
+            useRecordId: actions.useRecordId
+          })"
          [uiTooltip]="'components.widget.grid.actions.recordDashboard' | translate"
        ></button>
      </ng-template>

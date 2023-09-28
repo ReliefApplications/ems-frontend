@@ -49,6 +49,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { DOCUMENT } from '@angular/common';
+import {Location, LocationStrategy, PathLocationStrategy} from '@angular/common'
 
 /**
  * Test if an element match a css selector
@@ -124,7 +125,8 @@ export class GridComponent
     export: false,
     showDetails: false,
     showRecordDashboard: false,
-    pageId: '',
+    useRecordId: false,
+    pageIdUrl: '',
     remove: false,
   };
   @Input() hasDetails = true;
@@ -213,6 +215,7 @@ export class GridComponent
    * @param translate The translate service
    * @param snackBar The snackbar service
    * @param document document
+   * @param location Angular location service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -223,7 +226,8 @@ export class GridComponent
     private dashboardService: DashboardService,
     private translate: TranslateService,
     private snackBar: SnackbarService,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private location: Location
   ) {
     super();
     this.environment = environment.module || 'frontoffice';
@@ -242,6 +246,24 @@ export class GridComponent
       ...this.selectableSettings,
       mode: this.multiSelect ? 'multiple' : 'single',
     };
+    // verify if has location state, if has this means that we are come back from another url
+    const state: any = this.location.getState();
+    if (state.skip && state.take) {
+      const page: PageChangeEvent = {
+        skip: state.skip,
+        take: state.take
+      }
+      // clear the state
+      this.location.replaceState(
+        this.location.path(),
+        undefined,
+        { navigationId: state.navigationId }
+      );
+      setTimeout(() => {
+        // paginate to the right page
+        this.onPageChange(page);
+      }, 1000);
+    }
   }
 
   ngOnChanges(): void {

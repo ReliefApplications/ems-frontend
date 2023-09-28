@@ -1292,7 +1292,8 @@
 						"showDetails": "******",
 						"showRecordDashboard": "******",
 						"title": "******",
-						"update": "******"
+						"update": "******",
+						"useRecordId": "******"
 					},
 					"aggregations": {
 						"add": {

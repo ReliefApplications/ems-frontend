@@ -513,17 +513,7 @@ export class SummaryCardComponent
     const settings = {
       template: get(this.settings, 'template', null), //TO MODIFY
       resource: card.resource,
-      actions: {
-        //default actions, might need to modify later
-        addRecord: false,
-        convert: true,
-        delete: true,
-        export: true,
-        history: true,
-        inlineEdition: true,
-        showDetails: true,
-        update: true,
-      },
+      actions: this.settings.actions,
     };
 
     Object.assign(

@@ -3,7 +3,14 @@ import { CommonModule } from '@angular/common';
 import { TabActionsComponent } from './tab-actions.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { FormWrapperModule, IconModule, ToggleModule, TooltipModule } from '@oort-front/ui';
+import {
+  FormWrapperModule,
+  IconModule,
+  ToggleModule,
+  TooltipModule,
+  SelectMenuModule,
+  CheckboxModule
+} from '@oort-front/ui';
 
 /**
  * Actions tab of grid widget configuration modal.
@@ -19,6 +26,8 @@ import { FormWrapperModule, IconModule, ToggleModule, TooltipModule } from '@oor
     ToggleModule,
     IconModule,
     TooltipModule,
+    SelectMenuModule,
+    CheckboxModule,
   ],
   exports: [TabActionsComponent],
 })

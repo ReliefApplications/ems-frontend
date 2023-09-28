@@ -21,11 +21,21 @@
         <label>
           {{ 'components.widget.settings.grid.actions.pageId.label' | translate }}
         </label>
-        <input
-          formControlName="pageId"
+        <ui-select-menu
+          formControlName="pageIdUrl"
           [placeholder]="'components.widget.settings.grid.actions.pageId.placeholder' | translate"
-          type="string"
-        />
+        >
+          <ui-select-option *ngFor="let page of pages" [value]="page.url">
+            {{ page.name }}
+          </ui-select-option>
+        </ui-select-menu>
+      </div>
+      <div *ngIf="show">
+        <ui-checkbox formControlName="useRecordId">
+          <ng-container ngProjectAs="label">
+            {{ 'components.widget.settings.grid.actions.useRecordId' | translate }}
+          </ng-container>
+        </ui-checkbox>
       </div>
     </div>
   </div>

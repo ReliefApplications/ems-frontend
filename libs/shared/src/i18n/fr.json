@@ -1308,7 +1308,8 @@
 						"showDetails": "Afficher les détails des enregistrements",
 						"showRecordDashboard": "@TODO",
 						"title": "Actions activées",
-						"update": "Modifier les enregistrements"
+						"update": "Modifier les enregistrements",
+						"useRecordId": "@TODO"
 					},
 					"aggregations": {
 						"add": {

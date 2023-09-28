@@ -120,7 +120,8 @@ export class CoreGridComponent
   // === FEATURES INPUTS ===
   @Input() showDetails = true;
   @Input() showRecordDashboard = false;
-  @Input() pageId = '';
+  @Input() pageIdUrl = '';
+  @Input() useRecordId = false;
   @Input() showExport = true;
   @Input() admin = false;
   @Input() canCreateRecords = false;
@@ -278,7 +279,8 @@ export class CoreGridComponent
     export: this.showExport,
     showDetails: true,
     showRecordDashboard: false,
-    pageId: '',
+    useRecordId: false,
+    pageIdUrl: '',
     remove: false,
   };
 
@@ -345,10 +347,6 @@ export class CoreGridComponent
         this.configureGrid();
       }
     }
-
-    this.location.subscribe((test:any) => {
-      console.log(test);
-    })
   }
 
   /**
@@ -372,7 +370,8 @@ export class CoreGridComponent
       export: get(this.settings, 'actions.export', false),
       showDetails: get(this.settings, 'actions.showDetails', true),
       showRecordDashboard: get(this.settings, 'actions.showRecordDashboard', false),
-      pageId: get(this.settings, 'actions.pageId', ''),
+      useRecordId: get(this.settings, 'actions.useRecordId', false),
+      pageIdUrl: get(this.settings, 'actions.pageIdUrl', ''),
       remove: get(this.settings, 'actions.remove', false),
     };
     this.editable = this.settings.actions?.inlineEdition;
@@ -862,7 +861,8 @@ export class CoreGridComponent
     items?: any[];
     value?: any;
     field?: any;
-    pageId?: string;
+    pageIdUrl?: string;
+    useRecordId?: boolean;
   }): void {
     switch (event.action) {
       case 'add': {
@@ -899,15 +899,22 @@ export class CoreGridComponent
       }
       case 'recordDashboard': {
         if (event.item) {
-          let applicationId = '';
-          this.applicationService.application$.forEach((app: any) => {
-            applicationId = app.id;
-          });
-          const recordId = event.item.id;
-          const pageId = event.pageId;
-          const fullUrl = `//applications/${applicationId}/dashboard/${pageId}?id=${recordId}`;
+          const pageIdUrl = event.pageIdUrl;
+          let fullUrl = `${pageIdUrl}`;
+          if (event.useRecordId) {
+            const recordId = event.item.id;
+            fullUrl = `${pageIdUrl}?id=${recordId}`;
+          }
+          fullUrl = 'applications' + fullUrl.substring(fullUrl.indexOf('applications') + 'applications'.length);
+          this.location.replaceState(
+            this.location.path(),
+            undefined,
+            {
+              skip: this.skip,
+              take: this.pageSize
+            }
+          );
           this.router.navigateByUrl(fullUrl);
-          this.location.go(fullUrl, undefined, {test: "testing"});
         }
         break;
       }

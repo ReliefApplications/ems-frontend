@@ -34,6 +34,9 @@ const DEFAULT_CONTEXT_FILTER = `{
   "filters": []
 }`;
 
+/** Creating a new instance of the FormBuilder class. */
+const fb = new FormBuilder();
+
 /**
  * Create a card form
  *
@@ -74,6 +77,19 @@ const createSummaryCardForm = (def: any) => {
     contextFilters: new FormControl(
       get(settings, 'contextFilters', DEFAULT_CONTEXT_FILTER)
     ),
+    actions: fb.group({
+      delete: [get(settings, 'actions.delete', true)],
+      history: [get(settings, 'actions.history', true)],
+      convert: [get(settings, 'actions.convert', true)],
+      update: [get(settings, 'actions.update', true)],
+      inlineEdition: [get(settings, 'actions.inlineEdition', true)],
+      addRecord: [get(settings, 'actions.addRecord', false)],
+      export: [get(settings, 'actions.export', true)],
+      showDetails: [get(settings, 'actions.showDetails', true)],
+      showRecordDashboard: [get(settings, 'actions.showRecordDashboard', false)],
+      pageIdUrl: [get(settings, 'actions.pageIdUrl', '')],
+      useRecordId: [get(settings, 'actions.useRecordId', false)],
+    }),
     at: new FormControl(get(settings, 'at', '')),
   });
 
