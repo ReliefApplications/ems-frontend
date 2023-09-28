@@ -17,7 +17,8 @@ import { CommonModule } from '@angular/common';
 type StoryType = ButtonComponent & { label?: string };
 
 export default {
-  title: 'Button',
+  title: 'Components/Button',
+  tags: ['autodocs'],
   component: ButtonComponent,
   decorators: [
     moduleMetadata({
@@ -25,7 +26,7 @@ export default {
     }),
     componentWrapperDecorator((story) => {
       story = story.replace(/></, '>Button label<');
-      return `<div class="h-96">${story}</div>`;
+      return `${story}`;
     }),
   ],
   argTypes: {

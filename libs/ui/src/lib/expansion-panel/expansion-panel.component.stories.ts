@@ -10,7 +10,7 @@ type PanelOption = {
 };
 
 export default {
-  title: 'Expansion Panel',
+  title: 'Components/Expansion Panel',
   component: ExpansionPanelComponent,
   argTypes: {
     displayIcon: {

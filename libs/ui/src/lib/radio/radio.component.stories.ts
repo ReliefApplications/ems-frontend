@@ -12,7 +12,7 @@ type RadioOption = {
 };
 
 export default {
-  title: 'Radio',
+  title: 'Components/Radio',
   component: RadioComponent,
   argTypes: {
     variant: {

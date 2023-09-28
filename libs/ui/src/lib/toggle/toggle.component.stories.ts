@@ -6,7 +6,7 @@ import { variants } from '../types/variant';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 export default {
-  title: 'Toggle',
+  title: 'Components/Toggle',
   component: ToggleComponent,
   argTypes: {
     type: {

@@ -6,7 +6,7 @@ import { AlertComponent } from './alert.component';
 type StoryType = AlertComponent & { content?: string };
 
 export default {
-  title: 'Alert',
+  title: 'Components/Alert',
   component: AlertComponent,
   decorators: [
     moduleMetadata({

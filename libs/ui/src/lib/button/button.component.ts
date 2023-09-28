@@ -14,7 +14,9 @@ import { Size } from '../types/size';
   styleUrls: ['./button.component.scss'],
 })
 export class ButtonComponent {
+  /** Button Icon */
   @Input() icon = '';
+  /** Icon position, either before or after text */
   @Input() iconPosition: ButtonIconPosition = 'prefix';
   @Input() category: Category = 'primary';
   @Input() size: Size = 'medium';

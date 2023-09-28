@@ -6,7 +6,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 export default {
-  title: 'Chip',
+  title: 'Components/Chip',
   component: ChipComponent,
   argTypes: {
     variant: {
