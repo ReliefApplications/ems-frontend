@@ -1,0 +1,136 @@
+<ui-tabs
+  class="grow"
+  [vertical]="true"
+  (selectedIndexChange)="handleTabChange($event)"
+>
+  <!-- MAIN PARAMETERS / SELECTION OF LAYOUTS -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon
+        icon="preview"
+        [size]="24"
+        uiTooltip="{{ 'common.general' | translate }}"
+      ></ui-icon>
+      <span>{{ 'common.general' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-tab-main
+        [formGroup]="formGroup"
+        [resource]="resource"
+        [queries]="filteredQueries"
+        [templates]="templates"
+      ></shared-tab-main>
+    </ng-template>
+  </ui-tab>
+  <!-- AVAILABLE ACTIONS -->
+  <ui-tab *ngIf="formGroup && !(formGroup.value.aggregations.length > 0)">
+    <ng-container ngProjectAs="label">
+      <ui-icon
+        icon="toggle_on"
+        [size]="24"
+        uiTooltip="{{
+          'components.widget.settings.grid.actions.title' | translate
+        }}"
+      ></ui-icon>
+      <span>{{
+        'components.widget.settings.grid.actions.title' | translate
+      }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-tab-actions [formGroup]="formGroup"></shared-tab-actions>
+    </ng-template>
+  </ui-tab>
+  <!-- BUTTONS -->
+  <ui-tab *ngIf="formGroup && !(formGroup.value.aggregations.length > 0)">
+    <ng-container ngProjectAs="label">
+      <ui-icon
+        icon="bolt"
+        [size]="24"
+        uiTooltip="{{
+          'components.widget.settings.grid.buttons.title' | translate
+        }}"
+      ></ui-icon>
+      <span>{{
+        'components.widget.settings.grid.buttons.title' | translate
+      }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-tab-buttons
+        [formGroup]="formGroup"
+        [fields]="fields"
+        [templates]="appTemplates"
+        [distributionLists]="distributionLists"
+        [relatedForms]="relatedForms"
+        [channels]="channels"
+      ></shared-tab-buttons>
+    </ng-template>
+  </ui-tab>
+  <!-- Context filter settings -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="filter_list" [size]="24"></ui-icon>
+      <span>{{ 'models.dashboard.contextFilter' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-contextual-filters-settings
+        [form]="formGroup"
+      ></shared-contextual-filters-settings>
+    </ng-template>
+  </ui-tab>
+  <!-- Widget display options -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon
+        icon="settings_overscan"
+        [size]="24"
+        [uiTooltip]="'models.widget.display.title' | translate"
+      ></ui-icon>
+      <span>{{ 'models.widget.display.title' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-display-settings [formGroup]="formGroup">
+        <!-- Specific settings for grid -->
+        <ui-toggle
+          *ngIf="formGroup.get('widgetDisplay.sortable')"
+          [formControl]="$any(formGroup.get('widgetDisplay.sortable'))"
+        >
+          <ng-container ngProjectAs="label">
+            {{ 'models.widget.display.sortable' | translate }}
+          </ng-container>
+        </ui-toggle>
+        <ui-toggle
+          *ngIf="formGroup.get('widgetDisplay.showSingleActionAsButton')"
+          [formControl]="
+            $any(formGroup.get('widgetDisplay.showSingleActionAsButton'))
+          "
+        >
+          <ng-container ngProjectAs="label">
+            {{
+              'components.widget.settings.grid.display.showSingleActionAsButton'
+                | translate
+            }}
+          </ng-container>
+        </ui-toggle>
+      </shared-display-settings>
+    </ng-template>
+  </ui-tab>
+  <!-- Widget filters options -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon
+        icon="filter_alt"
+        [size]="24"
+        [uiTooltip]="'models.widget.sorting.title' | translate"
+      ></ui-icon>
+      <span>{{ 'models.widget.sorting.title' | translate }}</span>
+    </ng-container>
+
+    <ng-template uiTabContent>
+      <shared-sorting-settings
+        [fields]="fields"
+        [formArray]="$any(formGroup.get('sortFields'))"
+        [formGroup]="formGroup"
+      ></shared-sorting-settings>
+    </ng-template>
+  </ui-tab>
+</ui-tabs>

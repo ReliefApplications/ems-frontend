@@ -1,0 +1,32 @@
+<div uiFormFieldDirective [defaultMargin]="false" *ngIf="!useExpression">
+  <label>{{ 'common.value.one' | translate }}</label>
+  <div [uiDateWrapper]="calendar">
+    <input
+      [uiDatePicker]
+      [formControl]="control"
+      [label]="'kendo.datepicker.dateLabel' | translate"
+    />
+    <ui-date-picker #calendar> </ui-date-picker>
+  </div>
+</div>
+<div uiFormFieldDirective [defaultMargin]="false" *ngIf="useExpression">
+  <label>{{ 'common.value.one' | translate }}</label>
+  <input
+    uiTooltip="YYYY/MM/DD"
+    [formControl]="control"
+    type="text"
+    placeholder="YYYY/MM/DD"
+  />
+</div>
+<ui-button
+  [isIcon]="true"
+  icon="change_circle_outline"
+  variant="primary"
+  (click)="changeEditor()"
+  [uiTooltip]="
+    (useExpression
+      ? 'components.queryBuilder.tooltip.filter.date.usePicker'
+      : 'components.queryBuilder.tooltip.filter.date.useExpression'
+    ) | translate
+  "
+></ui-button>

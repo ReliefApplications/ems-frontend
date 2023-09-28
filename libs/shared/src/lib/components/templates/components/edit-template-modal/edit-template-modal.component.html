@@ -1,0 +1,58 @@
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{
+        (data
+          ? 'components.templates.edit.update'
+          : 'components.templates.edit.new'
+        ) | translate
+      }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="form" class="flex flex-col">
+      <div class="flex gap-2">
+        <div uiFormFieldDirective class="flex-1">
+          <label>{{ 'components.templates.type.title' | translate }}</label>
+          <ui-select-menu formControlName="type" [disabled]="true">
+            <ui-select-option value="email">{{
+              'components.templates.type.email' | translate
+            }}</ui-select-option>
+          </ui-select-menu>
+        </div>
+        <div uiFormFieldDirective class="flex-1">
+          <label>{{ 'components.templates.edit.name' | translate }}</label>
+          <input formControlName="name" type="text" />
+        </div>
+      </div>
+      <div uiFormFieldDirective>
+        <label>{{ 'components.templates.edit.subject' | translate }}</label>
+        <shared-editor-control
+          formControlName="subject"
+          [editorConfig]="subjectEditor"
+        ></shared-editor-control>
+        <ui-icon
+          icon="info"
+          class="cursor-pointer"
+          variant="grey"
+          uiSuffix
+          [uiTooltip]="'common.tooltip.editor.insert' | translate"
+        ></ui-icon>
+      </div>
+      <editor [init]="bodyEditor" formControlName="body"></editor>
+    </form>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
+      {{ 'common.close' | translate }}
+    </ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="form.value"
+      [disabled]="!form.valid"
+    >
+      {{ (data ? 'common.update' : 'common.create') | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

@@ -3,7 +3,7 @@
  * Theming defines colors of the modules, and additional parameters that can appear on screen.
  */
 export const theme = {
-  headerColor: 'primary',
+  headerClass: 'bg-primary-600',
   prefix: null,
   primary: '#00125C',
 };

@@ -1,16 +1,7 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import {
-  UntypedFormGroup,
-  UntypedFormBuilder,
-  Validators,
-} from '@angular/forms';
-import {
-  GetResourcesQueryResponse,
-  GET_RESOURCES,
-  GetResourceByIdQueryResponse,
-  GET_RESOURCE_BY_ID,
-} from './graphql/queries';
+import { Validators, FormBuilder } from '@angular/forms';
+import { GET_RESOURCES, GET_RESOURCE_BY_ID } from './graphql/queries';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -27,6 +18,10 @@ import {
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
 import { DialogRef } from '@angular/cdk/dialog';
+import {
+  ResourceQueryResponse,
+  ResourcesQueryResponse,
+} from '@oort-front/shared';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -59,35 +54,34 @@ const ITEMS_PER_PAGE = 10;
 })
 export class AddFormModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  public form!: UntypedFormGroup;
+  public form = this.fb.group({
+    name: ['', Validators.required],
+    newResource: this.fb.nonNullable.control(true),
+    resource: [null],
+    inheritsTemplate: this.fb.nonNullable.control(false),
+    template: [null],
+  });
 
   // === DATA ===
-  public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
 
   public templates: any[] = [];
 
   /**
    * Add form modal
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param dialogRef Dialog ref
    * @param apollo Apollo service
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<AddFormModalComponent>,
     private apollo: Apollo
   ) {}
 
   /** Load the resources and build the form. */
   ngOnInit(): void {
-    this.form = this.formBuilder.group({
-      name: ['', Validators.required],
-      newResource: [true],
-      resource: [null],
-      inheritsTemplate: [false],
-      template: [null],
-    });
     this.form.get('newResource')?.valueChanges.subscribe((value: boolean) => {
       if (value) {
         this.form.get('resource')?.clearValidators();
@@ -116,18 +110,20 @@ export class AddFormModalComponent implements OnInit {
         this.form.get('template')?.updateValueAndValidity();
       });
 
-    this.form.get('resource')?.valueChanges.subscribe((value: string) => {
-      if (value) {
-        this.getResource(value);
-      } else {
-        this.templates = [];
-      }
-      this.form.patchValue({
-        template: null,
+    this.form
+      .get('resource')
+      ?.valueChanges.subscribe((value: string | null) => {
+        if (value) {
+          this.getResource(value);
+        } else {
+          this.templates = [];
+        }
+        this.form.patchValue({
+          template: null,
+        });
       });
-    });
 
-    this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
+    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
       query: GET_RESOURCES,
       variables: {
         first: ITEMS_PER_PAGE,
@@ -166,7 +162,7 @@ export class AddFormModalComponent implements OnInit {
    */
   getResource(id: string): void {
     this.apollo
-      .query<GetResourceByIdQueryResponse>({
+      .query<ResourceQueryResponse>({
         query: GET_RESOURCE_BY_ID,
         variables: {
           id,
