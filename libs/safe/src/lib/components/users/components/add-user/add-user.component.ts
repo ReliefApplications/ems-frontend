@@ -1,11 +1,16 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { Role, User } from '../../../../models/user.model';
+import { Role, User, UsersQueryResponse } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
 import { FormBuilder, UntypedFormArray, Validators } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import { map, startWith } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  startWith,
+} from 'rxjs/operators';
 import { Observable } from 'rxjs';
-import { GET_USERS, GetUsersQueryResponse } from '../../graphql/queries';
+import { GET_USERS } from '../../graphql/queries';
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
@@ -73,13 +78,16 @@ export class SafeAddUserComponent
 
   ngOnInit(): void {
     this.filteredUsers = this.form.controls.email.valueChanges.pipe(
+      debounceTime(1000),
+      distinctUntilChanged(),
       startWith(''),
       map((value) => (typeof value === 'string' ? value : '')),
-      map((x) => this.filterUsers(x))
+      map((x) => this.filterUsers(x)),
+      takeUntil(this.destroy$)
     );
 
     this.apollo
-      .query<GetUsersQueryResponse>({
+      .query<UsersQueryResponse>({
         query: GET_USERS,
       })
       .pipe(takeUntil(this.destroy$))
@@ -87,11 +95,6 @@ export class SafeAddUserComponent
         const flatInvitedUsers = this.data.users.map((x) => x.username);
         this.users = data.users.filter(
           (x) => !flatInvitedUsers.includes(x.username)
-        );
-        this.filteredUsers = this.form.controls.email.valueChanges.pipe(
-          startWith(''),
-          map((value) => (typeof value === 'string' ? value : '')),
-          map((x) => this.filterUsers(x))
         );
       });
   }
@@ -104,9 +107,9 @@ export class SafeAddUserComponent
    */
   private filterUsers(value: string): User[] {
     const filterValue = value.toLowerCase();
-    return this.users.filter(
-      (x) => x.username?.toLowerCase().indexOf(filterValue) === 0
-    );
+    return this.users
+      .filter((x) => x.username?.toLowerCase().indexOf(filterValue) === 0)
+      .slice(0, 25);
   }
 
   /**
