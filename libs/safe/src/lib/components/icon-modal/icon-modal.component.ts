@@ -30,7 +30,6 @@ export class IconModalComponent {
    * Close the modal without sending any data.
    */
   public onClose() {
-    console.log(this.iconForm.value);
     this.dialogRef.close();
   }
 }

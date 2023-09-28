@@ -775,8 +775,7 @@ export class DashboardComponent
               icon,
             },
           })
-          .pipe(takeUntil(this.destroy$))
-          .subscribe(console.log, console.error);
+          .pipe(takeUntil(this.destroy$));
       } else {
         this.apollo
           .mutate<EditPageMutationResponse>({
@@ -786,8 +785,7 @@ export class DashboardComponent
               icon,
             },
           })
-          .pipe(takeUntil(this.destroy$))
-          .subscribe(console.log, console.error);
+          .pipe(takeUntil(this.destroy$));
       }
     });
   }
