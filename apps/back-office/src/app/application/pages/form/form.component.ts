@@ -6,25 +6,22 @@ import {
   Form,
   Page,
   Step,
-  SafeFormComponent,
-  SafeApplicationService,
-  SafeWorkflowService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  FormComponent as SharedFormComponent,
+  ApplicationService,
+  WorkflowService,
+  UnsubscribeComponent,
+  StepQueryResponse,
+  FormQueryResponse,
+  PageQueryResponse,
+  EditStepMutationResponse,
+  EditPageMutationResponse,
+} from '@oort-front/shared';
 import {
-  GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
-  GetPageByIdQueryResponse,
   GET_PAGE_BY_ID,
-  GetStepByIdQueryResponse,
   GET_STEP_BY_ID,
 } from './graphql/queries';
-import {
-  EditStepMutationResponse,
-  EDIT_STEP,
-  EditPageMutationResponse,
-  EDIT_PAGE,
-} from './graphql/mutations';
+import { EDIT_STEP, EDIT_PAGE } from './graphql/mutations';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
@@ -37,24 +34,33 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
-  @ViewChild(SafeFormComponent)
-  private formComponent?: SafeFormComponent;
+export class FormComponent extends UnsubscribeComponent implements OnInit {
+  @ViewChild(SharedFormComponent)
+  private formComponent?: SharedFormComponent;
 
-  // === DATA ===
+  /** Loading indicator */
   public loading = true;
+  /** Current form id */
   public id = '';
+  /** Current application id */
   public applicationId = '';
+  /** Current form */
   public form?: Form;
+  /** Is form completed */
   public completed = false;
+  /** Should possibility to add new records be hidden */
   public hideNewRecord = false;
+  /** Query subscription */
   public querySubscription?: Subscription;
-
-  // === TAB NAME EDITION ===
+  /** Can name be edited */
   public canEditName = false;
+  /** Is name form active */
   public formActive = false;
+  /** Application page form is part of ( if any ) */
   public page?: Page;
+  /** Application step form is part of ( if any ) */
   public step?: Step;
+  /** Is form part of workflow step */
   public isStep = false;
 
   /**
@@ -69,8 +75,8 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
    * @param translate Angular translate service
    */
   constructor(
-    private applicationService: SafeApplicationService,
-    private workflowService: SafeWorkflowService,
+    private applicationService: ApplicationService,
+    private workflowService: WorkflowService,
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
@@ -92,7 +98,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
       }
       if (this.isStep) {
         this.querySubscription = this.apollo
-          .query<GetStepByIdQueryResponse>({
+          .query<StepQueryResponse>({
             query: GET_STEP_BY_ID,
             variables: {
               id: this.id,
@@ -101,7 +107,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           .pipe(
             switchMap(({ data }) => {
               this.step = data.step;
-              return this.apollo.query<GetFormByIdQueryResponse>({
+              return this.apollo.query<FormQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
                 variables: {
                   id: this.step.content,
@@ -118,7 +124,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           });
       } else {
         this.querySubscription = this.apollo
-          .query<GetPageByIdQueryResponse>({
+          .query<PageQueryResponse>({
             query: GET_PAGE_BY_ID,
             variables: {
               id: this.id,
@@ -127,7 +133,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           .pipe(
             switchMap(({ data }) => {
               this.page = data.page;
-              return this.apollo.query<GetFormByIdQueryResponse>({
+              return this.apollo.query<FormQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
                 variables: {
                   id: this.page.content,

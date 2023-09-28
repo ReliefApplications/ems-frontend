@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { ApiConfiguration } from '@oort-front/safe';
 
 // === EDIT API CONFIGURATION ===
 /** Edit API configuration mutation definition */
@@ -54,8 +53,3 @@ export const EDIT_API_CONFIGURATION = gql`
     }
   }
 `;
-
-/** Edit API configuration gql mutation response interface */
-export interface EditApiConfigurationMutationResponse {
-  editApiConfiguration: ApiConfiguration;
-}

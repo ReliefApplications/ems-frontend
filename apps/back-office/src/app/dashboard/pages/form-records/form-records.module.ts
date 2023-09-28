@@ -4,10 +4,10 @@ import { FormRecordsRoutingModule } from './form-records-routing.module';
 import { FormRecordsComponent } from './form-records.component';
 import { IconModule } from '@oort-front/ui';
 import {
-  SafeRecordHistoryModule,
-  SafeSkeletonTableModule,
-  SafeEmptyModule,
-} from '@oort-front/safe';
+  RecordHistoryModule,
+  SkeletonTableModule,
+  EmptyModule,
+} from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.module';
@@ -28,17 +28,17 @@ import {
     FormRecordsRoutingModule,
     IconModule,
     MenuModule,
-    SafeRecordHistoryModule,
+    RecordHistoryModule,
     TooltipModule,
     DividerModule,
     PaginatorModule,
     TranslateModule,
     OverlayModule,
     UploadMenuModule,
-    SafeSkeletonTableModule,
+    SkeletonTableModule,
     ButtonModule,
     TableModule,
-    SafeEmptyModule,
+    EmptyModule,
   ],
   exports: [FormRecordsComponent],
 })

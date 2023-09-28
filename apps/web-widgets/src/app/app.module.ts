@@ -4,6 +4,7 @@ import {
   ElementRef,
   Injector,
   NgModule,
+  LOCALE_ID,
 } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 // Http
@@ -20,14 +21,17 @@ import {
   TranslateModule,
   TranslateService,
 } from '@ngx-translate/core';
+// Imports to translate datepickers
+import '@progress/kendo-angular-intl/locales/en/all';
+import '@progress/kendo-angular-intl/locales/fr/all';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { MessageService } from '@progress/kendo-angular-l10n';
 import {
   AppAbility,
   KendoTranslationService,
-  SafeAuthInterceptorService,
-  SafeFormService,
-} from '@oort-front/safe';
+  AuthInterceptorService,
+  FormService,
+} from '@oort-front/shared';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { OverlayContainer, OverlayModule } from '@angular/cdk/overlay';
 import { Platform } from '@angular/cdk/platform';
@@ -114,7 +118,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
  * @returns custom Overlay container.
  */
 const provideOverlay = (_platform: Platform): AppOverlayContainer =>
-  new AppOverlayContainer(_platform);
+  new AppOverlayContainer(_platform, document);
 
 /**
  * Web Widget project root module.
@@ -140,6 +144,10 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
   ],
   providers: [
     {
+      provide: LOCALE_ID,
+      useValue: localStorage.getItem('lang'),
+    },
+    {
       provide: 'environment',
       useValue: environment,
     },
@@ -164,7 +172,7 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     },
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: SafeAuthInterceptorService,
+      useClass: AuthInterceptorService,
       multi: true,
     },
     {
@@ -192,10 +200,10 @@ export class AppModule implements DoBootstrap {
    * Main project root module
    *
    * @param injector Angular injector
-   * @param formService SafeFormService
+   * @param formService FormService
    */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  constructor(private injector: Injector, formService: SafeFormService) {}
+  constructor(private injector: Injector, formService: FormService) {}
 
   /**
    * Bootstrap the project.

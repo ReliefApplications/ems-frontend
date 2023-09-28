@@ -14,14 +14,14 @@ import {
   DateTimeProvider,
 } from 'angular-oauth2-oidc';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { AppAbility } from '@oort-front/safe';
+import { AppAbility } from '@oort-front/shared';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
 import { DialogModule } from '@angular/cdk/dialog';
 import {
-  SafeWidgetGridModule,
-  SafeSkeletonModule,
-} from '@oort-front/safe';
+  WidgetGridModule,
+  SkeletonModule,
+} from '@oort-front/shared';
 
 describe('DashboardComponent', () => {
   let component: DashboardComponent;
@@ -34,8 +34,8 @@ describe('DashboardComponent', () => {
         HttpClientTestingModule,
         ApolloTestingModule,
         DialogModule,
-        SafeWidgetGridModule,
-        SafeSkeletonModule,
+        WidgetGridModule,
+        SkeletonModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

@@ -79,7 +79,7 @@
           </span>
         </th>
         <td uiCell *cdkCellDef="let element">
-          {{ element.modifiedAt | safeDate : 'medium' }}
+          {{ element.modifiedAt | sharedDate : 'medium' }}
         </td>
       </ng-container>
 
@@ -92,6 +92,7 @@
             [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
             [disabled]="!(element.canUpdate || element.canDelete)"
+            [uiTooltip]="'common.options' | translate"
           >
           </ui-button>
           <ui-menu #menu>
@@ -116,7 +117,7 @@
       ></tr>
     </table>
     <!-- Skeleton table when loading -->
-    <safe-skeleton-table
+    <shared-skeleton-table
       *ngIf="loading"
       [columns]="[
         'common.name',
@@ -126,7 +127,7 @@
       ]"
       [actions]="true"
     >
-    </safe-skeleton-table>
+    </shared-skeleton-table>
   </div>
 </div>
 <ui-paginator

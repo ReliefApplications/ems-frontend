@@ -1,6 +1,9 @@
 <!-- Wrapper of the entire select menu, has focusout event -->
 <button
-  [class]="'min-h-[32px] relative flex justify-between items-center w-full cursor-default rounded-md px-3 text-left shadow-sm ring-1 ring-inset ring-gray-300 sm:leading-6 overflow-hidden ' + extraClasses!"
+  [class]="
+    'min-h-[32px] relative flex justify-between items-center w-full cursor-default rounded-md px-3 text-left shadow-sm ring-1 ring-inset ring-gray-300 sm:leading-6 overflow-hidden ' +
+    extraClasses!
+  "
   (click)="openSelectPanel()"
   [ngClass]="{
     'non_selectable text-gray-400': disabled,
@@ -18,7 +21,9 @@
   <div class="default flex-1">
     <ng-container *ngIf="!customTemplate">
       <ng-container *ngIf="!displayTrigger">
-        <span class="block truncate text-sm text-neutral-400">{{ placeholder }}</span>
+        <span class="block truncate text-sm text-neutral-400">{{
+          placeholder
+        }}</span>
       </ng-container>
       <ng-container *ngIf="displayTrigger || !placeholder">
         <span class="block truncate text-sm">{{ displayTrigger }}</span>

@@ -1,5 +1,10 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, ErrorHandler, APP_INITIALIZER } from '@angular/core';
+import {
+  NgModule,
+  ErrorHandler,
+  APP_INITIALIZER,
+  LOCALE_ID,
+} from '@angular/core';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -25,9 +30,9 @@ import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
 import { MessageService } from '@progress/kendo-angular-l10n';
 import {
   KendoTranslationService,
-  SafeAuthInterceptorService,
+  AuthInterceptorService,
   AppAbility,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import localeEn from '@angular/common/locales/en';
@@ -38,6 +43,10 @@ import { PureAbility } from '@casl/ability';
 // Register local translations for dates
 registerLocaleData(localeFr);
 registerLocaleData(localeEn);
+
+// Imports to translate datepickers
+import '@progress/kendo-angular-intl/locales/en/all';
+import '@progress/kendo-angular-intl/locales/fr/all';
 
 import { PopupService } from '@progress/kendo-angular-popup';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
@@ -110,6 +119,10 @@ export const httpTranslateLoader = (http: HttpClient) =>
   ],
   providers: [
     {
+      provide: LOCALE_ID,
+      useValue: localStorage.getItem('lang'),
+    },
+    {
       provide: 'environment',
       useValue: environment,
     },
@@ -134,7 +147,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
     // },
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: SafeAuthInterceptorService,
+      useClass: AuthInterceptorService,
       multi: true,
     },
     {

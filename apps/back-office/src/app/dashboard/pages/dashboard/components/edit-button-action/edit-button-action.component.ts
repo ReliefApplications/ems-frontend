@@ -23,12 +23,12 @@ import { get } from 'lodash';
 import { RawEditorSettings } from 'tinymce';
 import { EditorModule } from '@tinymce/tinymce-angular';
 import {
-  SafeEditorService,
-  SafeEditorControlComponent,
+  EditorService,
+  EditorControlComponent,
   DataTemplateService,
   INLINE_EDITOR_CONFIG,
   ButtonActionT,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { Router } from '@angular/router';
 
 /**
@@ -62,7 +62,7 @@ const createButtonActionForm = (data?: ButtonActionT) => {
     ButtonModule,
     ToggleModule,
     EditorModule,
-    SafeEditorControlComponent,
+    EditorControlComponent,
     DividerModule,
   ],
   templateUrl: './edit-button-action.component.html',
@@ -91,7 +91,7 @@ export class EditButtonActionComponent implements OnInit {
   constructor(
     public dialogRef: DialogRef<ButtonActionT>,
     @Inject(DIALOG_DATA) private data: ButtonActionT,
-    private editorService: SafeEditorService,
+    private editorService: EditorService,
     private dataTemplateService: DataTemplateService,
     private router: Router
   ) {

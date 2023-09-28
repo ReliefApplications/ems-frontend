@@ -2,13 +2,13 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LayoutsTabRoutingModule } from './layouts-tab-routing.module';
 import { OverlayModule } from '@angular/cdk/overlay';
-import { DividerModule, IconModule } from '@oort-front/ui';
+import { DividerModule, IconModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import {
-  SafeDateModule,
-  SafeSkeletonTableModule,
-  SafeEmptyModule,
-} from '@oort-front/safe';
+  DateModule,
+  SkeletonTableModule,
+  EmptyModule,
+} from '@oort-front/shared';
 import { LayoutsTabComponent } from './layouts-tab.component';
 import {
   MenuModule,
@@ -29,13 +29,14 @@ import {
     MenuModule,
     TranslateModule,
     OverlayModule,
-    SafeDateModule,
-    SafeSkeletonTableModule,
+    DateModule,
+    SkeletonTableModule,
     PaginatorModule,
-    SafeEmptyModule,
+    EmptyModule,
     ButtonModule,
     TableModule,
     DividerModule,
+    TooltipModule,
   ],
 })
 export class LayoutsTabModule {}
