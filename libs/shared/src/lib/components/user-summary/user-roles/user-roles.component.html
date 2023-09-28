@@ -1,0 +1,19 @@
+<shared-user-groups
+  *ngIf="canSeeGroups"
+  [canEdit]="!application"
+  [user]="user"
+  (edit)="edit.emit($event)"
+  [loading]="loading"
+></shared-user-groups>
+<shared-user-back-roles
+  *ngIf="!application"
+  [user]="user"
+  (edit)="edit.emit($event)"
+  [loading]="loading"
+></shared-user-back-roles>
+<shared-user-app-roles
+  [user]="user"
+  [application]="application"
+  (edit)="edit.emit($event)"
+  [loading]="loading"
+></shared-user-app-roles>

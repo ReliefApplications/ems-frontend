@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Record, Form } from '@oort-front/safe';
 
 // === GET RECORD BY ID ===
 /** Graphql request for getting a record by its id */
@@ -20,6 +19,7 @@ export const GET_RECORD_BY_ID = gql`
       form {
         id
         name
+        queryName
         structure
         fields
         metadata {
@@ -32,11 +32,6 @@ export const GET_RECORD_BY_ID = gql`
     }
   }
 `;
-
-/** Model for GetRecordByIdQueryResponse object */
-export interface GetRecordByIdQueryResponse {
-  record: Record;
-}
 
 // === GET FORM STRUCTURE ===
 
@@ -57,8 +52,3 @@ export const GET_FORM_STRUCTURE = gql`
     }
   }
 `;
-
-/** Model for getFormByIdQueryResponse object */
-export interface GetFormByIdQueryResponse {
-  form: Form;
-}

@@ -18,7 +18,7 @@
         "assets": [
           {
             "glob": "**/*",
-            "input": "libs/safe/src/i18n/",
+            "input": "libs/shared/src/i18n/",
             "output": "/assets/i18n/"
           },
           {
@@ -35,7 +35,7 @@
           },
           {
             "glob": "**/*",
-            "input": "libs/safe/src/i18n/tinymce/",
+            "input": "libs/shared/src/i18n/tinymce/",
             "output": "/tinymce/langs"
           },
           {
@@ -50,12 +50,11 @@
           }
         ],
         "styles": [
-          {
-            "input": "node_modules/@progress/kendo-theme-default/dist/all.css",
-            "inject": true
-          },
           "apps/front-office/src/styles.scss",
-          "libs/safe/src/lib/style/styles.scss",
+          "libs/shared/src/lib/style/styles.scss",
+          "libs/styles/src/lib/tailwind/tailwind.scss",
+          "libs/styles/src/lib/kendo/theme.scss",
+          "libs/styles/src/lib/shared/shared.scss",
           "node_modules/survey-angular/survey.min.css",
           "node_modules/survey-creator/survey-creator.min.css",
           "node_modules/leaflet/dist/leaflet.css",
@@ -118,7 +117,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
         "azure-uat": {
@@ -142,7 +141,31 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
+          }
+        },
+        "azure-sit": {
+          "fileReplacements": [
+            {
+              "replace": "apps/front-office/src/environments/environment.ts",
+              "with": "apps/front-office/src/environments/environment.azure.sit.ts"
+            }
+          ],
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "12mb",
+              "maximumError": "15mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "6kb",
+              "maximumError": "10kb"
+            }
+          ],
+          "outputHashing": "all",
+          "stylePreprocessorOptions": {
+            "includePaths": ["libs/shared/src/lib/style/themes/default"]
           }
         },
         "azure-dev": {
@@ -166,7 +189,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
         "oort-prod": {
@@ -190,7 +213,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-dev": {
@@ -214,7 +237,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-tailwind": {
@@ -238,7 +261,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
         "oort-guyane": {
@@ -262,7 +285,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-alimentaide": {
@@ -286,7 +309,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/shared/src/lib/style/themes/alimentaide"]
           }
         },
         "oort-demo": {
@@ -310,7 +333,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-lift": {
@@ -334,7 +357,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/lift"]
+            "includePaths": ["libs/shared/src/lib/style/themes/lift"]
           }
         },
         "oort-expertisefr": {
@@ -358,7 +381,7 @@
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/expertisefr"]
+            "includePaths": ["libs/shared/src/lib/style/themes/expertisefr"]
           }
         },
         "oort-local": {
@@ -375,7 +398,7 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "development": {
@@ -386,7 +409,7 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         }
       },

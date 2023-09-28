@@ -1,0 +1,58 @@
+<form [formGroup]="form">
+  <!-- HEADER -->
+  <div class="filter-group-header">
+    <div uiFormFieldDirective [defaultMargin]="false" class="w-28">
+      <label>{{ 'components.queryBuilder.filter.logic' | translate }}</label>
+      <ui-select-menu formControlName="logic">
+        <ui-select-option value="or">{{
+          'components.queryBuilder.filter.or' | translate
+        }}</ui-select-option>
+        <ui-select-option value="and">{{
+          'components.queryBuilder.filter.and' | translate
+        }}</ui-select-option>
+      </ui-select-menu>
+    </div>
+
+    <ui-button category="tertiary" (click)="addFilter()">
+      {{ 'components.queryBuilder.filter.new' | translate }}
+    </ui-button>
+    <ui-button category="tertiary" (click)="addGroup()">
+      {{ 'components.queryBuilder.filter.newGroup' | translate }}
+    </ui-button>
+    <ui-button
+      [isIcon]="true"
+      icon="delete"
+      variant="danger"
+      (click)="delete.emit()"
+      [uiTooltip]="'common.delete' | translate"
+    >
+    </ui-button>
+  </div>
+  <!-- FILTERS -->
+  <div
+    formArrayName="filters"
+    class="filter-group-filters"
+    *ngIf="filters.length > 0"
+  >
+    <ng-container *ngFor="let filter of filters.controls; let i = index">
+      <ng-container *ngIf="filter.value.logic">
+        <!-- NESTED FILTER GROUP -->
+        <shared-filter-group
+          class="filter-group-item"
+          [form]="$any(filter)"
+          [fields]="fields"
+          (delete)="deleteFilter(i)"
+        ></shared-filter-group>
+      </ng-container>
+      <ng-container *ngIf="!filter.value.logic">
+        <!-- NESTED FILTER ROW -->
+        <shared-filter-row
+          class="filter-group-item"
+          [form]="$any(filter)"
+          [fields]="fields"
+          (delete)="deleteFilter(i)"
+        ></shared-filter-row>
+      </ng-container>
+    </ng-container>
+  </div>
+</form>

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UpdateRecordRoutingModule } from './update-record-routing.module';
 import { UpdateRecordComponent } from './update-record.component';
-import { SafeFormModule } from '@oort-front/safe';
+import { FormModule } from '@oort-front/shared';
 import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -13,7 +13,7 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonModule,
     TranslateModule,
     UpdateRecordRoutingModule,
-    SafeFormModule,
+    FormModule,
     IconModule,
   ],
   exports: [UpdateRecordComponent],

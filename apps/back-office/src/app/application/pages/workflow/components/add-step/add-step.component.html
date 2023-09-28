@@ -3,24 +3,26 @@
     <!-- Selection of type of content -->
     <ng-container *ngSwitchCase="1">
       <h2>{{ 'pages.workflow.addStep.selectType' | translate }}</h2>
-      <safe-content-choice
+      <shared-content-choice
         class="mt-8"
         formControlName="type"
         [contentTypes]="contentTypes"
-      ></safe-content-choice>
+      ></shared-content-choice>
     </ng-container>
     <!-- Form selection -->
     <ng-container *ngSwitchCase="2">
       <div class="flex flex-col w-80">
         <!-- Existing form -->
-        <ui-graphql-select
-          formControlName="content"
-          valueField="id"
-          textField="name"
-          [query]="formsQuery"
-          (searchChange)="onSearchChange($event)"
-          [filterable]="true"
-        ></ui-graphql-select>
+        <div uiFormFieldDirective>
+          <ui-graphql-select
+            formControlName="content"
+            valueField="id"
+            textField="name"
+            [query]="formsQuery"
+            (searchChange)="onSearchChange($event)"
+            [filterable]="true"
+          ></ui-graphql-select>
+        </div>
         <ui-divider [text]="'common.or' | translate" class="my-4"></ui-divider>
         <!-- New form -->
         <ui-button

@@ -6,13 +6,13 @@ import {
   Form,
   Page,
   Step,
-  SafeFormComponent,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  FormComponent as SharedFormComponent,
+  UnsubscribeComponent,
+  StepQueryResponse,
+  FormQueryResponse,
+  PageQueryResponse,
+} from '@oort-front/shared';
 import {
-  GetFormByIdQueryResponse,
-  GetPageByIdQueryResponse,
-  GetStepByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
   GET_PAGE_BY_ID,
   GET_STEP_BY_ID,
@@ -27,9 +27,9 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
-  @ViewChild(SafeFormComponent)
-  private formComponent?: SafeFormComponent;
+export class FormComponent extends UnsubscribeComponent implements OnInit {
+  @ViewChild(SharedFormComponent)
+  private formComponent?: SharedFormComponent;
 
   // === DATA ===
   public loading = true;
@@ -70,7 +70,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
       this.isStep = this.router.url.includes('/workflow/');
       if (this.isStep) {
         this.apollo
-          .query<GetStepByIdQueryResponse>({
+          .query<StepQueryResponse>({
             query: GET_STEP_BY_ID,
             variables: {
               id: this.id,
@@ -79,7 +79,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           .subscribe((res) => {
             this.step = res.data.step;
             this.apollo
-              .query<GetFormByIdQueryResponse>({
+              .query<FormQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
                 variables: {
                   id: this.step.content,
@@ -92,7 +92,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           });
       } else {
         this.apollo
-          .query<GetPageByIdQueryResponse>({
+          .query<PageQueryResponse>({
             query: GET_PAGE_BY_ID,
             variables: {
               id: this.id,
@@ -101,7 +101,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           .subscribe((res) => {
             this.page = res.data.page;
             this.apollo
-              .query<GetFormByIdQueryResponse>({
+              .query<FormQueryResponse>({
                 query: GET_SHORT_FORM_BY_ID,
                 variables: {
                   id: this.page.content,

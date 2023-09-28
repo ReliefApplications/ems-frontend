@@ -4,7 +4,7 @@ import { RedirectComponent } from './redirect.component';
 import { RedirectRoutingModule } from './redirect-routing.module';
 import { SpinnerModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { SafeEmptyModule } from '@oort-front/safe';
+import { EmptyModule } from '@oort-front/shared';
 
 /**
  * Redirect module of front-office.
@@ -15,7 +15,7 @@ import { SafeEmptyModule } from '@oort-front/safe';
     CommonModule,
     RedirectRoutingModule,
     SpinnerModule,
-    SafeEmptyModule,
+    EmptyModule,
     TranslateModule,
   ],
 })

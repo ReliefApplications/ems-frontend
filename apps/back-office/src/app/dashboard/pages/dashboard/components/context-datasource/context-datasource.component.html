@@ -11,7 +11,10 @@
       <!-- Origin -->
       <div uiFormFieldDirective [outline]="false" class="mb-2">
         <label>{{ 'models.dashboard.context.origin' | translate }}</label>
-        <ui-select-menu formControlName="origin">
+        <ui-select-menu
+          formControlName="origin"
+          [placeholder]="'models.dashboard.context.selectOrigin' | translate"
+        >
           <ui-select-option value="resource">
             {{ 'common.resource.one' | translate }}
           </ui-select-option>
@@ -62,7 +65,12 @@
       <!-- Field selection -->
       <div uiFormFieldDirective [outline]="false">
         <label>{{ 'models.dashboard.context.displayField' | translate }}</label>
-        <ui-select-menu formControlName="displayField">
+        <ui-select-menu
+          formControlName="displayField"
+          [placeholder]="
+            'models.dashboard.context.selectDisplayField' | translate
+          "
+        >
           <ui-select-option
             *ngFor="let field of availableFields"
             [value]="field"
