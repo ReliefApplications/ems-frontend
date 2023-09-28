@@ -44,6 +44,7 @@ const routes: Routes = [
                   import('../shared/pages/roles/roles.module').then(
                     (m) => m.RolesModule
                   ),
+                data: { inApplication: true },
                 // canActivate: [PermissionGuard]
               },
               {
