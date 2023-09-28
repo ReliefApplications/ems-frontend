@@ -282,6 +282,7 @@ export const createLayerFeatureReductionForm = (value: any) => {
     ...(type === 'cluster' && {
       drawingInfo: createLayerDrawingInfoForm(get(value, 'drawingInfo')),
       clusterRadius: get(value, 'clusterRadius', 60),
+      popupInfo: createPopupInfoForm(get(value, 'popupInfo')),
     }),
   });
   return formGroup;

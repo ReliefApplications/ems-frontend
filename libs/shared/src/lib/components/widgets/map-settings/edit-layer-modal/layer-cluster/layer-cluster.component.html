@@ -21,6 +21,120 @@
       }}</label>
     </div>
   </div>
+
+  <div [formGroup]="popupInfo" class="flex flex-col">
+    <div class="flex flex-col">
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.widget.settings.map.layers.popup.title' | translate
+        }}</label>
+        <shared-editor-control
+          formControlName="title"
+          [editorConfig]="editorConfig"
+        ></shared-editor-control>
+        <ui-icon
+          icon="info"
+          class="cursor-pointer"
+          variant="grey"
+          uiSuffix
+          [uiTooltip]="
+            'components.widget.settings.map.layers.popup.tooltip.text'
+              | translate
+          "
+        ></ui-icon>
+      </div>
+      <div uiFormFieldDirective>
+        <label>{{
+          'components.widget.settings.map.layers.popup.description'
+            | translate
+        }}</label>
+        <shared-editor-control
+          formControlName="description"
+          [editorConfig]="editorConfig"
+        ></shared-editor-control>
+        <ui-icon
+          icon="info"
+          class="cursor-pointer"
+          variant="grey"
+          uiSuffix
+          [uiTooltip]="
+            'components.widget.settings.map.layers.popup.tooltip.text'
+              | translate
+          "
+        ></ui-icon>
+      </div>
+    </div>
+  <ui-divider class="my-4"></ui-divider>
+  <h3>
+    {{
+      'components.widget.settings.map.layers.popup.popupElements'
+        | translate
+    }}
+  </h3>
+  <div
+    formArrayName="popupElements"
+    cdkDropList
+    (cdkDropListDropped)="onListDrop($event)"
+  >
+    <ui-expansion-panel
+      [expanded]="false"
+      hideToggle
+      cdkDrag
+      *ngFor="let item of popupElements.controls; let index = index"
+      [formGroup]="$any(item)"
+    >
+      <!-- Expand block header -->
+      <ng-container ngProjectAs="title">
+        <div class="flex items-center">
+          <div class="grow-0">
+            <ui-button
+              variant="grey"
+              cdkDragHandle
+              [isIcon]="true"
+              icon="drag_indicator"
+              [uiTooltip]="'models.page.tooltip.drag' | translate"
+            ></ui-button>
+          </div>
+          <div>
+            <div class="flex flex-col">
+              <h4 class="!m-0">
+                {{ item.value.type }}
+              </h4>
+              <h6 class="!m-0">{{ item.value.title }}</h6>
+            </div>
+          </div>
+          <ui-button
+            [isIcon]="true"
+            icon="delete"
+            variant="danger"
+            (click)="onRemoveElement(index)"
+            [uiTooltip]="'common.delete' | translate"
+          ></ui-button>
+        </div>
+      </ng-container>
+
+      <!-- Expanded block content -->
+      <div class="flex flex-col mx-4">
+        <shared-text-element
+          *ngIf="item.value.type === 'text'"
+          [formGroup]="$any(item)"
+        ></shared-text-element>
+      </div>
+    </ui-expansion-panel>
+  </div>
+  <!-- Add new block -->
+  <div class="flex justify-center">
+    <ui-button
+      category="secondary"
+      variant="primary"
+      (click)="onAddElement('text')"
+      class="self-center mt-4"
+    >
+      {{
+        'components.widget.settings.map.layers.popup.addField' | translate
+      }}
+    </ui-button>
+  </div>
 </div>
 
 <!-- <div class="flex flex-col overflow-hidden">

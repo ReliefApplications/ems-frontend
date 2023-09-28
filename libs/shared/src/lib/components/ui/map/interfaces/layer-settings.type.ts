@@ -41,6 +41,12 @@ export interface LayerFormData {
     };
     featureReduction: {
       type: any;
+      popupInfo: {
+        title: string;
+        description: string;
+        popupElements: PopupElement[];
+        fieldsInfo?: Fields[];
+      };
     };
   };
   popupInfo: {

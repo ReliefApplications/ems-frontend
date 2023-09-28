@@ -735,11 +735,20 @@ export class Layer implements LayerModel {
                   const children = event.layer
                     .getAllChildMarkers()
                     .map((child: L.Marker) => child.feature);
+                  const clusterPopupInfo = get(
+                    this.layerDefinition,
+                    'featureReduction.popupInfo'
+                  );
+                  console.log(clusterPopupInfo);
                   this.popupService.setPopUp(
                     children,
                     event.latlng,
                     this.popupInfo,
-                    event.layer
+                    event.layer,
+                    {
+                      ...clusterPopupInfo,
+                      clusterCount: children.length,
+                    }
                   );
                 });
 
@@ -1027,17 +1036,17 @@ export class Layer implements LayerModel {
       switch (type) {
         case 'Polygon': {
           // We avoid stroke width to be too important
-          const svgTemplate = `<svg 
-                
-                  width="16" 
+          const svgTemplate = `<svg
+
+                  width="16"
                   height="16"
                   fill="${symbol.color}"
                   stroke="${symbol.outline?.color}"
                   stroke-width="${Math.min(symbol.outline?.width || 0, 10)}px"
                   >
                     <g>
-                    <rect x="0" y="0" 
-                    width="16" 
+                    <rect x="0" y="0"
+                    width="16"
                     height="16" />
                     </g>
                 </svg>`;

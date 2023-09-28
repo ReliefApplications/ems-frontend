@@ -6,7 +6,7 @@ import * as L from 'leaflet';
 import { takeUntil } from 'rxjs';
 import { DomService } from '../../../../services/dom/dom.service';
 import { MapPopupComponent } from './map-popup.component';
-import { PopupInfo } from '../../../../models/layer.model';
+import { PopupInfo, ClusterPopupInfo } from '../../../../models/layer.model';
 import { DOCUMENT } from '@angular/common';
 
 /**
@@ -42,17 +42,24 @@ export class MapPopupService {
    * @param coordinates Coordinates
    * @param popupInfo Popup info
    * @param layerToBind Layer where to bind the popup, if not a default one would be created
+   * @param clusterPopupInfo Cluster popup info, used to show a specific popup on cluster group
    */
   public setPopUp(
     featurePoints: Feature<any>[],
     coordinates: L.LatLng,
-    popupInfo: PopupInfo,
-    layerToBind?: L.Layer
+    popupInfo?: PopupInfo,
+    layerToBind?: L.Layer,
+    clusterPopupInfo?: ClusterPopupInfo
   ) {
+    console.log(clusterPopupInfo?.clusterCount);
     if (
       featurePoints.length > 0 &&
-      popupInfo.popupElements &&
-      popupInfo.popupElements.length > 0
+      ((popupInfo &&
+        popupInfo.popupElements &&
+        popupInfo.popupElements.length > 0) ||
+        (clusterPopupInfo &&
+          clusterPopupInfo.popupElements &&
+          clusterPopupInfo.popupElements.length > 0))
     ) {
       const zoom = this.map.getZoom();
       const radius = 1000 / zoom;
@@ -73,7 +80,8 @@ export class MapPopupService {
       const { instance, popup } = this.setPopupComponentAndContent(
         featurePoints,
         coordinates,
-        popupInfo
+        popupInfo,
+        clusterPopupInfo
       );
 
       popup.on('remove', () => {
@@ -97,12 +105,14 @@ export class MapPopupService {
    * @param coordinates.lat Coordinates latitude
    * @param coordinates.lng Coordinates longitude
    * @param popupInfo Popup info
+   * @param clusterPopupInfo Cluster popup info, used to show a specific popup on cluster group
    * @returns Generated MapPopupComponent component instance and popup
    */
   private setPopupComponentAndContent(
     featurePoints: Feature<any>[],
     coordinates: L.LatLng,
-    popupInfo: PopupInfo
+    popupInfo?: PopupInfo,
+    clusterPopupInfo?: ClusterPopupInfo
   ): { instance: ComponentRef<MapPopupComponent>; popup: L.Popup } {
     // create div element to render the MapPopupComponent content
     const div = this.document.createElement('div');
@@ -110,7 +120,8 @@ export class MapPopupService {
       coordinates,
       featurePoints,
       div,
-      popupInfo
+      popupInfo,
+      clusterPopupInfo
     );
     // create a popup that renders the MapPopupComponent
     const popup = L.popup({ closeButton: false })
@@ -154,13 +165,15 @@ export class MapPopupService {
    * @param featurePoints featurePoints
    * @param containerElement containerElement
    * @param popupInfo Popup info
+   * @param clusterPopupInfo Cluster popup info, used to show a specific popup on cluster group
    * @returns MapPopupComponent instance
    */
   public initializeMapPopupComponent(
     coordinates: L.LatLng,
     featurePoints: any[],
     containerElement: HTMLElement,
-    popupInfo: PopupInfo
+    popupInfo?: PopupInfo,
+    clusterPopupInfo?: ClusterPopupInfo
   ): ComponentRef<MapPopupComponent> {
     // create component to render the MapPopupComponent
     const popupComponent = this.domService.appendComponentToBody(
@@ -179,11 +192,20 @@ export class MapPopupService {
       instance.currZoom = zoom.target.getZoom();
     });
 
+    if (clusterPopupInfo) {
+      instance.clusterTemplate = this.generatePopupContentTemplate(
+        featurePoints[0],
+        clusterPopupInfo
+      ).replace(/{cluster_count}/g, clusterPopupInfo.clusterCount.toString());
+    }
+
     // Use the first feature point as model to generate the popup template for the rest of features
-    instance.template = this.generatePopupContentTemplate(
-      featurePoints[0],
-      popupInfo
-    );
+    if (popupInfo) {
+      instance.template = this.generatePopupContentTemplate(
+        featurePoints[0],
+        popupInfo
+      );
+    }
     return popupComponent;
   }
 
