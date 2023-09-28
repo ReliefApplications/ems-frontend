@@ -159,13 +159,10 @@ export class AggregationTableComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
+        const id = this.resource?.id ?? this.referenceData?.id;
+        const type = this.resource?.id ? 'resource' : 'referenceData';
         this.aggregationService
-          .editAggregation(
-            aggregation,
-            value,
-            this.resource?.id,
-            this.referenceData?.id
-          )
+          .editAggregation(aggregation, value, id, type)
           .subscribe(({ data }: any) => {
             if (data.editAggregation) {
               const layouts = [...this.allAggregations];

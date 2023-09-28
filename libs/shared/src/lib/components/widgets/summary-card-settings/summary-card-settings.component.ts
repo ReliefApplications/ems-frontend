@@ -327,21 +327,19 @@ export class SummaryCardSettingsComponent
     if (
       !this.selectedAggregation ||
       (!this.selectedResource?.id && !this.selectedReferenceData?.id)
-    )
+    ) {
       return;
+    }
+    const id =
+      this.selectedResource?.id ?? this.selectedReferenceData?.id ?? '';
+    const type = this.selectedResource?.id ? 'resource' : 'referenceData';
     this.aggregationService
-      .aggregationDataQuery(
-        this.selectedResource?.id ?? '',
-        this.selectedReferenceData?.id ?? '',
-        this.selectedAggregation.id || ''
-      )
+      .aggregationDataQuery(id, type, this.selectedAggregation.id || '')
       ?.subscribe((res) => {
-        if (
-          res.data?.recordsAggregation ||
-          res.data?.referenceDataAggregation
-        ) {
-          this.customAggregation =
-            res.data.recordsAggregation ?? res.data.referenceDataAggregation;
+        const aggregations =
+          res.data?.recordsAggregation ?? res.data?.referenceDataAggregation;
+        if (aggregations) {
+          this.customAggregation = aggregations;
           // @TODO: Figure out fields' types from aggregation
           this.fields = this.customAggregation.items[0]
             ? Object.keys(this.customAggregation.items[0]).map((f) => ({

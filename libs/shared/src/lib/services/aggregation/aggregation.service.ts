@@ -35,6 +35,13 @@ const FALLBACK_AGGREGATIONS: Connection<Aggregation> = {
     hasNextPage: false,
   },
 };
+
+/**
+ * Aggregation source types
+ */
+export const aggregationSource = ['resource', 'referenceData'] as const;
+export type AggregationSource = (typeof aggregationSource)[number];
+
 /**
  * Shared service to manage aggregations.
  */
@@ -52,58 +59,49 @@ export class AggregationService {
   /**
    * Gets list of aggregation from resourceId
    *
-   * @param resourceId resource id
-   * @param referenceDataId reference data id
+   * @param id resource id
+   * @param type from where to fetch the aggregations
    * @param options query options
    * @param options.ids list of aggregation id
    * @param options.first number of items to get
    */
   async getAggregations(
-    resourceId: string,
-    referenceDataId: string,
+    id: string,
+    type: AggregationSource,
     options: { ids?: string[]; first?: number }
   ): Promise<Connection<Aggregation>> {
-    const aggregations = resourceId
-      ? await firstValueFrom(
-          this.apollo.query<ResourceQueryResponse>({
-            query: GET_RESOURCE_AGGREGATIONS,
-            variables: {
-              resource: resourceId,
-              ids: options.ids,
-              first: options.first,
-            },
-          })
-        ).then(async ({ errors, data }) => {
-          if (errors) {
-            return FALLBACK_AGGREGATIONS;
-          } else {
-            return data.resource.aggregations || FALLBACK_AGGREGATIONS;
-          }
-        })
-      : await firstValueFrom(
-          this.apollo.query<ReferenceDataQueryResponse>({
-            query: GET_REFERENCE_DATA_AGGREGATIONS,
-            variables: {
-              referenceData: referenceDataId,
-              ids: options.ids,
-              first: options.first,
-            },
-          })
-        ).then(async ({ errors, data }) => {
-          if (errors) {
-            return FALLBACK_AGGREGATIONS;
-          } else {
-            return data.referenceData.aggregations || FALLBACK_AGGREGATIONS;
-          }
-        });
+    const aggregations = await firstValueFrom(
+      this.apollo.query<ResourceQueryResponse | ReferenceDataQueryResponse>({
+        query:
+          type === 'resource'
+            ? GET_RESOURCE_AGGREGATIONS
+            : GET_REFERENCE_DATA_AGGREGATIONS,
+        variables: {
+          ...(type === 'resource' && { resource: id }),
+          ...(type === 'referenceData' && { referenceData: id }),
+          ids: options.ids,
+          first: options.first,
+        },
+      })
+    ).then(async ({ errors, data }) => {
+      if (errors) {
+        return FALLBACK_AGGREGATIONS;
+      } else {
+        return (
+          ('resource' in data
+            ? data.resource.aggregations
+            : data.referenceData.aggregations) || FALLBACK_AGGREGATIONS
+        );
+      }
+    });
     return aggregations;
   }
 
   /**
    * Builds the aggregation query from aggregation definition
    *
-   * @param resource Resource Id
-   * @param referenceData ReferenceData Id
+   * @param id source Id
+   * @param type source type, resource or reference data
    * @param aggregation Aggregation definition
    * @param mapping aggregation mapping ( category, field, series )
    * @param contextFilters context filters, if any
@@ -111,41 +109,34 @@ export class AggregationService {
    * @returns Aggregation query
    */
   aggregationDataQuery(
-    resource: string,
-    referenceData: string,
+    id: string,
+    type: AggregationSource,
     aggregation: string,
     mapping?: any,
     contextFilters?: CompositeFilterDescriptor,
     at?: Date
   ): Observable<ApolloQueryResult<AggregationDataQueryResponse>> {
-    return resource
-      ? this.apollo.query<AggregationDataQueryResponse>({
-          query: GET_RESOURCE_AGGREGATION_DATA,
-          variables: {
-            resource,
-            aggregation,
-            mapping,
-            contextFilters,
-            at,
-          },
-        })
-      : this.apollo.query<AggregationDataQueryResponse>({
-          query: GET_REFERENCE_DATA_AGGREGATION_DATA,
-          variables: {
-            referenceData,
-            aggregation,
-            mapping,
-            contextFilters,
-            at,
-          },
-        });
+    return this.apollo.query<AggregationDataQueryResponse>({
+      query:
+        type === 'resource'
+          ? GET_RESOURCE_AGGREGATION_DATA
+          : GET_REFERENCE_DATA_AGGREGATION_DATA,
+      variables: {
+        ...(type === 'resource' && { resource: id }),
+        ...(type === 'referenceData' && { referenceData: id }),
+        aggregation,
+        mapping,
+        contextFilters,
+        at,
+      },
+    });
   }
 
   /**
    * Builds the aggregation query from aggregation definition
    *
-   * @param resource Resource Id
-   * @param referenceData Reference data Id
+   * @param id Source Id
+   * @param type source type, resource or reference data
    * @param aggregation Aggregation definition
    * @param first size of the page
    * @param skip index of the page
@@ -154,37 +145,29 @@ export class AggregationService {
    * @returns Aggregation query
    */
   aggregationDataWatchQuery(
-    resource: string,
-    referenceData: string,
+    id: string,
+    type: AggregationSource,
     aggregation: string,
     first: number,
     skip: number,
     contextFilters?: CompositeFilterDescriptor,
     at?: Date
   ): QueryRef<AggregationDataQueryResponse> {
-    return resource
-      ? this.apollo.watchQuery<AggregationDataQueryResponse>({
-          query: GET_RESOURCE_AGGREGATION_DATA,
-          variables: {
-            resource,
-            aggregation,
-            first,
-            skip,
-            contextFilters,
-            at,
-          },
-        })
-      : this.apollo.watchQuery<AggregationDataQueryResponse>({
-          query: GET_REFERENCE_DATA_AGGREGATION_DATA,
-          variables: {
-            referenceData,
-            aggregation,
-            first,
-            skip,
-            contextFilters,
-            at,
-          },
-        });
+    return this.apollo.watchQuery<AggregationDataQueryResponse>({
+      query:
+        type === 'resource'
+          ? GET_RESOURCE_AGGREGATION_DATA
+          : GET_REFERENCE_DATA_AGGREGATION_DATA,
+      variables: {
+        ...(type === 'resource' && { resource: id }),
+        ...(type === 'referenceData' && { referenceData: id }),
+        aggregation,
+        first,
+        skip,
+        contextFilters,
+        at,
+      },
+    });
   }
 
   /**
@@ -192,22 +175,22 @@ export class AggregationService {
    *
    * @param aggregation aggregation to edit
    * @param value new value of the aggregation
-   * @param resource resource the aggregation is attached to ( optional )
-   * @param referenceData referenceData the aggregation is attached to ( optional )
+   * @param id source the aggregation is attached to ( optional )
+   * @param type source type, resource or reference data ( optional )
    * @returns Mutation observable
    */
   public editAggregation(
     aggregation: Aggregation,
     value: Aggregation,
-    resource?: string,
-    referenceData?: string
+    id?: string,
+    type?: AggregationSource
   ) {
     return this.apollo.mutate<EditAggregationMutationResponse>({
       mutation: EDIT_AGGREGATION,
       variables: {
         id: aggregation.id,
-        resource,
-        referenceData,
+        ...(type === 'resource' && { resource: id }),
+        ...(type === 'referenceData' && { referenceData: id }),
         aggregation: value,
       },
     });
@@ -217,20 +200,20 @@ export class AggregationService {
    * Create a new aggregation
    *
    * @param value the value of the aggregation
-   * @param resource resource the aggregation is attached to ( optional )
-   * @param referenceData reference data the aggregation is attached to (optional)
+   * @param id source the aggregation is attached to ( optional )
+   * @param type source type, resource or reference data ( optional )
    * @returns Mutation observable
    */
   public addAggregation(
     value: Aggregation,
-    resource?: string,
-    referenceData?: string
+    id?: string,
+    type?: AggregationSource
   ) {
     return this.apollo.mutate<AddAggregationMutationResponse>({
       mutation: ADD_AGGREGATION,
       variables: {
-        resource,
-        referenceData,
+        ...(type === 'resource' && { resource: id }),
+        ...(type === 'referenceData' && { referenceData: id }),
         aggregation: value,
       },
     });
@@ -240,20 +223,20 @@ export class AggregationService {
    * Delete an aggregation
    *
    * @param aggregation aggregation to edit
-   * @param resource resource the aggregation is attached to ( optional )
-   * @param referenceData form the aggregation is attached to ( optional )
+   * @param id source the aggregation is attached to ( optional )
+   * @param type source type, resource or reference data ( optional )
    * @returns Mutation observable
    */
   public deleteAggregation(
     aggregation: Aggregation,
-    resource?: string,
-    referenceData?: string
+    id?: string,
+    type?: AggregationSource
   ) {
     return this.apollo.mutate<DeleteAggregationMutationResponse>({
       mutation: DELETE_AGGREGATION,
       variables: {
-        resource,
-        referenceData,
+        ...(type === 'resource' && { resource: id }),
+        ...(type === 'referenceData' && { referenceData: id }),
         id: aggregation.id,
       },
     });

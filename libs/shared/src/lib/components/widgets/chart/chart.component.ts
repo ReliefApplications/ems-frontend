@@ -143,8 +143,10 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
   private loadChart(): void {
     this.loading = true;
     if (this.settings.resource || this.settings.referenceData) {
+      const id = this.settings.resource ?? this.settings.referenceData;
+      const type = this.settings.resource ? 'resource' : 'referenceData';
       this.aggregationService
-        .getAggregations(this.settings.resource, this.settings.referenceData, {
+        .getAggregations(id, type, {
           ids: [get(this.settings, 'chart.aggregationId', null)],
           first: 1,
         })
@@ -152,8 +154,8 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
           const aggregation = res.edges[0]?.node || null;
           if (aggregation) {
             this.dataQuery = this.aggregationService.aggregationDataQuery(
-              this.settings.resource,
-              this.settings.referenceData,
+              id,
+              type,
               aggregation.id || '',
               get(this.settings, 'chart.mapping', null),
               this.settings.contextFilters

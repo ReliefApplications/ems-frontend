@@ -395,7 +395,12 @@ export class LayerDatasourceComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value && this.aggregation) {
         this.aggregationService
-          .editAggregation(this.aggregation, value, this.resource?.id)
+          .editAggregation(
+            this.aggregation,
+            value,
+            this.resource?.id,
+            'resource'
+          )
           .subscribe((res) => {
             this.aggregation = get(res, 'data.editAggregation', null);
             this.fields.emit(

@@ -314,13 +314,10 @@ export class SummaryCardGeneralComponent
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value && this.selectedAggregation) {
+        const id = this.selectedResource?.id ?? this.selectedReferenceData?.id;
+        const type = this.selectedResource?.id ? 'resource' : 'referenceData';
         this.aggregationService
-          .editAggregation(
-            this.selectedAggregation,
-            value,
-            this.selectedResource?.id,
-            this.selectedReferenceData?.id
-          )
+          .editAggregation(this.selectedAggregation, value, id, type)
           .subscribe((res) => {
             this.aggregationChange.emit(res.data?.editAggregation || null);
           });

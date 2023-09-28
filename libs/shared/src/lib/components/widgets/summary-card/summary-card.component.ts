@@ -558,10 +558,11 @@ export class SummaryCardComponent
   ) {
     if (!card.aggregation || (!card.resource && !card.referenceData)) return;
     this.loading = true;
-
+    const id = card.resource ?? card.referenceData ?? '';
+    const type = card.resource ? 'resource' : 'referenceData';
     this.dataQuery = this.aggregationService.aggregationDataWatchQuery(
-      card.resource ?? '',
-      card.referenceData ?? '',
+      id,
+      type,
       card.aggregation,
       DEFAULT_PAGE_SIZE,
       0,

@@ -149,12 +149,10 @@ export class AddAggregationModalComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((aggregation: any) => {
         if (aggregation) {
+          const id = this.resource?.id ?? this.referenceData?.id;
+          const type = this.resource?.id ? 'resource' : 'referenceData';
           this.aggregationService
-            .addAggregation(
-              aggregation,
-              this.resource?.id,
-              this.referenceData?.id
-            )
+            .addAggregation(aggregation, id, type)
             .subscribe(({ data }) => {
               if (data?.addAggregation) {
                 this.dialogRef.close(data.addAggregation as any);

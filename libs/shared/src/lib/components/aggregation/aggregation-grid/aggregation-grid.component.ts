@@ -128,9 +128,11 @@ export class AggregationGridComponent
    */
   private getAggregationData(): void {
     this.loading = true;
+    const id = this.resourceId ?? this.referenceDataId;
+    const type = this.resourceId ? 'resource' : 'referenceData';
     this.dataQuery = this.aggregationService.aggregationDataWatchQuery(
-      this.resourceId,
-      this.referenceDataId,
+      id,
+      type,
       this.aggregation.id as string,
       this.pageSize,
       this.skip,
@@ -187,111 +189,8 @@ export class AggregationGridComponent
           },
         })
         .subscribe({
-          next: (res) => {
-            const resource = res.data.resource;
-            const allGqlFields = this.queryBuilder.getFields(
-              resource.queryName || ''
-            );
-            // Fetch fields at the end of the pipeline
-            const aggFields = this.aggregationBuilderService.fieldsAfter(
-              allGqlFields
-                ?.filter((x) => this.aggregation.sourceFields.includes(x.name))
-                .map((field: any) => {
-                  if (field.type?.kind !== 'SCALAR') {
-                    field.fields = this.queryBuilder
-                      .getFieldsFromType(
-                        field.type?.kind === 'OBJECT'
-                          ? field.type.name
-                          : field.type.ofType.name
-                      )
-                      .filter(
-                        (y) => y.type.name !== 'ID' && y.type?.kind === 'SCALAR'
-                      );
-                  }
-                  return field;
-                }) || [],
-              this.aggregation.pipeline
-            );
-            const fieldNames = aggFields.map((x) => x.name);
-            // Convert them to query fields
-            const queryFields = this.aggregationBuilderService.formatFields(
-              aggFields.filter((field) =>
-                allGqlFields.some((x) => x.name === field.name)
-              )
-            );
-            // Create meta query from query fields
-            const metaQuery = this.queryBuilder.buildMetaQuery({
-              name: resource.queryName || '',
-              fields: queryFields,
-            });
-            if (metaQuery) {
-              metaQuery.subscribe({
-                next: async ({ data }) => {
-                  this.status = {
-                    error: false,
-                  };
-                  for (const key in data) {
-                    if (Object.prototype.hasOwnProperty.call(data, key)) {
-                      const metaFields = Object.assign({}, data[key]);
-                      try {
-                        await this.gridService.populateMetaFields(metaFields);
-                        // Remove ref data meta fields because it messes up with the display
-                        for (const field of queryFields) {
-                          if (field.type.endsWith(REFERENCE_DATA_END)) {
-                            delete metaFields[field.name];
-                          }
-                        }
-                      } catch (err) {
-                        console.error(err);
-                      }
-                      this.loadingSettings = false;
-                      // Concat query fields with dummy one for newly added fields
-                      const fields = queryFields.concat(
-                        fieldNames.reduce((arr, fieldName) => {
-                          if (
-                            !queryFields.some(
-                              (field) => field.name === fieldName
-                            )
-                          ) {
-                            arr.push(createDefaultField(fieldName));
-                          }
-                          return arr;
-                        }, [])
-                      );
-                      // Generate grid fields
-                      this.fields = this.gridService.getFields(
-                        fields,
-                        metaFields,
-                        {}
-                      );
-                    }
-                  }
-                },
-                error: (err: any) => {
-                  this.loadingSettings = false;
-                  this.status = {
-                    error: true,
-                    message: this.translate.instant(
-                      'components.widget.grid.errors.metaQueryFetchFailed',
-                      {
-                        error:
-                          err.networkError?.error?.errors
-                            ?.map((x: any) => x.message)
-                            .join(', ') || err,
-                      }
-                    ),
-                  };
-                },
-              });
-            } else {
-              this.loadingSettings = false;
-              this.status = {
-                error: !this.loadingSettings,
-                message: this.translate.instant(
-                  'components.widget.grid.errors.metaQueryBuildFailed'
-                ),
-              };
-            }
+          next: ({ data }) => {
+            this.handleAggregationFieldsResponse(data.resource, 'resource');
           },
           error: () => {
             this.loadingSettings = false;
@@ -319,114 +218,11 @@ export class AggregationGridComponent
           },
         })
         .subscribe({
-          next: (res) => {
-            const referenceData = res.data.referenceData;
-            const allGqlFields = this.queryBuilder.getFields(
-              (referenceData.name as string)?.replace(/\s/g, '') + 'Ref' || ''
+          next: ({ data }) => {
+            this.handleAggregationFieldsResponse(
+              data.referenceData,
+              'referenceData'
             );
-            // Fetch fields at the end of the pipeline
-            const aggFields = this.aggregationBuilderService.fieldsAfter(
-              allGqlFields
-                ?.filter((x) => this.aggregation.sourceFields.includes(x.name))
-                .map((field: any) => {
-                  if (field.type.kind !== 'SCALAR') {
-                    field.fields = this.queryBuilder
-                      .getFieldsFromType(
-                        field.type.kind === 'OBJECT'
-                          ? field.type.name
-                          : field.type.ofType.name
-                      )
-                      .filter(
-                        (y) => y.type.name !== 'ID' && y.type.kind === 'SCALAR'
-                      );
-                  }
-                  return field;
-                }) || [],
-              this.aggregation.pipeline
-            );
-            const fieldNames = aggFields.map((x) => x.name);
-            // Convert them to query fields
-            const queryFields = this.aggregationBuilderService.formatFields(
-              aggFields.filter((field) =>
-                allGqlFields.some((x) => x.name === field.name)
-              )
-            );
-            // Create meta query from query fields
-            const metaQuery = this.queryBuilder.buildMetaQuery({
-              name:
-                (referenceData.name as string).replace(/^\w/, (match) =>
-                  match.toUpperCase()
-                ) + 'Ref' || '',
-              fields: queryFields,
-            });
-            if (metaQuery) {
-              metaQuery.subscribe({
-                next: async ({ data }) => {
-                  this.status = {
-                    error: false,
-                  };
-                  for (const key in data) {
-                    if (Object.prototype.hasOwnProperty.call(data, key)) {
-                      const metaFields = Object.assign({}, data[key]);
-                      try {
-                        await this.gridService.populateMetaFields(metaFields);
-                        // Remove ref data meta fields because it messes up with the display
-                        for (const field of queryFields) {
-                          if (field.type.endsWith(REFERENCE_DATA_END)) {
-                            delete metaFields[field.name];
-                          }
-                        }
-                      } catch (err) {
-                        console.error(err);
-                      }
-                      this.loadingSettings = false;
-                      // Concat query fields with dummy one for newly added fields
-                      const fields = queryFields.concat(
-                        fieldNames.reduce((arr, fieldName) => {
-                          if (
-                            !queryFields.some(
-                              (field) => field.name === fieldName
-                            )
-                          ) {
-                            arr.push(createDefaultField(fieldName));
-                          }
-                          return arr;
-                        }, [])
-                      );
-                      // Generate grid fields
-                      this.fields = this.gridService.getFields(
-                        fields,
-                        metaFields,
-                        {}
-                      );
-                    }
-                  }
-                },
-                error: (err: any) => {
-                  this.loadingSettings = false;
-                  this.status = {
-                    error: true,
-                    message: this.translate.instant(
-                      'components.widget.grid.errors.metaQueryFetchFailed',
-                      {
-                        error:
-                          err.networkError?.error?.errors
-                            ?.map((x: any) => x.message)
-                            .join(', ') || err,
-                      }
-                    ),
-                  };
-                },
-              });
-            } else {
-              this.loadingSettings = false;
-              this.status = {
-                error: !this.loadingSettings,
-                message: this.translate.instant(
-                  'components.widget.grid.errors.metaQueryBuildFailed'
-                ),
-              };
-            }
           },
           error: (err: any) => {
             this.loadingSettings = false;
@@ -444,6 +240,118 @@ export class AggregationGridComponent
             };
           },
         });
+    }
+  }
+
+  /**
+   * Handle aggregation field response query
+   *
+   * @param source Response from the aggregation fields query
+   * @param type of source from where aggregations where fetched, resource or a reference data
+   */
+  private handleAggregationFieldsResponse(
+    source: any,
+    type: 'resource' | 'referenceData'
+  ) {
+    const allGqlFields = this.queryBuilder.getFields(
+      (type === 'resource'
+        ? source.queryName
+        : (source.name as string)?.replace(/\s/g, '') + 'Ref') || ''
+    );
+    // Fetch fields at the end of the pipeline
+    const aggFields = this.aggregationBuilderService.fieldsAfter(
+      allGqlFields
+        ?.filter((x) => this.aggregation.sourceFields.includes(x.name))
+        .map((field: any) => {
+          if (field.type?.kind !== 'SCALAR') {
+            field.fields = this.queryBuilder
+              .getFieldsFromType(
+                field.type?.kind === 'OBJECT'
+                  ? field.type.name
+                  : field.type.ofType.name
+              )
+              .filter((y) => y.type.name !== 'ID' && y.type?.kind === 'SCALAR');
+          }
+          return field;
+        }) || [],
+      this.aggregation.pipeline
+    );
+    const fieldNames = aggFields.map((x) => x.name);
+    // Convert them to query fields
+    const queryFields = this.aggregationBuilderService.formatFields(
+      aggFields.filter((field) =>
+        allGqlFields.some((x) => x.name === field.name)
+      )
+    );
+    // Create meta query from query fields
+    const metaQuery = this.queryBuilder.buildMetaQuery({
+      name:
+        (type === 'resource'
+          ? source.queryName
+          : (source.name as string).replace(/^\w/, (match) =>
+              match.toUpperCase()
+            ) + 'Ref') || '',
+      fields: queryFields,
+    });
+    if (metaQuery) {
+      metaQuery.subscribe({
+        next: async ({ data }) => {
+          this.status = {
+            error: false,
+          };
+          for (const key in data) {
+            if (Object.prototype.hasOwnProperty.call(data, key)) {
+              const metaFields = Object.assign({}, data[key]);
+              try {
+                await this.gridService.populateMetaFields(metaFields);
+                // Remove ref data meta fields because it messes up with the display
+                for (const field of queryFields) {
+                  if (field.type.endsWith(REFERENCE_DATA_END)) {
+                    delete metaFields[field.name];
+                  }
+                }
+              } catch (err) {
+                console.error(err);
+              }
+              this.loadingSettings = false;
+              // Concat query fields with dummy one for newly added fields
+              const fields = queryFields.concat(
+                fieldNames.reduce((arr, fieldName) => {
+                  if (!queryFields.some((field) => field.name === fieldName)) {
+                    arr.push(createDefaultField(fieldName));
+                  }
+                  return arr;
+                }, [])
+              );
+              // Generate grid fields
+              this.fields = this.gridService.getFields(fields, metaFields, {});
+            }
+          }
+        },
+        error: (err: any) => {
+          this.loadingSettings = false;
+          this.status = {
+            error: true,
+            message: this.translate.instant(
+              'components.widget.grid.errors.metaQueryFetchFailed',
+              {
+                error:
+                  err.networkError?.error?.errors
+                    ?.map((x: any) => x.message)
+                    .join(', ') || err,
+              }
+            ),
+          };
+        },
+      });
+    } else {
+      this.loadingSettings = false;
+      this.status = {
+        error: !this.loadingSettings,
+        message: this.translate.instant(
+          'components.widget.grid.errors.metaQueryBuildFailed'
+        ),
+      };
     }
   }
 
