@@ -110,6 +110,24 @@ export const init = (Survey: any, environment: any): void => {
       choicesCallback(pages);
     },
   });
+
+  // Adds a property to the survey settings to delete or not unticket translations in the translations tab from the JSON Object
+  serializer.addProperty('survey', {
+    name: 'deleteUnusedTranslations',
+    category: 'general',
+    type: 'dropdown',
+    choices: [
+      {
+        value: true,
+        text: 'Yes',
+      },
+      {
+        value: false,
+        text: 'No',
+      },
+    ],
+    default: false,
+  });
 };
 
 /**

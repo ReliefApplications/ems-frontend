@@ -19,6 +19,7 @@ import { renderGlobalProperties } from '../../survey/render-global-properties';
 import { SnackbarService } from '@oort-front/ui';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
 import { DOCUMENT } from '@angular/common';
+import removeKeyFromJSON from '../../survey/functions/removeKeyFromJSON';
 
 /**
  * Array containing the different types of questions.
@@ -175,7 +176,7 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
   /**
    * Creates the form builder and sets up all the options.
    *
-   * @param structure Optional param used as the form struc
+   * @param structure Optional param used as the form structure.
    */
   private setFormBuilder(structure: string) {
     const creatorOptions = {
@@ -391,6 +392,16 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
    * Custom SurveyJS method, save the form when edited.
    */
   saveMySurvey = () => {
+    if (this.surveyCreator.survey.deleteUnusedTranslations) {
+      this.surveyCreator.translation.locales
+        .filter(
+          (x: any) =>
+            !this.surveyCreator.translation.getSelectedLocales().includes(x)
+        )
+        .forEach((locale: any) => {
+          removeKeyFromJSON(this.surveyCreator.JSON, locale);
+        });
+    }
     this.validateValueNames()
       .then((canCreate: boolean) => {
         if (canCreate) {
