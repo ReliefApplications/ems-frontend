@@ -321,6 +321,9 @@ export class CoreGridComponent
       .subscribe(() => {
         if (this.dataQuery) this.reloadData();
       });
+    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.configureGrid();
+    });
   }
 
   /**
@@ -420,6 +423,7 @@ export class CoreGridComponent
                 }
                 const fields = this.settings?.query?.fields || [];
                 const defaultLayoutFields = this.defaultLayout.fields || {};
+
                 this.fields = this.gridService.getFields(
                   fields,
                   this.metaFields,
@@ -796,8 +800,6 @@ export class CoreGridComponent
     // TODO = check what to do there
     this.onPageChange({ skip: 0, take: this.pageSize });
     this.selectedRows = [];
-    console.log(this.updatedItems);
-    console.log(this.items);
     // this.updatedItems = [];
     this.refresh$.next(true);
   }
