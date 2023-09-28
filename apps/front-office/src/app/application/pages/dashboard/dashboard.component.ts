@@ -3,6 +3,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  Inject,
   OnDestroy,
   OnInit,
   Output,
@@ -11,22 +12,22 @@ import {
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import {
-  GetDashboardByIdQueryResponse,
-  GET_DASHBOARD_BY_ID,
-} from './graphql/queries';
+import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 import {
   Dashboard,
-  SafeDashboardService,
-  SafeUnsubscribeComponent,
-  SafeWidgetGridComponent,
-  SafeConfirmService,
+  DashboardService,
+  UnsubscribeComponent,
+  WidgetGridComponent,
+  ConfirmService,
   ButtonActionT,
-} from '@oort-front/safe';
+  ContextService,
+  DashboardQueryResponse,
+} from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map, startWith, takeUntil } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
 import { SnackbarService } from '@oort-front/ui';
+import { DOCUMENT } from '@angular/common';
 
 /**
  * Dashboard page.
@@ -37,7 +38,7 @@ import { SnackbarService } from '@oort-front/ui';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
   public isFullScreen = false;
@@ -55,8 +56,8 @@ export class DashboardComponent
   /** Show name ( contextual pages ) */
   public showName = false;
 
-  @ViewChild(SafeWidgetGridComponent)
-  widgetGridComponent!: SafeWidgetGridComponent;
+  @ViewChild(WidgetGridComponent)
+  widgetGridComponent!: WidgetGridComponent;
   public showFilter?: boolean;
 
   // === BUTTON ACTIONS ===
@@ -84,6 +85,8 @@ export class DashboardComponent
    * @param confirmService Shared confirm service
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
+   * @param document Document
+   * @param contextService Dashboard context service
    */
   constructor(
     private apollo: Apollo,
@@ -91,11 +94,13 @@ export class DashboardComponent
     private router: Router,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private dashboardService: SafeDashboardService,
+    private dashboardService: DashboardService,
     private translate: TranslateService,
-    private confirmService: SafeConfirmService,
+    private confirmService: ConfirmService,
     private renderer: Renderer2,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    @Inject(DOCUMENT) private document: Document,
+    private contextService: ContextService
   ) {
     super();
   }
@@ -114,8 +119,10 @@ export class DashboardComponent
       .subscribe(() => {
         this.loading = true;
         // Reset scroll when changing page
-        const pageContainer = document.getElementById('appPageContainer');
-        if (pageContainer) pageContainer.scrollTop = 0;
+        const pageContainer = this.document.getElementById('appPageContainer');
+        if (pageContainer) {
+          pageContainer.scrollTop = 0;
+        }
         /** Extract main dashboard id */
         const id = this.route.snapshot.paramMap.get('id');
         /** Extract query id to load template */
@@ -210,7 +217,7 @@ export class DashboardComponent
     this.loading = true;
     this.id = id;
     return firstValueFrom(
-      this.apollo.query<GetDashboardByIdQueryResponse>({
+      this.apollo.query<DashboardQueryResponse>({
         query: GET_DASHBOARD_BY_ID,
         variables: {
           id: this.id,
@@ -225,7 +232,8 @@ export class DashboardComponent
             ? data.dashboard.structure
             : [];
           this.buttonActions = this.dashboard.buttons || [];
-          this.showFilter = this.dashboard.showFilter;
+          this.showFilter = this.dashboard.showFilter ?? false;
+          this.contextService.isFilterEnabled.next(this.showFilter);
         } else {
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.accessNotProvided', {

@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RolesComponent } from './roles.component';
-import { SafeRolesModule } from '@oort-front/safe';
+import { RolesModule } from '@oort-front/shared';
 import {
   TranslateFakeLoader,
   TranslateLoader,
@@ -14,7 +14,7 @@ import {
   OAuthLogger,
   DateTimeProvider,
 } from 'angular-oauth2-oidc';
-import { AppAbility } from '@oort-front/safe';
+import { AppAbility } from '@oort-front/shared';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
@@ -28,7 +28,7 @@ describe('RolesComponent', () => {
     await TestBed.configureTestingModule({
       declarations: [RolesComponent],
       imports: [
-        SafeRolesModule,
+        RolesModule,
         HttpClientTestingModule,
         TranslateModule.forRoot({
           loader: {

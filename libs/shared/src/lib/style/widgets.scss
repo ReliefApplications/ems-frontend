@@ -1,0 +1,21 @@
+@import 'https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap';
+@import 'https://fonts.googleapis.com/icon?family=Material+Icons|Material+Icons+Outlined';
+<<<<<<< HEAD:libs/safe/src/lib/style/widgets.scss
+@import 'styles.scss';
+=======
+@import '~survey-angular/survey.min.css';
+>>>>>>> beta:libs/shared/src/lib/style/widgets.scss
+
+.app-overlay-container {
+  position: fixed;
+  z-index: 1000;
+  pointer-events: none;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.app-overlay-container:empty {
+  display: none;
+}

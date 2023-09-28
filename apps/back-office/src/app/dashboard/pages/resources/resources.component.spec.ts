@@ -13,7 +13,7 @@ import {
   PaginatorModule,
   IconModule
 } from '@oort-front/ui';
-import { SafeSkeletonTableModule } from '@oort-front/safe';
+import { SkeletonTableModule } from '@oort-front/shared';
 import { FilterComponent } from './filter/filter.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -29,7 +29,7 @@ describe('ResourcesComponent', () => {
         ApolloTestingModule,
         ButtonModule,
         PaginatorModule,
-        SafeSkeletonTableModule,
+        SkeletonTableModule,
         IconModule,
         FormsModule,
         ReactiveFormsModule,

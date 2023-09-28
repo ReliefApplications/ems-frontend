@@ -16,7 +16,7 @@ import {
 } from 'angular-oauth2-oidc';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 import { AbilityModule } from '@casl/angular';
-import { AppAbility } from '@oort-front/safe';
+import { AppAbility } from '@oort-front/shared';
 import { FilterComponent } from './components/filter/filter.component';
 import { PureAbility } from '@casl/ability';
 import {
@@ -25,7 +25,7 @@ import {
   PaginatorModule,
 } from '@oort-front/ui';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SafeSkeletonTableModule } from '@oort-front/safe';
+import { SkeletonTableModule } from '@oort-front/shared';
 
 describe('FormsComponent', () => {
   let component: FormsComponent;
@@ -44,7 +44,7 @@ describe('FormsComponent', () => {
         PaginatorModule,
         FormsModule,
         ReactiveFormsModule,
-        SafeSkeletonTableModule,
+        SkeletonTableModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

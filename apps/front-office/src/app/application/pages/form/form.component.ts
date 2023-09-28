@@ -5,13 +5,13 @@ import {
   Form,
   Page,
   Step,
-  SafeFormComponent,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  FormComponent as SharedFormComponent,
+  UnsubscribeComponent,
+  StepQueryResponse,
+  FormQueryResponse,
+  PageQueryResponse,
+} from '@oort-front/shared';
 import {
-  GetFormByIdQueryResponse,
-  GetPageByIdQueryResponse,
-  GetStepByIdQueryResponse,
   GET_FORM_BY_ID,
   GET_PAGE_BY_ID,
   GET_STEP_BY_ID,
@@ -29,10 +29,10 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
+export class FormComponent extends UnsubscribeComponent implements OnInit {
   /** View reference of Shared form component */
-  @ViewChild(SafeFormComponent)
-  private formComponent?: SafeFormComponent;
+  @ViewChild(SharedFormComponent)
+  private formComponent?: SharedFormComponent;
   /** Loading state of the page */
   public loading = true;
   /** Current form id */
@@ -87,7 +87,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
       }
       if (this.isStep) {
         this.querySubscription = this.apollo
-          .query<GetStepByIdQueryResponse>({
+          .query<StepQueryResponse>({
             query: GET_STEP_BY_ID,
             variables: {
               id: this.id,
@@ -96,7 +96,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           .pipe(
             switchMap((res) => {
               this.step = res.data.step;
-              return this.apollo.query<GetFormByIdQueryResponse>({
+              return this.apollo.query<FormQueryResponse>({
                 query: GET_FORM_BY_ID,
                 variables: {
                   id: this.step.content,
@@ -132,7 +132,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           });
       } else {
         this.querySubscription = this.apollo
-          .query<GetPageByIdQueryResponse>({
+          .query<PageQueryResponse>({
             query: GET_PAGE_BY_ID,
             variables: {
               id: this.id,
@@ -141,7 +141,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           .pipe(
             switchMap((res) => {
               this.page = res.data.page;
-              return this.apollo.query<GetFormByIdQueryResponse>({
+              return this.apollo.query<FormQueryResponse>({
                 query: GET_FORM_BY_ID,
                 variables: {
                   id: this.page.content,

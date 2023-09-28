@@ -1,0 +1,37 @@
+.shared-content-choice {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  gap: 32px;
+
+  .shared-content-type {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 196px;
+    width: 196px;
+    cursor: pointer;
+    border-radius: 8px;
+
+    .shared-type-selected {
+      height: 4px;
+      width: 100%;
+      position: absolute;
+      bottom: 0;
+    }
+
+    img {
+      height: 90px;
+      margin-top: 38px;
+      margin-bottom: 33px;
+    }
+
+    span {
+      font-size: 20px;
+      @apply text-gray-500;
+      margin-bottom: 16px;
+    }
+  }
+}

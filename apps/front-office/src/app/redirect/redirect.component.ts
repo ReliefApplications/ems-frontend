@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   Application,
-  SafeAuthService,
-  SafeUnsubscribeComponent,
+  AuthService,
+  UnsubscribeComponent,
   User,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { takeUntil } from 'rxjs';
 
 /**
@@ -16,10 +16,7 @@ import { takeUntil } from 'rxjs';
   templateUrl: './redirect.component.html',
   styleUrls: ['./redirect.component.scss'],
 })
-export class RedirectComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
+export class RedirectComponent extends UnsubscribeComponent implements OnInit {
   /** List of accessible applications */
   applications: Application[] = [];
   /** @returns True if applications is empty */
@@ -33,7 +30,7 @@ export class RedirectComponent
    * @param authService shared authentication service
    * @param router Angular router
    */
-  constructor(private authService: SafeAuthService, private router: Router) {
+  constructor(private authService: AuthService, private router: Router) {
     super();
   }
 

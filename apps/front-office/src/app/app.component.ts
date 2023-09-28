@@ -1,16 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import {
   GeofieldsListboxComponent,
-  SafeApplicationDropdownComponent,
-  SafeReferenceDataDropdownComponent,
-  SafeResourceAvailableFieldsComponent,
-  SafeResourceCustomFiltersComponent,
-  SafeResourceDropdownComponent,
-  SafeResourceSelectTextComponent,
-  SafeTestServiceDropdownComponent,
-  SafeAuthService,
-  SafeFormService,
-} from '@oort-front/safe';
+  ApplicationDropdownComponent,
+  ReferenceDataDropdownComponent,
+  ResourceAvailableFieldsComponent,
+  ResourceCustomFiltersComponent,
+  ResourceDropdownComponent,
+  ResourceSelectTextComponent,
+  TestServiceDropdownComponent,
+  AuthService,
+  FormService,
+} from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
 
@@ -25,14 +25,14 @@ import { environment } from '../environments/environment';
 export class AppComponent implements OnInit {
   // Static component declaration of survey custom components for the property grid editor in order to avoid removal on tree shake for production build
   static declaration = [
-    SafeApplicationDropdownComponent,
+    ApplicationDropdownComponent,
     GeofieldsListboxComponent,
-    SafeReferenceDataDropdownComponent,
-    SafeResourceAvailableFieldsComponent,
-    SafeResourceCustomFiltersComponent,
-    SafeResourceDropdownComponent,
-    SafeResourceSelectTextComponent,
-    SafeTestServiceDropdownComponent,
+    ReferenceDataDropdownComponent,
+    ResourceAvailableFieldsComponent,
+    ResourceCustomFiltersComponent,
+    ResourceDropdownComponent,
+    ResourceSelectTextComponent,
+    TestServiceDropdownComponent,
   ];
   title = 'front-office';
 
@@ -40,12 +40,13 @@ export class AppComponent implements OnInit {
    * Main component of Front-office.
    *
    * @param authService Shared authentication service
-   * @param formService Shared form service. We need to initialize the service there.
+   * @param formService Shared form service
    * @param translate Angular translate service
    */
   constructor(
-    private authService: SafeAuthService,
-    private formService: SafeFormService,
+    private authService: AuthService,
+    // We need to initialize the service there
+    private formService: FormService,
     private translate: TranslateService
   ) {
     this.translate.addLangs(environment.availableLanguages);

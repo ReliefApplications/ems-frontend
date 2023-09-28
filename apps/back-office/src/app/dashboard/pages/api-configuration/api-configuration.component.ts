@@ -5,22 +5,18 @@ import { TranslateService } from '@ngx-translate/core';
 import {
   ApiConfiguration,
   authType,
-  SafeApiProxyService,
+  ApiProxyService,
   status,
-  SafeBreadcrumbService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  BreadcrumbService,
+  UnsubscribeComponent,
+  ApiConfigurationQueryResponse,
+  EditApiConfigurationMutationResponse,
+} from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
 import { takeUntil } from 'rxjs/operators';
 import { apiValidator } from '../../../utils/nameValidation';
-import {
-  EditApiConfigurationMutationResponse,
-  EDIT_API_CONFIGURATION,
-} from './graphql/mutations';
-import {
-  GetApiConfigurationQueryResponse,
-  GET_API_CONFIGURATION,
-} from './graphql/queries';
+import { EDIT_API_CONFIGURATION } from './graphql/mutations';
+import { GET_API_CONFIGURATION } from './graphql/queries';
 import { SnackbarService } from '@oort-front/ui';
 
 /**
@@ -32,7 +28,7 @@ import { SnackbarService } from '@oort-front/ui';
   styleUrls: ['./api-configuration.component.scss'],
 })
 export class ApiConfigurationComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   // === DATA ===
@@ -70,9 +66,9 @@ export class ApiConfigurationComponent
     private snackBar: SnackbarService,
     private router: Router,
     private fb: FormBuilder,
-    private apiProxy: SafeApiProxyService,
+    private apiProxy: ApiProxyService,
     private translate: TranslateService,
-    private breadcrumbService: SafeBreadcrumbService
+    private breadcrumbService: BreadcrumbService
   ) {
     super();
   }
@@ -81,7 +77,7 @@ export class ApiConfigurationComponent
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id) {
       this.apollo
-        .watchQuery<GetApiConfigurationQueryResponse>({
+        .watchQuery<ApiConfigurationQueryResponse>({
           query: GET_API_CONFIGURATION,
           variables: {
             id: this.id,
