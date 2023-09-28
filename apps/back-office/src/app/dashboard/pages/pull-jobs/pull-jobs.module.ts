@@ -7,6 +7,7 @@ import {
   SkeletonTableModule,
   CronParserModule,
   DateModule,
+  EmptyModule,
 } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -35,6 +36,7 @@ import {
     ButtonModule,
     TableModule,
     ChipModule,
+    EmptyModule,
     TooltipModule,
   ],
 })
