@@ -62,7 +62,7 @@ const GROUPED_OPTIONS = [
 ];
 
 export default {
-  title: 'Autocomplete',
+  title: 'Components/Autocomplete',
   component: AutocompleteComponent,
   decorators: [
     moduleMetadata({

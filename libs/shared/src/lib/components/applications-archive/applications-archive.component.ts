@@ -1,4 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 // eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import {
@@ -6,7 +7,7 @@ import {
   ConfirmService,
   UnsubscribeComponent,
 } from '@oort-front/shared';
-import { takeUntil } from 'rxjs';
+import { distinctUntilChanged, takeUntil } from 'rxjs';
 
 /**
  * Mocked Interface
@@ -39,6 +40,7 @@ export class ApplicationsArchiveComponent
     { id: 'name', value: '' },
     { id: 'autoDeletedAt', value: '' },
   ];
+  public form = this.fb.group({});
   public searchText = '';
   public dateFilter = '';
 
@@ -48,16 +50,24 @@ export class ApplicationsArchiveComponent
    * @param applicationService Shared application service
    * @param translate Angular Translate service
    * @param confirmService Shared confirmation service
+   * @param fb Angular form builder
    */
   constructor(
     private applicationService: ApplicationService,
     private translate: TranslateService,
-    private confirmService: ConfirmService
+    private confirmService: ConfirmService,
+    private fb: FormBuilder
   ) {
     super();
   }
 
   ngOnInit(): void {
+    this.form.valueChanges
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe((value: any) => {
+        this.searchText = (value?.search ?? '').trim().toLowerCase();
+        this.applyFilter('', this.searchText);
+      });
     this.filterPredicate();
   }
 
@@ -87,10 +97,6 @@ export class ApplicationsArchiveComponent
       this.dateFilter = event.target
         ? event.target.value.trim().toLowerCase()
         : '';
-    } else {
-      this.searchText = event
-        ? event.target.value.trim().toLowerCase()
-        : this.searchText;
     }
     this.filterPredicate();
   }
@@ -99,9 +105,8 @@ export class ApplicationsArchiveComponent
    * Clear all the filters
    */
   clearAllFilters(): void {
-    this.searchText = '';
     this.dateFilter = '';
-    this.applyFilter('', null);
+    this.form.reset();
   }
 
   /**

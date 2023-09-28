@@ -115,7 +115,7 @@ class CustomSnackbarComponent {
 }
 
 export default {
-  title: 'Snackbar',
+  title: 'Components/Snackbar',
   component: LaunchSnackbarComponent,
   decorators: [
     moduleMetadata({

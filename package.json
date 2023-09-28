@@ -26,6 +26,7 @@
     "@apollo/client": "3.7.17",
     "@casl/ability": "^6.3.3",
     "@casl/angular": "^8.2.0",
+    "@compodoc/compodoc": "^1.1.21",
     "@esri/arcgis-rest-portal": "^4.2.0",
     "@esri/arcgis-rest-request": "^4.1.2",
     "@fortawesome/fontawesome-free": "^6.3.0",

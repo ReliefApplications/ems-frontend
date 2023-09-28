@@ -15,7 +15,7 @@ type MockedTable = {
 };
 
 export default {
-  title: 'Table',
+  title: 'Components/Table',
   decorators: [
     moduleMetadata({
       imports: [TableModule, StorybookTranslateModule, ToggleModule],

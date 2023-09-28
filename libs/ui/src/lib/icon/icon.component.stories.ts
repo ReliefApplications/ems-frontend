@@ -5,7 +5,7 @@ import { IconModule } from './icon.module';
 import { MAT_ICON_LIST } from './icon.list';
 
 export default {
-  title: 'Icon',
+  title: 'Components/Icon',
   component: IconComponent,
   argTypes: {
     variant: {

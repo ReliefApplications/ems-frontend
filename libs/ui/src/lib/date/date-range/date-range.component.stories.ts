@@ -5,7 +5,7 @@ import { StorybookTranslateModule } from '../../../storybook-translate.module';
 import { DateModule } from '../date.module';
 
 export default {
-  title: 'Date Range',
+  title: 'Components/Date Range',
   component: DateRangeComponent,
   decorators: [
     moduleMetadata({

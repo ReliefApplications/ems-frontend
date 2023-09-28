@@ -8,12 +8,12 @@ import {
   DividerModule,
   ButtonModule,
   TableModule,
-  ChipModule,
   PaginatorModule,
   TooltipModule,
 } from '@oort-front/ui';
 import { IconModule } from '@oort-front/ui';
 import { EmptyModule } from '../ui/empty/empty.module';
+import { StatusOptionsComponent } from '../status-options/status-options.component';
 
 /**
  * Module for custom notifications table.
@@ -31,7 +31,7 @@ import { EmptyModule } from '../ui/empty/empty.module';
     PaginatorModule,
     ButtonModule,
     TableModule,
-    ChipModule,
+    StatusOptionsComponent,
     TooltipModule,
   ],
   exports: [NotificationsComponent],
