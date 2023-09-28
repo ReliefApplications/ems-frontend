@@ -17,7 +17,8 @@ import {
 import { Channel } from '@oort-front/shared';
 
 /**
- * Add channel component, act as modal.
+ * Channel component, act as modal.
+ * Used for both edition and addition of channels.
  */
 @Component({
   standalone: true,
@@ -46,7 +47,8 @@ export class ChannelModalComponent {
   });
 
   /**
-   * Add channel component
+   * Channel component, act as modal.
+   * Used for both edition and addition of channels.
    *
    * @param fb Angular form builder
    * @param dialogRef Dialog ref
