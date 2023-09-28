@@ -9,8 +9,9 @@ import {
   DividerModule,
   ButtonModule,
   TableModule,
+  TooltipModule,
 } from '@oort-front/ui';
-import { SafeEmptyModule, SafeSkeletonTableModule } from '@oort-front/safe';
+import { EmptyModule, SkeletonTableModule } from '@oort-front/shared';
 import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -31,8 +32,9 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule,
     ButtonModule,
     TableModule,
-    SafeEmptyModule,
-    SafeSkeletonTableModule,
+    TooltipModule,
+    EmptyModule,
+    SkeletonTableModule,
   ],
 })
 export class ChannelsModule {}

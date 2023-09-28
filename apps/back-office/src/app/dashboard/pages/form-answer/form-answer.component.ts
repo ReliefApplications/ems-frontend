@@ -1,16 +1,13 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-
 import {
   Form,
-  SafeBreadcrumbService,
-  SafeFormComponent,
-} from '@oort-front/safe';
-import {
-  GetFormByIdQueryResponse,
-  GET_SHORT_FORM_BY_ID,
-} from './graphql/queries';
+  FormQueryResponse,
+  BreadcrumbService,
+  FormComponent,
+} from '@oort-front/shared';
+import { GET_SHORT_FORM_BY_ID } from './graphql/queries';
 
 /**
  * Form answer page component.
@@ -22,8 +19,8 @@ import {
 })
 export class FormAnswerComponent implements OnInit {
   /** Reference to shared form component */
-  @ViewChild(SafeFormComponent)
-  private formComponent?: SafeFormComponent;
+  @ViewChild(FormComponent)
+  private formComponent?: FormComponent;
   /** Loading indicator */
   public loading = true;
   /** Current form id */
@@ -43,14 +40,14 @@ export class FormAnswerComponent implements OnInit {
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private breadcrumbService: SafeBreadcrumbService
+    private breadcrumbService: BreadcrumbService
   ) {}
 
   ngOnInit(): void {
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
       this.apollo
-        .watchQuery<GetFormByIdQueryResponse>({
+        .watchQuery<FormQueryResponse>({
           query: GET_SHORT_FORM_BY_ID,
           variables: {
             id: this.id,

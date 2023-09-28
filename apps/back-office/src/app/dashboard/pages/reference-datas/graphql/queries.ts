@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { ReferenceData } from '@oort-front/safe';
 
 // === GET REFERENCE DATAS ===
 /** Get list of ref data gql query definition */
@@ -50,18 +49,3 @@ export const GET_REFERENCE_DATAS = gql`
     }
   }
 `;
-
-/** Get list of ref data gql query response interface */
-export interface GetReferenceDatasQueryResponse {
-  referenceDatas: {
-    edges: {
-      node: ReferenceData;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-    totalCount: number;
-  };
-}

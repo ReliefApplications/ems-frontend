@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Resource } from '@oort-front/safe';
 
 /** Graphql query for getting a resource by its id */
 export const GET_RESOURCE_FORMS = gql`
@@ -21,8 +20,3 @@ export const GET_RESOURCE_FORMS = gql`
     }
   }
 `;
-
-/** Model for GetResourceByIdQueryResponse object */
-export interface GetResourceByIdQueryResponse {
-  resource: Resource;
-}

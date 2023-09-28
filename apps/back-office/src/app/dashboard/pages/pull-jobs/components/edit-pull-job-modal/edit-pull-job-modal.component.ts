@@ -10,16 +10,16 @@ import {
   status,
   authType,
   cronValidator,
-} from '@oort-front/safe';
+  ApplicationsApplicationNodesQueryResponse,
+  ApiConfigurationsQueryResponse,
+  FormQueryResponse,
+  FormsQueryResponse,
+} from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
-  GetApiConfigurationsQueryResponse,
   GET_API_CONFIGURATIONS,
-  GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
-  GetFormsQueryResponse,
   GET_FORM_NAMES,
-  GetRoutingKeysQueryResponse,
   GET_ROUTING_KEYS,
 } from '../../graphql/queries';
 import {
@@ -38,9 +38,9 @@ import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import {
-  SafeReadableCronModule,
+  ReadableCronModule,
   CronExpressionControlModule,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import {
   TooltipModule,
   ButtonModule,
@@ -71,7 +71,7 @@ const DEFAULT_FIELDS = ['createdBy'];
     TranslateModule,
     DialogModule,
     GraphQLSelectModule,
-    SafeReadableCronModule,
+    ReadableCronModule,
     TooltipModule,
     ExpansionPanelModule,
     CronExpressionControlModule,
@@ -124,14 +124,14 @@ export class EditPullJobModalComponent implements OnInit {
   isHardcoded = true;
 
   // === FORMS ===
-  public formsQuery!: QueryRef<GetFormsQueryResponse>;
+  public formsQuery!: QueryRef<FormsQueryResponse>;
 
   // === CHANNELS ===
   private applicationsLoading = true;
   public applications = new BehaviorSubject<Application[]>([]);
   public applications$!: Observable<Application[]>;
   private cachedApplications: Application[] = [];
-  private applicationsQuery!: QueryRef<GetRoutingKeysQueryResponse>;
+  private applicationsQuery!: QueryRef<ApplicationsApplicationNodesQueryResponse>;
   private applicationsPageInfo = {
     endCursor: '',
     hasNextPage: true,
@@ -139,7 +139,7 @@ export class EditPullJobModalComponent implements OnInit {
 
   // === API ===
   public apiConfigurations: ApiConfiguration[] = [];
-  public apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
+  public apiConfigurationsQuery!: QueryRef<ApiConfigurationsQueryResponse>;
 
   // === DATA ===
   public statusChoices = Object.values(status);
@@ -200,7 +200,7 @@ export class EditPullJobModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
+    this.formsQuery = this.apollo.watchQuery<FormsQueryResponse>({
       query: GET_FORM_NAMES,
       variables: {
         first: ITEMS_PER_PAGE,
@@ -209,7 +209,7 @@ export class EditPullJobModalComponent implements OnInit {
     });
 
     this.apiConfigurationsQuery =
-      this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
+      this.apollo.watchQuery<ApiConfigurationsQueryResponse>({
         query: GET_API_CONFIGURATIONS,
         variables: {
           first: ITEMS_PER_PAGE,
@@ -234,7 +234,7 @@ export class EditPullJobModalComponent implements OnInit {
 
     // Fetch the applications to get the channels
     this.applicationsQuery =
-      this.apollo.watchQuery<GetRoutingKeysQueryResponse>({
+      this.apollo.watchQuery<ApplicationsApplicationNodesQueryResponse>({
         query: GET_ROUTING_KEYS,
         variables: {
           first: ITEMS_PER_PAGE,
@@ -298,7 +298,7 @@ export class EditPullJobModalComponent implements OnInit {
       this.fieldsSubscription.unsubscribe();
     }
     this.fieldsSubscription = this.apollo
-      .watchQuery<GetFormByIdQueryResponse>({
+      .watchQuery<FormQueryResponse>({
         query: GET_SHORT_FORM_BY_ID,
         variables: {
           id,
@@ -413,11 +413,8 @@ export class EditPullJobModalComponent implements OnInit {
           first: ITEMS_PER_PAGE,
           afterCursor: this.applicationsPageInfo.endCursor,
         };
-        const cachedValues: GetRoutingKeysQueryResponse = getCachedValues(
-          this.apollo.client,
-          GET_ROUTING_KEYS,
-          variables
-        );
+        const cachedValues: ApplicationsApplicationNodesQueryResponse =
+          getCachedValues(this.apollo.client, GET_ROUTING_KEYS, variables);
         if (cachedValues) {
           this.updateValues(cachedValues, false);
         } else {
@@ -460,7 +457,10 @@ export class EditPullJobModalComponent implements OnInit {
    * @param data query response data
    * @param loading loading status
    */
-  private updateValues(data: GetRoutingKeysQueryResponse, loading: boolean) {
+  private updateValues(
+    data: ApplicationsApplicationNodesQueryResponse,
+    loading: boolean
+  ) {
     const nodes = data.applications.edges
       .map((x) => x.node)
       .filter((x) => (x.channels ? x.channels.length > 0 : false));

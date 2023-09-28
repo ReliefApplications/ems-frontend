@@ -108,6 +108,7 @@
                   icon="more_vert"
                   [uiMenuTriggerFor]="menu"
                   (click)="$event.stopPropagation()"
+                  [uiTooltip]="'common.options' | translate"
                 >
                 </ui-button>
                 <ui-menu #menu>
@@ -167,10 +168,10 @@
     </ui-paginator>
   </ng-container>
   <ng-template #emptyTmpl>
-    <safe-empty [title]="'kendo.grid.noRecords' | translate"></safe-empty>
+    <shared-empty [title]="'kendo.grid.noRecords' | translate"></shared-empty>
   </ng-template>
 </ng-container>
 <ng-template #loadingTmpl>
-  <safe-skeleton-table [columns]="displayedColumns" [actions]="true">
-  </safe-skeleton-table>
+  <shared-skeleton-table [columns]="displayedColumns" [actions]="true">
+  </shared-skeleton-table>
 </ng-template>

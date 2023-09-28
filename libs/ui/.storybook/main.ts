@@ -12,7 +12,7 @@ const config: StorybookConfig = {
       to: '/assets',
     },
     {
-      from: '../../../libs/safe/src/i18n',
+      from: '../../../libs/shared/src/i18n',
       to: '/assets/i18n',
     },
   ],

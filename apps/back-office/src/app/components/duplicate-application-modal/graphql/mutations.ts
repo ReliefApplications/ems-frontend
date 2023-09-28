@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Application } from '@oort-front/safe';
 
 // === DUPLICATE APPLICATION ===
 /** Duplicate application gql mutation definition */
@@ -12,8 +11,3 @@ export const DUPLICATE_APPLICATION = gql`
     }
   }
 `;
-
-/** Duplication application gql mutation response interface */
-export interface DuplicateApplicationMutationResponse {
-  duplicateApplication: Application;
-}

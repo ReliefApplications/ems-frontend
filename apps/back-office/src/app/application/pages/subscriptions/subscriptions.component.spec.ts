@@ -14,9 +14,9 @@ import {
   DateTimeProvider,
 } from 'angular-oauth2-oidc';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { AppAbility } from '@oort-front/safe';
+import { AppAbility } from '@oort-front/shared';
 import { DialogModule } from '@angular/cdk/dialog';
-import { SafeEmptyModule } from '@oort-front/safe';
+import { EmptyModule } from '@oort-front/shared';
 import { ButtonModule } from '@oort-front/ui';
 
 describe('SubscriptionsComponent', () => {
@@ -42,7 +42,7 @@ describe('SubscriptionsComponent', () => {
         ApolloTestingModule,
         HttpClientTestingModule,
         DialogModule,
-        SafeEmptyModule,
+        EmptyModule,
         ButtonModule,
         TranslateModule.forRoot({
           loader: {

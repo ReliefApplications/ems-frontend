@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { SafeAuthService, SafeFormService } from '@oort-front/safe';
+import { AuthService, FormService } from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
 
@@ -22,9 +22,9 @@ export class AppComponent implements OnInit {
    * @param translate Angular translate service
    */
   constructor(
-    private authService: SafeAuthService,
+    private authService: AuthService,
     // We need to initialize the service there
-    private formService: SafeFormService,
+    private formService: FormService,
     private translate: TranslateService
   ) {
     this.translate.addLangs(environment.availableLanguages);

@@ -4,21 +4,21 @@
     <ng-container *ngSwitchCase="1">
       <!-- Select a type of page -->
       <h2>{{ 'pages.application.addPage.selectType' | translate }}</h2>
-      <safe-content-choice
+      <shared-content-choice
         class="mt-4"
         formControlName="type"
         [contentTypes]="contentTypes"
-      ></safe-content-choice>
+      ></shared-content-choice>
       <ui-divider class="m-8" [text]="'common.or' | translate"></ui-divider>
       <!-- Select a type of widget -->
       <h2>{{ 'pages.application.addPage.startFromWidget' | translate }}</h2>
-      <safe-widget-choice
+      <shared-widget-choice
         class="mt-4"
         [floating]="false"
         [widgetTypes]="availableWidgets"
         (add)="onAddWidget($event)"
       >
-      </safe-widget-choice>
+      </shared-widget-choice>
     </ng-container>
     <!-- Form selection -->
     <ng-container *ngSwitchCase="2">

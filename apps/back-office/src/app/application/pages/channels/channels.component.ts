@@ -6,10 +6,10 @@ import {
   Channel,
   ChannelDisplay,
   Role,
-  SafeApplicationService,
-  SafeConfirmService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  ApplicationService,
+  ConfirmService,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import { takeUntil } from 'rxjs/operators';
 
 /**
@@ -20,10 +20,7 @@ import { takeUntil } from 'rxjs/operators';
   templateUrl: './channels.component.html',
   styleUrls: ['./channels.component.scss'],
 })
-export class ChannelsComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
+export class ChannelsComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   private channels: Channel[] = [];
   public channelsData: ChannelDisplay[] = [];
@@ -39,8 +36,8 @@ export class ChannelsComponent
    * @param translate Angular translate service
    */
   constructor(
-    private applicationService: SafeApplicationService,
-    private confirmService: SafeConfirmService,
+    private applicationService: ApplicationService,
+    private confirmService: ConfirmService,
     public dialog: Dialog,
     private translate: TranslateService
   ) {
