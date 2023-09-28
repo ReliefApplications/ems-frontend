@@ -43,6 +43,12 @@ export default {
  * ArgTypes for individual button stories
  */
 const individualBtnArgs = {
+  label: {
+    control: {
+      type: 'text',
+    },
+    description: 'Text content of the button ( storybook only ).',
+  },
   category: {
     options: categories,
     control: {
