@@ -1608,8 +1608,8 @@
 							}
 						},
 						"gridActions": {
-							"title": "Grid actions",
-							"tooltip": "Enabled grid actions"
+							"title": "@TODO",
+							"tooltip": "@TODO"
 						},
 						"preview": {
 							"title": "Prévisualisation"
