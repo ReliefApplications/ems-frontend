@@ -3,7 +3,6 @@
 /// <reference path="../../typings/extract-files/index.d.ts" />
 
 import { Apollo } from 'apollo-angular';
-import { UntypedFormBuilder } from '@angular/forms';
 import { DomService } from '../services/dom/dom.service';
 import { AuthService } from '../services/auth/auth.service';
 import { ReferenceDataService } from '../services/reference-data/reference-data.service';
@@ -18,88 +17,105 @@ import * as CommentWidget from './widgets/comment-widget';
 import * as DropdownWidget from './widgets/dropdown-widget';
 import * as TagboxWidget from './widgets/tagbox-widget';
 import * as OtherProperties from './global-properties/others';
-// import * as ChoicesByUrlProperties from './global-properties/choicesByUrl';
+import * as ChoicesByUrlProperties from './global-properties/choicesByUrl';
 import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';
 import { initLocalization } from './localization';
-import { Dialog } from '@angular/cdk/dialog';
-import { NgZone } from '@angular/core';
+import { Injector, NgZone } from '@angular/core';
+import {
+  ComponentCollection,
+  CustomWidgetCollection,
+  ElementFactory,
+} from 'survey-core';
+import { AngularComponentFactory } from 'survey-angular-ui';
+import {
+  CustomPropertyGridComponentTypes,
+  CustomPropertyGridEditors,
+} from './components/utils/components.enum';
 
 /**
  * Executes all init methods of custom SurveyJS.
  *
- * @param Survey surveyjs or surveyjsCreator library
- * @param domService Shared DOM service, used to inject components on the go
- * @param dialog dialog service
- * @param apollo apollo service
- * @param fb form builder service
- * @param authService custom auth service
  * @param environment injected environment
- * @param referenceDataService Reference data service
+ * @param injector Parent instance angular injector containing all needed services and directives
  * @param containsCustomQuestions If survey contains custom questions or not
  * @param ngZone Angular Service to execute code inside Angular environment
  * @param document Document
  */
 export const initCustomSurvey = (
-  Survey: any,
-  domService: DomService,
-  dialog: Dialog,
-  apollo: Apollo,
-  fb: UntypedFormBuilder,
-  authService: AuthService,
   environment: any,
-  referenceDataService: ReferenceDataService,
+  injector: Injector,
   containsCustomQuestions: boolean,
   ngZone: NgZone,
   document: Document
 ): void => {
+  const domService = injector.get(DomService);
+  const apollo = injector.get(Apollo);
+  const authService = injector.get(AuthService);
+  const referenceDataService = injector.get(ReferenceDataService);
+
   // If the survey created does not contain custom questions, we destroy previously set custom questions if so
   if (!containsCustomQuestions) {
-    Survey.CustomWidgetCollection.Instance.clear();
-    Survey.ComponentCollection.Instance.clear();
+    CustomWidgetCollection.Instance.clear();
+    ComponentCollection.Instance.clear();
   }
 
-  TagboxWidget.init(Survey, domService, document);
-  TextWidget.init(Survey, domService, document);
-  DropdownWidget.init(Survey, domService, document);
+  TagboxWidget.init(domService, CustomWidgetCollection.Instance, document);
+  TextWidget.init(domService, CustomWidgetCollection.Instance, document);
+  DropdownWidget.init(domService, CustomWidgetCollection.Instance, document);
 
   if (containsCustomQuestions) {
-    CommentWidget.init(Survey, document);
+    // Register all custom property grid component types
+    const registeredTypes = AngularComponentFactory.Instance.getAllTypes();
+    const registeredElements = ElementFactory.Instance.getAllTypes();
+    Object.keys(CustomPropertyGridComponentTypes).forEach((propertyKey) => {
+      const propertyType =
+        CustomPropertyGridComponentTypes[
+          propertyKey as keyof typeof CustomPropertyGridComponentTypes
+        ];
+      // Register the component in the Angular factory(the class with the @Component decorator)
+      if (!registeredTypes.includes(propertyType)) {
+        AngularComponentFactory.Instance.registerComponent(
+          `${propertyType}-question`,
+          CustomPropertyGridEditors[propertyType].component
+        );
+      }
+      // Register the related question model in the element factory
+      if (!registeredElements.includes(propertyType)) {
+        ElementFactory.Instance.registerElement(propertyType, (name) => {
+          return new CustomPropertyGridEditors[propertyType].model(name);
+        });
+      }
+    });
+    CommentWidget.init(CustomWidgetCollection.Instance, document);
     // load components (same as widgets, but with less configuration options)
     ResourceComponent.init(
-      Survey,
-      domService,
-      apollo,
-      dialog,
-      fb,
+      injector,
+      ComponentCollection.Instance,
       ngZone,
       document
     );
     ResourcesComponent.init(
-      Survey,
-      domService,
-      apollo,
-      dialog,
-      fb,
+      injector,
+      ComponentCollection.Instance,
       ngZone,
       document
     );
-    OwnerComponent.init(Survey, domService, apollo);
-    UsersComponent.init(Survey, domService, apollo);
-    GeospatialComponent.init(Survey, domService);
+    OwnerComponent.init(apollo, ComponentCollection.Instance);
+    UsersComponent.init(apollo, ComponentCollection.Instance);
+    GeospatialComponent.init(domService, ComponentCollection.Instance);
   }
 
   // load global properties
-  ReferenceDataProperties.init(Survey, domService, referenceDataService);
-  TooltipProperty.init(Survey);
-  OtherProperties.init(Survey, environment);
+  ReferenceDataProperties.init(referenceDataService);
+  TooltipProperty.init();
+  OtherProperties.init(environment);
 
   // enables POST requests for choicesByUrl
-  // todo: enable
-  // ChoicesByUrlProperties.init(Survey);
+  ChoicesByUrlProperties.init();
 
   // set localization
-  initLocalization(Survey);
+  initLocalization();
   // load internal functions
-  addCustomFunctions(Survey, authService);
+  addCustomFunctions(authService);
 };

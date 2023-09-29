@@ -179,7 +179,9 @@
           #dashboardSurveyCreatorContainer
           class="overflow-scroll"
           [ngClass]="{ hidden: empty }"
-        ></div>
+        >
+          <survey [model]="survey"></survey>
+        </div>
         <!-- <form
         [ngClass]="{
           'flex-col':

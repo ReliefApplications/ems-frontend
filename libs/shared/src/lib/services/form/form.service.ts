@@ -1,12 +1,9 @@
-import { Inject, Injectable, NgZone } from '@angular/core';
-import * as SurveyKo from 'survey-knockout';
-import * as Survey from 'survey-angular';
+import { Inject, Injectable, Injector, NgZone } from '@angular/core';
 import { initCreatorSettings } from '../../survey/creator';
 import { initCustomSurvey } from '../../survey/init';
 import { DomService } from '../dom/dom.service';
 import { Dialog } from '@angular/cdk/dialog';
 import { Apollo } from 'apollo-angular';
-import { UntypedFormBuilder } from '@angular/forms';
 import { AuthService } from '../auth/auth.service';
 import { ReferenceDataService } from '../reference-data/reference-data.service';
 import { DOCUMENT } from '@angular/common';
@@ -28,10 +25,10 @@ export class FormService {
    * @param domService Shared DOM service
    * @param dialog Dialog service
    * @param apollo Apollo client
-   * @param fb Angular form builder
    * @param authService Shared authentication service
    * @param referenceDataService Reference data service
    * @param ngZone Angular Service to execute code inside Angular environment
+   * @param injector Angular injector from where to fetch the needed services
    * @param document Document
    */
   constructor(
@@ -39,10 +36,10 @@ export class FormService {
     public domService: DomService,
     public dialog: Dialog,
     public apollo: Apollo,
-    public fb: UntypedFormBuilder,
     public authService: AuthService,
     public referenceDataService: ReferenceDataService,
     public ngZone: NgZone,
+    private injector: Injector,
     @Inject(DOCUMENT) private document: Document
   ) {
     this.environment = environment;
@@ -60,35 +57,14 @@ export class FormService {
       customQuestions: true,
     }
   ) {
-    // === CUSTOM WIDGETS / COMPONENTS ===
     initCustomSurvey(
-      SurveyKo,
-      this.domService,
-      this.dialog,
-      this.apollo,
-      this.fb,
-      this.authService,
       this.environment,
-      this.referenceDataService,
+      this.injector,
       additionalQuestions.customQuestions,
       this.ngZone,
       this.document
     );
     // === CREATOR SETTINGS ===
-    initCreatorSettings(SurveyKo);
-    // === CUSTOM WIDGETS / COMPONENTS ===
-    initCustomSurvey(
-      Survey,
-      this.domService,
-      this.dialog,
-      this.apollo,
-      this.fb,
-      this.authService,
-      this.environment,
-      this.referenceDataService,
-      additionalQuestions.customQuestions,
-      this.ngZone,
-      this.document
-    );
+    initCreatorSettings();
   }
 }
