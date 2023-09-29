@@ -40,17 +40,8 @@ export class LayoutComponent
   extends UnsubscribeComponent
   implements OnInit, OnChanges
 {
-  // === HEADER TITLE ===
+  /** Page title ( name of application ) */
   @Input() title = '';
-
-  // application toolbar settings
-  @Input() settings: any[] = [];
-
-  // application toolbar canUpdate boolean
-  @Input() canUpdate = false;
-
-  // application toolbar showActions boolean
-  @Input() showActions = false;
 
   @Input() applications: Application[] = [];
 
@@ -81,11 +72,12 @@ export class LayoutComponent
   public hasMoreNotifications = false;
   public loadingNotifications = false;
 
-  // === USER INFO ===
+  /** Account information of logged user */
   public account: Account | null;
+  /** Currently logged user */
   public user?: User;
 
-  // === DISPLAY ===
+  /** Is screen large */
   public largeDevice: boolean;
   public theme: any;
 

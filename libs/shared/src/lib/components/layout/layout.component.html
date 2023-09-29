@@ -33,18 +33,15 @@
   </div>
   <div class="min-w-0 flex items-center overflow-hidden">
     <div id="app-logo"></div>
-    <ng-container *ngIf="!header">
-      <shared-app-application-toolbar
-        [title]="title"
-        [settings]="settings"
-        [canUpdate]="canUpdate"
-        [showActions]="true"
-      >
-      </shared-app-application-toolbar>
-    </ng-container>
-    <ng-container *ngIf="header">
+    <ng-container *ngIf="header; else defaultHeader">
       <ng-container *ngTemplateOutlet="header"></ng-container>
     </ng-container>
+    <ng-template #defaultHeader>
+      <h1 class="text-xl mb-0 whitespace-nowrap text-clip font-medium">
+        {{ theme.prefix }}
+        {{ 'common.platform.backOffice' | translate }}
+      </h1>
+    </ng-template>
   </div>
   <!-- Account icon and info -->
   <div

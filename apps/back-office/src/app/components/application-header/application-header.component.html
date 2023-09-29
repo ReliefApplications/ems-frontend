@@ -6,22 +6,16 @@
     </h2>
     <!-- Settings -->
     <ui-button
-      *ngIf="settings.length > 0"
+      *ngIf="navItems.length > 0"
       [isIcon]="true"
       icon="tune"
-      variant="grey"
+      variant="light"
       [uiMenuTriggerFor]="settingsMenu"
       [uiTooltip]="'common.settings' | translate"
     ></ui-button>
-    <!-- Access -->
-    <shared-access
-      *ngIf="title && canUpdate"
-      [access]="application?.permissions"
-      [objectTypeName]="'common.application.one' | translate"
-      (save)="saveAccess($event)"
-    ></shared-access>
   </div>
-  <div class="flex flex-row gap-2 items-center" *ngIf="showActions">
+  <div class="flex flex-row gap-2 items-center" *ngIf="canUpdate">
+    <!-- Unlock application edition -->
     <ui-button
       *ngIf="application?.canUpdate && locked"
       [isIcon]="true"
@@ -31,12 +25,13 @@
       [uiTooltip]="'components.application.unlock.title' | translate"
     >
     </ui-button>
+    <!-- Publish application -->
     <ui-button
-      *ngIf="application"
+      *ngIf="application && this.application.status !== 'active'"
       category="secondary"
       variant="success"
       (click)="onPublish()"
-      [disabled]="!canPublish || this.application.status === 'active'"
+      [disabled]="!canPublish"
       >{{ 'common.publish' | translate }}</ui-button
     >
   </div>
@@ -45,12 +40,12 @@
 <ui-menu #settingsMenu>
   <a
     uiMenuItem
-    *ngFor="let setting of settings"
-    [routerLink]="setting.path"
+    *ngFor="let item of navItems"
+    [routerLink]="item.path"
     routerLinkActive="text-primary-600 bg-gray-50"
     class="text-sm font-semibold leading-6"
   >
-    <ui-icon variant="grey" [icon]="setting.icon"> </ui-icon>
-    {{ setting.name }}
+    <ui-icon variant="grey" [icon]="item.icon"> </ui-icon>
+    {{ item.name }}
   </a>
 </ui-menu>
