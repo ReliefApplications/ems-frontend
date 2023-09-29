@@ -926,6 +926,7 @@ export class CoreGridComponent
           this.location.replaceState(this.location.path(), undefined, {
             skip: this.skip,
             take: this.pageSize,
+            summaryCard: this.settings.summaryCard ?? false,
           });
           this.router.navigateByUrl(fullUrl);
         }

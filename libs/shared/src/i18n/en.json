@@ -1591,6 +1591,10 @@
 								"datasource": "Add a button in widget's header to view card's data source"
 							}
 						},
+						"gridActions": {
+							"title": "Grid actions",
+							"tooltip": "Enabled grid actions"
+						},
 						"preview": {
 							"title": "Preview"
 						},

@@ -23,6 +23,11 @@ import { GET_RESOURCE_METADATA } from './graphql/queries';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { SummaryCardFormT } from '../summary-card-settings/summary-card-settings.component';
 import { Record } from '../../../models/record.model';
+import {
+  Location,
+  LocationStrategy,
+  PathLocationStrategy,
+} from '@angular/common';
 
 export type CardT = NonNullable<SummaryCardFormT['value']['card']> &
   Partial<{
@@ -55,6 +60,10 @@ const DEFAULT_PAGE_SIZE = 25;
 @Component({
   selector: 'shared-summary-card',
   templateUrl: './summary-card.component.html',
+  providers: [
+    Location,
+    { provide: LocationStrategy, useClass: PathLocationStrategy },
+  ],
   styleUrls: ['./summary-card.component.scss'],
 })
 export class SummaryCardComponent
@@ -171,6 +180,7 @@ export class SummaryCardComponent
    * @param contextService ContextService
    * @param elementRef Element Ref
    * @param gridService grid service
+   * @param location Angular location service
    */
   constructor(
     private apollo: Apollo,
@@ -182,7 +192,8 @@ export class SummaryCardComponent
     private aggregationService: AggregationService,
     private contextService: ContextService,
     private elementRef: ElementRef,
-    private gridService: GridService
+    private gridService: GridService,
+    private location: Location
   ) {
     super();
   }
@@ -245,6 +256,16 @@ export class SummaryCardComponent
           this.loadOnScroll(event);
         }
       );
+    }
+    const state: any = this.location.getState();
+    if (state.summaryCard) {
+      this.displayMode = 'grid';
+      // clear the display mode
+      this.location.replaceState(this.location.path(), undefined, {
+        navigationId: state.navigationId,
+        skip: state.skip,
+        take: state.take
+      });
     }
   }
 
@@ -514,6 +535,7 @@ export class SummaryCardComponent
       template: get(this.settings, 'template', null), //TO MODIFY
       resource: card.resource,
       actions: this.settings.actions,
+      summaryCard: true,
     };
 
     Object.assign(

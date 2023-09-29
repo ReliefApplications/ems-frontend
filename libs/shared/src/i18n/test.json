@@ -1591,6 +1591,10 @@
 								"datasource": "******"
 							}
 						},
+						"gridActions": {
+							"title": "******",
+							"tooltip": "******"
+						},
 						"preview": {
 							"title": "******"
 						},

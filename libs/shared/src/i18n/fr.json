@@ -1607,6 +1607,10 @@
 								"datasource": "Ajoute un bouton pour afficher la source de données de la carte"
 							}
 						},
+						"gridActions": {
+							"title": "Grid actions",
+							"tooltip": "Enabled grid actions"
+						},
 						"preview": {
 							"title": "Prévisualisation"
 						},
