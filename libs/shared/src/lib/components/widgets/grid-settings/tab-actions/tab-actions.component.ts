@@ -15,14 +15,13 @@ import { ContentType, Page } from '../../../../models/page.model';
 export class TabActionsComponent implements OnInit {
   @Input() formGroup!: UntypedFormGroup;
 
-  // show select page id and checkbox for record id
-  public show = false;
-
+  /** Show select page id and checkbox for record id */
+  public showSelectPage = false;
+  /** Available pages from the application */
   public pages: any[] = [];
-
   /** Current environment */
   private environment: any;
-
+  /** Grid actions */
   public actions = [
     {
       name: 'delete',
@@ -86,7 +85,7 @@ export class TabActionsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.show = this.formGroup.controls.actions.get(
+    this.showSelectPage = this.formGroup.controls.actions.get(
       'showRecordDashboard'
     )?.value;
     // Add available pages to the list of available keys
@@ -95,7 +94,7 @@ export class TabActionsComponent implements OnInit {
     this.formGroup.controls.actions
       .get('showRecordDashboard')
       ?.valueChanges.subscribe((val: boolean) => {
-        this.show = val;
+        this.showSelectPage = val;
       });
   }
 

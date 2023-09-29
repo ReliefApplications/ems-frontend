@@ -1299,7 +1299,8 @@
 						"showRecordDashboard": "Show record dashboard view",
 						"title": "Enabled actions",
 						"update": "Update records",
-						"useRecordId": "Use record id"
+						"useRecordId": "Use record id",
+						"useRecordIdTooltip": "To be redirected to the context view of the record"
 					},
 					"aggregations": {
 						"add": {
