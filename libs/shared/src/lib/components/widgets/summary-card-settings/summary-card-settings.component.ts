@@ -74,6 +74,7 @@ const createSummaryCardForm = (def: any) => {
     contextFilters: new FormControl(
       get(settings, 'contextFilters', DEFAULT_CONTEXT_FILTER)
     ),
+    at: new FormControl(get(settings, 'at', '')),
   });
 
   const isUsingAggregation = !!get(settings, 'card.aggregation', null);

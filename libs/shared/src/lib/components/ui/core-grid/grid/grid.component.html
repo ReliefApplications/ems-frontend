@@ -673,6 +673,7 @@
             [hidden]="subField.hidden"
             [minResizableWidth]="50"
             [editable]="!subField.disabled"
+            class="no-padding"
           >
             <ng-template
               kendoGridFilterMenuTemplate
@@ -709,12 +710,60 @@
                 class="textbox-container"
                 [style]="getStyle(dataItem, field.name)"
               >
-                {{
-                  applyFieldFormat(
-                    getPropertyValue(dataItem, field, subField),
-                    field
-                  )
-                }}
+                <div
+                  #refSpanTruncate
+                  class="truncate"
+                  [uiTooltip]="
+                    applyFieldFormat(
+                      getPropertyValue(dataItem, field, subField),
+                      field
+                    ) ?? ''
+                  "
+                  [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
+                >
+                  {{
+                    applyFieldFormat(
+                      getPropertyValue(dataItem, field, subField),
+                      field
+                    )
+                  }}
+                </div>
+              </div>
+            </ng-template>
+            <ng-template
+              kendoGridEditTemplate
+              let-dataItem="dataItem"
+              let-formGroup="formGroup"
+            >
+              <div
+                class="textbox-container"
+                [style]="getStyle(dataItem, field.name)"
+              >
+                <div
+                  #refSpanTruncate
+                  class="truncate"
+                  [uiTooltip]="
+                    applyFieldFormat(
+                      getPropertyValue(dataItem, field, subField),
+                      field
+                    ) ?? ''
+                  "
+                  [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
+                >
+                  {{
+                    applyFieldFormat(
+                      getPropertyValue(dataItem, field, subField),
+                      field
+                    )
+                  }}
+                </div>
+                <button
+                  kendoButton
+                  icon="hyperlink-open-sm"
+                  (click)="openReferenceDataSelector(field)"
+                  [look]="'flat'"
+                  [uiTooltip]="'common.edit' | translate"
+                ></button>
               </div>
             </ng-template>
           </kendo-grid-column>

@@ -1,0 +1,14 @@
+<ui-dialog>
+  <!-- Form -->
+  <ng-container ngProjectAs="content">
+    <div class="grow max-h-full" #formContainer></div>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onClose()" variant="danger">{{
+      'common.close' | translate
+    }}</ui-button>
+    <ui-button category="secondary" variant="primary" (click)="onConfirm()">{{
+      'common.update' | translate
+    }}</ui-button>
+  </ng-container>
+</ui-dialog>

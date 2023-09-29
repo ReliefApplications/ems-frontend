@@ -221,13 +221,12 @@ export class ApiConfigurationComponent
             }),
             { error: true }
           );
-          this.loading = false;
         } else {
           if (data) {
             this.apiConfiguration = data.editApiConfiguration;
-            this.loading = loading;
           }
         }
+        this.loading = loading;
       });
   }
 
@@ -274,15 +273,14 @@ export class ApiConfigurationComponent
             }),
             { error: true }
           );
-          this.loading = false;
         } else {
           this.apiConfiguration = data?.editApiConfiguration;
           this.apiForm.controls.settings = this.buildSettingsForm(
             this.apiForm.getRawValue().authType
           );
           this.apiForm.markAsPristine();
-          this.loading = loading || false;
         }
+        this.loading = loading;
       });
   }
 

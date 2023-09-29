@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { CanDeactivateGuard } from '../guards/can-deactivate.guard';
 import { ApplicationComponent } from './application.component';
+import { PermissionGuard } from '@oort-front/shared';
 
 /** Routes of application module */
 const routes: Routes = [
@@ -40,17 +41,18 @@ const routes: Routes = [
               {
                 path: '',
                 loadChildren: () =>
-                  import('./pages/roles/roles.module').then(
+                  import('../shared/pages/roles/roles.module').then(
                     (m) => m.RolesModule
                   ),
+                data: { inApplication: true },
                 // canActivate: [PermissionGuard]
               },
               {
                 path: ':id',
                 loadChildren: () =>
-                  import('./pages/role-summary/role-summary.module').then(
-                    (m) => m.RoleSummaryModule
-                  ),
+                  import(
+                    '../shared/pages/role-summary/role-summary.module'
+                  ).then((m) => m.RoleSummaryModule),
                 data: {
                   breadcrumb: {
                     alias: '@role',
@@ -79,9 +81,9 @@ const routes: Routes = [
               {
                 path: ':id',
                 loadChildren: () =>
-                  import('./pages/user-summary/user-summary.module').then(
-                    (m) => m.UserSummaryModule
-                  ),
+                  import(
+                    '../shared/pages/user-summary/user-summary.module'
+                  ).then((m) => m.UserSummaryModule),
                 data: {
                   breadcrumb: {
                     alias: '@user',
@@ -166,6 +168,19 @@ const routes: Routes = [
                 (m) => m.ApplicationNotificationsViewModule
               ),
             // canActivate: [PermissionGuard]
+          },
+          {
+            path: 'archive',
+            loadChildren: () =>
+              import('./pages/archive/archive.module').then(
+                (m) => m.ArchiveModule
+              ),
+            canActivate: [PermissionGuard],
+            data: {
+              breadcrumb: {
+                key: 'common.archive.few',
+              },
+            },
           },
         ],
       },

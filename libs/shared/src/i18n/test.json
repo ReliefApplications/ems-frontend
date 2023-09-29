@@ -18,6 +18,25 @@
 			"none": "******",
 			"one": "******"
 		},
+		"archive": {
+			"delete": "******",
+			"few": "******",
+			"modal": {
+				"delete": {
+					"action": "******",
+					"confirmationMessage": "****** {{name}} ******",
+					"title": "******"
+				},
+				"one": "******",
+				"restore": {
+					"action": "******",
+					"confirmationMessage": "****** {{name}} ******",
+					"title": "******"
+				}
+			},
+			"none": "******",
+			"restore": "******"
+		},
 		"ariaLabel": {
 			"search": {
 				"clear": "******"
@@ -190,10 +209,10 @@
 			"objectNotFound": "{{name}} ******",
 			"objectNotInvited": "{{name}} ******",
 			"objectNotReordered": "{{type}} ****** {{error}}",
-			"objectNotRestored": "{{type}} ****** {{error}}",
+			"objectNotRestored": "{{value}} ****** {{error}}",
 			"objectNotUpdated": "{{type}} ****** {{error}}",
 			"objectReordered": "{{type}} ******",
-			"objectRestored": "{{type}} ******",
+			"objectRestored": "{{value}} ******",
 			"objectUpdated": "{{value}} ****** {{type}} ******",
 			"platformAccessNotGranted": "******",
 			"readAll": "******",
@@ -416,6 +435,10 @@
 			}
 		},
 		"application": {
+			"archive": {
+				"autoDeletedAt": "******",
+				"name": "******"
+			},
 			"customStyling": "******",
 			"dashboard": {
 				"editFilter": "******",
@@ -644,6 +667,12 @@
 				"missingGridField": "****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
+			},
+			"propertyGrid": {
+				"resource": {
+					"availableGridFields": "******",
+					"resourceSelectText": "******"
+				}
 			},
 			"saveSurvey": "******"
 		},
@@ -1865,10 +1894,14 @@
 				"selectDisplayField": "******",
 				"selectOrigin": "******"
 			},
+			"contextFilter": "******",
 			"dashboardFilter": "******",
 			"deactivateFiltering": "******",
+			"historicalDate": "******",
 			"share": "******",
 			"tooltip": {
+				"dashboardFilter": "******",
+				"historicalDate": "****** {{filter.<name>}} ******",
 				"useDashboardFilterEditor": "******",
 				"useDefaultEditor": "******"
 			}

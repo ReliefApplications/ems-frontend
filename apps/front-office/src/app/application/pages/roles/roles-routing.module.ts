@@ -7,6 +7,7 @@ const routes: Routes = [
   {
     path: '',
     component: RolesComponent,
+    data: { inApplication: true },
   },
 ];
 

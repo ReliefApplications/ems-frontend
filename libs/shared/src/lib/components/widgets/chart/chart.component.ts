@@ -157,6 +157,9 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
                 ? this.contextService.injectDashboardFilterValues(
                     JSON.parse(this.settings.contextFilters)
                   )
+                : undefined,
+              this.settings.at
+                ? this.contextService.atArgumentValue(this.settings.at)
                 : undefined
             );
             if (this.dataQuery) {

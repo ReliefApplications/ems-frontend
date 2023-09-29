@@ -203,4 +203,13 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
     });
     this.layoutService.closeRightSidenav = false;
   }
+
+  /**
+   * Edit the permissions layer.
+   *
+   * @param e permissions.
+   */
+  saveAccess(e: any): void {
+    this.applicationService.editPermissions(e);
+  }
 }

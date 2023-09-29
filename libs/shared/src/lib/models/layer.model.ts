@@ -151,6 +151,7 @@ export interface LayerModel {
   createdAt: Date;
   updatedAt: Date;
   contextFilters?: string;
+  at?: string;
 }
 
 /** Model for AddLayerMutationResponse object */

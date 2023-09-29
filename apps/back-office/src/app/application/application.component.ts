@@ -145,6 +145,13 @@ export class ApplicationComponent
               },
             ];
           }
+          if (application.canUpdate) {
+            this.adminNavItems.push({
+              name: this.translate.instant('common.archive.few'),
+              path: './settings/archive',
+              icon: 'delete',
+            });
+          }
           this.navGroups = [
             {
               name: this.translate.instant('common.page.few'),

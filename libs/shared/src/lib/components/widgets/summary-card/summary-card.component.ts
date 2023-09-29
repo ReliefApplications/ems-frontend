@@ -204,13 +204,25 @@ export class SummaryCardComponent
     this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => {
-        this.setupDynamicCards();
+        this.onPage({
+          pageSize: DEFAULT_PAGE_SIZE,
+          skip: 0,
+          previousPageIndex: 0,
+          pageIndex: 0,
+          totalItems: 0,
+        });
       });
 
     this.contextService.isFilterEnabled$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => {
-        this.setupDynamicCards();
+        this.onPage({
+          pageSize: DEFAULT_PAGE_SIZE,
+          skip: 0,
+          previousPageIndex: 0,
+          pageIndex: 0,
+          totalItems: 0,
+        });
       });
   }
 
@@ -319,6 +331,9 @@ export class SummaryCardComponent
           filter: this.queryFilter,
           sortField: this.sortOptions.field,
           sortOrder: this.sortOptions.order,
+          ...(this.settings.at && {
+            at: this.contextService.atArgumentValue(this.settings.at),
+          }),
         })
         .then(this.updateCards.bind(this));
     }
@@ -437,6 +452,9 @@ export class SummaryCardComponent
                 sortField: this.sortOptions.field,
                 sortOrder: this.sortOptions.order,
                 styles: layoutQuery.style || null,
+                ...(this.settings.at && {
+                  at: this.contextService.atArgumentValue(this.settings.at),
+                }),
               },
               fetchPolicy: 'network-only',
               nextFetchPolicy: 'cache-first',
@@ -534,7 +552,10 @@ export class SummaryCardComponent
       card.aggregation,
       DEFAULT_PAGE_SIZE,
       0,
-      this.contextService.injectDashboardFilterValues(this.contextFilters)
+      this.contextService.injectDashboardFilterValues(this.contextFilters),
+      this.widget.settings.at
+        ? this.contextService.atArgumentValue(this.widget.settings.at)
+        : undefined
     );
 
     this.dataQuery.valueChanges
@@ -591,6 +612,9 @@ export class SummaryCardComponent
           sortField: this.sortOptions.field,
           sortOrder: this.sortOptions.order,
           styles: layoutQuery?.style || null,
+          ...(this.settings.at && {
+            at: this.contextService.atArgumentValue(this.settings.at),
+          }),
         })
         .then(this.updateCards.bind(this));
     }
@@ -648,6 +672,9 @@ export class SummaryCardComponent
           filter: this.queryFilter,
           sortField: this.sortOptions.field,
           sortOrder: this.sortOptions.order,
+          ...(this.settings.at && {
+            at: this.contextService.atArgumentValue(this.settings.at),
+          }),
         })
         .then(() => (this.loading = false));
     }

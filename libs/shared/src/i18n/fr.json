@@ -18,6 +18,25 @@
 			"none": "Aucune application",
 			"one": "Application"
 		},
+		"archive": {
+			"delete": "Supprimer",
+			"few": "@TODO",
+			"modal": {
+				"delete": {
+					"action": "Supprimer",
+					"confirmationMessage": "Voulez-vous supprimer l'archive {{name}}?",
+					"title": "Supprimer?"
+				},
+				"one": "@TODO",
+				"restore": {
+					"action": "Restaurer",
+					"confirmationMessage": "Voulez-vous restaurer {{name}}?",
+					"title": "Restaurer?"
+				}
+			},
+			"none": "@TODO",
+			"restore": "Restaurer"
+		},
 		"ariaLabel": {
 			"search": {
 				"clear": "Supprimer la recherche"
@@ -190,10 +209,10 @@
 			"objectNotFound": "{{name}} n'a pas été trouvé.",
 			"objectNotInvited": "L'invitation vers {{name}} a échoué.",
 			"objectNotReordered": "{{type}} non réorganisé. {{error}}",
-			"objectNotRestored": "{{type}} non restauré. {{error}}",
+			"objectNotRestored": "{{value}} non restauré. {{error}}",
 			"objectNotUpdated": "L'objet de type {{type}} n'a pas pu être modifié. {{error}}",
 			"objectReordered": "L'objet de type {{type}} a été réorganisé.",
-			"objectRestored": "{{type}} restauré.",
+			"objectRestored": "{{value}} restauré.",
 			"objectUpdated": "{{value}} {{type}} a été modifié.",
 			"platformAccessNotGranted": "Vous n'avez pas d'accès valide à cette plateforme.",
 			"readAll": "Tout marqué comme lu",
@@ -416,6 +435,10 @@
 			}
 		},
 		"application": {
+			"archive": {
+				"autoDeletedAt": "Date de suppression automatique",
+				"name": "Nom"
+			},
 			"customStyling": "Style personnalisé",
 			"dashboard": {
 				"editFilter": "Modifier le filtre",
@@ -658,6 +681,12 @@
 				"missingGridField": "Champs disponible de table de données manquant pour la question {{question}} à la page {{page}}. Veuillez en sélectionner au moins un dans la propriété Custom Question pour sauvegarder le formulaire.",
 				"missingRelatedName": "Nom lié manquant pour la question {{question}} à la page {{page}}. Veuillez entrer un nom valide pour la valeur de la donnée (au format snake_case) pour sauvegarder le formulaire.",
 				"missingTemplate": "Ressource liée manquante pour la question {{question}} à la page {{page}}. Veuillez sélectionner un modèle pour sauvegarder le formulaire."
+			},
+			"propertyGrid": {
+				"resource": {
+					"availableGridFields": "Champs de grille disponibles",
+					"resourceSelectText": "Vous devez d’abord sélectionner une ressource avant de définir des filtres"
+				}
 			},
 			"saveSurvey": "Sauvegarde du questionnaire"
 		},
@@ -1881,10 +1910,14 @@
 				"selectDisplayField": "Sélectionnez le champ d'affichage",
 				"selectOrigin": "Sélectionnez la source de données"
 			},
-			"dashboardFilter": "Filtre de tableaux de bord",
+			"contextFilter": "Filtre contextuel",
+			"dashboardFilter": "Filtre du tableau de bord",
 			"deactivateFiltering": "Désactiver le filtre",
+			"historicalDate": "Récupérer les données historiques",
 			"share": "Partager le tableau de bord",
 			"tooltip": {
+				"dashboardFilter": "Vous pouvez utiliser les champs du filtre du tableau de bord, ou utiliser des valeurs statiques.",
+				"historicalDate": "Vous pouvez récupérer les données à une date spécifique en utilisant un champ du filtre du tableau de board.\nVeuillez alors utiliser cette syntaxe : {{filter.<nom>}}.",
 				"useDashboardFilterEditor": "Utiliser l'éditeur de tableaux de bord",
 				"useDefaultEditor": "Utiliser l'éditeur par défaut"
 			}

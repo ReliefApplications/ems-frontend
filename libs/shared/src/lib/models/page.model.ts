@@ -88,6 +88,7 @@ export interface Page {
   ) & {
     content: string;
   })[];
+  autoDeletedAt?: Date;
 }
 
 /** Model for page graphql query response */
@@ -113,6 +114,11 @@ export interface EditPageMutationResponse {
 /** Model for delete page graphql mutation response */
 export interface DeletePageMutationResponse {
   deletePage: Page;
+}
+
+/** Model for restore page graphql mutation response */
+export interface RestorePageMutationResponse {
+  restorePage: Page;
 }
 
 /** Model for edit page context mutation response object */

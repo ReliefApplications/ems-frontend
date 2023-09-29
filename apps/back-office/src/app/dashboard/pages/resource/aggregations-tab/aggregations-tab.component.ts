@@ -51,11 +51,6 @@ export class AggregationsTabComponent
     endCursor: '',
   };
 
-  /** @returns True if the aggregations tab is empty */
-  get empty(): boolean {
-    return !this.loading && this.aggregations.length === 0;
-  }
-
   /**
    * Aggregations tab of resource page
    *
@@ -139,6 +134,26 @@ export class AggregationsTabComponent
   }
 
   /**
+   * Handle action from the data list presentation component
+   *
+   * @param action action containing action type and aggregation item if exists
+   * @param action.type type of action, add, edit, delete
+   * @param action.item aggregation item for the given action type
+   */
+  handleAction(action: {
+    type: 'add' | 'edit' | 'delete';
+    item?: Aggregation | null;
+  }) {
+    if (action.type === 'add') {
+      this.onAddAggregation();
+    } else if (action.type === 'edit') {
+      this.onEditAggregation(action.item as Aggregation);
+    } else if (action.type === 'delete') {
+      this.onDeleteAggregation(action.item as Aggregation);
+    }
+  }
+
+  /**
    * Adds a new aggregation for the resource.
    */
   async onAddAggregation(): Promise<void> {
@@ -158,6 +173,7 @@ export class AggregationsTabComponent
           .subscribe(({ data }: any) => {
             if (data.addAggregation) {
               this.aggregations = [...this.aggregations, data?.addAggregation];
+              this.pageInfo.length += 1;
             }
           });
       }
@@ -226,6 +242,7 @@ export class AggregationsTabComponent
               this.aggregations = this.aggregations.filter(
                 (x: any) => x.id !== aggregation.id
               );
+              this.pageInfo.length -= 1;
             }
           });
       }

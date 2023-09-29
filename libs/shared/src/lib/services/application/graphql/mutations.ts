@@ -56,6 +56,22 @@ export const DELETE_PAGE = gql`
   }
 `;
 
+/** Graphql request for restoring a page by its id */
+export const RESTORE_PAGE = gql`
+  mutation restorePage($id: ID!) {
+    restorePage(id: $id) {
+      id
+      name
+      type
+      content
+      createdAt
+      canSee
+      canUpdate
+      canDelete
+    }
+  }
+`;
+
 // === EDIT PAGE ===
 /** Edit page gql mutation definition */
 export const EDIT_PAGE = gql`

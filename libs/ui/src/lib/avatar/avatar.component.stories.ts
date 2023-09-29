@@ -6,7 +6,7 @@ import { AvatarModule } from './avatar.module';
 import { avatarShapes } from './types/avatar-shape';
 
 export default {
-  title: 'Avatar',
+  title: 'Components/Avatar',
   component: AvatarComponent,
   argTypes: {
     size: {
