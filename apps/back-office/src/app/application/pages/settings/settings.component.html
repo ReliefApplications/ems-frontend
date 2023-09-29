@@ -20,10 +20,7 @@
           context: { $implicit: settingsForm.get('status')!.value }
         }"
       >
-        <ui-select-option
-          *ngFor="let status of statusChoices"
-          [value]="status"
-        >
+        <ui-select-option *ngFor="let status of statusChoices" [value]="status">
           <ng-container
             *ngTemplateOutlet="statusTemplate; context: { $implicit: status }"
           ></ng-container>
