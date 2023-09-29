@@ -16,6 +16,7 @@ type MockedTable = {
 
 export default {
   title: 'Components/Table',
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [TableModule, StorybookTranslateModule, ToggleModule],

@@ -31,8 +31,11 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   providers: [CONTROL_VALUE_ACCESSOR],
 })
 export class TextareaComponent implements ControlValueAccessor {
+  /** The value of the textarea. */
   @Input() value = '';
+  /** The placeholder text for the textarea. */
   @Input() placeholder = '';
+  /** The name of the textarea. */
   @Input() name!: string;
   /**
    * Set minimal rows for the textarea
@@ -58,13 +61,16 @@ export class TextareaComponent implements ControlValueAccessor {
    * @param kendoFocus FocusableDirective
    */
   constructor(@Self() @Optional() public kendoFocus: FocusableDirective) {}
-
+  /** The minimum number of rows in the textarea. */
   minRowsNumber = 2;
+  /** Event emitter for value changes. */
   valueChange: EventEmitter<boolean> = new EventEmitter();
   disabled = false;
+  /** Function to handle touch events. */
   onTouched!: () => void;
+  /** Function to handle value changes. */
   onChanged!: (value: string) => void;
-
+  /** Reference to the autosize directive. */
   @ViewChild('autosize') autosize!: CdkTextareaAutosize;
 
   /**

@@ -6,6 +6,7 @@ import { MAT_ICON_LIST } from './icon.list';
 
 export default {
   title: 'Components/Icon',
+  tags: ['autodocs'],
   component: IconComponent,
   argTypes: {
     variant: {

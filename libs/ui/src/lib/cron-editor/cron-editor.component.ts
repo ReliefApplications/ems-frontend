@@ -84,6 +84,7 @@ function* range(start: number, end: number) {
 
 /**
  * UI CronEditor Component
+ * CronEditor is a UI component that allows users to switch between two mutually exclusive options (checked or unchecked, on or off) through a single click or tap.
  */
 @Component({
   selector: 'ui-cron-editor',
@@ -93,22 +94,30 @@ function* range(start: number, end: number) {
 export class CronEditorComponent
   implements OnInit, OnDestroy, ControlValueAccessor
 {
+  /** Subject to emit when the component is destroyed. */
   destroy$: Subject<boolean> = new Subject<boolean>();
+  /** Arrays representing seconds */
   public seconds = [...range(0, 59)];
+  /** Arrays representing minutes */
   public minutes = [...range(0, 59)];
+  /** Arrays representing hours */
   public hours = [...range(0, 23)];
-
+  /** Boolean indicating whether the component is disabled. */
   @Input() public disabled = false;
+  /** Options for the cron editor. */
   @Input() public options: CronOptions = DefaultCronOptions;
-
+  /** Event emitter for cron validation. */
   @Output() cronValidEmitter: EventEmitter<boolean> =
     new EventEmitter<boolean>();
-
+  /** The current value of the cron expression. */
   public value: string | undefined | null;
+  /** The currently active tab in the cron editor. */
   public activeTab!: string;
+  /** Options for select inputs in the cron editor. */
   public selectOptions = this.getSelectOptions();
-
+  /** Boolean indicating whether the component has been touched. */
   touched = false;
+  /** Form group for all form controls in the cron editor. */
   allForm = this.fb.group({
     cronType: [<CronType>'unknown', Validators.required],
     seconds: [0],

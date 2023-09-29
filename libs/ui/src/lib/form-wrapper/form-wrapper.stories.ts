@@ -10,6 +10,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 export default {
   title: 'Components/Form Wrapper',
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [
@@ -24,6 +25,13 @@ export default {
       ],
     }),
   ],
+  argTypes: {
+    outline: {
+      description: 'Outline design',
+      defaultValue: 'false',
+      type: 'boolean',
+    },
+  },
 } as Meta<any>;
 
 /**

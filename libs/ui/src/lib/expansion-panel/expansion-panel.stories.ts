@@ -11,6 +11,7 @@ type PanelOption = {
 
 export default {
   title: 'Components/Expansion Panel',
+  tags: ['autodocs'],
   component: ExpansionPanelComponent,
   argTypes: {
     displayIcon: {

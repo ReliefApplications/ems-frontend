@@ -13,6 +13,7 @@ type RadioOption = {
 
 export default {
   title: 'Components/Radio',
+  tags: ['autodocs'],
   component: RadioComponent,
   argTypes: {
     variant: {
@@ -77,16 +78,18 @@ const getRadioChangeSelection = (radioSelectionChange: any) => {
  * @returns RadioComponent
  */
 const Template: StoryFn<RadioComponent> = (args: RadioComponent) => {
-  args.name = 'notification-method';
+  args.name = 'radio-primary';
   return {
     component: RadioComponent,
-    template: `<div class="space-y-4" (groupValueChange)="getRadioChangeSelection($event)" [uiRadioGroupDirective]="'${args.name}'">
-    <ui-radio *ngFor="let option of radioOptions; let i = index" [checked]="i === 0" [disabled]="${args.disabled}" [variant]="'${args.variant}'" [value]="option.value">
+    template: `
+    <div class="space-y-4" (groupValueChange)="getRadioChangeSelection($event)" [uiRadioGroupDirective]="'${args.name}'">
+    <ui-radio *ngFor="let option of radioOptions; " [disabled]="${args.disabled}" [variant]="'${args.variant}'" [value]="option.value">
       <ng-container ngProjectAs="label">{{option.label}}</ng-container>
     </ui-radio>
     </div>
     <br>
-    <p>value: {{selectedOption}}</p>`,
+    <p>value: {{selectedOption}}</p>
+    `,
     props: {
       ...args,
       radioOptions,
@@ -103,7 +106,7 @@ const Template: StoryFn<RadioComponent> = (args: RadioComponent) => {
  * @returns RadioComponent
  */
 const FormControlTemplate: StoryFn<RadioComponent> = (args: RadioComponent) => {
-  args.name = 'notification-method';
+  args.name = 'radio-primary';
   return {
     component: RadioComponent,
     template: `

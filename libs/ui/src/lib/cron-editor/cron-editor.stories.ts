@@ -9,6 +9,7 @@ import { CheckboxModule } from '../checkbox/checkbox.module';
 
 export default {
   title: 'Components/CronEditorComponent',
+  tags: ['autodocs'],
   component: CronEditorComponent,
   decorators: [
     moduleMetadata({

@@ -6,6 +6,7 @@ import { BreadcrumbsModule } from './breadcrumbs.module';
 
 export default {
   title: 'Components/Breadcrumbs',
+  tags: ['autodocs'],
   component: BreadcrumbsComponent,
   argTypes: {
     separator: {

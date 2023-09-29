@@ -26,7 +26,6 @@ import { StorybookTranslateModule } from '../../storybook-translate.module';
 })
 class LaunchSnackbarComponent implements OnDestroy {
   @Input() default = true;
-
   destroy$ = new Subject<void>();
   /**
    * Constructor for the launch Snackbar component
@@ -36,7 +35,7 @@ class LaunchSnackbarComponent implements OnDestroy {
   constructor(private snackBar: SnackbarService) {}
 
   /**
-   * open Snackbar.
+   * Open Snackbar.
    */
   openSnackBar(): void {
     if (this.default) {
@@ -116,6 +115,7 @@ class CustomSnackbarComponent {
 
 export default {
   title: 'Components/Snackbar',
+  tags: ['autodocs'],
   component: LaunchSnackbarComponent,
   decorators: [
     moduleMetadata({
@@ -126,7 +126,16 @@ export default {
   ],
   argTypes: {
     default: {
+      description: 'Open default snackbar',
       type: 'boolean',
+    },
+    destroy$: {
+      description: 'Subject to emit when the component is destroyed.',
+      type: 'string',
+    },
+    ngOnDestroy: {
+      description:
+        'Lifecycle hook that is called when the component is destroyed.',
     },
   },
 } as Meta;

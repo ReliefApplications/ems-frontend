@@ -6,6 +6,7 @@ import { FocusableDirective } from '@progress/kendo-angular-grid';
 
 export default {
   title: 'Components/Textarea',
+  tags: ['autodocs'],
   component: TextareaComponent,
   argTypes: {
     value: {
@@ -22,6 +23,9 @@ export default {
     },
     maxRows: {
       type: 'number',
+    },
+    disabled: {
+      description: 'Boolean indicating whether the textarea is disabled',
     },
   },
   decorators: [
