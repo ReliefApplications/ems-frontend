@@ -608,7 +608,7 @@ export class SummaryCardComponent
         .refetch({
           first: this.pageInfo.pageSize,
           skip: event.skip,
-          filters: this.queryFilter,
+          filter: this.queryFilter,
           sortField: this.sortOptions.field,
           sortOrder: this.sortOptions.order,
           styles: layoutQuery?.style || null,
