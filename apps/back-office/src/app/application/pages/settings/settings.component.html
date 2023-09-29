@@ -1,7 +1,15 @@
 <form [formGroup]="settingsForm" *ngIf="settingsForm">
   <!-- Header -->
-  <div class="flex gap-2 flex-wrap justify-between mb-8">
-    <h1 class="!m-0">{{ 'common.general' | translate }}</h1>
+  <div class="flex gap-2 flex-wrap justify-between items-start">
+    <div class="flex items-center gap-1">
+      <h1 class="!m-0">{{ 'common.general' | translate }}</h1>
+      <!-- Access -->
+      <shared-access
+        [access]="application?.permissions"
+        [objectTypeName]="'common.application.one' | translate"
+        (save)="saveAccess($event)"
+      ></shared-access>
+    </div>
     <!-- Selection of status -->
     <div uiFormFieldDirective [outline]="false" class="p-0">
       <label>{{ 'common.status' | translate }}</label>
