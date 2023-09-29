@@ -264,7 +264,7 @@ export class SummaryCardComponent
       this.location.replaceState(this.location.path(), undefined, {
         navigationId: state.navigationId,
         skip: state.skip,
-        take: state.take
+        take: state.take,
       });
     }
   }
