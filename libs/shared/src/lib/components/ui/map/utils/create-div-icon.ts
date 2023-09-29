@@ -149,6 +149,9 @@ export const createCustomDivIcon = (
  * @param color color to apply
  * @param opacity opacity to apply
  * @param childCount Cluster children count
+ * @param lightMode boolean to set text color to white or black
+ * @param autoSizeCluster boolean to auto size cluster
+ * @param clusterSize cluster size if autoSizeCluster is false
  * @returns leaflet div icon
  */
 export const createClusterDivIcon = (
