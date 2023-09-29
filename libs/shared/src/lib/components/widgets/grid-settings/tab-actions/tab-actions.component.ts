@@ -109,28 +109,22 @@ export class TabActionsComponent implements OnInit {
       application?.pages?.map((page: any) => ({
         id: page.id,
         name: page.name,
-        url: this.getPageUrl(application, page),
+        urlParams: this.getPageUrlParams(application, page),
         placeholder: `{{page(${page.id})}}`,
       })) || []
     );
   }
 
   /**
-   * Get page url
+   * Get page url params
    *
    * @param application application
    * @param page page to get url from
    * @returns url of the page
    */
-  private getPageUrl(application: Application, page: Page): string {
-    if (this.environment.module === 'backoffice') {
-      return page.type === ContentType.form
-        ? `${this.environment.backOfficeUri}/applications/${application.id}/${page.type}/${page.id}`
-        : `${this.environment.backOfficeUri}/applications/${application.id}/${page.type}/${page.content}`;
-    } else {
-      return page.type === ContentType.form
-        ? `${this.environment.frontOfficeUri}/${application.id}/${page.type}/${page.id}`
-        : `${this.environment.frontOfficeUri}/${application.id}/${page.type}/${page.content}`;
-    }
+  private getPageUrlParams(application: Application, page: Page): string {
+    return page.type === ContentType.form
+      ? `${application.id}/${page.type}/${page.id}`
+      : `${application.id}/${page.type}/${page.content}`;
   }
 }

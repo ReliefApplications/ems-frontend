@@ -293,6 +293,9 @@ export class CoreGridComponent
 
   public editable = false;
 
+  /** Current environment */
+  private environment: any;
+
   /**
    * Main Grid data component to display Records.
    * Used by grid widget, and in several other places, like record selection.
@@ -333,6 +336,7 @@ export class CoreGridComponent
     private location: Location
   ) {
     super();
+    this.environment = environment;
     this.isAdmin =
       this.authService.userIsAdmin && environment.module === 'backoffice';
 
@@ -903,17 +907,11 @@ export class CoreGridComponent
       }
       case 'recordDashboard': {
         if (event.item) {
-          const pageIdUrl = event.pageIdUrl;
-          let fullUrl = `${pageIdUrl}`;
+          let fullUrl = this.getPageUrl(event.pageIdUrl as string);
           if (event.useRecordId) {
             const recordId = event.item.id;
-            fullUrl = `${pageIdUrl}?id=${recordId}`;
+            fullUrl = `${fullUrl}?id=${recordId}`;
           }
-          fullUrl =
-            'applications' +
-            fullUrl.substring(
-              fullUrl.indexOf('applications') + 'applications'.length
-            );
           this.location.replaceState(this.location.path(), undefined, {
             skip: this.skip,
             take: this.pageSize,
@@ -1499,5 +1497,17 @@ export class CoreGridComponent
     );
     this.items = [...this.gridData.data];
     this.removeRowIds.emit(selected);
+  }
+
+  /**
+   * Get page url full link taking into account the environment.
+   *
+   * @param pageUrlParams page url params
+   * @returns url of the page
+   */
+  private getPageUrl(pageUrlParams: string): string {
+    return this.environment.module === 'backoffice'
+      ? `applications/${pageUrlParams}`
+      : `${pageUrlParams}`;
   }
 }

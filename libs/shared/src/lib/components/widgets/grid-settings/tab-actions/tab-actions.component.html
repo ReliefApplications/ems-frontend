@@ -27,7 +27,7 @@
             formControlName="pageIdUrl"
             [placeholder]="'components.widget.settings.grid.actions.pageId.placeholder' | translate"
           >
-            <ui-select-option *ngFor="let page of pages" [value]="page.url">
+            <ui-select-option *ngFor="let page of pages" [value]="page.urlParams">
               {{ page.name }}
             </ui-select-option>
           </ui-select-menu>
