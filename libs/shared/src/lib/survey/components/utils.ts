@@ -4,6 +4,9 @@ import { NgZone } from '@angular/core';
 import { surveyLocalization } from 'survey-angular';
 import localForage from 'localforage';
 
+/** Default value for the "Add record text" property */
+export const addRecordText = 'Add new record';
+
 /**
  * Build the search button for resource and resources components
  *
@@ -87,8 +90,7 @@ export const buildAddButton = (
   document: Document
 ): any => {
   const addButton = document.createElement('button');
-  //If question property add record text is set, use it, otherwise use default
-  if (question.addRecordText !== question.addRecordText.default) {
+  if (question.addRecordText !== addRecordText) {
     addButton.innerText = question.addRecordText;
   } else {
     addButton.innerText = surveyLocalization.getString(

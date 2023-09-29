@@ -19,6 +19,7 @@ import {
   buildSearchButton,
   buildAddButton,
   processNewCreatedRecords,
+  addRecordText,
 } from './utils';
 import { QuestionResource } from '../types';
 import { SurveyModel, Question } from 'survey-angular';
@@ -347,7 +348,7 @@ export const init = (
         name: 'addRecordText',
         category: 'Custom Questions',
         dependsOn: ['resources', 'addRecord'],
-        default: 'Add new record',
+        default: addRecordText,
         visibleIndex: 3,
         visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.addRecord,
       });
