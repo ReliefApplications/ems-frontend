@@ -22,6 +22,7 @@
     <div class="flex items-center" *ngIf="!formActive">
       <div uiFormFieldDirective [outline]="false" class="p-0">
         <label>{{ 'common.status' | translate }}</label>
+        {{ statusControl.value | json }}
         <ui-select-menu
           [formControl]="statusControl"
           [customTemplate]="{

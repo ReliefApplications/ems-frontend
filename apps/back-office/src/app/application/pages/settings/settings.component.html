@@ -15,16 +15,18 @@
       <label>{{ 'common.status' | translate }}</label>
       <ui-select-menu
         formControlName="status"
-        [placeholder]="'common.selectStatus' | translate"
+        [customTemplate]="{
+          template: statusTemplate,
+          context: { $implicit: settingsForm.get('status')!.value }
+        }"
       >
-        <ui-select-option value="active">
-          {{ 'common.status_active' | translate }}
-        </ui-select-option>
-        <ui-select-option value="pending">
-          {{ 'common.status_pending' | translate }}
-        </ui-select-option>
-        <ui-select-option value="archived">
-          {{ 'common.status_archived' | translate }}
+        <ui-select-option
+          *ngFor="let status of statusChoices"
+          [value]="status"
+        >
+          <ng-container
+            *ngTemplateOutlet="statusTemplate; context: { $implicit: status }"
+          ></ng-container>
         </ui-select-option>
       </ui-select-menu>
     </div>
@@ -112,3 +114,7 @@
     </ui-button>
   </div>
 </div>
+
+<ng-template #statusTemplate let-status>
+  <shared-status-options [status]="status"></shared-status-options>
+</ng-template>
