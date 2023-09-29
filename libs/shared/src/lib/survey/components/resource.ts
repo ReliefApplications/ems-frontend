@@ -340,6 +340,14 @@ export const init = (
         visibleIndex: 2,
       });
       serializer.addProperty('resource', {
+        name: 'addRecordText',
+        category: 'Custom Questions',
+        dependsOn: ['resource', 'addRecord'],
+        default: 'Add new record',
+        visibleIndex: 3,
+        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.addRecord,
+      });
+      serializer.addProperty('resource', {
         name: 'canSearch:boolean',
         category: 'Custom Questions',
         dependsOn: ['resource'],

@@ -344,6 +344,14 @@ export const init = (
         visibleIndex: 2,
       });
       Survey.Serializer.addProperty('resources', {
+        name: 'addRecordText',
+        category: 'Custom Questions',
+        dependsOn: ['resources', 'addRecord'],
+        default: 'Add new record',
+        visibleIndex: 3,
+        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.addRecord,
+      });
+      Survey.Serializer.addProperty('resources', {
         name: 'canDelete:boolean',
         displayName: 'Delete records',
         category: 'Custom Questions',

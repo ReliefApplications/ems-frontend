@@ -87,10 +87,15 @@ export const buildAddButton = (
   document: Document
 ): any => {
   const addButton = document.createElement('button');
-  addButton.innerText = surveyLocalization.getString(
-    'oort:addNewRecord',
-    question.survey.locale
-  );
+  //If question property add record text is set, use it, otherwise use default
+  if (question.addRecordText !== question.addRecordText.default) {
+    addButton.innerText = question.addRecordText;
+  } else {
+    addButton.innerText = surveyLocalization.getString(
+      'oort:addNewRecord',
+      question.survey.locale
+    );
+  }
   if (question.addRecord && question.addTemplate && !question.isReadOnly) {
     addButton.onclick = async () => {
       ngZone.run(async () => {
