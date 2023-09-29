@@ -1,0 +1,24 @@
+<div uiFormFieldDirective [outline]="false">
+  <label>{{ 'components.applications.dropdown.select' | translate }}</label>
+  <ui-select-menu
+    #applicationSelect
+    [(ngModel)]="model.value"
+    name="applications"
+    (opened)="onOpenSelect()"
+    (ngModelChange)="detectChangesUI()"
+    [multiselect]="true"
+  >
+    <ui-select-option
+      *ngFor="let application of selectedApplications"
+      [value]="application.id"
+    >
+      {{ application.name }}
+    </ui-select-option>
+    <ui-select-option
+      *ngFor="let application of applications$ | async"
+      [value]="application.id"
+    >
+      {{ application.name }}
+    </ui-select-option>
+  </ui-select-menu>
+</div>

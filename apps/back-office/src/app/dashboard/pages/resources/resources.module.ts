@@ -6,6 +6,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   SkeletonTableModule,
   DateModule as SharedDateModule,
+  ListFilterComponent,
 } from '@oort-front/shared';
 import { FilterComponent } from './filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
@@ -43,6 +44,7 @@ import {
     TableModule,
     DateModule,
     TooltipModule,
+    ListFilterComponent,
   ],
   exports: [ResourcesComponent],
 })

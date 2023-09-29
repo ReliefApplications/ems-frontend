@@ -107,19 +107,11 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           .pipe(
             switchMap(({ data }) => {
               this.step = data.step;
-              return this.apollo.query<FormQueryResponse>({
-                query: GET_SHORT_FORM_BY_ID,
-                variables: {
-                  id: this.step.content,
-                },
-              });
+              return this.getFormQuery(this.step.content ?? '');
             })
           )
           .subscribe(({ data, loading }) => {
-            this.form = data.form;
-            this.canEditName = this.page?.canUpdate || false;
-            this.applicationId =
-              this.step?.workflow?.page?.application?.id || '';
+            this.handleFormQueryResponse(data, 'step');
             this.loading = loading;
           });
       } else {
@@ -133,22 +125,48 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           .pipe(
             switchMap(({ data }) => {
               this.page = data.page;
-              return this.apollo.query<FormQueryResponse>({
-                query: GET_SHORT_FORM_BY_ID,
-                variables: {
-                  id: this.page.content,
-                },
-              });
+              return this.getFormQuery(this.page.content ?? '');
             })
           )
           .subscribe(({ data, loading }) => {
-            this.form = data.form;
-            this.canEditName = this.page?.canUpdate || false;
-            this.applicationId = this.page?.application?.id || '';
+            this.handleFormQueryResponse(data, 'page');
             this.loading = loading;
           });
       }
     });
+  }
+
+  /**
+   * Returns query for the given id
+   *
+   * @param {string} id form id to query
+   * @returns form query for the given id
+   */
+  private getFormQuery(id: string) {
+    return this.apollo.query<FormQueryResponse>({
+      query: GET_SHORT_FORM_BY_ID,
+      variables: {
+        id,
+      },
+    });
+  }
+
+  /**
+   * Handle response for the form query
+   *
+   * @param {FormQueryResponse} data form query response data
+   * @param from from where the form query is done
+   */
+  private handleFormQueryResponse(
+    data: FormQueryResponse,
+    from: 'step' | 'page'
+  ) {
+    this.form = data.form;
+    this.canEditName = this.page?.canUpdate || false;
+    this.applicationId =
+      (from === 'step'
+        ? this.step?.workflow?.page?.application?.id
+        : this.page?.application?.id) ?? '';
   }
 
   /**

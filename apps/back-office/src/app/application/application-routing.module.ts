@@ -41,17 +41,18 @@ const routes: Routes = [
               {
                 path: '',
                 loadChildren: () =>
-                  import('./pages/roles/roles.module').then(
+                  import('../shared/pages/roles/roles.module').then(
                     (m) => m.RolesModule
                   ),
+                data: { inApplication: true },
                 // canActivate: [PermissionGuard]
               },
               {
                 path: ':id',
                 loadChildren: () =>
-                  import('./pages/role-summary/role-summary.module').then(
-                    (m) => m.RoleSummaryModule
-                  ),
+                  import(
+                    '../shared/pages/role-summary/role-summary.module'
+                  ).then((m) => m.RoleSummaryModule),
                 data: {
                   breadcrumb: {
                     alias: '@role',
@@ -80,9 +81,9 @@ const routes: Routes = [
               {
                 path: ':id',
                 loadChildren: () =>
-                  import('./pages/user-summary/user-summary.module').then(
-                    (m) => m.UserSummaryModule
-                  ),
+                  import(
+                    '../shared/pages/user-summary/user-summary.module'
+                  ).then((m) => m.UserSummaryModule),
                 data: {
                   breadcrumb: {
                     alias: '@user',

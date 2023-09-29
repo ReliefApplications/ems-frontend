@@ -10,7 +10,7 @@ import { dividerPositions } from './types/divider-position';
 import { dividerOrientations } from './types/divider-orientation';
 
 export default {
-  title: 'Divider',
+  title: 'Components/Divider',
   component: DividerComponent,
   argTypes: {
     position: {

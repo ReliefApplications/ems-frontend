@@ -4,7 +4,7 @@ import { tooltipExamplesPositions } from './types/tooltip-example-positions';
 import { TooltipModule } from './tooltip.module';
 
 export default {
-  title: 'Tooltip',
+  title: 'Components/Tooltip',
   component: TooltipComponent,
   argTypes: {
     position: {

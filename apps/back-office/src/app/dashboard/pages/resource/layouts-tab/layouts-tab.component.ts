@@ -135,6 +135,26 @@ export class LayoutsTabComponent
   }
 
   /**
+   * Handle action from the data list presentation component
+   *
+   * @param action action containing action type and layout item if exists
+   * @param action.type type of action, add, edit, delete
+   * @param action.item layout item for the given action type
+   */
+  handleAction(action: {
+    type: 'add' | 'edit' | 'delete';
+    item?: Layout | null;
+  }) {
+    if (action.type === 'add') {
+      this.onAddLayout();
+    } else if (action.type === 'edit') {
+      this.onEditLayout(action.item as Layout);
+    } else if (action.type === 'delete') {
+      this.onDeleteLayout(action.item as Layout);
+    }
+  }
+
+  /**
    * Adds a new layout for the resource.
    */
   async onAddLayout(): Promise<void> {
@@ -152,6 +172,7 @@ export class LayoutsTabComponent
           .subscribe(({ data }: any) => {
             if (data.addLayout) {
               this.layouts = [...this.layouts, data?.addLayout];
+              this.pageInfo.length += 1;
             }
           });
       }
@@ -218,6 +239,7 @@ export class LayoutsTabComponent
               this.layouts = this.layouts.filter(
                 (x: any) => x.id !== layout.id
               );
+              this.pageInfo.length -= 1;
             }
           });
       }

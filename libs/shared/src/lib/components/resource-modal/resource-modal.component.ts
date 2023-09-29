@@ -14,6 +14,7 @@ import {
   SpinnerModule,
   TabsModule,
 } from '@oort-front/ui';
+import { SurveyModule } from 'survey-angular-ui';
 
 /**
  * Factory for creating scroll strategy
@@ -44,6 +45,7 @@ export function scrollFactory(overlay: Overlay): () => BlockScrollStrategy {
     DialogModule,
     SpinnerModule,
     TabsModule,
+    SurveyModule,
   ],
 })
 export class ResourceModalComponent extends FormModalComponent {

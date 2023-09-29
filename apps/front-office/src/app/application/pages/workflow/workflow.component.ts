@@ -66,7 +66,8 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
             id: this.id,
           },
         })
-        .valueChanges.subscribe({
+        .valueChanges.pipe(takeUntil(this.destroy$))
+        .subscribe({
           next: ({ data, loading }) => {
             if (data.workflow) {
               this.workflow = data.workflow;

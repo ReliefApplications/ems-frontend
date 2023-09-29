@@ -8,7 +8,7 @@ import { ConfirmService } from '../../../../services/confirm/confirm.service';
 import get from 'lodash/get';
 import { RestService } from '../../../../services/rest/rest.service';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import {
   AddGroupMutationResponse,
@@ -17,6 +17,7 @@ import {
   GroupsQueryResponse,
 } from '../../../../models/user.model';
 import { SnackbarSpinnerComponent } from '../../../snackbar-spinner/snackbar-spinner.component';
+import { FormBuilder } from '@angular/forms';
 
 /**
  * This component is used to display the groups tab in the platform
@@ -35,6 +36,7 @@ export class GroupListComponent extends UnsubscribeComponent implements OnInit {
   public manualCreation = true;
   public displayedColumns = ['title', 'usersCount', 'actions'];
 
+  form = this.fb.group({});
   public searchText = '';
 
   /**
@@ -46,6 +48,7 @@ export class GroupListComponent extends UnsubscribeComponent implements OnInit {
    * @param confirmService This is the service that will be used to display the confirm window.
    * @param translate This is the service that is used to
    * @param restService This is the service that will be used to make http requests.
+   * @param fb This is the Angular form builder.
    */
   constructor(
     private apollo: Apollo,
@@ -53,12 +56,20 @@ export class GroupListComponent extends UnsubscribeComponent implements OnInit {
     private snackBar: SnackbarService,
     private confirmService: ConfirmService,
     private translate: TranslateService,
-    private restService: RestService
+    private restService: RestService,
+    private fb: FormBuilder
   ) {
     super();
   }
 
   ngOnInit(): void {
+    this.form.valueChanges
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe((value: any) => {
+        this.searchText = (value?.search ?? '').trim().toLowerCase();
+        this.filterPredicate();
+      });
+
     this.getGroups();
     this.getPermissionsConfiguration();
 
@@ -78,18 +89,6 @@ export class GroupListComponent extends UnsubscribeComponent implements OnInit {
             .toLowerCase()
             .includes(this.searchText.trim().toLowerCase()))
     );
-  }
-
-  /**
-   * Applies filters to the list of roles on event
-   *
-   * @param event The event
-   */
-  applyFilter(event: any): void {
-    this.searchText = event
-      ? event.target.value.trim().toLowerCase()
-      : this.searchText;
-    this.filterPredicate();
   }
 
   /**
