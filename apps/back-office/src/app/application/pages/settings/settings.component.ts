@@ -8,6 +8,7 @@ import {
   UnsubscribeComponent,
   LayoutService,
   DeleteApplicationMutationResponse,
+  status,
 } from '@oort-front/shared';
 import { Dialog } from '@angular/cdk/dialog';
 import { DELETE_APPLICATION } from './graphql/mutations';
@@ -28,6 +29,7 @@ import { SnackbarService } from '@oort-front/ui';
 export class SettingsComponent extends UnsubscribeComponent implements OnInit {
   public applications = new Array<Application>();
   public settingsForm!: ReturnType<typeof this.createSettingsForm>;
+  public statusChoices = Object.values(status);
   public application?: Application;
   public user: any;
   public locked: boolean | undefined = undefined;
