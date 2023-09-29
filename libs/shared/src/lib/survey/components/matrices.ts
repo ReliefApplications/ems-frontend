@@ -24,7 +24,7 @@ export const init = (Survey: any, domService: DomService): void => {
     type: 'copyToOthers',
   });
 
-  serializer.addProperty('matrixdynamic', {
+  serializer.addProperty('matrixdropdown', {
     name: 'copyToOthers',
     category: 'rows',
     type: 'copyToOthers',
