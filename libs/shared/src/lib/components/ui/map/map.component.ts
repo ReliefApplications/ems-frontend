@@ -152,7 +152,9 @@ export class MapComponent
   private basemapTree: L.Control.Layers.TreeObject[][] = [];
   private overlaysTree: L.Control.Layers.TreeObject[][] = [];
 
-  private applyFiltersActionIsFinished = new BehaviorSubject<boolean>(true);
+  /** Refreshing layers. When true, should prevent layers to be duplicated  */
+  private refreshingLayers = new BehaviorSubject<boolean>(true);
+
   /**
    * Map widget component
    *
@@ -259,7 +261,7 @@ export class MapComponent
      */
     const loadNextFilters = (): Promise<void> => {
       const checkAgain = (resolve: () => void) => {
-        if (this.applyFiltersActionIsFinished.getValue()) {
+        if (this.refreshingLayers.getValue()) {
           resolve();
         } else {
           setTimeout(() => checkAgain(resolve), 100);
@@ -968,7 +970,7 @@ export class MapComponent
     if (isEqual(filters, this.appliedDashboardFilters)) {
       return;
     }
-    this.applyFiltersActionIsFinished.next(false);
+    this.refreshingLayers.next(false);
     this.appliedDashboardFilters = filters;
     const { layers: layersToGet, controls } = this.extractSettings();
 
@@ -1020,7 +1022,7 @@ export class MapComponent
       );
     }
 
-    this.applyFiltersActionIsFinished.next(true);
+    this.refreshingLayers.next(true);
   }
 
   /**
