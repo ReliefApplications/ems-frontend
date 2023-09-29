@@ -109,26 +109,28 @@ export class AddAggregationModalComponent
       this.queryRef = this.apollo.watchQuery<ResourceQueryResponse>({
         query: GET_RESOURCE_AGGREGATIONS,
         variables: {
-          resource: this.resource?.id,
+          resource: this.resource.id,
         },
       });
     else if (this.referenceData)
       this.queryRef = this.apollo.watchQuery<ReferenceDataQueryResponse>({
         query: GET_REFERENCE_DATA_AGGREGATIONS,
         variables: {
-          referenceData: this.referenceData?.id,
+          referenceData: this.referenceData.id,
         },
       });
     // emits selected aggregation
-    this.selectedAggregationControl.valueChanges.subscribe((value) => {
-      if (value) {
-        this.dialogRef.close(
-          this.aggregationSelect?.elements
-            .getValue()
-            .find((x) => x.id === value)
-        );
-      }
-    });
+    this.selectedAggregationControl.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.dialogRef.close(
+            this.aggregationSelect?.elements
+              .getValue()
+              .find((x) => x.id === value)
+          );
+        }
+      });
   }
 
   /**

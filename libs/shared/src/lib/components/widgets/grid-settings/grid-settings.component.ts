@@ -373,9 +373,11 @@ export class GridSettingsComponent
             this.referenceData = data.referenceData;
             this.relatedForms = [];
             this.templates = [];
-            this.fields = this.queryBuilder.getFields(
-              (this.referenceData?.name as string)?.replace(/\s/g, '') + 'Ref'
+            const queryName = this.aggregationService.setCurrentSourceQueryName(
+              this.referenceData,
+              'referenceData'
             );
+            this.fields = this.queryBuilder.getFields(queryName);
           } else {
             this.relatedForms = [];
             this.templates = [];

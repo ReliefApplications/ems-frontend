@@ -9,7 +9,7 @@ import {
   ViewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { Apollo } from 'apollo-angular';
 import {
   takeUntil,
   BehaviorSubject,
@@ -20,12 +20,10 @@ import {
 import {
   Resource,
   ResourceQueryResponse,
-  ResourcesQueryResponse,
 } from '../../../../../models/resource.model';
 import {
   ReferenceData,
   ReferenceDataQueryResponse,
-  ReferenceDatasQueryResponse,
 } from '../../../../../models/reference-data.model';
 import { Aggregation } from '../../../../../models/aggregation.model';
 import { Layout } from '../../../../../models/layout.model';
@@ -34,22 +32,23 @@ import {
   GET_RESOURCES,
   GET_REFERENCE_DATAS,
   GET_REFERENCE_DATA,
+  GET_RESOURCE,
 } from '../../graphql/queries';
 import { AddLayoutModalComponent } from '../../../../grid-layout/add-layout-modal/add-layout-modal.component';
 import { get, isEqual } from 'lodash';
 import { AddAggregationModalComponent } from '../../../../aggregation/add-aggregation-modal/add-aggregation-modal.component';
 import { EditLayoutModalComponent } from '../../../../grid-layout/edit-layout-modal/edit-layout-modal.component';
 import { GridLayoutService } from '../../../../../services/grid-layout/grid-layout.service';
-import { AggregationService } from '../../../../../services/aggregation/aggregation.service';
+import {
+  AggregationService,
+  AggregationSource,
+} from '../../../../../services/aggregation/aggregation.service';
 import { EditAggregationModalComponent } from '../../../../aggregation/edit-aggregation-modal/edit-aggregation-modal.component';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormGroup } from '@angular/forms';
 import { MapLayersService } from '../../../../../services/map/map-layers.service';
 import { Fields } from '../../../../../models/layer.model';
 import { GraphQLSelectComponent } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
-
-/** Default items per resources query, for pagination */
-const ITEMS_PER_PAGE = 10;
 
 /** Available admin fields ( only admin 0 now ) */
 const ADMIN_FIELDS = [
@@ -83,20 +82,14 @@ export class LayerDatasourceComponent
   implements OnInit, AfterViewInit
 {
   @Input() formGroup!: FormGroup;
-  @Input() resourceQuery!: BehaviorSubject<ResourceQueryResponse | null>;
-  @Input()
-  referenceDataQuery!: BehaviorSubject<ReferenceDataQueryResponse | null>;
-  public origin!: FormControl<string | null>;
 
   // Resource
-  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
   public resource: Resource | null = null;
   @ViewChild(GraphQLSelectComponent)
   resourceSelect?: GraphQLSelectComponent;
 
   // Reference data
-  public refDatasQuery!: QueryRef<ReferenceDatasQueryResponse>;
-  public refData: ReferenceData | null = null;
+  public referenceData: ReferenceData | null = null;
   @ViewChild(GraphQLSelectComponent)
   refDataSelect?: GraphQLSelectComponent;
 
@@ -114,6 +107,10 @@ export class LayerDatasourceComponent
   @Input() destroyTab$!: Subject<boolean>;
 
   public adminFields = ADMIN_FIELDS;
+
+  // Queries to fetch resources and references datas
+  getResources = GET_RESOURCES;
+  getReferenceDatas = GET_REFERENCE_DATAS;
 
   /**
    * Component for the layer datasource selection tab
@@ -137,62 +134,17 @@ export class LayerDatasourceComponent
   }
 
   ngOnInit(): void {
-    // Set origin form control
-    if (this.formGroup.value.resource) {
-      this.origin = new FormControl('resource');
-    } else {
-      if (this.formGroup.value.refData) {
-        this.origin = new FormControl('refData');
-      } else {
-        this.origin = new FormControl();
-      }
-    }
-    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
-      query: GET_RESOURCES,
-      variables: {
-        first: ITEMS_PER_PAGE,
-        sortField: 'name',
-      },
-    });
-
-    this.refDatasQuery = this.apollo.watchQuery<ReferenceDatasQueryResponse>({
-      query: GET_REFERENCE_DATAS,
-      variables: {
-        first: ITEMS_PER_PAGE,
-      },
-    });
-
     // If the form has a resource, get info from
     const resourceID = this.formGroup.value.resource;
     if (resourceID) {
-      this.resourceQuery.subscribe((data: ResourceQueryResponse | null) => {
-        const layoutID = this.formGroup.value.layout;
-        const aggregationID = this.formGroup.value.aggregation;
-        if (data) {
-          this.resource = data.resource;
-          if (layoutID) {
-            this.layout =
-              data.resource.layouts?.edges.find(
-                (layout) => layout.node.id === layoutID
-              )?.node ?? null;
-          } else {
-            if (aggregationID) {
-              this.aggregation =
-                data.resource.aggregations?.edges.find(
-                  (layout) => layout.node.id === aggregationID
-                )?.node ?? null;
-            }
-          }
-        }
-      });
+      this.getResource(resourceID);
     }
 
-    // Listen to origin changes
-    this.origin.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.resource = null;
-      this.refData = null;
-      this.formGroup.patchValue({ resource: null, refData: null });
-    });
+    // If form has a referenceData, fetch it
+    const referenceDataID = this.formGroup.get('referenceData')?.value;
+    if (referenceDataID) {
+      this.getReferenceData(referenceDataID);
+    }
 
     // Listen to resource changes
     this.formGroup
@@ -201,80 +153,86 @@ export class LayerDatasourceComponent
         distinctUntilChanged((prev, next) => isEqual(prev, next)),
         takeUntil(this.destroy$)
       )
-      .subscribe((resourceID) => {
-        this.resource =
-          this.resourceSelect?.elements
-            .getValue()
-            .find((x) => x.id === resourceID) || null;
-
-        this.formGroup.get('layout')?.setValue(null, { emitEvent: false });
-        this.formGroup.get('aggregation')?.setValue(null, { emitEvent: false });
-        this.formGroup.get('geoField')?.setValue(null, { emitEvent: false });
-        this.formGroup.get('adminField')?.setValue(null, { emitEvent: false });
-        this.formGroup
-          .get('latitudeField')
-          ?.setValue(null, { emitEvent: false });
-        this.formGroup
-          .get('longitudeField')
-          ?.setValue(null, { emitEvent: false });
-        this.layout = null;
-        this.aggregation = null;
-      });
-
-    // If form has a refData, fetch it
-    const refDataID = this.formGroup.get('refData')?.value;
-    if (refDataID) {
-      this.apollo
-        .query<ReferenceDataQueryResponse>({
-          query: GET_REFERENCE_DATA,
-          variables: {
-            id: refDataID,
-          },
-        })
-        .subscribe(({ data }) => {
-          const aggregationID = this.formGroup.value.aggregation;
-          this.refData = data.referenceData;
-          if (aggregationID) {
-            this.aggregation =
-              data.referenceData.aggregations?.edges.find(
-                (aggregation) => aggregation.node.id === aggregationID
-              )?.node ?? null;
-          } //only load fields if we do not have an aggregation
-          else
-            this.fields.next(
-              this.getFieldsFromRefData(this.refData?.fields || [])
-            );
-        });
-    }
-
-    // Listen to refData changes
-    this.formGroup
-      .get('refData')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((refDataID) => {
-        this.refData =
-          this.refDataSelect?.elements
-            .getValue()
-            .find((x) => x.id === refDataID) || null;
-        this.formGroup.get('layout')?.setValue(null);
-        this.formGroup.get('aggregation')?.setValue(null);
-        this.formGroup.get('geoField')?.setValue(null);
-        this.formGroup.get('latitudeField')?.setValue(null);
-        this.formGroup.get('longitudeField')?.setValue(null);
-        this.formGroup.patchValue({
-          layout: null,
-          aggregation: null,
-          geoField: null,
-          latitudeField: null,
-          longitudeField: null,
-        });
-        this.aggregation = null;
-        if (this.refData) {
-          this.fields.next(
-            this.getFieldsFromRefData(this.refData.fields || [])
-          );
+      .subscribe((value) => {
+        if (value) {
+          this.getResource(value);
         }
+        this.handleSourceFormChange();
       });
+
+    // Listen to referenceData changes
+    this.formGroup
+      .get('referenceData')
+      ?.valueChanges.pipe(
+        distinctUntilChanged((prev, next) => isEqual(prev, next)),
+        takeUntil(this.destroy$)
+      )
+      .subscribe((value) => {
+        if (value) {
+          this.getReferenceData(value);
+        }
+        this.handleSourceFormChange();
+      });
+  }
+
+  /**
+   * Fetch the resource with the given id
+   *
+   * @param resourceID resource id to fetch
+   */
+  private getResource(resourceID: string) {
+    const layoutID = this.formGroup.get('layout')?.value;
+    const aggregationID = this.formGroup.get('aggregation')?.value;
+    this.apollo
+      .query<ResourceQueryResponse>({
+        query: GET_RESOURCE,
+        variables: {
+          id: resourceID,
+          layout: layoutID ? [layoutID] : [],
+          aggregation: aggregationID ? [aggregationID] : [],
+        },
+      })
+      .subscribe(({ data }) => {
+        this.resource = data.resource;
+        this.updateFields('resource');
+      });
+  }
+
+  /**
+   * Fetch the reference data with the given id
+   *
+   * @param referenceDataID reference data id to fetch
+   */
+  private getReferenceData(referenceDataID: string) {
+    const aggregationID = this.formGroup.get('aggregation')?.value;
+    this.apollo
+      .query<ReferenceDataQueryResponse>({
+        query: GET_REFERENCE_DATA,
+        variables: {
+          id: referenceDataID,
+          aggregation: aggregationID ? [aggregationID] : [],
+        },
+      })
+      .subscribe(({ data }) => {
+        this.referenceData = data.referenceData;
+        this.updateFields('referenceData');
+      });
+  }
+
+  /**
+   * Update current form whenever source type changes
+   */
+  private handleSourceFormChange() {
+    this.formGroup.patchValue({
+      layout: null,
+      aggregation: null,
+      geoField: null,
+      adminField: null,
+      latitudeField: null,
+      longitudeField: null,
+    });
+    this.layout = null;
+    this.aggregation = null;
   }
 
   ngAfterViewInit(): void {
@@ -295,25 +253,75 @@ export class LayerDatasourceComponent
   }
 
   /**
-   * Changes the query according to search text
+   * Handle source change from the aggregation origin selection
    *
-   * @param search Search text from the graphql select
+   * @param event event containing source type and value
+   * @param {AggregationSource} event.type source type
+   * @param event.value selected source value from where load aggregations
    */
-  onResourceSearchChange(search: string): void {
-    this.resourcesQuery.refetch({
-      first: ITEMS_PER_PAGE,
-      sortField: 'name',
-      filter: {
-        logic: 'and',
-        filters: [
-          {
-            field: 'name',
-            operator: 'contains',
-            value: search,
-          },
-        ],
-      },
-    });
+  handleSourceChange(event: { type: AggregationSource; value: any }) {
+    const { type, value } = event;
+    if (type === 'resource') {
+      this.resource = value;
+      this.updateFields('resource');
+    } else if (type === 'referenceData') {
+      this.referenceData = value;
+      this.updateFields('referenceData');
+    }
+  }
+
+  /**
+   * Update aggregation and layout fields for the given source type
+   *
+   * @param type source type from where to update fields
+   */
+  private updateFields(type: AggregationSource) {
+    switch (type) {
+      case 'resource':
+        if (this.resource) {
+          const layoutID = this.formGroup.value.layout;
+          const aggregationID = this.formGroup.value.aggregation;
+          if (layoutID) {
+            this.layout =
+              this.resource.layouts?.edges.find(
+                (layout) => layout.node.id === layoutID
+              )?.node ?? null;
+            this.fields.emit(this.mapLayersService.getQueryFields(this.layout));
+          } else {
+            if (aggregationID) {
+              this.aggregation =
+                this.resource.aggregations?.edges.find(
+                  (layout) => layout.node.id === aggregationID
+                )?.node ?? null;
+              this.fields.emit(
+                this.mapLayersService.getAggregationFields(
+                  this.resource,
+                  'resource',
+                  this.aggregation
+                )
+              );
+            }
+          }
+        }
+        break;
+      case 'referenceData':
+        if (this.referenceData) {
+          const aggregationID = this.formGroup.value.aggregation;
+          if (aggregationID) {
+            this.aggregation =
+              this.referenceData.aggregations?.edges.find(
+                (aggregation) => aggregation.node.id === aggregationID
+              )?.node ?? null;
+          } //only load fields if we do not have an aggregation
+          else
+            this.fields.emit(
+              this.getFieldsFromRefData(this.referenceData?.fields || [])
+            );
+        }
+        break;
+      default:
+        break;
+    }
   }
 
   /** Opens modal for layout selection/creation */
@@ -338,19 +346,25 @@ export class LayerDatasourceComponent
     const dialogRef = this.dialog.open(AddAggregationModalComponent, {
       data: {
         hasAggregations:
-          get(this.resource ?? this.refData, 'aggregations.totalCount', 0) > 0,
+          get(
+            this.resource ?? this.referenceData,
+            'aggregations.totalCount',
+            0
+          ) > 0,
         resource: this.resource,
-        referenceData: this.refData,
+        referenceData: this.referenceData,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value) {
         this.formGroup.get('aggregation')?.setValue((value as any).id);
         this.aggregation = value;
+        const type = this.resource ? 'resource' : 'referenceData';
+        const source = this.resource ?? this.referenceData;
         this.fields.emit(
           this.mapLayersService.getAggregationFields(
-            this.resource,
-            this.refData,
+            source,
+            type,
             this.aggregation
           )
         );
@@ -388,25 +402,22 @@ export class LayerDatasourceComponent
       disableClose: true,
       data: {
         resource: this.resource,
-        referenceData: this.refData,
+        referenceData: this.referenceData,
         aggregation: this.aggregation,
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value) => {
       if (value && this.aggregation) {
+        const type = this.resource ? 'resource' : 'referenceData';
+        const source = this.resource ?? this.referenceData;
         this.aggregationService
-          .editAggregation(
-            this.aggregation,
-            value,
-            this.resource?.id,
-            'resource'
-          )
+          .editAggregation(this.aggregation, value, source?.id, type)
           .subscribe((res) => {
             this.aggregation = get(res, 'data.editAggregation', null);
             this.fields.emit(
               this.mapLayersService.getAggregationFields(
-                this.resource,
-                this.refData,
+                source,
+                type,
                 this.aggregation
               )
             );
@@ -431,19 +442,5 @@ export class LayerDatasourceComponent
           type: field.type,
         } as Fields;
       });
-  }
-
-  /**
-   * Reset given form field value if there is a value previously to avoid triggering
-   * not necessary actions
-   *
-   * @param formField Current form field
-   * @param event click event
-   */
-  clearFormField(formField: string, event: Event) {
-    if (this.formGroup.get(formField)?.value) {
-      this.formGroup.get(formField)?.setValue(null);
-    }
-    event.stopPropagation();
   }
 }

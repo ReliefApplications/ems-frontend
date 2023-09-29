@@ -129,9 +129,10 @@ export const createLayerForm = (value?: LayerModel) => {
 const createLayerDataSourceForm = (value?: any): FormGroup => {
   const getCanSeeFields = (value: any) => {
     return (
-      (get(value, 'resource') &&
+      ((get(value, 'resource') &&
         (get(value, 'layout') || get(value, 'aggregation'))) ||
-      get(value, 'refData')
+        get(value, 'refData')) ??
+      get(value, 'referenceData', null)
     );
   };
   const canSeeFields = getCanSeeFields(value);
@@ -139,7 +140,9 @@ const createLayerDataSourceForm = (value?: any): FormGroup => {
     resource: [get(value, 'resource', null)],
     layout: [get(value, 'layout', null)],
     aggregation: [get(value, 'aggregation', null)],
-    refData: [get(value, 'refData', null)],
+    referenceData: [
+      get(value, 'refData', null) ?? get(value, 'referenceData', null),
+    ],
     geoField: [
       {
         value: get(value, 'geoField', null),

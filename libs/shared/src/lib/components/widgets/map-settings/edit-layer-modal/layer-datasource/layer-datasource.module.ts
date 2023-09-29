@@ -3,17 +3,14 @@ import { CommonModule } from '@angular/common';
 import { LayerDatasourceComponent } from './layer-datasource.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { BadgeModule } from '../../../../ui/badge/badge.module';
 import {
-  AlertModule,
   ButtonModule,
-  TableModule,
   FormWrapperModule,
   SelectMenuModule,
-  GraphQLSelectModule,
   DividerModule,
   TooltipModule,
 } from '@oort-front/ui';
+import { AggregationOriginSelectComponent } from '../../../../aggregation/aggregation-origin-select/aggregation-origin-select.component';
 
 /** Module for the LayerDatasourceComponent */
 @NgModule({
@@ -23,17 +20,13 @@ import {
     FormsModule,
     ReactiveFormsModule,
     SelectMenuModule,
-    TranslateModule,
-    GraphQLSelectModule,
     ButtonModule,
     DividerModule,
     TranslateModule,
     FormWrapperModule,
-    BadgeModule,
-    TableModule,
     ButtonModule,
-    AlertModule,
     TooltipModule,
+    AggregationOriginSelectComponent,
   ],
   exports: [LayerDatasourceComponent],
 })

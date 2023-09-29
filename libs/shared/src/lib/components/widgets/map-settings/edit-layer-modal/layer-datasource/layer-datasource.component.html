@@ -2,81 +2,21 @@
   <!-- Datasource form -->
   <form [formGroup]="formGroup" class="flex-1">
     <div class="flex flex-col gap-3 w-full">
-      <!-- Origin -->
-      <div uiFormFieldDirective>
-        <label>{{
-          'components.widget.settings.map.edit.datasource.origin' | translate
-        }}</label>
-        <ui-select-menu [formControl]="origin">
-          <ui-select-option value="resource">{{
-            'common.resource.one' | translate
-          }}</ui-select-option>
-          <ui-select-option value="refData">{{
-            'common.referenceData.one' | translate
-          }}</ui-select-option>
-        </ui-select-menu>
-      </div>
-
-      <!-- Resource selection -->
-      <div
-        uiFormFieldDirective
-        class="flex-1"
-        *ngIf="origin.value === 'resource'"
-      >
-        <label>{{ 'common.resource.one' | translate }}</label>
-        <ui-graphql-select
-          valueField="id"
-          textField="name"
-          [query]="resourcesQuery"
-          formControlName="resource"
-          [selectedElements]="[resource]"
-          (searchChange)="onResourceSearchChange($event)"
-          [filterable]="true"
-        >
-        </ui-graphql-select>
-        <!-- Remove value -->
-        <ui-button
-          uiSuffix
-          (click)="clearFormField('resource', $event)"
-          [isIcon]="true"
-          icon="close"
-          variant="danger"
-          [uiTooltip]="'common.delete' | translate"
-        ></ui-button>
-      </div>
-
-      <!-- Reference data selection  -->
-      <div
-        uiFormFieldDirective
-        class="flex-1"
-        *ngIf="origin.value === 'refData'"
-      >
-        <label>{{ 'common.referenceData.one' | translate }}</label>
-        <ui-graphql-select
-          valueField="id"
-          textField="name"
-          [query]="refDatasQuery"
-          formControlName="refData"
-          [selectedElements]="[refData]"
-        >
-        </ui-graphql-select>
-        <!-- Remove value -->
-        <ui-button
-          uiSuffix
-          (click)="clearFormField('refData', $event)"
-          [isIcon]="true"
-          icon="close"
-          variant="danger"
-          [uiTooltip]="'common.delete' | translate"
-        ></ui-button>
-      </div>
+      <!-- Set aggregation origin and select aggregation template-->
+      <shared-aggregation-origin-select
+        [selectedResource]="resource"
+        [resourcesQueryValue]="getResources"
+        [selectedReferenceData]="referenceData"
+        [referenceDatasQueryValue]="getReferenceDatas"
+        (sourceChange)="handleSourceChange($event)"
+      ></shared-aggregation-origin-select>
 
       <!-- Aggregation or layout selection -->
       <div
         class="flex flex-col gap-8"
-        *ngIf="(resource || refData) && !layout && !aggregation"
+        *ngIf="(resource || referenceData) && !layout && !aggregation"
       >
-        <ng-container *ngIf="!refData">
+        <ng-container *ngIf="!referenceData">
           <h2>{{ 'common.layout.one' | translate }}</h2>
           <div class="flex justify-center mt-4">
             <ui-button
@@ -89,7 +29,7 @@
           </div>
         </ng-container>
         <ui-divider
-          *ngIf="!layout && !aggregation && !refData"
+          *ngIf="!layout && !aggregation && !referenceData"
           [text]="'common.or' | translate"
         ></ui-divider>
         <h2>{{ 'common.aggregation.one' | translate }}</h2>

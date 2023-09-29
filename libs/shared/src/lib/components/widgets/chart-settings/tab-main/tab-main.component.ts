@@ -175,9 +175,10 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
    */
   private setAvailableSeriesFields(): void {
     if (this.aggregation) {
-      const queryName = this.resource
-        ? this.resource.queryName
-        : (this.referenceData?.name as string).replace(/\s/g, '') + 'Ref';
+      const queryName = this.aggregationService.setCurrentSourceQueryName(
+        this.type === 'resource' ? this.resource : this.referenceData,
+        this.type
+      );
       const fields = this.queryBuilder
         .getFields(queryName as string)
         .filter(
@@ -264,9 +265,12 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
           .pipe(takeUntil(this.destroy$))
           .subscribe(({ data }) => {
             if (data?.editAggregation) {
-              if (this.resource) this.getResource(this.resource.id as string);
-              if (this.referenceData)
+              if (this.resource) {
+                this.getResource(this.resource.id as string);
+              }
+              if (this.referenceData) {
                 this.getReferenceData(this.referenceData.id as string);
+              }
             }
           });
       }

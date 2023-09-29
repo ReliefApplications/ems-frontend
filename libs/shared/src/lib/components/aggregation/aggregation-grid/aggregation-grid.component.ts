@@ -253,11 +253,11 @@ export class AggregationGridComponent
     source: any,
     type: 'resource' | 'referenceData'
   ) {
-    const allGqlFields = this.queryBuilder.getFields(
-      (type === 'resource'
-        ? source.queryName
-        : (source.name as string)?.replace(/\s/g, '') + 'Ref') || ''
+    const queryName = this.aggregationService.setCurrentSourceQueryName(
+      source,
+      type
     );
+    const allGqlFields = this.queryBuilder.getFields(queryName);
     // Fetch fields at the end of the pipeline
     const aggFields = this.aggregationBuilderService.fieldsAfter(
       allGqlFields

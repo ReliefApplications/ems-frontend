@@ -267,4 +267,30 @@ export class AggregationService {
     }
     return queryVariable;
   }
+
+  /**
+   * Build up the query name given the source and it's type
+   *
+   * @param source Source, resource or reference data
+   * @param {AggregationSource} type source type from where get aggregation fields
+   * @returns query name from the given source type
+   */
+  public setCurrentSourceQueryName(
+    source: any,
+    type: AggregationSource
+  ): string {
+    let queryName;
+    switch (type) {
+      case 'resource':
+        queryName = (source.queryName as string) ?? '';
+        break;
+      case 'referenceData':
+        queryName = (source?.name as string)?.replace(/\s/g, '') + 'Ref';
+        break;
+      default:
+        queryName = '';
+        break;
+    }
+    return queryName;
+  }
 }
