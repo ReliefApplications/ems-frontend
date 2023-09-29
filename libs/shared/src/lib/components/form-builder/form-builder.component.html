@@ -12,4 +12,6 @@
     ></path>
   </symbol>
 </svg>
-<div id="surveyCreatorContainer"></div>
+<ng-container *ngIf="surveyCreator">
+  <survey-creator [model]="surveyCreator"></survey-creator>
+</ng-container>

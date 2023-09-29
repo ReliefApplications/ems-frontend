@@ -202,7 +202,13 @@ export class DashboardComponent
         this.loading = true;
         // Reset context
         this.contextRecord = null;
-        this.contextId.reset(undefined, { emitEvent: false });
+        this.contextId.setValue(null, {
+          emitEvent: false,
+          emitModelToViewChange: false,
+          emitViewToModelChange: false,
+        });
+        this.contextId.markAsPristine();
+        this.contextId.markAsUntouched();
         // Reset scroll when changing page
         const pageContainer = this.document.getElementById('appPageContainer');
         if (pageContainer) {

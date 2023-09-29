@@ -86,7 +86,6 @@ export * from './lib/components/workflow-stepper/public-api';
 export * from './lib/components/applications-summary/public-api';
 export * from './lib/components/dashboard-filter/public-api';
 export * from './lib/components/snackbar-spinner/public-api';
-export * from './lib/components/reference-data-dropdown/public-api';
 export * from './lib/components/skeleton/skeleton-table/public-api';
 export * from './lib/components/mapping/public-api';
 export * from './lib/components/role-summary/public-api';
@@ -102,6 +101,16 @@ export * from './lib/components/button-action/public-api';
 export * from './lib/components/custom-widget-style/custom-widget-style.component';
 export * from './lib/components/list-filter/list-filter.component';
 export * from './lib/components/status-options/status-options.component';
+
+// === CUSTOM COMPONENTS FOR SURVEY CREATOR PROPERTY GRID === //
+export * from './lib/survey/components/application-dropdown/application-dropdown.component';
+export * from './lib/survey/components/geofields-listbox/geofields-listbox.component';
+export * from './lib/survey/components/reference-data-dropdown/reference-data-dropdown.component';
+export * from './lib/survey/components/resource-available-fields/resource-available-fields.component';
+export * from './lib/survey/components/resource-custom-filters/resource-custom-filters.component';
+export * from './lib/survey/components/resource-dropdown/resource-dropdown.component';
+export * from './lib/survey/components/resource-select-text/resource-select-text.component';
+export * from './lib/survey/components/test-service-dropdown/test-service-dropdown.component';
 
 /** Grid Layouts */
 export * from './lib/components/grid-layout/edit-layout-modal/public-api';
