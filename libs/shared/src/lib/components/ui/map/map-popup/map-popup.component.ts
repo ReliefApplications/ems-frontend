@@ -36,6 +36,7 @@ export class MapPopupComponent
   @Input() feature: Feature<Geometry>[] = [];
   @Input() template = '';
   @Input() currZoom = 13;
+  @Input() clusterTemplate? = '';
 
   @Output() closePopup: EventEmitter<void> = new EventEmitter<void>();
   @Output() zoomTo: EventEmitter<LatLng> = new EventEmitter<LatLng>();
@@ -66,27 +67,39 @@ export class MapPopupComponent
     this.current$.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.setInnerHtml();
     });
+    if (this.clusterTemplate) {
+      if (this.template) {
+        this.feature = [this.feature[0], ...this.feature];
+      } else {
+        this.feature = [this.feature[0]];
+      }
+    }
   }
 
   /** Updates the html for the current point */
   public setInnerHtml() {
-    const properties = this.feature[this.currValue].properties;
-    const regex = /{{(.*?)}}/g;
-    // if no properties, return the template replacing all matches with empty string
-    // if there are properties, replace the matches with the corresponding property
-    const html = properties
-      ? this.template.replace(regex, (match) => {
-          const key = match.replace(/{{|}}/g, '');
-          let value;
-          if (!key.includes('coordinates')) {
-            value = properties[key];
-          } else {
-            value = this.coordinates;
-          }
+    let html;
+    if (this.clusterTemplate && this.currValue === 0) {
+      html = this.clusterTemplate;
+    } else {
+      const properties = this.feature[this.currValue].properties;
+      const regex = /{{(.*?)}}/g;
+      // if no properties, return the template replacing all matches with empty string
+      // if there are properties, replace the matches with the corresponding property
+      html = properties
+        ? this.template.replace(regex, (match) => {
+            const key = match.replace(/{{|}}/g, '');
+            let value;
+            if (!key.includes('coordinates')) {
+              value = properties[key];
+            } else {
+              value = this.coordinates;
+            }
 
-          return value ? value : '';
-        })
-      : this.template.replace(regex, '');
+            return value ? value : '';
+          })
+        : this.template.replace(regex, '');
+    }
     const scriptRegex = /<script>(.*?)<\/script>/g;
     // remove all script tags
     const sanitizedHtml = html.replace(scriptRegex, '');

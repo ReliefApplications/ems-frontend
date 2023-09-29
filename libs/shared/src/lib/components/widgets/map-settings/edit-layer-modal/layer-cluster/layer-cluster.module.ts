@@ -6,11 +6,18 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { IconPickerModule } from '../../../../icon-picker/icon-picker.module';
 import { SimpleRendererComponent } from '../layer-styling/simple-renderer/simple-renderer.component';
 import {
+  ButtonModule,
   DividerModule,
+  ExpansionPanelModule,
   FormWrapperModule,
+  MenuModule,
   SliderModule,
   ToggleModule,
+  TooltipModule,
 } from '@oort-front/ui';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { TextElementComponent } from './text-element/text-element.component';
+import { EditorControlComponent } from '../../../../editor-control/editor-control.component';
 
 /**
  * layer cluster settings module.
@@ -28,6 +35,13 @@ import {
     IconPickerModule,
     DividerModule,
     SimpleRendererComponent,
+    ButtonModule,
+    TooltipModule,
+    DragDropModule,
+    ExpansionPanelModule,
+    MenuModule,
+    TextElementComponent,
+    EditorControlComponent,
   ],
   exports: [LayerClusterComponent],
 })

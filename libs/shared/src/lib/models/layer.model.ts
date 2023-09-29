@@ -55,6 +55,7 @@ export interface FeatureReduction {
   type: 'cluster';
   drawingInfo?: DrawingInfo;
   clusterRadius?: number;
+  popupInfo: PopupInfo;
 }
 
 /**
@@ -116,6 +117,13 @@ export interface PopupInfo {
   description?: string;
   popupElements?: PopupElement[];
   fieldsInfo?: Fields[];
+}
+
+/**
+ * Cluster Layer Popup info interface, only used by map-popup service & component
+ */
+export interface ClusterPopupInfo extends PopupInfo {
+  clusterCount: number;
 }
 
 export type LayerDatasourceType = 'Point' | 'Polygon';
