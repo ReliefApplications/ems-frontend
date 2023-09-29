@@ -668,6 +668,12 @@
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
 			},
+			"propertyGrid": {
+				"resource": {
+					"availableGridFields": "Available grid fields",
+					"resourceSelectText": "First you have to select a resource before setting any filters"
+				}
+			},
 			"saveSurvey": "SavingSurvey"
 		},
 		"formMapProperties": {

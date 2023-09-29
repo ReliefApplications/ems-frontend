@@ -41,6 +41,7 @@ import { SortingSettingsModule } from './components/widgets/common/sorting-setti
 import { WidgetChoiceModule } from './components/widget-choice/widget-choice.module';
 import { TabsSettingsModule } from './components/widgets/tabs-settings/tabs-settings.module';
 import { ApplicationsArchiveModule } from './components/applications-archive/applications-archive.module';
+import { ReferenceDataDropdownModule } from './survey/components/reference-data-dropdown/reference-data-dropdown.module';
 import { ListFilterComponent } from './components/list-filter/list-filter.component';
 import { StatusOptionsComponent } from './components/status-options/status-options.component';
 
@@ -78,6 +79,7 @@ import { StatusOptionsComponent } from './components/status-options/status-optio
     ButtonActionModule,
     WidgetChoiceModule,
     TabsSettingsModule,
+    ReferenceDataDropdownModule,
     StatusOptionsComponent,
     // === Pipes ===
     DateModule,

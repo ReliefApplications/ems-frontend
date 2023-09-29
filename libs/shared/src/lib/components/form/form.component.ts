@@ -1,6 +1,5 @@
 import { Apollo } from 'apollo-angular';
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
@@ -11,7 +10,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
-import * as Survey from 'survey-angular';
+import { SurveyModel } from 'survey-core';
 import { ADD_RECORD, EDIT_RECORD } from './graphql/mutations';
 import { Form } from '../../models/form.model';
 import {
@@ -41,7 +40,7 @@ import { cloneDeep, isNil } from 'lodash';
 })
 export class FormComponent
   extends UnsubscribeComponent
-  implements OnInit, OnDestroy, AfterViewInit
+  implements OnInit, OnDestroy
 {
   @Input() form!: Form;
   @Input() record?: RecordModel;
@@ -51,7 +50,7 @@ export class FormComponent
   }> = new EventEmitter();
 
   // === SURVEYJS ===
-  public survey!: Survey.SurveyModel;
+  public survey!: SurveyModel;
   public surveyActive = true;
   public temporaryFilesStorage: Record<string, Array<File>> = {};
 
@@ -102,8 +101,7 @@ export class FormComponent
   }
 
   ngOnInit(): void {
-    Survey.StylesManager.applyTheme();
-    addCustomFunctions(Survey, this.authService, this.record);
+    addCustomFunctions(this.authService, this.record);
 
     const structure = JSON.parse(this.form.structure || '{}');
     if (structure && !structure.completedHtml) {
@@ -117,6 +115,7 @@ export class FormComponent
       this.form.metadata,
       this.record
     );
+
     // After the survey is created we add common callback to survey events
     this.formBuilderService.addEventsCallBacksToSurvey(
       this.survey,
@@ -186,26 +185,6 @@ export class FormComponent
     // }
   }
 
-  ngAfterViewInit(): void {
-    this.survey?.render(this.formContainer.nativeElement);
-    // this.translate.onLangChange.subscribe(() => {
-    //   const currentLang = this.usedLocales.find(
-    //     (lang) => lang.value === this.translate.currentLang
-    //   );
-    //   if (currentLang && currentLang.text !== this.survey.locale) {
-    //     this.setLanguage(currentLang.text);
-    //     this.surveyLanguage = (LANGUAGES as any)[currentLang.value];
-    //   } else if (
-    //     !currentLang &&
-    //     this.survey.locale !== this.translate.currentLang
-    //   ) {
-    //     this.survey.locale = this.translate.currentLang;
-    //     this.surveyLanguage = (LANGUAGES as any).en;
-    //     this.survey.render();
-    //   }
-    // });
-  }
-
   /**
    * Reset the survey to empty
    */
@@ -220,7 +199,6 @@ export class FormComponent
     this.survey.fromJSON(this.survey.toJSON());
     this.survey.showCompletedPage = false;
     this.save.emit({ completed: false });
-    this.survey.render();
     setTimeout(() => (this.surveyActive = true), 100);
   }
 
@@ -358,7 +336,6 @@ export class FormComponent
     this.formHelpersService.cleanCachedRecords(this.survey);
     this.isFromCacheData = false;
     this.storageDate = undefined;
-    this.survey.render();
   }
 
   /**

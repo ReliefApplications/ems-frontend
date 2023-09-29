@@ -298,6 +298,7 @@ export class FormWrapperDirective
     if (this.currentSelectElement || this.currentGraphQLSelectComponent) {
       this.renderer.removeClass(this.beyondLabelContainer, 'px-2');
       this.renderer.addClass(this.beyondLabelContainer, 'pl-2');
+      this.renderer.addClass(this.beyondLabelContainer, 'bg-white');
     }
 
     if (this.currentInputElement && !this.dateWrapperElement) {
