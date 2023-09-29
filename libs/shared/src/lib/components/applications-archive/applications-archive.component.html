@@ -1,16 +1,6 @@
 <ng-container *ngIf="pages?.length">
-  <div class="flex justify-start flex-col sm:flex-row">
-    <!-- Search text filter -->
-    <div uiFormFieldDirective>
-      <ui-icon icon="search" uiPrefix></ui-icon>
-      <input
-        [ngModel]="searchText"
-        (keyup)="applyFilter('', $event)"
-        type="text"
-        [placeholder]="'common.placeholder.search' | translate"
-      />
-    </div>
-  </div>
+  <!-- Default filter -->
+  <shared-list-filter [loading]="loading"></shared-list-filter>
 </ng-container>
 <ng-container *ngIf="pages?.length; else emptyTmpl">
   <!-- Table container -->

@@ -4,7 +4,11 @@ import { FormsTabRoutingModule } from './forms-tab-routing.module';
 import { FormsTabComponent } from './forms-tab.component';
 import { DividerModule, IconModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { DateModule, SkeletonTableModule } from '@oort-front/shared';
+import {
+  DateModule,
+  SkeletonTableModule,
+  StatusOptionsComponent,
+} from '@oort-front/shared';
 import {
   MenuModule,
   ButtonModule,
@@ -28,6 +32,7 @@ import {
     ButtonModule,
     TableModule,
     ChipModule,
+    StatusOptionsComponent,
     DividerModule,
     TooltipModule,
   ],

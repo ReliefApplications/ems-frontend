@@ -9,7 +9,7 @@ import { UIPageChangeEvent } from './interfaces/paginator.interfaces';
 import { StorybookTranslateModule } from '../../storybook-translate.module';
 
 export default {
-  title: 'Paginator',
+  title: 'Components/Paginator',
   component: PaginatorComponent,
   argTypes: {
     disabled: {

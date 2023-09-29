@@ -6,7 +6,7 @@ import { variants } from '../types/variant';
 import { categories } from '../types/category';
 
 export default {
-  title: 'SpinnerComponent',
+  title: 'Components/Spinner',
   component: SpinnerComponent,
   decorators: [
     moduleMetadata({

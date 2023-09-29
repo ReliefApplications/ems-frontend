@@ -8,7 +8,7 @@ import { RadioModule } from '../radio/radio.module';
 import { CheckboxModule } from '../checkbox/checkbox.module';
 
 export default {
-  title: 'CronEditorComponent',
+  title: 'Components/CronEditorComponent',
   component: CronEditorComponent,
   decorators: [
     moduleMetadata({

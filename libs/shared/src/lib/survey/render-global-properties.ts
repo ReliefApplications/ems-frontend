@@ -1,8 +1,7 @@
 import { ReferenceDataService } from '../services/reference-data/reference-data.service';
-import { Question, SurveyModel } from 'survey-angular';
+import { AfterRenderQuestionEvent, SurveyModel } from 'survey-core';
 import * as OthersProperties from './global-properties/others';
 import * as ReferenceDataProperties from './global-properties/reference-data';
-import * as TooltipProperty from './global-properties/tooltip';
 
 /**
  * Render custom properties which are applied to every questions, or to
@@ -13,11 +12,7 @@ import * as TooltipProperty from './global-properties/tooltip';
  */
 export const renderGlobalProperties =
   (referenceDataService: ReferenceDataService) =>
-  (
-    survey: SurveyModel,
-    options: { question: Question; htmlElement: HTMLElement }
-  ) => {
+  (survey: SurveyModel, options: AfterRenderQuestionEvent) => {
     OthersProperties.render(options.question);
-    TooltipProperty.render(options.question, options.htmlElement, document);
     ReferenceDataProperties.render(options.question, referenceDataService);
   };

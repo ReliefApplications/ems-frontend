@@ -1,25 +1,32 @@
 @import 'variables.scss';
 @import '@angular/cdk/overlay-prebuilt.css';
 
-.sv_main,
-.svd_container {
+survey,
+survey-creator {
+  --font-size: 1em;
   --main-color: #{rgb($primary_500)};
   --main-hover-color: #{rgb($primary_600)};
-  --primary-color: #{rgb($primary_500)};
-  --secondary-color: #{rgb($primary_500)};
+  --primary: #{rgb($primary_500)};
+  --secondary: #{rgb($primary_500)};
   --progress-buttons-color: #{rgb($primary_500)};
+  --radio-checked-color: #{rgb($primary_500)};
   --header-background-color: transparent;
+  --answer-background-color: transparent;
   // --primary-text-color: #676a6c;
   // --secondary-text-color: #a7a7a7;
   // --inverted-text-color: #ffffff;
-  --primary-hover-color: #{rgb($primary_600)};
-  --selection-border-color: #{rgb($primary_500)};
+  --primary-hover: #{rgb($primary_600)};
+  --selection-border: #{rgb($primary_500)};
   // --primary-icon-color: #3d4d5d;
   // --primary-bg-color: #fff;
   // --secondary-bg-color: #f4f4f4;
   // --primary-border-color: #e7eaec;
   // --secondary-border-color: #ddd;
   // --error-color: #ed5565;
+}
+
+survey {
+  --sjs-base-unit: 0.66em;
 }
 
 // Checkbox

@@ -1,30 +1,10 @@
 <div [formGroup]="form" class="flex flex-col gap-x-4">
   <!-- Default filter -->
-  <div class="flex flex-wrap gap-2 flex-col sm:flex-row">
-    <!-- Search text filter -->
-    <div uiFormFieldDirective>
-      <ui-icon icon="search" uiPrefix></ui-icon>
-      <input
-        placeholder="{{ 'common.placeholder.search' | translate }}"
-        [formControl]="search"
-        type="text"
-      />
-      <ui-spinner [size]="'small'" *ngIf="loading" uiSuffix></ui-spinner>
-    </div>
-    <!-- Toggle advanced filters -->
-    <ui-button
-      class="max-sm:!w-auto"
-      icon="filter_list"
-      category="tertiary"
-      variant="primary"
-      (click)="show = !show"
-      >{{
-        show
-          ? ('common.filter.hide' | translate)
-          : ('common.filter.show' | translate)
-      }}
-    </ui-button>
-  </div>
+  <shared-list-filter
+    [hasSiblingFilters]="true"
+    [loading]="loading"
+    (showFilters)="show = $event"
+  ></shared-list-filter>
   <!-- Advanced filters -->
   <div
     *ngIf="show"

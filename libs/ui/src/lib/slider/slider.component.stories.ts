@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { SliderComponent } from './slider.component';
 
 export default {
-  title: 'Slider',
+  title: 'Components/Slider',
   component: SliderComponent,
   argTypes: {
     minValue: {

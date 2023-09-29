@@ -1,0 +1,31 @@
+<ui-dialog size="small">
+  <ng-container ngProjectAs="header">
+    <h1>
+      {{ (data ? 'models.channel.edit' : 'models.channel.new') | translate }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="channelForm" class="flex flex-col">
+      <div uiFormFieldDirective>
+        <label>{{ 'common.title' | translate }}</label>
+        <input
+          formControlName="title"
+          type="text"
+          [placeholder]="'common.placeholder.title' | translate"
+        />
+      </div>
+    </form>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="channelForm.value"
+      cdkFocusInitial
+      [disabled]="!channelForm.valid"
+    >
+      {{ (data ? 'common.update' : 'common.create') | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>
