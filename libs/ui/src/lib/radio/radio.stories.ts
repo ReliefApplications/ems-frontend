@@ -78,7 +78,7 @@ const getRadioChangeSelection = (radioSelectionChange: any) => {
  * @returns RadioComponent
  */
 const Template: StoryFn<RadioComponent> = (args: RadioComponent) => {
-  args.name = 'radio-primary';
+  args.name = 'notification-method';
   return {
     component: RadioComponent,
     template: `
@@ -106,7 +106,7 @@ const Template: StoryFn<RadioComponent> = (args: RadioComponent) => {
  * @returns RadioComponent
  */
 const FormControlTemplate: StoryFn<RadioComponent> = (args: RadioComponent) => {
-  args.name = 'radio-primary';
+  args.name = 'notification-method';
   return {
     component: RadioComponent,
     template: `

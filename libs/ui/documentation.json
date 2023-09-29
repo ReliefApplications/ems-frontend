@@ -13159,7 +13159,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "StoryFn<RadioComponent>",
-                "defaultValue": "(args: RadioComponent) => {\n  args.name = 'radio-primary';\n  return {\n    component: RadioComponent,\n    template: `\n    <div class=\"space-y-4\" [formControl]=\"formControl\" [uiRadioGroupDirective]=\"'${args.name}'\">\n    <ui-radio *ngFor=\"let option of radioOptions\" [disabled]=\"${args.disabled}\" [variant]=\"'${args.variant}'\" [value]=\"option.value\" >\n      <ng-container ngProjectAs=\"label\">{{option.label}}</ng-container>\n    </ui-radio>\n    </div>\n    <br>\n    <p>value: {{formControl.value}}</p>\n    <p>touched: {{formControl.touched}}</p>\n`,\n    props: {\n      ...args,\n      formControl,\n      radioOptions,\n    },\n  };\n}",
+                "defaultValue": "(args: RadioComponent) => {\n  args.name = 'notification-method';\n  return {\n    component: RadioComponent,\n    template: `\n    <div class=\"space-y-4\" [formControl]=\"formControl\" [uiRadioGroupDirective]=\"'${args.name}'\">\n    <ui-radio *ngFor=\"let option of radioOptions\" [disabled]=\"${args.disabled}\" [variant]=\"'${args.variant}'\" [value]=\"option.value\" >\n      <ng-container ngProjectAs=\"label\">{{option.label}}</ng-container>\n    </ui-radio>\n    </div>\n    <br>\n    <p>value: {{formControl.value}}</p>\n    <p>touched: {{formControl.touched}}</p>\n`,\n    props: {\n      ...args,\n      formControl,\n      radioOptions,\n    },\n  };\n}",
                 "rawdescription": "Form control template radio",
                 "description": "<p>Form control template radio</p>\n"
             },
@@ -14494,7 +14494,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "StoryFn<RadioComponent>",
-                "defaultValue": "(args: RadioComponent) => {\n  args.name = 'radio-primary';\n  return {\n    component: RadioComponent,\n    template: `<div class=\"space-y-4\" (groupValueChange)=\"getRadioChangeSelection($event)\" [uiRadioGroupDirective]=\"'${args.name}'\">\n    <ui-radio *ngFor=\"let option of radioOptions; let i = index\" [checked]=\"i === 0\" [disabled]=\"${args.disabled}\" [variant]=\"'${args.variant}'\" [value]=\"option.value\">\n      <ng-container ngProjectAs=\"label\">{{option.label}}</ng-container>\n    </ui-radio>\n    </div>\n    <br>\n    <p>value: {{selectedOption}}</p>`,\n    props: {\n      ...args,\n      radioOptions,\n      getRadioChangeSelection,\n      selectedOption,\n    },\n  };\n}",
+                "defaultValue": "(args: RadioComponent) => {\n  args.name = 'notification-method';\n  return {\n    component: RadioComponent,\n    template: `\n    <div class=\"space-y-4\" (groupValueChange)=\"getRadioChangeSelection($event)\" [uiRadioGroupDirective]=\"'${args.name}'\">\n    <ui-radio *ngFor=\"let option of radioOptions; \" [disabled]=\"${args.disabled}\" [variant]=\"'${args.variant}'\" [value]=\"option.value\">\n      <ng-container ngProjectAs=\"label\">{{option.label}}</ng-container>\n    </ui-radio>\n    </div>\n    <br>\n    <p>value: {{selectedOption}}</p>\n    `,\n    props: {\n      ...args,\n      radioOptions,\n      getRadioChangeSelection,\n      selectedOption,\n    },\n  };\n}",
                 "rawdescription": "Template radio group",
                 "description": "<p>Template radio group</p>\n"
             },
@@ -17046,7 +17046,7 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "StoryFn<RadioComponent>",
-                    "defaultValue": "(args: RadioComponent) => {\n  args.name = 'radio-primary';\n  return {\n    component: RadioComponent,\n    template: `\n    <div class=\"space-y-4\" [formControl]=\"formControl\" [uiRadioGroupDirective]=\"'${args.name}'\">\n    <ui-radio *ngFor=\"let option of radioOptions\" [disabled]=\"${args.disabled}\" [variant]=\"'${args.variant}'\" [value]=\"option.value\" >\n      <ng-container ngProjectAs=\"label\">{{option.label}}</ng-container>\n    </ui-radio>\n    </div>\n    <br>\n    <p>value: {{formControl.value}}</p>\n    <p>touched: {{formControl.touched}}</p>\n`,\n    props: {\n      ...args,\n      formControl,\n      radioOptions,\n    },\n  };\n}",
+                    "defaultValue": "(args: RadioComponent) => {\n  args.name = 'notification-method';\n  return {\n    component: RadioComponent,\n    template: `\n    <div class=\"space-y-4\" [formControl]=\"formControl\" [uiRadioGroupDirective]=\"'${args.name}'\">\n    <ui-radio *ngFor=\"let option of radioOptions\" [disabled]=\"${args.disabled}\" [variant]=\"'${args.variant}'\" [value]=\"option.value\" >\n      <ng-container ngProjectAs=\"label\">{{option.label}}</ng-container>\n    </ui-radio>\n    </div>\n    <br>\n    <p>value: {{formControl.value}}</p>\n    <p>touched: {{formControl.touched}}</p>\n`,\n    props: {\n      ...args,\n      formControl,\n      radioOptions,\n    },\n  };\n}",
                     "rawdescription": "Form control template radio",
                     "description": "<p>Form control template radio</p>\n"
                 },
@@ -17113,7 +17113,7 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "StoryFn<RadioComponent>",
-                    "defaultValue": "(args: RadioComponent) => {\n  args.name = 'radio-primary';\n  return {\n    component: RadioComponent,\n    template: `<div class=\"space-y-4\" (groupValueChange)=\"getRadioChangeSelection($event)\" [uiRadioGroupDirective]=\"'${args.name}'\">\n    <ui-radio *ngFor=\"let option of radioOptions; let i = index\" [checked]=\"i === 0\" [disabled]=\"${args.disabled}\" [variant]=\"'${args.variant}'\" [value]=\"option.value\">\n      <ng-container ngProjectAs=\"label\">{{option.label}}</ng-container>\n    </ui-radio>\n    </div>\n    <br>\n    <p>value: {{selectedOption}}</p>`,\n    props: {\n      ...args,\n      radioOptions,\n      getRadioChangeSelection,\n      selectedOption,\n    },\n  };\n}",
+                    "defaultValue": "(args: RadioComponent) => {\n  args.name = 'notification-method';\n  return {\n    component: RadioComponent,\n    template: `\n    <div class=\"space-y-4\" (groupValueChange)=\"getRadioChangeSelection($event)\" [uiRadioGroupDirective]=\"'${args.name}'\">\n    <ui-radio *ngFor=\"let option of radioOptions; \" [disabled]=\"${args.disabled}\" [variant]=\"'${args.variant}'\" [value]=\"option.value\">\n      <ng-container ngProjectAs=\"label\">{{option.label}}</ng-container>\n    </ui-radio>\n    </div>\n    <br>\n    <p>value: {{selectedOption}}</p>\n    `,\n    props: {\n      ...args,\n      radioOptions,\n      getRadioChangeSelection,\n      selectedOption,\n    },\n  };\n}",
                     "rawdescription": "Template radio group",
                     "description": "<p>Template radio group</p>\n"
                 }
