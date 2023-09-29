@@ -1,4 +1,4 @@
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import get from 'lodash/get';
 import { createMappingForm } from '../../ui/aggregation-builder/aggregation-builder-forms';
 import { DEFAULT_PALETTE } from '../../ui/charts/const/palette';
@@ -316,23 +316,6 @@ const DEFAULT_CONTEXT_FILTER = `{
 }`;
 
 /**
- * Ensures that one and only one reference data or resource exists in the form
- *
- * @param group formGroup to check
- * @returns a validator
- */
-function atLeastOneRequiredValidator(group: FormGroup) {
-  const resource = group.get('resource')?.value;
-  const referenceData = group.get('referenceData')?.value;
-
-  if ((!resource && !referenceData) || (resource && referenceData)) {
-    return { atLeastOneRequired: true };
-  }
-
-  return null;
-}
-
-/**
  * Create chart widget form group
  *
  * @param id widget id
@@ -340,18 +323,15 @@ function atLeastOneRequiredValidator(group: FormGroup) {
  * @returns chart widget form group
  */
 export const createChartWidgetForm = (id: any, value: any) =>
-  fb.group(
-    {
-      id,
-      title: [get(value, 'title', ''), Validators.required],
-      chart: createChartForm(get(value, 'chart')),
-      resource: [get(value, 'resource', null)],
-      referenceData: [get(value, 'referenceData', null)],
-      contextFilters: [get(value, 'contextFilters', DEFAULT_CONTEXT_FILTER)],
-      at: [get(value, 'at', '')],
-    },
-    { validators: atLeastOneRequiredValidator }
-  );
+  fb.group({
+    id,
+    title: [get(value, 'title', ''), Validators.required],
+    chart: createChartForm(get(value, 'chart')),
+    resource: [get(value, 'resource', null)],
+    referenceData: [get(value, 'referenceData', null)],
+    contextFilters: [get(value, 'contextFilters', DEFAULT_CONTEXT_FILTER)],
+    at: [get(value, 'at', '')],
+  });
 
 /**
  * Create chart serie category form group

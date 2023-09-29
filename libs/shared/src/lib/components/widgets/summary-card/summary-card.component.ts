@@ -287,10 +287,14 @@ export class SummaryCardComponent
   private async setupDynamicCards() {
     // only one dynamic card is allowed per widget
     const card = this.settings.card;
-    if (!card) return;
-
-    if (card.aggregation) this.getCardsFromAggregation(card);
-    else if (card.layout) this.createDynamicQueryFromLayout(card);
+    if (!card) {
+      return;
+    }
+    if (this.settings.aggregation) {
+      this.getCardsFromAggregation();
+    } else if (this.settings.layout) {
+      this.createDynamicQueryFromLayout();
+    }
   }
 
   /**
@@ -300,7 +304,7 @@ export class SummaryCardComponent
    */
   private handleSearch(search: string) {
     // Only need to fetch data if is dynamic and not an aggregation
-    const needRefetch = !this.settings.card?.aggregation;
+    const needRefetch = !this.settings.aggregation;
     const skippedFields = ['id', 'incrementalId'];
     this.pageInfo.pageIndex = 0;
     this.pageInfo.skip = 0;
@@ -360,7 +364,7 @@ export class SummaryCardComponent
         metadata: this.fields,
         style: e.meta.style,
       }));
-    } else if (this.settings.card?.aggregation) {
+    } else if (this.settings.aggregation) {
       if (
         !res.data?.recordsAggregation?.items &&
         !res.data?.referenceDataAggregation?.items
@@ -408,22 +412,23 @@ export class SummaryCardComponent
 
   /**
    * Gets the query for fetching the dynamic cards records from a card's settings
-   *
-   * @param card Card settings
    */
-  private async createDynamicQueryFromLayout(card: any) {
+  private async createDynamicQueryFromLayout() {
     // gets metadata
     const metaRes = await firstValueFrom(
       this.apollo.query<ResourceQueryResponse>({
         query: GET_RESOURCE_METADATA,
         variables: {
-          id: card.resource,
+          id: this.settings.resource,
         },
       })
     );
 
     this.gridLayoutService
-      .getLayouts(card.resource, { ids: [card.layout], first: 1 })
+      .getLayouts(this.settings.resource ?? '', {
+        ids: [this.settings.layout ?? ''],
+        first: 1,
+      })
       .then((res) => {
         const layouts = res.edges.map((edge) => edge.node);
         if (layouts.length > 0) {
@@ -520,11 +525,17 @@ export class SummaryCardComponent
    */
   private async setupGridSettings(): Promise<void> {
     const card = this.settings.card;
-    if (!card || !card.resource || (!card.layout && !card.aggregation)) return;
+    if (
+      !card ||
+      !this.settings.resource ||
+      (!this.settings.layout && !this.settings.aggregation)
+    ) {
+      return;
+    }
 
     const settings = {
       template: get(this.settings, 'template', null), //TO MODIFY
-      resource: card.resource,
+      resource: this.settings.resource,
       actions: {
         //default actions, might need to modify later
         addRecord: false,
@@ -540,9 +551,9 @@ export class SummaryCardComponent
 
     Object.assign(
       settings,
-      card.aggregation
-        ? { aggregations: card.aggregation }
-        : { layouts: card.layout }
+      this.settings.aggregation
+        ? { aggregations: this.settings.aggregation }
+        : { layouts: this.settings.layout }
     );
 
     this.gridSettings = settings;
@@ -550,20 +561,20 @@ export class SummaryCardComponent
 
   /**
    * Gets the query for fetching the dynamic cards records from a card's settings
-   *
-   * @param card Card settings
    */
-  private async getCardsFromAggregation(
-    card: NonNullable<SummaryCardFormT['value']['card']>
-  ) {
-    if (!card.aggregation || (!card.resource && !card.referenceData)) return;
+  private async getCardsFromAggregation() {
+    if (
+      !this.settings.aggregation ||
+      (!this.settings.resource && !this.settings.referenceData)
+    )
+      return;
     this.loading = true;
-    const id = card.resource ?? card.referenceData ?? '';
-    const type = card.resource ? 'resource' : 'referenceData';
+    const id = this.settings.resource ?? this.settings.referenceData ?? '';
+    const type = this.settings.resource ? 'resource' : 'referenceData';
     this.dataQuery = this.aggregationService.aggregationDataWatchQuery(
       id,
       type,
-      card.aggregation,
+      this.settings.aggregation,
       DEFAULT_PAGE_SIZE,
       0,
       this.contextService.injectDashboardFilterValues(this.contextFilters),

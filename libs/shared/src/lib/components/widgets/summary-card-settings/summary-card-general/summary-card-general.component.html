@@ -4,73 +4,20 @@
     <input formControlName="title" type="string" />
   </div>
 
-  <div uiFormFieldDirective>
-    <label>{{
-      'components.widget.settings.map.edit.datasource.origin' | translate
-    }}</label>
-    <ui-select-menu [formControl]="origin">
-      <ui-select-option value="resource">{{
-        'common.resource.one' | translate
-      }}</ui-select-option>
-      <ui-select-option value="referenceData">{{
-        'common.referenceData.one' | translate
-      }}</ui-select-option>
-    </ui-select-menu>
-  </div>
+  <!-- Set aggregation origin and select aggregation template-->
+  <shared-aggregation-origin-select
+    [selectedResource]="selectedResource"
+    [resourcesQueryValue]="getResources"
+    [selectedReferenceData]="selectedReferenceData"
+    [referenceDatasQueryValue]="getReferenceDatas"
+    (sourceChange)="handleSourceChange($event)"
+  ></shared-aggregation-origin-select>
 
   <ng-container formGroupName="card">
-    <!-- Resource selection -->
-    <div
-      uiFormFieldDirective
-      class="flex-1"
-      *ngIf="origin.value === 'resource'"
-    >
-      <label>{{ 'common.resource.one' | translate }}</label>
-      <ui-graphql-select
-        valueField="id"
-        textField="name"
-        [query]="resourcesQuery"
-        formControlName="resource"
-        [selectedElements]="[selectedResource]"
-        (searchChange)="onResourceSearchChange($event)"
-        [filterable]="true"
-      >
-      </ui-graphql-select>
-      <!-- Remove value -->
-      <ui-button
-        uiSuffix
-        (click)="clearFormField('resource', $event)"
-        [isIcon]="true"
-        icon="close"
-        variant="danger"
-      ></ui-button>
-    </div>
-
-    <!-- Reference data selection  -->
-    <div uiFormFieldDirective class="flex-1" *ngIf="origin.value === 'referenceData'">
-      <label>{{ 'common.referenceData.one' | translate }}</label>
-      <ui-graphql-select
-        valueField="id"
-        textField="name"
-        [query]="referenceDatasQuery"
-        formControlName="referenceData"
-        [selectedElements]="[selectedReferenceData]"
-      >
-      </ui-graphql-select>
-      <!-- Remove value -->
-      <ui-button
-        uiSuffix
-        (click)="clearFormField('referenceData', $event)"
-        [isIcon]="true"
-        icon="close"
-        variant="danger"
-      ></ui-button>
-    </div>
-
     <!-- SELECT AGGREGATION OR LAYOUT -->
     <div
       class="flex flex-col mt-8 gap-8"
-      *ngIf="tileForm.get('card.resource')?.value"
+      *ngIf="tileForm.get('resource')?.value"
     >
       <div *ngIf="!selectedAggregation">
         <h2>{{ 'common.layout.one' | translate }}</h2>
@@ -96,8 +43,7 @@
     <div
       class="flex flex-col mt-8 gap-8"
       *ngIf="
-        tileForm.get('card.resource')?.value ||
-        tileForm.get('card.referenceData')?.value
+        tileForm.get('resource')?.value || tileForm.get('referenceData')?.value
       "
     >
       <div *ngIf="!selectedLayout">
@@ -116,9 +62,7 @@
     </div>
 
     <!-- FROM LAYOUTS -->
-    <ng-container
-      *ngIf="selectedLayout && tileForm.get('card.resource')?.value"
-    >
+    <ng-container *ngIf="selectedLayout && tileForm.get('resource')?.value">
       <div uiFormFieldDirective>
         <label>{{ 'common.layout.one' | translate }}</label>
         <ui-select-menu [disabled]="true" [value]="selectedLayout.name">
@@ -140,7 +84,7 @@
           [isIcon]="true"
           icon="close"
           (click)="
-            tileForm.get('card.layout')?.setValue(null); layoutChange.emit(null)
+            tileForm.get('layout')?.setValue(null); layoutChange.emit(null)
           "
           [uiTooltip]="'common.delete' | translate"
         ></ui-button>
@@ -193,8 +137,8 @@
     <ng-container
       *ngIf="
         selectedAggregation &&
-        (tileForm.get('card.resource')?.value ||
-          tileForm.get('card.referenceData')?.value)
+        (tileForm.get('resource')?.value ||
+          tileForm.get('referenceData')?.value)
       "
     >
       <div uiFormFieldDirective>
@@ -218,7 +162,7 @@
           [isIcon]="true"
           icon="close"
           (click)="
-            tileForm.get('card.aggregation')?.setValue(null);
+            tileForm.get('aggregation')?.setValue(null);
             aggregationChange.emit(null)
           "
           [uiTooltip]="'common.delete' | translate"

@@ -5,81 +5,12 @@
     <label>{{ 'common.title' | translate }}</label>
     <input formControlName="title" type="string" />
   </div>
-  <div uiFormFieldDirective>
-    <label>{{
-      'components.widget.settings.map.edit.datasource.origin' | translate
-    }}</label>
-    <ui-select-menu [formControl]="origin">
-      <ui-select-option value="resource">{{
-        'common.resource.one' | translate
-      }}</ui-select-option>
-      <ui-select-option value="referenceData">{{
-        'common.referenceData.one' | translate
-      }}</ui-select-option>
-    </ui-select-menu>
-  </div>
-  <div class="flex gap-2 flex-wrap">
-    <!-- Resource selection -->
-    <div
-      uiFormFieldDirective
-      class="flex-1"
-      *ngIf="origin.value === 'resource'"
-    >
-      <label>{{ 'common.resource.one' | translate }}</label>
-      <ui-graphql-select
-        valueField="id"
-        textField="name"
-        [query]="resourcesQuery"
-        formControlName="resource"
-        [selectedElements]="[resource]"
-        (searchChange)="onResourceSearchChange($event)"
-        [filterable]="true"
-      >
-      </ui-graphql-select>
-    </div>
-    <!-- Template selection -->
-    <div
-      uiFormFieldDirective
-      class="flex-1"
-      *ngIf="origin.value === 'resource'"
-    >
-      <label>{{ 'models.form.template' | translate }}</label>
-      <ui-select-menu formControlName="template">
-        <ui-select-option>-</ui-select-option>
-        <ui-select-option
-          *ngFor="let template of templates"
-          [value]="template.id"
-        >
-          {{ template.name }}
-        </ui-select-option>
-      </ui-select-menu>
-      <ui-icon
-        uiSuffix
-        icon="info_outline"
-        variant="grey"
-        [uiTooltip]="
-          'components.widget.settings.grid.tooltip.template' | translate
-        "
-      ></ui-icon>
-    </div>
 
-    <!-- Reference data selection  -->
-    <div
-      uiFormFieldDirective
-      class="flex-1"
-      *ngIf="origin.value === 'referenceData'"
-    >
-      <label>{{ 'common.referenceData.one' | translate }}</label>
-      <ui-graphql-select
-        valueField="id"
-        textField="name"
-        [query]="referenceDatasQuery"
-        formControlName="referenceData"
-        [selectedElements]="[referenceData]"
-      >
-      </ui-graphql-select>
-    </div>
-  </div>
+  <!-- Set aggregation origin and select aggregation template-->
+  <shared-aggregation-origin-select
+    [selectedResource]="resource"
+    [resourcesQueryValue]="getResources"
+  ></shared-aggregation-origin-select>
 </div>
 <div class="flex flex-col mt-8 gap-8" *ngIf="form || resource || referenceData">
   <!-- Aggregations -->

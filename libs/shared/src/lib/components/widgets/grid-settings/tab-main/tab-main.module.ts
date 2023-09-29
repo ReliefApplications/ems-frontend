@@ -4,15 +4,9 @@ import { TabMainComponent } from './tab-main.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { LayoutTableModule } from '../../../grid-layout/layout-table/layout-table.module';
-import {
-  TooltipModule,
-  DividerModule,
-  FormWrapperModule,
-  SelectMenuModule,
-  GraphQLSelectModule,
-  IconModule,
-} from '@oort-front/ui';
+import { DividerModule, FormWrapperModule } from '@oort-front/ui';
 import { AggregationTableModule } from '../../../aggregation/aggregation-table/aggregation-table.module';
+import { AggregationOriginSelectComponent } from '../../../aggregation/aggregation-origin-select/aggregation-origin-select.component';
 
 /**
  * Main Tab of grid widget configuration modal.
@@ -26,12 +20,9 @@ import { AggregationTableModule } from '../../../aggregation/aggregation-table/a
     ReactiveFormsModule,
     FormWrapperModule,
     LayoutTableModule,
-    GraphQLSelectModule,
-    TooltipModule,
-    IconModule,
     DividerModule,
     AggregationTableModule,
-    SelectMenuModule,
+    AggregationOriginSelectComponent,
   ],
   exports: [TabMainComponent],
 })

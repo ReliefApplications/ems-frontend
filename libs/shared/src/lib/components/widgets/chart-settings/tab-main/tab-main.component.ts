@@ -1,16 +1,15 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { FormControl, UntypedFormGroup } from '@angular/forms';
-import { Apollo, QueryRef } from 'apollo-angular';
+import { UntypedFormGroup } from '@angular/forms';
+import { Apollo } from 'apollo-angular';
 import {
   Resource,
   ResourceQueryResponse,
-  ResourcesQueryResponse,
 } from '../../../../models/resource.model';
 import {
   GET_REFERENCE_DATA,
-  GET_REFERENCE_DATAS,
   GET_RESOURCE,
   GET_RESOURCES,
+  GET_REFERENCE_DATAS,
 } from '../graphql/queries';
 import { Subject } from 'rxjs';
 import { CHART_TYPES } from '../constants';
@@ -25,11 +24,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import {
   ReferenceData,
   ReferenceDataQueryResponse,
-  ReferenceDatasQueryResponse,
 } from '../../../../models/reference-data.model';
-
-/** Default items per query, for pagination */
-const ITEMS_PER_PAGE = 10;
 
 /**
  * Main tab of chart settings modal.
@@ -42,12 +37,9 @@ const ITEMS_PER_PAGE = 10;
 export class TabMainComponent extends UnsubscribeComponent implements OnInit {
   @Input() formGroup!: UntypedFormGroup;
   @Input() type: any;
-  public origin!: FormControl<string | null>;
   public types = CHART_TYPES;
   public resource?: Resource | null;
-  public referenceDatasQuery!: QueryRef<ReferenceDatasQueryResponse>;
   public referenceData?: ReferenceData | null;
-  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
   public aggregation?: Aggregation;
   public availableSeriesFields: any[] = [];
 
@@ -65,6 +57,9 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
       ) ?? { name: '', icon: null }
     );
   }
+
+  getResources = GET_RESOURCES;
+  getReferenceDatas = GET_REFERENCE_DATAS;
 
   /**
    * Main tab of chart settings modal.
@@ -86,16 +81,6 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // Set origin form control
-    if (this.formGroup.value.resource) {
-      this.origin = new FormControl('resource');
-    } else {
-      if (this.formGroup.value.referenceData) {
-        this.origin = new FormControl('referenceData');
-      } else {
-        this.origin = new FormControl();
-      }
-    }
     this.formGroup
       .get('chart.type')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
@@ -108,9 +93,11 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
       .subscribe((value) => {
         if (value) {
           this.getResource(value);
-          this.formGroup.get('chart.aggregationId')?.setValue(null);
           this.formGroup.get('referenceData')?.setValue(null);
+        } else {
+          this.resource = value;
         }
+        this.formGroup.get('chart.aggregationId')?.setValue(null);
       });
     if (this.formGroup.value.resource) {
       this.getResource(this.formGroup.value.resource);
@@ -121,33 +108,16 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
       .subscribe((value) => {
         if (value) {
           this.getReferenceData(value);
-          this.formGroup.get('chart.aggregationId')?.setValue(null);
           this.formGroup.get('resource')?.setValue(null);
+        } else {
+          this.referenceData = value;
         }
+        this.formGroup.get('chart.aggregationId')?.setValue(null);
       });
+
     if (this.formGroup.value.referenceData) {
       this.getReferenceData(this.formGroup.value.referenceData);
     }
-    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
-      query: GET_RESOURCES,
-      variables: {
-        first: ITEMS_PER_PAGE,
-        sortField: 'name',
-      },
-    });
-    this.referenceDatasQuery =
-      this.apollo.watchQuery<ReferenceDatasQueryResponse>({
-        query: GET_REFERENCE_DATAS,
-        variables: {
-          first: ITEMS_PER_PAGE,
-        },
-      });
-    // Listen to origin changes
-    this.origin.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      this.resource = null;
-      this.referenceData = null;
-      this.formGroup.patchValue({ resource: null, referenceData: null });
-    });
   }
 
   /**
@@ -301,41 +271,5 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
           });
       }
     });
-  }
-
-  /**
-   * Changes the query according to search text
-   *
-   * @param search Search text from the graphql select
-   */
-  public onResourceSearchChange(search: string): void {
-    const variables = this.resourcesQuery.variables;
-    this.resourcesQuery.refetch({
-      ...variables,
-      filter: {
-        logic: 'and',
-        filters: [
-          {
-            field: 'name',
-            operator: 'contains',
-            value: search,
-          },
-        ],
-      },
-    });
-  }
-
-  /**
-   * Reset given form field value if there is a value previously to avoid triggering
-   * not necessary actions
-   *
-   * @param formField Current form field
-   * @param event click event
-   */
-  clearFormField(formField: string, event: Event) {
-    if (this.formGroup.get(formField)?.value) {
-      this.formGroup.get(formField)?.setValue(null);
-    }
-    event.stopPropagation();
   }
 }

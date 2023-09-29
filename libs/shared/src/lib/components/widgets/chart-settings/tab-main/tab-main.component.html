@@ -28,63 +28,15 @@
       </ui-select-menu>
     </div>
   </ng-container>
-  <div uiFormFieldDirective>
-    <label>{{
-      'components.widget.settings.map.edit.datasource.origin' | translate
-    }}</label>
-    <ui-select-menu [formControl]="origin">
-      <ui-select-option value="resource">{{
-        'common.resource.one' | translate
-      }}</ui-select-option>
-      <ui-select-option value="referenceData">{{
-        'common.referenceData.one' | translate
-      }}</ui-select-option>
-    </ui-select-menu>
-  </div>
 
-  <!-- Resource selection -->
-  <div uiFormFieldDirective class="flex-1" *ngIf="origin.value === 'resource'">
-    <label>{{ 'common.resource.one' | translate }}</label>
-    <ui-graphql-select
-      valueField="id"
-      textField="name"
-      [query]="resourcesQuery"
-      formControlName="resource"
-      [selectedElements]="[resource]"
-      (searchChange)="onResourceSearchChange($event)"
-      [filterable]="true"
-    >
-    </ui-graphql-select>
-    <!-- Remove value -->
-    <ui-button
-      uiSuffix
-      (click)="clearFormField('resource', $event)"
-      [isIcon]="true"
-      icon="close"
-      variant="danger"
-    ></ui-button>
-  </div>
+  <!-- Set aggregation origin and select aggregation template-->
+  <shared-aggregation-origin-select
+    [selectedResource]="resource"
+    [resourcesQueryValue]="getResources"
+    [selectedReferenceData]="referenceData"
+    [referenceDatasQueryValue]="getReferenceDatas"
+  ></shared-aggregation-origin-select>
 
-  <!-- Reference data selection  -->
-  <div uiFormFieldDirective class="flex-1" *ngIf="origin.value === 'referenceData'">
-    <label>{{ 'common.referenceData.one' | translate }}</label>
-    <ui-graphql-select
-      valueField="id"
-      textField="name"
-      [query]="referenceDatasQuery"
-      formControlName="referenceData"
-      [selectedElements]="[referenceData]"
-    >
-    </ui-graphql-select>
-    <!-- Remove value -->
-    <ui-button
-      uiSuffix
-      (click)="clearFormField('referenceData', $event)"
-      [isIcon]="true"
-      icon="close"
-      variant="danger"
-    ></ui-button>
-  </div>
   <ng-container *ngIf="resource || referenceData">
     <!-- Aggregation -->
     <ng-container *ngIf="formGroup.value.chart.aggregationId">

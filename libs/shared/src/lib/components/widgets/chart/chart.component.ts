@@ -135,7 +135,9 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
       },
     };
 
-    if (!isEqual(previousDatasource, currentDatasource)) this.loadChart();
+    if (!isEqual(previousDatasource, currentDatasource)) {
+      this.loadChart();
+    }
     this.getOptions();
   }
 

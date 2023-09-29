@@ -12,6 +12,7 @@ import { CardT } from '../summary-card.component';
 })
 export class SummaryCardItemComponent implements OnInit, OnChanges {
   @Input() card!: CardT;
+  @Input() summaryCardsSettings!: any;
   public fields: any[] = [];
   public fieldsValue: any = null;
   public styles: any[] = [];
@@ -27,8 +28,12 @@ export class SummaryCardItemComponent implements OnInit, OnChanges {
   /** Sets the content of the card */
   private async setContent() {
     this.fields = this.card.metadata || [];
-    if (!this.card.resource && !this.card.referenceData) return;
-    if (this.card.aggregation) {
+    if (
+      !this.summaryCardsSettings.resource &&
+      !this.summaryCardsSettings.referenceData
+    )
+      return;
+    if (this.summaryCardsSettings.aggregation) {
       this.fieldsValue = this.card.cardAggregationData;
       this.setContentFromAggregation();
     } else this.setContentFromLayout();

@@ -33,7 +33,10 @@ import { DistributionList } from '../../../models/distribution-list.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
-import { AggregationService } from '../../../services/aggregation/aggregation.service';
+import {
+  AggregationService,
+  AggregationSource,
+} from '../../../services/aggregation/aggregation.service';
 import {
   ReferenceData,
   ReferenceDataQueryResponse,
@@ -128,38 +131,7 @@ export class GridSettingsComponent
       .get('resource')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        if (value) {
-          this.formGroup?.get('referenceData')?.setValue(null);
-          this.referenceData = null;
-          // Check if the query changed to clean modifications and fields for email in floating button
-          if (value !== this.resource?.id) {
-            // this.queryName = name;
-            this.formGroup?.get('layouts')?.setValue([]);
-            this.formGroup?.get('aggregations')?.setValue([]);
-            this.formGroup?.get('template')?.setValue(null);
-            this.formGroup?.get('template')?.enable();
-            const floatingButtons = this.formGroup?.get(
-              'floatingButtons'
-            ) as UntypedFormArray;
-            for (const floatingButton of floatingButtons.controls) {
-              const modifications = floatingButton.get(
-                'modifications'
-              ) as UntypedFormArray;
-              modifications.clear();
-              this.formGroup
-                ?.get('floatingButton.modifySelectedRows')
-                ?.setValue(false);
-              const bodyFields = floatingButton.get(
-                'bodyFields'
-              ) as UntypedFormArray;
-              bodyFields.clear();
-            }
-          }
-          this.getQueryMetaData();
-        } else {
-          this.fields = [];
-        }
-
+        this.handleValueChangesByType(value, 'resource');
         // clear sort fields array
         const sortFields = this.formGroup?.get('sortFields') as FormArray;
         sortFields.clear();
@@ -170,37 +142,7 @@ export class GridSettingsComponent
       .get('referenceData')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        if (value) {
-          this.formGroup?.get('resource')?.setValue(null);
-          this.resource = null;
-          // Check if the query changed to clean modifications and fields for email in floating button
-          if (value !== this.referenceData?.id) {
-            // this.queryName = name;
-            this.formGroup?.get('layouts')?.setValue([]);
-            this.formGroup?.get('aggregations')?.setValue([]);
-            this.formGroup?.get('template')?.setValue(null);
-            this.formGroup?.get('template')?.disable();
-            const floatingButtons = this.formGroup?.get(
-              'floatingButtons'
-            ) as UntypedFormArray;
-            for (const floatingButton of floatingButtons.controls) {
-              const modifications = floatingButton.get(
-                'modifications'
-              ) as UntypedFormArray;
-              modifications.clear();
-              this.formGroup
-                ?.get('floatingButton.modifySelectedRows')
-                ?.setValue(false);
-              const bodyFields = floatingButton.get(
-                'bodyFields'
-              ) as UntypedFormArray;
-              bodyFields.clear();
-            }
-          }
-          this.getQueryMetaData();
-        } else {
-          this.fields = [];
-        }
+        this.handleValueChangesByType(value, 'referenceData');
       });
 
     // Subscribe to form aggregations changes
@@ -231,6 +173,56 @@ export class GridSettingsComponent
     }
 
     this.initSortFields();
+  }
+
+  /**
+   * Handle value changes effects of the given source type
+   *
+   * @param value source form changed value
+   * @param type source type of the given value
+   */
+  private handleValueChangesByType(value: any, type: AggregationSource) {
+    if (value) {
+      const currentSourceId =
+        type === 'resource' ? this.resource?.id : this.referenceData?.id;
+      if (type === 'referenceData') {
+        this.resource = null;
+      } else if (type === 'resource') {
+        this.referenceData = null;
+      }
+      // Check if the query changed to clean modifications and fields for email in floating button
+      if (value !== currentSourceId) {
+        // this.queryName = name;
+        this.formGroup?.get('layouts')?.setValue([]);
+        this.formGroup?.get('aggregations')?.setValue([]);
+        this.formGroup?.get('template')?.setValue(null);
+        this.formGroup?.get('template')?.disable();
+        const floatingButtons = this.formGroup?.get(
+          'floatingButtons'
+        ) as UntypedFormArray;
+        for (const floatingButton of floatingButtons.controls) {
+          const modifications = floatingButton.get(
+            'modifications'
+          ) as UntypedFormArray;
+          modifications.clear();
+          this.formGroup
+            ?.get('floatingButton.modifySelectedRows')
+            ?.setValue(false);
+          const bodyFields = floatingButton.get(
+            'bodyFields'
+          ) as UntypedFormArray;
+          bodyFields.clear();
+        }
+      }
+      this.getQueryMetaData();
+    } else {
+      if (type === 'resource') {
+        this.resource = null;
+      } else if (type === 'referenceData') {
+        this.referenceData = null;
+      }
+      this.fields = [];
+    }
   }
 
   /**

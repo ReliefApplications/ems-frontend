@@ -70,6 +70,7 @@ export class AggregationService {
     type: AggregationSource,
     options: { ids?: string[]; first?: number }
   ): Promise<Connection<Aggregation>> {
+    const sourceVariable = this.mapCurrentSourceForAggregationQuery(id, type);
     const aggregations = await firstValueFrom(
       this.apollo.query<ResourceQueryResponse | ReferenceDataQueryResponse>({
         query:
@@ -77,8 +78,7 @@ export class AggregationService {
             ? GET_RESOURCE_AGGREGATIONS
             : GET_REFERENCE_DATA_AGGREGATIONS,
         variables: {
-          ...(type === 'resource' && { resource: id }),
-          ...(type === 'referenceData' && { referenceData: id }),
+          ...sourceVariable,
           ids: options.ids,
           first: options.first,
         },
@@ -116,14 +116,14 @@ export class AggregationService {
     contextFilters?: CompositeFilterDescriptor,
     at?: Date
   ): Observable<ApolloQueryResult<AggregationDataQueryResponse>> {
+    const sourceVariable = this.mapCurrentSourceForAggregationQuery(id, type);
     return this.apollo.query<AggregationDataQueryResponse>({
       query:
         type === 'resource'
           ? GET_RESOURCE_AGGREGATION_DATA
           : GET_REFERENCE_DATA_AGGREGATION_DATA,
       variables: {
-        ...(type === 'resource' && { resource: id }),
-        ...(type === 'referenceData' && { referenceData: id }),
+        ...sourceVariable,
         aggregation,
         mapping,
         contextFilters,
@@ -153,14 +153,14 @@ export class AggregationService {
     contextFilters?: CompositeFilterDescriptor,
     at?: Date
   ): QueryRef<AggregationDataQueryResponse> {
+    const sourceVariable = this.mapCurrentSourceForAggregationQuery(id, type);
     return this.apollo.watchQuery<AggregationDataQueryResponse>({
       query:
         type === 'resource'
           ? GET_RESOURCE_AGGREGATION_DATA
           : GET_REFERENCE_DATA_AGGREGATION_DATA,
       variables: {
-        ...(type === 'resource' && { resource: id }),
-        ...(type === 'referenceData' && { referenceData: id }),
+        ...sourceVariable,
         aggregation,
         first,
         skip,
@@ -185,12 +185,12 @@ export class AggregationService {
     id?: string,
     type?: AggregationSource
   ) {
+    const sourceVariable = this.mapCurrentSourceForAggregationQuery(id, type);
     return this.apollo.mutate<EditAggregationMutationResponse>({
       mutation: EDIT_AGGREGATION,
       variables: {
         id: aggregation.id,
-        ...(type === 'resource' && { resource: id }),
-        ...(type === 'referenceData' && { referenceData: id }),
+        ...sourceVariable,
         aggregation: value,
       },
     });
@@ -209,11 +209,11 @@ export class AggregationService {
     id?: string,
     type?: AggregationSource
   ) {
+    const sourceVariable = this.mapCurrentSourceForAggregationQuery(id, type);
     return this.apollo.mutate<AddAggregationMutationResponse>({
       mutation: ADD_AGGREGATION,
       variables: {
-        ...(type === 'resource' && { resource: id }),
-        ...(type === 'referenceData' && { referenceData: id }),
+        ...sourceVariable,
         aggregation: value,
       },
     });
@@ -232,13 +232,39 @@ export class AggregationService {
     id?: string,
     type?: AggregationSource
   ) {
+    const sourceVariable = this.mapCurrentSourceForAggregationQuery(id, type);
     return this.apollo.mutate<DeleteAggregationMutationResponse>({
       mutation: DELETE_AGGREGATION,
       variables: {
-        ...(type === 'resource' && { resource: id }),
-        ...(type === 'referenceData' && { referenceData: id }),
+        ...sourceVariable,
         id: aggregation.id,
       },
     });
+  }
+
+  /**
+   * Map the current property for aggregation query variable by given source type
+   *
+   * @param id source id for aggregations
+   * @param {AggregationSource} type source type
+   * @returns mapped value by given source type
+   */
+  private mapCurrentSourceForAggregationQuery(
+    id?: string,
+    type?: AggregationSource
+  ) {
+    let queryVariable;
+    switch (type) {
+      case 'resource':
+        queryVariable = { resource: id };
+        break;
+      case 'referenceData':
+        queryVariable = { referenceData: id };
+        break;
+      default:
+        queryVariable = {};
+        break;
+    }
+    return queryVariable;
   }
 }

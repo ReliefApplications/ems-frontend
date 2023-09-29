@@ -47,10 +47,6 @@ const DEFAULT_CONTEXT_FILTER = `{
 const createCardForm = (value?: any) => {
   return new FormGroup({
     title: new FormControl<string>(get(value, 'title', 'New Card')),
-    resource: new FormControl<string>(get(value, 'resource', null)),
-    referenceData: new FormControl<string>(get(value, 'referenceData', null)),
-    layout: new FormControl<string>(get(value, 'layout', null)),
-    aggregation: new FormControl<string>(get(value, 'aggregation', null)),
     html: new FormControl<string>(get(value, 'html', null)),
     showDataSourceLink: new FormControl<boolean>(
       get(value, 'showDataSourceLink', false)
@@ -75,6 +71,24 @@ const createSummaryCardForm = (def: any) => {
     id: new FormControl<number>(def.id),
     title: new FormControl<string>(get(settings, 'title', '')),
     card: createCardForm(get(settings, 'card', null)),
+    ///////////////////////////////
+    // This properties goes in the general settings, but for currently saved summary card settings we would add this get checks
+    resource: new FormControl<string>(
+      get(settings, 'resource', null) ?? get(settings, 'card', null)?.resource
+    ),
+    referenceData: new FormControl<string>(
+      get(settings, 'referenceData', null) ??
+        get(settings, 'card', null)?.referenceData
+    ),
+    aggregation: new FormControl<string>(
+      get(settings, 'aggregation', null) ??
+        get(settings, 'card', null)?.aggregation
+    ),
+    layout: new FormControl<string>(
+      get(settings, 'layout', null) ?? get(settings, 'card', null)?.layout
+    ),
+    // Once they load and saved with this new config, this properties would be placed in the settings property root, as it is
+    ///////////////////////////////
     sortFields: new FormArray([]),
     contextFilters: new FormControl(
       get(settings, 'contextFilters', DEFAULT_CONTEXT_FILTER)
@@ -82,7 +96,7 @@ const createSummaryCardForm = (def: any) => {
     at: new FormControl(get(settings, 'at', '')),
   });
 
-  const isUsingAggregation = !!get(settings, 'card.aggregation', null);
+  const isUsingAggregation = !!get(settings, 'aggregation', null);
   const searchable = isUsingAggregation
     ? false
     : get<boolean>(settings, 'widgetDisplay.searchable', false);
@@ -156,17 +170,17 @@ export class SummaryCardSettingsComponent
     this.tileForm = createSummaryCardForm(this.tile);
     this.change.emit(this.tileForm);
 
-    const resourceID = this.tileForm?.get('card.resource')?.value;
+    const resourceID = this.tileForm?.get('resource')?.value;
     if (resourceID) {
       this.getResource(resourceID);
     }
-    const referenceDataID = this.tileForm?.get('card.referenceData')?.value;
+    const referenceDataID = this.tileForm?.get('referenceData')?.value;
     if (referenceDataID) {
       this.getReferenceData(referenceDataID);
     }
     // Subscribe to aggregation changes
     this.tileForm
-      .get('card.aggregation')
+      .get('aggregation')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((aggregationID) => {
         // disable searchable if aggregation is selected
@@ -234,9 +248,11 @@ export class SummaryCardSettingsComponent
    */
   private getResource(id: string): void {
     const form = this.tileForm;
-    if (!form) return;
-    const layoutID = form.get('card.layout')?.value;
-    const aggregationID = form.get('card.aggregation')?.value;
+    if (!form) {
+      return;
+    }
+    const layoutID = form.get('layout')?.value;
+    const aggregationID = form.get('aggregation')?.value;
     this.fields = [];
     this.apollo
       .query<ResourceQueryResponse>({
@@ -249,9 +265,9 @@ export class SummaryCardSettingsComponent
       })
       .subscribe((res) => {
         if (res.errors) {
-          form.get('card.resource')?.patchValue(null);
-          form.get('card.layout')?.patchValue(null);
-          form.get('card.aggregation')?.patchValue(null);
+          form.get('resource')?.patchValue(null);
+          form.get('layout')?.patchValue(null);
+          form.get('aggregation')?.patchValue(null);
           this.selectedResource = null;
           this.selectedReferenceData = null;
           this.selectedLayout = null;
@@ -287,8 +303,10 @@ export class SummaryCardSettingsComponent
    */
   private getReferenceData(id: string): void {
     const form = this.tileForm;
-    if (!form) return;
-    const aggregationID = form.get('card.aggregation')?.value;
+    if (!form) {
+      return;
+    }
+    const aggregationID = form.get('aggregation')?.value;
     this.fields = [];
     this.apollo
       .query<ReferenceDataQueryResponse>({
@@ -300,9 +318,9 @@ export class SummaryCardSettingsComponent
       })
       .subscribe((res) => {
         if (res.errors) {
-          form.get('card.referenceData')?.patchValue(null);
-          form.get('card.layout')?.patchValue(null);
-          form.get('card.aggregation')?.patchValue(null);
+          form.get('referenceData')?.patchValue(null);
+          form.get('layout')?.patchValue(null);
+          form.get('aggregation')?.patchValue(null);
           this.selectedReferenceData = null;
           this.selectedResource = null;
           this.selectedLayout = null;
@@ -365,8 +383,6 @@ export class SummaryCardSettingsComponent
     this.fields = [];
 
     // clear layout and record
-    this.tileForm?.get('card.layout')?.setValue(null);
-    this.tileForm?.get('card.aggregation')?.setValue(null);
     this.selectedLayout = null;
     this.selectedAggregation = null;
     this.customAggregation = null;
@@ -382,8 +398,6 @@ export class SummaryCardSettingsComponent
     this.fields = [];
 
     // clear layout and record
-    this.tileForm?.get('card.layout')?.setValue(null);
-    this.tileForm?.get('card.aggregation')?.setValue(null);
     this.selectedLayout = null;
     this.selectedAggregation = null;
     this.customAggregation = null;
