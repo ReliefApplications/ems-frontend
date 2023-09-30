@@ -68,6 +68,17 @@ export const init = (Survey: any, environment: any): void => {
       }
     },
   });
+
+  serializer.addProperty('paneldynamic', {
+    name: 'valueExpression:expression',
+    category: 'logic',
+    visibleIndex: 7,
+    default: '',
+    isLocalizable: true,
+    onExecuteExpression: (obj: Question, res: any) => {
+      obj.allowAddPanel = !!res;
+    },
+  });
 };
 
 /**
