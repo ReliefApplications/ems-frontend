@@ -137,6 +137,108 @@
     -webkit-appearance: none !important;
     position: relative !important;
   }
+
+  // STYLES FOR DROPDOWN/TAGBOX
+  // dropdown/tagbox input
+  .k-combobox {
+    @apply 
+      focus-within:ring-2
+      focus-within:ring-inset
+      focus-within:ring-primary-600
+      shadow-sm
+      rounded-md
+      border-0
+      ring-1
+      ring-inset
+      ring-gray-300
+      bg-white
+      items-center
+      w-full
+      border-0;
+  }
+  // dropdown/tagbox list
+  .k-list-ul {
+    @apply
+      shadow-lg
+      ring-black
+      ring-opacity-5
+      focus:outline-none
+      sm:text-sm
+      ease-in-out
+      duration-100
+      w-full
+      overflow-auto
+      rounded-md
+      bg-white
+      text-base
+      max-h-36
+      py-1;
+  }
+  // dropdown/tagbox item
+  .k-list-item {
+    @apply 
+      px-2 
+      w-full 
+      justify-between 
+      cursor-pointer 
+      hover:bg-primary-200 
+      hover:text-white 
+      items-center 
+      text-gray-900 
+      py-[5px] 
+      text-sm
+  }
+  // dropdown/tagbox input icon
+  .k-icon-button {
+    @apply h-full items-center;
+  }
+  // dropdown/tagbox popup and list
+  .k-popup, .k-list {
+    @apply rounded-md;
+  }
+
+  // TEXT INPUT
+  .sd-text {
+    @apply h-12 rounded-md;
+  }
+
+  // COMMENT INPUT
+  .sd-comment {
+    @apply py-1 text-gray-900 rounded-md h-16 min-h-[64px] max-h-[144px];
+  }
+
+  // STYLES FOR FILE UPLOAD
+  // File upload drag area placeholder text
+  .sd-file__drag-area-placeholder {
+    @apply mt-1 text-sm text-gray-500;
+  }
+
+  // File upload file wrapper
+  .sd-file__wrapper {
+    // File upload choose button
+    .sd-file__choose-btn {
+      @apply
+        hover:bg-primary-500
+        bg-primary-400
+        focus-visible:outline
+        focus-visible:outline-2
+        focus-visible:outline-offset-2
+        focus-visible:outline-indigo-600
+        rounded-md
+        shadow-sm
+        text-sm
+        font-semibold
+        text-white;
+    }
+    // File upload choose button icon
+    .sd-file__choose-btn--icon {
+      @apply bg-white hover:bg-white;
+    }
+  }
+  // File upload clear button
+  .sd-file__clean-btn {
+    @apply bg-white ;
+  }
 }
 
 // On hover geospatial form field on survey creator, the actions are displayed over the map, which are not legible
