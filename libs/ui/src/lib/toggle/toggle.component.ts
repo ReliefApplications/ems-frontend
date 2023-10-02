@@ -18,7 +18,6 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
 };
 
 /**
- * UI Toggle component
  * Toggle is a UI component that allows users to switch between two mutually exclusive options (checked or unchecked, on or off) through a single click or tap.
  */
 @Component({
@@ -28,17 +27,17 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   providers: [CONTROL_VALUE_ACCESSOR],
 })
 export class ToggleComponent implements ControlValueAccessor {
-  /** The type of the toggle. */
+  /** Display type of toggle, can be short or normal. */
   @Input() type: ToggleType = 'short';
-  /** The icon of the toggle. */
+  /** Icon of the toggle. */
   @Input() icon!: ToggleIcon;
-  /** The position of the label for the toggle. */
+  /** Position of the label, relative to the toggle. */
   @Input() labelPosition: 'right' | 'left' = 'right';
-  /** The variant or style of the toggle. */
+  /** Variant or style of the toggle, defines the color. */
   @Input() variant: Variant = 'primary';
-  /** The value of the toggle. */
+  /** Current value of the input. */
   value = false;
-  /** Boolean indicating whether the toggle is disabled. */
+  /** Is the toggle disabled. */
   disabled = false;
   /** Event emitter for value changes. */
   valueChange: EventEmitter<boolean> = new EventEmitter();

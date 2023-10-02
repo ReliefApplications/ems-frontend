@@ -22,7 +22,8 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
 };
 
 /**
- * UI Textarea component
+ * UI Textarea component.
+ * Long text, that can be displayed on multiple lines. Ideal for comments, description.
  */
 @Component({
   selector: 'ui-textarea',
@@ -31,11 +32,11 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   providers: [CONTROL_VALUE_ACCESSOR],
 })
 export class TextareaComponent implements ControlValueAccessor {
-  /** The value of the textarea. */
+  /** Value of the textarea. */
   @Input() value = '';
-  /** The placeholder text for the textarea. */
+  /** Placeholder text for the textarea. */
   @Input() placeholder = '';
-  /** The name of the textarea. */
+  /** Name of the textarea. */
   @Input() name!: string;
   /**
    * Set minimal rows for the textarea
@@ -53,10 +54,12 @@ export class TextareaComponent implements ControlValueAccessor {
       }
     }
   }
+  /** Maximum number of rows that the textarea can display. */
   @Input() maxRows = 5;
 
   /**
-   * UI Textarea constructor
+   * UI Textarea component.
+   * Long text, that can be displayed on multiple lines. Ideal for comments, description.
    *
    * @param kendoFocus FocusableDirective
    */

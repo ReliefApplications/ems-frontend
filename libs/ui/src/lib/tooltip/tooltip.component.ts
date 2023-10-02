@@ -2,7 +2,6 @@ import { Component, Input } from '@angular/core';
 import { TooltipExamplesPosition } from './types/tooltip-example-positions';
 
 /**
- * Tooltip component (mainly here for storybook usage)
  * Tooltip is a UI component that displays a hint when hovering over an element.
  */
 @Component({
@@ -10,9 +9,9 @@ import { TooltipExamplesPosition } from './types/tooltip-example-positions';
   templateUrl: './tooltip.component.html',
 })
 export class TooltipComponent {
-  /** The position of the tooltip. */
+  /** Position of the tooltip. */
   @Input() position!: TooltipExamplesPosition;
-  /** The hint text displayed in the tooltip. */
+  /** Hint text displayed in the tooltip. */
   @Input() hint = '';
 
   /**

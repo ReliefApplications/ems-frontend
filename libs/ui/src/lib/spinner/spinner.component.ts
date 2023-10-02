@@ -13,11 +13,11 @@ import { Category } from '../types/category';
   styleUrls: ['./spinner.component.scss'],
 })
 export class SpinnerComponent {
-  /** The size of the spinner. */
+  /** Size of the spinner. */
   @Input() size: Size = 'large';
-  /** The variant or style of the spinner. */
+  /** Variant or style of the spinner, defines the color. */
   @Input() variant: Variant = 'default';
-  /** The category of the spinner. */
+  /** Category, defines the shape. */
   @Input() category: Category = 'primary';
 
   /** @returns general resolved classes and variant for spinner*/
