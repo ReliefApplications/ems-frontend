@@ -400,6 +400,14 @@ export const init = (
         visibleIndex: 3,
       });
       Survey.Serializer.addProperty('resources', {
+        name: 'canDeselectRecords:boolean',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        default: false,
+        visibleIf: visibleIfResource,
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resources', {
         name: 'alwaysCreateRecord:boolean',
         category: 'Custom Questions',
         dependsOn: ['resource', 'addRecord'],
@@ -900,7 +908,7 @@ export const init = (
           convert: question.convert,
           update: question.update,
           inlineEdition: question.inlineEdition,
-          remove: true,
+          remove: question.canDeselectRecords,
         },
       });
     }
