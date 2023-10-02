@@ -89,7 +89,7 @@
               *ngIf="item.action || item.orderable"
             >
               <ui-button
-                [variant]="!vertical ? 'danger' : 'default'"
+                [variant]="!vertical ? 'danger' : 'primary'"
                 class="hide-icons hover:text-primary-600"
                 [isIcon]="true"
                 *ngIf="item.action"
@@ -100,7 +100,7 @@
               >
               </ui-button>
               <ui-button
-                [variant]="!vertical ? 'grey' : 'default'"
+                [variant]="!vertical ? 'grey' : 'primary'"
                 [ngClass]="{ 'hide-icons': vertical }"
                 class="hover:text-primary-600"
                 [isIcon]="true"

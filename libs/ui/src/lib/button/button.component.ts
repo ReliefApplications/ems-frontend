@@ -26,7 +26,7 @@ export class ButtonComponent {
   /** Button size */
   @Input() size: Size = 'medium';
   /** Button variant, define color */
-  @Input() variant: Variant = 'default';
+  @Input() variant: Variant = 'primary';
   /** Is button only icon */
   @Input() isIcon = false;
   /** Should button appear as block */
@@ -67,9 +67,7 @@ export class ButtonComponent {
     classes.push(this.isIcon ? 'ui-button-icon' : 'ui-button');
     classes.push(this.category);
     classes.push(this.size);
-    classes.push(
-      'button-' + (this.variant === 'default' ? 'primary' : this.variant)
-    );
+    classes.push('button-' + this.variant);
     if ((this.icon || this.loading) && !this.isIcon) {
       classes.push('inline-flex items-center gap-x-2');
     }
