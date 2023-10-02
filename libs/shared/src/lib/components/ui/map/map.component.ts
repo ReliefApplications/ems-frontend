@@ -52,7 +52,7 @@ import {
   isEqual,
   flatMapDeep,
 } from 'lodash';
-import { debounceTime, takeUntil } from 'rxjs';
+import { BehaviorSubject, concatMap, debounceTime, takeUntil } from 'rxjs';
 import { MapPopupService } from './map-popup/map-popup.service';
 import { Platform } from '@angular/cdk/platform';
 import { ContextService } from '../../../services/context/context.service';
@@ -151,6 +151,9 @@ export class MapComponent
 
   private basemapTree: L.Control.Layers.TreeObject[][] = [];
   private overlaysTree: L.Control.Layers.TreeObject[][] = [];
+
+  /** Refreshing layers. When true, should prevent layers to be duplicated  */
+  private refreshingLayers = new BehaviorSubject<boolean>(true);
 
   /**
    * Map widget component
@@ -253,10 +256,27 @@ export class MapComponent
       });
       //}
     }, 1000);
+    /**
+     * Keep checking until filters are applied in order to apply next one
+     */
+    const loadNextFilters = (): Promise<void> => {
+      const checkAgain = (resolve: () => void) => {
+        if (this.refreshingLayers.getValue()) {
+          resolve();
+        } else {
+          setTimeout(() => checkAgain(resolve), 100);
+        }
+      };
+      return new Promise(checkAgain);
+    };
 
     // Listen to dashboard filters changes
     this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .pipe(
+        debounceTime(500),
+        concatMap(() => loadNextFilters()),
+        takeUntil(this.destroy$)
+      )
       .subscribe(() => {
         this.filterLayers();
       });
@@ -950,6 +970,7 @@ export class MapComponent
     if (isEqual(filters, this.appliedDashboardFilters)) {
       return;
     }
+    this.refreshingLayers.next(false);
     this.appliedDashboardFilters = filters;
     const { layers: layersToGet, controls } = this.extractSettings();
 
@@ -1000,6 +1021,8 @@ export class MapComponent
         flatten(this.overlaysTree)
       );
     }
+
+    this.refreshingLayers.next(true);
   }
 
   /**

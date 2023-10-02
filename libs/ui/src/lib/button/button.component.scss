@@ -1,5 +1,6 @@
 :host {
   display: block;
+  width: max-content !important;
 }
 
 :host button > * {

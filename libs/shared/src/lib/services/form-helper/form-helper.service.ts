@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import * as Survey from 'survey-angular';
+import { PageModel, SurveyModel } from 'survey-core';
 import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { ConfirmService } from '../confirm/confirm.service';
@@ -12,6 +12,7 @@ import { snakeCase, cloneDeep, set } from 'lodash';
 import { AuthService } from '../auth/auth.service';
 import { BlobType, DownloadService } from '../download/download.service';
 import { AddRecordMutationResponse } from '../../models/record.model';
+import { Question } from '../../survey/types';
 
 /**
  * Shared survey helper service.
@@ -68,7 +69,7 @@ export class FormHelpersService {
    *
    * @param survey Current survey to set up empty questions
    */
-  setEmptyQuestions(survey: Survey.SurveyModel): void {
+  setEmptyQuestions(survey: SurveyModel): void {
     // We get all the questions from the survey and check which ones contains values
     const questions = survey.getAllQuestions();
     const data = { ...survey.data };
@@ -100,7 +101,7 @@ export class FormHelpersService {
    * @param formId Form where to upload the files
    */
   async uploadFiles(
-    survey: Survey.SurveyModel,
+    survey: SurveyModel,
     temporaryFilesStorage: any,
     formId: string | undefined
   ): Promise<void> {
@@ -152,7 +153,7 @@ export class FormHelpersService {
    * @param survey The form of the parent record
    * @returns A promise with all the requests to upload files
    */
-  uploadTemporaryRecords(survey: Survey.SurveyModel): Promise<any>[] {
+  uploadTemporaryRecords(survey: SurveyModel): Promise<any>[] {
     const promises: Promise<any>[] = [];
     const surveyData = survey.data;
     const questions = survey.getAllQuestions();
@@ -228,7 +229,7 @@ export class FormHelpersService {
    *
    * @param survey Survey from which we need to clean cached records.
    */
-  cleanCachedRecords(survey: Survey.SurveyModel): void {
+  cleanCachedRecords(survey: SurveyModel): void {
     if (!survey) return;
     survey.getAllQuestions().forEach((question) => {
       if (question.value) {
@@ -249,7 +250,7 @@ export class FormHelpersService {
    *
    * @param survey Survey to get questions from
    */
-  public async createCachedRecords(survey: Survey.SurveyModel): Promise<void> {
+  public async createCachedRecords(survey: SurveyModel): Promise<void> {
     const promises: Promise<any>[] = [];
     const questions = survey.getAllQuestions();
     const nestedRecordsToAdd: string[] = [];
@@ -318,7 +319,7 @@ export class FormHelpersService {
    *
    * @param survey Survey instance
    */
-  public addUserVariables = (survey: Survey.SurveyModel) => {
+  public addUserVariables = (survey: SurveyModel) => {
     const user = this.authService.user.getValue();
 
     // set user variables
@@ -350,6 +351,28 @@ export class FormHelpersService {
   }
 
   /**
+   * Add tooltip to the survey question if exists
+   *
+   * @param _ Default value of afterRenderQuestion callback
+   * @param options current survey question options
+   */
+  public addQuestionTooltips(_: any, options: any): void {
+    //Return if there is no description to show in popup
+    if (!options.question.tooltip) {
+      return;
+    }
+    options.htmlElement
+      .querySelectorAll('.sv-string-viewer')
+      .forEach((el: any) => {
+        const tooltip = document.createElement('span');
+        tooltip.title = options.question.tooltip;
+        tooltip.innerHTML = '?';
+        tooltip.classList.add('survey-title__tooltip');
+        el.appendChild(tooltip);
+      });
+  }
+
+  /**
    * Convert a string to snake_case. Overrides the snakeCase function of lodash
    * by first checking if the text is not already in snake case
    *
@@ -371,10 +394,7 @@ export class FormHelpersService {
    * @param page The page of the form
    * @returns if valueName is set and in the correct format (snake_case)
    */
-  public setValueName(
-    question: Survey.Question,
-    page: Survey.PageModel
-  ): boolean {
+  public setValueName(question: Question, page: PageModel): boolean {
     if (!question.valueName) {
       if (question.title) {
         question.valueName = this.toSnakeCase(question.title);

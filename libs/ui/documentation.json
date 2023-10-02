@@ -12689,18 +12689,6 @@
                 "name": "Default",
                 "ctype": "miscellaneous",
                 "subtype": "variable",
-                "file": "libs/ui/src/lib/alert/alert.stories.ts",
-                "deprecated": false,
-                "deprecationMessage": "",
-                "type": "StoryObj<StoryType>",
-                "defaultValue": "{\n  args: {\n    content:\n      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pellentesque rhoncus odio, a accumsan purus venenatis eget. Suspendisse pretium nunc non tellus pulvinar, ut dapibus velit mollis. Vivamus dictum tempus ligula, vitae condimentum justo scelerisque sit amet. Donec ultrices quis turpis vitae tincidunt.',\n  },\n}",
-                "rawdescription": "Alert story",
-                "description": "<p>Alert story</p>\n"
-            },
-            {
-                "name": "Default",
-                "ctype": "miscellaneous",
-                "subtype": "variable",
                 "file": "libs/ui/src/lib/avatar-group/avatar-group.component.stories.ts",
                 "deprecated": false,
                 "deprecationMessage": "",
@@ -12708,6 +12696,18 @@
                 "defaultValue": "{\n  args: {},\n}",
                 "rawdescription": "AvatarGroup with top stack, limit 2",
                 "description": "<p>AvatarGroup with top stack, limit 2</p>\n"
+            },
+            {
+                "name": "Default",
+                "ctype": "miscellaneous",
+                "subtype": "variable",
+                "file": "libs/ui/src/lib/alert/alert.stories.ts",
+                "deprecated": false,
+                "deprecationMessage": "",
+                "type": "StoryObj<Story>",
+                "defaultValue": "{\n  args: {\n    content:\n      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pellentesque rhoncus odio, a accumsan purus venenatis eget. Suspendisse pretium nunc non tellus pulvinar, ut dapibus velit mollis. Vivamus dictum tempus ligula, vitae condimentum justo scelerisque sit amet. Donec ultrices quis turpis vitae tincidunt.',\n  },\n}",
+                "rawdescription": "Alert story",
+                "description": "<p>Alert story</p>\n"
             },
             {
                 "name": "Default",
@@ -13113,7 +13113,7 @@
                 "deprecated": false,
                 "deprecationMessage": "",
                 "type": "",
-                "defaultValue": "{\n  category: {\n    options: categories,\n    control: {\n      type: 'select',\n    },\n  },\n  variant: {\n    options: variants,\n    control: {\n      type: 'select',\n    },\n    defaultValue: 'default',\n  },\n  iconPosition: {\n    options: buttonIconPositions,\n    control: {\n      type: 'select',\n    },\n    defaultValue: 'prefix',\n  },\n  icon: {\n    control: 'text',\n    defaultValue: '',\n  },\n  isIcon: {\n    control: {\n      type: 'boolean',\n    },\n    defaultValue: false,\n  },\n  loading: {\n    control: {\n      type: 'boolean',\n    },\n    defaultValue: false,\n  },\n  disabled: {\n    control: {\n      type: 'boolean',\n    },\n    defaultValue: false,\n  },\n} as Meta<StoryType>",
+                "defaultValue": "{\n  label: {\n    control: {\n      type: 'text',\n    },\n    description: 'Text content of the button ( storybook only ).',\n  },\n  category: {\n    options: categories,\n    control: {\n      type: 'select',\n    },\n  },\n  variant: {\n    options: variants,\n    control: {\n      type: 'select',\n    },\n    defaultValue: 'default',\n  },\n  iconPosition: {\n    options: buttonIconPositions,\n    control: {\n      type: 'select',\n    },\n    defaultValue: 'prefix',\n  },\n  icon: {\n    control: 'text',\n    defaultValue: '',\n  },\n  isIcon: {\n    control: {\n      type: 'boolean',\n    },\n    defaultValue: false,\n  },\n  loading: {\n    control: {\n      type: 'boolean',\n    },\n    defaultValue: false,\n  },\n  disabled: {\n    control: {\n      type: 'boolean',\n    },\n    defaultValue: false,\n  },\n} as Meta<StoryType>",
                 "rawdescription": "ArgTypes for individual button stories",
                 "description": "<p>ArgTypes for individual button stories</p>\n"
             },
@@ -14906,7 +14906,7 @@
                 "kind": 184
             },
             {
-                "name": "StoryType",
+                "name": "Story",
                 "ctype": "miscellaneous",
                 "subtype": "typealias",
                 "rawtype": "",
@@ -15194,7 +15194,7 @@
                     "deprecated": false,
                     "deprecationMessage": "",
                     "type": "",
-                    "defaultValue": "{\n  category: {\n    options: categories,\n    control: {\n      type: 'select',\n    },\n  },\n  variant: {\n    options: variants,\n    control: {\n      type: 'select',\n    },\n    defaultValue: 'default',\n  },\n  iconPosition: {\n    options: buttonIconPositions,\n    control: {\n      type: 'select',\n    },\n    defaultValue: 'prefix',\n  },\n  icon: {\n    control: 'text',\n    defaultValue: '',\n  },\n  isIcon: {\n    control: {\n      type: 'boolean',\n    },\n    defaultValue: false,\n  },\n  loading: {\n    control: {\n      type: 'boolean',\n    },\n    defaultValue: false,\n  },\n  disabled: {\n    control: {\n      type: 'boolean',\n    },\n    defaultValue: false,\n  },\n} as Meta<StoryType>",
+                    "defaultValue": "{\n  label: {\n    control: {\n      type: 'text',\n    },\n    description: 'Text content of the button ( storybook only ).',\n  },\n  category: {\n    options: categories,\n    control: {\n      type: 'select',\n    },\n  },\n  variant: {\n    options: variants,\n    control: {\n      type: 'select',\n    },\n    defaultValue: 'default',\n  },\n  iconPosition: {\n    options: buttonIconPositions,\n    control: {\n      type: 'select',\n    },\n    defaultValue: 'prefix',\n  },\n  icon: {\n    control: 'text',\n    defaultValue: '',\n  },\n  isIcon: {\n    control: {\n      type: 'boolean',\n    },\n    defaultValue: false,\n  },\n  loading: {\n    control: {\n      type: 'boolean',\n    },\n    defaultValue: false,\n  },\n  disabled: {\n    control: {\n      type: 'boolean',\n    },\n    defaultValue: false,\n  },\n} as Meta<StoryType>",
                     "rawdescription": "ArgTypes for individual button stories",
                     "description": "<p>ArgTypes for individual button stories</p>\n"
                 },
@@ -16375,7 +16375,7 @@
                     "file": "libs/ui/src/lib/alert/alert.stories.ts",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "type": "StoryObj<StoryType>",
+                    "type": "StoryObj<Story>",
                     "defaultValue": "{\n  args: {\n    content:\n      'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pellentesque rhoncus odio, a accumsan purus venenatis eget. Suspendisse pretium nunc non tellus pulvinar, ut dapibus velit mollis. Vivamus dictum tempus ligula, vitae condimentum justo scelerisque sit amet. Donec ultrices quis turpis vitae tincidunt.',\n  },\n}",
                     "rawdescription": "Alert story",
                     "description": "<p>Alert story</p>\n"
@@ -17677,7 +17677,7 @@
             ],
             "libs/ui/src/lib/alert/alert.stories.ts": [
                 {
-                    "name": "StoryType",
+                    "name": "Story",
                     "ctype": "miscellaneous",
                     "subtype": "typealias",
                     "rawtype": "",

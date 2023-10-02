@@ -3,7 +3,7 @@ import { alertVariants } from './types/alert-variant';
 import { AlertModule } from './alert.module';
 import { AlertComponent } from './alert.component';
 
-type StoryType = AlertComponent & { content?: string };
+type Story = AlertComponent & { content?: string };
 
 export default {
   title: 'Components/Alert',
@@ -42,12 +42,12 @@ export default {
       template: `<ui-alert variant=${variant} [closable]=${closable} [border]=${border} [showIcon]=${showIcon}>${content}</ui-alert>`,
     };
   },
-} as Meta;
+} as Meta<Story>;
 
 /**
  * Alert story
  */
-export const Default: StoryObj<StoryType> = {
+export const Default: StoryObj<Story> = {
   args: {
     content:
       'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam pellentesque rhoncus odio, a accumsan purus venenatis eget. Suspendisse pretium nunc non tellus pulvinar, ut dapibus velit mollis. Vivamus dictum tempus ligula, vitae condimentum justo scelerisque sit amet. Donec ultrices quis turpis vitae tincidunt.',
