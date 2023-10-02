@@ -1,19 +1,23 @@
-<div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row">
-  <!-- FILTERING -->
-  <app-forms-filter
-    (filter)="onFilter($event)"
-    [loading]="updating"
-  ></app-forms-filter>
-  <!-- ACTIONS -->
-  <ui-button
-    icon="add"
-    category="secondary"
-    variant="primary"
-    (click)="onAdd()"
-    *ngIf="'create' | able : 'Form'"
-  >
-    {{ 'models.form.create' | translate }}
-  </ui-button>
+<div class="mb-8 flex flex-col gap-2">
+  <div class="flex gap-8 justify-between flex-col sm:flex-row">
+    <!-- FILTERING -->
+    <app-forms-filter
+      #filter
+      (filter)="onFilter($event)"
+      [loading]="updating"
+    ></app-forms-filter>
+    <!-- ACTIONS -->
+    <ui-button
+      icon="add"
+      category="secondary"
+      variant="primary"
+      (click)="onAdd()"
+      *ngIf="'create' | able : 'Form'"
+    >
+      {{ 'models.form.create' | translate }}
+    </ui-button>
+  </div>
+  <ng-container *ngTemplateOutlet="filter.expandedFilter"></ng-container>
 </div>
 <!-- Table container -->
 <div class="overflow-x-hidden shadow-2lg">
