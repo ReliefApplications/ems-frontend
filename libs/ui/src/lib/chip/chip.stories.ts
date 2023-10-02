@@ -7,6 +7,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 
 export default {
   title: 'Components/Chip',
+  tags: ['autodocs'],
   component: ChipComponent,
   argTypes: {
     variant: {

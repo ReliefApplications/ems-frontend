@@ -11,6 +11,7 @@ import { dividerOrientations } from './types/divider-orientation';
 
 export default {
   title: 'Components/Divider',
+  tags: ['autodocs'],
   component: DividerComponent,
   argTypes: {
     position: {

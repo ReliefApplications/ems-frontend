@@ -8,18 +8,26 @@ import {
 import { AlertVariant } from './types/alert-variant';
 import { Variant } from '../types/variant';
 
-/** UI Alert Component. */
+/**
+ * UI Alert Component.
+ *  The UI Alert Component is a user interface component that displays alert messages to the user.
+ *  It can be used to display information, warning, error, or success messages.
+ */
 @Component({
   selector: 'ui-alert',
   templateUrl: './alert.component.html',
   styleUrls: ['./alert.component.scss'],
 })
 export class AlertComponent {
+  /** Defines the visual theme of the alert component. */
   @Input() variant: AlertVariant = 'default';
+  /** Controls whether the alert can be dismissed by the user. */
   @Input() closable = false;
+  /** Determines if the alert component should have a border. */
   @Input() border = false;
+  /**  Controls the visibility of an icon in the alert component. */
   @Input() showIcon = true;
-
+  /** Emits an event when the alert is closed. */
   // eslint-disable-next-line @angular-eslint/no-output-native
   @Output() close = new EventEmitter<Event>();
 

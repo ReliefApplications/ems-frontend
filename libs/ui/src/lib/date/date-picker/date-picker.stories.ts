@@ -6,6 +6,7 @@ import { DateModule } from '../date.module';
 
 export default {
   title: 'Components/Date Picker',
+  tags: ['autodocs'],
   component: DatePickerComponent,
   decorators: [
     moduleMetadata({

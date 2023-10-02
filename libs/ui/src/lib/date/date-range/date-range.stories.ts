@@ -6,6 +6,7 @@ import { DateModule } from '../date.module';
 
 export default {
   title: 'Components/Date Range',
+  tags: ['autodocs'],
   component: DateRangeComponent,
   decorators: [
     moduleMetadata({

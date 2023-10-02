@@ -7,6 +7,7 @@ import { MenuModule } from './menu.module';
 
 export default {
   title: 'Components/Menu',
+  tags: ['autodocs'],
   component: MenuComponent,
   decorators: [
     moduleMetadata({

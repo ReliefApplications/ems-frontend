@@ -7,6 +7,7 @@ import { IconModule } from '../icon/icon.module';
 
 export default {
   title: 'Components/Checkbox',
+  tags: ['autodocs'],
   component: CheckboxComponent,
   argTypes: {
     variant: {
