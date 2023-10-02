@@ -7,6 +7,7 @@ import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 
 export default {
   title: 'Components/Toggle',
+  tags: ['autodocs'],
   component: ToggleComponent,
   argTypes: {
     type: {

@@ -5,6 +5,7 @@ import { Category } from '../types/category';
 
 /**
  * UI Spinner component
+ * Spinner is a UI component that displays a loading indicator.
  */
 @Component({
   selector: 'ui-spinner',
@@ -12,8 +13,11 @@ import { Category } from '../types/category';
   styleUrls: ['./spinner.component.scss'],
 })
 export class SpinnerComponent {
+  /** Size of the spinner. */
   @Input() size: Size = 'large';
+  /** Variant or style of the spinner, defines the color. */
   @Input() variant: Variant = 'default';
+  /** Category, defines the shape. */
   @Input() category: Category = 'primary';
 
   /** @returns general resolved classes and variant for spinner*/

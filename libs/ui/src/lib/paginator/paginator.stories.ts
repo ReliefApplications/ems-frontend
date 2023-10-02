@@ -10,6 +10,7 @@ import { StorybookTranslateModule } from '../../storybook-translate.module';
 
 export default {
   title: 'Components/Paginator',
+  tags: ['autodocs'],
   component: PaginatorComponent,
   argTypes: {
     disabled: {

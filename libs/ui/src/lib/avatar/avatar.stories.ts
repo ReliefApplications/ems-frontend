@@ -7,6 +7,7 @@ import { avatarShapes } from './types/avatar-shape';
 
 export default {
   title: 'Components/Avatar',
+  tags: ['autodocs'],
   component: AvatarComponent,
   argTypes: {
     size: {

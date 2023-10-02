@@ -3,6 +3,7 @@ import { Variant } from '../types/variant';
 
 /**
  * UI Chip Component
+ * Display a chip with text and optional remove button.
  */
 @Component({
   selector: 'ui-chip',
@@ -10,11 +11,15 @@ import { Variant } from '../types/variant';
   styleUrls: ['./chip.component.scss'],
 })
 export class ChipComponent {
+  /** The value or label of the chip. */
   @Input() value = '';
+  /** Boolean indicating whether the chip is removable. */
   @Input() removable = false;
+  /** The variant or style of the chip. */
   @Input() variant: Variant = 'default';
+  /** Boolean indicating whether the chip is disabled. */
   @Input() disabled = false;
-
+  /** Event emitter for when the chip is removed. */
   @Output() removed = new EventEmitter<void>();
 
   /** @returns general chip classes and variant */

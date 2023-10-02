@@ -5,6 +5,7 @@ import { TabsComponent } from './tabs.component';
 
 export default {
   title: 'Components/Tabs',
+  tags: ['autodocs'],
   component: TabsComponent,
   decorators: [
     moduleMetadata({

@@ -7,6 +7,7 @@ import { SelectOptionModule } from './components/select-option.module';
 
 export default {
   title: 'Components/Select Menu',
+  tags: ['autodocs'],
   component: SelectMenuComponent,
   // Defines the controls
   argTypes: {

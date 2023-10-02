@@ -5,6 +5,7 @@ import { ButtonModule } from '../button/button.module';
 
 export default {
   title: 'Components/Sidenav',
+  tags: ['autodocs'],
   component: SidenavContainerComponent,
   argTypes: {
     showSidenav: {

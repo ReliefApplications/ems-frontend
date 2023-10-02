@@ -7,6 +7,7 @@ import { categories } from '../types/category';
 
 export default {
   title: 'Components/Spinner',
+  tags: ['autodocs'],
   component: SpinnerComponent,
   decorators: [
     moduleMetadata({

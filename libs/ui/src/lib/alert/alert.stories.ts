@@ -7,6 +7,7 @@ type Story = AlertComponent & { content?: string };
 
 export default {
   title: 'Components/Alert',
+  tags: ['autodocs'],
   component: AlertComponent,
   decorators: [
     moduleMetadata({
@@ -19,6 +20,7 @@ export default {
       control: { type: 'select' },
     },
     content: {
+      description: 'Text content of the alert.',
       defaultValue: 'This is an alert',
       control: { type: 'text' },
     },

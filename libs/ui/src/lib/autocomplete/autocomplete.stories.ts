@@ -63,6 +63,7 @@ const GROUPED_OPTIONS = [
 
 export default {
   title: 'Components/Autocomplete',
+  tags: ['autodocs'],
   component: AutocompleteComponent,
   decorators: [
     moduleMetadata({

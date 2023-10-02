@@ -5,6 +5,7 @@ import { UIPageChangeEvent } from './interfaces/paginator.interfaces';
 
 /**
  * UI Paginator component
+ * Paginator is a UI component that allows the user to navigate through pages of content.
  */
 @Component({
   selector: 'ui-paginator',
