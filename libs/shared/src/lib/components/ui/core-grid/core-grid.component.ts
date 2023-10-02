@@ -341,8 +341,8 @@ export class CoreGridComponent
    */
   public configureGrid(): void {
     // set context filter
-    this.contextFilters = this.widget.settings.contextFilters
-      ? JSON.parse(this.widget.settings.contextFilters)
+    this.contextFilters = this.settings.contextFilters
+      ? JSON.parse(this.settings.contextFilters)
       : this.contextFilters;
 
     // define row actions

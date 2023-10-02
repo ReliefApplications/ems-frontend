@@ -524,6 +524,7 @@ export class SummaryCardComponent
         showDetails: true,
         update: true,
       },
+      contextFilters: JSON.stringify(this.contextFilters),
     };
 
     Object.assign(
