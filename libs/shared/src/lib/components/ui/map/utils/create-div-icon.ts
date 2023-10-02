@@ -23,15 +23,6 @@ const MIN_CLUSTER_SIZE = 20;
 /** Maximum cluster size in pixel */
 const MAX_CLUSTER_SIZE = 100;
 
-/** Enables auto-sizing of cluster marker */
-const AUTO_SIZE_CLUSTER = false;
-
-/** Default cluster marker size */
-const DEFAULT_CLUSTER_SIZE = 20;
-
-/** Enables text outline */
-const LIGHT_MODE = false;
-
 /**
  * Generates an HTML element for an icon
  *
@@ -150,6 +141,7 @@ export const createCustomDivIcon = (
  * @param opacity opacity to apply
  * @param childCount Cluster children count
  * @param lightMode boolean to set text color to white or black
+ * @param fontSize font size for the number displayed inside of the cluster marker
  * @param autoSizeCluster boolean to auto size cluster
  * @param clusterSize cluster size if autoSizeCluster is false
  * @returns leaflet div icon
@@ -158,16 +150,17 @@ export const createClusterDivIcon = (
   color: string,
   opacity: number,
   childCount: number,
-  lightMode: boolean = LIGHT_MODE,
-  autoSizeCluster: boolean = AUTO_SIZE_CLUSTER,
-  clusterSize: number = DEFAULT_CLUSTER_SIZE
+  lightMode: boolean,
+  fontSize: number,
+  autoSizeCluster: boolean,
+  clusterSize: number
 ) => {
   // const htmlTemplate = document.createElement('label');
   // htmlTemplate.textContent = childCount.toString();
   const size = autoSizeCluster
     ? (childCount / 50) * (MAX_CLUSTER_SIZE - MIN_CLUSTER_SIZE) +
       MIN_CLUSTER_SIZE
-    : clusterSize || DEFAULT_CLUSTER_SIZE;
+    : clusterSize;
   const mainColor = Color.rgb(
     // eslint-disable-next-line no-extra-boolean-cast
     Boolean(color) ? color : DEFAULT_MARKER_ICON_OPTIONS.color
@@ -192,7 +185,7 @@ export const createClusterDivIcon = (
   }
   `;
   return L.divIcon({
-    html: `<div style="${styles}" class="ring-4"><span>${childCount}</span></div>`,
+    html: `<div style="${styles}" class="ring-4"><span style="font-size: ${fontSize}px">${childCount}</span></div>`,
     className: `leaflet-data-cluster`,
     iconSize: L.point(size, size),
   });

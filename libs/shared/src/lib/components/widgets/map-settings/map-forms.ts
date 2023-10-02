@@ -282,8 +282,13 @@ export const createLayerFeatureReductionForm = (value: any) => {
     ...(type === 'cluster' && {
       drawingInfo: createLayerDrawingInfoForm(get(value, 'drawingInfo')),
       clusterRadius: get(value, 'clusterRadius', 60),
+      lightMode: get(value, 'lightMode', false),
+      fontSize: get(value, 'fontSize', 14),
+      autoSizeCluster: get(value, 'autoSizeCluster', false),
+      defaultClusterSize: get(value, 'defaultClusterSize', 20),
     }),
   });
+  console.log('yea', formGroup);
   return formGroup;
 };
 

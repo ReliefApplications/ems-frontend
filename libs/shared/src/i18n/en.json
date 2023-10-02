@@ -1385,11 +1385,15 @@
 					"edit": {
 						"aggregation": "Aggregation",
 						"cluster": {
+							"autoSizeCluster": "Cluster auto-sizing",
 							"cluster": "Cluster",
 							"clusterSettings": "Cluster settings",
+							"defaultClusterSize": "Default cluster size",
 							"fields": "Cluster fields",
+							"fontSize": "Font size",
 							"high": "High",
 							"label": "Cluster label",
+							"lightMode": "Light mode",
 							"low": "Low",
 							"max": "Max",
 							"min": "Min",

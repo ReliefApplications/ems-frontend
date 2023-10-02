@@ -7,6 +7,30 @@
   ></shared-simple-renderer>
   <ui-divider class="my-4"></ui-divider>
   <div class="flex flex-col">
+    <label>{{ 'components.widget.settings.map.edit.cluster.lightMode' | translate }}</label>
+    <ui-toggle formControlName="lightMode"> </ui-toggle>
+    <label>{{ 'components.widget.settings.map.edit.cluster.fontSize' | translate }}</label>
+    <div uiFormFieldDirective>
+      <input
+        type="number"
+        step="1"
+        min="1"
+        formControlName="fontSize"
+      />
+    </div>
+    <label>{{ 'components.widget.settings.map.edit.cluster.autoSizeCluster' | translate }}</label>
+    <ui-toggle formControlName="autoSizeCluster"> </ui-toggle>
+    <ng-container *ngIf="!formGroup.get('autoSizeCluster')?.value">
+      <label>{{ 'components.widget.settings.map.edit.cluster.defaultClusterSize' | translate }}</label>
+      <div uiFormFieldDirective>
+        <input
+          type="number"
+          step="1"
+          min="1"
+          formControlName="defaultClusterSize"
+        />
+      </div>
+    </ng-container>
     <label>
       {{ 'components.widget.settings.map.edit.cluster.radius' | translate }}
     </label>

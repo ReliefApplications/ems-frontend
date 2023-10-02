@@ -1401,11 +1401,15 @@
 					"edit": {
 						"aggregation": "Agrégation",
 						"cluster": {
+							"autoSizeCluster": "Taille automatique des clusters",
 							"cluster": "Cluster",
 							"clusterSettings": "Paramètres de groupes",
+							"defaultClusterSize": "Taille par defaut des clusters",
 							"fields": "Champs de groupes",
+							"fontSize": "Taille de la police",
 							"high": "Haut",
 							"label": "Libellé du groupes",
+							"lightMode": "Mode lumineux",
 							"low": "Faible",
 							"max": "Max",
 							"min": "Min",
