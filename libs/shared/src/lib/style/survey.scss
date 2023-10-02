@@ -150,3 +150,7 @@
 ::ng-deep .sv_custom_header {
   display: none;
 }
+
+::ng-deep .sd-body .sd-body__page {
+  min-width: 0 !important;
+}
