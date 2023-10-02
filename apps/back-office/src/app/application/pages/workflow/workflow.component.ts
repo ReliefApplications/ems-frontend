@@ -5,17 +5,17 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   Workflow,
   Step,
-  SafeConfirmService,
+  ConfirmService,
   ContentType,
-  SafeApplicationService,
-  SafeWorkflowService,
-  SafeAuthService,
+  ApplicationService,
+  WorkflowService,
+  AuthService,
   Application,
-  SafeUnsubscribeComponent,
+  UnsubscribeComponent,
   EditPageMutationResponse,
   DeleteStepMutationResponse,
   EditWorkflowMutationResponse,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { EDIT_PAGE, DELETE_STEP, EDIT_WORKFLOW } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
@@ -29,10 +29,7 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss'],
 })
-export class WorkflowComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
+export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   public loading = true;
 
@@ -70,14 +67,14 @@ export class WorkflowComponent
    */
   constructor(
     private apollo: Apollo,
-    private workflowService: SafeWorkflowService,
-    private applicationService: SafeApplicationService,
+    private workflowService: WorkflowService,
+    private applicationService: ApplicationService,
     private route: ActivatedRoute,
     private router: Router,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private authService: SafeAuthService,
-    private confirmService: SafeConfirmService,
+    private authService: AuthService,
+    private confirmService: ConfirmService,
     private translate: TranslateService
   ) {
     super();
@@ -351,10 +348,12 @@ export class WorkflowComponent
    * @param elementRef Element ref of workflow component
    */
   onActivate(elementRef: any): void {
-    if (elementRef.goToNextStep) {
-      elementRef.goToNextStep.subscribe((event: any) => {
-        if (event) {
+    if (elementRef.changeStep) {
+      elementRef.changeStep.subscribe((event: number) => {
+        if (event > 0) {
           this.goToNextStep();
+        } else {
+          this.goToPreviousStep();
         }
       });
     }
@@ -429,6 +428,29 @@ export class WorkflowComponent
   }
 
   /**
+   * Navigates to the previous step if possible and change selected step / index consequently
+   */
+  private goToPreviousStep(): void {
+    if (this.activeStep > 0) {
+      this.onOpenStep(this.activeStep - 1);
+    } else if (this.activeStep === 0) {
+      this.onOpenStep(this.steps.length - 1);
+      this.snackBar.openSnackBar(
+        this.translate.instant('models.workflow.notifications.goToStep', {
+          step: this.steps[this.steps.length - 1].name,
+        })
+      );
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant(
+          'models.workflow.notifications.cannotGoToPreviousStep'
+        ),
+        { error: true }
+      );
+    }
+  }
+
+  /**
    * Open selected step
    *
    * @param index index of selected step
@@ -449,5 +471,27 @@ export class WorkflowComponent
     } else {
       this.router.navigate(['./'], { relativeTo: this.route });
     }
+  }
+
+  /**
+   * Toggle page visibility.
+   */
+  togglePageVisibility() {
+    const callback = () => {
+      this.workflow = {
+        ...this.workflow,
+        page: {
+          ...this.workflow?.page,
+          visible: !this.workflow?.page?.visible,
+        },
+      };
+    };
+    this.applicationService.togglePageVisibility(
+      {
+        id: this.workflow?.page?.id,
+        visible: this.workflow?.page?.visible,
+      },
+      callback
+    );
   }
 }

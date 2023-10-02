@@ -1,51 +1,59 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import {
-  UntypedFormBuilder,
-  UntypedFormControl,
-  UntypedFormGroup,
-} from '@angular/forms';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
+import { FormBuilder } from '@angular/forms';
+import { UnsubscribeComponent } from '@oort-front/shared';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 
 /**
  * Filter component of applications page.
  */
 @Component({
-  selector: 'app-filter',
+  selector: 'app-applications-filter',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss'],
 })
-export class FilterComponent implements OnInit {
-  public form!: UntypedFormGroup;
-  public search = new UntypedFormControl('');
-  public show = false;
-
-  @Output() filter = new EventEmitter<any>();
+export class FilterComponent extends UnsubscribeComponent implements OnInit {
+  /** Loading indicator */
   @Input() loading = false;
+  /** Filter update event */
+  @Output() filter = new EventEmitter<any>();
+  /** Filter form group */
+  public form = this.fb.group({
+    startDate: [null],
+    endDate: [null],
+    status: [''],
+  });
+  /** Should expand filter */
+  public expanded = false;
+  /** Reference to expanded filter template */
+  @ViewChild('expandedFilter')
+  expandedFilter!: TemplateRef<any>;
 
   /**
    * Filter component of applications page.
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    */
-  constructor(private formBuilder: UntypedFormBuilder) {}
+  constructor(private fb: FormBuilder) {
+    super();
+  }
 
   ngOnInit(): void {
-    this.form = this.formBuilder.group({
-      name: [''],
-      startDate: [null],
-      endDate: [null],
-      status: [''],
-    });
     this.form.valueChanges
-      .pipe(debounceTime(1000), distinctUntilChanged())
+      .pipe(
+        debounceTime(1000),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
       .subscribe((value) => {
         this.emitFilter(value);
-      });
-    // this way we can wait for 0.2s before sending an update
-    this.search.valueChanges
-      .pipe(debounceTime(1000), distinctUntilChanged())
-      .subscribe((value) => {
-        this.form.controls.name.setValue(value);
       });
   }
 
@@ -56,8 +64,12 @@ export class FilterComponent implements OnInit {
    */
   private emitFilter(value: any): void {
     const filters: any[] = [];
-    if (value.name) {
-      filters.push({ field: 'name', operator: 'contains', value: value.name });
+    if (value.search) {
+      filters.push({
+        field: 'name',
+        operator: 'contains',
+        value: value.search,
+      });
     }
     if (value.status) {
       filters.push({ field: 'status', operator: 'eq', value: value.status });
@@ -88,13 +100,16 @@ export class FilterComponent implements OnInit {
    */
   clear(): void {
     this.form.reset();
-    this.search.reset();
   }
 
   /**
    * Clears date range.
    */
   clearDateFilter(): void {
-    this.form.setValue({ ...this.form.value, startDate: null, endDate: null });
+    this.form.setValue({
+      ...this.form.getRawValue(),
+      startDate: null,
+      endDate: null,
+    });
   }
 }

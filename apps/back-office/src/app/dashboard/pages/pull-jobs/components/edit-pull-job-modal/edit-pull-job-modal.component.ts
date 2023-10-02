@@ -1,11 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
-import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { FormBuilder, UntypedFormArray, Validators } from '@angular/forms';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import {
   ApiConfiguration,
   Application,
@@ -19,7 +14,8 @@ import {
   ApiConfigurationsQueryResponse,
   FormQueryResponse,
   FormsQueryResponse,
-} from '@oort-front/safe';
+  StatusOptionsComponent,
+} from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   GET_API_CONFIGURATIONS,
@@ -27,7 +23,13 @@ import {
   GET_FORM_NAMES,
   GET_ROUTING_KEYS,
 } from '../../graphql/queries';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subscription,
+  debounceTime,
+  distinctUntilChanged,
+} from 'rxjs';
 import get from 'lodash/get';
 import {
   getCachedValues,
@@ -37,9 +39,9 @@ import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import {
-  SafeReadableCronModule,
+  ReadableCronModule,
   CronExpressionControlModule,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import {
   TooltipModule,
   ButtonModule,
@@ -47,11 +49,11 @@ import {
   SelectMenuModule,
   FormWrapperModule,
   TextareaModule,
-  ChipModule,
   GraphQLSelectModule,
   IconModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 /** Items per page for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -69,7 +71,7 @@ const DEFAULT_FIELDS = ['createdBy'];
     TranslateModule,
     DialogModule,
     GraphQLSelectModule,
-    SafeReadableCronModule,
+    ReadableCronModule,
     TooltipModule,
     ExpansionPanelModule,
     CronExpressionControlModule,
@@ -78,7 +80,8 @@ const DEFAULT_FIELDS = ['createdBy'];
     ButtonModule,
     SelectMenuModule,
     FormWrapperModule,
-    ChipModule,
+    StatusOptionsComponent,
+    MonacoEditorModule,
   ],
   selector: 'app-edit-pull-job-modal',
   templateUrl: './edit-pull-job-modal.component.html',
@@ -86,7 +89,38 @@ const DEFAULT_FIELDS = ['createdBy'];
 })
 export class EditPullJobModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
+  public formGroup = this.fb.group({
+    name: [get(this.data, 'pullJob.name', ''), Validators.required],
+    status: [get(this.data, 'pullJob.status', ''), Validators.required],
+    apiConfiguration: [
+      get(this.data, 'pullJob.apiConfiguration.id', ''),
+      Validators.required,
+    ],
+    url: [get(this.data, 'pullJob.url', '')],
+    path: [get(this.data, 'pullJob.path', '')],
+    schedule: [
+      get(this.data, 'pullJob.schedule', ''),
+      [Validators.required, cronValidator()],
+    ],
+    convertTo: [get(this.data, 'pullJob.convertTo.id', '')],
+    channel: [get(this.data, 'pullJob.channel.id', '')],
+    mapping: this.fb.array(
+      this.data.pullJob && this.data.pullJob.mapping
+        ? Object.keys(this.data.pullJob.mapping).map((x: any) =>
+            this.fb.group({
+              name: [x, Validators.required],
+              value: [this.data.pullJob?.mapping[x], Validators.required],
+            })
+          )
+        : []
+    ),
+    rawMapping: [
+      this.data.pullJob && this.data.pullJob.mapping
+        ? JSON.stringify(this.data.pullJob?.mapping, null, 2)
+        : '',
+    ],
+    uniqueIdentifiers: [get(this.data, 'pullJob.uniqueIdentifiers', [])],
+  });
   isHardcoded = true;
 
   // === FORMS ===
@@ -135,23 +169,28 @@ export class EditPullJobModalComponent implements OnInit {
     return this.data.pullJob?.channel || null;
   }
 
+  /** Monaco editor configuration, for raw edition */
+  public editorOptions = {
+    theme: 'vs-dark',
+    language: 'json',
+    fixedOverflowWidgets: true,
+  };
+
   /**
    * Pull job modal component
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param dialogRef Dialog ref
    * @param apollo Apollo service
-   * @param dialog Dialog service
    * @param document Document
    * @param data Modal injected data
    * @param data.channels list of available channels
    * @param data.pullJob pull job
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<EditPullJobModalComponent>,
     private apollo: Apollo,
-    private dialog: Dialog,
     @Inject(DOCUMENT) private document: Document,
     @Inject(DIALOG_DATA)
     public data: {
@@ -161,38 +200,6 @@ export class EditPullJobModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.formGroup = this.formBuilder.group({
-      name: [get(this.data, 'pullJob.name', ''), Validators.required],
-      status: [get(this.data, 'pullJob.status', ''), Validators.required],
-      apiConfiguration: [
-        get(this.data, 'pullJob.apiConfiguration.id', ''),
-        Validators.required,
-      ],
-      url: [get(this.data, 'pullJob.url', '')],
-      path: [get(this.data, 'pullJob.path', '')],
-      schedule: [
-        get(this.data, 'pullJob.schedule', ''),
-        [Validators.required, cronValidator()],
-      ],
-      convertTo: [get(this.data, 'pullJob.convertTo.id', '')],
-      channel: [get(this.data, 'pullJob.channel.id', '')],
-      mapping: this.formBuilder.array(
-        this.data.pullJob && this.data.pullJob.mapping
-          ? Object.keys(this.data.pullJob.mapping).map((x: any) =>
-              this.formBuilder.group({
-                name: [x, Validators.required],
-                value: [this.data.pullJob?.mapping[x], Validators.required],
-              })
-            )
-          : []
-      ),
-      rawMapping: [
-        this.data.pullJob && this.data.pullJob.mapping
-          ? JSON.stringify(this.data.pullJob?.mapping, null, 2)
-          : '',
-      ],
-      uniqueIdentifiers: [get(this.data, 'pullJob.uniqueIdentifiers', [])],
-    });
     this.formsQuery = this.apollo.watchQuery<FormsQueryResponse>({
       query: GET_FORM_NAMES,
       variables: {
@@ -249,7 +256,7 @@ export class EditPullJobModalComponent implements OnInit {
     );
     this.formGroup
       .get('apiConfiguration')
-      ?.valueChanges.subscribe((apiConfiguration: string) => {
+      ?.valueChanges.subscribe((apiConfiguration: string | null) => {
         if (apiConfiguration) {
           const api = this.apiConfigurations.find(
             (x) => x.id === apiConfiguration
@@ -260,6 +267,24 @@ export class EditPullJobModalComponent implements OnInit {
             api.authType === authType.public
           );
         }
+      });
+
+    this.formGroup
+      .get('rawMapping')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        const mapping = JSON.parse(value || '{}');
+        this.formGroup.setControl(
+          'mapping',
+          this.fb.array(
+            Object.keys(mapping).map((x: any) =>
+              this.fb.group({
+                name: [x, Validators.required],
+                value: [mapping[x], Validators.required],
+              })
+            )
+          )
+        );
       });
   }
 
@@ -299,7 +324,7 @@ export class EditPullJobModalComponent implements OnInit {
     return this.fields.filter(
       (field) =>
         field.name === name ||
-        !this.formGroup.value.mapping.some((x: any) => x.name === field.name)
+        !this.formGroup.value.mapping?.some((x: any) => x.name === field.name)
     );
   }
 
@@ -317,7 +342,7 @@ export class EditPullJobModalComponent implements OnInit {
    */
   onAddElement(): void {
     this.mappingArray.push(
-      this.formBuilder.group({
+      this.fb.group({
         name: ['', Validators.required],
         value: ['', Validators.required],
       })
@@ -328,39 +353,14 @@ export class EditPullJobModalComponent implements OnInit {
    * Toggles the edit mode and update form values accordingly.
    */
   toggleRawJSON(): void {
-    if (this.openRawJSON) {
-      const mapping = JSON.parse(this.formGroup.get('rawMapping')?.value || '');
-      this.formGroup.setControl(
-        'mapping',
-        this.formBuilder.array(
-          Object.keys(mapping).map((x: any) =>
-            this.formBuilder.group({
-              name: [x, Validators.required],
-              value: [mapping[x], Validators.required],
-            })
-          )
-        )
-      );
-    } else {
-      const mapping = this.formGroup
-        .get('mapping')
-        ?.value.reduce(
-          (o: any, field: any) => ({ ...o, [field.name]: field.value }),
-          {}
-        );
-      this.formGroup
-        .get('rawMapping')
-        ?.setValue(JSON.stringify(mapping, null, 2));
-    }
+    this.synchronizeFormValueData();
     this.openRawJSON = !this.openRawJSON;
   }
 
   /**
-   * Synchronizes mapping values on update button click.
-   *
-   * @returns Return form value.
+   * Synchronize mapping of the form value to the raw mapping if user don't want to open raw JSON
    */
-  returnFormValue(): any {
+  private synchronizeFormValueData() {
     if (!this.openRawJSON) {
       const mapping = this.formGroup
         .get('mapping')
@@ -372,6 +372,15 @@ export class EditPullJobModalComponent implements OnInit {
         .get('rawMapping')
         ?.setValue(JSON.stringify(mapping, null, 2));
     }
+  }
+
+  /**
+   * Synchronizes mapping values on update button click.
+   *
+   * @returns Return form value.
+   */
+  returnFormValue(): any {
+    this.synchronizeFormValueData();
     return this.formGroup.value;
   }
 

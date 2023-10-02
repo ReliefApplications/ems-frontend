@@ -7,23 +7,15 @@
 /* === Tailwindcss === */
 // Allow to use @apply in not visible by default elements
 @layer components {
-  // Drag & Drop
-  .cdk-drag-preview {
-    @apply box-border rounded shadow-xl flex items-center justify-between bg-white;
-  }
-
-  .cdk-drag-animating {
-    @apply transition-transform;
-  }
-
-  .cdk-drag-placeholder {
-    @apply opacity-0;
-  }
-
-  .cdk-drop-list-dragging {
-    .cdk-drag:not(.cdk-drag-placeholder) {
-      @apply transition-transform;
-    }
+  // === Measure plugin ===
+  // todo(gis): move somewhere else
+  .leaflet-measure-resultpopup a.deletemarkup,
+  .leaflet-measure-resultpopup a.zoomto,
+  .leaflet-control-measure a.cancel,
+  .leaflet-control-measure a.finish,
+  .leaflet-control-measure a.start {
+    @apply text-primary-500;
+    background-image: none !important;
   }
 }
 

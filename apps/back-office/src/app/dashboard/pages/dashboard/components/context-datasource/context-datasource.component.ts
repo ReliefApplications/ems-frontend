@@ -15,10 +15,10 @@ import {
   ReferenceDataQueryResponse,
   ReferenceDatasQueryResponse,
   Resource,
+  UnsubscribeComponent,
   ResourceQueryResponse,
   ResourcesQueryResponse,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { takeUntil } from 'rxjs';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
@@ -87,7 +87,7 @@ const createContextDatasourceForm = (data?: PageContextT) => {
   styleUrls: ['./context-datasource.component.scss'],
 })
 export class ContextDatasourceComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   // Form

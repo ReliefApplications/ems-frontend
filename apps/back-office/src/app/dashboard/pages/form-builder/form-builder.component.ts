@@ -10,20 +10,21 @@ import {
 import { GET_SHORT_FORM_BY_ID } from './graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
 import {
-  SafeAuthService,
+  AuthService,
   Form,
-  SafeConfirmService,
-  SafeBreadcrumbService,
+  ConfirmService,
+  BreadcrumbService,
   status,
   FormQueryResponse,
   EditFormMutationResponse,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { FormControl } from '@angular/forms';
 import { isEqual } from 'lodash';
+import { GraphQLError } from 'graphql';
 
 /**
  * Form builder page
@@ -70,10 +71,10 @@ export class FormBuilderComponent implements OnInit {
     private router: Router,
     private snackBar: SnackbarService,
     public dialog: Dialog,
-    private authService: SafeAuthService,
-    private confirmService: SafeConfirmService,
+    private authService: AuthService,
+    private confirmService: ConfirmService,
     private translate: TranslateService,
-    private breadcrumbService: SafeBreadcrumbService
+    private breadcrumbService: BreadcrumbService
   ) {}
 
   /**
@@ -195,8 +196,8 @@ export class FormBuilderComponent implements OnInit {
     if (!this.form?.id) {
       alert('not valid');
     } else {
-      const { SafeStatusModalComponent } = await import('@oort-front/safe');
-      const statusModal = this.dialog.open(SafeStatusModalComponent, {
+      const { StatusModalComponent } = await import('@oort-front/shared');
+      const statusModal = this.dialog.open(StatusModalComponent, {
         disableClose: true,
         data: {
           title: this.translate.instant('components.formBuilder.saveSurvey'),
@@ -247,14 +248,7 @@ export class FormBuilderComponent implements OnInit {
    * @param status new status
    */
   private async updateStatus(status: string): Promise<void> {
-    const { SafeStatusModalComponent } = await import('@oort-front/safe');
-    const statusModal = this.dialog.open(SafeStatusModalComponent, {
-      disableClose: true,
-      data: {
-        title: 'Saving survey',
-        showSpinner: true,
-      },
-    });
+    const statusModal = await this.getStatusModalRef();
     this.apollo
       .mutate<EditFormMutationResponse>({
         mutation: EDIT_FORM_STATUS,
@@ -265,27 +259,8 @@ export class FormBuilderComponent implements OnInit {
       })
       .subscribe({
         next: ({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.status'),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-            statusModal.close();
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.statusUpdated', {
-                value: status,
-              })
-            );
-            this.form = { ...this.form, status: data?.editForm.status };
-            this.statusControl.setValue(data?.editForm.status, {
-              emitEvent: false,
-            });
-            statusModal.close();
-          }
+          this.handleFormMutationResponse(data, errors);
+          statusModal.close();
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
@@ -293,6 +268,63 @@ export class FormBuilderComponent implements OnInit {
       });
   }
 
+  /**
+   * Handles form mutations response
+   *
+   * @param {EditFormMutationResponse} data data retrieved from the graphql mutation
+   * @param {GraphQLError[]} errors errors from the graphql mutation if any
+   * @param {string} formName new form name if any
+   */
+  private handleFormMutationResponse(
+    data: EditFormMutationResponse | null | undefined,
+    errors: readonly GraphQLError[] | undefined,
+    formName?: string
+  ) {
+    if (errors) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectNotUpdated', {
+          type: this.translate.instant(
+            formName ? 'common.form.one' : 'common.status'
+          ),
+          error: errors ? errors[0].message : '',
+        }),
+        { error: true }
+      );
+    } else {
+      const successMessage = formName
+        ? this.translate.instant('common.notifications.objectUpdated', {
+            type: this.translate.instant('common.form.one').toLowerCase(),
+            value: formName,
+          })
+        : this.translate.instant('common.notifications.statusUpdated', {
+            value: data?.editForm.status,
+          });
+      this.snackBar.openSnackBar(successMessage);
+      if (formName) {
+        this.form = { ...this.form, name: data?.editForm.name };
+        this.breadcrumbService.setBreadcrumb('@form', this.form.name as string);
+      } else {
+        this.form = { ...this.form, status: data?.editForm.status };
+        this.statusControl.setValue(data?.editForm.status, {
+          emitEvent: false,
+        });
+      }
+    }
+  }
+
+  /**
+   * Open a modal and returns it's reference
+   */
+  private async getStatusModalRef() {
+    const { StatusModalComponent } = await import('@oort-front/shared');
+    return this.dialog.open(StatusModalComponent, {
+      disableClose: true,
+      data: {
+        title: 'Saving survey',
+        showSpinner: true,
+      },
+    });
+  }
   /**
    * Available in previous version to change the template.
    *
@@ -340,14 +372,7 @@ export class FormBuilderComponent implements OnInit {
    */
   public async saveName(formName: string): Promise<void> {
     if (formName && formName !== this.form?.name) {
-      const { SafeStatusModalComponent } = await import('@oort-front/safe');
-      const statusModal = this.dialog.open(SafeStatusModalComponent, {
-        disableClose: true,
-        data: {
-          title: 'Saving survey',
-          showSpinner: true,
-        },
-      });
+      const statusModal = await this.getStatusModalRef();
       this.apollo
         .mutate<EditFormMutationResponse>({
           mutation: EDIT_FORM_NAME,
@@ -357,29 +382,8 @@ export class FormBuilderComponent implements OnInit {
           },
         })
         .subscribe(({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.form.one'),
-                error: errors[0].message,
-              }),
-              { error: true }
-            );
-            statusModal.close();
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectUpdated', {
-                type: this.translate.instant('common.form.one').toLowerCase(),
-                value: formName,
-              })
-            );
-            this.form = { ...this.form, name: data?.editForm.name };
-            this.breadcrumbService.setBreadcrumb(
-              '@form',
-              this.form.name as string
-            );
-            statusModal.close();
-          }
+          this.handleFormMutationResponse(data, errors, formName);
+          statusModal.close();
         });
     }
   }
@@ -390,8 +394,8 @@ export class FormBuilderComponent implements OnInit {
    * @param e new permissions
    */
   async saveAccess(e: any): Promise<void> {
-    const { SafeStatusModalComponent } = await import('@oort-front/safe');
-    const statusModal = this.dialog.open(SafeStatusModalComponent, {
+    const { StatusModalComponent } = await import('@oort-front/shared');
+    const statusModal = this.dialog.open(StatusModalComponent, {
       disableClose: true,
       data: {
         title: 'Saving survey',

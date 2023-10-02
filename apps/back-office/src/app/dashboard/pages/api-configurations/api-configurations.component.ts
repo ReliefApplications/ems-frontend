@@ -4,19 +4,18 @@ import { Apollo, QueryRef } from 'apollo-angular';
 import {
   AddApiConfigurationMutationResponse,
   ApiConfiguration,
+  ConfirmService,
+  UnsubscribeComponent,
   ApiConfigurationsQueryResponse,
   DeleteApiConfigurationMutationResponse,
-  SafeConfirmService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
-import { GET_API_CONFIGURATIONS } from './graphql/queries';
+} from '@oort-front/shared';
 import {
   ADD_API_CONFIGURATION,
   DELETE_API_CONFIGURATION,
 } from './graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { takeUntil } from 'rxjs/operators';
+import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import {
   getCachedValues,
   updateQueryUniqueValues,
@@ -28,6 +27,8 @@ import {
   handleTablePageEvent,
 } from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
+import { GET_API_CONFIGURATIONS } from './graphql/queries';
+import { FormBuilder } from '@angular/forms';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
@@ -41,7 +42,7 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./api-configurations.component.scss'],
 })
 export class ApiConfigurationsComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   // === DATA ===
@@ -56,6 +57,7 @@ export class ApiConfigurationsComponent
   sort?: TableSort;
 
   // === FILTERS ===
+  form = this.fb.group({});
   public showFilters = false;
   public searchText = '';
   public statusFilter = '';
@@ -76,14 +78,16 @@ export class ApiConfigurationsComponent
    * @param confirmService Shared confirm service
    * @param router Angular router
    * @param translate Angular translate service
+   * @param fb Angular Form Builder
    */
   constructor(
     private apollo: Apollo,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private confirmService: SafeConfirmService,
+    private confirmService: ConfirmService,
     private router: Router,
-    private translate: TranslateService // private uiTableWrapper: TableWrapperDirective
+    private translate: TranslateService, // private uiTableWrapper: TableWrapperDirective
+    private fb: FormBuilder
   ) {
     super();
   }
@@ -92,6 +96,13 @@ export class ApiConfigurationsComponent
    * Creates the API configuration query, and subscribes to the query changes.
    */
   ngOnInit(): void {
+    this.form.valueChanges
+      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
+      .subscribe((value: any) => {
+        this.searchText = (value?.search ?? '').trim().toLowerCase();
+        this.applyFilter('', this.searchText);
+      });
+
     this.apiConfigurationsQuery =
       this.apollo.watchQuery<ApiConfigurationsQueryResponse>({
         query: GET_API_CONFIGURATIONS,
@@ -156,10 +167,6 @@ export class ApiConfigurationsComponent
   applyFilter(column: string, event: any): void {
     if (column === 'status') {
       this.statusFilter = event ?? '';
-    } else {
-      this.searchText = event
-        ? event.target.value.trim().toLowerCase()
-        : this.searchText;
     }
     this.filterPredicate();
   }
@@ -168,9 +175,8 @@ export class ApiConfigurationsComponent
    * Removes all the filters.
    */
   clearAllFilters(): void {
-    this.searchText = '';
     this.statusFilter = '';
-    this.applyFilter('', null);
+    this.form.reset();
   }
 
   /**

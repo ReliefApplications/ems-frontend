@@ -1,4 +1,5 @@
 import { gql } from 'apollo-angular';
+
 /** Graphql query for getting records of a resource */
 export const GET_RESOURCE_RECORDS = gql`
   query GetResourceRecords(

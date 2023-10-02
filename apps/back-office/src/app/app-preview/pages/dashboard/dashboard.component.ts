@@ -11,9 +11,9 @@ import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 import {
   Dashboard,
   DashboardQueryResponse,
-  SafeDashboardService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  DashboardService,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
@@ -27,7 +27,7 @@ import { SnackbarService } from '@oort-front/ui';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
   // === DATA ===
@@ -37,7 +37,7 @@ export class DashboardComponent
   public dashboard?: Dashboard;
 
   // === STEP CHANGE FOR WORKFLOW ===
-  @Output() goToNextStep: EventEmitter<any> = new EventEmitter();
+  @Output() changeStep: EventEmitter<number> = new EventEmitter();
 
   /**
    * Dashboard component page for application preview.
@@ -54,7 +54,7 @@ export class DashboardComponent
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: SnackbarService,
-    private dashboardService: SafeDashboardService,
+    private dashboardService: DashboardService,
     private translate: TranslateService
   ) {
     super();

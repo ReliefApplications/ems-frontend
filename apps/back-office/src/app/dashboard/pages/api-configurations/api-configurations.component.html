@@ -1,37 +1,18 @@
 <div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row">
   <!-- Filters -->
   <div class="flex flex-col gap-x-4">
-    <!-- Default filter -->
-    <div class="flex flex-wrap gap-2 flex-col sm:flex-row">
-      <!-- Search text filter -->
-      <div uiFormFieldDirective>
-        <ui-icon icon="search" uiPrefix></ui-icon>
-        <input
-          [ngModel]="searchText"
-          (keyup)="applyFilter('', $event)"
-          type="text"
-          [placeholder]="'common.placeholder.search' | translate"
-        />
-      </div>
-      <!-- Toggle advanced filters -->
-      <ui-button
-        class="max-sm:!w-auto"
-        icon="filter_list"
-        category="tertiary"
-        variant="primary"
-        (click)="showFilters = !showFilters"
-      >
-        {{
-          showFilters
-            ? ('common.filter.hide' | translate)
-            : ('common.filter.show' | translate)
-        }}
-      </ui-button>
-    </div>
+    <form [formGroup]="form">
+      <!-- Default filter -->
+      <shared-list-filter
+        [hasSiblingFilters]="true"
+        [loading]="loading"
+        (showFilters)="showFilters = $event"
+      ></shared-list-filter>
+    </form>
     <!-- Advanced filters -->
     <div
       *ngIf="showFilters"
-      class="flex flex-wrap gap-x-2 sm:items-center flex-col sm:flex-row"
+      class="flex flex-wrap gap-x-2 sm:items-end flex-col sm:flex-row"
     >
       <!-- Status filter -->
       <div
@@ -112,29 +93,9 @@
           </span>
         </th>
         <td uiCell *cdkCellDef="let element">
-          <div uiChipList="">
-            <ui-chip
-              class="!rounded-lg"
-              variant="success"
-              *ngIf="element.status === 'active'"
-            >
-              {{ 'common.status_active' | translate | titlecase }}
-            </ui-chip>
-            <ui-chip
-              class="!rounded-lg"
-              variant="warning"
-              *ngIf="element.status === 'pending'"
-            >
-              {{ 'common.status_pending' | translate | titlecase }}
-            </ui-chip>
-            <ui-chip
-              class="!rounded-lg"
-              variant="danger"
-              *ngIf="element.status === 'archived'"
-            >
-              {{ 'common.status_archived' | translate | titlecase }}
-            </ui-chip>
-          </div>
+          <shared-status-options
+            [status]="element.status"
+          ></shared-status-options>
         </td>
       </ng-container>
 
@@ -156,6 +117,7 @@
             [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
             [disabled]="!(element.canUpdate || element.canDelete)"
+            [uiTooltip]="'common.options' | translate"
           >
           </ui-button>
           <ui-menu #menu>
@@ -179,7 +141,7 @@
         [routerLink]="['/settings/apiconfigurations', row.id]"
       ></tr>
     </table>
-    <safe-skeleton-table
+    <shared-skeleton-table
       *ngIf="loading"
       [columns]="[
         'common.name',
@@ -188,7 +150,7 @@
       ]"
       [actions]="true"
     >
-    </safe-skeleton-table>
+    </shared-skeleton-table>
   </div>
 </div>
 <ui-paginator

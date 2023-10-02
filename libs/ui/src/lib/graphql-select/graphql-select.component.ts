@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -43,6 +44,8 @@ export class GraphQLSelectComponent
   @Input() valueField = '';
   @Input() textField = '';
   @Input() path = '';
+  @Input() isSurveyQuestion = false;
+  /** Add type to selectedElements */
   @Input() selectedElements: any[] = [];
   @Input() filterable = false;
   @Input() placeholder = '';
@@ -164,13 +167,15 @@ export class GraphQLSelectComponent
    *
    * @param ngControl form control shared service,
    * @param elementRef shared element ref service
-   * @param renderer Renderer2
+   * @param renderer - Angular - Renderer2
+   * @param changeDetectorRef - Angular - ChangeDetectorRef
    * @param document document
    */
   constructor(
     @Optional() @Self() public ngControl: NgControl,
     public elementRef: ElementRef<HTMLElement>,
     private renderer: Renderer2,
+    private changeDetectorRef: ChangeDetectorRef,
     @Inject(DOCUMENT) private document: Document
   ) {
     if (this.ngControl) {
@@ -220,7 +225,7 @@ export class GraphQLSelectComponent
    *
    * @param fn onChange function
    */
-  registerOnChange(fn: any): void {
+  registerOnChange(fn: (_: any) => void): void {
     this.onChange = fn;
   }
 
@@ -229,7 +234,7 @@ export class GraphQLSelectComponent
    *
    * @param fn onTouched function
    */
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn: () => void): void {
     this.onTouched = fn;
   }
 
@@ -367,7 +372,7 @@ export class GraphQLSelectComponent
   onOpenSelect(): void {
     // focus on search input, if filterable
     if (this.filterable) this.searchInput?.nativeElement.focus();
-    const panel = document.getElementById('optionList');
+    const panel = this.document.getElementById('optionList');
     if (this.scrollListener) {
       this.scrollListener();
     }
@@ -413,6 +418,10 @@ export class GraphQLSelectComponent
             this.updateValues(results.data, results.loading);
           });
       }
+      // If it's used as a survey question, then change detector have to be manually triggered
+      if (this.isSurveyQuestion) {
+        this.changeDetectorRef.detectChanges();
+      }
     }
   }
 
@@ -423,6 +432,10 @@ export class GraphQLSelectComponent
    */
   public onSelectionChange(event: any) {
     this.value = event.value;
+    // If it's used as a survey question, then change detector have to be manually triggered
+    if (this.isSurveyQuestion) {
+      this.changeDetectorRef.detectChanges();
+    }
   }
 
   /** Triggers on close of select */
@@ -472,6 +485,10 @@ export class GraphQLSelectComponent
     this.queryElements = this.cachedElements;
     this.pageInfo = get(data, path).pageInfo;
     this.loading = loading;
+    // If it's used as a survey question, then change detector have to be manually triggered
+    if (this.isSurveyQuestion) {
+      this.changeDetectorRef.detectChanges();
+    }
   }
 
   /**

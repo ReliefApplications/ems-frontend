@@ -4,10 +4,10 @@ import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
   ContentType,
-  SafeApplicationService,
-  SafeConfirmService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  ApplicationService,
+  ConfirmService,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import get from 'lodash/get';
 import { takeUntil, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -21,22 +21,23 @@ import { Observable } from 'rxjs';
   styleUrls: ['./application.component.scss'],
 })
 export class ApplicationComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
-  // === HEADER TITLE ===
-
+  /** Application title */
   public title = '';
-
-  // === AVAILABLE ROUTES, DEPENDS ON USER ===
+  /** Navigation groups */
   public navGroups: any[] = [];
+  /** Admin pages */
   public adminNavItems: any[] = [];
-
-  // === APPLICATION ===
+  /** Current application */
   public application?: Application;
-
+  /** Use side menu or not */
   public sideMenu = false;
+  /** Is large device */
   public largeDevice: boolean;
+  /** Loading indicator */
+  public loading = true;
 
   /**
    * Main component of application view
@@ -48,11 +49,11 @@ export class ApplicationComponent
    * @param confirmService Shared confirmation service
    */
   constructor(
-    private applicationService: SafeApplicationService,
+    private applicationService: ApplicationService,
     public route: ActivatedRoute,
     private router: Router,
     private translate: TranslateService,
-    private confirmService: SafeConfirmService
+    private confirmService: ConfirmService
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
@@ -60,12 +61,14 @@ export class ApplicationComponent
 
   ngOnInit(): void {
     this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+      this.loading = true;
       this.applicationService.loadApplication(params.id);
     });
     this.applicationService.application$
       .pipe(takeUntil(this.destroy$))
       .subscribe((application: Application | null) => {
         if (application) {
+          this.loading = false;
           this.title = application.name || '';
           const displayNavItems: any[] =
             application.pages
@@ -80,6 +83,7 @@ export class ApplicationComponent
                 icon: this.getNavIcon(x.type || ''),
                 class: null,
                 orderable: true,
+                visible: x.visible ?? true,
                 action: x.canDelete && {
                   icon: 'delete',
                   toolTip: this.translate.instant('common.deleteObject', {
@@ -141,6 +145,13 @@ export class ApplicationComponent
               },
             ];
           }
+          if (application.canUpdate) {
+            this.adminNavItems.push({
+              name: this.translate.instant('common.archive.few'),
+              path: './settings/archive',
+              icon: 'delete',
+            });
+          }
           this.navGroups = [
             {
               name: this.translate.instant('common.page.few'),
@@ -167,11 +178,11 @@ export class ApplicationComponent
             }
           }
           this.application = application;
+          this.sideMenu = this.application?.sideMenu ?? false;
         } else {
           this.title = '';
           this.navGroups = [];
         }
-        this.sideMenu = this.application?.sideMenu ?? false;
       });
   }
 
@@ -264,6 +275,9 @@ export class ApplicationComponent
     return true;
   }
 
+  /**
+   * Remove application data such as styling when existing application edition.
+   */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     this.applicationService.leaveApplication();

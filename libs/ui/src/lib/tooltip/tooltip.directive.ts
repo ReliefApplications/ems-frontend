@@ -87,14 +87,17 @@ export class TooltipDirective implements OnDestroy {
    * Show the tooltip and place it on the screen accordingly to its width and height
    */
   private showHint() {
+    // Fullscreen only renders the current fulsscreened element,
+    // Therefor we check if exists to take it as a reference, else we use the document body by default
+    const elementRef = this.document.fullscreenElement ?? this.document.body;
     this.elToolTip.textContent = this.uiTooltip;
     this.renderer.addClass(this.elToolTip, 'opacity-0');
-    this.renderer.appendChild(this.document.body, this.elToolTip);
+    this.renderer.appendChild(elementRef, this.elToolTip);
     // Management of tooltip placement in the screen (including screen edges cases)
     const hostPos = this.elementRef.nativeElement.getBoundingClientRect();
     const tooltipPos = this.elToolTip.getBoundingClientRect();
     this.renderer.removeClass(this.elToolTip, 'opacity-0');
-    this.renderer.removeChild(this.document.body, this.elToolTip);
+    this.renderer.removeChild(elementRef, this.elToolTip);
 
     const top = hostPos.bottom;
     const left = hostPos.left;
@@ -117,7 +120,7 @@ export class TooltipDirective implements OnDestroy {
     }
     this.renderer.setStyle(this.elToolTip, 'top', topValue);
     this.renderer.setStyle(this.elToolTip, 'left', leftValue);
-    this.renderer.appendChild(this.document.body, this.elToolTip);
+    this.renderer.appendChild(elementRef, this.elToolTip);
   }
 
   /**

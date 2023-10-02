@@ -12,6 +12,7 @@ import {
   ToggleModule,
   FixedWrapperModule,
 } from '@oort-front/ui';
+import { AccessModule, StatusOptionsComponent } from '@oort-front/shared';
 
 /**
  * Application settings module.
@@ -30,6 +31,8 @@ import {
     FormWrapperModule,
     ToggleModule,
     FixedWrapperModule,
+    AccessModule,
+    StatusOptionsComponent,
   ],
 })
 export class SettingsModule {}

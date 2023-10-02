@@ -3,8 +3,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   PositionAttribute,
   PositionAttributesQueryResponse,
-  SafeBreadcrumbService,
-} from '@oort-front/safe';
+  BreadcrumbService,
+} from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
 import { GET_POSITION_ATTRIBUTES_FROM_CATEGORY } from './graphql/queries';
 
@@ -37,7 +37,7 @@ export class PositionAttributesComponent implements OnInit {
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private breadcrumbService: SafeBreadcrumbService
+    private breadcrumbService: BreadcrumbService
   ) {}
 
   ngOnInit(): void {

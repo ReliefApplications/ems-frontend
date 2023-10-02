@@ -1,0 +1,15 @@
+<ui-dialog [closable]="true" size="fullscreen">
+  <ng-container ngProjectAs="header">
+    <h1>{{ 'components.application.dashboard.filter.title' | translate }}</h1>
+    <ui-alert [showIcon]="true" class="mb-6">
+      {{ 'components.application.dashboard.filter.info' | translate }}
+    </ui-alert>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <div class="max-h-full h-full">
+      <div *ngIf="surveyCreator" class="w-full h-full">
+        <survey-creator [model]="surveyCreator"></survey-creator>
+      </div>
+    </div>
+  </ng-container>
+</ui-dialog>

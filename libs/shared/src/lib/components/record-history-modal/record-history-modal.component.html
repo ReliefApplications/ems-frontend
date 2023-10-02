@@ -1,0 +1,10 @@
+<ui-dialog [padding]="false" class="!p-0">
+  <ng-container ngProjectAs="content">
+    <shared-record-history
+      class="max-h-screen"
+      (cancel)="closeModal($event)"
+      [id]="data.id"
+      [revert]="data.revert"
+    ></shared-record-history>
+  </ng-container>
+</ui-dialog>

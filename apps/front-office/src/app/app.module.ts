@@ -26,8 +26,8 @@ import { MessageService } from '@progress/kendo-angular-l10n';
 import {
   AppAbility,
   KendoTranslationService,
-  SafeAuthInterceptorService,
-} from '@oort-front/safe';
+  AuthInterceptorService,
+} from '@oort-front/shared';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import localeEn from '@angular/common/locales/en';
@@ -142,7 +142,7 @@ export const httpTranslateLoader = (http: HttpClient) =>
     // },
     {
       provide: HTTP_INTERCEPTORS,
-      useClass: SafeAuthInterceptorService,
+      useClass: AuthInterceptorService,
       multi: true,
     },
     {

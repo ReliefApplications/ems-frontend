@@ -29,6 +29,7 @@ import { DateRangeModule } from './date/date-range/date-range.module';
 import { GraphQLSelectModule } from './graphql-select/graphql-select.module';
 import { ErrorMessageModule } from './error-message/error-message.module';
 import { FixedWrapperModule } from './fixed-wrapper/fixed-wrapper.module';
+import { CronEditorModule } from './cron-editor/cron-editor.module';
 
 /**
  * UI Library Module
@@ -65,6 +66,9 @@ import { FixedWrapperModule } from './fixed-wrapper/fixed-wrapper.module';
     GraphQLSelectModule,
     ErrorMessageModule,
     FixedWrapperModule,
+    CronEditorModule,
   ],
+  declarations: [],
+  imports: [],
 })
 export class UiModule {}

@@ -9,7 +9,7 @@ import {
   PaginatorModule,
 } from '@oort-front/ui';
 import { IconModule } from '@oort-front/ui';
-import { SafeAccessModule, SafeDateModule } from '@oort-front/safe';
+import { AccessModule, DateModule } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.module';
@@ -24,12 +24,12 @@ import { UploadMenuModule } from '../../../components/upload-menu/upload-menu.mo
     TabsModule,
     IconModule,
     MenuModule,
-    SafeAccessModule,
+    AccessModule,
     PaginatorModule,
     TranslateModule,
     OverlayModule,
     UploadMenuModule,
-    SafeDateModule,
+    DateModule,
   ],
   exports: [ResourceComponent],
 })

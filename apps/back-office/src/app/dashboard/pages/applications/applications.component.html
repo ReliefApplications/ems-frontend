@@ -1,7 +1,7 @@
 <ng-container>
   <!-- NEW APPLICATIONS -->
   <h2>{{ 'pages.applications.recent' | translate }}</h2>
-  <safe-applications-summary
+  <shared-applications-summary
     class="block mb-14"
     [loading]="loading"
     [canCreate]="'create' | able : 'Application'"
@@ -11,16 +11,21 @@
     (delete)="onDelete($event)"
     (preview)="onPreview($event)"
     (clone)="onClone($event)"
-  ></safe-applications-summary>
-
-  <!-- APPLICATIONS TABLE -->
-  <h2>{{ 'pages.applications.all' | translate }}</h2>
-  <!-- FILTERING -->
-  <app-filter
-    (filter)="onFilter($event)"
-    [loading]="updating"
-    class="block mb-8"
-  ></app-filter>
+  ></shared-applications-summary>
+  <div class="mb-8 flex flex-col gap-2">
+    <div class="flex justify-between">
+      <!-- Title -->
+      <h2 class="m-0">{{ 'pages.applications.all' | translate }}</h2>
+      <!-- Filter -->
+      <app-applications-filter
+        #filter
+        (filter)="onFilter($event)"
+        [loading]="updating"
+        class="block"
+      ></app-applications-filter>
+    </div>
+    <ng-container *ngTemplateOutlet="filter.expandedFilter"></ng-container>
+  </div>
   <!-- Table container -->
   <div class="overflow-x-hidden shadow-2lg">
     <!-- Table scroll container -->
@@ -50,7 +55,7 @@
             {{ 'common.createdOn' | translate }}
           </th>
           <td uiCell *cdkCellDef="let element">
-            {{ element.createdAt | safeDate }}
+            {{ element.createdAt | sharedDate }}
           </td>
         </ng-container>
 
@@ -59,29 +64,9 @@
             {{ 'common.status' | translate }}
           </th>
           <td uiCell *cdkCellDef="let element">
-            <div uiChipList>
-              <ui-chip
-                class="!rounded-lg"
-                variant="success"
-                *ngIf="element.status === 'active'"
-              >
-                {{ 'common.status_active' | translate | titlecase }}
-              </ui-chip>
-              <ui-chip
-                class="!rounded-lg"
-                variant="warning"
-                *ngIf="element.status === 'pending'"
-              >
-                {{ 'common.status_pending' | translate | titlecase }}
-              </ui-chip>
-              <ui-chip
-                class="!rounded-lg"
-                variant="danger"
-                *ngIf="element.status === 'archived'"
-              >
-                {{ 'common.status_archived' | translate | titlecase }}
-              </ui-chip>
-            </div>
+            <shared-status-options
+              [status]="element.status"
+            ></shared-status-options>
           </td>
         </ng-container>
 
@@ -104,6 +89,7 @@
               icon="more_vert"
               [uiMenuTriggerFor]="menu"
               (click)="$event.stopPropagation()"
+              [uiTooltip]="'common.options' | translate"
             >
             </ui-button>
             <ui-menu #menu>
@@ -111,13 +97,13 @@
                 <ui-icon icon="preview" variant="grey"></ui-icon>
                 {{ 'common.preview' | translate }}
               </button>
-              <safe-access
+              <shared-access
                 [menuItem]="true"
                 [access]="element.permissions"
                 [objectTypeName]="'common.application.one' | translate"
                 (save)="saveAccess($event, element)"
                 *ngIf="element.canUpdate"
-              ></safe-access>
+              ></shared-access>
               <button
                 uiMenuItem
                 (click)="onClone(element)"
@@ -146,7 +132,7 @@
         ></tr>
       </table>
       <!-- Loading indicator -->
-      <safe-skeleton-table
+      <shared-skeleton-table
         *ngIf="loading"
         [columns]="[
           'common.name',
@@ -156,7 +142,7 @@
         ]"
         [actions]="true"
       >
-      </safe-skeleton-table>
+      </shared-skeleton-table>
     </div>
   </div>
   <!-- Pagination -->

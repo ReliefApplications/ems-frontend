@@ -1,9 +1,9 @@
 <!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
 <div [ngClass]="{ 'p-8 h-full bg-white overflow-auto': isFullScreen }">
   <ng-container
-    safeFullScreen
+    sharedFullScreen
     [(isFullScreenMode)]="isFullScreen"
-    *safeSkeleton="
+    *sharedSkeleton="
       loading;
       repeat: 1;
       height: '32px';
@@ -15,28 +15,60 @@
     <ng-container *ngIf="dashboard">
       <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
         <!-- Dashboard title -->
-        <safe-editable-text
-          [text]="dashboard.name"
-          [canEdit]="canEditName"
-          (onChange)="saveName($event)"
-          (formActiveEvent)="formActive = $event"
+        <div class="flex items-center gap-1">
+          <shared-editable-text
+            [text]="dashboard.name"
+            [canEdit]="canUpdate"
+            (onChange)="saveName($event)"
+            (formActiveEvent)="formActive = $event"
+          >
+            <h1 class="!m-0 overflow-hidden text-ellipsis">
+              {{ dashboard.name }}
+            </h1>
+          </shared-editable-text>
+          <ui-button
+            *ngIf="!isStep"
+            [isIcon]="true"
+            variant="grey"
+            category="primary"
+            [icon]="dashboard.page?.visible ? 'visibility' : 'visibility_off'"
+            (click)="togglePageVisibility()"
+            [uiTooltip]="
+              (dashboard.page?.visible
+                ? 'components.application.pages.hide'
+                : 'components.application.pages.show'
+              ) | translate
+            "
+          >
+          </ui-button>
+        </div>
+        <div
+          class="flex items-center gap-1"
+          *ngIf="!formActive"
+          cdkDropList
+          (cdkDropListDropped)="onButtonActionDrop($event)"
         >
-          <h1 class="!m-0 overflow-hidden text-ellipsis">
-            {{ dashboard.name }}
-          </h1>
-        </safe-editable-text>
+          <!-- Button actions -->
+          <shared-button-action
+            [buttonActions]="buttonActions"
+            [dashboard]="dashboard"
+            [canUpdate]="canUpdate"
+          ></shared-button-action>
 
-        <div class="flex items-center gap-1" *ngIf="!formActive">
           <!-- Fullscreen -->
           <ui-button
             variant="grey"
             [isIcon]="true"
             icon="{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}"
             (click)="isFullScreen = !isFullScreen"
+            [uiTooltip]="
+              (isFullScreen ? 'common.exitFullscreen' : 'common.openFullScreen')
+                | translate
+            "
           >
           </ui-button>
           <!-- Access -->
-          <safe-access
+          <shared-access
             [access]="dashboard.permissions"
             [application]="applicationId"
             [objectTypeName]="'common.page.one' | translate"
@@ -49,7 +81,7 @@
                 : false
             "
           >
-          </safe-access>
+          </shared-access>
           <!-- Context -->
           <ui-button
             variant="grey"
@@ -72,12 +104,12 @@
             [uiMenuTriggerFor]="menu"
             cdkOverlayOrigin
             #appMenuTrigger="cdkOverlayOrigin"
+            [uiTooltip]="'common.options' | translate"
           >
           </ui-button>
           <ui-menu #menu>
             <button uiMenuItem (click)="toggleFiltering()">
               <ui-icon icon="tune" variant="grey"></ui-icon>
-              <!-- todo(translate) -->
               {{
                 (showFilter
                   ? 'models.dashboard.deactivateFiltering'
@@ -88,6 +120,10 @@
             <button uiMenuItem (click)="onAppSelection()">
               <ui-icon icon="file_copy" variant="grey"></ui-icon>
               {{ 'common.duplicate' | translate }}
+            </button>
+            <button uiMenuItem (click)="onAddButtonAction()">
+              <ui-icon icon="touch_app" variant="grey"></ui-icon>
+              {{ 'models.dashboard.buttonActions.add' | translate }}
             </button>
             <button uiMenuItem (click)="onShare()">
               <ui-icon icon="share" variant="grey"></ui-icon>
@@ -100,24 +136,22 @@
               {{ 'models.page.tooltip.duplicate' | translate }}
             </ui-alert>
           </ng-template>
-
           <ng-template
             cdkConnectedOverlay
             [cdkConnectedOverlayOrigin]="appMenuTrigger"
             [cdkConnectedOverlayOpen]="showAppMenu"
           >
-            <safe-search-menu
+            <shared-search-menu
               [headerTemplate]="searchMenuHeaderTemplate"
               [currentApplicationId]="applicationId"
               [applications]="applications"
               (close)="showAppMenu = false"
               (open)="onDuplicate($event)"
-            ></safe-search-menu>
+            ></shared-search-menu>
           </ng-template>
         </div>
       </div>
       <ng-container *ngIf="dashboard.page?.context">
-        <!-- todo(translate) -->
         <ui-alert *ngIf="!contextRecord" class="mb-4">{{
           'models.dashboard.context.edition.template' | translate
         }}</ui-alert>
@@ -173,24 +207,25 @@
     </ng-container>
   </ng-container>
   <!-- Widgets -->
-  <safe-widget-grid
+  <shared-widget-grid
     [loading]="loading"
-    [widgets]="tiles"
+    [widgets]="widgets"
     [canUpdate]="dashboard?.canUpdate || false"
     (move)="onMove($event)"
     (edit)="onEditTile($event)"
     (delete)="onDeleteTile($event)"
-    (goToNextStep)="goToNextStep.emit($event)"
+    (style)="onStyleTile($event)"
+    (changeStep)="changeStep.emit($event)"
     (add)="onAdd($event)"
-  ></safe-widget-grid>
-  <safe-dashboard-filter
+  ></shared-widget-grid>
+  <shared-dashboard-filter
     *ngIf="showFilter && isFullScreen"
     [editable]="true"
     [isFullScreen]="isFullScreen"
-  ></safe-dashboard-filter>
+  ></shared-dashboard-filter>
 </div>
-<safe-dashboard-filter
+<shared-dashboard-filter
   *ngIf="showFilter && !isFullScreen"
   [editable]="true"
   [isFullScreen]="isFullScreen"
-></safe-dashboard-filter>
+></shared-dashboard-filter>

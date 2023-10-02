@@ -3,12 +3,13 @@
 <div class="w-full flex h-full overflow-y-auto">
   <!-- SIDENAV CONTENT -->
   <ng-container *ngFor="let sidenav of uiSidenavDirective; let i = index">
+    <!-- ngStyle prevent the left sidenav to have a fixed height -->
     <div
       #sidenav
       class="will-change-transform overflow-y-auto bg-white translate-x-0"
       [attr.data-sidenav-show]="showSidenav[i]"
       [ngClass]="resolveSidenavClasses(i)"
-      [style.height]="height"
+      [ngStyle]="(i > 0 && { height: height }) || null"
     >
       <div class="flex flex-col h-full"></div>
     </div>
@@ -20,10 +21,11 @@
         'visible bg-black opacity-50': showSidenav[0] && mode[0] === 'over',
         'invisible bg-transparent': !showSidenav[0] || mode[0] === 'side'
       }"
-      class="block w-full overflow-y-auto min-h-full transition-visibility duration-500 transition-all ease-in-out absolute inset-0 pointer-events-none z-[998]"
+      class="block w-full overflow-y-auto min-h-full transition-visibility duration-500 transition-all ease-in-out absolute inset-0 pointer-events-none z-[1001]"
     ></div>
     <div
       [ngClass]="{ 'pb-[64px]': fixedWrapperActionExist }"
+      id="appPageContainer"
       class="py-[32px] overflow-y-auto h-full px-[24px]"
       #contentWrapper
     >

@@ -4,11 +4,11 @@ import {
   AddReferenceDataMutationResponse,
   DeleteReferenceDataMutationResponse,
   ReferenceData,
+  AuthService,
+  ConfirmService,
+  UnsubscribeComponent,
   ReferenceDatasQueryResponse,
-  SafeAuthService,
-  SafeConfirmService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { GET_REFERENCE_DATAS } from './graphql/queries';
 import { ADD_REFERENCE_DATA, DELETE_REFERENCE_DATA } from './graphql/mutations';
 import { Router } from '@angular/router';
@@ -39,7 +39,7 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./reference-datas.component.scss'],
 })
 export class ReferenceDatasComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   // === DATA ===
@@ -85,8 +85,8 @@ export class ReferenceDatasComponent
     private apollo: Apollo,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private authService: SafeAuthService,
-    private confirmService: SafeConfirmService,
+    private authService: AuthService,
+    private confirmService: ConfirmService,
     private router: Router,
     private translate: TranslateService
   ) {

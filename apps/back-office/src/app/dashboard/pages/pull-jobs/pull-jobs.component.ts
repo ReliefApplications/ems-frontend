@@ -6,10 +6,10 @@ import {
   DeletePullJobMutationResponse,
   EditPullJobMutationResponse,
   PullJob,
+  ConfirmService,
+  UnsubscribeComponent,
   PullJobsNodesQueryResponse,
-  SafeConfirmService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import { GET_PULL_JOBS } from './graphql/queries';
 import {
@@ -39,10 +39,7 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './pull-jobs.component.html',
   styleUrls: ['./pull-jobs.component.scss'],
 })
-export class PullJobsComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
+export class PullJobsComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   public loading = true;
   private pullJobsQuery!: QueryRef<PullJobsNodesQueryResponse>;
@@ -81,7 +78,7 @@ export class PullJobsComponent
     public dialog: Dialog,
     private apollo: Apollo,
     private snackBar: SnackbarService,
-    private confirmService: SafeConfirmService,
+    private confirmService: ConfirmService,
     private translate: TranslateService
   ) {
     super();

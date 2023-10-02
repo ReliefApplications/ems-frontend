@@ -26,7 +26,5 @@ export const environment: Environment = {
   backOfficeUri: 'https://ems-safe.who.int/backoffice/',
   availableLanguages: ['en'],
   authConfig,
-  esriApiKey:
-    'AAPKf2bae9b3f32943e2a8d58b0b96ffea3fj8Vt8JYDt1omhzN_lONXPRHN8B89umU-pA9t7ze1rfCIiiEVXizYEiFRFiVrl6wg',
   theme,
 };

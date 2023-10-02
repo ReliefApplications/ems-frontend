@@ -4,16 +4,22 @@ import { ApplicationsRoutingModule } from './applications-routing.module';
 import { ApplicationsComponent } from './applications.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
-  SafeAccessModule,
-  SafeApplicationsSummaryModule,
-  SafeSkeletonTableModule,
-  SafeDateModule,
-} from '@oort-front/safe';
+  AccessModule,
+  ApplicationsSummaryModule,
+  SkeletonTableModule,
+  DateModule as SharedDateModule,
+  ListFilterComponent,
+  StatusOptionsComponent,
+} from '@oort-front/shared';
 import { ChoseRoleComponent } from './components/chose-role/chose-role.component';
 import { FilterComponent } from './components/filter/filter.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
-import { DialogModule, GraphQLSelectModule } from '@oort-front/ui';
+import {
+  DialogModule,
+  GraphQLSelectModule,
+  TooltipModule,
+} from '@oort-front/ui';
 import {
   ButtonModule,
   MenuModule,
@@ -23,7 +29,6 @@ import {
   IconModule,
   SelectMenuModule,
   TableModule,
-  ChipModule,
   PaginatorModule,
   DateModule,
 } from '@oort-front/ui';
@@ -41,12 +46,12 @@ import {
     SpinnerModule,
     MenuModule,
     IconModule,
-    SafeAccessModule,
+    AccessModule,
     PaginatorModule,
-    SafeApplicationsSummaryModule,
+    ApplicationsSummaryModule,
     TranslateModule,
-    SafeSkeletonTableModule,
-    SafeDateModule,
+    SkeletonTableModule,
+    SharedDateModule,
     GraphQLSelectModule,
     DividerModule,
     AbilityModule,
@@ -56,7 +61,9 @@ import {
     SelectMenuModule,
     TableModule,
     DateModule,
-    ChipModule,
+    StatusOptionsComponent,
+    TooltipModule,
+    ListFilterComponent,
   ],
   exports: [ApplicationsComponent],
 })

@@ -1,0 +1,92 @@
+.nav-items-list {
+  overflow-y: hidden;
+  display: flex;
+  margin: 0;
+  height: auto;
+}
+
+.nav-item-add {
+  margin: auto;
+}
+
+.nav-item {
+  a {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .nav-actions {
+    display: none;
+  }
+
+  .nav-action,
+  .nav-item-handle {
+    color: transparent;
+    width: 24px;
+    height: 24px;
+    line-height: 24px;
+    pointer-events: none;
+  }
+  &:hover {
+    .nav-actions {
+      display: block;
+    }
+    .nav-action,
+    .nav-item-handle {
+      color: #aeaeaf;
+      pointer-events: initial;
+    }
+  }
+
+  .nav-text {
+    text-overflow: ellipsis;
+  }
+}
+
+.show-icons {
+  & > li {
+    @apply min-h-[54px] flex justify-between items-center cursor-pointer flex-row text-gray-700 hover:bg-gray-50 hover:text-primary-600 rounded-md;
+    & > a {
+      @apply flex flex-1 overflow-hidden flex-row gap-x-3 text-sm leading-6 items-center font-semibold px-2 py-3;
+    }
+  }
+  .hide-icons {
+    display: none;
+  }
+  &:hover {
+    .hide-icons {
+      display: block;
+    }
+  }
+}
+
+.nav-item-handle {
+  cursor: move;
+}
+
+.app-sidenav-add-page {
+  // Subtracts topbar, header and add-page height
+  max-height: calc(100vh - 64px - 48px - 84px);
+  overflow: auto;
+}
+
+.app-sidenav-phone-add-page {
+  // Subtracts header and add-page height
+  max-height: calc(100vh - 48px - 84px);
+  overflow: auto;
+}
+
+.app-sidenav {
+  // Subtracts topbar, header height
+  max-height: calc(100vh - 64px - 48px);
+  overflow: hidden;
+}
+
+.app-sidenav-phone {
+  // Subtracts header height
+  max-height: calc(100vh - 48px);
+  overflow: auto;
+}

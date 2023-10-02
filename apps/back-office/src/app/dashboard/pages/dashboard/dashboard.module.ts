@@ -3,15 +3,16 @@ import { CommonModule } from '@angular/common';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import {
-  SafeAccessModule,
-  SafeRecordHistoryModule,
-  SafeWidgetGridModule,
-  SafeSkeletonModule,
-  SafeSearchMenuModule,
-  SafeEditableTextModule,
+  AccessModule,
+  RecordHistoryModule,
+  WidgetGridModule,
+  SkeletonModule,
+  SearchMenuModule,
+  EditableTextModule,
   FullScreenModule,
   DashboardFilterModule,
-} from '@oort-front/safe';
+  ButtonActionModule,
+} from '@oort-front/shared';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
@@ -27,6 +28,7 @@ import {
   DialogModule,
   GraphQLSelectModule,
 } from '@oort-front/ui';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 /**
  * Dashboard page module.
@@ -36,18 +38,18 @@ import {
   imports: [
     CommonModule,
     DashboardRoutingModule,
-    SafeAccessModule,
-    SafeWidgetGridModule,
+    AccessModule,
+    WidgetGridModule,
     IconModule,
     DialogModule,
     MenuModule,
     ClipboardModule,
-    SafeRecordHistoryModule,
+    RecordHistoryModule,
     TranslateModule,
     OverlayModule,
-    SafeSearchMenuModule,
-    SafeSkeletonModule,
-    SafeEditableTextModule,
+    SearchMenuModule,
+    SkeletonModule,
+    EditableTextModule,
     FullScreenModule,
     FormsModule,
     ReactiveFormsModule,
@@ -58,6 +60,8 @@ import {
     FormWrapperModule,
     GraphQLSelectModule,
     AlertModule,
+    DragDropModule,
+    ButtonActionModule,
   ],
   exports: [DashboardComponent],
 })

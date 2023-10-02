@@ -6,16 +6,16 @@ import {
   Form,
   Page,
   Step,
-  SafeFormComponent,
-  SafeApplicationService,
-  SafeWorkflowService,
-  SafeUnsubscribeComponent,
+  FormComponent as SharedFormComponent,
+  ApplicationService,
+  WorkflowService,
+  UnsubscribeComponent,
   StepQueryResponse,
   FormQueryResponse,
   PageQueryResponse,
   EditStepMutationResponse,
   EditPageMutationResponse,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import {
   GET_SHORT_FORM_BY_ID,
   GET_PAGE_BY_ID,
@@ -34,24 +34,33 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
-  @ViewChild(SafeFormComponent)
-  private formComponent?: SafeFormComponent;
+export class FormComponent extends UnsubscribeComponent implements OnInit {
+  @ViewChild(SharedFormComponent)
+  private formComponent?: SharedFormComponent;
 
-  // === DATA ===
+  /** Loading indicator */
   public loading = true;
+  /** Current form id */
   public id = '';
+  /** Current application id */
   public applicationId = '';
+  /** Current form */
   public form?: Form;
+  /** Is form completed */
   public completed = false;
+  /** Should possibility to add new records be hidden */
   public hideNewRecord = false;
+  /** Query subscription */
   public querySubscription?: Subscription;
-
-  // === TAB NAME EDITION ===
+  /** Can name be edited */
   public canEditName = false;
+  /** Is name form active */
   public formActive = false;
+  /** Application page form is part of ( if any ) */
   public page?: Page;
+  /** Application step form is part of ( if any ) */
   public step?: Step;
+  /** Is form part of workflow step */
   public isStep = false;
 
   /**
@@ -66,8 +75,8 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
    * @param translate Angular translate service
    */
   constructor(
-    private applicationService: SafeApplicationService,
-    private workflowService: SafeWorkflowService,
+    private applicationService: ApplicationService,
+    private workflowService: WorkflowService,
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
@@ -98,19 +107,11 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           .pipe(
             switchMap(({ data }) => {
               this.step = data.step;
-              return this.apollo.query<FormQueryResponse>({
-                query: GET_SHORT_FORM_BY_ID,
-                variables: {
-                  id: this.step.content,
-                },
-              });
+              return this.getFormQuery(this.step.content ?? '');
             })
           )
           .subscribe(({ data, loading }) => {
-            this.form = data.form;
-            this.canEditName = this.page?.canUpdate || false;
-            this.applicationId =
-              this.step?.workflow?.page?.application?.id || '';
+            this.handleFormQueryResponse(data, 'step');
             this.loading = loading;
           });
       } else {
@@ -124,22 +125,48 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           .pipe(
             switchMap(({ data }) => {
               this.page = data.page;
-              return this.apollo.query<FormQueryResponse>({
-                query: GET_SHORT_FORM_BY_ID,
-                variables: {
-                  id: this.page.content,
-                },
-              });
+              return this.getFormQuery(this.page.content ?? '');
             })
           )
           .subscribe(({ data, loading }) => {
-            this.form = data.form;
-            this.canEditName = this.page?.canUpdate || false;
-            this.applicationId = this.page?.application?.id || '';
+            this.handleFormQueryResponse(data, 'page');
             this.loading = loading;
           });
       }
     });
+  }
+
+  /**
+   * Returns query for the given id
+   *
+   * @param {string} id form id to query
+   * @returns form query for the given id
+   */
+  private getFormQuery(id: string) {
+    return this.apollo.query<FormQueryResponse>({
+      query: GET_SHORT_FORM_BY_ID,
+      variables: {
+        id,
+      },
+    });
+  }
+
+  /**
+   * Handle response for the form query
+   *
+   * @param {FormQueryResponse} data form query response data
+   * @param from from where the form query is done
+   */
+  private handleFormQueryResponse(
+    data: FormQueryResponse,
+    from: 'step' | 'page'
+  ) {
+    this.form = data.form;
+    this.canEditName = this.page?.canUpdate || false;
+    this.applicationId =
+      (from === 'step'
+        ? this.step?.workflow?.page?.application?.id
+        : this.page?.application?.id) ?? '';
   }
 
   /**
@@ -316,5 +343,22 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
         });
       }
     }
+  }
+
+  /**
+   * Toggle page visibility.
+   */
+  togglePageVisibility() {
+    // If form is page
+    const callback = () => {
+      this.page = { ...this.page, visible: !this.page?.visible };
+    };
+    this.applicationService.togglePageVisibility(
+      {
+        id: this.id,
+        visible: this.page?.visible,
+      },
+      callback
+    );
   }
 }

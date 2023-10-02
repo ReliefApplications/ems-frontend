@@ -1,0 +1,86 @@
+<div class="flex flex-wrap gap-4 flex-col lg:flex-row lg:h-full">
+  <!-- Properties -->
+  <div class="flex flex-col flex-1 space-y-12 overflow-x-hidden" *ngIf="form">
+    <!-- Options section -->
+    <form [formGroup]="form" class="flex flex-col space-y-8">
+      <!-- Layer title -->
+      <div uiFormFieldDirective>
+        <label>{{ 'common.title' | translate }}</label>
+        <input formControlName="name" type="text" />
+      </div>
+      <!-- Default visibility -->
+      <ui-toggle formControlName="visibility">
+        <ng-container ngProjectAs="label">
+          {{
+            'components.widget.settings.map.edit.properties.defaultVisibility'
+              | translate
+          }}
+        </ng-container>
+      </ui-toggle>
+      <!-- Opacity -->
+      <div class="flex flex-col">
+        <h3>
+          {{
+            'components.widget.settings.map.edit.properties.opacity' | translate
+          }}
+        </h3>
+        <ui-slider
+          formControlName="opacity"
+          class="grow"
+          [minValue]="0"
+          [maxValue]="1"
+          [step]="0.1"
+        >
+        </ui-slider>
+      </div>
+      <!-- Visibility range -->
+      <div class="flex flex-col" formGroupName="layerDefinition">
+        <h3>
+          {{
+            'components.widget.settings.map.edit.properties.visibilityRange'
+              | translate
+          }}
+          ({{
+            'components.widget.settings.map.edit.properties.from' | translate
+          }}
+          {{ form.get('layerDefinition')?.get('minZoom')?.value }}
+          {{ 'components.widget.settings.map.edit.properties.to' | translate }}
+          {{ form.get('layerDefinition')?.get('maxZoom')?.value }})
+        </h3>
+        <!--@TODO TAILWIND-->
+        <div class="flex flex-row gap-2">
+          <ui-slider
+            formControlName="minZoom"
+            class="grow"
+            [minValue]="2"
+            [maxValue]="form.get('layerDefinition.maxZoom')?.value"
+            [step]="1"
+          >
+          </ui-slider>
+          <ui-slider
+            formControlName="maxZoom"
+            class="grow"
+            [minValue]="form.get('layerDefinition.minZoom')?.value"
+            [maxValue]="18"
+            [step]="1"
+          >
+          </ui-slider>
+        </div>
+
+        <!-- <mat-slider class="grow" min="2" max="18" step="1" [discrete]="true">
+          <input formControlName="minZoom" matSliderStartThumb />
+          <input formControlName="maxZoom" matSliderEndThumb />
+        </mat-slider> -->
+      </div>
+      <!-- Zoom level -->
+      <h3>
+        {{ 'components.widget.settings.map.edit.properties.zoom' | translate }}:
+        {{ currentZoom }}
+      </h3>
+    </form>
+  </div>
+  <!-- Map -->
+  <div class="lg:flex-1 max-lg:min-w-full h-80 lg:h-[400px] flex-shrink-0">
+    <ng-template #mapContainer></ng-template>
+  </div>
+</div>

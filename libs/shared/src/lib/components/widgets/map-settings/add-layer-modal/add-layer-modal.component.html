@@ -1,0 +1,37 @@
+<ui-dialog size="small">
+  <ng-container ngProjectsAs="header">
+    <h1>
+      {{ 'components.widget.settings.map.layers.chooseLayer' | translate }}
+    </h1>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <form class="flex flex-col">
+      <!-- API to use -->
+      <div uiFormFieldDirective class="flex-1">
+        <label>{{ 'common.layers' | translate }}</label>
+        <ui-graphql-select
+          valueField="id"
+          textField="name"
+          [required]="true"
+          [query]="layersQuery"
+          [formControl]="layerControl"
+        >
+        </ui-graphql-select>
+      </div>
+    </form>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose]="'discard'">{{
+      'common.close' | translate
+    }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      cdkFocusInitial
+      [uiDialogClose]="layerControl.value"
+      [disabled]="!layerControl.value"
+    >
+      {{ 'common.select' | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

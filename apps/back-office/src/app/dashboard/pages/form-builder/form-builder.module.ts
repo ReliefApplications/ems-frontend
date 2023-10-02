@@ -3,13 +3,13 @@ import { CommonModule } from '@angular/common';
 import { FormBuilderRoutingModule } from './form-builder-routing.module';
 import { FormBuilderComponent } from './form-builder.component';
 import {
-  SafeAccessModule,
-  SafeFormBuilderModule,
-  SafeDateModule,
-  SafeEditableTextModule,
-} from '@oort-front/safe';
+  AccessModule,
+  FormBuilderModule as SharedFormBuilderModule,
+  DateModule,
+  EditableTextModule,
+  StatusOptionsComponent,
+} from '@oort-front/shared';
 import {
-  ChipModule,
   FormWrapperModule,
   SelectMenuModule,
   SpinnerModule,
@@ -28,13 +28,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     CommonModule,
     FormBuilderRoutingModule,
     SpinnerModule,
-    SafeFormBuilderModule,
-    SafeAccessModule,
+    SharedFormBuilderModule,
+    AccessModule,
     TranslateModule,
-    SafeDateModule,
-    SafeEditableTextModule,
+    DateModule,
+    EditableTextModule,
     TableModule,
-    ChipModule,
+    StatusOptionsComponent,
     SelectMenuModule,
     FormWrapperModule,
     FormsModule,

@@ -11,6 +11,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 /**
  * UI Slider component
+ * Slider is a UI component that allows users to make selections from a range of values.
  */
 @Component({
   selector: 'ui-slider',
@@ -35,17 +36,24 @@ export class SliderComponent
    * Maximum value of the slider
    */
   @Input() maxValue = 100;
+  /**
+   * Step value of each tick
+   */
+  @Input() step = 1;
 
-  //In order to define left position of the bubble linked to the slider
+  /**  In order to define left position of the bubble linked to the slider */
   bubbleStyle = '';
-  //In order to determine if bubble and ticks are to be shown
+  /** In order to determine if bubble and ticks are to be shown */
   bubbleToShow = false;
+  /** Boolean indicating whether to show ticks on the slider. */
   ticksToShow = false;
-  // Slider range
+  /** Slider range */
   range: number[] = [];
-  //Value of the slider
+  /** Value of the slider */
   currentValue = this.minValue;
+  /** Function to handle value changes. */
   onChange!: (value: number) => void;
+  /** Function to handle touch events. */
   onTouch!: () => void;
 
   /**
@@ -69,8 +77,8 @@ export class SliderComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    this.minValue = changes['minValue'].currentValue ?? this.minValue;
-    this.maxValue = changes['maxValue'].currentValue ?? this.maxValue;
+    // this.minValue = changes['minValue'].currentValue ?? this.minValue;
+    // this.maxValue = changes['maxValue'].currentValue ?? this.maxValue;
     //If one of these two changes, update slider range
     if (changes['minValue']?.currentValue || changes['maxValue'].currentValue) {
       this.createRange();
@@ -91,8 +99,10 @@ export class SliderComponent
    *
    * @param fn event that took place
    */
-  registerOnChange(fn: any) {
-    this.onChange = fn;
+  registerOnChange(fn: (value: number) => void) {
+    if (!this.onChange) {
+      this.onChange = fn;
+    }
   }
 
   /**
@@ -100,8 +110,10 @@ export class SliderComponent
    *
    * @param fn event that took place
    */
-  registerOnTouched(fn: any) {
-    this.onTouch = fn;
+  registerOnTouched(fn: () => void) {
+    if (!this.onTouch) {
+      this.onTouch = fn;
+    }
   }
 
   /**
@@ -142,8 +154,9 @@ export class SliderComponent
    * @param value The value from the slider
    */
   onChangeFunction(value: EventTarget | null) {
-    if (value) {
-      this.currentValue = +((value as HTMLInputElement)?.value ?? value);
+    const newValue = +((value as HTMLInputElement)?.value ?? value);
+    if (newValue !== this.currentValue) {
+      this.currentValue = isNaN(newValue) ? 0 : newValue;
       const min = this.minValue;
       const max = this.maxValue;
       const newVal = Number(((this.currentValue - min) * 100) / (max - min));
