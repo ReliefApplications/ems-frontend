@@ -1,44 +1,47 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
-import { Application } from '../../models/application.model';
-import { ApplicationService } from '../../services/application/application.service';
-import { ConfirmService } from '../../services/confirm/confirm.service';
-import { UnsubscribeComponent } from '../../components/utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
+import {
+  Application,
+  ApplicationService,
+  ConfirmService,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 
 /**
- * Toolbar component visible when editing application.
+ * Header component visible when editing application.
  * Appear on top of the view.
  */
 @Component({
-  selector: 'shared-app-application-toolbar',
-  templateUrl: './application-toolbar.component.html',
-  styleUrls: ['./application-toolbar.component.scss'],
+  selector: 'app-application-header',
+  templateUrl: './application-header.component.html',
+  styleUrls: ['./application-header.component.scss'],
 })
-export class ApplicationToolbarComponent
+export class ApplicationHeaderComponent
   extends UnsubscribeComponent
   implements OnInit
 {
+  /** Application title */
   @Input() title = '';
-  @Input() settings: any[] = [];
+  /** Admin routes */
+  @Input() navItems: any[] = [];
+  /** Can user update application */
   @Input() canUpdate = false;
-  @Input() showActions = false;
-
-  // === APPLICATION ===
+  /** Current application */
   public application: Application | null = null;
+  /** Is edition of application locked */
   public locked: boolean | undefined = undefined;
+  /** User that locked edition */
   public lockedByUser: boolean | undefined = undefined;
+  /** Can application be published */
   public canPublish = false;
-  public user: any;
 
   /**
-   * Toolbar component visible when editing application
+   * Header component visible when editing application
    *
    * @param applicationService Shared application service
-   * @param router Angular router
    * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param confirmService Shared confirm service
@@ -46,7 +49,6 @@ export class ApplicationToolbarComponent
    */
   constructor(
     private applicationService: ApplicationService,
-    private router: Router,
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private confirmService: ConfirmService,
@@ -67,13 +69,6 @@ export class ApplicationToolbarComponent
             ? this.application.pages.length > 0
             : false;
       });
-  }
-
-  /**
-   * Closes the application, go back to the back-office dashboard.
-   */
-  onClose(): void {
-    this.router.navigate(['/applications']);
   }
 
   /**
@@ -124,14 +119,5 @@ export class ApplicationToolbarComponent
           }
         });
     }
-  }
-
-  /**
-   * Edits the permissions layer.
-   *
-   * @param e permissions.
-   */
-  saveAccess(e: any): void {
-    this.applicationService.editPermissions(e);
   }
 }

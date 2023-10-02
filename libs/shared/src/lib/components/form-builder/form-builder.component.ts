@@ -264,7 +264,6 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
           if (!obj || !obj.page) {
             return;
           }
-          console.log(options);
           // If it is a core field
           if (coreFields.includes(obj.valueName)) {
             // Disable deleting, editing, changing type and changing if required or not

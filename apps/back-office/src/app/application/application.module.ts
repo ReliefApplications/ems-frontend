@@ -2,12 +2,9 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApplicationRoutingModule } from './application-routing.module';
 import { ApplicationComponent } from './application.component';
-import {
-  LayoutModule,
-  ApplicationToolbarModule,
-  NavbarModule,
-} from '@oort-front/shared';
+import { LayoutModule, NavbarModule } from '@oort-front/shared';
 import { SpinnerModule } from '@oort-front/ui';
+import { ApplicationHeaderModule } from '../components/application-header/application-header.module';
 
 /**
  * Application module.
@@ -17,7 +14,7 @@ import { SpinnerModule } from '@oort-front/ui';
   imports: [
     CommonModule,
     ApplicationRoutingModule,
-    ApplicationToolbarModule,
+    ApplicationHeaderModule,
     LayoutModule,
     NavbarModule,
     SpinnerModule,
