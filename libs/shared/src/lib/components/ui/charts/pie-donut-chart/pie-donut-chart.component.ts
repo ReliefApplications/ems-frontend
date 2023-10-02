@@ -133,6 +133,7 @@ export class PieDonutChartComponent implements OnChanges {
 
     this.chartOptions = {
       ...this.chartOptions,
+      devicePixelRatio: 2,
       plugins: {
         legend: {
           display: get(this.legend, 'visible', false),
