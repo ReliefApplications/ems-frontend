@@ -1,6 +1,7 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { FormBuilder, UntypedFormControl } from '@angular/forms';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { FormBuilder } from '@angular/forms';
+import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Role filter component
@@ -10,15 +11,13 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   templateUrl: './role-resources-filter.component.html',
   styleUrls: ['./role-resources-filter.component.scss'],
 })
-export class FilterComponent implements OnInit {
+export class FilterComponent extends UnsubscribeComponent implements OnInit {
   @Output() filter = new EventEmitter<any>();
   @Input() loading = false;
   public form = this.fb.group({
-    name: [''],
     startDate: [null],
     endDate: [null],
   });
-  public search = new UntypedFormControl('');
   public show = false;
 
   /**
@@ -26,19 +25,19 @@ export class FilterComponent implements OnInit {
    *
    * @param fb Angular form builder
    */
-  constructor(private fb: FormBuilder) {}
+  constructor(private fb: FormBuilder) {
+    super();
+  }
 
   ngOnInit(): void {
     this.form.valueChanges
-      .pipe(debounceTime(1000), distinctUntilChanged())
+      .pipe(
+        debounceTime(1000),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
       .subscribe((value) => {
         this.emitFilter(value);
-      });
-    // this way we can wait for 0.2s before sending an update
-    this.search.valueChanges
-      .pipe(debounceTime(1000), distinctUntilChanged())
-      .subscribe((value) => {
-        this.form.controls.name.setValue(value);
       });
   }
 
@@ -49,8 +48,12 @@ export class FilterComponent implements OnInit {
    */
   private emitFilter(value: any): void {
     const filters: any[] = [];
-    if (value.name) {
-      filters.push({ field: 'name', operator: 'contains', value: value.name });
+    if (value.search) {
+      filters.push({
+        field: 'name',
+        operator: 'contains',
+        value: value.search,
+      });
     }
     if (value.startDate) {
       filters.push({
@@ -78,7 +81,6 @@ export class FilterComponent implements OnInit {
    */
   clear(): void {
     this.form.reset();
-    this.search.reset();
   }
 
   /**

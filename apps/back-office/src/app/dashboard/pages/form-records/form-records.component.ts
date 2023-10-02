@@ -31,6 +31,7 @@ import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
 import { Metadata } from '@oort-front/shared';
 import { SnackbarService, UIPageChangeEvent } from '@oort-front/ui';
+import { GraphQLError } from 'graphql';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -276,25 +277,14 @@ export class FormRecordsComponent
       })
       .subscribe({
         next: ({ errors }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotDeleted', {
-                value: this.translate.instant('common.record.one'),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectDeleted', {
-                value: this.translate.instant('common.record.one'),
-              })
-            );
-            this.dataSource = this.dataSource.filter((x) => x.id !== id);
-            if (id === this.historyId) {
-              this.layoutService.setRightSidenav(null);
-            }
-          }
+          this.handleRecordMutationResponse(
+            errors,
+            {
+              success: 'common.notifications.objectDeleted',
+              error: 'common.notifications.objectNotDeleted',
+            },
+            id
+          );
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
@@ -481,29 +471,53 @@ export class FormRecordsComponent
       })
       .subscribe({
         next: ({ errors }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotRestored', {
-                type: this.translate.instant('common.record.one'),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectRestored', {
-                type: this.translate.instant('common.record.one'),
-              })
-            );
-            this.dataSource = this.dataSource.filter((x) => x.id !== id);
-            if (id === this.historyId) {
-              this.layoutService.setRightSidenav(null);
-            }
-          }
+          this.handleRecordMutationResponse(
+            errors,
+            {
+              success: 'common.notifications.objectRestored',
+              error: 'common.notifications.objectNotRestored',
+            },
+            id
+          );
         },
         error: (err) => {
           this.snackBar.openSnackBar(err.message, { error: true });
         },
       });
+  }
+
+  /**
+   * Handle response from record mutation
+   *
+   * @param {GraphQLError[]} errors mutation errors if any
+   * @param messageKeys containing keys for success and error response messages
+   * @param {string} messageKeys.success success key response messages
+   * @param {string} messageKeys.error error key response messages
+   * @param {string} recordId mutated record id
+   */
+  private handleRecordMutationResponse(
+    errors: readonly GraphQLError[] | undefined,
+    messageKeys: { success: string; error: string },
+    recordId: string
+  ) {
+    if (errors) {
+      this.snackBar.openSnackBar(
+        this.translate.instant(messageKeys.error, {
+          value: this.translate.instant('common.record.one'),
+          error: errors ? errors[0].message : '',
+        }),
+        { error: true }
+      );
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant(messageKeys.success, {
+          value: this.translate.instant('common.record.one'),
+        })
+      );
+      this.dataSource = this.dataSource.filter((x) => x.id !== recordId);
+      if (recordId === this.historyId) {
+        this.layoutService.setRightSidenav(null);
+      }
+    }
   }
 }

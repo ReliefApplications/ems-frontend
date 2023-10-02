@@ -1,4 +1,4 @@
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { NgModule } from '@angular/core';
@@ -17,6 +17,7 @@ import {
 } from '@oort-front/ui';
 import { AbilityModule } from '@casl/angular';
 import { EmptyModule } from '../../../ui/empty/empty.module';
+import { ListFilterComponent } from '../../../list-filter/list-filter.component';
 
 /**
  * BackOfficeRolesModule manages modules and components
@@ -27,7 +28,7 @@ import { EmptyModule } from '../../../ui/empty/empty.module';
   imports: [
     CommonModule,
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     SpinnerModule,
     MenuModule,
     IconModule,
@@ -41,6 +42,7 @@ import { EmptyModule } from '../../../ui/empty/empty.module';
     EmptyModule,
     SelectMenuModule,
     TooltipModule,
+    ListFilterComponent,
   ],
   exports: [RoleListComponent],
 })

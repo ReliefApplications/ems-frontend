@@ -11,6 +11,8 @@ import {
   FormWrapperModule,
   TooltipModule,
 } from '@oort-front/ui';
+import { ListFilterComponent } from '../../../list-filter/list-filter.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 /**
  * GroupsModule manages modules and components
@@ -23,11 +25,13 @@ import {
     TranslateModule,
     IconModule,
     FormWrapperModule,
+    ReactiveFormsModule,
     SkeletonTableModule,
     MenuModule,
     TableModule,
     ButtonModule,
     TooltipModule,
+    ListFilterComponent,
   ],
   exports: [GroupListComponent],
 })
