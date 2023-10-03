@@ -29,9 +29,13 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
   public applications = new Array<Application>();
   public settingsForm!: UntypedFormGroup;
   public statusChoices = Object.values(status);
+  /** Current application */
   public application?: Application;
+  /** Current user */
   public user: any;
+  /** Is application locked for edition */
   public locked: boolean | undefined = undefined;
+  /** Is application locked for edition by current user */
   public lockedByUser: boolean | undefined = undefined;
 
   /**
@@ -157,7 +161,7 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
                 },
               })
               .subscribe({
-                next: ({ errors, data }) => {
+                next: ({ errors }) => {
                   if (errors) {
                     this.snackBar.openSnackBar(
                       this.translate.instant(
@@ -181,9 +185,6 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
                           ),
                         }
                       )
-                    );
-                    this.applications = this.applications.filter(
-                      (x) => x.id !== data?.deleteApplication.id
                     );
                   }
                 },

@@ -756,6 +756,58 @@ export class ApplicationService {
   }
 
   /**
+   * Change page icon, by sending a mutation to the back-end.
+   *
+   * @param page Edited page
+   * @param icon new icon
+   * @param callback callback method, allow the component calling the service to do some logic.
+   */
+  changePageIcon(page: Page, icon: string, callback?: any): void {
+    const application = this.application.getValue();
+    if (application && this.isUnlocked) {
+      this.apollo
+        .mutate<EditPageMutationResponse>({
+          mutation: EDIT_PAGE,
+          variables: {
+            id: page.id,
+            icon,
+          },
+        })
+        .subscribe(({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.page.one'),
+                error: errors ? errors[0].message : '',
+              }),
+              { error: true }
+            );
+          } else {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.page.one'),
+                  value: '',
+                })
+              );
+              const newApplication = {
+                ...application,
+                pages: application.pages?.map((x) => {
+                  if (x.id === page.id) {
+                    x = { ...x, icon: data.editPage.icon };
+                  }
+                  return x;
+                }),
+              };
+              this.application.next(newApplication);
+              if (callback) callback();
+            }
+          }
+        });
+    }
+  }
+
+  /**
    * Adds a new page to the opened application.
    *
    * @param page new page

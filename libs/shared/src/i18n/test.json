@@ -1385,11 +1385,14 @@
 					"edit": {
 						"aggregation": "******",
 						"cluster": {
+							"autoSizeCluster": "******",
 							"cluster": "******",
 							"clusterSettings": "******",
 							"fields": "******",
+							"fontSize": "******",
 							"high": "******",
 							"label": "******",
+							"lightMode": "******",
 							"low": "******",
 							"max": "******",
 							"min": "******",
@@ -1555,6 +1558,10 @@
 					},
 					"tooltip": {
 						"category": "******",
+						"cluster": {
+							"autoSize": "******",
+							"lightMode": "******"
+						},
 						"dataset": "******",
 						"default": {
 							"latitude": "******",

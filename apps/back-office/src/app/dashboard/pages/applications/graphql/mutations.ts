@@ -29,6 +29,7 @@ export const EDIT_APPLICATION = gql`
       lockedByUser
       pages {
         id
+        icon
         name
         createdAt
         type

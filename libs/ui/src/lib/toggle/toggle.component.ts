@@ -44,7 +44,7 @@ export class ToggleComponent implements ControlValueAccessor {
   /** Function to handle value changes. */
   onChange!: (value: boolean) => void;
   /** Function to handle touch events. */
-  onTouch!: () => void;
+  onTouched!: () => void;
 
   /** @returns general toggle classes and variant */
   get toggleClasses(): string[] {
@@ -85,13 +85,10 @@ export class ToggleComponent implements ControlValueAccessor {
    * Handles the selection of a content
    *
    */
-  public onSelect(): void {
+  public onToggle(): void {
     this.value = !this.value;
-    if (this.onTouch && this.onChange) {
-      this.onTouch();
-      this.onChange(this.value);
-    }
-    this.valueChange.emit(this.value);
+    this.onChange(this.value);
+    this.onTouched();
   }
 
   /**
@@ -109,9 +106,7 @@ export class ToggleComponent implements ControlValueAccessor {
    * @param fn callback function
    */
   public registerOnChange(fn: (value: boolean) => void): void {
-    if (!this.onChange) {
-      this.onChange = fn;
-    }
+    this.onChange = fn;
   }
 
   /**
@@ -120,9 +115,7 @@ export class ToggleComponent implements ControlValueAccessor {
    * @param fn callback function
    */
   public registerOnTouched(fn: () => void): void {
-    if (!this.onTouch) {
-      this.onTouch = fn;
-    }
+    this.onTouched = fn;
   }
 
   /**

@@ -77,6 +77,7 @@ export interface Page {
   canDelete?: boolean;
   context?: PageContextT;
   visible?: boolean;
+  icon?: string;
   contentWithContext?: ((
     | {
         // The element string is the value for the value field of the refData

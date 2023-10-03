@@ -30,7 +30,7 @@ export class ButtonComponent {
   /** Is button only icon */
   @Input() isIcon = false;
   /** Should button appear as block */
-  @HostBinding('class.flex')
+  @HostBinding('class.!w-full')
   @Input()
   isBlock = false;
   /** Loading indicator */

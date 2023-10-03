@@ -926,4 +926,58 @@ export class DashboardComponent
       callback
     );
   }
+
+  /**
+   * Handle icon change.
+   * Open icon modal settings, and save changes if icon is updated.
+   */
+  public async onChangeIcon(): Promise<void> {
+    const { IconModalComponent } = await import(
+      '../../../components/icon-modal/icon-modal.component'
+    );
+    const dialogRef = this.dialog.open(IconModalComponent, {
+      data: {
+        icon: this.isStep
+          ? this.dashboard?.step?.icon
+          : this.dashboard?.page?.icon,
+      },
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((icon: any) => {
+      if (icon) {
+        if (this.isStep) {
+          const callback = () => {
+            this.dashboard = {
+              ...this.dashboard,
+              step: {
+                ...this.dashboard?.step,
+                icon,
+              },
+            };
+          };
+          this.dashboard?.step &&
+            this.workflowService.updateStepIcon(
+              this.dashboard.step,
+              icon,
+              callback
+            );
+        } else {
+          const callback = () => {
+            this.dashboard = {
+              ...this.dashboard,
+              page: {
+                ...this.dashboard?.page,
+                icon,
+              },
+            };
+          };
+          this.dashboard?.page &&
+            this.applicationService.changePageIcon(
+              this.dashboard.page,
+              icon,
+              callback
+            );
+        }
+      }
+    });
+  }
 }
