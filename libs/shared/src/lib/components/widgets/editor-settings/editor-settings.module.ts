@@ -25,6 +25,8 @@ import { DisplaySettingsComponent } from '../common/display-settings/display-set
 import { RecordSelectionTabComponent } from './record-selection-tab/record-selection-tab.component';
 import { CoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { EditorModule } from '../editor/editor.module';
+import { AggregationOriginSelectComponent } from '../../aggregation/aggregation-origin-select/aggregation-origin-select.component';
+import { TabGeneralEditorSettingsGeneralComponent } from './tab-general/tab-general.component';
 
 /**
  * Module for the EditorSetting component
@@ -52,6 +54,8 @@ import { EditorModule } from '../editor/editor.module';
     RadioModule,
     DividerModule,
     ToggleModule,
+    AggregationOriginSelectComponent,
+    TabGeneralEditorSettingsGeneralComponent,
   ],
   exports: [EditorSettingsComponent],
   providers: [

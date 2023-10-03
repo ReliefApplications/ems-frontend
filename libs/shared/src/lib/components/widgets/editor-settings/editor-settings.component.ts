@@ -16,9 +16,17 @@ import {
 } from '../../../models/resource.model';
 import { Layout } from '../../../models/layout.model';
 import { Apollo } from 'apollo-angular';
-import { GET_RESOURCE } from './graphql/queries';
+import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
 import { get } from 'lodash';
 import { DataTemplateService } from '../../../services/data-template/data-template.service';
+import {
+  ReferenceData,
+  ReferenceDataQueryResponse,
+} from '../../../models/reference-data.model';
+import { Aggregation } from '../../../models/aggregation.model';
+import { lastValueFrom, takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
+import { AggregationService } from '../../../services/aggregation/aggregation.service';
 
 /**
  * Creates the form for the editor widget settings.
@@ -33,6 +41,12 @@ const createEditorForm = (value: any) => {
     text: new FormControl<string>(get(value, 'settings.text', '')),
     // for record selection
     resource: new FormControl<string>(get(value, 'settings.resource', null)),
+    referenceData: new FormControl<string>(
+      get(value, 'settings.referenceData', null)
+    ),
+    aggregation: new FormControl<string>(
+      get(value, 'settings.aggregation', null)
+    ),
     layout: new FormControl<string>(get(value, 'settings.layout', null)),
     record: new FormControl<string>(get(value, 'settings.record', null)),
     showDataSourceLink: new FormControl<boolean>(
@@ -58,7 +72,10 @@ export type EditorFormType = ReturnType<typeof createEditorForm>;
   templateUrl: './editor-settings.component.html',
   styleUrls: ['./editor-settings.component.scss'],
 })
-export class EditorSettingsComponent implements OnInit, AfterViewInit {
+export class EditorSettingsComponent
+  extends UnsubscribeComponent
+  implements OnInit, AfterViewInit
+{
   // === REACTIVE FORM ===
   tileForm!: EditorFormType;
 
@@ -73,19 +90,29 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
   public editor: any = WIDGET_EDITOR_CONFIG;
 
   public selectedResource: Resource | null = null;
+  /** Current reference data */
+  public selectedReferenceData: ReferenceData | null = null;
+  /** Current layout */
   public selectedLayout: Layout | null = null;
+  /** Current aggregation */
+  public selectedAggregation: Aggregation | null = null;
+  public customAggregation: any;
+
   /**
    * Modal content for the settings of the editor widgets.
    *
    * @param editorService Editor service used to get main URL and current language
    * @param apollo Apollo service
    * @param dataTemplateService Shared data template service
+   * @param aggregationService Shared aggregation service
    */
   constructor(
     private editorService: EditorService,
     private apollo: Apollo,
-    private dataTemplateService: DataTemplateService
+    private dataTemplateService: DataTemplateService,
+    private aggregationService: AggregationService
   ) {
+    super();
     // Set the editor base url based on the environment file
     this.editor.base_url = editorService.url;
     // Set the editor language
@@ -102,34 +129,80 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
 
     // Initialize the selected resource, layout and record from the form
     const resourceID = this.tileForm?.get('resource')?.value;
-    const layoutID = this.tileForm?.get('layout')?.value;
     if (resourceID) {
-      this.apollo
-        .query<ResourceQueryResponse>({
-          query: GET_RESOURCE,
-          variables: {
-            id: resourceID,
-            layout: layoutID ? [layoutID] : undefined,
-          },
-        })
-        .subscribe((res) => {
-          if (res.data) {
-            this.selectedResource = res.data.resource;
-            if (layoutID) {
-              this.selectedLayout =
-                res.data?.resource.layouts?.edges[0]?.node || null;
-              this.updateFields();
-            }
-          }
-        });
+      this.getResource(resourceID);
     }
+    const referenceDataID = this.tileForm?.get('referenceData')?.value;
+    if (referenceDataID) {
+      this.getReferenceData(referenceDataID);
+    }
+  }
+
+  /**
+   * Get resource with aggregations and layouts for the given id
+   *
+   * @param resourceID resource id
+   */
+  private getResource(resourceID: string) {
+    const layoutID = this.tileForm.get('layout')?.value;
+    const aggregationID = this.tileForm.get('aggregation')?.value;
+    this.apollo
+      .query<ResourceQueryResponse>({
+        query: GET_RESOURCE,
+        variables: {
+          id: resourceID,
+          layout: layoutID ? [layoutID] : undefined,
+          aggregation: aggregationID ? [aggregationID] : undefined,
+        },
+      })
+      .subscribe((res) => {
+        if (res.data) {
+          this.selectedResource = res.data.resource;
+          if (layoutID) {
+            this.selectedLayout =
+              res.data?.resource.layouts?.edges[0]?.node || null;
+          }
+          if (aggregationID) {
+            this.selectedAggregation =
+              res.data?.resource.aggregations?.edges[0]?.node || null;
+          }
+          this.updateFields();
+        }
+      });
+  }
+
+  /**
+   * Get reference data with aggregations for the given id
+   *
+   * @param referenceDataID reference data id
+   */
+  private getReferenceData(referenceDataID: string): void {
+    const aggregationID = this.tileForm.get('aggregation')?.value;
+    this.apollo
+      .query<ReferenceDataQueryResponse>({
+        query: GET_REFERENCE_DATA,
+        variables: {
+          id: referenceDataID,
+          aggregation: aggregationID ? [aggregationID] : undefined,
+        },
+      })
+      .subscribe((res) => {
+        if (res.data) {
+          this.selectedReferenceData = res.data.referenceData;
+          if (aggregationID) {
+            this.selectedAggregation =
+              res.data?.referenceData.aggregations?.edges[0]?.node || null;
+            this.updateFields();
+          }
+        }
+      });
   }
 
   /**
    * Detect the form changes to emit the new configuration.
    */
   ngAfterViewInit(): void {
-    this.tileForm?.valueChanges.subscribe(() => {
+    this.tileForm?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.change.emit(this.tileForm);
       this.tile.settings.text = this.tileForm.value.text;
       this.tile.settings.record = this.tileForm.value.record;
@@ -143,19 +216,107 @@ export class EditorSettingsComponent implements OnInit, AfterViewInit {
   /** Extracts the fields from the resource/layout */
   public updateFields() {
     // extract data keys from metadata
-    const fields: any = [];
-    get(this.selectedResource, 'metadata', []).forEach((metaField: any) => {
-      get(this.selectedLayout, 'query.fields', []).forEach((field: any) => {
-        if (field.name === metaField.name) {
-          const type = metaField.type;
-          fields.push({ ...field, type });
-        }
+    let fields: any = [];
+    if (this.selectedResource) {
+      get(this.selectedResource, 'metadata', []).forEach((metaField: any) => {
+        get(this.selectedLayout, 'query.fields', []).forEach((field: any) => {
+          if (field.name === metaField.name) {
+            const type = metaField.type;
+            fields.push({ ...field, type });
+          }
+        });
       });
-    });
+    } else if (this.selectedReferenceData) {
+      fields = this.getCustomAggregation();
+    }
     // Setup editor auto complete
     this.editorService.addCalcAndKeysAutoCompleter(this.editor, [
       ...this.dataTemplateService.getAutoCompleterKeys(fields),
       ...this.dataTemplateService.getAutoCompleterPageKeys(),
     ]);
+  }
+
+  /**
+   * Gets the custom aggregation
+   * for the selected (resource or reference data) and aggregation.
+   */
+  private async getCustomAggregation(): Promise<any[]> {
+    if (
+      !this.selectedAggregation ||
+      (!this.selectedResource?.id && !this.selectedReferenceData?.id)
+    ) {
+      return [];
+    }
+    const id =
+      this.selectedResource?.id ?? this.selectedReferenceData?.id ?? '';
+    const type = this.selectedResource?.id ? 'resource' : 'referenceData';
+    const res = await lastValueFrom(
+      this.aggregationService.aggregationDataQuery(
+        id,
+        type,
+        this.selectedAggregation.id || ''
+      )
+    );
+    const aggregations =
+      res.data?.recordsAggregation ?? res.data?.referenceDataAggregation;
+    let fields: any[] = [];
+    if (aggregations) {
+      this.customAggregation = aggregations;
+      // @TODO: Figure out fields' types from aggregation
+      fields = this.customAggregation.items[0]
+        ? Object.keys(this.customAggregation.items[0]).map((f) => ({
+            name: f,
+            editor: 'text',
+          }))
+        : [];
+    }
+    return fields;
+  }
+
+  /**
+   * Updates modified resource
+   *
+   * @param resource the modified resource
+   */
+  handleResourceChange(resource: Resource | null) {
+    this.selectedResource = resource;
+
+    // clear layout and record
+    this.selectedLayout = null;
+    this.selectedAggregation = null;
+    this.customAggregation = null;
+  }
+
+  /**
+   * Updates modified reference data
+   *
+   * @param referenceData the modified reference data
+   */
+  handleReferenceDataChange(referenceData: ReferenceData | null) {
+    this.selectedReferenceData = referenceData;
+
+    this.selectedLayout = null;
+    this.selectedAggregation = null;
+    this.customAggregation = null;
+  }
+
+  /**
+   * Updates modified layout
+   *
+   * @param layout the modified layout
+   */
+  handleLayoutChange(layout: Layout | null) {
+    this.selectedLayout = layout;
+    this.updateFields();
+  }
+
+  /**
+   * Updates modified aggregation
+   *
+   * @param aggregation the modified aggregation
+   */
+  handleAggregationChange(aggregation: Aggregation | null) {
+    this.selectedAggregation = aggregation;
+    this.updateFields();
   }
 }
