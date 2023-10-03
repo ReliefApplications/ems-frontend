@@ -41,6 +41,12 @@
             "
           >
           </ui-button>
+          <ui-button
+            (click)="onChangeIcon()"
+            [isIcon]="true"
+            icon="settings"
+            uiTooltip="'common.settings' | translate"
+          ></ui-button>
         </div>
         <div
           class="flex items-center gap-1"

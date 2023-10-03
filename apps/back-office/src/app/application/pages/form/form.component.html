@@ -41,6 +41,13 @@
           !formActive && (page ? page.canUpdate : step ? step.canUpdate : false)
         "
       ></shared-access>
+      <ui-button
+        variant="grey"
+        (click)="onChangeIcon()"
+        [isIcon]="true"
+        icon="settings"
+        [uiTooltip]="'common.settings' | translate"
+      ></ui-button>
     </div>
     <!-- Page actions -->
     <div class="flex items-center" *ngIf="!formActive">
