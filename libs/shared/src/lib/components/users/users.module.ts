@@ -18,7 +18,7 @@ import { InviteUsersModule } from './components/invite-users/invite-users.module
 import { TranslateModule } from '@ngx-translate/core';
 import { SkeletonTableModule } from '../skeleton/skeleton-table/skeleton-table.module';
 import { ListFilterComponent } from '../list-filter/list-filter.component';
-import { FilterComponent } from './filter/filter.component'
+import { FilterComponent } from './filter/filter.component';
 
 /** Module for components related to users */
 @NgModule({
@@ -40,7 +40,7 @@ import { FilterComponent } from './filter/filter.component'
     SelectMenuModule,
     TooltipModule,
     ListFilterComponent,
-    DateModule
+    DateModule,
   ],
   exports: [UsersComponent],
 })

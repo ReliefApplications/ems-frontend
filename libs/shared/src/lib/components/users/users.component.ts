@@ -1,10 +1,5 @@
 import { Apollo } from 'apollo-angular';
-import {
-  Component,
-  Input,
-  ViewChild,
-  TemplateRef,
-} from '@angular/core';
+import { Component, Input, ViewChild, TemplateRef } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import {
   User,
@@ -296,8 +291,7 @@ export class UsersComponent extends UnsubscribeComponent {
   /**
    * Apply the filters to the list
    *
-   * @param column The column used for filtering
-   * @param event The event triggered on filter action
+   * @param event event value
    */
   applyFilter(event: any): void {
     if (event.roleFilter) {

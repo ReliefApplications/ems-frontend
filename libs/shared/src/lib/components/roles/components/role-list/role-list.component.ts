@@ -15,7 +15,7 @@ import { GET_ROLES } from '../../graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import { FormBuilder } from '@angular/forms';
 

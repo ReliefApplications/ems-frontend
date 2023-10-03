@@ -8,7 +8,7 @@ import { ConfirmService } from '../../../../services/confirm/confirm.service';
 import get from 'lodash/get';
 import { RestService } from '../../../../services/rest/rest.service';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import {
   AddGroupMutationResponse,

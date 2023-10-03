@@ -15,7 +15,7 @@ import {
 } from './graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import {
   getCachedValues,
   updateQueryUniqueValues,
@@ -154,8 +154,7 @@ export class ApiConfigurationsComponent
   /**
    * Applies the filter to the data source.
    *
-   * @param column Column to filter on.
-   * @param event Value of the filter.
+   * @param event event value of the filter.
    */
   applyFilter(event: any): void {
     if (event.statusFilter) {

@@ -1,9 +1,21 @@
-import { Component, EventEmitter, Input, OnInit, Output, ViewChild, TemplateRef } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  ViewChild,
+  TemplateRef,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { UnsubscribeComponent, ListFilterComponent } from '@oort-front/shared';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ButtonModule, SelectMenuModule, FormWrapperModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  SelectMenuModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 
 /**
@@ -12,7 +24,15 @@ import { TranslateModule } from '@ngx-translate/core';
 @Component({
   selector: 'app-api-configuration-filter',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, ListFilterComponent, ButtonModule, SelectMenuModule, FormWrapperModule, TranslateModule],
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ListFilterComponent,
+    ButtonModule,
+    SelectMenuModule,
+    FormWrapperModule,
+    TranslateModule,
+  ],
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss'],
 })
