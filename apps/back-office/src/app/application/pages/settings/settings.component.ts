@@ -1,18 +1,14 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import {
   Application,
-  SafeApplicationService,
-  SafeConfirmService,
-  SafeAuthService,
-  SafeUnsubscribeComponent,
   ApplicationService,
   ConfirmService,
   UnsubscribeComponent,
   DeleteApplicationMutationResponse,
   status,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import { Dialog } from '@angular/cdk/dialog';
 import { DELETE_APPLICATION } from './graphql/mutations';
 import { Router } from '@angular/router';
@@ -31,7 +27,7 @@ import { SnackbarService, UILayoutService } from '@oort-front/ui';
 })
 export class SettingsComponent extends UnsubscribeComponent implements OnInit {
   public applications = new Array<Application>();
-  public settingsForm!: ReturnType<typeof this.createSettingsForm>;
+  public settingsForm!: UntypedFormGroup;
   public statusChoices = Object.values(status);
   public application?: Application;
   public user: any;

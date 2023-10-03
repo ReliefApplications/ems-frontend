@@ -13,7 +13,6 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { Account, AuthService } from '../../services/auth/auth.service';
-import { LayoutService } from '../../services/layout/layout.service';
 import { User } from '../../models/user.model';
 import { Application } from '../../models/application.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -25,7 +24,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { Breadcrumb } from '@oort-front/ui';
+import { Breadcrumb, UILayoutService } from '@oort-front/ui';
 import { BreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
 
 /**
@@ -158,7 +157,7 @@ export class LayoutComponent
     private router: Router,
     private authService: AuthService,
     private notificationService: NotificationService,
-    private layoutService: LayoutService,
+    private layoutService: UILayoutService,
     private confirmService: ConfirmService,
     public dialog: Dialog,
     private translate: TranslateService,

@@ -20,15 +20,13 @@ import {
 } from '../../models/record.model';
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import addCustomFunctions from '../../utils/custom-functions';
-import { SafeAuthService } from '../../services/auth/auth.service';
-import { SafeFormBuilderService } from '../../services/form-builder/form-builder.service';
-import { SafeRecordHistoryComponent } from '../record-history/record-history.component';
-import { TranslateService } from '@ngx-translate/core';
-import { SafeUnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
-import { SafeFormHelpersService } from '../../services/form-helper/form-helper.service';
-import { SnackbarService, UILayoutService } from '@oort-front/ui';
+import { AuthService } from '../../services/auth/auth.service';
+import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { RecordHistoryComponent } from '../record-history/record-history.component';
+import { TranslateService } from '@ngx-translate/core';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
+import { FormHelpersService } from '../../services/form-helper/form-helper.service';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { cloneDeep, isNil } from 'lodash';
 
 /**
@@ -92,10 +90,10 @@ export class FormComponent
     public dialog: Dialog,
     private apollo: Apollo,
     private snackBar: SnackbarService,
-    private authService: SafeAuthService,
+    private authService: AuthService,
     private layoutService: UILayoutService,
-    private formBuilderService: SafeFormBuilderService,
-    private formHelpersService: SafeFormHelpersService,
+    private formBuilderService: FormBuilderService,
+    private formHelpersService: FormHelpersService,
     private translate: TranslateService
   ) {
     super();

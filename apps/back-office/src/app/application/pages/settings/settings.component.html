@@ -110,7 +110,7 @@
     category="secondary"
     variant="primary"
     (click)="onSubmit()"
-    [disabled]="settingsForm?.invalid || !settingsForm?.dirty"
+    [disabled]="settingsForm.invalid || !settingsForm.dirty"
   >
     {{ 'common.saveChanges' | translate }}
   </ui-button>

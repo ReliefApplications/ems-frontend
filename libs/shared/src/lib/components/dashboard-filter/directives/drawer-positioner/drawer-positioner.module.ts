@@ -1,9 +1,9 @@
 import { NgModule } from '@angular/core';
-import { SafeDrawerPositionerDirective } from './drawer-positioner.directive';
+import { DrawerPositionerDirective } from './drawer-positioner.directive';
 
 /** Drawer positioner directive module. */
 @NgModule({
-  declarations: [SafeDrawerPositionerDirective],
-  exports: [SafeDrawerPositionerDirective],
+  declarations: [DrawerPositionerDirective],
+  exports: [DrawerPositionerDirective],
 })
-export class SafeDrawerPositionerModule {}
+export class DrawerPositionerModule {}

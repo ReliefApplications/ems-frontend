@@ -12,10 +12,7 @@ import {
   RESTORE_RECORD,
 } from './graphql/mutations';
 import {
-  SafeConfirmService,
-  SafeBreadcrumbService,
-  SafeUnsubscribeComponent,
-  SafeDownloadService,
+  UnsubscribeComponent,
   Record,
   FormRecordsQueryResponse,
   FormQueryResponse,
@@ -25,17 +22,19 @@ import {
   RestoreRecordMutationResponse,
   BreadcrumbService,
   ConfirmService,
+  DownloadService,
 } from '@oort-front/shared';
 import { Dialog } from '@angular/cdk/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import get from 'lodash/get';
 import { takeUntil } from 'rxjs/operators';
-import { Metadata } from '@oort-front/safe';
+import { Metadata } from '@oort-front/shared';
 import {
   SnackbarService,
   UIPageChangeEvent,
   UILayoutService,
 } from '@oort-front/ui';
+import { GraphQLError } from 'graphql';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -102,7 +101,7 @@ export class FormRecordsComponent
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
-    private downloadService: SafeDownloadService,
+    private downloadService: DownloadService,
     private layoutService: UILayoutService,
     public dialog: Dialog,
     private snackBar: SnackbarService,
