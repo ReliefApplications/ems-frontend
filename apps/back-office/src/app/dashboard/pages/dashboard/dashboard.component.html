@@ -42,10 +42,11 @@
           >
           </ui-button>
           <ui-button
+            variant="grey"
             (click)="onChangeIcon()"
             [isIcon]="true"
             icon="settings"
-            uiTooltip="'common.settings' | translate"
+            [uiTooltip]="'common.settings' | translate"
           ></ui-button>
         </div>
         <div
