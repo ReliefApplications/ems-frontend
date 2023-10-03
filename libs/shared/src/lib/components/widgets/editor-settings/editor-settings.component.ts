@@ -214,7 +214,7 @@ export class EditorSettingsComponent
   }
 
   /** Extracts the fields from the resource/layout */
-  public updateFields() {
+  public async updateFields() {
     // extract data keys from metadata
     let fields: any = [];
     if (this.selectedResource) {
@@ -227,7 +227,7 @@ export class EditorSettingsComponent
         });
       });
     } else if (this.selectedReferenceData) {
-      fields = this.getCustomAggregation();
+      fields = await this.getCustomAggregation();
     }
     // Setup editor auto complete
     this.editorService.addCalcAndKeysAutoCompleter(this.editor, [

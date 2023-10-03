@@ -39,7 +39,7 @@
 
   <ng-container *ngIf="resource || referenceData">
     <!-- Aggregation -->
-    <ng-container *ngIf="formGroup.value.chart.aggregationId">
+    <ng-container *ngIf="formGroup.value.aggregation">
       <div *ngIf="aggregation" uiFormFieldDirective>
         <label>{{ 'common.aggregation.one' | translate }}</label>
         <ui-select-menu [disabled]="true" [value]="aggregation.id">
@@ -60,7 +60,7 @@
           variant="danger"
           [isIcon]="true"
           icon="close"
-          (click)="formGroup.get('chart.aggregationId')?.setValue(null)"
+          (click)="formGroup.get('aggregation')?.setValue(null)"
           [uiTooltip]="'common.delete' | translate"
         ></ui-button>
       </div>
@@ -71,14 +71,19 @@
         [formGroup]="$any(formGroup.get('chart.mapping'))"
       ></shared-series-mapping>
     </ng-container>
-    <ng-container *ngIf="!formGroup.value.chart.aggregationId">
-      <div class="flex justify-center">
-        <ui-button
-          category="tertiary"
-          variant="primary"
-          (click)="addAggregation()"
-          >{{ 'components.aggregation.add.title' | translate }}</ui-button
-        >
+    <ng-container *ngIf="!formGroup.value.aggregation">
+      <div class="flex flex-col mt-8 gap-8">
+        <div *ngIf="!aggregation">
+          <h2>{{ 'common.aggregation.one' | translate }}</h2>
+        </div>
+        <div class="flex justify-center">
+          <ui-button
+            category="tertiary"
+            variant="primary"
+            (click)="addAggregation()"
+            >{{ 'components.aggregation.add.title' | translate }}</ui-button
+          >
+        </div>
       </div>
     </ng-container>
   </ng-container>

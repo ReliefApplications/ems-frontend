@@ -1,5 +1,7 @@
 import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup } from '@angular/forms';
+import { takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Series Display Settings component
@@ -9,7 +11,10 @@ import { FormArray, FormControl, FormGroup } from '@angular/forms';
   templateUrl: './series-settings.component.html',
   styleUrls: ['./series-settings.component.css'],
 })
-export class SeriesSettingsComponent implements OnInit, OnChanges {
+export class SeriesSettingsComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnChanges
+{
   @Input() formArray!: FormArray;
   public formGroup?: FormGroup;
 
@@ -19,14 +24,23 @@ export class SeriesSettingsComponent implements OnInit, OnChanges {
 
   selectedSerie = new FormControl<string | undefined>(undefined);
 
+  /**
+   * Series Display Settings constructor
+   */
+  constructor() {
+    super();
+  }
+
   ngOnInit(): void {
-    this.selectedSerie.valueChanges.subscribe((value) => {
-      if (this.formArray.value.length > 0) {
-        this.formGroup = this.formArray.controls.find(
-          (x) => x.value.serie === value
-        ) as FormGroup;
-      }
-    });
+    this.selectedSerie.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (this.formArray.value.length > 0) {
+          this.formGroup = this.formArray.controls.find(
+            (x) => x.value.serie === value
+          ) as FormGroup;
+        }
+      });
   }
 
   ngOnChanges(): void {

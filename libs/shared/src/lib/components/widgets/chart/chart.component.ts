@@ -6,6 +6,7 @@ import {
   SimpleChanges,
   ViewChild,
   Inject,
+  OnInit,
 } from '@angular/core';
 import { LineChartComponent } from '../../ui/charts/line-chart/line-chart.component';
 import { PieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donut-chart.component';
@@ -13,8 +14,8 @@ import { BarChartComponent } from '../../ui/charts/bar-chart/bar-chart.component
 import { uniq, get, groupBy, isEqual } from 'lodash';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { debounceTime, takeUntil } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import { debounceTime, skip, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject, merge } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
@@ -32,7 +33,22 @@ const DEFAULT_FILE_NAME = 'chart';
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss'],
 })
-export class ChartComponent extends UnsubscribeComponent implements OnChanges {
+export class ChartComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnChanges
+{
+  // === WIDGET CONFIGURATION ===
+  @Input() header = true;
+  @Input() export = true;
+  @Input() settings: any = null;
+
+  // === CHART ===
+  @ViewChild('chartWrapper')
+  private chartWrapper?:
+    | LineChartComponent
+    | PieDonutChartComponent
+    | BarChartComponent;
+
   // === DATA ===
   public loading = true;
   public options: any = null;
@@ -43,11 +59,6 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
 
   public lastUpdate = '';
   public hasError = false;
-
-  // === WIDGET CONFIGURATION ===
-  @Input() header = true;
-  @Input() export = true;
-  @Input() settings: any = null;
 
   /**
    * Get filename from the date and widget title
@@ -64,13 +75,6 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
       this.settings.title ? this.settings.title : DEFAULT_FILE_NAME
     } ${formatDate}.png`;
   }
-
-  // === CHART ===
-  @ViewChild('chartWrapper')
-  private chartWrapper?:
-    | LineChartComponent
-    | PieDonutChartComponent
-    | BarChartComponent;
 
   /**
    * Chart widget using KendoUI.
@@ -89,27 +93,24 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
     @Inject(DOCUMENT) private document: Document
   ) {
     super();
+  }
 
-    this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
+  ngOnInit(): void {
+    // Skip the first stream value at the beginning and trigger chart load after the second emitted value of these operators so we load the chart
+    // once all the filter features are loaded
+    merge(this.contextService.filter$, this.contextService.isFilterEnabled$)
+      .pipe(skip(1), debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => {
         this.loadChart();
-        this.getOptions();
-      });
-
-    this.contextService.isFilterEnabled$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.loadChart();
-        this.getOptions();
       });
 
     // Not entirely sure why the change detection is not happening automatically
     // when the series are updated, but this forces it to happen
     this.series$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      setTimeout(() => {
+      const timeoutRef = setTimeout(() => {
         this.cdr.detectChanges();
       }, 100);
+      clearTimeout(timeoutRef);
     });
   }
 
@@ -117,25 +118,22 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
     const previousDatasource = {
       resource: get(changes, 'settings.previousValue.resource'),
       referenceData: get(changes, 'settings.previousValue.referenceData'),
-      chart: {
-        aggregationId: get(
-          changes,
-          'settings.previousValue.chart.aggregationId'
-        ),
-      },
+      aggregation: get(changes, 'settings.previousValue.aggregation'),
     };
     const currentDatasource = {
       resource: get(changes, 'settings.currentValue.resource'),
       referenceData: get(changes, 'settings.currentValue.referenceData'),
-      chart: {
-        aggregationId: get(
-          changes,
-          'settings.currentValue.chart.aggregationId'
-        ),
-      },
+      aggregation: get(changes, 'settings.currentValue.aggregation'),
     };
-
-    if (!isEqual(previousDatasource, currentDatasource)) {
+    // Don't trigger chart load on first load as a change
+    if (
+      !(
+        !previousDatasource.aggregation &&
+        !previousDatasource.referenceData &&
+        !previousDatasource.resource
+      ) &&
+      !isEqual(previousDatasource, currentDatasource)
+    ) {
       this.loadChart();
     }
     this.getOptions();
@@ -149,7 +147,7 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
       const type = this.settings.resource ? 'resource' : 'referenceData';
       this.aggregationService
         .getAggregations(id, type, {
-          ids: [get(this.settings, 'chart.aggregationId', null)],
+          ids: [get(this.settings, 'aggregation', null)],
           first: 1,
         })
         .then((res) => {

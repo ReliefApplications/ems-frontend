@@ -38,9 +38,9 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
   @Input() formGroup!: UntypedFormGroup;
   @Input() type: any;
   public types = CHART_TYPES;
-  public resource?: Resource | null;
-  public referenceData?: ReferenceData | null;
-  public aggregation?: Aggregation;
+  public resource!: Resource | null;
+  public referenceData!: ReferenceData | null;
+  public aggregation!: Aggregation | null;
   public availableSeriesFields: any[] = [];
 
   private reload = new Subject<boolean>();
@@ -97,7 +97,7 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
         } else {
           this.resource = value;
         }
-        this.formGroup.get('chart.aggregationId')?.setValue(null);
+        this.formGroup.get('aggregation')?.setValue(null);
       });
     if (this.formGroup.value.resource) {
       this.getResource(this.formGroup.value.resource);
@@ -112,9 +112,16 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
         } else {
           this.referenceData = value;
         }
-        this.formGroup.get('chart.aggregationId')?.setValue(null);
+        this.formGroup.get('aggregation')?.setValue(null);
       });
-
+    this.formGroup
+      .get('aggregation')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        if (!data) {
+          this.aggregation = null;
+        }
+      });
     if (this.formGroup.value.referenceData) {
       this.getReferenceData(this.formGroup.value.referenceData);
     }
@@ -126,7 +133,7 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
    * @param id resource id
    */
   private getResource(id: string): void {
-    const aggregationId = this.formGroup.get('chart.aggregationId')?.value;
+    const aggregationId = this.formGroup.get('aggregation')?.value;
     this.apollo
       .query<ResourceQueryResponse>({
         query: GET_RESOURCE,
@@ -151,7 +158,7 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
    * @param id reference data id
    */
   private getReferenceData(id: string): void {
-    const aggregationId = this.formGroup.get('chart.aggregationId')?.value;
+    const aggregationId = this.formGroup.get('aggregation')?.value;
     this.apollo
       .query<ReferenceDataQueryResponse>({
         query: GET_REFERENCE_DATA,
@@ -175,9 +182,11 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
    */
   private setAvailableSeriesFields(): void {
     if (this.aggregation) {
+      const source = this.resource ?? this.referenceData;
+      const type = this.resource ? 'resource' : 'referenceData';
       const queryName = this.aggregationService.setCurrentSourceQueryName(
-        this.type === 'resource' ? this.resource : this.referenceData,
-        this.type
+        source,
+        type
       );
       const fields = this.queryBuilder
         .getFields(queryName as string)
@@ -192,7 +201,9 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
       const selectedFields = this.aggregation.sourceFields
         .map((x: string) => {
           const field = fields.find((y) => x === y.name);
-          if (!field) return null;
+          if (!field) {
+            return null;
+          }
           if (field.type.kind !== 'SCALAR') {
             Object.assign(field, {
               fields: this.queryBuilder.deconfineFields(
@@ -234,7 +245,7 @@ export class TabMainComponent extends UnsubscribeComponent implements OnInit {
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
-        this.formGroup.get('chart.aggregationId')?.setValue(value.id);
+        this.formGroup.get('aggregation')?.setValue(value.id);
         this.aggregation = value;
         this.setAvailableSeriesFields();
       }

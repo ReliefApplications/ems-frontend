@@ -24,13 +24,11 @@ import {
   ReferenceDatasQueryResponse,
 } from '../../../models/reference-data.model';
 import {
-  AbstractControl,
   ControlContainer,
   FormControl,
   FormGroup,
   ReactiveFormsModule,
-  ValidationErrors,
-  ValidatorFn,
+  Validators,
 } from '@angular/forms';
 import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
@@ -40,24 +38,6 @@ import { DocumentNode } from '@apollo/client';
 
 /** Default items per query, for pagination */
 const ITEMS_PER_PAGE = 10;
-
-/**
- * Ensures that one and only one reference data or resource exists in the form
- *
- * @returns a validator
- */
-function atLeastOneRequiredValidator(): ValidatorFn {
-  return (control: AbstractControl): ValidationErrors | null => {
-    const resource = control.get('resource')?.value;
-    const referenceData = control.get('referenceData')?.value;
-
-    if ((!resource && !referenceData) || (resource && referenceData)) {
-      return { atLeastOneRequired: true };
-    }
-
-    return null;
-  };
-}
 
 /**
  * Shared aggregation grid component.
@@ -145,10 +125,6 @@ export class AggregationOriginSelectComponent
       }
     }
 
-    // Add validator to the parent form to ensure that at least a resource or reference data is selected
-    this.parentForm.addValidators(atLeastOneRequiredValidator);
-    this.parentForm.updateValueAndValidity();
-
     if (this.resourcesQueryValue) {
       this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
         query: this.resourcesQueryValue,
@@ -173,8 +149,53 @@ export class AggregationOriginSelectComponent
     this.origin.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.parentForm.patchValue({ resource: null, referenceData: null });
     });
+
+    // If there is a reference data selected we make sure that the aggregation field is required
+    if (this.parentForm.get('referenceData')?.value) {
+      this.parentForm.get('aggregation')?.setValidators(Validators.required);
+      this.parentForm.updateValueAndValidity();
+    }
+
+    this.setAggregationValidatorsListener();
   }
 
+  /**
+   * Initializes listener to handle validation of current control for aggregation value whenever there is a reference data selected
+   */
+  private setAggregationValidatorsListener() {
+    this.parentForm
+      .get('referenceData')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        let validatorUpdate = false;
+        // If we have a reference data selected and we don't have any validators set for the aggregation field, add it
+        if (
+          data &&
+          !this.parentForm.get('aggregation')?.hasValidator(Validators.required)
+        ) {
+          this.parentForm
+            .get('aggregation')
+            ?.setValidators(Validators.required);
+          validatorUpdate = true;
+        }
+        // If we have not a reference data selected and we have any validators set for the aggregation field, remove it
+        else if (
+          !data &&
+          this.parentForm.get('aggregation')?.hasValidator(Validators.required)
+        ) {
+          this.parentForm
+            .get('aggregation')
+            ?.removeValidators(Validators.required);
+          validatorUpdate = true;
+        }
+        // If there is any validator change done, trigger the validity of the affected field
+        if (validatorUpdate) {
+          this.parentForm
+            .get('aggregation')
+            ?.updateValueAndValidity({ emitEvent: false });
+        }
+      });
+  }
   /**
    * Changes the query according to search text
    *

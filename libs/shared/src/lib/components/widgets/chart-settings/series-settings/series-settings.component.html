@@ -43,7 +43,7 @@
           {{ 'components.widget.settings.chart.series.fill' | translate }}
         </label>
         <ui-select-menu formControlName="fill">
-          <ui-select-option>
+          <ui-select-option value="auto">
             {{ 'components.widget.settings.chart.auto' | translate }}
           </ui-select-option>
           <ui-select-option *ngFor="let type of fillTypes" [value]="type">
