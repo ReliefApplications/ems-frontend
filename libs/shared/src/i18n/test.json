@@ -1386,16 +1386,13 @@
 						"aggregation": "******",
 						"cluster": {
 							"autoSizeCluster": "******",
-							"autoSizeClusterTooltip": "******",
 							"cluster": "******",
 							"clusterSettings": "******",
-							"defaultClusterSize": "******",
 							"fields": "******",
 							"fontSize": "******",
 							"high": "******",
 							"label": "******",
 							"lightMode": "******",
-							"lightModeTooltip": "******",
 							"low": "******",
 							"max": "******",
 							"min": "******",
@@ -1561,6 +1558,10 @@
 					},
 					"tooltip": {
 						"category": "******",
+						"cluster": {
+							"autoSize": "******",
+							"lightMode": "******"
+						},
 						"dataset": "******",
 						"default": {
 							"latitude": "******",

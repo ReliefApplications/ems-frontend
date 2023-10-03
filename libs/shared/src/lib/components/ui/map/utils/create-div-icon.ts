@@ -1,6 +1,7 @@
 import Color from 'color';
 import { IconName } from '../../../icon-picker/icon-picker.const';
 import * as L from 'leaflet';
+import { LayerSymbol } from '../../../../models/layer.model';
 
 export type MarkerIconOptions = {
   icon: IconName | 'leaflet_default';
@@ -137,39 +138,37 @@ export const createCustomDivIcon = (
 /**
  * Create cluster div icon
  *
- * @param color color to apply
+ * @param symbol cluster symbol
  * @param opacity opacity to apply
  * @param childCount Cluster children count
  * @param lightMode boolean to set text color to white or black
  * @param fontSize font size for the number displayed inside of the cluster marker
- * @param autoSizeCluster boolean to auto size cluster
- * @param clusterSize cluster size if autoSizeCluster is false
+ * @param autoSize boolean to auto size cluster
  * @returns leaflet div icon
  */
 export const createClusterDivIcon = (
-  color: string,
+  symbol: LayerSymbol,
   opacity: number,
   childCount: number,
   lightMode: boolean,
   fontSize: number,
-  autoSizeCluster: boolean,
-  clusterSize: number
+  autoSize: boolean
 ) => {
   // const htmlTemplate = document.createElement('label');
   // htmlTemplate.textContent = childCount.toString();
-  const size = autoSizeCluster
+  const size = autoSize
     ? (childCount / 50) * (MAX_CLUSTER_SIZE - MIN_CLUSTER_SIZE) +
       MIN_CLUSTER_SIZE
-    : clusterSize;
+    : symbol.size;
   const mainColor = Color.rgb(
     // eslint-disable-next-line no-extra-boolean-cast
-    Boolean(color) ? color : DEFAULT_MARKER_ICON_OPTIONS.color
+    Boolean(symbol.color) ? symbol.color : DEFAULT_MARKER_ICON_OPTIONS.color
   )
     .fade(0.2)
     .toString();
   const ringColor = Color.rgb(
     // eslint-disable-next-line no-extra-boolean-cast
-    Boolean(color) ? color : DEFAULT_MARKER_ICON_OPTIONS.color
+    Boolean(symbol.color) ? symbol.color : DEFAULT_MARKER_ICON_OPTIONS.color
   )
     .fade(0.7)
     .toString();

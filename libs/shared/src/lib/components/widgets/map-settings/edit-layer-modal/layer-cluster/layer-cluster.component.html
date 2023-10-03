@@ -1,22 +1,30 @@
 <div [formGroup]="formGroup" class="flex flex-col space-y-8">
-  <!-- Custom color for symbol cluster (only color, don't customize the symbols for clusters) -->
+  <!-- Custom color for symbol cluster. Size can be edited if auto sizing is disabled. -->
   <shared-simple-renderer
     [formGroup]="$any(formGroup.get('drawingInfo.renderer.symbol'))"
-    [showSize]="false"
+    [showSize]="!formGroup.get('autoSizeCluster')?.value"
     [showStyle]="false"
   ></shared-simple-renderer>
   <ui-divider class="my-4"></ui-divider>
+  <!-- todo(translate) -->
+  <h2>Font</h2>
   <div class="flex flex-col">
-    <h3>
-      {{ 'components.widget.settings.map.edit.cluster.lightMode' | translate }}
-    </h3>
-    <ui-toggle
-      formControlName="lightMode"
-      [uiTooltip]="
-        'components.widget.settings.map.edit.cluster.lightModeTooltip'
-          | translate
-      "
-    >
+    <ui-toggle formControlName="lightMode">
+      <ng-container ngProjectAs="label">
+        {{
+          'components.widget.settings.map.edit.cluster.lightMode' | translate
+        }}
+        <ui-icon
+          class="cursor-help"
+          icon="info_outline"
+          variant="grey"
+          [size]="18"
+          [uiTooltip]="
+            'components.widget.settings.map.tooltip.cluster.lightMode'
+              | translate
+          "
+        ></ui-icon>
+      </ng-container>
     </ui-toggle>
   </div>
   <div class="flex flex-col">
@@ -27,37 +35,28 @@
       <input type="number" step="1" min="1" formControlName="fontSize" />
     </div>
   </div>
+  <ui-divider class="my-4"></ui-divider>
+  <!-- todo(translate) -->
+  <h2>Clustering</h2>
   <div class="flex flex-col">
-    <h3>
-      {{
-        'components.widget.settings.map.edit.cluster.autoSizeCluster'
-          | translate
-      }}
-    </h3>
-    <ui-toggle
-      formControlName="autoSizeCluster"
-      [uiTooltip]="
-        'components.widget.settings.map.edit.cluster.autoSizeClusterTooltip'
-          | translate
-      "
-    >
+    <ui-toggle formControlName="autoSizeCluster">
+      <ng-container ngProjectAs="label">
+        {{
+          'components.widget.settings.map.edit.cluster.autoSizeCluster'
+            | translate
+        }}
+        <ui-icon
+          class="cursor-help"
+          icon="info_outline"
+          variant="grey"
+          [size]="18"
+          [uiTooltip]="
+            'components.widget.settings.map.tooltip.cluster.autoSize'
+              | translate
+          "
+        ></ui-icon>
+      </ng-container>
     </ui-toggle>
-  </div>
-  <div class="flex flex-col" *ngIf="!formGroup.get('autoSizeCluster')?.value">
-    <h3>
-      {{
-        'components.widget.settings.map.edit.cluster.defaultClusterSize'
-          | translate
-      }}
-    </h3>
-    <div uiFormFieldDirective>
-      <input
-        type="number"
-        step="1"
-        min="1"
-        formControlName="defaultClusterSize"
-      />
-    </div>
   </div>
   <div class="flex flex-col">
     <h3>
@@ -75,49 +74,3 @@
     </div>
   </div>
 </div>
-
-<!-- <div class="flex flex-col overflow-hidden">
-  <form [formGroup]="form">
-    <div class="flex flex-row justify-between my-4">
-      <mat-label>{{
-        'components.widget.settings.map.edit.cluster.overrideSymbol' | translate
-      }}</mat-label>
-      <mat-slide-toggle formControlName="overrideSymbol"></mat-slide-toggle>
-    </div>
-    <ui-divider></ui-divider>
-    <div class="flex flex-col my-4">
-      <mat-label>
-        {{
-          'components.widget.settings.map.edit.cluster.sizeRange' | translate
-        }}
-      </mat-label>
-      <mat-slider min="1" max="10" step="1" [discrete]="true">
-        <input formControlName="sizeRangeStart" matSliderStartThumb />
-        <input formControlName="sizeRangeEnd" matSliderEndThumb />
-      </mat-slider>
-      <div class="flex flex-row justify-between">
-        <mat-label>{{
-          'components.widget.settings.map.edit.cluster.min' | translate
-        }}</mat-label>
-        <mat-label>{{
-          'components.widget.settings.map.edit.cluster.max' | translate
-        }}</mat-label>
-      </div>
-    </div>
-    <ui-divider></ui-divider>
-    <mat-accordion>
-      <mat-expansion-panel
-        *ngFor="let panel of expansivePanels"
-        [expanded]="false"
-      >
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{
-              'components.widget.settings.map.edit.cluster.' + panel | translate
-            }}
-          </mat-panel-title>
-        </mat-expansion-panel-header>
-      </mat-expansion-panel>
-    </mat-accordion>
-  </form>
-</div> -->

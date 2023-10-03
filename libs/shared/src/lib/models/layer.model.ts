@@ -58,7 +58,6 @@ export interface FeatureReduction {
   lightMode?: boolean;
   fontSize?: number;
   autoSizeCluster?: boolean;
-  defaultClusterSize?: number;
 }
 
 /**

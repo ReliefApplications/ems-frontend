@@ -1386,16 +1386,13 @@
 						"aggregation": "Aggregation",
 						"cluster": {
 							"autoSizeCluster": "Cluster auto-sizing",
-							"autoSizeClusterTooltip": "If enabled, the size of the clusters is automatic, else choose a default size below",
 							"cluster": "Cluster",
 							"clusterSettings": "Cluster settings",
-							"defaultClusterSize": "Default cluster size",
 							"fields": "Cluster fields",
 							"fontSize": "Font size",
 							"high": "High",
 							"label": "Cluster label",
 							"lightMode": "Light mode",
-							"lightModeTooltip": "If enabled, numbers will be displayed in white, else black",
 							"low": "Low",
 							"max": "Max",
 							"min": "Min",
@@ -1561,6 +1558,10 @@
 					},
 					"tooltip": {
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
+						"cluster": {
+							"autoSize": "If enabled, size of clusters is automated. Else, you can select one.",
+							"lightMode": "If enabled, label uses white. Else, it displays in black."
+						},
 						"dataset": "Select data points below and drag them to 'selected fields' on the right. They will be displayed in the pop-up when clicking on a marker",
 						"default": {
 							"latitude": "Set the default latitude of the center of the map. You can use 'Set By Map' to use the latitude of the preview map.",

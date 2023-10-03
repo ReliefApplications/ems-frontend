@@ -708,7 +708,7 @@ export class Layer implements LayerModel {
                       .getChildCount()
                       .toString();
                     return createClusterDivIcon(
-                      clusterSymbol.color,
+                      clusterSymbol,
                       this.opacity,
                       cluster.getChildCount(),
                       get(
@@ -725,11 +725,6 @@ export class Layer implements LayerModel {
                         this.layerDefinition,
                         'featureReduction.autoSizeCluster',
                         true
-                      ),
-                      get(
-                        this.layerDefinition,
-                        'featureReduction.defaultClusterSize',
-                        20
                       )
                     );
                   },
