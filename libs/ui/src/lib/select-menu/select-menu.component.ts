@@ -4,8 +4,6 @@ import {
   Output,
   EventEmitter,
   TemplateRef,
-  ContentChildren,
-  QueryList,
   OnDestroy,
   Renderer2,
   ElementRef,
@@ -15,21 +13,16 @@ import {
   AfterContentInit,
   Optional,
   Self,
+  ContentChildren,
+  QueryList,
 } from '@angular/core';
 import { ControlValueAccessor, NgControl } from '@angular/forms';
-import { SelectOptionComponent } from './components/select-option.component';
-import {
-  Observable,
-  Subject,
-  Subscription,
-  merge,
-  startWith,
-  takeUntil,
-} from 'rxjs';
+import { Observable, Subject, Subscription, merge, takeUntil } from 'rxjs';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { TemplatePortal } from '@angular/cdk/portal';
 import { DOCUMENT } from '@angular/common';
 import { isNil } from 'lodash';
+import { SelectOptionComponent } from './components/select-option.component';
 
 /**
  * UI Select Menu component
@@ -66,8 +59,9 @@ export class SelectMenuComponent
   // Emits the list of the selected options
   @Output() selectedOption = new EventEmitter<string | string[]>();
 
+  /** List of SelectOptionComponent descendants. */
   @ContentChildren(SelectOptionComponent, { descendants: true })
-  optionList!: QueryList<SelectOptionComponent>;
+  options!: QueryList<SelectOptionComponent>;
 
   @ViewChild('optionPanel', { static: true }) optionPanel!: TemplateRef<any>;
 
@@ -80,12 +74,36 @@ export class SelectMenuComponent
 
   private destroy$ = new Subject<void>();
   private clickOutsideListener!: () => void;
+  private selectOptionListener!: () => void;
   private selectClosingActionsSubscription!: Subscription;
   private overlayRef!: OverlayRef;
+
+  private overlayTimeoutListener!: NodeJS.Timeout;
+  private applyAnimationTimeoutListener!: NodeJS.Timeout;
 
   /** Control access value functions */
   onChange!: (value: any) => void;
   onTouch!: () => void;
+
+  /**
+   * Return current option list html elements
+   * @returns list option as html elements
+   */
+  get currentOptionList() {
+    return this.document.getElementById('selectList')?.querySelectorAll('li');
+  }
+
+  /**
+   * Get options
+   *
+   * @returns all the options that are not parent group
+   */
+  getNotGroupOptionList = () =>
+    this.options
+      ? (this.options as QueryList<SelectOptionComponent>).filter(
+          (option: SelectOptionComponent) => !option.isGroup
+        )
+      : [];
 
   /**
    * Ui Select constructor
@@ -118,86 +136,42 @@ export class SelectMenuComponent
         if (
           !(
             this.el.nativeElement.contains(event.target) ||
-            this.document.getElementById('optionList')?.contains(event.target)
+            this.document.getElementById('selectList')?.contains(event.target)
           )
         ) {
           this.closeSelectPanel();
         }
       }
     );
-    this.optionList?.changes
-      .pipe(startWith(this.optionList), takeUntil(this.destroy$))
-      .subscribe({
-        next: (options: QueryList<SelectOptionComponent>) => {
-          if (this.value) {
-            this.selectedValues.push(
-              this.value instanceof Array ? [...this.value] : this.value
-            );
-          }
-          options.forEach((option) => {
-            option.optionClick.pipe(takeUntil(this.destroy$)).subscribe({
-              next: (isSelected: boolean) => {
-                this.updateSelectedValues(option, isSelected);
-                this.onChangeFunction();
-              },
-            });
-            // Initialize any selected values
-            if (this.selectedValues.includes(option.value)) {
-              option.selected = true;
-            } else {
-              option.selected = false;
-            }
-            this.setDisplayTriggerText();
-          });
-        },
-      });
     if (this.control) {
       this.control.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe({
         next: (value) => {
           // If the value is cleared from outside, reset displayed values
           if (isNil(value) || value.length === 0) {
             this.selectedValues = [];
-            this.optionList.forEach((option) => (option.selected = false));
+            this.getNotGroupOptionList().forEach((option) => {
+              option.selected = false;
+            });
             this.setDisplayTriggerText();
           }
         },
       });
     }
-  }
-
-  /**
-   * Force the options list when they cannot be successfully loaded through contentchildren
-   *
-   * @param optionList the optionList we want to
-   */
-  forceOptionList(optionList: QueryList<SelectOptionComponent>) {
-    this.optionList = optionList;
-    this.optionList?.changes
-      .pipe(startWith(this.optionList), takeUntil(this.destroy$))
-      .subscribe({
-        next: (options: QueryList<SelectOptionComponent>) => {
-          if (this.value) {
-            this.selectedValues.push(
-              this.value instanceof Array ? [...this.value] : this.value
-            );
-          }
-          options.forEach((option) => {
-            option.optionClick.pipe(takeUntil(this.destroy$)).subscribe({
-              next: (isSelected: boolean) => {
-                this.updateSelectedValues(option, isSelected);
-                this.onChangeFunction();
-              },
-            });
-            // Initialize any selected values
-            if (this.selectedValues.includes(option.value)) {
-              option.selected = true;
-            } else {
-              option.selected = false;
-            }
-            this.setDisplayTriggerText();
-          });
-        },
+    if (this.value) {
+      this.selectedValues.push(
+        this.value instanceof Array ? [...this.value] : this.value
+      );
+    }
+    if (this.selectedValues) {
+      this.setDisplayTriggerText();
+      this.getNotGroupOptionList().forEach((option: SelectOptionComponent) => {
+        if (!this.selectedValues.includes(option.value)) {
+          option.selected = false;
+        } else {
+          option.selected = true;
+        }
       });
+    }
   }
 
   /**
@@ -292,37 +266,31 @@ export class SelectMenuComponent
   /**
    * Updated the form control value on optionClick event
    *
-   * @param {SelectOptionComponent} selectedOption option clicked
+   * @param selectedOption option clicked
+   * @param selectedOption.value value of option clicked
    * @param {boolean} selected if the option as selected or unselected
    */
   private updateSelectedValues(
-    selectedOption: SelectOptionComponent,
+    selectedOption: { value: any },
     selected: boolean
   ): void {
     if (selected) {
       if (!this.multiselect) {
-        // Reset any other selected option
-        this.optionList.forEach((option: SelectOptionComponent) => {
-          if (selectedOption.value !== option.value) {
-            option.selected = false;
-          }
-        });
         this.selectedValues = [selectedOption.value];
       } else {
         this.selectedValues = [...this.selectedValues, selectedOption.value];
       }
+      this.getNotGroupOptionList().forEach((option: SelectOptionComponent) => {
+        if (!this.selectedValues.includes(option.value)) {
+          option.selected = false;
+        } else {
+          option.selected = true;
+        }
+      });
     } else {
       const index = this.selectedValues?.indexOf(selectedOption.value) ?? 0;
       this.selectedValues?.splice(index, 1);
     }
-  }
-
-  ngOnDestroy(): void {
-    if (this.clickOutsideListener) {
-      this.clickOutsideListener();
-    }
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   /**
@@ -332,18 +300,12 @@ export class SelectMenuComponent
    * @returns mapped values
    */
   getValuesLabel(selectedValues: any[]) {
-    let values = this.optionList.filter((val: any) => {
-      if (selectedValues.includes(val.value)) {
-        return val;
-      }
+    const values = this.getNotGroupOptionList().filter(
+      (val: SelectOptionComponent) => selectedValues.includes(val.value)
+    );
+    return values.map((val: SelectOptionComponent) => {
+      return val.label;
     });
-    return (values = values.map((val: any) => {
-      if (val.label) {
-        return val.label;
-      } else {
-        return val.value;
-      }
-    }));
   }
 
   // SELECT DISPLAY LOGIC //
@@ -398,7 +360,10 @@ export class SelectMenuComponent
         // Attach it to our overlay
         this.overlayRef.attach(templatePortal);
         // We add the needed classes to create the animation on select display
-        setTimeout(() => {
+        if (this.applyAnimationTimeoutListener) {
+          clearTimeout(this.applyAnimationTimeoutListener);
+        }
+        this.applyAnimationTimeoutListener = setTimeout(() => {
           this.applySelectListDisplayAnimation(true);
         }, 0);
         // Subscribe to all actions that close the select (outside click, item click, any other overlay detach)
@@ -408,6 +373,32 @@ export class SelectMenuComponent
             // If so, destroy select
             () => this.closeSelectPanel()
           );
+        // Listeners to get the selected option
+        if (this.selectOptionListener) {
+          this.selectOptionListener();
+        }
+        this.selectOptionListener = this.renderer.listen(
+          this.document.getElementById('selectList'),
+          'click',
+          (event: any) => {
+            const isGroup = JSON.parse(
+              event.target.getAttribute('data-is-group')
+            );
+            const isDisabled = JSON.parse(
+              event.target.getAttribute('data-is-disabled')
+            );
+            if (!isGroup && !isDisabled) {
+              const optionValue = JSON.parse(
+                event.target.getAttribute('data-value')
+              );
+              const isSelected = JSON.parse(
+                event.target.getAttribute('data-selected')
+              );
+              this.updateSelectedValues({ value: optionValue }, isSelected);
+              this.onChangeFunction();
+            }
+          }
+        );
         this.opened.emit();
       }
     }
@@ -425,7 +416,10 @@ export class SelectMenuComponent
     // We remove the needed classes to create the animation on select close
     this.applySelectListDisplayAnimation(false);
     // Detach the previously created overlay for the select
-    setTimeout(() => {
+    if (this.overlayTimeoutListener) {
+      clearTimeout(this.overlayTimeoutListener);
+    }
+    this.overlayTimeoutListener = setTimeout(() => {
       this.overlayRef.detach();
     }, 100);
   }
@@ -456,5 +450,22 @@ export class SelectMenuComponent
       this.renderer.removeClass(selectList, 'translate-y-0');
       this.renderer.removeClass(selectList, 'opacity-100');
     }
+  }
+
+  ngOnDestroy(): void {
+    if (this.applyAnimationTimeoutListener) {
+      clearTimeout(this.applyAnimationTimeoutListener);
+    }
+    if (this.overlayTimeoutListener) {
+      clearTimeout(this.overlayTimeoutListener);
+    }
+    if (this.clickOutsideListener) {
+      this.clickOutsideListener();
+    }
+    if (this.selectOptionListener) {
+      this.selectOptionListener();
+    }
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

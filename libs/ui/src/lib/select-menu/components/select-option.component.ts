@@ -1,13 +1,12 @@
 import {
   Component,
-  EventEmitter,
   Input,
-  Output,
   ContentChildren,
   forwardRef,
   QueryList,
   ElementRef,
   AfterContentInit,
+  ChangeDetectionStrategy,
 } from '@angular/core';
 
 /**
@@ -17,13 +16,13 @@ import {
   selector: 'ui-select-option',
   templateUrl: './select-option.component.html',
   styleUrls: ['./select-option.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class SelectOptionComponent implements AfterContentInit {
   @Input() value!: any;
   @Input() selected = false;
   @Input() isGroup = false;
   @Input() disabled = false;
-  @Output() optionClick = new EventEmitter<boolean>();
 
   @ContentChildren(forwardRef(() => SelectOptionComponent))
   options!: QueryList<SelectOptionComponent>;
@@ -38,19 +37,16 @@ export class SelectOptionComponent implements AfterContentInit {
    */
   constructor(private el: ElementRef) {}
 
-  ngAfterContentInit(): void {
-    this.label =
-      this.el.nativeElement.querySelector('span').firstChild?.textContent ?? '';
+  /**
+   * Set formatted value for list element
+   *
+   * @returns formatted value
+   */
+  get getValue() {
+    return this.value ? JSON.stringify(this.value) : '';
   }
 
-  /**
-   * Emit optionClick output and updates option selected status
-   */
-  onChangeFunction(): void {
-    if (this.isGroup || this.disabled) {
-      return;
-    }
-    this.selected = !this.selected;
-    this.optionClick.emit(this.selected);
+  ngAfterContentInit(): void {
+    this.label = (this.el.nativeElement.firstChild?.textContent ?? '').trim();
   }
 }

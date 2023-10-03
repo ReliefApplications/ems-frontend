@@ -371,8 +371,10 @@ export class GraphQLSelectComponent
    */
   onOpenSelect(): void {
     // focus on search input, if filterable
-    if (this.filterable) this.searchInput?.nativeElement.focus();
-    const panel = this.document.getElementById('optionList');
+    if (this.filterable) {
+      this.searchInput?.nativeElement.focus();
+    }
+    const panel = this.document.getElementById('selectList');
     if (this.scrollListener) {
       this.scrollListener();
     }

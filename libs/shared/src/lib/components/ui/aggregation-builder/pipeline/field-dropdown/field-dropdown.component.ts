@@ -5,7 +5,6 @@ import {
   OnChanges,
   QueryList,
   SimpleChanges,
-  ViewChild,
   ViewChildren,
 } from '@angular/core';
 import { UntypedFormControl } from '@angular/forms';
@@ -34,7 +33,6 @@ export class FieldDropdownComponent implements AfterViewInit, OnChanges {
   @Input() nullable = false;
 
   @ViewChildren('field') fieldComponents!: QueryList<any>;
-  @ViewChild('menu') selectMenu!: any;
   private currentValueUnnested = false;
   public expansionTree: ExpansionTree = {};
 
@@ -42,7 +40,6 @@ export class FieldDropdownComponent implements AfterViewInit, OnChanges {
   public separator = NESTED_FIELD_NAME_SEPARATOR;
 
   ngAfterViewInit(): void {
-    this.selectMenu.forceOptionList(this.fieldComponents);
     if (
       !this.fieldControl.value ||
       !this.fieldControl.value.includes(this.separator)
