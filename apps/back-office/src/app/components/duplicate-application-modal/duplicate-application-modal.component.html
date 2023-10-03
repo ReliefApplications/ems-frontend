@@ -1,13 +1,13 @@
 <ui-dialog>
   <ng-container ngProjectAs="header">
-    <h2>
+    <h3 class="font-semibold">
       Duplicating <i>{{ currentApp.name }}</i>
-    </h2>
+    </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <form [formGroup]="duplicateForm">
       <div class="flex flex-col">
-        <h2>
+        <h2 class="text-sm text-gray-500">
           {{ 'components.application.duplicate.name.description' | translate }}
         </h2>
         <div uiFormFieldDirective>

@@ -1,12 +1,12 @@
 <ui-dialog size="small">
   <ng-container ngProjectAs="header">
-    <h1>
+    <h3 class="font-semibold">
       {{
         data.add
           ? ('models.positionAttribute.new' | translate)
           : ('models.positionAttribute.edit' | translate)
       }}
-    </h1>
+    </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <form [formGroup]="positionForm" class="flex flex-col">
