@@ -87,6 +87,7 @@ export class SelectMenuComponent
 
   /**
    * Return current option list html elements
+   *
    * @returns list option as html elements
    */
   get currentOptionList() {
