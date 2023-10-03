@@ -54,6 +54,7 @@ const avatars: MockedAvatar[] = [
 
 export default {
   title: 'Components/Avatar Group',
+  tags: ['autodocs'],
   component: AvatarGroupComponent,
   argTypes: {
     shape: {
@@ -61,6 +62,7 @@ export default {
       control: 'select',
     },
     variant: {
+      description: 'Variant: defines the colors',
       options: categories,
       control: 'select',
     },

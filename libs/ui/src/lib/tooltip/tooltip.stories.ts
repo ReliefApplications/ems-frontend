@@ -5,6 +5,7 @@ import { TooltipModule } from './tooltip.module';
 
 export default {
   title: 'Components/Tooltip',
+  tags: ['autodocs'],
   component: TooltipComponent,
   argTypes: {
     position: {

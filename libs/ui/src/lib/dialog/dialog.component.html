@@ -8,16 +8,18 @@
   (click)="onClose()"
 >
 </ui-button>
-<div class="flex flex-col h-full overflow-hidden">
+<div class="flex flex-col h-full overflow-hidden py-4 sm:py-6">
   <!-- Dialog header -->
-  <ng-content select="header"></ng-content>
+  <div class="empty:hidden px-4 sm:px-6">
+    <ng-content select="header"></ng-content>
+  </div>
   <!-- Dialog content -->
-  <div class="flex-1 overflow-auto">
+  <div class="flex-1 overflow-auto px-4 sm:px-6">
     <ng-content select="content"></ng-content>
   </div>
   <!-- Dialog footer -->
   <div
-    class="py-2 flex flex-wrap min-h-[52px] items-center box-content -mb-4 justify-end gap-2 empty:hidden"
+    class="px-4 sm:px-6 py-2 flex flex-wrap min-h-[52px] items-center box-content -mb-4 justify-end gap-2 empty:hidden"
   >
     <ng-content select="actions"></ng-content>
   </div>

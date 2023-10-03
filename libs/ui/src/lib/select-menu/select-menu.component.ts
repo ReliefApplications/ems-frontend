@@ -33,6 +33,7 @@ import { isNil } from 'lodash';
 
 /**
  * UI Select Menu component
+ * Select menu is a UI component that provides a list of options to choose from.
  */
 @Component({
   selector: 'ui-select-menu',

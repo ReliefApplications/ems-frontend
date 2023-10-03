@@ -3,13 +3,21 @@ import { IconComponent } from './icon.component';
 import { variants } from '../types/variant';
 import { IconModule } from './icon.module';
 import { MAT_ICON_LIST } from './icon.list';
+import { categories } from '../types/category';
 
 export default {
   title: 'Components/Icon',
+  tags: ['autodocs'],
   component: IconComponent,
   argTypes: {
     variant: {
       options: variants,
+      control: {
+        type: 'select',
+      },
+    },
+    category: {
+      options: categories,
       control: {
         type: 'select',
       },

@@ -135,6 +135,7 @@ class EditDialogComponent {
 
 export default {
   title: 'Components/Dialog',
+  tags: ['autodocs'],
   component: LaunchDialogComponent,
   decorators: [
     moduleMetadata({

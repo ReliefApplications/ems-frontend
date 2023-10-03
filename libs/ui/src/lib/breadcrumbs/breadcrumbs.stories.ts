@@ -3,9 +3,12 @@ import { BreadcrumbsComponent } from './breadcrumbs.component';
 import { breadCrumbDisplays } from './types/breadcrumb-display';
 import { breadcrumbSeparators } from './types/breadcrumb-separator';
 import { BreadcrumbsModule } from './breadcrumbs.module';
+import { RouterTestingModule } from '@angular/router/testing';
+import { StorybookTranslateModule } from '../../storybook-translate.module';
 
 export default {
   title: 'Components/Breadcrumbs',
+  tags: ['autodocs'],
   component: BreadcrumbsComponent,
   argTypes: {
     separator: {
@@ -19,7 +22,11 @@ export default {
   },
   decorators: [
     moduleMetadata({
-      imports: [BreadcrumbsModule],
+      imports: [
+        RouterTestingModule,
+        BreadcrumbsModule,
+        StorybookTranslateModule,
+      ],
     }),
   ],
 } as Meta<BreadcrumbsComponent>;

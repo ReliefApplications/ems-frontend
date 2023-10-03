@@ -5,6 +5,7 @@ import { SliderComponent } from './slider.component';
 
 export default {
   title: 'Components/Slider',
+  tags: ['autodocs'],
   component: SliderComponent,
   argTypes: {
     minValue: {

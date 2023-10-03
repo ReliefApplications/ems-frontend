@@ -6,13 +6,16 @@ import { FormWrapperModule } from '../form-wrapper/form-wrapper.module';
 import { TabsModule } from '../tabs/tabs.module';
 import { RadioModule } from '../radio/radio.module';
 import { CheckboxModule } from '../checkbox/checkbox.module';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export default {
   title: 'Components/CronEditorComponent',
+  tags: ['autodocs'],
   component: CronEditorComponent,
   decorators: [
     moduleMetadata({
       imports: [
+        BrowserAnimationsModule,
         CronEditorModule,
         SelectMenuModule,
         FormWrapperModule,

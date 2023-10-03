@@ -19,6 +19,7 @@ import { filter } from 'rxjs/operators';
 
 /**
  * UI Sidenav component
+ * Sidenav is a UI component that displays a drawer on the side of the screen.
  */
 @Component({
   selector: 'ui-sidenav-container',
@@ -26,16 +27,25 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./sidenav-container.component.scss'],
 })
 export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
+  /** A list of SidenavDirective children. */
   @ContentChildren(SidenavDirective) uiSidenavDirective!: SidenavDirective[];
+  /** Reference to the content container. */
   @ViewChild('contentContainer') contentContainer!: ElementRef;
+  /** A list of side navigation menus. */
   @ViewChildren('sidenav') sidenav!: QueryList<any>;
+  /** Reference to the content wrapper. */
   @ViewChild('contentWrapper') contentWrapper!: ElementRef;
-
+  /** Array indicating whether each side navigation menu should be shown. */
   public showSidenav: boolean[] = [];
+  /** Array indicating the mode of each side navigation menu. */
   public mode: SidenavTypes[] = [];
+  /** Array indicating the position of each side navigation menu. */
   public position: SidenavPositionTypes[] = [];
+  /** Array indicating whether each side navigation menu is visible. */
   public visible: boolean[] = [];
+  /** Subject to emit when the component is destroyed. */
   private destroy$ = new Subject<void>();
+  /** Array of classes for animations. */
   animationClasses = ['transition-all', 'duration-500', 'ease-in-out'] as const;
 
   /** @returns height of element */

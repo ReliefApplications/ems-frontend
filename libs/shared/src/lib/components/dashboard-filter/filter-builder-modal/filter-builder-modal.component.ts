@@ -26,6 +26,11 @@ interface DialogData {
   surveyStructure: any;
 }
 
+/** Default filter structure */
+const DEFAULT_STRUCTURE = {
+  showQuestionNumbers: 'off',
+};
+
 /**
  * Array containing the different types of questions.
  * Commented types are not yet implemented.
@@ -183,7 +188,7 @@ export class FilterBuilderModalComponent
   private setFormBuilder() {
     const creatorOptions = {
       showEmbededSurveyTab: false,
-      showJSONEditorTab: false,
+      showJSONEditorTab: true,
       generateValidJSON: true,
       showTranslationTab: false,
       questionTypes: QUESTION_TYPES,
@@ -196,7 +201,6 @@ export class FilterBuilderModalComponent
     this.surveyCreator.showSidebar = true;
     this.surveyCreator.sidebarLocation = 'right';
     this.surveyCreator.haveCommercialLicense = true;
-    this.surveyCreator.survey.showQuestionNumbers = 'off';
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
 
     // Block core fields edition
@@ -225,7 +229,9 @@ export class FilterBuilderModalComponent
     );
 
     // Set content
-    const survey = new SurveyModel(this.data?.surveyStructure || {});
+    const survey = new SurveyModel(
+      this.data?.surveyStructure || DEFAULT_STRUCTURE
+    );
     this.surveyCreator.JSON = survey.toJSON();
   }
 

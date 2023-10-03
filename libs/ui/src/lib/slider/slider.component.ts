@@ -11,6 +11,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 /**
  * UI Slider component
+ * Slider is a UI component that allows users to make selections from a range of values.
  */
 @Component({
   selector: 'ui-slider',
@@ -40,16 +41,19 @@ export class SliderComponent
    */
   @Input() step = 1;
 
-  //In order to define left position of the bubble linked to the slider
+  /**  In order to define left position of the bubble linked to the slider */
   bubbleStyle = '';
-  //In order to determine if bubble and ticks are to be shown
+  /** In order to determine if bubble and ticks are to be shown */
   bubbleToShow = false;
+  /** Boolean indicating whether to show ticks on the slider. */
   ticksToShow = false;
-  // Slider range
+  /** Slider range */
   range: number[] = [];
-  //Value of the slider
+  /** Value of the slider */
   currentValue = this.minValue;
+  /** Function to handle value changes. */
   onChange!: (value: number) => void;
+  /** Function to handle touch events. */
   onTouch!: () => void;
 
   /**
