@@ -46,7 +46,7 @@
     >
       {{ (isSearchActivated ? 'common.select' : 'common.search') | translate }}
     </ui-button>
-    <ui-button (click)="onClose()">{{ 'common.cancel' | translate }}</ui-button>
+    <ui-button (click)="onClose()" variant="default">{{ 'common.cancel' | translate }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"
