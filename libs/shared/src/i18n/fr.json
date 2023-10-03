@@ -1401,11 +1401,14 @@
 					"edit": {
 						"aggregation": "Agrégation",
 						"cluster": {
+							"autoSizeCluster": "Taille automatique des clusters",
 							"cluster": "Cluster",
 							"clusterSettings": "Paramètres de groupes",
 							"fields": "Champs de groupes",
+							"fontSize": "Taille de la police",
 							"high": "Haut",
 							"label": "Libellé du groupes",
+							"lightMode": "Mode lumineux",
 							"low": "Faible",
 							"max": "Max",
 							"min": "Min",
@@ -1571,6 +1574,10 @@
 					},
 					"tooltip": {
 						"category": "Sélectionnez un champ pour séparer vos enregistrements en différentes catégories",
+						"cluster": {
+							"autoSize": "La taille des clusters est automatique si activé, sinon, vous pouvez la définir.",
+							"lightMode": "Le texte s'affichera en blanc si activé, sinon en noir."
+						},
 						"dataset": "Sélectionnez des champs ci-dessous et déplacez-les vers 'champs sélectionnés' sur la droite. Ils seront présents dans le pop-up affiché en cliquant sur les marqueurs",
 						"default": {
 							"latitude": "Définissez la latitude par défaut du centre de la carte. 'Utiliser la vue actuelle' sauvegardera la latitude de la carte d'aperçu.",
