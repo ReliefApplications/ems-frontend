@@ -1,0 +1,56 @@
+<ui-dialog [closable]="true" [size]="'medium'">
+    <ng-container ngProjectAs="header">
+        <h1>{{ 'common.settings' | translate }}</h1>
+        <!-- ADD TOOL TIP TO INFORM CHANGES ARE ALWAYS AUTOMATICALLY SAVED -->
+      </ng-container>
+  <ng-container ngProjectAs="content">
+    <ui-tabs [vertical]="true">
+      <!-- General settings -->
+      <ui-tab>
+        <ng-container ngProjectAs="label">
+          <ui-icon
+            icon="settings"
+            [size]="18"
+            uiTooltip="{{ 'common.general' | translate }}"
+          ></ui-icon>
+          <span>{{ 'common.general' | translate }}</span>
+        </ng-container>
+        <!-- Tab content -->
+        <div class="flex flex-col" *ngIf="this.settingsForm">
+          <!-- Page / step icon -->
+          <app-page-icon [iconControl]="this.settingsForm.controls.icon"></app-page-icon>
+        </div>
+      </ui-tab>
+      <!-- Access (visibility) settings -->
+      <ui-tab>
+        <ng-container ngProjectAs="label">
+          <ui-icon
+            icon="visibility"
+            [size]="18"
+            uiTooltip="{{ 'common.access' | translate }}"
+          ></ui-icon>
+          <span>{{ 'common.access' | translate }}</span>
+        </ng-container>
+        <!-- Tab content -->
+        <div class="flex flex-col">
+        </div>
+      </ui-tab>
+    </ui-tabs>
+  </ng-container>
+
+  <!-- Action buttons -->
+  <ng-container ngProjectAs="actions">
+    <ui-button [uiDialogClose]="updated" variant="default">
+      {{ 'common.cancel' | translate }}
+    </ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="updated"
+      cdkFocusInitial
+    >
+      {{ 'common.save' | translate }}
+    </ui-button>
+  </ng-container>
+
+</ui-dialog>

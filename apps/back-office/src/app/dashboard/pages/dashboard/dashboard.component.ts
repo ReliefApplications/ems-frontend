@@ -929,56 +929,46 @@ export class DashboardComponent
   }
 
   /**
-   * Handle icon change.
-   * Open icon modal settings, and save changes if icon is updated.
+   * Open settings modal.
    */
-  public async onChangeIcon(): Promise<void> {
-    const { IconModalComponent } = await import(
-      '../../../components/icon-modal/icon-modal.component'
+  public async onOpenSettings(): Promise<void> {
+    const { PageSettingsComponent } = await import(
+      '../../../components/page-settings/page-settings.component'
     );
-    const dialogRef = this.dialog.open(IconModalComponent, {
+    const dialogRef = this.dialog.open(PageSettingsComponent, {
       data: {
+        type: this.isStep ? 'step' : 'page',
+        contentType: this.isStep ? this.dashboard?.step : this.dashboard?.page,
+        step: this.isStep ? this.dashboard?.step : undefined,
+        page: this.isStep ? undefined : this.dashboard?.page,
         icon: this.isStep
           ? this.dashboard?.step?.icon
           : this.dashboard?.page?.icon,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((icon: any) => {
-      if (icon) {
-        if (this.isStep) {
-          const callback = () => {
+
+    dialogRef.closed
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((updated: any) => {
+        if (updated?.icon.changed) {
+          if (this.isStep) {
             this.dashboard = {
               ...this.dashboard,
               step: {
                 ...this.dashboard?.step,
-                icon,
+                icon: updated.icon.value,
               },
             };
-          };
-          this.dashboard?.step &&
-            this.workflowService.updateStepIcon(
-              this.dashboard.step,
-              icon,
-              callback
-            );
-        } else {
-          const callback = () => {
+          } else {
             this.dashboard = {
               ...this.dashboard,
               page: {
                 ...this.dashboard?.page,
-                icon,
+                icon: updated.icon.value,
               },
             };
-          };
-          this.dashboard?.page &&
-            this.applicationService.changePageIcon(
-              this.dashboard.page,
-              icon,
-              callback
-            );
+          }
         }
-      }
-    });
+      });
   }
 }

@@ -474,6 +474,9 @@
 					"plural": "Les pages ont été réorganisées avec succès.",
 					"singular": "La page a été réorganisée avec succès."
 				},
+				"settings": {
+					"selectIcon": "Sélectionnez une icône"
+				},
 				"show": "Afficher la page dans la barre latérale de navigation"
 			},
 			"positionAttribute": {

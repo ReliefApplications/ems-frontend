@@ -370,10 +370,10 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
    * Open icon modal settings, and save changes if icon is updated.
    */
   public async onChangeIcon(): Promise<void> {
-    const { IconModalComponent } = await import(
-      '../../../components/icon-modal/icon-modal.component'
+    const { PageSettingsComponent } = await import(
+      '../../../components/page-settings/page-settings.component'
     );
-    const dialogRef = this.dialog.open(IconModalComponent, {
+    const dialogRef = this.dialog.open(PageSettingsComponent, {
       data: {
         icon: this.isStep ? this.step?.icon : this.page?.icon,
       },

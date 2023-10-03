@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { IconModalComponent } from './icon-modal.component';
+import { PageSettingsComponent } from './page-settings.component';
 
-describe('IconModalComponent', () => {
-  let component: IconModalComponent;
-  let fixture: ComponentFixture<IconModalComponent>;
+describe('PageSettingsComponent', () => {
+  let component: PageSettingsComponent;
+  let fixture: ComponentFixture<PageSettingsComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [IconModalComponent],
+      declarations: [PageSettingsComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(IconModalComponent);
+    fixture = TestBed.createComponent(PageSettingsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

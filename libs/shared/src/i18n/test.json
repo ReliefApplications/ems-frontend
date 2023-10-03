@@ -474,6 +474,9 @@
 					"plural": "******",
 					"singular": "******"
 				},
+				"settings": {
+					"selectIcon": "******"
+				},
 				"show": "******"
 			},
 			"positionAttribute": {

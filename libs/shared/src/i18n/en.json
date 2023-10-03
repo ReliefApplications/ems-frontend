@@ -474,6 +474,9 @@
 					"plural": "The pages were successfully reordered.",
 					"singular": "The page was successfully reordered."
 				},
+				"settings": {
+					"selectIcon": "Select an icon"
+				},
 				"show": "Make page visible in nav bar for end-users"
 			},
 			"positionAttribute": {
