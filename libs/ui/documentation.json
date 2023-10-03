@@ -1012,7 +1012,7 @@
         },
         {
             "name": "ButtonComponent",
-            "id": "component-ButtonComponent-89dfbc0d66670ecf8fd05472eb9e0a1d617871ff8618601ed752c341a2964fae2d0056ecf4399cb2e944dc69b79b9ed2644f70b13c7d91abb5548e8a8cd2e281",
+            "id": "component-ButtonComponent-124245a83d65c4d7f6925b1ba495a032e5fc5169fdb2faa9b1784dfbc933afa8cccb73d4101157112f507956a6b53fbaa27f0fe877b9e265b7d3d1afddd0f7e4",
             "file": "libs/ui/src/lib/button/button.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -1131,7 +1131,7 @@
                 },
                 {
                     "name": "variant",
-                    "defaultValue": "'default'",
+                    "defaultValue": "'primary'",
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\nButton variant, define color",
@@ -1168,11 +1168,11 @@
             "description": "<p>UI Button Component.\nEncapsulate a html button.\nButton can have various shapes / colors / sizes.\nIt can be only icon, or have one as prefix / suffix of its text.</p>\n",
             "rawdescription": "\n\nUI Button Component.\nEncapsulate a html button.\nButton can have various shapes / colors / sizes.\nIt can be only icon, or have one as prefix / suffix of its text.\n",
             "type": "component",
-            "sourceCode": "import { Component, HostBinding, Input } from '@angular/core';\nimport { ButtonIconPosition } from './types/button-icon-position';\nimport { Category } from '../types/category';\nimport { Variant } from '../types/variant';\nimport { Subject } from 'rxjs';\nimport { Size } from '../types/size';\n\n/**\n * UI Button Component.\n * Encapsulate a html button.\n * Button can have various shapes / colors / sizes.\n * It can be only icon, or have one as prefix / suffix of its text.\n */\n@Component({\n  selector: 'ui-button',\n  templateUrl: './button.component.html',\n  styleUrls: ['./button.component.scss'],\n})\nexport class ButtonComponent {\n  /** Button Icon */\n  @Input() icon = '';\n  /** Icon position, either before or after text */\n  @Input() iconPosition: ButtonIconPosition = 'prefix';\n  /** Button category, define shape */\n  @Input() category: Category = 'primary';\n  /** Button size */\n  @Input() size: Size = 'medium';\n  /** Button variant, define color */\n  @Input() variant: Variant = 'default';\n  /** Is button only icon */\n  @Input() isIcon = false;\n  /** Should button appear as block */\n  @HostBinding('class.flex')\n  @Input()\n  isBlock = false;\n  /** Loading indicator */\n  @Input() loading = false;\n  /** Disable interaction */\n  @HostBinding('class.disabled')\n  @Input()\n  disabled = false;\n  /** Is button outlined */\n  @Input() isOutlined = false;\n  /** Emit click event */\n  public emittedEventSubject: Subject<string> = new Subject();\n\n  /**\n   * Map icon size as number for Size enum\n   *\n   * @returns size as number\n   */\n  get iconSize(): number {\n    switch (this.size) {\n      case 'small':\n        return 18;\n      case 'large':\n        return 24;\n      default:\n        return 21;\n    }\n  }\n\n  /** @returns general resolved classes and variant for button*/\n  get resolveButtonClasses(): string[] {\n    const classes = [];\n    if (this.isBlock) classes.push('!w-full');\n    classes.push(this.isIcon ? 'ui-button-icon' : 'ui-button');\n    classes.push(this.category);\n    classes.push(this.size);\n    classes.push(\n      'button-' + (this.variant === 'default' ? 'primary' : this.variant)\n    );\n    if ((this.icon || this.loading) && !this.isIcon) {\n      classes.push('inline-flex items-center gap-x-2');\n    }\n    if (this.disabled) {\n      classes.push('opacity-70');\n    }\n    return classes;\n  }\n}\n",
+            "sourceCode": "import { Component, HostBinding, Input } from '@angular/core';\nimport { ButtonIconPosition } from './types/button-icon-position';\nimport { Category } from '../types/category';\nimport { Variant } from '../types/variant';\nimport { Subject } from 'rxjs';\nimport { Size } from '../types/size';\n\n/**\n * UI Button Component.\n * Encapsulate a html button.\n * Button can have various shapes / colors / sizes.\n * It can be only icon, or have one as prefix / suffix of its text.\n */\n@Component({\n  selector: 'ui-button',\n  templateUrl: './button.component.html',\n  styleUrls: ['./button.component.scss'],\n})\nexport class ButtonComponent {\n  /** Button Icon */\n  @Input() icon = '';\n  /** Icon position, either before or after text */\n  @Input() iconPosition: ButtonIconPosition = 'prefix';\n  /** Button category, define shape */\n  @Input() category: Category = 'primary';\n  /** Button size */\n  @Input() size: Size = 'medium';\n  /** Button variant, define color */\n  @Input() variant: Variant = 'primary';\n  /** Is button only icon */\n  @Input() isIcon = false;\n  /** Should button appear as block */\n  @HostBinding('class.!w-full')\n  @Input()\n  isBlock = false;\n  /** Loading indicator */\n  @Input() loading = false;\n  /** Disable interaction */\n  @HostBinding('class.disabled')\n  @Input()\n  disabled = false;\n  /** Is button outlined */\n  @Input() isOutlined = false;\n  /** Emit click event */\n  public emittedEventSubject: Subject<string> = new Subject();\n\n  /**\n   * Map icon size as number for Size enum\n   *\n   * @returns size as number\n   */\n  get iconSize(): number {\n    switch (this.size) {\n      case 'small':\n        return 18;\n      case 'large':\n        return 24;\n      default:\n        return 21;\n    }\n  }\n\n  /** @returns general resolved classes and variant for button*/\n  get resolveButtonClasses(): string[] {\n    const classes = [];\n    if (this.isBlock) classes.push('!w-full');\n    classes.push(this.isIcon ? 'ui-button-icon' : 'ui-button');\n    classes.push(this.category);\n    classes.push(this.size);\n    classes.push('button-' + this.variant);\n    if ((this.icon || this.loading) && !this.isIcon) {\n      classes.push('inline-flex items-center gap-x-2');\n    }\n    if (this.disabled) {\n      classes.push('opacity-70');\n    }\n    return classes;\n  }\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
-                    "data": ":host {\n  display: block;\n  width: max-content;\n}\n\n:host button > * {\n  pointer-events: none;\n}\n\n:host button {\n  pointer-events: inherit;\n}\n\n.ui-button {\n  &.primary {\n    @apply rounded-md text-sm font-medium shadow-sm;\n  }\n  &.secondary {\n    @apply rounded-md text-sm font-medium shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;\n  }\n  &.tertiary {\n    @apply rounded-md bg-white text-sm font-medium shadow-sm shadow-gray-300;\n    box-shadow: 0 0 0 1px inset !important;\n  }\n  &.small {\n    @apply px-2.5 py-1.5;\n  }\n  &.medium {\n    @apply px-3 py-2;\n  }\n  &.large {\n    @apply px-3.5 py-2.5;\n  }\n}\n\n.ui-button-icon {\n  &.primary {\n    @apply rounded-full shadow-sm;\n  }\n  &.secondary {\n    @apply rounded-full shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;\n  }\n  &.tertiary {\n    @apply bg-white rounded-full shadow-sm shadow-gray-300;\n    box-shadow: 0 0 0 1px inset !important;\n  }\n  &.small {\n    @apply p-1.5;\n  }\n  &.medium,\n  &.large {\n    @apply p-2.5;\n  }\n}\n\n.button-primary {\n  &.primary {\n    @apply text-primary-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-primary-50;\n  }\n  &.secondary {\n    @apply bg-primary-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-primary-500 focus-visible:outline-primary-600;\n  }\n  &.tertiary {\n    @apply shadow-primary-400 text-primary-400;\n  }\n}\n\n.button-success {\n  &.primary {\n    @apply text-green-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-green-50;\n  }\n  &.secondary {\n    @apply bg-green-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-green-500 focus-visible:outline-green-600;\n  }\n  &.tertiary {\n    @apply shadow-green-400 text-green-400;\n  }\n}\n\n.button-danger {\n  &.primary {\n    @apply text-red-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-red-50;\n  }\n  &.secondary {\n    @apply bg-red-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-red-500 focus-visible:outline-red-600;\n  }\n  &.tertiary {\n    @apply shadow-red-400 text-red-400;\n  }\n}\n\n.button-warning {\n  &.primary {\n    @apply text-yellow-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-yellow-50;\n  }\n  &.secondary {\n    @apply bg-yellow-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-yellow-500 focus-visible:outline-yellow-600;\n  }\n  &.tertiary {\n    @apply shadow-yellow-400 text-yellow-400;\n  }\n}\n\n.button-grey {\n  &.primary {\n    @apply text-neutral-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-neutral-200;\n  }\n  &.secondary {\n    @apply bg-neutral-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-neutral-500 focus-visible:outline-neutral-600;\n  }\n  &.tertiary {\n    @apply shadow-neutral-400 text-neutral-400;\n  }\n}\n\n.button-light {\n  &.primary {\n    @apply text-neutral-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-neutral-100 hover:bg-opacity-20;\n  }\n  &.secondary {\n    @apply bg-neutral-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-neutral-500 focus-visible:outline-neutral-600;\n  }\n  &.tertiary {\n    @apply shadow-neutral-400 text-neutral-400;\n  }\n}\n\nbutton.ui-button:disabled {\n  @apply text-neutral-400 bg-neutral-500 bg-opacity-20;\n}\n\nbutton.ui-button-icon:disabled {\n  @apply text-neutral-400 bg-opacity-20;\n}\n",
+                    "data": ":host {\n  display: block;\n  width: max-content;\n}\n\n:host button > * {\n  pointer-events: none;\n}\n\n:host button {\n  pointer-events: inherit;\n}\n\n.ui-button {\n  &.primary {\n    @apply rounded-md text-sm font-medium shadow-sm ring-1 ring-inset ring-gray-300;\n  }\n  &.secondary {\n    @apply rounded-md text-sm font-medium shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;\n  }\n  &.tertiary {\n    @apply rounded-md bg-white text-sm font-medium shadow-sm shadow-gray-300;\n    box-shadow: 0 0 0 1px inset !important;\n  }\n  &.small {\n    @apply px-2.5 py-1.5;\n  }\n  &.medium {\n    @apply px-3 py-2;\n  }\n  &.large {\n    @apply px-3.5 py-2.5;\n  }\n}\n\n.ui-button-icon {\n  &.primary {\n    @apply rounded-full shadow-sm;\n  }\n  &.secondary {\n    @apply rounded-full shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;\n  }\n  &.tertiary {\n    @apply bg-white rounded-full shadow-sm shadow-gray-300;\n    box-shadow: 0 0 0 1px inset !important;\n  }\n  &.small {\n    @apply p-1.5;\n  }\n  &.medium,\n  &.large {\n    @apply p-2.5;\n  }\n}\n\n.button-default {\n  &.primary {\n    @apply text-gray-900;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-gray-50;\n  }\n  &.secondary {\n    @apply bg-gray-900 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-gray-500 focus-visible:outline-gray-600;\n  }\n  &.tertiary {\n    @apply shadow-gray-900 text-gray-900;\n  }\n}\n\n.button-primary {\n  &.primary {\n    @apply text-primary-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-primary-50;\n  }\n  &.secondary {\n    @apply bg-primary-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-primary-500 focus-visible:outline-primary-600;\n  }\n  &.tertiary {\n    @apply shadow-primary-400 text-primary-400;\n  }\n}\n\n.button-success {\n  &.primary {\n    @apply text-green-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-green-50;\n  }\n  &.secondary {\n    @apply bg-green-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-green-500 focus-visible:outline-green-600;\n  }\n  &.tertiary {\n    @apply shadow-green-400 text-green-400;\n  }\n}\n\n.button-danger {\n  &.primary {\n    @apply text-red-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-red-50;\n  }\n  &.secondary {\n    @apply bg-red-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-red-500 focus-visible:outline-red-600;\n  }\n  &.tertiary {\n    @apply shadow-red-400 text-red-400;\n  }\n}\n\n.button-warning {\n  &.primary {\n    @apply text-yellow-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-yellow-50;\n  }\n  &.secondary {\n    @apply bg-yellow-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-yellow-500 focus-visible:outline-yellow-600;\n  }\n  &.tertiary {\n    @apply shadow-yellow-400 text-yellow-400;\n  }\n}\n\n.button-grey {\n  &.primary {\n    @apply text-neutral-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-neutral-200;\n  }\n  &.secondary {\n    @apply bg-neutral-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-neutral-500 focus-visible:outline-neutral-600;\n  }\n  &.tertiary {\n    @apply shadow-neutral-400 text-neutral-400;\n  }\n}\n\n.button-light {\n  &.primary {\n    @apply text-neutral-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-neutral-100 hover:bg-opacity-20;\n  }\n  &.secondary {\n    @apply bg-neutral-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-neutral-500 focus-visible:outline-neutral-600;\n  }\n  &.tertiary {\n    @apply shadow-neutral-400 text-neutral-400;\n  }\n}\n\nbutton.ui-button:disabled {\n  @apply text-neutral-400 bg-neutral-500 bg-opacity-20;\n}\n\nbutton.ui-button-icon:disabled {\n  @apply text-neutral-400 bg-opacity-20;\n}\n",
                     "styleUrl": "./button.component.scss"
                 }
             ],
@@ -1189,15 +1189,15 @@
                         "description": "<p>Map icon size as number for Size enum</p>\n",
                         "jsdoctags": [
                             {
-                                "pos": 1506,
-                                "end": 1533,
+                                "pos": 1509,
+                                "end": 1536,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
                                 "kind": 345,
                                 "tagName": {
-                                    "pos": 1507,
-                                    "end": 1514,
+                                    "pos": 1510,
+                                    "end": 1517,
                                     "flags": 8421376,
                                     "modifierFlagsCache": 0,
                                     "transformFlags": 0,
@@ -1220,15 +1220,15 @@
                         "description": "",
                         "jsdoctags": [
                             {
-                                "pos": 1717,
-                                "end": 1773,
+                                "pos": 1720,
+                                "end": 1776,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
                                 "kind": 345,
                                 "tagName": {
-                                    "pos": 1718,
-                                    "end": 1725,
+                                    "pos": 1721,
+                                    "end": 1728,
                                     "flags": 8421376,
                                     "modifierFlagsCache": 0,
                                     "transformFlags": 0,
@@ -4205,7 +4205,7 @@
             "assetsDirs": [],
             "styleUrlsData": [
                 {
-                    "data": ":host {\n  max-width: 100% !important;\n  max-height: 90vh;\n  @apply block h-full rounded-lg bg-white text-left shadow-xl transition-all sm:w-full sm:max-w-lg sm:p-6 flex flex-col relative;\n\n  @media (max-width: 640px) {\n    padding: 1rem !important;\n  }\n}\n\n::ng-deep button {\n  box-shadow: none !important;\n}\n",
+                    "data": ":host {\n  max-width: 100% !important;\n  max-height: 90vh;\n  @apply block h-full rounded-lg bg-white text-left shadow-xl transition-all sm:w-full sm:max-w-lg sm:p-6 flex flex-col relative;\n\n  @media (max-width: 640px) {\n    padding: 1rem !important;\n  }\n}\n",
                     "styleUrl": "./dialog.component.scss"
                 }
             ],
@@ -6398,7 +6398,7 @@
         },
         {
             "name": "IconComponent",
-            "id": "component-IconComponent-96334d90b277202ad1858415f2564505ca025a81231b63d2e0325ff1d02aaacb0bd9de183a87ba87d5e41c4087f40124b2f00f2aa808eb3d5f3a33c237b89b26",
+            "id": "component-IconComponent-5d652315192edeca5d9b2cb42c320af317a588745f185dde9b7cbcd7a2a520c99aaee67398057b8d6c24d080c45d40f51456a80e1a5f6d2ecb80b614994b0d98",
             "file": "libs/ui/src/lib/icon/icon.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -6425,6 +6425,17 @@
                     "description": "<p>The category of the icon.</p>\n",
                     "line": 18,
                     "type": "Category",
+                    "decorators": []
+                },
+                {
+                    "name": "fontFamily",
+                    "defaultValue": "'material'",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\nFont library",
+                    "description": "<p>Font library</p>\n",
+                    "line": 26,
+                    "type": "\"material\" | \"fa\"",
                     "decorators": []
                 },
                 {
@@ -6484,7 +6495,7 @@
             "description": "<p>UI Icon Component\nDisplay an icon with a given category and variant.</p>\n",
             "rawdescription": "\n\nUI Icon Component\nDisplay an icon with a given category and variant.\n",
             "type": "component",
-            "sourceCode": "import { Component, Input } from '@angular/core';\nimport { Variant } from '../types/variant';\nimport { Category } from '../types/category';\n\n/**\n * UI Icon Component\n * Display an icon with a given category and variant.\n */\n@Component({\n  selector: 'ui-icon',\n  templateUrl: './icon.component.html',\n  styleUrls: ['./icon.component.scss'],\n})\nexport class IconComponent {\n  /** The name of the icon. */\n  @Input() icon = '';\n  /** The category of the icon. */\n  @Input() category: Category = 'primary';\n  /** The variant or style of the icon. */\n  @Input() variant: Variant = 'default';\n  /** The size of the icon. */\n  @Input() size = 24;\n  /** Boolean indicating whether the icon is outlined. */\n  @Input() isOutlined = false;\n\n  /**\n   * Formats the size input adding a 'px' suffix\n   *\n   * @returns Returns a string with the size in px\n   */\n  get fontSize(): string {\n    return this.size + 'px';\n  }\n\n  /**\n   * Resolve icon class by given category and variant\n   *\n   * @returns Returns a string array with the current variant and category class\n   */\n  get iconVariantAndCategory(): string[] {\n    const classes = [];\n    classes.push(\n      this.category === 'secondary' || this.variant === 'light'\n        ? 'icon-light'\n        : this.variant === 'primary'\n        ? 'icon-primary'\n        : this.variant === 'success'\n        ? 'icon-success'\n        : this.variant === 'grey'\n        ? 'icon-grey'\n        : this.variant === 'danger'\n        ? 'icon-danger'\n        : this.variant === 'warning'\n        ? 'icon-warning'\n        : ''\n    );\n    return classes;\n  }\n}\n",
+            "sourceCode": "import { Component, Input } from '@angular/core';\nimport { Variant } from '../types/variant';\nimport { Category } from '../types/category';\n\n/**\n * UI Icon Component\n * Display an icon with a given category and variant.\n */\n@Component({\n  selector: 'ui-icon',\n  templateUrl: './icon.component.html',\n  styleUrls: ['./icon.component.scss'],\n})\nexport class IconComponent {\n  /** The name of the icon. */\n  @Input() icon = '';\n  /** The category of the icon. */\n  @Input() category: Category = 'primary';\n  /** The variant or style of the icon. */\n  @Input() variant: Variant = 'default';\n  /** The size of the icon. */\n  @Input() size = 24;\n  /** Boolean indicating whether the icon is outlined. */\n  @Input() isOutlined = false;\n  /** Font library */\n  @Input() fontFamily: 'material' | 'fa' = 'material';\n  /**\n   * Formats the size input adding a 'px' suffix\n   *\n   * @returns Returns a string with the size in px\n   */\n  get fontSize(): string {\n    return this.size + 'px';\n  }\n  /** @returns font awesome icon name */\n  private get fontAwesomeIcon(): string {\n    return `fa-${this.icon}`;\n  }\n\n  /**\n   * Resolve icon class by given category and variant\n   *\n   * @returns Returns a string array with the current variant and category class\n   */\n  get iconVariantAndCategory(): string[] {\n    const classes = [];\n    classes.push(\n      this.category === 'secondary' || this.variant === 'light'\n        ? 'icon-light'\n        : this.variant === 'primary'\n        ? 'icon-primary'\n        : this.variant === 'success'\n        ? 'icon-success'\n        : this.variant === 'grey'\n        ? 'icon-grey'\n        : this.variant === 'danger'\n        ? 'icon-danger'\n        : this.variant === 'warning'\n        ? 'icon-warning'\n        : ''\n    );\n    if (this.fontFamily === 'fa') {\n      classes.push(...['fa', this.fontAwesomeIcon]);\n    }\n    return classes;\n  }\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -6500,20 +6511,20 @@
                         "name": "fontSize",
                         "type": "string",
                         "returnType": "string",
-                        "line": 31,
+                        "line": 32,
                         "rawdescription": "\n\nFormats the size input adding a 'px' suffix\n\n",
                         "description": "<p>Formats the size input adding a &#39;px&#39; suffix</p>\n",
                         "jsdoctags": [
                             {
-                                "pos": 795,
-                                "end": 844,
+                                "pos": 871,
+                                "end": 920,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
                                 "kind": 345,
                                 "tagName": {
-                                    "pos": 796,
-                                    "end": 803,
+                                    "pos": 872,
+                                    "end": 879,
                                     "flags": 8421376,
                                     "modifierFlagsCache": 0,
                                     "transformFlags": 0,
@@ -6525,26 +6536,57 @@
                         ]
                     }
                 },
+                "fontAwesomeIcon": {
+                    "name": "fontAwesomeIcon",
+                    "getSignature": {
+                        "name": "fontAwesomeIcon",
+                        "type": "string",
+                        "returnType": "string",
+                        "line": 36,
+                        "rawdescription": "",
+                        "description": "",
+                        "jsdoctags": [
+                            {
+                                "pos": 989,
+                                "end": 1021,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 345,
+                                "tagName": {
+                                    "pos": 990,
+                                    "end": 997,
+                                    "flags": 8421376,
+                                    "modifierFlagsCache": 0,
+                                    "transformFlags": 0,
+                                    "kind": 79,
+                                    "escapedText": "returns"
+                                },
+                                "comment": "<p>font awesome icon name</p>\n"
+                            }
+                        ]
+                    }
+                },
                 "iconVariantAndCategory": {
                     "name": "iconVariantAndCategory",
                     "getSignature": {
                         "name": "iconVariantAndCategory",
                         "type": "[]",
                         "returnType": "string[]",
-                        "line": 40,
+                        "line": 45,
                         "rawdescription": "\n\nResolve icon class by given category and variant\n\n",
                         "description": "<p>Resolve icon class by given category and variant</p>\n",
                         "jsdoctags": [
                             {
-                                "pos": 978,
-                                "end": 1057,
+                                "pos": 1171,
+                                "end": 1250,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
                                 "kind": 345,
                                 "tagName": {
-                                    "pos": 979,
-                                    "end": 986,
+                                    "pos": 1172,
+                                    "end": 1179,
                                     "flags": 8421376,
                                     "modifierFlagsCache": 0,
                                     "transformFlags": 0,
@@ -6557,7 +6599,7 @@
                     }
                 }
             },
-            "templateData": "<ng-container *ngIf=\"isOutlined; else angularMaterialIconTmpl\">\n  <span\n    [ngClass]=\"iconVariantAndCategory\"\n    [ngStyle]=\"{\n      height: fontSize,\n      width: fontSize,\n      'line-height': fontSize,\n      'font-size': fontSize\n    }\"\n    class=\"material-icons-outlined material-symbols-outlined inline-flex align-middle\"\n  >\n    {{ icon }}\n  </span>\n</ng-container>\n<ng-template #angularMaterialIconTmpl>\n  <i\n    [ngClass]=\"iconVariantAndCategory\"\n    [ngStyle]=\"{\n      height: fontSize,\n      width: fontSize,\n      'line-height': fontSize,\n      'font-size': fontSize\n    }\"\n    class=\"material-icons inline-flex align-middle\"\n    >{{ icon }}</i\n  >\n</ng-template>\n"
+            "templateData": "<ng-container *ngIf=\"fontFamily === 'material'; else faIcon\">\n  <!-- Outline template -->\n  <ng-container *ngIf=\"isOutlined; else materialIcon\">\n    <span\n      [ngClass]=\"iconVariantAndCategory\"\n      [ngStyle]=\"{\n        height: fontSize,\n        width: fontSize,\n        'line-height': fontSize,\n        'font-size': fontSize\n      }\"\n      class=\"material-icons-outlined material-symbols-outlined inline-flex align-middle\"\n    >\n      {{ icon }}\n    </span>\n  </ng-container>\n</ng-container>\n<!-- Default material template -->\n<ng-template #materialIcon>\n  <i\n    [ngClass]=\"iconVariantAndCategory\"\n    [ngStyle]=\"{\n      height: fontSize,\n      width: fontSize,\n      'line-height': fontSize,\n      'font-size': fontSize\n    }\"\n    class=\"material-icons inline-flex align-middle\"\n    >{{ icon }}</i\n  >\n</ng-template>\n<!-- Font Awesome template -->\n<ng-template #faIcon>\n  <i\n    [ngClass]=\"iconVariantAndCategory\"\n    [ngStyle]=\"{\n      height: fontSize,\n      width: fontSize,\n      'line-height': fontSize,\n      'font-size': fontSize\n    }\"\n    class=\"inline-flex align-middle\"\n  ></i>\n</ng-template>\n"
         },
         {
             "name": "LaunchDialogComponent",
@@ -19232,7 +19274,7 @@
                 "linktype": "component",
                 "name": "IconComponent",
                 "coveragePercent": 100,
-                "coverageCount": "6/6",
+                "coverageCount": "7/7",
                 "status": "very-good"
             },
             {

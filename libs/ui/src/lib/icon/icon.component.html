@@ -1,27 +1,13 @@
-<ng-container *ngIf="isOutlined; else angularMaterialIconTmpl">
-  <span
-    [ngClass]="iconVariantAndCategory"
-    [ngStyle]="{
-      height: fontSize,
-      width: fontSize,
-      'line-height': fontSize,
-      'font-size': fontSize
-    }"
-    class="material-icons-outlined material-symbols-outlined inline-flex align-middle"
-  >
+<i
+  [ngClass]="iconVariantAndCategory"
+  [ngStyle]="{
+    height: fontSize,
+    width: fontSize,
+    'line-height': fontSize,
+    'font-size': fontSize
+  }"
+  class="inline-flex align-middle"
+  ><ng-container *ngIf="fontFamily === 'material'">
     {{ icon }}
-  </span>
-</ng-container>
-<ng-template #angularMaterialIconTmpl>
-  <i
-    [ngClass]="iconVariantAndCategory"
-    [ngStyle]="{
-      height: fontSize,
-      width: fontSize,
-      'line-height': fontSize,
-      'font-size': fontSize
-    }"
-    class="material-icons inline-flex align-middle"
-    >{{ icon }}</i
-  >
-</ng-template>
+  </ng-container></i
+>
