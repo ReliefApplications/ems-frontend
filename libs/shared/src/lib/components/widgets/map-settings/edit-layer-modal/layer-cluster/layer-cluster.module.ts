@@ -10,6 +10,7 @@ import {
   FormWrapperModule,
   SliderModule,
   ToggleModule,
+  TooltipModule,
 } from '@oort-front/ui';
 
 /**
@@ -27,6 +28,7 @@ import {
     ToggleModule,
     IconPickerModule,
     DividerModule,
+    TooltipModule,
     SimpleRendererComponent,
   ],
   exports: [LayerClusterComponent],

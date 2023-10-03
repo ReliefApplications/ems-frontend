@@ -1386,6 +1386,7 @@
 						"aggregation": "******",
 						"cluster": {
 							"autoSizeCluster": "******",
+							"autoSizeClusterTooltip": "******",
 							"cluster": "******",
 							"clusterSettings": "******",
 							"defaultClusterSize": "******",
@@ -1394,6 +1395,7 @@
 							"high": "******",
 							"label": "******",
 							"lightMode": "******",
+							"lightModeTooltip": "******",
 							"low": "******",
 							"max": "******",
 							"min": "******",

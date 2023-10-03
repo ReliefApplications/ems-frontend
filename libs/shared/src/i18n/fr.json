@@ -1402,6 +1402,7 @@
 						"aggregation": "Agrégation",
 						"cluster": {
 							"autoSizeCluster": "Taille automatique des clusters",
+							"autoSizeClusterTooltip": "Si active, la taille des clusters est automatique, sinon choisissez la taille des clusters ci-dessous",
 							"cluster": "Cluster",
 							"clusterSettings": "Paramètres de groupes",
 							"defaultClusterSize": "Taille par defaut des clusters",
@@ -1410,6 +1411,7 @@
 							"high": "Haut",
 							"label": "Libellé du groupes",
 							"lightMode": "Mode lumineux",
+							"lightModeTooltip": "Si active, les chiffres seront affiches en blanc, sinon en noir",
 							"low": "Faible",
 							"max": "Max",
 							"min": "Min",

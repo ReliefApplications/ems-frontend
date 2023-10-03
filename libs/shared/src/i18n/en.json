@@ -1386,6 +1386,7 @@
 						"aggregation": "Aggregation",
 						"cluster": {
 							"autoSizeCluster": "Cluster auto-sizing",
+							"autoSizeClusterTooltip": "If enabled, the size of the clusters is automatic, else choose a default size below",
 							"cluster": "Cluster",
 							"clusterSettings": "Cluster settings",
 							"defaultClusterSize": "Default cluster size",
@@ -1394,6 +1395,7 @@
 							"high": "High",
 							"label": "Cluster label",
 							"lightMode": "Light mode",
+							"lightModeTooltip": "If enabled, numbers will be displayed in white, else black",
 							"low": "Low",
 							"max": "Max",
 							"min": "Min",

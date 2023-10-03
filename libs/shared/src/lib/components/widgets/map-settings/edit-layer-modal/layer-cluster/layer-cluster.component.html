@@ -1,4 +1,4 @@
-<div [formGroup]="formGroup" class="flex flex-col">
+<div [formGroup]="formGroup" class="flex flex-col space-y-8">
   <!-- Custom color for symbol cluster (only color, don't customize the symbols for clusters) -->
   <shared-simple-renderer
     [formGroup]="$any(formGroup.get('drawingInfo.renderer.symbol'))"
@@ -7,33 +7,62 @@
   ></shared-simple-renderer>
   <ui-divider class="my-4"></ui-divider>
   <div class="flex flex-col">
-    <label>{{ 'components.widget.settings.map.edit.cluster.lightMode' | translate }}</label>
-    <ui-toggle formControlName="lightMode"> </ui-toggle>
-    <label>{{ 'components.widget.settings.map.edit.cluster.fontSize' | translate }}</label>
+    <h3>
+      {{ 'components.widget.settings.map.edit.cluster.lightMode' | translate }}
+    </h3>
+    <ui-toggle
+      formControlName="lightMode"
+      [uiTooltip]="
+        'components.widget.settings.map.edit.cluster.lightModeTooltip'
+          | translate
+      "
+    >
+    </ui-toggle>
+  </div>
+  <div class="flex flex-col">
+    <h3>
+      {{ 'components.widget.settings.map.edit.cluster.fontSize' | translate }}
+    </h3>
+    <div uiFormFieldDirective>
+      <input type="number" step="1" min="1" formControlName="fontSize" />
+    </div>
+  </div>
+  <div class="flex flex-col">
+    <h3>
+      {{
+        'components.widget.settings.map.edit.cluster.autoSizeCluster'
+          | translate
+      }}
+    </h3>
+    <ui-toggle
+      formControlName="autoSizeCluster"
+      [uiTooltip]="
+        'components.widget.settings.map.edit.cluster.autoSizeClusterTooltip'
+          | translate
+      "
+    >
+    </ui-toggle>
+  </div>
+  <div class="flex flex-col" *ngIf="!formGroup.get('autoSizeCluster')?.value">
+    <h3>
+      {{
+        'components.widget.settings.map.edit.cluster.defaultClusterSize'
+          | translate
+      }}
+    </h3>
     <div uiFormFieldDirective>
       <input
         type="number"
         step="1"
         min="1"
-        formControlName="fontSize"
+        formControlName="defaultClusterSize"
       />
     </div>
-    <label>{{ 'components.widget.settings.map.edit.cluster.autoSizeCluster' | translate }}</label>
-    <ui-toggle formControlName="autoSizeCluster"> </ui-toggle>
-    <ng-container *ngIf="!formGroup.get('autoSizeCluster')?.value">
-      <label>{{ 'components.widget.settings.map.edit.cluster.defaultClusterSize' | translate }}</label>
-      <div uiFormFieldDirective>
-        <input
-          type="number"
-          step="1"
-          min="1"
-          formControlName="defaultClusterSize"
-        />
-      </div>
-    </ng-container>
-    <label>
+  </div>
+  <div class="flex flex-col">
+    <h3>
       {{ 'components.widget.settings.map.edit.cluster.radius' | translate }}
-    </label>
+    </h3>
     <ui-slider formControlName="clusterRadius" [minValue]="1" [maxValue]="100">
     </ui-slider>
     <div class="flex flex-row justify-between">
