@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -43,6 +44,7 @@ export class GraphQLSelectComponent
   @Input() valueField = '';
   @Input() textField = '';
   @Input() path = '';
+  @Input() isSurveyQuestion = false;
   /** Add type to selectedElements */
   @Input() selectedElements: any[] = [];
   @Input() filterable = false;
@@ -165,13 +167,15 @@ export class GraphQLSelectComponent
    *
    * @param ngControl form control shared service,
    * @param elementRef shared element ref service
-   * @param renderer Renderer2
+   * @param renderer - Angular - Renderer2
+   * @param changeDetectorRef - Angular - ChangeDetectorRef
    * @param document document
    */
   constructor(
     @Optional() @Self() public ngControl: NgControl,
     public elementRef: ElementRef<HTMLElement>,
     private renderer: Renderer2,
+    private changeDetectorRef: ChangeDetectorRef,
     @Inject(DOCUMENT) private document: Document
   ) {
     if (this.ngControl) {
@@ -414,6 +418,10 @@ export class GraphQLSelectComponent
             this.updateValues(results.data, results.loading);
           });
       }
+      // If it's used as a survey question, then change detector have to be manually triggered
+      if (this.isSurveyQuestion) {
+        this.changeDetectorRef.detectChanges();
+      }
     }
   }
 
@@ -424,6 +432,10 @@ export class GraphQLSelectComponent
    */
   public onSelectionChange(event: any) {
     this.value = event.value;
+    // If it's used as a survey question, then change detector have to be manually triggered
+    if (this.isSurveyQuestion) {
+      this.changeDetectorRef.detectChanges();
+    }
   }
 
   /** Triggers on close of select */
@@ -477,6 +489,10 @@ export class GraphQLSelectComponent
       this.pageInfo = get(data, path).pageInfo;
     }
     this.loading = loading;
+    // If it's used as a survey question, then change detector have to be manually triggered
+    if (this.isSurveyQuestion) {
+      this.changeDetectorRef.detectChanges();
+    }
   }
 
   /**

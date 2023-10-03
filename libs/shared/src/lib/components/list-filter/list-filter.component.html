@@ -1,0 +1,32 @@
+<!-- Default filter -->
+<div class="flex flex-wrap gap-2 mb-2 sm:items-center">
+  <!-- Search text filter -->
+  <div
+    uiFormFieldDirective
+    [defaultMargin]="false"
+    class="p-0 max-sm:flex-auto"
+  >
+    <ui-icon icon="search" uiPrefix></ui-icon>
+    <input
+      type="text"
+      [formControlName]="controlKey"
+      [placeholder]="'common.placeholder.search' | translate"
+    />
+    <ui-spinner *ngIf="loading" size="small" uiSuffix></ui-spinner>
+  </div>
+  <!-- Toggle sibling filters if there is any -->
+  <ng-container *ngIf="hasSiblingFilters">
+    <ui-button
+      icon="filter_list"
+      category="tertiary"
+      variant="primary"
+      (click)="showSiblingFilters()"
+    >
+      {{
+        showSignal
+          ? ('common.filter.hide' | translate)
+          : ('common.filter.show' | translate)
+      }}
+    </ui-button>
+  </ng-container>
+</div>

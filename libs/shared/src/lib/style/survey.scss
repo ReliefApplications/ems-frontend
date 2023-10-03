@@ -1,3 +1,5 @@
+@import 'variables.scss';
+
 ::ng-deep .sv-boolean:not(.sv-boolean--checked) {
   .sv-boolean__switch {
     background-color: rgba(64, 64, 64, 0.5) !important;
@@ -59,21 +61,48 @@
   }
 }
 
-::ng-deep .sv_main .sv-title-actions {
+::ng-deep survey .sv-title-actions {
   display: block !important;
 }
 
-::ng-deep .sv_main shared-core-grid {
+::ng-deep survey shared-core-grid {
   height: 410px;
 
   .sv_row div {
     min-width: unset;
   }
 }
-::ng-deep .sv_main.sv_default_css .sv_body {
-  width: inherit !important;
+
+::ng-deep .survey-title__tooltip {
+  background-color: var(--primary);
+  padding: 0 0.35rem;
+  border-radius: 100%;
+  color: white;
+  margin-left: 0.25rem;
+  font-size: 0.75rem !important;
+  font-weight: bold;
 }
-::ng-deep .sv_main {
+
+::ng-deep .sd-matrixdropdown.sd-table,
+::ng-deep .sd-table.sd-matrixdynamic {
+  padding: 0.5rem 0 1rem 0;
+}
+
+::ng-deep survey {
+  .sv-radio--allowhover:hover .sv-radio__svg {
+    fill: var(--primary, rgba(64, 64, 64, 0.5)) !important;
+  }
+
+  .sv-page__title {
+    padding-left: 0 !important;
+    margin-bottom: calc(var(--font-size) / 2) !important;
+    padding-bottom: calc(var(--font-size) / 2);
+    border-bottom: 1px solid var(--primary);
+  }
+
+  .sv-body__page {
+    margin: 0 !important;
+  }
   .k-button {
     border-color: rgba(0, 0, 0, 0.08) !important;
     min-width: unset !important;
@@ -110,6 +139,18 @@
   }
 }
 
+// On hover geospatial form field on survey creator, the actions are displayed over the map, which are not legible
+// The background white would solve this
+::ng-deep survey-creator {
+  .svc-question__content-actions {
+    background-color: white !important;
+    bottom: 0 !important;
+  }
+}
 ::ng-deep .sv_custom_header {
   display: none;
+}
+
+::ng-deep .sd-body .sd-body__page {
+  min-width: 0 !important;
 }

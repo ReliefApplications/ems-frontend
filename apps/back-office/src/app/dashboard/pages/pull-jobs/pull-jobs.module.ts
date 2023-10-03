@@ -7,6 +7,8 @@ import {
   SkeletonTableModule,
   CronParserModule,
   DateModule,
+  StatusOptionsComponent,
+  EmptyModule,
 } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import {
@@ -14,7 +16,6 @@ import {
   MenuModule,
   ButtonModule,
   TableModule,
-  ChipModule,
   PaginatorModule,
 } from '@oort-front/ui';
 
@@ -34,7 +35,8 @@ import {
     DateModule,
     ButtonModule,
     TableModule,
-    ChipModule,
+    StatusOptionsComponent,
+    EmptyModule,
     TooltipModule,
   ],
 })

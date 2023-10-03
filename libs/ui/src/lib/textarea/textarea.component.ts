@@ -22,7 +22,8 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
 };
 
 /**
- * UI Textarea component
+ * UI Textarea component.
+ * Long text, that can be displayed on multiple lines. Ideal for comments, description.
  */
 @Component({
   selector: 'ui-textarea',
@@ -31,8 +32,11 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   providers: [CONTROL_VALUE_ACCESSOR],
 })
 export class TextareaComponent implements ControlValueAccessor {
+  /** Value of the textarea. */
   @Input() value = '';
+  /** Placeholder text for the textarea. */
   @Input() placeholder = '';
+  /** Name of the textarea. */
   @Input() name!: string;
   /**
    * Set minimal rows for the textarea
@@ -50,21 +54,26 @@ export class TextareaComponent implements ControlValueAccessor {
       }
     }
   }
+  /** Maximum number of rows that the textarea can display. */
   @Input() maxRows = 5;
 
   /**
-   * UI Textarea constructor
+   * UI Textarea component.
+   * Long text, that can be displayed on multiple lines. Ideal for comments, description.
    *
    * @param kendoFocus FocusableDirective
    */
   constructor(@Self() @Optional() public kendoFocus: FocusableDirective) {}
-
+  /** The minimum number of rows in the textarea. */
   minRowsNumber = 2;
+  /** Event emitter for value changes. */
   valueChange: EventEmitter<boolean> = new EventEmitter();
   disabled = false;
+  /** Function to handle touch events. */
   onTouched!: () => void;
+  /** Function to handle value changes. */
   onChanged!: (value: string) => void;
-
+  /** Reference to the autosize directive. */
   @ViewChild('autosize') autosize!: CdkTextareaAutosize;
 
   /**

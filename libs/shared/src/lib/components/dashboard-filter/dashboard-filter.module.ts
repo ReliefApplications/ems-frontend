@@ -5,6 +5,8 @@ import { DrawerPositionerDirective } from './directives/drawer-positioner/drawer
 import { TranslateModule } from '@ngx-translate/core';
 import { TooltipModule, ButtonModule, IconModule } from '@oort-front/ui';
 import { EmptyModule } from '../ui/empty/empty.module';
+import { SurveyCreatorModule } from 'survey-creator-angular';
+import { SurveyModule } from 'survey-angular-ui';
 
 /** Cron expression control module. */
 @NgModule({
@@ -16,6 +18,8 @@ import { EmptyModule } from '../ui/empty/empty.module';
     TooltipModule,
     ButtonModule,
     EmptyModule,
+    SurveyCreatorModule,
+    SurveyModule,
   ],
   exports: [DashboardFilterComponent],
   providers: [DrawerPositionerDirective],

@@ -547,6 +547,7 @@ export class SummaryCardComponent
         showDetails: true,
         update: true,
       },
+      contextFilters: JSON.stringify(this.contextFilters),
     };
 
     Object.assign(
@@ -633,7 +634,7 @@ export class SummaryCardComponent
         .refetch({
           first: this.pageInfo.pageSize,
           skip: event.skip,
-          filters: this.queryFilter,
+          filter: this.queryFilter,
           sortField: this.sortOptions.field,
           sortOrder: this.sortOptions.order,
           styles: layoutQuery?.style || null,

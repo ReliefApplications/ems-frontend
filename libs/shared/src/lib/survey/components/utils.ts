@@ -1,7 +1,8 @@
 import { Dialog } from '@angular/cdk/dialog';
 import { UntypedFormControl } from '@angular/forms';
 import { NgZone } from '@angular/core';
-import { surveyLocalization } from 'survey-angular';
+// todo: as it something to do with survey-angular
+import { surveyLocalization } from 'survey-core';
 import localForage from 'localforage';
 
 /**

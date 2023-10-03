@@ -2,7 +2,6 @@ import {
   AfterViewInit,
   ChangeDetectorRef,
   Component,
-  ElementRef,
   HostListener,
   Input,
   NgZone,
@@ -10,11 +9,10 @@ import {
   OnDestroy,
   Optional,
   SimpleChanges,
-  ViewChild,
 } from '@angular/core';
 import { FilterPosition } from './enums/dashboard-filters.enum';
 import { Dialog } from '@angular/cdk/dialog';
-import * as Survey from 'survey-angular';
+import { Model, SurveyModel } from 'survey-core';
 import { Apollo } from 'apollo-angular';
 import { ApplicationService } from '../../services/application/application.service';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
@@ -32,6 +30,7 @@ import { ContextService } from '../../services/context/context.service';
 import { SidenavContainerComponent, SnackbarService } from '@oort-front/ui';
 import { ReferenceDataService } from '../../services/reference-data/reference-data.service';
 import { renderGlobalProperties } from '../../survey/render-global-properties';
+import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { DatePipe } from '../../pipes/date/date.pipe';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
 
@@ -79,10 +78,8 @@ export class DashboardFilterComponent
   private resizeObserver!: ResizeObserver;
 
   // Survey
-  public survey: Survey.Model = new Survey.Model();
+  public survey: Model = new Model();
   public surveyStructure: any = {};
-  @ViewChild('dashboardSurveyCreatorContainer')
-  dashboardSurveyCreatorContainer!: ElementRef<HTMLElement>;
   public quickFilters: QuickFilter[] = [];
 
   public applicationId?: string;
@@ -96,6 +93,7 @@ export class DashboardFilterComponent
   /**
    * Class constructor
    *
+   * @param formBuilderService Form builder service
    * @param dialog The Dialog service
    * @param apollo Apollo client
    * @param applicationService Shared application service
@@ -109,6 +107,7 @@ export class DashboardFilterComponent
    * @param _host sidenav container host
    */
   constructor(
+    private formBuilderService: FormBuilderService,
     private dialog: Dialog,
     private apollo: Apollo,
     private applicationService: ApplicationService,
@@ -278,9 +277,9 @@ export class DashboardFilterComponent
 
   /** Render the survey using the saved structure */
   private initSurvey(): void {
-    Survey.StylesManager.applyTheme();
     const surveyStructure = this.surveyStructure;
-    this.survey = new Survey.Model(surveyStructure);
+
+    this.survey = this.formBuilderService.createSurvey(surveyStructure);
 
     if (this.value) {
       this.survey.data = this.value;
@@ -295,10 +294,11 @@ export class DashboardFilterComponent
     this.survey.onAfterRenderSurvey.add(this.onAfterRenderSurvey.bind(this));
 
     // we should render the custom questions somewhere, let's do it here
-    this.survey.onAfterRenderQuestion.add(
-      renderGlobalProperties(this.referenceDataService)
-    );
-    this.survey.render(this.dashboardSurveyCreatorContainer?.nativeElement);
+    this.survey.onAfterRenderQuestion.add((_, options: any) => {
+      const parent = options.htmlElement.parentElement;
+      (parent?.style as any)['min-width'] = '0px';
+      renderGlobalProperties(this.referenceDataService);
+    });
     this.onValueChange();
   }
 
@@ -319,7 +319,7 @@ export class DashboardFilterComponent
    *
    * @param survey survey model
    */
-  public onAfterRenderSurvey(survey: Survey.SurveyModel) {
+  public onAfterRenderSurvey(survey: SurveyModel) {
     this.empty = survey.getAllQuestions().length === 0;
   }
 

@@ -185,6 +185,7 @@ export class BarChartComponent implements OnChanges {
           font: fontOptions,
         },
       },
+      devicePixelRatio: 2,
     };
 
     // adds underline plugin if needed
