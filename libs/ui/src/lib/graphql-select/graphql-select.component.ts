@@ -245,7 +245,7 @@ export class GraphQLSelectComponent
       this.query.valueChanges
         .pipe(takeUntil(this.queryChange$), takeUntil(this.destroy$))
         .subscribe(({ data, loading }) => {
-          this.queryName = Object.keys(data)[0];
+          this.queryName = data ? Object.keys(data)[0] : '';
           this.updateValues(data, loading);
         });
     }
@@ -454,24 +454,28 @@ export class GraphQLSelectComponent
    * @param loading loading status
    */
   private updateValues(data: any, loading: boolean) {
-    const path = this.path ? `${this.queryName}.${this.path}` : this.queryName;
-    const elements: any[] = get(data, path).edges
-      ? get(data, path).edges.map((x: any) => x.node)
-      : get(data, path);
-    const selectedElements = this.selectedElements.filter(
-      (selectedElement) =>
-        selectedElement &&
-        !elements.find(
-          (node) => node[this.valueField] === selectedElement[this.valueField]
-        )
-    );
-    this.cachedElements = updateQueryUniqueValues(this.cachedElements, [
-      ...selectedElements,
-      ...elements,
-    ]);
-    this.elements.next(this.cachedElements);
-    this.queryElements = this.cachedElements;
-    this.pageInfo = get(data, path).pageInfo;
+    if (data) {
+      const path = this.path
+        ? `${this.queryName}.${this.path}`
+        : this.queryName;
+      const elements: any[] = get(data, path).edges
+        ? get(data, path).edges.map((x: any) => x.node)
+        : get(data, path);
+      const selectedElements = this.selectedElements.filter(
+        (selectedElement) =>
+          selectedElement &&
+          !elements.find(
+            (node) => node[this.valueField] === selectedElement[this.valueField]
+          )
+      );
+      this.cachedElements = updateQueryUniqueValues(this.cachedElements, [
+        ...selectedElements,
+        ...elements,
+      ]);
+      this.elements.next(this.cachedElements);
+      this.queryElements = this.cachedElements;
+      this.pageInfo = get(data, path).pageInfo;
+    }
     this.loading = loading;
   }
 
