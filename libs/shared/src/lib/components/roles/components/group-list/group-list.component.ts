@@ -63,13 +63,6 @@ export class GroupListComponent extends UnsubscribeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.form.valueChanges
-      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe((value: any) => {
-        this.searchText = (value?.search ?? '').trim().toLowerCase();
-        this.filterPredicate();
-      });
-
     this.getGroups();
     this.getPermissionsConfiguration();
 
@@ -119,6 +112,20 @@ export class GroupListComponent extends UnsubscribeComponent implements OnInit {
       .subscribe((res) => {
         this.manualCreation = get(res, 'groups.local', true);
       });
+  }
+
+  /**
+   * Applies filters to the list of groups on event
+   *
+   * @param event event
+   */
+  applyFilter(event: any): void {
+    if (event.search) {
+      this.searchText = event.search.toLowerCase();
+    } else {
+      this.searchText = '';
+    }
+    this.filterPredicate();
   }
 
   /**

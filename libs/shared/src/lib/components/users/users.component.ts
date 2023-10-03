@@ -2,9 +2,8 @@ import { Apollo } from 'apollo-angular';
 import {
   Component,
   Input,
-  OnChanges,
-  OnInit,
-  SimpleChanges,
+  ViewChild,
+  TemplateRef,
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import {
@@ -20,7 +19,7 @@ import { DownloadService } from '../../services/download/download.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { SnackbarService } from '@oort-front/ui';
-import { distinctUntilChanged, takeUntil } from 'rxjs';
+import { takeUntil } from 'rxjs';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import uniqBy from 'lodash/uniqBy';
 import { FormBuilder } from '@angular/forms';
@@ -33,10 +32,7 @@ import { FormBuilder } from '@angular/forms';
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
 })
-export class UsersComponent
-  extends UnsubscribeComponent
-  implements OnInit, OnChanges
-{
+export class UsersComponent extends UnsubscribeComponent {
   // === INPUT DATA ===
   @Input() users: Array<User> = new Array<User>();
   @Input() roles: Role[] = [];
@@ -59,6 +55,10 @@ export class UsersComponent
   public showFilters = false;
   public filteredUsers = new Array<User>();
   selection = new SelectionModel<User>(true, []);
+
+  /** Reference to expanded filter template */
+  @ViewChild('expandedFilter')
+  expandedFilter!: TemplateRef<any>;
 
   /**
    * Constructor of the users component
@@ -85,22 +85,6 @@ export class UsersComponent
     private fb: FormBuilder
   ) {
     super();
-  }
-
-  ngOnInit(): void {
-    this.form.valueChanges
-      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe((value: any) => {
-        this.searchText = (value?.search ?? '').trim().toLowerCase();
-        this.applyFilter('', this.searchText);
-      });
-    this.filterPredicate();
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes.users) {
-      this.filterPredicate();
-    }
   }
 
   /**
@@ -315,9 +299,16 @@ export class UsersComponent
    * @param column The column used for filtering
    * @param event The event triggered on filter action
    */
-  applyFilter(column: string, event: any): void {
-    if (column === 'role') {
-      this.roleFilter = event?.trim() ?? '';
+  applyFilter(event: any): void {
+    if (event.roleFilter) {
+      this.roleFilter = event.roleFilter;
+    } else {
+      this.roleFilter = '';
+    }
+    if (event.search) {
+      this.searchText = event.search.toLowerCase();
+    } else {
+      this.searchText = '';
     }
     this.filterPredicate();
   }
