@@ -111,6 +111,28 @@
             }}
           </ng-container>
         </ui-toggle>
+        <ui-toggle
+          *ngIf="formGroup.get('widgetDisplay.enableActionsTitle')"
+          [formControl]="
+            $any(formGroup.get('widgetDisplay.enableActionsTitle'))
+          "
+        >
+          <ng-container ngProjectAs="label">
+            {{
+              'components.widget.settings.grid.display.displayActionsTitle'
+                | translate
+            }}
+          </ng-container>
+        </ui-toggle>
+        <div
+          uiFormFieldDirective
+          *ngIf="formGroup.get('widgetDisplay.enableActionsTitle')?.value"
+        >
+          <input
+            type="string"
+            [formControl]="$any(formGroup.get('widgetDisplay.actionsTitle'))"
+          />
+        </div>
       </shared-display-settings>
     </ng-template>
   </ui-tab>

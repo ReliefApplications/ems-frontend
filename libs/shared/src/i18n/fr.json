@@ -1356,6 +1356,7 @@
 						}
 					},
 					"display": {
+						"displayActionsTitle": "Afficher le titre des actions",
 						"showSingleActionAsButton": "Afficher une seule action sous forme de bouton"
 					},
 					"hint": {
