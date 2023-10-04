@@ -128,6 +128,18 @@ export const init = (Survey: any, environment: any): void => {
     ],
     default: false,
   });
+
+  // Adds a property to the survey settings to hide the pages tab if only one page exists
+  serializer.addProperty('survey', {
+    name: 'hidePagesTab',
+    category: 'pages',
+    type: 'boolean',
+    default: false,
+    visibleIndex: 2,
+    visibleIf: (survey: Survey.Model) => {
+      return survey.visiblePageCount === 1;
+    },
+  });
 };
 
 /**

@@ -190,6 +190,16 @@ export class FormComponent
 
   ngAfterViewInit(): void {
     this.survey?.render(this.formContainer.nativeElement);
+    if (this.survey?.getPropertyValue('hidePagesTab')) {
+      if (this.survey?.visiblePageCount === 1) {
+        var pagesTab = document.querySelector(
+          '#appPageContainer #tab-group-wrapper'
+        );
+        if (pagesTab) {
+          pagesTab.classList.add('hidden');
+        }
+      }
+    }
     // this.translate.onLangChange.subscribe(() => {
     //   const currentLang = this.usedLocales.find(
     //     (lang) => lang.value === this.translate.currentLang
