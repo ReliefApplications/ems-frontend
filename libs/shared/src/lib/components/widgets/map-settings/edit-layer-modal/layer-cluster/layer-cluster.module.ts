@@ -8,8 +8,10 @@ import { SimpleRendererComponent } from '../layer-styling/simple-renderer/simple
 import {
   DividerModule,
   FormWrapperModule,
+  IconModule,
   SliderModule,
   ToggleModule,
+  TooltipModule,
 } from '@oort-front/ui';
 
 /**
@@ -27,7 +29,9 @@ import {
     ToggleModule,
     IconPickerModule,
     DividerModule,
+    TooltipModule,
     SimpleRendererComponent,
+    IconModule,
   ],
   exports: [LayerClusterComponent],
 })

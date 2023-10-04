@@ -1012,7 +1012,7 @@
         },
         {
             "name": "ButtonComponent",
-            "id": "component-ButtonComponent-a32b82884e38e0d6dfed39f45914214560ba7856bc702ba60998ce33ea85b873d5da3c55643e7c46695b85312aeb4e022c1d5b82de5126a57cde7413a55ac790",
+            "id": "component-ButtonComponent-124245a83d65c4d7f6925b1ba495a032e5fc5169fdb2faa9b1784dfbc933afa8cccb73d4101157112f507956a6b53fbaa27f0fe877b9e265b7d3d1afddd0f7e4",
             "file": "libs/ui/src/lib/button/button.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -1131,7 +1131,7 @@
                 },
                 {
                     "name": "variant",
-                    "defaultValue": "'default'",
+                    "defaultValue": "'primary'",
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\nButton variant, define color",
@@ -1168,11 +1168,11 @@
             "description": "<p>UI Button Component.\nEncapsulate a html button.\nButton can have various shapes / colors / sizes.\nIt can be only icon, or have one as prefix / suffix of its text.</p>\n",
             "rawdescription": "\n\nUI Button Component.\nEncapsulate a html button.\nButton can have various shapes / colors / sizes.\nIt can be only icon, or have one as prefix / suffix of its text.\n",
             "type": "component",
-            "sourceCode": "import { Component, HostBinding, Input } from '@angular/core';\nimport { ButtonIconPosition } from './types/button-icon-position';\nimport { Category } from '../types/category';\nimport { Variant } from '../types/variant';\nimport { Subject } from 'rxjs';\nimport { Size } from '../types/size';\n\n/**\n * UI Button Component.\n * Encapsulate a html button.\n * Button can have various shapes / colors / sizes.\n * It can be only icon, or have one as prefix / suffix of its text.\n */\n@Component({\n  selector: 'ui-button',\n  templateUrl: './button.component.html',\n  styleUrls: ['./button.component.scss'],\n})\nexport class ButtonComponent {\n  /** Button Icon */\n  @Input() icon = '';\n  /** Icon position, either before or after text */\n  @Input() iconPosition: ButtonIconPosition = 'prefix';\n  /** Button category, define shape */\n  @Input() category: Category = 'primary';\n  /** Button size */\n  @Input() size: Size = 'medium';\n  /** Button variant, define color */\n  @Input() variant: Variant = 'default';\n  /** Is button only icon */\n  @Input() isIcon = false;\n  /** Should button appear as block */\n  @HostBinding('class.flex')\n  @Input()\n  isBlock = false;\n  /** Loading indicator */\n  @Input() loading = false;\n  /** Disable interaction */\n  @HostBinding('class.disabled')\n  @Input()\n  disabled = false;\n  /** Is button outlined */\n  @Input() isOutlined = false;\n  /** Emit click event */\n  public emittedEventSubject: Subject<string> = new Subject();\n\n  /**\n   * Map icon size as number for Size enum\n   *\n   * @returns size as number\n   */\n  get iconSize(): number {\n    switch (this.size) {\n      case 'small':\n        return 18;\n      case 'large':\n        return 24;\n      default:\n        return 21;\n    }\n  }\n\n  /** @returns general resolved classes and variant for button*/\n  get resolveButtonClasses(): string[] {\n    const classes = [];\n    if (this.isBlock) classes.push('w-full');\n    classes.push(this.isIcon ? 'ui-button-icon' : 'ui-button');\n    classes.push(this.category);\n    classes.push(this.size);\n    classes.push(\n      'button-' + (this.variant === 'default' ? 'primary' : this.variant)\n    );\n    if ((this.icon || this.loading) && !this.isIcon) {\n      classes.push('inline-flex items-center gap-x-2');\n    }\n    if (this.disabled) {\n      classes.push('opacity-70');\n    }\n    return classes;\n  }\n}\n",
+            "sourceCode": "import { Component, HostBinding, Input } from '@angular/core';\nimport { ButtonIconPosition } from './types/button-icon-position';\nimport { Category } from '../types/category';\nimport { Variant } from '../types/variant';\nimport { Subject } from 'rxjs';\nimport { Size } from '../types/size';\n\n/**\n * UI Button Component.\n * Encapsulate a html button.\n * Button can have various shapes / colors / sizes.\n * It can be only icon, or have one as prefix / suffix of its text.\n */\n@Component({\n  selector: 'ui-button',\n  templateUrl: './button.component.html',\n  styleUrls: ['./button.component.scss'],\n})\nexport class ButtonComponent {\n  /** Button Icon */\n  @Input() icon = '';\n  /** Icon position, either before or after text */\n  @Input() iconPosition: ButtonIconPosition = 'prefix';\n  /** Button category, define shape */\n  @Input() category: Category = 'primary';\n  /** Button size */\n  @Input() size: Size = 'medium';\n  /** Button variant, define color */\n  @Input() variant: Variant = 'primary';\n  /** Is button only icon */\n  @Input() isIcon = false;\n  /** Should button appear as block */\n  @HostBinding('class.!w-full')\n  @Input()\n  isBlock = false;\n  /** Loading indicator */\n  @Input() loading = false;\n  /** Disable interaction */\n  @HostBinding('class.disabled')\n  @Input()\n  disabled = false;\n  /** Is button outlined */\n  @Input() isOutlined = false;\n  /** Emit click event */\n  public emittedEventSubject: Subject<string> = new Subject();\n\n  /**\n   * Map icon size as number for Size enum\n   *\n   * @returns size as number\n   */\n  get iconSize(): number {\n    switch (this.size) {\n      case 'small':\n        return 18;\n      case 'large':\n        return 24;\n      default:\n        return 21;\n    }\n  }\n\n  /** @returns general resolved classes and variant for button*/\n  get resolveButtonClasses(): string[] {\n    const classes = [];\n    if (this.isBlock) classes.push('!w-full');\n    classes.push(this.isIcon ? 'ui-button-icon' : 'ui-button');\n    classes.push(this.category);\n    classes.push(this.size);\n    classes.push('button-' + this.variant);\n    if ((this.icon || this.loading) && !this.isIcon) {\n      classes.push('inline-flex items-center gap-x-2');\n    }\n    if (this.disabled) {\n      classes.push('opacity-70');\n    }\n    return classes;\n  }\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
-                    "data": ":host {\n  display: block;\n  width: max-content !important;\n}\n\n:host button > * {\n  pointer-events: none;\n}\n\n:host button {\n  pointer-events: inherit;\n}\n\n.ui-button {\n  &.primary {\n    @apply rounded-md text-sm font-medium shadow-sm;\n  }\n  &.secondary {\n    @apply rounded-md text-sm font-medium shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;\n  }\n  &.tertiary {\n    @apply rounded-md bg-white text-sm font-medium shadow-sm shadow-gray-300;\n    box-shadow: 0 0 0 1px inset !important;\n  }\n  &.small {\n    @apply px-2.5 py-1.5;\n  }\n  &.medium {\n    @apply px-3 py-2;\n  }\n  &.large {\n    @apply px-3.5 py-2.5;\n  }\n}\n\n.ui-button-icon {\n  &.primary {\n    @apply rounded-full shadow-sm;\n  }\n  &.secondary {\n    @apply rounded-full shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;\n  }\n  &.tertiary {\n    @apply bg-white rounded-full shadow-sm shadow-gray-300;\n    box-shadow: 0 0 0 1px inset !important;\n  }\n  &.small {\n    @apply p-1.5;\n  }\n  &.medium,\n  &.large {\n    @apply p-2.5;\n  }\n}\n\n.button-primary {\n  &.primary {\n    @apply text-primary-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-primary-50;\n  }\n  &.secondary {\n    @apply bg-primary-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-primary-500 focus-visible:outline-primary-600;\n  }\n  &.tertiary {\n    @apply shadow-primary-400 text-primary-400;\n  }\n}\n\n.button-success {\n  &.primary {\n    @apply text-green-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-green-50;\n  }\n  &.secondary {\n    @apply bg-green-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-green-500 focus-visible:outline-green-600;\n  }\n  &.tertiary {\n    @apply shadow-green-400 text-green-400;\n  }\n}\n\n.button-danger {\n  &.primary {\n    @apply text-red-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-red-50;\n  }\n  &.secondary {\n    @apply bg-red-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-red-500 focus-visible:outline-red-600;\n  }\n  &.tertiary {\n    @apply shadow-red-400 text-red-400;\n  }\n}\n\n.button-warning {\n  &.primary {\n    @apply text-yellow-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-yellow-50;\n  }\n  &.secondary {\n    @apply bg-yellow-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-yellow-500 focus-visible:outline-yellow-600;\n  }\n  &.tertiary {\n    @apply shadow-yellow-400 text-yellow-400;\n  }\n}\n\n.button-grey {\n  &.primary {\n    @apply text-neutral-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-neutral-200;\n  }\n  &.secondary {\n    @apply bg-neutral-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-neutral-500 focus-visible:outline-neutral-600;\n  }\n  &.tertiary {\n    @apply shadow-neutral-400 text-neutral-400;\n  }\n}\n\n.button-light {\n  &.primary {\n    @apply text-neutral-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-neutral-100 hover:bg-opacity-20;\n  }\n  &.secondary {\n    @apply bg-neutral-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-neutral-500 focus-visible:outline-neutral-600;\n  }\n  &.tertiary {\n    @apply shadow-neutral-400 text-neutral-400;\n  }\n}\n\nbutton.ui-button:disabled {\n  @apply text-neutral-400 bg-neutral-500 bg-opacity-20;\n}\n\nbutton.ui-button-icon:disabled {\n  @apply text-neutral-400 bg-opacity-20;\n}\n",
+                    "data": ":host {\n  display: block;\n  width: max-content;\n}\n\n:host button > * {\n  pointer-events: none;\n}\n\n:host button {\n  pointer-events: inherit;\n}\n\n.ui-button {\n  &.primary {\n    @apply rounded-md text-sm font-medium shadow-sm ring-1 ring-inset ring-gray-300;\n  }\n  &.secondary {\n    @apply rounded-md text-sm font-medium shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;\n  }\n  &.tertiary {\n    @apply rounded-md bg-white text-sm font-medium shadow-sm shadow-gray-300;\n    box-shadow: 0 0 0 1px inset !important;\n  }\n  &.small {\n    @apply px-2.5 py-1.5;\n  }\n  &.medium {\n    @apply px-3 py-2;\n  }\n  &.large {\n    @apply px-3.5 py-2.5;\n  }\n}\n\n.ui-button-icon {\n  &.primary {\n    @apply rounded-full shadow-sm;\n  }\n  &.secondary {\n    @apply rounded-full shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2;\n  }\n  &.tertiary {\n    @apply bg-white rounded-full shadow-sm shadow-gray-300;\n    box-shadow: 0 0 0 1px inset !important;\n  }\n  &.small {\n    @apply p-1.5;\n  }\n  &.medium,\n  &.large {\n    @apply p-2.5;\n  }\n}\n\n.button-default {\n  &.primary {\n    @apply text-gray-900;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-gray-50;\n  }\n  &.secondary {\n    @apply bg-gray-900 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-gray-500 focus-visible:outline-gray-600;\n  }\n  &.tertiary {\n    @apply shadow-gray-900 text-gray-900;\n  }\n}\n\n.button-primary {\n  &.primary {\n    @apply text-primary-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-primary-50;\n  }\n  &.secondary {\n    @apply bg-primary-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-primary-500 focus-visible:outline-primary-600;\n  }\n  &.tertiary {\n    @apply shadow-primary-400 text-primary-400;\n  }\n}\n\n.button-success {\n  &.primary {\n    @apply text-green-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-green-50;\n  }\n  &.secondary {\n    @apply bg-green-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-green-500 focus-visible:outline-green-600;\n  }\n  &.tertiary {\n    @apply shadow-green-400 text-green-400;\n  }\n}\n\n.button-danger {\n  &.primary {\n    @apply text-red-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-red-50;\n  }\n  &.secondary {\n    @apply bg-red-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-red-500 focus-visible:outline-red-600;\n  }\n  &.tertiary {\n    @apply shadow-red-400 text-red-400;\n  }\n}\n\n.button-warning {\n  &.primary {\n    @apply text-yellow-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-yellow-50;\n  }\n  &.secondary {\n    @apply bg-yellow-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-yellow-500 focus-visible:outline-yellow-600;\n  }\n  &.tertiary {\n    @apply shadow-yellow-400 text-yellow-400;\n  }\n}\n\n.button-grey {\n  &.primary {\n    @apply text-neutral-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-neutral-200;\n  }\n  &.secondary {\n    @apply bg-neutral-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-neutral-500 focus-visible:outline-neutral-600;\n  }\n  &.tertiary {\n    @apply shadow-neutral-400 text-neutral-400;\n  }\n}\n\n.button-light {\n  &.primary {\n    @apply text-neutral-400;\n  }\n  &:not(:disabled) {\n    @apply hover:bg-neutral-100 hover:bg-opacity-20;\n  }\n  &.secondary {\n    @apply bg-neutral-400 text-white;\n  }\n  &.secondary:not(:disabled) {\n    @apply hover:bg-neutral-500 focus-visible:outline-neutral-600;\n  }\n  &.tertiary {\n    @apply shadow-neutral-400 text-neutral-400;\n  }\n}\n\nbutton.ui-button:disabled {\n  @apply text-neutral-400 bg-neutral-500 bg-opacity-20;\n}\n\nbutton.ui-button-icon:disabled {\n  @apply text-neutral-400 bg-opacity-20;\n}\n",
                     "styleUrl": "./button.component.scss"
                 }
             ],
@@ -1189,15 +1189,15 @@
                         "description": "<p>Map icon size as number for Size enum</p>\n",
                         "jsdoctags": [
                             {
-                                "pos": 1506,
-                                "end": 1533,
+                                "pos": 1509,
+                                "end": 1536,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
                                 "kind": 345,
                                 "tagName": {
-                                    "pos": 1507,
-                                    "end": 1514,
+                                    "pos": 1510,
+                                    "end": 1517,
                                     "flags": 8421376,
                                     "modifierFlagsCache": 0,
                                     "transformFlags": 0,
@@ -1220,15 +1220,15 @@
                         "description": "",
                         "jsdoctags": [
                             {
-                                "pos": 1717,
-                                "end": 1773,
+                                "pos": 1720,
+                                "end": 1776,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
                                 "kind": 345,
                                 "tagName": {
-                                    "pos": 1718,
-                                    "end": 1725,
+                                    "pos": 1721,
+                                    "end": 1728,
                                     "flags": 8421376,
                                     "modifierFlagsCache": 0,
                                     "transformFlags": 0,
@@ -4205,7 +4205,7 @@
             "assetsDirs": [],
             "styleUrlsData": [
                 {
-                    "data": ":host {\n  max-width: 100% !important;\n  max-height: 90vh;\n  @apply block h-full rounded-lg bg-white text-left shadow-xl transition-all sm:w-full sm:max-w-lg sm:p-6 flex flex-col relative;\n\n  @media (max-width: 640px) {\n    padding: 1rem !important;\n  }\n}\n\n::ng-deep button {\n  box-shadow: none !important;\n}\n",
+                    "data": ":host {\n  max-width: 100% !important;\n  max-height: 90vh;\n  @apply block h-full rounded-lg bg-white text-left shadow-xl transition-all sm:w-full sm:max-w-lg sm:p-6 flex flex-col relative;\n\n  @media (max-width: 640px) {\n    padding: 1rem !important;\n  }\n}\n",
                     "styleUrl": "./dialog.component.scss"
                 }
             ],
@@ -6398,7 +6398,7 @@
         },
         {
             "name": "IconComponent",
-            "id": "component-IconComponent-96334d90b277202ad1858415f2564505ca025a81231b63d2e0325ff1d02aaacb0bd9de183a87ba87d5e41c4087f40124b2f00f2aa808eb3d5f3a33c237b89b26",
+            "id": "component-IconComponent-5d652315192edeca5d9b2cb42c320af317a588745f185dde9b7cbcd7a2a520c99aaee67398057b8d6c24d080c45d40f51456a80e1a5f6d2ecb80b614994b0d98",
             "file": "libs/ui/src/lib/icon/icon.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -6425,6 +6425,17 @@
                     "description": "<p>The category of the icon.</p>\n",
                     "line": 18,
                     "type": "Category",
+                    "decorators": []
+                },
+                {
+                    "name": "fontFamily",
+                    "defaultValue": "'material'",
+                    "deprecated": false,
+                    "deprecationMessage": "",
+                    "rawdescription": "\nFont library",
+                    "description": "<p>Font library</p>\n",
+                    "line": 26,
+                    "type": "\"material\" | \"fa\"",
                     "decorators": []
                 },
                 {
@@ -6484,7 +6495,7 @@
             "description": "<p>UI Icon Component\nDisplay an icon with a given category and variant.</p>\n",
             "rawdescription": "\n\nUI Icon Component\nDisplay an icon with a given category and variant.\n",
             "type": "component",
-            "sourceCode": "import { Component, Input } from '@angular/core';\nimport { Variant } from '../types/variant';\nimport { Category } from '../types/category';\n\n/**\n * UI Icon Component\n * Display an icon with a given category and variant.\n */\n@Component({\n  selector: 'ui-icon',\n  templateUrl: './icon.component.html',\n  styleUrls: ['./icon.component.scss'],\n})\nexport class IconComponent {\n  /** The name of the icon. */\n  @Input() icon = '';\n  /** The category of the icon. */\n  @Input() category: Category = 'primary';\n  /** The variant or style of the icon. */\n  @Input() variant: Variant = 'default';\n  /** The size of the icon. */\n  @Input() size = 24;\n  /** Boolean indicating whether the icon is outlined. */\n  @Input() isOutlined = false;\n\n  /**\n   * Formats the size input adding a 'px' suffix\n   *\n   * @returns Returns a string with the size in px\n   */\n  get fontSize(): string {\n    return this.size + 'px';\n  }\n\n  /**\n   * Resolve icon class by given category and variant\n   *\n   * @returns Returns a string array with the current variant and category class\n   */\n  get iconVariantAndCategory(): string[] {\n    const classes = [];\n    classes.push(\n      this.category === 'secondary' || this.variant === 'light'\n        ? 'icon-light'\n        : this.variant === 'primary'\n        ? 'icon-primary'\n        : this.variant === 'success'\n        ? 'icon-success'\n        : this.variant === 'grey'\n        ? 'icon-grey'\n        : this.variant === 'danger'\n        ? 'icon-danger'\n        : this.variant === 'warning'\n        ? 'icon-warning'\n        : ''\n    );\n    return classes;\n  }\n}\n",
+            "sourceCode": "import { Component, Input } from '@angular/core';\nimport { Variant } from '../types/variant';\nimport { Category } from '../types/category';\n\n/**\n * UI Icon Component\n * Display an icon with a given category and variant.\n */\n@Component({\n  selector: 'ui-icon',\n  templateUrl: './icon.component.html',\n  styleUrls: ['./icon.component.scss'],\n})\nexport class IconComponent {\n  /** The name of the icon. */\n  @Input() icon = '';\n  /** The category of the icon. */\n  @Input() category: Category = 'primary';\n  /** The variant or style of the icon. */\n  @Input() variant: Variant = 'default';\n  /** The size of the icon. */\n  @Input() size = 24;\n  /** Boolean indicating whether the icon is outlined. */\n  @Input() isOutlined = false;\n  /** Font library */\n  @Input() fontFamily: 'material' | 'fa' = 'material';\n  /**\n   * Formats the size input adding a 'px' suffix\n   *\n   * @returns Returns a string with the size in px\n   */\n  get fontSize(): string {\n    return this.size + 'px';\n  }\n  /** @returns font awesome icon name */\n  private get fontAwesomeIcon(): string {\n    return `fa-${this.icon}`;\n  }\n\n  /**\n   * Resolve icon class by given category and variant\n   *\n   * @returns Returns a string array with the current variant and category class\n   */\n  get iconVariantAndCategory(): string[] {\n    const classes = [];\n    classes.push(\n      this.category === 'secondary' || this.variant === 'light'\n        ? 'icon-light'\n        : this.variant === 'primary'\n        ? 'icon-primary'\n        : this.variant === 'success'\n        ? 'icon-success'\n        : this.variant === 'grey'\n        ? 'icon-grey'\n        : this.variant === 'danger'\n        ? 'icon-danger'\n        : this.variant === 'warning'\n        ? 'icon-warning'\n        : ''\n    );\n    if (this.fontFamily === 'fa') {\n      classes.push(...['fa', this.fontAwesomeIcon]);\n    }\n    return classes;\n  }\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -6500,20 +6511,20 @@
                         "name": "fontSize",
                         "type": "string",
                         "returnType": "string",
-                        "line": 31,
+                        "line": 32,
                         "rawdescription": "\n\nFormats the size input adding a 'px' suffix\n\n",
                         "description": "<p>Formats the size input adding a &#39;px&#39; suffix</p>\n",
                         "jsdoctags": [
                             {
-                                "pos": 795,
-                                "end": 844,
+                                "pos": 871,
+                                "end": 920,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
                                 "kind": 345,
                                 "tagName": {
-                                    "pos": 796,
-                                    "end": 803,
+                                    "pos": 872,
+                                    "end": 879,
                                     "flags": 8421376,
                                     "modifierFlagsCache": 0,
                                     "transformFlags": 0,
@@ -6525,26 +6536,57 @@
                         ]
                     }
                 },
+                "fontAwesomeIcon": {
+                    "name": "fontAwesomeIcon",
+                    "getSignature": {
+                        "name": "fontAwesomeIcon",
+                        "type": "string",
+                        "returnType": "string",
+                        "line": 36,
+                        "rawdescription": "",
+                        "description": "",
+                        "jsdoctags": [
+                            {
+                                "pos": 989,
+                                "end": 1021,
+                                "flags": 8421376,
+                                "modifierFlagsCache": 0,
+                                "transformFlags": 0,
+                                "kind": 345,
+                                "tagName": {
+                                    "pos": 990,
+                                    "end": 997,
+                                    "flags": 8421376,
+                                    "modifierFlagsCache": 0,
+                                    "transformFlags": 0,
+                                    "kind": 79,
+                                    "escapedText": "returns"
+                                },
+                                "comment": "<p>font awesome icon name</p>\n"
+                            }
+                        ]
+                    }
+                },
                 "iconVariantAndCategory": {
                     "name": "iconVariantAndCategory",
                     "getSignature": {
                         "name": "iconVariantAndCategory",
                         "type": "[]",
                         "returnType": "string[]",
-                        "line": 40,
+                        "line": 45,
                         "rawdescription": "\n\nResolve icon class by given category and variant\n\n",
                         "description": "<p>Resolve icon class by given category and variant</p>\n",
                         "jsdoctags": [
                             {
-                                "pos": 978,
-                                "end": 1057,
+                                "pos": 1171,
+                                "end": 1250,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
                                 "kind": 345,
                                 "tagName": {
-                                    "pos": 979,
-                                    "end": 986,
+                                    "pos": 1172,
+                                    "end": 1179,
                                     "flags": 8421376,
                                     "modifierFlagsCache": 0,
                                     "transformFlags": 0,
@@ -6557,7 +6599,7 @@
                     }
                 }
             },
-            "templateData": "<ng-container *ngIf=\"isOutlined; else angularMaterialIconTmpl\">\n  <span\n    [ngClass]=\"iconVariantAndCategory\"\n    [ngStyle]=\"{\n      height: fontSize,\n      width: fontSize,\n      'line-height': fontSize,\n      'font-size': fontSize\n    }\"\n    class=\"material-icons-outlined material-symbols-outlined inline-flex align-middle\"\n  >\n    {{ icon }}\n  </span>\n</ng-container>\n<ng-template #angularMaterialIconTmpl>\n  <i\n    [ngClass]=\"iconVariantAndCategory\"\n    [ngStyle]=\"{\n      height: fontSize,\n      width: fontSize,\n      'line-height': fontSize,\n      'font-size': fontSize\n    }\"\n    class=\"material-icons inline-flex align-middle\"\n    >{{ icon }}</i\n  >\n</ng-template>\n"
+            "templateData": "<ng-container *ngIf=\"fontFamily === 'material'; else faIcon\">\n  <!-- Outline template -->\n  <ng-container *ngIf=\"isOutlined; else materialIcon\">\n    <span\n      [ngClass]=\"iconVariantAndCategory\"\n      [ngStyle]=\"{\n        height: fontSize,\n        width: fontSize,\n        'line-height': fontSize,\n        'font-size': fontSize\n      }\"\n      class=\"material-icons-outlined material-symbols-outlined inline-flex align-middle\"\n    >\n      {{ icon }}\n    </span>\n  </ng-container>\n</ng-container>\n<!-- Default material template -->\n<ng-template #materialIcon>\n  <i\n    [ngClass]=\"iconVariantAndCategory\"\n    [ngStyle]=\"{\n      height: fontSize,\n      width: fontSize,\n      'line-height': fontSize,\n      'font-size': fontSize\n    }\"\n    class=\"material-icons inline-flex align-middle\"\n    >{{ icon }}</i\n  >\n</ng-template>\n<!-- Font Awesome template -->\n<ng-template #faIcon>\n  <i\n    [ngClass]=\"iconVariantAndCategory\"\n    [ngStyle]=\"{\n      height: fontSize,\n      width: fontSize,\n      'line-height': fontSize,\n      'font-size': fontSize\n    }\"\n    class=\"inline-flex align-middle\"\n  ></i>\n</ng-template>\n"
         },
         {
             "name": "LaunchDialogComponent",
@@ -10361,7 +10403,7 @@
         },
         {
             "name": "SpinnerComponent",
-            "id": "component-SpinnerComponent-bf8787c80075fa0958da8b6fbec9828e4aa9f7ea4801fcadb620d3997f7ff006cab07ff24203708855385a43d7211145a98c2dd33c2984f0ec1db232a5ee2150",
+            "id": "component-SpinnerComponent-8e0a0f36713fc1273b866705ac3b3bce5ce6f9f218e1f7eb5641561f6e518b73344791419f25dd5069338753afee0f2e8958febd00baad89717aec867298479e",
             "file": "libs/ui/src/lib/spinner/spinner.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -10384,8 +10426,8 @@
                     "defaultValue": "'primary'",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "rawdescription": "\nThe category of the spinner.",
-                    "description": "<p>The category of the spinner.</p>\n",
+                    "rawdescription": "\nCategory, defines the shape.",
+                    "description": "<p>Category, defines the shape.</p>\n",
                     "line": 21,
                     "type": "Category",
                     "decorators": []
@@ -10395,8 +10437,8 @@
                     "defaultValue": "'large'",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "rawdescription": "\nThe size of the spinner.",
-                    "description": "<p>The size of the spinner.</p>\n",
+                    "rawdescription": "\nSize of the spinner.",
+                    "description": "<p>Size of the spinner.</p>\n",
                     "line": 17,
                     "type": "Size",
                     "decorators": []
@@ -10406,8 +10448,8 @@
                     "defaultValue": "'default'",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "rawdescription": "\nThe variant or style of the spinner.",
-                    "description": "<p>The variant or style of the spinner.</p>\n",
+                    "rawdescription": "\nVariant or style of the spinner, defines the color.",
+                    "description": "<p>Variant or style of the spinner, defines the color.</p>\n",
                     "line": 19,
                     "type": "Variant",
                     "decorators": []
@@ -10425,7 +10467,7 @@
             "description": "<p>UI Spinner component\nSpinner is a UI component that displays a loading indicator.</p>\n",
             "rawdescription": "\n\nUI Spinner component\nSpinner is a UI component that displays a loading indicator.\n",
             "type": "component",
-            "sourceCode": "import { Component, Input } from '@angular/core';\nimport { Size } from '../types/size';\nimport { Variant } from '../types/variant';\nimport { Category } from '../types/category';\n\n/**\n * UI Spinner component\n * Spinner is a UI component that displays a loading indicator.\n */\n@Component({\n  selector: 'ui-spinner',\n  templateUrl: './spinner.component.html',\n  styleUrls: ['./spinner.component.scss'],\n})\nexport class SpinnerComponent {\n  /** The size of the spinner. */\n  @Input() size: Size = 'large';\n  /** The variant or style of the spinner. */\n  @Input() variant: Variant = 'default';\n  /** The category of the spinner. */\n  @Input() category: Category = 'primary';\n\n  /** @returns general resolved classes and variant for spinner*/\n  get resolveSpinnerClasses(): string[] {\n    const classes = [];\n    classes.push('spinner-' + this.size);\n    classes.push(\n      this.category === 'secondary' || this.variant === 'light'\n        ? 'spinner-light'\n        : this.variant === 'default' || this.variant === 'primary'\n        ? 'spinner-primary'\n        : this.variant == 'danger'\n        ? 'spinner-danger'\n        : this.variant === 'grey'\n        ? 'spinner-grey'\n        : 'spinner-success'\n    );\n    return classes;\n  }\n}\n",
+            "sourceCode": "import { Component, Input } from '@angular/core';\nimport { Size } from '../types/size';\nimport { Variant } from '../types/variant';\nimport { Category } from '../types/category';\n\n/**\n * UI Spinner component\n * Spinner is a UI component that displays a loading indicator.\n */\n@Component({\n  selector: 'ui-spinner',\n  templateUrl: './spinner.component.html',\n  styleUrls: ['./spinner.component.scss'],\n})\nexport class SpinnerComponent {\n  /** Size of the spinner. */\n  @Input() size: Size = 'large';\n  /** Variant or style of the spinner, defines the color. */\n  @Input() variant: Variant = 'default';\n  /** Category, defines the shape. */\n  @Input() category: Category = 'primary';\n\n  /** @returns general resolved classes and variant for spinner*/\n  get resolveSpinnerClasses(): string[] {\n    const classes = [];\n    classes.push('spinner-' + this.size);\n    classes.push(\n      this.category === 'secondary' || this.variant === 'light'\n        ? 'spinner-light'\n        : this.variant === 'default' || this.variant === 'primary'\n        ? 'spinner-primary'\n        : this.variant == 'danger'\n        ? 'spinner-danger'\n        : this.variant === 'grey'\n        ? 'spinner-grey'\n        : 'spinner-success'\n    );\n    return classes;\n  }\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -10446,15 +10488,15 @@
                         "description": "",
                         "jsdoctags": [
                             {
-                                "pos": 677,
-                                "end": 734,
+                                "pos": 688,
+                                "end": 745,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
                                 "kind": 345,
                                 "tagName": {
-                                    "pos": 678,
-                                    "end": 685,
+                                    "pos": 689,
+                                    "end": 696,
                                     "flags": 8421376,
                                     "modifierFlagsCache": 0,
                                     "transformFlags": 0,
@@ -11129,7 +11171,7 @@
         },
         {
             "name": "TextareaComponent",
-            "id": "component-TextareaComponent-3b6c69afe1a073233207148550c23a028a3a9d07f633754077cf5cfd0ee980cf41a86e64220847ff806a6acde51fca21975018f0ac5a82d65c96ec2728971511",
+            "id": "component-TextareaComponent-8e588f21653dbe61f92b9022b815683421de4380085136432e11e1584b3cfa99a4dcebf5eee16ceeb672950bbd228f5f785afddae83a4f4743442b7bc1920716",
             "file": "libs/ui/src/lib/textarea/textarea.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -11156,7 +11198,9 @@
                     "defaultValue": "5",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "line": 56,
+                    "rawdescription": "\nMaximum number of rows that the textarea can display.",
+                    "description": "<p>Maximum number of rows that the textarea can display.</p>\n",
+                    "line": 58,
                     "type": "number",
                     "decorators": []
                 },
@@ -11166,15 +11210,15 @@
                     "deprecationMessage": "",
                     "jsdoctags": [
                         {
-                            "pos": 1203,
-                            "end": 1229,
+                            "pos": 1280,
+                            "end": 1306,
                             "flags": 8421376,
                             "modifierFlagsCache": 0,
                             "transformFlags": 0,
                             "kind": 344,
                             "tagName": {
-                                "pos": 1204,
-                                "end": 1209,
+                                "pos": 1281,
+                                "end": 1286,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -11183,8 +11227,8 @@
                             },
                             "comment": "<p>row number</p>\n",
                             "name": {
-                                "pos": 1210,
-                                "end": 1214,
+                                "pos": 1287,
+                                "end": 1291,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -11197,7 +11241,7 @@
                     ],
                     "rawdescription": "\n\nSet minimal rows for the textarea\n\nIf the minimal rows given is greater than the current max row values, or no max row values was provided\nthen we set the minimal rows to the max rows value\n\n",
                     "description": "<p>Set minimal rows for the textarea</p>\n<p>If the minimal rows given is greater than the current max row values, or no max row values was provided\nthen we set the minimal rows to the max rows value</p>\n",
-                    "line": 48,
+                    "line": 49,
                     "type": "number",
                     "decorators": []
                 },
@@ -11205,9 +11249,9 @@
                     "name": "name",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "rawdescription": "\nThe name of the textarea.",
-                    "description": "<p>The name of the textarea.</p>\n",
-                    "line": 39,
+                    "rawdescription": "\nName of the textarea.",
+                    "description": "<p>Name of the textarea.</p>\n",
+                    "line": 40,
                     "type": "string",
                     "decorators": []
                 },
@@ -11216,9 +11260,9 @@
                     "defaultValue": "''",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "rawdescription": "\nThe placeholder text for the textarea.",
-                    "description": "<p>The placeholder text for the textarea.</p>\n",
-                    "line": 37,
+                    "rawdescription": "\nPlaceholder text for the textarea.",
+                    "description": "<p>Placeholder text for the textarea.</p>\n",
+                    "line": 38,
                     "type": "string",
                     "decorators": []
                 },
@@ -11227,9 +11271,9 @@
                     "defaultValue": "''",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "rawdescription": "\nThe value of the textarea.",
-                    "description": "<p>The value of the textarea.</p>\n",
-                    "line": 35,
+                    "rawdescription": "\nValue of the textarea.",
+                    "description": "<p>Value of the textarea.</p>\n",
+                    "line": 36,
                     "type": "string",
                     "decorators": []
                 }
@@ -11243,7 +11287,7 @@
                     "type": "CdkTextareaAutosize",
                     "optional": false,
                     "description": "<p>Reference to the autosize directive.</p>\n",
-                    "line": 74,
+                    "line": 77,
                     "rawdescription": "\nReference to the autosize directive.",
                     "decorators": [
                         {
@@ -11263,7 +11307,7 @@
                     "type": "",
                     "optional": false,
                     "description": "",
-                    "line": 68
+                    "line": 71
                 },
                 {
                     "name": "kendoFocus",
@@ -11272,7 +11316,7 @@
                     "type": "FocusableDirective",
                     "optional": false,
                     "description": "FocusableDirective",
-                    "line": 63,
+                    "line": 66,
                     "decorators": [
                         {
                             "name": "Self",
@@ -11297,7 +11341,7 @@
                     "type": "number",
                     "optional": false,
                     "description": "<p>The minimum number of rows in the textarea.</p>\n",
-                    "line": 65,
+                    "line": 68,
                     "rawdescription": "\nThe minimum number of rows in the textarea."
                 },
                 {
@@ -11307,7 +11351,7 @@
                     "type": "function",
                     "optional": false,
                     "description": "<p>Function to handle value changes.</p>\n",
-                    "line": 72,
+                    "line": 75,
                     "rawdescription": "\nFunction to handle value changes."
                 },
                 {
@@ -11317,7 +11361,7 @@
                     "type": "function",
                     "optional": false,
                     "description": "<p>Function to handle touch events.</p>\n",
-                    "line": 70,
+                    "line": 73,
                     "rawdescription": "\nFunction to handle touch events."
                 },
                 {
@@ -11328,7 +11372,7 @@
                     "type": "EventEmitter<boolean>",
                     "optional": false,
                     "description": "<p>Event emitter for value changes.</p>\n",
-                    "line": 67,
+                    "line": 70,
                     "rawdescription": "\nEvent emitter for value changes."
                 }
             ],
@@ -11346,7 +11390,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 117,
+                    "line": 120,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nDetect text change\n\n",
@@ -11354,8 +11398,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 2720,
-                                "end": 2721,
+                                "pos": 2949,
+                                "end": 2950,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -11366,8 +11410,8 @@
                             "deprecated": false,
                             "deprecationMessage": "",
                             "tagName": {
-                                "pos": 2714,
-                                "end": 2719,
+                                "pos": 2943,
+                                "end": 2948,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -11399,7 +11443,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 81,
+                    "line": 84,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nRegister change of the control\n\n",
@@ -11410,8 +11454,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 2097,
-                                "end": 2099,
+                                "pos": 2326,
+                                "end": 2328,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -11430,8 +11474,8 @@
                                 }
                             ],
                             "tagName": {
-                                "pos": 2091,
-                                "end": 2096,
+                                "pos": 2320,
+                                "end": 2325,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -11456,7 +11500,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 90,
+                    "line": 93,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nRegister touch event\n\n",
@@ -11467,8 +11511,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 2257,
-                                "end": 2259,
+                                "pos": 2486,
+                                "end": 2488,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -11480,8 +11524,8 @@
                             "deprecationMessage": "",
                             "function": [],
                             "tagName": {
-                                "pos": 2251,
-                                "end": 2256,
+                                "pos": 2480,
+                                "end": 2485,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -11505,7 +11549,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 99,
+                    "line": 102,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nSet disabled state of the control\n\n",
@@ -11516,8 +11560,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 2418,
-                                "end": 2428,
+                                "pos": 2647,
+                                "end": 2657,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -11528,8 +11572,8 @@
                             "deprecated": false,
                             "deprecationMessage": "",
                             "tagName": {
-                                "pos": 2412,
-                                "end": 2417,
+                                "pos": 2641,
+                                "end": 2646,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -11553,7 +11597,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 108,
+                    "line": 111,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nWrite new value\n\n",
@@ -11561,8 +11605,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 2591,
-                                "end": 2596,
+                                "pos": 2820,
+                                "end": 2825,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -11573,8 +11617,8 @@
                             "deprecated": false,
                             "deprecationMessage": "",
                             "tagName": {
-                                "pos": 2585,
-                                "end": 2590,
+                                "pos": 2814,
+                                "end": 2819,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -11592,10 +11636,10 @@
             "hostListeners": [],
             "standalone": false,
             "imports": [],
-            "description": "<p>UI Textarea component</p>\n",
-            "rawdescription": "\n\nUI Textarea component\n",
+            "description": "<p>UI Textarea component.\nLong text, that can be displayed on multiple lines. Ideal for comments, description.</p>\n",
+            "rawdescription": "\n\nUI Textarea component.\nLong text, that can be displayed on multiple lines. Ideal for comments, description.\n",
             "type": "component",
-            "sourceCode": "import {\n  Component,\n  forwardRef,\n  Input,\n  Provider,\n  ViewChild,\n  EventEmitter,\n  Optional,\n  Self,\n} from '@angular/core';\nimport { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';\nimport { CdkTextareaAutosize } from '@angular/cdk/text-field';\nimport { FocusableDirective } from '@progress/kendo-angular-grid';\n\n/**\n * Control value accessor\n */\nconst CONTROL_VALUE_ACCESSOR: Provider = {\n  provide: NG_VALUE_ACCESSOR,\n  useExisting: forwardRef(() => TextareaComponent),\n  multi: true,\n};\n\n/**\n * UI Textarea component\n */\n@Component({\n  selector: 'ui-textarea',\n  templateUrl: './textarea.component.html',\n  styleUrls: ['./textarea.component.scss'],\n  providers: [CONTROL_VALUE_ACCESSOR],\n})\nexport class TextareaComponent implements ControlValueAccessor {\n  /** The value of the textarea. */\n  @Input() value = '';\n  /** The placeholder text for the textarea. */\n  @Input() placeholder = '';\n  /** The name of the textarea. */\n  @Input() name!: string;\n  /**\n   * Set minimal rows for the textarea\n   *\n   * If the minimal rows given is greater than the current max row values, or no max row values was provided\n   * then we set the minimal rows to the max rows value\n   *\n   * @param rows row number\n   */\n  @Input() set minRows(rows: number) {\n    if (rows) {\n      this.minRowsNumber = rows;\n      if (rows > this.maxRows) {\n        this.maxRows = rows;\n      }\n    }\n  }\n  @Input() maxRows = 5;\n\n  /**\n   * UI Textarea constructor\n   *\n   * @param kendoFocus FocusableDirective\n   */\n  constructor(@Self() @Optional() public kendoFocus: FocusableDirective) {}\n  /** The minimum number of rows in the textarea. */\n  minRowsNumber = 2;\n  /** Event emitter for value changes. */\n  valueChange: EventEmitter<boolean> = new EventEmitter();\n  disabled = false;\n  /** Function to handle touch events. */\n  onTouched!: () => void;\n  /** Function to handle value changes. */\n  onChanged!: (value: string) => void;\n  /** Reference to the autosize directive. */\n  @ViewChild('autosize') autosize!: CdkTextareaAutosize;\n\n  /**\n   * Register change of the control\n   *\n   * @param fn callback\n   */\n  public registerOnChange(fn: (value: string) => void): void {\n    this.onChanged = fn;\n  }\n\n  /**\n   * Register touch event\n   *\n   * @param fn callback\n   */\n  public registerOnTouched(fn: () => void): void {\n    this.onTouched = fn;\n  }\n\n  /**\n   * Set disabled state of the control\n   *\n   * @param isDisabled is control disabled\n   */\n  public setDisabledState(isDisabled: boolean): void {\n    this.disabled = isDisabled;\n  }\n\n  /**\n   * Write new value\n   *\n   * @param value text\n   */\n  writeValue(value: string): void {\n    this.value = value;\n  }\n\n  /**\n   * Detect text change\n   *\n   * @param e HTML event containing target\n   */\n  onTextChange(e: Event): void {\n    this.value = (e.target as HTMLTextAreaElement).value;\n    if (this.onTouched && this.onChanged) {\n      this.onTouched();\n      this.onChanged(this.value);\n    }\n    this.valueChange.emit(!!this.value);\n  }\n}\n",
+            "sourceCode": "import {\n  Component,\n  forwardRef,\n  Input,\n  Provider,\n  ViewChild,\n  EventEmitter,\n  Optional,\n  Self,\n} from '@angular/core';\nimport { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';\nimport { CdkTextareaAutosize } from '@angular/cdk/text-field';\nimport { FocusableDirective } from '@progress/kendo-angular-grid';\n\n/**\n * Control value accessor\n */\nconst CONTROL_VALUE_ACCESSOR: Provider = {\n  provide: NG_VALUE_ACCESSOR,\n  useExisting: forwardRef(() => TextareaComponent),\n  multi: true,\n};\n\n/**\n * UI Textarea component.\n * Long text, that can be displayed on multiple lines. Ideal for comments, description.\n */\n@Component({\n  selector: 'ui-textarea',\n  templateUrl: './textarea.component.html',\n  styleUrls: ['./textarea.component.scss'],\n  providers: [CONTROL_VALUE_ACCESSOR],\n})\nexport class TextareaComponent implements ControlValueAccessor {\n  /** Value of the textarea. */\n  @Input() value = '';\n  /** Placeholder text for the textarea. */\n  @Input() placeholder = '';\n  /** Name of the textarea. */\n  @Input() name!: string;\n  /**\n   * Set minimal rows for the textarea\n   *\n   * If the minimal rows given is greater than the current max row values, or no max row values was provided\n   * then we set the minimal rows to the max rows value\n   *\n   * @param rows row number\n   */\n  @Input() set minRows(rows: number) {\n    if (rows) {\n      this.minRowsNumber = rows;\n      if (rows > this.maxRows) {\n        this.maxRows = rows;\n      }\n    }\n  }\n  /** Maximum number of rows that the textarea can display. */\n  @Input() maxRows = 5;\n\n  /**\n   * UI Textarea component.\n   * Long text, that can be displayed on multiple lines. Ideal for comments, description.\n   *\n   * @param kendoFocus FocusableDirective\n   */\n  constructor(@Self() @Optional() public kendoFocus: FocusableDirective) {}\n  /** The minimum number of rows in the textarea. */\n  minRowsNumber = 2;\n  /** Event emitter for value changes. */\n  valueChange: EventEmitter<boolean> = new EventEmitter();\n  disabled = false;\n  /** Function to handle touch events. */\n  onTouched!: () => void;\n  /** Function to handle value changes. */\n  onChanged!: (value: string) => void;\n  /** Reference to the autosize directive. */\n  @ViewChild('autosize') autosize!: CdkTextareaAutosize;\n\n  /**\n   * Register change of the control\n   *\n   * @param fn callback\n   */\n  public registerOnChange(fn: (value: string) => void): void {\n    this.onChanged = fn;\n  }\n\n  /**\n   * Register touch event\n   *\n   * @param fn callback\n   */\n  public registerOnTouched(fn: () => void): void {\n    this.onTouched = fn;\n  }\n\n  /**\n   * Set disabled state of the control\n   *\n   * @param isDisabled is control disabled\n   */\n  public setDisabledState(isDisabled: boolean): void {\n    this.disabled = isDisabled;\n  }\n\n  /**\n   * Write new value\n   *\n   * @param value text\n   */\n  writeValue(value: string): void {\n    this.value = value;\n  }\n\n  /**\n   * Detect text change\n   *\n   * @param e HTML event containing target\n   */\n  onTextChange(e: Event): void {\n    this.value = (e.target as HTMLTextAreaElement).value;\n    if (this.onTouched && this.onChanged) {\n      this.onTouched();\n      this.onChanged(this.value);\n    }\n    this.valueChange.emit(!!this.value);\n  }\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -11606,7 +11650,7 @@
             "stylesData": "",
             "constructorObj": {
                 "name": "constructor",
-                "description": "<p>UI Textarea constructor</p>\n",
+                "description": "<p>UI Textarea component.\nLong text, that can be displayed on multiple lines. Ideal for comments, description.</p>\n",
                 "deprecated": false,
                 "deprecationMessage": "",
                 "args": [
@@ -11617,13 +11661,13 @@
                         "deprecationMessage": ""
                     }
                 ],
-                "line": 56,
-                "rawdescription": "\n\nUI Textarea constructor\n\n",
+                "line": 58,
+                "rawdescription": "\n\nUI Textarea component.\nLong text, that can be displayed on multiple lines. Ideal for comments, description.\n\n",
                 "jsdoctags": [
                     {
                         "name": {
-                            "pos": 1477,
-                            "end": 1487,
+                            "pos": 1706,
+                            "end": 1716,
                             "flags": 8421376,
                             "modifierFlagsCache": 0,
                             "transformFlags": 0,
@@ -11634,8 +11678,8 @@
                         "deprecated": false,
                         "deprecationMessage": "",
                         "tagName": {
-                            "pos": 1471,
-                            "end": 1476,
+                            "pos": 1700,
+                            "end": 1705,
                             "flags": 8421376,
                             "modifierFlagsCache": 0,
                             "transformFlags": 0,
@@ -11666,14 +11710,14 @@
                             }
                         ],
                         "returnType": "void",
-                        "line": 48,
+                        "line": 49,
                         "rawdescription": "\n\nSet minimal rows for the textarea\n\nIf the minimal rows given is greater than the current max row values, or no max row values was provided\nthen we set the minimal rows to the max rows value\n\n",
                         "description": "<p>Set minimal rows for the textarea</p>\n<p>If the minimal rows given is greater than the current max row values, or no max row values was provided\nthen we set the minimal rows to the max rows value</p>\n",
                         "jsdoctags": [
                             {
                                 "name": {
-                                    "pos": 1210,
-                                    "end": 1214,
+                                    "pos": 1287,
+                                    "end": 1291,
                                     "flags": 8421376,
                                     "modifierFlagsCache": 0,
                                     "transformFlags": 0,
@@ -11684,8 +11728,8 @@
                                 "deprecated": false,
                                 "deprecationMessage": "",
                                 "tagName": {
-                                    "pos": 1204,
-                                    "end": 1209,
+                                    "pos": 1281,
+                                    "end": 1286,
                                     "flags": 8421376,
                                     "modifierFlagsCache": 0,
                                     "transformFlags": 0,
@@ -11941,7 +11985,7 @@
         },
         {
             "name": "ToggleComponent",
-            "id": "component-ToggleComponent-7a5a833b9ad8200fd5134c561219e2eb971753cadc34642365164dd7c1a80d738bfac8a3f2aa31699ae08db5dad61c9730821ee5094d4a67daba18caa4ccffd6",
+            "id": "component-ToggleComponent-9f83ad6c81737ffaa871a547b5f2d1b1fc1335816d106ce58234f299e4efb888c318171703fd3d69f7baaa8c569164fb964fb986fca273763e43385bcf4d46e5",
             "file": "libs/ui/src/lib/toggle/toggle.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -11967,9 +12011,9 @@
                     "name": "icon",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "rawdescription": "\nThe icon of the toggle.",
-                    "description": "<p>The icon of the toggle.</p>\n",
-                    "line": 34,
+                    "rawdescription": "\nIcon of the toggle.",
+                    "description": "<p>Icon of the toggle.</p>\n",
+                    "line": 33,
                     "type": "ToggleIcon",
                     "decorators": []
                 },
@@ -11978,9 +12022,9 @@
                     "defaultValue": "'right'",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "rawdescription": "\nThe position of the label for the toggle.",
-                    "description": "<p>The position of the label for the toggle.</p>\n",
-                    "line": 36,
+                    "rawdescription": "\nPosition of the label, relative to the toggle.",
+                    "description": "<p>Position of the label, relative to the toggle.</p>\n",
+                    "line": 35,
                     "type": "\"right\" | \"left\"",
                     "decorators": []
                 },
@@ -11989,9 +12033,9 @@
                     "defaultValue": "'short'",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "rawdescription": "\nThe type of the toggle.",
-                    "description": "<p>The type of the toggle.</p>\n",
-                    "line": 32,
+                    "rawdescription": "\nDisplay type of toggle, can be short or normal.",
+                    "description": "<p>Display type of toggle, can be short or normal.</p>\n",
+                    "line": 31,
                     "type": "ToggleType",
                     "decorators": []
                 },
@@ -12000,9 +12044,9 @@
                     "defaultValue": "'primary'",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "rawdescription": "\nThe variant or style of the toggle.",
-                    "description": "<p>The variant or style of the toggle.</p>\n",
-                    "line": 38,
+                    "rawdescription": "\nVariant or style of the toggle, defines the color.",
+                    "description": "<p>Variant or style of the toggle, defines the color.</p>\n",
+                    "line": 37,
                     "type": "Variant",
                     "decorators": []
                 }
@@ -12016,9 +12060,9 @@
                     "deprecationMessage": "",
                     "type": "",
                     "optional": false,
-                    "description": "<p>Boolean indicating whether the toggle is disabled.</p>\n",
-                    "line": 42,
-                    "rawdescription": "\nBoolean indicating whether the toggle is disabled."
+                    "description": "<p>Is the toggle disabled.</p>\n",
+                    "line": 41,
+                    "rawdescription": "\nIs the toggle disabled."
                 },
                 {
                     "name": "onChange",
@@ -12027,7 +12071,7 @@
                     "type": "function",
                     "optional": false,
                     "description": "<p>Function to handle value changes.</p>\n",
-                    "line": 46,
+                    "line": 45,
                     "rawdescription": "\nFunction to handle value changes."
                 },
                 {
@@ -12037,7 +12081,7 @@
                     "type": "function",
                     "optional": false,
                     "description": "<p>Function to handle touch events.</p>\n",
-                    "line": 48,
+                    "line": 47,
                     "rawdescription": "\nFunction to handle touch events."
                 },
                 {
@@ -12047,9 +12091,9 @@
                     "deprecationMessage": "",
                     "type": "",
                     "optional": false,
-                    "description": "<p>The value of the toggle.</p>\n",
-                    "line": 40,
-                    "rawdescription": "\nThe value of the toggle."
+                    "description": "<p>Current value of the input.</p>\n",
+                    "line": 39,
+                    "rawdescription": "\nCurrent value of the input."
                 },
                 {
                     "name": "valueChange",
@@ -12059,7 +12103,7 @@
                     "type": "EventEmitter<boolean>",
                     "optional": false,
                     "description": "<p>Event emitter for value changes.</p>\n",
-                    "line": 44,
+                    "line": 43,
                     "rawdescription": "\nEvent emitter for value changes."
                 }
             ],
@@ -12070,7 +12114,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 89,
+                    "line": 88,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nHandles the selection of a content\n\n",
@@ -12100,7 +12144,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 112,
+                    "line": 111,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nRegister new method to call when control state change\n\n",
@@ -12111,8 +12155,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 3208,
-                                "end": 3210,
+                                "pos": 3201,
+                                "end": 3203,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -12131,8 +12175,8 @@
                                 }
                             ],
                             "tagName": {
-                                "pos": 3202,
-                                "end": 3207,
+                                "pos": 3195,
+                                "end": 3200,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -12157,7 +12201,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 123,
+                    "line": 122,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nRegister new method to call when control touch state change\n\n",
@@ -12168,8 +12212,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 3450,
-                                "end": 3452,
+                                "pos": 3443,
+                                "end": 3445,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -12181,8 +12225,8 @@
                             "deprecationMessage": "",
                             "function": [],
                             "tagName": {
-                                "pos": 3444,
-                                "end": 3449,
+                                "pos": 3437,
+                                "end": 3442,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -12206,7 +12250,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 134,
+                    "line": 133,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nSet disabled state of the control\n\n",
@@ -12217,8 +12261,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 3651,
-                                "end": 3661,
+                                "pos": 3644,
+                                "end": 3654,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -12229,8 +12273,8 @@
                             "deprecated": false,
                             "deprecationMessage": "",
                             "tagName": {
-                                "pos": 3645,
-                                "end": 3650,
+                                "pos": 3638,
+                                "end": 3643,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -12254,7 +12298,7 @@
                     "optional": false,
                     "returnType": "void",
                     "typeParameters": [],
-                    "line": 103,
+                    "line": 102,
                     "deprecated": false,
                     "deprecationMessage": "",
                     "rawdescription": "\n\nWrite value of control.\n\n",
@@ -12265,8 +12309,8 @@
                     "jsdoctags": [
                         {
                             "name": {
-                                "pos": 3031,
-                                "end": 3036,
+                                "pos": 3024,
+                                "end": 3029,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -12277,8 +12321,8 @@
                             "deprecated": false,
                             "deprecationMessage": "",
                             "tagName": {
-                                "pos": 3025,
-                                "end": 3030,
+                                "pos": 3018,
+                                "end": 3023,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
@@ -12296,10 +12340,10 @@
             "hostListeners": [],
             "standalone": false,
             "imports": [],
-            "description": "<p>UI Toggle component\nToggle is a UI component that allows users to switch between two mutually exclusive options (checked or unchecked, on or off) through a single click or tap.</p>\n",
-            "rawdescription": "\n\nUI Toggle component\nToggle is a UI component that allows users to switch between two mutually exclusive options (checked or unchecked, on or off) through a single click or tap.\n",
+            "description": "<p>Toggle is a UI component that allows users to switch between two mutually exclusive options (checked or unchecked, on or off) through a single click or tap.</p>\n",
+            "rawdescription": "\n\nToggle is a UI component that allows users to switch between two mutually exclusive options (checked or unchecked, on or off) through a single click or tap.\n",
             "type": "component",
-            "sourceCode": "import {\n  Component,\n  EventEmitter,\n  Input,\n  Provider,\n  forwardRef,\n} from '@angular/core';\nimport { ToggleType } from './types/toggle-type';\nimport { ToggleIcon } from './interfaces/toggle-icon.interface';\nimport { Variant } from '../types/variant';\nimport { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';\n\n/** A provider for the ControlValueAccessor interface. */\nconst CONTROL_VALUE_ACCESSOR: Provider = {\n  provide: NG_VALUE_ACCESSOR,\n  useExisting: forwardRef(() => ToggleComponent),\n  multi: true,\n};\n\n/**\n * UI Toggle component\n * Toggle is a UI component that allows users to switch between two mutually exclusive options (checked or unchecked, on or off) through a single click or tap.\n */\n@Component({\n  selector: 'ui-toggle',\n  templateUrl: './toggle.component.html',\n  styleUrls: ['./toggle.component.scss'],\n  providers: [CONTROL_VALUE_ACCESSOR],\n})\nexport class ToggleComponent implements ControlValueAccessor {\n  /** The type of the toggle. */\n  @Input() type: ToggleType = 'short';\n  /** The icon of the toggle. */\n  @Input() icon!: ToggleIcon;\n  /** The position of the label for the toggle. */\n  @Input() labelPosition: 'right' | 'left' = 'right';\n  /** The variant or style of the toggle. */\n  @Input() variant: Variant = 'primary';\n  /** The value of the toggle. */\n  value = false;\n  /** Boolean indicating whether the toggle is disabled. */\n  disabled = false;\n  /** Event emitter for value changes. */\n  valueChange: EventEmitter<boolean> = new EventEmitter();\n  /** Function to handle value changes. */\n  onChange!: (value: boolean) => void;\n  /** Function to handle touch events. */\n  onTouch!: () => void;\n\n  /** @returns general toggle classes and variant */\n  get toggleClasses(): string[] {\n    const classes: string[] = [];\n    // Disable state\n    classes.push(this.disabled ? 'opacity-70' : '');\n    // Space from button to label depending on label position\n    classes.push(this.labelPosition === 'left' ? 'ml-3' : 'mr-3');\n    // Order of button depending on label position\n    classes.push(this.labelPosition === 'left' ? 'order-2' : 'order-1');\n    // Variants\n    classes.push('focus-' + this.variant);\n    if (this.type === 'simple') {\n      classes.push('button-simple');\n      if (!this.value) {\n        classes.push('bg-gray-200');\n      } else {\n        classes.push('toggle-' + this.variant);\n      }\n    } else {\n      classes.push('button-short');\n    }\n    return classes;\n  }\n\n  /** @returns shot toggle classes and variant */\n  get shortToggleClasses(): string[] {\n    const classes: string[] = [];\n    if (!this.value) {\n      classes.push('bg-gray-200');\n    } else {\n      classes.push('toggle-' + this.variant);\n    }\n    return classes;\n  }\n\n  /**\n   * Handles the selection of a content\n   *\n   */\n  public onSelect(): void {\n    this.value = !this.value;\n    if (this.onTouch && this.onChange) {\n      this.onTouch();\n      this.onChange(this.value);\n    }\n    this.valueChange.emit(this.value);\n  }\n\n  /**\n   * Write value of control.\n   *\n   * @param value new value\n   */\n  public writeValue(value: boolean): void {\n    this.value = value;\n  }\n\n  /**\n   * Register new method to call when control state change\n   *\n   * @param fn callback function\n   */\n  public registerOnChange(fn: (value: boolean) => void): void {\n    if (!this.onChange) {\n      this.onChange = fn;\n    }\n  }\n\n  /**\n   * Register new method to call when control touch state change\n   *\n   * @param fn callback function\n   */\n  public registerOnTouched(fn: () => void): void {\n    if (!this.onTouch) {\n      this.onTouch = fn;\n    }\n  }\n\n  /**\n   * Set disabled state of the control\n   *\n   * @param isDisabled is control disabled\n   */\n  public setDisabledState(isDisabled: boolean): void {\n    this.disabled = isDisabled;\n  }\n}\n",
+            "sourceCode": "import {\n  Component,\n  EventEmitter,\n  Input,\n  Provider,\n  forwardRef,\n} from '@angular/core';\nimport { ToggleType } from './types/toggle-type';\nimport { ToggleIcon } from './interfaces/toggle-icon.interface';\nimport { Variant } from '../types/variant';\nimport { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';\n\n/** A provider for the ControlValueAccessor interface. */\nconst CONTROL_VALUE_ACCESSOR: Provider = {\n  provide: NG_VALUE_ACCESSOR,\n  useExisting: forwardRef(() => ToggleComponent),\n  multi: true,\n};\n\n/**\n * Toggle is a UI component that allows users to switch between two mutually exclusive options (checked or unchecked, on or off) through a single click or tap.\n */\n@Component({\n  selector: 'ui-toggle',\n  templateUrl: './toggle.component.html',\n  styleUrls: ['./toggle.component.scss'],\n  providers: [CONTROL_VALUE_ACCESSOR],\n})\nexport class ToggleComponent implements ControlValueAccessor {\n  /** Display type of toggle, can be short or normal. */\n  @Input() type: ToggleType = 'short';\n  /** Icon of the toggle. */\n  @Input() icon!: ToggleIcon;\n  /** Position of the label, relative to the toggle. */\n  @Input() labelPosition: 'right' | 'left' = 'right';\n  /** Variant or style of the toggle, defines the color. */\n  @Input() variant: Variant = 'primary';\n  /** Current value of the input. */\n  value = false;\n  /** Is the toggle disabled. */\n  disabled = false;\n  /** Event emitter for value changes. */\n  valueChange: EventEmitter<boolean> = new EventEmitter();\n  /** Function to handle value changes. */\n  onChange!: (value: boolean) => void;\n  /** Function to handle touch events. */\n  onTouch!: () => void;\n\n  /** @returns general toggle classes and variant */\n  get toggleClasses(): string[] {\n    const classes: string[] = [];\n    // Disable state\n    classes.push(this.disabled ? 'opacity-70' : '');\n    // Space from button to label depending on label position\n    classes.push(this.labelPosition === 'left' ? 'ml-3' : 'mr-3');\n    // Order of button depending on label position\n    classes.push(this.labelPosition === 'left' ? 'order-2' : 'order-1');\n    // Variants\n    classes.push('focus-' + this.variant);\n    if (this.type === 'simple') {\n      classes.push('button-simple');\n      if (!this.value) {\n        classes.push('bg-gray-200');\n      } else {\n        classes.push('toggle-' + this.variant);\n      }\n    } else {\n      classes.push('button-short');\n    }\n    return classes;\n  }\n\n  /** @returns shot toggle classes and variant */\n  get shortToggleClasses(): string[] {\n    const classes: string[] = [];\n    if (!this.value) {\n      classes.push('bg-gray-200');\n    } else {\n      classes.push('toggle-' + this.variant);\n    }\n    return classes;\n  }\n\n  /**\n   * Handles the selection of a content\n   *\n   */\n  public onSelect(): void {\n    this.value = !this.value;\n    if (this.onTouch && this.onChange) {\n      this.onTouch();\n      this.onChange(this.value);\n    }\n    this.valueChange.emit(this.value);\n  }\n\n  /**\n   * Write value of control.\n   *\n   * @param value new value\n   */\n  public writeValue(value: boolean): void {\n    this.value = value;\n  }\n\n  /**\n   * Register new method to call when control state change\n   *\n   * @param fn callback function\n   */\n  public registerOnChange(fn: (value: boolean) => void): void {\n    if (!this.onChange) {\n      this.onChange = fn;\n    }\n  }\n\n  /**\n   * Register new method to call when control touch state change\n   *\n   * @param fn callback function\n   */\n  public registerOnTouched(fn: () => void): void {\n    if (!this.onTouch) {\n      this.onTouch = fn;\n    }\n  }\n\n  /**\n   * Set disabled state of the control\n   *\n   * @param isDisabled is control disabled\n   */\n  public setDisabledState(isDisabled: boolean): void {\n    this.disabled = isDisabled;\n  }\n}\n",
             "assetsDirs": [],
             "styleUrlsData": [
                 {
@@ -12318,20 +12362,20 @@
                         "name": "toggleClasses",
                         "type": "[]",
                         "returnType": "string[]",
-                        "line": 51,
+                        "line": 50,
                         "rawdescription": "",
                         "description": "",
                         "jsdoctags": [
                             {
-                                "pos": 1662,
-                                "end": 1706,
+                                "pos": 1655,
+                                "end": 1699,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
                                 "kind": 345,
                                 "tagName": {
-                                    "pos": 1663,
-                                    "end": 1670,
+                                    "pos": 1656,
+                                    "end": 1663,
                                     "flags": 8421376,
                                     "modifierFlagsCache": 0,
                                     "transformFlags": 0,
@@ -12349,20 +12393,20 @@
                         "name": "shortToggleClasses",
                         "type": "[]",
                         "returnType": "string[]",
-                        "line": 75,
+                        "line": 74,
                         "rawdescription": "",
                         "description": "",
                         "jsdoctags": [
                             {
-                                "pos": 2453,
-                                "end": 2494,
+                                "pos": 2446,
+                                "end": 2487,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
                                 "kind": 345,
                                 "tagName": {
-                                    "pos": 2454,
-                                    "end": 2461,
+                                    "pos": 2447,
+                                    "end": 2454,
                                     "flags": 8421376,
                                     "modifierFlagsCache": 0,
                                     "transformFlags": 0,
@@ -12379,7 +12423,7 @@
         },
         {
             "name": "TooltipComponent",
-            "id": "component-TooltipComponent-3a1113fa0c37229516206cf4faf4cdbba0e5cc3e0502431b4b320395b4377cb0762fb68f8b8e84f5f592226bc3aa00fcc91bf7c4ae1a6b9afbe1fb1d34e875cb",
+            "id": "component-TooltipComponent-8a6fac1f2c76c55831d6130cdc021c874150ec9c87f61ca7123e00937a89e99c1e8f47ebc4893676ead5725493172c9c403061ad76dde9f42175830640031651",
             "file": "libs/ui/src/lib/tooltip/tooltip.component.ts",
             "encapsulation": [],
             "entryComponents": [],
@@ -12400,9 +12444,9 @@
                     "defaultValue": "''",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "rawdescription": "\nThe hint text displayed in the tooltip.",
-                    "description": "<p>The hint text displayed in the tooltip.</p>\n",
-                    "line": 16,
+                    "rawdescription": "\nHint text displayed in the tooltip.",
+                    "description": "<p>Hint text displayed in the tooltip.</p>\n",
+                    "line": 15,
                     "type": "string",
                     "decorators": []
                 },
@@ -12410,9 +12454,9 @@
                     "name": "position",
                     "deprecated": false,
                     "deprecationMessage": "",
-                    "rawdescription": "\nThe position of the tooltip.",
-                    "description": "<p>The position of the tooltip.</p>\n",
-                    "line": 14,
+                    "rawdescription": "\nPosition of the tooltip.",
+                    "description": "<p>Position of the tooltip.</p>\n",
+                    "line": 13,
                     "type": "TooltipExamplesPosition",
                     "decorators": []
                 }
@@ -12426,10 +12470,10 @@
             "hostListeners": [],
             "standalone": false,
             "imports": [],
-            "description": "<p>Tooltip component (mainly here for storybook usage)\nTooltip is a UI component that displays a hint when hovering over an element.</p>\n",
-            "rawdescription": "\n\nTooltip component (mainly here for storybook usage)\nTooltip is a UI component that displays a hint when hovering over an element.\n",
+            "description": "<p>Tooltip is a UI component that displays a hint when hovering over an element.</p>\n",
+            "rawdescription": "\n\nTooltip is a UI component that displays a hint when hovering over an element.\n",
             "type": "component",
-            "sourceCode": "import { Component, Input } from '@angular/core';\nimport { TooltipExamplesPosition } from './types/tooltip-example-positions';\n\n/**\n * Tooltip component (mainly here for storybook usage)\n * Tooltip is a UI component that displays a hint when hovering over an element.\n */\n@Component({\n  selector: 'ui-tooltip',\n  templateUrl: './tooltip.component.html',\n})\nexport class TooltipComponent {\n  /** The position of the tooltip. */\n  @Input() position!: TooltipExamplesPosition;\n  /** The hint text displayed in the tooltip. */\n  @Input() hint = '';\n\n  /**\n   * Returns resolved wrapper classes by position\n   *\n   * @returns Resolved classes\n   */\n  get resolvePositionCases(): string[] {\n    const classes = [];\n    switch (this.position) {\n      case 'top':\n        classes.push('group flex relative justify-center');\n        break;\n      case 'top-left':\n        classes.push('flex items-start justify-start');\n        break;\n      case 'top-right':\n        classes.push('flex items-start justify-end');\n        break;\n      case 'bottom':\n        classes.push('flex h-100% items-end justify-center');\n        break;\n      case 'bottom-left':\n        classes.push('flex items-end justify-start');\n        break;\n      case 'bottom-right':\n        classes.push('flex items-end justify-end');\n        break;\n      case 'left':\n        classes.push('flex items-center justify-start');\n        break;\n      case 'right':\n        classes.push('flex items-center justify-end');\n        break;\n      default:\n        break;\n    }\n    return classes;\n  }\n\n  /**\n   * Returns resolved button classes by position\n   *\n   * @returns Resolved classes\n   */\n  get resolveButtonCases(): string[] {\n    const classes = [];\n    switch (this.position) {\n      case 'bottom':\n      case 'bottom-left':\n      case 'bottom-right':\n        classes.push('fixed bottom-0');\n        break;\n      case 'right':\n      case 'left':\n        classes.push('fixed bottom-2/4');\n        break;\n      default:\n        break;\n    }\n    return classes;\n  }\n}\n",
+            "sourceCode": "import { Component, Input } from '@angular/core';\nimport { TooltipExamplesPosition } from './types/tooltip-example-positions';\n\n/**\n * Tooltip is a UI component that displays a hint when hovering over an element.\n */\n@Component({\n  selector: 'ui-tooltip',\n  templateUrl: './tooltip.component.html',\n})\nexport class TooltipComponent {\n  /** Position of the tooltip. */\n  @Input() position!: TooltipExamplesPosition;\n  /** Hint text displayed in the tooltip. */\n  @Input() hint = '';\n\n  /**\n   * Returns resolved wrapper classes by position\n   *\n   * @returns Resolved classes\n   */\n  get resolvePositionCases(): string[] {\n    const classes = [];\n    switch (this.position) {\n      case 'top':\n        classes.push('group flex relative justify-center');\n        break;\n      case 'top-left':\n        classes.push('flex items-start justify-start');\n        break;\n      case 'top-right':\n        classes.push('flex items-start justify-end');\n        break;\n      case 'bottom':\n        classes.push('flex h-100% items-end justify-center');\n        break;\n      case 'bottom-left':\n        classes.push('flex items-end justify-start');\n        break;\n      case 'bottom-right':\n        classes.push('flex items-end justify-end');\n        break;\n      case 'left':\n        classes.push('flex items-center justify-start');\n        break;\n      case 'right':\n        classes.push('flex items-center justify-end');\n        break;\n      default:\n        break;\n    }\n    return classes;\n  }\n\n  /**\n   * Returns resolved button classes by position\n   *\n   * @returns Resolved classes\n   */\n  get resolveButtonCases(): string[] {\n    const classes = [];\n    switch (this.position) {\n      case 'bottom':\n      case 'bottom-left':\n      case 'bottom-right':\n        classes.push('fixed bottom-0');\n        break;\n      case 'right':\n      case 'left':\n        classes.push('fixed bottom-2/4');\n        break;\n      default:\n        break;\n    }\n    return classes;\n  }\n}\n",
             "assetsDirs": [],
             "styleUrlsData": "",
             "stylesData": "",
@@ -12440,20 +12484,20 @@
                         "name": "resolvePositionCases",
                         "type": "[]",
                         "returnType": "string[]",
-                        "line": 23,
+                        "line": 22,
                         "rawdescription": "\n\nReturns resolved wrapper classes by position\n\n",
                         "description": "<p>Returns resolved wrapper classes by position</p>\n",
                         "jsdoctags": [
                             {
-                                "pos": 612,
-                                "end": 641,
+                                "pos": 549,
+                                "end": 578,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
                                 "kind": 345,
                                 "tagName": {
-                                    "pos": 613,
-                                    "end": 620,
+                                    "pos": 550,
+                                    "end": 557,
                                     "flags": 8421376,
                                     "modifierFlagsCache": 0,
                                     "transformFlags": 0,
@@ -12471,20 +12515,20 @@
                         "name": "resolveButtonCases",
                         "type": "[]",
                         "returnType": "string[]",
-                        "line": 61,
+                        "line": 60,
                         "rawdescription": "\n\nReturns resolved button classes by position\n\n",
                         "description": "<p>Returns resolved button classes by position</p>\n",
                         "jsdoctags": [
                             {
-                                "pos": 1612,
-                                "end": 1641,
+                                "pos": 1549,
+                                "end": 1578,
                                 "flags": 8421376,
                                 "modifierFlagsCache": 0,
                                 "transformFlags": 0,
                                 "kind": 345,
                                 "tagName": {
-                                    "pos": 1613,
-                                    "end": 1620,
+                                    "pos": 1550,
+                                    "end": 1557,
                                     "flags": 8421376,
                                     "modifierFlagsCache": 0,
                                     "transformFlags": 0,
@@ -19230,7 +19274,7 @@
                 "linktype": "component",
                 "name": "IconComponent",
                 "coveragePercent": 100,
-                "coverageCount": "6/6",
+                "coverageCount": "7/7",
                 "status": "very-good"
             },
             {
@@ -20075,8 +20119,8 @@
                 "type": "component",
                 "linktype": "component",
                 "name": "TextareaComponent",
-                "coveragePercent": 89,
-                "coverageCount": "17/19",
+                "coveragePercent": 94,
+                "coverageCount": "18/19",
                 "status": "very-good"
             },
             {

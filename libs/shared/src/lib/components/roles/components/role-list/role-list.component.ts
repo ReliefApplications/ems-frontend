@@ -15,7 +15,7 @@ import { GET_ROLES } from '../../graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
-import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
 import { FormBuilder } from '@angular/forms';
 
@@ -39,10 +39,6 @@ export class RoleListComponent extends UnsubscribeComponent implements OnInit {
   public displayedColumns = ['title', 'usersCount', 'actions'];
 
   // === FILTERS ===
-  public filters = [
-    { id: 'title', value: '' },
-    { id: 'usersCount', value: '' },
-  ];
   public showFilters = false;
   form = this.fb.group({});
   public searchText = '';
@@ -81,13 +77,6 @@ export class RoleListComponent extends UnsubscribeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.form.valueChanges
-      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe((value: any) => {
-        this.searchText = (value?.search ?? '').trim().toLowerCase();
-        this.applyFilter('', this.searchText);
-      });
-
     if (this.inApplication) {
       this.loading = false;
       this.applicationService.application$
@@ -262,14 +251,13 @@ export class RoleListComponent extends UnsubscribeComponent implements OnInit {
   /**
    * Applies filters to the list of roles on event
    *
-   * @param column Name of the column where the filtering happens
-   * @param event The event
+   * @param event event
    */
-  applyFilter(column: string, event: any): void {
-    if (column === 'usersCount') {
-      this.usersFilter = event.target
-        ? event.target.value.trim().toLowerCase()
-        : '';
+  applyFilter(event: any): void {
+    if (event.search) {
+      this.searchText = event.search.toLowerCase();
+    } else {
+      this.searchText = '';
     }
     this.filterPredicate();
   }

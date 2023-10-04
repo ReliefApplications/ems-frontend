@@ -12,15 +12,20 @@
     (preview)="onPreview($event)"
     (clone)="onClone($event)"
   ></shared-applications-summary>
-
-  <!-- APPLICATIONS TABLE -->
-  <h2>{{ 'pages.applications.all' | translate }}</h2>
-  <!-- FILTERING -->
-  <app-applications-filter
-    (filter)="onFilter($event)"
-    [loading]="updating"
-    class="block mb-8"
-  ></app-applications-filter>
+  <div class="mb-8 flex flex-col gap-2">
+    <div class="flex justify-between">
+      <!-- Title -->
+      <h2 class="m-0">{{ 'pages.applications.all' | translate }}</h2>
+      <!-- Filter -->
+      <app-applications-filter
+        #filter
+        (filter)="onFilter($event)"
+        [loading]="updating"
+        class="block"
+      ></app-applications-filter>
+    </div>
+    <ng-container *ngTemplateOutlet="filter.expandedFilter"></ng-container>
+  </div>
   <!-- Table container -->
   <div class="overflow-x-hidden shadow-2lg">
     <!-- Table scroll container -->

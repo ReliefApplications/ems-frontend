@@ -176,6 +176,58 @@ export class WorkflowService {
   }
 
   /**
+   * Update step icon, sending a mutation to the back-end.
+   *
+   * @param step Edited step
+   * @param icon new icon
+   * @param callback callback method, allow the component calling the service to do some logic.
+   */
+  updateStepIcon(step: Step, icon: string, callback?: any): void {
+    const workflow = this.workflow.getValue();
+    if (workflow) {
+      this.apollo
+        .mutate<EditStepMutationResponse>({
+          mutation: EDIT_STEP,
+          variables: {
+            id: step.id,
+            icon,
+          },
+        })
+        .subscribe(({ errors, data }) => {
+          if (errors) {
+            this.snackBar.openSnackBar(
+              this.translate.instant('common.notifications.objectNotUpdated', {
+                type: this.translate.instant('common.step.one'),
+                error: errors[0].message,
+              }),
+              { error: true }
+            );
+          } else {
+            if (data) {
+              this.snackBar.openSnackBar(
+                this.translate.instant('common.notifications.objectUpdated', {
+                  type: this.translate.instant('common.step.one').toLowerCase(),
+                  value: step.name,
+                })
+              );
+              const newWorkflow: Workflow = {
+                ...workflow,
+                steps: workflow.steps?.map((x) => {
+                  if (x.id === step.id) {
+                    x = { ...x, icon: data.editStep.icon };
+                  }
+                  return x;
+                }),
+              };
+              this.workflow.next(newWorkflow);
+              if (callback) callback();
+            }
+          }
+        });
+    }
+  }
+
+  /**
    * Goes to first page of application.
    */
   closeWorkflow(): void {

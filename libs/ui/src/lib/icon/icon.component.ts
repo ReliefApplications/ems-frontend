@@ -22,7 +22,8 @@ export class IconComponent {
   @Input() size = 24;
   /** Boolean indicating whether the icon is outlined. */
   @Input() isOutlined = false;
-
+  /** Font library */
+  @Input() fontFamily: 'material' | 'fa' = 'material';
   /**
    * Formats the size input adding a 'px' suffix
    *
@@ -30,6 +31,10 @@ export class IconComponent {
    */
   get fontSize(): string {
     return this.size + 'px';
+  }
+  /** @returns font awesome icon name */
+  private get fontAwesomeIcon(): string {
+    return `fa-${this.icon}`;
   }
 
   /**
@@ -39,6 +44,17 @@ export class IconComponent {
    */
   get iconVariantAndCategory(): string[] {
     const classes = [];
+    if (this.fontFamily === 'fa') {
+      classes.push(...['fa', this.fontAwesomeIcon]);
+    } else {
+      if (this.isOutlined) {
+        classes.push(
+          ...['material-icons-outlined', 'material-symbols-outlined']
+        );
+      } else {
+        classes.push(...['material-icons']);
+      }
+    }
     classes.push(
       this.category === 'secondary' || this.variant === 'light'
         ? 'icon-light'
