@@ -15,11 +15,11 @@ import { SnackbarService } from '@oort-front/ui';
  * Array of tab names sorted by position index.
  */
 const ROUTE_TABS: string[] = [
-  'records',
   'forms',
   'layouts',
   'aggregations',
   'calculated-fields',
+  'records',
 ];
 
 /**
@@ -58,6 +58,7 @@ export class ResourceComponent implements OnInit {
   /** Load data from the id of the resource passed as a parameter. */
   ngOnInit(): void {
     const routeTab: string = this.router.url.split('/').pop() || '';
+    console.log(routeTab);
     this.selectedTab = ROUTE_TABS.findIndex((tab) => tab === routeTab);
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id !== null) {
