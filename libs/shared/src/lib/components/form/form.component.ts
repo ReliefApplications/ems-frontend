@@ -192,7 +192,7 @@ export class FormComponent
     this.survey?.render(this.formContainer.nativeElement);
     if (this.survey?.getPropertyValue('hidePagesTab')) {
       if (this.survey?.visiblePageCount === 1) {
-        var pagesTab = document.querySelector(
+        const pagesTab = document.querySelector(
           '#appPageContainer #tab-group-wrapper'
         );
         if (pagesTab) {
