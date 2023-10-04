@@ -129,14 +129,14 @@ export const init = (Survey: any, environment: any): void => {
     default: false,
   });
 
-  // Add ability to conditionally allow dynamicpanel add new panel
+  // Add ability to conditionally allow dynamic panel add new panel
   serializer.addProperty('paneldynamic', {
-    name: 'Allow new panels expression:expression',
+    name: 'AllowNewPanelsExpression:expression',
     category: 'logic',
     visibleIndex: 7,
     default: '',
     isLocalizable: true,
-    onExecuteExpression: (obj: Question, res: any) => {
+    onExecuteExpression: (obj: Survey.QuestionPanelDynamicModel, res: any) => {
       obj.allowAddPanel = !!res;
     },
   });
