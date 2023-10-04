@@ -1192,6 +1192,11 @@
       [width]="actionsWidth"
       [resizable]="false"
       [sticky]="true"
+      [title]="
+        widget.settings.widgetDisplay.enableActionsTitle
+          ? widget.settings.widgetDisplay.actionsTitle
+          : ''
+      "
     >
       <ng-template
         kendoGridCellTemplate

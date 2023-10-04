@@ -1340,6 +1340,7 @@
 						}
 					},
 					"display": {
+						"actionsTitle": "Display actions title",
 						"showSingleActionAsButton": "Show single action as button"
 					},
 					"hint": {

@@ -11,6 +11,7 @@ import {
   TabsModule,
   ToggleModule,
   TooltipModule,
+  FormWrapperModule,
 } from '@oort-front/ui';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
 import { SortingSettingsModule } from '../common/sorting-settings/sorting-settings.module';
@@ -23,6 +24,7 @@ import { ContextualFiltersSettingsComponent } from '../common/contextual-filters
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
+    FormWrapperModule,
     TabsModule,
     TranslateModule,
     IconModule,
