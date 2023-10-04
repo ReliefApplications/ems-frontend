@@ -24,7 +24,6 @@ export class AggregationBuilderComponent
   // === REACTIVE FORM ===
   @Input() aggregationForm: UntypedFormGroup = new UntypedFormGroup({});
   @Input() resource!: Resource;
-
   @Input() reload$!: Observable<boolean>;
 
   // === DATA ===
@@ -84,8 +83,7 @@ export class AggregationBuilderComponent
     this.metaFields$ = this.metaFields.asObservable();
     this.aggregationForm
       .get('sourceFields')
-      ?.valueChanges.pipe(debounceTime(1000))
-      .pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((fieldsNames: string[]) => {
         this.updateSelectedAndMetaFields(fieldsNames);
       });
@@ -94,8 +92,7 @@ export class AggregationBuilderComponent
     this.mappingFields$ = this.mappingFields.asObservable();
     this.aggregationForm
       .get('pipeline')
-      ?.valueChanges.pipe(debounceTime(1000))
-      .pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(debounceTime(1000), takeUntil(this.destroy$))
       .subscribe((pipeline) => {
         this.mappingFields.next(
           this.aggregationBuilder.fieldsAfter(
