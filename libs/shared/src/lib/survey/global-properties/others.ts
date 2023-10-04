@@ -37,8 +37,8 @@ export const init = (environment: any): void => {
     console.log(options);
     if (sender.url.includes(environment.apiUrl)) {
       const token = localStorage.getItem('idtoken');
-      // options.request.setRequestHeader('Authorization', `Bearer ${token}`);
-      options.request.headers.append('Authorization', `Bearer ${token}`);
+      options.request.setRequestHeader('Authorization', `Bearer ${token}`);
+      // options.request.headers.append('Authorization', `Bearer ${token}`);
     }
   };
 
