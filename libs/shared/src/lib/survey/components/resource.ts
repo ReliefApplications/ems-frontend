@@ -17,7 +17,6 @@ import {
   buildSearchButton,
   buildAddButton,
   processNewCreatedRecords,
-  addRecordText,
 } from './utils';
 import get from 'lodash/get';
 import { Question, QuestionResource } from '../types';
@@ -344,7 +343,6 @@ export const init = (
         name: 'addRecordText',
         category: 'Custom Questions',
         dependsOn: ['resource', 'addRecord'],
-        default: addRecordText,
         visibleIndex: 3,
         visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.addRecord,
       });
