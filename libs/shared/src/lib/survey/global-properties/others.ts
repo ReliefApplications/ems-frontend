@@ -29,22 +29,16 @@ export const init = (environment: any): void => {
     required: true,
   });
   // Pass token before the request to fetch choices by URL if it's targeting SHARED API
-  // Survey.ChoicesRestful.onBeforeSendRequest = (
-  //   sender: ChoicesRestful,
-  //   options: { request: { headers: Headers } }
-  // ) => {
-  //   if (sender.url.includes(environment.apiUrl)) {
-  //     const token = localStorage.getItem('idtoken');
-  //     options.request.headers.append('Authorization', `Bearer ${token}`);
-  //   }
-  // };
   ChoicesRestful.onBeforeSendRequest = (
     sender: ChoicesRestful,
-    options: { request: XMLHttpRequest }
+    // need to use any because the interface is not correct
+    options: any
   ) => {
+    console.log(options);
     if (sender.url.includes(environment.apiUrl)) {
       const token = localStorage.getItem('idtoken');
-      options.request.setRequestHeader('Authorization', `Bearer ${token}`);
+      // options.request.setRequestHeader('Authorization', `Bearer ${token}`);
+      options.request.headers.append('Authorization', `Bearer ${token}`);
     }
   };
 
