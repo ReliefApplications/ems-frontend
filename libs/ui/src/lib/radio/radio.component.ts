@@ -3,6 +3,7 @@ import { Variant } from '../types/variant';
 
 /**
  * UI Radio button component
+ * Display a radio button with a given variant.
  */
 @Component({
   selector: 'ui-radio',
@@ -10,12 +11,19 @@ import { Variant } from '../types/variant';
   styleUrls: ['./radio.component.scss'],
 })
 export class RadioComponent {
+  /** The name of the radio button. */
   @Input() name = '';
+  /** The value of the radio button. */
   @Input() value: string | boolean = '';
+  /** Boolean indicating whether the radio button is disabled. */
   @Input() disabled = false;
+  /** Boolean indicating whether the radio button is required. */
   @Input() required = false;
+  /** Boolean indicating whether the radio button is checked. */
   @Input() checked = false;
+  /** Aria label for accessibility. */
   @Input() ariaLabelledby = '';
+  /** The variant or style of the radio button. */
   @Input() variant: Variant = 'default';
 
   /**

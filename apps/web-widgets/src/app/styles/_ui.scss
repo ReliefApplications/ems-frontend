@@ -10,11 +10,11 @@
 
 /* All the needed fonts for the web component */
 @import 'libs/styles/src/lib/tailwind/tailwind.scss';
-@import 'libs/styles/src/lib/shared/shared.scss';
-@import 'libs/shared/src/lib/style/styles.scss';
+@import 'libs/styles/src/lib/kendo/theme.scss';
 @import 'libs/shared/src/lib/style/widgets.scss';
+@import 'libs/shared/src/lib/style/styles.scss';
 @import 'libs/shared/src/lib/style/survey.scss';
-@import 'libs/shared/src/lib/style/theme.scss';
+@import 'libs/styles/src/lib/shared/shared.scss';
 
 /* Definition of the scss properties in the shadow root host element, won't affect any other element outside shadow-root */
 @import 'variables.scss';

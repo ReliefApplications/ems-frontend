@@ -1,23 +1,74 @@
 <div uiFormFieldDirective [defaultMargin]="false" class="flex-1 w-44">
   <label>{{ label || 'common.field.one' | translate }}</label>
-  <ui-select-menu [formControl]="fieldControl">
+  <ui-select-menu [formControl]="fieldControl" #menu>
     <ui-select-option *ngIf="nullable">{{
       'common.input.none' | translate
     }}</ui-select-option>
-    <ng-container *ngFor="let field of fields">
-      <ui-select-option
-        *ngIf="field.type.kind === 'SCALAR'"
-        [value]="field.name"
-        >{{ field.name }}</ui-select-option
-      >
-      <ui-select-option [isGroup]="true" *ngIf="field.type.kind !== 'SCALAR'">
-        {{ field.name }}
-        <ui-select-option
-          *ngFor="let subField of field.fields"
-          [value]="field.name + '.' + subField.name"
-          >{{ subField.name }}
-        </ui-select-option>
-      </ui-select-option>
+    <ng-container
+      *ngFor="let field of fields"
+      [ngTemplateOutlet]="fieldNode"
+      [ngTemplateOutletContext]="{
+        $implicit: field,
+        expansionSubTree: expansionTree[field.name]
+      }"
+    >
     </ng-container>
   </ui-select-menu>
 </div>
+
+<ng-template
+  #fieldNode
+  let-data
+  let-parentName="parentName"
+  let-expansionSubTree="expansionSubTree"
+>
+  <ui-select-option
+    [value]="parentName ? parentName + separator + data.name : data.name"
+    *ngIf="data.type.kind === 'SCALAR'"
+    #field
+    >{{ data.name }}</ui-select-option
+  >
+  <ui-select-option
+    [isGroup]="true"
+    *ngIf="data.type.kind === 'LIST' || data.type.kind === 'OBJECT'"
+  >
+    <button
+      (click)="
+        toggleNodeExpansion(
+          parentName ? parentName + separator + data.name : data.name
+        )
+      "
+      class="min-h-[32px] flex items-center w-full text-left overflow-hidden cursor-pointer text-primary-400"
+    >
+      <div class="default flex-1">
+        <span class="block truncate font-bold">{{ data.name }}</span>
+      </div>
+
+      <!-- icon at right of the button -->
+      <span class="pointer-events-none flex items-center">
+        <ui-icon icon="unfold_more"> </ui-icon>
+      </span>
+    </button>
+    <div
+      class="border-l-2 border-gray-100"
+      [ngClass]="{
+        hidden: expansionSubTree ? !expansionSubTree.expanded : true
+      }"
+    >
+      <ng-container
+        *ngFor="let subField of data.fields"
+        [ngTemplateOutlet]="fieldNode"
+        [ngTemplateOutletContext]="{
+          $implicit: subField,
+          parentName: parentName
+            ? parentName + separator + data.name
+            : data.name,
+          expansionSubTree: expansionSubTree
+            ? expansionSubTree[subField.name]
+            : ''
+        }"
+      >
+      </ng-container>
+    </div>
+  </ui-select-option>
+</ng-template>

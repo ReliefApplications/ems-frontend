@@ -5,23 +5,31 @@ import {
   OnDestroy,
   OnInit,
 } from '@angular/core';
-import * as SurveyCreator from 'survey-creator';
-import * as Survey from 'survey-angular';
+import { PageModel, SurveyModel } from 'survey-core';
+import { SurveyCreatorModel } from 'survey-creator-core';
+import { SurveyCreatorModule } from 'survey-creator-angular';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 import { FormService } from '../../../services/form/form.service';
 import { CommonModule } from '@angular/common';
 import { FormBuilderModule } from '../../form-builder/form-builder.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { TooltipModule } from '@oort-front/ui';
+import { SnackbarService, TooltipModule } from '@oort-front/ui';
 import { DialogModule, AlertModule } from '@oort-front/ui';
 import { renderGlobalProperties } from '../../../survey/render-global-properties';
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
+import { FormHelpersService } from '../../../services/form-helper/form-helper.service';
+import { Question } from '../../../survey/types';
 /**
  * Data passed to initialize the filter builder
  */
 interface DialogData {
   surveyStructure: any;
 }
+
+/** Default filter structure */
+const DEFAULT_STRUCTURE = {
+  showQuestionNumbers: 'off',
+};
 
 /**
  * Array containing the different types of questions.
@@ -138,12 +146,13 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
     TooltipModule,
     DialogModule,
     AlertModule,
+    SurveyCreatorModule,
   ],
 })
 export class FilterBuilderModalComponent
   implements OnInit, AfterViewInit, OnDestroy
 {
-  surveyCreator!: SurveyCreator.SurveyCreator;
+  surveyCreator!: SurveyCreatorModel;
 
   /**
    * Dialog component to build the filter
@@ -152,12 +161,16 @@ export class FilterBuilderModalComponent
    * @param dialogRef reference to the dialog component
    * @param data data passed to initialize the filter builder
    * @param referenceDataService reference data service
+   * @param formHelpersService Shared form helper service.
+   * @param snackBar Service that will be used to display the snackbar.
    */
   constructor(
     private formService: FormService,
     private dialogRef: DialogRef<FilterBuilderModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData,
-    private referenceDataService: ReferenceDataService
+    private referenceDataService: ReferenceDataService,
+    private formHelpersService: FormHelpersService,
+    private snackBar: SnackbarService
   ) {}
 
   ngOnInit(): void {
@@ -175,21 +188,19 @@ export class FilterBuilderModalComponent
   private setFormBuilder() {
     const creatorOptions = {
       showEmbededSurveyTab: false,
-      showJSONEditorTab: false,
+      showJSONEditorTab: true,
       generateValidJSON: true,
       showTranslationTab: false,
       questionTypes: QUESTION_TYPES,
     };
-    this.setCustomTheme();
-    this.surveyCreator = new SurveyCreator.SurveyCreator(
-      'dashboardSurveyCreatorContainer',
-      creatorOptions
-    );
+    this.surveyCreator = new SurveyCreatorModel(creatorOptions);
+
     // this.surveyCreator.text = '';
-    this.surveyCreator.showToolbox = 'right';
-    this.surveyCreator.showPropertyGrid = 'right';
+    this.surveyCreator.showToolbox = true;
+    this.surveyCreator.toolboxLocation = 'right';
+    this.surveyCreator.showSidebar = true;
+    this.surveyCreator.sidebarLocation = 'right';
     this.surveyCreator.haveCommercialLicense = true;
-    this.surveyCreator.survey.showQuestionNumbers = 'off';
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
 
     // Block core fields edition
@@ -208,7 +219,7 @@ export class FilterBuilderModalComponent
 
     // add the rendering of custom properties
     this.surveyCreator.survey.onAfterRenderQuestion.add(
-      renderGlobalProperties(this.referenceDataService)
+      renderGlobalProperties(this.referenceDataService) as any
     );
     (this.surveyCreator.onTestSurveyCreated as any).add(
       (sender: any, opt: any) =>
@@ -218,24 +229,48 @@ export class FilterBuilderModalComponent
     );
 
     // Set content
-    const survey = new Survey.SurveyModel(this.data?.surveyStructure || {});
+    const survey = new SurveyModel(
+      this.data?.surveyStructure || DEFAULT_STRUCTURE
+    );
     this.surveyCreator.JSON = survey.toJSON();
-  }
-
-  /**
-   * Set a theme for the form builder depending on the environment
-   */
-  setCustomTheme(): void {
-    Survey.StylesManager.applyTheme();
-    SurveyCreator.StylesManager.applyTheme('default');
   }
 
   /**
    * Custom SurveyJS method, save the survey when edited.
    */
   saveMySurvey = () => {
-    this.dialogRef.close(this.surveyCreator.text as any);
+    this.validateValueNames()
+      .then((canCreate: boolean) => {
+        if (canCreate) {
+          this.dialogRef.close(this.surveyCreator.text as any);
+        }
+      })
+      .catch((error) => {
+        this.snackBar.openSnackBar(error.message, {
+          error: true,
+          duration: 15000,
+        });
+      });
   };
+
+  /**
+   * Makes sure that value names are existent and snake case, to not cause backend problems.
+   *
+   * @returns if the validation is approved and can create the survey
+   */
+  private async validateValueNames(): Promise<boolean> {
+    const survey = new SurveyModel(this.surveyCreator.JSON);
+    const canCreate: boolean = survey.pages.every((page: PageModel) =>
+      page.questions.every(
+        // Created the valueName for every question. If valueName exists but with wrong format,
+        // raise an error and don't create survey
+        (question: Question) =>
+          this.formHelpersService.setValueName(question, page)
+      )
+    );
+    this.surveyCreator.JSON = survey.toJSON();
+    return canCreate;
+  }
 
   ngOnDestroy(): void {
     //Once we destroy the dashboard filter survey, set the survey creator with the custom questions config

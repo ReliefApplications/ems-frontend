@@ -1,19 +1,26 @@
-import { surveyLocalization, SurveyModel } from 'survey-angular';
+import {
+  CustomWidgetCollection,
+  Serializer,
+  SurveyModel,
+  surveyLocalization,
+} from 'survey-core';
 import { Question, QuestionComment } from '../types';
-
 /**
  * Custom definition for overriding the comment question. Add edit functionality.
  *
- * @param Survey Survey library
+ * @param customWidgetCollectionInstance CustomWidgetCollection
  * @param document Document
  */
-export const init = (Survey: any, document: Document): void => {
+export const init = (
+  customWidgetCollectionInstance: CustomWidgetCollection,
+  document: Document
+): void => {
   const widget = {
     name: 'comment-widget',
     widgetIsLoaded: (): boolean => true,
     isFit: (question: Question): boolean => question.getType() === 'comment',
     init: (): void => {
-      Survey.Serializer.addProperty('comment', {
+      Serializer.addProperty('comment', {
         name: 'allowEdition:boolean',
         type: 'boolean',
         dependsOn: ['readOnly'],
@@ -53,8 +60,5 @@ export const init = (Survey: any, document: Document): void => {
     },
   };
 
-  Survey.CustomWidgetCollection.Instance.addCustomWidget(
-    widget,
-    'customwidget'
-  );
+  customWidgetCollectionInstance.addCustomWidget(widget, 'customwidget');
 };

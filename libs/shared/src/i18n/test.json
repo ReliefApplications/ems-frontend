@@ -209,10 +209,10 @@
 			"objectNotFound": "{{name}} ******",
 			"objectNotInvited": "{{name}} ******",
 			"objectNotReordered": "{{type}} ****** {{error}}",
-			"objectNotRestored": "{{type}} ****** {{error}}",
+			"objectNotRestored": "{{value}} ****** {{error}}",
 			"objectNotUpdated": "{{type}} ****** {{error}}",
 			"objectReordered": "{{type}} ******",
-			"objectRestored": "{{type}} ******",
+			"objectRestored": "{{value}} ******",
 			"objectUpdated": "{{value}} ****** {{type}} ******",
 			"platformAccessNotGranted": "******",
 			"readAll": "******",
@@ -667,6 +667,12 @@
 				"missingGridField": "****** {{question}} ****** {{page}} ******",
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
+			},
+			"propertyGrid": {
+				"resource": {
+					"availableGridFields": "******",
+					"resourceSelectText": "******"
+				}
 			},
 			"saveSurvey": "******"
 		},
@@ -1379,11 +1385,14 @@
 					"edit": {
 						"aggregation": "******",
 						"cluster": {
+							"autoSizeCluster": "******",
 							"cluster": "******",
 							"clusterSettings": "******",
 							"fields": "******",
+							"fontSize": "******",
 							"high": "******",
 							"label": "******",
+							"lightMode": "******",
 							"low": "******",
 							"max": "******",
 							"min": "******",
@@ -1549,6 +1558,10 @@
 					},
 					"tooltip": {
 						"category": "******",
+						"cluster": {
+							"autoSize": "******",
+							"lightMode": "******"
+						},
 						"dataset": "******",
 						"default": {
 							"latitude": "******",
@@ -1888,10 +1901,14 @@
 				"selectDisplayField": "******",
 				"selectOrigin": "******"
 			},
+			"contextFilter": "******",
 			"dashboardFilter": "******",
 			"deactivateFiltering": "******",
+			"historicalDate": "******",
 			"share": "******",
 			"tooltip": {
+				"dashboardFilter": "******",
+				"historicalDate": "****** {{filter.<name>}} ******",
 				"useDashboardFilterEditor": "******",
 				"useDefaultEditor": "******"
 			}

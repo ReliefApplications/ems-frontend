@@ -27,6 +27,9 @@ export const GET_LAYER_BY_ID = gql`
         featureReduction {
           type
           clusterRadius
+          lightMode
+          fontSize
+          autoSizeCluster
           drawingInfo {
             renderer {
               type
@@ -99,6 +102,7 @@ export const GET_LAYER_BY_ID = gql`
       }
       sublayers
       contextFilters
+      at
     }
   }
 `;

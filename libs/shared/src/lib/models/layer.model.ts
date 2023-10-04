@@ -55,6 +55,9 @@ export interface FeatureReduction {
   type: 'cluster';
   drawingInfo?: DrawingInfo;
   clusterRadius?: number;
+  lightMode?: boolean;
+  fontSize?: number;
+  autoSizeCluster?: boolean;
 }
 
 /**
@@ -151,6 +154,7 @@ export interface LayerModel {
   createdAt: Date;
   updatedAt: Date;
   contextFilters?: string;
+  at?: string;
 }
 
 /** Model for AddLayerMutationResponse object */

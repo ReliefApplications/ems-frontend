@@ -209,10 +209,10 @@
 			"objectNotFound": "{{name}} not found.",
 			"objectNotInvited": "{{name}} invitation failed.",
 			"objectNotReordered": "{{type}} not reordered. {{error}}",
-			"objectNotRestored": "{{type}} not restored. {{error}}",
+			"objectNotRestored": "{{value}} not restored. {{error}}",
 			"objectNotUpdated": "{{type}} not edited. {{error}}",
 			"objectReordered": "{{type}} reordered.",
-			"objectRestored": "{{type}} restored.",
+			"objectRestored": "{{value}} restored.",
 			"objectUpdated": "{{value}} {{type}} was successfully edited.",
 			"platformAccessNotGranted": "You don't have a valid access to this platform.",
 			"readAll": "Mark all as read",
@@ -667,6 +667,12 @@
 				"missingGridField": "Missing an available field grid for question {{question}} on page {{page}}. Please select a least one in Custom Question Properties to save the form.",
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
+			},
+			"propertyGrid": {
+				"resource": {
+					"availableGridFields": "Available grid fields",
+					"resourceSelectText": "First you have to select a resource before setting any filters"
+				}
 			},
 			"saveSurvey": "SavingSurvey"
 		},
@@ -1379,11 +1385,14 @@
 					"edit": {
 						"aggregation": "Aggregation",
 						"cluster": {
+							"autoSizeCluster": "Cluster auto-sizing",
 							"cluster": "Cluster",
 							"clusterSettings": "Cluster settings",
 							"fields": "Cluster fields",
+							"fontSize": "Font size",
 							"high": "High",
 							"label": "Cluster label",
+							"lightMode": "Light mode",
 							"low": "Low",
 							"max": "Max",
 							"min": "Min",
@@ -1549,6 +1558,10 @@
 					},
 					"tooltip": {
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
+						"cluster": {
+							"autoSize": "If enabled, size of clusters is automated. Else, you can select one.",
+							"lightMode": "If enabled, label uses white. Else, it displays in black."
+						},
 						"dataset": "Select data points below and drag them to 'selected fields' on the right. They will be displayed in the pop-up when clicking on a marker",
 						"default": {
 							"latitude": "Set the default latitude of the center of the map. You can use 'Set By Map' to use the latitude of the preview map.",
@@ -1888,10 +1901,14 @@
 				"selectDisplayField": "Select display field",
 				"selectOrigin": "Select context origin"
 			},
+			"contextFilter": "Context filter",
 			"dashboardFilter": "Dashboard filter",
 			"deactivateFiltering": "Deactivate filtering",
+			"historicalDate": "Get dataset at",
 			"share": "Share Dashboard",
 			"tooltip": {
+				"dashboardFilter": "You can use fields from the dashboard filter as well as static values to filter the dataset.",
+				"historicalDate": "You can use a field from the dashboard filter to query dataset at a specific date.\nIndicate which field to use, by using this syntax: {{filter.<name>}}.",
 				"useDashboardFilterEditor": "Use dashboard filter editor",
 				"useDefaultEditor": "Use default editor"
 			}

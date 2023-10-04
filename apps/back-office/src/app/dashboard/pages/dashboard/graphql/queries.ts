@@ -28,6 +28,7 @@ export const GET_DASHBOARD_BY_ID = gql`
       canUpdate
       page {
         id
+        icon
         visible
         application {
           id
@@ -39,6 +40,7 @@ export const GET_DASHBOARD_BY_ID = gql`
       }
       step {
         id
+        icon
         workflow {
           id
           page {

@@ -8,12 +8,15 @@ import {
 } from '@angular/forms';
 import { AddApiConfigurationComponent } from './components/add-api-configuration/add-api-configuration.component';
 import { IconModule, TooltipModule } from '@oort-front/ui';
-import { SkeletonTableModule } from '@oort-front/shared';
+import {
+  ListFilterComponent,
+  SkeletonTableModule,
+  StatusOptionsComponent,
+} from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
 import {
   ButtonModule,
-  ChipModule,
   MenuModule,
   SpinnerModule,
   SelectMenuModule,
@@ -23,6 +26,7 @@ import {
   PaginatorModule,
   ErrorMessageModule,
 } from '@oort-front/ui';
+import { FilterComponent } from './filter/filter.component';
 
 /**
  * API configurations page module.
@@ -34,7 +38,7 @@ import {
     ApiConfigurationsRoutingModule,
     SpinnerModule,
     MenuModule,
-    ChipModule,
+    StatusOptionsComponent,
     FormWrapperModule,
     AngularFormsModule,
     ReactiveFormsModule,
@@ -50,6 +54,8 @@ import {
     ErrorMessageModule,
     TableModule,
     TooltipModule,
+    ListFilterComponent,
+    FilterComponent,
   ],
   exports: [ApiConfigurationsComponent],
 })

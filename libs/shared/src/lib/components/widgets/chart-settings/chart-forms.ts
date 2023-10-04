@@ -329,6 +329,7 @@ export const createChartWidgetForm = (id: any, value: any) =>
     chart: createChartForm(get(value, 'chart')),
     resource: [get(value, 'resource', null), Validators.required],
     contextFilters: [get(value, 'contextFilters', DEFAULT_CONTEXT_FILTER)],
+    at: [get(value, 'at', '')],
   });
 
 /**

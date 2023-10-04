@@ -102,6 +102,7 @@ export const createLayerForm = (value?: LayerModel) => {
     contextFilters: new FormControl(
       get(value, 'contextFilters', DEFAULT_CONTEXT_FILTER)
     ),
+    at: new FormControl(get(value, 'at', null)),
   });
   if (type !== 'GroupLayer') {
     formGroup.get('datasource.type')?.valueChanges.subscribe((geometryType) => {
@@ -280,9 +281,13 @@ export const createLayerFeatureReductionForm = (value: any) => {
     type: [type],
     ...(type === 'cluster' && {
       drawingInfo: createLayerDrawingInfoForm(get(value, 'drawingInfo')),
-      clusterRadius: get(value, 'clusterRadius', 60),
+      clusterRadius: get(value, 'clusterRadius') || 60,
+      lightMode: get(value, 'lightMode', false),
+      fontSize: get(value, 'fontSize') || 14,
+      autoSizeCluster: get(value, 'autoSizeCluster', false),
     }),
   });
+  console.log('yea', formGroup);
   return formGroup;
 };
 

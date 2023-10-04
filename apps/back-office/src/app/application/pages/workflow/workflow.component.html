@@ -49,6 +49,13 @@
         ></shared-access>
         <ui-button
           variant="grey"
+          (click)="onChangeIcon()"
+          [isIcon]="true"
+          icon="settings"
+          [uiTooltip]="'common.settings' | translate"
+        ></ui-button>
+        <ui-button
+          variant="grey"
           [isIcon]="true"
           icon="more_vert"
           [uiMenuTriggerFor]="menu"

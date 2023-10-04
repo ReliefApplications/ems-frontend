@@ -10,6 +10,7 @@ import { Record } from './record.model';
 export interface Resource {
   id?: string;
   name?: string;
+  singleQueryName?: string;
   queryName?: string;
   forms?: Form[];
   relatedForms?: Form[];
