@@ -141,7 +141,7 @@
 }
 
 ::ng-deep survey, ::ng-deep survey-creator {
-  .k-combobox, .k-multiselect, .sd-input {
+  .k-combobox, .k-multiselect, .sd-input, .k-datepicker {
     @apply
       focus-within:ring-2
       focus-within:ring-inset
@@ -229,6 +229,24 @@
         text-gray-500
     }
   }
+
+  .k-datepicker {
+
+    .k-input-inner {
+      padding-left: 16px !important;
+    }
+
+    .k-input-button {
+      width: 46px !important;
+      height: 46px !important;
+      margin-right: 2px !important;
+      background-color: white !important;
+      border: none !important;
+      border-radius: 4px !important;
+      background-image: none !important;
+    }
+  }
+
   .k-list-ul {
     @apply
       shadow-lg
