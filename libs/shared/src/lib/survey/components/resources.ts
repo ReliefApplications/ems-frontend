@@ -403,7 +403,7 @@ export const init = (
         name: 'canDeselectRecords:boolean',
         category: 'Custom Questions',
         dependsOn: 'resource',
-        default: false,
+        default: true,
         visibleIf: visibleIfResource,
         visibleIndex: 3,
       });
