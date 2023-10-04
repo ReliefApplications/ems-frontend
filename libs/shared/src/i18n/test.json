@@ -1340,7 +1340,7 @@
 						}
 					},
 					"display": {
-						"displayActionsTitle": "******",
+						"actionsTitle": "******",
 						"showSingleActionAsButton": "******"
 					},
 					"hint": {
