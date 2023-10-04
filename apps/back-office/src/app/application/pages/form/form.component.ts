@@ -15,6 +15,7 @@ import {
   PageQueryResponse,
   EditStepMutationResponse,
   EditPageMutationResponse,
+  ContentType,
 } from '@oort-front/shared';
 import {
   GET_SHORT_FORM_BY_ID,
@@ -366,34 +367,36 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
-   * Handle icon change.
-   * Open icon modal settings, and save changes if icon is updated.
+   * Open settings modal.
    */
-  public async onChangeIcon(): Promise<void> {
+  public async onOpenSettings(): Promise<void> {
     const { PageSettingsComponent } = await import(
       '../../../components/page-settings/page-settings.component'
     );
     const dialogRef = this.dialog.open(PageSettingsComponent, {
       data: {
+        type: this.isStep ? 'step' : 'page',
+        contentType: ContentType.form,
+        page: this.isStep ? undefined : this.page,
+        step: this.isStep ? this.step : undefined,
         icon: this.isStep ? this.step?.icon : this.page?.icon,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((icon: any) => {
-      if (icon) {
-        if (this.isStep) {
-          const callback = () => {
-            this.step = { ...this.step, icon };
-          };
-          this.step &&
-            this.workflowService.updateStepIcon(this.step, icon, callback);
-        } else {
-          const callback = () => {
-            this.page = { ...this.page, icon };
-          };
-          this.page &&
-            this.applicationService.changePageIcon(this.page, icon, callback);
+    // Subscribes to settings updates
+    const subscription = dialogRef.componentInstance?.onUpdate
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((updates: any) => {
+        if (updates) {
+          if (this.isStep) {
+            this.step = { ...this.step, ...updates };
+          } else {
+            this.page = { ...this.page, ...updates };
+          }
         }
-      }
+      });
+    // Unsubscribe to dialog onUpdate event
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      subscription?.unsubscribe();
     });
   }
 }

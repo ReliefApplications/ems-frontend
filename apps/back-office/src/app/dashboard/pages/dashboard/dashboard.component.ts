@@ -31,6 +31,7 @@ import {
   EditStepMutationResponse,
   EditPageMutationResponse,
   RecordQueryResponse,
+  ContentType,
 } from '@oort-front/shared';
 import { EDIT_DASHBOARD, EDIT_PAGE, EDIT_STEP } from './graphql/mutations';
 import {
@@ -938,25 +939,25 @@ export class DashboardComponent
     const dialogRef = this.dialog.open(PageSettingsComponent, {
       data: {
         type: this.isStep ? 'step' : 'page',
-        contentType: this.isStep ? this.dashboard?.step : this.dashboard?.page,
-        step: this.isStep ? this.dashboard?.step : undefined,
+        contentType: ContentType.dashboard,
         page: this.isStep ? undefined : this.dashboard?.page,
+        step: this.isStep ? this.dashboard?.step : undefined,
         icon: this.isStep
           ? this.dashboard?.step?.icon
           : this.dashboard?.page?.icon,
       },
     });
-
-    dialogRef.closed
+    // Subscribes to settings updates
+    const subscription = dialogRef.componentInstance?.onUpdate
       .pipe(takeUntil(this.destroy$))
-      .subscribe((updated: any) => {
-        if (updated?.icon.changed) {
+      .subscribe((updates: any) => {
+        if (updates) {
           if (this.isStep) {
             this.dashboard = {
               ...this.dashboard,
               step: {
                 ...this.dashboard?.step,
-                icon: updated.icon.value,
+                ...updates,
               },
             };
           } else {
@@ -964,11 +965,15 @@ export class DashboardComponent
               ...this.dashboard,
               page: {
                 ...this.dashboard?.page,
-                icon: updated.icon.value,
+                ...updates,
               },
             };
           }
         }
       });
+    // Unsubscribe to dialog onUpdate event
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      subscription?.unsubscribe();
+    });
   }
 }

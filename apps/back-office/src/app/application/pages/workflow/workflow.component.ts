@@ -496,36 +496,37 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
-   * Handle icon change.
-   * Open icon modal settings, and save changes if icon is updated.
+   * Open settings modal.
    */
-  public async onChangeIcon(): Promise<void> {
+  public async onOpenSettings(): Promise<void> {
     const { PageSettingsComponent } = await import(
       '../../../components/page-settings/page-settings.component'
     );
     const dialogRef = this.dialog.open(PageSettingsComponent, {
       data: {
+        type: 'page',
+        contentType: ContentType.workflow,
+        page: this.workflow?.page,
         icon: this.workflow?.page?.icon,
       },
     });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((icon: any) => {
-      if (icon) {
-        const callback = () => {
+    // Subscribes to settings updates
+    const subscription = dialogRef.componentInstance?.onUpdate
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((updates: any) => {
+        if (updates) {
           this.workflow = {
             ...this.workflow,
             page: {
               ...this.workflow?.page,
-              icon,
+              ...updates,
             },
           };
-        };
-        this.workflow?.page &&
-          this.applicationService.changePageIcon(
-            this.workflow.page,
-            icon,
-            callback
-          );
-      }
+        }
+      });
+    // Unsubscribe to dialog onUpdate event
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      subscription?.unsubscribe();
     });
   }
 }

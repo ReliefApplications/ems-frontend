@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
 import { DIALOG_DATA } from '@angular/cdk/dialog';
 import { FormBuilder } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -35,6 +35,7 @@ interface DialogData {
 
 /**
  * Application page and step settings component.
+ * Available settings: icon.
  */
 @Component({
   selector: 'app-page-settings',
@@ -62,10 +63,8 @@ export class PageSettingsComponent
 {
   /** Reactive Form */
   public settingsForm!: ReturnType<typeof this.createSettingsForm>;
-  /** To track which settings updates */
-  public updated = {
-    icon: { changed: false, value: '' },
-  };
+  /** Event to parent subscribe and update its own object after changes */
+  public onUpdate = new EventEmitter();
   /** Step object */
   private step?: Step;
   /** Page object */
@@ -96,7 +95,7 @@ export class PageSettingsComponent
     this.settingsForm = this.createSettingsForm();
     this.settingsForm?.controls.icon.valueChanges
       .pipe(takeUntil(this.destroy$))
-      .subscribe((value) => {
+      .subscribe((value: string | null) => {
         if (value) {
           this.onChangeIcon(value);
         }
@@ -121,25 +120,28 @@ export class PageSettingsComponent
    * @param icon new icon name
    */
   private onChangeIcon(icon: string): void {
-    if (this.data.type === 'step' && this.data.step) {
+    if (this.data.type === 'step' && this.step) {
       const callback = () => {
         this.step = {
-          ...this.data.step,
+          ...this.step,
           icon,
         };
-        this.updated.icon = { changed: true, value: icon };
+        // Updates parent component
+        const updates = { icon };
+        this.onUpdate.emit(updates);
       };
       this.workflowService.updateStepIcon(this.step as Step, icon, callback);
     } else {
       const callback = () => {
         this.page = {
-          ...this.data.page,
+          ...this.page,
           icon,
         };
-        this.updated.icon = { changed: true, value: icon };
+        // Updates parent component
+        const updates = { icon };
+        this.onUpdate.emit(updates);
       };
-
-      this.data.page &&
+      this.page &&
         this.applicationService.changePageIcon(
           this.page as Page,
           icon,

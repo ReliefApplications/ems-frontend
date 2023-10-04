@@ -475,7 +475,8 @@
 					"singular": "La page a été réorganisée avec succès."
 				},
 				"settings": {
-					"selectIcon": "Sélectionnez une icône"
+					"selectIcon": "Sélectionnez une icône",
+					"settingsTooltip": "Les modifications sont automatiquement enregistrées"
 				},
 				"show": "Afficher la page dans la barre latérale de navigation"
 			},

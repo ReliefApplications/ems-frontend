@@ -1,7 +1,14 @@
 <ui-dialog [closable]="true" [size]="'medium'">
     <ng-container ngProjectAs="header">
+      <div class="flex flex-row gap-2">
         <h1>{{ 'common.settings' | translate }}</h1>
-        <!-- ADD TOOL TIP TO INFORM CHANGES ARE ALWAYS AUTOMATICALLY SAVED -->
+        <ui-icon
+          icon="info"
+          [size]="18"
+          variant="grey"
+          [uiTooltip]="'components.application.pages.settings.settingsTooltip' | translate"
+        ></ui-icon>
+      </div>
       </ng-container>
   <ng-container ngProjectAs="content">
     <ui-tabs [vertical]="true">
@@ -40,16 +47,8 @@
 
   <!-- Action buttons -->
   <ng-container ngProjectAs="actions">
-    <ui-button [uiDialogClose]="updated" variant="default">
+    <ui-button uiDialogClose variant="default">
       {{ 'common.cancel' | translate }}
-    </ui-button>
-    <ui-button
-      category="secondary"
-      variant="primary"
-      [uiDialogClose]="updated"
-      cdkFocusInitial
-    >
-      {{ 'common.save' | translate }}
     </ui-button>
   </ng-container>
 
