@@ -494,7 +494,6 @@ export class CoreGridComponent
    * @param value Updated value of the item.
    */
   private update(item: any, value: any): void {
-    console.log(this.updatedItems);
     let updatedItem = this.updatedItems.find((x) => x.id === item.id);
     if (updatedItem) {
       updatedItem = { ...updatedItem, ...value };
@@ -552,11 +551,8 @@ export class CoreGridComponent
                       const dataItem = this.gridData.data.find(
                         (x) => x.id === item.id
                       );
-                      console.log(dataItem);
-                      console.log(get(data, queryName));
                       // Update data item element
                       Object.assign(dataItem, get(data, queryName));
-                      console.log(dataItem);
                       // Update data item raw value ( used by inline edition )
                       dataItem._meta.raw = editedData;
                       item.saved = false;
@@ -704,11 +700,9 @@ export class CoreGridComponent
           this.status = {
             error: false,
           };
-          console.log('there');
           for (const field in data) {
             try {
               if (Object.prototype.hasOwnProperty.call(data, field)) {
-                console.log('ici');
                 const nodes =
                   data[field]?.edges.map((x: any) => ({
                     ...x.node,
@@ -718,7 +712,6 @@ export class CoreGridComponent
                     },
                   })) || [];
                 this.totalCount = data[field] ? data[field].totalCount : 0;
-                console.log('cloning');
                 this.items = cloneData(nodes);
                 this.convertDateFields(this.items);
                 this.originalItems = cloneData(this.items);
@@ -796,9 +789,6 @@ export class CoreGridComponent
     // TODO = check what to do there
     this.onPageChange({ skip: 0, take: this.pageSize });
     this.selectedRows = [];
-    console.log(this.updatedItems);
-    console.log(this.items);
-    // this.updatedItems = [];
     this.refresh$.next(true);
   }
 
