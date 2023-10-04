@@ -3,6 +3,7 @@
 		"access": "******",
 		"accessDenied": "******",
 		"add": "******",
+		"adminField": "******",
 		"aggregation": {
 			"few": "******",
 			"none": "******",
@@ -76,6 +77,41 @@
 		"copy": "******",
 		"create": "******",
 		"createdOn": "******",
+		"cronEditor": {
+			"Wednesday": "******",
+			"advanced": "******",
+			"atTime": "******",
+			"daily": "******",
+			"day": "******",
+			"days": "******",
+			"every": {
+				"feminine": "******",
+				"masculine": "******"
+			},
+			"friday": "******",
+			"hourly": "******",
+			"hours": "******",
+			"minutely": "******",
+			"minutes": "******",
+			"monday": "******",
+			"month": "******",
+			"monthly": "******",
+			"of": "******",
+			"ofEvery": "******",
+			"onThe": {
+				"feminine": "******",
+				"masculine": "******"
+			},
+			"saturday": "******",
+			"seconds": "******",
+			"sunday": "******",
+			"thursday": "******",
+			"tuesday": "******",
+			"week": "******",
+			"weekDay": "******",
+			"weekly": "******",
+			"yearly": "******"
+		},
 		"customNotification": {
 			"few": "******",
 			"none": "******",
@@ -106,6 +142,7 @@
 			"one": "******"
 		},
 		"errors": {
+			"few": "******",
 			"objectDuplicated": "{{type}} ****** {{value}} ******"
 		},
 		"exitFullscreen": "******",
@@ -310,6 +347,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"tabs": "******",
 		"template": {
 			"few": "******",
 			"none": "******",
@@ -727,6 +765,12 @@
 			},
 			"preview": "******"
 		},
+		"icon": {
+			"modal": {
+				"select": "******",
+				"use": "******"
+			}
+		},
 		"logout": {
 			"confirmationMessage": "******",
 			"title": "******"
@@ -1084,6 +1128,7 @@
 			"invite": {
 				"confirm": "******",
 				"role": {
+					"additionalAttributes": "******",
 					"description": "******"
 				}
 			},
@@ -1388,7 +1433,9 @@
 							"autoSizeCluster": "******",
 							"cluster": "******",
 							"clusterSettings": "******",
+							"clustering": "******",
 							"fields": "******",
+							"font": "******",
 							"fontSize": "******",
 							"high": "******",
 							"label": "******",
@@ -1410,6 +1457,7 @@
 						"groupLayers": "******",
 						"labels": "******",
 						"layerDatasource": "******",
+						"layerEdition": "******",
 						"layerProperties": "******",
 						"layerStyling": "******",
 						"popup": "******",
@@ -1627,6 +1675,10 @@
 						"ariaLabel": "******"
 					},
 					"static": "******"
+				},
+				"tabs": {
+					"addNewTab": "******",
+					"deleteTab": "******"
 				}
 			},
 			"styling": "******",

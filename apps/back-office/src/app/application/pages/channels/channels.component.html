@@ -54,7 +54,9 @@
           </ng-container>
 
           <ng-container cdkColumnDef="recordsCount">
-            <th uiCellHeader *cdkHeaderCellDef scope="col">Records</th>
+            <th uiCellHeader *cdkHeaderCellDef scope="col">
+              {{ 'common.record' | translate }}
+            </th>
             <td uiCell *cdkCellDef="let element">{{ element.recordsCount }}</td>
           </ng-container>
 
