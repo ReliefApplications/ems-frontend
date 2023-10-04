@@ -193,6 +193,7 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
       generateValidJSON: true,
       showTranslationTab: true,
       questionTypes: QUESTION_TYPES,
+      allowChangeThemeInPreview: false,
     };
 
     this.surveyCreator = new SurveyCreatorModel(creatorOptions);
