@@ -174,6 +174,25 @@ export class WidgetGridComponent
         if (changes['widgets'].currentValue.length) {
           this.setLayout();
         }
+      } else {
+        // if a new widget is added, we have to update on the front the drag and resize feature ability,
+        // which are not save in db because they are just grid config related
+        if (
+          changes['widgets'].currentValue.length >
+          changes['widgets'].previousValue.length
+        ) {
+          // Widget can be only added one by one
+          const widgetIndex = this.widgets.findIndex(
+            (widget) => !('resizeEnabled' in widget)
+          );
+          if (widgetIndex !== -1) {
+            this.widgets.splice(widgetIndex, 1, {
+              ...this.widgets[widgetIndex],
+              resizeEnabled: this.canUpdate,
+              dragEnabled: this.canUpdate,
+            });
+          }
+        }
       }
     }
   }
@@ -218,6 +237,7 @@ export class WidgetGridComponent
       maxCols: this.colsNumber,
       minCols: this.colsNumber,
       maxItemRows: MAX_ROW_SPAN,
+      minItemRows: 2,
       draggable: {
         enabled: this.canUpdate,
       },
@@ -328,18 +348,14 @@ export class WidgetGridComponent
                 x: 0,
                 y: 0,
               };
-
               this.add.emit({
                 ...tile,
                 settings: value,
                 ...{
                   cols: tile.defaultCols,
                   rows: tile.defaultRows,
-                  minItemRows: tile.minRow,
                   y,
                   x,
-                  resizeEnabled: this.canUpdate,
-                  dragEnabled: this.canUpdate,
                 },
               });
             }
@@ -421,14 +437,14 @@ export class WidgetGridComponent
     widget: any
   ): { x: number; y: number } {
     // Update with the last values of the grid item pointer
-    yAxis += widget.defaultCols;
-    if (yAxis > this.colsNumber) {
-      xAxis += widget.defaultRows;
+    xAxis += widget.cols ?? widget.defaultCols;
+    if (xAxis > 8) {
+      yAxis += widget.rows ?? widget.defaultRows;
     }
 
-    if (yAxis + widget.defaultCols > this.colsNumber) {
-      yAxis = 0;
-      xAxis += widget.defaultRows;
+    if (xAxis + (widget.cols ?? widget.defaultCols) > 8) {
+      xAxis = 0;
+      yAxis += widget.rows ?? widget.defaultRows;
     }
     return { x: xAxis, y: yAxis };
   }
@@ -446,14 +462,17 @@ export class WidgetGridComponent
           : this.setXYAxisValues(yAxis, xAxis, widget);
       const gridItem = {
         ...widget,
-        cols: widget.defaultCols,
-        rows: widget.defaultRows,
-        minItemRows: widget.minRow,
+        cols: widget.cols ?? widget.defaultCols,
+        rows: widget.rows ?? widget.defaultRows,
         y: widget.y ?? y,
         x: widget.x ?? x,
         resizeEnabled: this.canUpdate,
         dragEnabled: this.canUpdate,
       };
+      // If first item, we know it's x:0 and y:0 but we set the init next pointer
+      if (index === 0) {
+        this.setXYAxisValues(yAxis, xAxis, widget);
+      }
       return gridItem;
     });
   }
