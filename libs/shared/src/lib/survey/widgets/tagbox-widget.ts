@@ -1,4 +1,4 @@
-import { MultiSelectComponent, TagTemplateDirective } from '@progress/kendo-angular-dropdowns';
+import { MultiSelectComponent } from '@progress/kendo-angular-dropdowns';
 import { DomService } from '../../services/dom/dom.service';
 import { Question } from '../types';
 import {
