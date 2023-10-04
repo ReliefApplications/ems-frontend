@@ -716,11 +716,8 @@ export class Layer implements LayerModel {
                         'featureReduction.lightMode',
                         true
                       ),
-                      get(
-                        this.layerDefinition,
-                        'featureReduction.fontSize',
-                        14
-                      ),
+                      get(this.layerDefinition, 'featureReduction.fontSize') ||
+                        14,
                       get(
                         this.layerDefinition,
                         'featureReduction.autoSizeCluster',
