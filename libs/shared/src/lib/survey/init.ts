@@ -53,6 +53,9 @@ export const initCustomSurvey = (
   ngZone: NgZone,
   document: Document
 ): void => {
+  // set localization
+  initLocalization(Survey);
+
   // If the survey created does not contain custom questions, we destroy previously set custom questions if so
   if (!containsCustomQuestions) {
     Survey.CustomWidgetCollection.Instance.clear();
@@ -98,8 +101,6 @@ export const initCustomSurvey = (
   // todo: enable
   // ChoicesByUrlProperties.init(Survey);
 
-  // set localization
-  initLocalization(Survey);
   // load internal functions
   addCustomFunctions(Survey, {
     authService,
