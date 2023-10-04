@@ -2,7 +2,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { UntypedFormControl } from '@angular/forms';
 import { NgZone } from '@angular/core';
 // todo: as it something to do with survey-angular
-import { surveyLocalization } from 'survey-core';
+// import { surveyLocalization } from 'survey-core';
 import localForage from 'localforage';
 
 /**
@@ -25,10 +25,13 @@ export const buildSearchButton = (
   document: Document
 ): any => {
   const searchButton = document.createElement('button');
-  searchButton.innerText = surveyLocalization.getString(
-    'oort:search',
-    question.survey.locale
-  );
+  // todo: not working
+  // searchButton.innerText = surveyLocalization.getString(
+  //   'oort:search',
+  //   question.survey.locale
+  // );
+  searchButton.innerText = 'Search';
+  searchButton.className = 'sd-btn !px-3 !py-2';
   searchButton.style.marginRight = '8px';
   if (fieldsSettingsForm) {
     temporaryRecords.valueChanges.subscribe((res: any) => {
@@ -88,10 +91,13 @@ export const buildAddButton = (
   document: Document
 ): any => {
   const addButton = document.createElement('button');
-  addButton.innerText = surveyLocalization.getString(
-    'oort:addNewRecord',
-    question.survey.locale
-  );
+  // todo: not working
+  // addButton.innerText = surveyLocalization.getString(
+  //   'oort:addNewRecord',
+  //   question.survey.locale
+  // );
+  addButton.innerText = 'Add new record';
+  addButton.className = 'sd-btn !px-3 !py-2';
   if (question.addRecord && question.addTemplate && !question.isReadOnly) {
     addButton.onclick = async () => {
       ngZone.run(async () => {
