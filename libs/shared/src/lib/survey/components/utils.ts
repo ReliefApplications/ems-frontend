@@ -87,10 +87,11 @@ export const buildAddButton = (
   document: Document
 ): any => {
   const addButton = document.createElement('button');
-  addButton.innerText = surveyLocalization.getString(
-    'oort:addNewRecord',
-    question.survey.locale
-  );
+
+  addButton.innerText =
+    question.addRecordText ??
+    surveyLocalization.getString('oort:addNewRecord', question.survey.locale);
+
   if (question.addRecord && question.addTemplate && !question.isReadOnly) {
     addButton.onclick = async () => {
       ngZone.run(async () => {
