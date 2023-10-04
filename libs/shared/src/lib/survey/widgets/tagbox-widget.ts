@@ -156,6 +156,9 @@ export const init = (
       element
     );
     const tagboxInstance: MultiSelectComponent = tagbox.instance;
+    tagboxInstance.virtual = {
+      itemHeight: 28,
+    };
     tagboxInstance.valuePrimitive = Boolean(question.isPrimitiveValue);
     tagboxInstance.filterable = true;
     tagboxInstance.loading = true;
