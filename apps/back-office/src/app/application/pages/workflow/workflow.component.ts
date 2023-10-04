@@ -430,28 +430,6 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
-   * Toggle page visibility.
-   */
-  togglePageVisibility() {
-    const callback = () => {
-      this.workflow = {
-        ...this.workflow,
-        page: {
-          ...this.workflow?.page,
-          visible: !this.workflow?.page?.visible,
-        },
-      };
-    };
-    this.applicationService.togglePageVisibility(
-      {
-        id: this.workflow?.page?.id,
-        visible: this.workflow?.page?.visible,
-      },
-      callback
-    );
-  }
-
-  /**
    * Open settings modal.
    */
   public async onOpenSettings(): Promise<void> {
@@ -464,6 +442,7 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
         contentType: ContentType.workflow,
         page: this.workflow?.page,
         icon: this.workflow?.page?.icon,
+        visible: this.workflow?.page?.visible,
         accessData: {
           access: this.workflow?.permissions,
           application: this.applicationId,

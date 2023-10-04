@@ -26,21 +26,7 @@
               {{ dashboard.name }}
             </h1>
           </shared-editable-text>
-          <ui-button
-            *ngIf="!isStep"
-            [isIcon]="true"
-            variant="grey"
-            category="primary"
-            [icon]="dashboard.page?.visible ? 'visibility' : 'visibility_off'"
-            (click)="togglePageVisibility()"
-            [uiTooltip]="
-              (dashboard.page?.visible
-                ? 'components.application.pages.hide'
-                : 'components.application.pages.show'
-              ) | translate
-            "
-          >
-          </ui-button>
+          <!-- Settings -->
           <ui-button
             variant="grey"
             (click)="onOpenSettings()"

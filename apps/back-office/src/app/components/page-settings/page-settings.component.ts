@@ -11,6 +11,7 @@ import {
   SelectMenuModule,
   FormWrapperModule,
   IconModule,
+  ToggleModule,
 } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { PageIconComponent } from '../page-icon/page-icon.component';
@@ -25,6 +26,7 @@ import {
   AccessData,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs';
+import { isNil } from 'lodash';
 
 /** Settings Dialog Data */
 interface DialogData {
@@ -33,13 +35,14 @@ interface DialogData {
   page?: Page;
   step?: Step;
   icon?: string;
+  visible?: boolean;
   accessData: AccessData;
   canEditAccess: boolean;
 }
 
 /**
  * Application page and step settings component.
- * Available settings: icon, access.
+ * Available settings: icon, access, visibility.
  */
 @Component({
   selector: 'app-page-settings',
@@ -58,6 +61,7 @@ interface DialogData {
     TranslateModule,
     PageIconComponent,
     AccessModule,
+    ToggleModule,
   ],
   templateUrl: './page-settings.component.html',
   styleUrls: ['./page-settings.component.scss'],
@@ -98,6 +102,8 @@ export class PageSettingsComponent
 
   ngOnInit(): void {
     this.settingsForm = this.createSettingsForm();
+
+    // Listen to icon updates
     this.settingsForm?.controls.icon.valueChanges
       .pipe(takeUntil(this.destroy$))
       .subscribe((value: string | null) => {
@@ -105,6 +111,17 @@ export class PageSettingsComponent
           this.onUpdateIcon(value);
         }
       });
+
+    // Listen to visibility updates (only for pages)
+    if (this.data.type === 'page') {
+      this.settingsForm?.controls.visible.valueChanges
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((value: boolean | null) => {
+          if (!isNil(value)) {
+            this.onUpdateVisibility(value);
+          }
+        });
+    }
   }
 
   /**
@@ -153,7 +170,8 @@ export class PageSettingsComponent
   private createSettingsForm() {
     return this.fb.group({
       // initializes icon field with data info
-      icon: this.fb.control(this.data.icon || ''),
+      icon: this.fb.control(this.data.icon ?? ''),
+      visible: this.fb.control(this.data.visible ?? true),
     });
   }
 
@@ -191,5 +209,29 @@ export class PageSettingsComponent
           callback
         );
     }
+  }
+
+  /**
+   * Save page visibility on change.
+   *
+   * @param visible boolean
+   */
+  private onUpdateVisibility(visible: boolean): void {
+    const callback = () => {
+      this.page = {
+        ...this.page,
+        visible,
+      };
+      // Updates parent component
+      const updates = { visible };
+      this.onUpdate.emit(updates);
+    };
+    this.applicationService.togglePageVisibility(
+      {
+        id: this.page?.id,
+        visible,
+      },
+      callback
+    );
   }
 }

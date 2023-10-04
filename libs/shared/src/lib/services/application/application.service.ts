@@ -681,7 +681,7 @@ export class ApplicationService {
           mutation: EDIT_PAGE,
           variables: {
             id: page.id,
-            visible: !page.visible,
+            visible: page.visible,
           },
         })
         .subscribe(({ errors, data }) => {

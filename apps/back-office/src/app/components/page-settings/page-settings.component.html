@@ -11,42 +11,50 @@
       </div>
       </ng-container>
   <ng-container ngProjectAs="content">
-    <ui-tabs [vertical]="true">
-      <!-- General settings -->
-      <ui-tab>
-        <ng-container ngProjectAs="label">
-          <ui-icon
-            icon="settings"
-            [size]="18"
-            uiTooltip="{{ 'common.general' | translate }}"
-          ></ui-icon>
-          <span>{{ 'common.general' | translate }}</span>
-        </ng-container>
-        <!-- Tab content -->
-        <div class="flex flex-col" *ngIf="this.settingsForm">
-          <!-- Page / step icon -->
-          <app-page-icon [iconControl]="this.settingsForm.controls.icon"></app-page-icon>
-        </div>
-      </ui-tab>
-      <!-- Access (visibility) settings -->
-      <ui-tab *ngIf="data.canEditAccess">
-        <ng-container ngProjectAs="label">
-          <ui-icon
-            icon="visibility"
-            [size]="18"
-            uiTooltip="{{ 'common.access' | translate }}"
-          ></ui-icon>
-          <span>{{ 'common.access' | translate }}</span>
-        </ng-container>
-        <!-- Tab content -->
-        <div class="flex flex-col">
-          <!-- Edit access -->
-          <shared-edit-access
-            (updateAccess)="onUpdateAccess($event)"
-          ></shared-edit-access>
-        </div>
-      </ui-tab>
-    </ui-tabs>
+    <form [formGroup]="settingsForm">
+      <ui-tabs [vertical]="true">
+        <!-- General settings -->
+        <ui-tab>
+          <ng-container ngProjectAs="label">
+            <ui-icon
+              icon="settings"
+              [size]="18"
+              uiTooltip="{{ 'common.general' | translate }}"
+            ></ui-icon>
+            <span>{{ 'common.general' | translate }}</span>
+          </ng-container>
+          <!-- Tab content -->
+          <div class="flex flex-col" *ngIf="this.settingsForm">
+            <!-- Page / step icon -->
+            <app-page-icon [iconControl]="this.settingsForm.controls.icon"></app-page-icon>
+            <!-- Visibility -->
+            <ui-toggle formControlName="visible" *ngIf="data.type === 'page'">
+              <ng-container ngProjectAs="label">
+                {{ 'components.application.pages.show' | translate }}
+              </ng-container>
+            </ui-toggle>
+          </div>
+        </ui-tab>
+        <!-- Access (visibility) settings -->
+        <ui-tab *ngIf="data.canEditAccess">
+          <ng-container ngProjectAs="label">
+            <ui-icon
+              icon="visibility"
+              [size]="18"
+              uiTooltip="{{ 'common.access' | translate }}"
+            ></ui-icon>
+            <span>{{ 'common.access' | translate }}</span>
+          </ng-container>
+          <!-- Tab content -->
+          <div class="flex flex-col">
+            <!-- Edit access -->
+            <shared-edit-access
+              (updateAccess)="onUpdateAccess($event)"
+            ></shared-edit-access>
+          </div>
+        </ui-tab>
+      </ui-tabs>
+    </form>
   </ng-container>
 
   <!-- Action buttons -->

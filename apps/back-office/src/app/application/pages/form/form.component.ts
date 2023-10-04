@@ -249,23 +249,6 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
-   * Toggle page visibility.
-   */
-  togglePageVisibility() {
-    // If form is page
-    const callback = () => {
-      this.page = { ...this.page, visible: !this.page?.visible };
-    };
-    this.applicationService.togglePageVisibility(
-      {
-        id: this.id,
-        visible: this.page?.visible,
-      },
-      callback
-    );
-  }
-
-  /**
    * Open settings modal.
    */
   public async onOpenSettings(): Promise<void> {
@@ -279,6 +262,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
         page: this.isStep ? undefined : this.page,
         step: this.isStep ? this.step : undefined,
         icon: this.isStep ? this.step?.icon : this.page?.icon,
+        visible: this.page?.visible,
         accessData: {
           access: this.page
             ? this.page.permissions

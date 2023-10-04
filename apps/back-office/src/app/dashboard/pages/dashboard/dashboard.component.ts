@@ -814,28 +814,6 @@ export class DashboardComponent
   }
 
   /**
-   * Toggle page visibility.
-   */
-  togglePageVisibility() {
-    const callback = () => {
-      this.dashboard = {
-        ...this.dashboard,
-        page: {
-          ...this.dashboard?.page,
-          visible: !this.dashboard?.page?.visible,
-        },
-      };
-    };
-    this.applicationService.togglePageVisibility(
-      {
-        id: this.dashboard?.page?.id,
-        visible: this.dashboard?.page?.visible,
-      },
-      callback
-    );
-  }
-
-  /**
    * Open settings modal.
    */
   public async onOpenSettings(): Promise<void> {
@@ -848,6 +826,7 @@ export class DashboardComponent
         contentType: ContentType.dashboard,
         page: this.isStep ? undefined : this.dashboard?.page,
         step: this.isStep ? this.dashboard?.step : undefined,
+        visible: this.dashboard?.page?.visible,
         icon: this.isStep
           ? this.dashboard?.step?.icon
           : this.dashboard?.page?.icon,

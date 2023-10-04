@@ -23,30 +23,15 @@
           </h1>
         </shared-editable-text>
         <ui-button
-          [isIcon]="true"
-          variant="grey"
-          category="primary"
-          [icon]="workflow.page?.visible ? 'visibility' : 'visibility_off'"
-          (click)="togglePageVisibility()"
-          [uiTooltip]="
-            (workflow.page?.visible
-              ? 'components.application.pages.hide'
-              : 'components.application.pages.show'
-            ) | translate
-          "
-        >
-        </ui-button>
-      </div>
-
-      <!-- buttons right to title -->
-      <div class="flex items-center gap-1" *ngIf="!formActive">
-        <ui-button
           variant="grey"
           (click)="onOpenSettings()"
           [isIcon]="true"
           icon="settings"
           [uiTooltip]="'common.settings' | translate"
         ></ui-button>
+      </div>
+      <!-- buttons right to title -->
+      <div class="flex items-center gap-1" *ngIf="!formActive">
         <ui-button
           variant="grey"
           [isIcon]="true"

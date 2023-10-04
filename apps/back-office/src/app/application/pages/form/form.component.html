@@ -4,33 +4,16 @@
   <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
     <div class="flex items-center overflow-hidden">
       <!-- Page name and name edition -->
-      <div class="flex items-center gap-1">
-        <shared-editable-text
-          [text]="page ? page.name || '' : step ? step.name || '' : ''"
-          [canEdit]="canEditName"
-          (onChange)="saveName($event)"
-          (formActiveEvent)="formActive = $event"
-        >
-          <h1 class="!m-0 overflow-hidden text-ellipsis">
-            {{ page ? page.name || '' : step ? step.name || '' : '' }}
-          </h1>
-        </shared-editable-text>
-        <ui-button
-          *ngIf="page && !isStep"
-          [isIcon]="true"
-          variant="grey"
-          category="primary"
-          [icon]="page.visible ? 'visibility' : 'visibility_off'"
-          (click)="togglePageVisibility()"
-          [uiTooltip]="
-            (page.visible
-              ? 'components.application.pages.hide'
-              : 'components.application.pages.show'
-            ) | translate
-          "
-        >
-        </ui-button>
-      </div>
+      <shared-editable-text
+        [text]="page ? page.name || '' : step ? step.name || '' : ''"
+        [canEdit]="canEditName"
+        (onChange)="saveName($event)"
+        (formActiveEvent)="formActive = $event"
+      >
+        <h1 class="!m-0 overflow-hidden text-ellipsis">
+          {{ page ? page.name || '' : step ? step.name || '' : '' }}
+        </h1>
+      </shared-editable-text>
       <!-- Page settings -->
       <ui-button
         variant="grey"
