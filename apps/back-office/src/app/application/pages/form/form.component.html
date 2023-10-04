@@ -31,16 +31,7 @@
         >
         </ui-button>
       </div>
-      <!-- Page access -->
-      <shared-access
-        [access]="page ? page.permissions : step ? step.permissions : null"
-        [application]="applicationId"
-        [objectTypeName]="'common.page.one' | translate"
-        (save)="saveAccess($event)"
-        *ngIf="
-          !formActive && (page ? page.canUpdate : step ? step.canUpdate : false)
-        "
-      ></shared-access>
+      <!-- Page settings -->
       <ui-button
         variant="grey"
         (click)="onOpenSettings()"

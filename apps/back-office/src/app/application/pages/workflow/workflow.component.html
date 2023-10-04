@@ -40,13 +40,6 @@
 
       <!-- buttons right to title -->
       <div class="flex items-center gap-1" *ngIf="!formActive">
-        <shared-access
-          [access]="workflow.permissions"
-          [application]="workflow.page?.application?.id"
-          [objectTypeName]="'common.page.one' | translate"
-          (save)="saveAccess($event)"
-          *ngIf="workflow.page?.canUpdate || false"
-        ></shared-access>
         <ui-button
           variant="grey"
           (click)="onOpenSettings()"

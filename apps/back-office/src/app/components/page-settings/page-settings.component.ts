@@ -15,27 +15,31 @@ import {
 import { TranslateModule } from '@ngx-translate/core';
 import { PageIconComponent } from '../page-icon/page-icon.component';
 import {
+  AccessModule,
   ApplicationService,
   ContentType,
   Page,
   Step,
   UnsubscribeComponent,
   WorkflowService,
+  AccessData,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs';
 
-/** Preferences Dialog Data */
+/** Settings Dialog Data */
 interface DialogData {
   type: 'page' | 'step';
   contentType: ContentType;
   page?: Page;
   step?: Step;
   icon?: string;
+  accessData: AccessData;
+  canEditAccess: boolean;
 }
 
 /**
  * Application page and step settings component.
- * Available settings: icon.
+ * Available settings: icon, access.
  */
 @Component({
   selector: 'app-page-settings',
@@ -53,6 +57,7 @@ interface DialogData {
     FormWrapperModule,
     TranslateModule,
     PageIconComponent,
+    AccessModule,
   ],
   templateUrl: './page-settings.component.html',
   styleUrls: ['./page-settings.component.scss'],
@@ -97,9 +102,47 @@ export class PageSettingsComponent
       .pipe(takeUntil(this.destroy$))
       .subscribe((value: string | null) => {
         if (value) {
-          this.onChangeIcon(value);
+          this.onUpdateIcon(value);
         }
       });
+  }
+
+  /**
+   * Save changes when access is updated.
+   *
+   * @param event new permissions object
+   */
+  public onUpdateAccess(event: any): void {
+    if (this.data.type === 'step' && this.step) {
+      const callback = (permissions: any) => {
+        // Updates parent component
+        const updates = { permissions };
+        this.onUpdate.emit(updates);
+      };
+      this.workflowService.updateStepPermissions(
+        this.step as Step,
+        event,
+        callback
+      );
+    } else {
+      const callback = (permissions: any) => {
+        this.page = {
+          ...this.page,
+          canDelete: permissions.canDelete,
+          canUpdate: permissions.canUpdate,
+          canSee: permissions.canSee,
+        };
+        // Updates parent component
+        const updates = { permissions };
+        this.onUpdate.emit(updates);
+      };
+      this.page &&
+        this.applicationService.updatePagePermissions(
+          this.page as Page,
+          event,
+          callback
+        );
+    }
   }
 
   /**
@@ -119,7 +162,7 @@ export class PageSettingsComponent
    *
    * @param icon new icon name
    */
-  private onChangeIcon(icon: string): void {
+  private onUpdateIcon(icon: string): void {
     if (this.data.type === 'step' && this.step) {
       const callback = () => {
         this.step = {

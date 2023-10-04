@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { WorkflowRoutingModule } from './workflow-routing.module';
 import { WorkflowComponent } from './workflow.component';
 import {
-  AccessModule,
   WorkflowStepperModule,
   SkeletonModule,
   EditableTextModule,
@@ -28,7 +27,6 @@ import {
   imports: [
     CommonModule,
     WorkflowRoutingModule,
-    AccessModule,
     SpinnerModule,
     WorkflowStepperModule,
     TranslateModule,

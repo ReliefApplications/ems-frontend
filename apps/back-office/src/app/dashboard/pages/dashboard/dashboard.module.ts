@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import {
-  AccessModule,
   RecordHistoryModule,
   WidgetGridModule,
   SkeletonModule,
@@ -38,7 +37,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
   imports: [
     CommonModule,
     DashboardRoutingModule,
-    AccessModule,
     WidgetGridModule,
     IconModule,
     DialogModule,

@@ -29,7 +29,7 @@
         </div>
       </ui-tab>
       <!-- Access (visibility) settings -->
-      <ui-tab>
+      <ui-tab *ngIf="data.canEditAccess">
         <ng-container ngProjectAs="label">
           <ui-icon
             icon="visibility"
@@ -40,6 +40,10 @@
         </ng-container>
         <!-- Tab content -->
         <div class="flex flex-col">
+          <!-- Edit access -->
+          <shared-edit-access
+            (updateAccess)="onUpdateAccess($event)"
+          ></shared-edit-access>
         </div>
       </ui-tab>
     </ui-tabs>
@@ -51,5 +55,4 @@
       {{ 'common.cancel' | translate }}
     </ui-button>
   </ng-container>
-
 </ui-dialog>

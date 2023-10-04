@@ -28,12 +28,10 @@ import {
   ResourceRecordsNodesQueryResponse,
   DashboardQueryResponse,
   EditDashboardMutationResponse,
-  EditStepMutationResponse,
-  EditPageMutationResponse,
   RecordQueryResponse,
   ContentType,
 } from '@oort-front/shared';
-import { EDIT_DASHBOARD, EDIT_PAGE, EDIT_STEP } from './graphql/mutations';
+import { EDIT_DASHBOARD } from './graphql/mutations';
 import {
   GET_DASHBOARD_BY_ID,
   GET_RECORD_BY_ID,
@@ -57,7 +55,6 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
 import { DOCUMENT } from '@angular/common';
 import { Clipboard } from '@angular/cdk/clipboard';
-import { GraphQLError } from 'graphql';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -508,119 +505,19 @@ export class DashboardComponent
       })
       .subscribe({
         next: ({ errors }) => {
-          this.handleDashboardMutationResponse(errors);
+          this.applicationService.handleEditionMutationResponse(
+            errors,
+            this.translate.instant('common.dashboard.one')
+          );
+          if (!errors) {
+            this.dashboardService.openDashboard({
+              ...this.dashboard,
+              structure: this.widgets,
+            });
+          }
         },
         complete: () => (this.loading = false),
       });
-  }
-
-  /**
-   * Handle dashboard mutations response
-   *
-   * @param errors errors from mutation response
-   * @param data from mutation response if any
-   */
-  private handleDashboardMutationResponse(
-    errors: readonly GraphQLError[] | undefined,
-    data?: EditDashboardMutationResponse | null
-  ) {
-    if (errors) {
-      this.snackBar.openSnackBar(
-        this.translate.instant('common.notifications.objectNotUpdated', {
-          type: this.translate.instant('common.dashboard.one'),
-          error: errors ? errors[0].message : '',
-        }),
-        { error: true }
-      );
-    } else {
-      this.snackBar.openSnackBar(
-        this.translate.instant('common.notifications.objectUpdated', {
-          type: this.translate.instant('common.dashboard.one'),
-          value: '',
-        })
-      );
-      this.dashboardService.openDashboard({
-        ...this.dashboard,
-        ...(!data && { structure: this.widgets }),
-        ...(data && { showFilter: data?.editDashboard.showFilter }),
-      });
-    }
-  }
-  /**
-   * Edit the permissions layer.
-   *
-   * @param e edit event
-   */
-  saveAccess(e: any): void {
-    if (this.isStep) {
-      this.apollo
-        .mutate<EditStepMutationResponse>({
-          mutation: EDIT_STEP,
-          variables: {
-            id: this.dashboard?.step?.id,
-            permissions: e,
-          },
-        })
-        .subscribe({
-          next: ({ errors, data }) => {
-            this.handleAccessMutationResponse(data, errors, 'editStep');
-          },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
-          },
-        });
-    } else {
-      this.apollo
-        .mutate<EditPageMutationResponse>({
-          mutation: EDIT_PAGE,
-          variables: {
-            id: this.dashboard?.page?.id,
-            permissions: e,
-          },
-        })
-        .subscribe({
-          next: ({ errors, data }) => {
-            this.handleAccessMutationResponse(data, errors, 'editPage');
-          },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
-          },
-        });
-    }
-  }
-
-  /**
-   * Handle access mutations response
-   *
-   * @param data retrieved from the access mutation response
-   * @param errors errors from the access mutation response if any
-   * @param dataKey key used to get permission from the given data
-   */
-  private handleAccessMutationResponse<T>(
-    data: T | null | undefined,
-    errors: readonly GraphQLError[] | undefined,
-    dataKey: keyof T
-  ) {
-    if (errors) {
-      this.snackBar.openSnackBar(
-        this.translate.instant('common.notifications.objectNotUpdated', {
-          type: this.translate.instant('common.step.one'),
-          error: errors ? errors[0].message : '',
-        }),
-        { error: true }
-      );
-    } else {
-      this.snackBar.openSnackBar(
-        this.translate.instant('common.notifications.objectUpdated', {
-          type: this.translate.instant('common.step.one'),
-          value: '',
-        })
-      );
-      this.dashboard = {
-        ...this.dashboard,
-        permissions: (data?.[dataKey] as any).permissions,
-      };
-    }
   }
 
   /**
@@ -687,7 +584,16 @@ export class DashboardComponent
         })
         .subscribe({
           next: ({ data, errors }) => {
-            this.handleDashboardMutationResponse(errors, data);
+            this.applicationService.handleEditionMutationResponse(
+              errors,
+              this.translate.instant('common.dashboard.one')
+            );
+            if (!errors) {
+              this.dashboardService.openDashboard({
+                ...this.dashboard,
+                ...(data && { showFilter: data?.editDashboard.showFilter }),
+              });
+            }
           },
           complete: () => {
             this.loading = false;
@@ -945,6 +851,18 @@ export class DashboardComponent
         icon: this.isStep
           ? this.dashboard?.step?.icon
           : this.dashboard?.page?.icon,
+        accessData: {
+          access: this.dashboard?.permissions,
+          application: this.applicationId,
+          objectTypeName: this.translate.instant(
+            'common.' + this.isStep ? 'step' : 'page' + '.one'
+          ),
+        },
+        canEditAccess: this.dashboard?.page
+          ? this.dashboard?.page.canUpdate
+          : this.dashboard?.step
+          ? this.dashboard?.step.canUpdate
+          : false,
       },
     });
     // Subscribes to settings updates
@@ -955,17 +873,19 @@ export class DashboardComponent
           if (this.isStep) {
             this.dashboard = {
               ...this.dashboard,
+              ...(updates.permissions && updates),
               step: {
                 ...this.dashboard?.step,
-                ...updates,
+                ...(!updates.permissions && updates),
               },
             };
           } else {
             this.dashboard = {
               ...this.dashboard,
+              ...(updates.permissions && updates),
               page: {
                 ...this.dashboard?.page,
-                ...updates,
+                ...(!updates.permissions && updates),
               },
             };
           }

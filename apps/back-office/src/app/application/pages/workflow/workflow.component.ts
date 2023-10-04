@@ -12,11 +12,10 @@ import {
   AuthService,
   Application,
   UnsubscribeComponent,
-  EditPageMutationResponse,
   DeleteStepMutationResponse,
   EditWorkflowMutationResponse,
 } from '@oort-front/shared';
-import { EDIT_PAGE, DELETE_STEP, EDIT_WORKFLOW } from './graphql/mutations';
+import { DELETE_STEP, EDIT_WORKFLOW } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
@@ -182,49 +181,6 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
         callback
       );
     }
-  }
-
-  /**
-   * Edits the permissions layer.
-   *
-   * @param e permission event.
-   */
-  saveAccess(e: any): void {
-    this.apollo
-      .mutate<EditPageMutationResponse>({
-        mutation: EDIT_PAGE,
-        variables: {
-          id: this.workflow?.page?.id,
-          permissions: e,
-        },
-      })
-      .subscribe({
-        next: ({ errors, data }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.page.one'),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectUpdated', {
-                type: this.translate.instant('common.page.one'),
-                value: '',
-              })
-            );
-            this.workflow = {
-              ...this.workflow,
-              permissions: data?.editPage.permissions,
-            };
-          }
-        },
-        error: (err) => {
-          this.snackBar.openSnackBar(err.message, { error: true });
-        },
-      });
   }
 
   /**
@@ -508,6 +464,12 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
         contentType: ContentType.workflow,
         page: this.workflow?.page,
         icon: this.workflow?.page?.icon,
+        accessData: {
+          access: this.workflow?.permissions,
+          application: this.applicationId,
+          objectTypeName: this.translate.instant('common.page.one'),
+        },
+        canEditAccess: this.workflow?.page?.canUpdate || false,
       },
     });
     // Subscribes to settings updates
@@ -517,9 +479,10 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
         if (updates) {
           this.workflow = {
             ...this.workflow,
+            ...(updates.permissions && updates),
             page: {
               ...this.workflow?.page,
-              ...updates,
+              ...(!updates.permissions && updates),
             },
           };
         }

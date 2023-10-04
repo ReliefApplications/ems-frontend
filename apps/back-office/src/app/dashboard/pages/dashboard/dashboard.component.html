@@ -74,21 +74,6 @@
             "
           >
           </ui-button>
-          <!-- Access -->
-          <shared-access
-            [access]="dashboard.permissions"
-            [application]="applicationId"
-            [objectTypeName]="'common.page.one' | translate"
-            (save)="saveAccess($event)"
-            *ngIf="
-              dashboard.page
-                ? dashboard.page.canUpdate
-                : dashboard.step
-                ? dashboard.step.canUpdate
-                : false
-            "
-          >
-          </shared-access>
           <!-- Context -->
           <ui-button
             variant="grey"
