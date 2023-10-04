@@ -8,27 +8,28 @@ import {
   TemplateRef,
 } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
-import { UnsubscribeComponent } from '@oort-front/shared';
+import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { Role } from '../../../models/user.model';
 
 /**
  * Filter used by the resources component
  */
 @Component({
-  selector: 'app-resources-filter',
+  selector: 'app-users-filter',
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss'],
 })
 export class FilterComponent extends UnsubscribeComponent implements OnInit {
   @Input() loading = false;
+  @Input() roles: Role[] = [];
   @Output() filter = new EventEmitter<any>();
   /** Reference to expanded filter template */
   @ViewChild('expandedFilter')
   expandedFilter!: TemplateRef<any>;
 
   public form = this.fb.group({
-    startDate: [null],
-    endDate: [null],
+    roleFilter: [null],
   });
   public show = false;
 
@@ -59,33 +60,7 @@ export class FilterComponent extends UnsubscribeComponent implements OnInit {
    * @param value Value to be emitted.
    */
   private emitFilter(value: any): void {
-    const filters: any[] = [];
-    if (value.search) {
-      filters.push({
-        field: 'name',
-        operator: 'contains',
-        value: value.search,
-      });
-    }
-    if (value.startDate) {
-      filters.push({
-        field: 'createdAt',
-        operator: 'gte',
-        value: value.startDate,
-      });
-    }
-    if (value.endDate) {
-      filters.push({
-        field: 'createdAt',
-        operator: 'lte',
-        value: value.endDate,
-      });
-    }
-    const filter = {
-      logic: 'and',
-      filters,
-    };
-    this.filter.emit(filter);
+    this.filter.emit(value);
   }
 
   /**
@@ -93,16 +68,5 @@ export class FilterComponent extends UnsubscribeComponent implements OnInit {
    */
   clear(): void {
     this.form.reset();
-  }
-
-  /**
-   * Clears date range.
-   */
-  clearDateFilter(): void {
-    this.form.setValue({
-      ...this.form.getRawValue(),
-      startDate: null,
-      endDate: null,
-    });
   }
 }
