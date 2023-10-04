@@ -140,7 +140,7 @@
 }
 
 ::ng-deep survey, ::ng-deep survey-creator {
-  .k-combobox, .k-multiselect, .sd-comment {
+  .k-combobox, .k-multiselect, .sd-input {
     @apply
       focus-within:ring-2
       focus-within:ring-inset
