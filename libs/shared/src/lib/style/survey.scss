@@ -154,7 +154,6 @@
       bg-white
       items-center
       w-full
-      border-0;
   }
   .k-combobox {
 
@@ -280,6 +279,29 @@
         text-sm
         font-semibold
         text-white;
+    }
+  }
+
+  //Checkbox
+  .sd-checkbox {
+    padding: 12px 0 !important;
+
+    label {
+      display: flex;
+      align-items: center;
+
+      .sd-checkbox__decorator {
+        margin-top: unset !important;
+        border: solid 1px lightgray !important;
+        @apply
+          h-6
+          w-6
+          focus-within:ring-2
+          focus-within:ring-inset
+          focus-within:ring-primary-600
+          shadow-sm
+          rounded-md
+      }
     }
   }
 }
