@@ -52,6 +52,7 @@ export class SidenavContainerComponent implements AfterViewInit, OnDestroy {
   private destroy$ = new Subject<void>();
   /** Array of classes for animations. */
   animationClasses = ['transition-all', 'duration-500', 'ease-in-out'] as const;
+  /** Should display fixed wrapper at bottom */
   fixedWrapperActionExist = false;
 
   /** @returns height of element */

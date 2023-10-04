@@ -1,5 +1,12 @@
 import { Apollo } from 'apollo-angular';
-import { Component, Input, ViewChild, TemplateRef } from '@angular/core';
+import {
+  Component,
+  Input,
+  ViewChild,
+  TemplateRef,
+  SimpleChanges,
+  OnChanges,
+} from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import {
   User,
@@ -27,7 +34,7 @@ import { FormBuilder } from '@angular/forms';
   templateUrl: './users.component.html',
   styleUrls: ['./users.component.scss'],
 })
-export class UsersComponent extends UnsubscribeComponent {
+export class UsersComponent extends UnsubscribeComponent implements OnChanges {
   // === INPUT DATA ===
   @Input() users: Array<User> = new Array<User>();
   @Input() roles: Role[] = [];
@@ -80,6 +87,12 @@ export class UsersComponent extends UnsubscribeComponent {
     private fb: FormBuilder
   ) {
     super();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes.users) {
+      this.filterPredicate();
+    }
   }
 
   /**

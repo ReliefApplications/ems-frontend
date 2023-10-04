@@ -16,6 +16,7 @@ import { UILayoutService } from '../sidenav/layout/layout.service';
   styleUrls: ['./fixed-wrapper.component.scss'],
 })
 export class FixedWrapperComponent implements AfterViewInit, OnDestroy {
+  /** Reference to fixed wrapper template */
   @ViewChild('fixedWrapperActions', { read: TemplateRef<any> })
   fixedWrapperActions?: TemplateRef<any>;
 
