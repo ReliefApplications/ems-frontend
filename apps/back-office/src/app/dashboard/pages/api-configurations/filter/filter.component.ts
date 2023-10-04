@@ -7,15 +7,32 @@ import {
   ViewChild,
   TemplateRef,
 } from '@angular/core';
-import { FormBuilder } from '@angular/forms';
-import { UnsubscribeComponent } from '@oort-front/shared';
+import { CommonModule } from '@angular/common';
+import { UnsubscribeComponent, ListFilterComponent } from '@oort-front/shared';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import {
+  ButtonModule,
+  SelectMenuModule,
+  FormWrapperModule,
+} from '@oort-front/ui';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * Filter used by the resources component
  */
 @Component({
-  selector: 'app-resources-filter',
+  selector: 'app-api-configuration-filter',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    ListFilterComponent,
+    ButtonModule,
+    SelectMenuModule,
+    FormWrapperModule,
+    TranslateModule,
+  ],
   templateUrl: './filter.component.html',
   styleUrls: ['./filter.component.scss'],
 })
@@ -27,8 +44,7 @@ export class FilterComponent extends UnsubscribeComponent implements OnInit {
   expandedFilter!: TemplateRef<any>;
 
   public form = this.fb.group({
-    startDate: [null],
-    endDate: [null],
+    statusFilter: [''],
   });
   public show = false;
 
@@ -59,33 +75,7 @@ export class FilterComponent extends UnsubscribeComponent implements OnInit {
    * @param value Value to be emitted.
    */
   private emitFilter(value: any): void {
-    const filters: any[] = [];
-    if (value.search) {
-      filters.push({
-        field: 'name',
-        operator: 'contains',
-        value: value.search,
-      });
-    }
-    if (value.startDate) {
-      filters.push({
-        field: 'createdAt',
-        operator: 'gte',
-        value: value.startDate,
-      });
-    }
-    if (value.endDate) {
-      filters.push({
-        field: 'createdAt',
-        operator: 'lte',
-        value: value.endDate,
-      });
-    }
-    const filter = {
-      logic: 'and',
-      filters,
-    };
-    this.filter.emit(filter);
+    this.filter.emit(value);
   }
 
   /**
@@ -93,16 +83,5 @@ export class FilterComponent extends UnsubscribeComponent implements OnInit {
    */
   clear(): void {
     this.form.reset();
-  }
-
-  /**
-   * Clears date range.
-   */
-  clearDateFilter(): void {
-    this.form.setValue({
-      ...this.form.getRawValue(),
-      startDate: null,
-      endDate: null,
-    });
   }
 }

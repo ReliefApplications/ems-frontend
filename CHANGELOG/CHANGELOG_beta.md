@@ -1,3 +1,50 @@
+# [2.2.0-beta.2](https://github.com/ReliefApplications/oort-frontend/compare/v2.2.0-beta.1...v2.2.0-beta.2) (2023-10-04)
+
+
+### Bug Fixes
+
+* access to the platform could fail due to login not completed ([#1854](https://github.com/ReliefApplications/oort-frontend/issues/1854)) ([10ba120](https://github.com/ReliefApplications/oort-frontend/commit/10ba1204a6a0d12728af039fd8fd85d60f4d5628))
+* aggregation filters only appling after saving twice ([#1829](https://github.com/ReliefApplications/oort-frontend/issues/1829)) ([3dd8bd4](https://github.com/ReliefApplications/oort-frontend/commit/3dd8bd409a117bfb51e46d7d4d2dee8145a898f1))
+* build not working ([3ed5f5b](https://github.com/ReliefApplications/oort-frontend/commit/3ed5f5b1ca16e41678412609caba2cd9973abf41))
+* context filter not loaded in front-office ([28d39fa](https://github.com/ReliefApplications/oort-frontend/commit/28d39fa44a4242f9ba0fbf779f0d57f29965dab5))
+* custom form variables not reused when creating multiple records from same view ([#1838](https://github.com/ReliefApplications/oort-frontend/issues/1838)) ([8fb2564](https://github.com/ReliefApplications/oort-frontend/commit/8fb25647aa7ee0e75765c7253255685c994ae7ae))
+* dashboard filter not working in summary cards dashboard ([#1908](https://github.com/ReliefApplications/oort-frontend/issues/1908)) ([b0f3da0](https://github.com/ReliefApplications/oort-frontend/commit/b0f3da052d1d5b8e7d6c0c10468acc14e17354f1))
+* date could not be cleared if opening a record with value in field ([2c0d047](https://github.com/ReliefApplications/oort-frontend/commit/2c0d0470f3889dbadf84d69c7aa529ef5d19bd05))
+* delete min-width of question in order to match current sidebar width ([#1912](https://github.com/ReliefApplications/oort-frontend/issues/1912)) ([697eb83](https://github.com/ReliefApplications/oort-frontend/commit/697eb8320a5c3cb2b0f377f19efe62cb8f3f060a))
+* few issues with layer styling ([baf115b](https://github.com/ReliefApplications/oort-frontend/commit/baf115b9ee907770b26334afd32602979af8d1a4))
+* infinite redirection when trying to open a contextual page ([#1903](https://github.com/ReliefApplications/oort-frontend/issues/1903)) ([3dbec90](https://github.com/ReliefApplications/oort-frontend/commit/3dbec908991c2fde0dd70e84a9e7a45fd03af954))
+* layers get duplicated when changing dashboard filter value ([#1876](https://github.com/ReliefApplications/oort-frontend/issues/1876)) ([5decf06](https://github.com/ReliefApplications/oort-frontend/commit/5decf068efcf7a2d438eb8f4976dfbe60a91cd36))
+* menu items text and buttons overlapping in firefox ([#1834](https://github.com/ReliefApplications/oort-frontend/issues/1834)) ([47532f9](https://github.com/ReliefApplications/oort-frontend/commit/47532f9f42984134b4ae96f7bade0bbdf58ba1cf))
+* only get visible fields when exporting grid data [#35940](https://github.com/ReliefApplications/oort-frontend/issues/35940) ([#1807](https://github.com/ReliefApplications/oort-frontend/issues/1807)) ([ce008da](https://github.com/ReliefApplications/oort-frontend/commit/ce008daba3cca2216bd3c40fd7a8ae6d2a68f358))
+* remove expand option for map widgets ([#1877](https://github.com/ReliefApplications/oort-frontend/issues/1877)) ([bfd1b2c](https://github.com/ReliefApplications/oort-frontend/commit/bfd1b2c049fbd3075660e65fadf319fa367b227f))
+* remove format filter method in grid, that could cause some date issues ([df3ee09](https://github.com/ReliefApplications/oort-frontend/commit/df3ee094c637b02c001eca81fe6ad6436ce0bd6f))
+* selected records in text widget would not appear when opening settings ([#1901](https://github.com/ReliefApplications/oort-frontend/issues/1901)) ([93a9af6](https://github.com/ReliefApplications/oort-frontend/commit/93a9af668d2adb3681badc1bc96307fb112fc0ee))
+* tagbox in surveyjs would not work in some cases ([f6cba5a](https://github.com/ReliefApplications/oort-frontend/commit/f6cba5ad548b6a377951704a3b99271bb2b903d7))
+* toggle would not correctly indicate touch events ([43cba1d](https://github.com/ReliefApplications/oort-frontend/commit/43cba1d4c99b6ee828573c2d5efea5208c82310d))
+* unable to invite new users, UI was broken ([#1902](https://github.com/ReliefApplications/oort-frontend/issues/1902)) ([a0a5eb6](https://github.com/ReliefApplications/oort-frontend/commit/a0a5eb6cdb61582c257cba9d4366a1143b31310c))
+* use flex-end and default margin false to the date field in the tab-filter component in order to align the element to the rest of the y axis ([#1809](https://github.com/ReliefApplications/oort-frontend/issues/1809)) ([d8b10c5](https://github.com/ReliefApplications/oort-frontend/commit/d8b10c57893e78f577972b1fd311a2ab94c99d69))
+* web widgets would not build ([#1886](https://github.com/ReliefApplications/oort-frontend/issues/1886)) ([73c1bc4](https://github.com/ReliefApplications/oort-frontend/commit/73c1bc4a584718f3b5d78f6512f82796dd41c25c))
+
+
+### Features
+
+* ability to archive and restore application pages ([#1505](https://github.com/ReliefApplications/oort-frontend/issues/1505)) ([8c38ccf](https://github.com/ReliefApplications/oort-frontend/commit/8c38ccf42c115dd943efd20110d0b2c9bcbb7e5f))
+* add more options to cluster layers ([#1906](https://github.com/ReliefApplications/oort-frontend/issues/1906)) ([c5e2d14](https://github.com/ReliefApplications/oort-frontend/commit/c5e2d14418a4a5c9d779280324a05b4750ac463b))
+* add tooltip when widget grid text overflows ([44850ed](https://github.com/ReliefApplications/oort-frontend/commit/44850ed0981eba04fa28c07d994323deec082146))
+* automatically open widget settings on addition ([#1843](https://github.com/ReliefApplications/oort-frontend/issues/1843)) ([6ab4174](https://github.com/ReliefApplications/oort-frontend/commit/6ab41740e9f15d8d83b12d72f7cbd30cab6987b0)), closes [feat/AB#74663](https://github.com/feat/AB/issues/74663)
+* can now edit page / step 's icon ([5a58854](https://github.com/ReliefApplications/oort-frontend/commit/5a58854f6b1bc5ada65b07f621b172b0257b0b54))
+* can now query historical data ([#1873](https://github.com/ReliefApplications/oort-frontend/issues/1873)) ([7627df4](https://github.com/ReliefApplications/oort-frontend/commit/7627df4f256d8838902e7c39b326650a3768fec5))
+* can now use infinite aggregations ([4379df2](https://github.com/ReliefApplications/oort-frontend/commit/4379df2025636c97c00037e14b938c55e49c85a1))
+* display matrix questions in grid / text / summary card widgets ([#1350](https://github.com/ReliefApplications/oort-frontend/issues/1350)) ([25dc2df](https://github.com/ReliefApplications/oort-frontend/commit/25dc2df6459846a9b215b12da940ba9050859355))
+* inline edition of reference data ([4dfa2b3](https://github.com/ReliefApplications/oort-frontend/commit/4dfa2b30be14dd5318cd17fba34dba338df055f6))
+
+
+### Performance Improvements
+
+* **bundle:** remove useless kendo styles imports ([#1882](https://github.com/ReliefApplications/oort-frontend/issues/1882)) ([70b74fc](https://github.com/ReliefApplications/oort-frontend/commit/70b74fca16d840b5f4d187215bfb10cb08236c28))
+* update apollo versions ([#1771](https://github.com/ReliefApplications/oort-frontend/issues/1771)) ([#1810](https://github.com/ReliefApplications/oort-frontend/issues/1810)) ([30180a1](https://github.com/ReliefApplications/oort-frontend/commit/30180a1013c8f9bdac58d9b107b570ca48eec9ba))
+* update surveyjs package, to use Angular version, and drop knockout ([#1763](https://github.com/ReliefApplications/oort-frontend/issues/1763)) ([73f29f8](https://github.com/ReliefApplications/oort-frontend/commit/73f29f8ef862416cd69358adbe88e2a42ec06e2f))
+
 # [2.2.0-beta.1](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.1...v2.2.0-beta.1) (2023-09-14)
 
 

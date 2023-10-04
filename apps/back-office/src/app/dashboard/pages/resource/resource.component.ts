@@ -15,11 +15,11 @@ import { SnackbarService } from '@oort-front/ui';
  * Array of tab names sorted by position index.
  */
 const ROUTE_TABS: string[] = [
-  'records',
   'forms',
   'layouts',
   'aggregations',
   'calculated-fields',
+  'records',
 ];
 
 /**

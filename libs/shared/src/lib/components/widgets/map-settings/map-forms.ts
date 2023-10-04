@@ -287,7 +287,6 @@ export const createLayerFeatureReductionForm = (value: any) => {
       autoSizeCluster: get(value, 'autoSizeCluster', false),
     }),
   });
-  console.log('yea', formGroup);
   return formGroup;
 };
 

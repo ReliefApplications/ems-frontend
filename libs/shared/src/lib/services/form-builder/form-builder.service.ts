@@ -261,7 +261,7 @@ export class FormBuilderService {
    */
   private onSetCustomCss(options: any): void {
     const classes = options.cssClasses;
-    classes.content += 'shared-qst-content';
+    classes.content += ' shared-qst-content';
   }
 
   /**
