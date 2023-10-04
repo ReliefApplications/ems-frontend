@@ -630,7 +630,7 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
       }
     }
     // Check that at least an application is selected in the properties of owner question
-    if (['owner'].includes(question.getType())) {
+    if (question.getType() === 'owner') {
       if (!question.applications) {
         this.snackBar.openSnackBar(
           this.translate.instant('pages.formBuilder.errors.selectApplication', {
