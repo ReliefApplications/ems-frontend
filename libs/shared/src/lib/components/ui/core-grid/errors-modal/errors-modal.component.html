@@ -1,6 +1,6 @@
 <ui-dialog>
   <ng-container ngProjectAs="header">
-    <h1>
+    <h3 class="font-semibold">
       {{
         'components.widget.grid.validation.title'
           | translate
@@ -8,7 +8,7 @@
                 record: data.incrementalId
               }
       }}
-    </h1>
+    </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <div class="flex flex-col gap-4">
