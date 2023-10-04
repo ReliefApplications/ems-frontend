@@ -321,6 +321,9 @@ export class CoreGridComponent
       .subscribe(() => {
         if (this.dataQuery) this.reloadData();
       });
+    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.configureGrid();
+    });
   }
 
   /**
