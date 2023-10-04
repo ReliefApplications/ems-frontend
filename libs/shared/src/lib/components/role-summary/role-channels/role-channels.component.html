@@ -19,11 +19,16 @@
     </div>
   </div>
 </form>
-<ui-button
-  variant="primary"
-  category="secondary"
-  type="submit"
-  [disabled]="!form.valid"
-  (click)="onUpdate()"
-  >{{ 'common.saveChanges' | translate }}</ui-button
->
+
+<!-- Floating div for actions buttons -->
+<ui-fixed-wrapper>
+  <!-- Save button -->
+  <ui-button
+    variant="primary"
+    category="secondary"
+    type="submit"
+    [disabled]="!form.valid"
+    (click)="onUpdate()"
+    >{{ 'common.saveChanges' | translate }}
+  </ui-button>
+</ui-fixed-wrapper>

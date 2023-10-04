@@ -4,7 +4,11 @@ import { UserDetailsComponent } from './user-details.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
-import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
+import {
+  ButtonModule,
+  FormWrapperModule,
+  FixedWrapperModule,
+} from '@oort-front/ui';
 
 /**
  * User details module.
@@ -19,6 +23,7 @@ import { ButtonModule, FormWrapperModule } from '@oort-front/ui';
     FormWrapperModule,
     AbilityModule,
     ButtonModule,
+    FixedWrapperModule,
   ],
   exports: [UserDetailsComponent],
 })
