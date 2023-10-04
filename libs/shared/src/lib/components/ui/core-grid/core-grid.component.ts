@@ -792,8 +792,6 @@ export class CoreGridComponent
     // TODO = check what to do there
     this.onPageChange({ skip: 0, take: this.pageSize });
     this.selectedRows = [];
-    console.log(this.updatedItems);
-    console.log(this.items);
     this.refresh$.next(true);
   }
 
