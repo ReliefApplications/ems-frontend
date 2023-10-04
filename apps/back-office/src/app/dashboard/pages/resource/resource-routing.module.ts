@@ -10,7 +10,7 @@ const routes: Routes = [
     children: [
       {
         path: '',
-        redirectTo: 'records',
+        redirectTo: 'forms',
         pathMatch: 'full',
       },
       {

@@ -26,11 +26,11 @@ export class ButtonComponent {
   /** Button size */
   @Input() size: Size = 'medium';
   /** Button variant, define color */
-  @Input() variant: Variant = 'default';
+  @Input() variant: Variant = 'primary';
   /** Is button only icon */
   @Input() isIcon = false;
   /** Should button appear as block */
-  @HostBinding('class.flex')
+  @HostBinding('class.!w-full')
   @Input()
   isBlock = false;
   /** Loading indicator */
@@ -63,13 +63,11 @@ export class ButtonComponent {
   /** @returns general resolved classes and variant for button*/
   get resolveButtonClasses(): string[] {
     const classes = [];
-    if (this.isBlock) classes.push('w-full');
+    if (this.isBlock) classes.push('!w-full');
     classes.push(this.isIcon ? 'ui-button-icon' : 'ui-button');
     classes.push(this.category);
     classes.push(this.size);
-    classes.push(
-      'button-' + (this.variant === 'default' ? 'primary' : this.variant)
-    );
+    classes.push('button-' + this.variant);
     if ((this.icon || this.loading) && !this.isIcon) {
       classes.push('inline-flex items-center gap-x-2');
     }

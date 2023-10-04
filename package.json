@@ -6,7 +6,7 @@
     "check-i18n": "node .scripts/check-i18n",
     "semantic-release": "semantic-release",
     "prepare": "husky install",
-    "lint": "npx nx run-many --target=lint --projects=shared,front-office,back-office,ui --verbose",
+    "lint": "npx nx run-many --target=lint --projects=shared,front-office,back-office,ui",
     "test": "npx nx run-many --target=test --projects=shared,front-office,back-office,ui --configuration=ci",
     "bundle:widgets": "npx nx build web-widgets --configuration=azure-uat  && node .scripts/build-widgets.js"
   },

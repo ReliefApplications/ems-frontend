@@ -24,6 +24,7 @@ export const GET_APPLICATION_BY_ID = gql`
       }
       pages {
         id
+        icon
         name
         visible
         type
