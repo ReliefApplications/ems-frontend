@@ -1,4 +1,4 @@
-import { MultiSelectComponent } from '@progress/kendo-angular-dropdowns';
+import { MultiSelectComponent, TagTemplateDirective } from '@progress/kendo-angular-dropdowns';
 import { DomService } from '../../services/dom/dom.service';
 import { Question } from '../types';
 import {
@@ -156,9 +156,6 @@ export const init = (
       element
     );
     const tagboxInstance: MultiSelectComponent = tagbox.instance;
-    tagboxInstance.virtual = {
-      itemHeight: 28,
-    };
     tagboxInstance.valuePrimitive = Boolean(question.isPrimitiveValue);
     tagboxInstance.filterable = true;
     tagboxInstance.loading = true;
@@ -166,6 +163,7 @@ export const init = (
     tagboxInstance.textField = 'text';
     tagboxInstance.valueField = 'value';
     tagboxInstance.popupSettings = { appendTo: 'component' };
+    tagboxInstance.fillMode = 'none';
     return tagboxInstance;
   };
   // ⚠ danger ⚠
