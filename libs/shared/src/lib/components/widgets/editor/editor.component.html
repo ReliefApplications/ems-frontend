@@ -1,7 +1,7 @@
 <div class="h-full flex flex-col">
   <div
     *ngIf="header"
-    class="widget-header border-b"
+    class="widget-header"
     [ngClass]="{
       '!border-transparent': !(settings.widgetDisplay?.showBorder ?? true),
       '!border-b-gray-300': settings.widgetDisplay?.showBorder ?? true

@@ -51,7 +51,7 @@ ui-checkbox {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  @apply bg-white border-b border-b-gray-300 #{!important};
+  @apply bg-white border-b border-b-gray-300 rounded-t-md;
 
   .widget-title {
     overflow: hidden;
