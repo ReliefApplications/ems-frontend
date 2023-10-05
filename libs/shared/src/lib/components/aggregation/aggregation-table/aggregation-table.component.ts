@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Layout } from '../../../models/layout.model';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
@@ -90,7 +90,6 @@ export class AggregationTableComponent
         .sort(
           (a, b) => value.indexOf(a.id || '') - value.indexOf(b.id || '')
         ) || [];
-    
   }
 
   /**
