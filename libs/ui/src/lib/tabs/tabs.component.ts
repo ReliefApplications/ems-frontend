@@ -3,7 +3,9 @@ import {
   ChangeDetectorRef,
   Component,
   ContentChildren,
+  ElementRef,
   EventEmitter,
+  HostListener,
   Input,
   OnChanges,
   OnDestroy,
@@ -75,15 +77,28 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
 
   previousTabsLength = 0;
   triggerAnimation = false;
+  hideScroll = true;
   destroy$ = new Subject<void>();
   reorder$ = new Subject<void>();
+  contentMaxWidth = 'none';
+  private triggerAnimationTimeoutListener!: NodeJS.Timeout;
+
+  /**
+   * Change the tab content max-width depending on windows size.
+   *
+   */
+  @HostListener('window:resize', ['$event'])
+  onResize(): void {
+    this.updateTabContainerMaxWidth();
+  }
 
   /**
    * Ui Sidenav constructor
    *
-   * @param cdr ChangeDetectorRef
+   * @param {ElementRef} el HTML attached to this class instance
+   * @param {ChangeDetectorRef} cdr ChangeDetectorRef
    */
-  constructor(private cdr: ChangeDetectorRef) {}
+  constructor(private el: ElementRef, private cdr: ChangeDetectorRef) {}
 
   /** @returns general resolved position classes for navigation tabs*/
   get resolveTabPositionClasses(): string[] {
@@ -113,9 +128,39 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
           this.subscribeToOpenTabEvents();
         }
       });
+    this.updateTabContainerMaxWidth();
+  }
+
+  /**
+   * If vertical tabs display, content on the left should have a max-width set dynamically
+   * in order to correctly trigger any x axis overflow
+   */
+  private updateTabContainerMaxWidth() {
+    if (this.vertical) {
+      const tabsContainerFullWidth = this.getTabsContainerFullWidth();
+      this.contentMaxWidth = `calc(100% - ${tabsContainerFullWidth}px)`;
+    }
+  }
+
+  /**
+   * Returns the element width of the tabs container
+   *
+   * @returns Element width containing tabs including also margin values
+   */
+  private getTabsContainerFullWidth(): number {
+    const tabsContainer: Element =
+      this.el.nativeElement.querySelector('[id^="tabs"]');
+    const styles = window.getComputedStyle(tabsContainer);
+    const leftMargin = styles.getPropertyValue('margin-left');
+    const rightMargin = styles.getPropertyValue('margin-right');
+    const leftMarginNumber = Number(leftMargin.match(/\d+/)) ?? 0;
+    const rightMarginNumber = Number(rightMargin.match(/\d+/)) ?? 0;
+    // Return element width plus any other margin values attached to it
+    return tabsContainer.clientWidth + leftMarginNumber + rightMarginNumber;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.hideScroll = false;
     if (changes['selectedIndex']) {
       this.setSelectedTab();
     }
@@ -136,7 +181,10 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
 
       // Creates the content element thanks to the hidden html content of the tab component
       // Timeout so the animation has the time to render (elsewhere it can't cause delete then create is instantaneous)
-      setTimeout(() => {
+      if (this.triggerAnimationTimeoutListener) {
+        clearTimeout(this.triggerAnimationTimeoutListener);
+      }
+      this.triggerAnimationTimeoutListener = setTimeout(() => {
         this.triggerAnimation = true;
         this.openedTab.emit(tab);
       }, 100);
@@ -182,6 +230,9 @@ export class TabsComponent implements AfterViewInit, OnDestroy, OnChanges {
   }
 
   ngOnDestroy(): void {
+    if (this.triggerAnimationTimeoutListener) {
+      clearTimeout(this.triggerAnimationTimeoutListener);
+    }
     this.destroy$.next();
     this.destroy$.complete();
   }

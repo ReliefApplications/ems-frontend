@@ -1,8 +1,8 @@
-<!-- Wrapper of the component, allows to display content 
+<!-- Wrapper of the component, allows to display content
      not in the body while not interfering with the list of tabs -->
+<!-- overflow-hidden is set while the content is entering to avoid the appear of a scroll during animation -->
 <div
-  class="overflow-x-hidden"
-  [ngClass]="{ flex: vertical }"
+  [ngClass]="{ flex: vertical, 'overflow-hidden': hideScroll }"
   id="tab-group-wrapper"
 >
   <!-- List of tabs -->
@@ -15,8 +15,12 @@
   </div>
   <!-- The directive will display the content here -->
   <div
+    [ngStyle]="{
+      'max-width': contentMaxWidth
+    }"
     class="flex-1"
     [@tabContentDisplay]="triggerAnimation ? 'initial' : 'loadContent'"
+    (@tabContentDisplay.start)="hideScroll = true"
   >
     <ng-template uiTabBodyHost [openedTab]="openedTab"></ng-template>
   </div>

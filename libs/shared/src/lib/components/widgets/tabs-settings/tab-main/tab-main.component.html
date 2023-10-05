@@ -8,7 +8,12 @@
   >
 </div>
 <!-- Available tabs -->
-<ui-tabs class="grow" [vertical]="false" *ngIf="tabs.length > 0" (openedTab)="selectedTab = $event.index">
+<ui-tabs
+  class="grow"
+  [vertical]="false"
+  *ngIf="tabs.length > 0"
+  (openedTab)="selectedTab = $event.index"
+>
   <ui-tab *ngFor="let tab of tabs.controls; let i = index">
     <ng-container ngProjectAs="label">
       <div
@@ -43,10 +48,12 @@
         </div>
       </div>
     </ng-container>
-    <shared-tab-settings
-      [tabGroup]="$any(tab)"
-      [isSelected]="selectedTab === i"
-      (delete)="onDeleteTab(i)"
-    ></shared-tab-settings>
+    <ng-template uiTabContent>
+      <shared-tab-settings
+        [tabGroup]="$any(tab)"
+        [isSelected]="selectedTab === i"
+        (delete)="onDeleteTab(i)"
+      ></shared-tab-settings>
+    </ng-template>
   </ui-tab>
 </ui-tabs>
