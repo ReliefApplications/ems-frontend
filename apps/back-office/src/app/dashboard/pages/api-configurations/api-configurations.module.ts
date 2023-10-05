@@ -26,6 +26,7 @@ import {
   PaginatorModule,
   ErrorMessageModule,
 } from '@oort-front/ui';
+import { FilterComponent } from './filter/filter.component';
 
 /**
  * API configurations page module.
@@ -54,6 +55,7 @@ import {
     TableModule,
     TooltipModule,
     ListFilterComponent,
+    FilterComponent,
   ],
   exports: [ApiConfigurationsComponent],
 })

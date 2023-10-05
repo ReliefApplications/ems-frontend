@@ -240,7 +240,6 @@ export class Layer implements LayerModel {
       this.popupService = injector.get(MapPopupService);
       this.layerService = injector.get(MapLayersService);
       this.renderer = injector.get(Renderer2);
-      console.log(options);
       this.setConfig(options);
     } else {
       throw 'No settings provided';
@@ -716,11 +715,8 @@ export class Layer implements LayerModel {
                         'featureReduction.lightMode',
                         true
                       ),
-                      get(
-                        this.layerDefinition,
-                        'featureReduction.fontSize',
-                        14
-                      ),
+                      get(this.layerDefinition, 'featureReduction.fontSize') ||
+                        14,
                       get(
                         this.layerDefinition,
                         'featureReduction.autoSizeCluster',

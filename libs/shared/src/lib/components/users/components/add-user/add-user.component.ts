@@ -3,7 +3,12 @@ import { Role, User, UsersQueryResponse } from '../../../../models/user.model';
 import { PositionAttributeCategory } from '../../../../models/position-attribute-category.model';
 import { FormBuilder, UntypedFormArray, Validators } from '@angular/forms';
 import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
-import { map, startWith } from 'rxjs/operators';
+import {
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  startWith,
+} from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { GET_USERS } from '../../graphql/queries';
 import { Apollo } from 'apollo-angular';
@@ -69,14 +74,14 @@ export class AddUserComponent extends UnsubscribeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const getUsersByEmail = this.form.controls.email.valueChanges.pipe(
+    this.filteredUsers = this.form.controls.email.valueChanges.pipe(
+      debounceTime(1000),
+      distinctUntilChanged(),
       startWith(''),
       map((value) => (typeof value === 'string' ? value : '')),
       map((x) => this.filterUsers(x)),
       takeUntil(this.destroy$)
     );
-
-    this.filteredUsers = getUsersByEmail;
 
     this.apollo
       .query<UsersQueryResponse>({
@@ -88,7 +93,6 @@ export class AddUserComponent extends UnsubscribeComponent implements OnInit {
         this.users = data.users.filter(
           (x) => !flatInvitedUsers.includes(x.username)
         );
-        this.filteredUsers = getUsersByEmail;
       });
   }
 
@@ -100,9 +104,9 @@ export class AddUserComponent extends UnsubscribeComponent implements OnInit {
    */
   private filterUsers(value: string): User[] {
     const filterValue = value.toLowerCase();
-    return this.users.filter(
-      (x) => x.username?.toLowerCase().indexOf(filterValue) === 0
-    );
+    return this.users
+      .filter((x) => x.username?.toLowerCase().indexOf(filterValue) === 0)
+      .slice(0, 25);
   }
 
   /**

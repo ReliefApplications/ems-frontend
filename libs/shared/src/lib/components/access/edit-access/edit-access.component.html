@@ -1,12 +1,12 @@
 <!-- Modal -->
 <ui-dialog *ngIf="useModal">
   <ng-container ngProjectAs="header">
-    <h1>
+    <h3 class="font-semibold">
       {{
         'components.access.description'
           | translate : { name: contentType }
       }}
-    </h1>
+    </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <ng-container *ngTemplateOutlet="accessFormTmpl"></ng-container>

@@ -5,32 +5,33 @@
     [loading]="loading"
     (showFilters)="show = $event"
   ></shared-list-filter>
-
   <!-- Advanced filters -->
-  <div
-    *ngIf="show"
-    class="flex flex-wrap gap-2 sm:items-end flex-col sm:flex-row"
-  >
-    <!-- Date range filter -->
-    <div uiFormFieldDirective [defaultMargin]="false">
-      <label>{{ 'common.input.dateRange' | translate }}</label>
-      <div [formGroup]="form" [uiDateWrapper]="calendar">
-        <input
-          [uiDatePicker]
-          formControlName="startDate"
-          [label]="'kendo.datepicker.startLabel' | translate"
-        />
-        <input
-          [uiDatePicker]
-          formControlName="endDate"
-          [label]="'kendo.datepicker.endLabel' | translate"
-        />
-        <ui-date-range #calendar> </ui-date-range>
+  <ng-template #expandedFilter>
+    <div
+      *ngIf="show"
+      class="flex flex-wrap gap-2 self-start items-end"
+    >
+      <!-- Date range filter -->
+      <div uiFormFieldDirective [defaultMargin]="false">
+        <label>{{ 'common.input.dateRange' | translate }}</label>
+        <div [formGroup]="form" [uiDateWrapper]="calendar">
+          <input
+            [uiDatePicker]
+            formControlName="startDate"
+            [label]="'kendo.datepicker.startLabel' | translate"
+          />
+          <input
+            [uiDatePicker]
+            formControlName="endDate"
+            [label]="'kendo.datepicker.endLabel' | translate"
+          />
+          <ui-date-range #calendar> </ui-date-range>
+        </div>
       </div>
+      <!-- Clear filters -->
+      <ui-button class="max-sm:!w-auto" variant="danger" (click)="clear()">
+        {{ 'common.filter.clear' | translate }}
+      </ui-button>
     </div>
-    <!-- Clear filters -->
-    <ui-button class="max-sm:!w-auto" variant="danger" (click)="clear()">
-      {{ 'common.filter.clear' | translate }}
-    </ui-button>
-  </div>
+  </ng-template>
 </div>

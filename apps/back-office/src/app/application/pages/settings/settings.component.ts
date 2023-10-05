@@ -1,12 +1,11 @@
 import { Apollo } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, UntypedFormGroup, Validators } from '@angular/forms';
 import {
   Application,
   ApplicationService,
   ConfirmService,
   UnsubscribeComponent,
-  LayoutService,
   DeleteApplicationMutationResponse,
   status,
 } from '@oort-front/shared';
@@ -16,7 +15,7 @@ import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { CustomStyleComponent } from '../../../components/custom-style/custom-style.component';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
 
 /**
  * Application settings page component.
@@ -27,9 +26,8 @@ import { SnackbarService } from '@oort-front/ui';
   styleUrls: ['./settings.component.scss'],
 })
 export class SettingsComponent extends UnsubscribeComponent implements OnInit {
-  /** Application settings form */
-  public settingsForm!: ReturnType<typeof this.createSettingsForm>;
-  /** Available statuses */
+  public applications = new Array<Application>();
+  public settingsForm!: UntypedFormGroup;
   public statusChoices = Object.values(status);
   /** Current application */
   public application?: Application;
@@ -51,7 +49,7 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
    * @param confirmService Shared confirm service
    * @param dialog Dialog service
    * @param translate Angular translate service
-   * @param layoutService Shared layout service
+   * @param layoutService UI layout service
    */
   constructor(
     private fb: FormBuilder,
@@ -62,7 +60,7 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
     private confirmService: ConfirmService,
     public dialog: Dialog,
     private translate: TranslateService,
-    private layoutService: LayoutService
+    private layoutService: UILayoutService
   ) {
     super();
   }

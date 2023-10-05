@@ -95,7 +95,7 @@ import {
   UpdateCustomNotificationMutationResponse,
 } from '../../models/custom-notification.model';
 import { UPDATE_CUSTOM_NOTIFICATION } from '../application-notifications/graphql/mutations';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import {
   AddPositionAttributeCategoryMutationResponse,
   DeletePositionAttributeCategoryMutationResponse,
@@ -108,7 +108,6 @@ import {
 } from '../../models/subscription.model';
 import { RestService } from '../rest/rest.service';
 import { DownloadService } from '../download/download.service';
-import { LayoutService } from '../layout/layout.service';
 import { DOCUMENT } from '@angular/common';
 import { GraphQLError } from 'graphql';
 
@@ -181,20 +180,20 @@ export class ApplicationService {
   get distributionLists(): DistributionList[] {
     return this.application.value?.distributionLists || [];
   }
-
   /**
-   * Shared application service. Handles events of opened application.
+   * Creates an instance of ApplicationService.
    *
-   * @param environment Current environment
-   * @param apollo Apollo client
-   * @param snackBar Shared snackbar service
-   * @param authService Shared authentication service
-   * @param router Angular router
-   * @param translate Angular translate service
-   * @param restService Shared rest service.
-   * @param downloadService Shared download service
-   * @param layoutService Shared layout service
-   * @param document document
+   * @param {any} environment - The environment configuration object.
+   * @param {Apollo} apollo - The Apollo client service.
+   * @param {SnackbarService} snackBar - The Snackbar service.
+   * @param {AuthService} authService - The authentication service.
+   * @param {Router} router - The router service.
+   * @param {TranslateService} translate - The translation service.
+   * @param {UILayoutService} layoutService - The UI layout service.
+   * @param {RestService} restService - The REST API service.
+   * @param {DownloadService} downloadService - The download service.
+   * @param {Document} document - The Document object.
+   * @memberof ApplicationService
    */
   constructor(
     @Inject('environment') environment: any,
@@ -203,9 +202,9 @@ export class ApplicationService {
     private authService: AuthService,
     private router: Router,
     private translate: TranslateService,
+    private layoutService: UILayoutService,
     private restService: RestService,
     private downloadService: DownloadService,
-    private layoutService: LayoutService,
     @Inject(DOCUMENT) private document: Document
   ) {
     this.environment = environment;

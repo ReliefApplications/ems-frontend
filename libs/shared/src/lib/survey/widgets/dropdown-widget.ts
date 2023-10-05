@@ -127,6 +127,7 @@ export const init = (
     dropdownInstance.textField = 'text';
     dropdownInstance.valueField = 'value';
     dropdownInstance.popupSettings = { appendTo: 'component' };
+    dropdownInstance.fillMode = 'none';
     return dropdownInstance;
   };
 

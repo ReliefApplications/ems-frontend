@@ -3,9 +3,9 @@
   <shared-form [form]="form" (save)="onComplete($event)"></shared-form>
   <ng-container *ngIf="completed && !form.uniqueRecord && !hideNewRecord">
     <div class="relative pt-2 flex justify-end">
-      <ui-button category="secondary" (click)="clearForm()"
-        >New record</ui-button
-      >
+      <ui-button category="secondary" (click)="clearForm()">{{
+        'models.record.new' | translate
+      }}</ui-button>
     </div>
   </ng-container>
 </ng-container>

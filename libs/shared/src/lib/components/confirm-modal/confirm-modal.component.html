@@ -1,9 +1,9 @@
 <ui-dialog>
   <ng-container ngProjectAs="header">
-    <h1>{{ title }}</h1>
+    <h3 class="font-semibold">{{ title }}</h3>
   </ng-container>
   <ng-container *ngIf="content" ngProjectAs="content">
-    {{ content }}
+    <p class="text-sm text-gray-500">{{ content }}</p>
   </ng-container>
   <ng-container ngProjectAs="actions">
     <ui-button uiDialogClose variant="default">{{ cancelText }}</ui-button>

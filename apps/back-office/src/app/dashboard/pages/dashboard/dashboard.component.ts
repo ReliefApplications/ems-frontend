@@ -24,7 +24,6 @@ import {
   ReferenceDataService,
   Record,
   ButtonActionT,
-  LayoutService,
   ResourceRecordsNodesQueryResponse,
   DashboardQueryResponse,
   EditDashboardMutationResponse,
@@ -48,7 +47,7 @@ import { Observable, firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { isEqual } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import localForage from 'localforage';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
@@ -174,7 +173,7 @@ export class DashboardComponent
     private refDataService: ReferenceDataService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
-    private layoutService: LayoutService,
+    private layoutService: UILayoutService,
     @Inject(DOCUMENT) private document: Document,
     private clipboard: Clipboard
   ) {
