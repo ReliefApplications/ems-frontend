@@ -128,6 +128,13 @@ export const init = (Survey: any, environment: any): void => {
     ],
     default: false,
   });
+  serializer.addProperty('survey', {
+    name: 'saveButtonText',
+    type: 'string',
+    category: 'general',
+    visibleIndex: 2,
+    isRequired: false,
+  });
 
   // Add ability to conditionally allow dynamic panel add new panel
   serializer.addProperty('paneldynamic', {
