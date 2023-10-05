@@ -21,7 +21,7 @@ import { Dialog } from '@angular/cdk/dialog';
 })
 export class AggregationTableComponent
   extends UnsubscribeComponent
-  implements OnInit, OnChanges
+  implements OnInit
 {
   /** Can select new aggregations or not */
   @Input() canAdd = true;
@@ -57,12 +57,6 @@ export class AggregationTableComponent
       });
   }
 
-  ngOnChanges(): void {
-    const defaultValue = this.selectedAggregations?.value;
-    this.setAllAggregations();
-    this.setSelectedAggregations(defaultValue);
-  }
-
   /**
    * Sets the list of all aggregations from resource / form.
    */
@@ -96,6 +90,7 @@ export class AggregationTableComponent
         .sort(
           (a, b) => value.indexOf(a.id || '') - value.indexOf(b.id || '')
         ) || [];
+    
   }
 
   /**
