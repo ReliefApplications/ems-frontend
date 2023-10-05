@@ -14,16 +14,16 @@ import {
   DateTimeProvider,
 } from 'angular-oauth2-oidc';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { AppAbility } from '@oort-front/safe';
+import { AppAbility } from '@oort-front/shared';
 import { of } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { DialogModule } from '@angular/cdk/dialog';
 import {
-  SafeAccessModule,
-  SafeWorkflowStepperModule,
-  SafeSkeletonModule,
-  SafeEditableTextModule,
-} from '@oort-front/safe';
+  AccessModule,
+  WorkflowStepperModule,
+  SkeletonModule,
+  EditableTextModule,
+} from '@oort-front/shared';
 import { WorkflowRoutingModule } from './workflow-routing.module';
 
 describe('WorkflowComponent', () => {
@@ -37,10 +37,10 @@ describe('WorkflowComponent', () => {
         ApolloTestingModule,
         HttpClientTestingModule,
         DialogModule,
-        SafeAccessModule,
-        SafeWorkflowStepperModule,
-        SafeSkeletonModule,
-        SafeEditableTextModule,
+        AccessModule,
+        WorkflowStepperModule,
+        SkeletonModule,
+        EditableTextModule,
         WorkflowRoutingModule,
         TranslateModule.forRoot({
           loader: {

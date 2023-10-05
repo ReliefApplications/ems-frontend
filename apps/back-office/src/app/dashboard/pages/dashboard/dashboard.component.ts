@@ -13,31 +13,26 @@ import {
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
 import {
   Dashboard,
-  SafeApplicationService,
-  SafeWorkflowService,
-  SafeDashboardService,
-  SafeAuthService,
+  ApplicationService,
+  WorkflowService,
+  DashboardService,
+  AuthService,
   Application,
-  SafeUnsubscribeComponent,
-  SafeWidgetGridComponent,
-  SafeConfirmService,
-  SafeReferenceDataService,
+  UnsubscribeComponent,
+  WidgetGridComponent,
+  ConfirmService,
+  ReferenceDataService,
   Record,
   ButtonActionT,
-  SafeLayoutService,
-} from '@oort-front/safe';
-import {
+  ResourceRecordsNodesQueryResponse,
+  DashboardQueryResponse,
   EditDashboardMutationResponse,
-  EDIT_DASHBOARD,
-  EditPageMutationResponse,
-  EDIT_PAGE,
   EditStepMutationResponse,
-  EDIT_STEP,
-} from './graphql/mutations';
+  EditPageMutationResponse,
+  RecordQueryResponse,
+} from '@oort-front/shared';
+import { EDIT_DASHBOARD, EDIT_PAGE, EDIT_STEP } from './graphql/mutations';
 import {
-  GetDashboardByIdQueryResponse,
-  GetRecordByIdQueryResponse,
-  GetResourceRecordsQueryResponse,
   GET_DASHBOARD_BY_ID,
   GET_RECORD_BY_ID,
   GET_RESOURCE_RECORDS,
@@ -54,11 +49,13 @@ import { Observable, firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { isEqual } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import localForage from 'localforage';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { ContextService, CustomWidgetStyleComponent } from '@oort-front/safe';
+import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
 import { DOCUMENT } from '@angular/common';
+import { Clipboard } from '@angular/cdk/clipboard';
+import { GraphQLError } from 'graphql';
 
 /** Default number of records fetched per page */
 const ITEMS_PER_PAGE = 10;
@@ -73,14 +70,14 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
   /** Change step event ( in workflow ) */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
   /** Widget grid reference */
-  @ViewChild(SafeWidgetGridComponent)
-  widgetGridComponent!: SafeWidgetGridComponent;
+  @ViewChild(WidgetGridComponent)
+  widgetGridComponent!: WidgetGridComponent;
   /** Is dashboard in fullscreen mode */
   public isFullScreen = false;
   /** Dashboard id */
@@ -106,7 +103,7 @@ export class DashboardComponent
   /** Contextual reference data elements  */
   public refDataElements: any[] = [];
   /** Contextual records query */
-  public recordsQuery!: QueryRef<GetResourceRecordsQueryResponse>;
+  public recordsQuery!: QueryRef<ResourceRecordsNodesQueryResponse>;
   /** Contextual template id */
   public contextId = new FormControl<string | number | null>(null);
   /** Field of contextual reference data */
@@ -115,6 +112,8 @@ export class DashboardComponent
   public contextRecord: Record | null = null;
   /** Configured dashboard quick actions */
   public buttonActions: ButtonActionT[] = [];
+
+  private timeoutListener!: NodeJS.Timeout;
 
   /** @returns get newest widget id from existing ids */
   get newestId(): number {
@@ -159,25 +158,27 @@ export class DashboardComponent
    * @param elementRef Angular element ref
    * @param layoutService Shared layout service
    * @param document Document
+   * @param clipboard Angular clipboard service
    */
   constructor(
-    private applicationService: SafeApplicationService,
-    private workflowService: SafeWorkflowService,
+    private applicationService: ApplicationService,
+    private workflowService: WorkflowService,
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private dashboardService: SafeDashboardService,
+    private dashboardService: DashboardService,
     private translate: TranslateService,
-    private authService: SafeAuthService,
-    private confirmService: SafeConfirmService,
+    private authService: AuthService,
+    private confirmService: ConfirmService,
     private contextService: ContextService,
-    private refDataService: SafeReferenceDataService,
+    private refDataService: ReferenceDataService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
-    private layoutService: SafeLayoutService,
-    @Inject(DOCUMENT) private document: Document
+    private layoutService: UILayoutService,
+    @Inject(DOCUMENT) private document: Document,
+    private clipboard: Clipboard
   ) {
     super();
   }
@@ -197,11 +198,16 @@ export class DashboardComponent
         takeUntil(this.destroy$)
       )
       .subscribe(() => {
-        console.log('aaaaah');
         this.loading = true;
         // Reset context
         this.contextRecord = null;
-        this.contextId.reset(undefined, { emitEvent: false });
+        this.contextId.setValue(null, {
+          emitEvent: false,
+          emitModelToViewChange: false,
+          emitViewToModelChange: false,
+        });
+        this.contextId.markAsPristine();
+        this.contextId.markAsUntouched();
         // Reset scroll when changing page
         const pageContainer = this.document.getElementById('appPageContainer');
         if (pageContainer) {
@@ -286,7 +292,10 @@ export class DashboardComponent
    * @returns Promise
    */
   private async loadDashboard(id: string) {
-    if (this.dashboard?.id === id) return; // don't init the dashboard if the id is the same
+    // don't init the dashboard if the id is the same
+    if (this.dashboard?.id === id) {
+      return;
+    }
 
     const rootElement = this.elementRef.nativeElement;
     this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
@@ -294,7 +303,7 @@ export class DashboardComponent
     this.loading = true;
     this.id = id;
     return firstValueFrom(
-      this.apollo.query<GetDashboardByIdQueryResponse>({
+      this.apollo.query<DashboardQueryResponse>({
         query: GET_DASHBOARD_BY_ID,
         variables: {
           id: this.id,
@@ -347,6 +356,9 @@ export class DashboardComponent
    */
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
     localForage.removeItem(this.applicationId + 'contextualFilterPosition'); //remove temporary contextual filter data
     localForage.removeItem(this.applicationId + 'contextualFilter');
     this.dashboardService.closeDashboard();
@@ -387,9 +399,12 @@ export class DashboardComponent
     widget.id = this.newestId;
     this.widgets = [...this.widgets, widget];
     this.autoSaveChanges();
+    if (this.timeoutListener) {
+      clearTimeout(this.timeoutListener);
+    }
     // scroll to the element once it is created
-    setTimeout(() => {
-      const el = document.getElementById(`widget-${widget.id}`);
+    this.timeoutListener = setTimeout(() => {
+      const el = this.document.getElementById(`widget-${widget.id}`);
       el?.scrollIntoView({ behavior: 'smooth' });
     });
   }
@@ -491,31 +506,44 @@ export class DashboardComponent
       })
       .subscribe({
         next: ({ errors }) => {
-          if (errors) {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectNotUpdated', {
-                type: this.translate.instant('common.dashboard.one'),
-                error: errors ? errors[0].message : '',
-              }),
-              { error: true }
-            );
-          } else {
-            this.snackBar.openSnackBar(
-              this.translate.instant('common.notifications.objectUpdated', {
-                type: this.translate.instant('common.dashboard.one'),
-                value: '',
-              })
-            );
-            this.dashboardService.openDashboard({
-              ...this.dashboard,
-              structure: this.widgets,
-            });
-          }
+          this.handleDashboardMutationResponse(errors);
         },
         complete: () => (this.loading = false),
       });
   }
 
+  /**
+   * Handle dashboard mutations response
+   *
+   * @param errors errors from mutation response
+   * @param data from mutation response if any
+   */
+  private handleDashboardMutationResponse(
+    errors: readonly GraphQLError[] | undefined,
+    data?: EditDashboardMutationResponse | null
+  ) {
+    if (errors) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectNotUpdated', {
+          type: this.translate.instant('common.dashboard.one'),
+          error: errors ? errors[0].message : '',
+        }),
+        { error: true }
+      );
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectUpdated', {
+          type: this.translate.instant('common.dashboard.one'),
+          value: '',
+        })
+      );
+      this.dashboardService.openDashboard({
+        ...this.dashboard,
+        ...(!data && { structure: this.widgets }),
+        ...(data && { showFilter: data?.editDashboard.showFilter }),
+      });
+    }
+  }
   /**
    * Edit the permissions layer.
    *
@@ -533,29 +561,7 @@ export class DashboardComponent
         })
         .subscribe({
           next: ({ errors, data }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotUpdated',
-                  {
-                    type: this.translate.instant('common.step.one'),
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.step.one'),
-                  value: '',
-                })
-              );
-              this.dashboard = {
-                ...this.dashboard,
-                permissions: data?.editStep.permissions,
-              };
-            }
+            this.handleAccessMutationResponse(data, errors, 'editStep');
           },
           error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
@@ -572,34 +578,46 @@ export class DashboardComponent
         })
         .subscribe({
           next: ({ errors, data }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotUpdated',
-                  {
-                    type: this.translate.instant('common.step.one'),
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.step.one'),
-                  value: '',
-                })
-              );
-              this.dashboard = {
-                ...this.dashboard,
-                permissions: data?.editPage.permissions,
-              };
-            }
+            this.handleAccessMutationResponse(data, errors, 'editPage');
           },
           error: (err) => {
             this.snackBar.openSnackBar(err.message, { error: true });
           },
         });
+    }
+  }
+
+  /**
+   * Handle access mutations response
+   *
+   * @param data retrieved from the access mutation response
+   * @param errors errors from the access mutation response if any
+   * @param dataKey key used to get permission from the given data
+   */
+  private handleAccessMutationResponse<T>(
+    data: T | null | undefined,
+    errors: readonly GraphQLError[] | undefined,
+    dataKey: keyof T
+  ) {
+    if (errors) {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectNotUpdated', {
+          type: this.translate.instant('common.step.one'),
+          error: errors ? errors[0].message : '',
+        }),
+        { error: true }
+      );
+    } else {
+      this.snackBar.openSnackBar(
+        this.translate.instant('common.notifications.objectUpdated', {
+          type: this.translate.instant('common.step.one'),
+          value: '',
+        })
+      );
+      this.dashboard = {
+        ...this.dashboard,
+        permissions: (data?.[dataKey] as any).permissions,
+      };
     }
   }
 
@@ -667,29 +685,7 @@ export class DashboardComponent
         })
         .subscribe({
           next: ({ data, errors }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotUpdated',
-                  {
-                    type: this.translate.instant('common.dashboard.one'),
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.dashboard.one'),
-                  value: '',
-                })
-              );
-              this.dashboardService.openDashboard({
-                ...this.dashboard,
-                showFilter: data?.editDashboard.showFilter,
-              });
-            }
+            this.handleDashboardMutationResponse(errors, data);
           },
           complete: () => {
             this.loading = false;
@@ -702,15 +698,10 @@ export class DashboardComponent
   /** Display the ShareUrl modal with the route to access the dashboard. */
   public async onShare(): Promise<void> {
     const url = `${window.origin}/share/${this.dashboard?.id}`;
-    const { ShareUrlComponent } = await import(
-      './components/share-url/share-url.component'
+    this.clipboard.copy(url);
+    this.snackBar.openSnackBar(
+      this.translate.instant('common.notifications.copiedToClipboard')
     );
-    const dialogRef = this.dialog.open(ShareUrlComponent, {
-      data: {
-        url,
-      },
-    });
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe();
   }
 
   /**
@@ -810,7 +801,7 @@ export class DashboardComponent
 
     if ('resource' in context) {
       this.recordsQuery =
-        this.apollo.watchQuery<GetResourceRecordsQueryResponse>({
+        this.apollo.watchQuery<ResourceRecordsNodesQueryResponse>({
           query: GET_RESOURCE_RECORDS,
           variables: {
             first: ITEMS_PER_PAGE,
@@ -881,7 +872,7 @@ export class DashboardComponent
     } else if ('record' in dContext) {
       // Get record by id
       this.apollo
-        .query<GetRecordByIdQueryResponse>({
+        .query<RecordQueryResponse>({
           query: GET_RECORD_BY_ID,
           variables: {
             id: dContext.record,
@@ -934,5 +925,59 @@ export class DashboardComponent
       },
       callback
     );
+  }
+
+  /**
+   * Handle icon change.
+   * Open icon modal settings, and save changes if icon is updated.
+   */
+  public async onChangeIcon(): Promise<void> {
+    const { IconModalComponent } = await import(
+      '../../../components/icon-modal/icon-modal.component'
+    );
+    const dialogRef = this.dialog.open(IconModalComponent, {
+      data: {
+        icon: this.isStep
+          ? this.dashboard?.step?.icon
+          : this.dashboard?.page?.icon,
+      },
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((icon: any) => {
+      if (icon) {
+        if (this.isStep) {
+          const callback = () => {
+            this.dashboard = {
+              ...this.dashboard,
+              step: {
+                ...this.dashboard?.step,
+                icon,
+              },
+            };
+          };
+          this.dashboard?.step &&
+            this.workflowService.updateStepIcon(
+              this.dashboard.step,
+              icon,
+              callback
+            );
+        } else {
+          const callback = () => {
+            this.dashboard = {
+              ...this.dashboard,
+              page: {
+                ...this.dashboard?.page,
+                icon,
+              },
+            };
+          };
+          this.dashboard?.page &&
+            this.applicationService.changePageIcon(
+              this.dashboard.page,
+              icon,
+              callback
+            );
+        }
+      }
+    });
   }
 }

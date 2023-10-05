@@ -1,0 +1,20 @@
+<ui-dialog [closable]="true" size="medium">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{ 'components.role.summary.autoAssignment.rule.edit' | translate }}
+    </h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <shared-filter [form]="formGroup" [fields]="fields"></shared-filter>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose variant="default">{{ 'common.close' | translate }}</ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="formGroup.value"
+      [disabled]="!formGroup.valid"
+      >{{ 'common.update' | translate }}</ui-button
+    >
+  </ng-container>
+</ui-dialog>

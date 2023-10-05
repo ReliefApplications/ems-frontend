@@ -1,20 +1,23 @@
-<div class="flex gap-8 justify-between mb-8 flex-col sm:flex-row">
-  <!-- FILTERING -->
-  <app-filter
-    (filter)="onFilter($event)"
-    [loading]="filterLoading"
-  ></app-filter>
-  <!-- ACTIONS -->
-  <ui-button
-    icon="add"
-    category="secondary"
-    variant="primary"
-    (click)="onAdd()"
-  >
-    {{ 'models.resource.create' | translate }}
-  </ui-button>
+<div class="mb-8 flex flex-col gap-2">
+  <div class="flex gap-8 justify-between flex-col sm:flex-row">
+    <!-- FILTERING -->
+    <app-resources-filter
+      #filter
+      (filter)="onFilter($event)"
+      [loading]="filterLoading"
+    ></app-resources-filter>
+    <!-- ACTIONS -->
+    <ui-button
+      icon="add"
+      category="secondary"
+      variant="primary"
+      (click)="onAdd()"
+    >
+      {{ 'models.resource.create' | translate }}
+    </ui-button>
+  </div>
+  <ng-container *ngTemplateOutlet="filter.expandedFilter"></ng-container>
 </div>
-
 <!-- Table container -->
 <div class="overflow-x-hidden shadow-2lg">
   <!-- Table scroll container -->
@@ -53,7 +56,7 @@
           </span>
         </th>
         <td uiCell *cdkCellDef="let element">
-          {{ element.createdAt | safeDate }}
+          {{ element.createdAt | sharedDate }}
         </td>
       </ng-container>
 
@@ -75,6 +78,7 @@
             [uiMenuTriggerFor]="menu"
             (click)="$event.stopPropagation()"
             [disabled]="!element.canDelete"
+            [uiTooltip]="'common.options' | translate"
           >
           </ui-button>
           <ui-menu #menu>
@@ -95,12 +99,12 @@
       ></tr>
     </table>
     <!-- Loading indicator -->
-    <safe-skeleton-table
+    <shared-skeleton-table
       *ngIf="loading"
       [columns]="['common.name', 'common.createdOn', 'common.record.few']"
       [actions]="true"
     >
-    </safe-skeleton-table>
+    </shared-skeleton-table>
   </div>
 </div>
 <!-- Pagination -->

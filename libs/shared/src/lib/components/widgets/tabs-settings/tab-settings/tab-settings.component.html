@@ -1,0 +1,24 @@
+<!-- Remove tab -->
+<div class="flex justify-end">
+  <ui-button (click)="delete.emit()" variant="danger" category="tertiary">{{
+    'components.widget.settings.tabs.deleteTab' | translate
+  }}</ui-button>
+</div>
+<!-- Tab label edition -->
+<div [formGroup]="tabGroup" class="my-3">
+  <div uiFormFieldDirective [defaultMargin]="false">
+    <label>{{ 'common.label' | translate }}</label>
+    <input formControlName="label" type="text" placeholder="Type a label..." />
+  </div>
+</div>
+<!-- tab structure edition -->
+<shared-widget-grid
+  *ngIf="isLoaded"
+  [widgets]="tabGroup.value.structure"
+  [canUpdate]="true"
+  (move)="onMove($event)"
+  (edit)="onEdit($event)"
+  (delete)="onDelete($event)"
+  (style)="onStyle($event)"
+  (add)="onAdd($event)"
+></shared-widget-grid>

@@ -1,0 +1,51 @@
+div {
+  display: inline-block;
+  font-size: 0.75em;
+  border-radius: 100em;
+}
+
+.shared-badge-small {
+  padding: 0 0.5em;
+  line-height: 1.5em;
+  height: 1.5em;
+}
+
+.shared-badge-medium {
+  padding: 0 0.75em;
+  line-height: 2em;
+  height: 2em;
+}
+
+.shared-badge-default {
+  background-color: #f1f1f1;
+  font-weight: lighter;
+}
+
+.shared-badge-primary {
+  background-color: rgba(0, 141, 201, 0.1);
+  color: rgb(0, 141, 201);
+}
+
+.shared-badge-danger {
+  background-color: rgba(241, 67, 67, 0.19);
+  color: rgb(241, 67, 67);
+}
+.shared-badge-success {
+  background-color: rgba(149, 221, 101, 0.2);
+  color: rgb(149, 221, 101);
+}
+.shared-badge-warning {
+  background-color: rgba(244, 174, 82, 0.2);
+  color: rgb(244, 174, 82);
+}
+
+.shared-badge-icon {
+  width: 2em;
+  @apply bg-white;
+  line-height: initial;
+
+  ui-icon {
+    position: absolute;
+    margin-top: -1.39em;
+  }
+}

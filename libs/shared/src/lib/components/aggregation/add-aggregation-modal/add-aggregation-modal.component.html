@@ -1,0 +1,59 @@
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{ 'components.aggregation.add.title' | translate }}
+    </h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <div class="flex gap-4 flex-col" *ngIf="!nextStep">
+      <!-- Load from existing Aggregation -->
+      <ui-button
+        class="!w-auto"
+        variant="primary"
+        category="secondary"
+        (click)="nextStep = true"
+        [disabled]="!hasAggregations"
+        [isBlock]="true"
+        >{{ 'components.aggregation.add.choice.load' | translate }}</ui-button
+      >
+      <!-- Add a new aggregation -->
+      <ui-button
+        class="!w-auto"
+        variant="primary"
+        category="tertiary"
+        [isBlock]="true"
+        (click)="onCreate()"
+        >{{ 'components.aggregation.add.choice.create' | translate }}</ui-button
+      >
+    </div>
+    <div *ngIf="nextStep">
+      <div class="flex items-center gap-4 mb-3">
+        <ui-button
+          [isIcon]="true"
+          icon="arrow_back"
+          (click)="nextStep = false"
+          [uiTooltip]="'common.back' | translate"
+        ></ui-button>
+        <div>
+          {{ 'components.aggregation.add.choice.load' | translate }}
+        </div>
+      </div>
+      <div uiFormFieldDirective class="w-full">
+        <label>{{ 'components.aggregation.add.select' | translate }}</label>
+        <ui-graphql-select
+          *ngIf="queryRef"
+          valueField="id"
+          textField="name"
+          path="aggregations"
+          [required]="true"
+          [query]="queryRef"
+          [formControl]="selectedAggregationControl"
+        >
+        </ui-graphql-select>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose variant="default">{{ 'common.close' | translate }}</ui-button>
+  </ng-container>
+</ui-dialog>

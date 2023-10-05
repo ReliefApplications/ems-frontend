@@ -5,22 +5,18 @@ import { ActivatedRoute, Router } from '@angular/router';
 import {
   Workflow,
   Step,
-  SafeConfirmService,
+  ConfirmService,
   ContentType,
-  SafeApplicationService,
-  SafeWorkflowService,
-  SafeAuthService,
+  ApplicationService,
+  WorkflowService,
+  AuthService,
   Application,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
-import {
+  UnsubscribeComponent,
   EditPageMutationResponse,
-  EDIT_PAGE,
   DeleteStepMutationResponse,
-  DELETE_STEP,
   EditWorkflowMutationResponse,
-  EDIT_WORKFLOW,
-} from './graphql/mutations';
+} from '@oort-front/shared';
+import { EDIT_PAGE, DELETE_STEP, EDIT_WORKFLOW } from './graphql/mutations';
 import { TranslateService } from '@ngx-translate/core';
 import { takeUntil } from 'rxjs/operators';
 import { SnackbarService } from '@oort-front/ui';
@@ -33,10 +29,7 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './workflow.component.html',
   styleUrls: ['./workflow.component.scss'],
 })
-export class WorkflowComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
+export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   // === DATA ===
   public loading = true;
 
@@ -74,14 +67,14 @@ export class WorkflowComponent
    */
   constructor(
     private apollo: Apollo,
-    private workflowService: SafeWorkflowService,
-    private applicationService: SafeApplicationService,
+    private workflowService: WorkflowService,
+    private applicationService: ApplicationService,
     private route: ActivatedRoute,
     private router: Router,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private authService: SafeAuthService,
-    private confirmService: SafeConfirmService,
+    private authService: AuthService,
+    private confirmService: ConfirmService,
     private translate: TranslateService
   ) {
     super();
@@ -500,5 +493,39 @@ export class WorkflowComponent
       },
       callback
     );
+  }
+
+  /**
+   * Handle icon change.
+   * Open icon modal settings, and save changes if icon is updated.
+   */
+  public async onChangeIcon(): Promise<void> {
+    const { IconModalComponent } = await import(
+      '../../../components/icon-modal/icon-modal.component'
+    );
+    const dialogRef = this.dialog.open(IconModalComponent, {
+      data: {
+        icon: this.workflow?.page?.icon,
+      },
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((icon: any) => {
+      if (icon) {
+        const callback = () => {
+          this.workflow = {
+            ...this.workflow,
+            page: {
+              ...this.workflow?.page,
+              icon,
+            },
+          };
+        };
+        this.workflow?.page &&
+          this.applicationService.changePageIcon(
+            this.workflow.page,
+            icon,
+            callback
+          );
+      }
+    });
   }
 }

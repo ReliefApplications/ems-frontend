@@ -12,18 +12,17 @@ import {
 } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { ActivatedRoute, NavigationEnd, Router } from '@angular/router';
-import {
-  GetDashboardByIdQueryResponse,
-  GET_DASHBOARD_BY_ID,
-} from './graphql/queries';
+import { GET_DASHBOARD_BY_ID } from './graphql/queries';
 import {
   Dashboard,
-  SafeDashboardService,
-  SafeUnsubscribeComponent,
-  SafeWidgetGridComponent,
-  SafeConfirmService,
+  DashboardService,
+  UnsubscribeComponent,
+  WidgetGridComponent,
+  ConfirmService,
   ButtonActionT,
-} from '@oort-front/safe';
+  ContextService,
+  DashboardQueryResponse,
+} from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { filter, map, startWith, takeUntil } from 'rxjs/operators';
 import { Observable, firstValueFrom } from 'rxjs';
@@ -39,27 +38,30 @@ import { DOCUMENT } from '@angular/common';
   styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
-  public isFullScreen = false;
-  // === STEP CHANGE FOR WORKFLOW ===
+  /** Change step event ( in workflow ) */
   @Output() changeStep: EventEmitter<number> = new EventEmitter();
-
-  /** Current dashboard id */
+  /** Widget grid reference */
+  @ViewChild(WidgetGridComponent)
+  widgetGridComponent!: WidgetGridComponent;
+  /** Is dashboard in fullscreen mode */
+  public isFullScreen = false;
+  /** Dashboard id */
   public id = '';
-  /** Loading state of the loading */
+  /** Application id */
+  public applicationId?: string;
+  /** Is dashboard loading */
   public loading = true;
   /** List of widgets */
-  public widgets = [];
+  public widgets: any[] = [];
   /** Current dashboard */
   public dashboard?: Dashboard;
+  /** Show dashboard filter */
+  public showFilter!: boolean;
   /** Show name ( contextual pages ) */
   public showName = false;
-
-  @ViewChild(SafeWidgetGridComponent)
-  widgetGridComponent!: SafeWidgetGridComponent;
-  public showFilter?: boolean;
 
   // === BUTTON ACTIONS ===
   public buttonActions: ButtonActionT[] = [];
@@ -87,6 +89,7 @@ export class DashboardComponent
    * @param renderer Angular renderer
    * @param elementRef Angular element ref
    * @param document Document
+   * @param contextService Dashboard context service
    */
   constructor(
     private apollo: Apollo,
@@ -94,12 +97,13 @@ export class DashboardComponent
     private router: Router,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private dashboardService: SafeDashboardService,
+    private dashboardService: DashboardService,
     private translate: TranslateService,
-    private confirmService: SafeConfirmService,
+    private confirmService: ConfirmService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
-    @Inject(DOCUMENT) private document: Document
+    @Inject(DOCUMENT) private document: Document,
+    private contextService: ContextService
   ) {
     super();
   }
@@ -133,31 +137,36 @@ export class DashboardComponent
             this.loadDashboard(id).then(() => {
               const templates = this.dashboard?.page?.contentWithContext;
               const type = this.contextType;
-              // Find template from parent's templates, based on query params id
-              const template = templates?.find((d) => {
-                // If templates use reference data
-                if (type === 'element')
-                  return (
-                    'element' in d &&
-                    d.element.toString().trim() === queryId.trim()
+              if (type) {
+                // Find template from parent's templates, based on query params id
+                const template = templates?.find((d) => {
+                  // If templates use reference data
+                  if (type === 'element')
+                    return (
+                      'element' in d &&
+                      d.element.toString().trim() === queryId.trim()
+                    );
+                  // If templates use resource
+                  else if (type === 'record')
+                    return (
+                      'record' in d &&
+                      d.record.toString().trim() === queryId.trim()
+                    );
+                  return false;
+                });
+
+                if (template) {
+                  // Load template, it will erase current dashboard
+                  this.loadDashboard(template.content).then(
+                    () => (this.loading = false)
                   );
-                // If templates use resource
-                else if (type === 'record')
-                  return (
-                    'record' in d &&
-                    d.record.toString().trim() === queryId.trim()
-                  );
-                return false;
-              });
-              if (template) {
-                // Load template, it will erase current dashboard
-                this.loadDashboard(template.content).then(
-                  () => (this.loading = false)
-                );
+                } else {
+                  // Will use current template
+                  this.loading = false;
+                  return;
+                }
               } else {
-                // Will use current template
                 this.loading = false;
-                return;
               }
             });
           } else {
@@ -166,6 +175,60 @@ export class DashboardComponent
             this.loadDashboard(id).then(() => (this.loading = false));
           }
         }
+      });
+  }
+
+  /**
+   * Init the dashboard
+   *
+   * @param id Dashboard id
+   * @returns Promise
+   */
+  private async loadDashboard(id: string) {
+    // don't init the dashboard if the id is the same
+    if (this.dashboard?.id === id) {
+      return;
+    }
+
+    const rootElement = this.elementRef.nativeElement;
+    // Doing this to be able to use custom styles on specific dashboards
+    this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
+    this.loading = true;
+    this.id = id;
+    return firstValueFrom(
+      this.apollo.query<DashboardQueryResponse>({
+        query: GET_DASHBOARD_BY_ID,
+        variables: {
+          id: this.id,
+        },
+      })
+    )
+      .then(({ data }) => {
+        if (data.dashboard) {
+          this.dashboard = data.dashboard;
+          this.dashboardService.openDashboard(this.dashboard);
+          this.widgets = data.dashboard.structure
+            ? data.dashboard.structure
+            : [];
+          this.buttonActions = this.dashboard.buttons || [];
+          this.showFilter = this.dashboard.showFilter ?? false;
+          this.contextService.isFilterEnabled.next(this.showFilter);
+        } else {
+          this.snackBar.openSnackBar(
+            this.translate.instant('common.notifications.accessNotProvided', {
+              type: this.translate
+                .instant('common.dashboard.one')
+                .toLowerCase(),
+              error: '',
+            }),
+            { error: true }
+          );
+          this.router.navigate(['/applications']);
+        }
+      })
+      .catch((err) => {
+        this.snackBar.openSnackBar(err.message, { error: true });
+        this.router.navigate(['/applications']);
       });
   }
 
@@ -200,54 +263,5 @@ export class DashboardComponent
       );
     }
     return true;
-  }
-
-  /**
-   * Init the dashboard
-   *
-   * @param id Dashboard id
-   * @returns Promise
-   */
-  private async loadDashboard(id: string) {
-    if (this.dashboard?.id === id) return; // don't init the dashboard if the id is the same
-    const rootElement = this.elementRef.nativeElement;
-    // Doing this to be able to use custom styles on specific dashboards
-    this.renderer.setAttribute(rootElement, 'data-dashboard-id', id);
-    this.loading = true;
-    this.id = id;
-    return firstValueFrom(
-      this.apollo.query<GetDashboardByIdQueryResponse>({
-        query: GET_DASHBOARD_BY_ID,
-        variables: {
-          id: this.id,
-        },
-      })
-    )
-      .then(({ data }) => {
-        if (data.dashboard) {
-          this.dashboard = data.dashboard;
-          this.dashboardService.openDashboard(this.dashboard);
-          this.widgets = data.dashboard.structure
-            ? data.dashboard.structure
-            : [];
-          this.buttonActions = this.dashboard.buttons || [];
-          this.showFilter = this.dashboard.showFilter;
-        } else {
-          this.snackBar.openSnackBar(
-            this.translate.instant('common.notifications.accessNotProvided', {
-              type: this.translate
-                .instant('common.dashboard.one')
-                .toLowerCase(),
-              error: '',
-            }),
-            { error: true }
-          );
-          this.router.navigate(['/applications']);
-        }
-      })
-      .catch((err) => {
-        this.snackBar.openSnackBar(err.message, { error: true });
-        this.router.navigate(['/applications']);
-      });
   }
 }

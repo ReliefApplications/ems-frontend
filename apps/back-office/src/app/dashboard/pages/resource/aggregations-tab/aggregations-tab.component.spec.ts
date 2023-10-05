@@ -14,7 +14,7 @@ import {
   TableModule,
   PaginatorModule,
 } from '@oort-front/ui';
-import { SafeSkeletonTableModule } from '@oort-front/safe';
+import { SkeletonTableModule } from '@oort-front/shared';
 
 describe('AggregationsTabComponent', () => {
   let component: AggregationsTabComponent;
@@ -30,7 +30,7 @@ describe('AggregationsTabComponent', () => {
         ButtonModule,
         TableModule,
         PaginatorModule,
-        SafeSkeletonTableModule,
+        SkeletonTableModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

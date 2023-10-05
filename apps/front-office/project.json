@@ -18,7 +18,7 @@
         "assets": [
           {
             "glob": "**/*",
-            "input": "libs/safe/src/i18n/",
+            "input": "libs/shared/src/i18n/",
             "output": "/assets/i18n/"
           },
           {
@@ -35,7 +35,7 @@
           },
           {
             "glob": "**/*",
-            "input": "libs/safe/src/i18n/tinymce/",
+            "input": "libs/shared/src/i18n/tinymce/",
             "output": "/tinymce/langs"
           },
           {
@@ -51,9 +51,13 @@
         ],
         "styles": [
           "apps/front-office/src/styles.scss",
-          "libs/safe/src/lib/style/styles.scss",
-          "node_modules/survey-angular/survey.min.css",
-          "node_modules/survey-creator/survey-creator.min.css",
+          "libs/shared/src/lib/style/styles.scss",
+          "libs/styles/src/lib/tailwind/tailwind.scss",
+          "libs/styles/src/lib/kendo/theme.scss",
+          "libs/styles/src/lib/shared/shared.scss",
+          "node_modules/survey-core/defaultV2.min.css",
+          "node_modules/survey-core/survey.min.css",
+          "node_modules/survey-creator-core/survey-creator-core.min.css",
           "node_modules/leaflet/dist/leaflet.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
@@ -64,15 +68,12 @@
           "node_modules/leaflet-timedimension/dist/leaflet.timedimension.control.min.css"
         ],
         "scripts": [
-          "node_modules/jquery/dist/jquery.js",
           "node_modules/tinymce/tinymce.js",
           "node_modules/tinymce/themes/silver/theme.js"
         ],
         "allowedCommonJsDependencies": [
           "minimatch",
           "hammerjs",
-          "survey-creator",
-          "survey-knockout",
           "subscriptions-transport-ws",
           "zen-observable",
           "lodash",
@@ -80,7 +81,9 @@
           "cron-parser",
           "cron-validator",
           "localforage",
-          "survey-angular",
+          "survey-core",
+          "survey-creator-core",
+          "survey-angular-ui",
           "fast-sha256",
           "leaflet",
           "esri-leaflet-geocoder",
@@ -109,12 +112,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
         "azure-uat": {
@@ -133,12 +136,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
         "azure-sit": {
@@ -157,12 +160,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/shared/src/lib/style/themes/default"]
           }
         },
         "azure-dev": {
@@ -181,12 +184,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
         "oort-prod": {
@@ -205,12 +208,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-dev": {
@@ -229,12 +232,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-tailwind": {
@@ -253,12 +256,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
         "oort-guyane": {
@@ -277,12 +280,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-alimentaide": {
@@ -301,12 +304,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-demo": {
@@ -325,12 +328,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-lift": {
@@ -349,12 +352,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/lift"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "oort-expertisefr": {
@@ -373,12 +376,12 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/expertisefr"]
+            "includePaths": ["libs/styles/src/lib/themes/expertisefr"]
           }
         },
         "oort-local": {
@@ -395,7 +398,7 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/oort"]
+            "includePaths": ["libs/styles/src/lib/themes/oort"]
           }
         },
         "development": {
@@ -406,7 +409,7 @@
           "sourceMap": true,
           "namedChunks": true,
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         }
       },

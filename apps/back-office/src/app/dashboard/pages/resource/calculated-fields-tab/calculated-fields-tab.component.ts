@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
-import { Resource, SafeUnsubscribeComponent } from '@oort-front/safe';
+import {
+  EditResourceMutationResponse,
+  Resource,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
 import get from 'lodash/get';
-import {
-  Calculated_FIELD_UPDATE,
-  CalculatedFieldUpdateMutationResponse,
-} from './graphql/mutations';
+import { Calculated_FIELD_UPDATE } from './graphql/mutations';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import { takeUntil } from 'rxjs';
@@ -20,7 +21,7 @@ import { takeUntil } from 'rxjs';
   styleUrls: ['./calculated-fields-tab.component.scss'],
 })
 export class CalculatedFieldsTabComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   public resource!: Resource;
@@ -60,10 +61,10 @@ export class CalculatedFieldsTabComponent
    * Adds a new Calculated field for the resource.
    */
   async onAddCalculatedField(): Promise<void> {
-    const { SafeEditCalculatedFieldModalComponent } = await import(
-      '@oort-front/safe'
+    const { EditCalculatedFieldModalComponent } = await import(
+      '@oort-front/shared'
     );
-    const dialogRef = this.dialog.open(SafeEditCalculatedFieldModalComponent, {
+    const dialogRef = this.dialog.open(EditCalculatedFieldModalComponent, {
       disableClose: true,
       data: {
         calculatedField: null,
@@ -73,46 +74,7 @@ export class CalculatedFieldsTabComponent
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (value) {
-        this.apollo
-          .mutate<CalculatedFieldUpdateMutationResponse>({
-            mutation: Calculated_FIELD_UPDATE,
-            variables: {
-              resourceId: this.resource.id,
-              calculatedField: {
-                add: {
-                  name: value.name,
-                  expression: value.expression
-                    .replace(/<[^>]*>/gi, ' ')
-                    .replace(/<\/[^>]*>/gi, ' ')
-                    .replace(/&nbsp;|&#160;/gi, ' ')
-                    .replace(/\s+/gi, ' ')
-                    .trim(),
-                },
-              },
-            },
-          })
-          .subscribe({
-            next: (res) => {
-              if (res.data?.editResource) {
-                // Needed to update the field as table data source
-                this.fields = this.fields.concat(
-                  res.data.editResource.fields.find(
-                    (f: any) => f.name === value.name
-                  )
-                );
-              }
-              if (res.errors) {
-                this.snackBar.openSnackBar(res.errors[0].message, {
-                  error: true,
-                });
-              }
-            },
-            error: (err) => {
-              this.snackBar.openSnackBar(err.message, { error: true });
-            },
-          });
-      }
+      this.handleCalculatedFieldResponse(value);
     });
   }
 
@@ -122,10 +84,10 @@ export class CalculatedFieldsTabComponent
    * @param field Calculated field to edit
    */
   async onEditCalculatedField(field: any): Promise<void> {
-    const { SafeEditCalculatedFieldModalComponent } = await import(
-      '@oort-front/safe'
+    const { EditCalculatedFieldModalComponent } = await import(
+      '@oort-front/shared'
     );
-    const dialogRef = this.dialog.open(SafeEditCalculatedFieldModalComponent, {
+    const dialogRef = this.dialog.open(EditCalculatedFieldModalComponent, {
       disableClose: true,
       data: {
         calculatedField: field,
@@ -135,25 +97,43 @@ export class CalculatedFieldsTabComponent
       },
     });
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      if (!value) {
-        return;
-      }
+      this.handleCalculatedFieldResponse(value, field);
+    });
+  }
+
+  /**
+   * Handle calculated field mutation response for add/update a calculated field
+   *
+   * @param value retrieved from the mutation response
+   * @param field field to update if it's an update mutation
+   */
+  private handleCalculatedFieldResponse(value: any, field?: any) {
+    if (value) {
+      const expression = value.expression
+        .replace(/<[^>]*>/gi, ' ')
+        .replace(/<\/[^>]*>/gi, ' ')
+        .replace(/&nbsp;|&#160;/gi, ' ')
+        .replace(/\s+/gi, ' ')
+        .trim();
       this.apollo
-        .mutate<CalculatedFieldUpdateMutationResponse>({
+        .mutate<EditResourceMutationResponse>({
           mutation: Calculated_FIELD_UPDATE,
           variables: {
             resourceId: this.resource.id,
             calculatedField: {
-              update: {
-                oldName: field.name,
-                name: value.name,
-                expression: value.expression
-                  .replace(/<[^>]*>/gi, ' ')
-                  .replace(/<\/[^>]*>/gi, ' ')
-                  .replace(/&nbsp;|&#160;/gi, ' ')
-                  .replace(/\s+/gi, ' ')
-                  .trim(),
-              },
+              ...(!field && {
+                add: {
+                  name: value.name,
+                  expression,
+                },
+              }),
+              ...(field && {
+                update: {
+                  oldName: field.name,
+                  name: value.name,
+                  expression,
+                },
+              }),
             },
           },
         })
@@ -161,9 +141,15 @@ export class CalculatedFieldsTabComponent
           next: (res) => {
             if (res.data?.editResource) {
               // Needed to update the field as table data source
-              this.fields = res.data.editResource.fields.filter(
-                (f: any) => f.isCalculated
-              );
+              this.fields = field
+                ? res.data.editResource.fields.filter(
+                    (f: any) => f.isCalculated
+                  )
+                : this.fields.concat(
+                    res.data.editResource.fields.find(
+                      (f: any) => f.name === value.name
+                    )
+                  );
             }
             if (res.errors) {
               this.snackBar.openSnackBar(res.errors[0].message, {
@@ -175,7 +161,7 @@ export class CalculatedFieldsTabComponent
             this.snackBar.openSnackBar(err.message, { error: true });
           },
         });
-    });
+    }
   }
 
   /**
@@ -184,8 +170,8 @@ export class CalculatedFieldsTabComponent
    * @param field Calculated field to delete
    */
   async onDeleteCalculatedField(field: any): Promise<void> {
-    const { SafeConfirmModalComponent } = await import('@oort-front/safe');
-    const dialogRef = this.dialog.open(SafeConfirmModalComponent, {
+    const { ConfirmModalComponent } = await import('@oort-front/shared');
+    const dialogRef = this.dialog.open(ConfirmModalComponent, {
       data: {
         title: this.translate.instant('common.deleteObject', {
           name: this.translate.instant('common.calculatedField.one'),
@@ -204,7 +190,7 @@ export class CalculatedFieldsTabComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.apollo
-          .mutate<CalculatedFieldUpdateMutationResponse>({
+          .mutate<EditResourceMutationResponse>({
             mutation: Calculated_FIELD_UPDATE,
             variables: {
               resourceId: this.resource.id,

@@ -1,10 +1,11 @@
 import { Component, Input, OnChanges, OnInit, ViewChild } from '@angular/core';
 import { Apollo } from 'apollo-angular';
-import { SafeFormComponent, Form } from '@oort-front/safe/widgets';
 import {
-  GetFormByIdQueryResponse,
-  GET_SHORT_FORM_BY_ID,
-} from '../graphql/queries';
+  FormComponent as SharedFormComponent,
+  Form,
+  FormQueryResponse,
+} from '@oort-front/shared/widgets';
+import { GET_SHORT_FORM_BY_ID } from '../graphql/queries';
 
 /** Form component */
 @Component({
@@ -15,14 +16,21 @@ import {
 export class FormComponent implements OnInit, OnChanges {
   @Input() id = '620236aa030f3a5e5db78319';
 
-  @ViewChild(SafeFormComponent)
-  private formComponent?: SafeFormComponent;
+  @ViewChild(SharedFormComponent)
+  private formComponent?: SharedFormComponent;
 
   // === DATA ===
   public loading = true;
   public form?: Form;
   public completed = false;
   public hideNewRecord = false;
+
+  private getFormQuery = this.apollo.query<FormQueryResponse>({
+    query: GET_SHORT_FORM_BY_ID,
+    variables: {
+      id: this.id,
+    },
+  });
 
   /**
    * Form component
@@ -32,35 +40,23 @@ export class FormComponent implements OnInit, OnChanges {
   constructor(private apollo: Apollo) {}
 
   ngOnInit(): void {
-    this.apollo
-      .query<GetFormByIdQueryResponse>({
-        query: GET_SHORT_FORM_BY_ID,
-        variables: {
-          id: this.id,
-        },
-      })
-      .subscribe(({ data, loading }) => {
-        if (data) {
-          this.form = data.form;
-          this.loading = loading;
-        }
-      });
+    this.getFormById();
   }
 
   ngOnChanges(): void {
-    this.apollo
-      .query<GetFormByIdQueryResponse>({
-        query: GET_SHORT_FORM_BY_ID,
-        variables: {
-          id: this.id,
-        },
-      })
-      .subscribe(({ data, loading }) => {
-        if (data) {
-          this.form = data.form;
-          this.loading = loading;
-        }
-      });
+    this.getFormById();
+  }
+
+  /**
+   * Trigger get form query action
+   */
+  private getFormById() {
+    this.getFormQuery.subscribe(({ data, loading }) => {
+      if (data) {
+        this.form = data.form;
+        this.loading = loading;
+      }
+    });
   }
 
   /**

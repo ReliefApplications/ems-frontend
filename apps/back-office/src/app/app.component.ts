@@ -1,5 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { SafeAuthService, SafeFormService } from '@oort-front/safe';
+import {
+  GeofieldsListboxComponent,
+  ApplicationDropdownComponent,
+  AuthService,
+  FormService,
+  ReferenceDataDropdownComponent,
+  ResourceAvailableFieldsComponent,
+  ResourceCustomFiltersComponent,
+  ResourceDropdownComponent,
+  ResourceSelectTextComponent,
+  TestServiceDropdownComponent,
+} from '@oort-front/shared';
 import { TranslateService } from '@ngx-translate/core';
 import { environment } from '../environments/environment';
 
@@ -12,6 +23,17 @@ import { environment } from '../environments/environment';
   styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
+  // Static component declaration of survey custom components for the property grid editor in order to avoid removal on tree shake for production build
+  static declaration = [
+    ApplicationDropdownComponent,
+    GeofieldsListboxComponent,
+    ReferenceDataDropdownComponent,
+    ResourceAvailableFieldsComponent,
+    ResourceCustomFiltersComponent,
+    ResourceDropdownComponent,
+    ResourceSelectTextComponent,
+    TestServiceDropdownComponent,
+  ];
   title = 'back-office';
 
   /**
@@ -22,9 +44,9 @@ export class AppComponent implements OnInit {
    * @param translate Angular translate service
    */
   constructor(
-    private authService: SafeAuthService,
+    private authService: AuthService,
     // We need to initialize the service there
-    private formService: SafeFormService,
+    private formService: FormService,
     private translate: TranslateService
   ) {
     this.translate.addLangs(environment.availableLanguages);

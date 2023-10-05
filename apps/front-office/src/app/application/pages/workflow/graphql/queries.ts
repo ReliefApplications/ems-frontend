@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Form, Workflow, Step, Page } from '@oort-front/safe';
 
 /**
  * Form query.
@@ -24,16 +23,6 @@ export const GET_FORM_BY_ID = gql`
 `;
 
 /**
- * Interface of form query response.
- */
-export interface GetFormByIdQueryResponse {
-  /** Loading state of the query */
-
-  /** Application form */
-  form: Form;
-}
-
-/**
  * Workflow query.
  */
 export const GET_WORKFLOW_BY_ID = gql`
@@ -45,6 +34,7 @@ export const GET_WORKFLOW_BY_ID = gql`
       modifiedAt
       steps {
         id
+        icon
         name
         type
         content
@@ -74,22 +64,13 @@ export const GET_WORKFLOW_BY_ID = gql`
 `;
 
 /**
- * Interface of workflow query response.
- */
-export interface GetWorkflowByIdQueryResponse {
-  /** Loading state of the query */
-
-  /** Application workflow */
-  workflow: Workflow;
-}
-
-/**
  * Workflow step query.
  */
 export const GET_STEP_BY_ID = gql`
   query GetStepById($id: ID!) {
     step(id: $id) {
       id
+      icon
       name
       createdAt
       modifiedAt
@@ -100,22 +81,13 @@ export const GET_STEP_BY_ID = gql`
 `;
 
 /**
- * Interface of workflow step query response.
- */
-export interface GetStepByIdQueryResponse {
-  /** Loading state of the query */
-
-  /** Application step */
-  step: Step;
-}
-
-/**
  * Application page query.
  */
 export const GET_PAGE_BY_ID = gql`
   query GetPageById($id: ID!) {
     page(id: $id) {
       id
+      icon
       name
       createdAt
       modifiedAt
@@ -125,13 +97,3 @@ export const GET_PAGE_BY_ID = gql`
     }
   }
 `;
-
-/**
- * Interface of application page query.
- */
-export interface GetPageByIdQueryResponse {
-  /** Loading state of the query */
-
-  /** Application page */
-  page: Page;
-}
