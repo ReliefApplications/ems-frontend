@@ -1,11 +1,11 @@
 <ui-dialog size="medium" [closable]="true">
   <ng-container ngProjectAs="header">
-    <h2>{{ 'models.dashboard.context.datasource.title' | translate }}</h2>
+    <h3 class="font-semibold">{{ 'models.dashboard.context.datasource.title' | translate }}</h3>
   </ng-container>
 
   <ng-container ngProjectAs="content">
     <form [formGroup]="form" class="flex justify-between w-full flex-col py-2">
-      <ui-alert class="mb-6">
+      <ui-alert class="mb-6 text-sm">
         {{ 'models.dashboard.context.datasource.alert' | translate }}
       </ui-alert>
       <!-- Origin -->

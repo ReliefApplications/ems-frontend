@@ -1,6 +1,6 @@
 <ui-dialog>
   <ng-container *ngIf="loading" ngProjectAs="header">
-    <h1>{{ data.title }}</h1>
+    <h3 class="font-semibold">{{ data.title }}</h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <ui-spinner *ngIf="loading"></ui-spinner>

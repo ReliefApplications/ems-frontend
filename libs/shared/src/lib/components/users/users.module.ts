@@ -12,7 +12,6 @@ import {
   FormWrapperModule,
   SelectMenuModule,
   TooltipModule,
-  DateModule,
 } from '@oort-front/ui';
 import { InviteUsersModule } from './components/invite-users/invite-users.module';
 import { TranslateModule } from '@ngx-translate/core';
@@ -40,7 +39,6 @@ import { FilterComponent } from './filter/filter.component';
     SelectMenuModule,
     TooltipModule,
     ListFilterComponent,
-    DateModule,
   ],
   exports: [UsersComponent],
 })

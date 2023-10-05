@@ -1,10 +1,9 @@
-<!-- todo: translate all texts -->
 <section>
   <ui-tabs>
     <!-- Minute -->
     <ui-tab [formGroup]="allForm" *ngIf="!options.hideMinutesTab" #minutesTab>
       <ng-container ngProjectAs="label">
-        <span>Minutely</span>
+        <span>{{ 'common.cronEditor.minutely' | translate }}</span>
       </ng-container>
       <ng-template uiTabContent>
         <div class="px-2">
@@ -12,10 +11,10 @@
             class="inline-flex items-center gap-2"
             (click)="allForm.controls.cronType.setValue('minutely')"
           >
-            <span>Every</span>
+            <span>{{ 'common.cronEditor.every.feminine' | translate }}</span>
             <div class="w-32">
               <div uiFormFieldDirective>
-                <label>Minute(s)</label>
+                <label>{{ 'common.cronEditor.minutes' | translate }}</label>
                 <ui-select-menu formControlName="minutesPer">
                   <ui-select-option
                     *ngFor="let minute of minutes"
@@ -27,7 +26,7 @@
             </div>
 
             <div *ngIf="isCronFlavorQuartz">
-              <span>At time </span>
+              <span>{{ 'common.cronEditor.atTime' | translate }}</span>
               <ui-cron-time-picker
                 [formGroup]="allForm"
                 [hideHours]="true"
@@ -45,7 +44,7 @@
     <!-- Hourly -->
     <ui-tab *ngIf="!options.hideHourlyTab" #hourlyTab>
       <ng-container ngProjectAs="label">
-        <span>Hourly</span>
+        <span>{{ 'common.cronEditor.hourly' | translate }}</span>
       </ng-container>
       <ng-template uiTabContent>
         <div class="px-2">
@@ -53,10 +52,10 @@
             class="inline-flex items-center gap-2"
             (click)="allForm.controls.cronType.setValue('hourly')"
           >
-            <span>Every</span>
+            <span>{{ 'common.cronEditor.every.feminine' | translate }}</span>
             <div class="w-32">
               <div uiFormFieldDirective [formGroup]="allForm">
-                <label>Hour(s)</label>
+                <label>{{ 'common.cronEditor.hours' | translate }}</label>
                 <ui-select-menu formControlName="hoursPer">
                   <ui-select-option *ngFor="let hour of hours" [value]="hour">{{
                     hour
@@ -81,7 +80,7 @@
     <!-- Daily-->
     <ui-tab *ngIf="!options.hideDailyTab" #dailyTab>
       <ng-container ngProjectAs="label">
-        <span>Daily</span>
+        <span>{{ 'common.cronEditor.daily' | translate }}</span>
       </ng-container>
       <ng-template uiTabContent>
         <div class="px-2">
@@ -91,7 +90,7 @@
           >
             <!-- Selection of days -->
             <div [formGroup]="allForm" class="flex gap-2 items-center">
-              <span>Every</span>
+              <span>{{ 'common.cronEditor.every.masculine' | translate }}</span>
               <div
                 class="flex flex-col"
                 formControlName="weekdaysOnly"
@@ -101,7 +100,7 @@
                 <ui-radio name="subTab" [value]="false" [checked]="true">
                   <ng-container ngProjectAs="label">
                     <div uiFormFieldDirective>
-                      <label>Day(s)</label>
+                      <label>{{ 'common.cronEditor.days' | translate }}</label>
                       <ui-select-menu formControlName="daysPer">
                         <ui-select-option
                           *ngFor="let monthDay of selectOptions.monthDays"
@@ -116,14 +115,14 @@
                 <!-- Working days -->
                 <ui-radio name="subTab" [value]="true">
                   <ng-container ngProjectAs="label">
-                    <span>Week Day (MON-FRI) </span>
+                    <span>{{ 'common.cronEditor.weekDay' | translate }} </span>
                   </ng-container>
                 </ui-radio>
               </div>
             </div>
             <!-- Selection of time -->
             <div class="inline-flex gap-2 items-center">
-              <span>At time:</span>
+              <span>{{ 'common.cronEditor.atTime' | translate }}:</span>
               <ui-cron-time-picker
                 [formGroup]="allForm"
                 [use24HourTime]="options.use24HourTime"
@@ -139,7 +138,7 @@
     <!-- Weekly-->
     <ui-tab *ngIf="!options.hideWeeklyTab" #weeklyTab>
       <ng-container ngProjectAs="label">
-        <span>Weekly</span>
+        <span>{{ 'common.cronEditor.weekly' | translate }}</span>
       </ng-container>
       <ng-template uiTabContent>
         <div class="px-2">
@@ -148,35 +147,51 @@
             class="flex flex-col gap-3"
           >
             <div class="inline-flex items-center gap-2">
-              <span>Every</span>
+              <span>{{ 'common.cronEditor.every.masculine' | translate }}</span>
 
               <div [formGroup]="allForm" class="flex flex-col">
                 <ui-checkbox formControlName="MON">
-                  <ng-container ngProjectAs="label"> Monday </ng-container>
+                  <ng-container ngProjectAs="label">
+                    {{ 'common.cronEditor.weekDays.monday' | translate }}
+                  </ng-container>
                 </ui-checkbox>
                 <ui-checkbox formControlName="TUE">
-                  <ng-container ngProjectAs="label"> Tuesday </ng-container>
+                  <ng-container ngProjectAs="label">
+                    {{ 'common.cronEditor.weekDays.tuesday' | translate }}
+                  </ng-container>
                 </ui-checkbox>
                 <ui-checkbox formControlName="WED">
-                  <ng-container ngProjectAs="label"> Wednesday </ng-container>
+                  <ng-container ngProjectAs="label">
+                    {{
+                      'common.cronEditor.weekDays.wednesday' | translate
+                    }}</ng-container
+                  >
                 </ui-checkbox>
                 <ui-checkbox formControlName="THU">
-                  <ng-container ngProjectAs="label"> Thursday </ng-container>
+                  <ng-container ngProjectAs="label">
+                    {{ 'common.cronEditor.weekDays.thursday' | translate }}
+                  </ng-container>
                 </ui-checkbox>
                 <ui-checkbox formControlName="FRI">
-                  <ng-container ngProjectAs="label"> Friday </ng-container>
+                  <ng-container ngProjectAs="label">
+                    {{ 'common.cronEditor.weekDays.friday' | translate }}
+                  </ng-container>
                 </ui-checkbox>
                 <ui-checkbox formControlName="SAT">
-                  <ng-container ngProjectAs="label"> Saturday </ng-container>
+                  <ng-container ngProjectAs="label">
+                    {{ 'common.cronEditor.weekDays.saturday' | translate }}
+                  </ng-container>
                 </ui-checkbox>
                 <ui-checkbox formControlName="SUN">
-                  <ng-container ngProjectAs="label"> Sunday </ng-container>
+                  <ng-container ngProjectAs="label">
+                    {{ 'common.cronEditor.weekDays.sunday' | translate }}
+                  </ng-container>
                 </ui-checkbox>
               </div>
             </div>
 
             <div class="inline-flex items-center gap-2">
-              <span>At time:</span>
+              <span>{{ 'common.cronEditor.atTime' | translate }}:</span>
               <ui-cron-time-picker
                 [formGroup]="allForm"
                 [use24HourTime]="options.use24HourTime"
@@ -192,7 +207,7 @@
     <!-- Monthly-->
     <ui-tab *ngIf="!options.hideMonthlyTab" #monthlyTab>
       <ng-container ngProjectAs="label">
-        <span>Monthly</span>
+        <span>{{ 'common.cronEditor.monthly' | translate }}</span>
       </ng-container>
       <ng-template uiTabContent>
         <div class="px-2">
@@ -213,10 +228,10 @@
                 <!-- Specific day -->
                 <ng-container ngProjectAs="label">
                   <div class="inline-flex items-center gap-2">
-                    <span>On the</span>
+                    <span>{{ 'common.cronEditor.onThe.masculine' | translate }}</span>
                     <ng-container *ngIf="options.cronFlavor === 'quartz'">
                       <div uiFormFieldDirective>
-                        <label>Day</label>
+                        <label>{{ 'common.cronEditor.day' | translate }}</label>
                         <ui-select-menu
                           class="month-days"
                           formControlName="days"
@@ -235,7 +250,7 @@
 
                     <ng-container *ngIf="options.cronFlavor === 'standard'">
                       <div uiFormFieldDirective>
-                        <label>Day</label>
+                        <label>{{ 'common.cronEditor.day' | translate }}</label>
                         <ui-select-menu
                           class="month-days"
                           formControlName="days"
@@ -252,10 +267,10 @@
                       </div>
                     </ng-container>
 
-                    <span>of every</span>
+                    <span>{{ 'common.cronEditor.ofEvery' | translate }}</span>
 
                     <div uiFormFieldDirective>
-                      <label>Month</label>
+                      <label>{{ 'common.cronEditor.month' | translate }}</label>
                       <ui-select-menu
                         class="months-small"
                         formControlName="monthsInc"
@@ -280,9 +295,9 @@
                 <!-- Specific Week day -->
                 <ng-container ngProjectAs="label">
                   <div class="inline-flex items-center gap-2">
-                    <span>On the</span>
+                    <span>{{ 'common.cronEditor.onThe.feminine' | translate }}</span>
                     <div uiFormFieldDirective>
-                      <label>Week</label>
+                      <label>{{ 'common.cronEditor.week' | translate }}</label>
                       <ui-select-menu
                         class="day-order-in-month"
                         formControlName="monthsWeek"
@@ -297,7 +312,7 @@
                     </div>
 
                     <div uiFormFieldDirective class="w-36">
-                      <label>Day</label>
+                      <label>{{ 'common.cronEditor.day' | translate }}</label>
                       <ui-select-menu class="week-days" formControlName="day">
                         <ui-select-option
                           *ngFor="let day of selectOptions.days"
@@ -308,10 +323,12 @@
                       </ui-select-menu>
                     </div>
 
-                    <span>of every</span>
+                    <span>{{ 'common.cronEditor.ofEvery' | translate }}</span>
 
                     <div uiFormFieldDirective>
-                      <label> Month</label>
+                      <label>
+                        {{ 'common.cronEditor.month' | translate }}</label
+                      >
                       <ui-select-menu
                         class="months-small"
                         formControlName="monthsInc"
@@ -330,7 +347,7 @@
             </div>
 
             <div class="inline-flex items-center gap-2">
-              <span>At time:</span>
+              <span>{{ 'common.cronEditor.atTime' | translate }}:</span>
               <ui-cron-time-picker
                 [formGroup]="allForm"
                 [use24HourTime]="options.use24HourTime"
@@ -346,7 +363,7 @@
     <!-- Yearly-->
     <ui-tab *ngIf="!options.hideYearlyTab" #yearlyTab>
       <ng-container ngProjectAs="label">
-        <span>Yearly</span>
+        <span>{{ 'common.cronEditor.yearly' | translate }}</span>
       </ng-container>
       <ng-template uiTabContent>
         <div class="px-2">
@@ -366,13 +383,13 @@
               >
                 <ng-container ngProjectAs="label">
                   <div class="inline-flex items-center gap-2">
-                    <span>On the</span>
+                    <span>{{ 'common.cronEditor.onThe.masculine' | translate }}</span>
 
                     <div
                       uiFormFieldDirective
                       *ngIf="options.cronFlavor === 'quartz'"
                     >
-                      <label>Day</label>
+                      <label>{{ 'common.cronEditor.day' | translate }}</label>
                       <ui-select-menu class="month-days" formControlName="day">
                         <ui-select-option
                           *ngFor="
@@ -389,7 +406,7 @@
                       uiFormFieldDirective
                       *ngIf="options.cronFlavor === 'standard'"
                     >
-                      <label>Day</label>
+                      <label>{{ 'common.cronEditor.day' | translate }}</label>
                       <ui-select-menu class="month-days" formControlName="day">
                         <ui-select-option
                           *ngFor="
@@ -402,10 +419,10 @@
                       </ui-select-menu>
                     </div>
 
-                    <span>of</span>
+                    <span>{{ 'common.cronEditor.of' | translate }}</span>
 
                     <div uiFormFieldDirective class="w-36">
-                      <label>Month</label>
+                      <label>{{ 'common.cronEditor.month' | translate }}</label>
                       <ui-select-menu class="months" formControlName="months">
                         <ui-select-option
                           *ngFor="let month of selectOptions.months"
@@ -426,10 +443,10 @@
               >
                 <ng-container ngProjectAs="label">
                   <div class="inline-flex items-center gap-2">
-                    <span>On the</span>
+                    <span>{{ 'common.cronEditor.onThe.feminine' | translate }}</span>
 
                     <div uiFormFieldDirective>
-                      <label>Week</label>
+                      <label>{{ 'common.cronEditor.week' | translate }}</label>
                       <ui-select-menu
                         class="day-order-in-month"
                         formControlName="monthsWeek"
@@ -444,7 +461,7 @@
                     </div>
 
                     <div uiFormFieldDirective class="w-36">
-                      <label>Day</label>
+                      <label>{{ 'common.cronEditor.day' | translate }}</label>
                       <ui-select-menu class="week-days" formControlName="day">
                         <ui-select-option
                           *ngFor="let day of selectOptions.days"
@@ -455,10 +472,10 @@
                       </ui-select-menu>
                     </div>
 
-                    <span>of</span>
+                    <span>{{ 'common.cronEditor.of' | translate }}</span>
 
                     <div uiFormFieldDirective class="w-36">
-                      <label>Month</label>
+                      <label>{{ 'common.cronEditor.month' | translate }}</label>
                       <ui-select-menu class="months" formControlName="months">
                         <ui-select-option
                           *ngFor="let month of selectOptions.months"
@@ -474,7 +491,7 @@
             </div>
 
             <div class="inline-flex items-center gap-2">
-              <span>At time:</span>
+              <span>{{ 'common.cronEditor.atTime' | translate }}:</span>
               <ui-cron-time-picker
                 [disabled]="disabled"
                 [formGroup]="allForm"
@@ -491,13 +508,13 @@
     <!-- Advanced-->
     <ui-tab *ngIf="!options.hideAdvancedTab" #advancedTab>
       <ng-container ngProjectAs="label">
-        <label>Advanced</label>
+        <label>{{ 'common.cronEditor.advanced' | translate }}</label>
       </ng-container>
       <ng-template uiTabContent>
         <div class="px-2">
           <div [formGroup]="allForm">
             <div uiFormFieldDirective>
-              <label>Expression</label>
+              <label>{{ 'components.calculatedFields.expression' | translate }}</label>
               <input type="text" formControlName="expression" />
             </div>
           </div>

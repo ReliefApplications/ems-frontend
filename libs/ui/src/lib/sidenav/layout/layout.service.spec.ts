@@ -1,15 +1,15 @@
 import { TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-import { LayoutService } from './layout.service';
+import { UILayoutService } from './layout.service';
 
-describe('LayoutService', () => {
-  let service: LayoutService;
+describe('UILayoutService', () => {
+  let service: UILayoutService;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [RouterTestingModule],
     });
-    service = TestBed.inject(LayoutService);
+    service = TestBed.inject(UILayoutService);
   });
 
   it('should be created', () => {

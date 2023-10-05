@@ -1,10 +1,10 @@
 <ui-dialog>
   <ng-container ngProjectAs="header">
-    <h1 *ngIf="data.title">{{ data.title }}</h1>
+    <h3 *ngIf="data.title" class="font-semibold">{{ data.title }}</h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <ng-container *ngIf="data.content">
-      {{ data.content }}
+      <p class="text-sm text-gray-500">{{ data.content }}</p>
     </ng-container>
     <ui-spinner *ngIf="data.showSpinner"></ui-spinner>
   </ng-container>

@@ -3,6 +3,7 @@
 		"access": "******",
 		"accessDenied": "******",
 		"add": "******",
+		"adminField": "******",
 		"aggregation": {
 			"few": "******",
 			"none": "******",
@@ -27,7 +28,6 @@
 					"confirmationMessage": "****** {{name}} ******",
 					"title": "******"
 				},
-				"one": "******",
 				"restore": {
 					"action": "******",
 					"confirmationMessage": "****** {{name}} ******",
@@ -76,6 +76,68 @@
 		"copy": "******",
 		"create": "******",
 		"createdOn": "******",
+		"cronEditor": {
+			"advanced": "******",
+			"atTime": "******",
+			"daily": "******",
+			"day": "******",
+			"days": "******",
+			"every": {
+				"feminine": "******",
+				"masculine": "******"
+			},
+			"firstWeekDay": "******",
+			"hourly": "******",
+			"hours": "******",
+			"lastDay": "******",
+			"lastWeekDay": "******",
+			"minutely": "******",
+			"minutes": "******",
+			"month": "******",
+			"monthly": "******",
+			"months": {
+				"april": "******",
+				"august": "******",
+				"december": "******",
+				"february": "******",
+				"january": "******",
+				"july": "******",
+				"june": "******",
+				"march": "******",
+				"may": "******",
+				"november": "******",
+				"october": "******",
+				"september": "******"
+			},
+			"of": "******",
+			"ofEvery": "******",
+			"onThe": {
+				"feminine": "******",
+				"masculine": "******"
+			},
+			"seconds": "******",
+			"week": "******",
+			"weekDay": "******",
+			"weekDays": {
+				"friday": "******",
+				"monday": "******",
+				"saturday": "******",
+				"sunday": "******",
+				"thursday": "******",
+				"tuesday": "******",
+				"wednesday": "******"
+			},
+			"weekNumber": {
+				"fifth": "******",
+				"first": "******",
+				"fourth": "******",
+				"last": "******",
+				"second": "******",
+				"third": "******"
+			},
+			"weekly": "******",
+			"yearly": "******"
+		},
 		"customNotification": {
 			"few": "******",
 			"none": "******",
@@ -106,6 +168,7 @@
 			"one": "******"
 		},
 		"errors": {
+			"few": "******",
 			"objectDuplicated": "{{type}} ****** {{value}} ******"
 		},
 		"exitFullscreen": "******",
@@ -310,6 +373,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"tabs": "******",
 		"template": {
 			"few": "******",
 			"none": "******",
@@ -727,6 +791,12 @@
 			},
 			"preview": "******"
 		},
+		"icon": {
+			"modal": {
+				"select": "******",
+				"use": "******"
+			}
+		},
 		"logout": {
 			"confirmationMessage": "******",
 			"title": "******"
@@ -924,6 +994,7 @@
 		"records": {
 			"active": "******",
 			"archived": "******",
+			"editAs": "******",
 			"paginator": {
 				"ariaLabel": "******"
 			},
@@ -1084,6 +1155,7 @@
 			"invite": {
 				"confirm": "******",
 				"role": {
+					"additionalAttributes": "******",
 					"description": "******"
 				}
 			},
@@ -1388,7 +1460,9 @@
 							"autoSizeCluster": "******",
 							"cluster": "******",
 							"clusterSettings": "******",
+							"clustering": "******",
 							"fields": "******",
+							"font": "******",
 							"fontSize": "******",
 							"high": "******",
 							"label": "******",
@@ -1410,6 +1484,7 @@
 						"groupLayers": "******",
 						"labels": "******",
 						"layerDatasource": "******",
+						"layerEdition": "******",
 						"layerProperties": "******",
 						"layerStyling": "******",
 						"popup": "******",
@@ -1627,6 +1702,10 @@
 						"ariaLabel": "******"
 					},
 					"static": "******"
+				},
+				"tabs": {
+					"addNewTab": "******",
+					"deleteTab": "******"
 				}
 			},
 			"styling": "******",

@@ -1,11 +1,11 @@
 <ui-dialog size="medium" [closable]="true">
   <ng-container ngProjectAs="header">
-    <h1>
+    <h3 class="font-semibold">
       {{
         'components.record.attach.selectTarget'
           | translate : { name: data.targetForm.name }
       }}
-    </h1>
+    </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <form [formGroup]="chooseRecordForm" *ngIf="!isSearchActivated">

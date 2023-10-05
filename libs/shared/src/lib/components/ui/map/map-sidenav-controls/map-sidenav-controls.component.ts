@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { TranslateModule } from '@ngx-translate/core';
 import { ButtonModule, DividerModule } from '@oort-front/ui';
-import { LayoutService } from '../../../../services/layout/layout.service';
+import { UILayoutService } from '@oort-front/ui';
 import { SidenavControlsMenuComponent } from './sidenav-controls-menu/sidenav-controls-menu.component';
 import { MapComponent } from '../map.component';
 
@@ -26,8 +26,7 @@ export class MapSidenavControlsComponent {
    *
    * @param layoutService shared layout service
    */
-  constructor(private layoutService: LayoutService) {}
-
+  constructor(private layoutService: UILayoutService) {}
   /** Opens the layers menu */
   openLayersMenu() {
     this.openSidenavMenu(true);
