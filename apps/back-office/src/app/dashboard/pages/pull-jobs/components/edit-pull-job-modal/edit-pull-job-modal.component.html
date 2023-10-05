@@ -1,13 +1,13 @@
 <ui-dialog size="medium">
   <!-- Modal header -->
   <ng-container ngProjectAs="header">
-    <h1>
+    <h3 class="font-semibold">
       {{
         data.pullJob
           ? ('models.pullJob.edit' | translate)
           : ('models.pullJob.new' | translate)
       }}
-    </h1>
+    </h3>
   </ng-container>
 
   <!-- Modal content -->

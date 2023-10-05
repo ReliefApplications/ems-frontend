@@ -1,6 +1,6 @@
 <ui-dialog [closable]="true" size="medium">
   <ng-container ngProjectAs="header">
-    <h2 class="flex flex-row gap-2">
+    <h3 class="flex flex-row gap-2" class="font-semibold">
       {{ 'components.widget.grid.map.mapDetailsTitle' | translate }}
       <ui-icon
         [size]="18"
@@ -9,7 +9,7 @@
         [uiTooltip]="'components.widget.grid.map.mapDetailsTooltip' | translate"
       >
       </ui-icon>
-    </h2>
+    </h3>
   </ng-container>
 
   <ng-container ngProjectAs="content">
