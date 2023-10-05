@@ -132,9 +132,8 @@ export const init = (Survey: any, environment: any): void => {
     name: 'saveButtonText',
     type: 'string',
     category: 'general',
-    default: 'Save',
     visibleIndex: 2,
-    isRequired: true,
+    isRequired: false,
   });
 
   // Add ability to conditionally allow dynamic panel add new panel
