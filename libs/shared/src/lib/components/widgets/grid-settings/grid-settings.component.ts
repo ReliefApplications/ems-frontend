@@ -116,6 +116,12 @@ export class GridSettingsComponent
             false
           )
         ),
+        enableActionsTitle: new FormControl(
+          get<boolean>(tileSettings, 'widgetDisplay.enableActionsTitle', false)
+        ),
+        actionsTitle: new FormControl(
+          get<string>(tileSettings, 'widgetDisplay.actionsTitle', '')
+        ),
       }
     );
 

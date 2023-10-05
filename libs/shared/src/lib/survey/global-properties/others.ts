@@ -128,6 +128,34 @@ export const init = (Survey: any, environment: any): void => {
     ],
     default: false,
   });
+
+  // Adds a property to the survey settings to hide the page tabs
+  serializer.addProperty('survey', {
+    name: 'hidePagesTab',
+    category: 'pages',
+    type: 'boolean',
+    default: false,
+    visibleIndex: 2,
+  });
+  serializer.addProperty('survey', {
+    name: 'saveButtonText',
+    type: 'string',
+    category: 'general',
+    visibleIndex: 2,
+    isRequired: false,
+  });
+
+  // Add ability to conditionally allow dynamic panel add new panel
+  serializer.addProperty('paneldynamic', {
+    name: 'AllowNewPanelsExpression:expression',
+    category: 'logic',
+    visibleIndex: 7,
+    default: '',
+    isLocalizable: true,
+    onExecuteExpression: (obj: Survey.QuestionPanelDynamicModel, res: any) => {
+      obj.allowAddPanel = !!res;
+    },
+  });
 };
 
 /**

@@ -344,6 +344,13 @@ export const init = (
         visibleIndex: 2,
       });
       Survey.Serializer.addProperty('resources', {
+        name: 'addRecordText',
+        category: 'Custom Questions',
+        dependsOn: ['resources', 'addRecord'],
+        visibleIndex: 3,
+        visibleIf: (obj: null | QuestionResource) => !!obj && !!obj.addRecord,
+      });
+      Survey.Serializer.addProperty('resources', {
         name: 'canDelete:boolean',
         displayName: 'Delete records',
         category: 'Custom Questions',
@@ -369,7 +376,7 @@ export const init = (
       });
       Survey.Serializer.addProperty('resources', {
         name: 'update:boolean',
-        dislayName: 'Update records',
+        displayName: 'Update records',
         category: 'Custom Questions',
         dependsOn: 'resource',
         visibleIf: visibleIfResource,
@@ -393,6 +400,14 @@ export const init = (
       });
       Survey.Serializer.addProperty('resources', {
         name: 'canSearch:boolean',
+        category: 'Custom Questions',
+        dependsOn: 'resource',
+        default: true,
+        visibleIf: visibleIfResource,
+        visibleIndex: 3,
+      });
+      Survey.Serializer.addProperty('resources', {
+        name: 'canDeselectRecords:boolean',
         category: 'Custom Questions',
         dependsOn: 'resource',
         default: true,
@@ -900,7 +915,7 @@ export const init = (
           convert: question.convert,
           update: question.update,
           inlineEdition: question.inlineEdition,
-          remove: true,
+          remove: question.canDeselectRecords,
         },
       });
     }
