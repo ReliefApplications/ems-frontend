@@ -8,16 +8,9 @@ import {
   EditableTextModule,
 } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
-import { OverlayModule } from '@angular/cdk/overlay';
-import { SearchMenuModule } from '@oort-front/shared';
 import { IconModule, TooltipModule } from '@oort-front/ui';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
-import {
-  AlertModule,
-  ButtonModule,
-  MenuModule,
-  SpinnerModule,
-} from '@oort-front/ui';
+import { ButtonModule, SpinnerModule } from '@oort-front/ui';
 
 /**
  * Application workflow page module.
@@ -30,15 +23,11 @@ import {
     SpinnerModule,
     WorkflowStepperModule,
     TranslateModule,
-    OverlayModule,
-    SearchMenuModule,
     IconModule,
-    MenuModule,
     IndicatorsModule,
     SkeletonModule,
     EditableTextModule,
     ButtonModule,
-    AlertModule,
     TooltipModule,
   ],
   exports: [WorkflowComponent],

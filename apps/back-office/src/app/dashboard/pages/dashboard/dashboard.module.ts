@@ -6,7 +6,6 @@ import {
   RecordHistoryModule,
   WidgetGridModule,
   SkeletonModule,
-  SearchMenuModule,
   EditableTextModule,
   FullScreenModule,
   DashboardFilterModule,
@@ -15,7 +14,6 @@ import {
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
-import { OverlayModule } from '@angular/cdk/overlay';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   MenuModule,
@@ -44,8 +42,6 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     ClipboardModule,
     RecordHistoryModule,
     TranslateModule,
-    OverlayModule,
-    SearchMenuModule,
     SkeletonModule,
     EditableTextModule,
     FullScreenModule,
