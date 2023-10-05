@@ -140,6 +140,25 @@ export const init = (Survey: any, environment: any): void => {
       return survey.visiblePageCount === 1;
     },
   });
+  serializer.addProperty('survey', {
+    name: 'saveButtonText',
+    type: 'string',
+    category: 'general',
+    visibleIndex: 2,
+    isRequired: false,
+  });
+
+  // Add ability to conditionally allow dynamic panel add new panel
+  serializer.addProperty('paneldynamic', {
+    name: 'AllowNewPanelsExpression:expression',
+    category: 'logic',
+    visibleIndex: 7,
+    default: '',
+    isLocalizable: true,
+    onExecuteExpression: (obj: Survey.QuestionPanelDynamicModel, res: any) => {
+      obj.allowAddPanel = !!res;
+    },
+  });
 };
 
 /**
