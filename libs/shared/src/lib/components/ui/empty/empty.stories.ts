@@ -31,7 +31,7 @@ export default {
  * @param args Arguments used by the component
  * @returns Returns an object used as the stories template
  */
-const TEMPLATE: StoryFn<sharedEmptyComponent> = (args) => ({
+const TEMPLATE: StoryFn<EmptyComponent> = (args) => ({
   // template: '<shared-empty></shared-empty></div>',
   props: {
     ...args,

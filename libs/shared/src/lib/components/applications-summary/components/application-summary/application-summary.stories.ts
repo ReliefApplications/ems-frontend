@@ -22,7 +22,7 @@ export default {
  * @param args the properties of the instance of ApplicationSummaryComponent
  * @returns the template
  */
-const TEMPLATE: StoryFn<sharedApplicationSummaryComponent> = (args) => ({
+const TEMPLATE: StoryFn<ApplicationSummaryComponent> = (args) => ({
   props: {
     ...args,
   },
