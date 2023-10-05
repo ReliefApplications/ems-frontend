@@ -202,6 +202,7 @@ export class FilterBuilderModalComponent
     this.surveyCreator.sidebarLocation = 'right';
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
+    this.surveyCreator.allowChangeThemeInPreview = false;
 
     // Block core fields edition
     this.surveyCreator.onShowingProperty.add((sender: any, opt: any) => {

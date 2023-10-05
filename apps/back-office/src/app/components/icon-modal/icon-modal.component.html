@@ -1,6 +1,6 @@
 <ui-dialog size="medium">
   <ng-container ngProjectAs="header">
-    <h3 class="font-semibold">Select an icon</h3>
+    <h3 class="font-semibold">{{'components.icon.modal.select' |translate}}</h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <div uiFormFieldDirective>
@@ -16,7 +16,7 @@
       variant="primary"
       [uiDialogClose]="iconControl.value"
     >
-      Use icon
+      {{'components.icon.modal.use' |translate}}
     </ui-button>
   </ng-container>
 </ui-dialog>

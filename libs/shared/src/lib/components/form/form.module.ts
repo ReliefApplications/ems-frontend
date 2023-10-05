@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { IconModule, TabsModule } from '@oort-front/ui';
+import { FixedWrapperModule, IconModule, TabsModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormComponent } from './form.component';
 import { FormActionsModule } from '../form-actions/form-actions.module';
@@ -23,6 +23,8 @@ import { SurveyModule } from 'survey-angular-ui';
     TranslateModule,
     ButtonModule,
     SurveyModule,
+    SurveyModule,
+    FixedWrapperModule,
   ],
   exports: [FormComponent],
 })

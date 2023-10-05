@@ -10,7 +10,7 @@
       class="hover:cursor-pointer hover:bg-gray-200 rounded-full p-2"
       (click)="close.emit()"
     >
-      <ui-icon class="text-gray-600">close</ui-icon>
+      <ui-icon class="text-gray-600">{{ 'common.close' | translate }}</ui-icon>
     </div>
   </span>
   <form [formGroup]="styleForm">
