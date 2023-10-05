@@ -3,6 +3,7 @@
 		"access": "Accès",
 		"accessDenied": "Accès refusé",
 		"add": "Ajouter",
+		"adminField": "Champ administrateur",
 		"aggregation": {
 			"few": "Agrégations",
 			"none": "Aucune agrégation",
@@ -20,21 +21,20 @@
 		},
 		"archive": {
 			"delete": "Supprimer",
-			"few": "@TODO",
+			"few": "Archives",
 			"modal": {
 				"delete": {
 					"action": "Supprimer",
 					"confirmationMessage": "Voulez-vous supprimer l'archive {{name}}?",
 					"title": "Supprimer?"
 				},
-				"one": "@TODO",
 				"restore": {
 					"action": "Restaurer",
 					"confirmationMessage": "Voulez-vous restaurer {{name}}?",
 					"title": "Restaurer?"
 				}
 			},
-			"none": "@TODO",
+			"none": "Aucun élément archivé",
 			"restore": "Restaurer"
 		},
 		"ariaLabel": {
@@ -76,6 +76,41 @@
 		"copy": "Copier",
 		"create": "Créer",
 		"createdOn": "Date de création",
+		"cronEditor": {
+			"Wednesday": "Mercredi",
+			"advanced": "Avancé",
+			"atTime": "À",
+			"daily": "Quotidien",
+			"day": "Jour",
+			"days": "Jour(s)",
+			"every": {
+				"feminine": "Toutes les",
+				"masculine": "Tous les"
+			},
+			"friday": "Vendredi",
+			"hourly": "Horaire",
+			"hours": "Heure(s)",
+			"minutely": "Chaque minute",
+			"minutes": "Minute(s)",
+			"monday": "Lundi",
+			"month": "Mois",
+			"monthly": "Mensuel",
+			"of": "du",
+			"ofEvery": "de chaque",
+			"onThe": {
+				"feminine": "Pendant la",
+				"masculine": "Pendant le"
+			},
+			"saturday": "Samedi",
+			"seconds": "Seconde(s)",
+			"sunday": "Dimanche",
+			"thursday": "Jeudi",
+			"tuesday": "Mardi",
+			"week": "Semaine",
+			"weekDay": "Jour de la semaine (LUN-VEN)",
+			"weekly": "Hebdomadaire",
+			"yearly": "Annuel"
+		},
 		"customNotification": {
 			"few": "Notifications",
 			"none": "Aucune notification",
@@ -106,6 +141,7 @@
 			"one": "Email"
 		},
 		"errors": {
+			"few": "Erreurs",
 			"objectDuplicated": "{{type}} {{value}} existe déjà."
 		},
 		"exitFullscreen": "Quitter le mode plein écran",
@@ -310,6 +346,7 @@
 			"none": "Aucun abonnement",
 			"one": "Abonnement"
 		},
+		"tabs": "Onglets",
 		"template": {
 			"few": "Modèles de notification",
 			"none": "Aucun modèle",
@@ -741,6 +778,12 @@
 			},
 			"preview": "Prévisualiser et revenir"
 		},
+		"icon": {
+			"modal": {
+				"select": "Sélectionner une icône",
+				"use": "Utiliser l'icône"
+			}
+		},
 		"logout": {
 			"confirmationMessage": "Le formulaire contient des éléments non sauvegardés. Voulez-vous vous vraiment déconnecter ?",
 			"title": "Quitter la plateforme sans sauvegarder"
@@ -1099,6 +1142,7 @@
 			"invite": {
 				"confirm": "Inviter",
 				"role": {
+					"additionalAttributes": "Définir des attributs supplémentaires",
 					"description": "Sélectionner le rôle à assigner"
 				}
 			},
@@ -1404,7 +1448,9 @@
 							"autoSizeCluster": "Taille automatique des clusters",
 							"cluster": "Cluster",
 							"clusterSettings": "Paramètres de groupes",
+							"clustering": "Clustering",
 							"fields": "Champs de groupes",
+							"font": "Police",
 							"fontSize": "Taille de la police",
 							"high": "Haut",
 							"label": "Libellé du groupes",
@@ -1426,6 +1472,7 @@
 						"groupLayers": "Regrouper les calques",
 						"labels": "Étiquettes",
 						"layerDatasource": "Source de données de la couche",
+						"layerEdition": "Edition de couche",
 						"layerProperties": "Propriétés",
 						"layerStyling": "Styles",
 						"popup": "Popup",
@@ -1643,6 +1690,10 @@
 						"ariaLabel": "***"
 					},
 					"static": "Statique"
+				},
+				"tabs": {
+					"addNewTab": "Ajouter un nouvel onglet",
+					"deleteTab": "Supprimer l'onglet"
 				}
 			},
 			"styling": "Modifier le style",

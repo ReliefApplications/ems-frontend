@@ -3,6 +3,7 @@
 		"access": "Access",
 		"accessDenied": "Access denied",
 		"add": "Add",
+		"adminField": "Admin field",
 		"aggregation": {
 			"few": "Aggregations",
 			"none": "No aggregation",
@@ -27,7 +28,6 @@
 					"confirmationMessage": "Do you want to delete archived page: {{name}}?",
 					"title": "Delete?"
 				},
-				"one": "page",
 				"restore": {
 					"action": "Restore",
 					"confirmationMessage": "Do you want to restore the archived page: {{name}}?",
@@ -76,6 +76,41 @@
 		"copy": "Copy",
 		"create": "Create",
 		"createdOn": "Created on",
+		"cronEditor": {
+			"Wednesday": "Wednesday",
+			"advanced": "Advanced",
+			"atTime": "At",
+			"daily": "Daily",
+			"day": "Day",
+			"days": "Day(s)",
+			"every": {
+				"feminine": "Every",
+				"masculine": "Every"
+			},
+			"friday": "Friday",
+			"hourly": "Hourly",
+			"hours": "Hour(s)",
+			"minutely": "Minutely",
+			"minutes": "Minute(s)",
+			"monday": "Monday",
+			"month": "Month",
+			"monthly": "Monthly",
+			"of": "of",
+			"ofEvery": "of every",
+			"onThe": {
+				"feminine": "On the",
+				"masculine": "On the"
+			},
+			"saturday": "Saturday",
+			"seconds": "Second(s)",
+			"sunday": "Sunday",
+			"thursday": "Thursday",
+			"tuesday": "Tuesday",
+			"week": "Week",
+			"weekDay": "Week Day (MON-FRI)",
+			"weekly": "Weekly",
+			"yearly": "Yearly"
+		},
 		"customNotification": {
 			"few": "Custom notifications",
 			"none": "No Custom notification",
@@ -106,6 +141,7 @@
 			"one": "Email"
 		},
 		"errors": {
+			"few": "Errors",
 			"objectDuplicated": "{{type}} {{value}} already exists."
 		},
 		"exitFullscreen": "Exit Fullscreen",
@@ -310,6 +346,7 @@
 			"none": "No subscription",
 			"one": "Subscription"
 		},
+		"tabs": "Tabs",
 		"template": {
 			"few": "Notification templates",
 			"none": "No template",
@@ -727,6 +764,12 @@
 			},
 			"preview": "Preview and revert"
 		},
+		"icon": {
+			"modal": {
+				"select": "Select an icon",
+				"use": "Use icon"
+			}
+		},
 		"logout": {
 			"confirmationMessage": "There are unsaved changes on your form. Are you sure you want to logout?",
 			"title": "Exit without saving changes"
@@ -1084,6 +1127,7 @@
 			"invite": {
 				"confirm": "Invite",
 				"role": {
+					"additionalAttributes": "Set additional attributes",
 					"description": "Select the role to assign"
 				}
 			},
@@ -1388,7 +1432,9 @@
 							"autoSizeCluster": "Cluster auto-sizing",
 							"cluster": "Cluster",
 							"clusterSettings": "Cluster settings",
+							"clustering": "Clustering",
 							"fields": "Cluster fields",
+							"font": "Font",
 							"fontSize": "Font size",
 							"high": "High",
 							"label": "Cluster label",
@@ -1410,6 +1456,7 @@
 						"groupLayers": "Group layers",
 						"labels": "Labels",
 						"layerDatasource": "Layer datasource",
+						"layerEdition": "Layer edition",
 						"layerProperties": "Layer properties",
 						"layerStyling": "Layer styling",
 						"popup": "Pop-up",
@@ -1627,6 +1674,10 @@
 						"ariaLabel": "Select an option"
 					},
 					"static": "Static"
+				},
+				"tabs": {
+					"addNewTab": "Add a new tab",
+					"deleteTab": "Delete tab"
 				}
 			},
 			"styling": "Edit styling",

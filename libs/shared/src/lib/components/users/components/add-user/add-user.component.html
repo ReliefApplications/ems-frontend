@@ -40,7 +40,9 @@
           "
         >
           <ng-container formArrayName="positionAttributes">
-            <label class="invite-label">Set additional attributes</label>
+            <label class="invite-label">{{
+              'components.user.invite.role.additionalAttributes' | translate
+            }}</label>
             <div
               uiFormFieldDirective
               *ngFor="
