@@ -414,9 +414,6 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
           duration: 15000,
         });
       });
-    if (this.surveyCreator.survey.visiblePageCount > 1) {
-      this.surveyCreator.survey.setPropertyValue('hidePagesTab', false);
-    }
   };
 
   /**

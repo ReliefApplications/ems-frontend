@@ -16,6 +16,7 @@
   class="mb-4"
   [selectedIndex]="(selectedPageIndex$ | async)!"
   (selectedIndexChange)="onShowPage($event)"
+  *ngIf="!survey?.hidePagesTab"
 >
   <ui-tab *ngFor="let page of survey.visiblePages ?? []">
     <ng-container ngProjectAs="label">
