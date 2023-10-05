@@ -21,12 +21,9 @@
 >
 </safe-summary-card-item-content>
 <!-- Edit -->
-<div class="absolute bottom-0 right-0 p-4">
-  <ui-button
-    *ngIf="card.record?.canUpdate"
-    [isIcon]="true"
-    icon="edit"
-    (click)="updateSummaryCard()"
-  >
-  </ui-button>
-</div>
+<ng-container *ngIf="card.record?.canUpdate">
+  <div class="absolute bottom-0 right-0 p-4">
+    <ui-button [isIcon]="true" icon="edit" (click)="updateSummaryCard()">
+    </ui-button>
+  </div>
+</ng-container>
