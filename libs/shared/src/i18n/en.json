@@ -28,7 +28,6 @@
 					"confirmationMessage": "Do you want to delete archived page: {{name}}?",
 					"title": "Delete?"
 				},
-				"one": "page",
 				"restore": {
 					"action": "Restore",
 					"confirmationMessage": "Do you want to restore the archived page: {{name}}?",

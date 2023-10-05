@@ -18,13 +18,14 @@ import {
 import { AbilityModule } from '@casl/angular';
 import { EmptyModule } from '../../../ui/empty/empty.module';
 import { ListFilterComponent } from '../../../list-filter/list-filter.component';
+import { FilterComponent } from './filter/filter.component';
 
 /**
  * BackOfficeRolesModule manages modules and components
  * related to the back-office roles tab
  */
 @NgModule({
-  declarations: [RoleListComponent],
+  declarations: [RoleListComponent, FilterComponent],
   imports: [
     CommonModule,
     CommonModule,

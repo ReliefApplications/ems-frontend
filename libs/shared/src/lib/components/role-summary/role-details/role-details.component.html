@@ -33,14 +33,6 @@
       ></ui-button>
     </div>
   </div>
-  <ui-button
-    variant="primary"
-    category="secondary"
-    type="submit"
-    [disabled]="!form.valid"
-    (click)="onUpdate()"
-    >{{ 'common.saveChanges' | translate }}</ui-button
-  >
 </form>
 
 <div class="role-description">
@@ -151,3 +143,16 @@
     </ui-tab>
   </ui-tabs>
 </div>
+
+<!-- Floating div for actions buttons -->
+<ui-fixed-wrapper>
+  <!-- Save button -->
+  <ui-button
+    variant="primary"
+    category="secondary"
+    type="submit"
+    [disabled]="!form.valid"
+    (click)="onUpdate()"
+    >{{ 'common.saveChanges' | translate }}
+  </ui-button>
+</ui-fixed-wrapper>

@@ -1,8 +1,8 @@
 import {
   CustomWidgetCollection,
   Serializer,
-  SurveyModel,
-  surveyLocalization,
+  // SurveyModel,
+  // surveyLocalization,
 } from 'survey-core';
 import { Question, QuestionComment } from '../types';
 /**
@@ -36,13 +36,15 @@ export const init = (
         el.parentElement?.querySelector('#editComment')?.remove();
         const mainDiv = document.createElement('div');
         mainDiv.id = 'editComment';
-        mainDiv.style.height = '23px';
         mainDiv.style.marginBottom = '0.5em';
         const btnEl = document.createElement('button');
-        btnEl.innerText = surveyLocalization.getString(
-          'oort:edit',
-          (question.survey as SurveyModel).locale
-        );
+        // todo: not working
+        // btnEl.innerText = surveyLocalization.getString(
+        //   'oort:edit',
+        //   (question.survey as SurveyModel).locale
+        // );
+        btnEl.innerText = 'Edit';
+        btnEl.className = 'sd-btn !px-3 !py-2';
         btnEl.style.width = '50px';
         mainDiv.appendChild(btnEl);
         el.parentElement?.insertBefore(mainDiv, el);

@@ -22,7 +22,6 @@ import {
 import { Apollo, QueryRef } from 'apollo-angular';
 import { AuthService } from '../../../services/auth/auth.service';
 import { DownloadService } from '../../../services/download/download.service';
-import { LayoutService } from '../../../services/layout/layout.service';
 import {
   QueryBuilderService,
   QueryResponse,
@@ -52,7 +51,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { firstValueFrom, Subject } from 'rxjs';
 import { searchFilters } from '../../../utils/filter/search-filters';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
 import { ResourceQueryResponse } from '../../../models/resource.model';
@@ -285,7 +284,7 @@ export class CoreGridComponent
    * @param apollo Apollo service
    * @param dialog Dialog
    * @param queryBuilder Shared query builder
-   * @param layoutService Shared layout service
+   * @param layoutService UI layout service
    * @param snackBar Shared snackbar service
    * @param downloadService Shared download service
    * @param authService Shared authentication service
@@ -301,7 +300,7 @@ export class CoreGridComponent
     private apollo: Apollo,
     public dialog: Dialog,
     private queryBuilder: QueryBuilderService,
-    private layoutService: LayoutService,
+    private layoutService: UILayoutService,
     private snackBar: SnackbarService,
     private downloadService: DownloadService,
     private authService: AuthService,
