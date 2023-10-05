@@ -6,6 +6,7 @@ import {
   SimpleChanges,
   ViewChild,
   Inject,
+  OnInit,
 } from '@angular/core';
 import { LineChartComponent } from '../../ui/charts/line-chart/line-chart.component';
 import { PieDonutChartComponent } from '../../ui/charts/pie-donut-chart/pie-donut-chart.component';
@@ -13,8 +14,8 @@ import { BarChartComponent } from '../../ui/charts/bar-chart/bar-chart.component
 import { uniq, get, groupBy, isEqual } from 'lodash';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { debounceTime, takeUntil } from 'rxjs/operators';
-import { BehaviorSubject } from 'rxjs';
+import { skip, takeUntil, throttleTime } from 'rxjs/operators';
+import { BehaviorSubject, merge } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
@@ -32,7 +33,10 @@ const DEFAULT_FILE_NAME = 'chart';
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.scss'],
 })
-export class ChartComponent extends UnsubscribeComponent implements OnChanges {
+export class ChartComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnChanges
+{
   // === DATA ===
   public loading = true;
   public options: any = null;
@@ -89,16 +93,11 @@ export class ChartComponent extends UnsubscribeComponent implements OnChanges {
     @Inject(DOCUMENT) private document: Document
   ) {
     super();
+  }
 
-    this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.loadChart();
-        this.getOptions();
-      });
-
-    this.contextService.isFilterEnabled$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
+  ngOnInit(): void {
+    merge(this.contextService.filter$, this.contextService.isFilterEnabled$)
+      .pipe(skip(1), throttleTime(1500), takeUntil(this.destroy$)) //we skip because filter emits at the same time as datasource is loaded => prevents one loading + increased throttle time so that if filter enabling, changing the filter does not retrigger loading
       .subscribe(() => {
         this.loadChart();
         this.getOptions();
