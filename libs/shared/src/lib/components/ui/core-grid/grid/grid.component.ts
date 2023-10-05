@@ -209,6 +209,11 @@ export class GridComponent
   // === SNACKBAR ===
   private snackBarRef!: any;
 
+  /** Page change timeout listener */
+  private pageChangeTimeoutListener!: NodeJS.Timeout
+
+
+
   /**
    * Constructor of the grid component
    *
@@ -263,10 +268,13 @@ export class GridComponent
       this.location.replaceState(this.location.path(), undefined, {
         navigationId: state.navigationId,
       });
-      setTimeout(() => {
+      if(this.pageChangeTimeoutListener){
+        clearTimeout(this.pageChangeTimeoutListener);
+      }
+      this.pageChangeTimeoutListener = setTimeout(() => {
         // paginate to the right page
         this.onPageChange(page);
-      }, 1000);
+      }, 1500);
     }
   }
 

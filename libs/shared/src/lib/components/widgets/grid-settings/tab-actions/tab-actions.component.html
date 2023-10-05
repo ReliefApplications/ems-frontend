@@ -19,7 +19,7 @@
       </ui-toggle>
       <!-- Redirect to specific page action details -->
       <ng-container *ngIf="showSelectPage">
-        <div uiFormFieldDirective class="w-80">
+        <div uiFormFieldDirective [defaultMargin]="false" class="w-80">
           <label>
             {{ 'components.widget.settings.grid.actions.pageId.label' | translate }}
           </label>

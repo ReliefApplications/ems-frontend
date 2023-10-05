@@ -3,6 +3,8 @@ import { UntypedFormGroup } from '@angular/forms';
 import { ApplicationService } from '../../../../services/application/application.service';
 import { Application } from '../../../../models/application.model';
 import { ContentType, Page } from '../../../../models/page.model';
+import { takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Actions tab of grid widget configuration modal.
@@ -12,7 +14,7 @@ import { ContentType, Page } from '../../../../models/page.model';
   templateUrl: './tab-actions.component.html',
   styleUrls: ['./tab-actions.component.scss'],
 })
-export class TabActionsComponent implements OnInit {
+export class TabActionsComponent extends UnsubscribeComponent implements OnInit {
   @Input() formGroup!: UntypedFormGroup;
 
   /** Show select page id and checkbox for record id */
@@ -81,6 +83,7 @@ export class TabActionsComponent implements OnInit {
     public applicationService: ApplicationService,
     @Inject('environment') environment: any
   ) {
+    super();
     this.environment = environment;
   }
 
@@ -93,7 +96,9 @@ export class TabActionsComponent implements OnInit {
     this.pages = this.getPages(application);
     this.formGroup.controls.actions
       .get('showRecordDashboard')
-      ?.valueChanges.subscribe((val: boolean) => {
+      ?.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((val: boolean) => {
         this.showSelectPage = val;
       });
   }

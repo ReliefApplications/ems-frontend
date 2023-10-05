@@ -1205,7 +1205,7 @@
 				"actions": {
 					"detail": "Ouvrir le détail",
 					"history": "Voir l'historique",
-					"recordDashboard": "@TODO"
+					"recordDashboard": "Ouvrir le tableau de bord des enregistrements"
 				},
 				"empty": "Aucun enregistrement détecté pour cette configuration de réseau",
 				"errors": {
@@ -1350,17 +1350,17 @@
 						"export": "Exporter les enregistrements",
 						"inline": "Modifier par ligne",
 						"pageId": {
-							"label": "@TODO",
-							"placeholder": "@TODO"
+							"label": "Id de la source de la page",
+							"placeholder": "Entrez l'id de la page"
 						},
 						"remove": "Retirer",
 						"show": "Voir l'historique",
 						"showDetails": "Afficher les détails des enregistrements",
-						"showRecordDashboard": "@TODO",
+						"showRecordDashboard": "Accédez à la page",
 						"title": "Actions activées",
 						"update": "Modifier les enregistrements",
-						"useRecordId": "@TODO",
-						"useRecordIdTooltip": "@TODO"
+						"useRecordId": "Utiliser l'id de l'enregistrement",
+						"useRecordIdTooltip": "Pour être redirigé vers la vue contextuelle de la fiche"
 					},
 					"aggregations": {
 						"add": {
@@ -1417,7 +1417,7 @@
 							"inline": "L'utilisateur peut éditer dans la grille les enregistrements affichés, s'il en a la permission",
 							"show": "L'utilisateur peut afficher l'historique complet des enregistrements affichés",
 							"showDetails": "L'utilisateur peut afficher les informations des enregistrements affichés",
-							"showRecordDashboard": "@TODO",
+							"showRecordDashboard": "L'utilisateur peut accéder au tableau de bord d'enregistrement",
 							"update": "L'utilisateur peut mettre à jour les enregistrements affichés"
 						},
 						"attachToRecord": "Si les enregistrements sélectionnés ne sont joints à aucun enregistrement, l'action sera annulée",
@@ -1669,8 +1669,8 @@
 							}
 						},
 						"gridActions": {
-							"title": "@TODO",
-							"tooltip": "@TODO"
+							"title": "Actions de grille",
+							"tooltip": "Actions de grille activées"
 						},
 						"preview": {
 							"title": "Prévisualisation"

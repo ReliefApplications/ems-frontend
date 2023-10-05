@@ -1340,7 +1340,7 @@
 						"remove": "Remove",
 						"show": "Show history",
 						"showDetails": "Show record details",
-						"showRecordDashboard": "Show record dashboard view",
+						"showRecordDashboard": "Navigate to page",
 						"title": "Enabled actions",
 						"update": "Update records",
 						"useRecordId": "Use record id",
