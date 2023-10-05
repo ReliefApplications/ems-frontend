@@ -323,7 +323,7 @@
       }
     }
   }
-  // submit button in preview
+  // Submit button in preview
   .sd-navigation__complete-btn {
     @apply hover:bg-primary-600;
   }
@@ -334,10 +334,22 @@
   }
   .sd-radio__decorator {
     border: solid 1px lightgray !important;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
   }  
   // Boolean
   .sd-boolean {
     @apply bg-gray-200 rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-indigo-600 focus:ring-offset-2;
+  }
+
+  // Icon button
+  .k-icon-button {
+    width: 46px !important;
+    height: 46px !important;
+    margin-right: 2px !important;
+    background-color: white !important;
+    border: none !important;
+    border-radius: 4px !important;
+    background-image: none !important;
   }
 }
 
