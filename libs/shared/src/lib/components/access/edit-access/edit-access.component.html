@@ -1,11 +1,11 @@
 <ui-dialog>
   <ng-container ngProjectAs="header">
-    <h1>
+    <h3 class="font-semibold">
       {{
         'components.access.description'
           | translate : { name: data.objectTypeName }
       }}
-    </h1>
+    </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <form [formGroup]="accessForm" class="flex flex-col">

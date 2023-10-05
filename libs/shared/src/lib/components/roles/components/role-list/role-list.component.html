@@ -2,9 +2,10 @@
   <ng-container *ngIf="roles?.length">
     <div class="flex gap-8 justify-between flex-col sm:flex-row">
       <!-- Search text filter -->
-      <form [formGroup]="form">
-        <shared-list-filter [loading]="loading"></shared-list-filter>
-      </form>
+      <app-roles-filter
+        (filter)="applyFilter($event)"
+        [loading]="loading"
+      ></app-roles-filter>
       <div class="flex">
         <ng-container *ngTemplateOutlet="newRole"></ng-container>
       </div>

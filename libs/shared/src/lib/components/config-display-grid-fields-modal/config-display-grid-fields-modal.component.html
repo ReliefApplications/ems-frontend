@@ -1,11 +1,11 @@
 <ui-dialog [size]="'big'">
   <ng-container ngProjectAs="header">
-    <h2>
+    <h3 class="font-semibold">
       {{
         'components.widget.settings.grid.buttons.callback.selectDisplay'
           | translate
       }}
-    </h2>
+    </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <ng-container *ngIf="!loading; else loadingTmpl">
