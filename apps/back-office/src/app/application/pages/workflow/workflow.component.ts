@@ -184,35 +184,6 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
   }
 
   /**
-   * Duplicate page, in a new ( or same ) application
-   *
-   * @param event duplication event
-   */
-  public onDuplicate(event: any): void {
-    if (this.workflow?.page?.id) {
-      this.applicationService.duplicatePage(event.id, {
-        pageId: this.workflow?.page?.id,
-      });
-    }
-  }
-
-  /**
-   * Show or hide application selector.
-   * Get applications.
-   */
-  public onAppSelection(): void {
-    this.showAppMenu = !this.showAppMenu;
-    const authSubscription = this.authService.user$.subscribe(
-      (user: any | null) => {
-        if (user) {
-          this.applications = user.applications;
-        }
-      }
-    );
-    authSubscription.unsubscribe();
-  }
-
-  /**
    * Deletes a step if authorized.
    *
    * @param index index of step to delete
@@ -439,7 +410,7 @@ export class WorkflowComponent extends UnsubscribeComponent implements OnInit {
     const dialogRef = this.dialog.open(PageSettingsComponent, {
       data: {
         type: 'page',
-        contentType: ContentType.workflow,
+        applicationId: this.applicationId,
         page: this.workflow?.page,
         icon: this.workflow?.page?.icon,
         visible: this.workflow?.page?.visible,

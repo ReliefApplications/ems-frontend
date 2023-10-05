@@ -13,7 +13,6 @@ import {
   StepQueryResponse,
   FormQueryResponse,
   PageQueryResponse,
-  ContentType,
 } from '@oort-front/shared';
 import {
   GET_SHORT_FORM_BY_ID,
@@ -258,7 +257,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
     const dialogRef = this.dialog.open(PageSettingsComponent, {
       data: {
         type: this.isStep ? 'step' : 'page',
-        contentType: ContentType.form,
+        applicationId: this.applicationId,
         page: this.isStep ? undefined : this.page,
         step: this.isStep ? this.step : undefined,
         icon: this.isStep ? this.step?.icon : this.page?.icon,

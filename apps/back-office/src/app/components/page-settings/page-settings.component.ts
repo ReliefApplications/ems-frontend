@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Inject, OnInit } from '@angular/core';
-import { DIALOG_DATA } from '@angular/cdk/dialog';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { FormBuilder } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -12,18 +12,22 @@ import {
   FormWrapperModule,
   IconModule,
   ToggleModule,
+  AlertModule,
 } from '@oort-front/ui';
+import { OverlayModule } from '@angular/cdk/overlay';
 import { TranslateModule } from '@ngx-translate/core';
 import { PageIconComponent } from '../page-icon/page-icon.component';
 import {
   AccessModule,
   ApplicationService,
-  ContentType,
   Page,
   Step,
   UnsubscribeComponent,
   WorkflowService,
   AccessData,
+  SearchMenuModule,
+  AuthService,
+  Application,
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs';
 import { isNil } from 'lodash';
@@ -31,7 +35,7 @@ import { isNil } from 'lodash';
 /** Settings Dialog Data */
 interface DialogData {
   type: 'page' | 'step';
-  contentType: ContentType;
+  applicationId: string;
   page?: Page;
   step?: Step;
   icon?: string;
@@ -42,7 +46,7 @@ interface DialogData {
 
 /**
  * Application page and step settings component.
- * Available settings: icon, access, visibility.
+ * Available settings: icon, access, visibility and duplicate page.
  */
 @Component({
   selector: 'app-page-settings',
@@ -62,6 +66,9 @@ interface DialogData {
     PageIconComponent,
     AccessModule,
     ToggleModule,
+    OverlayModule,
+    SearchMenuModule,
+    AlertModule,
   ],
   templateUrl: './page-settings.component.html',
   styleUrls: ['./page-settings.component.scss'],
@@ -74,6 +81,10 @@ export class PageSettingsComponent
   public settingsForm!: ReturnType<typeof this.createSettingsForm>;
   /** Event to parent subscribe and update its own object after changes */
   public onUpdate = new EventEmitter();
+  /** Show duplicate menu */
+  public showDuplicateMenu = false;
+  /** List of available applications */
+  public applications: Application[] = [];
   /** Step object */
   private step?: Step;
   /** Page object */
@@ -82,16 +93,20 @@ export class PageSettingsComponent
   /**
    * Common settings of pages / steps.
    *
+   * @param dialogRef Dialog ref
    * @param data Data that will be passed to the dialog
    * @param fb This is the service that will be used to build forms.
    * @param workflowService Shared workflow service
    * @param applicationService Shared application service
+   * @param authService Shared authentication service
    */
   constructor(
+    public dialogRef: DialogRef<PageSettingsComponent>,
     @Inject(DIALOG_DATA) public data: DialogData,
     private fb: FormBuilder,
     private workflowService: WorkflowService,
-    private applicationService: ApplicationService
+    private applicationService: ApplicationService,
+    private authService: AuthService
   ) {
     super();
     if (this.data) {
@@ -160,6 +175,41 @@ export class PageSettingsComponent
           callback
         );
     }
+  }
+
+  /**
+   * Duplicate page, in a new (or same) application
+   *
+   * @param event duplication event
+   */
+  public onDuplicate(event: any): void {
+    const callback = () => {
+      this.dialogRef.close();
+    };
+    this.applicationService.duplicatePage(
+      event.id,
+      {
+        pageId: this.page?.id,
+        stepId: this.step?.id,
+      },
+      callback
+    );
+  }
+
+  /**
+   * Toggle visibility of application menu.
+   * Get applications to use duplicate setting.
+   */
+  public onAppSelection(): void {
+    this.showDuplicateMenu = !this.showDuplicateMenu;
+    const authSubscription = this.authService.user$.subscribe(
+      (user: any | null) => {
+        if (user) {
+          this.applications = user.applications;
+        }
+      }
+    );
+    authSubscription.unsubscribe();
   }
 
   /**

@@ -24,15 +24,54 @@
             <span>{{ 'common.general' | translate }}</span>
           </ng-container>
           <!-- Tab content -->
-          <div class="flex flex-col" *ngIf="this.settingsForm">
+          <div class="flex gap-4 flex-col" *ngIf="this.settingsForm">
             <!-- Page / step icon -->
-            <app-page-icon [iconControl]="this.settingsForm.controls.icon"></app-page-icon>
-            <!-- Visibility -->
-            <ui-toggle formControlName="visible" *ngIf="data.type === 'page'">
-              <ng-container ngProjectAs="label">
-                {{ 'components.application.pages.show' | translate }}
-              </ng-container>
-            </ui-toggle>
+            <app-page-icon
+              [iconControl]="this.settingsForm.controls.icon"
+              [ngClass]="{
+                '-mb-4': data.type === 'page'
+              }"
+            ></app-page-icon>
+            <!-- Features available only for pages -->
+            <ng-container *ngIf="data.type === 'page'">
+              <!-- Duplicate page  -->
+              <ui-button
+                class="!w-auto"
+                variant="default"
+                icon="file_copy"
+                [isBlock]="true"
+                (click)="onAppSelection()"
+                cdkOverlayOrigin
+                #appMenuTrigger="cdkOverlayOrigin"
+              >
+                {{ 'common.duplicate' | translate }}
+              </ui-button>
+              <ng-template #searchMenuHeaderTemplate>
+                <ui-alert [closable]="true">
+                  {{ 'models.page.tooltip.duplicate' | translate }}
+                </ui-alert>
+              </ng-template>
+              <ng-template
+                cdkConnectedOverlay
+                [cdkConnectedOverlayOrigin]="appMenuTrigger"
+                [cdkConnectedOverlayOpen]="showDuplicateMenu"
+              >
+                <shared-search-menu
+                  [headerTemplate]="searchMenuHeaderTemplate"
+                  [currentApplicationId]="data.applicationId"
+                  [applications]="applications"
+                  (close)="showDuplicateMenu = false"
+                  (open)="onDuplicate($event)"
+                ></shared-search-menu>
+              </ng-template>
+
+              <!-- Visibility -->
+              <ui-toggle formControlName="visible" class="mb-2">
+                <ng-container ngProjectAs="label">
+                  {{ 'components.application.pages.show' | translate }}
+                </ng-container>
+              </ui-toggle>
+            </ng-container>
           </div>
         </ui-tab>
         <!-- Access (visibility) settings -->

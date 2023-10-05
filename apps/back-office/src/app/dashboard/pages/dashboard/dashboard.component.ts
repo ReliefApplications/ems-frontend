@@ -29,7 +29,6 @@ import {
   DashboardQueryResponse,
   EditDashboardMutationResponse,
   RecordQueryResponse,
-  ContentType,
 } from '@oort-front/shared';
 import { EDIT_DASHBOARD } from './graphql/mutations';
 import {
@@ -612,34 +611,6 @@ export class DashboardComponent
     );
   }
 
-  /**
-   * Duplicate page, in a new ( or same ) application
-   *
-   * @param event duplication event
-   */
-  public onDuplicate(event: any): void {
-    this.applicationService.duplicatePage(event.id, {
-      pageId: this.dashboard?.page?.id,
-      stepId: this.dashboard?.step?.id,
-    });
-  }
-
-  /**
-   * Toggle visibility of application menu
-   * Get applications
-   */
-  public onAppSelection(): void {
-    this.showAppMenu = !this.showAppMenu;
-    const authSubscription = this.authService.user$.subscribe(
-      (user: any | null) => {
-        if (user) {
-          this.applications = user.applications;
-        }
-      }
-    );
-    authSubscription.unsubscribe();
-  }
-
   /** Open modal to add new button action */
   public async onAddButtonAction() {
     const { EditButtonActionComponent } = await import(
@@ -823,7 +794,7 @@ export class DashboardComponent
     const dialogRef = this.dialog.open(PageSettingsComponent, {
       data: {
         type: this.isStep ? 'step' : 'page',
-        contentType: ContentType.dashboard,
+        applicationId: this.applicationId,
         page: this.isStep ? undefined : this.dashboard?.page,
         step: this.isStep ? this.dashboard?.step : undefined,
         visible: this.dashboard?.page?.visible,

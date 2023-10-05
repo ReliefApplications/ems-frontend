@@ -805,10 +805,12 @@ export class ApplicationService {
    * @param content content to duplicate
    * @param content.stepId id of step to duplicate
    * @param content.pageId id of page to duplicate
+   * @param callback additional callback
    */
   duplicatePage(
     applicationId: string,
-    content: { stepId?: string; pageId?: string }
+    content: { stepId?: string; pageId?: string },
+    callback: any
   ): void {
     this.apollo
       .mutate<DuplicatePageMutationResponse>({
@@ -846,6 +848,7 @@ export class ApplicationService {
             this.router.navigate([
               `/applications/${applicationId}/${newPage?.type}/${newPage?.content}`,
             ]);
+            if (callback) callback();
           }
         }
       });

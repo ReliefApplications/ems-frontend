@@ -95,10 +95,6 @@
                 ) | translate
               }}
             </button>
-            <button uiMenuItem (click)="onAppSelection()">
-              <ui-icon icon="file_copy" variant="grey"></ui-icon>
-              {{ 'common.duplicate' | translate }}
-            </button>
             <button uiMenuItem (click)="onAddButtonAction()">
               <ui-icon icon="touch_app" variant="grey"></ui-icon>
               {{ 'models.dashboard.buttonActions.add' | translate }}
@@ -108,25 +104,6 @@
               {{ 'models.dashboard.share' | translate }}
             </button>
           </ui-menu>
-
-          <ng-template #searchMenuHeaderTemplate>
-            <ui-alert [closable]="true">
-              {{ 'models.page.tooltip.duplicate' | translate }}
-            </ui-alert>
-          </ng-template>
-          <ng-template
-            cdkConnectedOverlay
-            [cdkConnectedOverlayOrigin]="appMenuTrigger"
-            [cdkConnectedOverlayOpen]="showAppMenu"
-          >
-            <shared-search-menu
-              [headerTemplate]="searchMenuHeaderTemplate"
-              [currentApplicationId]="applicationId"
-              [applications]="applications"
-              (close)="showAppMenu = false"
-              (open)="onDuplicate($event)"
-            ></shared-search-menu>
-          </ng-template>
         </div>
       </div>
       <ng-container *ngIf="dashboard.page?.context">
