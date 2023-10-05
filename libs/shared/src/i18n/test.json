@@ -78,7 +78,6 @@
 		"create": "******",
 		"createdOn": "******",
 		"cronEditor": {
-			"Wednesday": "******",
 			"advanced": "******",
 			"atTime": "******",
 			"daily": "******",
@@ -88,27 +87,55 @@
 				"feminine": "******",
 				"masculine": "******"
 			},
-			"friday": "******",
+			"firstWeekDay": "******",
 			"hourly": "******",
 			"hours": "******",
+			"lastDay": "******",
+			"lastWeekDay": "******",
 			"minutely": "******",
 			"minutes": "******",
-			"monday": "******",
 			"month": "******",
 			"monthly": "******",
+			"months": {
+				"april": "******",
+				"august": "******",
+				"december": "******",
+				"february": "******",
+				"january": "******",
+				"july": "******",
+				"june": "******",
+				"march": "******",
+				"may": "******",
+				"november": "******",
+				"october": "******",
+				"september": "******"
+			},
 			"of": "******",
 			"ofEvery": "******",
 			"onThe": {
 				"feminine": "******",
 				"masculine": "******"
 			},
-			"saturday": "******",
 			"seconds": "******",
-			"sunday": "******",
-			"thursday": "******",
-			"tuesday": "******",
 			"week": "******",
 			"weekDay": "******",
+			"weekDays": {
+				"friday": "******",
+				"monday": "******",
+				"saturday": "******",
+				"sunday": "******",
+				"thursday": "******",
+				"tuesday": "******",
+				"wednesday": "******"
+			},
+			"weekNumber": {
+				"fifth": "******",
+				"first": "******",
+				"fourth": "******",
+				"last": "******",
+				"second": "******",
+				"third": "******"
+			},
 			"weekly": "******",
 			"yearly": "******"
 		},
@@ -968,6 +995,7 @@
 		"records": {
 			"active": "******",
 			"archived": "******",
+			"editAs": "******",
 			"paginator": {
 				"ariaLabel": "******"
 			},
