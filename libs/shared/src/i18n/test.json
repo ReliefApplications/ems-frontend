@@ -28,7 +28,6 @@
 					"confirmationMessage": "****** {{name}} ******",
 					"title": "******"
 				},
-				"one": "******",
 				"restore": {
 					"action": "******",
 					"confirmationMessage": "****** {{name}} ******",
