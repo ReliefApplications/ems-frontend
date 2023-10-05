@@ -4,29 +4,28 @@
   *ngIf="loading"
 ></ui-spinner>
 <!-- Application wrapper -->
-<safe-layout
+<shared-layout
   *ngIf="!loading"
-  [toolbar]="toolbar"
   [route]="route"
+  [header]="header"
   [leftSidenav]="pages"
   [sideMenu]="sideMenu"
-></safe-layout>
-<ng-template #toolbar>
-  <safe-app-application-toolbar
+></shared-layout>
+<ng-template #header>
+  <app-application-header
     [title]="title"
-    [settings]="adminNavItems"
+    [navItems]="adminNavItems"
     [canUpdate]="application?.canUpdate!"
-    [showActions]="true"
-  ></safe-app-application-toolbar>
+  ></app-application-header>
 </ng-template>
 <!--Need the nav variable, don't remove let-nav, used in layout-->
 <ng-template #pages let-nav>
-  <safe-navbar
+  <shared-navbar
     [nav]="nav"
     [navGroups]="navGroups"
     [appLayout]="true"
     [canAddPage]="application?.canUpdate!"
     [vertical]="!(!sideMenu && largeDevice)"
     (reorder)="onReorder($event)"
-  ></safe-navbar>
+  ></shared-navbar>
 </ng-template>

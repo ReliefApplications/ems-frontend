@@ -1,5 +1,6 @@
 import { gql } from 'apollo-angular';
-import { Workflow } from '@oort-front/safe';
+
+// === GET WORKFLOW BY ID ===
 
 /** Graphql query for getting a workflow by its id */
 export const GET_WORKFLOW_BY_ID = gql`
@@ -25,6 +26,7 @@ export const GET_WORKFLOW_BY_ID = gql`
       }
       steps {
         id
+        icon
         name
         type
         content
@@ -55,8 +57,3 @@ export const GET_WORKFLOW_BY_ID = gql`
     }
   }
 `;
-
-/** Model for GetWorkflowByIdQueryResponse object */
-export interface GetWorkflowByIdQueryResponse {
-  workflow: Workflow;
-}

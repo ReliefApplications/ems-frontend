@@ -1,0 +1,69 @@
+<ui-dialog size="medium">
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{ 'components.widget.settings.grid.layouts.add.title' | translate }}
+    </h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <div class="flex gap-4 flex-col" *ngIf="!nextStep">
+      <!-- LOAD FROM EXISTING LAYOUT -->
+      <ui-button
+        variant="primary"
+        category="secondary"
+        class="!w-auto"
+        [isBlock]="true"
+        (click)="nextStep = true"
+        [disabled]="!hasLayouts"
+        >{{
+          'components.widget.settings.grid.layouts.add.choice.load' | translate
+        }}</ui-button
+      >
+      <!-- ADD A NEW LAYOUT -->
+      <ui-button
+        variant="primary"
+        category="tertiary"
+        class="!w-auto"
+        [isBlock]="true"
+        (click)="onCreate()"
+        >{{
+          'components.widget.settings.grid.layouts.add.choice.create'
+            | translate
+        }}</ui-button
+      >
+    </div>
+    <div *ngIf="nextStep">
+      <div class="flex gap-4 mb-3 items-center">
+        <ui-button
+          [isIcon]="true"
+          icon="arrow_back"
+          (click)="nextStep = false"
+          [uiTooltip]="'common.back' | translate"
+        ></ui-button>
+        <div>
+          {{
+            'components.widget.settings.grid.layouts.add.choice.load'
+              | translate
+          }}
+        </div>
+      </div>
+      <div uiFormFieldDirective class="w-full">
+        <label>{{
+          'components.widget.settings.grid.layouts.select' | translate
+        }}</label>
+        <ui-graphql-select
+          *ngIf="queryRef"
+          valueField="id"
+          textField="name"
+          path="layouts"
+          [required]="true"
+          [query]="queryRef"
+          [formControl]="selectedLayoutControl"
+        >
+        </ui-graphql-select>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose variant="default">{{ 'common.close' | translate }}</ui-button>
+  </ng-container>
+</ui-dialog>

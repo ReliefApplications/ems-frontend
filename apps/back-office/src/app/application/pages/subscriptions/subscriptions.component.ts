@@ -5,9 +5,9 @@ import {
   Application,
   Channel,
   Subscription as ApplicationSubscription,
-  SafeApplicationService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  ApplicationService,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import { takeUntil } from 'rxjs/operators';
 
 /**
@@ -19,7 +19,7 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./subscriptions.component.scss'],
 })
 export class SubscriptionsComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   // === DATA ===
@@ -43,7 +43,7 @@ export class SubscriptionsComponent
    * @param apollo Apollo service
    */
   constructor(
-    private applicationService: SafeApplicationService,
+    private applicationService: ApplicationService,
     public dialog: Dialog,
     private apollo: Apollo
   ) {

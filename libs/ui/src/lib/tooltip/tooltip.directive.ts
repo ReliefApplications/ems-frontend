@@ -37,6 +37,7 @@ export class TooltipDirective implements OnDestroy {
     'rounded-md',
     'absolute',
     'z-[9999]',
+    'break-words',
   ] as const;
 
   /**

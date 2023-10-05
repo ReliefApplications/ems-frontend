@@ -4,10 +4,10 @@ import { TranslateService } from '@ngx-translate/core';
 import {
   Application,
   ContentType,
-  SafeApplicationService,
-  SafeConfirmService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  ApplicationService,
+  ConfirmService,
+  UnsubscribeComponent,
+} from '@oort-front/shared';
 import get from 'lodash/get';
 import { takeUntil, map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
@@ -21,7 +21,7 @@ import { Observable } from 'rxjs';
   styleUrls: ['./application.component.scss'],
 })
 export class ApplicationComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit, OnDestroy
 {
   /** Application title */
@@ -49,11 +49,11 @@ export class ApplicationComponent
    * @param confirmService Shared confirmation service
    */
   constructor(
-    private applicationService: SafeApplicationService,
+    private applicationService: ApplicationService,
     public route: ActivatedRoute,
     private router: Router,
     private translate: TranslateService,
-    private confirmService: SafeConfirmService
+    private confirmService: ConfirmService
   ) {
     super();
     this.largeDevice = window.innerWidth > 1024;
@@ -80,7 +80,8 @@ export class ApplicationComponent
                   x.type === ContentType.form
                     ? `./${x.type}/${x.id}`
                     : `./${x.type}/${x.content}`,
-                icon: this.getNavIcon(x.type || ''),
+                icon: x.icon || this.getNavIcon(x.type || ''),
+                fontFamily: x.icon ? 'fa' : 'material',
                 class: null,
                 orderable: true,
                 visible: x.visible ?? true,
@@ -144,6 +145,13 @@ export class ApplicationComponent
                 icon: 'add_to_queue',
               },
             ];
+          }
+          if (application.canUpdate) {
+            this.adminNavItems.push({
+              name: this.translate.instant('common.archive.few'),
+              path: './settings/archive',
+              icon: 'delete',
+            });
           }
           this.navGroups = [
             {

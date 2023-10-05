@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Form } from '@oort-front/safe';
 
 /** Graphql query for getting forms with minimum details */
 export const GET_SHORT_FORMS = gql`
@@ -49,18 +48,3 @@ export const GET_SHORT_FORMS = gql`
     }
   }
 `;
-
-/** Model for GetFormsQueryResposne object */
-export interface GetFormsQueryResponse {
-  forms: {
-    edges: {
-      node: Form;
-      cursor: string;
-    }[];
-    pageInfo: {
-      endCursor: string;
-      hasNextPage: boolean;
-    };
-    totalCount: number;
-  };
-}

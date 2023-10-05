@@ -1,0 +1,245 @@
+<ui-dialog size="medium">
+  <!-- Modal header -->
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{
+        (notification
+          ? 'components.customNotifications.edit.update'
+          : 'components.customNotifications.edit.new'
+        ) | translate
+      }}
+    </h3>
+  </ng-container>
+  <!-- Modal content -->
+  <ng-container ngProjectAs="content">
+    <form [formGroup]="formGroup" class="flex flex-col pb-1">
+      <div class="flex gap-x-2 flex-wrap">
+        <!-- Title -->
+        <div uiFormFieldDirective class="flex-auto">
+          <label>{{ 'common.name' | translate }}</label>
+          <input
+            type="text"
+            [placeholder]="'common.placeholder.name' | translate"
+            formControlName="name"
+          />
+        </div>
+        <!-- Type -->
+        <div uiFormFieldDirective [outline]="false" class="flex-1 w-28">
+          <label>{{ 'models.customNotification.type' | translate }}</label>
+          <ui-select-menu formControlName="notificationType">
+            <ui-select-option value="email">
+              {{ 'common.email.one' | translate }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+      </div>
+      <ui-divider></ui-divider>
+      <!-- Schedule builder -->
+      <h3>{{ 'models.customNotification.schedule' | translate }}</h3>
+      <!-- Schedule -->
+      <shared-cron-expression-control
+        class="flex"
+        formControlName="schedule"
+      ></shared-cron-expression-control>
+      <ui-divider></ui-divider>
+      <!-- Dataset selection -->
+      <h3>{{ 'components.customNotifications.edit.dataset' | translate }}</h3>
+      <div class="flex flex-col">
+        <!-- Resource -->
+        <div uiFormFieldDirective>
+          <label>{{ 'common.resource.one' | translate }}</label>
+          <ui-graphql-select
+            valueField="id"
+            textField="name"
+            [query]="resourcesQuery"
+            formControlName="resource"
+            [selectedElements]="[resource]"
+          >
+          </ui-graphql-select>
+        </div>
+        <!-- Layout -->
+        <ng-container *ngIf="resource">
+          <ng-container *ngIf="layout">
+            <!-- Layout is selected -->
+
+            <div uiFormFieldDirective [outline]="false" class="w-60">
+              <label>{{ 'common.layout.one' | translate }}</label>
+              <input [value]="layout.id" [disabled]="true" />
+              <ui-button
+                uiPrefix
+                variant="primary"
+                [isIcon]="true"
+                icon="edit"
+                (click)="editLayout()"
+                [uiTooltip]="'common.edit' | translate"
+              ></ui-button>
+              <ui-button
+                uiSuffix
+                variant="danger"
+                [isIcon]="true"
+                icon="close"
+                (click)="removeLayout()"
+                [uiTooltip]="'common.delete' | translate"
+              ></ui-button>
+            </div>
+          </ng-container>
+          <ng-container *ngIf="!formGroup.value.layout">
+            <!-- Layout is not selected yet -->
+            <ui-button
+              class="!w-auto"
+              category="tertiary"
+              variant="primary"
+              (click)="addLayout()"
+              >{{
+                'components.widget.settings.grid.layouts.add.title' | translate
+              }}</ui-button
+            >
+          </ng-container>
+        </ng-container>
+      </div>
+      <ui-divider></ui-divider>
+      <h3>{{ 'components.customNotifications.edit.email' | translate }}</h3>
+      <div class="flex flex-col">
+        <!-- Template -->
+
+        <div uiFormFieldDirective [outline]="false" class="w-full">
+          <label>{{ 'common.template.one' | translate }}</label>
+          <ui-select-menu formControlName="template">
+            <ui-select-option
+              *ngFor="let template of templates"
+              [value]="template.id"
+            >
+              {{ template.name }}
+            </ui-select-option>
+          </ui-select-menu>
+          <ui-icon
+            uiPrefix
+            icon="info_outline"
+            class="cursor-pointer"
+            variant="grey"
+            uiTooltip="HINT"
+          ></ui-icon>
+          <ui-button
+            uiSuffix
+            [isIcon]="true"
+            icon="add_circle_outline"
+            variant="primary"
+            (click)="$event.stopPropagation(); addEmailTemplate()"
+            [uiTooltip]="'components.templates.edit.new' | translate"
+          >
+          </ui-button>
+        </div>
+        <!-- Recipients -->
+        <h4>
+          {{
+            'components.customNotifications.edit.recipients.title' | translate
+          }}
+        </h4>
+        <!-- Recipients type -->
+        <div
+          class="flex flex-col gap-2"
+          formControlName="recipientsType"
+          uiRadioGroupDirective="recipientsTypeOptions"
+        >
+          <!-- Using user field -->
+          <!-- <ui-radio value="field">
+            <ng-container ngProjectAs="label">
+              {{ 'components.customNotifications.edit.recipients.userField' | translate }}
+            </ng-container>
+          </ui-radio> -->
+          <!-- Using distribution list -->
+          <ui-radio value="distributionList">
+            <ng-container ngProjectAs="label">
+              {{
+                'components.customNotifications.edit.recipients.distributionList'
+                  | translate
+              }}
+            </ng-container>
+          </ui-radio>
+          <!-- Using email -->
+          <ui-radio value="email">
+            <ng-container ngProjectAs="label">
+              {{
+                'components.customNotifications.edit.recipients.email'
+                  | translate
+              }}
+            </ng-container>
+          </ui-radio>
+        </div>
+        <!-- Recipients value -->
+        <div class="mt-6 flex">
+          <!-- Using user field -->
+
+          <div
+            uiFormFieldDirective
+            [outline]="false"
+            class="w-60 flex-1"
+            *ngIf="formGroup.value.recipientsType === 'field'"
+          >
+            <label>{{
+              'components.customNotifications.edit.recipients.userField'
+                | translate
+            }}</label>
+            <ui-select-menu formControlName="recipients">
+              <ui-select-option
+                *ngFor="let field of userFields"
+                [value]="field.name"
+                >{{ field.name }}</ui-select-option
+              >
+            </ui-select-menu>
+          </div>
+          <!-- Using distribution list -->
+          <div
+            uiFormFieldDirective
+            [outline]="false"
+            class="w-60 flex-1"
+            *ngIf="formGroup.value.recipientsType === 'distributionList'"
+          >
+            <label>{{ 'common.distributionList.one' | translate }}</label>
+            <ui-select-menu formControlName="recipients">
+              <ui-select-option
+                *ngFor="let list of distributionLists"
+                [value]="list.id"
+                >{{ list.name }}</ui-select-option
+              >
+            </ui-select-menu>
+          </div>
+          <!-- Using email -->
+          <div
+            uiFormFieldDirective
+            [uiErrorMessage]="
+              'components.customNotifications.errors.email' | translate
+            "
+            [uiErrorMessageIf]="
+              formGroup.get('recipients')?.errors &&
+              formGroup.get('recipients')?.touched
+            "
+            *ngIf="formGroup.value.recipientsType === 'email'"
+            class="flex-1"
+          >
+            <label>{{ 'common.email.one' | translate }}</label>
+            <input
+              type="text"
+              [placeholder]="'common.placeholder.email' | translate"
+              formControlName="recipients"
+            />
+          </div>
+        </div>
+      </div>
+    </form>
+  </ng-container>
+  <!-- Modal actions -->
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose variant="default">
+      {{ 'common.close' | translate }}
+    </ui-button>
+    <ui-button
+      category="secondary"
+      variant="primary"
+      [uiDialogClose]="formGroup.getRawValue()"
+      [disabled]="!formGroup.valid"
+    >
+      {{ (notification ? 'common.update' : 'common.create') | translate }}
+    </ui-button>
+  </ng-container>
+</ui-dialog>

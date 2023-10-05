@@ -3,10 +3,10 @@ import { CommonModule } from '@angular/common';
 import { FormRoutingModule } from './form-routing.module';
 import { FormComponent } from './form.component';
 import {
-  SafeFormModule,
-  SafeAccessModule,
-  SafeEditableTextModule,
-} from '@oort-front/safe';
+  FormModule as SharedFormModule,
+  AccessModule,
+  EditableTextModule,
+} from '@oort-front/shared';
 import { ButtonModule, SpinnerModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -18,11 +18,11 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     FormRoutingModule,
-    SafeFormModule,
-    SafeAccessModule,
+    SharedFormModule,
+    AccessModule,
     SpinnerModule,
     TranslateModule,
-    SafeEditableTextModule,
+    EditableTextModule,
     ButtonModule,
     TooltipModule,
   ],

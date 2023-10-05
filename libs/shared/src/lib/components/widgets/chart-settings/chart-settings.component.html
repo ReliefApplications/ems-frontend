@@ -1,0 +1,65 @@
+<ui-tabs
+  class="grow"
+  [vertical]="true"
+  (selectedIndexChange)="handleTabChange($event)"
+>
+  <!-- Main Parameters -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon
+        icon="settings"
+        [size]="24"
+        uiTooltip="{{ 'common.general' | translate }}"
+      ></ui-icon>
+      <span>{{ 'common.general' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-tab-main [formGroup]="formGroup" [type]="type"></shared-tab-main>
+    </ng-template>
+  </ui-tab>
+  <!-- Display options -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon
+        icon="tune"
+        [size]="24"
+        uiTooltip="{{ 'common.display' | translate }}"
+      ></ui-icon>
+      <span>{{ 'common.display' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-tab-display
+        [formGroup]="formGroup"
+        [type]="type"
+      ></shared-tab-display>
+    </ng-template>
+  </ui-tab>
+  <!-- Context filter settings -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon icon="filter_list" [size]="24"></ui-icon>
+      <span>{{ 'models.dashboard.contextFilter' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-contextual-filters-settings
+        [form]="formGroup"
+      ></shared-contextual-filters-settings>
+    </ng-template>
+  </ui-tab>
+  <!-- Widget display options -->
+  <ui-tab>
+    <ng-container ngProjectAs="label">
+      <ui-icon
+        icon="settings_overscan"
+        [size]="24"
+        [uiTooltip]="'models.widget.display.title' | translate"
+      ></ui-icon>
+      <span>{{ 'models.widget.display.title' | translate }}</span>
+    </ng-container>
+    <ng-template uiTabContent>
+      <shared-display-settings
+        [formGroup]="formGroup"
+      ></shared-display-settings>
+    </ng-template>
+  </ui-tab>
+</ui-tabs>
