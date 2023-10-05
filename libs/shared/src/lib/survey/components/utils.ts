@@ -2,7 +2,7 @@ import { Dialog } from '@angular/cdk/dialog';
 import { UntypedFormControl } from '@angular/forms';
 import { NgZone } from '@angular/core';
 // todo: as it something to do with survey-angular
-// import { surveyLocalization } from 'survey-core';
+import { surveyLocalization } from 'survey-core';
 import localForage from 'localforage';
 
 /**
@@ -25,12 +25,10 @@ export const buildSearchButton = (
   document: Document
 ): any => {
   const searchButton = document.createElement('button');
-  // todo: not working
-  // searchButton.innerText = surveyLocalization.getString(
-  //   'oort:search',
-  //   question.survey.locale
-  // );
-  searchButton.innerText = 'Search';
+  searchButton.innerText = surveyLocalization.getString(
+    'oort:search',
+    question.survey.locale
+  );
   searchButton.className = 'sd-btn !px-3 !py-2';
   searchButton.style.marginRight = '8px';
   if (fieldsSettingsForm) {
@@ -91,12 +89,10 @@ export const buildAddButton = (
   document: Document
 ): any => {
   const addButton = document.createElement('button');
-  // todo: not working
-  // addButton.innerText = surveyLocalization.getString(
-  //   'oort:addNewRecord',
-  //   question.survey.locale
-  // );
-  addButton.innerText = 'Add new record';
+  addButton.innerText = surveyLocalization.getString(
+    'oort:addNewRecord',
+    question.survey.locale
+  );
   addButton.className = 'sd-btn !px-3 !py-2';
   if (question.addRecord && question.addTemplate && !question.isReadOnly) {
     addButton.onclick = async () => {
