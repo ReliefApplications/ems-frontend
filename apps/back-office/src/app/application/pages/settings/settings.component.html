@@ -74,7 +74,7 @@
 </form>
 <!-- Actions -->
 <div
-  *ngIf="application && (application.canUpdate || application.canDelete)"
+  *ngIf="application && (application.canSee || application.canDelete)"
   class="mt-2"
 >
   <h1>{{ 'pages.application.settings.actions' | translate }}</h1>
@@ -88,7 +88,7 @@
       category="tertiary"
       variant="primary"
       (click)="onDuplicate()"
-      *ngIf="application.canUpdate"
+      *ngIf="application.canSee"
     >
       {{ 'common.duplicate' | translate }}
     </ui-button>
