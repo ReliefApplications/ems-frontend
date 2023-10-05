@@ -210,9 +210,7 @@ export class GridComponent
   private snackBarRef!: any;
 
   /** Page change timeout listener */
-  private pageChangeTimeoutListener!: NodeJS.Timeout
-
-
+  private pageChangeTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Constructor of the grid component
@@ -268,7 +266,7 @@ export class GridComponent
       this.location.replaceState(this.location.path(), undefined, {
         navigationId: state.navigationId,
       });
-      if(this.pageChangeTimeoutListener){
+      if (this.pageChangeTimeoutListener) {
         clearTimeout(this.pageChangeTimeoutListener);
       }
       this.pageChangeTimeoutListener = setTimeout(() => {

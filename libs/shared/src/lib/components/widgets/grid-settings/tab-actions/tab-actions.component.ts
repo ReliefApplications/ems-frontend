@@ -14,7 +14,10 @@ import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.com
   templateUrl: './tab-actions.component.html',
   styleUrls: ['./tab-actions.component.scss'],
 })
-export class TabActionsComponent extends UnsubscribeComponent implements OnInit {
+export class TabActionsComponent
+  extends UnsubscribeComponent
+  implements OnInit
+{
   @Input() formGroup!: UntypedFormGroup;
 
   /** Show select page id and checkbox for record id */
@@ -96,8 +99,7 @@ export class TabActionsComponent extends UnsubscribeComponent implements OnInit 
     this.pages = this.getPages(application);
     this.formGroup.controls.actions
       .get('showRecordDashboard')
-      ?.valueChanges
-      .pipe(takeUntil(this.destroy$))
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((val: boolean) => {
         this.showSelectPage = val;
       });
