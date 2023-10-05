@@ -77,7 +77,6 @@
 		"create": "Create",
 		"createdOn": "Created on",
 		"cronEditor": {
-			"Wednesday": "Wednesday",
 			"advanced": "Advanced",
 			"atTime": "At",
 			"daily": "Daily",
@@ -87,27 +86,55 @@
 				"feminine": "Every",
 				"masculine": "Every"
 			},
-			"friday": "Friday",
+			"firstWeekDay": "First week day",
 			"hourly": "Hourly",
 			"hours": "Hour(s)",
+			"lastDay": "Last day",
+			"lastWeekDay": "Last week day",
 			"minutely": "Minutely",
 			"minutes": "Minute(s)",
-			"monday": "Monday",
 			"month": "Month",
 			"monthly": "Monthly",
+			"months": {
+				"april": "April",
+				"august": "August",
+				"december": "December",
+				"february": "February",
+				"january": "January",
+				"july": "July",
+				"june": "June",
+				"march": "March",
+				"may": "May",
+				"november": "November",
+				"october": "October",
+				"september": "September"
+			},
 			"of": "of",
 			"ofEvery": "of every",
 			"onThe": {
 				"feminine": "On the",
 				"masculine": "On the"
 			},
-			"saturday": "Saturday",
 			"seconds": "Second(s)",
-			"sunday": "Sunday",
-			"thursday": "Thursday",
-			"tuesday": "Tuesday",
 			"week": "Week",
 			"weekDay": "Week Day (MON-FRI)",
+			"weekDays": {
+				"friday": "Friday",
+				"monday": "Monday",
+				"saturday": "Saturday",
+				"sunday": "Sunday",
+				"thursday": "Thursday",
+				"tuesday": "Tuesday",
+				"wednesday": "Wednesday"
+			},
+			"weekNumber": {
+				"fifth": "Fifth",
+				"first": "First",
+				"fourth": "Fourth",
+				"last": "Last",
+				"second": "Second",
+				"third": "Third"
+			},
 			"weekly": "Weekly",
 			"yearly": "Yearly"
 		},
@@ -967,6 +994,7 @@
 		"records": {
 			"active": "Active records",
 			"archived": "Archived records",
+			"editAs": "Edit as",
 			"paginator": {
 				"ariaLabel": "Select page of records"
 			},
