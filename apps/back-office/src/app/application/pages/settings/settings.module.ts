@@ -10,6 +10,7 @@ import {
   TextareaModule,
   FormWrapperModule,
   ToggleModule,
+  FixedWrapperModule,
 } from '@oort-front/ui';
 import { AccessModule, StatusOptionsComponent } from '@oort-front/shared';
 
@@ -29,6 +30,7 @@ import { AccessModule, StatusOptionsComponent } from '@oort-front/shared';
     SelectMenuModule,
     FormWrapperModule,
     ToggleModule,
+    FixedWrapperModule,
     AccessModule,
     StatusOptionsComponent,
   ],

@@ -5,6 +5,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import {
   ButtonModule,
+  FixedWrapperModule,
   FormWrapperModule,
   SelectMenuModule,
 } from '@oort-front/ui';
@@ -21,6 +22,7 @@ import {
     ReactiveFormsModule,
     ButtonModule,
     SelectMenuModule,
+    FixedWrapperModule,
     FormWrapperModule,
   ],
   exports: [RoleChannelsComponent],
