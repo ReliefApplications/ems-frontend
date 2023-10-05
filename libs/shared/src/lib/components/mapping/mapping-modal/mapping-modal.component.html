@@ -1,9 +1,9 @@
 <ui-dialog>
   <ng-container ngProjectAs="header">
-    <h1 *ngIf="isNew">{{ 'models.mapping.add' | translate }}</h1>
-    <h1 *ngIf="!isNew">
+    <h3 *ngIf="isNew" class="font-semibold">{{ 'models.mapping.add' | translate }}</h3>
+    <h3 *ngIf="!isNew" class="font-semibold">
       {{ 'models.mapping.edit' | translate }}
-    </h1>
+    </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <form class="flex flex-col" [formGroup]="form" class="form-group">
@@ -46,7 +46,7 @@
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button (click)="onClose()">
+    <ui-button (click)="onClose()" variant="default">
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button

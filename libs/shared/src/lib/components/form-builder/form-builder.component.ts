@@ -193,6 +193,7 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
       generateValidJSON: true,
       showTranslationTab: true,
       questionTypes: QUESTION_TYPES,
+      allowChangeThemeInPreview: false,
     };
 
     this.surveyCreator = new SurveyCreatorModel(creatorOptions);
@@ -672,6 +673,6 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
    */
   private onSetCustomCss(options: any): void {
     const classes = options.cssClasses;
-    classes.content += 'shared-qst-content';
+    classes.content += ' shared-qst-content';
   }
 }

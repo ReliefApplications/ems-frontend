@@ -1,4 +1,12 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  TemplateRef,
+  ViewChild,
+} from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { UnsubscribeComponent } from '@oort-front/shared';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
@@ -12,15 +20,21 @@ import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
   styleUrls: ['./filter.component.scss'],
 })
 export class FilterComponent extends UnsubscribeComponent implements OnInit {
+  /** Loading indicator */
   @Input() loading = false;
+  /** Filter update event */
   @Output() filter = new EventEmitter<any>();
-
+  /** Filter form group */
   public form = this.fb.group({
     startDate: [null],
     endDate: [null],
     status: [''],
   });
-  public show = false;
+  /** Should expand filter */
+  public expanded = false;
+  /** Reference to expanded filter template */
+  @ViewChild('expandedFilter')
+  expandedFilter!: TemplateRef<any>;
 
   /**
    * Filter component of applications page.

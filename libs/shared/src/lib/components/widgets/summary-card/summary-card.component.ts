@@ -534,8 +534,19 @@ export class SummaryCardComponent
     const settings = {
       template: get(this.settings, 'template', null), //TO MODIFY
       resource: card.resource,
-      actions: this.settings.actions,
       summaryCard: true,
+      actions: {
+        //default actions, might need to modify later
+        addRecord: false,
+        convert: true,
+        delete: true,
+        export: true,
+        history: true,
+        inlineEdition: true,
+        showDetails: true,
+        update: true,
+      },
+      contextFilters: JSON.stringify(this.contextFilters),
     };
 
     Object.assign(
@@ -620,7 +631,7 @@ export class SummaryCardComponent
         .refetch({
           first: this.pageInfo.pageSize,
           skip: event.skip,
-          filters: this.queryFilter,
+          filter: this.queryFilter,
           sortField: this.sortOptions.field,
           sortOrder: this.sortOptions.order,
           styles: layoutQuery?.style || null,

@@ -1,7 +1,10 @@
 <!-- Add new tab -->
 <div class="flex justify-end">
-  <ui-button (click)="onAddTab($event)" category="secondary" variant="primary"
-    >Add a new tab</ui-button
+  <ui-button
+    (click)="onAddTab($event)"
+    category="secondary"
+    variant="primary"
+    >{{ 'components.widget.settings.tabs.addNewTab' | translate }}</ui-button
   >
 </div>
 <!-- Available tabs -->

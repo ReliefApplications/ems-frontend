@@ -1,10 +1,12 @@
 <ui-dialog size="small">
   <!-- Header -->
   <ng-container ngProjectAs="header">
-    {{
-      'components.formMapProperties.geofields.editDialog.editGeofield'
-        | translate
-    }}
+    <h3 class="font-semibold">
+      {{
+        'components.formMapProperties.geofields.editDialog.editGeofield'
+          | translate
+      }}
+    </h3>
   </ng-container>
   <!-- Form -->
   <ng-container ngProjectAs="content">
@@ -29,7 +31,7 @@
   </ng-container>
   <!-- Actions -->
   <ng-container ngProjectAs="actions">
-    <ui-button (click)="onClose()">{{ 'common.close' | translate }}</ui-button>
+    <ui-button (click)="onClose()" variant="default">{{ 'common.close' | translate }}</ui-button>
     <ui-button
       category="secondary"
       variant="primary"

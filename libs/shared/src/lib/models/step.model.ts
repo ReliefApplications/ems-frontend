@@ -15,6 +15,7 @@ export interface Step {
   canSee?: boolean;
   canUpdate?: boolean;
   canDelete?: boolean;
+  icon?: string;
 }
 
 /** Model for step graphql query response */

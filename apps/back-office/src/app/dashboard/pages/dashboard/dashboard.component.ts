@@ -24,7 +24,6 @@ import {
   ReferenceDataService,
   Record,
   ButtonActionT,
-  LayoutService,
   ResourceRecordsNodesQueryResponse,
   DashboardQueryResponse,
   EditDashboardMutationResponse,
@@ -50,7 +49,7 @@ import { Observable, firstValueFrom } from 'rxjs';
 import { FormControl } from '@angular/forms';
 import { isEqual } from 'lodash';
 import { Dialog } from '@angular/cdk/dialog';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import localForage from 'localforage';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { ContextService, CustomWidgetStyleComponent } from '@oort-front/shared';
@@ -177,7 +176,7 @@ export class DashboardComponent
     private refDataService: ReferenceDataService,
     private renderer: Renderer2,
     private elementRef: ElementRef,
-    private layoutService: LayoutService,
+    private layoutService: UILayoutService,
     @Inject(DOCUMENT) private document: Document,
     private clipboard: Clipboard
   ) {
@@ -926,5 +925,59 @@ export class DashboardComponent
       },
       callback
     );
+  }
+
+  /**
+   * Handle icon change.
+   * Open icon modal settings, and save changes if icon is updated.
+   */
+  public async onChangeIcon(): Promise<void> {
+    const { IconModalComponent } = await import(
+      '../../../components/icon-modal/icon-modal.component'
+    );
+    const dialogRef = this.dialog.open(IconModalComponent, {
+      data: {
+        icon: this.isStep
+          ? this.dashboard?.step?.icon
+          : this.dashboard?.page?.icon,
+      },
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((icon: any) => {
+      if (icon) {
+        if (this.isStep) {
+          const callback = () => {
+            this.dashboard = {
+              ...this.dashboard,
+              step: {
+                ...this.dashboard?.step,
+                icon,
+              },
+            };
+          };
+          this.dashboard?.step &&
+            this.workflowService.updateStepIcon(
+              this.dashboard.step,
+              icon,
+              callback
+            );
+        } else {
+          const callback = () => {
+            this.dashboard = {
+              ...this.dashboard,
+              page: {
+                ...this.dashboard?.page,
+                icon,
+              },
+            };
+          };
+          this.dashboard?.page &&
+            this.applicationService.changePageIcon(
+              this.dashboard.page,
+              icon,
+              callback
+            );
+        }
+      }
+    });
   }
 }

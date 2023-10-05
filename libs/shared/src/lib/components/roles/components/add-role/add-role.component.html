@@ -1,6 +1,6 @@
 <ui-dialog size="small">
   <ng-container ngProjectAs="header">
-    <h1>{{ title | translate }}</h1>
+    <h3 class="font-semibold">{{ title | translate }}</h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <form [formGroup]="roleForm" class="flex flex-col">
@@ -15,7 +15,7 @@
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button (click)="onClose()">
+    <ui-button (click)="onClose()" variant="default">
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button

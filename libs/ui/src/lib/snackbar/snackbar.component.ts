@@ -15,6 +15,7 @@ import { BehaviorSubject } from 'rxjs';
 
 /**
  * UI Snackbar component
+ * Snackbar is a UI component that displays a temporary message about an operation.
  */
 @Component({
   selector: 'ui-snackbar',
@@ -22,15 +23,23 @@ import { BehaviorSubject } from 'rxjs';
   styleUrls: ['./snackbar.component.scss'],
 })
 export class SnackbarComponent {
+  /** Event emitter for when an action is completed. */
   @Output() actionComplete = new EventEmitter<void>();
+  /** Reference to the content view of the snack bar. */
   @ViewChild('snackBarContent', { static: true, read: ViewContainerRef })
   snackBarContentView!: ViewContainerRef;
-
+  /** The data for the snack bar. */
   data!: BehaviorSubject<SnackBarData>;
+  /** The message to display in the snack bar. */
   message!: string;
+  /** Boolean indicating whether there is an error. */
   error = false;
+  /** Boolean indicating whether to display the snack bar. */
   displaySnackBar = false;
+  /** The action to perform. */
   action!: string;
+  /** Function to resolve after a certain duration. */
+
   durationResolver = (duration: number) =>
     new Promise((resolve) => setTimeout(resolve, duration));
 

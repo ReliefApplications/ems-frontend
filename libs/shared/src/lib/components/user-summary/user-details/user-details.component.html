@@ -47,12 +47,17 @@
     </ng-container>
   </div>
 </form>
-<ui-button
-  *ngIf="'update' | able : 'User'"
-  variant="primary"
-  category="secondary"
-  type="submit"
-  [disabled]="!form.valid"
-  (click)="onUpdate()"
-  >{{ 'common.saveChanges' | translate }}</ui-button
->
+<!-- Floating div for actions buttons -->
+<ng-container *ngIf="'update' | able : 'User'">
+  <ui-fixed-wrapper>
+    <!-- Save button -->
+    <ui-button
+      variant="primary"
+      category="secondary"
+      type="submit"
+      [disabled]="!form.valid"
+      (click)="onUpdate()"
+      >{{ 'common.saveChanges' | translate }}
+    </ui-button>
+  </ui-fixed-wrapper>
+</ng-container>

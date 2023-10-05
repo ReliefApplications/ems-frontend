@@ -294,9 +294,13 @@ export class DashboardFilterComponent
     this.survey.onAfterRenderSurvey.add(this.onAfterRenderSurvey.bind(this));
 
     // we should render the custom questions somewhere, let's do it here
-    this.survey.onAfterRenderQuestion.add(
-      renderGlobalProperties(this.referenceDataService)
-    );
+    this.survey.onAfterRenderQuestion.add((_, options: any) => {
+      const parent = options.htmlElement.parentElement;
+      if (parent) {
+        parent.style['min-width'] = '0px';
+      }
+      renderGlobalProperties(this.referenceDataService);
+    });
     this.onValueChange();
   }
 
