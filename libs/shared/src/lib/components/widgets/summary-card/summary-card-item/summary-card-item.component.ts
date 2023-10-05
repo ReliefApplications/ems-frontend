@@ -3,8 +3,8 @@ import { get } from 'lodash';
 import { CardT } from '../summary-card.component';
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs/operators';
-import { SafeUnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { SummaryCardFormT } from '../../summary-card-settings/summary-card-settings.component';
+import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Single Item component of Summary card widget.
@@ -15,7 +15,7 @@ import { SummaryCardFormT } from '../../summary-card-settings/summary-card-setti
   styleUrls: ['./summary-card-item.component.scss'],
 })
 export class SummaryCardItemComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit, OnChanges
 {
   @Input() card!: CardT;
@@ -136,10 +136,10 @@ export class SummaryCardItemComponent
    * Opens the form corresponding to selected summary card in order to update it
    */
   public async updateSummaryCard(): Promise<void> {
-    const { SafeFormModalComponent } = await import(
+    const { FormModalComponent } = await import(
       '../../../../components/form-modal/form-modal.component'
     );
-    const dialogRef = this.dialog.open(SafeFormModalComponent, {
+    const dialogRef = this.dialog.open(FormModalComponent, {
       disableClose: true,
       data: {
         recordId: this.card.record?.id,
