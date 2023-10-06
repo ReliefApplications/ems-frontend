@@ -170,19 +170,19 @@ export class ButtonConfigComponent
         }
       });
 
-      // this.formGroup
-      // ?.get('askConfirmation')
-      // ?.valueChanges.pipe(takeUntil(this.destroy$))
-      // .subscribe((value) => {
-      //   if (value) {
-      //     this.formGroup
-      //       ?.get('confirmationText')
-      //       ?.setValidators(Validators.required);
-      //   } else {
-      //     this.formGroup?.get('confirmationText')?.clearValidators();
-      //   }
-      //   this.formGroup?.get('confirmationText')?.updateValueAndValidity();
-      // });
+    // this.formGroup
+    // ?.get('askConfirmation')
+    // ?.valueChanges.pipe(takeUntil(this.destroy$))
+    // .subscribe((value) => {
+    //   if (value) {
+    //     this.formGroup
+    //       ?.get('confirmationText')
+    //       ?.setValidators(Validators.required);
+    //   } else {
+    //     this.formGroup?.get('confirmationText')?.clearValidators();
+    //   }
+    //   this.formGroup?.get('confirmationText')?.updateValueAndValidity();
+    // });
 
     this.formGroup
       ?.get('modifySelectedRows')
@@ -308,7 +308,7 @@ export class ButtonConfigComponent
         }
       });
 
-      this.formGroup
+    this.formGroup
       ?.get('selectPage')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((selectPage: boolean) => {
@@ -317,7 +317,6 @@ export class ButtonConfigComponent
           this.formGroup?.get('selectAll')?.updateValueAndValidity();
         }
       });
-  
 
     this.formGroup
       ?.get('selectPage')
