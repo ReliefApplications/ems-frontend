@@ -1344,6 +1344,7 @@
 						"create": "Ajouter un bouton",
 						"defaultName": "Bouton d'action",
 						"enable": "Activer",
+						"needConfirmation": "Confirmation requise",
 						"title": "Bouton d'action rapide",
 						"tooltip": {
 							"attach": "Si activé, vous devez fournir un formulaire et un champ dans ce formulaire. Toutes les lignes sélectionnées seront attachées à un enregistrement de ce formulaire. L'utilisateur pourra choisir cet enregistrement grâce au champ donné.",

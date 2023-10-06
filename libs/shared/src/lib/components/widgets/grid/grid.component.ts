@@ -377,6 +377,9 @@ export class GridWidgetComponent
     }
     // Auto modify the selected rows
     if (options.modifySelectedRows) {
+      //todo: show modal
+      console.log('aaas', options)
+
       await this.promisedRowsModifications(
         options.modifications,
         this.grid.selectedRows

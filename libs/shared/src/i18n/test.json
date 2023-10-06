@@ -1328,6 +1328,7 @@
 						"create": "******",
 						"defaultName": "******",
 						"enable": "******",
+						"needConfirmation": "******",
 						"title": "******",
 						"tooltip": {
 							"attach": "******",
