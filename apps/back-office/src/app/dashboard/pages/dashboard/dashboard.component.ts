@@ -331,7 +331,9 @@ export class DashboardComponent
             : '';
           this.buttonActions = this.dashboard.buttons || [];
           this.showFilter = this.dashboard.showFilter ?? false;
+          this.contextService.isFilterEnabled.next(this.showFilter);
         } else {
+          this.contextService.isFilterEnabled.next(false);
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.accessNotProvided', {
               type: this.translate
@@ -687,6 +689,7 @@ export class DashboardComponent
             this.handleDashboardMutationResponse(errors, data);
           },
           complete: () => {
+            this.contextService.isFilterEnabled.next(this.showFilter);
             this.loading = false;
           },
         });

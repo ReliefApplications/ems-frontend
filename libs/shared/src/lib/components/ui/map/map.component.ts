@@ -294,7 +294,7 @@ export class MapComponent
     };
 
     // Listen to dashboard filters changes
-    this.contextService.filterChanges$
+    this.contextService.filter$
       .pipe(
         debounceTime(500),
         filter(() => {

@@ -1,12 +1,5 @@
 import { Injectable } from '@angular/core';
-import {
-  BehaviorSubject,
-  Observable,
-  filter,
-  map,
-  merge,
-  pairwise,
-} from 'rxjs';
+import { BehaviorSubject, filter, map, pairwise } from 'rxjs';
 import { ApplicationService } from '../application/application.service';
 import { Application } from '../../models/application.model';
 import localForage from 'localforage';
@@ -80,11 +73,6 @@ export class ContextService {
   /** @returns current question values from the filter */
   get availableFilterFieldsValue(): Record<string, any> {
     return this.filter.getValue();
-  }
-
-  /** @returns any filter change of the context service, enable/disable or value change */
-  get filterChanges$(): Observable<any> {
-    return merge(this.isFilterEnabled$, this.filter$);
   }
 
   /**

@@ -100,7 +100,7 @@ export class AggregationGridComponent
   }
 
   ngOnInit(): void {
-    this.contextService.filterChanges$
+    this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => {
         this.getAggregationData();

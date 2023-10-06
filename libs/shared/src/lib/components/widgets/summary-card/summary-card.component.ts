@@ -205,7 +205,7 @@ export class SummaryCardComponent
         this.handleSearch(value || '');
       });
 
-    this.contextService.filterChanges$
+    this.contextService.filter$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => {
         this.onPage({

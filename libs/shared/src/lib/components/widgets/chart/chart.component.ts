@@ -93,13 +93,11 @@ export class ChartComponent
   }
 
   ngOnInit(): void {
-    this.contextService.filterChanges$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.series.next([]);
-        this.loadChart();
-        this.getOptions();
-      });
+    this.contextService.filter$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.series.next([]);
+      this.loadChart();
+      this.getOptions();
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
