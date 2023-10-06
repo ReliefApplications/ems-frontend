@@ -196,24 +196,16 @@ export class SummaryCardComponent
     this.setupDynamicCards();
     this.setupGridSettings();
     this.searchControl.valueChanges
-      .pipe(debounceTime(2000), distinctUntilChanged())
+      .pipe(
+        debounceTime(2000),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
       .subscribe((value) => {
         this.handleSearch(value || '');
       });
 
     this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.onPage({
-          pageSize: DEFAULT_PAGE_SIZE,
-          skip: 0,
-          previousPageIndex: 0,
-          pageIndex: 0,
-          totalItems: 0,
-        });
-      });
-
-    this.contextService.isFilterEnabled$
       .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => {
         this.onPage({

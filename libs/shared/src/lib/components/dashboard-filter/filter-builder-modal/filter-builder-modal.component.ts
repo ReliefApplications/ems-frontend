@@ -19,6 +19,9 @@ import { renderGlobalProperties } from '../../../survey/render-global-properties
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
 import { FormHelpersService } from '../../../services/form-helper/form-helper.service';
 import { Question } from '../../../survey/types';
+import 'survey-core/survey.i18n.js';
+import 'survey-creator-core/survey-creator-core.i18n.js';
+
 /**
  * Data passed to initialize the filter builder
  */
@@ -202,6 +205,7 @@ export class FilterBuilderModalComponent
     this.surveyCreator.sidebarLocation = 'right';
     this.surveyCreator.haveCommercialLicense = true;
     this.surveyCreator.saveSurveyFunc = this.saveMySurvey;
+    this.surveyCreator.allowChangeThemeInPreview = false;
 
     // Block core fields edition
     this.surveyCreator.onShowingProperty.add((sender: any, opt: any) => {

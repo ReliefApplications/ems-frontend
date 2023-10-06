@@ -27,7 +27,7 @@ export default {
  * @param args properties
  * @returns A story component
  */
-const TEMPLATE: StoryFn<sharedWorkflowStepperComponent> = (args) => ({
+const TEMPLATE: StoryFn<WorkflowStepperComponent> = (args) => ({
   props: {
     ...args,
   },

@@ -169,6 +169,8 @@ export class DashboardFilterComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    // Trigger filtering with no values on deactivating context filter
+    this.contextService.filter.next({});
     this.resizeObserver.disconnect();
   }
 
@@ -296,7 +298,9 @@ export class DashboardFilterComponent
     // we should render the custom questions somewhere, let's do it here
     this.survey.onAfterRenderQuestion.add((_, options: any) => {
       const parent = options.htmlElement.parentElement;
-      (parent?.style as any)['min-width'] = '0px';
+      if (parent) {
+        parent.style['min-width'] = '0px';
+      }
       renderGlobalProperties(this.referenceDataService);
     });
     this.onValueChange();
@@ -444,7 +448,6 @@ export class DashboardFilterComponent
         };
         return acc;
       }, {});
-
     this.contextService.filter.next(surveyData);
     this.ngZone.run(() => {
       this.quickFilters = displayValues

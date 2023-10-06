@@ -122,7 +122,9 @@ export const init = (
               '!outline-none',
               '!hidden',
               '!min-w-0',
-              '!px-2'
+              '!px-2',
+              'top-0',
+              'bottom-0'
             );
 
             const icon = domService.appendComponentToBody(

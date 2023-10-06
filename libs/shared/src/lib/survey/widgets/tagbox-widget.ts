@@ -166,6 +166,7 @@ export const init = (
     tagboxInstance.textField = 'text';
     tagboxInstance.valueField = 'value';
     tagboxInstance.popupSettings = { appendTo: 'component' };
+    tagboxInstance.fillMode = 'none';
     return tagboxInstance;
   };
   // ⚠ danger ⚠

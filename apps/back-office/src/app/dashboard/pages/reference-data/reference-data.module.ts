@@ -14,6 +14,7 @@ import {
   SelectMenuModule,
   TextareaModule,
   FormWrapperModule,
+  FixedWrapperModule,
 } from '@oort-front/ui';
 import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
@@ -39,6 +40,7 @@ import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
     SelectMenuModule,
     FormWrapperModule,
     MonacoEditorModule,
+    FixedWrapperModule,
     FormsModule,
   ],
 })

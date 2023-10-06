@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, TemplateRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable } from 'rxjs';
 
@@ -9,7 +9,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class LayoutService {
+export class UILayoutService {
   /** Close right sidenav opened when navigating */
   public closeRightSidenav = true;
   /** Current right sidenav */
@@ -17,6 +17,13 @@ export class LayoutService {
   /** @returns Current right sidenav as observable */
   get rightSidenav$(): Observable<any> {
     return this.rightSidenav.asObservable();
+  }
+
+  /** Current fixed wrapper actions */
+  private fixedWrapperActions = new BehaviorSubject<any>(null);
+  /** @returns Current fixed wrapper actions as observable */
+  get fixedWrapperActions$(): Observable<any> {
+    return this.fixedWrapperActions.asObservable();
   }
 
   /**
@@ -41,5 +48,14 @@ export class LayoutService {
    */
   setRightSidenav(container: any): void {
     this.rightSidenav.next(container);
+  }
+
+  /**
+   * Stores the container used as fixed wrapper actions.
+   *
+   * @param container Fixed wrapper actions container.
+   */
+  setFixedWrapperActions(container: TemplateRef<any> | null): void {
+    this.fixedWrapperActions.next(container);
   }
 }

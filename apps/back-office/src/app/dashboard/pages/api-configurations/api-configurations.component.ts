@@ -15,7 +15,7 @@ import {
 } from './graphql/mutations';
 import { Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
-import { distinctUntilChanged, takeUntil } from 'rxjs/operators';
+import { takeUntil } from 'rxjs/operators';
 import {
   getCachedValues,
   updateQueryUniqueValues,
@@ -96,13 +96,6 @@ export class ApiConfigurationsComponent
    * Creates the API configuration query, and subscribes to the query changes.
    */
   ngOnInit(): void {
-    this.form.valueChanges
-      .pipe(distinctUntilChanged(), takeUntil(this.destroy$))
-      .subscribe((value: any) => {
-        this.searchText = (value?.search ?? '').trim().toLowerCase();
-        this.applyFilter('', this.searchText);
-      });
-
     this.apiConfigurationsQuery =
       this.apollo.watchQuery<ApiConfigurationsQueryResponse>({
         query: GET_API_CONFIGURATIONS,
@@ -161,22 +154,20 @@ export class ApiConfigurationsComponent
   /**
    * Applies the filter to the data source.
    *
-   * @param column Column to filter on.
-   * @param event Value of the filter.
+   * @param event event value of the filter.
    */
-  applyFilter(column: string, event: any): void {
-    if (column === 'status') {
-      this.statusFilter = event ?? '';
+  applyFilter(event: any): void {
+    if (event.statusFilter) {
+      this.statusFilter = event.statusFilter;
+    } else {
+      this.statusFilter = '';
+    }
+    if (event.search) {
+      this.searchText = event.search.toLowerCase();
+    } else {
+      this.searchText = '';
     }
     this.filterPredicate();
-  }
-
-  /**
-   * Removes all the filters.
-   */
-  clearAllFilters(): void {
-    this.statusFilter = '';
-    this.form.reset();
   }
 
   /**

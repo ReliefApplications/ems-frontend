@@ -1,5 +1,4 @@
 import {
-  ChangeDetectorRef,
   Component,
   Input,
   OnChanges,
@@ -14,8 +13,8 @@ import { BarChartComponent } from '../../ui/charts/bar-chart/bar-chart.component
 import { uniq, get, groupBy, isEqual } from 'lodash';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { debounceTime, skip, takeUntil } from 'rxjs/operators';
-import { BehaviorSubject, merge } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
@@ -82,35 +81,22 @@ export class ChartComponent
    * @param aggregationService Shared aggregation service
    * @param translate Angular translate service
    * @param contextService Shared context service
-   * @param cdr Angular change detector
    * @param document document
    */
   constructor(
     private aggregationService: AggregationService,
     private translate: TranslateService,
     private contextService: ContextService,
-    private cdr: ChangeDetectorRef,
     @Inject(DOCUMENT) private document: Document
   ) {
     super();
   }
 
   ngOnInit(): void {
-    // Skip the first stream value at the beginning and trigger chart load after the second emitted value of these operators so we load the chart
-    // once all the filter features are loaded
-    merge(this.contextService.filter$, this.contextService.isFilterEnabled$)
-      .pipe(skip(1), debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.loadChart();
-      });
-
-    // Not entirely sure why the change detection is not happening automatically
-    // when the series are updated, but this forces it to happen
-    this.series$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      const timeoutRef = setTimeout(() => {
-        this.cdr.detectChanges();
-      }, 100);
-      clearTimeout(timeoutRef);
+    this.contextService.filter$.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.series.next([]);
+      this.loadChart();
+      this.getOptions();
     });
   }
 
@@ -125,15 +111,8 @@ export class ChartComponent
       referenceData: get(changes, 'settings.currentValue.referenceData'),
       aggregation: get(changes, 'settings.currentValue.aggregation'),
     };
-    // Don't trigger chart load on first load as a change
-    if (
-      !(
-        !previousDatasource.aggregation &&
-        !previousDatasource.referenceData &&
-        !previousDatasource.resource
-      ) &&
-      !isEqual(previousDatasource, currentDatasource)
-    ) {
+
+    if (!isEqual(previousDatasource, currentDatasource)) {
       this.loadChart();
     }
     this.getOptions();

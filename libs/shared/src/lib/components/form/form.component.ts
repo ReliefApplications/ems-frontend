@@ -21,13 +21,12 @@ import {
 import { BehaviorSubject, takeUntil } from 'rxjs';
 import addCustomFunctions from '../../utils/custom-functions';
 import { AuthService } from '../../services/auth/auth.service';
-import { LayoutService } from '../../services/layout/layout.service';
 import { FormBuilderService } from '../../services/form-builder/form-builder.service';
 import { RecordHistoryComponent } from '../record-history/record-history.component';
 import { TranslateService } from '@ngx-translate/core';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { FormHelpersService } from '../../services/form-helper/form-helper.service';
-import { SnackbarService } from '@oort-front/ui';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { cloneDeep, isNil } from 'lodash';
 
 /**
@@ -82,7 +81,7 @@ export class FormComponent
    * @param apollo This is the Apollo client that is used to make GraphQL requests.
    * @param snackBar This is the service that allows you to show a snackbar message to the user.
    * @param authService This is the service that handles authentication.
-   * @param layoutService Shared layout service
+   * @param layoutService UI layout service
    * @param formBuilderService This is the service that will be used to build forms.
    * @param formHelpersService This is the service that will handle forms.
    * @param translate This is the service used to translate text
@@ -92,7 +91,7 @@ export class FormComponent
     private apollo: Apollo,
     private snackBar: SnackbarService,
     private authService: AuthService,
-    private layoutService: LayoutService,
+    private layoutService: UILayoutService,
     private formBuilderService: FormBuilderService,
     private formHelpersService: FormHelpersService,
     private translate: TranslateService

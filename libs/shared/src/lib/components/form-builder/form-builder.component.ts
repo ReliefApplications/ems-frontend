@@ -26,6 +26,8 @@ import {
 import { SurveyCreatorModel } from 'survey-creator-core';
 import { Question } from '../../survey/types';
 import { DOCUMENT } from '@angular/common';
+import { takeUntil } from 'rxjs';
+import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Array containing the different types of questions.
@@ -96,7 +98,10 @@ const CORE_FIELD_CLASS = 'core-question';
   templateUrl: './form-builder.component.html',
   styleUrls: ['./form-builder.component.scss'],
 })
-export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
+export class FormBuilderComponent
+  extends UnsubscribeComponent
+  implements OnInit, OnChanges, OnDestroy
+{
   @Input() form!: Form;
   @Output() save: EventEmitter<any> = new EventEmitter();
   @Output() formChange: EventEmitter<any> = new EventEmitter();
@@ -126,9 +131,10 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
     private formHelpersService: FormHelpersService,
     @Inject(DOCUMENT) private document: Document
   ) {
+    super();
     // translate the editor in the same language as the interface
     surveyLocalization.currentLocale = this.translate.currentLang;
-    this.translate.onLangChange.subscribe(() => {
+    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
       surveyLocalization.currentLocale = this.translate.currentLang;
       this.setFormBuilder(this.surveyCreator.text);
     });
@@ -177,7 +183,8 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
     this.surveyCreator.survey?.dispose();
   }
 
@@ -193,6 +200,7 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
       generateValidJSON: true,
       showTranslationTab: true,
       questionTypes: QUESTION_TYPES,
+      allowChangeThemeInPreview: false,
     };
 
     this.surveyCreator = new SurveyCreatorModel(creatorOptions);
@@ -315,7 +323,7 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
           renderGlobalProperties(this.referenceDataService)
         )
     );
-    // this.surveyCreator.survey.locale = this.translate.currentLang; // -> set the defaultLanguage property also
+    this.surveyCreator.survey.locale = surveyLocalization.currentLocale; // -> set the defaultLanguage property also
 
     // add move up/down buttons
     // ¿No need? As the new surveyjs creator has a built in drag and drop feature to move questions between pages and within a page between questions
@@ -672,6 +680,6 @@ export class FormBuilderComponent implements OnInit, OnChanges, OnDestroy {
    */
   private onSetCustomCss(options: any): void {
     const classes = options.cssClasses;
-    classes.content += 'shared-qst-content';
+    classes.content += ' shared-qst-content';
   }
 }
