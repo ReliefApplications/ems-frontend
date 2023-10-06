@@ -1,5 +1,4 @@
 import {
-  ChangeDetectorRef,
   Component,
   Input,
   OnChanges,
@@ -14,8 +13,8 @@ import { BarChartComponent } from '../../ui/charts/bar-chart/bar-chart.component
 import { uniq, get, groupBy, isEqual } from 'lodash';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
-import { skip, takeUntil, throttleTime } from 'rxjs/operators';
-import { BehaviorSubject, merge } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ContextService } from '../../../services/context/context.service';
 import { DOCUMENT } from '@angular/common';
@@ -82,34 +81,25 @@ export class ChartComponent
    * @param aggregationService Shared aggregation service
    * @param translate Angular translate service
    * @param contextService Shared context service
-   * @param cdr Angular change detector
    * @param document document
    */
   constructor(
     private aggregationService: AggregationService,
     private translate: TranslateService,
     private contextService: ContextService,
-    private cdr: ChangeDetectorRef,
     @Inject(DOCUMENT) private document: Document
   ) {
     super();
   }
 
   ngOnInit(): void {
-    merge(this.contextService.filter$, this.contextService.isFilterEnabled$)
-      .pipe(skip(1), throttleTime(1500), takeUntil(this.destroy$)) //we skip because filter emits at the same time as datasource is loaded => prevents one loading + increased throttle time so that if filter enabling, changing the filter does not retrigger loading
+    this.contextService.filterChanges$
+      .pipe(takeUntil(this.destroy$))
       .subscribe(() => {
+        this.series.next([]);
         this.loadChart();
         this.getOptions();
       });
-
-    // Not entirely sure why the change detection is not happening automatically
-    // when the series are updated, but this forces it to happen
-    this.series$.pipe(takeUntil(this.destroy$)).subscribe(() => {
-      setTimeout(() => {
-        this.cdr.detectChanges();
-      }, 100);
-    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -132,7 +122,9 @@ export class ChartComponent
       },
     };
 
-    if (!isEqual(previousDatasource, currentDatasource)) this.loadChart();
+    if (!isEqual(previousDatasource, currentDatasource)) {
+      this.loadChart();
+    }
     this.getOptions();
   }
 

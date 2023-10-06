@@ -1,5 +1,12 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  filter,
+  map,
+  merge,
+  pairwise,
+} from 'rxjs';
 import { ApplicationService } from '../application/application.service';
 import { Application } from '../../models/application.model';
 import localForage from 'localforage';
@@ -8,7 +15,7 @@ import {
   FilterDescriptor,
 } from '@progress/kendo-data-query';
 import { cloneDeep } from '@apollo/client/utilities';
-import { isNil, isEmpty, get } from 'lodash';
+import { isNil, isEmpty, get, isEqual } from 'lodash';
 
 /**
  * Application context service
@@ -35,7 +42,16 @@ export class ContextService {
 
   /** @returns filter value as observable */
   get filter$() {
-    return this.filter.asObservable();
+    return this.filter.asObservable().pipe(
+      pairwise(),
+      // We only emit a filter value if filter value changes and we send back the actual(curr) value
+      filter(
+        ([prev, curr]: [Record<string, any>, Record<string, any>]) =>
+          !isEqual(prev, curr)
+      ),
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      map(([prev, curr]: [Record<string, any>, Record<string, any>]) => curr)
+    );
   }
 
   /** @returns filterStructure value as observable */
@@ -64,6 +80,11 @@ export class ContextService {
   /** @returns current question values from the filter */
   get availableFilterFieldsValue(): Record<string, any> {
     return this.filter.getValue();
+  }
+
+  /** @returns any filter change of the context service, enable/disable or value change */
+  get filterChanges$(): Observable<any> {
+    return merge(this.isFilterEnabled$, this.filter$);
   }
 
   /**

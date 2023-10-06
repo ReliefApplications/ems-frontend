@@ -100,20 +100,12 @@ export class AggregationGridComponent
   }
 
   ngOnInit(): void {
-    this.getAggregationData();
+    this.contextService.filterChanges$
+      .pipe(debounceTime(500), takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.getAggregationData();
+      });
     this.getAggregationFields();
-
-    this.contextService.filter$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.getAggregationData();
-      });
-
-    this.contextService.isFilterEnabled$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.getAggregationData();
-      });
   }
 
   ngOnChanges(): void {
