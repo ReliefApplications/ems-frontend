@@ -11,7 +11,6 @@ import { DialogSize } from './types/dialog-size';
   styleUrls: ['./dialog.component.scss'],
 })
 export class DialogComponent implements OnChanges, OnInit {
-  @Input() closable = false;
   @Input() padding = true;
   @Input() size!: DialogSize;
 

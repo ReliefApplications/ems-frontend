@@ -1,6 +1,17 @@
 <div class="flex flex-col h-full overflow-hidden">
   <!-- Dialog header -->
-  <ng-content select="header"></ng-content>
+  <div class="flex justify-between">
+    <div>
+      <ng-content select="header"></ng-content>
+    </div>
+    <ui-button
+      uiDialogClose
+      variant="danger"
+      [isIcon]="true"
+      icon="close"
+    ></ui-button>
+  </div>
+
   <!-- Dialog content -->
   <div class="flex-1 overflow-auto">
     <ng-content select="content"></ng-content>
