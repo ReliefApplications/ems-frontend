@@ -77,7 +77,6 @@
 		"create": "Créer",
 		"createdOn": "Date de création",
 		"cronEditor": {
-			"Wednesday": "Mercredi",
 			"advanced": "Avancé",
 			"atTime": "À",
 			"daily": "Quotidien",
@@ -87,27 +86,55 @@
 				"feminine": "Toutes les",
 				"masculine": "Tous les"
 			},
-			"friday": "Vendredi",
+			"firstWeekDay": "Premier jour de la semaine",
 			"hourly": "Horaire",
 			"hours": "Heure(s)",
+			"lastDay": "Dernier jour",
+			"lastWeekDay": "Dernier jour de la semaine",
 			"minutely": "Chaque minute",
 			"minutes": "Minute(s)",
-			"monday": "Lundi",
 			"month": "Mois",
 			"monthly": "Mensuel",
+			"months": {
+				"april": "Avril",
+				"august": "Août",
+				"december": "Décembre",
+				"february": "Février",
+				"january": "Janvier",
+				"july": "Juillet",
+				"june": "Juin",
+				"march": "Mars",
+				"may": "Mai",
+				"november": "Novembre",
+				"october": "Octobre",
+				"september": "Septembre"
+			},
 			"of": "du",
 			"ofEvery": "de chaque",
 			"onThe": {
 				"feminine": "Pendant la",
 				"masculine": "Pendant le"
 			},
-			"saturday": "Samedi",
 			"seconds": "Seconde(s)",
-			"sunday": "Dimanche",
-			"thursday": "Jeudi",
-			"tuesday": "Mardi",
 			"week": "Semaine",
 			"weekDay": "Jour de la semaine (LUN-VEN)",
+			"weekDays": {
+				"friday": "Vendredi",
+				"monday": "Lundi",
+				"saturday": "Samedi",
+				"sunday": "Dimanche",
+				"thursday": "Jeudi",
+				"tuesday": "Mardi",
+				"wednesday": "Mercredi"
+			},
+			"weekNumber": {
+				"fifth": "Cinquième",
+				"first": "Première",
+				"fourth": "Quatrième",
+				"last": "Dernière",
+				"second": "Deuxième",
+				"third": "Troisième"
+			},
 			"weekly": "Hebdomadaire",
 			"yearly": "Annuel"
 		},
@@ -985,6 +1012,7 @@
 		"records": {
 			"active": "Enregistrements actifs",
 			"archived": "Enregistrements archivés",
+			"editAs": "Editer en tant que",
 			"paginator": {
 				"ariaLabel": "Sélectionnez la page d'enregistrements"
 			},

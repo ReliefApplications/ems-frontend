@@ -44,7 +44,7 @@ export default {
  * @param args story arguments
  * @returns story template
  */
-const TEMPLATE_WITH_TEXT: StoryFn<sharedBadgeComponent> = (args) => ({
+const TEMPLATE_WITH_TEXT: StoryFn<BadgeComponent> = (args) => ({
   template:
     '<shared-badge [icon]="icon" [size]="size" [variant]="variant">{{content}}</shared-badge>',
   props: {

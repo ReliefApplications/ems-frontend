@@ -24,7 +24,7 @@ export default {
  * @param args the properties of the instance of ContentChoiceComponent
  * @returns the template
  */
-const TEMPLATE: StoryFn<sharedContentChoiceComponent> = (args) => ({
+const TEMPLATE: StoryFn<ContentChoiceComponent> = (args) => ({
   template:
     '<shared-content-choice [formControl]="type" [contentTypes]="contentTypes"></shared-content-choice>',
   props: {
