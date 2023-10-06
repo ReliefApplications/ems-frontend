@@ -4,16 +4,14 @@ import { Apollo } from 'apollo-angular';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeConfirmService } from '../confirm/confirm.service';
 import { firstValueFrom } from 'rxjs';
-import {
-  AddRecordMutationResponse,
-  ADD_RECORD,
-} from '../../components/form/graphql/mutations';
+import { ADD_RECORD } from '../../components/form/graphql/mutations';
 import { DialogRef } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
 import localForage from 'localforage';
 import set from 'lodash/set';
 import { SafeAuthService } from '../auth/auth.service';
 import { BlobType, SafeDownloadService } from '../download/download.service';
+import { AddRecordMutationResponse } from '../../models/record.model';
 
 /**
  * Shared survey helper service.

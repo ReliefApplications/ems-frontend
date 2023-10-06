@@ -8,18 +8,7 @@ import { firstValueFrom, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { SafeRestService } from '../rest/rest.service';
 import { SnackbarService } from '@oort-front/ui';
-
-/**
- * Takes an array, and returns a new array with all the nested arrays flattened
- *
- * @param {any[]} arr - The array to flatten.
- * @returns The flatten array
- */
-const flatDeep = (arr: any[]): any[] =>
-  arr.reduce(
-    (acc, val) => acc.concat(Array.isArray(val) ? flatDeep(val) : val),
-    []
-  );
+import { flatDeep } from '../../utils/array-filter';
 
 /**
  * Shared email service.

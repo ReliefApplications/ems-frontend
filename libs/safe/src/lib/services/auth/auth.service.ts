@@ -1,7 +1,11 @@
 import { Apollo } from 'apollo-angular';
 import { Injectable, Inject } from '@angular/core';
-import { Permission, User } from '../../models/user.model';
-import { GetProfileQueryResponse, GET_PROFILE } from './graphql/queries';
+import {
+  Permission,
+  ProfileQueryResponse,
+  User,
+} from '../../models/user.model';
+import { GET_PROFILE } from './graphql/queries';
 import {
   BehaviorSubject,
   combineLatest,
@@ -137,16 +141,17 @@ export class SafeAuthService {
     // Redirect to previous path
     this.oauthService.events
       .pipe(filter((e: any) => e.type === 'user_profile_loaded'))
-      .subscribe((e: any) => {
+      .subscribe(() => {
         const redirectPath = localStorage.getItem('redirectPath');
         if (redirectPath) {
+          // Current URL has finished loading, navigate to the desired URL
           this.router.navigateByUrl(redirectPath);
         } else {
           // Fallback to the location origin with a new url state with clean params
           // Chrome does not delete state and session state params once the oauth is successful
           // Which triggers a new token fetch with an invalid(deprecated) code
           // can cause an issue with navigation
-          console.log(e);
+          // console.log(e);
           // this.router.navigateByUrl(this.origin);
         }
         localStorage.removeItem('redirectPath');
@@ -267,8 +272,8 @@ export class SafeAuthService {
    *
    * @returns Apollo query of profile
    */
-  getProfile(): Observable<ApolloQueryResult<GetProfileQueryResponse>> {
-    return this.apollo.query<GetProfileQueryResponse>({
+  getProfile(): Observable<ApolloQueryResult<ProfileQueryResponse>> {
+    return this.apollo.query<ProfileQueryResponse>({
       query: GET_PROFILE,
       fetchPolicy: 'network-only',
       errorPolicy: 'all',

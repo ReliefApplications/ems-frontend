@@ -3,9 +3,9 @@ import { UntypedFormBuilder, UntypedFormGroup } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Application } from '../../../models/application.model';
-import { Channel } from '../../../models/channel.model';
+import { Channel, ChannelsQueryResponse } from '../../../models/channel.model';
 import { Role } from '../../../models/user.model';
-import { GetChannelsQueryResponse, GET_CHANNELS } from '../graphql/queries';
+import { GET_CHANNELS } from '../graphql/queries';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 
@@ -54,7 +54,7 @@ export class RoleChannelsComponent
       channels: [get(this.role, 'channels', []).map((x) => x.id)],
     });
     this.apollo
-      .query<GetChannelsQueryResponse>({
+      .query<ChannelsQueryResponse>({
         query: GET_CHANNELS,
         variables: {
           application: this.application?.id,

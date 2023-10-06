@@ -4,13 +4,12 @@ import { cronValidator } from '../../../../utils/validators/cron.validator';
 import { CustomNotification } from '../../../../models/custom-notification.model';
 import { Dialog, DIALOG_DATA } from '@angular/cdk/dialog';
 import { Apollo, QueryRef } from 'apollo-angular';
+import { GET_RESOURCE, GET_RESOURCES } from './graphql/queries';
 import {
-  GetResourceByIdQueryResponse,
-  GetResourcesQueryResponse,
-  GET_RESOURCE,
-  GET_RESOURCES,
-} from './graphql/queries';
-import { Resource } from '../../../../models/resource.model';
+  Resource,
+  ResourceQueryResponse,
+  ResourcesQueryResponse,
+} from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
 import { isEqual, get } from 'lodash';
 import { SafeGridLayoutService } from '../../../../services/grid-layout/grid-layout.service';
@@ -79,7 +78,7 @@ export class EditNotificationModalComponent
 {
   public notification?: CustomNotification;
   public formGroup!: ReturnType<typeof this.getNotificationForm>;
-  public resourcesQuery!: QueryRef<GetResourcesQueryResponse>;
+  public resourcesQuery!: QueryRef<ResourcesQueryResponse>;
   public resource?: Resource;
   public layout?: Layout;
 
@@ -170,7 +169,7 @@ export class EditNotificationModalComponent
         }
       });
     // Build resource query
-    this.resourcesQuery = this.apollo.watchQuery<GetResourcesQueryResponse>({
+    this.resourcesQuery = this.apollo.watchQuery<ResourcesQueryResponse>({
       query: GET_RESOURCES,
       variables: {
         first: ITEMS_PER_PAGE,
@@ -208,7 +207,7 @@ export class EditNotificationModalComponent
   private getResource(id: string): void {
     const layoutId = this.formGroup.get('layout')?.value;
     this.apollo
-      .query<GetResourceByIdQueryResponse>({
+      .query<ResourceQueryResponse>({
         query: GET_RESOURCE,
         variables: {
           id,

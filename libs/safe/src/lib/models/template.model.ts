@@ -10,3 +10,16 @@ export interface Template {
   name: string;
   content: any;
 }
+
+/** Model for add template mutation response */
+export interface AddTemplateMutationResponse {
+  addTemplate: Template;
+}
+/** Model for edit template mutation response */
+export interface UpdateTemplateMutationResponse {
+  editTemplate: Template;
+}
+/** Model for delete template mutation response */
+export interface DeleteTemplateMutationResponse {
+  deleteTemplate: Template;
+}

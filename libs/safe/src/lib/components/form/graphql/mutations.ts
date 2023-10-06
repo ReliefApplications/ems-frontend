@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Record } from '../../../models/record.model';
 
 // === ADD RECORD ===
 
@@ -27,11 +26,6 @@ export const ADD_RECORD = gql`
     }
   }
 `;
-
-/** Model for AddRecordMutationResponse object */
-export interface AddRecordMutationResponse {
-  addRecord: Record;
-}
 
 // === EDIT RECORD ===
 
@@ -67,8 +61,3 @@ export const EDIT_RECORD = gql`
     }
   }
 `;
-
-/** Model for EditRecordMutationResponse object */
-export interface EditRecordMutationResponse {
-  editRecord: Record;
-}

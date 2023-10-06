@@ -12,7 +12,6 @@ import {
   FullScreenModule,
   DashboardFilterModule,
 } from '@oort-front/safe';
-import { ShareUrlComponent } from './components/share-url/share-url.component';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { IconModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
@@ -33,7 +32,7 @@ import {
  * Dashboard page module.
  */
 @NgModule({
-  declarations: [DashboardComponent, ShareUrlComponent],
+  declarations: [DashboardComponent],
   imports: [
     CommonModule,
     DashboardRoutingModule,

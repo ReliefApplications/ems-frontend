@@ -11,14 +11,11 @@ import {
   Form,
   Subscription,
   SafeUnsubscribeComponent,
+  FormsQueryResponse,
+  ApplicationsApplicationNodesQueryResponse,
 } from '@oort-front/safe';
 import { BehaviorSubject, Observable } from 'rxjs';
-import {
-  GetRoutingKeysQueryResponse,
-  GET_ROUTING_KEYS,
-  GET_FORM_NAMES,
-  GetFormsQueryResponse,
-} from '../../graphql/queries';
+import { GET_ROUTING_KEYS, GET_FORM_NAMES } from '../../graphql/queries';
 import { map, startWith, takeUntil } from 'rxjs/operators';
 import get from 'lodash/get';
 import { ApolloQueryResult } from '@apollo/client';
@@ -83,13 +80,13 @@ export class SubscriptionModalComponent
   subscriptionForm!: UntypedFormGroup;
 
   // === DATA ===
-  public formsQuery!: QueryRef<GetFormsQueryResponse>;
+  public formsQuery!: QueryRef<FormsQueryResponse>;
 
   // === DATA ===
   private applications = new BehaviorSubject<Application[]>([]);
   public filteredApplications$!: Observable<Application[]>;
   public applications$!: Observable<Application[]>;
-  private applicationsQuery!: QueryRef<GetRoutingKeysQueryResponse>;
+  private applicationsQuery!: QueryRef<ApplicationsApplicationNodesQueryResponse>;
   private cachedApplications: Application[] = [];
   private applicationsPageInfo = {
     endCursor: '',
@@ -163,7 +160,7 @@ export class SubscriptionModalComponent
 
     // Get applications and set pagination logic
     this.applicationsQuery =
-      this.apollo.watchQuery<GetRoutingKeysQueryResponse>({
+      this.apollo.watchQuery<ApplicationsApplicationNodesQueryResponse>({
         query: GET_ROUTING_KEYS,
         variables: {
           first: ITEMS_PER_PAGE,
@@ -178,7 +175,7 @@ export class SubscriptionModalComponent
         this.updateValues(results.data, results.loading);
       });
 
-    this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
+    this.formsQuery = this.apollo.watchQuery<FormsQueryResponse>({
       query: GET_FORM_NAMES,
       variables: {
         first: ITEMS_PER_PAGE,
@@ -229,19 +226,20 @@ export class SubscriptionModalComponent
           first: ITEMS_PER_PAGE,
           afterCursor: this.applicationsPageInfo.endCursor,
         };
-        const cachedValues: GetRoutingKeysQueryResponse = getCachedValues(
-          this.apollo.client,
-          GET_ROUTING_KEYS,
-          variables
-        );
+        const cachedValues: ApplicationsApplicationNodesQueryResponse =
+          getCachedValues(this.apollo.client, GET_ROUTING_KEYS, variables);
         if (cachedValues) {
           this.updateValues(cachedValues, false);
         } else {
           this.applicationsQuery
             .fetchMore({ variables })
-            .then((results: ApolloQueryResult<GetRoutingKeysQueryResponse>) => {
-              this.updateValues(results.data, results.loading);
-            });
+            .then(
+              (
+                results: ApolloQueryResult<ApplicationsApplicationNodesQueryResponse>
+              ) => {
+                this.updateValues(results.data, results.loading);
+              }
+            );
         }
       }
     }
@@ -275,7 +273,10 @@ export class SubscriptionModalComponent
    * @param data New values to update forms
    * @param loading Loading state
    */
-  private updateValues(data: GetRoutingKeysQueryResponse, loading: boolean) {
+  private updateValues(
+    data: ApplicationsApplicationNodesQueryResponse,
+    loading: boolean
+  ) {
     this.cachedApplications = updateQueryUniqueValues(
       this.cachedApplications,
       data.applications.edges

@@ -1,15 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import {
+  DeleteFormMutationResponse,
   Form,
   Resource,
+  ResourceQueryResponse,
   SafeConfirmService,
   SafeUnsubscribeComponent,
 } from '@oort-front/safe';
 import { TranslateService } from '@ngx-translate/core';
-import { DeleteFormMutationResponse, DELETE_FORM } from './graphql/mutations';
+import { DELETE_FORM } from './graphql/mutations';
 import get from 'lodash/get';
-import { GetResourceByIdQueryResponse } from '../graphql/queries';
 import { GET_RESOURCE_FORMS } from './graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
 import { SnackbarService } from '@oort-front/ui';
@@ -64,7 +65,7 @@ export class FormsTabComponent
     this.resource = get(state, 'resource', null);
 
     this.apollo
-      .query<GetResourceByIdQueryResponse>({
+      .query<ResourceQueryResponse>({
         query: GET_RESOURCE_FORMS,
         variables: {
           id: this.resource?.id,

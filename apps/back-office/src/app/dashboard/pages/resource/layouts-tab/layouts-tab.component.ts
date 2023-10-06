@@ -6,6 +6,7 @@ import {
   SafeConfirmService,
   Resource,
   SafeUnsubscribeComponent,
+  ResourceQueryResponse,
 } from '@oort-front/safe';
 import { Apollo, QueryRef } from 'apollo-angular';
 import get from 'lodash/get';
@@ -13,13 +14,10 @@ import {
   getCachedValues,
   updateQueryUniqueValues,
 } from '../../../../utils/update-queries';
-import {
-  GetResourceByIdQueryResponse,
-  GET_RESOURCE_LAYOUTS,
-} from './graphql/queries';
 import { Dialog } from '@angular/cdk/dialog';
 import { takeUntil } from 'rxjs';
-import { UIPageChangeEvent } from '@oort-front/ui';
+import { UIPageChangeEvent, handleTablePageEvent } from '@oort-front/ui';
+import { GET_RESOURCE_LAYOUTS } from './graphql/queries';
 
 /**
  * Layouts tab of resource page
@@ -40,7 +38,7 @@ export class LayoutsTabComponent
   public displayedColumnsLayouts: string[] = ['name', 'createdAt', '_actions'];
 
   // ==== PAGINATION ====
-  private layoutsQuery!: QueryRef<GetResourceByIdQueryResponse>;
+  private layoutsQuery!: QueryRef<ResourceQueryResponse>;
   private cachedLayouts: Layout[] = [];
   public pageInfo = {
     pageIndex: 0,
@@ -77,7 +75,7 @@ export class LayoutsTabComponent
     const state = history.state;
     this.resource = get(state, 'resource', null);
 
-    this.layoutsQuery = this.apollo.watchQuery<GetResourceByIdQueryResponse>({
+    this.layoutsQuery = this.apollo.watchQuery<ResourceQueryResponse>({
       query: GET_RESOURCE_LAYOUTS,
       variables: {
         id: this.resource?.id,
@@ -97,30 +95,16 @@ export class LayoutsTabComponent
    * @param e page event.
    */
   onPage(e: UIPageChangeEvent): void {
-    this.pageInfo.pageIndex = e.pageIndex;
-    // Checks if with new page/size more data needs to be fetched
-    if (
-      ((e.pageIndex > e.previousPageIndex &&
-        e.pageIndex * this.pageInfo.pageSize >= this.cachedLayouts.length) ||
-        e.pageSize > this.pageInfo.pageSize) &&
-      e.totalItems > this.cachedLayouts.length
-    ) {
-      // Sets the new fetch quantity of data needed as the page size
-      // If the fetch is for a new page the page size is used
-      let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is subtracted from the new one
-      if (e.pageSize > this.pageInfo.pageSize) {
-        first -= this.pageInfo.pageSize;
-      }
-      this.pageInfo.pageSize = first;
-      this.fetchLayouts();
+    const cachedData = handleTablePageEvent(
+      e,
+      this.pageInfo,
+      this.cachedLayouts
+    );
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
+      this.layouts = cachedData;
     } else {
-      this.layouts = this.cachedLayouts.slice(
-        e.pageSize * this.pageInfo.pageIndex,
-        e.pageSize * (this.pageInfo.pageIndex + 1)
-      );
+      this.fetchLayouts();
     }
-    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**
@@ -134,7 +118,7 @@ export class LayoutsTabComponent
       first: this.pageInfo.pageSize,
       afterCursor: this.pageInfo.endCursor,
     };
-    const cachedValues: GetResourceByIdQueryResponse = getCachedValues(
+    const cachedValues: ResourceQueryResponse = getCachedValues(
       this.apollo.client,
       GET_RESOURCE_LAYOUTS,
       variables
@@ -246,7 +230,7 @@ export class LayoutsTabComponent
    * @param data query response data
    * @param loading loading status
    */
-  private updateValues(data: GetResourceByIdQueryResponse, loading: boolean) {
+  private updateValues(data: ResourceQueryResponse, loading: boolean) {
     if (data.resource) {
       const mappedValues =
         data.resource.layouts?.edges.map((x) => x.node) ?? [];

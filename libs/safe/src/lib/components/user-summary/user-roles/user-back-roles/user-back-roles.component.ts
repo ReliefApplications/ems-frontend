@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { UntypedFormBuilder, UntypedFormControl } from '@angular/forms';
 import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
-import { Role, User } from '../../../../models/user.model';
-import { GetRolesQueryResponse, GET_ROLES } from '../../graphql/queries';
+import { Role, RolesQueryResponse, User } from '../../../../models/user.model';
+import { GET_ROLES } from '../../graphql/queries';
 import { SnackbarService } from '@oort-front/ui';
 
 /** Back-office roles section the user summary */
@@ -52,7 +52,7 @@ export class UserBackRolesComponent implements OnInit {
 
     this.loading = true;
     this.apollo
-      .query<GetRolesQueryResponse>({
+      .query<RolesQueryResponse>({
         query: GET_ROLES,
       })
       .subscribe({

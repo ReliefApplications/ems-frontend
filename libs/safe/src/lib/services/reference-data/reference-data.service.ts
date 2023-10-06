@@ -5,15 +5,13 @@ import { map } from 'rxjs/operators';
 import localForage from 'localforage';
 import {
   ReferenceData,
+  ReferenceDataQueryResponse,
   referenceDataType,
 } from '../../models/reference-data.model';
-import {
-  GetReferenceDataByIdQueryResponse,
-  GET_REFERENCE_DATA_BY_ID,
-} from './graphql/queries';
+import { GET_REFERENCE_DATA_BY_ID } from './graphql/queries';
 import { SafeApiProxyService } from '../api-proxy/api-proxy.service';
 import { firstValueFrom } from 'rxjs';
-import { ApiConfiguration } from '../../models/apiConfiguration.model';
+import { ApiConfiguration } from '../../models/api-configuration.model';
 import jsonpath from 'jsonpath';
 
 /** Local storage key for last modified */
@@ -52,7 +50,7 @@ export class SafeReferenceDataService {
   public loadReferenceData(id: string): Promise<ReferenceData> {
     return firstValueFrom(
       this.apollo
-        .query<GetReferenceDataByIdQueryResponse>({
+        .query<ReferenceDataQueryResponse>({
           query: GET_REFERENCE_DATA_BY_ID,
           variables: {
             id,
@@ -171,15 +169,10 @@ export class SafeReferenceDataService {
       if (referenceData.type === referenceDataType.graphql) {
         const isCached = (await localForage.keys()).includes(cacheKey);
         // Fetch items
-        const url =
-          this.apiProxy.baseUrl +
-          (referenceData.apiConfiguration?.name ?? '') +
-          (referenceData.apiConfiguration?.graphQLEndpoint ?? '');
-        const body = { query: this.processQuery(referenceData) };
-        const data = (await this.apiProxy.buildPostRequest(url, body)) as any;
-        items = referenceData.path
-          ? jsonpath.query(data, referenceData.path)
-          : data;
+        items = this.processItemsByRequestType(
+          referenceData,
+          referenceDataType.graphql
+        );
         // Cache items
         if (isCached) {
           const { items: cache } = (await localForage.getItem(
@@ -229,15 +222,10 @@ export class SafeReferenceDataService {
     let items: any;
     switch (referenceData.type) {
       case referenceDataType.graphql: {
-        const url =
-          this.apiProxy.baseUrl +
-          (referenceData.apiConfiguration?.name ?? '') +
-          (referenceData.apiConfiguration?.graphQLEndpoint ?? '');
-        const body = { query: this.processQuery(referenceData) };
-        const data = (await this.apiProxy.buildPostRequest(url, body)) as any;
-        items = referenceData.path
-          ? jsonpath.query(data, referenceData.path)
-          : data;
+        items = await this.processItemsByRequestType(
+          referenceData,
+          referenceDataType.graphql
+        );
         localStorage.setItem(
           cacheKey + LAST_REQUEST_KEY,
           this.formatDateSQL(new Date())
@@ -245,14 +233,10 @@ export class SafeReferenceDataService {
         break;
       }
       case referenceDataType.rest: {
-        const url =
-          this.apiProxy.baseUrl +
-          referenceData.apiConfiguration?.name +
-          referenceData.query;
-        const data = await this.apiProxy.promisedRequestWithHeaders(url);
-        items = referenceData.path
-          ? jsonpath.query(data, referenceData.path)
-          : data;
+        items = await this.processItemsByRequestType(
+          referenceData,
+          referenceDataType.rest
+        );
         break;
       }
       case referenceDataType.static: {
@@ -265,6 +249,35 @@ export class SafeReferenceDataService {
       }
     }
     return items;
+  }
+
+  /**
+   * Builds the request and process the query for the given reference data item and reference data request type
+   *
+   * @param referenceData Reference data item
+   * @param type Reference data request type
+   * @returns processed items by the request type
+   */
+  private async processItemsByRequestType(
+    referenceData: ReferenceData,
+    type: referenceDataType
+  ) {
+    let data!: any;
+    if (type === referenceDataType.graphql) {
+      const url =
+        this.apiProxy.baseUrl +
+        (referenceData.apiConfiguration?.name ?? '') +
+        (referenceData.apiConfiguration?.graphQLEndpoint ?? '');
+      const body = { query: this.processQuery(referenceData) };
+      data = (await this.apiProxy.buildPostRequest(url, body)) as any;
+    } else if (referenceDataType.rest) {
+      const url =
+        this.apiProxy.baseUrl +
+        referenceData.apiConfiguration?.name +
+        referenceData.query;
+      data = await this.apiProxy.promisedRequestWithHeaders(url);
+    }
+    return referenceData.path ? jsonpath.query(data, referenceData.path) : data;
   }
 
   /**

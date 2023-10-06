@@ -11,11 +11,14 @@ import { Apollo } from 'apollo-angular';
 import { get } from 'lodash';
 import { Aggregation } from '../../../models/aggregation.model';
 import { Layout } from '../../../models/layout.model';
-import { Resource } from '../../../models/resource.model';
+import {
+  Resource,
+  ResourceQueryResponse,
+} from '../../../models/resource.model';
 import { SafeAggregationService } from '../../../services/aggregation/aggregation.service';
 import { SafeUnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
-import { GET_RESOURCE, GetResourceByIdQueryResponse } from './graphql/queries';
+import { GET_RESOURCE } from './graphql/queries';
 import { takeUntil } from 'rxjs';
 
 /** Define max height of summary card */
@@ -204,7 +207,7 @@ export class SafeSummaryCardSettingsComponent
     const aggregationID = form.get('card.aggregation')?.value;
     this.fields = [];
     this.apollo
-      .query<GetResourceByIdQueryResponse>({
+      .query<ResourceQueryResponse>({
         query: GET_RESOURCE,
         variables: {
           id,

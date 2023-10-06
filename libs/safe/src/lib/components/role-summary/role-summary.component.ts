@@ -1,10 +1,14 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { Apollo } from 'apollo-angular';
 import { Application } from '../../models/application.model';
-import { Role } from '../../models/user.model';
+import {
+  EditRoleMutationResponse,
+  Role,
+  RoleQueryResponse,
+} from '../../models/user.model';
 import { SafeBreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
-import { EditRoleMutationResponse, EDIT_ROLE } from './graphql/mutations';
-import { GetRoleQueryResponse, GET_ROLE } from './graphql/queries';
+import { EDIT_ROLE } from './graphql/mutations';
+import { GET_ROLE } from './graphql/queries';
 
 /**
  * Shared role summary component.
@@ -37,7 +41,7 @@ export class SafeRoleSummaryComponent implements OnInit {
 
   ngOnInit(): void {
     this.apollo
-      .query<GetRoleQueryResponse>({
+      .query<RoleQueryResponse>({
         query: GET_ROLE,
         variables: {
           id: this.id,

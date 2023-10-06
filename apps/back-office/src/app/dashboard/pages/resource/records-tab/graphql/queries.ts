@@ -1,6 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Record } from '@oort-front/safe';
-
 /** Graphql query for getting records of a resource */
 export const GET_RESOURCE_RECORDS = gql`
   query GetResourceRecords(
@@ -44,20 +42,3 @@ export const GET_RESOURCE_RECORDS = gql`
     }
   }
 `;
-
-/** Model for GetResourceRecordsQueryResponse object */
-export interface GetResourceRecordsQueryResponse {
-  resource: {
-    records: {
-      edges: {
-        node: Record;
-        cursor: string;
-      }[];
-      pageInfo: {
-        endCursor: string;
-        hasNextPage: boolean;
-      };
-      totalCount: number;
-    };
-  };
-}

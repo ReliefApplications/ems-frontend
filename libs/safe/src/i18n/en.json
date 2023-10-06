@@ -41,7 +41,10 @@
 			"none": "No channel",
 			"one": "Channel"
 		},
-		"child": "Child",
+		"child": {
+			"edit": "Edit child",
+			"one": "Child"
+		},
 		"clear": "Clear",
 		"close": "Close",
 		"column": {
@@ -75,7 +78,6 @@
 		"downloadTemplate": "Get template",
 		"duplicate": "Duplicate",
 		"edit": "Edit",
-		"editObject": "Edit {{name}}",
 		"email": {
 			"few": "Emails",
 			"none": "No email",
@@ -135,7 +137,7 @@
 			"accessDenied": "You don't have permission to see the {{type}}.",
 			"accessNotProvided": "No access provided to this {{type}}. {{error}}",
 			"alreadyExists": "The {{type}} {{value}} already exists on this application.",
-			"copiedToClipboard": "Copied!",
+			"copiedToClipboard": "Dashboard link copied!",
 			"dataNotRecovered": "Failure on data recovery",
 			"dataRecovered": "The data has been recovered",
 			"email": {
@@ -1642,6 +1644,7 @@
 		},
 		"channel": {
 			"create": "Create a channel",
+			"edit": "Edit channel",
 			"new": "New channel"
 		},
 		"customNotification": {
@@ -1677,6 +1680,7 @@
 		"form": {
 			"core": "Core",
 			"create": "Create a Form",
+			"edit": "Edit form",
 			"field": {
 				"label": "Label",
 				"name": "Field name",
@@ -1706,9 +1710,11 @@
 			}
 		},
 		"positionAttribute": {
+			"edit": "Edit position attribute",
 			"new": "New position attribute"
 		},
 		"pullJob": {
+			"edit": "Edit pull job",
 			"new": "New pull job",
 			"nextIteration": "Next iteration",
 			"path": "Path",
@@ -1717,6 +1723,7 @@
 		},
 		"record": {
 			"convert": "Convert",
+			"edit": "Edit record",
 			"new": "New record",
 			"notifications": {
 				"conversionIncomplete": "Selected record(s) do not match with some fields from this form.",
@@ -1743,6 +1750,7 @@
 			"new": "New step"
 		},
 		"subscription": {
+			"edit": "Edit subscription",
 			"new": "New subscription"
 		},
 		"user": {

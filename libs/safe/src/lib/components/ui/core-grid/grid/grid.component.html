@@ -177,7 +177,8 @@
               let-column="column"
               let-filterService="filterService"
             >
-              <safe-dropdown-filter-menu
+              <safe-grid-filter-menu
+                [isNotArray]="true"
                 [filter]="filter"
                 [filterService]="filterService"
                 [data]="field.meta.choices"
@@ -185,21 +186,22 @@
                 textField="text"
                 valueField="value"
               >
-              </safe-dropdown-filter-menu>
+              </safe-grid-filter-menu>
             </ng-template>
             <ng-template
               kendoGridFilterCellTemplate
               let-filter
               let-dataItem="dataItem"
             >
-              <safe-dropdown-filter
+              <safe-grid-filter
+                [isNotArray]="true"
                 [filter]="filter"
                 [data]="field.meta.choices"
                 [field]="field.name"
                 textField="text"
                 valueField="value"
               >
-              </safe-dropdown-filter>
+              </safe-grid-filter>
             </ng-template>
           </ng-container>
         </ng-container>
@@ -216,12 +218,20 @@
               class="translate textbox-container"
               [style]="getStyle(dataItem, field.name)"
             >
-              <div #refSpan class="textbox">
+              <div
+                #refSpanTruncate
+                class="truncate"
+                [uiTooltip]="
+                  applyFieldFormat(getPropertyValue(dataItem, field), field) ??
+                  ''
+                "
+                [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
+              >
                 {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
               </div>
               <button
                 kendoButton
-                *ngIf="isEllipsisActive(refSpan)"
+                *ngIf="isEllipsisActive(refSpanTruncate)"
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
@@ -244,7 +254,18 @@
               class="translate textbox-container"
               [style]="getStyle(dataItem, field.name)"
             >
-              <div #refSpan class="textbox" *ngIf="field.meta.type === 'time'">
+              <div
+                #refSpanTruncate
+                class="truncate"
+                *ngIf="field.meta.type === 'time'"
+                [uiTooltip]="
+                  applyFieldFormat(
+                    getPropertyValue(dataItem, field) | safeDate : 'shortTime',
+                    field
+                  ) || ''
+                "
+                [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
+              >
                 {{
                   applyFieldFormat(
                     getPropertyValue(dataItem, field) | safeDate : 'shortTime',
@@ -253,9 +274,16 @@
                 }}
               </div>
               <div
-                #refSpan
-                class="textbox"
+                #refSpanTruncate
+                class="truncate"
                 *ngIf="['datetime', 'datetime-local'].includes(field.meta.type)"
+                [uiTooltip]="
+                  applyFieldFormat(
+                    getPropertyValue(dataItem, field) | safeDate : 'short',
+                    field
+                  ) || ''
+                "
+                [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
               >
                 {{
                   applyFieldFormat(
@@ -264,7 +292,18 @@
                   )
                 }}
               </div>
-              <div #refSpan class="textbox" *ngIf="field.meta.type === 'date'">
+              <div
+                #refSpanTruncate
+                class="truncate"
+                *ngIf="field.meta.type === 'date'"
+                [uiTooltip]="
+                  applyFieldFormat(
+                    getPropertyValue(dataItem, field) | safeDate : 'shortDate',
+                    field
+                  ) || ''
+                "
+                [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
+              >
                 {{
                   applyFieldFormat(
                     getPropertyValue(dataItem, field) | safeDate : 'shortDate',
@@ -279,46 +318,29 @@
             #refSpan
             kendoGridCellTemplate
             let-dataItem="dataItem"
-            *ngIf="['url', 'tel', 'email'].includes(field.meta.type)"
+            *ngIf="['url'].includes(field.meta.type)"
           >
             <div
               class="textbox-container"
               [style]="getStyle(dataItem, field.name)"
             >
               <a
-                *ngIf="field.meta.type === 'url'"
-                class="url-container textbox"
+                class="url-container truncate"
                 href="{{ getUrl(getPropertyValue(dataItem, field)) }}"
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                <div #refSpan>
-                  {{
-                    applyFieldFormat(getPropertyValue(dataItem, field), field)
-                  }}
-                </div>
-              </a>
-              <a
-                *ngIf="field.meta.type === 'email'"
-                class="url-container textbox"
-                href="mailto:{{ getPropertyValue(dataItem, field) }}"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <div #refSpan>
-                  {{
-                    applyFieldFormat(getPropertyValue(dataItem, field), field)
-                  }}
-                </div>
-              </a>
-              <a
-                *ngIf="field.meta.type === 'tel'"
-                class="url-container textbox"
-                href="tel:{{ getPropertyValue(dataItem, field) }}"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                <div #refSpan>
+                <div
+                  #refSpanTruncate
+                  class="truncate"
+                  [uiTooltip]="
+                    applyFieldFormat(
+                      getPropertyValue(dataItem, field),
+                      field
+                    ) ?? ''
+                  "
+                  [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
+                >
                   {{
                     applyFieldFormat(getPropertyValue(dataItem, field), field)
                   }}
@@ -326,7 +348,91 @@
               </a>
               <button
                 kendoButton
-                *ngIf="isEllipsisActive(refSpan)"
+                *ngIf="isEllipsisActive(refSpanTruncate)"
+                icon="hyperlink-open-sm"
+                (click)="onExpandText(dataItem, field.name)"
+                [look]="'flat'"
+                [uiTooltip]="'common.openFullScreen' | translate"
+              ></button>
+            </div>
+          </ng-template>
+          <ng-template
+            #refSpan
+            kendoGridCellTemplate
+            let-dataItem="dataItem"
+            *ngIf="['email'].includes(field.meta.type)"
+          >
+            <div
+              class="textbox-container"
+              [style]="getStyle(dataItem, field.name)"
+            >
+              <a
+                class="url-container truncate"
+                href="mailto:{{ getPropertyValue(dataItem, field) }}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <div
+                  #refSpanTruncate
+                  class="truncate"
+                  [uiTooltip]="
+                    applyFieldFormat(
+                      getPropertyValue(dataItem, field),
+                      field
+                    ) ?? ''
+                  "
+                  [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
+                >
+                  {{
+                    applyFieldFormat(getPropertyValue(dataItem, field), field)
+                  }}
+                </div>
+              </a>
+              <button
+                kendoButton
+                *ngIf="isEllipsisActive(refSpanTruncate)"
+                icon="hyperlink-open-sm"
+                (click)="onExpandText(dataItem, field.name)"
+                [look]="'flat'"
+                [uiTooltip]="'common.openFullScreen' | translate"
+              ></button>
+            </div>
+          </ng-template>
+          <ng-template
+            #refSpan
+            kendoGridCellTemplate
+            let-dataItem="dataItem"
+            *ngIf="['tel'].includes(field.meta.type)"
+          >
+            <div
+              class="textbox-container"
+              [style]="getStyle(dataItem, field.name)"
+            >
+              <a
+                class="url-container truncate"
+                href="tel:{{ getPropertyValue(dataItem, field) }}"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <div
+                  #refSpanTruncate
+                  class="truncate"
+                  [uiTooltip]="
+                    applyFieldFormat(
+                      getPropertyValue(dataItem, field),
+                      field
+                    ) ?? ''
+                  "
+                  [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
+                >
+                  {{
+                    applyFieldFormat(getPropertyValue(dataItem, field), field)
+                  }}
+                </div>
+              </a>
+              <button
+                kendoButton
+                *ngIf="isEllipsisActive(refSpanTruncate)"
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
@@ -363,12 +469,20 @@
               class="translate textbox-container"
               [style]="getStyle(dataItem, field.name)"
             >
-              <div #refSpan class="textbox">
+              <div
+                #refSpanTruncate
+                class="truncate"
+                [uiTooltip]="
+                  applyFieldFormat(getPropertyValue(dataItem, field), field) ??
+                  ''
+                "
+                [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
+              >
                 {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
               </div>
               <button
                 kendoButton
-                *ngIf="isEllipsisActive(refSpan)"
+                *ngIf="isEllipsisActive(refSpanTruncate)"
                 icon="hyperlink-open-sm"
                 (click)="onExpandText(dataItem, field.name)"
                 [look]="'flat'"
@@ -422,6 +536,7 @@
           </ng-template>
           <!-- DISPLAY ( dropdown / radiogroup / form ) -->
           <ng-template
+            #refSpan
             kendoGridCellTemplate
             let-dataItem="dataItem"
             *ngIf="['dropdown', 'radiogroup'].includes(field.meta.type)"
@@ -430,7 +545,17 @@
               class="textbox-container"
               [style]="getStyle(dataItem, field.name)"
             >
-              {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
+              <div
+                #refSpanTruncate
+                class="truncate"
+                [uiTooltip]="
+                  applyFieldFormat(getPropertyValue(dataItem, field), field) ??
+                  ''
+                "
+                [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
+              >
+                {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
+              </div>
             </div>
           </ng-template>
         </ng-container>
@@ -551,7 +676,7 @@
               let-column="column"
               let-filterService="filterService"
             >
-              <safe-array-filter-menu
+              <safe-grid-filter-menu
                 [filter]="filter"
                 [filterService]="filterService"
                 [data]="subField.meta.choices || []"
@@ -559,21 +684,21 @@
                 textField="text"
                 valueField="value"
               >
-              </safe-array-filter-menu>
+              </safe-grid-filter-menu>
             </ng-template>
             <ng-template
               kendoGridFilterCellTemplate
               let-filter
               let-dataItem="dataItem"
             >
-              <safe-array-filter
+              <safe-grid-filter
                 [filter]="filter"
                 [data]="subField.meta.choices || []"
                 [field]="subField.name"
                 textField="text"
                 valueField="value"
               >
-              </safe-array-filter>
+              </safe-grid-filter>
             </ng-template>
             <ng-template kendoGridCellTemplate let-dataItem="dataItem">
               <div
@@ -612,7 +737,7 @@
           let-column="column"
           let-filterService="filterService"
         >
-          <safe-array-filter-menu
+          <safe-grid-filter-menu
             [filter]="filter"
             [filterService]="filterService"
             [data]="field.meta.choices || []"
@@ -620,28 +745,37 @@
             textField="text"
             valueField="value"
           >
-          </safe-array-filter-menu>
+          </safe-grid-filter-menu>
         </ng-template>
         <ng-template
           kendoGridFilterCellTemplate
           let-filter
           let-dataItem="dataItem"
         >
-          <safe-array-filter
+          <safe-grid-filter
             [filter]="filter"
             [data]="field.meta.choices || []"
             [field]="field.name"
             textField="text"
             valueField="value"
           >
-          </safe-array-filter>
+          </safe-grid-filter>
         </ng-template>
-        <ng-template kendoGridCellTemplate let-dataItem="dataItem">
+        <ng-template #refSpan kendoGridCellTemplate let-dataItem="dataItem">
           <div
             class="textbox-container"
             [style]="getStyle(dataItem, field.name)"
           >
-            {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
+            <div
+              #refSpanTruncate
+              class="truncate"
+              [uiTooltip]="
+                applyFieldFormat(getPropertyValue(dataItem, field), field) ?? ''
+              "
+              [tooltipDisabled]="!isEllipsisActive(refSpanTruncate)"
+            >
+              {{ applyFieldFormat(getPropertyValue(dataItem, field), field) }}
+            </div>
           </div>
         </ng-template>
         <ng-template
