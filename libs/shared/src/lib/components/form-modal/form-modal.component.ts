@@ -12,6 +12,8 @@ import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { GET_RECORD_BY_ID, GET_FORM_BY_ID } from './graphql/queries';
 import { Form, FormQueryResponse } from '../../models/form.model';
 import { ConfirmService } from '../../services/confirm/confirm.service';
+import { SurveyModel } from 'survey-core';
+import { SurveyModule } from 'survey-angular-ui';
 import {
   AddRecordMutationResponse,
   EditRecordMutationResponse,
@@ -19,7 +21,6 @@ import {
   Record,
   RecordQueryResponse,
 } from '../../models/record.model';
-import * as Survey from 'survey-angular';
 import { EDIT_RECORD, ADD_RECORD, EDIT_RECORDS } from './graphql/mutations';
 import addCustomFunctions from '../../utils/custom-functions';
 import { AuthService } from '../../services/auth/auth.service';
@@ -73,6 +74,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
     DialogModule,
     ButtonModule,
     SpinnerModule,
+    SurveyModule,
   ],
 })
 export class FormModalComponent
@@ -90,7 +92,7 @@ export class FormModalComponent
   protected isMultiEdition = false;
   private storedMergedData: any;
 
-  public survey!: Survey.SurveyModel;
+  public survey!: SurveyModel;
   protected temporaryFilesStorage: any = {};
 
   @ViewChild('formContainer') formContainer!: ElementRef;
@@ -139,7 +141,6 @@ export class FormModalComponent
 
   async ngOnInit(): Promise<void> {
     this.data = { ...DEFAULT_DIALOG_DATA, ...this.data };
-    Survey.StylesManager.applyTheme();
 
     this.isMultiEdition = Array.isArray(this.data.recordId);
     const promises: Promise<FormQueryResponse | RecordQueryResponse | void>[] =
@@ -224,7 +225,7 @@ export class FormModalComponent
     );
 
     if (this.data.recordId && this.record) {
-      addCustomFunctions(Survey, this.authService, this.record);
+      addCustomFunctions(this.authService, this.record);
       this.survey.data = this.isMultiEdition ? null : this.record.data;
       this.survey.showCompletedPage = false;
       this.form?.fields?.forEach((field) => {
@@ -239,8 +240,6 @@ export class FormModalComponent
         ...omitBy(this.storedMergedData, isNil),
       };
     }
-    this.survey.render(this.formContainer.nativeElement);
-    // this.survey.render(this.containerId);
     this.loading = false;
   }
 

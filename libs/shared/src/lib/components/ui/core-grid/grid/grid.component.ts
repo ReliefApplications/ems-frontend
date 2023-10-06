@@ -42,7 +42,7 @@ import { GridService } from '../../../../services/grid/grid.service';
 import { DownloadService } from '../../../../services/download/download.service';
 import { debounceTime, distinctUntilChanged, takeUntil } from 'rxjs/operators';
 import { GridLayout } from '../models/grid-layout.model';
-import { get, intersection, isNil } from 'lodash';
+import { get, intersection, isNil, has } from 'lodash';
 import { applyLayoutFormat } from '../../../../utils/parser/utils';
 import { DashboardService } from '../../../../services/dashboard/dashboard.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -194,7 +194,6 @@ export class GridComponent
 
   // === ADMIN ===
   @Input() admin = false;
-  private columnsOrder: any[] = [];
   @Output() columnChange = new EventEmitter();
 
   // === SNACKBAR ===
@@ -285,7 +284,17 @@ export class GridComponent
           return text;
         }
       } else {
-        return meta.choices.find((x: any) => x.value === value)?.text || value;
+        if (subField) {
+          if (meta.graphQLFieldName) {
+            value = get(value, meta.graphQLFieldName);
+            const text = meta.choices.find((x: any) => x.value === value)?.text;
+            return text || value;
+          }
+        } else {
+          return (
+            meta.choices.find((x: any) => x.value === value)?.text || value
+          );
+        }
       }
     } else {
       if (meta.type === 'geospatial') {
@@ -555,7 +564,6 @@ export class GridComponent
   }
 
   // === INLINE EDITION ===
-
   /**
    * Detects cell click event and opens row form if user is authorized.
    *
@@ -581,6 +589,44 @@ export class GridComponent
     this.currentEditedItem = dataItem;
     this.currentEditedRow = rowIndex;
     this.grid?.editRow(rowIndex, this.formGroup);
+  }
+
+  /**
+   * Open reference data editor, in a modal
+   *
+   * @param field reference data field
+   */
+  public async openReferenceDataSelector(field: any): Promise<void> {
+    this.editing = true;
+    if (this.formGroup) {
+      this.gridService
+        .getFieldDefinition(this.widget.settings.resource, field.name)
+        .pipe(takeUntil(this.destroy$))
+        .subscribe(async (fieldDefinition) => {
+          // Prevent edition to be cancelled
+          this.editing = true;
+          const { PopupEditorComponent } = await import(
+            '../popup-editor/popup-editor.component'
+          );
+          const dialogRef = this.dialog.open(PopupEditorComponent, {
+            data: {
+              field: fieldDefinition,
+              value: this.formGroup.get(field.name)?.value,
+            },
+            autoFocus: false,
+            disableClose: true,
+          });
+          dialogRef.closed
+            .pipe(takeUntil(this.destroy$))
+            .subscribe((data: any) => {
+              if (has(data, 'value')) {
+                this.formGroup.get(field.name)?.setValue(data.value);
+                this.formGroup.markAsDirty();
+              }
+              this.editing = false;
+            });
+        });
+    }
   }
 
   /**

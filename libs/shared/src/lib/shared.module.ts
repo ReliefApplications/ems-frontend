@@ -41,6 +41,9 @@ import { SortingSettingsModule } from './components/widgets/common/sorting-setti
 import { WidgetChoiceModule } from './components/widget-choice/widget-choice.module';
 import { TabsSettingsModule } from './components/widgets/tabs-settings/tabs-settings.module';
 import { ApplicationsArchiveModule } from './components/applications-archive/applications-archive.module';
+import { ReferenceDataDropdownModule } from './survey/components/reference-data-dropdown/reference-data-dropdown.module';
+import { ListFilterComponent } from './components/list-filter/list-filter.component';
+import { StatusOptionsComponent } from './components/status-options/status-options.component';
 
 /** Main module for the shared project */
 @NgModule({
@@ -69,12 +72,15 @@ import { ApplicationsArchiveModule } from './components/applications-archive/app
     SkeletonTableModule,
     UserSummaryModule,
     EditableTextModule,
+    ListFilterComponent,
     CronExpressionControlModule,
     MapModule,
     DashboardFilterModule,
     ButtonActionModule,
     WidgetChoiceModule,
     TabsSettingsModule,
+    ReferenceDataDropdownModule,
+    StatusOptionsComponent,
     // === Pipes ===
     DateModule,
     ReadableCronModule,
@@ -93,6 +99,6 @@ import { ApplicationsArchiveModule } from './components/applications-archive/app
     ViewsModule,
   ],
   declarations: [],
-  imports: [],
+  imports: [ListFilterComponent, StatusOptionsComponent],
 })
 export class Module {}

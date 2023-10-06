@@ -22,7 +22,6 @@ import {
 import { Apollo, QueryRef } from 'apollo-angular';
 import { AuthService } from '../../../services/auth/auth.service';
 import { DownloadService } from '../../../services/download/download.service';
-import { LayoutService } from '../../../services/layout/layout.service';
 import {
   QueryBuilderService,
   QueryResponse,
@@ -33,7 +32,7 @@ import {
   DELETE_RECORDS,
   EDIT_RECORD,
 } from './graphql/mutations';
-import { GET_FORM_BY_ID } from './graphql/queries';
+import { GET_RESOURCE_QUERY_NAME } from './graphql/queries';
 import {
   ConvertRecordMutationResponse,
   EditRecordMutationResponse,
@@ -52,10 +51,10 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { debounceTime, takeUntil } from 'rxjs/operators';
 import { firstValueFrom, Subject } from 'rxjs';
 import { searchFilters } from '../../../utils/filter/search-filters';
-import { SnackbarService } from '@oort-front/ui';
-import { FormQueryResponse } from '../../../models/form.model';
+import { SnackbarService, UILayoutService } from '@oort-front/ui';
 import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
+import { ResourceQueryResponse } from '../../../models/resource.model';
 
 /**
  * Default file name when exporting grid data.
@@ -161,7 +160,6 @@ export class CoreGridComponent
   } = {
     error: false,
   };
-  private templateStructure = '';
   // Refresh content of the history
   private refresh$: Subject<boolean> = new Subject<boolean>();
 
@@ -286,7 +284,7 @@ export class CoreGridComponent
    * @param apollo Apollo service
    * @param dialog Dialog
    * @param queryBuilder Shared query builder
-   * @param layoutService Shared layout service
+   * @param layoutService UI layout service
    * @param snackBar Shared snackbar service
    * @param downloadService Shared download service
    * @param authService Shared authentication service
@@ -302,7 +300,7 @@ export class CoreGridComponent
     private apollo: Apollo,
     public dialog: Dialog,
     private queryBuilder: QueryBuilderService,
-    private layoutService: LayoutService,
+    private layoutService: UILayoutService,
     private snackBar: SnackbarService,
     private downloadService: DownloadService,
     private authService: AuthService,
@@ -456,32 +454,10 @@ export class CoreGridComponent
           ),
         };
       }
-      this.loadTemplate();
     }
   }
 
-  /**
-   * Get template structure, for inline edition validation.
-   */
-  private async loadTemplate(): Promise<void> {
-    if (this.settings.template)
-      this.apollo
-        .query<FormQueryResponse>({
-          query: GET_FORM_BY_ID,
-          variables: {
-            id: this.settings.template,
-          },
-        })
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(({ data }) => {
-          if (data.form.structure) {
-            this.templateStructure = data.form.structure;
-          }
-        });
-  }
-
   // === GRID FIELDS ===
-
   /**
    * Converts fields with date type into javascript dates.
    *
@@ -536,15 +512,62 @@ export class CoreGridComponent
           draft: true,
         },
       })
-      .subscribe((res) => {
-        Object.assign(
-          this.items.find((x) => x.id === item.id),
-          res.data?.editRecord.data
-        );
-        item.saved = false;
-        const index = this.updatedItems.findIndex((x) => x.id === item.id);
-        this.updatedItems.splice(index, 1, item);
-        this.loadItems();
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data }) => {
+        if (data?.editRecord.data) {
+          const editedData = data.editRecord.data;
+          this.apollo
+            .query<ResourceQueryResponse>({
+              query: GET_RESOURCE_QUERY_NAME,
+              variables: {
+                id: this.settings.resource,
+              },
+            })
+            .pipe(takeUntil(this.destroy$))
+            .subscribe(({ data }) => {
+              const queryName = data.resource.singleQueryName;
+              if (queryName) {
+                const query = this.queryBuilder.buildQuery(
+                  {
+                    query: {
+                      ...this.settings.query,
+                      name: queryName,
+                    },
+                  },
+                  true
+                );
+                if (query) {
+                  this.apollo
+                    .query<any>({
+                      query,
+                      variables: {
+                        id: item.id,
+                        data: editedData,
+                      },
+                    })
+                    .pipe(takeUntil(this.destroy$))
+                    .subscribe(({ data }) => {
+                      const dataItem = this.gridData.data.find(
+                        (x) => x.id === item.id
+                      );
+                      // Update data item element
+                      Object.assign(dataItem, get(data, queryName));
+                      // Update data item raw value ( used by inline edition )
+                      dataItem._meta.raw = editedData;
+                      item.saved = false;
+                      const index = this.updatedItems.findIndex(
+                        (x) => x.id === item.id
+                      );
+                      this.updatedItems.splice(index, 1, {
+                        id: item.id,
+                        ...editedData,
+                      });
+                      this.loadItems();
+                    });
+                }
+              }
+            });
+        }
       });
   }
 
@@ -684,6 +707,7 @@ export class CoreGridComponent
                     ...x.node,
                     _meta: {
                       style: x.meta.style,
+                      raw: x.meta.raw,
                     },
                   })) || [];
                 this.totalCount = data[field] ? data[field].totalCount : 0;
@@ -763,7 +787,7 @@ export class CoreGridComponent
   public reloadData(): void {
     // TODO = check what to do there
     this.onPageChange({ skip: 0, take: this.pageSize });
-    this.selectedRows = [];
+    // this.selectedRows = [];
     // this.updatedItems = [];
     this.refresh$.next(true);
   }

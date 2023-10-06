@@ -3,6 +3,7 @@
 		"access": "Access",
 		"accessDenied": "Access denied",
 		"add": "Add",
+		"adminField": "Admin field",
 		"aggregation": {
 			"few": "Aggregations",
 			"none": "No aggregation",
@@ -27,7 +28,6 @@
 					"confirmationMessage": "Do you want to delete archived page: {{name}}?",
 					"title": "Delete?"
 				},
-				"one": "page",
 				"restore": {
 					"action": "Restore",
 					"confirmationMessage": "Do you want to restore the archived page: {{name}}?",
@@ -76,6 +76,68 @@
 		"copy": "Copy",
 		"create": "Create",
 		"createdOn": "Created on",
+		"cronEditor": {
+			"advanced": "Advanced",
+			"atTime": "At",
+			"daily": "Daily",
+			"day": "Day",
+			"days": "Day(s)",
+			"every": {
+				"feminine": "Every",
+				"masculine": "Every"
+			},
+			"firstWeekDay": "First week day",
+			"hourly": "Hourly",
+			"hours": "Hour(s)",
+			"lastDay": "Last day",
+			"lastWeekDay": "Last week day",
+			"minutely": "Minutely",
+			"minutes": "Minute(s)",
+			"month": "Month",
+			"monthly": "Monthly",
+			"months": {
+				"april": "April",
+				"august": "August",
+				"december": "December",
+				"february": "February",
+				"january": "January",
+				"july": "July",
+				"june": "June",
+				"march": "March",
+				"may": "May",
+				"november": "November",
+				"october": "October",
+				"september": "September"
+			},
+			"of": "of",
+			"ofEvery": "of every",
+			"onThe": {
+				"feminine": "On the",
+				"masculine": "On the"
+			},
+			"seconds": "Second(s)",
+			"week": "Week",
+			"weekDay": "Week Day (MON-FRI)",
+			"weekDays": {
+				"friday": "Friday",
+				"monday": "Monday",
+				"saturday": "Saturday",
+				"sunday": "Sunday",
+				"thursday": "Thursday",
+				"tuesday": "Tuesday",
+				"wednesday": "Wednesday"
+			},
+			"weekNumber": {
+				"fifth": "Fifth",
+				"first": "First",
+				"fourth": "Fourth",
+				"last": "Last",
+				"second": "Second",
+				"third": "Third"
+			},
+			"weekly": "Weekly",
+			"yearly": "Yearly"
+		},
 		"customNotification": {
 			"few": "Custom notifications",
 			"none": "No Custom notification",
@@ -106,6 +168,7 @@
 			"one": "Email"
 		},
 		"errors": {
+			"few": "Errors",
 			"objectDuplicated": "{{type}} {{value}} already exists."
 		},
 		"exitFullscreen": "Exit Fullscreen",
@@ -209,10 +272,10 @@
 			"objectNotFound": "{{name}} not found.",
 			"objectNotInvited": "{{name}} invitation failed.",
 			"objectNotReordered": "{{type}} not reordered. {{error}}",
-			"objectNotRestored": "{{type}} not restored. {{error}}",
+			"objectNotRestored": "{{value}} not restored. {{error}}",
 			"objectNotUpdated": "{{type}} not edited. {{error}}",
 			"objectReordered": "{{type}} reordered.",
-			"objectRestored": "{{type}} restored.",
+			"objectRestored": "{{value}} restored.",
 			"objectUpdated": "{{value}} {{type}} was successfully edited.",
 			"platformAccessNotGranted": "You don't have a valid access to this platform.",
 			"readAll": "Mark all as read",
@@ -310,6 +373,7 @@
 			"none": "No subscription",
 			"one": "Subscription"
 		},
+		"tabs": "Tabs",
 		"template": {
 			"few": "Notification templates",
 			"none": "No template",
@@ -668,7 +732,13 @@
 				"missingRelatedName": "Missing related name for question {{question}} on page {{page}}. Please provide a valid data value name (snake case format) to save the form.",
 				"missingTemplate": "Missing related resource template for question {{question}} on page {{page}}. Please select a template to save the form."
 			},
-			"saveSurvey": "SavingSurvey"
+			"propertyGrid": {
+				"resource": {
+					"availableGridFields": "Available grid fields",
+					"resourceSelectText": "First you have to select a resource before setting any filters"
+				}
+			},
+			"saveSurvey": "Saving the form"
 		},
 		"formMapProperties": {
 			"geofields": {
@@ -720,6 +790,12 @@
 				"select": "Select a field"
 			},
 			"preview": "Preview and revert"
+		},
+		"icon": {
+			"modal": {
+				"select": "Select an icon",
+				"use": "Use icon"
+			}
 		},
 		"logout": {
 			"confirmationMessage": "There are unsaved changes on your form. Are you sure you want to logout?",
@@ -918,6 +994,7 @@
 		"records": {
 			"active": "Active records",
 			"archived": "Archived records",
+			"editAs": "Edit as",
 			"paginator": {
 				"ariaLabel": "Select page of records"
 			},
@@ -1078,6 +1155,7 @@
 			"invite": {
 				"confirm": "Invite",
 				"role": {
+					"additionalAttributes": "Set additional attributes",
 					"description": "Select the role to assign"
 				}
 			},
@@ -1379,11 +1457,16 @@
 					"edit": {
 						"aggregation": "Aggregation",
 						"cluster": {
+							"autoSizeCluster": "Cluster auto-sizing",
 							"cluster": "Cluster",
 							"clusterSettings": "Cluster settings",
+							"clustering": "Clustering",
 							"fields": "Cluster fields",
+							"font": "Font",
+							"fontSize": "Font size",
 							"high": "High",
 							"label": "Cluster label",
+							"lightMode": "Light mode",
 							"low": "Low",
 							"max": "Max",
 							"min": "Min",
@@ -1401,6 +1484,7 @@
 						"groupLayers": "Group layers",
 						"labels": "Labels",
 						"layerDatasource": "Layer datasource",
+						"layerEdition": "Layer edition",
 						"layerProperties": "Layer properties",
 						"layerStyling": "Layer styling",
 						"popup": "Pop-up",
@@ -1549,6 +1633,10 @@
 					},
 					"tooltip": {
 						"category": "Selecting a field will separate your records into different layers, accessible on top right corner of the map",
+						"cluster": {
+							"autoSize": "If enabled, size of clusters is automated. Else, you can select one.",
+							"lightMode": "If enabled, label uses white. Else, it displays in black."
+						},
 						"dataset": "Select data points below and drag them to 'selected fields' on the right. They will be displayed in the pop-up when clicking on a marker",
 						"default": {
 							"latitude": "Set the default latitude of the center of the map. You can use 'Set By Map' to use the latitude of the preview map.",
@@ -1614,6 +1702,10 @@
 						"ariaLabel": "Select an option"
 					},
 					"static": "Static"
+				},
+				"tabs": {
+					"addNewTab": "Add a new tab",
+					"deleteTab": "Delete tab"
 				}
 			},
 			"styling": "Edit styling",

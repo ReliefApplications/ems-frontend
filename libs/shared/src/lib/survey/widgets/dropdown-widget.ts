@@ -1,7 +1,7 @@
 import { ComboBoxComponent } from '@progress/kendo-angular-dropdowns';
 import { DomService } from '../../services/dom/dom.service';
 import { Question } from '../types';
-import { QuestionDropdown } from 'survey-knockout';
+import { CustomWidgetCollection, QuestionDropdownModel } from 'survey-core';
 import { isArray, isObject } from 'lodash';
 import { debounceTime, map, tap } from 'rxjs';
 import updateChoices from './utils/common-list-filters';
@@ -9,13 +9,13 @@ import updateChoices from './utils/common-list-filters';
 /**
  * Init dropdown widget
  *
- * @param Survey Survey instance
  * @param domService Shared dom service
+ * @param customWidgetCollectionInstance CustomWidgetCollection
  * @param document Document
  */
 export const init = (
-  Survey: any,
   domService: DomService,
+  customWidgetCollectionInstance: CustomWidgetCollection,
   document: Document
 ): void => {
   let currentSearchValue = '';
@@ -24,12 +24,20 @@ export const init = (
     widgetIsLoaded: (): boolean => true,
     isFit: (question: Question): boolean => question.getType() === 'dropdown',
     isDefaultRender: true,
-    afterRender: (question: QuestionDropdown, el: HTMLInputElement): void => {
+    afterRender: (
+      question: QuestionDropdownModel,
+      el: HTMLInputElement
+    ): void => {
+      const defaultDropdown = el.querySelector('sv-ng-dropdown-question');
+      if (defaultDropdown) {
+        el.removeChild(defaultDropdown);
+      }
       widget.willUnmount(question);
       // remove default render
       el.parentElement?.querySelector('.sv_select_wrapper')?.remove();
       let dropdownDiv: HTMLDivElement | null = null;
       dropdownDiv = document.createElement('div');
+      dropdownDiv.classList.add('flex', 'min-h-[50px]');
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const dropdownInstance = createDropdownInstance(dropdownDiv, question);
       if (!isObject(question.value) && !isArray(question.value)) {
@@ -102,7 +110,7 @@ export const init = (
    */
   const createDropdownInstance = (
     element: any,
-    question: QuestionDropdown
+    question: QuestionDropdownModel
   ): ComboBoxComponent => {
     const dropdown = domService.appendComponentToBody(
       ComboBoxComponent,
@@ -119,11 +127,9 @@ export const init = (
     dropdownInstance.textField = 'text';
     dropdownInstance.valueField = 'value';
     dropdownInstance.popupSettings = { appendTo: 'component' };
+    dropdownInstance.fillMode = 'none';
     return dropdownInstance;
   };
 
-  Survey.CustomWidgetCollection.Instance.addCustomWidget(
-    widget,
-    'customwidget'
-  );
+  customWidgetCollectionInstance.addCustomWidget(widget, 'customwidget');
 };

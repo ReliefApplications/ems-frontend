@@ -8,6 +8,7 @@ import { FormWrapperModule } from '../form-wrapper/form-wrapper.module';
 import { TabsModule } from '../tabs/tabs.module';
 import { RadioModule } from '../radio/radio.module';
 import { CheckboxModule } from '../checkbox/checkbox.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 /**
  * UI CronEditor Module
@@ -24,6 +25,7 @@ import { CheckboxModule } from '../checkbox/checkbox.module';
     TabsModule,
     RadioModule,
     CheckboxModule,
+    TranslateModule,
   ],
   exports: [CronEditorComponent, TimePickerModule],
 })

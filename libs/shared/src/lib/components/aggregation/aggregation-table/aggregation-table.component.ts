@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { Layout } from '../../../models/layout.model';
 import { Form } from '../../../models/form.model';
 import { Resource } from '../../../models/resource.model';
@@ -21,7 +21,7 @@ import { Dialog } from '@angular/cdk/dialog';
 })
 export class AggregationTableComponent
   extends UnsubscribeComponent
-  implements OnInit, OnChanges
+  implements OnInit
 {
   /** Can select new aggregations or not */
   @Input() canAdd = true;
@@ -55,12 +55,6 @@ export class AggregationTableComponent
       .subscribe((value) => {
         this.setSelectedAggregations(value);
       });
-  }
-
-  ngOnChanges(): void {
-    const defaultValue = this.selectedAggregations?.value;
-    this.setAllAggregations();
-    this.setSelectedAggregations(defaultValue);
   }
 
   /**

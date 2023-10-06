@@ -1,10 +1,11 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import {
   BaseFilterCellComponent,
   FilterService,
 } from '@progress/kendo-angular-grid';
 import { isEmpty, isNil } from 'lodash';
+import { Subject, takeUntil } from 'rxjs';
 
 /**
  * Shared-grid-filter component
@@ -16,7 +17,7 @@ import { isEmpty, isNil } from 'lodash';
 })
 export class GridFilterComponent
   extends BaseFilterCellComponent
-  implements OnInit
+  implements OnInit, OnDestroy
 {
   /** @returns selected value */
   public get selectedValue(): any {
@@ -85,6 +86,7 @@ export class GridFilterComponent
   ] as const;
 
   public selectedOperator!: string;
+  private destroy$: Subject<void> = new Subject<void>();
 
   /**
    * Constructor for shared-grid-filter
@@ -103,7 +105,7 @@ export class GridFilterComponent
     this.selectedOperator = this.isNotArray ? 'eq' : 'contains';
     this.setOperators();
     this.choices = (this.data || []).slice();
-    this.translate.onLangChange.subscribe(() => {
+    this.translate.onLangChange.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.setOperators();
     });
   }
@@ -175,5 +177,11 @@ export class GridFilterComponent
       logic: 'and',
     };
     this.applyFilter(this.filter);
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 }

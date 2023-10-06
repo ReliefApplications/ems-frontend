@@ -1,19 +1,26 @@
-import { surveyLocalization, SurveyModel } from 'survey-angular';
+import {
+  CustomWidgetCollection,
+  Serializer,
+  SurveyModel,
+  surveyLocalization,
+} from 'survey-core';
 import { Question, QuestionComment } from '../types';
-
 /**
  * Custom definition for overriding the comment question. Add edit functionality.
  *
- * @param Survey Survey library
+ * @param customWidgetCollectionInstance CustomWidgetCollection
  * @param document Document
  */
-export const init = (Survey: any, document: Document): void => {
+export const init = (
+  customWidgetCollectionInstance: CustomWidgetCollection,
+  document: Document
+): void => {
   const widget = {
     name: 'comment-widget',
     widgetIsLoaded: (): boolean => true,
     isFit: (question: Question): boolean => question.getType() === 'comment',
     init: (): void => {
-      Survey.Serializer.addProperty('comment', {
+      Serializer.addProperty('comment', {
         name: 'allowEdition:boolean',
         type: 'boolean',
         dependsOn: ['readOnly'],
@@ -29,13 +36,13 @@ export const init = (Survey: any, document: Document): void => {
         el.parentElement?.querySelector('#editComment')?.remove();
         const mainDiv = document.createElement('div');
         mainDiv.id = 'editComment';
-        mainDiv.style.height = '23px';
         mainDiv.style.marginBottom = '0.5em';
         const btnEl = document.createElement('button');
         btnEl.innerText = surveyLocalization.getString(
           'oort:edit',
           (question.survey as SurveyModel).locale
         );
+        btnEl.className = 'sd-btn !px-3 !py-2';
         btnEl.style.width = '50px';
         mainDiv.appendChild(btnEl);
         el.parentElement?.insertBefore(mainDiv, el);
@@ -53,8 +60,5 @@ export const init = (Survey: any, document: Document): void => {
     },
   };
 
-  Survey.CustomWidgetCollection.Instance.addCustomWidget(
-    widget,
-    'customwidget'
-  );
+  customWidgetCollectionInstance.addCustomWidget(widget, 'customwidget');
 };

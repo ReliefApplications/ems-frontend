@@ -707,9 +707,21 @@ export class Layer implements LayerModel {
                       .getChildCount()
                       .toString();
                     return createClusterDivIcon(
-                      clusterSymbol.color,
+                      clusterSymbol,
                       this.opacity,
-                      cluster.getChildCount()
+                      cluster.getChildCount(),
+                      get(
+                        this.layerDefinition,
+                        'featureReduction.lightMode',
+                        true
+                      ),
+                      get(this.layerDefinition, 'featureReduction.fontSize') ||
+                        14,
+                      get(
+                        this.layerDefinition,
+                        'featureReduction.autoSizeCluster',
+                        true
+                      )
                     );
                   },
                 });
@@ -983,7 +995,7 @@ export class Layer implements LayerModel {
                 'featureReduction.drawingInfo.renderer.symbol',
                 symbol
               );
-              html += `<div>Clusters</div>`;
+              html += `<div>${this.name} clusters</div>`;
               html += `<i style="color: ${
                 clusterSymbol.color
               }"; class="${pipe.transform('circle', 'fa')} pl-2"></i>`;

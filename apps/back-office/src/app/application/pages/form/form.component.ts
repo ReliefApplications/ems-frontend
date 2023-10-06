@@ -25,6 +25,7 @@ import { EDIT_STEP, EDIT_PAGE } from './graphql/mutations';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
+import { Dialog } from '@angular/cdk/dialog';
 
 /**
  * Form page in application.
@@ -73,6 +74,7 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
    * @param router Angular router
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
+   * @param dialog CDK Dialog service
    */
   constructor(
     private applicationService: ApplicationService,
@@ -81,7 +83,8 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: SnackbarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private dialog: Dialog
   ) {
     super();
   }
@@ -107,19 +110,11 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           .pipe(
             switchMap(({ data }) => {
               this.step = data.step;
-              return this.apollo.query<FormQueryResponse>({
-                query: GET_SHORT_FORM_BY_ID,
-                variables: {
-                  id: this.step.content,
-                },
-              });
+              return this.getFormQuery(this.step.content ?? '');
             })
           )
           .subscribe(({ data, loading }) => {
-            this.form = data.form;
-            this.canEditName = this.page?.canUpdate || false;
-            this.applicationId =
-              this.step?.workflow?.page?.application?.id || '';
+            this.handleFormQueryResponse(data, 'step');
             this.loading = loading;
           });
       } else {
@@ -133,22 +128,48 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
           .pipe(
             switchMap(({ data }) => {
               this.page = data.page;
-              return this.apollo.query<FormQueryResponse>({
-                query: GET_SHORT_FORM_BY_ID,
-                variables: {
-                  id: this.page.content,
-                },
-              });
+              return this.getFormQuery(this.page.content ?? '');
             })
           )
           .subscribe(({ data, loading }) => {
-            this.form = data.form;
-            this.canEditName = this.page?.canUpdate || false;
-            this.applicationId = this.page?.application?.id || '';
+            this.handleFormQueryResponse(data, 'page');
             this.loading = loading;
           });
       }
     });
+  }
+
+  /**
+   * Returns query for the given id
+   *
+   * @param {string} id form id to query
+   * @returns form query for the given id
+   */
+  private getFormQuery(id: string) {
+    return this.apollo.query<FormQueryResponse>({
+      query: GET_SHORT_FORM_BY_ID,
+      variables: {
+        id,
+      },
+    });
+  }
+
+  /**
+   * Handle response for the form query
+   *
+   * @param {FormQueryResponse} data form query response data
+   * @param from from where the form query is done
+   */
+  private handleFormQueryResponse(
+    data: FormQueryResponse,
+    from: 'step' | 'page'
+  ) {
+    this.form = data.form;
+    this.canEditName = this.page?.canUpdate || false;
+    this.applicationId =
+      (from === 'step'
+        ? this.step?.workflow?.page?.application?.id
+        : this.page?.application?.id) ?? '';
   }
 
   /**
@@ -342,5 +363,37 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
       },
       callback
     );
+  }
+
+  /**
+   * Handle icon change.
+   * Open icon modal settings, and save changes if icon is updated.
+   */
+  public async onChangeIcon(): Promise<void> {
+    const { IconModalComponent } = await import(
+      '../../../components/icon-modal/icon-modal.component'
+    );
+    const dialogRef = this.dialog.open(IconModalComponent, {
+      data: {
+        icon: this.isStep ? this.step?.icon : this.page?.icon,
+      },
+    });
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((icon: any) => {
+      if (icon) {
+        if (this.isStep) {
+          const callback = () => {
+            this.step = { ...this.step, icon };
+          };
+          this.step &&
+            this.workflowService.updateStepIcon(this.step, icon, callback);
+        } else {
+          const callback = () => {
+            this.page = { ...this.page, icon };
+          };
+          this.page &&
+            this.applicationService.changePageIcon(this.page, icon, callback);
+        }
+      }
+    });
   }
 }

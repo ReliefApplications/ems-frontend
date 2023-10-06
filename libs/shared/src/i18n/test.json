@@ -3,6 +3,7 @@
 		"access": "******",
 		"accessDenied": "******",
 		"add": "******",
+		"adminField": "******",
 		"aggregation": {
 			"few": "******",
 			"none": "******",
@@ -27,7 +28,6 @@
 					"confirmationMessage": "****** {{name}} ******",
 					"title": "******"
 				},
-				"one": "******",
 				"restore": {
 					"action": "******",
 					"confirmationMessage": "****** {{name}} ******",
@@ -76,6 +76,68 @@
 		"copy": "******",
 		"create": "******",
 		"createdOn": "******",
+		"cronEditor": {
+			"advanced": "******",
+			"atTime": "******",
+			"daily": "******",
+			"day": "******",
+			"days": "******",
+			"every": {
+				"feminine": "******",
+				"masculine": "******"
+			},
+			"firstWeekDay": "******",
+			"hourly": "******",
+			"hours": "******",
+			"lastDay": "******",
+			"lastWeekDay": "******",
+			"minutely": "******",
+			"minutes": "******",
+			"month": "******",
+			"monthly": "******",
+			"months": {
+				"april": "******",
+				"august": "******",
+				"december": "******",
+				"february": "******",
+				"january": "******",
+				"july": "******",
+				"june": "******",
+				"march": "******",
+				"may": "******",
+				"november": "******",
+				"october": "******",
+				"september": "******"
+			},
+			"of": "******",
+			"ofEvery": "******",
+			"onThe": {
+				"feminine": "******",
+				"masculine": "******"
+			},
+			"seconds": "******",
+			"week": "******",
+			"weekDay": "******",
+			"weekDays": {
+				"friday": "******",
+				"monday": "******",
+				"saturday": "******",
+				"sunday": "******",
+				"thursday": "******",
+				"tuesday": "******",
+				"wednesday": "******"
+			},
+			"weekNumber": {
+				"fifth": "******",
+				"first": "******",
+				"fourth": "******",
+				"last": "******",
+				"second": "******",
+				"third": "******"
+			},
+			"weekly": "******",
+			"yearly": "******"
+		},
 		"customNotification": {
 			"few": "******",
 			"none": "******",
@@ -106,6 +168,7 @@
 			"one": "******"
 		},
 		"errors": {
+			"few": "******",
 			"objectDuplicated": "{{type}} ****** {{value}} ******"
 		},
 		"exitFullscreen": "******",
@@ -209,10 +272,10 @@
 			"objectNotFound": "{{name}} ******",
 			"objectNotInvited": "{{name}} ******",
 			"objectNotReordered": "{{type}} ****** {{error}}",
-			"objectNotRestored": "{{type}} ****** {{error}}",
+			"objectNotRestored": "{{value}} ****** {{error}}",
 			"objectNotUpdated": "{{type}} ****** {{error}}",
 			"objectReordered": "{{type}} ******",
-			"objectRestored": "{{type}} ******",
+			"objectRestored": "{{value}} ******",
 			"objectUpdated": "{{value}} ****** {{type}} ******",
 			"platformAccessNotGranted": "******",
 			"readAll": "******",
@@ -310,6 +373,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"tabs": "******",
 		"template": {
 			"few": "******",
 			"none": "******",
@@ -668,6 +732,12 @@
 				"missingRelatedName": "****** {{question}} ****** {{page}} ******",
 				"missingTemplate": "****** {{question}} ****** {{page}} ******"
 			},
+			"propertyGrid": {
+				"resource": {
+					"availableGridFields": "******",
+					"resourceSelectText": "******"
+				}
+			},
 			"saveSurvey": "******"
 		},
 		"formMapProperties": {
@@ -720,6 +790,12 @@
 				"select": "******"
 			},
 			"preview": "******"
+		},
+		"icon": {
+			"modal": {
+				"select": "******",
+				"use": "******"
+			}
 		},
 		"logout": {
 			"confirmationMessage": "******",
@@ -918,6 +994,7 @@
 		"records": {
 			"active": "******",
 			"archived": "******",
+			"editAs": "******",
 			"paginator": {
 				"ariaLabel": "******"
 			},
@@ -1078,6 +1155,7 @@
 			"invite": {
 				"confirm": "******",
 				"role": {
+					"additionalAttributes": "******",
 					"description": "******"
 				}
 			},
@@ -1379,11 +1457,16 @@
 					"edit": {
 						"aggregation": "******",
 						"cluster": {
+							"autoSizeCluster": "******",
 							"cluster": "******",
 							"clusterSettings": "******",
+							"clustering": "******",
 							"fields": "******",
+							"font": "******",
+							"fontSize": "******",
 							"high": "******",
 							"label": "******",
+							"lightMode": "******",
 							"low": "******",
 							"max": "******",
 							"min": "******",
@@ -1401,6 +1484,7 @@
 						"groupLayers": "******",
 						"labels": "******",
 						"layerDatasource": "******",
+						"layerEdition": "******",
 						"layerProperties": "******",
 						"layerStyling": "******",
 						"popup": "******",
@@ -1549,6 +1633,10 @@
 					},
 					"tooltip": {
 						"category": "******",
+						"cluster": {
+							"autoSize": "******",
+							"lightMode": "******"
+						},
 						"dataset": "******",
 						"default": {
 							"latitude": "******",
@@ -1614,6 +1702,10 @@
 						"ariaLabel": "******"
 					},
 					"static": "******"
+				},
+				"tabs": {
+					"addNewTab": "******",
+					"deleteTab": "******"
 				}
 			},
 			"styling": "******",

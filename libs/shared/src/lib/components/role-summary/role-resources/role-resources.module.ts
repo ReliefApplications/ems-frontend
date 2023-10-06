@@ -18,6 +18,7 @@ import { SpinnerModule, FormWrapperModule, IconModule } from '@oort-front/ui';
 import { ResourceFieldsComponent } from './resource-fields/resource-fields.component';
 import { RoleResourceFiltersComponent } from './resource-access-filters/resource-access-filters.component';
 import { FilterModule } from '../../filter/filter.module';
+import { ListFilterComponent } from '../../list-filter/list-filter.component';
 
 /**
  * Resources tab of Role Summary component.
@@ -46,6 +47,7 @@ import { FilterModule } from '../../filter/filter.module';
     ButtonModule,
     TableModule,
     DateModule,
+    ListFilterComponent,
   ],
   exports: [RoleResourcesComponent],
 })

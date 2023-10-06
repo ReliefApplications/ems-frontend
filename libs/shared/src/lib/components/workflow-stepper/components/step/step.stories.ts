@@ -27,7 +27,7 @@ export default {
  * @param args Properties
  * @returns A story component
  */
-const TEMPLATE: StoryFn<sharedStepComponent> = (args) => ({
+const TEMPLATE: StoryFn<StepComponent> = (args) => ({
   props: {
     ...args,
   },

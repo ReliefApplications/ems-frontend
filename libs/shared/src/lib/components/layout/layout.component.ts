@@ -13,7 +13,6 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import { Account, AuthService } from '../../services/auth/auth.service';
-import { LayoutService } from '../../services/layout/layout.service';
 import { User } from '../../models/user.model';
 import { Application } from '../../models/application.model';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -25,7 +24,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { DateTranslateService } from '../../services/date-translate/date-translate.service';
 import { UnsubscribeComponent } from '../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
-import { Breadcrumb } from '@oort-front/ui';
+import { Breadcrumb, UILayoutService } from '@oort-front/ui';
 import { BreadcrumbService } from '../../services/breadcrumb/breadcrumb.service';
 
 /**
@@ -40,7 +39,7 @@ export class LayoutComponent
   extends UnsubscribeComponent
   implements OnInit, OnChanges
 {
-  // === HEADER TITLE ===
+  /** Page title ( name of application ) */
   @Input() title = '';
 
   @Input() applications: Application[] = [];
@@ -48,8 +47,6 @@ export class LayoutComponent
   @Input() route?: ActivatedRoute;
 
   @Input() header?: TemplateRef<any>;
-
-  @Input() toolbar?: TemplateRef<any>;
 
   @Input() leftSidenav?: TemplateRef<any>;
 
@@ -74,11 +71,12 @@ export class LayoutComponent
   public hasMoreNotifications = false;
   public loadingNotifications = false;
 
-  // === USER INFO ===
+  /** Account information of logged user */
   public account: Account | null;
+  /** Currently logged user */
   public user?: User;
 
-  // === DISPLAY ===
+  /** Is screen large */
   public largeDevice: boolean;
   public theme: any;
 
@@ -147,7 +145,7 @@ export class LayoutComponent
    * @param router The Angular Router service
    * @param authService This is the service that handles authentication
    * @param notificationService This is the service that handles the notifications.
-   * @param layoutService Shared layout service
+   * @param layoutService UI layout service
    * @param confirmService This is the service that is used to display a confirm window.
    * @param dialog This is the dialog service provided by Angular CDK
    * @param translate This is the Angular service that translates text
@@ -159,7 +157,7 @@ export class LayoutComponent
     private router: Router,
     private authService: AuthService,
     private notificationService: NotificationService,
-    private layoutService: LayoutService,
+    private layoutService: UILayoutService,
     private confirmService: ConfirmService,
     public dialog: Dialog,
     private translate: TranslateService,
@@ -202,30 +200,32 @@ export class LayoutComponent
         this.loadingNotifications = false;
       });
 
-    this.layoutService.rightSidenav$.subscribe((view) => {
-      if (view && this.rightSidenav) {
-        // avoid to have multiple right sidenav components at same time
-        this.layoutService.setRightSidenav(null);
-        this.showSidenav = true;
-        const componentRef: ComponentRef<any> =
-          this.rightSidenav.createComponent(view.component);
-        if (view.inputs) {
-          for (const [key, value] of Object.entries(view.inputs)) {
-            componentRef.instance[key] = value;
+    this.layoutService.rightSidenav$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((view) => {
+        if (view && this.rightSidenav) {
+          // avoid to have multiple right sidenav components at same time
+          this.layoutService.setRightSidenav(null);
+          this.showSidenav = true;
+          const componentRef: ComponentRef<any> =
+            this.rightSidenav.createComponent(view.component);
+          if (view.inputs) {
+            for (const [key, value] of Object.entries(view.inputs)) {
+              componentRef.instance[key] = value;
+            }
+          }
+
+          componentRef.instance.cancel.subscribe(() => {
+            componentRef.destroy();
+            this.layoutService.setRightSidenav(null);
+          });
+        } else {
+          this.showSidenav = false;
+          if (this.rightSidenav) {
+            this.rightSidenav.clear();
           }
         }
-
-        componentRef.instance.cancel.subscribe(() => {
-          componentRef.destroy();
-          this.layoutService.setRightSidenav(null);
-        });
-      } else {
-        this.showSidenav = false;
-        if (this.rightSidenav) {
-          this.rightSidenav.clear();
-        }
-      }
-    });
+      });
 
     this.breadcrumbService.breadcrumbs$
       .pipe(takeUntil(this.destroy$))

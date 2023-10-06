@@ -23,7 +23,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { LayerModel } from '../../../models/layer.model';
 import { MapComponent } from '../../ui/map';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
-import { LayoutService } from '../../../services/layout/layout.service';
+import { UILayoutService } from '@oort-front/ui';
 
 /** Component for the map widget settings */
 @Component({
@@ -68,7 +68,7 @@ export class MapSettingsComponent
    */
   constructor(
     private cdr: ChangeDetectorRef,
-    private layoutService: LayoutService
+    private layoutService: UILayoutService
   ) {
     super();
   }

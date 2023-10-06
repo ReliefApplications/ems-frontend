@@ -33,7 +33,7 @@ export default {
  * @param args the properties of the instance of RecordSummaryComponent
  * @returns the template
  */
-const TEMPLATE: StoryFn<sharedRecordSummaryComponent> = (args) => ({
+const TEMPLATE: StoryFn<RecordSummaryComponent> = (args) => ({
   props: {
     ...args,
   },

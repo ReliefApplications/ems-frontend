@@ -60,8 +60,9 @@
           "libs/styles/src/lib/tailwind/tailwind.scss",
           "libs/styles/src/lib/kendo/theme.scss",
           "libs/styles/src/lib/shared/shared.scss",
-          "node_modules/survey-angular/survey.min.css",
-          "node_modules/survey-creator/survey-creator.min.css",
+          "node_modules/survey-core/defaultV2.min.css",
+          "node_modules/survey-core/survey.min.css",
+          "node_modules/survey-creator-core/survey-creator-core.min.css",
           "node_modules/leaflet/dist/leaflet.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
@@ -72,15 +73,12 @@
           "node_modules/leaflet-timedimension/dist/leaflet.timedimension.control.min.css"
         ],
         "scripts": [
-          "node_modules/jquery/dist/jquery.js",
           "node_modules/tinymce/tinymce.js",
           "node_modules/tinymce/themes/silver/theme.js"
         ],
         "allowedCommonJsDependencies": [
           "minimatch",
           "hammerjs",
-          "survey-creator",
-          "survey-knockout",
           "subscriptions-transport-ws",
           "zen-observable",
           "lodash",
@@ -88,7 +86,9 @@
           "cron-parser",
           "cron-validator",
           "localforage",
-          "survey-angular",
+          "survey-core",
+          "survey-creator-core",
+          "survey-angular-ui",
           "fast-sha256",
           "leaflet",
           "esri-leaflet-geocoder",
@@ -117,7 +117,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "baseHref": "/backoffice/",
@@ -142,7 +142,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "baseHref": "/backoffice/",
@@ -167,7 +167,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "baseHref": "/backoffice/",
@@ -192,7 +192,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "baseHref": "/backoffice/",
@@ -217,7 +217,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "baseHref": "/admin/",
@@ -242,7 +242,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "baseHref": "/admin/",
@@ -267,7 +267,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "baseHref": "/admin/",
@@ -292,7 +292,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "baseHref": "/admin/",
@@ -317,7 +317,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "baseHref": "/admin/",
@@ -342,7 +342,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "baseHref": "/admin/",
@@ -367,7 +367,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "baseHref": "/admin/",
@@ -392,7 +392,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "6kb",
-              "maximumError": "10kb"
+              "maximumError": "12kb"
             }
           ],
           "baseHref": "/admin/",

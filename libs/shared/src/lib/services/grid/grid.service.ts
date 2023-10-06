@@ -13,6 +13,10 @@ import {
 } from '../../utils/cache-with-expiry';
 import { FormBuilder } from '@angular/forms';
 import { flatDeep } from '../../utils/array-filter';
+import { Apollo } from 'apollo-angular';
+import { ResourceQueryResponse } from '../../models/resource.model';
+import { GET_RESOURCE_FIELDS } from './graphql/queries';
+import { map } from 'rxjs';
 
 /** List of disabled fields */
 const DISABLED_FIELDS = [
@@ -39,11 +43,13 @@ export class GridService {
    * @param fb Angular form builder
    * @param apiProxyService Shared API proxy service
    * @param translate Translate service
+   * @param apollo Apollo service
    */
   constructor(
     private fb: FormBuilder,
     private apiProxyService: ApiProxyService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private apollo: Apollo
   ) {}
 
   /**
@@ -82,17 +88,57 @@ export class GridService {
 
         switch (f.kind) {
           case 'OBJECT': {
-            return this.getFields(
-              f.fields,
-              metaFields,
-              layoutFields,
-              fullName,
-              {
-                disabled: true,
-                hidden,
-                filter: prefix ? false : options.filter,
-              }
-            );
+            if (f.type.endsWith(REFERENCE_DATA_END)) {
+              metaData = Object.assign([], metaData);
+              metaData.type = 'referenceData';
+              const cachedField = get(layoutFields, fullName);
+              const title = f.label ? f.label : prettifyLabel(f.name);
+              const subFields = this.getFields(
+                f.fields,
+                metaFields,
+                layoutFields,
+                fullName,
+                {
+                  ...(!f.type.endsWith(REFERENCE_DATA_END) && {
+                    disabled: true,
+                  }),
+                  hidden: !f.type.endsWith(REFERENCE_DATA_END),
+                  filter: false,
+                }
+              );
+              return {
+                name: fullName,
+                title,
+                type: f.type,
+                format: this.getFieldFormat(f.type),
+                editor: this.getFieldFilterOrEditor(f.type),
+                filter: prefix ? '' : this.getFieldFilterOrEditor(f.type),
+                meta: metaData,
+                disabled: f.type.endsWith(REFERENCE_DATA_END) ? false : true,
+                hidden: hidden || cachedField?.hidden || false,
+                width: cachedField?.width || title.length * 7 + 50,
+                order: cachedField?.order,
+                query: {
+                  sort: f.sort,
+                  fields: f.fields,
+                  filter: f.filter,
+                },
+                subFields,
+                canSee: true,
+              };
+            } else {
+              return this.getFields(
+                f.fields,
+                metaFields,
+                layoutFields,
+                fullName,
+                {
+                  disabled: true,
+                  hidden,
+                  filter: prefix ? false : options.filter,
+                }
+              );
+            }
           }
           case 'LIST': {
             metaData = Object.assign([], metaData);
@@ -109,7 +155,7 @@ export class GridService {
               layoutFields,
               fullName,
               {
-                disabled: true,
+                ...(!f.type.endsWith(REFERENCE_DATA_END) && { disabled: true }),
                 hidden: !f.type.endsWith(REFERENCE_DATA_END),
                 filter: false,
               }
@@ -122,7 +168,7 @@ export class GridService {
               editor: this.getFieldFilterOrEditor(f.type),
               filter: prefix ? '' : this.getFieldFilterOrEditor(f.type),
               meta: metaData,
-              disabled: true,
+              disabled: f.type.endsWith(REFERENCE_DATA_END) ? false : true,
               hidden: hidden || cachedField?.hidden || false,
               width: cachedField?.width || title.length * 7 + 50,
               order: cachedField?.order,
@@ -152,8 +198,8 @@ export class GridService {
               disabled:
                 disabled ||
                 DISABLED_FIELDS.includes(f.name) ||
-                metaData?.readOnly ||
-                metaData?.isCalculated,
+                get(metaData, 'readOnly', false) ||
+                get(metaData, 'isCalculated', false),
               hidden: hidden || cachedField?.hidden || false,
               width: cachedField?.width || title.length * 7 + 50,
               order: cachedField?.order,
@@ -348,6 +394,7 @@ export class GridService {
    */
   public createFormGroup(dataItem: any, fields: any[]) {
     const formGroup: any = {};
+    const data = get(dataItem, '_meta.raw') || {};
     fields
       .filter((x) => !x.disabled)
       .forEach((field) => {
@@ -355,13 +402,13 @@ export class GridService {
           field.type !== 'JSON' ||
           MULTISELECT_TYPES.includes(field.meta.type)
         ) {
-          formGroup[field.name] = [dataItem[field.name]];
+          formGroup[field.name] = [data[field.name]];
         } else {
           if (field.meta.type === 'multipletext') {
             const fieldGroup: any = {};
             for (const item of field.meta.items) {
               fieldGroup[item.name] = [
-                dataItem[field.name] ? dataItem[field.name][item.name] : null,
+                data[field.name] ? data[field.name][item.name] : null,
               ];
             }
             formGroup[field.name] = this.fb.group(fieldGroup);
@@ -370,14 +417,14 @@ export class GridService {
             const fieldGroup: any = {};
             for (const row of field.meta.rows) {
               fieldGroup[row.name] = [
-                dataItem[field.name] ? dataItem[field.name][row.name] : null,
+                data[field.name] ? data[field.name][row.name] : null,
               ];
             }
             formGroup[field.name] = this.fb.group(fieldGroup);
           }
           if (field.meta.type === 'matrixdropdown') {
             const fieldGroup: any = {};
-            const fieldValue = dataItem[field.name];
+            const fieldValue = data[field.name];
             for (const row of field.meta.rows) {
               const rowValue = fieldValue ? fieldValue[row.name] : null;
               const rowGroup: any = {};
@@ -391,7 +438,7 @@ export class GridService {
           }
           if (field.meta.type === 'matrixdynamic') {
             const fieldArray: any = [];
-            const fieldValue = dataItem[field.name] ? dataItem[field.name] : [];
+            const fieldValue = data[field.name] ? data[field.name] : [];
             for (const rowValue of fieldValue) {
               const rowGroup: any = {};
               for (const column of field.meta.columns) {
@@ -409,5 +456,32 @@ export class GridService {
         }
       });
     return this.fb.group(formGroup);
+  }
+
+  /**
+   * Get field definition from resource id and field name
+   *
+   * @param resourceId current resource id
+   * @param fieldName current field name
+   * @returns field definition
+   */
+  public getFieldDefinition(resourceId: string, fieldName: string) {
+    return this.apollo
+      .query<ResourceQueryResponse>({
+        query: GET_RESOURCE_FIELDS,
+        variables: {
+          id: resourceId,
+        },
+      })
+      .pipe(
+        map(({ data }) => {
+          if (data.resource) {
+            const field = data.resource.fields.find(
+              (f: any) => f.name === fieldName
+            );
+            return field;
+          }
+        })
+      );
   }
 }

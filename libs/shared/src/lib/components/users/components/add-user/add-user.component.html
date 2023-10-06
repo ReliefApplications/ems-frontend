@@ -1,6 +1,6 @@
 <ui-dialog size="medium">
   <ng-container ngProjectAs="header">
-    <h1>{{ 'components.users.invite.add' | translate }}</h1>
+    <h3 class="font-semibold">{{ 'components.users.invite.add' | translate }}</h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <form [formGroup]="form">
@@ -40,7 +40,9 @@
           "
         >
           <ng-container formArrayName="positionAttributes">
-            <label class="invite-label">Set additional attributes</label>
+            <label class="invite-label">{{
+              'components.user.invite.role.additionalAttributes' | translate
+            }}</label>
             <div
               uiFormFieldDirective
               *ngFor="
@@ -64,7 +66,7 @@
     </form>
   </ng-container>
   <ng-container ngProjectAs="actions">
-    <ui-button (click)="onClose()">
+    <ui-button (click)="onClose()" variant="default">
       {{ 'common.close' | translate }}
     </ui-button>
     <ui-button

@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ApiConfigurationRoutingModule } from './api-configuration-routing.module';
 import { ApiConfigurationComponent } from './api-configuration.component';
-import { AccessModule } from '@oort-front/shared';
+import { AccessModule, StatusOptionsComponent } from '@oort-front/shared';
 import { ChipModule, SpinnerModule } from '@oort-front/ui';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
@@ -11,6 +11,7 @@ import {
   SelectMenuModule,
   FormWrapperModule,
   ErrorMessageModule,
+  FixedWrapperModule,
 } from '@oort-front/ui';
 
 /**
@@ -31,6 +32,8 @@ import {
     FormWrapperModule,
     ErrorMessageModule,
     ChipModule,
+    FixedWrapperModule,
+    StatusOptionsComponent,
   ],
 })
 export class ApiConfigurationModule {}
