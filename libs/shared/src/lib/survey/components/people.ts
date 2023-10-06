@@ -59,10 +59,16 @@ export const init = (
             const people: any = [];
             for (const person of data.people) {
               if (!people.some((el: any) => el.value === person.id)) {
+                console.log(person);
                 people.push({
                   value: person.id,
-                  text: person.username,
-                  email: person.email,
+                  text:
+                    person.firstname +
+                    ', ' +
+                    person.lastname +
+                    ' (' +
+                    person.emailaddress +
+                    ')',
                 });
               }
             }

@@ -81,8 +81,9 @@ export const GET_PEOPLE = gql`
   query GetPeople($applications: [ID]) {
     people(applications: $applications) {
       id
-      username
-      name
+      firstname
+      lastname
+      emailaddress
       oid
     }
   }
