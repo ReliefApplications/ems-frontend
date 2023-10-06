@@ -52,7 +52,13 @@ import {
   isEqual,
   flatMapDeep,
 } from 'lodash';
-import { BehaviorSubject, concatMap, debounceTime, takeUntil } from 'rxjs';
+import {
+  BehaviorSubject,
+  concatMap,
+  debounceTime,
+  filter,
+  takeUntil,
+} from 'rxjs';
 import { MapPopupService } from './map-popup/map-popup.service';
 import { Platform } from '@angular/cdk/platform';
 import { ContextService } from '../../../services/context/context.service';
@@ -155,6 +161,9 @@ export class MapComponent
   /** Refreshing layers. When true, should prevent layers to be duplicated  */
   private refreshingLayers = new BehaviorSubject<boolean>(true);
 
+  /** Timeout listeners */
+  firstLoadEmitTimeoutListener!: NodeJS.Timeout;
+
   /**
    * Map widget component
    *
@@ -244,7 +253,10 @@ export class MapComponent
 
     this.setUpMapListeners();
 
-    setTimeout(() => {
+    if (this.firstLoadEmitTimeoutListener) {
+      clearTimeout(this.firstLoadEmitTimeoutListener);
+    }
+    this.firstLoadEmitTimeoutListener = setTimeout(() => {
       this.map.invalidateSize();
       this.mapEvent.emit({
         type: MapEventType.FIRST_LOAD,
@@ -256,15 +268,26 @@ export class MapComponent
       });
       //}
     }, 1000);
+
     /**
      * Keep checking until filters are applied in order to apply next one
      */
+    let filterCheckTimeoutListener: NodeJS.Timeout;
     const loadNextFilters = (): Promise<void> => {
       const checkAgain = (resolve: () => void) => {
         if (this.refreshingLayers.getValue()) {
+          if (filterCheckTimeoutListener) {
+            clearTimeout(filterCheckTimeoutListener);
+          }
           resolve();
         } else {
-          setTimeout(() => checkAgain(resolve), 100);
+          if (filterCheckTimeoutListener) {
+            clearTimeout(filterCheckTimeoutListener);
+          }
+          filterCheckTimeoutListener = setTimeout(
+            () => checkAgain(resolve),
+            100
+          );
         }
       };
       return new Promise(checkAgain);
@@ -274,15 +297,13 @@ export class MapComponent
     this.contextService.filter$
       .pipe(
         debounceTime(500),
+        filter(() => {
+          const filters = this.contextService.filter.getValue();
+          return !isEqual(filters, this.appliedDashboardFilters);
+        }),
         concatMap(() => loadNextFilters()),
         takeUntil(this.destroy$)
       )
-      .subscribe(() => {
-        this.filterLayers();
-      });
-
-    this.contextService.isFilterEnabled$
-      .pipe(debounceTime(500), takeUntil(this.destroy$))
       .subscribe(() => {
         this.filterLayers();
       });
@@ -290,6 +311,9 @@ export class MapComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    if (this.firstLoadEmitTimeoutListener) {
+      clearTimeout(this.firstLoadEmitTimeoutListener);
+    }
     this.resizeObserver?.disconnect();
   }
 
@@ -967,9 +991,6 @@ export class MapComponent
   private async filterLayers() {
     this.document.getElementById('layer-control-button-close')?.click();
     const filters = this.contextService.filter.getValue();
-    if (isEqual(filters, this.appliedDashboardFilters)) {
-      return;
-    }
     this.refreshingLayers.next(false);
     this.appliedDashboardFilters = filters;
     const { layers: layersToGet, controls } = this.extractSettings();
