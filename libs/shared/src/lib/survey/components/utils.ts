@@ -2,8 +2,9 @@ import { Dialog } from '@angular/cdk/dialog';
 import { UntypedFormControl } from '@angular/forms';
 import { NgZone } from '@angular/core';
 // todo: as it something to do with survey-angular
-import { surveyLocalization } from 'survey-core';
+import { SurveyModel, surveyLocalization } from 'survey-core';
 import localForage from 'localforage';
+import { Question } from '../types';
 
 /**
  * Build the search button for resource and resources components
@@ -17,7 +18,7 @@ import localForage from 'localforage';
  * @returns The button DOM element
  */
 export const buildSearchButton = (
-  question: any,
+  question: Question,
   fieldsSettingsForm: any,
   multiselect: boolean,
   dialog: Dialog,
@@ -27,7 +28,7 @@ export const buildSearchButton = (
   const searchButton = document.createElement('button');
   searchButton.innerText = surveyLocalization.getString(
     'oort:search',
-    question.survey.locale
+    (question.survey as SurveyModel).locale
   );
   searchButton.className = 'sd-btn !px-3 !py-2';
   searchButton.style.marginRight = '8px';
@@ -82,7 +83,7 @@ export const buildSearchButton = (
  * @returns The button DOM element
  */
 export const buildAddButton = (
-  question: any,
+  question: Question,
   multiselect: boolean,
   dialog: Dialog,
   ngZone: NgZone,
@@ -91,7 +92,7 @@ export const buildAddButton = (
   const addButton = document.createElement('button');
   addButton.innerText = surveyLocalization.getString(
     'oort:addNewRecord',
-    question.survey.locale
+    (question.survey as SurveyModel).locale
   );
   addButton.className = 'sd-btn !px-3 !py-2';
   if (question.addRecord && question.addTemplate && !question.isReadOnly) {
@@ -107,7 +108,7 @@ export const buildAddButton = (
             locale: question.resource.value,
             askForConfirm: false,
             ...(question.prefillWithCurrentRecord && {
-              prefillData: question.survey.data,
+              prefillData: (question.survey as SurveyModel).data,
             }),
           },
           height: '98%',
