@@ -55,7 +55,7 @@ export default {
  *
  * @returns story
  */
-const TEMPLATE: StoryFn<sharedMappingModalComponent> = () => ({
+const TEMPLATE: StoryFn<MappingModalComponent> = () => ({
   template: '<shared-mapping-modal></shared-mapping-modal>',
 });
 

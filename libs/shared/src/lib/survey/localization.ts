@@ -1,4 +1,3 @@
-import { set } from 'lodash';
 import { surveyLocalization } from 'survey-core';
 
 /** Available localizable strings, for survey */
@@ -33,11 +32,10 @@ const SURVEY_LOCALIZABLE_STRINGS = [
 export const initLocalization = () => {
   for (const item of SURVEY_LOCALIZABLE_STRINGS) {
     for (const [locale, value] of Object.entries(item.locales)) {
-      set(
-        surveyLocalization.locales,
-        `surveyLocalization.locales.${locale}.oort:${item.key}`,
-        value
-      );
+      if (!surveyLocalization.locales[locale]) {
+        surveyLocalization.locales[locale] = {};
+      }
+      surveyLocalization.locales[locale][`oort:${item.key}`] = value;
     }
   }
 };

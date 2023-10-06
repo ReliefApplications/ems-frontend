@@ -32,7 +32,7 @@ export default {
  * @param args Parameters
  * @returns A story component
  */
-const TEMPLATE: StoryFn<sharedWidgetChoiceComponent> = (args) => ({
+const TEMPLATE: StoryFn<WidgetChoiceComponent> = (args) => ({
   props: {
     ...args,
   },

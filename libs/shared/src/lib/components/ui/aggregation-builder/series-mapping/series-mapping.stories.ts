@@ -151,7 +151,7 @@ const DEFAULT_FIELDS = [
  *
  * @returns story template
  */
-const TEMPLATE: StoryFn<sharedSeriesMappingComponent> = () => ({
+const TEMPLATE: StoryFn<SeriesMappingComponent> = () => ({
   template:
     '<shared-series-mapping [fields$]=fields$ [mappingForm]=mappingForm></shared-series-mapping>',
   props: {
@@ -164,7 +164,7 @@ const TEMPLATE: StoryFn<sharedSeriesMappingComponent> = () => ({
         field: 'follow',
       },
       'column'
-    ).controls.mapping,
+    ),
   },
 });
 
