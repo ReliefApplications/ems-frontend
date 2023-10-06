@@ -89,8 +89,10 @@ const createSummaryCardForm = (def: any) => {
       navigateToPage: [get(settings, 'actions.navigateToPage', false)],
       navigateSettings: fb.group({
         pageUrl: [get(settings, 'actions.navigateSettings.pageUrl', '')],
-        useRecordId: [get(settings, 'actions.navigateSettings.useRecordId', false)],
-      })
+        useRecordId: [
+          get(settings, 'actions.navigateSettings.useRecordId', false),
+        ],
+      }),
     }),
     at: new FormControl(get(settings, 'at', '')),
   });

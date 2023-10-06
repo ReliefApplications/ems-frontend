@@ -142,8 +142,10 @@ export const createGridWidgetFormGroup = (id: string, configuration: any) => {
       navigateToPage: [get(configuration, 'actions.navigateToPage', false)],
       navigateSettings: fb.group({
         pageUrl: [get(configuration, 'actions.navigateSettings.pageUrl', '')],
-        useRecordId: [get(configuration, 'actions.navigateSettings.useRecordId', false)],
-      })
+        useRecordId: [
+          get(configuration, 'actions.navigateSettings.useRecordId', false),
+        ],
+      }),
     }),
     floatingButtons: fb.array(
       configuration.floatingButtons && configuration.floatingButtons.length

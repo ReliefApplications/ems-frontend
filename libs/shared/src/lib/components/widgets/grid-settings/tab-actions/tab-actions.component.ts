@@ -71,8 +71,7 @@ export class TabActionsComponent
     {
       name: 'navigateToPage',
       text: 'components.widget.settings.grid.actions.navigateToPage',
-      tooltip:
-        'components.widget.settings.grid.hint.actions.navigateToPage',
+      tooltip: 'components.widget.settings.grid.hint.actions.navigateToPage',
     },
   ];
 
@@ -91,9 +90,8 @@ export class TabActionsComponent
   }
 
   ngOnInit(): void {
-    this.showSelectPage = this.formGroup.controls.actions.get(
-      'navigateToPage'
-    )?.value;
+    this.showSelectPage =
+      this.formGroup.controls.actions.get('navigateToPage')?.value;
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
     this.pages = this.getPages(application);

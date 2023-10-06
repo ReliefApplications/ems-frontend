@@ -378,13 +378,13 @@ export class CoreGridComponent
       convert: get(this.settings, 'actions.convert', false),
       export: get(this.settings, 'actions.export', false),
       showDetails: get(this.settings, 'actions.showDetails', true),
-      navigateToPage: get(
-        this.settings,
-        'actions.navigateToPage',
-        false
-      ),
+      navigateToPage: get(this.settings, 'actions.navigateToPage', false),
       navigateSettings: {
-        useRecordId: get(this.settings, 'actions.navigateSettings.useRecordId', false),
+        useRecordId: get(
+          this.settings,
+          'actions.navigateSettings.useRecordId',
+          false
+        ),
         pageUrl: get(this.settings, 'actions.navigateSettings.pageUrl', ''),
       },
       remove: get(this.settings, 'actions.remove', false),

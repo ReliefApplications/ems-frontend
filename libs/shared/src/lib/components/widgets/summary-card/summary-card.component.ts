@@ -532,15 +532,19 @@ export class SummaryCardComponent
         convert: get(this.settings, 'actions.convert', true),
         delete: get(this.settings, 'actions.delete', true),
         export: get(this.settings, 'actions.export', true),
-        history: get(this.settings, 'actions.history', true), 
+        history: get(this.settings, 'actions.history', true),
         inlineEdition: get(this.settings, 'actions.inlineEdition', true),
         showDetails: get(this.settings, 'actions.showDetails', true),
         update: get(this.settings, 'actions.update', true),
         navigateToPage: get(this.settings, 'actions.navigateToPage', false),
         navigateSettings: {
           pageUrl: get(this.settings, 'actions.navigateSettings.pageUrl', ''),
-          useRecordId: get(this.settings, 'actions.navigateSettings.useRecordId', false),
-        }
+          useRecordId: get(
+            this.settings,
+            'actions.navigateSettings.useRecordId',
+            false
+          ),
+        },
       },
       contextFilters: JSON.stringify(this.contextFilters),
     };
