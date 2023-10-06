@@ -1185,7 +1185,7 @@
     </kendo-grid-column>
      <!-- ROW RECORD DASHBOARD -->
      <kendo-grid-column
-     *ngIf="actions.showRecordDashboard"
+     *ngIf="actions.navigateToPage"
      [columnMenu]="false"
      [width]="54"
      [resizable]="true"
@@ -1200,8 +1200,8 @@
          (click)="action.emit({
             action: 'recordDashboard',
             item: dataItem, 
-            pageIdUrl: actions.pageIdUrl,
-            useRecordId: actions.useRecordId
+            pageUrl: actions.navigateSettings.pageUrl,
+            useRecordId: actions.navigateSettings.useRecordId
           })"
          [uiTooltip]="'components.widget.grid.actions.recordDashboard' | translate"
        ></button>

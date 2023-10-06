@@ -69,10 +69,10 @@ export class TabActionsComponent
       tooltip: 'components.widget.settings.grid.hint.actions.showDetails',
     },
     {
-      name: 'showRecordDashboard',
-      text: 'components.widget.settings.grid.actions.showRecordDashboard',
+      name: 'navigateToPage',
+      text: 'components.widget.settings.grid.actions.navigateToPage',
       tooltip:
-        'components.widget.settings.grid.hint.actions.showRecordDashboard',
+        'components.widget.settings.grid.hint.actions.navigateToPage',
     },
   ];
 
@@ -92,13 +92,13 @@ export class TabActionsComponent
 
   ngOnInit(): void {
     this.showSelectPage = this.formGroup.controls.actions.get(
-      'showRecordDashboard'
+      'navigateToPage'
     )?.value;
     // Add available pages to the list of available keys
     const application = this.applicationService.application.getValue();
     this.pages = this.getPages(application);
     this.formGroup.controls.actions
-      .get('showRecordDashboard')
+      .get('navigateToPage')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((val: boolean) => {
         this.showSelectPage = val;

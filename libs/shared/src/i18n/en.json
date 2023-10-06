@@ -1361,14 +1361,14 @@
 						"delete": "Delete records",
 						"export": "Export records",
 						"inline": "Inline edition",
-						"pageId": {
-							"label": "Page source id",
+						"navigateToPage": "Navigate to page",
+						"pageUrl": {
+							"label": "Page source url",
 							"placeholder": "Enter page id"
 						},
 						"remove": "Remove",
 						"show": "Show history",
 						"showDetails": "Show record details",
-						"showRecordDashboard": "Navigate to page",
 						"title": "Enabled actions",
 						"update": "Update records",
 						"useRecordId": "Use record id",
@@ -1427,9 +1427,9 @@
 							"delete": "If authorized, user can delete visible records",
 							"export": "User can export selected columns of visible records",
 							"inline": "If authorized, user can edit records in the grid",
+							"navigateToPage": "User can go to record dashboard",
 							"show": "User can see full history of visible records",
 							"showDetails": "User can see full details of visible records",
-							"showRecordDashboard": "User can go to record dashboard",
 							"update": "If authorized, user can update visible records"
 						},
 						"attachToRecord": "If the selected records are not attached to any records, the action will be canceled",

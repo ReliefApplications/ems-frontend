@@ -130,9 +130,11 @@ export class GridComponent
     convert: false,
     export: false,
     showDetails: false,
-    showRecordDashboard: false,
-    useRecordId: false,
-    pageIdUrl: '',
+    navigateToPage: false,
+    navigateSettings: {
+      useRecordId: false,
+      pageUrl: '',
+    },
     remove: false,
   };
   @Input() hasDetails = true;

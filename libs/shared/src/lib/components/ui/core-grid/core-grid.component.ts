@@ -125,9 +125,6 @@ export class CoreGridComponent
 
   // === FEATURES INPUTS ===
   @Input() showDetails = true;
-  @Input() showRecordDashboard = false;
-  @Input() pageIdUrl = '';
-  @Input() useRecordId = false;
   @Input() showExport = true;
   @Input() admin = false;
   @Input() canCreateRecords = false;
@@ -284,9 +281,11 @@ export class CoreGridComponent
     convert: false,
     export: this.showExport,
     showDetails: true,
-    showRecordDashboard: false,
-    useRecordId: false,
-    pageIdUrl: '',
+    navigateToPage: false,
+    navigateSettings: {
+      useRecordId: false,
+      pageUrl: '',
+    },
     remove: false,
   };
 
@@ -379,13 +378,15 @@ export class CoreGridComponent
       convert: get(this.settings, 'actions.convert', false),
       export: get(this.settings, 'actions.export', false),
       showDetails: get(this.settings, 'actions.showDetails', true),
-      showRecordDashboard: get(
+      navigateToPage: get(
         this.settings,
-        'actions.showRecordDashboard',
+        'actions.navigateToPage',
         false
       ),
-      useRecordId: get(this.settings, 'actions.useRecordId', false),
-      pageIdUrl: get(this.settings, 'actions.pageIdUrl', ''),
+      navigateSettings: {
+        useRecordId: get(this.settings, 'actions.navigateSettings.useRecordId', false),
+        pageUrl: get(this.settings, 'actions.navigateSettings.pageUrl', ''),
+      },
       remove: get(this.settings, 'actions.remove', false),
     };
     this.editable = this.settings.actions?.inlineEdition;
@@ -859,7 +860,7 @@ export class CoreGridComponent
    * @param event.items list of items to perform the action on
    * @param event.value value to apply to item, if any
    * @param event.field field to use in action, optional
-   * @param event.pageIdUrl url of page id
+   * @param event.pageUrl url of page
    * @param event.useRecordId boolean to use record id
    */
   public onAction(event: {
@@ -868,7 +869,7 @@ export class CoreGridComponent
     items?: any[];
     value?: any;
     field?: any;
-    pageIdUrl?: string;
+    pageUrl?: string;
     useRecordId?: boolean;
   }): void {
     switch (event.action) {
@@ -906,7 +907,7 @@ export class CoreGridComponent
       }
       case 'recordDashboard': {
         if (event.item) {
-          let fullUrl = this.getPageUrl(event.pageIdUrl as string);
+          let fullUrl = this.getPageUrl(event.pageUrl as string);
           if (event.useRecordId) {
             const recordId = event.item.id;
             fullUrl = `${fullUrl}?id=${recordId}`;

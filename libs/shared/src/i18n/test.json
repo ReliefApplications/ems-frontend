@@ -1361,14 +1361,14 @@
 						"delete": "******",
 						"export": "******",
 						"inline": "******",
-						"pageId": {
+						"navigateToPage": "******",
+						"pageUrl": {
 							"label": "******",
 							"placeholder": "******"
 						},
 						"remove": "******",
 						"show": "******",
 						"showDetails": "******",
-						"showRecordDashboard": "******",
 						"title": "******",
 						"update": "******",
 						"useRecordId": "******",
@@ -1427,9 +1427,9 @@
 							"delete": "******",
 							"export": "******",
 							"inline": "******",
+							"navigateToPage": "******",
 							"show": "******",
 							"showDetails": "******",
-							"showRecordDashboard": "******",
 							"update": "******"
 						},
 						"attachToRecord": "******",
