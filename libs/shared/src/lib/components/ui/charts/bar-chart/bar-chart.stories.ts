@@ -37,7 +37,7 @@ export default {
  * @param args story arguments
  * @returns storybook template
  */
-const TEMPLATE: StoryFn<sharedBarChartComponent> = (args) => ({
+const TEMPLATE: StoryFn<BarChartComponent> = (args) => ({
   props: {
     ...args,
   },

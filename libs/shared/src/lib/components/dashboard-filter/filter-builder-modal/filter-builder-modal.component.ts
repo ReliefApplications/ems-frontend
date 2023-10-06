@@ -19,6 +19,9 @@ import { renderGlobalProperties } from '../../../survey/render-global-properties
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
 import { FormHelpersService } from '../../../services/form-helper/form-helper.service';
 import { Question } from '../../../survey/types';
+import 'survey-core/survey.i18n.js';
+import 'survey-creator-core/survey-creator-core.i18n.js';
+
 /**
  * Data passed to initialize the filter builder
  */

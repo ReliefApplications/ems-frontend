@@ -24,7 +24,7 @@ export default {
  * @param args Properties
  * @returns A story component
  */
-const TEMPLATE: StoryFn<sharedWidgetGridComponent> = (args) => ({
+const TEMPLATE: StoryFn<WidgetGridComponent> = (args) => ({
   props: {
     ...args,
     widgetTypes: WIDGET_TYPES,

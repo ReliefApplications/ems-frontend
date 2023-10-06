@@ -44,7 +44,7 @@ const fb = new UntypedFormBuilder();
  *
  * @returns story
  */
-const TEMPLATE: StoryFn<sharedMappingComponent> = () => ({
+const TEMPLATE: StoryFn<MappingComponent> = () => ({
   template: '<shared-mapping [mappingForm]="mappingForm"></shared-mapping>',
   props: {
     // Need to pass formArray there otherwise we get an error: https://github.com/storybookjs/storybook/discussions/15602
@@ -79,7 +79,7 @@ export const DEFAULT = {
  *
  * @returns story
  */
-const TEMPLATE_EMPTY: StoryFn<sharedMappingComponent> = () => ({
+const TEMPLATE_EMPTY: StoryFn<MappingComponent> = () => ({
   template: '<shared-mapping [mappingForm]="mappingForm"></shared-mapping>',
   props: {
     // Need to pass formArray there otherwise we get an error: https://github.com/storybookjs/storybook/discussions/15602

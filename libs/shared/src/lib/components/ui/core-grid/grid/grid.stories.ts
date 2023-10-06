@@ -1,11 +1,11 @@
 import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { KendoGridComponent } from './grid.component';
+import { GridComponent } from './grid.component';
 import { GridModule } from './grid.module';
 import { HttpClientModule } from '@angular/common/http';
 
 export default {
-  component: KendoGridComponent,
+  component: GridComponent,
   decorators: [
     moduleMetadata({
       imports: [GridModule, HttpClientModule, BrowserAnimationsModule],
@@ -27,7 +27,7 @@ export default {
  * @param args Properties of the component
  * @returns The template
  */
-const TEMPLATE: StoryFn<sharedGridComponent> = (args) => ({
+const TEMPLATE: StoryFn<GridComponent> = (args) => ({
   template: `<div style="height: 400px"><shared-grid
         [loading]="loading"
         [error]="error"
