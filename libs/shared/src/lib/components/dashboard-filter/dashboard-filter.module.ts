@@ -8,6 +8,8 @@ import { DrawerPositionerModule } from './directives/drawer-positioner/drawer-po
 import { DrawerPositionerDirective } from './directives/drawer-positioner/drawer-positioner.directive';
 import { SurveyCreatorModule } from 'survey-creator-angular';
 import { SurveyModule } from 'survey-angular-ui';
+import 'survey-core/survey.i18n.js';
+import 'survey-creator-core/survey-creator-core.i18n.js';
 
 /** Dashboard floating filter module. */
 @NgModule({
