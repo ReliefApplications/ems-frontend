@@ -738,7 +738,7 @@
 					"resourceSelectText": "First you have to select a resource before setting any filters"
 				}
 			},
-			"saveSurvey": "SavingSurvey"
+			"saveSurvey": "Saving the form"
 		},
 		"formMapProperties": {
 			"geofields": {
