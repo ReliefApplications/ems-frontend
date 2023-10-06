@@ -37,7 +37,7 @@ export default {
  * @param args Arguments used by the component
  * @returns Returns an object used as the stories template
  */
-const TEMPLATE: StoryFn<sharedLineChartComponent> = (args) => ({
+const TEMPLATE: StoryFn<LineChartComponent> = (args) => ({
   props: {
     ...args,
   },
