@@ -10,13 +10,14 @@ import {
   StepQueryResponse,
   FormQueryResponse,
   PageQueryResponse,
+  WorkflowService,
 } from '@oort-front/shared';
 import {
   GET_FORM_BY_ID,
   GET_PAGE_BY_ID,
   GET_STEP_BY_ID,
 } from './graphql/queries';
-import { Subscription } from 'rxjs';
+import { Subscription, firstValueFrom } from 'rxjs';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
@@ -62,13 +63,15 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
    * @param router Angular router
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
+   * @param workflowService Shared workflow service
    */
   constructor(
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: SnackbarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private workflowService: WorkflowService
   ) {
     super();
   }
@@ -189,6 +192,13 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
   onComplete(e: { completed: boolean; hideNewRecord?: boolean }): void {
     this.completed = e.completed;
     this.hideNewRecord = e.hideNewRecord || false;
+
+    // Checks if should go to next step if in an workflow
+    firstValueFrom(this.workflowService.workflow$).then((workflow) => {
+      if (workflow?.nextStepOnSave) {
+        this.workflowService.nextStep.emit();
+      }
+    });
   }
 
   /**

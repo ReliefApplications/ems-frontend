@@ -31,7 +31,9 @@ export class ContextService {
   /** To update/keep the current filter position  */
   public filterPosition = new BehaviorSubject<any>(null);
   /** The current application id */
-  private currentApplicationId?: string | null = null;
+  private currentApplicationId: string | null = null;
+  /** The description of the current application */
+  private currentApplicationDescription: string | null = null;
 
   /** @returns filter value as observable */
   get filter$() {
@@ -76,7 +78,9 @@ export class ContextService {
       (application: Application | null) => {
         if (application) {
           if (this.currentApplicationId !== application.id) {
-            this.currentApplicationId = application.id;
+            this.currentApplicationId = application.id || null;
+            this.currentApplicationDescription =
+              application.description ?? null;
             this.filter.next({});
             this.filterStructure.next(application.contextualFilter);
             localForage.getItem(this.positionKey).then((position) => {
@@ -125,6 +129,10 @@ export class ContextService {
         const filterName = filter.value?.match(regex)?.[0];
         if (filterName) {
           filter.value = get(this.availableFilterFieldsValue, filterName);
+        } else if (filter.value === '{{application.description}}') {
+          filter.value = this.currentApplicationDescription;
+        } else if (filter.value === '{{application.id}}') {
+          filter.value = this.currentApplicationId;
         }
       }
     } else if ('filters' in filter && filter.filters) {
