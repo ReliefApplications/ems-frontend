@@ -23,46 +23,6 @@ export const GET_FORM_BY_ID = gql`
 `;
 
 /**
- * Workflow query.
- */
-export const GET_WORKFLOW_BY_ID = gql`
-  query GetWorkflowById($id: ID!) {
-    workflow(id: $id) {
-      id
-      name
-      createdAt
-      modifiedAt
-      steps {
-        id
-        name
-        type
-        content
-        createdAt
-      }
-      page {
-        id
-        name
-        canUpdate
-        permissions {
-          canSee {
-            id
-            title
-          }
-          canUpdate {
-            id
-            title
-          }
-          canDelete {
-            id
-            title
-          }
-        }
-      }
-    }
-  }
-`;
-
-/**
  * Workflow step query.
  */
 export const GET_STEP_BY_ID = gql`
