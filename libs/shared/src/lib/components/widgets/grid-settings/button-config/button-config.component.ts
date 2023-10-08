@@ -317,16 +317,6 @@ export class ButtonConfigComponent
           this.formGroup?.get('selectAll')?.updateValueAndValidity();
         }
       });
-
-    this.formGroup
-      ?.get('selectPage')
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((selectPage: boolean) => {
-        if (selectPage) {
-          this.formGroup?.controls.selectAll.setValue(false);
-          this.formGroup?.get('selectAll')?.updateValueAndValidity();
-        }
-      });
   }
 
   /** Set list of resources user can attach a record to */
