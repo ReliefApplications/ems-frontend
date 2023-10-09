@@ -102,7 +102,12 @@ export class SummaryCardComponent
       filter = {
         logic: 'and',
         filters: [
-          { logic: 'and', filters: [this.layout?.query.filter] },
+          {
+            logic: 'and',
+            filters: this.layout?.query.filter
+              ? [this.layout.query.filter]
+              : [],
+          },
           {
             logic: 'or',
             filters: searchFilters(
@@ -116,7 +121,7 @@ export class SummaryCardComponent
     } else {
       filter = {
         logic: 'and',
-        filters: [this.layout?.query.filter],
+        filters: this.layout?.query.filter ? [this.layout.query.filter] : [],
       };
     }
     return {
@@ -524,6 +529,7 @@ export class SummaryCardComponent
         showDetails: true,
         update: true,
       },
+      contextFilters: JSON.stringify(this.contextFilters),
     };
 
     Object.assign(
@@ -608,7 +614,7 @@ export class SummaryCardComponent
         .refetch({
           first: this.pageInfo.pageSize,
           skip: event.skip,
-          filters: this.queryFilter,
+          contextFilters: this.queryFilter,
           sortField: this.sortOptions.field,
           sortOrder: this.sortOptions.order,
           styles: layoutQuery?.style || null,

@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, UrlTree, Router } from '@angular/router';
 import { AuthService } from '@oort-front/shared';
-import { Observable, firstValueFrom } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { firstValueFrom } from 'rxjs';
 
 /**
  * Guard to check if user is authenticated or not.
@@ -25,29 +24,24 @@ export class AccessGuard implements CanActivate {
    *
    * @returns Can the user continue navigation
    */
-  canActivate():
-    | Observable<boolean | UrlTree>
-    | Promise<boolean | UrlTree>
-    | boolean
-    | UrlTree {
-    return this.authService.getProfile().pipe(
-      map((res) => {
-        if (res.data.me) {
-          this.authService.user.next(res.data.me);
-          return true;
-        } else {
-          if (this.authService.account) {
-            this.authService.logout();
-          } else {
-            firstValueFrom(this.authService.isDoneLoading$).then((loaded) => {
-              if (loaded) {
-                this.router.navigate(['/auth']);
-              }
-            });
-          }
-          return false;
-        }
-      })
-    );
+  async canActivate(): Promise<boolean | UrlTree> {
+    const loaded = await firstValueFrom(this.authService.isDoneLoading$);
+    if (!loaded) {
+      return false;
+    }
+
+    const res = await firstValueFrom(this.authService.getProfile());
+    if (res.data.me) {
+      this.authService.user.next(res.data.me);
+      return true;
+    } else {
+      if (this.authService.account) {
+        this.authService.logout();
+      } else {
+        this.router.navigate(['/auth']);
+      }
+
+      return false;
+    }
   }
 }
