@@ -232,6 +232,8 @@ export class LayoutComponent
       .subscribe((res) => {
         this.breadcrumbs = res;
       });
+    
+    console.log(this.environment);
   }
 
   /**
@@ -321,6 +323,16 @@ export class LayoutComponent
       } else if (!form) {
         this.setLanguage(this.getLanguage());
       }
+    });
+  }
+
+  async onOpenDeployedVersion(): Promise<void> {
+    const { DeployedVersionModalComponent } = await import(
+      '../deployed-version-modal/deployed-version-modal.component'
+    );
+    const dialogRef = this.dialog.open(DeployedVersionModalComponent);
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      console.log(value);
     });
   }
 

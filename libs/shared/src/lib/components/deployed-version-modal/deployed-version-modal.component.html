@@ -1,0 +1,63 @@
+<ui-dialog [closable]="true" [size]="'medium'">
+    <ng-container ngProjectAs="header">
+        <h3 class="font-semibold">Deployed version</h3>
+    </ng-container>
+    <ng-container ngProjectAs="content">
+        <div class="flex flex-col justify-between">
+            <div class="w-1/2 p-4">
+                <div class="flex mb-2">
+                    <div class="w-1/2 font-semibold">Front-end</div>
+                </div>
+                <div class="flex mb-2">
+                    <div class="w-1/2">Version</div>
+                    <ui-button
+                        icon="content_copy"
+                        category="secondary"
+                        variant="primary"
+                        (click)="copyToClipboard('2.x.x')"
+                    >
+                        2.x.x
+                    </ui-button> 
+                </div>
+                <div class="flex mb-2">
+                    <div class="w-1/2">Commit ID</div>
+                    <ui-button
+                        icon="content_copy"
+                        category="secondary"
+                        variant="primary"
+                    >
+                        awegawe
+                    </ui-button> 
+                </div>
+            </div>
+            <div class="w-1/2 p-4">
+                <div class="flex mb-2">
+                    <div class="w-1/2 font-semibold">Back-end</div>
+                </div>
+                <div class="flex mb-2">
+                    <div class="w-1/2">Version</div>
+                    <ui-button
+                        icon="content_copy"
+                        category="secondary"
+                        variant="primary"
+                    >
+                        2.x.x
+                    </ui-button> 
+                </div>
+                <div class="flex mb-2">
+                    <div class="w-1/2">Commit ID</div>
+                    <ui-button
+                        icon="content_copy"
+                        category="secondary"
+                        variant="primary"
+                    >
+                        jnaweawe
+                    </ui-button> 
+                </div>
+            </div>
+        </div>
+    </ng-container>
+    <ng-container ngProjectAs="actions">
+        <ui-button uiDialogClose variant="default">{{ 'common.close' | translate }}</ui-button>
+    </ng-container>
+</ui-dialog>
