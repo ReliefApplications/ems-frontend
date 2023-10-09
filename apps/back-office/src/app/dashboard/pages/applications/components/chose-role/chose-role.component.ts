@@ -62,9 +62,4 @@ export class ChoseRoleComponent implements OnInit {
       role: [null, Validators.required],
     });
   }
-
-  /** Close the modal without sending any data. */
-  onClose(): void {
-    this.dialogRef.close();
-  }
 }
