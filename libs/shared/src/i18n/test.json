@@ -1155,6 +1155,7 @@
 					"metaQueryBuildFailed": "******",
 					"metaQueryFetchFailed": "****** {{error}}",
 					"missingDataset": "******",
+					"noRowsSelected": "******",
 					"queryBuildFailed": "******",
 					"queryFetchFailed": "****** {{error}}",
 					"validationFailed": "****** {{errors}} ******"

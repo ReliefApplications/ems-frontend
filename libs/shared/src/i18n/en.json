@@ -1155,6 +1155,7 @@
 					"metaQueryBuildFailed": "Error building metadata",
 					"metaQueryFetchFailed": "Error fetching metadata: {{error}}",
 					"missingDataset": "Select a dataset in settings",
+					"noRowsSelected": "No rows selected",
 					"queryBuildFailed": "Error building query",
 					"queryFetchFailed": "Error fetching data: {{error}}",
 					"validationFailed": "The following records could not be saved due to validation rules:\n{{errors}}\nPlease edit the record using the 'update' button for more details."

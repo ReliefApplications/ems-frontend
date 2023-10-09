@@ -526,26 +526,37 @@ export class GridWidgetComponent
 
     // Auto modify the selected rows
     if (options.modifySelectedRows) {
-      this.confirmService
-        .openConfirmModal({
-          title: this.translate.instant(
-            'components.widget.settings.chart.grid.buttons.modifySelectedRows.confirmation'
+      if (this.grid.selectedRows.length === 0) {
+        this.snackBar.openSnackBar(
+          this.translate.instant(
+            'components.widget.grid.errors.noRowsSelected'
           ),
-          confirmText: this.translate.instant(
-            'components.confirmModal.confirm'
-          ),
-          confirmVariant: 'primary',
-        })
-        .closed.pipe(takeUntil(this.destroy$))
-        .subscribe(async (confirm: any) => {
-          if (confirm) {
-            await this.promisedRowsModifications(
-              options.modifications,
-              this.grid.selectedRows
-            );
-            this.grid.reloadData();
-          }
-        });
+          { error: true }
+        );
+      } else {
+        if (options.needConfirmation) {
+          this.confirmService
+            .openConfirmModal({
+              title: this.translate.instant(
+                'components.widget.settings.chart.grid.buttons.modifySelectedRows.confirmation'
+              ),
+              confirmText: this.translate.instant(
+                'components.confirmModal.confirm'
+              ),
+              confirmVariant: 'primary',
+            })
+            .closed.pipe(takeUntil(this.destroy$))
+            .subscribe(async (confirm: any) => {
+              if (confirm) {
+                await this.promisedRowsModifications(
+                  options.modifications,
+                  this.grid.selectedRows
+                );
+                this.grid.reloadData();
+              }
+            });
+        }
+      }
 
       // We need this return to avoid the grid to reload and miss selected rows when modal is open
       return;
