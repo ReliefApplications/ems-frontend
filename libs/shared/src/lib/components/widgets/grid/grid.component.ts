@@ -274,6 +274,8 @@ export class GridWidgetComponent
    * @param options action options.
    */
   public async onQuickAction(options: any): Promise<void> {
+    console.log('onQuickAction', options);
+    console.log('this.grid.selectedRows', this.grid.selectedRows);
     // Select all the records in the grid
     if (options.selectAll) {
       const query = this.queryBuilder.graphqlQuery(
@@ -374,16 +376,6 @@ export class GridWidgetComponent
         this.grid.reloadData();
         return;
       }
-    }
-    // Auto modify the selected rows
-    if (options.modifySelectedRows) {
-      //todo: show modal
-      console.log('aaas', options);
-
-      await this.promisedRowsModifications(
-        options.modifications,
-        this.grid.selectedRows
-      );
     }
     const promises: Promise<any>[] = [];
     // Notifies on a channel.
@@ -530,9 +522,36 @@ export class GridWidgetComponent
             }
           });
       }
-    } else {
-      this.grid.reloadData();
     }
+
+    // Auto modify the selected rows
+    if (options.modifySelectedRows) {
+      this.confirmService
+        .openConfirmModal({
+          title: this.translate.instant(
+            'components.widget.settings.chart.grid.buttons.modifySelectedRows.confirmation'
+          ),
+          confirmText: this.translate.instant(
+            'components.confirmModal.confirm'
+          ),
+          confirmVariant: 'primary',
+        })
+        .closed.pipe(takeUntil(this.destroy$))
+        .subscribe(async (confirm: any) => {
+          if (confirm) {
+            await this.promisedRowsModifications(
+              options.modifications,
+              this.grid.selectedRows
+            );
+            this.grid.reloadData();
+          }
+        });
+
+      // We need this return to avoid the grid to reload and miss selected rows when modal is open
+      return;
+    }
+
+    this.grid.reloadData();
   }
 
   /**

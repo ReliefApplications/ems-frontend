@@ -1222,6 +1222,11 @@
 					"categories": "Categories",
 					"color": "Color",
 					"grid": {
+						"buttons": {
+							"modifySelectedRows": {
+								"confirmation": "Are you sure you want to modify the selected rows?"
+							}
+						},
 						"title": "Gridlines",
 						"x": {
 							"display": "Display horizontal gridlines"

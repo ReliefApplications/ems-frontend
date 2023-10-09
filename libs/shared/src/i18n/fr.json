@@ -1238,6 +1238,11 @@
 					"categories": "Catégories",
 					"color": "Couleur",
 					"grid": {
+						"buttons": {
+							"modifySelectedRows": {
+								"confirmation": "Are you sure you want to modify the selected rows?"
+							}
+						},
 						"title": "Grille",
 						"x": {
 							"display": "Afficher les lignes horizontales"

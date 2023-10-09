@@ -1222,6 +1222,11 @@
 					"categories": "******",
 					"color": "******",
 					"grid": {
+						"buttons": {
+							"modifySelectedRows": {
+								"confirmation": "******"
+							}
+						},
 						"title": "******",
 						"x": {
 							"display": "******"

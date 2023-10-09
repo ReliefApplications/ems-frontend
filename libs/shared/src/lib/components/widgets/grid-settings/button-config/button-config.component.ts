@@ -113,6 +113,20 @@ export class ButtonConfigComponent
     }
 
     this.formGroup
+      ?.get('needConfirmation')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.formGroup
+            ?.get('needConfirmation')
+            ?.setValidators(Validators.required);
+        } else {
+          this.formGroup?.get('needConfirmation')?.clearValidators();
+        }
+        this.formGroup?.get('needConfirmation')?.updateValueAndValidity();
+      });
+
+    this.formGroup
       ?.get('prefillForm')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
@@ -169,20 +183,6 @@ export class ButtonConfigComponent
           this.formGroup?.controls.publish.setValue(false);
         }
       });
-
-    // this.formGroup
-    // ?.get('askConfirmation')
-    // ?.valueChanges.pipe(takeUntil(this.destroy$))
-    // .subscribe((value) => {
-    //   if (value) {
-    //     this.formGroup
-    //       ?.get('confirmationText')
-    //       ?.setValidators(Validators.required);
-    //   } else {
-    //     this.formGroup?.get('confirmationText')?.clearValidators();
-    //   }
-    //   this.formGroup?.get('confirmationText')?.updateValueAndValidity();
-    // });
 
     this.formGroup
       ?.get('modifySelectedRows')
