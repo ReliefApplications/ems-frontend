@@ -2118,6 +2118,7 @@
 			"sorting": {
 				"add": "Ajouter un champ",
 				"delete": "Supprimer le champ de tri",
+				"empty": "Aucun champ de tri défini",
 				"field": "Champ",
 				"label": "Étiquette",
 				"management": "Gestion des champs de tri",
