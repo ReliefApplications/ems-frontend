@@ -123,11 +123,4 @@ export class SafeConvertModalComponent
         }
       });
   }
-
-  /**
-   * Closes the modal without sending data.
-   */
-  onClose(): void {
-    this.dialogRef.close();
-  }
 }

@@ -59,9 +59,4 @@ export class SafeMappingModalComponent implements OnInit {
       this.isNew = true;
     }
   }
-
-  /** Close the modal without sending any data. */
-  onClose(): void {
-    this.dialogRef.close();
-  }
 }
