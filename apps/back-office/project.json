@@ -153,7 +153,7 @@
           "baseHref": "/backoffice/",
           "outputHashing": "all",
           "stylePreprocessorOptions": {
-            "includePaths": ["libs/safe/src/lib/style/themes/default"]
+            "includePaths": ["libs/styles/src/lib/themes/default"]
           }
         },
         "azure-dev": {
