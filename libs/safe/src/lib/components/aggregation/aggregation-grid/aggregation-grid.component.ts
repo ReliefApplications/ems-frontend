@@ -236,11 +236,14 @@ export class SafeAggregationGridComponent
             });
           } else {
             this.loadingSettings = false;
+            // this.status = {
+            //   error: !this.loadingSettings,
+            //   message: this.translate.instant(
+            //     'components.widget.grid.errors.metaQueryBuildFailed'
+            //   ),
+            // };
             this.status = {
-              error: !this.loadingSettings,
-              message: this.translate.instant(
-                'components.widget.grid.errors.metaQueryBuildFailed'
-              ),
+              error: false,
             };
           }
         },

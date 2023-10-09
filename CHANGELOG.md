@@ -1,3 +1,10 @@
+## [2.0.11](https://github.com/ReliefApplications/oort-frontend/compare/v2.0.10...v2.0.11) (2023-10-09)
+
+
+### Bug Fixes
+
+* prevent metadata error to appear while building aggregation grid ([20470f9](https://github.com/ReliefApplications/oort-frontend/commit/20470f97cb299cbcd88cab8b9e01c0b8aa169b3d))
+
 ## [2.1.1](https://github.com/ReliefApplications/oort-frontend/compare/v2.1.0...v2.1.1) (2023-10-03)
 
 
