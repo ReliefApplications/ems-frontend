@@ -22,10 +22,9 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
-import { CoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { EditorModule } from '../editor/editor.module';
 import { AggregationOriginSelectComponent } from '../../aggregation/aggregation-origin-select/aggregation-origin-select.component';
-import { TabGeneralEditorSettingsGeneralComponent } from './tab-general/tab-general.component';
+import { DatasourceSelectionTabComponent } from './datasource-selection-tab/datasource-selection-tab.component';
 
 /**
  * Module for the EditorSetting component
@@ -40,7 +39,6 @@ import { TabGeneralEditorSettingsGeneralComponent } from './tab-general/tab-gene
     TinyMceEditorModule,
     TranslateModule,
     DisplaySettingsComponent,
-    CoreGridModule,
     EditorModule,
     GraphQLSelectModule,
     SelectMenuModule,
@@ -54,7 +52,7 @@ import { TabGeneralEditorSettingsGeneralComponent } from './tab-general/tab-gene
     DividerModule,
     ToggleModule,
     AggregationOriginSelectComponent,
-    TabGeneralEditorSettingsGeneralComponent,
+    DatasourceSelectionTabComponent,
   ],
   exports: [EditorSettingsComponent],
   providers: [

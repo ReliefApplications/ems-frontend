@@ -47,6 +47,12 @@ const createEditorForm = (value: any) => {
     aggregation: new FormControl<string>(
       get(value, 'settings.aggregation', null)
     ),
+    aggregationItem: new FormControl<string>(
+      get(value, 'settings.aggregationItem', null)
+    ),
+    aggregationItemIdentifier: new FormControl<string>(
+      get(value, 'settings.aggregationItemIdentifier', null)
+    ),
     layout: new FormControl<string>(get(value, 'settings.layout', null)),
     record: new FormControl<string>(get(value, 'settings.record', null)),
     showDataSourceLink: new FormControl<boolean>(
@@ -209,6 +215,7 @@ export class EditorSettingsComponent
           if (aggregationID) {
             this.selectedAggregation =
               res.data?.resource.aggregations?.edges[0]?.node || null;
+            console.log(this.selectedAggregation);
           }
           this.updateFields();
         }

@@ -1366,7 +1366,7 @@
 					"confirmationMessage": "Vos changements vont être perdus si vous fermez la fenêtre d'édition. Voulez-vous continuer ?"
 				},
 				"editor": {
-					"recordSelection": "Sélection d'enregistrement",
+					"datasourceSelection": "Sélection de la source de données",
 					"title": "Éditeur"
 				},
 				"grid": {
@@ -1928,6 +1928,10 @@
 		}
 	},
 	"models": {
+		"aggregationItem": {
+			"itemIdentifier": "Sélectionnez un identifiant de champ unique",
+			"select": "Sélectionnez un élément d'agrégation"
+		},
 		"apiConfiguration": {
 			"authType": "Type d'authentification",
 			"new": "Nouvelle configuration d'API",

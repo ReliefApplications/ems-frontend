@@ -1,0 +1,210 @@
+<div [formGroup]="tileForm">
+  <div class="w-full flex flex-col">
+    <!-- Set aggregation origin and select aggregation template-->
+    <shared-aggregation-origin-select
+      [selectedResource]="selectedResource"
+      [resourcesQueryValue]="getResources"
+      [selectedReferenceData]="selectedReferenceData"
+      [referenceDatasQueryValue]="getReferenceDatas"
+    ></shared-aggregation-origin-select>
+
+    <!-- SELECT AGGREGATION OR LAYOUT -->
+    <div
+      class="flex flex-col mt-8 gap-8"
+      *ngIf="tileForm.get('resource')?.value"
+    >
+      <div *ngIf="!selectedAggregation">
+        <h2>{{ 'common.layout.one' | translate }}</h2>
+      </div>
+      <ng-container *ngIf="!selectedLayout && !selectedAggregation">
+        <div class="flex justify-center mt-4">
+          <ui-button
+            category="tertiary"
+            variant="primary"
+            (click)="addLayout()"
+            >{{
+              'components.widget.settings.grid.layouts.add.title' | translate
+            }}</ui-button
+          >
+        </div>
+      </ng-container>
+      <ui-divider
+        *ngIf="!selectedAggregation && !selectedLayout"
+        [text]="'common.or' | translate"
+      ></ui-divider>
+    </div>
+
+    <div
+      class="flex flex-col mt-8 gap-8"
+      *ngIf="
+        tileForm.get('resource')?.value || tileForm.get('referenceData')?.value
+      "
+    >
+      <div *ngIf="!selectedLayout">
+        <h2>{{ 'common.aggregation.one' | translate }}</h2>
+      </div>
+      <ng-container *ngIf="!selectedLayout && !selectedAggregation">
+        <div class="flex justify-center mt-4">
+          <ui-button
+            category="tertiary"
+            variant="primary"
+            (click)="addAggregation()"
+            >{{ 'components.aggregation.add.title' | translate }}</ui-button
+          >
+        </div>
+      </ng-container>
+    </div>
+
+    <!-- FROM LAYOUTS -->
+    <ng-container *ngIf="selectedLayout && tileForm.get('resource')?.value">
+      <div uiFormFieldDirective>
+        <label>{{ 'common.layout.one' | translate }}</label>
+        <ui-select-menu [disabled]="true" [value]="selectedLayout.name">
+          <ui-select-option [value]="selectedLayout.name">{{
+            selectedLayout.name
+          }}</ui-select-option>
+        </ui-select-menu>
+        <ui-button
+          uiSuffix
+          variant="primary"
+          [isIcon]="true"
+          icon="edit"
+          (click)="editLayout()"
+          [uiTooltip]="'common.edit' | translate"
+        ></ui-button>
+        <ui-button
+          uiSuffix
+          variant="danger"
+          [isIcon]="true"
+          icon="close"
+          (click)="
+            tileForm.get('layout')?.setValue(null); layoutChange.emit(null)
+          "
+          [uiTooltip]="'common.delete' | translate"
+        ></ui-button>
+      </div>
+      <h2>
+        {{
+          'components.widget.settings.summaryCard.card.dataSource.layoutStyles.title'
+            | translate
+        }}
+      </h2>
+      <ui-checkbox formControlName="useStyles">
+        <ng-container ngProjectAs="label">
+          {{
+            'components.widget.settings.summaryCard.card.dataSource.layoutStyles.use'
+              | translate
+          }}
+        </ng-container>
+      </ui-checkbox>
+      <div *ngIf="this.tileForm.value.card?.useStyles">
+        <p>
+          {{
+            'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.title'
+              | translate
+          }}
+        </p>
+        <div
+          uiRadioGroupDirective="applyStyles"
+          formControlName="wholeCardStyles"
+        >
+          <ui-radio [value]="false">
+            <ng-container ngProjectAs="label">
+              {{
+                'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option1'
+                  | translate
+              }}
+            </ng-container>
+          </ui-radio>
+          <ui-radio [value]="true">
+            <ng-container ngProjectAs="label">
+              {{
+                'components.widget.settings.summaryCard.card.dataSource.layoutStyles.wholeRow.option2'
+                  | translate
+              }}
+            </ng-container>
+          </ui-radio>
+        </div>
+      </div>
+    </ng-container>
+    <!-- FROM AGGREGATIONS -->
+    <ng-container
+      *ngIf="
+        selectedAggregation &&
+        (tileForm.get('resource')?.value ||
+          tileForm.get('referenceData')?.value)
+      "
+    >
+      <div uiFormFieldDirective>
+        <label>{{ 'common.aggregation.one' | translate }}</label>
+        <ui-select-menu [disabled]="true" [value]="selectedAggregation.id">
+          <ui-select-option [value]="selectedAggregation.id">{{
+            selectedAggregation.name
+          }}</ui-select-option>
+        </ui-select-menu>
+        <ui-button
+          uiSuffix
+          variant="primary"
+          [isIcon]="true"
+          icon="edit"
+          (click)="editAggregation()"
+          [uiTooltip]="'common.edit' | translate"
+        ></ui-button>
+        <ui-button
+          uiSuffix
+          variant="danger"
+          [isIcon]="true"
+          icon="close"
+          (click)="
+            tileForm.get('aggregation')?.setValue(null);
+            aggregationChange.emit(null)
+          "
+          [uiTooltip]="'common.delete' | translate"
+        ></ui-button>
+      </div>
+    </ng-container>
+
+    <ng-container *ngIf="selectedLayout || selectedAggregation">
+      <div class="flex flex-col mt-2">
+        <h2>
+          {{
+            (selectedLayout
+              ? 'models.record.select'
+              : 'models.aggregationItem.select'
+            ) | translate
+          }}
+        </h2>
+        <ng-container *ngIf="selectedAggregation">
+          <div uiFormFieldDirective>
+            <label>{{
+              'models.aggregationItem.itemIdentifier' | translate
+            }}</label>
+            <ui-select-menu [formControlName]="'aggregationItemIdentifier'">
+              <ng-container
+                *ngFor="let field of selectedAggregation.sourceFields"
+              >
+                <ui-select-option [value]="field">{{ field }}</ui-select-option>
+              </ng-container>
+            </ui-select-menu>
+          </div>
+        </ng-container>
+        <shared-core-grid
+          class="h-96"
+          [settings]="selectedLayout ?? selectedAggregation"
+          [multiSelect]="false"
+          [selectable]="true"
+          [showExport]="false"
+          [selectedRows]="
+            selectedLayout && tileForm.get('record')?.value
+              ? [tileForm.get('record')?.value]
+              : selectedAggregation && tileForm.get('aggregationItem')?.value
+              ? [tileForm.get('aggregationItem')?.value]
+              : []
+          "
+          (selectionChange)="onSelectionChange($event)"
+        >
+        </shared-core-grid>
+      </div>
+    </ng-container>
+  </div>
+</div>

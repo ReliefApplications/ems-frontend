@@ -1350,7 +1350,7 @@
 					"confirmationMessage": "Some changes will be lost when closing edition. Do you want to continue?"
 				},
 				"editor": {
-					"recordSelection": "Record selection",
+					"datasourceSelection": "Datasource selection",
 					"title": "Editor"
 				},
 				"grid": {
@@ -1912,6 +1912,10 @@
 		}
 	},
 	"models": {
+		"aggregationItem": {
+			"itemIdentifier": "Select unique field identifier",
+			"select": "Select an aggregation item"
+		},
 		"apiConfiguration": {
 			"authType": "Authentication type",
 			"new": "New API Configuration",

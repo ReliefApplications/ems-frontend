@@ -10,7 +10,6 @@ import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { LayoutModule } from '@progress/kendo-angular-layout';
-import { SummaryCardItemModule } from '../../summary-card/summary-card-item/summary-card-item.module';
 import { Aggregation } from '../../../../models/aggregation.model';
 import { Resource } from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
@@ -34,13 +33,14 @@ import { Dialog } from '@angular/cdk/dialog';
 import { GET_REFERENCE_DATAS, GET_RESOURCES } from '../graphql/queries';
 import { ReferenceData } from '../../../../models/reference-data.model';
 import { AggregationOriginSelectComponent } from '../../../aggregation/aggregation-origin-select/aggregation-origin-select.component';
+import { CoreGridModule } from '../../../ui/core-grid/core-grid.module';
 
 /** Define max width of summary card */
 const MAX_COL_SPAN = 8;
 
 /** Component for the general summary cards tab */
 @Component({
-  selector: 'shared-tab-general-editor-settings',
+  selector: 'shared-datasource-selection-tab',
   standalone: true,
   imports: [
     CommonModule,
@@ -49,8 +49,8 @@ const MAX_COL_SPAN = 8;
     TranslateModule,
     LayoutModule,
     ButtonModule,
+    CoreGridModule,
     IconModule,
-    SummaryCardItemModule,
     DividerModule,
     FormWrapperModule,
     SelectMenuModule,
@@ -60,10 +60,10 @@ const MAX_COL_SPAN = 8;
     TooltipModule,
     AggregationOriginSelectComponent,
   ],
-  templateUrl: './tab-general.component.html',
-  styleUrls: ['./tab-general.component.scss'],
+  templateUrl: './datasource-selection-tab.component.html',
+  styleUrls: ['./datasource-selection-tab.component.scss'],
 })
-export class TabGeneralEditorSettingsGeneralComponent
+export class DatasourceSelectionTabComponent
   extends UnsubscribeComponent
   implements OnInit
 {
@@ -243,5 +243,34 @@ export class TabGeneralEditorSettingsGeneralComponent
           });
       }
     });
+  }
+
+  /**
+   * Updates the selected record when the selected row is changed.
+   *
+   * @param event selection event
+   */
+  onSelectionChange(event: any) {
+    if (event.selectedRows.length > 0) {
+      if (this.selectedLayout) {
+        this.tileForm
+          .get('record')
+          ?.setValue(event.selectedRows[0].dataItem.id);
+      } else if (this.selectedAggregation) {
+        this.tileForm
+          .get('aggregationItem')
+          ?.setValue(
+            event.selectedRows[0].dataItem[
+              this.tileForm.get('aggregationItemIdentifier').value
+            ]
+          );
+      }
+    } else {
+      if (this.selectedLayout) {
+        this.tileForm.get('record')?.setValue(null);
+      } else if (this.selectedAggregation) {
+        this.tileForm.get('aggregationItem')?.setValue(null);
+      }
+    }
   }
 }

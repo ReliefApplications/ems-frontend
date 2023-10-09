@@ -4,28 +4,6 @@
     <ui-tab>
       <ng-container ngProjectAs="label">
         <ui-icon
-          icon="preview"
-          [size]="24"
-          uiTooltip="{{ 'common.general' | translate }}"
-        ></ui-icon>
-        <span>{{ 'common.general' | translate }}</span>
-      </ng-container>
-      <ng-template uiTabContent>
-        <shared-tab-general-editor-settings
-          [tileForm]="tileForm"
-          [selectedResource]="selectedResource"
-          [selectedReferenceData]="selectedReferenceData"
-          [selectedLayout]="selectedLayout"
-          [selectedAggregation]="selectedAggregation"
-          (layoutChange)="handleLayoutChange($event)"
-          (aggregationChange)="handleAggregationChange($event)"
-        ></shared-tab-general-editor-settings>
-      </ng-template>
-    </ui-tab>
-    <!-- Main Parameters -->
-    <ui-tab>
-      <ng-container ngProjectAs="label">
-        <ui-icon
           icon="format_color_text"
           [size]="24"
           [uiTooltip]="'components.widget.settings.editor.title' | translate"
@@ -34,6 +12,12 @@
       </ng-container>
       <ng-template uiTabContent>
         <form [formGroup]="tileForm">
+          <div class="flex flex-col">
+            <div uiFormFieldDirective>
+              <label>{{ 'common.title' | translate }}</label>
+              <input formControlName="title" type="string" />
+            </div>
+          </div>
           <editor [init]="editor" formControlName="text"></editor>
         </form>
       </ng-template>
@@ -54,6 +38,34 @@
           [settings]="tile.settings"
         >
         </shared-editor>
+      </ng-template>
+    </ui-tab>
+    <!-- Resource/Reference data and record/aggregation item selection  -->
+    <ui-tab>
+      <ng-container ngProjectAs="label">
+        <ui-icon
+          icon="settings"
+          [size]="24"
+          [uiTooltip]="
+            'components.widget.settings.editor.datasourceSelection' | translate
+          "
+        ></ui-icon>
+        <span>{{
+          'components.widget.settings.editor.datasourceSelection' | translate
+        }}</span>
+      </ng-container>
+      <ng-template uiTabContent>
+        <ng-container *ngIf="tileForm">
+          <shared-datasource-selection-tab
+            [tileForm]="tileForm"
+            [selectedResource]="selectedResource"
+            [selectedReferenceData]="selectedReferenceData"
+            [selectedLayout]="selectedLayout"
+            [selectedAggregation]="selectedAggregation"
+            (layoutChange)="handleLayoutChange($event)"
+            (aggregationChange)="handleAggregationChange($event)"
+          ></shared-datasource-selection-tab>
+        </ng-container>
       </ng-template>
     </ui-tab>
     <!-- Widget display options -->
