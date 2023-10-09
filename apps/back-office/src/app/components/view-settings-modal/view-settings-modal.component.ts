@@ -16,7 +16,7 @@ import {
 } from '@oort-front/ui';
 import { OverlayModule } from '@angular/cdk/overlay';
 import { TranslateModule } from '@ngx-translate/core';
-import { PageIconComponent } from '../page-icon/page-icon.component';
+import { ViewIconSelectorComponent } from '../view-icon-selector/view-icon-selector.component';
 import {
   AccessModule,
   ApplicationService,
@@ -49,7 +49,7 @@ interface DialogData {
  * Available settings: icon, access, visibility and duplicate page.
  */
 @Component({
-  selector: 'app-page-settings',
+  selector: 'app-view-settings',
   standalone: true,
   imports: [
     CommonModule,
@@ -63,17 +63,17 @@ interface DialogData {
     SelectMenuModule,
     FormWrapperModule,
     TranslateModule,
-    PageIconComponent,
+    ViewIconSelectorComponent,
     AccessModule,
     ToggleModule,
     OverlayModule,
     SearchMenuModule,
     AlertModule,
   ],
-  templateUrl: './page-settings.component.html',
-  styleUrls: ['./page-settings.component.scss'],
+  templateUrl: './view-settings-modal.component.html',
+  styleUrls: ['./view-settings-modal.component.scss'],
 })
-export class PageSettingsComponent
+export class ViewSettingsModalComponent
   extends UnsubscribeComponent
   implements OnInit
 {
@@ -101,7 +101,7 @@ export class PageSettingsComponent
    * @param authService Shared authentication service
    */
   constructor(
-    public dialogRef: DialogRef<PageSettingsComponent>,
+    public dialogRef: DialogRef<ViewSettingsModalComponent>,
     @Inject(DIALOG_DATA) public data: DialogData,
     private fb: FormBuilder,
     private workflowService: WorkflowService,

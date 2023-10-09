@@ -251,10 +251,10 @@ export class FormComponent extends UnsubscribeComponent implements OnInit {
    * Open settings modal.
    */
   public async onOpenSettings(): Promise<void> {
-    const { PageSettingsComponent } = await import(
-      '../../../components/page-settings/page-settings.component'
+    const { ViewSettingsModalComponent } = await import(
+      '../../../components/view-settings-modal/view-settings-modal.component'
     );
-    const dialogRef = this.dialog.open(PageSettingsComponent, {
+    const dialogRef = this.dialog.open(ViewSettingsModalComponent, {
       data: {
         type: this.isStep ? 'step' : 'page',
         applicationId: this.applicationId,

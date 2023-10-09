@@ -1,15 +1,18 @@
 <ui-dialog [closable]="true" [size]="'medium'">
-    <ng-container ngProjectAs="header">
-      <div class="flex flex-row gap-2">
-        <h1>{{ 'common.settings' | translate }}</h1>
-        <ui-icon
-          icon="info"
-          [size]="18"
-          variant="grey"
-          [uiTooltip]="'components.application.pages.settings.settingsTooltip' | translate"
-        ></ui-icon>
-      </div>
-      </ng-container>
+  <ng-container ngProjectAs="header">
+    <div class="flex flex-row gap-2">
+      <h3>{{ 'common.settings' | translate }}</h3>
+      <ui-icon
+        class="cursor-help"
+        icon="info_outline"
+        [size]="18"
+        variant="grey"
+        [uiTooltip]="
+          'components.application.pages.settings.tooltip.autoSave' | translate
+        "
+      ></ui-icon>
+    </div>
+  </ng-container>
   <ng-container ngProjectAs="content">
     <form [formGroup]="settingsForm">
       <ui-tabs [vertical]="true">
@@ -26,51 +29,52 @@
           <!-- Tab content -->
           <div class="flex gap-4 flex-col" *ngIf="this.settingsForm">
             <!-- Page / step icon -->
-            <app-page-icon
+            <app-view-icon-selector
               [iconControl]="this.settingsForm.controls.icon"
               [ngClass]="{
                 '-mb-4': data.type === 'page'
               }"
-            ></app-page-icon>
+            ></app-view-icon-selector>
             <!-- Features available only for pages -->
             <ng-container *ngIf="data.type === 'page'">
-              <!-- Duplicate page  -->
-              <ui-button
-                class="!w-auto"
-                variant="default"
-                icon="file_copy"
-                [isBlock]="true"
-                (click)="onAppSelection()"
-                cdkOverlayOrigin
-                #appMenuTrigger="cdkOverlayOrigin"
-              >
-                {{ 'common.duplicate' | translate }}
-              </ui-button>
-              <ng-template #searchMenuHeaderTemplate>
-                <ui-alert [closable]="true">
-                  {{ 'models.page.tooltip.duplicate' | translate }}
-                </ui-alert>
-              </ng-template>
-              <ng-template
-                cdkConnectedOverlay
-                [cdkConnectedOverlayOrigin]="appMenuTrigger"
-                [cdkConnectedOverlayOpen]="showDuplicateMenu"
-              >
-                <shared-search-menu
-                  [headerTemplate]="searchMenuHeaderTemplate"
-                  [currentApplicationId]="data.applicationId"
-                  [applications]="applications"
-                  (close)="showDuplicateMenu = false"
-                  (open)="onDuplicate($event)"
-                ></shared-search-menu>
-              </ng-template>
-
               <!-- Visibility -->
               <ui-toggle formControlName="visible" class="mb-2">
                 <ng-container ngProjectAs="label">
                   {{ 'components.application.pages.show' | translate }}
                 </ng-container>
               </ui-toggle>
+              <div>
+                <h4>{{ 'components.application.pages.settings.actions' | translate }}</h4>
+                <!-- Duplicate page  -->
+                <ui-button
+                  variant="primary"
+                  category="tertiary"
+                  icon="file_copy"
+                  (click)="onAppSelection()"
+                  cdkOverlayOrigin
+                  #appMenuTrigger="cdkOverlayOrigin"
+                >
+                  {{ 'common.duplicate' | translate }}
+                </ui-button>
+                <ng-template #searchMenuHeaderTemplate>
+                  <ui-alert [closable]="true">
+                    {{ 'models.page.tooltip.duplicate' | translate }}
+                  </ui-alert>
+                </ng-template>
+                <ng-template
+                  cdkConnectedOverlay
+                  [cdkConnectedOverlayOrigin]="appMenuTrigger"
+                  [cdkConnectedOverlayOpen]="showDuplicateMenu"
+                >
+                  <shared-search-menu
+                    [headerTemplate]="searchMenuHeaderTemplate"
+                    [currentApplicationId]="data.applicationId"
+                    [applications]="applications"
+                    (close)="showDuplicateMenu = false"
+                    (open)="onDuplicate($event)"
+                  ></shared-search-menu>
+                </ng-template>
+              </div>
             </ng-container>
           </div>
         </ui-tab>

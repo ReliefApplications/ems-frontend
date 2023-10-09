@@ -539,8 +539,11 @@
 					"singular": "******"
 				},
 				"settings": {
+					"actions": "******",
 					"selectIcon": "******",
-					"settingsTooltip": "******"
+					"tooltip": {
+						"autoSave": "******"
+					}
 				},
 				"show": "******"
 			},

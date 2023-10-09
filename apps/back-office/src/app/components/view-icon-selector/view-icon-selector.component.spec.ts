@@ -1,17 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PageIconComponent } from './page-icon.component';
+import { ViewIconSelectorComponent } from './view-icon-selector.component';
 
 describe('PageIconComponent', () => {
-  let component: PageIconComponent;
-  let fixture: ComponentFixture<PageIconComponent>;
+  let component: ViewIconSelectorComponent;
+  let fixture: ComponentFixture<ViewIconSelectorComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PageIconComponent],
+      imports: [ViewIconSelectorComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(PageIconComponent);
+    fixture = TestBed.createComponent(ViewIconSelectorComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

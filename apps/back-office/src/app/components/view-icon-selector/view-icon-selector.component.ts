@@ -10,7 +10,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
  * Use shared icon picker.
  */
 @Component({
-  selector: 'app-page-icon',
+  selector: 'app-view-icon-selector',
   standalone: true,
   imports: [
     CommonModule,
@@ -19,10 +19,10 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
     ReactiveFormsModule,
     FormWrapperModule,
   ],
-  templateUrl: './page-icon.component.html',
-  styleUrls: ['./page-icon.component.scss'],
+  templateUrl: './view-icon-selector.component.html',
+  styleUrls: ['./view-icon-selector.component.scss'],
 })
-export class PageIconComponent {
+export class ViewIconSelectorComponent {
   /** Icon name form control */
   @Input() iconControl!: FormControl;
 }

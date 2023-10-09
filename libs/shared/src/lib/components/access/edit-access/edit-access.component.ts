@@ -58,7 +58,7 @@ export class EditAccessComponent
     @Inject(DIALOG_DATA) public data: AccessData
   ) {
     super();
-    // If dialog opened from the PageSettingsComponent modal
+    // If dialog opened from the View settings modal modal
     if (this.data.accessData) {
       this.contentType = this.data.accessData.objectTypeName;
       this.applicationId = this.data.accessData.application;

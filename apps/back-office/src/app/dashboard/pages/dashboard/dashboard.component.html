@@ -28,6 +28,7 @@
           </shared-editable-text>
           <!-- Settings -->
           <ui-button
+            *ngIf="!formActive"
             variant="grey"
             (click)="onOpenSettings()"
             [isIcon]="true"

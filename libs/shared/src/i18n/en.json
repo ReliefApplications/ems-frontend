@@ -539,8 +539,11 @@
 					"singular": "The page was successfully reordered."
 				},
 				"settings": {
+					"actions": "Actions",
 					"selectIcon": "Select an icon",
-					"settingsTooltip": "Changes are automatically saved"
+					"tooltip": {
+						"autoSave": "Changes are automatically saved"
+					}
 				},
 				"show": "Make page visible in nav bar for end-users"
 			},
