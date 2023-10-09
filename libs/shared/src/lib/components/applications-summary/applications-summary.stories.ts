@@ -63,6 +63,9 @@ export const Default: Story = {
   }),
 };
 
+/**
+ * Loading state
+ */
 export const Loading: Story = {
   render: () => ({
     props: {

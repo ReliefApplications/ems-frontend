@@ -6,9 +6,10 @@ import { StorybookTranslateModule } from '../../../storybook-translate/storybook
 
 export default {
   component: ApplicationSummaryComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
-      imports: [ApplicationsSummaryModule, StorybookTranslateModule],
+      imports: [ApplicationsSummaryModule, StorybookTranslateModule], // fix it
       providers: [],
     }),
   ],
