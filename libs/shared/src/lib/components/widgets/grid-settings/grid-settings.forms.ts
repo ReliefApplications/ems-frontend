@@ -130,23 +130,7 @@ export const createGridWidgetFormGroup = (id: string, configuration: any) => {
     template: [get(configuration, 'template', null)],
     layouts: [get(configuration, 'layouts', []), Validators.required],
     aggregations: [get(configuration, 'aggregations', []), Validators.required],
-    actions: fb.group({
-      delete: [get(configuration, 'actions.delete', true)],
-      history: [get(configuration, 'actions.history', true)],
-      convert: [get(configuration, 'actions.convert', true)],
-      update: [get(configuration, 'actions.update', true)],
-      inlineEdition: [get(configuration, 'actions.inlineEdition', true)],
-      addRecord: [get(configuration, 'actions.addRecord', false)],
-      export: [get(configuration, 'actions.export', true)],
-      showDetails: [get(configuration, 'actions.showDetails', true)],
-      navigateToPage: [get(configuration, 'actions.navigateToPage', false)],
-      navigateSettings: fb.group({
-        pageUrl: [get(configuration, 'actions.navigateSettings.pageUrl', '')],
-        useRecordId: [
-          get(configuration, 'actions.navigateSettings.useRecordId', false),
-        ],
-      }),
-    }),
+    actions: createGridActionsFormGroup(configuration),
     floatingButtons: fb.array(
       configuration.floatingButtons && configuration.floatingButtons.length
         ? configuration.floatingButtons.map((x: any) =>
@@ -161,4 +145,30 @@ export const createGridWidgetFormGroup = (id: string, configuration: any) => {
     at: get(configuration, 'at', ''),
   });
   return formGroup;
+};
+
+/**
+ * Creates a form group for the grid settings with the given grid actions configuration
+ *
+ * @param configuration configuration to build up the grid actions form group
+ * @returns form group with the given grid actions configuration
+ */
+export const createGridActionsFormGroup = (configuration: any) => {
+  return fb.group({
+    delete: [get(configuration, 'actions.delete', true)],
+    history: [get(configuration, 'actions.history', true)],
+    convert: [get(configuration, 'actions.convert', true)],
+    update: [get(configuration, 'actions.update', true)],
+    inlineEdition: [get(configuration, 'actions.inlineEdition', true)],
+    addRecord: [get(configuration, 'actions.addRecord', false)],
+    export: [get(configuration, 'actions.export', true)],
+    showDetails: [get(configuration, 'actions.showDetails', true)],
+    navigateToPage: [get(configuration, 'actions.navigateToPage', false)],
+    navigateSettings: fb.group({
+      pageUrl: [get(configuration, 'actions.navigateSettings.pageUrl', '')],
+      useRecordId: [
+        get(configuration, 'actions.navigateSettings.useRecordId', false),
+      ],
+    }),
+  });
 };

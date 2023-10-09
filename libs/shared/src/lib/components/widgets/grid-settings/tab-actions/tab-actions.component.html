@@ -5,7 +5,10 @@
     </h2>
     <div class="flex flex-col gap-2 pb-0.5">
       <div class="flex flex-col gap-2 mb-2">
-        <ui-toggle *ngFor="let action of actions" [formControlName]="action.name">
+        <ui-toggle
+          *ngFor="let action of actions"
+          [formControlName]="action.name"
+        >
           <ng-container ngProjectAs="label">
             {{ action.text | translate
             }}<ui-icon
@@ -20,34 +23,53 @@
         </ui-toggle>
       </div>
       <!-- Redirect to specific page action details -->
-      <div *ngIf="showSelectPage" formGroupName="navigateSettings" class="flex flex-col ml-8 gap-1">
-          <div uiFormFieldDirective [defaultMargin]="false" class="w-80">
-            <label>
-              {{ 'components.widget.settings.grid.actions.pageUrl.label' | translate }}
-            </label>
-            <ui-select-menu
-              formControlName="pageUrl"
-              [placeholder]="'components.widget.settings.grid.actions.pageUrl.placeholder' | translate"
+      <div
+        *ngIf="showSelectPage"
+        formGroupName="navigateSettings"
+        class="flex flex-col ml-[55px] gap-1"
+      >
+        <div uiFormFieldDirective [defaultMargin]="false" class="w-80">
+          <label>
+            {{
+              'components.widget.settings.grid.actions.pageUrl.label'
+                | translate
+            }}
+          </label>
+          <ui-select-menu
+            formControlName="pageUrl"
+            [placeholder]="
+              'components.widget.settings.grid.actions.pageUrl.placeholder'
+                | translate
+            "
+          >
+            <ui-select-option
+              *ngFor="let page of pages"
+              [value]="page.urlParams"
             >
-              <ui-select-option *ngFor="let page of pages" [value]="page.urlParams">
-                {{ page.name }}
-              </ui-select-option>
-            </ui-select-menu>
-          </div>
-          <div>
-            <ui-checkbox formControlName="useRecordId">
-              <ng-container ngProjectAs="label">
-                {{ 'components.widget.settings.grid.actions.useRecordId' | translate }}
-              </ng-container>
-            </ui-checkbox>
-            <ui-icon
-              class="ml-2"
-              variant="grey"
-              icon="info_outline"
-              [size]="18"
-              [uiTooltip]="'components.widget.settings.grid.actions.useRecordIdTooltip' | translate"
-            ></ui-icon>
-          </div>
+              {{ page.name }}
+            </ui-select-option>
+          </ui-select-menu>
+        </div>
+        <div>
+          <ui-checkbox formControlName="useRecordId">
+            <ng-container ngProjectAs="label">
+              {{
+                'components.widget.settings.grid.actions.useRecordId'
+                  | translate
+              }}
+            </ng-container>
+          </ui-checkbox>
+          <ui-icon
+            class="ml-2"
+            variant="grey"
+            icon="info_outline"
+            [size]="18"
+            [uiTooltip]="
+              'components.widget.settings.grid.actions.useRecordIdTooltip'
+                | translate
+            "
+          ></ui-icon>
+        </div>
       </div>
     </div>
   </div>

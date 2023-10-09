@@ -26,6 +26,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { GET_RESOURCE } from './graphql/queries';
 import { takeUntil } from 'rxjs';
+import { createGridActionsFormGroup } from '../grid-settings/grid-settings.forms';
 
 // todo: put in common
 /** Default context filter value. */
@@ -33,9 +34,6 @@ const DEFAULT_CONTEXT_FILTER = `{
   "logic": "and",
   "filters": []
 }`;
-
-/** Creating a new instance of the FormBuilder class. */
-const fb = new FormBuilder();
 
 /**
  * Create a card form
@@ -77,23 +75,7 @@ const createSummaryCardForm = (def: any) => {
     contextFilters: new FormControl(
       get(settings, 'contextFilters', DEFAULT_CONTEXT_FILTER)
     ),
-    actions: fb.group({
-      delete: [get(settings, 'actions.delete', true)],
-      history: [get(settings, 'actions.history', true)],
-      convert: [get(settings, 'actions.convert', true)],
-      update: [get(settings, 'actions.update', true)],
-      inlineEdition: [get(settings, 'actions.inlineEdition', true)],
-      addRecord: [get(settings, 'actions.addRecord', false)],
-      export: [get(settings, 'actions.export', true)],
-      showDetails: [get(settings, 'actions.showDetails', true)],
-      navigateToPage: [get(settings, 'actions.navigateToPage', false)],
-      navigateSettings: fb.group({
-        pageUrl: [get(settings, 'actions.navigateSettings.pageUrl', '')],
-        useRecordId: [
-          get(settings, 'actions.navigateSettings.useRecordId', false),
-        ],
-      }),
-    }),
+    actions: createGridActionsFormGroup(settings),
     at: new FormControl(get(settings, 'at', '')),
   });
 

@@ -5,9 +5,11 @@ import {
   Inject,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   Renderer2,
+  SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import {
@@ -82,7 +84,7 @@ const matches = (el: any, selector: any) =>
 })
 export class GridComponent
   extends UnsubscribeComponent
-  implements OnInit, AfterViewInit, OnChanges
+  implements OnInit, OnDestroy, AfterViewInit, OnChanges
 {
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
 
@@ -211,8 +213,11 @@ export class GridComponent
   // === SNACKBAR ===
   private snackBarRef!: any;
 
-  /** Page change timeout listener */
-  private pageChangeTimeoutListener!: NodeJS.Timeout;
+  /** Page change property if location state is present */
+  private locationPageChange!: PageChangeEvent | null;
+
+  /** Timeout listeners */
+  private columnChangeTimeoutListener!: NodeJS.Timeout;
 
   /**
    * Constructor of the grid component
@@ -249,7 +254,11 @@ export class GridComponent
     this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
     // this way we can wait for 2s before sending an update
     this.search.valueChanges
-      .pipe(debounceTime(2000), distinctUntilChanged())
+      .pipe(
+        debounceTime(2000),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$)
+      )
       .subscribe((value) => {
         this.searchChange.emit(value);
       });
@@ -260,7 +269,7 @@ export class GridComponent
     // verify if has location state, if has this means that we are come back from another url
     const state: any = this.location.getState();
     if (state.skip && state.take) {
-      const page: PageChangeEvent = {
+      this.locationPageChange = {
         skip: state.skip,
         take: state.take,
       };
@@ -268,26 +277,34 @@ export class GridComponent
       this.location.replaceState(this.location.path(), undefined, {
         navigationId: state.navigationId,
       });
-      if (this.pageChangeTimeoutListener) {
-        clearTimeout(this.pageChangeTimeoutListener);
-      }
-      this.pageChangeTimeoutListener = setTimeout(() => {
-        // paginate to the right page
-        this.onPageChange(page);
-      }, 1500);
     }
   }
 
-  ngOnChanges(): void {
+  ngOnChanges(changes: SimpleChanges): void {
     this.statusMessage = this.getStatusMessage();
+    // If there is a page change set from location, we trigger page change after the data is loaded
+    if (
+      this.locationPageChange &&
+      'loadingRecords' in changes &&
+      !changes['loadingRecords'].currentValue
+    ) {
+      this.onPageChange(this.locationPageChange);
+      this.locationPageChange = null;
+    }
   }
 
   ngAfterViewInit(): void {
     this.setSelectedItems();
     // Wait for columns to be reordered before updating the layout
-    this.grid?.columnReorder.subscribe(() =>
-      setTimeout(() => this.columnChange.emit(), 500)
-    );
+    this.grid?.columnReorder.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      if (this.columnChangeTimeoutListener) {
+        clearTimeout(this.columnChangeTimeoutListener);
+      }
+      this.columnChangeTimeoutListener = setTimeout(
+        () => this.columnChange.emit(),
+        500
+      );
+    });
   }
 
   // === DATA ===
@@ -905,18 +922,22 @@ export class GridComponent
         `components.widget.grid.errors.invalid.${this.environment}`
       );
     }
-    if (this.loadingSettings)
+    if (this.loadingSettings) {
       return this.translate.instant('components.widget.grid.loading.settings');
-    if (this.blank && this.environment === 'backoffice')
+    }
+    if (this.blank && this.environment === 'backoffice') {
       return this.translate.instant(
         'components.widget.grid.errors.missingDataset'
       );
-    if (this.blank && this.environment === 'frontoffice')
+    }
+    if (this.blank && this.environment === 'frontoffice') {
       return this.translate.instant(
         'components.widget.grid.errors.invalid.frontoffice'
       );
-    if (this.loadingRecords)
+    }
+    if (this.loadingRecords) {
       return this.translate.instant('components.widget.grid.loading.records');
+    }
     return this.translate.instant('kendo.grid.noRecords');
   }
 
@@ -932,5 +953,12 @@ export class GridComponent
       item: dataItem,
       field,
     });
+  }
+
+  override ngOnDestroy(): void {
+    super.ngOnDestroy();
+    if (this.columnChangeTimeoutListener) {
+      clearTimeout(this.columnChangeTimeoutListener);
+    }
   }
 }
