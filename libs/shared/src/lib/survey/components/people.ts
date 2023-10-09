@@ -1,10 +1,9 @@
-import { Apollo } from 'apollo-angular';
 import { ComponentCollection, Serializer, SvgRegistry } from 'survey-core';
-import { GET_PEOPLE } from '../graphql/queries';
 import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
-import { PeopleQueryResponse } from '../../models/people.model';
-
+import { PeopleQueryResponse, Person } from '../../models/people.model';
+import { RestService } from '../../services/rest/rest.service';
+import { GET_PEOPLE } from '../graphql/queries';
 /**
  * Inits the people component.
  *
@@ -12,8 +11,8 @@ import { PeopleQueryResponse } from '../../models/people.model';
  * @param componentCollectionInstance ComponentCollection
  */
 export const init = (
-  apollo: Apollo,
-  componentCollectionInstance: ComponentCollection
+  componentCollectionInstance: ComponentCollection,
+  restService: RestService
 ): void => {
   // registers icon-people in the SurveyJS library
   SvgRegistry.registerIconFromSvg(
@@ -46,34 +45,64 @@ export const init = (
         CustomPropertyGridComponentTypes.applicationsDropdown
       );
     },
-    onLoaded: (question: any): void => {
-      apollo
-        .query<PeopleQueryResponse>({
-          query: GET_PEOPLE,
-          variables: {
-            applications: question.applications,
-          },
-        })
-        .subscribe(({ data }) => {
-          if (data.people) {
-            const people: any = [];
-            for (const person of data.people) {
-              if (!people.some((el: any) => el.value === person.id)) {
+    onLoaded: (question: any): Promise<void> => {
+      // call the proxied API to get the people
+      // the endpoint to call should be:
+      // environment.apiUrl/proxy/common-services/graphql/
+      // query is the following:
+      // query {
+      //   users {
+      //       firstname
+      //       lastname
+      //       emailaddress
+      //   }
+      //  }
+      // http://localhost:3000/proxy/common-services/graphql
+
+      // response is the following:
+      // {
+      //   data: {
+      // users: [
+      //   {
+      //     firstname: 'John',
+      //     lastname: 'Doe',
+      //     emailaddress: 'test@test.com',
+      //   },
+      //   {
+      //     firstname: 'Jane',
+      //     lastname: 'Doe',
+      //     emailaddress: 'test2@test.com',
+      //   },
+      // ],
+      //   }
+      // }
+      return new Promise((resolve) => {
+        restService
+          .post('proxy/common-services/graphql', {
+            query: `query {
+              users {
+                  firstname
+                  lastname
+                  emailaddress
+              }
+            }`,
+          })
+          .subscribe((response: PeopleQueryResponse) => {
+            if (response.data) {
+              console.log(response.data);
+              const people: any = [];
+              for (const person of response.data.users) {
                 people.push({
-                  value: person.id,
-                  text:
-                    person.firstname +
-                    ', ' +
-                    person.lastname +
-                    ' (' +
-                    person.emailaddress +
-                    ')',
+                  value: person.emailaddress,
+                  text: `${person.firstname} ${person.lastname}`,
                 });
               }
+              question.contentQuestion.choices = people;
             }
-            question.contentQuestion.choices = people;
-          }
-        });
+            console.log(question);
+            resolve();
+          });
+      });
     },
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     onAfterRender: (): void => {},

@@ -1,6 +1,8 @@
 /** Model for graphql query response */
 export interface PeopleQueryResponse {
-  people: Person[];
+  data: {
+    users: Person[];
+  };
 }
 
 /** Model for Person object. */

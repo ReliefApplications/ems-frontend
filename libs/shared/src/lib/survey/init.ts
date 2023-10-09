@@ -33,6 +33,7 @@ import {
   CustomPropertyGridComponentTypes,
   CustomPropertyGridEditors,
 } from './components/utils/components.enum';
+import { RestService } from '../services/rest/rest.service';
 
 /**
  * Executes all init methods of custom SurveyJS.
@@ -105,7 +106,10 @@ export const initCustomSurvey = (
     OwnerComponent.init(apollo, ComponentCollection.Instance);
     UsersComponent.init(apollo, ComponentCollection.Instance);
     GeospatialComponent.init(domService, ComponentCollection.Instance);
-    PeopleComponent.init(apollo, ComponentCollection.Instance);
+    PeopleComponent.init(
+      ComponentCollection.Instance,
+      injector.get(RestService)
+    );
   }
 
   // load global properties
