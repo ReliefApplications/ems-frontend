@@ -41,16 +41,21 @@ export class ApiConfigurationComponent
   extends SafeUnsubscribeComponent
   implements OnInit
 {
-  // === DATA ===
+  /** Loading indicator */
   public loading = true;
+  /** Api configuration id */
   public id = '';
+  /** Edited api configuration */
   public apiConfiguration?: ApiConfiguration;
-
-  // === FORM ===
+  /** Api form group */
   public apiForm: UntypedFormGroup = new UntypedFormGroup({});
+  /** Reference to status enum */
   public status = status;
+  /** Available status choices */
   public statusChoices = Object.values(status);
+  /** Reference to auth type enum */
   public authType = authType;
+  /** Available auth types */
   public authTypeChoices = Object.values(authType);
 
   /** @returns API configuration name */
@@ -364,11 +369,14 @@ export class ApiConfigurationComponent
   }
 
   /**
-   * Clear the value of the given settings key
+   * Clear the value of the given control, if not updated by the user
    *
-   * @param settingsKey control key from settings control to clear
+   * @param key control key from settings control to clear
    */
-  clearSettingsValue(settingsKey: string) {
-    this.apiForm.get('settings')?.get(settingsKey)?.setValue('');
+  clearControl(key: string) {
+    const control = this.apiForm.get(key);
+    if (control && control.pristine) {
+      control.setValue('');
+    }
   }
 }
