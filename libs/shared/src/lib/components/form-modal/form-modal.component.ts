@@ -63,7 +63,7 @@ const DEFAULT_DIALOG_DATA = { askForConfirm: true };
   standalone: true,
   selector: 'shared-form-modal',
   templateUrl: './form-modal.component.html',
-  styleUrls: ['./form-modal.component.scss'],
+  styleUrls: ['../../style/survey.scss', './form-modal.component.scss'],
   imports: [
     CommonModule,
     IconModule,
