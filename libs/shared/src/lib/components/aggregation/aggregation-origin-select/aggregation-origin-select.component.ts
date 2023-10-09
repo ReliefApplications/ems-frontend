@@ -266,25 +266,33 @@ export class AggregationOriginSelectComponent
    * @param id of the selected source, could be null
    */
   setCurrentItemByType(type: AggregationSource, id: string | string[] | null) {
-    if (type === 'resource') {
+    let emitFlag = false;
+    if (type === 'resource' && this.selectedResource?.id !== id) {
+      emitFlag = true;
       this.selectedResource =
         this.resourcesQuery
           .getCurrentResult()
           .data?.resources.edges.find((r) => r.node.id === id)?.node || null;
-    } else if (type === 'referenceData') {
+    } else if (
+      type === 'referenceData' &&
+      this.selectedReferenceData?.id !== id
+    ) {
+      emitFlag = true;
       this.selectedReferenceData =
         this.referenceDatasQuery
           .getCurrentResult()
           .data?.referenceDatas.edges.find((r) => r.node.id === id)?.node ||
         null;
     }
-    this.sourceChange.emit({
-      type,
-      value:
-        type === 'resource'
-          ? this.selectedResource
-          : this.selectedReferenceData,
-    });
+    if (emitFlag) {
+      this.sourceChange.emit({
+        type,
+        value:
+          type === 'resource'
+            ? this.selectedResource
+            : this.selectedReferenceData,
+      });
+    }
   }
 
   /**

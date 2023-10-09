@@ -327,7 +327,6 @@ export class SummaryCardSettingsComponent
           this.selectedAggregation = null;
         } else {
           this.selectedReferenceData = res.data.referenceData;
-
           if (aggregationID) {
             this.selectedAggregation =
               res.data?.referenceData.aggregations?.edges[0]?.node || null;

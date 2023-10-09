@@ -277,12 +277,7 @@ export class AggregationGridComponent
     );
     // Create meta query from query fields
     const metaQuery = this.queryBuilder.buildMetaQuery({
-      name:
-        (type === 'resource'
-          ? source.queryName
-          : (source.name as string).replace(/^\w/, (match) =>
-              match.toUpperCase()
-            ) + 'Ref') || '',
+      name: this.aggregationService.setCurrentSourceQueryName(source, type),
       fields: queryFields,
     });
     if (metaQuery) {

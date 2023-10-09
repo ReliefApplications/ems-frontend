@@ -60,14 +60,15 @@
 
 <!-- Aggregation Grid -->
 <ng-template #aggregationGridTemplate>
-  <shared-aggregation-grid
-    *ngIf="aggregation"
-    [resourceId]="settings.resource"
-    [referenceDataId]="settings.referenceData"
-    [aggregation]="aggregation"
-    [contextFilters]="widget.settings.contextFilters"
-    [at]="widget.settings.at"
-  ></shared-aggregation-grid>
+  <ng-container *ngIf="aggregation">
+    <shared-aggregation-grid
+      [resourceId]="settings.resource"
+      [referenceDataId]="settings.referenceData"
+      [aggregation]="aggregation"
+      [contextFilters]="widget.settings.contextFilters"
+      [at]="widget.settings.at"
+    ></shared-aggregation-grid>
+  </ng-container>
 </ng-template>
 
 <!-- Quick action buttons -->

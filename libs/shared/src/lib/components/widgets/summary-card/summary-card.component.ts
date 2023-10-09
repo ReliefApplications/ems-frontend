@@ -195,6 +195,7 @@ export class SummaryCardComponent
 
     this.setupDynamicCards();
     this.setupGridSettings();
+
     this.searchControl.valueChanges
       .pipe(
         debounceTime(2000),
@@ -341,14 +342,17 @@ export class SummaryCardComponent
    * @param res Query result
    */
   private updateCards(res: any) {
-    if (!res?.data) return;
-    let newCards: any[] = [];
+    if (!res?.data) {
+      return;
+    }
 
+    let newCards: any[] = [];
     const layoutQueryName = this.layout?.query.name;
     if (this.layout) {
       const edges = res.data?.[layoutQueryName].edges;
-      if (!edges) return;
-
+      if (!edges) {
+        return;
+      }
       newCards = edges.map((e: any) => ({
         ...this.settings.card,
         record: e.node,
@@ -360,8 +364,10 @@ export class SummaryCardComponent
       if (
         !res.data?.recordsAggregation?.items &&
         !res.data?.referenceDataAggregation?.items
-      )
+      ) {
         return;
+      }
+
       const aggregationItems = res.data.recordsAggregation
         ? res.data.recordsAggregation.items
         : res.data.referenceDataAggregation.items;
@@ -519,7 +525,7 @@ export class SummaryCardComponent
     const card = this.settings.card;
     if (
       !card ||
-      !this.settings.resource ||
+      (!this.settings.resource && !this.settings.referenceData) ||
       (!this.settings.layout && !this.settings.aggregation)
     ) {
       return;
@@ -528,6 +534,7 @@ export class SummaryCardComponent
     const settings = {
       template: get(this.settings, 'template', null), //TO MODIFY
       resource: this.settings.resource,
+      referenceData: this.settings.referenceData,
       actions: {
         //default actions, might need to modify later
         addRecord: false,
@@ -559,8 +566,9 @@ export class SummaryCardComponent
     if (
       !this.settings.aggregation ||
       (!this.settings.resource && !this.settings.referenceData)
-    )
+    ) {
       return;
+    }
     this.loading = true;
     const id = this.settings.resource ?? this.settings.referenceData ?? '';
     const type = this.settings.resource ? 'resource' : 'referenceData';
