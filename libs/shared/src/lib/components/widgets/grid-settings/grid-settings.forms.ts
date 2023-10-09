@@ -24,7 +24,6 @@ const fb = new FormBuilder();
  * @returns new form group for the floating button.
  */
 export const createButtonFormGroup = (value: any) => {
-  console.log('needConfirmation', value.needConfirmation);
   const formGroup = fb.group({
     show: [value && value.show ? value.show : false, Validators.required],
     name: [
@@ -47,9 +46,7 @@ export const createButtonFormGroup = (value: any) => {
     ],
     autoSave: [value && value.autoSave ? value.autoSave : false],
     modifySelectedRows: [value ? value.modifySelectedRows : false],
-    needConfirmation: [
-      value && value.needConfirmation ? value.needConfirmation : false,
-    ],
+    needConfirmation: [value ? value.needConfirmation : false],
     modifications: fb.array(
       value && value.modifications && value.modifications.length
         ? value.modifications.map((x: any) =>

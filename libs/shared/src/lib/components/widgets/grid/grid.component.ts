@@ -274,8 +274,6 @@ export class GridWidgetComponent
    * @param options action options.
    */
   public async onQuickAction(options: any): Promise<void> {
-    console.log('onQuickAction', options);
-    console.log('this.grid.selectedRows', this.grid.selectedRows);
     // Select all the records in the grid
     if (options.selectAll) {
       const query = this.queryBuilder.graphqlQuery(
@@ -555,6 +553,12 @@ export class GridWidgetComponent
                 this.grid.reloadData();
               }
             });
+        } else {
+          await this.promisedRowsModifications(
+            options.modifications,
+            this.grid.selectedRows
+          );
+          this.grid.reloadData();
         }
       }
 

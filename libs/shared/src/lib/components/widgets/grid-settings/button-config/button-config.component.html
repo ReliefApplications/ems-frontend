@@ -169,6 +169,13 @@
           *ngIf="formGroup.value.modifySelectedRows"
           class="sub-parameters flex flex-col"
         >
+          <ui-checkbox 
+            class="margin-top-need-confirmation-checkbox"
+            formControlName="needConfirmation">
+            <ng-container ngProjectAs="label">{{
+              'components.widget.settings.grid.buttons.needConfirmation' | translate
+            }}</ng-container>
+          </ui-checkbox>
           <form
             [formGroup]="$any(modification)"
             *ngFor="let modification of modificationsArray.controls; index as i"
@@ -506,10 +513,5 @@
         <input formControlName="value" type="string" />
       </div>
     </ng-container>
-    <ui-toggle formControlName="needConfimation">
-      <ng-container ngProjectAs="label">{{
-        'components.widget.settings.grid.buttons.needConfirmation' | translate
-      }}</ng-container>
-    </ui-toggle>
   </div>
 </ng-template>

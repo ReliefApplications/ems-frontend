@@ -1241,7 +1241,7 @@
 					"grid": {
 						"buttons": {
 							"modifySelectedRows": {
-								"confirmation": "Are you sure you want to modify the selected rows?"
+								"confirmation": "Voulez-vous vraiment modifier les lignes sélectionnées?"
 							}
 						},
 						"title": "Grille",
