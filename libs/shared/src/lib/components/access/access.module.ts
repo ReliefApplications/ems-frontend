@@ -32,6 +32,6 @@ import {
     SelectMenuModule,
     FormWrapperModule,
   ],
-  exports: [AccessComponent],
+  exports: [AccessComponent, EditAccessComponent],
 })
 export class AccessModule {}
