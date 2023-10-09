@@ -10,11 +10,11 @@ import { Application } from '../../models/application.model';
   styleUrls: ['./applications-summary.component.scss'],
 })
 export class ApplicationsSummaryComponent {
-  /** Defines if the component is loading. */
+  /** Loading indicator */
   @Input() loading = false;
-  /** Defines if a new application can be created. */
+  /** Can user create new applications */
   @Input() canCreate = false;
-  /** List of applications. */
+  /** Available applications */
   @Input() applications: Application[] = [];
   /** Emits an event when a new application is added. */
   @Output() add = new EventEmitter();

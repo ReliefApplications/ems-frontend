@@ -4,21 +4,21 @@ import type { StorybookConfig } from '@storybook/angular';
  * Storybook configuration
  */
 const config: StorybookConfig = {
-  stories: ['../**/*.stories.mdx', '../**/*.stories.@(js|jsx|ts|tsx)'],
-  addons: ['@storybook/addon-essentials', '@storybook/addon-mdx-gfm'],
+  stories: ['../**/*.stories.@(js|jsx|ts|tsx|mdx)'],
+  addons: ['@storybook/addon-mdx-gfm', '@storybook/addon-essentials'],
   staticDirs: [
     {
       from: '../../../assets',
       to: '/assets',
     },
+    {
+      from: '../src/i18n',
+      to: '/assets/i18n',
+    },
   ],
   framework: {
     name: '@storybook/angular',
     options: {},
-  },
-  docs: {
-    autodocs: 'tag',
-    defaultName: 'Documentation',
   },
 };
 

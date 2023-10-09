@@ -96,7 +96,7 @@ const CORE_FIELD_CLASS = 'core-question';
 @Component({
   selector: 'shared-form-builder',
   templateUrl: './form-builder.component.html',
-  styleUrls: ['./form-builder.component.scss'],
+  styleUrls: ['../../style/survey.scss', './form-builder.component.scss'],
 })
 export class FormBuilderComponent
   extends UnsubscribeComponent

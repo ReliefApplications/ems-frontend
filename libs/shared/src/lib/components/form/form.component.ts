@@ -35,7 +35,7 @@ import { cloneDeep, isNil } from 'lodash';
 @Component({
   selector: 'shared-form',
   templateUrl: './form.component.html',
-  styleUrls: ['./form.component.scss'],
+  styleUrls: ['../../style/survey.scss', './form.component.scss'],
 })
 export class FormComponent
   extends UnsubscribeComponent
