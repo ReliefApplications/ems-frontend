@@ -4,7 +4,7 @@ import { ApplicationsSummaryComponent } from './applications-summary.component';
 
 describe('ApplicationsSummaryComponent', () => {
   let component: ApplicationsSummaryComponent;
-  let fixture: ComponentFixture<sharedApplicationsSummaryComponent>;
+  let fixture: ComponentFixture<ApplicationsSummaryComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
