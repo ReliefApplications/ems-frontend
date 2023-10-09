@@ -73,18 +73,3 @@ export const GET_USERS = gql`
     }
   }
 `;
-
-// === GET PEOPLE ===
-
-/** Graphql request for getting people */
-export const GET_PEOPLE = gql`
-  query GetPeople($applications: [ID]) {
-    people(applications: $applications) {
-      id
-      firstname
-      lastname
-      emailaddress
-      oid
-    }
-  }
-`;
