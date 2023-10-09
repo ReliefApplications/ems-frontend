@@ -3,12 +3,12 @@ import { registerCustomPropertyEditor } from './utils/component-register';
 import { CustomPropertyGridComponentTypes } from './utils/components.enum';
 import { PeopleQueryResponse, Person } from '../../models/people.model';
 import { RestService } from '../../services/rest/rest.service';
-import { GET_PEOPLE } from '../graphql/queries';
+
 /**
  * Inits the people component.
  *
- * @param apollo Apollo client.
  * @param componentCollectionInstance ComponentCollection
+ * @param restService RestService
  */
 export const init = (
   componentCollectionInstance: ComponentCollection,
@@ -45,64 +45,33 @@ export const init = (
         CustomPropertyGridComponentTypes.applicationsDropdown
       );
     },
-    onLoaded: (question: any): Promise<void> => {
-      // call the proxied API to get the people
-      // the endpoint to call should be:
-      // environment.apiUrl/proxy/common-services/graphql/
-      // query is the following:
-      // query {
-      //   users {
-      //       firstname
-      //       lastname
-      //       emailaddress
-      //   }
-      //  }
-      // http://localhost:3000/proxy/common-services/graphql
-
-      // response is the following:
-      // {
-      //   data: {
-      // users: [
-      //   {
-      //     firstname: 'John',
-      //     lastname: 'Doe',
-      //     emailaddress: 'test@test.com',
-      //   },
-      //   {
-      //     firstname: 'Jane',
-      //     lastname: 'Doe',
-      //     emailaddress: 'test2@test.com',
-      //   },
-      // ],
-      //   }
-      // }
-      return new Promise((resolve) => {
-        restService
-          .post('proxy/common-services/graphql', {
-            query: `query {
+    onLoaded: (question: any): void => {
+      restService
+        .post('proxy/common-services/graphql', {
+          query: `query {
               users {
                   firstname
                   lastname
                   emailaddress
               }
             }`,
-          })
-          .subscribe((response: PeopleQueryResponse) => {
-            if (response.data) {
-              console.log(response.data);
-              const people: any = [];
-              for (const person of response.data.users) {
-                people.push({
-                  value: person.emailaddress,
-                  text: `${person.firstname} ${person.lastname}`,
-                });
-              }
-              question.contentQuestion.choices = people;
-            }
-            console.log(question);
-            resolve();
-          });
-      });
+        })
+        .subscribe((response: PeopleQueryResponse) => {
+          if (response.data) {
+            //Format data like this "name, surname (email)"
+            const people = response.data.users.map((person: Person) => {
+              const fullname =
+                person.firstname && person.lastname
+                  ? `${person.firstname}, ${person.lastname}`
+                  : person.firstname || person.lastname;
+              return {
+                value: person.emailaddress,
+                text: `${fullname} (${person.emailaddress})`,
+              };
+            });
+            question.contentQuestion.choices = people;
+          }
+        });
     },
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     onAfterRender: (): void => {},
