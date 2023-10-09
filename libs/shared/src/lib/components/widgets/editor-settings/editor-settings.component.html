@@ -58,31 +58,6 @@
         </shared-editor>
       </ng-template>
     </ui-tab>
-    <!-- Resource and record selection  -->
-    <ui-tab>
-      <ng-container ngProjectAs="label">
-        <ui-icon
-          icon="settings"
-          [size]="24"
-          [uiTooltip]="
-            'components.widget.settings.editor.recordSelection' | translate
-          "
-        ></ui-icon>
-        <span>{{
-          'components.widget.settings.editor.recordSelection' | translate
-        }}</span>
-      </ng-container>
-      <ng-template uiTabContent>
-        <shared-record-selection-tab
-          *ngIf="tileForm"
-          [form]="tileForm"
-          [selectedResource]="selectedResource"
-          [selectedLayout]="selectedLayout"
-          (resourceChange)="selectedResource = $event; updateFields()"
-          (layoutChange)="selectedLayout = $event; updateFields()"
-        ></shared-record-selection-tab>
-      </ng-template>
-    </ui-tab>
     <!-- Widget display options -->
     <ui-tab>
       <ng-container ngProjectAs="label">

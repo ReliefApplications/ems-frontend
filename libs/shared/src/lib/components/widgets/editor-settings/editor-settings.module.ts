@@ -22,7 +22,6 @@ import {
   TooltipModule,
 } from '@oort-front/ui';
 import { DisplaySettingsComponent } from '../common/display-settings/display-settings.component';
-import { RecordSelectionTabComponent } from './record-selection-tab/record-selection-tab.component';
 import { CoreGridModule } from '../../ui/core-grid/core-grid.module';
 import { EditorModule } from '../editor/editor.module';
 import { AggregationOriginSelectComponent } from '../../aggregation/aggregation-origin-select/aggregation-origin-select.component';
@@ -32,7 +31,7 @@ import { TabGeneralEditorSettingsGeneralComponent } from './tab-general/tab-gene
  * Module for the EditorSetting component
  */
 @NgModule({
-  declarations: [EditorSettingsComponent, RecordSelectionTabComponent],
+  declarations: [EditorSettingsComponent],
   imports: [
     CommonModule,
     FormsModule,
