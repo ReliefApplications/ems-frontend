@@ -17,10 +17,7 @@ import { Resource } from '../../../../models/resource.model';
 import { Layout } from '../../../../models/layout.model';
 import { get } from 'lodash';
 import { GridLayoutService } from '../../../../services/grid-layout/grid-layout.service';
-import {
-  AggregationService,
-  AggregationSource,
-} from '../../../../services/aggregation/aggregation.service';
+import { AggregationService } from '../../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs';
 import {
@@ -78,8 +75,6 @@ export class SummaryCardGeneralComponent
   @Input() selectedLayout: Layout | null = null;
   @Input() selectedAggregation: Aggregation | null = null;
 
-  @Output() resourceChange = new EventEmitter<Resource | null>();
-  @Output() referenceDataChange = new EventEmitter<ReferenceData | null>();
   @Output() layoutChange = new EventEmitter<Layout | null>();
   @Output() aggregationChange = new EventEmitter<Aggregation | null>();
 
@@ -117,22 +112,6 @@ export class SummaryCardGeneralComponent
 
   ngOnInit(): void {
     this.colsNumber = this.setColsNumber(window.innerWidth);
-  }
-
-  /**
-   * Handle source change from the aggregation origin selection
-   *
-   * @param event event containing source type and value
-   * @param {AggregationSource} event.type source type
-   * @param event.value selected source value from where load aggregations
-   */
-  handleSourceChange(event: { type: AggregationSource; value: any }) {
-    const { type, value } = event;
-    if (type === 'resource') {
-      this.resourceChange.emit(value);
-    } else if (type === 'referenceData') {
-      this.referenceDataChange.emit(value);
-    }
   }
 
   /**

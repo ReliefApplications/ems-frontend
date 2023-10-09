@@ -170,14 +170,47 @@ export class SummaryCardSettingsComponent
     this.tileForm = createSummaryCardForm(this.tile);
     this.change.emit(this.tileForm);
 
+    this.tileForm
+      .get('resource')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.getResource(value);
+          this.tileForm?.get('referenceData')?.setValue(null);
+        } else {
+          // clear sort fields array
+          const sortFields = this.tileForm?.get('sortFields') as FormArray;
+          sortFields.clear();
+          this.fields = [];
+          this.selectedResource = null;
+        }
+        this.tileForm?.get('aggregation')?.setValue(null);
+        this.tileForm?.get('layout')?.setValue(null);
+      });
+    // Initialize the selected resource, layout and record from the form
     const resourceID = this.tileForm?.get('resource')?.value;
     if (resourceID) {
       this.getResource(resourceID);
     }
+    this.tileForm
+      .get('referenceData')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.getReferenceData(value);
+          this.tileForm?.get('resource')?.setValue(null);
+        } else {
+          this.selectedReferenceData = null;
+        }
+        this.tileForm?.get('aggregation')?.setValue(null);
+        this.tileForm?.get('layout')?.setValue(null);
+      });
+    // Initialize the selected reference data from the form
     const referenceDataID = this.tileForm?.get('referenceData')?.value;
     if (referenceDataID) {
       this.getReferenceData(referenceDataID);
     }
+
     // Subscribe to aggregation changes
     this.tileForm
       .get('aggregation')
@@ -190,7 +223,19 @@ export class SummaryCardSettingsComponent
           );
           searchableControl?.setValue(false);
           searchableControl?.disable();
-        } else this.tileForm?.get('widgetDisplay.searchable')?.enable();
+        } else {
+          this.selectedAggregation = null;
+          this.customAggregation = null;
+          this.tileForm?.get('widgetDisplay.searchable')?.enable();
+        }
+      });
+    this.tileForm
+      .get('layout')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (!value) {
+          this.selectedLayout = null;
+        }
       });
     this.tileForm?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
       this.change.emit(this.tileForm);
@@ -366,40 +411,6 @@ export class SummaryCardSettingsComponent
             : [];
         }
       });
-  }
-
-  /**
-   * Updates modified resource
-   *
-   * @param resource the modified resource
-   */
-  handleResourceChange(resource: Resource | null) {
-    // clear sort fields array
-    const sortFields = this.tileForm?.get('sortFields') as FormArray;
-    sortFields.clear();
-
-    this.selectedResource = resource;
-    this.fields = [];
-
-    // clear layout and record
-    this.selectedLayout = null;
-    this.selectedAggregation = null;
-    this.customAggregation = null;
-  }
-
-  /**
-   * Updates modified reference data
-   *
-   * @param referenceData the modified reference data
-   */
-  handleReferenceDataChange(referenceData: ReferenceData | null) {
-    this.selectedReferenceData = referenceData;
-    this.fields = [];
-
-    // clear layout and record
-    this.selectedLayout = null;
-    this.selectedAggregation = null;
-    this.customAggregation = null;
   }
 
   /**

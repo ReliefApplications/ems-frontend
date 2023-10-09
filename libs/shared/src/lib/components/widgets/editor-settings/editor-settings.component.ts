@@ -127,15 +127,59 @@ export class EditorSettingsComponent
     this.tileForm = createEditorForm(this.tile);
     this.change.emit(this.tileForm);
 
+    this.tileForm
+      .get('resource')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.getResource(value);
+          this.tileForm.get('referenceData')?.setValue(null);
+        } else {
+          this.selectedResource = null;
+        }
+        this.tileForm.get('aggregation')?.setValue(null);
+        this.tileForm.get('layout')?.setValue(null);
+      });
     // Initialize the selected resource, layout and record from the form
     const resourceID = this.tileForm?.get('resource')?.value;
     if (resourceID) {
       this.getResource(resourceID);
     }
+    this.tileForm
+      .get('referenceData')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.getReferenceData(value);
+          this.tileForm.get('resource')?.setValue(null);
+        } else {
+          this.selectedReferenceData = null;
+        }
+        this.tileForm.get('aggregation')?.setValue(null);
+        this.tileForm.get('layout')?.setValue(null);
+      });
+    // Initialize the selected reference data from the form
     const referenceDataID = this.tileForm?.get('referenceData')?.value;
     if (referenceDataID) {
       this.getReferenceData(referenceDataID);
     }
+    this.tileForm
+      .get('aggregation')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        if (!data) {
+          this.selectedAggregation = null;
+          this.customAggregation = null;
+        }
+      });
+    this.tileForm
+      .get('layout')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (!value) {
+          this.selectedLayout = null;
+        }
+      });
   }
 
   /**
@@ -271,33 +315,6 @@ export class EditorSettingsComponent
         : [];
     }
     return fields;
-  }
-
-  /**
-   * Updates modified resource
-   *
-   * @param resource the modified resource
-   */
-  handleResourceChange(resource: Resource | null) {
-    this.selectedResource = resource;
-
-    // clear layout and record
-    this.selectedLayout = null;
-    this.selectedAggregation = null;
-    this.customAggregation = null;
-  }
-
-  /**
-   * Updates modified reference data
-   *
-   * @param referenceData the modified reference data
-   */
-  handleReferenceDataChange(referenceData: ReferenceData | null) {
-    this.selectedReferenceData = referenceData;
-
-    this.selectedLayout = null;
-    this.selectedAggregation = null;
-    this.customAggregation = null;
   }
 
   /**

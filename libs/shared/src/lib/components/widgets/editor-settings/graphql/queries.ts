@@ -47,7 +47,7 @@ export const GET_RESOURCES = gql`
 
 /** Graphql request for getting resource  */
 export const GET_RESOURCE = gql`
-  query GetResource($id: ID!, $layout: [ID]) {
+  query GetResource($id: ID!, $layout: [ID], $aggregation: [ID]) {
     resource(id: $id) {
       id
       name
