@@ -52,11 +52,4 @@ export class AddResourceModalComponent implements OnInit {
       name: ['', Validators.required],
     });
   }
-
-  /**
-   * Closes the modal without sending any data.
-   */
-  onClose(): void {
-    this.dialogRef.close();
-  }
 }

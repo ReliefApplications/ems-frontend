@@ -72,9 +72,4 @@ export class PositionModalComponent implements OnInit {
       this.positionForm.controls.title.setValue(this.data.title);
     }
   }
-
-  /** Close the modal without sending data. */
-  onClose(): void {
-    this.dialogRef.close();
-  }
 }

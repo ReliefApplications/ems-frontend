@@ -119,11 +119,4 @@ export class DuplicateApplicationModalComponent implements OnInit {
         },
       });
   }
-
-  /**
-   * Close dialog.
-   */
-  onCancel(): void {
-    this.dialogRef.close();
-  }
 }

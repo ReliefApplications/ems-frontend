@@ -74,13 +74,6 @@ export class SafeInviteUsersComponent extends SafeUnsubscribeComponent {
   }
 
   /**
-   * Closes the modal.
-   */
-  onClose(): void {
-    this.dialogRef.close();
-  }
-
-  /**
    * Opens a modal to invite a new user.
    */
   async onAdd(): Promise<void> {

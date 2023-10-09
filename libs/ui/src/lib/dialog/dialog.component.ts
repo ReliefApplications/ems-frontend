@@ -11,8 +11,9 @@ import { DialogSize } from './types/dialog-size';
   styleUrls: ['./dialog.component.scss'],
 })
 export class DialogComponent implements OnChanges, OnInit {
-  @Input() closable = false;
+  /** Should display padding around dialog */
   @Input() padding = true;
+  /** Size of the dialog: small - medium - big - fullscreen */
   @Input() size!: DialogSize;
 
   /** Close Dialog. */
