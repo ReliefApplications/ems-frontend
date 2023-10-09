@@ -61,7 +61,7 @@ interface DialogData {
   ],
   selector: 'shared-record-modal',
   templateUrl: './record-modal.component.html',
-  styleUrls: ['./record-modal.component.scss'],
+  styleUrls: ['../../style/survey.scss', './record-modal.component.scss'],
 })
 export class RecordModalComponent
   extends UnsubscribeComponent

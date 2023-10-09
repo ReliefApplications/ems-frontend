@@ -330,6 +330,7 @@ export class DashboardComponent
           this.showFilter = this.dashboard.showFilter ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
         } else {
+          this.contextService.isFilterEnabled.next(false);
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.accessNotProvided', {
               type: this.translate
@@ -594,8 +595,8 @@ export class DashboardComponent
             }
           },
           complete: () => {
-            this.loading = false;
             this.contextService.isFilterEnabled.next(this.showFilter);
+            this.loading = false;
           },
         });
     }

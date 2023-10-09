@@ -6,7 +6,6 @@ import { TooltipModule, ButtonModule, IconModule } from '@oort-front/ui';
 import { EmptyModule } from '../ui/empty/empty.module';
 import { DrawerPositionerModule } from './directives/drawer-positioner/drawer-positioner.module';
 import { DrawerPositionerDirective } from './directives/drawer-positioner/drawer-positioner.directive';
-import { SurveyCreatorModule } from 'survey-creator-angular';
 import { SurveyModule } from 'survey-angular-ui';
 
 /** Dashboard floating filter module. */
@@ -19,7 +18,6 @@ import { SurveyModule } from 'survey-angular-ui';
     TooltipModule,
     ButtonModule,
     EmptyModule,
-    SurveyCreatorModule,
     SurveyModule,
     DrawerPositionerModule,
   ],

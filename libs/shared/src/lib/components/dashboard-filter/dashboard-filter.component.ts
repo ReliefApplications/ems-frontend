@@ -46,7 +46,7 @@ interface QuickFilter {
 @Component({
   selector: 'shared-dashboard-filter',
   templateUrl: './dashboard-filter.component.html',
-  styleUrls: ['./dashboard-filter.component.scss'],
+  styleUrls: ['../../style/survey.scss', './dashboard-filter.component.scss'],
 })
 export class DashboardFilterComponent
   extends UnsubscribeComponent
@@ -169,6 +169,8 @@ export class DashboardFilterComponent
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
+    // Trigger filtering with no values on deactivating context filter
+    this.contextService.filter.next({});
     this.resizeObserver.disconnect();
   }
 
@@ -446,7 +448,6 @@ export class DashboardFilterComponent
         };
         return acc;
       }, {});
-
     this.contextService.filter.next(surveyData);
     this.ngZone.run(() => {
       this.quickFilters = displayValues
