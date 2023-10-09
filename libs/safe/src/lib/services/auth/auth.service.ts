@@ -14,8 +14,8 @@ import {
 } from 'rxjs';
 import { ApolloQueryResult } from '@apollo/client';
 import { OAuthService } from 'angular-oauth2-oidc';
-import { filter, map, switchMap } from 'rxjs/operators';
-import { NavigationEnd, Router } from '@angular/router';
+import { filter, map } from 'rxjs/operators';
+import { Router } from '@angular/router';
 import {
   Ability,
   AbilityBuilder,
@@ -140,11 +140,7 @@ export class SafeAuthService {
       });
     // Redirect to previous path
     this.oauthService.events
-      .pipe(
-        filter((e: any) => e.type === 'user_profile_loaded'),
-        switchMap(() => this.router.events),
-        filter((event) => event instanceof NavigationEnd)
-      )
+      .pipe(filter((e: any) => e.type === 'user_profile_loaded'))
       .subscribe(() => {
         const redirectPath = localStorage.getItem('redirectPath');
         if (redirectPath) {
