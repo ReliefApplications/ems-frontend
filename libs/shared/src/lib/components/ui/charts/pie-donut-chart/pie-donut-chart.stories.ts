@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export default {
   component: PieDonutChartComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [PieDonutChartModule, BrowserAnimationsModule],

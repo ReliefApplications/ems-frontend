@@ -12,6 +12,7 @@ import { DialogModule as DialogCdkModule } from '@angular/cdk/dialog';
 
 export default {
   component: MappingComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [

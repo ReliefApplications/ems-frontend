@@ -9,14 +9,14 @@ import { Component, Input, TemplateRef } from '@angular/core';
   styleUrls: ['./empty.component.scss'],
 })
 export class EmptyComponent {
-  // Icon name, has priority over an image
+  /**  Icon name, has priority over an image */
   @Input() icon?: string;
-  // Image URL
+  /** Image URL */
   @Input() image?: string;
-  // Title of the component
+  /** Title of the component */
   @Input() title?: string;
-  // Subtitle of the component
+  /** Subtitle of the component */
   @Input() subtitle?: string;
-  // Footer template, will be inserted after everything else
+  /** Footer template, will be inserted after everything else */
   @Input() footerTemplate?: TemplateRef<any>;
 }

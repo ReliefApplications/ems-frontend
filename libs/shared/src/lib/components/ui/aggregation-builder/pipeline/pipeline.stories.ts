@@ -15,6 +15,7 @@ import { delay } from 'rxjs/operators';
 
 export default {
   component: PipelineComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [

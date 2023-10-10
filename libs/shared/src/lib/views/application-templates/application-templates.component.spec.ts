@@ -4,7 +4,7 @@ import { ApplicationTemplatesComponent } from './application-templates.component
 
 describe('ApplicationTemplatesComponent', () => {
   let component: ApplicationTemplatesComponent;
-  let fixture: ComponentFixture<sharedApplicationTemplatesComponent>;
+  let fixture: ComponentFixture<ApplicationTemplatesComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

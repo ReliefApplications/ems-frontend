@@ -5,7 +5,7 @@ import { WidgetGridComponent } from './widget-grid.component';
 
 describe('WidgetGridComponent', () => {
   let component: WidgetGridComponent;
-  let fixture: ComponentFixture<sharedWidgetGridComponent>;
+  let fixture: ComponentFixture<WidgetGridComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

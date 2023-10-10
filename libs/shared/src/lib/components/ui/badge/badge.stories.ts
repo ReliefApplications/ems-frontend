@@ -6,6 +6,7 @@ import { BadgeVariant } from './badge-variant.enum';
 
 export default {
   component: BadgeComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [BadgeModule],
