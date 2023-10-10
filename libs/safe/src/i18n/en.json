@@ -533,6 +533,17 @@
 				"schedule": "Enter schedule for notification sending"
 			}
 		},
+		"deployedVersion": {
+			"backend": "Back-end",
+			"commitId": "Commit ID",
+			"copied": "Copied to clipboard!",
+			"frontend": "Front-end",
+			"title": "Deployed version",
+			"tooltip": {
+				"copyToClipboard": "Copy to clipboard"
+			},
+			"version": "Version"
+		},
 		"distributionLists": {
 			"delete": {
 				"confirmationMessage": "Are you sure you want to delete the distribution list '{{name}}'?"
@@ -657,6 +668,9 @@
 			}
 		},
 		"header": {
+			"deployedVersion": {
+				"tooltip": "Deployed version"
+			},
 			"goToApp": "Go to application",
 			"goToPlatform": "Navigate to",
 			"logout": "Logout",

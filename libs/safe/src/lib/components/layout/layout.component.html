@@ -126,9 +126,18 @@
       {{ 'components.header.logout' | translate }}
     </button>
     <div
-      class="absolute bottom-0 right-1 text-gray-400 text-xs pointer-events-none"
+      class="absolute bottom-0 right-1"
     >
-      {{ environment.version }}
+      <ui-button
+        [isIcon]="true"
+        icon="question_mark"
+        variant="default"
+        size="small"
+        category="tertiary"
+        (click)="onOpenDeployedVersion()"
+        [uiTooltip]="'components.header.deployedVersion.tooltip' | translate"
+      >
+      </ui-button>
     </div>
   </ui-menu>
   <!-- Notification menu -->

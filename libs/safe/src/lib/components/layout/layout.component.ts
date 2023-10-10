@@ -324,6 +324,17 @@ export class SafeLayoutComponent
     });
   }
 
+  async onOpenDeployedVersion(): Promise<void> {
+    console.log(this.environment);
+    const { DeployedVersionModalComponent } = await import(
+      '../deployed-version-modal/deployed-version-modal.component'
+    );
+    const dialogRef = this.dialog.open(DeployedVersionModalComponent);
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
+      console.log(value);
+    });
+  }
+
   /**
    * Load more notifications
    *
