@@ -66,6 +66,33 @@ export const GET_REFERENCE_DATA_AGGREGATION_DATA = gql`
   }
 `;
 
+/** Graphql request for getting reference data and given aggregation */
+export const GET_RESOURCE_AGGREGATION_DATA = gql`
+  query GetResourceData($id: ID!, $aggregation: [ID]) {
+    resource(id: $id) {
+      id
+      queryName
+      fields
+      aggregations(ids: $aggregation) {
+        edges {
+          node {
+            id
+            name
+            sourceFields
+            pipeline
+            createdAt
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
+      }
+    }
+  }
+`;
+
 /** Graphql request for getting resource layout */
 export const GET_LAYOUT = gql`
   query GetLayout($resource: ID!, $id: ID) {

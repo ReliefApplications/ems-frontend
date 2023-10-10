@@ -215,7 +215,6 @@ export class EditorSettingsComponent
           if (aggregationID) {
             this.selectedAggregation =
               res.data?.resource.aggregations?.edges[0]?.node || null;
-            console.log(this.selectedAggregation);
           }
           this.updateFields();
         }
@@ -261,7 +260,6 @@ export class EditorSettingsComponent
       this.tile.settings.resource = this.tileForm.value.resource;
       this.tile.settings.layout = this.tileForm.value.layout;
     });
-    this.updateFields();
   }
 
   /** Extracts the fields from the resource/layout */
@@ -269,14 +267,20 @@ export class EditorSettingsComponent
     // extract data keys from metadata
     let fields: any = [];
     if (this.selectedResource) {
-      get(this.selectedResource, 'metadata', []).forEach((metaField: any) => {
-        get(this.selectedLayout, 'query.fields', []).forEach((field: any) => {
-          if (field.name === metaField.name) {
-            const type = metaField.type;
-            fields.push({ ...field, type });
-          }
+      if (this.selectedLayout) {
+        get(this.selectedResource, 'metadata', []).forEach((metaField: any) => {
+          get(this.selectedLayout, 'query.fields', []).forEach((field: any) => {
+            if (field.name === metaField.name) {
+              const type = metaField.type;
+              fields.push({ ...field, type });
+            }
+          });
         });
-      });
+      } else if (this.selectedAggregation) {
+        fields = get(this.selectedResource, 'metadata', []).filter((metadata) =>
+          (this.selectedAggregation?.sourceFields ?? []).includes(metadata.name)
+        );
+      }
     } else if (this.selectedReferenceData) {
       fields = await this.getCustomAggregation();
     }
