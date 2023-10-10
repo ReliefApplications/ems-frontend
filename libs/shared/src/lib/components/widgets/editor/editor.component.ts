@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SafeHtml } from '@angular/platform-browser';
 import { Apollo } from 'apollo-angular';
-import { firstValueFrom, takeUntil } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
 import {
   GET_LAYOUT,
   GET_REFERENCE_DATA_AGGREGATION_DATA,
@@ -19,7 +19,6 @@ import { GridService } from '../../../services/grid/grid.service';
 import { ReferenceDataQueryResponse } from '../../../models/reference-data.model';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
-import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 
 /**
  * Text widget component using KendoUI
@@ -29,7 +28,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
   templateUrl: './editor.component.html',
   styleUrls: ['./editor.component.scss'],
 })
-export class EditorComponent extends UnsubscribeComponent implements OnInit {
+export class EditorComponent implements OnInit {
   // === WIDGET CONFIGURATION ===
   @Input() header = true;
   @Input() settings: any;
@@ -66,9 +65,7 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
     private snackBar: SnackbarService,
     private translate: TranslateService,
     private gridService: GridService
-  ) {
-    super();
-  }
+  ) {}
 
   /** Sanitizes the text. */
   ngOnInit(): void {
@@ -271,21 +268,20 @@ export class EditorComponent extends UnsubscribeComponent implements OnInit {
       );
 
     if (aggregationItemQuery) {
-      aggregationItemQuery.valueChanges
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(({ data }) => {
-          let selectedItem;
-          if (type === 'resource') {
-            selectedItem = data.recordsAggregation.items[0];
-          } else {
-            selectedItem = data.referenceDataAggregation.items.find(
-              (item: any) =>
-                item[this.settings.aggregationItemIdentifier] ===
-                this.settings.aggregationItem
-            );
-          }
-          this.fieldsValue = selectedItem ? { ...selectedItem } : {};
-        });
+      const aggregationData = await firstValueFrom(
+        aggregationItemQuery.valueChanges
+      );
+      let selectedItem;
+      if (type === 'resource') {
+        selectedItem = aggregationData.data.recordsAggregation.items[0];
+      } else {
+        selectedItem = aggregationData.data.referenceDataAggregation.items.find(
+          (item: any) =>
+            item[this.settings.aggregationItemIdentifier] ===
+            this.settings.aggregationItem
+        );
+      }
+      this.fieldsValue = selectedItem ? { ...selectedItem } : {};
     }
   }
 

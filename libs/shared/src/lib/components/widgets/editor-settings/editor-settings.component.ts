@@ -258,7 +258,12 @@ export class EditorSettingsComponent
       this.tile.settings.record = this.tileForm.value.record;
       this.tile.settings.title = this.tileForm.value.title;
       this.tile.settings.resource = this.tileForm.value.resource;
+      this.tile.settings.referenceData = this.tileForm.value.referenceData;
       this.tile.settings.layout = this.tileForm.value.layout;
+      this.tile.settings.aggregation = this.tileForm.value.aggregation;
+      this.tile.settings.aggregationItem = this.tileForm.value.aggregationItem;
+      this.tile.settings.aggregationItemIdentifier =
+        this.tileForm.value.aggregationItemIdentifier;
     });
   }
 
