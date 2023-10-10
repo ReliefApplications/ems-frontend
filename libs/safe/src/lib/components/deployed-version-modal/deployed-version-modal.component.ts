@@ -7,9 +7,12 @@ import {
   FormWrapperModule,
   IconModule,
   TooltipModule,
-  SnackbarService
+  SnackbarService,
 } from '@oort-front/ui';
 
+/**
+ * Component to show the deployed version
+ */
 @Component({
   standalone: true,
   imports: [
@@ -18,8 +21,8 @@ import {
     IconModule,
     DialogModule,
     FormWrapperModule,
-    TooltipModule
-  ], 
+    TooltipModule,
+  ],
   selector: 'safe-deployed-version-modal',
   templateUrl: './deployed-version-modal.component.html',
   styleUrls: ['./deployed-version-modal.component.scss'],

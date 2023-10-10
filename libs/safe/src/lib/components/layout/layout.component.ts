@@ -324,6 +324,9 @@ export class SafeLayoutComponent
     });
   }
 
+  /**
+   * Opens the deployed version modal
+   */
   async onOpenDeployedVersion(): Promise<void> {
     console.log(this.environment);
     const { DeployedVersionModalComponent } = await import(
