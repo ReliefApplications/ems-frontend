@@ -538,6 +538,13 @@
 					"plural": "Les pages ont été réorganisées avec succès.",
 					"singular": "La page a été réorganisée avec succès."
 				},
+				"settings": {
+					"actions": "Actions",
+					"selectIcon": "Sélectionnez une icône",
+					"tooltip": {
+						"autoSave": "Les modifications sont automatiquement enregistrées"
+					}
+				},
 				"show": "Afficher la page dans la barre latérale de navigation"
 			},
 			"positionAttribute": {

@@ -46,7 +46,7 @@ interface QuickFilter {
 @Component({
   selector: 'shared-dashboard-filter',
   templateUrl: './dashboard-filter.component.html',
-  styleUrls: ['./dashboard-filter.component.scss'],
+  styleUrls: ['../../style/survey.scss', './dashboard-filter.component.scss'],
 })
 export class DashboardFilterComponent
   extends UnsubscribeComponent

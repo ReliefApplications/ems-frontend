@@ -26,24 +26,11 @@
               {{ dashboard.name }}
             </h1>
           </shared-editable-text>
+          <!-- Settings -->
           <ui-button
-            *ngIf="!isStep"
-            [isIcon]="true"
+            *ngIf="!formActive"
             variant="grey"
-            category="primary"
-            [icon]="dashboard.page?.visible ? 'visibility' : 'visibility_off'"
-            (click)="togglePageVisibility()"
-            [uiTooltip]="
-              (dashboard.page?.visible
-                ? 'components.application.pages.hide'
-                : 'components.application.pages.show'
-              ) | translate
-            "
-          >
-          </ui-button>
-          <ui-button
-            variant="grey"
-            (click)="onChangeIcon()"
+            (click)="onOpenSettings()"
             [isIcon]="true"
             icon="settings"
             [uiTooltip]="'common.settings' | translate"
@@ -74,21 +61,6 @@
             "
           >
           </ui-button>
-          <!-- Access -->
-          <shared-access
-            [access]="dashboard.permissions"
-            [application]="applicationId"
-            [objectTypeName]="'common.page.one' | translate"
-            (save)="saveAccess($event)"
-            *ngIf="
-              dashboard.page
-                ? dashboard.page.canUpdate
-                : dashboard.step
-                ? dashboard.step.canUpdate
-                : false
-            "
-          >
-          </shared-access>
           <!-- Context -->
           <ui-button
             variant="grey"
@@ -109,8 +81,6 @@
             [isIcon]="true"
             icon="more_vert"
             [uiMenuTriggerFor]="menu"
-            cdkOverlayOrigin
-            #appMenuTrigger="cdkOverlayOrigin"
             [uiTooltip]="'common.options' | translate"
           >
           </ui-button>
@@ -124,10 +94,6 @@
                 ) | translate
               }}
             </button>
-            <button uiMenuItem (click)="onAppSelection()">
-              <ui-icon icon="file_copy" variant="grey"></ui-icon>
-              {{ 'common.duplicate' | translate }}
-            </button>
             <button uiMenuItem (click)="onAddButtonAction()">
               <ui-icon icon="touch_app" variant="grey"></ui-icon>
               {{ 'models.dashboard.buttonActions.add' | translate }}
@@ -137,25 +103,6 @@
               {{ 'models.dashboard.share' | translate }}
             </button>
           </ui-menu>
-
-          <ng-template #searchMenuHeaderTemplate>
-            <ui-alert [closable]="true">
-              {{ 'models.page.tooltip.duplicate' | translate }}
-            </ui-alert>
-          </ng-template>
-          <ng-template
-            cdkConnectedOverlay
-            [cdkConnectedOverlayOrigin]="appMenuTrigger"
-            [cdkConnectedOverlayOpen]="showAppMenu"
-          >
-            <shared-search-menu
-              [headerTemplate]="searchMenuHeaderTemplate"
-              [currentApplicationId]="applicationId"
-              [applications]="applications"
-              (close)="showAppMenu = false"
-              (open)="onDuplicate($event)"
-            ></shared-search-menu>
-          </ng-template>
         </div>
       </div>
       <ng-container *ngIf="dashboard.page?.context">

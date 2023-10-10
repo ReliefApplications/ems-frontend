@@ -538,6 +538,13 @@
 					"plural": "******",
 					"singular": "******"
 				},
+				"settings": {
+					"actions": "******",
+					"selectIcon": "******",
+					"tooltip": {
+						"autoSave": "******"
+					}
+				},
 				"show": "******"
 			},
 			"positionAttribute": {

@@ -19,8 +19,8 @@ import { renderGlobalProperties } from '../../../survey/render-global-properties
 import { ReferenceDataService } from '../../../services/reference-data/reference-data.service';
 import { FormHelpersService } from '../../../services/form-helper/form-helper.service';
 import { Question } from '../../../survey/types';
-import 'survey-core/survey.i18n.js';
-import 'survey-creator-core/survey-creator-core.i18n.js';
+import 'survey-core/survey.i18n.min.js';
+//import 'survey-creator-core/survey-creator-core.i18n.min.js';
 
 /**
  * Data passed to initialize the filter builder
@@ -141,7 +141,10 @@ const CORE_QUESTION_ALLOWED_PROPERTIES = [
   standalone: true,
   selector: 'shared-filter-builder-modal',
   templateUrl: './filter-builder-modal.component.html',
-  styleUrls: ['./filter-builder-modal.component.scss'],
+  styleUrls: [
+    '../../../style/survey.scss',
+    './filter-builder-modal.component.scss',
+  ],
   imports: [
     CommonModule,
     FormBuilderModule,

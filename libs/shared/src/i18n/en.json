@@ -538,6 +538,13 @@
 					"plural": "The pages were successfully reordered.",
 					"singular": "The page was successfully reordered."
 				},
+				"settings": {
+					"actions": "Actions",
+					"selectIcon": "Select an icon",
+					"tooltip": {
+						"autoSave": "Changes are automatically saved"
+					}
+				},
 				"show": "Make page visible in nav bar for end-users"
 			},
 			"positionAttribute": {
