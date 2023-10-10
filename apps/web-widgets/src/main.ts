@@ -14,8 +14,12 @@ platformBrowserDynamic()
     /** Automatic insertion of form widget on application bootstrap on locally serving it */
     const body = document.getElementById('bodyPlaceholder');
     if (body) {
-      const formWidget = document.createElement('form-widget');
-      body.appendChild(formWidget);
+      // Form web widget
+      // const formWidget = document.createElement('form-widget');
+      // body.appendChild(formWidget);
+      // Application web widget
+      const appWidget = document.createElement('oort-web-widget-app');
+      body.appendChild(appWidget);
     }
   })
   .catch((err) => console.error(err));

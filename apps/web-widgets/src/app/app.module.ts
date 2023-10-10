@@ -13,6 +13,7 @@ import {
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
 import { FormWidgetModule } from './widgets/form-widget/form-widget.module';
+import { AppWidgetModule } from './widgets/app-widget/app-widget.module';
 import { environment } from '../environments/environment';
 import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
 import {
@@ -47,6 +48,8 @@ import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import localeEn from '@angular/common/locales/en';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
+import { AppWidgetComponent } from './widgets/app-widget/app-widget.component';
+import { RouterModule } from '@angular/router';
 // Register local translations for dates
 registerLocaleData(localeFr);
 registerLocaleData(localeEn);
@@ -135,8 +138,10 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     }),
     OverlayModule,
     FormWidgetModule,
+    AppWidgetModule,
     GraphQLModule,
     DateInputsModule,
+    RouterModule.forRoot([]),
   ],
   providers: [
     {
@@ -207,6 +212,12 @@ export class AppModule implements DoBootstrap {
       injector: this.injector,
     });
     customElements.define('form-widget', form);
+
+    // Form
+    const application = createCustomElement(AppWidgetComponent, {
+      injector: this.injector,
+    });
+    customElements.define('oort-web-widget-app', application);
 
     const fonts = [
       'https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap',

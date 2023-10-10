@@ -1,0 +1,56 @@
+<!-- We use a div so we can have a standard background when seeing the dashboard on fullscreen -->
+<div [ngClass]="{ 'p-8 h-full bg-white overflow-auto': isFullScreen }">
+  <ng-container
+    sharedFullScreen
+    [(isFullScreenMode)]="isFullScreen"
+    *sharedSkeleton="
+      loading;
+      repeat: 1;
+      height: '32px';
+      width: '120px';
+      shape: 'rectangle'
+    "
+  >
+    <ng-container *ngIf="dashboard && (showName || buttonActions.length > 0)">
+      <div class="flex flex-wrap items-center mb-6 gap-4 justify-between">
+        <ng-container *ngIf="showName">
+          <h1 class="!m-0 overflow-hidden text-ellipsis">
+            {{ dashboard.name }}
+          </h1>
+        </ng-container>
+        <div class="flex items-center gap-1">
+          <!-- Button actions -->
+          <shared-button-action
+            [buttonActions]="buttonActions"
+            [dashboard]="dashboard"
+          ></shared-button-action>
+          <!-- Fullscreen -->
+          <!-- <ui-button
+            variant="grey"
+            [isIcon]="true"
+            icon="{{ isFullScreen ? 'fullscreen_exit' : 'fullscreen' }}"
+            (click)="isFullScreen = !isFullScreen"
+            [uiTooltip]="
+              (isFullScreen ? 'common.exitFullscreen' : 'common.openFullScreen')
+                | translate
+            "
+          >
+          </ui-button> -->
+        </div>
+      </div>
+    </ng-container>
+    <shared-widget-grid
+      [loading]="loading"
+      [widgets]="widgets"
+      (changeStep)="changeStep.emit($event)"
+    ></shared-widget-grid>
+    <shared-dashboard-filter
+      *ngIf="showFilter && isFullScreen"
+      [isFullScreen]="isFullScreen"
+    ></shared-dashboard-filter>
+  </ng-container>
+</div>
+<shared-dashboard-filter
+  *ngIf="showFilter && !isFullScreen"
+  [isFullScreen]="isFullScreen"
+></shared-dashboard-filter>

@@ -1,8 +1,8 @@
 /* All the styling that would be applied for the web component within the shadow root */
 
 /* All the styling used for the leaflet maps and controls */
-@use 'node_modules/survey-angular/survey.min.css';
-@use 'node_modules/survey-creator/survey-creator.min.css';
+@use 'node_modules/survey-core/defaultV2.min.css';
+@use 'node_modules/survey-creator-core/survey-creator-core.min.css';
 @use 'node_modules/leaflet/dist/leaflet.css' as leaflet;
 @use 'node_modules/leaflet.markercluster/dist/MarkerCluster.css' as marker;
 @use 'node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css' as
@@ -11,9 +11,6 @@
 /* All the needed fonts for the web component */
 @import 'libs/styles/src/lib/tailwind/tailwind.scss';
 @import 'libs/styles/src/lib/kendo/theme.scss';
-@import 'libs/shared/src/lib/style/widgets.scss';
-@import 'libs/shared/src/lib/style/styles.scss';
-@import 'libs/shared/src/lib/style/survey.scss';
 @import 'libs/styles/src/lib/shared/shared.scss';
 
 /* Definition of the scss properties in the shadow root host element, won't affect any other element outside shadow-root */
