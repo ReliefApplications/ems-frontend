@@ -118,7 +118,8 @@ export class QueryBuilderService {
         this.availableQueries.next(
           // eslint-disable-next-line no-underscore-dangle
           data.__schema.queryType.fields.filter(
-            (x: any) => x.name.startsWith('all') || x.name.endsWith('Ref')
+            (x: any) =>
+              x.name.startsWith('all') || x.name.endsWith(REFERENCE_DATA_END)
           )
         );
         // eslint-disable-next-line no-underscore-dangle
@@ -181,7 +182,9 @@ export class QueryBuilderService {
       .getValue()
       .find((x) => x.name.toLowerCase() === queryName.toLowerCase());
     let typeName = query?.type?.name?.replace('Connection', '') || ''; //might be dangerous if a resource has Connection in its name
-    if (!query?.type?.name) typeName = queryName; //this is the case for reference data
+    if (!query?.type?.name) {
+      typeName = queryName; //this is the case for reference data
+    }
     const type = this.availableTypes
       .getValue()
       .find((x) => x.name.toLowerCase() === typeName.toLowerCase());

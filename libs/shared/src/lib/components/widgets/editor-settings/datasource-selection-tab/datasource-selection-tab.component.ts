@@ -34,6 +34,7 @@ import { GET_REFERENCE_DATAS, GET_RESOURCES } from '../graphql/queries';
 import { ReferenceData } from '../../../../models/reference-data.model';
 import { AggregationOriginSelectComponent } from '../../../aggregation/aggregation-origin-select/aggregation-origin-select.component';
 import { CoreGridModule } from '../../../ui/core-grid/core-grid.module';
+import { AggregationGridModule } from '../../../aggregation/aggregation-grid/aggregation-grid.module';
 
 /** Define max width of summary card */
 const MAX_COL_SPAN = 8;
@@ -50,6 +51,7 @@ const MAX_COL_SPAN = 8;
     LayoutModule,
     ButtonModule,
     CoreGridModule,
+    AggregationGridModule,
     IconModule,
     DividerModule,
     FormWrapperModule,
@@ -110,6 +112,22 @@ export class DatasourceSelectionTabComponent
   }
 
   ngOnInit(): void {
+    this.tileForm
+      .get('aggregation')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.tileForm.get('record')?.setValue(null);
+        this.tileForm.get('aggregationItem')?.setValue(null);
+        this.tileForm.get('aggregationItemIdentifier')?.setValue(null);
+      });
+    this.tileForm
+      .get('layout')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe(() => {
+        this.tileForm.get('record')?.setValue(null);
+        this.tileForm.get('aggregationItem')?.setValue(null);
+        this.tileForm.get('aggregationItemIdentifier')?.setValue(null);
+      });
     this.colsNumber = this.setColsNumber(window.innerWidth);
   }
 
@@ -266,11 +284,8 @@ export class DatasourceSelectionTabComponent
           );
       }
     } else {
-      if (this.selectedLayout) {
-        this.tileForm.get('record')?.setValue(null);
-      } else if (this.selectedAggregation) {
-        this.tileForm.get('aggregationItem')?.setValue(null);
-      }
+      this.tileForm.get('record')?.setValue(null);
+      this.tileForm.get('aggregationItem')?.setValue(null);
     }
   }
 }

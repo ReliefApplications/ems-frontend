@@ -4,6 +4,7 @@ import { Apollo } from 'apollo-angular';
 import { firstValueFrom } from 'rxjs';
 import {
   GET_LAYOUT,
+  GET_REFERENCE_DATA_AGGREGATION_DATA,
   GET_RESOURCE_METADATA,
 } from '../summary-card/graphql/queries';
 import { clone, get } from 'lodash';
@@ -14,6 +15,9 @@ import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { GridService } from '../../../services/grid/grid.service';
+import { ReferenceDataQueryResponse } from '../../../models/reference-data.model';
+import { AggregationService } from '../../../services/aggregation/aggregation.service';
+import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
 
 /**
  * Text widget component using KendoUI
@@ -52,6 +56,8 @@ export class EditorComponent implements OnInit {
     private apollo: Apollo,
     private queryBuilder: QueryBuilderService,
     private dataTemplateService: DataTemplateService,
+    private aggregationService: AggregationService,
+    private aggregationBuilderService: AggregationBuilderService,
     private dialog: Dialog,
     private snackBar: SnackbarService,
     private translate: TranslateService,
@@ -67,9 +73,13 @@ export class EditorComponent implements OnInit {
    * Sets content of the text widget, querying associated record if any.
    */
   private async setContentFromLayout(): Promise<void> {
-    if (this.settings.record) {
-      await this.getLayout();
-      await this.getData();
+    if (this.settings.record || this.settings.aggregationItem) {
+      if (this.settings.record) {
+        await this.getLayout();
+        await this.getResourceData();
+      } else if (this.settings.aggregationItem) {
+        await this.getReferenceDataData();
+      }
       this.formattedStyle = this.dataTemplateService.renderStyle(
         this.settings.wholeCardStyles || false,
         this.fieldsValue,
@@ -109,9 +119,9 @@ export class EditorComponent implements OnInit {
   }
 
   /**
-   * Queries the data.
+   * Queries the resource data.
    */
-  private async getData() {
+  private async getResourceData() {
     const metaRes = await firstValueFrom(
       this.apollo.query<ResourceQueryResponse>({
         query: GET_RESOURCE_METADATA,
@@ -179,6 +189,91 @@ export class EditorComponent implements OnInit {
             } catch (err) {
               console.error(err);
             }
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * Queries the reference data data.
+   */
+  private async getReferenceDataData() {
+    const metaRes = await firstValueFrom(
+      this.apollo.query<ReferenceDataQueryResponse>({
+        query: GET_REFERENCE_DATA_AGGREGATION_DATA,
+        variables: {
+          id: this.settings.referenceData,
+          aggregation: this.settings.aggregation
+            ? [this.settings.aggregation]
+            : [],
+        },
+      })
+    );
+
+    const queryName = this.aggregationService.setCurrentSourceQueryName(
+      metaRes.data.referenceData,
+      'referenceData'
+    );
+    const allGqlFields = this.queryBuilder.getFields(queryName);
+    // Fetch fields at the end of the pipeline
+    const aggregationItem: any =
+      metaRes.data.referenceData.aggregations?.edges[0].node;
+    const fieldsName =
+      metaRes.data.referenceData.fields?.map(
+        (field) => field.graphQLFieldName
+      ) ?? [];
+    const aggFields = this.aggregationBuilderService.fieldsAfter(
+      allGqlFields
+        ?.filter((x) => fieldsName.includes(x.name))
+        .map((field: any) => {
+          if (field.type?.kind !== 'SCALAR') {
+            field.fields = this.queryBuilder
+              .getFieldsFromType(
+                field.type?.kind === 'OBJECT'
+                  ? field.type.name
+                  : field.type.ofType.name
+              )
+              .filter((y) => y.type.name !== 'ID' && y.type?.kind === 'SCALAR');
+          }
+          return field;
+        }) || [],
+      aggregationItem.pipeline ?? []
+    );
+
+    this.fieldsValue = { ...aggregationItem };
+    // Convert them to query fields
+    const queryFields = this.aggregationBuilderService.formatFields(
+      aggFields.filter((field) =>
+        allGqlFields.some((x) => x.name === field.name)
+      )
+    );
+    // Create meta query from query fields
+    const metaQuery = this.queryBuilder.buildMetaQuery({
+      name: queryName,
+      fields: queryFields,
+    });
+    if (metaQuery) {
+      const metaData = await firstValueFrom(metaQuery);
+      for (const field in metaData.data) {
+        if (Object.prototype.hasOwnProperty.call(metaData.data, field)) {
+          const metaFields = Object.assign({}, metaData.data[field]);
+          try {
+            await this.gridService.populateMetaFields(metaFields);
+            this.fields = this.fields.map((field) => {
+              //add shape for columns and matrices
+              const metaData = metaFields[field.name];
+              if (metaData && (metaData.columns || metaData.rows)) {
+                return {
+                  ...field,
+                  columns: metaData.columns,
+                  rows: metaData.rows,
+                };
+              }
+              return field;
+            });
+          } catch (err) {
+            console.error(err);
           }
         }
       }

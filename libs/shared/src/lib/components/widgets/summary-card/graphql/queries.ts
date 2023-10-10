@@ -38,6 +38,34 @@ export const GET_RESOURCE_METADATA = gql`
   }
 `;
 
+/** Graphql request for getting reference data and given aggregation */
+export const GET_REFERENCE_DATA_AGGREGATION_DATA = gql`
+  query GetReferenceData($id: ID!, $aggregation: [ID]) {
+    referenceData(id: $id) {
+      id
+      name
+      type
+      fields
+      aggregations(ids: $aggregation) {
+        edges {
+          node {
+            id
+            name
+            sourceFields
+            pipeline
+            createdAt
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
+      }
+    }
+  }
+`;
+
 /** Graphql request for getting resource layout */
 export const GET_LAYOUT = gql`
   query GetLayout($resource: ID!, $id: ID) {

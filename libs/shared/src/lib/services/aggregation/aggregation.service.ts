@@ -24,6 +24,7 @@ import { Connection } from '../../utils/graphql/connection.type';
 import { CompositeFilterDescriptor } from '@progress/kendo-data-query';
 import { ResourceQueryResponse } from '../../models/resource.model';
 import { ReferenceDataQueryResponse } from '../../models/reference-data.model';
+import { REFERENCE_DATA_END } from '../query-builder/query-builder.service';
 
 /** Fallback AggregationConnection */
 const FALLBACK_AGGREGATIONS: Connection<Aggregation> = {
@@ -285,7 +286,17 @@ export class AggregationService {
         queryName = (source.queryName as string) ?? '';
         break;
       case 'referenceData':
-        queryName = (source?.name as string)?.replace(/\s/g, '') + 'Ref';
+        queryName =
+          (source?.name as string)
+            .split(' ')
+            .map((word) => {
+              // To build the query name for a reference data, we have to uppercase each of the words of it's name and join them
+              const firstLetterUppercase = word[0].toUpperCase();
+              const newWord = firstLetterUppercase + word.substring(1);
+              return newWord;
+            })
+            // After that we add the Ref suffix at the end
+            .join('') + REFERENCE_DATA_END;
         break;
       default:
         queryName = '';

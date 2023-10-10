@@ -1,5 +1,16 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { GridDataResult, PageChangeEvent } from '@progress/kendo-angular-grid';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+} from '@angular/core';
+import {
+  GridDataResult,
+  PageChangeEvent,
+  SelectionEvent,
+} from '@progress/kendo-angular-grid';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   Aggregation,
@@ -59,6 +70,11 @@ export class AggregationGridComponent
   @Input() contextFilters: string | undefined;
   /** Version at to be used with dashboard filters */
   @Input() at: string | undefined;
+  @Input() selectedRows: string[] = [];
+  @Input() selectable = false;
+  @Input() itemIdentifier = 'id';
+
+  @Output() selectionChange = new EventEmitter();
 
   /** @returns The column menu */
   get columnMenu(): { columnChooser: boolean; filter: boolean } {
@@ -277,7 +293,7 @@ export class AggregationGridComponent
     );
     // Create meta query from query fields
     const metaQuery = this.queryBuilder.buildMetaQuery({
-      name: this.aggregationService.setCurrentSourceQueryName(source, type),
+      name: queryName,
       fields: queryFields,
     });
     if (metaQuery) {
@@ -391,5 +407,28 @@ export class AggregationGridComponent
         : data.referenceDataAggregation.totalCount,
     };
     this.loading = loading;
+  }
+
+  /**
+   * Handle selection change event.
+   *
+   * @param selection Selection event.
+   */
+  public onSelectionChange(selection: SelectionEvent): void {
+    const deselectedRows = selection.deselectedRows || [];
+    const selectedRows = selection.selectedRows || [];
+    if (deselectedRows.length > 0) {
+      this.selectedRows = [
+        ...this.selectedRows.filter(
+          (x) => !deselectedRows.some((y) => x === y.dataItem.id)
+        ),
+      ];
+    }
+    if (selectedRows.length > 0) {
+      this.selectedRows = this.selectedRows.concat(
+        selectedRows.map((x) => x.dataItem.id)
+      );
+    }
+    this.selectionChange.emit(selection);
   }
 }

@@ -188,22 +188,39 @@
             </ui-select-menu>
           </div>
         </ng-container>
-        <shared-core-grid
-          class="h-96"
-          [settings]="selectedLayout ?? selectedAggregation"
-          [multiSelect]="false"
-          [selectable]="true"
-          [showExport]="false"
-          [selectedRows]="
-            selectedLayout && tileForm.get('record')?.value
-              ? [tileForm.get('record')?.value]
-              : selectedAggregation && tileForm.get('aggregationItem')?.value
-              ? [tileForm.get('aggregationItem')?.value]
-              : []
-          "
-          (selectionChange)="onSelectionChange($event)"
-        >
-        </shared-core-grid>
+        <ng-container *ngIf="selectedLayout; else aggregationGridTmpl">
+          <shared-core-grid
+            class="h-96"
+            [settings]="selectedLayout"
+            [multiSelect]="false"
+            [selectable]="true"
+            [showExport]="false"
+            [selectedRows]="
+              selectedLayout && tileForm.get('record')?.value
+                ? [tileForm.get('record')?.value]
+                : []
+            "
+            (selectionChange)="onSelectionChange($event)"
+          >
+          </shared-core-grid>
+        </ng-container>
+        <ng-template #aggregationGridTmpl>
+          <ng-container *ngIf="tileForm.get('aggregationItemIdentifier').value">
+            <shared-aggregation-grid
+              [resourceId]="tileForm.get('resource')?.value"
+              [referenceDataId]="tileForm.get('referenceData')?.value"
+              [aggregation]="selectedAggregation ?? {}"
+              [selectedRows]="
+                selectedAggregation && tileForm.get('aggregationItem')?.value
+                  ? [tileForm.get('aggregationItem')?.value]
+                  : []
+              "
+              [selectable]="true"
+              [itemIdentifier]="tileForm.get('aggregationItemIdentifier').value"
+              (selectionChange)="onSelectionChange($event)"
+            ></shared-aggregation-grid>
+          </ng-container>
+        </ng-template>
       </div>
     </ng-container>
   </div>

@@ -18,7 +18,7 @@ export interface ReferenceData {
   type?: referenceDataType;
   apiConfiguration?: ApiConfiguration;
   query?: string;
-  fields?: { name: string; type: string }[];
+  fields?: { name: string; type: string; graphQLFieldName?: string }[];
   valueField?: string;
   path?: string;
   data?: any;
