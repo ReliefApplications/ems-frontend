@@ -336,7 +336,10 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
   togglePageVisibility() {
     // If form is page
     const callback = () => {
-      this.page = { ...this.page, visible: !this.page?.visible };
+      this.page = {
+        ...this.page,
+        visible: !this.page?.visible,
+      };
     };
     this.applicationService.togglePageVisibility(
       {
