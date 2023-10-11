@@ -42,6 +42,7 @@
 				"clear": "Clear search"
 			}
 		},
+		"asc": "Ascending",
 		"attribute": {
 			"few": "Attributes",
 			"none": "No attribute",
@@ -151,6 +152,7 @@
 		"delete": "Delete",
 		"deleteObject": "Delete {{name}}",
 		"deleted": "Deleted",
+		"desc": "Descending",
 		"dismiss": "Dismiss",
 		"display": "Display",
 		"distributionList": {

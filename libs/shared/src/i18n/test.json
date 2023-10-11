@@ -42,6 +42,7 @@
 				"clear": "******"
 			}
 		},
+		"asc": "******",
 		"attribute": {
 			"few": "******",
 			"none": "******",
@@ -151,6 +152,7 @@
 		"delete": "******",
 		"deleteObject": "****** {{name}}",
 		"deleted": "******",
+		"desc": "******",
 		"dismiss": "******",
 		"display": "******",
 		"distributionList": {

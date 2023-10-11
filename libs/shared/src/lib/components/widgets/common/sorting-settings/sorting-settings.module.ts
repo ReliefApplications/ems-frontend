@@ -18,7 +18,8 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { EmptyModule } from '../../../ui/empty/empty.module';
 
 /**
- * Module for the sorting-settings component
+ * Widget sorting settings module.
+ * Used by grid & summary card widgets, to sort the data.
  */
 @NgModule({
   declarations: [SortingSettingsComponent],

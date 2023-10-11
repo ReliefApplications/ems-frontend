@@ -42,6 +42,7 @@
 				"clear": "Supprimer la recherche"
 			}
 		},
+		"asc": "Croissant",
 		"attribute": {
 			"few": "Attributs",
 			"none": "Aucun attribut",
@@ -151,6 +152,7 @@
 		"delete": "Supprimer",
 		"deleteObject": "Supprimer {{name}}",
 		"deleted": "Supprimé",
+		"desc": "Décroissant",
 		"dismiss": "Fermer",
 		"display": "Afficher",
 		"distributionList": {
