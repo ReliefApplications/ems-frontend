@@ -328,14 +328,10 @@ export class SafeLayoutComponent
    * Opens the deployed version modal
    */
   async onOpenDeployedVersion(): Promise<void> {
-    console.log(this.environment);
     const { DeployedVersionModalComponent } = await import(
       '../deployed-version-modal/deployed-version-modal.component'
     );
-    const dialogRef = this.dialog.open(DeployedVersionModalComponent);
-    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
-      console.log(value);
-    });
+    this.dialog.open(DeployedVersionModalComponent);
   }
 
   /**

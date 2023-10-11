@@ -14,10 +14,10 @@
                         icon="content_copy"
                         category="secondary"
                         variant="primary"
-                        (click)="copyToClipboard('2.x.x')"
+                        (click)="copyToClipboard(environment.version)"
                         [uiTooltip]="'components.deployedVersion.tooltip.copyToClipboard' | translate"
                     >
-                        2.x.x
+                        {{ environment.version }}
                     </ui-button> 
                 </div>
                 <div class="flex mb-2">
@@ -26,9 +26,10 @@
                         icon="content_copy"
                         category="secondary"
                         variant="primary"
+                        (click)="copyToClipboard('test123')"
                         [uiTooltip]="'components.deployedVersion.tooltip.copyToClipboard' | translate"
                     >
-                        awegawe
+                        test123
                     </ui-button> 
                 </div>
             </div>
@@ -37,14 +38,15 @@
                     <div class="w-1/2 font-semibold">{{ 'components.deployedVersion.backend' | translate }}</div>
                 </div>
                 <div class="flex mb-2">
-                    <div class="w-1/2">Version</div>
+                    <div class="w-1/2">{{ 'components.deployedVersion.version' | translate }}</div>
                     <ui-button
                         icon="content_copy"
                         category="secondary"
                         variant="primary"
+                        (click)="copyToClipboard(environment.version)"
                         [uiTooltip]="'components.deployedVersion.tooltip.copyToClipboard' | translate"
                     >
-                        2.x.x
+                    {{ environment.version }}
                     </ui-button> 
                 </div>
                 <div class="flex mb-2">
@@ -53,9 +55,10 @@
                         icon="content_copy"
                         category="secondary"
                         variant="primary"
+                        (click)="copyToClipboard('test456')"
                         [uiTooltip]="'components.deployedVersion.tooltip.copyToClipboard' | translate"
                     >
-                        jnaweawe
+                        test456
                     </ui-button> 
                 </div>
             </div>
