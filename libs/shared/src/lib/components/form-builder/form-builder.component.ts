@@ -333,7 +333,7 @@ export class FormBuilderComponent
   /**
    * Add custom actions to the question action items bar
    */
-  private addCustomActionsToQuestionItemBar() { 
+  private addCustomActionsToQuestionItemBar() {
     this.surveyCreator.onDefineElementMenuItems.add((_, options) => {
       const question = options.obj;
 
@@ -359,11 +359,11 @@ export class FormBuilderComponent
         options.items.push(moveUpAdorner);
         options.items.push(moveDownAdorner);
       }
-  });
+    });
 
-    const moveUpButton  = (question: any) => {
+    const moveUpButton = (question: any) => {
       return new Action({
-        id: "moveUpButton",
+        id: 'moveUpButton',
         iconName: 'icon-arrow-up',
         css: 'sv-action-bar-item--secondary sv-action-bar-item__icon',
         title: this.translate.instant('pages.formBuilder.move.up'),
@@ -378,20 +378,25 @@ export class FormBuilderComponent
 
           // get the index of the current question in the page
           const questionIndex =
-            this.surveyCreator.survey.pages[pageIndex].questions.indexOf(question);
+            this.surveyCreator.survey.pages[pageIndex].questions.indexOf(
+              question
+            );
 
           // remove the element from the current page
           this.surveyCreator.survey.pages[pageIndex].removeElement(question);
 
           // add it back to the page at the previous index
-          this.surveyCreator.survey.pages[pageIndex].addElement(question, questionIndex - 1);
-        }
+          this.surveyCreator.survey.pages[pageIndex].addElement(
+            question,
+            questionIndex - 1
+          );
+        },
       });
-    }
+    };
 
-    const moveDownButton  = (question: any) => {
+    const moveDownButton = (question: any) => {
       return new Action({
-        id: "moveDownButton",
+        id: 'moveDownButton',
         iconName: 'icon-arrow-down',
         css: 'sv-action-bar-item--secondary sv-action-bar-item__icon',
         title: this.translate.instant('pages.formBuilder.move.down'),
@@ -399,14 +404,16 @@ export class FormBuilderComponent
           if (!question) {
             return;
           }
-           // get the page index of current question
-           const pageIndex = this.surveyCreator.survey.pages.findIndex(
+          // get the page index of current question
+          const pageIndex = this.surveyCreator.survey.pages.findIndex(
             (page: any) => page.questions.indexOf(question) !== -1
           );
 
           // get the index of the current question in the page
           const questionIndex =
-          this.surveyCreator.survey.pages[pageIndex].questions.indexOf(question);
+            this.surveyCreator.survey.pages[pageIndex].questions.indexOf(
+              question
+            );
 
           if (
             questionIndex ===
@@ -418,10 +425,13 @@ export class FormBuilderComponent
           this.surveyCreator.survey.pages[pageIndex].removeElement(question);
 
           // add it back to the page at the previous index
-          this.surveyCreator.survey.pages[pageIndex].addElement(question, questionIndex + 1);
-        }
+          this.surveyCreator.survey.pages[pageIndex].addElement(
+            question,
+            questionIndex + 1
+          );
+        },
       });
-    }
+    };
   }
 
   /**
