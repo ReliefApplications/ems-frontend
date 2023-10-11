@@ -275,6 +275,8 @@ export class EditorComponent implements OnInit {
       if (type === 'resource') {
         selectedItem = aggregationData.data.recordsAggregation.items[0];
       } else {
+        /**@TODO Once the contextFilters are implemented in the backend for reference data, change this line with */
+        /** selectedItem = aggregationData.data.referenceDataAggregation.items[0] */
         selectedItem = aggregationData.data.referenceDataAggregation.items.find(
           (item: any) =>
             item[this.settings.aggregationItemIdentifier] ===
