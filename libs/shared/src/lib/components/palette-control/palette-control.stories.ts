@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export default {
   component: PaletteControlComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [

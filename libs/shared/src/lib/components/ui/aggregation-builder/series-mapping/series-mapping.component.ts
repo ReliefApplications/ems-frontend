@@ -17,11 +17,13 @@ export class SeriesMappingComponent
   extends UnsubscribeComponent
   implements OnInit, OnChanges
 {
-  // === DATA ===
+  /** Input decorator for availableFields. */
   @Input() availableFields: any[] = [];
+  /** Object to hold the fields by control. */
   public fieldsByControl: any = {};
-  // === REACTIVE FORM ===
+  /** Input decorator for formGroup. */
   @Input() formGroup!: AbstractControl;
+  /** Array to hold the control names. */
   public controlNames: string[] = [];
 
   /**
@@ -30,11 +32,11 @@ export class SeriesMappingComponent
   constructor() {
     super();
   }
-
+  /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.setControlListeners();
   }
-
+  /** OnChanges lifecycle hook. */
   ngOnChanges(): void {
     this.setControlListeners();
   }

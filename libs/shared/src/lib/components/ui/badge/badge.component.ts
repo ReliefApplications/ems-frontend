@@ -11,9 +11,10 @@ import { BadgeVariant } from './badge-variant.enum';
   styleUrls: ['./badge.component.scss'],
 })
 export class BadgeComponent {
+  /** Input decorator for size. */
   @Input() size: BadgeSize | string = BadgeSize.MEDIUM;
-
+  /** Input decorator for variant. */
   @Input() variant: BadgeVariant | string = BadgeVariant.DEFAULT;
-
+  /** Input decorator for icon. */
   @Input() icon = '';
 }

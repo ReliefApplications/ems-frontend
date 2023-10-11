@@ -18,17 +18,23 @@ import { takeUntil } from 'rxjs/operators';
   styleUrls: ['./pipeline.component.scss'],
 })
 export class PipelineComponent extends UnsubscribeComponent implements OnInit {
+  /** Public variable for stage type. */
   public stageType = PipelineStage;
+  /** Array to hold the list of stages. */
   public stageList: string[] = Object.values(PipelineStage);
 
-  // === DATA ===
+  /** Input decorator for fields$. */
   @Input() public fields$!: Observable<any[]>;
+  /** Input decorator for metaFields$. */
   @Input() public metaFields$!: Observable<any[]>;
+  /** Array to hold the meta fields. */
   public metaFields: any[] = [];
+  /** Array to hold the initial fields. */
   public initialFields: any[] = [];
+  /** Array to hold the fields per stage. */
   public fieldsPerStage: any[] = [];
 
-  // === PARENT FORM ===
+  /** Input decorator for pipelineForm. */
   @Input() pipelineForm!: UntypedFormArray;
 
   /**
@@ -39,7 +45,7 @@ export class PipelineComponent extends UnsubscribeComponent implements OnInit {
   constructor(private aggregationBuilder: AggregationBuilderService) {
     super();
   }
-
+  /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.fields$.subscribe((fields: any[]) => {
       this.initialFields = [...fields];

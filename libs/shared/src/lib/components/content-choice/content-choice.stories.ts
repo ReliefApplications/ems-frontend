@@ -16,6 +16,7 @@ export default {
       providers: [],
     }),
   ],
+  tags: ['autodocs'],
   title: 'UI/Content Type Choice',
 } as Meta;
 /**

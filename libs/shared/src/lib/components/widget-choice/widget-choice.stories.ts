@@ -7,6 +7,7 @@ import { StorybookTranslateModule } from '../storybook-translate/storybook-trans
 
 export default {
   component: WidgetChoiceComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [
