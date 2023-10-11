@@ -60,6 +60,14 @@ body {
   @apply box-border rounded shadow-xl flex items-center justify-between bg-white;
 }
 
+tr.cdk-drag-preview {
+  display: table;
+  > * {
+    display: table-cell;
+    vertical-align: middle;
+  }
+}
+
 .cdk-drag-animating {
   @apply transition-transform;
 }
