@@ -94,6 +94,7 @@ export class EmailService {
         },
       }
     );
+    const snackBarSpinner = snackBarRef.instance.nestedComponent;
     let fileFolderId = '';
     if (files && files.length > 0) {
       const response = await firstValueFrom(this.sendFiles(files));
@@ -124,19 +125,19 @@ export class EmailService {
       )
       .subscribe({
         next: () => {
-          (snackBarRef.instance.message = this.translate.instant(
+          (snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.email.sent'
           )),
-            (snackBarRef.instance.loading = false);
+            (snackBarSpinner.instance.loading = false);
 
           setTimeout(() => snackBarRef.instance.dismiss(), 1000);
         },
         error: () => {
-          (snackBarRef.instance.message = this.translate.instant(
+          (snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.email.error'
           )),
-            (snackBarRef.instance.loading = false);
-          snackBarRef.instance.error = true;
+            (snackBarSpinner.instance.loading = false);
+          snackBarSpinner.instance.error = true;
           setTimeout(() => snackBarRef.instance.dismiss(), 1000);
         },
       });
@@ -182,6 +183,7 @@ export class EmailService {
         },
       }
     );
+    const snackBarSpinner = snackBarRef.instance.nestedComponent;
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
@@ -203,10 +205,10 @@ export class EmailService {
       )
       .subscribe({
         next: async (res) => {
-          snackBarRef.instance.message = this.translate.instant(
+          snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.email.ready'
           );
-          snackBarRef.instance.loading = false;
+          snackBarSpinner.instance.loading = false;
           setTimeout(() => snackBarRef.instance.dismiss(), 1000);
           const { EmailPreviewComponent } = await import(
             '../../components/email-preview/email-preview.component'
@@ -234,11 +236,11 @@ export class EmailService {
           });
         },
         error: () => {
-          snackBarRef.instance.message = this.translate.instant(
+          snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.email.error'
           );
-          snackBarRef.instance.loading = false;
-          snackBarRef.instance.error = true;
+          snackBarSpinner.instance.loading = false;
+          snackBarSpinner.instance.error = true;
 
           setTimeout(() => snackBarRef.instance.dismiss(), 1000);
         },
