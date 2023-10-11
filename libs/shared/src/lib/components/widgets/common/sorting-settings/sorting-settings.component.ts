@@ -28,6 +28,8 @@ export class SortingSettingsComponent implements OnInit {
     { value: 'asc', text: 'ASC' },
     { value: 'desc', text: 'DESC' },
   ];
+  /** Enabled drag behavior, needed to set the drag on run time so cdkDragHandle directive works in the table */
+  public dragEnabled = false;
 
   /**
    * Constructor for sorting-settings component
