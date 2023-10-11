@@ -9,6 +9,7 @@ export default {
   decorators: [
     moduleMetadata({
       imports: [
+        RecordSummaryModule,
         BrowserAnimationsModule,
         RecordSummaryModule,
         StorybookTranslateModule,
@@ -33,63 +34,77 @@ export default {
  * @param args the properties of the instance of RecordSummaryComponent
  * @returns the template
  */
-const TEMPLATE: StoryFn<RecordSummaryComponent> = (args) => ({
-  props: {
-    ...args,
-  },
+const Template: StoryFn<RecordSummaryComponent> = (
+  args: RecordSummaryComponent
+) => ({
+  props: args,
 });
 
 /**
  * Default story.
  */
-export const DEFAULT = {
-  render: TEMPLATE,
-  name: 'Default',
-
-  args: {
-    record: {
-      createdBy: {
-        name: 'Dummy',
-      },
-      createdAt: new Date(),
-      modifiedBy: {
-        name: 'Dummy',
-      },
-      modifiedAt: new Date(),
+export const Default = Template.bind({});
+Default.args = {
+  record: {
+    createdBy: {
+      name: 'Dummy',
     },
-    cacheDate: new Date(),
+    createdAt: new Date(),
+    modifiedBy: {
+      name: 'Dummy',
+    },
+    modifiedAt: new Date(),
   },
+  cacheDate: new Date(),
 };
+//  = {
+//   render: TEMPLATE,
+//   name: 'Default',
+
+//   args: {
+//     record: {
+//       createdBy: {
+//         name: 'Dummy',
+//       },
+//       createdAt: new Date(),
+//       modifiedBy: {
+//         name: 'Dummy',
+//       },
+//       modifiedAt: new Date(),
+//     },
+//     cacheDate: new Date(),
+//   },
+// };
 
 /**
  * Cache only story.
  */
-export const CACHE_ONLY = {
-  render: TEMPLATE,
-  name: 'Cache only',
+// export const CACHE_ONLY = {
+//   render: TEMPLATE,
+//   name: 'Cache only',
 
-  args: {
-    cacheDate: new Date(),
-  },
-};
+//   args: {
+//     cacheDate: new Date(),
+//   },
+// };
 
 /**
  * Without cache story.
  */
-export const WITHOUT_CACHE = {
-  render: TEMPLATE,
-  name: 'Without cache',
+// export const WITHOUT_CACHE = {
+//   render: TEMPLATE,
+//   name: 'Without cache',
 
-  args: {
-    record: {
-      createdBy: {
-        name: 'Dummy',
-      },
-      createdAt: new Date(),
-      modifiedBy: {
-        name: 'Dummy',
-      },
-      modifiedAt: new Date(),
-    },
-  },
-};
+//   args: {
+//     record: {
+//       createdBy: {
+//         name: 'Dummy',
+//       },
+//       createdAt: new Date(),
+//       modifiedBy: {
+//         name: 'Dummy',
+//       },
+//       modifiedAt: new Date(),
+//     },
+//   },
+// };
