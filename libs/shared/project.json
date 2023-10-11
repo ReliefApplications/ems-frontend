@@ -32,13 +32,19 @@
         "port": 4400,
         "configDir": "libs/shared/.storybook",
         "browserTarget": "shared:build-storybook",
-        "compodoc": false,
-        "styles": ["libs/shared/src/lib/style/styles.scss"],
+        "compodoc": true,
+        "compodocArgs": ["-e", "json", "-d", "libs/shared"],
+        "styles": [
+          "libs/shared/src/lib/style/styles.scss",
+          "libs/styles/src/lib/storybook/storybook.scss",
+          "libs/styles/src/lib/tailwind/tailwind.scss",
+          "libs/styles/src/lib/shared/shared.scss",
+          "libs/styles/src/lib/kendo/theme.scss",
+          "node_modules/survey-core/defaultV2.min.css",
+          "node_modules/survey-core/survey.min.css"
+        ],
         "stylePreprocessorOptions": {
-          "includePaths": [
-            "libs/styles/src/lib/themes/default",
-            "libs/styles/src/lib/kendo"
-          ]
+          "includePaths": ["libs/styles/src/lib/themes/default"]
         }
       },
       "configurations": {

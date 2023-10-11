@@ -4,46 +4,21 @@
   <div class="flex flex-wrap items-center justify-between mb-6 gap-4">
     <div class="flex items-center overflow-hidden">
       <!-- Page name and name edition -->
-      <div class="flex items-center gap-1">
-        <shared-editable-text
-          [text]="page ? page.name || '' : step ? step.name || '' : ''"
-          [canEdit]="canEditName"
-          (onChange)="saveName($event)"
-          (formActiveEvent)="formActive = $event"
-        >
-          <h1 class="!m-0 overflow-hidden text-ellipsis">
-            {{ page ? page.name || '' : step ? step.name || '' : '' }}
-          </h1>
-        </shared-editable-text>
-        <ui-button
-          *ngIf="page && !isStep"
-          [isIcon]="true"
-          variant="grey"
-          category="primary"
-          [icon]="page.visible ? 'visibility' : 'visibility_off'"
-          (click)="togglePageVisibility()"
-          [uiTooltip]="
-            (page.visible
-              ? 'components.application.pages.hide'
-              : 'components.application.pages.show'
-            ) | translate
-          "
-        >
-        </ui-button>
-      </div>
-      <!-- Page access -->
-      <shared-access
-        [access]="page ? page.permissions : step ? step.permissions : null"
-        [application]="applicationId"
-        [objectTypeName]="'common.page.one' | translate"
-        (save)="saveAccess($event)"
-        *ngIf="
-          !formActive && (page ? page.canUpdate : step ? step.canUpdate : false)
-        "
-      ></shared-access>
+      <shared-editable-text
+        [text]="page ? page.name || '' : step ? step.name || '' : ''"
+        [canEdit]="canEditName"
+        (onChange)="saveName($event)"
+        (formActiveEvent)="formActive = $event"
+      >
+        <h1 class="!m-0 overflow-hidden text-ellipsis">
+          {{ page ? page.name || '' : step ? step.name || '' : '' }}
+        </h1>
+      </shared-editable-text>
+      <!-- Page settings -->
       <ui-button
+        *ngIf="!formActive"
         variant="grey"
-        (click)="onChangeIcon()"
+        (click)="onOpenSettings()"
         [isIcon]="true"
         icon="settings"
         [uiTooltip]="'common.settings' | translate"
