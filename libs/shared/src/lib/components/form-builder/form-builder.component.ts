@@ -211,7 +211,7 @@ export class FormBuilderComponent
         survey.applyTheme({
           isPanelless: true,
           cssVariables: {
-            '--sjs-base-unit': '.66em',
+            '--sjs-base-unit': '.5em',
           },
         });
         survey.onAfterRenderQuestion.add(
