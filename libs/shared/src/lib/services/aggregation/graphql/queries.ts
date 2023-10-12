@@ -88,6 +88,8 @@ export const GET_REFERENCE_DATA_AGGREGATION_DATA = gql`
     $mapping: JSON
     $first: Int
     $skip: Int
+    $sortOrder: String
+    $sortField: String
   ) {
     referenceDataAggregation(
       referenceData: $referenceData
@@ -95,6 +97,8 @@ export const GET_REFERENCE_DATA_AGGREGATION_DATA = gql`
       mapping: $mapping
       first: $first
       skip: $skip
+      sortOrder: $sortOrder
+      sortField: $sortField
     )
   }
 `;
