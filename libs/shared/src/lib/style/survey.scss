@@ -238,18 +238,12 @@
     @apply rounded-md;
   }
 
-  --sjs-base-unit: 0.66em;
+  --sjs-base-unit: 0.5em;
 
   .sd-header__text {
     .sd-title {
       --sjs-font-size: 12px; //Reduces size of titles
     }
-  }
-
-  .sd-question__header { //removes the margin-top and aligns question title with the middle of the input (in the case of left and right titles)
-    display: flex;
-    align-items: center;
-    margin-top: unset;
   }
 
   .sd-root-modern {

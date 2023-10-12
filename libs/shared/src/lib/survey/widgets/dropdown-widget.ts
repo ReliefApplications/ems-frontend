@@ -35,6 +35,16 @@ export const init = (
       widget.willUnmount(question);
       // remove default render
       el.parentElement?.querySelector('.sv_select_wrapper')?.remove();
+      const questionTitle =
+        el.parentElement?.parentElement?.parentElement?.querySelector(
+          '.sd-question__header'
+        )?.classList;
+      questionTitle?.add('flex', 'items-center', 'mt-0', 'max-w-1/2', 'w-auto'); //we find the question title and modify its position to have it in the middle (for left and right titles)
+      questionTitle?.remove(
+        'sd-question__header',
+        'sd-question__header--location--left',
+        'sd-question__header--location--right'
+      );
       let dropdownDiv: HTMLDivElement | null = null;
       dropdownDiv = document.createElement('div');
       dropdownDiv.classList.add('flex', 'min-h-[40px]');
