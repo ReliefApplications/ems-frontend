@@ -40,18 +40,6 @@ import { PureAbility } from '@casl/ability';
 registerLocaleData(localeFr);
 registerLocaleData(localeEn);
 
-// Kendo datepicker for surveyjs
-// import {
-//   CalendarDOMService,
-//   CenturyViewService,
-//   DecadeViewService,
-//   HoursService,
-//   MinutesService,
-//   MonthViewService,
-//   TimePickerDOMService,
-//   TOUCH_ENABLED,
-//   YearViewService,
-// } from '@progress/kendo-angular-dateinputs';
 import { PopupService } from '@progress/kendo-angular-popup';
 import { ResizeBatchService } from '@progress/kendo-angular-common';
 import { IconsService } from '@progress/kendo-angular-icons';

@@ -9,10 +9,16 @@ import { FormModule } from './form.module';
 import { DialogModule } from '@angular/cdk/dialog';
 import { ApolloModule } from 'apollo-angular';
 import { StorybookTranslateModule } from '../storybook-translate/storybook-translate-module';
-import { importProvidersFrom } from '@angular/core';
+import { APP_INITIALIZER, importProvidersFrom } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthService } from '../../services/auth/auth.service';
 import { BehaviorSubject } from 'rxjs';
+import { FormService } from '../../services/form/form.service';
+import { PopupService } from '@progress/kendo-angular-popup';
+import { ResizeBatchService } from '@progress/kendo-angular-common';
+import { IconsService } from '@progress/kendo-angular-icons';
+import { ComponentCollection, CustomWidgetCollection } from 'survey-core';
+import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 
 // You can create new stories getting the logic from: https://surveyjs.io/create-free-survey
 
@@ -32,7 +38,19 @@ class MockAuthService {
     roles: [],
     id: 'dummyid',
   });
+
+  constructor() {
+    console.log('init');
+  }
 }
+
+const initializeApp =
+  (formService: FormService): any =>
+  () => {
+    CustomWidgetCollection.Instance.clear();
+    ComponentCollection.Instance.clear();
+    formService.initialize();
+  };
 
 export default {
   title: 'Form/Examples',
@@ -45,6 +63,7 @@ export default {
         importProvidersFrom(BrowserAnimationsModule),
         importProvidersFrom(StorybookTranslateModule),
         importProvidersFrom(ApolloModule),
+        importProvidersFrom(DateInputsModule),
         {
           provide: 'environment',
           useValue: {},
@@ -53,6 +72,15 @@ export default {
           provide: AuthService,
           useValue: new MockAuthService(),
         },
+        {
+          provide: APP_INITIALIZER,
+          useFactory: initializeApp,
+          multi: true,
+          deps: [FormService],
+        },
+        PopupService,
+        ResizeBatchService,
+        IconsService,
       ],
     }),
     moduleMetadata({
