@@ -1,4 +1,4 @@
-@import "variables.scss";
+@import 'variables.scss';
 
 ::ng-deep .sv-boolean:not(.sv-boolean--checked) {
   .sv-boolean__switch {
@@ -19,7 +19,7 @@
   flex-direction: column;
   max-width: 100%;
 
-  .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) {
+  .sv_q_erbox:not([style*='display: none']):not([style*='display:none']) {
     background-color: transparent;
     border: none;
     order: 2;
@@ -182,9 +182,9 @@
       padding-left: 16px !important;
     }
     .k-input-button {
-      width: 46px !important;
-      height: 46px !important;
-      margin-right: 2px !important;
+      width: 20px !important;
+      height: 20px !important;
+      margin-right: 15px !important;
       background-color: white !important;
       border: none !important;
       border-radius: 4px !important;
@@ -236,6 +236,24 @@
   .k-popup,
   .k-list {
     @apply rounded-md;
+  }
+
+  --sjs-base-unit: 0.66em;
+
+  .sd-header__text {
+    .sd-title {
+      --sjs-font-size: 12px; //Reduces size of titles
+    }
+  }
+
+  .sd-question__header { //removes the margin-top and aligns question title with the middle of the input (in the case of left and right titles)
+    display: flex;
+    align-items: center;
+    margin-top: unset;
+  }
+
+  .sd-root-modern {
+    --sd-base-vertical-padding: 10px !important; //Reduces space between questions
   }
 
   // File upload file wrapper
