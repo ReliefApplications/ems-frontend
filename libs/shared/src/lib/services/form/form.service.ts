@@ -43,20 +43,21 @@ export class FormService {
     @Inject(DOCUMENT) private document: Document
   ) {
     this.environment = environment;
-    this.setSurveyCreatorInstance();
   }
 
   /**
-   * Set any custom components needed for our survey creator instance
+   * Initialize form builder in Angular.
+   * Initialize custom widgets / components we added on top of the form builder library.
    *
    * @param additionalQuestions Object narrowing the question types that the survey has to have
    * @param additionalQuestions.customQuestions If the survey creator should contain custom questions
    */
-  setSurveyCreatorInstance(
+  initialize(
     additionalQuestions: { customQuestions: boolean } = {
       customQuestions: true,
     }
   ) {
+    console.log('init');
     initCustomSurvey(
       this.environment,
       this.injector,
