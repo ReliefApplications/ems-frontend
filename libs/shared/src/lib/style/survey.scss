@@ -129,7 +129,7 @@
       border-0;
   }
   .sd-text {
-    height: 40px;
+    @apply text-sm h-10;
   }
   .k-multiselect {
     .k-clear-value {
