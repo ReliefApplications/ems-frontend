@@ -337,6 +337,11 @@ export class FormBuilderComponent
     this.surveyCreator.onDefineElementMenuItems.add((_, options) => {
       const question = options.obj;
 
+      // if is not question it's not displayed the moveUp and moveDown
+      if (question.isPage) {
+        return;
+      }
+
       // Create a "moveUp" adorner for all question types
       const moveUpAdorner = moveUpButton(question);
 
@@ -368,10 +373,6 @@ export class FormBuilderComponent
         css: 'sv-action-bar-item--secondary sv-action-bar-item__icon',
         title: this.translate.instant('pages.formBuilder.move.up'),
         action: () => {
-          console.log(question);
-          if (!question) {
-            return;
-          }
           const pageIndex = this.surveyCreator.survey.pages.findIndex(
             (page: any) => page.questions.indexOf(question) !== -1
           );
@@ -401,9 +402,6 @@ export class FormBuilderComponent
         css: 'sv-action-bar-item--secondary sv-action-bar-item__icon',
         title: this.translate.instant('pages.formBuilder.move.down'),
         action: () => {
-          if (!question) {
-            return;
-          }
           // get the page index of current question
           const pageIndex = this.surveyCreator.survey.pages.findIndex(
             (page: any) => page.questions.indexOf(question) !== -1
