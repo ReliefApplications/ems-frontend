@@ -326,107 +326,67 @@ export class FormBuilderComponent
     this.surveyCreator.survey.locale = surveyLocalization.currentLocale; // -> set the defaultLanguage property also
 
     // add move up/down buttons
-    // ¿No need? As the new surveyjs creator has a built in drag and drop feature to move questions between pages and within a page between questions
-    this.addCustomActionsToQuestionItemBar();
+    this.addAdorners();
   }
 
   /**
    * Add custom actions to the question action items bar
    */
-  private addCustomActionsToQuestionItemBar() {
+  private addAdorners() {
     this.surveyCreator.onDefineElementMenuItems.add((_, options) => {
-      const question = options.obj;
-
-      // if is not question it's not displayed the moveUp and moveDown
-      if (question.isPage) {
+      const element = options.obj;
+      // Only display for questions & panels
+      if (element.isPage) {
         return;
       }
 
-      // Create a "moveUp" adorner for all question types
-      const moveUpAdorner = moveUpButton(question);
-
-      // Create a "moveDown" adorner for all question types
-      const moveDownAdorner = moveDownButton(question);
-
-      // Find the `delete` action's position.
-      let index = -1;
-      for (let i = 0; i < options.items.length; i++) {
-        if (options.items[i].name === 'delete') {
-          index = i;
-          break;
-        }
-      }
-      // Insert the new action before `delete` or as the last action if `delete` is not found
-      if (index > -1) {
-        options.items.splice(index, 0, moveDownAdorner);
-        options.items.splice(index, 0, moveUpAdorner);
-      } else {
+      // Add 'up' & 'down' adorners to panels & questions
+      const parent = element.parent;
+      const index = parent.elements.indexOf(element);
+      if (index > 0) {
+        const moveUpAdorner = moveUpButton(element);
         options.items.push(moveUpAdorner);
+      }
+      if (index < parent.elements.length - 1) {
+        const moveDownAdorner = moveDownButton(element);
         options.items.push(moveDownAdorner);
       }
     });
 
-    const moveUpButton = (question: any) => {
+    const moveUpButton = (element: any) => {
       return new Action({
         id: 'moveUpButton',
         iconName: 'icon-arrow-up',
         css: 'sv-action-bar-item--secondary sv-action-bar-item__icon',
         title: this.translate.instant('pages.formBuilder.move.up'),
         action: () => {
-          const pageIndex = this.surveyCreator.survey.pages.findIndex(
-            (page: any) => page.questions.indexOf(question) !== -1
-          );
-
-          // get the index of the current question in the page
-          const questionIndex =
-            this.surveyCreator.survey.pages[pageIndex].questions.indexOf(
-              question
-            );
-
-          // remove the element from the current page
-          this.surveyCreator.survey.pages[pageIndex].removeElement(question);
-
-          // add it back to the page at the previous index
-          this.surveyCreator.survey.pages[pageIndex].addElement(
-            question,
-            questionIndex - 1
-          );
+          const parent = element.parent;
+          const index = parent.elements.indexOf(element);
+          if (index > 0) {
+            // Remove from array
+            parent.elements.splice(index, 1)[0];
+            // Move into array
+            parent.elements.splice(index - 1, 0, element);
+          }
         },
       });
     };
 
-    const moveDownButton = (question: any) => {
+    const moveDownButton = (element: any) => {
       return new Action({
         id: 'moveDownButton',
         iconName: 'icon-arrow-down',
         css: 'sv-action-bar-item--secondary sv-action-bar-item__icon',
         title: this.translate.instant('pages.formBuilder.move.down'),
         action: () => {
-          // get the page index of current question
-          const pageIndex = this.surveyCreator.survey.pages.findIndex(
-            (page: any) => page.questions.indexOf(question) !== -1
-          );
-
-          // get the index of the current question in the page
-          const questionIndex =
-            this.surveyCreator.survey.pages[pageIndex].questions.indexOf(
-              question
-            );
-
-          if (
-            questionIndex ===
-            this.surveyCreator.survey.pages[pageIndex].questions.length - 1
-          )
-            return;
-
-          // remove the element from the current page
-          this.surveyCreator.survey.pages[pageIndex].removeElement(question);
-
-          // add it back to the page at the previous index
-          this.surveyCreator.survey.pages[pageIndex].addElement(
-            question,
-            questionIndex + 1
-          );
+          const parent = element.parent;
+          const index = parent.elements.indexOf(element);
+          if (index < parent.elements.length - 1) {
+            // Remove from array
+            parent.elements.splice(index, 1)[0];
+            // Move into array
+            parent.elements.splice(index + 1, 0, element);
+          }
         },
       });
     };
