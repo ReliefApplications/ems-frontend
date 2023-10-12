@@ -1982,6 +1982,7 @@
 				"updated": "Application modifiée."
 			},
 			"setAsFavorite": "Ajouter aux favoris",
+			"show-side-menu": "Menu latéral visible par défaut",
 			"subscription": {
 				"create": "Créer un abonnement"
 			}

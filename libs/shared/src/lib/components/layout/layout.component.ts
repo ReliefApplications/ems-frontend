@@ -63,6 +63,7 @@ export class LayoutComponent
   @Input() profileRoute = '/profile';
 
   @Input() sideMenu = true;
+  @Input() showLeftSideNav = true;
 
   languages: string[] = [];
 

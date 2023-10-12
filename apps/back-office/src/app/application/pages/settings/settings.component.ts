@@ -65,6 +65,15 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
     super();
   }
 
+  /**
+   * Getter for the sideMenu value inside the settingsForm
+   *
+   * @returns the sideMenu value
+   */
+  get sideMenu() {
+    return this.settingsForm.get('sideMenu')?.value as boolean;
+  }
+
   ngOnInit(): void {
     this.applicationService.application$
       .pipe(takeUntil(this.destroy$))
@@ -89,6 +98,7 @@ export class SettingsComponent extends UnsubscribeComponent implements OnInit {
       id: [{ value: application.id, disabled: true }],
       name: [application.name, Validators.required],
       sideMenu: [application.sideMenu],
+      showLeftSideBar: [application.showLeftSideBar],
       description: [application.description],
       status: [application.status],
     });
