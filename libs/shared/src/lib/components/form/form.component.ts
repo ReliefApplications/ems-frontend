@@ -50,8 +50,6 @@ export class FormComponent
     completed: boolean;
     hideNewRecord?: boolean;
   }> = new EventEmitter();
-
-  // === SURVEYJS ===
   /** Survey model */
   public survey!: SurveyModel;
   /** Indicates whether the search is active */
@@ -60,19 +58,14 @@ export class FormComponent
   public temporaryFilesStorage: Record<string, Array<File>> = {};
   /** Reference to the form container element */
   @ViewChild('formContainer') formContainer!: ElementRef;
-
-  // === MODIFIED AT ===
   /** Date when the form was last modified */
   public modifiedAt: Date | null = null;
-
-  // === LOCALE STORAGE ===
   /** ID for local storage */
   private storageId = '';
   /** Date of local storage */
   public storageDate?: Date;
   /** indicates whether the data is from the cache */
   public isFromCacheData = false;
-
   /** Selected page index */
   public selectedPageIndex: BehaviorSubject<number> =
     new BehaviorSubject<number>(0);

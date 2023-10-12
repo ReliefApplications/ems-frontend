@@ -57,7 +57,6 @@ export class FormService {
       customQuestions: true,
     }
   ) {
-    console.log('init');
     initCustomSurvey(
       this.environment,
       this.injector,
