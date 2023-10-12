@@ -34,6 +34,8 @@ export class ApplicationComponent
   public application?: Application;
   /** Use side menu or not */
   public sideMenu = false;
+  /** Show left side menu or not */
+  public showLeftSideBar = false;
   /** Is large device */
   public largeDevice: boolean;
   /** Loading indicator */
@@ -172,6 +174,7 @@ export class ApplicationComponent
           }
           this.application = application;
           this.sideMenu = this.application?.sideMenu ?? false;
+          this.showLeftSideBar = this.application?.showLeftSideBar ?? false;
         } else {
           this.title = '';
           this.navGroups = [];

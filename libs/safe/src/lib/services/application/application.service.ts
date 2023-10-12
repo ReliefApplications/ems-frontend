@@ -337,6 +337,7 @@ export class SafeApplicationService {
             name: value.name,
             description: value.description,
             sideMenu: value.sideMenu,
+            showLeftSideBar: value.showLeftSideBar,
             status: value.status,
           },
         })
@@ -364,6 +365,7 @@ export class SafeApplicationService {
                 name: data.editApplication.name,
                 description: data.editApplication.description,
                 sideMenu: value.sideMenu,
+                showLeftSideBar: value.showLeftSideBar,
                 status: data.editApplication.status,
               };
 

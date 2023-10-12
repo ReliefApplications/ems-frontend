@@ -53,7 +53,7 @@
         [minRows]="2"
         [maxRows]="5"
         name="textarea"
-      >
+      >=)
       </ui-textarea>
     </div>
     <div class="mb-6">
@@ -61,6 +61,11 @@
         <ng-container ngProjectAs="label">
           {{ 'models.application.menu' | translate }}</ng-container
         >
+      </ui-toggle>
+    </div>
+    <div *ngIf="sideMenu" class="mb-6">
+      <ui-toggle formControlName="showLeftSideBar">
+        <ng-container ngProjectAs="label"> {{ 'models.application.show-side-menu' | translate }} </ng-container>
       </ui-toggle>
     </div>
   </div>

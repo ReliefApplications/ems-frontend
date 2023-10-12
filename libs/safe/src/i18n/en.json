@@ -1808,6 +1808,7 @@
 				"updated": "Application updated."
 			},
 			"setAsFavorite": "Set as favorite",
+			"show-side-menu": "Show side menu by default",
 			"subscription": {
 				"create": "Create a subscription"
 			}
