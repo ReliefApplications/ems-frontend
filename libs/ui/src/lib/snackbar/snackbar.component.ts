@@ -129,9 +129,7 @@ export class SnackbarComponent {
   openFromComponent(component: ComponentType<any>, config: SnackBarConfig) {
     this.setSnackbarProperties(config);
     const ref = this.snackBarContentView?.createComponent(component);
-    console.log(ref.instance);
     this.nestedComponent = ref;
-    console.log(this.nestedComponent);
     ref.changeDetectorRef.detectChanges();
     this.triggerSnackBar(config.duration);
   }

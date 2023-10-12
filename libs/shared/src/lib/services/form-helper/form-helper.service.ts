@@ -361,15 +361,18 @@ export class FormHelpersService {
     if (!options.question.tooltip) {
       return;
     }
-    options.htmlElement
-      .querySelectorAll('.sv-string-viewer')
-      .forEach((el: any) => {
+    const titleElement = (options.htmlElement as HTMLElement).querySelector(
+      '.sd-question__title'
+    );
+    if (titleElement) {
+      titleElement.querySelectorAll('.sv-string-viewer').forEach((el: any) => {
         const tooltip = document.createElement('span');
         tooltip.title = options.question.tooltip;
         tooltip.innerHTML = '?';
         tooltip.classList.add('survey-title__tooltip');
         el.appendChild(tooltip);
       });
+    }
   }
 
   /**

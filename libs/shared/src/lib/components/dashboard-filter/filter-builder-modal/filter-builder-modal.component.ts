@@ -181,7 +181,7 @@ export class FilterBuilderModalComponent
 
   ngOnInit(): void {
     // Initialize survey creator instance without custom questions
-    this.formService.setSurveyCreatorInstance({ customQuestions: false });
+    this.formService.initialize({ customQuestions: false });
   }
 
   ngAfterViewInit(): void {
@@ -281,6 +281,6 @@ export class FilterBuilderModalComponent
 
   ngOnDestroy(): void {
     //Once we destroy the dashboard filter survey, set the survey creator with the custom questions config
-    this.formService.setSurveyCreatorInstance();
+    this.formService.initialize();
   }
 }

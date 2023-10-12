@@ -93,7 +93,6 @@ export class DownloadService {
         next: (res) => {
           const blob = new Blob([res], { type });
           this.saveFile(fileName, blob);
-          console.log(snackBarRef.nestedComponent);
           snackBarSpinner.instance.message = this.translate.instant(
             'common.notifications.file.download.ready'
           );

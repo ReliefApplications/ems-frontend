@@ -164,14 +164,14 @@ export class ReferenceDataService {
     if (!cacheTimestamp || cacheTimestamp < modifiedAt) {
       items = await this.fetchItems(referenceData);
       // Cache items and timestamp
-      localForage.setItem(cacheKey, { items, valueField });
+      await localForage.setItem(cacheKey, { items, valueField });
       localStorage.setItem(cacheKey + LAST_MODIFIED_KEY, modifiedAt);
     } else {
       // If referenceData has not changed, use cached value and check for updates for graphQL.
       if (referenceData.type === referenceDataType.graphql) {
         const isCached = (await localForage.keys()).includes(cacheKey);
         // Fetch items
-        items = this.processItemsByRequestType(
+        items = await this.processItemsByRequestType(
           referenceData,
           referenceDataType.graphql
         );
@@ -194,7 +194,7 @@ export class ReferenceDataService {
             items = cache || [];
           }
         }
-        localForage.setItem(cacheKey, { items, valueField });
+        await localForage.setItem(cacheKey, { items, valueField });
         localStorage.setItem(
           cacheKey + LAST_REQUEST_KEY,
           this.formatDateSQL(new Date())
@@ -205,7 +205,7 @@ export class ReferenceDataService {
         if (!items) {
           items = await this.fetchItems(referenceData);
           // Cache items and timestamp
-          localForage.setItem(cacheKey, { items, valueField });
+          await localForage.setItem(cacheKey, { items, valueField });
           localStorage.setItem(cacheKey + LAST_MODIFIED_KEY, modifiedAt);
         }
       }
