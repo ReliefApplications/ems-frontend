@@ -9,10 +9,16 @@ import { FormModule } from './form.module';
 import { DialogModule } from '@angular/cdk/dialog';
 import { ApolloModule } from 'apollo-angular';
 import { StorybookTranslateModule } from '../storybook-translate/storybook-translate-module';
-import { importProvidersFrom } from '@angular/core';
+import { APP_INITIALIZER, importProvidersFrom } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { AuthService } from '../../services/auth/auth.service';
 import { BehaviorSubject } from 'rxjs';
+import { FormService } from '../../services/form/form.service';
+import { PopupService } from '@progress/kendo-angular-popup';
+import { ResizeBatchService } from '@progress/kendo-angular-common';
+import { IconsService } from '@progress/kendo-angular-icons';
+import { ComponentCollection, CustomWidgetCollection } from 'survey-core';
+import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 
 // You can create new stories getting the logic from: https://surveyjs.io/create-free-survey
 
@@ -34,8 +40,16 @@ class MockAuthService {
   });
 }
 
+const initializeApp =
+  (formService: FormService): any =>
+  () => {
+    CustomWidgetCollection.Instance.clear();
+    ComponentCollection.Instance.clear();
+    formService.initialize();
+  };
+
 export default {
-  title: 'Form/Examples',
+  title: 'Form/Inputs',
   tags: ['autodocs'],
   component: FormComponent,
   decorators: [
@@ -45,6 +59,7 @@ export default {
         importProvidersFrom(BrowserAnimationsModule),
         importProvidersFrom(StorybookTranslateModule),
         importProvidersFrom(ApolloModule),
+        importProvidersFrom(DateInputsModule),
         {
           provide: 'environment',
           useValue: {},
@@ -53,15 +68,61 @@ export default {
           provide: AuthService,
           useValue: new MockAuthService(),
         },
+        {
+          provide: APP_INITIALIZER,
+          useFactory: initializeApp,
+          multi: true,
+          deps: [FormService],
+        },
+        PopupService,
+        ResizeBatchService,
+        IconsService,
       ],
     }),
     moduleMetadata({
       imports: [FormModule],
     }),
   ],
+  argTypes: {
+    title: {
+      control: {
+        type: 'text',
+      },
+    },
+    titleLocation: {
+      options: ['top', 'bottom', 'left'],
+      control: {
+        type: 'select',
+      },
+    },
+    description: {
+      control: {
+        type: 'text',
+      },
+    },
+    descriptionLocation: {
+      options: ['underTitle', 'underInput'],
+      control: {
+        type: 'select',
+      },
+    },
+    tooltip: {
+      control: {
+        type: 'text',
+      },
+    },
+  },
 } as Meta<FormComponent>;
 
-type Story = StoryObj<FormComponent>;
+type ExtendedFormComponent = FormComponent & {
+  title?: string;
+  titleLocation?: string;
+  description?: string;
+  descriptionLocation?: string;
+  tooltip?: string;
+};
+
+type Story = StoryObj<ExtendedFormComponent>;
 
 /**
  * Shared form data
@@ -71,40 +132,56 @@ const sharedForm = {
   canCreateRecords: true,
 };
 
+const sharedQuestion = (args: ExtendedFormComponent) => ({
+  title: args.title,
+  titleLocation: args.titleLocation,
+  tooltip: args.tooltip,
+  description: args.description,
+  descriptionLocation: args.descriptionLocation,
+});
+
 /**
  * Default inputs Radio
  */
 export const Radio: Story = {
-  render: () => ({
-    props: {
-      form: {
-        ...sharedForm,
-        structure: JSON.stringify({
-          pages: [
-            {
-              name: 'page1',
-              elements: [
-                {
-                  type: 'radiogroup',
-                  name: 'question1',
-                  title: 'Radio question',
-                  choices: ['Item 1', 'Item 2', 'Item 3'],
-                },
-              ],
-            },
-          ],
-          showQuestionNumbers: 'off',
-        }),
+  args: {
+    title: 'Radio question',
+  },
+  render: (args) => {
+    return {
+      props: {
+        form: {
+          ...sharedForm,
+          structure: JSON.stringify({
+            pages: [
+              {
+                name: 'page1',
+                elements: [
+                  {
+                    type: 'radiogroup',
+                    name: 'question1',
+                    ...sharedQuestion(args),
+                    choices: ['Item 1', 'Item 2', 'Item 3'],
+                  },
+                ],
+              },
+            ],
+            showQuestionNumbers: 'off',
+          }),
+        },
       },
-    },
-  }),
+    };
+  },
 };
 
 /**
  * Default inputs YesNo
  */
 export const YesNo: Story = {
-  render: () => ({
+  args: {
+    title: 'Yes/No',
+  },
+  render: (args) => ({
     props: {
       form: {
         ...sharedForm,
@@ -116,7 +193,7 @@ export const YesNo: Story = {
                 {
                   type: 'boolean',
                   name: 'question1',
-                  title: 'Yes/No',
+                  ...sharedQuestion(args),
                 },
               ],
             },
@@ -132,7 +209,10 @@ export const YesNo: Story = {
  * Default inputs Checkbox
  */
 export const Checkbox: Story = {
-  render: () => ({
+  args: {
+    title: 'Checkbox',
+  },
+  render: (args) => ({
     props: {
       form: {
         ...sharedForm,
@@ -144,11 +224,11 @@ export const Checkbox: Story = {
                 {
                   type: 'checkbox',
                   name: 'question1',
-                  title: 'Checkbox',
                   choices: ['Item 1', 'Item 2', 'Item 3'],
                   showOtherItem: true,
                   showNoneItem: true,
                   showSelectAllItem: true,
+                  ...sharedQuestion(args),
                 },
               ],
             },
@@ -164,7 +244,10 @@ export const Checkbox: Story = {
  * Default inputs Date
  */
 export const Date: Story = {
-  render: () => ({
+  args: {
+    title: 'Date',
+  },
+  render: (args) => ({
     props: {
       form: {
         ...sharedForm,
@@ -176,8 +259,8 @@ export const Date: Story = {
                 {
                   type: 'text',
                   name: 'question1',
-                  title: 'Date',
                   inputType: 'date',
+                  ...sharedQuestion(args),
                 },
               ],
             },

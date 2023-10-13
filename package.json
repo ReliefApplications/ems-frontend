@@ -134,6 +134,7 @@
     "@semantic-release/git": "^10.0.1",
     "@semantic-release/release-notes-generator": "^10.0.3",
     "@storybook/addon-essentials": "^7.3.2",
+    "@storybook/addon-interactions": "^7.4.6",
     "@storybook/addon-mdx-gfm": "^7.3.2",
     "@storybook/angular": "^7.3.2",
     "@storybook/core-server": "^7.3.2",
