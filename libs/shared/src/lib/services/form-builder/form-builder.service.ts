@@ -160,9 +160,6 @@ export class FormBuilderService {
     survey.onDownloadFile.add((_, options: any) =>
       this.onDownloadFile(options)
     );
-    survey.onUpdateQuestionCssClasses.add((_, options: any) =>
-      this.onSetCustomCss(options)
-    );
     survey.onCurrentPageChanged.add((survey: SurveyModel) => {
       survey.checkErrorsMode = survey.isLastPage ? 'onComplete' : 'onNextPage';
       selectedPageIndex.next(survey.currentPageNo);
@@ -252,16 +249,6 @@ export class FormBuilderService {
       };
       xhr.send();
     }
-  }
-
-  /**
-   * Add custom CSS classes to the survey elements.
-   *
-   * @param options survey options.
-   */
-  private onSetCustomCss(options: any): void {
-    const classes = options.cssClasses;
-    classes.content += ' shared-qst-content';
   }
 
   /**
