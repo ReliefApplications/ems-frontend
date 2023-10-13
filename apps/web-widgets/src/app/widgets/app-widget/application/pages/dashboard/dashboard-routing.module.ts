@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { CanDeactivateGuard } from '../../../guards/can-deactivate.guard';
 import { DashboardComponent } from './dashboard.component';
-import { CanDeactivateGuard } from '../../guards/can-deactivate.guard';
 
 /**
  * List of routes of Dashboard page.

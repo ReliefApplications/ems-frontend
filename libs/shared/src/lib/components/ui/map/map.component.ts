@@ -381,8 +381,19 @@ export class MapComponent
     } = this.extractSettings();
 
     if (initMap) {
+      // If the map is initiated in a web element, we will used directly the html element
+      // As leaflet cannot fetch the element in shadow doms with just the id
+      const isShadowRoot = Array.from(
+        document.getElementsByTagName('*')
+      ).filter((element) => element.shadowRoot);
+
+      const shadowRootMapHolder =
+        isShadowRoot instanceof Array && isShadowRoot.length
+          ? isShadowRoot[0].shadowRoot?.getElementById(this.mapId)
+          : null;
+
       // Create leaflet map
-      this.map = L.map(this.mapId, {
+      this.map = L.map(shadowRootMapHolder ?? this.mapId, {
         zoomControl,
         maxBounds: maxBounds
           ? L.latLngBounds(

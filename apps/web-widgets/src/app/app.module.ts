@@ -13,7 +13,6 @@ import {
   HTTP_INTERCEPTORS,
 } from '@angular/common/http';
 import { FormWidgetModule } from './widgets/form-widget/form-widget.module';
-import { AppWidgetModule } from './widgets/app-widget/app-widget.module';
 import { environment } from '../environments/environment';
 import { OAuthModule, OAuthService, OAuthStorage } from 'angular-oauth2-oidc';
 import {
@@ -49,7 +48,8 @@ import localeFr from '@angular/common/locales/fr';
 import localeEn from '@angular/common/locales/en';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { AppWidgetComponent } from './widgets/app-widget/app-widget.component';
-import { RouterModule } from '@angular/router';
+import { ApplicationWidgetRoutingModule } from './widgets/app-widget/app-widget-routing.module';
+
 // Register local translations for dates
 registerLocaleData(localeFr);
 registerLocaleData(localeEn);
@@ -138,10 +138,10 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     }),
     OverlayModule,
     FormWidgetModule,
-    AppWidgetModule,
+    AppWidgetComponent,
+    ApplicationWidgetRoutingModule,
     GraphQLModule,
     DateInputsModule,
-    RouterModule.forRoot([]),
   ],
   providers: [
     {

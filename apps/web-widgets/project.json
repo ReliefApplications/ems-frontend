@@ -50,14 +50,21 @@
         ],
         "styles": [
           "apps/web-widgets/src/styles.scss",
+          "libs/shared/src/lib/style/styles.scss",
           "libs/styles/src/lib/tailwind/tailwind.scss",
           "libs/styles/src/lib/kendo/theme.scss",
           "libs/styles/src/lib/shared/shared.scss",
           "node_modules/survey-core/defaultV2.min.css",
           "node_modules/survey-core/survey.min.css",
           "node_modules/survey-creator-core/survey-creator-core.min.css",
+          "node_modules/leaflet/dist/leaflet.css",
           "node_modules/leaflet.markercluster/dist/MarkerCluster.css",
-          "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css"
+          "node_modules/leaflet.markercluster/dist/MarkerCluster.Default.css",
+          "node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css",
+          "node_modules/leaflet-measure/dist/leaflet-measure.css",
+          "node_modules/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css",
+          "node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css",
+          "node_modules/leaflet-timedimension/dist/leaflet.timedimension.control.min.css"
         ],
         "scripts": [
           "node_modules/tinymce/tinymce.js",
