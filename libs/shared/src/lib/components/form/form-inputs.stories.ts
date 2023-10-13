@@ -175,6 +175,40 @@ export const Radio: Story = {
 };
 
 /**
+ * Default inputs Dropdown
+ */
+export const Dropdown: Story = {
+  args: {
+    title: 'Dropdown question',
+  },
+  render: (args) => {
+    return {
+      props: {
+        form: {
+          ...sharedForm,
+          structure: JSON.stringify({
+            pages: [
+              {
+                name: 'page1',
+                elements: [
+                  {
+                    type: 'dropdown',
+                    name: 'question1',
+                    ...sharedQuestion(args),
+                    choices: ['Item 1', 'Item 2', 'Item 3'],
+                  },
+                ],
+              },
+            ],
+            showQuestionNumbers: 'off',
+          }),
+        },
+      },
+    };
+  },
+};
+
+/**
  * Default inputs YesNo
  */
 export const YesNo: Story = {
