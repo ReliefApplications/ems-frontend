@@ -56,11 +56,6 @@ import { ConfirmService } from '../../../services/confirm/confirm.service';
 import { ContextService } from '../../../services/context/context.service';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { Router } from '@angular/router';
-import {
-  Location,
-  LocationStrategy,
-  PathLocationStrategy,
-} from '@angular/common';
 
 /**
  * Default file name when exporting grid data.
@@ -82,10 +77,6 @@ const cloneData = (data: any[]) => data.map((item) => Object.assign({}, item));
 @Component({
   selector: 'shared-core-grid',
   templateUrl: './core-grid.component.html',
-  providers: [
-    Location,
-    { provide: LocationStrategy, useClass: PathLocationStrategy },
-  ],
   styleUrls: ['./core-grid.component.scss'],
 })
 export class CoreGridComponent
@@ -313,7 +304,6 @@ export class CoreGridComponent
    * @param applicationService Shared application service
    * @param contextService Shared context service
    * @param router Angular Router
-   * @param location Angular location service
    */
   constructor(
     @Inject('environment') environment: any,
@@ -331,7 +321,6 @@ export class CoreGridComponent
     private applicationService: ApplicationService,
     private contextService: ContextService,
     private router: Router,
-    private location: Location
   ) {
     super();
     this.environment = environment;
@@ -912,11 +901,6 @@ export class CoreGridComponent
             const recordId = event.item.id;
             fullUrl = `${fullUrl}?id=${recordId}`;
           }
-          this.location.replaceState(this.location.path(), undefined, {
-            skip: this.skip,
-            take: this.pageSize,
-            summaryCard: this.settings.summaryCard ?? false,
-          });
           this.router.navigateByUrl(fullUrl);
         }
         break;
