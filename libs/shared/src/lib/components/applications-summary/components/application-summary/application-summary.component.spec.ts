@@ -10,7 +10,7 @@ import { MenuModule } from '@oort-front/ui';
 
 describe('ApplicationSummaryComponent', () => {
   let component: ApplicationSummaryComponent;
-  let fixture: ComponentFixture<sharedApplicationSummaryComponent>;
+  let fixture: ComponentFixture<ApplicationSummaryComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

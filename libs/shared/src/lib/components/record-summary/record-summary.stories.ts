@@ -6,6 +6,7 @@ import { StorybookTranslateModule } from '../storybook-translate/storybook-trans
 
 export default {
   component: RecordSummaryComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [

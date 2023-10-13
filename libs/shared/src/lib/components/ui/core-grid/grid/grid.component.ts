@@ -65,56 +65,70 @@ const matches = (el: any, selector: any) =>
   selector: 'shared-grid',
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss'],
-  providers: [
-    PopupService,
-    ResizeBatchService,
-    // CalendarDOMService,
-    // MonthViewService,
-    // WeekNamesService,
-  ],
+  providers: [PopupService, ResizeBatchService],
 })
 export class GridComponent
   extends UnsubscribeComponent
   implements OnInit, AfterViewInit, OnChanges
 {
+  /** Array of multi-select types. */
   public multiSelectTypes: string[] = MULTISELECT_TYPES;
-
+  /** Environment of the grid. */
   public environment: 'frontoffice' | 'backoffice';
+  /** Status message of the grid. */
   public statusMessage = '';
 
   // === DATA ===
+  /** Input decorator for fields.   */
   @Input() fields: any[] = [];
+  /** Input decorator for data. */
   @Input() data: GridDataResult = { data: [], total: 0 };
+  /** Input decorator for loadingRecords. */
   @Input() loadingRecords = false;
+  /** Input decorator for loadingSettings. */
   @Input() loadingSettings = true;
+  /** Input decorator for status. */
   @Input() status: {
     error: boolean;
     message?: string;
   } = {
     error: false,
   };
+  /** Input decorator for blank. */
   @Input() blank = false;
+  /** Input decorator for widget. */
   @Input() widget: any;
+  /** Input decorator for canUpdate. */
   @Input() canUpdate = false;
 
   // === EXPORT ===
+  /** Input decorator for exportSettings. */
   public exportSettings = EXPORT_SETTINGS;
+  /** Output decorator for export */
   @Output() export = new EventEmitter();
 
   // === EDITION ===
   /** If inlineEdition is allowed */
   @Input() editable = false;
+  /* If the grid has changes */
   @Input() hasChanges = false;
+  /** Output decorator for edit */
   @Output() edit: EventEmitter<any> = new EventEmitter();
+  /** Form group for the component */
   public formGroup: UntypedFormGroup = new UntypedFormGroup({});
+  /** Current edited row */
   private currentEditedRow = 0;
+  /** Current edited item */
   private currentEditedItem: any;
+  /** Gradient settings for the component */
   public gradientSettings = GRADIENT_SETTINGS;
+  /** Indicates if the component is in editing mode */
   public editing = false;
-
+  /** Row actions for the component */
   private readonly rowActions = ['update', 'delete', 'history', 'convert'];
 
   // === ACTIONS ===
+  /** Input decorator for actions */
   @Input() actions = {
     add: false,
     update: false,
@@ -125,7 +139,9 @@ export class GridComponent
     showDetails: false,
     remove: false,
   };
+  /** Input decorator */
   @Input() hasDetails = true;
+  /** Output decorator for action */
   @Output() action = new EventEmitter();
 
   /** @returns A boolean indicating if actions are enabled */
@@ -146,8 +162,11 @@ export class GridComponent
   }
 
   // === DISPLAY ===
+  /** Resizable status */
   @Input() resizable = true;
+  /** Resizable status */
   @Input() reorderable = true;
+  /** Add permission */
   @Input() canAdd = false;
 
   /** @returns The column menu */
@@ -159,44 +178,70 @@ export class GridComponent
   }
 
   // === SELECT ===
+  /** Selectable status */
   @Input() selectable = true;
+  /** Multi-select status */
   @Input() multiSelect = true;
+  /** Selectable settings */
   public selectableSettings = SELECTABLE_SETTINGS;
+  /** Selected rows */
   @Input() selectedRows: string[] = [];
+  /** Selection change event emitter */
   @Output() selectionChange = new EventEmitter();
+  /** Selected items */
   public selectedItems: any[] = [];
+  /** Column chooser visibility */
   public showColumnChooser = false;
 
   // === FILTER ===
+  /** Filterable status */
   @Input() filterable = true;
+  /** Filter visibility */
   @Input() showFilter = false;
+  /** Filter descriptor */
   @Input() filter: CompositeFilterDescriptor = { logic: 'and', filters: [] };
+  /** Filter change event emitter */
   @Output() filterChange = new EventEmitter();
+  /** Show filter change event emitter */
   @Output() showFilterChange = new EventEmitter();
+  /** Searchable status */
   @Input() searchable = true;
+  /** Search control */
   public search = new UntypedFormControl('');
+  /** Search change event emitter */
   @Output() searchChange = new EventEmitter();
 
   // === PAGINATION ===
+  /** Page size */
   @Input() pageSize = 10;
+  /** Skip value */
   @Input() skip = 0;
+  /** Pager settings */
   public pagerSettings = PAGER_SETTINGS;
+  /** Page change event emitter */
   @Output() pageChange = new EventEmitter();
 
   // === SORT ===
+  /** Sortable status */
   @Input() sortable = true;
+  /** Sort descriptor */
   @Input() sort: SortDescriptor[] = [];
+  /** Sort change event emitter */
   @Output() sortChange = new EventEmitter();
 
   // === TEMPLATE ===
+  /** KendoGridComponent view child */
   @ViewChild(KendoGridComponent)
   public grid?: KendoGridComponent;
 
   // === ADMIN ===
+  /** Admin mode status */
   @Input() admin = false;
+  /** Column change event emitter */
   @Output() columnChange = new EventEmitter();
 
   // === SNACKBAR ===
+  /** Snackbar reference */
   private snackBarRef!: any;
 
   /**
@@ -226,7 +271,7 @@ export class GridComponent
     super();
     this.environment = environment.module || 'frontoffice';
   }
-
+  /** OnInit lifecycle hook. */
   ngOnInit(): void {
     this.setSelectedItems();
     this.renderer.listen('document', 'click', this.onDocumentClick.bind(this));
@@ -241,11 +286,11 @@ export class GridComponent
       mode: this.multiSelect ? 'multiple' : 'single',
     };
   }
-
+  /** OnChanges lifecycle hook. */
   ngOnChanges(): void {
     this.statusMessage = this.getStatusMessage();
   }
-
+  /** OnAfterViewInit lifecycle hook. */
   ngAfterViewInit(): void {
     this.setSelectedItems();
     // Wait for columns to be reordered before updating the layout

@@ -20,11 +20,15 @@ const CONTROL_VALUE_ACCESSOR: Provider = {
   providers: [CONTROL_VALUE_ACCESSOR],
 })
 export class ContentChoiceComponent implements ControlValueAccessor {
+  /** Input decorator for contentTypes. */
   @Input() contentTypes?: IContentType[];
-
+  /** Holds selected content type. */
   selected!: string;
+  /** Holds control's disabled state. */
   disabled = false;
+  /** Called when control is touched. */
   private onTouched!: () => void;
+  /** Called when control value changes. */
   private onChanged!: (value: string) => void;
 
   /**

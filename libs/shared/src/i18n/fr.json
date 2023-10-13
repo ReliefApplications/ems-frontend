@@ -42,6 +42,7 @@
 				"clear": "Supprimer la recherche"
 			}
 		},
+		"asc": "Croissant",
 		"attribute": {
 			"few": "Attributs",
 			"none": "Aucun attribut",
@@ -151,6 +152,7 @@
 		"delete": "Supprimer",
 		"deleteObject": "Supprimer {{name}}",
 		"deleted": "Supprimé",
+		"desc": "Décroissant",
 		"dismiss": "Fermer",
 		"display": "Afficher",
 		"distributionList": {
@@ -2126,6 +2128,7 @@
 			"sorting": {
 				"add": "Ajouter un champ",
 				"delete": "Supprimer le champ de tri",
+				"empty": "Aucun champ de tri défini",
 				"field": "Champ",
 				"label": "Étiquette",
 				"management": "Gestion des champs de tri",

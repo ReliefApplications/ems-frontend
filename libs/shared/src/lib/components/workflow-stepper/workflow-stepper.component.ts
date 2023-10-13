@@ -11,14 +11,23 @@ import { Step } from '../../models/step.model';
   styleUrls: ['./workflow-stepper.component.scss'],
 })
 export class WorkflowStepperComponent {
+  /** Active step */
   @Input() activeStep = 0;
+  /** Steps */
   @Input() steps: Step[] = [];
+  /** Update permission */
   @Input() canUpdate = false;
+  /** Loading status */
   @Input() loading = false;
+  /** Add event emitter */
   @Output() add = new EventEmitter();
+  /** Delete event emitter */
   @Output() delete = new EventEmitter<number>();
+  /** Open step event emitter */
   @Output() openStep = new EventEmitter<number>();
+  /** Reorder steps event emitter   */
   @Output() reorderSteps = new EventEmitter<Step[]>();
+  /** Dragging status */
   public dragging = false;
 
   /** Activate draging */

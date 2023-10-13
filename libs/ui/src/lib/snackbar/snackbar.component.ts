@@ -1,5 +1,6 @@
 import {
   Component,
+  ComponentRef,
   ElementRef,
   EventEmitter,
   Inject,
@@ -30,7 +31,7 @@ export class SnackbarComponent {
   snackBarContentView!: ViewContainerRef;
   /** The data for the snack bar. */
   data!: BehaviorSubject<SnackBarData>;
-  /** The message to display in the snack bar. */
+  /** Message displayed in snackbar */
   message!: string;
   /** Boolean indicating whether there is an error. */
   error = false;
@@ -38,8 +39,15 @@ export class SnackbarComponent {
   displaySnackBar = false;
   /** The action to perform. */
   action!: string;
-  /** Function to resolve after a certain duration. */
+  /** Reference to nested component ( if created from one ) */
+  public nestedComponent?: ComponentRef<any>;
 
+  /**
+   * Function to resolve after a certain duration.
+   *
+   * @param duration duration in ms
+   * @returns Promise
+   */
   durationResolver = (duration: number) =>
     new Promise((resolve) => setTimeout(resolve, duration));
 
@@ -120,7 +128,9 @@ export class SnackbarComponent {
    */
   openFromComponent(component: ComponentType<any>, config: SnackBarConfig) {
     this.setSnackbarProperties(config);
-    this.snackBarContentView?.createComponent(component);
+    const ref = this.snackBarContentView?.createComponent(component);
+    this.nestedComponent = ref;
+    ref.changeDetectorRef.detectChanges();
     this.triggerSnackBar(config.duration);
   }
 

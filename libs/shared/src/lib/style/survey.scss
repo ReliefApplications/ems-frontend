@@ -14,11 +14,7 @@
 }
 
 // === QUESTION CONTENT ===
-::ng-deep .shared-qst-content {
-  display: flex;
-  flex-direction: column;
-  max-width: 100%;
-
+::ng-deep .sd-question__content {
   .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) {
     background-color: transparent;
     border: none;
@@ -108,6 +104,9 @@
 
 ::ng-deep survey,
 ::ng-deep survey-creator {
+  .sd-input {
+    padding: calc(1 * var(--sjs-base-unit, var(--base-unit, 8px))) calc(2 * var(--sjs-base-unit, var(--base-unit, 8px)));
+  }
   .k-combobox,
   .k-multiselect,
   .sd-input,
@@ -128,6 +127,9 @@
       w-full
       border-0;
   }
+  // .sd-text {
+  //   @apply text-sm h-10;
+  // }
   .k-multiselect {
     .k-clear-value {
       padding-right: 18px !important;
@@ -138,8 +140,7 @@
     }
 
     .k-chip-list {
-      // padding-left: 12px !important;
-      padding: 12px 0 12px 12px !important;
+      padding-left: 12px !important;
     }
 
     .k-chip {
@@ -182,9 +183,9 @@
       padding-left: 16px !important;
     }
     .k-input-button {
-      width: 46px !important;
-      height: 46px !important;
-      margin-right: 2px !important;
+      width: 20px !important;
+      height: 20px !important;
+      margin-right: 15px !important;
       background-color: white !important;
       border: none !important;
       border-radius: 4px !important;
@@ -236,6 +237,10 @@
   .k-popup,
   .k-list {
     @apply rounded-md;
+  }
+
+  .sd-root-modern {
+    --sd-base-vertical-padding: 10px !important; //Reduces space between questions
   }
 
   // File upload file wrapper
@@ -310,4 +315,8 @@
 
 ::ng-deep .sd-body .sd-body__page {
   min-width: 0 !important;
+}
+
+::ng-deep .sd-body.sd-body--static {
+  max-width: unset;
 }

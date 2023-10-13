@@ -609,7 +609,7 @@ export const init = (
       }, 500);
       // Display the add button | grid for resources question
       if (question.resource) {
-        const parentElement = el.querySelector('.shared-qst-content');
+        const parentElement = el.querySelector('.sd-question__content');
         if (parentElement) {
           const instance: CoreGridComponent =
             buildRecordsGrid(question, parentElement.firstChild) || undefined;

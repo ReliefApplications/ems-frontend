@@ -10,6 +10,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export default {
   component: LineChartComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [LineChartModule, BrowserAnimationsModule],

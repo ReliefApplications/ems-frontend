@@ -1,11 +1,91 @@
+/* eslint-disable jsdoc/require-param-description */
 import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { GridComponent } from './grid.component';
 import { GridModule } from './grid.module';
 import { HttpClientModule } from '@angular/common/http';
+import { GridService } from '../../../../services/grid/grid.service';
+import { ApiProxyService } from '../../../../services/api-proxy/api-proxy.service';
+import { RestService } from '../../../../services/rest/rest.service';
+import {
+  DEFAULT_LANGUAGE,
+  MissingTranslationHandler,
+  MissingTranslationHandlerParams,
+  TranslateCompiler,
+  TranslateLoader,
+  TranslateParser,
+  TranslateService,
+  TranslateStore,
+  USE_DEFAULT_LANG,
+  USE_EXTEND,
+  USE_STORE,
+} from '@ngx-translate/core';
+import { Observable, of } from 'rxjs';
+import { Apollo } from 'apollo-angular';
+import { DownloadService } from '../../../../services/download/download.service';
+import { SnackbarService } from '@oort-front/ui';
+import { DashboardService } from '../../../../services/dashboard/dashboard.service';
+/**
+ *
+ */
+export class TranslateHttpLoaderMock implements TranslateLoader {
+  // eslint-disable-next-line jsdoc/require-returns, jsdoc/require-jsdoc
+  getTranslation(): Observable<any> {
+    const translation = { key: 'value' };
+    return of(translation);
+  }
+}
+// eslint-disable-next-line jsdoc/require-jsdoc
+export class TranslateCompilerMock implements TranslateCompiler {
+  // eslint-disable-next-line jsdoc/require-jsdoc, @typescript-eslint/ban-types
+  compile(value: string): string | Function {
+    return value;
+  }
+
+  // eslint-disable-next-line jsdoc/require-description, jsdoc/require-returns, jsdoc/require-jsdoc
+  compileTranslations(translations: any): any {
+    return translations;
+  }
+}
+// eslint-disable-next-line jsdoc/require-jsdoc
+export class TranslateParseMock implements TranslateParser {
+  // eslint-disable-next-line jsdoc/require-description, jsdoc/require-param, jsdoc/require-returns
+  // eslint-disable-next-line @typescript-eslint/ban-types, jsdoc/require-jsdoc
+  interpolate(expr: string | Function): string | undefined {
+    return expr as string;
+  }
+
+  // eslint-disable-next-line jsdoc/require-jsdoc
+  getValue(target: any, key: string): any {
+    return target[key];
+  }
+}
+// eslint-disable-next-line jsdoc/require-jsdoc
+export class MissingTranslationHandlerMock
+  implements MissingTranslationHandler
+{
+  // eslint-disable-next-line jsdoc/require-jsdoc
+  handle(params: MissingTranslationHandlerParams): any {
+    return params.key;
+  }
+}
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const translateLoaderMock = () => new TranslateHttpLoaderMock();
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const translateCompilerMock = () => new TranslateCompilerMock();
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const translateParseMock = () => new TranslateParseMock();
+
+// eslint-disable-next-line jsdoc/require-jsdoc
+export const missingTranslationHandlerMock = () =>
+  new MissingTranslationHandlerMock();
 
 export default {
   component: GridComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [GridModule, HttpClientModule, BrowserAnimationsModule],
@@ -14,6 +94,35 @@ export default {
           provide: 'environment',
           useValue: {},
         },
+        GridService,
+        ApiProxyService,
+        RestService,
+        TranslateService,
+        TranslateStore,
+        {
+          provide: TranslateLoader,
+          useFactory: translateLoaderMock,
+        },
+        {
+          provide: TranslateCompiler,
+          useFactory: translateCompilerMock,
+        },
+        {
+          provide: TranslateParser,
+          useFactory: translateParseMock,
+        },
+        {
+          provide: MissingTranslationHandler,
+          useFactory: missingTranslationHandlerMock,
+        },
+        { provide: USE_DEFAULT_LANG, useValue: 'en' },
+        { provide: USE_STORE, useValue: {} },
+        { provide: USE_EXTEND, useValue: {} },
+        { provide: DEFAULT_LANGUAGE, useValue: 'en' },
+        Apollo,
+        DownloadService,
+        SnackbarService,
+        DashboardService,
       ],
     }),
   ],

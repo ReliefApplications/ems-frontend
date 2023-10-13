@@ -5,6 +5,7 @@ import { StorybookTranslateModule } from '../../../storybook-translate/storybook
 
 export default {
   component: AddApplicationComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [ApplicationsSummaryModule, StorybookTranslateModule],

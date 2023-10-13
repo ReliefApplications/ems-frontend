@@ -1,67 +1,75 @@
-import { Meta, moduleMetadata, StoryFn } from '@storybook/angular';
+import {
+  Meta,
+  moduleMetadata,
+  StoryObj,
+  applicationConfig,
+} from '@storybook/angular';
 import { ApplicationsSummaryComponent } from './applications-summary.component';
 import { ApplicationsSummaryModule } from './applications-summary.module';
-import { status } from '../../models/form.model';
 import { StorybookTranslateModule } from '../storybook-translate/storybook-translate-module';
+import { status } from '../../models/form.model';
+import { importProvidersFrom } from '@angular/core';
 
 export default {
-  component: ApplicationsSummaryComponent,
-  decorators: [
-    moduleMetadata({
-      imports: [ApplicationsSummaryModule, StorybookTranslateModule],
-      providers: [],
-    }),
-  ],
   title: 'UI/Applications/Applications Summary',
   argTypes: {},
-} as Meta;
+  component: ApplicationsSummaryComponent,
+  tags: ['autodocs'],
+  decorators: [
+    applicationConfig({
+      providers: [importProvidersFrom(StorybookTranslateModule)],
+    }),
+    moduleMetadata({
+      imports: [ApplicationsSummaryModule, StorybookTranslateModule],
+    }),
+  ],
+} as Meta<ApplicationsSummaryComponent>;
+
+type Story = StoryObj<ApplicationsSummaryComponent>;
+
+/** Default inputs */
+export const Default: Story = {
+  render: () => ({
+    props: {
+      canCreate: true,
+      loading: false,
+      applications: [
+        {
+          name: 'Dummy Application',
+          createdAt: new Date(),
+          status: status.active,
+        },
+        {
+          name: 'Dummy Application',
+          createdAt: new Date(),
+          status: status.pending,
+        },
+        {
+          name: 'Dummy Application',
+          createdAt: new Date(),
+          status: status.archived,
+        },
+        {
+          name: 'Dummy Application',
+          createdAt: new Date(),
+          status: status.active,
+        },
+        {
+          name: 'Dummy Application',
+          createdAt: new Date(),
+        },
+      ],
+    },
+  }),
+};
 
 /**
- * Defines a template for the component ApplicationsSummaryComponent to use as a playground
- *
- * @param args the properties of the instance of ApplicationsSummaryComponent
- * @returns the template
+ * Loading state
  */
-const TEMPLATE: StoryFn<ApplicationsSummaryComponent> = (args) => ({
-  props: {
-    ...args,
-  },
-});
-
-/**
- * Default story.
- */
-export const DEFAULT = {
-  render: TEMPLATE,
-  name: 'Default',
-
-  args: {
-    canCreate: true,
-    applications: [
-      {
-        name: 'Dummy Application',
-        createdAt: new Date(),
-        status: status.active,
-      },
-      {
-        name: 'Dummy Application',
-        createdAt: new Date(),
-        status: status.pending,
-      },
-      {
-        name: 'Dummy Application',
-        createdAt: new Date(),
-        status: status.archived,
-      },
-      {
-        name: 'Dummy Application',
-        createdAt: new Date(),
-        status: status.active,
-      },
-      {
-        name: 'Dummy Application',
-        createdAt: new Date(),
-      },
-    ],
-  },
+export const Loading: Story = {
+  render: () => ({
+    props: {
+      loading: true,
+    },
+  }),
 };
