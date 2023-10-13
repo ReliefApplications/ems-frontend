@@ -15,7 +15,11 @@ import {
   FormArray,
 } from '@angular/forms';
 import { QueryBuilderService } from '../../../services/query-builder/query-builder.service';
-import { GET_CHANNELS, GET_GRID_RESOURCE_META } from './graphql/queries';
+import {
+  GET_CHANNELS,
+  GET_GRID_REFERENCE_DATA_META,
+  GET_GRID_RESOURCE_META,
+} from './graphql/queries';
 import { Application } from '../../../models/application.model';
 import { Channel, ChannelsQueryResponse } from '../../../models/channel.model';
 import { ApplicationService } from '../../../services/application/application.service';
@@ -29,7 +33,14 @@ import { DistributionList } from '../../../models/distribution-list.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
-import { AggregationService } from '../../../services/aggregation/aggregation.service';
+import {
+  AggregationService,
+  AggregationSource,
+} from '../../../services/aggregation/aggregation.service';
+import {
+  ReferenceData,
+  ReferenceDataQueryResponse,
+} from '../../../models/reference-data.model';
 
 /**
  * Modal content for the settings of the grid widgets.
@@ -66,6 +77,7 @@ export class GridSettingsComponent
   private allQueries: any[] = [];
   public filteredQueries: any[] = [];
   public resource: Resource | null = null;
+  public referenceData: ReferenceData | null = null;
 
   /** Stores the selected tab */
   public selectedTab = 0;
@@ -119,39 +131,18 @@ export class GridSettingsComponent
       .get('resource')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((value) => {
-        if (value) {
-          // Check if the query changed to clean modifications and fields for email in floating button
-          if (value !== this.resource?.id) {
-            // this.queryName = name;
-            this.formGroup?.get('layouts')?.setValue([]);
-            this.formGroup?.get('aggregations')?.setValue([]);
-            this.formGroup?.get('template')?.setValue(null);
-            this.formGroup?.get('template')?.enable();
-            const floatingButtons = this.formGroup?.get(
-              'floatingButtons'
-            ) as UntypedFormArray;
-            for (const floatingButton of floatingButtons.controls) {
-              const modifications = floatingButton.get(
-                'modifications'
-              ) as UntypedFormArray;
-              modifications.clear();
-              this.formGroup
-                ?.get('floatingButton.modifySelectedRows')
-                ?.setValue(false);
-              const bodyFields = floatingButton.get(
-                'bodyFields'
-              ) as UntypedFormArray;
-              bodyFields.clear();
-            }
-          }
-          this.getQueryMetaData();
-        } else {
-          this.fields = [];
-        }
-
+        this.handleValueChangesByType(value, 'resource');
         // clear sort fields array
         const sortFields = this.formGroup?.get('sortFields') as FormArray;
         sortFields.clear();
+      });
+
+    // Subscribe to form reference data changes
+    this.formGroup
+      .get('referenceData')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        this.handleValueChangesByType(value, 'referenceData');
       });
 
     // Subscribe to form aggregations changes
@@ -182,6 +173,56 @@ export class GridSettingsComponent
     }
 
     this.initSortFields();
+  }
+
+  /**
+   * Handle value changes effects of the given source type
+   *
+   * @param value source form changed value
+   * @param type source type of the given value
+   */
+  private handleValueChangesByType(value: any, type: AggregationSource) {
+    if (value) {
+      const currentSourceId =
+        type === 'resource' ? this.resource?.id : this.referenceData?.id;
+      if (type === 'referenceData') {
+        this.resource = null;
+      } else if (type === 'resource') {
+        this.referenceData = null;
+      }
+      // Check if the query changed to clean modifications and fields for email in floating button
+      if (value !== currentSourceId) {
+        // this.queryName = name;
+        this.formGroup?.get('layouts')?.setValue([]);
+        this.formGroup?.get('aggregations')?.setValue([]);
+        this.formGroup?.get('template')?.setValue(null);
+        this.formGroup?.get('template')?.disable();
+        const floatingButtons = this.formGroup?.get(
+          'floatingButtons'
+        ) as UntypedFormArray;
+        for (const floatingButton of floatingButtons.controls) {
+          const modifications = floatingButton.get(
+            'modifications'
+          ) as UntypedFormArray;
+          modifications.clear();
+          this.formGroup
+            ?.get('floatingButton.modifySelectedRows')
+            ?.setValue(false);
+          const bodyFields = floatingButton.get(
+            'bodyFields'
+          ) as UntypedFormArray;
+          bodyFields.clear();
+        }
+      }
+      this.getQueryMetaData();
+    } else {
+      if (type === 'resource') {
+        this.resource = null;
+      } else if (type === 'referenceData') {
+        this.referenceData = null;
+      }
+      this.fields = [];
+    }
   }
 
   /**
@@ -315,10 +356,40 @@ export class GridSettingsComponent
             this.fields = [];
           }
         });
+    } else if (this.formGroup.get('referenceData')?.value) {
+      const aggregationIds: string[] | undefined =
+        this.formGroup?.get('aggregations')?.value;
+      this.apollo
+        .query<ReferenceDataQueryResponse>({
+          query: GET_GRID_REFERENCE_DATA_META,
+          variables: {
+            referenceData: this.formGroup.get('referenceData')?.value,
+            aggregationIds,
+            firstAggregations: aggregationIds?.length || 10,
+          },
+        })
+        .subscribe(({ data }) => {
+          if (data) {
+            this.referenceData = data.referenceData;
+            this.relatedForms = [];
+            this.templates = [];
+            const queryName = this.aggregationService.setCurrentSourceQueryName(
+              this.referenceData,
+              'referenceData'
+            );
+            this.fields = this.queryBuilder.getFields(queryName);
+          } else {
+            this.relatedForms = [];
+            this.templates = [];
+            this.referenceData = null;
+            this.fields = [];
+          }
+        });
     } else {
       this.relatedForms = [];
       this.templates = [];
       this.resource = null;
+      this.referenceData = null;
       this.fields = [];
     }
   }
@@ -341,7 +412,7 @@ export class GridSettingsComponent
   private onAggregationChange(aggregationId: string): void {
     if (this.resource?.id && aggregationId) {
       this.aggregationService
-        .aggregationDataQuery(this.resource.id, aggregationId || '')
+        .aggregationDataQuery(this.resource.id, 'resource', aggregationId || '')
         .subscribe(({ data }) => {
           if (data.recordsAggregation) {
             this.fields = data.recordsAggregation.items[0]

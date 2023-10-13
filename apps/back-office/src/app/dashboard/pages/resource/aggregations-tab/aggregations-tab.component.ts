@@ -169,7 +169,7 @@ export class AggregationsTabComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.aggregationService
-          .addAggregation(value, this.resource.id)
+          .addAggregation(value, this.resource.id, 'resource')
           .subscribe(({ data }: any) => {
             if (data.addAggregation) {
               this.aggregations = [...this.aggregations, data?.addAggregation];
@@ -199,7 +199,7 @@ export class AggregationsTabComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.aggregationService
-          .editAggregation(aggregation, value, this.resource.id)
+          .editAggregation(aggregation, value, this.resource.id, 'resource')
           .subscribe(({ data }: any) => {
             if (data.editAggregation) {
               this.aggregations = this.aggregations.map((x: any) => {
@@ -236,7 +236,7 @@ export class AggregationsTabComponent
     dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe((value: any) => {
       if (value) {
         this.aggregationService
-          .deleteAggregation(aggregation, this.resource.id)
+          .deleteAggregation(aggregation, this.resource.id, 'resource')
           .subscribe(({ data }: any) => {
             if (data.deleteAggregation) {
               this.aggregations = this.aggregations.filter(

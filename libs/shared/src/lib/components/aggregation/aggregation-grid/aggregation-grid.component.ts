@@ -1,5 +1,16 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
-import { GridDataResult, PageChangeEvent } from '@progress/kendo-angular-grid';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+} from '@angular/core';
+import {
+  GridDataResult,
+  PageChangeEvent,
+  SelectionEvent,
+} from '@progress/kendo-angular-grid';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
   Aggregation,
@@ -8,7 +19,7 @@ import {
 import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { PAGER_SETTINGS } from './aggregation-grid.constants';
-import { GET_RESOURCE } from './graphql/queries';
+import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
 import { debounceTime, takeUntil } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import {
@@ -21,6 +32,7 @@ import { ContextService } from '../../../services/context/context.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { SortDescriptor } from '@progress/kendo-data-query';
+import { ReferenceDataQueryResponse } from '../../../models/reference-data.model';
 
 /**
  * Shared aggregation grid component.
@@ -52,11 +64,17 @@ export class AggregationGridComponent
   public showFilter = false;
 
   @Input() resourceId!: string;
+  @Input() referenceDataId!: string;
   @Input() aggregation!: Aggregation;
   /** Context filters to be used with dashboard filters */
   @Input() contextFilters: string | undefined;
   /** Version at to be used with dashboard filters */
   @Input() at: string | undefined;
+  @Input() selectedRows: string[] = [];
+  @Input() selectable = false;
+  @Input() itemIdentifier = 'id';
+
+  @Output() selectionChange = new EventEmitter();
 
   /** @returns The column menu */
   get columnMenu(): { columnChooser: boolean; filter: boolean } {
@@ -118,8 +136,11 @@ export class AggregationGridComponent
    */
   private getAggregationData(): void {
     this.loading = true;
+    const id = this.resourceId ?? this.referenceDataId;
+    const type = this.resourceId ? 'resource' : 'referenceData';
     this.dataQuery = this.aggregationService.aggregationDataWatchQuery(
-      this.resourceId,
+      id,
+      type,
       this.aggregation.id as string,
       this.pageSize,
       this.skip,
@@ -167,119 +188,174 @@ export class AggregationGridComponent
    */
   private getAggregationFields(): void {
     this.loadingSettings = true;
-    this.apollo
-      .query<ResourceQueryResponse>({
-        query: GET_RESOURCE,
-        variables: {
-          id: this.resourceId,
-        },
-      })
-      .subscribe({
-        next: (res) => {
-          const resource = res.data.resource;
-          const allGqlFields = this.queryBuilder.getFields(
-            resource.queryName || ''
-          );
-          // Fetch fields at the end of the pipeline
-          const aggFields = this.aggregationBuilderService.fieldsAfter(
-            allGqlFields
-              ?.filter((x) => this.aggregation.sourceFields.includes(x.name))
-              .map((field: any) => {
-                if (field.type?.kind !== 'SCALAR') {
-                  field.fields = this.queryBuilder
-                    .getFieldsFromType(
-                      field.type?.kind === 'OBJECT'
-                        ? field.type.name
-                        : field.type.ofType.name
-                    )
-                    .filter(
-                      (y) => y.type.name !== 'ID' && y.type?.kind === 'SCALAR'
-                    );
-                }
-                return field;
-              }) || [],
-            this.aggregation.pipeline
-          );
-          const fieldNames = aggFields.map((x) => x.name);
-          // Convert them to query fields
-          const queryFields = this.aggregationBuilderService.formatFields(
-            aggFields.filter((field) =>
-              allGqlFields.some((x) => x.name === field.name)
-            )
-          );
-          // Create meta query from query fields
-          const metaQuery = this.queryBuilder.buildMetaQuery({
-            name: resource.queryName || '',
-            fields: queryFields,
-          });
-          if (metaQuery) {
-            metaQuery.subscribe({
-              next: async ({ data }) => {
-                this.status = {
-                  error: false,
-                };
-                for (const key in data) {
-                  if (Object.prototype.hasOwnProperty.call(data, key)) {
-                    const metaFields = Object.assign({}, data[key]);
-                    try {
-                      await this.gridService.populateMetaFields(metaFields);
-                      // Remove ref data meta fields because it messes up with the display
-                      for (const field of queryFields) {
-                        if (field.type.endsWith(REFERENCE_DATA_END)) {
-                          delete metaFields[field.name];
-                        }
-                      }
-                    } catch (err) {
-                      console.error(err);
-                    }
-                    this.loadingSettings = false;
-                    // Concat query fields with dummy one for newly added fields
-                    const fields = queryFields.concat(
-                      fieldNames.reduce((arr, fieldName) => {
-                        if (
-                          !queryFields.some((field) => field.name === fieldName)
-                        ) {
-                          arr.push(createDefaultField(fieldName));
-                        }
-                        return arr;
-                      }, [])
-                    );
-                    // Generate grid fields
-                    this.fields = this.gridService.getFields(
-                      fields,
-                      metaFields,
-                      {}
-                    );
-                  }
-                }
-              },
-              error: (err: any) => {
-                this.loadingSettings = false;
-                this.setErrorStatus(
-                  err,
-                  'components.widget.grid.errors.metaQueryFetchFailed'
-                );
-              },
-            });
-          } else {
+    if (this.resourceId) {
+      this.apollo
+        .query<ResourceQueryResponse>({
+          query: GET_RESOURCE,
+          variables: {
+            id: this.resourceId,
+          },
+        })
+        .subscribe({
+          next: ({ data }) => {
+            this.handleAggregationFieldsResponse(data.resource, 'resource');
+          },
+          error: () => {
             this.loadingSettings = false;
             // todo(infinite): check
             // this.status = {
-            //   error: !this.loadingSettings,
+            //   error: true,
             //   message: this.translate.instant(
-            //     'components.widget.grid.errors.metaQueryBuildFailed'
+            //     'components.widget.grid.errors.metaQueryFetchFailed',
+            //     {
+            //       error:
+            //         err.networkError?.error?.errors
+            //           ?.map((x: any) => x.message)
+            //           .join(', ') || err,
+            //     }
             //   ),
             // };
+          },
+        });
+    } else if (this.referenceDataId) {
+      this.apollo
+        .query<ReferenceDataQueryResponse>({
+          query: GET_REFERENCE_DATA,
+          variables: {
+            id: this.referenceDataId,
+          },
+        })
+        .subscribe({
+          next: ({ data }) => {
+            this.handleAggregationFieldsResponse(
+              data.referenceData,
+              'referenceData'
+            );
+          },
+          error: (err: any) => {
+            this.loadingSettings = false;
+            this.status = {
+              error: true,
+              message: this.translate.instant(
+                'components.widget.grid.errors.metaQueryFetchFailed',
+                {
+                  error:
+                    err.networkError?.error?.errors
+                      ?.map((x: any) => x.message)
+                      .join(', ') || err,
+                }
+              ),
+            };
+          },
+        });
+    }
+  }
+
+  /**
+   * Handle aggregation field response query
+   *
+   * @param source Response from the aggregation fields query
+   * @param type of source from where aggregations where fetched, resource or a reference data
+   */
+  private handleAggregationFieldsResponse(
+    source: any,
+    type: 'resource' | 'referenceData'
+  ) {
+    const queryName = this.aggregationService.setCurrentSourceQueryName(
+      source,
+      type
+    );
+    const allGqlFields = this.queryBuilder.getFields(queryName);
+    // Fetch fields at the end of the pipeline
+    const aggFields = this.aggregationBuilderService.fieldsAfter(
+      allGqlFields
+        ?.filter((x) => this.aggregation.sourceFields.includes(x.name))
+        .map((field: any) => {
+          if (field.type?.kind !== 'SCALAR') {
+            field.fields = this.queryBuilder
+              .getFieldsFromType(
+                field.type?.kind === 'OBJECT'
+                  ? field.type.name
+                  : field.type.ofType.name
+              )
+              .filter((y) => y.type.name !== 'ID' && y.type?.kind === 'SCALAR');
+          }
+          return field;
+        }) || [],
+      this.aggregation.pipeline
+    );
+    const fieldNames = aggFields.map((x) => x.name);
+    // Convert them to query fields
+    const queryFields = this.aggregationBuilderService.formatFields(
+      aggFields.filter((field) =>
+        allGqlFields.some((x) => x.name === field.name)
+      )
+    );
+    // Create meta query from query fields
+    const metaQuery = this.queryBuilder.buildMetaQuery({
+      name: queryName,
+      fields: queryFields,
+    });
+    if (metaQuery) {
+      metaQuery.subscribe({
+        next: async ({ data }) => {
+          this.status = {
+            error: false,
+          };
+          for (const key in data) {
+            if (Object.prototype.hasOwnProperty.call(data, key)) {
+              const metaFields = Object.assign({}, data[key]);
+              try {
+                await this.gridService.populateMetaFields(metaFields);
+                // Remove ref data meta fields because it messes up with the display
+                for (const field of queryFields) {
+                  if (field.type.endsWith(REFERENCE_DATA_END)) {
+                    delete metaFields[field.name];
+                  }
+                }
+              } catch (err) {
+                console.error(err);
+              }
+              this.loadingSettings = false;
+              // Concat query fields with dummy one for newly added fields
+              const fields = queryFields.concat(
+                fieldNames.reduce((arr, fieldName) => {
+                  if (!queryFields.some((field) => field.name === fieldName)) {
+                    arr.push(createDefaultField(fieldName));
+                  }
+                  return arr;
+                }, [])
+              );
+              // Generate grid fields
+              this.fields = this.gridService.getFields(fields, metaFields, {});
+            }
           }
         },
         error: (err: any) => {
           this.loadingSettings = false;
-          this.setErrorStatus(
-            err,
-            'components.widget.grid.errors.metaQueryFetchFailed'
-          );
+          this.status = {
+            error: true,
+            message: this.translate.instant(
+              'components.widget.grid.errors.metaQueryFetchFailed',
+              {
+                error:
+                  err.networkError?.error?.errors
+                    ?.map((x: any) => x.message)
+                    .join(', ') || err,
+              }
+            ),
+          };
         },
       });
+    } else {
+      this.loadingSettings = false;
+      this.status = {
+        error: !this.loadingSettings,
+        message: this.translate.instant(
+          'components.widget.grid.errors.metaQueryBuildFailed'
+        ),
+      };
+    }
   }
 
   /**
@@ -323,9 +399,36 @@ export class AggregationGridComponent
    */
   private updateValues(data: AggregationDataQueryResponse, loading: boolean) {
     this.gridData = {
-      data: data.recordsAggregation.items,
-      total: data.recordsAggregation.totalCount,
+      data: data.recordsAggregation
+        ? data.recordsAggregation.items
+        : data.referenceDataAggregation.items,
+      total: data.recordsAggregation
+        ? data.recordsAggregation.totalCount
+        : data.referenceDataAggregation.totalCount,
     };
     this.loading = loading;
+  }
+
+  /**
+   * Handle selection change event.
+   *
+   * @param selection Selection event.
+   */
+  public onSelectionChange(selection: SelectionEvent): void {
+    const deselectedRows = selection.deselectedRows || [];
+    const selectedRows = selection.selectedRows || [];
+    if (deselectedRows.length > 0) {
+      this.selectedRows = [
+        ...this.selectedRows.filter(
+          (x) => !deselectedRows.some((y) => x === y.dataItem.id)
+        ),
+      ];
+    }
+    if (selectedRows.length > 0) {
+      this.selectedRows = this.selectedRows.concat(
+        selectedRows.map((x) => x.dataItem.id)
+      );
+    }
+    this.selectionChange.emit(selection);
   }
 }

@@ -1,18 +1,13 @@
-<form [formGroup]="tileForm" class="flex flex-col gap-3">
-  <div uiFormFieldDirective>
-    <label>{{ 'common.title' | translate }}</label>
-    <input formControlName="title" type="string" />
-  </div>
+<div [formGroup]="tileForm">
+  <div class="w-full flex flex-col">
+    <!-- Set aggregation origin and select aggregation template-->
+    <shared-aggregation-origin-select
+      [selectedResource]="selectedResource"
+      [resourcesQueryValue]="getResources"
+      [selectedReferenceData]="selectedReferenceData"
+      [referenceDatasQueryValue]="getReferenceDatas"
+    ></shared-aggregation-origin-select>
 
-  <!-- Set aggregation origin and select aggregation template-->
-  <shared-aggregation-origin-select
-    [selectedResource]="selectedResource"
-    [resourcesQueryValue]="getResources"
-    [selectedReferenceData]="selectedReferenceData"
-    [referenceDatasQueryValue]="getReferenceDatas"
-  ></shared-aggregation-origin-select>
-
-  <ng-container formGroupName="card">
     <!-- SELECT AGGREGATION OR LAYOUT -->
     <div
       class="flex flex-col mt-8 gap-8"
@@ -168,5 +163,65 @@
         ></ui-button>
       </div>
     </ng-container>
-  </ng-container>
-</form>
+
+    <ng-container *ngIf="selectedLayout || selectedAggregation">
+      <div class="flex flex-col mt-2">
+        <h2>
+          {{
+            (selectedLayout
+              ? 'models.record.select'
+              : 'models.aggregationItem.select'
+            ) | translate
+          }}
+        </h2>
+        <ng-container *ngIf="selectedAggregation">
+          <div uiFormFieldDirective>
+            <label>{{
+              'models.aggregationItem.itemIdentifier' | translate
+            }}</label>
+            <ui-select-menu [formControlName]="'aggregationItemIdentifier'">
+              <ng-container
+                *ngFor="let field of selectedAggregation.sourceFields"
+              >
+                <ui-select-option [value]="field">{{ field }}</ui-select-option>
+              </ng-container>
+            </ui-select-menu>
+          </div>
+        </ng-container>
+        <ng-container *ngIf="selectedLayout; else aggregationGridTmpl">
+          <shared-core-grid
+            class="h-96"
+            [settings]="selectedLayout"
+            [multiSelect]="false"
+            [selectable]="true"
+            [showExport]="false"
+            [selectedRows]="
+              selectedLayout && tileForm.get('record')?.value
+                ? [tileForm.get('record')?.value]
+                : []
+            "
+            (selectionChange)="onSelectionChange($event)"
+          >
+          </shared-core-grid>
+        </ng-container>
+        <ng-template #aggregationGridTmpl>
+          <ng-container *ngIf="tileForm.get('aggregationItemIdentifier').value">
+            <shared-aggregation-grid
+              [resourceId]="tileForm.get('resource')?.value"
+              [referenceDataId]="tileForm.get('referenceData')?.value"
+              [aggregation]="selectedAggregation ?? {}"
+              [selectedRows]="
+                selectedAggregation && tileForm.get('aggregationItem')?.value
+                  ? [tileForm.get('aggregationItem')?.value]
+                  : []
+              "
+              [selectable]="true"
+              [itemIdentifier]="tileForm.get('aggregationItemIdentifier').value"
+              (selectionChange)="onSelectionChange($event)"
+            ></shared-aggregation-grid>
+          </ng-container>
+        </ng-template>
+      </div>
+    </ng-container>
+  </div>
+</div>

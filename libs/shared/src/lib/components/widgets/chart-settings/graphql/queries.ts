@@ -1,6 +1,5 @@
 import { gql } from 'apollo-angular';
 
-// === GET RESOURCES ===
 /** Graphql query for getting multiple resources with a cursor */
 export const GET_RESOURCES = gql`
   query GetResources(
@@ -22,6 +21,12 @@ export const GET_RESOURCES = gql`
           forms {
             id
             name
+          }
+          layouts {
+            totalCount
+          }
+          aggregations {
+            totalCount
           }
         }
         cursor
@@ -46,6 +51,58 @@ export const GET_RESOURCE = gql`
         id
         name
       }
+      aggregations(ids: $aggregationIds) {
+        edges {
+          node {
+            id
+            name
+            sourceFields
+            pipeline
+            createdAt
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
+      }
+    }
+  }
+`;
+
+/** Get list of ref data gql query definition */
+export const GET_REFERENCE_DATAS = gql`
+  query GetReferenceDatas($first: Int, $afterCursor: ID) {
+    referenceDatas(first: $first, afterCursor: $afterCursor) {
+      edges {
+        node {
+          id
+          name
+          type
+          aggregations {
+            totalCount
+          }
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
+/** Get ref data gql query definition */
+export const GET_REFERENCE_DATA = gql`
+  query GetReferenceData($id: ID!, $aggregationIds: [ID]) {
+    referenceData(id: $id) {
+      id
+      name
+      type
+      fields
       aggregations(ids: $aggregationIds) {
         edges {
           node {

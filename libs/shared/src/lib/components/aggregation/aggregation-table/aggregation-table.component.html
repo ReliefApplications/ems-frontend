@@ -75,7 +75,7 @@
     variant="primary"
     [isBlock]="true"
     (click)="onAdd()"
-    [disabled]="!resource && !form"
+    [disabled]="!resource && !form && !referenceData"
     >{{ 'components.aggregation.add.title' | translate }}</ui-button
   >
 </div>

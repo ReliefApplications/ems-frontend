@@ -7,6 +7,11 @@ import { QueryBuilderService } from '../../../services/query-builder/query-build
 import { Resource } from '../../../models/resource.model';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { takeUntil } from 'rxjs/operators';
+import { ReferenceData } from '../../../models/reference-data.model';
+import {
+  AggregationService,
+  AggregationSource,
+} from '../../../services/aggregation/aggregation.service';
 
 /**
  * Main component of Aggregation builder.
@@ -23,8 +28,8 @@ export class AggregationBuilderComponent
 {
   // === REACTIVE FORM ===
   @Input() aggregationForm: UntypedFormGroup = new UntypedFormGroup({});
-  @Input() resource!: Resource;
-
+  @Input() source!: Resource | ReferenceData;
+  @Input() type!: AggregationSource;
   @Input() reload$!: Observable<boolean>;
 
   // === DATA ===
@@ -54,10 +59,12 @@ export class AggregationBuilderComponent
    *
    * @param queryBuilder This is a service that is used to build queries.
    * @param aggregationBuilder This is the service that will be used to build the aggregation query.
+   * @param aggregationService This is the service that will be used to handle aggregation data methods.
    */
   constructor(
     private queryBuilder: QueryBuilderService,
-    private aggregationBuilder: AggregationBuilderService
+    private aggregationBuilder: AggregationBuilderService,
+    private aggregationService: AggregationService
   ) {
     super();
   }
@@ -121,14 +128,18 @@ export class AggregationBuilderComponent
    * Updates fields depending on selected form.
    */
   private updateFields(): void {
+    const queryName = this.aggregationService.setCurrentSourceQueryName(
+      this.source,
+      this.type
+    );
     const fields = this.queryBuilder
-      .getFields(this.resource.queryName as string)
+      .getFields(queryName as string)
       .filter(
         (field: any) =>
           !(
             field.name.includes('_id') &&
-            (field.type.name === 'ID' ||
-              (field.type?.kind === 'LIST' && field.type.ofType.name === 'ID'))
+            (field.type?.name === 'ID' ||
+              (field.type?.kind === 'LIST' && field.type?.ofType.name === 'ID'))
           )
       );
     this.fields.next(fields);
@@ -145,12 +156,30 @@ export class AggregationBuilderComponent
       const selectedFields = fieldsNames.map((x: string) => {
         const field = { ...currentFields.find((y) => x === y.name) };
         if (field.type?.kind !== 'SCALAR') {
-          field.fields = this.queryBuilder.deconfineFields(
-            field.type,
-            new Set()
-              .add(this.resource.name)
-              .add(field.type.name ?? field.type.ofType.name)
-          );
+          switch (this.type) {
+            case 'resource':
+              field.fields = this.queryBuilder.deconfineFields(
+                field.type,
+                new Set()
+                  .add(this.source?.name)
+                  .add(field.type.name ?? field.type.ofType.name)
+              );
+              break;
+            case 'referenceData':
+              // todo(ref): check
+              // field.fields = this.queryBuilder
+              //   .getFieldsFromType(
+              //     field.type?.kind === 'OBJECT'
+              //       ? field.type?.name
+              //       : field.type?.ofType.name
+              //   )
+              //   .filter(
+              //     (y) => y.type?.name !== 'ID' && y.type?.kind === 'SCALAR'
+              //   );
+              break;
+            default:
+              break;
+          }
         }
         return field;
       });

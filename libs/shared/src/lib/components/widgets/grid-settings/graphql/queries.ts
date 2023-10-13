@@ -1,7 +1,5 @@
 import { gql } from 'apollo-angular';
 
-// === GET CHANNELS ===
-
 /** Graphql request for getting channels (optionally by an application id) */
 export const GET_CHANNELS = gql`
   query getChannels($application: ID) {
@@ -15,8 +13,6 @@ export const GET_CHANNELS = gql`
     }
   }
 `;
-
-// === GET META FIELDS OF A GRID ===
 
 /** Graphql request for getting the meta fields of a grid by form id */
 export const GET_GRID_FORM_META = gql`
@@ -111,7 +107,35 @@ export const GET_GRID_RESOURCE_META = gql`
   }
 `;
 
-// === GET QUERY TYPES ===
+/** Graphql request for getting resource meta date for a grid */
+export const GET_GRID_REFERENCE_DATA_META = gql`
+  query GetGridResourceMeta(
+    $referenceData: ID!
+    $aggregationIds: [ID]
+    $firstAggregations: Int
+  ) {
+    referenceData(id: $referenceData) {
+      id
+      name
+      aggregations(ids: $aggregationIds, first: $firstAggregations) {
+        edges {
+          node {
+            id
+            name
+            sourceFields
+            pipeline
+            createdAt
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
+      }
+    }
+  }
+`;
 
 /** Graphql request for getting query types */
 export const GET_QUERY_TYPES = gql`
@@ -254,6 +278,26 @@ export const GET_RESOURCES = gql`
             id
             name
           }
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
+/** Graphql query for getting multiple reference datas with a cursor */
+export const GET_REFERENCE_DATAS = gql`
+  query GetReferenceDatas($first: Int, $afterCursor: ID, $filter: JSON) {
+    referenceDatas(first: $first, afterCursor: $afterCursor, filter: $filter) {
+      edges {
+        node {
+          id
+          name
         }
         cursor
       }

@@ -47,7 +47,7 @@ export const GET_RESOURCES = gql`
 
 /** Graphql request for getting resource  */
 export const GET_RESOURCE = gql`
-  query GetResource($id: ID!, $layout: [ID]) {
+  query GetResource($id: ID!, $layout: [ID], $aggregation: [ID]) {
     resource(id: $id) {
       id
       name
@@ -64,9 +64,74 @@ export const GET_RESOURCE = gql`
         }
         totalCount
       }
+      aggregations(ids: $aggregation) {
+        edges {
+          node {
+            id
+            name
+            sourceFields
+            pipeline
+            createdAt
+          }
+        }
+        totalCount
+      }
       metadata {
         name
         type
+      }
+    }
+  }
+`;
+
+/** Get list of ref data gql query definition */
+export const GET_REFERENCE_DATAS = gql`
+  query GetReferenceDatas($first: Int, $afterCursor: ID) {
+    referenceDatas(first: $first, afterCursor: $afterCursor) {
+      edges {
+        node {
+          id
+          name
+          type
+          aggregations {
+            totalCount
+          }
+          fields
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
+/** Get ref data gql query definition */
+export const GET_REFERENCE_DATA = gql`
+  query GetReferenceData($id: ID!, $aggregation: [ID]) {
+    referenceData(id: $id) {
+      id
+      name
+      type
+      fields
+      aggregations(ids: $aggregation) {
+        edges {
+          node {
+            id
+            name
+            sourceFields
+            pipeline
+            createdAt
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
       }
     }
   }

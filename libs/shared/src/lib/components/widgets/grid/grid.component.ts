@@ -51,6 +51,7 @@ import {
 } from '../../../models/notification.model';
 import { FormQueryResponse } from '../../../models/form.model';
 import { AggregationGridComponent } from '../../aggregation/aggregation-grid/aggregation-grid.component';
+import { Connection } from '../../../utils/public-api';
 
 /** Component for the grid widget */
 @Component({
@@ -213,24 +214,28 @@ export class GridWidgetComponent
 
       if (aggregations.length > 0) {
         this.aggregationService
-          .getAggregations(this.settings.resource, {
+          .getAggregations(this.settings.resource, 'resource', {
             ids: aggregations,
             first: aggregations.length,
           })
           .then((res) => {
-            this.aggregations = res.edges
-              .map((edge) => edge.node)
-              .sort(
-                (a, b) =>
-                  aggregations.indexOf(a.id) - aggregations.indexOf(b.id)
-              );
-            if (!this.aggregation) {
-              this.status = {
-                error: true,
-              };
-            }
-            this.aggregation = this.aggregations[0] || null;
+            this.handleAggregationResponse(res, aggregations);
+          });
+        return;
+      }
+    }
+    if (this.settings.referenceData) {
+      const aggregations = get(this.settings, 'aggregations', []);
+      this.canCreateRecords = false;
 
+      if (aggregations.length > 0) {
+        this.aggregationService
+          .getAggregations(this.settings.referenceData, 'referenceData', {
+            ids: aggregations,
+            first: aggregations.length,
+          })
+          .then((res) => {
+            this.handleAggregationResponse(res, aggregations);
             // Build list of available sort fields
             this.widget.settings.sortFields?.forEach((sortField: any) => {
               this.sortFields.push(sortField);
@@ -238,6 +243,27 @@ export class GridWidgetComponent
           });
         return;
       }
+    }
+  }
+
+  /**
+   * Handle aggregations query response for both resource and reference data
+   *
+   * @param res Aggregations query response
+   * @param aggregations aggregation ids array
+   */
+  private handleAggregationResponse(
+    res: Connection<Aggregation>,
+    aggregations: any[]
+  ) {
+    this.aggregations = res.edges
+      .map((edge) => edge.node)
+      .sort((a, b) => aggregations.indexOf(a.id) - aggregations.indexOf(b.id));
+    this.aggregation = this.aggregations[0] || null;
+    if (!this.aggregation) {
+      this.status = {
+        error: true,
+      };
     }
   }
 

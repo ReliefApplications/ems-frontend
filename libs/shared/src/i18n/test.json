@@ -1359,7 +1359,7 @@
 					"confirmationMessage": "******"
 				},
 				"editor": {
-					"recordSelection": "******",
+					"datasourceSelection": "******",
 					"title": "******"
 				},
 				"grid": {
@@ -1921,6 +1921,10 @@
 		}
 	},
 	"models": {
+		"aggregationItem": {
+			"itemIdentifier": "******",
+			"select": "******"
+		},
 		"apiConfiguration": {
 			"authType": "******",
 			"new": "******",

@@ -52,7 +52,6 @@
         <ng-template uiTabContent>
           <shared-layer-datasource
             [formGroup]="$any(form.get('datasource'))"
-            [resourceQuery]="resource"
             [fields$]="fields$"
             (fields)="fields.next($event)"
             [destroyTab$]="destroyTab$"

@@ -36,6 +36,18 @@ export class ChartComponent
   extends UnsubscribeComponent
   implements OnInit, OnChanges
 {
+  // === WIDGET CONFIGURATION ===
+  @Input() header = true;
+  @Input() export = true;
+  @Input() settings: any = null;
+
+  // === CHART ===
+  @ViewChild('chartWrapper')
+  private chartWrapper?:
+    | LineChartComponent
+    | PieDonutChartComponent
+    | BarChartComponent;
+
   // === DATA ===
   public loading = true;
   public options: any = null;
@@ -46,11 +58,6 @@ export class ChartComponent
 
   public lastUpdate = '';
   public hasError = false;
-
-  // === WIDGET CONFIGURATION ===
-  @Input() header = true;
-  @Input() export = true;
-  @Input() settings: any = null;
 
   /**
    * Get filename from the date and widget title
@@ -67,13 +74,6 @@ export class ChartComponent
       this.settings.title ? this.settings.title : DEFAULT_FILE_NAME
     } ${formatDate}.png`;
   }
-
-  // === CHART ===
-  @ViewChild('chartWrapper')
-  private chartWrapper?:
-    | LineChartComponent
-    | PieDonutChartComponent
-    | BarChartComponent;
 
   /**
    * Chart widget using KendoUI.
@@ -103,21 +103,13 @@ export class ChartComponent
   ngOnChanges(changes: SimpleChanges): void {
     const previousDatasource = {
       resource: get(changes, 'settings.previousValue.resource'),
-      chart: {
-        aggregationId: get(
-          changes,
-          'settings.previousValue.chart.aggregationId'
-        ),
-      },
+      referenceData: get(changes, 'settings.previousValue.referenceData'),
+      aggregation: get(changes, 'settings.previousValue.aggregation'),
     };
     const currentDatasource = {
       resource: get(changes, 'settings.currentValue.resource'),
-      chart: {
-        aggregationId: get(
-          changes,
-          'settings.currentValue.chart.aggregationId'
-        ),
-      },
+      referenceData: get(changes, 'settings.currentValue.referenceData'),
+      aggregation: get(changes, 'settings.currentValue.aggregation'),
     };
 
     if (!isEqual(previousDatasource, currentDatasource)) {
@@ -129,17 +121,20 @@ export class ChartComponent
   /** Loads chart */
   private loadChart(): void {
     this.loading = true;
-    if (this.settings.resource) {
+    if (this.settings.resource || this.settings.referenceData) {
+      const id = this.settings.resource ?? this.settings.referenceData;
+      const type = this.settings.resource ? 'resource' : 'referenceData';
       this.aggregationService
-        .getAggregations(this.settings.resource, {
-          ids: [get(this.settings, 'chart.aggregationId', null)],
+        .getAggregations(id, type, {
+          ids: [get(this.settings, 'aggregation', null)],
           first: 1,
         })
         .then((res) => {
           const aggregation = res.edges[0]?.node || null;
           if (aggregation) {
             this.dataQuery = this.aggregationService.aggregationDataQuery(
-              this.settings.resource,
+              id,
+              type,
               aggregation.id || '',
               get(this.settings, 'chart.mapping', null),
               this.settings.contextFilters
@@ -259,8 +254,11 @@ export class ChartComponent
               'polar',
             ].includes(this.settings.chart.type)
           ) {
+            const aggregationType = data.recordsAggregation
+              ? 'recordsAggregation'
+              : 'referenceDataAggregation';
             const aggregationData = JSON.parse(
-              JSON.stringify(data.recordsAggregation)
+              JSON.stringify(data[aggregationType])
             );
             // If series
             if (get(this.settings, 'chart.mapping.series', null)) {

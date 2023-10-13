@@ -10,3 +10,13 @@ export const GET_RESOURCE = gql`
     }
   }
 `;
+
+/** Get reference data */
+export const GET_REFERENCE_DATA = gql`
+  query GetReferenceData($id: ID!) {
+    referenceData(id: $id) {
+      id
+      name
+    }
+  }
+`;

@@ -32,7 +32,12 @@ import { GET_LAYERS, GET_LAYER_BY_ID } from './graphql/queries';
 import { HttpParams } from '@angular/common/http';
 import { omitBy, isNil, get } from 'lodash';
 import { ContextService } from '../context/context.service';
+import { ReferenceData } from '../../models/reference-data.model';
 import { DOCUMENT } from '@angular/common';
+import {
+  AggregationService,
+  AggregationSource,
+} from '../aggregation/aggregation.service';
 
 /**
  * Shared map layer service
@@ -44,20 +49,22 @@ export class MapLayersService {
   /**
    * Class constructor
    *
+   * @param document document
    * @param apollo Apollo client instance
    * @param restService RestService
    * @param queryBuilder Query builder service
    * @param aggregationBuilder Aggregation builder service
    * @param contextService Application context service
-   * @param document document
+   * @param aggregationService Aggregation service
    */
   constructor(
+    @Inject(DOCUMENT) private document: Document,
     private apollo: Apollo,
     private restService: RestService,
     private queryBuilder: QueryBuilderService,
     private aggregationBuilder: AggregationBuilderService,
     private contextService: ContextService,
-    @Inject(DOCUMENT) private document: Document
+    private aggregationService: AggregationService
   ) {}
   /**
    * Save a new layer in the DB
@@ -195,17 +202,19 @@ export class MapLayersService {
   /**
    * Get fields from aggregation
    *
-   * @param resource A resource
+   * @param source Source, resource or reference data
+   * @param {AggregationSource} type source type from where get aggregation fields
    * @param aggregation A aggregation
    * @returns aggregation fields
    */
   public getAggregationFields(
-    resource: Resource | null,
+    source: Resource | null,
+    type: AggregationSource,
     aggregation: Aggregation | null
   ) {
     //@TODO this part should be refactored
     // Get fields
-    const fields = this.getAvailableSeriesFields(resource);
+    const fields = this.getAvailableSeriesFields(source, type);
     const selectedFields = aggregation?.sourceFields
       .map((x: string) => {
         const field = fields.find((y) => x === y.name);
@@ -239,11 +248,19 @@ export class MapLayersService {
   /**
    * Set available series fields, from resource fields and aggregation definition.
    *
-   * @param resource A resource
+   * @param source Source, resource or reference data
+   * @param {AggregationSource} type source type from where get aggregation fields
    */
-  private getAvailableSeriesFields(resource: Resource | null): any[] {
+  private getAvailableSeriesFields(
+    source?: Resource | ReferenceData | null,
+    type?: AggregationSource
+  ): any[] {
+    const queryName = this.aggregationService.setCurrentSourceQueryName(
+      source,
+      type ?? 'resource'
+    );
     return this.queryBuilder
-      .getFields(resource?.queryName as string)
+      .getFields(queryName)
       .filter(
         (field: any) =>
           !(

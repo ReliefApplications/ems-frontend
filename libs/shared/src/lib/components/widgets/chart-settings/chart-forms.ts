@@ -23,7 +23,6 @@ export const createChartForm = (value: any) => {
 
   const formGroup = fb.group({
     type: [get(value, 'type', null), Validators.required],
-    aggregationId: [get(value, 'aggregationId', null), Validators.required],
     mapping: createMappingForm(
       get(value, 'mapping', null),
       get(value, 'type', null)
@@ -184,13 +183,6 @@ export const createChartForm = (value: any) => {
     formGroup.setControl('series', seriesFormArray);
   });
 
-  formGroup.get('aggregationId')?.valueChanges.subscribe(() => {
-    formGroup.setControl(
-      'mapping',
-      createMappingForm(null, formGroup.get('type')?.value)
-    );
-  });
-
   // Update of palette
   formGroup.get('palette.enabled')?.valueChanges.subscribe((value) => {
     if (value) {
@@ -322,15 +314,31 @@ const DEFAULT_CONTEXT_FILTER = `{
  * @param value chart widget settings
  * @returns chart widget form group
  */
-export const createChartWidgetForm = (id: any, value: any) =>
-  fb.group({
+export const createChartWidgetForm = (id: any, value: any) => {
+  const chartWidgetForm = fb.group({
     id,
     title: [get(value, 'title', ''), Validators.required],
     chart: createChartForm(get(value, 'chart')),
-    resource: [get(value, 'resource', null), Validators.required],
+    resource: [get(value, 'resource', null)],
+    referenceData: [get(value, 'referenceData', null)],
+    // For previously loaded aggregations we try to fetch them from the old form structure first
+    // If no value, we will try to fetch value for current new form structure
+    aggregation: [
+      get(value, 'chart.aggregationId', null) ??
+        get(value, 'aggregation', null),
+      Validators.required,
+    ],
     contextFilters: [get(value, 'contextFilters', DEFAULT_CONTEXT_FILTER)],
     at: [get(value, 'at', '')],
   });
+  chartWidgetForm.get('aggregation')?.valueChanges.subscribe(() => {
+    chartWidgetForm.controls.chart?.setControl(
+      'mapping',
+      createMappingForm(null, chartWidgetForm.get('chart.type')?.value)
+    );
+  });
+  return chartWidgetForm;
+};
 
 /**
  * Create chart serie category form group

@@ -12,7 +12,6 @@ export const GET_RESOURCE_LAYOUTS = gql`
   }
 `;
 
-// === GET RECORD BY ID ===
 /** Graphql request for getting a record by its id */
 export const GET_RECORD_BY_ID = gql`
   query GetRecordById($id: ID!) {
@@ -120,6 +119,58 @@ export const GET_RESOURCE = gql`
       metadata {
         name
         type
+      }
+    }
+  }
+`;
+
+/** Get list of ref data gql query definition */
+export const GET_REFERENCE_DATAS = gql`
+  query GetReferenceDatas($first: Int, $afterCursor: ID) {
+    referenceDatas(first: $first, afterCursor: $afterCursor) {
+      edges {
+        node {
+          id
+          name
+          type
+          aggregations {
+            totalCount
+          }
+        }
+        cursor
+      }
+      totalCount
+      pageInfo {
+        hasNextPage
+        endCursor
+      }
+    }
+  }
+`;
+
+/** Get ref data gql query definition */
+export const GET_REFERENCE_DATA = gql`
+  query GetReferenceData($id: ID!, $aggregation: [ID]) {
+    referenceData(id: $id) {
+      id
+      name
+      type
+      fields
+      aggregations(ids: $aggregation) {
+        edges {
+          node {
+            id
+            name
+            sourceFields
+            pipeline
+            createdAt
+          }
+        }
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+        totalCount
       }
     }
   }

@@ -1,6 +1,5 @@
 import { gql } from 'apollo-angular';
 
-// === GET RELATED FORMS FROM RESOURCE ===
 /** Graphql request to get resource aggregations */
 export const GET_RESOURCE_AGGREGATIONS = gql`
   query GetGridResourceMeta($resource: ID!, $ids: [ID], $first: Int) {
@@ -28,8 +27,34 @@ export const GET_RESOURCE_AGGREGATIONS = gql`
   }
 `;
 
+/** Graphql request to get resource aggregations */
+export const GET_REFERENCE_DATA_AGGREGATIONS = gql`
+  query GetGridReferenceDataMeta($referenceData: ID!, $ids: [ID], $first: Int) {
+    referenceData(id: $referenceData) {
+      id
+      name
+      aggregations(ids: $ids, first: $first) {
+        edges {
+          node {
+            id
+            name
+            sourceFields
+            pipeline
+            createdAt
+          }
+        }
+        totalCount
+        pageInfo {
+          hasNextPage
+          endCursor
+        }
+      }
+    }
+  }
+`;
+
 /** Query definition to get aggregation data */
-export const GET_AGGREGATION_DATA = gql`
+export const GET_RESOURCE_AGGREGATION_DATA = gql`
   query GetAggregationData(
     $resource: ID!
     $aggregation: ID!
@@ -49,6 +74,29 @@ export const GET_AGGREGATION_DATA = gql`
       skip: $skip
       contextFilters: $contextFilters
       at: $at
+      sortOrder: $sortOrder
+      sortField: $sortField
+    )
+  }
+`;
+
+/** Query definition to get aggregation data */
+export const GET_REFERENCE_DATA_AGGREGATION_DATA = gql`
+  query GetAggregationData(
+    $referenceData: ID!
+    $aggregation: ID!
+    $mapping: JSON
+    $first: Int
+    $skip: Int
+    $sortOrder: String
+    $sortField: String
+  ) {
+    referenceDataAggregation(
+      referenceData: $referenceData
+      aggregation: $aggregation
+      mapping: $mapping
+      first: $first
+      skip: $skip
       sortOrder: $sortOrder
       sortField: $sortField
     )

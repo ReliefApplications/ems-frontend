@@ -40,29 +40,32 @@
         </shared-editor>
       </ng-template>
     </ui-tab>
-    <!-- Resource and record selection  -->
+    <!-- Resource/Reference data and record/aggregation item selection  -->
     <ui-tab>
       <ng-container ngProjectAs="label">
         <ui-icon
           icon="settings"
           [size]="24"
           [uiTooltip]="
-            'components.widget.settings.editor.recordSelection' | translate
+            'components.widget.settings.editor.datasourceSelection' | translate
           "
         ></ui-icon>
         <span>{{
-          'components.widget.settings.editor.recordSelection' | translate
+          'components.widget.settings.editor.datasourceSelection' | translate
         }}</span>
       </ng-container>
       <ng-template uiTabContent>
-        <shared-record-selection-tab
-          *ngIf="tileForm"
-          [form]="tileForm"
-          [selectedResource]="selectedResource"
-          [selectedLayout]="selectedLayout"
-          (resourceChange)="selectedResource = $event; updateFields()"
-          (layoutChange)="selectedLayout = $event; updateFields()"
-        ></shared-record-selection-tab>
+        <ng-container *ngIf="tileForm">
+          <shared-datasource-selection-tab
+            [tileForm]="tileForm"
+            [selectedResource]="selectedResource"
+            [selectedReferenceData]="selectedReferenceData"
+            [selectedLayout]="selectedLayout"
+            [selectedAggregation]="selectedAggregation"
+            (layoutChange)="handleLayoutChange($event)"
+            (aggregationChange)="handleAggregationChange($event)"
+          ></shared-datasource-selection-tab>
+        </ng-container>
       </ng-template>
     </ui-tab>
     <!-- Widget display options -->

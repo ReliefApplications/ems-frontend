@@ -24,8 +24,12 @@ import {
 import { AggregationService } from '../../../services/aggregation/aggregation.service';
 import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.component';
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
-import { GET_RESOURCE } from './graphql/queries';
+import { GET_REFERENCE_DATA, GET_RESOURCE } from './graphql/queries';
 import { takeUntil } from 'rxjs';
+import {
+  ReferenceData,
+  ReferenceDataQueryResponse,
+} from '../../../models/reference-data.model';
 
 // todo: put in common
 /** Default context filter value. */
@@ -43,9 +47,6 @@ const DEFAULT_CONTEXT_FILTER = `{
 const createCardForm = (value?: any) => {
   return new FormGroup({
     title: new FormControl<string>(get(value, 'title', 'New Card')),
-    resource: new FormControl<string>(get(value, 'resource', null)),
-    layout: new FormControl<string>(get(value, 'layout', null)),
-    aggregation: new FormControl<string>(get(value, 'aggregation', null)),
     html: new FormControl<string>(get(value, 'html', null)),
     showDataSourceLink: new FormControl<boolean>(
       get(value, 'showDataSourceLink', false)
@@ -70,6 +71,24 @@ const createSummaryCardForm = (def: any) => {
     id: new FormControl<number>(def.id),
     title: new FormControl<string>(get(settings, 'title', '')),
     card: createCardForm(get(settings, 'card', null)),
+    ///////////////////////////////
+    // This properties goes in the general settings, but for currently saved summary card settings we would add this get checks
+    resource: new FormControl<string>(
+      get(settings, 'resource', null) ?? get(settings, 'card', null)?.resource
+    ),
+    referenceData: new FormControl<string>(
+      get(settings, 'referenceData', null) ??
+        get(settings, 'card', null)?.referenceData
+    ),
+    aggregation: new FormControl<string>(
+      get(settings, 'aggregation', null) ??
+        get(settings, 'card', null)?.aggregation
+    ),
+    layout: new FormControl<string>(
+      get(settings, 'layout', null) ?? get(settings, 'card', null)?.layout
+    ),
+    // Once they load and saved with this new config, this properties would be placed in the settings property root, as it is
+    ///////////////////////////////
     sortFields: new FormArray([]),
     contextFilters: new FormControl(
       get(settings, 'contextFilters', DEFAULT_CONTEXT_FILTER)
@@ -77,7 +96,7 @@ const createSummaryCardForm = (def: any) => {
     at: new FormControl(get(settings, 'at', '')),
   });
 
-  const isUsingAggregation = !!get(settings, 'card.aggregation', null);
+  const isUsingAggregation = !!get(settings, 'aggregation', null);
   const searchable = isUsingAggregation
     ? false
     : get<boolean>(settings, 'widgetDisplay.searchable', false);
@@ -118,6 +137,8 @@ export class SummaryCardSettingsComponent
   public tileForm: SummaryCardFormT | undefined;
   /** Current resource */
   public selectedResource: Resource | null = null;
+  /** Current reference data */
+  public selectedReferenceData: ReferenceData | null = null;
   /** Current layout */
   public selectedLayout: Layout | null = null;
   /** Current aggregation */
@@ -149,14 +170,50 @@ export class SummaryCardSettingsComponent
     this.tileForm = createSummaryCardForm(this.tile);
     this.change.emit(this.tileForm);
 
-    const resourceID = this.tileForm?.get('card.resource')?.value;
+    this.tileForm
+      .get('resource')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.getResource(value);
+          this.tileForm?.get('referenceData')?.setValue(null);
+        } else {
+          // clear sort fields array
+          const sortFields = this.tileForm?.get('sortFields') as FormArray;
+          sortFields.clear();
+          this.fields = [];
+          this.selectedResource = null;
+        }
+        this.tileForm?.get('aggregation')?.setValue(null);
+        this.tileForm?.get('layout')?.setValue(null);
+      });
+    // Initialize the selected resource, layout and record from the form
+    const resourceID = this.tileForm?.get('resource')?.value;
     if (resourceID) {
       this.getResource(resourceID);
+    }
+    this.tileForm
+      .get('referenceData')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (value) {
+          this.getReferenceData(value);
+          this.tileForm?.get('resource')?.setValue(null);
+        } else {
+          this.selectedReferenceData = null;
+        }
+        this.tileForm?.get('aggregation')?.setValue(null);
+        this.tileForm?.get('layout')?.setValue(null);
+      });
+    // Initialize the selected reference data from the form
+    const referenceDataID = this.tileForm?.get('referenceData')?.value;
+    if (referenceDataID) {
+      this.getReferenceData(referenceDataID);
     }
 
     // Subscribe to aggregation changes
     this.tileForm
-      .get('card.aggregation')
+      .get('aggregation')
       ?.valueChanges.pipe(takeUntil(this.destroy$))
       .subscribe((aggregationID) => {
         // disable searchable if aggregation is selected
@@ -166,8 +223,23 @@ export class SummaryCardSettingsComponent
           );
           searchableControl?.setValue(false);
           searchableControl?.disable();
-        } else this.tileForm?.get('widgetDisplay.searchable')?.enable();
+        } else {
+          this.selectedAggregation = null;
+          this.customAggregation = null;
+          this.tileForm?.get('widgetDisplay.searchable')?.enable();
+        }
       });
+    this.tileForm
+      .get('layout')
+      ?.valueChanges.pipe(takeUntil(this.destroy$))
+      .subscribe((value) => {
+        if (!value) {
+          this.selectedLayout = null;
+        }
+      });
+    this.tileForm?.valueChanges.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      this.change.emit(this.tileForm);
+    });
 
     this.initSortFields();
   }
@@ -221,9 +293,11 @@ export class SummaryCardSettingsComponent
    */
   private getResource(id: string): void {
     const form = this.tileForm;
-    if (!form) return;
-    const layoutID = form.get('card.layout')?.value;
-    const aggregationID = form.get('card.aggregation')?.value;
+    if (!form) {
+      return;
+    }
+    const layoutID = form.get('layout')?.value;
+    const aggregationID = form.get('aggregation')?.value;
     this.fields = [];
     this.apollo
       .query<ResourceQueryResponse>({
@@ -236,10 +310,11 @@ export class SummaryCardSettingsComponent
       })
       .subscribe((res) => {
         if (res.errors) {
-          form.get('card.resource')?.patchValue(null);
-          form.get('card.layout')?.patchValue(null);
-          form.get('card.aggregation')?.patchValue(null);
+          form.get('resource')?.patchValue(null);
+          form.get('layout')?.patchValue(null);
+          form.get('aggregation')?.patchValue(null);
           this.selectedResource = null;
+          this.selectedReferenceData = null;
           this.selectedLayout = null;
           this.selectedAggregation = null;
         } else {
@@ -267,19 +342,66 @@ export class SummaryCardSettingsComponent
   }
 
   /**
+   * Get reference data by id, doing graphQL query
+   *
+   * @param id reference data id
+   */
+  private getReferenceData(id: string): void {
+    const form = this.tileForm;
+    if (!form) {
+      return;
+    }
+    const aggregationID = form.get('aggregation')?.value;
+    this.fields = [];
+    this.apollo
+      .query<ReferenceDataQueryResponse>({
+        query: GET_REFERENCE_DATA,
+        variables: {
+          id,
+          aggregation: aggregationID ? [aggregationID] : undefined,
+        },
+      })
+      .subscribe((res) => {
+        if (res.errors) {
+          form.get('referenceData')?.patchValue(null);
+          form.get('layout')?.patchValue(null);
+          form.get('aggregation')?.patchValue(null);
+          this.selectedReferenceData = null;
+          this.selectedResource = null;
+          this.selectedLayout = null;
+          this.selectedAggregation = null;
+        } else {
+          this.selectedReferenceData = res.data.referenceData;
+          if (aggregationID) {
+            this.selectedAggregation =
+              res.data?.referenceData.aggregations?.edges[0]?.node || null;
+            this.getCustomAggregation();
+          }
+        }
+      });
+  }
+
+  /**
    * Gets the custom aggregation
-   * for the selected resource and aggregation.
+   * for the selected (resource or reference data) and aggregation.
    */
   private getCustomAggregation(): void {
-    if (!this.selectedAggregation || !this.selectedResource?.id) return;
+    if (
+      !this.selectedAggregation ||
+      (!this.selectedResource?.id && !this.selectedReferenceData?.id)
+    ) {
+      return;
+    }
+    const id =
+      this.selectedResource?.id ?? this.selectedReferenceData?.id ?? '';
+    const type = this.selectedResource?.id ? 'resource' : 'referenceData';
     this.aggregationService
-      .aggregationDataQuery(
-        this.selectedResource.id,
-        this.selectedAggregation.id || ''
-      )
+      .aggregationDataQuery(id, type, this.selectedAggregation.id || '')
       ?.subscribe((res) => {
-        if (res.data?.recordsAggregation) {
-          this.customAggregation = res.data.recordsAggregation;
+        const aggregations =
+          res.data?.recordsAggregation ?? res.data?.referenceDataAggregation;
+        if (aggregations) {
+          this.customAggregation = aggregations;
           // @TODO: Figure out fields' types from aggregation
           this.fields = this.customAggregation.items[0]
             ? Object.keys(this.customAggregation.items[0]).map((f) => ({
@@ -289,27 +411,6 @@ export class SummaryCardSettingsComponent
             : [];
         }
       });
-  }
-
-  /**
-   * Updates modified resource
-   *
-   * @param resource the modified resource
-   */
-  handleResourceChange(resource: Resource | null) {
-    // clear sort fields array
-    const sortFields = this.tileForm?.get('sortFields') as FormArray;
-    sortFields.clear();
-
-    this.selectedResource = resource;
-    this.fields = [];
-
-    // clear layout and record
-    this.tileForm?.get('card.layout')?.setValue(null);
-    this.tileForm?.get('card.aggregation')?.setValue(null);
-    this.selectedLayout = null;
-    this.selectedAggregation = null;
-    this.customAggregation = null;
   }
 
   /**

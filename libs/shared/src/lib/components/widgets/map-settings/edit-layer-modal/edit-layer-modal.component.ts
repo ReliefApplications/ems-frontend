@@ -32,8 +32,6 @@ import { OverlayLayerTree } from '../../../ui/map/interfaces/map-layers.interfac
 import * as L from 'leaflet';
 import { MapLayersService } from '../../../../services/map/map-layers.service';
 import { Layer } from '../../../ui/map/layer';
-import { Apollo } from 'apollo-angular';
-import { GET_RESOURCE } from '../graphql/queries';
 import { get, isEqual } from 'lodash';
 import { UnsubscribeComponent } from '../../../utils/unsubscribe/unsubscribe.component';
 import { LayerPropertiesModule } from './layer-properties/layer-properties.module';
@@ -57,7 +55,6 @@ import { MapLayersModule } from '../map-layers/map-layers.module';
 import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import { ContextualFiltersSettingsComponent } from '../../common/contextual-filters-settings/contextual-filters-settings.component';
 import { FormArray, FormBuilder } from '@angular/forms';
-import { ResourceQueryResponse } from '../../../../models/resource.model';
 
 /**
  * Interface of dialog input
@@ -107,9 +104,6 @@ export class EditLayerModalComponent
   @ViewChild('mapContainer', { read: ViewContainerRef })
   mapContainerRef!: ViewContainerRef;
   destroyTab$: Subject<boolean> = new Subject<boolean>();
-
-  public resource: BehaviorSubject<ResourceQueryResponse | null> =
-    new BehaviorSubject<ResourceQueryResponse | null>(null);
   public fields = new BehaviorSubject<Fields[]>([]);
   public fields$ = this.fields.asObservable();
 
@@ -141,7 +135,6 @@ export class EditLayerModalComponent
    * @param confirmService Shared confirm service.
    * @param translate Angular translate service.
    * @param mapLayersService Shared map layer Service.
-   * @param apollo Apollo service
    * @param dialogRef Dialog ref
    * @param fb Angular form builder
    */
@@ -150,7 +143,6 @@ export class EditLayerModalComponent
     private confirmService: ConfirmService,
     private translate: TranslateService,
     private mapLayersService: MapLayersService,
-    private apollo: Apollo,
     public dialogRef: DialogRef<LayerFormData>,
     private fb: FormBuilder
   ) {
@@ -191,7 +183,6 @@ export class EditLayerModalComponent
       this.setUpLayer(true);
     }
     this.setUpEditLayerListeners();
-    this.getResource();
   }
 
   ngAfterViewInit(): void {
@@ -365,22 +356,6 @@ export class EditLayerModalComponent
         },
       });
 
-    this.form
-      .get('datasource')
-      ?.valueChanges.pipe(
-        startWith(this.form.get('datasource')?.value),
-        pairwise(),
-        takeUntil(this.destroy$)
-      )
-      .subscribe({
-        next: ([prev, next]) => {
-          if (!!prev && prev?.resource !== next?.resource && next?.resource) {
-            this.getResource();
-          }
-          // else on aggregation implementation add it here
-        },
-      });
-
     this.data.mapComponent?.mapEvent.pipe(takeUntil(this.destroy$)).subscribe({
       next: (event: MapEvent) => this.handleMapEvent(event),
     });
@@ -439,49 +414,6 @@ export class EditLayerModalComponent
             this.destroyTab$.next(true);
             this.data.editingLayer.next(false);
             this.dialogRef.close();
-          }
-        });
-    }
-  }
-
-  /** If the form has a resource, fetch it */
-  getResource(): void {
-    const resourceID = this.form.get('datasource')?.value?.resource;
-    if (resourceID) {
-      const layoutID = this.form.get('datasource')?.value?.layout;
-      const aggregationID = this.form.get('datasource')?.value?.aggregation;
-      this.apollo
-        .query<ResourceQueryResponse>({
-          query: GET_RESOURCE,
-          variables: {
-            id: resourceID,
-            layout: layoutID ? [layoutID] : [],
-            aggregation: aggregationID ? [aggregationID] : [],
-          },
-        })
-        .pipe(takeUntil(this.destroy$))
-        .subscribe(({ data }) => {
-          this.resource.next(data);
-          // Update fields
-          if (layoutID) {
-            const layout = get(data, 'resource.layouts.edges[0].node', null);
-            this.fields.next(this.mapLayersService.getQueryFields(layout));
-          } else {
-            if (aggregationID) {
-              const aggregation = get(
-                data,
-                'resource.aggregations.edges[0].node',
-                null
-              );
-              this.fields.next(
-                aggregation
-                  ? this.mapLayersService.getAggregationFields(
-                      data.resource,
-                      aggregation
-                    )
-                  : []
-              );
-            }
           }
         });
     }

@@ -58,6 +58,7 @@ export const createButtonFormGroup = (value: any) => {
     ),
     attachToRecord: [get(value, 'attachToRecord', false)],
     targetResource: [get(value, 'targetResource', null)],
+    targetReferenceData: [get(value, 'targetReferenceData', null)],
     targetForm: [get(value, 'targetForm', null)],
     targetFormField: [get(value, 'targetFormField', null)],
     targetFormQuery: createQueryForm(

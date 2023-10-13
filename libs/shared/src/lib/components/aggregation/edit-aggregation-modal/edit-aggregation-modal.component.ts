@@ -13,13 +13,15 @@ import {
   SelectMenuModule,
   FormWrapperModule,
 } from '@oort-front/ui';
+import { ReferenceData } from '../../../models/reference-data.model';
 
 /**
  * Interface describing the structure of the data displayed in the dialog
  */
 interface DialogData {
   aggregation?: Aggregation;
-  resource: Resource;
+  resource?: Resource;
+  referenceData?: ReferenceData;
 }
 
 /**
@@ -44,7 +46,8 @@ interface DialogData {
 })
 export class EditAggregationModalComponent implements OnInit {
   public formGroup!: UntypedFormGroup;
-  public resource!: Resource;
+  public resource?: Resource;
+  public referenceData?: ReferenceData;
 
   // public templates: any[] = [];
   // public layoutPreviewData!: { form: FormGroup; defaultLayout: any };
@@ -62,6 +65,7 @@ export class EditAggregationModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.resource = this.data.resource;
+    this.referenceData = this.data.referenceData;
     this.formGroup = createAggregationForm(this.data.aggregation);
     // TODO: edit with the parameters the aggregation has
     // this.formGroup = this.formBuilder.group({

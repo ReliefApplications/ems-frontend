@@ -1,0 +1,74 @@
+<ng-container *ngIf="resourcesQuery && referenceDatasQuery">
+  <div uiFormFieldDirective>
+    <label>{{
+      'components.widget.settings.map.edit.datasource.origin' | translate
+    }}</label>
+    <ui-select-menu [formControl]="origin">
+      <ui-select-option value="resource">{{
+        'common.resource.one' | translate
+      }}</ui-select-option>
+      <ui-select-option value="referenceData">{{
+        'common.referenceData.one' | translate
+      }}</ui-select-option>
+    </ui-select-menu>
+  </div>
+</ng-container>
+
+<!-- Resource selection -->
+<ng-container *ngIf="origin.value === 'resource'">
+  <ng-container
+    [ngTemplateOutlet]="sourceSelection"
+    [ngTemplateOutletContext]="{
+      label: 'common.resource.one',
+      type: 'resource',
+      element: selectedResource,
+      query: resourcesQuery
+    }"
+  >
+  </ng-container>
+</ng-container>
+
+<!-- Reference data selection  -->
+<ng-container *ngIf="origin.value === 'referenceData'">
+  <ng-container
+    [ngTemplateOutlet]="sourceSelection"
+    [ngTemplateOutletContext]="{
+      label: 'common.referenceData.one',
+      type: 'referenceData',
+      element: selectedReferenceData,
+      query: referenceDatasQuery
+    }"
+  >
+  </ng-container>
+</ng-container>
+
+<ng-template
+  #sourceSelection
+  let-label="label"
+  let-type="type"
+  let-element="element"
+  let-query="query"
+>
+  <div uiFormFieldDirective class="flex-1">
+    <label>{{ label | translate }}</label>
+    <ui-graphql-select
+      valueField="id"
+      textField="name"
+      [query]="query"
+      [formControlName]="type"
+      [selectedElements]="[element]"
+      (searchChange)="handleSearchChangeBySource(type, $event)"
+      (selectionChange)="setCurrentItemByType(type, $event)"
+      [filterable]="true"
+    >
+    </ui-graphql-select>
+    <!-- Remove value -->
+    <ui-button
+      uiSuffix
+      (click)="clearFormField(type, $event)"
+      [isIcon]="true"
+      icon="close"
+      variant="danger"
+    ></ui-button>
+  </div>
+</ng-template>

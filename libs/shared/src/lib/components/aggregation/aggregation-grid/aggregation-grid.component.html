@@ -9,8 +9,12 @@
   [searchable]="false"
   [filterable]="false"
   [sortable]="false"
-  [selectable]="false"
+  [selectable]="selectable"
+  [multiSelect]="false"
   [status]="status"
-  [blank]="!resourceId || !aggregation"
+  [blank]="(!resourceId && !referenceDataId) || !aggregation"
+  [selectedRows]="selectedRows"
+  [itemIdentifier]="itemIdentifier"
+  (selectionChange)="onSelectionChange($event)"
 >
 </shared-grid>

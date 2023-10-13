@@ -195,6 +195,7 @@ export class SummaryCardComponent
 
     this.setupDynamicCards();
     this.setupGridSettings();
+
     this.searchControl.valueChanges
       .pipe(
         debounceTime(2000),
@@ -279,10 +280,14 @@ export class SummaryCardComponent
   private async setupDynamicCards() {
     // only one dynamic card is allowed per widget
     const card = this.settings.card;
-    if (!card) return;
-
-    if (card.aggregation) this.getCardsFromAggregation(card);
-    else if (card.layout) this.createDynamicQueryFromLayout(card);
+    if (!card) {
+      return;
+    }
+    if (this.settings.aggregation) {
+      this.getCardsFromAggregation();
+    } else if (this.settings.layout) {
+      this.createDynamicQueryFromLayout();
+    }
   }
 
   /**
@@ -292,7 +297,7 @@ export class SummaryCardComponent
    */
   private handleSearch(search: string) {
     // Only need to fetch data if is dynamic and not an aggregation
-    const needRefetch = !this.settings.card?.aggregation;
+    const needRefetch = !this.settings.aggregation;
     const skippedFields = ['id', 'incrementalId'];
     this.pageInfo.pageIndex = 0;
     this.pageInfo.skip = 0;
@@ -337,14 +342,17 @@ export class SummaryCardComponent
    * @param res Query result
    */
   private updateCards(res: any) {
-    if (!res?.data) return;
-    let newCards: any[] = [];
+    if (!res?.data) {
+      return;
+    }
 
+    let newCards: any[] = [];
     const layoutQueryName = this.layout?.query.name;
     if (this.layout) {
       const edges = res.data?.[layoutQueryName].edges;
-      if (!edges) return;
-
+      if (!edges) {
+        return;
+      }
       newCards = edges.map((e: any) => ({
         ...this.settings.card,
         record: e.node,
@@ -352,9 +360,19 @@ export class SummaryCardComponent
         metadata: this.fields,
         style: e.meta.style,
       }));
-    } else if (this.settings.card?.aggregation) {
-      if (!res.data?.recordsAggregation?.items) return;
-      newCards = res.data.recordsAggregation.items.map((x: any) => ({
+    } else if (this.settings.aggregation) {
+      if (
+        !res.data?.recordsAggregation?.items &&
+        !res.data?.referenceDataAggregation?.items
+      ) {
+        return;
+      }
+
+      const aggregationItems = res.data.recordsAggregation
+        ? res.data.recordsAggregation.items
+        : res.data.referenceDataAggregation.items;
+
+      newCards = aggregationItems.map((x: any) => ({
         ...this.settings.card,
         cardAggregationData: x,
       }));
@@ -377,8 +395,12 @@ export class SummaryCardComponent
         });
       }
     }
+    const aggregationType = res.data.recordsAggregation
+      ? 'recordsAggregation'
+      : 'referenceDataAggregation';
+
     this.pageInfo.length = get(
-      res.data[layoutQueryName ?? 'recordsAggregation'],
+      res.data[layoutQueryName ?? aggregationType],
       'totalCount',
       0
     );
@@ -388,22 +410,23 @@ export class SummaryCardComponent
 
   /**
    * Gets the query for fetching the dynamic cards records from a card's settings
-   *
-   * @param card Card settings
    */
-  private async createDynamicQueryFromLayout(card: any) {
+  private async createDynamicQueryFromLayout() {
     // gets metadata
     const metaRes = await firstValueFrom(
       this.apollo.query<ResourceQueryResponse>({
         query: GET_RESOURCE_METADATA,
         variables: {
-          id: card.resource,
+          id: this.settings.resource,
         },
       })
     );
 
     this.gridLayoutService
-      .getLayouts(card.resource, { ids: [card.layout], first: 1 })
+      .getLayouts(this.settings.resource ?? '', {
+        ids: [this.settings.layout ?? ''],
+        first: 1,
+      })
       .then((res) => {
         const layouts = res.edges.map((edge) => edge.node);
         if (layouts.length > 0) {
@@ -500,11 +523,18 @@ export class SummaryCardComponent
    */
   private async setupGridSettings(): Promise<void> {
     const card = this.settings.card;
-    if (!card || !card.resource || (!card.layout && !card.aggregation)) return;
+    if (
+      !card ||
+      (!this.settings.resource && !this.settings.referenceData) ||
+      (!this.settings.layout && !this.settings.aggregation)
+    ) {
+      return;
+    }
 
     const settings = {
       template: get(this.settings, 'template', null), //TO MODIFY
-      resource: card.resource,
+      resource: this.settings.resource,
+      referenceData: this.settings.referenceData,
       actions: {
         //default actions, might need to modify later
         addRecord: false,
@@ -521,9 +551,9 @@ export class SummaryCardComponent
 
     Object.assign(
       settings,
-      card.aggregation
-        ? { aggregations: card.aggregation }
-        : { layouts: card.layout }
+      this.settings.aggregation
+        ? { aggregations: this.settings.aggregation }
+        : { layouts: this.settings.layout }
     );
 
     this.gridSettings = settings;
@@ -531,18 +561,21 @@ export class SummaryCardComponent
 
   /**
    * Gets the query for fetching the dynamic cards records from a card's settings
-   *
-   * @param card Card settings
    */
-  private async getCardsFromAggregation(
-    card: NonNullable<SummaryCardFormT['value']['card']>
-  ) {
-    if (!card.aggregation || !card.resource) return;
+  private async getCardsFromAggregation() {
+    if (
+      !this.settings.aggregation ||
+      (!this.settings.resource && !this.settings.referenceData)
+    ) {
+      return;
+    }
     this.loading = true;
-
+    const id = this.settings.resource ?? this.settings.referenceData ?? '';
+    const type = this.settings.resource ? 'resource' : 'referenceData';
     this.dataQuery = this.aggregationService.aggregationDataWatchQuery(
-      card.resource,
-      card.aggregation,
+      id,
+      type,
+      this.settings.aggregation,
       DEFAULT_PAGE_SIZE,
       0,
       this.contextService.injectDashboardFilterValues(this.contextFilters),

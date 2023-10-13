@@ -4,6 +4,8 @@ import { Apollo } from 'apollo-angular';
 import { firstValueFrom } from 'rxjs';
 import {
   GET_LAYOUT,
+  GET_REFERENCE_DATA_AGGREGATION_DATA,
+  GET_RESOURCE_AGGREGATION_DATA,
   GET_RESOURCE_METADATA,
 } from '../summary-card/graphql/queries';
 import { clone, get } from 'lodash';
@@ -14,6 +16,9 @@ import { SnackbarService } from '@oort-front/ui';
 import { TranslateService } from '@ngx-translate/core';
 import { ResourceQueryResponse } from '../../../models/resource.model';
 import { GridService } from '../../../services/grid/grid.service';
+import { ReferenceDataQueryResponse } from '../../../models/reference-data.model';
+import { AggregationService } from '../../../services/aggregation/aggregation.service';
+import { AggregationBuilderService } from '../../../services/aggregation-builder/aggregation-builder.service';
 
 /**
  * Text widget component using KendoUI
@@ -43,6 +48,8 @@ export class EditorComponent implements OnInit {
    * @param apollo Apollo instance
    * @param queryBuilder Query builder service
    * @param dataTemplateService Shared data template service, used to render content from template
+   * @param aggregationService aggregation service to fetch needed data
+   * @param aggregationBuilderService aggregation builder service to map and build up any needed fields
    * @param dialog Dialog service
    * @param snackBar Shared snackbar service
    * @param translate Angular translate service
@@ -52,6 +59,8 @@ export class EditorComponent implements OnInit {
     private apollo: Apollo,
     private queryBuilder: QueryBuilderService,
     private dataTemplateService: DataTemplateService,
+    private aggregationService: AggregationService,
+    private aggregationBuilderService: AggregationBuilderService,
     private dialog: Dialog,
     private snackBar: SnackbarService,
     private translate: TranslateService,
@@ -67,9 +76,13 @@ export class EditorComponent implements OnInit {
    * Sets content of the text widget, querying associated record if any.
    */
   private async setContentFromLayout(): Promise<void> {
-    if (this.settings.record) {
-      await this.getLayout();
-      await this.getData();
+    if (this.settings.record || this.settings.aggregationItem) {
+      if (this.settings.record) {
+        await this.getLayout();
+        await this.getResourceData();
+      } else if (this.settings.aggregationItem) {
+        await this.getAggregationData();
+      }
       this.formattedStyle = this.dataTemplateService.renderStyle(
         this.settings.wholeCardStyles || false,
         this.fieldsValue,
@@ -109,9 +122,9 @@ export class EditorComponent implements OnInit {
   }
 
   /**
-   * Queries the data.
+   * Queries the resource data.
    */
-  private async getData() {
+  private async getResourceData() {
     const metaRes = await firstValueFrom(
       this.apollo.query<ResourceQueryResponse>({
         query: GET_RESOURCE_METADATA,
@@ -182,6 +195,95 @@ export class EditorComponent implements OnInit {
           }
         }
       }
+    }
+  }
+
+  /**
+   * Queries the reference data data.
+   */
+  private async getAggregationData() {
+    const type = this.settings.resource ? 'resource' : 'referenceData';
+
+    const metaRes = await firstValueFrom(
+      this.apollo.query<ResourceQueryResponse & ReferenceDataQueryResponse>({
+        query: this.settings.resource
+          ? GET_RESOURCE_AGGREGATION_DATA
+          : GET_REFERENCE_DATA_AGGREGATION_DATA,
+        variables: {
+          id: this.settings.resource ?? this.settings.referenceData,
+          aggregation: this.settings.aggregation
+            ? [this.settings.aggregation]
+            : [],
+        },
+      })
+    );
+
+    const queryName = this.aggregationService.setCurrentSourceQueryName(
+      metaRes.data[type],
+      type
+    );
+    const allGqlFields = this.queryBuilder.getFields(queryName);
+    // Fetch fields at the end of the pipeline
+    const aggregationItem: any = metaRes.data[type].aggregations?.edges[0].node;
+    const fieldsName =
+      metaRes.data[type].fields?.map((field: any) =>
+        type === 'resource' ? field.name : field.graphQLFieldName
+      ) ?? [];
+    this.fields = this.aggregationBuilderService.fieldsAfter(
+      allGqlFields
+        ?.filter((x) => fieldsName.includes(x.name))
+        .map((field: any) => {
+          if (field.type?.kind !== 'SCALAR') {
+            field.fields = this.queryBuilder
+              .getFieldsFromType(
+                field.type?.kind === 'OBJECT'
+                  ? field.type.name
+                  : field.type.ofType.name
+              )
+              .filter((y) => y.type.name !== 'ID' && y.type?.kind === 'SCALAR');
+          }
+          return field;
+        }) || [],
+      aggregationItem.pipeline ?? []
+    );
+
+    const aggregationItemQuery =
+      this.aggregationService.aggregationDataWatchQuery(
+        this.settings.resource ?? this.settings.referenceData,
+        type,
+        this.settings.aggregation,
+        10,
+        0,
+        {
+          // get only the aggregation item we need
+          logic: 'and',
+          filters: [
+            {
+              field: this.settings.aggregationItemIdentifier,
+              operator: 'eq',
+              value: this.settings.aggregationItem,
+            },
+          ],
+        }
+      );
+
+    if (aggregationItemQuery) {
+      const aggregationData = await firstValueFrom(
+        aggregationItemQuery.valueChanges
+      );
+      let selectedItem;
+      if (type === 'resource') {
+        selectedItem = aggregationData.data.recordsAggregation.items[0];
+      } else {
+        /**@TODO Once the contextFilters are implemented in the backend for reference data, change this line with */
+        /** selectedItem = aggregationData.data.referenceDataAggregation.items[0] */
+        selectedItem = aggregationData.data.referenceDataAggregation.items.find(
+          (item: any) =>
+            item[this.settings.aggregationItemIdentifier] ===
+            this.settings.aggregationItem
+        );
+      }
+      this.fieldsValue = selectedItem ? { ...selectedItem } : {};
     }
   }
 

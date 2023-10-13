@@ -4,7 +4,37 @@
       {{ 'components.aggregation.edit.title' | translate }}
     </h3>
   </ng-container>
-  <ng-container ngProjectAs="content">
+  <ng-container ngProjectAs="content" *ngIf="resource">
+    <ng-container
+      [ngTemplateOutlet]="aggregationBuilderTmpl"
+      [ngTemplateOutletContext]="{
+        formGroup: formGroup,
+        sourceName: 'common.resource.one',
+        type: 'resource',
+        source: resource
+      }"
+    >
+    </ng-container>
+  </ng-container>
+  <ng-container ngProjectAs="content" *ngIf="referenceData">
+    <ng-container
+      [ngTemplateOutlet]="aggregationBuilderTmpl"
+      [ngTemplateOutletContext]="{
+        formGroup: formGroup,
+        sourceName: 'common.referenceData.one',
+        type: 'referenceData',
+        source: referenceData
+      }"
+    >
+    </ng-container>
+  </ng-container>
+  <ng-template
+    #aggregationBuilderTmpl
+    let-formGroup="formGroup"
+    let-sourceName="sourceName"
+    let-type="type"
+    let-source="source"
+  >
     <form [formGroup]="formGroup" class="flex flex-col gap-8">
       <div class="flex flex-col">
         <div uiFormFieldDirective>
@@ -12,22 +42,23 @@
           <input formControlName="name" type="string" />
         </div>
         <div uiFormFieldDirective>
-          <label>{{ 'common.resource.one' | translate }}</label>
-          <ui-select-menu [value]="resource.id" [disabled]="true">
-            <ui-select-option [value]="resource.id" [disabled]="true">
-              {{ resource.name }}
+          <label>{{ sourceName | translate }}</label>
+          <ui-select-menu [value]="source.id" [disabled]="true">
+            <ui-select-option [value]="source.id" [disabled]="true">
+              {{ source.name }}
             </ui-select-option>
           </ui-select-menu>
         </div>
       </div>
       <div class="flex flex-col">
         <shared-aggregation-builder
-          [resource]="resource"
+          [source]="source"
+          [type]="type"
           [aggregationForm]="formGroup"
         ></shared-aggregation-builder>
       </div>
     </form>
-  </ng-container>
+  </ng-template>
   <ng-container ngProjectAs="actions">
     <ui-button uiDialogClose variant="default">
       {{ 'common.close' | translate }}

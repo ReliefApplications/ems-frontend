@@ -110,6 +110,18 @@ export const GET_REFERENCE_DATAS = gql`
           name
           type
           fields
+          aggregations {
+            edges {
+              node {
+                id
+                name
+                sourceFields
+                pipeline
+                createdAt
+              }
+            }
+            totalCount
+          }
         }
         cursor
       }
@@ -124,12 +136,24 @@ export const GET_REFERENCE_DATAS = gql`
 
 /** Get ref data gql query definition */
 export const GET_REFERENCE_DATA = gql`
-  query GetReferenceData($id: ID!) {
+  query GetReferenceData($id: ID!, $aggregation: [ID!]) {
     referenceData(id: $id) {
       id
       name
       type
       fields
+      aggregations(ids: $aggregation) {
+        edges {
+          node {
+            id
+            name
+            sourceFields
+            pipeline
+            createdAt
+          }
+        }
+        totalCount
+      }
     }
   }
 `;

@@ -100,6 +100,7 @@ export class GridComponent
   @Input() widget: any;
   /** Input decorator for canUpdate. */
   @Input() canUpdate = false;
+  @Input() itemIdentifier = 'id';
 
   // === EXPORT ===
   /** Input decorator for exportSettings. */
@@ -494,13 +495,14 @@ export class GridComponent
     if (deselectedRows.length > 0) {
       this.selectedRows = [
         ...this.selectedRows.filter(
-          (x) => !deselectedRows.some((y) => x === y.dataItem.id)
+          (x) =>
+            !deselectedRows.some((y) => x === y.dataItem[this.itemIdentifier])
         ),
       ];
     }
     if (selectedRows.length > 0) {
       this.selectedRows = this.selectedRows.concat(
-        selectedRows.map((x) => x.dataItem.id)
+        selectedRows.map((x) => x.dataItem[this.itemIdentifier])
       );
     }
     this.setSelectedItems();
@@ -514,14 +516,14 @@ export class GridComponent
    * @returns selected status of the row.
    */
   public isRowSelected = (row: RowArgs) =>
-    this.selectedRows.includes(row.dataItem.id);
+    this.selectedRows.includes(row.dataItem[this.itemIdentifier]);
 
   /**
    * Set array of selected items from selected rows.
    */
   private setSelectedItems(): void {
     this.selectedItems = this.data.data.filter((x) =>
-      this.selectedRows.includes(x.id)
+      this.selectedRows.includes(x[this.itemIdentifier])
     );
   }
 
