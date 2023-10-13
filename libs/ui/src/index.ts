@@ -1,5 +1,3 @@
-export * from './lib/ui.module';
-
 // === TAILWIND COMPONENTS === //
 export * from './lib/avatar/avatar.module';
 export * from './lib/button/button.module';
