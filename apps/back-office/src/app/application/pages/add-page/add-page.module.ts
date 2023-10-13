@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AddPageRoutingModule } from './add-page-routing.module';
 import { AddPageComponent } from './add-page.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { SafeContentChoiceModule } from '@oort-front/safe';
+import { ContentChoiceModule, WidgetChoiceModule } from '@oort-front/shared';
 import { TranslateModule } from '@ngx-translate/core';
 import { AbilityModule } from '@casl/angular';
 import {
@@ -23,11 +23,12 @@ import {
     FormsModule,
     ReactiveFormsModule,
     AddPageRoutingModule,
-    SafeContentChoiceModule,
+    ContentChoiceModule,
     TranslateModule,
     DividerModule,
     AbilityModule,
     ButtonModule,
+    WidgetChoiceModule,
     GraphQLSelectModule,
     FormWrapperModule,
   ],

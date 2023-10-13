@@ -1,0 +1,18 @@
+<ui-spinner size="large" *ngIf="loading"></ui-spinner>
+<ng-container *ngIf="!loading">
+  <div class="flex">
+    <!-- Selection of fields -->
+    <shared-tagbox
+      class="flex flex-1"
+      [choices$]="fields$"
+      [control]="$any(aggregationForm.get('sourceFields'))"
+      [label]="'components.aggregationBuilder.sourceFields' | translate"
+    ></shared-tagbox>
+  </div>
+  <!-- Pipeline builder -->
+  <shared-pipeline
+    [fields$]="selectedFields$"
+    [metaFields$]="metaFields$"
+    [pipelineForm]="pipelineForm"
+  ></shared-pipeline>
+</ng-container>

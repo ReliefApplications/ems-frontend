@@ -1,5 +1,4 @@
 import { gql } from 'apollo-angular';
-import { Resource, ReferenceData, Connection } from '@oort-front/safe';
 
 /** GraphQL query definition to get single resource */
 export const GET_RESOURCE = gql`
@@ -12,16 +11,21 @@ export const GET_RESOURCE = gql`
   }
 `;
 
-/** Response interface of get single resource query */
-export interface GetResourceQueryResponse {
-  resource: Resource;
-}
-
 // === GET RESOURCES ===
 /** Graphql request for getting resources */
 export const GET_RESOURCES = gql`
-  query GetResources($first: Int, $afterCursor: ID, $sortField: String) {
-    resources(first: $first, afterCursor: $afterCursor, sortField: $sortField) {
+  query GetResources(
+    $first: Int
+    $afterCursor: ID
+    $sortField: String
+    $filter: JSON
+  ) {
+    resources(
+      first: $first
+      afterCursor: $afterCursor
+      sortField: $sortField
+      filter: $filter
+    ) {
       edges {
         node {
           id
@@ -39,15 +43,15 @@ export const GET_RESOURCES = gql`
   }
 `;
 
-/** Model for GetResourcesQueryResponse object */
-export interface GetResourcesQueryResponse {
-  resources: Connection<Resource>;
-}
-
 /** Get list of ref data gql query definition */
 export const GET_REFERENCE_DATAS = gql`
   query GetReferenceDatas($first: Int, $afterCursor: ID) {
-    referenceDatas(first: $first, afterCursor: $afterCursor) {
+    referenceDatas(
+      first: $first
+      afterCursor: $afterCursor
+      sortField: "name"
+      sortOrder: "asc"
+    ) {
       edges {
         node {
           id
@@ -66,11 +70,6 @@ export const GET_REFERENCE_DATAS = gql`
   }
 `;
 
-/** Get list of ref data gql query response interface */
-export interface GetReferenceDatasQueryResponse {
-  referenceDatas: Connection<ReferenceData>;
-}
-
 /** Get ref data gql query definition */
 export const GET_REFERENCE_DATA = gql`
   query GetReferenceData($id: ID!) {
@@ -82,8 +81,3 @@ export const GET_REFERENCE_DATA = gql`
     }
   }
 `;
-
-/** Get ref data gql query response interface */
-export interface GetReferenceDataQueryResponse {
-  referenceData: ReferenceData;
-}

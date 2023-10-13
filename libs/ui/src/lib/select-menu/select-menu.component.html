@@ -1,6 +1,9 @@
 <!-- Wrapper of the entire select menu, has focusout event -->
 <button
-  class="min-h-[32px] relative flex justify-between items-center w-full cursor-default rounded-md px-3 text-left shadow-sm ring-1 ring-inset ring-gray-300 sm:leading-6 overflow-hidden"
+  [class]="
+    'min-h-[32px] relative flex justify-between items-center w-full cursor-default rounded-md px-3 text-left shadow-sm ring-1 ring-inset ring-gray-300 sm:leading-6 overflow-hidden ' +
+    extraClasses!
+  "
   (click)="openSelectPanel()"
   [ngClass]="{
     'non_selectable text-gray-400': disabled,

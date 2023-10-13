@@ -13,17 +13,24 @@
           icon="check"
           (click)="onSave()"
           [disabled]="!applicationId || formControl.pristine"
+          [uiTooltip]="'common.save' | translate"
         >
         </ui-button>
-        <ui-button [isIcon]="true" icon="close" (click)="onClose()">
+        <ui-button
+          [isIcon]="true"
+          icon="close"
+          (click)="onClose()"
+          [uiTooltip]="'common.cancel' | translate"
+        >
         </ui-button>
       </div>
     </div>
   </div>
+  <ui-spinner class="my-2" *ngIf="loading"></ui-spinner>
   <!-- Style editor -->
   <div class="grow overflow-y-auto overflow-x-hidden">
     <ngx-monaco-editor
-      class="h-full"
+      class="!h-full"
       (onInit)="initEditor($event)"
       [options]="editorOptions"
       [formControl]="formControl"

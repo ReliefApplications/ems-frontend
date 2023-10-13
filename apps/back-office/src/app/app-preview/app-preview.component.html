@@ -1,17 +1,17 @@
-<safe-layout
+<shared-layout
   [title]="title"
   [leftSidenav]="leftSidenav"
-  [toolbar]="toolbar"
   [sideMenu]="sideMenu"
-></safe-layout>
+></shared-layout>
 <ng-template #toolbar>
   <app-preview-toolbar></app-preview-toolbar>
 </ng-template>
 <!--Need the nav variable, don't remove let-nav, used in layout-->
 <ng-template #leftSidenav let-nav>
-  <safe-navbar
+  <shared-navbar
     [nav]="nav"
     [navGroups]="navGroups"
+    [appLayout]="true"
     [vertical]="!(!sideMenu && largeDevice)"
-  ></safe-navbar>
+  ></shared-navbar>
 </ng-template>

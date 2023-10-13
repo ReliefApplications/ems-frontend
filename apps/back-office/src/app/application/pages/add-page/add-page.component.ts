@@ -1,27 +1,26 @@
 import { Apollo, QueryRef } from 'apollo-angular';
 import { Component, OnInit } from '@angular/core';
-import {
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { FormBuilder, Validators } from '@angular/forms';
 import {
   ContentType,
   CONTENT_TYPES,
-  SafeApplicationService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  WIDGET_TYPES,
+  ApplicationService,
+  UnsubscribeComponent,
+  FormsQueryResponse,
+  AddFormMutationResponse,
+} from '@oort-front/shared';
 import { takeUntil } from 'rxjs';
-import { AddFormMutationResponse, ADD_FORM } from './graphql/mutations';
-import { GET_FORMS, GetFormsQueryResponse } from './graphql/queries';
+import { ADD_FORM } from './graphql/mutations';
+import { GET_FORMS } from './graphql/queries';
 import { TranslateService } from '@ngx-translate/core';
 import { SnackbarService } from '@oort-front/ui';
 import { Dialog } from '@angular/cdk/dialog';
 
-/**
- * Number of items per page.
- */
+/** Number of items per page */
 const ITEMS_PER_PAGE = 10;
+/** Widget types that can be used as single widget page */
+const SINGLE_WIDGET_PAGE_TYPES = ['grid', 'map', 'summaryCard', 'tabs'];
 
 /**
  * Add page component.
@@ -31,22 +30,26 @@ const ITEMS_PER_PAGE = 10;
   templateUrl: './add-page.component.html',
   styleUrls: ['./add-page.component.scss'],
 })
-export class AddPageComponent
-  extends SafeUnsubscribeComponent
-  implements OnInit
-{
-  // === DATA ===
+export class AddPageComponent extends UnsubscribeComponent implements OnInit {
+  /** Available content types */
   public contentTypes = CONTENT_TYPES;
-  public formsQuery!: QueryRef<GetFormsQueryResponse>;
-
-  // === REACTIVE FORM ===
-  public pageForm: UntypedFormGroup = new UntypedFormGroup({});
+  /** Available widgets for addition */
+  public availableWidgets: any[] = WIDGET_TYPES;
+  /** Forms query */
+  public formsQuery!: QueryRef<FormsQueryResponse>;
+  /** New page form */
+  public pageForm = this.fb.group({
+    type: ['', Validators.required],
+    content: [''],
+    newForm: [false],
+  });
+  /** Current step in stepper */
   public step = 1;
 
   /**
    * Add page component
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param apollo Apollo service
    * @param applicationService Shared application service
    * @param dialog Dialog service
@@ -54,9 +57,9 @@ export class AddPageComponent
    * @param translate Angular translate service
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     private apollo: Apollo,
-    private applicationService: SafeApplicationService,
+    private applicationService: ApplicationService,
     public dialog: Dialog,
     private snackBar: SnackbarService,
     private translate: TranslateService
@@ -65,15 +68,10 @@ export class AddPageComponent
   }
 
   ngOnInit(): void {
-    this.pageForm = this.formBuilder.group({
-      type: ['', Validators.required],
-      content: [''],
-      newForm: [false],
-    });
     this.pageForm.get('type')?.valueChanges.subscribe((type) => {
       const contentControl = this.pageForm.controls.content;
       if (type === ContentType.form) {
-        this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
+        this.formsQuery = this.apollo.watchQuery<FormsQueryResponse>({
           query: GET_FORMS,
           variables: {
             first: ITEMS_PER_PAGE,
@@ -88,6 +86,15 @@ export class AddPageComponent
         contentControl.updateValueAndValidity();
       }
       this.onNext();
+    });
+
+    // Set the available widgets that can directly be added as single widget dashboard
+    this.availableWidgets = this.availableWidgets.filter((widget: any) => {
+      for (const wid of SINGLE_WIDGET_PAGE_TYPES) {
+        if (widget.id.includes(wid)) {
+          return widget;
+        }
+      }
     });
   }
 
@@ -112,7 +119,7 @@ export class AddPageComponent
   }
 
   /**
-   * Submit form to application service for creation
+   * Submit form to application service for creation of a new page
    */
   onSubmit(): void {
     this.applicationService.addPage(this.pageForm.value);
@@ -206,7 +213,30 @@ export class AddPageComponent
   }
 
   /**
-   * Changes the query according to search text
+   * Add a new widget as a dashboard page.
+   * Skip the onSubmit method, and use custom event handling to call application service to add the page with new content.
+   *
+   * @param widget new widget.
+   */
+  onAddWidget(widget: any): void {
+    // Build the structure and set width of widget
+    const structure = [
+      {
+        ...widget,
+        defaultCols: 8,
+      },
+    ];
+    // Directly call application service to add page with structure
+    this.applicationService.addPage(
+      {
+        type: 'dashboard',
+      },
+      structure
+    );
+  }
+
+  /**
+   * Update query based on text search.
    *
    * @param search Search text from the graphql select
    */

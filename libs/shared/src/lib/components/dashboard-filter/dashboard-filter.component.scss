@@ -1,0 +1,61 @@
+:host {
+  // Host is positioned absolutely with an inset of 0
+  // to take all the available space without interfering in the element flow of the DOM
+  position: absolute;
+  // Also, in order to position the fixed element to the hosts parent, the element positioning is:
+  // parent(relative) > host/component(absolute) > sidebar(fixed) otherwise the fixed element would position to the DOM viewport
+  inset: 0;
+  pointer-events: none;
+}
+
+.dashboard-filter-y-axis {
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
+  justify-content: center;
+}
+
+.dashboard-filter-x-axis {
+  margin-top: auto;
+  margin-bottom: auto;
+  top: 0;
+  bottom: 0;
+}
+
+.dashboard-filter-tab {
+  &.top {
+    top: 0px;
+    width: 80px;
+    border-bottom-left-radius: 1rem;
+    border-bottom-right-radius: 1rem;
+    @extend .dashboard-filter-y-axis;
+  }
+  &.bottom {
+    bottom: 0px;
+    width: 80px;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
+    @extend .dashboard-filter-y-axis;
+  }
+  &.right {
+    right: 0px;
+    width: 40px;
+    border-bottom-left-radius: 1rem;
+    border-top-left-radius: 1rem;
+    @extend .dashboard-filter-x-axis;
+    justify-content: start;
+  }
+  &.left {
+    left: 0px;
+    width: 40px;
+    border-bottom-right-radius: 1rem;
+    border-top-right-radius: 1rem;
+    @extend .dashboard-filter-x-axis;
+    justify-content: end;
+  }
+}
+
+.text-side {
+  writing-mode: vertical-lr;
+}

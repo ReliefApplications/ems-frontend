@@ -1,11 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import {
-  UntypedFormArray,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
-import { Dialog, DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
+import { FormBuilder, UntypedFormArray, Validators } from '@angular/forms';
+import { DIALOG_DATA, DialogRef } from '@angular/cdk/dialog';
 import {
   ApiConfiguration,
   Application,
@@ -15,19 +10,26 @@ import {
   status,
   authType,
   cronValidator,
-} from '@oort-front/safe';
+  ApplicationsApplicationNodesQueryResponse,
+  ApiConfigurationsQueryResponse,
+  FormQueryResponse,
+  FormsQueryResponse,
+  StatusOptionsComponent,
+} from '@oort-front/shared';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
-  GetApiConfigurationsQueryResponse,
   GET_API_CONFIGURATIONS,
-  GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
-  GetFormsQueryResponse,
   GET_FORM_NAMES,
-  GetRoutingKeysQueryResponse,
   GET_ROUTING_KEYS,
 } from '../../graphql/queries';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import {
+  BehaviorSubject,
+  Observable,
+  Subscription,
+  debounceTime,
+  distinctUntilChanged,
+} from 'rxjs';
 import get from 'lodash/get';
 import {
   getCachedValues,
@@ -37,9 +39,9 @@ import { CommonModule, DOCUMENT } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import {
-  SafeReadableCronModule,
+  ReadableCronModule,
   CronExpressionControlModule,
-} from '@oort-front/safe';
+} from '@oort-front/shared';
 import {
   TooltipModule,
   ButtonModule,
@@ -47,11 +49,11 @@ import {
   SelectMenuModule,
   FormWrapperModule,
   TextareaModule,
-  ChipModule,
   GraphQLSelectModule,
   IconModule,
 } from '@oort-front/ui';
 import { DialogModule } from '@oort-front/ui';
+import { MonacoEditorModule } from 'ngx-monaco-editor-v2';
 
 /** Items per page for pagination */
 const ITEMS_PER_PAGE = 10;
@@ -69,7 +71,7 @@ const DEFAULT_FIELDS = ['createdBy'];
     TranslateModule,
     DialogModule,
     GraphQLSelectModule,
-    SafeReadableCronModule,
+    ReadableCronModule,
     TooltipModule,
     ExpansionPanelModule,
     CronExpressionControlModule,
@@ -78,7 +80,8 @@ const DEFAULT_FIELDS = ['createdBy'];
     ButtonModule,
     SelectMenuModule,
     FormWrapperModule,
-    ChipModule,
+    StatusOptionsComponent,
+    MonacoEditorModule,
   ],
   selector: 'app-edit-pull-job-modal',
   templateUrl: './edit-pull-job-modal.component.html',
@@ -86,18 +89,49 @@ const DEFAULT_FIELDS = ['createdBy'];
 })
 export class EditPullJobModalComponent implements OnInit {
   // === REACTIVE FORM ===
-  public formGroup: UntypedFormGroup = new UntypedFormGroup({});
+  public formGroup = this.fb.group({
+    name: [get(this.data, 'pullJob.name', ''), Validators.required],
+    status: [get(this.data, 'pullJob.status', ''), Validators.required],
+    apiConfiguration: [
+      get(this.data, 'pullJob.apiConfiguration.id', ''),
+      Validators.required,
+    ],
+    url: [get(this.data, 'pullJob.url', '')],
+    path: [get(this.data, 'pullJob.path', '')],
+    schedule: [
+      get(this.data, 'pullJob.schedule', ''),
+      [Validators.required, cronValidator()],
+    ],
+    convertTo: [get(this.data, 'pullJob.convertTo.id', '')],
+    channel: [get(this.data, 'pullJob.channel.id', '')],
+    mapping: this.fb.array(
+      this.data.pullJob && this.data.pullJob.mapping
+        ? Object.keys(this.data.pullJob.mapping).map((x: any) =>
+            this.fb.group({
+              name: [x, Validators.required],
+              value: [this.data.pullJob?.mapping[x], Validators.required],
+            })
+          )
+        : []
+    ),
+    rawMapping: [
+      this.data.pullJob && this.data.pullJob.mapping
+        ? JSON.stringify(this.data.pullJob?.mapping, null, 2)
+        : '',
+    ],
+    uniqueIdentifiers: [get(this.data, 'pullJob.uniqueIdentifiers', [])],
+  });
   isHardcoded = true;
 
   // === FORMS ===
-  public formsQuery!: QueryRef<GetFormsQueryResponse>;
+  public formsQuery!: QueryRef<FormsQueryResponse>;
 
   // === CHANNELS ===
   private applicationsLoading = true;
   public applications = new BehaviorSubject<Application[]>([]);
   public applications$!: Observable<Application[]>;
   private cachedApplications: Application[] = [];
-  private applicationsQuery!: QueryRef<GetRoutingKeysQueryResponse>;
+  private applicationsQuery!: QueryRef<ApplicationsApplicationNodesQueryResponse>;
   private applicationsPageInfo = {
     endCursor: '',
     hasNextPage: true,
@@ -105,7 +139,7 @@ export class EditPullJobModalComponent implements OnInit {
 
   // === API ===
   public apiConfigurations: ApiConfiguration[] = [];
-  public apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
+  public apiConfigurationsQuery!: QueryRef<ApiConfigurationsQueryResponse>;
 
   // === DATA ===
   public statusChoices = Object.values(status);
@@ -135,23 +169,28 @@ export class EditPullJobModalComponent implements OnInit {
     return this.data.pullJob?.channel || null;
   }
 
+  /** Monaco editor configuration, for raw edition */
+  public editorOptions = {
+    theme: 'vs-dark',
+    language: 'json',
+    fixedOverflowWidgets: true,
+  };
+
   /**
    * Pull job modal component
    *
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param dialogRef Dialog ref
    * @param apollo Apollo service
-   * @param dialog Dialog service
    * @param document Document
    * @param data Modal injected data
    * @param data.channels list of available channels
    * @param data.pullJob pull job
    */
   constructor(
-    private formBuilder: UntypedFormBuilder,
+    private fb: FormBuilder,
     public dialogRef: DialogRef<EditPullJobModalComponent>,
     private apollo: Apollo,
-    private dialog: Dialog,
     @Inject(DOCUMENT) private document: Document,
     @Inject(DIALOG_DATA)
     public data: {
@@ -161,39 +200,7 @@ export class EditPullJobModalComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.formGroup = this.formBuilder.group({
-      name: [get(this.data, 'pullJob.name', ''), Validators.required],
-      status: [get(this.data, 'pullJob.status', ''), Validators.required],
-      apiConfiguration: [
-        get(this.data, 'pullJob.apiConfiguration.id', ''),
-        Validators.required,
-      ],
-      url: [get(this.data, 'pullJob.url', '')],
-      path: [get(this.data, 'pullJob.path', '')],
-      schedule: [
-        get(this.data, 'pullJob.schedule', ''),
-        [Validators.required, cronValidator()],
-      ],
-      convertTo: [get(this.data, 'pullJob.convertTo.id', '')],
-      channel: [get(this.data, 'pullJob.channel.id', '')],
-      mapping: this.formBuilder.array(
-        this.data.pullJob && this.data.pullJob.mapping
-          ? Object.keys(this.data.pullJob.mapping).map((x: any) =>
-              this.formBuilder.group({
-                name: [x, Validators.required],
-                value: [this.data.pullJob?.mapping[x], Validators.required],
-              })
-            )
-          : []
-      ),
-      rawMapping: [
-        this.data.pullJob && this.data.pullJob.mapping
-          ? JSON.stringify(this.data.pullJob?.mapping, null, 2)
-          : '',
-      ],
-      uniqueIdentifiers: [get(this.data, 'pullJob.uniqueIdentifiers', [])],
-    });
-    this.formsQuery = this.apollo.watchQuery<GetFormsQueryResponse>({
+    this.formsQuery = this.apollo.watchQuery<FormsQueryResponse>({
       query: GET_FORM_NAMES,
       variables: {
         first: ITEMS_PER_PAGE,
@@ -202,7 +209,7 @@ export class EditPullJobModalComponent implements OnInit {
     });
 
     this.apiConfigurationsQuery =
-      this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
+      this.apollo.watchQuery<ApiConfigurationsQueryResponse>({
         query: GET_API_CONFIGURATIONS,
         variables: {
           first: ITEMS_PER_PAGE,
@@ -227,7 +234,7 @@ export class EditPullJobModalComponent implements OnInit {
 
     // Fetch the applications to get the channels
     this.applicationsQuery =
-      this.apollo.watchQuery<GetRoutingKeysQueryResponse>({
+      this.apollo.watchQuery<ApplicationsApplicationNodesQueryResponse>({
         query: GET_ROUTING_KEYS,
         variables: {
           first: ITEMS_PER_PAGE,
@@ -249,7 +256,7 @@ export class EditPullJobModalComponent implements OnInit {
     );
     this.formGroup
       .get('apiConfiguration')
-      ?.valueChanges.subscribe((apiConfiguration: string) => {
+      ?.valueChanges.subscribe((apiConfiguration: string | null) => {
         if (apiConfiguration) {
           const api = this.apiConfigurations.find(
             (x) => x.id === apiConfiguration
@@ -260,6 +267,24 @@ export class EditPullJobModalComponent implements OnInit {
             api.authType === authType.public
           );
         }
+      });
+
+    this.formGroup
+      .get('rawMapping')
+      ?.valueChanges.pipe(debounceTime(500), distinctUntilChanged())
+      .subscribe((value: any) => {
+        const mapping = JSON.parse(value || '{}');
+        this.formGroup.setControl(
+          'mapping',
+          this.fb.array(
+            Object.keys(mapping).map((x: any) =>
+              this.fb.group({
+                name: [x, Validators.required],
+                value: [mapping[x], Validators.required],
+              })
+            )
+          )
+        );
       });
   }
 
@@ -273,7 +298,7 @@ export class EditPullJobModalComponent implements OnInit {
       this.fieldsSubscription.unsubscribe();
     }
     this.fieldsSubscription = this.apollo
-      .watchQuery<GetFormByIdQueryResponse>({
+      .watchQuery<FormQueryResponse>({
         query: GET_SHORT_FORM_BY_ID,
         variables: {
           id,
@@ -299,7 +324,7 @@ export class EditPullJobModalComponent implements OnInit {
     return this.fields.filter(
       (field) =>
         field.name === name ||
-        !this.formGroup.value.mapping.some((x: any) => x.name === field.name)
+        !this.formGroup.value.mapping?.some((x: any) => x.name === field.name)
     );
   }
 
@@ -317,7 +342,7 @@ export class EditPullJobModalComponent implements OnInit {
    */
   onAddElement(): void {
     this.mappingArray.push(
-      this.formBuilder.group({
+      this.fb.group({
         name: ['', Validators.required],
         value: ['', Validators.required],
       })
@@ -328,39 +353,14 @@ export class EditPullJobModalComponent implements OnInit {
    * Toggles the edit mode and update form values accordingly.
    */
   toggleRawJSON(): void {
-    if (this.openRawJSON) {
-      const mapping = JSON.parse(this.formGroup.get('rawMapping')?.value || '');
-      this.formGroup.setControl(
-        'mapping',
-        this.formBuilder.array(
-          Object.keys(mapping).map((x: any) =>
-            this.formBuilder.group({
-              name: [x, Validators.required],
-              value: [mapping[x], Validators.required],
-            })
-          )
-        )
-      );
-    } else {
-      const mapping = this.formGroup
-        .get('mapping')
-        ?.value.reduce(
-          (o: any, field: any) => ({ ...o, [field.name]: field.value }),
-          {}
-        );
-      this.formGroup
-        .get('rawMapping')
-        ?.setValue(JSON.stringify(mapping, null, 2));
-    }
+    this.synchronizeFormValueData();
     this.openRawJSON = !this.openRawJSON;
   }
 
   /**
-   * Synchronizes mapping values on update button click.
-   *
-   * @returns Return form value.
+   * Synchronize mapping of the form value to the raw mapping if user don't want to open raw JSON
    */
-  returnFormValue(): any {
+  private synchronizeFormValueData() {
     if (!this.openRawJSON) {
       const mapping = this.formGroup
         .get('mapping')
@@ -372,6 +372,15 @@ export class EditPullJobModalComponent implements OnInit {
         .get('rawMapping')
         ?.setValue(JSON.stringify(mapping, null, 2));
     }
+  }
+
+  /**
+   * Synchronizes mapping values on update button click.
+   *
+   * @returns Return form value.
+   */
+  returnFormValue(): any {
+    this.synchronizeFormValueData();
     return this.formGroup.value;
   }
 
@@ -401,11 +410,8 @@ export class EditPullJobModalComponent implements OnInit {
           first: ITEMS_PER_PAGE,
           afterCursor: this.applicationsPageInfo.endCursor,
         };
-        const cachedValues: GetRoutingKeysQueryResponse = getCachedValues(
-          this.apollo.client,
-          GET_ROUTING_KEYS,
-          variables
-        );
+        const cachedValues: ApplicationsApplicationNodesQueryResponse =
+          getCachedValues(this.apollo.client, GET_ROUTING_KEYS, variables);
         if (cachedValues) {
           this.updateValues(cachedValues, false);
         } else {
@@ -448,7 +454,10 @@ export class EditPullJobModalComponent implements OnInit {
    * @param data query response data
    * @param loading loading status
    */
-  private updateValues(data: GetRoutingKeysQueryResponse, loading: boolean) {
+  private updateValues(
+    data: ApplicationsApplicationNodesQueryResponse,
+    loading: boolean
+  ) {
     const nodes = data.applications.edges
       .map((x) => x.node)
       .filter((x) => (x.channels ? x.channels.length > 0 : false));

@@ -19,6 +19,7 @@ import { CdkAccordionItem } from '@angular/cdk/accordion';
 
 /**
  * UI Expansion Panel Component
+ * Expansion Panel is a UI component that allows the user to expand and collapse content.
  */
 @Component({
   selector: 'ui-expansion-panel',
@@ -44,13 +45,19 @@ import { CdkAccordionItem } from '@angular/cdk/accordion';
   ],
 })
 export class ExpansionPanelComponent implements AfterViewInit {
+  /** Boolean indicating whether to display an icon. */
   @Input() displayIcon = true;
+  /** Boolean indicating whether the component is disabled. */
   @Input() disabled = false;
+  /** Boolean indicating whether the panel is expanded. */
   @Input() expanded = false;
+  /** The index of the panel. */
   @Input() index = 0;
-  @Output() closePanel = new EventEmitter<any>();
-
+  /** Event emitter for closing the panel. */
+  @Output() closePanel = new EventEmitter<boolean>();
+  /** Reference to the accordion item. */
   @ViewChild('accordionItem') accordionItem!: CdkAccordionItem;
+  /** Reference to the content container. */
   @ViewChild('contentContainer') contentContainer!: ElementRef;
 
   /**

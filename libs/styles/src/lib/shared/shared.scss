@@ -1,0 +1,102 @@
+@import '~@fortawesome/fontawesome-free/css/all.css';
+
+*:focus,
+*:active:focus,
+*.active:focus {
+  outline: none !important;
+  outline-style: none !important;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  overflow: hidden;
+
+  // Firefox scrollbars
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+  scrollbar-color: #d4d4d9 white;
+}
+
+// === DIALOGS ===
+.cdk-overlay-container {
+  z-index: 1003;
+}
+
+.cdk-dialog-container {
+  @media (max-width: 640px) {
+    padding: 24px !important;
+  }
+}
+
+.fullscreen-dialog {
+  max-width: unset !important;
+  width: 100%;
+  height: 100%;
+  .cdk-dialog-container {
+    @media (max-width: 640px) {
+      padding: unset !important;
+    }
+  }
+  ui-dialog {
+    max-height: 100vh !important;
+  }
+}
+
+.no-padding-dialog {
+  .cdk-dialog-container {
+    padding: unset;
+  }
+}
+
+// === CDK ===
+// Drag & Drop
+.cdk-drag-preview {
+  z-index: 1100 !important;
+  @apply box-border rounded shadow-xl flex items-center justify-between bg-white;
+}
+
+tr.cdk-drag-preview {
+  display: table;
+  > * {
+    display: table-cell;
+    vertical-align: middle;
+  }
+}
+
+.cdk-drag-animating {
+  @apply transition-transform;
+}
+
+.cdk-drag-placeholder {
+  @apply opacity-0;
+}
+
+.cdk-drop-list-dragging {
+  .cdk-drag:not(.cdk-drag-placeholder) {
+    @apply transition-transform;
+  }
+}
+
+// === SCROLL BARS ===
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+/* === Track === */
+::-webkit-scrollbar-track {
+  background: none;
+}
+
+/* === Handle === */
+::-webkit-scrollbar-thumb {
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+  background: #d4d4d9;
+  border: solid 2px white;
+}

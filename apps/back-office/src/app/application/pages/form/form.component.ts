@@ -6,28 +6,22 @@ import {
   Form,
   Page,
   Step,
-  SafeFormComponent,
-  SafeApplicationService,
-  SafeWorkflowService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  FormComponent as SharedFormComponent,
+  ApplicationService,
+  WorkflowService,
+  UnsubscribeComponent,
+  StepQueryResponse,
+  FormQueryResponse,
+  PageQueryResponse,
+} from '@oort-front/shared';
 import {
-  GetFormByIdQueryResponse,
   GET_SHORT_FORM_BY_ID,
-  GetPageByIdQueryResponse,
   GET_PAGE_BY_ID,
-  GetStepByIdQueryResponse,
   GET_STEP_BY_ID,
 } from './graphql/queries';
-import {
-  EditStepMutationResponse,
-  EDIT_STEP,
-  EditPageMutationResponse,
-  EDIT_PAGE,
-} from './graphql/mutations';
 import { switchMap, takeUntil } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
-import { SnackbarService } from '@oort-front/ui';
+import { Dialog } from '@angular/cdk/dialog';
 
 /**
  * Form page in application.
@@ -37,24 +31,33 @@ import { SnackbarService } from '@oort-front/ui';
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
 })
-export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
-  @ViewChild(SafeFormComponent)
-  private formComponent?: SafeFormComponent;
+export class FormComponent extends UnsubscribeComponent implements OnInit {
+  @ViewChild(SharedFormComponent)
+  private formComponent?: SharedFormComponent;
 
-  // === DATA ===
+  /** Loading indicator */
   public loading = true;
+  /** Current form id */
   public id = '';
+  /** Current application id */
   public applicationId = '';
+  /** Current form */
   public form?: Form;
+  /** Is form completed */
   public completed = false;
+  /** Should possibility to add new records be hidden */
   public hideNewRecord = false;
+  /** Query subscription */
   public querySubscription?: Subscription;
-
-  // === TAB NAME EDITION ===
+  /** Can name be edited */
   public canEditName = false;
+  /** Is name form active */
   public formActive = false;
+  /** Application page form is part of ( if any ) */
   public page?: Page;
+  /** Application step form is part of ( if any ) */
   public step?: Step;
+  /** Is form part of workflow step */
   public isStep = false;
 
   /**
@@ -65,17 +68,17 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
    * @param apollo Apollo service
    * @param route Angular activated route
    * @param router Angular router
-   * @param snackBar Shared snackbar service
    * @param translate Angular translate service
+   * @param dialog CDK Dialog service
    */
   constructor(
-    private applicationService: SafeApplicationService,
-    private workflowService: SafeWorkflowService,
+    private applicationService: ApplicationService,
+    private workflowService: WorkflowService,
     private apollo: Apollo,
     private route: ActivatedRoute,
     private router: Router,
-    private snackBar: SnackbarService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private dialog: Dialog
   ) {
     super();
   }
@@ -92,7 +95,7 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
       }
       if (this.isStep) {
         this.querySubscription = this.apollo
-          .query<GetStepByIdQueryResponse>({
+          .query<StepQueryResponse>({
             query: GET_STEP_BY_ID,
             variables: {
               id: this.id,
@@ -101,24 +104,16 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           .pipe(
             switchMap(({ data }) => {
               this.step = data.step;
-              return this.apollo.query<GetFormByIdQueryResponse>({
-                query: GET_SHORT_FORM_BY_ID,
-                variables: {
-                  id: this.step.content,
-                },
-              });
+              return this.getFormQuery(this.step.content ?? '');
             })
           )
           .subscribe(({ data, loading }) => {
-            this.form = data.form;
-            this.canEditName = this.page?.canUpdate || false;
-            this.applicationId =
-              this.step?.workflow?.page?.application?.id || '';
+            this.handleFormQueryResponse(data, 'step');
             this.loading = loading;
           });
       } else {
         this.querySubscription = this.apollo
-          .query<GetPageByIdQueryResponse>({
+          .query<PageQueryResponse>({
             query: GET_PAGE_BY_ID,
             variables: {
               id: this.id,
@@ -127,22 +122,48 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
           .pipe(
             switchMap(({ data }) => {
               this.page = data.page;
-              return this.apollo.query<GetFormByIdQueryResponse>({
-                query: GET_SHORT_FORM_BY_ID,
-                variables: {
-                  id: this.page.content,
-                },
-              });
+              return this.getFormQuery(this.page.content ?? '');
             })
           )
           .subscribe(({ data, loading }) => {
-            this.form = data.form;
-            this.canEditName = this.page?.canUpdate || false;
-            this.applicationId = this.page?.application?.id || '';
+            this.handleFormQueryResponse(data, 'page');
             this.loading = loading;
           });
       }
     });
+  }
+
+  /**
+   * Returns query for the given id
+   *
+   * @param {string} id form id to query
+   * @returns form query for the given id
+   */
+  private getFormQuery(id: string) {
+    return this.apollo.query<FormQueryResponse>({
+      query: GET_SHORT_FORM_BY_ID,
+      variables: {
+        id,
+      },
+    });
+  }
+
+  /**
+   * Handle response for the form query
+   *
+   * @param {FormQueryResponse} data form query response data
+   * @param from from where the form query is done
+   */
+  private handleFormQueryResponse(
+    data: FormQueryResponse,
+    from: 'step' | 'page'
+  ) {
+    this.form = data.form;
+    this.canEditName = this.page?.canUpdate || false;
+    this.applicationId =
+      (from === 'step'
+        ? this.step?.workflow?.page?.application?.id
+        : this.page?.application?.id) ?? '';
   }
 
   /**
@@ -191,101 +212,6 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
   }
 
   /**
-   * Edit the permissions layer.
-   *
-   * @param e permissions
-   */
-  saveAccess(e: any): void {
-    if (this.isStep) {
-      this.apollo
-        .mutate<EditStepMutationResponse>({
-          mutation: EDIT_STEP,
-          variables: {
-            id: this.id,
-            permissions: e,
-          },
-        })
-        .subscribe({
-          next: ({ errors, data }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotUpdated',
-                  {
-                    type: this.translate.instant('common.step.one'),
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.step.one'),
-                  value: '',
-                })
-              );
-              this.form = {
-                ...this.form,
-                permissions: data?.editStep.permissions,
-              };
-              this.step = {
-                ...this.step,
-                permissions: data?.editStep.permissions,
-              };
-            }
-          },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
-          },
-        });
-    } else {
-      this.apollo
-        .mutate<EditPageMutationResponse>({
-          mutation: EDIT_PAGE,
-          variables: {
-            id: this.id,
-            permissions: e,
-          },
-        })
-        .subscribe({
-          next: ({ errors, data }) => {
-            if (errors) {
-              this.snackBar.openSnackBar(
-                this.translate.instant(
-                  'common.notifications.objectNotUpdated',
-                  {
-                    type: this.translate.instant('common.page.one'),
-                    error: errors ? errors[0].message : '',
-                  }
-                ),
-                { error: true }
-              );
-            } else {
-              this.snackBar.openSnackBar(
-                this.translate.instant('common.notifications.objectUpdated', {
-                  type: this.translate.instant('common.page.one').toLowerCase(),
-                  value: '',
-                })
-              );
-              this.form = {
-                ...this.form,
-                permissions: data?.editPage.permissions,
-              };
-              this.page = {
-                ...this.page,
-                permissions: data?.editPage.permissions,
-              };
-            }
-          },
-          error: (err) => {
-            this.snackBar.openSnackBar(err.message, { error: true });
-          },
-        });
-    }
-  }
-
-  /**
    * Complete form
    *
    * @param e completion event
@@ -319,5 +245,64 @@ export class FormComponent extends SafeUnsubscribeComponent implements OnInit {
         });
       }
     }
+  }
+
+  /**
+   * Open settings modal.
+   */
+  public async onOpenSettings(): Promise<void> {
+    const { ViewSettingsModalComponent } = await import(
+      '../../../components/view-settings-modal/view-settings-modal.component'
+    );
+    const dialogRef = this.dialog.open(ViewSettingsModalComponent, {
+      data: {
+        type: this.isStep ? 'step' : 'page',
+        applicationId: this.applicationId,
+        page: this.isStep ? undefined : this.page,
+        step: this.isStep ? this.step : undefined,
+        icon: this.isStep ? this.step?.icon : this.page?.icon,
+        visible: this.page?.visible,
+        accessData: {
+          access: this.page
+            ? this.page.permissions
+            : this.step
+            ? this.step.permissions
+            : null,
+          application: this.applicationId,
+          objectTypeName: this.translate.instant(
+            'common.' + this.isStep ? 'step' : 'page' + '.one'
+          ),
+        },
+        canEditAccess:
+          !this.formActive &&
+          (this.page
+            ? this.page.canUpdate
+            : this.step
+            ? this.step.canUpdate
+            : false),
+      },
+    });
+    // Subscribes to settings updates
+    const subscription = dialogRef.componentInstance?.onUpdate
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((updates: any) => {
+        if (updates) {
+          if (this.isStep) {
+            this.step = { ...this.step, ...updates };
+          } else {
+            this.page = { ...this.page, ...updates };
+          }
+          if (updates.permissions) {
+            this.form = {
+              ...this.form,
+              ...updates,
+            };
+          }
+        }
+      });
+    // Unsubscribe to dialog onUpdate event
+    dialogRef.closed.pipe(takeUntil(this.destroy$)).subscribe(() => {
+      subscription?.unsubscribe();
+    });
   }
 }

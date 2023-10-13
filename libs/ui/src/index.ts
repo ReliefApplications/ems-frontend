@@ -15,6 +15,7 @@ export * from './lib/paginator/paginator.module';
 export * from './lib/avatar-group/avatar-group.module';
 export * from './lib/toggle/toggle.module';
 export * from './lib/textarea/textarea.module';
+export * from './lib/textarea/textarea.component';
 export * from './lib/breadcrumbs/breadcrumbs.module';
 export * from './lib/divider/divider.module';
 export * from './lib/autocomplete/autocomplete.module';
@@ -27,6 +28,7 @@ export * from './lib/sidenav/sidenav-container.module';
 export * from './lib/sidenav/sidenav-container.component';
 export * from './lib/chip/chip.module';
 export * from './lib/form-wrapper/form-wrapper.module';
+export * from './lib/form-wrapper/form-control/form-control.component';
 export * from './lib/dialog/dialog.module';
 export * from './lib/tabs/tabs.module';
 export * from './lib/tabs/tabs.component';
@@ -36,9 +38,12 @@ export * from './lib/date/date.module';
 export * from './lib/graphql-select/graphql-select.module';
 export * from './lib/graphql-select/graphql-select.component';
 export * from './lib/error-message/error-message.module';
+export * from './lib/fixed-wrapper/fixed-wrapper.module';
+export * from './lib/cron-editor/cron-editor.module';
 
 // === SERVICES === //
 export * from './lib/snackbar/snackbar.service';
+export * from './lib/sidenav/layout/layout.service';
 
 // === TYPES === //
 export * from './lib/types/variant';
@@ -63,3 +68,6 @@ export * from './lib/snackbar/snackbar.token';
 
 // === MODULE === //
 export * from './lib/ui.module';
+
+// === HELPER METHODS === //
+export * from './lib/table/handle-pagination-event';

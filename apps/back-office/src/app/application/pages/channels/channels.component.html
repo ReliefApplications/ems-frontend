@@ -53,11 +53,6 @@
             </td>
           </ng-container>
 
-          <ng-container cdkColumnDef="recordsCount">
-            <th uiCellHeader *cdkHeaderCellDef scope="col">Records</th>
-            <td uiCell *cdkCellDef="let element">{{ element.recordsCount }}</td>
-          </ng-container>
-
           <ng-container cdkColumnDef="actions" [stickyEnd]="true">
             <th uiCellHeader *cdkHeaderCellDef scope="col" class="w-16"></th>
             <td uiCell *cdkCellDef="let element">
@@ -66,6 +61,7 @@
                 icon="more_vert"
                 [uiMenuTriggerFor]="menu"
                 (click)="$event.stopPropagation()"
+                [uiTooltip]="'common.options' | translate"
               >
               </ui-button>
               <ui-menu #menu>
@@ -90,14 +86,14 @@
   </ng-container>
   <ng-template #emptyTmpl>
     <!-- Empty indicator -->
-    <safe-empty
+    <shared-empty
       [title]="'common.channel.none' | translate"
       [footerTemplate]="newChannel"
-    ></safe-empty>
+    ></shared-empty>
   </ng-template>
 </ng-container>
 <ng-template #loadingTmpl>
   <!-- Loading indicator -->
-  <safe-skeleton-table [columns]="displayedColumns" [actions]="true">
-  </safe-skeleton-table>
+  <shared-skeleton-table [columns]="displayedColumns" [actions]="true">
+  </shared-skeleton-table>
 </ng-template>

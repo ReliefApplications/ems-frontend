@@ -2,18 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { Dialog } from '@angular/cdk/dialog';
 import { Apollo, QueryRef } from 'apollo-angular';
 import {
-  ApiConfiguration,
-  SafeConfirmService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
-import {
-  GetApiConfigurationsQueryResponse,
-  GET_API_CONFIGURATIONS,
-} from './graphql/queries';
-import {
   AddApiConfigurationMutationResponse,
-  ADD_API_CONFIGURATION,
+  ApiConfiguration,
+  ConfirmService,
+  UnsubscribeComponent,
+  ApiConfigurationsQueryResponse,
   DeleteApiConfigurationMutationResponse,
+} from '@oort-front/shared';
+import {
+  ADD_API_CONFIGURATION,
   DELETE_API_CONFIGURATION,
 } from './graphql/mutations';
 import { Router } from '@angular/router';
@@ -24,8 +21,14 @@ import {
   updateQueryUniqueValues,
 } from '../../../utils/update-queries';
 import { ApolloQueryResult } from '@apollo/client';
-import { TableSort, UIPageChangeEvent } from '@oort-front/ui';
+import {
+  TableSort,
+  UIPageChangeEvent,
+  handleTablePageEvent,
+} from '@oort-front/ui';
 import { SnackbarService } from '@oort-front/ui';
+import { GET_API_CONFIGURATIONS } from './graphql/queries';
+import { FormBuilder } from '@angular/forms';
 
 /** Default items per page for pagination. */
 const ITEMS_PER_PAGE = 10;
@@ -39,12 +42,12 @@ const ITEMS_PER_PAGE = 10;
   styleUrls: ['./api-configurations.component.scss'],
 })
 export class ApiConfigurationsComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   // === DATA ===
   public loading = true;
-  private apiConfigurationsQuery!: QueryRef<GetApiConfigurationsQueryResponse>;
+  private apiConfigurationsQuery!: QueryRef<ApiConfigurationsQueryResponse>;
   displayedColumns = ['name', 'status', 'authType', 'actions'];
   dataSource = new Array<ApiConfiguration>();
   filteredDataSources = new Array<ApiConfiguration>();
@@ -54,6 +57,7 @@ export class ApiConfigurationsComponent
   sort?: TableSort;
 
   // === FILTERS ===
+  form = this.fb.group({});
   public showFilters = false;
   public searchText = '';
   public statusFilter = '';
@@ -74,14 +78,16 @@ export class ApiConfigurationsComponent
    * @param confirmService Shared confirm service
    * @param router Angular router
    * @param translate Angular translate service
+   * @param fb Angular Form Builder
    */
   constructor(
     private apollo: Apollo,
     public dialog: Dialog,
     private snackBar: SnackbarService,
-    private confirmService: SafeConfirmService,
+    private confirmService: ConfirmService,
     private router: Router,
-    private translate: TranslateService // private uiTableWrapper: TableWrapperDirective
+    private translate: TranslateService, // private uiTableWrapper: TableWrapperDirective
+    private fb: FormBuilder
   ) {
     super();
   }
@@ -91,7 +97,7 @@ export class ApiConfigurationsComponent
    */
   ngOnInit(): void {
     this.apiConfigurationsQuery =
-      this.apollo.watchQuery<GetApiConfigurationsQueryResponse>({
+      this.apollo.watchQuery<ApiConfigurationsQueryResponse>({
         query: GET_API_CONFIGURATIONS,
         variables: {
           first: ITEMS_PER_PAGE,
@@ -117,32 +123,17 @@ export class ApiConfigurationsComponent
    * @param e page event.
    */
   onPage(e: UIPageChangeEvent): void {
-    this.pageInfo.pageIndex = e.pageIndex;
-    // Checks if with new page/size more data needs to be fetched
-    if (
-      ((e.pageIndex > e.previousPageIndex &&
-        e.pageIndex * this.pageInfo.pageSize >=
-          this.cachedApiConfigurations.length) ||
-        e.pageSize > this.pageInfo.pageSize) &&
-      e.totalItems > this.cachedApiConfigurations.length
-    ) {
-      // Sets the new fetch quantity of data needed as the page size
-      // If the fetch is for a new page the page size is used
-      let first = e.pageSize;
-      // If the fetch is for a new page size, the old page size is subtracted from the new one
-      if (e.pageSize > this.pageInfo.pageSize) {
-        first -= this.pageInfo.pageSize;
-      }
-      this.pageInfo.pageSize = first;
-      this.fetchApiConfigurations();
-    } else {
-      this.dataSource = this.cachedApiConfigurations.slice(
-        e.pageSize * this.pageInfo.pageIndex,
-        e.pageSize * (this.pageInfo.pageIndex + 1)
-      );
+    const cachedData = handleTablePageEvent(
+      e,
+      this.pageInfo,
+      this.cachedApiConfigurations
+    );
+    if (cachedData && cachedData.length === this.pageInfo.pageSize) {
+      this.dataSource = cachedData;
       this.filteredDataSources = this.dataSource;
+    } else {
+      this.fetchApiConfigurations();
     }
-    this.pageInfo.pageSize = e.pageSize;
   }
 
   /**
@@ -163,27 +154,20 @@ export class ApiConfigurationsComponent
   /**
    * Applies the filter to the data source.
    *
-   * @param column Column to filter on.
-   * @param event Value of the filter.
+   * @param event event value of the filter.
    */
-  applyFilter(column: string, event: any): void {
-    if (column === 'status') {
-      this.statusFilter = event ?? '';
+  applyFilter(event: any): void {
+    if (event.statusFilter) {
+      this.statusFilter = event.statusFilter;
     } else {
-      this.searchText = event
-        ? event.target.value.trim().toLowerCase()
-        : this.searchText;
+      this.statusFilter = '';
+    }
+    if (event.search) {
+      this.searchText = event.search.toLowerCase();
+    } else {
+      this.searchText = '';
     }
     this.filterPredicate();
-  }
-
-  /**
-   * Removes all the filters.
-   */
-  clearAllFilters(): void {
-    this.searchText = '';
-    this.statusFilter = '';
-    this.applyFilter('', null);
   }
 
   /**
@@ -316,7 +300,7 @@ export class ApiConfigurationsComponent
    * @param loading Loading state
    */
   private updateValues(
-    data: GetApiConfigurationsQueryResponse,
+    data: ApiConfigurationsQueryResponse,
     loading: boolean
   ): void {
     const mappedValues = data.apiConfigurations.edges.map((x) => x.node);
@@ -359,7 +343,7 @@ export class ApiConfigurationsComponent
       sortField: this.sort?.sortDirection && this.sort.active,
       sortOrder: this.sort?.sortDirection,
     };
-    const cachedValues: GetApiConfigurationsQueryResponse = getCachedValues(
+    const cachedValues: ApiConfigurationsQueryResponse = getCachedValues(
       this.apollo.client,
       GET_API_CONFIGURATIONS,
       variables
@@ -381,7 +365,7 @@ export class ApiConfigurationsComponent
             variables,
           })
           .then(
-            (results: ApolloQueryResult<GetApiConfigurationsQueryResponse>) => {
+            (results: ApolloQueryResult<ApiConfigurationsQueryResponse>) => {
               this.updateValues(results.data, results.loading);
             }
           );

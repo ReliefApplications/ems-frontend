@@ -9,7 +9,7 @@ import {
 } from '@ngx-translate/core';
 import { DialogModule } from '@angular/cdk/dialog';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { SafeSkeletonTableModule } from '@oort-front/safe';
+import { SkeletonTableModule } from '@oort-front/shared';
 
 describe('RecordsTabComponent', () => {
   let component: RecordsTabComponent;
@@ -22,7 +22,7 @@ describe('RecordsTabComponent', () => {
         ApolloTestingModule,
         DialogModule,
         HttpClientTestingModule,
-        SafeSkeletonTableModule,
+        SkeletonTableModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,

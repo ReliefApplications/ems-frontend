@@ -33,9 +33,9 @@ export class ChipListDirective
   @ContentChildren(ChipComponent) currentChipList!: QueryList<ChipComponent>;
   private destroy$: Subject<void> = new Subject<void>();
 
-  value: any[] = [];
+  value: string[] = [];
   disabled = false;
-  onChange!: (value: any) => void;
+  onChange!: (value: string[]) => void;
   onTouch!: () => void;
 
   /**
@@ -70,7 +70,7 @@ export class ChipListDirective
    *
    * @param value new value
    */
-  public writeValue(value: any[]): void {
+  public writeValue(value: string[]): void {
     this.value = value;
   }
 
@@ -79,8 +79,10 @@ export class ChipListDirective
    *
    * @param fn callback function
    */
-  public registerOnChange(fn: any): void {
-    this.onChange = fn;
+  public registerOnChange(fn: (value: string[]) => void): void {
+    if (!this.onChange) {
+      this.onChange = fn;
+    }
   }
 
   /**
@@ -88,8 +90,10 @@ export class ChipListDirective
    *
    * @param fn callback function
    */
-  public registerOnTouched(fn: any): void {
-    this.onTouch = fn;
+  public registerOnTouched(fn: () => void): void {
+    if (!this.onTouch) {
+      this.onTouch = fn;
+    }
   }
 
   /**

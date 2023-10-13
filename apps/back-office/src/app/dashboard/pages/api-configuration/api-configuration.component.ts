@@ -1,31 +1,22 @@
 import { Component, OnInit } from '@angular/core';
-import {
-  AbstractControl,
-  UntypedFormBuilder,
-  UntypedFormGroup,
-  Validators,
-} from '@angular/forms';
+import { AbstractControl, FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import {
   ApiConfiguration,
   authType,
-  SafeApiProxyService,
+  ApiProxyService,
   status,
-  SafeBreadcrumbService,
-  SafeUnsubscribeComponent,
-} from '@oort-front/safe';
+  BreadcrumbService,
+  UnsubscribeComponent,
+  ApiConfigurationQueryResponse,
+  EditApiConfigurationMutationResponse,
+} from '@oort-front/shared';
 import { Apollo } from 'apollo-angular';
 import { takeUntil } from 'rxjs/operators';
 import { apiValidator } from '../../../utils/nameValidation';
-import {
-  EditApiConfigurationMutationResponse,
-  EDIT_API_CONFIGURATION,
-} from './graphql/mutations';
-import {
-  GetApiConfigurationQueryResponse,
-  GET_API_CONFIGURATION,
-} from './graphql/queries';
+import { EDIT_API_CONFIGURATION } from './graphql/mutations';
+import { GET_API_CONFIGURATION } from './graphql/queries';
 import { SnackbarService } from '@oort-front/ui';
 
 /**
@@ -37,7 +28,7 @@ import { SnackbarService } from '@oort-front/ui';
   styleUrls: ['./api-configuration.component.scss'],
 })
 export class ApiConfigurationComponent
-  extends SafeUnsubscribeComponent
+  extends UnsubscribeComponent
   implements OnInit
 {
   // === DATA ===
@@ -46,7 +37,7 @@ export class ApiConfigurationComponent
   public apiConfiguration?: ApiConfiguration;
 
   // === FORM ===
-  public apiForm: UntypedFormGroup = new UntypedFormGroup({});
+  public apiForm!: ReturnType<typeof this.createApiForm>;
   public status = status;
   public statusChoices = Object.values(status);
   public authType = authType;
@@ -64,7 +55,7 @@ export class ApiConfigurationComponent
    * @param route Angular activated route
    * @param snackBar Shared snackbar service
    * @param router Angular router
-   * @param formBuilder Angular form builder
+   * @param fb Angular form builder
    * @param apiProxy Shared API proxy service
    * @param translate Angular translate service
    * @param breadcrumbService Shared breadcrumb service
@@ -74,10 +65,10 @@ export class ApiConfigurationComponent
     private route: ActivatedRoute,
     private snackBar: SnackbarService,
     private router: Router,
-    private formBuilder: UntypedFormBuilder,
-    private apiProxy: SafeApiProxyService,
+    private fb: FormBuilder,
+    private apiProxy: ApiProxyService,
     private translate: TranslateService,
-    private breadcrumbService: SafeBreadcrumbService
+    private breadcrumbService: BreadcrumbService
   ) {
     super();
   }
@@ -86,7 +77,7 @@ export class ApiConfigurationComponent
     this.id = this.route.snapshot.paramMap.get('id') || '';
     if (this.id) {
       this.apollo
-        .watchQuery<GetApiConfigurationQueryResponse>({
+        .watchQuery<ApiConfigurationQueryResponse>({
           query: GET_API_CONFIGURATION,
           variables: {
             id: this.id,
@@ -101,27 +92,7 @@ export class ApiConfigurationComponent
                 '@api',
                 this.apiConfiguration.name as string
               );
-              this.apiForm = this.formBuilder.group({
-                id: [{ value: this.apiConfiguration.id, disabled: true }],
-                name: [
-                  this.apiConfiguration?.name,
-                  [Validators.required, Validators.pattern(apiValidator)],
-                ],
-                status: [this.apiConfiguration?.status, Validators.required],
-                authType: [
-                  this.apiConfiguration?.authType,
-                  Validators.required,
-                ],
-                endpoint: [
-                  this.apiConfiguration?.endpoint,
-                  Validators.required,
-                ],
-                pingUrl: [this.apiConfiguration?.pingUrl],
-                settings: this.buildSettingsForm(
-                  this.apiConfiguration?.authType || ''
-                ),
-                graphQLEndpoint: this.apiConfiguration?.graphQLEndpoint,
-              });
+              this.apiForm = this.createApiForm(data.apiConfiguration);
               this.apiForm.get('authType')?.valueChanges.subscribe((value) => {
                 this.apiForm.controls.settings.clearValidators();
                 this.apiForm.controls.settings = this.buildSettingsForm(value);
@@ -153,14 +124,36 @@ export class ApiConfigurationComponent
   }
 
   /**
+   * Create API form
+   *
+   * @param api API configuration
+   * @returns form group
+   */
+  private createApiForm(api: ApiConfiguration) {
+    return this.fb.group({
+      id: [{ value: api.id, disabled: true }],
+      name: [api.name, [Validators.required, Validators.pattern(apiValidator)]],
+      status: [api.status, Validators.required],
+      authType: this.fb.nonNullable.control(
+        api.authType || '',
+        Validators.required
+      ),
+      endpoint: [api.endpoint, Validators.required],
+      pingUrl: [api.pingUrl],
+      settings: this.buildSettingsForm(api.authType || ''),
+      graphQLEndpoint: api.graphQLEndpoint,
+    });
+  }
+
+  /**
    * Create the settings form depending on the authType
    *
    * @param type type of API connection
    * @returns settings form group
    */
-  private buildSettingsForm(type: string): UntypedFormGroup {
+  private buildSettingsForm(type: string) {
     if (type === authType.serviceToService) {
-      return this.formBuilder.group({
+      return this.fb.group({
         authTargetUrl: [
           this.apiConfiguration?.settings &&
           this.apiConfiguration?.settings.authTargetUrl
@@ -191,7 +184,7 @@ export class ApiConfigurationComponent
         ],
       });
     } else if (type === authType.userToService) {
-      return this.formBuilder.group({
+      return this.fb.group({
         token: [
           this.apiConfiguration?.settings &&
           this.apiConfiguration?.settings.token
@@ -201,7 +194,7 @@ export class ApiConfigurationComponent
         ],
       });
     }
-    return this.formBuilder.group({});
+    return this.fb.group({});
   }
 
   /**
@@ -228,13 +221,12 @@ export class ApiConfigurationComponent
             }),
             { error: true }
           );
-          this.loading = false;
         } else {
           if (data) {
             this.apiConfiguration = data.editApiConfiguration;
-            this.loading = loading;
           }
         }
+        this.loading = loading;
       });
   }
 
@@ -281,37 +273,47 @@ export class ApiConfigurationComponent
             }),
             { error: true }
           );
-          this.loading = false;
         } else {
           this.apiConfiguration = data?.editApiConfiguration;
           this.apiForm.controls.settings = this.buildSettingsForm(
-            this.apiForm.value.authType
+            this.apiForm.getRawValue().authType
           );
           this.apiForm.markAsPristine();
-          this.loading = loading || false;
         }
+        this.loading = loading;
       });
   }
 
   /** Send a ping request to test the configuration */
   onPing(): void {
-    this.apiProxy.buildPingRequest(this.apiForm.getRawValue())?.subscribe(
-      (res: any) => {
-        if (res) {
-          if (res.access_token) {
-            this.snackBar.openSnackBar(
-              this.translate.instant(
-                'pages.apiConfiguration.notifications.authTokenFetched'
-              )
-            );
+    this.apiProxy
+      .buildPingRequest(this.apiForm.getRawValue() as ApiConfiguration)
+      ?.subscribe(
+        (res: any) => {
+          if (res) {
+            if (res.access_token) {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'pages.apiConfiguration.notifications.authTokenFetched'
+                )
+              );
+            } else {
+              this.snackBar.openSnackBar(
+                this.translate.instant(
+                  'pages.apiConfiguration.notifications.pingReceived'
+                )
+              );
+            }
           } else {
             this.snackBar.openSnackBar(
               this.translate.instant(
-                'pages.apiConfiguration.notifications.pingReceived'
-              )
+                'pages.apiConfiguration.notifications.pingFailed'
+              ),
+              { error: true }
             );
           }
-        } else {
+        },
+        () => {
           this.snackBar.openSnackBar(
             this.translate.instant(
               'pages.apiConfiguration.notifications.pingFailed'
@@ -319,15 +321,6 @@ export class ApiConfigurationComponent
             { error: true }
           );
         }
-      },
-      () => {
-        this.snackBar.openSnackBar(
-          this.translate.instant(
-            'pages.apiConfiguration.notifications.pingFailed'
-          ),
-          { error: true }
-        );
-      }
-    );
+      );
   }
 }

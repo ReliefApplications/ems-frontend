@@ -12,7 +12,7 @@ import {
   ButtonModule,
   PaginatorModule,
 } from '@oort-front/ui';
-import { SafeSkeletonTableModule } from '@oort-front/safe';
+import { SkeletonTableModule } from '@oort-front/shared';
 
 describe('PullJobsComponent', () => {
   let component: PullJobsComponent;
@@ -26,7 +26,7 @@ describe('PullJobsComponent', () => {
         ApolloTestingModule,
         ButtonModule,
         PaginatorModule,
-        SafeSkeletonTableModule,
+        SkeletonTableModule,
         TranslateModule.forRoot({
           loader: {
             provide: TranslateLoader,
