@@ -68,7 +68,7 @@ export class DownloadService {
     );
     const headers = new HttpHeaders({
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      'Content-Type': 'application/json',
+      Accept: 'application/json',
     });
 
     return { snackBarRef, headers };
