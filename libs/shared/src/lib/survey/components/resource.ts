@@ -601,7 +601,7 @@ export const init = (
         );
         actionsButtons.appendChild(addBtn);
 
-        const parentElement = el.querySelector('.shared-qst-content');
+        const parentElement = el.querySelector('.sd-question__content');
         if (parentElement) {
           parentElement.insertBefore(actionsButtons, parentElement.firstChild);
         }

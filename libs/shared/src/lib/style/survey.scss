@@ -1,4 +1,4 @@
-@import 'variables.scss';
+@import "variables.scss";
 
 ::ng-deep .sv-boolean:not(.sv-boolean--checked) {
   .sv-boolean__switch {
@@ -14,12 +14,8 @@
 }
 
 // === QUESTION CONTENT ===
-::ng-deep .shared-qst-content {
-  display: flex;
-  flex-direction: column;
-  max-width: 100%;
-
-  .sv_q_erbox:not([style*='display: none']):not([style*='display:none']) {
+::ng-deep .sd-question__content {
+  .sv_q_erbox:not([style*="display: none"]):not([style*="display:none"]) {
     background-color: transparent;
     border: none;
     order: 2;
@@ -108,6 +104,9 @@
 
 ::ng-deep survey,
 ::ng-deep survey-creator {
+  .sd-input {
+    padding: calc(1 * var(--sjs-base-unit, var(--base-unit, 8px))) calc(2 * var(--sjs-base-unit, var(--base-unit, 8px)));
+  }
   .k-combobox,
   .k-multiselect,
   .sd-input,
@@ -128,9 +127,9 @@
       w-full
       border-0;
   }
-  .sd-text {
-    @apply text-sm h-10;
-  }
+  // .sd-text {
+  //   @apply text-sm h-10;
+  // }
   .k-multiselect {
     .k-clear-value {
       padding-right: 18px !important;
@@ -141,8 +140,7 @@
     }
 
     .k-chip-list {
-      // padding-left: 12px !important;
-      padding: 12px 0 12px 12px !important;
+      padding-left: 12px !important;
     }
 
     .k-chip {
@@ -241,14 +239,6 @@
     @apply rounded-md;
   }
 
-  --sjs-base-unit: 0.5em;
-
-  .sd-header__text {
-    .sd-title {
-      --sjs-font-size: 12px; //Reduces size of titles
-    }
-  }
-
   .sd-root-modern {
     --sd-base-vertical-padding: 10px !important; //Reduces space between questions
   }
@@ -325,4 +315,8 @@
 
 ::ng-deep .sd-body .sd-body__page {
   min-width: 0 !important;
+}
+
+::ng-deep .sd-body.sd-body--static {
+  max-width: unset;
 }

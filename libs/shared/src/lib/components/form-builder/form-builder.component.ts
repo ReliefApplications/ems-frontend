@@ -20,7 +20,6 @@ import {
   Action,
   PageModel,
   SurveyModel,
-  UpdateQuestionCssClassesEvent,
   surveyLocalization,
 } from 'survey-core';
 import { SurveyCreatorModel } from 'survey-creator-core';
@@ -169,13 +168,6 @@ export class FormBuilderComponent
         this.addCustomClassToCoreFields(coreFields);
       }
 
-      this.surveyCreator.survey.onUpdateQuestionCssClasses.add(((
-        sender: SurveyModel,
-        options: UpdateQuestionCssClassesEvent
-      ) => {
-        this.onSetCustomCss(options);
-      }) as any);
-
       // add the rendering of custom properties
       this.surveyCreator.survey.onAfterRenderQuestion.add(
         renderGlobalProperties(this.referenceDataService) as any
@@ -210,9 +202,6 @@ export class FormBuilderComponent
         const survey: SurveyModel = options.survey;
         survey.applyTheme({
           isPanelless: true,
-          cssVariables: {
-            '--sjs-base-unit': '.5em',
-          },
         });
         survey.onAfterRenderQuestion.add(
           this.formHelpersService.addQuestionTooltips
@@ -246,18 +235,6 @@ export class FormBuilderComponent
     // Notify parent that form structure has changed
     this.surveyCreator.onModified.add((survey: any) => {
       this.formChange.emit(survey.text);
-    });
-
-    this.surveyCreator.survey.onUpdateQuestionCssClasses.add(((
-      survey: SurveyModel,
-      options: UpdateQuestionCssClassesEvent
-    ) => {
-      this.onSetCustomCss(options);
-    }) as any);
-    this.surveyCreator.onTestSurveyCreated.add((sender: any, opt: any) => {
-      opt.survey.onUpdateQuestionCssClasses.add((_: any, opt2: any) =>
-        this.onSetCustomCss(opt2)
-      );
     });
 
     // === CORE QUESTIONS FOR CHILD FORM ===
@@ -671,15 +648,5 @@ export class FormBuilderComponent
       }
     }
     return true;
-  }
-
-  /**
-   * Add custom CSS classes to the survey elements.
-   *
-   * @param options survey options.
-   */
-  private onSetCustomCss(options: any): void {
-    const classes = options.cssClasses;
-    classes.content += ' shared-qst-content';
   }
 }

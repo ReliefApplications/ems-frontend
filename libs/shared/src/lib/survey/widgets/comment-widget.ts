@@ -42,7 +42,7 @@ export const init = (
           'oort:edit',
           (question.survey as SurveyModel).locale
         );
-        btnEl.className = 'sd-btn !px-3 !py-2';
+        btnEl.className = 'sd-btn !px-3 !py-1';
         btnEl.style.width = '50px';
         mainDiv.appendChild(btnEl);
         el.parentElement?.insertBefore(mainDiv, el);
