@@ -8,6 +8,7 @@ import { DialogRef, DIALOG_DATA } from '@angular/cdk/dialog';
 
 export default {
   component: MappingModalComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [

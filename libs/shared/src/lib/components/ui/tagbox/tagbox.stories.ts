@@ -10,6 +10,7 @@ import { UntypedFormControl } from '@angular/forms';
 
 export default {
   component: TagboxComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [

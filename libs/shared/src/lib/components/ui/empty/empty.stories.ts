@@ -5,6 +5,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 export default {
   component: EmptyComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [EmptyModule, BrowserAnimationsModule],
@@ -12,17 +13,6 @@ export default {
     }),
   ],
   title: 'UI/Empty',
-  // argTypes: {
-  //   series: {
-  //     control: { type: 'object' },
-  //   },
-  //   legend: {
-  //     control: { type: 'object' },
-  //   },
-  //   title: {
-  //     control: { type: 'object' },
-  //   },
-  // },
 } as Meta;
 
 /**

@@ -36,11 +36,15 @@ export class IconPickerComponent
   extends FormControlComponent
   implements ControlValueAccessor, OnDestroy
 {
+  /** Static variable to keep track of id increment. */
   static nextId = 0;
-
+  /** Array of icons. */
   public icons: string[] = FA_ICONS;
+  /** Primary color for the icon. */
   private primaryColor!: string;
+  /** Input decorator for color */
   @Input() color: string = this.primaryColor;
+  /** Boolean to control the visibility of the list. */
   public showList = false;
 
   /**
@@ -57,10 +61,11 @@ export class IconPickerComponent
     this.onChange(val);
     this.stateChanges.next();
   }
-
+  /** Input decorator for fontFamily */
   @Input() fontFamily = 'fa';
-
+  /** Subject to emit state changes. */
   public stateChanges = new Subject<void>();
+  /** HostBinding decorator for id. */
   @HostBinding()
   id = `shared-icon-picker-${IconPickerComponent.nextId++}`;
 
@@ -80,8 +85,11 @@ export class IconPickerComponent
     this.ePlaceholder = plh;
     this.stateChanges.next();
   }
+  /** Private variable for placeholder. */
   private ePlaceholder = '';
+  /** Boolean to track focus state. */
   public focused = false;
+  /** Boolean to track touch state. */
   public touched = false;
 
   /**
@@ -121,6 +129,7 @@ export class IconPickerComponent
     this.isRequired = coerceBooleanProperty(req);
     this.stateChanges.next();
   }
+  /** Private variable to track if the field is required. */
   private isRequired = false;
 
   /**
@@ -151,9 +160,9 @@ export class IconPickerComponent
     // return this.ngControl.invalid && this.touched;
     // return this.selected.invalid && this.touched;
   }
-
+  /** The type of control. */
   public controlType = 'shared-icon-picker';
-
+  /** Input decorator for aria-describedby. */
   // eslint-disable-next-line @angular-eslint/no-input-rename
   @Input('aria-describedby') userAriaDescribedBy!: string;
 
@@ -191,9 +200,15 @@ export class IconPickerComponent
       this.ngControl.valueAccessor = this;
     }
   }
-
+  /** Function to handle touch events. */
   // eslint-disable-next-line @typescript-eslint/no-empty-function
   onTouched = () => {};
+
+  /**
+   * Function to handle change events.
+   *
+   * @param _ value
+   */
   // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-empty-function
   onChange = (_: any) => {};
 
@@ -296,7 +311,7 @@ export class IconPickerComponent
       this.stateChanges.next();
     }
   }
-
+  /** Function to handle component destruction. */
   ngOnDestroy(): void {
     this.stateChanges.complete();
   }

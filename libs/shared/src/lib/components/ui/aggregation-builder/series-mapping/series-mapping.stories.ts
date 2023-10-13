@@ -9,6 +9,7 @@ import { delay } from 'rxjs/operators';
 
 export default {
   component: SeriesMappingComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [

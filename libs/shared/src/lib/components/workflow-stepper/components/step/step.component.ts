@@ -9,10 +9,15 @@ import { Step } from '../../../../models/step.model';
   styleUrls: ['./step.component.scss'],
 })
 export class StepComponent {
+  /** Input step */
   @Input() step!: Step;
+  /** Active status */
   @Input() active = false;
+  /** Update permission */
   @Input() canUpdate = false;
+  /** Delete event emitter */
   @Output() delete = new EventEmitter();
+  /** Duplicate event emitter */
   @Output() duplicate = new EventEmitter();
 
   /** @returns The type of the step */

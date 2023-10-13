@@ -42,6 +42,7 @@
 				"clear": "******"
 			}
 		},
+		"asc": "******",
 		"attribute": {
 			"few": "******",
 			"none": "******",
@@ -151,6 +152,7 @@
 		"delete": "******",
 		"deleteObject": "****** {{name}}",
 		"deleted": "******",
+		"desc": "******",
 		"dismiss": "******",
 		"display": "******",
 		"distributionList": {
@@ -537,6 +539,13 @@
 				"reordered": {
 					"plural": "******",
 					"singular": "******"
+				},
+				"settings": {
+					"actions": "******",
+					"selectIcon": "******",
+					"tooltip": {
+						"autoSave": "******"
+					}
 				},
 				"show": "******"
 			},
@@ -2115,6 +2124,7 @@
 			"sorting": {
 				"add": "******",
 				"delete": "******",
+				"empty": "******",
 				"field": "******",
 				"label": "******",
 				"management": "******",

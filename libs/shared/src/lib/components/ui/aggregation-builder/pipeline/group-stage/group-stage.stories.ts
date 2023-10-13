@@ -8,6 +8,7 @@ import {
 
 export default {
   component: GroupStageComponent,
+  tags: ['autodocs'],
   ...SHARED_PIPELINE_STORIES_CONFIG,
   title: 'UI/Aggregation builder/Stages/Group',
 } as Meta;

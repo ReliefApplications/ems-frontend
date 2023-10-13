@@ -86,7 +86,7 @@ export const init = (
       widget.willUnmount(question);
       let tagboxDiv: HTMLDivElement | null = null;
       tagboxDiv = document.createElement('div');
-      tagboxDiv.classList.add('flex', 'min-h-[50px]');
+      tagboxDiv.classList.add('flex', 'min-h-[36px]');
       tagboxDiv.id = 'tagbox';
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       const tagboxInstance = createTagboxInstance(tagboxDiv, question);

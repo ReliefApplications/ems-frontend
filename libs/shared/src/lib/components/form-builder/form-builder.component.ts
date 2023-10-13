@@ -20,7 +20,6 @@ import {
   Action,
   PageModel,
   SurveyModel,
-  UpdateQuestionCssClassesEvent,
   surveyLocalization,
 } from 'survey-core';
 import { SurveyCreatorModel } from 'survey-creator-core';
@@ -96,7 +95,7 @@ const CORE_FIELD_CLASS = 'core-question';
 @Component({
   selector: 'shared-form-builder',
   templateUrl: './form-builder.component.html',
-  styleUrls: ['./form-builder.component.scss'],
+  styleUrls: ['../../style/survey.scss', './form-builder.component.scss'],
 })
 export class FormBuilderComponent
   extends UnsubscribeComponent
@@ -169,13 +168,6 @@ export class FormBuilderComponent
         this.addCustomClassToCoreFields(coreFields);
       }
 
-      this.surveyCreator.survey.onUpdateQuestionCssClasses.add(((
-        sender: SurveyModel,
-        options: UpdateQuestionCssClassesEvent
-      ) => {
-        this.onSetCustomCss(options);
-      }) as any);
-
       // add the rendering of custom properties
       this.surveyCreator.survey.onAfterRenderQuestion.add(
         renderGlobalProperties(this.referenceDataService) as any
@@ -210,9 +202,6 @@ export class FormBuilderComponent
         const survey: SurveyModel = options.survey;
         survey.applyTheme({
           isPanelless: true,
-          cssVariables: {
-            '--sjs-base-unit': '.66em',
-          },
         });
         survey.onAfterRenderQuestion.add(
           this.formHelpersService.addQuestionTooltips
@@ -246,18 +235,6 @@ export class FormBuilderComponent
     // Notify parent that form structure has changed
     this.surveyCreator.onModified.add((survey: any) => {
       this.formChange.emit(survey.text);
-    });
-
-    this.surveyCreator.survey.onUpdateQuestionCssClasses.add(((
-      survey: SurveyModel,
-      options: UpdateQuestionCssClassesEvent
-    ) => {
-      this.onSetCustomCss(options);
-    }) as any);
-    this.surveyCreator.onTestSurveyCreated.add((sender: any, opt: any) => {
-      opt.survey.onUpdateQuestionCssClasses.add((_: any, opt2: any) =>
-        this.onSetCustomCss(opt2)
-      );
     });
 
     // === CORE QUESTIONS FOR CHILD FORM ===
@@ -326,85 +303,70 @@ export class FormBuilderComponent
     this.surveyCreator.survey.locale = surveyLocalization.currentLocale; // -> set the defaultLanguage property also
 
     // add move up/down buttons
-    // ¿No need? As the new surveyjs creator has a built in drag and drop feature to move questions between pages and within a page between questions
-    // this.addCustomActionsToQuestionItemBar();
+    this.addAdorners();
   }
 
   /**
    * Add custom actions to the question action items bar
    */
-  private addCustomActionsToQuestionItemBar() {
-    // add move up/down buttons
-    this.surveyCreator.onDefineElementMenuItems.add(
-      (sender: SurveyCreatorModel, options: any) => {
-        const moveUpButton = new Action({
-          iconName: 'icon-arrow-up',
-          css: 'sv-action-bar-item--secondary sv-action-bar-item__icon',
-          title: this.translate.instant('pages.formBuilder.move.up'),
-          action: (obj: any) => {
-            // get the page index of current question
-            const pageIndex = sender.survey.pages.findIndex(
-              (page: any) => page.questions.indexOf(obj) !== -1
-            );
-
-            // get the index of the current question in the page
-            const questionIndex =
-              sender.survey.pages[pageIndex].questions.indexOf(obj);
-
-            // remove the element from the current page
-            sender.survey.pages[pageIndex].removeElement(obj);
-
-            // add it back to the page at the previous index
-            sender.survey.pages[pageIndex].addElement(obj, questionIndex - 1);
-          },
-        });
-
-        const moveDownButton = new Action({
-          iconName: 'icon-arrow-down',
-          css: 'sv-action-bar-item--secondary sv-action-bar-item__icon',
-          title: this.translate.instant('pages.formBuilder.move.down'),
-          action: (obj: any) => {
-            // get the page index of current question
-            const pageIndex = sender.survey.pages.findIndex(
-              (page: any) => page.questions.indexOf(obj) !== -1
-            );
-
-            // get the index of the current question in the page
-            const questionIndex =
-              sender.survey.pages[pageIndex].questions.indexOf(obj);
-
-            if (
-              questionIndex ===
-              sender.survey.pages[pageIndex].questions.length - 1
-            )
-              return;
-
-            // remove the element from the current page
-            sender.survey.pages[pageIndex].removeElement(obj);
-
-            // add it back to the page at the previous index
-            sender.survey.pages[pageIndex].addElement(obj, questionIndex + 1);
-          },
-        });
-
-        // Find the `delete` action's position.
-        let index = -1;
-        for (let i = 0; i < options.items.length; i++) {
-          if (options.items[i].name === 'delete') {
-            index = i;
-            break;
-          }
-        }
-        // Insert the new action before `delete` or as the last action if `delete` is not found
-        if (index > -1) {
-          options.items.splice(index, 0, moveDownButton);
-          options.items.splice(index, 0, moveUpButton);
-        } else {
-          options.items.push(moveUpButton);
-          options.items.push(moveDownButton);
-        }
+  private addAdorners() {
+    this.surveyCreator.onDefineElementMenuItems.add((_, options) => {
+      const element = options.obj;
+      // Only display for questions & panels
+      if (element.isPage) {
+        return;
       }
-    );
+
+      // Add 'up' & 'down' adorners to panels & questions
+      const parent = element.parent;
+      const index = parent.elements.indexOf(element);
+      if (index > 0) {
+        const moveUpAdorner = moveUpButton(element);
+        options.items.push(moveUpAdorner);
+      }
+      if (index < parent.elements.length - 1) {
+        const moveDownAdorner = moveDownButton(element);
+        options.items.push(moveDownAdorner);
+      }
+    });
+
+    const moveUpButton = (element: any) => {
+      return new Action({
+        id: 'moveUpButton',
+        iconName: 'icon-arrow-up',
+        css: 'sv-action-bar-item--secondary sv-action-bar-item__icon',
+        title: this.translate.instant('pages.formBuilder.move.up'),
+        action: () => {
+          const parent = element.parent;
+          const index = parent.elements.indexOf(element);
+          if (index > 0) {
+            // Remove from array
+            parent.elements.splice(index, 1)[0];
+            // Move into array
+            parent.elements.splice(index - 1, 0, element);
+          }
+        },
+      });
+    };
+
+    const moveDownButton = (element: any) => {
+      return new Action({
+        id: 'moveDownButton',
+        iconName: 'icon-arrow-down',
+        css: 'sv-action-bar-item--secondary sv-action-bar-item__icon',
+        title: this.translate.instant('pages.formBuilder.move.down'),
+        action: () => {
+          const parent = element.parent;
+          const index = parent.elements.indexOf(element);
+          if (index < parent.elements.length - 1) {
+            // Remove from array
+            parent.elements.splice(index, 1)[0];
+            // Move into array
+            parent.elements.splice(index + 1, 0, element);
+          }
+        },
+      });
+    };
   }
 
   /**
@@ -671,15 +633,5 @@ export class FormBuilderComponent
       }
     }
     return true;
-  }
-
-  /**
-   * Add custom CSS classes to the survey elements.
-   *
-   * @param options survey options.
-   */
-  private onSetCustomCss(options: any): void {
-    const classes = options.cssClasses;
-    classes.content += ' shared-qst-content';
   }
 }

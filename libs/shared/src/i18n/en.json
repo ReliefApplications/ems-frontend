@@ -42,6 +42,7 @@
 				"clear": "Clear search"
 			}
 		},
+		"asc": "Ascending",
 		"attribute": {
 			"few": "Attributes",
 			"none": "No attribute",
@@ -151,6 +152,7 @@
 		"delete": "Delete",
 		"deleteObject": "Delete {{name}}",
 		"deleted": "Deleted",
+		"desc": "Descending",
 		"dismiss": "Dismiss",
 		"display": "Display",
 		"distributionList": {
@@ -537,6 +539,13 @@
 				"reordered": {
 					"plural": "The pages were successfully reordered.",
 					"singular": "The page was successfully reordered."
+				},
+				"settings": {
+					"actions": "Actions",
+					"selectIcon": "Select an icon",
+					"tooltip": {
+						"autoSave": "Changes are automatically saved"
+					}
 				},
 				"show": "Make page visible in nav bar for end-users"
 			},
@@ -2115,6 +2124,7 @@
 			"sorting": {
 				"add": "Add a field",
 				"delete": "Delete sort field",
+				"empty": "No sort field set",
 				"field": "Field",
 				"label": "Label",
 				"management": "Sort fields",
