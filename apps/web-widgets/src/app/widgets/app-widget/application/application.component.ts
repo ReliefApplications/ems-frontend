@@ -111,22 +111,24 @@ export class ApplicationComponent
           this.setNavGroups(application);
           if (!this.application || application.id !== this.application.id) {
             const firstPage = get(application, 'pages', [])[0];
-            if (this.router.url.endsWith(application?.id || '') || !firstPage) {
-              // If a page is configured
-              if (firstPage) {
-                this.router.navigate(
-                  [
-                    `./${firstPage.type}/${
-                      firstPage.type === ContentType.form
-                        ? firstPage.id
-                        : firstPage.content
-                    }`,
-                  ],
-                  { relativeTo: this.route }
-                );
-              } else {
-                this.router.navigate(['./'], { relativeTo: this.route });
-              }
+            // If a page is configured and it's applications first load, and not a reload
+            // We load the applications first page
+            const pagesRegex = new RegExp('(/dashboard/)|(/form/)', 'gmi');
+            if (!location.pathname.match(pagesRegex) && firstPage) {
+              this.router.navigate(
+                [
+                  `./${firstPage.type}/${
+                    firstPage.type === ContentType.form
+                      ? firstPage.id
+                      : firstPage.content
+                  }`,
+                ],
+                { relativeTo: this.route }
+              );
+            } else {
+              this.router.navigate([`./${location.pathname}`], {
+                relativeTo: this.route,
+              });
             }
           }
           this.application = application;
@@ -136,15 +138,6 @@ export class ApplicationComponent
           this.navGroups = [];
         }
       });
-  }
-
-  /**
-   * Opens an application, contacting the application service.
-   *
-   * @param application Application to open
-   */
-  onOpenApplication(application: Application): void {
-    this.router.navigate([`/${application.id}`]);
   }
 
   /**
