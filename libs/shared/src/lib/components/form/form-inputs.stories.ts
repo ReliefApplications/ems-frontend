@@ -40,6 +40,12 @@ class MockAuthService {
   });
 }
 
+/**
+ * Initialize app
+ *
+ * @param formService Form Service
+ * @returns Initialized app
+ */
 const initializeApp =
   (formService: FormService): any =>
   () => {
@@ -132,6 +138,12 @@ const sharedForm = {
   canCreateRecords: true,
 };
 
+/**
+ * Shared Questions
+ *
+ * @param args Extended form component
+ * @returns Shared questions structure
+ */
 const sharedQuestion = (args: ExtendedFormComponent) => ({
   title: args.title,
   titleLocation: args.titleLocation,
