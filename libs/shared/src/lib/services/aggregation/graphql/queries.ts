@@ -90,6 +90,7 @@ export const GET_REFERENCE_DATA_AGGREGATION_DATA = gql`
     $skip: Int
     $sortOrder: String
     $sortField: String
+    $contextFilters: JSON
   ) {
     referenceDataAggregation(
       referenceData: $referenceData
@@ -99,6 +100,7 @@ export const GET_REFERENCE_DATA_AGGREGATION_DATA = gql`
       skip: $skip
       sortOrder: $sortOrder
       sortField: $sortField
+      contextFilters: $contextFilters
     )
   }
 `;
