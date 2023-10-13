@@ -182,7 +182,7 @@ export class SummaryCardComponent
     private aggregationService: AggregationService,
     private contextService: ContextService,
     private elementRef: ElementRef,
-    private gridService: GridService,
+    private gridService: GridService
   ) {
     super();
   }

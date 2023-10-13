@@ -320,7 +320,7 @@ export class CoreGridComponent
     private dateTranslate: DateTranslateService,
     private applicationService: ApplicationService,
     private contextService: ContextService,
-    private router: Router,
+    private router: Router
   ) {
     super();
     this.environment = environment;

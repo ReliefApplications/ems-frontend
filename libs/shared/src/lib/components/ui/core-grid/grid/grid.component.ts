@@ -66,10 +66,7 @@ const matches = (el: any, selector: any) =>
   selector: 'shared-grid',
   templateUrl: './grid.component.html',
   styleUrls: ['./grid.component.scss'],
-  providers: [
-    PopupService,
-    ResizeBatchService,
-  ],
+  providers: [PopupService, ResizeBatchService],
 })
 export class GridComponent
   extends UnsubscribeComponent
@@ -278,7 +275,7 @@ export class GridComponent
     private dashboardService: DashboardService,
     private translate: TranslateService,
     private snackBar: SnackbarService,
-    @Inject(DOCUMENT) private document: Document,
+    @Inject(DOCUMENT) private document: Document
   ) {
     super();
     this.environment = environment.module || 'frontoffice';
