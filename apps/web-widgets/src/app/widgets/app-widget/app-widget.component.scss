@@ -1,1 +1,14 @@
+// Application specific styles for leaflet
+@use 'node_modules/leaflet-fullscreen/dist/leaflet.fullscreen.css' as
+  leafletfullscreen;
+@use 'node_modules/leaflet-measure/dist/leaflet-measure.css' as leaftletmeasure;
+@use 'node_modules/esri-leaflet-geocoder/dist/esri-leaflet-geocoder.css' as
+  leafletgeocoder;
+@use 'node_modules/@geoman-io/leaflet-geoman-free/dist/leaflet-geoman.css' as
+  leafletgeoman;
+@use 'node_modules/leaflet-timedimension/dist/leaflet.timedimension.control.min.css'
+  as leaflettimedimension;
+// Styles for angular overlay
+@import '@angular/cdk/overlay-prebuilt.css';
+// Shared ui styles
 @import 'ui.scss';

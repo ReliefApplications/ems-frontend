@@ -9,7 +9,7 @@
           "error",
           {
             "type": "attribute",
-            "prefix": "oortWebWidget",
+            "prefix": "oort",
             "style": "camelCase"
           }
         ],
@@ -17,7 +17,7 @@
           "error",
           {
             "type": "element",
-            "prefix": "oort-web-widget",
+            "prefix": "oort",
             "style": "kebab-case"
           }
         ]

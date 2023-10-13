@@ -49,6 +49,7 @@ import localeEn from '@angular/common/locales/en';
 import { DateInputsModule } from '@progress/kendo-angular-dateinputs';
 import { AppWidgetComponent } from './widgets/app-widget/app-widget.component';
 import { ApplicationWidgetRoutingModule } from './widgets/app-widget/app-widget-routing.module';
+import { AppWidgetModule } from './widgets/app-widget/app-widget.module';
 
 // Register local translations for dates
 registerLocaleData(localeFr);
@@ -138,7 +139,7 @@ const provideOverlay = (_platform: Platform): AppOverlayContainer =>
     }),
     OverlayModule,
     FormWidgetModule,
-    AppWidgetComponent,
+    AppWidgetModule,
     ApplicationWidgetRoutingModule,
     GraphQLModule,
     DateInputsModule,
@@ -217,7 +218,7 @@ export class AppModule implements DoBootstrap {
     const application = createCustomElement(AppWidgetComponent, {
       injector: this.injector,
     });
-    customElements.define('oort-web-widget-app', application);
+    customElements.define('oort-application-widget', application);
 
     const fonts = [
       'https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap',

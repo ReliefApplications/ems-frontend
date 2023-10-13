@@ -1246,7 +1246,8 @@
 					"autoSaveFailed": "L'exécution de l'action a été stoppé à cause d'enregistrement(s) non valide(s). Veuillez les vérifier avant de lancer une autre action.",
 					"invalid": {
 						"backoffice": "Configuration de grille invalide",
-						"frontoffice": "Configuration de grille non valide, veuillez contacter votre administrateur"
+						"frontoffice": "Configuration de grille non valide, veuillez contacter votre administrateur",
+						"webwidgets": "Configuration de grille non valide, veuillez contacter votre administrateur"
 					},
 					"metaQueryBuildFailed": "Erreur lors de la création des métadonnées",
 					"metaQueryFetchFailed": "Erreur lors de la récupération des métadonnées: {{error}}",

@@ -18,7 +18,7 @@ platformBrowserDynamic()
       // const formWidget = document.createElement('form-widget');
       // body.appendChild(formWidget);
       // Application web widget
-      const appWidget = document.createElement('oort-web-widget-app');
+      const appWidget = document.createElement('oort-application-widget');
       body.appendChild(appWidget);
     }
   })

@@ -1,16 +1,14 @@
 import {
-  CUSTOM_ELEMENTS_SCHEMA,
   Component,
   ElementRef,
   Injector,
   Input,
   OnInit,
+  ViewEncapsulation,
 } from '@angular/core';
-import { TranslateService } from '@ngx-translate/core';
 import {
   ApplicationDropdownComponent,
   AuthService,
-  FormService,
   GeofieldsListboxComponent,
   ReferenceDataDropdownComponent,
   ResourceAvailableFieldsComponent,
@@ -20,21 +18,16 @@ import {
   TestServiceDropdownComponent,
 } from '@oort-front/shared';
 import { SnackbarService } from '@oort-front/ui';
-import { environment } from '../../../environments/environment';
 import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
-import { ApplicationModule } from './application/application.module';
-import { CommonModule } from '@angular/common';
 
 /**
  * Main component of Front-office.
  */
 @Component({
-  selector: 'oort-web-widget-app',
+  selector: 'oort-application-widget',
   templateUrl: './app-widget.component.html',
   styleUrls: ['./app-widget.component.scss'],
-  standalone: true,
-  imports: [CommonModule, ApplicationModule],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  encapsulation: ViewEncapsulation.ShadowDom,
 })
 export class AppWidgetComponent implements OnInit {
   // Static component declaration of survey custom components for the property grid editor in order to avoid removal on tree shake for production build
@@ -56,25 +49,18 @@ export class AppWidgetComponent implements OnInit {
    *
    * @param snackBarService snackbar service to set the current attached shadow root
    * @param authService Shared authentication service
-   * @param formService Shared form service
-   * @param translate Angular translate service
    * @param el class related element reference
    * @param injector angular application injector
    */
   constructor(
     private snackBarService: SnackbarService,
     private authService: AuthService,
-    // We need to initialize the service there
-    private formService: FormService,
-    private translate: TranslateService,
     el: ElementRef,
     injector: Injector
   ) {
     const kendoPopupHost = injector.get(POPUP_CONTAINER);
     kendoPopupHost.nativeElement = el.nativeElement.shadowRoot;
     this.snackBarService.shadowDom = el.nativeElement.shadowRoot;
-    this.translate.addLangs(environment.availableLanguages);
-    this.translate.setDefaultLang(environment.availableLanguages[0]);
   }
 
   /**

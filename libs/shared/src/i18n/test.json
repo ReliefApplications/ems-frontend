@@ -1230,7 +1230,8 @@
 					"autoSaveFailed": "******",
 					"invalid": {
 						"backoffice": "******",
-						"frontoffice": "******"
+						"frontoffice": "******",
+						"webwidgets": "******"
 					},
 					"metaQueryBuildFailed": "******",
 					"metaQueryFetchFailed": "****** {{error}}",

@@ -40,6 +40,8 @@ export class TooltipDirective implements OnDestroy {
     'break-words',
   ] as const;
 
+  private currentHost!: any;
+
   /**
    * Constructor of the directive
    *
@@ -52,6 +54,15 @@ export class TooltipDirective implements OnDestroy {
     private elementRef: ElementRef,
     private renderer: Renderer2
   ) {
+    const isShadowRoot = Array.from(
+      this.document.getElementsByTagName('*')
+    ).filter((element) => element.shadowRoot);
+
+    this.currentHost =
+      isShadowRoot instanceof Array && isShadowRoot.length
+        ? isShadowRoot[0].shadowRoot?.children[1]
+        : this.document.body;
+
     // Creation of the tooltip element
     this.createTooltipElement();
   }
@@ -78,8 +89,8 @@ export class TooltipDirective implements OnDestroy {
    * Destroy the tooltip and stop its display
    */
   private removeHint() {
-    if (this.document.body.contains(this.elToolTip)) {
-      this.renderer.removeChild(this.document.body, this.elToolTip);
+    if (this.currentHost.contains(this.elToolTip)) {
+      this.renderer.removeChild(this.currentHost, this.elToolTip);
     }
   }
 
@@ -89,7 +100,7 @@ export class TooltipDirective implements OnDestroy {
   private showHint() {
     // Fullscreen only renders the current fulsscreened element,
     // Therefor we check if exists to take it as a reference, else we use the document body by default
-    const elementRef = this.document.fullscreenElement ?? this.document.body;
+    const elementRef = this.document.fullscreenElement ?? this.currentHost;
     this.elToolTip.textContent = this.uiTooltip;
     this.renderer.addClass(this.elToolTip, 'opacity-0');
     this.renderer.appendChild(elementRef, this.elToolTip);

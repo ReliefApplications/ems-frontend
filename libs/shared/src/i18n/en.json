@@ -1230,7 +1230,8 @@
 					"autoSaveFailed": "Action stopped due to some invalid records. Please review them before taking any other action.",
 					"invalid": {
 						"backoffice": "Invalid grid configuration",
-						"frontoffice": "Invalid grid configuration, please contact your admin"
+						"frontoffice": "Invalid grid configuration, please contact your admin",
+						"webwidgets": "Invalid grid configuration, please contact your admin"
 					},
 					"metaQueryBuildFailed": "Error building metadata",
 					"metaQueryFetchFailed": "Error fetching metadata: {{error}}",

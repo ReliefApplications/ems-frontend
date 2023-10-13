@@ -2,6 +2,7 @@
 
 /* All the styling used for the leaflet maps and controls */
 @use 'node_modules/survey-core/defaultV2.min.css';
+@use 'node_modules/survey-core/survey.min.css';
 @use 'node_modules/survey-creator-core/survey-creator-core.min.css';
 @use 'node_modules/leaflet/dist/leaflet.css' as leaflet;
 @use 'node_modules/leaflet.markercluster/dist/MarkerCluster.css' as marker;
