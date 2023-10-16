@@ -17,7 +17,7 @@
     </ui-tab>
   </ng-container>
   <ng-template #loadingTemplate>
-    <ui-tab *ngFor="let number of [0, 1, 2]">
+    <ui-tab *ngFor="let step of steps; let i = index">
       <ng-container ngProjectAs="label">
         <kendo-skeleton
           shape="rectangle"
