@@ -669,7 +669,7 @@
 		},
 		"header": {
 			"deployedVersion": {
-				"tooltip": "Deployed version"
+				"tooltip": "About"
 			},
 			"goToApp": "Go to application",
 			"goToPlatform": "Navigate to",

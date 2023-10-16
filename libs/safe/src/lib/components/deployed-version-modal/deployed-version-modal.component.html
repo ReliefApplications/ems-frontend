@@ -1,70 +1,94 @@
 <ui-dialog [size]="'medium'">
-    <ng-container ngProjectAs="header">
-        <h3 class="font-semibold">{{ 'components.deployedVersion.title' | translate }}</h3>
-    </ng-container>
-    <ng-container ngProjectAs="content">
-        <div class="flex flex-col justify-between">
-            <div class="w-1/2 p-4">
-                <div class="flex mb-2">
-                    <div class="w-1/2 font-semibold">{{ 'components.deployedVersion.frontend' | translate }}</div>
-                </div>
-                <div class="flex mb-2">
-                    <div class="w-1/2">{{ 'components.deployedVersion.version' | translate }}</div>
-                    <ui-button
-                        icon="content_copy"
-                        category="secondary"
-                        variant="primary"
-                        (click)="copyToClipboard(environment.version)"
-                        [uiTooltip]="'components.deployedVersion.tooltip.copyToClipboard' | translate"
-                    >
-                        {{ environment.version }}
-                    </ui-button> 
-                </div>
-                <div class="flex mb-2">
-                    <div class="w-1/2">{{ 'components.deployedVersion.commitId' | translate }}</div>
-                    <ui-button
-                        icon="content_copy"
-                        category="secondary"
-                        variant="primary"
-                        (click)="copyToClipboard('test123')"
-                        [uiTooltip]="'components.deployedVersion.tooltip.copyToClipboard' | translate"
-                    >
-                        test123
-                    </ui-button> 
-                </div>
-            </div>
-            <div class="w-1/2 p-4">
-                <div class="flex mb-2">
-                    <div class="w-1/2 font-semibold">{{ 'components.deployedVersion.backend' | translate }}</div>
-                </div>
-                <div class="flex mb-2">
-                    <div class="w-1/2">{{ 'components.deployedVersion.version' | translate }}</div>
-                    <ui-button
-                        icon="content_copy"
-                        category="secondary"
-                        variant="primary"
-                        (click)="copyToClipboard(environment.version)"
-                        [uiTooltip]="'components.deployedVersion.tooltip.copyToClipboard' | translate"
-                    >
-                    {{ environment.version }}
-                    </ui-button> 
-                </div>
-                <div class="flex mb-2">
-                    <div class="w-1/2">{{ 'components.deployedVersion.commitId' | translate }}</div>
-                    <ui-button
-                        icon="content_copy"
-                        category="secondary"
-                        variant="primary"
-                        (click)="copyToClipboard('test456')"
-                        [uiTooltip]="'components.deployedVersion.tooltip.copyToClipboard' | translate"
-                    >
-                        test456
-                    </ui-button> 
-                </div>
-            </div>
+  <ng-container ngProjectAs="header">
+    <h3 class="font-semibold">
+      {{ 'components.deployedVersion.title' | translate }}
+    </h3>
+  </ng-container>
+  <ng-container ngProjectAs="content">
+    <div class="flex flex-col justify-between">
+      <div class="w-1/2 p-4">
+        <div class="flex mb-2">
+          <div class="w-1/2 font-semibold">
+            {{ 'components.deployedVersion.frontend' | translate }}
+          </div>
         </div>
-    </ng-container>
-    <ng-container ngProjectAs="actions">
-        <ui-button uiDialogClose variant="default">{{ 'common.close' | translate }}</ui-button>
-    </ng-container>
+        <div class="flex mb-2">
+          <div class="w-1/2">
+            {{ 'components.deployedVersion.version' | translate }}
+          </div>
+          <ui-button
+            icon="content_copy"
+            category="secondary"
+            variant="primary"
+            (click)="copyToClipboard(environment.version)"
+            [uiTooltip]="
+              'components.deployedVersion.tooltip.copyToClipboard' | translate
+            "
+          >
+            {{ environment.version }}
+          </ui-button>
+        </div>
+        <div class="flex mb-2">
+          <div class="w-1/2">
+            {{ 'components.deployedVersion.commitId' | translate }}
+          </div>
+          <ui-button
+            icon="content_copy"
+            category="secondary"
+            variant="primary"
+            (click)="copyToClipboard(frontEndCommitHash.long)"
+            [uiTooltip]="
+              'components.deployedVersion.tooltip.copyToClipboard' | translate
+            "
+          >
+            {{ frontEndCommitHash.short }}
+          </ui-button>
+        </div>
+      </div>
+      <div class="w-1/2 p-4">
+        <div class="flex mb-2">
+          <div class="w-1/2 font-semibold">
+            {{ 'components.deployedVersion.backend' | translate }}
+          </div>
+        </div>
+        <div class="flex mb-2">
+          <div class="w-1/2">
+            {{ 'components.deployedVersion.version' | translate }}
+          </div>
+          <ui-button
+            icon="content_copy"
+            category="secondary"
+            variant="primary"
+            (click)="copyToClipboard(environment.version)"
+            [uiTooltip]="
+              'components.deployedVersion.tooltip.copyToClipboard' | translate
+            "
+          >
+            {{ environment.version }}
+          </ui-button>
+        </div>
+        <div class="flex mb-2">
+          <div class="w-1/2">
+            {{ 'components.deployedVersion.commitId' | translate }}
+          </div>
+          <ui-button
+            icon="content_copy"
+            category="secondary"
+            variant="primary"
+            (click)="copyToClipboard(backEndCommitHash.long)"
+            [uiTooltip]="
+              'components.deployedVersion.tooltip.copyToClipboard' | translate
+            "
+          >
+            {{ backEndCommitHash.short }}
+          </ui-button>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+  <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose variant="default">{{
+      'common.close' | translate
+    }}</ui-button>
+  </ng-container>
 </ui-dialog>

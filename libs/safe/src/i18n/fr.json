@@ -674,7 +674,7 @@
 		},
 		"header": {
 			"deployedVersion": {
-				"tooltip": "Version déployée"
+				"tooltip": "A propos"
 			},
 			"goToApp": "Ouvrir l'application",
 			"goToPlatform": "Naviguer vers",
