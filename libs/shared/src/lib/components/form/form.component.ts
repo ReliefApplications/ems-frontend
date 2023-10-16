@@ -307,11 +307,6 @@ export class FormComponent
         });
       }
     });
-
-    console.log(this.form);
-    console.log(this.pages);
-    console.log(this.pages$);
-    console.log(this.survey.pages);
   };
 
   /**
