@@ -3,6 +3,7 @@
   [selectedIndex]="activeStep"
   cdkDropListOrientation="horizontal"
   cdkDropList
+  (cdkDropListDropped)="dropStep($event)"
 >
   <ng-container *ngIf="!loading; else loadingTemplate">
     <ui-tab *ngFor="let step of steps; let i = index">
