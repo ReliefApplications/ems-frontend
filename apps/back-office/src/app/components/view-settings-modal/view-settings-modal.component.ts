@@ -31,6 +31,8 @@ import {
 } from '@oort-front/shared';
 import { takeUntil } from 'rxjs';
 import { isNil } from 'lodash';
+import { AbilityModule } from '@casl/angular';
+import { AppAbility } from '@oort-front/shared';
 
 /** Settings Dialog Data */
 interface DialogData {
@@ -69,6 +71,7 @@ interface DialogData {
     OverlayModule,
     SearchMenuModule,
     AlertModule,
+    AbilityModule,
   ],
   templateUrl: './view-settings-modal.component.html',
   styleUrls: ['./view-settings-modal.component.scss'],
@@ -99,6 +102,7 @@ export class ViewSettingsModalComponent
    * @param workflowService Shared workflow service
    * @param applicationService Shared application service
    * @param authService Shared authentication service
+   * @param ability user ability
    */
   constructor(
     public dialogRef: DialogRef<ViewSettingsModalComponent>,
@@ -106,7 +110,8 @@ export class ViewSettingsModalComponent
     private fb: FormBuilder,
     private workflowService: WorkflowService,
     private applicationService: ApplicationService,
-    private authService: AuthService
+    private authService: AuthService,
+    private ability: AppAbility
   ) {
     super();
     if (this.data) {
@@ -117,6 +122,12 @@ export class ViewSettingsModalComponent
 
   ngOnInit(): void {
     this.settingsForm = this.createSettingsForm();
+
+    // check if the user doesn't have permission to update the page
+    // if the user does not, the visible toggle is disabled
+    if (this.ability.cannot('update', 'Application')) {
+      this.settingsForm.get('visible')?.disable();
+    }
 
     // Listen to icon updates
     this.settingsForm?.controls.icon.valueChanges

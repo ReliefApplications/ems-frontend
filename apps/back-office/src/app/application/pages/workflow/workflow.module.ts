@@ -11,6 +11,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { IconModule, TooltipModule } from '@oort-front/ui';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import { ButtonModule, SpinnerModule } from '@oort-front/ui';
+import { AbilityModule } from '@casl/angular';
 
 /**
  * Application workflow page module.
@@ -29,6 +30,7 @@ import { ButtonModule, SpinnerModule } from '@oort-front/ui';
     EditableTextModule,
     ButtonModule,
     TooltipModule,
+    AbilityModule,
   ],
   exports: [WorkflowComponent],
 })

@@ -26,6 +26,7 @@ import {
   GraphQLSelectModule,
 } from '@oort-front/ui';
 import { DragDropModule } from '@angular/cdk/drag-drop';
+import { AbilityModule } from '@casl/angular';
 
 /**
  * Dashboard page module.
@@ -56,6 +57,7 @@ import { DragDropModule } from '@angular/cdk/drag-drop';
     AlertModule,
     DragDropModule,
     ButtonActionModule,
+    AbilityModule,
   ],
   exports: [DashboardComponent],
 })

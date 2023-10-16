@@ -8,6 +8,7 @@ import {
 } from '@oort-front/shared';
 import { ButtonModule, SpinnerModule, TooltipModule } from '@oort-front/ui';
 import { TranslateModule } from '@ngx-translate/core';
+import { AbilityModule } from '@casl/angular';
 
 /**
  * Application form page module.
@@ -23,6 +24,7 @@ import { TranslateModule } from '@ngx-translate/core';
     EditableTextModule,
     ButtonModule,
     TooltipModule,
+    AbilityModule
   ],
   exports: [FormComponent],
 })

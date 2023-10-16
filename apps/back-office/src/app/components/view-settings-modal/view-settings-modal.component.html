@@ -30,6 +30,7 @@
           <div class="flex gap-4 flex-col" *ngIf="this.settingsForm">
             <!-- Page / step icon -->
             <app-view-icon-selector
+              *ngIf="('update' | able : 'Application')"
               [iconControl]="this.settingsForm.controls.icon"
               [ngClass]="{
                 '-mb-4': data.type === 'page'
@@ -53,6 +54,7 @@
                   (click)="onAppSelection()"
                   cdkOverlayOrigin
                   #appMenuTrigger="cdkOverlayOrigin"
+                  [disabled]="!('read' | able : 'Application')"
                 >
                   {{ 'common.duplicate' | translate }}
                 </ui-button>
