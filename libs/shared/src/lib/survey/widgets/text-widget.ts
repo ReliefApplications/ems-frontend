@@ -104,7 +104,7 @@ export const init = (
           )
         ) {
           pickerDiv = document.createElement('div');
-          pickerDiv.classList.add('flex', 'min-h-[50px]');
+          pickerDiv.classList.add('flex', 'min-h-[36px]');
           const pickerInstance = createPickerInstance(
             question.inputType as DateInputFormat,
             pickerDiv,
@@ -206,7 +206,7 @@ export const init = (
             );
           }
         } else {
-          el.classList.add('flex-1', 'min-h-[50px]');
+          el.classList.add('flex-1', 'min-h-[36px]');
           el.style.display = 'initial';
         }
       };

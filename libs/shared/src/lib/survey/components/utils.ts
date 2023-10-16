@@ -30,7 +30,7 @@ export const buildSearchButton = (
     'oort:search',
     (question.survey as SurveyModel).locale
   );
-  searchButton.className = 'sd-btn !px-3 !py-2';
+  searchButton.className = 'sd-btn !px-3 !py-1';
   searchButton.style.marginRight = '8px';
   if (fieldsSettingsForm) {
     temporaryRecords.valueChanges.subscribe((res: any) => {
@@ -94,7 +94,7 @@ export const buildAddButton = (
     'oort:addNewRecord',
     (question.survey as SurveyModel).locale
   );
-  addButton.className = 'sd-btn !px-3 !py-2';
+  addButton.className = 'sd-btn !px-3 !py-1';
   if (question.addRecord && question.addTemplate && !question.isReadOnly) {
     addButton.onclick = async () => {
       ngZone.run(async () => {
