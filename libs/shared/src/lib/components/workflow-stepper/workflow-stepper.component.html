@@ -6,7 +6,7 @@
   (cdkDropListDropped)="dropStep($event)"
 >
   <ng-container *ngIf="!loading; else loadingTemplate">
-    <ui-tab *ngFor="let step of steps; let i = index">
+    <ui-tab *ngFor="let step of steps; let i = index" cdkDrag>
       <ng-container ngProjectAs="label">
         <shared-step
           [step]="step"
