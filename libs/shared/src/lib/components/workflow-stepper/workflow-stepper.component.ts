@@ -27,13 +27,6 @@ export class WorkflowStepperComponent {
   @Output() openStep = new EventEmitter<number>();
   /** Reorder steps event emitter   */
   @Output() reorderSteps = new EventEmitter<Step[]>();
-  /** Dragging status */
-  public dragging = false;
-
-  /** Activate draging */
-  onDragStart(): void {
-    this.dragging = true;
-  }
 
   /**
    * Open a step on click
@@ -41,10 +34,6 @@ export class WorkflowStepperComponent {
    * @param index Index of the step
    */
   onStep(index: number): void {
-    if (this.dragging) {
-      this.dragging = false;
-      return;
-    }
     if (this.activeStep !== index) {
       this.openStep.emit(index);
     }
@@ -55,8 +44,7 @@ export class WorkflowStepperComponent {
    *
    * @param event Drag and drop on mouse release event
    */
-  dropStep(event: CdkDragDrop<string[]>): void {
-    this.dragging = false;
+  onReorder(event: CdkDragDrop<string[]>): void {
     const reorderedSteps = this.steps.slice();
     moveItemInArray(reorderedSteps, event.previousIndex, event.currentIndex);
     this.steps = reorderedSteps;

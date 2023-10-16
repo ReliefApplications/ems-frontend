@@ -8,9 +8,9 @@ import { TranslateModule } from '@ngx-translate/core';
 import { IndicatorsModule } from '@progress/kendo-angular-indicators';
 import {
   TooltipModule,
-  DividerModule,
   ButtonModule,
   IconModule,
+  TabsModule,
 } from '@oort-front/ui';
 /**
  * Module for workflow stepper component
@@ -19,13 +19,13 @@ import {
   declarations: [WorkflowStepperComponent, AddStepComponent, StepComponent],
   imports: [
     CommonModule,
-    DividerModule,
     TooltipModule,
     DragDropModule,
     IconModule,
     TranslateModule,
     IndicatorsModule,
     ButtonModule,
+    TabsModule,
   ],
   exports: [WorkflowStepperComponent, AddStepComponent, StepComponent],
 })
