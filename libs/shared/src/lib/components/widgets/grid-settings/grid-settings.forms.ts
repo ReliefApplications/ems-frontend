@@ -183,6 +183,7 @@ export const createGridActionsFormGroup = (configuration: any) => {
     } else {
       formGroup.get('navigateSettings.title')?.clearValidators();
     }
+    formGroup.get('navigateSettings.title')?.updateValueAndValidity();
   };
   // Initialize
   setValidatorsNavigateToPageTitle(formGroup.get('navigateToPage')?.value);
