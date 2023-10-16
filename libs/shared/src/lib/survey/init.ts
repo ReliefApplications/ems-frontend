@@ -17,7 +17,7 @@ import * as CommentWidget from './widgets/comment-widget';
 import * as DropdownWidget from './widgets/dropdown-widget';
 import * as TagboxWidget from './widgets/tagbox-widget';
 import * as OtherProperties from './global-properties/others';
-import * as ChoicesByUrlProperties from './global-properties/choicesByUrl';
+// import * as ChoicesByUrlProperties from './global-properties/choicesByUrl';
 import * as ReferenceDataProperties from './global-properties/reference-data';
 import * as TooltipProperty from './global-properties/tooltip';
 import { initLocalization } from './localization';
@@ -112,7 +112,7 @@ export const initCustomSurvey = (
   OtherProperties.init(environment);
 
   // enables POST requests for choicesByUrl
-  ChoicesByUrlProperties.init();
+  // ChoicesByUrlProperties.init();
 
   // set localization
   initLocalization();

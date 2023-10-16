@@ -1,8 +1,8 @@
 <ui-dialog [closable]="true" size="medium">
   <ng-container ngProjectAs="header">
-    <h2>
+    <h3 class="font-semibold">
       {{ 'components.role.summary.autoAssignment.rule.edit' | translate }}
-    </h2>
+    </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <shared-filter [form]="formGroup" [fields]="fields"></shared-filter>

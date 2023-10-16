@@ -6,6 +6,7 @@ import { IconPickerModule } from './icon-picker.module';
 
 export default {
   component: IconPickerComponent,
+  tags: ['autodocs'],
   decorators: [
     moduleMetadata({
       imports: [

@@ -394,7 +394,7 @@ export class LayerDatasourceComponent
       .map((field) => {
         return {
           label: field.name,
-          name: field.graphQLFieldName,
+          name: field.name,
           type: field.type,
         } as Fields;
       });

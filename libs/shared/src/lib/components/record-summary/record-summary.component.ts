@@ -10,8 +10,12 @@ import { Record } from '../../models/record.model';
   styleUrls: ['./record-summary.component.scss'],
 })
 export class RecordSummaryComponent {
+  /** Cache date */
   @Input() cacheDate?: Date;
+  /** Record */
   @Input() record?: Record;
+  /** Show history event emitter */
   @Output() showHistory = new EventEmitter();
+  /** Clear event emitter */
   @Output() clear = new EventEmitter();
 }

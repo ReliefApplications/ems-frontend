@@ -9,7 +9,7 @@ import {
 
 describe('AddApplicationComponent', () => {
   let component: AddApplicationComponent;
-  let fixture: ComponentFixture<sharedAddApplicationComponent>;
+  let fixture: ComponentFixture<AddApplicationComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({

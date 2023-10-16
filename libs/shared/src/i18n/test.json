@@ -3,6 +3,7 @@
 		"access": "******",
 		"accessDenied": "******",
 		"add": "******",
+		"adminField": "******",
 		"aggregation": {
 			"few": "******",
 			"none": "******",
@@ -27,7 +28,6 @@
 					"confirmationMessage": "****** {{name}} ******",
 					"title": "******"
 				},
-				"one": "******",
 				"restore": {
 					"action": "******",
 					"confirmationMessage": "****** {{name}} ******",
@@ -42,6 +42,7 @@
 				"clear": "******"
 			}
 		},
+		"asc": "******",
 		"attribute": {
 			"few": "******",
 			"none": "******",
@@ -76,6 +77,68 @@
 		"copy": "******",
 		"create": "******",
 		"createdOn": "******",
+		"cronEditor": {
+			"advanced": "******",
+			"atTime": "******",
+			"daily": "******",
+			"day": "******",
+			"days": "******",
+			"every": {
+				"feminine": "******",
+				"masculine": "******"
+			},
+			"firstWeekDay": "******",
+			"hourly": "******",
+			"hours": "******",
+			"lastDay": "******",
+			"lastWeekDay": "******",
+			"minutely": "******",
+			"minutes": "******",
+			"month": "******",
+			"monthly": "******",
+			"months": {
+				"april": "******",
+				"august": "******",
+				"december": "******",
+				"february": "******",
+				"january": "******",
+				"july": "******",
+				"june": "******",
+				"march": "******",
+				"may": "******",
+				"november": "******",
+				"october": "******",
+				"september": "******"
+			},
+			"of": "******",
+			"ofEvery": "******",
+			"onThe": {
+				"feminine": "******",
+				"masculine": "******"
+			},
+			"seconds": "******",
+			"week": "******",
+			"weekDay": "******",
+			"weekDays": {
+				"friday": "******",
+				"monday": "******",
+				"saturday": "******",
+				"sunday": "******",
+				"thursday": "******",
+				"tuesday": "******",
+				"wednesday": "******"
+			},
+			"weekNumber": {
+				"fifth": "******",
+				"first": "******",
+				"fourth": "******",
+				"last": "******",
+				"second": "******",
+				"third": "******"
+			},
+			"weekly": "******",
+			"yearly": "******"
+		},
 		"customNotification": {
 			"few": "******",
 			"none": "******",
@@ -89,6 +152,7 @@
 		"delete": "******",
 		"deleteObject": "****** {{name}}",
 		"deleted": "******",
+		"desc": "******",
 		"dismiss": "******",
 		"display": "******",
 		"distributionList": {
@@ -106,6 +170,7 @@
 			"one": "******"
 		},
 		"errors": {
+			"few": "******",
 			"objectDuplicated": "{{type}} ****** {{value}} ******"
 		},
 		"exitFullscreen": "******",
@@ -310,6 +375,7 @@
 			"none": "******",
 			"one": "******"
 		},
+		"tabs": "******",
 		"template": {
 			"few": "******",
 			"none": "******",
@@ -473,6 +539,13 @@
 				"reordered": {
 					"plural": "******",
 					"singular": "******"
+				},
+				"settings": {
+					"actions": "******",
+					"selectIcon": "******",
+					"tooltip": {
+						"autoSave": "******"
+					}
 				},
 				"show": "******"
 			},
@@ -727,6 +800,12 @@
 			},
 			"preview": "******"
 		},
+		"icon": {
+			"modal": {
+				"select": "******",
+				"use": "******"
+			}
+		},
 		"logout": {
 			"confirmationMessage": "******",
 			"title": "******"
@@ -924,6 +1003,7 @@
 		"records": {
 			"active": "******",
 			"archived": "******",
+			"editAs": "******",
 			"paginator": {
 				"ariaLabel": "******"
 			},
@@ -1084,6 +1164,7 @@
 			"invite": {
 				"confirm": "******",
 				"role": {
+					"additionalAttributes": "******",
 					"description": "******"
 				}
 			},
@@ -1145,6 +1226,7 @@
 			"grid": {
 				"actions": {
 					"detail": "******",
+					"goTo": "******",
 					"history": "******"
 				},
 				"errors": {
@@ -1205,6 +1287,7 @@
 				"openSettings": "******",
 				"tooltip": {
 					"displayMap": "******",
+					"openPage": "******",
 					"saved": "******",
 					"unsaved": "******",
 					"uploadFailed": "******"
@@ -1288,11 +1371,21 @@
 						"delete": "******",
 						"export": "******",
 						"inline": "******",
+						"navigateToPage": "******",
+						"pageUrl": {
+							"label": "******",
+							"placeholder": "******"
+						},
+						"pageUrlTitle": {
+							"label": "******",
+							"placeholder": "******"
+						},
 						"remove": "******",
 						"show": "******",
 						"showDetails": "******",
 						"title": "******",
-						"update": "******"
+						"update": "******",
+						"useRecordId": "******"
 					},
 					"aggregations": {
 						"add": {
@@ -1347,6 +1440,7 @@
 							"delete": "******",
 							"export": "******",
 							"inline": "******",
+							"navigateToPage": "******",
 							"show": "******",
 							"showDetails": "******",
 							"update": "******"
@@ -1371,7 +1465,8 @@
 						"title": "******"
 					},
 					"tooltip": {
-						"template": "******"
+						"template": "******",
+						"useRecordId": "******"
 					}
 				},
 				"iconPicker": {
@@ -1388,7 +1483,9 @@
 							"autoSizeCluster": "******",
 							"cluster": "******",
 							"clusterSettings": "******",
+							"clustering": "******",
 							"fields": "******",
+							"font": "******",
 							"fontSize": "******",
 							"high": "******",
 							"label": "******",
@@ -1410,6 +1507,7 @@
 						"groupLayers": "******",
 						"labels": "******",
 						"layerDatasource": "******",
+						"layerEdition": "******",
 						"layerProperties": "******",
 						"layerStyling": "******",
 						"popup": "******",
@@ -1596,6 +1694,10 @@
 								"datasource": "******"
 							}
 						},
+						"gridActions": {
+							"title": "******",
+							"tooltip": "******"
+						},
 						"preview": {
 							"title": "******"
 						},
@@ -1627,6 +1729,10 @@
 						"ariaLabel": "******"
 					},
 					"static": "******"
+				},
+				"tabs": {
+					"addNewTab": "******",
+					"deleteTab": "******"
 				}
 			},
 			"styling": "******",
@@ -2023,6 +2129,7 @@
 			"sorting": {
 				"add": "******",
 				"delete": "******",
+				"empty": "******",
 				"field": "******",
 				"label": "******",
 				"management": "******",

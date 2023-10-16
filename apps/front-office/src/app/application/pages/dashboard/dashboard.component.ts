@@ -214,6 +214,7 @@ export class DashboardComponent
           this.showFilter = this.dashboard.showFilter ?? false;
           this.contextService.isFilterEnabled.next(this.showFilter);
         } else {
+          this.contextService.isFilterEnabled.next(false);
           this.snackBar.openSnackBar(
             this.translate.instant('common.notifications.accessNotProvided', {
               type: this.translate

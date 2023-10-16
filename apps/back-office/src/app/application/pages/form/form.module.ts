@@ -4,7 +4,6 @@ import { FormRoutingModule } from './form-routing.module';
 import { FormComponent } from './form.component';
 import {
   FormModule as SharedFormModule,
-  AccessModule,
   EditableTextModule,
 } from '@oort-front/shared';
 import { ButtonModule, SpinnerModule, TooltipModule } from '@oort-front/ui';
@@ -19,7 +18,6 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonModule,
     FormRoutingModule,
     SharedFormModule,
-    AccessModule,
     SpinnerModule,
     TranslateModule,
     EditableTextModule,

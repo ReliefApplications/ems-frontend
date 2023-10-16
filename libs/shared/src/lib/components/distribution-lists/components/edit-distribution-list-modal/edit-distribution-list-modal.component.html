@@ -1,13 +1,13 @@
 <ui-dialog size="medium">
   <ng-container ngProjectAs="header">
-    <h1>
+    <h3 class="font-semibold">
       {{
         (data
           ? 'components.distributionLists.edit.update'
           : 'components.distributionLists.edit.new'
         ) | translate
       }}
-    </h1>
+    </h3>
   </ng-container>
   <ng-container ngProjectAs="content">
     <form [formGroup]="form" class="flex flex-col">

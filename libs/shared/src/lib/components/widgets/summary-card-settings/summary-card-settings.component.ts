@@ -26,6 +26,7 @@ import { UnsubscribeComponent } from '../../utils/unsubscribe/unsubscribe.compon
 import { extendWidgetForm } from '../common/display-settings/extendWidgetForm';
 import { GET_RESOURCE } from './graphql/queries';
 import { takeUntil } from 'rxjs';
+import { createGridActionsFormGroup } from '../grid-settings/grid-settings.forms';
 
 // todo: put in common
 /** Default context filter value. */
@@ -74,6 +75,7 @@ const createSummaryCardForm = (def: any) => {
     contextFilters: new FormControl(
       get(settings, 'contextFilters', DEFAULT_CONTEXT_FILTER)
     ),
+    actions: createGridActionsFormGroup(settings),
     at: new FormControl(get(settings, 'at', '')),
   });
 

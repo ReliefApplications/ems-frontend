@@ -3,6 +3,7 @@
 		"access": "Access",
 		"accessDenied": "Access denied",
 		"add": "Add",
+		"adminField": "Admin field",
 		"aggregation": {
 			"few": "Aggregations",
 			"none": "No aggregation",
@@ -27,7 +28,6 @@
 					"confirmationMessage": "Do you want to delete archived page: {{name}}?",
 					"title": "Delete?"
 				},
-				"one": "page",
 				"restore": {
 					"action": "Restore",
 					"confirmationMessage": "Do you want to restore the archived page: {{name}}?",
@@ -42,6 +42,7 @@
 				"clear": "Clear search"
 			}
 		},
+		"asc": "Ascending",
 		"attribute": {
 			"few": "Attributes",
 			"none": "No attribute",
@@ -76,6 +77,68 @@
 		"copy": "Copy",
 		"create": "Create",
 		"createdOn": "Created on",
+		"cronEditor": {
+			"advanced": "Advanced",
+			"atTime": "At",
+			"daily": "Daily",
+			"day": "Day",
+			"days": "Day(s)",
+			"every": {
+				"feminine": "Every",
+				"masculine": "Every"
+			},
+			"firstWeekDay": "First week day",
+			"hourly": "Hourly",
+			"hours": "Hour(s)",
+			"lastDay": "Last day",
+			"lastWeekDay": "Last week day",
+			"minutely": "Minutely",
+			"minutes": "Minute(s)",
+			"month": "Month",
+			"monthly": "Monthly",
+			"months": {
+				"april": "April",
+				"august": "August",
+				"december": "December",
+				"february": "February",
+				"january": "January",
+				"july": "July",
+				"june": "June",
+				"march": "March",
+				"may": "May",
+				"november": "November",
+				"october": "October",
+				"september": "September"
+			},
+			"of": "of",
+			"ofEvery": "of every",
+			"onThe": {
+				"feminine": "On the",
+				"masculine": "On the"
+			},
+			"seconds": "Second(s)",
+			"week": "Week",
+			"weekDay": "Week Day (MON-FRI)",
+			"weekDays": {
+				"friday": "Friday",
+				"monday": "Monday",
+				"saturday": "Saturday",
+				"sunday": "Sunday",
+				"thursday": "Thursday",
+				"tuesday": "Tuesday",
+				"wednesday": "Wednesday"
+			},
+			"weekNumber": {
+				"fifth": "Fifth",
+				"first": "First",
+				"fourth": "Fourth",
+				"last": "Last",
+				"second": "Second",
+				"third": "Third"
+			},
+			"weekly": "Weekly",
+			"yearly": "Yearly"
+		},
 		"customNotification": {
 			"few": "Custom notifications",
 			"none": "No Custom notification",
@@ -89,6 +152,7 @@
 		"delete": "Delete",
 		"deleteObject": "Delete {{name}}",
 		"deleted": "Deleted",
+		"desc": "Descending",
 		"dismiss": "Dismiss",
 		"display": "Display",
 		"distributionList": {
@@ -106,6 +170,7 @@
 			"one": "Email"
 		},
 		"errors": {
+			"few": "Errors",
 			"objectDuplicated": "{{type}} {{value}} already exists."
 		},
 		"exitFullscreen": "Exit Fullscreen",
@@ -310,6 +375,7 @@
 			"none": "No subscription",
 			"one": "Subscription"
 		},
+		"tabs": "Tabs",
 		"template": {
 			"few": "Notification templates",
 			"none": "No template",
@@ -473,6 +539,13 @@
 				"reordered": {
 					"plural": "The pages were successfully reordered.",
 					"singular": "The page was successfully reordered."
+				},
+				"settings": {
+					"actions": "Actions",
+					"selectIcon": "Select an icon",
+					"tooltip": {
+						"autoSave": "Changes are automatically saved"
+					}
 				},
 				"show": "Make page visible in nav bar for end-users"
 			},
@@ -674,7 +747,7 @@
 					"resourceSelectText": "First you have to select a resource before setting any filters"
 				}
 			},
-			"saveSurvey": "SavingSurvey"
+			"saveSurvey": "Saving the form"
 		},
 		"formMapProperties": {
 			"geofields": {
@@ -726,6 +799,12 @@
 				"select": "Select a field"
 			},
 			"preview": "Preview and revert"
+		},
+		"icon": {
+			"modal": {
+				"select": "Select an icon",
+				"use": "Use icon"
+			}
 		},
 		"logout": {
 			"confirmationMessage": "There are unsaved changes on your form. Are you sure you want to logout?",
@@ -924,6 +1003,7 @@
 		"records": {
 			"active": "Active records",
 			"archived": "Archived records",
+			"editAs": "Edit as",
 			"paginator": {
 				"ariaLabel": "Select page of records"
 			},
@@ -1084,6 +1164,7 @@
 			"invite": {
 				"confirm": "Invite",
 				"role": {
+					"additionalAttributes": "Set additional attributes",
 					"description": "Select the role to assign"
 				}
 			},
@@ -1145,6 +1226,7 @@
 			"grid": {
 				"actions": {
 					"detail": "Open detail",
+					"goTo": "Go to page",
 					"history": "Show history"
 				},
 				"errors": {
@@ -1205,6 +1287,7 @@
 				"openSettings": "Open settings",
 				"tooltip": {
 					"displayMap": "Display map",
+					"openPage": "Navigate to page",
 					"saved": "Changes saved",
 					"unsaved": "Click on save button to upload changes",
 					"uploadFailed": "Record not saved. Click to see more details"
@@ -1288,11 +1371,21 @@
 						"delete": "Delete records",
 						"export": "Export records",
 						"inline": "Inline edition",
+						"navigateToPage": "Navigate to page",
+						"pageUrl": {
+							"label": "Target page",
+							"placeholder": "Select a page"
+						},
+						"pageUrlTitle": {
+							"label": "Column name",
+							"placeholder": "Type a title for the column..."
+						},
 						"remove": "Remove",
 						"show": "Show history",
 						"showDetails": "Show record details",
 						"title": "Enabled actions",
-						"update": "Update records"
+						"update": "Update records",
+						"useRecordId": "Pass id as query parameter"
 					},
 					"aggregations": {
 						"add": {
@@ -1347,6 +1440,7 @@
 							"delete": "If authorized, user can delete visible records",
 							"export": "User can export selected columns of visible records",
 							"inline": "If authorized, user can edit records in the grid",
+							"navigateToPage": "User can go to specified page on click",
 							"show": "User can see full history of visible records",
 							"showDetails": "User can see full details of visible records",
 							"update": "If authorized, user can update visible records"
@@ -1371,7 +1465,8 @@
 						"title": "Grid layouts"
 					},
 					"tooltip": {
-						"template": "Select a template for addition and edition of records"
+						"template": "Select a template for addition and edition of records",
+						"useRecordId": "Url will contain id of the item, in order to redirect to contextual page, if configured"
 					}
 				},
 				"iconPicker": {
@@ -1388,7 +1483,9 @@
 							"autoSizeCluster": "Cluster auto-sizing",
 							"cluster": "Cluster",
 							"clusterSettings": "Cluster settings",
+							"clustering": "Clustering",
 							"fields": "Cluster fields",
+							"font": "Font",
 							"fontSize": "Font size",
 							"high": "High",
 							"label": "Cluster label",
@@ -1410,6 +1507,7 @@
 						"groupLayers": "Group layers",
 						"labels": "Labels",
 						"layerDatasource": "Layer datasource",
+						"layerEdition": "Layer edition",
 						"layerProperties": "Layer properties",
 						"layerStyling": "Layer styling",
 						"popup": "Pop-up",
@@ -1596,6 +1694,10 @@
 								"datasource": "Add a button in widget's header to view card's data source"
 							}
 						},
+						"gridActions": {
+							"title": "Grid actions",
+							"tooltip": "Enabled grid actions"
+						},
 						"preview": {
 							"title": "Preview"
 						},
@@ -1627,6 +1729,10 @@
 						"ariaLabel": "Select an option"
 					},
 					"static": "Static"
+				},
+				"tabs": {
+					"addNewTab": "Add a new tab",
+					"deleteTab": "Delete tab"
 				}
 			},
 			"styling": "Edit styling",
@@ -2023,6 +2129,7 @@
 			"sorting": {
 				"add": "Add a field",
 				"delete": "Delete sort field",
+				"empty": "No sort field set",
 				"field": "Field",
 				"label": "Label",
 				"management": "Sort fields",

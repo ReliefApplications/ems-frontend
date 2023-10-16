@@ -2,7 +2,7 @@
   <div [ngClass]="{ 'flex gap-3 items-center': !hideHours }">
     <ng-container *ngIf="!hideHours">
       <div uiFormFieldDirective>
-        <label>Hour(s)</label>
+        <label>{{ 'common.cronEditor.hours' | translate }}</label>
         <ui-select-menu formControlName="hours">
           <ui-select-option *ngFor="let hour of hours" [value]="hour">
             {{ hour }}
@@ -15,7 +15,7 @@
 
     <ng-container *ngIf="!hideMinutes">
       <div uiFormFieldDirective>
-        <label>Minute(s)</label>
+        <label>{{ 'common.cronEditor.minutes' | translate }}</label>
         <ui-select-menu formControlName="minutes">
           <ui-select-option *ngFor="let minute of minutes" [value]="minute">
             {{ minute }}
@@ -28,7 +28,7 @@
 
     <ng-container *ngIf="!hideSeconds">
       <div uiFormFieldDirective>
-        <label>Second(s)</label>
+        <label>{{ 'common.cronEditor.seconds' | translate }}</label>
         <ui-select-menu formControlName="seconds">
           <ui-select-option *ngFor="let second of seconds" [value]="second">
             {{ second }}
