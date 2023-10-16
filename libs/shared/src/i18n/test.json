@@ -1226,8 +1226,8 @@
 			"grid": {
 				"actions": {
 					"detail": "******",
-					"history": "******",
-					"recordDashboard": "******"
+					"goTo": "******",
+					"history": "******"
 				},
 				"errors": {
 					"autoSaveFailed": "******",
@@ -1287,6 +1287,7 @@
 				"openSettings": "******",
 				"tooltip": {
 					"displayMap": "******",
+					"openPage": "******",
 					"saved": "******",
 					"unsaved": "******",
 					"uploadFailed": "******"
@@ -1375,13 +1376,16 @@
 							"label": "******",
 							"placeholder": "******"
 						},
+						"pageUrlTitle": {
+							"label": "******",
+							"placeholder": "******"
+						},
 						"remove": "******",
 						"show": "******",
 						"showDetails": "******",
 						"title": "******",
 						"update": "******",
-						"useRecordId": "******",
-						"useRecordIdTooltip": "******"
+						"useRecordId": "******"
 					},
 					"aggregations": {
 						"add": {
@@ -1461,7 +1465,8 @@
 						"title": "******"
 					},
 					"tooltip": {
-						"template": "******"
+						"template": "******",
+						"useRecordId": "******"
 					}
 				},
 				"iconPicker": {

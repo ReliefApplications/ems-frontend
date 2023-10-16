@@ -1226,8 +1226,8 @@
 			"grid": {
 				"actions": {
 					"detail": "Open detail",
-					"history": "Show history",
-					"goTo": "Go to page"
+					"goTo": "Go to page",
+					"history": "Show history"
 				},
 				"errors": {
 					"autoSaveFailed": "Action stopped due to some invalid records. Please review them before taking any other action.",
@@ -1287,10 +1287,10 @@
 				"openSettings": "Open settings",
 				"tooltip": {
 					"displayMap": "Display map",
+					"openPage": "Navigate to page",
 					"saved": "Changes saved",
 					"unsaved": "Click on save button to upload changes",
-					"uploadFailed": "Record not saved. Click to see more details",
-					"openPage": "Navigate to page"
+					"uploadFailed": "Record not saved. Click to see more details"
 				},
 				"validation": {
 					"help": "Please edit the record using the 'update' button for more details.",
@@ -1376,16 +1376,16 @@
 							"label": "Target page",
 							"placeholder": "Select a page"
 						},
+						"pageUrlTitle": {
+							"label": "Column name",
+							"placeholder": "Type a title for the column..."
+						},
 						"remove": "Remove",
 						"show": "Show history",
 						"showDetails": "Show record details",
 						"title": "Enabled actions",
 						"update": "Update records",
-						"useRecordId": "Pass id as query parameter",
-						"pageUrlTitle": {
-							"label": "Column name",
-							"placeholder": "Type a title for the column..."
-						}
+						"useRecordId": "Pass id as query parameter"
 					},
 					"aggregations": {
 						"add": {
