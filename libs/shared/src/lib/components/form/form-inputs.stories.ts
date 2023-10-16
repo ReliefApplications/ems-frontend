@@ -686,9 +686,9 @@ export const MultiSelectMatrix: Story = {
   }),
 };
 /**
- * Default inputs DinamicMatrix
+ * Default inputs DynamicMatrix
  */
-export const DinamicMatrix: Story = {
+export const DynamicMatrix: Story = {
   render: () => ({
     props: {
       form: {
