@@ -40,6 +40,12 @@ class MockAuthService {
   });
 }
 
+/**
+ * Initialize app
+ *
+ * @param formService Form Service
+ * @returns Initialized app
+ */
 const initializeApp =
   (formService: FormService): any =>
   () => {
@@ -132,6 +138,12 @@ const sharedForm = {
   canCreateRecords: true,
 };
 
+/**
+ * Shared Questions
+ *
+ * @param args Extended form component
+ * @returns Shared questions structure
+ */
 const sharedQuestion = (args: ExtendedFormComponent) => ({
   title: args.title,
   titleLocation: args.titleLocation,
@@ -159,6 +171,40 @@ export const Radio: Story = {
                 elements: [
                   {
                     type: 'radiogroup',
+                    name: 'question1',
+                    ...sharedQuestion(args),
+                    choices: ['Item 1', 'Item 2', 'Item 3'],
+                  },
+                ],
+              },
+            ],
+            showQuestionNumbers: 'off',
+          }),
+        },
+      },
+    };
+  },
+};
+
+/**
+ * Default inputs Dropdown
+ */
+export const Dropdown: Story = {
+  args: {
+    title: 'Dropdown question',
+  },
+  render: (args) => {
+    return {
+      props: {
+        form: {
+          ...sharedForm,
+          structure: JSON.stringify({
+            pages: [
+              {
+                name: 'page1',
+                elements: [
+                  {
+                    type: 'dropdown',
                     name: 'question1',
                     ...sharedQuestion(args),
                     choices: ['Item 1', 'Item 2', 'Item 3'],
@@ -640,9 +686,9 @@ export const MultiSelectMatrix: Story = {
   }),
 };
 /**
- * Default inputs DinamicMatrix
+ * Default inputs DynamicMatrix
  */
-export const DinamicMatrix: Story = {
+export const DynamicMatrix: Story = {
   render: () => ({
     props: {
       form: {

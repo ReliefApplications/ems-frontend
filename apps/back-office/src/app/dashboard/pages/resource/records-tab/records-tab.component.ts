@@ -103,9 +103,11 @@ export class RecordsTabComponent
           showDeletedRecords: this.showDeletedRecords,
         },
       });
-    this.recordsQuery.valueChanges.subscribe(({ data, loading }) => {
-      this.updateValues(data, loading);
-    });
+    this.recordsQuery.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(({ data, loading }) => {
+        this.updateValues(data, loading);
+      });
   }
 
   /**
@@ -360,6 +362,7 @@ export class RecordsTabComponent
       this.pageInfo,
       this.cachedRecords
     );
+    console.log(this.pageInfo);
     if (cachedData && cachedData.length === this.pageInfo.pageSize) {
       this.dataSource = cachedData;
     } else {
@@ -399,8 +402,8 @@ export class RecordsTabComponent
   private fetchRecords(refetch?: boolean): void {
     this.loading = true;
     const variables = {
-      id: this.resource.id,
       first: this.pageInfo.pageSize,
+      id: this.resource.id,
       afterCursor: refetch ? null : this.pageInfo.endCursor,
       display: false,
       showDeletedRecords: this.showDeletedRecords,

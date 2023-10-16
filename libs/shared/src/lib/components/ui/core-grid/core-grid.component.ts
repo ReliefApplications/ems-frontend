@@ -26,7 +26,6 @@ import {
   QueryBuilderService,
   QueryResponse,
 } from '../../../services/query-builder/query-builder.service';
-import { RecordHistoryComponent } from '../../record-history/record-history.component';
 import {
   CONVERT_RECORD,
   DELETE_RECORDS,
@@ -1207,15 +1206,19 @@ export class CoreGridComponent
    * @param item item to get history of
    */
   public onViewHistory(item: any): void {
-    this.layoutService.setRightSidenav({
-      component: RecordHistoryComponent,
-      inputs: {
-        id: item.id,
-        revert: (version: any) => this.confirmRevertDialog(item, version),
-        template: this.settings.template || null,
-        refresh$: this.refresh$,
-      },
-    });
+    import('../../record-history/record-history.component').then(
+      ({ RecordHistoryComponent }) => {
+        this.layoutService.setRightSidenav({
+          component: RecordHistoryComponent,
+          inputs: {
+            id: item.id,
+            revert: (version: any) => this.confirmRevertDialog(item, version),
+            template: this.settings.template || null,
+            refresh$: this.refresh$,
+          },
+        });
+      }
+    );
   }
 
   /**
