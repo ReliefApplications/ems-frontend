@@ -1471,7 +1471,7 @@
 				},
 				"iconPicker": {
 					"default": "Default",
-					"placeholder": "Search an icon"
+					"placeholder": "Click to select an icon"
 				},
 				"map": {
 					"basemap": "Base map",
