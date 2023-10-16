@@ -270,6 +270,9 @@ export class AggregationGridComponent
             //     'components.widget.grid.errors.metaQueryBuildFailed'
             //   ),
             // };
+            this.status = {
+              error: false,
+            };
           }
         },
         error: (err: any) => {

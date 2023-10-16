@@ -1,4 +1,4 @@
-<ui-dialog size="medium" [closable]="true">
+<ui-dialog size="medium">
   <ng-container ngProjectAs="header">
     <h3 class="font-semibold">{{ 'models.dashboard.context.datasource.title' | translate }}</h3>
   </ng-container>
@@ -91,6 +91,9 @@
   </ng-container>
 
   <ng-container ngProjectAs="actions">
+    <ui-button uiDialogClose>
+      {{ 'common.close' | translate }}
+    </ui-button>
     <ui-button
       category="secondary"
       variant="primary"

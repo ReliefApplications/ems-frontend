@@ -198,11 +198,6 @@ export class SubscriptionModalComponent
     }
   }
 
-  /** Close the modal without sending any data. */
-  onClose(): void {
-    this.dialogRef.close();
-  }
-
   /**
    * Adds scroll listener to auto complete.
    */
