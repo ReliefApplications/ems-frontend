@@ -13,7 +13,7 @@
             {{ action.text | translate
             }}<ui-icon
               *ngIf="action.tooltip"
-              class="ml-2"
+              class="ml-2 cursor-help"
               variant="grey"
               icon="info_outline"
               [size]="18"
@@ -26,9 +26,22 @@
       <div
         *ngIf="showSelectPage"
         formGroupName="navigateSettings"
-        class="flex flex-col ml-[55px] gap-1"
+        class="flex flex-col ml-[55px]"
       >
-        <div uiFormFieldDirective [defaultMargin]="false" class="w-80">
+        <div uiFormFieldDirective class="w-80">
+          <label>{{
+            'components.widget.settings.grid.actions.pageUrlTitle.label'
+              | translate
+          }}</label>
+          <input
+            formControlName="title"
+            [placeholder]="
+              'components.widget.settings.grid.actions.pageUrlTitle.placeholder'
+                | translate
+            "
+          />
+        </div>
+        <div uiFormFieldDirective class="w-80">
           <label>
             {{
               'components.widget.settings.grid.actions.pageUrl.label'
@@ -50,26 +63,22 @@
             </ui-select-option>
           </ui-select-menu>
         </div>
-        <div>
-          <ui-checkbox formControlName="useRecordId">
-            <ng-container ngProjectAs="label">
-              {{
-                'components.widget.settings.grid.actions.useRecordId'
+        <ui-checkbox formControlName="useRecordId">
+          <ng-container ngProjectAs="label">
+            {{
+              'components.widget.settings.grid.actions.useRecordId' | translate
+            }}<ui-icon
+              class="ml-2 cursor-help"
+              variant="grey"
+              icon="info_outline"
+              [size]="18"
+              [uiTooltip]="
+                'components.widget.settings.grid.tooltip.useRecordId'
                   | translate
-              }}
-            </ng-container>
-          </ui-checkbox>
-          <ui-icon
-            class="ml-2"
-            variant="grey"
-            icon="info_outline"
-            [size]="18"
-            [uiTooltip]="
-              'components.widget.settings.grid.actions.useRecordIdTooltip'
-                | translate
-            "
-          ></ui-icon>
-        </div>
+              "
+            ></ui-icon>
+          </ng-container>
+        </ui-checkbox>
       </div>
     </div>
   </div>

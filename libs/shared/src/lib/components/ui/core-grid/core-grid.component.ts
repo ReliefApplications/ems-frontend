@@ -275,6 +275,7 @@ export class CoreGridComponent
     navigateSettings: {
       useRecordId: false,
       pageUrl: '',
+      title: '',
     },
     remove: false,
   };
@@ -374,6 +375,7 @@ export class CoreGridComponent
           false
         ),
         pageUrl: get(this.settings, 'actions.navigateSettings.pageUrl', ''),
+        title: get(this.settings, 'actions.navigateSettings.title', ''),
       },
       remove: get(this.settings, 'actions.remove', false),
     };
@@ -893,7 +895,7 @@ export class CoreGridComponent
         }
         break;
       }
-      case 'recordDashboard': {
+      case 'goTo': {
         if (event.item) {
           let fullUrl = this.getPageUrl(event.pageUrl as string);
           if (event.useRecordId) {

@@ -154,7 +154,7 @@ export const createGridWidgetFormGroup = (id: string, configuration: any) => {
  * @returns form group with the given grid actions configuration
  */
 export const createGridActionsFormGroup = (configuration: any) => {
-  return fb.group({
+  const formGroup = fb.group({
     delete: [get(configuration, 'actions.delete', true)],
     history: [get(configuration, 'actions.history', true)],
     convert: [get(configuration, 'actions.convert', true)],
@@ -169,6 +169,26 @@ export const createGridActionsFormGroup = (configuration: any) => {
       useRecordId: [
         get(configuration, 'actions.navigateSettings.useRecordId', false),
       ],
+      title: [
+        get(configuration, 'actions.navigateSettings.title', 'Details view'),
+      ],
     }),
   });
+  // Set validators ot navigate to page title option, based on other params
+  const setValidatorsNavigateToPageTitle = (value: boolean) => {
+    if (value) {
+      formGroup
+        .get('navigateSettings.title')
+        ?.setValidators(Validators.required);
+    } else {
+      formGroup.get('navigateSettings.title')?.clearValidators();
+    }
+  };
+  // Initialize
+  setValidatorsNavigateToPageTitle(formGroup.get('navigateToPage')?.value);
+  // Subscribe to changes
+  formGroup.get('navigateToPage')?.valueChanges.subscribe((value) => {
+    setValidatorsNavigateToPageTitle(value);
+  });
+  return formGroup;
 };

@@ -1396,8 +1396,7 @@
 						"showDetails": "Afficher les détails des enregistrements",
 						"title": "Actions activées",
 						"update": "Modifier les enregistrements",
-						"useRecordId": "Utiliser l'id de l'enregistrement",
-						"useRecordIdTooltip": "Pour être redirigé vers la vue contextuelle de la fiche"
+						"useRecordId": "Passer l'identifiant comme paramètre de requête"
 					},
 					"aggregations": {
 						"add": {
@@ -1477,7 +1476,8 @@
 						"title": "Mise en page de la grille"
 					},
 					"tooltip": {
-						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements"
+						"template": "Sélectionnez un modèle à utiliser pour l'ajout et l'édition des enregistrements",
+						"useRecordId": "L'url de redirection contiendra l'identifiant de l'élément, afin de naviguer à une page contextuelle, si configurée"
 					}
 				},
 				"iconPicker": {

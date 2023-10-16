@@ -523,6 +523,7 @@ export class SummaryCardComponent
             'actions.navigateSettings.useRecordId',
             false
           ),
+          title: get(this.settings, 'actions.navigateSettings.title', ''),
         },
       },
       contextFilters: JSON.stringify(this.contextFilters),

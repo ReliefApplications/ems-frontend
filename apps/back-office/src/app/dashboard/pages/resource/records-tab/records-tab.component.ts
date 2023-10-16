@@ -362,7 +362,6 @@ export class RecordsTabComponent
       this.pageInfo,
       this.cachedRecords
     );
-    console.log(this.pageInfo);
     if (cachedData && cachedData.length === this.pageInfo.pageSize) {
       this.dataSource = cachedData;
     } else {

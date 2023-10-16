@@ -142,6 +142,7 @@ export class GridComponent
     navigateSettings: {
       useRecordId: false,
       pageUrl: '',
+      title: '',
     },
     remove: false,
   };
