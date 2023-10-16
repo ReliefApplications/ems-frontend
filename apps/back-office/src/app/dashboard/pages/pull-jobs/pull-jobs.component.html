@@ -95,15 +95,6 @@
         </table>
       </div>
     </div>
-    <ui-paginator
-      [disabled]="loading"
-      [pageSize]="pageInfo.pageSize"
-      [pageSizeOptions]="[10, 25, 50]"
-      [totalItems]="pageInfo.length"
-      [ariaLabel]="'components.pullJob.paginator.ariaLabel' | translate"
-      (pageChange)="onPage($event)"
-    >
-    </ui-paginator>
   </ng-container>
   <ng-template #emptyTmpl>
     <!-- Empty indicator -->
@@ -118,3 +109,13 @@
   <shared-skeleton-table [columns]="displayedColumns" [actions]="true">
   </shared-skeleton-table>
 </ng-template>
+
+<ui-paginator
+  [disabled]="loading"
+  [pageSize]="pageInfo.pageSize"
+  [pageSizeOptions]="[10, 25, 50]"
+  [totalItems]="pageInfo.length"
+  [ariaLabel]="'components.pullJob.paginator.ariaLabel' | translate"
+  (pageChange)="onPage($event)"
+>
+</ui-paginator>
