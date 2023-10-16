@@ -1226,6 +1226,7 @@
 			"grid": {
 				"actions": {
 					"detail": "Open detail",
+					"goTo": "Go to page",
 					"history": "Show history"
 				},
 				"errors": {
@@ -1286,6 +1287,7 @@
 				"openSettings": "Open settings",
 				"tooltip": {
 					"displayMap": "Display map",
+					"openPage": "Navigate to page",
 					"saved": "Changes saved",
 					"unsaved": "Click on save button to upload changes",
 					"uploadFailed": "Record not saved. Click to see more details"
@@ -1369,11 +1371,21 @@
 						"delete": "Delete records",
 						"export": "Export records",
 						"inline": "Inline edition",
+						"navigateToPage": "Navigate to page",
+						"pageUrl": {
+							"label": "Target page",
+							"placeholder": "Select a page"
+						},
+						"pageUrlTitle": {
+							"label": "Column name",
+							"placeholder": "Type a title for the column..."
+						},
 						"remove": "Remove",
 						"show": "Show history",
 						"showDetails": "Show record details",
 						"title": "Enabled actions",
-						"update": "Update records"
+						"update": "Update records",
+						"useRecordId": "Pass id as query parameter"
 					},
 					"aggregations": {
 						"add": {
@@ -1428,6 +1440,7 @@
 							"delete": "If authorized, user can delete visible records",
 							"export": "User can export selected columns of visible records",
 							"inline": "If authorized, user can edit records in the grid",
+							"navigateToPage": "User can go to specified page on click",
 							"show": "User can see full history of visible records",
 							"showDetails": "User can see full details of visible records",
 							"update": "If authorized, user can update visible records"
@@ -1452,7 +1465,8 @@
 						"title": "Grid layouts"
 					},
 					"tooltip": {
-						"template": "Select a template for addition and edition of records"
+						"template": "Select a template for addition and edition of records",
+						"useRecordId": "Url will contain id of the item, in order to redirect to contextual page, if configured"
 					}
 				},
 				"iconPicker": {
@@ -1679,6 +1693,10 @@
 							"tooltip": {
 								"datasource": "Add a button in widget's header to view card's data source"
 							}
+						},
+						"gridActions": {
+							"title": "Grid actions",
+							"tooltip": "Enabled grid actions"
 						},
 						"preview": {
 							"title": "Preview"
