@@ -13,7 +13,8 @@
     [header]="header"
     [leftSidenav]="pages"
     [sideMenu]="sideMenu"
-    [profileRoute]="'/' + appID + '/profile'"
+    [profileRoute]="'profile'"
+    (openApplication)="onOpenApplication($event)"
   ></shared-layout>
 </ng-template>
 <!--Need the nav variable, don't remove let-nav, used in layout-->

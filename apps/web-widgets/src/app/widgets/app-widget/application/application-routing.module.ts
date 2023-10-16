@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { PermissionGuard } from '@oort-front/shared';
+import { AccessGuard } from '../guards/access.guard';
 
 /**
  * List of routes of the application.
@@ -13,21 +14,25 @@ export const routes: Routes = [
       import('./pages/dashboard/dashboard.module').then(
         (m) => m.DashboardModule
       ),
+    canActivate: [AccessGuard],
   },
   {
     path: 'form/:id',
     loadChildren: () =>
       import('./pages/form/form.module').then((m) => m.FormModule),
+    canActivate: [AccessGuard],
   },
   {
     path: 'workflow/:id',
     loadChildren: () =>
       import('./pages/workflow/workflow.module').then((m) => m.WorkflowModule),
+    canActivate: [AccessGuard],
   },
   {
     path: 'profile',
     loadChildren: () =>
       import('@oort-front/shared').then((m) => m.ProfileViewModule),
+    canActivate: [AccessGuard],
   },
   {
     path: 'settings',

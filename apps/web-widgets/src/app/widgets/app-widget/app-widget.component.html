@@ -1,1 +1,5 @@
-<app-application [appID]="appID"></app-application>
+<app-application
+  (openApplication)="id = $event"
+  [displaySideNav]="true"
+  [appID]="id"
+></app-application>

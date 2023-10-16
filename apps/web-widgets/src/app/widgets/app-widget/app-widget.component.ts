@@ -3,7 +3,9 @@ import {
   ElementRef,
   Injector,
   Input,
+  OnChanges,
   OnInit,
+  SimpleChanges,
   ViewEncapsulation,
 } from '@angular/core';
 import {
@@ -29,7 +31,7 @@ import { POPUP_CONTAINER } from '@progress/kendo-angular-popup';
   styleUrls: ['./app-widget.component.scss'],
   encapsulation: ViewEncapsulation.ShadowDom,
 })
-export class AppWidgetComponent implements OnInit {
+export class AppWidgetComponent implements OnInit, OnChanges {
   // Static component declaration of survey custom components for the property grid editor in order to avoid removal on tree shake for production build
   static declaration = [
     ApplicationDropdownComponent,
@@ -41,7 +43,9 @@ export class AppWidgetComponent implements OnInit {
     ResourceSelectTextComponent,
     TestServiceDropdownComponent,
   ];
-  @Input() appID = '63c9610ec7dee6439fe33604';
+  // @Input() id = '';
+  @Input() id = '63c9610ec7dee6439fe33604';
+  @Input() displaySideNav = true;
   title = 'front-office';
 
   /**
@@ -68,5 +72,9 @@ export class AppWidgetComponent implements OnInit {
    */
   ngOnInit(): void {
     this.authService.initLoginSequence();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
   }
 }

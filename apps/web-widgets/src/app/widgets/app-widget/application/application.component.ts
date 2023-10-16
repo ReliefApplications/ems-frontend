@@ -1,9 +1,13 @@
 import {
   Component,
+  EventEmitter,
   HostListener,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
+  Output,
+  SimpleChanges,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { subject } from '@casl/ability';
@@ -30,10 +34,14 @@ import { takeUntil } from 'rxjs/operators';
 })
 export class ApplicationComponent
   extends UnsubscribeComponent
-  implements OnInit, OnDestroy
+  implements OnInit, OnDestroy, OnChanges
 {
   /** Stores current app ID */
   @Input() appID = '';
+  /** Display application sidenav component */
+  @Input() displaySideNav = true;
+  /** Send application id to open in the web widget */
+  @Output() openApplication: EventEmitter<string> = new EventEmitter<string>();
   /** Application title */
   public title = '';
   /** Stores current app page */
@@ -90,9 +98,25 @@ export class ApplicationComponent
    * On load, try to open the first application accessible to the user.
    */
   ngOnInit(): void {
-    this.loading = true;
-    this.applicationService.loadApplication(this.appID);
+    this.setUpApplicationListeners();
+    if (this.appID) {
+      this.loading = true;
+      this.applicationService.loadApplication(this.appID);
+    }
+  }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    console.log(changes);
+    if (changes['appID'].currentValue) {
+      this.loading = true;
+      this.applicationService.loadApplication(changes['appID'].currentValue);
+    }
+  }
+
+  /**
+   * Initialize all the needed listeners to load the application content
+   */
+  private setUpApplicationListeners() {
     // Get list of available applications
     this.authService.user$
       .pipe(takeUntil(this.destroy$))
@@ -132,7 +156,7 @@ export class ApplicationComponent
             }
           }
           this.application = application;
-          this.sideMenu = this.application?.sideMenu ?? false;
+          this.sideMenu = this.application?.sideMenu ?? this.displaySideNav;
         } else {
           this.title = '';
           this.navGroups = [];
@@ -194,7 +218,7 @@ export class ApplicationComponent
       // if can see users globally / can manage apps / can see users in app
       this.adminNavItems.push({
         name: this.translate.instant('common.user.few'),
-        path: `./settings/users`,
+        path: `settings/users`,
         icon: 'supervisor_account',
       });
     }
@@ -204,7 +228,7 @@ export class ApplicationComponent
       // if can see roles globally / can manage apps / can see roles in app
       this.adminNavItems.push({
         name: this.translate.instant('common.role.few'),
-        path: `./settings/roles`,
+        path: `settings/roles`,
         icon: 'admin_panel_settings',
       });
     }
@@ -217,7 +241,7 @@ export class ApplicationComponent
       // if can manage apps / can manage templates in app
       this.adminNavItems.push({
         name: this.translate.instant('common.template.few'),
-        path: `./settings/templates`,
+        path: `settings/templates`,
         icon: 'description',
       });
     }
@@ -230,7 +254,7 @@ export class ApplicationComponent
       // if can manage apps / can manage distribution lists in app
       this.adminNavItems.push({
         name: this.translate.instant('common.distributionList.few'),
-        path: `./settings/distribution-lists`,
+        path: `settings/distribution-lists`,
         icon: 'mail',
       });
     }
@@ -243,15 +267,25 @@ export class ApplicationComponent
       // if can manage apps / can manage distribution lists in app
       this.adminNavItems.push({
         name: this.translate.instant('common.customNotification.few'),
-        path: './settings/notifications',
+        path: 'settings/notifications',
         icon: 'schedule_send',
       });
     }
+    console.log(this.adminNavItems);
   }
 
   override ngOnDestroy(): void {
     super.ngOnDestroy();
     this.applicationService.leaveApplication();
+  }
+
+  /**
+   * Opens an application, contacting the application service.
+   *
+   * @param application Application to open
+   */
+  onOpenApplication(application: Application): void {
+    this.openApplication.emit(application.id);
   }
 
   // /**
