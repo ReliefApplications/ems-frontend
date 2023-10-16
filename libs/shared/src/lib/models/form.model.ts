@@ -38,7 +38,7 @@ export interface Form {
   versions?: Version[];
   recordsCount?: number;
   core?: boolean;
-  records?: Record[];
+  records?: Connection<Record>;
   fields?: any[];
   permissions?: any;
   resource?: Resource;
