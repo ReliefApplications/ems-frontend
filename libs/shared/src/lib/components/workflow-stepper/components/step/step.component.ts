@@ -32,7 +32,6 @@ export class StepComponent {
    * @param e click event.
    */
   public onDelete(e: any): void {
-    console.log('delete');
     e.stopPropagation();
     this.delete.emit();
   }

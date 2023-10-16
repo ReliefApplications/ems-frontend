@@ -41,7 +41,6 @@ export class WorkflowStepperComponent {
    * @param index Index of the step
    */
   onStep(index: number): void {
-    console.log('On step index: ', index);
     if (this.dragging) {
       this.dragging = false;
       return;
