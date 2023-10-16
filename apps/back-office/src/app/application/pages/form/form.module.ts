@@ -24,7 +24,7 @@ import { AbilityModule } from '@casl/angular';
     EditableTextModule,
     ButtonModule,
     TooltipModule,
-    AbilityModule
+    AbilityModule,
   ],
   exports: [FormComponent],
 })

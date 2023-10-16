@@ -32,7 +32,7 @@ import { AbilityModule } from '@casl/angular';
     ButtonModule,
     SelectMenuModule,
     FormWrapperModule,
-    AbilityModule
+    AbilityModule,
   ],
   exports: [AccessComponent, EditAccessComponent],
 })
