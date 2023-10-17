@@ -1155,6 +1155,7 @@
 					"metaQueryBuildFailed": "******",
 					"metaQueryFetchFailed": "****** {{error}}",
 					"missingDataset": "******",
+					"noRowsSelected": "******",
 					"queryBuildFailed": "******",
 					"queryFetchFailed": "****** {{error}}",
 					"validationFailed": "****** {{errors}} ******"
@@ -1222,6 +1223,11 @@
 					"categories": "******",
 					"color": "******",
 					"grid": {
+						"buttons": {
+							"modifySelectedRows": {
+								"confirmation": "******"
+							}
+						},
 						"title": "******",
 						"x": {
 							"display": "******"
@@ -1328,6 +1334,7 @@
 						"create": "******",
 						"defaultName": "******",
 						"enable": "******",
+						"requireConfirmation": "******",
 						"title": "******",
 						"tooltip": {
 							"attach": "******",

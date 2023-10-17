@@ -112,6 +112,20 @@ export class ButtonConfigComponent
         });
     }
 
+    // this.formGroup
+    //   ?.get('requireConfirmation')
+    //   ?.valueChanges.pipe(takeUntil(this.destroy$))
+    //   .subscribe((value) => {
+    //     if (value) {
+    //       this.formGroup
+    //         ?.get('requireConfirmation')
+    //         ?.setValidators(Validators.required);
+    //     } else {
+    //       this.formGroup?.get('requireConfirmation')?.clearValidators();
+    //     }
+    //     this.formGroup?.get('requireConfirmation')?.updateValueAndValidity();
+    //   });
+
     this.formGroup
       ?.get('prefillForm')
       ?.valueChanges.pipe(takeUntil(this.destroy$))

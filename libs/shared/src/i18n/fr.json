@@ -1171,6 +1171,7 @@
 					"metaQueryBuildFailed": "Erreur lors de la création des métadonnées",
 					"metaQueryFetchFailed": "Erreur lors de la récupération des métadonnées: {{error}}",
 					"missingDataset": "Sélectionner un jeu de données dans les jeux de données",
+					"noRowsSelected": "Aucune ligne sélectionnée",
 					"queryBuildFailed": "Erreur lors de la création de la requête",
 					"queryFetchFailed": "Erreur lors de la récupération des données : {{error}}",
 					"validationFailed": "Les enregistrements suivants n'ont pas pu être sauvegardés car invalides :\n{{errors}}\nMerci de les modifier en utilisant le bouton \"Mettre à jour \" pour plus de détails."
@@ -1238,6 +1239,11 @@
 					"categories": "Catégories",
 					"color": "Couleur",
 					"grid": {
+						"buttons": {
+							"modifySelectedRows": {
+								"confirmation": "Voulez-vous vraiment modifier les lignes sélectionnées?"
+							}
+						},
 						"title": "Grille",
 						"x": {
 							"display": "Afficher les lignes horizontales"
@@ -1344,6 +1350,7 @@
 						"create": "Ajouter un bouton",
 						"defaultName": "Bouton d'action",
 						"enable": "Activer",
+						"requireConfirmation": "Exiger une confirmation",
 						"title": "Bouton d'action rapide",
 						"tooltip": {
 							"attach": "Si activé, vous devez fournir un formulaire et un champ dans ce formulaire. Toutes les lignes sélectionnées seront attachées à un enregistrement de ce formulaire. L'utilisateur pourra choisir cet enregistrement grâce au champ donné.",
